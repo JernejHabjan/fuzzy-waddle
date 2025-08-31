@@ -9,22 +9,22 @@ import { IdComponent } from "../components/id-component";
 import { AttackComponent } from "../components/combat/components/attack-component";
 import { OrderData } from "../../ai/OrderData";
 import { OrderType } from "../../ai/order-type";
-import { GathererComponent } from "../components/gatherer-component";
+import { GathererComponent } from "../components/resource/gatherer-component";
 import { ResourceDrainComponent } from "../components/resource/resource-drain-component";
 import { OwnerComponent } from "../components/owner-component";
 import { ConstructionSiteComponent } from "../components/construction/construction-site-component";
-import { BuilderComponent } from "../components/builder-component";
-import { ActorTranslateComponent } from "../components/actor-translate-component";
+import { BuilderComponent } from "../components/construction/builder-component";
+import { ActorTranslateComponent } from "../components/movement/actor-translate-component";
 import { HealingComponent } from "../components/combat/components/healing-component";
-import { ContainerComponent } from "../building/container-component";
+import { ContainerComponent } from "../components/building/container-component";
 import { ResourceSourceComponent } from "../components/resource/resource-source-component";
 import { environment } from "../../../../../environments/environment";
 import { getSceneService } from "../../world/components/scene-component-helpers";
 import { DebuggingService } from "../../world/services/DebuggingService";
-import { ContainableComponent } from "../components/containable-component";
-import { AudioActorComponent } from "../components/audio-actor-component";
-import { WalkableComponent } from "../components/walkable-component";
-import { FlightComponent } from "../components/flight-component";
+import { ContainableComponent } from "../components/building/containable-component";
+import { AudioActorComponent } from "../components/actor-audio/audio-actor-component";
+import { WalkableComponent } from "../components/movement/walkable-component";
+import { FlyingComponent } from "../components/movement/flying-component";
 import { type GameObjectActionAssignerConfig } from "../../world/managers/controllers/game-object-action-assigner";
 
 export class ActionSystem {
@@ -123,7 +123,7 @@ export class ActionSystem {
         // ally
 
         const targetIsWalkable = getActorComponent(targetGameObject, WalkableComponent);
-        const selfHasFlying = getActorComponent(this.gameObject, FlightComponent);
+        const selfHasFlying = getActorComponent(this.gameObject, FlyingComponent);
         if (targetIsWalkable && !selfHasFlying) {
           // target is walkable and self is not flying
           return new OrderData(OrderType.Move, { targetGameObject });

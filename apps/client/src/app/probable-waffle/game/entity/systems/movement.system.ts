@@ -15,12 +15,12 @@ import { AudioService } from "../../world/services/audio.service";
 import { getCommunicator, getCurrentPlayerNumber } from "../../data/scene-data";
 import { SelectableComponent } from "../components/selectable-component";
 import { getActorComponent } from "../../data/actor-component";
-import { ActorTranslateComponent, type IsoDirection } from "../components/actor-translate-component";
+import { ActorTranslateComponent } from "../components/movement/actor-translate-component";
 import { HealthComponent } from "../components/combat/components/health-component";
 import { PawnAiController } from "../../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
 import { OrderType } from "../../ai/order-type";
 import { OrderData } from "../../ai/OrderData";
-import { AudioActorComponent } from "../components/audio-actor-component";
+import { AudioActorComponent } from "../components/actor-audio/audio-actor-component";
 import {
   SharedActorActionsSfxGrassSounds,
   SharedActorActionsSfxGravelSounds,
@@ -30,14 +30,15 @@ import {
 } from "../../sfx/SharedActorActionsSfx";
 import { OwnerComponent } from "../components/owner-component";
 import { AnimationActorComponent } from "../components/animation/animation-actor-component";
-import { FlightComponent } from "../components/flight-component";
-import { WalkableComponent } from "../components/walkable-component";
+import { FlyingComponent } from "../components/movement/flying-component";
+import { WalkableComponent } from "../components/movement/walkable-component";
 import { RepresentableComponent } from "../components/representable-component";
 import Tween = Phaser.Tweens.Tween;
 import GameObject = Phaser.GameObjects.GameObject;
 import { IdComponent } from "../components/id-component";
 import { getTileCoordsUnderObject } from "../../library/tile-under-object";
 import { TilemapComponent } from "../../world/components/tilemap.component";
+import type { IsoDirection } from "../components/movement/iso-directions";
 
 export interface PathMoveConfig {
   radiusTilesAroundDestination?: number;
@@ -127,8 +128,8 @@ export class MovementSystem {
     tileVec3: Vector3Simple,
     pathMoveConfig?: PathMoveConfig
   ): Promise<boolean> {
-    const flightComponent = getActorComponent(this.gameObject, FlightComponent);
-    const usePathfinding = !flightComponent;
+    const flyingComponent = getActorComponent(this.gameObject, FlyingComponent);
+    const usePathfinding = !flyingComponent;
     if (!usePathfinding) {
       return this.moveDirectlyToLocationWithoutPathfinding(tileVec3, pathMoveConfig)
         .then(() => true)
@@ -161,8 +162,8 @@ export class MovementSystem {
     gameObject: GameObject,
     pathMoveConfig?: Partial<PathMoveConfig>
   ): Promise<boolean> {
-    const flightComponent = getActorComponent(gameObject, FlightComponent);
-    const usePathfinding = !flightComponent;
+    const flyingComponent = getActorComponent(gameObject, FlyingComponent);
+    const usePathfinding = !flyingComponent;
     if (!usePathfinding) {
       const vec3 = getGameObjectCurrentTile(gameObject);
       if (!vec3) return false;
@@ -636,8 +637,8 @@ export async function getRandomTileInNavigableRadius(
 ): Promise<Vector2Simple | undefined> {
   const movementSystem = getActorSystem<MovementSystem>(gameObject, MovementSystem);
   if (!movementSystem) return Promise.reject("No movement system found");
-  const flightComponent = getActorComponent(gameObject, FlightComponent);
-  const usePathfinding = !flightComponent;
+  const flyingComponent = getActorComponent(gameObject, FlyingComponent);
+  const usePathfinding = !flyingComponent;
   const newTile = usePathfinding
     ? await getGameObjectTileInNavigableRadius(gameObject, radius)
     : getGameObjectTileInRadius(gameObject, radius);

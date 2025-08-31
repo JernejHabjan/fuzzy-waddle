@@ -1,7 +1,7 @@
-import { SoundType } from "../../../../entity/components/audio-actor-component";
 import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { ActorsStoneSfxOutOfResourcesSounds, ActorsStoneSfxSelectionSounds } from "./sfx-stone";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
+import { SoundType } from "../../../../entity/components/actor-audio/sound-type";
 
 export const stonePileDefinition = {
   components: {

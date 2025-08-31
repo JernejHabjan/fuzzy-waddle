@@ -8,9 +8,10 @@ import { onObjectReady } from "../../../data/game-object-helper";
 import { getActorSystem } from "../../../data/actor-system";
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { getActorComponent } from "../../../data/actor-component";
-import { AudioActorComponent, SoundType } from "../../../entity/components/audio-actor-component";
+import { AudioActorComponent } from "../../../entity/components/actor-audio/audio-actor-component";
 import { AnimationActorComponent } from "../../../entity/components/animation/animation-actor-component";
 import { OrderType } from "../../../ai/order-type";
+import { SoundType } from "../../../entity/components/actor-audio/sound-type";
 /* END-USER-IMPORTS */
 
 export default class Sheep extends Phaser.GameObjects.Sprite {

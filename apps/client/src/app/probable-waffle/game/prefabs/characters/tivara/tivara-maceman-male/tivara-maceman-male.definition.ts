@@ -1,9 +1,7 @@
-import { ActorPhysicalType } from "../../../../entity/components/combat/components/health-component";
 import { weaponDefinitions } from "../../../../entity/components/combat/attack-data";
 import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
-import { PaymentType } from "../../../../entity/building/payment-type";
+import { PaymentType } from "../../../../entity/components/production/payment-type";
 import { AiType } from "../../../../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
-import { SoundType } from "../../../../entity/components/audio-actor-component";
 import {
   TivaraMacemanSfxAttackSounds,
   TivaraMacemanSfxDamageSounds,
@@ -15,6 +13,8 @@ import {
 } from "./TivaraMacemanSfx";
 import { ANIM_TIVARA_MACEMAN_MALE_DEFINITION } from "./tivara_maceman_male_anims";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
+import { SoundType } from "../../../../entity/components/actor-audio/sound-type";
+import { ActorPhysicalType } from "../../../../entity/components/combat/components/actor-physical-type";
 
 export const tivaraMacemanMaleDefinition = {
   components: {

@@ -1,25 +1,25 @@
-import { ConstructionSiteComponent } from "./construction/construction-site-component";
+import { ConstructionSiteComponent } from "./construction-site-component";
 import { ContainerComponent } from "../building/container-component";
 import { Subject } from "rxjs";
-import { getActorComponent } from "../../data/actor-component";
+import { getActorComponent } from "../../../data/actor-component";
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
-import { HealthComponent } from "./combat/components/health-component";
-import { getSceneService } from "../../world/components/scene-component-helpers";
-import { AudioService } from "../../world/services/audio.service";
-import { getGameObjectLogicalTransform, onObjectReady } from "../../data/game-object-helper";
-import { UiFeedbackBuildDeniedSound } from "../../hud/UiFeedbackSfx";
-import HudMessages, { HudVisualFeedbackMessageType } from "../../prefabs/gui/labels/HudMessages";
-import { CrossSceneCommunicationService } from "../../world/services/CrossSceneCommunicationService";
-import { OwnerComponent } from "./owner-component";
-import { getCurrentPlayerNumber } from "../../data/scene-data";
-import { AnimationActorComponent, type AnimationOptions } from "./animation/animation-actor-component";
-import { OrderType } from "../../ai/order-type";
-import { ActorTranslateComponent } from "./actor-translate-component";
-import { DistanceHelper } from "../../library/distance-helper";
+import { HealthComponent } from "../combat/components/health-component";
+import { getSceneService } from "../../../world/components/scene-component-helpers";
+import { AudioService } from "../../../world/services/audio.service";
+import { getGameObjectLogicalTransform, onObjectReady } from "../../../data/game-object-helper";
+import { UiFeedbackBuildDeniedSound } from "../../../hud/UiFeedbackSfx";
+import HudMessages, { HudVisualFeedbackMessageType } from "../../../prefabs/gui/labels/HudMessages";
+import { CrossSceneCommunicationService } from "../../../world/services/CrossSceneCommunicationService";
+import { OwnerComponent } from "../owner-component";
+import { getCurrentPlayerNumber } from "../../../data/scene-data";
+import { AnimationActorComponent, type AnimationOptions } from "../animation/animation-actor-component";
+import { OrderType } from "../../../ai/order-type";
+import { ActorTranslateComponent } from "../movement/actor-translate-component";
+import { DistanceHelper } from "../../../library/distance-helper";
 import GameObject = Phaser.GameObjects.GameObject;
 import { type BuilderComponentData } from "@fuzzy-waddle/api-interfaces";
-import { IdComponent } from "./id-component";
-import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
+import { IdComponent } from "../id-component";
+import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 
 export type BuilderDefinition = {
   // types of building the gameObject can produce

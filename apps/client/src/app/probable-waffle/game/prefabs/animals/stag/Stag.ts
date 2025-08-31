@@ -4,7 +4,7 @@
 
 /* START-USER-IMPORTS */
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
-import { AudioActorComponent } from "../../../entity/components/audio-actor-component";
+import { AudioActorComponent } from "../../../entity/components/actor-audio/audio-actor-component";
 import { AnimationActorComponent } from "../../../entity/components/animation/animation-actor-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { moveGameObjectToRandomTileInNavigableRadius, MovementSystem } from "../../../entity/systems/movement.system";

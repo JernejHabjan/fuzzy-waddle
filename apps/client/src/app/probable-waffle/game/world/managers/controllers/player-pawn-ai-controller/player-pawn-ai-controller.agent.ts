@@ -16,13 +16,13 @@ import {
 } from "../../../../entity/systems/movement.system";
 import { OrderLabelToTypeMap, OrderType } from "../../../../ai/order-type";
 import { PawnAiBlackboard } from "./pawn-ai-blackboard";
-import { GathererComponent } from "../../../../entity/components/gatherer-component";
+import { GathererComponent } from "../../../../entity/components/resource/gatherer-component";
 import { ResourceSourceComponent } from "../../../../entity/components/resource/resource-source-component";
 import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { HealthComponent } from "../../../../entity/components/combat/components/health-component";
-import { ContainableComponent } from "../../../../entity/components/containable-component";
+import { ContainableComponent } from "../../../../entity/components/building/containable-component";
 import { ResourceDrainComponent } from "../../../../entity/components/resource/resource-drain-component";
-import { BuilderComponent } from "../../../../entity/components/builder-component";
+import { BuilderComponent } from "../../../../entity/components/construction/builder-component";
 import { OrderData } from "../../../../ai/OrderData";
 import { HealingComponent } from "../../../../entity/components/combat/components/healing-component";
 import { ConstructionSiteComponent } from "../../../../entity/components/construction/construction-site-component";

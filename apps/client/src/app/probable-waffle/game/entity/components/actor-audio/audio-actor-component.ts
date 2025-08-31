@@ -1,26 +1,11 @@
-import { OrderData } from "../../ai/OrderData";
-import { onObjectReady } from "../../data/game-object-helper";
-import { type AdditionalAudioConfig, AudioService } from "../../world/services/audio.service";
-import { getSceneService } from "../../world/components/scene-component-helpers";
-import { OrderType } from "../../ai/order-type";
-import { getActorComponent } from "../../data/actor-component";
-import { GathererComponent } from "./gatherer-component";
-export enum SoundType {
-  Select = "select",
-  SelectExtra = "selectExtra",
-  Move = "move",
-  LocationUnavailable = "locationUnavailable",
-  Attack = "attack",
-  Build = "build",
-  Chop = "chop",
-  Mine = "mine",
-  Repair = "repair",
-  Heal = "heal",
-  EnterContainer = "enterContainer",
-  Damage = "damage",
-  Death = "death",
-  Stop = "stop"
-}
+import { OrderData } from "../../../ai/OrderData";
+import { onObjectReady } from "../../../data/game-object-helper";
+import { type AdditionalAudioConfig, AudioService } from "../../../world/services/audio.service";
+import { getSceneService } from "../../../world/components/scene-component-helpers";
+import { OrderType } from "../../../ai/order-type";
+import { getActorComponent } from "../../../data/actor-component";
+import { GathererComponent } from "../resource/gatherer-component";
+import { SoundType } from "./sound-type";
 
 export type SoundDefinition = {
   key: string;

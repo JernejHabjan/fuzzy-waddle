@@ -1,7 +1,7 @@
-import { getGameObjectBounds, onObjectReady } from "../../data/game-object-helper";
-import { HealthComponent } from "./combat/components/health-component";
+import { getGameObjectBounds, onObjectReady } from "../../../data/game-object-helper";
+import { HealthComponent } from "../combat/components/health-component";
 import { Subscription } from "rxjs";
-import { getActorComponent } from "../../data/actor-component";
+import { getActorComponent } from "../../../data/actor-component";
 import { ActorTranslateComponent } from "./actor-translate-component";
 import Graphics = Phaser.GameObjects.Graphics;
 
@@ -9,7 +9,7 @@ export interface FlightDefinition {
   height: number;
 }
 
-export class FlightComponent {
+export class FlyingComponent {
   private verticalLineGraphics?: Graphics;
   private actorMovedSubscription?: Subscription;
   constructor(

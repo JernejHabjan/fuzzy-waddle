@@ -6,8 +6,8 @@ import GameProbableWaffleScene from "../../world/scenes/GameProbableWaffleScene"
 import { HealthComponent } from "./combat/components/health-component";
 import { getGameObjectDepth, onObjectReady } from "../../data/game-object-helper";
 import { Subscription } from "rxjs";
-import { ActorTranslateComponent } from "./actor-translate-component";
-import { ContainerComponent } from "../building/container-component";
+import { ActorTranslateComponent } from "./movement/actor-translate-component";
+import { ContainerComponent } from "./building/container-component";
 import { ConstructionSiteComponent } from "./construction/construction-site-component";
 import { VisionComponent } from "./vision-component";
 

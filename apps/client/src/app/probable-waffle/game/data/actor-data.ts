@@ -9,14 +9,14 @@ import { SelectableComponent } from "../entity/components/selectable-component";
 import { HealthComponent } from "../entity/components/combat/components/health-component";
 import { AttackComponent } from "../entity/components/combat/components/attack-component";
 import { ProductionCostComponent } from "../entity/components/production/production-cost-component";
-import { ContainableComponent } from "../entity/components/containable-component";
+import { ContainableComponent } from "../entity/components/building/containable-component";
 import { RequirementsComponent } from "../entity/components/requirements-component";
-import { BuilderComponent } from "../entity/components/builder-component";
-import { GathererComponent } from "../entity/components/gatherer-component";
-import { ActorTranslateComponent } from "../entity/components/actor-translate-component";
+import { BuilderComponent } from "../entity/components/construction/builder-component";
+import { GathererComponent } from "../entity/components/resource/gatherer-component";
+import { ActorTranslateComponent } from "../entity/components/movement/actor-translate-component";
 import { MovementSystem } from "../entity/systems/movement.system";
-import { ColliderComponent } from "../entity/components/collider-component";
-import { ContainerComponent } from "../entity/building/container-component";
+import { ColliderComponent } from "../entity/components/movement/collider-component";
+import { ContainerComponent } from "../entity/components/building/container-component";
 import { ResourceDrainComponent } from "../entity/components/resource/resource-drain-component";
 import { ProductionComponent } from "../entity/components/production/production-component";
 import { ResourceSourceComponent } from "../entity/components/resource/resource-source-component";
@@ -26,11 +26,11 @@ import { getActorComponent } from "./actor-component";
 import { DepthHelper } from "../world/map/depth.helper";
 import { ActionSystem } from "../entity/systems/action.system";
 import { HealingComponent } from "../entity/components/combat/components/healing-component";
-import { AudioActorComponent } from "../entity/components/audio-actor-component";
+import { AudioActorComponent } from "../entity/components/actor-audio/audio-actor-component";
 import { AnimationActorComponent } from "../entity/components/animation/animation-actor-component";
 import { RepresentableComponent } from "../entity/components/representable-component";
-import { FlightComponent } from "../entity/components/flight-component";
-import { WalkableComponent } from "../entity/components/walkable-component";
+import { FlyingComponent } from "../entity/components/movement/flying-component";
+import { WalkableComponent } from "../entity/components/movement/walkable-component";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export const ActorDataKey = "actorData";
@@ -163,7 +163,7 @@ function gatherCompletedActorData(actor: Phaser.GameObjects.GameObject): { compo
     ...(componentDefinitions?.translatable
       ? [new ActorTranslateComponent(actor, componentDefinitions.translatable)]
       : []),
-    ...(componentDefinitions?.flying ? [new FlightComponent(actor, componentDefinitions.flying)] : []),
+    ...(componentDefinitions?.flying ? [new FlyingComponent(actor, componentDefinitions.flying)] : []),
     ...(componentDefinitions?.walkable ? [new WalkableComponent(actor, componentDefinitions.walkable)] : []),
     ...(componentDefinitions?.animatable ? [new AnimationActorComponent(actor, componentDefinitions.animatable)] : []),
     ...(componentDefinitions?.aiControlled ? [new PawnAiController(actor, componentDefinitions.aiControlled)] : [])

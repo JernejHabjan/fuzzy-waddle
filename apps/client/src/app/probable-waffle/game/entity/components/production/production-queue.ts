@@ -1,4 +1,4 @@
-import { type ProductionQueueItem } from "./production-component";
+import type { ProductionQueueItem } from "./game-object";
 
 export class ProductionQueue {
   queuedItems: ProductionQueueItem[] = [];

@@ -5,11 +5,11 @@ import {
 } from "../../../../../entity/components/object-descriptor-component";
 import {
   AudioActorComponent,
-  type AudioDefinition,
-  SoundType
-} from "../../../../../entity/components/audio-actor-component";
+  type AudioDefinition
+} from "../../../../../entity/components/actor-audio/audio-actor-component";
 import { ActorsFoliageSfxBushSounds } from "./sfx-bush";
 import GameObject = Phaser.GameObjects.GameObject;
+import { SoundType } from "../../../../../entity/components/actor-audio/sound-type";
 
 export class BushComponent {
   constructor(gameObject: GameObject, color: number | null) {

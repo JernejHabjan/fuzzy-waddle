@@ -4,7 +4,7 @@
 
 /* START-USER-IMPORTS */
 import { setActorData } from "../../../../../data/actor-data";
-import { ColliderComponent } from "../../../../../entity/components/collider-component";
+import { ColliderComponent } from "../../../../../entity/components/movement/collider-component";
 import {
   ObjectDescriptorComponent,
   type ObjectDescriptorDefinition

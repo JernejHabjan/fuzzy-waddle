@@ -1,13 +1,13 @@
 import GameObject = Phaser.GameObjects.GameObject;
 import Phaser from "phaser";
-import { HealthComponent } from "../components/combat/components/health-component";
-import { getActorComponent } from "../../data/actor-component";
-import { VisionComponent } from "../components/vision-component";
-import { getGameObjectVisibility } from "../../data/game-object-helper";
+import { HealthComponent } from "../combat/components/health-component";
+import { getActorComponent } from "../../../data/actor-component";
+import { VisionComponent } from "../vision-component";
+import { getGameObjectVisibility } from "../../../data/game-object-helper";
 import type { ContainerComponentData } from "@fuzzy-waddle/api-interfaces";
-import { IdComponent } from "../components/id-component";
-import { getSceneService } from "../../world/components/scene-component-helpers";
-import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
+import { IdComponent } from "../id-component";
+import { getSceneService } from "../../../world/components/scene-component-helpers";
+import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 
 export type ContainerDefinition = {
   capacity: number;

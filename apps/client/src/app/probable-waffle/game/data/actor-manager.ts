@@ -47,9 +47,9 @@ import { RepresentableComponent } from "../entity/components/representable-compo
 import { VisionComponent } from "../entity/components/vision-component";
 import { AttackComponent } from "../entity/components/combat/components/attack-component";
 import { HealingComponent } from "../entity/components/combat/components/healing-component";
-import { BuilderComponent } from "../entity/components/builder-component";
-import { GathererComponent } from "../entity/components/gatherer-component";
-import { ContainerComponent } from "../entity/building/container-component";
+import { BuilderComponent } from "../entity/components/construction/builder-component";
+import { GathererComponent } from "../entity/components/resource/gatherer-component";
+import { ContainerComponent } from "../entity/components/building/container-component";
 import { ResourceDrainComponent } from "../entity/components/resource/resource-drain-component";
 import { ResourceSourceComponent } from "../entity/components/resource/resource-source-component";
 import { ProductionComponent } from "../entity/components/production/production-component";

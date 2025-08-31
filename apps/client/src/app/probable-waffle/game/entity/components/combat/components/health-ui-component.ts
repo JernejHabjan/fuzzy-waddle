@@ -4,7 +4,7 @@ import { getActorComponent } from "../../../../data/actor-component";
 import { Subscription } from "rxjs";
 import { getGameObjectBounds, getGameObjectDepth, onObjectReady } from "../../../../data/game-object-helper";
 import { OwnerComponent } from "../../owner-component";
-import { ActorTranslateComponent } from "../../actor-translate-component";
+import { ActorTranslateComponent } from "../../movement/actor-translate-component";
 
 export class HealthUiComponent {
   static ZIndex = 1;

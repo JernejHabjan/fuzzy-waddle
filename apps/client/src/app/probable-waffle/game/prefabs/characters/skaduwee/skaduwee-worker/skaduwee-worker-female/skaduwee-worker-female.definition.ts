@@ -1,5 +1,4 @@
 import { skaduweeWorkerDefinition } from "../skaduwee-worker.definition";
-import { SoundType } from "../../../../../entity/components/audio-actor-component";
 import {
   SkaduweeWorkerFemaleSfxAttackSounds,
   SkaduweeWorkerFemaleSfxBuildSounds,
@@ -16,6 +15,7 @@ import {
 import { ANIM_SKADUWEE_WORKER_FEMALE_DEFINITION } from "./skaduwee_worker_female_anims";
 
 import type { PrefabDefinition } from "../../../../definitions/prefab-definition";
+import { SoundType } from "../../../../../entity/components/actor-audio/sound-type";
 
 export const skaduweeWorkerFemaleDefinition = {
   ...skaduweeWorkerDefinition,

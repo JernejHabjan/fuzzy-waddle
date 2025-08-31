@@ -1,4 +1,4 @@
-import { type AttackData, type ProjectileData, ProjectileType } from "../attack-data";
+import { type AttackData } from "../attack-data";
 import { HealthComponent } from "./health-component";
 import { getActorComponent } from "../../../../data/actor-component";
 import { AnimationActorComponent, type AnimationOptions } from "../../animation/animation-actor-component";
@@ -9,7 +9,7 @@ import {
   onObjectReady
 } from "../../../../data/game-object-helper";
 import { OrderType } from "../../../../ai/order-type";
-import { ActorTranslateComponent } from "../../actor-translate-component";
+import { ActorTranslateComponent } from "../../movement/actor-translate-component";
 import { getSceneService } from "../../../../world/components/scene-component-helpers";
 import { AudioService } from "../../../../world/services/audio.service";
 import { DepthHelper } from "../../../../world/map/depth.helper";
@@ -20,9 +20,10 @@ import FrostBolt from "../../../../prefabs/weapons/FrostBolt";
 import { DistanceHelper } from "../../../../library/distance-helper";
 import { EffectsAnims } from "../../../../animations/effects";
 import SkaduweeOwlFurball from "../../../../prefabs/weapons/SkaduweeOwlFurball";
-import { FlightComponent } from "../../flight-component";
+import { FlyingComponent } from "../../movement/flying-component";
 import { type AttackComponentData } from "@fuzzy-waddle/api-interfaces";
 import GameObject = Phaser.GameObjects.GameObject;
+import { type ProjectileData, ProjectileType } from "../projectile-type";
 
 export type AttackDefinition = {
   attacks: AttackData[];
@@ -78,7 +79,7 @@ export class AttackComponent {
    * @returns Whether the target is flying or not
    */
   private isTargetFlying(target: GameObject): boolean {
-    return !!getActorComponent(target, FlightComponent);
+    return !!getActorComponent(target, FlyingComponent);
   }
 
   /**

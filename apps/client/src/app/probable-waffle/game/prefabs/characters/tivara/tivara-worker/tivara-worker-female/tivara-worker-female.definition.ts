@@ -12,9 +12,9 @@ import {
   TivaraWorkerFemaleSfxSelectionSounds
 } from "./TivaraWorkerFemaleSfx";
 import { tivaraWorkerDefinition } from "../tivara-worker.definition";
-import { SoundType } from "../../../../../entity/components/audio-actor-component";
 import { ANIM_TIVARA_WORKER_FEMALE_DEFINITION } from "./tivara_worker_female_anims";
 import type { PrefabDefinition } from "../../../../definitions/prefab-definition";
+import { SoundType } from "../../../../../entity/components/actor-audio/sound-type";
 
 export const tivaraWorkerFemaleDefinition = {
   ...tivaraWorkerDefinition,

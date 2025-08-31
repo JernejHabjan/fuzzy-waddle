@@ -17,7 +17,7 @@ import {
 } from "../../../entity/systems/movement.system";
 import { getActorSystem } from "../../../data/actor-system";
 import { onObjectReady } from "../../../data/game-object-helper";
-import { ActorTranslateComponent } from "../../../entity/components/actor-translate-component";
+import { ActorTranslateComponent } from "../../../entity/components/movement/actor-translate-component";
 import { OrderType } from "../../../ai/order-type";
 /* END-USER-IMPORTS */
 

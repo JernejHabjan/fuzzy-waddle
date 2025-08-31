@@ -11,7 +11,7 @@ export interface VisionDefinition {
 }
 
 export class VisionComponent {
-  private visibleEnemies?: GameObject[]; // todo
+  private visibleEnemies?: GameObject[];
   public visibilityByCurrentPlayer: boolean = false;
 
   constructor(
@@ -36,7 +36,6 @@ export class VisionComponent {
   }
 
   getVisibleEnemies(): GameObject[] {
-    // todo if (this.visibleEnemies) return this.visibleEnemies;
     const currentActorOwnerComponent = getActorComponent(this.gameObject, OwnerComponent);
     const owner = currentActorOwnerComponent?.getOwner();
     if (!owner) return [];
@@ -50,7 +49,6 @@ export class VisionComponent {
       return this.isActorVisible(c as GameObject);
     });
 
-    // todo apply vision radius check here
     this.visibleEnemies = tempEnemies as GameObject[];
     return this.visibleEnemies;
   }

@@ -21,12 +21,13 @@ import {
 } from "@fuzzy-waddle/api-interfaces";
 import { getActorSystem } from "../../../../data/actor-system";
 import { MovementSystem } from "../../../../entity/systems/movement.system";
-import { AudioActorComponent, SoundType } from "../../../../entity/components/audio-actor-component";
+import { AudioActorComponent } from "../../../../entity/components/actor-audio/audio-actor-component";
 import { OwnerComponent } from "../../../../entity/components/owner-component";
 import GameObject = Phaser.GameObjects.GameObject;
 import { pwActorDefinitions } from "../../../../prefabs/definitions/actor-definitions";
 import { getSceneService } from "../../../components/scene-component-helpers";
 import { PlayerActionsHandler } from "../PlayerActionsHandler";
+import { SoundType } from "../../../../entity/components/actor-audio/sound-type";
 
 export class GameObjectSelectionHandler {
   private readonly debug = false;

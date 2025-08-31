@@ -15,11 +15,11 @@ import {
   AssignProductionErrorCode,
   ProductionComponent
 } from "../../../entity/components/production/production-component";
-import { ActorTranslateComponent } from "../../../entity/components/actor-translate-component";
+import { ActorTranslateComponent } from "../../../entity/components/movement/actor-translate-component";
 import { pwActorDefinitions } from "../../definitions/actor-definitions";
 import { HealthComponent } from "../../../entity/components/combat/components/health-component";
 import { AudioService } from "../../../world/services/audio.service";
-import { BuilderComponent } from "../../../entity/components/builder-component";
+import { BuilderComponent } from "../../../entity/components/construction/builder-component";
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { getSceneComponent, getSceneService } from "../../../world/components/scene-component-helpers";
 import { BuildingCursor } from "../../../world/managers/controllers/building-cursor";
@@ -33,7 +33,7 @@ import { PawnAiController } from "../../../world/managers/controllers/player-paw
 import { PlayerActionsHandler } from "../../../world/managers/controllers/PlayerActionsHandler";
 import { OrderType } from "../../../ai/order-type";
 import { HealingComponent } from "../../../entity/components/combat/components/healing-component";
-import { GathererComponent } from "../../../entity/components/gatherer-component";
+import { GathererComponent } from "../../../entity/components/resource/gatherer-component";
 import { getPrimarySelectedActor } from "../../../data/selection-helpers";
 /* END-USER-IMPORTS */
 

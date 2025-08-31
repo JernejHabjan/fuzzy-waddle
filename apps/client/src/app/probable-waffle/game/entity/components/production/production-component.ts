@@ -1,4 +1,4 @@
-import { PaymentType } from "../../building/payment-type";
+import { PaymentType } from "./payment-type";
 import { ProductionQueue } from "./production-queue";
 import { OwnerComponent } from "../owner-component";
 import { getActorComponent } from "../../../data/actor-component";
@@ -26,22 +26,9 @@ import { Subject, Subscription } from "rxjs";
 import RallyPoint from "../../../prefabs/buildings/misc/RallyPoint";
 import { ConstructionSiteComponent } from "../construction/construction-site-component";
 import { pwActorDefinitions } from "../../../prefabs/definitions/actor-definitions";
+import type { ProductionProgressEvent, ProductionQueueChangeEvent } from "./production-events";
+import type { ProductionQueueItem } from "./game-object";
 import GameObject = Phaser.GameObjects.GameObject;
-
-export type ProductionQueueItem = {
-  actorName: ObjectNames;
-  costData: ProductionCostDefinition;
-};
-
-export type ProductionProgressEvent = {
-  queueIndex: number;
-  queueItemIndex: number;
-  progressInPercentage: number;
-};
-export type ProductionQueueChangeEvent = {
-  itemsFromAllQueues: ProductionQueueItem[];
-  type: "add" | "remove" | "completed";
-};
 
 export type ProductionDefinition = {
   availableProduceActors: ObjectNames[];

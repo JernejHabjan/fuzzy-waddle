@@ -13,9 +13,9 @@ import {
   TivaraWorkerMaleSfxSelectionSounds
 } from "./TivaraWorkerMaleSfx";
 import { tivaraWorkerDefinition } from "../tivara-worker.definition";
-import { SoundType } from "../../../../../entity/components/audio-actor-component";
 import { ANIM_TIVARA_WORKER_MALE_DEFINITION } from "./tivara_worker_male_anims";
 import type { PrefabDefinition } from "../../../../definitions/prefab-definition";
+import { SoundType } from "../../../../../entity/components/actor-audio/sound-type";
 
 export const tivaraWorkerMaleDefinition = {
   ...tivaraWorkerDefinition,

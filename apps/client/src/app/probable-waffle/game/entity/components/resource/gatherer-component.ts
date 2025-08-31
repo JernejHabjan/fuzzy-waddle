@@ -1,30 +1,31 @@
-import { GatherData } from "./resource/gather-data";
-import { ResourceSourceComponent } from "./resource/resource-source-component";
-import { DistanceHelper } from "../../library/distance-helper";
+import { GatherData } from "./gather-data";
+import { ResourceSourceComponent } from "./resource-source-component";
+import { DistanceHelper } from "../../../library/distance-helper";
 import { Subject } from "rxjs";
 import { ContainerComponent } from "../building/container-component";
-import { ResourceDrainComponent } from "./resource/resource-drain-component";
+import { ResourceDrainComponent } from "./resource-drain-component";
 import { ResourceType } from "@fuzzy-waddle/api-interfaces";
-import { getActorComponent } from "../../data/actor-component";
-import { OwnerComponent } from "./owner-component";
-import { ConstructionSiteComponent } from "./construction/construction-site-component";
-import { emitResource, getPlayer } from "../../data/scene-data";
-import { HealthComponent } from "./combat/components/health-component";
-import { getSceneService } from "../../world/components/scene-component-helpers";
-import { AudioService } from "../../world/services/audio.service";
+import { getActorComponent } from "../../../data/actor-component";
+import { OwnerComponent } from "../owner-component";
+import { ConstructionSiteComponent } from "../construction/construction-site-component";
+import { emitResource, getPlayer } from "../../../data/scene-data";
+import { HealthComponent } from "../combat/components/health-component";
+import { getSceneService } from "../../../world/components/scene-component-helpers";
+import { AudioService } from "../../../world/services/audio.service";
 import {
   SharedActorActionsSfxChoppingSounds,
   SharedActorActionsSfxMiningSounds
-} from "../../sfx/SharedActorActionsSfx";
-import { type SoundDefinition, SoundType } from "./audio-actor-component";
-import { AnimationActorComponent } from "./animation/animation-actor-component";
-import { OrderType } from "../../ai/order-type";
-import { ActorTranslateComponent } from "./actor-translate-component";
-import { getGameObjectVisibility, onObjectReady } from "../../data/game-object-helper";
+} from "../../../sfx/SharedActorActionsSfx";
+import { type SoundDefinition } from "../actor-audio/audio-actor-component";
+import { AnimationActorComponent } from "../animation/animation-actor-component";
+import { OrderType } from "../../../ai/order-type";
+import { ActorTranslateComponent } from "../movement/actor-translate-component";
+import { getGameObjectVisibility, onObjectReady } from "../../../data/game-object-helper";
 import GameObject = Phaser.GameObjects.GameObject;
-import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
+import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { type GathererComponentData } from "@fuzzy-waddle/api-interfaces";
-import { AnimationType } from "./animation/animation-type";
+import { AnimationType } from "../animation/animation-type";
+import { SoundType } from "../actor-audio/sound-type";
 
 export type GathererDefinition = {
   // types of gameObjects the gatherer can gather resourcesFrom

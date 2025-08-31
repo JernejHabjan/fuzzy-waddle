@@ -1,6 +1,6 @@
 import { HealthComponent } from "../../../../entity/components/combat/components/health-component";
 import { getActorComponent } from "../../../../data/actor-component";
-import { ActorTranslateComponent } from "../../../../entity/components/actor-translate-component";
+import { ActorTranslateComponent } from "../../../../entity/components/movement/actor-translate-component";
 import { Subscription } from "rxjs";
 import { getGameObjectDepth, getGameObjectRenderedTransform, onObjectReady } from "../../../../data/game-object-helper";
 import { OwnerComponent } from "../../../../entity/components/owner-component";

@@ -6,10 +6,7 @@
 import ActorIcon, { type ActorIconClickAction } from "./ActorIcon";
 import { pwActorDefinitions } from "../../definitions/actor-definitions";
 import { getActorComponent } from "../../../data/actor-component";
-import {
-  ProductionComponent,
-  type ProductionQueueItem
-} from "../../../entity/components/production/production-component";
+import { ProductionComponent } from "../../../entity/components/production/production-component";
 import { BehaviorSubject, Subscription } from "rxjs";
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { SingleSelectionHandler } from "../../../world/managers/controllers/input/single-selection.handler";
@@ -17,6 +14,7 @@ import { getSceneComponent } from "../../../world/components/scene-component-hel
 import { IdComponent } from "../../../entity/components/id-component";
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import HudProbableWaffle from "../../../world/scenes/hud-scenes/HudProbableWaffle";
+import type { ProductionQueueItem } from "../../../entity/components/production/game-object";
 /* END-USER-IMPORTS */
 
 export default class ActorInfoLabels extends Phaser.GameObjects.Container {

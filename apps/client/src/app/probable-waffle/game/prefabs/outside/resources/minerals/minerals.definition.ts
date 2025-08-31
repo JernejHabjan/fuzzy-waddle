@@ -1,8 +1,8 @@
-import { SoundType } from "../../../../entity/components/audio-actor-component";
 import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { ActorsMineralsSfxSelectionSounds } from "./sfx-minerals";
 import { ActorsStoneSfxOutOfResourcesSounds } from "../stone-pile/sfx-stone";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
+import { SoundType } from "../../../../entity/components/actor-audio/sound-type";
 
 export const mineralsDefinition = {
   components: {

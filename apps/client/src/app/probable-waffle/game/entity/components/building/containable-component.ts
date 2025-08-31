@@ -1,5 +1,5 @@
-import { ContainerComponent } from "../building/container-component";
-import { getActorComponent } from "../../data/actor-component";
+import { ContainerComponent } from "./container-component";
+import { getActorComponent } from "../../../data/actor-component";
 import GameObject = Phaser.GameObjects.GameObject;
 
 /**

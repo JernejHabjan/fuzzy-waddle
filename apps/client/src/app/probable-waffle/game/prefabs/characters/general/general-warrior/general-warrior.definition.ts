@@ -1,10 +1,10 @@
-import { ActorPhysicalType } from "../../../../entity/components/combat/components/health-component";
 import { weaponDefinitions } from "../../../../entity/components/combat/attack-data";
 import { ResourceType } from "@fuzzy-waddle/api-interfaces";
-import { PaymentType } from "../../../../entity/building/payment-type";
+import { PaymentType } from "../../../../entity/components/production/payment-type";
 import { AiType } from "../../../../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
 import { ANIM_GENERAL_WARRIOR_DEFINITION } from "./warrior_anim";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
+import { ActorPhysicalType } from "../../../../entity/components/combat/components/actor-physical-type";
 
 export const generalWarriorDefinition = {
   components: {

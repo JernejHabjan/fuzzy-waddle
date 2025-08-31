@@ -1,5 +1,5 @@
 import { type PlayerStateResources, type ResourceDrainComponentData, ResourceType } from "@fuzzy-waddle/api-interfaces";
-import { ContainerComponent } from "../../building/container-component";
+import { ContainerComponent } from "../building/container-component";
 import { Subject } from "rxjs";
 import { getActorComponent } from "../../../data/actor-component";
 import { emitResource } from "../../../data/scene-data";

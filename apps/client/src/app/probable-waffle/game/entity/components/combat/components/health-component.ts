@@ -4,7 +4,7 @@ import { HealthUiComponent } from "./health-ui-component";
 import { Subject, Subscription } from "rxjs";
 import { type HealthComponentData } from "@fuzzy-waddle/api-interfaces";
 import { ComponentSyncSystem, type SyncOptions } from "../../../systems/component-sync.system";
-import { ContainerComponent } from "../../../building/container-component";
+import { ContainerComponent } from "../../building/container-component";
 import Phaser from "phaser";
 import { getActorComponent } from "../../../../data/actor-component";
 import { ConstructionSiteComponent } from "../../construction/construction-site-component";
@@ -18,10 +18,10 @@ import { environment } from "../../../../../../../environments/environment";
 import { SelectableComponent } from "../../selectable-component";
 import { OwnerComponent } from "../../owner-component";
 import { getCurrentPlayerNumber } from "../../../../data/scene-data";
-import { AudioActorComponent, type SoundDefinition, SoundType } from "../../audio-actor-component";
+import { AudioActorComponent, type SoundDefinition } from "../../actor-audio/audio-actor-component";
 import { AnimationActorComponent } from "../../animation/animation-actor-component";
 import { EffectsAnims } from "../../../../animations/effects";
-import { ActorTranslateComponent } from "../../actor-translate-component";
+import { ActorTranslateComponent } from "../../movement/actor-translate-component";
 import { getSceneService } from "../../../../world/components/scene-component-helpers";
 import { AudioService } from "../../../../world/services/audio.service";
 import {
@@ -30,6 +30,8 @@ import {
 } from "../../../../sfx/SharedActorActionsSfx";
 import { VisionComponent } from "../../vision-component";
 import { AnimationType } from "../../animation/animation-type";
+import { SoundType } from "../../actor-audio/sound-type";
+import { ActorPhysicalType } from "./actor-physical-type";
 
 export type HealthDefinition = {
   maxHealth: number;
@@ -38,12 +40,6 @@ export type HealthDefinition = {
   healthDisplayBehavior?: "always" | "onDamage";
   physicalState: ActorPhysicalType;
 };
-
-export enum ActorPhysicalType {
-  Biological = "biological",
-  Structural = "structural",
-  Organic = "organic"
-}
 
 export class HealthComponent {
   static readonly DEBUG = false;

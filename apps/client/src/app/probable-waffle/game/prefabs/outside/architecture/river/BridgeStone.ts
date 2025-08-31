@@ -4,7 +4,7 @@
 
 /* START-USER-IMPORTS */
 import { setActorData } from "../../../../data/actor-data";
-import { WalkableComponent, type WalkableDefinition } from "../../../../entity/components/walkable-component";
+import { WalkableComponent, type WalkableDefinition } from "../../../../entity/components/movement/walkable-component";
 import {
   ObjectDescriptorComponent,
   type ObjectDescriptorDefinition

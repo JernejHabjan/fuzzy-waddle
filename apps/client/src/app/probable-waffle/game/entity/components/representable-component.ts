@@ -6,7 +6,7 @@ import {
   onObjectReady
 } from "../../data/game-object-helper";
 import { getActorComponent } from "../../data/actor-component";
-import { FlightComponent } from "./flight-component";
+import { FlyingComponent } from "./movement/flying-component";
 import { DepthHelper } from "../../world/map/depth.helper";
 import type { RepresentableComponentData } from "@fuzzy-waddle/api-interfaces";
 export interface RepresentableDefinition {
@@ -95,7 +95,7 @@ export class RepresentableComponent {
    */
   getActualLogicalZ(logicalWorldTransform: Vector3Simple): number {
     const logicalZ = logicalWorldTransform.z;
-    const flightHeight = getActorComponent(this.gameObject, FlightComponent)?.flightDefinition?.height ?? 0;
+    const flightHeight = getActorComponent(this.gameObject, FlyingComponent)?.flightDefinition?.height ?? 0;
     return logicalZ + flightHeight;
   }
 

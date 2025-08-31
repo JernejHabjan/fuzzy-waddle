@@ -1,5 +1,5 @@
 import { DamageType } from "./damage-type";
-import { type SoundDefinition } from "../audio-actor-component";
+import { type SoundDefinition } from "../actor-audio/audio-actor-component";
 import {
   SharedActorActionsSfxArrowHitSounds,
   SharedActorActionsSfxArrowShootMultipleSounds,
@@ -25,6 +25,8 @@ import {
   SkaduweeOwlSfxFurballHitSounds
 } from "../../../prefabs/characters/skaduwee/skaduwee-owl/SkaduweeOwlSfx";
 import { AnimationType } from "../animation/animation-type";
+import { WeaponType } from "./weapon-type";
+import { type ProjectileData, ProjectileType } from "./projectile-type";
 
 export interface AttackData {
   // Time before this attack can be used again, in seconds
@@ -49,46 +51,6 @@ export interface AttackData {
     fire: number;
     hit: number;
   };
-}
-
-export interface ProjectileData {
-  type: ProjectileType;
-  // nr of world-space pixels per second
-  speed: number;
-  orientation: {
-    // if false, the projectile will rotate so that pointing orientation points towards the target
-    randomizeOrientation: boolean;
-    // 0 means right - 90 means up - 180 means left - 270 means down
-    pointingOrientation: number;
-    rotationSpeed?: number;
-  };
-  impactAnimation?: {
-    anims: string[];
-    tint?: number;
-  };
-}
-
-export enum ProjectileType {
-  SlingshotProjectile = "slingshotProjectile",
-  ArrowProjectile = "arrowProjectile",
-  FireballProjectile = "fireballProjectile",
-  FrostBoltProjectile = "frostBoltProjectile",
-  FurballProjectile = "furballProjectile"
-}
-
-export enum WeaponType {
-  Slingshot = "slingshot",
-  Bow = "bow",
-  FrostSpell = "frostSpell",
-  FireSpell = "fireSpell",
-  Mace = "mace",
-  Axe = "axe",
-  Spear = "spear",
-  Staff = "staff",
-  Hands = "hands",
-  Furball = "furball",
-  BowTower = "bowTower",
-  WolfBite = "wolfBite"
 }
 
 export const weaponDefinitions: Record<WeaponType, AttackData> = {

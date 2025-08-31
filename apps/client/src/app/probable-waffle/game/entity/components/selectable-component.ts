@@ -10,9 +10,9 @@ import Phaser from "phaser";
 import { listenToSelectionEvents } from "../../data/scene-data";
 import { getActorComponent } from "../../data/actor-component";
 import { IdComponent } from "./id-component";
-import { ActorTranslateComponent } from "./actor-translate-component";
+import { ActorTranslateComponent } from "./movement/actor-translate-component";
 import { HealthComponent } from "./combat/components/health-component";
-import { ContainerComponent } from "../building/container-component";
+import { ContainerComponent } from "./building/container-component";
 import { VisionComponent } from "./vision-component";
 import type { SelectableComponentData } from "@fuzzy-waddle/api-interfaces";
 

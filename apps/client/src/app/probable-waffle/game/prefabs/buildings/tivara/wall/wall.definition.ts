@@ -1,8 +1,8 @@
 import { coreConstructionSiteDefinition } from "../../shared/core-construction-site.definition";
-import { PaymentType } from "../../../../entity/building/payment-type";
-import { ActorPhysicalType } from "../../../../entity/components/combat/components/health-component";
+import { PaymentType } from "../../../../entity/components/production/payment-type";
 import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
+import { ActorPhysicalType } from "../../../../entity/components/combat/components/actor-physical-type";
 
 export const wallDefinition = {
   components: {

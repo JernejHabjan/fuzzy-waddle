@@ -1,4 +1,4 @@
-import { PaymentType } from "../../building/payment-type";
+import { PaymentType } from "../production/payment-type";
 import {
   type ConstructionSiteComponentData,
   ConstructionStateEnum,
@@ -15,7 +15,7 @@ import { getGameObjectVisibility, onObjectReady } from "../../../data/game-objec
 import { BehaviorSubject, Subject } from "rxjs";
 import { upgradeFromConstructingToFullActorData } from "../../../data/actor-data";
 import { ConstructionProgressUiComponent } from "./construction-progress-ui-component";
-import { BuilderComponent } from "../builder-component";
+import { BuilderComponent } from "./builder-component";
 import { getSceneService } from "../../../world/components/scene-component-helpers";
 import { AudioService } from "../../../world/services/audio.service";
 import {

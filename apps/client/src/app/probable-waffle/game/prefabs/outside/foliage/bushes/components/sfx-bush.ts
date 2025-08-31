@@ -1,4 +1,4 @@
-import { type SoundDefinition } from "../../../../../entity/components/audio-actor-component";
+import { type SoundDefinition } from "../../../../../entity/components/actor-audio/audio-actor-component";
 import { AudioSprites } from "../../../../../sfx/AudioSprites";
 
 export enum SfxBush {

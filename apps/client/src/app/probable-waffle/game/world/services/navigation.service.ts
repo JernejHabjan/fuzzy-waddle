@@ -17,8 +17,8 @@ import {
   WalkableComponent,
   type WalkablePath,
   WalkablePathDirection
-} from "../../entity/components/walkable-component";
-import { ColliderComponent } from "../../entity/components/collider-component";
+} from "../../entity/components/movement/walkable-component";
+import { ColliderComponent } from "../../entity/components/movement/collider-component";
 import { getCenterTileCoordUnderObject, getTileCoordsUnderObject } from "../../library/tile-under-object";
 import { drawDebugPath } from "../../debug/debug-path";
 import { drawDebugPoint } from "../../debug/debug-point";
