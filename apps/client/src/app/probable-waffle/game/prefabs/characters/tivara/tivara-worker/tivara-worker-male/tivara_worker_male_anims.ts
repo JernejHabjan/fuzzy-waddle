@@ -16,7 +16,10 @@ const ANIM_TIVARA_WORKER_MALE_WALK_LEFT = "tivara_worker_male_walk_left";
 const ANIM_TIVARA_WORKER_MALE_WALK_DOWN = "tivara_worker_male_walk_down";
 const ANIM_TIVARA_WORKER_MALE_WALK_RIGHT = "tivara_worker_male_walk_right";
 
-import { AnimationDefinitionMap, AnimationType } from "../entity/actor/components/animation-actor-component";
+import {
+  AnimationDefinitionMap,
+  AnimationType
+} from "../../../../../entity/actor/components/animation-actor-component";
 
 export const ANIM_TIVARA_WORKER_MALE_DEFINITION: AnimationDefinitionMap = {
   [AnimationType.Idle]: {

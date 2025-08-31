@@ -8,12 +8,11 @@ import WatchTower from "../prefabs/buildings/tivara/wall/WatchTower";
 import EditorOwner from "../editor-components/EditorOwner";
 import Stairs from "../prefabs/buildings/tivara/stairs/Stairs";
 import Wall from "../prefabs/buildings/tivara/wall/Wall";
-import TivaraWorkerMale from "../prefabs/characters/tivara/TivaraWorkerMale";
+import TivaraWorkerMale from "../prefabs/characters/tivara/tivara-worker/tivara-worker-male/TivaraWorkerMale";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
 export default class MapSandbox extends GameProbableWaffleScene {
-
   constructor() {
     super("MapSandbox");
 
@@ -23,14 +22,13 @@ export default class MapSandbox extends GameProbableWaffleScene {
   }
 
   editorCreate(): void {
-
     // tilemap
     const tilemap = this.add.tilemap("tiles_river_crossing");
     tilemap.addTilesetImage("tiles", "tiles_1");
     tilemap.addTilesetImage("tiles_2", "tiles_2");
 
     // tilemap_level_1
-    tilemap.createLayer("TileMap_level_1", ["tiles","tiles_2"], 0, 0);
+    tilemap.createLayer("TileMap_level_1", ["tiles", "tiles_2"], 0, 0);
 
     // tree11
     const tree11 = new Tree11(this, -160, 416);

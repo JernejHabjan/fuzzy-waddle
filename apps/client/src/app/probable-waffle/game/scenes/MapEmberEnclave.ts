@@ -15,12 +15,12 @@ import BlockStoneWater4 from "../prefabs/outside/nature/block_stone_water/BlockS
 import AnkGuard from "../prefabs/buildings/tivara/AnkGuard";
 import Sandhold from "../prefabs/buildings/tivara/Sandhold";
 import Temple from "../prefabs/buildings/tivara/Temple";
-import TivaraSlingshotFemale from "../prefabs/characters/tivara/TivaraSlingshotFemale";
-import TivaraWorkerFemale from "../prefabs/characters/tivara/TivaraWorkerFemale";
-import TivaraWorkerMale from "../prefabs/characters/tivara/TivaraWorkerMale";
+import TivaraSlingshotFemale from "../prefabs/characters/tivara/tivara-slingshot-female/TivaraSlingshotFemale";
+import TivaraWorkerFemale from "../prefabs/characters/tivara/tivara-worker/tivara-worker-female/TivaraWorkerFemale";
+import TivaraWorkerMale from "../prefabs/characters/tivara/tivara-worker/tivara-worker-male/TivaraWorkerMale";
 import WorkMill from "../prefabs/buildings/tivara/WorkMill";
-import SkaduweeMagicianFemale from "../prefabs/characters/skaduwee/SkaduweeMagicianFemale";
-import SkaduweeWorkerMale from "../prefabs/characters/skaduwee/SkaduweeWorkerMale";
+import SkaduweeMagicianFemale from "../prefabs/characters/skaduwee/skaduwee-magician-female/SkaduweeMagicianFemale";
+import SkaduweeWorkerMale from "../prefabs/characters/skaduwee/skaduwee-worker/skaduwee-worker-male/SkaduweeWorkerMale";
 import SoundEffectMarker from "../prefabs/buildings/misc/SoundEffectMarker";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */

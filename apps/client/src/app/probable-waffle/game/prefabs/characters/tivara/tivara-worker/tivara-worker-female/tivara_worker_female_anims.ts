@@ -1,4 +1,7 @@
-import { AnimationDefinitionMap, AnimationType } from "../entity/actor/components/animation-actor-component";
+import {
+  AnimationDefinitionMap,
+  AnimationType
+} from "../../../../../entity/actor/components/animation-actor-component";
 
 const ANIM_TIVARA_WORKER_FEMALE_HURT = "tivara_worker_female_hurt";
 const ANIM_TIVARA_WORKER_FEMALE_IDLE_UP = "tivara_worker_female_idle_up";

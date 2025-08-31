@@ -16,7 +16,10 @@ const ANIM_SKADUWEE_WORKER_MALE_WALK_LEFT = "skaduwee_worker_male_walk_left";
 const ANIM_SKADUWEE_WORKER_MALE_WALK_DOWN = "skaduwee_worker_male_walk_down";
 const ANIM_SKADUWEE_WORKER_MALE_WALK_RIGHT = "skaduwee_worker_male_walk_right";
 
-import { AnimationDefinitionMap, AnimationType } from "../entity/actor/components/animation-actor-component";
+import {
+  AnimationDefinitionMap,
+  AnimationType
+} from "../../../../../entity/actor/components/animation-actor-component";
 
 export const ANIM_SKADUWEE_WORKER_MALE_DEFINITION: AnimationDefinitionMap = {
   [AnimationType.Idle]: {
