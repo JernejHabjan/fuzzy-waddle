@@ -1,6 +1,6 @@
 import GameObject = Phaser.GameObjects.GameObject;
-import { AudioActorComponent, SoundType } from "../../../../entity/actor/components/audio-actor-component";
-import { getActorComponent } from "../../../../data/actor-component";
+import { AudioActorComponent, SoundType } from "../../../../../entity/actor/components/audio-actor-component";
+import { getActorComponent } from "../../../../../data/actor-component";
 
 export class BushRustleComponent {
   constructor(private readonly gameObject: GameObject) {

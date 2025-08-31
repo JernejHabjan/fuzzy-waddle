@@ -1,14 +1,14 @@
-import { setActorData } from "../../../../data/actor-data";
+import { setActorData } from "../../../../../data/actor-data";
 import {
   ObjectDescriptorComponent,
   ObjectDescriptorDefinition
-} from "../../../../entity/actor/components/object-descriptor-component";
+} from "../../../../../entity/actor/components/object-descriptor-component";
 import {
   AudioActorComponent,
   AudioDefinition,
   SoundType
-} from "../../../../entity/actor/components/audio-actor-component";
-import { ActorsFoliageSfxBushSounds } from "../../../../sfx/ActorsFoliageSfx";
+} from "../../../../../entity/actor/components/audio-actor-component";
+import { ActorsFoliageSfxBushSounds } from "./sfx-bush";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class BushComponent {

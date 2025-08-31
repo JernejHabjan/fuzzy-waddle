@@ -33,13 +33,6 @@ import { ConstructionSiteDefinition } from "../entity/building/construction/cons
 import { HealingDefinition } from "../entity/combat/components/healing-component";
 import { AudioDefinition, SoundType } from "../entity/actor/components/audio-actor-component";
 import {
-  ActorsHedgehogSfxAngrySounds,
-  ActorsHedgehogSfxSelectionSounds,
-  ActorsSheepSfxBleatSounds,
-  ActorsSheepSfxScissorsSounds,
-  ActorsSheepSfxWoolBombSounds
-} from "../sfx/ActorsAnimalsSfx";
-import {
   TivaraMacemanSfxAttackSounds,
   TivaraMacemanSfxDamageSounds,
   TivaraMacemanSfxDeathSounds,
@@ -144,13 +137,6 @@ import {
   SkaduweeWorkerMaleSfxRepairSounds,
   SkaduweeWorkerMaleSfxSelectionSounds
 } from "../sfx/SkaduweeWorkerMaleSfx";
-import {
-  ActorsMineralsSfxSelectionSounds,
-  ActorsStoneSfxOutOfResourcesSounds,
-  ActorsStoneSfxSelectionSounds,
-  ActorsTreeSfxResourceDepletedSounds,
-  ActorsTreeSfxSelectionSounds
-} from "../sfx/ActorsResourcesSfx";
 import { TivaraOlivalSfxSelectionSounds } from "../sfx/TivaraOlivalSfx";
 import { SelectableDefinition } from "../entity/actor/components/selectable-component";
 import { ActorAnimationsDefinition } from "../entity/actor/components/animation-actor-component";
@@ -175,6 +161,24 @@ import { ANIM_BADGER_DEFINITION } from "../prefabs/animals/badger/anims-badger";
 import { ANIM_BOAR_DEFINITION } from "../prefabs/animals/boar/anims-boar";
 import { ANIM_STAG_DEFINITION } from "../prefabs/animals/stag/anims-stag";
 import { ANIM_WOLF_DEFINITION } from "../prefabs/animals/wolf/anims-wolf";
+import {
+  ActorsSheepSfxBleatSounds,
+  ActorsSheepSfxScissorsSounds,
+  ActorsSheepSfxWoolBombSounds
+} from "../prefabs/animals/sheep/sfx-sheep";
+import {
+  ActorsHedgehogSfxAngrySounds,
+  ActorsHedgehogSfxSelectionSounds
+} from "../prefabs/animals/hedgehog/sfx-hedgehog";
+import {
+  ActorsStoneSfxOutOfResourcesSounds,
+  ActorsStoneSfxSelectionSounds
+} from "../prefabs/outside/resources/stone-pile/sfx-stone";
+import {
+  ActorsTreeSfxResourceDepletedSounds,
+  ActorsTreeSfxSelectionSounds
+} from "../prefabs/outside/foliage/trees/resources/sfx-tree";
+import { ActorsMineralsSfxSelectionSounds } from "../prefabs/outside/resources/minerals/sfx-minerals";
 
 const coreConstructionSiteDefinition: ConstructionSiteDefinition = {
   consumesBuilders: false,

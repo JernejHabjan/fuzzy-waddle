@@ -34,12 +34,12 @@ import { SelectableComponent } from "../entity/actor/components/selectable-compo
 import WatchTower from "../prefabs/buildings/tivara/wall/WatchTower";
 import { IdComponent } from "../entity/actor/components/id-component";
 import { setConstructingActorDataFromName, setCoreActorDataFromName, setFullActorDataFromName } from "./actor-data";
-import Minerals from "../prefabs/outside/resources/Minerals";
+import Minerals from "../prefabs/outside/resources/minerals/Minerals";
 import { ConstructionSiteComponent } from "../entity/building/construction/construction-site-component";
 import { HealthComponent } from "../entity/combat/components/health-component";
 import Wall from "../prefabs/buildings/tivara/wall/Wall";
 import Stairs from "../prefabs/buildings/tivara/stairs/Stairs";
-import StonePile from "../prefabs/outside/resources/StonePile";
+import StonePile from "../prefabs/outside/resources/stone-pile/StonePile";
 import { SkaduweeWorker } from "../prefabs/characters/skaduwee/skaduwee-worker/SkaduweeWorker";
 import { TivaraWorker } from "../prefabs/characters/tivara/tivara-worker/TivaraWorker";
 import { pwActorDefinitions } from "./actor-definitions";

@@ -54,8 +54,8 @@ import FenceTopLeft from "../../prefabs/outside/architecture/obstruction/FenceTo
 import FenceBottomLeft from "../../prefabs/outside/architecture/obstruction/FenceBottomLeft";
 import FenceBottomRight from "../../prefabs/outside/architecture/obstruction/FenceBottomRight";
 import FenceBottom from "../../prefabs/outside/architecture/obstruction/FenceBottom";
-import StonePile from "../../prefabs/outside/resources/StonePile";
-import Minerals from "../../prefabs/outside/resources/Minerals";
+import StonePile from "../../prefabs/outside/resources/stone-pile/StonePile";
+import Minerals from "../../prefabs/outside/resources/minerals/Minerals";
 import TallGrass3 from "../../prefabs/outside/foliage/tall_grass/TallGrass3";
 import TallGrass7 from "../../prefabs/outside/foliage/tall_grass/TallGrass7";
 import TallGrass2 from "../../prefabs/outside/foliage/tall_grass/TallGrass2";
