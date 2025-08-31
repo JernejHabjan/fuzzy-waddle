@@ -160,7 +160,7 @@ import { ANIM_SKADUWEE_RANGED_FEMALE_DEFINITION } from "../prefabs/characters/sk
 import { ANIM_SKADUWEE_MAGICIAN_FEMALE_DEFINITION } from "../prefabs/characters/skaduwee/skaduwee-magician-female/skaduwee_magician_female_anim";
 import { ANIM_SKADUWEE_WARRIOR_MALE_DEFINITION } from "../prefabs/characters/skaduwee/skaduwee-warrior-male/skaduwee_warrior_male_anims";
 import { ANIM_SKADUWEE_WORKER_FEMALE_DEFINITION } from "../prefabs/characters/skaduwee/skaduwee-worker/skaduwee-worker-female/skaduwee_worker_female_anims";
-import { ANIM_GENERAL_WARRIOR_DEFINITION } from "../animations/warrior_anim";
+import { ANIM_GENERAL_WARRIOR_DEFINITION } from "../prefabs/characters/general/general-warrior/warrior_anim";
 import { ANIM_TIVARA_WORKER_MALE_DEFINITION } from "../prefabs/characters/tivara/tivara-worker/tivara-worker-male/tivara_worker_male_anims";
 import { ANIM_SKADUWEE_WORKER_MALE_DEFINITION } from "../prefabs/characters/skaduwee/skaduwee-worker/skaduwee-worker-male/skaduwee_worker_male_anims";
 import { ANIM_TIVARA_WORKER_FEMALE_DEFINITION } from "../prefabs/characters/tivara/tivara-worker/tivara-worker-female/tivara_worker_female_anims";

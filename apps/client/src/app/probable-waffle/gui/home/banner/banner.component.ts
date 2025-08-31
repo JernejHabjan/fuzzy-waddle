@@ -18,7 +18,7 @@ import Tree10 from "../../../game/prefabs/outside/foliage/trees/resources/Tree10
 import Tree11 from "../../../game/prefabs/outside/foliage/trees/resources/Tree11";
 import Minerals from "../../../game/prefabs/outside/resources/Minerals";
 import StonePile from "../../../game/prefabs/outside/resources/StonePile";
-import GeneralWarrior from "../../../game/prefabs/characters/general/GeneralWarrior";
+import GeneralWarrior from "../../../game/prefabs/characters/general/general-warrior/GeneralWarrior";
 import TivaraWorkerFemale from "../../../game/prefabs/characters/tivara/tivara-worker/tivara-worker-female/TivaraWorkerFemale";
 import TivaraWorkerMale from "../../../game/prefabs/characters/tivara/tivara-worker/tivara-worker-male/TivaraWorkerMale";
 import TivaraSlingshotFemale from "../../../game/prefabs/characters/tivara/tivara-slingshot-female/TivaraSlingshotFemale";

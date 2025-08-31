@@ -1,5 +1,5 @@
-import { ANIM_TIVARA_BUILDINGS_OLIVAL_SMALL } from "../../../../animations/tivara-buildings";
 import { GameObjects } from "phaser";
+import { ANIM_TIVARA_BUILDINGS_OLIVAL_SMALL } from "../Olival/anims-olival";
 
 export class SandholdShared {
   constructor(private readonly gameObject: GameObjects.Container) {}

@@ -18,7 +18,7 @@ import SkaduweeWorkerMale from "../prefabs/characters/skaduwee/skaduwee-worker/s
 import SkaduweeWorkerFemale from "../prefabs/characters/skaduwee/skaduwee-worker/skaduwee-worker-female/SkaduweeWorkerFemale";
 import SkaduweeRangedFemale from "../prefabs/characters/skaduwee/skaduwee-ranged-female/SkaduweeRangedFemale";
 import SkaduweeWarriorMale from "../prefabs/characters/skaduwee/skaduwee-warrior-male/SkaduweeWarriorMale";
-import GeneralWarrior from "../prefabs/characters/general/GeneralWarrior";
+import GeneralWarrior from "../prefabs/characters/general/general-warrior/GeneralWarrior";
 import TivaraSlingshotFemale from "../prefabs/characters/tivara/tivara-slingshot-female/TivaraSlingshotFemale";
 import TallGrass1 from "../prefabs/outside/foliage/tall_grass/TallGrass1";
 import Olival from "../prefabs/buildings/tivara/Olival";
