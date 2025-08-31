@@ -8,16 +8,16 @@ import { DebuggingService } from "../../../services/DebuggingService";
 import { Subscription } from "rxjs";
 import { getActorComponent } from "../../../../data/actor-component";
 import { ProductionComponent } from "../../../../entity/components/production/production-component";
-import { pwActorDefinitions } from "../../../../data/actor-definitions";
+import { pwActorDefinitions } from "../../../../prefabs/definitions/actor-definitions";
 import { ScenePlayerHelpers } from "../../../../data/scene-player-helpers";
-import { GathererComponent } from "../../../../entity/actor/components/gatherer-component";
-import { BuilderComponent } from "../../../../entity/actor/components/builder-component";
+import { GathererComponent } from "../../../../entity/components/gatherer-component";
+import { BuilderComponent } from "../../../../entity/components/builder-component";
 import { PawnAiController } from "../player-pawn-ai-controller/pawn-ai-controller";
 import { OrderData } from "../../../../ai/OrderData";
 import { OrderType } from "../../../../ai/order-type";
 import { BuildingCursor } from "../building-cursor";
 import { getGameObjectLogicalTransform } from "../../../../data/game-object-helper";
-import { GameplayLibrary } from "../../../../library/gameplay-library";
+import { DistanceHelper } from "../../../../library/distance-helper";
 import GameObject = Phaser.GameObjects.GameObject;
 import { MapAnalyzer } from "./map-analyzer";
 import { BasePlanner } from "./base-planner";
@@ -112,7 +112,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       let closestDistance = Infinity;
       actorsByEnemy.forEach((actors: GameObject[]) => {
         actors.forEach((actor: GameObject) => {
-          const distance = GameplayLibrary.getTileDistanceBetweenGameObjects(unit, actor);
+          const distance = DistanceHelper.getTileDistanceBetweenGameObjects(unit, actor);
           if (distance !== null && distance < closestDistance) {
             closestDistance = distance;
             closestEnemy = actor;

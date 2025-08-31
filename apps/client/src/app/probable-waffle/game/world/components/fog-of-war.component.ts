@@ -1,14 +1,14 @@
 import { getTilesAroundGameObjectsOfShape } from "../../data/tile-map-helpers";
 import { NavigationService } from "../services/navigation.service";
 import { throttle } from "../../library/throttle";
-import { VisionComponent } from "../../entity/actor/components/vision-component";
+import { VisionComponent } from "../../entity/components/vision-component";
 import { getActorComponent } from "../../data/actor-component";
 import { getCurrentPlayerNumber } from "../../data/scene-data";
-import { IdComponent } from "../../entity/actor/components/id-component";
+import { IdComponent } from "../../entity/components/id-component";
 import { getGameObjectBounds, getGameObjectVisibility } from "../../data/game-object-helper";
 import { IsoHelper } from "../map/tile/iso-helper";
-import { ResourceSourceComponent } from "../../entity/economy/resource/resource-source-component";
-import { HealthComponent } from "../../entity/combat/components/health-component";
+import { ResourceSourceComponent } from "../../entity/components/resource/resource-source-component";
+import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import { getSceneService } from "./scene-component-helpers";
 import { ActorIndexSystem } from "../services/ActorIndexSystem";
 import GameObject = Phaser.GameObjects.GameObject;

@@ -2,12 +2,12 @@ import { setActorData } from "../../../../../data/actor-data";
 import {
   ObjectDescriptorComponent,
   type ObjectDescriptorDefinition
-} from "../../../../../entity/actor/components/object-descriptor-component";
+} from "../../../../../entity/components/object-descriptor-component";
 import {
   AudioActorComponent,
   type AudioDefinition,
   SoundType
-} from "../../../../../entity/actor/components/audio-actor-component";
+} from "../../../../../entity/components/audio-actor-component";
 import { ActorsFoliageSfxBushSounds } from "./sfx-bush";
 import GameObject = Phaser.GameObjects.GameObject;
 

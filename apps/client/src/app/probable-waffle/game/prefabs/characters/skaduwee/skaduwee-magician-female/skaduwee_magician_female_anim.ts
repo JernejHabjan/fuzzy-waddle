@@ -1,4 +1,4 @@
-import { AnimationType } from "../../../../entity/actor/components/animation/animation-type";
+import { AnimationType } from "../../../../entity/components/animation/animation-type";
 
 const ANIM_SKADUWEE_MAGICIAN_FEMALE_HURT = "skaduwee_magician_female_hurt";
 const ANIM_SKADUWEE_MAGICIAN_FEMALE_LARGE_THRUST_UP = "skaduwee_magician_female_large_thrust_up";
@@ -18,7 +18,7 @@ const ANIM_SKADUWEE_MAGICIAN_FEMALE_WALK_LEFT = "skaduwee_magician_female_walk_l
 const ANIM_SKADUWEE_MAGICIAN_FEMALE_WALK_DOWN = "skaduwee_magician_female_walk_down";
 const ANIM_SKADUWEE_MAGICIAN_FEMALE_WALK_RIGHT = "skaduwee_magician_female_walk_right";
 
-import { type AnimationDefinitionMap } from "../../../../entity/actor/components/animation/animation-actor-component";
+import { type AnimationDefinitionMap } from "../../../../entity/components/animation/animation-actor-component";
 
 export const ANIM_SKADUWEE_MAGICIAN_FEMALE_DEFINITION: AnimationDefinitionMap = {
   [AnimationType.Idle]: {

@@ -1,5 +1,5 @@
-import { type AnimationDefinitionMap } from "../../../../entity/actor/components/animation/animation-actor-component";
-import { AnimationType } from "../../../../entity/actor/components/animation/animation-type";
+import { type AnimationDefinitionMap } from "../../../../entity/components/animation/animation-actor-component";
+import { AnimationType } from "../../../../entity/components/animation/animation-type";
 
 const ANIM_SKADUWEE_OWL_IDLE_DOWN = "skaduwee/owl/idle/down";
 const ANIM_SKADUWEE_OWL_IDLE_RIGHT = "skaduwee/owl/idle/right";

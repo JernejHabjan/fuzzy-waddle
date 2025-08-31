@@ -1,6 +1,6 @@
 import { getGameObjectLogicalTransform, getGameObjectRenderedTransform } from "../../data/game-object-helper";
 import { getActorComponent } from "../../data/actor-component";
-import { FlightComponent } from "../../entity/actor/components/flight-component";
+import { FlightComponent } from "../../entity/components/flight-component";
 
 export class DepthHelper {
   constructor(private readonly scene: Phaser.Scene) {

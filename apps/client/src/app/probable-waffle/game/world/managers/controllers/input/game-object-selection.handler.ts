@@ -2,7 +2,7 @@ import { ProbableWaffleScene } from "../../../../core/probable-waffle.scene";
 import { filter, Subscription } from "rxjs";
 import { getActorComponent } from "../../../../data/actor-component";
 import { getGameObjectBounds } from "../../../../data/game-object-helper";
-import { IdComponent } from "../../../../entity/actor/components/id-component";
+import { IdComponent } from "../../../../entity/components/id-component";
 import {
   emitEventIssueActorCommandToSelectedActors,
   emitEventIssueMoveCommandToSelectedActors,
@@ -11,9 +11,9 @@ import {
   getPlayer,
   getSelectableSceneChildren
 } from "../../../../data/scene-data";
-import { AttackComponent } from "../../../../entity/combat/components/attack-component";
+import { AttackComponent } from "../../../../entity/components/combat/components/attack-component";
 import { ProductionCostComponent } from "../../../../entity/components/production/production-cost-component";
-import { HealthComponent } from "../../../../entity/combat/components/health-component";
+import { HealthComponent } from "../../../../entity/components/combat/components/health-component";
 import {
   ObjectNames,
   type ProbableWaffleDoubleSelectionData,
@@ -21,10 +21,10 @@ import {
 } from "@fuzzy-waddle/api-interfaces";
 import { getActorSystem } from "../../../../data/actor-system";
 import { MovementSystem } from "../../../../entity/systems/movement.system";
-import { AudioActorComponent, SoundType } from "../../../../entity/actor/components/audio-actor-component";
-import { OwnerComponent } from "../../../../entity/actor/components/owner-component";
+import { AudioActorComponent, SoundType } from "../../../../entity/components/audio-actor-component";
+import { OwnerComponent } from "../../../../entity/components/owner-component";
 import GameObject = Phaser.GameObjects.GameObject;
-import { pwActorDefinitions } from "../../../../data/actor-definitions";
+import { pwActorDefinitions } from "../../../../prefabs/definitions/actor-definitions";
 import { getSceneService } from "../../../components/scene-component-helpers";
 import { PlayerActionsHandler } from "../PlayerActionsHandler";
 

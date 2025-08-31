@@ -3,7 +3,7 @@
 /* START OF COMPILED CODE */
 /* START-USER-IMPORTS */
 import PlayerGroup from "./PlayerGroup";
-import HudProbableWaffle from "../../../scenes/hud-scenes/HudProbableWaffle";
+import HudProbableWaffle from "../../../world/scenes/hud-scenes/HudProbableWaffle";
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { getSceneService } from "../../../world/components/scene-component-helpers";
 import { CrossSceneCommunicationService } from "../../../world/services/CrossSceneCommunicationService";

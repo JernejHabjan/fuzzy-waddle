@@ -13,14 +13,14 @@ import {
 import { Subscription } from "rxjs";
 import { AudioService } from "../../world/services/audio.service";
 import { getCommunicator, getCurrentPlayerNumber } from "../../data/scene-data";
-import { SelectableComponent } from "../actor/components/selectable-component";
+import { SelectableComponent } from "../components/selectable-component";
 import { getActorComponent } from "../../data/actor-component";
-import { ActorTranslateComponent, type IsoDirection } from "../actor/components/actor-translate-component";
-import { HealthComponent } from "../combat/components/health-component";
+import { ActorTranslateComponent, type IsoDirection } from "../components/actor-translate-component";
+import { HealthComponent } from "../components/combat/components/health-component";
 import { PawnAiController } from "../../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
 import { OrderType } from "../../ai/order-type";
 import { OrderData } from "../../ai/OrderData";
-import { AudioActorComponent } from "../actor/components/audio-actor-component";
+import { AudioActorComponent } from "../components/audio-actor-component";
 import {
   SharedActorActionsSfxGrassSounds,
   SharedActorActionsSfxGravelSounds,
@@ -28,14 +28,14 @@ import {
   SharedActorActionsSfxSnowSounds,
   SharedActorActionsSfxStoneSounds
 } from "../../sfx/SharedActorActionsSfx";
-import { OwnerComponent } from "../actor/components/owner-component";
-import { AnimationActorComponent } from "../actor/components/animation/animation-actor-component";
-import { FlightComponent } from "../actor/components/flight-component";
-import { WalkableComponent } from "../actor/components/walkable-component";
-import { RepresentableComponent } from "../actor/components/representable-component";
+import { OwnerComponent } from "../components/owner-component";
+import { AnimationActorComponent } from "../components/animation/animation-actor-component";
+import { FlightComponent } from "../components/flight-component";
+import { WalkableComponent } from "../components/walkable-component";
+import { RepresentableComponent } from "../components/representable-component";
 import Tween = Phaser.Tweens.Tween;
 import GameObject = Phaser.GameObjects.GameObject;
-import { IdComponent } from "../actor/components/id-component";
+import { IdComponent } from "../components/id-component";
 import { getTileCoordsUnderObject } from "../../library/tile-under-object";
 import { TilemapComponent } from "../../world/components/tilemap.component";
 

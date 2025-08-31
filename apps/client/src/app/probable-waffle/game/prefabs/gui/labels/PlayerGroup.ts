@@ -11,7 +11,7 @@ import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { getSceneComponent } from "../../../world/components/scene-component-helpers";
 import { SelectionGroupsComponent } from "../../../world/components/selection-groups.component";
 import { getActorComponent } from "../../../data/actor-component";
-import { InfoComponent } from "../../../entity/actor/components/info-component";
+import { InfoComponent } from "../../../entity/components/info-component";
 import { IconHelper } from "./IconHelper";
 /* END-USER-IMPORTS */
 

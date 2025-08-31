@@ -1,5 +1,5 @@
 import { treeDefinitions } from "./tree.definition";
-import type { PrefabDefinition } from "../../../../../data/prefab-definition";
+import type { PrefabDefinition } from "../../../../definitions/prefab-definition";
 
 export const tree5Definition = {
   ...treeDefinitions,

@@ -1,6 +1,6 @@
 import { ANIM_STAG_DEFINITION } from "./anims-stag";
 
-import type { PrefabDefinition } from "../../../data/prefab-definition";
+import type { PrefabDefinition } from "../../definitions/prefab-definition";
 
 export const stagDefinition = {
   components: {

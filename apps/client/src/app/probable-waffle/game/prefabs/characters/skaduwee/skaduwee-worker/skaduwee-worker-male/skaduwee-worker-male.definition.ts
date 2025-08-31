@@ -1,6 +1,6 @@
 import { ANIM_SKADUWEE_WORKER_MALE_DEFINITION } from "./skaduwee_worker_male_anims";
 import { skaduweeWorkerDefinition } from "../skaduwee-worker.definition";
-import { SoundType } from "../../../../../entity/actor/components/audio-actor-component";
+import { SoundType } from "../../../../../entity/components/audio-actor-component";
 import {
   SkaduweeWorkerMaleSfxAttackSounds,
   SkaduweeWorkerMaleSfxBuildSounds,
@@ -14,7 +14,7 @@ import {
   SkaduweeWorkerMaleSfxRepairSounds,
   SkaduweeWorkerMaleSfxSelectionSounds
 } from "./SkaduweeWorkerMaleSfx";
-import type { PrefabDefinition } from "../../../../../data/prefab-definition";
+import type { PrefabDefinition } from "../../../../definitions/prefab-definition";
 
 export const skaduweeWorkerMaleDefinition = {
   ...skaduweeWorkerDefinition,

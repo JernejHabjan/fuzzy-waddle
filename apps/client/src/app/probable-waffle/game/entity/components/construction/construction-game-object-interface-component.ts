@@ -1,5 +1,5 @@
 import { ActorDataChangedEvent } from "../../../data/actor-data";
-import { HealthComponent } from "../../combat/components/health-component";
+import { HealthComponent } from "../combat/components/health-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { ConstructionSiteComponent } from "./construction-site-component";
 import { Subscription } from "rxjs";

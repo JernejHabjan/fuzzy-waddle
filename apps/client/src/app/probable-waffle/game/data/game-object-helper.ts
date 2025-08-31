@@ -3,10 +3,10 @@ import { NavigationService } from "../world/services/navigation.service";
 import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { filter, first } from "rxjs";
 import { GameObjects } from "phaser";
-import { SelectableComponent } from "../entity/actor/components/selectable-component";
-import { IdComponent } from "../entity/actor/components/id-component";
+import { SelectableComponent } from "../entity/components/selectable-component";
+import { IdComponent } from "../entity/components/id-component";
 import { getActorComponent } from "./actor-component";
-import { RepresentableComponent } from "../entity/actor/components/representable-component";
+import { RepresentableComponent } from "../entity/components/representable-component";
 
 export function getGameObjectBounds(gameObject?: Phaser.GameObjects.GameObject): Phaser.Geom.Rectangle | null {
   if (!gameObject) return null;

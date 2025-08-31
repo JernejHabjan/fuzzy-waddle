@@ -1,8 +1,8 @@
-import { SoundType } from "../../../entity/actor/components/audio-actor-component";
+import { SoundType } from "../../../entity/components/audio-actor-component";
 import { ActorsHedgehogSfxAngrySounds, ActorsHedgehogSfxSelectionSounds } from "./sfx-hedgehog";
 import { ANIM_HEDGEHOG_DEFINITION } from "./anims-hedgehog";
 
-import type { PrefabDefinition } from "../../../data/prefab-definition";
+import type { PrefabDefinition } from "../../definitions/prefab-definition";
 
 export const hedgehogDefinition = {
   components: {

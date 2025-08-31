@@ -1,7 +1,7 @@
 import { generalWorkerDefinitions } from "../../shared/worker/worker-shared.definition";
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 
-import type { PrefabDefinition } from "../../../../data/prefab-definition";
+import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 
 export const tivaraWorkerDefinition: PrefabDefinition = {
   ...generalWorkerDefinitions,

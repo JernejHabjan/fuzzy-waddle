@@ -7,7 +7,7 @@ import { setActorData } from "../../../../data/actor-data";
 import {
   ObjectDescriptorComponent,
   type ObjectDescriptorDefinition
-} from "../../../../entity/actor/components/object-descriptor-component";
+} from "../../../../entity/components/object-descriptor-component";
 /* END-USER-IMPORTS */
 
 export default class TallGrass7 extends Phaser.GameObjects.Image {

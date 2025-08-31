@@ -1,4 +1,4 @@
-import { ActorPhysicalType } from "../../../../entity/combat/components/health-component";
+import { ActorPhysicalType } from "../../../../entity/components/combat/components/health-component";
 import {
   ANIM_BUILDING_ICON_ANIMS_TIVARA_SANDHOLD_ACTION,
   ANIM_BUILDING_ICON_ANIMS_TIVARA_SANDHOLD_IDLE
@@ -6,7 +6,7 @@ import {
 import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PaymentType } from "../../../../entity/building/payment-type";
 import { coreConstructionSiteDefinition } from "../../shared/core-construction-site.definition";
-import type { PrefabDefinition } from "../../../../data/prefab-definition";
+import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 
 export const sandholdDefinition = {
   components: {

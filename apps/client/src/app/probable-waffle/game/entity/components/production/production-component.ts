@@ -1,6 +1,6 @@
 import { PaymentType } from "../../building/payment-type";
 import { ProductionQueue } from "./production-queue";
-import { OwnerComponent } from "../../actor/components/owner-component";
+import { OwnerComponent } from "../owner-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { type ProductionCostDefinition } from "./production-cost-component";
 import { emitResource, getCommunicator, getCurrentPlayerNumber, getPlayer } from "../../../data/scene-data";
@@ -12,7 +12,7 @@ import {
   ResourceType,
   type Vector3Simple
 } from "@fuzzy-waddle/api-interfaces";
-import { HealthComponent } from "../../combat/components/health-component";
+import { HealthComponent } from "../combat/components/health-component";
 import { getSceneService } from "../../../world/components/scene-component-helpers";
 import { SceneActorCreator } from "../../../world/components/scene-actor-creator";
 import {
@@ -21,11 +21,11 @@ import {
   getGameObjectVisibility,
   onObjectReady
 } from "../../../data/game-object-helper";
-import { SelectableComponent } from "../../actor/components/selectable-component";
+import { SelectableComponent } from "../selectable-component";
 import { Subject, Subscription } from "rxjs";
 import RallyPoint from "../../../prefabs/buildings/misc/RallyPoint";
 import { ConstructionSiteComponent } from "../construction/construction-site-component";
-import { pwActorDefinitions } from "../../../data/actor-definitions";
+import { pwActorDefinitions } from "../../../prefabs/definitions/actor-definitions";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export type ProductionQueueItem = {

@@ -8,8 +8,8 @@ import { getActorSystem } from "../../../data/actor-system";
 import { onObjectReady } from "../../../data/game-object-helper";
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { getActorComponent } from "../../../data/actor-component";
-import { AudioActorComponent, SoundType } from "../../../entity/actor/components/audio-actor-component";
-import { AnimationActorComponent } from "../../../entity/actor/components/animation/animation-actor-component";
+import { AudioActorComponent, SoundType } from "../../../entity/components/audio-actor-component";
+import { AnimationActorComponent } from "../../../entity/components/animation/animation-actor-component";
 /* END-USER-IMPORTS */
 
 export default class Hedgehog extends Phaser.GameObjects.Sprite {

@@ -3,8 +3,8 @@ import { ConstructionSiteComponent } from "./construction-site-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { Subscription } from "rxjs";
 import { getGameObjectBounds, getGameObjectDepth, onObjectReady } from "../../../data/game-object-helper";
-import { OwnerComponent } from "../../actor/components/owner-component";
-import { HealthComponent } from "../../combat/components/health-component";
+import { OwnerComponent } from "../owner-component";
+import { HealthComponent } from "../combat/components/health-component";
 import { throttle } from "../../../library/throttle";
 
 export class ConstructionProgressUiComponent {

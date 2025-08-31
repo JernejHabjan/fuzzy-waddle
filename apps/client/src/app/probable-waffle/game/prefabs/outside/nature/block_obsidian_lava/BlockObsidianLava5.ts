@@ -3,13 +3,13 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { LavaParticles } from "../../../../effects/particles/LavaParticles";
+import { LavaParticles } from "../../../../world/scenes/effects/LavaParticles";
 import { setActorData } from "../../../../data/actor-data";
-import { ColliderComponent } from "../../../../entity/actor/components/collider-component";
+import { ColliderComponent } from "../../../../entity/components/collider-component";
 import {
   ObjectDescriptorComponent,
   type ObjectDescriptorDefinition
-} from "../../../../entity/actor/components/object-descriptor-component";
+} from "../../../../entity/components/object-descriptor-component";
 /* END-USER-IMPORTS */
 
 export default class BlockObsidianLava5 extends Phaser.GameObjects.Container {

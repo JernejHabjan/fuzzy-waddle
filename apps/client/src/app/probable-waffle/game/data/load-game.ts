@@ -1,7 +1,7 @@
 import { ActorManager } from "./actor-manager";
 import { getSceneService } from "../world/components/scene-component-helpers";
 import { SceneActorCreator } from "../world/components/scene-actor-creator";
-import GameProbableWaffleScene from "../scenes/GameProbableWaffleScene";
+import GameProbableWaffleScene from "../world/scenes/GameProbableWaffleScene";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class LoadGame {

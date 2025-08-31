@@ -4,7 +4,7 @@ import { getGameObjectBounds, getGameObjectLogicalTransform } from "../data/game
 import { environment } from "../../../../environments/environment";
 import { drawDebugPoint } from "../debug/debug-point";
 import { getActorComponent } from "../data/actor-component";
-import { ColliderComponent } from "../entity/actor/components/collider-component";
+import { ColliderComponent } from "../entity/components/collider-component";
 
 export function getTileCoordsUnderObject(
   tilemap: Phaser.Tilemaps.Tilemap,

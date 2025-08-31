@@ -1,5 +1,5 @@
-import { type AnimationDefinitionMap } from "../../../../entity/actor/components/animation/animation-actor-component";
-import { AnimationType } from "../../../../entity/actor/components/animation/animation-type";
+import { type AnimationDefinitionMap } from "../../../../entity/components/animation/animation-actor-component";
+import { AnimationType } from "../../../../entity/components/animation/animation-type";
 const ANIM_TIVARA_SLINGSHOT_FEMALE_HURT = "tivara_slingshot_female_hurt";
 const ANIM_TIVARA_SLINGSHOT_FEMALE_IDLE_UP = "tivara_slingshot_female_idle_up";
 const ANIM_TIVARA_SLINGSHOT_FEMALE_IDLE_LEFT = "tivara_slingshot_female_idle_left";

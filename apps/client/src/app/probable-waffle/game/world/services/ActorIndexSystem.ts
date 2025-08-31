@@ -1,11 +1,11 @@
 import GameObject = Phaser.GameObjects.GameObject;
 import { getActorComponent } from "../../data/actor-component";
-import { IdComponent } from "../../entity/actor/components/id-component";
-import { OwnerComponent } from "../../entity/actor/components/owner-component";
-import { ResourceSourceComponent } from "../../entity/economy/resource/resource-source-component";
-import { ResourceDrainComponent } from "../../entity/economy/resource/resource-drain-component";
+import { IdComponent } from "../../entity/components/id-component";
+import { OwnerComponent } from "../../entity/components/owner-component";
+import { ResourceSourceComponent } from "../../entity/components/resource/resource-source-component";
+import { ResourceDrainComponent } from "../../entity/components/resource/resource-drain-component";
 import { ResourceType } from "@fuzzy-waddle/api-interfaces";
-import { HealthComponent } from "../../entity/combat/components/health-component";
+import { HealthComponent } from "../../entity/components/combat/components/health-component";
 
 export class ActorIndexSystem {
   private readonly idActors = new Set<GameObject>();

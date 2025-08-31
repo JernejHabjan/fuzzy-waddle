@@ -17,8 +17,8 @@ import {
   WalkableComponent,
   type WalkablePath,
   WalkablePathDirection
-} from "../../entity/actor/components/walkable-component";
-import { ColliderComponent } from "../../entity/actor/components/collider-component";
+} from "../../entity/components/walkable-component";
+import { ColliderComponent } from "../../entity/components/collider-component";
 import { getCenterTileCoordUnderObject, getTileCoordsUnderObject } from "../../library/tile-under-object";
 import { drawDebugPath } from "../../debug/debug-path";
 import { drawDebugPoint } from "../../debug/debug-point";
@@ -27,7 +27,7 @@ import { TilemapComponent } from "../components/tilemap.component";
 import { getSelectableGameObject, onSceneInitialized } from "../../data/game-object-helper";
 import { throttleWithTrailing } from "../../library/throttle";
 import { environment } from "../../../../../environments/environment";
-import { RepresentableComponent } from "../../entity/actor/components/representable-component";
+import { RepresentableComponent } from "../../entity/components/representable-component";
 
 export enum TerrainType {
   Grass = "grass",

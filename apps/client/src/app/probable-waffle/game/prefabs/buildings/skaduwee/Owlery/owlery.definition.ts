@@ -3,10 +3,10 @@ import {
   ANIM_BUILDING_ICON_ANIMS_SKADUWEE_OWLERY_ACTION,
   ANIM_BUILDING_ICON_ANIMS_SKADUWEE_OWLERY_IDLE
 } from "../../../gui/icon-animations";
-import { ActorPhysicalType } from "../../../../entity/combat/components/health-component";
+import { ActorPhysicalType } from "../../../../entity/components/combat/components/health-component";
 import { PaymentType } from "../../../../entity/building/payment-type";
 import { coreConstructionSiteDefinition } from "../../shared/core-construction-site.definition";
-import type { PrefabDefinition } from "../../../../data/prefab-definition";
+import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 
 export const owleryDefinition = {
   components: {

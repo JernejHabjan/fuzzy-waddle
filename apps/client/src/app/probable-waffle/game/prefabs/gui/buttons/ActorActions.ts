@@ -6,20 +6,20 @@ import OnPointerDownScript from "../../../../../shared/game/phaser/script-nodes-
 /* START-USER-IMPORTS */
 import ActorAction, { type ActorActionSetup } from "./ActorAction";
 import { getCurrentPlayerNumber, listenToSelectionEvents } from "../../../data/scene-data";
-import HudProbableWaffle from "../../../scenes/hud-scenes/HudProbableWaffle";
+import HudProbableWaffle from "../../../world/scenes/hud-scenes/HudProbableWaffle";
 import { Subscription } from "rxjs";
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { getActorComponent } from "../../../data/actor-component";
-import { AttackComponent } from "../../../entity/combat/components/attack-component";
+import { AttackComponent } from "../../../entity/components/combat/components/attack-component";
 import {
   AssignProductionErrorCode,
   ProductionComponent
 } from "../../../entity/components/production/production-component";
-import { ActorTranslateComponent } from "../../../entity/actor/components/actor-translate-component";
-import { pwActorDefinitions } from "../../../data/actor-definitions";
-import { HealthComponent } from "../../../entity/combat/components/health-component";
+import { ActorTranslateComponent } from "../../../entity/components/actor-translate-component";
+import { pwActorDefinitions } from "../../definitions/actor-definitions";
+import { HealthComponent } from "../../../entity/components/combat/components/health-component";
 import { AudioService } from "../../../world/services/audio.service";
-import { BuilderComponent } from "../../../entity/actor/components/builder-component";
+import { BuilderComponent } from "../../../entity/components/builder-component";
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { getSceneComponent, getSceneService } from "../../../world/components/scene-component-helpers";
 import { BuildingCursor } from "../../../world/managers/controllers/building-cursor";
@@ -28,12 +28,12 @@ import HudMessages, { HudVisualFeedbackMessageType } from "../labels/HudMessages
 import { AudioSprites } from "../../../sfx/AudioSprites";
 import { UiFeedbackSfx } from "../../../hud/UiFeedbackSfx";
 import { CrossSceneCommunicationService } from "../../../world/services/CrossSceneCommunicationService";
-import { OwnerComponent } from "../../../entity/actor/components/owner-component";
+import { OwnerComponent } from "../../../entity/components/owner-component";
 import { PawnAiController } from "../../../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
 import { PlayerActionsHandler } from "../../../world/managers/controllers/PlayerActionsHandler";
 import { OrderType } from "../../../ai/order-type";
-import { HealingComponent } from "../../../entity/combat/components/healing-component";
-import { GathererComponent } from "../../../entity/actor/components/gatherer-component";
+import { HealingComponent } from "../../../entity/components/combat/components/healing-component";
+import { GathererComponent } from "../../../entity/components/gatherer-component";
 import { getPrimarySelectedActor } from "../../../data/selection-helpers";
 /* END-USER-IMPORTS */
 

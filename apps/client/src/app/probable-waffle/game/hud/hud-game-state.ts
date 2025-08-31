@@ -5,7 +5,7 @@ import { environment } from "../../../../environments/environment";
 import { getSceneService } from "../world/components/scene-component-helpers";
 import { AudioService } from "../world/services/audio.service";
 import { UiFeedbackSfxCountdownFinalSound, UiFeedbackSfxCountdownSound } from "./UiFeedbackSfx";
-import HudProbableWaffle from "../scenes/hud-scenes/HudProbableWaffle";
+import HudProbableWaffle from "../world/scenes/hud-scenes/HudProbableWaffle";
 
 export class HudGameState {
   private sessionStateSubscription?: Subscription;

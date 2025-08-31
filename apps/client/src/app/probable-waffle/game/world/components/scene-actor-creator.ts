@@ -7,18 +7,18 @@ import {
   type Vector3Simple
 } from "@fuzzy-waddle/api-interfaces";
 import { ActorManager } from "../../data/actor-manager";
-import GameProbableWaffleScene from "../../scenes/GameProbableWaffleScene";
+import GameProbableWaffleScene from "../scenes/GameProbableWaffleScene";
 import { getCommunicator } from "../../data/scene-data";
 import Spawn from "../../prefabs/buildings/misc/Spawn";
-import EditorOwner from "../../editor-components/EditorOwner";
+import EditorOwner from "../scenes/editor-components/EditorOwner";
 import { FactionDefinitions } from "../../player/faction-definitions";
 import { getGameObjectBounds, getGameObjectLogicalTransform } from "../../data/game-object-helper";
 import { getActorSystem } from "../../data/actor-system";
 import { MovementSystem } from "../../entity/systems/movement.system";
 import { setFullActorDataFromName } from "../../data/actor-data";
-import { pwActorDefinitions } from "../../data/actor-definitions";
+import { pwActorDefinitions } from "../../prefabs/definitions/actor-definitions";
 import { getActorComponent } from "../../data/actor-component";
-import { IdComponent } from "../../entity/actor/components/id-component";
+import { IdComponent } from "../../entity/components/id-component";
 import { getSceneService } from "./scene-component-helpers";
 import { ActorIndexSystem } from "../services/ActorIndexSystem";
 import { LoadGame } from "../../data/load-game";

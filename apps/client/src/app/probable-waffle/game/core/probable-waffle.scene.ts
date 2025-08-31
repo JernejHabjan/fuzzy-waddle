@@ -15,7 +15,7 @@ import {
 } from "@fuzzy-waddle/api-interfaces";
 import { ProbableWaffleCommunicatorService } from "../../communicators/probable-waffle-communicator.service";
 import { BehaviorSubject } from "rxjs";
-import { type ProbableWaffleSceneData } from "../scenes/GameProbableWaffleScene";
+import { type ProbableWaffleSceneData } from "../world/scenes/GameProbableWaffleScene";
 
 export class ProbableWaffleScene extends BaseScene<
   ProbableWaffleGameData,

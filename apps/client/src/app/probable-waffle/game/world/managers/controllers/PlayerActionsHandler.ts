@@ -13,14 +13,14 @@ import { BehaviorSubject, Subscription } from "rxjs";
 import { getPrimarySelectedActor } from "../../../data/selection-helpers";
 import { getActorComponent } from "../../../data/actor-component";
 import { PawnAiController } from "./player-pawn-ai-controller/pawn-ai-controller";
-import { BuilderComponent } from "../../../entity/actor/components/builder-component";
+import { BuilderComponent } from "../../../entity/components/builder-component";
 import { BuildingCursor } from "./building-cursor";
 import { ProductionComponent } from "../../../entity/components/production/production-component";
-import { pwActorDefinitions } from "../../../data/actor-definitions";
-import { AttackComponent } from "../../../entity/combat/components/attack-component";
-import { ActorTranslateComponent } from "../../../entity/actor/components/actor-translate-component";
-import { GathererComponent } from "../../../entity/actor/components/gatherer-component";
-import { HealingComponent } from "../../../entity/combat/components/healing-component";
+import { pwActorDefinitions } from "../../../prefabs/definitions/actor-definitions";
+import { AttackComponent } from "../../../entity/components/combat/components/attack-component";
+import { ActorTranslateComponent } from "../../../entity/components/actor-translate-component";
+import { GathererComponent } from "../../../entity/components/gatherer-component";
+import { HealingComponent } from "../../../entity/components/combat/components/healing-component";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class PlayerActionsHandler {

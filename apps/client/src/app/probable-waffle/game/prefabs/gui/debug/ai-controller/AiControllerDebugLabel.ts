@@ -3,7 +3,7 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import HudProbableWaffle from "../../../../scenes/hud-scenes/HudProbableWaffle";
+import HudProbableWaffle from "../../../../world/scenes/hud-scenes/HudProbableWaffle";
 import { ProbableWaffleScene } from "../../../../core/probable-waffle.scene";
 import { getPlayer } from "../../../../data/scene-data";
 import { getSceneSystem } from "../../../../world/components/scene-component-helpers";

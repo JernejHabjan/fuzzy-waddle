@@ -7,7 +7,7 @@ import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import {
   AnimationActorComponent,
   type AnimationOptions
-} from "../../../entity/actor/components/animation/animation-actor-component";
+} from "../../../entity/components/animation/animation-actor-component";
 import { getActorComponent } from "../../../data/actor-component";
 import {
   getRandomTileInNavigableRadius,
@@ -17,7 +17,7 @@ import {
 } from "../../../entity/systems/movement.system";
 import { getActorSystem } from "../../../data/actor-system";
 import { onObjectReady } from "../../../data/game-object-helper";
-import { ActorTranslateComponent } from "../../../entity/actor/components/actor-translate-component";
+import { ActorTranslateComponent } from "../../../entity/components/actor-translate-component";
 import { OrderType } from "../../../ai/order-type";
 /* END-USER-IMPORTS */
 

@@ -1,8 +1,8 @@
-import { ActorPhysicalType } from "../../../../entity/combat/components/health-component";
+import { ActorPhysicalType } from "../../../../entity/components/combat/components/health-component";
 import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PaymentType } from "../../../../entity/building/payment-type";
 import { coreConstructionSiteDefinition } from "../../shared/core-construction-site.definition";
-import type { PrefabDefinition } from "../../../../data/prefab-definition";
+import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 
 export const stairsDefinition = {
   components: {

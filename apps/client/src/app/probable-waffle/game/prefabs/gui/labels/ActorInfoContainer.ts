@@ -8,17 +8,17 @@ import ProgressBar from "../ProgressBar";
 import ActorDetails from "./ActorDetails";
 import ActorInfoLabels from "./ActorInfoLabels";
 /* START-USER-IMPORTS */
-import HudProbableWaffle from "../../../scenes/hud-scenes/HudProbableWaffle";
+import HudProbableWaffle from "../../../world/scenes/hud-scenes/HudProbableWaffle";
 import { Subscription } from "rxjs";
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { getCurrentPlayerNumber, getSelectedActors, listenToSelectionEvents } from "../../../data/scene-data";
-import { pwActorDefinitions } from "../../../data/actor-definitions";
+import { pwActorDefinitions } from "../../definitions/actor-definitions";
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { getActorComponent } from "../../../data/actor-component";
-import { HealthComponent } from "../../../entity/combat/components/health-component";
+import { HealthComponent } from "../../../entity/components/combat/components/health-component";
 import { ConstructionSiteComponent } from "../../../entity/components/construction/construction-site-component";
-import { OwnerComponent } from "../../../entity/actor/components/owner-component";
-import type { PrefabDefinition } from "../../../data/prefab-definition";
+import { OwnerComponent } from "../../../entity/components/owner-component";
+import type { PrefabDefinition } from "../../definitions/prefab-definition";
 /* END-USER-IMPORTS */
 
 export default class ActorInfoContainer extends Phaser.GameObjects.Container {

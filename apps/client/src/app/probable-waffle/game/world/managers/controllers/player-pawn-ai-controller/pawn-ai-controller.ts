@@ -6,7 +6,7 @@ import { PlayerPawnAiControllerAgent } from "./player-pawn-ai-controller.agent";
 import { NodeDebugger } from "./node-debugger";
 import { OrderType } from "../../../../ai/order-type";
 import { environment } from "../../../../../../../environments/environment";
-import { HealthComponent } from "../../../../entity/combat/components/health-component";
+import { HealthComponent } from "../../../../entity/components/combat/components/health-component";
 import { getSceneService } from "../../../components/scene-component-helpers";
 import { DebuggingService } from "../../../services/DebuggingService";
 import { Subscription } from "rxjs";

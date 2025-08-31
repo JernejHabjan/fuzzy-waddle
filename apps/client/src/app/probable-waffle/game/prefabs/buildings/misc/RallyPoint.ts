@@ -10,13 +10,13 @@ import { MovementSystem } from "../../../entity/systems/movement.system";
 import { type RallyPointComponentData, type Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { GameObjects } from "phaser";
 import { getActorComponent } from "../../../data/actor-component";
-import { SelectableComponent } from "../../../entity/actor/components/selectable-component";
+import { SelectableComponent } from "../../../entity/components/selectable-component";
 import { Subscription } from "rxjs";
 import { getGameObjectRenderedTransform } from "../../../data/game-object-helper";
 import { SharedActorActionsRallyPointSound } from "../../../sfx/SharedActorActionsSfx";
 import { getSceneService } from "../../../world/components/scene-component-helpers";
 import { AudioService } from "../../../world/services/audio.service";
-import { IdComponent } from "../../../entity/actor/components/id-component";
+import { IdComponent } from "../../../entity/components/id-component";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import GameObject = Phaser.GameObjects.GameObject;
 

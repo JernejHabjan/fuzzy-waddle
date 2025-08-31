@@ -1,5 +1,5 @@
-import { type AnimationDefinitionMap } from "../../../entity/actor/components/animation/animation-actor-component";
-import { AnimationType } from "../../../entity/actor/components/animation/animation-type";
+import { type AnimationDefinitionMap } from "../../../entity/components/animation/animation-actor-component";
+import { AnimationType } from "../../../entity/components/animation/animation-type";
 
 const ANIM_SHEEP_IDLE_DOWN = "sheep_idle_down";
 const ANIM_SHEEP_IDLE_LEFT = "sheep_idle_left";

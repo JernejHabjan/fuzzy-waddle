@@ -5,9 +5,9 @@ import type {
   PlayerPawnRangeType
 } from "./player-pawn-ai-controller.agent.interface";
 import { getActorComponent } from "../../../../data/actor-component";
-import { VisionComponent } from "../../../../entity/actor/components/vision-component";
-import { GameplayLibrary } from "../../../../library/gameplay-library";
-import { AttackComponent } from "../../../../entity/combat/components/attack-component";
+import { VisionComponent } from "../../../../entity/components/vision-component";
+import { DistanceHelper } from "../../../../library/distance-helper";
+import { AttackComponent } from "../../../../entity/components/combat/components/attack-component";
 import { getActorSystem } from "../../../../data/actor-system";
 import {
   getRandomTileInNavigableRadius,
@@ -16,17 +16,17 @@ import {
 } from "../../../../entity/systems/movement.system";
 import { OrderLabelToTypeMap, OrderType } from "../../../../ai/order-type";
 import { PawnAiBlackboard } from "./pawn-ai-blackboard";
-import { GathererComponent } from "../../../../entity/actor/components/gatherer-component";
-import { ResourceSourceComponent } from "../../../../entity/economy/resource/resource-source-component";
+import { GathererComponent } from "../../../../entity/components/gatherer-component";
+import { ResourceSourceComponent } from "../../../../entity/components/resource/resource-source-component";
 import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
-import { HealthComponent } from "../../../../entity/combat/components/health-component";
-import { ContainableComponent } from "../../../../entity/actor/components/containable-component";
-import { ResourceDrainComponent } from "../../../../entity/economy/resource/resource-drain-component";
-import { BuilderComponent } from "../../../../entity/actor/components/builder-component";
+import { HealthComponent } from "../../../../entity/components/combat/components/health-component";
+import { ContainableComponent } from "../../../../entity/components/containable-component";
+import { ResourceDrainComponent } from "../../../../entity/components/resource/resource-drain-component";
+import { BuilderComponent } from "../../../../entity/components/builder-component";
 import { OrderData } from "../../../../ai/OrderData";
-import { HealingComponent } from "../../../../entity/combat/components/healing-component";
+import { HealingComponent } from "../../../../entity/components/combat/components/healing-component";
 import { ConstructionSiteComponent } from "../../../../entity/components/construction/construction-site-component";
-import { AnimationActorComponent } from "../../../../entity/actor/components/animation/animation-actor-component";
+import { AnimationActorComponent } from "../../../../entity/components/animation/animation-actor-component";
 
 export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
   constructor(
@@ -85,14 +85,14 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
         );
         distance = nrTiles.length;
       } else {
-        distance = GameplayLibrary.getTileDistanceBetweenGameObjects(this.gameObject, targetGameObject);
+        distance = DistanceHelper.getTileDistanceBetweenGameObjects(this.gameObject, targetGameObject);
       }
       if (distance === null) return State.FAILED;
       return distance <= range ? State.SUCCEEDED : State.FAILED;
     } else if (targetLocation) {
       const movementSystem = getActorSystem(this.gameObject, MovementSystem);
       if (!movementSystem) return State.FAILED;
-      const distance = GameplayLibrary.getTileDistanceBetweenGameObjectAndTile(this.gameObject, targetLocation);
+      const distance = DistanceHelper.getTileDistanceBetweenGameObjectAndTile(this.gameObject, targetLocation);
       if (distance === null) return State.FAILED;
       return distance <= range ? State.SUCCEEDED : State.FAILED;
     } else {

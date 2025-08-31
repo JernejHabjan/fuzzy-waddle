@@ -1,5 +1,5 @@
 import { filter, Subscription } from "rxjs";
-import GameProbableWaffleScene from "../scenes/GameProbableWaffleScene";
+import GameProbableWaffleScene from "../world/scenes/GameProbableWaffleScene";
 import { getSceneService } from "../world/components/scene-component-helpers";
 import { SceneActorCreator } from "../world/components/scene-actor-creator";
 

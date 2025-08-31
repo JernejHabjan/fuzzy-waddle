@@ -1,5 +1,5 @@
 import { Cameras, Geom, Input, type Types } from "phaser";
-import GameProbableWaffleScene from "../../../../scenes/GameProbableWaffleScene";
+import GameProbableWaffleScene from "../../../scenes/GameProbableWaffleScene";
 
 export class CameraMovementHandler {
   private readonly enabledMouseCornerMovement = false;

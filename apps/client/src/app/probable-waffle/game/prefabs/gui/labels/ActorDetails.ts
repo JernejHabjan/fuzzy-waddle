@@ -5,11 +5,11 @@
 import ActorInfoLabel from "./ActorInfoLabel";
 /* START-USER-IMPORTS */
 import { getActorComponent } from "../../../data/actor-component";
-import { HealthComponent } from "../../../entity/combat/components/health-component";
-import { DamageType } from "../../../entity/combat/damage-type";
+import { HealthComponent } from "../../../entity/components/combat/components/health-component";
+import { DamageType } from "../../../entity/components/combat/damage-type";
 import { Subscription } from "rxjs";
 import GameObject = Phaser.GameObjects.GameObject;
-import type { PrefabDefinition } from "../../../data/prefab-definition";
+import type { PrefabDefinition } from "../../definitions/prefab-definition";
 /* END-USER-IMPORTS */
 
 export default class ActorDetails extends Phaser.GameObjects.Container {

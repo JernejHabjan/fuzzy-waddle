@@ -1,10 +1,10 @@
-import { HealthComponent } from "../../entity/combat/components/health-component";
+import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import { emitEventSelection, getSelectedActors } from "../../data/scene-data";
 import { onSceneInitialized } from "../../data/game-object-helper";
 import { CrossSceneCommunicationService } from "../services/CrossSceneCommunicationService";
 import { getSceneService } from "./scene-component-helpers";
 import { getActorComponent } from "../../data/actor-component";
-import { IdComponent } from "../../entity/actor/components/id-component";
+import { IdComponent } from "../../entity/components/id-component";
 
 export interface SelectionGroup {
   actors: Phaser.GameObjects.GameObject[];

@@ -1,7 +1,7 @@
 import { GameObjects, Input } from "phaser";
 import { ProbableWaffleScene } from "../../../../core/probable-waffle.scene";
 import { getActorComponent } from "../../../../data/actor-component";
-import { IdComponent } from "../../../../entity/actor/components/id-component";
+import { IdComponent } from "../../../../entity/components/id-component";
 import { MULTI_SELECTING } from "./multi-selection.handler";
 import type {
   ProbableWaffleDoubleSelectionData,

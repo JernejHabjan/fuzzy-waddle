@@ -4,11 +4,11 @@
 
 /* START-USER-IMPORTS */
 import { setActorData } from "../../../../data/actor-data";
-import { ColliderComponent } from "../../../../entity/actor/components/collider-component";
+import { ColliderComponent } from "../../../../entity/components/collider-component";
 import {
   ObjectDescriptorComponent,
   type ObjectDescriptorDefinition
-} from "../../../../entity/actor/components/object-descriptor-component";
+} from "../../../../entity/components/object-descriptor-component";
 /* END-USER-IMPORTS */
 
 export default class FenceRightCorner extends Phaser.GameObjects.Image {

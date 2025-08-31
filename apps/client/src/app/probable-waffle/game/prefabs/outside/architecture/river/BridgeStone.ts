@@ -4,11 +4,11 @@
 
 /* START-USER-IMPORTS */
 import { setActorData } from "../../../../data/actor-data";
-import { WalkableComponent, type WalkableDefinition } from "../../../../entity/actor/components/walkable-component";
+import { WalkableComponent, type WalkableDefinition } from "../../../../entity/components/walkable-component";
 import {
   ObjectDescriptorComponent,
   type ObjectDescriptorDefinition
-} from "../../../../entity/actor/components/object-descriptor-component";
+} from "../../../../entity/components/object-descriptor-component";
 /* END-USER-IMPORTS */
 
 export default class BridgeStone extends Phaser.GameObjects.Image {

@@ -1,10 +1,10 @@
-import { HealthComponent } from "../../../../entity/combat/components/health-component";
+import { HealthComponent } from "../../../../entity/components/combat/components/health-component";
 import { getActorComponent } from "../../../../data/actor-component";
-import { ActorTranslateComponent } from "../../../../entity/actor/components/actor-translate-component";
+import { ActorTranslateComponent } from "../../../../entity/components/actor-translate-component";
 import { Subscription } from "rxjs";
 import { getGameObjectDepth, getGameObjectRenderedTransform, onObjectReady } from "../../../../data/game-object-helper";
-import { OwnerComponent } from "../../../../entity/actor/components/owner-component";
-import { HealthUiComponent } from "../../../../entity/combat/components/health-ui-component";
+import { OwnerComponent } from "../../../../entity/components/owner-component";
+import { HealthUiComponent } from "../../../../entity/components/combat/components/health-ui-component";
 
 export class NodeDebugger {
   static readonly ZIndex = 1;

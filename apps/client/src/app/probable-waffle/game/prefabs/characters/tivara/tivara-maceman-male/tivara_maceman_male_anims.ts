@@ -1,5 +1,5 @@
-import { type AnimationDefinitionMap } from "../../../../entity/actor/components/animation/animation-actor-component";
-import { AnimationType } from "../../../../entity/actor/components/animation/animation-type";
+import { type AnimationDefinitionMap } from "../../../../entity/components/animation/animation-actor-component";
+import { AnimationType } from "../../../../entity/components/animation/animation-type";
 const ANIM_TIVARA_MACEMAN_MALE_HURT = "tivara_maceman_male_hurt";
 const ANIM_TIVARA_MACEMAN_MALE_IDLE_UP = "tivara_maceman_male_idle_up";
 const ANIM_TIVARA_MACEMAN_MALE_IDLE_LEFT = "tivara_maceman_male_idle_left";

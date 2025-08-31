@@ -12,23 +12,23 @@ import {
   onSceneInitialized
 } from "../../../data/game-object-helper";
 import { DepthHelper } from "../../map/depth.helper";
-import { pwActorDefinitions } from "../../../data/actor-definitions";
+import { pwActorDefinitions } from "../../../prefabs/definitions/actor-definitions";
 import { upgradeFromCoreToConstructingActorData } from "../../../data/actor-data";
 import { emitEventIssueActorCommandToSelectedActors, getCurrentPlayerNumber } from "../../../data/scene-data";
 import { EventEmitter } from "@angular/core";
-import GameProbableWaffleScene from "../../../scenes/GameProbableWaffleScene";
+import GameProbableWaffleScene from "../../scenes/GameProbableWaffleScene";
 import { Subscription } from "rxjs";
 import { TilemapComponent } from "../../components/tilemap.component";
 import { getActorComponent } from "../../../data/actor-component";
 import { ConstructionGameObjectInterfaceComponent } from "../../../entity/components/construction/construction-game-object-interface-component";
-import { IdComponent } from "../../../entity/actor/components/id-component";
+import { IdComponent } from "../../../entity/components/id-component";
 import { getSceneComponent, getSceneService } from "../../components/scene-component-helpers";
 import { getTileCoordsUnderObject } from "../../../library/tile-under-object";
 import { NavigationService } from "../../services/navigation.service";
 import { AudioService } from "../../services/audio.service";
 import { UiFeedbackBuildDeniedSound } from "../../../hud/UiFeedbackSfx";
 import { FogOfWarComponent } from "../../components/fog-of-war.component";
-import { RepresentableComponent } from "../../../entity/actor/components/representable-component";
+import { RepresentableComponent } from "../../../entity/components/representable-component";
 import Vector2 = Phaser.Math.Vector2;
 
 export class BuildingCursor {
