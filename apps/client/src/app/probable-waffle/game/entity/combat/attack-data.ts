@@ -20,7 +20,10 @@ import {
   SharedActorActionsSfxStaffHitSounds
 } from "../../sfx/SharedActorActionsSfx";
 import { EffectsAnims } from "../../animations/effects";
-import { SkaduweeOwlSfxFurballFireSounds, SkaduweeOwlSfxFurballHitSounds } from "../../sfx/SkaduweeOwlSfx";
+import {
+  SkaduweeOwlSfxFurballFireSounds,
+  SkaduweeOwlSfxFurballHitSounds
+} from "../../prefabs/characters/skaduwee/skaduwee-owl/SkaduweeOwlSfx";
 import { AnimationType } from "../actor/components/animation/animation-type";
 
 export interface AttackData {

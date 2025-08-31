@@ -18,7 +18,7 @@ import { type ProbableWaffleGameData } from "../../../core/probable-waffle-game-
 import { ScenePlayerHelpers } from "../../../data/scene-player-helpers";
 import { getCurrentPlayerNumber } from "../../../data/scene-data";
 import { getActorComponent } from "../../../data/actor-component";
-import { ConstructionSiteComponent } from "../../../entity/building/construction/construction-site-component";
+import { ConstructionSiteComponent } from "../../../entity/components/construction/construction-site-component";
 
 export class GameModeConditionChecker {
   private loseConditions: LoseConditions;

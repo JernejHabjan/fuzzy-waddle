@@ -18,7 +18,7 @@ import { Observable } from "rxjs";
 import GameProbableWaffleScene from "../scenes/GameProbableWaffleScene";
 import { BaseScene } from "../../../shared/game/phaser/scene/base.scene";
 import { AttackComponent } from "../entity/combat/components/attack-component";
-import { ProductionComponent } from "../entity/building/production/production-component";
+import { ProductionComponent } from "../entity/components/production/production-component";
 import { GathererComponent } from "../entity/actor/components/gatherer-component";
 import { SelectableComponent } from "../entity/actor/components/selectable-component";
 import { HealthComponent } from "../entity/combat/components/health-component";

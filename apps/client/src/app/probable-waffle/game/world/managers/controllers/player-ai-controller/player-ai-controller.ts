@@ -1,5 +1,5 @@
 import { ProbableWafflePlayer } from "@fuzzy-waddle/api-interfaces";
-import { PlayerAiBlackboard } from "../../../../entity/character/ai/player-ai/player-ai-blackboard";
+import { PlayerAiBlackboard } from "./player-ai-blackboard";
 import { PlayerAiControllerAgent } from "./player-ai-controller.agent";
 import { BehaviourTree } from "mistreevous";
 import Phaser from "phaser";

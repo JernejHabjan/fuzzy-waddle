@@ -1,5 +1,5 @@
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
-import { OrderType } from "../../../entity/character/ai/order-type";
+import { OrderType } from "../../../ai/order-type";
 import { CursorHandler, CursorType } from "./input/cursor.handler";
 import { getSceneComponent } from "../../components/scene-component-helpers";
 import type { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
@@ -15,7 +15,7 @@ import { getActorComponent } from "../../../data/actor-component";
 import { PawnAiController } from "./player-pawn-ai-controller/pawn-ai-controller";
 import { BuilderComponent } from "../../../entity/actor/components/builder-component";
 import { BuildingCursor } from "./building-cursor";
-import { ProductionComponent } from "../../../entity/building/production/production-component";
+import { ProductionComponent } from "../../../entity/components/production/production-component";
 import { pwActorDefinitions } from "../../../data/actor-definitions";
 import { AttackComponent } from "../../../entity/combat/components/attack-component";
 import { ActorTranslateComponent } from "../../../entity/actor/components/actor-translate-component";

@@ -1,8 +1,8 @@
-import { OrderData } from "../../character/ai/OrderData";
+import { OrderData } from "../../../ai/OrderData";
 import { onObjectReady } from "../../../data/game-object-helper";
 import { type AdditionalAudioConfig, AudioService } from "../../../world/services/audio.service";
 import { getSceneService } from "../../../world/components/scene-component-helpers";
-import { OrderType } from "../../character/ai/order-type";
+import { OrderType } from "../../../ai/order-type";
 import { getActorComponent } from "../../../data/actor-component";
 import { GathererComponent } from "./gatherer-component";
 export enum SoundType {

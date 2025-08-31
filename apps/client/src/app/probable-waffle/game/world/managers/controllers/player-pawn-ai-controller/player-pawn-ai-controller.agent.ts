@@ -14,8 +14,8 @@ import {
   MovementSystem,
   type PathMoveConfig
 } from "../../../../entity/systems/movement.system";
-import { OrderLabelToTypeMap, OrderType } from "../../../../entity/character/ai/order-type";
-import { PawnAiBlackboard } from "../../../../entity/character/ai/pawn-ai-blackboard";
+import { OrderLabelToTypeMap, OrderType } from "../../../../ai/order-type";
+import { PawnAiBlackboard } from "./pawn-ai-blackboard";
 import { GathererComponent } from "../../../../entity/actor/components/gatherer-component";
 import { ResourceSourceComponent } from "../../../../entity/economy/resource/resource-source-component";
 import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
@@ -23,10 +23,10 @@ import { HealthComponent } from "../../../../entity/combat/components/health-com
 import { ContainableComponent } from "../../../../entity/actor/components/containable-component";
 import { ResourceDrainComponent } from "../../../../entity/economy/resource/resource-drain-component";
 import { BuilderComponent } from "../../../../entity/actor/components/builder-component";
-import { OrderData } from "../../../../entity/character/ai/OrderData";
+import { OrderData } from "../../../../ai/OrderData";
 import { HealingComponent } from "../../../../entity/combat/components/healing-component";
-import { ConstructionSiteComponent } from "../../../../entity/building/construction/construction-site-component";
-import { AnimationActorComponent } from "../../../../entity/actor/components/animation-actor-component";
+import { ConstructionSiteComponent } from "../../../../entity/components/construction/construction-site-component";
+import { AnimationActorComponent } from "../../../../entity/actor/components/animation/animation-actor-component";
 
 export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
   constructor(

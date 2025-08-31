@@ -12,7 +12,7 @@ import {
   SkaduweeWorkerFemaleSfxMoveSounds,
   SkaduweeWorkerFemaleSfxRepairSounds,
   SkaduweeWorkerFemaleSfxSelectSounds
-} from "../../../../../sfx/SkaduweeWorkerFemaleSfx";
+} from "./SkaduweeWorkerFemaleSfx";
 import { ANIM_SKADUWEE_WORKER_FEMALE_DEFINITION } from "./skaduwee_worker_female_anims";
 
 import type { PrefabDefinition } from "../../../../../data/prefab-definition";

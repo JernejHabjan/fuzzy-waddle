@@ -1,6 +1,6 @@
 // This file was generated from "convert-to-enums.js" script
 import { type SoundDefinition } from "../entity/actor/components/audio-actor-component";
-import { AudioSprites } from "./AudioSprites";
+import { AudioSprites } from "../sfx/AudioSprites";
 
 export enum UiFeedbackSfx {
   ACHIEVEMENT = "achievement",

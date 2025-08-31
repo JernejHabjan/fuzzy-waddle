@@ -7,7 +7,7 @@ import { ComponentSyncSystem, type SyncOptions } from "../../systems/component-s
 import { ContainerComponent } from "../../building/container-component";
 import Phaser from "phaser";
 import { getActorComponent } from "../../../data/actor-component";
-import { ConstructionSiteComponent } from "../../building/construction/construction-site-component";
+import { ConstructionSiteComponent } from "../../components/construction/construction-site-component";
 import {
   getGameObjectBounds,
   getGameObjectDepth,
@@ -19,7 +19,7 @@ import { SelectableComponent } from "../../actor/components/selectable-component
 import { OwnerComponent } from "../../actor/components/owner-component";
 import { getCurrentPlayerNumber } from "../../../data/scene-data";
 import { AudioActorComponent, type SoundDefinition, SoundType } from "../../actor/components/audio-actor-component";
-import { AnimationActorComponent } from "../../actor/components/animation-actor-component";
+import { AnimationActorComponent } from "../../actor/components/animation/animation-actor-component";
 import { EffectsAnims } from "../../../animations/effects";
 import { ActorTranslateComponent } from "../../actor/components/actor-translate-component";
 import { getSceneService } from "../../../world/components/scene-component-helpers";

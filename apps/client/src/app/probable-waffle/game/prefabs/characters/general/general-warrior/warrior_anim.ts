@@ -14,7 +14,7 @@ const ANIM_GENERAL_WARRIOR_WALK_LEFT = "general_warrior_walk_left";
 const ANIM_GENERAL_WARRIOR_WALK_DOWN = "general_warrior_walk_down";
 const ANIM_GENERAL_WARRIOR_WALK_RIGHT = "general_warrior_walk_right";
 
-import { type AnimationDefinitionMap } from "../../../../entity/actor/components/animation-actor-component";
+import { type AnimationDefinitionMap } from "../../../../entity/actor/components/animation/animation-actor-component";
 
 export const ANIM_GENERAL_WARRIOR_DEFINITION: AnimationDefinitionMap = {
   [AnimationType.Idle]: {

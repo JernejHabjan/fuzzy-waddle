@@ -4,7 +4,7 @@ import {
   SkaduweeOwlSfxLocationSounds,
   SkaduweeOwlSfxMoveSounds,
   SkaduweeOwlSfxSelectionSounds
-} from "../../../../sfx/SkaduweeOwlSfx";
+} from "./SkaduweeOwlSfx";
 import { ActorPhysicalType } from "../../../../entity/combat/components/health-component";
 import { weaponDefinitions } from "../../../../entity/combat/attack-data";
 import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";

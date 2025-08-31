@@ -16,7 +16,7 @@ import { pwActorDefinitions } from "../../../data/actor-definitions";
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { getActorComponent } from "../../../data/actor-component";
 import { HealthComponent } from "../../../entity/combat/components/health-component";
-import { ConstructionSiteComponent } from "../../../entity/building/construction/construction-site-component";
+import { ConstructionSiteComponent } from "../../../entity/components/construction/construction-site-component";
 import { OwnerComponent } from "../../../entity/actor/components/owner-component";
 import type { PrefabDefinition } from "../../../data/prefab-definition";
 /* END-USER-IMPORTS */

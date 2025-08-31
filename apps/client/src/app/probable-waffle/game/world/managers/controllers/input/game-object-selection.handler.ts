@@ -12,7 +12,7 @@ import {
   getSelectableSceneChildren
 } from "../../../../data/scene-data";
 import { AttackComponent } from "../../../../entity/combat/components/attack-component";
-import { ProductionCostComponent } from "../../../../entity/building/production/production-cost-component";
+import { ProductionCostComponent } from "../../../../entity/components/production/production-cost-component";
 import { HealthComponent } from "../../../../entity/combat/components/health-component";
 import {
   ObjectNames,

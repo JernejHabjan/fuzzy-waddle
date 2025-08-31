@@ -9,7 +9,7 @@ import { getActorComponent } from "../../../data/actor-component";
 import {
   ProductionComponent,
   type ProductionQueueItem
-} from "../../../entity/building/production/production-component";
+} from "../../../entity/components/production/production-component";
 import { BehaviorSubject, Subscription } from "rxjs";
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { SingleSelectionHandler } from "../../../world/managers/controllers/input/single-selection.handler";

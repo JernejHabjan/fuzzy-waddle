@@ -6,7 +6,7 @@ import {
   TivaraSlingshotSfxLocationSounds,
   TivaraSlingshotSfxMoveSounds,
   TivaraSlingshotSfxSelectionSounds
-} from "../../../../sfx/TivaraSlingshotSfx";
+} from "./TivaraSlingshotSfx";
 import { ActorPhysicalType } from "../../../../entity/combat/components/health-component";
 import { weaponDefinitions } from "../../../../entity/combat/attack-data";
 import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";

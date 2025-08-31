@@ -11,7 +11,7 @@ import {
   TivaraWorkerMaleSfxRepairSounds,
   TivaraWorkerMaleSfxSelectionExtraSounds,
   TivaraWorkerMaleSfxSelectionSounds
-} from "../../../../../sfx/TivaraWorkerMaleSfx";
+} from "./TivaraWorkerMaleSfx";
 import { tivaraWorkerDefinition } from "../tivara-worker.definition";
 import { SoundType } from "../../../../../entity/actor/components/audio-actor-component";
 import { ANIM_TIVARA_WORKER_MALE_DEFINITION } from "./tivara_worker_male_anims";

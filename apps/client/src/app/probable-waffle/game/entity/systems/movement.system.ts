@@ -18,8 +18,8 @@ import { getActorComponent } from "../../data/actor-component";
 import { ActorTranslateComponent, type IsoDirection } from "../actor/components/actor-translate-component";
 import { HealthComponent } from "../combat/components/health-component";
 import { PawnAiController } from "../../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
-import { OrderType } from "../character/ai/order-type";
-import { OrderData } from "../character/ai/OrderData";
+import { OrderType } from "../../ai/order-type";
+import { OrderData } from "../../ai/OrderData";
 import { AudioActorComponent } from "../actor/components/audio-actor-component";
 import {
   SharedActorActionsSfxGrassSounds,
@@ -29,7 +29,7 @@ import {
   SharedActorActionsSfxStoneSounds
 } from "../../sfx/SharedActorActionsSfx";
 import { OwnerComponent } from "../actor/components/owner-component";
-import { AnimationActorComponent } from "../actor/components/animation-actor-component";
+import { AnimationActorComponent } from "../actor/components/animation/animation-actor-component";
 import { FlightComponent } from "../actor/components/flight-component";
 import { WalkableComponent } from "../actor/components/walkable-component";
 import { RepresentableComponent } from "../actor/components/representable-component";

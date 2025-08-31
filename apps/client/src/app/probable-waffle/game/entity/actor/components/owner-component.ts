@@ -8,7 +8,7 @@ import { getGameObjectDepth, onObjectReady } from "../../../data/game-object-hel
 import { Subscription } from "rxjs";
 import { ActorTranslateComponent } from "./actor-translate-component";
 import { ContainerComponent } from "../../building/container-component";
-import { ConstructionSiteComponent } from "../../building/construction/construction-site-component";
+import { ConstructionSiteComponent } from "../../components/construction/construction-site-component";
 import { VisionComponent } from "./vision-component";
 
 export type OwnerDefinition = {

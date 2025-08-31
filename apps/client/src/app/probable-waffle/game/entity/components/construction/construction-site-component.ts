@@ -1,4 +1,4 @@
-import { PaymentType } from "../payment-type";
+import { PaymentType } from "../../building/payment-type";
 import {
   type ConstructionSiteComponentData,
   ConstructionStateEnum,

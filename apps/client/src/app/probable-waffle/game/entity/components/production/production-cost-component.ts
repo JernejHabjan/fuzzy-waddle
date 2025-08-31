@@ -1,4 +1,4 @@
-import { PaymentType } from "../payment-type";
+import { PaymentType } from "../../building/payment-type";
 import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 import GameObject = Phaser.GameObjects.GameObject;
 

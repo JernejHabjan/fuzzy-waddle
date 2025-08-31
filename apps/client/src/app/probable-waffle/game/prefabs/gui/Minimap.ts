@@ -20,7 +20,7 @@ import { FogOfWarComponent, FogOfWarMode } from "../../world/components/fog-of-w
 import { VisionComponent } from "../../entity/actor/components/vision-component";
 import { PlayerActionsHandler } from "../../world/managers/controllers/PlayerActionsHandler";
 import { type GameObjectActionAssignerConfig } from "../../world/managers/controllers/game-object-action-assigner";
-import { OrderType } from "../../entity/character/ai/order-type";
+import { OrderType } from "../../ai/order-type";
 /* END-USER-IMPORTS */
 
 export default class Minimap extends Phaser.GameObjects.Container {

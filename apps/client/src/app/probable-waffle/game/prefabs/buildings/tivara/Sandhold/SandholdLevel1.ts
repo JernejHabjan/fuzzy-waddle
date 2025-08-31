@@ -10,7 +10,7 @@ import { SandholdShared } from "./SandholdShared";
 import Sandhold from "../Sandhold";
 import { ActorDataChangedEvent } from "../../../../data/actor-data";
 import { getActorComponent } from "../../../../data/actor-component";
-import { ProductionComponent } from "../../../../entity/building/production/production-component";
+import { ProductionComponent } from "../../../../entity/components/production/production-component";
 
 export default class SandholdLevel1 extends Phaser.GameObjects.Container {
   constructor(scene: Phaser.Scene, x?: number, y?: number) {

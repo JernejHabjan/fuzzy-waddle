@@ -1,26 +1,26 @@
 import { State } from "mistreevous";
 import { type IPlayerControllerAgent } from "./player-ai-controller.agent.interface";
-import { PlayerAiBlackboard } from "../../../../entity/character/ai/player-ai/player-ai-blackboard";
+import { PlayerAiBlackboard } from "./player-ai-blackboard";
 import { ObjectNames, ProbableWafflePlayer, ResourceType, type Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { environment } from "../../../../../../../environments/environment";
 import { getSceneService } from "../../../components/scene-component-helpers";
 import { DebuggingService } from "../../../services/DebuggingService";
 import { Subscription } from "rxjs";
 import { getActorComponent } from "../../../../data/actor-component";
-import { ProductionComponent } from "../../../../entity/building/production/production-component";
+import { ProductionComponent } from "../../../../entity/components/production/production-component";
 import { pwActorDefinitions } from "../../../../data/actor-definitions";
 import { ScenePlayerHelpers } from "../../../../data/scene-player-helpers";
 import { GathererComponent } from "../../../../entity/actor/components/gatherer-component";
 import { BuilderComponent } from "../../../../entity/actor/components/builder-component";
 import { PawnAiController } from "../player-pawn-ai-controller/pawn-ai-controller";
-import { OrderData } from "../../../../entity/character/ai/OrderData";
-import { OrderType } from "../../../../entity/character/ai/order-type";
+import { OrderData } from "../../../../ai/OrderData";
+import { OrderType } from "../../../../ai/order-type";
 import { BuildingCursor } from "../building-cursor";
 import { getGameObjectLogicalTransform } from "../../../../data/game-object-helper";
 import { GameplayLibrary } from "../../../../library/gameplay-library";
 import GameObject = Phaser.GameObjects.GameObject;
-import { MapAnalyzer } from "../../../../entity/character/ai/player-ai/map-analyzer";
-import { BasePlanner } from "../../../../entity/character/ai/player-ai/base-planner";
+import { MapAnalyzer } from "./map-analyzer";
+import { BasePlanner } from "./base-planner";
 
 export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   private readonly baseHeavyAttackThreshold = 10; // Enemy units count for a heavy attack

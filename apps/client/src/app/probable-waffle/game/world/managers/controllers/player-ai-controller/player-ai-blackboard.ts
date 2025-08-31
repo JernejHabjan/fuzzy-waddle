@@ -1,4 +1,4 @@
-import { Blackboard } from "../blackboard";
+import { Blackboard } from "../../../../ai/blackboard";
 import { ResourceType, type Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 import type { MapAnalysis } from "./map-analyzer";
 

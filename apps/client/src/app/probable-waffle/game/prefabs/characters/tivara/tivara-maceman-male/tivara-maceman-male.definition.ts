@@ -12,7 +12,7 @@ import {
   TivaraMacemanSfxLocationSounds,
   TivaraMacemanSfxMoveSounds,
   TivaraMacemanSfxSelectionSounds
-} from "../../../../sfx/TivaraMacemanSfx";
+} from "./TivaraMacemanSfx";
 import { ANIM_TIVARA_MACEMAN_MALE_DEFINITION } from "./tivara_maceman_male_anims";
 import type { PrefabDefinition } from "../../../../data/prefab-definition";
 

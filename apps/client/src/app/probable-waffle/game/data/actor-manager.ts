@@ -35,7 +35,7 @@ import WatchTower from "../prefabs/buildings/tivara/wall/WatchTower";
 import { IdComponent } from "../entity/actor/components/id-component";
 import { setConstructingActorDataFromName, setCoreActorDataFromName, setFullActorDataFromName } from "./actor-data";
 import Minerals from "../prefabs/outside/resources/minerals/Minerals";
-import { ConstructionSiteComponent } from "../entity/building/construction/construction-site-component";
+import { ConstructionSiteComponent } from "../entity/components/construction/construction-site-component";
 import { HealthComponent } from "../entity/combat/components/health-component";
 import Wall from "../prefabs/buildings/tivara/wall/Wall";
 import Stairs from "../prefabs/buildings/tivara/stairs/Stairs";
@@ -52,7 +52,7 @@ import { GathererComponent } from "../entity/actor/components/gatherer-component
 import { ContainerComponent } from "../entity/building/container-component";
 import { ResourceDrainComponent } from "../entity/economy/resource/resource-drain-component";
 import { ResourceSourceComponent } from "../entity/economy/resource/resource-source-component";
-import { ProductionComponent } from "../entity/building/production/production-component";
+import { ProductionComponent } from "../entity/components/production/production-component";
 import { PawnAiController } from "../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
 import GameObject = Phaser.GameObjects.GameObject;
 import { getSceneService } from "../world/components/scene-component-helpers";

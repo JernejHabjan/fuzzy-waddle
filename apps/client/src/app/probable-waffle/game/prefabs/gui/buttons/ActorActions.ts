@@ -14,7 +14,7 @@ import { AttackComponent } from "../../../entity/combat/components/attack-compon
 import {
   AssignProductionErrorCode,
   ProductionComponent
-} from "../../../entity/building/production/production-component";
+} from "../../../entity/components/production/production-component";
 import { ActorTranslateComponent } from "../../../entity/actor/components/actor-translate-component";
 import { pwActorDefinitions } from "../../../data/actor-definitions";
 import { HealthComponent } from "../../../entity/combat/components/health-component";
@@ -23,15 +23,15 @@ import { BuilderComponent } from "../../../entity/actor/components/builder-compo
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { getSceneComponent, getSceneService } from "../../../world/components/scene-component-helpers";
 import { BuildingCursor } from "../../../world/managers/controllers/building-cursor";
-import { ConstructionSiteComponent } from "../../../entity/building/construction/construction-site-component";
+import { ConstructionSiteComponent } from "../../../entity/components/construction/construction-site-component";
 import HudMessages, { HudVisualFeedbackMessageType } from "../labels/HudMessages";
 import { AudioSprites } from "../../../sfx/AudioSprites";
-import { UiFeedbackSfx } from "../../../sfx/UiFeedbackSfx";
+import { UiFeedbackSfx } from "../../../hud/UiFeedbackSfx";
 import { CrossSceneCommunicationService } from "../../../world/services/CrossSceneCommunicationService";
 import { OwnerComponent } from "../../../entity/actor/components/owner-component";
 import { PawnAiController } from "../../../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
 import { PlayerActionsHandler } from "../../../world/managers/controllers/PlayerActionsHandler";
-import { OrderType } from "../../../entity/character/ai/order-type";
+import { OrderType } from "../../../ai/order-type";
 import { HealingComponent } from "../../../entity/combat/components/healing-component";
 import { GathererComponent } from "../../../entity/actor/components/gatherer-component";
 import { getPrimarySelectedActor } from "../../../data/selection-helpers";

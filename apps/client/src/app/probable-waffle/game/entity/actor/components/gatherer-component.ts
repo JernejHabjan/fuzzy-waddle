@@ -7,7 +7,7 @@ import { ResourceDrainComponent } from "../../economy/resource/resource-drain-co
 import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "./owner-component";
-import { ConstructionSiteComponent } from "../../building/construction/construction-site-component";
+import { ConstructionSiteComponent } from "../../components/construction/construction-site-component";
 import { emitResource, getPlayer } from "../../../data/scene-data";
 import { HealthComponent } from "../../combat/components/health-component";
 import { getSceneService } from "../../../world/components/scene-component-helpers";
@@ -17,8 +17,8 @@ import {
   SharedActorActionsSfxMiningSounds
 } from "../../../sfx/SharedActorActionsSfx";
 import { type SoundDefinition, SoundType } from "./audio-actor-component";
-import { AnimationActorComponent } from "./animation-actor-component";
-import { OrderType } from "../../character/ai/order-type";
+import { AnimationActorComponent } from "./animation/animation-actor-component";
+import { OrderType } from "../../../ai/order-type";
 import { ActorTranslateComponent } from "./actor-translate-component";
 import { getGameObjectVisibility, onObjectReady } from "../../../data/game-object-helper";
 import GameObject = Phaser.GameObjects.GameObject;

@@ -6,7 +6,7 @@ import {
   SkaduweeRangedSfxLocationSounds,
   SkaduweeRangedSfxMoveSounds,
   SkaduweeRangedSfxSelectionSounds
-} from "../../../../sfx/SkaduweeRangedSfx";
+} from "./SkaduweeRangedSfx";
 import { ActorPhysicalType } from "../../../../entity/combat/components/health-component";
 import { weaponDefinitions } from "../../../../entity/combat/attack-data";
 import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";

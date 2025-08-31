@@ -2,7 +2,7 @@ import Minimap from "../../../prefabs/gui/Minimap";
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { emitEventIssueActorCommandToSelectedActors } from "../../../data/scene-data";
 import type { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
-import { OrderType } from "../../../entity/character/ai/order-type";
+import { OrderType } from "../../../ai/order-type";
 
 export interface GameObjectActionAssignerConfig {
   objectIds?: string[];

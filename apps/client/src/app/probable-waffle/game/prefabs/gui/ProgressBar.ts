@@ -4,7 +4,7 @@
 
 /* START-USER-IMPORTS */
 import { getActorComponent } from "../../data/actor-component";
-import { ProductionComponent } from "../../entity/building/production/production-component";
+import { ProductionComponent } from "../../entity/components/production/production-component";
 import { Subscription } from "rxjs";
 /* END-USER-IMPORTS */
 

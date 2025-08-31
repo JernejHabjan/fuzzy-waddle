@@ -1,12 +1,12 @@
-import { onObjectReady } from "../../../data/game-object-helper";
-import { OrderType } from "../../character/ai/order-type";
-import { ActorTranslateComponent, type IsoDirection } from "./actor-translate-component";
-import { getActorComponent } from "../../../data/actor-component";
+import { onObjectReady } from "../../../../data/game-object-helper";
+import { OrderType } from "../../../../ai/order-type";
+import { ActorTranslateComponent, type IsoDirection } from "../actor-translate-component";
+import { getActorComponent } from "../../../../data/actor-component";
 import { Subscription } from "rxjs";
-import { HealthComponent } from "../../combat/components/health-component";
-import { AttackComponent } from "../../combat/components/attack-component";
-import { GathererComponent } from "./gatherer-component";
-import { AnimationType } from "./animation/animation-type";
+import { HealthComponent } from "../../../combat/components/health-component";
+import { AttackComponent } from "../../../combat/components/attack-component";
+import { GathererComponent } from "../gatherer-component";
+import { AnimationType } from "./animation-type";
 
 const oneTimeAnimations: AnimationType[] = [
   AnimationType.Shoot,

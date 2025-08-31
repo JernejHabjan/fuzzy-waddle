@@ -10,7 +10,7 @@ import {
   TivaraWorkerFemaleSfxMoveSounds,
   TivaraWorkerFemaleSfxRepairSounds,
   TivaraWorkerFemaleSfxSelectionSounds
-} from "../../../../../sfx/TivaraWorkerFemaleSfx";
+} from "./TivaraWorkerFemaleSfx";
 import { tivaraWorkerDefinition } from "../tivara-worker.definition";
 import { SoundType } from "../../../../../entity/actor/components/audio-actor-component";
 import { ANIM_TIVARA_WORKER_FEMALE_DEFINITION } from "./tivara_worker_female_anims";

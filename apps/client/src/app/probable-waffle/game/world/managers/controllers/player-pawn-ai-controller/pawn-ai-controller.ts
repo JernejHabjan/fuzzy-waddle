@@ -1,10 +1,10 @@
 import { PlayerPawnAiControllerMdsl } from "./player-pawn-ai-controller.mdsl";
 import { BehaviourTree, type BehaviourTreeOptions } from "mistreevous";
 import Phaser from "phaser";
-import { PawnAiBlackboard } from "../../../../entity/character/ai/pawn-ai-blackboard";
+import { PawnAiBlackboard } from "./pawn-ai-blackboard";
 import { PlayerPawnAiControllerAgent } from "./player-pawn-ai-controller.agent";
 import { NodeDebugger } from "./node-debugger";
-import { OrderType } from "../../../../entity/character/ai/order-type";
+import { OrderType } from "../../../../ai/order-type";
 import { environment } from "../../../../../../../environments/environment";
 import { HealthComponent } from "../../../../entity/combat/components/health-component";
 import { getSceneService } from "../../../components/scene-component-helpers";

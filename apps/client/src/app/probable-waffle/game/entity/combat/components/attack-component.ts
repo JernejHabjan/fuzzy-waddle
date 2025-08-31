@@ -1,14 +1,17 @@
 import { type AttackData, type ProjectileData, ProjectileType } from "../attack-data";
 import { HealthComponent } from "./health-component";
 import { getActorComponent } from "../../../data/actor-component";
-import { AnimationActorComponent, type AnimationOptions } from "../../actor/components/animation-actor-component";
+import {
+  AnimationActorComponent,
+  type AnimationOptions
+} from "../../actor/components/animation/animation-actor-component";
 import {
   getGameObjectBounds,
   getGameObjectDepth,
   getGameObjectVisibility,
   onObjectReady
 } from "../../../data/game-object-helper";
-import { OrderType } from "../../character/ai/order-type";
+import { OrderType } from "../../../ai/order-type";
 import { ActorTranslateComponent } from "../../actor/components/actor-translate-component";
 import { getSceneService } from "../../../world/components/scene-component-helpers";
 import { AudioService } from "../../../world/services/audio.service";

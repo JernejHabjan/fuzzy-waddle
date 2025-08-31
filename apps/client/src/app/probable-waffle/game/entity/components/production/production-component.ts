@@ -1,4 +1,4 @@
-import { PaymentType } from "../payment-type";
+import { PaymentType } from "../../building/payment-type";
 import { ProductionQueue } from "./production-queue";
 import { OwnerComponent } from "../../actor/components/owner-component";
 import { getActorComponent } from "../../../data/actor-component";

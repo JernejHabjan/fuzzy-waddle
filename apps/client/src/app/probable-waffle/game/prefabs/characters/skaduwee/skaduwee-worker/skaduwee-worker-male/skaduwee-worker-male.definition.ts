@@ -13,7 +13,7 @@ import {
   SkaduweeWorkerMaleSfxMoveSounds,
   SkaduweeWorkerMaleSfxRepairSounds,
   SkaduweeWorkerMaleSfxSelectionSounds
-} from "../../../../../sfx/SkaduweeWorkerMaleSfx";
+} from "./SkaduweeWorkerMaleSfx";
 import type { PrefabDefinition } from "../../../../../data/prefab-definition";
 
 export const skaduweeWorkerMaleDefinition = {

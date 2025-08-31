@@ -1,5 +1,5 @@
 import { SoundType } from "../../../../entity/actor/components/audio-actor-component";
-import { TivaraOlivalSfxSelectionSounds } from "../../../../sfx/TivaraOlivalSfx";
+import { TivaraOlivalSfxSelectionSounds } from "./TivaraOlivalSfx";
 import { ActorPhysicalType } from "../../../../entity/combat/components/health-component";
 import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PaymentType } from "../../../../entity/building/payment-type";

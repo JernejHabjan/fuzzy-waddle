@@ -1,5 +1,5 @@
-import { Blackboard } from "./blackboard";
-import { OrderData } from "./OrderData";
+import { Blackboard } from "../../../../ai/blackboard";
+import { OrderData } from "../../../../ai/OrderData";
 
 export class PawnAiBlackboard extends Blackboard {
   private orderQueue: OrderData[] = [];
