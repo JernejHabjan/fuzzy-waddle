@@ -166,7 +166,7 @@ export default class Dungeon extends Scene implements CreateSceneFromObjectConfi
   /**
    * Update speed by delta
    */
-  update(t: number, dt: number) {
+  override update(t: number, dt: number) {
     if (!this.faune) return;
     if (this.isMobile) {
       const joystick = this.joystick;

@@ -15,7 +15,6 @@
   ],
   "compilerOptions": {
     "forceConsistentCasingInFileNames": true,
-    "noImplicitOverride": false,
     "noPropertyAccessFromIndexSignature": false,
     "noFallthroughCasesInSwitch": true,
     "allowSyntheticDefaultImports": true,

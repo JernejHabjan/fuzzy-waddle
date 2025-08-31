@@ -130,7 +130,7 @@ export default class GroupContainer extends Phaser.GameObjects.Container {
     this.buttons.forEach((button) => button.deselect());
   }
 
-  destroy(fromScene?: boolean) {
+  override destroy(fromScene?: boolean) {
     super.destroy(fromScene);
     this.crossSceneCommunicationService?.off(
       SelectionGroupsComponent.GroupSelectedEvent,

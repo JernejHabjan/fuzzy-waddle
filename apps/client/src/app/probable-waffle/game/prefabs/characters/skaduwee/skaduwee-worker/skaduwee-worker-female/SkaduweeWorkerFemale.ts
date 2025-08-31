@@ -20,7 +20,7 @@ export default class SkaduweeWorkerFemale extends Phaser.GameObjects.Sprite {
   }
 
   /* START-USER-CODE */
-  name = ObjectNames.SkaduweeWorkerFemale;
+  override name = ObjectNames.SkaduweeWorkerFemale;
   // Write your code here.
 
   /* END-USER-CODE */

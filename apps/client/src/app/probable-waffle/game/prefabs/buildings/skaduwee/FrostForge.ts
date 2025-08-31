@@ -58,7 +58,7 @@ export default class FrostForge extends Phaser.GameObjects.Container {
   private frostForgeLevel1: FrostForgeLevel1;
 
   /* START-USER-CODE */
-  name = ObjectNames.FrostForge;
+  override name = ObjectNames.FrostForge;
   private setup() {
     setActorData(
       this,

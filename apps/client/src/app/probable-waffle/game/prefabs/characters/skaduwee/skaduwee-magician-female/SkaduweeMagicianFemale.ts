@@ -23,7 +23,7 @@ export default class SkaduweeMagicianFemale extends Phaser.GameObjects.Container
   }
 
   /* START-USER-CODE */
-  name = ObjectNames.SkaduweeMagicianFemale;
+  override name = ObjectNames.SkaduweeMagicianFemale;
   /* END-USER-CODE */
 }
 

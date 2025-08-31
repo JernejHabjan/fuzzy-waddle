@@ -52,7 +52,7 @@ export default class Sandhold extends Phaser.GameObjects.Container {
   public sandholdFoundation2: SandholdFoundation2;
 
   /* START-USER-CODE */
-  name = ObjectNames.Sandhold;
+  override name = ObjectNames.Sandhold;
 
   private setup() {
     setActorData(

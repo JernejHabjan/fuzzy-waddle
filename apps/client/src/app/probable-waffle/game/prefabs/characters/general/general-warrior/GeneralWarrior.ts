@@ -20,7 +20,7 @@ export default class GeneralWarrior extends Phaser.GameObjects.Sprite {
   }
 
   /* START-USER-CODE */
-  name = ObjectNames.GeneralWarrior;
+  override name = ObjectNames.GeneralWarrior;
   // Write your code here.
 
   /* END-USER-CODE */

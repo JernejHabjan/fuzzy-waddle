@@ -108,7 +108,7 @@ export default class ProgressBar extends Phaser.GameObjects.Container {
     this.nr.text = Math.round(percentage).toString();
   }
 
-  destroy(fromScene?: boolean) {
+  override destroy(fromScene?: boolean) {
     this.cleanActor(); // Clean up subscription
     super.destroy(fromScene);
   }

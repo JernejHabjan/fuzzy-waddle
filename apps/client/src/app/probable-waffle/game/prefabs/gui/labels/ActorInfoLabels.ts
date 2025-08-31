@@ -134,7 +134,7 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
     return this.visibilityChanged.asObservable();
   }
 
-  destroy(fromScene?: boolean) {
+  override destroy(fromScene?: boolean) {
     this.cleanActor();
     this.clickSubscriptions.forEach((sub) => sub.unsubscribe());
     super.destroy(fromScene);

@@ -103,10 +103,10 @@ export default class MapSandbox extends GameProbableWaffleScene {
     this.events.emit("scene-awake");
   }
 
-  public tilemap!: Phaser.Tilemaps.Tilemap;
+  public override tilemap!: Phaser.Tilemaps.Tilemap;
 
   /* START-USER-CODE */
-  create() {
+  override create() {
     this.editorCreate();
 
     super.create();

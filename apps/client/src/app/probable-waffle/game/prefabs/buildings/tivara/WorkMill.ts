@@ -58,7 +58,7 @@ export default class WorkMill extends Phaser.GameObjects.Container {
   private workMillLevel1: WorkMillLevel1;
 
   /* START-USER-CODE */
-  name = ObjectNames.WorkMill;
+  override name = ObjectNames.WorkMill;
   private setup() {
     setActorData(
       this,

@@ -28,7 +28,7 @@ export default class Wolf extends Phaser.GameObjects.Sprite {
   }
 
   /* START-USER-CODE */
-  name = ObjectNames.Wolf;
+  override name = ObjectNames.Wolf;
   private actorAudioComponent?: AudioActorComponent;
   private animationActorComponent?: AnimationActorComponent;
   private readonly radius = 2;

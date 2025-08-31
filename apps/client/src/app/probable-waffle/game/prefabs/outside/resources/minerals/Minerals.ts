@@ -37,7 +37,7 @@ export default class Minerals extends Phaser.GameObjects.Image {
   }
 
   /* START-USER-CODE */
-  name = ObjectNames.Minerals;
+  override name = ObjectNames.Minerals;
   private readonly availableMinerals = ["minerals_pile_1.png", "minerals_pile_2.png"];
 
   /* END-USER-CODE */

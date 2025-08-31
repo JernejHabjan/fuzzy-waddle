@@ -27,7 +27,7 @@ export default class OnEventScript extends ScriptNode {
 
   /* START-USER-CODE */
 
-  awake() {
+  override awake() {
     let emitter: Phaser.Events.EventEmitter | null | undefined;
 
     switch (this.eventEmitter) {

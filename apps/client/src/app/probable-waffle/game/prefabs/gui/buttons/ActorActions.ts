@@ -691,7 +691,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     return index;
   }
 
-  destroy(fromScene?: boolean) {
+  override destroy(fromScene?: boolean) {
     super.destroy(fromScene);
     this.selectionChangedSubscription?.unsubscribe();
     this.actorKillSubscription?.unsubscribe();

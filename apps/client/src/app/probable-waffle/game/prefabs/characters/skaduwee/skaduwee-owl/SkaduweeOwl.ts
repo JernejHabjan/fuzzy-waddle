@@ -18,7 +18,7 @@ export default class SkaduweeOwl extends Phaser.GameObjects.Sprite {
   }
 
   /* START-USER-CODE */
-  name = ObjectNames.SkaduweeOwl;
+  override name = ObjectNames.SkaduweeOwl;
   /* END-USER-CODE */
 }
 

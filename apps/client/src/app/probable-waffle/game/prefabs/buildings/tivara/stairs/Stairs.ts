@@ -66,7 +66,7 @@ export default class Stairs extends Phaser.GameObjects.Container {
   private foundation: Phaser.GameObjects.Image;
 
   /* START-USER-CODE */
-  name = ObjectNames.Stairs;
+  override name = ObjectNames.Stairs;
   private stairs?: Phaser.GameObjects.GameObject;
   private currentStairsType?: StairsType;
   updateStairs(stairsType: StairsType) {
@@ -223,7 +223,7 @@ export default class Stairs extends Phaser.GameObjects.Container {
     return getNeighboursByTypes(this, [Wall, WatchTower], TilemapComponent.tileWidth);
   }
 
-  destroy(fromScene?: boolean) {
+  override destroy(fromScene?: boolean) {
     this.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.throttleRedrawStairs, this);
     super.destroy(fromScene);
   }

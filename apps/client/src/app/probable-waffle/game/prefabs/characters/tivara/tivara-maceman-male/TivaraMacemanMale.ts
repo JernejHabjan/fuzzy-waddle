@@ -23,7 +23,7 @@ export default class TivaraMacemanMale extends Phaser.GameObjects.Container {
   }
 
   /* START-USER-CODE */
-  name = ObjectNames.TivaraMacemanMale;
+  override name = ObjectNames.TivaraMacemanMale;
   // Write your code here.
 
   /* END-USER-CODE */

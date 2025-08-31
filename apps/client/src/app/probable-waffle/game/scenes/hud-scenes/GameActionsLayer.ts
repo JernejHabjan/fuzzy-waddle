@@ -394,7 +394,7 @@ export default class GameActionsLayer extends ProbableWaffleScene {
 
   /* START-USER-CODE */
   private readonly smallScreenBreakpoint = 800;
-  create() {
+  override create() {
     this.editorCreate();
 
     // resize the scene to match the screen size
@@ -506,7 +506,7 @@ export default class GameActionsLayer extends ProbableWaffleScene {
     this.scene.stop();
   }
 
-  destroy() {
+  override destroy() {
     super.destroy();
   }
 

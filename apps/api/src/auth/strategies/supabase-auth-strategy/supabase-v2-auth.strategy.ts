@@ -8,11 +8,11 @@ import { UserAuthCacheService } from "../../../core/cache/user-auth-cache.servic
 // fixes https://github.com/hiro1107/nestjs-supabase-auth/issues/7
 // uses node-cache to cache users for 1 hour
 export class SupabaseV2AuthStrategy extends Strategy {
-  readonly name = SUPABASE_AUTH;
+  override readonly name = SUPABASE_AUTH;
   private extractor: JwtFromRequestFunction;
-  success!: (user: any, info: any) => void;
+  override success!: (user: any, info: any) => void;
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  fail!: Strategy["fail"];
+  override fail!: Strategy["fail"];
   private readonly userAuthCacheService: UserAuthCacheService;
   private supabaseClient: SupabaseClient;
 
@@ -32,7 +32,7 @@ export class SupabaseV2AuthStrategy extends Strategy {
     return authUser ? authUser : null;
   }
 
-  async authenticate(req: any): Promise<void> {
+  override async authenticate(req: any): Promise<void> {
     const idToken = this.extractor(req);
 
     if (!idToken) {

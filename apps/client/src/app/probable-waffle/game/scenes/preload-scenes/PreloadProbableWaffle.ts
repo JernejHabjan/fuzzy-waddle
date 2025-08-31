@@ -52,7 +52,7 @@ export default class PreloadProbableWaffle extends ProbableWaffleScene {
 
   // Write your code here
 
-  preload() {
+  override preload() {
     this.editorCreate();
     this.center();
     this.load.pack("asset-pack", "assets/probable-waffle/asset-packers/asset-pack-probable-waffle.json");
@@ -72,7 +72,7 @@ export default class PreloadProbableWaffle extends ProbableWaffleScene {
     this.loadingText.y = this.progressBar.y - this.loadingText.height - 10;
   }
 
-  create() {
+  override create() {
     this.scene.start(this.mapInfo.loader.mapSceneKey);
   }
 

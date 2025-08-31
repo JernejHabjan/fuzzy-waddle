@@ -83,7 +83,7 @@ export default class HudMessages extends Phaser.GameObjects.Text {
     });
   }
 
-  destroy(fromScene?: boolean) {
+  override destroy(fromScene?: boolean) {
     super.destroy(fromScene);
     if (this.delayedCall) this.delayedCall.destroy();
     this.crossSceneCommunicationService?.off(HudMessages.HudVisualFeedbackMessageEventName, this.messageEvent);

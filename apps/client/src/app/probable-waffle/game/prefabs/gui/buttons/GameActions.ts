@@ -102,7 +102,7 @@ export default class GameActions extends Phaser.GameObjects.Container {
     layer.scene.start();
   };
 
-  destroy(fromScene?: boolean) {
+  override destroy(fromScene?: boolean) {
     super.destroy(fromScene);
     this.game_action_menu.off("menu-open", this.createGameActionsLayer);
   }

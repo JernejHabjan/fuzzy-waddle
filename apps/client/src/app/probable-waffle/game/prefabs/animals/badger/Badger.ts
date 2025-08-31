@@ -37,7 +37,7 @@ export default class Badger extends Phaser.GameObjects.Sprite {
   }
 
   /* START-USER-CODE */
-  name = ObjectNames.Badger;
+  override name = ObjectNames.Badger;
 
   private animationActorComponent?: AnimationActorComponent;
   private actorTranslateComponent?: ActorTranslateComponent;

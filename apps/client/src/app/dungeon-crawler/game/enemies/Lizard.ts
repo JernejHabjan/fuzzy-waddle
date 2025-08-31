@@ -36,7 +36,7 @@ export default class Lizard extends Phaser.Physics.Arcade.Sprite {
     });
   }
 
-  destroy(fromScene?: boolean) {
+  override destroy(fromScene?: boolean) {
     this.moveEvent.destroy();
     super.destroy(fromScene);
   }
@@ -46,7 +46,7 @@ export default class Lizard extends Phaser.Physics.Arcade.Sprite {
     this.body!.onCollide = true;
   }
 
-  preUpdate(t: number, dt: number) {
+  override preUpdate(t: number, dt: number) {
     super.preUpdate(t, dt);
     const speed = 50;
     switch (this.direction) {

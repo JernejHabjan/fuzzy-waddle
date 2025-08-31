@@ -51,7 +51,7 @@ export default class BlockStoneWater4 extends Phaser.GameObjects.Container {
     /* END-USER-CTR-CODE */
   }
 
-  public z: number = 0;
+  public override z: number = 0;
 
   /* START-USER-CODE */
 

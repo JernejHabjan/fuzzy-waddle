@@ -58,7 +58,7 @@ export default class AnkGuard extends Phaser.GameObjects.Container {
   private ankGuardLevel1: AnkGuardLevel1;
 
   /* START-USER-CODE */
-  name = ObjectNames.AnkGuard;
+  override name = ObjectNames.AnkGuard;
   private setup() {
     setActorData(
       this,

@@ -122,7 +122,7 @@ export default class PlayerGroup extends Phaser.GameObjects.Container {
     this.nr.text = count.toString();
   }
 
-  destroy(fromScene?: boolean) {
+  override destroy(fromScene?: boolean) {
     this.off("actor-action", this.handleSelection, this);
     this.underline?.destroy();
     super.destroy(fromScene);

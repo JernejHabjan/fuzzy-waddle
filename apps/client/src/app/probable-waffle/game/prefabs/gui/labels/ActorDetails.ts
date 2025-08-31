@@ -168,7 +168,7 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
     this.attributes.forEach((a) => (a.visible = false));
   }
 
-  destroy(fromScene?: boolean) {
+  override destroy(fromScene?: boolean) {
     this.healthSubscription?.unsubscribe();
     this.armourSubscription?.unsubscribe();
     super.destroy(fromScene);

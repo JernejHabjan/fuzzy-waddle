@@ -28,7 +28,7 @@ export default class Stag extends Phaser.GameObjects.Sprite {
   }
 
   /* START-USER-CODE */
-  name = ObjectNames.Stag;
+  override name = ObjectNames.Stag;
   private actorAudioComponent?: AudioActorComponent;
   private animationActorComponent?: AnimationActorComponent;
   private readonly radius = 2;

@@ -53,7 +53,7 @@ export default class InfantryInn extends Phaser.GameObjects.Container {
   private infantryInnLevel1: InfantryInnLevel1;
 
   /* START-USER-CODE */
-  name = ObjectNames.InfantryInn;
+  override name = ObjectNames.InfantryInn;
   private setup() {
     setActorData(
       this,

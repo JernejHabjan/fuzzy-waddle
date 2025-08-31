@@ -72,7 +72,7 @@ export default class Wall extends Phaser.GameObjects.Container {
   private cursor: Phaser.GameObjects.Image;
 
   /* START-USER-CODE */
-  name = ObjectNames.Wall;
+  override name = ObjectNames.Wall;
 
   private wall?: Phaser.GameObjects.GameObject;
   private currentWallType?: WallType;
@@ -272,12 +272,10 @@ export default class Wall extends Phaser.GameObjects.Container {
   private get neighbors() {
     return getNeighboursByTypes(this, [Wall, WatchTower, Stairs], TilemapComponent.tileWidth);
   }
-
-  destroy(fromScene?: boolean) {
+  override destroy(fromScene?: boolean) {
     this.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.throttleRedrawWalls, this);
     super.destroy(fromScene);
   }
-
   /* END-USER-CODE */
 }
 

@@ -58,7 +58,7 @@ export default class Owlery extends Phaser.GameObjects.Container {
   private owleryLevel1: OwleryLevel1;
 
   /* START-USER-CODE */
-  name = ObjectNames.Owlery;
+  override name = ObjectNames.Owlery;
   private setup() {
     setActorData(
       this,

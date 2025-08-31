@@ -350,7 +350,7 @@ export default class Minimap extends Phaser.GameObjects.Container {
     return null;
   }
 
-  destroy(fromScene?: boolean) {
+  override destroy(fromScene?: boolean) {
     this.minimapDiamonds.forEach((diamond) => diamond.destroy());
     this.actorDiamonds.forEach((diamond) => diamond.destroy());
     this.probableWaffleScene?.events.off(NavigationService.UpdateNavigationEvent, this.throttleRedrawMinimap, this);

@@ -69,7 +69,7 @@ export default class OlivalLevel1 extends Phaser.GameObjects.Container {
     this.init();
   }
 
-  destroy(fromScene?: boolean) {
+  override destroy(fromScene?: boolean) {
     this.bounceTweens?.stop();
     this.bounceTweens?.remove();
     super.destroy(fromScene);

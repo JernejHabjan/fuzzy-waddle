@@ -73,7 +73,7 @@ export default class SandholdLevel1 extends Phaser.GameObjects.Container {
     });
   }
 
-  destroy(fromScene?: boolean) {
+  override destroy(fromScene?: boolean) {
     if (this.queueChangeSubscription) {
       this.queueChangeSubscription.unsubscribe();
     }

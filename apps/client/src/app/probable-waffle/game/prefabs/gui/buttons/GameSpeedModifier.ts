@@ -199,7 +199,7 @@ export default class GameSpeedModifier extends Phaser.GameObjects.Container {
     });
   }
 
-  destroy() {
+  override destroy() {
     super.destroy();
     this.multiplier_1x.removeAllListeners();
     this.multiplier_3x.removeAllListeners();

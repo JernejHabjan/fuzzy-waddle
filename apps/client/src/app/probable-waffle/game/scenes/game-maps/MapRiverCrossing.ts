@@ -961,7 +961,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.events.emit("scene-awake");
   }
 
-  public tilemap!: Phaser.Tilemaps.Tilemap;
+  public override tilemap!: Phaser.Tilemaps.Tilemap;
 
   /* START-USER-CODE */
 
@@ -986,7 +986,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     graphics.displayOriginY = 0.5;
   }
 
-  create() {
+  override create() {
     // todo - buggy when zooming out - this.createGradientSky();
 
     this.editorCreate();

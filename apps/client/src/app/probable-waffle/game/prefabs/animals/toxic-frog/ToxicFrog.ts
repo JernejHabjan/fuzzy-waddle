@@ -55,7 +55,7 @@ export default class ToxicFrog extends Phaser.GameObjects.Sprite {
   capitalize(str: string): string {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
-  destroy(fromScene?: boolean) {
+  override destroy(fromScene?: boolean) {
     super.destroy(fromScene);
     this.off("pointerdown", this.handlePointerDown, this);
   }

@@ -20,7 +20,7 @@ export default class TivaraSlingshotFemale extends Phaser.GameObjects.Sprite {
   }
 
   /* START-USER-CODE */
-  name = ObjectNames.TivaraSlingshotFemale;
+  override name = ObjectNames.TivaraSlingshotFemale;
   // Write your code here.
 
   /* END-USER-CODE */

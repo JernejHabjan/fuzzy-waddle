@@ -2,9 +2,9 @@
   "compileOnSave": false,
   "compilerOptions": {
     /* Language & Output */
-    "target": "ESNext",                         // Use the latest ECMAScript features
-    "module": "ESNext",                          // Modern ESM for bundlers
-    "lib": ["ESNext", "DOM"],    // Latest JS + DOM features
+    "target": "ES2024",                         // Use the latest ECMAScript features
+    "module": "ES2022",                          // Modern ESM for bundlers
+    "lib": ["ES2024", "DOM"],    // Latest JS + DOM features
     "moduleResolution": "Bundler",              // Optimized for Vite/Webpack
     "allowArbitraryExtensions": true,           // Allows importing files with arbitrary extensions
 
@@ -31,6 +31,8 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "forceConsistentCasingInFileNames": true,
+    "noImplicitOverride": true,
+    "moduleDetection": "force",
 
     /* Build Optimizations */
     "skipLibCheck": true,

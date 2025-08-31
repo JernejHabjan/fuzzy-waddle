@@ -27,7 +27,7 @@ export default class Sheep extends Phaser.GameObjects.Sprite {
   }
 
   /* START-USER-CODE */
-  name = ObjectNames.Sheep;
+  override name = ObjectNames.Sheep;
 
   private postSceneCreate() {
     this.actorAudioComponent = getActorComponent(this, AudioActorComponent);
@@ -111,7 +111,7 @@ export default class Sheep extends Phaser.GameObjects.Sprite {
     this.currentDelay = this.scene.time.delayedCall(randomDelay, this.startMovement, [], this);
   }
 
-  setDepth(value: number): this {
+  override setDepth(value: number): this {
     this.woolParticles?.setDepth(value + 1);
     return super.setDepth(value);
   }

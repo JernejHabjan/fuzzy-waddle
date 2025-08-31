@@ -20,7 +20,7 @@ export default class TivaraWorkerFemale extends Phaser.GameObjects.Sprite {
   }
 
   /* START-USER-CODE */
-  name = ObjectNames.TivaraWorkerFemale;
+  override name = ObjectNames.TivaraWorkerFemale;
   // Write your code here.
 
   /* END-USER-CODE */

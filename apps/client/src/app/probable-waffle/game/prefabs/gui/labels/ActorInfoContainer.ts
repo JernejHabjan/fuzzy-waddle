@@ -175,7 +175,7 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
     return actorPlayerNr === currentPlayerNr;
   }
 
-  destroy(fromScene?: boolean) {
+  override destroy(fromScene?: boolean) {
     super.destroy(fromScene);
     this.selectionChangedSubscription?.unsubscribe();
     this.actorKillSubscription?.unsubscribe();

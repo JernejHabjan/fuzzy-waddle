@@ -44,11 +44,11 @@ export interface ProbableWaffleSceneData {
 export default class GameProbableWaffleScene extends ProbableWaffleScene {
   tilemap!: Phaser.Tilemaps.Tilemap;
 
-  init() {
+  override init() {
     super.init();
   }
 
-  create() {
+  override create() {
     const c = this.baseGameData.gameInstance.gameState;
     const hud = this.scene.get<HudProbableWaffle>("HudProbableWaffle") as HudProbableWaffle;
     hud.scene.start();
@@ -112,12 +112,12 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     this.sceneGameData.initializers.sceneInitialized.next(false);
   }
 
-  protected shutDown() {
+  protected override shutDown() {
     super.shutDown();
     this.cleanup();
   }
 
-  destroy() {
+  override destroy() {
     super.destroy();
     this.cleanup();
   }

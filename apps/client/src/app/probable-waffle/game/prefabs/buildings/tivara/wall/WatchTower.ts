@@ -52,7 +52,7 @@ export default class WatchTower extends Phaser.GameObjects.Container {
   private watchTowerLevel1: WatchTowerLevel1;
 
   /* START-USER-CODE */
-  name = ObjectNames.WatchTower;
+  override name = ObjectNames.WatchTower;
   private setup() {
     setActorData(
       this,

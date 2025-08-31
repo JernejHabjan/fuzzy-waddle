@@ -105,11 +105,11 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   private readonly actorInfoSmallScreenBreakpoint = 1200;
 
   probableWaffleScene?: ProbableWaffleScene;
-  preload() {
+  override preload() {
     this.load.pack("asset-pack-gui", "assets/probable-waffle/asset-packers/asset-pack-probable-waffle-gui.json");
   }
 
-  create() {
+  override create() {
     this.editorCreate();
 
     // resize the scene to match the screen size
@@ -232,7 +232,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.saveGameSubscription = this.subscribeToGameEvent("save-game", "Game saved");
   }
 
-  destroy() {
+  override destroy() {
     this.saveGameSubscription?.unsubscribe();
     super.destroy();
   }

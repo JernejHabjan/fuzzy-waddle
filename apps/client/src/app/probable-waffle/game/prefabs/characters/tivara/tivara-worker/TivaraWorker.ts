@@ -5,5 +5,5 @@ export class TivaraWorker extends Phaser.GameObjects.GameObject {
     super(scene, ObjectNames.TivaraWorker);
   }
 
-  name = ObjectNames.TivaraWorker;
+  override name = ObjectNames.TivaraWorker;
 }

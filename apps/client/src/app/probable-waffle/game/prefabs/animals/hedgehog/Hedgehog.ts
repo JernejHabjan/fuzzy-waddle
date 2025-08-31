@@ -25,7 +25,7 @@ export default class Hedgehog extends Phaser.GameObjects.Sprite {
   }
 
   /* START-USER-CODE */
-  name = ObjectNames.Hedgehog;
+  override name = ObjectNames.Hedgehog;
   private actorAudioComponent?: AudioActorComponent;
   private animationActorComponent?: AnimationActorComponent;
   private readonly radius = 2;

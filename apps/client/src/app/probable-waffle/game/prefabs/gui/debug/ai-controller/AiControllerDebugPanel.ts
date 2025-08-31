@@ -126,7 +126,7 @@ export default class AiControllerDebugPanel extends Phaser.GameObjects.Container
     return (this.scene as HudProbableWaffle).probableWaffleScene!;
   }
 
-  destroy() {
+  override destroy() {
     this.button.off("action", this.toggleLabels, this);
     this.labels.forEach((label) => label.destroy());
     super.destroy();

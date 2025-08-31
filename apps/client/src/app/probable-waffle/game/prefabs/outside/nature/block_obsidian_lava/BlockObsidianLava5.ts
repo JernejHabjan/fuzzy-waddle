@@ -52,13 +52,13 @@ export default class BlockObsidianLava5 extends Phaser.GameObjects.Container {
     /* END-USER-CTR-CODE */
   }
 
-  public z: number = 0;
+  public override z: number = 0;
 
   /* START-USER-CODE */
 
   private particles: LavaParticles;
 
-  setDepth(value: number): this {
+  override setDepth(value: number): this {
     this.particles.setDepth(value);
     return super.setDepth(value);
   }

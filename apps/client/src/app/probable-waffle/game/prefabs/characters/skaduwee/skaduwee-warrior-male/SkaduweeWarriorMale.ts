@@ -23,7 +23,7 @@ export default class SkaduweeWarriorMale extends Phaser.GameObjects.Container {
   }
 
   /* START-USER-CODE */
-  name = ObjectNames.SkaduweeWarriorMale;
+  override name = ObjectNames.SkaduweeWarriorMale;
   // Write your code here.
 
   /* END-USER-CODE */

@@ -37,7 +37,7 @@ export default class BlockStone2 extends Phaser.GameObjects.Image {
     /* END-USER-CTR-CODE */
   }
 
-  public z: number = 0;
+  public override z: number = 0;
 
   /* START-USER-CODE */
 

@@ -28,7 +28,7 @@ export default class Boar extends Phaser.GameObjects.Sprite {
   }
 
   /* START-USER-CODE */
-  name = ObjectNames.Boar;
+  override name = ObjectNames.Boar;
   private actorAudioComponent?: AudioActorComponent;
   private animationActorComponent?: AnimationActorComponent;
   private readonly radius = 2;

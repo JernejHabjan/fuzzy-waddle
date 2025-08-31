@@ -183,7 +183,7 @@ export default class RallyPoint extends Phaser.GameObjects.Image {
     }
   }
 
-  destroy(fromScene?: boolean) {
+  override destroy(fromScene?: boolean) {
     super.destroy(fromScene);
     this.selectionChangedSubscription?.unsubscribe();
     this.lineGraphics?.destroy();

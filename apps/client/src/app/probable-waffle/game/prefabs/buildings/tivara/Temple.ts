@@ -58,7 +58,7 @@ export default class Temple extends Phaser.GameObjects.Container {
   private templeLevel1: TempleLevel1;
 
   /* START-USER-CODE */
-  name = ObjectNames.Temple;
+  override name = ObjectNames.Temple;
   private setup() {
     setActorData(
       this,

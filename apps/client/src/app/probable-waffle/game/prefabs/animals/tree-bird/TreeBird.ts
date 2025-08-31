@@ -22,7 +22,7 @@ export default class TreeBird extends Phaser.GameObjects.Sprite {
     /* END-USER-CTR-CODE */
   }
 
-  public z: number = 0;
+  public override z: number = 0;
 
   /* START-USER-CODE */
   private idle = true;
@@ -101,7 +101,7 @@ export default class TreeBird extends Phaser.GameObjects.Sprite {
     }
   }
 
-  destroy(fromScene?: boolean) {
+  override destroy(fromScene?: boolean) {
     super.destroy(fromScene);
     this.off(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, this.flyOff, this);
     this.timer?.remove(false);

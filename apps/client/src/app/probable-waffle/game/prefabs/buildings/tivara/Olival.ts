@@ -50,7 +50,7 @@ export default class Olival extends Phaser.GameObjects.Container {
   private olivalLevel1: OlivalLevel1;
 
   /* START-USER-CODE */
-  name = ObjectNames.Olival;
+  override name = ObjectNames.Olival;
 
   private setup() {
     setActorData(
