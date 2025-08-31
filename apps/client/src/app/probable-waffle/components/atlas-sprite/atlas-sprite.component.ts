@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, inject, Input, ViewChild } from "@angular/core";
 
-import { AtlasService } from "../../atlas/atlas.service";
+import { AtlasService } from "../../services/atlas/atlas.service";
 
 @Component({
   selector: "fuzzy-waddle-atlas-sprite",

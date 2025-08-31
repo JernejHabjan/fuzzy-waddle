@@ -2,7 +2,7 @@ import { Component, inject, Input, OnDestroy, OnInit } from "@angular/core";
 import { animate, style, transition, trigger } from "@angular/animations";
 
 import { AtlasSpriteComponent } from "../atlas-sprite/atlas-sprite.component";
-import { AudioAtlasService } from "../../audio-atlas/audio-atlas.service";
+import { AudioAtlasService } from "../../services/audio-atlas/audio-atlas.service";
 
 @Component({
   selector: "fuzzy-waddle-achievement-notification",
