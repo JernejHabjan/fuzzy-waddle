@@ -1,5 +1,4 @@
 import { DamageType } from "./damage-type";
-import { AnimationType } from "../actor/components/animation-actor-component";
 import { type SoundDefinition } from "../actor/components/audio-actor-component";
 import {
   SharedActorActionsSfxArrowHitSounds,
@@ -22,6 +21,7 @@ import {
 } from "../../sfx/SharedActorActionsSfx";
 import { EffectsAnims } from "../../animations/effects";
 import { SkaduweeOwlSfxFurballFireSounds, SkaduweeOwlSfxFurballHitSounds } from "../../sfx/SkaduweeOwlSfx";
+import { AnimationType } from "../actor/components/animation/animation-type";
 
 export interface AttackData {
   // Time before this attack can be used again, in seconds

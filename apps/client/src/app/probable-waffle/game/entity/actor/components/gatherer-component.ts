@@ -17,13 +17,14 @@ import {
   SharedActorActionsSfxMiningSounds
 } from "../../../sfx/SharedActorActionsSfx";
 import { type SoundDefinition, SoundType } from "./audio-actor-component";
-import { AnimationActorComponent, AnimationType } from "./animation-actor-component";
+import { AnimationActorComponent } from "./animation-actor-component";
 import { OrderType } from "../../character/ai/order-type";
 import { ActorTranslateComponent } from "./actor-translate-component";
 import { getGameObjectVisibility, onObjectReady } from "../../../data/game-object-helper";
 import GameObject = Phaser.GameObjects.GameObject;
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { type GathererComponentData } from "@fuzzy-waddle/api-interfaces";
+import { AnimationType } from "./animation/animation-type";
 
 export type GathererDefinition = {
   // types of gameObjects the gatherer can gather resourcesFrom

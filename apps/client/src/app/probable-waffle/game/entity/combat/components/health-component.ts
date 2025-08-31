@@ -19,7 +19,7 @@ import { SelectableComponent } from "../../actor/components/selectable-component
 import { OwnerComponent } from "../../actor/components/owner-component";
 import { getCurrentPlayerNumber } from "../../../data/scene-data";
 import { AudioActorComponent, type SoundDefinition, SoundType } from "../../actor/components/audio-actor-component";
-import { AnimationActorComponent, AnimationType } from "../../actor/components/animation-actor-component";
+import { AnimationActorComponent } from "../../actor/components/animation-actor-component";
 import { EffectsAnims } from "../../../animations/effects";
 import { ActorTranslateComponent } from "../../actor/components/actor-translate-component";
 import { getSceneService } from "../../../world/components/scene-component-helpers";
@@ -29,6 +29,7 @@ import {
   SharedActorActionsSfxBuildingDestroySounds
 } from "../../../sfx/SharedActorActionsSfx";
 import { VisionComponent } from "../../actor/components/vision-component";
+import { AnimationType } from "../../actor/components/animation/animation-type";
 
 export type HealthDefinition = {
   maxHealth: number;

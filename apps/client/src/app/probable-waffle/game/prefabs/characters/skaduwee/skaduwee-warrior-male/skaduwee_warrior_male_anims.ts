@@ -1,3 +1,5 @@
+import { AnimationType } from "../../../../entity/actor/components/animation/animation-type";
+
 const ANIM_SKADUWEE_WARRIOR_MALE_HURT = "skaduwee_warrior_male_hurt";
 const ANIM_SKADUWEE_WARRIOR_MALE_IDLE_UP = "skaduwee_warrior_male_idle_up";
 const ANIM_SKADUWEE_WARRIOR_MALE_IDLE_LEFT = "skaduwee_warrior_male_idle_left";
@@ -20,10 +22,7 @@ const ANIM_SKADUWEE_WARRIOR_MALE_WALK_LEFT = "skaduwee_warrior_male_walk_left";
 const ANIM_SKADUWEE_WARRIOR_MALE_WALK_DOWN = "skaduwee_warrior_male_walk_down";
 const ANIM_SKADUWEE_WARRIOR_MALE_WALK_RIGHT = "skaduwee_warrior_male_walk_right";
 
-import {
-  type AnimationDefinitionMap,
-  AnimationType
-} from "../../../../entity/actor/components/animation-actor-component";
+import { type AnimationDefinitionMap } from "../../../../entity/actor/components/animation-actor-component";
 
 export const ANIM_SKADUWEE_WARRIOR_MALE_DEFINITION: AnimationDefinitionMap = {
   [AnimationType.Idle]: {

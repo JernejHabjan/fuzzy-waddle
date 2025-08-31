@@ -1,4 +1,5 @@
-import { type AnimationDefinitionMap, AnimationType } from "../../../entity/actor/components/animation-actor-component";
+import { type AnimationDefinitionMap } from "../../../entity/actor/components/animation-actor-component";
+import { AnimationType } from "../../../entity/actor/components/animation/animation-type";
 
 const ANIM_WOLF_BITE_NE = "wolf/bite/ne";
 const ANIM_WOLF_BITE_NW = "wolf/bite/nw";
