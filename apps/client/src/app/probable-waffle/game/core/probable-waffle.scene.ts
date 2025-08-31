@@ -1,5 +1,5 @@
 import { BaseScene } from "../../../shared/game/phaser/scene/base.scene";
-import { ProbableWaffleGameData } from "../scenes/probable-waffle-game-data";
+import { ProbableWaffleGameData } from "./probable-waffle-game-data";
 import {
   ProbableWaffleGameMode,
   ProbableWaffleGameModeData,

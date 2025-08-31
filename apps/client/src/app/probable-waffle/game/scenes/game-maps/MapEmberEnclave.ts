@@ -2,26 +2,26 @@
 
 /* START OF COMPILED CODE */
 
-import GameProbableWaffleScene from "./GameProbableWaffleScene";
-import Spawn from "../prefabs/buildings/misc/Spawn";
-import EditorOwner from "../editor-components/EditorOwner";
-import BlockObsidianLava5 from "../prefabs/outside/nature/block_obsidian_lava/BlockObsidianLava5";
-import BushDownwardsLarge from "../prefabs/outside/foliage/bushes/BushDownwardsLarge";
-import BlockObsidianLava4 from "../prefabs/outside/nature/block_obsidian_lava/BlockObsidianLava4";
-import Tree6 from "../prefabs/outside/foliage/trees/resources/Tree6";
-import BushUpwardsLarge from "../prefabs/outside/foliage/bushes/BushUpwardsLarge";
-import BushDownwardsSmall from "../prefabs/outside/foliage/bushes/BushDownwardsSmall";
-import BlockStoneWater4 from "../prefabs/outside/nature/block_stone_water/BlockStoneWater4";
-import AnkGuard from "../prefabs/buildings/tivara/AnkGuard";
-import Sandhold from "../prefabs/buildings/tivara/Sandhold";
-import Temple from "../prefabs/buildings/tivara/Temple";
-import TivaraSlingshotFemale from "../prefabs/characters/tivara/tivara-slingshot-female/TivaraSlingshotFemale";
-import TivaraWorkerFemale from "../prefabs/characters/tivara/tivara-worker/tivara-worker-female/TivaraWorkerFemale";
-import TivaraWorkerMale from "../prefabs/characters/tivara/tivara-worker/tivara-worker-male/TivaraWorkerMale";
-import WorkMill from "../prefabs/buildings/tivara/WorkMill";
-import SkaduweeMagicianFemale from "../prefabs/characters/skaduwee/skaduwee-magician-female/SkaduweeMagicianFemale";
-import SkaduweeWorkerMale from "../prefabs/characters/skaduwee/skaduwee-worker/skaduwee-worker-male/SkaduweeWorkerMale";
-import SoundEffectMarker from "../prefabs/buildings/misc/SoundEffectMarker";
+import GameProbableWaffleScene from "../GameProbableWaffleScene";
+import Spawn from "../../prefabs/buildings/misc/Spawn";
+import EditorOwner from "../../editor-components/EditorOwner";
+import BlockObsidianLava5 from "../../prefabs/outside/nature/block_obsidian_lava/BlockObsidianLava5";
+import BushDownwardsLarge from "../../prefabs/outside/foliage/bushes/BushDownwardsLarge";
+import BlockObsidianLava4 from "../../prefabs/outside/nature/block_obsidian_lava/BlockObsidianLava4";
+import Tree6 from "../../prefabs/outside/foliage/trees/resources/Tree6";
+import BushUpwardsLarge from "../../prefabs/outside/foliage/bushes/BushUpwardsLarge";
+import BushDownwardsSmall from "../../prefabs/outside/foliage/bushes/BushDownwardsSmall";
+import BlockStoneWater4 from "../../prefabs/outside/nature/block_stone_water/BlockStoneWater4";
+import AnkGuard from "../../prefabs/buildings/tivara/AnkGuard";
+import Sandhold from "../../prefabs/buildings/tivara/Sandhold";
+import Temple from "../../prefabs/buildings/tivara/Temple";
+import TivaraSlingshotFemale from "../../prefabs/characters/tivara/tivara-slingshot-female/TivaraSlingshotFemale";
+import TivaraWorkerFemale from "../../prefabs/characters/tivara/tivara-worker/tivara-worker-female/TivaraWorkerFemale";
+import TivaraWorkerMale from "../../prefabs/characters/tivara/tivara-worker/tivara-worker-male/TivaraWorkerMale";
+import WorkMill from "../../prefabs/buildings/tivara/WorkMill";
+import SkaduweeMagicianFemale from "../../prefabs/characters/skaduwee/skaduwee-magician-female/SkaduweeMagicianFemale";
+import SkaduweeWorkerMale from "../../prefabs/characters/skaduwee/skaduwee-worker/skaduwee-worker-male/SkaduweeWorkerMale";
+import SoundEffectMarker from "../../prefabs/buildings/misc/SoundEffectMarker";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 

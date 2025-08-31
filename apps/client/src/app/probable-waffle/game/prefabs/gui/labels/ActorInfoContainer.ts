@@ -8,7 +8,7 @@ import ProgressBar from "../ProgressBar";
 import ActorDetails from "./ActorDetails";
 import ActorInfoLabels from "./ActorInfoLabels";
 /* START-USER-IMPORTS */
-import HudProbableWaffle from "../../../scenes/HudProbableWaffle";
+import HudProbableWaffle from "../../../scenes/hud-scenes/HudProbableWaffle";
 import { Subscription } from "rxjs";
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { getCurrentPlayerNumber, getSelectedActors, listenToSelectionEvents } from "../../../data/scene-data";

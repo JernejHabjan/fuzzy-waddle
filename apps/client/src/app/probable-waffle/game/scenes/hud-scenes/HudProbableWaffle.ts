@@ -2,25 +2,25 @@
 
 /* START OF COMPILED CODE */
 
-import ActorActions from "../prefabs/gui/buttons/ActorActions";
-import ActorInfoContainer from "../prefabs/gui/labels/ActorInfoContainer";
-import Minimap from "../prefabs/gui/Minimap";
-import GameActions from "../prefabs/gui/buttons/GameActions";
-import Resources from "../prefabs/gui/labels/Resources";
-import AiControllerDebugPanel from "../prefabs/gui/debug/ai-controller/AiControllerDebugPanel";
-import GameSpeedModifier from "../prefabs/gui/buttons/GameSpeedModifier";
-import HudMessages from "../prefabs/gui/labels/HudMessages";
-import GroupContainer from "../prefabs/gui/labels/GroupContainer";
+import ActorActions from "../../prefabs/gui/buttons/ActorActions";
+import ActorInfoContainer from "../../prefabs/gui/labels/ActorInfoContainer";
+import Minimap from "../../prefabs/gui/Minimap";
+import GameActions from "../../prefabs/gui/buttons/GameActions";
+import Resources from "../../prefabs/gui/labels/Resources";
+import AiControllerDebugPanel from "../../prefabs/gui/debug/ai-controller/AiControllerDebugPanel";
+import GameSpeedModifier from "../../prefabs/gui/buttons/GameSpeedModifier";
+import HudMessages from "../../prefabs/gui/labels/HudMessages";
+import GroupContainer from "../../prefabs/gui/labels/GroupContainer";
 /* START-USER-IMPORTS */
-import { ProbableWaffleScene } from "../core/probable-waffle.scene";
-import { HudGameState } from "../hud/hud-game-state";
-import { HudElementVisibilityHandler } from "../hud/hud-element-visibility.handler";
-import { CursorHandler } from "../world/managers/controllers/input/cursor.handler";
-import { MultiSelectionHandler } from "../world/managers/controllers/input/multi-selection.handler";
+import { ProbableWaffleScene } from "../../core/probable-waffle.scene";
+import { HudGameState } from "../../hud/hud-game-state";
+import { HudElementVisibilityHandler } from "../../hud/hud-element-visibility.handler";
+import { CursorHandler } from "../../world/managers/controllers/input/cursor.handler";
+import { MultiSelectionHandler } from "../../world/managers/controllers/input/multi-selection.handler";
 import { ProbableWaffleGameInstanceType } from "@fuzzy-waddle/api-interfaces";
-import { getGameObjectBounds } from "../data/game-object-helper";
+import { getGameObjectBounds } from "../../data/game-object-helper";
 import { filter, Subscription } from "rxjs";
-import { environment } from "../../../../environments/environment";
+import { environment } from "../../../../../environments/environment";
 /* END-USER-IMPORTS */
 
 export default class HudProbableWaffle extends ProbableWaffleScene {

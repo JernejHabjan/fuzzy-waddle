@@ -13,7 +13,7 @@ import { SingleSelectionHandler } from "../../../world/managers/controllers/inpu
 import { getSceneComponent } from "../../../world/components/scene-component-helpers";
 import { IdComponent } from "../../../entity/actor/components/id-component";
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
-import HudProbableWaffle from "../../../scenes/HudProbableWaffle";
+import HudProbableWaffle from "../../../scenes/hud-scenes/HudProbableWaffle";
 /* END-USER-IMPORTS */
 
 export default class ActorInfoLabels extends Phaser.GameObjects.Container {

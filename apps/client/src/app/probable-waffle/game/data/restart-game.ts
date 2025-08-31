@@ -1,6 +1,6 @@
 import { filter, Subscription } from "rxjs";
 import GameProbableWaffleScene from "../scenes/GameProbableWaffleScene";
-import HudProbableWaffle from "../scenes/HudProbableWaffle";
+import HudProbableWaffle from "../scenes/hud-scenes/HudProbableWaffle";
 
 export class RestartGame {
   private restartGameSubscription: Subscription;

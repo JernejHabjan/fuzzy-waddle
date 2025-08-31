@@ -14,7 +14,7 @@ import {
   WinConditions
 } from "@fuzzy-waddle/api-interfaces";
 import { throttle } from "../../../library/throttle";
-import { ProbableWaffleGameData } from "../../../scenes/probable-waffle-game-data";
+import { ProbableWaffleGameData } from "../../../core/probable-waffle-game-data";
 import { ScenePlayerHelpers } from "../../../data/scene-player-helpers";
 import { getCurrentPlayerNumber } from "../../../data/scene-data";
 import { getActorComponent } from "../../../data/actor-component";

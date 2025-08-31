@@ -2,13 +2,13 @@
 
 /* START OF COMPILED CODE */
 
-import GameProbableWaffleScene from "./GameProbableWaffleScene";
-import Tree11 from "../prefabs/outside/foliage/trees/resources/Tree11";
-import WatchTower from "../prefabs/buildings/tivara/wall/WatchTower";
-import EditorOwner from "../editor-components/EditorOwner";
-import Stairs from "../prefabs/buildings/tivara/stairs/Stairs";
-import Wall from "../prefabs/buildings/tivara/wall/Wall";
-import TivaraWorkerMale from "../prefabs/characters/tivara/tivara-worker/tivara-worker-male/TivaraWorkerMale";
+import GameProbableWaffleScene from "../GameProbableWaffleScene";
+import Tree11 from "../../prefabs/outside/foliage/trees/resources/Tree11";
+import WatchTower from "../../prefabs/buildings/tivara/wall/WatchTower";
+import EditorOwner from "../../editor-components/EditorOwner";
+import Stairs from "../../prefabs/buildings/tivara/stairs/Stairs";
+import Wall from "../../prefabs/buildings/tivara/wall/Wall";
+import TivaraWorkerMale from "../../prefabs/characters/tivara/tivara-worker/tivara-worker-male/TivaraWorkerMale";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 

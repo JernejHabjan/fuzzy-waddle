@@ -6,7 +6,7 @@ import OnPointerDownScript from "../../../../../shared/game/phaser/script-nodes-
 /* START-USER-IMPORTS */
 import ActorAction, { ActorActionSetup } from "./ActorAction";
 import { getCurrentPlayerNumber, listenToSelectionEvents } from "../../../data/scene-data";
-import HudProbableWaffle from "../../../scenes/HudProbableWaffle";
+import HudProbableWaffle from "../../../scenes/hud-scenes/HudProbableWaffle";
 import { Subscription } from "rxjs";
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { getActorComponent } from "../../../data/actor-component";

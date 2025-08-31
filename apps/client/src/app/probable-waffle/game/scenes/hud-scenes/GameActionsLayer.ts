@@ -2,12 +2,12 @@
 
 /* START OF COMPILED CODE */
 
-import OnPointerUpScript from "../../../shared/game/phaser/script-nodes-basic/OnPointerUpScript";
-import EmitEventActionScript from "../../../shared/game/phaser/script-nodes-basic/EmitEventActionScript";
-import OnPointerDownScript from "../../../shared/game/phaser/script-nodes-basic/OnPointerDownScript";
-import PushActionScript from "../../../shared/game/phaser/script-nodes/PushActionScript";
+import OnPointerUpScript from "../../../../shared/game/phaser/script-nodes-basic/OnPointerUpScript";
+import EmitEventActionScript from "../../../../shared/game/phaser/script-nodes-basic/EmitEventActionScript";
+import OnPointerDownScript from "../../../../shared/game/phaser/script-nodes-basic/OnPointerDownScript";
+import PushActionScript from "../../../../shared/game/phaser/script-nodes/PushActionScript";
 /* START-USER-IMPORTS */
-import { ProbableWaffleScene } from "../core/probable-waffle.scene";
+import { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { GameSessionState } from "@fuzzy-waddle/api-interfaces";
 /* END-USER-IMPORTS */
 

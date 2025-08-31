@@ -12,7 +12,7 @@ import { getActorComponent } from "../../data/actor-component";
 import { ObjectDescriptorComponent } from "../../entity/actor/components/object-descriptor-component";
 import { getTileCoordsUnderObject } from "../../library/tile-under-object";
 import { OwnerComponent } from "../../entity/actor/components/owner-component";
-import HudProbableWaffle from "../../scenes/HudProbableWaffle";
+import HudProbableWaffle from "../../scenes/hud-scenes/HudProbableWaffle";
 import { MultiSelectionHandler } from "../../world/managers/controllers/input/multi-selection.handler";
 import { NavigationService } from "../../world/services/navigation.service";
 import { throttle } from "../../library/throttle";
