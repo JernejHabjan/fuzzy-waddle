@@ -10,7 +10,7 @@ import { OwnerComponent } from "../owner-component";
 import { ConstructionSiteComponent } from "../construction/construction-site-component";
 import { emitResource, getPlayer } from "../../../data/scene-data";
 import { HealthComponent } from "../combat/components/health-component";
-import { getSceneService } from "../../../world/components/scene-component-helpers";
+import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { AudioService } from "../../../world/services/audio.service";
 import {
   SharedActorActionsSfxChoppingSounds,

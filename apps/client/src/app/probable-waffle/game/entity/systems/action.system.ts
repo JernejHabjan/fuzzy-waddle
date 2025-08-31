@@ -4,7 +4,7 @@ import { getCommunicator, getCurrentPlayerNumber } from "../../data/scene-data";
 import { SelectableComponent } from "../components/selectable-component";
 import { getActorComponent } from "../../data/actor-component";
 import { HealthComponent } from "../components/combat/components/health-component";
-import { PawnAiController } from "../../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
+import { PawnAiController } from "../../prefabs/agents/pawn-ai-controller";
 import { IdComponent } from "../components/id-component";
 import { AttackComponent } from "../components/combat/components/attack-component";
 import { OrderData } from "../../ai/OrderData";
@@ -19,13 +19,13 @@ import { HealingComponent } from "../components/combat/components/healing-compon
 import { ContainerComponent } from "../components/building/container-component";
 import { ResourceSourceComponent } from "../components/resource/resource-source-component";
 import { environment } from "../../../../../environments/environment";
-import { getSceneService } from "../../world/components/scene-component-helpers";
+import { getSceneService } from "../../world/services/scene-component-helpers";
 import { DebuggingService } from "../../world/services/DebuggingService";
 import { ContainableComponent } from "../components/building/containable-component";
 import { AudioActorComponent } from "../components/actor-audio/audio-actor-component";
 import { WalkableComponent } from "../components/movement/walkable-component";
 import { FlyingComponent } from "../components/movement/flying-component";
-import { type GameObjectActionAssignerConfig } from "../../world/managers/controllers/game-object-action-assigner";
+import { type GameObjectActionAssignerConfig } from "../../prefabs/gui/game-object-action-assigner";
 
 export class ActionSystem {
   private playerChangedSubscription?: Subscription;

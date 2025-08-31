@@ -11,7 +11,7 @@ import AiControllerDebugLabel from "./AiControllerDebugLabel";
 import { getPlayers } from "../../../../data/scene-data";
 import HudProbableWaffle from "../../../../world/scenes/hud-scenes/HudProbableWaffle";
 import { ProbableWafflePlayerType } from "@fuzzy-waddle/api-interfaces";
-import { getSceneService } from "../../../../world/components/scene-component-helpers";
+import { getSceneService } from "../../../../world/services/scene-component-helpers";
 import { DebuggingService } from "../../../../world/services/DebuggingService";
 /* END-USER-IMPORTS */
 

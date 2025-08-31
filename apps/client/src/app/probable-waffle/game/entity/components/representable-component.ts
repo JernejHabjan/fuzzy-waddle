@@ -7,7 +7,7 @@ import {
 } from "../../data/game-object-helper";
 import { getActorComponent } from "../../data/actor-component";
 import { FlyingComponent } from "./movement/flying-component";
-import { DepthHelper } from "../../world/map/depth.helper";
+import { DepthHelper } from "../../world/services/depth.helper";
 import type { RepresentableComponentData } from "@fuzzy-waddle/api-interfaces";
 export interface RepresentableDefinition {
   width: number;

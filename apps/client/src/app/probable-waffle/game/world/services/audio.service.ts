@@ -1,6 +1,6 @@
 import { VolumeSettings } from "../../core/volumeSettings";
 import { getGameObjectRenderedTransform, onSceneInitialized } from "../../data/game-object-helper";
-import { getSceneExternalComponent } from "../components/scene-component-helpers";
+import { getSceneExternalComponent } from "./scene-component-helpers";
 import { OptionsService } from "../../../gui/options/options.service";
 import { filter, Subscription } from "rxjs";
 

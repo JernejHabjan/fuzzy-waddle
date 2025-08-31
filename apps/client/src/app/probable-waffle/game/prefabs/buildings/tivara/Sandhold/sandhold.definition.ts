@@ -1,7 +1,7 @@
 import {
   ANIM_BUILDING_ICON_ANIMS_TIVARA_SANDHOLD_ACTION,
   ANIM_BUILDING_ICON_ANIMS_TIVARA_SANDHOLD_IDLE
-} from "../../../gui/icon-animations";
+} from "../../../icon-animations";
 import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PaymentType } from "../../../../entity/components/production/payment-type";
 import { coreConstructionSiteDefinition } from "../../shared/core-construction-site.definition";

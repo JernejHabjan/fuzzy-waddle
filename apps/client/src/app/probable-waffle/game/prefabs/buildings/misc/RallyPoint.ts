@@ -14,7 +14,7 @@ import { SelectableComponent } from "../../../entity/components/selectable-compo
 import { Subscription } from "rxjs";
 import { getGameObjectRenderedTransform } from "../../../data/game-object-helper";
 import { SharedActorActionsRallyPointSound } from "../../../sfx/SharedActorActionsSfx";
-import { getSceneService } from "../../../world/components/scene-component-helpers";
+import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { AudioService } from "../../../world/services/audio.service";
 import { IdComponent } from "../../../entity/components/id-component";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";

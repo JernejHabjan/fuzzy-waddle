@@ -1,5 +1,5 @@
 import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
-import { getSceneComponent, getSceneService } from "../../world/components/scene-component-helpers";
+import { getSceneComponent, getSceneService } from "../../world/services/scene-component-helpers";
 import { NavigationService, TerrainType } from "../../world/services/navigation.service";
 import { throttle } from "../../library/throttle";
 import { getActorSystem } from "../../data/actor-system";
@@ -17,7 +17,7 @@ import { SelectableComponent } from "../components/selectable-component";
 import { getActorComponent } from "../../data/actor-component";
 import { ActorTranslateComponent } from "../components/movement/actor-translate-component";
 import { HealthComponent } from "../components/combat/components/health-component";
-import { PawnAiController } from "../../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
+import { PawnAiController } from "../../prefabs/agents/pawn-ai-controller";
 import { OrderType } from "../../ai/order-type";
 import { OrderData } from "../../ai/OrderData";
 import { AudioActorComponent } from "../components/actor-audio/audio-actor-component";
@@ -37,7 +37,7 @@ import Tween = Phaser.Tweens.Tween;
 import GameObject = Phaser.GameObjects.GameObject;
 import { IdComponent } from "../components/id-component";
 import { getTileCoordsUnderObject } from "../../library/tile-under-object";
-import { TilemapComponent } from "../../world/components/tilemap.component";
+import { TilemapComponent } from "../../world/tilemap/tilemap.component";
 import type { IsoDirection } from "../components/movement/iso-directions";
 
 export interface PathMoveConfig {

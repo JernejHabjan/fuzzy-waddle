@@ -2,7 +2,7 @@ import { OrderType } from "./order-type";
 import type { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { getActorComponent } from "../data/actor-component";
 import { IdComponent } from "../entity/components/id-component";
-import { getSceneService } from "../world/components/scene-component-helpers";
+import { getSceneService } from "../world/services/scene-component-helpers";
 import { ActorIndexSystem } from "../world/services/ActorIndexSystem";
 import GameObject = Phaser.GameObjects.GameObject;
 

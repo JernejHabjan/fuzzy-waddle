@@ -10,9 +10,9 @@ import {
 } from "../../../../data/game-object-helper";
 import { OrderType } from "../../../../ai/order-type";
 import { ActorTranslateComponent } from "../../movement/actor-translate-component";
-import { getSceneService } from "../../../../world/components/scene-component-helpers";
+import { getSceneService } from "../../../../world/services/scene-component-helpers";
 import { AudioService } from "../../../../world/services/audio.service";
-import { DepthHelper } from "../../../../world/map/depth.helper";
+import { DepthHelper } from "../../../../world/services/depth.helper";
 import SlingshotRock from "../../../../prefabs/weapons/SlingshotRock";
 import Arrow from "../../../../prefabs/weapons/Arrow";
 import FireBall from "../../../../prefabs/weapons/FireBall";

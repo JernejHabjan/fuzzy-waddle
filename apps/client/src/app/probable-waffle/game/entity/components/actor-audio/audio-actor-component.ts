@@ -1,7 +1,7 @@
 import { OrderData } from "../../../ai/OrderData";
 import { onObjectReady } from "../../../data/game-object-helper";
 import { type AdditionalAudioConfig, AudioService } from "../../../world/services/audio.service";
-import { getSceneService } from "../../../world/components/scene-component-helpers";
+import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { OrderType } from "../../../ai/order-type";
 import { getActorComponent } from "../../../data/actor-component";
 import { GathererComponent } from "../resource/gatherer-component";

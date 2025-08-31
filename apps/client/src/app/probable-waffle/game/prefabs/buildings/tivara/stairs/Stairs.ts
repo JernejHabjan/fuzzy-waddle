@@ -10,7 +10,7 @@ import { onObjectReady } from "../../../../data/game-object-helper";
 import { throttle } from "../../../../library/throttle";
 import { getNeighboursByTypes } from "../../../../data/tile-map-helpers";
 import WatchTower from "../wall/WatchTower";
-import { TilemapComponent } from "../../../../world/components/tilemap.component";
+import { TilemapComponent } from "../../../../world/tilemap/tilemap.component";
 import Wall from "../wall/Wall";
 import StairsTopRight from "./StairsTopRight";
 import StairsBottomLeft from "./StairsBottomLeft";

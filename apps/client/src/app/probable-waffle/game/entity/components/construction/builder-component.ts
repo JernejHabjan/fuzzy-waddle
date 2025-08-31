@@ -4,7 +4,7 @@ import { Subject } from "rxjs";
 import { getActorComponent } from "../../../data/actor-component";
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { HealthComponent } from "../combat/components/health-component";
-import { getSceneService } from "../../../world/components/scene-component-helpers";
+import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { AudioService } from "../../../world/services/audio.service";
 import { getGameObjectLogicalTransform, onObjectReady } from "../../../data/game-object-helper";
 import { UiFeedbackBuildDeniedSound } from "../../../hud/UiFeedbackSfx";

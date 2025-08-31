@@ -53,10 +53,10 @@ import { ContainerComponent } from "../entity/components/building/container-comp
 import { ResourceDrainComponent } from "../entity/components/resource/resource-drain-component";
 import { ResourceSourceComponent } from "../entity/components/resource/resource-source-component";
 import { ProductionComponent } from "../entity/components/production/production-component";
-import { PawnAiController } from "../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
+import { PawnAiController } from "../prefabs/agents/pawn-ai-controller";
 import GameObject = Phaser.GameObjects.GameObject;
-import { getSceneService } from "../world/components/scene-component-helpers";
-import { SceneActorCreator } from "../world/components/scene-actor-creator";
+import { getSceneService } from "../world/services/scene-component-helpers";
+import { SceneActorCreator } from "../world/services/scene-actor-creator";
 
 export type ActorConstructor = new (scene: Phaser.Scene) => GameObject;
 export type ActorMap = { [name: string]: ActorConstructor };

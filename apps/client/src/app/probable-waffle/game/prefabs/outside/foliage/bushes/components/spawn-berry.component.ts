@@ -1,5 +1,5 @@
 import { getGameObjectBounds } from "../../../../../data/game-object-helper";
-import { DepthHelper } from "../../../../../world/map/depth.helper";
+import { DepthHelper } from "../../../../../world/services/depth.helper";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class SpawnBerryComponent {

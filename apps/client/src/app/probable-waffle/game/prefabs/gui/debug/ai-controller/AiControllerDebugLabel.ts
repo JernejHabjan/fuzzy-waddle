@@ -6,8 +6,8 @@
 import HudProbableWaffle from "../../../../world/scenes/hud-scenes/HudProbableWaffle";
 import { ProbableWaffleScene } from "../../../../core/probable-waffle.scene";
 import { getPlayer } from "../../../../data/scene-data";
-import { getSceneSystem } from "../../../../world/components/scene-component-helpers";
-import { AiPlayerHandler } from "../../../../world/components/ai-player-handler";
+import { getSceneSystem } from "../../../../world/services/scene-component-helpers";
+import { AiPlayerHandler } from "../../../../player/ai-player-handler";
 /* END-USER-IMPORTS */
 
 export default class AiControllerDebugLabel extends Phaser.GameObjects.Container {

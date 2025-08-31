@@ -5,21 +5,21 @@
 import OnPointerDownScript from "../../../../shared/game/phaser/script-nodes-basic/OnPointerDownScript";
 /* START-USER-IMPORTS */
 import { ProbableWaffleScene } from "../../core/probable-waffle.scene";
-import { getSceneComponent, getSceneService } from "../../world/components/scene-component-helpers";
-import { TilemapComponent } from "../../world/components/tilemap.component";
+import { getSceneComponent, getSceneService } from "../../world/services/scene-component-helpers";
+import { TilemapComponent } from "../../world/tilemap/tilemap.component";
 import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { getActorComponent } from "../../data/actor-component";
 import { ObjectDescriptorComponent } from "../../entity/components/object-descriptor-component";
 import { getTileCoordsUnderObject } from "../../library/tile-under-object";
 import { OwnerComponent } from "../../entity/components/owner-component";
 import HudProbableWaffle from "../../world/scenes/hud-scenes/HudProbableWaffle";
-import { MultiSelectionHandler } from "../../world/managers/controllers/input/multi-selection.handler";
+import { MultiSelectionHandler } from "../../player/input/multi-selection.handler";
 import { NavigationService } from "../../world/services/navigation.service";
 import { throttle } from "../../library/throttle";
-import { FogOfWarComponent, FogOfWarMode } from "../../world/components/fog-of-war.component";
+import { FogOfWarComponent, FogOfWarMode } from "../../world/tilemap/fog-of-war.component";
 import { VisionComponent } from "../../entity/components/vision-component";
-import { PlayerActionsHandler } from "../../world/managers/controllers/PlayerActionsHandler";
-import { type GameObjectActionAssignerConfig } from "../../world/managers/controllers/game-object-action-assigner";
+import { PlayerActionsHandler } from "../../player/input/PlayerActionsHandler";
+import { type GameObjectActionAssignerConfig } from "./game-object-action-assigner";
 import { OrderType } from "../../ai/order-type";
 /* END-USER-IMPORTS */
 

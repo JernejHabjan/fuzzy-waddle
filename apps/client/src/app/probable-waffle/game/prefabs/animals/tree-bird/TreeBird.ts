@@ -3,7 +3,7 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { DepthHelper } from "../../../world/map/depth.helper";
+import { DepthHelper } from "../../../world/services/depth.helper";
 import { ANIM_BIRD_FLY, ANIM_BIRD_FLY_OFF, ANIM_BIRD_IDLE, ANIM_BIRD_IDLE_FLAP } from "./anims-bird";
 /* END-USER-IMPORTS */
 

@@ -1,4 +1,4 @@
-import { ANIM_BUILDING_ICON_ANIMS_SKADUWEE_INFANTRY_INN } from "../../../gui/icon-animations";
+import { ANIM_BUILDING_ICON_ANIMS_SKADUWEE_INFANTRY_INN } from "../../../icon-animations";
 import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PaymentType } from "../../../../entity/components/production/payment-type";
 import { coreConstructionSiteDefinition } from "../../shared/core-construction-site.definition";

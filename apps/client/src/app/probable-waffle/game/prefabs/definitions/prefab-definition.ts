@@ -19,7 +19,7 @@ import type { HealingDefinition } from "../../entity/components/combat/component
 import type { ActorTranslateDefinition } from "../../entity/components/movement/actor-translate-component";
 import type { FlightDefinition } from "../../entity/components/movement/flying-component";
 import type { ActorAnimationsDefinition } from "../../entity/components/animation/animation-actor-component";
-import type { PawnAiDefinition } from "../../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
+import type { PawnAiDefinition } from "../agents/pawn-ai-controller";
 import type { SelectableDefinition } from "../../entity/components/selectable-component";
 import type { ColliderDefinition } from "../../entity/components/movement/collider-component";
 import type { AudioDefinition } from "../../entity/components/actor-audio/audio-actor-component";

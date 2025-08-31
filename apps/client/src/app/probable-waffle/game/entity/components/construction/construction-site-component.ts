@@ -16,14 +16,14 @@ import { BehaviorSubject, Subject } from "rxjs";
 import { upgradeFromConstructingToFullActorData } from "../../../data/actor-data";
 import { ConstructionProgressUiComponent } from "./construction-progress-ui-component";
 import { BuilderComponent } from "./builder-component";
-import { getSceneService } from "../../../world/components/scene-component-helpers";
+import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { AudioService } from "../../../world/services/audio.service";
 import {
   SharedActorActionsSfxHammeringSounds,
   SharedActorActionsSfxSawingSounds,
   SharedActorActionsSfxSelectionSounds
 } from "../../../sfx/SharedActorActionsSfx";
-import { PawnAiController } from "../../../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
+import { PawnAiController } from "../../../prefabs/agents/pawn-ai-controller";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export type ConstructionSiteDefinition = {

@@ -13,8 +13,8 @@ import {
   type Vector3Simple
 } from "@fuzzy-waddle/api-interfaces";
 import { HealthComponent } from "../combat/components/health-component";
-import { getSceneService } from "../../../world/components/scene-component-helpers";
-import { SceneActorCreator } from "../../../world/components/scene-actor-creator";
+import { getSceneService } from "../../../world/services/scene-component-helpers";
+import { SceneActorCreator } from "../../../world/services/scene-actor-creator";
 import {
   getGameObjectBounds,
   getGameObjectLogicalTransform,

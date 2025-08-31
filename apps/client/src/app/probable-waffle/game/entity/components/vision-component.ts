@@ -2,7 +2,7 @@ import GameObject = Phaser.GameObjects.GameObject;
 import { DistanceHelper } from "../../library/distance-helper";
 import { getActorComponent } from "../../data/actor-component";
 import { OwnerComponent } from "./owner-component";
-import { getSceneService } from "../../world/components/scene-component-helpers";
+import { getSceneService } from "../../world/services/scene-component-helpers";
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 import { type VisionComponentData } from "@fuzzy-waddle/api-interfaces";
 

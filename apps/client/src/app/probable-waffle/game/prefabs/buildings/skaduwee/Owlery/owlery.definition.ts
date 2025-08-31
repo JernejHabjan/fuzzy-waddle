@@ -2,7 +2,7 @@ import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import {
   ANIM_BUILDING_ICON_ANIMS_SKADUWEE_OWLERY_ACTION,
   ANIM_BUILDING_ICON_ANIMS_SKADUWEE_OWLERY_IDLE
-} from "../../../gui/icon-animations";
+} from "../../../icon-animations";
 import { PaymentType } from "../../../../entity/components/production/payment-type";
 import { coreConstructionSiteDefinition } from "../../shared/core-construction-site.definition";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";

@@ -6,7 +6,7 @@ import { VisionComponent } from "../vision-component";
 import { getGameObjectVisibility } from "../../../data/game-object-helper";
 import type { ContainerComponentData } from "@fuzzy-waddle/api-interfaces";
 import { IdComponent } from "../id-component";
-import { getSceneService } from "../../../world/components/scene-component-helpers";
+import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 
 export type ContainerDefinition = {

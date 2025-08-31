@@ -2,7 +2,7 @@ import { GameSessionState } from "@fuzzy-waddle/api-interfaces";
 import { ProbableWaffleScene } from "../core/probable-waffle.scene";
 import { Subscription } from "rxjs";
 import { environment } from "../../../../environments/environment";
-import { getSceneService } from "../world/components/scene-component-helpers";
+import { getSceneService } from "../world/services/scene-component-helpers";
 import { AudioService } from "../world/services/audio.service";
 import { UiFeedbackSfxCountdownFinalSound, UiFeedbackSfxCountdownSound } from "./UiFeedbackSfx";
 import HudProbableWaffle from "../world/scenes/hud-scenes/HudProbableWaffle";

@@ -22,7 +22,7 @@ import { AudioActorComponent, type SoundDefinition } from "../../actor-audio/aud
 import { AnimationActorComponent } from "../../animation/animation-actor-component";
 import { EffectsAnims } from "../../../../animations/effects";
 import { ActorTranslateComponent } from "../../movement/actor-translate-component";
-import { getSceneService } from "../../../../world/components/scene-component-helpers";
+import { getSceneService } from "../../../../world/services/scene-component-helpers";
 import { AudioService } from "../../../../world/services/audio.service";
 import {
   SharedActorActionsSfxBodyFallSounds,

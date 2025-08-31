@@ -1,4 +1,4 @@
-import { getSceneInitializers, getSceneService } from "../world/components/scene-component-helpers";
+import { getSceneInitializers, getSceneService } from "../world/services/scene-component-helpers";
 import { NavigationService } from "../world/services/navigation.service";
 import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { filter, first } from "rxjs";

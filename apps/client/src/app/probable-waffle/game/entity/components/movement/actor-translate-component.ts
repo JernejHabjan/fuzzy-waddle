@@ -2,7 +2,7 @@ import { Observable, Subject } from "rxjs";
 import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { getGameObjectDirectionBetweenTiles } from "../../systems/movement.system";
 import { getGameObjectRenderedTransform, onObjectReady } from "../../../data/game-object-helper";
-import { getSceneService } from "../../../world/components/scene-component-helpers";
+import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { NavigationService } from "../../../world/services/navigation.service";
 import { getActorComponent } from "../../../data/actor-component";
 import { RepresentableComponent } from "../representable-component";

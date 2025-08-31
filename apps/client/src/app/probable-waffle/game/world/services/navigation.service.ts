@@ -22,8 +22,8 @@ import { ColliderComponent } from "../../entity/components/movement/collider-com
 import { getCenterTileCoordUnderObject, getTileCoordsUnderObject } from "../../library/tile-under-object";
 import { drawDebugPath } from "../../debug/debug-path";
 import { drawDebugPoint } from "../../debug/debug-point";
-import { getSceneComponent } from "../components/scene-component-helpers";
-import { TilemapComponent } from "../components/tilemap.component";
+import { getSceneComponent } from "./scene-component-helpers";
+import { TilemapComponent } from "../tilemap/tilemap.component";
 import { getSelectableGameObject, onSceneInitialized } from "../../data/game-object-helper";
 import { throttleWithTrailing } from "../../library/throttle";
 import { environment } from "../../../../../environments/environment";

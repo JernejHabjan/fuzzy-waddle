@@ -23,7 +23,7 @@ import { GathererComponent } from "../entity/components/resource/gatherer-compon
 import { SelectableComponent } from "../entity/components/selectable-component";
 import { HealthComponent } from "../entity/components/combat/components/health-component";
 import { VisionComponent } from "../entity/components/vision-component";
-import { type GameObjectActionAssignerConfig } from "../world/managers/controllers/game-object-action-assigner";
+import { type GameObjectActionAssignerConfig } from "../prefabs/gui/game-object-action-assigner";
 
 export function getPlayer(scene: Scene, playerNumber?: number): ProbableWafflePlayer | undefined {
   if (!scene) {
