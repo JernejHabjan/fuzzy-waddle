@@ -165,17 +165,16 @@ import { ANIM_TIVARA_WORKER_MALE_DEFINITION } from "../animations/tivara_worker_
 import { ANIM_SKADUWEE_WORKER_MALE_DEFINITION } from "../animations/skaduwee_worker_male_anims";
 import { ANIM_TIVARA_WORKER_FEMALE_DEFINITION } from "../animations/tivara_worker_female_anims";
 import { weaponDefinitions } from "../entity/combat/attack-data";
-import { ANIM_HEDGEHOG_DEFINITION, ANIM_SHEEP_DEFINITION } from "../animations/animals";
 import { ANIM_SKADUWEE_OWL_DEFINITION } from "../prefabs/units/skaduwee/SkaduweeOwlAnims";
-import {
-  ANIM_BADGER_DEFINITION,
-  ANIM_BOAR_DEFINITION,
-  ANIM_STAG_DEFINITION,
-  ANIM_WOLF_DEFINITION
-} from "../animations/animals2";
 import { RepresentableDefinition } from "../entity/actor/components/representable-component";
 import { FlightDefinition } from "../entity/actor/components/flight-component";
 import { WalkableDefinition } from "../entity/actor/components/walkable-component";
+import { ANIM_HEDGEHOG_DEFINITION } from "../prefabs/animals/anims/anims-hedgehog";
+import { ANIM_SHEEP_DEFINITION } from "../prefabs/animals/anims/anims-sheep";
+import { ANIM_BADGER_DEFINITION } from "../prefabs/animals/anims/anims-badger";
+import { ANIM_BOAR_DEFINITION } from "../prefabs/animals/anims/anims-boar";
+import { ANIM_STAG_DEFINITION } from "../prefabs/animals/anims/anims-stag";
+import { ANIM_WOLF_DEFINITION } from "../prefabs/animals/anims/anims-wolf";
 
 const coreConstructionSiteDefinition: ConstructionSiteDefinition = {
   consumesBuilders: false,

@@ -10,8 +10,8 @@ import { OwnerComponent } from "./owner-component";
 import { ConstructionSiteComponent } from "../../building/construction/construction-site-component";
 import { emitResource, getPlayer } from "../../../data/scene-data";
 import { HealthComponent } from "../../combat/components/health-component";
-import { getSceneService } from "../../../scenes/components/scene-component-helpers";
-import { AudioService } from "../../../scenes/services/audio.service";
+import { getSceneService } from "../../../world/components/scene-component-helpers";
+import { AudioService } from "../../../world/services/audio.service";
 import {
   SharedActorActionsSfxChoppingSounds,
   SharedActorActionsSfxMiningSounds
@@ -22,7 +22,7 @@ import { OrderType } from "../../character/ai/order-type";
 import { ActorTranslateComponent } from "./actor-translate-component";
 import { getGameObjectVisibility, onObjectReady } from "../../../data/game-object-helper";
 import GameObject = Phaser.GameObjects.GameObject;
-import { ActorIndexSystem } from "../../../scenes/services/ActorIndexSystem";
+import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { GathererComponentData } from "@fuzzy-waddle/api-interfaces";
 
 export type GathererDefinition = {

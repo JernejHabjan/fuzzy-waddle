@@ -14,10 +14,10 @@ import { SelectableComponent } from "../../../entity/actor/components/selectable
 import { Subscription } from "rxjs";
 import { getGameObjectRenderedTransform } from "../../../data/game-object-helper";
 import { SharedActorActionsRallyPointSound } from "../../../sfx/SharedActorActionsSfx";
-import { getSceneService } from "../../../scenes/components/scene-component-helpers";
-import { AudioService } from "../../../scenes/services/audio.service";
+import { getSceneService } from "../../../world/components/scene-component-helpers";
+import { AudioService } from "../../../world/services/audio.service";
 import { IdComponent } from "../../../entity/actor/components/id-component";
-import { ActorIndexSystem } from "../../../scenes/services/ActorIndexSystem";
+import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export default class RallyPoint extends Phaser.GameObjects.Image {

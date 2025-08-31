@@ -1,6 +1,6 @@
-import GameProbableWaffleScene from "../GameProbableWaffleScene";
+import GameProbableWaffleScene from "../../scenes/GameProbableWaffleScene";
 import { ProbableWafflePlayerType } from "@fuzzy-waddle/api-interfaces";
-import { PlayerAiController } from "../../world/managers/controllers/player-ai-controller/player-ai-controller";
+import { PlayerAiController } from "../managers/controllers/player-ai-controller/player-ai-controller";
 import { Subscription } from "rxjs";
 
 export class AiPlayerHandler {

@@ -11,8 +11,8 @@ import AiControllerDebugLabel from "./AiControllerDebugLabel";
 import { getPlayers } from "../../../../data/scene-data";
 import HudProbableWaffle from "../../../../scenes/HudProbableWaffle";
 import { ProbableWafflePlayerType } from "@fuzzy-waddle/api-interfaces";
-import { getSceneService } from "../../../../scenes/components/scene-component-helpers";
-import { DebuggingService } from "../../../../scenes/services/DebuggingService";
+import { getSceneService } from "../../../../world/components/scene-component-helpers";
+import { DebuggingService } from "../../../../world/services/DebuggingService";
 /* END-USER-IMPORTS */
 
 export default class AiControllerDebugPanel extends Phaser.GameObjects.Container {

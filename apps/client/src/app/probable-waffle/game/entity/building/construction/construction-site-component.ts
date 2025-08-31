@@ -16,8 +16,8 @@ import { BehaviorSubject, Subject } from "rxjs";
 import { upgradeFromConstructingToFullActorData } from "../../../data/actor-data";
 import { ConstructionProgressUiComponent } from "./construction-progress-ui-component";
 import { BuilderComponent } from "../../actor/components/builder-component";
-import { getSceneService } from "../../../scenes/components/scene-component-helpers";
-import { AudioService } from "../../../scenes/services/audio.service";
+import { getSceneService } from "../../../world/components/scene-component-helpers";
+import { AudioService } from "../../../world/services/audio.service";
 import {
   SharedActorActionsSfxHammeringSounds,
   SharedActorActionsSfxSawingSounds,

@@ -1,8 +1,8 @@
 import { getActorComponent } from "../../../data/actor-component";
 import { HealthComponent } from "./health-component";
 import { onObjectReady } from "../../../data/game-object-helper";
-import { getSceneService } from "../../../scenes/components/scene-component-helpers";
-import { AudioService } from "../../../scenes/services/audio.service";
+import { getSceneService } from "../../../world/components/scene-component-helpers";
+import { AudioService } from "../../../world/services/audio.service";
 import { SharedActorActionsSfxHealSounds } from "../../../sfx/SharedActorActionsSfx";
 import { HealingComponentData } from "@fuzzy-waddle/api-interfaces";
 

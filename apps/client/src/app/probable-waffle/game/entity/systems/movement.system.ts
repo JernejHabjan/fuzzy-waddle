@@ -1,6 +1,6 @@
 import { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
-import { getSceneComponent, getSceneService } from "../../scenes/components/scene-component-helpers";
-import { NavigationService, TerrainType } from "../../scenes/services/navigation.service";
+import { getSceneComponent, getSceneService } from "../../world/components/scene-component-helpers";
+import { NavigationService, TerrainType } from "../../world/services/navigation.service";
 import { throttle } from "../../library/throttle";
 import { getActorSystem } from "../../data/actor-system";
 import {
@@ -11,7 +11,7 @@ import {
   onObjectReady
 } from "../../data/game-object-helper";
 import { Subscription } from "rxjs";
-import { AudioService } from "../../scenes/services/audio.service";
+import { AudioService } from "../../world/services/audio.service";
 import { getCommunicator, getCurrentPlayerNumber } from "../../data/scene-data";
 import { SelectableComponent } from "../actor/components/selectable-component";
 import { getActorComponent } from "../../data/actor-component";
@@ -37,7 +37,7 @@ import Tween = Phaser.Tweens.Tween;
 import GameObject = Phaser.GameObjects.GameObject;
 import { IdComponent } from "../actor/components/id-component";
 import { getTileCoordsUnderObject } from "../../library/tile-under-object";
-import { TilemapComponent } from "../../scenes/components/tilemap.component";
+import { TilemapComponent } from "../../world/components/tilemap.component";
 
 export interface PathMoveConfig {
   radiusTilesAroundDestination?: number;

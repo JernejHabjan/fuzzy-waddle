@@ -22,8 +22,8 @@ import { AudioActorComponent, SoundDefinition, SoundType } from "../../actor/com
 import { AnimationActorComponent, AnimationType } from "../../actor/components/animation-actor-component";
 import { EffectsAnims } from "../../../animations/effects";
 import { ActorTranslateComponent } from "../../actor/components/actor-translate-component";
-import { getSceneService } from "../../../scenes/components/scene-component-helpers";
-import { AudioService } from "../../../scenes/services/audio.service";
+import { getSceneService } from "../../../world/components/scene-component-helpers";
+import { AudioService } from "../../../world/services/audio.service";
 import {
   SharedActorActionsSfxBodyFallSounds,
   SharedActorActionsSfxBuildingDestroySounds

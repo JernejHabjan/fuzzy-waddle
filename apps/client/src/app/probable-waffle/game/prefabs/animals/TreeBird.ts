@@ -3,8 +3,8 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { ANIM_BIRD_FLY, ANIM_BIRD_FLY_OFF, ANIM_BIRD_IDLE, ANIM_BIRD_IDLE_FLAP } from "./anims/animals";
 import { DepthHelper } from "../../world/map/depth.helper";
+import { ANIM_BIRD_FLY, ANIM_BIRD_FLY_OFF, ANIM_BIRD_IDLE, ANIM_BIRD_IDLE_FLAP } from "./anims/anims-bird";
 /* END-USER-IMPORTS */
 
 export default class TreeBird extends Phaser.GameObjects.Sprite {

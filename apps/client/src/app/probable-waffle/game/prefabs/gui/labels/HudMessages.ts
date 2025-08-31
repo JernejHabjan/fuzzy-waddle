@@ -1,6 +1,6 @@
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
-import { getSceneService } from "../../../scenes/components/scene-component-helpers";
-import { CrossSceneCommunicationService } from "../../../scenes/services/CrossSceneCommunicationService";
+import { getSceneService } from "../../../world/components/scene-component-helpers";
+import { CrossSceneCommunicationService } from "../../../world/services/CrossSceneCommunicationService";
 
 export enum HudVisualFeedbackMessageType {
   NotEnoughResources,

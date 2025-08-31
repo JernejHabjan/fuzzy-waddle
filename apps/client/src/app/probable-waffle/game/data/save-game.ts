@@ -1,7 +1,7 @@
 import { filter, Subscription } from "rxjs";
 import GameProbableWaffleScene from "../scenes/GameProbableWaffleScene";
-import { getSceneService } from "../scenes/components/scene-component-helpers";
-import { SceneActorCreator } from "../scenes/components/scene-actor-creator";
+import { getSceneService } from "../world/components/scene-component-helpers";
+import { SceneActorCreator } from "../world/components/scene-actor-creator";
 
 export class SaveGame {
   private saveGameSubscription: Subscription;

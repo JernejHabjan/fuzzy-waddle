@@ -1,6 +1,6 @@
 import GameObject = Phaser.GameObjects.GameObject;
 import { getActorComponent } from "../../../data/actor-component";
-import { NavigationService } from "../../../scenes/services/navigation.service";
+import { NavigationService } from "../../../world/services/navigation.service";
 
 export interface WalkablePath {
   top?: boolean;

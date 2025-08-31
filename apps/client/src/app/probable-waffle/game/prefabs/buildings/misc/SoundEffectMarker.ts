@@ -4,8 +4,8 @@
 
 /* START-USER-IMPORTS */
 import { onSceneInitialized } from "../../../data/game-object-helper";
-import { getSceneService } from "../../../scenes/components/scene-component-helpers";
-import { AudioService } from "../../../scenes/services/audio.service";
+import { getSceneService } from "../../../world/components/scene-component-helpers";
+import { AudioService } from "../../../world/services/audio.service";
 import { SoundDefinition } from "../../../entity/actor/components/audio-actor-component";
 import {
   EnvironmentSfxBirdsSounds,

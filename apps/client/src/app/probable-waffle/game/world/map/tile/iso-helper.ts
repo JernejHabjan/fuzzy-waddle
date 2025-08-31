@@ -1,6 +1,6 @@
 import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
-import { getSceneComponent } from "../../../scenes/components/scene-component-helpers";
-import { TilemapComponent } from "../../../scenes/components/tilemap.component";
+import { getSceneComponent } from "../../components/scene-component-helpers";
+import { TilemapComponent } from "../../components/tilemap.component";
 
 export class IsoHelper {
   static isometricWorldToTileXY(

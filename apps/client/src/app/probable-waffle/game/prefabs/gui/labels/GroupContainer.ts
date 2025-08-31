@@ -5,9 +5,9 @@
 import PlayerGroup from "./PlayerGroup";
 import HudProbableWaffle from "../../../scenes/HudProbableWaffle";
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
-import { getSceneService } from "../../../scenes/components/scene-component-helpers";
-import { CrossSceneCommunicationService } from "../../../scenes/services/CrossSceneCommunicationService";
-import { ActorGroupEvent, SelectionGroupsComponent } from "../../../scenes/components/selection-groups.component";
+import { getSceneService } from "../../../world/components/scene-component-helpers";
+import { CrossSceneCommunicationService } from "../../../world/services/CrossSceneCommunicationService";
+import { ActorGroupEvent, SelectionGroupsComponent } from "../../../world/components/selection-groups.component";
 import { Subscription } from "rxjs";
 /* END-USER-IMPORTS */
 

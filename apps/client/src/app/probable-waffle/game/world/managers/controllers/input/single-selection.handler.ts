@@ -10,7 +10,7 @@ import {
 } from "@fuzzy-waddle/api-interfaces";
 import { getSelectableGameObject, onSceneInitialized } from "../../../../data/game-object-helper";
 import { IsoHelper } from "../../../map/tile/iso-helper";
-import { getSceneComponent, getSceneService } from "../../../../scenes/components/scene-component-helpers";
+import { getSceneComponent, getSceneService } from "../../../components/scene-component-helpers";
 import { BuildingCursor } from "../building-cursor";
 import Pointer = Phaser.Input.Pointer;
 import GameObject = Phaser.GameObjects.GameObject;

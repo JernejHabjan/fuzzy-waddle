@@ -55,8 +55,8 @@ import { ResourceSourceComponent } from "../entity/economy/resource/resource-sou
 import { ProductionComponent } from "../entity/building/production/production-component";
 import { PawnAiController } from "../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
 import GameObject = Phaser.GameObjects.GameObject;
-import { getSceneService } from "../scenes/components/scene-component-helpers";
-import { SceneActorCreator } from "../scenes/components/scene-actor-creator";
+import { getSceneService } from "../world/components/scene-component-helpers";
+import { SceneActorCreator } from "../world/components/scene-actor-creator";
 
 export type ActorConstructor = new (scene: Phaser.Scene) => GameObject;
 export type ActorMap = { [name: string]: ActorConstructor };

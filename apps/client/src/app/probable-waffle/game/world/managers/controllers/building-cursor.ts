@@ -13,16 +13,16 @@ import { emitEventIssueActorCommandToSelectedActors, getCurrentPlayerNumber } fr
 import { EventEmitter } from "@angular/core";
 import GameProbableWaffleScene from "../../../scenes/GameProbableWaffleScene";
 import { Subscription } from "rxjs";
-import { TilemapComponent } from "../../../scenes/components/tilemap.component";
+import { TilemapComponent } from "../../components/tilemap.component";
 import { getActorComponent } from "../../../data/actor-component";
 import { ConstructionGameObjectInterfaceComponent } from "../../../entity/building/construction/construction-game-object-interface-component";
 import { IdComponent } from "../../../entity/actor/components/id-component";
-import { getSceneComponent, getSceneService } from "../../../scenes/components/scene-component-helpers";
+import { getSceneComponent, getSceneService } from "../../components/scene-component-helpers";
 import { getTileCoordsUnderObject } from "../../../library/tile-under-object";
-import { NavigationService } from "../../../scenes/services/navigation.service";
-import { AudioService } from "../../../scenes/services/audio.service";
+import { NavigationService } from "../../services/navigation.service";
+import { AudioService } from "../../services/audio.service";
 import { UiFeedbackBuildDeniedSound } from "../../../sfx/UiFeedbackSfx";
-import { FogOfWarComponent } from "../../../scenes/components/fog-of-war.component";
+import { FogOfWarComponent } from "../../components/fog-of-war.component";
 import { RepresentableComponent } from "../../../entity/actor/components/representable-component";
 import Vector2 = Phaser.Math.Vector2;
 

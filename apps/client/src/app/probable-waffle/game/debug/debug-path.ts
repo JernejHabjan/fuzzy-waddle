@@ -1,7 +1,7 @@
 import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 import { environment } from "../../../../environments/environment";
 import { drawDebugPoint } from "./debug-point";
-import { NavigationService } from "../scenes/services/navigation.service";
+import { NavigationService } from "../world/services/navigation.service";
 
 export function drawDebugPath(scene: Phaser.Scene, tilemap: Phaser.Tilemaps.Tilemap, path: Vector2Simple[]) {
   if (environment.production) return;

@@ -1,7 +1,7 @@
 import { HealthComponent } from "../../combat/components/health-component";
 import { removeActorComponent } from "../../../data/actor-data";
 import { onObjectReady } from "../../../data/game-object-helper";
-import { NavigationService } from "../../../scenes/services/navigation.service";
+import { NavigationService } from "../../../world/services/navigation.service";
 
 export interface ColliderDefinition {
   enabled: boolean;

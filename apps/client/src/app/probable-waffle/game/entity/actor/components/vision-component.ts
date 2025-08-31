@@ -2,8 +2,8 @@ import GameObject = Phaser.GameObjects.GameObject;
 import { GameplayLibrary } from "../../../library/gameplay-library";
 import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "./owner-component";
-import { getSceneService } from "../../../scenes/components/scene-component-helpers";
-import { ActorIndexSystem } from "../../../scenes/services/ActorIndexSystem";
+import { getSceneService } from "../../../world/components/scene-component-helpers";
+import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { VisionComponentData } from "@fuzzy-waddle/api-interfaces";
 
 export interface VisionDefinition {

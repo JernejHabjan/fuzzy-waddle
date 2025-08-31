@@ -6,10 +6,10 @@ import { getActorComponent } from "../../data/actor-component";
 import { getCurrentPlayerNumber } from "../../data/scene-data";
 import { IdComponent } from "../../entity/actor/components/id-component";
 import { getGameObjectBounds, getGameObjectVisibility } from "../../data/game-object-helper";
-import { IsoHelper } from "../../world/map/tile/iso-helper";
+import { IsoHelper } from "../map/tile/iso-helper";
 import { ResourceSourceComponent } from "../../entity/economy/resource/resource-source-component";
 import { HealthComponent } from "../../entity/combat/components/health-component";
-import { getSceneService } from "../components/scene-component-helpers";
+import { getSceneService } from "./scene-component-helpers";
 import { ActorIndexSystem } from "../services/ActorIndexSystem";
 import GameObject = Phaser.GameObjects.GameObject;
 

@@ -10,26 +10,26 @@ import { GameObjectSelectionHandler } from "../world/managers/controllers/input/
 import { SceneGameState } from "../world/managers/game-state/scene-game-state";
 import { ProbableWaffleGameData } from "./probable-waffle-game-data";
 import { SaveGame } from "../data/save-game";
-import { SceneActorCreator } from "./components/scene-actor-creator";
-import { NavigationService } from "./services/navigation.service";
+import { SceneActorCreator } from "../world/components/scene-actor-creator";
+import { NavigationService } from "../world/services/navigation.service";
 import { BehaviorSubject } from "rxjs";
-import { AudioService } from "./services/audio.service";
-import { TilemapComponent } from "./components/tilemap.component";
+import { AudioService } from "../world/services/audio.service";
+import { TilemapComponent } from "../world/components/tilemap.component";
 import { RestartGame } from "../data/restart-game";
-import { AiPlayerHandler } from "./components/ai-player-handler";
+import { AiPlayerHandler } from "../world/components/ai-player-handler";
 import { BuildingCursor } from "../world/managers/controllers/building-cursor";
-import { DebuggingService } from "./services/DebuggingService";
-import { CrossSceneCommunicationService } from "./services/CrossSceneCommunicationService";
-import { FogOfWarComponent } from "./components/fog-of-war.component";
-import { SelectionGroupsComponent } from "./components/selection-groups.component";
+import { DebuggingService } from "../world/services/DebuggingService";
+import { CrossSceneCommunicationService } from "../world/services/CrossSceneCommunicationService";
+import { FogOfWarComponent } from "../world/components/fog-of-war.component";
+import { SelectionGroupsComponent } from "../world/components/selection-groups.component";
 import { GameModeConditionChecker } from "../world/managers/game-mode/GameModeConditionChecker";
-import { getSceneExternalComponent } from "./components/scene-component-helpers";
+import { getSceneExternalComponent } from "../world/components/scene-component-helpers";
 import { AchievementService } from "../../services/achievement/achievement.service";
 import { AchievementType } from "../../services/achievement/achievement-type";
 import { environment } from "../../../../environments/environment";
 import { GameObjectActionAssigner } from "../world/managers/controllers/game-object-action-assigner";
 import { PlayerActionsHandler } from "../world/managers/controllers/PlayerActionsHandler";
-import { ActorIndexSystem } from "./services/ActorIndexSystem";
+import { ActorIndexSystem } from "../world/services/ActorIndexSystem";
 
 export interface ProbableWaffleSceneData {
   baseGameData: ProbableWaffleGameData;

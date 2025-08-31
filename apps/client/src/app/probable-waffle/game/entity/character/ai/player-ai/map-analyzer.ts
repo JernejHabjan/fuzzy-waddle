@@ -1,8 +1,8 @@
 import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 import GameObject = Phaser.GameObjects.GameObject;
-import { NavigationService } from "../../../../scenes/services/navigation.service";
-import { ActorIndexSystem } from "../../../../scenes/services/ActorIndexSystem";
-import { getSceneService } from "../../../../scenes/components/scene-component-helpers";
+import { NavigationService } from "../../../../world/services/navigation.service";
+import { ActorIndexSystem } from "../../../../world/services/ActorIndexSystem";
+import { getSceneService } from "../../../../world/components/scene-component-helpers";
 
 // Lightweight result of a map analysis pass
 export interface MapAnalysis {

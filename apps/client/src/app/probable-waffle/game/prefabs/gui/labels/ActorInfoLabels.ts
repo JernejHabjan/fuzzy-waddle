@@ -10,7 +10,7 @@ import { ProductionComponent, ProductionQueueItem } from "../../../entity/buildi
 import { BehaviorSubject, Subscription } from "rxjs";
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { SingleSelectionHandler } from "../../../world/managers/controllers/input/single-selection.handler";
-import { getSceneComponent } from "../../../scenes/components/scene-component-helpers";
+import { getSceneComponent } from "../../../world/components/scene-component-helpers";
 import { IdComponent } from "../../../entity/actor/components/id-component";
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import HudProbableWaffle from "../../../scenes/HudProbableWaffle";

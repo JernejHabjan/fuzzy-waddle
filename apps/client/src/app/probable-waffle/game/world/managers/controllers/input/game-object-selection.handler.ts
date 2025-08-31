@@ -25,7 +25,7 @@ import { AudioActorComponent, SoundType } from "../../../../entity/actor/compone
 import { OwnerComponent } from "../../../../entity/actor/components/owner-component";
 import GameObject = Phaser.GameObjects.GameObject;
 import { pwActorDefinitions } from "../../../../data/actor-definitions";
-import { getSceneService } from "../../../../scenes/components/scene-component-helpers";
+import { getSceneService } from "../../../components/scene-component-helpers";
 import { PlayerActionsHandler } from "../PlayerActionsHandler";
 
 export class GameObjectSelectionHandler {

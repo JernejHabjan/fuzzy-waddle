@@ -1,7 +1,7 @@
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { OrderType } from "../../../entity/character/ai/order-type";
 import { CursorHandler, CursorType } from "./input/cursor.handler";
-import { getSceneComponent } from "../../../scenes/components/scene-component-helpers";
+import { getSceneComponent } from "../../components/scene-component-helpers";
 import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 import {
   emitEventIssueActorCommandToSelectedActors,

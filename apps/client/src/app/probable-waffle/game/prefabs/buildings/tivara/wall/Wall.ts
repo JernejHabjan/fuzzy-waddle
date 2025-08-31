@@ -26,7 +26,7 @@ import WatchTower from "./WatchTower";
 import { throttle } from "../../../../library/throttle";
 import Stairs from "../stairs/Stairs";
 import { getNeighboursByTypes } from "../../../../data/tile-map-helpers";
-import { TilemapComponent } from "../../../../scenes/components/tilemap.component";
+import { TilemapComponent } from "../../../../world/components/tilemap.component";
 import { setActorData } from "../../../../data/actor-data";
 import { getActorComponent } from "../../../../data/actor-component";
 import { WalkableComponent, WalkablePath } from "../../../../entity/actor/components/walkable-component";
