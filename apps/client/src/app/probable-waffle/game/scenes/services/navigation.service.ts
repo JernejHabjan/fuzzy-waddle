@@ -652,7 +652,7 @@ export class NavigationService {
     return walkableTilesArray[0]; // Return the closest tile
   }
 
-  private isWithinGridBounds(tile: Vector2Simple): boolean {
+  isWithinGridBounds(tile: Vector2Simple): boolean {
     return (
       tile.x >= 0 &&
       tile.x < this.easyStarNavigationGrid[0].length &&

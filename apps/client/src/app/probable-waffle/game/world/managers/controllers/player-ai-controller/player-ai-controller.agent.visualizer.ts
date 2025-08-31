@@ -219,4 +219,9 @@ class PlayerAiControllerAgentVisualizer implements IPlayerControllerAgent {
     showInfoToast("Shifting to economic strategy.");
     return State.SUCCEEDED;
   }
+
+  AnalyzeGameMap(): State {
+    showInfoToast("Analyzing game map.");
+    return State.SUCCEEDED;
+  }
 }

@@ -17,9 +17,11 @@ import { PawnAiController } from "../player-pawn-ai-controller/pawn-ai-controlle
 import { OrderData } from "../../../../entity/character/ai/OrderData";
 import { OrderType } from "../../../../entity/character/ai/order-type";
 import { BuildingCursor } from "../building-cursor";
-import { getGameObjectLogicalTransform, getGameObjectRenderedTransform } from "../../../../data/game-object-helper";
+import { getGameObjectLogicalTransform } from "../../../../data/game-object-helper";
 import { GameplayLibrary } from "../../../../library/gameplay-library";
 import GameObject = Phaser.GameObjects.GameObject;
+import { MapAnalyzer } from "../../../../entity/character/ai/player-ai/map-analyzer";
+import { BasePlanner } from "../../../../entity/character/ai/player-ai/base-planner";
 
 export class PlayerAiControllerAgent implements IPlayerControllerAgent, Agent {
   private readonly baseHeavyAttackThreshold = 10; // Enemy units count for a heavy attack
@@ -32,6 +34,8 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent, Agent {
   private readonly sufficientResourcesForUpgradeThreshold = 1000; // Threshold for upgrades
   private displayDebugInfo = false;
   private aiDebuggingSubscription?: Subscription;
+  private mapAnalyzer?: MapAnalyzer;
+  private basePlanner: BasePlanner;
   constructor(
     private readonly scene: Phaser.Scene,
     private readonly player: ProbableWafflePlayer,
@@ -44,9 +48,24 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent, Agent {
         this.displayDebugInfo = debug;
       });
     }
+    this.mapAnalyzer = new MapAnalyzer(this.scene, this.player.playerNumber!);
+    this.basePlanner = new BasePlanner(this.mapAnalyzer);
   }
 
   [propertyName: string]: unknown;
+
+  AnalyzeGameMap(): State {
+    try {
+      if (!this.mapAnalyzer) this.mapAnalyzer = new MapAnalyzer(this.scene, this.player.playerNumber!);
+      const result = this.mapAnalyzer.analyzeIfStale(2000);
+      this.blackboard.mapAnalysis = result;
+      this.blackboard.baseCenterTile = result.baseCenterTile ?? null;
+      this.blackboard.suggestedBuildTiles = result.candidateBuildSpots ?? [];
+      return State.SUCCEEDED;
+    } catch {
+      return State.FAILED;
+    }
+  }
 
   IsBaseUnderAttack() {
     return this.blackboard.enemiesNearBase.length > 0;
@@ -335,11 +354,11 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent, Agent {
 
     const validWorkers = this.blackboard.workers.filter((worker) => {
       const aiController = getActorComponent(worker, PawnAiController);
-      if (!aiController) return;
+      if (!aiController) return false;
       // do not check if busy - override current order
-      // if (aiController.blackboard.getCurrentOrder()) return; // currently busy
+      // if (aiController.blackboard.getCurrentOrder()) return false; // currently busy
       const builderComponent = getActorComponent(worker, BuilderComponent);
-      if (!builderComponent) return;
+      if (!builderComponent) return false;
       return builderComponent.isIdle();
     });
 
@@ -364,8 +383,8 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent, Agent {
       this.player.playerNumber
     );
 
-    validWorkers.forEach((worker) => {
-      const aiController = getActorComponent(worker, PawnAiController);
+    validWorkers.forEach((w) => {
+      const aiController = getActorComponent(w, PawnAiController);
       const newOrder = new OrderData(OrderType.Build, { targetGameObject: building });
       aiController!.blackboard.overrideOrderQueueAndActiveOrder(newOrder);
       aiController!.blackboard.setCurrentOrder(newOrder);
@@ -378,9 +397,11 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent, Agent {
   AssignHousingBuilding(): State {
     return this.assignBuilding(ObjectNames.WorkMill);
   }
+
   AssignProductionBuilding(): State {
     return this.assignBuilding(ObjectNames.Owlery);
   }
+
   AssignDefenseBuilding(): State {
     return this.assignBuilding(ObjectNames.InfantryInn);
   }

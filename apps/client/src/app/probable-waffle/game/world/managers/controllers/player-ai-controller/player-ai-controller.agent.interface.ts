@@ -55,6 +55,7 @@ export interface IPlayerControllerAgent {
   AnalyzeEnemyBase(): State;
   GatherEnemyData(): State;
   ContinueScouting(): State;
+  AnalyzeGameMap(): State;
 
   // Strategic shifts
   ShiftToAggressiveStrategy(): State;

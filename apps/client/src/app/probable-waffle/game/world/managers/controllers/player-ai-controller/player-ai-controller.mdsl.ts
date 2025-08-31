@@ -22,13 +22,20 @@
 export const PlayerAiControllerMdsl = `
 root {
     selector {
+        branch [AnalyzeMap]
         branch [AdjustStrategyBasedOnGameState]
         branch [DefendBase]
         branch [AttackEnemy]
-        /* TODO branch [ExpandBase] */
+        branch [ExpandBase]
         branch [ManageEconomy]
         branch [ScoutEnemy]
         branch [CombatTactics]
+    }
+}
+
+root [AnalyzeMap] {
+    fail {
+        action [AnalyzeGameMap]
     }
 }
 

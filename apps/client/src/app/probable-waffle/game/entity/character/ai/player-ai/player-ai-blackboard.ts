@@ -1,5 +1,6 @@
 import { Blackboard } from "../blackboard";
-import { ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { ResourceType, Vector2Simple } from "@fuzzy-waddle/api-interfaces";
+import { MapAnalysis } from "./map-analyzer";
 
 export class PlayerAiBlackboard extends Blackboard {
   constructor(
@@ -26,7 +27,11 @@ export class PlayerAiBlackboard extends Blackboard {
     public enemyFlankOpen: boolean = false, // Is the enemy's flank open for an attack?
     public enemiesInCombat: any[] = [], // Enemies currently engaged in combat
     public selectedStructure: any = null, // The structure currently selected by the player
-    public currentStrategy: string = "defensive" // Current strategy: "aggressive", "defensive", "economic"
+    public currentStrategy: string = "defensive", // Current strategy: "aggressive", "defensive", "economic"
+    // Map analysis/cache (phase 1)
+    public mapAnalysis: MapAnalysis | null = null,
+    public baseCenterTile: Vector2Simple | null = null,
+    public suggestedBuildTiles: Vector2Simple[] = []
   ) {
     super();
   }
