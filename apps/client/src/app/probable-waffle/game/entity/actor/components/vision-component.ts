@@ -4,7 +4,7 @@ import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "./owner-component";
 import { getSceneService } from "../../../world/components/scene-component-helpers";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
-import { VisionComponentData } from "@fuzzy-waddle/api-interfaces";
+import { type VisionComponentData } from "@fuzzy-waddle/api-interfaces";
 
 export interface VisionDefinition {
   range: number;

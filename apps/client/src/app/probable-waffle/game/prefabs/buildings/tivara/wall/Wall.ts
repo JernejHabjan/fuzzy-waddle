@@ -29,7 +29,7 @@ import { getNeighboursByTypes } from "../../../../data/tile-map-helpers";
 import { TilemapComponent } from "../../../../world/components/tilemap.component";
 import { setActorData } from "../../../../data/actor-data";
 import { getActorComponent } from "../../../../data/actor-component";
-import { WalkableComponent, WalkablePath } from "../../../../entity/actor/components/walkable-component";
+import { WalkableComponent, type WalkablePath } from "../../../../entity/actor/components/walkable-component";
 /* END-USER-IMPORTS */
 
 export default class Wall extends Phaser.GameObjects.Container {

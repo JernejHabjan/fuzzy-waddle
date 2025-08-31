@@ -1,5 +1,5 @@
 import { VersionState } from "./version.service";
-import { VersionServiceInterface } from "./version.service.interface";
+import { type VersionServiceInterface } from "./version.service.interface";
 import { Observable } from "rxjs";
 
 export const versionServiceStub = {

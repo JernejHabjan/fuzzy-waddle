@@ -1,4 +1,4 @@
-import { SceneCommunicatorClientServiceInterface } from "./scene-communicator-client.service.interface";
+import { type SceneCommunicatorClientServiceInterface } from "./scene-communicator-client.service.interface";
 
 export const sceneCommunicatorClientServiceStub = {
   startCommunication: () => {},

@@ -2,15 +2,15 @@ import { inject, Injectable } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import {
-  GameInstanceDataDto,
-  LittleMuncherGameCreate,
-  LittleMuncherGameCreateDto,
+  type GameInstanceDataDto,
+  type LittleMuncherGameCreate,
+  type LittleMuncherGameCreateDto,
   LittleMuncherGameInstance,
-  LittleMuncherGameInstanceData,
-  LittleMuncherLevel
+  type LittleMuncherGameInstanceData,
+  type LittleMuncherLevel
 } from "@fuzzy-waddle/api-interfaces";
 import { SceneCommunicatorClientService } from "./scene-communicator-client.service";
-import { GameInstanceClientServiceInterface } from "./game-instance-client.service.interface";
+import { type GameInstanceClientServiceInterface } from "./game-instance-client.service.interface";
 import { AuthService } from "../../../auth/auth.service";
 import { ServerHealthService } from "../../../shared/services/server-health.service";
 import { environment } from "../../../../environments/environment";

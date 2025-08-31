@@ -1,6 +1,6 @@
 import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 import type { PrefabDefinition } from "../../../data/actor-definitions";
-import { ConstructionSiteDefinition } from "../../../entity/building/construction/construction-site-component";
+import { type ConstructionSiteDefinition } from "../../../entity/building/construction/construction-site-component";
 
 export const coreConstructionSiteDefinition: ConstructionSiteDefinition = {
   consumesBuilders: false,

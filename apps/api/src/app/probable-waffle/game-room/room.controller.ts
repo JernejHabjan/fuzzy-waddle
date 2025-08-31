@@ -1,8 +1,8 @@
 import { Body, Controller, Post, UseGuards } from "@nestjs/common";
 import { SupabaseAuthGuard } from "../../../auth/guards/supabase-auth.guard";
 import { CurrentUser } from "../../../auth/current-user";
-import { AuthUser } from "@supabase/supabase-js";
-import { ProbableWaffleGetRoomsDto, ProbableWaffleRoom } from "@fuzzy-waddle/api-interfaces";
+import { type AuthUser } from "@supabase/supabase-js";
+import { type ProbableWaffleGetRoomsDto, type ProbableWaffleRoom } from "@fuzzy-waddle/api-interfaces";
 import { RoomServerService } from "./room-server.service";
 
 @Controller("probable-waffle")

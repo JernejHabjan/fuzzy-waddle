@@ -1,4 +1,5 @@
 import type { PrefabDefinition } from "../../../../../data/actor-definitions";
+import { treeDefinitions } from "./tree.definition";
 
 export const tree10Definition = {
   ...treeDefinitions,

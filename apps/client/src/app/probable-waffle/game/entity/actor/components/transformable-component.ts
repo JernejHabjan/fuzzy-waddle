@@ -1,6 +1,6 @@
 import { TilePlacementData_old } from "../../../world/managers/controllers/input/tilemap/tilemap-input.handler";
 import { SpriteHelper_old, SpriteWorldPlacementInfo_old } from "../sprite-helper_old";
-import { IFlyBase } from "../../../../../fly-squasher/game/fly/component.service";
+import { type IFlyBase } from "../../../../../fly-squasher/game/fly/component.service";
 import { EventEmitter } from "@angular/core";
 
 export type TransformChange = [TilePlacementData_old, SpriteWorldPlacementInfo_old];

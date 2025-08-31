@@ -1,21 +1,21 @@
 import { Scenes } from "./const/scenes";
 import {
   LittleMuncherGameMode,
-  LittleMuncherGameModeData,
+  type LittleMuncherGameModeData,
   LittleMuncherGameState,
-  LittleMuncherGameStateData,
+  type LittleMuncherGameStateData,
   LittleMuncherHills,
   LittleMuncherPlayer,
-  LittleMuncherPlayerControllerData,
-  LittleMuncherPlayerStateData,
+  type LittleMuncherPlayerControllerData,
+  type LittleMuncherPlayerStateData,
   LittleMuncherSpectator,
-  LittleMuncherSpectatorData
+  type LittleMuncherSpectatorData
 } from "@fuzzy-waddle/api-interfaces";
 import { BaseScene } from "../../shared/game/phaser/scene/base.scene";
-import { LittleMuncherGameData } from "./little-muncher-game-data";
+import { type LittleMuncherGameData } from "./little-muncher-game-data";
 import { Pause } from "./pause";
 import { PlayerInputController } from "./player-input-controller";
-import { UiCommunicator, UiCommunicatorData } from "./ui-communicator";
+import { UiCommunicator, type UiCommunicatorData } from "./ui-communicator";
 import { Fireworks } from "../../shared/game/phaser/components/fireworks";
 import { LittleMuncherCommunicatorService } from "../main/communicators/little-muncher-communicator.service";
 

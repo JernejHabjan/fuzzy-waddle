@@ -1,5 +1,5 @@
-import { AuthUser } from "@supabase/supabase-js";
-import { IAuthService } from "./auth.service.interface";
+import { type AuthUser } from "@supabase/supabase-js";
+import { type IAuthService } from "./auth.service.interface";
 
 export const authUserStub: AuthUser = {
   user_metadata: undefined,

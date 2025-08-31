@@ -1,16 +1,16 @@
 import { Injectable } from "@nestjs/common";
-import { User } from "@supabase/supabase-js";
+import { type User } from "@supabase/supabase-js";
 import {
-  DifficultyModifiers,
-  MapTuning,
+  type DifficultyModifiers,
+  type MapTuning,
   ProbableWaffleGameInstance,
-  ProbableWaffleGameInstanceData,
-  ProbableWaffleGameInstanceMetadataData,
-  ProbableWaffleGameModeData,
-  ProbableWaffleGameStateData
+  type ProbableWaffleGameInstanceData,
+  type ProbableWaffleGameInstanceMetadataData,
+  type ProbableWaffleGameModeData,
+  type ProbableWaffleGameStateData
 } from "@fuzzy-waddle/api-interfaces";
 import { Cron, CronExpression } from "@nestjs/schedule";
-import { GameInstanceServiceInterface } from "./game-instance.service.interface";
+import { type GameInstanceServiceInterface } from "./game-instance.service.interface";
 import { TextSanitizationService } from "../../../core/content-filters/text-sanitization.service";
 import { RoomServerService } from "../game-room/room-server.service";
 import { GameInstanceHolderService } from "./game-instance-holder.service";

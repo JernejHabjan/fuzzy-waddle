@@ -7,7 +7,7 @@ import HudProbableWaffle from "../../../scenes/hud-scenes/HudProbableWaffle";
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { getSceneService } from "../../../world/components/scene-component-helpers";
 import { CrossSceneCommunicationService } from "../../../world/services/CrossSceneCommunicationService";
-import { ActorGroupEvent, SelectionGroupsComponent } from "../../../world/components/selection-groups.component";
+import { type ActorGroupEvent, SelectionGroupsComponent } from "../../../world/components/selection-groups.component";
 import { Subscription } from "rxjs";
 /* END-USER-IMPORTS */
 

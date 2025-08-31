@@ -15,7 +15,7 @@ import { AudioService } from "../../world/services/audio.service";
 import { getCommunicator, getCurrentPlayerNumber } from "../../data/scene-data";
 import { SelectableComponent } from "../actor/components/selectable-component";
 import { getActorComponent } from "../../data/actor-component";
-import { ActorTranslateComponent, IsoDirection } from "../actor/components/actor-translate-component";
+import { ActorTranslateComponent, type IsoDirection } from "../actor/components/actor-translate-component";
 import { HealthComponent } from "../combat/components/health-component";
 import { PawnAiController } from "../../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
 import { OrderType } from "../character/ai/order-type";

@@ -1,7 +1,7 @@
 import { inject, Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { firstValueFrom } from "rxjs";
-import { AtlasServiceInterface } from "./atlas.service.interface";
+import { type AtlasServiceInterface } from "./atlas.service.interface";
 
 @Injectable({
   providedIn: "root"

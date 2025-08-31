@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import NodeCache from "node-cache";
-import { AuthUser } from "@supabase/supabase-js";
+import { type AuthUser } from "@supabase/supabase-js";
 
 @Injectable()
 export class UserAuthCacheService {

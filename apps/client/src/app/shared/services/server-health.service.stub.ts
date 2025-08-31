@@ -1,4 +1,4 @@
-import { ServerHealthServiceInterface } from "./server-health.service.interface";
+import { type ServerHealthServiceInterface } from "./server-health.service.interface";
 
 export const serverHealthServiceStub = {
   checkHealth(): Promise<void> {

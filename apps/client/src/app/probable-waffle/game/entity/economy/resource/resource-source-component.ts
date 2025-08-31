@@ -1,4 +1,4 @@
-import { ResourceSourceComponentData, ResourceType, Vector2Simple } from "@fuzzy-waddle/api-interfaces";
+import { type ResourceSourceComponentData, ResourceType, type Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 import { ContainerComponent } from "../../building/container-component";
 import { Subject } from "rxjs";
 import { getActorComponent } from "../../../data/actor-component";

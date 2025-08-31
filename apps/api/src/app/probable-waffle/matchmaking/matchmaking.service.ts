@@ -1,28 +1,28 @@
 import { Injectable } from "@nestjs/common";
 import {
-  DifficultyModifiers,
+  type DifficultyModifiers,
   FactionType,
   GameSessionState,
   getRandomFactionType,
-  MapTuning,
-  PendingMatchmakingGameInstance,
-  PlayerLobbyDefinition,
-  PositionPlayerDefinition,
+  type MapTuning,
+  type PendingMatchmakingGameInstance,
+  type PlayerLobbyDefinition,
+  type PositionPlayerDefinition,
   ProbableWaffleGameInstance,
   ProbableWaffleGameInstanceType,
   ProbableWaffleGameInstanceVisibility,
   ProbableWaffleGameMode,
-  ProbableWaffleGameModeData,
-  ProbableWaffleGameStateData,
+  type ProbableWaffleGameModeData,
+  type ProbableWaffleGameStateData,
   ProbableWaffleLevels,
   ProbableWaffleMapEnum,
-  ProbableWafflePlayerControllerData,
+  type ProbableWafflePlayerControllerData,
   ProbableWafflePlayerType,
-  RequestGameSearchForMatchMakingDto
+  type RequestGameSearchForMatchMakingDto
 } from "@fuzzy-waddle/api-interfaces";
-import { User } from "@supabase/supabase-js";
+import { type User } from "@supabase/supabase-js";
 import { Cron, CronExpression } from "@nestjs/schedule";
-import { MatchmakingServiceInterface } from "./matchmaking.service.interface";
+import { type MatchmakingServiceInterface } from "./matchmaking.service.interface";
 import { GameInstanceService } from "../game-instance/game-instance.service";
 import { RoomServerService } from "../game-room/room-server.service";
 import { GameInstanceGateway } from "../game-instance/game-instance.gateway";

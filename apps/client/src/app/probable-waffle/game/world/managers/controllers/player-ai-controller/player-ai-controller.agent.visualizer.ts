@@ -1,5 +1,5 @@
 import { State } from "mistreevous";
-import { IPlayerControllerAgent } from "./player-ai-controller.agent.interface";
+import { type IPlayerControllerAgent } from "./player-ai-controller.agent.interface";
 import { getBooleanValue, showInfoToast } from "../behavior-tree-utilities/behavior-tree-global-functions";
 
 /**

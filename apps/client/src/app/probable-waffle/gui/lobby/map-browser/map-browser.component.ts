@@ -10,7 +10,7 @@ import {
   Output
 } from "@angular/core";
 
-import { ProbableWaffleLevels, ProbableWaffleMapData, ProbableWaffleMapEnum } from "@fuzzy-waddle/api-interfaces";
+import { ProbableWaffleLevels, type ProbableWaffleMapData, ProbableWaffleMapEnum } from "@fuzzy-waddle/api-interfaces";
 import { environment } from "../../../../../environments/environment";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { Subscription } from "rxjs";

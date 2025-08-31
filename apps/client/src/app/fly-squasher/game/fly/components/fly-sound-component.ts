@@ -1,4 +1,4 @@
-import { IFlyBase } from "../component.service";
+import { type IFlyBase } from "../component.service";
 import { BaseScene } from "../../../../shared/game/phaser/scene/base.scene";
 import { FlyBase } from "../FlyBase";
 import { FlySquasherAudio } from "../../audio";

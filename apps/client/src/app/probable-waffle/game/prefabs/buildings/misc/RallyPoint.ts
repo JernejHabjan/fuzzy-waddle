@@ -7,7 +7,7 @@
 
 import { getActorSystem } from "../../../data/actor-system";
 import { MovementSystem } from "../../../entity/systems/movement.system";
-import { RallyPointComponentData, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import { type RallyPointComponentData, type Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { GameObjects } from "phaser";
 import { getActorComponent } from "../../../data/actor-component";
 import { SelectableComponent } from "../../../entity/actor/components/selectable-component";

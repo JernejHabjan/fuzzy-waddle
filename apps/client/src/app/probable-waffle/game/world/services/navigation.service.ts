@@ -2,7 +2,7 @@ import {
   BOTTOM,
   BOTTOM_LEFT,
   BOTTOM_RIGHT,
-  Direction,
+  type Direction,
   js as EasyStar,
   LEFT,
   RIGHT,
@@ -15,7 +15,7 @@ import Phaser from "phaser";
 import { getActorComponent } from "../../data/actor-component";
 import {
   WalkableComponent,
-  WalkablePath,
+  type WalkablePath,
   WalkablePathDirection
 } from "../../entity/actor/components/walkable-component";
 import { ColliderComponent } from "../../entity/actor/components/collider-component";

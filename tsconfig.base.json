@@ -6,7 +6,6 @@
     "module": "ESNext",
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "moduleResolution": "Bundler",              // Faster & better for modern bundlers (Vite, Webpack, etc.)
-    "allowImportingTsExtensions": true,
     "allowArbitraryExtensions": true,
 
     /* Interop & Imports */

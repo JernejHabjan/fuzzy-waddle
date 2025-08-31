@@ -1,4 +1,4 @@
-import { AnimationDefinitionMap, AnimationType } from "../../../entity/actor/components/animation-actor-component";
+import { type AnimationDefinitionMap, AnimationType } from "../../../entity/actor/components/animation-actor-component";
 
 const ANIM_BOAR_IDLE_NE = "boar/idle/ne";
 const ANIM_BOAR_IDLE_NW = "boar/idle/nw";

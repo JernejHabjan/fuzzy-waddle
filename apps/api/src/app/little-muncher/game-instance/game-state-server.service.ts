@@ -1,14 +1,14 @@
 import { Injectable } from "@nestjs/common";
 import {
-  CommunicatorEvent,
-  LittleMuncherCommunicatorClimbingEvent,
-  LittleMuncherCommunicatorPauseEvent,
-  LittleMuncherCommunicatorScoreEvent,
-  LittleMuncherCommunicatorType,
+  type CommunicatorEvent,
+  type LittleMuncherCommunicatorClimbingEvent,
+  type LittleMuncherCommunicatorPauseEvent,
+  type LittleMuncherCommunicatorScoreEvent,
+  type LittleMuncherCommunicatorType,
   LittleMuncherPosition
 } from "@fuzzy-waddle/api-interfaces";
 import { GameInstanceService } from "./game-instance.service";
-import { User } from "@supabase/supabase-js";
+import { type User } from "@supabase/supabase-js";
 
 @Injectable()
 export class GameStateServerService {

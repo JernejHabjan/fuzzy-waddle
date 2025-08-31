@@ -3,10 +3,10 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import ActorIcon, { ActorIconClickAction } from "./ActorIcon";
+import ActorIcon, { type ActorIconClickAction } from "./ActorIcon";
 import { pwActorDefinitions } from "../../../data/actor-definitions";
 import { getActorComponent } from "../../../data/actor-component";
-import { ProductionComponent, ProductionQueueItem } from "../../../entity/building/production/production-component";
+import { ProductionComponent, type ProductionQueueItem } from "../../../entity/building/production/production-component";
 import { BehaviorSubject, Subscription } from "rxjs";
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { SingleSelectionHandler } from "../../../world/managers/controllers/input/single-selection.handler";

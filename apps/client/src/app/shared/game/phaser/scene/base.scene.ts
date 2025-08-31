@@ -3,16 +3,16 @@ import type { CreateSceneFromObjectConfig } from "./scene-config.interface";
 import { EventEmitter } from "@angular/core";
 import type { UpdateEventData } from "./update-event-data";
 import { BaseGame } from "../game/base-game";
-import { BaseGameData } from "../game/base-game-data";
+import { type BaseGameData } from "../game/base-game-data";
 import { Observable, Subscription, take } from "rxjs";
 import {
-  BaseData,
+  type BaseData,
   BaseGameMode,
   BaseGameState,
   BasePlayer,
-  BasePlayerControllerData,
+  type BasePlayerControllerData,
   BaseSpectator,
-  BaseSpectatorData
+  type BaseSpectatorData
 } from "@fuzzy-waddle/api-interfaces";
 import { Loader } from "../../../../little-muncher/game/loader";
 import type { CommunicatorService } from "../../communicators/CommunicatorService";

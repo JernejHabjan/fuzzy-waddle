@@ -1,5 +1,5 @@
 import { Utils } from "phaser";
-import { ComponentService, IFlyBase } from "./component.service";
+import { ComponentService, type IFlyBase } from "./component.service";
 import { BaseScene } from "../../../shared/game/phaser/scene/base.scene";
 
 export abstract class FlyBase implements IFlyBase {

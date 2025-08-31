@@ -1,5 +1,5 @@
 import { WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
-import { ProbableWaffleGatewayEvent, ProbableWaffleRoomEvent } from "@fuzzy-waddle/api-interfaces";
+import { ProbableWaffleGatewayEvent, type ProbableWaffleRoomEvent } from "@fuzzy-waddle/api-interfaces";
 import { Server } from "socket.io";
 
 @WebSocketGateway({

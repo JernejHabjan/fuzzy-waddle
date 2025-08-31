@@ -19,7 +19,7 @@ import { throttle } from "../../library/throttle";
 import { FogOfWarComponent, FogOfWarMode } from "../../world/components/fog-of-war.component";
 import { VisionComponent } from "../../entity/actor/components/vision-component";
 import { PlayerActionsHandler } from "../../world/managers/controllers/PlayerActionsHandler";
-import { GameObjectActionAssignerConfig } from "../../world/managers/controllers/game-object-action-assigner";
+import { type GameObjectActionAssignerConfig } from "../../world/managers/controllers/game-object-action-assigner";
 import { OrderType } from "../../entity/character/ai/order-type";
 /* END-USER-IMPORTS */
 

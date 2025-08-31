@@ -1,6 +1,6 @@
 import { onObjectReady } from "../../../data/game-object-helper";
 import { OrderType } from "../../character/ai/order-type";
-import { ActorTranslateComponent, IsoDirection } from "./actor-translate-component";
+import { ActorTranslateComponent, type IsoDirection } from "./actor-translate-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { Subscription } from "rxjs";
 import { HealthComponent } from "../../combat/components/health-component";

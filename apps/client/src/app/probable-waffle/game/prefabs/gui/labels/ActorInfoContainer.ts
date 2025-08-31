@@ -12,7 +12,7 @@ import HudProbableWaffle from "../../../scenes/hud-scenes/HudProbableWaffle";
 import { Subscription } from "rxjs";
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { getCurrentPlayerNumber, getSelectedActors, listenToSelectionEvents } from "../../../data/scene-data";
-import { PrefabDefinition, pwActorDefinitions } from "../../../data/actor-definitions";
+import { type PrefabDefinition, pwActorDefinitions } from "../../../data/actor-definitions";
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { getActorComponent } from "../../../data/actor-component";
 import { HealthComponent } from "../../../entity/combat/components/health-component";

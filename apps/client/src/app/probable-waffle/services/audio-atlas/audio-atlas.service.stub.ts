@@ -1,4 +1,4 @@
-import { AudioAtlasServiceInterface } from "./audio-atlas.service.interface";
+import { type AudioAtlasServiceInterface } from "./audio-atlas.service.interface";
 
 export const audioAtlasServiceStub = {
   playSound: function (name: string): Promise<number> {

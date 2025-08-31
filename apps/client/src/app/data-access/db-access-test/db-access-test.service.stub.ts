@@ -1,4 +1,4 @@
-import { DbAccessTestServiceInterface } from "./db-access-test.service.interface";
+import { type DbAccessTestServiceInterface } from "./db-access-test.service.interface";
 
 export const dbAccessTestServiceStub = {
   get(): void {

@@ -1,5 +1,5 @@
 import { State } from "mistreevous";
-import { IPlayerPawnControllerAgent } from "./player-pawn-ai-controller.agent.interface";
+import { type IPlayerPawnControllerAgent } from "./player-pawn-ai-controller.agent.interface";
 import { getBooleanValue, showInfoToast } from "../behavior-tree-utilities/behavior-tree-global-functions";
 
 /**

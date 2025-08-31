@@ -2,10 +2,10 @@ import { WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { Server } from "net";
 import {
   LittleMuncherGatewayEvent,
-  LittleMuncherRoomEvent,
-  LittleMuncherSpectatorEvent
+  type LittleMuncherRoomEvent,
+  type LittleMuncherSpectatorEvent
 } from "@fuzzy-waddle/api-interfaces";
-import { GameInstanceGatewayInterface } from "./game-instance.gateway.interface";
+import { type GameInstanceGatewayInterface } from "./game-instance.gateway.interface";
 
 export const GameInstanceGatewayStub = {
   emitRoom(roomEvent: LittleMuncherRoomEvent) {

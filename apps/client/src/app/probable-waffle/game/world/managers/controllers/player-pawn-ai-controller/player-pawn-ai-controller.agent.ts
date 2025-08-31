@@ -12,11 +12,10 @@ import { getActorSystem } from "../../../../data/actor-system";
 import {
   getRandomTileInNavigableRadius,
   MovementSystem,
-  PathMoveConfig
+  type PathMoveConfig
 } from "../../../../entity/systems/movement.system";
 import { OrderLabelToTypeMap, OrderType } from "../../../../entity/character/ai/order-type";
 import { PawnAiBlackboard } from "../../../../entity/character/ai/pawn-ai-blackboard";
-import { Agent } from "mistreevous/dist/Agent";
 import { GathererComponent } from "../../../../entity/actor/components/gatherer-component";
 import { ResourceSourceComponent } from "../../../../entity/economy/resource/resource-source-component";
 import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
@@ -29,7 +28,7 @@ import { HealingComponent } from "../../../../entity/combat/components/healing-c
 import { ConstructionSiteComponent } from "../../../../entity/building/construction/construction-site-component";
 import { AnimationActorComponent } from "../../../../entity/actor/components/animation-actor-component";
 
-export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent, Agent {
+export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,
     private readonly blackboard: PawnAiBlackboard

@@ -1,7 +1,7 @@
 import { Scene } from "phaser";
-import { CreateSceneFromObjectConfig } from "../../shared/game/phaser/scene/scene-config.interface";
+import { type CreateSceneFromObjectConfig } from "../../shared/game/phaser/scene/scene-config.interface";
 import { Scenes } from "./const/scenes";
-import { UiCommunicatorData } from "./ui-communicator";
+import { type UiCommunicatorData } from "./ui-communicator";
 import { Subscription } from "rxjs";
 
 export class LittleMuncherUiScene extends Scene implements CreateSceneFromObjectConfig {

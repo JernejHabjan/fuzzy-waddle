@@ -27,7 +27,7 @@ import Tree7 from "../prefabs/outside/foliage/trees/resources/Tree7";
 import Tree9 from "../prefabs/outside/foliage/trees/resources/Tree9";
 import Tree10 from "../prefabs/outside/foliage/trees/resources/Tree10";
 import Tree11 from "../prefabs/outside/foliage/trees/resources/Tree11";
-import { ActorDefinition, ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { type ActorDefinition, ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { getActorComponent } from "./actor-component";
 import { OwnerComponent } from "../entity/actor/components/owner-component";
 import { SelectableComponent } from "../entity/actor/components/selectable-component";

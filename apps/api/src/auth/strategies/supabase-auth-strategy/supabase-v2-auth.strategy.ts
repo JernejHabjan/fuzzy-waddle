@@ -1,8 +1,8 @@
-import { JwtFromRequestFunction } from "passport-jwt";
+import { type JwtFromRequestFunction } from "passport-jwt";
 import { Strategy } from "passport-strategy";
-import { AuthUser, SupabaseClient } from "@supabase/supabase-js";
+import { type AuthUser, SupabaseClient } from "@supabase/supabase-js";
 import { SUPABASE_AUTH, UNAUTHORIZED } from "./constants";
-import { SupabaseAuthStrategyOptions } from "./options.interface";
+import { type SupabaseAuthStrategyOptions } from "./options.interface";
 import { UserAuthCacheService } from "../../../core/cache/user-auth-cache.service.ts/user-auth-cache.service";
 
 // fixes https://github.com/hiro1107/nestjs-supabase-auth/issues/7

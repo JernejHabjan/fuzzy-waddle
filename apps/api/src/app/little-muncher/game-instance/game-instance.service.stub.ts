@@ -1,16 +1,16 @@
 import {
-  GameInstanceDataDto,
-  LittleMuncherGameCreateDto,
+  type GameInstanceDataDto,
+  type LittleMuncherGameCreateDto,
   LittleMuncherGameInstance,
-  LittleMuncherGameInstanceData,
-  LittleMuncherRoom,
-  LittleMuncherRoomEvent,
-  LittleMuncherSpectatorEvent,
-  RoomAction,
-  SpectatorAction
+  type LittleMuncherGameInstanceData,
+  type LittleMuncherRoom,
+  type LittleMuncherRoomEvent,
+  type LittleMuncherSpectatorEvent,
+  type RoomAction,
+  type SpectatorAction
 } from "@fuzzy-waddle/api-interfaces";
-import { User } from "../../../users/users.service";
-import { GameInstanceServiceInterface } from "./game-instance.service.interface";
+import { type User } from "../../../users/users.service";
+import { type GameInstanceServiceInterface } from "./game-instance.service.interface";
 
 export const GameInstanceServiceStub = {
   findGameInstance(gameInstanceId: string): LittleMuncherGameInstance | undefined {

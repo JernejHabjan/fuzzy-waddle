@@ -1,6 +1,5 @@
 import { State } from "mistreevous";
-import { IPlayerControllerAgent } from "./player-ai-controller.agent.interface";
-import { Agent } from "mistreevous/dist/Agent";
+import { type IPlayerControllerAgent } from "./player-ai-controller.agent.interface";
 import { PlayerAiBlackboard } from "../../../../entity/character/ai/player-ai/player-ai-blackboard";
 import { ObjectNames, ProbableWafflePlayer, ResourceType, type Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { environment } from "../../../../../../../environments/environment";
@@ -23,7 +22,7 @@ import GameObject = Phaser.GameObjects.GameObject;
 import { MapAnalyzer } from "../../../../entity/character/ai/player-ai/map-analyzer";
 import { BasePlanner } from "../../../../entity/character/ai/player-ai/base-planner";
 
-export class PlayerAiControllerAgent implements IPlayerControllerAgent, Agent {
+export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   private readonly baseHeavyAttackThreshold = 10; // Enemy units count for a heavy attack
   private readonly militaryPowerThreshold = 3; // Minimum military power to attack
   private readonly resourceSurplusThreshold = 500; // Surplus resources needed for expansion or upgrades

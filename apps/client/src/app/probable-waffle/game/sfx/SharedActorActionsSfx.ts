@@ -1,4 +1,4 @@
-import { SoundDefinition } from "../entity/actor/components/audio-actor-component";
+import { type SoundDefinition } from "../entity/actor/components/audio-actor-component";
 import { AudioSprites } from "./AudioSprites";
 
 // This file was generated from "convert-to-enums.js" script

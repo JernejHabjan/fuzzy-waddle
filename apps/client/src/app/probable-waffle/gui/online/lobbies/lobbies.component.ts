@@ -1,14 +1,14 @@
 import { Component, EventEmitter, inject, type OnDestroy, type OnInit, Output } from "@angular/core";
 import {
-  type GameSessionState,
-  type ProbableWaffleGameInstanceType,
-  type ProbableWaffleGameInstanceVisibility,
+  GameSessionState,
+  ProbableWaffleGameInstanceType,
+  ProbableWaffleGameInstanceVisibility,
   ProbableWaffleLevels,
   type ProbableWaffleMapData,
   type ProbableWaffleMapEnum,
   ProbableWafflePlayerType,
   type ProbableWaffleRoom,
-  type ProbableWaffleRoomHelper
+  ProbableWaffleRoomHelper
 } from "@fuzzy-waddle/api-interfaces";
 import { RoomsService } from "../../../communicators/rooms/rooms.service";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";

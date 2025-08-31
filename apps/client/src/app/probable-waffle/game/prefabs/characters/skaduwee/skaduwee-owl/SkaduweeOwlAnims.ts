@@ -1,4 +1,4 @@
-import { AnimationDefinitionMap, AnimationType } from "../../../../entity/actor/components/animation-actor-component";
+import { type AnimationDefinitionMap, AnimationType } from "../../../../entity/actor/components/animation-actor-component";
 
 const ANIM_SKADUWEE_OWL_IDLE_DOWN = "skaduwee/owl/idle/down";
 const ANIM_SKADUWEE_OWL_IDLE_RIGHT = "skaduwee/owl/idle/right";

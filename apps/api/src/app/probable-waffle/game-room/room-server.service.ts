@@ -1,21 +1,21 @@
 import { Injectable } from "@nestjs/common";
 import { RoomGateway } from "./room.gateway";
 import {
-  CommunicatorEvent,
+  type CommunicatorEvent,
   GameSessionState,
-  ProbableWaffleCommunicatorType,
+  type ProbableWaffleCommunicatorType,
   ProbableWaffleGameInstance,
   ProbableWaffleGameInstanceVisibility,
-  ProbableWaffleGetRoomsDto,
-  ProbableWafflePlayerDataChangeEvent,
-  ProbableWaffleRoom,
-  ProbableWaffleRoomEvent,
-  ProbableWaffleSpectatorDataChangeEvent,
-  RoomAction
+  type ProbableWaffleGetRoomsDto,
+  type ProbableWafflePlayerDataChangeEvent,
+  type ProbableWaffleRoom,
+  type ProbableWaffleRoomEvent,
+  type ProbableWaffleSpectatorDataChangeEvent,
+  type RoomAction
 } from "@fuzzy-waddle/api-interfaces";
-import { User } from "@supabase/supabase-js";
+import { type User } from "@supabase/supabase-js";
 import { GameInstanceHolderService } from "../game-instance/game-instance-holder.service";
-import { RoomServerServiceInterface } from "./room-server.service.interface";
+import { type RoomServerServiceInterface } from "./room-server.service.interface";
 
 @Injectable()
 export class RoomServerService implements RoomServerServiceInterface {

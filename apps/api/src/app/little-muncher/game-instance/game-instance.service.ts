@@ -1,20 +1,20 @@
 import { Injectable } from "@nestjs/common";
-import { User } from "@supabase/supabase-js";
+import { type User } from "@supabase/supabase-js";
 import {
-  GameInstanceDataDto,
+  type GameInstanceDataDto,
   GameSessionState,
-  LittleMuncherGameCreateDto,
+  type LittleMuncherGameCreateDto,
   LittleMuncherGameInstance,
-  LittleMuncherGameInstanceData,
-  LittleMuncherRoom,
-  LittleMuncherRoomEvent,
-  LittleMuncherSpectatorEvent,
-  RoomAction,
-  SpectatorAction
+  type LittleMuncherGameInstanceData,
+  type LittleMuncherRoom,
+  type LittleMuncherRoomEvent,
+  type LittleMuncherSpectatorEvent,
+  type RoomAction,
+  type SpectatorAction
 } from "@fuzzy-waddle/api-interfaces";
 import { Cron, CronExpression } from "@nestjs/schedule";
 import { GameInstanceGateway } from "./game-instance.gateway";
-import { GameInstanceServiceInterface } from "./game-instance.service.interface";
+import { type GameInstanceServiceInterface } from "./game-instance.service.interface";
 
 @Injectable()
 export class GameInstanceService implements GameInstanceServiceInterface {

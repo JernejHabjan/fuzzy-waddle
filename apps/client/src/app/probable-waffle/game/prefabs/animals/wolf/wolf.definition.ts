@@ -1,4 +1,7 @@
 import type { PrefabDefinition } from "../../../data/actor-definitions";
+import { ActorPhysicalType } from "../../../entity/combat/components/health-component";
+import { ANIM_WOLF_DEFINITION } from "./anims-wolf";
+import { weaponDefinitions } from "../../../entity/combat/attack-data";
 
 export const wolfDefinition = {
   components: {

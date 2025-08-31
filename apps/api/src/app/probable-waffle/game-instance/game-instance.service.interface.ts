@@ -1,9 +1,9 @@
 import {
   ProbableWaffleGameInstance,
-  ProbableWaffleGameInstanceData,
-  ProbableWaffleGameInstanceMetadataData
+  type ProbableWaffleGameInstanceData,
+  type ProbableWaffleGameInstanceMetadataData
 } from "@fuzzy-waddle/api-interfaces";
-import { User } from "@supabase/supabase-js";
+import { type User } from "@supabase/supabase-js";
 
 export interface GameInstanceServiceInterface {
   createGameInstance(gameInstanceMetadataData: ProbableWaffleGameInstanceMetadataData, user: User);

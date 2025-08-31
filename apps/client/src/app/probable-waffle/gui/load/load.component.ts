@@ -2,8 +2,8 @@ import { Component, inject } from "@angular/core";
 import type { OnInit } from "@angular/core";
 
 import {
-  ProbableWaffleGameInstanceData,
-  ProbableWaffleGameInstanceSaveData,
+  type ProbableWaffleGameInstanceData,
+  type ProbableWaffleGameInstanceSaveData,
   ProbableWaffleLevels
 } from "@fuzzy-waddle/api-interfaces";
 import { Router } from "@angular/router";

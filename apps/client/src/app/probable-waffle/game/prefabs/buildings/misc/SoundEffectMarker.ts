@@ -6,7 +6,7 @@
 import { onSceneInitialized } from "../../../data/game-object-helper";
 import { getSceneService } from "../../../world/components/scene-component-helpers";
 import { AudioService } from "../../../world/services/audio.service";
-import { SoundDefinition } from "../../../entity/actor/components/audio-actor-component";
+import { type SoundDefinition } from "../../../entity/actor/components/audio-actor-component";
 import {
   EnvironmentSfxBirdsSounds,
   EnvironmentSfxLavaSounds,

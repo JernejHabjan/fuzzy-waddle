@@ -1,7 +1,7 @@
-import { Component, inject, Input, NgZone, OnDestroy, ViewChild } from "@angular/core";
+import { Component, inject, Input, NgZone, type OnDestroy, ViewChild } from "@angular/core";
 import { BaseGame } from "../phaser/game/base-game";
 import type { Types } from "phaser";
-import { BaseGameData } from "../phaser/game/base-game-data";
+import { type BaseGameData } from "../phaser/game/base-game-data";
 import { GameContainerElement } from "./game-container";
 import { AngularHost } from "../../consts";
 

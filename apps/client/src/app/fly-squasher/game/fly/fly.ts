@@ -2,7 +2,7 @@ import { Subject, Subscription } from "rxjs";
 import { BaseScene } from "../../../shared/game/phaser/scene/base.scene";
 import { FlyBase } from "./FlyBase";
 import { FlySoundComponent } from "./components/fly-sound-component";
-import { FlyMovementComponent, WorldSpeedState } from "./components/fly-movement-component";
+import { FlyMovementComponent, type WorldSpeedState } from "./components/fly-movement-component";
 import { FlyHealthSystem } from "./components/fly-health.system";
 import { FlyRepresentableComponent } from "./components/fly-representable-component";
 import { FlyHealthComponent } from "./components/fly-health-component";

@@ -1,4 +1,4 @@
-import { IFlyBase } from "../component.service";
+import { type IFlyBase } from "../component.service";
 import { FlyRepresentableComponent } from "./fly-representable-component";
 import { Subject, Subscription } from "rxjs";
 import { FlyMovementComponent } from "./fly-movement-component";

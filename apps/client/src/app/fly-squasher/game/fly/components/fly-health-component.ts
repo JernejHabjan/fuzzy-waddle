@@ -1,6 +1,6 @@
-import { FlyHealthBarOptions, FlyHealthUiComponent } from "./fly-health-ui-component";
+import { type FlyHealthBarOptions, FlyHealthUiComponent } from "./fly-health-ui-component";
 import { EventEmitter } from "@angular/core";
-import { IFlyBase } from "../component.service";
+import { type IFlyBase } from "../component.service";
 import { FlyBase } from "../FlyBase";
 
 export type HealthDefinition = {

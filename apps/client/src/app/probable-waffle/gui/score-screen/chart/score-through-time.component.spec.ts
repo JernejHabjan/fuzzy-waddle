@@ -4,12 +4,12 @@ import { Component, Input } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import {
   FactionType,
-  PlayerLobbyDefinition,
-  PlayerStateActionBuildingConstructed,
-  PlayerStateActionBuildingDestroyed,
-  PlayerStateActionUnitKilled,
-  PlayerStateActionUnitProduced,
-  PositionPlayerDefinition,
+  type PlayerLobbyDefinition,
+  type PlayerStateActionBuildingConstructed,
+  type PlayerStateActionBuildingDestroyed,
+  type PlayerStateActionUnitKilled,
+  type PlayerStateActionUnitProduced,
+  type PositionPlayerDefinition,
   ProbableWaffleGameInstanceType,
   ProbableWaffleGameInstanceVisibility,
   ProbableWafflePlayerType

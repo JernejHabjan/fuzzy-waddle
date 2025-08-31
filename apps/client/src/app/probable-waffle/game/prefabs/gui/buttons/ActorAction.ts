@@ -7,7 +7,7 @@ import PushActionScript from "../../../../../shared/game/phaser/script-nodes/Pus
 import OnPointerUpScript from "../../../../../shared/game/phaser/script-nodes-basic/OnPointerUpScript";
 import EmitEventActionScript from "../../../../../shared/game/phaser/script-nodes-basic/EmitEventActionScript";
 /* START-USER-IMPORTS */
-import ActorDefinitionTooltip, { TooltipInfo } from "../labels/ActorDefinitionTooltip";
+import ActorDefinitionTooltip, { type TooltipInfo } from "../labels/ActorDefinitionTooltip";
 import HudProbableWaffle from "../../../scenes/hud-scenes/HudProbableWaffle";
 import { getGameObjectBounds } from "../../../data/game-object-helper";
 import { IconHelper } from "../labels/IconHelper";

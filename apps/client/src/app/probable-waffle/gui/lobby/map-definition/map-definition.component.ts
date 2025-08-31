@@ -4,8 +4,8 @@ import {
   ElementRef,
   HostListener,
   inject,
-  OnDestroy,
-  OnInit,
+  type OnDestroy,
+  type OnInit,
   ViewChild
 } from "@angular/core";
 import {
@@ -18,7 +18,7 @@ import {
   type ProbableWafflePlayerDataChangeEventProperty
 } from "@fuzzy-waddle/api-interfaces";
 import {
-  ProbableWaffleCommunicators,
+  type ProbableWaffleCommunicators,
   SceneCommunicatorClientService
 } from "../../../communicators/scene-communicator-client.service";
 import { Subscription } from "rxjs";

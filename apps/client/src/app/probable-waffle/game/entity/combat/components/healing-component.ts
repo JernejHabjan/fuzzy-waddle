@@ -4,7 +4,7 @@ import { onObjectReady } from "../../../data/game-object-helper";
 import { getSceneService } from "../../../world/components/scene-component-helpers";
 import { AudioService } from "../../../world/services/audio.service";
 import { SharedActorActionsSfxHealSounds } from "../../../sfx/SharedActorActionsSfx";
-import { HealingComponentData } from "@fuzzy-waddle/api-interfaces";
+import { type HealingComponentData } from "@fuzzy-waddle/api-interfaces";
 
 export type HealingDefinition = {
   healPerCooldown: number;

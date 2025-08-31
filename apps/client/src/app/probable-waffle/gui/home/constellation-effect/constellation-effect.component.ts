@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy } from "@angular/core";
+import { type AfterViewInit, Component, type OnDestroy } from "@angular/core";
 import { ConstellationParticle } from "./constellation-particle";
 
 type MousePosition = { x?: number; y?: number };

@@ -3,8 +3,8 @@ import { Subscription } from "rxjs";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { RoomsService } from "../../../communicators/rooms/rooms.service";
 import { FactionType, type ProbableWaffleGameFoundEvent, ProbableWaffleLevels } from "@fuzzy-waddle/api-interfaces";
-import { MatchmakingLevel, type MatchmakingOptions } from "./matchmaking.component";
-import { IMatchmakingService } from "./matchmaking.service.interface";
+import { type MatchmakingLevel, type MatchmakingOptions } from "./matchmaking.component";
+import { type IMatchmakingService } from "./matchmaking.service.interface";
 import { environment } from "../../../../../environments/environment";
 
 @Injectable({

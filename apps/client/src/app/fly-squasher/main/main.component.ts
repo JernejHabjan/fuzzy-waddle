@@ -2,12 +2,12 @@ import { Component, inject, Input, type OnDestroy, type OnInit } from "@angular/
 import { flySquasherGameConfig } from "../game/consts/game-config";
 import { FlySquasherGameInstance, FlySquasherLevels, FlySquasherUserInfo } from "@fuzzy-waddle/api-interfaces";
 import { AuthService } from "../../auth/auth.service";
-import { FlySquasherGameData } from "../game/fly-squasher-game-data";
+import { type FlySquasherGameData } from "../game/fly-squasher-game-data";
 import { FlySquasherCommunicatorService } from "../game/fly-squasher-communicator.service";
 import { SceneCommunicatorClientService } from "./scene-communicator-client.service";
 import { Router } from "@angular/router";
 import { PreventNavigateBack } from "../../shared/handlers/prevent-navigate-back";
-import { ModalConfig } from "../../shared/components/modal/modal-config";
+import { type ModalConfig } from "../../shared/components/modal/modal-config";
 
 import { GameContainerComponent } from "../../shared/game/game-container/game-container.component";
 import { AngularHost } from "../../shared/consts";

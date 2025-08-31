@@ -2,7 +2,7 @@ import { inject, Injectable } from "@angular/core";
 import { FlySquasherCommunicatorService } from "../game/fly-squasher-communicator.service";
 import { HighScoreService } from "../high-score/high-score.service";
 import { Subscription } from "rxjs";
-import { SceneCommunicatorClientServiceInterface } from "./scene-communicator-client.service.interface";
+import { type SceneCommunicatorClientServiceInterface } from "./scene-communicator-client.service.interface";
 
 @Injectable({
   providedIn: "root"

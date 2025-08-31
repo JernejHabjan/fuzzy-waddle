@@ -2,15 +2,15 @@ import { PaymentType } from "../payment-type";
 import { ProductionQueue } from "./production-queue";
 import { OwnerComponent } from "../../actor/components/owner-component";
 import { getActorComponent } from "../../../data/actor-component";
-import { ProductionCostDefinition } from "./production-cost-component";
+import { type ProductionCostDefinition } from "./production-cost-component";
 import { emitResource, getCommunicator, getCurrentPlayerNumber, getPlayer } from "../../../data/scene-data";
 import {
-  ActorDefinition,
+  type ActorDefinition,
   ConstructionStateEnum,
   ObjectNames,
-  ProductionComponentData,
+  type ProductionComponentData,
   ResourceType,
-  Vector3Simple
+  type Vector3Simple
 } from "@fuzzy-waddle/api-interfaces";
 import { HealthComponent } from "../../combat/components/health-component";
 import { getSceneService } from "../../../world/components/scene-component-helpers";

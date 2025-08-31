@@ -1,11 +1,11 @@
-import { Injectable, OnDestroy } from "@angular/core";
+import { Injectable, type OnDestroy } from "@angular/core";
 import { Socket } from "ngx-socket-io";
 import {
-  LittleMuncherCommunicatorClimbingEvent,
-  LittleMuncherCommunicatorPauseEvent,
-  LittleMuncherCommunicatorResetEvent,
-  LittleMuncherCommunicatorScoreEvent,
-  LittleMuncherCommunicatorType,
+  type LittleMuncherCommunicatorClimbingEvent,
+  type LittleMuncherCommunicatorPauseEvent,
+  type LittleMuncherCommunicatorResetEvent,
+  type LittleMuncherCommunicatorScoreEvent,
+  type LittleMuncherCommunicatorType,
   LittleMuncherGatewayEvent,
   LittleMuncherPosition
 } from "@fuzzy-waddle/api-interfaces";

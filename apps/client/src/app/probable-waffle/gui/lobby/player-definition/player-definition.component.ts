@@ -3,7 +3,7 @@ import { FactionDefinitions } from "../../../game/player/faction-definitions";
 import { faCheck, faSpinner, faTimes } from "@fortawesome/free-solid-svg-icons";
 import {
   GameSetupHelpers,
-  PositionPlayerDefinition,
+  type PositionPlayerDefinition,
   ProbableWaffleAiDifficulty,
   ProbableWaffleGameInstanceType,
   ProbableWaffleLevels,

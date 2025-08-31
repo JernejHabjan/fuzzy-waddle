@@ -1,4 +1,4 @@
-import { AnimationDefinitionMap, AnimationType } from "../../../entity/actor/components/animation-actor-component";
+import { type AnimationDefinitionMap, AnimationType } from "../../../entity/actor/components/animation-actor-component";
 
 const ANIM_BADGER_BURROW_NE = "badger/burrow/ne";
 const ANIM_BADGER_BURROW_NW = "badger/burrow/nw";

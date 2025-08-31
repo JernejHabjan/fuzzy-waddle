@@ -1,15 +1,15 @@
 import {
-  GameInstanceDataDto,
-  LittleMuncherGameCreateDto,
+  type GameInstanceDataDto,
+  type LittleMuncherGameCreateDto,
   LittleMuncherGameInstance,
-  LittleMuncherGameInstanceData,
-  LittleMuncherRoom,
-  LittleMuncherRoomEvent,
-  LittleMuncherSpectatorEvent,
-  RoomAction,
-  SpectatorAction
+  type LittleMuncherGameInstanceData,
+  type LittleMuncherRoom,
+  type LittleMuncherRoomEvent,
+  type LittleMuncherSpectatorEvent,
+  type RoomAction,
+  type SpectatorAction
 } from "@fuzzy-waddle/api-interfaces";
-import { User } from "@supabase/supabase-js";
+import { type User } from "@supabase/supabase-js";
 
 export interface GameInstanceServiceInterface {
   startGame(body: GameInstanceDataDto, user: User);

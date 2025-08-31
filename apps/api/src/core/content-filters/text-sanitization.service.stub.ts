@@ -1,4 +1,4 @@
-import { ITextSanitizationService } from "./text-sanitization.service.interface";
+import { type ITextSanitizationService } from "./text-sanitization.service.interface";
 
 export const textSanitizationServiceStub = {
   cleanBadWords(text: string): string {

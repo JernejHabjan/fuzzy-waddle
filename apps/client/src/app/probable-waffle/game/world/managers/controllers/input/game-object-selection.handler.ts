@@ -16,8 +16,8 @@ import { ProductionCostComponent } from "../../../../entity/building/production/
 import { HealthComponent } from "../../../../entity/combat/components/health-component";
 import {
   ObjectNames,
-  ProbableWaffleDoubleSelectionData,
-  ProbableWaffleSelectionData
+  type ProbableWaffleDoubleSelectionData,
+  type ProbableWaffleSelectionData
 } from "@fuzzy-waddle/api-interfaces";
 import { getActorSystem } from "../../../../data/actor-system";
 import { MovementSystem } from "../../../../entity/systems/movement.system";

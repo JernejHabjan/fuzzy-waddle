@@ -1,4 +1,4 @@
-import { GameInstanceClientServiceInterface } from "./game-instance-client.service.interface";
+import { type GameInstanceClientServiceInterface } from "./game-instance-client.service.interface";
 
 export const gameInstanceClientServiceStub = {
   get gameInstanceId(): string | null {

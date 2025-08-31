@@ -1,6 +1,6 @@
 import { DamageType } from "./damage-type";
 import { AnimationType } from "../actor/components/animation-actor-component";
-import { SoundDefinition } from "../actor/components/audio-actor-component";
+import { type SoundDefinition } from "../actor/components/audio-actor-component";
 import {
   SharedActorActionsSfxArrowHitSounds,
   SharedActorActionsSfxArrowShootMultipleSounds,

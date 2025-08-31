@@ -1,5 +1,5 @@
-import { AuthUser } from "@supabase/supabase-js";
-import { IChatService } from "./chat.service.interface";
+import { type AuthUser } from "@supabase/supabase-js";
+import { type IChatService } from "./chat.service.interface";
 
 export const chatServiceStub = {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

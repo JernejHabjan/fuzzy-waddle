@@ -1,8 +1,8 @@
 import {
-  LittleMuncherGameCreate,
+  type LittleMuncherGameCreate,
   LittleMuncherGameInstance,
-  LittleMuncherGameInstanceData,
-  LittleMuncherLevel
+  type LittleMuncherGameInstanceData,
+  type LittleMuncherLevel
 } from "@fuzzy-waddle/api-interfaces";
 
 export interface GameInstanceClientServiceInterface {

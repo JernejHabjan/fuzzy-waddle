@@ -1,6 +1,6 @@
 import Phaser, { GameObjects, Geom, Input } from "phaser";
 import HudProbableWaffle from "../../../../scenes/hud-scenes/HudProbableWaffle";
-import { ProbableWaffleSelectionData } from "@fuzzy-waddle/api-interfaces";
+import { type ProbableWaffleSelectionData } from "@fuzzy-waddle/api-interfaces";
 import { getSceneComponent } from "../../../components/scene-component-helpers";
 import { ProbableWaffleScene } from "../../../../core/probable-waffle.scene";
 import { BuildingCursor } from "../building-cursor";

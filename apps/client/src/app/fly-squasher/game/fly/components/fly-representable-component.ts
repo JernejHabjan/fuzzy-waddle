@@ -1,8 +1,8 @@
-import { IFlyBase } from "../component.service";
+import { type IFlyBase } from "../component.service";
 import { FlyPrefab } from "../fly-prefab";
 import { BaseScene } from "../../../../shared/game/phaser/scene/base.scene";
 import { FlyBase } from "../FlyBase";
-import { FlyOptions } from "../fly";
+import { type FlyOptions } from "../fly";
 import { ANIM_BLOOD_SPLATTER } from "../blood-splatter";
 
 export class FlyRepresentableComponent implements IFlyBase {

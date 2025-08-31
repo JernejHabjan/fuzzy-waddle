@@ -3,7 +3,7 @@ import type { OnInit } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { map, Observable } from "rxjs";
 import { HttpClient } from "@angular/common/http";
-import { Attribution } from "./attribution";
+import { type Attribution } from "./attribution";
 import { HomeNavComponent } from "../../shared/components/home-nav/home-nav.component";
 
 interface GroupedAttribution {

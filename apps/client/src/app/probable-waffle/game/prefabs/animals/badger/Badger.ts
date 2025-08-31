@@ -4,13 +4,13 @@
 
 /* START-USER-IMPORTS */
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
-import { AnimationActorComponent, AnimationOptions } from "../../../entity/actor/components/animation-actor-component";
+import { AnimationActorComponent, type AnimationOptions } from "../../../entity/actor/components/animation-actor-component";
 import { getActorComponent } from "../../../data/actor-component";
 import {
   getRandomTileInNavigableRadius,
   moveGameObjectToRandomTileInNavigableRadius,
   MovementSystem,
-  PathMoveConfig
+  type PathMoveConfig
 } from "../../../entity/systems/movement.system";
 import { getActorSystem } from "../../../data/actor-system";
 import { onObjectReady } from "../../../data/game-object-helper";

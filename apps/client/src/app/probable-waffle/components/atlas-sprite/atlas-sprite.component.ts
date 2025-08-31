@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, inject, Input, ViewChild } from "@angular/core";
+import { type AfterViewInit, Component, ElementRef, inject, Input, ViewChild } from "@angular/core";
 
 import { AtlasService } from "../../services/atlas/atlas.service";
 

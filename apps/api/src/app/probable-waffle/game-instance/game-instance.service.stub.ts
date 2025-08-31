@@ -1,10 +1,10 @@
 import {
   ProbableWaffleGameInstance,
-  ProbableWaffleGameInstanceData,
-  ProbableWaffleGameInstanceMetadataData
+  type ProbableWaffleGameInstanceData,
+  type ProbableWaffleGameInstanceMetadataData
 } from "@fuzzy-waddle/api-interfaces";
-import { User } from "../../../users/users.service";
-import { GameInstanceServiceInterface } from "./game-instance.service.interface";
+import { type User } from "../../../users/users.service";
+import { type GameInstanceServiceInterface } from "./game-instance.service.interface";
 
 export const GameInstanceServiceStub = {
   findGameInstance(gameInstanceId: string): ProbableWaffleGameInstance | undefined {

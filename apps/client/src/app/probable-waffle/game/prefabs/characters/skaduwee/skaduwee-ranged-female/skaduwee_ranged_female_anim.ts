@@ -12,7 +12,7 @@ const ANIM_SKADUWEE_RANGED_FEMALE_WALK_LEFT = "skaduwee_ranged_female_walk_left"
 const ANIM_SKADUWEE_RANGED_FEMALE_WALK_DOWN = "skaduwee_ranged_female_walk_down";
 const ANIM_SKADUWEE_RANGED_FEMALE_WALK_RIGHT = "skaduwee_ranged_female_walk_right";
 
-import { AnimationDefinitionMap, AnimationType } from "../../../../entity/actor/components/animation-actor-component";
+import { type AnimationDefinitionMap, AnimationType } from "../../../../entity/actor/components/animation-actor-component";
 
 export const ANIM_SKADUWEE_RANGED_FEMALE_DEFINITION: AnimationDefinitionMap = {
   [AnimationType.Idle]: {

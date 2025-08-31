@@ -1,13 +1,13 @@
 import {
-  PlayerStateResources,
-  ProbableWaffleGameStateDataChangeEvent,
-  ProbableWaffleGameStateDataChangeEventProperty,
-  ProbableWaffleGameStateDataPayload,
+  type PlayerStateResources,
+  type ProbableWaffleGameStateDataChangeEvent,
+  type ProbableWaffleGameStateDataChangeEventProperty,
+  type ProbableWaffleGameStateDataPayload,
   ProbableWafflePlayer,
-  ProbableWafflePlayerDataChangeEvent,
-  ProbableWafflePlayerDataChangeEventPayload,
-  ProbableWafflePlayerDataChangeEventProperty,
-  Vector3Simple
+  type ProbableWafflePlayerDataChangeEvent,
+  type ProbableWafflePlayerDataChangeEventPayload,
+  type ProbableWafflePlayerDataChangeEventProperty,
+  type Vector3Simple
 } from "@fuzzy-waddle/api-interfaces";
 import { Scene } from "phaser";
 import { ProbableWaffleScene } from "../core/probable-waffle.scene";
@@ -23,7 +23,7 @@ import { GathererComponent } from "../entity/actor/components/gatherer-component
 import { SelectableComponent } from "../entity/actor/components/selectable-component";
 import { HealthComponent } from "../entity/combat/components/health-component";
 import { VisionComponent } from "../entity/actor/components/vision-component";
-import { GameObjectActionAssignerConfig } from "../world/managers/controllers/game-object-action-assigner";
+import { type GameObjectActionAssignerConfig } from "../world/managers/controllers/game-object-action-assigner";
 
 export function getPlayer(scene: Scene, playerNumber?: number): ProbableWafflePlayer | undefined {
   if (!scene) {

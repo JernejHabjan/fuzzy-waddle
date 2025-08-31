@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { IUsersService } from "./users.service.interface";
+import { type IUsersService } from "./users.service.interface";
 
 // This should be a real class/interface representing a user entity
 export type User = any;

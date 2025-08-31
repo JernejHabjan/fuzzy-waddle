@@ -1,5 +1,5 @@
 import { Component, inject } from "@angular/core";
-import { ProbableWaffleDataChangeEventProperty, ProbableWaffleGameModeData } from "@fuzzy-waddle/api-interfaces";
+import { type ProbableWaffleDataChangeEventProperty, type ProbableWaffleGameModeData } from "@fuzzy-waddle/api-interfaces";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 
 import { FormsModule } from "@angular/forms";

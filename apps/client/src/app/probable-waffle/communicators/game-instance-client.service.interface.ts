@@ -10,7 +10,7 @@ import type {
   ProbableWaffleGameInstanceVisibility,
   ProbableWaffleGameModeData
 } from "@fuzzy-waddle/api-interfaces";
-import { MatchmakingOptions } from "../gui/online/matchmaking/matchmaking.component";
+import { type MatchmakingOptions } from "../gui/online/matchmaking/matchmaking.component";
 import { Observable, Subject } from "rxjs";
 
 export interface GameInstanceClientServiceInterface {

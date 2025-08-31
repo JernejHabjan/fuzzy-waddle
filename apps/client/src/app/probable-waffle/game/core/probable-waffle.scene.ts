@@ -1,21 +1,21 @@
 import { BaseScene } from "../../../shared/game/phaser/scene/base.scene";
-import { ProbableWaffleGameData } from "./probable-waffle-game-data";
+import { type ProbableWaffleGameData } from "./probable-waffle-game-data";
 import {
   ProbableWaffleGameMode,
-  ProbableWaffleGameModeData,
+  type ProbableWaffleGameModeData,
   ProbableWaffleGameState,
-  ProbableWaffleGameStateData,
+  type ProbableWaffleGameStateData,
   ProbableWaffleLevels,
-  ProbableWaffleMapData,
+  type ProbableWaffleMapData,
   ProbableWafflePlayer,
-  ProbableWafflePlayerControllerData,
-  ProbableWafflePlayerStateData,
+  type ProbableWafflePlayerControllerData,
+  type ProbableWafflePlayerStateData,
   ProbableWaffleSpectator,
-  ProbableWaffleSpectatorData
+  type ProbableWaffleSpectatorData
 } from "@fuzzy-waddle/api-interfaces";
 import { ProbableWaffleCommunicatorService } from "../../communicators/probable-waffle-communicator.service";
 import { BehaviorSubject } from "rxjs";
-import { ProbableWaffleSceneData } from "../scenes/GameProbableWaffleScene";
+import { type ProbableWaffleSceneData } from "../scenes/GameProbableWaffleScene";
 
 export class ProbableWaffleScene extends BaseScene<
   ProbableWaffleGameData,

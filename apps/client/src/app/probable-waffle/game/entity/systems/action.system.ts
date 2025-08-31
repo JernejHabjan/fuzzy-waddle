@@ -25,7 +25,7 @@ import { ContainableComponent } from "../actor/components/containable-component"
 import { AudioActorComponent } from "../actor/components/audio-actor-component";
 import { WalkableComponent } from "../actor/components/walkable-component";
 import { FlightComponent } from "../actor/components/flight-component";
-import { GameObjectActionAssignerConfig } from "../../world/managers/controllers/game-object-action-assigner";
+import { type GameObjectActionAssignerConfig } from "../../world/managers/controllers/game-object-action-assigner";
 
 export class ActionSystem {
   private playerChangedSubscription?: Subscription;

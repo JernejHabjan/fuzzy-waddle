@@ -4,7 +4,7 @@ import { environment } from "../../../environments/environment";
 import { HttpClient } from "@angular/common/http";
 import {
   type DifficultyModifiers,
-  type GameSessionState,
+  GameSessionState,
   GameSetupHelpers,
   getRandomFactionType,
   type MapTuning,

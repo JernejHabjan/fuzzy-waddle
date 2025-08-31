@@ -1,4 +1,4 @@
-import { AtlasServiceInterface } from "./atlas.service.interface";
+import { type AtlasServiceInterface } from "./atlas.service.interface";
 
 export const atlasServiceStub = {
   getSpriteFrame(): Promise<{

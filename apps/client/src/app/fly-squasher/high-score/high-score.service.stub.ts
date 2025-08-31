@@ -1,4 +1,4 @@
-import { HighScoreServiceInterface } from "./high-score.service.interface";
+import { type HighScoreServiceInterface } from "./high-score.service.interface";
 
 export const highScoreServiceStub = {
   postScore: () => {

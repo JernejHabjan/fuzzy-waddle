@@ -8,7 +8,7 @@ import { SingleSelectionHandler } from "../world/managers/controllers/input/sing
 import HudProbableWaffle from "./hud-scenes/HudProbableWaffle";
 import { GameObjectSelectionHandler } from "../world/managers/controllers/input/game-object-selection.handler";
 import { SceneGameState } from "../world/managers/game-state/scene-game-state";
-import { ProbableWaffleGameData } from "../core/probable-waffle-game-data";
+import { type ProbableWaffleGameData } from "../core/probable-waffle-game-data";
 import { SaveGame } from "../data/save-game";
 import { SceneActorCreator } from "../world/components/scene-actor-creator";
 import { NavigationService } from "../world/services/navigation.service";

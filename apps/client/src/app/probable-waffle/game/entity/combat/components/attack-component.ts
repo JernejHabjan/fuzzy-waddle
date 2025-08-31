@@ -1,7 +1,7 @@
-import { AttackData, ProjectileData, ProjectileType } from "../attack-data";
+import { type AttackData, type ProjectileData, ProjectileType } from "../attack-data";
 import { HealthComponent } from "./health-component";
 import { getActorComponent } from "../../../data/actor-component";
-import { AnimationActorComponent, AnimationOptions } from "../../actor/components/animation-actor-component";
+import { AnimationActorComponent, type AnimationOptions } from "../../actor/components/animation-actor-component";
 import {
   getGameObjectBounds,
   getGameObjectDepth,
@@ -21,7 +21,7 @@ import { GameplayLibrary } from "../../../library/gameplay-library";
 import { EffectsAnims } from "../../../animations/effects";
 import SkaduweeOwlFurball from "../../../prefabs/weapons/SkaduweeOwlFurball";
 import { FlightComponent } from "../../actor/components/flight-component";
-import { AttackComponentData } from "@fuzzy-waddle/api-interfaces";
+import { type AttackComponentData } from "@fuzzy-waddle/api-interfaces";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export type AttackDefinition = {

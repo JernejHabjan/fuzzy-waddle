@@ -5,7 +5,7 @@ import {
 } from "../../../../../entity/actor/components/object-descriptor-component";
 import {
   AudioActorComponent,
-  AudioDefinition,
+  type AudioDefinition,
   SoundType
 } from "../../../../../entity/actor/components/audio-actor-component";
 import { ActorsFoliageSfxBushSounds } from "./sfx-bush";

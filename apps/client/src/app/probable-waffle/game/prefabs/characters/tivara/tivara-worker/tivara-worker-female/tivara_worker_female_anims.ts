@@ -1,5 +1,5 @@
 import {
-  AnimationDefinitionMap,
+  type AnimationDefinitionMap,
   AnimationType
 } from "../../../../../entity/actor/components/animation-actor-component";
 

@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { UserInstanceServiceInterface } from "./user-instance.service.interface";
+import { type UserInstanceServiceInterface } from "./user-instance.service.interface";
 
 export interface GamesVisited {
   name: string;

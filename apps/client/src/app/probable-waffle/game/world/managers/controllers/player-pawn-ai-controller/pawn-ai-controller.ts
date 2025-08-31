@@ -1,18 +1,16 @@
 import { PlayerPawnAiControllerMdsl } from "./player-pawn-ai-controller.mdsl";
-import { BehaviourTree } from "mistreevous";
+import { BehaviourTree, type BehaviourTreeOptions } from "mistreevous";
 import Phaser from "phaser";
 import { PawnAiBlackboard } from "../../../../entity/character/ai/pawn-ai-blackboard";
 import { PlayerPawnAiControllerAgent } from "./player-pawn-ai-controller.agent";
 import { NodeDebugger } from "./node-debugger";
 import { OrderType } from "../../../../entity/character/ai/order-type";
 import { environment } from "../../../../../../../environments/environment";
-import { Agent } from "mistreevous/dist/Agent";
 import { HealthComponent } from "../../../../entity/combat/components/health-component";
 import { getSceneService } from "../../../components/scene-component-helpers";
 import { DebuggingService } from "../../../services/DebuggingService";
 import { Subscription } from "rxjs";
-import { BehaviourTreeOptions } from "mistreevous/dist/BehaviourTreeOptions";
-import { BackboardComponentData } from "@fuzzy-waddle/api-interfaces";
+import { type BackboardComponentData } from "@fuzzy-waddle/api-interfaces";
 
 export interface PawnAiDefinition {
   type: AiType;
@@ -21,7 +19,7 @@ export interface PawnAiDefinition {
 
 export class PawnAiController {
   readonly blackboard: PawnAiBlackboard = new PawnAiBlackboard(); // todo it's actually blackboard that should replicate
-  private readonly agent: Agent;
+  private readonly agent: PlayerPawnAiControllerAgent;
   private readonly behaviourTree: BehaviourTree;
   private elapsedTime: number = 0;
   private nodeDebugger?: NodeDebugger;

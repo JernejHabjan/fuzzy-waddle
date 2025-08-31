@@ -17,7 +17,7 @@ const ANIM_TIVARA_WORKER_MALE_WALK_DOWN = "tivara_worker_male_walk_down";
 const ANIM_TIVARA_WORKER_MALE_WALK_RIGHT = "tivara_worker_male_walk_right";
 
 import {
-  AnimationDefinitionMap,
+  type AnimationDefinitionMap,
   AnimationType
 } from "../../../../../entity/actor/components/animation-actor-component";
 

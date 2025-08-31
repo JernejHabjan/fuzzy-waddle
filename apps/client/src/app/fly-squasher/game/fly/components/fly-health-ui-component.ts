@@ -1,6 +1,6 @@
 import { GameObjects } from "phaser";
 import { FlyHealthComponent } from "./fly-health-component";
-import { IFlyBase } from "../component.service";
+import { type IFlyBase } from "../component.service";
 import { FlyBase } from "../FlyBase";
 
 export type FlyHealthBarOptions = {

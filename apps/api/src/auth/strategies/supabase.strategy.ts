@@ -3,8 +3,8 @@ import { PassportStrategy } from "@nestjs/passport";
 import { ExtractJwt } from "passport-jwt";
 import { AuthStrategies } from "./auth-strategies";
 import { SupabaseV2AuthStrategy } from "./supabase-auth-strategy/supabase-v2-auth.strategy";
-import { AuthUser } from "@supabase/supabase-js";
-import { SupabaseAuthStrategyOptions } from "./supabase-auth-strategy/options.interface";
+import { type AuthUser } from "@supabase/supabase-js";
+import { type SupabaseAuthStrategyOptions } from "./supabase-auth-strategy/options.interface";
 import { UserAuthCacheService } from "../../core/cache/user-auth-cache.service.ts/user-auth-cache.service";
 import { SupabaseProviderService } from "../../core/supabase-provider/supabase-provider.service";
 
