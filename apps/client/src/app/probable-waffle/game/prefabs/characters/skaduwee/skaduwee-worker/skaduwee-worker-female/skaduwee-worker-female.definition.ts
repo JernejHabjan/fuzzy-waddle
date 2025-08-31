@@ -14,7 +14,8 @@ import {
   SkaduweeWorkerFemaleSfxSelectSounds
 } from "../../../../../sfx/SkaduweeWorkerFemaleSfx";
 import { ANIM_SKADUWEE_WORKER_FEMALE_DEFINITION } from "./skaduwee_worker_female_anims";
-import type { PrefabDefinition } from "../../../../../data/actor-definitions";
+
+import type { PrefabDefinition } from "../../../../../data/prefab-definition";
 
 export const skaduweeWorkerFemaleDefinition = {
   ...skaduweeWorkerDefinition,

@@ -1,5 +1,5 @@
-import type { PrefabDefinition } from "../../../data/actor-definitions";
 import { ANIM_BOAR_DEFINITION } from "./anims-boar";
+import type { PrefabDefinition } from "../../../data/prefab-definition";
 
 export const boarDefinition = {
   components: {

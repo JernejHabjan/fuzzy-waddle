@@ -1,6 +1,6 @@
 import { generalWorkerDefinitions } from "../../shared/worker/worker-shared.definition";
-import type { PrefabDefinition } from "../../../../data/actor-definitions";
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import type { PrefabDefinition } from "../../../../data/prefab-definition";
 
 export const skaduweeWorkerDefinition: PrefabDefinition = {
   ...generalWorkerDefinitions,

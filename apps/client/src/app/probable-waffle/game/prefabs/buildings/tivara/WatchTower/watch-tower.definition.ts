@@ -2,8 +2,8 @@ import { ActorPhysicalType } from "../../../../entity/combat/components/health-c
 import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PaymentType } from "../../../../entity/building/payment-type";
 import { weaponDefinitions } from "../../../../entity/combat/attack-data";
-import type { PrefabDefinition } from "../../../../data/actor-definitions";
 import { coreConstructionSiteDefinition } from "../../shared/core-construction-site.definition";
+import type { PrefabDefinition } from "../../../../data/prefab-definition";
 
 export const watchTowerDefinition = {
   components: {

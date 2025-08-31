@@ -12,12 +12,13 @@ import HudProbableWaffle from "../../../scenes/hud-scenes/HudProbableWaffle";
 import { Subscription } from "rxjs";
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { getCurrentPlayerNumber, getSelectedActors, listenToSelectionEvents } from "../../../data/scene-data";
-import { type PrefabDefinition, pwActorDefinitions } from "../../../data/actor-definitions";
+import { pwActorDefinitions } from "../../../data/actor-definitions";
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { getActorComponent } from "../../../data/actor-component";
 import { HealthComponent } from "../../../entity/combat/components/health-component";
 import { ConstructionSiteComponent } from "../../../entity/building/construction/construction-site-component";
 import { OwnerComponent } from "../../../entity/actor/components/owner-component";
+import type { PrefabDefinition } from "../../../data/prefab-definition";
 /* END-USER-IMPORTS */
 
 export default class ActorInfoContainer extends Phaser.GameObjects.Container {

@@ -1,10 +1,10 @@
-import type { PrefabDefinition } from "../../../../data/actor-definitions";
 import { SoundType } from "../../../../entity/actor/components/audio-actor-component";
 import { TivaraOlivalSfxSelectionSounds } from "../../../../sfx/TivaraOlivalSfx";
 import { ActorPhysicalType } from "../../../../entity/combat/components/health-component";
 import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PaymentType } from "../../../../entity/building/payment-type";
 import { coreConstructionSiteDefinition } from "../../shared/core-construction-site.definition";
+import type { PrefabDefinition } from "../../../../data/prefab-definition";
 
 export const olivalDefinition = {
   components: {

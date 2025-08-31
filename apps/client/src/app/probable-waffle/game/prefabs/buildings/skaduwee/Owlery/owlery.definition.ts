@@ -1,4 +1,3 @@
-import type { PrefabDefinition } from "../../../../data/actor-definitions";
 import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import {
   ANIM_BUILDING_ICON_ANIMS_SKADUWEE_OWLERY_ACTION,
@@ -7,6 +6,7 @@ import {
 import { ActorPhysicalType } from "../../../../entity/combat/components/health-component";
 import { PaymentType } from "../../../../entity/building/payment-type";
 import { coreConstructionSiteDefinition } from "../../shared/core-construction-site.definition";
+import type { PrefabDefinition } from "../../../../data/prefab-definition";
 
 export const owleryDefinition = {
   components: {

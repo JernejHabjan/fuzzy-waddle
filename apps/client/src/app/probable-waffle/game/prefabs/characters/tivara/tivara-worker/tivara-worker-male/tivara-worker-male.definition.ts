@@ -1,4 +1,3 @@
-import type { PrefabDefinition } from "../../../../../data/actor-definitions";
 import {
   TivaraWorkerMaleSfxAttackSounds,
   TivaraWorkerMaleSfxBuildSounds,
@@ -16,6 +15,7 @@ import {
 import { tivaraWorkerDefinition } from "../tivara-worker.definition";
 import { SoundType } from "../../../../../entity/actor/components/audio-actor-component";
 import { ANIM_TIVARA_WORKER_MALE_DEFINITION } from "./tivara_worker_male_anims";
+import type { PrefabDefinition } from "../../../../../data/prefab-definition";
 
 export const tivaraWorkerMaleDefinition = {
   ...tivaraWorkerDefinition,

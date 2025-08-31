@@ -1,7 +1,7 @@
-import type { PrefabDefinition } from "../../../../../data/actor-definitions";
 import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { SoundType } from "../../../../../entity/actor/components/audio-actor-component";
 import { ActorsTreeSfxResourceDepletedSounds, ActorsTreeSfxSelectionSounds } from "./sfx-tree";
+import type { PrefabDefinition } from "../../../../../data/prefab-definition";
 
 export const treeDefinitions = {
   components: {

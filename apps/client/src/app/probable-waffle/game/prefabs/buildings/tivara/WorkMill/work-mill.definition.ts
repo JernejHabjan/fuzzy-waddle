@@ -1,8 +1,8 @@
-import type { PrefabDefinition } from "../../../../data/actor-definitions";
 import { ActorPhysicalType } from "../../../../entity/combat/components/health-component";
 import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PaymentType } from "../../../../entity/building/payment-type";
 import { coreConstructionSiteDefinition } from "../../shared/core-construction-site.definition";
+import type { PrefabDefinition } from "../../../../data/prefab-definition";
 
 export const workMillDefinition = {
   components: {

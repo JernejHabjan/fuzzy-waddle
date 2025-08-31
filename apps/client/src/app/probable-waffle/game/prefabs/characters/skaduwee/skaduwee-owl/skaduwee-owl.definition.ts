@@ -1,4 +1,3 @@
-import type { PrefabDefinition } from "../../../../data/actor-definitions";
 import {
   SkaduweeOwlSfxDamageSounds,
   SkaduweeOwlSfxDeathSounds,
@@ -13,6 +12,7 @@ import { PaymentType } from "../../../../entity/building/payment-type";
 import { AiType } from "../../../../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
 import { SoundType } from "../../../../entity/actor/components/audio-actor-component";
 import { ANIM_SKADUWEE_OWL_DEFINITION } from "./SkaduweeOwlAnims";
+import type { PrefabDefinition } from "../../../../data/prefab-definition";
 
 export const skaduweeOwlDefinition = {
   components: {

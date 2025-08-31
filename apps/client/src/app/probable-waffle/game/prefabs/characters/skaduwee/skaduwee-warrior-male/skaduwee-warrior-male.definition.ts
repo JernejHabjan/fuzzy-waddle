@@ -1,4 +1,3 @@
-import type { PrefabDefinition } from "../../../../data/actor-definitions";
 import {
   SkaduweeWarriorSfxAttackSounds,
   SkaduweeWarriorSfxDamageSounds,
@@ -15,6 +14,7 @@ import { PaymentType } from "../../../../entity/building/payment-type";
 import { AiType } from "../../../../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
 import { SoundType } from "../../../../entity/actor/components/audio-actor-component";
 import { ANIM_SKADUWEE_WARRIOR_MALE_DEFINITION } from "./skaduwee_warrior_male_anims";
+import type { PrefabDefinition } from "../../../../data/prefab-definition";
 
 export const skaduweeWarriorMaleDefinition = {
   components: {

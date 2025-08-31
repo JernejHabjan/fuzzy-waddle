@@ -1,4 +1,3 @@
-import type { PrefabDefinition } from "../../../../data/actor-definitions";
 import { ActorPhysicalType } from "../../../../entity/combat/components/health-component";
 import { weaponDefinitions } from "../../../../entity/combat/attack-data";
 import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
@@ -15,6 +14,7 @@ import {
   TivaraMacemanSfxSelectionSounds
 } from "../../../../sfx/TivaraMacemanSfx";
 import { ANIM_TIVARA_MACEMAN_MALE_DEFINITION } from "./tivara_maceman_male_anims";
+import type { PrefabDefinition } from "../../../../data/prefab-definition";
 
 export const tivaraMacemanMaleDefinition = {
   components: {

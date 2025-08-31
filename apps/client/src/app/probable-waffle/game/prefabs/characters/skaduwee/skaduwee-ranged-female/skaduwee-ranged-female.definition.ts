@@ -1,4 +1,3 @@
-import type { PrefabDefinition } from "../../../../data/actor-definitions";
 import {
   SkaduweeRangedSfxAttackSounds,
   SkaduweeRangedSfxDamageSounds,
@@ -15,6 +14,7 @@ import { PaymentType } from "../../../../entity/building/payment-type";
 import { AiType } from "../../../../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
 import { SoundType } from "../../../../entity/actor/components/audio-actor-component";
 import { ANIM_SKADUWEE_RANGED_FEMALE_DEFINITION } from "./skaduwee_ranged_female_anim";
+import type { PrefabDefinition } from "../../../../data/prefab-definition";
 
 export const skaduweeRangedFemaleDefinition = {
   components: {
