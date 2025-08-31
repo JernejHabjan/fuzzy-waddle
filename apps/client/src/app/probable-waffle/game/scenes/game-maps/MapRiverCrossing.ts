@@ -44,7 +44,7 @@ import WorkMill from "../../prefabs/buildings/tivara/WorkMill";
 import BlockStoneWater1 from "../../prefabs/outside/nature/block_stone_water/BlockStoneWater1";
 import BlockStoneWater4 from "../../prefabs/outside/nature/block_stone_water/BlockStoneWater4";
 import BlockStoneWater3 from "../../prefabs/outside/nature/block_stone_water/BlockStoneWater3";
-import SkaduweeOwl from "../../prefabs/units/skaduwee/SkaduweeOwl";
+import SkaduweeOwl from "../../prefabs/characters/skaduwee/skaduwee-owl/SkaduweeOwl";
 import Tree10 from "../../prefabs/outside/foliage/trees/resources/Tree10";
 import Tree9 from "../../prefabs/outside/foliage/trees/resources/Tree9";
 import Tree11 from "../../prefabs/outside/foliage/trees/resources/Tree11";

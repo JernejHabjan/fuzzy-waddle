@@ -100,7 +100,7 @@ import { ANIM_GENERAL_WARRIOR_DEFINITION } from "../prefabs/characters/general/g
 import { ANIM_TIVARA_WORKER_MALE_DEFINITION } from "../prefabs/characters/tivara/tivara-worker/tivara-worker-male/tivara_worker_male_anims";
 import { ANIM_TIVARA_WORKER_FEMALE_DEFINITION } from "../prefabs/characters/tivara/tivara-worker/tivara-worker-female/tivara_worker_female_anims";
 import { weaponDefinitions } from "../entity/combat/attack-data";
-import { ANIM_SKADUWEE_OWL_DEFINITION } from "../prefabs/units/skaduwee/SkaduweeOwlAnims";
+import { ANIM_SKADUWEE_OWL_DEFINITION } from "../prefabs/characters/skaduwee/skaduwee-owl/SkaduweeOwlAnims";
 import { RepresentableDefinition } from "../entity/actor/components/representable-component";
 import { FlightDefinition } from "../entity/actor/components/flight-component";
 import { WalkableDefinition } from "../entity/actor/components/walkable-component";
@@ -135,6 +135,7 @@ import { hedgehogDefinition } from "../prefabs/animals/hedgehog/hedgehog.definit
 import { sheepDefinition } from "../prefabs/animals/sheep/sheep.definition";
 import { badgerDefinition } from "../prefabs/animals/badger/badger.definition";
 import { tivaraSlingshotFemaleDefinition } from "../prefabs/characters/tivara/tivara-slingshot-female/tivara-slingshot-female.definition";
+import { skaduweeOwlDefinition } from "../prefabs/characters/skaduwee/skaduwee-owl/skaduwee-owl.definition";
 
 const treeDefinitions: PrefabDefinition = {
   components: {
@@ -502,81 +503,7 @@ export const pwActorDefinitions: {
   Sandhold: sandholdDefinition,
   Temple: templeDefinition,
   WorkMill: workMillDefinition,
-  SkaduweeOwl: {
-    components: {
-      representable: {
-        width: 32,
-        height: 32
-      },
-      objectDescriptor: {
-        color: 0xe9ecf2
-      },
-      owner: {
-        color: [
-          {
-            originalColor: 0x000000,
-            epsilon: 0
-          }
-        ]
-      },
-      vision: {
-        range: 14
-      },
-      info: {
-        name: "Mirk",
-        description: "A tiny harbinger of decay, this swift flyer unleashes toxic venom that corrupts all it touches",
-        smallImage: {
-          key: "factions",
-          frame: "character_icons/skaduwee/owl.png",
-          origin: { x: 0.5, y: 0.5 }
-        }
-      },
-      health: {
-        physicalState: ActorPhysicalType.Biological,
-        maxHealth: 100
-      },
-      attack: {
-        attacks: [weaponDefinitions.furball]
-      },
-      selectable: {},
-      productionCost: {
-        resources: {
-          [ResourceType.Wood]: 10,
-          [ResourceType.Minerals]: 10
-        },
-        refundFactor: 0.5,
-        productionTime: 5000,
-        costType: PaymentType.PayImmediately
-      },
-      requirements: {
-        actors: [ObjectNames.Owlery]
-      },
-      translatable: {
-        tileMoveDuration: 2000
-      },
-      flying: {
-        height: 128
-      },
-      aiControlled: {
-        type: AiType.Character
-      },
-      audio: {
-        sounds: {
-          [SoundType.Attack]: SkaduweeOwlSfxSelectionSounds,
-          [SoundType.Damage]: SkaduweeOwlSfxDamageSounds,
-          [SoundType.Death]: SkaduweeOwlSfxDeathSounds,
-          [SoundType.Select]: SkaduweeOwlSfxSelectionSounds,
-          [SoundType.Move]: SkaduweeOwlSfxMoveSounds,
-          [SoundType.LocationUnavailable]: SkaduweeOwlSfxLocationSounds
-        }
-      },
-      animatable: { animations: ANIM_SKADUWEE_OWL_DEFINITION }
-    },
-    systems: {
-      movement: { enabled: true },
-      action: { enabled: true }
-    }
-  },
+  SkaduweeOwl: skaduweeOwlDefinition,
   SkaduweeRangedFemale: {
     components: {
       representable: {

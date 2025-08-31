@@ -10,7 +10,7 @@ import Olival from "../prefabs/buildings/tivara/Olival";
 import Sandhold from "../prefabs/buildings/tivara/Sandhold";
 import Temple from "../prefabs/buildings/tivara/Temple";
 import WorkMill from "../prefabs/buildings/tivara/WorkMill";
-import SkaduweeOwl from "../prefabs/units/skaduwee/SkaduweeOwl";
+import SkaduweeOwl from "../prefabs/characters/skaduwee/skaduwee-owl/SkaduweeOwl";
 import SkaduweeRangedFemale from "../prefabs/characters/skaduwee/skaduwee-ranged-female/SkaduweeRangedFemale";
 import SkaduweeMagicianFemale from "../prefabs/characters/skaduwee/skaduwee-magician-female/SkaduweeMagicianFemale";
 import SkaduweeWarriorMale from "../prefabs/characters/skaduwee/skaduwee-warrior-male/SkaduweeWarriorMale";
