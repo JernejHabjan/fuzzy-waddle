@@ -1,7 +1,5 @@
 {
-  "resources": [
-    "assets/probable-waffle/sfx/actors/Skaduwee/Owl.mp3"
-  ],
+  "resources": ["assets/probable-waffle/sfx/actors/Skaduwee/Owl.mp3"],
   "spritemap": {
     "Cannot reach location": {
       "start": 0,

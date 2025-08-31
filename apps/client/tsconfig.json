@@ -24,7 +24,7 @@
     "noFallthroughCasesInSwitch": true,
     "allowSyntheticDefaultImports": true,
     "module": "ESNext",
-    "verbatimModuleSyntax": true               // Avoids unwanted transpilation of ESM/CJS
+    "verbatimModuleSyntax": true // Avoids unwanted transpilation of ESM/CJS
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

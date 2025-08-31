@@ -16,7 +16,10 @@ const ANIM_SKADUWEE_MAGICIAN_FEMALE_WALK_LEFT = "skaduwee_magician_female_walk_l
 const ANIM_SKADUWEE_MAGICIAN_FEMALE_WALK_DOWN = "skaduwee_magician_female_walk_down";
 const ANIM_SKADUWEE_MAGICIAN_FEMALE_WALK_RIGHT = "skaduwee_magician_female_walk_right";
 
-import { type AnimationDefinitionMap, AnimationType } from "../../../../entity/actor/components/animation-actor-component";
+import {
+  type AnimationDefinitionMap,
+  AnimationType
+} from "../../../../entity/actor/components/animation-actor-component";
 
 export const ANIM_SKADUWEE_MAGICIAN_FEMALE_DEFINITION: AnimationDefinitionMap = {
   [AnimationType.Idle]: {
