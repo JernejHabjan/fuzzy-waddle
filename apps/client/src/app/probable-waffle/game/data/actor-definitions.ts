@@ -10,18 +10,6 @@ import { PaymentType } from "../entity/building/payment-type";
 import { AttackDefinition } from "../entity/combat/components/attack-component";
 import { ActorPhysicalType, HealthDefinition } from "../entity/combat/components/health-component";
 import { ProductionCostDefinition } from "../entity/building/production/production-cost-component";
-import {
-  ANIM_BUILDING_ICON_ANIMS_SKADUWEE_FROST_FORGE,
-  ANIM_BUILDING_ICON_ANIMS_SKADUWEE_INFANTRY_INN,
-  ANIM_BUILDING_ICON_ANIMS_SKADUWEE_OWLERY_ACTION,
-  ANIM_BUILDING_ICON_ANIMS_SKADUWEE_OWLERY_IDLE,
-  ANIM_BUILDING_ICON_ANIMS_TIVARA_ANKGUARD_ACTION,
-  ANIM_BUILDING_ICON_ANIMS_TIVARA_ANKGUARD_IDLE,
-  ANIM_BUILDING_ICON_ANIMS_TIVARA_SANDHOLD_ACTION,
-  ANIM_BUILDING_ICON_ANIMS_TIVARA_SANDHOLD_IDLE,
-  ANIM_BUILDING_ICON_ANIMS_TIVARA_TEMPLE_ACTION,
-  ANIM_BUILDING_ICON_ANIMS_TIVARA_TEMPLE_IDLE
-} from "../prefabs/gui/icon-animations";
 import { ContainerDefinition } from "../entity/building/container-component";
 import { ResourceDrainDefinition } from "../entity/economy/resource/resource-drain-component";
 import { ProductionDefinition } from "../entity/building/production/production-component";
@@ -41,15 +29,6 @@ import {
   TivaraMacemanSfxMoveSounds,
   TivaraMacemanSfxSelectionSounds
 } from "../sfx/TivaraMacemanSfx";
-import {
-  TivaraSlingshotSfxAttackSounds,
-  TivaraSlingshotSfxDamageSounds,
-  TivaraSlingshotSfxDeathSounds,
-  TivaraSlingshotSfxEnterSounds,
-  TivaraSlingshotSfxLocationSounds,
-  TivaraSlingshotSfxMoveSounds,
-  TivaraSlingshotSfxSelectionSounds
-} from "../sfx/TivaraSlingshotSfx";
 import {
   TivaraWorkerFemaleSfxAttackSounds,
   TivaraWorkerFemaleSfxBuildSounds,
@@ -111,65 +90,23 @@ import {
   SkaduweeWarriorSfxMoveSounds,
   SkaduweeWarriorSfxSelectionSounds
 } from "../sfx/SkaduweeWarriorSfx";
-import {
-  SkaduweeWorkerFemaleSfxAttackSounds,
-  SkaduweeWorkerFemaleSfxBuildSounds,
-  SkaduweeWorkerFemaleSfxChopSounds,
-  SkaduweeWorkerFemaleSfxDamageSounds,
-  SkaduweeWorkerFemaleSfxDeathSounds,
-  SkaduweeWorkerFemaleSfxEnterSounds,
-  SkaduweeWorkerFemaleSfxLocationSounds,
-  SkaduweeWorkerFemaleSfxMineSounds,
-  SkaduweeWorkerFemaleSfxMoveSounds,
-  SkaduweeWorkerFemaleSfxRepairSounds,
-  SkaduweeWorkerFemaleSfxSelectSounds
-} from "../sfx/SkaduweeWorkerFemaleSfx";
-import {
-  SkaduweeWorkerMaleSfxAttackSounds,
-  SkaduweeWorkerMaleSfxBuildSounds,
-  SkaduweeWorkerMaleSfxChopSounds,
-  SkaduweeWorkerMaleSfxDamageSounds,
-  SkaduweeWorkerMaleSfxDeathSounds,
-  SkaduweeWorkerMaleSfxEnterSounds,
-  SkaduweeWorkerMaleSfxLocationSounds,
-  SkaduweeWorkerMaleSfxMineSounds,
-  SkaduweeWorkerMaleSfxMoveSounds,
-  SkaduweeWorkerMaleSfxRepairSounds,
-  SkaduweeWorkerMaleSfxSelectionSounds
-} from "../sfx/SkaduweeWorkerMaleSfx";
-import { TivaraOlivalSfxSelectionSounds } from "../sfx/TivaraOlivalSfx";
 import { SelectableDefinition } from "../entity/actor/components/selectable-component";
 import { ActorAnimationsDefinition } from "../entity/actor/components/animation-actor-component";
 import { ANIM_TIVARA_MACEMAN_MALE_DEFINITION } from "../prefabs/characters/tivara/tivara-maceman-male/tivara_maceman_male_anims";
-import { ANIM_TIVARA_SLINGSHOT_FEMALE_DEFINITION } from "../prefabs/characters/tivara/tivara-slingshot-female/tivara_slingshot_female_anims";
 import { ANIM_SKADUWEE_RANGED_FEMALE_DEFINITION } from "../prefabs/characters/skaduwee/skaduwee-ranged-female/skaduwee_ranged_female_anim";
 import { ANIM_SKADUWEE_MAGICIAN_FEMALE_DEFINITION } from "../prefabs/characters/skaduwee/skaduwee-magician-female/skaduwee_magician_female_anim";
 import { ANIM_SKADUWEE_WARRIOR_MALE_DEFINITION } from "../prefabs/characters/skaduwee/skaduwee-warrior-male/skaduwee_warrior_male_anims";
-import { ANIM_SKADUWEE_WORKER_FEMALE_DEFINITION } from "../prefabs/characters/skaduwee/skaduwee-worker/skaduwee-worker-female/skaduwee_worker_female_anims";
 import { ANIM_GENERAL_WARRIOR_DEFINITION } from "../prefabs/characters/general/general-warrior/warrior_anim";
 import { ANIM_TIVARA_WORKER_MALE_DEFINITION } from "../prefabs/characters/tivara/tivara-worker/tivara-worker-male/tivara_worker_male_anims";
-import { ANIM_SKADUWEE_WORKER_MALE_DEFINITION } from "../prefabs/characters/skaduwee/skaduwee-worker/skaduwee-worker-male/skaduwee_worker_male_anims";
 import { ANIM_TIVARA_WORKER_FEMALE_DEFINITION } from "../prefabs/characters/tivara/tivara-worker/tivara-worker-female/tivara_worker_female_anims";
 import { weaponDefinitions } from "../entity/combat/attack-data";
 import { ANIM_SKADUWEE_OWL_DEFINITION } from "../prefabs/units/skaduwee/SkaduweeOwlAnims";
 import { RepresentableDefinition } from "../entity/actor/components/representable-component";
 import { FlightDefinition } from "../entity/actor/components/flight-component";
 import { WalkableDefinition } from "../entity/actor/components/walkable-component";
-import { ANIM_HEDGEHOG_DEFINITION } from "../prefabs/animals/hedgehog/anims-hedgehog";
-import { ANIM_SHEEP_DEFINITION } from "../prefabs/animals/sheep/anims-sheep";
-import { ANIM_BADGER_DEFINITION } from "../prefabs/animals/badger/anims-badger";
 import { ANIM_BOAR_DEFINITION } from "../prefabs/animals/boar/anims-boar";
 import { ANIM_STAG_DEFINITION } from "../prefabs/animals/stag/anims-stag";
 import { ANIM_WOLF_DEFINITION } from "../prefabs/animals/wolf/anims-wolf";
-import {
-  ActorsSheepSfxBleatSounds,
-  ActorsSheepSfxScissorsSounds,
-  ActorsSheepSfxWoolBombSounds
-} from "../prefabs/animals/sheep/sfx-sheep";
-import {
-  ActorsHedgehogSfxAngrySounds,
-  ActorsHedgehogSfxSelectionSounds
-} from "../prefabs/animals/hedgehog/sfx-hedgehog";
 import {
   ActorsStoneSfxOutOfResourcesSounds,
   ActorsStoneSfxSelectionSounds
@@ -179,21 +116,27 @@ import {
   ActorsTreeSfxSelectionSounds
 } from "../prefabs/outside/foliage/trees/resources/sfx-tree";
 import { ActorsMineralsSfxSelectionSounds } from "../prefabs/outside/resources/minerals/sfx-minerals";
+import { tivaraWorkerDefinition } from "../prefabs/characters/tivara/tivara-worker/tivara-worker.definition";
+import { skaduweeWorkerDefinition } from "../prefabs/characters/skaduwee/skaduwee-worker/skaduwee-worker.definition";
+import { skaduweeWorkerMaleDefinition } from "../prefabs/characters/skaduwee/skaduwee-worker/skaduwee-worker-male/skaduwee-worker-male.definition";
+import { skaduweeWorkerFemaleDefinition } from "../prefabs/characters/skaduwee/skaduwee-worker/skaduwee-worker-female/skaduwee-worker-female.definition";
+import { frostForgeDefinition } from "../prefabs/buildings/skaduwee/FrostForge/frost-forge.definition";
+import { infantryInnDefinition } from "../prefabs/buildings/skaduwee/InfantryInn/infantry-inn.definition";
+import { wallDefinition } from "../prefabs/buildings/tivara/wall/wall.definition";
+import { watchTowerDefinition } from "../prefabs/buildings/tivara/WatchTower/watch-tower.definition";
+import { stairsDefinition } from "../prefabs/buildings/tivara/stairs/stairs.definition";
+import { ankGuardDefinition } from "../prefabs/buildings/tivara/AnkGuard/ank-guard.definition";
+import { olivalDefinition } from "../prefabs/buildings/tivara/Olival/olival.definition";
+import { sandholdDefinition } from "../prefabs/buildings/tivara/Sandhold/sandhold.definition";
+import { templeDefinition } from "../prefabs/buildings/tivara/Temple/temple.definition";
+import { workMillDefinition } from "../prefabs/buildings/tivara/WorkMill/work-mill.definition";
+import { owleryDefinition } from "../prefabs/buildings/skaduwee/Owlery/owlery.definition";
+import { hedgehogDefinition } from "../prefabs/animals/hedgehog/hedgehog.definition";
+import { sheepDefinition } from "../prefabs/animals/sheep/sheep.definition";
+import { badgerDefinition } from "../prefabs/animals/badger/badger.definition";
+import { tivaraSlingshotFemaleDefinition } from "../prefabs/characters/tivara/tivara-slingshot-female/tivara-slingshot-female.definition";
 
-const coreConstructionSiteDefinition: ConstructionSiteDefinition = {
-  consumesBuilders: false,
-  maxAssignedBuilders: 4,
-  maxAssignedRepairers: 2,
-  progressMadeAutomatically: 0,
-  progressMadePerBuilder: 1,
-  initialHealthPercentage: 0.2,
-  repairFactor: 0.005,
-  refundFactor: 0.5,
-  startImmediately: false,
-  canBeDragPlaced: false
-};
-
-const treeDefinitions: ActorInfoDefinition = {
+const treeDefinitions: PrefabDefinition = {
   components: {
     objectDescriptor: {
       color: 0xbea55b
@@ -217,133 +160,7 @@ const treeDefinitions: ActorInfoDefinition = {
   }
 };
 
-const generalWorkerDefinitions: Partial<ActorInfoDefinition> = {
-  components: {
-    vision: {
-      range: 10
-    },
-    health: {
-      physicalState: ActorPhysicalType.Biological,
-      maxHealth: 100
-    },
-    attack: {
-      attacks: [weaponDefinitions.hands]
-    },
-    productionCost: {
-      resources: {
-        [ResourceType.Wood]: 10,
-        [ResourceType.Minerals]: 10
-      },
-      refundFactor: 0.5,
-      productionTime: 5000,
-      costType: PaymentType.PayImmediately
-    },
-    healing: {
-      range: 2,
-      healPerCooldown: 5,
-      cooldown: 1000
-    },
-    gatherer: {
-      resourceSweepRadius: 20,
-      resourceSourceGameObjectClasses: [
-        ResourceType.Ambrosia,
-        ResourceType.Wood,
-        ResourceType.Minerals,
-        ResourceType.Stone
-      ]
-    },
-    selectable: {},
-    translatable: {
-      tileMoveDuration: 500
-    },
-    containable: { enabled: true },
-    aiControlled: {
-      type: AiType.Character
-    }
-  },
-  systems: {
-    movement: { enabled: true },
-    action: { enabled: true }
-  }
-};
-
-const tivaraWorkerDefinition: ActorInfoDefinition = {
-  ...generalWorkerDefinitions,
-  components: {
-    ...generalWorkerDefinitions.components,
-    representable: {
-      width: 64,
-      height: 64
-    },
-    objectDescriptor: {
-      color: 0xc2a080
-    },
-    owner: {
-      color: [
-        {
-          originalColor: 0x31770f,
-          epsilon: 0.25
-        }
-      ]
-    },
-    requirements: {
-      actors: [ObjectNames.Sandhold]
-    },
-    builder: {
-      constructionSiteOffset: 2,
-      enterConstructionSite: false,
-      constructableBuildings: [
-        ObjectNames.Sandhold,
-        ObjectNames.AnkGuard,
-        ObjectNames.Olival,
-        ObjectNames.Temple,
-        ObjectNames.WorkMill,
-        ObjectNames.WatchTower,
-        ObjectNames.Wall,
-        ObjectNames.Stairs
-      ]
-    }
-  }
-};
-
-const skaduweeWorkerDefinition: ActorInfoDefinition = {
-  ...generalWorkerDefinitions,
-  components: {
-    ...generalWorkerDefinitions.components,
-    representable: {
-      width: 64,
-      height: 64
-    },
-    objectDescriptor: {
-      color: 0xf2f7fa
-    },
-    owner: {
-      color: [
-        {
-          originalColor: 0x7995bf,
-          epsilon: 0.15
-        }
-      ]
-    },
-    requirements: {
-      actors: [ObjectNames.FrostForge]
-    },
-    builder: {
-      constructionSiteOffset: 2,
-      enterConstructionSite: false,
-      constructableBuildings: [
-        ObjectNames.FrostForge,
-        ObjectNames.InfantryInn,
-        ObjectNames.Owlery,
-        ObjectNames.WorkMill,
-        ObjectNames.WatchTower,
-        ObjectNames.Wall,
-        ObjectNames.Stairs
-      ]
-    }
-  }
-};
-export type ActorInfoDefinition = Partial<{
+export type PrefabDefinition = Partial<{
   components: Partial<{
     objectDescriptor: ObjectDescriptorDefinition;
     representable: RepresentableDefinition;
@@ -385,80 +202,11 @@ export type ActorInfoDefinition = Partial<{
   }>;
 }>;
 export const pwActorDefinitions: {
-  [key in ObjectNames]: ActorInfoDefinition;
+  [key in ObjectNames]: PrefabDefinition;
 } = {
-  [ObjectNames.Hedgehog]: {
-    components: {
-      representable: {
-        width: 32,
-        height: 32
-      },
-      objectDescriptor: {
-        color: 0x896347
-      },
-      translatable: {
-        tileMoveDuration: 5000
-      },
-      audio: {
-        sounds: {
-          [SoundType.Select]: ActorsHedgehogSfxSelectionSounds,
-          [SoundType.SelectExtra]: ActorsHedgehogSfxAngrySounds
-        }
-      },
-      animatable: { animations: ANIM_HEDGEHOG_DEFINITION }
-    },
-    systems: {
-      movement: { enabled: true }
-    }
-  },
-  [ObjectNames.Sheep]: {
-    components: {
-      representable: {
-        width: 64,
-        height: 64
-      },
-      objectDescriptor: {
-        color: 0xf2f7fa
-      },
-      translatable: {
-        tileMoveDuration: 5000
-      },
-      audio: {
-        sounds: {
-          [SoundType.Select]: ActorsSheepSfxBleatSounds,
-          ["scissors"]: ActorsSheepSfxScissorsSounds,
-          ["wool"]: ActorsSheepSfxWoolBombSounds
-        }
-      },
-      animatable: { animations: ANIM_SHEEP_DEFINITION }
-    },
-    systems: {
-      movement: { enabled: true }
-    }
-  },
-  Badger: {
-    components: {
-      representable: {
-        width: 42,
-        height: 32
-      },
-      objectDescriptor: {
-        color: 0x222e37
-      },
-      translatable: {
-        tileMoveDuration: 800
-      },
-      audio: {
-        sounds: {
-          // todo
-        }
-      },
-      animatable: { animations: ANIM_BADGER_DEFINITION }
-    },
-    systems: {
-      movement: { enabled: true }
-    }
-  },
+  Hedgehog: hedgehogDefinition,
+  Sheep: sheepDefinition,
+  Badger: badgerDefinition,
   Boar: {
     components: {
       representable: {
@@ -548,7 +296,7 @@ export const pwActorDefinitions: {
     }
   },
 
-  [ObjectNames.GeneralWarrior]: {
+  GeneralWarrior: {
     components: {
       representable: {
         width: 64,
@@ -607,7 +355,7 @@ export const pwActorDefinitions: {
       movement: { enabled: true }
     }
   },
-  [ObjectNames.TivaraMacemanMale]: {
+  TivaraMacemanMale: {
     components: {
       representable: {
         width: 64,
@@ -682,99 +430,9 @@ export const pwActorDefinitions: {
       action: { enabled: true }
     }
   },
-  [ObjectNames.TivaraSlingshotFemale]: {
-    components: {
-      representable: {
-        width: 64,
-        height: 64
-      },
-      objectDescriptor: {
-        color: 0xc2a080
-      },
-      owner: {
-        color: [
-          {
-            originalColor: 0x31770f,
-            epsilon: 0.25
-          }
-        ]
-      },
-      vision: {
-        range: 10
-      },
-      info: {
-        name: "Cursed Banshee",
-        description: "A silent stalker armed with ancient curses and deadly precision",
-        smallImage: {
-          key: "factions",
-          frame: "character_icons/tivara/slingshot_female.png",
-          origin: { x: 0.5, y: 0.6 }
-        }
-      },
-      health: {
-        physicalState: ActorPhysicalType.Biological,
-        maxHealth: 100
-      },
-      attack: {
-        attacks: [weaponDefinitions.slingshot]
-      },
-      productionCost: {
-        resources: {
-          [ResourceType.Wood]: 10,
-          [ResourceType.Minerals]: 10
-        },
-        refundFactor: 0.5,
-        productionTime: 5000,
-        costType: PaymentType.PayImmediately
-      },
-      requirements: {
-        actors: [ObjectNames.AnkGuard]
-      },
-      selectable: {},
-      translatable: {
-        tileMoveDuration: 500
-      },
-      containable: { enabled: true },
-      aiControlled: {
-        type: AiType.Character
-      },
-      audio: {
-        sounds: {
-          [SoundType.Attack]: TivaraSlingshotSfxAttackSounds,
-          [SoundType.Damage]: TivaraSlingshotSfxDamageSounds,
-          [SoundType.Death]: TivaraSlingshotSfxDeathSounds,
-          [SoundType.Select]: TivaraSlingshotSfxSelectionSounds,
-          [SoundType.Move]: TivaraSlingshotSfxMoveSounds,
-          [SoundType.EnterContainer]: TivaraSlingshotSfxEnterSounds,
-          [SoundType.LocationUnavailable]: TivaraSlingshotSfxLocationSounds
-        }
-      },
-      animatable: { animations: ANIM_TIVARA_SLINGSHOT_FEMALE_DEFINITION }
-    },
-    systems: {
-      movement: { enabled: true },
-      action: { enabled: true }
-    }
-  },
-  [ObjectNames.TivaraWorker]: {
-    ...tivaraWorkerDefinition,
-    components: {
-      ...tivaraWorkerDefinition.components,
-      info: {
-        name: "Tivara Scavenger",
-        description: "Guardian of forgotten secrets, laboring in shadow to uphold the ancient cycle",
-        smallImage: {
-          key: "factions",
-          frame: "character_icons/tivara/worker.png",
-          origin: { x: 0.5, y: 0.5 }
-        }
-      }
-    },
-    meta: {
-      randomOfType: [ObjectNames.TivaraWorkerFemale, ObjectNames.TivaraWorkerMale]
-    }
-  },
-  [ObjectNames.TivaraWorkerFemale]: {
+  TivaraSlingshotFemale: tivaraSlingshotFemaleDefinition,
+  TivaraWorker: tivaraWorkerDefinition,
+  TivaraWorkerFemale: {
     ...tivaraWorkerDefinition,
     components: {
       ...tivaraWorkerDefinition.components,
@@ -806,7 +464,7 @@ export const pwActorDefinitions: {
       animatable: { animations: ANIM_TIVARA_WORKER_FEMALE_DEFINITION }
     }
   },
-  [ObjectNames.TivaraWorkerMale]: {
+  TivaraWorkerMale: {
     ...tivaraWorkerDefinition,
     components: {
       ...tivaraWorkerDefinition.components,
@@ -839,305 +497,12 @@ export const pwActorDefinitions: {
       animatable: { animations: ANIM_TIVARA_WORKER_MALE_DEFINITION }
     }
   },
-  [ObjectNames.AnkGuard]: {
-    components: {
-      representable: {
-        width: 256,
-        height: 256
-      },
-      objectDescriptor: {
-        color: 0xc2a080
-      },
-      owner: {
-        color: [
-          {
-            originalColor: 0x800080,
-            epsilon: 0
-          }
-        ]
-      },
-      vision: {
-        range: 15
-      },
-      info: {
-        name: "Ank Guard",
-        description: "Oozing with ancient curse, this fortress births the mightiest of Tivara’s infantry",
-        portraitAnimation: {
-          idle: ANIM_BUILDING_ICON_ANIMS_TIVARA_ANKGUARD_IDLE,
-          action: ANIM_BUILDING_ICON_ANIMS_TIVARA_ANKGUARD_ACTION
-        },
-        smallImage: {
-          key: "factions",
-          frame: "building_icons/tivara/ankguard.png",
-          origin: { x: 0.5, y: 0.5 }
-        }
-      },
-      health: {
-        physicalState: ActorPhysicalType.Structural,
-        maxHealth: 100
-      },
-      productionCost: {
-        resources: {
-          [ResourceType.Wood]: 10,
-          [ResourceType.Minerals]: 10
-        },
-        refundFactor: 0.5,
-        productionTime: 5000,
-        costType: PaymentType.PayImmediately
-      },
-      production: {
-        queueCount: 1,
-        capacityPerQueue: 5,
-        availableProduceActors: [ObjectNames.TivaraSlingshotFemale, ObjectNames.TivaraMacemanMale]
-      },
-      selectable: {},
-      collider: { enabled: true },
-      constructable: {
-        ...coreConstructionSiteDefinition
-      }
-    }
-  },
-  [ObjectNames.Olival]: {
-    components: {
-      representable: {
-        width: 32,
-        height: 64
-      },
-      objectDescriptor: {
-        color: 0xc2a080
-      },
-      owner: {
-        color: [
-          {
-            originalColor: 0x265b17,
-            epsilon: 0.1
-          }
-        ]
-      },
-      vision: {
-        range: 14
-      },
-      info: {
-        name: "Olival",
-        description: "A living gem that transforms the barren sands into a foundation for dark power",
-        smallImage: {
-          key: "factions",
-          frame: "buildings/tivara/olival/olival.png",
-          origin: { x: 0.5, y: 0.5 }
-        }
-      },
-      health: {
-        physicalState: ActorPhysicalType.Structural,
-        maxHealth: 100
-      },
-      productionCost: {
-        resources: {
-          [ResourceType.Wood]: 10,
-          [ResourceType.Minerals]: 10
-        },
-        refundFactor: 0.5,
-        productionTime: 5000,
-        costType: PaymentType.PayImmediately
-      },
-      requirements: {
-        actors: [ObjectNames.Sandhold]
-      },
-      selectable: {},
-      collider: { enabled: true },
-      constructable: {
-        ...coreConstructionSiteDefinition
-      },
-      audio: {
-        sounds: {
-          [SoundType.Select]: TivaraOlivalSfxSelectionSounds
-        }
-      }
-    }
-  },
-  [ObjectNames.Sandhold]: {
-    components: {
-      representable: {
-        width: 320,
-        height: 320
-      },
-      objectDescriptor: {
-        color: 0xc2a080
-      },
-      owner: {
-        color: [
-          {
-            originalColor: 0x4dbd33,
-            epsilon: 0.1
-          }
-        ]
-      },
-      vision: {
-        range: 20
-      },
-      info: {
-        name: "Sandhold",
-        description:
-          "A monument of stone and shadow, Sandhold is the cradle of Tivara’s power, commanding the restless workers and hoarding the lifeblood of the desert",
-        portraitAnimation: {
-          idle: ANIM_BUILDING_ICON_ANIMS_TIVARA_SANDHOLD_IDLE,
-          action: ANIM_BUILDING_ICON_ANIMS_TIVARA_SANDHOLD_ACTION
-        },
-        smallImage: {
-          key: "factions",
-          frame: "building_icons/tivara/sandhold.png",
-          origin: { x: 0.5, y: 0.5 }
-        }
-      },
-      health: {
-        physicalState: ActorPhysicalType.Structural,
-        maxHealth: 100,
-        maxArmour: 50
-      },
-      productionCost: {
-        resources: {
-          [ResourceType.Wood]: 10,
-          [ResourceType.Minerals]: 10
-        },
-        refundFactor: 0.5,
-        productionTime: 5000,
-        costType: PaymentType.PayImmediately
-      },
-      container: {
-        capacity: 2
-      },
-      resourceDrain: {
-        resourceTypes: [ResourceType.Wood, ResourceType.Minerals, ResourceType.Stone, ResourceType.Ambrosia]
-      },
-      production: {
-        queueCount: 1,
-        capacityPerQueue: 5,
-        availableProduceActors: [ObjectNames.TivaraWorker]
-      },
-      selectable: {},
-      collider: { enabled: true },
-      constructable: {
-        ...coreConstructionSiteDefinition
-      }
-    }
-  },
-  [ObjectNames.Temple]: {
-    components: {
-      representable: {
-        width: 192,
-        height: 192
-      },
-      objectDescriptor: {
-        color: 0xc2a080
-      },
-      owner: {
-        color: [
-          {
-            originalColor: 0x5c9999,
-            epsilon: 0
-          }
-        ]
-      },
-      vision: {
-        range: 15
-      },
-      info: {
-        name: "Hall of Echoing Rites",
-        description:
-          "Ancient fabrics sway between crumbling pillars, and the air hums with ritual echoes long buried in the sand",
-        portraitAnimation: {
-          idle: ANIM_BUILDING_ICON_ANIMS_TIVARA_TEMPLE_IDLE,
-          action: ANIM_BUILDING_ICON_ANIMS_TIVARA_TEMPLE_ACTION
-        },
-        smallImage: {
-          key: "factions",
-          frame: "building_icons/tivara/temple.png",
-          origin: { x: 0.5, y: 0.5 }
-        }
-      },
-      health: {
-        physicalState: ActorPhysicalType.Structural,
-        maxHealth: 100
-      },
-      productionCost: {
-        resources: {
-          [ResourceType.Wood]: 10,
-          [ResourceType.Minerals]: 10
-        },
-        refundFactor: 0.5,
-        productionTime: 5000,
-        costType: PaymentType.PayImmediately
-      },
-      requirements: {
-        actors: [ObjectNames.AnkGuard]
-      },
-      production: {
-        queueCount: 1,
-        capacityPerQueue: 5,
-        availableProduceActors: [ObjectNames.TivaraSlingshotFemale]
-      },
-      selectable: {},
-      collider: { enabled: true },
-      constructable: {
-        ...coreConstructionSiteDefinition
-      }
-    }
-  },
-  [ObjectNames.WorkMill]: {
-    components: {
-      representable: {
-        width: 128,
-        height: 128
-      },
-      objectDescriptor: {
-        color: 0x967847
-      },
-      owner: {
-        color: [
-          {
-            originalColor: 0x825e39,
-            epsilon: 0
-          }
-        ]
-      },
-      vision: {
-        range: 14
-      },
-      info: {
-        name: "Work Mill",
-        description: "A sturdy mill that turns raw timber into vital resources",
-        smallImage: {
-          key: "factions",
-          frame: "buildings/tivara/workmill.png",
-          origin: { x: 0.5, y: 0.5 }
-        }
-      },
-      health: {
-        physicalState: ActorPhysicalType.Structural,
-        maxHealth: 100
-      },
-      productionCost: {
-        resources: {
-          [ResourceType.Wood]: 10,
-          [ResourceType.Minerals]: 10
-        },
-        refundFactor: 0.5,
-        productionTime: 5000,
-        costType: PaymentType.PayImmediately
-      },
-      resourceDrain: {
-        resourceTypes: [ResourceType.Wood]
-      },
-      selectable: {},
-      collider: { enabled: true },
-      container: {
-        capacity: 2
-      },
-      constructable: {
-        ...coreConstructionSiteDefinition
-      }
-    }
-  },
-  [ObjectNames.SkaduweeOwl]: {
+  AnkGuard: ankGuardDefinition,
+  Olival: olivalDefinition,
+  Sandhold: sandholdDefinition,
+  Temple: templeDefinition,
+  WorkMill: workMillDefinition,
+  SkaduweeOwl: {
     components: {
       representable: {
         width: 32,
@@ -1212,7 +577,7 @@ export const pwActorDefinitions: {
       action: { enabled: true }
     }
   },
-  [ObjectNames.SkaduweeRangedFemale]: {
+  SkaduweeRangedFemale: {
     components: {
       representable: {
         width: 64,
@@ -1286,7 +651,7 @@ export const pwActorDefinitions: {
       action: { enabled: true }
     }
   },
-  [ObjectNames.SkaduweeMagicianFemale]: {
+  SkaduweeMagicianFemale: {
     components: {
       representable: {
         width: 64,
@@ -1360,7 +725,7 @@ export const pwActorDefinitions: {
       action: { enabled: true }
     }
   },
-  [ObjectNames.SkaduweeWarriorMale]: {
+  SkaduweeWarriorMale: {
     components: {
       representable: {
         width: 64,
@@ -1434,273 +799,13 @@ export const pwActorDefinitions: {
       action: { enabled: true }
     }
   },
-  [ObjectNames.SkaduweeWorkerMale]: {
-    ...skaduweeWorkerDefinition,
-    components: {
-      ...skaduweeWorkerDefinition.components,
-      info: {
-        name: "Darkwright",
-        description: "A shadowbound worker, crafting the foundation of dark dominion",
-        smallImage: {
-          key: "factions",
-          frame: "character_icons/skaduwee/worker_male.png",
-          origin: { x: 0.5, y: 0.6 }
-        }
-      },
-      audio: {
-        sounds: {
-          [SoundType.Attack]: SkaduweeWorkerMaleSfxAttackSounds,
-          [SoundType.Damage]: SkaduweeWorkerMaleSfxDamageSounds,
-          [SoundType.Death]: SkaduweeWorkerMaleSfxDeathSounds,
-          [SoundType.Select]: SkaduweeWorkerMaleSfxSelectionSounds,
-          [SoundType.Move]: SkaduweeWorkerMaleSfxMoveSounds,
-          [SoundType.EnterContainer]: SkaduweeWorkerMaleSfxEnterSounds,
-          [SoundType.LocationUnavailable]: SkaduweeWorkerMaleSfxLocationSounds,
-          [SoundType.Repair]: SkaduweeWorkerMaleSfxRepairSounds,
-          [SoundType.Heal]: SkaduweeWorkerMaleSfxRepairSounds,
-          [SoundType.Build]: SkaduweeWorkerMaleSfxBuildSounds,
-          [SoundType.Chop]: SkaduweeWorkerMaleSfxChopSounds,
-          [SoundType.Mine]: SkaduweeWorkerMaleSfxMineSounds
-        }
-      },
-      animatable: { animations: ANIM_SKADUWEE_WORKER_MALE_DEFINITION }
-    }
-  },
-  [ObjectNames.SkaduweeWorker]: {
-    ...skaduweeWorkerDefinition,
-    components: {
-      ...skaduweeWorkerDefinition.components,
-      info: {
-        name: "Umbral Worker",
-        description: "Shaping the realm of shadows with silent devotion",
-        smallImage: {
-          key: "factions",
-          frame: "character_icons/skaduwee/worker.png",
-          origin: { x: 0.5, y: 0.5 }
-        }
-      }
-    },
-    meta: {
-      randomOfType: [ObjectNames.SkaduweeWorkerFemale, ObjectNames.SkaduweeWorkerMale]
-    }
-  },
-  [ObjectNames.SkaduweeWorkerFemale]: {
-    ...skaduweeWorkerDefinition,
-    components: {
-      ...skaduweeWorkerDefinition.components,
-      info: {
-        name: "Shadehand",
-        description: "With whispered effort, the foundations of shadow are laid",
-        smallImage: {
-          key: "factions",
-          frame: "character_icons/skaduwee/worker_female.png",
-          origin: { x: 0.5, y: 0.6 }
-        }
-      },
-      audio: {
-        sounds: {
-          [SoundType.Attack]: SkaduweeWorkerFemaleSfxAttackSounds,
-          [SoundType.Damage]: SkaduweeWorkerFemaleSfxDamageSounds,
-          [SoundType.Death]: SkaduweeWorkerFemaleSfxDeathSounds,
-          [SoundType.Select]: SkaduweeWorkerFemaleSfxSelectSounds,
-          [SoundType.Move]: SkaduweeWorkerFemaleSfxMoveSounds,
-          [SoundType.EnterContainer]: SkaduweeWorkerFemaleSfxEnterSounds,
-          [SoundType.LocationUnavailable]: SkaduweeWorkerFemaleSfxLocationSounds,
-          [SoundType.Repair]: SkaduweeWorkerFemaleSfxRepairSounds,
-          [SoundType.Heal]: SkaduweeWorkerFemaleSfxRepairSounds,
-          [SoundType.Build]: SkaduweeWorkerFemaleSfxBuildSounds,
-          [SoundType.Chop]: SkaduweeWorkerFemaleSfxChopSounds,
-          [SoundType.Mine]: SkaduweeWorkerFemaleSfxMineSounds
-        }
-      },
-      animatable: { animations: ANIM_SKADUWEE_WORKER_FEMALE_DEFINITION }
-    }
-  },
-  [ObjectNames.FrostForge]: {
-    components: {
-      representable: {
-        width: 256,
-        height: 384
-      },
-      objectDescriptor: {
-        color: 0xf2f7fa
-      },
-      owner: {
-        color: [
-          {
-            originalColor: 0x7d9cdb,
-            epsilon: 0
-          }
-        ]
-      },
-      vision: {
-        range: 20
-      },
-      info: {
-        name: "Frost Forge",
-        description: "Main building of the Skaduwee faction. It is used to produce workers and store resources.",
-        portraitAnimation: {
-          idle: ANIM_BUILDING_ICON_ANIMS_SKADUWEE_FROST_FORGE,
-          action: ANIM_BUILDING_ICON_ANIMS_SKADUWEE_FROST_FORGE
-        },
-        smallImage: {
-          key: "factions",
-          frame: "building_icons/skaduwee/frost_forge.png",
-          origin: { x: 0.5, y: 0.5 }
-        }
-      },
-      health: {
-        physicalState: ActorPhysicalType.Structural,
-        maxHealth: 100
-      },
-      productionCost: {
-        resources: {
-          [ResourceType.Wood]: 10,
-          [ResourceType.Minerals]: 10
-        },
-        refundFactor: 0.5,
-        productionTime: 5000,
-        costType: PaymentType.PayImmediately
-      },
-      selectable: {},
-      container: {
-        capacity: 2
-      },
-      resourceDrain: {
-        resourceTypes: [ResourceType.Wood, ResourceType.Minerals, ResourceType.Stone, ResourceType.Ambrosia]
-      },
-      production: {
-        queueCount: 1,
-        capacityPerQueue: 5,
-        availableProduceActors: [ObjectNames.SkaduweeWorker]
-      },
-      collider: { enabled: true },
-      constructable: {
-        ...coreConstructionSiteDefinition
-      }
-    }
-  },
-  [ObjectNames.InfantryInn]: {
-    components: {
-      representable: {
-        width: 128,
-        height: 128
-      },
-      objectDescriptor: {
-        color: 0xf2f7fa
-      },
-      owner: {
-        color: [
-          {
-            originalColor: 0x7d9cdb,
-            epsilon: 0
-          }
-        ]
-      },
-      vision: {
-        range: 15
-      },
-      info: {
-        name: "Infantry Inn",
-        description: "Trains infantry units",
-        portraitAnimation: {
-          idle: ANIM_BUILDING_ICON_ANIMS_SKADUWEE_INFANTRY_INN,
-          action: ANIM_BUILDING_ICON_ANIMS_SKADUWEE_INFANTRY_INN
-        },
-        smallImage: {
-          key: "factions",
-          frame: "building_icons/skaduwee/infantry_inn.png",
-          origin: { x: 0.5, y: 0.5 }
-        }
-      },
-      health: {
-        physicalState: ActorPhysicalType.Structural,
-        maxHealth: 100
-      },
-      productionCost: {
-        resources: {
-          [ResourceType.Wood]: 10,
-          [ResourceType.Minerals]: 10
-        },
-        refundFactor: 0.5,
-        productionTime: 5000,
-        costType: PaymentType.PayImmediately
-      },
-      production: {
-        queueCount: 1,
-        capacityPerQueue: 5,
-        availableProduceActors: [
-          ObjectNames.SkaduweeMagicianFemale,
-          ObjectNames.SkaduweeRangedFemale,
-          ObjectNames.SkaduweeWarriorMale
-        ]
-      },
-      selectable: {},
-      collider: { enabled: true },
-      constructable: {
-        ...coreConstructionSiteDefinition
-      }
-    }
-  },
-  [ObjectNames.Owlery]: {
-    components: {
-      representable: {
-        width: 64,
-        height: 192
-      },
-      objectDescriptor: {
-        color: 0xf2f7fa
-      },
-      owner: {
-        color: [
-          {
-            originalColor: 0xf4f5f7,
-            epsilon: 0
-          }
-        ]
-      },
-      vision: {
-        range: 16
-      },
-      info: {
-        name: "Owlery",
-        description: "Produces Owls",
-        portraitAnimation: {
-          idle: ANIM_BUILDING_ICON_ANIMS_SKADUWEE_OWLERY_IDLE,
-          action: ANIM_BUILDING_ICON_ANIMS_SKADUWEE_OWLERY_ACTION
-        },
-        smallImage: {
-          key: "factions",
-          frame: "building_icons/skaduwee/owlery.png",
-          origin: { x: 0.5, y: 0.5 }
-        }
-      },
-      health: {
-        physicalState: ActorPhysicalType.Structural,
-        maxHealth: 100
-      },
-      productionCost: {
-        resources: {
-          [ResourceType.Wood]: 10,
-          [ResourceType.Minerals]: 10
-        },
-        refundFactor: 0.5,
-        productionTime: 5000,
-        costType: PaymentType.PayImmediately
-      },
-      production: {
-        queueCount: 1,
-        capacityPerQueue: 5,
-        availableProduceActors: [ObjectNames.SkaduweeOwl]
-      },
-      selectable: {},
-      collider: { enabled: true },
-      constructable: {
-        ...coreConstructionSiteDefinition
-      }
-    }
-  },
-  [ObjectNames.Tree1]: {
+  SkaduweeWorkerMale: skaduweeWorkerMaleDefinition,
+  SkaduweeWorker: skaduweeWorkerDefinition,
+  SkaduweeWorkerFemale: skaduweeWorkerFemaleDefinition,
+  FrostForge: frostForgeDefinition,
+  InfantryInn: infantryInnDefinition,
+  Owlery: owleryDefinition,
+  Tree1: {
     ...treeDefinitions,
     components: {
       ...treeDefinitions.components,
@@ -1714,7 +819,7 @@ export const pwActorDefinitions: {
       }
     }
   },
-  [ObjectNames.Tree4]: {
+  Tree4: {
     ...treeDefinitions,
     components: {
       ...treeDefinitions.components,
@@ -1728,7 +833,7 @@ export const pwActorDefinitions: {
       }
     }
   },
-  [ObjectNames.Tree5]: {
+  Tree5: {
     ...treeDefinitions,
     components: {
       ...treeDefinitions.components,
@@ -1742,7 +847,7 @@ export const pwActorDefinitions: {
       }
     }
   },
-  [ObjectNames.Tree6]: {
+  Tree6: {
     ...treeDefinitions,
     components: {
       ...treeDefinitions.components,
@@ -1756,7 +861,7 @@ export const pwActorDefinitions: {
       }
     }
   },
-  [ObjectNames.Tree7]: {
+  Tree7: {
     ...treeDefinitions,
     components: {
       ...treeDefinitions.components,
@@ -1770,7 +875,7 @@ export const pwActorDefinitions: {
       }
     }
   },
-  [ObjectNames.Tree9]: {
+  Tree9: {
     ...treeDefinitions,
     components: {
       ...treeDefinitions.components,
@@ -1784,7 +889,7 @@ export const pwActorDefinitions: {
       }
     }
   },
-  [ObjectNames.Tree10]: {
+  Tree10: {
     ...treeDefinitions,
     components: {
       ...treeDefinitions.components,
@@ -1798,7 +903,7 @@ export const pwActorDefinitions: {
       }
     }
   },
-  [ObjectNames.Tree11]: {
+  Tree11: {
     ...treeDefinitions,
     components: {
       ...treeDefinitions.components,
@@ -1812,182 +917,10 @@ export const pwActorDefinitions: {
       }
     }
   },
-  [ObjectNames.Stairs]: {
-    components: {
-      representable: {
-        width: 64,
-        height: 64
-      },
-      objectDescriptor: {
-        color: 0x95a083
-      },
-      info: {
-        name: "Stairs",
-        description: "Used to move to top of the Wall and Watch Tower",
-        smallImage: {
-          key: "factions",
-          frame: "buildings/tivara/stairs/stairs_top_left.png",
-          origin: { x: 0.5, y: 0.5 }
-        }
-      },
-      owner: {
-        color: [
-          {
-            originalColor: 0x000000,
-            epsilon: 0
-          }
-        ]
-      },
-      vision: {
-        range: 10
-      },
-      walkable: {
-        walkableHeight: 24,
-        exitHeight: 64,
-        acceptMinimumHeight: 0
-      },
-      selectable: {},
-      health: {
-        physicalState: ActorPhysicalType.Structural,
-        maxHealth: 300,
-        healthDisplayBehavior: "onDamage"
-      },
-      productionCost: {
-        resources: {
-          [ResourceType.Wood]: 10,
-          [ResourceType.Minerals]: 10
-        },
-        refundFactor: 0.5,
-        productionTime: 5000,
-        costType: PaymentType.PayImmediately
-      },
-      collider: { enabled: true },
-      constructable: {
-        ...coreConstructionSiteDefinition
-      }
-    }
-  },
-  [ObjectNames.WatchTower]: {
-    components: {
-      representable: {
-        width: 128,
-        height: 176
-      },
-      objectDescriptor: {
-        color: 0x95a083
-      },
-      owner: {
-        color: [
-          {
-            originalColor: 0x000000,
-            epsilon: 0
-          }
-        ]
-      },
-      vision: {
-        range: 18
-      },
-      info: {
-        name: "Watch Tower",
-        description: "Main defense building",
-        smallImage: {
-          key: "factions",
-          frame: "buildings/tivara/watchtower.png",
-          origin: { x: 0.5, y: 0.5 }
-        }
-      },
-      selectable: {},
-      walkable: {
-        walkableHeight: 128,
-        exitHeight: 128,
-        // can be accessed from the stairs or a wall
-        acceptMinimumHeight: 64
-      },
-      health: {
-        physicalState: ActorPhysicalType.Structural,
-        maxHealth: 1000,
-        healthDisplayBehavior: "onDamage"
-      },
-      productionCost: {
-        resources: {
-          [ResourceType.Wood]: 10,
-          [ResourceType.Stone]: 30
-        },
-        refundFactor: 0.5,
-        productionTime: 5000,
-        costType: PaymentType.PayImmediately
-      },
-      // note - this unit can be walked on and can not contain units
-      // container: {
-      //   capacity: 2
-      // },
-      attack: {
-        attacks: [weaponDefinitions.bowTower]
-      },
-      collider: { enabled: true },
-      constructable: {
-        ...coreConstructionSiteDefinition
-      }
-    }
-  },
-  [ObjectNames.Wall]: {
-    components: {
-      representable: {
-        width: 64,
-        height: 96
-      },
-      objectDescriptor: {
-        color: 0x95a083
-      },
-      owner: {
-        color: [
-          {
-            originalColor: 0x000000,
-            epsilon: 0
-          }
-        ]
-      },
-      vision: {
-        range: 10
-      },
-      info: {
-        name: "Wall",
-        description: "Defense building",
-        smallImage: {
-          key: "factions",
-          frame: "buildings/tivara/wall/wall_top_right_bottom_left.png",
-          origin: { x: 0.5, y: 0.5 }
-        }
-      },
-      selectable: {},
-      health: {
-        physicalState: ActorPhysicalType.Structural,
-        maxHealth: 300,
-        healthDisplayBehavior: "onDamage"
-      },
-      productionCost: {
-        resources: {
-          [ResourceType.Wood]: 10,
-          [ResourceType.Stone]: 30
-        },
-        refundFactor: 0.5,
-        productionTime: 5000,
-        costType: PaymentType.PayImmediately
-      },
-      collider: { enabled: true },
-      constructable: {
-        ...coreConstructionSiteDefinition,
-        canBeDragPlaced: true
-      },
-      walkable: {
-        walkableHeight: 42,
-        exitHeight: 64,
-        // can be accessed from the stairs
-        acceptMinimumHeight: 64
-      }
-    }
-  },
-  [ObjectNames.Minerals]: {
+  Stairs: stairsDefinition,
+  WatchTower: watchTowerDefinition,
+  Wall: wallDefinition,
+  Minerals: {
     components: {
       representable: {
         width: 64,
@@ -2013,7 +946,7 @@ export const pwActorDefinitions: {
       }
     }
   },
-  [ObjectNames.StonePile]: {
+  StonePile: {
     components: {
       representable: {
         width: 64,

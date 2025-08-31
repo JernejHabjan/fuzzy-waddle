@@ -6,7 +6,7 @@ import ActorInfoLabel from "./ActorInfoLabel";
 /* START-USER-IMPORTS */
 import { getActorComponent } from "../../../data/actor-component";
 import { HealthComponent } from "../../../entity/combat/components/health-component";
-import { ActorInfoDefinition } from "../../../data/actor-definitions";
+import { PrefabDefinition } from "../../../data/actor-definitions";
 import { DamageType } from "../../../entity/combat/damage-type";
 import { Subscription } from "rxjs";
 import GameObject = Phaser.GameObjects.GameObject;
@@ -81,7 +81,7 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
   private healthSubscription?: Subscription;
   private armourSubscription?: Subscription;
 
-  showActorAttributes(actor: GameObject, definition: ActorInfoDefinition) {
+  showActorAttributes(actor: GameObject, definition: PrefabDefinition) {
     const iconsAndTexts: {
       icon: {
         key: string;

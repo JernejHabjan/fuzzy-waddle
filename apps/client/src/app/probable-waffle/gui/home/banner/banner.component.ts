@@ -25,7 +25,7 @@ import TivaraSlingshotFemale from "../../../game/prefabs/characters/tivara/tivar
 import SandholdCursor from "../../../game/prefabs/buildings/tivara/Sandhold/SandholdCursor";
 import AnkGuardCursor from "../../../game/prefabs/buildings/tivara/AnkGuard/AnkGuardCursor";
 import FrostForgeCursor from "../../../game/prefabs/buildings/skaduwee/FrostForge/FrostForgeCursor";
-import WatchTowerCursor from "../../../game/prefabs/buildings/tivara/wall/WatchTower/WatchTowerCursor";
+import WatchTowerCursor from "../../../game/prefabs/buildings/tivara/WatchTower/WatchTowerCursor";
 import OlivalCursor from "../../../game/prefabs/buildings/tivara/Olival/OlivalCursor";
 import InfantryInnCursor from "../../../game/prefabs/buildings/skaduwee/InfantryInn/InfantryInnCursor";
 import WorkMillCursor from "../../../game/prefabs/buildings/tivara/WorkMill/WorkMillCursor";

@@ -12,7 +12,7 @@ import HudProbableWaffle from "../../../scenes/hud-scenes/HudProbableWaffle";
 import { Subscription } from "rxjs";
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { getCurrentPlayerNumber, getSelectedActors, listenToSelectionEvents } from "../../../data/scene-data";
-import { ActorInfoDefinition, pwActorDefinitions } from "../../../data/actor-definitions";
+import { PrefabDefinition, pwActorDefinitions } from "../../../data/actor-definitions";
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { getActorComponent } from "../../../data/actor-component";
 import { HealthComponent } from "../../../entity/combat/components/health-component";
@@ -121,7 +121,7 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
     }
   }
 
-  private setActorInfoLabel(actorDefinition: ActorInfoDefinition) {
+  private setActorInfoLabel(actorDefinition: PrefabDefinition) {
     const infoDefinition = actorDefinition.components?.info;
     this.actorInfoLabel.setText(infoDefinition?.name ?? "");
     this.actorInfoLabel.setIcon(infoDefinition?.smallImage?.key, infoDefinition?.smallImage?.frame);
