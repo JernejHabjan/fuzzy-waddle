@@ -80,6 +80,9 @@ export class FlyHealthUiComponent implements IFlyBase {
 
     //  BG
     this.bar.fillStyle(0x000000);
+    if (x === undefined || y === undefined) {
+      return;
+    }
     this.bar.fillRect(x, y, this.barWidth, this.barHeight);
 
     //  Health

@@ -64,7 +64,7 @@ export class AudioService {
       this.shuffleOstQueue(); // Reshuffle once all tracks are played
     }
 
-    const music = this.ostQueue[this.currentTrackIndex];
+    const music = this.ostQueue[this.currentTrackIndex]!;
     this.currentTrackIndex++;
 
     this.playAudio(

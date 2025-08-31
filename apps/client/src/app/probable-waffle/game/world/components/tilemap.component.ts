@@ -3,6 +3,10 @@ export class TilemapComponent {
   constructor(public readonly tilemap: Phaser.Tilemaps.Tilemap) {}
 
   get data(): Phaser.Tilemaps.Tile[][] {
-    return this.tilemap.layers[0].data;
+    const firstLayer = this.tilemap.layers[0];
+    if (!firstLayer) {
+      throw new Error("Tilemap has no layers");
+    }
+    return firstLayer.data;
   }
 }

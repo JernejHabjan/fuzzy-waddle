@@ -38,7 +38,7 @@ export class UserInstanceService implements UserInstanceServiceInterface {
       return null;
     }
     const preferredGame = gamesVisited.sort((a, b) => b.count - a.count)[0];
-    return preferredGame.name;
+    return preferredGame?.name ?? null;
   }
 
   setVisitedGame(game: "aota" | "little-muncher" | "fly-squasher"): void {

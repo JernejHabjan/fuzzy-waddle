@@ -238,7 +238,7 @@ export class GameObjectSelectionHandler {
 
   private playAudio(actorIds: string[]) {
     if (!actorIds.length) return;
-    const firstActorId = actorIds[0];
+    const firstActorId = actorIds[0]!;
     const firstActor = this.getActorsByIds([firstActorId])[0];
     if (!firstActor) return;
     const audioActorComponent = getActorComponent(firstActor, AudioActorComponent);

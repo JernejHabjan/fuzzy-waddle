@@ -84,6 +84,7 @@ export class NavigationService {
             .filter((go) => !!go) as Phaser.GameObjects.GameObject[];
           if (interactiveObjectIds.length === 0) return; // No interactive objects clicked
           const object = interactiveObjectIds[0];
+          if (!object) return;
           const tiles = getTileCoordsUnderObject(this.tilemap, object);
           console.log("Clicked GameObject:", object);
           tiles.forEach(({ x, y }) => {
@@ -143,7 +144,8 @@ export class NavigationService {
     const objectsGrid = this.extractGridFromObjects();
     this.easyStarNavigationGrid = this.tilemapGrid.map((row, i) =>
       row.map((tile, j) => {
-        const objectValue = objectsGrid[i][j];
+        const objectValue = objectsGrid[i]?.[j];
+        if (objectValue === undefined) return tile; // no object, use tilemap easyStarNavigationGrid
         if (objectValue === 0) return 0; // walkable object
         if (objectValue === 1) return 1; // blocked by object
         return tile; // tilemap easyStarNavigationGrid
@@ -188,7 +190,8 @@ export class NavigationService {
 
     // Second pass: Determine accessibility for all walkable objects
     walkableTilesToProcess.forEach(({ x, y }) => {
-      const cell = this.heightMapGrid[y][x];
+      const cell = this.heightMapGrid[y]?.[x];
+      if (!cell) return;
       const neighborOffsets = [
         { dx: 0, dy: -1 },
         { dx: 0, dy: 1 },
@@ -202,8 +205,8 @@ export class NavigationService {
       for (const { dx, dy } of neighborOffsets) {
         const nx = x + dx,
           ny = y + dy;
-        if (ny >= 0 && ny < this.heightMapGrid.length && nx >= 0 && nx < this.heightMapGrid[ny].length) {
-          const neighbor = this.heightMapGrid[ny][nx];
+        if (ny >= 0 && ny < this.heightMapGrid.length && nx >= 0 && nx < this.heightMapGrid[ny]!.length) {
+          const neighbor = this.heightMapGrid[ny]![nx]!;
           // Accessible if neighbor is walkable and can access from neighbor to this tile
           if (this.canAccessFrom(neighbor, cell)) {
             cell.isWalkable = true;
@@ -218,8 +221,8 @@ export class NavigationService {
     // For each tile, set directional conditions based on heightMapGrid
     this.directionalConditions.clear(); // Clear previous conditions
     for (let y = 0; y < this.heightMapGrid.length; y++) {
-      for (let x = 0; x < this.heightMapGrid[y].length; x++) {
-        const cell = this.heightMapGrid[y][x];
+      for (let x = 0; x < this.heightMapGrid[y]!.length; x++) {
+        const cell = this.heightMapGrid[y]![x]!;
         if (!cell.isWalkable) continue;
         const allowedDirections: Direction[] = [];
 
@@ -244,8 +247,8 @@ export class NavigationService {
         ) => {
           const nx = x + dx;
           const ny = y + dy;
-          if (ny >= 0 && ny < this.heightMapGrid.length && nx >= 0 && nx < this.heightMapGrid[ny].length) {
-            const neighbor = this.heightMapGrid[ny][nx];
+          if (ny >= 0 && ny < this.heightMapGrid.length && nx >= 0 && nx < this.heightMapGrid[ny]!.length) {
+            const neighbor = this.heightMapGrid[ny]![nx]!;
             const neighborWalkableComponent = neighbor.walkableComponent;
 
             // check if we can move from cell to neighbor
@@ -365,7 +368,7 @@ export class NavigationService {
     actualTilesUnderColliders.forEach((tile) => {
       if (!tile) return;
       if (this.DEBUG) tile.tint = 0xff0000;
-      emptyGrid[tile.y][tile.x] = 1;
+      emptyGrid[tile.y]![tile.x]! = 1;
     });
 
     const walkables = this.getTileIndexesForWalkables();
@@ -374,7 +377,7 @@ export class NavigationService {
     actualWalkableTiles.forEach((tile) => {
       if (!tile) return;
       if (this.DEBUG) tile.tint = 0x00ff00;
-      emptyGrid[tile.y][tile.x] = 0;
+      emptyGrid[tile.y]![tile.x]! = 0;
     });
 
     return emptyGrid;
@@ -455,7 +458,7 @@ export class NavigationService {
     const maxAttempts = validTiles.length; // Limit attempts to prevent infinite loops
     while (attempts < maxAttempts) {
       const randomIndex = Math.floor(Math.random() * validTiles.length);
-      const tile = validTiles[randomIndex];
+      const tile = validTiles[randomIndex]!;
 
       // Check path to the random tile
       let path: Vector2Simple[] = [];
@@ -468,6 +471,7 @@ export class NavigationService {
       // Calculate path length based on XY distances:
       const sumPathLengthByXY = path.reduce((sum, node, index) => {
         const previousNode = index === 0 ? currentTile : path[index - 1]; // Use currentTile as the "previous" for the first node
+        if (!previousNode) return sum;
         const dx = Math.abs(node.x - previousNode.x);
         const dy = Math.abs(node.y - previousNode.y);
         // If diagonal movement is allowed, count diagonal steps as 1.414 tiles (approximate square root of 2)
@@ -546,10 +550,12 @@ export class NavigationService {
     const validTiles: Vector2Simple[] = [];
     for (let y = currentTile.y - radiusTiles; y <= currentTile.y + radiusTiles; y++) {
       for (let x = currentTile.x - radiusTiles; x <= currentTile.x + radiusTiles; x++) {
+        const firstVal = this.easyStarNavigationGrid[0];
+        if (!firstVal) continue;
         // Ensure coordinates are within easyStarNavigationGrid bounds
-        if (0 <= x && x < this.easyStarNavigationGrid[0].length && 0 <= y && y < this.easyStarNavigationGrid.length) {
+        if (0 <= x && x < firstVal.length && 0 <= y && y < this.easyStarNavigationGrid.length) {
           if (walkable) {
-            if (this.easyStarNavigationGrid[y][x] === 0) {
+            if (this.easyStarNavigationGrid[y]?.[x] === 0) {
               validTiles.push({ x, y });
             }
           } else {
@@ -644,7 +650,7 @@ export class NavigationService {
     // Convert Set to an array of Vector2Simple
     const walkableTilesArray = Array.from(walkableTiles).map((tile) => {
       const [x, y] = tile.split(",").map(Number);
-      return { x, y };
+      return { x: x!, y: y! };
     });
 
     // Step 2: Find the closest walkable tile to the fromTile
@@ -656,20 +662,17 @@ export class NavigationService {
     // Sort the walkable tiles based on distance to fromTile
     walkableTilesArray.sort((a, b) => this.getTileDistance(a, fromTile) - this.getTileDistance(b, fromTile));
 
-    return walkableTilesArray[0]; // Return the closest tile
+    return walkableTilesArray[0]!; // Return the closest tile
   }
 
   isWithinGridBounds(tile: Vector2Simple): boolean {
-    return (
-      tile.x >= 0 &&
-      tile.x < this.easyStarNavigationGrid[0].length &&
-      tile.y >= 0 &&
-      tile.y < this.easyStarNavigationGrid.length
-    );
+    const firstRow = this.easyStarNavigationGrid[0];
+    if (!firstRow) return false;
+    return tile.x >= 0 && tile.x < firstRow.length && tile.y >= 0 && tile.y < this.easyStarNavigationGrid.length;
   }
 
   public isTileWalkable(tile: Vector2Simple): boolean {
-    return this.easyStarNavigationGrid[tile.y][tile.x] === 0; // Check if the tile is walkable (0 means walkable)
+    return this.easyStarNavigationGrid[tile.y]?.[tile.x] === 0; // Check if the tile is walkable (0 means walkable)
   }
 
   isAreaBeneathGameObjectWalkable(gameObject: Phaser.GameObjects.GameObject): boolean {
@@ -776,6 +779,7 @@ export class NavigationService {
             // Calculate actual path length to ensure it's within radius
             const pathLength = path.reduce((sum, node, index) => {
               const previousNode = index === 0 ? targetTile : path[index - 1];
+              if (!previousNode) return sum;
               const dx = Math.abs(node.x - previousNode.x);
               const dy = Math.abs(node.y - previousNode.y);
               // If diagonal movement is allowed, count diagonal steps as 1.414 tiles (approximate square root of 2)

@@ -33,6 +33,7 @@
     "forceConsistentCasingInFileNames": true,
     "noImplicitOverride": true,
     "moduleDetection": "force",
+    "noUncheckedIndexedAccess": true,
 
     /* Build Optimizations */
     "skipLibCheck": true,

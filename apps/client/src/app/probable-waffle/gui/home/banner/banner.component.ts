@@ -118,7 +118,7 @@ class BannerScene extends Phaser.Scene implements CreateSceneFromObjectConfig {
       TempleCursor
     ];
     const randomIndex = Phaser.Math.Between(0, constructors.length - 1);
-    const randomConstructor = constructors[randomIndex];
+    const randomConstructor = constructors[randomIndex]!;
 
     this.gameObject = new randomConstructor(this, 0, 0) as any;
     // set scale so it fits the screen

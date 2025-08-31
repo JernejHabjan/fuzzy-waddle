@@ -65,7 +65,7 @@ export class VisionComponent {
       if (distanceA === null || distanceB === null) return 0;
       return distanceA - distanceB;
     });
-    return visibleEnemies[0];
+    return visibleEnemies[0]!;
   }
 
   setData(data: Partial<VisionComponentData>) {

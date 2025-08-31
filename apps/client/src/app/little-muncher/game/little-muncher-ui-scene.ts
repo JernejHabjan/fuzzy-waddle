@@ -38,10 +38,10 @@ export class LittleMuncherUiScene extends Scene implements CreateSceneFromObject
   private updateHealthDisplay = (health: number) => {
     for (let i = 0; i < this.maxCharacterHealth; i++) {
       if (i >= health) {
-        this.healthDisplays[i].setVisible(false);
+        this.healthDisplays[i]!.setVisible(false);
         continue;
       }
-      this.healthDisplays[i].setVisible(true);
+      this.healthDisplays[i]!.setVisible(true);
     }
   };
 

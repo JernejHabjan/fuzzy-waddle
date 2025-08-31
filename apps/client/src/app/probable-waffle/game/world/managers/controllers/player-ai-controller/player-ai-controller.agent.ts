@@ -205,7 +205,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       return true;
     });
     if (trainingBuildings.length === 0) return State.FAILED;
-    getActorComponent(trainingBuildings[0], ProductionComponent)!.startProduction({
+    getActorComponent(trainingBuildings[0]!, ProductionComponent)!.startProduction({
       actorName: ObjectNames.SkaduweeWorkerMale, // todo,
       costData: pwActorDefinitions.TivaraWorkerMale.components!.productionCost!
     });
@@ -237,7 +237,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       return builderComponent.isIdle();
     });
     if (idleWorkers.length > 0 && this.blackboard.selectedStructure) {
-      const builderComponent = getActorComponent(idleWorkers[0], BuilderComponent);
+      const builderComponent = getActorComponent(idleWorkers[0]!, BuilderComponent);
       builderComponent?.assignToConstructionSite(this.blackboard.selectedStructure);
       this.logDebugInfo("Assigned worker to build structure.");
       return State.SUCCEEDED;

@@ -353,6 +353,7 @@ export class BuildingCursor {
     }
 
     const primaryAttack = attackDefinition.attacks[0];
+    if (primaryAttack === undefined) return;
 
     const rangeRadiusX = primaryAttack.range * this.tileSize;
     const rangeRadiusY = rangeRadiusX / 2;

@@ -71,32 +71,36 @@ export class ConstellationEffectComponent implements AfterViewInit, OnDestroy {
   private handleParticles = () => {
     if (!this.canvas) return;
     for (let i = 0; i < this.particles.length; i++) {
-      const particleRadius = this.particles[i].size / 2;
+      const particleI = this.particles[i];
+      if (!particleI) continue;
+      const particleRadius = particleI.size / 2;
       const particleOnCanvas =
-        this.particles[i].x + particleRadius > 0 &&
-        this.particles[i].x - particleRadius < this.canvas.width &&
-        this.particles[i].y + particleRadius > 0 &&
-        this.particles[i].y - particleRadius < this.canvas.height;
+        particleI.x + particleRadius > 0 &&
+        particleI.x - particleRadius < this.canvas.width &&
+        particleI.y + particleRadius > 0 &&
+        particleI.y - particleRadius < this.canvas.height;
       if (!particleOnCanvas) {
         this.particles.splice(i, 1);
         i--;
       } else {
-        this.particles[i].update();
-        this.particles[i].draw(this.ctx);
+        particleI.update();
+        particleI.draw(this.ctx);
         for (let j = i + 1; j < this.particles.length; j++) {
-          const dx = this.particles[j].x - this.particles[i].x;
-          const dy = this.particles[j].y - this.particles[i].y;
+          const particleJ = this.particles[i + 1];
+          if (!particleJ) continue;
+          const dx = particleJ.x - particleI.x;
+          const dy = particleJ.y - particleI.y;
           const distance = dx * dx + dy * dy;
           if (distance < 10000) {
             this.ctx.beginPath();
-            this.ctx.strokeStyle = this.particles[i].color;
+            this.ctx.strokeStyle = particleI.color;
             this.ctx.lineWidth = 0.3;
-            this.ctx.moveTo(this.particles[i].x, this.particles[i].y);
-            this.ctx.lineTo(this.particles[j].x, this.particles[j].y);
+            this.ctx.moveTo(particleI.x, particleI.y);
+            this.ctx.lineTo(particleJ.x, particleJ.y);
             this.ctx.stroke();
           }
         }
-        if (this.particles[i].size < 0.3) {
+        if (particleI.size < 0.3) {
           this.particles.splice(i, 1);
           i--;
         }

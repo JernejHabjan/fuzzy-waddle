@@ -49,7 +49,10 @@ class AnimatedTile {
     this.firstgid = firstgid;
     this.elapsedTime = 0;
     // assuming the duration is uniform across all frames
-    this.animationDuration = tileAnimationData[0].duration * tileAnimationData.length;
+    if (tileAnimationData.length === 0) {
+      throw new Error("Tile animation data is empty");
+    }
+    this.animationDuration = tileAnimationData[0]!.duration * tileAnimationData.length;
   }
 
   /**
@@ -60,9 +63,9 @@ class AnimatedTile {
     this.elapsedTime += delta;
     this.elapsedTime %= this.animationDuration;
 
-    const animationFrameIndex = Math.floor(this.elapsedTime / this.tileAnimationData[0].duration);
+    const animationFrameIndex = Math.floor(this.elapsedTime / this.tileAnimationData[0]!.duration);
 
-    this.tile.index = this.tileAnimationData[animationFrameIndex].tileid + this.firstgid;
+    this.tile.index = this.tileAnimationData[animationFrameIndex]!.tileid + this.firstgid;
   }
 }
 
@@ -91,8 +94,8 @@ export class AnimatedTilemap {
             // Typically `firstgid` is 1, which means tileId starts from 1.
             // TileId in Tiled starts from 0.
             if (tile.index - tileset.firstgid === parseInt(tileId, 10)) {
-              if (!tileData[tileId].animation) return;
-              animatedTiles.push(new AnimatedTile(tile, tileData[tileId].animation!, tileset.firstgid));
+              if (!tileData[tileId]!.animation) return;
+              animatedTiles.push(new AnimatedTile(tile, tileData[tileId]!.animation!, tileset.firstgid));
             }
           })
         );
@@ -102,7 +105,10 @@ export class AnimatedTilemap {
   };
 
   private get relevantTileset() {
-    return this.tilesets[0];
+    if (this.tilesets.length === 0) {
+      throw new Error("Tilemap has no tilesets");
+    }
+    return this.tilesets[0]!;
   }
 
   private update = (_: number, delta: number) => this.animatedTiles.forEach((tile) => tile.update(delta));

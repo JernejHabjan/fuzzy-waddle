@@ -71,7 +71,7 @@ export class SingleSelectionHandler {
           }
           // Double-click detection for interactive objects
           const now = Date.now();
-          const objectId = interactiveObjectIds[0];
+          const objectId = interactiveObjectIds[0]!;
           const isDoubleClick =
             now - this.lastClickTime < this.doubleClickThreshold && this.lastClickedObjectId === objectId;
           this.lastClickTime = now;

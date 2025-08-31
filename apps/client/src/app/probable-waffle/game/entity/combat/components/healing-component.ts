@@ -52,7 +52,7 @@ export class HealingComponent {
 
   private playHealSound() {
     const soundDefinitions = SharedActorActionsSfxHealSounds;
-    const soundDefinition = soundDefinitions[Math.floor(Math.random() * soundDefinitions.length)];
+    const soundDefinition = soundDefinitions[Math.floor(Math.random() * soundDefinitions.length)]!;
     this.audioService?.playAudioSprite(soundDefinition.key, soundDefinition.spriteName);
   }
 

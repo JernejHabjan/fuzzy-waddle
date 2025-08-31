@@ -114,7 +114,7 @@ export class AttackComponent {
       });
 
     if (availableAttacks.length === 0) return null;
-    return availableAttacks[0];
+    return availableAttacks[0]!;
   }
 
   useAttack(enemy: GameObject) {
@@ -254,7 +254,7 @@ export class AttackComponent {
     if (this.audioService && attack.sounds.hit) {
       const visibilityComponent = getGameObjectVisibility(this.gameObject);
       if (visibilityComponent && visibilityComponent.visible) {
-        const randomHitSound = attack.sounds.hit[Math.floor(Math.random() * attack.sounds.hit.length)];
+        const randomHitSound = attack.sounds.hit[Math.floor(Math.random() * attack.sounds.hit.length)]!;
         this.audioService.playSpatialAudioSprite(
           enemy, // enemy hit position
           randomHitSound.key,
@@ -265,7 +265,7 @@ export class AttackComponent {
     this.stopProjectile();
     if (projectile.impactAnimation) {
       const anims = projectile.impactAnimation.anims;
-      const randomImpactAnim = anims[Math.floor(Math.random() * anims.length)];
+      const randomImpactAnim = anims[Math.floor(Math.random() * anims.length)]!;
       const impactSprite = EffectsAnims.createAndPlayEffectAnimation(
         this.gameObject.scene,
         randomImpactAnim,
@@ -322,7 +322,7 @@ export class AttackComponent {
     if (preparing) {
       const visibilityComponent = getGameObjectVisibility(this.gameObject);
       if (visibilityComponent && visibilityComponent.visible) {
-        const randomPreparingSound = preparing[Math.floor(Math.random() * preparing.length)];
+        const randomPreparingSound = preparing[Math.floor(Math.random() * preparing.length)]!;
         this.audioService.playSpatialAudioSprite(
           this.gameObject,
           randomPreparingSound.key,
@@ -334,7 +334,7 @@ export class AttackComponent {
       if (fire) {
         const visibilityComponent = getGameObjectVisibility(this.gameObject);
         if (visibilityComponent && visibilityComponent.visible) {
-          const randomFireSound = fire[Math.floor(Math.random() * fire.length)];
+          const randomFireSound = fire[Math.floor(Math.random() * fire.length)]!;
           this.audioService!.playSpatialAudioSprite(this.gameObject, randomFireSound.key, randomFireSound.spriteName);
         }
       }
@@ -346,7 +346,7 @@ export class AttackComponent {
         if (hit) {
           const visibilityComponent = getGameObjectVisibility(this.gameObject);
           if (visibilityComponent && visibilityComponent.visible) {
-            const randomHitSound = hit[Math.floor(Math.random() * hit.length)];
+            const randomHitSound = hit[Math.floor(Math.random() * hit.length)]!;
             this.audioService!.playSpatialAudioSprite(
               enemy, // enemy hit position
               randomHitSound.key,
@@ -384,7 +384,7 @@ export class AttackComponent {
     });
 
     // Return the range of the best attack
-    return availableAttacks[0].range;
+    return availableAttacks[0]!.range;
   }
 
   setData(data: Partial<AttackComponentData>) {
@@ -394,7 +394,7 @@ export class AttackComponent {
       if (idx === null || idx === undefined) {
         this.currentAttack = null;
       } else if (idx >= 0 && idx < this.attackDefinition.attacks.length) {
-        this.currentAttack = this.attackDefinition.attacks[idx];
+        this.currentAttack = this.attackDefinition.attacks[idx]!;
       }
     }
   }

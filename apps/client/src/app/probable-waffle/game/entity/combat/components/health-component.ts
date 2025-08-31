@@ -353,14 +353,14 @@ export class HealthComponent {
       case ActorPhysicalType.Organic:
       case ActorPhysicalType.Biological:
         randomSoundIndex = Math.floor(Math.random() * SharedActorActionsSfxBodyFallSounds.length);
-        randomSound = SharedActorActionsSfxBodyFallSounds[randomSoundIndex];
+        randomSound = SharedActorActionsSfxBodyFallSounds[randomSoundIndex]!;
         if (this.audioService)
           this.audioService.playSpatialAudioSprite(this.gameObject, randomSound.key, randomSound.spriteName);
         if (this.audioActorComponent) this.audioActorComponent.playCustomSound(SoundType.Death);
         break;
       case ActorPhysicalType.Structural:
         randomSoundIndex = Math.floor(Math.random() * SharedActorActionsSfxBuildingDestroySounds.length);
-        randomSound = SharedActorActionsSfxBuildingDestroySounds[randomSoundIndex];
+        randomSound = SharedActorActionsSfxBuildingDestroySounds[randomSoundIndex]!;
         if (this.audioService)
           this.audioService.playSpatialAudioSprite(this.gameObject, randomSound.key, randomSound.spriteName);
         break;

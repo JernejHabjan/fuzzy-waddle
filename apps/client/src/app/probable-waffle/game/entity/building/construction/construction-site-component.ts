@@ -167,7 +167,7 @@ export class ConstructionSiteComponent {
     if (this.playingBuildSound) return;
     this.playingBuildSound = true;
     const soundDefinitions = [...SharedActorActionsSfxHammeringSounds, ...SharedActorActionsSfxSawingSounds];
-    const soundDefinition = soundDefinitions[Math.floor(Math.random() * soundDefinitions.length)];
+    const soundDefinition = soundDefinitions[Math.floor(Math.random() * soundDefinitions.length)]!;
     this.audioService.playSpatialAudioSprite(
       this.gameObject,
       soundDefinition.key,
@@ -321,7 +321,7 @@ export class ConstructionSiteComponent {
     const visibilityComponent = getGameObjectVisibility(this.gameObject);
     if (visibilityComponent && visibilityComponent.visible) {
       const soundDefinitions = SharedActorActionsSfxSelectionSounds;
-      const soundDefinition = soundDefinitions[Math.floor(Math.random() * soundDefinitions.length)];
+      const soundDefinition = soundDefinitions[Math.floor(Math.random() * soundDefinitions.length)]!;
       this.audioService?.playSpatialAudioSprite(this.gameObject, soundDefinition.key, soundDefinition.spriteName);
     }
 

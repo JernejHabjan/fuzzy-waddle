@@ -63,7 +63,7 @@ export class GameInterfaceComponent implements OnInit, OnDestroy {
       return;
     }
     // set initial score:
-    this.score = this.gameInstanceClientService.gameInstance.players[0].playerState.data.score;
+    this.score = this.gameInstanceClientService.gameInstance.players[0]!.playerState.data.score;
     this.scoreSubscription = this.communicatorService.score?.on.subscribe((event) => {
       this.score = event.score;
       this.changeDetectorRef.detectChanges();

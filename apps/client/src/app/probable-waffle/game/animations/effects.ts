@@ -60,7 +60,7 @@ export class EffectsAnims {
       EffectsAnims.ANIM_BLOOD_SPLATTER_SMALL_4,
       EffectsAnims.ANIM_BLOOD_SPLATTER_SMALL_5
     ];
-    const randomBloodAnim = bloodAnims[Math.floor(Math.random() * bloodAnims.length)];
+    const randomBloodAnim = bloodAnims[Math.floor(Math.random() * bloodAnims.length)]!;
     return this.createAndPlayEffectAnimation(scene, randomBloodAnim, x, y);
   };
 

@@ -14,9 +14,7 @@
     }
   ],
   "compilerOptions": {
-    "forceConsistentCasingInFileNames": true,
     "noPropertyAccessFromIndexSignature": false,
-    "noFallthroughCasesInSwitch": true,
     "allowSyntheticDefaultImports": true,
     "verbatimModuleSyntax": false
   },

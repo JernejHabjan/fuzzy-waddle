@@ -251,6 +251,10 @@ export class MapDefinitionComponent implements OnInit, OnDestroy {
       if (!playerRect) {
         const playerPosition = definition!.player.playerPosition!;
         const isoCoordinate = isoCoordinates[playerPosition];
+        if (!isoCoordinate) {
+          console.warn("No iso coordinate found for player position " + playerPosition);
+          continue;
+        }
         const maxPlayers = this.mapData.mapInfo.startPositionsOnTile.length;
         const playerNumber = definition!.player.playerNumber;
         const color = GameSetupHelpers.getStringColorForPlayer(playerNumber, maxPlayers);
@@ -391,7 +395,7 @@ export class MapDefinitionComponent implements OnInit, OnDestroy {
     const h = hsl[0];
     const s = hsl[1];
     const l = hsl[2];
-    const lPercent = parseFloat(l) + percent * 100;
+    const lPercent = parseFloat(l ?? "0") + percent * 100;
     return "hsl(" + h + "," + s + "," + lPercent + "%)";
   }
 
@@ -426,6 +430,7 @@ export class MapDefinitionComponent implements OnInit, OnDestroy {
     this.rects.sort((a, b) => a.zIndex - b.zIndex);
     for (let i = 0; i < this.rects.length; i++) {
       const r = this.rects[i];
+      if (!r) continue;
       this.rect(r.worldX, r.worldY, r.width, r.height, r.isHovering ? r.fillHover : r.fillNormal);
     }
   }
@@ -443,6 +448,7 @@ export class MapDefinitionComponent implements OnInit, OnDestroy {
     // test each rect to see if mouse is inside
     for (let i = 0; i < this.rects.length; i++) {
       const r = this.rects[i];
+      if (!r) continue;
       const previousIsHovering = r.isHovering;
 
       r.isHovering = this.intersects({ x: mx, y: my }, { x: r.worldX, y: r.worldY, width: r.width, height: r.height });
@@ -499,6 +505,7 @@ export class MapDefinitionComponent implements OnInit, OnDestroy {
     // test each rect to see if mouse is inside
     for (let i = 0; i < this.rects.length; i++) {
       const r = this.rects[i];
+      if (!r) continue;
       const intersects = this.intersects(
         { x: mx, y: my },
         { x: r.worldX, y: r.worldY, width: r.width, height: r.height }
@@ -739,7 +746,9 @@ export class MapDefinitionComponent implements OnInit, OnDestroy {
     // clear all the dragging flags
     this.currentlyDragging = false;
     for (let i = 0; i < this.rects.length; i++) {
-      this.rects[i].isDragging = false;
+      const r = this.rects[i];
+      if (!r) continue;
+      r.isDragging = false;
     }
   }
 
@@ -770,7 +779,7 @@ export class MapDefinitionComponent implements OnInit, OnDestroy {
       // since the last mousemove
       for (let i = 0; i < this.rects.length; i++) {
         const r = this.rects[i];
-        if (r.isDragging) {
+        if (!!r && r.isDragging) {
           r.worldX += dx;
           r.worldY += dy;
         }

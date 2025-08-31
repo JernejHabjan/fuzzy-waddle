@@ -391,7 +391,12 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     const constructionSiteComponent = getActorComponent(actor, ConstructionSiteComponent);
     if (constructionSiteComponent && !constructionSiteComponent.isFinished) {
       // Show sword icon as 9th (bottom right) icon
-      this.actor_actions[8].setup({
+      const action = this.actor_actions[8];
+      if (!action) {
+        console.error("Action button not found at index", index);
+        return;
+      }
+      action.setup({
         icon: {
           key: "gui",
           frame: "action_icons/hand.png",
@@ -440,7 +445,12 @@ export default class ActorActions extends Phaser.GameObjects.Container {
   ): number {
     const attackComponent = getActorComponent(actor, AttackComponent);
     if (attackComponent) {
-      this.actor_actions[index].setup(this.attackAction(allActors));
+      const action = this.actor_actions[index];
+      if (!action) {
+        console.error("Action button not found at index", index);
+        return index;
+      }
+      action.setup(this.attackAction(allActors));
       index++;
     }
     return index;
@@ -453,9 +463,14 @@ export default class ActorActions extends Phaser.GameObjects.Container {
   ): number {
     const actorTranslateComponent = getActorComponent(actor, ActorTranslateComponent);
     if (actorTranslateComponent) {
-      this.actor_actions[index].setup(this.moveAction(allActors));
+      const action = this.actor_actions[index];
+      if (!action) {
+        console.error("Action button not found at index", index);
+        return index;
+      }
+      action.setup(this.moveAction(allActors));
       index++;
-      this.actor_actions[index].setup(this.stopAction(allActors));
+      action.setup(this.stopAction(allActors));
       index++;
     }
     return index;
@@ -468,7 +483,12 @@ export default class ActorActions extends Phaser.GameObjects.Container {
   ): number {
     const productionComponent = getActorComponent(actor, ProductionComponent);
     if (productionComponent) {
-      this.actor_actions[index].setup(this.rallyAction(allActors));
+      const action = this.actor_actions[index];
+      if (!action) {
+        console.error("Action button not found at index", index);
+        return index;
+      }
+      action.setup(this.rallyAction(allActors));
       index++;
     }
     return index;
@@ -481,7 +501,12 @@ export default class ActorActions extends Phaser.GameObjects.Container {
   ): number {
     const healingComponent = getActorComponent(actor, HealingComponent);
     if (healingComponent) {
-      this.actor_actions[index].setup(this.healAction(allActors));
+      const action = this.actor_actions[index];
+      if (!action) {
+        console.error("Action button not found at index", index);
+        return index;
+      }
+      action.setup(this.healAction(allActors));
       index++;
     }
     return index;
@@ -494,7 +519,12 @@ export default class ActorActions extends Phaser.GameObjects.Container {
   ): number {
     const gathererComponent = getActorComponent(actor, GathererComponent);
     if (gathererComponent) {
-      this.actor_actions[index].setup(this.gatherAction(allActors));
+      const action = this.actor_actions[index];
+      if (!action) {
+        console.error("Action button not found at index", index);
+        return index;
+      }
+      action.setup(this.gatherAction(allActors));
       index++;
     }
     return index;
@@ -504,13 +534,18 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     const productionComponent = getActorComponent(actor, ProductionComponent);
     if (productionComponent && productionComponent.isFinished) {
       const availableToProduce = productionComponent.productionDefinition.availableProduceActors;
-      availableToProduce.forEach((product, localIndex) => {
+      availableToProduce.forEach((product: ObjectNames, localIndex: number): void => {
         const actorDefinition = pwActorDefinitions[product];
         const info = actorDefinition.components?.info;
         if (!info || !info.smallImage) {
           throw new Error(`Info component not found for ${product}`);
         }
-        this.actor_actions[index].setup({
+        const action = this.actor_actions[index];
+        if (!action) {
+          console.error("Action button not found at index", index);
+          return;
+        }
+        action.setup({
           icon: {
             key: info.smallImage.key!,
             frame: info.smallImage.frame,
@@ -583,7 +618,12 @@ export default class ActorActions extends Phaser.GameObjects.Container {
   ): number {
     const builderComponent = getActorComponent(actor, BuilderComponent);
     if (builderComponent) {
-      this.actor_actions[index].setup({
+      const action = this.actor_actions[index];
+      if (!action) {
+        console.error("Action button not found at index", index);
+        return index;
+      }
+      action.setup({
         icon: {
           key: "gui",
           frame: "action_icons/hammer.png",
@@ -610,7 +650,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
 
   private hideAllIcons() {
     for (let i = 0; i < this.actor_actions.length; i++) {
-      this.actor_actions[i].setup({ visible: false });
+      this.actor_actions[i]!.setup({ visible: false });
     }
   }
 
@@ -633,7 +673,12 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       if (!info || !info.smallImage) {
         throw new Error(`Info component not found for ${building}`);
       }
-      this.actor_actions[index].setup({
+      const action = this.actor_actions[index];
+      if (!action) {
+        console.error("Action button not found at index", index);
+        return;
+      }
+      action.setup({
         icon: {
           key: info.smallImage.key!,
           frame: info.smallImage.frame,
@@ -667,7 +712,12 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       console.error("Not enough slots for building icons");
       return index;
     }
-    this.actor_actions[index].setup({
+    const action = this.actor_actions[index];
+    if (!action) {
+      console.error("Action button not found at index", index);
+      return index;
+    }
+    action.setup({
       icon: {
         key: "gui",
         frame: "action_icons/back.png",

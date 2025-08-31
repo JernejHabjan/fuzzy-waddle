@@ -97,6 +97,7 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
         return;
       }
       const actor = selectedActors[0];
+      if (!actor) throw new Error("Actor not found");
       const definition = pwActorDefinitions[actor.name as ObjectNames];
       this.setActorInfoLabel(definition);
       if (selectedActors.length === 1) {

@@ -200,7 +200,7 @@ export default class Minimap extends Phaser.GameObjects.Container {
 
     for (let i = 0; i < widthInTiles; i++) {
       for (let j = 0; j < widthInTiles; j++) {
-        const tile = layerData[i][j];
+        const tile = layerData[i]![j]!;
         const baseColor = this.getColorFromTiledProperty(tile) ?? Phaser.Display.Color.RandomRGB();
 
         // Get tile visibility and apply appropriate color/alpha

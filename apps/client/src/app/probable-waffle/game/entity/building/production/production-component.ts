@@ -101,13 +101,13 @@ export class ProductionComponent {
     if (!this.isFinished) return;
     // process all queues
     for (let i = 0; i < this.productionQueues.length; i++) {
-      const queue = this.productionQueues[i];
+      const queue = this.productionQueues[i]!;
       if (queue.queuedItems.length <= 0) {
         continue;
       }
 
       for (let j = 0; j < queue.queuedItems.length; j++) {
-        const { costData } = queue.queuedItems[j];
+        const { costData } = queue.queuedItems[j]!;
 
         let productionCostPaid = false;
         if (costData.costType == PaymentType.PayOverTime) {
@@ -160,7 +160,7 @@ export class ProductionComponent {
 
   get isProducing(): boolean {
     for (let i = 0; i < this.productionQueues.length; i++) {
-      const queue = this.productionQueues[i];
+      const queue = this.productionQueues[i]!;
       if (queue.queuedItems.length > 0) {
         return true;
       }
@@ -176,9 +176,9 @@ export class ProductionComponent {
     if (!this.isProducing) return null;
 
     for (let i = 0; i < this.productionQueues.length; i++) {
-      const queue = this.productionQueues[i];
+      const queue = this.productionQueues[i]!;
       if (queue.queuedItems.length > 0) {
-        const { costData } = queue.queuedItems[0];
+        const { costData } = queue.queuedItems[0]!;
         return 100 - (queue.remainingProductionTime / costData.productionTime) * 100;
       }
     }
@@ -253,7 +253,7 @@ export class ProductionComponent {
     if (queueIndex >= queue.queuedItems.length) {
       throw new Error("Invalid queue index");
     }
-    const { actorName } = queue.queuedItems[queueIndex];
+    const { actorName } = queue.queuedItems[queueIndex]!;
 
     queue.queuedItems.splice(queueIndex, 1);
     this.resetQueue(queue);
@@ -318,7 +318,7 @@ export class ProductionComponent {
     let queueWithLeastProductsCount = Number.MAX_SAFE_INTEGER;
 
     for (let i = 0; i < this.productionQueues.length; i++) {
-      const queue = this.productionQueues[i];
+      const queue = this.productionQueues[i]!;
 
       // Check if the queue is not at full capacity
       if (queue.queuedItems.length < this.productionDefinition.capacityPerQueue) {
@@ -358,7 +358,7 @@ export class ProductionComponent {
 
   private resetQueue(queue: ProductionQueue) {
     if (queue.queuedItems.length <= 0) return;
-    const { costData } = queue.queuedItems[0];
+    const { costData } = queue.queuedItems[0]!;
     queue.remainingProductionTime = costData.productionTime;
   }
 
@@ -371,12 +371,12 @@ export class ProductionComponent {
   cancelProduction(item: ProductionQueueItem) {
     if (!this.isFinished) return;
     for (let i = 0; i < this.productionQueues.length; i++) {
-      const queue = this.productionQueues[i];
+      const queue = this.productionQueues[i]!;
       const index = queue.queuedItems.findIndex((i) => i.actorName === item.actorName);
 
       if (index !== -1) {
         // Get the item being cancelled
-        const cancelledItem = queue.queuedItems[index];
+        const cancelledItem = queue.queuedItems[index]!;
         const { costData } = cancelledItem;
 
         // Remove the item from the queue

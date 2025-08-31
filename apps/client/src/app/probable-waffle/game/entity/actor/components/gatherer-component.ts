@@ -422,7 +422,7 @@ export class GathererComponent {
         break;
     }
 
-    const randomSound = sounds[Math.floor(Math.random() * sounds.length)];
+    const randomSound = sounds[Math.floor(Math.random() * sounds.length)]!;
     const visibilityComponent = getGameObjectVisibility(this.gameObject);
     if (visibilityComponent && visibilityComponent.visible) {
       this.audioService.playSpatialAudioSprite(this.gameObject, randomSound.key, randomSound.spriteName);

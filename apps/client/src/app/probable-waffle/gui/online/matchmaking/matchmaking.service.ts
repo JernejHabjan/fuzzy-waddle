@@ -21,6 +21,9 @@ export class MatchmakingService implements IMatchmakingService {
 
   constructor() {
     const firstNrOfPlayersOption = this.nrOfPlayersOptions[0];
+    if (!firstNrOfPlayersOption) {
+      throw new Error("No levels available for matchmaking");
+    }
     this.matchmakingOptions = {
       factionType: this.lastPlayedFactionType,
       nrOfPlayers: firstNrOfPlayersOption,

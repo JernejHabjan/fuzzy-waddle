@@ -33,13 +33,13 @@ export class AttributionComponent implements OnInit {
       if (!grouped[attribution.type]) {
         grouped[attribution.type] = [];
       }
-      grouped[attribution.type].push(attribution);
+      grouped[attribution.type]!.push(attribution);
     }
 
     const sortedTypes = Object.keys(grouped).sort();
     return sortedTypes.map((type) => ({
       type,
-      items: grouped[type].sort((a, b) => a.name.localeCompare(b.name))
+      items: grouped[type]!.sort((a, b) => a.name.localeCompare(b.name))
     }));
   }
 }

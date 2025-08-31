@@ -191,7 +191,7 @@ export class CameraMovementHandler {
 
   private findNearestValidZoom(zoom: number): number {
     const powersOfTwo = [0.5, 1, 2, 4, 8];
-    let nearest = powersOfTwo[0];
+    let nearest = powersOfTwo[0]!;
     for (const power of powersOfTwo) {
       if (Math.abs(zoom - power) < Math.abs(zoom - nearest)) {
         nearest = power;

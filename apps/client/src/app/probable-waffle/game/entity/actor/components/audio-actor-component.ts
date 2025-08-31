@@ -70,7 +70,7 @@ export class AudioActorComponent {
     return this.getSound(key);
   }
 
-  private getSound(key: SoundType | string | null) {
+  private getSound(key: SoundType | string | null): SoundDefinition | null {
     if (!this.audioDefinition || !key) return null;
 
     const extraSoundDefinitions = this.audioDefinition.sounds[SoundType.SelectExtra];
@@ -105,7 +105,7 @@ export class AudioActorComponent {
 
     this.lastPlayedSoundIndex[key] = soundIndex;
 
-    return soundDefinitions[soundIndex!];
+    return soundDefinitions[soundIndex!]!;
   }
 
   private playSound(soundDefinition: SoundDefinition | null, key: SoundType | string | null, spatial: boolean) {
@@ -139,7 +139,7 @@ export class AudioActorComponent {
   private shuffleArray(array: number[]): number[] {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
+      [array[i], array[j]] = [array[j]!, array[i]!];
     }
     return array;
   }

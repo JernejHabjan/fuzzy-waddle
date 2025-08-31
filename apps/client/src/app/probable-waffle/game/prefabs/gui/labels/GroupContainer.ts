@@ -109,6 +109,7 @@ export default class GroupContainer extends Phaser.GameObjects.Container {
 
   private groupSelectedEvent(payload: ActorGroupEvent) {
     const group = this.buttons[payload.groupKey - 1];
+    if (!group) return;
     // deselect all groups
     this.buttons.forEach((button) => button.deselect());
     // select the clicked group
@@ -117,6 +118,7 @@ export default class GroupContainer extends Phaser.GameObjects.Container {
 
   private groupCreatedOrUpdatedEvent(payload: ActorGroupEvent) {
     const group = this.buttons[payload.groupKey - 1];
+    if (!group) return;
     group.setVisible(true);
     group.setGroupActor(payload.leadActor);
     group.setCount(payload.count);

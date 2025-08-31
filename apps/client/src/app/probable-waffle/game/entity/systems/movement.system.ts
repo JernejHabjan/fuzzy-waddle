@@ -224,7 +224,7 @@ export class MovementSystem {
 
       // Start moving along the first step of the path
       if (path.length > 0) {
-        const nextTile = path[0];
+        const nextTile = path[0]!;
         const tileWorldXY = this.navigationService?.getTileWorldCenter(nextTile);
         if (!tileWorldXY) return false;
 
@@ -444,7 +444,7 @@ export class MovementSystem {
     if (!movementSoundDefinition) return;
     // get random from movementSoundDefinition
     const randomIndex = Math.floor(Math.random() * movementSoundDefinition.length);
-    const movementSound = movementSoundDefinition[randomIndex];
+    const movementSound = movementSoundDefinition[randomIndex]!;
     this.audioService.playSpatialAudioSprite(this.gameObject, movementSound.key, movementSound.spriteName, {
       volume: 70 // make it quieter so it doesn't drown out other sounds
     });
@@ -579,6 +579,7 @@ export class MovementSystem {
     // Assign a unique formation point to this unit based on its sorted index
     if (ownSortedIndex < formationPoints.length) {
       const assignedPoint = formationPoints[ownSortedIndex];
+      if (!assignedPoint) return tileVec3;
       const destinationTile: Vector2Simple = { x: assignedPoint.x, y: assignedPoint.y };
 
       // Check if the assigned point is valid and reachable
