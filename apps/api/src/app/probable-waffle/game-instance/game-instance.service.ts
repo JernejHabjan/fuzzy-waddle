@@ -83,7 +83,7 @@ export class GameInstanceService implements GameInstanceServiceInterface {
       const lastUpdated = gi.gameInstanceMetadata.data.updatedOn;
       const now = new Date();
       // is old if started is more than N minutes ago and lastUpdated is null or more than N minutes ago
-      const startedMoreThanNMinutesAgo = started.getTime() + minutesAgo < now.getTime();
+      const startedMoreThanNMinutesAgo = started!.getTime() + minutesAgo < now.getTime();
       const lastUpdatedMoreThanNMinutesAgo = !lastUpdated || lastUpdated.getTime() + minutesAgo < now.getTime();
       const isOld = startedMoreThanNMinutesAgo && lastUpdatedMoreThanNMinutesAgo;
       if (isOld) {
@@ -93,7 +93,7 @@ export class GameInstanceService implements GameInstanceServiceInterface {
       return !isOld;
     });
     toRemove.forEach((gi) =>
-      this.gameInstanceHolderService.removeGameInstance(gi.gameInstanceMetadata.data.gameInstanceId)
+      this.gameInstanceHolderService.removeGameInstance(gi.gameInstanceMetadata.data.gameInstanceId!)
     );
   }
 
@@ -107,7 +107,7 @@ export class GameInstanceService implements GameInstanceServiceInterface {
 
   getGameInstanceData(gameInstanceId: string): ProbableWaffleGameInstanceData | null {
     const gameInstance = this.findGameInstance(gameInstanceId);
-    if (!gameInstance) return;
+    if (!gameInstance) return null;
     return gameInstance.data;
   }
 

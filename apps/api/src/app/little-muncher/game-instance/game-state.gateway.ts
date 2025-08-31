@@ -17,7 +17,7 @@ import { Server, Socket } from "socket.io";
   }
 })
 export class GameStateGateway {
-  @WebSocketServer() private readonly server: Server;
+  @WebSocketServer() private readonly server!: Server;
 
   constructor(private readonly gameStateServerService: GameStateServerService) {}
 

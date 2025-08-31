@@ -18,7 +18,7 @@ export class GameStateServerService {
   constructor(private readonly gameInstanceService: GameInstanceService) {}
 
   updateGameState(body: CommunicatorEvent<any, ProbableWaffleCommunicatorType>, user: User): boolean {
-    const gameInstance = this.gameInstanceService.findGameInstance(body.gameInstanceId);
+    const gameInstance = this.gameInstanceService.findGameInstance(body.gameInstanceId!);
     if (!gameInstance) {
       console.log("game instance not found in updateGameState in GameStateServerService");
       return false;
@@ -34,7 +34,7 @@ export class GameStateServerService {
           case "sessionState":
             switch (giMetadata.data.sessionState) {
               case GameSessionState.Stopped:
-                this.gameInstanceService.stopGameInstance(body.gameInstanceId, user);
+                this.gameInstanceService.stopGameInstance(body.gameInstanceId!, user);
                 break;
             }
             break;

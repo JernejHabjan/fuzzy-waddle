@@ -31,7 +31,7 @@ export class SupabaseStrategy extends PassportStrategy(SupabaseV2AuthStrategy, A
     return super.validate(payload);
   }
 
-  authenticate(req) {
+  authenticate(req: any) {
     return super.authenticate(req);
   }
 }

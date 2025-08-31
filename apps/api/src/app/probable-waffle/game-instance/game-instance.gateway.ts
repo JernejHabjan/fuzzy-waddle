@@ -24,7 +24,7 @@ import { RoomServerService } from "../game-room/room-server.service";
   }
 })
 export class GameInstanceGateway {
-  @WebSocketServer() private readonly server: Server;
+  @WebSocketServer() private readonly server!: Server;
 
   constructor(
     private readonly gameStateServerService: GameStateServerService,

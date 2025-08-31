@@ -3,7 +3,6 @@
   "compilerOptions": {
     /* Output & Language Features */
     "target": "ES2022",
-    "module": "ESNext",
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "moduleResolution": "Bundler",              // Faster & better for modern bundlers (Vite, Webpack, etc.)
     "allowArbitraryExtensions": true,
@@ -16,7 +15,6 @@
 
     /* Decorators */
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,              // Still needed for Angular/NestJS
 
     /* Paths & Aliases */
     "baseUrl": ".",
@@ -37,7 +35,6 @@
     "skipDefaultLibCheck": true,
     "isolatedModules": true,                    // Better for modern bundlers
     "importsNotUsedAsValues": "remove",         // Helps tree-shaking
-    "verbatimModuleSyntax": true,               // Avoids unwanted transpilation of ESM/CJS
 
     /* Source Maps & Declarations */
     "sourceMap": true,

@@ -22,13 +22,13 @@ export const GameInstanceGatewayStub = {
   }
 })
 export class GameInstanceGateway implements GameInstanceGatewayInterface {
-  @WebSocketServer() private readonly server: Server;
+  @WebSocketServer() private readonly server!: Server;
 
-  emitRoom(roomEvent: LittleMuncherRoomEvent) {
+  emitRoom(roomEvent: LittleMuncherRoomEvent): void {
     this.server.emit(LittleMuncherGatewayEvent.LittleMuncherRoom, roomEvent);
   }
 
-  emitSpectator(spectatorEvent: LittleMuncherSpectatorEvent) {
+  emitSpectator(spectatorEvent: LittleMuncherSpectatorEvent): void {
     // todo??? this.server.emit(LittleMuncherGatewayEvent.Spectator, spectatorEvent);
   }
 }

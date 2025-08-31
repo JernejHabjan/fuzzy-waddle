@@ -32,7 +32,7 @@ export class SupabaseV2AuthStrategy extends Strategy {
     return authUser ? authUser : null;
   }
 
-  async authenticate(req): Promise<void> {
+  async authenticate(req: any): Promise<void> {
     const idToken = this.extractor(req);
 
     if (!idToken) {

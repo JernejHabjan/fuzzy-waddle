@@ -14,7 +14,7 @@ import { type User } from "@supabase/supabase-js";
 export class GameStateServerService {
   constructor(private readonly gameInstanceService: GameInstanceService) {}
   updateGameState(body: CommunicatorEvent<any, LittleMuncherCommunicatorType>, user: User): boolean {
-    const gameInstance = this.gameInstanceService.findGameInstance(body.gameInstanceId);
+    const gameInstance = this.gameInstanceService.findGameInstance(body.gameInstanceId!);
     if (!gameInstance) {
       console.log("game instance not found in updateGameState in GameStateServerService");
       return false;
@@ -34,7 +34,7 @@ export class GameStateServerService {
           console.log("User is not a player in this game instance");
           return false;
         }
-        gameInstance.gameState.data.climbedHeight = (
+        gameInstance.gameState!.data.climbedHeight = (
           body.payload as LittleMuncherCommunicatorClimbingEvent
         ).timeClimbing;
         console.log("updating time climbing", body.payload);
@@ -44,7 +44,7 @@ export class GameStateServerService {
           console.log("User is not a player in this game instance");
           return false;
         }
-        gameInstance.gameState.data.pause = (body.payload as LittleMuncherCommunicatorPauseEvent).pause;
+        gameInstance.gameState!.data.pause = (body.payload as LittleMuncherCommunicatorPauseEvent).pause;
         console.log("updating pause", body.payload);
         console.log("pausing game");
         break;
@@ -53,8 +53,8 @@ export class GameStateServerService {
           console.log("User is not a player in this game instance");
           return false;
         }
-        gameInstance.gameState.data.climbedHeight = 0;
-        gameInstance.gameState.data.score = 0;
+        gameInstance.gameState!.data.climbedHeight = 0;
+        gameInstance.gameState!.data.score = 0;
         console.log("resetting game");
         break;
       case "score":

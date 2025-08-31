@@ -13,7 +13,7 @@ import { Server, Socket } from "socket.io";
   }
 })
 export class ChatGateway {
-  @WebSocketServer() private readonly server: Server;
+  @WebSocketServer() private readonly server!: Server;
 
   constructor(private readonly chatService: ChatService) {}
   //subscribe to chat message and broadcast to all clients

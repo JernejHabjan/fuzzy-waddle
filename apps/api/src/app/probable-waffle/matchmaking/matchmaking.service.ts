@@ -47,7 +47,7 @@ export class MatchmakingService implements MatchmakingServiceInterface {
       const lastUpdated = gi.gameInstance.gameInstanceMetadata.data.updatedOn;
       const now = new Date();
       // is old if started is more than N minutes ago and lastUpdated is null or more than N minutes ago
-      const startedMoreThanNMinutesAgo = started.getTime() + minutesAgo < now.getTime();
+      const startedMoreThanNMinutesAgo = started!.getTime() + minutesAgo < now.getTime();
       const lastUpdatedMoreThanNMinutesAgo = !lastUpdated || lastUpdated.getTime() + minutesAgo < now.getTime();
       const isOld = startedMoreThanNMinutesAgo && lastUpdatedMoreThanNMinutesAgo;
       if (isOld) {
@@ -70,6 +70,7 @@ export class MatchmakingService implements MatchmakingServiceInterface {
 
   private promoteGameInstanceToLoaded(gameInstance: ProbableWaffleGameInstance, user: User) {
     const gameInstanceId = gameInstance.gameInstanceMetadata.data.gameInstanceId;
+    if (!gameInstanceId) return;
     this.pendingMatchmakingGameInstances = this.pendingMatchmakingGameInstances.filter(
       (gi) =>
         gi.gameInstance.gameInstanceMetadata.data.gameInstanceId !==
@@ -77,7 +78,7 @@ export class MatchmakingService implements MatchmakingServiceInterface {
     );
     gameInstance.gameInstanceMetadata.data.sessionState = GameSessionState.MovingPlayersToGame;
     this.gameInstanceGateway.emitGameFound({
-      userIds: gameInstance.players.map((p) => p.playerController.data.userId),
+      userIds: gameInstance.players.map((p) => p.playerController.data.userId!),
       gameInstanceId
     });
     this.roomServerService.roomEvent("game_instance_metadata", gameInstance, user);
@@ -97,7 +98,7 @@ export class MatchmakingService implements MatchmakingServiceInterface {
 
     // GAME MODE
     const mapPoolIds = pendingMatchmakingGameInstance.commonMapPoolIds;
-    const randomMapId = mapPoolIds[Math.floor(Math.random() * mapPoolIds.length)];
+    const randomMapId = mapPoolIds[Math.floor(Math.random() * mapPoolIds.length)] as ProbableWaffleMapEnum;
     gameInstance.gameMode = this.getNewMatchmakingGameMode(randomMapId);
     this.roomServerService.roomEvent("game_mode", gameInstance, user);
 
@@ -233,6 +234,7 @@ export class MatchmakingService implements MatchmakingServiceInterface {
     );
     if (!pendingMatchMakingGameInstance) return;
     const gameInstanceId = pendingMatchMakingGameInstance.gameInstance.gameInstanceMetadata.data.gameInstanceId;
+    if (!gameInstanceId) return;
     const player = pendingMatchMakingGameInstance.gameInstance.players.find(
       (p) => p.playerController.data.userId === user.id
     );

@@ -16,34 +16,34 @@ export const GameInstanceServiceStub = {
   findGameInstance(gameInstanceId: string): LittleMuncherGameInstance | undefined {
     return undefined;
   },
-  startGame(body: GameInstanceDataDto, user: User) {
-    //
+  startGame(body: GameInstanceDataDto, user: User): Promise<void> {
+    return Promise.resolve();
   },
-  stopGame(body: GameInstanceDataDto, user: User) {
-    //
+  stopGame(body: GameInstanceDataDto, user: User): Promise<void> {
+    return Promise.resolve();
   },
   getGameInstanceToRoom(gameInstance: LittleMuncherGameInstance): LittleMuncherRoom {
-    return undefined;
+    return {} as LittleMuncherRoom;
   },
   getRoomEvent(gameInstance: LittleMuncherGameInstance, action: RoomAction): LittleMuncherRoomEvent {
-    return undefined;
+    return {} as LittleMuncherRoomEvent;
   },
   getSpectatorEvent(user: User, room: LittleMuncherRoom, action: SpectatorAction): LittleMuncherSpectatorEvent {
-    return undefined;
+    return {} as LittleMuncherSpectatorEvent;
   },
   getSpectatorRooms(user: User): Promise<LittleMuncherRoom[]> {
-    return undefined;
+    return Promise.resolve([]);
   },
   spectatorJoined(body: GameInstanceDataDto, user: User): Promise<LittleMuncherGameInstanceData> {
-    return undefined;
+    return Promise.resolve({} as LittleMuncherGameInstanceData);
   },
-  spectatorLeft(body: GameInstanceDataDto, user: User) {
-    //
+  spectatorLeft(body: GameInstanceDataDto, user: User): Promise<void> {
+    return Promise.resolve();
   },
-  startLevel(body: LittleMuncherGameCreateDto, user: User) {
-    //
+  startLevel(body: LittleMuncherGameCreateDto, user: User): Promise<void> {
+    return Promise.resolve();
   },
-  stopLevel(body: GameInstanceDataDto, user: User) {
-    //
+  stopLevel(body: GameInstanceDataDto, user: User): Promise<void> {
+    return Promise.resolve();
   }
 } satisfies GameInstanceServiceInterface;

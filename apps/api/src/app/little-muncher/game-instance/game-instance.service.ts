@@ -55,7 +55,7 @@ export class GameInstanceService implements GameInstanceServiceInterface {
 
   async spectatorJoined(body: GameInstanceDataDto, user: User): Promise<LittleMuncherGameInstanceData> {
     const gameInstance = this.findGameInstance(body.gameInstanceId);
-    if (!gameInstance) return;
+    if (!gameInstance) throw new Error("Game instance not found");
     gameInstance.initSpectator({
       userId: user.id
     });
@@ -99,7 +99,7 @@ export class GameInstanceService implements GameInstanceServiceInterface {
   getGameInstanceToRoom(gameInstance: LittleMuncherGameInstance): LittleMuncherRoom {
     return {
       gameInstanceMetadataData: gameInstance.gameInstanceMetadata.data,
-      gameModeData: gameInstance.gameMode
+      gameModeData: gameInstance.gameMode!
     };
   }
 
@@ -135,7 +135,7 @@ export class GameInstanceService implements GameInstanceServiceInterface {
       const lastUpdated = gi.gameInstanceMetadata.data.updatedOn;
       const now = new Date();
       // is old if started is more than N minutes ago and lastUpdated is null or more than N minutes ago
-      const startedMoreThanNMinutesAgo = started.getTime() + minutesAgo < now.getTime();
+      const startedMoreThanNMinutesAgo = started!.getTime() + minutesAgo < now.getTime();
       const lastUpdatedMoreThanNMinutesAgo = !lastUpdated || lastUpdated.getTime() + minutesAgo < now.getTime();
       const isOld = startedMoreThanNMinutesAgo && lastUpdatedMoreThanNMinutesAgo;
       if (isOld) {

@@ -15,14 +15,16 @@
   ],
   "compilerOptions": {
     "lib": ["ES2021", "DOM"],
-    "target": "es2020",
+    "target": "es2022",
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitOverride": false,
     "noPropertyAccessFromIndexSignature": false,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "module": "ESNext",
+    "verbatimModuleSyntax": true               // Avoids unwanted transpilation of ESM/CJS
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

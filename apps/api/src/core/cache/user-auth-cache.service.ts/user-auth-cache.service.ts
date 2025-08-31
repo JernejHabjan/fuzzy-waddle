@@ -10,7 +10,7 @@ export class UserAuthCacheService {
     deleteOnExpire: true // delete expired items from the cache
   });
 
-  getUser(idToken: string): AuthUser | null {
+  getUser(idToken: string): AuthUser | undefined {
     return this.cachedUsers.get<AuthUser>(idToken);
   }
 

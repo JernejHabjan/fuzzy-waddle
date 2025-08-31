@@ -11,7 +11,7 @@ export const GameInstanceServiceStub = {
     return undefined;
   },
   createGameInstance(gameInstanceMetadataData: ProbableWaffleGameInstanceMetadataData, user: User) {
-    //
+    return Promise.resolve();
   },
   getGameInstanceData(gameInstanceId: string): ProbableWaffleGameInstanceData | null {
     return null;

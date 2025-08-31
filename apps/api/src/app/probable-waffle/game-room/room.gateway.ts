@@ -8,7 +8,7 @@ import { Server } from "socket.io";
   }
 })
 export class RoomGateway {
-  @WebSocketServer() private readonly server: Server;
+  @WebSocketServer() private readonly server!: Server;
 
   emitRoom(roomEvent: ProbableWaffleRoomEvent) {
     this.server.emit(ProbableWaffleGatewayEvent.ProbableWaffleRoom, roomEvent);

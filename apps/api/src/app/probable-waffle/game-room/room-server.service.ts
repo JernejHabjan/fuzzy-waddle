@@ -33,7 +33,7 @@ export class RoomServerService implements RoomServerServiceInterface {
     );
     const notCreatedByUser = visible.filter((gi) => gi.gameInstanceMetadata.data.createdBy !== user.id);
     const filteredByMap = notCreatedByUser.filter(
-      (gi) => !gi.gameMode || (body.maps?.includes(gi.gameMode.data.map) ?? true)
+      (gi) => !gi.gameMode || (body.maps?.includes(gi.gameMode.data.map!) ?? true)
     );
     // noinspection UnnecessaryLocalVariableJS
     const gameInstanceToRoom = filteredByMap.map((gameInstance) => this.getGameInstanceToRoom(gameInstance));
@@ -59,7 +59,7 @@ export class RoomServerService implements RoomServerServiceInterface {
   }
 
   emitCertainGameInstanceEventsToAllUsers(body: CommunicatorEvent<any, ProbableWaffleCommunicatorType>, user: User) {
-    const gameInstance = this.gameInstanceHolderService.findGameInstance(body.gameInstanceId);
+    const gameInstance = this.gameInstanceHolderService.findGameInstance(body.gameInstanceId!);
     if (!gameInstance) {
       console.log("game instance not found in emitCertainGameInstanceEventsToAllUsers in RoomServerService");
       return false;
@@ -94,5 +94,6 @@ export class RoomServerService implements RoomServerServiceInterface {
         }
         break;
     }
+    return true;
   }
 }
