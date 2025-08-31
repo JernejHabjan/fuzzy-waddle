@@ -1,29 +1,31 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    /* Output & Language Features */
-    "target": "ES2022",
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
-    "moduleResolution": "Bundler",              // Faster & better for modern bundlers (Vite, Webpack, etc.)
-    "allowArbitraryExtensions": true,
+    /* Language & Output */
+    "target": "ESNext",                         // Use the latest ECMAScript features
+    "module": "ESNext",                          // Modern ESM for bundlers
+    "lib": ["ESNext", "DOM"],    // Latest JS + DOM features
+    "moduleResolution": "Bundler",              // Optimized for Vite/Webpack
+    "allowArbitraryExtensions": true,           // Allows importing files with arbitrary extensions
 
     /* Interop & Imports */
-    "esModuleInterop": true,                    // Ensures smooth default import compatibility
+    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "noResolve": false,
 
     /* Decorators */
     "experimentalDecorators": true,
+    "emitDecoratorMetadata": false,             // Not required for Angular unless explicitly used
 
-    /* Paths & Aliases */
+    /* Path Aliases */
     "baseUrl": ".",
     "paths": {
       "@fuzzy-waddle/api-interfaces": ["libs/api-interfaces/src/index.ts"]
     },
 
-    /* Type Checking & Strictness */
-    "strict": true,                             // Enables all strict checks
+    /* Strict Type Checking */
+    "strict": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noImplicitReturns": true,
@@ -31,15 +33,16 @@
     "forceConsistentCasingInFileNames": true,
 
     /* Build Optimizations */
-    "skipLibCheck": true,                       // Faster builds
+    "skipLibCheck": true,
     "skipDefaultLibCheck": true,
-    "isolatedModules": true,                    // Better for modern bundlers
-    "importsNotUsedAsValues": "remove",         // Helps tree-shaking
+    "isolatedModules": true,
+    "importsNotUsedAsValues": "remove",
+    "verbatimModuleSyntax": true,
 
     /* Source Maps & Declarations */
     "sourceMap": true,
     "declaration": false,
-    "incremental": true,                        // Enables faster builds via .tsbuildinfo cache
+    "incremental": true,
     "tsBuildInfoFile": "./tmp/tsconfig.tsbuildinfo"
   },
   "exclude": ["node_modules", "tmp", "dist"]

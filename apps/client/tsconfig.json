@@ -14,16 +14,11 @@
     }
   ],
   "compilerOptions": {
-    "lib": ["ES2021", "DOM"],
-    "target": "es2022",
     "forceConsistentCasingInFileNames": true,
-    "strict": true,
     "noImplicitOverride": false,
     "noPropertyAccessFromIndexSignature": false,
-    "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "allowSyntheticDefaultImports": true,
-    "module": "ESNext",
     "verbatimModuleSyntax": false
   },
   "angularCompilerOptions": {

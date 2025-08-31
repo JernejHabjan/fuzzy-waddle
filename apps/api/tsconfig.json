@@ -13,6 +13,8 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "sourceMap": true,
-    "moduleResolution": "Node"
+    "emitDecoratorMetadata": true,
+    "moduleResolution": "Node",
+    "verbatimModuleSyntax": false
   }
 }
