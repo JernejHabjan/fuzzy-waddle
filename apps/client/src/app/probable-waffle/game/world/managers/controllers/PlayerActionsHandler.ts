@@ -14,7 +14,7 @@ import { getPrimarySelectedActor } from "../../../data/selection-helpers";
 import { getActorComponent } from "../../../data/actor-component";
 import { PawnAiController } from "./player-pawn-ai-controller/pawn-ai-controller";
 import { BuilderComponent } from "../../../entity/actor/components/builder-component";
-import { BuildingCursor } from "../../../world/managers/controllers/building-cursor";
+import { BuildingCursor } from "./building-cursor";
 import { ProductionComponent } from "../../../entity/building/production/production-component";
 import { pwActorDefinitions } from "../../../data/actor-definitions";
 import { AttackComponent } from "../../../entity/combat/components/attack-component";

@@ -3,10 +3,6 @@ import { GameSessionState } from "@fuzzy-waddle/api-interfaces";
 import { environment } from "../../../../../../environments/environment";
 import { getCommunicator } from "../../../data/scene-data";
 
-export class MapObject {
-  // todo
-}
-
 export class SceneGameState {
   private sessionStateSubscription?: { unsubscribe(): void };
   constructor(private readonly scene: ProbableWaffleScene) {

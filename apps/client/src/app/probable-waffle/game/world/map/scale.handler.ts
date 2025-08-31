@@ -1,10 +1,9 @@
-import { MapSizeInfo_old } from "../const/map-size.info_old";
 import { Cameras, Scale, Structs } from "phaser";
 
 export class ScaleHandler {
   private readonly mainCamera: Cameras.Scene2D.Camera;
-  private scaleManager: Scale.ScaleManager;
-  private cameras: Cameras.Scene2D.CameraManager;
+  private readonly scaleManager: Scale.ScaleManager;
+  private readonly cameras: Cameras.Scene2D.CameraManager;
 
   constructor(
     scene: Phaser.Scene,
@@ -33,8 +32,8 @@ export class ScaleHandler {
   setupBounds(centerOn: boolean = false) {
     const maxMapLayers = this.config.maxLayers;
     // noinspection UnnecessaryLocalVariableJS
-    const topMarginDueToMapLayers = maxMapLayers * MapSizeInfo_old.info.tileHeight;
-    const topMargin = topMarginDueToMapLayers;
+    const tileHeight = this.tilemap.tileHeight;
+    const topMargin = maxMapLayers * tileHeight;
     const leftMargin = this.config.margins.left;
     const bottomMargin = this.config.margins.bottom;
     const mapLeft = -this.tilemap.widthInPixels / 2 - leftMargin;

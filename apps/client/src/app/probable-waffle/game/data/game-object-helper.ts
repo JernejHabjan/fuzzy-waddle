@@ -144,15 +144,6 @@ export function onSceneInitialized(scene: Phaser.Scene, callback: () => void, sc
     });
 }
 
-export function onGameObjectReady(
-  gameObject: Phaser.GameObjects.GameObject,
-  callback: () => void,
-  scope: any,
-  delay: number | null = 0
-) {
-  return onObjectReady(gameObject, callback, scope, delay);
-}
-
 /**
  * Waits until scene and gameObject are initialized and active, then executes the callback.
  */

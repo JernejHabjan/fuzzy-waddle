@@ -21,7 +21,6 @@ import {
 import { ColliderComponent } from "../../entity/actor/components/collider-component";
 import { getCenterTileCoordUnderObject, getTileCoordsUnderObject } from "../../library/tile-under-object";
 import { drawDebugPath } from "../../debug/debug-path";
-import { Pathfinder_old } from "../../world/map/pathfinder_old";
 import { drawDebugPoint } from "../../debug/debug-point";
 import { getSceneComponent } from "../components/scene-component-helpers";
 import { TilemapComponent } from "../components/tilemap.component";
@@ -118,7 +117,7 @@ export class NavigationService {
       const randomTile = await this.randomTileInNavigableRadius({ x: 33, y: 30 }, 15);
       if (!randomTile) return;
       console.log("RANDOM TILE", randomTile);
-      const tileWorldXY = Pathfinder_old.getTileWorldCenter(this.tilemap, randomTile)!;
+      const tileWorldXY = this.getTileWorldCenter(randomTile)!;
       drawDebugPoint(this.scene, tileWorldXY, 0x0000ff);
     };
 
@@ -128,8 +127,16 @@ export class NavigationService {
     }
   }
 
+  public static getTileWorldCenter(tilemap: Phaser.Tilemaps.Tilemap, vector: Vector2Simple): Vector2Simple | undefined {
+    const tileAtStart = tilemap.getTileAt(vector.x, vector.y);
+    if (!tileAtStart) return;
+    const centerX = tileAtStart.getCenterX();
+    const centerY = tileAtStart.getCenterY();
+    return { x: centerX, y: centerY };
+  }
+
   getTileWorldCenter(tile: Vector2Simple): Vector2Simple | undefined {
-    return Pathfinder_old.getTileWorldCenter(this.tilemap, tile);
+    return NavigationService.getTileWorldCenter(this.tilemap, tile);
   }
 
   private setup() {

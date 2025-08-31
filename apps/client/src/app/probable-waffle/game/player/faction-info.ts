@@ -1,11 +1,9 @@
-import { TechTreeComponent } from "./tech-tree";
 import { FactionType, ObjectNames, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 
 export class FactionInfo {
   constructor(
     public factionType: FactionType,
     public name: string,
-    public techTreeComponent: TechTreeComponent,
     /**
      * Actors to spawn for each player in the game
      */

@@ -1,4 +1,3 @@
-import { TechTreeComponent } from "./tech-tree";
 import { FactionInfo } from "./faction-info";
 import { FactionType, ObjectNames } from "@fuzzy-waddle/api-interfaces";
 
@@ -6,7 +5,6 @@ export class FactionDefinitions {
   static tivara: FactionInfo = new FactionInfo(
     FactionType.Tivara,
     "Tivara",
-    new TechTreeComponent(),
     [ObjectNames.Sandhold, ObjectNames.TivaraMacemanMale],
     [
       { x: 0, y: 0, z: 0 },
@@ -20,7 +18,6 @@ export class FactionDefinitions {
   static skaduwee: FactionInfo = new FactionInfo(
     FactionType.Skaduwee,
     "Skaduwee",
-    new TechTreeComponent(),
     [ObjectNames.FrostForge, ObjectNames.SkaduweeMagicianFemale],
     [
       { x: 0, y: 0, z: 0 },

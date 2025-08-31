@@ -28,7 +28,6 @@ import Vector2 = Phaser.Math.Vector2;
 
 export class BuildingCursor {
   placementGrid?: GameObjects.Graphics;
-  allCellsAreValid = false;
   private building?: GameObjects.GameObject;
   private pointerLocation?: Vector2Simple;
   private attackRangeCircle?: GameObjects.Graphics;
