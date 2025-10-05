@@ -166,6 +166,10 @@ export class BasePlanner {
   planBaseIfStale(blackboard: PlayerAiBlackboard, ttlMs: number): boolean {
     if (!this.isNeedsStale(ttlMs)) return false;
     this.recomputeNeedsAndUpdateBlackboard(blackboard);
+    // Fallback: if no explicit high-priority needs, opportunistically stage a generic reservation
+    if (this.buildingNeeds.length === 0) {
+      this.chooseNextBuildingAndLocation();
+    }
     return true;
   }
 

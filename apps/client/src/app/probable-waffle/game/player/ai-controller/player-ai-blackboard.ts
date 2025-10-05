@@ -7,11 +7,12 @@ import GameObject = Phaser.GameObjects.GameObject;
 export class PlayerAiBlackboard extends Blackboard {
   constructor(
     public resources: Record<ResourceType, number> = {
-      ambrosia: 0,
-      food: 0,
-      minerals: 0,
-      stone: 0,
-      wood: 0
+      // todo this is not updated from world yet
+      ambrosia: 1000,
+      food: 1000,
+      minerals: 1000,
+      stone: 1000,
+      wood: 1000
     },
     public units: Phaser.GameObjects.GameObject[] = [],
     public workers: Phaser.GameObjects.GameObject[] = [],

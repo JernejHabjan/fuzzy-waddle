@@ -280,12 +280,20 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       this.blackboard.mapAnalysis = result;
       this.blackboard.baseCenterTile = result.baseCenterTile ?? null;
       this.blackboard.suggestedBuildTiles = result.candidateBuildSpots ?? [];
+      this.basePlanner.updateFromAnalysis(result);
       this.cooldowns.markRun("analyzeMap", now);
       this.blackboard.cooldowns.analyzeMap = now; // mirror timestamp for other systems
       return State.SUCCEEDED;
     } catch {
       return State.FAILED;
     }
+  }
+
+  HasIdleProductionBuilding() {
+    return this.blackboard.productionBuildings.some((building) => {
+      const productionComponent = getActorComponent(building, ProductionComponent);
+      return productionComponent?.isIdle;
+    });
   }
 
   IsBaseUnderAttack() {
@@ -607,46 +615,64 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     return this.blackboard.defensiveStructures.length < this.blackboard.desiredDefensiveStructures;
   }
 
-  private assignBuilding(buildingType: ObjectNames): State {
-    // Improved placement: radial search around baseCenter for free tile
-    const baseCenter = this.blackboard.baseCenterTile;
-    let location: Vector3Simple | null = null;
-    const index = getSceneService(this.scene, ActorIndexSystem);
-    if (baseCenter && index) {
-      const maxRadius = AI_CONFIG.buildingPlacementSearchMaxRadius;
-      outer: for (
-        let r = AI_CONFIG.buildingPlacementSearchStartRadius;
-        r <= maxRadius;
-        r += AI_CONFIG.buildingPlacementSearchIncrement
-      ) {
-        // start 2 increment 2
-        for (let dx = -r; dx <= r; dx += AI_CONFIG.buildingPlacementSearchStep) {
-          // step 2
-          for (let dy = -r; dy <= r; dy += AI_CONFIG.buildingPlacementSearchStep) {
-            // step 2
-            const tile = { x: baseCenter.x + dx, y: baseCenter.y + dy };
-            if (index.isTileFree(tile)) {
-              location = { x: tile.x, y: tile.y, z: 0 } as Vector3Simple;
-              break outer;
+  private assignBuilding(buildingType: ObjectNames, preferredLocation?: Vector3Simple): State {
+    // Preferred order:
+    // 1. Explicit preferredLocation (reserved)
+    // 2. Consumed plan for type
+    // 3. Existing planned tile for type (not yet consumed)
+    // 4. Heuristic radial search
+    let location: Vector3Simple | null = preferredLocation ?? null;
+    let planConsumed: { tile: { x: number; y: number } } | null = null;
+    if (!location) {
+      const consumed = this.basePlanner.consumePlanForType(buildingType);
+      if (consumed) {
+        planConsumed = consumed;
+        location = { x: consumed.tile.x, y: consumed.tile.y, z: 0 } as Vector3Simple;
+      }
+    }
+    if (!location) {
+      const plannedTile = this.basePlanner.getPlannedTileForType(buildingType);
+      if (plannedTile) {
+        location = { x: plannedTile.x, y: plannedTile.y, z: 0 } as Vector3Simple;
+      }
+    }
+
+    // Improved placement (legacy fallback) if still no location
+    if (!location) {
+      const baseCenter = this.blackboard.baseCenterTile;
+      const index = getSceneService(this.scene, ActorIndexSystem);
+      if (baseCenter && index) {
+        outer: for (
+          let r = AI_CONFIG.buildingPlacementSearchStartRadius;
+          r <= AI_CONFIG.buildingPlacementSearchMaxRadius;
+          r += AI_CONFIG.buildingPlacementSearchIncrement
+        ) {
+          for (let dx = -r; dx <= r; dx += AI_CONFIG.buildingPlacementSearchStep) {
+            for (let dy = -r; dy <= r; dy += AI_CONFIG.buildingPlacementSearchStep) {
+              const tile = { x: baseCenter.x + dx, y: baseCenter.y + dy };
+              if (index.isTileFree(tile)) {
+                location = { x: tile.x, y: tile.y, z: 0 } as Vector3Simple;
+                break outer;
+              }
             }
           }
         }
       }
-    }
-    if (!location) {
-      // Fallback random near first worker if no free tile found
-      const worker = this.blackboard.workers[0];
-      if (!worker) return State.FAILED;
-      const transform = getGameObjectLogicalTransform(worker);
-      const rx =
-        transform!.x +
-        Math.floor(Math.random() * AI_CONFIG.buildingPlacementRandomOffsetRange) -
-        AI_CONFIG.buildingPlacementRandomOffsetRange; // replaced *10 -10
-      const ry =
-        transform!.y +
-        Math.floor(Math.random() * AI_CONFIG.buildingPlacementRandomOffsetRange) -
-        AI_CONFIG.buildingPlacementRandomOffsetRange; // replaced *10 -10
-      location = { x: rx, y: ry, z: 0 } as Vector3Simple;
+      if (!location) {
+        // Fallback random near first worker if no free tile found
+        const worker = this.blackboard.workers[0];
+        if (!worker) return State.FAILED;
+        const transform = getGameObjectLogicalTransform(worker);
+        const rx =
+          transform!.x +
+          Math.floor(Math.random() * AI_CONFIG.buildingPlacementRandomOffsetRange) -
+          AI_CONFIG.buildingPlacementRandomOffsetRange;
+        const ry =
+          transform!.y +
+          Math.floor(Math.random() * AI_CONFIG.buildingPlacementRandomOffsetRange) -
+          AI_CONFIG.buildingPlacementRandomOffsetRange;
+        location = { x: rx, y: ry, z: 0 } as Vector3Simple;
+      }
     }
 
     const validWorkers = this.blackboard.workers.filter((worker) => {
@@ -655,7 +681,11 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       const builderComponent = getActorComponent(worker, BuilderComponent);
       return !!builderComponent && builderComponent.isIdle();
     });
-    if (validWorkers.length === 0) return State.FAILED;
+    if (validWorkers.length === 0) {
+      // Release consumed plan if no workers available
+      if (planConsumed) this.basePlanner.releasePlanAt(planConsumed.tile);
+      return State.FAILED;
+    }
 
     const building = BuildingCursor.spawnBuildingForPlayer(
       this.scene,
@@ -670,7 +700,10 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       aiController!.blackboard.overrideOrderQueueAndActiveOrder(newOrder);
       aiController!.blackboard.setCurrentOrder(newOrder);
     });
-    this.logDebugInfo("Assigned workers to build a new building.");
+    // Mark reservation usage & release any lingering plan reservation reference
+    this.basePlanner.markTileUsed({ x: location.x, y: location.y });
+    this.basePlanner.releasePlanAt({ x: location.x, y: location.y });
+    this.logDebugInfo("Assigned workers to build a new building (planned-aware).");
     return State.SUCCEEDED;
   }
 
@@ -827,13 +860,22 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   ReplanBase(): State {
     try {
       this.basePlanner.planBaseIfStale(this.blackboard, AI_CONFIG.baseReplanStaleMs); // extracted 4000
+      // Debug: show how many plan reservations currently tracked
+      const planCount = this.basePlanner.getPlannedBuildings().length;
+      this.logDebugInfo("ReplanBase executed. Active plan reservations:", planCount);
       return State.SUCCEEDED;
     } catch {
       return State.FAILED;
     }
   }
   HasPlannedBuildingNeed(): boolean {
-    return this.basePlanner.getCurrentNeeds().length > 0;
+    const needs = this.basePlanner.getCurrentNeeds();
+    if (needs.length > 0) {
+      const nextType = this.basePlanner.getNextNeededType();
+      if (nextType) this.logDebugInfo("Next needed building type:", nextType);
+      return true;
+    }
+    return false;
   }
   async EnsureReservationForNextNeed(): Promise<State> {
     const res = await this.basePlanner.ensureReservationForTopNeed(this.blackboard);
@@ -846,7 +888,12 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     const reserved = this.basePlanner.getReservedBuilding();
     if (!reserved) return State.FAILED;
     if (!this.basePlanner.hasResourcesForObjectName(reserved.objectName, this.blackboard)) return State.FAILED;
-    const result = this.assignBuilding(reserved.objectName);
+    // Pass reserved tile directly so placement prefers planning reservation
+    const result = this.assignBuilding(reserved.objectName, {
+      x: reserved.tile.x,
+      y: reserved.tile.y,
+      z: 0
+    } as Vector3Simple);
     this.basePlanner.clearReservedBuilding();
     return result;
   }

@@ -471,8 +471,8 @@ export class MovementSystem {
       case TerrainType.Gravel:
         return SharedActorActionsSfxGravelSounds;
       case TerrainType.Water:
-        console.warn("No movement sound for water");
-        return undefined; // todo add water sound
+        // console.warn("No movement sound for water");
+        return undefined; // todo add water sound, but it should not be played when crossing the bridge
       case TerrainType.Sand:
         return SharedActorActionsSfxSandSounds;
       case TerrainType.Snow:
