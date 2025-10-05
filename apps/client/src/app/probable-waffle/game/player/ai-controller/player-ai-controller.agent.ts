@@ -270,7 +270,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   // needed only when passing this agent to BehaviourTree constructor
   [propertyName: string]: unknown;
 
-  AnalyzeGameMap(): State {
+  async AnalyzeGameMap(): Promise<State> {
     // Cooldown gating: avoid excessive map analyses.
     const now = performance.now();
     if (!this.cooldowns.canRun("analyzeMap", now)) return State.FAILED;
@@ -280,7 +280,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       this.blackboard.mapAnalysis = result;
       this.blackboard.baseCenterTile = result.baseCenterTile ?? null;
       this.blackboard.suggestedBuildTiles = result.candidateBuildSpots ?? [];
-      this.basePlanner.updateFromAnalysis(result);
+      await this.basePlanner.updateFromAnalysis(result);
       this.cooldowns.markRun("analyzeMap", now);
       this.blackboard.cooldowns.analyzeMap = now; // mirror timestamp for other systems
       return State.SUCCEEDED;
@@ -909,9 +909,9 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   EnemySpotted(): boolean {
     return this.blackboard.visibleEnemies.length > 0;
   }
-  AnalyzeEnemyBase(): State {
+  async AnalyzeEnemyBase(): Promise<State> {
     // Placeholder: reuse existing map analysis to satisfy interface. TODO refine enemy base analysis.
-    return this.AnalyzeGameMap();
+    return await this.AnalyzeGameMap();
   }
   GatherEnemyData(): State {
     // Placeholder: simply succeed after ensuring targeting manager updated.

@@ -22,7 +22,7 @@ export class MapAnalyzer {
   private lastComputedAt = 0;
 
   constructor(
-    private readonly scene: Phaser.Scene,
+    public readonly scene: Phaser.Scene,
     private readonly playerNumber: number
   ) {}
 

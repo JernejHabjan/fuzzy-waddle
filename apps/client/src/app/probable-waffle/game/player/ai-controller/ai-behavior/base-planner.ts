@@ -75,13 +75,13 @@ export class BasePlanner {
     this.plans = this.plans.filter((p) => !(p.tile.x === tile.x && p.tile.y === tile.y));
   }
 
-  updateFromAnalysis(analysis: MapAnalysis) {
+  async updateFromAnalysis(analysis: MapAnalysis) {
     // Refresh candidate list only when object identity changed (new analysis pass)
     if (!analysis) return;
     if (analysis.analyzedAtMs === this.lastAnalysisVersion) return;
     this.lastAnalysisVersion = analysis.analyzedAtMs;
-    const actorIndex = getSceneService(this.analyzer["scene"], ActorIndexSystem);
-    const navigation = getSceneService(this.analyzer["scene"], NavigationService);
+    const actorIndex = getSceneService(this.analyzer.scene, ActorIndexSystem);
+    const navigation = getSceneService(this.analyzer.scene, NavigationService);
     let candidates = analysis.candidateBuildSpots.slice();
     if (actorIndex) {
       candidates = candidates.filter((t) => actorIndex.isTileFree(t));
@@ -91,7 +91,7 @@ export class BasePlanner {
     this.pruneInvalidPlans();
     this.pruneExpiredReservations();
     if (navigation && analysis.baseCenterTile) {
-      this.refineAccessibility(navigation, analysis.baseCenterTile);
+      await this.refineAccessibility(navigation, analysis.baseCenterTile);
     }
   }
 

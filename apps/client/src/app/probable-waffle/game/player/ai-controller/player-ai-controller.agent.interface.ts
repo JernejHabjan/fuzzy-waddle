@@ -52,10 +52,10 @@ export interface IPlayerControllerAgent {
   // Scouting and intelligence
   NeedToScout(): boolean;
   AssignScoutUnits(): State;
-  AnalyzeEnemyBase(): State;
+  AnalyzeEnemyBase(): Promise<State>;
   GatherEnemyData(): State;
   ContinueScouting(): State;
-  AnalyzeGameMap(): State;
+  AnalyzeGameMap(): Promise<State>;
   ShouldReanalyzeMap(): boolean;
   ReplanBase(): State;
   ShouldReplanBase(): boolean;
