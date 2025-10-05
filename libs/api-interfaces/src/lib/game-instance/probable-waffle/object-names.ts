@@ -26,6 +26,7 @@ export enum ObjectNames {
   FrostForge = "FrostForge",
   InfantryInn = "InfantryInn",
   Owlery = "Owlery",
+  SkaduweeOlival = "SkaduweeOlival",
   Tree1 = "Tree1",
   Tree4 = "Tree4",
   Tree5 = "Tree5",
