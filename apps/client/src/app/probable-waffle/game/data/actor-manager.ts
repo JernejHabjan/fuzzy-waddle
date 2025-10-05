@@ -19,6 +19,7 @@ import SkaduweeWorkerFemale from "../prefabs/characters/skaduwee/SkaduweeWorkerF
 import FrostForge from "../prefabs/buildings/skaduwee/FrostForge";
 import InfantryInn from "../prefabs/buildings/skaduwee/InfantryInn";
 import Owlery from "../prefabs/buildings/skaduwee/Owlery";
+import SkaduweeOlival from "../prefabs/buildings/skaduwee/SkaduweeOlival";
 import Tree1 from "../prefabs/outside/foliage/trees/resources/Tree1";
 import Tree4 from "../prefabs/outside/foliage/trees/resources/Tree4";
 import Tree5 from "../prefabs/outside/foliage/trees/resources/Tree5";
@@ -110,7 +111,8 @@ export class ActorManager {
   private static skaduweeBuildings: ActorMap = {
     [ObjectNames.FrostForge]: FrostForge,
     [ObjectNames.InfantryInn]: InfantryInn,
-    [ObjectNames.Owlery]: Owlery
+    [ObjectNames.Owlery]: Owlery,
+    [ObjectNames.SkaduweeOlival]: SkaduweeOlival
   };
 
   private static resources: ActorMap = {
