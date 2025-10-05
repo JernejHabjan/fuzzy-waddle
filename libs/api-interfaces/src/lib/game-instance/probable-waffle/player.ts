@@ -106,7 +106,8 @@ export class ProbableWafflePlayerState extends BasePlayerState<ProbableWafflePla
         [ResourceType.Minerals]: 500,
         [ResourceType.Stone]: 100,
         [ResourceType.Wood]: 200,
-        [ResourceType.Food]: 8
+        [ResourceType.Food]: 8,
+        [ResourceType.Housing]: 0
       },
       summary: [],
       selection: []

@@ -84,3 +84,8 @@ export interface IdComponentData {
 export interface BackboardComponentData {
   blackboard: Record<string, any>;
 }
+
+export interface HousingComponentData {
+  housingCapacity?: number;
+  housingProvided?: boolean;
+}

@@ -12,6 +12,7 @@ import {
   ConstructionGameObjectInterfaceComponent
 } from "../../../entity/building/construction/construction-game-object-interface-component";
 import { setActorData } from "../../../data/actor-data";
+import { HousingComponent } from "../../../entity/building/housing-component";
 /* END-USER-IMPORTS */
 
 export default class Sandhold extends Phaser.GameObjects.Container {
@@ -59,7 +60,10 @@ export default class Sandhold extends Phaser.GameObjects.Container {
   private setup() {
     setActorData(
       this,
-      [new ConstructionGameObjectInterfaceComponent(this, this.handlePrefabVisibility, this.sandholdCursor)],
+      [
+        new ConstructionGameObjectInterfaceComponent(this, this.handlePrefabVisibility, this.sandholdCursor),
+        new HousingComponent(this, { housingCapacity: 10 })
+      ],
       []
     );
   }
