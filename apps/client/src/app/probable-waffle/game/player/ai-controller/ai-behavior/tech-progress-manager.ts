@@ -39,30 +39,26 @@ export class TechProgressManager {
     const prod = getActorComponent(this.blackboard.upgradeBuilding, ProductionComponent);
     if (!prod || !prod.isIdle) return State.FAILED;
 
+    return State.FAILED; // Placeholder until actual upgrade definitions are available
+
     // Placeholder "tech upgrade" job (could map to actual upgrade definitions)
-    const fakeUpgrade = {
-      actorName: "TechUpgrade_Lv1",
-      costData: { resources: { wood: 200, stone: 150 } }
-    };
-
-    try {
-      // Deduct cost manually (placeholder)
-      Object.entries(fakeUpgrade.costData.resources).forEach(([k, v]) => {
-        // @ts-ignore dynamic index
-        this.blackboard.resources[k] = Math.max(0, (this.blackboard.resources[k] ?? 0) - (v as number));
-      });
-
-      prod.startProduction(fakeUpgrade as any);
-      this.blackboard.activeTechUpgrades += 1;
-      this.blackboard.lastTechUpgradeAt = Date.now();
-      this.log("Started tech upgrade:", fakeUpgrade.actorName);
-      // Simulate completion callback (placeholder - should hook into production completion event)
-      setTimeout(() => {
-        this.blackboard.activeTechUpgrades = Math.max(0, this.blackboard.activeTechUpgrades - 1);
-      }, 4000);
-      return State.SUCCEEDED;
-    } catch {
-      return State.FAILED;
-    }
+    // todo const fakeUpgrade = {
+    // todo   actorName: "TechUpgrade_Lv1",
+    // todo   costData: { resources: { wood: 200, stone: 150 } }
+    // todo } satisfies ProductionQueueItem;
+    // todo
+    // todo try {
+    // todo   prod.startProduction(fakeUpgrade);
+    // todo   this.blackboard.activeTechUpgrades += 1;
+    // todo   this.blackboard.lastTechUpgradeAt = Date.now();
+    // todo   this.log("Started tech upgrade:", fakeUpgrade.actorName);
+    // todo   // Simulate completion callback (placeholder - should hook into production completion event)
+    // todo   setTimeout(() => {
+    // todo     this.blackboard.activeTechUpgrades = Math.max(0, this.blackboard.activeTechUpgrades - 1);
+    // todo   }, 4000);
+    // todo   return State.SUCCEEDED;
+    // todo } catch {
+    // todo   return State.FAILED;
+    // todo }
   }
 }
