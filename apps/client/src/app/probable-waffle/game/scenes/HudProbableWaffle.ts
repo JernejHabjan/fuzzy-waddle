@@ -173,6 +173,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     const actorActionsWidth = getGameObjectBounds(this.actor_actions_container)!.width;
     this.actor_info_container.x = this.scale.width - actorActionsWidth;
     this.actor_info_container.y = this.scale.height;
+    this.actor_info_container.scale = sceneWidth > this.actorInfoSmallScreenBreakpoint ? 2.2 : 1.5;
     // hide on small devices
     this.actor_info_container.visible = sceneWidth > this.actorInfoSmallScreenBreakpoint;
 
