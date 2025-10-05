@@ -56,11 +56,24 @@ export interface IPlayerControllerAgent {
   GatherEnemyData(): State;
   ContinueScouting(): State;
   AnalyzeGameMap(): State;
-
+  ShouldReanalyzeMap(): boolean;
+  ReplanBase(): State;
+  ShouldReplanBase(): boolean;
+  HasPlannedBuildingNeed(): boolean;
+  EnsureReservationForNextNeed(): Promise<State>;
+  AttemptPlacePlannedBuilding(): State;
+  HasResourcesForReservedBuilding(): boolean;
   // Strategic shifts
   ShiftToAggressiveStrategy(): State;
   ShiftToDefensiveStrategy(): State;
   ShiftToEconomicStrategy(): State;
   DecideNextMoveBasedOnAnalysis(): State;
   IsEnemyPlayerWeak(): boolean;
+
+  // Force maintenance & production
+  ShouldProduceMilitaryUnit(): boolean;
+  HasResourcesForQueuedUnit(): boolean;
+  QueueMilitaryUnitProduction(): State;
+  HasDamagedStructures(): boolean;
+  AssignRepairWorkers(): State;
 }

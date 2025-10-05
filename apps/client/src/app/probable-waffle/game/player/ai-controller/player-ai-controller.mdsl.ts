@@ -23,19 +23,73 @@ export const PlayerAiControllerMdsl = `
 root {
     selector {
         branch [AnalyzeMap]
+        branch [PlanBase]
+        branch [ExecuteBasePlan]
+        branch [MaintainForces]
+        branch [RepairBase]
         branch [AdjustStrategyBasedOnGameState]
         branch [DefendBase]
         branch [AttackEnemy]
         branch [ExpandBase]
         branch [ManageEconomy]
+        branch [ManageLogistics]
+        branch [AdvanceTech]
         branch [ScoutEnemy]
         branch [CombatTactics]
     }
 }
 
 root [AnalyzeMap] {
+    /* Run only when map analysis cache is stale; always fail to allow other selector children to proceed.*/
     fail {
-        action [AnalyzeGameMap]
+        sequence {
+            condition [ShouldReanalyzeMap]
+            action [AnalyzeGameMap]
+        }
+    }
+}
+
+root [PlanBase] {
+    /* Periodic base (what to build) planning. Fails so selector continues.*/
+    fail {
+        sequence {
+            condition [ShouldReplanBase]
+            action [ReplanBase]
+        }
+    }
+}
+
+root [ExecuteBasePlan] {
+    /* Turn high-level needs into concrete reservations -> attempt placement. Always fail so selector continues.*/
+    fail {
+        sequence {
+            condition [HasPlannedBuildingNeed]
+            action [EnsureReservationForNextNeed]
+            condition [HasResourcesForReservedBuilding]
+            action [AttemptPlacePlannedBuilding]
+        }
+    }
+}
+
+root [MaintainForces] {
+    /* Handles continuous unit production (throttled & resource aware). Fails to allow other branches.*/
+    fail {
+        sequence {
+            condition [ShouldProduceMilitaryUnit]
+            condition [HasIdleProductionBuilding]
+            condition [HasResourcesForQueuedUnit]
+            action [QueueMilitaryUnitProduction]
+        }
+    }
+}
+
+root [RepairBase] {
+    /* Assigns repair workers to damaged friendly structures (non-blocking).*/
+    fail {
+        sequence {
+            condition [HasDamagedStructures]
+            action [AssignRepairWorkers]
+        }
     }
 }
 
@@ -85,6 +139,34 @@ root [ManageEconomy] {
             branch [GatherResources]
             branch [TrainWorkers]
             branch [OptimizeResourceGathering]
+        }
+    }
+}
+
+root [ManageLogistics] {
+    /* Balances resource gathering distribution and resolves bottlenecks (non-blocking).*/
+    fail {
+        selector {
+            sequence {
+                condition [ShouldRebalanceHarvesters]
+                action [RebalanceHarvesterAllocation]
+            }
+            sequence {
+                condition [StockpileImbalanceDetected]
+                action [RedirectWorkersToScarceResource]
+            }
+        }
+    }
+}
+
+root [AdvanceTech] {
+    /* Drives tech / upgrade progression pacing (non-blocking).*/
+    fail {
+        sequence {
+            condition [ShouldPursueNextTech]
+            condition [HaveIdleUpgradeBuilding]
+            condition [HasResourcesForNextTech]
+            action [StartNextTechUpgrade]
         }
     }
 }

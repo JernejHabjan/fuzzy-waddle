@@ -77,6 +77,7 @@ export default class AiControllerDebugPanel extends Phaser.GameObjects.Container
     /* START-USER-CTR-CODE */
     this.init();
     this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
+    this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.onUpdate, this); // periodic telemetry refresh
     /* END-USER-CTR-CODE */
   }
 
@@ -90,6 +91,12 @@ export default class AiControllerDebugPanel extends Phaser.GameObjects.Container
   private init() {
     this.button.on("action", this.toggleLabels, this);
     this.aiControllerDebugLabel.destroy();
+  }
+
+  private onUpdate() {
+    if (!this.enabled) return;
+    const now = performance.now();
+    this.labels.forEach((lbl) => lbl.refreshTelemetry(now));
   }
 
   private toggleLabels() {
@@ -119,6 +126,7 @@ export default class AiControllerDebugPanel extends Phaser.GameObjects.Container
     } else {
       this.aiControllerDebugLabel.setVisible(false);
       this.labels.forEach((label) => label.destroy());
+      this.labels = [];
     }
   }
 
@@ -128,6 +136,7 @@ export default class AiControllerDebugPanel extends Phaser.GameObjects.Container
 
   override destroy() {
     this.button.off("action", this.toggleLabels, this);
+    this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.onUpdate, this);
     this.labels.forEach((label) => label.destroy());
     super.destroy();
   }

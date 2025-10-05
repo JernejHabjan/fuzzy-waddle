@@ -35,6 +35,7 @@ import { OrderType } from "../../../ai/order-type";
 import { HealingComponent } from "../../../entity/components/combat/components/healing-component";
 import { GathererComponent } from "../../../entity/components/resource/gatherer-component";
 import { getPrimarySelectedActor } from "../../../data/selection-helpers";
+import { ProductionValidator } from "../../../data/tech-tree/production-validator";
 /* END-USER-IMPORTS */
 
 export default class ActorActions extends Phaser.GameObjects.Container {
@@ -540,6 +541,14 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         if (!info || !info.smallImage) {
           throw new Error(`Info component not found for ${product}`);
         }
+        // UI validation gating
+        const playerNumber = getCurrentPlayerNumber(this.mainSceneWithActors)!;
+        const validation = ProductionValidator.validateForScene(this.mainSceneWithActors, playerNumber, product);
+        const disabled = !!validation?.prereqs?.length;
+        let disabledDescription = null;
+        if (disabled) {
+          disabledDescription = `Requires: ${validation.prereqs.join(", ")}`;
+        }
         const action = this.actor_actions[index];
         if (!action) {
           console.error("Action button not found at index", index);
@@ -551,7 +560,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
             frame: info.smallImage.frame,
             origin: info.smallImage.origin
           },
-          disabled: false, // todo
+          disabled,
           visible: true,
           action: () => {
             if (!actorDefinition.components?.productionCost) {
@@ -600,7 +609,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
             iconKey: info.smallImage.key!,
             iconFrame: info.smallImage.frame,
             iconOrigin: info.smallImage.origin ?? { x: 0.5, y: 0.5 },
-            description: info.description
+            description: disabledDescription ?? info.description
           },
           // Use letter shortcuts from handler (Q..O)
           shortcut: this.HOTKEYS[localIndex]
@@ -673,6 +682,14 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       if (!info || !info.smallImage) {
         throw new Error(`Info component not found for ${building}`);
       }
+      // UI validation gating
+      const playerNumber = getCurrentPlayerNumber(this.mainSceneWithActors)!;
+      const validation = ProductionValidator.validateForScene(this.mainSceneWithActors, playerNumber, building);
+      const disabled = !!validation?.prereqs?.length;
+      let disabledDescription = null;
+      if (disabled) {
+        disabledDescription = `Requires: ${validation.prereqs.join(", ")}`;
+      }
       const action = this.actor_actions[index];
       if (!action) {
         console.error("Action button not found at index", index);
@@ -684,9 +701,10 @@ export default class ActorActions extends Phaser.GameObjects.Container {
           frame: info.smallImage.frame,
           origin: info.smallImage.origin
         },
-        disabled: false, // todo
+        disabled,
         visible: true,
         action: () => {
+          if (disabled) return; // prevent invalid action
           const buildingCursor = getSceneComponent(this.mainSceneWithActors, BuildingCursor);
           buildingCursor?.startPlacingBuilding.emit(building);
         },
@@ -695,7 +713,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
           iconKey: info.smallImage.key!,
           iconFrame: info.smallImage.frame,
           iconOrigin: info.smallImage.origin ?? { x: 0.5, y: 0.5 },
-          description: info.description
+          description: disabledDescription ?? info.description
         },
         // Use letter shortcuts from handler (Q..O)
         shortcut: this.HOTKEYS[localIndex]

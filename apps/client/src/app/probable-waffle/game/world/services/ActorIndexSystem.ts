@@ -6,6 +6,9 @@ import { ResourceSourceComponent } from "../../entity/components/resource/resour
 import { ResourceDrainComponent } from "../../entity/components/resource/resource-drain-component";
 import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
+import { getTileCoordsUnderObject } from "../../library/tile-under-object";
+import { getSceneComponent } from "./scene-component-helpers";
+import { TilemapComponent } from "../tilemap/tilemap.component";
 
 export class ActorIndexSystem {
   private readonly idActors = new Set<GameObject>();
@@ -157,6 +160,24 @@ export class ActorIndexSystem {
       result.push(obj);
     });
     return result;
+  }
+
+  getActorsAtTile(tile: { x: number; y: number }): GameObject[] {
+    const tileMapComponent = getSceneComponent(this.scene, TilemapComponent);
+    if (!tileMapComponent) return [];
+
+    const result: GameObject[] = [];
+    this.idActors.forEach((obj) => {
+      const objTile = getTileCoordsUnderObject(tileMapComponent.tilemap, obj);
+      if (objTile.some((t) => t.x === tile.x && t.y === tile.y)) {
+        result.push(obj);
+      }
+    });
+    return result;
+  }
+
+  isTileFree(tile: { x: number; y: number }): boolean {
+    return this.getActorsAtTile(tile).length === 0;
   }
 
   private destroy() {

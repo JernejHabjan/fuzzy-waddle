@@ -167,7 +167,6 @@ export default class ActorAction extends Phaser.GameObjects.Container {
     this.tooltipTimeoutId = window.setTimeout(() => {
       if (!this.pointerIn) return;
       if (!this.tooltipInfo) return;
-      if (this.disabled) return;
 
       const hudScene = this.scene as HudProbableWaffle;
       const bounds = getGameObjectBounds(hudScene.actor_actions_container);

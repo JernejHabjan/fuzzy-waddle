@@ -40,6 +40,10 @@ export class ProbableWafflePlayer extends BasePlayer<
     return this.playerState.data.resources;
   }
 
+  get factionType(): FactionType | undefined {
+    return this.playerController.data.playerDefinition?.factionType;
+  }
+
   /**
    * IMPORTANT - do not use directly - use emitResource function instead
    * @deprecated

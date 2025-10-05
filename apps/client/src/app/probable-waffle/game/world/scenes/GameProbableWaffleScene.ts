@@ -30,6 +30,7 @@ import { environment } from "../../../../../environments/environment";
 import { GameObjectActionAssigner } from "../../prefabs/gui/game-object-action-assigner";
 import { PlayerActionsHandler } from "../../player/human-controller/player-actions-handler";
 import { ActorIndexSystem } from "../services/ActorIndexSystem";
+import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
 
 export interface ProbableWaffleSceneData {
   baseGameData: ProbableWaffleGameData;
@@ -69,6 +70,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     const audioService = new AudioService(this);
     const playerActionsHandler = new PlayerActionsHandler(this, hud);
     const actorIndex = new ActorIndexSystem(this);
+    const techTreeService = new TechTreeService();
 
     this.sceneGameData.components.push(
       new TilemapComponent(this.tilemap),
@@ -82,7 +84,8 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
       creator,
       new DebuggingService(),
       new CrossSceneCommunicationService(),
-      actorIndex
+      actorIndex,
+      techTreeService
     );
     this.sceneGameData.systems.push(new AiPlayerHandler(this));
     this.sceneGameData.components.push(new FogOfWarComponent(this, this.tilemap));

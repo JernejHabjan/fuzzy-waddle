@@ -1,13 +1,14 @@
-import type { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
-import GameObject = Phaser.GameObjects.GameObject;
+import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { NavigationService } from "../../../world/services/navigation.service";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
+import { PlayerAiBlackboard } from "../player-ai-blackboard";
+import GameObject = Phaser.GameObjects.GameObject;
 
 // Lightweight result of a map analysis pass
 export interface MapAnalysis {
-  baseCenterTile?: Vector2Simple;
-  candidateBuildSpots: Vector2Simple[];
+  baseCenterTile?: Vector3Simple;
+  candidateBuildSpots: Vector3Simple[];
   analyzedAtMs: number;
 }
 
@@ -39,6 +40,35 @@ export class MapAnalyzer {
     return result;
   }
 
+  /**
+   * Convenience: perform analysis (respecting TTL) AND push results into the AI blackboard.
+   * Returns the (possibly cached) MapAnalysis.
+   */
+  analyzeAndUpdateBlackboard(blackboard: PlayerAiBlackboard, ttlMs: number = 2500): MapAnalysis {
+    const result = this.analyzeIfStale(ttlMs);
+    // Write-through to blackboard (centralizes this logic here instead of agent)
+    blackboard.mapAnalysis = result;
+    blackboard.baseCenterTile = result.baseCenterTile ?? null;
+    blackboard.suggestedBuildTiles = result.candidateBuildSpots ?? [];
+    return result;
+  }
+
+  isStale(ttlMs: number) {
+    return !this.lastResult || Date.now() - this.lastComputedAt >= ttlMs;
+  }
+
+  getLastResult(): MapAnalysis | undefined {
+    return this.lastResult;
+  }
+
+  scoreBuildSpot(tile: Vector2Simple, baseCenter?: Vector2Simple): number {
+    if (!baseCenter) return 0;
+    // Prefer moderate distance (not too close, not too far)
+    const d = this.manhattan(tile, baseCenter);
+    const ideal = 6;
+    return Math.max(0, 10 - Math.abs(ideal - d));
+  }
+
   private computeAnalysis(): MapAnalysis {
     const actorIndex = getSceneService(this.scene, ActorIndexSystem);
     const navigation = getSceneService(this.scene, NavigationService);
@@ -60,10 +90,10 @@ export class MapAnalyzer {
     }
 
     // 1) Estimate base center by averaging center tiles of owned buildings/units
-    const ownedTiles: Vector2Simple[] = [];
+    const ownedTiles: Vector3Simple[] = [];
     owned.forEach((obj) => {
       const tile = navigation.getCenterTileCoordUnderObject(obj);
-      if (tile) ownedTiles.push(tile);
+      if (tile) ownedTiles.push({ x: tile.x, y: tile.y, z: 0 });
     });
     if (ownedTiles.length > 0) {
       analysis.baseCenterTile = this.averageTile(ownedTiles);
@@ -77,7 +107,7 @@ export class MapAnalyzer {
     return analysis;
   }
 
-  private averageTile(tiles: Vector2Simple[]): Vector2Simple {
+  private averageTile(tiles: Vector3Simple[]): Vector3Simple {
     const sum = tiles.reduce(
       (acc, t) => {
         acc.x += t.x;
@@ -86,11 +116,11 @@ export class MapAnalyzer {
       },
       { x: 0, y: 0 }
     );
-    return { x: Math.round(sum.x / tiles.length), y: Math.round(sum.y / tiles.length) };
+    return { x: Math.round(sum.x / tiles.length), y: Math.round(sum.y / tiles.length), z: 0 };
   }
 
-  private sampleCandidateBuildSpots(navigation: NavigationService, base: Vector2Simple): Vector2Simple[] {
-    const spots: Vector2Simple[] = [];
+  private sampleCandidateBuildSpots(navigation: NavigationService, base: Vector3Simple): Vector3Simple[] {
+    const spots: Vector3Simple[] = [];
     const maxTry = 120; // sampling attempts
     const radius = 10;
     const minSpacing = 3; // tiles between suggested spots
@@ -103,10 +133,12 @@ export class MapAnalyzer {
 
       // Spacing filter
       if (spots.some((s) => this.manhattan(s, tile) < minSpacing)) continue;
-      spots.push(tile);
+      spots.push({ x: tile.x, y: tile.y, z: 0 });
       if (spots.length >= 12) break;
     }
-    return spots;
+
+    // Sort by score (best first)
+    return spots.sort((a, b) => this.scoreBuildSpot(b, base) - this.scoreBuildSpot(a, base));
   }
 
   private manhattan(a: Vector2Simple, b: Vector2Simple): number {

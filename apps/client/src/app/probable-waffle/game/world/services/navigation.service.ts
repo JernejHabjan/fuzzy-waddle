@@ -315,7 +315,7 @@ export class NavigationService {
     return false;
   }
 
-  private async find(fromTileXY: Vector2Simple, toTileXY: Vector2Simple): Promise<Vector2Simple[]> {
+  async find(fromTileXY: Vector2Simple, toTileXY: Vector2Simple): Promise<Vector2Simple[]> {
     return new Promise((resolve, reject) => {
       this.easyStar.findPath(fromTileXY.x, fromTileXY.y, toTileXY.x, toTileXY.y, (path) => {
         if (!path) {
