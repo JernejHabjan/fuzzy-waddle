@@ -42,6 +42,7 @@ import { ScoutingManager } from "./ai-behavior/scouting-manager";
 import { TargetingManager } from "./ai-behavior/targeting-manager";
 import { SupplyPlanner } from "./ai-behavior/supply-planner";
 import GameObject = Phaser.GameObjects.GameObject;
+import { IsoHelper } from "../../world/tilemap/iso-helper";
 
 export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   private displayDebugInfo = false;
@@ -615,30 +616,30 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     return this.blackboard.defensiveStructures.length < this.blackboard.desiredDefensiveStructures;
   }
 
-  private assignBuilding(buildingType: ObjectNames, preferredLocation?: Vector3Simple): State {
+  private assignBuilding(buildingType: ObjectNames, preferredLocationTileXY?: Vector3Simple): State {
     // Preferred order:
-    // 1. Explicit preferredLocation (reserved)
+    // 1. Explicit preferredLocationTileXY (reserved)
     // 2. Consumed plan for type
     // 3. Existing planned tile for type (not yet consumed)
     // 4. Heuristic radial search
-    let location: Vector3Simple | null = preferredLocation ?? null;
+    let tileLocationXYZ: Vector3Simple | null = preferredLocationTileXY ?? null;
     let planConsumed: { tile: { x: number; y: number } } | null = null;
-    if (!location) {
+    if (!tileLocationXYZ) {
       const consumed = this.basePlanner.consumePlanForType(buildingType);
       if (consumed) {
         planConsumed = consumed;
-        location = { x: consumed.tile.x, y: consumed.tile.y, z: 0 } as Vector3Simple;
+        tileLocationXYZ = { x: consumed.tile.x, y: consumed.tile.y, z: 0 } as Vector3Simple;
       }
     }
-    if (!location) {
+    if (!tileLocationXYZ) {
       const plannedTile = this.basePlanner.getPlannedTileForType(buildingType);
       if (plannedTile) {
-        location = { x: plannedTile.x, y: plannedTile.y, z: 0 } as Vector3Simple;
+        tileLocationXYZ = { x: plannedTile.x, y: plannedTile.y, z: 0 } as Vector3Simple;
       }
     }
 
     // Improved placement (legacy fallback) if still no location
-    if (!location) {
+    if (!tileLocationXYZ) {
       const baseCenter = this.blackboard.baseCenterTile;
       const index = getSceneService(this.scene, ActorIndexSystem);
       if (baseCenter && index) {
@@ -651,14 +652,14 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
             for (let dy = -r; dy <= r; dy += AI_CONFIG.buildingPlacementSearchStep) {
               const tile = { x: baseCenter.x + dx, y: baseCenter.y + dy };
               if (index.isTileFree(tile)) {
-                location = { x: tile.x, y: tile.y, z: 0 } as Vector3Simple;
+                tileLocationXYZ = { x: tile.x, y: tile.y, z: 0 } as Vector3Simple;
                 break outer;
               }
             }
           }
         }
       }
-      if (!location) {
+      if (!tileLocationXYZ) {
         // Fallback random near first worker if no free tile found
         const worker = this.blackboard.workers[0];
         if (!worker) return State.FAILED;
@@ -671,7 +672,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
           transform!.y +
           Math.floor(Math.random() * AI_CONFIG.buildingPlacementRandomOffsetRange) -
           AI_CONFIG.buildingPlacementRandomOffsetRange;
-        location = { x: rx, y: ry, z: 0 } as Vector3Simple;
+        tileLocationXYZ = { x: rx, y: ry, z: 0 } as Vector3Simple;
       }
     }
 
@@ -687,10 +688,15 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       return State.FAILED;
     }
 
+    const worldXYZ = IsoHelper.isometricTileToWorldXY(this.scene, tileLocationXYZ.x, tileLocationXYZ.y);
+    if (!worldXYZ) {
+      if (planConsumed) this.basePlanner.releasePlanAt(planConsumed.tile);
+      return State.FAILED;
+    }
     const building = BuildingCursor.spawnBuildingForPlayer(
       this.scene,
       buildingType,
-      location,
+      { x: worldXYZ.x, y: worldXYZ.y, z: 0 },
       this.player.playerNumber
     );
 
@@ -701,8 +707,8 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       aiController!.blackboard.setCurrentOrder(newOrder);
     });
     // Mark reservation usage & release any lingering plan reservation reference
-    this.basePlanner.markTileUsed({ x: location.x, y: location.y });
-    this.basePlanner.releasePlanAt({ x: location.x, y: location.y });
+    this.basePlanner.markTileUsed({ x: tileLocationXYZ.x, y: tileLocationXYZ.y });
+    this.basePlanner.releasePlanAt({ x: tileLocationXYZ.x, y: tileLocationXYZ.y });
     this.logDebugInfo("Assigned workers to build a new building (planned-aware).");
     return State.SUCCEEDED;
   }

@@ -23,4 +23,12 @@ export class IsoHelper {
     );
     return { x: clickedTileXY.x, y: clickedTileXY.y };
   }
+
+  static isometricTileToWorldXY(scene: Phaser.Scene, tileX: number, tileY: number): Vector2Simple | null {
+    const tileMapComponent = getSceneComponent(scene, TilemapComponent);
+    if (!tileMapComponent) throw new Error("TilemapComponent not found in scene");
+
+    const worldXY = new Phaser.Math.Vector2();
+    return tileMapComponent.tilemap.tileToWorldXY(tileX, tileY);
+  }
 }

@@ -605,7 +605,7 @@ export class BuildingCursor {
   static spawnBuildingForPlayer(
     scene: Phaser.Scene,
     name: ObjectNames,
-    logicalTransform: Vector3Simple,
+    logicalWorldTransform: Vector3Simple,
     playerNumber?: number
   ) {
     const actorDefinition = {
@@ -615,7 +615,7 @@ export class BuildingCursor {
         }
       }),
       representable: {
-        logicalWorldTransform: logicalTransform
+        logicalWorldTransform
       }
     } satisfies ActorDefinition;
 
