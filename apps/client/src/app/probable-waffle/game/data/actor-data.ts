@@ -20,7 +20,7 @@ import { ContainerComponent } from "../entity/components/building/container-comp
 import { ResourceDrainComponent } from "../entity/components/resource/resource-drain-component";
 import { ProductionComponent } from "../entity/components/production/production-component";
 import { ResourceSourceComponent } from "../entity/components/resource/resource-source-component";
-import { PawnAiController } from "../prefabs/agents/pawn-ai-controller";
+import { PawnAiController } from "../prefabs/ai-agents/pawn-ai-controller";
 import { ConstructionSiteComponent } from "../entity/components/construction/construction-site-component";
 import { getActorComponent } from "./actor-component";
 import { DepthHelper } from "../world/services/depth.helper";

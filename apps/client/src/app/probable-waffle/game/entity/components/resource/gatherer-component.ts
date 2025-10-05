@@ -15,7 +15,7 @@ import { AudioService } from "../../../world/services/audio.service";
 import {
   SharedActorActionsSfxChoppingSounds,
   SharedActorActionsSfxMiningSounds
-} from "../../../sfx/SharedActorActionsSfx";
+} from "../../../sfx/shared-actor-actions-sfx";
 import { type SoundDefinition } from "../actor-audio/audio-actor-component";
 import { AnimationActorComponent } from "../animation/animation-actor-component";
 import { OrderType } from "../../../ai/order-type";

@@ -9,7 +9,7 @@ import { getActorComponent } from "../../../data/actor-component";
 import { ProductionComponent } from "../../../entity/components/production/production-component";
 import { BehaviorSubject, Subscription } from "rxjs";
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
-import { SingleSelectionHandler } from "../../../player/input/single-selection.handler";
+import { SingleSelectionHandler } from "../../../player/human-controller/single-selection.handler";
 import { getSceneComponent } from "../../../world/services/scene-component-helpers";
 import { IdComponent } from "../../../entity/components/id-component";
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";

@@ -27,7 +27,7 @@ import { AudioService } from "../../../../world/services/audio.service";
 import {
   SharedActorActionsSfxBodyFallSounds,
   SharedActorActionsSfxBuildingDestroySounds
-} from "../../../../sfx/SharedActorActionsSfx";
+} from "../../../../sfx/shared-actor-actions-sfx";
 import { VisionComponent } from "../../vision-component";
 import { AnimationType } from "../../animation/animation-type";
 import { SoundType } from "../../actor-audio/sound-type";

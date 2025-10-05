@@ -1,5 +1,5 @@
 import { type SoundDefinition } from "../../../../../entity/components/actor-audio/audio-actor-component";
-import { AudioSprites } from "../../../../../sfx/AudioSprites";
+import { AudioSprites } from "../../../../../sfx/audio-sprites";
 
 export enum SfxTree {
   RESOURCES_TREE_RESOURCE_DEPLETED = "resources tree resource depleted",

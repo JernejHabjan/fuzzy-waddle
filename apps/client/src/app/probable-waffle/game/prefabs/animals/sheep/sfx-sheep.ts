@@ -1,5 +1,5 @@
 import { type SoundDefinition } from "../../../entity/components/actor-audio/audio-actor-component";
-import { AudioSprites } from "../../../sfx/AudioSprites";
+import { AudioSprites } from "../../../sfx/audio-sprites";
 
 enum SheepSfx {
   SHEEP_BLEAT_1 = "sheep bleat 1",

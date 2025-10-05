@@ -22,8 +22,8 @@ import {
   SharedActorActionsSfxHammeringSounds,
   SharedActorActionsSfxSawingSounds,
   SharedActorActionsSfxSelectionSounds
-} from "../../../sfx/SharedActorActionsSfx";
-import { PawnAiController } from "../../../prefabs/agents/pawn-ai-controller";
+} from "../../../sfx/shared-actor-actions-sfx";
+import { PawnAiController } from "../../../prefabs/ai-agents/pawn-ai-controller";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export type ConstructionSiteDefinition = {

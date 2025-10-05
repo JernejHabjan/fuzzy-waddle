@@ -13,12 +13,12 @@ import { ObjectDescriptorComponent } from "../../entity/components/object-descri
 import { getTileCoordsUnderObject } from "../../library/tile-under-object";
 import { OwnerComponent } from "../../entity/components/owner-component";
 import HudProbableWaffle from "../../world/scenes/hud-scenes/HudProbableWaffle";
-import { MultiSelectionHandler } from "../../player/input/multi-selection.handler";
+import { MultiSelectionHandler } from "../../player/human-controller/multi-selection.handler";
 import { NavigationService } from "../../world/services/navigation.service";
 import { throttle } from "../../library/throttle";
 import { FogOfWarComponent, FogOfWarMode } from "../../world/tilemap/fog-of-war.component";
 import { VisionComponent } from "../../entity/components/vision-component";
-import { PlayerActionsHandler } from "../../player/input/PlayerActionsHandler";
+import { PlayerActionsHandler } from "../../player/human-controller/player-actions-handler";
 import { type GameObjectActionAssignerConfig } from "./game-object-action-assigner";
 import { OrderType } from "../../ai/order-type";
 /* END-USER-IMPORTS */

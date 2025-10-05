@@ -8,7 +8,7 @@ import {
 import { weaponDefinitions } from "../../../../entity/components/combat/attack-data";
 import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PaymentType } from "../../../../entity/components/production/payment-type";
-import { AiType } from "../../../agents/pawn-ai-controller";
+import { AiType } from "../../../ai-agents/pawn-ai-controller";
 import { ANIM_SKADUWEE_OWL_DEFINITION } from "./SkaduweeOwlAnims";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 import { SoundType } from "../../../../entity/components/actor-audio/sound-type";

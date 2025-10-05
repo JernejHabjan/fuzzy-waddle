@@ -1,6 +1,6 @@
 import { Blackboard } from "../../ai/blackboard";
 import { ResourceType, type Vector2Simple } from "@fuzzy-waddle/api-interfaces";
-import type { MapAnalysis } from "./map-analyzer";
+import type { MapAnalysis } from "./ai-behavior/map-analyzer";
 
 export class PlayerAiBlackboard extends Blackboard {
   constructor(

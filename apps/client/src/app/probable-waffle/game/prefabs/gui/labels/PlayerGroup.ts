@@ -9,7 +9,7 @@ import EmitEventActionScript from "../../../../../shared/game/phaser/script-node
 /* START-USER-IMPORTS */
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { getSceneComponent } from "../../../world/services/scene-component-helpers";
-import { SelectionGroupsComponent } from "../../../player/input/selection-groups.component";
+import { SelectionGroupsComponent } from "../../../player/human-controller/selection-groups.component";
 import { getActorComponent } from "../../../data/actor-component";
 import { InfoComponent } from "../../../entity/components/info-component";
 import { IconHelper } from "./IconHelper";

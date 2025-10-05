@@ -1,6 +1,6 @@
 // This file was generated from "convert-to-enums.js" script
 import { type SoundDefinition } from "../../../../entity/components/actor-audio/audio-actor-component";
-import { AudioSprites } from "../../../../sfx/AudioSprites";
+import { AudioSprites } from "../../../../sfx/audio-sprites";
 
 export enum SkaduweeOwlSfx {
   CANNOT_REACH_LOCATION = "Cannot reach location",

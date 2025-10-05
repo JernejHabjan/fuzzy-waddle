@@ -12,7 +12,7 @@ import { SingleSelectionHandler } from "./single-selection.handler";
 import { BehaviorSubject, Subscription } from "rxjs";
 import { getPrimarySelectedActor } from "../../data/selection-helpers";
 import { getActorComponent } from "../../data/actor-component";
-import { PawnAiController } from "../../prefabs/agents/pawn-ai-controller";
+import { PawnAiController } from "../../prefabs/ai-agents/pawn-ai-controller";
 import { BuilderComponent } from "../../entity/components/construction/builder-component";
 import { BuildingCursor } from "./building-cursor";
 import { ProductionComponent } from "../../entity/components/production/production-component";

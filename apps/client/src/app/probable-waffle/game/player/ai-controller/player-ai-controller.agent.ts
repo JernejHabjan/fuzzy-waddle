@@ -12,15 +12,15 @@ import { pwActorDefinitions } from "../../prefabs/definitions/actor-definitions"
 import { ScenePlayerHelpers } from "../../data/scene-player-helpers";
 import { GathererComponent } from "../../entity/components/resource/gatherer-component";
 import { BuilderComponent } from "../../entity/components/construction/builder-component";
-import { PawnAiController } from "../../prefabs/agents/pawn-ai-controller";
+import { PawnAiController } from "../../prefabs/ai-agents/pawn-ai-controller";
 import { OrderData } from "../../ai/OrderData";
 import { OrderType } from "../../ai/order-type";
-import { BuildingCursor } from "../input/building-cursor";
+import { BuildingCursor } from "../human-controller/building-cursor";
 import { getGameObjectLogicalTransform } from "../../data/game-object-helper";
 import { DistanceHelper } from "../../library/distance-helper";
 import GameObject = Phaser.GameObjects.GameObject;
-import { MapAnalyzer } from "./map-analyzer";
-import { BasePlanner } from "./base-planner";
+import { MapAnalyzer } from "./ai-behavior/map-analyzer";
+import { BasePlanner } from "./ai-behavior/base-planner";
 
 export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   private readonly baseHeavyAttackThreshold = 10; // Enemy units count for a heavy attack

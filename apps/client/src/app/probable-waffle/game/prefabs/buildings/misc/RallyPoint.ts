@@ -13,7 +13,7 @@ import { getActorComponent } from "../../../data/actor-component";
 import { SelectableComponent } from "../../../entity/components/selectable-component";
 import { Subscription } from "rxjs";
 import { getGameObjectRenderedTransform } from "../../../data/game-object-helper";
-import { SharedActorActionsRallyPointSound } from "../../../sfx/SharedActorActionsSfx";
+import { SharedActorActionsRallyPointSound } from "../../../sfx/shared-actor-actions-sfx";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { AudioService } from "../../../world/services/audio.service";
 import { IdComponent } from "../../../entity/components/id-component";

@@ -17,7 +17,7 @@ import { SelectableComponent } from "../components/selectable-component";
 import { getActorComponent } from "../../data/actor-component";
 import { ActorTranslateComponent } from "../components/movement/actor-translate-component";
 import { HealthComponent } from "../components/combat/components/health-component";
-import { PawnAiController } from "../../prefabs/agents/pawn-ai-controller";
+import { PawnAiController } from "../../prefabs/ai-agents/pawn-ai-controller";
 import { OrderType } from "../../ai/order-type";
 import { OrderData } from "../../ai/OrderData";
 import { AudioActorComponent } from "../components/actor-audio/audio-actor-component";
@@ -27,7 +27,7 @@ import {
   SharedActorActionsSfxSandSounds,
   SharedActorActionsSfxSnowSounds,
   SharedActorActionsSfxStoneSounds
-} from "../../sfx/SharedActorActionsSfx";
+} from "../../sfx/shared-actor-actions-sfx";
 import { OwnerComponent } from "../components/owner-component";
 import { AnimationActorComponent } from "../components/animation/animation-actor-component";
 import { FlyingComponent } from "../components/movement/flying-component";

@@ -12,7 +12,7 @@ import {
   EnvironmentSfxLavaSounds,
   EnvironmentSfxSeagullsSounds,
   EnvironmentSfxWaterSounds
-} from "../../../sfx/EnvironmentSfx";
+} from "../../../sfx/environment-sfx";
 /* END-USER-IMPORTS */
 
 export default class SoundEffectMarker extends Phaser.GameObjects.Ellipse {

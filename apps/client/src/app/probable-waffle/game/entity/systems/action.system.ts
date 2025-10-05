@@ -4,7 +4,7 @@ import { getCommunicator, getCurrentPlayerNumber } from "../../data/scene-data";
 import { SelectableComponent } from "../components/selectable-component";
 import { getActorComponent } from "../../data/actor-component";
 import { HealthComponent } from "../components/combat/components/health-component";
-import { PawnAiController } from "../../prefabs/agents/pawn-ai-controller";
+import { PawnAiController } from "../../prefabs/ai-agents/pawn-ai-controller";
 import { IdComponent } from "../components/id-component";
 import { AttackComponent } from "../components/combat/components/attack-component";
 import { OrderData } from "../../ai/OrderData";

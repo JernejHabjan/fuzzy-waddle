@@ -14,7 +14,7 @@ import { getSceneComponent, getSceneService } from "../../world/services/scene-c
 import { BuildingCursor } from "./building-cursor";
 import Pointer = Phaser.Input.Pointer;
 import GameObject = Phaser.GameObjects.GameObject;
-import { PlayerActionsHandler } from "./PlayerActionsHandler";
+import { PlayerActionsHandler } from "./player-actions-handler";
 
 export class SingleSelectionHandler {
   private readonly debug = false;

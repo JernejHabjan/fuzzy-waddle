@@ -53,7 +53,7 @@ import { ContainerComponent } from "../entity/components/building/container-comp
 import { ResourceDrainComponent } from "../entity/components/resource/resource-drain-component";
 import { ResourceSourceComponent } from "../entity/components/resource/resource-source-component";
 import { ProductionComponent } from "../entity/components/production/production-component";
-import { PawnAiController } from "../prefabs/agents/pawn-ai-controller";
+import { PawnAiController } from "../prefabs/ai-agents/pawn-ai-controller";
 import GameObject = Phaser.GameObjects.GameObject;
 import { getSceneService } from "../world/services/scene-component-helpers";
 import { SceneActorCreator } from "../world/services/scene-actor-creator";

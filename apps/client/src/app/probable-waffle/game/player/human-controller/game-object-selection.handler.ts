@@ -26,7 +26,7 @@ import { OwnerComponent } from "../../entity/components/owner-component";
 import GameObject = Phaser.GameObjects.GameObject;
 import { pwActorDefinitions } from "../../prefabs/definitions/actor-definitions";
 import { getSceneService } from "../../world/services/scene-component-helpers";
-import { PlayerActionsHandler } from "./PlayerActionsHandler";
+import { PlayerActionsHandler } from "./player-actions-handler";
 import { SoundType } from "../../entity/components/actor-audio/sound-type";
 
 export class GameObjectSelectionHandler {

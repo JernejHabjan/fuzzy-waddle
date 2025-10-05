@@ -1,5 +1,5 @@
 // This file was generated from "convert-to-enums.js" script
-import { AudioSprites } from "../../../../sfx/AudioSprites";
+import { AudioSprites } from "../../../../sfx/audio-sprites";
 import { type SoundDefinition } from "../../../../entity/components/actor-audio/audio-actor-component";
 
 export enum TivaraOlivalSfx {

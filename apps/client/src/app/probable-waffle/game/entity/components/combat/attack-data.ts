@@ -18,7 +18,7 @@ import {
   SharedActorActionsSfxSlingshotHitSounds,
   SharedActorActionsSfxSpearStabHitSounds,
   SharedActorActionsSfxStaffHitSounds
-} from "../../../sfx/SharedActorActionsSfx";
+} from "../../../sfx/shared-actor-actions-sfx";
 import { EffectsAnims } from "../../../animations/effects";
 import {
   SkaduweeOwlSfxFurballFireSounds,
