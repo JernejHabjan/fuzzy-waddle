@@ -47,17 +47,6 @@ export class RoomServerService implements RoomServerServiceInterface {
     } satisfies ProbableWaffleRoomEvent);
   }
 
-  private getGameInstanceToRoom(gameInstance: ProbableWaffleGameInstance): ProbableWaffleRoom {
-    return {
-      gameInstanceMetadataData: gameInstance.gameInstanceMetadata.data,
-      gameModeData: gameInstance.gameMode?.data,
-      players: gameInstance.players.map((player) => ({
-        controllerData: player.playerController.data
-      })),
-      spectators: gameInstance.spectators.map((spectator) => spectator.data)
-    };
-  }
-
   emitCertainGameInstanceEventsToAllUsers(body: CommunicatorEvent<any, ProbableWaffleCommunicatorType>, user: User) {
     const gameInstance = this.gameInstanceHolderService.findGameInstance(body.gameInstanceId!);
     if (!gameInstance) {
@@ -95,5 +84,16 @@ export class RoomServerService implements RoomServerServiceInterface {
         break;
     }
     return true;
+  }
+
+  private getGameInstanceToRoom(gameInstance: ProbableWaffleGameInstance): ProbableWaffleRoom {
+    return {
+      gameInstanceMetadataData: gameInstance.gameInstanceMetadata.data,
+      gameModeData: gameInstance.gameMode?.data,
+      players: gameInstance.players.map((player) => ({
+        controllerData: player.playerController.data
+      })),
+      spectators: gameInstance.spectators.map((spectator) => spectator.data)
+    };
   }
 }

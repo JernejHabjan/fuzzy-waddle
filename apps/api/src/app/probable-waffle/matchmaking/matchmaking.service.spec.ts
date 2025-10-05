@@ -2,7 +2,7 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { MatchmakingService } from "./matchmaking.service";
 import { GameInstanceService } from "../game-instance/game-instance.service";
 import { GameInstanceGateway } from "../game-instance/game-instance.gateway";
-import { GameInstanceGatewayStub } from "../../little-muncher/game-instance/game-instance.gateway";
+import { GameInstanceGatewayStub } from "../../little-muncher/game-instance/game-instance.gateway.stub";
 import { RoomServerService } from "../game-room/room-server.service";
 import { GameInstanceServiceStub } from "../game-instance/game-instance.service.stub";
 import { roomServerServiceStub } from "../game-room/room-server.service.stub";

@@ -28,6 +28,10 @@ export class GameStateServerService {
     // get player from gameInstance:
     const authUserPlayer = gameInstance.isPlayer(user.id);
     const player = gameInstance.players[0];
+    if (!player) {
+      console.log("player not found in game instance");
+      return false;
+    }
     switch (body.communicator) {
       case "timeClimbing":
         if (!authUserPlayer) {

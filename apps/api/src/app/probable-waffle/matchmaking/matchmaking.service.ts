@@ -68,6 +68,32 @@ export class MatchmakingService implements MatchmakingServiceInterface {
     }
   }
 
+  async stopRequestGameSearchForMatchmaking(user: User): Promise<void> {
+    // remove self as player from pending matchmaking game instances
+    // if game instance has no players left, then remove it
+    const pendingMatchMakingGameInstance = this.pendingMatchmakingGameInstances.find((gi) =>
+      gi.gameInstance.players.some((p) => p.playerController.data.userId === user.id)
+    );
+    if (!pendingMatchMakingGameInstance) return;
+    const gameInstanceId = pendingMatchMakingGameInstance.gameInstance.gameInstanceMetadata.data.gameInstanceId;
+    if (!gameInstanceId) return;
+    const player = pendingMatchMakingGameInstance.gameInstance.players.find(
+      (p) => p.playerController.data.userId === user.id
+    );
+    if (!player) return;
+
+    this.roomServerService.roomEvent("player.left", pendingMatchMakingGameInstance.gameInstance, user);
+    pendingMatchMakingGameInstance.gameInstance.players = pendingMatchMakingGameInstance.gameInstance.players.filter(
+      (p) => p.playerController.data.userId !== user.id
+    );
+    console.log("Ashes of the Ancients - Player left pending matchmaking instance", user.id);
+
+    if (pendingMatchMakingGameInstance.gameInstance.players.length === 0) {
+      this.removePendingMatchmakingGameInstance(gameInstanceId);
+      this.gameInstanceService.stopGameInstance(gameInstanceId, user);
+    }
+  }
+
   private promoteGameInstanceToLoaded(gameInstance: ProbableWaffleGameInstance, user: User) {
     const gameInstanceId = gameInstance.gameInstanceMetadata.data.gameInstanceId;
     if (!gameInstanceId) return;
@@ -109,6 +135,7 @@ export class MatchmakingService implements MatchmakingServiceInterface {
       this.promoteGameInstanceToLoaded(gameInstance, user);
     }
   }
+
   private createGameInstanceForMatchmaking(matchMakingDto: RequestGameSearchForMatchMakingDto, user: User) {
     // create new one
     const newGameInstance = new ProbableWaffleGameInstance({
@@ -224,32 +251,6 @@ export class MatchmakingService implements MatchmakingServiceInterface {
       } satisfies MapTuning
     } satisfies ProbableWaffleGameModeData;
     return new ProbableWaffleGameMode(gameModeData);
-  }
-
-  async stopRequestGameSearchForMatchmaking(user: User): Promise<void> {
-    // remove self as player from pending matchmaking game instances
-    // if game instance has no players left, then remove it
-    const pendingMatchMakingGameInstance = this.pendingMatchmakingGameInstances.find((gi) =>
-      gi.gameInstance.players.some((p) => p.playerController.data.userId === user.id)
-    );
-    if (!pendingMatchMakingGameInstance) return;
-    const gameInstanceId = pendingMatchMakingGameInstance.gameInstance.gameInstanceMetadata.data.gameInstanceId;
-    if (!gameInstanceId) return;
-    const player = pendingMatchMakingGameInstance.gameInstance.players.find(
-      (p) => p.playerController.data.userId === user.id
-    );
-    if (!player) return;
-
-    this.roomServerService.roomEvent("player.left", pendingMatchMakingGameInstance.gameInstance, user);
-    pendingMatchMakingGameInstance.gameInstance.players = pendingMatchMakingGameInstance.gameInstance.players.filter(
-      (p) => p.playerController.data.userId !== user.id
-    );
-    console.log("Ashes of the Ancients - Player left pending matchmaking instance", user.id);
-
-    if (pendingMatchMakingGameInstance.gameInstance.players.length === 0) {
-      this.removePendingMatchmakingGameInstance(gameInstanceId);
-      this.gameInstanceService.stopGameInstance(gameInstanceId, user);
-    }
   }
 
   private removePendingMatchmakingGameInstance(gameInstanceId: string) {

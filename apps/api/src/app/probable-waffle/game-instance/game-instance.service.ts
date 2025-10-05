@@ -101,14 +101,14 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     return this.gameInstanceHolderService.findGameInstance(gameInstanceId);
   }
 
-  private checkIfPlayerIsCreator(gameInstance: ProbableWaffleGameInstance, user: User) {
-    return gameInstance.gameInstanceMetadata.data.createdBy === user.id;
-  }
-
   getGameInstanceData(gameInstanceId: string): ProbableWaffleGameInstanceData | null {
     const gameInstance = this.findGameInstance(gameInstanceId);
     if (!gameInstance) return null;
     return gameInstance.data;
+  }
+
+  private checkIfPlayerIsCreator(gameInstance: ProbableWaffleGameInstance, user: User) {
+    return gameInstance.gameInstanceMetadata.data.createdBy === user.id;
   }
 
   private sanitizeGameInstanceMetadataData(

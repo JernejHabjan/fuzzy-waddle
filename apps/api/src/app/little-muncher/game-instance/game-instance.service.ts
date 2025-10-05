@@ -18,9 +18,9 @@ import { type GameInstanceServiceInterface } from "./game-instance.service.inter
 
 @Injectable()
 export class GameInstanceService implements GameInstanceServiceInterface {
-  constructor(private readonly gameInstanceGateway: GameInstanceGateway) {}
-
   openGameInstances: LittleMuncherGameInstance[] = [];
+
+  constructor(private readonly gameInstanceGateway: GameInstanceGateway) {}
 
   async startGame(body: GameInstanceDataDto, user: User) {
     const newGameInstance = new LittleMuncherGameInstance({

@@ -3,8 +3,8 @@ import {
   type ProbableWaffleGameInstanceData,
   type ProbableWaffleGameInstanceMetadataData
 } from "@fuzzy-waddle/api-interfaces";
-import { type User } from "../../../users/users.service";
 import { type GameInstanceServiceInterface } from "./game-instance.service.interface";
+import { User } from "@supabase/supabase-js";
 
 export const GameInstanceServiceStub = {
   findGameInstance(gameInstanceId: string): ProbableWaffleGameInstance | undefined {

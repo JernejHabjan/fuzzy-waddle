@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { SupabaseProviderService } from "../../core/supabase-provider/supabase-provider.service";
 import { ScoreDto } from "@fuzzy-waddle/api-interfaces";
-import { type User } from "../../users/users.service";
 import { type FlySquasherServiceInterface } from "./fly-squasher.service.interface";
+import { User } from "@supabase/supabase-js";
 
 interface ScoreRecord {
   id: number;
