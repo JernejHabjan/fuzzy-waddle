@@ -1,4 +1,4 @@
-import { LittleMuncherRoom, LittleMuncherRoomEvent } from "@fuzzy-waddle/api-interfaces";
+import { type LittleMuncherRoom, type LittleMuncherRoomEvent } from "@fuzzy-waddle/api-interfaces";
 import { Observable, Subject } from "rxjs";
 
 export interface SpectateServiceInterface {

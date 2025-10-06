@@ -1,13 +1,13 @@
 import { Body, Controller, Delete, Get, Post, UseGuards } from "@nestjs/common";
 import { SupabaseAuthGuard } from "../../../auth/guards/supabase-auth.guard";
 import { CurrentUser } from "../../../auth/current-user";
-import { AuthUser } from "@supabase/supabase-js";
+import { type AuthUser } from "@supabase/supabase-js";
 import { GameInstanceService } from "./game-instance.service";
 import {
-  GameInstanceDataDto,
-  LittleMuncherGameCreateDto,
-  LittleMuncherGameInstanceData,
-  LittleMuncherRoom
+  type GameInstanceDataDto,
+  type LittleMuncherGameCreateDto,
+  type LittleMuncherGameInstanceData,
+  type LittleMuncherRoom
 } from "@fuzzy-waddle/api-interfaces";
 
 @Controller("little-muncher")

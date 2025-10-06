@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, type OnInit, Output } from "@angular/core";
 import { ProbableWaffleLevels, ProbableWaffleMapEnum } from "@fuzzy-waddle/api-interfaces";
 
 @Component({

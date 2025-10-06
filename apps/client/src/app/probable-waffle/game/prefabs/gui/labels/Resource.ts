@@ -38,7 +38,7 @@ export default class Resource extends Phaser.GameObjects.Container {
 
   private resource_text: Phaser.GameObjects.Text;
   public resource_icon: Phaser.GameObjects.Image;
-  public type: "wood" | "stone" | "minerals" | "food" | "" = "";
+  public override type: "wood" | "stone" | "minerals" | "food" | "" = "";
 
   /* START-USER-CODE */
   private readonly player: ProbableWafflePlayer | undefined;
@@ -73,7 +73,7 @@ export default class Resource extends Phaser.GameObjects.Container {
     this.resource_text.text = this.getPlayerResource().toString();
   };
 
-  destroy(fromScene?: boolean) {
+  override destroy(fromScene?: boolean) {
     super.destroy(fromScene);
     this.resourceChangedSubscription?.unsubscribe();
   }

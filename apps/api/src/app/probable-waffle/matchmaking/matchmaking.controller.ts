@@ -1,8 +1,8 @@
 import { Body, Controller, Delete, Post, UseGuards } from "@nestjs/common";
 import { SupabaseAuthGuard } from "../../../auth/guards/supabase-auth.guard";
 import { CurrentUser } from "../../../auth/current-user";
-import { AuthUser } from "@supabase/supabase-js";
-import { RequestGameSearchForMatchMakingDto } from "@fuzzy-waddle/api-interfaces";
+import { type AuthUser } from "@supabase/supabase-js";
+import { type RequestGameSearchForMatchMakingDto } from "@fuzzy-waddle/api-interfaces";
 import { MatchmakingService } from "./matchmaking.service";
 
 @Controller("probable-waffle/matchmaking")

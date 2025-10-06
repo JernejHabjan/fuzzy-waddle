@@ -1,10 +1,10 @@
 import { BasePlayer } from "../player/player";
-import { BaseData } from "../data";
-import { BasePlayerController, BasePlayerControllerData } from "../player/player-controller";
+import type { BaseData } from "../data";
+import { BasePlayerController, type BasePlayerControllerData } from "../player/player-controller";
 import { BasePlayerState } from "../player/player-state";
 import { ResourceType } from "../../probable-waffle/resource-type-definition";
-import { PlayerStateAction } from "../../probable-waffle/probable-waffle-player-state-action";
-import { Vector3Simple } from "../../game/vector";
+import type { PlayerStateAction } from "../../probable-waffle/probable-waffle-player-state-action";
+import type { Vector3Simple } from "../../game/vector";
 
 export class ProbableWafflePlayer extends BasePlayer<
   ProbableWafflePlayerStateData,
@@ -38,6 +38,10 @@ export class ProbableWafflePlayer extends BasePlayer<
 
   getResources(): PlayerStateResources {
     return this.playerState.data.resources;
+  }
+
+  get factionType(): FactionType | undefined {
+    return this.playerController.data.playerDefinition?.factionType;
   }
 
   /**

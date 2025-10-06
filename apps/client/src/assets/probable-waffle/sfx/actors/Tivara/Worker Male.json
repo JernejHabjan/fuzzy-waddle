@@ -1,7 +1,5 @@
 {
-  "resources": [
-    "assets/probable-waffle/sfx/actors/Tivara/Worker Male.mp3"
-  ],
+  "resources": ["assets/probable-waffle/sfx/actors/Tivara/Worker Male.mp3"],
   "spritemap": {
     "Attack 1": {
       "start": 0,

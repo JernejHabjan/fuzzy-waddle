@@ -1,7 +1,5 @@
 {
-  "resources": [
-    "assets/probable-waffle/sfx/environment.mp3"
-  ],
+  "resources": ["assets/probable-waffle/sfx/environment.mp3"],
   "spritemap": {
     "birds 1": {
       "start": 0,

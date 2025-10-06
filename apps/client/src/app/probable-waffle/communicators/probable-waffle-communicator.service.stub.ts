@@ -1,4 +1,4 @@
-import { ProbableWaffleCommunicatorServiceInterface } from "./probable-waffle-communicator.service.interface";
+import { type ProbableWaffleCommunicatorServiceInterface } from "./probable-waffle-communicator.service.interface";
 
 export const probableWaffleCommunicatorServiceStub = {
   startCommunication: () => {},

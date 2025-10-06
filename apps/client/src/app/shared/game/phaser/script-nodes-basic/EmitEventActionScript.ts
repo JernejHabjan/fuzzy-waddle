@@ -27,7 +27,7 @@ export default class EmitEventActionScript extends ScriptNode {
 
   /* START-USER-CODE */
 
-  execute(...args: any[]): void {
+  override execute(...args: any[]): void {
     let emitter: Phaser.Events.EventEmitter | null | undefined;
 
     switch (this.eventEmitter) {

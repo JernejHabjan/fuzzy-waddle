@@ -7,17 +7,17 @@
 
 import { getActorSystem } from "../../../data/actor-system";
 import { MovementSystem } from "../../../entity/systems/movement.system";
-import { RallyPointComponentData, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import { type RallyPointComponentData, type Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { GameObjects } from "phaser";
 import { getActorComponent } from "../../../data/actor-component";
-import { SelectableComponent } from "../../../entity/actor/components/selectable-component";
+import { SelectableComponent } from "../../../entity/components/selectable-component";
 import { Subscription } from "rxjs";
 import { getGameObjectRenderedTransform } from "../../../data/game-object-helper";
-import { SharedActorActionsRallyPointSound } from "../../../sfx/SharedActorActionsSfx";
-import { getSceneService } from "../../../scenes/components/scene-component-helpers";
-import { AudioService } from "../../../scenes/services/audio.service";
-import { IdComponent } from "../../../entity/actor/components/id-component";
-import { ActorIndexSystem } from "../../../scenes/services/ActorIndexSystem";
+import { SharedActorActionsRallyPointSound } from "../../../sfx/shared-actor-actions-sfx";
+import { getSceneService } from "../../../world/services/scene-component-helpers";
+import { AudioService } from "../../../world/services/audio.service";
+import { IdComponent } from "../../../entity/components/id-component";
+import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export default class RallyPoint extends Phaser.GameObjects.Image {
@@ -169,10 +169,10 @@ export default class RallyPoint extends Phaser.GameObjects.Image {
     if (data.tileVec3 && data.worldVec3) {
       this.setLocation(data.tileVec3, data.worldVec3);
     } else if (data.actorId) {
-      const actorIndex = getSceneService(this.scene, ActorIndexSystem) as any;
+      const actorIndex = getSceneService(this.scene, ActorIndexSystem);
       const actor = actorIndex?.getActorById(data.actorId);
       if (actor) {
-        this.setActor(actor);
+        this.setActor(actor as any);
       }
     } else {
       this.tileVec3 = undefined;
@@ -183,7 +183,7 @@ export default class RallyPoint extends Phaser.GameObjects.Image {
     }
   }
 
-  destroy(fromScene?: boolean) {
+  override destroy(fromScene?: boolean) {
     super.destroy(fromScene);
     this.selectionChangedSubscription?.unsubscribe();
     this.lineGraphics?.destroy();

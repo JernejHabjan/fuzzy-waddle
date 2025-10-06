@@ -1,16 +1,16 @@
 import { Injectable } from "@nestjs/common";
-import { User } from "@supabase/supabase-js";
+import { type User } from "@supabase/supabase-js";
 import {
-  DifficultyModifiers,
-  MapTuning,
+  type DifficultyModifiers,
+  type MapTuning,
   ProbableWaffleGameInstance,
-  ProbableWaffleGameInstanceData,
-  ProbableWaffleGameInstanceMetadataData,
-  ProbableWaffleGameModeData,
-  ProbableWaffleGameStateData
+  type ProbableWaffleGameInstanceData,
+  type ProbableWaffleGameInstanceMetadataData,
+  type ProbableWaffleGameModeData,
+  type ProbableWaffleGameStateData
 } from "@fuzzy-waddle/api-interfaces";
 import { Cron, CronExpression } from "@nestjs/schedule";
-import { GameInstanceServiceInterface } from "./game-instance.service.interface";
+import { type GameInstanceServiceInterface } from "./game-instance.service.interface";
 import { TextSanitizationService } from "../../../core/content-filters/text-sanitization.service";
 import { RoomServerService } from "../game-room/room-server.service";
 import { GameInstanceHolderService } from "./game-instance-holder.service";
@@ -83,7 +83,7 @@ export class GameInstanceService implements GameInstanceServiceInterface {
       const lastUpdated = gi.gameInstanceMetadata.data.updatedOn;
       const now = new Date();
       // is old if started is more than N minutes ago and lastUpdated is null or more than N minutes ago
-      const startedMoreThanNMinutesAgo = started.getTime() + minutesAgo < now.getTime();
+      const startedMoreThanNMinutesAgo = started!.getTime() + minutesAgo < now.getTime();
       const lastUpdatedMoreThanNMinutesAgo = !lastUpdated || lastUpdated.getTime() + minutesAgo < now.getTime();
       const isOld = startedMoreThanNMinutesAgo && lastUpdatedMoreThanNMinutesAgo;
       if (isOld) {
@@ -93,7 +93,7 @@ export class GameInstanceService implements GameInstanceServiceInterface {
       return !isOld;
     });
     toRemove.forEach((gi) =>
-      this.gameInstanceHolderService.removeGameInstance(gi.gameInstanceMetadata.data.gameInstanceId)
+      this.gameInstanceHolderService.removeGameInstance(gi.gameInstanceMetadata.data.gameInstanceId!)
     );
   }
 
@@ -101,14 +101,14 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     return this.gameInstanceHolderService.findGameInstance(gameInstanceId);
   }
 
-  private checkIfPlayerIsCreator(gameInstance: ProbableWaffleGameInstance, user: User) {
-    return gameInstance.gameInstanceMetadata.data.createdBy === user.id;
-  }
-
   getGameInstanceData(gameInstanceId: string): ProbableWaffleGameInstanceData | null {
     const gameInstance = this.findGameInstance(gameInstanceId);
-    if (!gameInstance) return;
+    if (!gameInstance) return null;
     return gameInstance.data;
+  }
+
+  private checkIfPlayerIsCreator(gameInstance: ProbableWaffleGameInstance, user: User) {
+    return gameInstance.gameInstanceMetadata.data.createdBy === user.id;
   }
 
   private sanitizeGameInstanceMetadataData(

@@ -1,4 +1,4 @@
-import { Scale, Types } from "phaser";
+import { Scale, type Types } from "phaser";
 import { GameContainerElement } from "./game-container/game-container";
 
 export const baseGameConfig: Types.Core.GameConfig = {

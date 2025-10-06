@@ -1,12 +1,12 @@
-import { getSceneInitializers, getSceneService } from "../scenes/components/scene-component-helpers";
-import { NavigationService } from "../scenes/services/navigation.service";
-import { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import { getSceneInitializers, getSceneService } from "../world/services/scene-component-helpers";
+import { NavigationService } from "../world/services/navigation.service";
+import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { filter, first } from "rxjs";
 import { GameObjects } from "phaser";
-import { SelectableComponent } from "../entity/actor/components/selectable-component";
-import { IdComponent } from "../entity/actor/components/id-component";
+import { SelectableComponent } from "../entity/components/selectable-component";
+import { IdComponent } from "../entity/components/id-component";
 import { getActorComponent } from "./actor-component";
-import { RepresentableComponent } from "../entity/actor/components/representable-component";
+import { RepresentableComponent } from "../entity/components/representable-component";
 
 export function getGameObjectBounds(gameObject?: Phaser.GameObjects.GameObject): Phaser.Geom.Rectangle | null {
   if (!gameObject) return null;
@@ -142,15 +142,6 @@ export function onSceneInitialized(scene: Phaser.Scene, callback: () => void, sc
         }, delay);
       }
     });
-}
-
-export function onGameObjectReady(
-  gameObject: Phaser.GameObjects.GameObject,
-  callback: () => void,
-  scope: any,
-  delay: number | null = 0
-) {
-  return onObjectReady(gameObject, callback, scope, delay);
 }
 
 /**

@@ -1,5 +1,5 @@
 import { GameInstanceStorageServiceInterface } from "./game-instance-storage.service.interface";
-import { ProbableWaffleGameInstanceSaveData } from "@fuzzy-waddle/api-interfaces";
+import { type ProbableWaffleGameInstanceSaveData } from "@fuzzy-waddle/api-interfaces";
 
 export const gameInstanceLocalStorageServiceStub = {
   async saveToStorage(gameInstance: ProbableWaffleGameInstanceSaveData): Promise<void> {

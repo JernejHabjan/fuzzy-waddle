@@ -1,4 +1,5 @@
-import { BaseSpectator, BaseSpectatorData } from "../spectator";
+import { BaseSpectator } from "../spectator";
+import type { BaseSpectatorData } from "../spectator";
 
 export class ProbableWaffleSpectator extends BaseSpectator<ProbableWaffleSpectatorData> {
   constructor(data?: ProbableWaffleSpectatorData) {

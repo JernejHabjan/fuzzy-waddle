@@ -1,21 +1,21 @@
 import { Scenes } from "./const/scenes";
 import {
   LittleMuncherGameMode,
-  LittleMuncherGameModeData,
+  type LittleMuncherGameModeData,
   LittleMuncherGameState,
-  LittleMuncherGameStateData,
+  type LittleMuncherGameStateData,
   LittleMuncherHills,
   LittleMuncherPlayer,
-  LittleMuncherPlayerControllerData,
-  LittleMuncherPlayerStateData,
+  type LittleMuncherPlayerControllerData,
+  type LittleMuncherPlayerStateData,
   LittleMuncherSpectator,
-  LittleMuncherSpectatorData
+  type LittleMuncherSpectatorData
 } from "@fuzzy-waddle/api-interfaces";
 import { BaseScene } from "../../shared/game/phaser/scene/base.scene";
-import { LittleMuncherGameData } from "./little-muncher-game-data";
+import { type LittleMuncherGameData } from "./little-muncher-game-data";
 import { Pause } from "./pause";
 import { PlayerInputController } from "./player-input-controller";
-import { UiCommunicator, UiCommunicatorData } from "./ui-communicator";
+import { UiCommunicator, type UiCommunicatorData } from "./ui-communicator";
 import { Fireworks } from "../../shared/game/phaser/components/fireworks";
 import { LittleMuncherCommunicatorService } from "../main/communicators/little-muncher-communicator.service";
 
@@ -95,7 +95,7 @@ export class LittleMuncherScene extends BaseScene<
   override get playerOrNull(): LittleMuncherPlayer | null {
     // there can only be 1 player in little muncher
     if (!this.baseGameData.gameInstance.players.length) return null;
-    return this.baseGameData.gameInstance.players[0];
+    return this.baseGameData.gameInstance.players[0]!;
   }
 
   override preload() {
@@ -536,7 +536,7 @@ export class LittleMuncherScene extends BaseScene<
     if (success) {
       // play victory animation
       const victoryAnimations = ["character-victory-front", "character-victory-back"];
-      this.character.anims.play(victoryAnimations[Math.floor(this.seededRandomByTime() * victoryAnimations.length)]);
+      this.character.anims.play(victoryAnimations[Math.floor(this.seededRandomByTime() * victoryAnimations.length)]!);
     } else {
       this.character.anims.play("character-death");
     }
@@ -638,7 +638,7 @@ export class LittleMuncherScene extends BaseScene<
         delay: largeWordWidth ? 500 : 600, // spawn an object every 2 seconds
         loop: true,
         callback: () =>
-          this.spawnObject(obstacles[Math.floor(this.seededRandomByTime() * obstacles.length)], ObjectName.obstacle)
+          this.spawnObject(obstacles[Math.floor(this.seededRandomByTime() * obstacles.length)]!, ObjectName.obstacle)
       });
     }
 
@@ -650,7 +650,7 @@ export class LittleMuncherScene extends BaseScene<
         delay: largeWordWidth ? 3000 : 4000, // spawn an object every 5 seconds
         loop: true,
         callback: () =>
-          this.spawnObject(powerUps[Math.floor(this.seededRandomByTime() * powerUps.length)], ObjectName.powerUp)
+          this.spawnObject(powerUps[Math.floor(this.seededRandomByTime() * powerUps.length)]!, ObjectName.powerUp)
       });
     }
   };

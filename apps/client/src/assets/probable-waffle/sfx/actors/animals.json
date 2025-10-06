@@ -1,7 +1,5 @@
 {
-  "resources": [
-    "assets/probable-waffle/sfx/actors/animals.mp3"
-  ],
+  "resources": ["assets/probable-waffle/sfx/actors/animals.mp3"],
   "spritemap": {
     "hedgehog angry": {
       "start": 0,

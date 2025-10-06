@@ -1,4 +1,4 @@
-import { Vector3Simple } from "../../game/vector";
+import type { Vector3Simple } from "../../game/vector";
 import { ResourceType } from "../../probable-waffle/resource-type-definition";
 import { ObjectNames } from "./object-names";
 

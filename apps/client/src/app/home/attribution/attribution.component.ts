@@ -1,8 +1,9 @@
-import { Component, inject, OnInit } from "@angular/core";
+import { Component, inject } from "@angular/core";
+import type { OnInit } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { map, Observable } from "rxjs";
 import { HttpClient } from "@angular/common/http";
-import { Attribution } from "./attribution";
+import { type Attribution } from "./attribution";
 import { HomeNavComponent } from "../../shared/components/home-nav/home-nav.component";
 
 interface GroupedAttribution {
@@ -32,13 +33,13 @@ export class AttributionComponent implements OnInit {
       if (!grouped[attribution.type]) {
         grouped[attribution.type] = [];
       }
-      grouped[attribution.type].push(attribution);
+      grouped[attribution.type]!.push(attribution);
     }
 
     const sortedTypes = Object.keys(grouped).sort();
     return sortedTypes.map((type) => ({
       type,
-      items: grouped[type].sort((a, b) => a.name.localeCompare(b.name))
+      items: grouped[type]!.sort((a, b) => a.name.localeCompare(b.name))
     }));
   }
 }

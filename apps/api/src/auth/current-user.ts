@@ -1,6 +1,6 @@
-import { createParamDecorator, ExecutionContext } from "@nestjs/common";
+import { createParamDecorator, type ExecutionContext } from "@nestjs/common";
 import { GqlExecutionContext } from "@nestjs/graphql";
-import { AuthUser } from "@supabase/supabase-js";
+import { type AuthUser } from "@supabase/supabase-js";
 
 export const CurrentUser = createParamDecorator((_data: unknown, context: ExecutionContext): AuthUser => {
   const contextType = context.getType();

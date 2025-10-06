@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, inject, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, inject, type OnInit } from "@angular/core";
 
 import { FormsModule } from "@angular/forms";
 import { RouterLink } from "@angular/router";

@@ -2,10 +2,10 @@ import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSo
 import { UseGuards } from "@nestjs/common";
 import { SupabaseAuthGuard } from "../../../auth/guards/supabase-auth.guard";
 import { CurrentUser } from "../../../auth/current-user";
-import { AuthUser } from "@supabase/supabase-js";
+import { type AuthUser } from "@supabase/supabase-js";
 import {
-  CommunicatorEvent,
-  LittleMuncherCommunicatorType,
+  type CommunicatorEvent,
+  type LittleMuncherCommunicatorType,
   LittleMuncherGatewayEvent
 } from "@fuzzy-waddle/api-interfaces";
 import { GameStateServerService } from "./game-state-server.service";
@@ -17,7 +17,7 @@ import { Server, Socket } from "socket.io";
   }
 })
 export class GameStateGateway {
-  @WebSocketServer() private readonly server: Server;
+  @WebSocketServer() private readonly server!: Server;
 
   constructor(private readonly gameStateServerService: GameStateServerService) {}
 

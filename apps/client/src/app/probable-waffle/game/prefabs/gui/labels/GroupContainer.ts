@@ -3,11 +3,14 @@
 /* START OF COMPILED CODE */
 /* START-USER-IMPORTS */
 import PlayerGroup from "./PlayerGroup";
-import HudProbableWaffle from "../../../scenes/HudProbableWaffle";
+import HudProbableWaffle from "../../../world/scenes/hud-scenes/HudProbableWaffle";
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
-import { getSceneService } from "../../../scenes/components/scene-component-helpers";
-import { CrossSceneCommunicationService } from "../../../scenes/services/CrossSceneCommunicationService";
-import { ActorGroupEvent, SelectionGroupsComponent } from "../../../scenes/components/selection-groups.component";
+import { getSceneService } from "../../../world/services/scene-component-helpers";
+import { CrossSceneCommunicationService } from "../../../world/services/CrossSceneCommunicationService";
+import {
+  type ActorGroupEvent,
+  SelectionGroupsComponent
+} from "../../../player/human-controller/selection-groups.component";
 import { Subscription } from "rxjs";
 /* END-USER-IMPORTS */
 
@@ -109,6 +112,7 @@ export default class GroupContainer extends Phaser.GameObjects.Container {
 
   private groupSelectedEvent(payload: ActorGroupEvent) {
     const group = this.buttons[payload.groupKey - 1];
+    if (!group) return;
     // deselect all groups
     this.buttons.forEach((button) => button.deselect());
     // select the clicked group
@@ -117,6 +121,7 @@ export default class GroupContainer extends Phaser.GameObjects.Container {
 
   private groupCreatedOrUpdatedEvent(payload: ActorGroupEvent) {
     const group = this.buttons[payload.groupKey - 1];
+    if (!group) return;
     group.setVisible(true);
     group.setGroupActor(payload.leadActor);
     group.setCount(payload.count);
@@ -130,7 +135,7 @@ export default class GroupContainer extends Phaser.GameObjects.Container {
     this.buttons.forEach((button) => button.deselect());
   }
 
-  destroy(fromScene?: boolean) {
+  override destroy(fromScene?: boolean) {
     super.destroy(fromScene);
     this.crossSceneCommunicationService?.off(
       SelectionGroupsComponent.GroupSelectedEvent,

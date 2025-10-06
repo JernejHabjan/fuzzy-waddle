@@ -1,4 +1,4 @@
-import { Component, HostListener, inject, OnDestroy, OnInit } from "@angular/core";
+import { Component, HostListener, inject, type OnDestroy, type OnInit } from "@angular/core";
 import { FactionDefinitions } from "../../../game/player/faction-definitions";
 import { FactionType } from "@fuzzy-waddle/api-interfaces";
 import { RoomsService } from "../../../communicators/rooms/rooms.service";

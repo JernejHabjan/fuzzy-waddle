@@ -1,7 +1,7 @@
 import { Observable } from "rxjs";
-import { AchievementDto } from "@fuzzy-waddle/api-interfaces";
+import type { AchievementDto } from "@fuzzy-waddle/api-interfaces";
 import { AchievementType } from "./achievement-type";
-import { AchievementDefinition } from "./achievement-definition";
+import { type AchievementDefinition } from "./achievement-definition";
 
 export interface AchievementServiceInterface {
   achievements$: Observable<AchievementDto[]>;

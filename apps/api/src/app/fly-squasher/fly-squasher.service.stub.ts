@@ -1,4 +1,4 @@
-import { FlySquasherServiceInterface } from "./fly-squasher.service.interface";
+import { type FlySquasherServiceInterface } from "./fly-squasher.service.interface";
 
 export const flySquasherServiceStub = {
   postScore: () => {

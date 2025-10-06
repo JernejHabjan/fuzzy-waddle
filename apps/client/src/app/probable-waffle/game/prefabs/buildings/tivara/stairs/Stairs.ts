@@ -5,19 +5,19 @@
 import StairsTopLeft from "./StairsTopLeft";
 /* START-USER-IMPORTS */
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
-import { ConstructionGameObjectInterfaceComponent } from "../../../../entity/building/construction/construction-game-object-interface-component";
+import { ConstructionGameObjectInterfaceComponent } from "../../../../entity/components/construction/construction-game-object-interface-component";
 import { onObjectReady } from "../../../../data/game-object-helper";
 import { throttle } from "../../../../library/throttle";
 import { getNeighboursByTypes } from "../../../../data/tile-map-helpers";
 import WatchTower from "../wall/WatchTower";
-import { TilemapComponent } from "../../../../scenes/components/tilemap.component";
+import { TilemapComponent } from "../../../../world/tilemap/tilemap.component";
 import Wall from "../wall/Wall";
 import StairsTopRight from "./StairsTopRight";
 import StairsBottomLeft from "./StairsBottomLeft";
 import StairsBottomRight from "./StairsBottomRight";
 import { setActorData } from "../../../../data/actor-data";
 import { getActorComponent } from "../../../../data/actor-component";
-import { WalkablePath, WalkableComponent } from "../../../../entity/actor/components/walkable-component";
+import { type WalkablePath, WalkableComponent } from "../../../../entity/components/movement/walkable-component";
 /* END-USER-IMPORTS */
 
 export default class Stairs extends Phaser.GameObjects.Container {
@@ -66,7 +66,7 @@ export default class Stairs extends Phaser.GameObjects.Container {
   private foundation: Phaser.GameObjects.Image;
 
   /* START-USER-CODE */
-  name = ObjectNames.Stairs;
+  override name = ObjectNames.Stairs;
   private stairs?: Phaser.GameObjects.GameObject;
   private currentStairsType?: StairsType;
   updateStairs(stairsType: StairsType) {
@@ -223,7 +223,7 @@ export default class Stairs extends Phaser.GameObjects.Container {
     return getNeighboursByTypes(this, [Wall, WatchTower], TilemapComponent.tileWidth);
   }
 
-  destroy(fromScene?: boolean) {
+  override destroy(fromScene?: boolean) {
     this.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.throttleRedrawStairs, this);
     super.destroy(fromScene);
   }

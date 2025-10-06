@@ -1,18 +1,18 @@
 import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
 import {
-  CommunicatorEvent,
-  ProbableWaffleCommunicatorMessageEvent,
-  ProbableWaffleCommunicatorType,
-  ProbableWaffleGameFoundEvent,
+  type CommunicatorEvent,
+  type ProbableWaffleCommunicatorMessageEvent,
+  type ProbableWaffleCommunicatorType,
+  type ProbableWaffleGameFoundEvent,
   ProbableWaffleGameInstanceEvent,
   ProbableWaffleGatewayEvent,
   ProbableWaffleGatewayRoomTypes,
-  ProbableWaffleWebsocketRoomEvent
+  type ProbableWaffleWebsocketRoomEvent
 } from "@fuzzy-waddle/api-interfaces";
 import { ProbableWaffleChatService } from "../chat/probable-waffle-chat.service";
 import { UseGuards } from "@nestjs/common";
-import { AuthUser } from "@supabase/supabase-js";
+import { type AuthUser } from "@supabase/supabase-js";
 import { SupabaseAuthGuard } from "../../../auth/guards/supabase-auth.guard";
 import { CurrentUser } from "../../../auth/current-user";
 import { GameStateServerService } from "./game-state-server.service";
@@ -24,7 +24,7 @@ import { RoomServerService } from "../game-room/room-server.service";
   }
 })
 export class GameInstanceGateway {
-  @WebSocketServer() private readonly server: Server;
+  @WebSocketServer() private readonly server!: Server;
 
   constructor(
     private readonly gameStateServerService: GameStateServerService,

@@ -1,13 +1,13 @@
-import { User } from "@supabase/supabase-js";
+import { type User } from "@supabase/supabase-js";
 import {
-  CommunicatorEvent,
-  ProbableWaffleCommunicatorType,
+  type CommunicatorEvent,
+  type ProbableWaffleCommunicatorType,
   ProbableWaffleGameInstance,
-  ProbableWaffleGetRoomsDto,
-  ProbableWaffleRoom,
-  RoomAction
+  type ProbableWaffleGetRoomsDto,
+  type ProbableWaffleRoom,
+  type RoomAction
 } from "@fuzzy-waddle/api-interfaces";
-import { RoomServerServiceInterface } from "./room-server.service.interface";
+import { type RoomServerServiceInterface } from "./room-server.service.interface";
 
 export const roomServerServiceStub = {
   getVisibleRooms(user: User, body: ProbableWaffleGetRoomsDto): Promise<ProbableWaffleRoom[]> {

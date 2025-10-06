@@ -1,4 +1,4 @@
-import { BaseSpectator, BaseSpectatorData } from "../spectator";
+import { BaseSpectator, type BaseSpectatorData } from "../spectator";
 
 export class FlySquasherSpectator extends BaseSpectator<FlySquasherSpectatorData> {
   constructor(data?: FlySquasherSpectatorData) {

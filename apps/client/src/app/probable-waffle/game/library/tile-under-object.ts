@@ -1,10 +1,10 @@
 import Phaser from "phaser";
-import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
+import type { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 import { getGameObjectBounds, getGameObjectLogicalTransform } from "../data/game-object-helper";
 import { environment } from "../../../../environments/environment";
 import { drawDebugPoint } from "../debug/debug-point";
 import { getActorComponent } from "../data/actor-component";
-import { ColliderComponent } from "../entity/actor/components/collider-component";
+import { ColliderComponent } from "../entity/components/movement/collider-component";
 
 export function getTileCoordsUnderObject(
   tilemap: Phaser.Tilemaps.Tilemap,

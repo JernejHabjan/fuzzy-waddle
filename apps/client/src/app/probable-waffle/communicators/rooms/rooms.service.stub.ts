@@ -1,5 +1,5 @@
-import { RoomsServiceInterface } from "./rooms.service.interface";
-import { ProbableWaffleRoom } from "@fuzzy-waddle/api-interfaces";
+import { type RoomsServiceInterface } from "./rooms.service.interface";
+import { type ProbableWaffleRoom } from "@fuzzy-waddle/api-interfaces";
 import { computed, signal } from "@angular/core";
 
 export const roomsServiceStub = {

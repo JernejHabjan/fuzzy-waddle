@@ -5,12 +5,12 @@ import {
   HostListener,
   inject,
   Input,
-  OnDestroy,
-  OnInit,
+  type OnDestroy,
+  type OnInit,
   Output,
   ViewChild
 } from "@angular/core";
-import { ChatMessage } from "@fuzzy-waddle/api-interfaces";
+import type { ChatMessage } from "@fuzzy-waddle/api-interfaces";
 import { AvatarProviderService } from "./avatar-provider/avatar-provider.service";
 import { Observable, Subscription } from "rxjs";
 

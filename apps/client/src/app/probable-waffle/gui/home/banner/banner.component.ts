@@ -1,13 +1,13 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { Component, ElementRef, type OnDestroy, type OnInit, ViewChild } from "@angular/core";
 import Phaser from "phaser";
-import TivaraMacemanMale from "../../../game/prefabs/characters/tivara/TivaraMacemanMale";
+import TivaraMacemanMale from "../../../game/prefabs/characters/tivara/tivara-maceman-male/TivaraMacemanMale";
 import { baseGameConfig } from "../../../../shared/game/base-game.config";
-import { CreateSceneFromObjectConfig } from "../../../../shared/game/phaser/scene/scene-config.interface";
-import SkaduweeWorkerFemale from "../../../game/prefabs/characters/skaduwee/SkaduweeWorkerFemale";
-import SkaduweeWorkerMale from "../../../game/prefabs/characters/skaduwee/SkaduweeWorkerMale";
-import SkaduweeRangedFemale from "../../../game/prefabs/characters/skaduwee/SkaduweeRangedFemale";
-import SkaduweeMagicianFemale from "../../../game/prefabs/characters/skaduwee/SkaduweeMagicianFemale";
-import SkaduweeWarriorMale from "../../../game/prefabs/characters/skaduwee/SkaduweeWarriorMale";
+import { type CreateSceneFromObjectConfig } from "../../../../shared/game/phaser/scene/scene-config.interface";
+import SkaduweeWorkerFemale from "../../../game/prefabs/characters/skaduwee/skaduwee-worker/skaduwee-worker-female/SkaduweeWorkerFemale";
+import SkaduweeWorkerMale from "../../../game/prefabs/characters/skaduwee/skaduwee-worker/skaduwee-worker-male/SkaduweeWorkerMale";
+import SkaduweeRangedFemale from "../../../game/prefabs/characters/skaduwee/skaduwee-ranged-female/SkaduweeRangedFemale";
+import SkaduweeMagicianFemale from "../../../game/prefabs/characters/skaduwee/skaduwee-magician-female/SkaduweeMagicianFemale";
+import SkaduweeWarriorMale from "../../../game/prefabs/characters/skaduwee/skaduwee-warrior-male/SkaduweeWarriorMale";
 import Tree1 from "../../../game/prefabs/outside/foliage/trees/resources/Tree1";
 import Tree4 from "../../../game/prefabs/outside/foliage/trees/resources/Tree4";
 import Tree5 from "../../../game/prefabs/outside/foliage/trees/resources/Tree5";
@@ -16,16 +16,16 @@ import Tree7 from "../../../game/prefabs/outside/foliage/trees/resources/Tree7";
 import Tree9 from "../../../game/prefabs/outside/foliage/trees/resources/Tree9";
 import Tree10 from "../../../game/prefabs/outside/foliage/trees/resources/Tree10";
 import Tree11 from "../../../game/prefabs/outside/foliage/trees/resources/Tree11";
-import Minerals from "../../../game/prefabs/outside/resources/Minerals";
-import StonePile from "../../../game/prefabs/outside/resources/StonePile";
-import GeneralWarrior from "../../../game/prefabs/characters/general/GeneralWarrior";
-import TivaraWorkerFemale from "../../../game/prefabs/characters/tivara/TivaraWorkerFemale";
-import TivaraWorkerMale from "../../../game/prefabs/characters/tivara/TivaraWorkerMale";
-import TivaraSlingshotFemale from "../../../game/prefabs/characters/tivara/TivaraSlingshotFemale";
+import Minerals from "../../../game/prefabs/outside/resources/minerals/Minerals";
+import StonePile from "../../../game/prefabs/outside/resources/stone-pile/StonePile";
+import GeneralWarrior from "../../../game/prefabs/characters/general/general-warrior/GeneralWarrior";
+import TivaraWorkerFemale from "../../../game/prefabs/characters/tivara/tivara-worker/tivara-worker-female/TivaraWorkerFemale";
+import TivaraWorkerMale from "../../../game/prefabs/characters/tivara/tivara-worker/tivara-worker-male/TivaraWorkerMale";
+import TivaraSlingshotFemale from "../../../game/prefabs/characters/tivara/tivara-slingshot-female/TivaraSlingshotFemale";
 import SandholdCursor from "../../../game/prefabs/buildings/tivara/Sandhold/SandholdCursor";
 import AnkGuardCursor from "../../../game/prefabs/buildings/tivara/AnkGuard/AnkGuardCursor";
 import FrostForgeCursor from "../../../game/prefabs/buildings/skaduwee/FrostForge/FrostForgeCursor";
-import WatchTowerCursor from "../../../game/prefabs/buildings/tivara/wall/WatchTower/WatchTowerCursor";
+import WatchTowerCursor from "../../../game/prefabs/buildings/tivara/WatchTower/WatchTowerCursor";
 import OlivalCursor from "../../../game/prefabs/buildings/tivara/Olival/OlivalCursor";
 import InfantryInnCursor from "../../../game/prefabs/buildings/skaduwee/InfantryInn/InfantryInnCursor";
 import WorkMillCursor from "../../../game/prefabs/buildings/tivara/WorkMill/WorkMillCursor";
@@ -118,7 +118,7 @@ class BannerScene extends Phaser.Scene implements CreateSceneFromObjectConfig {
       TempleCursor
     ];
     const randomIndex = Phaser.Math.Between(0, constructors.length - 1);
-    const randomConstructor = constructors[randomIndex];
+    const randomConstructor = constructors[randomIndex]!;
 
     this.gameObject = new randomConstructor(this, 0, 0) as any;
     // set scale so it fits the screen

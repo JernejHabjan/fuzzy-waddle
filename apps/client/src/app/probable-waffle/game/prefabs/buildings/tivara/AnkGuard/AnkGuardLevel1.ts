@@ -7,7 +7,7 @@ import {
   ANIM_TIVARA_BUILDINGS_ANKGUARD_FLAG,
   ANIM_TIVARA_BUILDINGS_ANKGUARD_FLAME,
   ANIM_TIVARA_BUILDINGS_ANKGUARD_FLAME_STICK
-} from "../../../../animations/tivara-buildings";
+} from "./anims-ankguard";
 /* END-USER-IMPORTS */
 
 export default class AnkGuardLevel1 extends Phaser.GameObjects.Container {

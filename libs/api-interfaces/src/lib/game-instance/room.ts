@@ -1,9 +1,10 @@
 import { LittleMuncherGameMode } from "./little-muncher/game-mode";
-import { LittleMuncherGameInstanceMetadataData } from "./little-muncher/game-instance-medatada";
-import { ProbableWaffleGameModeData } from "./probable-waffle/game-mode";
-import { ProbableWaffleGameInstanceMetadataData } from "./probable-waffle/game-instance-medatada";
-import { ProbableWafflePlayerControllerData, ProbableWafflePlayerType } from "./probable-waffle/player";
-import { ProbableWaffleSpectatorData } from "./probable-waffle/spectator";
+import type { LittleMuncherGameInstanceMetadataData } from "./little-muncher/game-instance-medatada";
+import type { ProbableWaffleGameModeData } from "./probable-waffle/game-mode";
+import type { ProbableWaffleGameInstanceMetadataData } from "./probable-waffle/game-instance-medatada";
+import type { ProbableWafflePlayerControllerData } from "./probable-waffle/player";
+import { ProbableWafflePlayerType } from "./probable-waffle/player";
+import type { ProbableWaffleSpectatorData } from "./probable-waffle/spectator";
 
 interface Room<TGameInstanceMetadataData, TGameModeData> {
   gameInstanceMetadataData: TGameInstanceMetadataData;
@@ -18,11 +19,6 @@ interface RoomEvent<TRoom> {
 interface SpectatorEvent {
   gameInstanceId: string;
   action: SpectatorAction;
-}
-
-interface PlayerEvent {
-  gameInstanceId: string;
-  action: PlayerAction;
 }
 
 export type SpectatorAction = "joined" | "left";

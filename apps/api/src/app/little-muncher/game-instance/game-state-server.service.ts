@@ -1,20 +1,20 @@
 import { Injectable } from "@nestjs/common";
 import {
-  CommunicatorEvent,
-  LittleMuncherCommunicatorClimbingEvent,
-  LittleMuncherCommunicatorPauseEvent,
-  LittleMuncherCommunicatorScoreEvent,
-  LittleMuncherCommunicatorType,
+  type CommunicatorEvent,
+  type LittleMuncherCommunicatorClimbingEvent,
+  type LittleMuncherCommunicatorPauseEvent,
+  type LittleMuncherCommunicatorScoreEvent,
+  type LittleMuncherCommunicatorType,
   LittleMuncherPosition
 } from "@fuzzy-waddle/api-interfaces";
 import { GameInstanceService } from "./game-instance.service";
-import { User } from "@supabase/supabase-js";
+import { type User } from "@supabase/supabase-js";
 
 @Injectable()
 export class GameStateServerService {
   constructor(private readonly gameInstanceService: GameInstanceService) {}
   updateGameState(body: CommunicatorEvent<any, LittleMuncherCommunicatorType>, user: User): boolean {
-    const gameInstance = this.gameInstanceService.findGameInstance(body.gameInstanceId);
+    const gameInstance = this.gameInstanceService.findGameInstance(body.gameInstanceId!);
     if (!gameInstance) {
       console.log("game instance not found in updateGameState in GameStateServerService");
       return false;
@@ -28,13 +28,17 @@ export class GameStateServerService {
     // get player from gameInstance:
     const authUserPlayer = gameInstance.isPlayer(user.id);
     const player = gameInstance.players[0];
+    if (!player) {
+      console.log("player not found in game instance");
+      return false;
+    }
     switch (body.communicator) {
       case "timeClimbing":
         if (!authUserPlayer) {
           console.log("User is not a player in this game instance");
           return false;
         }
-        gameInstance.gameState.data.climbedHeight = (
+        gameInstance.gameState!.data.climbedHeight = (
           body.payload as LittleMuncherCommunicatorClimbingEvent
         ).timeClimbing;
         console.log("updating time climbing", body.payload);
@@ -44,7 +48,7 @@ export class GameStateServerService {
           console.log("User is not a player in this game instance");
           return false;
         }
-        gameInstance.gameState.data.pause = (body.payload as LittleMuncherCommunicatorPauseEvent).pause;
+        gameInstance.gameState!.data.pause = (body.payload as LittleMuncherCommunicatorPauseEvent).pause;
         console.log("updating pause", body.payload);
         console.log("pausing game");
         break;
@@ -53,8 +57,8 @@ export class GameStateServerService {
           console.log("User is not a player in this game instance");
           return false;
         }
-        gameInstance.gameState.data.climbedHeight = 0;
-        gameInstance.gameState.data.score = 0;
+        gameInstance.gameState!.data.climbedHeight = 0;
+        gameInstance.gameState!.data.score = 0;
         console.log("resetting game");
         break;
       case "score":

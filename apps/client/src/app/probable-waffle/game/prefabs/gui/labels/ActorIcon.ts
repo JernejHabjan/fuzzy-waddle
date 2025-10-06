@@ -103,7 +103,7 @@ export default class ActorIcon extends Phaser.GameObjects.Container {
     return this.clickSubject.asObservable();
   }
 
-  destroy(fromScene?: boolean) {
+  override destroy(fromScene?: boolean) {
     this.off("actor-action", this.emitClick, this);
     super.destroy(fromScene);
   }

@@ -1,21 +1,21 @@
 import { Scene } from "phaser";
-import { CreateSceneFromObjectConfig } from "./scene-config.interface";
+import type { CreateSceneFromObjectConfig } from "./scene-config.interface";
 import { EventEmitter } from "@angular/core";
-import { UpdateEventData } from "./update-event-data";
+import type { UpdateEventData } from "./update-event-data";
 import { BaseGame } from "../game/base-game";
-import { BaseGameData } from "../game/base-game-data";
+import { type BaseGameData } from "../game/base-game-data";
 import { Observable, Subscription, take } from "rxjs";
 import {
-  BaseData,
+  type BaseData,
   BaseGameMode,
   BaseGameState,
   BasePlayer,
-  BasePlayerControllerData,
+  type BasePlayerControllerData,
   BaseSpectator,
-  BaseSpectatorData
+  type BaseSpectatorData
 } from "@fuzzy-waddle/api-interfaces";
 import { Loader } from "../../../../little-muncher/game/loader";
-import { CommunicatorService } from "../../communicators/CommunicatorService";
+import type { CommunicatorService } from "../../communicators/CommunicatorService";
 
 export const SceneGameDataKey = "SceneGameData";
 export class BaseScene<

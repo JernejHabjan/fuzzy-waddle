@@ -4,37 +4,38 @@
 
 import OnPointerDownScript from "../../../../../shared/game/phaser/script-nodes-basic/OnPointerDownScript";
 /* START-USER-IMPORTS */
-import ActorAction, { ActorActionSetup } from "./ActorAction";
+import ActorAction, { type ActorActionSetup } from "./ActorAction";
 import { getCurrentPlayerNumber, listenToSelectionEvents } from "../../../data/scene-data";
-import HudProbableWaffle from "../../../scenes/HudProbableWaffle";
+import HudProbableWaffle from "../../../world/scenes/hud-scenes/HudProbableWaffle";
 import { Subscription } from "rxjs";
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { getActorComponent } from "../../../data/actor-component";
-import { AttackComponent } from "../../../entity/combat/components/attack-component";
+import { AttackComponent } from "../../../entity/components/combat/components/attack-component";
 import {
   AssignProductionErrorCode,
   ProductionComponent
-} from "../../../entity/building/production/production-component";
-import { ActorTranslateComponent } from "../../../entity/actor/components/actor-translate-component";
-import { pwActorDefinitions } from "../../../data/actor-definitions";
-import { HealthComponent } from "../../../entity/combat/components/health-component";
-import { AudioService } from "../../../scenes/services/audio.service";
-import { BuilderComponent } from "../../../entity/actor/components/builder-component";
+} from "../../../entity/components/production/production-component";
+import { ActorTranslateComponent } from "../../../entity/components/movement/actor-translate-component";
+import { pwActorDefinitions } from "../../definitions/actor-definitions";
+import { HealthComponent } from "../../../entity/components/combat/components/health-component";
+import { AudioService } from "../../../world/services/audio.service";
+import { BuilderComponent } from "../../../entity/components/construction/builder-component";
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
-import { getSceneComponent, getSceneService } from "../../../scenes/components/scene-component-helpers";
-import { BuildingCursor } from "../../../world/managers/controllers/building-cursor";
-import { ConstructionSiteComponent } from "../../../entity/building/construction/construction-site-component";
+import { getSceneComponent, getSceneService } from "../../../world/services/scene-component-helpers";
+import { BuildingCursor } from "../../../player/human-controller/building-cursor";
+import { ConstructionSiteComponent } from "../../../entity/components/construction/construction-site-component";
 import HudMessages, { HudVisualFeedbackMessageType } from "../labels/HudMessages";
-import { AudioSprites } from "../../../sfx/AudioSprites";
-import { UiFeedbackSfx } from "../../../sfx/UiFeedbackSfx";
-import { CrossSceneCommunicationService } from "../../../scenes/services/CrossSceneCommunicationService";
-import { OwnerComponent } from "../../../entity/actor/components/owner-component";
-import { PawnAiController } from "../../../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
-import { PlayerActionsHandler } from "../../../world/managers/controllers/PlayerActionsHandler";
-import { OrderType } from "../../../entity/character/ai/order-type";
-import { HealingComponent } from "../../../entity/combat/components/healing-component";
-import { GathererComponent } from "../../../entity/actor/components/gatherer-component";
+import { AudioSprites } from "../../../sfx/audio-sprites";
+import { UiFeedbackSfx } from "../../../hud/UiFeedbackSfx";
+import { CrossSceneCommunicationService } from "../../../world/services/CrossSceneCommunicationService";
+import { OwnerComponent } from "../../../entity/components/owner-component";
+import { PawnAiController } from "../../ai-agents/pawn-ai-controller";
+import { PlayerActionsHandler } from "../../../player/human-controller/player-actions-handler";
+import { OrderType } from "../../../ai/order-type";
+import { HealingComponent } from "../../../entity/components/combat/components/healing-component";
+import { GathererComponent } from "../../../entity/components/resource/gatherer-component";
 import { getPrimarySelectedActor } from "../../../data/selection-helpers";
+import { ProductionValidator } from "../../../data/tech-tree/production-validator";
 /* END-USER-IMPORTS */
 
 export default class ActorActions extends Phaser.GameObjects.Container {
@@ -391,7 +392,12 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     const constructionSiteComponent = getActorComponent(actor, ConstructionSiteComponent);
     if (constructionSiteComponent && !constructionSiteComponent.isFinished) {
       // Show sword icon as 9th (bottom right) icon
-      this.actor_actions[8].setup({
+      const action = this.actor_actions[8];
+      if (!action) {
+        console.error("Action button not found at index", index);
+        return;
+      }
+      action.setup({
         icon: {
           key: "gui",
           frame: "action_icons/hand.png",
@@ -440,7 +446,12 @@ export default class ActorActions extends Phaser.GameObjects.Container {
   ): number {
     const attackComponent = getActorComponent(actor, AttackComponent);
     if (attackComponent) {
-      this.actor_actions[index].setup(this.attackAction(allActors));
+      const action = this.actor_actions[index];
+      if (!action) {
+        console.error("Action button not found at index", index);
+        return index;
+      }
+      action.setup(this.attackAction(allActors));
       index++;
     }
     return index;
@@ -453,9 +464,14 @@ export default class ActorActions extends Phaser.GameObjects.Container {
   ): number {
     const actorTranslateComponent = getActorComponent(actor, ActorTranslateComponent);
     if (actorTranslateComponent) {
-      this.actor_actions[index].setup(this.moveAction(allActors));
+      const action = this.actor_actions[index];
+      if (!action) {
+        console.error("Action button not found at index", index);
+        return index;
+      }
+      action.setup(this.moveAction(allActors));
       index++;
-      this.actor_actions[index].setup(this.stopAction(allActors));
+      action.setup(this.stopAction(allActors));
       index++;
     }
     return index;
@@ -468,7 +484,12 @@ export default class ActorActions extends Phaser.GameObjects.Container {
   ): number {
     const productionComponent = getActorComponent(actor, ProductionComponent);
     if (productionComponent) {
-      this.actor_actions[index].setup(this.rallyAction(allActors));
+      const action = this.actor_actions[index];
+      if (!action) {
+        console.error("Action button not found at index", index);
+        return index;
+      }
+      action.setup(this.rallyAction(allActors));
       index++;
     }
     return index;
@@ -481,7 +502,12 @@ export default class ActorActions extends Phaser.GameObjects.Container {
   ): number {
     const healingComponent = getActorComponent(actor, HealingComponent);
     if (healingComponent) {
-      this.actor_actions[index].setup(this.healAction(allActors));
+      const action = this.actor_actions[index];
+      if (!action) {
+        console.error("Action button not found at index", index);
+        return index;
+      }
+      action.setup(this.healAction(allActors));
       index++;
     }
     return index;
@@ -494,7 +520,12 @@ export default class ActorActions extends Phaser.GameObjects.Container {
   ): number {
     const gathererComponent = getActorComponent(actor, GathererComponent);
     if (gathererComponent) {
-      this.actor_actions[index].setup(this.gatherAction(allActors));
+      const action = this.actor_actions[index];
+      if (!action) {
+        console.error("Action button not found at index", index);
+        return index;
+      }
+      action.setup(this.gatherAction(allActors));
       index++;
     }
     return index;
@@ -504,19 +535,32 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     const productionComponent = getActorComponent(actor, ProductionComponent);
     if (productionComponent && productionComponent.isFinished) {
       const availableToProduce = productionComponent.productionDefinition.availableProduceActors;
-      availableToProduce.forEach((product, localIndex) => {
+      availableToProduce.forEach((product: ObjectNames, localIndex: number): void => {
         const actorDefinition = pwActorDefinitions[product];
         const info = actorDefinition.components?.info;
         if (!info || !info.smallImage) {
           throw new Error(`Info component not found for ${product}`);
         }
-        this.actor_actions[index].setup({
+        // UI validation gating
+        const playerNumber = getCurrentPlayerNumber(this.mainSceneWithActors)!;
+        const validation = ProductionValidator.validateForScene(this.mainSceneWithActors, playerNumber, product);
+        const disabled = !!validation?.prereqs?.length;
+        let disabledDescription = null;
+        if (disabled) {
+          disabledDescription = `Requires: ${validation.prereqs.join(", ")}`;
+        }
+        const action = this.actor_actions[index];
+        if (!action) {
+          console.error("Action button not found at index", index);
+          return;
+        }
+        action.setup({
           icon: {
             key: info.smallImage.key!,
             frame: info.smallImage.frame,
             origin: info.smallImage.origin
           },
-          disabled: false, // todo
+          disabled,
           visible: true,
           action: () => {
             if (!actorDefinition.components?.productionCost) {
@@ -565,7 +609,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
             iconKey: info.smallImage.key!,
             iconFrame: info.smallImage.frame,
             iconOrigin: info.smallImage.origin ?? { x: 0.5, y: 0.5 },
-            description: info.description
+            description: disabledDescription ?? info.description
           },
           // Use letter shortcuts from handler (Q..O)
           shortcut: this.HOTKEYS[localIndex]
@@ -583,7 +627,12 @@ export default class ActorActions extends Phaser.GameObjects.Container {
   ): number {
     const builderComponent = getActorComponent(actor, BuilderComponent);
     if (builderComponent) {
-      this.actor_actions[index].setup({
+      const action = this.actor_actions[index];
+      if (!action) {
+        console.error("Action button not found at index", index);
+        return index;
+      }
+      action.setup({
         icon: {
           key: "gui",
           frame: "action_icons/hammer.png",
@@ -610,7 +659,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
 
   private hideAllIcons() {
     for (let i = 0; i < this.actor_actions.length; i++) {
-      this.actor_actions[i].setup({ visible: false });
+      this.actor_actions[i]!.setup({ visible: false });
     }
   }
 
@@ -633,15 +682,29 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       if (!info || !info.smallImage) {
         throw new Error(`Info component not found for ${building}`);
       }
-      this.actor_actions[index].setup({
+      // UI validation gating
+      const playerNumber = getCurrentPlayerNumber(this.mainSceneWithActors)!;
+      const validation = ProductionValidator.validateForScene(this.mainSceneWithActors, playerNumber, building);
+      const disabled = !!validation?.prereqs?.length;
+      let disabledDescription = null;
+      if (disabled) {
+        disabledDescription = `Requires: ${validation.prereqs.join(", ")}`;
+      }
+      const action = this.actor_actions[index];
+      if (!action) {
+        console.error("Action button not found at index", index);
+        return;
+      }
+      action.setup({
         icon: {
           key: info.smallImage.key!,
           frame: info.smallImage.frame,
           origin: info.smallImage.origin
         },
-        disabled: false, // todo
+        disabled,
         visible: true,
         action: () => {
+          if (disabled) return; // prevent invalid action
           const buildingCursor = getSceneComponent(this.mainSceneWithActors, BuildingCursor);
           buildingCursor?.startPlacingBuilding.emit(building);
         },
@@ -650,7 +713,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
           iconKey: info.smallImage.key!,
           iconFrame: info.smallImage.frame,
           iconOrigin: info.smallImage.origin ?? { x: 0.5, y: 0.5 },
-          description: info.description
+          description: disabledDescription ?? info.description
         },
         // Use letter shortcuts from handler (Q..O)
         shortcut: this.HOTKEYS[localIndex]
@@ -667,7 +730,12 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       console.error("Not enough slots for building icons");
       return index;
     }
-    this.actor_actions[index].setup({
+    const action = this.actor_actions[index];
+    if (!action) {
+      console.error("Action button not found at index", index);
+      return index;
+    }
+    action.setup({
       icon: {
         key: "gui",
         frame: "action_icons/back.png",
@@ -691,7 +759,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     return index;
   }
 
-  destroy(fromScene?: boolean) {
+  override destroy(fromScene?: boolean) {
     super.destroy(fromScene);
     this.selectionChangedSubscription?.unsubscribe();
     this.actorKillSubscription?.unsubscribe();

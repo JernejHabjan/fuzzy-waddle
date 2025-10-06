@@ -1,6 +1,6 @@
-import { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
-import { getSceneComponent, getSceneService } from "../../scenes/components/scene-component-helpers";
-import { NavigationService, TerrainType } from "../../scenes/services/navigation.service";
+import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import { getSceneComponent, getSceneService } from "../../world/services/scene-component-helpers";
+import { NavigationService, TerrainType } from "../../world/services/navigation.service";
 import { throttle } from "../../library/throttle";
 import { getActorSystem } from "../../data/actor-system";
 import {
@@ -11,33 +11,34 @@ import {
   onObjectReady
 } from "../../data/game-object-helper";
 import { Subscription } from "rxjs";
-import { AudioService } from "../../scenes/services/audio.service";
+import { AudioService } from "../../world/services/audio.service";
 import { getCommunicator, getCurrentPlayerNumber } from "../../data/scene-data";
-import { SelectableComponent } from "../actor/components/selectable-component";
+import { SelectableComponent } from "../components/selectable-component";
 import { getActorComponent } from "../../data/actor-component";
-import { ActorTranslateComponent, IsoDirection } from "../actor/components/actor-translate-component";
-import { HealthComponent } from "../combat/components/health-component";
-import { PawnAiController } from "../../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
-import { OrderType } from "../character/ai/order-type";
-import { OrderData } from "../character/ai/OrderData";
-import { AudioActorComponent } from "../actor/components/audio-actor-component";
+import { ActorTranslateComponent } from "../components/movement/actor-translate-component";
+import { HealthComponent } from "../components/combat/components/health-component";
+import { PawnAiController } from "../../prefabs/ai-agents/pawn-ai-controller";
+import { OrderType } from "../../ai/order-type";
+import { OrderData } from "../../ai/OrderData";
+import { AudioActorComponent } from "../components/actor-audio/audio-actor-component";
 import {
   SharedActorActionsSfxGrassSounds,
   SharedActorActionsSfxGravelSounds,
   SharedActorActionsSfxSandSounds,
   SharedActorActionsSfxSnowSounds,
   SharedActorActionsSfxStoneSounds
-} from "../../sfx/SharedActorActionsSfx";
-import { OwnerComponent } from "../actor/components/owner-component";
-import { AnimationActorComponent } from "../actor/components/animation-actor-component";
-import { FlightComponent } from "../actor/components/flight-component";
-import { WalkableComponent } from "../actor/components/walkable-component";
-import { RepresentableComponent } from "../actor/components/representable-component";
+} from "../../sfx/shared-actor-actions-sfx";
+import { OwnerComponent } from "../components/owner-component";
+import { AnimationActorComponent } from "../components/animation/animation-actor-component";
+import { FlyingComponent } from "../components/movement/flying-component";
+import { WalkableComponent } from "../components/movement/walkable-component";
+import { RepresentableComponent } from "../components/representable-component";
 import Tween = Phaser.Tweens.Tween;
 import GameObject = Phaser.GameObjects.GameObject;
-import { IdComponent } from "../actor/components/id-component";
+import { IdComponent } from "../components/id-component";
 import { getTileCoordsUnderObject } from "../../library/tile-under-object";
-import { TilemapComponent } from "../../scenes/components/tilemap.component";
+import { TilemapComponent } from "../../world/tilemap/tilemap.component";
+import type { IsoDirection } from "../components/movement/iso-directions";
 
 export interface PathMoveConfig {
   radiusTilesAroundDestination?: number;
@@ -127,8 +128,8 @@ export class MovementSystem {
     tileVec3: Vector3Simple,
     pathMoveConfig?: PathMoveConfig
   ): Promise<boolean> {
-    const flightComponent = getActorComponent(this.gameObject, FlightComponent);
-    const usePathfinding = !flightComponent;
+    const flyingComponent = getActorComponent(this.gameObject, FlyingComponent);
+    const usePathfinding = !flyingComponent;
     if (!usePathfinding) {
       return this.moveDirectlyToLocationWithoutPathfinding(tileVec3, pathMoveConfig)
         .then(() => true)
@@ -161,8 +162,8 @@ export class MovementSystem {
     gameObject: GameObject,
     pathMoveConfig?: Partial<PathMoveConfig>
   ): Promise<boolean> {
-    const flightComponent = getActorComponent(gameObject, FlightComponent);
-    const usePathfinding = !flightComponent;
+    const flyingComponent = getActorComponent(gameObject, FlyingComponent);
+    const usePathfinding = !flyingComponent;
     if (!usePathfinding) {
       const vec3 = getGameObjectCurrentTile(gameObject);
       if (!vec3) return false;
@@ -224,7 +225,7 @@ export class MovementSystem {
 
       // Start moving along the first step of the path
       if (path.length > 0) {
-        const nextTile = path[0];
+        const nextTile = path[0]!;
         const tileWorldXY = this.navigationService?.getTileWorldCenter(nextTile);
         if (!tileWorldXY) return false;
 
@@ -444,7 +445,7 @@ export class MovementSystem {
     if (!movementSoundDefinition) return;
     // get random from movementSoundDefinition
     const randomIndex = Math.floor(Math.random() * movementSoundDefinition.length);
-    const movementSound = movementSoundDefinition[randomIndex];
+    const movementSound = movementSoundDefinition[randomIndex]!;
     this.audioService.playSpatialAudioSprite(this.gameObject, movementSound.key, movementSound.spriteName, {
       volume: 70 // make it quieter so it doesn't drown out other sounds
     });
@@ -470,8 +471,8 @@ export class MovementSystem {
       case TerrainType.Gravel:
         return SharedActorActionsSfxGravelSounds;
       case TerrainType.Water:
-        console.warn("No movement sound for water");
-        return undefined; // todo add water sound
+        // console.warn("No movement sound for water");
+        return undefined; // todo add water sound, but it should not be played when crossing the bridge
       case TerrainType.Sand:
         return SharedActorActionsSfxSandSounds;
       case TerrainType.Snow:
@@ -579,6 +580,7 @@ export class MovementSystem {
     // Assign a unique formation point to this unit based on its sorted index
     if (ownSortedIndex < formationPoints.length) {
       const assignedPoint = formationPoints[ownSortedIndex];
+      if (!assignedPoint) return tileVec3;
       const destinationTile: Vector2Simple = { x: assignedPoint.x, y: assignedPoint.y };
 
       // Check if the assigned point is valid and reachable
@@ -635,8 +637,8 @@ export async function getRandomTileInNavigableRadius(
 ): Promise<Vector2Simple | undefined> {
   const movementSystem = getActorSystem<MovementSystem>(gameObject, MovementSystem);
   if (!movementSystem) return Promise.reject("No movement system found");
-  const flightComponent = getActorComponent(gameObject, FlightComponent);
-  const usePathfinding = !flightComponent;
+  const flyingComponent = getActorComponent(gameObject, FlyingComponent);
+  const usePathfinding = !flyingComponent;
   const newTile = usePathfinding
     ? await getGameObjectTileInNavigableRadius(gameObject, radius)
     : getGameObjectTileInRadius(gameObject, radius);

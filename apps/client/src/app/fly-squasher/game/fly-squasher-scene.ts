@@ -1,21 +1,21 @@
 import { BaseScene } from "../../shared/game/phaser/scene/base.scene";
 import {
   FlySquasherGameMode,
-  FlySquasherGameModeData,
+  type FlySquasherGameModeData,
   FlySquasherGameState,
-  FlySquasherGameStateData,
+  type FlySquasherGameStateData,
   FlySquasherLevelEnum,
   FlySquasherPlayer,
-  FlySquasherPlayerControllerData,
-  FlySquasherPlayerStateData,
+  type FlySquasherPlayerControllerData,
+  type FlySquasherPlayerStateData,
   FlySquasherSpectator,
-  FlySquasherSpectatorData
+  type FlySquasherSpectatorData
 } from "@fuzzy-waddle/api-interfaces";
 import { Scenes } from "./consts/scenes";
 import { Fly } from "./fly/fly";
 import { Scenery } from "./scenery/Scenery";
 import { FlyFactory } from "./fly/fly.factory";
-import { FlySquasherGameData } from "./fly-squasher-game-data";
+import { type FlySquasherGameData } from "./fly-squasher-game-data";
 import { FlySquasherAudio } from "./audio";
 import { FlySquasherCommunicatorService } from "./fly-squasher-communicator.service";
 

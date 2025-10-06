@@ -3,7 +3,7 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { ANIM_SKADUWEE_BUILDINGS_INFANTRY_INN_ENTRANCE } from "../../../../animations/skaduwee-buildings";
+import { ANIM_SKADUWEE_BUILDINGS_INFANTRY_INN_ENTRANCE } from "./anims-infantry-inn";
 /* END-USER-IMPORTS */
 
 export default class InfantryInnLevel1 extends Phaser.GameObjects.Container {

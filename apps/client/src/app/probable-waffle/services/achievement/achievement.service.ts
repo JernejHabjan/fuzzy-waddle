@@ -1,13 +1,13 @@
 import { inject, Injectable } from "@angular/core";
 import { BehaviorSubject, Observable } from "rxjs";
 import { AchievementNotificationService } from "../achievement-notification.service";
-import { AudioAtlasService } from "../../audio-atlas/audio-atlas.service";
+import { AudioAtlasService } from "../audio-atlas/audio-atlas.service";
 import { AuthService } from "../../../auth/auth.service";
 import { DataAccessService } from "../../../data-access/data-access.service";
-import { AchievementDto } from "@fuzzy-waddle/api-interfaces";
-import { AchievementServiceInterface } from "./achievement.service.interface";
+import type { AchievementDto } from "@fuzzy-waddle/api-interfaces";
+import { type AchievementServiceInterface } from "./achievement.service.interface";
 import { PROBABLE_WAFFLE_ACHIEVEMENTS } from "./PROBABLE_WAFFLE_ACHIEVEMENTS";
-import { AchievementDefinition } from "./achievement-definition";
+import type { AchievementDefinition } from "./achievement-definition";
 import { AchievementType } from "./achievement-type";
 
 interface AchievementRecord {
