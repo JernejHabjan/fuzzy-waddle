@@ -74,12 +74,17 @@ export class HousingComponent {
   }
 
   setData(data: Partial<HousingComponentData>) {
-    // Currently no mutable data to set
+    if (data.housingProvided !== undefined) {
+      if (data.housingProvided && !this.housingProvided) {
+        this.addHousing();
+      } else if (!data.housingProvided && this.housingProvided) {
+        this.removeHousing();
+      }
+    }
   }
 
   getData(): HousingComponentData {
     return {
-      housingCapacity: this.housingDefinition.housingCapacity,
       housingProvided: this.housingProvided
     } satisfies HousingComponentData;
   }

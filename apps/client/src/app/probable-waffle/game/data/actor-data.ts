@@ -32,6 +32,7 @@ import { RepresentableComponent } from "../entity/actor/components/representable
 import { FlightComponent } from "../entity/actor/components/flight-component";
 import { WalkableComponent } from "../entity/actor/components/walkable-component";
 import GameObject = Phaser.GameObjects.GameObject;
+import { HousingComponent } from "../entity/building/housing-component";
 
 export const ActorDataKey = "actorData";
 export class ActorData {
@@ -71,6 +72,7 @@ function setActorProperties(actor: GameObject, actorDefinition?: Partial<ActorDe
   if (actorDefinition.id) getActorComponent(actor, IdComponent)?.setData(actorDefinition.id);
   if (actorDefinition.constructionSite)
     getActorComponent(actor, ConstructionSiteComponent)?.setData(actorDefinition.constructionSite);
+  if (actorDefinition.housing) getActorComponent(actor, HousingComponent)?.setData(actorDefinition.housing);
   if (actorDefinition.health) getActorComponent(actor, HealthComponent)?.setData(actorDefinition.health);
   if (actorDefinition.vision) getActorComponent(actor, VisionComponent)?.setData(actorDefinition.vision);
   if (actorDefinition.attack) getActorComponent(actor, AttackComponent)?.setData(actorDefinition.attack);

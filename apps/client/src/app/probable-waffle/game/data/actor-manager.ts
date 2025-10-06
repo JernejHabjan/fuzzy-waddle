@@ -57,6 +57,7 @@ import { PawnAiController } from "../world/managers/controllers/player-pawn-ai-c
 import GameObject = Phaser.GameObjects.GameObject;
 import { getSceneService } from "../scenes/components/scene-component-helpers";
 import { SceneActorCreator } from "../scenes/components/scene-actor-creator";
+import { HousingComponent } from "../entity/building/housing-component";
 
 export type ActorConstructor = new (scene: Phaser.Scene) => GameObject;
 export type ActorMap = { [name: string]: ActorConstructor };
@@ -153,6 +154,7 @@ export class ActorManager {
       id: getActorComponent(actor, IdComponent)?.getData(),
       constructionSite: getActorComponent(actor, ConstructionSiteComponent)?.getData(),
       health: getActorComponent(actor, HealthComponent)?.getData(),
+      housing: getActorComponent(actor, HousingComponent)?.getData(),
       vision: getActorComponent(actor, VisionComponent)?.getData(),
       attack: getActorComponent(actor, AttackComponent)?.getData(),
       healing: getActorComponent(actor, HealingComponent)?.getData(),

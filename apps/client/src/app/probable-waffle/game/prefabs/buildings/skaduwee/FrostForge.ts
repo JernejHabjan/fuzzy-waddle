@@ -8,11 +8,8 @@ import FrostForgeFoundation2 from "./FrostForge/FrostForgeFoundation2";
 import FrostForgeLevel1 from "./FrostForge/FrostForgeLevel1";
 /* START-USER-IMPORTS */
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
-import {
-  ConstructionGameObjectInterfaceComponent
-} from "../../../entity/building/construction/construction-game-object-interface-component";
+import { ConstructionGameObjectInterfaceComponent } from "../../../entity/building/construction/construction-game-object-interface-component";
 import { setActorData } from "../../../data/actor-data";
-import { HousingComponent } from "../../../entity/building/housing-component";
 /* END-USER-IMPORTS */
 
 export default class FrostForge extends Phaser.GameObjects.Container {
@@ -65,10 +62,7 @@ export default class FrostForge extends Phaser.GameObjects.Container {
   private setup() {
     setActorData(
       this,
-      [
-        new ConstructionGameObjectInterfaceComponent(this, this.handlePrefabVisibility, this.frostForgeCursor),
-        new HousingComponent(this, { housingCapacity: 10 })
-      ],
+      [new ConstructionGameObjectInterfaceComponent(this, this.handlePrefabVisibility, this.frostForgeCursor)],
       []
     );
   }

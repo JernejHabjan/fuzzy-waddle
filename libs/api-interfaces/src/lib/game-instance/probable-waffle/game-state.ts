@@ -13,6 +13,7 @@ import {
   ContainerComponentData,
   GathererComponentData,
   HealingComponentData,
+  HousingComponentData,
   IdComponentData,
   OwnerComponentData,
   ProductionComponentData,
@@ -56,6 +57,7 @@ export interface ActorDefinition extends Record<string, any> {
   owner?: Partial<OwnerComponentData>;
   id?: Partial<IdComponentData>;
   health?: Partial<HealthComponentData>;
+  housing?: Partial<HousingComponentData>;
   constructionSite?: Partial<ConstructionSiteComponentData>;
   selected?: Partial<SelectableComponentData>;
   vision?: Partial<VisionComponentData>;

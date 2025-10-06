@@ -176,6 +176,7 @@ import {
 import { RepresentableDefinition } from "../entity/actor/components/representable-component";
 import { FlightDefinition } from "../entity/actor/components/flight-component";
 import { WalkableDefinition } from "../entity/actor/components/walkable-component";
+import { HousingDefinition } from "../entity/building/housing-component";
 
 const coreConstructionSiteDefinition: ConstructionSiteDefinition = {
   consumesBuilders: false,
@@ -360,6 +361,7 @@ export type ActorInfoDefinition = Partial<{
     resourceSource: ResourceSourceDefinition;
     production: ProductionDefinition;
     healing: HealingDefinition;
+    housing: HousingDefinition;
     translatable: ActorTranslateDefinition;
     flying: FlightDefinition;
     animatable: ActorAnimationsDefinition;
@@ -911,6 +913,9 @@ export const pwActorDefinitions: {
           }
         ]
       },
+      housing: {
+        housingCapacity: 8
+      },
       vision: {
         range: 14
       },
@@ -970,6 +975,9 @@ export const pwActorDefinitions: {
       },
       vision: {
         range: 20
+      },
+      housing: {
+        housingCapacity: 8
       },
       info: {
         name: "Sandhold",
@@ -1545,6 +1553,9 @@ export const pwActorDefinitions: {
           frame: "building_icons/skaduwee/frost_forge.png",
           origin: { x: 0.5, y: 0.5 }
         }
+      },
+      housing: {
+        housingCapacity: 8
       },
       health: {
         physicalState: ActorPhysicalType.Structural,

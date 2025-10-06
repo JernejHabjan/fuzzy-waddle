@@ -86,6 +86,5 @@ export interface BackboardComponentData {
 }
 
 export interface HousingComponentData {
-  housingCapacity?: number;
   housingProvided?: boolean;
 }
