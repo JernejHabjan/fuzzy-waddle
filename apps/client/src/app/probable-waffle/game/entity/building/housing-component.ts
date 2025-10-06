@@ -12,7 +12,6 @@ export type HousingDefinition = {
 
 /**
  * Component that provides housing capacity to buildings
- * Housing is tracked as a resource similar to food
  */
 export class HousingComponent {
   private housingProvided: boolean = false;
@@ -29,7 +28,7 @@ export class HousingComponent {
   private init() {
     // Check if building is already constructed
     const constructionSiteComponent = getActorComponent(this.gameObject, ConstructionSiteComponent);
-    
+
     if (constructionSiteComponent) {
       // Building is under construction, wait for it to finish
       const subscription = constructionSiteComponent.constructionStateChanged.subscribe((state) => {
@@ -52,21 +51,21 @@ export class HousingComponent {
 
   private addHousing() {
     if (this.housingProvided) return;
-    
+
     emitResource(this.gameObject.scene, "resource.added", {
       [ResourceType.Housing]: this.housingDefinition.housingCapacity
     });
-    
+
     this.housingProvided = true;
   }
 
   private removeHousing() {
     if (!this.housingProvided) return;
-    
+
     emitResource(this.gameObject.scene, "resource.removed", {
       [ResourceType.Housing]: this.housingDefinition.housingCapacity
     });
-    
+
     this.housingProvided = false;
   }
 
