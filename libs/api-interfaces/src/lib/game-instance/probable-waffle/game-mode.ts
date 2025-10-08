@@ -1,7 +1,7 @@
-import { BaseData } from "../data";
+import type { BaseData } from "../data";
 import { BaseGameMode } from "../game-mode";
 import { ProbableWaffleMapEnum } from "../../probable-waffle/probable-waffle";
-import {
+import type {
   DifficultyModifiers,
   MapTuning,
   TieConditions,

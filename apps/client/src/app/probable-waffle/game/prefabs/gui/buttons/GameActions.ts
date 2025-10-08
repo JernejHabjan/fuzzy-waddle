@@ -7,7 +7,7 @@ import PushActionScript from "../../../../../shared/game/phaser/script-nodes/Pus
 import OnPointerUpScript from "../../../../../shared/game/phaser/script-nodes-basic/OnPointerUpScript";
 import EmitEventActionScript from "../../../../../shared/game/phaser/script-nodes-basic/EmitEventActionScript";
 /* START-USER-IMPORTS */
-import GameActionsLayer from "../../../scenes/GameActionsLayer";
+import GameActionsLayer from "../../../world/scenes/hud-scenes/GameActionsLayer";
 /* END-USER-IMPORTS */
 
 export default class GameActions extends Phaser.GameObjects.Container {
@@ -102,7 +102,7 @@ export default class GameActions extends Phaser.GameObjects.Container {
     layer.scene.start();
   };
 
-  destroy(fromScene?: boolean) {
+  override destroy(fromScene?: boolean) {
     super.destroy(fromScene);
     this.game_action_menu.off("menu-open", this.createGameActionsLayer);
   }

@@ -5,11 +5,11 @@
 import ActorInfoLabel from "./ActorInfoLabel";
 /* START-USER-IMPORTS */
 import { getActorComponent } from "../../../data/actor-component";
-import { HealthComponent } from "../../../entity/combat/components/health-component";
-import { ActorInfoDefinition } from "../../../data/actor-definitions";
-import { DamageType } from "../../../entity/combat/damage-type";
+import { HealthComponent } from "../../../entity/components/combat/components/health-component";
+import { DamageType } from "../../../entity/components/combat/damage-type";
 import { Subscription } from "rxjs";
 import GameObject = Phaser.GameObjects.GameObject;
+import type { PrefabDefinition } from "../../definitions/prefab-definition";
 /* END-USER-IMPORTS */
 
 export default class ActorDetails extends Phaser.GameObjects.Container {
@@ -81,7 +81,7 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
   private healthSubscription?: Subscription;
   private armourSubscription?: Subscription;
 
-  showActorAttributes(actor: GameObject, definition: ActorInfoDefinition) {
+  showActorAttributes(actor: GameObject, definition: PrefabDefinition) {
     const iconsAndTexts: {
       icon: {
         key: string;
@@ -89,7 +89,7 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
       };
       text: string;
     }[] = [];
-    const tileStepDuration = definition.components?.translatable?.tileStepDuration;
+    const tileStepDuration = definition.components?.translatable?.tileMoveDuration;
     if (tileStepDuration) {
       const movementSpeed = (1000 / tileStepDuration).toFixed(1) + " t/s";
       iconsAndTexts.push({
@@ -137,7 +137,9 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
       const iconIndex = iconsAndTexts.push({ icon: { key: "gui", frame: "actor_info_icons/heart.png" }, text: health });
 
       this.healthSubscription = healthComponent!.healthChanged.subscribe((newHealth) => {
-        this.attributes[iconIndex - 1].setText(`${Math.round(newHealth)}/${maxHealth}`);
+        const attribute = this.attributes[iconIndex - 1];
+        if (!attribute) return;
+        attribute.setText(`${Math.round(newHealth)}/${maxHealth}`);
       });
     }
 
@@ -152,13 +154,16 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
       });
 
       this.armourSubscription = healthComponent!.armorChanged.subscribe((newArmour) => {
-        this.attributes[iconIndex - 1].setText(`${Math.round(newArmour)}/${maxArmour}`);
+        const icon = this.attributes[iconIndex - 1];
+        if (!icon) return;
+        icon.setText(`${Math.round(newArmour)}/${maxArmour}`);
       });
     }
 
     this.attributes.forEach((a) => (a.visible = false));
     iconsAndTexts.forEach((info, index) => {
       const label = this.attributes[index];
+      if (!label) return;
       label.setIcon(info.icon.key, info.icon.frame, 24);
       label.setText(info.text);
       label.visible = true;
@@ -168,7 +173,7 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
     this.attributes.forEach((a) => (a.visible = false));
   }
 
-  destroy(fromScene?: boolean) {
+  override destroy(fromScene?: boolean) {
     this.healthSubscription?.unsubscribe();
     this.armourSubscription?.unsubscribe();
     super.destroy(fromScene);

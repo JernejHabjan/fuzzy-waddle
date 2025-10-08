@@ -31,7 +31,9 @@
           <h3>Selected Map</h3>
           <button class="btn btn-sm btn-outline-secondary" (click)="deselectMap()">Change Map</button>
         </div>
-        <probable-waffle-map-definition *ngIf="selectedMapId" />
+        @if (selectedMapId) {
+          <probable-waffle-map-definition />
+        }
       </div>
     </div>
 
@@ -56,17 +58,21 @@
     <!-- Only show chat sidebar for self-hosted games -->
     <div class="lobby-chat-sidebar" [class.no-chat]="!isSelfHosted">
       <!-- Chat Section - Only show for self-hosted games -->
-      <div class="chat-section" *ngIf="isSelfHosted">
-        <h3>Lobby Chat</h3>
-        <div class="chat-container">
-          <probable-waffle-lobby-chat />
+      @if (isSelfHosted) {
+        <div class="chat-section">
+          <h3>Lobby Chat</h3>
+          <div class="chat-container">
+            <probable-waffle-lobby-chat />
+          </div>
         </div>
-      </div>
+      }
 
       <!-- Start Game Button (for host only) -->
-      <div class="start-game-section" *ngIf="selectedMapId">
-        <probable-waffle-trigger />
-      </div>
+      @if (selectedMapId) {
+        <div class="start-game-section">
+          <probable-waffle-trigger />
+        </div>
+      }
     </div>
   </div>
 </div>

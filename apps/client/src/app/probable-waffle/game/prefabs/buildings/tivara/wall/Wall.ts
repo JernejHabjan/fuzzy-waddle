@@ -13,7 +13,7 @@ import WallTopLeft from "./WallTopLeft";
 import WallTopRight from "./WallTopRight";
 import WallBottomLeft from "./WallBottomLeft";
 import WallBottomRight from "./WallBottomRight";
-import { ConstructionGameObjectInterfaceComponent } from "../../../../entity/building/construction/construction-game-object-interface-component";
+import { ConstructionGameObjectInterfaceComponent } from "../../../../entity/components/construction/construction-game-object-interface-component";
 import WallBottomLeftBottomRight from "./WallBottomLeftBottomRight";
 import WallTopLeftTopRight from "./WallTopLeftTopRight";
 import WallFull from "./WallFull";
@@ -26,8 +26,10 @@ import WatchTower from "./WatchTower";
 import { throttle } from "../../../../library/throttle";
 import Stairs from "../stairs/Stairs";
 import { getNeighboursByTypes } from "../../../../data/tile-map-helpers";
-import { TilemapComponent } from "../../../../scenes/components/tilemap.component";
+import { TilemapComponent } from "../../../../world/tilemap/tilemap.component";
 import { setActorData } from "../../../../data/actor-data";
+import { getActorComponent } from "../../../../data/actor-component";
+import { WalkableComponent, type WalkablePath } from "../../../../entity/components/movement/walkable-component";
 /* END-USER-IMPORTS */
 
 export default class Wall extends Phaser.GameObjects.Container {
@@ -70,11 +72,13 @@ export default class Wall extends Phaser.GameObjects.Container {
   private cursor: Phaser.GameObjects.Image;
 
   /* START-USER-CODE */
-  name = ObjectNames.Wall;
+  override name = ObjectNames.Wall;
 
   private wall?: Phaser.GameObjects.GameObject;
-
+  private currentWallType?: WallType;
   updateWall(wallType: WallType) {
+    if (this.currentWallType === wallType) return;
+    this.currentWallType = wallType;
     this.wall?.destroy();
 
     const wallClasses = {
@@ -103,6 +107,60 @@ export default class Wall extends Phaser.GameObjects.Container {
       this.add(this.wall);
     } else {
       throw new Error("Wall type not found");
+    }
+
+    const walkableComponent = getActorComponent(this, WalkableComponent);
+    if (walkableComponent) {
+      const walkablePath = this.getWalkablePath(wallType);
+      walkableComponent.allowWalkablePath(walkablePath);
+    }
+  }
+
+  private getWalkablePath(wallType: WallType): WalkablePath {
+    switch (wallType) {
+      case WallType.TopRightBottomRight:
+        return { topLeft: true, left: true, bottomLeft: true };
+      case WallType.TopRightBottomLeft:
+        return { topLeft: true, bottomRight: true };
+      case WallType.TopLeftBottomRight:
+        return { topRight: true, bottomLeft: true };
+      case WallType.TopLeftBottomLeft:
+        return { topRight: true, right: true, bottomRight: true };
+      case WallType.Empty:
+        return {
+          top: true,
+          bottom: true,
+          left: true,
+          right: true,
+          topLeft: true,
+          topRight: true,
+          bottomLeft: true,
+          bottomRight: true
+        };
+      case WallType.Full:
+        return {};
+      case WallType.TopLeft:
+        return { topRight: true, right: true, bottomRight: true, bottom: true, bottomLeft: true };
+      case WallType.TopRight:
+        return { topLeft: true, left: true, bottomLeft: true, bottom: true, bottomRight: true };
+      case WallType.BottomLeft:
+        return { topLeft: true, top: true, topRight: true, right: true, bottomRight: true };
+      case WallType.BottomRight:
+        return { topRight: true, top: true, topLeft: true, left: true, bottomLeft: true };
+      case WallType.TopLeftTopRight:
+        return { bottomLeft: true, bottom: true, bottomRight: true };
+      case WallType.BottomLeftBottomRight:
+        return { topRight: true, top: true, topLeft: true };
+      case WallType.TopLeftTopRightBottomLeft:
+        return { bottomRight: true };
+      case WallType.TopRightBottomLeftBottomRight:
+        return { topLeft: true };
+      case WallType.TopLeftTopRightBottomRight:
+        return { bottomLeft: true };
+      case WallType.TopLeftBottomLeftBottomRight:
+        return { topRight: true };
+      default:
+        return {};
     }
   }
 
@@ -214,12 +272,10 @@ export default class Wall extends Phaser.GameObjects.Container {
   private get neighbors() {
     return getNeighboursByTypes(this, [Wall, WatchTower, Stairs], TilemapComponent.tileWidth);
   }
-
-  destroy(fromScene?: boolean) {
+  override destroy(fromScene?: boolean) {
     this.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.throttleRedrawWalls, this);
     super.destroy(fromScene);
   }
-
   /* END-USER-CODE */
 }
 

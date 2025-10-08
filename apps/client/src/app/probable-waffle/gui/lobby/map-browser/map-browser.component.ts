@@ -1,6 +1,16 @@
-import { Component, EventEmitter, OnInit, OnDestroy, Output, input, effect, model, inject } from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { ProbableWaffleLevels, ProbableWaffleMapData, ProbableWaffleMapEnum } from "@fuzzy-waddle/api-interfaces";
+import {
+  Component,
+  effect,
+  EventEmitter,
+  inject,
+  input,
+  model,
+  type OnDestroy,
+  type OnInit,
+  Output
+} from "@angular/core";
+
+import { ProbableWaffleLevels, type ProbableWaffleMapData, ProbableWaffleMapEnum } from "@fuzzy-waddle/api-interfaces";
 import { environment } from "../../../../../environments/environment";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { Subscription } from "rxjs";
@@ -11,8 +21,7 @@ import { AuthService } from "../../../../auth/auth.service";
   selector: "probable-waffle-map-browser",
   templateUrl: "./map-browser.component.html",
   styleUrls: ["./map-browser.component.scss"],
-  standalone: true,
-  imports: [CommonModule]
+  standalone: true
 })
 export class MapBrowserComponent implements OnInit, OnDestroy {
   // Using the new input signal approach

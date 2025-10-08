@@ -8,7 +8,7 @@ import TempleFoundation2 from "./Temple/TempleFoundation2";
 import TempleLevel1 from "./Temple/TempleLevel1";
 /* START-USER-IMPORTS */
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
-import { ConstructionGameObjectInterfaceComponent } from "../../../entity/building/construction/construction-game-object-interface-component";
+import { ConstructionGameObjectInterfaceComponent } from "../../../entity/components/construction/construction-game-object-interface-component";
 import { setActorData } from "../../../data/actor-data";
 /* END-USER-IMPORTS */
 
@@ -58,7 +58,7 @@ export default class Temple extends Phaser.GameObjects.Container {
   private templeLevel1: TempleLevel1;
 
   /* START-USER-CODE */
-  name = ObjectNames.Temple;
+  override name = ObjectNames.Temple;
   private setup() {
     setActorData(
       this,

@@ -1,6 +1,6 @@
 import { BasePlayerState } from "./player-state";
-import { BaseData } from "../data";
-import { BasePlayerController, BasePlayerControllerData } from "./player-controller";
+import type { BaseData } from "../data";
+import { BasePlayerController, type BasePlayerControllerData } from "./player-controller";
 
 export abstract class BasePlayer<
   TPlayerStateData extends BaseData = BaseData,

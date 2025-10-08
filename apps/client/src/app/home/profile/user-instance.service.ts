@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { UserInstanceServiceInterface } from "./user-instance.service.interface";
+import { type UserInstanceServiceInterface } from "./user-instance.service.interface";
 
 export interface GamesVisited {
   name: string;
@@ -38,10 +38,10 @@ export class UserInstanceService implements UserInstanceServiceInterface {
       return null;
     }
     const preferredGame = gamesVisited.sort((a, b) => b.count - a.count)[0];
-    return preferredGame.name;
+    return preferredGame?.name ?? null;
   }
 
-  setVisitedGame(game: "probable-waffle" | "little-muncher" | "fly-squasher"): void {
+  setVisitedGame(game: "aota" | "little-muncher" | "fly-squasher"): void {
     const gamesVisited = this.getGamesVisited();
     const existingGame = gamesVisited.find((g) => g.name === game);
 

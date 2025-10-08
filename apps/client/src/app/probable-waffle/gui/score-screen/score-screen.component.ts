@@ -1,4 +1,4 @@
-import { Component, HostListener, inject, OnDestroy } from "@angular/core";
+import { Component, HostListener, inject, type OnDestroy } from "@angular/core";
 
 import { RouterLink } from "@angular/router";
 import { ScoreTableComponent } from "./table/score-table.component";

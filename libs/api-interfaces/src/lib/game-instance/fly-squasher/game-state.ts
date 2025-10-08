@@ -1,5 +1,5 @@
 import { BaseGameState } from "../game-state";
-import { BaseData } from "../data";
+import type { BaseData } from "../data";
 
 export class FlySquasherGameState extends BaseGameState<FlySquasherGameStateData> {
   constructor(data?: FlySquasherGameStateData) {

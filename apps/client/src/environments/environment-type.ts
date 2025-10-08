@@ -1,4 +1,4 @@
-import { SocketIoConfig } from 'ngx-socket-io';
+import type { SocketIoConfig } from "ngx-socket-io";
 
 export type Environment = {
   production: boolean;

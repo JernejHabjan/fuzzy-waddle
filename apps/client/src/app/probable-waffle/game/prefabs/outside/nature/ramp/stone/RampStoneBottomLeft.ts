@@ -4,11 +4,11 @@
 
 /* START-USER-IMPORTS */
 import { setActorData } from "../../../../../data/actor-data";
-import { ColliderComponent } from "../../../../../entity/actor/components/collider-component";
+import { ColliderComponent } from "../../../../../entity/components/movement/collider-component";
 import {
   ObjectDescriptorComponent,
-  ObjectDescriptorDefinition
-} from "../../../../../entity/actor/components/object-descriptor-component";
+  type ObjectDescriptorDefinition
+} from "../../../../../entity/components/object-descriptor-component";
 /* END-USER-IMPORTS */
 
 export default class RampStoneBottomLeft extends Phaser.GameObjects.Image {

@@ -5,11 +5,12 @@ import { environment } from "../../../environments/environment";
 import { firstValueFrom } from "rxjs";
 import { ServerHealthService } from "../../shared/services/server-health.service";
 import { AuthService } from "../../auth/auth.service";
+import { type HighScoreServiceInterface } from "./high-score.service.interface";
 
 @Injectable({
   providedIn: "root"
 })
-export class HighScoreService {
+export class HighScoreService implements HighScoreServiceInterface {
   private readonly httpClient = inject(HttpClient);
   private readonly authService = inject(AuthService);
   private readonly serverHealthService = inject(ServerHealthService);

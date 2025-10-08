@@ -4,17 +4,17 @@ import { Component, Input } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import {
   FactionType,
-  PlayerLobbyDefinition,
-  PlayerStateActionBuildingConstructed,
-  PlayerStateActionBuildingDestroyed,
-  PlayerStateActionUnitKilled,
-  PlayerStateActionUnitProduced,
-  PositionPlayerDefinition,
+  type PlayerLobbyDefinition,
+  type PlayerStateActionBuildingConstructed,
+  type PlayerStateActionBuildingDestroyed,
+  type PlayerStateActionUnitKilled,
+  type PlayerStateActionUnitProduced,
+  type PositionPlayerDefinition,
   ProbableWaffleGameInstanceType,
   ProbableWaffleGameInstanceVisibility,
   ProbableWafflePlayerType
 } from "@fuzzy-waddle/api-interfaces";
-import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.spec";
+import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.stub";
 import { BaseChartDirective } from "ng2-charts";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 

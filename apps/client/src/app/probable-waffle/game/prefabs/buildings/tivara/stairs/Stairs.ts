@@ -5,17 +5,19 @@
 import StairsTopLeft from "./StairsTopLeft";
 /* START-USER-IMPORTS */
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
-import { ConstructionGameObjectInterfaceComponent } from "../../../../entity/building/construction/construction-game-object-interface-component";
+import { ConstructionGameObjectInterfaceComponent } from "../../../../entity/components/construction/construction-game-object-interface-component";
 import { onObjectReady } from "../../../../data/game-object-helper";
 import { throttle } from "../../../../library/throttle";
 import { getNeighboursByTypes } from "../../../../data/tile-map-helpers";
 import WatchTower from "../wall/WatchTower";
-import { TilemapComponent } from "../../../../scenes/components/tilemap.component";
+import { TilemapComponent } from "../../../../world/tilemap/tilemap.component";
 import Wall from "../wall/Wall";
 import StairsTopRight from "./StairsTopRight";
 import StairsBottomLeft from "./StairsBottomLeft";
 import StairsBottomRight from "./StairsBottomRight";
 import { setActorData } from "../../../../data/actor-data";
+import { getActorComponent } from "../../../../data/actor-component";
+import { type WalkablePath, WalkableComponent } from "../../../../entity/components/movement/walkable-component";
 /* END-USER-IMPORTS */
 
 export default class Stairs extends Phaser.GameObjects.Container {
@@ -64,9 +66,12 @@ export default class Stairs extends Phaser.GameObjects.Container {
   private foundation: Phaser.GameObjects.Image;
 
   /* START-USER-CODE */
-  name = ObjectNames.Stairs;
+  override name = ObjectNames.Stairs;
   private stairs?: Phaser.GameObjects.GameObject;
+  private currentStairsType?: StairsType;
   updateStairs(stairsType: StairsType) {
+    if (this.currentStairsType === stairsType) return;
+    this.currentStairsType = stairsType;
     this.stairs?.destroy();
     const stairClasses = {
       [StairsType.TopLeft]: StairsTopLeft,
@@ -82,6 +87,42 @@ export default class Stairs extends Phaser.GameObjects.Container {
       this.add(this.stairs);
     } else {
       throw new Error("Stairs type not found");
+    }
+    const walkableComponent = getActorComponent(this, WalkableComponent);
+    if (walkableComponent) {
+      const walkablePath = this.getWalkablePath(stairsType);
+      walkableComponent.allowWalkablePath(walkablePath);
+    }
+  }
+
+  private getWalkablePath(stairsType: StairsType): WalkablePath {
+    switch (stairsType) {
+      case StairsType.TopLeft:
+        return {
+          right: true,
+          bottomRight: true,
+          bottom: true
+        };
+      case StairsType.TopRight:
+        return {
+          left: true,
+          bottomLeft: true,
+          bottom: true
+        };
+      case StairsType.BottomLeft:
+        return {
+          top: true,
+          topRight: true,
+          right: true
+        };
+      case StairsType.BottomRight:
+        return {
+          top: true,
+          topLeft: true,
+          left: true
+        };
+      default:
+        return {};
     }
   }
 
@@ -182,7 +223,7 @@ export default class Stairs extends Phaser.GameObjects.Container {
     return getNeighboursByTypes(this, [Wall, WatchTower], TilemapComponent.tileWidth);
   }
 
-  destroy(fromScene?: boolean) {
+  override destroy(fromScene?: boolean) {
     this.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.throttleRedrawStairs, this);
     super.destroy(fromScene);
   }

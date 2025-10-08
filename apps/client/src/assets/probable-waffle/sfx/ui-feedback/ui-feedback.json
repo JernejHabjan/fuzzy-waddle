@@ -1,7 +1,5 @@
 {
-  "resources": [
-    "assets/probable-waffle/sfx/ui-feedback/ui-feedback.mp3"
-  ],
+  "resources": ["assets/probable-waffle/sfx/ui-feedback/ui-feedback.mp3"],
   "spritemap": {
     "achievement": {
       "start": 0,

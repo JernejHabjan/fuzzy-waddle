@@ -1,7 +1,7 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { GameInstanceController } from "./game-instance.controller";
 import { GameInstanceService } from "./game-instance.service";
-import { GameInstanceServiceStub } from "./game-instance.service.spec";
+import { GameInstanceServiceStub } from "./game-instance.service.stub";
 
 describe("GameInstanceController", () => {
   let controller: GameInstanceController;

@@ -2,18 +2,18 @@ import { inject, Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "../../../../environments/environment";
 import {
-  GameInstanceDataDto,
-  LittleMuncherGameInstanceData,
+  type GameInstanceDataDto,
+  type LittleMuncherGameInstanceData,
   LittleMuncherGatewayEvent,
-  LittleMuncherRoom,
-  LittleMuncherRoomEvent
+  type LittleMuncherRoom,
+  type LittleMuncherRoomEvent
 } from "@fuzzy-waddle/api-interfaces";
 import { firstValueFrom, Observable, Subject, Subscription } from "rxjs";
 import { AuthenticatedSocketService } from "../../../data-access/chat/authenticated-socket.service";
 import { map } from "rxjs/operators";
 import { AuthService } from "../../../auth/auth.service";
 import { ServerHealthService } from "../../../shared/services/server-health.service";
-import { SpectateServiceInterface } from "./spectate.service.interface";
+import { type SpectateServiceInterface } from "./spectate.service.interface";
 import { GameInstanceClientService } from "../../main/communicators/game-instance-client.service";
 
 @Injectable({

@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ProfileComponent } from "./profile.component";
 import { ProfileNavTestingComponent } from "./profile-nav/profile-nav.component.spec";
 import { AuthService } from "../../auth/auth.service";
-import { authServiceStub } from "../../auth/auth.service.spec";
+import { authServiceStub } from "../../auth/auth.service.stub";
 import { ProfileNavComponent } from "./profile-nav/profile-nav.component";
 
 describe("ProfileComponent", () => {

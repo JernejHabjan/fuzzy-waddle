@@ -1,6 +1,7 @@
-import { Component, inject, OnInit } from "@angular/core";
+import { Component, inject } from "@angular/core";
+import type { OnInit } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { Toast, ToastService } from "../services/toast.service";
+import { type Toast, ToastService } from "../services/toast.service";
 
 @Component({
   selector: "app-toast-container",
@@ -8,20 +9,21 @@ import { Toast, ToastService } from "../services/toast.service";
   imports: [CommonModule],
   template: `
     <div class="toast-container position-fixed top-0 end-0 p-3">
-      <div
-        *ngFor="let toast of toasts"
-        class="toast show"
-        [ngClass]="'bg-' + toast.type + ' text-light'"
-        role="alert"
-        aria-live="assertive"
-        aria-atomic="true"
-      >
-        <div class="toast-header">
-          <strong class="me-auto">{{ toast.header }}</strong>
-          <button type="button" class="btn-close" aria-label="Close" (click)="removeToast(toast.id)"></button>
+      @for (toast of toasts; track toast) {
+        <div
+          class="toast show"
+          [ngClass]="'bg-' + toast.type + ' text-light'"
+          role="alert"
+          aria-live="assertive"
+          aria-atomic="true"
+        >
+          <div class="toast-header">
+            <strong class="me-auto">{{ toast.header }}</strong>
+            <button type="button" class="btn-close" aria-label="Close" (click)="removeToast(toast.id)"></button>
+          </div>
+          <div class="toast-body">{{ toast.body }}</div>
         </div>
-        <div class="toast-body">{{ toast.body }}</div>
-      </div>
+      }
     </div>
   `,
   styles: [

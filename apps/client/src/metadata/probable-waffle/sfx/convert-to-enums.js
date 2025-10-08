@@ -1,15 +1,15 @@
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 
 function toPascalCase(str) {
-  return str.replace(/(?:^\w|[A-Z]|\b\w|\s+|-)/g, (match, index) =>
-    index === 0 ? match.toUpperCase() : match.toUpperCase()
-  ).replace(/\s+|-/g, '');
+  return str
+    .replace(/(?:^\w|[A-Z]|\b\w|\s+|-)/g, (match, index) => (index === 0 ? match.toUpperCase() : match.toUpperCase()))
+    .replace(/\s+|-/g, "");
 }
 
 function toEnumKey(str) {
-  let key = str.replace(/ |-/g, '_').toUpperCase();
-  if (key.startsWith('_')) {
+  let key = str.replace(/ |-/g, "_").toUpperCase();
+  if (key.startsWith("_")) {
     key = key.substring(1);
   }
   return key;
@@ -17,15 +17,19 @@ function toEnumKey(str) {
 
 function generateAudioSpritesEnum(fileNamesWithPrefixes) {
   const enumEntries = fileNamesWithPrefixes.map(
-    ({prefix, fileName}) => `  ${toEnumKey(prefix + '_' + fileName)} = "${fileName.toLowerCase()}"`
+    ({ prefix, fileName }) => `  ${toEnumKey(prefix + "_" + fileName)} = "${fileName.toLowerCase()}"`
   );
-  return `// This file was generated from "convert-to-enums.js" script\n` +
-    `export enum AudioSprites {\n` + enumEntries.join(',\n') + '\n}\n';
+  return (
+    `// This file was generated from "convert-to-enums.js" script\n` +
+    `export enum AudioSprites {\n` +
+    enumEntries.join(",\n") +
+    "\n}\n"
+  );
 }
 
 function generateGroupedConstants(enumName, keys) {
   const groups = keys.reduce((acc, key) => {
-    const group = key.split('_')[0];
+    const group = key.split("_")[0];
     if (!acc[group]) {
       acc[group] = [];
     }
@@ -33,49 +37,57 @@ function generateGroupedConstants(enumName, keys) {
     return acc;
   }, {});
 
-  return Object.entries(groups).map(([group, values]) => {
-    if (values.length > 1) {
-      return `export const ${enumName}${toPascalCase(group.toLowerCase())}Sounds = [\n  ${values.join(',\n  ')}\n];`;
-    }
-    return '';
-  }).filter(Boolean).join('\n\n');
+  return Object.entries(groups)
+    .map(([group, values]) => {
+      if (values.length > 1) {
+        return `export const ${enumName}${toPascalCase(group.toLowerCase())}Sounds = [\n  ${values.join(",\n  ")}\n];`;
+      }
+      return "";
+    })
+    .filter(Boolean)
+    .join("\n\n");
 }
 
 const allFileNamesWithPrefixes = [];
 
 function processJsonFile(jsonFilePath) {
   return new Promise((resolve, reject) => {
-    const filename = path.basename(jsonFilePath, '.json');
+    const filename = path.basename(jsonFilePath, ".json");
     const folderName = path.basename(path.dirname(jsonFilePath));
     let pascalCaseFilename = toPascalCase(filename);
-    let prefix = '';
+    let prefix = "";
 
-    if (folderName.toLowerCase() !== 'sfx' && toPascalCase(folderName) !== pascalCaseFilename) {
+    if (folderName.toLowerCase() !== "sfx" && toPascalCase(folderName) !== pascalCaseFilename) {
       pascalCaseFilename = toPascalCase(folderName) + pascalCaseFilename;
       prefix = toPascalCase(folderName);
     }
 
-    if (pascalCaseFilename.startsWith('_')) {
+    if (pascalCaseFilename.startsWith("_")) {
       pascalCaseFilename = pascalCaseFilename.substring(1);
     }
 
-    allFileNamesWithPrefixes.push({prefix, fileName: filename});
+    allFileNamesWithPrefixes.push({ prefix, fileName: filename });
 
-    fs.readFile(jsonFilePath, 'utf8', (err, data) => {
+    fs.readFile(jsonFilePath, "utf8", (err, data) => {
       if (err) {
         console.error(`Error reading file ${jsonFilePath}:`, err);
         return reject(err);
       }
 
       const jsonData = JSON.parse(data);
-      const enumEntries = Object.keys(jsonData.spritemap).map(
-        (key) => `  ${toEnumKey(key)} = "${key}"`
+      const enumEntries = Object.keys(jsonData.spritemap).map((key) => `  ${toEnumKey(key)} = "${key}"`);
+
+      const groupedConstants = generateGroupedConstants(
+        pascalCaseFilename + "Sfx",
+        Object.keys(jsonData.spritemap).map(toEnumKey)
       );
 
-      const groupedConstants = generateGroupedConstants(pascalCaseFilename + 'Sfx', Object.keys(jsonData.spritemap).map(toEnumKey));
-
-      const tsContent = `// This file was generated from "convert-to-enums.js" script\n` +
-        `export enum ${pascalCaseFilename}Sfx {\n` + enumEntries.join(',\n') + '\n}\n\n' + groupedConstants;
+      const tsContent =
+        `// This file was generated from "convert-to-enums.js" script\n` +
+        `export enum ${pascalCaseFilename}Sfx {\n` +
+        enumEntries.join(",\n") +
+        "\n}\n\n" +
+        groupedConstants;
       const tsFilePath = path.join(path.dirname(jsonFilePath), `${pascalCaseFilename}Sfx.ts`);
 
       fs.writeFile(tsFilePath, tsContent, (err) => {
@@ -103,7 +115,7 @@ function processDirectory(directory) {
         const fullPath = path.join(directory, file.name);
         if (file.isDirectory()) {
           return processDirectory(fullPath);
-        } else if (file.isFile() && file.name.endsWith('.json')) {
+        } else if (file.isFile() && file.name.endsWith(".json")) {
           return processJsonFile(fullPath);
         }
       });
@@ -114,22 +126,24 @@ function processDirectory(directory) {
 }
 
 // Define the starting directory (two levels up from __dirname and then down to assets/probable-waffle/sfx/)
-const startingDirectory = path.join(__dirname, '..', '..', '..', 'assets', 'probable-waffle', 'sfx');
+const startingDirectory = path.join(__dirname, "..", "..", "..", "assets", "probable-waffle", "sfx");
 console.log(`Starting directory: ${startingDirectory}`);
 
 // Process all JSON files recursively
-processDirectory(startingDirectory).then(() => {
-  const audioSpritesEnumContent = generateAudioSpritesEnum(allFileNamesWithPrefixes);
-  const audioSpritesFilePath = path.join(startingDirectory, 'AudioSprites.ts');
+processDirectory(startingDirectory)
+  .then(() => {
+    const audioSpritesEnumContent = generateAudioSpritesEnum(allFileNamesWithPrefixes);
+    const audioSpritesFilePath = path.join(startingDirectory, "AudioSprites.ts");
 
-  fs.writeFile(audioSpritesFilePath, audioSpritesEnumContent, (err) => {
-    if (err) {
-      console.error(`Error writing file ${audioSpritesFilePath}:`, err);
-      return;
-    }
+    fs.writeFile(audioSpritesFilePath, audioSpritesEnumContent, (err) => {
+      if (err) {
+        console.error(`Error writing file ${audioSpritesFilePath}:`, err);
+        return;
+      }
 
-    console.log(`TypeScript enum file created at: ${audioSpritesFilePath}`);
+      console.log(`TypeScript enum file created at: ${audioSpritesFilePath}`);
+    });
+  })
+  .catch((err) => {
+    console.error("Error processing directories:", err);
   });
-}).catch((err) => {
-  console.error('Error processing directories:', err);
-});

@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { ProbableWaffleComponent } from "./probable-waffle.component";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
-import { gameInstanceClientServiceStub } from "../../communicators/game-instance-client.service.spec";
+import { gameInstanceClientServiceStub } from "../../communicators/game-instance-client.service.stub";
 import { provideRouter } from "@angular/router";
 
 describe("ProbableWaffleComponent", () => {

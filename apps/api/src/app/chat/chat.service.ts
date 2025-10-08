@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { IChatService } from "./chat.service.interface";
-import { AuthUser } from "@supabase/supabase-js";
+import { type IChatService } from "./chat.service.interface";
+import { type AuthUser } from "@supabase/supabase-js";
 import { SupabaseProviderService } from "../../core/supabase-provider/supabase-provider.service";
 import { TextSanitizationService } from "../../core/content-filters/text-sanitization.service";
 
@@ -17,7 +17,7 @@ export class ChatService implements IChatService {
   async postMessage(text: string, user: AuthUser): Promise<string> {
     const sanitizedMessage = this.textSanitizationService.cleanBadWords(text);
     // Insert sanitized message into Messages table
-    const { data, error } = await this.supabaseProviderService.supabaseClient.from("test").insert({
+    const { data, error } = await this.supabaseProviderService.supabaseClient.from("messages").insert({
       text: sanitizedMessage,
       user_id: user.id
     });

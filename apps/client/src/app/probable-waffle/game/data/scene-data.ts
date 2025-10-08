@@ -1,30 +1,35 @@
 import {
-  PlayerStateResources,
-  ProbableWaffleGameStateDataChangeEvent,
-  ProbableWaffleGameStateDataChangeEventProperty,
-  ProbableWaffleGameStateDataPayload,
+  type PlayerStateResources,
+  type ProbableWaffleGameStateDataChangeEvent,
+  type ProbableWaffleGameStateDataChangeEventProperty,
+  type ProbableWaffleGameStateDataPayload,
   ProbableWafflePlayer,
-  ProbableWafflePlayerDataChangeEvent,
-  ProbableWafflePlayerDataChangeEventPayload,
-  ProbableWafflePlayerDataChangeEventProperty,
-  Vector3Simple
+  type ProbableWafflePlayerDataChangeEvent,
+  type ProbableWafflePlayerDataChangeEventPayload,
+  type ProbableWafflePlayerDataChangeEventProperty,
+  type Vector3Simple
 } from "@fuzzy-waddle/api-interfaces";
 import { Scene } from "phaser";
 import { ProbableWaffleScene } from "../core/probable-waffle.scene";
 import { ProbableWaffleCommunicatorService } from "../../communicators/probable-waffle-communicator.service";
 import { getActorComponent } from "./actor-component";
-import { IdComponent } from "../entity/actor/components/id-component";
+import { IdComponent } from "../entity/components/id-component";
 import { Observable } from "rxjs";
-import GameProbableWaffleScene from "../scenes/GameProbableWaffleScene";
+import GameProbableWaffleScene from "../world/scenes/GameProbableWaffleScene";
 import { BaseScene } from "../../../shared/game/phaser/scene/base.scene";
-import { AttackComponent } from "../entity/combat/components/attack-component";
-import { ProductionComponent } from "../entity/building/production/production-component";
-import { GathererComponent } from "../entity/actor/components/gatherer-component";
-import { SelectableComponent } from "../entity/actor/components/selectable-component";
-import { HealthComponent } from "../entity/combat/components/health-component";
-import { VisionComponent } from "../entity/actor/components/vision-component";
+import { AttackComponent } from "../entity/components/combat/components/attack-component";
+import { ProductionComponent } from "../entity/components/production/production-component";
+import { GathererComponent } from "../entity/components/resource/gatherer-component";
+import { SelectableComponent } from "../entity/components/selectable-component";
+import { HealthComponent } from "../entity/components/combat/components/health-component";
+import { VisionComponent } from "../entity/components/vision-component";
+import { type GameObjectActionAssignerConfig } from "../prefabs/gui/game-object-action-assigner";
 
 export function getPlayer(scene: Scene, playerNumber?: number): ProbableWafflePlayer | undefined {
+  if (!scene) {
+    console.error("Scene is undefined");
+    return undefined;
+  }
   if (!(scene instanceof BaseScene)) throw new Error("scene is not instanceof BaseScene");
   if (playerNumber === undefined) {
     playerNumber = scene.baseGameData.user.playerNumber!;
@@ -33,6 +38,10 @@ export function getPlayer(scene: Scene, playerNumber?: number): ProbableWafflePl
 }
 
 export function getAllPlayers(scene: Scene): ProbableWafflePlayer[] {
+  if (!scene) {
+    console.error("Scene is undefined");
+    return [];
+  }
   if (!(scene instanceof BaseScene)) throw new Error("scene is not instanceof BaseScene");
   return scene.baseGameData.gameInstance.players;
 }
@@ -43,11 +52,18 @@ export function getAllPlayers(scene: Scene): ProbableWafflePlayer[] {
  * @returns {number | undefined}
  */
 export function getCurrentPlayerNumber(scene: Scene): number | undefined {
+  if (!scene) {
+    console.error("Scene is undefined");
+    return undefined;
+  }
   if (!(scene instanceof BaseScene)) throw new Error("scene is not instanceof BaseScene");
   return scene.player.playerNumber;
 }
 
 export function getCommunicator(scene: Scene): ProbableWaffleCommunicatorService {
+  if (!scene) {
+    console.error("Scene is undefined");
+  }
   if (!(scene instanceof BaseScene)) throw new Error("scene is not instanceof BaseScene");
 
   return scene.baseGameData.communicator;
@@ -164,7 +180,8 @@ export function listenToSelectionEvents(scene: Scene): Observable<ProbableWaffle
 export function emitEventIssueMoveCommandToSelectedActors(
   scene: Phaser.Scene,
   tileVec3: Vector3Simple,
-  worldVec3: Vector3Simple
+  worldVec3: Vector3Simple,
+  selectedActorObjectIds: string[]
 ) {
   if (!(scene instanceof ProbableWaffleScene)) throw new Error("Scene is not of type ProbableWaffleScene");
   scene.communicator.playerChanged!.send({
@@ -173,7 +190,8 @@ export function emitEventIssueMoveCommandToSelectedActors(
       playerNumber: getPlayer(scene)?.playerNumber,
       data: {
         tileVec3,
-        worldVec3
+        worldVec3,
+        selectedActorObjectIds
       }
     },
     gameInstanceId: scene.gameInstanceId,
@@ -181,15 +199,13 @@ export function emitEventIssueMoveCommandToSelectedActors(
   });
 }
 
-export function emitEventIssueActorCommandToSelectedActors(scene: Phaser.Scene, objectIds: string[]) {
+export function emitEventIssueActorCommandToSelectedActors(scene: Phaser.Scene, data: GameObjectActionAssignerConfig) {
   if (!(scene instanceof ProbableWaffleScene)) throw new Error("Scene is not of type ProbableWaffleScene");
   scene.communicator.playerChanged!.send({
     property: "command.issued.actor",
     data: {
       playerNumber: getPlayer(scene)?.playerNumber,
-      data: {
-        objectIds
-      }
+      data
     },
     gameInstanceId: scene.gameInstanceId,
     emitterUserId: scene.userId

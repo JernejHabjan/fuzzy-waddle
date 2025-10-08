@@ -1,5 +1,5 @@
 import { WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
-import { ProbableWaffleGatewayEvent, ProbableWaffleRoomEvent } from "@fuzzy-waddle/api-interfaces";
+import { ProbableWaffleGatewayEvent, type ProbableWaffleRoomEvent } from "@fuzzy-waddle/api-interfaces";
 import { Server } from "socket.io";
 
 @WebSocketGateway({
@@ -8,7 +8,7 @@ import { Server } from "socket.io";
   }
 })
 export class RoomGateway {
-  @WebSocketServer() private readonly server: Server;
+  @WebSocketServer() private readonly server!: Server;
 
   emitRoom(roomEvent: ProbableWaffleRoomEvent) {
     this.server.emit(ProbableWaffleGatewayEvent.ProbableWaffleRoom, roomEvent);

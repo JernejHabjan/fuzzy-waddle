@@ -1,4 +1,4 @@
-import { Component, HostListener, inject, OnDestroy, OnInit } from "@angular/core";
+import { Component, HostListener, inject, type OnDestroy, type OnInit } from "@angular/core";
 
 import { LoaderComponent } from "../../../../shared/loader/loader.component";
 import { MatchmakingService } from "../matchmaking/matchmaking.service";
@@ -15,7 +15,7 @@ import { CenterWrapperComponent } from "../../../../shared/components/center-wra
     @if (errorText) {
       <fuzzy-waddle-center-wrapper>
         <p class="text-danger">{{ errorText }}</p>
-        <button routerLink="/probable-waffle" class="btn btn-primary m-1" type="button">Home</button>
+        <button routerLink="/aota" class="btn btn-primary m-1" type="button">Home</button>
       </fuzzy-waddle-center-wrapper>
     } @else if (!matchmakingService.gameFound) {
       <fuzzy-waddle-loader />

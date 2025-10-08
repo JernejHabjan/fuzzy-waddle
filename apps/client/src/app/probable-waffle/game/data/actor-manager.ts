@@ -1,21 +1,21 @@
-import Hedgehog from "../prefabs/animals/Hedgehog";
-import Sheep from "../prefabs/animals/Sheep";
-import GeneralWarrior from "../prefabs/characters/general/GeneralWarrior";
-import TivaraMacemanMale from "../prefabs/characters/tivara/TivaraMacemanMale";
-import TivaraSlingshotFemale from "../prefabs/characters/tivara/TivaraSlingshotFemale";
-import TivaraWorkerFemale from "../prefabs/characters/tivara/TivaraWorkerFemale";
-import TivaraWorkerMale from "../prefabs/characters/tivara/TivaraWorkerMale";
+import Hedgehog from "../prefabs/animals/hedgehog/Hedgehog";
+import Sheep from "../prefabs/animals/sheep/Sheep";
+import GeneralWarrior from "../prefabs/characters/general/general-warrior/GeneralWarrior";
+import TivaraMacemanMale from "../prefabs/characters/tivara/tivara-maceman-male/TivaraMacemanMale";
+import TivaraSlingshotFemale from "../prefabs/characters/tivara/tivara-slingshot-female/TivaraSlingshotFemale";
+import TivaraWorkerFemale from "../prefabs/characters/tivara/tivara-worker/tivara-worker-female/TivaraWorkerFemale";
+import TivaraWorkerMale from "../prefabs/characters/tivara/tivara-worker/tivara-worker-male/TivaraWorkerMale";
 import AnkGuard from "../prefabs/buildings/tivara/AnkGuard";
 import Olival from "../prefabs/buildings/tivara/Olival";
 import Sandhold from "../prefabs/buildings/tivara/Sandhold";
 import Temple from "../prefabs/buildings/tivara/Temple";
 import WorkMill from "../prefabs/buildings/tivara/WorkMill";
-import SkaduweeOwl from "../prefabs/units/skaduwee/SkaduweeOwl";
-import SkaduweeRangedFemale from "../prefabs/characters/skaduwee/SkaduweeRangedFemale";
-import SkaduweeMagicianFemale from "../prefabs/characters/skaduwee/SkaduweeMagicianFemale";
-import SkaduweeWarriorMale from "../prefabs/characters/skaduwee/SkaduweeWarriorMale";
-import SkaduweeWorkerMale from "../prefabs/characters/skaduwee/SkaduweeWorkerMale";
-import SkaduweeWorkerFemale from "../prefabs/characters/skaduwee/SkaduweeWorkerFemale";
+import SkaduweeOwl from "../prefabs/characters/skaduwee/skaduwee-owl/SkaduweeOwl";
+import SkaduweeRangedFemale from "../prefabs/characters/skaduwee/skaduwee-ranged-female/SkaduweeRangedFemale";
+import SkaduweeMagicianFemale from "../prefabs/characters/skaduwee/skaduwee-magician-female/SkaduweeMagicianFemale";
+import SkaduweeWarriorMale from "../prefabs/characters/skaduwee/skaduwee-warrior-male/SkaduweeWarriorMale";
+import SkaduweeWorkerMale from "../prefabs/characters/skaduwee/skaduwee-worker/skaduwee-worker-male/SkaduweeWorkerMale";
+import SkaduweeWorkerFemale from "../prefabs/characters/skaduwee/skaduwee-worker/skaduwee-worker-female/SkaduweeWorkerFemale";
 import FrostForge from "../prefabs/buildings/skaduwee/FrostForge";
 import InfantryInn from "../prefabs/buildings/skaduwee/InfantryInn";
 import Owlery from "../prefabs/buildings/skaduwee/Owlery";
@@ -27,25 +27,36 @@ import Tree7 from "../prefabs/outside/foliage/trees/resources/Tree7";
 import Tree9 from "../prefabs/outside/foliage/trees/resources/Tree9";
 import Tree10 from "../prefabs/outside/foliage/trees/resources/Tree10";
 import Tree11 from "../prefabs/outside/foliage/trees/resources/Tree11";
-import { ActorDefinition } from "@fuzzy-waddle/api-interfaces";
+import { type ActorDefinition, ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { getActorComponent } from "./actor-component";
-import { OwnerComponent } from "../entity/actor/components/owner-component";
-import { SelectableComponent } from "../entity/actor/components/selectable-component";
+import { OwnerComponent } from "../entity/components/owner-component";
+import { SelectableComponent } from "../entity/components/selectable-component";
 import WatchTower from "../prefabs/buildings/tivara/wall/WatchTower";
-import { IdComponent } from "../entity/actor/components/id-component";
-import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { IdComponent } from "../entity/components/id-component";
 import { setConstructingActorDataFromName, setCoreActorDataFromName, setFullActorDataFromName } from "./actor-data";
-import Minerals from "../prefabs/outside/resources/Minerals";
-import { ConstructionSiteComponent } from "../entity/building/construction/construction-site-component";
-import { HealthComponent } from "../entity/combat/components/health-component";
+import Minerals from "../prefabs/outside/resources/minerals/Minerals";
+import { ConstructionSiteComponent } from "../entity/components/construction/construction-site-component";
+import { HealthComponent } from "../entity/components/combat/components/health-component";
 import Wall from "../prefabs/buildings/tivara/wall/Wall";
 import Stairs from "../prefabs/buildings/tivara/stairs/Stairs";
-import StonePile from "../prefabs/outside/resources/StonePile";
+import StonePile from "../prefabs/outside/resources/stone-pile/StonePile";
+import { SkaduweeWorker } from "../prefabs/characters/skaduwee/skaduwee-worker/SkaduweeWorker";
+import { TivaraWorker } from "../prefabs/characters/tivara/tivara-worker/TivaraWorker";
+import { pwActorDefinitions } from "../prefabs/definitions/actor-definitions";
+import { RepresentableComponent } from "../entity/components/representable-component";
+import { VisionComponent } from "../entity/components/vision-component";
+import { AttackComponent } from "../entity/components/combat/components/attack-component";
+import { HealingComponent } from "../entity/components/combat/components/healing-component";
+import { BuilderComponent } from "../entity/components/construction/builder-component";
+import { GathererComponent } from "../entity/components/resource/gatherer-component";
+import { ContainerComponent } from "../entity/components/building/container-component";
+import { ResourceDrainComponent } from "../entity/components/resource/resource-drain-component";
+import { ResourceSourceComponent } from "../entity/components/resource/resource-source-component";
+import { ProductionComponent } from "../entity/components/production/production-component";
+import { PawnAiController } from "../prefabs/ai-agents/pawn-ai-controller";
 import GameObject = Phaser.GameObjects.GameObject;
-import Transform = Phaser.GameObjects.Components.Transform;
-import { SkaduweeWorker } from "../prefabs/characters/skaduwee/SkaduweeWorker";
-import { TivaraWorker } from "../prefabs/characters/tivara/TivaraWorker";
-import { pwActorDefinitions } from "./actor-definitions";
+import { getSceneService } from "../world/services/scene-component-helpers";
+import { SceneActorCreator } from "../world/services/scene-actor-creator";
 
 export type ActorConstructor = new (scene: Phaser.Scene) => GameObject;
 export type ActorMap = { [name: string]: ActorConstructor };
@@ -129,30 +140,31 @@ export class ActorManager {
   } as const;
 
   static getActorDefinitionFromActor(actor: GameObject): ActorDefinition | undefined {
-    const actorName = actor.name;
+    const actorName = actor.name as ObjectNames;
     if (!this.actorMap[actorName]) {
       // console.error(`Actor ${actorName} not found`);
       return undefined;
     }
+    // noinspection UnnecessaryLocalVariableJS
     const actorDefinition: ActorDefinition = {
-      name: actorName
+      name: actorName,
+      owner: getActorComponent(actor, OwnerComponent)?.getData(),
+      selected: getActorComponent(actor, SelectableComponent)?.getData(),
+      id: getActorComponent(actor, IdComponent)?.getData(),
+      constructionSite: getActorComponent(actor, ConstructionSiteComponent)?.getData(),
+      health: getActorComponent(actor, HealthComponent)?.getData(),
+      vision: getActorComponent(actor, VisionComponent)?.getData(),
+      attack: getActorComponent(actor, AttackComponent)?.getData(),
+      healing: getActorComponent(actor, HealingComponent)?.getData(),
+      builder: getActorComponent(actor, BuilderComponent)?.getData(),
+      gatherer: getActorComponent(actor, GathererComponent)?.getData(),
+      container: getActorComponent(actor, ContainerComponent)?.getData(),
+      resourceDrain: getActorComponent(actor, ResourceDrainComponent)?.getData(),
+      resourceSource: getActorComponent(actor, ResourceSourceComponent)?.getData(),
+      production: getActorComponent(actor, ProductionComponent)?.getData(),
+      representable: getActorComponent(actor, RepresentableComponent)?.getData(),
+      blackboard: getActorComponent(actor, PawnAiController)?.getData()
     };
-    const transform = actor as any as Transform;
-    if (transform.x !== undefined) actorDefinition.x = transform.x;
-    if (transform.y !== undefined) actorDefinition.y = transform.y;
-    if (transform.z !== undefined) actorDefinition.z = transform.z;
-    const ownerComponent = getActorComponent(actor, OwnerComponent);
-    if (ownerComponent) actorDefinition.owner = ownerComponent.getOwner();
-    const selectableComponent = getActorComponent(actor, SelectableComponent);
-    if (selectableComponent) actorDefinition.selectable = selectableComponent.getSelected();
-    const idComponent = getActorComponent(actor, IdComponent);
-    if (idComponent) actorDefinition.id = idComponent.id;
-    const healthComponent = getActorComponent(actor, HealthComponent);
-    if (healthComponent) actorDefinition.health = healthComponent.getData();
-    const constructionSiteComponent = getActorComponent(actor, ConstructionSiteComponent);
-    if (constructionSiteComponent) actorDefinition.constructionSite = constructionSiteComponent.getData();
-
-    // todo blackboard - create a blackboard component that can be added to actors
 
     return actorDefinition;
   }
@@ -198,6 +210,11 @@ export class ActorManager {
     }
     actor = new actorConstructor(scene);
     setCoreActorDataFromName(actor, actorDefinition);
+    const sceneActorCreator = getSceneService(scene, SceneActorCreator);
+    if (!sceneActorCreator) {
+      throw new Error("SceneActorCreator not found in scene");
+    }
+    sceneActorCreator.registerAndSaveNewActor(actor);
     return actor;
   }
 

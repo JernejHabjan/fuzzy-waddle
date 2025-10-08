@@ -1,5 +1,5 @@
 import { ProbableWaffleGameInstance } from "../../game-instance/probable-waffle/game-instance";
-import {
+import type {
   ProbableWaffleGameInstanceMetadataChangeEvent,
   ProbableWaffleGameModeDataChangeEvent,
   ProbableWaffleGameStateDataChangeEvent,
@@ -9,14 +9,14 @@ import {
 } from "./communicators";
 import {
   ProbableWafflePlayer,
-  ProbableWafflePlayerControllerData,
+  type ProbableWafflePlayerControllerData,
   ProbableWafflePlayerType
 } from "../../game-instance/probable-waffle/player";
-import { ProbableWaffleSpectatorData } from "../../game-instance/probable-waffle/spectator";
-import { ProbableWaffleGameMode, ProbableWaffleGameModeData } from "../../game-instance/probable-waffle/game-mode";
+import { type ProbableWaffleSpectatorData } from "../../game-instance/probable-waffle/spectator";
+import { ProbableWaffleGameMode, type ProbableWaffleGameModeData } from "../../game-instance/probable-waffle/game-mode";
 import { GameSessionState } from "../../game-instance/session";
 import { GameSetupHelpers } from "../../probable-waffle/game-setup.helpers";
-import { ActorDefinition } from "../../game-instance/probable-waffle/game-state";
+import type { ActorDefinition } from "../../game-instance/probable-waffle/game-state";
 
 export class ProbableWaffleListeners {
   private static readonly debug = false;
@@ -208,7 +208,9 @@ export class ProbableWaffleListeners {
           // get selected actors and issue move command to them
           const selectedActors = player.getSelection();
           // find actors in game state by id
-          const actors = gameInstance.gameState!.data.actors.filter((a) => a.id && selectedActors.includes(a.id));
+          const actors = gameInstance.gameState!.data.actors.filter(
+            (a) => a.id?.id && selectedActors.includes(a.id.id)
+          );
           actors.forEach((actor) => {
             // todo handle storing to game state
             ProbableWaffleListeners.logDebugInfo(

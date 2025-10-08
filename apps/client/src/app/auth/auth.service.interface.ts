@@ -1,4 +1,4 @@
-import { Session } from "@supabase/supabase-js";
+import { type Session } from "@supabase/supabase-js";
 
 export interface AuthServiceInterface {
   processing: Promise<unknown> | null;

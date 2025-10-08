@@ -3,45 +3,44 @@ import { filter, firstValueFrom, Observable, Subject, Subscription } from "rxjs"
 import { environment } from "../../../environments/environment";
 import { HttpClient } from "@angular/common/http";
 import {
-  DifficultyModifiers,
+  type DifficultyModifiers,
   GameSessionState,
   GameSetupHelpers,
   getRandomFactionType,
-  MapTuning,
-  PlayerLobbyDefinition,
-  PositionPlayerDefinition,
+  type MapTuning,
+  type PlayerLobbyDefinition,
+  type PositionPlayerDefinition,
   ProbableWaffleAiDifficulty,
-  ProbableWaffleDataChangeEventProperty,
-  ProbableWaffleGameFoundEvent,
+  type ProbableWaffleDataChangeEventProperty,
+  type ProbableWaffleGameFoundEvent,
   ProbableWaffleGameInstance,
-  ProbableWaffleGameInstanceData,
+  type ProbableWaffleGameInstanceData,
   ProbableWaffleGameInstanceEvent,
-  ProbableWaffleGameInstanceMetadataData,
-  ProbableWaffleGameInstanceSaveData,
+  type ProbableWaffleGameInstanceMetadataData,
+  type ProbableWaffleGameInstanceSaveData,
   ProbableWaffleGameInstanceType,
   ProbableWaffleGameInstanceVisibility,
-  ProbableWaffleGameModeData,
-  ProbableWaffleGameStateData,
+  type ProbableWaffleGameModeData,
+  type ProbableWaffleGameStateData,
   ProbableWaffleListeners,
-  ProbableWafflePlayerDataChangeEventPayload,
-  ProbableWafflePlayerDataChangeEventProperty,
+  type ProbableWafflePlayerDataChangeEventPayload,
+  type ProbableWafflePlayerDataChangeEventProperty,
   ProbableWafflePlayerType,
-  ProbableWaffleSpectatorData,
-  ProbableWaffleSpectatorDataChangeEventProperty,
-  RequestGameSearchForMatchMakingDto,
-  TieConditions
+  type ProbableWaffleSpectatorData,
+  type ProbableWaffleSpectatorDataChangeEventProperty,
+  type RequestGameSearchForMatchMakingDto
 } from "@fuzzy-waddle/api-interfaces";
 import { ServerHealthService } from "../../shared/services/server-health.service";
-import { ProbableWaffleCommunicators, SceneCommunicatorClientService } from "./scene-communicator-client.service";
+import { type ProbableWaffleCommunicators, SceneCommunicatorClientService } from "./scene-communicator-client.service";
 import { AuthService } from "../../auth/auth.service";
-import { GameInstanceClientServiceInterface } from "./game-instance-client.service.interface";
-import { MatchmakingOptions } from "../gui/online/matchmaking/matchmaking.component";
+import { type GameInstanceClientServiceInterface } from "./game-instance-client.service.interface";
+import { type MatchmakingOptions } from "../gui/online/matchmaking/matchmaking.component";
 import { Router } from "@angular/router";
 import { ProbableWaffleCommunicatorService } from "./probable-waffle-communicator.service";
 import { map } from "rxjs/operators";
 import { AuthenticatedSocketService } from "../../data-access/chat/authenticated-socket.service";
 import { GameInstanceStorageServiceInterface } from "./storage/game-instance-storage.service.interface";
-import { SaveGamePayload } from "../game/data/save-game";
+import { type SaveGamePayload } from "../game/data/save-game";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { LoadComponent } from "../gui/load/load.component";
 import { OptionsComponent } from "../gui/options/options.component";
@@ -121,11 +120,11 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
           case "sessionState":
             switch (payload.data.sessionState) {
               case GameSessionState.MovingPlayersToGame:
-                await this.router.navigate(["probable-waffle/game"]);
+                await this.router.navigate(["aota/game"]);
                 break;
               case GameSessionState.ToScoreScreen:
                 await this.ngZone.run(async () => {
-                  await this.router.navigate(["probable-waffle/score-screen"]);
+                  await this.router.navigate(["aota/score-screen"]);
                 });
                 break;
               case GameSessionState.Stopped:
@@ -475,17 +474,17 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     switch (this.gameInstance.gameInstanceMetadata!.data.type) {
       case ProbableWaffleGameInstanceType.SelfHosted:
         // join lobby
-        await this.router.navigate(["probable-waffle/lobby"]);
+        await this.router.navigate(["aota/lobby"]);
         break;
       case ProbableWaffleGameInstanceType.Skirmish:
         // replaceUrl: true - we don't want to go back to skirmish page
-        await this.router.navigate(["probable-waffle/lobby"], { replaceUrl: true });
+        await this.router.navigate(["aota/lobby"], { replaceUrl: true });
         break;
       case ProbableWaffleGameInstanceType.Matchmaking:
       case ProbableWaffleGameInstanceType.InstantGame:
       case ProbableWaffleGameInstanceType.Replay:
         // directly to game
-        await this.router.navigate(["probable-waffle/game"]);
+        await this.router.navigate(["aota/game"]);
         break;
       default:
         throw new Error("Not implemented");
@@ -495,7 +494,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   async navigateDirectlyToGame(): Promise<void> {
     if (!this.gameInstance)
       throw new Error("Game instance not found in navigateDirectlyToGame in GameInstanceClientService");
-    await this.router.navigate(["probable-waffle/game"]);
+    await this.router.navigate(["aota/game"]);
   }
 
   get currentGameInstanceId(): string | null {

@@ -2,19 +2,19 @@
 
 /* START OF COMPILED CODE */
 
-import ActorIcon from "./ActorIcon";
 /* START-USER-IMPORTS */
-import { ActorIconClickAction } from "./ActorIcon";
-import { pwActorDefinitions } from "../../../data/actor-definitions";
+import ActorIcon, { type ActorIconClickAction } from "./ActorIcon";
+import { pwActorDefinitions } from "../../definitions/actor-definitions";
 import { getActorComponent } from "../../../data/actor-component";
-import { ProductionComponent, ProductionQueueItem } from "../../../entity/building/production/production-component";
+import { ProductionComponent } from "../../../entity/components/production/production-component";
 import { BehaviorSubject, Subscription } from "rxjs";
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
-import { SingleSelectionHandler } from "../../../world/managers/controllers/input/single-selection.handler";
-import { getSceneComponent } from "../../../scenes/components/scene-component-helpers";
-import { IdComponent } from "../../../entity/actor/components/id-component";
+import { SingleSelectionHandler } from "../../../player/human-controller/single-selection.handler";
+import { getSceneComponent } from "../../../world/services/scene-component-helpers";
+import { IdComponent } from "../../../entity/components/id-component";
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
-import HudProbableWaffle from "../../../scenes/HudProbableWaffle";
+import HudProbableWaffle from "../../../world/scenes/hud-scenes/HudProbableWaffle";
+import type { ProductionQueueItem } from "../../../entity/components/production/game-object";
 /* END-USER-IMPORTS */
 
 export default class ActorInfoLabels extends Phaser.GameObjects.Container {
@@ -132,7 +132,7 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
     return this.visibilityChanged.asObservable();
   }
 
-  destroy(fromScene?: boolean) {
+  override destroy(fromScene?: boolean) {
     this.cleanActor();
     this.clickSubscriptions.forEach((sub) => sub.unsubscribe());
     super.destroy(fromScene);
@@ -206,6 +206,7 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
         return;
       }
       const actor = selectedActors[index];
+      if (!actor) throw new Error("Actor not found");
       const actorName = actor.name;
       const actorDefinition = pwActorDefinitions[actorName as ObjectNames];
       const infoComponent = actorDefinition.components!.info!;

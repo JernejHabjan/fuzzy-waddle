@@ -1,8 +1,9 @@
-import { Component, inject, OnInit } from "@angular/core";
+import { Component, inject } from "@angular/core";
+import type { OnInit } from "@angular/core";
 
 import {
-  ProbableWaffleGameInstanceData,
-  ProbableWaffleGameInstanceSaveData,
+  type ProbableWaffleGameInstanceData,
+  type ProbableWaffleGameInstanceSaveData,
   ProbableWaffleLevels
 } from "@fuzzy-waddle/api-interfaces";
 import { Router } from "@angular/router";
@@ -72,7 +73,7 @@ export class LoadComponent implements OnInit {
     if (this.fromGame) {
       this.dialogRef?.close();
     } else {
-      this.router.navigate(["/probable-waffle"]);
+      this.router.navigate(["/aota"]);
     }
   }
 }

@@ -1,9 +1,9 @@
 import { inject, Injectable } from "@angular/core";
 import { map } from "rxjs/operators";
 import { Observable } from "rxjs";
-import { IChatService } from "./chat.service.interface";
+import { type IChatService } from "./chat.service.interface";
 import { AuthenticatedSocketService } from "./authenticated-socket.service";
-import { ChatMessage, GatewayChatEvent } from "@fuzzy-waddle/api-interfaces";
+import { type ChatMessage, GatewayChatEvent } from "@fuzzy-waddle/api-interfaces";
 
 @Injectable({
   providedIn: "root"

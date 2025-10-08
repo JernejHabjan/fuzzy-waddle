@@ -36,7 +36,7 @@ CREATE POLICY "Allow authenticated users to delete their own profile"
   USING (auth.uid() = id);
 
 -- inserts a row into public.profiles
-CREATE FUNCTION public.handle_new_user()
+CREATE OR REPLACE FUNCTION public.handle_new_user()
   RETURNS trigger
   LANGUAGE plpgsql
   SECURITY DEFINER
@@ -47,18 +47,19 @@ BEGIN
 
   -- if provider is Google
   IF NEW.raw_app_meta_data ->> 'provider' = 'google' THEN
-    INSERT INTO public.profiles (id, email, name, profile_image_url)
-    VALUES (NEW.id, NEW.email, NEW.raw_user_meta_data ->> 'name', NEW.raw_user_meta_data ->> 'avatar_url');
+    INSERT INTO public.profiles (id, email, name, profile_image_url, created)
+    VALUES (NEW.id, NEW.email, NEW.raw_user_meta_data ->> 'name', NEW.raw_user_meta_data ->> 'avatar_url', CURRENT_TIMESTAMP);
   ELSE
     -- else insert random name
-    INSERT INTO public.profiles (id, email, name, profile_image_url)
+    INSERT INTO public.profiles (id, email, name, profile_image_url, created)
     VALUES (NEW.id,
             NEW.email,
             substring(
               string_agg(chr(65 + floor(random() * 26)::int), ''), -- Random letters (A-Z)
               1, 10 -- 10-character random name
             ),
-            '');
+            '',
+            CURRENT_TIMESTAMP);
   END IF;
 
   RETURN NEW;

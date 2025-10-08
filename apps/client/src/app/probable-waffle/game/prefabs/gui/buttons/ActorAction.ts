@@ -7,8 +7,8 @@ import PushActionScript from "../../../../../shared/game/phaser/script-nodes/Pus
 import OnPointerUpScript from "../../../../../shared/game/phaser/script-nodes-basic/OnPointerUpScript";
 import EmitEventActionScript from "../../../../../shared/game/phaser/script-nodes-basic/EmitEventActionScript";
 /* START-USER-IMPORTS */
-import ActorDefinitionTooltip, { TooltipInfo } from "../labels/ActorDefinitionTooltip";
-import HudProbableWaffle from "../../../scenes/HudProbableWaffle";
+import ActorDefinitionTooltip, { type TooltipInfo } from "../labels/ActorDefinitionTooltip";
+import HudProbableWaffle from "../../../world/scenes/hud-scenes/HudProbableWaffle";
 import { getGameObjectBounds } from "../../../data/game-object-helper";
 import { IconHelper } from "../labels/IconHelper";
 /* END-USER-IMPORTS */
@@ -84,6 +84,10 @@ export default class ActorAction extends Phaser.GameObjects.Container {
   private tooltipInfo?: TooltipInfo;
   private action: (() => void) | undefined;
   private tooltipTimeoutId?: number;
+
+  // Small shortcut label rendered on top of the button
+  private shortcutText?: Phaser.GameObjects.Text;
+
   setup(setup: ActorActionSetup) {
     if (setup.icon) {
       this.setIcon(setup.icon.key, setup.icon.frame, setup.icon.origin);
@@ -92,6 +96,39 @@ export default class ActorAction extends Phaser.GameObjects.Container {
     this.setVisible(setup.visible);
     this.tooltipInfo = setup.tooltipInfo;
     this.action = setup.action;
+    this.setShortcutLabel(setup.shortcut);
+  }
+
+  private ensureShortcutText() {
+    if (!this.shortcutText) {
+      // Bottom-left corner
+      const txt = this.scene.add.text(-16, 0, "", {
+        fontSize: "12px",
+        fontFamily: "disposabledroid",
+        color: "#222222",
+        resolution: 10
+      });
+      txt.setOrigin(0, 1);
+      txt.setDepth(10);
+      // subtle shadow for readability
+      txt.setShadow(1, 1, "#ffffff", 0, true, true);
+      this.add(txt);
+      this.shortcutText = txt;
+    }
+  }
+
+  private setShortcutLabel(shortcut?: string) {
+    this.ensureShortcutText();
+    if (!this.shortcutText) return;
+    if (shortcut && shortcut.trim().length > 0) {
+      this.shortcutText.setText(shortcut.toUpperCase());
+      this.shortcutText.setVisible(true);
+    } else {
+      this.shortcutText.setVisible(false);
+      this.shortcutText.setText("");
+    }
+    // reflect disabled state visually
+    this.shortcutText.setAlpha(this.disabled ? 0.5 : 1);
   }
 
   private setIcon(key: string, frame: string, origin?: { x: number; y: number }) {
@@ -111,6 +148,8 @@ export default class ActorAction extends Phaser.GameObjects.Container {
   private recolorDisabled() {
     this.game_action_bg.setTint(this.disabled ? 0x666666 : 0xffffff);
     this.game_action_icon.setTint(this.disabled ? 0x666666 : 0xffffff);
+    // adjust shortcut alpha too
+    this.shortcutText?.setAlpha(this.disabled ? 0.5 : 1);
   }
 
   private onPointerOver = () => {
@@ -128,7 +167,6 @@ export default class ActorAction extends Phaser.GameObjects.Container {
     this.tooltipTimeoutId = window.setTimeout(() => {
       if (!this.pointerIn) return;
       if (!this.tooltipInfo) return;
-      if (this.disabled) return;
 
       const hudScene = this.scene as HudProbableWaffle;
       const bounds = getGameObjectBounds(hudScene.actor_actions_container);
@@ -188,6 +226,8 @@ export type ActorActionSetup = {
   visible: boolean;
   action?: () => void;
   tooltipInfo?: TooltipInfo;
+  // Optional shortcut label (e.g., "A", "M", "1")
+  shortcut?: string;
 };
 
 // You can write more code here

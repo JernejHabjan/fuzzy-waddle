@@ -5,12 +5,12 @@ import { FontAwesomeTestingModule } from "@fortawesome/angular-fontawesome/testi
 import { HomePageNavTestingComponent } from "./home-page-nav/home-page-nav.component.spec";
 import { provideRouter } from "@angular/router";
 import { AuthService } from "../../auth/auth.service";
-import { authServiceStub } from "../../auth/auth.service.spec";
+import { authServiceStub } from "../../auth/auth.service.stub";
 import { DbAccessTestService } from "../../data-access/db-access-test/db-access-test.service";
-import { dbAccessTestServiceStub } from "../../data-access/db-access-test/db-access-test.service.spec";
+import { dbAccessTestServiceStub } from "../../data-access/db-access-test/db-access-test.service.stub";
 import { HomePageNavComponent } from "./home-page-nav/home-page-nav.component";
 import { ServerHealthService } from "../../shared/services/server-health.service";
-import { serverHealthServiceStub } from "../../shared/services/server-health.service.spec";
+import { serverHealthServiceStub } from "../../shared/services/server-health.service.stub";
 
 describe("HomePageComponent", () => {
   let component: HomePageComponent;

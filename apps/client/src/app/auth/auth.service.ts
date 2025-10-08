@@ -1,7 +1,7 @@
 import { inject, Injectable } from "@angular/core";
-import { Session } from "@supabase/supabase-js";
+import { type Session } from "@supabase/supabase-js";
 import { DataAccessService } from "../data-access/data-access.service";
-import { AuthServiceInterface } from "./auth.service.interface";
+import { type AuthServiceInterface } from "./auth.service.interface";
 
 @Injectable({
   providedIn: "root"

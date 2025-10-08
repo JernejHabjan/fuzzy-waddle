@@ -1,37 +1,37 @@
-import { pwActorDefinitions } from "./actor-definitions";
-import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
-import { VisionComponent } from "../entity/actor/components/vision-component";
-import { InfoComponent } from "../entity/actor/components/info-component";
-import { ObjectDescriptorComponent } from "../entity/actor/components/object-descriptor-component";
-import { OwnerComponent } from "../entity/actor/components/owner-component";
-import { IdComponent } from "../entity/actor/components/id-component";
-import { SelectableComponent } from "../entity/actor/components/selectable-component";
-import { HealthComponent } from "../entity/combat/components/health-component";
-import { AttackComponent } from "../entity/combat/components/attack-component";
-import { ProductionCostComponent } from "../entity/building/production/production-cost-component";
-import { ContainableComponent } from "../entity/actor/components/containable-component";
-import { RequirementsComponent } from "../entity/actor/components/requirements-component";
-import { BuilderComponent } from "../entity/actor/components/builder-component";
-import { GathererComponent } from "../entity/actor/components/gatherer-component";
-import { ActorTranslateComponent } from "../entity/actor/components/actor-translate-component";
+import { pwActorDefinitions } from "../prefabs/definitions/actor-definitions";
+import { type ActorDefinition, ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { VisionComponent } from "../entity/components/vision-component";
+import { InfoComponent } from "../entity/components/info-component";
+import { ObjectDescriptorComponent } from "../entity/components/object-descriptor-component";
+import { OwnerComponent } from "../entity/components/owner-component";
+import { IdComponent } from "../entity/components/id-component";
+import { SelectableComponent } from "../entity/components/selectable-component";
+import { HealthComponent } from "../entity/components/combat/components/health-component";
+import { AttackComponent } from "../entity/components/combat/components/attack-component";
+import { ProductionCostComponent } from "../entity/components/production/production-cost-component";
+import { ContainableComponent } from "../entity/components/building/containable-component";
+import { RequirementsComponent } from "../entity/components/requirements-component";
+import { BuilderComponent } from "../entity/components/construction/builder-component";
+import { GathererComponent } from "../entity/components/resource/gatherer-component";
+import { ActorTranslateComponent } from "../entity/components/movement/actor-translate-component";
 import { MovementSystem } from "../entity/systems/movement.system";
-import { ColliderComponent } from "../entity/actor/components/collider-component";
-import { ContainerComponent } from "../entity/building/container-component";
-import { ResourceDrainComponent } from "../entity/economy/resource/resource-drain-component";
-import { ProductionComponent } from "../entity/building/production/production-component";
-import { ResourceSourceComponent } from "../entity/economy/resource/resource-source-component";
-import { PawnAiController } from "../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
-import { ConstructionSiteComponent } from "../entity/building/construction/construction-site-component";
-import { ActorDefinition } from "@fuzzy-waddle/api-interfaces";
+import { ColliderComponent } from "../entity/components/movement/collider-component";
+import { ContainerComponent } from "../entity/components/building/container-component";
+import { ResourceDrainComponent } from "../entity/components/resource/resource-drain-component";
+import { ProductionComponent } from "../entity/components/production/production-component";
+import { ResourceSourceComponent } from "../entity/components/resource/resource-source-component";
+import { PawnAiController } from "../prefabs/ai-agents/pawn-ai-controller";
+import { ConstructionSiteComponent } from "../entity/components/construction/construction-site-component";
 import { getActorComponent } from "./actor-component";
-import { DepthHelper } from "../world/map/depth.helper";
-import GameObject = Phaser.GameObjects.GameObject;
-import Transform = Phaser.GameObjects.Components.Transform;
+import { DepthHelper } from "../world/services/depth.helper";
 import { ActionSystem } from "../entity/systems/action.system";
-import { HealingComponent } from "../entity/combat/components/healing-component";
-import { AudioActorComponent } from "../entity/actor/components/audio-actor-component";
-import { AnimationActorComponent } from "../entity/actor/components/animation-actor-component";
-import { RepresentableComponent } from "../entity/actor/components/representable-component";
+import { HealingComponent } from "../entity/components/combat/components/healing-component";
+import { AudioActorComponent } from "../entity/components/actor-audio/audio-actor-component";
+import { AnimationActorComponent } from "../entity/components/animation/animation-actor-component";
+import { RepresentableComponent } from "../entity/components/representable-component";
+import { FlyingComponent } from "../entity/components/movement/flying-component";
+import { WalkableComponent } from "../entity/components/movement/walkable-component";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export const ActorDataKey = "actorData";
 export class ActorData {
@@ -66,17 +66,27 @@ export function setActorData(
 
 function setActorProperties(actor: GameObject, actorDefinition?: Partial<ActorDefinition>) {
   if (!actorDefinition) return;
-  const transform = actor as any as Transform;
-  if (transform.x !== undefined && actorDefinition.x !== undefined) transform.x = actorDefinition.x;
-  if (transform.y !== undefined && actorDefinition.y !== undefined) transform.y = actorDefinition.y;
-  if (transform.z !== undefined && actorDefinition.z !== undefined) transform.z = actorDefinition.z;
-  if (actorDefinition.owner) getActorComponent(actor, OwnerComponent)?.setOwner(actorDefinition.owner);
-  if (actorDefinition.selectable)
-    getActorComponent(actor, SelectableComponent)?.setSelected(actorDefinition.selectable);
-  if (actorDefinition.id) getActorComponent(actor, IdComponent)?.setId(actorDefinition.id);
+  if (actorDefinition.owner) getActorComponent(actor, OwnerComponent)?.setData(actorDefinition.owner);
+  if (actorDefinition.selected) getActorComponent(actor, SelectableComponent)?.setData(actorDefinition.selected);
+  if (actorDefinition.id) getActorComponent(actor, IdComponent)?.setData(actorDefinition.id);
   if (actorDefinition.constructionSite)
     getActorComponent(actor, ConstructionSiteComponent)?.setData(actorDefinition.constructionSite);
   if (actorDefinition.health) getActorComponent(actor, HealthComponent)?.setData(actorDefinition.health);
+  if (actorDefinition.vision) getActorComponent(actor, VisionComponent)?.setData(actorDefinition.vision);
+  if (actorDefinition.attack) getActorComponent(actor, AttackComponent)?.setData(actorDefinition.attack);
+  if (actorDefinition.healing) getActorComponent(actor, HealingComponent)?.setData(actorDefinition.healing);
+  if (actorDefinition.builder) getActorComponent(actor, BuilderComponent)?.setData(actorDefinition.builder);
+  if (actorDefinition.gatherer) getActorComponent(actor, GathererComponent)?.setData(actorDefinition.gatherer);
+  if (actorDefinition.container) getActorComponent(actor, ContainerComponent)?.setData(actorDefinition.container);
+  if (actorDefinition.resourceDrain)
+    getActorComponent(actor, ResourceDrainComponent)?.setData(actorDefinition.resourceDrain);
+  if (actorDefinition.resourceSource)
+    getActorComponent(actor, ResourceSourceComponent)?.setData(actorDefinition.resourceSource);
+  if (actorDefinition.production) getActorComponent(actor, ProductionComponent)?.setData(actorDefinition.production);
+  if (actorDefinition.representable)
+    getActorComponent(actor, RepresentableComponent)?.setData(actorDefinition.representable);
+  if (actorDefinition.blackboard) getActorComponent(actor, PawnAiController)?.setData(actorDefinition.blackboard);
+
   DepthHelper.setActorDepth(actor);
 }
 
@@ -153,6 +163,8 @@ function gatherCompletedActorData(actor: Phaser.GameObjects.GameObject): { compo
     ...(componentDefinitions?.translatable
       ? [new ActorTranslateComponent(actor, componentDefinitions.translatable)]
       : []),
+    ...(componentDefinitions?.flying ? [new FlyingComponent(actor, componentDefinitions.flying)] : []),
+    ...(componentDefinitions?.walkable ? [new WalkableComponent(actor, componentDefinitions.walkable)] : []),
     ...(componentDefinitions?.animatable ? [new AnimationActorComponent(actor, componentDefinitions.animatable)] : []),
     ...(componentDefinitions?.aiControlled ? [new PawnAiController(actor, componentDefinitions.aiControlled)] : [])
   ];

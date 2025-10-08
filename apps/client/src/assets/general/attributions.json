@@ -1037,7 +1037,7 @@
     "license": {
       "name": "CC-BY 3.0"
     },
-    "reason": "Assets for Probable Waffle"
+    "reason": "Assets for Ashes of the Ancients"
   },
   {
     "type": "Art",
@@ -1047,7 +1047,7 @@
     "license": {
       "name": "CC-BY 3.0"
     },
-    "reason": "Assets for Probable Waffle"
+    "reason": "Assets for Ashes of the Ancients"
   },
   {
     "type": "Art",
@@ -1067,8 +1067,9 @@
     "license": {
       "name": "CC-0"
     },
-    "reason": "Assets for Probable Waffle - Frog"
-  },  {
+    "reason": "Assets for Ashes of the Ancients - Frog"
+  },
+  {
     "type": "Art",
     "url": "https://scrabling.itch.io/pixel-isometric-tiles",
     "name": "32 x 32 Pixel Isometric Tiles",
@@ -1076,7 +1077,7 @@
     "license": {
       "name": "CC-0"
     },
-    "reason": "Assets for Probable Waffle - Animals"
+    "reason": "Assets for Ashes of the Ancients - Animals"
   },
   {
     "type": "Art",
@@ -1086,13 +1087,13 @@
     "license": {
       "name": "CC-1"
     },
-    "reason": "Assets for Probable Waffle - Cursors"
+    "reason": "Assets for Ashes of the Ancients - Cursors"
   },
   {
     "type": "Art",
     "url": "https://paperhatlizard.itch.io/cryos-mini-gui",
     "name": "Cryo's Mini GUI",
     "author": "https://paperhatlizard.itch.io/",
-    "reason": "GUI assets for Probable Waffle"
+    "reason": "GUI assets for Ashes of the Ancients"
   }
 ]

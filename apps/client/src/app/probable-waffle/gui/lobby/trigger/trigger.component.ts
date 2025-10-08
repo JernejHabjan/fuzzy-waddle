@@ -5,9 +5,9 @@ import { AuthService } from "../../../../auth/auth.service";
 import { ToastService } from "../../../../shared/services/toast.service";
 import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
 import {
-  PositionPlayerDefinition,
+  type PositionPlayerDefinition,
   ProbableWaffleGameInstanceType,
-  ProbableWafflePlayerDataChangeEventProperty,
+  type ProbableWafflePlayerDataChangeEventProperty,
   ProbableWafflePlayerType
 } from "@fuzzy-waddle/api-interfaces";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";

@@ -1,6 +1,6 @@
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
-import { getSceneService } from "../../../scenes/components/scene-component-helpers";
-import { CrossSceneCommunicationService } from "../../../scenes/services/CrossSceneCommunicationService";
+import { getSceneService } from "../../../world/services/scene-component-helpers";
+import { CrossSceneCommunicationService } from "../../../world/services/CrossSceneCommunicationService";
 
 export enum HudVisualFeedbackMessageType {
   NotEnoughResources,
@@ -83,7 +83,7 @@ export default class HudMessages extends Phaser.GameObjects.Text {
     });
   }
 
-  destroy(fromScene?: boolean) {
+  override destroy(fromScene?: boolean) {
     super.destroy(fromScene);
     if (this.delayedCall) this.delayedCall.destroy();
     this.crossSceneCommunicationService?.off(HudMessages.HudVisualFeedbackMessageEventName, this.messageEvent);

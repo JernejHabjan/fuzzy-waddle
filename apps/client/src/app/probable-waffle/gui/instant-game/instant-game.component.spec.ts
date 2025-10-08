@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { InstantGameComponent } from "./instant-game.component";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
-import { gameInstanceClientServiceStub } from "../../communicators/game-instance-client.service.spec";
+import { gameInstanceClientServiceStub } from "../../communicators/game-instance-client.service.stub";
 
 describe("InstantGameComponent", () => {
   let component: InstantGameComponent;

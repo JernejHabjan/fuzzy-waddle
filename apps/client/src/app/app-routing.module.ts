@@ -1,5 +1,5 @@
 import { NgModule } from "@angular/core";
-import { RouterModule, Routes } from "@angular/router";
+import { RouterModule, type Routes } from "@angular/router";
 import { AuthGuard } from "./auth/auth.guard";
 import { LevelGuard } from "./fly-squasher/choose-level/level.guard";
 import { environment } from "../environments/environment";
@@ -20,7 +20,7 @@ const littleMuncherRoutes = [
 
 const probableWaffleRoutes = [
   {
-    path: "probable-waffle",
+    path: "aota",
     children: [
       {
         path: "",
@@ -70,6 +70,11 @@ const probableWaffleRoutes = [
           },
           {
             path: "progress",
+            loadComponent: () =>
+              import("./probable-waffle/gui/progress/progress.component").then((m) => m.ProgressComponent)
+          },
+          {
+            path: "progress/:userId",
             loadComponent: () =>
               import("./probable-waffle/gui/progress/progress.component").then((m) => m.ProgressComponent)
           },

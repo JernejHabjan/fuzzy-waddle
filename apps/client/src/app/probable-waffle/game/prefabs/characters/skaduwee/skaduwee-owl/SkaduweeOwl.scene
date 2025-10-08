@@ -1,0 +1,40 @@
+{
+    "id": "c06632b7-0afd-49c5-8129-a5051bf0f87d",
+    "sceneType": "PREFAB",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 48,
+        "borderHeight": 48
+    },
+    "displayList": [
+        {
+            "type": "Sprite",
+            "id": "7426080b-ba13-466a-8bd4-1fda3e24ba97",
+            "label": "owl",
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": 24,
+            "hitArea.y": 24,
+            "hitArea.radius": 24,
+            "texture": {
+                "key": "units",
+                "frame": "skaduwee/owl/idle/down_1.png"
+            },
+            "x": 24,
+            "y": 24,
+            "animationPlayMethod": 1,
+            "animationKey": "skaduwee/owl/idle/down"
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

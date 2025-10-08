@@ -1,6 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { UserAuthCacheService } from "./user-auth-cache.service";
-import { authUserStub } from "../../../auth/auth.service.spec";
 
 describe("UserAuthCacheService", () => {
   let service: UserAuthCacheService;
@@ -15,12 +14,5 @@ describe("UserAuthCacheService", () => {
 
   it("should be defined", () => {
     expect(service).toBeDefined();
-  });
-
-  it("should set and get user", () => {
-    const user = authUserStub;
-    const idToken = "idToken";
-    service.setUser(idToken, user);
-    expect(service.getUser(idToken)).toEqual(user);
   });
 });

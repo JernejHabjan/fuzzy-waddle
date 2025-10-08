@@ -2,13 +2,13 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MainComponent } from "./main.component";
 import { GameContainerTestingComponent } from "../../shared/game/game-container/game-container.component.spec";
 import { AuthService } from "../../auth/auth.service";
-import { authServiceStub } from "../../auth/auth.service.spec";
+import { authServiceStub } from "../../auth/auth.service.stub";
 import {
   FlySquasherCommunicatorService,
   flySquasherCommunicatorServiceStub
 } from "../game/fly-squasher-communicator.service";
 import { SceneCommunicatorClientService } from "./scene-communicator-client.service";
-import { sceneCommunicatorClientServiceStub } from "./scene-communicator-client.service.spec";
+import { sceneCommunicatorClientServiceStub } from "./scene-communicator-client.service.stub";
 import { ModalTestComponent } from "../../shared/components/modal/modal.component.spec";
 import { GameContainerComponent } from "../../shared/game/game-container/game-container.component";
 import { ModalComponent } from "../../shared/components/modal/modal.component";

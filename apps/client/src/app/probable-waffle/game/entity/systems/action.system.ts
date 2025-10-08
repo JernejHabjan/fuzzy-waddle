@@ -1,28 +1,31 @@
 import { onObjectReady } from "../../data/game-object-helper";
 import { Subscription } from "rxjs";
 import { getCommunicator, getCurrentPlayerNumber } from "../../data/scene-data";
-import { SelectableComponent } from "../actor/components/selectable-component";
+import { SelectableComponent } from "../components/selectable-component";
 import { getActorComponent } from "../../data/actor-component";
-import { HealthComponent } from "../combat/components/health-component";
-import { PawnAiController } from "../../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
-import { IdComponent } from "../actor/components/id-component";
-import { AttackComponent } from "../combat/components/attack-component";
-import { OrderData } from "../character/ai/OrderData";
-import { OrderType } from "../character/ai/order-type";
-import { GathererComponent } from "../actor/components/gatherer-component";
-import { ResourceDrainComponent } from "../economy/resource/resource-drain-component";
-import { OwnerComponent } from "../actor/components/owner-component";
-import { ConstructionSiteComponent } from "../building/construction/construction-site-component";
-import { BuilderComponent } from "../actor/components/builder-component";
-import { ActorTranslateComponent } from "../actor/components/actor-translate-component";
-import { HealingComponent } from "../combat/components/healing-component";
-import { ContainerComponent } from "../building/container-component";
-import { ResourceSourceComponent } from "../economy/resource/resource-source-component";
+import { HealthComponent } from "../components/combat/components/health-component";
+import { PawnAiController } from "../../prefabs/ai-agents/pawn-ai-controller";
+import { IdComponent } from "../components/id-component";
+import { AttackComponent } from "../components/combat/components/attack-component";
+import { OrderData } from "../../ai/OrderData";
+import { OrderType } from "../../ai/order-type";
+import { GathererComponent } from "../components/resource/gatherer-component";
+import { ResourceDrainComponent } from "../components/resource/resource-drain-component";
+import { OwnerComponent } from "../components/owner-component";
+import { ConstructionSiteComponent } from "../components/construction/construction-site-component";
+import { BuilderComponent } from "../components/construction/builder-component";
+import { ActorTranslateComponent } from "../components/movement/actor-translate-component";
+import { HealingComponent } from "../components/combat/components/healing-component";
+import { ContainerComponent } from "../components/building/container-component";
+import { ResourceSourceComponent } from "../components/resource/resource-source-component";
 import { environment } from "../../../../../environments/environment";
-import { getSceneService } from "../../scenes/components/scene-component-helpers";
-import { DebuggingService } from "../../scenes/services/DebuggingService";
-import { ContainableComponent } from "../actor/components/containable-component";
-import { AudioActorComponent } from "../actor/components/audio-actor-component";
+import { getSceneService } from "../../world/services/scene-component-helpers";
+import { DebuggingService } from "../../world/services/DebuggingService";
+import { ContainableComponent } from "../components/building/containable-component";
+import { AudioActorComponent } from "../components/actor-audio/audio-actor-component";
+import { WalkableComponent } from "../components/movement/walkable-component";
+import { FlyingComponent } from "../components/movement/flying-component";
+import { type GameObjectActionAssignerConfig } from "../../prefabs/gui/game-object-action-assigner";
 
 export class ActionSystem {
   private playerChangedSubscription?: Subscription;
@@ -55,25 +58,49 @@ export class ActionSystem {
     this.playerChangedSubscription = getCommunicator(this.gameObject.scene)
       .playerChanged?.onWithFilter((p) => p.property === "command.issued.actor") // todo it's actually blackboard that should replicate
       .subscribe((payload) => {
+        if (!this.gameObject.active) return;
         const canIssueCommand = this.canIssueCommand();
         if (!canIssueCommand) return;
 
         const isSelected = getActorComponent(this.gameObject, SelectableComponent)?.getSelected();
         if (!isSelected) return;
+
         const payerPawnAiController = getActorComponent(this.gameObject, PawnAiController);
         if (!payerPawnAiController) return;
 
-        const objectIds = payload.data.data!["objectIds"] as string[];
-        const clickedGameObjects = this.gameObject.scene.children.list.filter((go) =>
-          objectIds.includes(getActorComponent(go, IdComponent)?.id ?? "")
-        );
+        const { objectIds, orderType, tileVec3 } = payload.data.data as GameObjectActionAssignerConfig;
 
-        if (clickedGameObjects.length === 0) return;
-        const clickedGameObject = clickedGameObjects[0];
-        const action = this.findAction(clickedGameObject);
+        let action: OrderData | null = null;
+        let targetGameObject: Phaser.GameObjects.GameObject | undefined;
+
+        if (objectIds) {
+          const clickedGameObjects = this.gameObject.scene.children.list.filter((go) =>
+            objectIds.includes(getActorComponent(go, IdComponent)?.id ?? "")
+          );
+          if (clickedGameObjects.length > 0) {
+            targetGameObject = clickedGameObjects[0];
+          }
+        }
+
+        if (orderType) {
+          action = new OrderData(orderType, {
+            targetGameObject,
+            targetTileLocation: tileVec3
+          });
+        } else if (targetGameObject) {
+          action = this.findAction(targetGameObject);
+        } else if (tileVec3) {
+          action = new OrderData(OrderType.Move, {
+            targetTileLocation: tileVec3
+          });
+        }
+
         if (!action) return;
 
-        if (this.displayDebugInfo && !environment.production) console.log("ActionSystem: action", action);
+        if (this.displayDebugInfo && !environment.production) {
+          console.log("ActionSystem: action", action);
+        }
+
         if (this.shiftKey?.isDown) {
           payerPawnAiController.blackboard.addOrder(action);
         } else {
@@ -94,6 +121,13 @@ export class ActionSystem {
       const selfPlayerNumber = selfOwnerComponent.getOwner();
       if (selfPlayerNumber === targetPlayerNumber) {
         // ally
+
+        const targetIsWalkable = getActorComponent(targetGameObject, WalkableComponent);
+        const selfHasFlying = getActorComponent(this.gameObject, FlyingComponent);
+        if (targetIsWalkable && !selfHasFlying) {
+          // target is walkable and self is not flying
+          return new OrderData(OrderType.Move, { targetGameObject });
+        }
 
         const targetIsBuilding = getActorComponent(targetGameObject, ConstructionSiteComponent);
         if (targetIsBuilding) {
@@ -159,6 +193,7 @@ export class ActionSystem {
           if (selfContainableComponent) {
             // self is containable
 
+            console.warn("todo - this is not yet supported in player-pawn-ai-controller"); // todo
             return new OrderData(OrderType.EnterContainer, { targetGameObject });
           }
         }

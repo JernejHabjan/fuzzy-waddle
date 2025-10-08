@@ -1,20 +1,20 @@
-import { EventEmitter, Injectable, OnDestroy } from "@angular/core";
+import { EventEmitter, Injectable, type OnDestroy } from "@angular/core";
 import {
-  ProbableWaffleCommunicatorMessageEvent,
-  ProbableWaffleCommunicatorType,
-  ProbableWaffleGameInstanceMetadataChangeEvent,
-  ProbableWaffleGameModeDataChangeEvent,
-  ProbableWaffleGameStateDataChangeEvent,
+  type ProbableWaffleCommunicatorMessageEvent,
+  type ProbableWaffleCommunicatorType,
+  type ProbableWaffleGameInstanceMetadataChangeEvent,
+  type ProbableWaffleGameModeDataChangeEvent,
+  type ProbableWaffleGameStateDataChangeEvent,
   ProbableWaffleGatewayEvent,
   ProbableWaffleGatewayRoomTypes,
-  ProbableWafflePlayerDataChangeEvent,
-  ProbableWaffleSpectatorDataChangeEvent,
-  ProbableWaffleWebsocketRoomEvent
+  type ProbableWafflePlayerDataChangeEvent,
+  type ProbableWaffleSpectatorDataChangeEvent,
+  type ProbableWaffleWebsocketRoomEvent
 } from "@fuzzy-waddle/api-interfaces";
 import { TwoWayCommunicator } from "../../shared/game/communicators/two-way-communicator";
 import { Socket } from "ngx-socket-io";
-import { CommunicatorService } from "../../shared/game/communicators/CommunicatorService";
-import { ProbableWaffleCommunicatorServiceInterface } from "./probable-waffle-communicator.service.interface";
+import type { CommunicatorService } from "../../shared/game/communicators/CommunicatorService";
+import { type ProbableWaffleCommunicatorServiceInterface } from "./probable-waffle-communicator.service.interface";
 
 @Injectable({
   providedIn: "root"
@@ -45,6 +45,7 @@ export class ProbableWaffleCommunicatorService
       | "restart-game"
       | "selection.deselect"
       | "selection.singleSelect"
+      | "selection.doubleSelect"
       | "selection.multiSelect"
       | "selection.multiSelectPreview"
       | "selection.terrainSelect";

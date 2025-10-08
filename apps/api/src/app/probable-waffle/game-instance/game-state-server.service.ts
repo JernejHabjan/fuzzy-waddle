@@ -1,24 +1,24 @@
 import { Injectable } from "@nestjs/common";
 import {
-  CommunicatorEvent,
+  type CommunicatorEvent,
   GameSessionState,
-  ProbableWaffleCommunicatorType,
-  ProbableWaffleGameInstanceMetadataChangeEvent,
-  ProbableWaffleGameModeDataChangeEvent,
-  ProbableWaffleGameStateDataChangeEvent,
+  type ProbableWaffleCommunicatorType,
+  type ProbableWaffleGameInstanceMetadataChangeEvent,
+  type ProbableWaffleGameModeDataChangeEvent,
+  type ProbableWaffleGameStateDataChangeEvent,
   ProbableWaffleListeners,
-  ProbableWafflePlayerDataChangeEvent,
-  ProbableWaffleSpectatorDataChangeEvent
+  type ProbableWafflePlayerDataChangeEvent,
+  type ProbableWaffleSpectatorDataChangeEvent
 } from "@fuzzy-waddle/api-interfaces";
 import { GameInstanceService } from "./game-instance.service";
-import { User } from "@supabase/supabase-js";
+import { type User } from "@supabase/supabase-js";
 
 @Injectable()
 export class GameStateServerService {
   constructor(private readonly gameInstanceService: GameInstanceService) {}
 
   updateGameState(body: CommunicatorEvent<any, ProbableWaffleCommunicatorType>, user: User): boolean {
-    const gameInstance = this.gameInstanceService.findGameInstance(body.gameInstanceId);
+    const gameInstance = this.gameInstanceService.findGameInstance(body.gameInstanceId!);
     if (!gameInstance) {
       console.log("game instance not found in updateGameState in GameStateServerService");
       return false;
@@ -34,7 +34,7 @@ export class GameStateServerService {
           case "sessionState":
             switch (giMetadata.data.sessionState) {
               case GameSessionState.Stopped:
-                this.gameInstanceService.stopGameInstance(body.gameInstanceId, user);
+                this.gameInstanceService.stopGameInstance(body.gameInstanceId!, user);
                 break;
             }
             break;

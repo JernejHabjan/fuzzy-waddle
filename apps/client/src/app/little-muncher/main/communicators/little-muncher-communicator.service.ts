@@ -1,16 +1,16 @@
-import { Injectable, OnDestroy } from "@angular/core";
+import { Injectable, type OnDestroy } from "@angular/core";
 import { Socket } from "ngx-socket-io";
 import {
-  LittleMuncherCommunicatorClimbingEvent,
-  LittleMuncherCommunicatorPauseEvent,
-  LittleMuncherCommunicatorResetEvent,
-  LittleMuncherCommunicatorScoreEvent,
-  LittleMuncherCommunicatorType,
+  type LittleMuncherCommunicatorClimbingEvent,
+  type LittleMuncherCommunicatorPauseEvent,
+  type LittleMuncherCommunicatorResetEvent,
+  type LittleMuncherCommunicatorScoreEvent,
+  type LittleMuncherCommunicatorType,
   LittleMuncherGatewayEvent,
   LittleMuncherPosition
 } from "@fuzzy-waddle/api-interfaces";
 import { TwoWayCommunicator } from "../../../shared/game/communicators/two-way-communicator";
-import { CommunicatorService } from "../../../shared/game/communicators/CommunicatorService";
+import type { CommunicatorService } from "../../../shared/game/communicators/CommunicatorService";
 
 @Injectable({
   providedIn: "root"

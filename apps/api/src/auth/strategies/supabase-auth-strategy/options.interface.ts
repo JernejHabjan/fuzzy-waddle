@@ -1,4 +1,4 @@
-import { JwtFromRequestFunction } from "passport-jwt";
+import { type JwtFromRequestFunction } from "passport-jwt";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { UserAuthCacheService } from "../../../core/cache/user-auth-cache.service.ts/user-auth-cache.service";
 

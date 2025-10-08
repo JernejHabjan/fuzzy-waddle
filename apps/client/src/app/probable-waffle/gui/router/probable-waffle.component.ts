@@ -1,5 +1,4 @@
-import { Component, HostListener, inject, OnDestroy, OnInit } from "@angular/core";
-import { DEPRECATED_gameInstanceService } from "../../communicators/DEPRECATED_game-instance.service";
+import { Component, HostListener, inject, type OnDestroy, type OnInit } from "@angular/core";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 import { UserInstanceService } from "../../../home/profile/user-instance.service";
 import { RouterOutlet } from "@angular/router";
@@ -15,10 +14,8 @@ export class ProbableWaffleComponent implements OnInit, OnDestroy {
   private readonly gameInstanceClientService = inject(GameInstanceClientService);
   protected readonly userInstanceService = inject(UserInstanceService);
 
-  private readonly dEPRECATED_gameInstanceService = inject(DEPRECATED_gameInstanceService);
-
   ngOnInit(): void {
-    this.userInstanceService.setVisitedGame("probable-waffle");
+    this.userInstanceService.setVisitedGame("aota");
   }
 
   @HostListener("window:beforeunload")

@@ -1,19 +1,19 @@
-import { FlyHealthBarOptions, FlyHealthUiComponent } from "./fly-health-ui-component";
+import { type FlyHealthBarOptions, FlyHealthUiComponent } from "./fly-health-ui-component";
 import { EventEmitter } from "@angular/core";
-import { IComponent } from "../../../../probable-waffle/game/core/component.service";
-import { Actor } from "../../../../probable-waffle/game/entity/actor/actor";
+import { type IFlyBase } from "../component.service";
+import { FlyBase } from "../FlyBase";
 
 export type HealthDefinition = {
   maxHealth: number;
 };
 
-export class FlyHealthComponent implements IComponent {
+export class FlyHealthComponent implements IFlyBase {
   healthChanged: EventEmitter<number> = new EventEmitter<number>();
   private currentHealth: number;
   private healthUiComponent!: FlyHealthUiComponent;
 
   constructor(
-    private readonly actor: Actor,
+    private readonly actor: FlyBase,
     private readonly scene: Phaser.Scene,
     public readonly healthDefinition: HealthDefinition,
     private readonly barOptions: () => FlyHealthBarOptions

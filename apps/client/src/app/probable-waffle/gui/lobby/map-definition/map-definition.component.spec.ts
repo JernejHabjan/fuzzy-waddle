@@ -3,11 +3,11 @@ import { MapDefinitionComponent } from "./map-definition.component";
 import { FormsModule } from "@angular/forms";
 import { Component } from "@angular/core";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
-import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.spec";
+import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.stub";
 import { SceneCommunicatorClientService } from "../../../communicators/scene-communicator-client.service";
-import { sceneCommunicatorClientServiceStub } from "../../../../fly-squasher/main/scene-communicator-client.service.spec";
+import { sceneCommunicatorClientServiceStub } from "../../../../fly-squasher/main/scene-communicator-client.service.stub";
 import { AuthService } from "../../../../auth/auth.service";
-import { authServiceStub } from "../../../../auth/auth.service.spec";
+import { authServiceStub } from "../../../../auth/auth.service.stub";
 
 @Component({ selector: "probable-waffle-map-definition", template: "", standalone: true, imports: [] })
 export class MapDefinitionTestingComponent {}

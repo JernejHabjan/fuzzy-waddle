@@ -1,6 +1,7 @@
-import { Component, inject, OnInit } from "@angular/core";
+import { Component, inject } from "@angular/core";
+import type { OnInit } from "@angular/core";
 import { littleMuncherGameConfig } from "../game/const/game-config";
-import { LittleMuncherGameData } from "../game/little-muncher-game-data";
+import { type LittleMuncherGameData } from "../game/little-muncher-game-data";
 import { AuthService } from "../../auth/auth.service";
 import { LittleMuncherUserInfo } from "@fuzzy-waddle/api-interfaces";
 import { LittleMuncherCommunicatorService } from "./communicators/little-muncher-communicator.service";

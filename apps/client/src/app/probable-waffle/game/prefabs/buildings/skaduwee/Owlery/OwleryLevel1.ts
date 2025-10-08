@@ -3,10 +3,7 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import {
-  ANIM_SKADUWEE_BUILDINGS_OWLERY_OWL,
-  ANIM_SKADUWEE_BUILDINGS_OWLERY_OWL_FLAP
-} from "../../../../animations/skaduwee-buildings";
+import { ANIM_SKADUWEE_BUILDINGS_OWLERY_OWL, ANIM_SKADUWEE_BUILDINGS_OWLERY_OWL_FLAP } from "./anims-owlery";
 /* END-USER-IMPORTS */
 
 export default class OwleryLevel1 extends Phaser.GameObjects.Container {

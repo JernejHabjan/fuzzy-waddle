@@ -19,6 +19,8 @@ export default class PushActionScript extends ScriptNode {
   private disabled: boolean = false;
   private originalScaleX: number | null = null;
   private originalScaleY: number | null = null;
+  private activeTween: Phaser.Tweens.Tween | null = null; // Track the active tween
+
   setDisabled(disabled: boolean) {
     this.disabled = disabled;
   }
@@ -37,10 +39,17 @@ export default class PushActionScript extends ScriptNode {
       this.originalScaleY = gameObjectAny.scaleY;
     }
 
-    // Reset the scale to its original value before starting a new tween
-    this.resetScale();
+    // If a tween is already running, stop it and reset the scale
+    if (this.activeTween) {
+      this.activeTween.stop();
+      this.resetScale();
+      this.activeTween = null;
+    } else {
+      // Always reset scale before starting a new tween
+      this.resetScale();
+    }
 
-    this.scene.add.tween({
+    this.activeTween = this.scene.add.tween({
       targets: gameObject,
       scaleX: "*=0.8",
       scaleY: "*=0.8",
@@ -51,6 +60,7 @@ export default class PushActionScript extends ScriptNode {
       },
       onComplete: () => {
         this.resetScale();
+        this.activeTween = null;
       }
     });
   }

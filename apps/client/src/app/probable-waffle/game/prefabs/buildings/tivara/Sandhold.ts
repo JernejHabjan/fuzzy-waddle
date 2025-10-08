@@ -8,7 +8,7 @@ import SandholdFoundation1 from "./Sandhold/SandholdFoundation1";
 import SandholdFoundation2 from "./Sandhold/SandholdFoundation2";
 /* START-USER-IMPORTS */
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
-import { ConstructionGameObjectInterfaceComponent } from "../../../entity/building/construction/construction-game-object-interface-component";
+import { ConstructionGameObjectInterfaceComponent } from "../../../entity/components/construction/construction-game-object-interface-component";
 import { setActorData } from "../../../data/actor-data";
 /* END-USER-IMPORTS */
 
@@ -52,7 +52,7 @@ export default class Sandhold extends Phaser.GameObjects.Container {
   public sandholdFoundation2: SandholdFoundation2;
 
   /* START-USER-CODE */
-  name = ObjectNames.Sandhold;
+  override name = ObjectNames.Sandhold;
 
   private setup() {
     setActorData(

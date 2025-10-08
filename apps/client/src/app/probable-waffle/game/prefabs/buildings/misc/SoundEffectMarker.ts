@@ -4,15 +4,15 @@
 
 /* START-USER-IMPORTS */
 import { onSceneInitialized } from "../../../data/game-object-helper";
-import { getSceneService } from "../../../scenes/components/scene-component-helpers";
-import { AudioService } from "../../../scenes/services/audio.service";
-import { SoundDefinition } from "../../../entity/actor/components/audio-actor-component";
+import { getSceneService } from "../../../world/services/scene-component-helpers";
+import { AudioService } from "../../../world/services/audio.service";
+import { type SoundDefinition } from "../../../entity/components/actor-audio/audio-actor-component";
 import {
   EnvironmentSfxBirdsSounds,
   EnvironmentSfxLavaSounds,
   EnvironmentSfxSeagullsSounds,
   EnvironmentSfxWaterSounds
-} from "../../../sfx/EnvironmentSfx";
+} from "../../../sfx/environment-sfx";
 /* END-USER-IMPORTS */
 
 export default class SoundEffectMarker extends Phaser.GameObjects.Ellipse {
@@ -64,7 +64,7 @@ export default class SoundEffectMarker extends Phaser.GameObjects.Ellipse {
     if (!this.active) return;
     const soundDefinitions = this.getSoundDefinitions();
     if (!soundDefinitions) return;
-    const soundDefinition = soundDefinitions[Math.floor(Math.random() * soundDefinitions.length)];
+    const soundDefinition = soundDefinitions[Math.floor(Math.random() * soundDefinitions.length)]!;
     this.audioService.playSpatialAudioSprite(this, soundDefinition.key, soundDefinition.spriteName, undefined, {
       onComplete: () => {
         this.playSound();

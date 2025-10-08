@@ -1,14 +1,13 @@
-// noinspection ES6PreferShortImport
-import { ChatMessage } from "../../chat/chat";
-import { ProbableWaffleGameInstanceMetadataData } from "../../game-instance/probable-waffle/game-instance-medatada";
-import { ProbableWaffleGameModeData } from "../../game-instance/probable-waffle/game-mode";
+import type { ChatMessage } from "../../chat/chat";
+import type { ProbableWaffleGameInstanceMetadataData } from "../../game-instance/probable-waffle/game-instance-medatada";
+import type { ProbableWaffleGameModeData } from "../../game-instance/probable-waffle/game-mode";
 import {
   ProbableWafflePlayer,
-  ProbableWafflePlayerControllerData,
-  ProbableWafflePlayerStateData
+  type ProbableWafflePlayerControllerData,
+  type ProbableWafflePlayerStateData
 } from "../../game-instance/probable-waffle/player";
-import { ProbableWaffleSpectatorData } from "../../game-instance/probable-waffle/spectator";
-import { ActorDefinition, ProbableWaffleGameStateData } from "../../game-instance/probable-waffle/game-state";
+import type { ProbableWaffleSpectatorData } from "../../game-instance/probable-waffle/spectator";
+import type { ActorDefinition, ProbableWaffleGameStateData } from "../../game-instance/probable-waffle/game-state";
 
 export type ProbableWaffleGameCommunicatorType = "selection";
 
