@@ -34,14 +34,14 @@ export default class Resources extends Phaser.GameObjects.Container {
     resources_bg_1.setOrigin(0, 0);
     resources_container.add(resources_bg_1);
 
-    // food
-    const food = new Resource(scene, 156, 21);
-    food.scaleX = 0.5;
-    food.scaleY = 0.5;
-    resources_container.add(food);
-    food.resource_icon.setTexture("gui", "resource_icons/food.png");
-    food.resource_icon.scaleX = 1;
-    food.resource_icon.scaleY = 1;
+    // housing
+    const housing = new Resource(scene, 156, 21);
+    housing.scaleX = 0.5;
+    housing.scaleY = 0.5;
+    resources_container.add(housing);
+    housing.resource_icon.setTexture("gui", "resource_icons/food.png");
+    housing.resource_icon.scaleX = 1;
+    housing.resource_icon.scaleY = 1;
 
     // minerals
     const minerals = new Resource(scene, 119, 21);
@@ -70,8 +70,8 @@ export default class Resources extends Phaser.GameObjects.Container {
     wood.resource_icon.scaleX = 1;
     wood.resource_icon.scaleY = 1;
 
-    // food (prefab fields)
-    food.type = "food";
+    // housing (prefab fields)
+    housing.type = "housing";
 
     // minerals (prefab fields)
     minerals.type = "minerals";

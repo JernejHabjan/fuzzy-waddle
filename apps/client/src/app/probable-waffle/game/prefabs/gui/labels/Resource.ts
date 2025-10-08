@@ -38,7 +38,7 @@ export default class Resource extends Phaser.GameObjects.Container {
 
   private resource_text: Phaser.GameObjects.Text;
   public resource_icon: Phaser.GameObjects.Image;
-  public override type: "wood" | "stone" | "minerals" | "food" | "" = "";
+  public override type: "wood" | "stone" | "minerals" | "housing" | "" = "";
 
   /* START-USER-CODE */
   private readonly player: ProbableWafflePlayer | undefined;
@@ -62,8 +62,8 @@ export default class Resource extends Phaser.GameObjects.Container {
         return resources.stone;
       case "minerals":
         return resources.minerals;
-      case "food":
-        return resources.food;
+      case "housing":
+        return resources.housing;
       default:
         return 0;
     }
