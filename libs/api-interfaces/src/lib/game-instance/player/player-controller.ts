@@ -1,4 +1,4 @@
-import { BaseData } from "../data";
+import type { BaseData } from "../data";
 
 export interface BasePlayerControllerData extends BaseData {
   userId: string | null;

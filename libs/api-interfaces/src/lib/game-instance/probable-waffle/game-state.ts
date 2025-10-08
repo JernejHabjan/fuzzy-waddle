@@ -1,11 +1,11 @@
 import { BaseGameState } from "../game-state";
-import { BaseData } from "../data";
-import {
+import type { BaseData } from "../data";
+import type {
   ConstructionSiteComponentData,
   HealthComponentData
 } from "../../communicators/probable-waffle/communicator-game-events";
 import { ObjectNames } from "./object-names";
-import {
+import type {
   ActorTranslateComponentData,
   AttackComponentData,
   BackboardComponentData,

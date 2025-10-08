@@ -7,8 +7,8 @@ import PushActionScript from "../../../../../shared/game/phaser/script-nodes/Pus
 import OnPointerUpScript from "../../../../../shared/game/phaser/script-nodes-basic/OnPointerUpScript";
 import EmitEventActionScript from "../../../../../shared/game/phaser/script-nodes-basic/EmitEventActionScript";
 /* START-USER-IMPORTS */
-import ActorDefinitionTooltip, { TooltipInfo } from "../labels/ActorDefinitionTooltip";
-import HudProbableWaffle from "../../../scenes/HudProbableWaffle";
+import ActorDefinitionTooltip, { type TooltipInfo } from "../labels/ActorDefinitionTooltip";
+import HudProbableWaffle from "../../../world/scenes/hud-scenes/HudProbableWaffle";
 import { getGameObjectBounds } from "../../../data/game-object-helper";
 import { IconHelper } from "../labels/IconHelper";
 /* END-USER-IMPORTS */
@@ -167,7 +167,6 @@ export default class ActorAction extends Phaser.GameObjects.Container {
     this.tooltipTimeoutId = window.setTimeout(() => {
       if (!this.pointerIn) return;
       if (!this.tooltipInfo) return;
-      if (this.disabled) return;
 
       const hudScene = this.scene as HudProbableWaffle;
       const bounds = getGameObjectBounds(hudScene.actor_actions_container);

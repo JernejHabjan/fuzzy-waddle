@@ -1,4 +1,5 @@
-import { Component, inject, OnInit } from "@angular/core";
+import { Component, inject } from "@angular/core";
+import type { OnInit } from "@angular/core";
 import { UserInstanceService } from "../home/profile/user-instance.service";
 
 import { RouterOutlet } from "@angular/router";

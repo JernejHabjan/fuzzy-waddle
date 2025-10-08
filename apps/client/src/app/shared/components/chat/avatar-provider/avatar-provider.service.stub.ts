@@ -1,4 +1,4 @@
-import { IAvatarProviderService } from "./avatar-provider.service.interface";
+import { type IAvatarProviderService } from "./avatar-provider.service.interface";
 
 export const avatarProviderServiceStub = {
   getAvatar(seed: string): string {

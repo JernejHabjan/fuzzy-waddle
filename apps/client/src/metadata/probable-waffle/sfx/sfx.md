@@ -27,6 +27,7 @@
 ## Tivara Units
 
 ### Olival
+
 - [x] Select Sfx
 
 ### TivaraMacemanMale
@@ -359,6 +360,7 @@
 - [x] Sfx: lava bubbling
 - [x] Sfx: water flowing
 - [x] Sfx: wind
+
 ## UI Feedback
 
 - [x] Vocal: "You don't have enough resources."

@@ -1,461 +1,461 @@
 {
-	"textures": [
-		{
-			"image": "gui.png",
-			"format": "RGBA8888",
-			"size": {
-				"w": 64,
-				"h": 258
-			},
-			"scale": 1,
-			"frames": [
-				{
-					"filename": "actor_info_icons/element.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 32,
-						"h": 32
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 1,
-						"w": 32,
-						"h": 31
-					},
-					"frame": {
-						"x": 1,
-						"y": 1,
-						"w": 32,
-						"h": 31
-					}
-				},
-				{
-					"filename": "action_icons/hammer.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 32,
-						"h": 32
-					},
-					"spriteSourceSize": {
-						"x": 3,
-						"y": 3,
-						"w": 27,
-						"h": 25
-					},
-					"frame": {
-						"x": 35,
-						"y": 1,
-						"w": 27,
-						"h": 25
-					}
-				},
-				{
-					"filename": "action_icons/arrow.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 32,
-						"h": 32
-					},
-					"spriteSourceSize": {
-						"x": 3,
-						"y": 4,
-						"w": 27,
-						"h": 24
-					},
-					"frame": {
-						"x": 35,
-						"y": 28,
-						"w": 27,
-						"h": 24
-					}
-				},
-				{
-					"filename": "resource_icons/food.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 32,
-						"h": 32
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 3,
-						"w": 32,
-						"h": 28
-					},
-					"frame": {
-						"x": 1,
-						"y": 34,
-						"w": 32,
-						"h": 28
-					}
-				},
-				{
-					"filename": "actor_info_icons/shield.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 32,
-						"h": 32
-					},
-					"spriteSourceSize": {
-						"x": 3,
-						"y": 1,
-						"w": 26,
-						"h": 29
-					},
-					"frame": {
-						"x": 35,
-						"y": 54,
-						"w": 26,
-						"h": 29
-					}
-				},
-				{
-					"filename": "resource_icons/stone.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 32,
-						"h": 32
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 3,
-						"w": 32,
-						"h": 27
-					},
-					"frame": {
-						"x": 1,
-						"y": 64,
-						"w": 32,
-						"h": 27
-					}
-				},
-				{
-					"filename": "action_icons/hand.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 32,
-						"h": 32
-					},
-					"spriteSourceSize": {
-						"x": 3,
-						"y": 1,
-						"w": 24,
-						"h": 31
-					},
-					"frame": {
-						"x": 35,
-						"y": 85,
-						"w": 24,
-						"h": 31
-					}
-				},
-				{
-					"filename": "actor_info_icons/bow.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 32,
-						"h": 32
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 1,
-						"w": 31,
-						"h": 31
-					},
-					"frame": {
-						"x": 1,
-						"y": 93,
-						"w": 31,
-						"h": 31
-					}
-				},
-				{
-					"filename": "cryos_mini_gui/surfaces/surface_parchment.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 24,
-						"h": 24
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 24,
-						"h": 24
-					},
-					"frame": {
-						"x": 34,
-						"y": 118,
-						"w": 24,
-						"h": 24
-					}
-				},
-				{
-					"filename": "actor_info_icons/sword.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 32,
-						"h": 32
-					},
-					"spriteSourceSize": {
-						"x": 1,
-						"y": 1,
-						"w": 30,
-						"h": 30
-					},
-					"frame": {
-						"x": 1,
-						"y": 126,
-						"w": 30,
-						"h": 30
-					}
-				},
-				{
-					"filename": "resource_icons/minerals.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 32,
-						"h": 32
-					},
-					"spriteSourceSize": {
-						"x": 1,
-						"y": 1,
-						"w": 30,
-						"h": 30
-					},
-					"frame": {
-						"x": 33,
-						"y": 144,
-						"w": 30,
-						"h": 30
-					}
-				},
-				{
-					"filename": "actor_info_icons/heart.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 32,
-						"h": 32
-					},
-					"spriteSourceSize": {
-						"x": 1,
-						"y": 2,
-						"w": 30,
-						"h": 28
-					},
-					"frame": {
-						"x": 1,
-						"y": 158,
-						"w": 30,
-						"h": 28
-					}
-				},
-				{
-					"filename": "actor_info_icons/speed_attack.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 32,
-						"h": 32
-					},
-					"spriteSourceSize": {
-						"x": 1,
-						"y": 2,
-						"w": 30,
-						"h": 28
-					},
-					"frame": {
-						"x": 33,
-						"y": 176,
-						"w": 30,
-						"h": 28
-					}
-				},
-				{
-					"filename": "actor_info_icons/boot.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 32,
-						"h": 32
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 3,
-						"w": 30,
-						"h": 26
-					},
-					"frame": {
-						"x": 1,
-						"y": 188,
-						"w": 30,
-						"h": 26
-					}
-				},
-				{
-					"filename": "resource_icons/wood.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 32,
-						"h": 32
-					},
-					"spriteSourceSize": {
-						"x": 1,
-						"y": 6,
-						"w": 30,
-						"h": 20
-					},
-					"frame": {
-						"x": 33,
-						"y": 206,
-						"w": 30,
-						"h": 20
-					}
-				},
-				{
-					"filename": "action_icons/back.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 32,
-						"h": 32
-					},
-					"spriteSourceSize": {
-						"x": 5,
-						"y": 3,
-						"w": 21,
-						"h": 25
-					},
-					"frame": {
-						"x": 1,
-						"y": 228,
-						"w": 21,
-						"h": 25
-					}
-				},
-				{
-					"filename": "cryos_mini_gui/borders/border_dark_outer.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 8,
-						"h": 8
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 8,
-						"h": 8
-					},
-					"frame": {
-						"x": 1,
-						"y": 216,
-						"w": 8,
-						"h": 8
-					}
-				},
-				{
-					"filename": "cryos_mini_gui/surfaces/surface_dark.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 8,
-						"h": 8
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 8,
-						"h": 8
-					},
-					"frame": {
-						"x": 11,
-						"y": 216,
-						"w": 8,
-						"h": 8
-					}
-				},
-				{
-					"filename": "cryos_mini_gui/buttons/button_small.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 16,
-						"h": 16
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 16,
-						"h": 16
-					},
-					"frame": {
-						"x": 24,
-						"y": 228,
-						"w": 16,
-						"h": 16
-					}
-				},
-				{
-					"filename": "cryos_mini_gui/buttons/button_small_pressed.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 16,
-						"h": 16
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 1,
-						"w": 16,
-						"h": 15
-					},
-					"frame": {
-						"x": 42,
-						"y": 228,
-						"w": 16,
-						"h": 15
-					}
-				},
-				{
-					"filename": "cryos_mini_gui/borders/border_wood.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 12,
-						"h": 12
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 12,
-						"h": 12
-					},
-					"frame": {
-						"x": 42,
-						"y": 245,
-						"w": 12,
-						"h": 12
-					}
-				}
-			]
-		}
-	],
-	"meta": {
-		"app": "https://www.codeandweb.com/texturepacker",
-		"version": "3.0",
-		"smartupdate": "$TexturePacker:SmartUpdate:b96ce36edb43b8af8d8601d7f33545f2:cb249013dd92111ee72183472ef2944e:788b34ed4e778d63c84b2c3df4d44949$"
-	}
+  "textures": [
+    {
+      "image": "gui.png",
+      "format": "RGBA8888",
+      "size": {
+        "w": 64,
+        "h": 258
+      },
+      "scale": 1,
+      "frames": [
+        {
+          "filename": "actor_info_icons/element.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 32,
+            "h": 32
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 1,
+            "w": 32,
+            "h": 31
+          },
+          "frame": {
+            "x": 1,
+            "y": 1,
+            "w": 32,
+            "h": 31
+          }
+        },
+        {
+          "filename": "action_icons/hammer.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 32,
+            "h": 32
+          },
+          "spriteSourceSize": {
+            "x": 3,
+            "y": 3,
+            "w": 27,
+            "h": 25
+          },
+          "frame": {
+            "x": 35,
+            "y": 1,
+            "w": 27,
+            "h": 25
+          }
+        },
+        {
+          "filename": "action_icons/arrow.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 32,
+            "h": 32
+          },
+          "spriteSourceSize": {
+            "x": 3,
+            "y": 4,
+            "w": 27,
+            "h": 24
+          },
+          "frame": {
+            "x": 35,
+            "y": 28,
+            "w": 27,
+            "h": 24
+          }
+        },
+        {
+          "filename": "resource_icons/food.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 32,
+            "h": 32
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 3,
+            "w": 32,
+            "h": 28
+          },
+          "frame": {
+            "x": 1,
+            "y": 34,
+            "w": 32,
+            "h": 28
+          }
+        },
+        {
+          "filename": "actor_info_icons/shield.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 32,
+            "h": 32
+          },
+          "spriteSourceSize": {
+            "x": 3,
+            "y": 1,
+            "w": 26,
+            "h": 29
+          },
+          "frame": {
+            "x": 35,
+            "y": 54,
+            "w": 26,
+            "h": 29
+          }
+        },
+        {
+          "filename": "resource_icons/stone.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 32,
+            "h": 32
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 3,
+            "w": 32,
+            "h": 27
+          },
+          "frame": {
+            "x": 1,
+            "y": 64,
+            "w": 32,
+            "h": 27
+          }
+        },
+        {
+          "filename": "action_icons/hand.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 32,
+            "h": 32
+          },
+          "spriteSourceSize": {
+            "x": 3,
+            "y": 1,
+            "w": 24,
+            "h": 31
+          },
+          "frame": {
+            "x": 35,
+            "y": 85,
+            "w": 24,
+            "h": 31
+          }
+        },
+        {
+          "filename": "actor_info_icons/bow.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 32,
+            "h": 32
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 1,
+            "w": 31,
+            "h": 31
+          },
+          "frame": {
+            "x": 1,
+            "y": 93,
+            "w": 31,
+            "h": 31
+          }
+        },
+        {
+          "filename": "cryos_mini_gui/surfaces/surface_parchment.png",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 24,
+            "h": 24
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 24,
+            "h": 24
+          },
+          "frame": {
+            "x": 34,
+            "y": 118,
+            "w": 24,
+            "h": 24
+          }
+        },
+        {
+          "filename": "actor_info_icons/sword.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 32,
+            "h": 32
+          },
+          "spriteSourceSize": {
+            "x": 1,
+            "y": 1,
+            "w": 30,
+            "h": 30
+          },
+          "frame": {
+            "x": 1,
+            "y": 126,
+            "w": 30,
+            "h": 30
+          }
+        },
+        {
+          "filename": "resource_icons/minerals.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 32,
+            "h": 32
+          },
+          "spriteSourceSize": {
+            "x": 1,
+            "y": 1,
+            "w": 30,
+            "h": 30
+          },
+          "frame": {
+            "x": 33,
+            "y": 144,
+            "w": 30,
+            "h": 30
+          }
+        },
+        {
+          "filename": "actor_info_icons/heart.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 32,
+            "h": 32
+          },
+          "spriteSourceSize": {
+            "x": 1,
+            "y": 2,
+            "w": 30,
+            "h": 28
+          },
+          "frame": {
+            "x": 1,
+            "y": 158,
+            "w": 30,
+            "h": 28
+          }
+        },
+        {
+          "filename": "actor_info_icons/speed_attack.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 32,
+            "h": 32
+          },
+          "spriteSourceSize": {
+            "x": 1,
+            "y": 2,
+            "w": 30,
+            "h": 28
+          },
+          "frame": {
+            "x": 33,
+            "y": 176,
+            "w": 30,
+            "h": 28
+          }
+        },
+        {
+          "filename": "actor_info_icons/boot.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 32,
+            "h": 32
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 3,
+            "w": 30,
+            "h": 26
+          },
+          "frame": {
+            "x": 1,
+            "y": 188,
+            "w": 30,
+            "h": 26
+          }
+        },
+        {
+          "filename": "resource_icons/wood.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 32,
+            "h": 32
+          },
+          "spriteSourceSize": {
+            "x": 1,
+            "y": 6,
+            "w": 30,
+            "h": 20
+          },
+          "frame": {
+            "x": 33,
+            "y": 206,
+            "w": 30,
+            "h": 20
+          }
+        },
+        {
+          "filename": "action_icons/back.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 32,
+            "h": 32
+          },
+          "spriteSourceSize": {
+            "x": 5,
+            "y": 3,
+            "w": 21,
+            "h": 25
+          },
+          "frame": {
+            "x": 1,
+            "y": 228,
+            "w": 21,
+            "h": 25
+          }
+        },
+        {
+          "filename": "cryos_mini_gui/borders/border_dark_outer.png",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 8,
+            "h": 8
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 8,
+            "h": 8
+          },
+          "frame": {
+            "x": 1,
+            "y": 216,
+            "w": 8,
+            "h": 8
+          }
+        },
+        {
+          "filename": "cryos_mini_gui/surfaces/surface_dark.png",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 8,
+            "h": 8
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 8,
+            "h": 8
+          },
+          "frame": {
+            "x": 11,
+            "y": 216,
+            "w": 8,
+            "h": 8
+          }
+        },
+        {
+          "filename": "cryos_mini_gui/buttons/button_small.png",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 16,
+            "h": 16
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 16,
+            "h": 16
+          },
+          "frame": {
+            "x": 24,
+            "y": 228,
+            "w": 16,
+            "h": 16
+          }
+        },
+        {
+          "filename": "cryos_mini_gui/buttons/button_small_pressed.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 16,
+            "h": 16
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 1,
+            "w": 16,
+            "h": 15
+          },
+          "frame": {
+            "x": 42,
+            "y": 228,
+            "w": 16,
+            "h": 15
+          }
+        },
+        {
+          "filename": "cryos_mini_gui/borders/border_wood.png",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 12,
+            "h": 12
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 12,
+            "h": 12
+          },
+          "frame": {
+            "x": 42,
+            "y": 245,
+            "w": 12,
+            "h": 12
+          }
+        }
+      ]
+    }
+  ],
+  "meta": {
+    "app": "https://www.codeandweb.com/texturepacker",
+    "version": "3.0",
+    "smartupdate": "$TexturePacker:SmartUpdate:b96ce36edb43b8af8d8601d7f33545f2:cb249013dd92111ee72183472ef2944e:788b34ed4e778d63c84b2c3df4d44949$"
+  }
 }

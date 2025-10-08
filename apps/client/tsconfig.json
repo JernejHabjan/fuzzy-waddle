@@ -14,15 +14,9 @@
     }
   ],
   "compilerOptions": {
-    "lib": ["ES2021", "DOM"],
-    "target": "es2020",
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "noImplicitOverride": false,
     "noPropertyAccessFromIndexSignature": false,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "verbatimModuleSyntax": false
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

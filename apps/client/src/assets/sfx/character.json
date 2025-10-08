@@ -1,7 +1,5 @@
 {
-  "resources": [
-    "assets/sfx/character.mp3"
-  ],
+  "resources": ["assets/sfx/character.mp3"],
   "spritemap": {
     "death1": {
       "start": 0,

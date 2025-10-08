@@ -1,15 +1,15 @@
-import { GameInstance, GameInstanceData } from "../game-instance";
-import { FlySquasherGameInstanceMetadata, FlySquasherGameInstanceMetadataData } from "./game-instance-medatada";
-import { FlySquasherGameMode, FlySquasherGameModeData } from "./game-mode";
-import { FlySquasherGameState, FlySquasherGameStateData } from "./game-state";
+import { GameInstance, type GameInstanceData } from "../game-instance";
+import { FlySquasherGameInstanceMetadata, type FlySquasherGameInstanceMetadataData } from "./game-instance-medatada";
+import { FlySquasherGameMode, type FlySquasherGameModeData } from "./game-mode";
+import { FlySquasherGameState, type FlySquasherGameStateData } from "./game-state";
 import {
   FlySquasherPlayer,
   FlySquasherPlayerController,
-  FlySquasherPlayerControllerData,
+  type FlySquasherPlayerControllerData,
   FlySquasherPlayerState,
-  FlySquasherPlayerStateData
+  type FlySquasherPlayerStateData
 } from "./player";
-import { FlySquasherSpectator, FlySquasherSpectatorData } from "./spectator";
+import { FlySquasherSpectator, type FlySquasherSpectatorData } from "./spectator";
 
 export type FlySquasherGameInstanceData = GameInstanceData<
   FlySquasherGameInstanceMetadataData,

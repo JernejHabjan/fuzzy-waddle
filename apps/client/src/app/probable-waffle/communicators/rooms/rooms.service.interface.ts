@@ -1,5 +1,5 @@
-import { ProbableWaffleMapEnum, ProbableWaffleRoom } from "@fuzzy-waddle/api-interfaces";
-import { Signal, WritableSignal } from "@angular/core";
+import { ProbableWaffleMapEnum, type ProbableWaffleRoom } from "@fuzzy-waddle/api-interfaces";
+import { type Signal, type WritableSignal } from "@angular/core";
 
 export interface RoomsServiceInterface {
   rooms: WritableSignal<ProbableWaffleRoom[]>;

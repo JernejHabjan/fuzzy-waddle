@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { SupabaseProviderService } from "../../../core/supabase-provider/supabase-provider.service";
-import { AuthUser } from "@supabase/supabase-js";
+import { type AuthUser } from "@supabase/supabase-js";
 import { RoomDto } from "./room.dto";
-import { IRoomService } from "./room.service.interface";
+import { type IRoomService } from "./room.service.interface";
 
 @Injectable()
 export class RoomService implements IRoomService {

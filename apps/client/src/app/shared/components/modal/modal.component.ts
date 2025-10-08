@@ -1,5 +1,5 @@
 import { Component, inject, Injectable, Input, TemplateRef, ViewChild } from "@angular/core";
-import { ModalConfig } from "./modal-config";
+import { type ModalConfig } from "./modal-config";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({

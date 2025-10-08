@@ -4,7 +4,7 @@
 
 /* START-USER-IMPORTS */
 import { getActorComponent } from "../../data/actor-component";
-import { ProductionComponent } from "../../entity/building/production/production-component";
+import { ProductionComponent } from "../../entity/components/production/production-component";
 import { Subscription } from "rxjs";
 /* END-USER-IMPORTS */
 
@@ -108,7 +108,7 @@ export default class ProgressBar extends Phaser.GameObjects.Container {
     this.nr.text = Math.round(percentage).toString();
   }
 
-  destroy(fromScene?: boolean) {
+  override destroy(fromScene?: boolean) {
     this.cleanActor(); // Clean up subscription
     super.destroy(fromScene);
   }

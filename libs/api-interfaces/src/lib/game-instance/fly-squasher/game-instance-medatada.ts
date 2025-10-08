@@ -1,4 +1,4 @@
-import { GameInstanceMetadata, GameInstanceMetadataData } from "../game-instance-metadata";
+import { GameInstanceMetadata, type GameInstanceMetadataData } from "../game-instance-metadata";
 
 export interface FlySquasherGameInstanceMetadataData extends GameInstanceMetadataData {}
 

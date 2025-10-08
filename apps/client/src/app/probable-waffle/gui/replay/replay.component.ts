@@ -1,9 +1,10 @@
-import { Component, inject, OnInit } from "@angular/core";
+import { Component, inject } from "@angular/core";
+import type { OnInit } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 import {
-  ProbableWaffleGameInstanceData,
-  ProbableWaffleGameInstanceSaveData,
+  type ProbableWaffleGameInstanceData,
+  type ProbableWaffleGameInstanceSaveData,
   ProbableWaffleLevels
 } from "@fuzzy-waddle/api-interfaces";
 import { GameInstanceStorageServiceInterface } from "../../communicators/storage/game-instance-storage.service.interface";

@@ -1,6 +1,6 @@
 import { inject, Injectable } from "@angular/core";
 import { DataAccessService } from "../data-access.service";
-import { DbAccessTestServiceInterface } from "./db-access-test.service.interface";
+import { type DbAccessTestServiceInterface } from "./db-access-test.service.interface";
 
 @Injectable({
   providedIn: "root"

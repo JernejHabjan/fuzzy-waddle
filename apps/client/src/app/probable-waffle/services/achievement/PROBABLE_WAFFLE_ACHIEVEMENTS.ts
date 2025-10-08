@@ -1,5 +1,5 @@
 // Achievement definitions - in a real app, these might come from a config file
-import { AchievementDefinition } from "./achievement-definition";
+import type { AchievementDefinition } from "./achievement-definition";
 import { AchievementType } from "./achievement-type";
 
 export const PROBABLE_WAFFLE_ACHIEVEMENTS: Record<AchievementType, AchievementDefinition> = {

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, Component, type OnInit } from "@angular/core";
 
 import { RouterLink } from "@angular/router";
 import { FormsModule } from "@angular/forms";

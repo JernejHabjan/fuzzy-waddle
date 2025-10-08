@@ -1,4 +1,3 @@
-// noinspection ES6PreferShortImport
 import { FlySquasherLevelEnum } from "../../fly-squasher/fly-squasher";
 
 export type FlySquasherCommunicatorType = "score";

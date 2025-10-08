@@ -5,22 +5,22 @@
 import OnPointerDownScript from "../../../../shared/game/phaser/script-nodes-basic/OnPointerDownScript";
 /* START-USER-IMPORTS */
 import { ProbableWaffleScene } from "../../core/probable-waffle.scene";
-import { getSceneComponent, getSceneService } from "../../scenes/components/scene-component-helpers";
-import { TilemapComponent } from "../../scenes/components/tilemap.component";
-import { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import { getSceneComponent, getSceneService } from "../../world/services/scene-component-helpers";
+import { TilemapComponent } from "../../world/tilemap/tilemap.component";
+import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { getActorComponent } from "../../data/actor-component";
-import { ObjectDescriptorComponent } from "../../entity/actor/components/object-descriptor-component";
+import { ObjectDescriptorComponent } from "../../entity/components/object-descriptor-component";
 import { getTileCoordsUnderObject } from "../../library/tile-under-object";
-import { OwnerComponent } from "../../entity/actor/components/owner-component";
-import HudProbableWaffle from "../../scenes/HudProbableWaffle";
-import { MultiSelectionHandler } from "../../world/managers/controllers/input/multi-selection.handler";
-import { NavigationService } from "../../scenes/services/navigation.service";
+import { OwnerComponent } from "../../entity/components/owner-component";
+import HudProbableWaffle from "../../world/scenes/hud-scenes/HudProbableWaffle";
+import { MultiSelectionHandler } from "../../player/human-controller/multi-selection.handler";
+import { NavigationService } from "../../world/services/navigation.service";
 import { throttle } from "../../library/throttle";
-import { FogOfWarComponent, FogOfWarMode } from "../../scenes/components/fog-of-war.component";
-import { VisionComponent } from "../../entity/actor/components/vision-component";
-import { PlayerActionsHandler } from "../../world/managers/controllers/PlayerActionsHandler";
-import { GameObjectActionAssignerConfig } from "../../world/managers/controllers/game-object-action-assigner";
-import { OrderType } from "../../entity/character/ai/order-type";
+import { FogOfWarComponent, FogOfWarMode } from "../../world/tilemap/fog-of-war.component";
+import { VisionComponent } from "../../entity/components/vision-component";
+import { PlayerActionsHandler } from "../../player/human-controller/player-actions-handler";
+import { type GameObjectActionAssignerConfig } from "./game-object-action-assigner";
+import { OrderType } from "../../ai/order-type";
 /* END-USER-IMPORTS */
 
 export default class Minimap extends Phaser.GameObjects.Container {
@@ -200,7 +200,7 @@ export default class Minimap extends Phaser.GameObjects.Container {
 
     for (let i = 0; i < widthInTiles; i++) {
       for (let j = 0; j < widthInTiles; j++) {
-        const tile = layerData[i][j];
+        const tile = layerData[i]![j]!;
         const baseColor = this.getColorFromTiledProperty(tile) ?? Phaser.Display.Color.RandomRGB();
 
         // Get tile visibility and apply appropriate color/alpha
@@ -350,7 +350,7 @@ export default class Minimap extends Phaser.GameObjects.Container {
     return null;
   }
 
-  destroy(fromScene?: boolean) {
+  override destroy(fromScene?: boolean) {
     this.minimapDiamonds.forEach((diamond) => diamond.destroy());
     this.actorDiamonds.forEach((diamond) => diamond.destroy());
     this.probableWaffleScene?.events.off(NavigationService.UpdateNavigationEvent, this.throttleRedrawMinimap, this);

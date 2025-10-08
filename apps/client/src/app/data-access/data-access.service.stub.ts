@@ -1,5 +1,5 @@
 import { SupabaseClient } from "@supabase/supabase-js";
-import { DataAccessServiceInterface } from "./data-access.service.interface";
+import { type DataAccessServiceInterface } from "./data-access.service.interface";
 
 export const dataAccessServiceStub = {
   get supabase(): SupabaseClient {

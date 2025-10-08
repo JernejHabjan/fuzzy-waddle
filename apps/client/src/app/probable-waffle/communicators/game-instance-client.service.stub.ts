@@ -1,21 +1,21 @@
 import {
-  DifficultyModifiers,
-  MapTuning,
-  PositionPlayerDefinition,
-  ProbableWaffleDataChangeEventProperty,
-  ProbableWaffleGameFoundEvent,
+  type DifficultyModifiers,
+  type MapTuning,
+  type PositionPlayerDefinition,
+  type ProbableWaffleDataChangeEventProperty,
+  type ProbableWaffleGameFoundEvent,
   ProbableWaffleGameInstance,
-  ProbableWaffleGameInstanceData,
-  ProbableWaffleGameInstanceMetadataData,
-  ProbableWaffleGameInstanceSaveData,
+  type ProbableWaffleGameInstanceData,
+  type ProbableWaffleGameInstanceMetadataData,
+  type ProbableWaffleGameInstanceSaveData,
   ProbableWaffleGameInstanceType,
   ProbableWaffleGameInstanceVisibility,
-  ProbableWaffleGameModeData,
-  ProbableWaffleGameStateData
+  type ProbableWaffleGameModeData,
+  type ProbableWaffleGameStateData
 } from "@fuzzy-waddle/api-interfaces";
 import { Observable, Subject } from "rxjs";
-import { MatchmakingOptions } from "../gui/online/matchmaking/matchmaking.component";
-import { GameInstanceClientServiceInterface } from "./game-instance-client.service.interface";
+import { type MatchmakingOptions } from "../gui/online/matchmaking/matchmaking.component";
+import { type GameInstanceClientServiceInterface } from "./game-instance-client.service.interface";
 
 export const gameInstanceClientServiceStub = {
   gameInstance: undefined as ProbableWaffleGameInstance | undefined,

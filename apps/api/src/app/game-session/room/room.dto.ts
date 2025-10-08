@@ -3,13 +3,13 @@ import { IsNotEmpty, IsString } from "class-validator";
 export class RoomDto {
   @IsString()
   @IsNotEmpty()
-  roomName: string;
+  roomName!: string;
 
   @IsString()
   @IsNotEmpty()
-  roomDescription: string;
+  roomDescription!: string;
 
   @IsString()
   @IsNotEmpty()
-  roomType: string;
+  roomType!: string;
 }

@@ -1,6 +1,6 @@
 import { filter, Observable, Subject, Subscription, take } from "rxjs";
 import { Socket } from "ngx-socket-io";
-import { CommunicatorEvent } from "@fuzzy-waddle/api-interfaces";
+import type { CommunicatorEvent } from "@fuzzy-waddle/api-interfaces";
 
 export class TwoWayCommunicator<T, K> {
   private onSubject: Subject<T> = new Subject<T>();

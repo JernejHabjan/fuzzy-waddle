@@ -66,7 +66,7 @@ export default class Faune extends Phaser.Physics.Arcade.Sprite {
     }
   }
 
-  preUpdate(t: number, dt: number) {
+  override preUpdate(t: number, dt: number) {
     super.preUpdate(t, dt);
     switch (this.healthState) {
       case HealthState.HEALTHY:
@@ -82,7 +82,13 @@ export default class Faune extends Phaser.Physics.Arcade.Sprite {
     }
   }
 
-  update(cursors: Phaser.Types.Input.Keyboard.CursorKeys, t: number, dt: number, joystick?: any, joystickRight?: any) {
+  override update(
+    cursors: Phaser.Types.Input.Keyboard.CursorKeys,
+    t: number,
+    dt: number,
+    joystick?: any,
+    joystickRight?: any
+  ) {
     super.update(t, dt);
 
     if (this.healthState === HealthState.DAMAGE || this.healthState === HealthState.DEAD) {

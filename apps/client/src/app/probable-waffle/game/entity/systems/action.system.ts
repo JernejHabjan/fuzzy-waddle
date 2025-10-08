@@ -1,31 +1,31 @@
 import { onObjectReady } from "../../data/game-object-helper";
 import { Subscription } from "rxjs";
 import { getCommunicator, getCurrentPlayerNumber } from "../../data/scene-data";
-import { SelectableComponent } from "../actor/components/selectable-component";
+import { SelectableComponent } from "../components/selectable-component";
 import { getActorComponent } from "../../data/actor-component";
-import { HealthComponent } from "../combat/components/health-component";
-import { PawnAiController } from "../../world/managers/controllers/player-pawn-ai-controller/pawn-ai-controller";
-import { IdComponent } from "../actor/components/id-component";
-import { AttackComponent } from "../combat/components/attack-component";
-import { OrderData } from "../character/ai/OrderData";
-import { OrderType } from "../character/ai/order-type";
-import { GathererComponent } from "../actor/components/gatherer-component";
-import { ResourceDrainComponent } from "../economy/resource/resource-drain-component";
-import { OwnerComponent } from "../actor/components/owner-component";
-import { ConstructionSiteComponent } from "../building/construction/construction-site-component";
-import { BuilderComponent } from "../actor/components/builder-component";
-import { ActorTranslateComponent } from "../actor/components/actor-translate-component";
-import { HealingComponent } from "../combat/components/healing-component";
-import { ContainerComponent } from "../building/container-component";
-import { ResourceSourceComponent } from "../economy/resource/resource-source-component";
+import { HealthComponent } from "../components/combat/components/health-component";
+import { PawnAiController } from "../../prefabs/ai-agents/pawn-ai-controller";
+import { IdComponent } from "../components/id-component";
+import { AttackComponent } from "../components/combat/components/attack-component";
+import { OrderData } from "../../ai/OrderData";
+import { OrderType } from "../../ai/order-type";
+import { GathererComponent } from "../components/resource/gatherer-component";
+import { ResourceDrainComponent } from "../components/resource/resource-drain-component";
+import { OwnerComponent } from "../components/owner-component";
+import { ConstructionSiteComponent } from "../components/construction/construction-site-component";
+import { BuilderComponent } from "../components/construction/builder-component";
+import { ActorTranslateComponent } from "../components/movement/actor-translate-component";
+import { HealingComponent } from "../components/combat/components/healing-component";
+import { ContainerComponent } from "../components/building/container-component";
+import { ResourceSourceComponent } from "../components/resource/resource-source-component";
 import { environment } from "../../../../../environments/environment";
-import { getSceneService } from "../../scenes/components/scene-component-helpers";
-import { DebuggingService } from "../../scenes/services/DebuggingService";
-import { ContainableComponent } from "../actor/components/containable-component";
-import { AudioActorComponent } from "../actor/components/audio-actor-component";
-import { WalkableComponent } from "../actor/components/walkable-component";
-import { FlightComponent } from "../actor/components/flight-component";
-import { GameObjectActionAssignerConfig } from "../../world/managers/controllers/game-object-action-assigner";
+import { getSceneService } from "../../world/services/scene-component-helpers";
+import { DebuggingService } from "../../world/services/DebuggingService";
+import { ContainableComponent } from "../components/building/containable-component";
+import { AudioActorComponent } from "../components/actor-audio/audio-actor-component";
+import { WalkableComponent } from "../components/movement/walkable-component";
+import { FlyingComponent } from "../components/movement/flying-component";
+import { type GameObjectActionAssignerConfig } from "../../prefabs/gui/game-object-action-assigner";
 
 export class ActionSystem {
   private playerChangedSubscription?: Subscription;
@@ -123,7 +123,7 @@ export class ActionSystem {
         // ally
 
         const targetIsWalkable = getActorComponent(targetGameObject, WalkableComponent);
-        const selfHasFlying = getActorComponent(this.gameObject, FlightComponent);
+        const selfHasFlying = getActorComponent(this.gameObject, FlyingComponent);
         if (targetIsWalkable && !selfHasFlying) {
           // target is walkable and self is not flying
           return new OrderData(OrderType.Move, { targetGameObject });

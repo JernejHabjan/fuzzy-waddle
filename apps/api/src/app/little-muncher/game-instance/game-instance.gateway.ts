@@ -2,19 +2,10 @@ import { WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { Server } from "net";
 import {
   LittleMuncherGatewayEvent,
-  LittleMuncherRoomEvent,
-  LittleMuncherSpectatorEvent
+  type LittleMuncherRoomEvent,
+  type LittleMuncherSpectatorEvent
 } from "@fuzzy-waddle/api-interfaces";
-import { GameInstanceGatewayInterface } from "./game-instance.gateway.interface";
-
-export const GameInstanceGatewayStub = {
-  emitRoom(roomEvent: LittleMuncherRoomEvent) {
-    //
-  },
-  emitSpectator(spectatorEvent: LittleMuncherSpectatorEvent) {
-    //
-  }
-} satisfies GameInstanceGatewayInterface;
+import { type GameInstanceGatewayInterface } from "./game-instance.gateway.interface";
 
 @WebSocketGateway({
   cors: {
@@ -22,13 +13,13 @@ export const GameInstanceGatewayStub = {
   }
 })
 export class GameInstanceGateway implements GameInstanceGatewayInterface {
-  @WebSocketServer() private readonly server: Server;
+  @WebSocketServer() private readonly server!: Server;
 
-  emitRoom(roomEvent: LittleMuncherRoomEvent) {
+  emitRoom(roomEvent: LittleMuncherRoomEvent): void {
     this.server.emit(LittleMuncherGatewayEvent.LittleMuncherRoom, roomEvent);
   }
 
-  emitSpectator(spectatorEvent: LittleMuncherSpectatorEvent) {
+  emitSpectator(spectatorEvent: LittleMuncherSpectatorEvent): void {
     // todo??? this.server.emit(LittleMuncherGatewayEvent.Spectator, spectatorEvent);
   }
 }

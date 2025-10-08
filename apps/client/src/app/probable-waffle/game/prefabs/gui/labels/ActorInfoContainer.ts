@@ -8,16 +8,17 @@ import ProgressBar from "../ProgressBar";
 import ActorDetails from "./ActorDetails";
 import ActorInfoLabels from "./ActorInfoLabels";
 /* START-USER-IMPORTS */
-import HudProbableWaffle from "../../../scenes/HudProbableWaffle";
+import HudProbableWaffle from "../../../world/scenes/hud-scenes/HudProbableWaffle";
 import { Subscription } from "rxjs";
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { getCurrentPlayerNumber, getSelectedActors, listenToSelectionEvents } from "../../../data/scene-data";
-import { ActorInfoDefinition, pwActorDefinitions } from "../../../data/actor-definitions";
+import { pwActorDefinitions } from "../../definitions/actor-definitions";
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { getActorComponent } from "../../../data/actor-component";
-import { HealthComponent } from "../../../entity/combat/components/health-component";
-import { ConstructionSiteComponent } from "../../../entity/building/construction/construction-site-component";
-import { OwnerComponent } from "../../../entity/actor/components/owner-component";
+import { HealthComponent } from "../../../entity/components/combat/components/health-component";
+import { ConstructionSiteComponent } from "../../../entity/components/construction/construction-site-component";
+import { OwnerComponent } from "../../../entity/components/owner-component";
+import type { PrefabDefinition } from "../../definitions/prefab-definition";
 /* END-USER-IMPORTS */
 
 export default class ActorInfoContainer extends Phaser.GameObjects.Container {
@@ -97,6 +98,7 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
         return;
       }
       const actor = selectedActors[0];
+      if (!actor) throw new Error("Actor not found");
       const definition = pwActorDefinitions[actor.name as ObjectNames];
       this.setActorInfoLabel(definition);
       if (selectedActors.length === 1) {
@@ -121,7 +123,7 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
     }
   }
 
-  private setActorInfoLabel(actorDefinition: ActorInfoDefinition) {
+  private setActorInfoLabel(actorDefinition: PrefabDefinition) {
     const infoDefinition = actorDefinition.components?.info;
     this.actorInfoLabel.setText(infoDefinition?.name ?? "");
     this.actorInfoLabel.setIcon(infoDefinition?.smallImage?.key, infoDefinition?.smallImage?.frame);
@@ -175,7 +177,7 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
     return actorPlayerNr === currentPlayerNr;
   }
 
-  destroy(fromScene?: boolean) {
+  override destroy(fromScene?: boolean) {
     super.destroy(fromScene);
     this.selectionChangedSubscription?.unsubscribe();
     this.actorKillSubscription?.unsubscribe();

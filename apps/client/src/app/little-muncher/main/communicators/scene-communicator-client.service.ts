@@ -1,5 +1,5 @@
 import { inject, Injectable } from "@angular/core";
-import { SceneCommunicatorClientServiceInterface } from "./scene-communicator-client.service.interface";
+import { type SceneCommunicatorClientServiceInterface } from "./scene-communicator-client.service.interface";
 import { LittleMuncherCommunicatorService } from "./little-muncher-communicator.service";
 import { AuthenticatedSocketService } from "../../../data-access/chat/authenticated-socket.service";
 
