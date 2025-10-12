@@ -777,7 +777,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     reason: ProductionInvalidReason | null;
   } {
     const playerNumber = getCurrentPlayerNumber(this.mainSceneWithActors)!;
-    const validation = ProductionValidator.validateForScene(this.mainSceneWithActors, playerNumber, objectName);
+    const validation = ProductionValidator.validateObject(this.mainSceneWithActors, playerNumber, objectName);
     let disabled = !!validation?.prereqs?.length;
     let disabledDescription: string | null = null;
     let reason: ProductionInvalidReason | null = null;

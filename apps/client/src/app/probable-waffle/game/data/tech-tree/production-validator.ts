@@ -1,10 +1,10 @@
 // Centralized production & queue validation using tech tree, supply & resource state.
-import { ObjectNames, ProbableWafflePlayer, ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { FactionType, ObjectNames, ProbableWafflePlayer, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PlayerAiBlackboard } from "../../player/ai-controller/player-ai-blackboard";
 import { TechTreeService } from "./tech-tree.service";
 import { getCostForObjectName } from "../../entity/components/production/cost-utils";
-import { getSceneService, getSceneSystem } from "../../world/services/scene-component-helpers";
-import { AiPlayerHandler } from "../../player/ai-controller/ai-player-handler";
+import { getSceneService } from "../../world/services/scene-component-helpers";
+import { getPlayer } from "../scene-data";
 
 export enum ProductionInvalidReason {
   TechLocked = "tech_locked",
@@ -35,17 +35,8 @@ export class ProductionValidator {
     const techSvc = getSceneService(this.scene, TechTreeService);
     const faction = this.player.factionType;
     // Tech checks
-    if (techSvc && faction != null) {
-      if (!techSvc.isUnlocked(faction, actorName)) {
-        const prereqs = techSvc.getPrerequisites(faction, actorName);
-        if (prereqs.length > 0) {
-          result.canQueue = false;
-          result.techBlocked = true;
-          result.prereqs = prereqs;
-          result.reason = ProductionInvalidReason.TechLocked;
-        }
-      }
-    }
+    ProductionValidator.validateTechPrerequisites(techSvc, faction, actorName, result);
+
     // Supply check (simple): if projected queued would exceed capacity
     const supply = this.blackboard.production.supply;
     if (supply.max > 0 && supply.used + supply.pendingFromQueued >= supply.max) {
@@ -84,27 +75,48 @@ export class ProductionValidator {
     // Optionally also push final target marker (optional): keep lean for now.
   }
 
-  static validateForScene(
-    scene: Phaser.Scene,
-    playerNumber: number,
-    actorName: ObjectNames
-  ): ProductionValidationResult | null {
-    try {
-      // Retrieve AI controller via system -> AiPlayerHandler
-      // We avoid direct import here to keep coupling low; dynamic require style access.
-      const handler = getSceneSystem(scene, AiPlayerHandler);
-      if (!handler) return null;
-      const controller = handler.getAiPlayerController(playerNumber);
-      if (!controller) return null;
-      const validator = new ProductionValidator(scene, controller.player, controller.blackboard);
-      const validation = validator.validate(actorName);
-      if (ProductionValidator.debugEnabled && validation && !validation.canQueue) {
-        // eslint-disable-next-line no-console
-        console.debug("[ProductionValidator] UI block", { actorName, validation });
+  private static validateTechPrerequisites(
+    techSvc: TechTreeService | undefined,
+    faction: FactionType | undefined,
+    actorName: ObjectNames,
+    result: ProductionValidationResult
+  ) {
+    if (techSvc && faction != null) {
+      if (!techSvc.isUnlocked(faction, actorName)) {
+        const prereqs = techSvc.getPrerequisites(faction, actorName);
+        if (prereqs.length > 0) {
+          result.canQueue = false;
+          result.techBlocked = true;
+          result.prereqs = prereqs;
+          result.reason = ProductionInvalidReason.TechLocked;
+        }
       }
-      return validation;
-    } catch {
-      return null;
     }
+  }
+
+  static validateObject(scene: Phaser.Scene, playerNumber: number, actorName: ObjectNames): ProductionValidationResult {
+    const result: ProductionValidationResult = { canQueue: true, prereqs: [] };
+    const player = getPlayer(scene, playerNumber);
+    if (!player) {
+      result.canQueue = false;
+      return result;
+    }
+
+    // Tech checks
+    const techSvc = getSceneService(scene, TechTreeService);
+    const faction = player.factionType;
+    ProductionValidator.validateTechPrerequisites(techSvc, faction, actorName, result);
+
+    // Resource cost check
+    const cost = getCostForObjectName(actorName);
+    result.cost = cost;
+    if (result.canQueue && cost) {
+      if (!player.canPayAllResources(cost)) {
+        result.canQueue = false;
+        result.reason = ProductionInvalidReason.NotEnoughResources;
+      }
+    }
+
+    return result;
   }
 }
