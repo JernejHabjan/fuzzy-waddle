@@ -77,6 +77,7 @@ import Wolf from "../../../prefabs/animals/wolf/Wolf";
 import Stag from "../../../prefabs/animals/stag/Stag";
 import Boar from "../../../prefabs/animals/boar/Boar";
 import Badger from "../../../prefabs/animals/badger/Badger";
+import Emberstone from "../../../prefabs/buildings/skaduwee/Emberstone";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -812,6 +813,10 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     const tree_17 = new Tree4(this, 960, 720);
     this.add.existing(tree_17);
 
+    // emberstone
+    const emberstone = new Emberstone(this, 896, 864);
+    this.add.existing(emberstone);
+
     // spawn (components)
     const spawnEditorOwner = new EditorOwner(spawn);
     spawnEditorOwner.owner_id = "1";
@@ -955,6 +960,10 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
 
     // treeBird_1 (prefab fields)
     treeBird_1.z = 64;
+
+    // emberstone (components)
+    const emberstoneEditorOwner = new EditorOwner(emberstone);
+    emberstoneEditorOwner.owner_id = "2";
 
     this.tilemap = tilemap;
 

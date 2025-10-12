@@ -40,6 +40,7 @@ import { tree11Definition } from "../outside/foliage/trees/resources/tree11.defi
 import { mineralsDefinition } from "../outside/resources/minerals/minerals.definition";
 import { stonePileDefinition } from "../outside/resources/stone-pile/stone-pile.definition";
 import type { PrefabDefinition } from "./prefab-definition";
+import { emberstoneDefinition } from "../buildings/skaduwee/Emberstone/emberstone.definition";
 
 export const pwActorDefinitions: {
   [key in ObjectNames]: PrefabDefinition;
@@ -58,6 +59,7 @@ export const pwActorDefinitions: {
   TivaraWorkerMale: tivaraWorkerMaleDefinition,
   AnkGuard: ankGuardDefinition,
   Olival: olivalDefinition,
+  Emberstone: emberstoneDefinition,
   Sandhold: sandholdDefinition,
   Temple: templeDefinition,
   WorkMill: workMillDefinition,
