@@ -47,7 +47,7 @@ export const skaduweeWarriorMaleDefinition = {
     },
     health: {
       physicalState: ActorPhysicalType.Biological,
-      maxHealth: 100
+      maxHealth: 150
     },
     attack: {
       attacks: [weaponDefinitions.axe]

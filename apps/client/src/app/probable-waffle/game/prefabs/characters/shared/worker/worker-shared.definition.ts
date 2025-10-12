@@ -12,7 +12,7 @@ export const generalWorkerDefinitions: Partial<PrefabDefinition> = {
     },
     health: {
       physicalState: ActorPhysicalType.Biological,
-      maxHealth: 100
+      maxHealth: 50
     },
     attack: {
       attacks: [weaponDefinitions.hands]

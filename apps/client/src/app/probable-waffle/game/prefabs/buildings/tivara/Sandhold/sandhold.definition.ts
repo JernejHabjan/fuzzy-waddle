@@ -44,8 +44,8 @@ export const sandholdDefinition = {
     },
     health: {
       physicalState: ActorPhysicalType.Structural,
-      maxHealth: 100,
-      maxArmour: 50
+      maxHealth: 500,
+      maxArmour: 300
     },
     productionCost: {
       resources: {

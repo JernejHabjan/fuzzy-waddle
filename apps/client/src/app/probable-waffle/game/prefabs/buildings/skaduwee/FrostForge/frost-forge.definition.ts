@@ -43,7 +43,8 @@ export const frostForgeDefinition = {
     },
     health: {
       physicalState: ActorPhysicalType.Structural,
-      maxHealth: 100
+      maxHealth: 500,
+      maxArmour: 300
     },
     productionCost: {
       resources: {

@@ -15,8 +15,8 @@ export const treeDefinitions = {
     selectable: {},
     resourceSource: {
       resourceType: ResourceType.Wood,
-      maximumResources: 20,
-      gatheringFactor: 1
+      maximumResources: 200,
+      gatheringFactor: 10
     },
     audio: {
       sounds: {

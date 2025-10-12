@@ -45,7 +45,7 @@ export const skaduweeOwlDefinition = {
     },
     health: {
       physicalState: ActorPhysicalType.Biological,
-      maxHealth: 100
+      maxHealth: 80
     },
     attack: {
       attacks: [weaponDefinitions.furball]

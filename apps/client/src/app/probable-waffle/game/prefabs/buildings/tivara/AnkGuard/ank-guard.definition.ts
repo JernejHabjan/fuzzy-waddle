@@ -43,7 +43,7 @@ export const ankGuardDefinition = {
     },
     health: {
       physicalState: ActorPhysicalType.Structural,
-      maxHealth: 100
+      maxHealth: 400
     },
     productionCost: {
       resources: {

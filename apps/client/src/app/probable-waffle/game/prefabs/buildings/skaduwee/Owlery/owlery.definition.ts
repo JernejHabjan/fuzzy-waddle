@@ -43,7 +43,8 @@ export const owleryDefinition = {
     },
     health: {
       physicalState: ActorPhysicalType.Structural,
-      maxHealth: 100
+      maxHealth: 200,
+      maxArmour: 200
     },
     productionCost: {
       resources: {

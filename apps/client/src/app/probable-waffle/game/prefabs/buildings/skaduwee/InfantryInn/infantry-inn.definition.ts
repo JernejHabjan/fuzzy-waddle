@@ -40,7 +40,7 @@ export const infantryInnDefinition = {
     },
     health: {
       physicalState: ActorPhysicalType.Structural,
-      maxHealth: 100
+      maxHealth: 400
     },
     productionCost: {
       resources: {
