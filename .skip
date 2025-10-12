@@ -57,7 +57,8 @@ apps/client/src/app/probable-waffle/game/library
 apps/client/src/app/probable-waffle/game/player
 apps/client/src/app/probable-waffle/game/scenes/components
 apps/client/src/app/probable-waffle/game/scenes/services
-apps/client/src/app/probable-waffle/game/world
+apps/client/src/app/probable-waffle/game/world/services
+apps/client/src/app/probable-waffle/game/world/tilemap
 apps/client/src/app/shared/game/communicators
 apps/client/src/app/shared/game/phaser/scene
 apps/client/src/app/shared/game/base-game.config.ts

@@ -2162,6 +2162,21 @@
             "label": "tree_17",
             "x": 960,
             "y": 720
+        },
+        {
+            "prefabId": "562e6de3-f2af-48c3-b297-7d67a34dfe91",
+            "id": "2761ac46-5ded-40b0-95e0-336fd5d5ed76",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "emberstone",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "2",
+            "x": 896,
+            "y": 864
         }
     ],
     "plainObjects": [
