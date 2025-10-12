@@ -81,7 +81,13 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
   private healthSubscription?: Subscription;
   private armourSubscription?: Subscription;
 
-  showActorAttributes(actor: GameObject, definition: PrefabDefinition) {
+  static getActorAttributeIconsAndTexts(definition: PrefabDefinition): {
+    icon: {
+      key: string;
+      frame: string;
+    };
+    text: string;
+  }[] {
     const iconsAndTexts: {
       icon: {
         key: string;
@@ -128,16 +134,36 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
       });
     }
 
+    const maxHealth = definition.components?.health?.maxHealth;
+    if (maxHealth) {
+      iconsAndTexts.push({ icon: { key: "gui", frame: "actor_info_icons/heart.png" }, text: maxHealth.toString() });
+    }
+
+    const maxArmour = definition.components?.health?.maxArmour;
+    if (maxArmour) {
+      iconsAndTexts.push({ icon: { key: "gui", frame: "actor_info_icons/shield.png" }, text: maxArmour.toString() });
+    }
+    return iconsAndTexts;
+  }
+
+  showActorAttributes(actor: GameObject, definition: PrefabDefinition) {
+    const iconsAndTexts = ActorDetails.getActorAttributeIconsAndTexts(definition);
+
     const healthComponent = getActorComponent(actor, HealthComponent);
     const maxHealth = definition.components?.health?.maxHealth;
     this.healthSubscription?.unsubscribe();
     if (maxHealth) {
       const currentHealth = Math.round(healthComponent!.healthComponentData!.health);
       const health = `${currentHealth}/${maxHealth}`;
-      const iconIndex = iconsAndTexts.push({ icon: { key: "gui", frame: "actor_info_icons/heart.png" }, text: health });
+      const healthInfo = iconsAndTexts.find((i) => i.icon.frame === "actor_info_icons/heart.png");
+      if (healthInfo) {
+        healthInfo.text = health;
+      }
 
       this.healthSubscription = healthComponent!.healthChanged.subscribe((newHealth) => {
-        const attribute = this.attributes[iconIndex - 1];
+        const attribute = this.attributes.find(
+          (a) => a.icon.frame.texture.key === "gui" && a.icon.frame.name === "actor_info_icons/heart.png"
+        );
         if (!attribute) return;
         attribute.setText(`${Math.round(newHealth)}/${maxHealth}`);
       });
@@ -148,13 +174,15 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
     if (maxArmour) {
       const currentArmour = Math.round(healthComponent!.healthComponentData.armour);
       const armour = `${currentArmour}/${maxArmour}`;
-      const iconIndex = iconsAndTexts.push({
-        icon: { key: "gui", frame: "actor_info_icons/shield.png" },
-        text: armour
-      });
+      const armourInfo = iconsAndTexts.find((i) => i.icon.frame === "actor_info_icons/shield.png");
+      if (armourInfo) {
+        armourInfo.text = armour;
+      }
 
       this.armourSubscription = healthComponent!.armorChanged.subscribe((newArmour) => {
-        const icon = this.attributes[iconIndex - 1];
+        const icon = this.attributes.find(
+          (a) => a.icon.frame.texture.key === "gui" && a.icon.frame.name === "actor_info_icons/shield.png"
+        );
         if (!icon) return;
         icon.setText(`${Math.round(newArmour)}/${maxArmour}`);
       });

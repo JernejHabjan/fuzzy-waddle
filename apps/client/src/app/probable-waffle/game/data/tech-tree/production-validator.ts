@@ -115,7 +115,7 @@ export class ProductionValidator {
     // Resource cost check
     const cost = getCostForObjectName(actorName);
     result.cost = cost;
-    if (result.canQueue && cost) {
+    if (cost) {
       const totalCost = { ...currentCost };
       for (const resource in cost) {
         totalCost[resource as ResourceType] =

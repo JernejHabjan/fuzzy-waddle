@@ -35,7 +35,11 @@ import { OrderType } from "../../../ai/order-type";
 import { HealingComponent } from "../../../entity/components/combat/components/healing-component";
 import { GathererComponent } from "../../../entity/components/resource/gatherer-component";
 import { getPrimarySelectedActor } from "../../../data/selection-helpers";
-import { ProductionInvalidReason, ProductionValidator } from "../../../data/tech-tree/production-validator";
+import {
+  ProductionInvalidReason,
+  type ProductionValidationResult,
+  ProductionValidator
+} from "../../../data/tech-tree/production-validator";
 import { getCommunicator, getPlayer } from "../../../data/scene-data";
 /* END-USER-IMPORTS */
 
@@ -557,7 +561,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
           throw new Error(`Info component not found for ${product}`);
         }
         // UI validation gating
-        const { disabled, disabledDescription, reason } = this.getProductionValidationState(product);
+        const { disabled, disabledDescription, reason, validation } = this.getProductionValidationState(product);
 
         const action = this.actor_actions[index];
         if (!action) {
@@ -623,7 +627,9 @@ export default class ActorActions extends Phaser.GameObjects.Container {
             iconKey: info.smallImage.key!,
             iconFrame: info.smallImage.frame,
             iconOrigin: info.smallImage.origin ?? { x: 0.5, y: 0.5 },
-            description: disabledDescription ?? info.description
+            description: disabledDescription ?? info.description,
+            definition: actorDefinition,
+            unmetRequirements: validation?.prereqs
           },
           // Use letter shortcuts from handler (Q..O)
           shortcut: this.HOTKEYS[localIndex]
@@ -697,7 +703,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         throw new Error(`Info component not found for ${building}`);
       }
       // UI validation gating
-      const { disabled, disabledDescription, reason } = this.getProductionValidationState(building);
+      const { disabled, disabledDescription, reason, validation } = this.getProductionValidationState(building);
 
       const action = this.actor_actions[index];
       if (!action) {
@@ -725,7 +731,9 @@ export default class ActorActions extends Phaser.GameObjects.Container {
           iconKey: info.smallImage.key!,
           iconFrame: info.smallImage.frame,
           iconOrigin: info.smallImage.origin ?? { x: 0.5, y: 0.5 },
-          description: disabledDescription ?? info.description
+          description: disabledDescription ?? info.description,
+          definition: actorDefinition,
+          unmetRequirements: validation?.prereqs
         },
         // Use letter shortcuts from handler (Q..O)
         shortcut: this.HOTKEYS[localIndex]
@@ -775,14 +783,17 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     disabled: boolean;
     disabledDescription: string | null;
     reason: ProductionInvalidReason | null;
+    validation: ProductionValidationResult | null;
   } {
     const playerNumber = getCurrentPlayerNumber(this.mainSceneWithActors)!;
     const validation = ProductionValidator.validateObject(this.mainSceneWithActors, playerNumber, objectName);
-    let disabled = !!validation?.prereqs?.length;
+    let disabled = !validation.canQueue;
     let disabledDescription: string | null = null;
-    let reason: ProductionInvalidReason | null = null;
-    if (disabled) {
-      disabledDescription = `Requires: ${validation!.prereqs.join(", ")}`;
+    let reason: ProductionInvalidReason | null = validation.reason ?? null;
+    if (validation.techBlocked) {
+      const requirementNames =
+        validation.prereqs?.map((req) => pwActorDefinitions[req]?.components?.info?.name ?? req).join(", ") ?? "";
+      disabledDescription = `Requires: ${requirementNames}`;
       reason = ProductionInvalidReason.TechLocked;
     }
 
@@ -797,7 +808,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       }
     }
 
-    return { disabled, disabledDescription, reason };
+    return { disabled, disabledDescription, reason, validation };
   }
 
   private playInvalidActionSfx(reason: ProductionInvalidReason | null) {

@@ -86,6 +86,10 @@ export class ProbableWafflePlayer extends BasePlayer<
     });
     return canAfford;
   }
+
+  canAffordHousing(housingNeeded: number) {
+    return this.playerState.data.housing.currentHousing + housingNeeded <= this.playerState.data.housing.maxHousing;
+  }
 }
 
 export interface ProbableWafflePlayerStateData extends BaseData {
