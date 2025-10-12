@@ -1,0 +1,48 @@
+{
+    "id": "0e262c51-e497-4b22-b8da-4b99fb226053",
+    "sceneType": "PREFAB",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 128,
+        "borderHeight": 128
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "90611f81-4f6a-4383-90b5-706bd8d1aac3",
+            "label": "container_1",
+            "hitArea.shape": "RECTANGLE",
+            "hitArea.x": -15.99154048826449,
+            "hitArea.y": -0.5352534599789038,
+            "hitArea.width": 32,
+            "hitArea.height": 10,
+            "x": 16,
+            "y": 55,
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "da1fb168-4fa6-402a-805d-6e7882f6fd32",
+                    "label": "buildings_skaduwee_emberstone_floor",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/tivara/olival/olival-floor.png"
+                    },
+                    "x": 0.008459511735509295,
+                    "y": 4.464746540021096
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}
