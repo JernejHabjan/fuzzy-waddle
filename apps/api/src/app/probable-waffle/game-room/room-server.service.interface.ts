@@ -1,11 +1,11 @@
-import { User } from "@supabase/supabase-js";
+import { type User } from "@supabase/supabase-js";
 import {
-  CommunicatorEvent,
-  ProbableWaffleCommunicatorType,
+  type CommunicatorEvent,
+  type ProbableWaffleCommunicatorType,
   ProbableWaffleGameInstance,
-  ProbableWaffleGetRoomsDto,
-  ProbableWaffleRoom,
-  RoomAction
+  type ProbableWaffleGetRoomsDto,
+  type ProbableWaffleRoom,
+  type RoomAction
 } from "@fuzzy-waddle/api-interfaces";
 
 export interface RoomServerServiceInterface {

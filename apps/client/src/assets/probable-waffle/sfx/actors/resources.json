@@ -1,7 +1,5 @@
 {
-  "resources": [
-    "assets/probable-waffle/sfx/actors/resources.mp3"
-  ],
+  "resources": ["assets/probable-waffle/sfx/actors/resources.mp3"],
   "spritemap": {
     "resources minerals selection 1": {
       "start": 0,

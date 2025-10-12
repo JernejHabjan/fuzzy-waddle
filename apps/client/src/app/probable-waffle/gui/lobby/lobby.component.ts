@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, inject, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, inject, type OnInit } from "@angular/core";
 import { MapDefinitionComponent } from "./map-definition/map-definition.component";
 import { PlayerDefinitionComponent } from "./player-definition/player-definition.component";
 import { SpectatorsGridComponent } from "./spectators-grid/spectators-grid.component";

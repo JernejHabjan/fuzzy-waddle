@@ -1,7 +1,5 @@
 {
-  "resources": [
-    "assets/probable-waffle/sfx/actors/foliage.mp3"
-  ],
+  "resources": ["assets/probable-waffle/sfx/actors/foliage.mp3"],
   "spritemap": {
     "bush rustle 1": {
       "start": 0,

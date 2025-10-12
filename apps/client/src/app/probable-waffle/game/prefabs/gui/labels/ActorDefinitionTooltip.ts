@@ -4,7 +4,7 @@
 
 /* START-USER-IMPORTS */
 import { IconHelper } from "./IconHelper";
-import { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
+import type { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 /* END-USER-IMPORTS */
 
 export default class ActorDefinitionTooltip extends Phaser.GameObjects.Container {

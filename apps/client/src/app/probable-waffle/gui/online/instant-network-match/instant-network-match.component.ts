@@ -1,4 +1,4 @@
-import { Component, HostListener, inject, OnDestroy, OnInit } from "@angular/core";
+import { Component, HostListener, inject, type OnDestroy, type OnInit } from "@angular/core";
 
 import { LoaderComponent } from "../../../../shared/loader/loader.component";
 import { MatchmakingService } from "../matchmaking/matchmaking.service";

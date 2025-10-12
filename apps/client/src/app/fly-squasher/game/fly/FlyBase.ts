@@ -1,0 +1,88 @@
+import { Utils } from "phaser";
+import { ComponentService, type IFlyBase } from "./component.service";
+import { BaseScene } from "../../../shared/game/phaser/scene/base.scene";
+
+export abstract class FlyBase implements IFlyBase {
+  components: ComponentService;
+  /**
+   * unique name
+   */
+  readonly name: string;
+  destroyed = false;
+  killed = false;
+  killedAt?: Date;
+
+  /**
+   * time until actor is finally destroyed from scene (in sec)
+   */
+  despawnTime = 10;
+
+  protected constructor(
+    protected readonly options?: {
+      scene?: BaseScene;
+    }
+  ) {
+    this.name = Utils.String.UUID();
+    this.components = new ComponentService(this.name);
+    if (options?.scene) {
+      options.scene.subscribe(options.scene.onUpdate.subscribe((u) => this.update(u.time, u.delta)));
+      options.scene.subscribe(options.scene.onShutdown.subscribe(() => this.destroy()));
+    }
+  }
+
+  /**
+   * initialize all mandatory actor properties that cannot be set in constructor
+   */
+  init() {
+    // pass
+  }
+
+  /**
+   * init all components for the actor
+   */
+  initComponents(): void {
+    // pass
+  }
+
+  /**
+   * as actor is fully initialized, init and start all components
+   */
+  start(): void {
+    this.components.init();
+    this.components.start();
+  }
+
+  /**
+   * post initialize - to additionally prepare actor for world
+   */
+  postStart(): void {
+    // pass
+  }
+
+  registerGameObject(): void {
+    this.init();
+    this.initComponents();
+    this.start();
+    this.postStart();
+  }
+
+  update(time: number, delta: number) {
+    this.components.update(time, delta);
+  }
+
+  kill(): void {
+    if (this.killed) return;
+    this.killed = true;
+    this.killedAt = new Date();
+
+    // destroy actor after a delay
+    setTimeout(() => {
+      this.destroy();
+    }, this.despawnTime * 1000);
+  }
+
+  destroy(): void {
+    this.destroyed = true;
+    this.components.destroy();
+  }
+}

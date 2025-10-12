@@ -1,4 +1,4 @@
-import { ProbableWaffleGameInstanceSaveData } from "@fuzzy-waddle/api-interfaces";
+import { type ProbableWaffleGameInstanceSaveData } from "@fuzzy-waddle/api-interfaces";
 
 export abstract class GameInstanceStorageServiceInterface {
   abstract saveToStorage(gameInstanceSaveData: ProbableWaffleGameInstanceSaveData): Promise<void>;

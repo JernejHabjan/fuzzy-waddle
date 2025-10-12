@@ -1,0 +1,3 @@
+export const ANIM_TIVARA_BUILDINGS_ANKGUARD_FLAME = "tivara-buildings-ankguard-flame";
+export const ANIM_TIVARA_BUILDINGS_ANKGUARD_FLAME_STICK = "tivara-buildings-ankguard-flame-stick";
+export const ANIM_TIVARA_BUILDINGS_ANKGUARD_FLAG = "tivara-buildings-ankguard-flag";

@@ -1,26 +1,26 @@
 import { Injectable } from "@nestjs/common";
-import { User } from "@supabase/supabase-js";
+import { type User } from "@supabase/supabase-js";
 import {
-  GameInstanceDataDto,
+  type GameInstanceDataDto,
   GameSessionState,
-  LittleMuncherGameCreateDto,
+  type LittleMuncherGameCreateDto,
   LittleMuncherGameInstance,
-  LittleMuncherGameInstanceData,
-  LittleMuncherRoom,
-  LittleMuncherRoomEvent,
-  LittleMuncherSpectatorEvent,
-  RoomAction,
-  SpectatorAction
+  type LittleMuncherGameInstanceData,
+  type LittleMuncherRoom,
+  type LittleMuncherRoomEvent,
+  type LittleMuncherSpectatorEvent,
+  type RoomAction,
+  type SpectatorAction
 } from "@fuzzy-waddle/api-interfaces";
 import { Cron, CronExpression } from "@nestjs/schedule";
 import { GameInstanceGateway } from "./game-instance.gateway";
-import { GameInstanceServiceInterface } from "./game-instance.service.interface";
+import { type GameInstanceServiceInterface } from "./game-instance.service.interface";
 
 @Injectable()
 export class GameInstanceService implements GameInstanceServiceInterface {
-  constructor(private readonly gameInstanceGateway: GameInstanceGateway) {}
-
   openGameInstances: LittleMuncherGameInstance[] = [];
+
+  constructor(private readonly gameInstanceGateway: GameInstanceGateway) {}
 
   async startGame(body: GameInstanceDataDto, user: User) {
     const newGameInstance = new LittleMuncherGameInstance({
@@ -55,7 +55,7 @@ export class GameInstanceService implements GameInstanceServiceInterface {
 
   async spectatorJoined(body: GameInstanceDataDto, user: User): Promise<LittleMuncherGameInstanceData> {
     const gameInstance = this.findGameInstance(body.gameInstanceId);
-    if (!gameInstance) return;
+    if (!gameInstance) throw new Error("Game instance not found");
     gameInstance.initSpectator({
       userId: user.id
     });
@@ -99,7 +99,7 @@ export class GameInstanceService implements GameInstanceServiceInterface {
   getGameInstanceToRoom(gameInstance: LittleMuncherGameInstance): LittleMuncherRoom {
     return {
       gameInstanceMetadataData: gameInstance.gameInstanceMetadata.data,
-      gameModeData: gameInstance.gameMode
+      gameModeData: gameInstance.gameMode!
     };
   }
 
@@ -135,7 +135,7 @@ export class GameInstanceService implements GameInstanceServiceInterface {
       const lastUpdated = gi.gameInstanceMetadata.data.updatedOn;
       const now = new Date();
       // is old if started is more than N minutes ago and lastUpdated is null or more than N minutes ago
-      const startedMoreThanNMinutesAgo = started.getTime() + minutesAgo < now.getTime();
+      const startedMoreThanNMinutesAgo = started!.getTime() + minutesAgo < now.getTime();
       const lastUpdatedMoreThanNMinutesAgo = !lastUpdated || lastUpdated.getTime() + minutesAgo < now.getTime();
       const isOld = startedMoreThanNMinutesAgo && lastUpdatedMoreThanNMinutesAgo;
       if (isOld) {

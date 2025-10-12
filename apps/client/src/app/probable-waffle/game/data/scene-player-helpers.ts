@@ -1,7 +1,7 @@
 import { getAllPlayers, getSelectableSceneChildren } from "./scene-data";
 import { getActorComponent } from "./actor-component";
-import { OwnerComponent } from "../entity/actor/components/owner-component";
-import { HealthComponent } from "../entity/combat/components/health-component";
+import { OwnerComponent } from "../entity/components/owner-component";
+import { HealthComponent } from "../entity/components/combat/components/health-component";
 
 export class ScenePlayerHelpers {
   static getActorsByPlayer(

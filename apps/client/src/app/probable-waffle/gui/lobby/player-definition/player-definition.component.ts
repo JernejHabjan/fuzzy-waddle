@@ -3,13 +3,13 @@ import { FactionDefinitions } from "../../../game/player/faction-definitions";
 import { faCheck, faSpinner, faTimes } from "@fortawesome/free-solid-svg-icons";
 import {
   GameSetupHelpers,
-  PositionPlayerDefinition,
+  type PositionPlayerDefinition,
   ProbableWaffleAiDifficulty,
   ProbableWaffleGameInstanceType,
   ProbableWaffleLevels,
-  ProbableWaffleMapData,
+  type ProbableWaffleMapData,
   ProbableWafflePlayer,
-  ProbableWafflePlayerDataChangeEventProperty,
+  type ProbableWafflePlayerDataChangeEventProperty,
   ProbableWafflePlayerType
 } from "@fuzzy-waddle/api-interfaces";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";

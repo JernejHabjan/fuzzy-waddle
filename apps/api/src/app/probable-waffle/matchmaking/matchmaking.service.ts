@@ -1,28 +1,28 @@
 import { Injectable } from "@nestjs/common";
 import {
-  DifficultyModifiers,
+  type DifficultyModifiers,
   FactionType,
   GameSessionState,
   getRandomFactionType,
-  MapTuning,
-  PendingMatchmakingGameInstance,
-  PlayerLobbyDefinition,
-  PositionPlayerDefinition,
+  type MapTuning,
+  type PendingMatchmakingGameInstance,
+  type PlayerLobbyDefinition,
+  type PositionPlayerDefinition,
   ProbableWaffleGameInstance,
   ProbableWaffleGameInstanceType,
   ProbableWaffleGameInstanceVisibility,
   ProbableWaffleGameMode,
-  ProbableWaffleGameModeData,
-  ProbableWaffleGameStateData,
+  type ProbableWaffleGameModeData,
+  type ProbableWaffleGameStateData,
   ProbableWaffleLevels,
   ProbableWaffleMapEnum,
-  ProbableWafflePlayerControllerData,
+  type ProbableWafflePlayerControllerData,
   ProbableWafflePlayerType,
-  RequestGameSearchForMatchMakingDto
+  type RequestGameSearchForMatchMakingDto
 } from "@fuzzy-waddle/api-interfaces";
-import { User } from "@supabase/supabase-js";
+import { type User } from "@supabase/supabase-js";
 import { Cron, CronExpression } from "@nestjs/schedule";
-import { MatchmakingServiceInterface } from "./matchmaking.service.interface";
+import { type MatchmakingServiceInterface } from "./matchmaking.service.interface";
 import { GameInstanceService } from "../game-instance/game-instance.service";
 import { RoomServerService } from "../game-room/room-server.service";
 import { GameInstanceGateway } from "../game-instance/game-instance.gateway";
@@ -47,7 +47,7 @@ export class MatchmakingService implements MatchmakingServiceInterface {
       const lastUpdated = gi.gameInstance.gameInstanceMetadata.data.updatedOn;
       const now = new Date();
       // is old if started is more than N minutes ago and lastUpdated is null or more than N minutes ago
-      const startedMoreThanNMinutesAgo = started.getTime() + minutesAgo < now.getTime();
+      const startedMoreThanNMinutesAgo = started!.getTime() + minutesAgo < now.getTime();
       const lastUpdatedMoreThanNMinutesAgo = !lastUpdated || lastUpdated.getTime() + minutesAgo < now.getTime();
       const isOld = startedMoreThanNMinutesAgo && lastUpdatedMoreThanNMinutesAgo;
       if (isOld) {
@@ -68,8 +68,35 @@ export class MatchmakingService implements MatchmakingServiceInterface {
     }
   }
 
+  async stopRequestGameSearchForMatchmaking(user: User): Promise<void> {
+    // remove self as player from pending matchmaking game instances
+    // if game instance has no players left, then remove it
+    const pendingMatchMakingGameInstance = this.pendingMatchmakingGameInstances.find((gi) =>
+      gi.gameInstance.players.some((p) => p.playerController.data.userId === user.id)
+    );
+    if (!pendingMatchMakingGameInstance) return;
+    const gameInstanceId = pendingMatchMakingGameInstance.gameInstance.gameInstanceMetadata.data.gameInstanceId;
+    if (!gameInstanceId) return;
+    const player = pendingMatchMakingGameInstance.gameInstance.players.find(
+      (p) => p.playerController.data.userId === user.id
+    );
+    if (!player) return;
+
+    this.roomServerService.roomEvent("player.left", pendingMatchMakingGameInstance.gameInstance, user);
+    pendingMatchMakingGameInstance.gameInstance.players = pendingMatchMakingGameInstance.gameInstance.players.filter(
+      (p) => p.playerController.data.userId !== user.id
+    );
+    console.log("Ashes of the Ancients - Player left pending matchmaking instance", user.id);
+
+    if (pendingMatchMakingGameInstance.gameInstance.players.length === 0) {
+      this.removePendingMatchmakingGameInstance(gameInstanceId);
+      this.gameInstanceService.stopGameInstance(gameInstanceId, user);
+    }
+  }
+
   private promoteGameInstanceToLoaded(gameInstance: ProbableWaffleGameInstance, user: User) {
     const gameInstanceId = gameInstance.gameInstanceMetadata.data.gameInstanceId;
+    if (!gameInstanceId) return;
     this.pendingMatchmakingGameInstances = this.pendingMatchmakingGameInstances.filter(
       (gi) =>
         gi.gameInstance.gameInstanceMetadata.data.gameInstanceId !==
@@ -77,7 +104,7 @@ export class MatchmakingService implements MatchmakingServiceInterface {
     );
     gameInstance.gameInstanceMetadata.data.sessionState = GameSessionState.MovingPlayersToGame;
     this.gameInstanceGateway.emitGameFound({
-      userIds: gameInstance.players.map((p) => p.playerController.data.userId),
+      userIds: gameInstance.players.map((p) => p.playerController.data.userId!),
       gameInstanceId
     });
     this.roomServerService.roomEvent("game_instance_metadata", gameInstance, user);
@@ -97,7 +124,7 @@ export class MatchmakingService implements MatchmakingServiceInterface {
 
     // GAME MODE
     const mapPoolIds = pendingMatchmakingGameInstance.commonMapPoolIds;
-    const randomMapId = mapPoolIds[Math.floor(Math.random() * mapPoolIds.length)];
+    const randomMapId = mapPoolIds[Math.floor(Math.random() * mapPoolIds.length)] as ProbableWaffleMapEnum;
     gameInstance.gameMode = this.getNewMatchmakingGameMode(randomMapId);
     this.roomServerService.roomEvent("game_mode", gameInstance, user);
 
@@ -108,6 +135,7 @@ export class MatchmakingService implements MatchmakingServiceInterface {
       this.promoteGameInstanceToLoaded(gameInstance, user);
     }
   }
+
   private createGameInstanceForMatchmaking(matchMakingDto: RequestGameSearchForMatchMakingDto, user: User) {
     // create new one
     const newGameInstance = new ProbableWaffleGameInstance({
@@ -223,31 +251,6 @@ export class MatchmakingService implements MatchmakingServiceInterface {
       } satisfies MapTuning
     } satisfies ProbableWaffleGameModeData;
     return new ProbableWaffleGameMode(gameModeData);
-  }
-
-  async stopRequestGameSearchForMatchmaking(user: User): Promise<void> {
-    // remove self as player from pending matchmaking game instances
-    // if game instance has no players left, then remove it
-    const pendingMatchMakingGameInstance = this.pendingMatchmakingGameInstances.find((gi) =>
-      gi.gameInstance.players.some((p) => p.playerController.data.userId === user.id)
-    );
-    if (!pendingMatchMakingGameInstance) return;
-    const gameInstanceId = pendingMatchMakingGameInstance.gameInstance.gameInstanceMetadata.data.gameInstanceId;
-    const player = pendingMatchMakingGameInstance.gameInstance.players.find(
-      (p) => p.playerController.data.userId === user.id
-    );
-    if (!player) return;
-
-    this.roomServerService.roomEvent("player.left", pendingMatchMakingGameInstance.gameInstance, user);
-    pendingMatchMakingGameInstance.gameInstance.players = pendingMatchMakingGameInstance.gameInstance.players.filter(
-      (p) => p.playerController.data.userId !== user.id
-    );
-    console.log("Ashes of the Ancients - Player left pending matchmaking instance", user.id);
-
-    if (pendingMatchMakingGameInstance.gameInstance.players.length === 0) {
-      this.removePendingMatchmakingGameInstance(gameInstanceId);
-      this.gameInstanceService.stopGameInstance(gameInstanceId, user);
-    }
   }
 
   private removePendingMatchmakingGameInstance(gameInstanceId: string) {

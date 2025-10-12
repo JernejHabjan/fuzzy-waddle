@@ -1,7 +1,5 @@
 {
-  "resources": [
-    "assets/probable-waffle/sfx/actors/Tivara/Olival.mp3"
-  ],
+  "resources": ["assets/probable-waffle/sfx/actors/Tivara/Olival.mp3"],
   "spritemap": {
     "selection": {
       "start": 0,

@@ -1,8 +1,8 @@
-import { Component, inject, OnDestroy, OnInit } from "@angular/core";
+import { Component, inject, type OnDestroy, type OnInit } from "@angular/core";
 import { ProbableWaffleCommunicatorService } from "../../../communicators/probable-waffle-communicator.service";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { AuthService } from "../../../../auth/auth.service";
-import { ChatMessage, ProbableWaffleGameInstanceType } from "@fuzzy-waddle/api-interfaces";
+import { type ChatMessage, ProbableWaffleGameInstanceType } from "@fuzzy-waddle/api-interfaces";
 import { Subject, Subscription } from "rxjs";
 import { ChatComponent } from "../../../../shared/components/chat/chat.component";
 

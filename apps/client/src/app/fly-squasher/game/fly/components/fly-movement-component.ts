@@ -1,18 +1,18 @@
-import { IComponent } from "../../../../probable-waffle/game/core/component.service";
+import { type IFlyBase } from "../component.service";
 import { BaseScene } from "../../../../shared/game/phaser/scene/base.scene";
 import { FlyRepresentableComponent } from "./fly-representable-component";
-import { Actor } from "../../../../probable-waffle/game/entity/actor/actor";
+import { FlyBase } from "../FlyBase";
 
 export type WorldSpeedState = {
   worldSpeedPerFrame: number;
   initialWorldSpeedPerFrame: number;
 };
 
-export class FlyMovementComponent implements IComponent {
+export class FlyMovementComponent implements IFlyBase {
   private representableComponent!: FlyRepresentableComponent;
 
   constructor(
-    private readonly fly: Actor,
+    private readonly fly: FlyBase,
     private readonly scene: BaseScene,
     private readonly worldSpeedState: WorldSpeedState
   ) {}

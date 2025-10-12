@@ -1,15 +1,18 @@
-import { GameInstance, GameInstanceData, GameInstanceDataDto } from "../game-instance";
-import { ProbableWaffleGameInstanceMetadata, ProbableWaffleGameInstanceMetadataData } from "./game-instance-medatada";
-import { ProbableWaffleGameMode, ProbableWaffleGameModeData } from "./game-mode";
-import { ProbableWaffleGameState, ProbableWaffleGameStateData } from "./game-state";
+import { GameInstance, type GameInstanceData, type GameInstanceDataDto } from "../game-instance";
+import {
+  ProbableWaffleGameInstanceMetadata,
+  type ProbableWaffleGameInstanceMetadataData
+} from "./game-instance-medatada";
+import { ProbableWaffleGameMode, type ProbableWaffleGameModeData } from "./game-mode";
+import { ProbableWaffleGameState, type ProbableWaffleGameStateData } from "./game-state";
 import {
   ProbableWafflePlayer,
   ProbableWafflePlayerController,
-  ProbableWafflePlayerControllerData,
+  type ProbableWafflePlayerControllerData,
   ProbableWafflePlayerState,
-  ProbableWafflePlayerStateData
+  type ProbableWafflePlayerStateData
 } from "./player";
-import { ProbableWaffleSpectator, ProbableWaffleSpectatorData } from "./spectator";
+import { ProbableWaffleSpectator, type ProbableWaffleSpectatorData } from "./spectator";
 
 export type ProbableWaffleGameInstanceData = GameInstanceData<
   ProbableWaffleGameInstanceMetadataData,

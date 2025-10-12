@@ -1,5 +1,5 @@
-import { AuthServiceInterface } from "./auth.service.interface";
-import { Session } from "@supabase/supabase-js";
+import { type AuthServiceInterface } from "./auth.service.interface";
+import { type Session } from "@supabase/supabase-js";
 
 export const authServiceStub = {
   get session(): Session | null {

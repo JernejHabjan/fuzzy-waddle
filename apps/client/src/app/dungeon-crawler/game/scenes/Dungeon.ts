@@ -6,7 +6,7 @@ import "../characters/Faune";
 import Faune from "../characters/Faune";
 import { createTreasureAnims } from "../anims/TreasureAnims";
 import { DungeonCrawlerScenes } from "../dungeonCrawlerScenes";
-import { CreateSceneFromObjectConfig } from "../../../shared/game/phaser/scene/scene-config.interface";
+import { type CreateSceneFromObjectConfig } from "../../../shared/game/phaser/scene/scene-config.interface";
 import Phaser, { Scene } from "phaser";
 import VirtualJoystickPlugin from "phaser3-rex-plugins/plugins/virtualjoystick-plugin.js";
 import TilemapLayer = Phaser.Tilemaps.TilemapLayer;
@@ -166,7 +166,7 @@ export default class Dungeon extends Scene implements CreateSceneFromObjectConfi
   /**
    * Update speed by delta
    */
-  update(t: number, dt: number) {
+  override update(t: number, dt: number) {
     if (!this.faune) return;
     if (this.isMobile) {
       const joystick = this.joystick;

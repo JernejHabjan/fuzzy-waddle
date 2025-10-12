@@ -2,7 +2,7 @@ import { Component } from "@angular/core";
 
 import { dungeonCrawlerGameConfig } from "./game/game-config";
 import { GameContainerComponent } from "../shared/game/game-container/game-container.component";
-import { BaseGameData } from "../shared/game/phaser/game/base-game-data";
+import { type BaseGameData } from "../shared/game/phaser/game/base-game-data";
 import { AngularHost } from "../shared/consts";
 
 @Component({

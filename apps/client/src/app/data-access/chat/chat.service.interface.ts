@@ -1,4 +1,4 @@
-import { ChatMessage } from "@fuzzy-waddle/api-interfaces";
+import { type ChatMessage } from "@fuzzy-waddle/api-interfaces";
 import { Observable } from "rxjs";
 
 export interface IChatService {

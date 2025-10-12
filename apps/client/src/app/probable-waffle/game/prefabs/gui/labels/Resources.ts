@@ -7,7 +7,6 @@ import Resource from "./Resource";
 /* END-USER-IMPORTS */
 
 export default class Resources extends Phaser.GameObjects.Container {
-
   constructor(scene: Phaser.Scene, x?: number, y?: number) {
     super(scene, x ?? 0, y ?? 0);
 
@@ -18,23 +17,34 @@ export default class Resources extends Phaser.GameObjects.Container {
     this.add(resources_container);
 
     // resources_bg_1
-    const resources_bg_1 = scene.add.nineslice(0, 0, "gui", "cryos_mini_gui/surfaces/surface_dark.png", 40, 10, 1, 1, 1, 1);
-    resources_bg_1.scaleX = 3.9745690975308436;
+    const resources_bg_1 = scene.add.nineslice(
+      0,
+      0,
+      "gui",
+      "cryos_mini_gui/surfaces/surface_dark.png",
+      50,
+      10,
+      1,
+      1,
+      1,
+      1
+    );
+    resources_bg_1.scaleX = 3.7755996610027305;
     resources_bg_1.scaleY = 2.8023638778148445;
     resources_bg_1.setOrigin(0, 0);
     resources_container.add(resources_bg_1);
 
-    // food
-    const food = new Resource(scene, 156, 21);
-    food.scaleX = 0.5;
-    food.scaleY = 0.5;
-    resources_container.add(food);
-    food.resource_icon.setTexture("gui", "resource_icons/food.png");
-    food.resource_icon.scaleX = 1;
-    food.resource_icon.scaleY = 1;
+    // housing
+    const housing = new Resource(scene, 168, 21);
+    housing.scaleX = 0.5;
+    housing.scaleY = 0.5;
+    resources_container.add(housing);
+    housing.resource_icon.setTexture("gui", "resource_icons/food.png");
+    housing.resource_icon.scaleX = 1;
+    housing.resource_icon.scaleY = 1;
 
     // minerals
-    const minerals = new Resource(scene, 119, 21);
+    const minerals = new Resource(scene, 126, 21);
     minerals.scaleX = 0.5;
     minerals.scaleY = 0.5;
     resources_container.add(minerals);
@@ -43,7 +53,7 @@ export default class Resources extends Phaser.GameObjects.Container {
     minerals.resource_icon.scaleY = 1;
 
     // stone
-    const stone = new Resource(scene, 80, 21);
+    const stone = new Resource(scene, 84, 21);
     stone.scaleX = 0.5;
     stone.scaleY = 0.5;
     resources_container.add(stone);
@@ -60,8 +70,8 @@ export default class Resources extends Phaser.GameObjects.Container {
     wood.resource_icon.scaleX = 1;
     wood.resource_icon.scaleY = 1;
 
-    // food (prefab fields)
-    food.type = "food";
+    // housing (prefab fields)
+    housing.type = "housing";
 
     // minerals (prefab fields)
     minerals.type = "minerals";

@@ -1,283 +1,283 @@
 {
-    "anims": [
+  "anims": [
+    {
+      "key": "skaduwee/owl/idle/down",
+      "type": "frame",
+      "frames": [
         {
-            "key": "skaduwee/owl/idle/down",
-            "type": "frame",
-            "frames": [
-                {
-                    "key": "units",
-                    "frame": "skaduwee/owl/idle/down_1.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "units",
-                    "frame": "skaduwee/owl/idle/down_2.png",
-                    "duration": 0,
-                    "keyframe": false
-                }
-            ],
-            "frameRate": 5,
-            "skipMissedFrames": true,
-            "repeat": -1
+          "key": "units",
+          "frame": "skaduwee/owl/idle/down_1.png",
+          "duration": 0,
+          "keyframe": false
         },
         {
-            "key": "skaduwee/owl/idle/right",
-            "type": "frame",
-            "frames": [
-                {
-                    "key": "units",
-                    "frame": "skaduwee/owl/idle/right_1.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "units",
-                    "frame": "skaduwee/owl/idle/right_2.png",
-                    "duration": 0,
-                    "keyframe": false
-                }
-            ],
-            "frameRate": 5,
-            "skipMissedFrames": true,
-            "repeat": -1
-        },
-        {
-            "key": "skaduwee/owl/idle/up",
-            "type": "frame",
-            "frames": [
-                {
-                    "key": "units",
-                    "frame": "skaduwee/owl/idle/up_1.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "units",
-                    "frame": "skaduwee/owl/idle/up_2.png",
-                    "duration": 0,
-                    "keyframe": false
-                }
-            ],
-            "frameRate": 5,
-            "skipMissedFrames": true,
-            "repeat": -1
-        },
-        {
-            "key": "skaduwee/owl/idle/right_1",
-            "type": "frame",
-            "frames": [
-                {
-                    "key": "units",
-                    "frame": "skaduwee/owl/idle/right_1.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "units",
-                    "frame": "skaduwee/owl/idle/right_2.png",
-                    "duration": 0,
-                    "keyframe": false
-                }
-            ],
-            "frameRate": 5,
-            "skipMissedFrames": true,
-            "repeat": -1
-        },
-        {
-            "key": "skaduwee/owl/move/down",
-            "type": "frame",
-            "frames": [
-                {
-                    "key": "units",
-                    "frame": "skaduwee/owl/move/down_1.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "units",
-                    "frame": "skaduwee/owl/move/down_2.png",
-                    "duration": 0,
-                    "keyframe": false
-                }
-            ],
-            "frameRate": 10,
-            "skipMissedFrames": true,
-            "repeat": -1
-        },
-        {
-            "key": "skaduwee/owl/move/left",
-            "type": "frame",
-            "frames": [
-                {
-                    "key": "units",
-                    "frame": "skaduwee/owl/move/left_1.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "units",
-                    "frame": "skaduwee/owl/move/left_2.png",
-                    "duration": 0,
-                    "keyframe": false
-                }
-            ],
-            "frameRate": 10,
-            "skipMissedFrames": true,
-            "repeat": -1
-        },
-        {
-            "key": "skaduwee/owl/move/up",
-            "type": "frame",
-            "frames": [
-                {
-                    "key": "units",
-                    "frame": "skaduwee/owl/move/up_1.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "units",
-                    "frame": "skaduwee/owl/move/up_2.png",
-                    "duration": 0,
-                    "keyframe": false
-                }
-            ],
-            "frameRate": 10,
-            "skipMissedFrames": true,
-            "repeat": -1
-        },
-        {
-            "key": "skaduwee/owl/move/right",
-            "type": "frame",
-            "frames": [
-                {
-                    "key": "units",
-                    "frame": "skaduwee/owl/move/right_1.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "units",
-                    "frame": "skaduwee/owl/move/right_2.png",
-                    "duration": 0,
-                    "keyframe": false
-                }
-            ],
-            "frameRate": 10,
-            "skipMissedFrames": true,
-            "repeat": -1
-        },
-        {
-            "key": "skaduwee/owl/attack/up",
-            "type": "frame",
-            "frames": [
-                {
-                    "key": "units",
-                    "frame": "skaduwee/owl/attack/up_1.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "units",
-                    "frame": "skaduwee/owl/attack/up_2.png",
-                    "duration": 0,
-                    "keyframe": false
-                }
-            ],
-            "frameRate": 5,
-            "skipMissedFrames": true
-        },
-        {
-            "key": "skaduwee/owl/attack/down",
-            "type": "frame",
-            "frames": [
-                {
-                    "key": "units",
-                    "frame": "skaduwee/owl/attack/down_1.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "units",
-                    "frame": "skaduwee/owl/attack/down_2.png",
-                    "duration": 0,
-                    "keyframe": false
-                }
-            ],
-            "frameRate": 5,
-            "skipMissedFrames": true
-        },
-        {
-            "key": "skaduwee/owl/attack/left",
-            "type": "frame",
-            "frames": [
-                {
-                    "key": "units",
-                    "frame": "skaduwee/owl/attack/left_1.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "units",
-                    "frame": "skaduwee/owl/attack/left_2.png",
-                    "duration": 0,
-                    "keyframe": false
-                }
-            ],
-            "frameRate": 5,
-            "skipMissedFrames": true
-        },
-        {
-            "key": "skaduwee/owl/attack/right",
-            "type": "frame",
-            "frames": [
-                {
-                    "key": "units",
-                    "frame": "skaduwee/owl/attack/right_1.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "units",
-                    "frame": "skaduwee/owl/attack/right_2.png",
-                    "duration": 0,
-                    "keyframe": false
-                }
-            ],
-            "frameRate": 5,
-            "skipMissedFrames": true
-        },
-        {
-            "key": "skaduwee/owl/die/down",
-            "type": "frame",
-            "frames": [
-                {
-                    "key": "units",
-                    "frame": "skaduwee/owl/die/down_1.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "units",
-                    "frame": "skaduwee/owl/die/down_2.png",
-                    "duration": 0,
-                    "keyframe": false
-                }
-            ],
-            "frameRate": 5,
-            "skipMissedFrames": true
+          "key": "units",
+          "frame": "skaduwee/owl/idle/down_2.png",
+          "duration": 0,
+          "keyframe": false
         }
-    ],
-    "globalTimeScale": 1,
-    "meta": {
-        "app": "Phaser Editor 2D v3",
-        "contentType": "Phaser v3 Animations"
+      ],
+      "frameRate": 5,
+      "skipMissedFrames": true,
+      "repeat": -1
     },
-    "settings": {
-        "sourceLang": "TYPE_SCRIPT",
-        "esModule": true,
-        "generateCode": true,
-        "outputFolder": "fuzzy-waddle/apps/client/src/app/probable-waffle/game/prefabs/units/anims"
+    {
+      "key": "skaduwee/owl/idle/right",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "units",
+          "frame": "skaduwee/owl/idle/right_1.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "units",
+          "frame": "skaduwee/owl/idle/right_2.png",
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 5,
+      "skipMissedFrames": true,
+      "repeat": -1
+    },
+    {
+      "key": "skaduwee/owl/idle/up",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "units",
+          "frame": "skaduwee/owl/idle/up_1.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "units",
+          "frame": "skaduwee/owl/idle/up_2.png",
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 5,
+      "skipMissedFrames": true,
+      "repeat": -1
+    },
+    {
+      "key": "skaduwee/owl/idle/right_1",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "units",
+          "frame": "skaduwee/owl/idle/right_1.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "units",
+          "frame": "skaduwee/owl/idle/right_2.png",
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 5,
+      "skipMissedFrames": true,
+      "repeat": -1
+    },
+    {
+      "key": "skaduwee/owl/move/down",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "units",
+          "frame": "skaduwee/owl/move/down_1.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "units",
+          "frame": "skaduwee/owl/move/down_2.png",
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 10,
+      "skipMissedFrames": true,
+      "repeat": -1
+    },
+    {
+      "key": "skaduwee/owl/move/left",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "units",
+          "frame": "skaduwee/owl/move/left_1.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "units",
+          "frame": "skaduwee/owl/move/left_2.png",
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 10,
+      "skipMissedFrames": true,
+      "repeat": -1
+    },
+    {
+      "key": "skaduwee/owl/move/up",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "units",
+          "frame": "skaduwee/owl/move/up_1.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "units",
+          "frame": "skaduwee/owl/move/up_2.png",
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 10,
+      "skipMissedFrames": true,
+      "repeat": -1
+    },
+    {
+      "key": "skaduwee/owl/move/right",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "units",
+          "frame": "skaduwee/owl/move/right_1.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "units",
+          "frame": "skaduwee/owl/move/right_2.png",
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 10,
+      "skipMissedFrames": true,
+      "repeat": -1
+    },
+    {
+      "key": "skaduwee/owl/attack/up",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "units",
+          "frame": "skaduwee/owl/attack/up_1.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "units",
+          "frame": "skaduwee/owl/attack/up_2.png",
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 5,
+      "skipMissedFrames": true
+    },
+    {
+      "key": "skaduwee/owl/attack/down",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "units",
+          "frame": "skaduwee/owl/attack/down_1.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "units",
+          "frame": "skaduwee/owl/attack/down_2.png",
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 5,
+      "skipMissedFrames": true
+    },
+    {
+      "key": "skaduwee/owl/attack/left",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "units",
+          "frame": "skaduwee/owl/attack/left_1.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "units",
+          "frame": "skaduwee/owl/attack/left_2.png",
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 5,
+      "skipMissedFrames": true
+    },
+    {
+      "key": "skaduwee/owl/attack/right",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "units",
+          "frame": "skaduwee/owl/attack/right_1.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "units",
+          "frame": "skaduwee/owl/attack/right_2.png",
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 5,
+      "skipMissedFrames": true
+    },
+    {
+      "key": "skaduwee/owl/die/down",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "units",
+          "frame": "skaduwee/owl/die/down_1.png",
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "units",
+          "frame": "skaduwee/owl/die/down_2.png",
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 5,
+      "skipMissedFrames": true
     }
+  ],
+  "globalTimeScale": 1,
+  "meta": {
+    "app": "Phaser Editor 2D v3",
+    "contentType": "Phaser v3 Animations"
+  },
+  "settings": {
+    "sourceLang": "TYPE_SCRIPT",
+    "esModule": true,
+    "generateCode": true,
+    "outputFolder": "fuzzy-waddle/apps/client/src/app/probable-waffle/game/prefabs/units/anims"
+  }
 }

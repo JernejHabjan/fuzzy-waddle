@@ -1,4 +1,5 @@
-import { Component, inject, OnInit } from "@angular/core";
+import { Component, inject } from "@angular/core";
+import type { OnInit } from "@angular/core";
 import { AuthService } from "./auth/auth.service";
 import { ServerHealthService } from "./shared/services/server-health.service";
 import { SwRefreshComponent } from "./shared/components/sw-refresh/sw-refresh.component";

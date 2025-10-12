@@ -1,13 +1,6 @@
-<button
-  (click)="onclick()"
-  [routerLink]="routerLink"
-  [class]="class"
-  [style]="style"
-  type="button"
->
+<button (click)="onclick()" [routerLink]="routerLink" [class]="class" [style]="style" type="button">
   {{ text }}
 </button>
-
 
 <fuzzy-waddle-modal #modal [modalConfig]="leaveModalConfirm">
   <div>Are you sure you wish to leave?</div>

@@ -1,21 +1,21 @@
 import { Injectable } from "@nestjs/common";
 import { RoomGateway } from "./room.gateway";
 import {
-  CommunicatorEvent,
+  type CommunicatorEvent,
   GameSessionState,
-  ProbableWaffleCommunicatorType,
+  type ProbableWaffleCommunicatorType,
   ProbableWaffleGameInstance,
   ProbableWaffleGameInstanceVisibility,
-  ProbableWaffleGetRoomsDto,
-  ProbableWafflePlayerDataChangeEvent,
-  ProbableWaffleRoom,
-  ProbableWaffleRoomEvent,
-  ProbableWaffleSpectatorDataChangeEvent,
-  RoomAction
+  type ProbableWaffleGetRoomsDto,
+  type ProbableWafflePlayerDataChangeEvent,
+  type ProbableWaffleRoom,
+  type ProbableWaffleRoomEvent,
+  type ProbableWaffleSpectatorDataChangeEvent,
+  type RoomAction
 } from "@fuzzy-waddle/api-interfaces";
-import { User } from "@supabase/supabase-js";
+import { type User } from "@supabase/supabase-js";
 import { GameInstanceHolderService } from "../game-instance/game-instance-holder.service";
-import { RoomServerServiceInterface } from "./room-server.service.interface";
+import { type RoomServerServiceInterface } from "./room-server.service.interface";
 
 @Injectable()
 export class RoomServerService implements RoomServerServiceInterface {
@@ -33,7 +33,7 @@ export class RoomServerService implements RoomServerServiceInterface {
     );
     const notCreatedByUser = visible.filter((gi) => gi.gameInstanceMetadata.data.createdBy !== user.id);
     const filteredByMap = notCreatedByUser.filter(
-      (gi) => !gi.gameMode || (body.maps?.includes(gi.gameMode.data.map) ?? true)
+      (gi) => !gi.gameMode || (body.maps?.includes(gi.gameMode.data.map!) ?? true)
     );
     // noinspection UnnecessaryLocalVariableJS
     const gameInstanceToRoom = filteredByMap.map((gameInstance) => this.getGameInstanceToRoom(gameInstance));
@@ -47,19 +47,8 @@ export class RoomServerService implements RoomServerServiceInterface {
     } satisfies ProbableWaffleRoomEvent);
   }
 
-  private getGameInstanceToRoom(gameInstance: ProbableWaffleGameInstance): ProbableWaffleRoom {
-    return {
-      gameInstanceMetadataData: gameInstance.gameInstanceMetadata.data,
-      gameModeData: gameInstance.gameMode?.data,
-      players: gameInstance.players.map((player) => ({
-        controllerData: player.playerController.data
-      })),
-      spectators: gameInstance.spectators.map((spectator) => spectator.data)
-    };
-  }
-
   emitCertainGameInstanceEventsToAllUsers(body: CommunicatorEvent<any, ProbableWaffleCommunicatorType>, user: User) {
-    const gameInstance = this.gameInstanceHolderService.findGameInstance(body.gameInstanceId);
+    const gameInstance = this.gameInstanceHolderService.findGameInstance(body.gameInstanceId!);
     if (!gameInstance) {
       console.log("game instance not found in emitCertainGameInstanceEventsToAllUsers in RoomServerService");
       return false;
@@ -94,5 +83,17 @@ export class RoomServerService implements RoomServerServiceInterface {
         }
         break;
     }
+    return true;
+  }
+
+  private getGameInstanceToRoom(gameInstance: ProbableWaffleGameInstance): ProbableWaffleRoom {
+    return {
+      gameInstanceMetadataData: gameInstance.gameInstanceMetadata.data,
+      gameModeData: gameInstance.gameMode?.data,
+      players: gameInstance.players.map((player) => ({
+        controllerData: player.playerController.data
+      })),
+      spectators: gameInstance.spectators.map((spectator) => spectator.data)
+    };
   }
 }

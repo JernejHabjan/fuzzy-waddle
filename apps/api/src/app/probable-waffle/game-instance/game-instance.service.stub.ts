@@ -1,17 +1,17 @@
 import {
   ProbableWaffleGameInstance,
-  ProbableWaffleGameInstanceData,
-  ProbableWaffleGameInstanceMetadataData
+  type ProbableWaffleGameInstanceData,
+  type ProbableWaffleGameInstanceMetadataData
 } from "@fuzzy-waddle/api-interfaces";
-import { User } from "../../../users/users.service";
-import { GameInstanceServiceInterface } from "./game-instance.service.interface";
+import { type GameInstanceServiceInterface } from "./game-instance.service.interface";
+import { User } from "@supabase/supabase-js";
 
 export const GameInstanceServiceStub = {
   findGameInstance(gameInstanceId: string): ProbableWaffleGameInstance | undefined {
     return undefined;
   },
   createGameInstance(gameInstanceMetadataData: ProbableWaffleGameInstanceMetadataData, user: User) {
-    //
+    return Promise.resolve();
   },
   getGameInstanceData(gameInstanceId: string): ProbableWaffleGameInstanceData | null {
     return null;

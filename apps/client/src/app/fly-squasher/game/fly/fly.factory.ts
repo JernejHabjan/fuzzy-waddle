@@ -1,7 +1,7 @@
 import { BaseScene } from "../../../shared/game/phaser/scene/base.scene";
 import { Fly } from "./fly";
 import { FlyHealthComponent } from "./components/fly-health-component";
-import { WorldSpeedState } from "./components/fly-movement-component";
+import { type WorldSpeedState } from "./components/fly-movement-component";
 import { FlySquasherAudio } from "../audio";
 
 export class FlyFactory {

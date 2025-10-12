@@ -1,6 +1,6 @@
 import { FactionType } from "@fuzzy-waddle/api-interfaces";
-import { MatchmakingLevel } from "./matchmaking.component";
-import { IMatchmakingService } from "./matchmaking.service.interface";
+import { type MatchmakingLevel } from "./matchmaking.component";
+import { type IMatchmakingService } from "./matchmaking.service.interface";
 
 export const matchmakingServiceStub = {
   searching: false,

@@ -1,21 +1,21 @@
-import { computed, inject, Injectable, Signal, signal } from "@angular/core";
+import { computed, inject, Injectable, type Signal, signal } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "../../../../environments/environment";
 import {
   GameSessionState,
   ProbableWaffleGameInstanceType,
   ProbableWaffleGatewayEvent,
-  ProbableWaffleGetRoomsDto,
+  type ProbableWaffleGetRoomsDto,
   ProbableWaffleMapEnum,
-  ProbableWaffleRoom,
-  ProbableWaffleRoomEvent
+  type ProbableWaffleRoom,
+  type ProbableWaffleRoomEvent
 } from "@fuzzy-waddle/api-interfaces";
 import { firstValueFrom, Observable, Subscription } from "rxjs";
 import { AuthenticatedSocketService } from "../../../data-access/chat/authenticated-socket.service";
 import { map } from "rxjs/operators";
 import { AuthService } from "../../../auth/auth.service";
 import { ServerHealthService } from "../../../shared/services/server-health.service";
-import { RoomsServiceInterface } from "./rooms.service.interface";
+import { type RoomsServiceInterface } from "./rooms.service.interface";
 
 @Injectable({
   providedIn: "root"

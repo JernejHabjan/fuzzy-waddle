@@ -26,7 +26,7 @@ export default class Tree9 extends Phaser.GameObjects.Image {
   }
 
   /* START-USER-CODE */
-  name = ObjectNames.Tree9;
+  override name = ObjectNames.Tree9;
   // Write your code here.
 
   /* END-USER-CODE */

@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { ITextSanitizationService } from "./text-sanitization.service.interface";
+import { type ITextSanitizationService } from "./text-sanitization.service.interface";
 import { clean } from "profanity-cleaner";
 import { slovenianBadWords } from "./slovenian-bad-words";
 

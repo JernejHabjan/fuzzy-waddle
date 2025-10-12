@@ -1,5 +1,5 @@
 import { ProbableWaffleGameInstance } from "../../game-instance/probable-waffle/game-instance";
-import {
+import type {
   ProbableWaffleGameInstanceMetadataChangeEvent,
   ProbableWaffleGameModeDataChangeEvent,
   ProbableWaffleGameStateDataChangeEvent,
@@ -9,14 +9,14 @@ import {
 } from "./communicators";
 import {
   ProbableWafflePlayer,
-  ProbableWafflePlayerControllerData,
+  type ProbableWafflePlayerControllerData,
   ProbableWafflePlayerType
 } from "../../game-instance/probable-waffle/player";
-import { ProbableWaffleSpectatorData } from "../../game-instance/probable-waffle/spectator";
-import { ProbableWaffleGameMode, ProbableWaffleGameModeData } from "../../game-instance/probable-waffle/game-mode";
+import { type ProbableWaffleSpectatorData } from "../../game-instance/probable-waffle/spectator";
+import { ProbableWaffleGameMode, type ProbableWaffleGameModeData } from "../../game-instance/probable-waffle/game-mode";
 import { GameSessionState } from "../../game-instance/session";
 import { GameSetupHelpers } from "../../probable-waffle/game-setup.helpers";
-import { ActorDefinition } from "../../game-instance/probable-waffle/game-state";
+import type { ActorDefinition } from "../../game-instance/probable-waffle/game-state";
 
 export class ProbableWaffleListeners {
   private static readonly debug = false;
@@ -240,7 +240,41 @@ export class ProbableWaffleListeners {
           player.payAllResources(payload.data.playerStateData!.resources!);
           ProbableWaffleListeners.logDebugInfo("resources removed for player", player.playerNumber);
           break;
+        case "housing.added" as ProbableWafflePlayerDataChangeEventProperty:
+          player = gameInstance.getPlayerByNumber(payload.data.playerNumber!);
+          if (!player) throw new Error("Player not found with number " + payload.data.playerNumber);
+          player.playerState.data.housing.maxHousing += payload.data.playerStateData!.housing!.maxHousing;
+          ProbableWaffleListeners.logDebugInfo("housing added for player", player.playerNumber);
+          break;
+        case "housing.removed" as ProbableWafflePlayerDataChangeEventProperty:
+          player = gameInstance.getPlayerByNumber(payload.data.playerNumber!);
+          if (!player) throw new Error("Player not found with number " + payload.data.playerNumber);
+          player.playerState.data.housing.maxHousing -= payload.data.playerStateData!.housing!.maxHousing;
+          if (player.playerState.data.housing.maxHousing < 0) player.playerState.data.housing.maxHousing = 0;
+          if (player.playerState.data.housing.currentHousing > player.playerState.data.housing.maxHousing) {
+            player.playerState.data.housing.currentHousing = player.playerState.data.housing.maxHousing;
+          }
 
+          ProbableWaffleListeners.logDebugInfo("housing removed for player", player.playerNumber);
+          break;
+        case "housing.current.increased" as ProbableWafflePlayerDataChangeEventProperty:
+          player = gameInstance.getPlayerByNumber(payload.data.playerNumber!);
+          if (!player) throw new Error("Player not found with number " + payload.data.playerNumber);
+          player.playerState.data.housing.currentHousing += payload.data.playerStateData!.housing!.currentHousing;
+          if (player.playerState.data.housing.currentHousing > player.playerState.data.housing.maxHousing) {
+            player.playerState.data.housing.currentHousing = player.playerState.data.housing.maxHousing;
+          }
+          ProbableWaffleListeners.logDebugInfo("housing current increased for player", player.playerNumber);
+          break;
+        case "housing.current.decreased" as ProbableWafflePlayerDataChangeEventProperty:
+          player = gameInstance.getPlayerByNumber(payload.data.playerNumber!);
+          if (!player) throw new Error("Player not found with number " + payload.data.playerNumber);
+          player.playerState.data.housing.currentHousing -= payload.data.playerStateData!.housing!.currentHousing;
+          if (player.playerState.data.housing.currentHousing < 0) {
+            player.playerState.data.housing.currentHousing = 0;
+          }
+          ProbableWaffleListeners.logDebugInfo("housing current decreased for player", player.playerNumber);
+          break;
         default:
           throw new Error("Unknown communicator for playerDataChange: " + payload.property);
       }

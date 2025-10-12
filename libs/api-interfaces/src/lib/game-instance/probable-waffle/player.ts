@@ -1,10 +1,10 @@
 import { BasePlayer } from "../player/player";
-import { BaseData } from "../data";
-import { BasePlayerController, BasePlayerControllerData } from "../player/player-controller";
+import type { BaseData } from "../data";
+import { BasePlayerController, type BasePlayerControllerData } from "../player/player-controller";
 import { BasePlayerState } from "../player/player-state";
 import { ResourceType } from "../../probable-waffle/resource-type-definition";
-import { PlayerStateAction } from "../../probable-waffle/probable-waffle-player-state-action";
-import { Vector3Simple } from "../../game/vector";
+import type { PlayerStateAction } from "../../probable-waffle/probable-waffle-player-state-action";
+import type { Vector3Simple } from "../../game/vector";
 
 export class ProbableWafflePlayer extends BasePlayer<
   ProbableWafflePlayerStateData,
@@ -38,6 +38,10 @@ export class ProbableWafflePlayer extends BasePlayer<
 
   getResources(): PlayerStateResources {
     return this.playerState.data.resources;
+  }
+
+  get factionType(): FactionType | undefined {
+    return this.playerController.data.playerDefinition?.factionType;
   }
 
   /**
@@ -86,6 +90,7 @@ export class ProbableWafflePlayer extends BasePlayer<
 
 export interface ProbableWafflePlayerStateData extends BaseData {
   resources: PlayerStateResources;
+  housing: PlayerStateHousing;
   summary: PlayerStateAction[];
   /**
    * contains GUID from actors' IdComponent
@@ -105,8 +110,11 @@ export class ProbableWafflePlayerState extends BasePlayerState<ProbableWafflePla
         [ResourceType.Ambrosia]: 0,
         [ResourceType.Minerals]: 500,
         [ResourceType.Stone]: 100,
-        [ResourceType.Wood]: 200,
-        [ResourceType.Food]: 8
+        [ResourceType.Wood]: 200
+      },
+      housing: {
+        currentHousing: 3,
+        maxHousing: 10
       },
       summary: [],
       selection: []
@@ -169,4 +177,9 @@ export interface PositionPlayerDefinition {
 
 export type PlayerStateResources = {
   [key in ResourceType]: number;
+};
+
+export type PlayerStateHousing = {
+  currentHousing: number;
+  maxHousing: number;
 };

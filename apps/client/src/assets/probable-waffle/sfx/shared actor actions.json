@@ -1,7 +1,5 @@
 {
-  "resources": [
-    "assets/probable-waffle/sfx/shared actor actions.mp3"
-  ],
+  "resources": ["assets/probable-waffle/sfx/shared actor actions.mp3"],
   "spritemap": {
     "hit": {
       "start": 0,
