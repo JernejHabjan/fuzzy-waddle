@@ -26,6 +26,9 @@ export const generalWorkerDefinitions: Partial<PrefabDefinition> = {
       productionTime: 5000,
       costType: PaymentType.PayImmediately
     },
+    housingCost: {
+      housingNeeded: 1
+    },
     healing: {
       range: 2,
       healPerCooldown: 5,

@@ -14,6 +14,9 @@ export const frostForgeDefinition = {
     objectDescriptor: {
       color: 0xf2f7fa
     },
+    housing: {
+      housingCapacity: 8
+    },
     owner: {
       color: [
         {

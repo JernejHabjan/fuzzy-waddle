@@ -1,5 +1,11 @@
 import { Blackboard } from "../../ai/blackboard";
-import { ObjectNames, ResourceType, type Vector2Simple, type Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import {
+  ObjectNames,
+  type PlayerStateHousing,
+  ResourceType,
+  type Vector2Simple,
+  type Vector3Simple
+} from "@fuzzy-waddle/api-interfaces";
 import type { MapAnalysis } from "./ai-behavior/map-analyzer";
 import { ReservationPool } from "./resource-reservations";
 import GameObject = Phaser.GameObjects.GameObject;
@@ -9,10 +15,14 @@ export class PlayerAiBlackboard extends Blackboard {
     public resources: Record<ResourceType, number> = {
       // todo this is not updated from world yet
       ambrosia: 1000,
-      food: 1000,
       minerals: 1000,
       stone: 1000,
       wood: 1000
+    },
+    public housing: PlayerStateHousing = {
+      // todo this is not updated from world yet
+      currentHousing: 0,
+      maxHousing: 1000
     },
     public units: Phaser.GameObjects.GameObject[] = [],
     public workers: Phaser.GameObjects.GameObject[] = [],
@@ -49,18 +59,16 @@ export class PlayerAiBlackboard extends Blackboard {
     // public nextReservedBuilding?: { name: string; tile: Vector2Simple } // (optional future use)
   ) {
     super();
-    // --- Phase 1 Augmentation: Construct modular slice objects (non-breaking). ---
-    // These slices mirror existing primitive fields to enable future refactors without
-    // renaming legacy public properties.
     this.economy = {
       resources: this.resources,
+      housing: this.housing,
       // Placeholder income/surplus structures (populated via updateFromWorld)
-      incomePerSecond: { ambrosia: 0, food: 0, minerals: 0, stone: 0, wood: 0 },
+      incomePerSecond: { ambrosia: 0, minerals: 0, stone: 0, wood: 0 },
       lastIncomeSampleAt: 0,
-      lastIncomeSnapshot: { ambrosia: 0, food: 0, minerals: 0, stone: 0, wood: 0 },
-      reserved: { ambrosia: 0, food: 0, minerals: 0, stone: 0, wood: 0 },
+      lastIncomeSnapshot: { ambrosia: 0, minerals: 0, stone: 0, wood: 0 },
+      reserved: { ambrosia: 0, minerals: 0, stone: 0, wood: 0 },
       get available() {
-        const out: Record<ResourceType, number> = { ambrosia: 0, food: 0, minerals: 0, stone: 0, wood: 0 };
+        const out: Record<ResourceType, number> = { ambrosia: 0, minerals: 0, stone: 0, wood: 0 };
         for (const k in out) {
           const r = k as ResourceType;
           out[r] = (this.resources[r] ?? 0) - (this.reserved[r] ?? 0);
@@ -202,6 +210,7 @@ export class PlayerAiBlackboard extends Blackboard {
   // Slices
   public readonly economy!: {
     resources: Record<ResourceType, number>;
+    housing: PlayerStateHousing;
     incomePerSecond: Record<ResourceType, number>;
     lastIncomeSampleAt: number;
     lastIncomeSnapshot: Record<ResourceType, number>;
@@ -308,7 +317,7 @@ export class PlayerAiBlackboard extends Blackboard {
 
   /** Returns a shallow copy of current free (unreserved) resources. */
   getFreeResources(): Record<ResourceType, number> {
-    const out: Record<ResourceType, number> = { ambrosia: 0, food: 0, minerals: 0, stone: 0, wood: 0 };
+    const out: Record<ResourceType, number> = { ambrosia: 0, minerals: 0, stone: 0, wood: 0 };
     for (const k in out) {
       const r = k as ResourceType;
       out[r] = (this.resources[r] ?? 0) - (this.economy.reserved[r] ?? 0);

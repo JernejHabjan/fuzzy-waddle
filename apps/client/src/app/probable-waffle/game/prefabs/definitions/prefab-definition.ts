@@ -24,6 +24,8 @@ import type { SelectableDefinition } from "../../entity/components/selectable-co
 import type { ColliderDefinition } from "../../entity/components/movement/collider-component";
 import type { AudioDefinition } from "../../entity/components/actor-audio/audio-actor-component";
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { type HousingCostDefinition } from "../../entity/components/building/housing-cost-component";
+import type { HousingDefinition } from "../../entity/components/building/housing-component";
 
 export type PrefabDefinition = Partial<{
   components: Partial<{
@@ -35,6 +37,8 @@ export type PrefabDefinition = Partial<{
     health: HealthDefinition;
     attack: AttackDefinition;
     productionCost: ProductionCostDefinition;
+    housingCost: HousingCostDefinition;
+    housing: HousingDefinition;
     requirements: RequirementsDefinition;
     builder: BuilderDefinition;
     constructable: ConstructionSiteDefinition;

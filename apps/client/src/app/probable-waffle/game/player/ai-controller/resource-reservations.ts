@@ -7,7 +7,7 @@ export interface ResourceReservation {
   minerals?: number;
   wood?: number;
   stone?: number;
-  food?: number;
+  housing?: number;
   ambrosia?: number;
   expiresAt: number;
   createdAt: number;
@@ -24,16 +24,15 @@ export class ReservationPool {
     now: number
   ): ResourceReservation {
     const existing = this.reservations.get(token);
-    const res: ResourceReservation = {
+    const res = {
       id: token,
       minerals: costs.minerals || 0,
       wood: costs.wood || 0,
       stone: costs.stone || 0,
-      food: costs.food || 0,
       ambrosia: costs.ambrosia || 0,
       createdAt: now,
       expiresAt: now + ttlMs
-    };
+    } satisfies ResourceReservation;
     if (existing) {
       // Overwrite existing (breaking change acceptable per instructions)
       this.reservations.set(token, res);
@@ -54,13 +53,17 @@ export class ReservationPool {
   }
 
   getTotals(): Record<ResourceType, number> {
-    const total: Record<ResourceType, number> = { ambrosia: 0, food: 0, minerals: 0, stone: 0, wood: 0 };
+    const total = {
+      [ResourceType.Ambrosia]: 0,
+      [ResourceType.Minerals]: 0,
+      [ResourceType.Wood]: 0,
+      [ResourceType.Stone]: 0
+    } satisfies Record<ResourceType, number>;
     for (const r of this.reservations.values()) {
-      total.minerals += r.minerals || 0;
-      total.wood += r.wood || 0;
-      total.stone += r.stone || 0;
-      total.food += r.food || 0;
-      total.ambrosia += r.ambrosia || 0;
+      total[ResourceType.Minerals] += r.minerals || 0;
+      total[ResourceType.Wood] += r.wood || 0;
+      total[ResourceType.Stone] += r.stone || 0;
+      total[ResourceType.Ambrosia] += r.ambrosia || 0;
     }
     return total;
   }

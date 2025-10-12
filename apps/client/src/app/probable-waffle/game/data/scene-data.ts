@@ -1,4 +1,5 @@
 import {
+  type PlayerStateHousing,
   type PlayerStateResources,
   type ProbableWaffleGameStateDataChangeEvent,
   type ProbableWaffleGameStateDataChangeEventProperty,
@@ -149,11 +150,11 @@ export function emitEventSelection(
   });
 }
 
-export function listenToResourceChanged(scene: Scene) {
+export function listenToPlayerChangedChanged(scene: Scene, searchString: string) {
   if (!(scene instanceof ProbableWaffleScene)) throw new Error("Scene is not of type ProbableWaffleScene");
   const player = getPlayer(scene);
   return scene.communicator.playerChanged?.onWithFilter(
-    (p) => p.data.playerNumber === player?.playerNumber && p.property.startsWith("resource.")
+    (p) => p.data.playerNumber === player?.playerNumber && p.property.startsWith(searchString)
   );
 }
 
@@ -165,6 +166,18 @@ export function emitResource(
   sendPlayerStateEvent(scene, action, {
     playerStateData: {
       resources: resources as PlayerStateResources
+    }
+  });
+}
+
+export function emitHousing(
+  scene: Scene,
+  action: "housing.added" | "housing.removed" | "housing.current.increased" | "housing.current.decreased",
+  housing: Partial<PlayerStateHousing>
+) {
+  sendPlayerStateEvent(scene, action, {
+    playerStateData: {
+      housing: housing as PlayerStateHousing
     }
   });
 }

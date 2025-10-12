@@ -54,9 +54,10 @@ import { ResourceDrainComponent } from "../entity/components/resource/resource-d
 import { ResourceSourceComponent } from "../entity/components/resource/resource-source-component";
 import { ProductionComponent } from "../entity/components/production/production-component";
 import { PawnAiController } from "../prefabs/ai-agents/pawn-ai-controller";
-import GameObject = Phaser.GameObjects.GameObject;
+import { HousingComponent } from "../entity/components/building/housing-component";
 import { getSceneService } from "../world/services/scene-component-helpers";
 import { SceneActorCreator } from "../world/services/scene-actor-creator";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export type ActorConstructor = new (scene: Phaser.Scene) => GameObject;
 export type ActorMap = { [name: string]: ActorConstructor };
@@ -153,6 +154,7 @@ export class ActorManager {
       id: getActorComponent(actor, IdComponent)?.getData(),
       constructionSite: getActorComponent(actor, ConstructionSiteComponent)?.getData(),
       health: getActorComponent(actor, HealthComponent)?.getData(),
+      housing: getActorComponent(actor, HousingComponent)?.getData(),
       vision: getActorComponent(actor, VisionComponent)?.getData(),
       attack: getActorComponent(actor, AttackComponent)?.getData(),
       healing: getActorComponent(actor, HealingComponent)?.getData(),
