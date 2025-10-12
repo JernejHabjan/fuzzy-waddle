@@ -47,14 +47,14 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
     new OnPointerDownScript(actor_info_bg);
 
     // actorInfoLabel
-    const actorInfoLabel = new ActorInfoLabel(scene, -188, -63);
+    const actorInfoLabel = new ActorInfoLabel(scene, -188, -68);
     actorInfoLabel.scaleX = 0.5;
     actorInfoLabel.scaleY = 0.5;
     this.add(actorInfoLabel);
     actorInfoLabel.text.setStyle({});
 
     // progress_bar
-    const progress_bar = new ProgressBar(scene, -49, -56);
+    const progress_bar = new ProgressBar(scene, -146, -50);
     this.add(progress_bar);
 
     // actorDetails
