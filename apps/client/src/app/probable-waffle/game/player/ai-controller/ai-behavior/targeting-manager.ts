@@ -27,6 +27,7 @@ export class TargetingManager {
     const center = this.blackboard.baseCenterTile;
     let best: { score: number; obj: GameObject } | undefined;
     enemies.forEach((e) => {
+      if (!e.active) return;
       let score = 0;
       const hc = getActorComponent(e, HealthComponent);
       if (hc) {

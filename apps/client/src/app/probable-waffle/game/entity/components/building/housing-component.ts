@@ -5,6 +5,9 @@ import { getActorComponent } from "../../../data/actor-component";
 import { ConstructionSiteComponent } from "../construction/construction-site-component";
 import { emitHousing } from "../../../data/scene-data";
 import GameObject = Phaser.GameObjects.GameObject;
+import { ConstructionGameObjectInterfaceComponent } from "../construction/construction-game-object-interface-component";
+import { ActorDataChangedEvent } from "../../../data/actor-data";
+import type { Subscription } from "rxjs";
 
 export type HousingDefinition = {
   housingCapacity: number;
@@ -15,7 +18,7 @@ export type HousingDefinition = {
  */
 export class HousingComponent {
   private housingProvided: boolean = false;
-
+  private constructionChangedSubscription?: Subscription;
   constructor(
     private readonly gameObject: GameObject,
     public readonly housingDefinition: HousingDefinition
@@ -23,30 +26,38 @@ export class HousingComponent {
     onObjectReady(gameObject, this.init, this);
     gameObject.once(HealthComponent.KilledEvent, this.onDestroy, this);
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.onDestroy, this);
+    gameObject.on(ActorDataChangedEvent, this.init, this);
   }
 
   private init() {
+    const constructionGameObjectInterfaceComponent = getActorComponent(
+      this.gameObject,
+      ConstructionGameObjectInterfaceComponent
+    );
+
     // Check if building is already constructed
     const constructionSiteComponent = getActorComponent(this.gameObject, ConstructionSiteComponent);
+    if (constructionGameObjectInterfaceComponent && !constructionSiteComponent) {
+      // then await the handler setup
+      return;
+    }
+    if (!constructionSiteComponent) {
+      throw new Error("HousingComponent requires ConstructionSiteComponent to function");
+    }
 
-    if (constructionSiteComponent) {
-      // Building is under construction, wait for it to finish
-      const subscription = constructionSiteComponent.constructionStateChanged.subscribe(() => {
-        if (constructionSiteComponent.isFinished && !this.housingProvided) {
-          this.addHousing();
-          subscription.unsubscribe();
-        }
-      });
+    // Check if already finished
+    if (constructionSiteComponent.isFinished && !this.housingProvided) {
+      this.addHousing();
+      return;
+    }
 
-      // Check if already finished
+    // Building is under construction, wait for it to finish
+    this.constructionChangedSubscription = constructionSiteComponent.constructionStateChanged.subscribe(() => {
       if (constructionSiteComponent.isFinished && !this.housingProvided) {
         this.addHousing();
-        subscription.unsubscribe();
+        this.constructionChangedSubscription?.unsubscribe();
       }
-    } else {
-      // Building is already constructed (e.g., main buildings like Sandhold/FrostForge)
-      this.addHousing();
-    }
+    });
   }
 
   private addHousing() {
@@ -71,6 +82,8 @@ export class HousingComponent {
 
   private onDestroy() {
     this.removeHousing();
+    this.gameObject.off(ActorDataChangedEvent, this.init, this);
+    this.constructionChangedSubscription?.unsubscribe();
   }
 
   setData(data: Partial<HousingComponentData>) {

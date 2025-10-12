@@ -13,16 +13,14 @@ export default class Resource extends Phaser.GameObjects.Container {
     super(scene, x ?? 71.80414581298828, y ?? 32.202178808720916);
 
     // resource_text
-    const resource_text = scene.add.text(-25, -16, "", {});
+    const resource_text = scene.add.text(4, -15, "", {});
     resource_text.setOrigin(0.5, 0.5);
-    resource_text.text = "0";
-    resource_text.setStyle({ fontFamily: "disposabledroid", fontSize: "22px", resolution: 10 });
+    resource_text.text = "1000";
+    resource_text.setStyle({ fixedWidth: 80, fontFamily: "disposabledroid", fontSize: "22px", resolution: 10 });
     this.add(resource_text);
 
     // resource_icon
     const resource_icon = scene.add.image(-56, -4, "gui", "resource_icons/food.png");
-    resource_icon.scaleX = 0.5;
-    resource_icon.scaleY = 0.5;
     resource_icon.setOrigin(0.5, 0.9);
     this.add(resource_icon);
 
