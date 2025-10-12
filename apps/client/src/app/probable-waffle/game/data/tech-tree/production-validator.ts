@@ -94,7 +94,12 @@ export class ProductionValidator {
     }
   }
 
-  static validateObject(scene: Phaser.Scene, playerNumber: number, actorName: ObjectNames): ProductionValidationResult {
+  static validateObject(
+    scene: Phaser.Scene,
+    playerNumber: number,
+    actorName: ObjectNames,
+    currentCost: Partial<Record<ResourceType, number>> = {}
+  ): ProductionValidationResult {
     const result: ProductionValidationResult = { canQueue: true, prereqs: [] };
     const player = getPlayer(scene, playerNumber);
     if (!player) {
@@ -111,7 +116,13 @@ export class ProductionValidator {
     const cost = getCostForObjectName(actorName);
     result.cost = cost;
     if (result.canQueue && cost) {
-      if (!player.canPayAllResources(cost)) {
+      const totalCost = { ...currentCost };
+      for (const resource in cost) {
+        totalCost[resource as ResourceType] =
+          (totalCost[resource as ResourceType] || 0) + cost[resource as ResourceType]!;
+      }
+
+      if (!player.canPayAllResources(totalCost)) {
         result.canQueue = false;
         result.reason = ProductionInvalidReason.NotEnoughResources;
       }
