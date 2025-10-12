@@ -90,6 +90,7 @@ export class ProbableWafflePlayer extends BasePlayer<
 
 export interface ProbableWafflePlayerStateData extends BaseData {
   resources: PlayerStateResources;
+  housing: PlayerStateHousing;
   summary: PlayerStateAction[];
   /**
    * contains GUID from actors' IdComponent
@@ -109,8 +110,11 @@ export class ProbableWafflePlayerState extends BasePlayerState<ProbableWafflePla
         [ResourceType.Ambrosia]: 0,
         [ResourceType.Minerals]: 500,
         [ResourceType.Stone]: 100,
-        [ResourceType.Wood]: 200,
-        [ResourceType.Housing]: 8
+        [ResourceType.Wood]: 200
+      },
+      housing: {
+        currentHousing: 3,
+        maxHousing: 10
       },
       summary: [],
       selection: []
@@ -173,4 +177,9 @@ export interface PositionPlayerDefinition {
 
 export type PlayerStateResources = {
   [key in ResourceType]: number;
+};
+
+export type PlayerStateHousing = {
+  currentHousing: number;
+  maxHousing: number;
 };

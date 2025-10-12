@@ -51,6 +51,9 @@ export const generalWarriorDefinition = {
       productionTime: 5000,
       costType: PaymentType.PayImmediately
     },
+    housingCost: {
+      housingNeeded: 1
+    },
     selectable: {},
     translatable: {
       tileMoveDuration: 500

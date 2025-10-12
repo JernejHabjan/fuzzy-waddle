@@ -3,7 +3,7 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { getCurrentPlayerNumber, getPlayer, listenToResourceChanged } from "../../../data/scene-data";
+import { getCurrentPlayerNumber, getPlayer, listenToPlayerChangedChanged } from "../../../data/scene-data";
 import { Subscription } from "rxjs";
 import { ProbableWafflePlayer } from "@fuzzy-waddle/api-interfaces";
 /* END-USER-IMPORTS */
@@ -43,39 +43,47 @@ export default class Resource extends Phaser.GameObjects.Container {
   /* START-USER-CODE */
   private readonly player: ProbableWafflePlayer | undefined;
   private resourceChangedSubscription?: Subscription;
+  private housingChangedSubscription?: Subscription;
 
   private init = () => {
     this.assignResourceText();
   };
 
   private listenToResourceChanged() {
-    this.resourceChangedSubscription = listenToResourceChanged(this.scene)?.subscribe(this.assignResourceText);
+    this.resourceChangedSubscription = listenToPlayerChangedChanged(this.scene, "resource.")?.subscribe(
+      this.assignResourceText
+    );
+    this.housingChangedSubscription = listenToPlayerChangedChanged(this.scene, "housing.")?.subscribe(
+      this.assignResourceText
+    );
   }
 
-  private getPlayerResource(): number {
-    if (!this.player) return 0;
+  private getPlayerResource(): string {
+    if (!this.player) return "";
     const resources = this.player.playerState.data.resources;
     switch (this.type) {
       case "wood":
-        return resources.wood;
+        return resources.wood.toString();
       case "stone":
-        return resources.stone;
+        return resources.stone.toString();
       case "minerals":
-        return resources.minerals;
+        return resources.minerals.toString();
       case "housing":
-        return resources.housing;
+        const housing = this.player.playerState.data.housing;
+        return housing.currentHousing + "/" + housing.maxHousing;
       default:
-        return 0;
+        return "";
     }
   }
 
   private assignResourceText = () => {
-    this.resource_text.text = this.getPlayerResource().toString();
+    this.resource_text.text = this.getPlayerResource();
   };
 
   override destroy(fromScene?: boolean) {
     super.destroy(fromScene);
     this.resourceChangedSubscription?.unsubscribe();
+    this.housingChangedSubscription?.unsubscribe();
   }
 
   /* END-USER-CODE */

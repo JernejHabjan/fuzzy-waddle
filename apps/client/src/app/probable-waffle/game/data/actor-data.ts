@@ -32,7 +32,8 @@ import { RepresentableComponent } from "../entity/components/representable-compo
 import { FlyingComponent } from "../entity/components/movement/flying-component";
 import { WalkableComponent } from "../entity/components/movement/walkable-component";
 import GameObject = Phaser.GameObjects.GameObject;
-import { HousingComponent } from "../entity/building/housing-component";
+import { HousingComponent } from "../entity/components/building/housing-component";
+import { HousingCostComponent } from "../entity/components/building/housing-cost-component";
 
 export const ActorDataKey = "actorData";
 export class ActorData {
@@ -113,6 +114,8 @@ function gatherCoreActorData(actor: Phaser.GameObjects.GameObject): { components
     ...(componentDefinitions?.productionCost
       ? [new ProductionCostComponent(actor, componentDefinitions.productionCost)]
       : []),
+    ...(componentDefinitions?.housingCost ? [new HousingCostComponent(actor, componentDefinitions.housingCost)] : []),
+    ...(componentDefinitions?.housing ? [new HousingComponent(actor, componentDefinitions.housing)] : []),
     ...(componentDefinitions?.audio ? [new AudioActorComponent(actor, componentDefinitions.audio)] : [])
   ];
 

@@ -51,6 +51,9 @@ export const olivalDefinition = {
     requirements: {
       actors: [ObjectNames.Sandhold]
     },
+    housing: {
+      housingCapacity: 8
+    },
     selectable: {},
     collider: { enabled: true },
     constructable: {

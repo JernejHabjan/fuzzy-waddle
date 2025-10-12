@@ -62,6 +62,9 @@ export const tivaraMacemanMaleDefinition = {
       productionTime: 5000,
       costType: PaymentType.PayImmediately
     },
+    housingCost: {
+      housingNeeded: 1
+    },
     requirements: {
       actors: [ObjectNames.AnkGuard]
     },

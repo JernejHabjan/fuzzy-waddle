@@ -56,6 +56,9 @@ export const sandholdDefinition = {
       productionTime: 5000,
       costType: PaymentType.PayImmediately
     },
+    housing: {
+      housingCapacity: 8
+    },
     container: {
       capacity: 2
     },

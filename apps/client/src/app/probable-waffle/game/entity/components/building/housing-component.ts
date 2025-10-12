@@ -1,9 +1,9 @@
-import { HousingComponentData, ResourceType } from "@fuzzy-waddle/api-interfaces";
-import { emitResource } from "../../data/scene-data";
+import { type HousingComponentData } from "@fuzzy-waddle/api-interfaces";
 import { HealthComponent } from "../combat/components/health-component";
-import { ConstructionSiteComponent } from "./construction/construction-site-component";
-import { getActorComponent } from "../../data/actor-component";
-import { onObjectReady } from "../../data/game-object-helper";
+import { onObjectReady } from "../../../data/game-object-helper";
+import { getActorComponent } from "../../../data/actor-component";
+import { ConstructionSiteComponent } from "../construction/construction-site-component";
+import { emitHousing } from "../../../data/scene-data";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export type HousingDefinition = {
@@ -31,7 +31,7 @@ export class HousingComponent {
 
     if (constructionSiteComponent) {
       // Building is under construction, wait for it to finish
-      const subscription = constructionSiteComponent.constructionStateChanged.subscribe((state) => {
+      const subscription = constructionSiteComponent.constructionStateChanged.subscribe(() => {
         if (constructionSiteComponent.isFinished && !this.housingProvided) {
           this.addHousing();
           subscription.unsubscribe();
@@ -52,8 +52,8 @@ export class HousingComponent {
   private addHousing() {
     if (this.housingProvided) return;
 
-    emitResource(this.gameObject.scene, "resource.added", {
-      [ResourceType.Housing]: this.housingDefinition.housingCapacity
+    emitHousing(this.gameObject.scene, "housing.added", {
+      maxHousing: this.housingDefinition.housingCapacity
     });
 
     this.housingProvided = true;
@@ -62,8 +62,8 @@ export class HousingComponent {
   private removeHousing() {
     if (!this.housingProvided) return;
 
-    emitResource(this.gameObject.scene, "resource.removed", {
-      [ResourceType.Housing]: this.housingDefinition.housingCapacity
+    emitHousing(this.gameObject.scene, "housing.removed", {
+      maxHousing: this.housingDefinition.housingCapacity
     });
 
     this.housingProvided = false;
