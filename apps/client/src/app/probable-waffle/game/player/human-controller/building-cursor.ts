@@ -530,13 +530,11 @@ export class BuildingCursor {
   }
 
   private spawnCursorGameObjectAt(x: number, y: number) {
-    const actor = ActorManager.createActorCore(
-      this.scene,
-      this.building!.name as ObjectNames,
-      {
+    const actor = ActorManager.createActorCore(this.scene, this.building!.name as ObjectNames, {
+      representable: {
         logicalWorldTransform: { x, y, z: 0 }
-      } as ActorDefinition
-    );
+      }
+    } satisfies ActorDefinition);
     const gameObject = this.scene.add.existing(actor);
     this.spawnedCursorGameObjects.push(gameObject);
     DepthHelper.setActorDepth(gameObject);
