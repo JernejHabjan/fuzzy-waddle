@@ -6,9 +6,15 @@ import { getCostForObjectName } from "../../entity/components/production/cost-ut
 import { getSceneService, getSceneSystem } from "../../world/services/scene-component-helpers";
 import { AiPlayerHandler } from "../../player/ai-controller/ai-player-handler";
 
+export enum ProductionInvalidReason {
+  TechLocked = "tech_locked",
+  SupplyBlocked = "supply_blocked",
+  NotEnoughResources = "not_enough_resources"
+}
+
 export interface ProductionValidationResult {
   canQueue: boolean;
-  reason?: string;
+  reason?: ProductionInvalidReason;
   techBlocked?: boolean;
   supplyBlocked?: boolean;
   prereqs: ObjectNames[];
@@ -16,10 +22,7 @@ export interface ProductionValidationResult {
 }
 
 export class ProductionValidator {
-  static debugEnabled = false; // lightweight debug flag
-  static setDebugEnabled(flag: boolean) {
-    this.debugEnabled = flag;
-  }
+  private static readonly debugEnabled = false;
 
   constructor(
     private readonly scene: Phaser.Scene,
@@ -39,7 +42,7 @@ export class ProductionValidator {
           result.canQueue = false;
           result.techBlocked = true;
           result.prereqs = prereqs;
-          result.reason = "tech_locked";
+          result.reason = ProductionInvalidReason.TechLocked;
         }
       }
     }
@@ -48,7 +51,7 @@ export class ProductionValidator {
     if (supply.max > 0 && supply.used + supply.pendingFromQueued >= supply.max) {
       result.canQueue = false;
       result.supplyBlocked = true;
-      result.reason = result.reason || "supply_blocked";
+      result.reason = result.reason || ProductionInvalidReason.SupplyBlocked;
     }
     // Resource cost check (only if tech & supply OK)
     const cost = getCostForObjectName(actorName);
@@ -56,7 +59,7 @@ export class ProductionValidator {
     if (result.canQueue && cost) {
       if (!this.blackboard.hasAtLeastResources(cost)) {
         result.canQueue = false;
-        result.reason = "not_enough_resources";
+        result.reason = ProductionInvalidReason.NotEnoughResources;
       }
     }
     if (ProductionValidator.debugEnabled && !result.canQueue) {
@@ -102,23 +105,6 @@ export class ProductionValidator {
       return validation;
     } catch {
       return null;
-    }
-  }
-
-  static schedulePrereqsForScene(
-    scene: Phaser.Scene,
-    playerNumber: number,
-    target: ObjectNames,
-    prereqs: ObjectNames[]
-  ) {
-    try {
-      const handler = getSceneSystem(scene, AiPlayerHandler);
-      if (!handler) return;
-      const controller = handler.getAiPlayerController(playerNumber);
-      if (!controller) return;
-      controller.playerAiControllerAgent?.productionValidator?.schedulePrerequisites?.(prereqs, target);
-    } catch {
-      /* silent */
     }
   }
 }

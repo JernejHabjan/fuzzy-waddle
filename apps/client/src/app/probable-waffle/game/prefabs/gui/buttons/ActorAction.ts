@@ -141,7 +141,8 @@ export default class ActorAction extends Phaser.GameObjects.Container {
 
   private setDisabled(disabled: boolean) {
     this.disabled = disabled;
-    this.actor_action_click.setDisabled(disabled);
+    // do not actually disable the button, as we want to react to it on click
+    // this.actor_action_click.setDisabled(disabled);
     this.recolorDisabled();
   }
 
@@ -197,7 +198,8 @@ export default class ActorAction extends Phaser.GameObjects.Container {
   }
 
   private onAction = () => {
-    if (this.disabled) return;
+    // do not actually disable the button, as we want to react to it on click
+    // if (this.disabled) return;
     this.action?.();
   };
 

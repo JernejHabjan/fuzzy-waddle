@@ -39,7 +39,7 @@ export type ProductionDefinition = {
 
 export class ProductionComponent {
   productionQueues: ProductionQueue[] = [];
-  private rallyPoint: RallyPoint = new RallyPoint(this.gameObject.scene);
+  private readonly rallyPoint: RallyPoint;
   private ownerComponent!: OwnerComponent;
   private playerChangedSubscription?: Subscription;
   private productionProgressSubject = new Subject<ProductionProgressEvent>();
@@ -48,6 +48,7 @@ export class ProductionComponent {
     private readonly gameObject: GameObject,
     public readonly productionDefinition: ProductionDefinition
   ) {
+    this.rallyPoint = new RallyPoint(this.gameObject.scene);
     this.init();
     this.listenToMoveEvents();
     onObjectReady(gameObject, this.initOnObjectReady, this);
@@ -337,8 +338,10 @@ export class ProductionComponent {
     const player = getPlayer(this.gameObject.scene, owner);
     if (!player) return AssignProductionErrorCode.NoOwner;
 
-    const canPayAllResources = player.canPayAllResources(item.costData.resources);
-    if (!canPayAllResources) return AssignProductionErrorCode.NotEnoughResources;
+    if (item.costData.costType === PaymentType.PayImmediately) {
+      const canPayAllResources = player.canPayAllResources(item.costData.resources);
+      if (!canPayAllResources) return AssignProductionErrorCode.NotEnoughResources;
+    }
 
     return null;
   }
