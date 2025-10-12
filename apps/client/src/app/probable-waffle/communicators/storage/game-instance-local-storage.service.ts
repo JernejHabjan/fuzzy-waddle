@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { GameInstanceStorageServiceInterface } from "./game-instance-storage.service.interface";
-import { ProbableWaffleGameInstanceSaveData } from "@fuzzy-waddle/api-interfaces";
+import { type ProbableWaffleGameInstanceSaveData } from "@fuzzy-waddle/api-interfaces";
 
 @Injectable({
   providedIn: "root"

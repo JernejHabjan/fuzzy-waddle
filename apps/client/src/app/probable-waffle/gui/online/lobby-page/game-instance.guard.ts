@@ -1,5 +1,5 @@
 import { inject, Injectable } from "@angular/core";
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
+import { ActivatedRouteSnapshot, type CanActivate, Router, RouterStateSnapshot } from "@angular/router";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { environment } from "../../../../../environments/environment";
 import { ServerHealthService } from "../../../../shared/services/server-health.service";

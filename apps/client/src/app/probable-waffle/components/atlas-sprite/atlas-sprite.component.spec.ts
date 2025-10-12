@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { AtlasSpriteComponent } from "./atlas-sprite.component";
-import { AtlasService } from "../../atlas/atlas.service";
-import { atlasServiceStub } from "../../atlas/atlas.service.stub";
+import { AtlasService } from "../../services/atlas/atlas.service";
+import { atlasServiceStub } from "../../services/atlas/atlas.service.stub";
 
 describe("AtlasSpriteComponent", () => {
   let component: AtlasSpriteComponent;

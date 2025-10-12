@@ -1,4 +1,4 @@
-import { Vector3Simple } from "../game/vector";
+import type { Vector3Simple } from "../game/vector";
 
 export enum ProbableWaffleMapEnum {
   Sandbox = 1,

@@ -8,10 +8,10 @@ import OnPointerUpScript from "../../../../../shared/game/phaser/script-nodes-ba
 import EmitEventActionScript from "../../../../../shared/game/phaser/script-nodes-basic/EmitEventActionScript";
 /* START-USER-IMPORTS */
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
-import { getSceneComponent } from "../../../scenes/components/scene-component-helpers";
-import { SelectionGroupsComponent } from "../../../scenes/components/selection-groups.component";
+import { getSceneComponent } from "../../../world/services/scene-component-helpers";
+import { SelectionGroupsComponent } from "../../../player/human-controller/selection-groups.component";
 import { getActorComponent } from "../../../data/actor-component";
-import { InfoComponent } from "../../../entity/actor/components/info-component";
+import { InfoComponent } from "../../../entity/components/info-component";
 import { IconHelper } from "./IconHelper";
 /* END-USER-IMPORTS */
 
@@ -122,7 +122,7 @@ export default class PlayerGroup extends Phaser.GameObjects.Container {
     this.nr.text = count.toString();
   }
 
-  destroy(fromScene?: boolean) {
+  override destroy(fromScene?: boolean) {
     this.off("actor-action", this.handleSelection, this);
     this.underline?.destroy();
     super.destroy(fromScene);

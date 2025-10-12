@@ -1,12 +1,12 @@
 import { TwoWayCommunicator } from "../../shared/game/communicators/two-way-communicator";
 import {
-  ProbableWaffleCommunicatorMessageEvent,
-  ProbableWaffleCommunicatorType,
-  ProbableWaffleGameInstanceMetadataChangeEvent,
-  ProbableWaffleGameModeDataChangeEvent,
-  ProbableWaffleGameStateDataChangeEvent,
-  ProbableWafflePlayerDataChangeEvent,
-  ProbableWaffleSpectatorDataChangeEvent
+  type ProbableWaffleCommunicatorMessageEvent,
+  type ProbableWaffleCommunicatorType,
+  type ProbableWaffleGameInstanceMetadataChangeEvent,
+  type ProbableWaffleGameModeDataChangeEvent,
+  type ProbableWaffleGameStateDataChangeEvent,
+  type ProbableWafflePlayerDataChangeEvent,
+  type ProbableWaffleSpectatorDataChangeEvent
 } from "@fuzzy-waddle/api-interfaces";
 import { Socket } from "ngx-socket-io";
 

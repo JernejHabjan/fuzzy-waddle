@@ -1,29 +1,30 @@
 import {
-  PlayerStateResources,
-  ProbableWaffleGameStateDataChangeEvent,
-  ProbableWaffleGameStateDataChangeEventProperty,
-  ProbableWaffleGameStateDataPayload,
+  type PlayerStateHousing,
+  type PlayerStateResources,
+  type ProbableWaffleGameStateDataChangeEvent,
+  type ProbableWaffleGameStateDataChangeEventProperty,
+  type ProbableWaffleGameStateDataPayload,
   ProbableWafflePlayer,
-  ProbableWafflePlayerDataChangeEvent,
-  ProbableWafflePlayerDataChangeEventPayload,
-  ProbableWafflePlayerDataChangeEventProperty,
-  Vector3Simple
+  type ProbableWafflePlayerDataChangeEvent,
+  type ProbableWafflePlayerDataChangeEventPayload,
+  type ProbableWafflePlayerDataChangeEventProperty,
+  type Vector3Simple
 } from "@fuzzy-waddle/api-interfaces";
 import { Scene } from "phaser";
 import { ProbableWaffleScene } from "../core/probable-waffle.scene";
 import { ProbableWaffleCommunicatorService } from "../../communicators/probable-waffle-communicator.service";
 import { getActorComponent } from "./actor-component";
-import { IdComponent } from "../entity/actor/components/id-component";
+import { IdComponent } from "../entity/components/id-component";
 import { Observable } from "rxjs";
-import GameProbableWaffleScene from "../scenes/GameProbableWaffleScene";
+import GameProbableWaffleScene from "../world/scenes/GameProbableWaffleScene";
 import { BaseScene } from "../../../shared/game/phaser/scene/base.scene";
-import { AttackComponent } from "../entity/combat/components/attack-component";
-import { ProductionComponent } from "../entity/building/production/production-component";
-import { GathererComponent } from "../entity/actor/components/gatherer-component";
-import { SelectableComponent } from "../entity/actor/components/selectable-component";
-import { HealthComponent } from "../entity/combat/components/health-component";
-import { VisionComponent } from "../entity/actor/components/vision-component";
-import { GameObjectActionAssignerConfig } from "../world/managers/controllers/game-object-action-assigner";
+import { AttackComponent } from "../entity/components/combat/components/attack-component";
+import { ProductionComponent } from "../entity/components/production/production-component";
+import { GathererComponent } from "../entity/components/resource/gatherer-component";
+import { SelectableComponent } from "../entity/components/selectable-component";
+import { HealthComponent } from "../entity/components/combat/components/health-component";
+import { VisionComponent } from "../entity/components/vision-component";
+import { type GameObjectActionAssignerConfig } from "../prefabs/gui/game-object-action-assigner";
 
 export function getPlayer(scene: Scene, playerNumber?: number): ProbableWafflePlayer | undefined {
   if (!scene) {
@@ -149,11 +150,11 @@ export function emitEventSelection(
   });
 }
 
-export function listenToResourceChanged(scene: Scene) {
+export function listenToPlayerChangedChanged(scene: Scene, searchString: string) {
   if (!(scene instanceof ProbableWaffleScene)) throw new Error("Scene is not of type ProbableWaffleScene");
   const player = getPlayer(scene);
   return scene.communicator.playerChanged?.onWithFilter(
-    (p) => p.data.playerNumber === player?.playerNumber && p.property.startsWith("resource.")
+    (p) => p.data.playerNumber === player?.playerNumber && p.property.startsWith(searchString)
   );
 }
 
@@ -165,6 +166,18 @@ export function emitResource(
   sendPlayerStateEvent(scene, action, {
     playerStateData: {
       resources: resources as PlayerStateResources
+    }
+  });
+}
+
+export function emitHousing(
+  scene: Scene,
+  action: "housing.added" | "housing.removed" | "housing.current.increased" | "housing.current.decreased",
+  housing: Partial<PlayerStateHousing>
+) {
+  sendPlayerStateEvent(scene, action, {
+    playerStateData: {
+      housing: housing as PlayerStateHousing
     }
   });
 }

@@ -10,7 +10,7 @@
         "preloadPackFiles": [],
         "createMethodName": "",
         "compilerOutputLanguage": "TYPE_SCRIPT",
-        "borderWidth": 75,
+        "borderWidth": 120,
         "borderHeight": 36
     },
     "displayList": [
@@ -27,11 +27,12 @@
                     "label": "resource_text",
                     "displayName": "Text",
                     "scope": "CLASS",
-                    "x": -25,
-                    "y": -16,
+                    "x": 4,
+                    "y": -15,
                     "originX": 0.5,
                     "originY": 0.5,
-                    "text": "0",
+                    "text": "1000",
+                    "fixedWidth": 80,
                     "resolution": 10,
                     "fontFamily": "disposabledroid",
                     "fontSize": "22px"
@@ -47,8 +48,6 @@
                     },
                     "x": -56,
                     "y": -4,
-                    "scaleX": 0.5,
-                    "scaleY": 0.5,
                     "originY": 0.9
                 }
             ]
@@ -74,7 +73,7 @@
                     "wood",
                     "stone",
                     "minerals",
-                    "food",
+                    "housing",
                     ""
                 ]
             }

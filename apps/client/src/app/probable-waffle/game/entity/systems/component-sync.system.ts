@@ -39,12 +39,12 @@ function createComponentProxy<T extends object>(
 
 function setNestedProperty(target: any, path: string[], value: any) {
   if (path.length === 1) {
-    target[path[0]] = value;
+    target[path[0]!] = value;
   } else {
-    if (!target[path[0]]) {
-      target[path[0]] = {};
+    if (!target[path[0]!]) {
+      target[path[0]!] = {};
     }
-    setNestedProperty(target[path[0]], path.slice(1), value);
+    setNestedProperty(target[path[0]!], path.slice(1), value);
   }
 }
 

@@ -1,9 +1,12 @@
 import { Body, Controller, Get, Post, Query, UseGuards } from "@nestjs/common";
 import { SupabaseAuthGuard } from "../../../auth/guards/supabase-auth.guard";
 import { CurrentUser } from "../../../auth/current-user";
-import { AuthUser } from "@supabase/supabase-js";
+import { type AuthUser } from "@supabase/supabase-js";
 import { GameInstanceService } from "./game-instance.service";
-import { ProbableWaffleGameInstanceData, ProbableWaffleGameInstanceMetadataData } from "@fuzzy-waddle/api-interfaces";
+import {
+  type ProbableWaffleGameInstanceData,
+  type ProbableWaffleGameInstanceMetadataData
+} from "@fuzzy-waddle/api-interfaces";
 
 @Controller("probable-waffle")
 export class GameInstanceController {

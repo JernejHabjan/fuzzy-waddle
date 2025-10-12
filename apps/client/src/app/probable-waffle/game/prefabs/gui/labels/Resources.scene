@@ -10,7 +10,7 @@
         "preloadPackFiles": [],
         "createMethodName": "",
         "compilerOutputLanguage": "TYPE_SCRIPT",
-        "borderWidth": 320,
+        "borderWidth": 380,
         "borderHeight": 56
     },
     "displayList": [
@@ -37,7 +37,7 @@
                                 "key": "gui",
                                 "frame": "cryos_mini_gui/surfaces/surface_dark.png"
                             },
-                            "scaleX": 3.9745690975308436,
+                            "scaleX": 3.7755996610027305,
                             "scaleY": 2.8023638778148445,
                             "originX": 0,
                             "originY": 0,
@@ -45,7 +45,7 @@
                             "rightWidth": 1,
                             "topHeight": 1,
                             "bottomHeight": 1,
-                            "width": 40,
+                            "width": 50,
                             "height": 10
                         },
                         {
@@ -58,9 +58,9 @@
                                 "scaleY",
                                 "type"
                             ],
-                            "label": "food",
-                            "type": "food",
-                            "x": 156,
+                            "label": "housing",
+                            "type": "housing",
+                            "x": 168,
                             "y": 21,
                             "scaleX": 0.5,
                             "scaleY": 0.5,
@@ -95,7 +95,7 @@
                             ],
                             "label": "minerals",
                             "type": "minerals",
-                            "x": 119,
+                            "x": 126,
                             "y": 21,
                             "scaleX": 0.5,
                             "scaleY": 0.5,
@@ -130,7 +130,7 @@
                             ],
                             "label": "stone",
                             "type": "stone",
-                            "x": 80,
+                            "x": 84,
                             "y": 21,
                             "scaleX": 0.5,
                             "scaleY": 0.5,

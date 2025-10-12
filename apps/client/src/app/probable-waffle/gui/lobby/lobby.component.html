@@ -18,61 +18,61 @@
             placeholder="Search maps..."
             [(ngModel)]="mapSearchQuery"
             (input)="filterMaps()"
-            />
-          </div>
-          <div class="maps-grid">
-            <probable-waffle-map-browser [(selectedMapId)]="selectedMapId" [searchQuery]="mapSearchQuery" />
-          </div>
+          />
         </div>
-
-        <!-- Map Definition Section - Shown when a map is selected -->
-        <div class="map-definition-section" [class.active]="selectedMapId">
-          <div class="map-definition-header">
-            <h3>Selected Map</h3>
-            <button class="btn btn-sm btn-outline-secondary" (click)="deselectMap()">Change Map</button>
-          </div>
-          @if (selectedMapId) {
-            <probable-waffle-map-definition />
-          }
+        <div class="maps-grid">
+          <probable-waffle-map-browser [(selectedMapId)]="selectedMapId" [searchQuery]="mapSearchQuery" />
         </div>
       </div>
 
-      <div class="lobby-main" [class.hidden]="!selectedMapId">
-        <!-- Players Configuration -->
-        <div class="players-section">
-          <probable-waffle-player-definition />
-          <probable-waffle-spectators-grid />
+      <!-- Map Definition Section - Shown when a map is selected -->
+      <div class="map-definition-section" [class.active]="selectedMapId">
+        <div class="map-definition-header">
+          <h3>Selected Map</h3>
+          <button class="btn btn-sm btn-outline-secondary" (click)="deselectMap()">Change Map</button>
         </div>
-
-        <!-- Game Setup (Collapsible) -->
-        <div class="game-setup-section">
-          <button class="btn btn-secondary toggle-setup" (click)="toggleGameSetup()">
-            {{ showGameSetup ? "Hide" : "Show" }} Game Setup Options
-          </button>
-          <div [class.collapsed]="!showGameSetup" class="game-setup-content">
-            <probable-waffle-game-mode-definition />
-          </div>
-        </div>
-      </div>
-
-      <!-- Only show chat sidebar for self-hosted games -->
-      <div class="lobby-chat-sidebar" [class.no-chat]="!isSelfHosted">
-        <!-- Chat Section - Only show for self-hosted games -->
-        @if (isSelfHosted) {
-          <div class="chat-section">
-            <h3>Lobby Chat</h3>
-            <div class="chat-container">
-              <probable-waffle-lobby-chat />
-            </div>
-          </div>
-        }
-
-        <!-- Start Game Button (for host only) -->
         @if (selectedMapId) {
-          <div class="start-game-section">
-            <probable-waffle-trigger />
-          </div>
+          <probable-waffle-map-definition />
         }
       </div>
     </div>
+
+    <div class="lobby-main" [class.hidden]="!selectedMapId">
+      <!-- Players Configuration -->
+      <div class="players-section">
+        <probable-waffle-player-definition />
+        <probable-waffle-spectators-grid />
+      </div>
+
+      <!-- Game Setup (Collapsible) -->
+      <div class="game-setup-section">
+        <button class="btn btn-secondary toggle-setup" (click)="toggleGameSetup()">
+          {{ showGameSetup ? "Hide" : "Show" }} Game Setup Options
+        </button>
+        <div [class.collapsed]="!showGameSetup" class="game-setup-content">
+          <probable-waffle-game-mode-definition />
+        </div>
+      </div>
+    </div>
+
+    <!-- Only show chat sidebar for self-hosted games -->
+    <div class="lobby-chat-sidebar" [class.no-chat]="!isSelfHosted">
+      <!-- Chat Section - Only show for self-hosted games -->
+      @if (isSelfHosted) {
+        <div class="chat-section">
+          <h3>Lobby Chat</h3>
+          <div class="chat-container">
+            <probable-waffle-lobby-chat />
+          </div>
+        </div>
+      }
+
+      <!-- Start Game Button (for host only) -->
+      @if (selectedMapId) {
+        <div class="start-game-section">
+          <probable-waffle-trigger />
+        </div>
+      }
+    </div>
   </div>
+</div>

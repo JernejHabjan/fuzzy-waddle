@@ -1,13 +1,13 @@
-import { ProbableWaffleGameModeData } from "../game-instance/probable-waffle/game-mode";
-import {
+import type { ProbableWaffleGameModeData } from "../game-instance/probable-waffle/game-mode";
+import type {
   FactionType,
   ProbableWafflePlayerControllerData,
   ProbableWafflePlayerStateData
 } from "../game-instance/probable-waffle/player";
 import { ProbableWaffleMapEnum } from "./probable-waffle";
-import { ProbableWaffleSpectatorData } from "../game-instance/probable-waffle/spectator";
-import { GameInstanceDataDto } from "../game-instance/game-instance";
-import {
+import type { ProbableWaffleSpectatorData } from "../game-instance/probable-waffle/spectator";
+import type { GameInstanceDataDto } from "../game-instance/game-instance";
+import type {
   ProbableWaffleGameInstance,
   ProbableWaffleGameInstanceData
 } from "../game-instance/probable-waffle/game-instance";

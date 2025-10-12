@@ -5,7 +5,7 @@ import { environment } from "../../../environments/environment";
 import { firstValueFrom } from "rxjs";
 import { ServerHealthService } from "../../shared/services/server-health.service";
 import { AuthService } from "../../auth/auth.service";
-import { HighScoreServiceInterface } from "./high-score.service.interface";
+import { type HighScoreServiceInterface } from "./high-score.service.interface";
 
 @Injectable({
   providedIn: "root"

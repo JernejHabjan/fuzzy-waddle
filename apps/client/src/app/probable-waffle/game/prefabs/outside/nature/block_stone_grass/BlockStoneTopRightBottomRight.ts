@@ -4,11 +4,11 @@
 
 /* START-USER-IMPORTS */
 import { setActorData } from "../../../../data/actor-data";
-import { ColliderComponent } from "../../../../entity/actor/components/collider-component";
+import { ColliderComponent } from "../../../../entity/components/movement/collider-component";
 import {
   ObjectDescriptorComponent,
-  ObjectDescriptorDefinition
-} from "../../../../entity/actor/components/object-descriptor-component";
+  type ObjectDescriptorDefinition
+} from "../../../../entity/components/object-descriptor-component";
 /* END-USER-IMPORTS */
 
 export default class BlockStoneTopRightBottomRight extends Phaser.GameObjects.Image {
@@ -43,7 +43,7 @@ export default class BlockStoneTopRightBottomRight extends Phaser.GameObjects.Im
     /* END-USER-CTR-CODE */
   }
 
-  public z: number = 0;
+  public override z: number = 0;
 
   /* START-USER-CODE */
 

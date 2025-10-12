@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { PlayerSummary, ScoreTableComponent } from "./score-table.component";
+import { type PlayerSummary, ScoreTableComponent } from "./score-table.component";
 import {
   FactionType,
-  PlayerLobbyDefinition,
-  PositionPlayerDefinition,
+  type PlayerLobbyDefinition,
+  type PositionPlayerDefinition,
   ProbableWaffleGameInstanceType,
   ProbableWaffleGameInstanceVisibility,
   ProbableWafflePlayerType

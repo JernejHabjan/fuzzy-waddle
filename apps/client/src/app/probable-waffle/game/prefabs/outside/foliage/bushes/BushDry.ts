@@ -3,8 +3,8 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { BushRustleComponent } from "./bush-rustle.component";
-import { BushComponent } from "./bush.component";
+import { BushRustleComponent } from "./components/bush-rustle.component";
+import { BushComponent } from "./components/bush.component";
 /* END-USER-IMPORTS */
 
 export default class BushDry extends Phaser.GameObjects.Image {

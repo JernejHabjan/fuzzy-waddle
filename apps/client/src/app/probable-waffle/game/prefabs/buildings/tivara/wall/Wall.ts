@@ -13,7 +13,7 @@ import WallTopLeft from "./WallTopLeft";
 import WallTopRight from "./WallTopRight";
 import WallBottomLeft from "./WallBottomLeft";
 import WallBottomRight from "./WallBottomRight";
-import { ConstructionGameObjectInterfaceComponent } from "../../../../entity/building/construction/construction-game-object-interface-component";
+import { ConstructionGameObjectInterfaceComponent } from "../../../../entity/components/construction/construction-game-object-interface-component";
 import WallBottomLeftBottomRight from "./WallBottomLeftBottomRight";
 import WallTopLeftTopRight from "./WallTopLeftTopRight";
 import WallFull from "./WallFull";
@@ -26,10 +26,10 @@ import WatchTower from "./WatchTower";
 import { throttle } from "../../../../library/throttle";
 import Stairs from "../stairs/Stairs";
 import { getNeighboursByTypes } from "../../../../data/tile-map-helpers";
-import { TilemapComponent } from "../../../../scenes/components/tilemap.component";
+import { TilemapComponent } from "../../../../world/tilemap/tilemap.component";
 import { setActorData } from "../../../../data/actor-data";
 import { getActorComponent } from "../../../../data/actor-component";
-import { WalkableComponent, WalkablePath } from "../../../../entity/actor/components/walkable-component";
+import { WalkableComponent, type WalkablePath } from "../../../../entity/components/movement/walkable-component";
 /* END-USER-IMPORTS */
 
 export default class Wall extends Phaser.GameObjects.Container {
@@ -72,7 +72,7 @@ export default class Wall extends Phaser.GameObjects.Container {
   private cursor: Phaser.GameObjects.Image;
 
   /* START-USER-CODE */
-  name = ObjectNames.Wall;
+  override name = ObjectNames.Wall;
 
   private wall?: Phaser.GameObjects.GameObject;
   private currentWallType?: WallType;
@@ -272,12 +272,10 @@ export default class Wall extends Phaser.GameObjects.Container {
   private get neighbors() {
     return getNeighboursByTypes(this, [Wall, WatchTower, Stairs], TilemapComponent.tileWidth);
   }
-
-  destroy(fromScene?: boolean) {
+  override destroy(fromScene?: boolean) {
     this.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.throttleRedrawWalls, this);
     super.destroy(fromScene);
   }
-
   /* END-USER-CODE */
 }
 

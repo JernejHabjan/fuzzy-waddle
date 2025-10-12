@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, UseGuards } from "@nestjs/common";
 import { SupabaseAuthGuard } from "../../auth/guards/supabase-auth.guard";
 import { CurrentUser } from "../../auth/current-user";
-import { AuthUser } from "@supabase/supabase-js";
+import { type AuthUser } from "@supabase/supabase-js";
 import { ScoreDto } from "@fuzzy-waddle/api-interfaces";
 import { FlySquasherService } from "./fly-squasher.service";
 

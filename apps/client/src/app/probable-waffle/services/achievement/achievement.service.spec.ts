@@ -1,8 +1,8 @@
 import { TestBed } from "@angular/core/testing";
 import { AuthService } from "../../../auth/auth.service";
 import { authServiceStub } from "../../../auth/auth.service.stub";
-import { AudioAtlasService } from "../../audio-atlas/audio-atlas.service";
-import { audioAtlasServiceStub } from "../../audio-atlas/audio-atlas.service.stub";
+import { AudioAtlasService } from "../audio-atlas/audio-atlas.service";
+import { audioAtlasServiceStub } from "../audio-atlas/audio-atlas.service.stub";
 import { AchievementService } from "./achievement.service";
 
 describe("AchievementService", () => {

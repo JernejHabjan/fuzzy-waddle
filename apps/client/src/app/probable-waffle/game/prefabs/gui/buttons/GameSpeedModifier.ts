@@ -8,7 +8,7 @@ import OnPointerDownScript from "../../../../../shared/game/phaser/script-nodes-
 import PushActionScript from "../../../../../shared/game/phaser/script-nodes/PushActionScript";
 /* START-USER-IMPORTS */
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
-import HudProbableWaffle from "../../../scenes/HudProbableWaffle";
+import HudProbableWaffle from "../../../world/scenes/hud-scenes/HudProbableWaffle";
 /* END-USER-IMPORTS */
 
 export default class GameSpeedModifier extends Phaser.GameObjects.Container {
@@ -199,7 +199,7 @@ export default class GameSpeedModifier extends Phaser.GameObjects.Container {
     });
   }
 
-  destroy() {
+  override destroy() {
     super.destroy();
     this.multiplier_1x.removeAllListeners();
     this.multiplier_3x.removeAllListeners();

@@ -90,7 +90,7 @@ function createVirtualTiles(
     if (worldXY) {
       // Create a virtual tile that mimics the structure of a real tile
       const virtualTile = new Phaser.Tilemaps.Tile(
-        tilemap.layers[0], // Use first layer as reference
+        tilemap.layers[0]!, // Use first layer as reference
         -1, // No real tile index
         pos.x,
         pos.y,

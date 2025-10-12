@@ -1,3520 +1,3520 @@
 {
-	"textures": [
-		{
-			"image": "outside.png",
-			"format": "RGBA8888",
-			"size": {
-				"w": 493,
-				"h": 1132
-			},
-			"scale": 1,
-			"frames": [
-				{
-					"filename": "architecture/river/bridge_stone.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 320,
-						"h": 192
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 305,
-						"h": 185
-					},
-					"frame": {
-						"x": 1,
-						"y": 1,
-						"w": 305,
-						"h": 185
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "foliage/trees/large/with_leaves.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 192,
-						"h": 192
-					},
-					"spriteSourceSize": {
-						"x": 14,
-						"y": 39,
-						"w": 174,
-						"h": 147
-					},
-					"frame": {
-						"x": 1,
-						"y": 188,
-						"w": 174,
-						"h": 147
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.885417
-					}
-				},
-				{
-					"filename": "foliage/trees/resources/tree9.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 128,
-						"h": 192
-					},
-					"spriteSourceSize": {
-						"x": 5,
-						"y": 0,
-						"w": 120,
-						"h": 187
-					},
-					"frame": {
-						"x": 1,
-						"y": 337,
-						"w": 120,
-						"h": 187
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "foliage/trees/large/no_leaves_snow.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 192,
-						"h": 128
-					},
-					"spriteSourceSize": {
-						"x": 23,
-						"y": 9,
-						"w": 144,
-						"h": 116
-					},
-					"frame": {
-						"x": 308,
-						"y": 1,
-						"w": 144,
-						"h": 116
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "foliage/trees/large/no_leaves.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 192,
-						"h": 128
-					},
-					"spriteSourceSize": {
-						"x": 23,
-						"y": 10,
-						"w": 144,
-						"h": 115
-					},
-					"frame": {
-						"x": 177,
-						"y": 188,
-						"w": 144,
-						"h": 115
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.851563
-					}
-				},
-				{
-					"filename": "foliage/trees/resources/tree6.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 192
-					},
-					"spriteSourceSize": {
-						"x": 1,
-						"y": 40,
-						"w": 63,
-						"h": 141
-					},
-					"frame": {
-						"x": 1,
-						"y": 526,
-						"w": 63,
-						"h": 141
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.911458
-					}
-				},
-				{
-					"filename": "foliage/trees/resources/tree1.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 192
-					},
-					"spriteSourceSize": {
-						"x": 5,
-						"y": 46,
-						"w": 59,
-						"h": 135
-					},
-					"frame": {
-						"x": 1,
-						"y": 669,
-						"w": 59,
-						"h": 135
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.911458
-					}
-				},
-				{
-					"filename": "foliage/trees/resources/tree5.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 128
-					},
-					"spriteSourceSize": {
-						"x": 6,
-						"y": 7,
-						"w": 50,
-						"h": 108
-					},
-					"frame": {
-						"x": 123,
-						"y": 337,
-						"w": 50,
-						"h": 108
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.859375
-					}
-				},
-				{
-					"filename": "nature/block_obsidian_lava/3.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 17,
-						"y": 6,
-						"w": 38,
-						"h": 55
-					},
-					"frame": {
-						"x": 454,
-						"y": 1,
-						"w": 38,
-						"h": 55
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "nature/block_stone_water/3.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 17,
-						"y": 6,
-						"w": 38,
-						"h": 55
-					},
-					"frame": {
-						"x": 454,
-						"y": 58,
-						"w": 38,
-						"h": 55
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "foliage/trees/resources/special/tree_christmas.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 128
-					},
-					"spriteSourceSize": {
-						"x": 6,
-						"y": 18,
-						"w": 48,
-						"h": 97
-					},
-					"frame": {
-						"x": 66,
-						"y": 526,
-						"w": 48,
-						"h": 97
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "foliage/trees/resources/tree7.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 128
-					},
-					"spriteSourceSize": {
-						"x": 6,
-						"y": 18,
-						"w": 48,
-						"h": 97
-					},
-					"frame": {
-						"x": 1,
-						"y": 806,
-						"w": 48,
-						"h": 97
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.86719
-					}
-				},
-				{
-					"filename": "foliage/trees/resources/tree7_snow.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 128
-					},
-					"spriteSourceSize": {
-						"x": 6,
-						"y": 18,
-						"w": 48,
-						"h": 97
-					},
-					"frame": {
-						"x": 1,
-						"y": 905,
-						"w": 48,
-						"h": 97
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "foliage/trees/resources/tree4.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 128
-					},
-					"spriteSourceSize": {
-						"x": 12,
-						"y": 10,
-						"w": 39,
-						"h": 105
-					},
-					"frame": {
-						"x": 1,
-						"y": 1004,
-						"w": 39,
-						"h": 105
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.859375
-					}
-				},
-				{
-					"filename": "architecture/blocks/doors_left.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 64,
-						"h": 64
-					},
-					"frame": {
-						"x": 308,
-						"y": 119,
-						"w": 64,
-						"h": 64
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "foliage/trees/resources/tree10.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 92,
-						"h": 92
-					},
-					"spriteSourceSize": {
-						"x": 3,
-						"y": 17,
-						"w": 85,
-						"h": 71
-					},
-					"frame": {
-						"x": 374,
-						"y": 119,
-						"w": 85,
-						"h": 71
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "foliage/trees/resources/tree11.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 92,
-						"h": 92
-					},
-					"spriteSourceSize": {
-						"x": 3,
-						"y": 12,
-						"w": 89,
-						"h": 80
-					},
-					"frame": {
-						"x": 123,
-						"y": 447,
-						"w": 89,
-						"h": 80
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "architecture/blocks/doors_right.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 64,
-						"h": 64
-					},
-					"frame": {
-						"x": 116,
-						"y": 529,
-						"w": 64,
-						"h": 64
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "foliage/trees/resources/tree8.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 128
-					},
-					"spriteSourceSize": {
-						"x": 8,
-						"y": 42,
-						"w": 45,
-						"h": 73
-					},
-					"frame": {
-						"x": 323,
-						"y": 185,
-						"w": 45,
-						"h": 73
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.859375
-					}
-				},
-				{
-					"filename": "architecture/blocks/height_4.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 64,
-						"h": 64
-					},
-					"frame": {
-						"x": 370,
-						"y": 192,
-						"w": 64,
-						"h": 64
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "foliage/bushes/bush_dry_snow.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 6,
-						"y": 15,
-						"w": 56,
-						"h": 41
-					},
-					"frame": {
-						"x": 436,
-						"y": 192,
-						"w": 56,
-						"h": 41
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "nature/rock_piles/1.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 5,
-						"y": 24,
-						"w": 56,
-						"h": 40
-					},
-					"frame": {
-						"x": 436,
-						"y": 235,
-						"w": 56,
-						"h": 40
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "foliage/river/water lily.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 80,
-						"h": 40
-					},
-					"spriteSourceSize": {
-						"x": 7,
-						"y": 3,
-						"w": 66,
-						"h": 37
-					},
-					"frame": {
-						"x": 177,
-						"y": 305,
-						"w": 66,
-						"h": 37
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "architecture/blocks/hollow.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 64,
-						"h": 64
-					},
-					"frame": {
-						"x": 175,
-						"y": 344,
-						"w": 64,
-						"h": 64
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/rocks/5.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 6,
-						"y": 25,
-						"w": 53,
-						"h": 35
-					},
-					"frame": {
-						"x": 175,
-						"y": 410,
-						"w": 53,
-						"h": 35
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "architecture/blocks/height_1.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 23,
-						"w": 64,
-						"h": 41
-					},
-					"frame": {
-						"x": 245,
-						"y": 305,
-						"w": 64,
-						"h": 41
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "architecture/blocks/hollow_bottom.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 64,
-						"h": 64
-					},
-					"frame": {
-						"x": 241,
-						"y": 348,
-						"w": 64,
-						"h": 64
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "architecture/blocks/hollow_left.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 64,
-						"h": 64
-					},
-					"frame": {
-						"x": 182,
-						"y": 529,
-						"w": 64,
-						"h": 64
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "architecture/blocks/height_2.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 15,
-						"w": 64,
-						"h": 49
-					},
-					"frame": {
-						"x": 116,
-						"y": 595,
-						"w": 64,
-						"h": 49
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "architecture/blocks/height_3.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 7,
-						"w": 64,
-						"h": 57
-					},
-					"frame": {
-						"x": 182,
-						"y": 595,
-						"w": 64,
-						"h": 57
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "architecture/blocks/hollow_right.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 64,
-						"h": 64
-					},
-					"frame": {
-						"x": 323,
-						"y": 260,
-						"w": 64,
-						"h": 64
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "foliage/trees/resources/tree8_snow.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 128
-					},
-					"spriteSourceSize": {
-						"x": 8,
-						"y": 42,
-						"w": 45,
-						"h": 73
-					},
-					"frame": {
-						"x": 389,
-						"y": 258,
-						"w": 45,
-						"h": 73
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "nature/rock_piles/1_snow.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 5,
-						"y": 24,
-						"w": 56,
-						"h": 40
-					},
-					"frame": {
-						"x": 436,
-						"y": 277,
-						"w": 56,
-						"h": 40
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "nature/rock_piles/1_snow_covered.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 5,
-						"y": 24,
-						"w": 56,
-						"h": 40
-					},
-					"frame": {
-						"x": 436,
-						"y": 319,
-						"w": 56,
-						"h": 40
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "nature/block_stone_water/6.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 11,
-						"y": 2,
-						"w": 43,
-						"h": 59
-					},
-					"frame": {
-						"x": 66,
-						"y": 625,
-						"w": 43,
-						"h": 59
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/block_obsidian/1.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 64,
-						"h": 64
-					},
-					"frame": {
-						"x": 62,
-						"y": 686,
-						"w": 64,
-						"h": 64
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "nature/block_obsidian/2.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 64,
-						"h": 64
-					},
-					"frame": {
-						"x": 62,
-						"y": 752,
-						"w": 64,
-						"h": 64
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "nature/block_stone/1.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 64,
-						"h": 64
-					},
-					"frame": {
-						"x": 51,
-						"y": 818,
-						"w": 64,
-						"h": 64
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/block_stone/2.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 64,
-						"h": 64
-					},
-					"frame": {
-						"x": 51,
-						"y": 884,
-						"w": 64,
-						"h": 64
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/block_stone_grass/bottom_left.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 64,
-						"h": 64
-					},
-					"frame": {
-						"x": 51,
-						"y": 950,
-						"w": 64,
-						"h": 64
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/block_stone_grass/bottom_left_bottom_right.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 64,
-						"h": 64
-					},
-					"frame": {
-						"x": 42,
-						"y": 1016,
-						"w": 64,
-						"h": 64
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/ramp/earth/platform_bottom.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 15,
-						"w": 64,
-						"h": 49
-					},
-					"frame": {
-						"x": 42,
-						"y": 1082,
-						"w": 64,
-						"h": 49
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/grass/grass_0.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 26,
-						"w": 64,
-						"h": 38
-					},
-					"frame": {
-						"x": 111,
-						"y": 646,
-						"w": 64,
-						"h": 38
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/block_stone_grass/bottom_right.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 64,
-						"h": 64
-					},
-					"frame": {
-						"x": 128,
-						"y": 686,
-						"w": 64,
-						"h": 64
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/block_stone_grass/empty.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 64,
-						"h": 64
-					},
-					"frame": {
-						"x": 128,
-						"y": 752,
-						"w": 64,
-						"h": 64
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/block_stone_grass/top_left.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 64,
-						"h": 64
-					},
-					"frame": {
-						"x": 117,
-						"y": 818,
-						"w": 64,
-						"h": 64
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/block_stone_grass/top_left_bottom_left.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 64,
-						"h": 64
-					},
-					"frame": {
-						"x": 117,
-						"y": 884,
-						"w": 64,
-						"h": 64
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/block_stone_grass/top_left_top_right.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 64,
-						"h": 64
-					},
-					"frame": {
-						"x": 117,
-						"y": 950,
-						"w": 64,
-						"h": 64
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/block_stone_grass/top_right.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 64,
-						"h": 64
-					},
-					"frame": {
-						"x": 108,
-						"y": 1016,
-						"w": 64,
-						"h": 64
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/ramp/earth/ramp_bottom_left.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 15,
-						"w": 64,
-						"h": 49
-					},
-					"frame": {
-						"x": 108,
-						"y": 1082,
-						"w": 64,
-						"h": 49
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "architecture/obstruction/fence/bottom.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 80
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 41,
-						"w": 64,
-						"h": 39
-					},
-					"frame": {
-						"x": 230,
-						"y": 414,
-						"w": 64,
-						"h": 39
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "nature/block_stone_grass/top_right_bottom_right.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 64,
-						"h": 64
-					},
-					"frame": {
-						"x": 214,
-						"y": 455,
-						"w": 64,
-						"h": 64
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/ramp/earth/empty.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 64,
-						"h": 64
-					},
-					"frame": {
-						"x": 248,
-						"y": 521,
-						"w": 64,
-						"h": 64
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/ramp/earth/platform_left.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 64,
-						"h": 64
-					},
-					"frame": {
-						"x": 248,
-						"y": 587,
-						"w": 64,
-						"h": 64
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/ramp/earth/platform_right.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 64,
-						"h": 64
-					},
-					"frame": {
-						"x": 280,
-						"y": 455,
-						"w": 64,
-						"h": 64
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/grass/grass_1.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 25,
-						"w": 64,
-						"h": 39
-					},
-					"frame": {
-						"x": 296,
-						"y": 414,
-						"w": 64,
-						"h": 39
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/ramp/earth/platform_top.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 64,
-						"h": 64
-					},
-					"frame": {
-						"x": 307,
-						"y": 348,
-						"w": 64,
-						"h": 64
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/ramp/earth/ramp_top_left.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 64,
-						"h": 64
-					},
-					"frame": {
-						"x": 314,
-						"y": 521,
-						"w": 64,
-						"h": 64
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/ramp/earth/ramp_top_right.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 64,
-						"h": 64
-					},
-					"frame": {
-						"x": 314,
-						"y": 587,
-						"w": 64,
-						"h": 64
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/ramp/earth/spike_top.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 64,
-						"h": 64
-					},
-					"frame": {
-						"x": 346,
-						"y": 455,
-						"w": 64,
-						"h": 64
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/grass/grass_2.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 25,
-						"w": 64,
-						"h": 39
-					},
-					"frame": {
-						"x": 362,
-						"y": 414,
-						"w": 64,
-						"h": 39
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "foliage/tall_grass/tall_grass_1.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 14,
-						"w": 64,
-						"h": 50
-					},
-					"frame": {
-						"x": 428,
-						"y": 361,
-						"w": 64,
-						"h": 50
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "foliage/tall_grass/tall_grass_4.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 14,
-						"w": 64,
-						"h": 50
-					},
-					"frame": {
-						"x": 428,
-						"y": 413,
-						"w": 64,
-						"h": 50
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/ramp/earth/ramp_bottom_right.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 15,
-						"w": 64,
-						"h": 49
-					},
-					"frame": {
-						"x": 412,
-						"y": 465,
-						"w": 64,
-						"h": 49
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "architecture/obstruction/fence/left.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 80
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 18,
-						"w": 37,
-						"h": 62
-					},
-					"frame": {
-						"x": 380,
-						"y": 521,
-						"w": 37,
-						"h": 62
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "nature/ramp/stone/top_left.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 1,
-						"y": 6,
-						"w": 57,
-						"h": 57
-					},
-					"frame": {
-						"x": 419,
-						"y": 516,
-						"w": 57,
-						"h": 57
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "architecture/obstruction/fence/right.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 80
-					},
-					"spriteSourceSize": {
-						"x": 27,
-						"y": 18,
-						"w": 37,
-						"h": 62
-					},
-					"frame": {
-						"x": 380,
-						"y": 585,
-						"w": 37,
-						"h": 62
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "nature/ramp/stone/top_right.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 6,
-						"y": 6,
-						"w": 57,
-						"h": 57
-					},
-					"frame": {
-						"x": 419,
-						"y": 575,
-						"w": 57,
-						"h": 57
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "nature/block_obsidian_lava/5.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 19,
-						"y": 3,
-						"w": 30,
-						"h": 57
-					},
-					"frame": {
-						"x": 461,
-						"y": 115,
-						"w": 30,
-						"h": 57
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "nature/rock_piles/3.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 4,
-						"y": 6,
-						"w": 55,
-						"h": 54
-					},
-					"frame": {
-						"x": 194,
-						"y": 654,
-						"w": 55,
-						"h": 54
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/ramp/earth/spike_left.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 15,
-						"w": 64,
-						"h": 49
-					},
-					"frame": {
-						"x": 251,
-						"y": 653,
-						"w": 64,
-						"h": 49
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "foliage/tall_grass/tall_grass_2.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 14,
-						"w": 62,
-						"h": 50
-					},
-					"frame": {
-						"x": 317,
-						"y": 653,
-						"w": 62,
-						"h": 50
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/rock_piles/3_snow.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 4,
-						"y": 6,
-						"w": 55,
-						"h": 54
-					},
-					"frame": {
-						"x": 194,
-						"y": 710,
-						"w": 55,
-						"h": 54
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "nature/ramp/earth/spike_right.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 15,
-						"w": 64,
-						"h": 49
-					},
-					"frame": {
-						"x": 251,
-						"y": 704,
-						"w": 64,
-						"h": 49
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "foliage/tall_grass/tall_grass_7.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 16,
-						"w": 64,
-						"h": 48
-					},
-					"frame": {
-						"x": 317,
-						"y": 705,
-						"w": 64,
-						"h": 48
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "foliage/bushes/bush_downwards_large.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 2,
-						"y": 10,
-						"w": 59,
-						"h": 50
-					},
-					"frame": {
-						"x": 194,
-						"y": 766,
-						"w": 59,
-						"h": 50
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/ramp/stone/bottom_left.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 11,
-						"w": 60,
-						"h": 53
-					},
-					"frame": {
-						"x": 183,
-						"y": 818,
-						"w": 60,
-						"h": 53
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/ramp/stone/bottom_right.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 15,
-						"w": 64,
-						"h": 49
-					},
-					"frame": {
-						"x": 183,
-						"y": 873,
-						"w": 64,
-						"h": 49
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "foliage/tall_grass/tall_grass_6.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 17,
-						"w": 64,
-						"h": 47
-					},
-					"frame": {
-						"x": 183,
-						"y": 924,
-						"w": 64,
-						"h": 47
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "architecture/obstruction/fence/top.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 80
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 18,
-						"w": 64,
-						"h": 42
-					},
-					"frame": {
-						"x": 183,
-						"y": 973,
-						"w": 64,
-						"h": 42
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "nature/rock_piles/3_snow_covered.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 4,
-						"y": 6,
-						"w": 55,
-						"h": 54
-					},
-					"frame": {
-						"x": 174,
-						"y": 1017,
-						"w": 55,
-						"h": 54
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "nature/rock_piles/2.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 4,
-						"y": 9,
-						"w": 55,
-						"h": 51
-					},
-					"frame": {
-						"x": 174,
-						"y": 1073,
-						"w": 55,
-						"h": 51
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/grass/grass_3.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 22,
-						"w": 64,
-						"h": 42
-					},
-					"frame": {
-						"x": 255,
-						"y": 755,
-						"w": 64,
-						"h": 42
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "architecture/well/stone_empty.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 23,
-						"w": 64,
-						"h": 41
-					},
-					"frame": {
-						"x": 321,
-						"y": 755,
-						"w": 64,
-						"h": 41
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/rock_piles/2_snow.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 4,
-						"y": 9,
-						"w": 55,
-						"h": 51
-					},
-					"frame": {
-						"x": 381,
-						"y": 649,
-						"w": 55,
-						"h": 51
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "nature/rock_piles/6_snow_covered.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 13,
-						"w": 54,
-						"h": 47
-					},
-					"frame": {
-						"x": 438,
-						"y": 634,
-						"w": 54,
-						"h": 47
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "nature/rock_piles/6.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 14,
-						"w": 54,
-						"h": 46
-					},
-					"frame": {
-						"x": 438,
-						"y": 683,
-						"w": 54,
-						"h": 46
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "foliage/tall_grass/tall_grass_3.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 13,
-						"y": 16,
-						"w": 51,
-						"h": 48
-					},
-					"frame": {
-						"x": 383,
-						"y": 702,
-						"w": 51,
-						"h": 48
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "foliage/bushes/bush_upwards_large.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 5,
-						"y": 15,
-						"w": 58,
-						"h": 45
-					},
-					"frame": {
-						"x": 387,
-						"y": 752,
-						"w": 58,
-						"h": 45
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "architecture/well/stone_full.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 23,
-						"w": 64,
-						"h": 41
-					},
-					"frame": {
-						"x": 255,
-						"y": 799,
-						"w": 64,
-						"h": 41
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/grass/grass_5.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 24,
-						"w": 64,
-						"h": 40
-					},
-					"frame": {
-						"x": 321,
-						"y": 798,
-						"w": 64,
-						"h": 40
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "foliage/bushes/bush_downwards_small.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 4,
-						"y": 18,
-						"w": 59,
-						"h": 42
-					},
-					"frame": {
-						"x": 387,
-						"y": 799,
-						"w": 59,
-						"h": 42
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/block_obsidian_lava/4.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 7,
-						"y": 3,
-						"w": 42,
-						"h": 57
-					},
-					"frame": {
-						"x": 447,
-						"y": 731,
-						"w": 42,
-						"h": 57
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "nature/block_stone_water/4.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 7,
-						"y": 3,
-						"w": 42,
-						"h": 57
-					},
-					"frame": {
-						"x": 448,
-						"y": 790,
-						"w": 42,
-						"h": 57
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/block_obsidian_lava/2.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 32,
-						"y": 2,
-						"w": 19,
-						"h": 58
-					},
-					"frame": {
-						"x": 231,
-						"y": 1017,
-						"w": 19,
-						"h": 58
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "nature/rock_piles/2_snow_covered.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 4,
-						"y": 9,
-						"w": 55,
-						"h": 51
-					},
-					"frame": {
-						"x": 249,
-						"y": 842,
-						"w": 55,
-						"h": 51
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "nature/rock_piles/5.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 9,
-						"y": 15,
-						"w": 55,
-						"h": 47
-					},
-					"frame": {
-						"x": 249,
-						"y": 895,
-						"w": 55,
-						"h": 47
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/rock_piles/5_snow.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 9,
-						"y": 15,
-						"w": 55,
-						"h": 47
-					},
-					"frame": {
-						"x": 249,
-						"y": 944,
-						"w": 55,
-						"h": 47
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "nature/rock_piles/5_snow_covered.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 9,
-						"y": 15,
-						"w": 55,
-						"h": 47
-					},
-					"frame": {
-						"x": 252,
-						"y": 993,
-						"w": 55,
-						"h": 47
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "foliage/bushes/bush_dry.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 6,
-						"y": 15,
-						"w": 55,
-						"h": 41
-					},
-					"frame": {
-						"x": 252,
-						"y": 1042,
-						"w": 55,
-						"h": 41
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/rock_piles/6_snow.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 14,
-						"w": 54,
-						"h": 46
-					},
-					"frame": {
-						"x": 231,
-						"y": 1085,
-						"w": 54,
-						"h": 46
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "nature/block_stone_water/2.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 32,
-						"y": 2,
-						"w": 19,
-						"h": 58
-					},
-					"frame": {
-						"x": 306,
-						"y": 842,
-						"w": 19,
-						"h": 58
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/resources/minerals_pile_1.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 3,
-						"y": 24,
-						"w": 58,
-						"h": 40
-					},
-					"frame": {
-						"x": 327,
-						"y": 840,
-						"w": 58,
-						"h": 40
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "nature/resources/minerals_pile_2.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 3,
-						"y": 24,
-						"w": 58,
-						"h": 40
-					},
-					"frame": {
-						"x": 387,
-						"y": 843,
-						"w": 58,
-						"h": 40
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "nature/block_obsidian_lava/1.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 18,
-						"y": 4,
-						"w": 36,
-						"h": 57
-					},
-					"frame": {
-						"x": 306,
-						"y": 902,
-						"w": 36,
-						"h": 57
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "nature/block_stone_water/1.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 18,
-						"y": 4,
-						"w": 36,
-						"h": 57
-					},
-					"frame": {
-						"x": 344,
-						"y": 882,
-						"w": 36,
-						"h": 57
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/grass/grass_4.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 25,
-						"w": 64,
-						"h": 39
-					},
-					"frame": {
-						"x": 382,
-						"y": 885,
-						"w": 64,
-						"h": 39
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/ramp/earth/spike_bottom.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 31,
-						"w": 64,
-						"h": 33
-					},
-					"frame": {
-						"x": 382,
-						"y": 926,
-						"w": 64,
-						"h": 33
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "foliage/bushes/leaves_small.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 9,
-						"y": 22,
-						"w": 44,
-						"h": 24
-					},
-					"frame": {
-						"x": 447,
-						"y": 849,
-						"w": 44,
-						"h": 24
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/block_stone_water/5.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 19,
-						"y": 3,
-						"w": 30,
-						"h": 57
-					},
-					"frame": {
-						"x": 448,
-						"y": 875,
-						"w": 30,
-						"h": 57
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "foliage/bushes/bush_upwards_small.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 27,
-						"y": 27,
-						"w": 35,
-						"h": 29
-					},
-					"frame": {
-						"x": 306,
-						"y": 961,
-						"w": 35,
-						"h": 29
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "architecture/chimneys/chimney_large.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 32,
-						"h": 48
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 32,
-						"h": 48
-					},
-					"frame": {
-						"x": 309,
-						"y": 992,
-						"w": 32,
-						"h": 48
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.833333
-					}
-				},
-				{
-					"filename": "architecture/obstruction/fence/top_left.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 80
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 18,
-						"w": 37,
-						"h": 42
-					},
-					"frame": {
-						"x": 309,
-						"y": 1042,
-						"w": 37,
-						"h": 42
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "foliage/tall_grass/tall_grass_8.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 5,
-						"y": 22,
-						"w": 54,
-						"h": 42
-					},
-					"frame": {
-						"x": 287,
-						"y": 1086,
-						"w": 54,
-						"h": 42
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "foliage/tall_grass/tall_grass_5.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 19,
-						"w": 52,
-						"h": 42
-					},
-					"frame": {
-						"x": 373,
-						"y": 333,
-						"w": 52,
-						"h": 42
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/rocks/1.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 22,
-						"y": 23,
-						"w": 21,
-						"h": 35
-					},
-					"frame": {
-						"x": 373,
-						"y": 377,
-						"w": 21,
-						"h": 35
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "nature/resources/stone_pile_1.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 26,
-						"w": 63,
-						"h": 36
-					},
-					"frame": {
-						"x": 343,
-						"y": 961,
-						"w": 63,
-						"h": 36
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "nature/resources/stone_pile_2.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 26,
-						"w": 63,
-						"h": 36
-					},
-					"frame": {
-						"x": 343,
-						"y": 999,
-						"w": 63,
-						"h": 36
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "foliage/tall_grass/tall_grass_0.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 6,
-						"y": 17,
-						"w": 54,
-						"h": 40
-					},
-					"frame": {
-						"x": 348,
-						"y": 1037,
-						"w": 54,
-						"h": 40
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "architecture/obstruction/fence/top_right.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 80
-					},
-					"spriteSourceSize": {
-						"x": 27,
-						"y": 18,
-						"w": 37,
-						"h": 42
-					},
-					"frame": {
-						"x": 408,
-						"y": 961,
-						"w": 37,
-						"h": 42
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "architecture/obstruction/fence/bottom_left.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 80
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 41,
-						"w": 37,
-						"h": 39
-					},
-					"frame": {
-						"x": 408,
-						"y": 1005,
-						"w": 37,
-						"h": 39
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "nature/grass/reeds_1.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 8,
-						"y": 8,
-						"w": 51,
-						"h": 41
-					},
-					"frame": {
-						"x": 404,
-						"y": 1046,
-						"w": 51,
-						"h": 41
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "nature/rocks/4.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 7,
-						"y": 33,
-						"w": 52,
-						"h": 26
-					},
-					"frame": {
-						"x": 348,
-						"y": 1079,
-						"w": 52,
-						"h": 26
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "foliage/tree_trunks/tree_trunk_right.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 41,
-						"h": 22
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 41,
-						"h": 22
-					},
-					"frame": {
-						"x": 343,
-						"y": 1107,
-						"w": 41,
-						"h": 22
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "foliage/tree_trunks/tree_fallen.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 32
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 37,
-						"h": 19
-					},
-					"frame": {
-						"x": 1,
-						"y": 1111,
-						"w": 37,
-						"h": 19
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "architecture/chimneys/chimney_short.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 32,
-						"h": 32
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 32,
-						"h": 32
-					},
-					"frame": {
-						"x": 448,
-						"y": 934,
-						"w": 32,
-						"h": 32
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "architecture/obstruction/fence/bottom_right.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 80
-					},
-					"spriteSourceSize": {
-						"x": 27,
-						"y": 41,
-						"w": 37,
-						"h": 39
-					},
-					"frame": {
-						"x": 447,
-						"y": 968,
-						"w": 37,
-						"h": 39
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "foliage/bushes/leaves_large.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 13,
-						"y": 24,
-						"w": 35,
-						"h": 26
-					},
-					"frame": {
-						"x": 447,
-						"y": 1009,
-						"w": 35,
-						"h": 26
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "foliage/tree_trunks/tree_trunk_left.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 38,
-						"h": 23
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 38,
-						"h": 23
-					},
-					"frame": {
-						"x": 402,
-						"y": 1089,
-						"w": 38,
-						"h": 23
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "foliage/tree_trunks/tree_fallen_snow.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 32
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 37,
-						"h": 19
-					},
-					"frame": {
-						"x": 311,
-						"y": 326,
-						"w": 37,
-						"h": 19
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "nature/stone_water/1.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 32
-					},
-					"spriteSourceSize": {
-						"x": 19,
-						"y": 0,
-						"w": 23,
-						"h": 21
-					},
-					"frame": {
-						"x": 396,
-						"y": 377,
-						"w": 23,
-						"h": 21
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "nature/rocks/2.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 40,
-						"y": 33,
-						"w": 20,
-						"h": 17
-					},
-					"frame": {
-						"x": 386,
-						"y": 1114,
-						"w": 20,
-						"h": 17
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "foliage/tree_trunks/tree_trunk.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 32
-					},
-					"spriteSourceSize": {
-						"x": 27,
-						"y": 7,
-						"w": 10,
-						"h": 12
-					},
-					"frame": {
-						"x": 311,
-						"y": 305,
-						"w": 10,
-						"h": 12
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "foliage/tree_trunks/tree_trunk_snow.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 32
-					},
-					"spriteSourceSize": {
-						"x": 26,
-						"y": 7,
-						"w": 11,
-						"h": 12
-					},
-					"frame": {
-						"x": 396,
-						"y": 400,
-						"w": 11,
-						"h": 12
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "nature/rocks/3.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 64,
-						"h": 64
-					},
-					"spriteSourceSize": {
-						"x": 22,
-						"y": 24,
-						"w": 19,
-						"h": 21
-					},
-					"frame": {
-						"x": 442,
-						"y": 1089,
-						"w": 19,
-						"h": 21
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.75
-					}
-				},
-				{
-					"filename": "effects/ember/1.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 8,
-						"h": 8
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 8,
-						"h": 8
-					},
-					"frame": {
-						"x": 412,
-						"y": 455,
-						"w": 8,
-						"h": 8
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "effects/ember/2.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 8,
-						"h": 8
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 8,
-						"h": 8
-					},
-					"frame": {
-						"x": 245,
-						"y": 818,
-						"w": 8,
-						"h": 8
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "effects/ember/3.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 8,
-						"h": 8
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 8,
-						"h": 8
-					},
-					"frame": {
-						"x": 245,
-						"y": 828,
-						"w": 8,
-						"h": 8
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "foliage/fruits/blue-fruit.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 8,
-						"h": 8
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 8,
-						"h": 8
-					},
-					"frame": {
-						"x": 484,
-						"y": 1009,
-						"w": 8,
-						"h": 8
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "foliage/fruits/red-fruit.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 8,
-						"h": 8
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 8,
-						"h": 8
-					},
-					"frame": {
-						"x": 484,
-						"y": 1019,
-						"w": 8,
-						"h": 8
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				}
-			]
-		}
-	],
-	"meta": {
-		"app": "https://www.codeandweb.com/texturepacker",
-		"version": "3.0",
-		"smartupdate": "$TexturePacker:SmartUpdate:66a73036207a32d70507218441b0c72d:446a57c91cffd66c9f70c3897d25f9cb:abb19a90748d26f4f55b50cb9c7aab1d$"
-	}
+  "textures": [
+    {
+      "image": "outside.png",
+      "format": "RGBA8888",
+      "size": {
+        "w": 493,
+        "h": 1132
+      },
+      "scale": 1,
+      "frames": [
+        {
+          "filename": "architecture/river/bridge_stone.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 320,
+            "h": 192
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 305,
+            "h": 185
+          },
+          "frame": {
+            "x": 1,
+            "y": 1,
+            "w": 305,
+            "h": 185
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "foliage/trees/large/with_leaves.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 192,
+            "h": 192
+          },
+          "spriteSourceSize": {
+            "x": 14,
+            "y": 39,
+            "w": 174,
+            "h": 147
+          },
+          "frame": {
+            "x": 1,
+            "y": 188,
+            "w": 174,
+            "h": 147
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.885417
+          }
+        },
+        {
+          "filename": "foliage/trees/resources/tree9.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 128,
+            "h": 192
+          },
+          "spriteSourceSize": {
+            "x": 5,
+            "y": 0,
+            "w": 120,
+            "h": 187
+          },
+          "frame": {
+            "x": 1,
+            "y": 337,
+            "w": 120,
+            "h": 187
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "foliage/trees/large/no_leaves_snow.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 192,
+            "h": 128
+          },
+          "spriteSourceSize": {
+            "x": 23,
+            "y": 9,
+            "w": 144,
+            "h": 116
+          },
+          "frame": {
+            "x": 308,
+            "y": 1,
+            "w": 144,
+            "h": 116
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "foliage/trees/large/no_leaves.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 192,
+            "h": 128
+          },
+          "spriteSourceSize": {
+            "x": 23,
+            "y": 10,
+            "w": 144,
+            "h": 115
+          },
+          "frame": {
+            "x": 177,
+            "y": 188,
+            "w": 144,
+            "h": 115
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.851563
+          }
+        },
+        {
+          "filename": "foliage/trees/resources/tree6.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 192
+          },
+          "spriteSourceSize": {
+            "x": 1,
+            "y": 40,
+            "w": 63,
+            "h": 141
+          },
+          "frame": {
+            "x": 1,
+            "y": 526,
+            "w": 63,
+            "h": 141
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.911458
+          }
+        },
+        {
+          "filename": "foliage/trees/resources/tree1.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 192
+          },
+          "spriteSourceSize": {
+            "x": 5,
+            "y": 46,
+            "w": 59,
+            "h": 135
+          },
+          "frame": {
+            "x": 1,
+            "y": 669,
+            "w": 59,
+            "h": 135
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.911458
+          }
+        },
+        {
+          "filename": "foliage/trees/resources/tree5.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 128
+          },
+          "spriteSourceSize": {
+            "x": 6,
+            "y": 7,
+            "w": 50,
+            "h": 108
+          },
+          "frame": {
+            "x": 123,
+            "y": 337,
+            "w": 50,
+            "h": 108
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.859375
+          }
+        },
+        {
+          "filename": "nature/block_obsidian_lava/3.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 17,
+            "y": 6,
+            "w": 38,
+            "h": 55
+          },
+          "frame": {
+            "x": 454,
+            "y": 1,
+            "w": 38,
+            "h": 55
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "nature/block_stone_water/3.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 17,
+            "y": 6,
+            "w": 38,
+            "h": 55
+          },
+          "frame": {
+            "x": 454,
+            "y": 58,
+            "w": 38,
+            "h": 55
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "foliage/trees/resources/special/tree_christmas.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 128
+          },
+          "spriteSourceSize": {
+            "x": 6,
+            "y": 18,
+            "w": 48,
+            "h": 97
+          },
+          "frame": {
+            "x": 66,
+            "y": 526,
+            "w": 48,
+            "h": 97
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "foliage/trees/resources/tree7.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 128
+          },
+          "spriteSourceSize": {
+            "x": 6,
+            "y": 18,
+            "w": 48,
+            "h": 97
+          },
+          "frame": {
+            "x": 1,
+            "y": 806,
+            "w": 48,
+            "h": 97
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.86719
+          }
+        },
+        {
+          "filename": "foliage/trees/resources/tree7_snow.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 128
+          },
+          "spriteSourceSize": {
+            "x": 6,
+            "y": 18,
+            "w": 48,
+            "h": 97
+          },
+          "frame": {
+            "x": 1,
+            "y": 905,
+            "w": 48,
+            "h": 97
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "foliage/trees/resources/tree4.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 128
+          },
+          "spriteSourceSize": {
+            "x": 12,
+            "y": 10,
+            "w": 39,
+            "h": 105
+          },
+          "frame": {
+            "x": 1,
+            "y": 1004,
+            "w": 39,
+            "h": 105
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.859375
+          }
+        },
+        {
+          "filename": "architecture/blocks/doors_left.png",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 308,
+            "y": 119,
+            "w": 64,
+            "h": 64
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "foliage/trees/resources/tree10.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 92,
+            "h": 92
+          },
+          "spriteSourceSize": {
+            "x": 3,
+            "y": 17,
+            "w": 85,
+            "h": 71
+          },
+          "frame": {
+            "x": 374,
+            "y": 119,
+            "w": 85,
+            "h": 71
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "foliage/trees/resources/tree11.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 92,
+            "h": 92
+          },
+          "spriteSourceSize": {
+            "x": 3,
+            "y": 12,
+            "w": 89,
+            "h": 80
+          },
+          "frame": {
+            "x": 123,
+            "y": 447,
+            "w": 89,
+            "h": 80
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "architecture/blocks/doors_right.png",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 116,
+            "y": 529,
+            "w": 64,
+            "h": 64
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "foliage/trees/resources/tree8.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 128
+          },
+          "spriteSourceSize": {
+            "x": 8,
+            "y": 42,
+            "w": 45,
+            "h": 73
+          },
+          "frame": {
+            "x": 323,
+            "y": 185,
+            "w": 45,
+            "h": 73
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.859375
+          }
+        },
+        {
+          "filename": "architecture/blocks/height_4.png",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 370,
+            "y": 192,
+            "w": 64,
+            "h": 64
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "foliage/bushes/bush_dry_snow.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 6,
+            "y": 15,
+            "w": 56,
+            "h": 41
+          },
+          "frame": {
+            "x": 436,
+            "y": 192,
+            "w": 56,
+            "h": 41
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "nature/rock_piles/1.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 5,
+            "y": 24,
+            "w": 56,
+            "h": 40
+          },
+          "frame": {
+            "x": 436,
+            "y": 235,
+            "w": 56,
+            "h": 40
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "foliage/river/water lily.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 80,
+            "h": 40
+          },
+          "spriteSourceSize": {
+            "x": 7,
+            "y": 3,
+            "w": 66,
+            "h": 37
+          },
+          "frame": {
+            "x": 177,
+            "y": 305,
+            "w": 66,
+            "h": 37
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "architecture/blocks/hollow.png",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 175,
+            "y": 344,
+            "w": 64,
+            "h": 64
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "nature/rocks/5.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 6,
+            "y": 25,
+            "w": 53,
+            "h": 35
+          },
+          "frame": {
+            "x": 175,
+            "y": 410,
+            "w": 53,
+            "h": 35
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "architecture/blocks/height_1.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 23,
+            "w": 64,
+            "h": 41
+          },
+          "frame": {
+            "x": 245,
+            "y": 305,
+            "w": 64,
+            "h": 41
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "architecture/blocks/hollow_bottom.png",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 241,
+            "y": 348,
+            "w": 64,
+            "h": 64
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "architecture/blocks/hollow_left.png",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 182,
+            "y": 529,
+            "w": 64,
+            "h": 64
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "architecture/blocks/height_2.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 15,
+            "w": 64,
+            "h": 49
+          },
+          "frame": {
+            "x": 116,
+            "y": 595,
+            "w": 64,
+            "h": 49
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "architecture/blocks/height_3.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 7,
+            "w": 64,
+            "h": 57
+          },
+          "frame": {
+            "x": 182,
+            "y": 595,
+            "w": 64,
+            "h": 57
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "architecture/blocks/hollow_right.png",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 323,
+            "y": 260,
+            "w": 64,
+            "h": 64
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "foliage/trees/resources/tree8_snow.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 128
+          },
+          "spriteSourceSize": {
+            "x": 8,
+            "y": 42,
+            "w": 45,
+            "h": 73
+          },
+          "frame": {
+            "x": 389,
+            "y": 258,
+            "w": 45,
+            "h": 73
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "nature/rock_piles/1_snow.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 5,
+            "y": 24,
+            "w": 56,
+            "h": 40
+          },
+          "frame": {
+            "x": 436,
+            "y": 277,
+            "w": 56,
+            "h": 40
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "nature/rock_piles/1_snow_covered.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 5,
+            "y": 24,
+            "w": 56,
+            "h": 40
+          },
+          "frame": {
+            "x": 436,
+            "y": 319,
+            "w": 56,
+            "h": 40
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "nature/block_stone_water/6.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 11,
+            "y": 2,
+            "w": 43,
+            "h": 59
+          },
+          "frame": {
+            "x": 66,
+            "y": 625,
+            "w": 43,
+            "h": 59
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "nature/block_obsidian/1.png",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 62,
+            "y": 686,
+            "w": 64,
+            "h": 64
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "nature/block_obsidian/2.png",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 62,
+            "y": 752,
+            "w": 64,
+            "h": 64
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "nature/block_stone/1.png",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 51,
+            "y": 818,
+            "w": 64,
+            "h": 64
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "nature/block_stone/2.png",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 51,
+            "y": 884,
+            "w": 64,
+            "h": 64
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "nature/block_stone_grass/bottom_left.png",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 51,
+            "y": 950,
+            "w": 64,
+            "h": 64
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "nature/block_stone_grass/bottom_left_bottom_right.png",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 42,
+            "y": 1016,
+            "w": 64,
+            "h": 64
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "nature/ramp/earth/platform_bottom.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 15,
+            "w": 64,
+            "h": 49
+          },
+          "frame": {
+            "x": 42,
+            "y": 1082,
+            "w": 64,
+            "h": 49
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "nature/grass/grass_0.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 26,
+            "w": 64,
+            "h": 38
+          },
+          "frame": {
+            "x": 111,
+            "y": 646,
+            "w": 64,
+            "h": 38
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "nature/block_stone_grass/bottom_right.png",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 128,
+            "y": 686,
+            "w": 64,
+            "h": 64
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "nature/block_stone_grass/empty.png",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 128,
+            "y": 752,
+            "w": 64,
+            "h": 64
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "nature/block_stone_grass/top_left.png",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 117,
+            "y": 818,
+            "w": 64,
+            "h": 64
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "nature/block_stone_grass/top_left_bottom_left.png",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 117,
+            "y": 884,
+            "w": 64,
+            "h": 64
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "nature/block_stone_grass/top_left_top_right.png",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 117,
+            "y": 950,
+            "w": 64,
+            "h": 64
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "nature/block_stone_grass/top_right.png",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 108,
+            "y": 1016,
+            "w": 64,
+            "h": 64
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "nature/ramp/earth/ramp_bottom_left.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 15,
+            "w": 64,
+            "h": 49
+          },
+          "frame": {
+            "x": 108,
+            "y": 1082,
+            "w": 64,
+            "h": 49
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "architecture/obstruction/fence/bottom.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 80
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 41,
+            "w": 64,
+            "h": 39
+          },
+          "frame": {
+            "x": 230,
+            "y": 414,
+            "w": 64,
+            "h": 39
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "nature/block_stone_grass/top_right_bottom_right.png",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 214,
+            "y": 455,
+            "w": 64,
+            "h": 64
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "nature/ramp/earth/empty.png",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 248,
+            "y": 521,
+            "w": 64,
+            "h": 64
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "nature/ramp/earth/platform_left.png",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 248,
+            "y": 587,
+            "w": 64,
+            "h": 64
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "nature/ramp/earth/platform_right.png",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 280,
+            "y": 455,
+            "w": 64,
+            "h": 64
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "nature/grass/grass_1.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 25,
+            "w": 64,
+            "h": 39
+          },
+          "frame": {
+            "x": 296,
+            "y": 414,
+            "w": 64,
+            "h": 39
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "nature/ramp/earth/platform_top.png",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 307,
+            "y": 348,
+            "w": 64,
+            "h": 64
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "nature/ramp/earth/ramp_top_left.png",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 314,
+            "y": 521,
+            "w": 64,
+            "h": 64
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "nature/ramp/earth/ramp_top_right.png",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 314,
+            "y": 587,
+            "w": 64,
+            "h": 64
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "nature/ramp/earth/spike_top.png",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "frame": {
+            "x": 346,
+            "y": 455,
+            "w": 64,
+            "h": 64
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "nature/grass/grass_2.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 25,
+            "w": 64,
+            "h": 39
+          },
+          "frame": {
+            "x": 362,
+            "y": 414,
+            "w": 64,
+            "h": 39
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "foliage/tall_grass/tall_grass_1.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 14,
+            "w": 64,
+            "h": 50
+          },
+          "frame": {
+            "x": 428,
+            "y": 361,
+            "w": 64,
+            "h": 50
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "foliage/tall_grass/tall_grass_4.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 14,
+            "w": 64,
+            "h": 50
+          },
+          "frame": {
+            "x": 428,
+            "y": 413,
+            "w": 64,
+            "h": 50
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "nature/ramp/earth/ramp_bottom_right.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 15,
+            "w": 64,
+            "h": 49
+          },
+          "frame": {
+            "x": 412,
+            "y": 465,
+            "w": 64,
+            "h": 49
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "architecture/obstruction/fence/left.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 80
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 18,
+            "w": 37,
+            "h": 62
+          },
+          "frame": {
+            "x": 380,
+            "y": 521,
+            "w": 37,
+            "h": 62
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "nature/ramp/stone/top_left.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 1,
+            "y": 6,
+            "w": 57,
+            "h": 57
+          },
+          "frame": {
+            "x": 419,
+            "y": 516,
+            "w": 57,
+            "h": 57
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "architecture/obstruction/fence/right.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 80
+          },
+          "spriteSourceSize": {
+            "x": 27,
+            "y": 18,
+            "w": 37,
+            "h": 62
+          },
+          "frame": {
+            "x": 380,
+            "y": 585,
+            "w": 37,
+            "h": 62
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "nature/ramp/stone/top_right.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 6,
+            "y": 6,
+            "w": 57,
+            "h": 57
+          },
+          "frame": {
+            "x": 419,
+            "y": 575,
+            "w": 57,
+            "h": 57
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "nature/block_obsidian_lava/5.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 19,
+            "y": 3,
+            "w": 30,
+            "h": 57
+          },
+          "frame": {
+            "x": 461,
+            "y": 115,
+            "w": 30,
+            "h": 57
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "nature/rock_piles/3.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 4,
+            "y": 6,
+            "w": 55,
+            "h": 54
+          },
+          "frame": {
+            "x": 194,
+            "y": 654,
+            "w": 55,
+            "h": 54
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "nature/ramp/earth/spike_left.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 15,
+            "w": 64,
+            "h": 49
+          },
+          "frame": {
+            "x": 251,
+            "y": 653,
+            "w": 64,
+            "h": 49
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "foliage/tall_grass/tall_grass_2.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 14,
+            "w": 62,
+            "h": 50
+          },
+          "frame": {
+            "x": 317,
+            "y": 653,
+            "w": 62,
+            "h": 50
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "nature/rock_piles/3_snow.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 4,
+            "y": 6,
+            "w": 55,
+            "h": 54
+          },
+          "frame": {
+            "x": 194,
+            "y": 710,
+            "w": 55,
+            "h": 54
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "nature/ramp/earth/spike_right.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 15,
+            "w": 64,
+            "h": 49
+          },
+          "frame": {
+            "x": 251,
+            "y": 704,
+            "w": 64,
+            "h": 49
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "foliage/tall_grass/tall_grass_7.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 16,
+            "w": 64,
+            "h": 48
+          },
+          "frame": {
+            "x": 317,
+            "y": 705,
+            "w": 64,
+            "h": 48
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "foliage/bushes/bush_downwards_large.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 2,
+            "y": 10,
+            "w": 59,
+            "h": 50
+          },
+          "frame": {
+            "x": 194,
+            "y": 766,
+            "w": 59,
+            "h": 50
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "nature/ramp/stone/bottom_left.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 11,
+            "w": 60,
+            "h": 53
+          },
+          "frame": {
+            "x": 183,
+            "y": 818,
+            "w": 60,
+            "h": 53
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "nature/ramp/stone/bottom_right.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 15,
+            "w": 64,
+            "h": 49
+          },
+          "frame": {
+            "x": 183,
+            "y": 873,
+            "w": 64,
+            "h": 49
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "foliage/tall_grass/tall_grass_6.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 17,
+            "w": 64,
+            "h": 47
+          },
+          "frame": {
+            "x": 183,
+            "y": 924,
+            "w": 64,
+            "h": 47
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "architecture/obstruction/fence/top.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 80
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 18,
+            "w": 64,
+            "h": 42
+          },
+          "frame": {
+            "x": 183,
+            "y": 973,
+            "w": 64,
+            "h": 42
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "nature/rock_piles/3_snow_covered.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 4,
+            "y": 6,
+            "w": 55,
+            "h": 54
+          },
+          "frame": {
+            "x": 174,
+            "y": 1017,
+            "w": 55,
+            "h": 54
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "nature/rock_piles/2.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 4,
+            "y": 9,
+            "w": 55,
+            "h": 51
+          },
+          "frame": {
+            "x": 174,
+            "y": 1073,
+            "w": 55,
+            "h": 51
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "nature/grass/grass_3.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 22,
+            "w": 64,
+            "h": 42
+          },
+          "frame": {
+            "x": 255,
+            "y": 755,
+            "w": 64,
+            "h": 42
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "architecture/well/stone_empty.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 23,
+            "w": 64,
+            "h": 41
+          },
+          "frame": {
+            "x": 321,
+            "y": 755,
+            "w": 64,
+            "h": 41
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "nature/rock_piles/2_snow.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 4,
+            "y": 9,
+            "w": 55,
+            "h": 51
+          },
+          "frame": {
+            "x": 381,
+            "y": 649,
+            "w": 55,
+            "h": 51
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "nature/rock_piles/6_snow_covered.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 13,
+            "w": 54,
+            "h": 47
+          },
+          "frame": {
+            "x": 438,
+            "y": 634,
+            "w": 54,
+            "h": 47
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "nature/rock_piles/6.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 14,
+            "w": 54,
+            "h": 46
+          },
+          "frame": {
+            "x": 438,
+            "y": 683,
+            "w": 54,
+            "h": 46
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "foliage/tall_grass/tall_grass_3.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 13,
+            "y": 16,
+            "w": 51,
+            "h": 48
+          },
+          "frame": {
+            "x": 383,
+            "y": 702,
+            "w": 51,
+            "h": 48
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "foliage/bushes/bush_upwards_large.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 5,
+            "y": 15,
+            "w": 58,
+            "h": 45
+          },
+          "frame": {
+            "x": 387,
+            "y": 752,
+            "w": 58,
+            "h": 45
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "architecture/well/stone_full.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 23,
+            "w": 64,
+            "h": 41
+          },
+          "frame": {
+            "x": 255,
+            "y": 799,
+            "w": 64,
+            "h": 41
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "nature/grass/grass_5.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 24,
+            "w": 64,
+            "h": 40
+          },
+          "frame": {
+            "x": 321,
+            "y": 798,
+            "w": 64,
+            "h": 40
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "foliage/bushes/bush_downwards_small.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 4,
+            "y": 18,
+            "w": 59,
+            "h": 42
+          },
+          "frame": {
+            "x": 387,
+            "y": 799,
+            "w": 59,
+            "h": 42
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "nature/block_obsidian_lava/4.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 7,
+            "y": 3,
+            "w": 42,
+            "h": 57
+          },
+          "frame": {
+            "x": 447,
+            "y": 731,
+            "w": 42,
+            "h": 57
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "nature/block_stone_water/4.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 7,
+            "y": 3,
+            "w": 42,
+            "h": 57
+          },
+          "frame": {
+            "x": 448,
+            "y": 790,
+            "w": 42,
+            "h": 57
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "nature/block_obsidian_lava/2.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 32,
+            "y": 2,
+            "w": 19,
+            "h": 58
+          },
+          "frame": {
+            "x": 231,
+            "y": 1017,
+            "w": 19,
+            "h": 58
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "nature/rock_piles/2_snow_covered.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 4,
+            "y": 9,
+            "w": 55,
+            "h": 51
+          },
+          "frame": {
+            "x": 249,
+            "y": 842,
+            "w": 55,
+            "h": 51
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "nature/rock_piles/5.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 9,
+            "y": 15,
+            "w": 55,
+            "h": 47
+          },
+          "frame": {
+            "x": 249,
+            "y": 895,
+            "w": 55,
+            "h": 47
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "nature/rock_piles/5_snow.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 9,
+            "y": 15,
+            "w": 55,
+            "h": 47
+          },
+          "frame": {
+            "x": 249,
+            "y": 944,
+            "w": 55,
+            "h": 47
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "nature/rock_piles/5_snow_covered.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 9,
+            "y": 15,
+            "w": 55,
+            "h": 47
+          },
+          "frame": {
+            "x": 252,
+            "y": 993,
+            "w": 55,
+            "h": 47
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "foliage/bushes/bush_dry.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 6,
+            "y": 15,
+            "w": 55,
+            "h": 41
+          },
+          "frame": {
+            "x": 252,
+            "y": 1042,
+            "w": 55,
+            "h": 41
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "nature/rock_piles/6_snow.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 14,
+            "w": 54,
+            "h": 46
+          },
+          "frame": {
+            "x": 231,
+            "y": 1085,
+            "w": 54,
+            "h": 46
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "nature/block_stone_water/2.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 32,
+            "y": 2,
+            "w": 19,
+            "h": 58
+          },
+          "frame": {
+            "x": 306,
+            "y": 842,
+            "w": 19,
+            "h": 58
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "nature/resources/minerals_pile_1.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 3,
+            "y": 24,
+            "w": 58,
+            "h": 40
+          },
+          "frame": {
+            "x": 327,
+            "y": 840,
+            "w": 58,
+            "h": 40
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "nature/resources/minerals_pile_2.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 3,
+            "y": 24,
+            "w": 58,
+            "h": 40
+          },
+          "frame": {
+            "x": 387,
+            "y": 843,
+            "w": 58,
+            "h": 40
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "nature/block_obsidian_lava/1.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 18,
+            "y": 4,
+            "w": 36,
+            "h": 57
+          },
+          "frame": {
+            "x": 306,
+            "y": 902,
+            "w": 36,
+            "h": 57
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "nature/block_stone_water/1.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 18,
+            "y": 4,
+            "w": 36,
+            "h": 57
+          },
+          "frame": {
+            "x": 344,
+            "y": 882,
+            "w": 36,
+            "h": 57
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "nature/grass/grass_4.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 25,
+            "w": 64,
+            "h": 39
+          },
+          "frame": {
+            "x": 382,
+            "y": 885,
+            "w": 64,
+            "h": 39
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "nature/ramp/earth/spike_bottom.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 31,
+            "w": 64,
+            "h": 33
+          },
+          "frame": {
+            "x": 382,
+            "y": 926,
+            "w": 64,
+            "h": 33
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "foliage/bushes/leaves_small.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 9,
+            "y": 22,
+            "w": 44,
+            "h": 24
+          },
+          "frame": {
+            "x": 447,
+            "y": 849,
+            "w": 44,
+            "h": 24
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "nature/block_stone_water/5.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 19,
+            "y": 3,
+            "w": 30,
+            "h": 57
+          },
+          "frame": {
+            "x": 448,
+            "y": 875,
+            "w": 30,
+            "h": 57
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "foliage/bushes/bush_upwards_small.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 27,
+            "y": 27,
+            "w": 35,
+            "h": 29
+          },
+          "frame": {
+            "x": 306,
+            "y": 961,
+            "w": 35,
+            "h": 29
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "architecture/chimneys/chimney_large.png",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 32,
+            "h": 48
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 32,
+            "h": 48
+          },
+          "frame": {
+            "x": 309,
+            "y": 992,
+            "w": 32,
+            "h": 48
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.833333
+          }
+        },
+        {
+          "filename": "architecture/obstruction/fence/top_left.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 80
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 18,
+            "w": 37,
+            "h": 42
+          },
+          "frame": {
+            "x": 309,
+            "y": 1042,
+            "w": 37,
+            "h": 42
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "foliage/tall_grass/tall_grass_8.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 5,
+            "y": 22,
+            "w": 54,
+            "h": 42
+          },
+          "frame": {
+            "x": 287,
+            "y": 1086,
+            "w": 54,
+            "h": 42
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "foliage/tall_grass/tall_grass_5.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 19,
+            "w": 52,
+            "h": 42
+          },
+          "frame": {
+            "x": 373,
+            "y": 333,
+            "w": 52,
+            "h": 42
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "nature/rocks/1.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 22,
+            "y": 23,
+            "w": 21,
+            "h": 35
+          },
+          "frame": {
+            "x": 373,
+            "y": 377,
+            "w": 21,
+            "h": 35
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "nature/resources/stone_pile_1.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 26,
+            "w": 63,
+            "h": 36
+          },
+          "frame": {
+            "x": 343,
+            "y": 961,
+            "w": 63,
+            "h": 36
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "nature/resources/stone_pile_2.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 26,
+            "w": 63,
+            "h": 36
+          },
+          "frame": {
+            "x": 343,
+            "y": 999,
+            "w": 63,
+            "h": 36
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "foliage/tall_grass/tall_grass_0.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 6,
+            "y": 17,
+            "w": 54,
+            "h": 40
+          },
+          "frame": {
+            "x": 348,
+            "y": 1037,
+            "w": 54,
+            "h": 40
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "architecture/obstruction/fence/top_right.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 80
+          },
+          "spriteSourceSize": {
+            "x": 27,
+            "y": 18,
+            "w": 37,
+            "h": 42
+          },
+          "frame": {
+            "x": 408,
+            "y": 961,
+            "w": 37,
+            "h": 42
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "architecture/obstruction/fence/bottom_left.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 80
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 41,
+            "w": 37,
+            "h": 39
+          },
+          "frame": {
+            "x": 408,
+            "y": 1005,
+            "w": 37,
+            "h": 39
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "nature/grass/reeds_1.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 8,
+            "y": 8,
+            "w": 51,
+            "h": 41
+          },
+          "frame": {
+            "x": 404,
+            "y": 1046,
+            "w": 51,
+            "h": 41
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "nature/rocks/4.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 7,
+            "y": 33,
+            "w": 52,
+            "h": 26
+          },
+          "frame": {
+            "x": 348,
+            "y": 1079,
+            "w": 52,
+            "h": 26
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "foliage/tree_trunks/tree_trunk_right.png",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 41,
+            "h": 22
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 41,
+            "h": 22
+          },
+          "frame": {
+            "x": 343,
+            "y": 1107,
+            "w": 41,
+            "h": 22
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "foliage/tree_trunks/tree_fallen.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 32
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 37,
+            "h": 19
+          },
+          "frame": {
+            "x": 1,
+            "y": 1111,
+            "w": 37,
+            "h": 19
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "architecture/chimneys/chimney_short.png",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 32,
+            "h": 32
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 32,
+            "h": 32
+          },
+          "frame": {
+            "x": 448,
+            "y": 934,
+            "w": 32,
+            "h": 32
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "architecture/obstruction/fence/bottom_right.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 80
+          },
+          "spriteSourceSize": {
+            "x": 27,
+            "y": 41,
+            "w": 37,
+            "h": 39
+          },
+          "frame": {
+            "x": 447,
+            "y": 968,
+            "w": 37,
+            "h": 39
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "foliage/bushes/leaves_large.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 13,
+            "y": 24,
+            "w": 35,
+            "h": 26
+          },
+          "frame": {
+            "x": 447,
+            "y": 1009,
+            "w": 35,
+            "h": 26
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "foliage/tree_trunks/tree_trunk_left.png",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 38,
+            "h": 23
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 38,
+            "h": 23
+          },
+          "frame": {
+            "x": 402,
+            "y": 1089,
+            "w": 38,
+            "h": 23
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "foliage/tree_trunks/tree_fallen_snow.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 32
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 37,
+            "h": 19
+          },
+          "frame": {
+            "x": 311,
+            "y": 326,
+            "w": 37,
+            "h": 19
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "nature/stone_water/1.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 32
+          },
+          "spriteSourceSize": {
+            "x": 19,
+            "y": 0,
+            "w": 23,
+            "h": 21
+          },
+          "frame": {
+            "x": 396,
+            "y": 377,
+            "w": 23,
+            "h": 21
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "nature/rocks/2.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 40,
+            "y": 33,
+            "w": 20,
+            "h": 17
+          },
+          "frame": {
+            "x": 386,
+            "y": 1114,
+            "w": 20,
+            "h": 17
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "foliage/tree_trunks/tree_trunk.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 32
+          },
+          "spriteSourceSize": {
+            "x": 27,
+            "y": 7,
+            "w": 10,
+            "h": 12
+          },
+          "frame": {
+            "x": 311,
+            "y": 305,
+            "w": 10,
+            "h": 12
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "foliage/tree_trunks/tree_trunk_snow.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 32
+          },
+          "spriteSourceSize": {
+            "x": 26,
+            "y": 7,
+            "w": 11,
+            "h": 12
+          },
+          "frame": {
+            "x": 396,
+            "y": 400,
+            "w": 11,
+            "h": 12
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "nature/rocks/3.png",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          },
+          "spriteSourceSize": {
+            "x": 22,
+            "y": 24,
+            "w": 19,
+            "h": 21
+          },
+          "frame": {
+            "x": 442,
+            "y": 1089,
+            "w": 19,
+            "h": 21
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.75
+          }
+        },
+        {
+          "filename": "effects/ember/1.png",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 8,
+            "h": 8
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 8,
+            "h": 8
+          },
+          "frame": {
+            "x": 412,
+            "y": 455,
+            "w": 8,
+            "h": 8
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "effects/ember/2.png",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 8,
+            "h": 8
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 8,
+            "h": 8
+          },
+          "frame": {
+            "x": 245,
+            "y": 818,
+            "w": 8,
+            "h": 8
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "effects/ember/3.png",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 8,
+            "h": 8
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 8,
+            "h": 8
+          },
+          "frame": {
+            "x": 245,
+            "y": 828,
+            "w": 8,
+            "h": 8
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "foliage/fruits/blue-fruit.png",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 8,
+            "h": 8
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 8,
+            "h": 8
+          },
+          "frame": {
+            "x": 484,
+            "y": 1009,
+            "w": 8,
+            "h": 8
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "filename": "foliage/fruits/red-fruit.png",
+          "rotated": false,
+          "trimmed": false,
+          "sourceSize": {
+            "w": 8,
+            "h": 8
+          },
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 8,
+            "h": 8
+          },
+          "frame": {
+            "x": 484,
+            "y": 1019,
+            "w": 8,
+            "h": 8
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        }
+      ]
+    }
+  ],
+  "meta": {
+    "app": "https://www.codeandweb.com/texturepacker",
+    "version": "3.0",
+    "smartupdate": "$TexturePacker:SmartUpdate:66a73036207a32d70507218441b0c72d:446a57c91cffd66c9f70c3897d25f9cb:abb19a90748d26f4f55b50cb9c7aab1d$"
+  }
 }

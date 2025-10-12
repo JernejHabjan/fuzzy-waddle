@@ -2,7 +2,7 @@ import { Component, Input, ViewChild } from "@angular/core";
 
 import { RouterLink } from "@angular/router";
 import { ModalComponent } from "../modal/modal.component";
-import { ModalConfig } from "../modal/modal-config";
+import type { ModalConfig } from "../modal/modal-config";
 
 @Component({
   selector: "fuzzy-waddle-leave-button",

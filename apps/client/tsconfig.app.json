@@ -3,9 +3,9 @@
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
     "types": ["@angular/localize"],
-    "target": "ES2022",
     "useDefineForClassFields": false,
-    "moduleResolution": "bundler"
+    "moduleResolution": "bundler",
+    "verbatimModuleSyntax": true
   },
   "files": ["src/main.ts", "src/polyfills.ts"],
   "include": ["src/**/*.d.ts"],

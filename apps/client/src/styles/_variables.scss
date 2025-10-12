@@ -1,7 +1,7 @@
-@use 'fonts';
+@use "fonts";
 
 /* custom */
-$app-font-bold: 'EagleLake', sans-serif;
+$app-font-bold: "EagleLake", sans-serif;
 $app-row-odd: #d8e3ef;
 $app-row-even: #eef4fa;
 $app-border-radius: 10px !default;
@@ -12,6 +12,6 @@ $dark: #141a26;
 /* bootstrap overrides */
 $primary: #001f4d;
 $secondary: #334d73;
-$font-family-base: 'WorkSans', sans-serif !default;
+$font-family-base: "WorkSans", sans-serif !default;
 $btn-font-family: $app-font-bold !default;
 /* IMPORTANT - use these overrides then in overrides.scss */

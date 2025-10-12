@@ -1,7 +1,7 @@
 import { Component, EventEmitter, inject, Output } from "@angular/core";
 import {
-  HillData,
-  LittleMuncherGameCreate,
+  type HillData,
+  type LittleMuncherGameCreate,
   LittleMuncherHillEnum,
   LittleMuncherHills
 } from "@fuzzy-waddle/api-interfaces";

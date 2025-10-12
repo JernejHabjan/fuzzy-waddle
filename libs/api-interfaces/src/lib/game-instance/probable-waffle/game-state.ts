@@ -1,11 +1,11 @@
 import { BaseGameState } from "../game-state";
-import { BaseData } from "../data";
-import {
+import type { BaseData } from "../data";
+import type {
   ConstructionSiteComponentData,
   HealthComponentData
 } from "../../communicators/probable-waffle/communicator-game-events";
 import { ObjectNames } from "./object-names";
-import {
+import type {
   ActorTranslateComponentData,
   AttackComponentData,
   BackboardComponentData,
@@ -13,6 +13,7 @@ import {
   ContainerComponentData,
   GathererComponentData,
   HealingComponentData,
+  HousingComponentData,
   IdComponentData,
   OwnerComponentData,
   ProductionComponentData,
@@ -56,6 +57,7 @@ export interface ActorDefinition extends Record<string, any> {
   owner?: Partial<OwnerComponentData>;
   id?: Partial<IdComponentData>;
   health?: Partial<HealthComponentData>;
+  housing?: Partial<HousingComponentData>;
   constructionSite?: Partial<ConstructionSiteComponentData>;
   selected?: Partial<SelectableComponentData>;
   vision?: Partial<VisionComponentData>;

@@ -2,7 +2,7 @@ import { computed, inject, Injectable, signal } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "../../../environments/environment";
 import { firstValueFrom, timeout } from "rxjs";
-import { ServerHealthServiceInterface } from "./server-health.service.interface";
+import type { ServerHealthServiceInterface } from "./server-health.service.interface";
 
 export enum ServerState {
   available = 0,

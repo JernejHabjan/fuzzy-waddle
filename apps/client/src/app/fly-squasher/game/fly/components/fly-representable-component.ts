@@ -1,15 +1,15 @@
-import { IComponent } from "../../../../probable-waffle/game/core/component.service";
+import { type IFlyBase } from "../component.service";
 import { FlyPrefab } from "../fly-prefab";
 import { BaseScene } from "../../../../shared/game/phaser/scene/base.scene";
-import { Actor } from "../../../../probable-waffle/game/entity/actor/actor";
-import { FlyOptions } from "../fly";
+import { FlyBase } from "../FlyBase";
+import { type FlyOptions } from "../fly";
 import { ANIM_BLOOD_SPLATTER } from "../blood-splatter";
 
-export class FlyRepresentableComponent implements IComponent {
+export class FlyRepresentableComponent implements IFlyBase {
   private _fly!: FlyPrefab;
 
   constructor(
-    private readonly fly: Actor,
+    private readonly fly: FlyBase,
     private readonly scene: BaseScene,
     private readonly actorOptions?: FlyOptions
   ) {}

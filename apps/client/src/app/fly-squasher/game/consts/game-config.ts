@@ -1,4 +1,4 @@
-import { Types } from "phaser";
+import type { Types } from "phaser";
 import { FlySquasherScene } from "../fly-squasher-scene";
 import { baseGameConfig } from "../../../shared/game/base-game.config";
 

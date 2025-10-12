@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { IChatService } from "./chat.service.interface";
-import { AuthUser } from "@supabase/supabase-js";
+import { type IChatService } from "./chat.service.interface";
+import { type AuthUser } from "@supabase/supabase-js";
 import { SupabaseProviderService } from "../../core/supabase-provider/supabase-provider.service";
 import { TextSanitizationService } from "../../core/content-filters/text-sanitization.service";
 

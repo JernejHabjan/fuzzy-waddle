@@ -2,9 +2,9 @@ import { inject, Injectable } from "@angular/core";
 import { Subscription } from "rxjs";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { RoomsService } from "../../../communicators/rooms/rooms.service";
-import { FactionType, ProbableWaffleGameFoundEvent, ProbableWaffleLevels } from "@fuzzy-waddle/api-interfaces";
-import { MatchmakingLevel, MatchmakingOptions } from "./matchmaking.component";
-import { IMatchmakingService } from "./matchmaking.service.interface";
+import { FactionType, type ProbableWaffleGameFoundEvent, ProbableWaffleLevels } from "@fuzzy-waddle/api-interfaces";
+import { type MatchmakingLevel, type MatchmakingOptions } from "./matchmaking.component";
+import { type IMatchmakingService } from "./matchmaking.service.interface";
 import { environment } from "../../../../../environments/environment";
 
 @Injectable({
@@ -21,6 +21,9 @@ export class MatchmakingService implements IMatchmakingService {
 
   constructor() {
     const firstNrOfPlayersOption = this.nrOfPlayersOptions[0];
+    if (!firstNrOfPlayersOption) {
+      throw new Error("No levels available for matchmaking");
+    }
     this.matchmakingOptions = {
       factionType: this.lastPlayedFactionType,
       nrOfPlayers: firstNrOfPlayersOption,

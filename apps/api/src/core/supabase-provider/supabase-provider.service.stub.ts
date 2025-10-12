@@ -1,5 +1,5 @@
 import { SupabaseClient } from "@supabase/supabase-js";
-import { ISupabaseProviderService } from "./supabase-provider.service.interface";
+import { type ISupabaseProviderService } from "./supabase-provider.service.interface";
 
 export const supabaseProviderServiceStub = {
   get supabaseClient(): SupabaseClient {
