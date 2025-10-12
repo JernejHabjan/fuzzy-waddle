@@ -47,11 +47,11 @@ export const ankGuardDefinition = {
     },
     productionCost: {
       resources: {
-        [ResourceType.Wood]: 10,
-        [ResourceType.Minerals]: 10
+        [ResourceType.Wood]: 200,
+        [ResourceType.Stone]: 50
       },
       refundFactor: 0.5,
-      productionTime: 5000,
+      productionTime: 20000,
       costType: PaymentType.PayImmediately
     },
     production: {

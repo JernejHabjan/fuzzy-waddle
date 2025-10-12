@@ -48,11 +48,10 @@ export const watchTowerDefinition = {
     },
     productionCost: {
       resources: {
-        [ResourceType.Wood]: 10,
-        [ResourceType.Stone]: 30
+        [ResourceType.Stone]: 250
       },
       refundFactor: 0.5,
-      productionTime: 5000,
+      productionTime: 30000,
       costType: PaymentType.PayImmediately
     },
     // note - this unit can be walked on and can not contain units

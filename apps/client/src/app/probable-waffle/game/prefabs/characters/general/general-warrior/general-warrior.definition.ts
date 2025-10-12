@@ -44,8 +44,7 @@ export const generalWarriorDefinition = {
     },
     productionCost: {
       resources: {
-        [ResourceType.Wood]: 10,
-        [ResourceType.Minerals]: 10
+        [ResourceType.Minerals]: 80
       },
       refundFactor: 0.5,
       productionTime: 5000,

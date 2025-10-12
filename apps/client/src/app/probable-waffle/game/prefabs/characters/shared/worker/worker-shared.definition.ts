@@ -19,8 +19,7 @@ export const generalWorkerDefinitions: Partial<PrefabDefinition> = {
     },
     productionCost: {
       resources: {
-        [ResourceType.Wood]: 10,
-        [ResourceType.Minerals]: 10
+        [ResourceType.Minerals]: 50
       },
       refundFactor: 0.5,
       productionTime: 5000,
