@@ -22,6 +22,7 @@ import { getActorComponent } from "../../data/actor-component";
 import { ConstructionSiteComponent } from "../../entity/components/construction/construction-site-component";
 import { getSceneSystem } from "../services/scene-component-helpers";
 import { AiPlayerHandler } from "../../player/ai-controller/ai-player-handler";
+import HudProbableWaffle from "../scenes/hud-scenes/HudProbableWaffle";
 
 export class GameModeConditionChecker {
   private loseConditions: LoseConditions;
@@ -137,17 +138,18 @@ export class GameModeConditionChecker {
 
       const blackboard = aiController.blackboard;
       if (blackboard.wantsToSurrender) {
+        // Reset surrender flag before showing dialog to prevent repeated dialogs
+        // if the same AI offers again before the dialog is shown/handled
+        blackboard.wantsToSurrender = false;
         // Show surrender dialog
         this.showSurrenderDialog(aiPlayer);
-        // Reset surrender flag to prevent repeated dialogs
-        blackboard.wantsToSurrender = false;
       }
     });
   }
 
   private showSurrenderDialog(aiPlayer: ProbableWafflePlayer) {
     // Find the HUD scene
-    const hudScene = this.scene.scene.get("HudProbableWaffle") as any;
+    const hudScene = this.scene.scene.get("HudProbableWaffle") as HudProbableWaffle;
     if (!hudScene || !hudScene.surrenderDialog) return;
 
     // Don't show if dialog is already visible
