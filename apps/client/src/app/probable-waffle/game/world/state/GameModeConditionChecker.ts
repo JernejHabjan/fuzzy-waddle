@@ -20,6 +20,8 @@ import { ScenePlayerHelpers } from "../../data/scene-player-helpers";
 import { getCurrentPlayerNumber } from "../../data/scene-data";
 import { getActorComponent } from "../../data/actor-component";
 import { ConstructionSiteComponent } from "../../entity/components/construction/construction-site-component";
+import { getSceneSystem } from "../services/scene-component-helpers";
+import { AiPlayerHandler } from "../../player/ai-controller/ai-player-handler";
 
 export class GameModeConditionChecker {
   private loseConditions: LoseConditions;
@@ -126,11 +128,11 @@ export class GameModeConditionChecker {
     );
 
     aiPlayers.forEach((aiPlayer) => {
-      // Get AI controller to check surrender state
-      const aiPlayerHandler = baseGameData.components.find((c: any) => c.getAiPlayerController);
+      // Get AI controller to check surrender state using getSceneSystem
+      const aiPlayerHandler = getSceneSystem(this.scene, AiPlayerHandler);
       if (!aiPlayerHandler) return;
 
-      const aiController = (aiPlayerHandler as any).getAiPlayerController(aiPlayer.playerNumber);
+      const aiController = aiPlayerHandler.getAiPlayerController(aiPlayer.playerNumber);
       if (!aiController) return;
 
       const blackboard = aiController.blackboard;
