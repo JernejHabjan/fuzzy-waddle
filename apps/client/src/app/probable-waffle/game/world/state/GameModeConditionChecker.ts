@@ -150,6 +150,9 @@ export class GameModeConditionChecker {
     const hudScene = this.scene.scene.get("HudProbableWaffle") as any;
     if (!hudScene || !hudScene.surrenderDialog) return;
 
+    // Don't show if dialog is already visible
+    if (hudScene.surrenderDialog.visible) return;
+
     hudScene.surrenderDialog.showSurrenderRequest(
       aiPlayer,
       (player: ProbableWafflePlayer) => this.handleSurrenderAccepted(player),
@@ -173,7 +176,14 @@ export class GameModeConditionChecker {
 
   private handleSurrenderRejected(player: ProbableWafflePlayer) {
     console.log(`Player ${player.playerNumber} surrender rejected - continuing game`);
-    // AI continues playing
+    // Mark surrender as rejected so AI won't offer again
+    const aiPlayerHandler = getSceneSystem(this.scene, AiPlayerHandler);
+    if (aiPlayerHandler) {
+      const aiController = aiPlayerHandler.getAiPlayerController(player.playerNumber);
+      if (aiController) {
+        aiController.blackboard.surrenderRejected = true;
+      }
+    }
   }
 
   private checkWinConditions(): boolean {

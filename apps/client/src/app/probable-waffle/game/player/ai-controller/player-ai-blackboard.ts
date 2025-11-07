@@ -58,7 +58,8 @@ export class PlayerAiBlackboard extends Blackboard {
     public lastTechUpgradeAt: number = 0,
     // Surrender state
     public wantsToSurrender: boolean = false,
-    public surrenderOfferedAt: number = 0
+    public surrenderOfferedAt: number = 0,
+    public surrenderRejected: boolean = false
     // public nextReservedBuilding?: { name: string; tile: Vector2Simple } // (optional future use)
   ) {
     super();

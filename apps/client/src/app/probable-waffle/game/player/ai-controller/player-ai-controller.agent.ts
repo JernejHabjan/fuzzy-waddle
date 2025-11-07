@@ -970,8 +970,8 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   
   // ================= Surrender Logic =================
   ShouldOfferSurrender(): boolean {
-    // Don't offer surrender if already offered
-    if (this.blackboard.wantsToSurrender) return false;
+    // Don't offer surrender if already offered or rejected
+    if (this.blackboard.wantsToSurrender || this.blackboard.surrenderRejected) return false;
     
     // Check if AI is in a losing position
     const totalUnits = this.blackboard.units.length + this.blackboard.workers.length;
