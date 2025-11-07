@@ -55,7 +55,10 @@ export class PlayerAiBlackboard extends Blackboard {
     public plannedBuildingTypes: string[] = [],
     // Logistics / tech (new lightweight fields)
     public activeTechUpgrades: number = 0,
-    public lastTechUpgradeAt: number = 0
+    public lastTechUpgradeAt: number = 0,
+    // Surrender state
+    public wantsToSurrender: boolean = false,
+    public surrenderOfferedAt: number = 0
     // public nextReservedBuilding?: { name: string; tile: Vector2Simple } // (optional future use)
   ) {
     super();

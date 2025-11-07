@@ -8,6 +8,7 @@ import {
   GameSessionState,
   type LoseConditions,
   ProbableWaffleGameMode,
+  ProbableWaffleGameInstanceType,
   ProbableWafflePlayer,
   ProbableWafflePlayerType,
   type TieConditions,
@@ -28,6 +29,8 @@ export class GameModeConditionChecker {
   private currentPlayerNumber!: number;
   private players!: ProbableWafflePlayer[];
   private currentPlayer!: ProbableWafflePlayer;
+  private surrenderCheckInterval = 2000; // Check every 2 seconds
+  private lastSurrenderCheckTime = 0;
 
   constructor(private readonly scene: Phaser.Scene) {
     const gameModeData = getGameModeFromScene<ProbableWaffleGameMode>(scene).data;
@@ -44,6 +47,7 @@ export class GameModeConditionChecker {
   private check() {
     if (!this.scene.scene || !this.scene.scene.isActive()) return;
     this.prepareData();
+    this.checkAiSurrender();
     if (this.checkWinConditions()) {
       this.winGame();
       return;
@@ -84,6 +88,90 @@ export class GameModeConditionChecker {
         console.log(`Player ${player.playerNumber} has no actors left, marked as killed.`);
       }
     });
+  }
+
+  private checkAiSurrender() {
+    const now = Date.now();
+    if (now - this.lastSurrenderCheckTime < this.surrenderCheckInterval) return;
+    this.lastSurrenderCheckTime = now;
+
+    // Only check surrender in single-player mode (InstantGame or Skirmish)
+    const baseGameData = getBaseGameDataFromScene<ProbableWaffleGameData>(this.scene);
+    const gameType = baseGameData.gameInstance.gameInstanceMetadata.data.type;
+    if (
+      gameType !== ProbableWaffleGameInstanceType.InstantGame &&
+      gameType !== ProbableWaffleGameInstanceType.Skirmish
+    ) {
+      return;
+    }
+
+    // Check if there are any other human players
+    const humanPlayers = this.players.filter(
+      (player) =>
+        player.playerController.data.playerDefinition?.playerType === ProbableWafflePlayerType.Human &&
+        !player.playerController.data.leftOrKilled
+    );
+    if (humanPlayers.length > 1) {
+      return; // Multiple human players, don't offer surrender
+    }
+
+    // Check AI players for surrender requests
+    const isHost = isPlayerHostInScene(this.scene, this.currentPlayer);
+    if (!isHost) return;
+
+    const aiPlayers = this.players.filter(
+      (player) =>
+        player.playerController.data.playerDefinition?.playerType === ProbableWafflePlayerType.AI &&
+        !player.playerController.data.leftOrKilled
+    );
+
+    aiPlayers.forEach((aiPlayer) => {
+      // Get AI controller to check surrender state
+      const aiPlayerHandler = baseGameData.components.find((c: any) => c.getAiPlayerController);
+      if (!aiPlayerHandler) return;
+
+      const aiController = (aiPlayerHandler as any).getAiPlayerController(aiPlayer.playerNumber);
+      if (!aiController) return;
+
+      const blackboard = aiController.blackboard;
+      if (blackboard.wantsToSurrender) {
+        // Show surrender dialog
+        this.showSurrenderDialog(aiPlayer);
+        // Reset surrender flag to prevent repeated dialogs
+        blackboard.wantsToSurrender = false;
+      }
+    });
+  }
+
+  private showSurrenderDialog(aiPlayer: ProbableWafflePlayer) {
+    // Find the HUD scene
+    const hudScene = this.scene.scene.get("HudProbableWaffle") as any;
+    if (!hudScene || !hudScene.surrenderDialog) return;
+
+    hudScene.surrenderDialog.showSurrenderRequest(
+      aiPlayer,
+      (player: ProbableWafflePlayer) => this.handleSurrenderAccepted(player),
+      (player: ProbableWafflePlayer) => this.handleSurrenderRejected(player)
+    );
+  }
+
+  private handleSurrenderAccepted(player: ProbableWafflePlayer) {
+    console.log(`Player ${player.playerNumber} surrender accepted - eliminating player`);
+    // Mark player as eliminated
+    player.playerController.data.leftOrKilled = true;
+
+    // Destroy all units/buildings owned by this player
+    const actors = this.actorsByPlayer?.get(player.playerNumber!) || [];
+    actors.forEach((actor) => {
+      if (actor && actor.active) {
+        actor.destroy();
+      }
+    });
+  }
+
+  private handleSurrenderRejected(player: ProbableWafflePlayer) {
+    console.log(`Player ${player.playerNumber} surrender rejected - continuing game`);
+    // AI continues playing
   }
 
   private checkWinConditions(): boolean {

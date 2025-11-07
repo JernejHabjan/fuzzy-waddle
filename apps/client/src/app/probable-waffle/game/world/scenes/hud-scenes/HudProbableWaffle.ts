@@ -11,6 +11,7 @@ import AiControllerDebugPanel from "../../../prefabs/gui/debug/ai-controller/AiC
 import GameSpeedModifier from "../../../prefabs/gui/buttons/GameSpeedModifier";
 import HudMessages from "../../../prefabs/gui/labels/HudMessages";
 import GroupContainer from "../../../prefabs/gui/labels/GroupContainer";
+import SurrenderDialog from "../../../prefabs/gui/SurrenderDialog";
 /* START-USER-IMPORTS */
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { HudGameState } from "../../../hud/hud-game-state";
@@ -72,6 +73,10 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     const groupContainer = new GroupContainer(this, 552, 541);
     this.add.existing(groupContainer);
 
+    // surrenderDialog
+    const surrenderDialog = new SurrenderDialog(this, 640, 360);
+    this.add.existing(surrenderDialog);
+
     // lists
     const hudElements: Array<any> = [];
 
@@ -84,6 +89,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.gameSpeedModifier = gameSpeedModifier;
     this.hudMessages = hudMessages;
     this.groupContainer = groupContainer;
+    this.surrenderDialog = surrenderDialog;
     this.hudElements = hudElements;
 
     this.events.emit("scene-awake");
@@ -98,6 +104,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   private gameSpeedModifier!: GameSpeedModifier;
   private hudMessages!: HudMessages;
   private groupContainer!: GroupContainer;
+  public surrenderDialog!: SurrenderDialog;
   private hudElements!: Array<any>;
 
   /* START-USER-CODE */
@@ -199,6 +206,10 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
         this.gameType === ProbableWaffleGameInstanceType.Replay ||
         this.gameType === ProbableWaffleGameInstanceType.Skirmish) &&
       sceneWidth > this.minimap_container.minimapHideBreakpoint;
+
+    // position surrender dialog in center of screen
+    this.surrenderDialog.x = this.scale.width / 2;
+    this.surrenderDialog.y = this.scale.height / 2;
 
     // redraw minimap
     this.minimap_container.redrawMinimap();
