@@ -138,16 +138,15 @@ export class GameModeConditionChecker {
 
       const blackboard = aiController.blackboard;
       if (blackboard.wantsToSurrender) {
-        // Reset surrender flag before showing dialog to prevent repeated dialogs
-        // if the same AI offers again before the dialog is shown/handled
-        blackboard.wantsToSurrender = false;
         // Show surrender dialog
-        this.showSurrenderDialog(aiPlayer);
+        // Note: We keep wantsToSurrender flag set to prevent offering again
+        // The flag will be reset when the dialog is accepted/rejected
+        this.showSurrenderDialog(aiPlayer, aiController);
       }
     });
   }
 
-  private showSurrenderDialog(aiPlayer: ProbableWafflePlayer) {
+  private showSurrenderDialog(aiPlayer: ProbableWafflePlayer, aiController: any) {
     // Find the HUD scene
     const hudScene = this.scene.scene.get("HudProbableWaffle") as HudProbableWaffle;
     if (!hudScene || !hudScene.surrenderDialog) return;
@@ -157,8 +156,16 @@ export class GameModeConditionChecker {
 
     hudScene.surrenderDialog.showSurrenderRequest(
       aiPlayer,
-      (player: ProbableWafflePlayer) => this.handleSurrenderAccepted(player),
-      (player: ProbableWafflePlayer) => this.handleSurrenderRejected(player)
+      (player: ProbableWafflePlayer) => {
+        // Reset surrender flag before handling
+        aiController.blackboard.wantsToSurrender = false;
+        this.handleSurrenderAccepted(player);
+      },
+      (player: ProbableWafflePlayer) => {
+        // Reset surrender flag before handling
+        aiController.blackboard.wantsToSurrender = false;
+        this.handleSurrenderRejected(player);
+      }
     );
   }
 

@@ -981,12 +981,14 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     // Surrender conditions:
     // 1. Very low unit count (< 3 units)
     // 2. Low building count (< 2 buildings)
-    // 3. Enemy has significant military advantage (3x or more)
+    // 3. Enemy has significant military advantage (3x or more, or AI has no military)
     // 4. Very low resources (< 100 total)
     const veryLowUnits = totalUnits < 3;
     const fewBuildings = totalBuildings < 2;
-    const enemyAdvantage = this.blackboard.militaryStrength > 0 && 
-                          this.blackboard.enemyMilitaryStrength > this.blackboard.militaryStrength * 3;
+    const enemyAdvantage = 
+      this.blackboard.militaryStrength === 0 && this.blackboard.enemyMilitaryStrength > 0 ||
+      (this.blackboard.militaryStrength > 0 && 
+       this.blackboard.enemyMilitaryStrength > this.blackboard.militaryStrength * 3);
     const lowResources = resources < 100;
     
     // AI should surrender if it meets multiple losing conditions

@@ -65,6 +65,9 @@ export default class SurrenderDialog extends Phaser.GameObjects.Container {
     this.visible = false;
 
     /* START-USER-CTR-CODE */
+    // Set up button listeners once during construction
+    this.acceptButtonBg.on("pointerdown", this.handleAcceptClick, this);
+    this.rejectButtonBg.on("pointerdown", this.handleRejectClick, this);
     /* END-USER-CTR-CODE */
   }
 
@@ -76,6 +79,20 @@ export default class SurrenderDialog extends Phaser.GameObjects.Container {
   private surrenderingPlayer?: ProbableWafflePlayer;
   private onAcceptCallback?: (player: ProbableWafflePlayer) => void;
   private onRejectCallback?: (player: ProbableWafflePlayer) => void;
+
+  private handleAcceptClick() {
+    if (this.surrenderingPlayer && this.onAcceptCallback) {
+      this.onAcceptCallback(this.surrenderingPlayer);
+    }
+    this.hide();
+  }
+
+  private handleRejectClick() {
+    if (this.surrenderingPlayer && this.onRejectCallback) {
+      this.onRejectCallback(this.surrenderingPlayer);
+    }
+    this.hide();
+  }
 
   showSurrenderRequest(
     player: ProbableWafflePlayer,
@@ -90,24 +107,6 @@ export default class SurrenderDialog extends Phaser.GameObjects.Container {
     this.titleText.setText(`${playerName} wants to surrender.\nDo you accept?`);
 
     this.visible = true;
-
-    // Set up button listeners
-    this.acceptButtonBg.removeAllListeners();
-    this.rejectButtonBg.removeAllListeners();
-
-    this.acceptButtonBg.on("pointerdown", () => {
-      if (this.surrenderingPlayer && this.onAcceptCallback) {
-        this.onAcceptCallback(this.surrenderingPlayer);
-      }
-      this.hide();
-    });
-
-    this.rejectButtonBg.on("pointerdown", () => {
-      if (this.surrenderingPlayer && this.onRejectCallback) {
-        this.onRejectCallback(this.surrenderingPlayer);
-      }
-      this.hide();
-    });
   }
 
   hide() {
@@ -115,6 +114,13 @@ export default class SurrenderDialog extends Phaser.GameObjects.Container {
     this.surrenderingPlayer = undefined;
     this.onAcceptCallback = undefined;
     this.onRejectCallback = undefined;
+  }
+
+  override destroy(fromScene?: boolean) {
+    // Clean up event listeners
+    this.acceptButtonBg.off("pointerdown", this.handleAcceptClick, this);
+    this.rejectButtonBg.off("pointerdown", this.handleRejectClick, this);
+    super.destroy(fromScene);
   }
 
   /* END-USER-CODE */
