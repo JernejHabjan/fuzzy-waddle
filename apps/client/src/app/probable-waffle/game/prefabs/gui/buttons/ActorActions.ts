@@ -546,7 +546,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         }))
         .filter(
           (item): item is { actor: Phaser.GameObjects.GameObject; component: ProductionComponent } =>
-            item.component !== null && item.component.isFinished
+            item.component !== null && item.component!.isFinished
         );
 
       const availableToProduce = productionComponent.productionDefinition.availableProduceActors;
