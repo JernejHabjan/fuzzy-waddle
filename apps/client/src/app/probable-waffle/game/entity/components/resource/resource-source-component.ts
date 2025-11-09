@@ -15,6 +15,7 @@ export class ResourceSourceComponent {
   private static readonly debug = false;
   onResourcesChanged: Subject<[ResourceType, number, GameObject]> = new Subject<[ResourceType, number, GameObject]>();
   onDepleted: Subject<GameObject> = new Subject<GameObject>();
+  onAssignedGatherersChanged: Subject<number> = new Subject<number>();
   private currentResources: number;
   private containerComponent?: ContainerComponent;
   private gathererMustEnter = false;
@@ -22,6 +23,7 @@ export class ResourceSourceComponent {
   private currentCapacity = 0;
   private depletedImage?: Phaser.GameObjects.Image;
   private scene?: Phaser.Scene;
+  private assignedGatherers: Set<GameObject> = new Set();
 
   constructor(
     private readonly gameObject: GameObject,
@@ -142,6 +144,38 @@ export class ResourceSourceComponent {
 
   getCurrentResources(): number {
     return this.currentResources;
+  }
+
+  /**
+   * Register a gatherer as assigned to this resource source
+   */
+  assignGatherer(gatherer: GameObject): void {
+    if (!this.assignedGatherers.has(gatherer)) {
+      this.assignedGatherers.add(gatherer);
+      this.onAssignedGatherersChanged.next(this.assignedGatherers.size);
+      
+      // Listen for gatherer destruction to remove from set
+      gatherer.once(Phaser.GameObjects.Events.DESTROY, () => {
+        this.unassignGatherer(gatherer);
+      });
+    }
+  }
+
+  /**
+   * Unregister a gatherer from this resource source
+   */
+  unassignGatherer(gatherer: GameObject): void {
+    if (this.assignedGatherers.has(gatherer)) {
+      this.assignedGatherers.delete(gatherer);
+      this.onAssignedGatherersChanged.next(this.assignedGatherers.size);
+    }
+  }
+
+  /**
+   * Get the count of gatherers currently assigned to this resource
+   */
+  getAssignedGatherersCount(): number {
+    return this.assignedGatherers.size;
   }
 
   setData(data: Partial<ResourceSourceComponentData>) {

@@ -10,6 +10,7 @@ import { DamageType } from "../../../entity/components/combat/damage-type";
 import { Subscription } from "rxjs";
 import GameObject = Phaser.GameObjects.GameObject;
 import type { PrefabDefinition } from "../../definitions/prefab-definition";
+import { ResourceSourceComponent } from "../../../entity/components/resource/resource-source-component";
 /* END-USER-IMPORTS */
 
 export default class ActorDetails extends Phaser.GameObjects.Container {
@@ -80,6 +81,8 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
   /* START-USER-CODE */
   private healthSubscription?: Subscription;
   private armourSubscription?: Subscription;
+  private resourcesChangedSubscription?: Subscription;
+  private assignedGatherersChangedSubscription?: Subscription;
 
   showActorAttributes(actor: GameObject, definition: PrefabDefinition) {
     const iconsAndTexts: {
@@ -89,6 +92,58 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
       };
       text: string;
     }[] = [];
+
+    // Check if this is a resource source
+    const resourceSourceComponent = getActorComponent(actor, ResourceSourceComponent);
+    if (resourceSourceComponent) {
+      // Show remaining resources
+      const currentResources = resourceSourceComponent.getCurrentResources();
+      const maxResources = resourceSourceComponent.getMaximumResources();
+      const resourcesText = `${currentResources}/${maxResources}`;
+      const resourceIconIndex = iconsAndTexts.push({
+        icon: { key: "gui", frame: "actor_info_icons/element.png" },
+        text: resourcesText
+      });
+
+      // Subscribe to resource changes
+      this.resourcesChangedSubscription?.unsubscribe();
+      this.resourcesChangedSubscription = resourceSourceComponent.onResourcesChanged.subscribe(() => {
+        const attribute = this.attributes[resourceIconIndex - 1];
+        if (!attribute) return;
+        const updatedResources = resourceSourceComponent.getCurrentResources();
+        attribute.setText(`${updatedResources}/${maxResources}`);
+      });
+
+      // Show assigned gatherers count
+      const assignedCount = resourceSourceComponent.getAssignedGatherersCount();
+      const gatherersText = `${assignedCount}`;
+      const gatherersIconIndex = iconsAndTexts.push({
+        icon: { key: "gui", frame: "actor_info_icons/boot.png" },
+        text: gatherersText
+      });
+
+      // Subscribe to gatherer count changes
+      this.assignedGatherersChangedSubscription?.unsubscribe();
+      this.assignedGatherersChangedSubscription = resourceSourceComponent.onAssignedGatherersChanged.subscribe(
+        (count) => {
+          const attribute = this.attributes[gatherersIconIndex - 1];
+          if (!attribute) return;
+          attribute.setText(`${count}`);
+        }
+      );
+
+      // Display the resource-specific icons
+      this.attributes.forEach((a) => (a.visible = false));
+      iconsAndTexts.forEach((info, index) => {
+        const label = this.attributes[index];
+        if (!label) return;
+        label.setIcon(info.icon.key, info.icon.frame, 24);
+        label.setText(info.text);
+        label.visible = true;
+      });
+      return;
+    }
+
     const tileStepDuration = definition.components?.translatable?.tileMoveDuration;
     if (tileStepDuration) {
       const movementSpeed = (1000 / tileStepDuration).toFixed(1) + " t/s";
@@ -171,11 +226,15 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
   }
   hideAll() {
     this.attributes.forEach((a) => (a.visible = false));
+    this.resourcesChangedSubscription?.unsubscribe();
+    this.assignedGatherersChangedSubscription?.unsubscribe();
   }
 
   override destroy(fromScene?: boolean) {
     this.healthSubscription?.unsubscribe();
     this.armourSubscription?.unsubscribe();
+    this.resourcesChangedSubscription?.unsubscribe();
+    this.assignedGatherersChangedSubscription?.unsubscribe();
     super.destroy(fromScene);
   }
 
