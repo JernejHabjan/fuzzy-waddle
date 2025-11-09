@@ -79,7 +79,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       });
     }
     this.mapAnalyzer = new MapAnalyzer(this.scene, this.player.playerNumber!);
-    this.basePlanner = new BasePlanner(this.mapAnalyzer);
+    this.basePlanner = new BasePlanner(this.mapAnalyzer, this.player.factionType);
     this.cooldowns.configure("strategyShift", AI_CONFIG.strategyShiftIntervalMs);
     this.cooldowns.configure("analyzeMap", AI_CONFIG.mapAnalysisIntervalMs);
     this.cooldowns.configure("attackTrigger", AI_CONFIG.attackTriggerIntervalMs);
@@ -713,16 +713,109 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     return State.SUCCEEDED;
   }
 
+  /**
+   * Get faction-appropriate housing building.
+   * Housing buildings are identified by the presence of a 'housing' component.
+   */
+  private getHousingBuildingForFaction(): ObjectNames | null {
+    const faction = this.player.factionType;
+    switch (faction) {
+      case FactionType.Tivara:
+        return ObjectNames.Olival;
+      case FactionType.Skaduwee:
+        return ObjectNames.Emberstone;
+      default:
+        return null;
+    }
+  }
+
+  /**
+   * Get an appropriate production building from the tech tree.
+   * Production buildings are identified by the presence of a 'production' component.
+   * Selects based on what's available in tech tree and not yet constructed.
+   */
+  private getProductionBuildingFromTechTree(): ObjectNames | null {
+    // Query tech tree for available production buildings
+    if (!this.productionValidator) return ObjectNames.Owlery; // fallback
+    
+    const faction = this.player.factionType;
+    // Get all buildings with production component for this faction
+    const productionBuildings: ObjectNames[] = [];
+    
+    Object.entries(pwActorDefinitions).forEach(([key, def]) => {
+      const objName = key as ObjectNames;
+      // Filter by faction and presence of production component
+      const isFactionMatch = 
+        (faction === FactionType.Tivara && key.toLowerCase().includes('tivara')) ||
+        (faction === FactionType.Skaduwee && key.toLowerCase().includes('skaduwee')) ||
+        (!key.toLowerCase().includes('tivara') && !key.toLowerCase().includes('skaduwee'));
+      
+      if (isFactionMatch && def.components?.production) {
+        productionBuildings.push(objName);
+      }
+    });
+
+    // Filter to buildings that can be constructed (pass tech tree validation)
+    const constructible = productionBuildings.filter(building => {
+      const validation = this.productionValidator!.validate(building);
+      return validation.canQueue || !validation.techBlocked;
+    });
+
+    // Return first constructible, or first available if none constructible
+    return constructible[0] ?? productionBuildings[0] ?? ObjectNames.Owlery;
+  }
+
+  /**
+   * Get an appropriate defense building.
+   * Defense buildings are identified by the presence of an 'attack' component.
+   */
+  private getDefenseBuildingForFaction(): ObjectNames | null {
+    const faction = this.player.factionType;
+    // Find buildings with attack components
+    const defenseBuildings: ObjectNames[] = [];
+    
+    Object.entries(pwActorDefinitions).forEach(([key, def]) => {
+      const objName = key as ObjectNames;
+      // Filter by faction and presence of attack component
+      const isFactionMatch = 
+        (faction === FactionType.Tivara && key.toLowerCase().includes('tivara')) ||
+        (faction === FactionType.Skaduwee && key.toLowerCase().includes('skaduwee')) ||
+        (!key.toLowerCase().includes('tivara') && !key.toLowerCase().includes('skaduwee'));
+      
+      if (isFactionMatch && def.components?.attack && def.components?.constructable) {
+        defenseBuildings.push(objName);
+      }
+    });
+
+    // Return first available defense building
+    return defenseBuildings[0] ?? ObjectNames.WatchTower; // fallback to WatchTower
+  }
+
   AssignHousingBuilding(): State {
-    return this.assignBuilding(ObjectNames.WorkMill);
+    const housingBuilding = this.getHousingBuildingForFaction();
+    if (!housingBuilding) {
+      this.logDebugInfo("No housing building available for faction");
+      return State.FAILED;
+    }
+    return this.assignBuilding(housingBuilding);
   }
 
   AssignProductionBuilding(): State {
-    return this.assignBuilding(ObjectNames.Owlery);
+    const productionBuilding = this.getProductionBuildingFromTechTree();
+    if (!productionBuilding) {
+      this.logDebugInfo("No production building available from tech tree");
+      return State.FAILED;
+    }
+    return this.assignBuilding(productionBuilding);
   }
 
   AssignDefenseBuilding(): State {
-    return this.assignBuilding(ObjectNames.InfantryInn);
+    const defenseBuilding = this.getDefenseBuildingForFaction();
+    if (!defenseBuilding) {
+      this.logDebugInfo("No defense building available for faction");
+      return State.FAILED;
+    }
+    return this.assignBuilding(defenseBuilding);
   }
 
   NeedToScout() {

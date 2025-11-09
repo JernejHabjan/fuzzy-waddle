@@ -103,17 +103,8 @@ export class AdaptiveThresholdManager {
   }
 
   private roughCostFor(obj: ObjectNames): number {
-    // Per-Definition Supply Costing Integration (replaces static switch; preserves fallback behavior)
-    switch (obj) {
-      case ObjectNames.WorkMill:
-        return getApproxWoodCost(obj, 120);
-      case ObjectNames.Owlery:
-        return getApproxWoodCost(obj, 160);
-      case ObjectNames.InfantryInn:
-        return getApproxWoodCost(obj, 200);
-      default:
-        return getApproxWoodCost(obj, 100);
-    }
+    // Per-Definition Supply Costing Integration - sources cost directly from actor definitions
+    return getApproxWoodCost(obj, 100); // getApproxWoodCost now reads from pwActorDefinitions with fallback
   }
 
   // ---- Getters (Agent queries) ----

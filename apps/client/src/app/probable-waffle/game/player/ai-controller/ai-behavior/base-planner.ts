@@ -1,5 +1,5 @@
 import { type MapAnalysis, MapAnalyzer } from "./map-analyzer";
-import { ObjectNames, ResourceType, type Vector2Simple } from "@fuzzy-waddle/api-interfaces";
+import { FactionType, ObjectNames, ResourceType, type Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { NavigationService } from "../../../world/services/navigation.service";
@@ -46,7 +46,10 @@ export class BasePlanner {
     planId?: string; //link to blackboard plannedStructures reservation
   } | null = null;
 
-  constructor(private readonly analyzer: MapAnalyzer) {}
+  constructor(
+    private readonly analyzer: MapAnalyzer,
+    private readonly faction?: FactionType
+  ) {}
 
   /**
    * Ensure a reservation exists for the given building type; returns its tile.
@@ -279,35 +282,38 @@ export class BasePlanner {
 
   /**
    * Translate highest priority need into a concrete buildable type label.
-   * Mapping can later become data-driven.
+   * Now faction-aware and uses actual building names.
    */
   getNextNeededType(): string | null {
     if (this.buildingNeeds.length === 0) return null;
     const top = this.buildingNeeds[0];
     if (!top) return null;
-    switch (top.type) {
-      case "Housing":
-        return "WorkMill"; // placeholder mapping
-      case "Production":
-        return "Owlery"; // placeholder mapping
-      case "Defense":
-        return "InfantryInn"; // placeholder mapping
-      default:
-        return null;
-    }
+    const objName = this.mapNeedTypeToObjectName(top.type as NeedType);
+    return objName ? objName.toString() : null;
   }
 
   /**
    * Translate need type to concrete object enum value.
+   * Now faction-aware for housing buildings.
    */
   mapNeedTypeToObjectName(needType: NeedType): ObjectNames | null {
     switch (needType) {
       case NeedType.Housing:
-        return ObjectNames.WorkMill;
+        // Faction-specific housing
+        if (this.faction === FactionType.Tivara) {
+          return ObjectNames.Olival;
+        } else if (this.faction === FactionType.Skaduwee) {
+          return ObjectNames.Emberstone;
+        }
+        return ObjectNames.Olival; // fallback
       case NeedType.Production:
+        // For now, return a generic production building
+        // This could be enhanced to query tech tree for available production buildings
         return ObjectNames.Owlery;
       case NeedType.Defense:
-        return ObjectNames.InfantryInn;
+        // Return defense building with attack component
+        // WatchTower is the primary defense building
+        return ObjectNames.WatchTower;
       default:
         return null;
     }
