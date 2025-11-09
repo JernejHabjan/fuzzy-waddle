@@ -50,10 +50,21 @@ export default class ActorInfoLabel extends Phaser.GameObjects.Container {
   setIconClickHandler(callback: () => void) {
     this.onIconClickCallback = callback;
     this.icon.setInteractive({ useHandCursor: true });
-    this.icon.off('pointerdown');
-    this.icon.on('pointerdown', () => {
-      this.onIconClickCallback?.();
-    });
+    this.icon.off("pointerdown");
+    this.icon.on("pointerdown", this.onPointerDown, this);
+    this.text.setInteractive({ useHandCursor: true });
+    this.text.off("pointerdown");
+    this.text.on("pointerdown", this.onPointerDown, this);
+  }
+
+  private onPointerDown() {
+    this.onIconClickCallback?.();
+  }
+
+  override destroy(fromScene?: boolean) {
+    this.icon.off("pointerdown", this.onPointerDown, this);
+    this.text.off("pointerdown", this.onPointerDown, this);
+    super.destroy(fromScene);
   }
 
   /* END-USER-CODE */
