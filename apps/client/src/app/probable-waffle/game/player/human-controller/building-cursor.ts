@@ -119,9 +119,19 @@ export class BuildingCursor {
   /**
    * Issue move orders to actors that need to be moved out of the way.
    * Finds a safe tile near the building and orders the actor to move there.
+   * @param buildingsBeingPlaced - Array of building game objects that are being placed (to exclude their tiles)
    */
-  private moveActorsOutOfTheWay() {
-    if (!this.navigationService || this.actorsToMove.size === 0) return;
+  private moveActorsOutOfTheWay(buildingsBeingPlaced: GameObjects.GameObject[]) {
+    if (!this.navigationService || !this.tileMapComponent || this.actorsToMove.size === 0) return;
+
+    // Collect all tiles that will be occupied by buildings being placed
+    const occupiedTiles = new Set<string>();
+    for (const building of buildingsBeingPlaced) {
+      const tilesUnderBuilding = getTileCoordsUnderObject(this.tileMapComponent.tilemap, building);
+      for (const tile of tilesUnderBuilding) {
+        occupiedTiles.add(`${tile.x},${tile.y}`);
+      }
+    }
 
     this.actorsToMove.forEach((actor) => {
       const pawnAiController = getActorComponent(actor, PawnAiController);
@@ -129,6 +139,14 @@ export class BuildingCursor {
 
       const actorTransform = getGameObjectLogicalTransform(actor);
       if (!actorTransform) return;
+
+      // Get the actor's current tile position
+      const actorCurrentTile = IsoHelper.isometricWorldToTileXY(
+        this.scene,
+        Math.floor(actorTransform.x),
+        Math.floor(actorTransform.y),
+        false
+      );
 
       // Find a nearby walkable tile to move the actor to
       // Try tiles in a spiral pattern around the actor's current position
@@ -150,8 +168,22 @@ export class BuildingCursor {
             const tileWorldCenter = IsoHelper.isometricWorldToTileXY(this.scene, testTile.x, testTile.y, false);
             if (!tileWorldCenter) continue;
 
-            // Create a temporary game object to test if this position is walkable
-            // We use the navigation service to check if the tile is walkable
+            // Skip if this is the actor's current tile
+            if (
+              actorCurrentTile &&
+              tileWorldCenter.x === actorCurrentTile.x &&
+              tileWorldCenter.y === actorCurrentTile.y
+            ) {
+              continue;
+            }
+
+            // Skip if this tile will be occupied by a building being placed
+            const tileKey = `${tileWorldCenter.x},${tileWorldCenter.y}`;
+            if (occupiedTiles.has(tileKey)) {
+              continue;
+            }
+
+            // Check if the tile is walkable
             const isWalkable = this.navigationService!.isTileWalkable(tileWorldCenter);
             if (isWalkable) {
               targetTile = { x: tileWorldCenter.x, y: tileWorldCenter.y, z: 0 } satisfies Vector3Simple;
@@ -676,8 +708,15 @@ export class BuildingCursor {
       this.getCanConstructBuildingAt(this.building, [], true);
     }
 
+    // Collect all buildings being placed to pass to moveActorsOutOfTheWay
+    const buildingsBeingPlaced: GameObjects.GameObject[] = this.isDragging && objectsToPlace.length
+      ? objectsToPlace
+      : this.building
+        ? [this.building]
+        : [];
+
     // Move actors out of the way before placing buildings
-    this.moveActorsOutOfTheWay();
+    this.moveActorsOutOfTheWay(buildingsBeingPlaced);
 
     if (this.isDragging && objectsToPlace.length) {
       this.building?.destroy();
