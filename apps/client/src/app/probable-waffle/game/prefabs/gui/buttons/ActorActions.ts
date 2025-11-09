@@ -160,6 +160,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
 
     /* START-USER-CTR-CODE */
     this.mainSceneWithActors = (scene as HudProbableWaffle).probableWaffleScene!;
+    this.hudScene = scene as HudProbableWaffle;
     this.audioService = getSceneService(this.mainSceneWithActors, AudioService)!;
     this.playerActionsHandler = getSceneService(this.mainSceneWithActors, PlayerActionsHandler)!;
     this.subscribeToPlayerSelection();
@@ -174,6 +175,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
   private actorKillSubscription?: Subscription;
   private actorConstructionSubscription?: Subscription;
   private readonly mainSceneWithActors: ProbableWaffleScene;
+  private readonly hudScene: HudProbableWaffle;
   private readonly audioService: AudioService;
   private readonly playerActionsHandler: PlayerActionsHandler;
   /**
@@ -390,14 +392,14 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         origin: { x: 0.5, y: 0.5 }
       },
       visible: true,
-      action: () => {
+      action: async () => {
         // Check if it's a main building
         const actorName = actor.name;
         const actorDefinition = pwActorDefinitions[actorName as keyof typeof pwActorDefinitions];
         const isMainBuilding = actorDefinition?.meta?.isMainBuilding ?? false;
 
         if (isMainBuilding) {
-          const confirmed = window.confirm(
+          const confirmed = await this.hudScene.confirmationDialog.show(
             "Are you sure you want to delete this main building? This action cannot be undone."
           );
           if (!confirmed) {

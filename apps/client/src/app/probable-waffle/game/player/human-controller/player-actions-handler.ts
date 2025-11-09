@@ -22,6 +22,7 @@ import { ActorTranslateComponent } from "../../entity/components/movement/actor-
 import { GathererComponent } from "../../entity/components/resource/gatherer-component";
 import { HealingComponent } from "../../entity/components/combat/components/healing-component";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
+import HudProbableWaffle from "../../world/scenes/hud-scenes/HudProbableWaffle";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class PlayerActionsHandler {
@@ -191,7 +192,7 @@ export class PlayerActionsHandler {
     }
   }
 
-  private deleteSelectedActors() {
+  private async deleteSelectedActors() {
     if (!this.primarySelectedActor) return;
 
     // Check if it's a main building
@@ -200,7 +201,8 @@ export class PlayerActionsHandler {
     const isMainBuilding = actorDefinition?.meta?.isMainBuilding ?? false;
 
     if (isMainBuilding) {
-      const confirmed = window.confirm(
+      const hudScene = this.hudScene as HudProbableWaffle;
+      const confirmed = await hudScene.confirmationDialog.show(
         "Are you sure you want to delete this main building? This action cannot be undone."
       );
       if (!confirmed) {
