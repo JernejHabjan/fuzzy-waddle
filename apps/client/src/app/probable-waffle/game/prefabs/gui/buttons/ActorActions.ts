@@ -36,6 +36,7 @@ import { HealingComponent } from "../../../entity/components/combat/components/h
 import { GathererComponent } from "../../../entity/components/resource/gatherer-component";
 import { getPrimarySelectedActor } from "../../../data/selection-helpers";
 import { ProductionValidator } from "../../../data/tech-tree/production-validator";
+import { findProductionBuildingWithLeastRemainingTime } from "../../../entity/components/production/production-helpers";
 /* END-USER-IMPORTS */
 
 export default class ActorActions extends Phaser.GameObjects.Container {
@@ -469,7 +470,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       index = this.showRallyPointIcon(actor, allActors, index);
       index = this.showHealIcons(actor, allActors, index);
       index = this.showGatherIcons(actor, allActors, index);
-      index = this.showProductionIcons(actor, index);
+      index = this.showProductionIcons(actor, allActors, index);
       index = this.showBuilderIcons(actor, allActors, index);
       // Always show delete button at the bottom-right position
       this.showDeleteIcon(actor, allActors, index);
@@ -574,7 +575,11 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     return index;
   }
 
-  private showProductionIcons(actor: Phaser.GameObjects.GameObject, index: number): number {
+  private showProductionIcons(
+    actor: Phaser.GameObjects.GameObject,
+    allActors: Phaser.GameObjects.GameObject[],
+    index: number
+  ): number {
     const productionComponent = getActorComponent(actor, ProductionComponent);
     if (productionComponent && productionComponent.isFinished) {
       const availableToProduce = productionComponent.productionDefinition.availableProduceActors;
@@ -609,7 +614,15 @@ export default class ActorActions extends Phaser.GameObjects.Container {
             if (!actorDefinition.components?.productionCost) {
               throw new Error(`Production cost not found for ${product}`);
             }
-            const errorCode = productionComponent.startProduction({
+
+            // Find the production building with the least total remaining production time
+            const targetComponent = findProductionBuildingWithLeastRemainingTime(allActors);
+            if (!targetComponent) {
+              console.error("No production building found");
+              return;
+            }
+
+            const errorCode = targetComponent.startProduction({
               actorName: product,
               costData: actorDefinition.components.productionCost
             });

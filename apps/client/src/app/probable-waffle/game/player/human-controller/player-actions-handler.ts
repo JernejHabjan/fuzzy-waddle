@@ -25,6 +25,7 @@ import { HealingComponent } from "../../entity/components/combat/components/heal
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import HudProbableWaffle from "../../world/scenes/hud-scenes/HudProbableWaffle";
 import { OwnerComponent } from "../../entity/components/owner-component";
+import { findProductionBuildingWithLeastRemainingTime } from "../../entity/components/production/production-helpers";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class PlayerActionsHandler {
@@ -115,9 +116,13 @@ export class PlayerActionsHandler {
           const def = pwActorDefinitions[product];
           const cost = def.components?.productionCost;
           if (cost) {
-            production.startProduction({ actorName: product, costData: cost });
-            e.preventDefault();
-            return;
+            // Find the production building with the least total remaining production time
+            const targetComponent = findProductionBuildingWithLeastRemainingTime(this.currentSelectedActors);
+            if (targetComponent) {
+              targetComponent.startProduction({ actorName: product, costData: cost });
+              e.preventDefault();
+              return;
+            }
           }
         }
       }
