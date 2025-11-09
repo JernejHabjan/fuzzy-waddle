@@ -428,7 +428,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       index = this.showRallyPointIcon(actor, allActors, index);
       index = this.showHealIcons(actor, allActors, index);
       index = this.showGatherIcons(actor, allActors, index);
-      index = this.showProductionIcons(actor, index);
+      index = this.showProductionIcons(actor, allActors, index);
       this.showBuilderIcons(actor, allActors, index);
     }
   }
@@ -531,9 +531,24 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     return index;
   }
 
-  private showProductionIcons(actor: Phaser.GameObjects.GameObject, index: number): number {
+  private showProductionIcons(
+    actor: Phaser.GameObjects.GameObject,
+    allActors: Phaser.GameObjects.GameObject[],
+    index: number
+  ): number {
     const productionComponent = getActorComponent(actor, ProductionComponent);
     if (productionComponent && productionComponent.isFinished) {
+      // Get all production components from selected actors
+      const productionBuildings = allActors
+        .map((a) => ({
+          actor: a,
+          component: getActorComponent(a, ProductionComponent)
+        }))
+        .filter(
+          (item): item is { actor: Phaser.GameObjects.GameObject; component: ProductionComponent } =>
+            item.component !== null && item.component.isFinished
+        );
+
       const availableToProduce = productionComponent.productionDefinition.availableProduceActors;
       availableToProduce.forEach((product: ObjectNames, localIndex: number): void => {
         const actorDefinition = pwActorDefinitions[product];
@@ -566,7 +581,15 @@ export default class ActorActions extends Phaser.GameObjects.Container {
             if (!actorDefinition.components?.productionCost) {
               throw new Error(`Production cost not found for ${product}`);
             }
-            const errorCode = productionComponent.startProduction({
+
+            // Find the production building with the least total remaining production time
+            const targetBuilding = this.findProductionBuildingWithLeastRemainingTime(productionBuildings);
+            if (!targetBuilding) {
+              console.error("No production building found");
+              return;
+            }
+
+            const errorCode = targetBuilding.component.startProduction({
               actorName: product,
               costData: actorDefinition.components.productionCost
             });
@@ -618,6 +641,30 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       });
     }
     return index;
+  }
+
+  /**
+   * Find the production building with the least total remaining production time.
+   * This implements SC2-style production cycling across multiple buildings.
+   */
+  private findProductionBuildingWithLeastRemainingTime(
+    productionBuildings: { actor: Phaser.GameObjects.GameObject; component: ProductionComponent }[]
+  ): { actor: Phaser.GameObjects.GameObject; component: ProductionComponent } | null {
+    if (productionBuildings.length === 0) return null;
+    if (productionBuildings.length === 1) return productionBuildings[0]!;
+
+    let minTime = Number.MAX_SAFE_INTEGER;
+    let targetBuilding = productionBuildings[0]!;
+
+    for (const building of productionBuildings) {
+      const totalRemainingTime = building.component.getTotalRemainingProductionTime();
+      if (totalRemainingTime < minTime) {
+        minTime = totalRemainingTime;
+        targetBuilding = building;
+      }
+    }
+
+    return targetBuilding;
   }
 
   private showBuilderIcons(
