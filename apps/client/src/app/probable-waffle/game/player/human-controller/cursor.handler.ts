@@ -11,8 +11,10 @@ import { ConstructionSiteComponent } from "../../entity/components/construction/
 import { ContainerComponent } from "../../entity/components/building/container-component";
 import { getCurrentPlayerNumber } from "../../data/scene-data";
 import { getSelectableGameObject } from "../../data/game-object-helper";
-import { getSceneService } from "../../world/services/scene-component-helpers";
+import { getSceneComponent, getSceneService } from "../../world/services/scene-component-helpers";
 import { PlayerActionsHandler } from "./player-actions-handler";
+import { BuildingCursor } from "./building-cursor";
+import { MULTI_SELECTING } from "./multi-selection.handler";
 import { OrderType } from "../../ai/order-type";
 import GameObject = Phaser.GameObjects.GameObject;
 
@@ -181,11 +183,14 @@ export class CursorHandler {
   private currentCursor?: string;
   private mainScene?: ProbableWaffleScene;
   private lastHoveredCursor: CursorType = CursorType.Default;
+  private multiSelecting: boolean = false;
 
   constructor(private readonly scene: Phaser.Scene) {
     new LockedCursorHandler(scene, this);
     this.setupCursor();
     this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
+    // Listen to multi-selection events from HUD scene
+    this.scene.events.on(MULTI_SELECTING, this.onMultiSelecting, this);
   }
 
   /**
@@ -194,6 +199,10 @@ export class CursorHandler {
   initializeWithMainScene(mainScene: ProbableWaffleScene) {
     this.mainScene = mainScene;
     this.setupHoverDetection();
+  }
+
+  private onMultiSelecting(multiSelecting: boolean) {
+    this.multiSelecting = multiSelecting;
   }
 
   private setupCursor() {
@@ -209,6 +218,17 @@ export class CursorHandler {
 
   private handlePointerMove(pointer: Phaser.Input.Pointer, gameObjectsUnderCursor: GameObject[]) {
     if (!this.mainScene) return;
+
+    // Don't change cursor during multi-selection
+    if (this.multiSelecting) {
+      return;
+    }
+
+    // Don't change cursor if building is being placed
+    const buildingCursor = getSceneComponent(this.mainScene, BuildingCursor);
+    if (buildingCursor?.placingBuilding) {
+      return;
+    }
 
     // Don't change cursor if PlayerActionsHandler is currently handling an action
     const playerActionsHandler = getSceneService(this.mainScene, PlayerActionsHandler);
@@ -375,5 +395,6 @@ export class CursorHandler {
       this.mainScene.input.off(Input.Events.POINTER_MOVE, this.handlePointerMove, this);
     }
     this.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
+    this.scene.events.off(MULTI_SELECTING, this.onMultiSelecting, this);
   }
 }
