@@ -28,7 +28,13 @@ export default class MapSandbox extends GameProbableWaffleScene {
     tilemap.addTilesetImage("tiles_2", "tiles_2");
 
     // tilemap_level_1
-    tilemap.createLayer("TileMap_level_1", ["tiles", "tiles_2"], 0, 0);
+    const tilemap_level_1 = tilemap.createLayer("TileMap_level_1", ["tiles", "tiles_2"], 0, 0);
+    
+    // Enable camera culling for performance optimization
+    if (tilemap_level_1) {
+      tilemap_level_1.skipCull = false;
+      tilemap_level_1.cullPadding = 1;
+    }
 
     // tree11
     const tree11 = new Tree11(this, -160, 416);

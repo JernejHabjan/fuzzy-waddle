@@ -41,7 +41,13 @@ export default class MapEmberEnclave extends GameProbableWaffleScene {
     tilemap.addTilesetImage("tiles_2", "tiles_2");
 
     // tilemap_level_1
-    tilemap.createLayer("TileMap_level_1", ["tiles_2", "tiles"], 0, 0);
+    const tilemap_level_1 = tilemap.createLayer("TileMap_level_1", ["tiles_2", "tiles"], 0, 0);
+    
+    // Enable camera culling for performance optimization
+    if (tilemap_level_1) {
+      tilemap_level_1.skipCull = false;
+      tilemap_level_1.cullPadding = 1;
+    }
 
     // spawn_2
     const spawn_2 = new Spawn(this, -176, 1264);
