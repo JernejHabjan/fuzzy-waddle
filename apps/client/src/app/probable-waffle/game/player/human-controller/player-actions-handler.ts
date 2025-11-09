@@ -21,6 +21,7 @@ import { AttackComponent } from "../../entity/components/combat/components/attac
 import { ActorTranslateComponent } from "../../entity/components/movement/actor-translate-component";
 import { GathererComponent } from "../../entity/components/resource/gatherer-component";
 import { HealingComponent } from "../../entity/components/combat/components/healing-component";
+import { findProductionBuildingWithLeastRemainingTime } from "../../entity/components/production/production-helpers";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class PlayerActionsHandler {
@@ -111,9 +112,13 @@ export class PlayerActionsHandler {
           const def = pwActorDefinitions[product];
           const cost = def.components?.productionCost;
           if (cost) {
-            production.startProduction({ actorName: product, costData: cost });
-            e.preventDefault();
-            return;
+            // Find the production building with the least total remaining production time
+            const targetComponent = findProductionBuildingWithLeastRemainingTime(this.currentSelectedActors);
+            if (targetComponent) {
+              targetComponent.startProduction({ actorName: product, costData: cost });
+              e.preventDefault();
+              return;
+            }
           }
         }
       }

@@ -36,6 +36,7 @@ import { HealingComponent } from "../../../entity/components/combat/components/h
 import { GathererComponent } from "../../../entity/components/resource/gatherer-component";
 import { getPrimarySelectedActor } from "../../../data/selection-helpers";
 import { ProductionValidator } from "../../../data/tech-tree/production-validator";
+import { findProductionBuildingWithLeastRemainingTime } from "../../../entity/components/production/production-helpers";
 /* END-USER-IMPORTS */
 
 export default class ActorActions extends Phaser.GameObjects.Container {
@@ -538,17 +539,6 @@ export default class ActorActions extends Phaser.GameObjects.Container {
   ): number {
     const productionComponent = getActorComponent(actor, ProductionComponent);
     if (productionComponent && productionComponent.isFinished) {
-      // Get all production components from selected actors
-      const productionBuildings = allActors
-        .map((a) => ({
-          actor: a,
-          component: getActorComponent(a, ProductionComponent)
-        }))
-        .filter(
-          (item): item is { actor: Phaser.GameObjects.GameObject; component: ProductionComponent } =>
-            item.component !== null && item.component!.isFinished
-        );
-
       const availableToProduce = productionComponent.productionDefinition.availableProduceActors;
       availableToProduce.forEach((product: ObjectNames, localIndex: number): void => {
         const actorDefinition = pwActorDefinitions[product];
@@ -583,13 +573,13 @@ export default class ActorActions extends Phaser.GameObjects.Container {
             }
 
             // Find the production building with the least total remaining production time
-            const targetBuilding = this.findProductionBuildingWithLeastRemainingTime(productionBuildings);
-            if (!targetBuilding) {
+            const targetComponent = findProductionBuildingWithLeastRemainingTime(allActors);
+            if (!targetComponent) {
               console.error("No production building found");
               return;
             }
 
-            const errorCode = targetBuilding.component.startProduction({
+            const errorCode = targetComponent.startProduction({
               actorName: product,
               costData: actorDefinition.components.productionCost
             });
@@ -641,30 +631,6 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       });
     }
     return index;
-  }
-
-  /**
-   * Find the production building with the least total remaining production time.
-   * This implements SC2-style production cycling across multiple buildings.
-   */
-  private findProductionBuildingWithLeastRemainingTime(
-    productionBuildings: { actor: Phaser.GameObjects.GameObject; component: ProductionComponent }[]
-  ): { actor: Phaser.GameObjects.GameObject; component: ProductionComponent } | null {
-    if (productionBuildings.length === 0) return null;
-    if (productionBuildings.length === 1) return productionBuildings[0]!;
-
-    let minTime = Number.MAX_SAFE_INTEGER;
-    let targetBuilding = productionBuildings[0]!;
-
-    for (const building of productionBuildings) {
-      const totalRemainingTime = building.component.getTotalRemainingProductionTime();
-      if (totalRemainingTime < minTime) {
-        minTime = totalRemainingTime;
-        targetBuilding = building;
-      }
-    }
-
-    return targetBuilding;
   }
 
   private showBuilderIcons(
