@@ -7,6 +7,7 @@ import { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { OptionsService } from "./options.service";
 import { HomeNavComponent } from "../../../shared/components/home-nav/home-nav.component";
 import { CenterWrapperComponent } from "../../../shared/components/center-wrapper/center-wrapper.component";
+import { environment } from "../../../../environments/environment";
 
 @Component({
   templateUrl: "./options.component.html",
@@ -31,4 +32,6 @@ export class OptionsComponent implements OnInit {
   backToGame() {
     this.dialogRef?.close();
   }
+
+  protected readonly environment = environment;
 }

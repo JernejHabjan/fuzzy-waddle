@@ -2,7 +2,6 @@ import { Cameras, Geom, Input, type Types } from "phaser";
 import GameProbableWaffleScene from "../../world/scenes/GameProbableWaffleScene";
 
 export class CameraMovementHandler {
-  private readonly enabledMouseCornerMovement: boolean;
   private readonly input: Input.InputPlugin;
   private readonly mainCamera: Cameras.Scene2D.Camera;
   private cursorOverGameInstance = false;
@@ -22,7 +21,6 @@ export class CameraMovementHandler {
       cameraKeyboardMovementSpeed: 2
     }
   ) {
-    this.enabledMouseCornerMovement = config.enabledMouseCornerMovement ?? false;
     this.mainCamera = scene.cameras.main;
     this.input = scene.input;
     this.createKeyboardControls();
@@ -121,7 +119,7 @@ export class CameraMovementHandler {
   }
 
   private screenEdgeMovementUpdate() {
-    if (!this.enabledMouseCornerMovement || !this.cursorOverGameInstance) return;
+    if (!(this.config.enabledMouseCornerMovement ?? false) || !this.cursorOverGameInstance) return;
 
     const pointer = this.input.activePointer;
     const margin = this.cameraEdgeMargin;
