@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, type OnInit, ViewChild } from "@angular/core";
 
 import { ConstellationEffectComponent } from "./constellation-effect/constellation-effect.component";
 import { AngularHost } from "../../../shared/consts";
@@ -34,6 +34,7 @@ export class HomeComponent implements OnInit {
       hideDismissButton: () => true,
       onClose: () => {
         sessionStorage.setItem(this.MOBILE_WARNING_DISMISSED_KEY, "true");
+        return true;
       }
     };
   }
