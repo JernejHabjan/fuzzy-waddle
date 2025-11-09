@@ -11,6 +11,7 @@ export class OptionsService {
   volumeSettings = new VolumeSettings();
   gameSettings = new GameSettings();
   private localOptionsChanged = new Subject<{ type: OptionsChangedType; payload: any }>();
+  settingsChanged = this.localOptionsChanged.asObservable();
 
   init() {
     this.volumeSettings.init();

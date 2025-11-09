@@ -1,12 +1,17 @@
 import { Input } from "phaser";
 import { CursorHandler } from "./cursor.handler";
+import { Subscription } from "rxjs";
+import { getSceneExternalComponent } from "../../world/services/scene-component-helpers";
+import { OptionsService } from "../../../gui/options/options.service";
+import { GameSettings } from "../../core/gameSettings";
 
 export class LockedCursorHandler {
-  private readonly lockToScreen: boolean;
+  private lockToScreen: boolean;
   private readonly input: Input.InputPlugin;
 
   private customCursor: Phaser.GameObjects.Graphics | null = null;
   private cursorPosition = { x: 0, y: 0 };
+  private optionsChangedSubscription?: Subscription;
 
   constructor(
     private readonly scene: Phaser.Scene,
@@ -15,22 +20,42 @@ export class LockedCursorHandler {
   ) {
     this.lockToScreen = lockToScreen;
     this.input = scene.input;
-    this.lockCursorToScreen();
+    this.setupListeners();
     this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
+    this.subscribeToOptions();
+  }
+
+  setConfig(config: { lockToScreen: boolean }) {
+    if (this.lockToScreen === config.lockToScreen) return;
+    this.lockToScreen = config.lockToScreen;
+    if (this.lockToScreen) {
+      this.setupListeners();
+    } else {
+      this.removeListeners();
+      if (this.input.mouse?.locked) {
+        this.input.mouse.releasePointerLock();
+      }
+    }
   }
 
   /**
    * https://phaser.io/examples/v3/view/input/mouse/pointer-lock
    * https://web.dev/articles/pointerlock-intro
    */
-  private lockCursorToScreen() {
+  private setupListeners() {
     if (!this.lockToScreen) return;
-
     if (!this.input.keyboard || !this.input.mouse) return;
     this.input.on("pointerdown", this.onPointerDown, this);
     this.input.on("pointermove", this.onPointerMove, this);
     this.input.manager.events.on("pointerlockchange", this.pointerLockChangeHandler, this);
     this.input.keyboard.on("keydown_ESC", this.onEscKeyDown, this);
+  }
+
+  private removeListeners() {
+    this.input.off("pointerdown", this.onPointerDown, this);
+    this.input.off("pointermove", this.onPointerMove, this);
+    this.input.manager.events.off("pointerlockchange", this.pointerLockChangeHandler, this);
+    this.input.keyboard?.off("keydown_ESC", this.onEscKeyDown, this);
   }
 
   /**
@@ -124,14 +149,20 @@ export class LockedCursorHandler {
 
   destroy() {
     this.destroyCustomCursor();
-    this.input.off("pointerdown");
-    this.input.off("pointermove");
-    this.input.keyboard?.off("keydown_ESC");
-    this.input.manager.events.off("pointerlockchange");
+    this.removeListeners();
     this.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
-    this.input.manager.events.off("pointerlockchange", this.pointerLockChangeHandler, this);
-    this.input.keyboard?.off("keydown_ESC", this.onEscKeyDown, this);
-    this.input.off("pointermove", this.onPointerMove, this);
-    this.input.off("pointerdown", this.onPointerDown, this);
+    this.optionsChangedSubscription?.unsubscribe();
+  }
+
+  private subscribeToOptions() {
+    const optionsService = getSceneExternalComponent(this.scene, OptionsService);
+    this.optionsChangedSubscription = optionsService?.settingsChanged.subscribe((change) => {
+      if (change.type === "game") {
+        const newGameSettings = change.payload as GameSettings;
+        this.setConfig({
+          lockToScreen: newGameSettings.lockToScreen
+        });
+      }
+    });
   }
 }
