@@ -165,6 +165,28 @@ export function getRandomFactionType(): FactionType {
   return enumValues[randomIndex] as FactionType;
 }
 
+/**
+ * Creates a PlayerLobbyDefinition with default values.
+ * This centralizes player lobby definition creation to avoid duplication.
+ *
+ * @param playerNumber - The player number (1-8)
+ * @param playerPosition - The player position (defaults to playerNumber - 1 if not provided)
+ * @param playerName - The player name (defaults to "Player {playerNumber}" if not provided)
+ * @returns A PlayerLobbyDefinition object
+ */
+export function createPlayerLobbyDefinition(
+  playerNumber: number,
+  playerPosition?: number,
+  playerName?: string
+): PlayerLobbyDefinition {
+  return {
+    playerNumber,
+    playerName: playerName ?? `Player ${playerNumber}`,
+    playerPosition: playerPosition ?? playerNumber - 1,
+    joined: true
+  };
+}
+
 export interface PositionPlayerDefinition {
   // assigned only after entering the game in world space coordinates
   initialWorldLogicalSpawnPosition?: Vector3Simple;

@@ -979,24 +979,37 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
   createGradientSky() {
     // Create a graphics object
     const graphics = this.add.graphics();
-    const width = this.scale.width;
-    const height = this.scale.height;
+    
+    // Get camera bounds to ensure the gradient covers the entire viewable area
+    const camera = this.cameras.main;
+    const cameraBounds = camera.getBounds();
+    
+    // Make the gradient significantly larger to account for camera zoom out
+    // Use the camera bounds with a generous multiplier to ensure coverage
+    const width = Math.max(this.scale.width, cameraBounds.width) * 3;
+    const height = Math.max(this.scale.height, cameraBounds.height) * 3;
 
     // Define gradient colors
     const topColor = 0x87ceeb;
     const bottomColor = 0x12110f;
 
+    // Center the gradient
+    const x = -width / 2;
+    const y = -height / 2;
+
     // Draw gradient
     graphics.fillGradientStyle(topColor, topColor, bottomColor, bottomColor);
-    graphics.fillRect(0, 0, width, height);
+    graphics.fillRect(x, y, width, height);
 
+    // Keep the gradient fixed to the camera (doesn't scroll with the world)
     graphics.setScrollFactor(0);
-    graphics.displayOriginX = 0.5;
-    graphics.displayOriginY = 0.5;
+    
+    // Set depth to ensure it's behind everything else
+    graphics.setDepth(-1000);
   }
 
   override create() {
-    // todo - buggy when zooming out - this.createGradientSky();
+    this.createGradientSky();
 
     this.editorCreate();
 

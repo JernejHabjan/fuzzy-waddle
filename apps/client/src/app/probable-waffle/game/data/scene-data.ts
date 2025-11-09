@@ -112,13 +112,14 @@ export function sendActorEvent(
 export function sendPlayerStateEvent(
   scene: Scene,
   property: ProbableWafflePlayerDataChangeEventProperty,
-  payloadIn: ProbableWafflePlayerDataChangeEventPayload
+  payloadIn: ProbableWafflePlayerDataChangeEventPayload,
+  playerNumber?: number
 ): void {
   if (!(scene instanceof BaseScene)) throw new Error("Scene is not of type BaseScene");
 
   const communicator = getCommunicator(scene);
   const data = {
-    playerNumber: scene.player.playerNumber!, // todo this is incorrect, as AI player will not be able to get resources
+    playerNumber: playerNumber ?? scene.player.playerNumber!,
     ...payloadIn
   } satisfies ProbableWafflePlayerDataChangeEventPayload;
 
@@ -161,25 +162,27 @@ export function listenToPlayerChangedChanged(scene: Scene, searchString: string)
 export function emitResource(
   scene: Scene,
   action: "resource.added" | "resource.removed",
-  resources: Partial<PlayerStateResources>
+  resources: Partial<PlayerStateResources>,
+  playerNumber?: number
 ) {
   sendPlayerStateEvent(scene, action, {
     playerStateData: {
       resources: resources as PlayerStateResources
     }
-  });
+  }, playerNumber);
 }
 
 export function emitHousing(
   scene: Scene,
   action: "housing.added" | "housing.removed" | "housing.current.increased" | "housing.current.decreased",
-  housing: Partial<PlayerStateHousing>
+  housing: Partial<PlayerStateHousing>,
+  playerNumber?: number
 ) {
   sendPlayerStateEvent(scene, action, {
     playerStateData: {
       housing: housing as PlayerStateHousing
     }
-  });
+  }, playerNumber);
 }
 
 export function listenToSelectionEvents(scene: Scene): Observable<ProbableWafflePlayerDataChangeEvent> | undefined {

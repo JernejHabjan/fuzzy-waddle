@@ -11,6 +11,7 @@ import AiControllerDebugPanel from "../../../prefabs/gui/debug/ai-controller/AiC
 import GameSpeedModifier from "../../../prefabs/gui/buttons/GameSpeedModifier";
 import HudMessages from "../../../prefabs/gui/labels/HudMessages";
 import GroupContainer from "../../../prefabs/gui/labels/GroupContainer";
+import ConfirmationDialog from "../../../prefabs/gui/dialogs/ConfirmationDialog";
 /* START-USER-IMPORTS */
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { HudGameState } from "../../../hud/hud-game-state";
@@ -72,6 +73,10 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     const groupContainer = new GroupContainer(this, 552, 541);
     this.add.existing(groupContainer);
 
+    // confirmationDialog
+    const confirmationDialog = new ConfirmationDialog(this, 640, 360);
+    this.add.existing(confirmationDialog);
+
     // lists
     const hudElements: Array<any> = [];
 
@@ -84,6 +89,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.gameSpeedModifier = gameSpeedModifier;
     this.hudMessages = hudMessages;
     this.groupContainer = groupContainer;
+    this.confirmationDialog = confirmationDialog;
     this.hudElements = hudElements;
 
     this.events.emit("scene-awake");
@@ -98,6 +104,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   private gameSpeedModifier!: GameSpeedModifier;
   private hudMessages!: HudMessages;
   private groupContainer!: GroupContainer;
+  public confirmationDialog!: ConfirmationDialog;
   private hudElements!: Array<any>;
 
   /* START-USER-CODE */
@@ -214,6 +221,10 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
 
     // redraw minimap
     this.minimap_container.redrawMinimap();
+
+    // position confirmation dialog in center of screen
+    this.confirmationDialog.x = this.scale.width / 2;
+    this.confirmationDialog.y = this.scale.height / 2;
   }
 
   private get gameType() {
