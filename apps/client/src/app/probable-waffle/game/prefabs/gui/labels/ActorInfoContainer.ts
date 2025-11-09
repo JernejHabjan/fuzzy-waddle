@@ -74,6 +74,7 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
     this.mainSceneWithActors = (scene as HudProbableWaffle).probableWaffleScene!;
     this.subscribeToPlayerSelection();
     this.subscribeToActorInfoLabelEvents();
+    this.setupIconClickHandler();
     this.hideAllLabels();
     /* END-USER-CTR-CODE */
   }
@@ -142,6 +143,34 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
       }
     );
   }
+
+  private setupIconClickHandler() {
+    this.actorInfoLabel.setIconClickHandler(() => {
+      this.centerCameraOnSelectedActor();
+    });
+  }
+
+  private centerCameraOnSelectedActor() {
+    const selectedActors = getSelectedActors(this.mainSceneWithActors);
+    if (selectedActors.length === 0) return;
+
+    const actor = selectedActors[0];
+    if (!actor) return;
+
+    // Get the actor's position
+    const actorX = (actor as any).x;
+    const actorY = (actor as any).y;
+
+    if (actorX === undefined || actorY === undefined) return;
+
+    // Get the main camera from the game scene
+    const camera = this.mainSceneWithActors.cameras.main;
+
+    // Center the camera on the actor
+    camera.scrollX = actorX - camera.width / 2;
+    camera.scrollY = actorY - camera.height / 2;
+  }
+
   private hideAllLabels() {
     this.actorInfoLabel.visible = false;
     this.actorInfoLabels.cleanActor();
