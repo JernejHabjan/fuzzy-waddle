@@ -16,6 +16,7 @@ import { PlayerActionsHandler } from "./player-actions-handler";
 import { BuildingCursor } from "./building-cursor";
 import { MULTI_SELECTING } from "./multi-selection.handler";
 import { OrderType } from "../../ai/order-type";
+import { GameSettings } from "../../core/gameSettings";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export enum CursorType {
@@ -184,13 +185,19 @@ export class CursorHandler {
   private mainScene?: ProbableWaffleScene;
   private lastHoveredCursor: CursorType = CursorType.Default;
   private multiSelecting: boolean = false;
+  private lockedCursorHandler: LockedCursorHandler;
 
   constructor(private readonly scene: Phaser.Scene) {
-    new LockedCursorHandler(scene, this);
+    const gameSettings = GameSettings.loadFromLocalStorage();
+    this.lockedCursorHandler = new LockedCursorHandler(scene, this, gameSettings.lockToScreen);
     this.setupCursor();
     this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
     // Listen to multi-selection events from HUD scene
     this.scene.events.on(MULTI_SELECTING, this.onMultiSelecting, this);
+  }
+
+  getLockedCursorHandler(): LockedCursorHandler {
+    return this.lockedCursorHandler;
   }
 
   /**
