@@ -176,9 +176,6 @@ export class FogOfWarComponent {
       const centerY = bounds.centerY;
 
       const tilePos = IsoHelper.isometricWorldToTileXY(this.scene, centerX, centerY, false);
-      // for some reason we need to ceil the clicked tile - its not ok if se set snapToFloor to true
-      tilePos.x = Math.ceil(tilePos.x);
-      tilePos.y = Math.ceil(tilePos.y);
 
       if (!tilePos) return;
 

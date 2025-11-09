@@ -31,6 +31,7 @@ import { PawnAiController } from "../../prefabs/ai-agents/pawn-ai-controller";
 import { OrderData } from "../../ai/OrderData";
 import { OrderType } from "../../ai/order-type";
 import Vector2 = Phaser.Math.Vector2;
+import { IsoHelper } from "../../world/tilemap/iso-helper";
 
 export class BuildingCursor {
   placementGrid?: GameObjects.Graphics;
@@ -146,15 +147,14 @@ export class BuildingCursor {
               z: 0
             } as Vector3Simple;
 
-            // Check if this tile is walkable
-            const tileWorldCenter = this.navigationService.getTileWorldCenter({ x: testTile.x, y: testTile.y });
+            const tileWorldCenter = IsoHelper.isometricWorldToTileXY(this.scene, testTile.x, testTile.y, false);
             if (!tileWorldCenter) continue;
 
             // Create a temporary game object to test if this position is walkable
             // We use the navigation service to check if the tile is walkable
-            const isWalkable = this.navigationService.isLocationWalkable(testTile.x, testTile.y);
+            const isWalkable = this.navigationService!.isTileWalkable(tileWorldCenter);
             if (isWalkable) {
-              targetTile = testTile;
+              targetTile = { x: tileWorldCenter.x, y: tileWorldCenter.y, z: 0 } satisfies Vector3Simple;
             }
           }
         }
