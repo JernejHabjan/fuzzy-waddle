@@ -153,11 +153,6 @@ export class ResourceSourceComponent {
     if (!this.assignedGatherers.has(gatherer)) {
       this.assignedGatherers.add(gatherer);
       this.onAssignedGatherersChanged.next(this.assignedGatherers.size);
-      
-      // Listen for gatherer destruction to remove from set
-      gatherer.once(Phaser.GameObjects.Events.DESTROY, () => {
-        this.unassignGatherer(gatherer);
-      });
     }
   }
 

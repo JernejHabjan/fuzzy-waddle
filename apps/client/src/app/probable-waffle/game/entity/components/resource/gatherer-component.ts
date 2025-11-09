@@ -117,6 +117,13 @@ export class GathererComponent {
 
   private destroy() {
     this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
+    // Unassign from resource source
+    if (this.currentResourceSource) {
+      const resourceSourceComponent = getActorComponent(this.currentResourceSource, ResourceSourceComponent);
+      if (resourceSourceComponent) {
+        resourceSourceComponent.unassignGatherer(this.gameObject);
+      }
+    }
   }
 
   canGatherFrom(gameObject: GameObject): boolean {

@@ -101,7 +101,7 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
       const maxResources = resourceSourceComponent.getMaximumResources();
       const resourcesText = `${currentResources}/${maxResources}`;
       const resourceIconIndex = iconsAndTexts.push({
-        icon: { key: "gui", frame: "actor_info_icons/element.png" },
+        icon: { key: "gui", frame: "actor_info_icons/element.png" }, // todo
         text: resourcesText
       });
 
@@ -116,9 +116,9 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
 
       // Show assigned gatherers count
       const assignedCount = resourceSourceComponent.getAssignedGatherersCount();
-      const gatherersText = `${assignedCount}`;
+      const gatherersText = assignedCount === 1 ? "1 gatherer" : `${assignedCount} gatherers`;
       const gatherersIconIndex = iconsAndTexts.push({
-        icon: { key: "gui", frame: "actor_info_icons/boot.png" },
+        icon: { key: "gui", frame: "actor_info_icons/element.png" }, // todo
         text: gatherersText
       });
 
@@ -128,7 +128,7 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
         (count) => {
           const attribute = this.attributes[gatherersIconIndex - 1];
           if (!attribute) return;
-          attribute.setText(`${count}`);
+          attribute.setText(count === 1 ? "1 gatherer" : `${count} gatherers`);
         }
       );
 
