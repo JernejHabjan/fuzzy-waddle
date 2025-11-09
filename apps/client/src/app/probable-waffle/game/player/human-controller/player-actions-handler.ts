@@ -21,6 +21,7 @@ import { AttackComponent } from "../../entity/components/combat/components/attac
 import { ActorTranslateComponent } from "../../entity/components/movement/actor-translate-component";
 import { GathererComponent } from "../../entity/components/resource/gatherer-component";
 import { HealingComponent } from "../../entity/components/combat/components/healing-component";
+import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class PlayerActionsHandler {
@@ -172,6 +173,13 @@ export class PlayerActionsHandler {
         }
         e.preventDefault();
         break;
+      case "Delete":
+        // Delete selected actors
+        if (this.currentSelectedActors.length) {
+          this.deleteSelectedActors();
+        }
+        e.preventDefault();
+        break;
       case "Escape":
         // Cancel current cursor/orders and building placement
         this.stopOrderCommand();
@@ -181,6 +189,30 @@ export class PlayerActionsHandler {
       default:
         break;
     }
+  }
+
+  private deleteSelectedActors() {
+    if (!this.primarySelectedActor) return;
+
+    // Check if it's a main building
+    const actorName = this.primarySelectedActor.name;
+    const actorDefinition = pwActorDefinitions[actorName as keyof typeof pwActorDefinitions];
+    const isMainBuilding = actorDefinition?.meta?.isMainBuilding ?? false;
+
+    if (isMainBuilding) {
+      const confirmed = window.confirm(
+        "Are you sure you want to delete this main building? This action cannot be undone."
+      );
+      if (!confirmed) {
+        return;
+      }
+    }
+
+    // Delete all selected actors
+    this.currentSelectedActors.forEach((actor) => {
+      const healthComponent = getActorComponent(actor, HealthComponent);
+      healthComponent?.killActor();
+    });
   }
 
   private pointerHandler(pointer: Phaser.Input.Pointer, gameObjectsUnderCursor: GameObject[]) {
