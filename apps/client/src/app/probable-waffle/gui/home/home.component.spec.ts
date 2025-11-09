@@ -6,6 +6,8 @@ import { HomePageNavTestingComponent } from "../../../home/page/home-page-nav/ho
 import { ConstellationEffectComponent } from "./constellation-effect/constellation-effect.component";
 import { BannerComponent } from "./banner/banner.component";
 import { BannerTestComponent } from "./banner/banner.component.spec";
+import { ModalComponent } from "../../../shared/components/modal/modal.component";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 
 describe("HomeComponent", () => {
   let component: HomeComponent;
@@ -14,7 +16,7 @@ describe("HomeComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [HomeComponent],
-      providers: [provideRouter([])]
+      providers: [provideRouter([]), NgbModal]
     })
       .overrideComponent(HomeComponent, {
         remove: {
@@ -33,5 +35,19 @@ describe("HomeComponent", () => {
 
   it("should create", () => {
     expect(component).toBeTruthy();
+  });
+
+  it("should have mobile warning config", () => {
+    expect(component["mobileWarningConfig"]).toBeDefined();
+    expect(component["mobileWarningConfig"].modalTitle).toBe("Desktop Recommended");
+  });
+
+  it("should store dismissal in sessionStorage when modal is closed", () => {
+    const config = component["mobileWarningConfig"];
+    sessionStorage.clear();
+
+    config.onClose?.();
+
+    expect(sessionStorage.getItem("aota_mobile_warning_dismissed")).toBe("true");
   });
 });
