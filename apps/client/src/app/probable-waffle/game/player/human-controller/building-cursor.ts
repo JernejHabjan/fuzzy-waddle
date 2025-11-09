@@ -25,6 +25,11 @@ import { AudioService } from "../../world/services/audio.service";
 import { UiFeedbackBuildDeniedSound } from "../../hud/UiFeedbackSfx";
 import { FogOfWarComponent } from "../../world/tilemap/fog-of-war.component";
 import { RepresentableComponent } from "../../entity/components/representable-component";
+import { ActorTranslateComponent } from "../../entity/components/movement/actor-translate-component";
+import { OwnerComponent } from "../../entity/components/owner-component";
+import { PawnAiController } from "../../prefabs/ai-agents/pawn-ai-controller";
+import { OrderData } from "../../ai/OrderData";
+import { OrderType } from "../../ai/order-type";
 import Vector2 = Phaser.Math.Vector2;
 
 export class BuildingCursor {
@@ -50,6 +55,7 @@ export class BuildingCursor {
   private canBeDragPlaced: boolean = false;
   private canConstructBuildingAt: boolean = false;
   private invalidCursorPositions: Set<string> = new Set(); // Track positions where buildings can't be placed
+  private actorsToMove: Set<GameObjects.GameObject> = new Set(); // Track actors that need to be moved when placing buildings
 
   // Helper: stable key based on snapped logical position (avoids z-offset and float drift)
   private getSnappedLogicalKey(go: GameObjects.GameObject): string | undefined {
@@ -81,6 +87,89 @@ export class BuildingCursor {
 
   get placingBuilding() {
     return !!this.building;
+  }
+
+  /**
+   * Check if an actor should be ignored during building placement because it can be moved automatically.
+   * This applies to actors that:
+   * 1. Are owned by the current player
+   * 2. Have ActorTranslateComponent (can move)
+   * 3. Have PawnAiController (AI-controlled, can receive move orders)
+   */
+  private canActorBeAutoMoved(actor: GameObjects.GameObject): boolean {
+    const currentPlayer = getCurrentPlayerNumber(this.scene);
+    if (!currentPlayer) return false;
+
+    // Check if actor is owned by current player
+    const ownerComponent = getActorComponent(actor, OwnerComponent);
+    if (!ownerComponent || ownerComponent.getOwner() !== currentPlayer) return false;
+
+    // Check if actor has ActorTranslateComponent (can move)
+    const actorTranslateComponent = getActorComponent(actor, ActorTranslateComponent);
+    if (!actorTranslateComponent) return false;
+
+    // Check if actor is AI-controlled (can receive orders)
+    const pawnAiController = getActorComponent(actor, PawnAiController);
+    if (!pawnAiController) return false;
+
+    return true;
+  }
+
+  /**
+   * Issue move orders to actors that need to be moved out of the way.
+   * Finds a safe tile near the building and orders the actor to move there.
+   */
+  private moveActorsOutOfTheWay() {
+    if (!this.navigationService || this.actorsToMove.size === 0) return;
+
+    this.actorsToMove.forEach((actor) => {
+      const pawnAiController = getActorComponent(actor, PawnAiController);
+      if (!pawnAiController) return;
+
+      const actorTransform = getGameObjectLogicalTransform(actor);
+      if (!actorTransform) return;
+
+      // Find a nearby walkable tile to move the actor to
+      // Try tiles in a spiral pattern around the actor's current position
+      let targetTile: Vector3Simple | undefined;
+      const maxDistance = 5; // Search up to 5 tiles away
+
+      for (let distance = 1; distance <= maxDistance && !targetTile; distance++) {
+        for (let dx = -distance; dx <= distance && !targetTile; dx++) {
+          for (let dy = -distance; dy <= distance && !targetTile; dy++) {
+            // Only check tiles at the current distance (forming a square ring)
+            if (Math.abs(dx) !== distance && Math.abs(dy) !== distance) continue;
+
+            const testTile = {
+              x: Math.floor(actorTransform.x) + dx,
+              y: Math.floor(actorTransform.y) + dy,
+              z: 0
+            } as Vector3Simple;
+
+            // Check if this tile is walkable
+            const tileWorldCenter = this.navigationService.getTileWorldCenter({ x: testTile.x, y: testTile.y });
+            if (!tileWorldCenter) continue;
+
+            // Create a temporary game object to test if this position is walkable
+            // We use the navigation service to check if the tile is walkable
+            const isWalkable = this.navigationService.isLocationWalkable(testTile.x, testTile.y);
+            if (isWalkable) {
+              targetTile = testTile;
+            }
+          }
+        }
+      }
+
+      // If we found a target tile, issue the move order
+      if (targetTile) {
+        const order = new OrderData(OrderType.Move, { targetTileLocation: targetTile });
+        pawnAiController.blackboard.overrideOrderQueueAndActiveOrder(order);
+        pawnAiController.blackboard.setCurrentOrder(order);
+      }
+    });
+
+    // Clear the set of actors to move
+    this.actorsToMove.clear();
   }
 
   private spawn(name: ObjectNames) {
@@ -197,7 +286,8 @@ export class BuildingCursor {
 
   getCanConstructBuildingAt(
     building?: GameObjects.GameObject,
-    ignoreGameObjects: GameObjects.GameObject[] = []
+    ignoreGameObjects: GameObjects.GameObject[] = [],
+    trackActorsToMove: boolean = false
   ): boolean {
     if (!this.tileMapComponent || !this.navigationService || !this.fogOfWarComponent || !building) return false;
 
@@ -247,9 +337,19 @@ export class BuildingCursor {
       const tilesUnderChild = getTileCoordsUnderObject(this.tileMapComponent!.tilemap, c);
       if (!tilesUnderChild.length) return false;
 
-      return tilesUnderBuilding.some((tile) =>
+      const overlaps = tilesUnderBuilding.some((tile) =>
         tilesUnderChild.some((childTile) => childTile.x === tile.x && childTile.y === tile.y)
       );
+
+      // If the child overlaps and can be auto-moved, track it and don't count it as a collision
+      if (overlaps && this.canActorBeAutoMoved(c)) {
+        if (trackActorsToMove) {
+          this.actorsToMove.add(c);
+        }
+        return false;
+      }
+
+      return overlaps;
     });
 
     return children.length === 0;
@@ -556,6 +656,9 @@ export class BuildingCursor {
   }
 
   private placeBuildings() {
+    // Clear the actors to move set before checking placement
+    this.actorsToMove.clear();
+
     // Filter out any objects at invalid positions when in drag mode
     const objectsToPlace = this.isDragging
       ? this.spawnedCursorGameObjects.filter((obj) => {
@@ -563,6 +666,18 @@ export class BuildingCursor {
           return key !== undefined && !this.invalidCursorPositions.has(key);
         })
       : [];
+
+    // Track actors that need to be moved for all buildings being placed
+    if (this.isDragging && objectsToPlace.length) {
+      for (const gameObject of objectsToPlace) {
+        this.getCanConstructBuildingAt(gameObject, [...this.spawnedCursorGameObjects, this.building!], true);
+      }
+    } else if (this.building) {
+      this.getCanConstructBuildingAt(this.building, [], true);
+    }
+
+    // Move actors out of the way before placing buildings
+    this.moveActorsOutOfTheWay();
 
     if (this.isDragging && objectsToPlace.length) {
       this.building?.destroy();
@@ -643,6 +758,7 @@ export class BuildingCursor {
     this.downPointerLocation = undefined;
     this.clearGraphics();
     this.clearSpawnedCursorGameObjects();
+    this.actorsToMove.clear();
     this.isDragging = false;
   }
 
