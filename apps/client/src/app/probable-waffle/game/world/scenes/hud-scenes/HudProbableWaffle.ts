@@ -11,6 +11,7 @@ import AiControllerDebugPanel from "../../../prefabs/gui/debug/ai-controller/AiC
 import GameSpeedModifier from "../../../prefabs/gui/buttons/GameSpeedModifier";
 import HudMessages from "../../../prefabs/gui/labels/HudMessages";
 import GroupContainer from "../../../prefabs/gui/labels/GroupContainer";
+import IdleWorkersButton from "../../../prefabs/gui/buttons/IdleWorkersButton";
 /* START-USER-IMPORTS */
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { HudGameState } from "../../../hud/hud-game-state";
@@ -63,6 +64,10 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     const gameSpeedModifier = new GameSpeedModifier(this, 13, 486);
     this.add.existing(gameSpeedModifier);
 
+    // idleWorkersButton
+    const idleWorkersButton = new IdleWorkersButton(this, 13, 516);
+    this.add.existing(idleWorkersButton);
+
     // hudMessages
     const hudMessages = new HudMessages(this, 6, 472);
     this.add.existing(hudMessages);
@@ -82,6 +87,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.resources_container = resources_container;
     this.aiControllerDebugPanel = aiControllerDebugPanel;
     this.gameSpeedModifier = gameSpeedModifier;
+    this.idleWorkersButton = idleWorkersButton;
     this.hudMessages = hudMessages;
     this.groupContainer = groupContainer;
     this.hudElements = hudElements;
@@ -96,6 +102,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   private resources_container!: Resources;
   private aiControllerDebugPanel!: AiControllerDebugPanel;
   private gameSpeedModifier!: GameSpeedModifier;
+  private idleWorkersButton!: IdleWorkersButton;
   private hudMessages!: HudMessages;
   private groupContainer!: GroupContainer;
   private hudElements!: Array<any>;
@@ -199,6 +206,12 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
         this.gameType === ProbableWaffleGameInstanceType.Replay ||
         this.gameType === ProbableWaffleGameInstanceType.Skirmish) &&
       sceneWidth > this.minimap_container.minimapHideBreakpoint;
+
+    // position idle workers button below game speed modifier on left side
+    this.idleWorkersButton.x = 10;
+    this.idleWorkersButton.y = this.gameSpeedModifier.y + 40;
+    this.idleWorkersButton.scale = sceneWidth > this.actorInfoSmallScreenBreakpoint ? 1 : 0.7;
+    this.idleWorkersButton.visible = sceneWidth > this.minimap_container.minimapHideBreakpoint;
 
     // redraw minimap
     this.minimap_container.redrawMinimap();
