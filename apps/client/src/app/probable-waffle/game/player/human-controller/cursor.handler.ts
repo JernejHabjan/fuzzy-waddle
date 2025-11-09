@@ -237,9 +237,7 @@ export class CursorHandler {
     }
 
     // Get the first selectable game object under cursor
-    const selectableObject = gameObjectsUnderCursor
-      .map((go) => getSelectableGameObject(go))
-      .find((go) => !!go);
+    const selectableObject = gameObjectsUnderCursor.map((go) => getSelectableGameObject(go)).find((go) => !!go);
 
     if (selectableObject) {
       const contextualCursor = this.determineContextualCursor(selectableObject, playerActionsHandler);
@@ -259,10 +257,7 @@ export class CursorHandler {
   /**
    * Determine the appropriate cursor based on the actor under the cursor
    */
-  private determineContextualCursor(
-    gameObject: GameObject,
-    playerActionsHandler?: PlayerActionsHandler
-  ): CursorType {
+  private determineContextualCursor(gameObject: GameObject, playerActionsHandler?: PlayerActionsHandler): CursorType {
     if (!this.mainScene) return CursorType.Default;
 
     const currentPlayerNumber = getCurrentPlayerNumber(this.mainScene);
@@ -325,7 +320,7 @@ export class CursorHandler {
       case OrderType.Attack: {
         const attackComponent = getActorComponent(gameObject, AttackComponent);
         if (attackComponent) {
-          return isEnemy ? CursorType.AttackRed : CursorType.AttackYellow;
+          return isEnemy ? CursorType.AttackGreen : CursorType.AttackRed;
         }
         return CursorType.CannotTarget;
       }
