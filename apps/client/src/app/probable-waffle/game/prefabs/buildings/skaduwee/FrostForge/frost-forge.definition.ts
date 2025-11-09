@@ -70,5 +70,8 @@ export const frostForgeDefinition = {
     constructable: {
       ...coreConstructionSiteDefinition
     }
+  },
+  meta: {
+    isMainBuilding: true
   }
 } satisfies PrefabDefinition;
