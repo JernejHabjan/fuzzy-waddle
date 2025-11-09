@@ -336,7 +336,7 @@ export class GathererComponent {
 
           const carriedAmount = this.carriedResourceAmount;
           if (carriedAmount > 0) {
-            emitResource(this.gameObject.scene, "resource.added", { [carriedResourceType]: carriedAmount });
+            emitResource(this.gameObject.scene, "resource.added", { [carriedResourceType]: carriedAmount }, owner);
             this.setCarriedResourceAmount(0);
 
             if (GathererComponent.debug) {

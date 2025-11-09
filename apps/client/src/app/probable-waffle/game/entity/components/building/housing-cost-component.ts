@@ -2,6 +2,8 @@ import GameObject = Phaser.GameObjects.GameObject;
 import { emitHousing } from "../../../data/scene-data";
 import { onObjectReady } from "../../../data/game-object-helper";
 import { HealthComponent } from "../combat/components/health-component";
+import { getActorComponent } from "../../../data/actor-component";
+import { OwnerComponent } from "../owner-component";
 
 export type HousingCostDefinition = {
   housingNeeded: number;
@@ -29,9 +31,11 @@ export class HousingCostComponent {
   private addHousing() {
     if (this.housingCostProvided) return;
 
+    const ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
+    const owner = ownerComponent?.getOwner();
     emitHousing(this.gameObject.scene, "housing.current.increased", {
       currentHousing: this.housingCostDefinition.housingNeeded
-    });
+    }, owner);
 
     this.housingCostProvided = true;
   }
@@ -39,9 +43,11 @@ export class HousingCostComponent {
   private removeHousing() {
     if (!this.housingCostProvided) return;
 
+    const ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
+    const owner = ownerComponent?.getOwner();
     emitHousing(this.gameObject.scene, "housing.current.decreased", {
       currentHousing: this.housingCostDefinition.housingNeeded
-    });
+    }, owner);
 
     this.housingCostProvided = false;
   }
