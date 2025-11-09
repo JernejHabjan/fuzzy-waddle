@@ -6,6 +6,7 @@ import type { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 import {
   emitEventIssueActorCommandToSelectedActors,
   emitEventIssueMoveCommandToSelectedActors,
+  getCurrentPlayerNumber,
   listenToSelectionEvents
 } from "../../data/scene-data";
 import { SingleSelectionHandler } from "./single-selection.handler";
@@ -23,6 +24,7 @@ import { GathererComponent } from "../../entity/components/resource/gatherer-com
 import { HealingComponent } from "../../entity/components/combat/components/healing-component";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import HudProbableWaffle from "../../world/scenes/hud-scenes/HudProbableWaffle";
+import { OwnerComponent } from "../../entity/components/owner-component";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class PlayerActionsHandler {
@@ -176,9 +178,7 @@ export class PlayerActionsHandler {
         break;
       case "Delete":
         // Delete selected actors
-        if (this.currentSelectedActors.length) {
-          this.deleteSelectedActors();
-        }
+        this.deleteSelectedActors();
         e.preventDefault();
         break;
       case "Escape":
@@ -193,14 +193,21 @@ export class PlayerActionsHandler {
   }
 
   private async deleteSelectedActors() {
-    if (!this.primarySelectedActor) return;
+    const currentPlayerNumber = getCurrentPlayerNumber(this.scene);
+    if (!currentPlayerNumber) return;
 
-    // Check if it's a main building
-    const actorName = this.primarySelectedActor.name;
-    const actorDefinition = pwActorDefinitions[actorName as keyof typeof pwActorDefinitions];
-    const isMainBuilding = actorDefinition?.meta?.isMainBuilding ?? false;
+    const owningSelectedActors = this.currentSelectedActors.filter((actor) => {
+      const ownerComponent = getActorComponent(actor, OwnerComponent);
+      return ownerComponent?.getOwner() === currentPlayerNumber;
+    });
 
-    if (isMainBuilding) {
+    // check if any of them in this.currentSelectedActors is a main building
+    const anyIsMainBuilding = owningSelectedActors.some((actor) => {
+      const actorDefinition = pwActorDefinitions[actor.name as keyof typeof pwActorDefinitions];
+      return actorDefinition?.meta?.isMainBuilding ?? false;
+    });
+
+    if (anyIsMainBuilding) {
       const hudScene = this.hudScene as HudProbableWaffle;
       const confirmed = await hudScene.confirmationDialog.show(
         "Are you sure you want to delete this main building? This action cannot be undone."
@@ -211,9 +218,11 @@ export class PlayerActionsHandler {
     }
 
     // Delete all selected actors
-    this.currentSelectedActors.forEach((actor) => {
+    owningSelectedActors.forEach((actor) => {
       const healthComponent = getActorComponent(actor, HealthComponent);
-      healthComponent?.killActor();
+      if (!healthComponent) return;
+      if (!healthComponent.canDamageOrKillOnOwnerAction()) return;
+      healthComponent.killActor();
     });
   }
 

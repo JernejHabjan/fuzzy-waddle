@@ -64,7 +64,8 @@ export default class ConfirmationDialog extends Phaser.GameObjects.Container {
     yesButton.text = "Yes";
     yesButton.w = 80;
     yesButton.h = 30;
-    yesButton.fontSize = 16;
+    yesButton.fontSize = 20;
+    yesButton.image_1.setVisible(false);
     this.add(yesButton);
 
     // no button
@@ -72,7 +73,8 @@ export default class ConfirmationDialog extends Phaser.GameObjects.Container {
     noButton.text = "No";
     noButton.w = 80;
     noButton.h = 30;
-    noButton.fontSize = 16;
+    noButton.fontSize = 20;
+    noButton.image_1.setVisible(false);
     this.add(noButton);
 
     this.overlay = overlay;
@@ -99,12 +101,16 @@ export default class ConfirmationDialog extends Phaser.GameObjects.Container {
   private noButton: ButtonSmall;
 
   /* START-USER-CODE */
-  scene: Phaser.Scene;
+  override scene: Phaser.Scene;
   confirmed = new EventEmitter<boolean>();
 
   postCreate() {
     // Make overlay interactive to prevent clicks behind the dialog
     this.overlay.setInteractive();
+    // stretch overlay to cover the entire scene
+    this.overlay.width = this.scene.scale.width;
+    this.overlay.height = this.scene.scale.height;
+    this.overlay.setOrigin(0.5, 0.5);
 
     // Setup button handlers
     this.yesButton.clicked.subscribe(() => {
