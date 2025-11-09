@@ -9,6 +9,8 @@ import PushActionScript from "../../../../../shared/game/phaser/script-nodes/Pus
 /* START-USER-IMPORTS */
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { GameSessionState } from "@fuzzy-waddle/api-interfaces";
+import { getActorComponent } from "../../../data/actor-component";
+import { OwnerComponent } from "../../../entity/components/owner-component";
 /* END-USER-IMPORTS */
 
 export default class GameActionsLayer extends ProbableWaffleScene {
@@ -444,26 +446,13 @@ export default class GameActionsLayer extends ProbableWaffleScene {
 
     // Get all actors owned by this player and destroy them
     const actorsToRemove = gameScene.children.list.filter((child) => {
-      const ownerComponent = this.getOwnerComponent(child);
+      const ownerComponent = getActorComponent(child, OwnerComponent);
       return ownerComponent && ownerComponent.getOwner() === playerNumber;
     });
 
     actorsToRemove.forEach((actor) => {
       actor.destroy();
     });
-  }
-
-  private getOwnerComponent(gameObject: Phaser.GameObjects.GameObject): any {
-    const actorData = gameObject.getData("actorData");
-    if (!actorData?.components) return null;
-    
-    // Find OwnerComponent in the components map
-    for (const [key, component] of actorData.components) {
-      if (key.name === "OwnerComponent") {
-        return component;
-      }
-    }
-    return null;
   }
 
   private resize(gameSize: { width: number; height: number }) {
