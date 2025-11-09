@@ -33,6 +33,7 @@ export default class ActorInfoLabel extends Phaser.GameObjects.Container {
   public text: Phaser.GameObjects.Text;
 
   /* START-USER-CODE */
+  private onIconClickCallback?: () => void;
 
   setText(text: string) {
     this.text.text = text;
@@ -44,6 +45,15 @@ export default class ActorInfoLabel extends Phaser.GameObjects.Container {
 
     // noinspection JSSuspiciousNameCombination
     IconHelper.setIcon(this.icon, key, frame, { x: 0.5, y: 0.5 }, { maxWidth: height, maxHeight: height });
+  }
+
+  setIconClickHandler(callback: () => void) {
+    this.onIconClickCallback = callback;
+    this.icon.setInteractive({ useHandCursor: true });
+    this.icon.off('pointerdown');
+    this.icon.on('pointerdown', () => {
+      this.onIconClickCallback?.();
+    });
   }
 
   /* END-USER-CODE */
