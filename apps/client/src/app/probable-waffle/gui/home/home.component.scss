@@ -43,6 +43,15 @@
   pointer-events: all;
 }
 
+.mobile-warning-content {
+  font-size: 1rem;
+  line-height: 1.5;
+
+  p {
+    margin-bottom: 1rem;
+  }
+}
+
 // Responsive design
 @media (max-width: 1200px) {
   .home-content {
