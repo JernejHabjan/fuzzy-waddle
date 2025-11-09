@@ -280,13 +280,12 @@ export default class Minimap extends Phaser.GameObjects.Container {
    * Determines if a game object is a building based on its components
    */
   private isBuilding(actor: Phaser.GameObjects.GameObject): boolean {
-    // Buildings typically have production, container, or health components
+    // Buildings typically have production, container components
     const hasProduction = getActorComponent(actor, ProductionComponent) !== undefined;
     const hasContainer = getActorComponent(actor, ContainerComponent) !== undefined;
-    const healthComponent = getActorComponent(actor, HealthComponent);
     
-    // Buildings have health components with structural type or have production/container components
-    return hasProduction || hasContainer || (healthComponent !== undefined && !healthComponent.isUnit());
+    // Buildings have production or container components
+    return hasProduction || hasContainer;
   }
 
   /**
