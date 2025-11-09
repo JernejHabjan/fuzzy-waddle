@@ -103,6 +103,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   /* START-USER-CODE */
   private saveGameSubscription?: Subscription;
   private readonly actorInfoSmallScreenBreakpoint = 1200;
+  private cursorHandler?: CursorHandler;
 
   probableWaffleScene?: ProbableWaffleScene;
   override preload() {
@@ -118,19 +119,30 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
 
     new HudGameState(this, this.probableWaffleScene!);
     new HudElementVisibilityHandler(this, this.hudElements);
+    this.cursorHandler = new CursorHandler(this);
     this.sceneGameData.components.push(
       new MultiSelectionHandler(this, this.probableWaffleScene!),
-      new CursorHandler(this)
+      this.cursorHandler
     );
 
     this.minimap_container.initializeWithParentScene(this.probableWaffleScene!, this);
 
     this.hudMessages.setup(this.probableWaffleScene!);
+
+    // Initialize cursor handler with main scene for hover detection
+    if (this.probableWaffleScene && this.cursorHandler) {
+      this.cursorHandler.initializeWithMainScene(this.probableWaffleScene);
+    }
   }
 
   initializeWithParentScene(probableWaffleScene: ProbableWaffleScene) {
     this.probableWaffleScene = probableWaffleScene;
     this.subscribeToSaveGameEvent();
+
+    // Initialize cursor handler with main scene if it was created before the parent scene was set
+    if (this.cursorHandler) {
+      this.cursorHandler.initializeWithMainScene(probableWaffleScene);
+    }
   }
 
   private resize(gameSize: { height: number; width: number }) {
