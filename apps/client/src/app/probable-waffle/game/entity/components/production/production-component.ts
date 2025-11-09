@@ -211,7 +211,7 @@ export class ProductionComponent {
       if (!player) return;
 
       // Fully pay for the production item
-      emitResource(this.gameObject.scene, "resource.removed", queueItem.costData.resources);
+      emitResource(this.gameObject.scene, "resource.removed", queueItem.costData.resources, owner);
     }
   }
 
@@ -229,7 +229,7 @@ export class ProductionComponent {
 
     let productionCostPaid = false;
     if (canPayAllResources) {
-      emitResource(this.gameObject.scene, "resource.removed", resources);
+      emitResource(this.gameObject.scene, "resource.removed", resources, owner);
       productionCostPaid = true;
     }
 
@@ -423,7 +423,7 @@ export class ProductionComponent {
         });
         break;
     }
-    emitResource(this.gameObject.scene, "resource.added", refundedResources);
+    emitResource(this.gameObject.scene, "resource.added", refundedResources, owner);
   }
 
   private canIssueCommand() {
