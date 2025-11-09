@@ -8,6 +8,7 @@ import { SingleSelectionHandler } from "../../player/human-controller/single-sel
 import HudProbableWaffle from "./hud-scenes/HudProbableWaffle";
 import { GameObjectSelectionHandler } from "../../player/human-controller/game-object-selection.handler";
 import { SceneGameState } from "../state/scene-game-state";
+import { GameSettings } from "../../core/gameSettings";
 import { type ProbableWaffleGameData } from "../../core/probable-waffle-game-data";
 import { SaveGame } from "../../data/save-game";
 import { SceneActorCreator } from "../services/scene-actor-creator";
@@ -56,7 +57,12 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     hud.initializeWithParentScene(this);
     new SceneGameState(this);
     new ScaleHandler(this, this.tilemap, { margins: { left: 150, bottom: 100 }, maxLayers: 8 });
-    new CameraMovementHandler(this);
+    const gameSettings = GameSettings.loadFromLocalStorage();
+    new CameraMovementHandler(this, {
+      cameraEdgeMovementSpeed: 30,
+      cameraKeyboardMovementSpeed: 2,
+      enabledMouseCornerMovement: gameSettings.enabledMouseCornerMovement
+    });
     new LightsHandler(this, { enableLights: false });
     new DepthHelper(this);
     new AnimatedTilemap(this, this.tilemap, this.tilemap.tilesets);

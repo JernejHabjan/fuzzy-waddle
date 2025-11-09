@@ -23,8 +23,8 @@ export class OptionsComponent implements OnInit {
     this.optionsService.init();
   }
 
-  protected saveToLocalStorage() {
-    this.optionsService.saveChanges("volume");
+  protected saveToLocalStorage(type: "volume" | "game") {
+    this.optionsService.saveChanges(type);
     this.cdr.detectChanges();
   }
 

@@ -1,4 +1,5 @@
 import { LockedCursorHandler } from "./locked-cursor.handler";
+import { GameSettings } from "../../core/gameSettings";
 
 export enum CursorType {
   Add = "add",
@@ -165,7 +166,8 @@ export class CursorHandler {
   private currentCursor?: string;
 
   constructor(private readonly scene: Phaser.Scene) {
-    new LockedCursorHandler(scene, this);
+    const gameSettings = GameSettings.loadFromLocalStorage();
+    new LockedCursorHandler(scene, this, gameSettings.lockToScreen);
     this.setupCursor();
   }
 

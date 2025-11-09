@@ -2,7 +2,7 @@ import { Input } from "phaser";
 import { CursorHandler } from "./cursor.handler";
 
 export class LockedCursorHandler {
-  private readonly lockToScreen = false;
+  private readonly lockToScreen: boolean;
   private readonly input: Input.InputPlugin;
 
   private customCursor: Phaser.GameObjects.Graphics | null = null;
@@ -10,8 +10,10 @@ export class LockedCursorHandler {
 
   constructor(
     private readonly scene: Phaser.Scene,
-    private readonly cursorHandler: CursorHandler
+    private readonly cursorHandler: CursorHandler,
+    lockToScreen: boolean = false
   ) {
+    this.lockToScreen = lockToScreen;
     this.input = scene.input;
     this.lockCursorToScreen();
     this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
