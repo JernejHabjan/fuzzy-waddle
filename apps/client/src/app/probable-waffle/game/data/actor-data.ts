@@ -28,6 +28,7 @@ import { ActionSystem } from "../entity/systems/action.system";
 import { HealingComponent } from "../entity/components/combat/components/healing-component";
 import { AudioActorComponent } from "../entity/components/actor-audio/audio-actor-component";
 import { AnimationActorComponent } from "../entity/components/animation/animation-actor-component";
+import { AnimationCullingComponent } from "../entity/components/animation/animation-culling-component";
 import { RepresentableComponent } from "../entity/components/representable-component";
 import { FlyingComponent } from "../entity/components/movement/flying-component";
 import { WalkableComponent } from "../entity/components/movement/walkable-component";
@@ -171,6 +172,7 @@ function gatherCompletedActorData(actor: Phaser.GameObjects.GameObject): { compo
     ...(componentDefinitions?.flying ? [new FlyingComponent(actor, componentDefinitions.flying)] : []),
     ...(componentDefinitions?.walkable ? [new WalkableComponent(actor, componentDefinitions.walkable)] : []),
     ...(componentDefinitions?.animatable ? [new AnimationActorComponent(actor, componentDefinitions.animatable)] : []),
+    ...(componentDefinitions?.animatable ? [new AnimationCullingComponent(actor)] : []),
     ...(componentDefinitions?.aiControlled ? [new PawnAiController(actor, componentDefinitions.aiControlled)] : [])
   ];
 
