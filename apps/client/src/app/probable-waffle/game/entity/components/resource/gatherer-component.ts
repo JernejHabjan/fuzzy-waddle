@@ -117,6 +117,13 @@ export class GathererComponent {
 
   private destroy() {
     this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
+    // Unassign from resource source
+    if (this.currentResourceSource) {
+      const resourceSourceComponent = getActorComponent(this.currentResourceSource, ResourceSourceComponent);
+      if (resourceSourceComponent) {
+        resourceSourceComponent.unassignGatherer(this.gameObject);
+      }
+    }
   }
 
   canGatherFrom(gameObject: GameObject): boolean {
@@ -142,10 +149,21 @@ export class GathererComponent {
 
     if (!this.canGatherFrom(resourceSource)) return false;
 
+    // Unassign from previous resource source if switching
+    if (this.currentResourceSource) {
+      const previousResourceSourceComponent = getActorComponent(this.currentResourceSource, ResourceSourceComponent);
+      if (previousResourceSourceComponent) {
+        previousResourceSourceComponent.unassignGatherer(this.gameObject);
+      }
+    }
+
     this.currentResourceSource = resourceSource;
 
     const resourceSourceComponent = getActorComponent(resourceSource, ResourceSourceComponent);
     if (!resourceSourceComponent) return false;
+
+    // Assign this gatherer to the new resource source
+    resourceSourceComponent.assignGatherer(this.gameObject);
 
     const gatherData = this.getGatherDataForResourceSource(resourceSource);
 
@@ -318,7 +336,7 @@ export class GathererComponent {
 
           const carriedAmount = this.carriedResourceAmount;
           if (carriedAmount > 0) {
-            emitResource(this.gameObject.scene, "resource.added", { [carriedResourceType]: carriedAmount });
+            emitResource(this.gameObject.scene, "resource.added", { [carriedResourceType]: carriedAmount }, owner);
             this.setCarriedResourceAmount(0);
 
             if (GathererComponent.debug) {
@@ -399,6 +417,12 @@ export class GathererComponent {
     const containerComponent = getActorComponent(this.currentResourceSource, ContainerComponent);
     if (containerComponent) {
       containerComponent.unloadGameObject(this.gameObject);
+    }
+
+    // Unassign from resource source
+    const resourceSourceComponent = getActorComponent(this.currentResourceSource, ResourceSourceComponent);
+    if (resourceSourceComponent) {
+      resourceSourceComponent.unassignGatherer(this.gameObject);
     }
 
     // store data about resource source for future reference (e.g. return here, or find similar)

@@ -16,6 +16,15 @@ export const stonePileDefinition = {
       enabled: true
     },
     selectable: { offsetY: 16 },
+    info: {
+      name: "Stone Pile",
+      description: "A pile of stone waiting to be gathered",
+      smallImage: {
+        key: "outside",
+        frame: "nature/resources/stone_pile_1.png",
+        origin: { x: 0.5, y: 0.5 }
+      }
+    },
     resourceSource: {
       resourceType: ResourceType.Stone,
       maximumResources: 100,

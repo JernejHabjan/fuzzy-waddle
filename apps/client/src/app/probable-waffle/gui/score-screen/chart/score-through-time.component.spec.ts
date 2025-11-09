@@ -3,6 +3,7 @@ import { ScoreThroughTimeComponent } from "./score-through-time.component";
 import { Component, Input } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import {
+  createPlayerLobbyDefinition,
   FactionType,
   type PlayerLobbyDefinition,
   type PlayerStateActionBuildingConstructed,
@@ -60,22 +61,12 @@ describe("ScoreThroughTimeComponent", () => {
     await gameInstanceService.addAiPlayer();
     const players = gameInstanceService.gameInstance!.players!;
     players[0].playerController.data.playerDefinition = {
-      player: {
-        playerNumber: 1,
-        playerName: "Player 1",
-        playerPosition: 1,
-        joined: true
-      } satisfies PlayerLobbyDefinition, // TODO THIS IS DUPLICATED EVERYWHERE
+      player: createPlayerLobbyDefinition(1, 1),
       factionType: FactionType.Skaduwee,
       playerType: ProbableWafflePlayerType.AI
     } satisfies PositionPlayerDefinition;
     players[1].playerController.data.playerDefinition = {
-      player: {
-        playerNumber: 2,
-        playerName: "Player 2",
-        playerPosition: 2,
-        joined: true
-      } satisfies PlayerLobbyDefinition, // TODO THIS IS DUPLICATED EVERYWHERE
+      player: createPlayerLobbyDefinition(2, 2),
       factionType: FactionType.Skaduwee,
       playerType: ProbableWafflePlayerType.AI
     } satisfies PositionPlayerDefinition;
