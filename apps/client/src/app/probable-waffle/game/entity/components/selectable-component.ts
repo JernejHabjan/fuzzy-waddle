@@ -14,18 +14,15 @@ import { ActorTranslateComponent } from "./movement/actor-translate-component";
 import { HealthComponent } from "./combat/components/health-component";
 import { ContainerComponent } from "./building/container-component";
 import { VisionComponent } from "./vision-component";
-import { OutlineComponent } from "./outline-component";
 import type { SelectableComponentData } from "@fuzzy-waddle/api-interfaces";
 
 export type SelectableDefinition = {
   offsetY?: number;
-  enableOutline?: boolean; // Enable outline effect for sprites behind objects
 };
 
 export class SelectableComponent {
   private selected: boolean = false;
   private selectionCircle!: Phaser.GameObjects.Graphics;
-  private outlineComponent?: OutlineComponent;
   private actorMovedSubscription?: Subscription;
   private selectionChangedSubscription?: Subscription;
   selectionChanged: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -42,10 +39,6 @@ export class SelectableComponent {
 
   private init = () => {
     this.subscribeActorMove();
-    // Initialize outline component if enabled
-    if (this.selectableDefinition?.enableOutline !== false) {
-      this.outlineComponent = new OutlineComponent(this.gameObject);
-    }
   };
 
   private subscribeActorMove() {
@@ -65,12 +58,8 @@ export class SelectableComponent {
     graphics.visible = false;
     this.selectionCircle = graphics;
     this.gameObject.scene.add.existing(graphics);
-    
-    // Pass selection circle to outline component to ignore in occlusion checks
-    if (this.outlineComponent) {
-      this.outlineComponent.setSelectionCircle(graphics);
-    }
   }
+  
   setSelected(selected: boolean) {
     if (this.selected === selected) return;
     this.selected = selected;
@@ -78,15 +67,6 @@ export class SelectableComponent {
     const visionComponent = getActorComponent(this.gameObject, VisionComponent);
     if (visionComponent && !visionComponent.visibilityByCurrentPlayer) selected = false;
     this.selectionCircle.visible = selected;
-
-    // Show/hide outline effect
-    if (this.outlineComponent) {
-      if (selected) {
-        this.outlineComponent.show();
-      } else {
-        this.outlineComponent.hide();
-      }
-    }
 
     if (selected) this.update();
     this.selectionChanged.next(selected);

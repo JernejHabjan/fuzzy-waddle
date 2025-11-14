@@ -6,6 +6,8 @@ import { getSceneService } from "../../../world/services/scene-component-helpers
 import { NavigationService } from "../../../world/services/navigation.service";
 import { getActorComponent } from "../../../data/actor-component";
 import { RepresentableComponent } from "../representable-component";
+import { OutlineComponent } from "../outline-component";
+import { SelectableComponent } from "../selectable-component";
 import type { IsoDirection } from "./iso-directions";
 
 export interface ActorTranslateDefinition {
@@ -13,6 +15,10 @@ export interface ActorTranslateDefinition {
    * Tile move duration specifies how long (in ms) unit requires to cross 1 tile
    */
   tileMoveDuration?: number;
+  /**
+   * Enable outline effect for sprites behind objects (default: true)
+   */
+  enableOutline?: boolean;
 }
 
 export class ActorTranslateComponent {
@@ -20,14 +26,48 @@ export class ActorTranslateComponent {
   currentDirection?: IsoDirection;
   onDirectionChanged: Subject<IsoDirection> = new Subject<IsoDirection>();
   private representableComponent?: RepresentableComponent;
+  private outlineComponent?: OutlineComponent;
+  
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,
     public readonly actorTranslateDefinition: ActorTranslateDefinition
   ) {
     onObjectReady(gameObject, this.init, this);
   }
+  
   init() {
     this.representableComponent = getActorComponent(this.gameObject, RepresentableComponent);
+    
+    // Initialize outline component if enabled (default: true)
+    if (this.actorTranslateDefinition.enableOutline !== false) {
+      this.outlineComponent = new OutlineComponent(this.gameObject);
+      
+      // Listen to selection changes to show/hide outline
+      const selectableComponent = getActorComponent(this.gameObject, SelectableComponent);
+      if (selectableComponent) {
+        selectableComponent.selectionChanged.subscribe((selected) => {
+          if (this.outlineComponent) {
+            if (selected) {
+              this.outlineComponent.show();
+            } else {
+              this.outlineComponent.hide();
+            }
+          }
+        });
+        
+        // Pass selection circle reference if it exists
+        const interval = setInterval(() => {
+          const circle = (selectableComponent as any).selectionCircle;
+          if (circle && this.outlineComponent) {
+            this.outlineComponent.setSelectionCircle(circle);
+            clearInterval(interval);
+          }
+        }, 100);
+        
+        // Clear interval after 2 seconds if circle not found
+        setTimeout(() => clearInterval(interval), 2000);
+      }
+    }
   }
   get renderedTransform(): Vector2Simple {
     const transform = getGameObjectRenderedTransform(this.gameObject);

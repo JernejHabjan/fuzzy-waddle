@@ -5,12 +5,14 @@ import { HealthComponent } from "./combat/components/health-component";
 import { ContainerComponent } from "./building/container-component";
 
 /**
- * OutlineComponent creates a visual outline effect for game objects using Phaser's built-in glow effect.
+ * OutlineComponent creates a visual outline effect for game objects.
  *
  * Performance Optimizations:
  * - Only renders outline when actor is occluded (behind other objects)
  * - Lazy creation of outline sprites (created only when needed)
  * - Conditional frame updates (only when visible and selected)
+ * - Uses simple tint/blend mode instead of expensive GPU filters
+ * - Periodic occlusion checks (every 10 frames) instead of every frame
  *
  * Supports:
  * - Simple Sprites and Images
@@ -18,7 +20,6 @@ import { ContainerComponent } from "./building/container-component";
  *
  * Based on Rex's advice:
  * - Creates duplicate sprite/image at the top depth
- * - Applies built-in glow effect with knockout parameter
  * - Ensures outline is visible even when actor is behind other objects
  *
  * Implementation inspired by:
@@ -30,7 +31,6 @@ export class OutlineComponent {
   private outlineSprites: Array<{
     outline: Phaser.GameObjects.Sprite | Phaser.GameObjects.Image;
     source: Phaser.GameObjects.Sprite | Phaser.GameObjects.Image;
-    glowEffect?: Phaser.Filters.Glow;
   }> = [];
   private isVisible: boolean = false;
   private isSelected: boolean = false;
@@ -167,6 +167,7 @@ export class OutlineComponent {
 
   /**
    * Sets up common properties for outline sprites
+   * Performance optimization: Uses simple tint instead of expensive GPU filters
    */
   private setupOutlineSprite(
     outline: Phaser.GameObjects.Sprite | Phaser.GameObjects.Image,
@@ -177,7 +178,6 @@ export class OutlineComponent {
     outline.setOrigin(source.originX ?? 0.5, source.originY ?? 0.5);
     outline.setScale(source.scaleX ?? 1, source.scaleY ?? 1);
     outline.setRotation(source.rotation ?? 0);
-    outline.setAlpha(source.alpha ?? 1);
     outline.setFlipX(source.flipX ?? false);
     outline.setFlipY(source.flipY ?? false);
 
@@ -189,20 +189,13 @@ export class OutlineComponent {
       outline.setDepth(Number.MAX_SAFE_INTEGER);
     }
 
-    // Apply glow effect
-    const outlineWithFilters = outline;
-    if (outlineWithFilters.enableFilters) {
-      const glowEffect = outlineWithFilters.enableFilters().filters?.external.addGlow(0xffffff, 4, 0);
-
-      // Make the sprite itself more transparent while keeping the glow visible
-      outline.setAlpha(0.3);
-
-      // Store the glow effect reference
-      const spriteEntry = this.outlineSprites.find((s) => s.outline === outline);
-      if (spriteEntry) {
-        spriteEntry.glowEffect = glowEffect;
-      }
-    }
+    // Performance optimization: Use simple tint/alpha instead of expensive GPU filters
+    // This creates a subtle outline effect without the performance cost of filters
+    outline.setTint(0x00ffff); // Cyan tint for visibility
+    outline.setAlpha(0.6); // Semi-transparent for outline effect
+    outline.setBlendMode(Phaser.BlendModes.ADD); // Additive blend for glow-like effect
+    
+    this.outlineSprites.push({ outline, source });
   }
 
   /**
