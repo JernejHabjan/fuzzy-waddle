@@ -142,6 +142,8 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.minimap_container.initializeWithParentScene(this.probableWaffleScene!, this);
 
     this.hudMessages.setup(this.probableWaffleScene!);
+    
+    this.idleWorkersButton.setup(this.probableWaffleScene!);
 
     // Initialize cursor handler with main scene for hover detection
     if (this.probableWaffleScene && this.cursorHandler) {

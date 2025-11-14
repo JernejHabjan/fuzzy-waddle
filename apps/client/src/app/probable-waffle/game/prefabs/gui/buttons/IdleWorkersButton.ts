@@ -77,7 +77,11 @@ export default class IdleWorkersButton extends Phaser.GameObjects.Container {
 
     /* START-USER-CTR-CODE */
     this.scene.events.on(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
-    this.init();
+    
+    // Listen for click events
+    this.button_container.on("action", () => {
+      this.selectFirstIdleWorker();
+    });
     /* END-USER-CTR-CODE */
   }
 
@@ -89,14 +93,9 @@ export default class IdleWorkersButton extends Phaser.GameObjects.Container {
   private mainSceneWithActors?: ProbableWaffleScene;
   private updateInterval?: Phaser.Time.TimerEvent;
 
-  private init() {
-    this.mainSceneWithActors = (this.scene as HudProbableWaffle).probableWaffleScene!;
+  setup(probableWaffleScene: ProbableWaffleScene) {
+    this.mainSceneWithActors = probableWaffleScene;
     
-    // Listen for click events
-    this.button_container.on("action", () => {
-      this.selectFirstIdleWorker();
-    });
-
     // Update the button count periodically
     this.updateInterval = this.scene.time.addEvent({
       delay: 500, // Update every 500ms
