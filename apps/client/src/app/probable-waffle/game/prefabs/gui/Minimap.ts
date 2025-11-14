@@ -90,7 +90,7 @@ export default class Minimap extends Phaser.GameObjects.Container {
   private fogOfWarComponent?: FogOfWarComponent;
   private playerActionsHandler?: PlayerActionsHandler;
   // Threshold for revealing last enemy buildings on minimap
-  private readonly lastBuildingsThreshold = 5;
+  private readonly lastBuildingsThreshold = 3;
 
   initializeWithParentScene(probableWaffleScene: ProbableWaffleScene, hudProbableWaffle: HudProbableWaffle) {
     this.probableWaffleScene = probableWaffleScene;
@@ -314,10 +314,10 @@ export default class Minimap extends Phaser.GameObjects.Container {
     }
 
     const allActors = actorIndexSystem.getAllIdActors();
-    
+
     // Get building counts per player to determine which buildings to highlight
     const buildingCounts = getBuildingCountsByPlayer(allActors);
-    const currentPlayer = getCurrentPlayerNumber(this.probableWaffleScene.scene);
+    const currentPlayer = getCurrentPlayerNumber(this.probableWaffleScene);
 
     for (const child of allActors) {
       const objectDescriptor = getActorComponent(child, ObjectDescriptorComponent);
@@ -353,7 +353,11 @@ export default class Minimap extends Phaser.GameObjects.Container {
           let shouldShow = true;
 
           // Apply visibility rules based on fog of war mode, unless it's a last building
-          if (!isLastBuilding && this.fogOfWarComponent && this.fogOfWarComponent.getMode() === FogOfWarMode.FULL_EXPLORATION) {
+          if (
+            !isLastBuilding &&
+            this.fogOfWarComponent &&
+            this.fogOfWarComponent.getMode() === FogOfWarMode.FULL_EXPLORATION
+          ) {
             const tileVisibility = this.fogOfWarComponent.getTileVisibility(tile.x, tile.y);
 
             if (tileVisibility === "unexplored") {
