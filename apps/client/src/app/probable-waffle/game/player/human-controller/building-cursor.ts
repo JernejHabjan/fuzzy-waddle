@@ -278,19 +278,19 @@ export class BuildingCursor {
     const outerRangeY = innerRangeY + 2; // 2 tiles beyond
 
     // Helper function to check if a specific tile position is occupied
-    const isTileOccupied = (tileX: number, tileY: number): boolean => {
+    const isTileOccupied = (worldX: number, worldY: number): boolean => {
       if (!this.tileMapComponent || !this.navigationService || !this.fogOfWarComponent) return true;
 
-      // Check if tile is walkable (not occupied by terrain)
-      const tileCoord = this.tileMapComponent.tilemap.worldToTileXY(tileX, tileY);
+      // Convert world coordinates to tile coordinates
+      const tileCoord = this.tileMapComponent.tilemap.worldToTileXY(worldX, worldY);
       if (!tileCoord) return true;
 
-      // Check if tile is visible
+      // Check if tile is visible - if not visible, consider it occupied
       const tileVisible = this.fogOfWarComponent.getTileVisibility(tileCoord.x, tileCoord.y);
       if (tileVisible !== "visible") return true;
 
-      // Check navigation grid
-      const isWalkable = this.navigationService.isPositionWalkable(tileX, tileY);
+      // Check if tile is walkable using tile coordinates (not world coordinates)
+      const isWalkable = this.navigationService.isTileWalkable(tileCoord);
       if (!isWalkable) return true;
 
       // Check for collisions with existing game objects at this specific tile
