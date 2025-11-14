@@ -7,6 +7,11 @@ import { ContainerComponent } from "./building/container-component";
 /**
  * OutlineComponent creates a visual outline effect for game objects using Phaser's built-in glow effect.
  *
+ * Performance Optimizations:
+ * - Only renders outline when actor is occluded (behind other objects)
+ * - Lazy creation of outline sprites (created only when needed)
+ * - Conditional frame updates (only when visible and selected)
+ *
  * Supports:
  * - Simple Sprites and Images
  * - Containers with multiple child sprites (for complex animated prefabs)
@@ -28,14 +33,25 @@ export class OutlineComponent {
     glowEffect?: Phaser.Filters.Glow;
   }> = [];
   private isVisible: boolean = false;
+  private isSelected: boolean = false;
+  private occlusionCheckCounter: number = 0;
+  private readonly occlusionCheckInterval: number = 10; // Check every 10 frames for performance
+  private selectionCircle?: Phaser.GameObjects.Graphics; // Reference to ignore in occlusion checks
 
   constructor(private readonly gameObject: GameObject) {
     onObjectReady(gameObject, this.init, this);
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
     gameObject.on(ContainerComponent.GameObjectVisibilityChanged, this.gameObjectVisibilityChanged, this);
-    // Subscribe to scene update to keep outline in sync
+    // Subscribe to scene update to keep outline in sync (only when selected and visible)
     gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
+  }
+
+  /**
+   * Sets the selection circle reference to ignore in occlusion checks
+   */
+  setSelectionCircle(selectionCircle: Phaser.GameObjects.Graphics) {
+    this.selectionCircle = selectionCircle;
   }
 
   private init = () => {
@@ -190,9 +206,120 @@ export class OutlineComponent {
   }
 
   /**
-   * Shows the outline effect
+   * Shows the outline effect (only if actor is occluded)
    */
   show() {
+    this.isSelected = true;
+    // Don't create sprites yet - wait for occlusion check
+    this.checkAndUpdateOcclusion();
+  }
+
+  /**
+   * Hides the outline effect
+   */
+  hide() {
+    this.isSelected = false;
+    this.hideOutlineSprites();
+  }
+
+  /**
+   * Checks if the game object is occluded (behind other objects)
+   * Only shows outline if occluded
+   */
+  private checkAndUpdateOcclusion() {
+    if (!this.isSelected) return;
+
+    const isOccluded = this.isGameObjectOccluded();
+
+    if (isOccluded && !this.isVisible) {
+      // Actor is occluded and outline not visible - show it
+      this.showOutlineSprites();
+    } else if (!isOccluded && this.isVisible) {
+      // Actor is not occluded but outline is visible - hide it
+      this.hideOutlineSprites();
+    }
+  }
+
+  /**
+   * Checks if the game object is occluded by other objects with higher depth
+   */
+  private isGameObjectOccluded(): boolean {
+    // Get the depth of the current game object
+    const myDepth = this.gameObject.depth ?? 0;
+    const bounds = this.getGameObjectBounds();
+    
+    if (!bounds) return false;
+
+    // Get all display objects in the scene
+    const displayList = this.gameObject.scene.children.list;
+
+    // Check if any object with higher depth overlaps with this object
+    for (const obj of displayList) {
+      if (obj === this.gameObject) continue;
+      if (obj === this.selectionCircle) continue; // Ignore selection circle
+      if (obj === this.outlineContainer) continue; // Ignore our own outline
+      
+      // Check if this object has higher depth (in front)
+      const objDepth = (obj as any).depth ?? 0;
+      if (objDepth <= myDepth) continue;
+
+      // Check for overlap
+      const otherBounds = this.getObjectBounds(obj);
+      if (!otherBounds) continue;
+
+      if (this.boundsOverlap(bounds, otherBounds)) {
+        return true; // Found an overlapping object with higher depth
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Gets bounds of the game object
+   */
+  private getGameObjectBounds(): Phaser.Geom.Rectangle | null {
+    try {
+      if (this.gameObject instanceof Phaser.GameObjects.Sprite || 
+          this.gameObject instanceof Phaser.GameObjects.Image) {
+        const bounds = this.gameObject.getBounds();
+        return new Phaser.Geom.Rectangle(bounds.x, bounds.y, bounds.width, bounds.height);
+      } else if (this.gameObject instanceof Phaser.GameObjects.Container) {
+        const bounds = this.gameObject.getBounds();
+        return new Phaser.Geom.Rectangle(bounds.x, bounds.y, bounds.width, bounds.height);
+      }
+    } catch (e) {
+      // Bounds not available
+    }
+    return null;
+  }
+
+  /**
+   * Gets bounds of any display object
+   */
+  private getObjectBounds(obj: any): Phaser.Geom.Rectangle | null {
+    try {
+      if (obj.getBounds && typeof obj.getBounds === 'function') {
+        const bounds = obj.getBounds();
+        return new Phaser.Geom.Rectangle(bounds.x, bounds.y, bounds.width, bounds.height);
+      }
+    } catch (e) {
+      // Bounds not available
+    }
+    return null;
+  }
+
+  /**
+   * Checks if two bounds overlap
+   */
+  private boundsOverlap(a: Phaser.Geom.Rectangle, b: Phaser.Geom.Rectangle): boolean {
+    return Phaser.Geom.Rectangle.Overlaps(a, b);
+  }
+
+  /**
+   * Shows the outline sprites
+   */
+  private showOutlineSprites() {
     if (this.outlineSprites.length === 0) {
       this.createOutlineSprite();
     }
@@ -210,9 +337,9 @@ export class OutlineComponent {
   }
 
   /**
-   * Hides the outline effect
+   * Hides the outline sprites
    */
-  hide() {
+  private hideOutlineSprites() {
     this.isVisible = false;
 
     if (this.outlineContainer) {
@@ -284,9 +411,23 @@ export class OutlineComponent {
 
   /**
    * Update method called on each frame to sync outline with game object
+   * Performance optimization: Only updates when selected and visible
+   * Performs occlusion check periodically (every N frames)
    */
   update = () => {
-    this.updatePosition();
+    if (!this.isSelected) return; // Skip if not selected
+
+    // Perform occlusion check periodically for performance
+    this.occlusionCheckCounter++;
+    if (this.occlusionCheckCounter >= this.occlusionCheckInterval) {
+      this.occlusionCheckCounter = 0;
+      this.checkAndUpdateOcclusion();
+    }
+
+    // Only update position if outline is visible
+    if (this.isVisible) {
+      this.updatePosition();
+    }
   };
 
   private gameObjectVisibilityChanged(visible: boolean) {

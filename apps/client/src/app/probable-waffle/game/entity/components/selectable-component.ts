@@ -43,10 +43,9 @@ export class SelectableComponent {
   private init = () => {
     this.subscribeActorMove();
     // Initialize outline component if enabled
-    // todo if (this.selectableDefinition?.enableOutline !== false) {
-    this.outlineComponent = new OutlineComponent(this.gameObject);
-    // todo }
-    this.outlineComponent.show(); // todo
+    if (this.selectableDefinition?.enableOutline !== false) {
+      this.outlineComponent = new OutlineComponent(this.gameObject);
+    }
   };
 
   private subscribeActorMove() {
@@ -66,6 +65,11 @@ export class SelectableComponent {
     graphics.visible = false;
     this.selectionCircle = graphics;
     this.gameObject.scene.add.existing(graphics);
+    
+    // Pass selection circle to outline component to ignore in occlusion checks
+    if (this.outlineComponent) {
+      this.outlineComponent.setSelectionCircle(graphics);
+    }
   }
   setSelected(selected: boolean) {
     if (this.selected === selected) return;
@@ -96,10 +100,7 @@ export class SelectableComponent {
     if (!this.selected) return;
     this.setPosition();
     this.setDepth();
-    // Update outline position
-    if (this.outlineComponent) {
-      this.outlineComponent.update();
-    }
+    // Outline component has its own update logic via scene events
   };
 
   /**
