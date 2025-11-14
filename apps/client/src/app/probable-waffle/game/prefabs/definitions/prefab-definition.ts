@@ -68,5 +68,6 @@ export type PrefabDefinition = Partial<{
   }>;
   meta: Partial<{
     randomOfType: ObjectNames[];
+    isMainBuilding: boolean;
   }>;
 }>;

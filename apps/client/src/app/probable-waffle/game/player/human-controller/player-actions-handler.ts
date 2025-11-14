@@ -6,6 +6,7 @@ import type { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 import {
   emitEventIssueActorCommandToSelectedActors,
   emitEventIssueMoveCommandToSelectedActors,
+  getCurrentPlayerNumber,
   listenToSelectionEvents
 } from "../../data/scene-data";
 import { SingleSelectionHandler } from "./single-selection.handler";
@@ -21,6 +22,10 @@ import { AttackComponent } from "../../entity/components/combat/components/attac
 import { ActorTranslateComponent } from "../../entity/components/movement/actor-translate-component";
 import { GathererComponent } from "../../entity/components/resource/gatherer-component";
 import { HealingComponent } from "../../entity/components/combat/components/healing-component";
+import { HealthComponent } from "../../entity/components/combat/components/health-component";
+import HudProbableWaffle from "../../world/scenes/hud-scenes/HudProbableWaffle";
+import { OwnerComponent } from "../../entity/components/owner-component";
+import { findProductionBuildingWithLeastRemainingTime } from "../../entity/components/production/production-helpers";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class PlayerActionsHandler {
@@ -111,9 +116,13 @@ export class PlayerActionsHandler {
           const def = pwActorDefinitions[product];
           const cost = def.components?.productionCost;
           if (cost) {
-            production.startProduction({ actorName: product, costData: cost });
-            e.preventDefault();
-            return;
+            // Find the production building with the least total remaining production time
+            const targetComponent = findProductionBuildingWithLeastRemainingTime(this.currentSelectedActors);
+            if (targetComponent) {
+              targetComponent.startProduction({ actorName: product, costData: cost });
+              e.preventDefault();
+              return;
+            }
           }
         }
       }
@@ -172,6 +181,11 @@ export class PlayerActionsHandler {
         }
         e.preventDefault();
         break;
+      case "Delete":
+        // Delete selected actors
+        this.deleteSelectedActors();
+        e.preventDefault();
+        break;
       case "Escape":
         // Cancel current cursor/orders and building placement
         this.stopOrderCommand();
@@ -181,6 +195,40 @@ export class PlayerActionsHandler {
       default:
         break;
     }
+  }
+
+  private async deleteSelectedActors() {
+    const currentPlayerNumber = getCurrentPlayerNumber(this.scene);
+    if (!currentPlayerNumber) return;
+
+    const owningSelectedActors = this.currentSelectedActors.filter((actor) => {
+      const ownerComponent = getActorComponent(actor, OwnerComponent);
+      return ownerComponent?.getOwner() === currentPlayerNumber;
+    });
+
+    // check if any of them in this.currentSelectedActors is a main building
+    const anyIsMainBuilding = owningSelectedActors.some((actor) => {
+      const actorDefinition = pwActorDefinitions[actor.name as keyof typeof pwActorDefinitions];
+      return actorDefinition?.meta?.isMainBuilding ?? false;
+    });
+
+    if (anyIsMainBuilding) {
+      const hudScene = this.hudScene as HudProbableWaffle;
+      const confirmed = await hudScene.confirmationDialog.show(
+        "Are you sure you want to delete this main building? This action cannot be undone."
+      );
+      if (!confirmed) {
+        return;
+      }
+    }
+
+    // Delete all selected actors
+    owningSelectedActors.forEach((actor) => {
+      const healthComponent = getActorComponent(actor, HealthComponent);
+      if (!healthComponent) return;
+      if (!healthComponent.canDamageOrKillOnOwnerAction()) return;
+      healthComponent.killActor();
+    });
   }
 
   private pointerHandler(pointer: Phaser.Input.Pointer, gameObjectsUnderCursor: GameObject[]) {

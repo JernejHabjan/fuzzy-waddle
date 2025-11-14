@@ -12,6 +12,7 @@ import GameSpeedModifier from "../../../prefabs/gui/buttons/GameSpeedModifier";
 import HudMessages from "../../../prefabs/gui/labels/HudMessages";
 import GroupContainer from "../../../prefabs/gui/labels/GroupContainer";
 import IdleWorkersButton from "../../../prefabs/gui/buttons/IdleWorkersButton";
+import ConfirmationDialog from "../../../prefabs/gui/dialogs/ConfirmationDialog";
 /* START-USER-IMPORTS */
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { HudGameState } from "../../../hud/hud-game-state";
@@ -77,6 +78,10 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     const groupContainer = new GroupContainer(this, 552, 541);
     this.add.existing(groupContainer);
 
+    // confirmationDialog
+    const confirmationDialog = new ConfirmationDialog(this, 640, 360);
+    this.add.existing(confirmationDialog);
+
     // lists
     const hudElements: Array<any> = [];
 
@@ -90,6 +95,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.idleWorkersButton = idleWorkersButton;
     this.hudMessages = hudMessages;
     this.groupContainer = groupContainer;
+    this.confirmationDialog = confirmationDialog;
     this.hudElements = hudElements;
 
     this.events.emit("scene-awake");
@@ -105,11 +111,13 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   private idleWorkersButton!: IdleWorkersButton;
   private hudMessages!: HudMessages;
   private groupContainer!: GroupContainer;
+  public confirmationDialog!: ConfirmationDialog;
   private hudElements!: Array<any>;
 
   /* START-USER-CODE */
   private saveGameSubscription?: Subscription;
   private readonly actorInfoSmallScreenBreakpoint = 1200;
+  private cursorHandler?: CursorHandler;
 
   probableWaffleScene?: ProbableWaffleScene;
   override preload() {
@@ -125,19 +133,30 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
 
     new HudGameState(this, this.probableWaffleScene!);
     new HudElementVisibilityHandler(this, this.hudElements);
+    this.cursorHandler = new CursorHandler(this);
     this.sceneGameData.components.push(
       new MultiSelectionHandler(this, this.probableWaffleScene!),
-      new CursorHandler(this)
+      this.cursorHandler
     );
 
     this.minimap_container.initializeWithParentScene(this.probableWaffleScene!, this);
 
     this.hudMessages.setup(this.probableWaffleScene!);
+
+    // Initialize cursor handler with main scene for hover detection
+    if (this.probableWaffleScene && this.cursorHandler) {
+      this.cursorHandler.initializeWithMainScene(this.probableWaffleScene);
+    }
   }
 
   initializeWithParentScene(probableWaffleScene: ProbableWaffleScene) {
     this.probableWaffleScene = probableWaffleScene;
     this.subscribeToSaveGameEvent();
+
+    // Initialize cursor handler with main scene if it was created before the parent scene was set
+    if (this.cursorHandler) {
+      this.cursorHandler.initializeWithMainScene(probableWaffleScene);
+    }
   }
 
   private resize(gameSize: { height: number; width: number }) {
@@ -215,6 +234,10 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
 
     // redraw minimap
     this.minimap_container.redrawMinimap();
+
+    // position confirmation dialog in center of screen
+    this.confirmationDialog.x = this.scale.width / 2;
+    this.confirmationDialog.y = this.scale.height / 2;
   }
 
   private get gameType() {
