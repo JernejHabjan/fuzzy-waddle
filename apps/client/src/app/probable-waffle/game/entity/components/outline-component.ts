@@ -6,16 +6,16 @@ import { ContainerComponent } from "./building/container-component";
 
 /**
  * OutlineComponent creates a visual outline effect for game objects using Phaser's built-in glow effect.
- * 
+ *
  * Supports:
  * - Simple Sprites and Images
  * - Containers with multiple child sprites (for complex animated prefabs)
- * 
+ *
  * Based on Rex's advice:
  * - Creates duplicate sprite/image at the top depth
  * - Applies built-in glow effect with knockout parameter
  * - Ensures outline is visible even when actor is behind other objects
- * 
+ *
  * Implementation inspired by:
  * - https://rexrainbow.github.io/phaser3-rex-notes/docs/site/shader-builtin/#glow
  * - https://codepen.io/rexrainbow/pen/dyGNrqa
@@ -25,7 +25,7 @@ export class OutlineComponent {
   private outlineSprites: Array<{
     outline: Phaser.GameObjects.Sprite | Phaser.GameObjects.Image;
     source: Phaser.GameObjects.Sprite | Phaser.GameObjects.Image;
-    glowFX?: Phaser.FX.Glow;
+    glowEffect?: Phaser.Filters.Glow;
   }> = [];
   private isVisible: boolean = false;
 
@@ -79,7 +79,7 @@ export class OutlineComponent {
    */
   private createContainerOutline(containerTransform: { x: number; y: number }) {
     const container = this.gameObject as Phaser.GameObjects.Container;
-    
+
     // Create a container to hold all outline sprites at high depth
     this.outlineContainer = this.gameObject.scene.add.container(containerTransform.x, containerTransform.y);
     this.outlineContainer.setDepth(Number.MAX_SAFE_INTEGER);
@@ -174,16 +174,17 @@ export class OutlineComponent {
     }
 
     // Apply glow effect
-    if (outline.postFX) {
-      const glowFX = outline.postFX.addGlow(0xffffff, 4, 0, false, 0.1, 10);
-      
+    const outlineWithFilters = outline;
+    if (outlineWithFilters.enableFilters) {
+      const glowEffect = outlineWithFilters.enableFilters().filters?.external.addGlow(0xffffff, 4, 0);
+
       // Make the sprite itself more transparent while keeping the glow visible
       outline.setAlpha(0.3);
-      
-      // Store the glow FX reference
-      const spriteEntry = this.outlineSprites.find(s => s.outline === outline);
+
+      // Store the glow effect reference
+      const spriteEntry = this.outlineSprites.find((s) => s.outline === outline);
       if (spriteEntry) {
-        spriteEntry.glowFX = glowFX;
+        spriteEntry.glowEffect = glowEffect;
       }
     }
   }
@@ -196,15 +197,15 @@ export class OutlineComponent {
       this.createOutlineSprite();
     }
     this.isVisible = true;
-    
+
     if (this.outlineContainer) {
       this.outlineContainer.setVisible(true);
     }
-    
+
     this.outlineSprites.forEach(({ outline }) => {
       outline.setVisible(true);
     });
-    
+
     this.updatePosition();
   }
 
@@ -213,11 +214,11 @@ export class OutlineComponent {
    */
   hide() {
     this.isVisible = false;
-    
+
     if (this.outlineContainer) {
       this.outlineContainer.setVisible(false);
     }
-    
+
     this.outlineSprites.forEach(({ outline }) => {
       outline.setVisible(false);
     });
@@ -290,11 +291,11 @@ export class OutlineComponent {
 
   private gameObjectVisibilityChanged(visible: boolean) {
     if (!this.isVisible) return;
-    
+
     if (this.outlineContainer) {
       this.outlineContainer.setVisible(visible);
     }
-    
+
     this.outlineSprites.forEach(({ outline }) => {
       outline.setVisible(visible);
     });
@@ -302,19 +303,19 @@ export class OutlineComponent {
 
   private destroy = () => {
     this.hide();
-    
+
     // Destroy all outline sprites
     this.outlineSprites.forEach(({ outline }) => {
       outline.destroy();
     });
     this.outlineSprites = [];
-    
+
     // Destroy outline container if it exists
     if (this.outlineContainer) {
       this.outlineContainer.destroy();
       this.outlineContainer = undefined;
     }
-    
+
     this.gameObject.scene.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
     this.gameObject.off(ContainerComponent.GameObjectVisibilityChanged, this.gameObjectVisibilityChanged, this);
   };
