@@ -30,7 +30,7 @@ export class FogOfWarComponent {
   private readonly gridHeight: number;
   private readonly startX: number;
   private readonly startY: number;
-  private readonly margin: number = 20; // Margin for the fog of war grid
+  private readonly margin: number = 40; // Margin for the fog of war grid
   private static depth: number = 10000000000; // High depth to ensure it's drawn above most game elements
 
   // Track actors with ID components for visibility management

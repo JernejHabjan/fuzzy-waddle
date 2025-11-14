@@ -14,10 +14,24 @@ export class GameSetupHelpers {
     saturation: number;
     lightness: number;
   } {
-    const hue = (playerNumber / totalPlayers) * 360;
-    const saturation = 100;
-    const lightness = 50;
-    return { hue, saturation, lightness };
+    // Not using spectrum as it can produce very bright/neon colors that are hard to look at for long periods
+    // const hue = (playerNumber / totalPlayers) * 360;
+    // const saturation = 100;
+    // const lightness = 50;
+    // return { hue, saturation, lightness };
+
+    const colors = [
+      { hue: 210, saturation: 50, lightness: 50 }, // Soft blue
+      { hue: 25, saturation: 65, lightness: 55 }, // Warm orange
+      { hue: 120, saturation: 35, lightness: 45 }, // Muted green
+      { hue: 280, saturation: 35, lightness: 55 }, // Lavender/purple
+      { hue: 0, saturation: 45, lightness: 50 }, // Muted red
+      { hue: 50, saturation: 50, lightness: 55 }, // Warm yellow-gold
+      { hue: 190, saturation: 40, lightness: 50 }, // Teal-cyan
+      { hue: 330, saturation: 35, lightness: 55 } // Soft pink-magenta
+    ];
+
+    return colors[playerNumber % colors.length]!;
   }
 
   public static getFirstFreePosition(players: ProbableWafflePlayer[]) {

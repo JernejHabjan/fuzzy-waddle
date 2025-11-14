@@ -3,6 +3,7 @@ import { filter, firstValueFrom, Observable, Subject, Subscription } from "rxjs"
 import { environment } from "../../../environments/environment";
 import { HttpClient } from "@angular/common/http";
 import {
+  createPlayerLobbyDefinition,
   type DifficultyModifiers,
   GameSessionState,
   GameSetupHelpers,
@@ -409,13 +410,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     const firstFreePlayerNumber = GameSetupHelpers.getFirstFreePlayerNumber(gameInstance.players);
     const firstFreePosition = GameSetupHelpers.getFirstFreePosition(gameInstance.players);
     const playerDefinition = {
-      // todo move this to single place
-      player: {
-        playerNumber: firstFreePlayerNumber,
-        playerName: "Player " + firstFreePlayerNumber,
-        playerPosition: firstFreePosition,
-        joined: true
-      } satisfies PlayerLobbyDefinition,
+      player: createPlayerLobbyDefinition(firstFreePlayerNumber, firstFreePosition),
       playerType: ProbableWafflePlayerType.Human
     } satisfies PositionPlayerDefinition;
 
@@ -429,13 +424,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     const firstFreePlayerNumber = GameSetupHelpers.getFirstFreePlayerNumber(gameInstance.players);
     const firstFreePosition = GameSetupHelpers.getFirstFreePosition(gameInstance.players);
     const playerDefinition = {
-      // todo move this to single place
-      player: {
-        playerNumber: firstFreePlayerNumber,
-        playerName: "Player " + firstFreePlayerNumber,
-        playerPosition: position ?? firstFreePosition,
-        joined: true
-      } satisfies PlayerLobbyDefinition,
+      player: createPlayerLobbyDefinition(firstFreePlayerNumber, position ?? firstFreePosition),
       playerType: ProbableWafflePlayerType.AI,
       difficulty: ProbableWaffleAiDifficulty.Medium
     } satisfies PositionPlayerDefinition;
