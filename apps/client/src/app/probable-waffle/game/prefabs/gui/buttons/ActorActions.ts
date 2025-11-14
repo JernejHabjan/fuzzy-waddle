@@ -37,6 +37,7 @@ import { GathererComponent } from "../../../entity/components/resource/gatherer-
 import { getPrimarySelectedActor } from "../../../data/selection-helpers";
 import { ProductionValidator } from "../../../data/tech-tree/production-validator";
 import { findProductionBuildingWithLeastRemainingTime } from "../../../entity/components/production/production-helpers";
+import { SelectionTabHandler } from "../../../player/human-controller/selection-tab-handler";
 /* END-USER-IMPORTS */
 
 export default class ActorActions extends Phaser.GameObjects.Container {
@@ -175,6 +176,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
   private selectionChangedSubscription?: Subscription;
   private actorKillSubscription?: Subscription;
   private actorConstructionSubscription?: Subscription;
+  private tabHandlerSubscription?: Subscription;
   private readonly mainSceneWithActors: ProbableWaffleScene;
   private readonly hudScene: HudProbableWaffle;
   private readonly audioService: AudioService;
@@ -193,6 +195,12 @@ export default class ActorActions extends Phaser.GameObjects.Container {
 
   private subscribeToPlayerSelection() {
     this.selectionChangedSubscription = listenToSelectionEvents(this.scene)?.subscribe(() => {
+      // Update tab handler with new selection
+      const tabHandler = getSceneComponent(this.mainSceneWithActors, SelectionTabHandler);
+      if (tabHandler) {
+        tabHandler.updateGroupedActors();
+      }
+      
       // deterministically pick the primary actor
       const { selectedActors, actorsByPriority, primaryActor } = getPrimarySelectedActor(this.mainSceneWithActors);
       if (selectedActors.length === 0) {
@@ -213,6 +221,14 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       this.buildingMode = active;
       this.refreshForCurrentSelection();
     });
+    
+    // Subscribe to tab changes to update actions display
+    const tabHandler = getSceneComponent(this.mainSceneWithActors, SelectionTabHandler);
+    if (tabHandler) {
+      this.tabHandlerSubscription = tabHandler.currentTabIndex$.subscribe(() => {
+        this.refreshForCurrentSelection();
+      });
+    }
   }
 
   private refreshForCurrentSelection() {
@@ -836,6 +852,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     this.actorKillSubscription?.unsubscribe();
     this.actorConstructionSubscription?.unsubscribe();
     this.buildingModeSubscription?.unsubscribe();
+    this.tabHandlerSubscription?.unsubscribe();
   }
 
   /* END-USER-CODE */
