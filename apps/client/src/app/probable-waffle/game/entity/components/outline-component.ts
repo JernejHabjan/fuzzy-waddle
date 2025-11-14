@@ -7,8 +7,12 @@ import { ContainerComponent } from "./building/container-component";
 /**
  * OutlineComponent creates a visual outline effect for game objects using Phaser's built-in glow effect.
  * 
+ * Supports:
+ * - Simple Sprites and Images
+ * - Containers with multiple child sprites (for complex animated prefabs)
+ * 
  * Based on Rex's advice:
- * - Creates a duplicate sprite/image at the top depth
+ * - Creates duplicate sprite/image at the top depth
  * - Applies built-in glow effect with knockout parameter
  * - Ensures outline is visible even when actor is behind other objects
  * 
@@ -17,8 +21,12 @@ import { ContainerComponent } from "./building/container-component";
  * - https://codepen.io/rexrainbow/pen/dyGNrqa
  */
 export class OutlineComponent {
-  private outlineSprite?: Phaser.GameObjects.Sprite | Phaser.GameObjects.Image;
-  private glowFX?: Phaser.FX.Glow;
+  private outlineContainer?: Phaser.GameObjects.Container;
+  private outlineSprites: Array<{
+    outline: Phaser.GameObjects.Sprite | Phaser.GameObjects.Image;
+    source: Phaser.GameObjects.Sprite | Phaser.GameObjects.Image;
+    glowFX?: Phaser.FX.Glow;
+  }> = [];
   private isVisible: boolean = false;
 
   constructor(private readonly gameObject: GameObject) {
@@ -35,87 +43,169 @@ export class OutlineComponent {
   };
 
   /**
-   * Creates the outline sprite with glow effect.
-   * The sprite is created at a very high depth to ensure it's always visible on top.
+   * Creates the outline sprite(s) with glow effect.
+   * For containers, creates outline sprites for all child sprites.
+   * For simple sprites/images, creates a single outline sprite.
+   * The sprites are created at a very high depth to ensure they're always visible on top.
    */
   private createOutlineSprite() {
-    if (this.outlineSprite) return;
+    if (this.outlineSprites.length > 0) return;
 
     const transform = getGameObjectRenderedTransform(this.gameObject);
     if (!transform || transform.x === undefined || transform.y === undefined) return;
 
-    // Determine the type and get the texture/frame
-    let texture: string | undefined;
-    let frame: string | number | undefined;
-
-    if (this.gameObject instanceof Phaser.GameObjects.Sprite) {
-      texture = this.gameObject.texture.key;
-      frame = this.gameObject.frame.name;
-      
-      // Create sprite duplicate
-      this.outlineSprite = this.gameObject.scene.add.sprite(transform.x, transform.y, texture, frame);
-      
-      // Copy animation state if playing
-      if (this.gameObject.anims && this.gameObject.anims.currentAnim) {
-        this.outlineSprite.play(this.gameObject.anims.currentAnim.key);
-        this.outlineSprite.anims.setProgress(this.gameObject.anims.getProgress());
-      }
+    if (this.gameObject instanceof Phaser.GameObjects.Container) {
+      // Handle containers with multiple sprites
+      this.createContainerOutline(transform);
+    } else if (this.gameObject instanceof Phaser.GameObjects.Sprite) {
+      // Handle single sprite
+      this.createSpriteOutline(this.gameObject, transform);
     } else if (this.gameObject instanceof Phaser.GameObjects.Image) {
-      texture = this.gameObject.texture.key;
-      frame = this.gameObject.frame.name;
-      
-      // Create image duplicate
-      this.outlineSprite = this.gameObject.scene.add.image(transform.x, transform.y, texture, frame);
+      // Handle single image
+      this.createImageOutline(this.gameObject, transform);
     } else {
-      // For other game object types (like containers), we can't create a simple outline
       console.warn("OutlineComponent: Unsupported game object type for outline", this.gameObject);
       return;
     }
 
-    if (!this.outlineSprite) return;
+    // Set visibility for all created outlines
+    this.outlineSprites.forEach(({ outline }) => {
+      outline.setVisible(this.isVisible);
+    });
+  }
 
-    // Copy transform properties
-    this.outlineSprite.setOrigin(
-      (this.gameObject as Phaser.GameObjects.Sprite).originX ?? 0.5,
-      (this.gameObject as Phaser.GameObjects.Sprite).originY ?? 0.5
-    );
-    this.outlineSprite.setScale(
-      (this.gameObject as Phaser.GameObjects.Sprite).scaleX ?? 1,
-      (this.gameObject as Phaser.GameObjects.Sprite).scaleY ?? 1
-    );
-    this.outlineSprite.setRotation((this.gameObject as Phaser.GameObjects.Sprite).rotation ?? 0);
-    this.outlineSprite.setAlpha((this.gameObject as Phaser.GameObjects.Sprite).alpha ?? 1);
-    this.outlineSprite.setFlipX((this.gameObject as Phaser.GameObjects.Sprite).flipX ?? false);
-    this.outlineSprite.setFlipY((this.gameObject as Phaser.GameObjects.Sprite).flipY ?? false);
+  /**
+   * Creates outline for a container by duplicating all child sprites
+   */
+  private createContainerOutline(containerTransform: { x: number; y: number }) {
+    const container = this.gameObject as Phaser.GameObjects.Container;
+    
+    // Create a container to hold all outline sprites at high depth
+    this.outlineContainer = this.gameObject.scene.add.container(containerTransform.x, containerTransform.y);
+    this.outlineContainer.setDepth(Number.MAX_SAFE_INTEGER);
 
-    // Set to very high depth to be on top of everything
-    this.outlineSprite.setDepth(Number.MAX_SAFE_INTEGER);
+    // Iterate through all children and create outlines for sprites/images
+    container.each((child: GameObject) => {
+      if (child instanceof Phaser.GameObjects.Sprite) {
+        const childTransform = this.getChildWorldTransform(child, container);
+        this.createSpriteOutline(child, childTransform, true);
+      } else if (child instanceof Phaser.GameObjects.Image) {
+        const childTransform = this.getChildWorldTransform(child, container);
+        this.createImageOutline(child, childTransform, true);
+      }
+    });
+  }
 
-    // Apply glow effect with knockout
-    if (this.outlineSprite.postFX) {
-      this.glowFX = this.outlineSprite.postFX.addGlow(0xffffff, 4, 0, false, 0.1, 10);
-      
-      // Set knockout to true so only the outline/glow is visible, not the sprite itself
-      // Note: In Phaser 4, knockout might work differently. We'll use alpha blending instead.
-      // Make the sprite itself more transparent while keeping the glow visible
-      this.outlineSprite.setAlpha(0.3);
+  /**
+   * Gets the world transform of a child relative to its container
+   */
+  private getChildWorldTransform(
+    child: Phaser.GameObjects.Sprite | Phaser.GameObjects.Image,
+    container: Phaser.GameObjects.Container
+  ): { x: number; y: number } {
+    // Child position is relative to container, so we use the child's local position
+    return { x: child.x, y: child.y };
+  }
+
+  /**
+   * Creates an outline for a single sprite
+   */
+  private createSpriteOutline(
+    sourceSprite: Phaser.GameObjects.Sprite,
+    transform: { x: number; y: number },
+    isInContainer: boolean = false
+  ) {
+    const texture = sourceSprite.texture.key;
+    const frame = sourceSprite.frame.name;
+
+    // Create sprite duplicate
+    const outlineSprite = this.gameObject.scene.add.sprite(transform.x, transform.y, texture, frame);
+
+    // Copy animation state if playing
+    if (sourceSprite.anims && sourceSprite.anims.currentAnim) {
+      outlineSprite.play(sourceSprite.anims.currentAnim.key);
+      outlineSprite.anims.setProgress(sourceSprite.anims.getProgress());
     }
 
-    this.outlineSprite.setVisible(this.isVisible);
+    this.setupOutlineSprite(outlineSprite, sourceSprite, isInContainer);
+    this.outlineSprites.push({ outline: outlineSprite, source: sourceSprite });
+  }
+
+  /**
+   * Creates an outline for a single image
+   */
+  private createImageOutline(
+    sourceImage: Phaser.GameObjects.Image,
+    transform: { x: number; y: number },
+    isInContainer: boolean = false
+  ) {
+    const texture = sourceImage.texture.key;
+    const frame = sourceImage.frame.name;
+
+    // Create image duplicate
+    const outlineImage = this.gameObject.scene.add.image(transform.x, transform.y, texture, frame);
+
+    this.setupOutlineSprite(outlineImage, sourceImage, isInContainer);
+    this.outlineSprites.push({ outline: outlineImage, source: sourceImage });
+  }
+
+  /**
+   * Sets up common properties for outline sprites
+   */
+  private setupOutlineSprite(
+    outline: Phaser.GameObjects.Sprite | Phaser.GameObjects.Image,
+    source: Phaser.GameObjects.Sprite | Phaser.GameObjects.Image,
+    isInContainer: boolean
+  ) {
+    // Copy transform properties
+    outline.setOrigin(source.originX ?? 0.5, source.originY ?? 0.5);
+    outline.setScale(source.scaleX ?? 1, source.scaleY ?? 1);
+    outline.setRotation(source.rotation ?? 0);
+    outline.setAlpha(source.alpha ?? 1);
+    outline.setFlipX(source.flipX ?? false);
+    outline.setFlipY(source.flipY ?? false);
+
+    if (isInContainer && this.outlineContainer) {
+      // Add to outline container
+      this.outlineContainer.add(outline);
+    } else {
+      // Set to very high depth for standalone sprites
+      outline.setDepth(Number.MAX_SAFE_INTEGER);
+    }
+
+    // Apply glow effect
+    if (outline.postFX) {
+      const glowFX = outline.postFX.addGlow(0xffffff, 4, 0, false, 0.1, 10);
+      
+      // Make the sprite itself more transparent while keeping the glow visible
+      outline.setAlpha(0.3);
+      
+      // Store the glow FX reference
+      const spriteEntry = this.outlineSprites.find(s => s.outline === outline);
+      if (spriteEntry) {
+        spriteEntry.glowFX = glowFX;
+      }
+    }
   }
 
   /**
    * Shows the outline effect
    */
   show() {
-    if (!this.outlineSprite) {
+    if (this.outlineSprites.length === 0) {
       this.createOutlineSprite();
     }
     this.isVisible = true;
-    if (this.outlineSprite) {
-      this.outlineSprite.setVisible(true);
-      this.updatePosition();
+    
+    if (this.outlineContainer) {
+      this.outlineContainer.setVisible(true);
     }
+    
+    this.outlineSprites.forEach(({ outline }) => {
+      outline.setVisible(true);
+    });
+    
+    this.updatePosition();
   }
 
   /**
@@ -123,49 +213,72 @@ export class OutlineComponent {
    */
   hide() {
     this.isVisible = false;
-    if (this.outlineSprite) {
-      this.outlineSprite.setVisible(false);
+    
+    if (this.outlineContainer) {
+      this.outlineContainer.setVisible(false);
     }
+    
+    this.outlineSprites.forEach(({ outline }) => {
+      outline.setVisible(false);
+    });
   }
 
   /**
-   * Updates the outline sprite position to match the game object
+   * Updates the outline sprite(s) position to match the game object
    */
   private updatePosition() {
-    if (!this.outlineSprite || !this.isVisible) return;
+    if (this.outlineSprites.length === 0 || !this.isVisible) return;
 
     const transform = getGameObjectRenderedTransform(this.gameObject);
     if (!transform || transform.x === undefined || transform.y === undefined) return;
 
-    this.outlineSprite.setPosition(transform.x, transform.y);
+    if (this.gameObject instanceof Phaser.GameObjects.Container) {
+      // Update container position
+      if (this.outlineContainer) {
+        this.outlineContainer.setPosition(transform.x, transform.y);
+      }
 
+      // Update each child outline sprite
+      this.outlineSprites.forEach(({ outline, source }) => {
+        this.updateSpriteOutline(outline, source);
+      });
+    } else {
+      // Update single sprite/image outline
+      const { outline, source } = this.outlineSprites[0]!;
+      outline.setPosition(transform.x, transform.y);
+      this.updateSpriteOutline(outline, source);
+    }
+  }
+
+  /**
+   * Updates a single outline sprite to match its source
+   */
+  private updateSpriteOutline(
+    outline: Phaser.GameObjects.Sprite | Phaser.GameObjects.Image,
+    source: Phaser.GameObjects.Sprite | Phaser.GameObjects.Image
+  ) {
     // Update animation if it's a sprite
-    if (
-      this.gameObject instanceof Phaser.GameObjects.Sprite &&
-      this.outlineSprite instanceof Phaser.GameObjects.Sprite
-    ) {
-      if (this.gameObject.anims && this.gameObject.anims.currentAnim) {
-        const currentAnimKey = this.gameObject.anims.currentAnim.key;
-        
+    if (source instanceof Phaser.GameObjects.Sprite && outline instanceof Phaser.GameObjects.Sprite) {
+      if (source.anims && source.anims.currentAnim) {
+        const currentAnimKey = source.anims.currentAnim.key;
+
         // Only update if animation changed or not playing
-        if (!this.outlineSprite.anims.isPlaying || this.outlineSprite.anims.currentAnim?.key !== currentAnimKey) {
-          this.outlineSprite.play(currentAnimKey);
+        if (!outline.anims.isPlaying || outline.anims.currentAnim?.key !== currentAnimKey) {
+          outline.play(currentAnimKey);
         }
-        
+
         // Sync animation progress
-        this.outlineSprite.anims.setProgress(this.gameObject.anims.getProgress());
+        outline.anims.setProgress(source.anims.getProgress());
       }
 
       // Update flip state
-      this.outlineSprite.setFlipX(this.gameObject.flipX);
-      this.outlineSprite.setFlipY(this.gameObject.flipY);
+      outline.setFlipX(source.flipX);
+      outline.setFlipY(source.flipY);
     }
 
     // Update rotation and scale
-    if (this.gameObject instanceof Phaser.GameObjects.Sprite || this.gameObject instanceof Phaser.GameObjects.Image) {
-      this.outlineSprite.setRotation(this.gameObject.rotation);
-      this.outlineSprite.setScale(this.gameObject.scaleX, this.gameObject.scaleY);
-    }
+    outline.setRotation(source.rotation);
+    outline.setScale(source.scaleX, source.scaleY);
   }
 
   /**
@@ -176,19 +289,32 @@ export class OutlineComponent {
   };
 
   private gameObjectVisibilityChanged(visible: boolean) {
-    if (!this.outlineSprite) return;
-    if (this.isVisible) {
-      this.outlineSprite.setVisible(visible);
+    if (!this.isVisible) return;
+    
+    if (this.outlineContainer) {
+      this.outlineContainer.setVisible(visible);
     }
+    
+    this.outlineSprites.forEach(({ outline }) => {
+      outline.setVisible(visible);
+    });
   }
 
   private destroy = () => {
     this.hide();
-    if (this.outlineSprite) {
-      this.outlineSprite.destroy();
-      this.outlineSprite = undefined;
+    
+    // Destroy all outline sprites
+    this.outlineSprites.forEach(({ outline }) => {
+      outline.destroy();
+    });
+    this.outlineSprites = [];
+    
+    // Destroy outline container if it exists
+    if (this.outlineContainer) {
+      this.outlineContainer.destroy();
+      this.outlineContainer = undefined;
     }
-    this.glowFX = undefined;
+    
     this.gameObject.scene.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
     this.gameObject.off(ContainerComponent.GameObjectVisibilityChanged, this.gameObjectVisibilityChanged, this);
   };
