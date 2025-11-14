@@ -32,6 +32,7 @@ import { GameObjectActionAssigner } from "../../prefabs/gui/game-object-action-a
 import { PlayerActionsHandler } from "../../player/human-controller/player-actions-handler";
 import { ActorIndexSystem } from "../services/ActorIndexSystem";
 import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
+import { DecalCursorService } from "../services/decal-cursor.service";
 
 export interface ProbableWaffleSceneData {
   baseGameData: ProbableWaffleGameData;
@@ -91,7 +92,8 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
       new DebuggingService(),
       new CrossSceneCommunicationService(),
       actorIndex,
-      techTreeService
+      techTreeService,
+      new DecalCursorService(this)
     );
     this.sceneGameData.systems.push(new AiPlayerHandler(this));
     this.sceneGameData.components.push(new FogOfWarComponent(this, this.tilemap));

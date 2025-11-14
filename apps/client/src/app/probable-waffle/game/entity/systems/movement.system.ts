@@ -39,6 +39,8 @@ import { IdComponent } from "../components/id-component";
 import { getTileCoordsUnderObject } from "../../library/tile-under-object";
 import { TilemapComponent } from "../../world/tilemap/tilemap.component";
 import type { IsoDirection } from "../components/movement/iso-directions";
+import { DecalCursorService } from "../../world/services/decal-cursor.service";
+import { MovementDestinationComponent } from "../components/movement/movement-destination-component";
 
 export interface PathMoveConfig {
   radiusTilesAroundDestination?: number;
@@ -56,6 +58,7 @@ export class MovementSystem {
   private _currentTween?: Tween;
   private readonly DEBUG = false;
   private playerChangedSubscription?: Subscription;
+  private selectionChangedSubscription?: Subscription;
   private actorTranslateComponent?: ActorTranslateComponent;
   private tileMapComponent!: TilemapComponent;
   private audioService: AudioService | undefined;
@@ -63,9 +66,11 @@ export class MovementSystem {
   private animationActorComponent?: AnimationActorComponent;
   private shiftKey: Phaser.Input.Keyboard.Key | undefined;
   private targetGameObject?: GameObject;
+  private movementDestinationComponent?: MovementDestinationComponent;
 
   constructor(private readonly gameObject: Phaser.GameObjects.GameObject) {
     this.listenToMoveEvents();
+    this.listenToSelectionEvents();
     onObjectReady(gameObject, this.init, this);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
   }
@@ -76,6 +81,7 @@ export class MovementSystem {
     this.audioService = getSceneService(this.gameObject.scene, AudioService);
     this.audioActorComponent = getActorComponent(this.gameObject, AudioActorComponent);
     this.tileMapComponent = getSceneComponent(this.gameObject.scene, TilemapComponent)!;
+    this.movementDestinationComponent = getActorComponent(this.gameObject, MovementDestinationComponent);
     this.subscribeToShiftKey();
   }
 
@@ -94,6 +100,14 @@ export class MovementSystem {
         const tileVec3 = payload.data.data!["tileVec3"] as Vector3Simple;
         const selectedActorObjectIds = payload.data.data!["selectedActorObjectIds"] as string[];
         const newWorldVec3 = await this.getTileVec3ByDynamicFlocking(tileVec3, selectedActorObjectIds);
+        
+        // Store destination in component for re-selection
+        this.movementDestinationComponent?.setDestination(newWorldVec3);
+        
+        // Show decal cursor for move command
+        const decalCursorService = getSceneService(this.gameObject.scene, DecalCursorService);
+        decalCursorService?.showMoveMarker(newWorldVec3);
+        
         const payerPawnAiController = getActorComponent(this.gameObject, PawnAiController);
         if (payerPawnAiController) {
           const newOrder = new OrderData(OrderType.Move, { targetTileLocation: newWorldVec3 });
@@ -106,6 +120,22 @@ export class MovementSystem {
           this.playOrderSound(payerPawnAiController.blackboard.peekNextPlayerOrder()!);
         } else {
           this.moveToLocationByFollowingStaticPath(newWorldVec3);
+        }
+      });
+  }
+
+  private listenToSelectionEvents() {
+    this.selectionChangedSubscription = getCommunicator(this.gameObject.scene)
+      .playerChanged?.onWithFilter((p) => p.property === "selection.set" || p.property === "selection.added")
+      .subscribe(() => {
+        const isSelected = getActorComponent(this.gameObject, SelectableComponent)?.getSelected();
+        if (!isSelected) return;
+        
+        // If this actor is selected and has a destination, re-show the decal
+        const destination = this.movementDestinationComponent?.getDestination();
+        if (destination) {
+          const decalCursorService = getSceneService(this.gameObject.scene, DecalCursorService);
+          decalCursorService?.showMoveMarker(destination);
         }
       });
   }
@@ -298,6 +328,8 @@ export class MovementSystem {
     if (!path.length) {
       config?.onComplete?.();
       this.playMovementAnimation(false, config);
+      // Clear destination when movement completes
+      this.movementDestinationComponent?.clearDestination();
       return;
     }
     const nextTile = path.shift();
@@ -489,6 +521,7 @@ export class MovementSystem {
     this.cancelMovement();
     this.shiftKey?.destroy();
     this.playerChangedSubscription?.unsubscribe();
+    this.selectionChangedSubscription?.unsubscribe();
   }
 
   async canMoveTo(targetGameObject: Phaser.GameObjects.GameObject, range?: number): Promise<boolean> {

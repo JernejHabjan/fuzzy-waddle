@@ -26,6 +26,7 @@ import { AudioActorComponent } from "../components/actor-audio/audio-actor-compo
 import { WalkableComponent } from "../components/movement/walkable-component";
 import { FlyingComponent } from "../components/movement/flying-component";
 import { type GameObjectActionAssignerConfig } from "../../prefabs/gui/game-object-action-assigner";
+import { DecalCursorService } from "../../world/services/decal-cursor.service";
 
 export class ActionSystem {
   private playerChangedSubscription?: Subscription;
@@ -96,6 +97,12 @@ export class ActionSystem {
         }
 
         if (!action) return;
+
+        // Show decal cursor for move actions
+        if (action.type === OrderType.Move && tileVec3) {
+          const decalCursorService = getSceneService(this.gameObject.scene, DecalCursorService);
+          decalCursorService?.showMoveMarker(tileVec3);
+        }
 
         if (this.displayDebugInfo && !environment.production) {
           console.log("ActionSystem: action", action);
