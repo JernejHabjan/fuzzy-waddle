@@ -235,13 +235,14 @@ export class OutlineComponent {
 
   /**
    * Checks if the game object is occluded by other objects with higher depth
+   * Uses interactive hit areas when available for more accurate detection (ignores transparency)
    */
   private isGameObjectOccluded(): boolean {
     // Get the depth of the current game object
     const myDepth = getGameObjectDepth(this.gameObject) ?? 0;
-    const bounds = this.getGameObjectBounds();
+    const myGeometry = this.getGameObjectGeometry();
 
-    if (!bounds) return false;
+    if (!myGeometry) return false;
 
     // Get all display objects in the scene
     const displayList = this.gameObject.scene.children.list;
@@ -256,11 +257,11 @@ export class OutlineComponent {
       const objDepth = (obj as any).depth ?? 0;
       if (objDepth <= myDepth) continue;
 
-      // Check for overlap
-      const otherBounds = this.getObjectBounds(obj);
-      if (!otherBounds) continue;
+      // Check for overlap using hit areas if available
+      const otherGeometry = this.getObjectGeometry(obj);
+      if (!otherGeometry) continue;
 
-      if (this.boundsOverlap(bounds, otherBounds)) {
+      if (this.geometryOverlaps(myGeometry, otherGeometry)) {
         return true; // Found an overlapping object with higher depth
       }
     }
@@ -269,31 +270,104 @@ export class OutlineComponent {
   }
 
   /**
-   * Gets bounds of the game object
+   * Gets geometry of the game object (hit area if available, otherwise bounds)
+   * Hit areas are more accurate as they ignore transparent pixels
    */
-  private getGameObjectBounds(): Phaser.Geom.Rectangle | null {
-    try {
-      if (this.gameObject instanceof Phaser.GameObjects.Sprite || this.gameObject instanceof Phaser.GameObjects.Image) {
-        const bounds = this.gameObject.getBounds();
-        return new Phaser.Geom.Rectangle(bounds.x, bounds.y, bounds.width, bounds.height);
-      } else if (this.gameObject instanceof Phaser.GameObjects.Container) {
-        const bounds = this.gameObject.getBounds();
-        return new Phaser.Geom.Rectangle(bounds.x, bounds.y, bounds.width, bounds.height);
+  private getGameObjectGeometry(): any {
+    // Try to use hit area from interactive input first
+    const input = (this.gameObject as any).input;
+    if (input && input.hitArea) {
+      const hitArea = input.hitArea;
+      const transform = getGameObjectRenderedTransform(this.gameObject);
+      
+      if (!transform) return null;
+      
+      // Return geometry with type and position
+      if (hitArea instanceof Phaser.Geom.Circle) {
+        return {
+          type: 'circle',
+          geometry: new Phaser.Geom.Circle(
+            transform.x + hitArea.x,
+            transform.y + hitArea.y,
+            hitArea.radius
+          )
+        };
+      } else if (hitArea instanceof Phaser.Geom.Polygon) {
+        // Clone and offset polygon points to world position
+        const points = hitArea.points.map((p: any) => ({
+          x: p.x + transform.x,
+          y: p.y + transform.y
+        }));
+        return {
+          type: 'polygon',
+          geometry: new Phaser.Geom.Polygon(points)
+        };
+      } else if (hitArea instanceof Phaser.Geom.Rectangle) {
+        return {
+          type: 'rectangle',
+          geometry: new Phaser.Geom.Rectangle(
+            transform.x + hitArea.x,
+            transform.y + hitArea.y,
+            hitArea.width,
+            hitArea.height
+          )
+        };
       }
-    } catch (e) {
-      // Bounds not available
     }
-    return null;
+
+    // Fallback to bounds for non-interactive objects
+    return this.getGeometryFromBounds(this.gameObject);
   }
 
   /**
-   * Gets bounds of any display object
+   * Gets geometry of any display object (hit area if available, otherwise bounds)
    */
-  private getObjectBounds(obj: any): Phaser.Geom.Rectangle | null {
+  private getObjectGeometry(obj: any): any {
+    // Try to use hit area from interactive input first
+    const input = obj.input;
+    if (input && input.hitArea) {
+      const hitArea = input.hitArea;
+      const x = obj.x ?? 0;
+      const y = obj.y ?? 0;
+      
+      // Return geometry with type and position
+      if (hitArea instanceof Phaser.Geom.Circle) {
+        return {
+          type: 'circle',
+          geometry: new Phaser.Geom.Circle(x + hitArea.x, y + hitArea.y, hitArea.radius)
+        };
+      } else if (hitArea instanceof Phaser.Geom.Polygon) {
+        const points = hitArea.points.map((p: any) => ({
+          x: p.x + x,
+          y: p.y + y
+        }));
+        return {
+          type: 'polygon',
+          geometry: new Phaser.Geom.Polygon(points)
+        };
+      } else if (hitArea instanceof Phaser.Geom.Rectangle) {
+        return {
+          type: 'rectangle',
+          geometry: new Phaser.Geom.Rectangle(x + hitArea.x, y + hitArea.y, hitArea.width, hitArea.height)
+        };
+      }
+    }
+
+    // Fallback to bounds
+    return this.getGeometryFromBounds(obj);
+  }
+
+  /**
+   * Gets rectangle geometry from object bounds (fallback)
+   */
+  private getGeometryFromBounds(obj: any): any {
     try {
-      if (obj.getBounds && typeof obj.getBounds === "function") {
+      if (obj.getBounds && typeof obj.getBounds === 'function') {
         const bounds = obj.getBounds();
-        return new Phaser.Geom.Rectangle(bounds.x, bounds.y, bounds.width, bounds.height);
+        return {
+          type: 'rectangle',
+          geometry: new Phaser.Geom.Rectangle(bounds.x, bounds.y, bounds.width, bounds.height)
+        };
       }
     } catch (e) {
       // Bounds not available
@@ -302,10 +376,96 @@ export class OutlineComponent {
   }
 
   /**
-   * Checks if two bounds overlap
+   * Checks if two geometries overlap
+   * Handles different geometry type combinations (Circle, Polygon, Rectangle)
    */
-  private boundsOverlap(a: Phaser.Geom.Rectangle, b: Phaser.Geom.Rectangle): boolean {
-    return Phaser.Geom.Rectangle.Overlaps(a, b);
+  private geometryOverlaps(a: any, b: any): boolean {
+    if (!a || !b) return false;
+
+    const typeA = a.type;
+    const typeB = b.type;
+    const geomA = a.geometry;
+    const geomB = b.geometry;
+
+    // Circle vs Circle
+    if (typeA === 'circle' && typeB === 'circle') {
+      const distance = Phaser.Math.Distance.Between(geomA.x, geomA.y, geomB.x, geomB.y);
+      return distance < (geomA.radius + geomB.radius);
+    }
+
+    // Rectangle vs Rectangle
+    if (typeA === 'rectangle' && typeB === 'rectangle') {
+      return Phaser.Geom.Rectangle.Overlaps(geomA, geomB);
+    }
+
+    // Circle vs Rectangle
+    if ((typeA === 'circle' && typeB === 'rectangle') || (typeA === 'rectangle' && typeB === 'circle')) {
+      const circle = typeA === 'circle' ? geomA : geomB;
+      const rect = typeA === 'rectangle' ? geomA : geomB;
+      return Phaser.Geom.Intersects.CircleToRectangle(circle, rect);
+    }
+
+    // Polygon vs Rectangle
+    if ((typeA === 'polygon' && typeB === 'rectangle') || (typeA === 'rectangle' && typeB === 'polygon')) {
+      const polygon = typeA === 'polygon' ? geomA : geomB;
+      const rect = typeA === 'rectangle' ? geomA : geomB;
+      return Phaser.Geom.Intersects.RectangleToTriangle(rect, polygon) ||
+             this.polygonContainsRectangle(polygon, rect);
+    }
+
+    // Polygon vs Circle
+    if ((typeA === 'polygon' && typeB === 'circle') || (typeA === 'circle' && typeB === 'polygon')) {
+      const polygon = typeA === 'polygon' ? geomA : geomB;
+      const circle = typeA === 'circle' ? geomA : geomB;
+      // Check if circle center is in polygon or if circle intersects polygon edges
+      return Phaser.Geom.Polygon.Contains(polygon, circle.x, circle.y) ||
+             this.circleIntersectsPolygon(circle, polygon);
+    }
+
+    // Polygon vs Polygon
+    if (typeA === 'polygon' && typeB === 'polygon') {
+      // Check if any point of polygon A is inside polygon B or vice versa
+      for (const point of geomA.points) {
+        if (Phaser.Geom.Polygon.Contains(geomB, point.x, point.y)) {
+          return true;
+        }
+      }
+      for (const point of geomB.points) {
+        if (Phaser.Geom.Polygon.Contains(geomA, point.x, point.y)) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    // Fallback: convert both to rectangles and check overlap
+    return false;
+  }
+
+  /**
+   * Helper: Check if polygon contains any corner of rectangle
+   */
+  private polygonContainsRectangle(polygon: Phaser.Geom.Polygon, rect: Phaser.Geom.Rectangle): boolean {
+    return Phaser.Geom.Polygon.Contains(polygon, rect.x, rect.y) ||
+           Phaser.Geom.Polygon.Contains(polygon, rect.right, rect.y) ||
+           Phaser.Geom.Polygon.Contains(polygon, rect.x, rect.bottom) ||
+           Phaser.Geom.Polygon.Contains(polygon, rect.right, rect.bottom);
+  }
+
+  /**
+   * Helper: Check if circle intersects with polygon edges
+   */
+  private circleIntersectsPolygon(circle: Phaser.Geom.Circle, polygon: Phaser.Geom.Polygon): boolean {
+    const points = polygon.points;
+    for (let i = 0; i < points.length; i++) {
+      const p1 = points[i];
+      const p2 = points[(i + 1) % points.length];
+      const line = new Phaser.Geom.Line(p1.x, p1.y, p2.x, p2.y);
+      if (Phaser.Geom.Intersects.LineToCircle(line, circle)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /**
