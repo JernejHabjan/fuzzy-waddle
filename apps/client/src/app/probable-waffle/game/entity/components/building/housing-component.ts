@@ -4,6 +4,7 @@ import { onObjectReady } from "../../../data/game-object-helper";
 import { getActorComponent } from "../../../data/actor-component";
 import { ConstructionSiteComponent } from "../construction/construction-site-component";
 import { emitHousing } from "../../../data/scene-data";
+import { OwnerComponent } from "../owner-component";
 import GameObject = Phaser.GameObjects.GameObject;
 import { ConstructionGameObjectInterfaceComponent } from "../construction/construction-game-object-interface-component";
 import { ActorDataChangedEvent } from "../../../data/actor-data";
@@ -63,9 +64,11 @@ export class HousingComponent {
   private addHousing() {
     if (this.housingProvided) return;
 
+    const ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
+    const owner = ownerComponent?.getOwner();
     emitHousing(this.gameObject.scene, "housing.added", {
       maxHousing: this.housingDefinition.housingCapacity
-    });
+    }, owner);
 
     this.housingProvided = true;
   }
@@ -73,9 +76,11 @@ export class HousingComponent {
   private removeHousing() {
     if (!this.housingProvided) return;
 
+    const ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
+    const owner = ownerComponent?.getOwner();
     emitHousing(this.gameObject.scene, "housing.removed", {
       maxHousing: this.housingDefinition.housingCapacity
-    });
+    }, owner);
 
     this.housingProvided = false;
   }

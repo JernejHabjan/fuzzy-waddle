@@ -36,6 +36,7 @@ import { HealingComponent } from "../../../entity/components/combat/components/h
 import { GathererComponent } from "../../../entity/components/resource/gatherer-component";
 import { getPrimarySelectedActor } from "../../../data/selection-helpers";
 import { ProductionValidator } from "../../../data/tech-tree/production-validator";
+import { findProductionBuildingWithLeastRemainingTime } from "../../../entity/components/production/production-helpers";
 /* END-USER-IMPORTS */
 
 export default class ActorActions extends Phaser.GameObjects.Container {
@@ -160,6 +161,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
 
     /* START-USER-CTR-CODE */
     this.mainSceneWithActors = (scene as HudProbableWaffle).probableWaffleScene!;
+    this.hudScene = scene as HudProbableWaffle;
     this.audioService = getSceneService(this.mainSceneWithActors, AudioService)!;
     this.playerActionsHandler = getSceneService(this.mainSceneWithActors, PlayerActionsHandler)!;
     this.subscribeToPlayerSelection();
@@ -174,6 +176,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
   private actorKillSubscription?: Subscription;
   private actorConstructionSubscription?: Subscription;
   private readonly mainSceneWithActors: ProbableWaffleScene;
+  private readonly hudScene: HudProbableWaffle;
   private readonly audioService: AudioService;
   private readonly playerActionsHandler: PlayerActionsHandler;
   /**
@@ -382,6 +385,45 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       shortcut: "v"
     }) satisfies ActorActionSetup;
 
+  private readonly deleteAction = (actor: Phaser.GameObjects.GameObject, allActors: Phaser.GameObjects.GameObject[]) =>
+    ({
+      icon: {
+        key: "gui",
+        frame: "action_icons/hand.png",
+        origin: { x: 0.5, y: 0.5 }
+      },
+      visible: true,
+      action: async () => {
+        // Check if it's a main building
+        const actorName = actor.name;
+        const actorDefinition = pwActorDefinitions[actorName as keyof typeof pwActorDefinitions];
+        const isMainBuilding = actorDefinition?.meta?.isMainBuilding ?? false;
+
+        if (isMainBuilding) {
+          const confirmed = await this.hudScene.confirmationDialog.show(
+            "Are you sure you want to delete this main building? This action cannot be undone."
+          );
+          if (!confirmed) {
+            return;
+          }
+        }
+
+        // Delete all selected actors
+        allActors.forEach((actorToDelete) => {
+          const healthComponent = getActorComponent(actorToDelete, HealthComponent);
+          healthComponent?.killActor();
+        });
+      },
+      tooltipInfo: {
+        title: "Delete",
+        description: "Delete selected actor(s)",
+        iconKey: "gui",
+        iconFrame: "action_icons/hand.png",
+        iconOrigin: { x: 0.5, y: 0.5 }
+      },
+      shortcut: "del"
+    }) satisfies ActorActionSetup;
+
   private showActorActions(actor: Phaser.GameObjects.GameObject, allActors: Phaser.GameObjects.GameObject[]) {
     this.hideAllIcons();
     let index = 0;
@@ -428,8 +470,10 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       index = this.showRallyPointIcon(actor, allActors, index);
       index = this.showHealIcons(actor, allActors, index);
       index = this.showGatherIcons(actor, allActors, index);
-      index = this.showProductionIcons(actor, index);
-      this.showBuilderIcons(actor, allActors, index);
+      index = this.showProductionIcons(actor, allActors, index);
+      index = this.showBuilderIcons(actor, allActors, index);
+      // Always show delete button at the bottom-right position
+      this.showDeleteIcon(actor, allActors, index);
     }
   }
 
@@ -531,7 +575,11 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     return index;
   }
 
-  private showProductionIcons(actor: Phaser.GameObjects.GameObject, index: number): number {
+  private showProductionIcons(
+    actor: Phaser.GameObjects.GameObject,
+    allActors: Phaser.GameObjects.GameObject[],
+    index: number
+  ): number {
     const productionComponent = getActorComponent(actor, ProductionComponent);
     if (productionComponent && productionComponent.isFinished) {
       const availableToProduce = productionComponent.productionDefinition.availableProduceActors;
@@ -566,7 +614,15 @@ export default class ActorActions extends Phaser.GameObjects.Container {
             if (!actorDefinition.components?.productionCost) {
               throw new Error(`Production cost not found for ${product}`);
             }
-            const errorCode = productionComponent.startProduction({
+
+            // Find the production building with the least total remaining production time
+            const targetComponent = findProductionBuildingWithLeastRemainingTime(allActors);
+            if (!targetComponent) {
+              console.error("No production building found");
+              return;
+            }
+
+            const errorCode = targetComponent.startProduction({
               actorName: product,
               costData: actorDefinition.components.productionCost
             });
@@ -654,6 +710,21 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       });
       index++;
     }
+    return index;
+  }
+
+  private showDeleteIcon(
+    actor: Phaser.GameObjects.GameObject,
+    allActors: Phaser.GameObjects.GameObject[],
+    index: number
+  ): number {
+    // Always show delete button as the last action (index 8, bottom-right position)
+    const action = this.actor_actions[8];
+    if (!action) {
+      console.error("Action button not found at index 8");
+      return index;
+    }
+    action.setup(this.deleteAction(actor, allActors));
     return index;
   }
 
