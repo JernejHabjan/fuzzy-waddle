@@ -124,75 +124,80 @@ export class BuildingCursor {
   private moveActorsOutOfTheWay(buildingsBeingPlaced: GameObjects.GameObject[]) {
     if (!this.navigationService || !this.tileMapComponent || this.actorsToMove.size === 0) return;
 
-    // Collect all tiles that will be occupied by buildings being placed
-    const occupiedTiles = new Set<string>();
-    for (const building of buildingsBeingPlaced) {
-      const tilesUnderBuilding = getTileCoordsUnderObject(this.tileMapComponent.tilemap, building);
-      for (const tile of tilesUnderBuilding) {
-        occupiedTiles.add(`${tile.x},${tile.y}`);
-      }
-    }
-
-    this.actorsToMove.forEach((actor) => {
-      const pawnAiController = getActorComponent(actor, PawnAiController);
-      if (!pawnAiController) return;
-
-      const actorTransform = getGameObjectLogicalTransform(actor);
-      if (!actorTransform) return;
-
-      // Get the actor's current tile position
-      const actorCurrentTile = IsoHelper.isometricWorldToTileXY(
-        this.scene,
-        actorTransform.x,
-        actorTransform.y,
-        false
-      );
-
-      // Find a nearby walkable tile to move the actor to
-      // Try tiles in a spiral pattern around the actor's current tile position
-      let targetTile: Vector3Simple | undefined;
-      const maxDistance = 5; // Search up to 5 tiles away
-
-      for (let distance = 1; distance <= maxDistance && !targetTile; distance++) {
-        for (let dx = -distance; dx <= distance && !targetTile; dx++) {
-          for (let dy = -distance; dy <= distance && !targetTile; dy++) {
-            // Only check tiles at the current distance (forming a square ring)
-            if (Math.abs(dx) !== distance && Math.abs(dy) !== distance) continue;
-
-            // Calculate test tile in tile coordinates
-            const testTileX = actorCurrentTile.x + dx;
-            const testTileY = actorCurrentTile.y + dy;
-
-            // Skip if this is the actor's current tile
-            if (testTileX === actorCurrentTile.x && testTileY === actorCurrentTile.y) {
-              continue;
-            }
-
-            // Skip if this tile will be occupied by a building being placed
-            const tileKey = `${testTileX},${testTileY}`;
-            if (occupiedTiles.has(tileKey)) {
-              continue;
-            }
-
-            // Check if the tile is walkable
-            const isWalkable = this.navigationService!.isTileWalkable({ x: testTileX, y: testTileY });
-            if (isWalkable) {
-              targetTile = { x: testTileX, y: testTileY, z: 0 } satisfies Vector3Simple;
-            }
-          }
+    try {
+      // Collect all tiles that will be occupied by buildings being placed
+      const occupiedTiles = new Set<string>();
+      for (const building of buildingsBeingPlaced) {
+        const tilesUnderBuilding = getTileCoordsUnderObject(this.tileMapComponent.tilemap, building);
+        for (const tile of tilesUnderBuilding) {
+          occupiedTiles.add(`${tile.x},${tile.y}`);
         }
       }
 
-      // If we found a target tile, issue the move order
-      if (targetTile) {
-        const order = new OrderData(OrderType.Move, { targetTileLocation: targetTile });
-        pawnAiController.blackboard.overrideOrderQueueAndActiveOrder(order);
-        pawnAiController.blackboard.setCurrentOrder(order);
-      }
-    });
+      this.actorsToMove.forEach((actor) => {
+        const pawnAiController = getActorComponent(actor, PawnAiController);
+        if (!pawnAiController) return;
 
-    // Clear the set of actors to move
-    this.actorsToMove.clear();
+        const actorTransform = getGameObjectLogicalTransform(actor);
+        if (!actorTransform) return;
+
+        // Get the actor's current tile position
+        const actorCurrentTile = IsoHelper.isometricWorldToTileXY(
+          this.scene,
+          actorTransform.x,
+          actorTransform.y,
+          false
+        );
+
+        // Find a nearby walkable tile to move the actor to
+        // Try tiles in a spiral pattern around the actor's current tile position
+        let targetTile: Vector3Simple | undefined;
+        const maxDistance = 5; // Search up to 5 tiles away
+
+        for (let distance = 1; distance <= maxDistance && !targetTile; distance++) {
+          for (let dx = -distance; dx <= distance && !targetTile; dx++) {
+            for (let dy = -distance; dy <= distance && !targetTile; dy++) {
+              // Only check tiles at the current distance (forming a square ring)
+              if (Math.abs(dx) !== distance && Math.abs(dy) !== distance) continue;
+
+              // Calculate test tile in tile coordinates
+              const testTileX = actorCurrentTile.x + dx;
+              const testTileY = actorCurrentTile.y + dy;
+
+              // Skip if this is the actor's current tile
+              if (testTileX === actorCurrentTile.x && testTileY === actorCurrentTile.y) {
+                continue;
+              }
+
+              // Skip if this tile will be occupied by a building being placed
+              const tileKey = `${testTileX},${testTileY}`;
+              if (occupiedTiles.has(tileKey)) {
+                continue;
+              }
+
+              // Check if the tile is walkable
+              const isWalkable = this.navigationService!.isTileWalkable({ x: testTileX, y: testTileY });
+              if (isWalkable) {
+                targetTile = { x: testTileX, y: testTileY, z: 0 } satisfies Vector3Simple;
+              }
+            }
+          }
+        }
+
+        // If we found a target tile, issue the move order
+        if (targetTile) {
+          const order = new OrderData(OrderType.Move, { targetTileLocation: targetTile });
+          pawnAiController.blackboard.overrideOrderQueueAndActiveOrder(order);
+          pawnAiController.blackboard.setCurrentOrder(order);
+        }
+      });
+    } catch (error) {
+      console.error("Error in moveActorsOutOfTheWay:", error);
+      // Don't let actor movement errors break building placement
+    } finally {
+      // Clear the set of actors to move
+      this.actorsToMove.clear();
+    }
   }
 
   private spawn(name: ObjectNames) {
