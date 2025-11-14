@@ -22,9 +22,8 @@ import { PlayerActionsHandler } from "../../player/human-controller/player-actio
 import { type GameObjectActionAssignerConfig } from "./game-object-action-assigner";
 import { OrderType } from "../../ai/order-type";
 import { getCurrentPlayerNumber } from "../../data/scene-data";
-import { ProductionComponent } from "../../entity/components/production/production-component";
-import { ContainerComponent } from "../../entity/components/building/container-component";
-import { HealthComponent } from "../../entity/components/combat/components/health-component";
+import { getBuildingCountsByPlayer, isLastEnemyBuilding } from "../../library/building-helpers";
+import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 /* END-USER-IMPORTS */
 
 export default class Minimap extends Phaser.GameObjects.Container {
@@ -276,59 +275,6 @@ export default class Minimap extends Phaser.GameObjects.Container {
     } satisfies GameObjectActionAssignerConfig);
   }
 
-  /**
-   * Determines if a game object is a building based on its components
-   */
-  private isBuilding(actor: Phaser.GameObjects.GameObject): boolean {
-    // Buildings typically have production, container components
-    const hasProduction = getActorComponent(actor, ProductionComponent) !== undefined;
-    const hasContainer = getActorComponent(actor, ContainerComponent) !== undefined;
-    
-    // Buildings have production or container components
-    return hasProduction || hasContainer;
-  }
-
-  /**
-   * Counts buildings per player
-   */
-  private getBuildingCountsByPlayer(): Map<number, number> {
-    if (!this.probableWaffleScene) return new Map();
-    
-    const buildingCounts = new Map<number, number>();
-    
-    this.probableWaffleScene.scene.scene.children.each((child) => {
-      const objectDescriptor = getActorComponent(child, ObjectDescriptorComponent);
-      if (!objectDescriptor) return;
-      
-      const ownerComponent = getActorComponent(child, OwnerComponent);
-      const owner = ownerComponent?.getOwner();
-      if (owner === undefined) return;
-      
-      if (this.isBuilding(child)) {
-        buildingCounts.set(owner, (buildingCounts.get(owner) ?? 0) + 1);
-      }
-    });
-    
-    return buildingCounts;
-  }
-
-  /**
-   * Determines if an actor is an enemy's last building that should be revealed
-   */
-  private isLastEnemyBuilding(actor: Phaser.GameObjects.GameObject, buildingCounts: Map<number, number>): boolean {
-    if (!this.probableWaffleScene) return false;
-    
-    const currentPlayer = getCurrentPlayerNumber(this.probableWaffleScene.scene);
-    if (currentPlayer === undefined) return false;
-    
-    const ownerComponent = getActorComponent(actor, OwnerComponent);
-    const owner = ownerComponent?.getOwner();
-    if (owner === undefined || owner === currentPlayer) return false;
-    
-    const buildingCount = buildingCounts.get(owner) ?? 0;
-    return this.isBuilding(actor) && buildingCount > 0 && buildingCount <= this.lastBuildingsThreshold;
-  }
-
   private shouldShowActorOnMinimap(actor: Phaser.GameObjects.GameObject): boolean {
     if (!this.fogOfWarComponent) return true;
 
@@ -360,18 +306,28 @@ export default class Minimap extends Phaser.GameObjects.Container {
     this.actorDiamonds.forEach((diamond) => diamond.destroy());
     this.actorDiamonds = [];
 
-    // Get building counts per player to determine which buildings to highlight
-    const buildingCounts = this.getBuildingCountsByPlayer();
+    // Use ActorIndexSystem to get all actors efficiently
+    const actorIndexSystem = getSceneService(this.probableWaffleScene, ActorIndexSystem);
+    if (!actorIndexSystem) {
+      console.warn("ActorIndexSystem not found, skipping minimap actor rendering");
+      return;
+    }
 
-    this.probableWaffleScene.scene.scene.children.each((child) => {
+    const allActors = actorIndexSystem.getAllIdActors();
+    
+    // Get building counts per player to determine which buildings to highlight
+    const buildingCounts = getBuildingCountsByPlayer(allActors);
+    const currentPlayer = getCurrentPlayerNumber(this.probableWaffleScene.scene);
+
+    for (const child of allActors) {
       const objectDescriptor = getActorComponent(child, ObjectDescriptorComponent);
-      if (!objectDescriptor) return;
+      if (!objectDescriptor) continue;
 
       // Check if this is a last enemy building that should be revealed
-      const isLastBuilding = this.isLastEnemyBuilding(child, buildingCounts);
+      const isLastBuilding = isLastEnemyBuilding(child, buildingCounts, currentPlayer, this.lastBuildingsThreshold);
 
       // Skip actors that shouldn't be visible due to fog-of-war, unless they are last enemy buildings
-      if (!isLastBuilding && !this.shouldShowActorOnMinimap(child)) return;
+      if (!isLastBuilding && !this.shouldShowActorOnMinimap(child)) continue;
 
       const tilesUnderObject: Vector2Simple[] = getTileCoordsUnderObject(tileMapComponent.tilemap, child);
       const ownerColor = getActorComponent(child, OwnerComponent)?.ownerColor;
@@ -415,7 +371,7 @@ export default class Minimap extends Phaser.GameObjects.Container {
           }
         }
       }
-    });
+    }
   }
 
   private getColorFromTiledProperty(tile: Phaser.Tilemaps.Tile): Phaser.Display.Color | null {
