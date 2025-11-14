@@ -554,124 +554,139 @@ export class BuildingCursor {
   private drawLineBetweenPoints() {
     if (!this.downPointerLocation || !this.pointerLocation) return;
 
-    const snappedDownPointer = this.snapToGrid(new Vector2(this.downPointerLocation.x, this.downPointerLocation.y));
-    const snappedPointer = this.snapToGrid(new Vector2(this.pointerLocation.x, this.pointerLocation.y));
+    try {
+      const snappedDownPointer = this.snapToGrid(new Vector2(this.downPointerLocation.x, this.downPointerLocation.y));
+      const snappedPointer = this.snapToGrid(new Vector2(this.pointerLocation.x, this.pointerLocation.y));
 
-    const startX = snappedDownPointer.x;
-    const startY = snappedDownPointer.y;
-    const endX = snappedPointer.x;
-    const endY = snappedPointer.y;
+      const startX = snappedDownPointer.x;
+      const startY = snappedDownPointer.y;
+      const endX = snappedPointer.x;
+      const endY = snappedPointer.y;
 
-    // Convert to isometric coordinates using the same 2:1 ratio as the grid
-    // Note: keep conversions consistent with snapToGrid (divide by 2)
-    const isoStartX = (startX / (this.tileSize / 2) - startY / (this.tileSize / 4)) / 2;
-    const isoStartY = (startX / (this.tileSize / 2) + startY / (this.tileSize / 4)) / 2;
-    const isoEndX = (endX / (this.tileSize / 2) - endY / (this.tileSize / 4)) / 2;
-    const isoEndY = (endX / (this.tileSize / 2) + endY / (this.tileSize / 4)) / 2;
+      // Convert to isometric coordinates using the same 2:1 ratio as the grid
+      // Note: keep conversions consistent with snapToGrid (divide by 2)
+      const isoStartX = (startX / (this.tileSize / 2) - startY / (this.tileSize / 4)) / 2;
+      const isoStartY = (startX / (this.tileSize / 2) + startY / (this.tileSize / 4)) / 2;
+      const isoEndX = (endX / (this.tileSize / 2) - endY / (this.tileSize / 4)) / 2;
+      const isoEndY = (endX / (this.tileSize / 2) + endY / (this.tileSize / 4)) / 2;
 
-    let midpointX, midpointY;
+      let midpointX, midpointY;
 
-    // Calculate the differences in isometric space
-    const dIsoX = isoEndX - isoStartX;
-    const dIsoY = isoEndY - isoStartY;
+      // Calculate the differences in isometric space
+      const dIsoX = isoEndX - isoStartX;
+      const dIsoY = isoEndY - isoStartY;
 
-    // Determine which isometric axis to follow first
-    if (Math.abs(dIsoX) > Math.abs(dIsoY)) {
-      // Move along isometric X axis first
-      const isoMidX = isoEndX;
-      const isoMidY = isoStartY;
+      // Determine which isometric axis to follow first
+      if (Math.abs(dIsoX) > Math.abs(dIsoY)) {
+        // Move along isometric X axis first
+        const isoMidX = isoEndX;
+        const isoMidY = isoStartY;
 
-      // Convert back to screen coordinates
-      midpointX = (isoMidX + isoMidY) * (this.tileSize / 2);
-      midpointY = (isoMidY - isoMidX) * (this.tileSize / 4);
-    } else {
-      // Move along isometric Y axis first
-      const isoMidX = isoStartX;
-      const isoMidY = isoEndY;
+        // Convert back to screen coordinates
+        midpointX = (isoMidX + isoMidY) * (this.tileSize / 2);
+        midpointY = (isoMidY - isoMidX) * (this.tileSize / 4);
+      } else {
+        // Move along isometric Y axis first
+        const isoMidX = isoStartX;
+        const isoMidY = isoEndY;
 
-      // Convert back to screen coordinates
-      midpointX = (isoMidX + isoMidY) * (this.tileSize / 2);
-      midpointY = (isoMidY - isoMidX) * (this.tileSize / 4);
-    }
-
-    // Ensure midpoint is snapped to the isometric grid
-    const snappedMidpoint = this.snapToGrid(new Vector2(midpointX, midpointY));
-    midpointX = snappedMidpoint.x;
-    midpointY = snappedMidpoint.y;
-
-    // Calculate points along the path in isometric space
-    const generatePoints = (from: Vector2, to: Vector2): Vector2[] => {
-      const points: Vector2[] = [];
-
-      // Convert screen coordinates to isometric coordinates
-      const fromIsoX = (from.x / (this.tileSize / 2) - from.y / (this.tileSize / 4)) / 2;
-      const fromIsoY = (from.x / (this.tileSize / 2) + from.y / (this.tileSize / 4)) / 2;
-      const toIsoX = (to.x / (this.tileSize / 2) - to.y / (this.tileSize / 4)) / 2;
-      const toIsoY = (to.x / (this.tileSize / 2) + to.y / (this.tileSize / 4)) / 2;
-
-      // Calculate differences in isometric space
-      const dx = toIsoX - fromIsoX;
-      const dy = toIsoY - fromIsoY;
-
-      // Number of steps using Manhattan distance in iso space
-      const steps = Math.max(Math.abs(dx), Math.abs(dy));
-
-      for (let i = 0; i <= steps; i++) {
-        const t = steps === 0 ? 1 : i / steps;
-        // Interpolate in isometric space
-        const isoX = fromIsoX + dx * t;
-        const isoY = fromIsoY + dy * t;
-
-        // Convert back to screen coordinates and snap to grid
-        const screenX = (isoX + isoY) * (this.tileSize / 2);
-        const screenY = (isoY - isoX) * (this.tileSize / 4);
-        const snappedPoint = this.snapToGrid(new Vector2(screenX, screenY));
-        points.push(snappedPoint);
+        // Convert back to screen coordinates
+        midpointX = (isoMidX + isoMidY) * (this.tileSize / 2);
+        midpointY = (isoMidY - isoMidX) * (this.tileSize / 4);
       }
 
-      return points;
-    };
+      // Ensure midpoint is snapped to the isometric grid
+      const snappedMidpoint = this.snapToGrid(new Vector2(midpointX, midpointY));
+      midpointX = snappedMidpoint.x;
+      midpointY = snappedMidpoint.y;
 
-    // Generate points for both segments
-    const firstSegmentPoints = generatePoints(new Vector2(startX, startY), new Vector2(midpointX, midpointY));
-    const secondSegmentPoints = generatePoints(new Vector2(midpointX, midpointY), new Vector2(endX, endY));
+      // Calculate points along the path in isometric space
+      const generatePoints = (from: Vector2, to: Vector2): Vector2[] => {
+        const points: Vector2[] = [];
 
-    // Combine points and remove duplicates
-    const allPoints = [...firstSegmentPoints];
-    for (const point of secondSegmentPoints) {
-      const isDuplicate = allPoints.some((existing) => existing.x === point.x && existing.y === point.y);
-      if (!isDuplicate) {
-        allPoints.push(point);
+        // Convert screen coordinates to isometric coordinates
+        const fromIsoX = (from.x / (this.tileSize / 2) - from.y / (this.tileSize / 4)) / 2;
+        const fromIsoY = (from.x / (this.tileSize / 2) + from.y / (this.tileSize / 4)) / 2;
+        const toIsoX = (to.x / (this.tileSize / 2) - to.y / (this.tileSize / 4)) / 2;
+        const toIsoY = (to.x / (this.tileSize / 2) + to.y / (this.tileSize / 4)) / 2;
+
+        // Calculate differences in isometric space
+        const dx = toIsoX - fromIsoX;
+        const dy = toIsoY - fromIsoY;
+
+        // Number of steps using Manhattan distance in iso space
+        const steps = Math.max(Math.abs(dx), Math.abs(dy));
+
+        for (let i = 0; i <= steps; i++) {
+          const t = steps === 0 ? 1 : i / steps;
+          // Interpolate in isometric space
+          const isoX = fromIsoX + dx * t;
+          const isoY = fromIsoY + dy * t;
+
+          // Convert back to screen coordinates and snap to grid
+          const screenX = (isoX + isoY) * (this.tileSize / 2);
+          const screenY = (isoY - isoX) * (this.tileSize / 4);
+          const snappedPoint = this.snapToGrid(new Vector2(screenX, screenY));
+          points.push(snappedPoint);
+        }
+
+        return points;
+      };
+
+      // Generate points for both segments
+      const firstSegmentPoints = generatePoints(new Vector2(startX, startY), new Vector2(midpointX, midpointY));
+      const secondSegmentPoints = generatePoints(new Vector2(midpointX, midpointY), new Vector2(endX, endY));
+
+      // Combine points and remove duplicates
+      const allPoints = [...firstSegmentPoints];
+      for (const point of secondSegmentPoints) {
+        const isDuplicate = allPoints.some((existing) => existing.x === point.x && existing.y === point.y);
+        if (!isDuplicate) {
+          allPoints.push(point);
+        }
       }
+
+      // Spawn buildings at each point (points are already snapped)
+      for (const point of allPoints) {
+        // if point 0,0, then skip it
+        if (point.x === 0 && point.y === 0) continue;
+
+        this.spawnCursorGameObjectAt(point.x, point.y);
+      }
+
+      // After spawning all objects, check their placement validity
+      this.updateObjectVisuals();
+    } catch (error) {
+      console.error("Error in drawLineBetweenPoints:", error);
+      // Clear any partial spawned objects and cancel placement
+      this.stop();
     }
-
-    // Spawn buildings at each point (points are already snapped)
-    for (const point of allPoints) {
-      // if point 0,0, then skip it
-      if (point.x === 0 && point.y === 0) continue;
-
-      this.spawnCursorGameObjectAt(point.x, point.y);
-    }
-
-    // After spawning all objects, check their placement validity
-    this.updateObjectVisuals();
   }
 
   private spawnCursorGameObjectAt(x: number, y: number) {
-    const actor = ActorManager.createActorCore(
-      this.scene,
-      this.building!.name as ObjectNames,
-      {
-        logicalWorldTransform: { x, y, z: 0 }
-      } as ActorDefinition
-    );
-    const gameObject = this.scene.add.existing(actor);
-    this.spawnedCursorGameObjects.push(gameObject);
-    DepthHelper.setActorDepth(gameObject);
+    if (!this.building) {
+      console.error("Cannot spawn cursor: building is undefined");
+      return;
+    }
 
-    if (!this.isDragging) {
-      this.drawPlacementGrid({ x, y });
-      this.drawAttackRange({ x, y });
+    try {
+      const actor = ActorManager.createActorCore(
+        this.scene,
+        this.building.name as ObjectNames,
+        {
+          logicalWorldTransform: { x, y, z: 0 }
+        } as ActorDefinition
+      );
+      const gameObject = this.scene.add.existing(actor);
+      this.spawnedCursorGameObjects.push(gameObject);
+      DepthHelper.setActorDepth(gameObject);
+
+      if (!this.isDragging) {
+        this.drawPlacementGrid({ x, y });
+        this.drawAttackRange({ x, y });
+      }
+    } catch (error) {
+      console.error("Error in spawnCursorGameObjectAt:", error, { x, y, buildingName: this.building.name });
     }
   }
 
