@@ -33,18 +33,7 @@ export default class IdleWorkersButton extends Phaser.GameObjects.Container {
     this.add(button_container);
 
     // button_bg
-    const button_bg = scene.add.nineslice(
-      0,
-      0,
-      "gui",
-      "cryos_mini_gui/buttons/button_small.png",
-      20,
-      20,
-      3,
-      3,
-      3,
-      3
-    );
+    const button_bg = scene.add.nineslice(0, 0, "gui", "cryos_mini_gui/buttons/button_small.png", 20, 20, 3, 3, 3, 3);
     button_bg.scaleX = 2.0762647352357817;
     button_bg.scaleY = 1.5492262688240692;
     button_container.add(button_bg);
@@ -77,7 +66,7 @@ export default class IdleWorkersButton extends Phaser.GameObjects.Container {
 
     /* START-USER-CTR-CODE */
     this.scene.events.on(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
-    
+
     // Listen for click events
     this.button_container.on("action", () => {
       this.selectFirstIdleWorker();
@@ -95,7 +84,7 @@ export default class IdleWorkersButton extends Phaser.GameObjects.Container {
 
   setup(probableWaffleScene: ProbableWaffleScene) {
     this.mainSceneWithActors = probableWaffleScene;
-    
+
     // Update the button count periodically
     this.updateInterval = this.scene.time.addEvent({
       delay: 500, // Update every 500ms
@@ -141,9 +130,9 @@ export default class IdleWorkersButton extends Phaser.GameObjects.Container {
   private updateIdleWorkerCount() {
     const idleWorkers = this.getIdleWorkers();
     const count = idleWorkers.length;
-    
+
     this.button_text.setText(count.toString());
-    
+
     // Enable/disable button based on count
     if (count > 0) {
       this.button_container.setAlpha(1);
@@ -161,7 +150,7 @@ export default class IdleWorkersButton extends Phaser.GameObjects.Container {
     if (idleWorkers.length === 0) return;
 
     // Select the first idle worker
-    const firstWorker = idleWorkers[0];
+    const firstWorker = idleWorkers[0]!;
     const idComponent = getActorComponent(firstWorker, IdComponent);
     if (!idComponent || !idComponent.id) return;
 
