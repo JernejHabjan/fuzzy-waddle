@@ -43,9 +43,10 @@ export class SelectableComponent {
   private init = () => {
     this.subscribeActorMove();
     // Initialize outline component if enabled
-    if (this.selectableDefinition?.enableOutline !== false) {
-      this.outlineComponent = new OutlineComponent(this.gameObject);
-    }
+    // todo if (this.selectableDefinition?.enableOutline !== false) {
+    this.outlineComponent = new OutlineComponent(this.gameObject);
+    // todo }
+    this.outlineComponent.show(); // todo
   };
 
   private subscribeActorMove() {
@@ -73,7 +74,7 @@ export class SelectableComponent {
     const visionComponent = getActorComponent(this.gameObject, VisionComponent);
     if (visionComponent && !visionComponent.visibilityByCurrentPlayer) selected = false;
     this.selectionCircle.visible = selected;
-    
+
     // Show/hide outline effect
     if (this.outlineComponent) {
       if (selected) {
@@ -82,7 +83,7 @@ export class SelectableComponent {
         this.outlineComponent.hide();
       }
     }
-    
+
     if (selected) this.update();
     this.selectionChanged.next(selected);
   }
