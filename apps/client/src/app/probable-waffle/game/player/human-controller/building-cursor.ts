@@ -143,13 +143,13 @@ export class BuildingCursor {
       // Get the actor's current tile position
       const actorCurrentTile = IsoHelper.isometricWorldToTileXY(
         this.scene,
-        Math.floor(actorTransform.x),
-        Math.floor(actorTransform.y),
+        actorTransform.x,
+        actorTransform.y,
         false
       );
 
       // Find a nearby walkable tile to move the actor to
-      // Try tiles in a spiral pattern around the actor's current position
+      // Try tiles in a spiral pattern around the actor's current tile position
       let targetTile: Vector3Simple | undefined;
       const maxDistance = 5; // Search up to 5 tiles away
 
@@ -159,34 +159,25 @@ export class BuildingCursor {
             // Only check tiles at the current distance (forming a square ring)
             if (Math.abs(dx) !== distance && Math.abs(dy) !== distance) continue;
 
-            const testTile = {
-              x: Math.floor(actorTransform.x) + dx,
-              y: Math.floor(actorTransform.y) + dy,
-              z: 0
-            } as Vector3Simple;
-
-            const tileWorldCenter = IsoHelper.isometricWorldToTileXY(this.scene, testTile.x, testTile.y, false);
-            if (!tileWorldCenter) continue;
+            // Calculate test tile in tile coordinates
+            const testTileX = actorCurrentTile.x + dx;
+            const testTileY = actorCurrentTile.y + dy;
 
             // Skip if this is the actor's current tile
-            if (
-              actorCurrentTile &&
-              tileWorldCenter.x === actorCurrentTile.x &&
-              tileWorldCenter.y === actorCurrentTile.y
-            ) {
+            if (testTileX === actorCurrentTile.x && testTileY === actorCurrentTile.y) {
               continue;
             }
 
             // Skip if this tile will be occupied by a building being placed
-            const tileKey = `${tileWorldCenter.x},${tileWorldCenter.y}`;
+            const tileKey = `${testTileX},${testTileY}`;
             if (occupiedTiles.has(tileKey)) {
               continue;
             }
 
             // Check if the tile is walkable
-            const isWalkable = this.navigationService!.isTileWalkable(tileWorldCenter);
+            const isWalkable = this.navigationService!.isTileWalkable({ x: testTileX, y: testTileY });
             if (isWalkable) {
-              targetTile = { x: tileWorldCenter.x, y: tileWorldCenter.y, z: 0 } satisfies Vector3Simple;
+              targetTile = { x: testTileX, y: testTileY, z: 0 } satisfies Vector3Simple;
             }
           }
         }
