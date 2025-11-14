@@ -34,6 +34,7 @@ import { WalkableComponent } from "../entity/components/movement/walkable-compon
 import GameObject = Phaser.GameObjects.GameObject;
 import { HousingComponent } from "../entity/components/building/housing-component";
 import { HousingCostComponent } from "../entity/components/building/housing-cost-component";
+import { MovementDestinationComponent } from "../entity/components/movement/movement-destination-component";
 
 export const ActorDataKey = "actorData";
 export class ActorData {
@@ -166,7 +167,7 @@ function gatherCompletedActorData(actor: Phaser.GameObjects.GameObject): { compo
     ...(componentDefinitions?.builder ? [new BuilderComponent(actor, componentDefinitions.builder)] : []),
     ...(componentDefinitions?.gatherer ? [new GathererComponent(actor, componentDefinitions.gatherer)] : []),
     ...(componentDefinitions?.translatable
-      ? [new ActorTranslateComponent(actor, componentDefinitions.translatable)]
+      ? [new ActorTranslateComponent(actor, componentDefinitions.translatable), new MovementDestinationComponent()]
       : []),
     ...(componentDefinitions?.flying ? [new FlyingComponent(actor, componentDefinitions.flying)] : []),
     ...(componentDefinitions?.walkable ? [new WalkableComponent(actor, componentDefinitions.walkable)] : []),
