@@ -1,5 +1,5 @@
 import GameObject = Phaser.GameObjects.GameObject;
-import { getGameObjectRenderedTransform, onObjectReady } from "../../data/game-object-helper";
+import { getGameObjectDepth, getGameObjectRenderedTransform, onObjectReady } from "../../data/game-object-helper";
 import Phaser from "phaser";
 import { HealthComponent } from "./combat/components/health-component";
 import { ContainerComponent } from "./building/container-component";
@@ -194,7 +194,7 @@ export class OutlineComponent {
     outline.setTint(0x00ffff); // Cyan tint for visibility
     outline.setAlpha(0.6); // Semi-transparent for outline effect
     outline.setBlendMode(Phaser.BlendModes.ADD); // Additive blend for glow-like effect
-    
+
     this.outlineSprites.push({ outline, source });
   }
 
@@ -238,9 +238,9 @@ export class OutlineComponent {
    */
   private isGameObjectOccluded(): boolean {
     // Get the depth of the current game object
-    const myDepth = this.gameObject.depth ?? 0;
+    const myDepth = getGameObjectDepth(this.gameObject) ?? 0;
     const bounds = this.getGameObjectBounds();
-    
+
     if (!bounds) return false;
 
     // Get all display objects in the scene
@@ -251,7 +251,7 @@ export class OutlineComponent {
       if (obj === this.gameObject) continue;
       if (obj === this.selectionCircle) continue; // Ignore selection circle
       if (obj === this.outlineContainer) continue; // Ignore our own outline
-      
+
       // Check if this object has higher depth (in front)
       const objDepth = (obj as any).depth ?? 0;
       if (objDepth <= myDepth) continue;
@@ -273,8 +273,7 @@ export class OutlineComponent {
    */
   private getGameObjectBounds(): Phaser.Geom.Rectangle | null {
     try {
-      if (this.gameObject instanceof Phaser.GameObjects.Sprite || 
-          this.gameObject instanceof Phaser.GameObjects.Image) {
+      if (this.gameObject instanceof Phaser.GameObjects.Sprite || this.gameObject instanceof Phaser.GameObjects.Image) {
         const bounds = this.gameObject.getBounds();
         return new Phaser.Geom.Rectangle(bounds.x, bounds.y, bounds.width, bounds.height);
       } else if (this.gameObject instanceof Phaser.GameObjects.Container) {
@@ -292,7 +291,7 @@ export class OutlineComponent {
    */
   private getObjectBounds(obj: any): Phaser.Geom.Rectangle | null {
     try {
-      if (obj.getBounds && typeof obj.getBounds === 'function') {
+      if (obj.getBounds && typeof obj.getBounds === "function") {
         const bounds = obj.getBounds();
         return new Phaser.Geom.Rectangle(bounds.x, bounds.y, bounds.width, bounds.height);
       }
