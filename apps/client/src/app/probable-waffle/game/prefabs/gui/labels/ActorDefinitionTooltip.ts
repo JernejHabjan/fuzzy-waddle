@@ -15,12 +15,12 @@ import { pwActorDefinitions } from "../../definitions/actor-definitions";
 
 export default class ActorDefinitionTooltip extends Phaser.GameObjects.Container {
   constructor(scene: Phaser.Scene, x?: number, y?: number) {
-    super(scene, x ?? 0, y ?? 0);
+    super(scene, x ?? 336.6949719548286, y ?? 427.40274978740797);
 
     // game_actions_bg
     const game_actions_bg = scene.add.nineslice(
-      1,
-      0,
+      -336.6949719548286,
+      -427.40274978740797,
       "gui",
       "cryos_mini_gui/surfaces/surface_dark.png",
       20,
@@ -30,25 +30,30 @@ export default class ActorDefinitionTooltip extends Phaser.GameObjects.Container
       1,
       1
     );
-    game_actions_bg.scaleX = 12.430939264477326;
-    game_actions_bg.scaleY = 15.778213319031138;
+    game_actions_bg.scaleX = 16.76840048753606;
+    game_actions_bg.scaleY = 21.490989609445222;
     game_actions_bg.setOrigin(0, 0);
     this.add(game_actions_bg);
 
     // icon
-    const icon = scene.add.image(131, 49, "factions", "character_icons/general/warrior.png");
+    const icon = scene.add.image(
+      -169.6949719548286,
+      -378.40274978740797,
+      "factions",
+      "character_icons/general/warrior.png"
+    );
     this.add(icon);
 
     // title
-    const title = scene.add.text(129, 77, "", {});
+    const title = scene.add.text(-169.6949719548286, -332.40274978740797, "", {});
     title.setOrigin(0.5, 0);
     title.text = "Actor name";
     title.setStyle({ align: "center", fontFamily: "disposabledroid", fontSize: "26px", maxLines: 2, resolution: 10 });
-    title.setWordWrapWidth(220);
+    title.setWordWrapWidth(300);
     this.add(title);
 
     // description
-    const description = scene.add.text(125, 123, "", {});
+    const description = scene.add.text(-169.6949719548286, -277.40274978740797, "", {});
     description.setOrigin(0.5, 0);
     description.text =
       "Actual description of this actor Actual description of this actor Actual description of this actor ";
@@ -59,33 +64,34 @@ export default class ActorDefinitionTooltip extends Phaser.GameObjects.Container
       maxLines: 5,
       resolution: 10
     });
-    description.setWordWrapWidth(220);
+    description.setWordWrapWidth(300);
     this.add(description);
 
     // attributesContainer
-    const attributesContainer = scene.add.container(20, 180);
+    const attributesContainer = scene.add.container(-169.6949719548286, -207.40274978740797);
     this.add(attributesContainer);
 
     // resourcesNeeded
-    const resourcesNeeded = scene.add.text(20, 220, "", {});
+    const resourcesNeeded = scene.add.text(-309, -167, "", {});
     resourcesNeeded.text = "Resources needed:";
     resourcesNeeded.setStyle({ fontFamily: "disposabledroid", fontSize: "18px" });
     this.add(resourcesNeeded);
 
     // resourcesContainer
-    const resourcesContainer = scene.add.container(20, 240);
+    const resourcesContainer = scene.add.container(-167.6949719548286, -142.40274978740797);
     this.add(resourcesContainer);
 
     // requirements
-    const requirements = scene.add.text(20, 280, "", {});
+    const requirements = scene.add.text(-309, -97, "", {});
     requirements.text = "Requirements:";
     requirements.setStyle({ fontFamily: "disposabledroid", fontSize: "18px" });
     this.add(requirements);
 
     // requirementsList
-    const requirementsList = scene.add.text(20, 300, "", {});
-    requirementsList.setStyle({ fontFamily: "disposabledroid", fontSize: "16px", color: "#ff0000" });
-    requirementsList.setWordWrapWidth(220);
+    const requirementsList = scene.add.text(-169.6949719548286, -72.40274978740797, "", {});
+    requirementsList.setOrigin(0.5, 0);
+    requirementsList.setStyle({ color: "#ff0000", fontFamily: "disposabledroid" });
+    requirementsList.setWordWrapWidth(300);
     this.add(requirementsList);
 
     this.game_actions_bg = game_actions_bg;
@@ -99,7 +105,6 @@ export default class ActorDefinitionTooltip extends Phaser.GameObjects.Container
     this.requirementsList = requirementsList;
 
     /* START-USER-CTR-CODE */
-    // Write your code here.
     /* END-USER-CTR-CODE */
   }
 
@@ -114,13 +119,18 @@ export default class ActorDefinitionTooltip extends Phaser.GameObjects.Container
   private requirementsList: Phaser.GameObjects.Text;
 
   /* START-USER-CODE */
+  private readonly padding = 25;
+  private readonly sectionPadding = 5;
+  private readonly tooltipWidth = 334;
+  private readonly iconSize = 64;
+  private readonly ninesliceTextureSize = 20;
+
   private attributeLabels: ActorInfoLabel[] = [];
   private resourceLabels: Resource[] = [];
 
   private manageAttributeLabels(count: number) {
     while (this.attributeLabels.length < count) {
       const label = new ActorInfoLabel(this.scene, 0, 0);
-      label.scale = 0.4;
       this.attributesContainer.add(label);
       this.attributeLabels.push(label);
     }
@@ -133,7 +143,6 @@ export default class ActorDefinitionTooltip extends Phaser.GameObjects.Container
     while (this.resourceLabels.length < count) {
       const label = new Resource(this.scene, 0, 0);
       label.static = true;
-      label.scale = 0.8;
       this.resourcesContainer.add(label);
       this.resourceLabels.push(label);
     }
@@ -143,15 +152,25 @@ export default class ActorDefinitionTooltip extends Phaser.GameObjects.Container
   }
 
   setup(tooltipInfo: TooltipInfo) {
-    const tooltipIconSize = 64;
     IconHelper.setIcon(this.icon, tooltipInfo.iconKey, tooltipInfo.iconFrame, tooltipInfo.iconOrigin, {
-      maxWidth: tooltipIconSize,
-      maxHeight: tooltipIconSize
+      maxWidth: this.iconSize,
+      maxHeight: this.iconSize
     });
     this.title.setText(tooltipInfo.title);
     this.description.setText(tooltipInfo.description);
 
-    let yOffset = this.description.y + this.description.height + 10;
+    // Dynamically position elements
+    const topY = this.icon.y - this.icon.displayHeight / 2;
+    let yOffset = topY;
+
+    this.icon.y = yOffset + this.icon.displayHeight / 2;
+    yOffset += this.icon.displayHeight + this.padding;
+
+    this.title.y = yOffset;
+    yOffset += this.title.height + this.padding;
+
+    this.description.y = yOffset;
+    yOffset += this.description.height + this.padding;
 
     // attributes
     const attributes = tooltipInfo.definition
@@ -161,17 +180,20 @@ export default class ActorDefinitionTooltip extends Phaser.GameObjects.Container
     if (attributes.length > 0) {
       this.attributesContainer.visible = true;
       this.attributesContainer.y = yOffset;
-      const cols = 3;
-      const itemWidth = 80;
+      const cols = 2;
+      const itemWidth = 120;
       const itemHeight = 30;
+      const actualCols = Math.min(cols, attributes.length);
+      const totalWidth = actualCols * itemWidth;
+      const startX = -totalWidth / 2;
       attributes.forEach((attribute, index) => {
         const label = this.attributeLabels[index]!;
         label.setIcon(attribute.icon.key, attribute.icon.frame, 24);
         label.setText(attribute.text);
-        label.x = (index % cols) * itemWidth;
+        label.x = startX + (index % cols) * itemWidth;
         label.y = Math.floor(index / cols) * itemHeight;
       });
-      yOffset = this.attributesContainer.y + Math.ceil(attributes.length / cols) * itemHeight;
+      yOffset += Math.ceil(attributes.length / cols) * itemHeight + this.padding;
     } else {
       this.attributesContainer.visible = false;
     }
@@ -186,31 +208,46 @@ export default class ActorDefinitionTooltip extends Phaser.GameObjects.Container
     if (totalResourceItems > 0) {
       this.resourcesNeeded.visible = true;
       this.resourcesNeeded.y = yOffset;
-      yOffset += this.resourcesNeeded.height + 5;
+      yOffset += this.resourcesNeeded.height + this.sectionPadding;
       this.resourcesContainer.visible = true;
       this.resourcesContainer.y = yOffset;
 
       const player = getPlayer(this.scene, getCurrentPlayerNumber(this.scene));
-      const canAfford = player?.canPayAllResources(cost) ?? true;
 
-      resources.forEach((resource, index) => {
-        const label = this.resourceLabels[index]!;
-        label.resource_icon.setTexture("gui", `resource_icons/${resource}.png`);
-        label.setText(cost![resource]!.toString());
-        label.setTextColor(canAfford ? "#ffffff" : "#ff0000");
-        label.x = index * 90;
+      const resourceLabels: { label: Resource; cost: number; canAfford: boolean; texture: string }[] = [];
+
+      resources.forEach((resource) => {
+        resourceLabels.push({
+          label: this.resourceLabels[resourceLabels.length]!,
+          cost: cost![resource]!,
+          canAfford: player?.canPayResources(resource, cost![resource]!) ?? true,
+          texture: `resource_icons/${resource}.png`
+        });
       });
 
       if (housingCost) {
-        const housingLabel = this.resourceLabels[resources.length]!;
-        const canAffordHousing = player?.canAffordHousing(housingCost) ?? true;
-        housingLabel.resource_icon.setTexture("gui", "resource_icons/food.png"); // housing icon
-        housingLabel.setText(housingCost.toString());
-        housingLabel.setTextColor(canAffordHousing ? "#ffffff" : "#ff0000");
-        housingLabel.x = resources.length * 90;
+        resourceLabels.push({
+          label: this.resourceLabels[resourceLabels.length]!,
+          cost: housingCost,
+          canAfford: player?.canAffordHousing(housingCost) ?? true,
+          texture: "resource_icons/food.png" // housing icon
+        });
       }
 
-      yOffset = this.resourcesContainer.y + 30;
+      const cols = 2;
+      const itemWidth = 150;
+      const itemHeight = 30;
+      const startX = -((Math.min(cols, resourceLabels.length) * itemWidth) / 2) + itemWidth / 2;
+      resourceLabels.forEach((resourceInfo, index) => {
+        const { label, cost, canAfford, texture } = resourceInfo;
+        label.resource_icon.setTexture("gui", texture);
+        label.setText(cost.toString());
+        label.setTextColor(canAfford ? "#ffffff" : "#ff0000");
+        label.x = startX + (index % cols) * itemWidth;
+        label.y = Math.floor(index / cols) * itemHeight + itemHeight;
+      });
+
+      yOffset += Math.ceil(resourceLabels.length / cols) * itemHeight + this.padding;
     } else {
       this.resourcesNeeded.visible = false;
       this.resourcesContainer.visible = false;
@@ -221,7 +258,7 @@ export default class ActorDefinitionTooltip extends Phaser.GameObjects.Container
     if (unmetRequirements.length > 0) {
       this.requirements.visible = true;
       this.requirements.y = yOffset;
-      yOffset += this.requirements.height + 5;
+      yOffset += this.requirements.height + this.sectionPadding;
       this.requirementsList.visible = true;
       this.requirementsList.y = yOffset;
       const requirementNames = unmetRequirements
@@ -235,7 +272,14 @@ export default class ActorDefinitionTooltip extends Phaser.GameObjects.Container
     }
 
     // resize bg
-    // todo this.game_actions_bg.height = yOffset + 10;
+    const bgHeight = yOffset + this.padding - this.game_actions_bg.y;
+    this.game_actions_bg.scaleX = this.tooltipWidth / this.ninesliceTextureSize;
+    this.game_actions_bg.scaleY = bgHeight / this.ninesliceTextureSize;
+    this.setSize(this.tooltipWidth, bgHeight);
+
+    // adjust position for bottom-right pivot
+    this.x -= this.tooltipWidth - this.width;
+    this.y -= bgHeight - this.height;
   }
   /* END-USER-CODE */
 }

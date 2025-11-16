@@ -172,15 +172,10 @@ export default class ActorAction extends Phaser.GameObjects.Container {
       const hudScene = this.scene as HudProbableWaffle;
       const bounds = getGameObjectBounds(hudScene.actor_actions_container);
 
-      const x = bounds?.x ?? 0;
+      const x = bounds ? bounds.x + bounds.width : 0;
       const y = bounds?.y ?? 0;
       this.tooltip = new ActorDefinitionTooltip(this.scene, x, y);
       this.tooltip.setup(this.tooltipInfo);
-      // set origin of tooltip to 1,1
-      const boundsTooltip = getGameObjectBounds(this.tooltip);
-      if (boundsTooltip) {
-        this.tooltip.y -= boundsTooltip.height;
-      }
       this.scene.add.existing(this.tooltip);
     }, 500);
   };
