@@ -34,8 +34,23 @@ export class ProductionValidator {
     const result: ProductionValidationResult = { canQueue: true, prereqs: [] };
     const techSvc = getSceneService(this.scene, TechTreeService);
     const faction = this.player.factionType;
-    // Tech checks
+
+    // Tech checks using tech tree
     ProductionValidator.validateTechPrerequisites(techSvc, faction, actorName, result);
+
+    // Additional validation: check if actor exists in tech tree
+    if (techSvc && faction != null) {
+      const definition = techSvc.getDefinition(faction, actorName);
+      if (!definition) {
+        result.canQueue = false;
+        result.reason = ProductionInvalidReason.TechLocked;
+        if (ProductionValidator.debugEnabled) {
+          // eslint-disable-next-line no-console
+          console.warn(`[ProductionValidator] Actor ${actorName} not found in tech tree for faction ${faction}`);
+        }
+        return result;
+      }
+    }
 
     // Supply check (simple): if projected queued would exceed capacity
     const supply = this.blackboard.production.supply;
@@ -44,6 +59,7 @@ export class ProductionValidator {
       result.supplyBlocked = true;
       result.reason = result.reason || ProductionInvalidReason.SupplyBlocked;
     }
+
     // Resource cost check (only if tech & supply OK)
     const cost = getCostForObjectName(actorName);
     result.cost = cost;
@@ -53,6 +69,7 @@ export class ProductionValidator {
         result.reason = ProductionInvalidReason.NotEnoughResources;
       }
     }
+
     if (ProductionValidator.debugEnabled && !result.canQueue) {
       // eslint-disable-next-line no-console
       console.debug("[ProductionValidator] block", { actorName, reason: result.reason, prereqs: result.prereqs });

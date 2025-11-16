@@ -1,5 +1,6 @@
 // Basic graph node & graph state types for automatic tech tree inference.
 import { FactionType, ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import type { PrefabDefinition } from "../../prefabs/definitions/prefab-definition";
 
 export type TechNodeKind = "Unit" | "Building" | "Upgrade";
 
@@ -10,12 +11,12 @@ export interface TechTreeNode {
   prerequisites: Array<ObjectNames>; // ids this node depends on
   produces: ObjectNames[]; // unit production edges
   constructs: ObjectNames[]; // building construction edges
+  definition: PrefabDefinition; // Full actor definition for validation and reference
 }
 
 export interface TechTreeGraph {
   faction: FactionType;
   nodes: Record<string, TechTreeNode>;
-  roots: ObjectNames[]; // worker roots
 }
 
 export interface TechUnlockState {

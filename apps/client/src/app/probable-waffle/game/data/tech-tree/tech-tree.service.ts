@@ -12,8 +12,34 @@ export class TechTreeService {
 
   constructor() {
     this.graphs = TechTreeBuilder.build();
-    // Auto-unlock roots
-    Object.values(this.graphs).forEach((g) => g.roots.forEach((r) => this.unlocks[g.faction].add(r)));
+    // Validate tech tree structure on initialization
+    this.validateAllTechTrees();
+  }
+
+  /**
+   * Validate tech trees for all factions and log any errors.
+   * This ensures the tech tree is properly constructed from definitions.
+   */
+  private validateAllTechTrees() {
+    const allErrors: string[] = [];
+
+    // Iterate over the actual faction values (not enum keys)
+    const factions = [FactionType.Tivara, FactionType.Skaduwee];
+
+    factions.forEach((faction) => {
+      const errors = this.validateTechTree(faction);
+      if (errors.length > 0) {
+        allErrors.push(`[${FactionType[faction]}]`, ...errors);
+      }
+    });
+
+    if (allErrors.length > 0) {
+      // eslint-disable-next-line no-console
+      console.warn("[TechTreeService] Tech tree validation errors:", allErrors);
+    } else {
+      // eslint-disable-next-line no-console
+      console.log("[TechTreeService] Tech tree validation passed for all factions");
+    }
   }
 
   getGraph(faction: FactionType): TechTreeGraph | undefined {
@@ -57,7 +83,110 @@ export class TechTreeService {
   getNode(faction: FactionType, id: string) {
     return this.graphs[faction]?.nodes[id];
   }
+
   isAvailable(faction: FactionType, id: ObjectNames): boolean {
     return this.isUnlocked(faction, id) || this.getPrerequisites(faction, id).length === 0; // unlocked or no prereqs
+  }
+
+  /**
+   * Get the full definition for an actor from the tech tree.
+   * This provides access to embedded definitions for validation.
+   */
+  getDefinition(faction: FactionType, id: ObjectNames) {
+    return this.graphs[faction]?.nodes[id]?.definition;
+  }
+
+  /**
+   * Get all units that can be produced by a specific building.
+   */
+  getProducibleUnits(faction: FactionType, buildingId: ObjectNames): ObjectNames[] {
+    return this.graphs[faction]?.nodes[buildingId]?.produces || [];
+  }
+
+  /**
+   * Get all buildings that can be constructed by a specific unit.
+   */
+  getConstructableBuildings(faction: FactionType, unitId: ObjectNames): ObjectNames[] {
+    return this.graphs[faction]?.nodes[unitId]?.constructs || [];
+  }
+
+  /**
+   * Validate that the tech tree is properly structured.
+   * Returns any validation errors found.
+   */
+  validateTechTree(faction: FactionType): string[] {
+    const errors: string[] = [];
+    const graph = this.graphs[faction];
+    if (!graph) {
+      errors.push(`No graph found for faction ${faction}`);
+      return errors;
+    }
+
+    // Validate each node
+    Object.entries(graph.nodes).forEach(([id, node]) => {
+      // Check that definition exists
+      if (!node.definition) {
+        errors.push(`Node ${id} missing definition`);
+      }
+
+      // Check that all prerequisites exist in the graph
+      node.prerequisites.forEach((prereq) => {
+        if (!graph.nodes[prereq]) {
+          errors.push(`Node ${id} has prerequisite ${prereq} that doesn't exist in graph`);
+        }
+      });
+
+      // Check that all produces targets exist
+      node.produces.forEach((producible) => {
+        if (!graph.nodes[producible]) {
+          errors.push(`Node ${id} produces ${producible} that doesn't exist in graph`);
+        }
+      });
+
+      // Check that all constructs targets exist
+      node.constructs.forEach((constructable) => {
+        if (!graph.nodes[constructable]) {
+          errors.push(`Node ${id} constructs ${constructable} that doesn't exist in graph`);
+        }
+      });
+
+      // Check that building definitions match production component
+      if (node.kind === "Building" && node.definition.components?.production) {
+        const prodComponent = node.definition.components.production;
+        const producibleActors = prodComponent.availableProduceActors || [];
+
+        // Verify produces list matches definition
+        producibleActors.forEach((actor) => {
+          if (!node.produces.includes(actor as ObjectNames)) {
+            errors.push(`Building ${id} definition produces ${actor} but it's not in node.produces`);
+          }
+        });
+      }
+
+      // Check that builder definitions match builder component
+      if (node.definition.components?.builder) {
+        const builderComponent = node.definition.components.builder;
+        const constructables = builderComponent.constructableBuildings || [];
+
+        // Verify constructs list matches definition
+        constructables.forEach((building) => {
+          if (!node.constructs.includes(building as ObjectNames)) {
+            errors.push(`Unit ${id} definition constructs ${building} but it's not in node.constructs`);
+          }
+        });
+      }
+
+      // Check that requirements match prerequisites
+      if (node.definition.components?.requirements) {
+        const requirements = node.definition.components.requirements.actors || [];
+        requirements.forEach((req) => {
+          if (!node.prerequisites.includes(req)) {
+            errors.push(`Node ${id} has requirement ${req} but it's not in prerequisites`);
+          }
+        });
+      }
+    });
+
+    return errors;
   }
 }
