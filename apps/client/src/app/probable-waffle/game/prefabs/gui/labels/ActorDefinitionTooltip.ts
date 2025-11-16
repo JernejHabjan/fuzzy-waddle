@@ -275,11 +275,6 @@ export default class ActorDefinitionTooltip extends Phaser.GameObjects.Container
     const bgHeight = yOffset + this.padding - this.game_actions_bg.y;
     this.game_actions_bg.scaleX = this.tooltipWidth / this.ninesliceTextureSize;
     this.game_actions_bg.scaleY = bgHeight / this.ninesliceTextureSize;
-    this.setSize(this.tooltipWidth, bgHeight);
-
-    // adjust position for bottom-right pivot
-    this.x -= this.tooltipWidth - this.width;
-    this.y -= bgHeight - this.height;
   }
   /* END-USER-CODE */
 }

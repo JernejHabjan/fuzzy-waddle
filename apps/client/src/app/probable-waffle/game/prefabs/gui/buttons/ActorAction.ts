@@ -172,10 +172,17 @@ export default class ActorAction extends Phaser.GameObjects.Container {
       const hudScene = this.scene as HudProbableWaffle;
       const bounds = getGameObjectBounds(hudScene.actor_actions_container);
 
-      const x = bounds ? bounds.x + bounds.width : 0;
-      const y = bounds?.y ?? 0;
-      this.tooltip = new ActorDefinitionTooltip(this.scene, x, y);
+      this.tooltip = new ActorDefinitionTooltip(this.scene, 0, 0);
       this.tooltip.setup(this.tooltipInfo);
+      const tooltipBounds = getGameObjectBounds(this.tooltip);
+
+      if (bounds && tooltipBounds) {
+        const x = hudScene.scale.width;
+        // TODO - I cannot make it to stick to the top right edge of actor_actions_container - needs further investigation
+        const y = hudScene.scale.height - bounds.height - 80;
+        this.tooltip.setPosition(x, y);
+      }
+
       this.scene.add.existing(this.tooltip);
     }, 500);
   };
