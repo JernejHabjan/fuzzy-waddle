@@ -26,6 +26,7 @@ import { UiFeedbackBuildDeniedSound } from "../../hud/UiFeedbackSfx";
 import { FogOfWarComponent } from "../../world/tilemap/fog-of-war.component";
 import { RepresentableComponent } from "../../entity/components/representable-component";
 import Vector2 = Phaser.Math.Vector2;
+import { IsoHelper } from "../../world/tilemap/iso-helper";
 
 export class BuildingCursor {
   placementGrid?: GameObjects.Graphics;
@@ -282,8 +283,10 @@ export class BuildingCursor {
       if (!this.tileMapComponent || !this.navigationService || !this.fogOfWarComponent) return true;
 
       // Convert world coordinates to tile coordinates
-      const tileCoord = this.tileMapComponent.tilemap.worldToTileXY(worldX, worldY);
-      if (!tileCoord) return true;
+      const tileCoord = IsoHelper.isometricWorldToTileXY(this.scene, worldX, worldY, false);
+      // for some reason we need to ceil the clicked tile - its not ok if se set snapToFloor to true
+      tileCoord.x = Math.ceil(tileCoord.x);
+      tileCoord.y = Math.ceil(tileCoord.y);
 
       // Check if tile is visible - if not visible, consider it occupied
       const tileVisible = this.fogOfWarComponent.getTileVisibility(tileCoord.x, tileCoord.y);
