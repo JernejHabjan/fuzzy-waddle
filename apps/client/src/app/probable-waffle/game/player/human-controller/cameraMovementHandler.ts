@@ -1,8 +1,17 @@
 import { Cameras, Geom, Input, type Types } from "phaser";
 import GameProbableWaffleScene from "../../world/scenes/GameProbableWaffleScene";
+import { Subscription } from "rxjs";
+import { getSceneExternalComponent } from "../../world/services/scene-component-helpers";
+import { OptionsService } from "../../../gui/options/options.service";
+import { GameSettings } from "../../core/gameSettings";
+
+export interface CameraMovementHandlerConfig {
+  cameraEdgeMovementSpeed: number;
+  cameraKeyboardMovementSpeed: number;
+  enabledMouseCornerMovement?: boolean;
+}
 
 export class CameraMovementHandler {
-  private readonly enabledMouseCornerMovement = false;
   private readonly input: Input.InputPlugin;
   private readonly mainCamera: Cameras.Scene2D.Camera;
   private cursorOverGameInstance = false;
@@ -10,13 +19,11 @@ export class CameraMovementHandler {
   private readonly cameraEdgeMargin = 30;
   private readonly cameraMinZoom = 30;
   private readonly cameraMaxZoom = 0.3;
+  private optionsChangedSubscription?: Subscription;
 
   constructor(
     private readonly scene: Phaser.Scene,
-    private readonly config: {
-      cameraEdgeMovementSpeed: number;
-      cameraKeyboardMovementSpeed: number;
-    } = {
+    private config: CameraMovementHandlerConfig = {
       cameraEdgeMovementSpeed: 30,
       cameraKeyboardMovementSpeed: 2
     }
@@ -30,6 +37,11 @@ export class CameraMovementHandler {
     this.scene.events.on(Phaser.Scenes.Events.CREATE, this.create, this);
     this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
     this.scene.events.on(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
+    this.subscribeToOptions();
+  }
+
+  setConfig(config: Partial<CameraMovementHandlerConfig>) {
+    this.config = { ...this.config, ...config };
   }
 
   /**
@@ -60,6 +72,7 @@ export class CameraMovementHandler {
     this.input.on(Input.Events.POINTER_MOVE, this.handlePointerMove, this);
     this.input.on(Input.Events.POINTER_UP, this.handlePointerUp, this);
     this.keyboardMovementControls?.destroy();
+    this.optionsChangedSubscription?.unsubscribe();
   }
 
   private createKeyboardControls() {
@@ -119,7 +132,7 @@ export class CameraMovementHandler {
   }
 
   private screenEdgeMovementUpdate() {
-    if (!this.enabledMouseCornerMovement || !this.cursorOverGameInstance) return;
+    if (!this.config.enabledMouseCornerMovement || !this.cursorOverGameInstance) return;
 
     const pointer = this.input.activePointer;
     const margin = this.cameraEdgeMargin;
@@ -240,6 +253,18 @@ export class CameraMovementHandler {
     });
     this.input.on(Input.Events.GAME_OVER, () => {
       this.cursorOverGameInstance = true;
+    });
+  }
+
+  private subscribeToOptions() {
+    const optionsService = getSceneExternalComponent(this.scene, OptionsService);
+    this.optionsChangedSubscription = optionsService?.settingsChanged.subscribe((change) => {
+      if (change.type === "game") {
+        const newGameSettings = change.payload as GameSettings;
+        this.setConfig({
+          enabledMouseCornerMovement: newGameSettings.enabledMouseCornerMovement
+        });
+      }
     });
   }
 

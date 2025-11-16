@@ -76,5 +76,8 @@ export const sandholdDefinition = {
     constructable: {
       ...coreConstructionSiteDefinition
     }
+  },
+  meta: {
+    isMainBuilding: true
   }
 } satisfies PrefabDefinition;

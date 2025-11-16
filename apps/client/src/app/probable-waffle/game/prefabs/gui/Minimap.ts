@@ -21,6 +21,9 @@ import { VisionComponent } from "../../entity/components/vision-component";
 import { PlayerActionsHandler } from "../../player/human-controller/player-actions-handler";
 import { type GameObjectActionAssignerConfig } from "./game-object-action-assigner";
 import { OrderType } from "../../ai/order-type";
+import { getCurrentPlayerNumber } from "../../data/scene-data";
+import { getBuildingCountsByPlayer, isLastEnemyBuilding } from "../../library/building-helpers";
+import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 /* END-USER-IMPORTS */
 
 export default class Minimap extends Phaser.GameObjects.Container {
@@ -86,6 +89,8 @@ export default class Minimap extends Phaser.GameObjects.Container {
   private hudProbableWaffle?: HudProbableWaffle;
   private fogOfWarComponent?: FogOfWarComponent;
   private playerActionsHandler?: PlayerActionsHandler;
+  // Threshold for revealing last enemy buildings on minimap
+  private readonly lastBuildingsThreshold = 3;
 
   initializeWithParentScene(probableWaffleScene: ProbableWaffleScene, hudProbableWaffle: HudProbableWaffle) {
     this.probableWaffleScene = probableWaffleScene;
@@ -301,12 +306,28 @@ export default class Minimap extends Phaser.GameObjects.Container {
     this.actorDiamonds.forEach((diamond) => diamond.destroy());
     this.actorDiamonds = [];
 
-    this.probableWaffleScene.scene.scene.children.each((child) => {
-      const objectDescriptor = getActorComponent(child, ObjectDescriptorComponent);
-      if (!objectDescriptor) return;
+    // Use ActorIndexSystem to get all actors efficiently
+    const actorIndexSystem = getSceneService(this.probableWaffleScene, ActorIndexSystem);
+    if (!actorIndexSystem) {
+      console.warn("ActorIndexSystem not found, skipping minimap actor rendering");
+      return;
+    }
 
-      // Skip actors that shouldn't be visible due to fog-of-war
-      if (!this.shouldShowActorOnMinimap(child)) return;
+    const allActors = actorIndexSystem.getAllIdActors();
+
+    // Get building counts per player to determine which buildings to highlight
+    const buildingCounts = getBuildingCountsByPlayer(allActors);
+    const currentPlayer = getCurrentPlayerNumber(this.probableWaffleScene);
+
+    for (const child of allActors) {
+      const objectDescriptor = getActorComponent(child, ObjectDescriptorComponent);
+      if (!objectDescriptor) continue;
+
+      // Check if this is a last enemy building that should be revealed
+      const isLastBuilding = isLastEnemyBuilding(child, buildingCounts, currentPlayer, this.lastBuildingsThreshold);
+
+      // Skip actors that shouldn't be visible due to fog-of-war, unless they are last enemy buildings
+      if (!isLastBuilding && !this.shouldShowActorOnMinimap(child)) continue;
 
       const tilesUnderObject: Vector2Simple[] = getTileCoordsUnderObject(tileMapComponent.tilemap, child);
       const ownerColor = getActorComponent(child, OwnerComponent)?.ownerColor;
@@ -315,14 +336,28 @@ export default class Minimap extends Phaser.GameObjects.Container {
       const black = new Phaser.Display.Color(0, 0, 0);
       const fallbackColor =
         defaultColor === null ? null : defaultColor ? Phaser.Display.Color.IntegerToColor(defaultColor) : black;
-      const color = ownerColor ?? fallbackColor;
+      let color = ownerColor ?? fallbackColor;
+
+      // Highlight last enemy buildings with a brighter/pulsing effect
+      if (isLastBuilding && color) {
+        // Make the color brighter for last buildings
+        color = new Phaser.Display.Color(
+          Math.min(255, color.red + 80),
+          Math.min(255, color.green + 80),
+          Math.min(255, color.blue + 80)
+        );
+      }
 
       if (color) {
         for (const tile of tilesUnderObject) {
           let shouldShow = true;
 
-          // Apply visibility rules based on fog of war mode
-          if (this.fogOfWarComponent && this.fogOfWarComponent.getMode() === FogOfWarMode.FULL_EXPLORATION) {
+          // Apply visibility rules based on fog of war mode, unless it's a last building
+          if (
+            !isLastBuilding &&
+            this.fogOfWarComponent &&
+            this.fogOfWarComponent.getMode() === FogOfWarMode.FULL_EXPLORATION
+          ) {
             const tileVisibility = this.fogOfWarComponent.getTileVisibility(tile.x, tile.y);
 
             if (tileVisibility === "unexplored") {
@@ -333,12 +368,14 @@ export default class Minimap extends Phaser.GameObjects.Container {
           if (shouldShow) {
             const isoX = offsetX + (tile.x - tile.y) * (pixelWidth / 2);
             const isoY = (tile.x + tile.y) * (pixelHeight / 2);
-            const diamond = this.createDiamondShape(x, y, isoX, isoY, pixelWidth, pixelHeight, color);
+            // Use higher alpha for last buildings to make them stand out
+            const alpha = isLastBuilding ? 1.0 : 1.0;
+            const diamond = this.createDiamondShape(x, y, isoX, isoY, pixelWidth, pixelHeight, color, alpha);
             this.actorDiamonds.push(diamond);
           }
         }
       }
-    });
+    }
   }
 
   private getColorFromTiledProperty(tile: Phaser.Tilemaps.Tile): Phaser.Display.Color | null {

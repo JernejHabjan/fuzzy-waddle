@@ -173,6 +173,30 @@ export class ProductionComponent {
     return null;
   }
 
+  /**
+   * Get the total remaining production time across all queues.
+   * This is the sum of remaining time for the current item in each queue,
+   * plus the full production time of all queued items.
+   */
+  getTotalRemainingProductionTime(): number {
+    let totalTime = 0;
+
+    for (const queue of this.productionQueues) {
+      if (queue.queuedItems.length === 0) continue;
+
+      // Add remaining time for the current (first) item in the queue
+      totalTime += queue.remainingProductionTime;
+
+      // Add full production time for all other items in the queue
+      for (let i = 1; i < queue.queuedItems.length; i++) {
+        const { costData } = queue.queuedItems[i]!;
+        totalTime += costData.productionTime;
+      }
+    }
+
+    return totalTime;
+  }
+
   startProduction(queueItem: ProductionQueueItem): AssignProductionErrorCode | null {
     if (!this.isFinished) return AssignProductionErrorCode.NotFinished;
     const productionState = this.canAssignProduction(queueItem);
@@ -212,7 +236,7 @@ export class ProductionComponent {
       if (!player) return;
 
       // Fully pay for the production item
-      emitResource(this.gameObject.scene, "resource.removed", queueItem.costData.resources);
+      emitResource(this.gameObject.scene, "resource.removed", queueItem.costData.resources, owner);
     }
   }
 
@@ -230,7 +254,7 @@ export class ProductionComponent {
 
     let productionCostPaid = false;
     if (canPayAllResources) {
-      emitResource(this.gameObject.scene, "resource.removed", resources);
+      emitResource(this.gameObject.scene, "resource.removed", resources, owner);
       productionCostPaid = true;
     }
 
@@ -426,7 +450,7 @@ export class ProductionComponent {
         });
         break;
     }
-    emitResource(this.gameObject.scene, "resource.added", refundedResources);
+    emitResource(this.gameObject.scene, "resource.added", refundedResources, owner);
   }
 
   private canIssueCommand() {
