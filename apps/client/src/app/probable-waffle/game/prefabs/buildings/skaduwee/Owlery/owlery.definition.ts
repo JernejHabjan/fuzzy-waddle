@@ -55,6 +55,9 @@ export const owleryDefinition = {
       productionTime: 30000,
       costType: PaymentType.PayImmediately
     },
+    buildingPrerequisites: {
+      requiresAnyOf: [ObjectNames.InfantryInn]
+    },
     production: {
       queueCount: 1,
       capacityPerQueue: 5,

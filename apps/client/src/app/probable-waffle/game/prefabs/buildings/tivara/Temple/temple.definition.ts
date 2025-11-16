@@ -56,6 +56,9 @@ export const templeDefinition = {
       productionTime: 30000,
       costType: PaymentType.PayImmediately
     },
+    buildingPrerequisites: {
+      requiresAnyOf: [ObjectNames.AnkGuard]
+    },
     requirements: {
       actors: [ObjectNames.AnkGuard]
     },

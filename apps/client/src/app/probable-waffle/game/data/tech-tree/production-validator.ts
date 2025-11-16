@@ -5,11 +5,16 @@ import { TechTreeService } from "./tech-tree.service";
 import { getCostForObjectName } from "../../entity/components/production/cost-utils";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { getPlayer } from "../scene-data";
+import { pwActorDefinitions } from "../../prefabs/definitions/actor-definitions";
+import { getActorComponent } from "../actor-component";
+import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
+import { ProductionComponent } from "../../entity/components/production/production-component";
 
 export enum ProductionInvalidReason {
   TechLocked = "tech_locked",
   SupplyBlocked = "supply_blocked",
-  NotEnoughResources = "not_enough_resources"
+  NotEnoughResources = "not_enough_resources",
+  BuildingPrerequisitesMissing = "building_prerequisites_missing"
 }
 
 export interface ProductionValidationResult {
@@ -17,7 +22,9 @@ export interface ProductionValidationResult {
   reason?: ProductionInvalidReason;
   techBlocked?: boolean;
   supplyBlocked?: boolean;
+  buildingPrereqBlocked?: boolean;
   prereqs: ObjectNames[];
+  missingBuildings?: ObjectNames[];
   cost?: Partial<Record<ResourceType, number>>;
 }
 
@@ -60,6 +67,9 @@ export class ProductionValidator {
       }
     }
 
+    // Check building prerequisites
+    this.validateBuildingPrerequisites(actorName, result);
+
     // Supply check (simple): if projected queued would exceed capacity
     const supply = this.blackboard.production.supply;
     if (supply.max > 0 && supply.used + supply.pendingFromQueued >= supply.max) {
@@ -83,10 +93,59 @@ export class ProductionValidator {
       console.debug("[ProductionValidator] block", {
         actorName,
         reason: result.reason,
-        prereqs: result.prereqs
+        prereqs: result.prereqs,
+        missingBuildings: result.missingBuildings
       });
     }
     return result;
+  }
+
+  private validateBuildingPrerequisites(actorName: ObjectNames, result: ProductionValidationResult): void {
+    const def = pwActorDefinitions[actorName];
+    const buildingPrereqs = def?.components?.buildingPrerequisites;
+
+    if (!buildingPrereqs) return;
+
+    const missingBuildings: ObjectNames[] = [];
+
+    // Check requiresAnyOf
+    if (buildingPrereqs.requiresAnyOf && buildingPrereqs.requiresAnyOf.length > 0) {
+      const hasAnyRequired = buildingPrereqs.requiresAnyOf.some((requiredBuilding) =>
+        this.blackboard.productionBuildings.some((building) => {
+          return building.name === requiredBuilding;
+        })
+      );
+
+      if (!hasAnyRequired) {
+        result.canQueue = false;
+        result.buildingPrereqBlocked = true;
+        result.reason = ProductionInvalidReason.BuildingPrerequisitesMissing;
+        missingBuildings.push(...buildingPrereqs.requiresAnyOf);
+      }
+    }
+
+    // Check requiresAllOf
+    if (buildingPrereqs.requiresAllOf && buildingPrereqs.requiresAllOf.length > 0) {
+      const missingRequired = buildingPrereqs.requiresAllOf.filter(
+        (requiredBuilding) =>
+          !this.blackboard.productionBuildings.some((building) => {
+            return building.name === requiredBuilding;
+          })
+      );
+
+      if (missingRequired.length > 0) {
+        result.canQueue = false;
+        result.buildingPrereqBlocked = true;
+        result.reason = ProductionInvalidReason.BuildingPrerequisitesMissing;
+        missingBuildings.push(...missingRequired);
+      }
+    }
+
+    if (missingBuildings.length > 0) {
+      result.missingBuildings = missingBuildings;
+      // Also populate prereqs to maintain consistency with tech prerequisite validation
+      result.prereqs = [...(result.prereqs || []), ...missingBuildings];
+    }
   }
 
   /** Insert prerequisite tasks into blackboard production prereqQueue (order: earliest first). */
@@ -124,6 +183,68 @@ export class ProductionValidator {
     }
   }
 
+  private static validateBuildingPrerequisitesStatic(
+    scene: Phaser.Scene,
+    playerNumber: number,
+    actorName: ObjectNames,
+    result: ProductionValidationResult
+  ): void {
+    const def = pwActorDefinitions[actorName];
+    const buildingPrereqs = def?.components?.buildingPrerequisites;
+
+    if (!buildingPrereqs) return;
+
+    const missingBuildings: ObjectNames[] = [];
+
+    // Get player's buildings from ActorIndexSystem
+    const actorIndex = getSceneService(scene, ActorIndexSystem);
+    if (!actorIndex) return;
+
+    const ownedActors = actorIndex.getOwnedActors(playerNumber);
+    const productionBuildings = Array.from(ownedActors).filter((actor) => {
+      return getActorComponent(actor, ProductionComponent) !== undefined;
+    });
+
+    // Check requiresAnyOf
+    if (buildingPrereqs.requiresAnyOf && buildingPrereqs.requiresAnyOf.length > 0) {
+      const hasAnyRequired = buildingPrereqs.requiresAnyOf.some((requiredBuilding) =>
+        productionBuildings.some((building) => {
+          return building.name === requiredBuilding;
+        })
+      );
+
+      if (!hasAnyRequired) {
+        result.canQueue = false;
+        result.buildingPrereqBlocked = true;
+        result.reason = ProductionInvalidReason.BuildingPrerequisitesMissing;
+        missingBuildings.push(...buildingPrereqs.requiresAnyOf);
+      }
+    }
+
+    // Check requiresAllOf
+    if (buildingPrereqs.requiresAllOf && buildingPrereqs.requiresAllOf.length > 0) {
+      const missingRequired = buildingPrereqs.requiresAllOf.filter(
+        (requiredBuilding) =>
+          !productionBuildings.some((building) => {
+            return building.name === requiredBuilding;
+          })
+      );
+
+      if (missingRequired.length > 0) {
+        result.canQueue = false;
+        result.buildingPrereqBlocked = true;
+        result.reason = ProductionInvalidReason.BuildingPrerequisitesMissing;
+        missingBuildings.push(...missingRequired);
+      }
+    }
+
+    if (missingBuildings.length > 0) {
+      result.missingBuildings = missingBuildings;
+      // Also populate prereqs to maintain consistency with tech prerequisite validation
+      result.prereqs = [...(result.prereqs || []), ...missingBuildings];
+    }
+  }
+
   static validateObject(
     scene: Phaser.Scene,
     playerNumber: number,
@@ -141,6 +262,9 @@ export class ProductionValidator {
     const techSvc = getSceneService(scene, TechTreeService);
     const faction = player.factionType;
     ProductionValidator.validateTechPrerequisites(techSvc, playerNumber, faction, actorName, result);
+
+    // Check building prerequisites
+    ProductionValidator.validateBuildingPrerequisitesStatic(scene, playerNumber, actorName, result);
 
     // Resource cost check
     const cost = getCostForObjectName(actorName);

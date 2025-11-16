@@ -861,11 +861,21 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     let disabled = !validation.canQueue;
     let disabledDescription: string | null = null;
     let reason: ProductionInvalidReason | null = validation.reason ?? null;
+
     if (validation.techBlocked) {
       const requirementNames =
         validation.prereqs?.map((req) => pwActorDefinitions[req]?.components?.info?.name ?? req).join(", ") ?? "";
       disabledDescription = `Requires: ${requirementNames}`;
       reason = ProductionInvalidReason.TechLocked;
+    }
+
+    if (validation.buildingPrereqBlocked) {
+      const missingBuildingNames =
+        validation.missingBuildings
+          ?.map((building) => pwActorDefinitions[building]?.components?.info?.name ?? building)
+          .join(", ") ?? "";
+      disabledDescription = `Requires Building: ${missingBuildingNames}`;
+      reason = ProductionInvalidReason.BuildingPrerequisitesMissing;
     }
 
     const actorDefinition = pwActorDefinitions[objectName];
@@ -891,6 +901,9 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.BUILD_DENIED); // TODO
         break;
       case ProductionInvalidReason.SupplyBlocked:
+        this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.BUILD_DENIED); // TODO
+        break;
+      case ProductionInvalidReason.BuildingPrerequisitesMissing:
         this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.BUILD_DENIED); // TODO
         break;
       default:
