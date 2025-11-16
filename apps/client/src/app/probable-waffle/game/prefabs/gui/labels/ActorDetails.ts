@@ -84,7 +84,10 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
   private resourcesChangedSubscription?: Subscription;
   private assignedGatherersChangedSubscription?: Subscription;
 
-  static getActorAttributeIconsAndTexts(definition: PrefabDefinition): {
+  static getActorAttributeIconsAndTexts(
+    definition: PrefabDefinition,
+    actor?: GameObject
+  ): {
     icon: {
       key: string;
       frame: string;
@@ -100,54 +103,26 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
     }[] = [];
 
     // Check if this is a resource source
-    const resourceSourceComponent = getActorComponent(actor, ResourceSourceComponent);
+    const resourceSourceComponent = actor ? getActorComponent(actor, ResourceSourceComponent) : undefined;
     if (resourceSourceComponent) {
       // Show remaining resources
       const currentResources = resourceSourceComponent.getCurrentResources();
       const maxResources = resourceSourceComponent.getMaximumResources();
       const resourcesText = `${currentResources}/${maxResources}`;
-      const resourceIconIndex = iconsAndTexts.push({
+      iconsAndTexts.push({
         icon: { key: "gui", frame: "actor_info_icons/element.png" }, // todo
         text: resourcesText
-      });
-
-      // Subscribe to resource changes
-      this.resourcesChangedSubscription?.unsubscribe();
-      this.resourcesChangedSubscription = resourceSourceComponent.onResourcesChanged.subscribe(() => {
-        const attribute = this.attributes[resourceIconIndex - 1];
-        if (!attribute) return;
-        const updatedResources = resourceSourceComponent.getCurrentResources();
-        attribute.setText(`${updatedResources}/${maxResources}`);
       });
 
       // Show assigned gatherers count
       const assignedCount = resourceSourceComponent.getAssignedGatherersCount();
       const gatherersText = assignedCount === 1 ? "1 gatherer" : `${assignedCount} gatherers`;
-      const gatherersIconIndex = iconsAndTexts.push({
+      iconsAndTexts.push({
         icon: { key: "gui", frame: "actor_info_icons/element.png" }, // todo
         text: gatherersText
       });
 
-      // Subscribe to gatherer count changes
-      this.assignedGatherersChangedSubscription?.unsubscribe();
-      this.assignedGatherersChangedSubscription = resourceSourceComponent.onAssignedGatherersChanged.subscribe(
-        (count) => {
-          const attribute = this.attributes[gatherersIconIndex - 1];
-          if (!attribute) return;
-          attribute.setText(count === 1 ? "1 gatherer" : `${count} gatherers`);
-        }
-      );
-
-      // Display the resource-specific icons
-      this.attributes.forEach((a) => (a.visible = false));
-      iconsAndTexts.forEach((info, index) => {
-        const label = this.attributes[index];
-        if (!label) return;
-        label.setIcon(info.icon.key, info.icon.frame, 24);
-        label.setText(info.text);
-        label.visible = true;
-      });
-      return;
+      return iconsAndTexts;
     }
 
     const tileStepDuration = definition.components?.translatable?.tileMoveDuration;
@@ -202,7 +177,31 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
   }
 
   showActorAttributes(actor: GameObject, definition: PrefabDefinition) {
-    const iconsAndTexts = ActorDetails.getActorAttributeIconsAndTexts(definition);
+    const iconsAndTexts = ActorDetails.getActorAttributeIconsAndTexts(definition, actor);
+
+    // Check if this is a resource source
+    const resourceSourceComponent = getActorComponent(actor, ResourceSourceComponent);
+    if (resourceSourceComponent) {
+      const maxResources = resourceSourceComponent.getMaximumResources();
+      // Subscribe to resource changes
+      this.resourcesChangedSubscription?.unsubscribe();
+      this.resourcesChangedSubscription = resourceSourceComponent.onResourcesChanged.subscribe(() => {
+        const attribute = this.attributes[0];
+        if (!attribute) return;
+        const updatedResources = resourceSourceComponent.getCurrentResources();
+        attribute.setText(`${updatedResources}/${maxResources}`);
+      });
+
+      // Subscribe to gatherer count changes
+      this.assignedGatherersChangedSubscription?.unsubscribe();
+      this.assignedGatherersChangedSubscription = resourceSourceComponent.onAssignedGatherersChanged.subscribe(
+        (count) => {
+          const attribute = this.attributes[1];
+          if (!attribute) return;
+          attribute.setText(count === 1 ? "1 gatherer" : `${count} gatherers`);
+        }
+      );
+    }
 
     const healthComponent = getActorComponent(actor, HealthComponent);
     const maxHealth = definition.components?.health?.maxHealth;

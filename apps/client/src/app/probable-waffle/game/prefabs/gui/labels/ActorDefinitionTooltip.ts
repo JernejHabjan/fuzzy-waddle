@@ -4,7 +4,7 @@
 
 /* START-USER-IMPORTS */
 import { IconHelper } from "./IconHelper";
-import type { Vector2Simple, ResourceType, ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import type { ObjectNames, ResourceType, Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 import type { PrefabDefinition } from "../../definitions/prefab-definition";
 import ActorInfoLabel from "./ActorInfoLabel";
 import ActorDetails from "./ActorDetails";
@@ -155,7 +155,7 @@ export default class ActorDefinitionTooltip extends Phaser.GameObjects.Container
 
     // attributes
     const attributes = tooltipInfo.definition
-      ? ActorDetails.getActorAttributeIconsAndTexts(tooltipInfo.definition)
+      ? ActorDetails.getActorAttributeIconsAndTexts(tooltipInfo.definition, undefined)
       : [];
     this.manageAttributeLabels(attributes.length);
     if (attributes.length > 0) {
