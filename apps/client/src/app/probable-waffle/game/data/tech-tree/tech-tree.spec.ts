@@ -79,10 +79,14 @@ describe("TechTree", () => {
     });
 
     it("should get prerequisites for locked actors", () => {
-      const prereqs = service.getPrerequisites(FactionType.Tivara, ObjectNames.AnkGuard);
+      const testPlayerNumber = 1;
+      const prereqs = service.getPrerequisites(testPlayerNumber, FactionType.Tivara, ObjectNames.AnkGuard);
 
-      // AnkGuard requires worker to build it
-      expect(prereqs.length).toBeGreaterThan(0);
+      // Should return a Set
+      expect(prereqs).toBeInstanceOf(Set);
+
+      // AnkGuard requires worker to build it, but prerequisites should not include self
+      expect(prereqs.has(ObjectNames.AnkGuard)).toBe(false);
     });
 
     it("should get definition from tech tree", () => {

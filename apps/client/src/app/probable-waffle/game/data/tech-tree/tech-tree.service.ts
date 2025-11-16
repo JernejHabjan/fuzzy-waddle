@@ -1,14 +1,12 @@
-// Runtime service that stores per-faction tech graphs & unlock state.
+// Runtime service that stores per-faction tech graphs & per-player unlock state.
 import type { TechTreeGraph } from "./tech-tree.types";
-import { FactionType, ObjectNames, ProbableWafflePlayer } from "@fuzzy-waddle/api-interfaces";
+import { FactionType, ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { TechTreeBuilder } from "./tech-tree.builder";
 
 export class TechTreeService {
   private readonly graphs: Record<FactionType, TechTreeGraph>;
-  private unlocks: Record<FactionType, Set<string>> = {
-    [FactionType.Tivara]: new Set<string>(),
-    [FactionType.Skaduwee]: new Set<string>()
-  } as const;
+  // Per-player unlock tracking (keyed by player number)
+  private readonly playerUnlocks = new Map<number, Set<ObjectNames>>();
 
   constructor() {
     this.graphs = TechTreeBuilder.build();
@@ -42,41 +40,94 @@ export class TechTreeService {
     }
   }
 
+  /**
+   * Initialize unlocks for a player by scanning their existing actors.
+   * Should be called after loading a game or when a player joins.
+   */
+  initializePlayerUnlocks(playerNumber: number, existingActors: Phaser.GameObjects.GameObject[]) {
+    const unlocks = new Set<ObjectNames>();
+
+    existingActors.forEach((actor) => {
+      const actorName = actor.name as ObjectNames;
+      if (actorName) {
+        unlocks.add(actorName);
+      }
+    });
+
+    this.playerUnlocks.set(playerNumber, unlocks);
+  }
+
+  /**
+   * Register an actor as unlocked for a player.
+   * Called when an actor is created/spawned.
+   */
+  registerActorUnlock(playerNumber: number, actorName: ObjectNames) {
+    let unlocks = this.playerUnlocks.get(playerNumber);
+    if (!unlocks) {
+      unlocks = new Set<ObjectNames>();
+      this.playerUnlocks.set(playerNumber, unlocks);
+    }
+    unlocks.add(actorName);
+  }
+
+  /**
+   * Unregister an actor unlock for a player.
+   * Called when the last instance of an actor type is destroyed.
+   * Only unlocks the actor if no other instances of that type exist for the player.
+   */
+  unregisterActorUnlock(playerNumber: number, actorName: ObjectNames, remainingCount: number) {
+    if (remainingCount > 0) return; // Still have instances, keep unlocked
+
+    const unlocks = this.playerUnlocks.get(playerNumber);
+    if (unlocks) {
+      unlocks.delete(actorName);
+    }
+  }
+
   getGraph(faction: FactionType): TechTreeGraph | undefined {
     return this.graphs[faction];
   }
 
-  isUnlocked(faction: FactionType, id: ObjectNames | string): boolean {
-    return this.unlocks[faction].has(id);
+  isUnlocked(playerNumber: number, id: ObjectNames | string): boolean {
+    const unlocks = this.playerUnlocks.get(playerNumber);
+    return unlocks ? unlocks.has(id as ObjectNames) : false;
   }
 
-  advanceOnSpawn(player: ProbableWafflePlayer, id: ObjectNames | string) {
-    const faction = player.factionType;
-    if (!faction) return;
-    this.unlocks[faction].add(id);
-  }
-
-  /** Return (locked) prerequisite chain for a target node (depth-first). */
-  getPrerequisites(faction: FactionType, target: ObjectNames): ObjectNames[] {
+  /**
+   * Get prerequisites for a target actor that are not yet unlocked.
+   * Returns a Set to avoid duplicates, and excludes the target itself.
+   */
+  getPrerequisites(playerNumber: number, faction: FactionType, target: ObjectNames): Set<ObjectNames> {
     const graph = this.graphs[faction];
-    if (!graph) return [];
+    if (!graph) return new Set();
+
     const node = graph.nodes[target];
-    if (!node) return [];
-    const needed: ObjectNames[] = [];
-    const visit = (id: ObjectNames, stack: Set<string>) => {
-      if (this.isUnlocked(faction, id)) return;
+    if (!node) return new Set();
+
+    const needed = new Set<ObjectNames>();
+    const visited = new Set<ObjectNames>();
+
+    const visit = (id: ObjectNames) => {
+      if (visited.has(id)) return;
+      visited.add(id);
+
+      if (this.isUnlocked(playerNumber, id)) return;
+
       const n = graph.nodes[id];
       if (!n) return;
+
+      // Recursively visit prerequisites
       for (const pre of n.prerequisites) {
-        if (!stack.has(pre)) {
-          stack.add(pre);
-          visit(pre, stack);
-          stack.delete(pre);
-        }
+        visit(pre);
       }
-      if (!this.isUnlocked(faction, id)) needed.push(id);
+
+      // Add to needed if not unlocked and not the target itself
+      if (!this.isUnlocked(playerNumber, id) && id !== target) {
+        needed.add(id);
+      }
     };
-    visit(target, new Set());
+
+    visit(target);
     return needed;
   }
 
@@ -84,8 +135,8 @@ export class TechTreeService {
     return this.graphs[faction]?.nodes[id];
   }
 
-  isAvailable(faction: FactionType, id: ObjectNames): boolean {
-    return this.isUnlocked(faction, id) || this.getPrerequisites(faction, id).length === 0; // unlocked or no prereqs
+  isAvailable(playerNumber: number, faction: FactionType, id: ObjectNames): boolean {
+    return this.isUnlocked(playerNumber, id) || this.getPrerequisites(playerNumber, faction, id).size === 0;
   }
 
   /**

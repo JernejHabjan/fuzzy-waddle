@@ -34,9 +34,17 @@ export class ProductionValidator {
     const result: ProductionValidationResult = { canQueue: true, prereqs: [] };
     const techSvc = getSceneService(this.scene, TechTreeService);
     const faction = this.player.factionType;
+    const playerNumber = this.player.playerNumber;
 
-    // Tech checks using tech tree
-    ProductionValidator.validateTechPrerequisites(techSvc, faction, actorName, result);
+    // Validate player number exists
+    if (playerNumber === undefined) {
+      result.canQueue = false;
+      result.reason = ProductionInvalidReason.TechLocked;
+      return result;
+    }
+
+    // Tech checks using tech tree (now player-based, not faction-based)
+    ProductionValidator.validateTechPrerequisites(techSvc, playerNumber, faction, actorName, result);
 
     // Additional validation: check if actor exists in tech tree
     if (techSvc && faction != null) {
@@ -72,7 +80,11 @@ export class ProductionValidator {
 
     if (ProductionValidator.debugEnabled && !result.canQueue) {
       // eslint-disable-next-line no-console
-      console.debug("[ProductionValidator] block", { actorName, reason: result.reason, prereqs: result.prereqs });
+      console.debug("[ProductionValidator] block", {
+        actorName,
+        reason: result.reason,
+        prereqs: result.prereqs
+      });
     }
     return result;
   }
@@ -81,7 +93,7 @@ export class ProductionValidator {
   schedulePrerequisites(prereqs: ObjectNames[], finalTarget: ObjectNames) {
     const now = performance.now();
     // Insert in reverse so that earliest prerequisite appears first in queue processing
-    [...prereqs].reverse().forEach((p) => {
+    prereqs.reverse().forEach((p) => {
       this.blackboard.production.prereqQueue.push({
         id: `${p}-${now}-${Math.random().toString(36).slice(2)}`,
         type: "construct", // default semantic; execution layer decides produce vs construct
@@ -89,22 +101,23 @@ export class ProductionValidator {
         insertedAt: now
       });
     });
-    // Optionally also push final target marker (optional): keep lean for now.
   }
 
   private static validateTechPrerequisites(
     techSvc: TechTreeService | undefined,
+    playerNumber: number,
     faction: FactionType | undefined,
     actorName: ObjectNames,
     result: ProductionValidationResult
   ) {
     if (techSvc && faction != null) {
-      if (!techSvc.isUnlocked(faction, actorName)) {
-        const prereqs = techSvc.getPrerequisites(faction, actorName);
-        if (prereqs.length > 0) {
+      // Check if unlocked for this specific player, not just faction
+      if (!techSvc.isUnlocked(playerNumber, actorName)) {
+        const prereqs = techSvc.getPrerequisites(playerNumber, faction, actorName);
+        if (prereqs.size > 0) {
           result.canQueue = false;
           result.techBlocked = true;
-          result.prereqs = prereqs;
+          result.prereqs = Array.from(prereqs);
           result.reason = ProductionInvalidReason.TechLocked;
         }
       }
@@ -124,10 +137,10 @@ export class ProductionValidator {
       return result;
     }
 
-    // Tech checks
+    // Tech checks (now player-based)
     const techSvc = getSceneService(scene, TechTreeService);
     const faction = player.factionType;
-    ProductionValidator.validateTechPrerequisites(techSvc, faction, actorName, result);
+    ProductionValidator.validateTechPrerequisites(techSvc, playerNumber, faction, actorName, result);
 
     // Resource cost check
     const cost = getCostForObjectName(actorName);

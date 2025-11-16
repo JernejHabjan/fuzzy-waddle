@@ -4,17 +4,20 @@ import { IdComponent } from "../../entity/components/id-component";
 import { OwnerComponent } from "../../entity/components/owner-component";
 import { ResourceSourceComponent } from "../../entity/components/resource/resource-source-component";
 import { ResourceDrainComponent } from "../../entity/components/resource/resource-drain-component";
-import { ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import { getTileCoordsUnderObject } from "../../library/tile-under-object";
-import { getSceneComponent } from "./scene-component-helpers";
+import { getSceneComponent, getSceneService } from "./scene-component-helpers";
 import { TilemapComponent } from "../tilemap/tilemap.component";
+import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
 
 export class ActorIndexSystem {
   private readonly idActors = new Set<GameObject>();
   private readonly ownedActors = new Map<number, Set<GameObject>>();
   private readonly resourceSources = new Set<GameObject>();
   private readonly resourceDrains = new Set<GameObject>();
+  // Track count of each actor type per player for tech unlock management
+  private readonly actorTypeCounts = new Map<number, Map<ObjectNames, number>>();
 
   constructor(private readonly scene: Phaser.Scene) {
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
@@ -40,6 +43,18 @@ export class ActorIndexSystem {
           this.ownedActors.set(owner, set);
         }
         set.add(obj);
+
+        // Track actor type count and update tech tree unlocks
+        const actorName = obj.name as ObjectNames;
+        if (actorName) {
+          this.incrementActorTypeCount(owner, actorName);
+
+          // Register unlock in tech tree service
+          const techTreeService = getSceneService(this.scene, TechTreeService);
+          if (techTreeService) {
+            techTreeService.registerActorUnlock(owner, actorName);
+          }
+        }
       }
 
       if (getActorComponent(obj, ResourceSourceComponent)) {
@@ -50,6 +65,7 @@ export class ActorIndexSystem {
       }
 
       // Auto-unregister on destroy
+      obj.once(HealthComponent.KilledEvent, () => this.unregisterActor(obj));
       obj.once(Phaser.GameObjects.Events.DESTROY, () => this.unregisterActor(obj));
     }
   };
@@ -65,6 +81,18 @@ export class ActorIndexSystem {
         const set = this.ownedActors.get(owner);
         set?.delete(obj);
         if (set && set.size === 0) this.ownedActors.delete(owner);
+
+        // Track actor type count and update tech tree unlocks
+        const actorName = obj.name as ObjectNames;
+        if (actorName) {
+          const remainingCount = this.decrementActorTypeCount(owner, actorName);
+
+          // Unregister unlock if this was the last instance
+          const techTreeService = getSceneService(this.scene, TechTreeService);
+          if (techTreeService) {
+            techTreeService.unregisterActorUnlock(owner, actorName, remainingCount);
+          }
+        }
       }
 
       this.resourceSources.delete(obj);
@@ -72,9 +100,61 @@ export class ActorIndexSystem {
     }
   };
 
+  /**
+   * Increment the count of a specific actor type for a player.
+   */
+  private incrementActorTypeCount(playerNumber: number, actorName: ObjectNames): number {
+    let playerCounts = this.actorTypeCounts.get(playerNumber);
+    if (!playerCounts) {
+      playerCounts = new Map<ObjectNames, number>();
+      this.actorTypeCounts.set(playerNumber, playerCounts);
+    }
+
+    const currentCount = playerCounts.get(actorName) || 0;
+    const newCount = currentCount + 1;
+    playerCounts.set(actorName, newCount);
+    return newCount;
+  }
+
+  /**
+   * Decrement the count of a specific actor type for a player.
+   * Returns the remaining count.
+   */
+  private decrementActorTypeCount(playerNumber: number, actorName: ObjectNames): number {
+    const playerCounts = this.actorTypeCounts.get(playerNumber);
+    if (!playerCounts) return 0;
+
+    const currentCount = playerCounts.get(actorName) || 0;
+    const newCount = Math.max(0, currentCount - 1);
+
+    if (newCount === 0) {
+      playerCounts.delete(actorName);
+    } else {
+      playerCounts.set(actorName, newCount);
+    }
+
+    return newCount;
+  }
+
+  /**
+   * Get the count of a specific actor type for a player.
+   */
+  getActorTypeCount(playerNumber: number, actorName: ObjectNames): number {
+    const playerCounts = this.actorTypeCounts.get(playerNumber);
+    return playerCounts?.get(actorName) || 0;
+  }
+
   // One-time population (useful after initial actor creation)
   scanExistingActors(): void {
     this.scene.children.list.forEach((child) => this.registerActor(child as GameObject));
+
+    // After scanning, initialize tech tree unlocks for all players
+    const techTreeService = getSceneService(this.scene, TechTreeService);
+    if (techTreeService) {
+      this.ownedActors.forEach((actors, playerNumber) => {
+        techTreeService.initializePlayerUnlocks(playerNumber, Array.from(actors));
+      });
+    }
   }
 
   getAllIdActors(): GameObject[] {
