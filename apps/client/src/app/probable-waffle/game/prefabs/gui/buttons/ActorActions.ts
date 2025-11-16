@@ -35,7 +35,12 @@ import { OrderType } from "../../../ai/order-type";
 import { HealingComponent } from "../../../entity/components/combat/components/healing-component";
 import { GathererComponent } from "../../../entity/components/resource/gatherer-component";
 import { getPrimarySelectedActor } from "../../../data/selection-helpers";
-import { ProductionValidator } from "../../../data/tech-tree/production-validator";
+import {
+  ProductionInvalidReason,
+  type ProductionValidationResult,
+  ProductionValidator
+} from "../../../data/tech-tree/production-validator";
+import { getCommunicator, getPlayer } from "../../../data/scene-data";
 import { findProductionBuildingWithLeastRemainingTime } from "../../../entity/components/production/production-helpers";
 /* END-USER-IMPORTS */
 
@@ -190,6 +195,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
 
   // keep UI in sync with handler
   private buildingModeSubscription?: Subscription;
+  private resourceChangedSubscription?: Subscription;
 
   private subscribeToPlayerSelection() {
     this.selectionChangedSubscription = listenToSelectionEvents(this.scene)?.subscribe(() => {
@@ -205,6 +211,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         this.showActorActions(actor, actorsByPriority);
         this.subscribeToActorKillEvent(actor);
         this.subscribeToActorConstructionEvent(actor, actorsByPriority);
+        this.subscribeToResourceChanges();
       }
     });
 
@@ -228,6 +235,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     this.actor_actions.forEach((action) => {
       action.setup({ visible: false });
     });
+    this.resourceChangedSubscription?.unsubscribe();
   }
 
   private subscribeToActorKillEvent(actor: Phaser.GameObjects.GameObject) {
@@ -253,6 +261,17 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         this.showActorActions(actor, allActors);
       }
     });
+  }
+
+  private subscribeToResourceChanges() {
+    this.resourceChangedSubscription?.unsubscribe();
+    const playerNr = getCurrentPlayerNumber(this.mainSceneWithActors);
+    if (!playerNr) return;
+    this.resourceChangedSubscription = getCommunicator(this.mainSceneWithActors)
+      .playerChanged?.onWithFilter((p) => p.data.playerNumber === playerNr && p.property.startsWith("resource."))
+      .subscribe(() => {
+        this.refreshForCurrentSelection();
+      });
   }
 
   private readonly attackAction = (actors: Phaser.GameObjects.GameObject[]) =>
@@ -590,13 +609,8 @@ export default class ActorActions extends Phaser.GameObjects.Container {
           throw new Error(`Info component not found for ${product}`);
         }
         // UI validation gating
-        const playerNumber = getCurrentPlayerNumber(this.mainSceneWithActors)!;
-        const validation = ProductionValidator.validateForScene(this.mainSceneWithActors, playerNumber, product);
-        const disabled = !!validation?.prereqs?.length;
-        let disabledDescription = null;
-        if (disabled) {
-          disabledDescription = `Requires: ${validation.prereqs.join(", ")}`;
-        }
+        const { disabled, disabledDescription, reason, validation } = this.getProductionValidationState(product);
+
         const action = this.actor_actions[index];
         if (!action) {
           console.error("Action button not found at index", index);
@@ -611,6 +625,10 @@ export default class ActorActions extends Phaser.GameObjects.Container {
           disabled,
           visible: true,
           action: () => {
+            if (disabled) {
+              this.playInvalidActionSfx(reason);
+              return;
+            }
             if (!actorDefinition.components?.productionCost) {
               throw new Error(`Production cost not found for ${product}`);
             }
@@ -665,7 +683,9 @@ export default class ActorActions extends Phaser.GameObjects.Container {
             iconKey: info.smallImage.key!,
             iconFrame: info.smallImage.frame,
             iconOrigin: info.smallImage.origin ?? { x: 0.5, y: 0.5 },
-            description: disabledDescription ?? info.description
+            description: disabledDescription ?? info.description,
+            definition: actorDefinition,
+            unmetRequirements: validation?.prereqs
           },
           // Use letter shortcuts from handler (Q..O)
           shortcut: this.HOTKEYS[localIndex]
@@ -754,13 +774,8 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         throw new Error(`Info component not found for ${building}`);
       }
       // UI validation gating
-      const playerNumber = getCurrentPlayerNumber(this.mainSceneWithActors)!;
-      const validation = ProductionValidator.validateForScene(this.mainSceneWithActors, playerNumber, building);
-      const disabled = !!validation?.prereqs?.length;
-      let disabledDescription = null;
-      if (disabled) {
-        disabledDescription = `Requires: ${validation.prereqs.join(", ")}`;
-      }
+      const { disabled, disabledDescription, reason, validation } = this.getProductionValidationState(building);
+
       const action = this.actor_actions[index];
       if (!action) {
         console.error("Action button not found at index", index);
@@ -775,7 +790,10 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         disabled,
         visible: true,
         action: () => {
-          if (disabled) return; // prevent invalid action
+          if (disabled) {
+            this.playInvalidActionSfx(reason);
+            return;
+          }
           const buildingCursor = getSceneComponent(this.mainSceneWithActors, BuildingCursor);
           buildingCursor?.startPlacingBuilding.emit(building);
         },
@@ -784,7 +802,9 @@ export default class ActorActions extends Phaser.GameObjects.Container {
           iconKey: info.smallImage.key!,
           iconFrame: info.smallImage.frame,
           iconOrigin: info.smallImage.origin ?? { x: 0.5, y: 0.5 },
-          description: disabledDescription ?? info.description
+          description: disabledDescription ?? info.description,
+          definition: actorDefinition,
+          unmetRequirements: validation?.prereqs
         },
         // Use letter shortcuts from handler (Q..O)
         shortcut: this.HOTKEYS[localIndex]
@@ -830,12 +850,75 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     return index;
   }
 
+  private getProductionValidationState(objectName: ObjectNames): {
+    disabled: boolean;
+    disabledDescription: string | null;
+    reason: ProductionInvalidReason | null;
+    validation: ProductionValidationResult | null;
+  } {
+    const playerNumber = getCurrentPlayerNumber(this.mainSceneWithActors)!;
+    const validation = ProductionValidator.validateObject(this.mainSceneWithActors, playerNumber, objectName);
+    let disabled = !validation.canQueue;
+    let disabledDescription: string | null = null;
+    let reason: ProductionInvalidReason | null = validation.reason ?? null;
+
+    if (validation.techBlocked) {
+      const requirementNames =
+        validation.prereqs?.map((req) => pwActorDefinitions[req]?.components?.info?.name ?? req).join(", ") ?? "";
+      disabledDescription = `Requires: ${requirementNames}`;
+      reason = ProductionInvalidReason.TechLocked;
+    }
+
+    if (validation.buildingPrereqBlocked) {
+      const missingBuildingNames =
+        validation.missingBuildings
+          ?.map((building) => pwActorDefinitions[building]?.components?.info?.name ?? building)
+          .join(", ") ?? "";
+      disabledDescription = `Requires Building: ${missingBuildingNames}`;
+      reason = ProductionInvalidReason.BuildingPrerequisitesMissing;
+    }
+
+    const actorDefinition = pwActorDefinitions[objectName];
+    const player = getPlayer(this.mainSceneWithActors, playerNumber);
+    const cost = actorDefinition.components?.productionCost;
+    if (player && cost && !player.canPayAllResources(cost.resources)) {
+      disabled = true;
+      if (!disabledDescription) {
+        disabledDescription = "Not enough resources";
+        reason = ProductionInvalidReason.NotEnoughResources;
+      }
+    }
+
+    return { disabled, disabledDescription, reason, validation };
+  }
+
+  private playInvalidActionSfx(reason: ProductionInvalidReason | null) {
+    switch (reason) {
+      case ProductionInvalidReason.NotEnoughResources:
+        this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.NOT_ENOUGH_RESOURCES);
+        break;
+      case ProductionInvalidReason.TechLocked:
+        this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.BUILD_DENIED); // TODO
+        break;
+      case ProductionInvalidReason.SupplyBlocked:
+        this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.BUILD_DENIED); // TODO
+        break;
+      case ProductionInvalidReason.BuildingPrerequisitesMissing:
+        this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.BUILD_DENIED); // TODO
+        break;
+      default:
+        this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.BUILD_DENIED);
+        break;
+    }
+  }
+
   override destroy(fromScene?: boolean) {
     super.destroy(fromScene);
     this.selectionChangedSubscription?.unsubscribe();
     this.actorKillSubscription?.unsubscribe();
     this.actorConstructionSubscription?.unsubscribe();
     this.buildingModeSubscription?.unsubscribe();
+    this.resourceChangedSubscription?.unsubscribe();
   }
 
   /* END-USER-CODE */

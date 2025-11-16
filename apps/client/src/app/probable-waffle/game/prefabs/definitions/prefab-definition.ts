@@ -26,6 +26,7 @@ import type { AudioDefinition } from "../../entity/components/actor-audio/audio-
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { type HousingCostDefinition } from "../../entity/components/building/housing-cost-component";
 import type { HousingDefinition } from "../../entity/components/building/housing-component";
+import { type BuildingPrerequisitesDefinition } from "../../data/tech-tree/actor-prerequisites";
 
 export type PrefabDefinition = Partial<{
   components: Partial<{
@@ -57,6 +58,7 @@ export type PrefabDefinition = Partial<{
     selectable: SelectableDefinition;
     collider: ColliderDefinition;
     audio: AudioDefinition;
+    buildingPrerequisites: BuildingPrerequisitesDefinition;
   }>;
   systems: Partial<{
     movement: {

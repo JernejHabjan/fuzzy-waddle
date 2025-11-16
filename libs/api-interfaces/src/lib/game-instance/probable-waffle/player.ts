@@ -81,10 +81,18 @@ export class ProbableWafflePlayer extends BasePlayer<
   canPayAllResources(constructionCosts: Partial<Record<ResourceType, number>>) {
     // noinspection UnnecessaryLocalVariableJS
     const canAfford = Object.entries(constructionCosts).every(([resourceType, amount]) => {
-      const resourceAmount = this.playerState.data.resources[resourceType as ResourceType] || 0;
-      return resourceAmount >= amount;
+      return this.canPayResources(resourceType as ResourceType, amount);
     });
     return canAfford;
+  }
+
+  canPayResources(resourceType: ResourceType, amount: number) {
+    const resourceAmount = this.playerState.data.resources[resourceType] || 0;
+    return resourceAmount >= amount;
+  }
+
+  canAffordHousing(housingNeeded: number) {
+    return this.playerState.data.housing.currentHousing + housingNeeded <= this.playerState.data.housing.maxHousing;
   }
 }
 

@@ -25,7 +25,10 @@ import { AudioService } from "../../world/services/audio.service";
 import { UiFeedbackBuildDeniedSound } from "../../hud/UiFeedbackSfx";
 import { FogOfWarComponent } from "../../world/tilemap/fog-of-war.component";
 import { RepresentableComponent } from "../../entity/components/representable-component";
+import { ProductionValidator } from "../../data/tech-tree/production-validator";
 import Vector2 = Phaser.Math.Vector2;
+import { getCostForObjectName } from "../../entity/components/production/cost-utils";
+import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { IsoHelper } from "../../world/tilemap/iso-helper";
 
 export class BuildingCursor {
@@ -171,10 +174,23 @@ export class BuildingCursor {
     if (this.isDragging) {
       // Reset invalid positions set
       this.invalidCursorPositions.clear();
+      const cumulativeCost: Partial<Record<ResourceType, number>> = {};
 
       // Check each spawned object individually and track which ones can't be placed
       for (const gameObject of this.spawnedCursorGameObjects) {
-        const canPlace = this.getCanConstructBuildingAt(gameObject, [...this.spawnedCursorGameObjects, this.building!]);
+        const canPlace = this.getCanConstructBuildingAt(
+          gameObject,
+          [...this.spawnedCursorGameObjects, this.building!],
+          cumulativeCost
+        );
+
+        const cost = getCostForObjectName(gameObject.name as ObjectNames);
+        if (cost) {
+          for (const resource in cost) {
+            cumulativeCost[resource as ResourceType] =
+              (cumulativeCost[resource as ResourceType] || 0) + cost[resource as ResourceType]!;
+          }
+        }
 
         if (!canPlace) {
           const key = this.getSnappedLogicalKey(gameObject);
@@ -191,6 +207,7 @@ export class BuildingCursor {
       // If not dragging, just update the main building cursor
       const constructionInterface = getActorComponent(this.building, ConstructionGameObjectInterfaceComponent);
       if (constructionInterface) {
+        this.canConstructBuildingAt = this.getCanConstructBuildingAt(this.building);
         constructionInterface.tintAndAlphaCursor(this.canConstructBuildingAt ? undefined : 0xff0000, 0.7);
       }
     }
@@ -198,9 +215,23 @@ export class BuildingCursor {
 
   getCanConstructBuildingAt(
     building?: GameObjects.GameObject,
-    ignoreGameObjects: GameObjects.GameObject[] = []
+    ignoreGameObjects: GameObjects.GameObject[] = [],
+    currentCost: Partial<Record<ResourceType, number>> = {}
   ): boolean {
     if (!this.tileMapComponent || !this.navigationService || !this.fogOfWarComponent || !building) return false;
+
+    const playerNumber = getCurrentPlayerNumber(this.scene);
+    if (playerNumber) {
+      const validation = ProductionValidator.validateObject(
+        this.scene,
+        playerNumber,
+        building.name as ObjectNames,
+        currentCost
+      );
+      if (!validation.canQueue) {
+        return false;
+      }
+    }
 
     const tilesUnderBuilding = getTileCoordsUnderObject(this.tileMapComponent.tilemap, building);
     if (!tilesUnderBuilding.length) return false;
@@ -439,6 +470,9 @@ export class BuildingCursor {
       return;
     }
 
+    // Re-validate just before placing
+    this.updateObjectVisuals();
+
     if (this.isDragging) {
       // For drag operations, check if all buildings can be placed
       const allValid = this.spawnedCursorGameObjects.length === 0 || this.invalidCursorPositions.size === 0;
@@ -579,13 +613,11 @@ export class BuildingCursor {
   }
 
   private spawnCursorGameObjectAt(x: number, y: number) {
-    const actor = ActorManager.createActorCore(
-      this.scene,
-      this.building!.name as ObjectNames,
-      {
+    const actor = ActorManager.createActorCore(this.scene, this.building!.name as ObjectNames, {
+      representable: {
         logicalWorldTransform: { x, y, z: 0 }
-      } as ActorDefinition
-    );
+      }
+    } satisfies ActorDefinition);
     const gameObject = this.scene.add.existing(actor);
     this.spawnedCursorGameObjects.push(gameObject);
     DepthHelper.setActorDepth(gameObject);

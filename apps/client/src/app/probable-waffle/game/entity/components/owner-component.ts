@@ -1,7 +1,7 @@
 import GameObject = Phaser.GameObjects.GameObject;
 import { getActorComponent } from "../../data/actor-component";
 import { Plugins } from "../../world/const/Plugins";
-import { GameSetupHelpers, Guid, type OwnerComponentData } from "@fuzzy-waddle/api-interfaces";
+import { GameSetupHelpers, Guid, type OwnerComponentData, ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import GameProbableWaffleScene from "../../world/scenes/GameProbableWaffleScene";
 import { HealthComponent } from "./combat/components/health-component";
 import { getGameObjectDepth, onObjectReady } from "../../data/game-object-helper";
@@ -10,6 +10,10 @@ import { ActorTranslateComponent } from "./movement/actor-translate-component";
 import { ContainerComponent } from "./building/container-component";
 import { ConstructionSiteComponent } from "./construction/construction-site-component";
 import { VisionComponent } from "./vision-component";
+import { getSceneService } from "../../world/services/scene-component-helpers";
+import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
+import { getCanonicalActorNameCached } from "../../data/tech-tree/canonical-actor-name";
+import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 
 export type OwnerDefinition = {
   color: { originalColor: number; epsilon: number }[];
@@ -74,8 +78,42 @@ export class OwnerComponent {
   }
 
   setOwner(playerNumber?: number) {
+    const oldOwner = this.owner;
+    const newOwner = playerNumber;
+
+    // Handle tech tree unlock changes when owner changes
+    if (oldOwner !== newOwner) {
+      this.handleOwnerChangeForTechTree(oldOwner, newOwner);
+    }
+
     this.owner = playerNumber;
     this.tryToSetComponents();
+  }
+
+  private handleOwnerChangeForTechTree(oldOwner: number | undefined, newOwner: number | undefined) {
+    const techTreeService = getSceneService(this.gameObject.scene, TechTreeService);
+    if (!techTreeService) return;
+
+    const actorName = this.gameObject.name as ObjectNames;
+    if (!actorName) return;
+
+    const canonicalName = getCanonicalActorNameCached(actorName);
+
+    // Get ActorIndexSystem to check actor counts
+    const actorIndexSystem = getSceneService(this.gameObject.scene, ActorIndexSystem);
+
+    // Remove from old owner's unlocks
+    if (oldOwner !== undefined && actorIndexSystem) {
+      const remainingCount = actorIndexSystem.getActorTypeCount(oldOwner, canonicalName) - 1;
+      if (remainingCount <= 0) {
+        techTreeService.unregisterActorUnlock(oldOwner, canonicalName, 0);
+      }
+    }
+
+    // Add to new owner's unlocks
+    if (newOwner !== undefined) {
+      techTreeService.registerActorUnlock(newOwner, canonicalName);
+    }
   }
 
   clearOwner() {
