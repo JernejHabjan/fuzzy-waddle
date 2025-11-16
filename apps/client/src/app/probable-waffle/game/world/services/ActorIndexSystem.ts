@@ -10,6 +10,7 @@ import { getTileCoordsUnderObject } from "../../library/tile-under-object";
 import { getSceneComponent, getSceneService } from "./scene-component-helpers";
 import { TilemapComponent } from "../tilemap/tilemap.component";
 import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
+import { getCanonicalActorNameCached } from "../../data/tech-tree/canonical-actor-name";
 
 export class ActorIndexSystem {
   private readonly idActors = new Set<GameObject>();
@@ -17,6 +18,7 @@ export class ActorIndexSystem {
   private readonly resourceSources = new Set<GameObject>();
   private readonly resourceDrains = new Set<GameObject>();
   // Track count of each actor type per player for tech unlock management
+  // Uses canonical names to group variants (e.g., TivaraWorkerMale counts as TivaraWorker)
   private readonly actorTypeCounts = new Map<number, Map<ObjectNames, number>>();
 
   constructor(private readonly scene: Phaser.Scene) {
@@ -47,12 +49,14 @@ export class ActorIndexSystem {
         // Track actor type count and update tech tree unlocks
         const actorName = obj.name as ObjectNames;
         if (actorName) {
-          this.incrementActorTypeCount(owner, actorName);
+          // Use canonical name to group variants (e.g., TivaraWorkerMale -> TivaraWorker)
+          const canonicalName = getCanonicalActorNameCached(actorName);
+          this.incrementActorTypeCount(owner, canonicalName);
 
           // Register unlock in tech tree service
           const techTreeService = getSceneService(this.scene, TechTreeService);
           if (techTreeService) {
-            techTreeService.registerActorUnlock(owner, actorName);
+            techTreeService.registerActorUnlock(owner, canonicalName);
           }
         }
       }
@@ -85,12 +89,14 @@ export class ActorIndexSystem {
         // Track actor type count and update tech tree unlocks
         const actorName = obj.name as ObjectNames;
         if (actorName) {
-          const remainingCount = this.decrementActorTypeCount(owner, actorName);
+          // Use canonical name to group variants (e.g., TivaraWorkerMale -> TivaraWorker)
+          const canonicalName = getCanonicalActorNameCached(actorName);
+          const remainingCount = this.decrementActorTypeCount(owner, canonicalName);
 
           // Unregister unlock if this was the last instance
           const techTreeService = getSceneService(this.scene, TechTreeService);
           if (techTreeService) {
-            techTreeService.unregisterActorUnlock(owner, actorName, remainingCount);
+            techTreeService.unregisterActorUnlock(owner, canonicalName, remainingCount);
           }
         }
       }
@@ -138,6 +144,7 @@ export class ActorIndexSystem {
 
   /**
    * Get the count of a specific actor type for a player.
+   * Uses canonical names (e.g., TivaraWorkerMale is counted as TivaraWorker).
    */
   getActorTypeCount(playerNumber: number, actorName: ObjectNames): number {
     const playerCounts = this.actorTypeCounts.get(playerNumber);

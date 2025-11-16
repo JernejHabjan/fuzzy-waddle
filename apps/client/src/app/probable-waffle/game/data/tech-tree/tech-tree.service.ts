@@ -2,6 +2,7 @@
 import type { TechTreeGraph } from "./tech-tree.types";
 import { FactionType, ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { TechTreeBuilder } from "./tech-tree.builder";
+import { getCanonicalActorNameCached } from "./canonical-actor-name";
 
 export class TechTreeService {
   private readonly graphs: Record<FactionType, TechTreeGraph>;
@@ -50,7 +51,9 @@ export class TechTreeService {
     existingActors.forEach((actor) => {
       const actorName = actor.name as ObjectNames;
       if (actorName) {
-        unlocks.add(actorName);
+        // Use canonical name to group variants (e.g., TivaraWorkerMale -> TivaraWorker)
+        const canonicalName = getCanonicalActorNameCached(actorName);
+        unlocks.add(canonicalName);
       }
     });
 
@@ -67,7 +70,10 @@ export class TechTreeService {
       unlocks = new Set<ObjectNames>();
       this.playerUnlocks.set(playerNumber, unlocks);
     }
-    unlocks.add(actorName);
+
+    // Use canonical name to group variants
+    const canonicalName = getCanonicalActorNameCached(actorName);
+    unlocks.add(canonicalName);
   }
 
   /**
@@ -80,7 +86,9 @@ export class TechTreeService {
 
     const unlocks = this.playerUnlocks.get(playerNumber);
     if (unlocks) {
-      unlocks.delete(actorName);
+      // Use canonical name to group variants
+      const canonicalName = getCanonicalActorNameCached(actorName);
+      unlocks.delete(canonicalName);
     }
   }
 
