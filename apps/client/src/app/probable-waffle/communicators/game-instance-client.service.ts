@@ -247,6 +247,14 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
         if (this.DEBUG) {
           console.log("game state changed on client", payload);
         }
+        if (!this.gameInstance) return;
+        ProbableWaffleListeners.gameStateDataChanged(this.gameInstance, payload);
+
+        if (payload.property === "all") {
+          // this is the initial sync
+          this.gameInstance.gameInstanceMetadata.data.startOptions.loadFromSave = true;
+          this.probableWaffleCommunicatorService.allScenes.emit({ name: "restart-game" });
+        }
       })
     );
   }

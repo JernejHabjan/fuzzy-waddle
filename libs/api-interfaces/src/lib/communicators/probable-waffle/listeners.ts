@@ -338,7 +338,7 @@ export class ProbableWaffleListeners {
   }
 
   private static getActorById(id: string, gameInstance: ProbableWaffleGameInstance): ActorDefinition | undefined {
-    return gameInstance.gameState!.data.actors.find((a) => a.id === id);
+    return gameInstance.gameState!.data.actors.find((a) => a.id?.id === id);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
