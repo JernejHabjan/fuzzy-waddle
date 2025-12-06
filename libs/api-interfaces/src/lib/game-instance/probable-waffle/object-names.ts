@@ -17,6 +17,7 @@ export enum ObjectNames {
   Sandhold = "Sandhold",
   Temple = "Temple",
   WorkMill = "WorkMill",
+  MiningCamp = "MiningCamp",
   SkaduweeOwl = "SkaduweeOwl",
   SkaduweeRangedFemale = "SkaduweeRangedFemale",
   SkaduweeMagicianFemale = "SkaduweeMagicianFemale",
