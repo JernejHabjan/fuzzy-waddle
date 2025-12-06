@@ -271,7 +271,8 @@ export class NavigationService {
               if (!neighborPathDef) {
                 // This indicates a data integrity issue: accessibleFromAllSides is false but no path definition exists
                 console.warn(
-                  `WalkableComponent at (${nx}, ${ny}) has accessibleFromAllSides=false but undefined walkablePathDefinition`
+                  `WalkableComponent at (${nx}, ${ny}) has accessibleFromAllSides=false but undefined walkablePathDefinition. ` +
+                    `Checking from (${x}, ${y}) direction ${name}`
                 );
                 return;
               }
