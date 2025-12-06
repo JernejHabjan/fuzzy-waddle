@@ -106,17 +106,4 @@ export class WalkableComponent {
   get walkablePathDefinition(): WalkablePath {
     return this.walkablePath;
   }
-
-  get accessibleFromAllSides(): boolean {
-    return (
-      (this.walkablePath.top ?? false) &&
-      (this.walkablePath.bottom ?? false) &&
-      (this.walkablePath.left ?? false) &&
-      (this.walkablePath.right ?? false) &&
-      (this.walkablePath.topLeft ?? false) &&
-      (this.walkablePath.topRight ?? false) &&
-      (this.walkablePath.bottomLeft ?? false) &&
-      (this.walkablePath.bottomRight ?? false)
-    );
-  }
 }

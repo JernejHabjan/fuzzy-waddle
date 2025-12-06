@@ -26,6 +26,9 @@ failOnConsole();
     Polygon: class {}
   },
   Scene: class {},
+  Scenes: {
+    Events: {},
+  },
   Math: {
     Distance: {
       Between: () => 0,

@@ -284,9 +284,8 @@ export class NavigationService {
 
         const walkableComponent = cell.walkableComponent;
         const pathDef = walkableComponent?.walkablePathDefinition;
-        const accessibleFromAllSides = walkableComponent?.accessibleFromAllSides ?? true;
 
-        if (walkableComponent && !accessibleFromAllSides) {
+        if (walkableComponent) {
           directions.forEach(({ dir, dx, dy, name }) => {
             checkDirection(dir, dx, dy, name, pathDef);
           });
