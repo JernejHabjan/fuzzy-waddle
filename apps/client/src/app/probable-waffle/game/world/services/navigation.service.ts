@@ -259,6 +259,7 @@ export class NavigationService {
             if (!canMoveToNeighbor && !canMoveFromNeighbor) return;
 
             // Check if current cell restricts movement in this direction (exiting check)
+            // If pathDef is undefined, the cell is accessible from all sides
             if (pathDef && !pathDef[name]) {
               // Current cell doesn't allow exiting in this direction
               return;
@@ -715,10 +716,20 @@ export class NavigationService {
    * Gets the walkable height at a specific tile position.
    * Returns the height (in px) at which units should stand when on this tile.
    * @param tile The tile coordinates to check
-   * @returns The walkable height in pixels, or 0 if not available
+   * @returns The walkable height in pixels, or 0 if tile is out of bounds or not available
    */
   public getWalkableHeightAtTile(tile: Vector2Simple): number {
-    const cell = this.heightMapGrid[tile.y]?.[tile.x];
+    // Validate bounds
+    if (tile.y < 0 || tile.y >= this.heightMapGrid.length) {
+      console.warn(`getWalkableHeightAtTile: tile Y coordinate ${tile.y} is out of bounds`);
+      return 0;
+    }
+    const row = this.heightMapGrid[tile.y];
+    if (!row || tile.x < 0 || tile.x >= row.length) {
+      console.warn(`getWalkableHeightAtTile: tile X coordinate ${tile.x} is out of bounds`);
+      return 0;
+    }
+    const cell = row[tile.x];
     return cell?.walkableHeight ?? 0;
   }
 
