@@ -105,12 +105,12 @@ export class ResourceSourceComponent {
         frame = "foliage/tree_trunks/tree_fallen.png";
         break;
       case ResourceType.Stone:
-        texture = "outside"; // todo
-        frame = "foliage/tree_trunks/tree_fallen.png"; // todo
+        texture = "outside";
+        frame = "nature/resources/stone_pile_depleted_1.png"; // todo - zip to spritesheet
         break;
       case ResourceType.Minerals:
-        texture = "outside"; // todo
-        frame = "foliage/tree_trunks/tree_fallen.png"; // todo
+        texture = "outside";
+        frame = "nature/resources/minerals_pile_depleted_1.png"; // todo - zip to spritesheet
         break;
     }
     if (!texture || !frame) return;
