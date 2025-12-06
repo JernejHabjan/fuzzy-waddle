@@ -85,15 +85,15 @@ export class ResourceSourceComponent {
       this.onDepleted.next(this.gameObject);
       const renderedTransform = getGameObjectRenderedTransform(this.gameObject);
       this.gameObject.destroy();
-      this.spawnTreeTrunk(renderedTransform);
+      this.spawnDepletedResourceSourceSprite(renderedTransform);
     }
     return gatheredAmount;
   }
 
   /**
-   * Spawns a tree trunk image at the given rendered transform position.
+   * Spawns a depleted resource source image at the given rendered transform position.
    */
-  private spawnTreeTrunk(renderedTransform: Vector2Simple | null) {
+  private spawnDepletedResourceSourceSprite(renderedTransform: Vector2Simple | null) {
     if (!renderedTransform) return;
     if (!this.scene) return;
 
