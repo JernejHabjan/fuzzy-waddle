@@ -112,10 +112,6 @@ export class ResourceSourceComponent {
         texture = "outside"; // todo
         frame = "foliage/tree_trunks/tree_fallen.png"; // todo
         break;
-      case ResourceType.Ambrosia:
-        texture = "outside"; // todo
-        frame = "foliage/tree_trunks/tree_fallen.png"; // todo
-        break;
     }
     if (!texture || !frame) return;
 
