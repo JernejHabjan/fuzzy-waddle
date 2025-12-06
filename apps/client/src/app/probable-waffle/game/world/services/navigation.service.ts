@@ -268,6 +268,10 @@ export class NavigationService {
             // Check if neighbor cell restricts movement from the opposite direction (entering check)
             if (neighborWalkableComponent && !neighborWalkableComponent.accessibleFromAllSides) {
               const neighborPathDef = neighborWalkableComponent.walkablePathDefinition;
+              if (!neighborPathDef) {
+                // Safety check: if walkablePathDefinition is undefined, skip this neighbor
+                return;
+              }
               const oppositeDirection: WalkablePathDirection | undefined = {
                 [WalkablePathDirection.Top]: WalkablePathDirection.Bottom,
                 [WalkablePathDirection.Bottom]: WalkablePathDirection.Top,
