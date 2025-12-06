@@ -269,7 +269,10 @@ export class NavigationService {
             if (neighborWalkableComponent && !neighborWalkableComponent.accessibleFromAllSides) {
               const neighborPathDef = neighborWalkableComponent.walkablePathDefinition;
               if (!neighborPathDef) {
-                // Safety check: if walkablePathDefinition is undefined, skip this neighbor
+                // This indicates a data integrity issue: accessibleFromAllSides is false but no path definition exists
+                console.warn(
+                  `WalkableComponent at (${nx}, ${ny}) has accessibleFromAllSides=false but undefined walkablePathDefinition`
+                );
                 return;
               }
               const oppositeDirection: WalkablePathDirection | undefined = {
@@ -723,13 +726,14 @@ export class NavigationService {
    * @returns The walkable height in pixels, or 0 if tile is out of bounds or not available
    */
   public getWalkableHeightAtTile(tile: Vector2Simple): number {
-    // Validate bounds
-    if (tile.y < 0 || tile.y >= this.heightMapGrid.length) {
+    // Validate Y coordinate and row existence
+    const row = this.heightMapGrid[tile.y];
+    if (!row || tile.y < 0) {
       console.warn(`getWalkableHeightAtTile: tile Y coordinate ${tile.y} is out of bounds`);
       return 0;
     }
-    const row = this.heightMapGrid[tile.y];
-    if (!row || tile.x < 0 || tile.x >= row.length) {
+    // Validate X coordinate
+    if (tile.x < 0 || tile.x >= row.length) {
       console.warn(`getWalkableHeightAtTile: tile X coordinate ${tile.x} is out of bounds`);
       return 0;
     }
