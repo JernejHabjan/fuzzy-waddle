@@ -707,6 +707,17 @@ export class NavigationService {
   }
 
   /**
+   * Gets the walkable height at a specific tile position.
+   * Returns the height (in px) at which units should stand when on this tile.
+   * @param tile The tile coordinates to check
+   * @returns The walkable height in pixels, or 0 if not available
+   */
+  public getWalkableHeightAtTile(tile: Vector2Simple): number {
+    const cell = this.heightMapGrid[tile.y]?.[tile.x];
+    return cell?.walkableHeight ?? 0;
+  }
+
+  /**
    * Gets all tiles currently occupied by actors (any game object with position)
    */
   private getOccupiedTilesByActors(): Set<string> {
