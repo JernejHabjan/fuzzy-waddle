@@ -40,12 +40,12 @@ export const skaduweeWorkerDefinition: PrefabDefinition = {
         // keep this in sync with actor-manager
         ObjectNames.FrostForge,
         ObjectNames.InfantryInn,
-        ObjectNames.Owlery,
         ObjectNames.WorkMill,
+        ObjectNames.MiningCamp,
+        ObjectNames.Owlery,
         ObjectNames.WatchTower,
         ObjectNames.Wall,
-        ObjectNames.Stairs,
-        ObjectNames.MiningCamp
+        ObjectNames.Stairs
       ]
     }
   },

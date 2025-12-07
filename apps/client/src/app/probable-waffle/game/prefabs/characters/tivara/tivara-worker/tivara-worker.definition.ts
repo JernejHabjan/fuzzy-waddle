@@ -39,15 +39,15 @@ export const tivaraWorkerDefinition: PrefabDefinition = {
       enterConstructionSite: false,
       constructableBuildings: [
         // keep this in sync with actor-manager
-        ObjectNames.AnkGuard,
-        ObjectNames.Olival,
         ObjectNames.Sandhold,
+        ObjectNames.Olival,
+        ObjectNames.AnkGuard,
+        ObjectNames.WorkMill,
+        ObjectNames.MiningCamp,
         ObjectNames.Temple,
         ObjectNames.Stairs,
         ObjectNames.WatchTower,
-        ObjectNames.Wall,
-        ObjectNames.WorkMill,
-        ObjectNames.MiningCamp
+        ObjectNames.Wall
       ]
     }
   },
