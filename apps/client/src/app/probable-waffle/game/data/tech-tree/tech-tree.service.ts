@@ -3,6 +3,7 @@ import type { TechTreeGraph } from "./tech-tree.types";
 import { FactionType, ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { TechTreeBuilder } from "./tech-tree.builder";
 import { getCanonicalActorNameCached } from "./canonical-actor-name";
+import { BuilderComponent } from "../../entity/components/construction/builder-component";
 
 export class TechTreeService {
   private readonly graphs: Record<FactionType, TechTreeGraph>;
@@ -166,7 +167,19 @@ export class TechTreeService {
    * Get all buildings that can be constructed by a specific unit.
    */
   getConstructableBuildings(faction: FactionType, unitId: ObjectNames): ObjectNames[] {
-    return this.graphs[faction]?.nodes[unitId]?.constructs || [];
+    const node = this.graphs[faction]?.nodes[unitId];
+    if (!node) return [];
+
+    // If we already have a pre-computed list from the graph, return it
+    if (node.constructs && node.constructs.length > 0) {
+      return node.constructs;
+    }
+
+    // Otherwise, extract from the builder component definition
+    const builderComponent = node.definition?.components?.builder;
+    if (!builderComponent?.constructableBuildings) return [];
+
+    return BuilderComponent.getFlatConstructableBuildings(builderComponent.constructableBuildings);
   }
 
   /**
@@ -225,7 +238,7 @@ export class TechTreeService {
       // Check that builder definitions match builder component
       if (node.definition.components?.builder) {
         const builderComponent = node.definition.components.builder;
-        const constructables = builderComponent.constructableBuildings || [];
+        const constructables = BuilderComponent.getFlatConstructableBuildings(builderComponent.constructableBuildings);
 
         // Verify constructs list matches definition
         constructables.forEach((building) => {

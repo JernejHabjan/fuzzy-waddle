@@ -5,7 +5,7 @@
 import OnPointerDownScript from "../../../../../shared/game/phaser/script-nodes-basic/OnPointerDownScript";
 /* START-USER-IMPORTS */
 import ActorAction, { type ActorActionSetup } from "./ActorAction";
-import { getCurrentPlayerNumber, listenToSelectionEvents } from "../../../data/scene-data";
+import { getCommunicator, getCurrentPlayerNumber, getPlayer, listenToSelectionEvents } from "../../../data/scene-data";
 import HudProbableWaffle from "../../../world/scenes/hud-scenes/HudProbableWaffle";
 import { Subscription } from "rxjs";
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
@@ -40,8 +40,11 @@ import {
   type ProductionValidationResult,
   ProductionValidator
 } from "../../../data/tech-tree/production-validator";
-import { getCommunicator, getPlayer } from "../../../data/scene-data";
 import { findProductionBuildingWithLeastRemainingTime } from "../../../entity/components/production/production-helpers";
+import {
+  type ConstructableCategory,
+  ConstructableDefinition
+} from "../../../entity/components/construction/constructable-category";
 /* END-USER-IMPORTS */
 
 export default class ActorActions extends Phaser.GameObjects.Container {
@@ -188,6 +191,10 @@ export default class ActorActions extends Phaser.GameObjects.Container {
    * If true, building icons are displayed with back button
    */
   private buildingMode: boolean = false;
+  /**
+   * Navigation stack for building categories. Empty array means root level.
+   */
+  private categoryNavigationStack: ConstructableCategory[] = [];
 
   private get HOTKEYS(): readonly string[] {
     return this.playerActionsHandler.getListHotkeys();
@@ -228,6 +235,8 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       this.hideAllActions();
       return;
     }
+    // Reset category navigation when selection changes
+    this.categoryNavigationStack = [];
     this.showActorActions(primaryActor, actorsByPriority);
   }
 
@@ -761,8 +770,50 @@ export default class ActorActions extends Phaser.GameObjects.Container {
   ): number {
     const builderComponent = getActorComponent(actor, BuilderComponent);
     if (!builderComponent) throw new Error("BuilderComponent not found");
-    const buildable: ObjectNames[] = builderComponent.constructableBuildings;
 
+    // Determine what to show based on navigation level
+    const currentLevel = this.getCurrentConstructableLevel(builderComponent);
+
+    // Show categories first
+    const categories = currentLevel.constructableCategories || [];
+    categories.forEach((category, localIndex) => {
+      if (index >= this.actor_actions.length) {
+        console.error("Not enough slots for category icons");
+        return;
+      }
+
+      const action = this.actor_actions[index];
+      if (!action) {
+        console.error("Action button not found at index", index);
+        return;
+      }
+
+      action.setup({
+        icon: {
+          key: category.key,
+          frame: category.frame,
+          origin: { x: 0.5, y: 0.5 }
+        },
+        visible: true,
+        action: () => {
+          // Navigate into this category
+          this.categoryNavigationStack.push(category);
+          this.refreshForCurrentSelection();
+        },
+        tooltipInfo: {
+          title: category.text,
+          description: `Browse ${category.text}`,
+          iconKey: category.key,
+          iconFrame: category.frame,
+          iconOrigin: { x: 0.5, y: 0.5 }
+        },
+        shortcut: this.HOTKEYS[localIndex]
+      });
+      index++;
+    });
+
+    // Show buildings at current level
+    const buildable = currentLevel.actorNames || [];
     buildable.forEach((building, localIndex) => {
       if (index >= this.actor_actions.length) {
         console.error("Not enough slots for building icons");
@@ -806,8 +857,8 @@ export default class ActorActions extends Phaser.GameObjects.Container {
           definition: actorDefinition,
           unmetRequirements: validation?.prereqs
         },
-        // Use letter shortcuts from handler (Q..O)
-        shortcut: this.HOTKEYS[localIndex]
+        // Use letter shortcuts from handler (Q..O), offset by category count
+        shortcut: this.HOTKEYS[categories.length + localIndex]
       });
       index++;
     });
@@ -834,12 +885,18 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       },
       visible: true,
       action: () => {
-        // turn off via handler to sync with input system and cursor
-        this.playerActionsHandler.setBuildingMode(false);
+        // If we're in a category, go back one level
+        if (this.categoryNavigationStack.length > 0) {
+          this.categoryNavigationStack.pop();
+          this.refreshForCurrentSelection();
+        } else {
+          // Otherwise exit building mode via handler
+          this.playerActionsHandler.setBuildingMode(false);
+        }
       },
       tooltipInfo: {
-        title: "Stop Building",
-        description: "Stop building",
+        title: this.categoryNavigationStack.length > 0 ? "Back" : "Stop Building",
+        description: this.categoryNavigationStack.length > 0 ? "Go back to previous category" : "Stop building",
         iconKey: "gui",
         iconFrame: "action_icons/back.png",
         iconOrigin: { x: 0.5, y: 0.5 }
@@ -848,6 +905,28 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     });
 
     return index;
+  }
+
+  /**
+   * Get the constructable definition for the current navigation level
+   */
+  private getCurrentConstructableLevel(builderComponent: BuilderComponent): ConstructableDefinition {
+    let current = builderComponent.constructableBuildingsNested;
+
+    // Navigate down the stack to find current level
+    for (const category of this.categoryNavigationStack) {
+      const categories = current.constructableCategories || [];
+      const found = categories.find((c) => c === category);
+      if (!found || !found.constructableDefinitions || found.constructableDefinitions.length === 0) {
+        // Invalid navigation, reset
+        this.categoryNavigationStack = [];
+        return builderComponent.constructableBuildingsNested;
+      }
+      // Navigate into first definition of this category
+      current = found.constructableDefinitions[0]!;
+    }
+
+    return current;
   }
 
   private getProductionValidationState(objectName: ObjectNames): {
@@ -919,6 +998,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     this.actorConstructionSubscription?.unsubscribe();
     this.buildingModeSubscription?.unsubscribe();
     this.resourceChangedSubscription?.unsubscribe();
+    this.categoryNavigationStack = [];
   }
 
   /* END-USER-CODE */
