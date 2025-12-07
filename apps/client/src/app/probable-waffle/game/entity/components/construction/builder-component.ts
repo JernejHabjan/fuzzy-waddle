@@ -2,7 +2,7 @@ import { ConstructionSiteComponent } from "./construction-site-component";
 import { ContainerComponent } from "../building/container-component";
 import { Subject } from "rxjs";
 import { getActorComponent } from "../../../data/actor-component";
-import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { type BuilderComponentData, ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { HealthComponent } from "../combat/components/health-component";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { AudioService } from "../../../world/services/audio.service";
@@ -16,14 +16,14 @@ import { AnimationActorComponent, type AnimationOptions } from "../animation/ani
 import { OrderType } from "../../../ai/order-type";
 import { ActorTranslateComponent } from "../movement/actor-translate-component";
 import { DistanceHelper } from "../../../library/distance-helper";
-import GameObject = Phaser.GameObjects.GameObject;
-import { type BuilderComponentData } from "@fuzzy-waddle/api-interfaces";
 import { IdComponent } from "../id-component";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
+import { ConstructableDefinition } from "./constructable-category";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export type BuilderDefinition = {
   // types of building the gameObject can produce
-  constructableBuildings: ObjectNames[];
+  constructableBuildings: ConstructableDefinition;
   // Whether the builder enters the building site while working on it, or not.
   enterConstructionSite: boolean;
   // from how far a builder builds building site
@@ -76,7 +76,29 @@ export class BuilderComponent {
 
   get constructableBuildings(): ObjectNames[] {
     // NOTE, this can be later filtered, so we show only buildings that are available to the player
+    return BuilderComponent.getFlatConstructableBuildings(this.builderComponentDefinition.constructableBuildings);
+  }
+
+  get constructableBuildingsNested(): ConstructableDefinition {
     return this.builderComponentDefinition.constructableBuildings;
+  }
+
+  static getFlatConstructableBuildings(constructableDefinition: ConstructableDefinition): ObjectNames[] {
+    const flatBuildings: ObjectNames[] = [];
+    if (constructableDefinition.actorNames) {
+      flatBuildings.push(...constructableDefinition.actorNames);
+    }
+    if (constructableDefinition.constructableCategories) {
+      for (const category of constructableDefinition.constructableCategories) {
+        const buildingsInCategory = category.constructableDefinitions;
+        if (!buildingsInCategory) continue;
+        for (const buildingDef of buildingsInCategory) {
+          const buildings = BuilderComponent.getFlatConstructableBuildings(buildingDef);
+          flatBuildings.push(...buildings);
+        }
+      }
+    }
+    return flatBuildings;
   }
 
   getAssignedConstructionSite() {

@@ -2,6 +2,7 @@
 import { type TechTreeGraph, type TechTreeNode } from "./tech-tree.types";
 import { FactionType, ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { pwActorDefinitions } from "../../prefabs/definitions/actor-definitions";
+import { BuilderComponent } from "../../entity/components/construction/builder-component";
 
 /**
  * Recursively gather all actors that belong to a faction starting from a main building.
@@ -26,8 +27,10 @@ function gatherFactionActors(mainBuildingName: ObjectNames, definitions: typeof 
     producible.forEach((actor) => visit(actor as ObjectNames));
 
     // Add all buildings that can be constructed by this unit
-    const constructable = components.builder?.constructableBuildings || [];
-    constructable.forEach((building) => visit(building as ObjectNames));
+    if (components.builder?.constructableBuildings) {
+      const constructable = BuilderComponent.getFlatConstructableBuildings(components.builder.constructableBuildings);
+      constructable.forEach((building) => visit(building as ObjectNames));
+    }
 
     // Add all required actors (tech requirements)
     const requirements = components.requirements?.actors || [];
@@ -153,10 +156,11 @@ export class TechTreeBuilder {
         }
 
         // Construction edges
-        const constructable = components.builder?.constructableBuildings;
-        if (Array.isArray(constructable)) {
-          constructable.forEach((buildingName) => {
-            const buildingObjectName = buildingName as ObjectNames;
+        if (components.builder?.constructableBuildings) {
+          const constructable = BuilderComponent.getFlatConstructableBuildings(
+            components.builder.constructableBuildings
+          );
+          constructable.forEach((buildingObjectName) => {
             const buildingNode = graphs[faction].nodes[buildingObjectName];
 
             if (buildingNode) {
