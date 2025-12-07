@@ -48,10 +48,10 @@ export const skaduweeWorkerDefinition: PrefabDefinition = {
           ObjectNames.Owlery
         ],
         [
-          new ConstructableCategory("gui", "actor_info_icons/sword.png", "Resource", [
+          new ConstructableCategory("gui", "action_icons/category_resource_gathering.png", "Resource Gathering", [
             new ConstructableDefinition([ObjectNames.WorkMill, ObjectNames.MiningCamp])
           ]),
-          new ConstructableCategory("gui", "actor_info_icons/sword.png", "Defensive Structures", [
+          new ConstructableCategory("gui", "action_icons/category_defensive_buildings.png", "Defensive Structures", [
             new ConstructableDefinition([ObjectNames.WatchTower, ObjectNames.Wall, ObjectNames.Stairs])
           ])
         ]

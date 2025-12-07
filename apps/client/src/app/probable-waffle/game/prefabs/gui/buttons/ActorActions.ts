@@ -315,7 +315,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     ({
       icon: {
         key: "gui",
-        frame: "actor_info_icons/element.png", // todo
+        frame: "action_icons/heal.png",
         origin: { x: 0.5, y: 0.5 }
       },
       visible: true,
@@ -326,7 +326,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         title: "Heal",
         description: "Heal an ally",
         iconKey: "gui",
-        iconFrame: "actor_info_icons/element.png", // todo
+        iconFrame: "action_icons/heal.png",
         iconOrigin: { x: 0.5, y: 0.5 }
       },
       shortcut: "h"
@@ -336,7 +336,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     ({
       icon: {
         key: "gui",
-        frame: "action_icons/element.png", // todo
+        frame: "action_icons/gather.png",
         origin: { x: 0.5, y: 0.5 }
       },
       visible: true,
@@ -347,7 +347,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         title: "Gather",
         description: "Gather resources from a resource node",
         iconKey: "gui",
-        iconFrame: "action_icons/element.png", // todo
+        iconFrame: "action_icons/gather.png",
         iconOrigin: { x: 0.5, y: 0.5 }
       },
       shortcut: "g"
@@ -403,7 +403,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     ({
       icon: {
         key: "gui",
-        frame: "action_icons/element.png", // todo
+        frame: "action_icons/rally.png",
         origin: { x: 0.5, y: 0.5 }
       },
       visible: true,
@@ -414,7 +414,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         title: "Rally point",
         description: "Set rally point for this building",
         iconKey: "gui",
-        iconFrame: "action_icons/element.png", // todo
+        iconFrame: "action_icons/rally.png",
         iconOrigin: { x: 0.5, y: 0.5 }
       },
       shortcut: "v"
