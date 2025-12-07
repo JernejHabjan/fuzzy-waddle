@@ -215,6 +215,8 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         const actor = primaryActor!;
         // local fallback; will be overridden by handler stream
         this.buildingMode = false;
+        // Reset category navigation when selection changes
+        this.categoryNavigationStack = [];
         this.showActorActions(actor, actorsByPriority);
         this.subscribeToActorKillEvent(actor);
         this.subscribeToActorConstructionEvent(actor, actorsByPriority);
@@ -225,6 +227,10 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     // sync HUD with handler build mode toggles (e.g. keyboard 'B' / 'Esc')
     this.buildingModeSubscription = this.playerActionsHandler.buildingModeObservable?.subscribe((active) => {
       this.buildingMode = active;
+      // Reset category navigation when exiting building mode
+      if (!active) {
+        this.categoryNavigationStack = [];
+      }
       this.refreshForCurrentSelection();
     });
   }
@@ -235,8 +241,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       this.hideAllActions();
       return;
     }
-    // Reset category navigation when selection changes
-    this.categoryNavigationStack = [];
+    // Don't reset navigation stack here - it's managed elsewhere
     this.showActorActions(primaryActor, actorsByPriority);
   }
 
@@ -266,6 +271,8 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       ConstructionSiteComponent
     )?.constructionProgressPercentageChanged.subscribe((progress) => {
       if (progress === 100) {
+        // Reset category navigation when construction finishes
+        this.categoryNavigationStack = [];
         // show actions again
         this.showActorActions(actor, allActors);
       }
@@ -461,6 +468,8 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     // Add this block for ConstructionSiteComponent unfinished state
     const constructionSiteComponent = getActorComponent(actor, ConstructionSiteComponent);
     if (constructionSiteComponent && !constructionSiteComponent.isFinished) {
+      // Reset category navigation when showing construction site
+      this.categoryNavigationStack = [];
       // Show sword icon as 9th (bottom right) icon
       const action = this.actor_actions[8];
       if (!action) {
@@ -493,6 +502,8 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     if (this.buildingMode) {
       this.showBuildableIcons(actor, allActors, index);
     } else {
+      // Reset category navigation when not in building mode
+      this.categoryNavigationStack = [];
       index = this.showAttackIcons(actor, allActors, index);
       index = this.showMoveIcons(actor, allActors, index);
       index = this.showRallyPointIcon(actor, allActors, index);
@@ -916,14 +927,32 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     // Navigate down the stack to find current level
     for (const category of this.categoryNavigationStack) {
       const categories = current.constructableCategories || [];
-      const found = categories.find((c) => c === category);
+      const found = categories.find(
+        (c) => c.key === category.key && c.frame === category.frame && c.text === category.text
+      );
       if (!found || !found.constructableDefinitions || found.constructableDefinitions.length === 0) {
         // Invalid navigation, reset
+        console.warn("Invalid navigation, resetting stack");
         this.categoryNavigationStack = [];
         return builderComponent.constructableBuildingsNested;
       }
-      // Navigate into first definition of this category
-      current = found.constructableDefinitions[0]!;
+      // Merge all definitions in this category into a single ConstructableDefinition
+      const mergedActorNames: ObjectNames[] = [];
+      const mergedCategories: ConstructableCategory[] = [];
+
+      found.constructableDefinitions.forEach((def) => {
+        if (def.actorNames) {
+          mergedActorNames.push(...def.actorNames);
+        }
+        if (def.constructableCategories) {
+          mergedCategories.push(...def.constructableCategories);
+        }
+      });
+
+      current = new ConstructableDefinition(
+        mergedActorNames.length > 0 ? mergedActorNames : undefined,
+        mergedCategories.length > 0 ? mergedCategories : undefined
+      );
     }
 
     return current;
