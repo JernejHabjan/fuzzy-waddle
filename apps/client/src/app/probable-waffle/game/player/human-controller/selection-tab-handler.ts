@@ -1,19 +1,11 @@
 import { BehaviorSubject, Observable } from "rxjs";
 import { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { getSelectedActors } from "../../data/scene-data";
-import { getActorComponent } from "../../data/actor-component";
-import { AttackComponent } from "../../entity/components/combat/components/attack-component";
-import { ProductionComponent } from "../../entity/components/production/production-component";
-import { GathererComponent } from "../../entity/components/resource/gatherer-component";
 import GameObject = Phaser.GameObjects.GameObject;
 
 /**
- * Groups actors by their type/capability for tab switching.
- * Priority:
- * - Attack units (combat units)
- * - Production buildings
- * - Gatherer units (workers)
- * - Others
+ * Groups actors by their name (GameObject.name) for tab switching.
+ * This allows cycling through different actor types, e.g., warriors, workers, buildings separately.
  */
 export class SelectionTabHandler {
   private currentTabIndexSubject = new BehaviorSubject<number>(0);
@@ -93,46 +85,22 @@ export class SelectionTabHandler {
   }
 
   /**
-   * Groups actors by their type/capability.
-   * Returns array of actor groups, ordered by priority.
+   * Groups actors by their name.
+   * Returns array of actor groups, ordered by first occurrence in selection.
    */
   private groupActorsByType(actors: GameObject[]): GameObject[][] {
-    const attackActors: GameObject[] = [];
-    const productionActors: GameObject[] = [];
-    const gathererActors: GameObject[] = [];
-    const otherActors: GameObject[] = [];
+    const groupsByName = new Map<string, GameObject[]>();
 
     actors.forEach((actor) => {
-      // Prioritize by most important capability
-      const attackComponent = getActorComponent(actor, AttackComponent);
-      if (attackComponent) {
-        attackActors.push(actor);
-        return;
+      const actorName = actor.name;
+      if (!groupsByName.has(actorName)) {
+        groupsByName.set(actorName, []);
       }
-
-      const productionComponent = getActorComponent(actor, ProductionComponent);
-      if (productionComponent) {
-        productionActors.push(actor);
-        return;
-      }
-
-      const gathererComponent = getActorComponent(actor, GathererComponent);
-      if (gathererComponent) {
-        gathererActors.push(actor);
-        return;
-      }
-
-      otherActors.push(actor);
+      groupsByName.get(actorName)!.push(actor);
     });
 
-    // Return only non-empty groups
-    const groups: GameObject[][] = [];
-    if (attackActors.length > 0) groups.push(attackActors);
-    if (productionActors.length > 0) groups.push(productionActors);
-    if (gathererActors.length > 0) groups.push(gathererActors);
-    if (otherActors.length > 0) groups.push(otherActors);
-
-    return groups;
+    // Return groups in order of first occurrence
+    return Array.from(groupsByName.values());
   }
 
   /**

@@ -1,13 +1,8 @@
 import { SelectionTabHandler } from "./selection-tab-handler";
 import { ProbableWaffleScene } from "../../core/probable-waffle.scene";
-import { getActorComponent } from "../../data/actor-component";
-import { AttackComponent } from "../../entity/components/combat/components/attack-component";
-import { ProductionComponent } from "../../entity/components/production/production-component";
-import { GathererComponent } from "../../entity/components/resource/gatherer-component";
 
 // Mock the dependencies
 jest.mock("../../data/scene-data");
-jest.mock("../../data/actor-component");
 
 describe("SelectionTabHandler", () => {
   let mockScene: any;
@@ -28,29 +23,16 @@ describe("SelectionTabHandler", () => {
       }
     };
 
-    // Create mock actors with different components
+    // Create mock actors with different names
     mockActors = [
-      { name: "AttackUnit1" },
-      { name: "AttackUnit2" },
-      { name: "ProductionBuilding1" },
-      { name: "GathererUnit1" },
-      { name: "GathererUnit2" },
-      { name: "OtherUnit1" }
+      { name: "Warrior" },
+      { name: "Warrior" },
+      { name: "Warrior" },
+      { name: "Archer" },
+      { name: "Archer" },
+      { name: "Worker" },
+      { name: "Barracks" }
     ];
-
-    // Mock getActorComponent to return different components based on actor name
-    (getActorComponent as jest.Mock).mockImplementation((actor: any, componentType: any) => {
-      if (componentType === AttackComponent) {
-        return actor.name.startsWith("AttackUnit") ? {} : undefined;
-      }
-      if (componentType === ProductionComponent) {
-        return actor.name.startsWith("ProductionBuilding") ? {} : undefined;
-      }
-      if (componentType === GathererComponent) {
-        return actor.name.startsWith("GathererUnit") ? {} : undefined;
-      }
-      return undefined;
-    });
 
     handler = new SelectionTabHandler(mockScene as ProbableWaffleScene);
   });
@@ -69,7 +51,7 @@ describe("SelectionTabHandler", () => {
     expect(handler.currentTabActors).toEqual([]);
   });
 
-  it("should group actors by type correctly", () => {
+  it("should group actors by name correctly", () => {
     // Mock getSelectedActors to return our mock actors
     const { getSelectedActors } = require("../../data/scene-data");
     (getSelectedActors as jest.Mock).mockReturnValue(mockActors);
@@ -77,23 +59,23 @@ describe("SelectionTabHandler", () => {
     handler.updateGroupedActors();
 
     const groups = handler.groupedActors;
-    expect(groups.length).toBe(4); // attack, production, gatherer, other
+    expect(groups.length).toBe(4); // Warrior, Archer, Worker, Barracks
 
-    // Check attack group (highest priority)
-    expect(groups[0]?.length).toBe(2);
-    expect(groups[0]?.[0]?.name).toBe("AttackUnit1");
+    // Check Warrior group (first in selection)
+    expect(groups[0]?.length).toBe(3);
+    expect(groups[0]?.[0]?.name).toBe("Warrior");
 
-    // Check production group
-    expect(groups[1]?.length).toBe(1);
-    expect(groups[1]?.[0]?.name).toBe("ProductionBuilding1");
+    // Check Archer group
+    expect(groups[1]?.length).toBe(2);
+    expect(groups[1]?.[0]?.name).toBe("Archer");
 
-    // Check gatherer group
-    expect(groups[2]?.length).toBe(2);
-    expect(groups[2]?.[0]?.name).toBe("GathererUnit1");
+    // Check Worker group
+    expect(groups[2]?.length).toBe(1);
+    expect(groups[2]?.[0]?.name).toBe("Worker");
 
-    // Check other group
+    // Check Barracks group
     expect(groups[3]?.length).toBe(1);
-    expect(groups[3]?.[0]?.name).toBe("OtherUnit1");
+    expect(groups[3]?.[0]?.name).toBe("Barracks");
   });
 
   it("should reset tab index to 0 when selection changes", () => {
@@ -128,8 +110,8 @@ describe("SelectionTabHandler", () => {
 
   it("should not cycle tabs when only one group exists", () => {
     const { getSelectedActors } = require("../../data/scene-data");
-    // Only attack units
-    (getSelectedActors as jest.Mock).mockReturnValue([mockActors[0], mockActors[1]]);
+    // Only warriors
+    (getSelectedActors as jest.Mock).mockReturnValue([mockActors[0], mockActors[1], mockActors[2]]);
 
     handler.updateGroupedActors();
 
@@ -146,17 +128,17 @@ describe("SelectionTabHandler", () => {
 
     handler.updateGroupedActors();
 
-    // Tab 0 - Attack units
+    // Tab 0 - Warriors
     let currentActors = handler.currentTabActors;
-    expect(currentActors.length).toBe(2);
-    expect(currentActors[0]?.name).toBe("AttackUnit1");
+    expect(currentActors.length).toBe(3);
+    expect(currentActors[0]?.name).toBe("Warrior");
 
     handler.nextTab();
 
-    // Tab 1 - Production buildings
+    // Tab 1 - Archers
     currentActors = handler.currentTabActors;
-    expect(currentActors.length).toBe(1);
-    expect(currentActors[0]?.name).toBe("ProductionBuilding1");
+    expect(currentActors.length).toBe(2);
+    expect(currentActors[0]?.name).toBe("Archer");
   });
 
   it("should clear groups when selection is empty", () => {
@@ -178,5 +160,29 @@ describe("SelectionTabHandler", () => {
   it("should clean up on destroy", () => {
     handler.destroy();
     expect(mockScene.input.keyboard.off).toHaveBeenCalledWith("keydown", expect.any(Function), handler);
+  });
+
+  it("should maintain order of first occurrence when grouping", () => {
+    const { getSelectedActors } = require("../../data/scene-data");
+    const mixedActors = [
+      { name: "Worker" },
+      { name: "Warrior" },
+      { name: "Worker" },
+      { name: "Warrior" },
+    ];
+    (getSelectedActors as jest.Mock).mockReturnValue(mixedActors);
+
+    handler.updateGroupedActors();
+
+    const groups = handler.groupedActors;
+    expect(groups.length).toBe(2);
+    
+    // Worker appears first in selection, so should be first group
+    expect(groups[0]?.[0]?.name).toBe("Worker");
+    expect(groups[0]?.length).toBe(2);
+    
+    // Warrior appears second
+    expect(groups[1]?.[0]?.name).toBe("Warrior");
+    expect(groups[1]?.length).toBe(2);
   });
 });
