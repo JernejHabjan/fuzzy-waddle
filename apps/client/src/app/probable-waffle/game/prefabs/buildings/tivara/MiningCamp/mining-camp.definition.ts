@@ -29,21 +29,20 @@ export const miningCampDefinition = {
       description: "A camp for mining minerals and stone",
       smallImage: {
         key: "factions",
-        frame: "buildings/tivara/mining-camp.png",
+        frame: "buildings/tivara/mining_camp.png",
         origin: { x: 0.5, y: 0.5 }
       }
     },
     health: {
       physicalState: ActorPhysicalType.Structural,
-      maxHealth: 100
+      maxHealth: 120
     },
     productionCost: {
       resources: {
-        [ResourceType.Wood]: 10,
-        [ResourceType.Minerals]: 10
+        [ResourceType.Wood]: 150
       },
       refundFactor: 0.5,
-      productionTime: 5000,
+      productionTime: 10000,
       costType: PaymentType.PayImmediately
     },
     resourceDrain: {

@@ -1,5 +1,5 @@
 {
-    "id": "fd634376-bf8a-44f2-b2ae-9c41763ccf19",
+    "id": "f022e4ad-a37b-4695-9fde-9ef15dca6f0e",
     "sceneType": "PREFAB",
     "settings": {
         "exportClass": true,
@@ -24,10 +24,10 @@
                 {
                     "type": "Image",
                     "id": "abe0cde8-3484-409c-8cec-5f39a71cc21b",
-                    "label": "buildings_tivara_mining-camp_png_1",
+                    "label": "buildings_tivara_mining_camp_png_1",
                     "texture": {
                         "key": "factions",
-                        "frame": "buildings/tivara/mining-camp.png"
+                        "frame": "buildings/tivara/mining_camp.png"
                     },
                     "y": -32.29342343955079
                 }

@@ -1,9 +1,0 @@
- WARN  Unsupported engine: wanted: {"node":">=23.7.0"} (current: {"node":"v22.21.1","pnpm":"10.20.0"})
-
-> fuzzy-waddle@1.0.0 start:client /app
-> nx serve client
-
-
-> nx run client:serve:development
-
-[33m❯[39m Building...
