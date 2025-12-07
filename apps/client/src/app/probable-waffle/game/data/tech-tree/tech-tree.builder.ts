@@ -26,7 +26,7 @@ function gatherFactionActors(mainBuildingName: ObjectNames, definitions: typeof 
     const producible = components.production?.availableProduceActors || [];
     producible.forEach((actor) => visit(actor as ObjectNames));
 
-    // Add all buildings that can be constructed by this unit (recursively extract from nested categories)
+    // Add all buildings that can be constructed by this unit
     if (components.builder?.constructableBuildings) {
       const constructable = BuilderComponent.getFlatConstructableBuildings(components.builder.constructableBuildings);
       constructable.forEach((building) => visit(building as ObjectNames));
