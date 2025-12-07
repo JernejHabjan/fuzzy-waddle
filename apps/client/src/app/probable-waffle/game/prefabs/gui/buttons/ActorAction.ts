@@ -141,7 +141,8 @@ export default class ActorAction extends Phaser.GameObjects.Container {
 
   private setDisabled(disabled: boolean) {
     this.disabled = disabled;
-    this.actor_action_click.setDisabled(disabled);
+    // do not actually disable the button, as we want to react to it on click
+    // this.actor_action_click.setDisabled(disabled);
     this.recolorDisabled();
   }
 
@@ -171,15 +172,17 @@ export default class ActorAction extends Phaser.GameObjects.Container {
       const hudScene = this.scene as HudProbableWaffle;
       const bounds = getGameObjectBounds(hudScene.actor_actions_container);
 
-      const x = bounds?.x ?? 0;
-      const y = bounds?.y ?? 0;
-      this.tooltip = new ActorDefinitionTooltip(this.scene, x, y);
+      this.tooltip = new ActorDefinitionTooltip(this.scene, 0, 0);
       this.tooltip.setup(this.tooltipInfo);
-      // set origin of tooltip to 1,1
-      const boundsTooltip = getGameObjectBounds(this.tooltip);
-      if (boundsTooltip) {
-        this.tooltip.y -= boundsTooltip.height;
+      const tooltipBounds = getGameObjectBounds(this.tooltip);
+
+      if (bounds && tooltipBounds) {
+        const x = hudScene.scale.width;
+        // TODO - I cannot make it to stick to the top right edge of actor_actions_container - needs further investigation
+        const y = hudScene.scale.height - bounds.height - 80;
+        this.tooltip.setPosition(x, y);
       }
+
       this.scene.add.existing(this.tooltip);
     }, 500);
   };
@@ -197,7 +200,8 @@ export default class ActorAction extends Phaser.GameObjects.Container {
   }
 
   private onAction = () => {
-    if (this.disabled) return;
+    // do not actually disable the button, as we want to react to it on click
+    // if (this.disabled) return;
     this.action?.();
   };
 

@@ -45,7 +45,7 @@ export const skaduweeOwlDefinition = {
     },
     health: {
       physicalState: ActorPhysicalType.Biological,
-      maxHealth: 100
+      maxHealth: 80
     },
     attack: {
       attacks: [weaponDefinitions.furball]
@@ -53,11 +53,11 @@ export const skaduweeOwlDefinition = {
     selectable: {},
     productionCost: {
       resources: {
-        [ResourceType.Wood]: 10,
-        [ResourceType.Minerals]: 10
+        [ResourceType.Stone]: 40,
+        [ResourceType.Minerals]: 100
       },
       refundFactor: 0.5,
-      productionTime: 5000,
+      productionTime: 10000,
       costType: PaymentType.PayImmediately
     },
     housingCost: {

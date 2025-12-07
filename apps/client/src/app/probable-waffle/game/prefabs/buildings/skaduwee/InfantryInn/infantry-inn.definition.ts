@@ -40,15 +40,15 @@ export const infantryInnDefinition = {
     },
     health: {
       physicalState: ActorPhysicalType.Structural,
-      maxHealth: 100
+      maxHealth: 400
     },
     productionCost: {
       resources: {
-        [ResourceType.Wood]: 10,
-        [ResourceType.Minerals]: 10
+        [ResourceType.Wood]: 200,
+        [ResourceType.Stone]: 50
       },
       refundFactor: 0.5,
-      productionTime: 5000,
+      productionTime: 20000,
       costType: PaymentType.PayImmediately
     },
     production: {

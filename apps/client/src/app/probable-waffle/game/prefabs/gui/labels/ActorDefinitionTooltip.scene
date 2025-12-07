@@ -10,27 +10,31 @@
         "preloadPackFiles": [],
         "createMethodName": "",
         "compilerOutputLanguage": "TYPE_SCRIPT",
-        "borderWidth": 250,
-        "borderHeight": 220
+        "borderWidth": 336,
+        "borderHeight": 430
     },
     "displayList": [
         {
             "type": "Container",
             "id": "17f2db5d-de2d-4ecf-94f2-7c6d903612ee",
             "label": "container_1",
+            "x": 336.6949719548286,
+            "y": 427.40274978740797,
             "list": [
                 {
                     "type": "NineSlice",
                     "id": "9b3d2f13-deab-4615-ad68-e15426efbeef",
                     "label": "game_actions_bg",
                     "displayName": "Background",
+                    "scope": "CLASS",
                     "texture": {
                         "key": "gui",
                         "frame": "cryos_mini_gui/surfaces/surface_dark.png"
                     },
-                    "x": 1,
-                    "scaleX": 12.430939264477326,
-                    "scaleY": 15.778213319031138,
+                    "x": -336.6949719548286,
+                    "y": -427.40274978740797,
+                    "scaleX": 16.76840048753606,
+                    "scaleY": 21.490989609445222,
                     "originX": 0,
                     "originY": 0,
                     "leftWidth": 1,
@@ -49,16 +53,16 @@
                         "key": "factions",
                         "frame": "character_icons/general/warrior.png"
                     },
-                    "x": 131,
-                    "y": 49
+                    "x": -169.6949719548286,
+                    "y": -378.40274978740797
                 },
                 {
                     "type": "Text",
                     "id": "4b6e075b-8943-4ad8-92cd-168014353b51",
                     "label": "title",
                     "scope": "CLASS",
-                    "x": 129,
-                    "y": 77,
+                    "x": -169.6949719548286,
+                    "y": -332.40274978740797,
                     "originX": 0.5,
                     "text": "Actor name",
                     "resolution": 10,
@@ -66,15 +70,15 @@
                     "fontFamily": "disposabledroid",
                     "fontSize": "26px",
                     "maxLines": 2,
-                    "wordWrapWidth": 220
+                    "wordWrapWidth": 300
                 },
                 {
                     "type": "Text",
                     "id": "e910978e-f6fd-4b7d-9e6a-6d278257eb27",
                     "label": "description",
                     "scope": "CLASS",
-                    "x": 125,
-                    "y": 123,
+                    "x": -169.6949719548286,
+                    "y": -277.40274978740797,
                     "originX": 0.5,
                     "text": "Actual description of this actor Actual description of this actor Actual description of this actor ",
                     "resolution": 10,
@@ -82,7 +86,57 @@
                     "fontFamily": "disposabledroid",
                     "fontSize": "20px",
                     "maxLines": 5,
-                    "wordWrapWidth": 220
+                    "wordWrapWidth": 300
+                },
+                {
+                    "type": "Container",
+                    "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                    "label": "attributesContainer",
+                    "scope": "CLASS",
+                    "x": -169.6949719548286,
+                    "y": -207.40274978740797
+                },
+                {
+                    "type": "Text",
+                    "id": "b2c3d4e5-f6a7-8901-2345-67890abcdef1",
+                    "label": "resourcesNeeded",
+                    "scope": "CLASS",
+                    "x": -309,
+                    "y": -167,
+                    "text": "Resources needed:",
+                    "fontFamily": "disposabledroid",
+                    "fontSize": "18px"
+                },
+                {
+                    "type": "Container",
+                    "id": "c3d4e5f6-a7b8-9012-3456-7890abcdef12",
+                    "label": "resourcesContainer",
+                    "scope": "CLASS",
+                    "x": -167.6949719548286,
+                    "y": -142.40274978740797
+                },
+                {
+                    "type": "Text",
+                    "id": "d4e5f6a7-b8c9-0123-4567-890abcdef123",
+                    "label": "requirements",
+                    "scope": "CLASS",
+                    "x": -309,
+                    "y": -97,
+                    "text": "Requirements:",
+                    "fontFamily": "disposabledroid",
+                    "fontSize": "18px"
+                },
+                {
+                    "type": "Text",
+                    "id": "e5f6a7b8-c9d0-1234-5678-90abcdef1234",
+                    "label": "requirementsList",
+                    "scope": "CLASS",
+                    "x": -169.6949719548286,
+                    "y": -72.40274978740797,
+                    "originX": 0.5,
+                    "fontFamily": "disposabledroid",
+                    "color": "#ff0000",
+                    "wordWrapWidth": 300
                 }
             ]
         }

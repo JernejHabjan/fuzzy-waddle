@@ -5,7 +5,7 @@
 import OnPointerDownScript from "../../../../../shared/game/phaser/script-nodes-basic/OnPointerDownScript";
 /* START-USER-IMPORTS */
 import ActorAction, { type ActorActionSetup } from "./ActorAction";
-import { getCurrentPlayerNumber, listenToSelectionEvents } from "../../../data/scene-data";
+import { getCommunicator, getCurrentPlayerNumber, getPlayer, listenToSelectionEvents } from "../../../data/scene-data";
 import HudProbableWaffle from "../../../world/scenes/hud-scenes/HudProbableWaffle";
 import { Subscription } from "rxjs";
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
@@ -35,8 +35,16 @@ import { OrderType } from "../../../ai/order-type";
 import { HealingComponent } from "../../../entity/components/combat/components/healing-component";
 import { GathererComponent } from "../../../entity/components/resource/gatherer-component";
 import { getPrimarySelectedActor } from "../../../data/selection-helpers";
-import { ProductionValidator } from "../../../data/tech-tree/production-validator";
+import {
+  ProductionInvalidReason,
+  type ProductionValidationResult,
+  ProductionValidator
+} from "../../../data/tech-tree/production-validator";
 import { findProductionBuildingWithLeastRemainingTime } from "../../../entity/components/production/production-helpers";
+import {
+  type ConstructableCategory,
+  ConstructableDefinition
+} from "../../../entity/components/construction/constructable-category";
 import { SelectionTabHandler } from "../../../player/human-controller/selection-tab-handler";
 /* END-USER-IMPORTS */
 
@@ -185,6 +193,10 @@ export default class ActorActions extends Phaser.GameObjects.Container {
    * If true, building icons are displayed with back button
    */
   private buildingMode: boolean = false;
+  /**
+   * Navigation stack for building categories. Empty array means root level.
+   */
+  private categoryNavigationStack: ConstructableCategory[] = [];
 
   private get HOTKEYS(): readonly string[] {
     return this.playerActionsHandler.getListHotkeys();
@@ -192,6 +204,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
 
   // keep UI in sync with handler
   private buildingModeSubscription?: Subscription;
+  private resourceChangedSubscription?: Subscription;
 
   private subscribeToPlayerSelection() {
     this.selectionChangedSubscription = listenToSelectionEvents(this.scene)?.subscribe(() => {
@@ -200,7 +213,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       if (tabHandler) {
         tabHandler.updateGroupedActors();
       }
-      
+
       // deterministically pick the primary actor
       const { selectedActors, actorsByPriority, primaryActor } = getPrimarySelectedActor(this.mainSceneWithActors);
       if (selectedActors.length === 0) {
@@ -210,18 +223,25 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         const actor = primaryActor!;
         // local fallback; will be overridden by handler stream
         this.buildingMode = false;
+        // Reset category navigation when selection changes
+        this.categoryNavigationStack = [];
         this.showActorActions(actor, actorsByPriority);
         this.subscribeToActorKillEvent(actor);
         this.subscribeToActorConstructionEvent(actor, actorsByPriority);
+        this.subscribeToResourceChanges();
       }
     });
 
     // sync HUD with handler build mode toggles (e.g. keyboard 'B' / 'Esc')
     this.buildingModeSubscription = this.playerActionsHandler.buildingModeObservable?.subscribe((active) => {
       this.buildingMode = active;
+      // Reset category navigation when exiting building mode
+      if (!active) {
+        this.categoryNavigationStack = [];
+      }
       this.refreshForCurrentSelection();
     });
-    
+
     // Subscribe to tab changes to update actions display
     const tabHandler = getSceneComponent(this.mainSceneWithActors, SelectionTabHandler);
     if (tabHandler) {
@@ -237,6 +257,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       this.hideAllActions();
       return;
     }
+    // Don't reset navigation stack here - it's managed elsewhere
     this.showActorActions(primaryActor, actorsByPriority);
   }
 
@@ -244,6 +265,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     this.actor_actions.forEach((action) => {
       action.setup({ visible: false });
     });
+    this.resourceChangedSubscription?.unsubscribe();
   }
 
   private subscribeToActorKillEvent(actor: Phaser.GameObjects.GameObject) {
@@ -265,10 +287,23 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       ConstructionSiteComponent
     )?.constructionProgressPercentageChanged.subscribe((progress) => {
       if (progress === 100) {
+        // Reset category navigation when construction finishes
+        this.categoryNavigationStack = [];
         // show actions again
         this.showActorActions(actor, allActors);
       }
     });
+  }
+
+  private subscribeToResourceChanges() {
+    this.resourceChangedSubscription?.unsubscribe();
+    const playerNr = getCurrentPlayerNumber(this.mainSceneWithActors);
+    if (!playerNr) return;
+    this.resourceChangedSubscription = getCommunicator(this.mainSceneWithActors)
+      .playerChanged?.onWithFilter((p) => p.data.playerNumber === playerNr && p.property.startsWith("resource."))
+      .subscribe(() => {
+        this.refreshForCurrentSelection();
+      });
   }
 
   private readonly attackAction = (actors: Phaser.GameObjects.GameObject[]) =>
@@ -296,7 +331,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     ({
       icon: {
         key: "gui",
-        frame: "actor_info_icons/element.png", // todo
+        frame: "action_icons/heal.png",
         origin: { x: 0.5, y: 0.5 }
       },
       visible: true,
@@ -307,7 +342,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         title: "Heal",
         description: "Heal an ally",
         iconKey: "gui",
-        iconFrame: "actor_info_icons/element.png", // todo
+        iconFrame: "action_icons/heal.png",
         iconOrigin: { x: 0.5, y: 0.5 }
       },
       shortcut: "h"
@@ -317,7 +352,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     ({
       icon: {
         key: "gui",
-        frame: "action_icons/element.png", // todo
+        frame: "action_icons/gather.png",
         origin: { x: 0.5, y: 0.5 }
       },
       visible: true,
@@ -328,7 +363,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         title: "Gather",
         description: "Gather resources from a resource node",
         iconKey: "gui",
-        iconFrame: "action_icons/element.png", // todo
+        iconFrame: "action_icons/gather.png",
         iconOrigin: { x: 0.5, y: 0.5 }
       },
       shortcut: "g"
@@ -384,7 +419,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     ({
       icon: {
         key: "gui",
-        frame: "action_icons/element.png", // todo
+        frame: "action_icons/rally.png",
         origin: { x: 0.5, y: 0.5 }
       },
       visible: true,
@@ -395,7 +430,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         title: "Rally point",
         description: "Set rally point for this building",
         iconKey: "gui",
-        iconFrame: "action_icons/element.png", // todo
+        iconFrame: "action_icons/rally.png",
         iconOrigin: { x: 0.5, y: 0.5 }
       },
       shortcut: "v"
@@ -449,6 +484,8 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     // Add this block for ConstructionSiteComponent unfinished state
     const constructionSiteComponent = getActorComponent(actor, ConstructionSiteComponent);
     if (constructionSiteComponent && !constructionSiteComponent.isFinished) {
+      // Reset category navigation when showing construction site
+      this.categoryNavigationStack = [];
       // Show sword icon as 9th (bottom right) icon
       const action = this.actor_actions[8];
       if (!action) {
@@ -481,6 +518,8 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     if (this.buildingMode) {
       this.showBuildableIcons(actor, allActors, index);
     } else {
+      // Reset category navigation when not in building mode
+      this.categoryNavigationStack = [];
       index = this.showAttackIcons(actor, allActors, index);
       index = this.showMoveIcons(actor, allActors, index);
       index = this.showRallyPointIcon(actor, allActors, index);
@@ -606,13 +645,8 @@ export default class ActorActions extends Phaser.GameObjects.Container {
           throw new Error(`Info component not found for ${product}`);
         }
         // UI validation gating
-        const playerNumber = getCurrentPlayerNumber(this.mainSceneWithActors)!;
-        const validation = ProductionValidator.validateForScene(this.mainSceneWithActors, playerNumber, product);
-        const disabled = !!validation?.prereqs?.length;
-        let disabledDescription = null;
-        if (disabled) {
-          disabledDescription = `Requires: ${validation.prereqs.join(", ")}`;
-        }
+        const { disabled, disabledDescription, reason, validation } = this.getProductionValidationState(product);
+
         const action = this.actor_actions[index];
         if (!action) {
           console.error("Action button not found at index", index);
@@ -627,6 +661,10 @@ export default class ActorActions extends Phaser.GameObjects.Container {
           disabled,
           visible: true,
           action: () => {
+            if (disabled) {
+              this.playInvalidActionSfx(reason);
+              return;
+            }
             if (!actorDefinition.components?.productionCost) {
               throw new Error(`Production cost not found for ${product}`);
             }
@@ -681,7 +719,9 @@ export default class ActorActions extends Phaser.GameObjects.Container {
             iconKey: info.smallImage.key!,
             iconFrame: info.smallImage.frame,
             iconOrigin: info.smallImage.origin ?? { x: 0.5, y: 0.5 },
-            description: disabledDescription ?? info.description
+            description: disabledDescription ?? info.description,
+            definition: actorDefinition,
+            unmetRequirements: validation?.prereqs
           },
           // Use letter shortcuts from handler (Q..O)
           shortcut: this.HOTKEYS[localIndex]
@@ -757,8 +797,50 @@ export default class ActorActions extends Phaser.GameObjects.Container {
   ): number {
     const builderComponent = getActorComponent(actor, BuilderComponent);
     if (!builderComponent) throw new Error("BuilderComponent not found");
-    const buildable: ObjectNames[] = builderComponent.constructableBuildings;
 
+    // Determine what to show based on navigation level
+    const currentLevel = this.getCurrentConstructableLevel(builderComponent);
+
+    // Show categories first
+    const categories = currentLevel.constructableCategories || [];
+    categories.forEach((category, localIndex) => {
+      if (index >= this.actor_actions.length) {
+        console.error("Not enough slots for category icons");
+        return;
+      }
+
+      const action = this.actor_actions[index];
+      if (!action) {
+        console.error("Action button not found at index", index);
+        return;
+      }
+
+      action.setup({
+        icon: {
+          key: category.key,
+          frame: category.frame,
+          origin: { x: 0.5, y: 0.5 }
+        },
+        visible: true,
+        action: () => {
+          // Navigate into this category
+          this.categoryNavigationStack.push(category);
+          this.refreshForCurrentSelection();
+        },
+        tooltipInfo: {
+          title: category.text,
+          description: `Browse ${category.text}`,
+          iconKey: category.key,
+          iconFrame: category.frame,
+          iconOrigin: { x: 0.5, y: 0.5 }
+        },
+        shortcut: this.HOTKEYS[localIndex]
+      });
+      index++;
+    });
+
+    // Show buildings at current level
+    const buildable = currentLevel.actorNames || [];
     buildable.forEach((building, localIndex) => {
       if (index >= this.actor_actions.length) {
         console.error("Not enough slots for building icons");
@@ -770,13 +852,8 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         throw new Error(`Info component not found for ${building}`);
       }
       // UI validation gating
-      const playerNumber = getCurrentPlayerNumber(this.mainSceneWithActors)!;
-      const validation = ProductionValidator.validateForScene(this.mainSceneWithActors, playerNumber, building);
-      const disabled = !!validation?.prereqs?.length;
-      let disabledDescription = null;
-      if (disabled) {
-        disabledDescription = `Requires: ${validation.prereqs.join(", ")}`;
-      }
+      const { disabled, disabledDescription, reason, validation } = this.getProductionValidationState(building);
+
       const action = this.actor_actions[index];
       if (!action) {
         console.error("Action button not found at index", index);
@@ -791,7 +868,10 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         disabled,
         visible: true,
         action: () => {
-          if (disabled) return; // prevent invalid action
+          if (disabled) {
+            this.playInvalidActionSfx(reason);
+            return;
+          }
           const buildingCursor = getSceneComponent(this.mainSceneWithActors, BuildingCursor);
           buildingCursor?.startPlacingBuilding.emit(building);
         },
@@ -800,10 +880,12 @@ export default class ActorActions extends Phaser.GameObjects.Container {
           iconKey: info.smallImage.key!,
           iconFrame: info.smallImage.frame,
           iconOrigin: info.smallImage.origin ?? { x: 0.5, y: 0.5 },
-          description: disabledDescription ?? info.description
+          description: disabledDescription ?? info.description,
+          definition: actorDefinition,
+          unmetRequirements: validation?.prereqs
         },
-        // Use letter shortcuts from handler (Q..O)
-        shortcut: this.HOTKEYS[localIndex]
+        // Use letter shortcuts from handler (Q..O), offset by category count
+        shortcut: this.HOTKEYS[categories.length + localIndex]
       });
       index++;
     });
@@ -830,12 +912,18 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       },
       visible: true,
       action: () => {
-        // turn off via handler to sync with input system and cursor
-        this.playerActionsHandler.setBuildingMode(false);
+        // If we're in a category, go back one level
+        if (this.categoryNavigationStack.length > 0) {
+          this.categoryNavigationStack.pop();
+          this.refreshForCurrentSelection();
+        } else {
+          // Otherwise exit building mode via handler
+          this.playerActionsHandler.setBuildingMode(false);
+        }
       },
       tooltipInfo: {
-        title: "Stop Building",
-        description: "Stop building",
+        title: this.categoryNavigationStack.length > 0 ? "Back" : "Stop Building",
+        description: this.categoryNavigationStack.length > 0 ? "Go back to previous category" : "Stop building",
         iconKey: "gui",
         iconFrame: "action_icons/back.png",
         iconOrigin: { x: 0.5, y: 0.5 }
@@ -846,12 +934,116 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     return index;
   }
 
+  /**
+   * Get the constructable definition for the current navigation level
+   */
+  private getCurrentConstructableLevel(builderComponent: BuilderComponent): ConstructableDefinition {
+    let current = builderComponent.constructableBuildingsNested;
+
+    // Navigate down the stack to find current level
+    for (const category of this.categoryNavigationStack) {
+      const categories = current.constructableCategories || [];
+      const found = categories.find(
+        (c) => c.key === category.key && c.frame === category.frame && c.text === category.text
+      );
+      if (!found || !found.constructableDefinitions || found.constructableDefinitions.length === 0) {
+        // Invalid navigation, reset
+        console.warn("Invalid navigation, resetting stack");
+        this.categoryNavigationStack = [];
+        return builderComponent.constructableBuildingsNested;
+      }
+      // Merge all definitions in this category into a single ConstructableDefinition
+      const mergedActorNames: ObjectNames[] = [];
+      const mergedCategories: ConstructableCategory[] = [];
+
+      found.constructableDefinitions.forEach((def) => {
+        if (def.actorNames) {
+          mergedActorNames.push(...def.actorNames);
+        }
+        if (def.constructableCategories) {
+          mergedCategories.push(...def.constructableCategories);
+        }
+      });
+
+      current = new ConstructableDefinition(
+        mergedActorNames.length > 0 ? mergedActorNames : undefined,
+        mergedCategories.length > 0 ? mergedCategories : undefined
+      );
+    }
+
+    return current;
+  }
+
+  private getProductionValidationState(objectName: ObjectNames): {
+    disabled: boolean;
+    disabledDescription: string | null;
+    reason: ProductionInvalidReason | null;
+    validation: ProductionValidationResult | null;
+  } {
+    const playerNumber = getCurrentPlayerNumber(this.mainSceneWithActors)!;
+    const validation = ProductionValidator.validateObject(this.mainSceneWithActors, playerNumber, objectName);
+    let disabled = !validation.canQueue;
+    let disabledDescription: string | null = null;
+    let reason: ProductionInvalidReason | null = validation.reason ?? null;
+
+    if (validation.techBlocked) {
+      const requirementNames =
+        validation.prereqs?.map((req) => pwActorDefinitions[req]?.components?.info?.name ?? req).join(", ") ?? "";
+      disabledDescription = `Requires: ${requirementNames}`;
+      reason = ProductionInvalidReason.TechLocked;
+    }
+
+    if (validation.buildingPrereqBlocked) {
+      const missingBuildingNames =
+        validation.missingBuildings
+          ?.map((building) => pwActorDefinitions[building]?.components?.info?.name ?? building)
+          .join(", ") ?? "";
+      disabledDescription = `Requires Building: ${missingBuildingNames}`;
+      reason = ProductionInvalidReason.BuildingPrerequisitesMissing;
+    }
+
+    const actorDefinition = pwActorDefinitions[objectName];
+    const player = getPlayer(this.mainSceneWithActors, playerNumber);
+    const cost = actorDefinition.components?.productionCost;
+    if (player && cost && !player.canPayAllResources(cost.resources)) {
+      disabled = true;
+      if (!disabledDescription) {
+        disabledDescription = "Not enough resources";
+        reason = ProductionInvalidReason.NotEnoughResources;
+      }
+    }
+
+    return { disabled, disabledDescription, reason, validation };
+  }
+
+  private playInvalidActionSfx(reason: ProductionInvalidReason | null) {
+    switch (reason) {
+      case ProductionInvalidReason.NotEnoughResources:
+        this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.NOT_ENOUGH_RESOURCES);
+        break;
+      case ProductionInvalidReason.TechLocked:
+        this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.BUILD_DENIED); // TODO
+        break;
+      case ProductionInvalidReason.SupplyBlocked:
+        this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.BUILD_DENIED); // TODO
+        break;
+      case ProductionInvalidReason.BuildingPrerequisitesMissing:
+        this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.BUILD_DENIED); // TODO
+        break;
+      default:
+        this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.BUILD_DENIED);
+        break;
+    }
+  }
+
   override destroy(fromScene?: boolean) {
     super.destroy(fromScene);
     this.selectionChangedSubscription?.unsubscribe();
     this.actorKillSubscription?.unsubscribe();
     this.actorConstructionSubscription?.unsubscribe();
     this.buildingModeSubscription?.unsubscribe();
+    this.resourceChangedSubscription?.unsubscribe();
+    this.categoryNavigationStack = [];
     this.tabHandlerSubscription?.unsubscribe();
   }
 
