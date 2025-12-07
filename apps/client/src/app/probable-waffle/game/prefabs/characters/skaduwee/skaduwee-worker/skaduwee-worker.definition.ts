@@ -37,13 +37,15 @@ export const skaduweeWorkerDefinition: PrefabDefinition = {
       constructionSiteOffset: 2,
       enterConstructionSite: false,
       constructableBuildings: [
+        // keep this in sync with actor-manager
         ObjectNames.FrostForge,
         ObjectNames.InfantryInn,
         ObjectNames.Owlery,
         ObjectNames.WorkMill,
         ObjectNames.WatchTower,
         ObjectNames.Wall,
-        ObjectNames.Stairs
+        ObjectNames.Stairs,
+        ObjectNames.MiningCamp
       ]
     }
   },
