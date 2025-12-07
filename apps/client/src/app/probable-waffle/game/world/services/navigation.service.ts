@@ -251,19 +251,31 @@ export class NavigationService {
             const neighbor = this.heightMapGrid[ny]![nx]!;
             const neighborWalkableComponent = neighbor.walkableComponent;
 
-            // check if we can move from cell to neighbor
+            // check if we can move from cell to neighbor based on height
             const canMoveToNeighbor = this.canAccessFrom(cell, neighbor);
-            // check if we can move from neighbor to cell
+            // check if we can move from neighbor to cell based on height
             const canMoveFromNeighbor = this.canAccessFrom(neighbor, cell);
 
             if (!canMoveToNeighbor && !canMoveFromNeighbor) return;
 
-            // if on a walkable component with path restrictions, check them
+            // Check if current cell restricts movement in this direction (exiting check)
+            // If pathDef is undefined, the cell is accessible from all sides
             if (pathDef && !pathDef[name]) {
-              // if neighbor is not a walkable component, we can't move to it if path is restricted
-              if (!neighborWalkableComponent) return;
+              // Current cell doesn't allow exiting in this direction
+              return;
+            }
 
-              // if neighbor is a walkable component, check if it allows access from our direction
+            // Check if neighbor cell restricts movement from the opposite direction (entering check)
+            if (neighborWalkableComponent && !neighborWalkableComponent.accessibleFromAllSides) {
+              const neighborPathDef = neighborWalkableComponent.walkablePathDefinition;
+              if (!neighborPathDef) {
+                // This indicates a data integrity issue: accessibleFromAllSides is false but no path definition exists
+                console.warn(
+                  `WalkableComponent at (${nx}, ${ny}) has accessibleFromAllSides=false but undefined walkablePathDefinition. ` +
+                    `Checking from (${x}, ${y}) direction ${name}`
+                );
+                return;
+              }
               const oppositeDirection: WalkablePathDirection | undefined = {
                 [WalkablePathDirection.Top]: WalkablePathDirection.Bottom,
                 [WalkablePathDirection.Bottom]: WalkablePathDirection.Top,
@@ -274,10 +286,12 @@ export class NavigationService {
                 [WalkablePathDirection.BottomLeft]: WalkablePathDirection.TopRight,
                 [WalkablePathDirection.BottomRight]: WalkablePathDirection.TopLeft
               }[name];
-              if (!oppositeDirection || !neighborWalkableComponent.walkablePathDefinition[oppositeDirection]) {
+              if (!oppositeDirection || !neighborPathDef[oppositeDirection]) {
+                // Neighbor doesn't allow entry from this direction
                 return;
               }
             }
+
             allowedDirections.push(dir);
           }
         };
@@ -704,6 +718,28 @@ export class NavigationService {
       return terrainType as TerrainType;
     }
     return undefined;
+  }
+
+  /**
+   * Gets the walkable height at a specific tile position.
+   * Returns the height (in px) at which units should stand when on this tile.
+   * @param tile The tile coordinates to check
+   * @returns The walkable height in pixels, or 0 if tile is out of bounds or not available
+   */
+  public getWalkableHeightAtTile(tile: Vector2Simple): number {
+    // Validate Y coordinate and row existence
+    const row = this.heightMapGrid[tile.y];
+    if (!row || tile.y < 0) {
+      console.warn(`getWalkableHeightAtTile: tile Y coordinate ${tile.y} is out of bounds`);
+      return 0;
+    }
+    // Validate X coordinate
+    if (tile.x < 0 || tile.x >= row.length) {
+      console.warn(`getWalkableHeightAtTile: tile X coordinate ${tile.x} is out of bounds`);
+      return 0;
+    }
+    const cell = row[tile.x];
+    return cell?.walkableHeight ?? 0;
   }
 
   /**
