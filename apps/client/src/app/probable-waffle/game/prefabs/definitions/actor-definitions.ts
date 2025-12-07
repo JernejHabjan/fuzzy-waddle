@@ -13,6 +13,7 @@ import { olivalDefinition } from "../buildings/tivara/Olival/olival.definition";
 import { sandholdDefinition } from "../buildings/tivara/Sandhold/sandhold.definition";
 import { templeDefinition } from "../buildings/tivara/Temple/temple.definition";
 import { workMillDefinition } from "../buildings/tivara/WorkMill/work-mill.definition";
+import { miningCampDefinition } from "../buildings/tivara/MiningCamp/mining-camp.definition";
 import { owleryDefinition } from "../buildings/skaduwee/Owlery/owlery.definition";
 import { hedgehogDefinition } from "../animals/hedgehog/hedgehog.definition";
 import { sheepDefinition } from "../animals/sheep/sheep.definition";
@@ -63,6 +64,7 @@ export const pwActorDefinitions: {
   Sandhold: sandholdDefinition,
   Temple: templeDefinition,
   WorkMill: workMillDefinition,
+  MiningCamp: miningCampDefinition,
   SkaduweeOwl: skaduweeOwlDefinition,
   SkaduweeRangedFemale: skaduweeRangedFemaleDefinition,
   SkaduweeMagicianFemale: skaduweeMagicianFemaleDefinition,

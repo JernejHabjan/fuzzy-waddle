@@ -100,7 +100,7 @@ export class PlayerActionsHandler {
         // Building selection
         const actor = this.primarySelectedActor;
         const builder = actor ? getActorComponent(actor, BuilderComponent) : undefined;
-        const building = builder?.constructableBuildings[listIndex];
+        const building = builder?.constructableBuildings[listIndex]; // This uses the flattened list now
         if (building) {
           const buildingCursor = getSceneComponent(this.scene, BuildingCursor);
           buildingCursor?.startPlacingBuilding.emit(building);

@@ -58,6 +58,7 @@ import { HousingComponent } from "../entity/components/building/housing-componen
 import { getSceneService } from "../world/services/scene-component-helpers";
 import { SceneActorCreator } from "../world/services/scene-actor-creator";
 import GameObject = Phaser.GameObjects.GameObject;
+import MiningCamp from "../prefabs/buildings/tivara/MiningCamp";
 
 export type ActorConstructor = new (scene: Phaser.Scene) => GameObject;
 export type ActorMap = { [name: string]: ActorConstructor };
@@ -87,13 +88,11 @@ export class ActorManager {
     [ObjectNames.Olival]: Olival,
     [ObjectNames.Sandhold]: Sandhold,
     [ObjectNames.Temple]: Temple,
-    [ObjectNames.WorkMill]: WorkMill
-  };
-
-  private static tivaraWall: ActorMap = {
     [ObjectNames.Stairs]: Stairs,
     [ObjectNames.WatchTower]: WatchTower,
-    [ObjectNames.Wall]: Wall
+    [ObjectNames.Wall]: Wall,
+    [ObjectNames.WorkMill]: WorkMill,
+    [ObjectNames.MiningCamp]: MiningCamp
   };
 
   private static skaduweeWorkers: ActorMap = {
@@ -111,7 +110,12 @@ export class ActorManager {
   private static skaduweeBuildings: ActorMap = {
     [ObjectNames.FrostForge]: FrostForge,
     [ObjectNames.InfantryInn]: InfantryInn,
-    [ObjectNames.Owlery]: Owlery
+    [ObjectNames.Owlery]: Owlery,
+    [ObjectNames.WorkMill]: WorkMill,
+    [ObjectNames.WatchTower]: WatchTower,
+    [ObjectNames.Wall]: Wall,
+    [ObjectNames.Stairs]: Stairs,
+    [ObjectNames.MiningCamp]: MiningCamp
   };
 
   private static resources: ActorMap = {
@@ -133,7 +137,6 @@ export class ActorManager {
     ...ActorManager.tivaraWorkers,
     ...ActorManager.tivaraUnits,
     ...ActorManager.tivaraBuildings,
-    ...ActorManager.tivaraWall,
     ...ActorManager.skaduweeWorkers,
     ...ActorManager.skaduweeUnits,
     ...ActorManager.skaduweeBuildings,
