@@ -1,6 +1,6 @@
 import { PlayerAiBlackboard } from "../player-ai-blackboard";
 import { BasePlanner } from "./base-planner";
-import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames, FactionType } from "@fuzzy-waddle/api-interfaces";
 import { getApproxWoodCost } from "../../../entity/components/production/cost-utils";
 
 /**
@@ -27,7 +27,8 @@ export class AdaptiveThresholdManager {
 
   constructor(
     private readonly blackboard: PlayerAiBlackboard,
-    private readonly basePlanner: BasePlanner
+    private readonly basePlanner: BasePlanner,
+    private readonly factionType?: FactionType
   ) {}
 
   /**
@@ -103,17 +104,8 @@ export class AdaptiveThresholdManager {
   }
 
   private roughCostFor(obj: ObjectNames): number {
-    // Per-Definition Supply Costing Integration (replaces static switch; preserves fallback behavior)
-    switch (obj) {
-      case ObjectNames.WorkMill:
-        return getApproxWoodCost(obj, 120);
-      case ObjectNames.Owlery:
-        return getApproxWoodCost(obj, 160);
-      case ObjectNames.InfantryInn:
-        return getApproxWoodCost(obj, 200);
-      default:
-        return getApproxWoodCost(obj, 100);
-    }
+    // Per-Definition Supply Costing Integration - dynamically sources costs from actor definitions
+    return getApproxWoodCost(obj, 100);
   }
 
   // ---- Getters (Agent queries) ----

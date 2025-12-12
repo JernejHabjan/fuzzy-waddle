@@ -1,5 +1,5 @@
 import { type MapAnalysis, MapAnalyzer } from "./map-analyzer";
-import { ObjectNames, ResourceType, type Vector2Simple } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames, ResourceType, type Vector2Simple, FactionType } from "@fuzzy-waddle/api-interfaces";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { NavigationService } from "../../../world/services/navigation.service";
@@ -46,7 +46,10 @@ export class BasePlanner {
     planId?: string; //link to blackboard plannedStructures reservation
   } | null = null;
 
-  constructor(private readonly analyzer: MapAnalyzer) {}
+  constructor(
+    private readonly analyzer: MapAnalyzer,
+    private readonly factionType?: FactionType
+  ) {}
 
   /**
    * Ensure a reservation exists for the given building type; returns its tile.
@@ -299,15 +302,22 @@ export class BasePlanner {
 
   /**
    * Translate need type to concrete object enum value.
+   * Now faction-aware for housing buildings.
    */
   mapNeedTypeToObjectName(needType: NeedType): ObjectNames | null {
     switch (needType) {
       case NeedType.Housing:
-        return ObjectNames.WorkMill;
+        // Faction-aware housing building
+        if (this.factionType === FactionType.Tivara) {
+          return ObjectNames.Olival;
+        } else if (this.factionType === FactionType.Skaduwee) {
+          return ObjectNames.Emberstone;
+        }
+        return ObjectNames.WorkMill; // fallback
       case NeedType.Production:
         return ObjectNames.Owlery;
       case NeedType.Defense:
-        return ObjectNames.InfantryInn;
+        return ObjectNames.WatchTower; // Changed to WatchTower (has attack component)
       default:
         return null;
     }

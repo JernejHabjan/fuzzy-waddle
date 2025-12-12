@@ -79,7 +79,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       });
     }
     this.mapAnalyzer = new MapAnalyzer(this.scene, this.player.playerNumber!);
-    this.basePlanner = new BasePlanner(this.mapAnalyzer);
+    this.basePlanner = new BasePlanner(this.mapAnalyzer, this.player.factionType);
     this.cooldowns.configure("strategyShift", AI_CONFIG.strategyShiftIntervalMs);
     this.cooldowns.configure("analyzeMap", AI_CONFIG.mapAnalysisIntervalMs);
     this.cooldowns.configure("attackTrigger", AI_CONFIG.attackTriggerIntervalMs);
@@ -99,7 +99,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     );
     this.logisticsManager = new LogisticsManager(this.blackboard, this.logDebugInfo.bind(this));
     this.techManager = new TechProgressManager(this.blackboard, this.logDebugInfo.bind(this));
-    this.adaptiveThresholds = new AdaptiveThresholdManager(this.blackboard, this.basePlanner);
+    this.adaptiveThresholds = new AdaptiveThresholdManager(this.blackboard, this.basePlanner, this.player.factionType);
     this.combatMicro = new CombatMicroManager(this.scene, this.blackboard, this.logDebugInfo.bind(this));
     this.scoutingManager = new ScoutingManager(this.scene, this.blackboard, this.logDebugInfo.bind(this));
     this.targetingManager = new TargetingManager(this.blackboard);
@@ -725,15 +725,105 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   }
 
   AssignHousingBuilding(): State {
-    return this.assignBuilding(ObjectNames.WorkMill);
+    // Faction-aware housing building assignment
+    const faction = this.player.factionType;
+    let housingBuilding: ObjectNames;
+    
+    switch (faction) {
+      case FactionType.Tivara:
+        housingBuilding = ObjectNames.Olival;
+        break;
+      case FactionType.Skaduwee:
+        housingBuilding = ObjectNames.Emberstone;
+        break;
+      default:
+        // Fallback to WorkMill if faction is unknown
+        housingBuilding = ObjectNames.WorkMill;
+    }
+    
+    return this.assignBuilding(housingBuilding);
   }
 
   AssignProductionBuilding(): State {
-    return this.assignBuilding(ObjectNames.Owlery);
+    // Use tech tree to determine available production buildings
+    if (!this.productionValidator) return State.FAILED;
+    
+    const faction = this.player.factionType;
+    const candidateBuildings: ObjectNames[] = [];
+    
+    // Get all buildings with production component from actor definitions
+    Object.keys(pwActorDefinitions).forEach((key) => {
+      const objectName = key as ObjectNames;
+      const def = pwActorDefinitions[objectName];
+      
+      // Check if building has production component and is constructable
+      if (def?.components?.production && def?.components?.constructable) {
+        // Validate if this building can be constructed by checking tech tree
+        const validation = this.productionValidator!.validate(objectName);
+        if (validation.canQueue || !validation.techBlocked) {
+          candidateBuildings.push(objectName);
+        }
+      }
+    });
+    
+    // Prefer buildings we don't already have much of
+    const buildingCounts = new Map<ObjectNames, number>();
+    this.blackboard.productionBuildings.forEach((building) => {
+      const name = building.name as ObjectNames;
+      buildingCounts.set(name, (buildingCounts.get(name) || 0) + 1);
+    });
+    
+    // Sort by count (ascending) to build variety
+    candidateBuildings.sort((a, b) => {
+      const countA = buildingCounts.get(a) || 0;
+      const countB = buildingCounts.get(b) || 0;
+      return countA - countB;
+    });
+    
+    // Use first available production building, fallback to Owlery if none found
+    const selectedBuilding = candidateBuildings.length > 0 ? candidateBuildings[0]! : ObjectNames.Owlery;
+    return this.assignBuilding(selectedBuilding);
   }
 
   AssignDefenseBuilding(): State {
-    return this.assignBuilding(ObjectNames.InfantryInn);
+    // Only assign buildings with attack component (defensive structures)
+    const candidateDefenseBuildings: ObjectNames[] = [];
+    
+    Object.keys(pwActorDefinitions).forEach((key) => {
+      const objectName = key as ObjectNames;
+      const def = pwActorDefinitions[objectName];
+      
+      // Check if building has attack component and is constructable
+      if (def?.components?.attack && def?.components?.constructable) {
+        // Validate if this building can be constructed
+        if (this.productionValidator) {
+          const validation = this.productionValidator.validate(objectName);
+          if (validation.canQueue || !validation.techBlocked) {
+            candidateDefenseBuildings.push(objectName);
+          }
+        } else {
+          candidateDefenseBuildings.push(objectName);
+        }
+      }
+    });
+    
+    // Prefer buildings we don't already have much of
+    const buildingCounts = new Map<ObjectNames, number>();
+    this.blackboard.productionBuildings.forEach((building) => {
+      const name = building.name as ObjectNames;
+      buildingCounts.set(name, (buildingCounts.get(name) || 0) + 1);
+    });
+    
+    // Sort by count (ascending) to build variety
+    candidateDefenseBuildings.sort((a, b) => {
+      const countA = buildingCounts.get(a) || 0;
+      const countB = buildingCounts.get(b) || 0;
+      return countA - countB;
+    });
+    
+    // Use first available defense building, fallback to WatchTower if none found
+    const selectedBuilding = candidateDefenseBuildings.length > 0 ? candidateDefenseBuildings[0]! : ObjectNames.WatchTower;
+    return this.assignBuilding(selectedBuilding);
   }
 
   NeedToScout() {
