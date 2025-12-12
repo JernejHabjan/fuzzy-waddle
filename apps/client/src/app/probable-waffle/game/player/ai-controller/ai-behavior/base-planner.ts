@@ -308,10 +308,12 @@ export class BasePlanner {
     switch (needType) {
       case NeedType.Housing:
         // Faction-aware housing building
-        if (this.factionType === FactionType.Tivara) {
-          return ObjectNames.Olival;
-        } else if (this.factionType === FactionType.Skaduwee) {
-          return ObjectNames.Emberstone;
+        if (this.factionType) {
+          if (this.factionType === FactionType.Tivara) {
+            return ObjectNames.Olival;
+          } else if (this.factionType === FactionType.Skaduwee) {
+            return ObjectNames.Emberstone;
+          }
         }
         return ObjectNames.WorkMill; // fallback
       case NeedType.Production:

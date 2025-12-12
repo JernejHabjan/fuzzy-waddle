@@ -570,7 +570,8 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     // Also consider if we have production buildings that need workers
     const productionBuildingCount = this.blackboard.productionBuildings.length;
     const minWorkersPerBuilding = 2;
-    const buildingBasedTarget = Math.max(4, productionBuildingCount * minWorkersPerBuilding);
+    const minBaseWorkers = 4;
+    const buildingBasedTarget = Math.max(minBaseWorkers, productionBuildingCount * minWorkersPerBuilding);
     
     // Use the higher of the two targets
     const finalTarget = Math.max(targetWorkers, buildingBasedTarget);
@@ -662,7 +663,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     const buildingCounts = new Map<ObjectNames, number>();
     this.blackboard.productionBuildings.forEach((building) => {
       const name = building.name as ObjectNames;
-      buildingCounts.set(name, (buildingCounts.get(name) || 0) + 1);
+      buildingCounts.set(name, (buildingCounts.get(name) ?? 0) + 1);
     });
     
     // Sort by count (ascending) to build variety
@@ -798,9 +799,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     const candidateBuildings: ObjectNames[] = [];
     
     // Get all buildings with production component from actor definitions
-    Object.keys(pwActorDefinitions).forEach((key) => {
-      const objectName = key as ObjectNames;
-      const def = pwActorDefinitions[objectName];
+    Object.entries(pwActorDefinitions).forEach(([objectName, def]) => {
       
       // Check if building has production component and is constructable
       if (def?.components?.production && def?.components?.constructable) {
@@ -824,9 +823,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     // Only assign buildings with attack component (defensive structures)
     const candidateDefenseBuildings: ObjectNames[] = [];
     
-    Object.keys(pwActorDefinitions).forEach((key) => {
-      const objectName = key as ObjectNames;
-      const def = pwActorDefinitions[objectName];
+    Object.entries(pwActorDefinitions).forEach(([objectName, def]) => {
       
       // Check if building has attack component and is constructable
       if (def?.components?.attack && def?.components?.constructable) {
@@ -1091,7 +1088,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       if (this.productionValidator) {
         const validation = this.productionValidator.validate(candidate);
         if (!validation.canQueue) {
-          if (validation.techBlocked && validation.prereqs.length > 0) {
+          if (validation.prereqs.length > 0) {
             this.productionValidator.schedulePrerequisites(validation.prereqs, candidate);
           }
           continue; // Try next unit
