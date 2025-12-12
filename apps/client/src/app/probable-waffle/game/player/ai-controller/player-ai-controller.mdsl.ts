@@ -22,6 +22,7 @@
 export const PlayerAiControllerMdsl = `
 root {
     selector {
+        branch [CheckSurrender]
         branch [AnalyzeMap]
         branch [PlanBase]
         branch [ExecuteBasePlan]
@@ -36,6 +37,16 @@ root {
         branch [AdvanceTech]
         branch [ScoutEnemy]
         branch [CombatTactics]
+    }
+}
+
+root [CheckSurrender] {
+    /* Check if AI should offer surrender when in a losing position. Fails to allow other selector children to proceed.*/
+    fail {
+        sequence {
+            condition [ShouldOfferSurrender]
+            action [OfferSurrender]
+        }
     }
 }
 

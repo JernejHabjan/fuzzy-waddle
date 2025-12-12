@@ -13,6 +13,7 @@ import HudMessages from "../../../prefabs/gui/labels/HudMessages";
 import GroupContainer from "../../../prefabs/gui/labels/GroupContainer";
 import IdleWorkersButton from "../../../prefabs/gui/buttons/IdleWorkersButton";
 import ConfirmationDialog from "../../../prefabs/gui/dialogs/ConfirmationDialog";
+import SurrenderDialog from "../../../prefabs/gui/SurrenderDialog";
 /* START-USER-IMPORTS */
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { HudGameState } from "../../../hud/hud-game-state";
@@ -82,6 +83,10 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     const confirmationDialog = new ConfirmationDialog(this, 640, 360);
     this.add.existing(confirmationDialog);
 
+    // surrenderDialog
+    const surrenderDialog = new SurrenderDialog(this, 640, 360);
+    this.add.existing(surrenderDialog);
+
     // lists
     const hudElements: Array<any> = [];
 
@@ -96,6 +101,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.hudMessages = hudMessages;
     this.groupContainer = groupContainer;
     this.confirmationDialog = confirmationDialog;
+    this.surrenderDialog = surrenderDialog;
     this.hudElements = hudElements;
 
     this.events.emit("scene-awake");
@@ -112,6 +118,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   private hudMessages!: HudMessages;
   private groupContainer!: GroupContainer;
   public confirmationDialog!: ConfirmationDialog;
+  public surrenderDialog!: SurrenderDialog;
   private hudElements!: Array<any>;
 
   /* START-USER-CODE */
@@ -230,6 +237,10 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.idleWorkersButton.y = this.gameSpeedModifier.y + 40;
     this.idleWorkersButton.scale = sceneWidth > this.actorInfoSmallScreenBreakpoint ? 1 : 0.7;
     this.idleWorkersButton.visible = sceneWidth > this.minimap_container.minimapHideBreakpoint;
+
+    // position surrender dialog in center of screen
+    this.surrenderDialog.x = this.scale.width / 2;
+    this.surrenderDialog.y = this.scale.height / 2;
 
     // redraw minimap
     this.minimap_container.redrawMinimap();

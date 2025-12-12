@@ -978,6 +978,43 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       return State.FAILED;
     }
   }
+  
+  // ================= Surrender Logic =================
+  ShouldOfferSurrender(): boolean {
+    // Don't offer surrender if already offered or rejected
+    if (this.blackboard.wantsToSurrender || this.blackboard.surrenderRejected) return false;
+    
+    // Check if AI is in a losing position
+    const totalUnits = this.blackboard.units.length + this.blackboard.workers.length;
+    const totalBuildings = this.blackboard.productionBuildings.length;
+    const resources = this.blackboard.getTotalResources();
+    
+    // Surrender conditions:
+    // 1. Very low unit count (< 3 units)
+    // 2. Low building count (< 2 buildings)
+    // 3. Enemy has significant military advantage (3x or more, or AI has no military)
+    // 4. Very low resources (< 100 total)
+    const veryLowUnits = totalUnits < 3;
+    const fewBuildings = totalBuildings < 2;
+    const enemyAdvantage = 
+      this.blackboard.militaryStrength === 0 && this.blackboard.enemyMilitaryStrength > 0 ||
+      (this.blackboard.militaryStrength > 0 && 
+       this.blackboard.enemyMilitaryStrength > this.blackboard.militaryStrength * 3);
+    const lowResources = resources < 100;
+    
+    // AI should surrender if it meets multiple losing conditions
+    const losingConditionsMet = [veryLowUnits, fewBuildings, enemyAdvantage, lowResources].filter(Boolean).length >= 2;
+    
+    return losingConditionsMet;
+  }
+  
+  OfferSurrender(): State {
+    const now = performance.now();
+    this.blackboard.wantsToSurrender = true;
+    this.blackboard.surrenderOfferedAt = now;
+    this.logDebugInfo("AI player offering surrender");
+    return State.SUCCEEDED;
+  }
   // ===========================================================================
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private logDebugInfo(message?: any, ...optionalParams: any[]) {
