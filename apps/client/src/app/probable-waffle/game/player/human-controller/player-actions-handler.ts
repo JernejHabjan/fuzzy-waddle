@@ -58,11 +58,14 @@ export class PlayerActionsHandler {
 
     // Listen to selection changes to track primary selection deterministically
     this.selectionChangedSubscription = listenToSelectionEvents(this.scene)?.subscribe(() => {
-      const { selectedActors, actorsByPriority, primaryActor } = getPrimarySelectedActor(this.scene);
-      this.currentSelectedActors = actorsByPriority.length ? actorsByPriority : selectedActors;
-      this.primarySelectedActor = primaryActor;
-      // reset on selection change
-      this.setBuildingMode(false);
+      // wait so that any tab changes are processed first
+      setTimeout(() => {
+        const { selectedActors, primaryActor } = getPrimarySelectedActor(this.scene);
+        this.currentSelectedActors = selectedActors;
+        this.primarySelectedActor = primaryActor;
+        // reset on selection change
+        this.setBuildingMode(false);
+      }, 0);
     });
 
     // Global keyboard shortcuts
