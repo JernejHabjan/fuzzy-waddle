@@ -48,7 +48,8 @@ export class ProbableWaffleCommunicatorService
       | "selection.doubleSelect"
       | "selection.multiSelect"
       | "selection.multiSelectPreview"
-      | "selection.terrainSelect";
+      | "selection.terrainSelect"
+      | "quit";
     data?: any;
   }>();
 

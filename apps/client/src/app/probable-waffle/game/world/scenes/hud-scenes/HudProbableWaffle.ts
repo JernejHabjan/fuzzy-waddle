@@ -118,7 +118,6 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   private saveGameSubscription?: Subscription;
   private readonly actorInfoSmallScreenBreakpoint = 1200;
   private cursorHandler?: CursorHandler;
-  private victoryCheckInterval?: number;
 
   probableWaffleScene?: ProbableWaffleScene;
   override preload() {
@@ -135,10 +134,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     new HudGameState(this, this.probableWaffleScene!);
     new HudElementVisibilityHandler(this, this.hudElements);
     this.cursorHandler = new CursorHandler(this);
-    this.sceneGameData.components.push(
-      new MultiSelectionHandler(this, this.probableWaffleScene!),
-      this.cursorHandler
-    );
+    this.sceneGameData.components.push(new MultiSelectionHandler(this, this.probableWaffleScene!), this.cursorHandler);
 
     this.minimap_container.initializeWithParentScene(this.probableWaffleScene!, this);
 
@@ -160,7 +156,6 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     if (this.cursorHandler) {
       this.cursorHandler.initializeWithMainScene(probableWaffleScene);
     }
-    this.startVictoryCheck();
   }
 
   private resize(gameSize: { height: number; width: number }) {
@@ -272,62 +267,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.saveGameSubscription = this.subscribeToGameEvent("save-game", "Game saved");
   }
 
-  private startVictoryCheck() {
-    // Check for victory condition every 2 seconds
-    this.victoryCheckInterval = window.setInterval(() => {
-      this.checkForVictory();
-    }, 2000);
-  }
-
-  private checkForVictory() {
-    if (!this.probableWaffleScene) return;
-
-    // Don't check for victory in replay mode
-    const isReplay = this.probableWaffleScene.baseGameData.gameInstance.gameInstanceMetadata.isReplay();
-    if (isReplay) return;
-
-    // Check if VictoryDialog is already open
-    if (this.scene.isActive("VictoryDialog")) return;
-
-    const players = this.probableWaffleScene.baseGameData.gameInstance.players;
-    const currentPlayerNumber = this.probableWaffleScene.baseGameData.playerNumber;
-    const currentPlayer = players.find((p) => p.playerNumber === currentPlayerNumber);
-
-    if (!currentPlayer) return;
-
-    // Check if current player is defeated
-    if (currentPlayer.playerController.data.leftOrKilled) return;
-
-    // Get all players on different teams that are still active
-    const enemyPlayers = players.filter(
-      (player) =>
-        player.playerNumber !== currentPlayer.playerNumber &&
-        player.playerController.data.playerDefinition!.team !== currentPlayer.playerController.data.playerDefinition!.team &&
-        !player.playerController.data.leftOrKilled
-    );
-
-    // If no enemy players remain, show victory dialog
-    if (enemyPlayers.length === 0 && players.length > 1) {
-      this.showVictoryDialog();
-    }
-  }
-
-  private showVictoryDialog() {
-    // Stop the victory check
-    if (this.victoryCheckInterval) {
-      clearInterval(this.victoryCheckInterval);
-      this.victoryCheckInterval = undefined;
-    }
-
-    // Launch the VictoryDialog scene
-    this.scene.launch("VictoryDialog");
-  }
-
   override destroy() {
-    if (this.victoryCheckInterval) {
-      clearInterval(this.victoryCheckInterval);
-      this.victoryCheckInterval = undefined;
-    }
     this.saveGameSubscription?.unsubscribe();
     super.destroy();
   }

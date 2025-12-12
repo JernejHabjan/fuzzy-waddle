@@ -136,7 +136,7 @@ export default class AiControllerDebugPanel extends Phaser.GameObjects.Container
 
   override destroy() {
     this.button.off("action", this.toggleLabels, this);
-    this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.onUpdate, this);
+    this.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.onUpdate, this);
     this.labels.forEach((label) => label.destroy());
     super.destroy();
   }

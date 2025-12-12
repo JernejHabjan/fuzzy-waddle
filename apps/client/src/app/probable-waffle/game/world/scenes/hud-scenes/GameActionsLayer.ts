@@ -8,9 +8,6 @@ import OnPointerDownScript from "../../../../../shared/game/phaser/script-nodes-
 import PushActionScript from "../../../../../shared/game/phaser/script-nodes/PushActionScript";
 /* START-USER-IMPORTS */
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
-import { GameSessionState } from "@fuzzy-waddle/api-interfaces";
-import { getActorComponent } from "../../../data/actor-component";
-import { OwnerComponent } from "../../../entity/components/owner-component";
 /* END-USER-IMPORTS */
 
 export default class GameActionsLayer extends ProbableWaffleScene {
@@ -415,43 +412,8 @@ export default class GameActionsLayer extends ProbableWaffleScene {
 
   private handleQuit() {
     this.game_action_quit.once("game-quit", () => {
-      // Mark the current player as having left the game
-      const currentPlayerNumber = this.baseGameData.playerNumber;
-      const currentPlayer = this.baseGameData.gameInstance.players.find(
-        (p) => p.playerNumber === currentPlayerNumber
-      );
-      
-      if (currentPlayer) {
-        currentPlayer.playerController.data.leftOrKilled = true;
-        
-        // Remove all actors owned by the quitting player
-        this.removePlayerActors(currentPlayerNumber!);
-      }
-      
-      // Navigate to score screen
-      this.communicator.gameInstanceMetadataChanged?.send({
-        property: "sessionState",
-        gameInstanceId: this.baseGameData.gameInstance.gameInstanceMetadata.data.gameInstanceId!,
-        data: { sessionState: GameSessionState.ToScoreScreen },
-        emitterUserId: this.baseGameData.user.userId
-      });
+      this.communicator.allScenes.emit({ name: "quit" });
       this.destroySelf();
-    });
-  }
-
-  private removePlayerActors(playerNumber: number) {
-    // Get the main game scene to remove actors from
-    const gameScene = this.scene.get(this.baseGameData.gameInstance.gameInstanceMetadata.data.startOptions.map!);
-    if (!gameScene) return;
-
-    // Get all actors owned by this player and destroy them
-    const actorsToRemove = gameScene.children.list.filter((child) => {
-      const ownerComponent = getActorComponent(child, OwnerComponent);
-      return ownerComponent && ownerComponent.getOwner() === playerNumber;
-    });
-
-    actorsToRemove.forEach((actor) => {
-      actor.destroy();
     });
   }
 

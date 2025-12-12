@@ -52,7 +52,6 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
   }
 
   override create() {
-    const c = this.baseGameData.gameInstance.gameState;
     const hud = this.scene.get<HudProbableWaffle>("HudProbableWaffle") as HudProbableWaffle;
     hud.scene.start();
     hud.initializeWithParentScene(this);

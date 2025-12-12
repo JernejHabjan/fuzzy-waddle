@@ -19,6 +19,9 @@ import { ScenePlayerHelpers } from "../../data/scene-player-helpers";
 import { getCurrentPlayerNumber } from "../../data/scene-data";
 import { getActorComponent } from "../../data/actor-component";
 import { ConstructionSiteComponent } from "../../entity/components/construction/construction-site-component";
+import type EndGameDialog from "../scenes/hud-scenes/EndGameDialog";
+import { filter, type Subscription } from "rxjs";
+import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 
 export class GameModeConditionChecker {
   private loseConditions: LoseConditions;
@@ -28,8 +31,9 @@ export class GameModeConditionChecker {
   private currentPlayerNumber!: number;
   private players!: ProbableWafflePlayer[];
   private currentPlayer!: ProbableWafflePlayer;
+  private selfQuitSubscription?: Subscription;
 
-  constructor(private readonly scene: Phaser.Scene) {
+  constructor(private readonly scene: ProbableWaffleScene) {
     const gameModeData = getGameModeFromScene<ProbableWaffleGameMode>(scene).data;
     this.loseConditions = gameModeData.loseConditions;
     this.winConditions = gameModeData.winConditions;
@@ -37,6 +41,7 @@ export class GameModeConditionChecker {
 
     this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.throttleCheck, this);
     this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
+    this.listenToPlayerQuit();
   }
 
   private throttleCheck = throttle(this.check.bind(this), 1000);
@@ -65,6 +70,12 @@ export class GameModeConditionChecker {
     this.actorsByPlayer = ScenePlayerHelpers.getActorsByPlayer(this.scene).actorsByPlayer;
 
     this.runChecksForSelfAndAiPlayers();
+  }
+
+  private listenToPlayerQuit() {
+    this.selfQuitSubscription = this.scene.communicator.allScenes
+      .pipe(filter((scene) => scene.name === "quit"))
+      .subscribe(() => this.selfQuit());
   }
 
   private runChecksForSelfAndAiPlayers() {
@@ -187,25 +198,31 @@ export class GameModeConditionChecker {
     return false;
   }
 
+  private selfQuit() {
+    this.currentPlayer.playerController.data.leftOrKilled = true;
+    console.log(`Player ${this.currentPlayer.playerNumber} has quit the game.`);
+    this.navigateToScoreScreen();
+  }
+
   private winGame() {
-    // Implement your win game logic here
-    console.log("You win!");
-    this.tempQuit();
+    this.createEndGameLayer("You have won the game!", () => {
+      this.navigateToScoreScreen();
+    });
   }
 
   private loseGame() {
-    // Implement your lose game logic here
-    console.log("You lose!");
-    this.tempQuit();
+    this.createEndGameLayer("You have lost the game.", () => {
+      this.navigateToScoreScreen();
+    });
   }
 
   private tieGame() {
-    // Implement your tie game logic here
-    console.log("It's a tie!");
-    this.tempQuit();
+    this.createEndGameLayer("The game ended in a tie!", () => {
+      this.navigateToScoreScreen();
+    });
   }
 
-  private tempQuit() {
+  private navigateToScoreScreen() {
     const baseGameData = getBaseGameDataFromScene<ProbableWaffleGameData>(this.scene);
     const communicator = baseGameData.communicator;
     // todo rather than this, change the player state session state to "to score screen" because only 1 player quits
@@ -216,6 +233,15 @@ export class GameModeConditionChecker {
       emitterUserId: baseGameData.user.userId
     });
   }
+
+  private createEndGameLayer = (message: string, callback: () => void) => {
+    const layer = this.scene.scene.get<EndGameDialog>("EndGameDialog") as EndGameDialog;
+    layer.scene.start();
+    setTimeout(() => {
+      layer.setMessage(message);
+      layer.setCallback(callback);
+    }, 0);
+  };
 
   private destroy() {
     this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.throttleCheck);

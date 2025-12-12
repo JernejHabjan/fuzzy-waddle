@@ -7,7 +7,7 @@ import { Boot } from "../scenes/preload-scenes/Boot";
 import MapEmberEnclave from "../scenes/game-maps/MapEmberEnclave";
 import HudProbableWaffle from "../scenes/hud-scenes/HudProbableWaffle";
 import GameActionsLayer from "../scenes/hud-scenes/GameActionsLayer";
-import VictoryDialog from "../scenes/hud-scenes/VictoryDialog";
+import EndGameDialog from "../scenes/hud-scenes/EndGameDialog";
 import MapSandbox from "../scenes/game-maps/MapSandbox";
 
 export const probableWaffleGameConfig: Types.Core.GameConfig = {
@@ -21,7 +21,7 @@ export const probableWaffleGameConfig: Types.Core.GameConfig = {
     MapEmberEnclave,
     HudProbableWaffle,
     GameActionsLayer,
-    VictoryDialog
+    EndGameDialog
   ],
   physics: {
     default: "arcade",
