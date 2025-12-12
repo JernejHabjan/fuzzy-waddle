@@ -29,7 +29,7 @@ export const workMillDefinition = {
       description: "A sturdy mill that turns raw timber into vital resources",
       smallImage: {
         key: "factions",
-        frame: "buildings/tivara/workmill.png",
+        frame: "buildings/tivara/workmill/workmill.png",
         origin: { x: 0.5, y: 0.5 }
       }
     },

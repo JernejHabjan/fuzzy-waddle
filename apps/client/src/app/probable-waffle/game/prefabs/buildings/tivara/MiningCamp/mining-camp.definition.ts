@@ -29,7 +29,7 @@ export const miningCampDefinition = {
       description: "A camp for mining minerals and stone",
       smallImage: {
         key: "factions",
-        frame: "buildings/tivara/mining_camp.png",
+        frame: "buildings/tivara/mining_camp/mining-camp.png",
         origin: { x: 0.5, y: 0.5 }
       }
     },
