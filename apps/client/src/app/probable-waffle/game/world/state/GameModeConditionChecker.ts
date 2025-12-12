@@ -149,7 +149,7 @@ export class GameModeConditionChecker {
       const aiPlayerHandler = getSceneSystem(this.scene, AiPlayerHandler);
       if (!aiPlayerHandler) return;
 
-      const aiController = aiPlayerHandler.getAiPlayerController(aiPlayer.playerNumber);
+      const aiController = aiPlayerHandler.getAiPlayerController(aiPlayer.playerNumber!);
       if (!aiController) return;
 
       const blackboard = aiController.blackboard;
@@ -204,7 +204,7 @@ export class GameModeConditionChecker {
     // Mark surrender as rejected so AI won't offer again
     const aiPlayerHandler = getSceneSystem(this.scene, AiPlayerHandler);
     if (aiPlayerHandler) {
-      const aiController = aiPlayerHandler.getAiPlayerController(player.playerNumber);
+      const aiController = aiPlayerHandler.getAiPlayerController(player.playerNumber!);
       if (aiController) {
         aiController.blackboard.surrenderRejected = true;
       }
