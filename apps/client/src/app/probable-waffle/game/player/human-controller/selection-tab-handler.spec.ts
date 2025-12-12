@@ -176,11 +176,11 @@ describe("SelectionTabHandler", () => {
 
     const groups = handler.groupedActors;
     expect(groups.length).toBe(2);
-    
+
     // Worker appears first in selection, so should be first group
     expect(groups[0]?.[0]?.name).toBe("Worker");
     expect(groups[0]?.length).toBe(2);
-    
+
     // Warrior appears second
     expect(groups[1]?.[0]?.name).toBe("Warrior");
     expect(groups[1]?.length).toBe(2);

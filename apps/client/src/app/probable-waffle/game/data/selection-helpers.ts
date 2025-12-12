@@ -26,7 +26,7 @@ export function getPrimarySelectedActor(scene: ProbableWaffleScene): {
     return { selectedActors, actorsByPriority, primaryActor: actorsByPriority[0] };
   }
 
-  // Fallback to original behavior
+  // Fallback to original behaviour
   const actorsByPriority = sortActorsByPriority(selectedActors);
   return { selectedActors, actorsByPriority, primaryActor: actorsByPriority[0] };
 }
