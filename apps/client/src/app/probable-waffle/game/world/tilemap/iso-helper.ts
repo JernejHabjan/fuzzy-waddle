@@ -7,7 +7,8 @@ export class IsoHelper {
     scene: Phaser.Scene,
     worldX: number,
     worldY: number,
-    snapToFloor: boolean = true
+    snapToFloor: boolean = true,
+    ceil: boolean = true
   ): Vector2Simple {
     const tileMapComponent = getSceneComponent(scene, TilemapComponent);
     if (!tileMapComponent) throw new Error("TilemapComponent not found in scene");
@@ -21,6 +22,13 @@ export class IsoHelper {
       scene.cameras.main,
       tileMapComponent.tilemap.layer
     );
+
+    if (ceil) {
+      // for some reason we need to ceil the clicked tile - its not ok if se set snapToFloor to true
+      clickedTileXY.x = Math.ceil(clickedTileXY.x);
+      clickedTileXY.y = Math.ceil(clickedTileXY.y);
+    }
+
     return { x: clickedTileXY.x, y: clickedTileXY.y };
   }
 
