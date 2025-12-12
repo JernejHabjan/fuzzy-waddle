@@ -1,6 +1,7 @@
 import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { NavigationService } from "./navigation.service";
 import { getSceneService } from "./scene-component-helpers";
+import { onSceneInitialized } from "../../data/game-object-helper";
 
 export class DecalCursorService {
   private moveMarkerSprite?: Phaser.GameObjects.Image;
@@ -9,42 +10,13 @@ export class DecalCursorService {
   private navigationService?: NavigationService;
   private inaccessibleTimer?: Phaser.Time.TimerEvent;
 
-  private static readonly MOVE_MARKER_KEY = 'decal-move-marker';
-  private static readonly INACCESSIBLE_MARKER_KEY = 'decal-inaccessible-marker';
-
   constructor(private readonly scene: Phaser.Scene) {
-    this.navigationService = getSceneService(scene, NavigationService);
+    onSceneInitialized(scene, this.initService, this);
     this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
-    this.preloadSprites();
   }
-
-  /**
-   * Preload the decal sprites
-   */
-  private preloadSprites(): void {
-    // Only load if not already loaded
-    if (!this.scene.textures.exists(DecalCursorService.MOVE_MARKER_KEY)) {
-      this.scene.load.image(
-        DecalCursorService.MOVE_MARKER_KEY,
-        'assets/probable-waffle/sprites/gui/decals/move-marker.png'
-      );
-    }
-    if (!this.scene.textures.exists(DecalCursorService.INACCESSIBLE_MARKER_KEY)) {
-      this.scene.load.image(
-        DecalCursorService.INACCESSIBLE_MARKER_KEY,
-        'assets/probable-waffle/sprites/gui/decals/inaccessible-marker.png'
-      );
-    }
-    
-    // Start the load if there are pending loads
-    if (this.scene.load.isLoading() || this.scene.load.list.size > 0) {
-      this.scene.load.once(Phaser.Loader.Events.COMPLETE, () => {
-        // Sprites are now ready to use
-      });
-      this.scene.load.start();
-    }
+  private initService(): void {
+    this.navigationService = getSceneService(this.scene, NavigationService);
   }
-
   /**
    * Shows a move marker at the specified tile position
    * @param tileVec3 The tile position to show the marker at
@@ -70,15 +42,15 @@ export class DecalCursorService {
    */
   private showAccessibleMarker(worldXY: Vector2Simple, tileVec3: Vector3Simple): void {
     this.hideInaccessibleMarker();
-    
+
     // Store current destination
     this.currentDestination = tileVec3;
 
     // Create or update move marker
     if (!this.moveMarkerSprite) {
-      this.moveMarkerSprite = this.scene.add.image(worldXY.x, worldXY.y, DecalCursorService.MOVE_MARKER_KEY);
+      this.moveMarkerSprite = this.scene.add.image(worldXY.x, worldXY.y, "gui", "decals/move-marker.png");
       this.moveMarkerSprite.setDepth(1000); // Ensure it's visible above terrain
-      this.moveMarkerSprite.setOrigin(0.5, 1); // Anchor at bottom center like a flag
+      this.moveMarkerSprite.setOrigin(0.5, 0.5); // Anchor at bottom center like a flag
     } else {
       this.moveMarkerSprite.setPosition(worldXY.x, worldXY.y);
       this.moveMarkerSprite.setVisible(true);
@@ -103,7 +75,8 @@ export class DecalCursorService {
       this.inaccessibleMarkerSprite = this.scene.add.image(
         worldXY.x,
         worldXY.y,
-        DecalCursorService.INACCESSIBLE_MARKER_KEY
+        "gui",
+        "decal_cursors/inaccessible-marker.png"
       );
       this.inaccessibleMarkerSprite.setDepth(1000);
       this.inaccessibleMarkerSprite.setOrigin(0.5, 0.5);

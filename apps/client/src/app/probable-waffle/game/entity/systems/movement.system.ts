@@ -97,11 +97,11 @@ export class MovementSystem {
         const tileVec3 = payload.data.data!["tileVec3"] as Vector3Simple;
         const selectedActorObjectIds = payload.data.data!["selectedActorObjectIds"] as string[];
         const newWorldVec3 = await this.getTileVec3ByDynamicFlocking(tileVec3, selectedActorObjectIds);
-        
+
         // Show decal cursor for move command
         const decalCursorService = getSceneService(this.gameObject.scene, DecalCursorService);
         decalCursorService?.showMoveMarker(newWorldVec3);
-        
+
         const payerPawnAiController = getActorComponent(this.gameObject, PawnAiController);
         if (payerPawnAiController) {
           const newOrder = new OrderData(OrderType.Move, { targetTileLocation: newWorldVec3 });
@@ -124,11 +124,11 @@ export class MovementSystem {
       .subscribe(() => {
         const isSelected = getActorComponent(this.gameObject, SelectableComponent)?.getSelected();
         if (!isSelected) return;
-        
+
         // If this actor is selected and has a move order, re-show the decal
         const pawnAiController = getActorComponent(this.gameObject, PawnAiController);
         if (!pawnAiController) return;
-        
+
         const currentOrder = pawnAiController.blackboard.getCurrentOrder();
         if (currentOrder && currentOrder.orderType === OrderType.Move && currentOrder.data.targetTileLocation) {
           const decalCursorService = getSceneService(this.gameObject.scene, DecalCursorService);
@@ -256,15 +256,12 @@ export class MovementSystem {
         const tileWorldXY = this.navigationService?.getTileWorldCenter(nextTile);
         if (!tileWorldXY) return false;
 
-        let newZ = 0;
-        const walkableComponent = getActorComponent(destinationGameObject, WalkableComponent);
-        if (walkableComponent && walkableComponent.getDestinationHeight) {
-          newZ += walkableComponent.getDestinationHeight();
-        }
+        // Get the walkable height at the destination tile
+        const walkableHeight = this.navigationService?.getWalkableHeightAtTile(nextTile) ?? 0;
         const newLogicalTransform = {
           x: tileWorldXY.x,
           y: tileWorldXY.y,
-          z: newZ
+          z: walkableHeight
         } as Vector3Simple;
 
         const onComplete = () => {
@@ -334,7 +331,9 @@ export class MovementSystem {
     this.cancelMovement();
     config?.onPathUpdate?.(nextTile);
 
-    const newLogicalTransform = { ...tileWorldXY, z: 0 } as Vector3Simple;
+    // Get the walkable height at the destination tile
+    const walkableHeight = this.navigationService?.getWalkableHeightAtTile(nextTile) ?? 0;
+    const newLogicalTransform = { ...tileWorldXY, z: walkableHeight } as Vector3Simple;
 
     const onComplete = async () => {
       await this.moveAlongPathByFollowingPreCalculatedStaticPath(path, config);
