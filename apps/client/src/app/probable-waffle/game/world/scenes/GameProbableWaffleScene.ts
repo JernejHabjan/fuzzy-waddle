@@ -33,7 +33,6 @@ import { PlayerActionsHandler } from "../../player/human-controller/player-actio
 import { ActorIndexSystem } from "../services/ActorIndexSystem";
 import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
 import { SelectionTabHandler } from "../../player/human-controller/selection-tab-handler";
-import { DecalCursorService } from "../services/decal-cursor.service";
 
 export interface ProbableWaffleSceneData {
   baseGameData: ProbableWaffleGameData;
@@ -94,8 +93,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
       new DebuggingService(),
       new CrossSceneCommunicationService(),
       actorIndex,
-      techTreeService,
-      new DecalCursorService(this)
+      techTreeService
     );
     this.sceneGameData.systems.push(new AiPlayerHandler(this));
     this.sceneGameData.components.push(new FogOfWarComponent(this, this.tilemap));

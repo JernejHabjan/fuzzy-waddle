@@ -1,27 +1,72 @@
 import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
-import { NavigationService } from "./navigation.service";
-import { getSceneService } from "./scene-component-helpers";
-import { onSceneInitialized } from "../../data/game-object-helper";
+import { NavigationService } from "../../../world/services/navigation.service";
+import { getSceneService } from "../../../world/services/scene-component-helpers";
+import { onObjectReady } from "../../../data/game-object-helper";
+import { getActorComponent } from "../../../data/actor-component";
+import { SelectableComponent } from "../selectable-component";
+import { PawnAiController } from "../../../prefabs/ai-agents/pawn-ai-controller";
+import type { Subscription } from "rxjs";
+import { OrderType } from "../../../ai/order-type";
 
-export class DecalCursorService {
+export class MovementDecalCursorService {
   private moveMarkerSprite?: Phaser.GameObjects.Image;
   private inaccessibleMarkerSprite?: Phaser.GameObjects.Image;
   private currentDestination?: Vector3Simple;
   private navigationService?: NavigationService;
   private inaccessibleTimer?: Phaser.Time.TimerEvent;
+  private selectableComponent?: SelectableComponent;
+  private pawnAiController?: PawnAiController;
+  private selectionChangedSubscription?: Subscription;
+  private currentOrderChangedSubscription?: Subscription;
 
-  constructor(private readonly scene: Phaser.Scene) {
-    onSceneInitialized(scene, this.initService, this);
-    this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
+  constructor(private readonly gameObject: Phaser.GameObjects.GameObject) {
+    onObjectReady(gameObject, this.init, this);
+    this.gameObject.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
   }
-  private initService(): void {
-    this.navigationService = getSceneService(this.scene, NavigationService);
+
+  private init() {
+    this.navigationService = getSceneService(this.gameObject.scene, NavigationService);
+    this.selectableComponent = getActorComponent(this.gameObject, SelectableComponent);
+    this.pawnAiController = getActorComponent(this.gameObject, PawnAiController);
+    this.subscribeOnSelectionChanges();
+    this.subscribeOnAIDestinationChanges();
   }
+
+  private subscribeOnSelectionChanges(): void {
+    if (!this.selectableComponent) return;
+    this.selectionChangedSubscription = this.selectableComponent.selectionChanged.subscribe(() => {
+      this.handleVisibility();
+    });
+  }
+
+  private handleVisibility(): void {
+    if (!this.currentDestination) return;
+    const selected = this.selectableComponent?.getSelected();
+    if (!selected) {
+      this.hideMoveMarker();
+    } else {
+      this.reshowMoveMarker();
+    }
+  }
+
+  private subscribeOnAIDestinationChanges(): void {
+    if (!this.pawnAiController) return;
+    this.currentOrderChangedSubscription = this.pawnAiController.blackboard.currentOrderChanged.subscribe(() => {
+      const currentOrder = this.pawnAiController?.blackboard?.getCurrentOrder();
+      if (currentOrder?.orderType === OrderType.Move && currentOrder.data.targetTileLocation) {
+        this.showMoveMarker(currentOrder.data.targetTileLocation);
+      } else {
+        this.clearCurrentDestination();
+        this.hideMoveMarker();
+      }
+    });
+  }
+
   /**
    * Shows a move marker at the specified tile position
    * @param tileVec3 The tile position to show the marker at
    */
-  showMoveMarker(tileVec3: Vector3Simple): void {
+  private showMoveMarker(tileVec3: Vector3Simple): void {
     if (!this.navigationService) return;
 
     const tileWorldXY = this.navigationService.getTileWorldCenter(tileVec3);
@@ -48,9 +93,9 @@ export class DecalCursorService {
 
     // Create or update move marker
     if (!this.moveMarkerSprite) {
-      this.moveMarkerSprite = this.scene.add.image(worldXY.x, worldXY.y, "gui", "decals/move-marker.png");
+      this.moveMarkerSprite = this.gameObject.scene.add.image(worldXY.x, worldXY.y, "gui", "decals/move-marker.png");
       this.moveMarkerSprite.setDepth(1000); // Ensure it's visible above terrain
-      this.moveMarkerSprite.setOrigin(0.5, 0.5); // Anchor at bottom center like a flag
+      this.moveMarkerSprite.setOrigin(0.5, 0.5); // Anchor at bottom centre like a flag
     } else {
       this.moveMarkerSprite.setPosition(worldXY.x, worldXY.y);
       this.moveMarkerSprite.setVisible(true);
@@ -72,7 +117,7 @@ export class DecalCursorService {
 
     // Create or update inaccessible marker
     if (!this.inaccessibleMarkerSprite) {
-      this.inaccessibleMarkerSprite = this.scene.add.image(
+      this.inaccessibleMarkerSprite = this.gameObject.scene.add.image(
         worldXY.x,
         worldXY.y,
         "gui",
@@ -86,7 +131,7 @@ export class DecalCursorService {
     }
 
     // Hide after 1 second
-    this.inaccessibleTimer = this.scene.time.delayedCall(1000, () => {
+    this.inaccessibleTimer = this.gameObject.scene.time.delayedCall(1000, () => {
       this.hideInaccessibleMarker();
     });
   }
@@ -94,7 +139,7 @@ export class DecalCursorService {
   /**
    * Hides the move marker
    */
-  hideMoveMarker(): void {
+  private hideMoveMarker(): void {
     if (this.moveMarkerSprite) {
       this.moveMarkerSprite.setVisible(false);
     }
@@ -115,9 +160,9 @@ export class DecalCursorService {
 
   /**
    * Re-shows the move marker if there's a current destination
-   * This is used when a player re-selects an actor that's still traveling
+   * This is used when a player re-selects an actor that's still travelling
    */
-  reshowMoveMarker(): void {
+  private reshowMoveMarker(): void {
     if (this.currentDestination && this.navigationService) {
       const tileWorldXY = this.navigationService.getTileWorldCenter(this.currentDestination);
       if (tileWorldXY) {
@@ -129,15 +174,8 @@ export class DecalCursorService {
   /**
    * Clears the current destination
    */
-  clearCurrentDestination(): void {
+  private clearCurrentDestination(): void {
     this.currentDestination = undefined;
-  }
-
-  /**
-   * Gets the current destination
-   */
-  getCurrentDestination(): Vector3Simple | undefined {
-    return this.currentDestination;
   }
 
   /**
@@ -156,6 +194,8 @@ export class DecalCursorService {
       this.inaccessibleTimer.remove();
       this.inaccessibleTimer = undefined;
     }
-    this.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
+    this.gameObject.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
+    this.selectionChangedSubscription?.unsubscribe();
+    this.currentOrderChangedSubscription?.unsubscribe();
   }
 }
