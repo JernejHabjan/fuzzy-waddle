@@ -12,15 +12,14 @@ export const generalWorkerDefinitions: Partial<PrefabDefinition> = {
     },
     health: {
       physicalState: ActorPhysicalType.Biological,
-      maxHealth: 100
+      maxHealth: 50
     },
     attack: {
       attacks: [weaponDefinitions.hands]
     },
     productionCost: {
       resources: {
-        [ResourceType.Wood]: 10,
-        [ResourceType.Minerals]: 10
+        [ResourceType.Minerals]: 50
       },
       refundFactor: 0.5,
       productionTime: 5000,

@@ -19,6 +19,8 @@ import { HealthComponent } from "../../../entity/components/combat/components/he
 import { ConstructionSiteComponent } from "../../../entity/components/construction/construction-site-component";
 import { OwnerComponent } from "../../../entity/components/owner-component";
 import type { PrefabDefinition } from "../../definitions/prefab-definition";
+import { getSceneComponent } from "../../../world/services/scene-component-helpers";
+import { SelectionTabHandler } from "../../../player/human-controller/selection-tab-handler";
 /* END-USER-IMPORTS */
 
 export default class ActorInfoContainer extends Phaser.GameObjects.Container {
@@ -89,11 +91,19 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
   private actorConstructionSubscription?: Subscription;
   private selectionChangedSubscription?: Subscription;
   private actorInfoLabelsVisibilitySubscription?: Subscription;
+  private tabHandlerSubscription?: Subscription;
   private readonly mainSceneWithActors: ProbableWaffleScene;
 
   private subscribeToPlayerSelection() {
     this.selectionChangedSubscription = listenToSelectionEvents(this.scene)?.subscribe(() => {
       const selectedActors = getSelectedActors(this.mainSceneWithActors);
+      
+      // Update tab handler with new selection
+      const tabHandler = getSceneComponent(this.mainSceneWithActors, SelectionTabHandler);
+      if (tabHandler) {
+        tabHandler.updateGroupedActors();
+      }
+      
       if (selectedActors.length === 0) {
         this.hideAllLabels();
         return;
@@ -108,11 +118,50 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
         this.subscribeToActorConstructionEvent(actor);
         return;
       }
-      // multi-selection
-      this.actorInfoLabels.setLabelsForDisplayingActors(selectedActors);
+      // multi-selection - always show all actors, highlight current tab group
+      const currentTabActors = tabHandler?.currentTabActors || selectedActors;
+      this.actorInfoLabels.setLabelsForDisplayingActors(selectedActors, currentTabActors);
       this.actorDetails.hideAll();
       this.progress_bar.cleanActor();
     });
+    
+    // Subscribe to tab changes to update display
+    const tabHandler = getSceneComponent(this.mainSceneWithActors, SelectionTabHandler);
+    if (tabHandler) {
+      this.tabHandlerSubscription = tabHandler.currentTabIndex$.subscribe(() => {
+        this.updateDisplayForCurrentTab();
+      });
+    }
+  }
+  
+  private updateDisplayForCurrentTab() {
+    const tabHandler = getSceneComponent(this.mainSceneWithActors, SelectionTabHandler);
+    if (!tabHandler) return;
+    
+    const selectedActors = getSelectedActors(this.mainSceneWithActors);
+    const currentTabActors = tabHandler.currentTabActors;
+    
+    if (selectedActors.length === 0 || currentTabActors.length === 0) {
+      this.hideAllLabels();
+      return;
+    }
+    
+    const actor = currentTabActors[0];
+    if (!actor) return;
+    
+    const definition = pwActorDefinitions[actor.name as ObjectNames];
+    this.setActorInfoLabel(definition);
+    
+    if (currentTabActors.length === 1 && selectedActors.length === 1) {
+      this.setActorDetailLabels(actor);
+      this.subscribeToActorKillEvent(actor);
+      this.subscribeToActorConstructionEvent(actor);
+    } else {
+      // multi-selection - always show all actors, highlight current tab group
+      this.actorInfoLabels.setLabelsForDisplayingActors(selectedActors, currentTabActors);
+      this.actorDetails.hideAll();
+      this.progress_bar.cleanActor();
+    }
   }
 
   private setActorDetailLabels(actor: Phaser.GameObjects.GameObject) {
@@ -212,6 +261,7 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
     this.actorKillSubscription?.unsubscribe();
     this.actorConstructionSubscription?.unsubscribe();
     this.actorInfoLabelsVisibilitySubscription?.unsubscribe();
+    this.tabHandlerSubscription?.unsubscribe();
   }
   /* END-USER-CODE */
 }

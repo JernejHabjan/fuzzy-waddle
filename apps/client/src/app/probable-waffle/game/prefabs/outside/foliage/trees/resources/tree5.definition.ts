@@ -12,6 +12,13 @@ export const tree5Definition = {
     representable: {
       width: 128,
       height: 256
+    },
+    info: {
+      ...treeDefinitions.components!.info!,
+      smallImage: {
+        ...treeDefinitions.components!.info!.smallImage!,
+        frame: "foliage/trees/resources/tree5.png"
+      }
     }
   }
 } satisfies PrefabDefinition;

@@ -10,6 +10,7 @@ import { DamageType } from "../../../entity/components/combat/damage-type";
 import { Subscription } from "rxjs";
 import GameObject = Phaser.GameObjects.GameObject;
 import type { PrefabDefinition } from "../../definitions/prefab-definition";
+import { ResourceSourceComponent } from "../../../entity/components/resource/resource-source-component";
 /* END-USER-IMPORTS */
 
 export default class ActorDetails extends Phaser.GameObjects.Container {
@@ -80,8 +81,19 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
   /* START-USER-CODE */
   private healthSubscription?: Subscription;
   private armourSubscription?: Subscription;
+  private resourcesChangedSubscription?: Subscription;
+  private assignedGatherersChangedSubscription?: Subscription;
 
-  showActorAttributes(actor: GameObject, definition: PrefabDefinition) {
+  static getActorAttributeIconsAndTexts(
+    definition: PrefabDefinition,
+    actor?: GameObject
+  ): {
+    icon: {
+      key: string;
+      frame: string;
+    };
+    text: string;
+  }[] {
     const iconsAndTexts: {
       icon: {
         key: string;
@@ -89,6 +101,30 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
       };
       text: string;
     }[] = [];
+
+    // Check if this is a resource source
+    const resourceSourceComponent = actor ? getActorComponent(actor, ResourceSourceComponent) : undefined;
+    if (resourceSourceComponent) {
+      // Show remaining resources
+      const currentResources = resourceSourceComponent.getCurrentResources();
+      const maxResources = resourceSourceComponent.getMaximumResources();
+      const resourcesText = `${currentResources}/${maxResources}`;
+      iconsAndTexts.push({
+        icon: { key: "gui", frame: "actor_info_icons/element.png" }, // todo
+        text: resourcesText
+      });
+
+      // Show assigned gatherers count
+      const assignedCount = resourceSourceComponent.getAssignedGatherersCount();
+      const gatherersText = assignedCount === 1 ? "1 gatherer" : `${assignedCount} gatherers`;
+      iconsAndTexts.push({
+        icon: { key: "gui", frame: "actor_info_icons/element.png" }, // todo
+        text: gatherersText
+      });
+
+      return iconsAndTexts;
+    }
+
     const tileStepDuration = definition.components?.translatable?.tileMoveDuration;
     if (tileStepDuration) {
       const movementSpeed = (1000 / tileStepDuration).toFixed(1) + " t/s";
@@ -128,16 +164,60 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
       });
     }
 
+    const maxHealth = definition.components?.health?.maxHealth;
+    if (maxHealth) {
+      iconsAndTexts.push({ icon: { key: "gui", frame: "actor_info_icons/heart.png" }, text: maxHealth.toString() });
+    }
+
+    const maxArmour = definition.components?.health?.maxArmour;
+    if (maxArmour) {
+      iconsAndTexts.push({ icon: { key: "gui", frame: "actor_info_icons/shield.png" }, text: maxArmour.toString() });
+    }
+    return iconsAndTexts;
+  }
+
+  showActorAttributes(actor: GameObject, definition: PrefabDefinition) {
+    const iconsAndTexts = ActorDetails.getActorAttributeIconsAndTexts(definition, actor);
+
+    // Check if this is a resource source
+    const resourceSourceComponent = getActorComponent(actor, ResourceSourceComponent);
+    if (resourceSourceComponent) {
+      const maxResources = resourceSourceComponent.getMaximumResources();
+      // Subscribe to resource changes
+      this.resourcesChangedSubscription?.unsubscribe();
+      this.resourcesChangedSubscription = resourceSourceComponent.onResourcesChanged.subscribe(() => {
+        const attribute = this.attributes[0];
+        if (!attribute) return;
+        const updatedResources = resourceSourceComponent.getCurrentResources();
+        attribute.setText(`${updatedResources}/${maxResources}`);
+      });
+
+      // Subscribe to gatherer count changes
+      this.assignedGatherersChangedSubscription?.unsubscribe();
+      this.assignedGatherersChangedSubscription = resourceSourceComponent.onAssignedGatherersChanged.subscribe(
+        (count) => {
+          const attribute = this.attributes[1];
+          if (!attribute) return;
+          attribute.setText(count === 1 ? "1 gatherer" : `${count} gatherers`);
+        }
+      );
+    }
+
     const healthComponent = getActorComponent(actor, HealthComponent);
     const maxHealth = definition.components?.health?.maxHealth;
     this.healthSubscription?.unsubscribe();
     if (maxHealth) {
       const currentHealth = Math.round(healthComponent!.healthComponentData!.health);
       const health = `${currentHealth}/${maxHealth}`;
-      const iconIndex = iconsAndTexts.push({ icon: { key: "gui", frame: "actor_info_icons/heart.png" }, text: health });
+      const healthInfo = iconsAndTexts.find((i) => i.icon.frame === "actor_info_icons/heart.png");
+      if (healthInfo) {
+        healthInfo.text = health;
+      }
 
       this.healthSubscription = healthComponent!.healthChanged.subscribe((newHealth) => {
-        const attribute = this.attributes[iconIndex - 1];
+        const attribute = this.attributes.find(
+          (a) => a.icon.frame.texture.key === "gui" && a.icon.frame.name === "actor_info_icons/heart.png"
+        );
         if (!attribute) return;
         attribute.setText(`${Math.round(newHealth)}/${maxHealth}`);
       });
@@ -148,13 +228,15 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
     if (maxArmour) {
       const currentArmour = Math.round(healthComponent!.healthComponentData.armour);
       const armour = `${currentArmour}/${maxArmour}`;
-      const iconIndex = iconsAndTexts.push({
-        icon: { key: "gui", frame: "actor_info_icons/shield.png" },
-        text: armour
-      });
+      const armourInfo = iconsAndTexts.find((i) => i.icon.frame === "actor_info_icons/shield.png");
+      if (armourInfo) {
+        armourInfo.text = armour;
+      }
 
       this.armourSubscription = healthComponent!.armorChanged.subscribe((newArmour) => {
-        const icon = this.attributes[iconIndex - 1];
+        const icon = this.attributes.find(
+          (a) => a.icon.frame.texture.key === "gui" && a.icon.frame.name === "actor_info_icons/shield.png"
+        );
         if (!icon) return;
         icon.setText(`${Math.round(newArmour)}/${maxArmour}`);
       });
@@ -171,11 +253,15 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
   }
   hideAll() {
     this.attributes.forEach((a) => (a.visible = false));
+    this.resourcesChangedSubscription?.unsubscribe();
+    this.assignedGatherersChangedSubscription?.unsubscribe();
   }
 
   override destroy(fromScene?: boolean) {
     this.healthSubscription?.unsubscribe();
     this.armourSubscription?.unsubscribe();
+    this.resourcesChangedSubscription?.unsubscribe();
+    this.assignedGatherersChangedSubscription?.unsubscribe();
     super.destroy(fromScene);
   }
 

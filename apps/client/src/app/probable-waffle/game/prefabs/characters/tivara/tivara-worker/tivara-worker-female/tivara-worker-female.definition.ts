@@ -46,5 +46,9 @@ export const tivaraWorkerFemaleDefinition = {
       }
     },
     animatable: { animations: ANIM_TIVARA_WORKER_FEMALE_DEFINITION }
+  },
+  meta: {
+    ...tivaraWorkerDefinition.meta,
+    randomOfType: []
   }
 } satisfies PrefabDefinition;

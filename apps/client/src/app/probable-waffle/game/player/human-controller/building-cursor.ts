@@ -25,12 +25,15 @@ import { AudioService } from "../../world/services/audio.service";
 import { UiFeedbackBuildDeniedSound } from "../../hud/UiFeedbackSfx";
 import { FogOfWarComponent } from "../../world/tilemap/fog-of-war.component";
 import { RepresentableComponent } from "../../entity/components/representable-component";
+import { ProductionValidator } from "../../data/tech-tree/production-validator";
 import { ActorTranslateComponent } from "../../entity/components/movement/actor-translate-component";
 import { OwnerComponent } from "../../entity/components/owner-component";
 import { PawnAiController } from "../../prefabs/ai-agents/pawn-ai-controller";
 import { OrderData } from "../../ai/OrderData";
 import { OrderType } from "../../ai/order-type";
 import Vector2 = Phaser.Math.Vector2;
+import { getCostForObjectName } from "../../entity/components/production/cost-utils";
+import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { IsoHelper } from "../../world/tilemap/iso-helper";
 
 export class BuildingCursor {
@@ -287,10 +290,23 @@ export class BuildingCursor {
     if (this.isDragging) {
       // Reset invalid positions set
       this.invalidCursorPositions.clear();
+      const cumulativeCost: Partial<Record<ResourceType, number>> = {};
 
       // Check each spawned object individually and track which ones can't be placed
       for (const gameObject of this.spawnedCursorGameObjects) {
-        const canPlace = this.getCanConstructBuildingAt(gameObject, [...this.spawnedCursorGameObjects, this.building!]);
+        const canPlace = this.getCanConstructBuildingAt(
+          gameObject,
+          [...this.spawnedCursorGameObjects, this.building!],
+          cumulativeCost
+        );
+
+        const cost = getCostForObjectName(gameObject.name as ObjectNames);
+        if (cost) {
+          for (const resource in cost) {
+            cumulativeCost[resource as ResourceType] =
+              (cumulativeCost[resource as ResourceType] || 0) + cost[resource as ResourceType]!;
+          }
+        }
 
         if (!canPlace) {
           const key = this.getSnappedLogicalKey(gameObject);
@@ -307,6 +323,7 @@ export class BuildingCursor {
       // If not dragging, just update the main building cursor
       const constructionInterface = getActorComponent(this.building, ConstructionGameObjectInterfaceComponent);
       if (constructionInterface) {
+        this.canConstructBuildingAt = this.getCanConstructBuildingAt(this.building);
         constructionInterface.tintAndAlphaCursor(this.canConstructBuildingAt ? undefined : 0xff0000, 0.7);
       }
     }
@@ -315,9 +332,23 @@ export class BuildingCursor {
   getCanConstructBuildingAt(
     building?: GameObjects.GameObject,
     ignoreGameObjects: GameObjects.GameObject[] = [],
+    currentCost: Partial<Record<ResourceType, number>> = {},
     trackActorsToMove: boolean = false
   ): boolean {
     if (!this.tileMapComponent || !this.navigationService || !this.fogOfWarComponent || !building) return false;
+
+    const playerNumber = getCurrentPlayerNumber(this.scene);
+    if (playerNumber) {
+      const validation = ProductionValidator.validateObject(
+        this.scene,
+        playerNumber,
+        building.name as ObjectNames,
+        currentCost
+      );
+      if (!validation.canQueue) {
+        return false;
+      }
+    }
 
     const tilesUnderBuilding = getTileCoordsUnderObject(this.tileMapComponent.tilemap, building);
     if (!tilesUnderBuilding.length) return false;
@@ -396,26 +427,6 @@ export class BuildingCursor {
 
     gridGraphics.clear();
 
-    const canConstruct = this.canConstructBuildingAt;
-
-    gridGraphics.lineStyle(2, canConstruct ? 0x00ff00 : 0xff0000, 1);
-    gridGraphics.fillStyle(canConstruct ? 0x00ff00 : 0xff0000, 0.3);
-
-    function drawIsoDiamond(isoX: number, isoY: number, fill: boolean) {
-      gridGraphics.beginPath();
-      gridGraphics.moveTo(isoX, isoY - tileSize / 4);
-      gridGraphics.lineTo(isoX + tileSize / 2, isoY);
-      gridGraphics.lineTo(isoX, isoY + tileSize / 4);
-      gridGraphics.lineTo(isoX - tileSize / 2, isoY);
-      gridGraphics.closePath();
-
-      if (fill) {
-        gridGraphics.fillPath();
-      } else {
-        gridGraphics.stroke();
-      }
-    }
-
     const buildingWidth = Math.floor(bounds.width / tileSize);
     const buildingHeight = Math.floor(bounds.width / tileSize);
 
@@ -425,7 +436,69 @@ export class BuildingCursor {
     const outerRangeX = innerRangeX + 2; // 2 tiles beyond
     const outerRangeY = innerRangeY + 2; // 2 tiles beyond
 
-    // Draw the entire grid
+    // Helper function to check if a specific tile position is occupied
+    const isTileOccupied = (worldX: number, worldY: number): boolean => {
+      if (!this.tileMapComponent || !this.navigationService || !this.fogOfWarComponent) return true;
+
+      // Convert world coordinates to tile coordinates
+      const tileCoord = IsoHelper.isometricWorldToTileXY(this.scene, worldX, worldY, false);
+      // for some reason we need to ceil the clicked tile - its not ok if se set snapToFloor to true
+      tileCoord.x = Math.ceil(tileCoord.x);
+      tileCoord.y = Math.ceil(tileCoord.y);
+
+      // Check if tile is visible - if not visible, consider it occupied
+      const tileVisible = this.fogOfWarComponent.getTileVisibility(tileCoord.x, tileCoord.y);
+      if (tileVisible !== "visible") return true;
+
+      // Check if tile is walkable using tile coordinates (not world coordinates)
+      const isWalkable = this.navigationService.isTileWalkable(tileCoord);
+      if (!isWalkable) return true;
+
+      // Check for collisions with existing game objects at this specific tile
+      const children = this.scene.children.list.filter((c) => {
+        if (c === this.building) return false;
+        if (this.spawnedCursorGameObjects.includes(c as GameObjects.GameObject)) return false;
+        if (c instanceof Phaser.GameObjects.Graphics) return false;
+
+        const logicalTransform = getGameObjectLogicalTransform(c);
+        if (!logicalTransform) return false;
+
+        // Check if this object occupies the tile we're checking
+        const tilesUnderChild = getTileCoordsUnderObject(this.tileMapComponent!.tilemap, c);
+        return tilesUnderChild.some((childTile) => childTile.x === tileCoord.x && childTile.y === tileCoord.y);
+      });
+
+      return children.length > 0;
+    };
+
+    // Helper function to draw a single isometric diamond with specific color (lines only)
+    const drawIsoDiamond = (isoX: number, isoY: number, fill: boolean, color: number) => {
+      // Set line style for the outline
+      gridGraphics.lineStyle(2, color, 1);
+
+      // Draw the outline
+      gridGraphics.beginPath();
+      gridGraphics.moveTo(isoX, isoY - tileSize / 4);
+      gridGraphics.lineTo(isoX + tileSize / 2, isoY);
+      gridGraphics.lineTo(isoX, isoY + tileSize / 4);
+      gridGraphics.lineTo(isoX - tileSize / 2, isoY);
+      gridGraphics.closePath();
+      gridGraphics.stroke();
+
+      // Fill only for inner tiles and only when they can be placed (green)
+      if (fill && color === 0x00ff00) {
+        gridGraphics.fillStyle(color, 0.3);
+        gridGraphics.beginPath();
+        gridGraphics.moveTo(isoX, isoY - tileSize / 4);
+        gridGraphics.lineTo(isoX + tileSize / 2, isoY);
+        gridGraphics.lineTo(isoX, isoY + tileSize / 4);
+        gridGraphics.lineTo(isoX - tileSize / 2, isoY);
+        gridGraphics.closePath();
+        gridGraphics.fillPath();
+      }
+    };
+
+    // Draw the entire grid, checking each tile individually
     for (let i = -outerRangeX; i <= outerRangeX; i++) {
       for (let j = -outerRangeY; j <= outerRangeY; j++) {
         const isoX = xPos + (i - j) * (tileSize / 2);
@@ -434,7 +507,13 @@ export class BuildingCursor {
         // Determine if this is part of the inner area (building footprint)
         const isInnerTile = Math.abs(i) <= innerRangeX && Math.abs(j) <= innerRangeY;
 
-        drawIsoDiamond(isoX, isoY, isInnerTile);
+        // Check if this specific tile is occupied
+        const tileOccupied = isTileOccupied(isoX, isoY);
+
+        // Determine color: red if occupied, green if free
+        const tileColor = tileOccupied ? 0xff0000 : 0x00ff00;
+
+        drawIsoDiamond(isoX, isoY, isInnerTile, tileColor);
       }
     }
 
@@ -517,6 +596,9 @@ export class BuildingCursor {
       this.stop();
       return;
     }
+
+    // Re-validate just before placing
+    this.updateObjectVisuals();
 
     if (this.isDragging) {
       // For drag operations, check if all buildings can be placed
@@ -664,19 +746,11 @@ export class BuildingCursor {
   }
 
   private spawnCursorGameObjectAt(x: number, y: number) {
-    if (!this.building) {
-      console.error("Cannot spawn cursor: building is undefined");
-      return;
-    }
-
-    try {
-      const actor = ActorManager.createActorCore(
-        this.scene,
-        this.building.name as ObjectNames,
-        {
+    const actor = ActorManager.createActorCore(this.scene, this.building!.name as ObjectNames, {
+      representable: {
           logicalWorldTransform: { x, y, z: 0 }
-        } as ActorDefinition
-      );
+      }
+    } satisfies ActorDefinition);
       const gameObject = this.scene.add.existing(actor);
       this.spawnedCursorGameObjects.push(gameObject);
       DepthHelper.setActorDepth(gameObject);
@@ -685,9 +759,7 @@ export class BuildingCursor {
         this.drawPlacementGrid({ x, y });
         this.drawAttackRange({ x, y });
       }
-    } catch (error) {
-      console.error("Error in spawnCursorGameObjectAt:", error, { x, y, buildingName: this.building.name });
-    }
+
   }
 
   private clearSpawnedCursorGameObjects() {
