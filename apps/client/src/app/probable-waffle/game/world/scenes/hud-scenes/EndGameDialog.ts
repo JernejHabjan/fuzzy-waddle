@@ -11,7 +11,8 @@ import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { GameSessionState } from "@fuzzy-waddle/api-interfaces";
 /* END-USER-IMPORTS */
 
-export default class EndGameDialog extends ProbableWaffleScene {
+export default class EndGameDialog extends Phaser.Scene {
+
   constructor() {
     super("EndGameDialog");
 
@@ -21,95 +22,42 @@ export default class EndGameDialog extends ProbableWaffleScene {
   }
 
   editorCreate(): void {
+
     // dialog_container
     const dialog_container = this.add.container(0, 0);
 
-    // dialog_bg
-    const dialog_bg = this.add.nineslice(
-      -200,
-      -150,
-      "gui",
-      "cryos_mini_gui/surfaces/surface_dark.png",
-      20,
-      40,
-      1,
-      1,
-      1,
-      1
-    );
-    dialog_bg.scaleX = 18;
-    dialog_bg.scaleY = 14;
-    dialog_bg.setOrigin(0, 0);
-    dialog_container.add(dialog_bg);
-
-    // title
-    const title = this.add.text(0, -100, "", {});
-    title.setOrigin(0.5, 0.5);
-    title.text = "Victory!";
-    title.setStyle({
-      align: "center",
-      color: "#FFD700ff",
-      fontFamily: "disposabledroid",
-      fontSize: "48px",
-      resolution: 10
-    });
-    dialog_container.add(title);
-
-    // message
-    const message = this.add.text(0, -20, "", {});
-    message.setOrigin(0.5, 0.5);
-    message.text = "You are the last player remaining!";
-    message.setStyle({
-      align: "center",
-      color: "#ffffffff",
-      fontFamily: "disposabledroid",
-      fontSize: "24px",
-      resolution: 10
-    });
-    dialog_container.add(message);
+    // game_actions_bg
+    const game_actions_bg = this.add.nineslice(-112.60605580401727, -190.29550515717648, "gui", "cryos_mini_gui/surfaces/surface_dark.png", 20, 25, 1, 1, 1, 1);
+    game_actions_bg.scaleX = 10.948325638168216;
+    game_actions_bg.scaleY = 10.305188906705764;
+    game_actions_bg.setOrigin(0, 0);
+    dialog_container.add(game_actions_bg);
 
     // continue_button
-    const continue_button = this.add.container(0, 80);
-    continue_button.setInteractive(new Phaser.Geom.Rectangle(-60, -15, 120, 30), Phaser.Geom.Rectangle.Contains);
+    const continue_button = this.add.container(-5, 22);
+    continue_button.setInteractive(new Phaser.Geom.Rectangle(-42, -13, 85.7117848223629, 25.429332302435576), Phaser.Geom.Rectangle.Contains);
     continue_button.scaleX = 2;
     continue_button.scaleY = 2;
     dialog_container.add(continue_button);
 
-    // continue_button_bg
-    const continue_button_bg = this.add.nineslice(
-      0,
-      0,
-      "gui",
-      "cryos_mini_gui/buttons/button_small.png",
-      40,
-      20,
-      3,
-      3,
-      3,
-      3
-    );
-    continue_button_bg.scaleX = 3.2;
-    continue_button_bg.scaleY = 1.8;
-    continue_button.add(continue_button_bg);
+    // game_actions_quit_bg_2
+    const game_actions_quit_bg_2 = this.add.nineslice(0, 0, "gui", "cryos_mini_gui/buttons/button_small.png", 40, 20, 3, 3, 3, 3);
+    game_actions_quit_bg_2.scaleX = 2.3521289589041787;
+    game_actions_quit_bg_2.scaleY = 1.5492262688240692;
+    continue_button.add(game_actions_quit_bg_2);
 
-    // continue_text
-    const continue_text = this.add.text(0, 0, "", {});
-    continue_text.setOrigin(0.5, 0.5);
-    continue_text.text = "View Score Screen";
-    continue_text.setStyle({
-      align: "center",
-      color: "#000000ff",
-      fontFamily: "disposabledroid",
-      fontSize: "18px",
-      resolution: 10
-    });
-    continue_button.add(continue_text);
+    // text_1
+    const text_1 = this.add.text(-1, 0, "", {});
+    text_1.setOrigin(0.5, 0.5);
+    text_1.text = "Continue";
+    text_1.setStyle({ "align": "center", "color": "#000000ff", "fontFamily": "disposabledroid", "fontSize": "18px", "stroke": "#ffffffff", "resolution": 10 });
+    continue_button.add(text_1);
 
     // onPointerUpScript_continue
     const onPointerUpScript_continue = new OnPointerUpScript(continue_button);
 
-    // emitEventContinue
-    const emitEventContinue = new EmitEventActionScript(onPointerUpScript_continue);
+    // emitEventContinueAction
+    const emitEventContinueAction = new EmitEventActionScript(onPointerUpScript_continue);
 
     // onPointerDownScript_continue
     const onPointerDownScript_continue = new OnPointerDownScript(continue_button);
@@ -117,25 +65,33 @@ export default class EndGameDialog extends ProbableWaffleScene {
     // continue_click
     new PushActionScript(onPointerDownScript_continue);
 
-    // emitEventContinue (prefab fields)
-    emitEventContinue.eventName = "continue";
+    // message
+    const message = this.add.text(-95, -96, "", {});
+    message.setOrigin(0, 0.5);
+    message.setStyle({ "align": "center", "color": "#000000ff", "fontFamily": "disposabledroid", "fontSize": "32px", "maxLines": 5, "resolution": 10 });
+    message.setWordWrapWidth(200);
+    dialog_container.add(message);
+
+    // emitEventContinueAction (prefab fields)
+    emitEventContinueAction.eventName = "continue";
 
     this.continue_button = continue_button;
-    this.dialog_container = dialog_container;
     this.message = message;
+    this.dialog_container = dialog_container;
 
     this.events.emit("scene-awake");
   }
 
   private continue_button!: Phaser.GameObjects.Container;
-  private dialog_container!: Phaser.GameObjects.Container;
   private message!: Phaser.GameObjects.Text;
+  private dialog_container!: Phaser.GameObjects.Container;
 
   /* START-USER-CODE */
   private readonly smallScreenBreakpoint = 800;
   private callback: (() => void) | null = null;
 
-  override create() {
+  // noinspection JSUnusedGlobalSymbols
+  create() {
     this.editorCreate();
 
     // resize the scene to match the screen size
@@ -148,6 +104,9 @@ export default class EndGameDialog extends ProbableWaffleScene {
 
   setMessage(message: string) {
     this.message.text = message;
+  }
+  setCallback(callback: () => void) {
+    this.callback = callback;
   }
 
   private resize(gameSize: { width: number; height: number }) {
@@ -179,15 +138,7 @@ export default class EndGameDialog extends ProbableWaffleScene {
   private destroySelf() {
     this.scene.stop();
   }
-
-  override destroy() {
-    super.destroy();
-  }
-
   /* END-USER-CODE */
-  setCallback(callback: () => void) {
-    this.callback = callback;
-  }
 }
 
 /* END OF COMPILED CODE */

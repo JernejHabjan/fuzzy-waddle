@@ -19,9 +19,9 @@ import { ScenePlayerHelpers } from "../../data/scene-player-helpers";
 import { getCurrentPlayerNumber } from "../../data/scene-data";
 import { getActorComponent } from "../../data/actor-component";
 import { ConstructionSiteComponent } from "../../entity/components/construction/construction-site-component";
-import type EndGameDialog from "../scenes/hud-scenes/EndGameDialog";
 import { filter, type Subscription } from "rxjs";
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
+import type EndGameDialog from "../scenes/hud-scenes/EndGameDialog";
 
 export class GameModeConditionChecker {
   private loseConditions: LoseConditions;
@@ -32,6 +32,7 @@ export class GameModeConditionChecker {
   private players!: ProbableWafflePlayer[];
   private currentPlayer!: ProbableWafflePlayer;
   private selfQuitSubscription?: Subscription;
+  private stopped: boolean = false;
 
   constructor(private readonly scene: ProbableWaffleScene) {
     const gameModeData = getGameModeFromScene<ProbableWaffleGameMode>(scene).data;
@@ -48,6 +49,7 @@ export class GameModeConditionChecker {
 
   private check() {
     if (!this.scene.scene || !this.scene.scene.isActive()) return;
+    if (this.stopped) return;
     this.prepareData();
     if (this.checkWinConditions()) {
       this.winGame();
@@ -75,7 +77,10 @@ export class GameModeConditionChecker {
   private listenToPlayerQuit() {
     this.selfQuitSubscription = this.scene.communicator.allScenes
       .pipe(filter((scene) => scene.name === "quit"))
-      .subscribe(() => this.selfQuit());
+      .subscribe(() => {
+        if (this.stopped) return;
+        this.selfQuit();
+      });
   }
 
   private runChecksForSelfAndAiPlayers() {
@@ -202,24 +207,28 @@ export class GameModeConditionChecker {
     this.currentPlayer.playerController.data.leftOrKilled = true;
     console.log(`Player ${this.currentPlayer.playerNumber} has quit the game.`);
     this.navigateToScoreScreen();
+    this.stop();
   }
 
   private winGame() {
     this.createEndGameLayer("You have won the game!", () => {
       this.navigateToScoreScreen();
     });
+    this.stop();
   }
 
   private loseGame() {
     this.createEndGameLayer("You have lost the game.", () => {
       this.navigateToScoreScreen();
     });
+    this.stop();
   }
 
   private tieGame() {
     this.createEndGameLayer("The game ended in a tie!", () => {
       this.navigateToScoreScreen();
     });
+    this.stop();
   }
 
   private navigateToScoreScreen() {
@@ -240,11 +249,16 @@ export class GameModeConditionChecker {
     setTimeout(() => {
       layer.setMessage(message);
       layer.setCallback(callback);
-    }, 0);
+    }, 100);
   };
+
+  private stop() {
+    this.stopped = true;
+  }
 
   private destroy() {
     this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.throttleCheck);
     this.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.destroy);
+    this.selfQuitSubscription?.unsubscribe();
   }
 }
