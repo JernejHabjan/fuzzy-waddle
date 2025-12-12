@@ -47,5 +47,9 @@ export const skaduweeWorkerFemaleDefinition = {
       }
     },
     animatable: { animations: ANIM_SKADUWEE_WORKER_FEMALE_DEFINITION }
+  },
+  meta: {
+    ...skaduweeWorkerDefinition.meta,
+    randomOfType: []
   }
 } satisfies PrefabDefinition;

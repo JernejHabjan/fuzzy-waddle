@@ -15,6 +15,7 @@ export class ResourceSourceComponent {
   private static readonly debug = false;
   onResourcesChanged: Subject<[ResourceType, number, GameObject]> = new Subject<[ResourceType, number, GameObject]>();
   onDepleted: Subject<GameObject> = new Subject<GameObject>();
+  onAssignedGatherersChanged: Subject<number> = new Subject<number>();
   private currentResources: number;
   private containerComponent?: ContainerComponent;
   private gathererMustEnter = false;
@@ -22,6 +23,7 @@ export class ResourceSourceComponent {
   private currentCapacity = 0;
   private depletedImage?: Phaser.GameObjects.Image;
   private scene?: Phaser.Scene;
+  private assignedGatherers: Set<GameObject> = new Set();
 
   constructor(
     private readonly gameObject: GameObject,
@@ -83,15 +85,15 @@ export class ResourceSourceComponent {
       this.onDepleted.next(this.gameObject);
       const renderedTransform = getGameObjectRenderedTransform(this.gameObject);
       this.gameObject.destroy();
-      this.spawnTreeTrunk(renderedTransform);
+      this.spawnDepletedResourceSourceSprite(renderedTransform);
     }
     return gatheredAmount;
   }
 
   /**
-   * Spawns a tree trunk image at the given rendered transform position.
+   * Spawns a depleted resource source image at the given rendered transform position.
    */
-  private spawnTreeTrunk(renderedTransform: Vector2Simple | null) {
+  private spawnDepletedResourceSourceSprite(renderedTransform: Vector2Simple | null) {
     if (!renderedTransform) return;
     if (!this.scene) return;
 
@@ -103,16 +105,12 @@ export class ResourceSourceComponent {
         frame = "foliage/tree_trunks/tree_fallen.png";
         break;
       case ResourceType.Stone:
-        texture = "outside"; // todo
-        frame = "foliage/tree_trunks/tree_fallen.png"; // todo
+        texture = "outside";
+        frame = "nature/resources/stone_pile_depleted_1.png"; // todo - zip to spritesheet
         break;
       case ResourceType.Minerals:
-        texture = "outside"; // todo
-        frame = "foliage/tree_trunks/tree_fallen.png"; // todo
-        break;
-      case ResourceType.Ambrosia:
-        texture = "outside"; // todo
-        frame = "foliage/tree_trunks/tree_fallen.png"; // todo
+        texture = "outside";
+        frame = "nature/resources/minerals_pile_depleted_1.png"; // todo - zip to spritesheet
         break;
     }
     if (!texture || !frame) return;
@@ -142,6 +140,33 @@ export class ResourceSourceComponent {
 
   getCurrentResources(): number {
     return this.currentResources;
+  }
+
+  /**
+   * Register a gatherer as assigned to this resource source
+   */
+  assignGatherer(gatherer: GameObject): void {
+    if (!this.assignedGatherers.has(gatherer)) {
+      this.assignedGatherers.add(gatherer);
+      this.onAssignedGatherersChanged.next(this.assignedGatherers.size);
+    }
+  }
+
+  /**
+   * Unregister a gatherer from this resource source
+   */
+  unassignGatherer(gatherer: GameObject): void {
+    if (this.assignedGatherers.has(gatherer)) {
+      this.assignedGatherers.delete(gatherer);
+      this.onAssignedGatherersChanged.next(this.assignedGatherers.size);
+    }
+  }
+
+  /**
+   * Get the count of gatherers currently assigned to this resource
+   */
+  getAssignedGatherersCount(): number {
+    return this.assignedGatherers.size;
   }
 
   setData(data: Partial<ResourceSourceComponentData>) {

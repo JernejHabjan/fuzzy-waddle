@@ -38,15 +38,14 @@ export const emberstoneDefinition = {
     },
     health: {
       physicalState: ActorPhysicalType.Structural,
-      maxHealth: 100
+      maxHealth: 200
     },
     productionCost: {
       resources: {
-        [ResourceType.Wood]: 10,
-        [ResourceType.Minerals]: 10
+        [ResourceType.Wood]: 100
       },
       refundFactor: 0.5,
-      productionTime: 5000,
+      productionTime: 10000,
       costType: PaymentType.PayImmediately
     },
     requirements: {

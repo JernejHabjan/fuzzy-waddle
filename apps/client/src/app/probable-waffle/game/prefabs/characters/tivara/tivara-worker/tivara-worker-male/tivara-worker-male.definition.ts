@@ -16,6 +16,7 @@ import { tivaraWorkerDefinition } from "../tivara-worker.definition";
 import { ANIM_TIVARA_WORKER_MALE_DEFINITION } from "./tivara_worker_male_anims";
 import type { PrefabDefinition } from "../../../../definitions/prefab-definition";
 import { SoundType } from "../../../../../entity/components/actor-audio/sound-type";
+import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 
 export const tivaraWorkerMaleDefinition = {
   ...tivaraWorkerDefinition,
@@ -48,5 +49,9 @@ export const tivaraWorkerMaleDefinition = {
       }
     },
     animatable: { animations: ANIM_TIVARA_WORKER_MALE_DEFINITION }
+  },
+  meta: {
+    ...tivaraWorkerDefinition.meta,
+    randomOfType: []
   }
 } satisfies PrefabDefinition;

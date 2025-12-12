@@ -43,15 +43,17 @@ export const frostForgeDefinition = {
     },
     health: {
       physicalState: ActorPhysicalType.Structural,
-      maxHealth: 100
+      maxHealth: 500,
+      maxArmour: 300
     },
     productionCost: {
       resources: {
-        [ResourceType.Wood]: 10,
-        [ResourceType.Minerals]: 10
+        [ResourceType.Wood]: 400,
+        [ResourceType.Minerals]: 300,
+        [ResourceType.Stone]: 400
       },
       refundFactor: 0.5,
-      productionTime: 5000,
+      productionTime: 60000,
       costType: PaymentType.PayImmediately
     },
     selectable: {},
@@ -70,5 +72,8 @@ export const frostForgeDefinition = {
     constructable: {
       ...coreConstructionSiteDefinition
     }
+  },
+  meta: {
+    isMainBuilding: true
   }
 } satisfies PrefabDefinition;

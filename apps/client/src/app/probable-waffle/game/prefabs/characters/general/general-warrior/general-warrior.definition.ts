@@ -37,15 +37,14 @@ export const generalWarriorDefinition = {
     },
     health: {
       physicalState: ActorPhysicalType.Biological,
-      maxHealth: 100
+      maxHealth: 150
     },
     attack: {
       attacks: [weaponDefinitions.spear]
     },
     productionCost: {
       resources: {
-        [ResourceType.Wood]: 10,
-        [ResourceType.Minerals]: 10
+        [ResourceType.Minerals]: 80
       },
       refundFactor: 0.5,
       productionTime: 5000,

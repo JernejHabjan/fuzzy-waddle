@@ -138,9 +138,6 @@ export class SingleSelectionHandler {
     // convert pointerXY to worldXY including camera zoom
     const worldPosition = scene.cameras.main.getWorldPoint(pointer.x, pointer.y);
     const clickedTileXY = IsoHelper.isometricWorldToTileXY(scene, worldPosition.x, worldPosition.y, false);
-    // for some reason we need to ceil the clicked tile - its not ok if se set snapToFloor to true
-    clickedTileXY.x = Math.ceil(clickedTileXY.x);
-    clickedTileXY.y = Math.ceil(clickedTileXY.y);
 
     const interactiveObjectIds = gameObjectsUnderCursor
       .map((go) => getSelectableGameObject(go))

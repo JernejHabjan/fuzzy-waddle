@@ -13,10 +13,19 @@ export const treeDefinitions = {
       colliderFactorReduction: 0.5
     },
     selectable: {},
+    info: {
+      name: "Tree",
+      description: "A tree that can be chopped for wood",
+      smallImage: {
+        key: "outside",
+        frame: "foliage/trees/resources/tree1.png",
+        origin: { x: 0.5, y: 0.5 }
+      }
+    },
     resourceSource: {
       resourceType: ResourceType.Wood,
-      maximumResources: 20,
-      gatheringFactor: 1
+      maximumResources: 200,
+      gatheringFactor: 10
     },
     audio: {
       sounds: {

@@ -81,10 +81,18 @@ export class ProbableWafflePlayer extends BasePlayer<
   canPayAllResources(constructionCosts: Partial<Record<ResourceType, number>>) {
     // noinspection UnnecessaryLocalVariableJS
     const canAfford = Object.entries(constructionCosts).every(([resourceType, amount]) => {
-      const resourceAmount = this.playerState.data.resources[resourceType as ResourceType] || 0;
-      return resourceAmount >= amount;
+      return this.canPayResources(resourceType as ResourceType, amount);
     });
     return canAfford;
+  }
+
+  canPayResources(resourceType: ResourceType, amount: number) {
+    const resourceAmount = this.playerState.data.resources[resourceType] || 0;
+    return resourceAmount >= amount;
+  }
+
+  canAffordHousing(housingNeeded: number) {
+    return this.playerState.data.housing.currentHousing + housingNeeded <= this.playerState.data.housing.maxHousing;
   }
 }
 
@@ -163,6 +171,28 @@ export function getRandomFactionType(): FactionType {
   const enumValues = Object.values(FactionType).filter((value) => typeof value === "number");
   const randomIndex = Math.floor(Math.random() * enumValues.length);
   return enumValues[randomIndex] as FactionType;
+}
+
+/**
+ * Creates a PlayerLobbyDefinition with default values.
+ * This centralizes player lobby definition creation to avoid duplication.
+ *
+ * @param playerNumber - The player number (1-8)
+ * @param playerPosition - The player position (defaults to playerNumber - 1 if not provided)
+ * @param playerName - The player name (defaults to "Player {playerNumber}" if not provided)
+ * @returns A PlayerLobbyDefinition object
+ */
+export function createPlayerLobbyDefinition(
+  playerNumber: number,
+  playerPosition?: number,
+  playerName?: string
+): PlayerLobbyDefinition {
+  return {
+    playerNumber,
+    playerName: playerName ?? `Player ${playerNumber}`,
+    playerPosition: playerPosition ?? playerNumber - 1,
+    joined: true
+  };
 }
 
 export interface PositionPlayerDefinition {

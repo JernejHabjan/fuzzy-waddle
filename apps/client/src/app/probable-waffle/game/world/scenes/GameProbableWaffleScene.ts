@@ -8,6 +8,7 @@ import { SingleSelectionHandler } from "../../player/human-controller/single-sel
 import HudProbableWaffle from "./hud-scenes/HudProbableWaffle";
 import { GameObjectSelectionHandler } from "../../player/human-controller/game-object-selection.handler";
 import { SceneGameState } from "../state/scene-game-state";
+import { GameSettings } from "../../core/gameSettings";
 import { type ProbableWaffleGameData } from "../../core/probable-waffle-game-data";
 import { SaveGame } from "../../data/save-game";
 import { SceneActorCreator } from "../services/scene-actor-creator";
@@ -31,6 +32,7 @@ import { GameObjectActionAssigner } from "../../prefabs/gui/game-object-action-a
 import { PlayerActionsHandler } from "../../player/human-controller/player-actions-handler";
 import { ActorIndexSystem } from "../services/ActorIndexSystem";
 import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
+import { SelectionTabHandler } from "../../player/human-controller/selection-tab-handler";
 
 export interface ProbableWaffleSceneData {
   baseGameData: ProbableWaffleGameData;
@@ -50,13 +52,17 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
   }
 
   override create() {
-    const c = this.baseGameData.gameInstance.gameState;
     const hud = this.scene.get<HudProbableWaffle>("HudProbableWaffle") as HudProbableWaffle;
     hud.scene.start();
     hud.initializeWithParentScene(this);
     new SceneGameState(this);
     new ScaleHandler(this, this.tilemap, { margins: { left: 150, bottom: 100 }, maxLayers: 8 });
-    new CameraMovementHandler(this);
+    const gameSettings = GameSettings.loadFromLocalStorage();
+    new CameraMovementHandler(this, {
+      cameraEdgeMovementSpeed: 30,
+      cameraKeyboardMovementSpeed: 2,
+      enabledMouseCornerMovement: gameSettings.enabledMouseCornerMovement
+    });
     new LightsHandler(this, { enableLights: false });
     new DepthHelper(this);
     new AnimatedTilemap(this, this.tilemap, this.tilemap.tilesets);
@@ -75,7 +81,8 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     this.sceneGameData.components.push(
       new TilemapComponent(this.tilemap),
       new BuildingCursor(this),
-      new SelectionGroupsComponent(this)
+      new SelectionGroupsComponent(this),
+      new SelectionTabHandler(this)
     );
     this.sceneGameData.services.push(
       new NavigationService(this, this.tilemap),

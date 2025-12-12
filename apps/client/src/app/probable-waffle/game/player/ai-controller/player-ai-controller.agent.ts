@@ -161,6 +161,17 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
             if (validation.techBlocked && validation.prereqs.length > 0) {
               this.productionValidator?.schedulePrerequisites(validation.prereqs, next.objectName as ObjectNames);
             }
+            // Handle building prerequisites
+            if (
+              validation.buildingPrereqBlocked &&
+              validation.missingBuildings &&
+              validation.missingBuildings.length > 0
+            ) {
+              this.productionValidator?.schedulePrerequisites(
+                validation.missingBuildings,
+                next.objectName as ObjectNames
+              );
+            }
             return;
           }
           prod.startProduction({ actorName: next.objectName as ObjectNames, costData });
