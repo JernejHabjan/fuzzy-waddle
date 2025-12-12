@@ -547,7 +547,35 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   }
 
   NeedMoreWorkers(): boolean {
-    return this.blackboard.workers.length < AI_CONFIG.needMoreWorkersThreshold; // extracted fallback 5
+    // Dynamic worker threshold based on strategy and economy state
+    const currentWorkers = this.blackboard.workers.length;
+    const currentStrategy = this.blackboard.currentStrategy;
+    
+    // Strategy-based worker targets
+    let targetWorkers: number;
+    switch (currentStrategy) {
+      case "economic":
+        targetWorkers = 12; // Focus on economy - train more workers
+        break;
+      case "aggressive":
+        targetWorkers = 6; // Less workers, more military
+        break;
+      case "defensive":
+        targetWorkers = 8; // Balanced approach
+        break;
+      default:
+        targetWorkers = AI_CONFIG.needMoreWorkersThreshold; // fallback 5
+    }
+    
+    // Also consider if we have production buildings that need workers
+    const productionBuildingCount = this.blackboard.productionBuildings.length;
+    const minWorkersPerBuilding = 2;
+    const buildingBasedTarget = Math.max(4, productionBuildingCount * minWorkersPerBuilding);
+    
+    // Use the higher of the two targets
+    const finalTarget = Math.max(targetWorkers, buildingBasedTarget);
+    
+    return currentWorkers < finalTarget;
   }
 
   ReassignWorkersToResource() {
@@ -1037,36 +1065,66 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     return this.blackboard.getTotalResources() >= AI_CONFIG.hasEnoughResourcesForWorkerThreshold * 2;
   }
   QueueMilitaryUnitProduction(): State {
-    // Placeholder: attempt to start production of a worker variant as stand-in for military until proper unit selection added.
+    // Find an idle production building
     const building = this.blackboard.trainingBuildings.find((b) => {
       const prod = getActorComponent(b, ProductionComponent);
       return prod?.isIdle;
     });
     if (!building) return State.FAILED;
+    
     const prod = getActorComponent(building, ProductionComponent);
     if (!prod) return State.FAILED;
-    try {
-      const candidate = ObjectNames.SkaduweeWorkerMale as ObjectNames; // placeholder
+    
+    // Get available units that this building can produce
+    const availableUnits = prod.availableProduceActors || [];
+    if (availableUnits.length === 0) return State.FAILED;
+    
+    // Filter to units with attack component (military units)
+    const militaryUnits = availableUnits.filter((unitName) => {
+      const def = pwActorDefinitions[unitName as ObjectNames];
+      return def?.components?.attack !== undefined;
+    });
+    
+    if (militaryUnits.length === 0) return State.FAILED;
+    
+    // Try to queue the first affordable and tech-available military unit
+    for (const unitName of militaryUnits) {
+      const candidate = unitName as ObjectNames;
+      
+      // Validate tech and building prerequisites
       if (this.productionValidator) {
         const validation = this.productionValidator.validate(candidate);
         if (!validation.canQueue) {
           if (validation.techBlocked && validation.prereqs.length > 0) {
             this.productionValidator.schedulePrerequisites(validation.prereqs, candidate);
           }
-          return State.FAILED;
+          continue; // Try next unit
         }
       }
+      
+      // Check if we have resources
       const def = pwActorDefinitions[candidate];
       const costData = def?.components?.productionCost;
-      if (!costData) return State.FAILED;
-      prod.startProduction({
-        actorName: candidate,
-        costData
-      });
-      return State.SUCCEEDED;
-    } catch {
-      return State.FAILED;
+      if (!costData) continue;
+      
+      if (!this.blackboard.hasAtLeastResources(costData.resources || {})) {
+        continue; // Try next unit
+      }
+      
+      // Queue the production
+      try {
+        prod.startProduction({
+          actorName: candidate,
+          costData
+        });
+        this.logDebugInfo(`Queued military unit production: ${candidate}`);
+        return State.SUCCEEDED;
+      } catch {
+        continue;
+      }
     }
+    
+    return State.FAILED;
   }
   
   // ================= Surrender Logic =================
