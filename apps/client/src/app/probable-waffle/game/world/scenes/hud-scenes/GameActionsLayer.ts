@@ -8,7 +8,6 @@ import OnPointerDownScript from "../../../../../shared/game/phaser/script-nodes-
 import PushActionScript from "../../../../../shared/game/phaser/script-nodes/PushActionScript";
 /* START-USER-IMPORTS */
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
-import { GameSessionState } from "@fuzzy-waddle/api-interfaces";
 /* END-USER-IMPORTS */
 
 export default class GameActionsLayer extends ProbableWaffleScene {
@@ -413,13 +412,7 @@ export default class GameActionsLayer extends ProbableWaffleScene {
 
   private handleQuit() {
     this.game_action_quit.once("game-quit", () => {
-      // todo rather than this, change the player state session state to "to score screen" because only 1 player quits
-      this.communicator.gameInstanceMetadataChanged?.send({
-        property: "sessionState",
-        gameInstanceId: this.baseGameData.gameInstance.gameInstanceMetadata.data.gameInstanceId!,
-        data: { sessionState: GameSessionState.ToScoreScreen },
-        emitterUserId: this.baseGameData.user.userId
-      });
+      this.communicator.allScenes.emit({ name: "quit" });
       this.destroySelf();
     });
   }

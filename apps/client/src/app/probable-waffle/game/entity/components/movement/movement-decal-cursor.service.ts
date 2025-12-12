@@ -194,7 +194,6 @@ export class MovementDecalCursorService {
       this.inaccessibleTimer.remove();
       this.inaccessibleTimer = undefined;
     }
-    this.gameObject.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
     this.selectionChangedSubscription?.unsubscribe();
     this.currentOrderChangedSubscription?.unsubscribe();
   }

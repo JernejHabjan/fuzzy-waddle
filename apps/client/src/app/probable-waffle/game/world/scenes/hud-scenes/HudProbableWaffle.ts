@@ -134,15 +134,12 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     new HudGameState(this, this.probableWaffleScene!);
     new HudElementVisibilityHandler(this, this.hudElements);
     this.cursorHandler = new CursorHandler(this);
-    this.sceneGameData.components.push(
-      new MultiSelectionHandler(this, this.probableWaffleScene!),
-      this.cursorHandler
-    );
+    this.sceneGameData.components.push(new MultiSelectionHandler(this, this.probableWaffleScene!), this.cursorHandler);
 
     this.minimap_container.initializeWithParentScene(this.probableWaffleScene!, this);
 
     this.hudMessages.setup(this.probableWaffleScene!);
-    
+
     this.idleWorkersButton.setup(this.probableWaffleScene!);
 
     // Initialize cursor handler with main scene for hover detection
