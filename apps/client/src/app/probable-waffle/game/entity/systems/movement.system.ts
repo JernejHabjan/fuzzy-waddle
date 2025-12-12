@@ -40,7 +40,6 @@ import { getTileCoordsUnderObject } from "../../library/tile-under-object";
 import { TilemapComponent } from "../../world/tilemap/tilemap.component";
 import type { IsoDirection } from "../components/movement/iso-directions";
 import { DecalCursorService } from "../../world/services/decal-cursor.service";
-import { MovementDestinationComponent } from "../components/movement/movement-destination-component";
 
 export interface PathMoveConfig {
   radiusTilesAroundDestination?: number;
@@ -66,7 +65,6 @@ export class MovementSystem {
   private animationActorComponent?: AnimationActorComponent;
   private shiftKey: Phaser.Input.Keyboard.Key | undefined;
   private targetGameObject?: GameObject;
-  private movementDestinationComponent?: MovementDestinationComponent;
 
   constructor(private readonly gameObject: Phaser.GameObjects.GameObject) {
     this.listenToMoveEvents();
@@ -81,7 +79,6 @@ export class MovementSystem {
     this.audioService = getSceneService(this.gameObject.scene, AudioService);
     this.audioActorComponent = getActorComponent(this.gameObject, AudioActorComponent);
     this.tileMapComponent = getSceneComponent(this.gameObject.scene, TilemapComponent)!;
-    this.movementDestinationComponent = getActorComponent(this.gameObject, MovementDestinationComponent);
     this.subscribeToShiftKey();
   }
 
@@ -100,9 +97,6 @@ export class MovementSystem {
         const tileVec3 = payload.data.data!["tileVec3"] as Vector3Simple;
         const selectedActorObjectIds = payload.data.data!["selectedActorObjectIds"] as string[];
         const newWorldVec3 = await this.getTileVec3ByDynamicFlocking(tileVec3, selectedActorObjectIds);
-        
-        // Store destination in component for re-selection
-        this.movementDestinationComponent?.setDestination(newWorldVec3);
         
         // Show decal cursor for move command
         const decalCursorService = getSceneService(this.gameObject.scene, DecalCursorService);
@@ -131,11 +125,14 @@ export class MovementSystem {
         const isSelected = getActorComponent(this.gameObject, SelectableComponent)?.getSelected();
         if (!isSelected) return;
         
-        // If this actor is selected and has a destination, re-show the decal
-        const destination = this.movementDestinationComponent?.getDestination();
-        if (destination) {
+        // If this actor is selected and has a move order, re-show the decal
+        const pawnAiController = getActorComponent(this.gameObject, PawnAiController);
+        if (!pawnAiController) return;
+        
+        const currentOrder = pawnAiController.blackboard.getCurrentOrder();
+        if (currentOrder && currentOrder.orderType === OrderType.Move && currentOrder.data.targetTileLocation) {
           const decalCursorService = getSceneService(this.gameObject.scene, DecalCursorService);
-          decalCursorService?.showMoveMarker(destination);
+          decalCursorService?.showMoveMarker(currentOrder.data.targetTileLocation);
         }
       });
   }
@@ -259,12 +256,15 @@ export class MovementSystem {
         const tileWorldXY = this.navigationService?.getTileWorldCenter(nextTile);
         if (!tileWorldXY) return false;
 
-        // Get the walkable height at the destination tile
-        const walkableHeight = this.navigationService?.getWalkableHeightAtTile(nextTile) ?? 0;
+        let newZ = 0;
+        const walkableComponent = getActorComponent(destinationGameObject, WalkableComponent);
+        if (walkableComponent && walkableComponent.getDestinationHeight) {
+          newZ += walkableComponent.getDestinationHeight();
+        }
         const newLogicalTransform = {
           x: tileWorldXY.x,
           y: tileWorldXY.y,
-          z: walkableHeight
+          z: newZ
         } as Vector3Simple;
 
         const onComplete = () => {
@@ -325,8 +325,6 @@ export class MovementSystem {
     if (!path.length) {
       config?.onComplete?.();
       this.playMovementAnimation(false, config);
-      // Clear destination when movement completes
-      this.movementDestinationComponent?.clearDestination();
       return;
     }
     const nextTile = path.shift();
@@ -336,9 +334,7 @@ export class MovementSystem {
     this.cancelMovement();
     config?.onPathUpdate?.(nextTile);
 
-    // Get the walkable height at the destination tile
-    const walkableHeight = this.navigationService?.getWalkableHeightAtTile(nextTile) ?? 0;
-    const newLogicalTransform = { ...tileWorldXY, z: walkableHeight } as Vector3Simple;
+    const newLogicalTransform = { ...tileWorldXY, z: 0 } as Vector3Simple;
 
     const onComplete = async () => {
       await this.moveAlongPathByFollowingPreCalculatedStaticPath(path, config);
