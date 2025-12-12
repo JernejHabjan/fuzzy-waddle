@@ -30,7 +30,7 @@ export const watchTowerDefinition = {
       description: "Main defense building",
       smallImage: {
         key: "factions",
-        frame: "buildings/tivara/watchtower.png",
+        frame: "buildings/tivara/watchtower/watchtower.png",
         origin: { x: 0.5, y: 0.5 }
       }
     },

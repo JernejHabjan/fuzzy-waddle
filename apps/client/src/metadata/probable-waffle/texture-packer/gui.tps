@@ -4,7 +4,7 @@
         <key>fileFormatVersion</key>
         <int>6</int>
         <key>texturePackerVersion</key>
-        <string>7.1.0</string>
+        <string>7.4.0</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -175,8 +175,13 @@
         <map type="IndividualSpriteSettingsMap">
             <key type="filename">../sprites/gui/action_icons/arrow.png</key>
             <key type="filename">../sprites/gui/action_icons/back.png</key>
+            <key type="filename">../sprites/gui/action_icons/category_defensive_buildings.png</key>
+            <key type="filename">../sprites/gui/action_icons/category_resource_gathering.png</key>
+            <key type="filename">../sprites/gui/action_icons/gather.png</key>
             <key type="filename">../sprites/gui/action_icons/hammer.png</key>
             <key type="filename">../sprites/gui/action_icons/hand.png</key>
+            <key type="filename">../sprites/gui/action_icons/heal.png</key>
+            <key type="filename">../sprites/gui/action_icons/rally.png</key>
             <key type="filename">../sprites/gui/actor_info_icons/boot.png</key>
             <key type="filename">../sprites/gui/actor_info_icons/bow.png</key>
             <key type="filename">../sprites/gui/actor_info_icons/element.png</key>
@@ -275,6 +280,22 @@
                 <rect>6,6,12,12</rect>
                 <key>scale9Paddings</key>
                 <rect>6,6,12,12</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">../sprites/gui/decals/inaccessible-marker.png</key>
+            <key type="filename">../sprites/gui/decals/move-marker.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>16,16,32,32</rect>
+                <key>scale9Paddings</key>
+                <rect>16,16,32,32</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>

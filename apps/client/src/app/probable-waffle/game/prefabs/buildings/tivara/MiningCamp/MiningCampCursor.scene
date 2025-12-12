@@ -27,7 +27,7 @@
                     "label": "buildings_tivara_mining_camp_png_1",
                     "texture": {
                         "key": "factions",
-                        "frame": "buildings/tivara/mining_camp.png"
+                        "frame": "buildings/tivara/mining_camp/mining-camp.png"
                     },
                     "y": -32.29342343955079
                 }
