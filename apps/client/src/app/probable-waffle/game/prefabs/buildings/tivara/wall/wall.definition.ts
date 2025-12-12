@@ -41,11 +41,10 @@ export const wallDefinition = {
     },
     productionCost: {
       resources: {
-        [ResourceType.Wood]: 10,
-        [ResourceType.Stone]: 30
+        [ResourceType.Stone]: 25
       },
       refundFactor: 0.5,
-      productionTime: 5000,
+      productionTime: 10000,
       costType: PaymentType.PayImmediately
     },
     collider: { enabled: true },

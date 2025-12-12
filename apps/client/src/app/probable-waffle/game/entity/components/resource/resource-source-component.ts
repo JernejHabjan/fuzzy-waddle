@@ -85,15 +85,15 @@ export class ResourceSourceComponent {
       this.onDepleted.next(this.gameObject);
       const renderedTransform = getGameObjectRenderedTransform(this.gameObject);
       this.gameObject.destroy();
-      this.spawnTreeTrunk(renderedTransform);
+      this.spawnDepletedResourceSourceSprite(renderedTransform);
     }
     return gatheredAmount;
   }
 
   /**
-   * Spawns a tree trunk image at the given rendered transform position.
+   * Spawns a depleted resource source image at the given rendered transform position.
    */
-  private spawnTreeTrunk(renderedTransform: Vector2Simple | null) {
+  private spawnDepletedResourceSourceSprite(renderedTransform: Vector2Simple | null) {
     if (!renderedTransform) return;
     if (!this.scene) return;
 
@@ -105,16 +105,12 @@ export class ResourceSourceComponent {
         frame = "foliage/tree_trunks/tree_fallen.png";
         break;
       case ResourceType.Stone:
-        texture = "outside"; // todo
-        frame = "foliage/tree_trunks/tree_fallen.png"; // todo
+        texture = "outside";
+        frame = "nature/resources/stone_pile_depleted_1.png"; // todo - zip to spritesheet
         break;
       case ResourceType.Minerals:
-        texture = "outside"; // todo
-        frame = "foliage/tree_trunks/tree_fallen.png"; // todo
-        break;
-      case ResourceType.Ambrosia:
-        texture = "outside"; // todo
-        frame = "foliage/tree_trunks/tree_fallen.png"; // todo
+        texture = "outside";
+        frame = "nature/resources/minerals_pile_depleted_1.png"; // todo - zip to spritesheet
         break;
     }
     if (!texture || !frame) return;

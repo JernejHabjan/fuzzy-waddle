@@ -48,15 +48,14 @@ export const tivaraMacemanMaleDefinition = {
     },
     health: {
       physicalState: ActorPhysicalType.Biological,
-      maxHealth: 100
+      maxHealth: 150
     },
     attack: {
       attacks: [weaponDefinitions.mace]
     },
     productionCost: {
       resources: {
-        [ResourceType.Wood]: 10,
-        [ResourceType.Minerals]: 10
+        [ResourceType.Minerals]: 100
       },
       refundFactor: 0.5,
       productionTime: 5000,

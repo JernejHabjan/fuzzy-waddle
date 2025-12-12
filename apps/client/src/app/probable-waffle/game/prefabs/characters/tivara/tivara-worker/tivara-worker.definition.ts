@@ -2,6 +2,10 @@ import { generalWorkerDefinitions } from "../../shared/worker/worker-shared.defi
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
+import {
+  ConstructableCategory,
+  ConstructableDefinition
+} from "../../../../entity/components/construction/constructable-category";
 
 export const tivaraWorkerDefinition: PrefabDefinition = {
   ...generalWorkerDefinitions,
@@ -37,16 +41,23 @@ export const tivaraWorkerDefinition: PrefabDefinition = {
     builder: {
       constructionSiteOffset: 2,
       enterConstructionSite: false,
-      constructableBuildings: [
-        ObjectNames.Sandhold,
-        ObjectNames.AnkGuard,
-        ObjectNames.Olival,
-        ObjectNames.Temple,
-        ObjectNames.WorkMill,
-        ObjectNames.WatchTower,
-        ObjectNames.Wall,
-        ObjectNames.Stairs
-      ]
+      constructableBuildings: new ConstructableDefinition(
+        [
+          // keep this in sync with actor-manager
+          ObjectNames.Sandhold,
+          ObjectNames.Olival,
+          ObjectNames.AnkGuard,
+          ObjectNames.Temple
+        ],
+        [
+          new ConstructableCategory("gui", "action_icons/category_resource_gathering.png", "Resource Gathering", [
+            new ConstructableDefinition([ObjectNames.WorkMill, ObjectNames.MiningCamp])
+          ]),
+          new ConstructableCategory("gui", "action_icons/category_defensive_buildings.png", "Defensive Structures", [
+            new ConstructableDefinition([ObjectNames.WatchTower, ObjectNames.Wall, ObjectNames.Stairs])
+          ])
+        ]
+      )
     }
   },
   meta: {

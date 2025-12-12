@@ -259,15 +259,12 @@ export class MovementSystem {
         const tileWorldXY = this.navigationService?.getTileWorldCenter(nextTile);
         if (!tileWorldXY) return false;
 
-        let newZ = 0;
-        const walkableComponent = getActorComponent(destinationGameObject, WalkableComponent);
-        if (walkableComponent && walkableComponent.getDestinationHeight) {
-          newZ += walkableComponent.getDestinationHeight();
-        }
+        // Get the walkable height at the destination tile
+        const walkableHeight = this.navigationService?.getWalkableHeightAtTile(nextTile) ?? 0;
         const newLogicalTransform = {
           x: tileWorldXY.x,
           y: tileWorldXY.y,
-          z: newZ
+          z: walkableHeight
         } as Vector3Simple;
 
         const onComplete = () => {
@@ -339,7 +336,9 @@ export class MovementSystem {
     this.cancelMovement();
     config?.onPathUpdate?.(nextTile);
 
-    const newLogicalTransform = { ...tileWorldXY, z: 0 } as Vector3Simple;
+    // Get the walkable height at the destination tile
+    const walkableHeight = this.navigationService?.getWalkableHeightAtTile(nextTile) ?? 0;
+    const newLogicalTransform = { ...tileWorldXY, z: walkableHeight } as Vector3Simple;
 
     const onComplete = async () => {
       await this.moveAlongPathByFollowingPreCalculatedStaticPath(path, config);

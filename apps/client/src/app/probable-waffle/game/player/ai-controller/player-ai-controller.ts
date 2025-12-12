@@ -12,6 +12,7 @@ export class PlayerAiController {
   public blackboard: PlayerAiBlackboard = new PlayerAiBlackboard();
   private behaviourTree: BehaviourTree;
   private elapsedTime: number = 0;
+  private static readonly AI_ENABLED = true;
   private readonly stepInterval: number = AI_CONFIG.controllerStepIntervalMs;
   telemetry = new TelemetrySink();
   private telemetryFrameModulo = AI_CONFIG.telemetryFrameModulo;
@@ -29,6 +30,7 @@ export class PlayerAiController {
   }
 
   private update(time: number, dt: number) {
+    if (!PlayerAiController.AI_ENABLED) return;
     this.elapsedTime += dt;
     if (this.elapsedTime >= this.stepInterval) {
       this.telemetry.nextFrame();
