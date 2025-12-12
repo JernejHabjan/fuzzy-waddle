@@ -655,6 +655,24 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     return this.blackboard.defensiveStructures.length < this.blackboard.desiredDefensiveStructures;
   }
 
+  /**
+   * Helper method to sort buildings by variety - prefers buildings we don't have many of.
+   */
+  private sortBuildingsByVariety(buildings: ObjectNames[]): ObjectNames[] {
+    const buildingCounts = new Map<ObjectNames, number>();
+    this.blackboard.productionBuildings.forEach((building) => {
+      const name = building.name as ObjectNames;
+      buildingCounts.set(name, (buildingCounts.get(name) || 0) + 1);
+    });
+    
+    // Sort by count (ascending) to build variety
+    return [...buildings].sort((a, b) => {
+      const countA = buildingCounts.get(a) || 0;
+      const countB = buildingCounts.get(b) || 0;
+      return countA - countB;
+    });
+  }
+
   private assignBuilding(buildingType: ObjectNames, preferredLocationTileXY?: Vector3Simple): State {
     // Preferred order:
     // 1. Explicit preferredLocationTileXY (reserved)
@@ -788,28 +806,17 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       if (def?.components?.production && def?.components?.constructable) {
         // Validate if this building can be constructed by checking tech tree
         const validation = this.productionValidator!.validate(objectName);
-        if (validation.canQueue || !validation.techBlocked) {
+        if (validation.canQueue) {
           candidateBuildings.push(objectName);
         }
       }
     });
     
-    // Prefer buildings we don't already have much of
-    const buildingCounts = new Map<ObjectNames, number>();
-    this.blackboard.productionBuildings.forEach((building) => {
-      const name = building.name as ObjectNames;
-      buildingCounts.set(name, (buildingCounts.get(name) || 0) + 1);
-    });
-    
-    // Sort by count (ascending) to build variety
-    candidateBuildings.sort((a, b) => {
-      const countA = buildingCounts.get(a) || 0;
-      const countB = buildingCounts.get(b) || 0;
-      return countA - countB;
-    });
+    // Sort by variety (prefer buildings we don't already have much of)
+    const sortedByVariety = this.sortBuildingsByVariety(candidateBuildings);
     
     // Use first available production building, fallback to Owlery if none found
-    const selectedBuilding = candidateBuildings.length > 0 ? candidateBuildings[0]! : ObjectNames.Owlery;
+    const selectedBuilding = sortedByVariety.length > 0 ? sortedByVariety[0] : ObjectNames.Owlery;
     return this.assignBuilding(selectedBuilding);
   }
 
@@ -826,7 +833,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
         // Validate if this building can be constructed
         if (this.productionValidator) {
           const validation = this.productionValidator.validate(objectName);
-          if (validation.canQueue || !validation.techBlocked) {
+          if (validation.canQueue) {
             candidateDefenseBuildings.push(objectName);
           }
         } else {
@@ -835,22 +842,11 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       }
     });
     
-    // Prefer buildings we don't already have much of
-    const buildingCounts = new Map<ObjectNames, number>();
-    this.blackboard.productionBuildings.forEach((building) => {
-      const name = building.name as ObjectNames;
-      buildingCounts.set(name, (buildingCounts.get(name) || 0) + 1);
-    });
-    
-    // Sort by count (ascending) to build variety
-    candidateDefenseBuildings.sort((a, b) => {
-      const countA = buildingCounts.get(a) || 0;
-      const countB = buildingCounts.get(b) || 0;
-      return countA - countB;
-    });
+    // Sort by variety (prefer buildings we don't already have much of)
+    const sortedByVariety = this.sortBuildingsByVariety(candidateDefenseBuildings);
     
     // Use first available defense building, fallback to WatchTower if none found
-    const selectedBuilding = candidateDefenseBuildings.length > 0 ? candidateDefenseBuildings[0]! : ObjectNames.WatchTower;
+    const selectedBuilding = sortedByVariety.length > 0 ? sortedByVariety[0] : ObjectNames.WatchTower;
     return this.assignBuilding(selectedBuilding);
   }
 
