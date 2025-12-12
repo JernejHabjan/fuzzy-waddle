@@ -45,6 +45,7 @@ import {
   type ConstructableCategory,
   ConstructableDefinition
 } from "../../../entity/components/construction/constructable-category";
+import { SelectionTabHandler } from "../../../player/human-controller/selection-tab-handler";
 /* END-USER-IMPORTS */
 
 export default class ActorActions extends Phaser.GameObjects.Container {
@@ -183,6 +184,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
   private selectionChangedSubscription?: Subscription;
   private actorKillSubscription?: Subscription;
   private actorConstructionSubscription?: Subscription;
+  private tabHandlerSubscription?: Subscription;
   private readonly mainSceneWithActors: ProbableWaffleScene;
   private readonly hudScene: HudProbableWaffle;
   private readonly audioService: AudioService;
@@ -206,6 +208,12 @@ export default class ActorActions extends Phaser.GameObjects.Container {
 
   private subscribeToPlayerSelection() {
     this.selectionChangedSubscription = listenToSelectionEvents(this.scene)?.subscribe(() => {
+      // Update tab handler with new selection
+      const tabHandler = getSceneComponent(this.mainSceneWithActors, SelectionTabHandler);
+      if (tabHandler) {
+        tabHandler.updateGroupedActors();
+      }
+
       // deterministically pick the primary actor
       const { selectedActors, actorsByPriority, primaryActor } = getPrimarySelectedActor(this.mainSceneWithActors);
       if (selectedActors.length === 0) {
@@ -233,6 +241,14 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       }
       this.refreshForCurrentSelection();
     });
+
+    // Subscribe to tab changes to update actions display
+    const tabHandler = getSceneComponent(this.mainSceneWithActors, SelectionTabHandler);
+    if (tabHandler) {
+      this.tabHandlerSubscription = tabHandler.currentTabIndex$.subscribe(() => {
+        this.refreshForCurrentSelection();
+      });
+    }
   }
 
   private refreshForCurrentSelection() {
@@ -1028,6 +1044,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     this.buildingModeSubscription?.unsubscribe();
     this.resourceChangedSubscription?.unsubscribe();
     this.categoryNavigationStack = [];
+    this.tabHandlerSubscription?.unsubscribe();
   }
 
   /* END-USER-CODE */

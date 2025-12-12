@@ -32,6 +32,7 @@ import { GameObjectActionAssigner } from "../../prefabs/gui/game-object-action-a
 import { PlayerActionsHandler } from "../../player/human-controller/player-actions-handler";
 import { ActorIndexSystem } from "../services/ActorIndexSystem";
 import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
+import { SelectionTabHandler } from "../../player/human-controller/selection-tab-handler";
 
 export interface ProbableWaffleSceneData {
   baseGameData: ProbableWaffleGameData;
@@ -81,7 +82,8 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     this.sceneGameData.components.push(
       new TilemapComponent(this.tilemap),
       new BuildingCursor(this),
-      new SelectionGroupsComponent(this)
+      new SelectionGroupsComponent(this),
+      new SelectionTabHandler(this)
     );
     this.sceneGameData.services.push(
       new NavigationService(this, this.tilemap),
