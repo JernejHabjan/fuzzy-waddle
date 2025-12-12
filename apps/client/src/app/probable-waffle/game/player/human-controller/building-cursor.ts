@@ -123,8 +123,9 @@ export class BuildingCursor {
    * Issue move orders to actors that need to be moved out of the way.
    * Finds a safe tile near the building and orders the actor to move there.
    * @param buildingsBeingPlaced - Array of building game objects that are being placed (to exclude their tiles)
+   * @returns Promise that resolves once all actors have completed their movement
    */
-  private moveActorsOutOfTheWay(buildingsBeingPlaced: GameObjects.GameObject[]) {
+  private async moveActorsOutOfTheWay(buildingsBeingPlaced: GameObjects.GameObject[]): Promise<void> {
     if (!this.navigationService || !this.tileMapComponent || this.actorsToMove.size === 0) return;
 
     try {
@@ -136,6 +137,8 @@ export class BuildingCursor {
           occupiedTiles.add(`${tile.x},${tile.y}`);
         }
       }
+
+      const movementPromises: Promise<void>[] = [];
 
       this.actorsToMove.forEach((actor) => {
         const pawnAiController = getActorComponent(actor, PawnAiController);
@@ -187,13 +190,22 @@ export class BuildingCursor {
           }
         }
 
-        // If we found a target tile, issue the move order
+        // If we found a target tile, issue the move order and track the movement promise
         if (targetTile) {
           const order = new OrderData(OrderType.Move, { targetTileLocation: targetTile });
           pawnAiController.blackboard.overrideOrderQueueAndActiveOrder(order);
           pawnAiController.blackboard.setCurrentOrder(order);
+
+          // Create a promise that resolves when the actor completes movement
+          const movementPromise = this.waitForActorMovementComplete(actor);
+          movementPromises.push(movementPromise);
         }
       });
+
+      // Wait for all actors to complete their movement
+      if (movementPromises.length > 0) {
+        await Promise.all(movementPromises);
+      }
     } catch (error) {
       console.error("Error in moveActorsOutOfTheWay:", error);
       // Don't let actor movement errors break building placement
@@ -201,6 +213,65 @@ export class BuildingCursor {
       // Clear the set of actors to move
       this.actorsToMove.clear();
     }
+  }
+
+  /**
+   * Waits for an actor to complete its current movement order.
+   * Resolves when the actor's order changes or times out after a reasonable duration.
+   * @param actor - The actor to monitor
+   * @returns Promise that resolves when movement is complete
+   */
+  private waitForActorMovementComplete(actor: GameObjects.GameObject): Promise<void> {
+    return new Promise((resolve) => {
+      const pawnAiController = getActorComponent(actor, PawnAiController);
+      if (!pawnAiController) {
+        resolve();
+        return;
+      }
+
+      const maxWaitTime = 30000; // 30 seconds max wait
+      const startTime = Date.now();
+      const checkInterval = 100; // Check every 100ms
+
+      const checkMovementComplete = () => {
+        const elapsed = Date.now() - startTime;
+
+        // Timeout safety check
+        if (elapsed > maxWaitTime) {
+          resolve();
+          return;
+        }
+
+        const currentOrder = pawnAiController.blackboard.getCurrentOrder();
+
+        // If no current order or order is no longer Move type, movement is complete
+        if (!currentOrder || currentOrder.orderType !== OrderType.Move) {
+          resolve();
+          return;
+        }
+
+        // Check if actor is close enough to target
+        const actorTransform = getGameObjectLogicalTransform(actor);
+        if (currentOrder.data.targetTileLocation && actorTransform) {
+          const targetTile = currentOrder.data.targetTileLocation;
+          const distance = Math.sqrt(
+            Math.pow(actorTransform.x - targetTile.x, 2) + Math.pow(actorTransform.y - targetTile.y, 2)
+          );
+
+          // Consider movement complete if within ~1 tile distance
+          if (distance < 2) {
+            resolve();
+            return;
+          }
+        }
+
+        // Not complete yet, check again later
+        setTimeout(checkMovementComplete, checkInterval);
+      };
+
+      // Start checking
+      checkMovementComplete();
+    });
   }
 
   private spawn(name: ObjectNames) {
@@ -465,7 +536,16 @@ export class BuildingCursor {
 
         // Check if this object occupies the tile we're checking
         const tilesUnderChild = getTileCoordsUnderObject(this.tileMapComponent!.tilemap, c);
-        return tilesUnderChild.some((childTile) => childTile.x === tileCoord.x && childTile.y === tileCoord.y);
+        const overlaps = tilesUnderChild.some(
+          (childTile) => childTile.x === tileCoord.x && childTile.y === tileCoord.y
+        );
+
+        // If the child overlaps but can be auto-moved, don't count it as an obstacle
+        if (overlaps && this.canActorBeAutoMoved(c)) {
+          return false;
+        }
+
+        return overlaps;
       });
 
       return children.length > 0;
@@ -763,7 +843,7 @@ export class BuildingCursor {
     this.invalidCursorPositions.clear();
   }
 
-  private placeBuildings() {
+  private async placeBuildings() {
     // Clear the actors to move set before checking placement
     this.actorsToMove.clear();
 
@@ -788,24 +868,27 @@ export class BuildingCursor {
     const buildingsBeingPlaced: GameObjects.GameObject[] =
       this.isDragging && objectsToPlace.length ? objectsToPlace : this.building ? [this.building] : [];
 
-    // Move actors out of the way before placing buildings
-    this.moveActorsOutOfTheWay(buildingsBeingPlaced);
+    // Exit build mode immediately
+    const buildingToPlace = this.building;
+    this.building = undefined;
+    this.clearGraphics();
+
+    // Move actors out of the way before placing buildings, wait for them to complete
+    await this.moveActorsOutOfTheWay(buildingsBeingPlaced);
 
     if (this.isDragging && objectsToPlace.length) {
-      this.building?.destroy();
+      buildingToPlace?.destroy();
       for (const gameObject of objectsToPlace) {
         this.spawnConstructionSite(gameObject);
       }
-    } else if (this.building) {
-      this.spawnConstructionSite(this.building);
+    } else if (buildingToPlace) {
+      this.spawnConstructionSite(buildingToPlace);
     } else {
       throw new Error("No building to place");
     }
 
-    this.building = undefined;
     this.pointerLocation = undefined;
     this.downPointerLocation = undefined;
-    this.clearGraphics();
     this.spawnedCursorGameObjects = [];
     this.invalidCursorPositions.clear();
     this.isDragging = false;
