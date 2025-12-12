@@ -99,7 +99,7 @@ export class ActionSystem {
         if (!action) return;
 
         // Show decal cursor for move actions
-        if (action.type === OrderType.Move && tileVec3) {
+        if (action.orderType === OrderType.Move && tileVec3) {
           const decalCursorService = getSceneService(this.gameObject.scene, DecalCursorService);
           decalCursorService?.showMoveMarker(tileVec3);
         }
