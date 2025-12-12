@@ -22,6 +22,13 @@ export default class ActorIcon extends Phaser.GameObjects.Container {
     bg.setOrigin(0, 0);
     this.add(bg);
 
+    // highlight
+    const highlight = scene.add.rectangle(8, 8, 16, 16);
+    highlight.setStrokeStyle(2, 0xffffff, 1);
+    highlight.isFilled = false;
+    highlight.visible = false;
+    this.add(highlight);
+
     // nr
     const nr = scene.add.text(8, 7, "", {});
     nr.setOrigin(0.5, 0.5);
@@ -52,6 +59,7 @@ export default class ActorIcon extends Phaser.GameObjects.Container {
 
     this.nr = nr;
     this.image = image;
+    this.highlight = highlight;
 
     /* START-USER-CTR-CODE */
     this.nr.visible = false;
@@ -64,6 +72,7 @@ export default class ActorIcon extends Phaser.GameObjects.Container {
 
   private nr: Phaser.GameObjects.Text;
   private image: Phaser.GameObjects.Image;
+  private highlight: Phaser.GameObjects.Rectangle;
 
   /* START-USER-CODE */
   private definition?: ActorIconObjectDefinition;
@@ -101,6 +110,10 @@ export default class ActorIcon extends Phaser.GameObjects.Container {
 
   get onClick() {
     return this.clickSubject.asObservable();
+  }
+
+  setHighlight(highlighted: boolean) {
+    this.highlight.visible = highlighted;
   }
 
   override destroy(fromScene?: boolean) {

@@ -30,6 +30,7 @@ import OlivalCursor from "../../../game/prefabs/buildings/tivara/Olival/OlivalCu
 import InfantryInnCursor from "../../../game/prefabs/buildings/skaduwee/InfantryInn/InfantryInnCursor";
 import WorkMillCursor from "../../../game/prefabs/buildings/tivara/WorkMill/WorkMillCursor";
 import TempleCursor from "../../../game/prefabs/buildings/tivara/Temple/TempleCursor";
+import MiningCampCursor from "../../../game/prefabs/buildings/tivara/MiningCamp/MiningCampCursor";
 
 @Component({
   selector: "probable-waffle-banner",
@@ -115,6 +116,7 @@ class BannerScene extends Phaser.Scene implements CreateSceneFromObjectConfig {
       OlivalCursor,
       InfantryInnCursor,
       WorkMillCursor,
+      MiningCampCursor,
       TempleCursor
     ];
     const randomIndex = Phaser.Math.Between(0, constructors.length - 1);

@@ -4,6 +4,7 @@ import { Subject } from "rxjs";
 import { getActorComponent } from "../../../data/actor-component";
 import { emitResource } from "../../../data/scene-data";
 import { onObjectReady } from "../../../data/game-object-helper";
+import { OwnerComponent } from "../owner-component";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export type ResourceDrainDefinition = {
@@ -54,9 +55,11 @@ export class ResourceDrainComponent {
       this.currentCapacity -= 1;
     }
 
+    const ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
+    const owner = ownerComponent?.getOwner();
     emitResource(this.gameObject.scene, "resource.added", {
       [resourceType]: amount
-    } satisfies Partial<PlayerStateResources>);
+    } satisfies Partial<PlayerStateResources>, owner);
 
     // notify listeners
     this.onResourcesReturned.next([resourceType, amount, gatherer]);

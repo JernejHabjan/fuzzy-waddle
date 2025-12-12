@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { type PlayerSummary, ScoreTableComponent } from "./score-table.component";
 import {
+  createPlayerLobbyDefinition,
   FactionType,
   type PlayerLobbyDefinition,
   type PositionPlayerDefinition,
@@ -44,12 +45,10 @@ describe("ScoreTableComponent", () => {
     gameInstanceClientServiceStub.addAiPlayer();
     const gameInstance = gameInstanceClientServiceStub.gameInstance!;
     const playerDefinition = {
-      player: {
-        playerNumber: gameInstance.players.length + 1,
-        playerName: "Player " + (gameInstance.players.length + 1),
-        playerPosition: gameInstance.players.length,
-        joined: true
-      } satisfies PlayerLobbyDefinition, // TODO THIS IS DUPLICATED EVERYWHERE
+      player: createPlayerLobbyDefinition(
+        gameInstance.players.length + 1,
+        gameInstance.players.length
+      ),
       factionType: FactionType.Skaduwee,
       playerType: ProbableWafflePlayerType.AI
     } satisfies PositionPlayerDefinition;

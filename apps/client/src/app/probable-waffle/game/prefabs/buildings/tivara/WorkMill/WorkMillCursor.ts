@@ -22,7 +22,7 @@ export default class WorkMillCursor extends Phaser.GameObjects.Container {
       0,
       -32.29342343955079,
       "factions",
-      "buildings/tivara/workmill.png"
+      "buildings/tivara/workmill/workmill.png"
     );
     this.add(buildings_tivara_workmill_png_1);
 

@@ -325,9 +325,12 @@
             <key type="filename">../sprites/factions/buildings/skaduwee/infantry_inn/foundation/foundation_1.png</key>
             <key type="filename">../sprites/factions/buildings/skaduwee/infantry_inn/foundation/foundation_2.png</key>
             <key type="filename">../sprites/factions/buildings/skaduwee/infantry_inn/infantry_inn.png</key>
-            <key type="filename">../sprites/factions/buildings/tivara/workmill.png</key>
+            <key type="filename">../sprites/factions/buildings/tivara/mining_camp/foundation/foundation_1.png</key>
+            <key type="filename">../sprites/factions/buildings/tivara/mining_camp/foundation/foundation_2.png</key>
+            <key type="filename">../sprites/factions/buildings/tivara/mining_camp/mining-camp.png</key>
             <key type="filename">../sprites/factions/buildings/tivara/workmill/foundation/foundation_1.png</key>
             <key type="filename">../sprites/factions/buildings/tivara/workmill/foundation/foundation_2.png</key>
+            <key type="filename">../sprites/factions/buildings/tivara/workmill/workmill.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -704,9 +707,9 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
-            <key type="filename">../sprites/factions/buildings/tivara/watchtower.png</key>
             <key type="filename">../sprites/factions/buildings/tivara/watchtower/foundation/foundation_1.png</key>
             <key type="filename">../sprites/factions/buildings/tivara/watchtower/foundation/foundation_2.png</key>
+            <key type="filename">../sprites/factions/buildings/tivara/watchtower/watchtower.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>

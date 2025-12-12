@@ -11,6 +11,8 @@ import AiControllerDebugPanel from "../../../prefabs/gui/debug/ai-controller/AiC
 import GameSpeedModifier from "../../../prefabs/gui/buttons/GameSpeedModifier";
 import HudMessages from "../../../prefabs/gui/labels/HudMessages";
 import GroupContainer from "../../../prefabs/gui/labels/GroupContainer";
+import IdleWorkersButton from "../../../prefabs/gui/buttons/IdleWorkersButton";
+import ConfirmationDialog from "../../../prefabs/gui/dialogs/ConfirmationDialog";
 /* START-USER-IMPORTS */
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { HudGameState } from "../../../hud/hud-game-state";
@@ -63,6 +65,10 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     const gameSpeedModifier = new GameSpeedModifier(this, 13, 486);
     this.add.existing(gameSpeedModifier);
 
+    // idleWorkersButton
+    const idleWorkersButton = new IdleWorkersButton(this, 13, 516);
+    this.add.existing(idleWorkersButton);
+
     // hudMessages
     const hudMessages = new HudMessages(this, 6, 472);
     this.add.existing(hudMessages);
@@ -71,6 +77,10 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     // groupContainer
     const groupContainer = new GroupContainer(this, 552, 541);
     this.add.existing(groupContainer);
+
+    // confirmationDialog
+    const confirmationDialog = new ConfirmationDialog(this, 640, 360);
+    this.add.existing(confirmationDialog);
 
     // lists
     const hudElements: Array<any> = [];
@@ -82,8 +92,10 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.resources_container = resources_container;
     this.aiControllerDebugPanel = aiControllerDebugPanel;
     this.gameSpeedModifier = gameSpeedModifier;
+    this.idleWorkersButton = idleWorkersButton;
     this.hudMessages = hudMessages;
     this.groupContainer = groupContainer;
+    this.confirmationDialog = confirmationDialog;
     this.hudElements = hudElements;
 
     this.events.emit("scene-awake");
@@ -96,13 +108,16 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   private resources_container!: Resources;
   private aiControllerDebugPanel!: AiControllerDebugPanel;
   private gameSpeedModifier!: GameSpeedModifier;
+  private idleWorkersButton!: IdleWorkersButton;
   private hudMessages!: HudMessages;
   private groupContainer!: GroupContainer;
+  public confirmationDialog!: ConfirmationDialog;
   private hudElements!: Array<any>;
 
   /* START-USER-CODE */
   private saveGameSubscription?: Subscription;
   private readonly actorInfoSmallScreenBreakpoint = 1200;
+  private cursorHandler?: CursorHandler;
   private victoryCheckInterval?: number;
 
   probableWaffleScene?: ProbableWaffleScene;
@@ -119,19 +134,32 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
 
     new HudGameState(this, this.probableWaffleScene!);
     new HudElementVisibilityHandler(this, this.hudElements);
+    this.cursorHandler = new CursorHandler(this);
     this.sceneGameData.components.push(
       new MultiSelectionHandler(this, this.probableWaffleScene!),
-      new CursorHandler(this)
+      this.cursorHandler
     );
 
     this.minimap_container.initializeWithParentScene(this.probableWaffleScene!, this);
 
     this.hudMessages.setup(this.probableWaffleScene!);
+
+    this.idleWorkersButton.setup(this.probableWaffleScene!);
+
+    // Initialize cursor handler with main scene for hover detection
+    if (this.probableWaffleScene && this.cursorHandler) {
+      this.cursorHandler.initializeWithMainScene(this.probableWaffleScene);
+    }
   }
 
   initializeWithParentScene(probableWaffleScene: ProbableWaffleScene) {
     this.probableWaffleScene = probableWaffleScene;
     this.subscribeToSaveGameEvent();
+
+    // Initialize cursor handler with main scene if it was created before the parent scene was set
+    if (this.cursorHandler) {
+      this.cursorHandler.initializeWithMainScene(probableWaffleScene);
+    }
     this.startVictoryCheck();
   }
 
@@ -202,8 +230,18 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
         this.gameType === ProbableWaffleGameInstanceType.Skirmish) &&
       sceneWidth > this.minimap_container.minimapHideBreakpoint;
 
+    // position idle workers button below game speed modifier on left side
+    this.idleWorkersButton.x = 10;
+    this.idleWorkersButton.y = this.gameSpeedModifier.y + 40;
+    this.idleWorkersButton.scale = sceneWidth > this.actorInfoSmallScreenBreakpoint ? 1 : 0.7;
+    this.idleWorkersButton.visible = sceneWidth > this.minimap_container.minimapHideBreakpoint;
+
     // redraw minimap
     this.minimap_container.redrawMinimap();
+
+    // position confirmation dialog in center of screen
+    this.confirmationDialog.x = this.scale.width / 2;
+    this.confirmationDialog.y = this.scale.height / 2;
   }
 
   private get gameType() {
@@ -243,7 +281,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
 
   private checkForVictory() {
     if (!this.probableWaffleScene) return;
-    
+
     // Don't check for victory in replay mode
     const isReplay = this.probableWaffleScene.baseGameData.gameInstance.gameInstanceMetadata.isReplay();
     if (isReplay) return;

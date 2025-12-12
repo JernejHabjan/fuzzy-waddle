@@ -44,16 +44,20 @@ export const templeDefinition = {
     },
     health: {
       physicalState: ActorPhysicalType.Structural,
-      maxHealth: 100
+      maxHealth: 200,
+      maxArmour: 200
     },
     productionCost: {
       resources: {
-        [ResourceType.Wood]: 10,
-        [ResourceType.Minerals]: 10
+        [ResourceType.Wood]: 150,
+        [ResourceType.Minerals]: 50
       },
       refundFactor: 0.5,
-      productionTime: 5000,
+      productionTime: 30000,
       costType: PaymentType.PayImmediately
+    },
+    buildingPrerequisites: {
+      requiresAnyOf: [ObjectNames.AnkGuard]
     },
     requirements: {
       actors: [ObjectNames.AnkGuard]

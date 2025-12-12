@@ -199,10 +199,11 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
     this.visibilityChanged.next(producingActors > 0);
   }
 
-  setLabelsForDisplayingActors(selectedActors: Phaser.GameObjects.GameObject[]) {
+  setLabelsForDisplayingActors(selectedActors: Phaser.GameObjects.GameObject[], highlightActors?: Phaser.GameObjects.GameObject[]) {
     this.icons.forEach((icon, index) => {
       if (index >= selectedActors.length) {
         icon.visible = false;
+        icon.setHighlight(false);
         return;
       }
       const actor = selectedActors[index];
@@ -221,6 +222,14 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
         infoComponent.smallImage.origin
       );
       icon.visible = true;
+      
+      // Set highlight if this actor is in the highlight list
+      if (highlightActors) {
+        const isHighlighted = highlightActors.includes(actor);
+        icon.setHighlight(isHighlighted);
+      } else {
+        icon.setHighlight(false);
+      }
     });
 
     this.visibilityChanged.next(selectedActors.length > 0);

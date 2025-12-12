@@ -29,7 +29,6 @@ export default class Resource extends Phaser.GameObjects.Container {
 
     /* START-USER-CTR-CODE */
     this.player = getPlayer(scene, getCurrentPlayerNumber(scene));
-    this.listenToResourceChanged();
     this.scene.events.once(Phaser.Scenes.Events.CREATE, this.init);
     /* END-USER-CTR-CODE */
   }
@@ -37,6 +36,7 @@ export default class Resource extends Phaser.GameObjects.Container {
   private resource_text: Phaser.GameObjects.Text;
   public resource_icon: Phaser.GameObjects.Image;
   public override type: "wood" | "stone" | "minerals" | "housing" | "" = "";
+  public static = false;
 
   /* START-USER-CODE */
   private readonly player: ProbableWafflePlayer | undefined;
@@ -45,15 +45,25 @@ export default class Resource extends Phaser.GameObjects.Container {
 
   private init = () => {
     this.assignResourceText();
+    this.listenToResourceChanged();
   };
 
   private listenToResourceChanged() {
+    if (this.static) return;
     this.resourceChangedSubscription = listenToPlayerChangedChanged(this.scene, "resource.")?.subscribe(
       this.assignResourceText
     );
     this.housingChangedSubscription = listenToPlayerChangedChanged(this.scene, "housing.")?.subscribe(
       this.assignResourceText
     );
+  }
+
+  setText(text: string) {
+    this.resource_text.text = text;
+  }
+
+  setTextColor(color: string) {
+    this.resource_text.setColor(color);
   }
 
   private getPlayerResource(): string {

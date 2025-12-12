@@ -196,7 +196,7 @@ export class ConstructionSiteComponent {
 
       const canAfford = player.canPayAllResources(productionDefinition.resources);
       if (canAfford) {
-        emitResource(this.gameObject.scene, "resource.removed", productionDefinition.resources);
+        emitResource(this.gameObject.scene, "resource.removed", productionDefinition.resources, owner);
       } else {
         throw new Error("Cannot afford building costs");
       }
@@ -238,7 +238,9 @@ export class ConstructionSiteComponent {
       refundCosts[key as ResourceType] = Math.floor(value * actualRefundFactor);
     });
 
-    emitResource(this.gameObject.scene, "resource.added", refundCosts);
+    const ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
+    const owner = ownerComponent?.getOwner();
+    emitResource(this.gameObject.scene, "resource.added", refundCosts, owner);
 
     // stop action on builders
     this.assignedBuilders.forEach((builder) => {

@@ -1,5 +1,6 @@
 import { Blackboard } from "../../ai/blackboard";
 import { OrderData } from "../../ai/OrderData";
+import { Subject } from "rxjs";
 
 export class PawnAiBlackboard extends Blackboard {
   private orderQueue: OrderData[] = [];
@@ -8,6 +9,7 @@ export class PawnAiBlackboard extends Blackboard {
   private status: "idle" | "executing" | "paused" = "idle";
   private failedOrders: OrderData[] = [];
   cancellationHandler?: () => void;
+  currentOrderChanged = new Subject<OrderData | undefined>();
 
   getStatus(): string {
     return this.status;
@@ -41,7 +43,11 @@ export class PawnAiBlackboard extends Blackboard {
   }
 
   setCurrentOrder(order?: OrderData): void {
+    const previous = this.currentOrder;
     this.currentOrder = order;
+    if (previous !== order) {
+      this.currentOrderChanged.next(order);
+    }
   }
 
   resetAll(): void {
@@ -61,7 +67,11 @@ export class PawnAiBlackboard extends Blackboard {
     if (callCancellationHandler) {
       this.cancellationHandler?.();
     }
+    const previous = this.currentOrder;
     this.currentOrder = undefined;
+    if (previous !== undefined) {
+      this.currentOrderChanged.next(undefined);
+    }
   }
 
   remember<T>(key: string, value: T): void {
@@ -110,7 +120,7 @@ export class PawnAiBlackboard extends Blackboard {
       );
     }
     if (data.currentOrder) {
-      this.currentOrder = OrderData.mapFromRecordToOrderDataClass(data.currentOrder, scene);
+      this.setCurrentOrder(OrderData.mapFromRecordToOrderDataClass(data.currentOrder, scene));
     }
     if (data.memory) {
       this.memory = new Map(Object.entries(data.memory));
