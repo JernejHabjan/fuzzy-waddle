@@ -24,7 +24,7 @@ export const treeDefinitions = {
     },
     resourceSource: {
       resourceType: ResourceType.Wood,
-      maximumResources: 1000,
+      maximumResources: 120,
       gatheringFactor: 10
     },
     audio: {

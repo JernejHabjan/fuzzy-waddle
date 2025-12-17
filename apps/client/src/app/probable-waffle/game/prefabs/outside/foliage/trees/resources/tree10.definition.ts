@@ -7,7 +7,7 @@ export const tree10Definition = {
     ...treeDefinitions.components,
     resourceSource: {
       ...treeDefinitions.components!.resourceSource!,
-      maximumResources: 50
+      maximumResources: 150
     },
     representable: {
       width: 184,
