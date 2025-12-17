@@ -30,7 +30,8 @@ export const wolfDefinition = {
     },
     health: {
       physicalState: ActorPhysicalType.Biological,
-      maxHealth: 100
+      maxHealth: 100,
+      healthDisplayBehavior: "onDamage"
     },
     translatable: {
       tileMoveDuration: 300
