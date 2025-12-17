@@ -37,6 +37,7 @@ export default class Tree11 extends Phaser.GameObjects.Container {
     this.treeBird = treeBird;
 
     /* START-USER-CTR-CODE */
+    this.handleBirdVisibility();
     /* END-USER-CTR-CODE */
   }
 
@@ -44,7 +45,13 @@ export default class Tree11 extends Phaser.GameObjects.Container {
 
   /* START-USER-CODE */
   override name = ObjectNames.Tree11;
-  // Write your code here.
+
+  private handleBirdVisibility() {
+    const randomNum = Phaser.Math.Between(1, 5);
+    if (randomNum !== 1) {
+      this.treeBird.setVisible(false);
+    }
+  }
 
   /* END-USER-CODE */
 }
