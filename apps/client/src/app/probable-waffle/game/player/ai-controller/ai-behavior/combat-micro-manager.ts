@@ -66,34 +66,72 @@ export class CombatMicroManager {
   focusFire(): boolean {
     const now = performance.now();
     if (now - this.lastFocusFireAt < this.focusFireCooldownMs) return false;
+
     const enemies = this.blackboard.visibleEnemies;
-    if (enemies.length === 0) return false;
-    // Choose the lowest health enemy (if health component available) else first
-    let target: GameObject | null = null;
-    let lowestRatio = Infinity;
-    enemies.forEach((e: any) => {
-      const hc = getActorComponent(e, HealthComponent);
-      if (!hc) return;
-      const ratio = hc.healthComponentData.health / (hc.healthDefinition.maxHealth || 1);
-      if (ratio < lowestRatio) {
-        lowestRatio = ratio;
-        target = e;
+    if (enemies.length === 0) {
+      return false;
+    }
+
+    let issuedAttackOrder = false;
+
+    this.blackboard.units.forEach((unit) => {
+      const pawnAi = getActorComponent(unit, PawnAiController);
+      if (!pawnAi) return;
+
+      // Check if current target is still valid to prevent constant switching
+      const currentOrder = pawnAi.blackboard.getCurrentOrder();
+      if (currentOrder?.orderType === OrderType.Attack && currentOrder.data.targetGameObject) {
+        const target = currentOrder.data.targetGameObject;
+        const isTargetStillValid = target.active && enemies.some((e) => e === target);
+        if (isTargetStillValid) {
+          return; // Unit already has a valid attack order, leave it.
+        }
+      }
+
+      // if we don't have a valid target, find the best one for this unit
+      let bestTarget: GameObject | null = null;
+      let maxScore = -Infinity;
+
+      enemies.forEach((enemy) => {
+        const healthComponent = getActorComponent(enemy, HealthComponent);
+        if (!healthComponent) return; // a non-killable target is not a valid target
+
+        const hasAttackComponent = !!getActorComponent(enemy, AttackComponent);
+        const healthRatio =
+          healthComponent.healthComponentData.health / (healthComponent.healthDefinition.maxHealth || 1);
+        const distance = DistanceHelper.getTileDistanceBetweenGameObjects(unit, enemy) ?? 1000;
+
+        // Scoring:
+        // - hasAttackComponent is a huge bonus
+        // - closer is better (for this specific unit)
+        // - lower health is better
+        const score =
+          (hasAttackComponent ? 1000 : 0) + // Priority for threats
+          (100 - distance) * 5 + // Closer targets are much better
+          (1 - healthRatio) * 50; // Low health targets are better
+
+        if (score > maxScore) {
+          maxScore = score;
+          bestTarget = enemy;
+        }
+      });
+
+      if (bestTarget) {
+        // Issue attack order to this unit
+        const order = new OrderData(OrderType.Attack, { targetGameObject: bestTarget });
+        pawnAi.blackboard.overrideOrderQueueAndActiveOrder(order);
+        pawnAi.blackboard.setCurrentOrder(order);
+        issuedAttackOrder = true;
       }
     });
-    if (!target && enemies.length) {
-      target = enemies[0] ?? null;
+
+    if (issuedAttackOrder) {
+      this.lastFocusFireAt = now;
+      this.log("Focus fire issued to available units.");
+      return true;
     }
-    if (!target) return false;
-    this.blackboard.units.forEach((u) => {
-      const pawnAi = getActorComponent(u, PawnAiController);
-      if (!pawnAi) return;
-      const order = new OrderData(OrderType.Attack, { targetGameObject: target! });
-      pawnAi.blackboard.overrideOrderQueueAndActiveOrder(order);
-      pawnAi.blackboard.setCurrentOrder(order);
-    });
-    this.lastFocusFireAt = now;
-    this.log("Focus fire issued.");
-    return true;
+
+    return false;
   }
 
   flankEnemy(): boolean {
