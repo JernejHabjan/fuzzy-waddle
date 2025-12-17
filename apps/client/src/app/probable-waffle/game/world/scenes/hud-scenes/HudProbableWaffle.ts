@@ -12,8 +12,6 @@ import GameSpeedModifier from "../../../prefabs/gui/buttons/GameSpeedModifier";
 import HudMessages from "../../../prefabs/gui/labels/HudMessages";
 import GroupContainer from "../../../prefabs/gui/labels/GroupContainer";
 import IdleWorkersButton from "../../../prefabs/gui/buttons/IdleWorkersButton";
-import ConfirmationDialog from "../../../prefabs/gui/dialogs/ConfirmationDialog";
-import SurrenderDialog from "../../../prefabs/gui/SurrenderDialog";
 /* START-USER-IMPORTS */
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { HudGameState } from "../../../hud/hud-game-state";
@@ -24,9 +22,12 @@ import { ProbableWaffleGameInstanceType } from "@fuzzy-waddle/api-interfaces";
 import { getGameObjectBounds } from "../../../data/game-object-helper";
 import { filter, Subscription } from "rxjs";
 import { environment } from "../../../../../../environments/environment";
+import ConfirmationDialog from "../../../prefabs/gui/dialogs/ConfirmationDialog";
+import SurrenderDialog from "../../../prefabs/gui/SurrenderDialog";
 /* END-USER-IMPORTS */
 
 export default class HudProbableWaffle extends ProbableWaffleScene {
+
   constructor() {
     super("HudProbableWaffle");
 
@@ -36,6 +37,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   }
 
   editorCreate(): void {
+
     // actor_actions_container
     const actor_actions_container = new ActorActions(this, 1280, 720);
     this.add.existing(actor_actions_container);
@@ -66,26 +68,18 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     const gameSpeedModifier = new GameSpeedModifier(this, 13, 486);
     this.add.existing(gameSpeedModifier);
 
-    // idleWorkersButton
-    const idleWorkersButton = new IdleWorkersButton(this, 13, 516);
-    this.add.existing(idleWorkersButton);
-
     // hudMessages
     const hudMessages = new HudMessages(this, 6, 472);
     this.add.existing(hudMessages);
-    hudMessages.setStyle({});
+    hudMessages.setStyle({  });
 
     // groupContainer
     const groupContainer = new GroupContainer(this, 552, 541);
     this.add.existing(groupContainer);
 
-    // confirmationDialog
-    const confirmationDialog = new ConfirmationDialog(this, 640, 360);
-    this.add.existing(confirmationDialog);
-
-    // surrenderDialog
-    const surrenderDialog = new SurrenderDialog(this, 640, 360);
-    this.add.existing(surrenderDialog);
+    // idleWorkersButton
+    const idleWorkersButton = new IdleWorkersButton(this, 13, 520);
+    this.add.existing(idleWorkersButton);
 
     // lists
     const hudElements: Array<any> = [];
@@ -97,11 +91,9 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.resources_container = resources_container;
     this.aiControllerDebugPanel = aiControllerDebugPanel;
     this.gameSpeedModifier = gameSpeedModifier;
-    this.idleWorkersButton = idleWorkersButton;
     this.hudMessages = hudMessages;
     this.groupContainer = groupContainer;
-    this.confirmationDialog = confirmationDialog;
-    this.surrenderDialog = surrenderDialog;
+    this.idleWorkersButton = idleWorkersButton;
     this.hudElements = hudElements;
 
     this.events.emit("scene-awake");
@@ -114,14 +106,14 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   private resources_container!: Resources;
   private aiControllerDebugPanel!: AiControllerDebugPanel;
   private gameSpeedModifier!: GameSpeedModifier;
-  private idleWorkersButton!: IdleWorkersButton;
   private hudMessages!: HudMessages;
   private groupContainer!: GroupContainer;
-  public confirmationDialog!: ConfirmationDialog;
-  public surrenderDialog!: SurrenderDialog;
+  private idleWorkersButton!: IdleWorkersButton;
   private hudElements!: Array<any>;
 
   /* START-USER-CODE */
+  public confirmationDialog!: ConfirmationDialog;
+  public surrenderDialog!: SurrenderDialog;
   private saveGameSubscription?: Subscription;
   private readonly actorInfoSmallScreenBreakpoint = 1200;
   private cursorHandler?: CursorHandler;
@@ -133,6 +125,12 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
 
   override create() {
     this.editorCreate();
+
+    this.confirmationDialog = new ConfirmationDialog(this, 640, 360);
+    this.add.existing(this.confirmationDialog);
+
+    this.surrenderDialog = new SurrenderDialog(this, 640, 360);
+    this.add.existing(this.surrenderDialog);
 
     // resize the scene to match the screen size
     this.scale.on("resize", this.resize, this);

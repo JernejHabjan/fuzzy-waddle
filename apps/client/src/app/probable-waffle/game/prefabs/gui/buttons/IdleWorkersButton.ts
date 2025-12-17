@@ -21,64 +21,75 @@ import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 /* END-USER-IMPORTS */
 
 export default class IdleWorkersButton extends Phaser.GameObjects.Container {
-  constructor(scene: Phaser.Scene, x?: number, y?: number) {
-    super(scene, x ?? 0, y ?? 0);
 
-    // button_container
-    const button_container = scene.add.container(20, 15);
-    button_container.setInteractive(
-      new Phaser.Geom.Rectangle(-17, -13, 34.60550202698232, 25.429332302435576),
-      Phaser.Geom.Rectangle.Contains
-    );
-    this.add(button_container);
+	constructor(scene: Phaser.Scene, x?: number, y?: number) {
+		super(scene, x ?? 0, y ?? 0);
 
-    // button_bg
-    const button_bg = scene.add.nineslice(0, 0, "gui", "cryos_mini_gui/buttons/button_small.png", 20, 20, 3, 3, 3, 3);
-    button_bg.scaleX = 2.0762647352357817;
-    button_bg.scaleY = 1.5492262688240692;
-    button_container.add(button_bg);
+		this.setInteractive(new Phaser.Geom.Rectangle(4, 2, 34.60550202698232, 25.429332302435576), Phaser.Geom.Rectangle.Contains);
 
-    // button_text
-    const button_text = scene.add.text(0, -1, "", {});
-    button_text.setOrigin(0.5, 0.5);
-    button_text.text = "0";
-    button_text.setStyle({ color: "#000000ff", fontFamily: "disposabledroid", fontSize: "22px", resolution: 10 });
-    button_container.add(button_text);
+		// game_action_bg
+		const game_action_bg = scene.add.nineslice(21, 15, "gui", "cryos_mini_gui/buttons/button_small.png", 20, 20, 3, 3, 3, 3);
+		game_action_bg.scaleX = 2.0762647352357817;
+		game_action_bg.scaleY = 1.5492262688240692;
+		this.add(game_action_bg);
 
-    // onPointerUpScript
-    const onPointerUpScript = new OnPointerUpScript(button_container);
+		// button_text
+		const button_text = scene.add.text(21, 14, "", {});
+		button_text.setOrigin(0.5, 0.5);
+		button_text.text = "1";
+		button_text.setStyle({ "color": "#000000ff", "fontFamily": "disposabledroid", "fontSize": "22px", "resolution": 10 });
+		this.add(button_text);
 
-    // emitAction
-    const emitAction = new EmitEventActionScript(onPointerUpScript);
+		// button_text_1
+		const button_text_1 = scene.add.text(30, 2, "", {});
+		button_text_1.setOrigin(0.5, 0.5);
+		button_text_1.text = "z";
+		button_text_1.setStyle({ "color": "#000000ff", "fontFamily": "disposabledroid", "fontSize": "18px", "stroke": "#ffffffff", "shadow.offsetX": 1, "shadow.offsetY": 1, "shadow.color": "#000000ff", "resolution": 10 });
+		this.add(button_text_1);
 
-    // onPointerDownScript
-    const onPointerDownScript = new OnPointerDownScript(button_container);
+		// button_text_2
+		const button_text_2 = scene.add.text(37, -2, "", {});
+		button_text_2.setOrigin(0.5, 0.5);
+		button_text_2.text = "z";
+		button_text_2.setStyle({ "color": "#000000ff", "fontFamily": "disposabledroid", "stroke": "#ffffffff", "shadow.offsetX": 1, "shadow.offsetY": 1, "shadow.color": "#000000ff", "resolution": 10 });
+		this.add(button_text_2);
 
-    // action_click
-    new PushActionScript(onPointerDownScript);
+		// onPointerUpScript_menu_9
+		const onPointerUpScript_menu_9 = new OnPointerUpScript(this);
 
-    // emitAction (prefab fields)
-    emitAction.eventName = "action";
+		// emitActorAction
+		const emitActorAction = new EmitEventActionScript(onPointerUpScript_menu_9);
 
-    this.button_container = button_container;
-    this.button_bg = button_bg;
-    this.button_text = button_text;
+		// onPointerDownScript
+		const onPointerDownScript = new OnPointerDownScript(this);
 
-    /* START-USER-CTR-CODE */
+		// action_click
+		new PushActionScript(onPointerDownScript);
+
+		// button_text_3
+		const button_text_3 = scene.add.text(44, -5, "", {});
+		button_text_3.setOrigin(0.5, 0.5);
+		button_text_3.text = "z";
+		button_text_3.setStyle({ "color": "#000000ff", "fontFamily": "disposabledroid", "fontSize": "14px", "stroke": "#ffffffff", "shadow.offsetX": 1, "shadow.offsetY": 1, "shadow.color": "#000000ff", "resolution": 10 });
+		this.add(button_text_3);
+
+		// emitActorAction (prefab fields)
+		emitActorAction.eventName = "action";
+
+		this.button_text = button_text;
+
+		/* START-USER-CTR-CODE */
     this.scene.events.on(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
 
-    // Listen for click events
-    this.button_container.on("action", () => {
+    this.on("action", () => {
       this.selectFirstIdleWorker();
     });
     /* END-USER-CTR-CODE */
-  }
+	}
 
-  private button_container: Phaser.GameObjects.Container;
-  private button_bg: Phaser.GameObjects.NineSlice;
-  private button_text: Phaser.GameObjects.Text;
+	private button_text: Phaser.GameObjects.Text;
 
-  /* START-USER-CODE */
+	/* START-USER-CODE */
   private mainSceneWithActors?: ProbableWaffleScene;
   private updateInterval?: Phaser.Time.TimerEvent;
 
@@ -135,11 +146,11 @@ export default class IdleWorkersButton extends Phaser.GameObjects.Container {
 
     // Enable/disable button based on count
     if (count > 0) {
-      this.button_container.setAlpha(1);
-      this.button_container.setInteractive();
+      this.setAlpha(1);
+      this.setInteractive();
     } else {
-      this.button_container.setAlpha(0.5);
-      this.button_container.removeInteractive();
+      this.setAlpha(0.5);
+      this.removeInteractive();
     }
   }
 
@@ -159,7 +170,7 @@ export default class IdleWorkersButton extends Phaser.GameObjects.Container {
 
   override destroy() {
     super.destroy();
-    this.button_container.removeAllListeners();
+    this.removeAllListeners();
     if (this.updateInterval) {
       this.updateInterval.destroy();
     }
