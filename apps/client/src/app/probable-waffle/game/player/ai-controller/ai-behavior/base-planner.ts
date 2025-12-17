@@ -233,7 +233,7 @@ export class BasePlanner {
     this.buildingNeeds = [];
 
     // Housing pressure
-    if (blackboard.housingCapacity <= blackboard.units.length + 3) {
+    if (blackboard.production.supply.max <= blackboard.units.length + 3) {
       this.buildingNeeds.push({
         type: NeedType.Housing,
         reason: "Low housing buffer",
@@ -285,13 +285,13 @@ export class BasePlanner {
 
     switch (needType) {
       case NeedType.Housing:
-        candidates = techTree.getHousingBuildings(this.factionType);
+        candidates = techTree.getHousingBuildingsExcludingMain(this.factionType);
         break;
       case NeedType.Production:
-        candidates = techTree.getProductionBuildings(this.factionType);
+        candidates = techTree.getProductionBuildingsExcludingMain(this.factionType);
         break;
       case NeedType.Defense:
-        candidates = techTree.getDefensiveBuildings(this.factionType);
+        candidates = techTree.getDefensiveBuildingsExcludingMain(this.factionType);
         break;
     }
 

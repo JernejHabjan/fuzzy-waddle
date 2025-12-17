@@ -1,100 +1,133 @@
 import { State } from "mistreevous";
-import { ObjectNames, ProbableWafflePlayer } from "@fuzzy-waddle/api-interfaces";
+import { FactionType, ObjectNames, ProbableWafflePlayer } from "@fuzzy-waddle/api-interfaces";
 import { PlayerAiBlackboard } from "../player-ai-blackboard";
 import { getActorComponent } from "../../../data/actor-component";
 import { ProductionComponent } from "../../../entity/components/production/production-component";
 import { pwActorDefinitions } from "../../../prefabs/definitions/actor-definitions";
 import { getCostForObjectName } from "../../../entity/components/production/cost-utils";
 import { ProductionValidator } from "../../../data/tech-tree/production-validator";
+import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
+import { getSceneService } from "../../../world/services/scene-component-helpers";
+import { AI_CONFIG } from "../ai-config";
+import { FlyingComponent } from "../../../entity/components/movement/flying-component";
 
 /**
  * ForceMaintenanceManager
- * - Decides whether to queue more military units (simple heuristic for now).
- * - Handles cooldown + resource checks.
- * - Kept separate to isolate production logic away from the agent.
+ * - Decides whether to queue more military units.
+ * - Selects appropriate units (melee/ranged) based on enemy threats.
+ * - Handles cooldown, resource checks, and production validation.
  */
 export class ForceMaintenanceManager {
   private lastUnitQueueTime = 0;
-  private readonly unitQueueCooldownMs = 5000;
 
   constructor(
-    // scene currently unused but kept to match existing agent instantiation (future pathing / rally logic)
     private readonly scene: Phaser.Scene,
     private readonly player: ProbableWafflePlayer,
     private readonly blackboard: PlayerAiBlackboard,
     private readonly log: (...args: any[]) => void,
-    private readonly productionValidator: ProductionValidator = new ProductionValidator(scene, player, blackboard)
+    private readonly productionValidator: ProductionValidator
   ) {}
 
   shouldProduceMilitaryUnit(): boolean {
     const target =
-      this.blackboard.currentStrategy === "aggressive" ? 12 : this.blackboard.currentStrategy === "defensive" ? 8 : 6;
-    const now = Date.now();
-    if (now - this.lastUnitQueueTime < this.unitQueueCooldownMs) return false;
+      this.blackboard.currentStrategy === "aggressive"
+        ? AI_CONFIG.militaryUnitTargetAggressive
+        : this.blackboard.currentStrategy === "defensive"
+          ? AI_CONFIG.militaryUnitTargetDefensive
+          : AI_CONFIG.militaryUnitTargetEconomic;
+    const now = performance.now();
+    if (now - this.lastUnitQueueTime < AI_CONFIG.unitQueueCooldownMs) return false;
     return this.blackboard.units.length < target;
   }
 
   hasResourcesForQueuedUnit(): boolean {
-    // Per-Definition Supply Costing Integration: use first viable preferred unit cost
-    const preferred: ObjectNames[] = [ObjectNames.SkaduweeWarriorMale, ObjectNames.TivaraMacemanMale].filter(
-      Boolean
-    ) as ObjectNames[];
-    for (const unit of preferred) {
-      const cost = getCostForObjectName(unit);
-      if (!cost) continue;
-      if (this.blackboard.hasAtLeastResources(cost)) return true;
-    }
-    return false;
+    // A simple check to see if we have enough for a basic unit.
+    // The main queueing logic does a more specific check.
+    return this.blackboard.getTotalResources() >= AI_CONFIG.hasEnoughResourcesForMilitaryUnitThreshold;
+  }
+
+  isSupplyCapped(): boolean {
+    return this.blackboard.production.supply.used >= this.blackboard.production.supply.max;
   }
 
   queueMilitaryUnitProduction(): State {
-    const now = Date.now();
+    const now = performance.now();
     if (!this.hasResourcesForQueuedUnit()) return State.FAILED;
 
-    const trainingBuildings = this.blackboard.trainingBuildings;
-    if (!trainingBuildings || trainingBuildings.length === 0) return State.FAILED;
-
-    const building = trainingBuildings.find((b) => {
+    const buildings = this.blackboard.trainingBuildings.filter((b) => {
       const prod = getActorComponent(b, ProductionComponent);
-      return prod && prod.isIdle;
+      return prod?.isIdle;
     });
-    if (!building) return State.FAILED;
+    if (!buildings.length) return State.FAILED;
 
-    const prod = getActorComponent(building, ProductionComponent);
-    if (!prod) return State.FAILED;
+    let productionComponent: ProductionComponent | null = null;
+    let pickedUnitName: ObjectNames | null = null;
+    let productionCost = null;
 
-    // Choose first available warrior definition (fallback chain)
-    const preferred: ObjectNames[] = [ObjectNames.SkaduweeWarriorMale, ObjectNames.TivaraMacemanMale].filter(Boolean);
+    for (const building of buildings) {
+      const prod = getActorComponent(building, ProductionComponent);
+      if (!prod) continue;
 
-    let unitName: ObjectNames | null = null;
-    for (const candidate of preferred) {
-      if (candidate && pwActorDefinitions[candidate]) {
-        unitName = candidate;
+      const availableUnits = prod.productionDefinition.availableProduceActors as ObjectNames[];
+      if (availableUnits.length === 0) continue;
+
+      const techTree = getSceneService(this.scene, TechTreeService);
+      if (!techTree) continue;
+
+      const enemyHasFlight = this.blackboard.visibleEnemies.some((enemy) => getActorComponent(enemy, FlyingComponent));
+      const faction = this.player.factionType ?? FactionType.Tivara;
+
+      let preferredUnits: ObjectNames[];
+      if (enemyHasFlight) {
+        this.log("Enemy has flying units, prioritizing ranged units.");
+        preferredUnits = techTree.getRangedInfantryUnits(faction, availableUnits);
+        // Fallback to melee if no ranged are available from this building
+        if (preferredUnits.length === 0) {
+          preferredUnits = techTree.getMeleeInfantryUnits(faction, availableUnits);
+        }
+      } else {
+        preferredUnits = techTree.getMeleeInfantryUnits(faction, availableUnits);
+        // Fallback to ranged if no melee are available
+        if (preferredUnits.length === 0) {
+          preferredUnits = techTree.getRangedInfantryUnits(faction, availableUnits);
+        }
+      }
+
+      if (preferredUnits.length === 0) continue;
+
+      for (const unitName of preferredUnits) {
+        const validation = this.productionValidator.validate(unitName);
+        if (!validation.canQueue) {
+          if (validation.prereqs.length > 0) {
+            this.productionValidator.schedulePrerequisites(validation.prereqs, unitName);
+          }
+          continue;
+        }
+
+        const cost = getCostForObjectName(unitName);
+        if (!cost || !this.blackboard.hasAtLeastResources(cost)) {
+          continue;
+        }
+
+        const def = pwActorDefinitions[unitName];
+        if (!def?.components?.productionCost) continue;
+
+        productionComponent = prod;
+        productionCost = def.components.productionCost;
+        pickedUnitName = unitName;
         break;
       }
     }
-    if (!unitName) return State.FAILED;
 
-    // Centralized validation (now uses injected productionValidator)
-    const val = this.productionValidator.validate(unitName);
-    if (!val.canQueue) {
-      if (val.techBlocked && val.prereqs.length > 0) {
-        this.productionValidator.schedulePrerequisites(val.prereqs, unitName);
-      }
-      return State.FAILED;
-    }
+    if (!productionComponent || productionCost === null || pickedUnitName === null) return State.FAILED;
 
-    const def = pwActorDefinitions[unitName];
-    if (!def?.components?.productionCost) return State.FAILED;
-    const costResources = def.components.productionCost.resources; // dynamic cost capture
-
-    prod.startProduction({
-      actorName: unitName,
-      costData: def.components.productionCost
+    productionComponent.startProduction({
+      actorName: pickedUnitName,
+      costData: productionCost
     });
 
     this.lastUnitQueueTime = now;
-    this.log("Queued military unit production:", unitName);
+    this.log(`Queued military unit production: ${pickedUnitName}`);
     return State.SUCCEEDED;
   }
 }

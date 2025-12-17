@@ -36,7 +36,8 @@ export class CombatMicroManager {
     if (enemies.length === 0) return false;
     for (const u of this.blackboard.units) {
       for (const e of enemies) {
-        const d = DistanceHelper.getTileDistanceBetweenGameObjects(u, e as GameObject);
+        if (!e.active || !e.scene) continue;
+        const d = DistanceHelper.getTileDistanceBetweenGameObjects(u, e);
         if (d !== null && d <= 8) return true;
       }
     }
@@ -54,7 +55,8 @@ export class CombatMicroManager {
       const attack = getActorComponent(u, AttackComponent);
       if (!attack) continue;
       for (const e of enemies) {
-        const d = DistanceHelper.getTileDistanceBetweenGameObjects(u, e as GameObject);
+        if (!e.active || !e.scene) continue;
+        const d = DistanceHelper.getTileDistanceBetweenGameObjects(u, e);
         if (d !== null && d <= 8 /* coarse fallback range */) return true;
       }
     }
@@ -66,7 +68,7 @@ export class CombatMicroManager {
     if (now - this.lastFocusFireAt < this.focusFireCooldownMs) return false;
     const enemies = this.blackboard.visibleEnemies;
     if (enemies.length === 0) return false;
-    // Choose lowest health enemy (if health component available) else first
+    // Choose the lowest health enemy (if health component available) else first
     let target: GameObject | null = null;
     let lowestRatio = Infinity;
     enemies.forEach((e: any) => {

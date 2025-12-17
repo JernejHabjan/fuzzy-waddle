@@ -29,9 +29,9 @@ describe("ToastService", () => {
       .pipe(skip(1))
       .subscribe((toasts) => {
         expect(toasts.length).toBe(1);
-        expect(toasts[0].header).toBe("Test Header");
-        expect(toasts[0].body).toBe("Test Body");
-        expect(toasts[0].type).toBe("info");
+        expect(toasts[0]!.header).toBe("Test Header");
+        expect(toasts[0]!.body).toBe("Test Body");
+        expect(toasts[0]!.type).toBe("info");
         done();
       });
 
@@ -49,7 +49,7 @@ describe("ToastService", () => {
       }
       // Second emission should have 1 toast
       else if (toasts.length === 1) {
-        const toastId = toasts[0].id;
+        const toastId = toasts[0]!.id;
         service.remove(toastId);
       }
       // Third emission should have 0 toasts again
@@ -89,7 +89,7 @@ describe("ToastService", () => {
       .pipe(skip(1))
       .subscribe((toasts) => {
         expect(toasts.length).toBe(1);
-        expect(toasts[0].type).toBe("success");
+        expect(toasts[0]!.type).toBe("success");
         done();
       });
 
@@ -102,7 +102,7 @@ describe("ToastService", () => {
       .pipe(skip(1))
       .subscribe((toasts) => {
         expect(toasts.length).toBe(1);
-        expect(toasts[0].type).toBe("warning");
+        expect(toasts[0]!.type).toBe("warning");
         done();
       });
 
@@ -115,7 +115,7 @@ describe("ToastService", () => {
       .pipe(skip(1))
       .subscribe((toasts) => {
         expect(toasts.length).toBe(1);
-        expect(toasts[0].type).toBe("danger");
+        expect(toasts[0]!.type).toBe("danger");
         done();
       });
 
@@ -128,7 +128,7 @@ describe("ToastService", () => {
       .pipe(skip(1))
       .subscribe((toasts) => {
         expect(toasts.length).toBe(1);
-        expect(toasts[0].type).toBe("info");
+        expect(toasts[0]!.type).toBe("info");
         done();
       });
 

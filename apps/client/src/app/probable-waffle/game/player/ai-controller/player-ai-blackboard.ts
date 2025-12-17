@@ -1,11 +1,5 @@
 import { Blackboard } from "../../ai/blackboard";
-import {
-  ObjectNames,
-  type PlayerStateHousing,
-  ResourceType,
-  type Vector2Simple,
-  type Vector3Simple
-} from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames, ResourceType, type Vector2Simple, type Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import type { MapAnalysis } from "./ai-behavior/map-analyzer";
 import { ReservationPool } from "./resource-reservations";
 import GameObject = Phaser.GameObjects.GameObject;
@@ -13,16 +7,10 @@ import GameObject = Phaser.GameObjects.GameObject;
 export class PlayerAiBlackboard extends Blackboard {
   constructor(
     public resources: Record<ResourceType, number> = {
-      // todo this is not updated from world yet
-      ambrosia: 1000,
-      minerals: 1000,
-      stone: 1000,
-      wood: 1000
-    },
-    public housing: PlayerStateHousing = {
-      // todo this is not updated from world yet
-      currentHousing: 0,
-      maxHousing: 1000
+      ambrosia: 0,
+      minerals: 0,
+      stone: 0,
+      wood: 0
     },
     public units: Phaser.GameObjects.GameObject[] = [],
     public workers: Phaser.GameObjects.GameObject[] = [],
@@ -37,7 +25,6 @@ export class PlayerAiBlackboard extends Blackboard {
     public defensiveStructures: any[] = [], // Defensive buildings like towers, walls, etc.
     public desiredProductionBuildings: number = 5, // Desired number of production buildings
     public desiredDefensiveStructures: number = 3, // Desired number of defensive buildings
-    public housingCapacity: number = 0, // Total housing capacity for the player's units
     public baseSize: number = 0, // Current size of the player's base (based on expansion)
     public desiredBaseSize: number = 3, // Desired size of the player's base (expansion goal)
     public upgradeBuilding: Phaser.GameObjects.GameObject | null = null, // Building responsible for upgrades (tech or unit)
@@ -59,13 +46,13 @@ export class PlayerAiBlackboard extends Blackboard {
     // Surrender state
     public wantsToSurrender: boolean = false,
     public surrenderOfferedAt: number = 0,
-    public surrenderRejected: boolean = false
+    public surrenderRejected: boolean = false,
     // public nextReservedBuilding?: { name: string; tile: Vector2Simple } // (optional future use)
+    private reservationPool = new ReservationPool()
   ) {
     super();
     this.economy = {
       resources: this.resources,
-      housing: this.housing,
       // Placeholder income/surplus structures (populated via updateFromWorld)
       incomePerSecond: { ambrosia: 0, minerals: 0, stone: 0, wood: 0 },
       lastIncomeSampleAt: 0,
@@ -87,12 +74,10 @@ export class PlayerAiBlackboard extends Blackboard {
       defensiveStructures: this.defensiveStructures,
       desiredProductionBuildings: this.desiredProductionBuildings,
       desiredDefensiveStructures: this.desiredDefensiveStructures,
-      housingCapacity: this.housingCapacity,
       supply: {
         used: 0,
-        max: this.housingCapacity,
-        pendingFromQueued: 0,
-        projectedUsedAt: (horizonMs: number) => 0 // updated later
+        max: 0,
+        pendingFromQueued: 0
       },
       queueSnapshots: [],
       plannedStructures: [], // will be used by later prompts
@@ -157,15 +142,6 @@ export class PlayerAiBlackboard extends Blackboard {
     };
   }
 
-  availableStructures(): Array<any> {
-    // Example: Return available structures that can be built
-    return [
-      { name: "Barracks", cost: 150 },
-      { name: "Farm", cost: 100 },
-      { name: "Tower", cost: 200 }
-    ];
-  }
-
   getMostNeededResource(): { type: ResourceType; amount: number } | null {
     // Example heuristic based on wood only (placeholder)
     // Enhanced: now examines all tracked resources and returns the lowest stock (excluding zero-total case).
@@ -201,9 +177,6 @@ export class PlayerAiBlackboard extends Blackboard {
     return true;
   }
 
-  // Optional storage for debugging adaptive thresholds (not currently populated; reserved for future use)
-  public debugAdaptiveThresholds?: Record<string, number>;
-
   getData(): Record<string, any> {
     throw new Error("Method not implemented.");
   }
@@ -214,7 +187,6 @@ export class PlayerAiBlackboard extends Blackboard {
   // Slices
   public readonly economy!: {
     resources: Record<ResourceType, number>;
-    housing: PlayerStateHousing;
     incomePerSecond: Record<ResourceType, number>;
     lastIncomeSampleAt: number;
     lastIncomeSnapshot: Record<ResourceType, number>;
@@ -227,12 +199,10 @@ export class PlayerAiBlackboard extends Blackboard {
     defensiveStructures: any[];
     desiredProductionBuildings: number;
     desiredDefensiveStructures: number;
-    housingCapacity: number;
     supply: {
       used: number;
       max: number;
       pendingFromQueued: number;
-      projectedUsedAt: (horizonMs: number) => number;
     };
     queueSnapshots: Array<{ at: number; queued: string[] }>;
     plannedStructures: Array<{
@@ -300,14 +270,6 @@ export class PlayerAiBlackboard extends Blackboard {
     telemetry?: any; // appended dynamically
   };
 
-  /** Getter mapping for future pivot; returns current military strength (own). */
-  getMilitaryStrength(): number {
-    return this.militaryStrength;
-  }
-  /** Getter returning enemy strength estimate. */
-  getEnemyStrength(): number {
-    return this.enemyMilitaryStrength;
-  }
   /** Returns ratio (own/enemy) with graceful handling of zero enemy strength. */
   getAttackPowerRatio(now: number = performance.now()): number {
     const cache = this.diagnostics.caches.attackPowerRatio;
@@ -317,16 +279,6 @@ export class PlayerAiBlackboard extends Blackboard {
     cache.value = ratio;
     cache.lastComputedAt = now;
     return ratio;
-  }
-
-  /** Returns a shallow copy of current free (unreserved) resources. */
-  getFreeResources(): Record<ResourceType, number> {
-    const out: Record<ResourceType, number> = { ambrosia: 0, minerals: 0, stone: 0, wood: 0 };
-    for (const k in out) {
-      const r = k as ResourceType;
-      out[r] = (this.resources[r] ?? 0) - (this.economy.reserved[r] ?? 0);
-    }
-    return out;
   }
 
   /** Aggregated income estimate across all resources for a future horizon (ms). Placeholder linear extrapolation. */
@@ -358,104 +310,6 @@ export class PlayerAiBlackboard extends Blackboard {
     this.strategy.modeLockedUntil = now + durationMs;
     // track last shift timestamp in cooldowns (used by agent gating)
     this.cooldowns.strategyShift = now;
-  }
-
-  /** Returns true if strategy shift cooldown is satisfied given interval. */
-  isStrategyCooldownReady(now: number, intervalMs: number): boolean {
-    return now - this.cooldowns.strategyShift >= intervalMs;
-  }
-
-  /** Mark a strategy shift attempt time without locking (used for rejected attempts metrics later). */
-  markStrategyShiftAttempt(now: number): void {
-    // Placeholder for future telemetry; intentionally minimal now.
-    // Could accumulate attempt counts inside diagnostics later.
-  }
-
-  /** Update blackboard slices from a world snapshot. Keeps legacy fields in sync. */
-  updateFromWorld(snapshot: Partial<WorldSnapshot>, now: number): void {
-    // Update primitive canonical fields first.
-    if (snapshot.resources) {
-      for (const k in snapshot.resources) {
-        const r = k as ResourceType;
-        const v = snapshot.resources[r];
-        if (typeof v === "number") this.resources[r] = v;
-      }
-    }
-    if (snapshot.units) this.units = snapshot.units;
-    if (snapshot.workers) this.workers = snapshot.workers;
-    if (typeof snapshot.militaryStrength === "number") this.militaryStrength = snapshot.militaryStrength;
-    if (typeof snapshot.enemyMilitaryStrength === "number") this.enemyMilitaryStrength = snapshot.enemyMilitaryStrength;
-    if (typeof snapshot.housingCapacity === "number") this.housingCapacity = snapshot.housingCapacity;
-    if (snapshot.mapAnalysis !== undefined) this.mapAnalysis = snapshot.mapAnalysis;
-
-    // Economy income sampling (simple delta over time placeholder)
-    if (snapshot.resources) {
-      const econ = this.economy;
-      if (econ.lastIncomeSampleAt > 0) {
-        const dt = (now - econ.lastIncomeSampleAt) / 1000;
-        if (dt > 0) {
-          for (const k in econ.resources) {
-            const r = k as ResourceType;
-            const diff = (econ.resources[r] ?? 0) - (econ.lastIncomeSnapshot[r] ?? 0);
-            econ.incomePerSecond[r] = diff / dt;
-          }
-        }
-      }
-      econ.lastIncomeSampleAt = now;
-      for (const k in econ.resources) {
-        const r = k as ResourceType;
-        econ.lastIncomeSnapshot[r] = econ.resources[r];
-      }
-    }
-
-    // Sync slices to primitives (one-direction for now)
-    Object.assign(this.army, {
-      militaryStrength: this.militaryStrength,
-      enemyMilitaryStrength: this.enemyMilitaryStrength
-    });
-    Object.assign(this.production, {
-      trainingBuildings: this.trainingBuildings,
-      productionBuildings: this.productionBuildings,
-      defensiveStructures: this.defensiveStructures,
-      desiredProductionBuildings: this.desiredProductionBuildings,
-      desiredDefensiveStructures: this.desiredDefensiveStructures,
-      housingCapacity: this.housingCapacity,
-      supply: {
-        ...this.production.supply,
-        max: this.housingCapacity
-      }
-    });
-    Object.assign(this.map, {
-      analysis: this.mapAnalysis,
-      baseCenterTile: this.baseCenterTile,
-      suggestedBuildTiles: this.suggestedBuildTiles
-    });
-    Object.assign(this.strategy, {
-      current: this.currentStrategy,
-      desiredBaseSize: this.desiredBaseSize,
-      baseSize: this.baseSize
-    });
-    Object.assign(this.logistics, {
-      workers: this.workers,
-      activeTechUpgrades: this.activeTechUpgrades,
-      lastTechUpgradeAt: this.lastTechUpgradeAt
-    });
-
-    this.diagnostics.lastUpdateAt = now;
-  }
-
-  //Additional diagnostics & reservation pool fields appended below.
-  private reservationPool = new ReservationPool();
-
-  /** Unified spendable calculation: current free (unreserved) minus prospective cost. */
-  getSpendable(cost: Partial<Record<ResourceType, number>>): boolean {
-    for (const k in cost) {
-      const r = k as ResourceType;
-      const need = cost[r] || 0;
-      const available = (this.resources[r] || 0) - (this.economy.reserved[r] || 0);
-      if (available < need) return false;
-    }
-    return true;
   }
 
   /** Reserve resources for a planned structure; returns token or null if denied. */

@@ -44,6 +44,7 @@ import { SupplyPlanner } from "./ai-behavior/supply-planner";
 import { IsoHelper } from "../../world/tilemap/iso-helper";
 import GameObject = Phaser.GameObjects.GameObject;
 import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
+import { HealthComponent } from "../../entity/components/combat/components/health-component";
 
 export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   private displayDebugInfo = false;
@@ -55,7 +56,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     enter: AI_CONFIG.hysteresisAggressiveEnter,
     exit: AI_CONFIG.hysteresisAggressiveExit
   });
-  private forceMaintenance: ForceMaintenanceManager; // todo use
+  private forceMaintenance: ForceMaintenanceManager;
   private repairManager: RepairManager;
   private logisticsManager: LogisticsManager;
   private techManager: TechProgressManager;
@@ -229,6 +230,11 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       }
     });
 
+    // Update resources and housing from player state (world source of truth)
+    this.blackboard.resources = this.player.getResources();
+    this.blackboard.production.supply.max = this.player.playerState.data.housing.maxHousing;
+    this.blackboard.production.supply.used = this.player.playerState.data.housing.currentHousing;
+
     // Update primary actor lists
     this.blackboard.workers = workers;
     this.blackboard.productionBuildings = production;
@@ -237,15 +243,6 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     this.blackboard.defensiveStructures = defense;
 
     // Calculate housing capacity from housing buildings using tech tree definitions
-    let totalHousingCapacity = 0;
-    if (techTree) {
-      housing.forEach((housingBuilding) => {
-        const actorName = housingBuilding.name as ObjectNames;
-        totalHousingCapacity += pwActorDefinitions[actorName]?.components?.housing?.housingCapacity || 0;
-      });
-    }
-    this.blackboard.housingCapacity = totalHousingCapacity;
-
     // Estimate base size as total building count (production + defense + housing)
     this.blackboard.baseSize = production.length;
 
@@ -259,14 +256,9 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     this.blackboard.production.supply.pendingFromQueued = queued;
 
     // Sync production slice with updated values
-    this.blackboard.production.housingCapacity = this.blackboard.housingCapacity;
     this.blackboard.production.defensiveStructures = defense;
     this.blackboard.production.trainingBuildings = production;
     this.blackboard.production.productionBuildings = production;
-    this.blackboard.production.supply.max = this.blackboard.housingCapacity;
-
-    // Sync economy slice
-    this.blackboard.economy.housing.maxHousing = this.blackboard.housingCapacity;
 
     // Derive enemy visibility & defense assignment
     const enemyCandidates: GameObject[] = [];
@@ -275,8 +267,8 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     const baseCenter = this.blackboard.baseCenterTile;
     allActors.forEach((obj) => {
       if (ownedSet.has(obj)) return;
-      const attack = getActorComponent(obj, AttackComponent); // treat only combative as visible candidate
-      if (!attack) return;
+      const health = getActorComponent(obj, HealthComponent); // treat only combative as visible candidate
+      if (!health) return;
       // Basic visibility heuristic: distance to any unit or base center < visionRadius
       const visionRadius = AI_CONFIG.enemyVisionRadiusTiles;
       let visible = false;
@@ -613,8 +605,12 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     let anyAssigned = false;
     this.blackboard.workers.forEach((worker) => {
       const aiController = getActorComponent(worker, PawnAiController);
-      if (!aiController) return;
-      if (aiController.blackboard.getCurrentOrder()) return; // currently busy
+      if (!aiController) {
+        return;
+      }
+      if (aiController.blackboard.getCurrentOrder()) {
+        return; // currently busy
+      }
       const gathererComponent = getActorComponent(worker, GathererComponent);
       if (!gathererComponent) return;
       const closestResourceSource = gathererComponent.getClosestResourceSource(
@@ -649,7 +645,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   }
 
   NeedMoreHousing() {
-    return this.blackboard.housingCapacity <= this.blackboard.units.length + AI_CONFIG.housingBuffer; // extracted +3 buffer
+    return this.blackboard.production.supply.max <= this.blackboard.units.length + AI_CONFIG.housingBuffer; // extracted +3 buffer
   }
 
   NeedMoreProduction() {
@@ -974,74 +970,16 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     return State.SUCCEEDED;
   }
   ShouldProduceMilitaryUnit(): boolean {
-    // Simple heuristic: produce if below threshold (reuse config militaryPowerDefaultThreshold)
-    return this.blackboard.units.length < this.adaptiveThresholds.getMilitaryPowerThreshold();
+    return this.forceMaintenance.shouldProduceMilitaryUnit();
   }
   HasResourcesForQueuedUnit(): boolean {
-    // Placeholder heuristic: needs at least worker threshold * 2 total resources.
-    return this.blackboard.getTotalResources() >= AI_CONFIG.hasEnoughResourcesForWorkerThreshold * 2;
+    return this.forceMaintenance.hasResourcesForQueuedUnit();
+  }
+  HasSupplyCapacity(): boolean {
+    return !this.forceMaintenance.isSupplyCapped();
   }
   QueueMilitaryUnitProduction(): State {
-    // Find an idle production building
-    const building = this.blackboard.trainingBuildings.find((b) => {
-      const prod = getActorComponent(b, ProductionComponent);
-      return prod?.isIdle;
-    });
-    if (!building) return State.FAILED;
-
-    const prod = getActorComponent(building, ProductionComponent);
-    if (!prod) return State.FAILED;
-
-    // Get available units that this building can produce
-    const availableUnits = prod.productionDefinition.availableProduceActors || [];
-    if (availableUnits.length === 0) return State.FAILED;
-
-    // Filter to units with attack component (military units)
-    const militaryUnits = availableUnits.filter((unitName) => {
-      const def = pwActorDefinitions[unitName as ObjectNames];
-      return def?.components?.attack !== undefined;
-    });
-
-    if (militaryUnits.length === 0) return State.FAILED;
-
-    // Try to queue the first affordable and tech-available military unit
-    for (const unitName of militaryUnits) {
-      const candidate = unitName as ObjectNames;
-
-      // Validate tech and building prerequisites
-      if (this.productionValidator) {
-        const validation = this.productionValidator.validate(candidate);
-        if (!validation.canQueue) {
-          if (validation.prereqs.length > 0) {
-            this.productionValidator.schedulePrerequisites(validation.prereqs, candidate);
-          }
-          continue; // Try next unit
-        }
-      }
-
-      // Check if we have resources
-      const def = pwActorDefinitions[candidate];
-      const costData = def?.components?.productionCost;
-      if (!costData) continue;
-
-      if (!this.blackboard.hasAtLeastResources(costData.resources || {})) {
-        continue; // Try next unit
-      }
-
-      // Queue the production
-      try {
-        prod.startProduction({
-          actorName: candidate,
-          costData
-        });
-        this.logDebugInfo(`Queued military unit production: ${candidate}`);
-        return State.SUCCEEDED;
-      } catch {
-        continue;
-      }
-    }
-
-    return State.FAILED;
+    return this.forceMaintenance.queueMilitaryUnitProduction();
   }
 
   // ================= Surrender Logic =================

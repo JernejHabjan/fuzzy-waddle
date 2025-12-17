@@ -22,6 +22,7 @@ export class TargetingManager {
     const enemies = this.blackboard.visibleEnemies as GameObject[];
     if (!enemies || enemies.length === 0) {
       this.cachedTarget = null;
+      this.blackboard.primaryTarget = null;
       return null;
     }
     const center = this.blackboard.baseCenterTile;

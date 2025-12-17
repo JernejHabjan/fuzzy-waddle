@@ -59,9 +59,7 @@ export class ConstructionSiteComponent {
   public constructionStateChanged: Subject<ConstructionStateEnum> = new Subject<ConstructionStateEnum>();
   private assignedBuilders: GameObject[] = [];
   private assignedRepairers: GameObject[] = [];
-  constructionProgressUiComponent: ConstructionProgressUiComponent = new ConstructionProgressUiComponent(
-    this.gameObject
-  );
+  constructionProgressUiComponent: ConstructionProgressUiComponent;
   private audioService?: AudioService;
   private healthComponent?: HealthComponent;
   private playingBuildSound: boolean = false;
@@ -69,6 +67,7 @@ export class ConstructionSiteComponent {
     private readonly gameObject: GameObject,
     private readonly constructionSiteDefinition: ConstructionSiteDefinition
   ) {
+    this.constructionProgressUiComponent = new ConstructionProgressUiComponent(this.gameObject);
     onObjectReady(gameObject, this.init, this);
     gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
     gameObject.on(Phaser.GameObjects.Events.DESTROY, this.onDestroy, this);

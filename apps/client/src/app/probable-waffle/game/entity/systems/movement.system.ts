@@ -31,14 +31,13 @@ import {
 import { OwnerComponent } from "../components/owner-component";
 import { AnimationActorComponent } from "../components/animation/animation-actor-component";
 import { FlyingComponent } from "../components/movement/flying-component";
-import { WalkableComponent } from "../components/movement/walkable-component";
 import { RepresentableComponent } from "../components/representable-component";
-import Tween = Phaser.Tweens.Tween;
-import GameObject = Phaser.GameObjects.GameObject;
 import { IdComponent } from "../components/id-component";
 import { getTileCoordsUnderObject } from "../../library/tile-under-object";
 import { TilemapComponent } from "../../world/tilemap/tilemap.component";
 import type { IsoDirection } from "../components/movement/iso-directions";
+import Tween = Phaser.Tweens.Tween;
+import GameObject = Phaser.GameObjects.GameObject;
 
 export interface PathMoveConfig {
   radiusTilesAroundDestination?: number;
@@ -128,6 +127,7 @@ export class MovementSystem {
     tileVec3: Vector3Simple,
     pathMoveConfig?: PathMoveConfig
   ): Promise<boolean> {
+    if (!this.gameObject.active || !this.gameObject.scene) return false;
     const flyingComponent = getActorComponent(this.gameObject, FlyingComponent);
     const usePathfinding = !flyingComponent;
     if (!usePathfinding) {

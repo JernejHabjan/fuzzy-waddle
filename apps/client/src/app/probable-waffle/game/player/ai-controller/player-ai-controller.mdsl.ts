@@ -85,6 +85,7 @@ root [MaintainForces] {
     /* Handles continuous unit production (throttled & resource aware). Fails to allow other branches.*/
     fail {
         sequence {
+            condition [HasSupplyCapacity]
             condition [ShouldProduceMilitaryUnit]
             condition [HasIdleProductionBuilding]
             condition [HasResourcesForQueuedUnit]
@@ -188,6 +189,7 @@ root [AssignWorkersToGather] {
 root [TrainWorkers] {
     succeed {
         sequence {
+            condition [HasSupplyCapacity]
             condition [NeedMoreWorkers]
             condition [HasIdleTrainingBuilding]
             condition [HasEnoughResourcesForWorker]

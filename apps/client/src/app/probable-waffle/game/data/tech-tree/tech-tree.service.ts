@@ -203,7 +203,7 @@ export class TechTreeService {
    * Get all housing buildings for a faction.
    * Returns array of ObjectNames that have housing components.
    */
-  getHousingBuildings(faction: FactionType): ObjectNames[] {
+  getHousingBuildingsExcludingMain(faction: FactionType): ObjectNames[] {
     const graph = this.graphs[faction];
     if (!graph) return [];
 
@@ -217,7 +217,7 @@ export class TechTreeService {
   /**
    * Get all defensive buildings (have attack component) for a faction.
    */
-  getDefensiveBuildings(faction: FactionType): ObjectNames[] {
+  getDefensiveBuildingsExcludingMain(faction: FactionType): ObjectNames[] {
     const graph = this.graphs[faction];
     if (!graph) return [];
 
@@ -232,64 +232,55 @@ export class TechTreeService {
   }
 
   /**
-   * Get all worker unit types for a faction.
-   * Workers have gatherer component.
-   */
-  getWorkerUnits(faction: FactionType): ObjectNames[] {
-    const graph = this.graphs[faction];
-    if (!graph) return [];
-
-    return Object.entries(graph.nodes)
-      .filter(([, node]) => node.definition.components?.gatherer !== undefined)
-      .map(([id]) => id as ObjectNames);
-  }
-
-  /**
-   * Get all military units (have attack component, no production).
-   */
-  getMilitaryUnits(faction: FactionType): ObjectNames[] {
-    const graph = this.graphs[faction];
-    if (!graph) return [];
-
-    return Object.entries(graph.nodes)
-      .filter(([, node]) => node.definition.components?.attack !== undefined && !node.definition.components?.production)
-      .map(([id]) => id as ObjectNames);
-  }
-
-  /**
    * Get all ranged units (have attack component with ranged property).
    */
-  getRangedUnits(faction: FactionType): ObjectNames[] {
+  getRangedInfantryUnits(faction: FactionType, filterFrom?: ObjectNames[]): ObjectNames[] {
     const graph = this.graphs[faction];
     if (!graph) return [];
 
-    return Object.entries(graph.nodes)
+    const allRanged = Object.entries(graph.nodes)
       .filter(([, node]) => {
+        const gatherer = node.definition.components?.gatherer;
+        if (gatherer) return false; // Exclude gatherers
         const attack = node.definition.components?.attack;
         return attack && attack.attacks.find((attackData) => attackData.range > 2) !== undefined;
       })
       .map(([id]) => id as ObjectNames);
+
+    if (filterFrom) {
+      const filterSet = new Set(filterFrom);
+      return allRanged.filter((unit) => filterSet.has(unit));
+    }
+    return allRanged;
   }
 
   /**
    * Get all melee units (have attack component with no range or range 0).
    */
-  getMeleeUnits(faction: FactionType): ObjectNames[] {
+  getMeleeInfantryUnits(faction: FactionType, filterFrom?: ObjectNames[]): ObjectNames[] {
     const graph = this.graphs[faction];
     if (!graph) return [];
 
-    return Object.entries(graph.nodes)
+    const allMelee = Object.entries(graph.nodes)
       .filter(([, node]) => {
+        const gatherer = node.definition.components?.gatherer;
+        if (gatherer) return false; // Exclude gatherers
         const attack = node.definition.components?.attack;
         return attack && !attack.attacks.find((attackData) => attackData.range > 2);
       })
       .map(([id]) => id as ObjectNames);
+
+    if (filterFrom) {
+      const filterSet = new Set(filterFrom);
+      return allMelee.filter((unit) => filterSet.has(unit));
+    }
+    return allMelee;
   }
 
   /**
    * Get production buildings (have production component).
    */
-  getProductionBuildings(faction: FactionType): ObjectNames[] {
+  getProductionBuildingsExcludingMain(faction: FactionType): ObjectNames[] {
     const graph = this.graphs[faction];
     if (!graph) return [];
 

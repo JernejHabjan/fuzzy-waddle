@@ -60,18 +60,18 @@ describe("ScoreThroughTimeComponent", () => {
     await gameInstanceService.addAiPlayer();
     await gameInstanceService.addAiPlayer();
     const players = gameInstanceService.gameInstance!.players!;
-    players[0].playerController.data.playerDefinition = {
+    players[0]!.playerController.data.playerDefinition = {
       player: createPlayerLobbyDefinition(1, 1),
       factionType: FactionType.Skaduwee,
       playerType: ProbableWafflePlayerType.AI
     } satisfies PositionPlayerDefinition;
-    players[1].playerController.data.playerDefinition = {
+    players[1]!.playerController.data.playerDefinition = {
       player: createPlayerLobbyDefinition(2, 2),
       factionType: FactionType.Skaduwee,
       playerType: ProbableWafflePlayerType.AI
     } satisfies PositionPlayerDefinition;
 
-    players[0].playerState.data.summary.push(
+    players[0]!.playerState.data.summary.push(
       {
         data: {
           unitName: "test"
@@ -96,7 +96,7 @@ describe("ScoreThroughTimeComponent", () => {
         type: "unit_killed"
       } satisfies PlayerStateActionUnitKilled
     );
-    players[1].playerState.data.summary.push(
+    players[1]!.playerState.data.summary.push(
       {
         data: {
           unitName: "test"
@@ -120,14 +120,14 @@ describe("ScoreThroughTimeComponent", () => {
       } satisfies PlayerStateActionUnitProduced
     );
 
-    players[0].playerState.data.summary.push({
+    players[0]!.playerState.data.summary.push({
       data: {
         buildingName: "test"
       },
       time: 1000,
       type: "building_constructed"
     } satisfies PlayerStateActionBuildingConstructed);
-    players[1].playerState.data.summary.push(
+    players[1]!.playerState.data.summary.push(
       {
         data: {
           buildingName: "test"
