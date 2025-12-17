@@ -45,6 +45,7 @@ import { IsoHelper } from "../../world/tilemap/iso-helper";
 import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import GameObject = Phaser.GameObjects.GameObject;
+import { OwnerComponent } from "../../entity/components/owner-component";
 
 export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   private displayDebugInfo = false;
@@ -270,8 +271,10 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     const baseCenter = this.blackboard.baseCenterTile;
     allActors.forEach((obj) => {
       if (ownedSet.has(obj)) return;
-      const health = getActorComponent(obj, HealthComponent); // treat only combative as visible candidate
+      const health = getActorComponent(obj, HealthComponent);
       if (!health) return;
+      const ownerComponent = getActorComponent(obj, OwnerComponent);
+      if (!ownerComponent) return;
       // Basic visibility heuristic: distance to any unit or base center < visionRadius
       const visionRadius = AI_CONFIG.enemyVisionRadiusTiles;
       let visible = false;
