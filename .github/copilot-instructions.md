@@ -1,16 +1,42 @@
 # Copilot Instructions
 
-## General Guidelines
+## Comment Preservation (Mandatory)
 
-- **Preserve Existing Comments**: When updating code, never remove, overwrite, or substantially alter existing code comments. Comments should be kept intact unless specifically instructed otherwise.
-- **Respect Code Annotations**: Maintain any TODO, FIXME, or other annotated notes in the code.
+- **Do not remove existing comments** under any circumstances.
+- **Do not rewrite, paraphrase, or “clean up” comments**, even if they appear redundant, outdated, or poorly worded.
+- **Do not move comments** unless explicitly instructed.
 
-## Example
+## Comment Integrity
 
-When refactoring or updating code:
-- Existing comments explaining logic, usage, or context must always be kept.
-- If new comments are added, ensure they do not duplicate or contradict existing ones.
+- Preserve all comment types exactly as they are:
+  - Explanatory comments
+  - TODO / FIXME / NOTE / HACK annotations
+  - Inline, block, and file-level comments
+- Maintain original formatting, wording, and placement.
+
+## Adding New Comments
+
+- Add new comments **only when necessary** to explain newly introduced logic.
+- New comments must:
+  - Complement existing comments
+  - Never duplicate, contradict, or override existing explanations
+  - Be clearly distinguishable from existing comments
+
+## Code Changes
+
+- When refactoring or modifying code:
+  - Treat comments as **read-only**.
+  - Adapt code around comments, not the other way around.
+  - If a comment appears incorrect, **do not fix it silently** — flag it explicitly instead.
+
+## Allowed Exceptions
+
+- Modify comments **only if explicitly instructed** to do so.
+- If a comment conflicts with required behavior:
+  - Preserve the comment
+  - Add a new comment explaining the discrepancy
 
 ## Rationale
 
-Comments provide essential context for future development and debugging. Removing them could hinder understanding or maintenance of the codebase.
+Comments are a critical part of the codebase’s knowledge system.  
+They provide historical context, design intent, and debugging clues that must remain intact for future maintainability.
