@@ -44,8 +44,8 @@ import { SupplyPlanner } from "./ai-behavior/supply-planner";
 import { IsoHelper } from "../../world/tilemap/iso-helper";
 import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
-import GameObject = Phaser.GameObjects.GameObject;
 import { OwnerComponent } from "../../entity/components/owner-component";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   private displayDebugInfo = false;
@@ -347,7 +347,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     if (!this.cooldowns.canRun("analyzeMap", now)) return State.FAILED;
     try {
       if (!this.mapAnalyzer) this.mapAnalyzer = new MapAnalyzer(this.scene, this.player.playerNumber!);
-      const result = this.mapAnalyzer.analyzeIfStale(AI_CONFIG.mapAnalysisIntervalMs);
+      const result = await this.mapAnalyzer.analyzeIfStale(AI_CONFIG.mapAnalysisIntervalMs);
       this.blackboard.mapAnalysis = result;
       this.blackboard.baseCenterTile = result.baseCenterTile ?? null;
       this.blackboard.suggestedBuildTiles = result.candidateBuildSpots ?? [];
@@ -457,23 +457,23 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     ); // extracted fallback 300
   }
 
-  AssignWorkersToGather() {
+  async AssignWorkersToGather(): Promise<State> {
     const idleWorkers = this.blackboard.workers.filter((worker) => {
       const gathererComponent = getActorComponent(worker, GathererComponent);
       if (!gathererComponent) return false;
       return !gathererComponent.isGathering;
     });
     if (idleWorkers.length > 0) {
-      idleWorkers.forEach((worker) => {
+      for (const worker of idleWorkers) {
         const gathererComponent = getActorComponent(worker, GathererComponent);
-        if (!gathererComponent) return;
-        const closestResourceSource = gathererComponent.getClosestResourceSource(
+        if (!gathererComponent) continue;
+        const closestResourceSource = await gathererComponent.getClosestResourceSource(
           ResourceType.Wood,
           AI_CONFIG.gatherSearchRadius
         ); // todo hardcoded replaced 100
-        if (!closestResourceSource) return;
+        if (!closestResourceSource) continue;
         gathererComponent.startGatheringResources(closestResourceSource);
-      });
+      }
       this.logDebugInfo("Assigned idle workers to gather resources.");
       return State.SUCCEEDED;
     }
@@ -596,7 +596,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     return currentWorkers < finalTarget;
   }
 
-  ReassignWorkersToResource() {
+  async ReassignWorkersToResource(): Promise<State> {
     const criticalResource = this.blackboard.getMostNeededResource();
     const workers = this.blackboard.workers.filter((worker) => {
       const gathererComponent = getActorComponent(worker, GathererComponent);
@@ -604,44 +604,44 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       return gathererComponent.isGathering;
     });
     if (workers.length > 0 && criticalResource) {
-      workers.forEach((worker) => {
+      for (const worker of workers) {
         const gathererComponent = getActorComponent(worker, GathererComponent);
-        if (!gathererComponent) return;
-        const closestResourceSource = gathererComponent.getClosestResourceSource(
+        if (!gathererComponent) continue;
+        const closestResourceSource = await gathererComponent.getClosestResourceSource(
           criticalResource.type,
           AI_CONFIG.gatherSearchRadius
         ); // replaced 100
-        if (!closestResourceSource) return;
+        if (!closestResourceSource) continue;
         gathererComponent.startGatheringResources(closestResourceSource);
-      });
+      }
       this.logDebugInfo("Reassigned workers to gather the most critical resource.");
       return State.SUCCEEDED;
     }
     return State.FAILED;
   }
 
-  AssignWorkersToResource() {
+  async AssignWorkersToResource(): Promise<State> {
     let anyAssigned = false;
-    this.blackboard.workers.forEach((worker) => {
+    for (const worker of this.blackboard.workers) {
       const aiController = getActorComponent(worker, PawnAiController);
       if (!aiController) {
-        return;
+        continue;
       }
       if (aiController.blackboard.getCurrentOrder()) {
-        return; // currently busy
+        continue; // currently busy
       }
       const gathererComponent = getActorComponent(worker, GathererComponent);
-      if (!gathererComponent) return;
-      const closestResourceSource = gathererComponent.getClosestResourceSource(
+      if (!gathererComponent) continue;
+      const closestResourceSource = await gathererComponent.getClosestResourceSource(
         ResourceType.Wood,
         AI_CONFIG.gatherSearchRadius
       ); // TODO resource targeting logic (replaced 100)
-      if (!closestResourceSource) return;
+      if (!closestResourceSource) continue;
       const newOrder = new OrderData(OrderType.Gather, { targetGameObject: closestResourceSource });
       aiController.blackboard.overrideOrderQueueAndActiveOrder(newOrder);
       aiController.blackboard.setCurrentOrder(newOrder);
       anyAssigned = true;
-    });
+    }
     if (anyAssigned) {
       this.logDebugInfo("Assigned workers to gather the closest resource.");
       return State.SUCCEEDED;
@@ -898,13 +898,13 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   ShouldRebalanceHarvesters(): boolean {
     return this.logisticsManager.shouldRebalance();
   }
-  RebalanceHarvesterAllocation(): State {
+  async RebalanceHarvesterAllocation(): Promise<State> {
     return this.logisticsManager.rebalanceHarvesters();
   }
   StockpileImbalanceDetected(): boolean {
     return this.logisticsManager.stockpileImbalanceDetected();
   }
-  RedirectWorkersToScarceResource(): State {
+  async RedirectWorkersToScarceResource(): Promise<State> {
     return this.logisticsManager.redirectToScarce();
   }
   ShouldPursueNextTech(): boolean {

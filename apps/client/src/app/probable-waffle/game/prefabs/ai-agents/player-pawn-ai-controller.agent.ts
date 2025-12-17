@@ -287,15 +287,15 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
     return await movementSystem.canMoveTo(target, range);
   }
 
-  AcquireNewResourceSource() {
+  async AcquireNewResourceSource() {
     const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
     if (!gathererComponent) return State.FAILED;
-    let resourceSource = gathererComponent.getPreferredResourceSource();
+    let resourceSource = await gathererComponent.getPreferredResourceSource();
     const currentResources = resourceSource?.active
       ? getActorComponent(resourceSource, ResourceSourceComponent)?.getCurrentResources()
       : 0;
     if (!currentResources || currentResources <= 0) {
-      resourceSource = gathererComponent.getNewResourceSource();
+      resourceSource = await gathererComponent.getNewResourceSource();
     }
     if (!resourceSource) return State.FAILED;
     const currentOrder = this.blackboard.getCurrentOrder();
@@ -304,10 +304,10 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
     return State.SUCCEEDED;
   }
 
-  AcquireNewResourceDrain() {
+  async AcquireNewResourceDrain(): Promise<State> {
     const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
     if (!gathererComponent) return State.FAILED;
-    const resourceDrain = gathererComponent.getPreferredResourceDrain();
+    const resourceDrain = await gathererComponent.getPreferredResourceDrain();
     if (!resourceDrain) return State.FAILED;
     const currentOrder = this.blackboard.getCurrentOrder();
     if (!currentOrder) return State.FAILED;
@@ -550,14 +550,14 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
     return gathererComponent.isCapacityFull();
   }
 
-  AssignDropOffResourcesOrder(): State {
+  async AssignDropOffResourcesOrder(): Promise<State> {
     const currentOrder = this.blackboard.getCurrentOrder();
     if (!currentOrder) return State.FAILED;
 
     const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
     if (!gathererComponent) return State.FAILED;
 
-    const preferredResourceDrain = gathererComponent.getPreferredResourceDrain();
+    const preferredResourceDrain = await gathererComponent.getPreferredResourceDrain();
     if (!preferredResourceDrain) return State.FAILED;
 
     currentOrder.orderType = OrderType.ReturnResources;
@@ -565,14 +565,14 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
     return State.SUCCEEDED;
   }
 
-  AssignGatherResourcesOrder(): State {
+  async AssignGatherResourcesOrder(): Promise<State> {
     const currentOrder = this.blackboard.getCurrentOrder();
     if (!currentOrder) return State.FAILED;
 
     const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
     if (!gathererComponent) return State.FAILED;
 
-    const preferredResourceSource = gathererComponent.getPreferredResourceSource();
+    const preferredResourceSource = await gathererComponent.getPreferredResourceSource();
     if (!preferredResourceSource) return State.FAILED;
 
     currentOrder.orderType = OrderType.Gather;

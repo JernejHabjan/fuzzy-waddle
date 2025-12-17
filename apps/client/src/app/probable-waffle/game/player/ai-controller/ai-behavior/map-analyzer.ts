@@ -2,7 +2,6 @@ import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces"
 import { NavigationService } from "../../../world/services/navigation.service";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
-import { PlayerAiBlackboard } from "../player-ai-blackboard";
 import GameObject = Phaser.GameObjects.GameObject;
 
 // Lightweight result of a map analysis pass
@@ -29,27 +28,14 @@ export class MapAnalyzer {
   /**
    * Compute analysis if stale, otherwise return cached.
    */
-  analyzeIfStale(ttlMs: number = 2500): MapAnalysis {
+  async analyzeIfStale(ttlMs: number = 2500): Promise<MapAnalysis> {
     const now = Date.now();
     if (this.lastResult && now - this.lastComputedAt < ttlMs) {
       return this.lastResult;
     }
-    const result = this.computeAnalysis();
+    const result = await this.computeAnalysis();
     this.lastResult = result;
     this.lastComputedAt = now;
-    return result;
-  }
-
-  /**
-   * Convenience: perform analysis (respecting TTL) AND push results into the AI blackboard.
-   * Returns the (possibly cached) MapAnalysis.
-   */
-  analyzeAndUpdateBlackboard(blackboard: PlayerAiBlackboard, ttlMs: number = 2500): MapAnalysis {
-    const result = this.analyzeIfStale(ttlMs);
-    // Write-through to blackboard (centralizes this logic here instead of agent)
-    blackboard.mapAnalysis = result;
-    blackboard.baseCenterTile = result.baseCenterTile ?? null;
-    blackboard.suggestedBuildTiles = result.candidateBuildSpots ?? [];
     return result;
   }
 
@@ -69,7 +55,7 @@ export class MapAnalyzer {
     return Math.max(0, 10 - Math.abs(ideal - d));
   }
 
-  private computeAnalysis(): MapAnalysis {
+  private async computeAnalysis(): Promise<MapAnalysis> {
     const actorIndex = getSceneService(this.scene, ActorIndexSystem);
     const navigation = getSceneService(this.scene, NavigationService);
 
@@ -101,7 +87,7 @@ export class MapAnalyzer {
 
     // 2) Find candidate build spots around base center (walkable, spaced out)
     if (analysis.baseCenterTile) {
-      analysis.candidateBuildSpots = this.sampleCandidateBuildSpots(navigation, analysis.baseCenterTile);
+      analysis.candidateBuildSpots = await this.sampleCandidateBuildSpots(navigation, analysis.baseCenterTile);
     }
 
     return analysis;
@@ -119,11 +105,15 @@ export class MapAnalyzer {
     return { x: Math.round(sum.x / tiles.length), y: Math.round(sum.y / tiles.length), z: 0 };
   }
 
-  private sampleCandidateBuildSpots(navigation: NavigationService, base: Vector3Simple): Vector3Simple[] {
+  private async sampleCandidateBuildSpots(
+    navigation: NavigationService,
+    base: Vector3Simple
+  ): Promise<Vector3Simple[]> {
     const spots: Vector3Simple[] = [];
-    const maxTry = 120; // sampling attempts
-    const radius = 10;
+    const maxTry = 20; // sampling attempts
+    const radius = 20; // todo this must be dynamic based on current base size
     const minSpacing = 3; // tiles between suggested spots
+    const maxSpots = 3;
 
     for (let i = 0; i < maxTry; i++) {
       const tile = navigation.randomTileInRadius(base, radius);
@@ -131,10 +121,23 @@ export class MapAnalyzer {
 
       if (!navigation.isWithinGridBounds(tile) || !navigation.isTileWalkable(tile)) continue;
 
-      // Spacing filter
-      if (spots.some((s) => this.manhattan(s, tile) < minSpacing)) continue;
+      const path = await navigation.findPathBetweenTiles(base, tile);
+      if (!path || !path.length) continue; // too close or unreachable
+      if (path.length > radius) continue; // too far
+
+      // Check spacing from existing spots
+      let tooClose = false;
+      for (const s of spots) {
+        if (this.manhattan(s, tile) < minSpacing) {
+          tooClose = true;
+          break;
+        }
+      }
+      if (tooClose) continue;
+
       spots.push({ x: tile.x, y: tile.y, z: 0 });
-      if (spots.length >= 12) break;
+
+      if (spots.length >= maxSpots) break;
     }
 
     // Sort by score (best first)

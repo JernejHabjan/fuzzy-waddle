@@ -41,21 +41,21 @@ export class LogisticsManager {
     return max / (min || 1) >= this.severeImbalanceRatio;
   }
 
-  redirectToScarce(): State {
+  async redirectToScarce(): Promise<State> {
     const scarce = this.blackboard.getMostNeededResource();
     if (!scarce) return State.FAILED;
     let reassigned = 0;
-    this.blackboard.workers.forEach((w) => {
-      if (reassigned >= 3) return;
+    for (const w of this.blackboard.workers) {
+      if (reassigned >= 3) continue;
       const g = getActorComponent(w, GathererComponent);
-      if (!g) return;
+      if (!g) continue;
       // Skip if already gathering target resource
-      if (g.currentResourceSource?.type === scarce.type) return;
-      const source = g.getClosestResourceSource(scarce.type, 120);
-      if (!source) return;
+      if (g.currentResourceSource?.type === scarce.type) continue;
+      const source = await g.getClosestResourceSource(scarce.type, 120);
+      if (!source) continue;
       g.startGatheringResources(source);
       reassigned++;
-    });
+    }
     if (reassigned > 0) {
       this.log("Redirected workers to scarce resource:", scarce.type);
       return State.SUCCEEDED;
@@ -63,7 +63,7 @@ export class LogisticsManager {
     return State.FAILED;
   }
 
-  rebalanceHarvesters(): State {
+  async rebalanceHarvesters(): Promise<State> {
     const now = Date.now();
     if (!this.shouldRebalance()) return State.FAILED;
     const scarce = this.blackboard.getMostNeededResource();
@@ -76,16 +76,16 @@ export class LogisticsManager {
 
     if (richest && richest !== scarce.type) {
       let switched = 0;
-      this.blackboard.workers.forEach((w) => {
-        if (switched >= 2) return;
+      for (const w of this.blackboard.workers) {
+        if (switched >= 2) continue;
         const g = getActorComponent(w, GathererComponent);
-        if (!g) return;
-        if (g.currentResourceSource?.type !== richest) return;
-        const source = g.getClosestResourceSource(scarce.type, 120);
-        if (!source) return;
+        if (!g) continue;
+        if (g.currentResourceSource?.type !== richest) continue;
+        const source = await g.getClosestResourceSource(scarce.type, 120);
+        if (!source) continue;
         g.startGatheringResources(source);
         switched++;
-      });
+      }
       if (switched > 0) {
         this.lastRebalanceAt = now;
         this.log("Rebalanced harvesters from", richest, "to", scarce.type);

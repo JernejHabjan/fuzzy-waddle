@@ -4,7 +4,7 @@ import { DistanceHelper } from "../../../library/distance-helper";
 import { Subject } from "rxjs";
 import { ContainerComponent } from "../building/container-component";
 import { ResourceDrainComponent } from "./resource-drain-component";
-import { ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { type GathererComponentData, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "../owner-component";
 import { ConstructionSiteComponent } from "../construction/construction-site-component";
@@ -21,11 +21,10 @@ import { AnimationActorComponent } from "../animation/animation-actor-component"
 import { OrderType } from "../../../ai/order-type";
 import { ActorTranslateComponent } from "../movement/actor-translate-component";
 import { getGameObjectVisibility, onObjectReady } from "../../../data/game-object-helper";
-import GameObject = Phaser.GameObjects.GameObject;
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
-import { type GathererComponentData } from "@fuzzy-waddle/api-interfaces";
 import { AnimationType } from "../animation/animation-type";
 import { SoundType } from "../actor-audio/sound-type";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export type GathererDefinition = {
   // types of gameObjects the gatherer can gather resourcesFrom
@@ -183,15 +182,11 @@ export class GathererComponent {
     return true;
   }
 
-  findClosestResourceDrain(): GameObject | null {
+  async findClosestResourceDrain(): Promise<GameObject | null> {
     if (this.carriedResourceType === null) {
       // Gatherer is not carrying any resources
       return null;
     }
-
-    // find nearby gameObjects
-    let closestResourceDrain: GameObject | null = null;
-    let closestResourceDrainDistance = 0;
 
     const gatherer = this.gameObject;
     const gatherOwnerComponent = getActorComponent(gatherer, OwnerComponent);
@@ -200,16 +195,27 @@ export class GathererComponent {
     // Use indexed drains if available, otherwise nothing
     const drains = actorIndex ? actorIndex.getResourceDrainsFiltered(undefined, this.carriedResourceType) : [];
 
-    for (const resourceDrain of drains) {
+    const validDrains = drains.filter((resourceDrain) => {
       // check owner / team
-      if (!gatherOwnerComponent || !gatherOwnerComponent.isSameTeamAsGameObject(resourceDrain)) continue;
+      if (!gatherOwnerComponent || !gatherOwnerComponent.isSameTeamAsGameObject(resourceDrain)) return false;
 
       // check ready to use
-      if (!GathererComponent.isReadyToUse(resourceDrain)) continue;
+      return GathererComponent.isReadyToUse(resourceDrain);
+    });
 
-      // distance (todo: pathing)
-      const distance = DistanceHelper.getTileDistanceBetweenGameObjects(gatherer, resourceDrain);
-      if (distance && (!closestResourceDrain || distance < closestResourceDrainDistance)) {
+    const distancePromises = validDrains.map((resourceDrain) =>
+      DistanceHelper.getTileDistanceBetweenGameObjectsNavigation(gatherer, resourceDrain).then(
+        (distance) => [resourceDrain, distance] as [GameObject, number | null]
+      )
+    );
+
+    const drainsWithDistances = await Promise.all(distancePromises);
+
+    let closestResourceDrain: GameObject | null = null;
+    let closestResourceDrainDistance = Infinity;
+
+    for (const [resourceDrain, distance] of drainsWithDistances) {
+      if (distance !== null && distance < closestResourceDrainDistance) {
         closestResourceDrain = resourceDrain;
         closestResourceDrainDistance = distance;
       }
@@ -228,7 +234,7 @@ export class GathererComponent {
   }
 
   // Gets the resource source the gameObject has recently been gathering from, if available, or a similar one within its sweep radius
-  getPreferredResourceSource(): GameObject | undefined {
+  async getPreferredResourceSource(): Promise<GameObject | undefined> {
     if (this.previousResourceSource) {
       return this.previousResourceSource;
     }
@@ -238,30 +244,44 @@ export class GathererComponent {
     );
   }
 
-  getNewResourceSource(): GameObject | undefined {
+  async getNewResourceSource(): Promise<GameObject | undefined> {
     this.previousResourceSource = null;
     return this.getPreferredResourceSource();
   }
 
-  getClosestResourceSource(resourceType: ResourceType | null, maxDistance: number): GameObject | undefined {
-    let closestResourceSource: GameObject | undefined = undefined;
-    let closestResourceSourceDistance = 0;
-
+  async getClosestResourceSource(
+    resourceType: ResourceType | null,
+    maxDistance: number
+  ): Promise<GameObject | undefined> {
     const actorIndex = getSceneService(this.gameObject.scene, ActorIndexSystem);
     const sources = actorIndex ? actorIndex.getResourceSourcesFiltered(resourceType ?? undefined) : [];
 
-    for (const gameObject of sources) {
+    const validSources = sources.filter((gameObject) => {
       const resourceSourceComponent = getActorComponent(gameObject, ResourceSourceComponent);
-      if (!resourceSourceComponent) continue;
+      if (!resourceSourceComponent) return false;
       // if not correct resource type
-      if (resourceType && resourceSourceComponent.getResourceType() !== resourceType) continue;
+      if (resourceType && resourceSourceComponent.getResourceType() !== resourceType) return false;
       // check amount of resources
-      if (resourceSourceComponent.getCurrentResources() <= 0) continue;
-      // distance (todo: pathing)
-      const distance = DistanceHelper.getTileDistanceBetweenGameObjects(this.gameObject, gameObject);
+      // noinspection RedundantIfStatementJS
+      if (resourceSourceComponent.getCurrentResources() <= 0) return false;
+      return true;
+    });
+
+    const distancePromises = validSources.map((gameObject) =>
+      DistanceHelper.getTileDistanceBetweenGameObjectsNavigation(this.gameObject, gameObject).then(
+        (distance) => [gameObject, distance] as [GameObject, number | null]
+      )
+    );
+
+    const sourcesWithDistances = await Promise.all(distancePromises);
+
+    let closestResourceSource: GameObject | undefined = undefined;
+    let closestResourceSourceDistance = Infinity;
+
+    for (const [gameObject, distance] of sourcesWithDistances) {
       if (distance === null) continue;
       if (maxDistance > 0 && distance > maxDistance) continue;
-      if (!closestResourceSource || distance < closestResourceSourceDistance) {
+      if (distance < closestResourceSourceDistance) {
         closestResourceSource = gameObject;
         closestResourceSourceDistance = distance;
       }
@@ -269,7 +289,7 @@ export class GathererComponent {
     return closestResourceSource;
   }
 
-  getPreferredResourceDrain(): GameObject | null {
+  async getPreferredResourceDrain(): Promise<GameObject | null> {
     return this.findClosestResourceDrain();
   }
 

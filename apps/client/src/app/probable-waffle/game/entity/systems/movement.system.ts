@@ -138,7 +138,7 @@ export class MovementSystem {
 
     if (!this.navigationService) return false;
 
-    const path = await this.navigationService.findAndUsePathFromGameObjectToTile(this.gameObject, tileVec3);
+    const path = await this.navigationService.findPathFromGameObjectToTile(this.gameObject, tileVec3);
     if (!path.length) return false;
 
     if (this.DEBUG) console.log(`Moving to tile ${tileVec3.x}, ${tileVec3.y}`);
@@ -585,10 +585,7 @@ export class MovementSystem {
       // Check if the assigned point is valid and reachable
       if (this.navigationService.isTileWalkable(destinationTile)) {
         try {
-          const path = await this.navigationService.findAndUsePathFromGameObjectToTile(
-            this.gameObject,
-            destinationTile
-          );
+          const path = await this.navigationService.findPathFromGameObjectToTile(this.gameObject, destinationTile);
           if (path.length > 0) {
             return {
               x: destinationTile.x,

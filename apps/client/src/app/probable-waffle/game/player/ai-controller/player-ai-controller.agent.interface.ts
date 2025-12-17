@@ -25,11 +25,11 @@ export interface IPlayerControllerAgent {
   HasEnoughResourcesForWorker(): boolean;
 
   // Worker and resource gathering
-  AssignWorkersToGather(): State;
+  AssignWorkersToGather(): Promise<State>;
   TrainWorker(): State;
   GatherResources(): State;
-  AssignWorkersToResource(): State;
-  ReassignWorkersToResource(): State;
+  AssignWorkersToResource(): Promise<State>;
+  ReassignWorkersToResource(): Promise<State>;
   ContinueNormalGathering(): State;
   NeedMoreWorkers(): boolean;
 

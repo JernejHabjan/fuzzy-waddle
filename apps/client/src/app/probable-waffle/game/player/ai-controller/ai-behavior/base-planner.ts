@@ -324,12 +324,8 @@ export class BasePlanner {
     //
     if (this.accessibilityChecked) return;
     this.candidateSpots = this.candidateSpots.filter(async (t) => {
-      try {
-        const path = await navigation.find(origin, t); // small path limit
-        return Array.isArray(path) && path.length > 0;
-      } catch {
-        return true;
-      }
+      const path = await navigation.findPathBetweenTiles(origin, t); // small path limit
+      return Array.isArray(path) && path.length > 0;
     });
     this.accessibilityChecked = true;
   }
