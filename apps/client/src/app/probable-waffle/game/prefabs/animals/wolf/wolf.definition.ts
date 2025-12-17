@@ -12,6 +12,10 @@ export const wolfDefinition = {
     objectDescriptor: {
       color: 0x3b4a50
     },
+    collider: {
+      enabled: false,
+      colliderFactorReduction: 0.5
+    },
     vision: {
       range: 10
     },
