@@ -35,17 +35,15 @@ import { OrderType } from "../../../ai/order-type";
 import { HealingComponent } from "../../../entity/components/combat/components/healing-component";
 import { GathererComponent } from "../../../entity/components/resource/gatherer-component";
 import { getPrimarySelectedActor } from "../../../data/selection-helpers";
-import {
-  ProductionInvalidReason,
-  type ProductionValidationResult,
-  ProductionValidator
-} from "../../../data/tech-tree/production-validator";
+import { ProductionValidator } from "../../../data/tech-tree/production-validator";
 import { findProductionBuildingWithLeastRemainingTime } from "../../../entity/components/production/production-helpers";
 import {
   type ConstructableCategory,
   ConstructableDefinition
 } from "../../../entity/components/construction/constructable-category";
 import { SelectionTabHandler } from "../../../player/human-controller/selection-tab-handler";
+import { ProductionInvalidReason } from "../../../data/tech-tree/production-invalid-reason";
+import type { ProductionValidationResult } from "../../../data/tech-tree/production-validation-result";
 /* END-USER-IMPORTS */
 
 export default class ActorActions extends Phaser.GameObjects.Container {

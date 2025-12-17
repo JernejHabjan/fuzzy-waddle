@@ -12,13 +12,14 @@ import HudMessages, { HudVisualFeedbackMessageType } from "../../../prefabs/gui/
 import { CrossSceneCommunicationService } from "../../../world/services/CrossSceneCommunicationService";
 import { OwnerComponent } from "../owner-component";
 import { getCurrentPlayerNumber } from "../../../data/scene-data";
-import { AnimationActorComponent, type AnimationOptions } from "../animation/animation-actor-component";
+import { AnimationActorComponent } from "../animation/animation-actor-component";
 import { OrderType } from "../../../ai/order-type";
 import { ActorTranslateComponent } from "../movement/actor-translate-component";
 import { DistanceHelper } from "../../../library/distance-helper";
 import { IdComponent } from "../id-component";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { ConstructableDefinition } from "./constructable-category";
+import type { AnimationOptions } from "../animation/animation-options";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export type BuilderDefinition = {

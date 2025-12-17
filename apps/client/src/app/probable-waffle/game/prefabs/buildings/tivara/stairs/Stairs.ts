@@ -17,7 +17,8 @@ import StairsBottomLeft from "./StairsBottomLeft";
 import StairsBottomRight from "./StairsBottomRight";
 import { setActorData } from "../../../../data/actor-data";
 import { getActorComponent } from "../../../../data/actor-component";
-import { type WalkablePath, WalkableComponent } from "../../../../entity/components/movement/walkable-component";
+import { WalkableComponent } from "../../../../entity/components/movement/walkable-component";
+import type { WalkablePath } from "../../../../entity/components/movement/walkable-path";
 /* END-USER-IMPORTS */
 
 export default class Stairs extends Phaser.GameObjects.Container {

@@ -1,5 +1,5 @@
 // Runtime service that stores per-faction tech graphs & per-player unlock state.
-import type { TechTreeGraph } from "./tech-tree.types";
+import type { TechTreeGraph } from "./tech-tree-graph";
 import { FactionType, ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { TechTreeBuilder } from "./tech-tree.builder";
 import { getCanonicalActorNameCached } from "./canonical-actor-name";

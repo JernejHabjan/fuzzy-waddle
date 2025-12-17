@@ -36,19 +36,9 @@ import { IdComponent } from "../components/id-component";
 import { getTileCoordsUnderObject } from "../../library/tile-under-object";
 import { TilemapComponent } from "../../world/tilemap/tilemap.component";
 import type { IsoDirection } from "../components/movement/iso-directions";
+import type { PathMoveConfig } from "./path-move-config";
 import Tween = Phaser.Tweens.Tween;
 import GameObject = Phaser.GameObjects.GameObject;
-
-export interface PathMoveConfig {
-  radiusTilesAroundDestination?: number;
-  onUpdateThrottle?: number;
-  onComplete?: () => void;
-  onPathUpdate?: (newTileXY: Vector2Simple) => void;
-  onUpdateThrottled?: () => void;
-  onUpdate?: () => void;
-  onStop?: () => void;
-  ignoreAnimations?: boolean;
-}
 
 export class MovementSystem {
   private _navigationService?: NavigationService;

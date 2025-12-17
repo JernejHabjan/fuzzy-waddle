@@ -1,5 +1,5 @@
-import { type SoundDefinition } from "../../../../entity/components/actor-audio/audio-actor-component";
 import { AudioSprites } from "../../../../sfx/audio-sprites";
+import type { SoundDefinition } from "../../../../entity/components/actor-audio/sound-definition";
 
 export enum SfxMinerals {
   RESOURCES_MINERALS_SELECTION_1 = "resources minerals selection 1"

@@ -4,10 +4,8 @@
 
 /* START-USER-IMPORTS */
 import { setActorData } from "../../../../data/actor-data";
-import {
-  ObjectDescriptorComponent,
-  type ObjectDescriptorDefinition
-} from "../../../../entity/components/object-descriptor-component";
+import { ObjectDescriptorComponent } from "../../../../entity/components/object-descriptor-component";
+import { ObjectDescriptorDefinition } from "../../../../entity/components/object-descriptor-definition";
 /* END-USER-IMPORTS */
 
 export default class LeavesSmall extends Phaser.GameObjects.Image {

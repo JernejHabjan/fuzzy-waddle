@@ -41,10 +41,10 @@ import { ProbableWaffleCommunicatorService } from "./probable-waffle-communicato
 import { map } from "rxjs/operators";
 import { AuthenticatedSocketService } from "../../data-access/chat/authenticated-socket.service";
 import { GameInstanceStorageServiceInterface } from "./storage/game-instance-storage.service.interface";
-import { type SaveGamePayload } from "../game/data/save-game";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { LoadComponent } from "../gui/load/load.component";
 import { OptionsComponent } from "../gui/options/options.component";
+import type { SaveGamePayload } from "../game/data/save-game-payload";
 
 @Injectable({
   providedIn: "root"

@@ -7,13 +7,7 @@ import { NavigationService } from "../../../world/services/navigation.service";
 import { getActorComponent } from "../../../data/actor-component";
 import { RepresentableComponent } from "../representable-component";
 import type { IsoDirection } from "./iso-directions";
-
-export interface ActorTranslateDefinition {
-  /**
-   * Tile move duration specifies how long (in ms) unit requires to cross 1 tile
-   */
-  tileMoveDuration?: number;
-}
+import type { ActorTranslateDefinition } from "./actor-translate-definition";
 
 export class ActorTranslateComponent {
   private _actorMovedLogicalPosition: Subject<Vector3Simple> = new Subject<Vector3Simple>();

@@ -8,36 +8,9 @@ import { AttackComponent } from "../combat/components/attack-component";
 import { GathererComponent } from "../resource/gatherer-component";
 import { AnimationType } from "./animation-type";
 import type { IsoDirection } from "../movement/iso-directions";
-
-const oneTimeAnimations: AnimationType[] = [
-  AnimationType.Shoot,
-  AnimationType.Cast,
-  AnimationType.Slash,
-  AnimationType.InvertedSlash,
-  AnimationType.Smash,
-  AnimationType.Thrust,
-  AnimationType.LargeSlash,
-  AnimationType.LargeThrust,
-  AnimationType.Chop,
-  AnimationType.Mine
-];
-
-type AnimationDefinition = {
-  key: string;
-  frameRate?: number;
-  repeat?: number;
-};
-
-export type AnimationDefinitionMap = {
-  [key in AnimationType | string]?: {
-    [direction in IsoDirection]?: AnimationDefinition;
-  };
-};
-
-export interface ActorAnimationsDefinition {
-  animations: AnimationDefinitionMap;
-  defaultDirection?: IsoDirection;
-}
+import { oneTimeAnimations } from "./one-time-animations";
+import type { ActorAnimationsDefinition } from "./actor-animations-definition";
+import type { AnimationOptions } from "./animation-options";
 
 export class AnimationActorComponent {
   private sprite?: Phaser.GameObjects.Sprite;
@@ -242,10 +215,4 @@ export class AnimationActorComponent {
   private destroy() {
     this.directionChangedSubscription?.unsubscribe();
   }
-}
-
-export interface AnimationOptions {
-  forceRestart?: boolean;
-  onComplete?: () => void;
-  repeat?: number;
 }

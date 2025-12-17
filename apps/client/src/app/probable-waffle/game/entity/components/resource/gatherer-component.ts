@@ -16,7 +16,6 @@ import {
   SharedActorActionsSfxChoppingSounds,
   SharedActorActionsSfxMiningSounds
 } from "../../../sfx/shared-actor-actions-sfx";
-import { type SoundDefinition } from "../actor-audio/audio-actor-component";
 import { AnimationActorComponent } from "../animation/animation-actor-component";
 import { OrderType } from "../../../ai/order-type";
 import { ActorTranslateComponent } from "../movement/actor-translate-component";
@@ -24,6 +23,7 @@ import { getGameObjectVisibility, onObjectReady } from "../../../data/game-objec
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { AnimationType } from "../animation/animation-type";
 import { SoundType } from "../actor-audio/sound-type";
+import type { SoundDefinition } from "../actor-audio/sound-definition";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export type GathererDefinition = {

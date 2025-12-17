@@ -13,11 +13,7 @@ import {
 import type { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 import Phaser from "phaser";
 import { getActorComponent } from "../../data/actor-component";
-import {
-  WalkableComponent,
-  type WalkablePath,
-  WalkablePathDirection
-} from "../../entity/components/movement/walkable-component";
+import { WalkableComponent } from "../../entity/components/movement/walkable-component";
 import { ColliderComponent } from "../../entity/components/movement/collider-component";
 import { getCenterTileCoordUnderObject, getTileCoordsUnderObject } from "../../library/tile-under-object";
 import { drawDebugPath } from "../../debug/debug-path";
@@ -28,6 +24,8 @@ import { getSelectableGameObject, onSceneInitialized } from "../../data/game-obj
 import { throttleWithTrailing } from "../../library/throttle";
 import { environment } from "../../../../../environments/environment";
 import { RepresentableComponent } from "../../entity/components/representable-component";
+import type { WalkablePath } from "../../entity/components/movement/walkable-path";
+import { WalkablePathDirection } from "../../entity/components/movement/walkable-path-direction";
 
 export enum TerrainType {
   Grass = "grass",

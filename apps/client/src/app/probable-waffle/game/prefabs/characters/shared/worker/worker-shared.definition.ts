@@ -1,9 +1,9 @@
-import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
-import { weaponDefinitions } from "../../../../entity/components/combat/attack-data";
+import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PaymentType } from "../../../../entity/components/production/payment-type";
-import { AiType } from "../../../ai-agents/pawn-ai-controller";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 import { ActorPhysicalType } from "../../../../entity/components/combat/components/actor-physical-type";
+import { weaponDefinitions } from "../../../../entity/components/combat/weapon-definitions";
+import { AiType } from "../../../ai-agents/ai-type";
 
 export const generalWorkerDefinitions: Partial<PrefabDefinition> = {
   components: {

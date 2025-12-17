@@ -1,6 +1,7 @@
 // This file was generated from "convert-to-enums.js" script
 import { AudioSprites } from "../../../../sfx/audio-sprites";
-import { type SoundDefinition } from "../../../../entity/components/actor-audio/audio-actor-component";
+
+import type { SoundDefinition } from "../../../../entity/components/actor-audio/sound-definition";
 
 export enum SkaduweeEmberstoneSfx {
   SELECTION = "selection"

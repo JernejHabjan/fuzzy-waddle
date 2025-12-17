@@ -9,24 +9,8 @@ import { pwActorDefinitions } from "../../prefabs/definitions/actor-definitions"
 import { getActorComponent } from "../actor-component";
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 import { ProductionComponent } from "../../entity/components/production/production-component";
-
-export enum ProductionInvalidReason {
-  TechLocked = "tech_locked",
-  SupplyBlocked = "supply_blocked",
-  NotEnoughResources = "not_enough_resources",
-  BuildingPrerequisitesMissing = "building_prerequisites_missing"
-}
-
-export interface ProductionValidationResult {
-  canQueue: boolean;
-  reason?: ProductionInvalidReason;
-  techBlocked?: boolean;
-  supplyBlocked?: boolean;
-  buildingPrereqBlocked?: boolean;
-  prereqs: ObjectNames[];
-  missingBuildings?: ObjectNames[];
-  cost?: Partial<Record<ResourceType, number>>;
-}
+import { ProductionInvalidReason } from "./production-invalid-reason";
+import type { ProductionValidationResult } from "./production-validation-result";
 
 export class ProductionValidator {
   private static readonly debugEnabled = false;

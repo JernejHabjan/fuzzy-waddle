@@ -1,15 +1,11 @@
 import { setActorData } from "../../../../../data/actor-data";
-import {
-  ObjectDescriptorComponent,
-  type ObjectDescriptorDefinition
-} from "../../../../../entity/components/object-descriptor-component";
-import {
-  AudioActorComponent,
-  type AudioDefinition
-} from "../../../../../entity/components/actor-audio/audio-actor-component";
+import { ObjectDescriptorComponent } from "../../../../../entity/components/object-descriptor-component";
+import { AudioActorComponent } from "../../../../../entity/components/actor-audio/audio-actor-component";
 import { ActorsFoliageSfxBushSounds } from "./sfx-bush";
-import GameObject = Phaser.GameObjects.GameObject;
 import { SoundType } from "../../../../../entity/components/actor-audio/sound-type";
+import type { ObjectDescriptorDefinition } from "../../../../../entity/components/object-descriptor-definition";
+import type { AudioDefinition } from "../../../../../entity/components/actor-audio/audio-definition";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export class BushComponent {
   constructor(gameObject: GameObject, color: number | null) {

@@ -9,11 +9,7 @@ import { VisionComponent } from "../../entity/components/vision-component";
 import { DistanceHelper } from "../../library/distance-helper";
 import { AttackComponent } from "../../entity/components/combat/components/attack-component";
 import { getActorSystem } from "../../data/actor-system";
-import {
-  getRandomTileInNavigableRadius,
-  MovementSystem,
-  type PathMoveConfig
-} from "../../entity/systems/movement.system";
+import { getRandomTileInNavigableRadius, MovementSystem } from "../../entity/systems/movement.system";
 import { OrderLabelToTypeMap, OrderType } from "../../ai/order-type";
 import { PawnAiBlackboard } from "./pawn-ai-blackboard";
 import { GathererComponent } from "../../entity/components/resource/gatherer-component";
@@ -27,6 +23,7 @@ import { OrderData } from "../../ai/OrderData";
 import { HealingComponent } from "../../entity/components/combat/components/healing-component";
 import { ConstructionSiteComponent } from "../../entity/components/construction/construction-site-component";
 import { AnimationActorComponent } from "../../entity/components/animation/animation-actor-component";
+import type { PathMoveConfig } from "../../entity/systems/path-move-config";
 
 export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
   constructor(

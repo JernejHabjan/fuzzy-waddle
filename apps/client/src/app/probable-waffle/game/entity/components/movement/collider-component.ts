@@ -2,11 +2,8 @@ import { HealthComponent } from "../combat/components/health-component";
 import { removeActorComponent } from "../../../data/actor-data";
 import { onObjectReady } from "../../../data/game-object-helper";
 import { NavigationService } from "../../../world/services/navigation.service";
+import type { ColliderDefinition } from "./collider-definition";
 
-export interface ColliderDefinition {
-  enabled: boolean;
-  colliderFactorReduction?: number;
-}
 export class ColliderComponent {
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,

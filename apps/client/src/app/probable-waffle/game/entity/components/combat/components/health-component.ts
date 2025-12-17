@@ -18,7 +18,7 @@ import { environment } from "../../../../../../../environments/environment";
 import { SelectableComponent } from "../../selectable-component";
 import { OwnerComponent } from "../../owner-component";
 import { getCurrentPlayerNumber } from "../../../../data/scene-data";
-import { AudioActorComponent, type SoundDefinition } from "../../actor-audio/audio-actor-component";
+import { AudioActorComponent } from "../../actor-audio/audio-actor-component";
 import { AnimationActorComponent } from "../../animation/animation-actor-component";
 import { EffectsAnims } from "../../../../animations/effects";
 import { ActorTranslateComponent } from "../../movement/actor-translate-component";
@@ -32,6 +32,7 @@ import { VisionComponent } from "../../vision-component";
 import { AnimationType } from "../../animation/animation-type";
 import { SoundType } from "../../actor-audio/sound-type";
 import { ActorPhysicalType } from "./actor-physical-type";
+import type { SoundDefinition } from "../../actor-audio/sound-definition";
 
 export type HealthDefinition = {
   maxHealth: number;

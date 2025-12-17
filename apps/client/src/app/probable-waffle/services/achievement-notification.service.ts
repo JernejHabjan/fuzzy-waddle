@@ -1,13 +1,6 @@
 import { ApplicationRef, ComponentRef, createComponent, EnvironmentInjector, inject, Injectable } from "@angular/core";
 import { AchievementNotificationComponent } from "../components/achievement-notification/achievement-notification.component";
-
-export interface AchievementNotificationOptions {
-  title: string;
-  description: string;
-  spriteId: string;
-  autoHide?: boolean;
-  autoHideDuration?: number;
-}
+import type { AchievementNotificationOptions } from "./achievement-notification.options";
 
 @Injectable({
   providedIn: "root"

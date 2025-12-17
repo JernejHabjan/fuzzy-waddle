@@ -1,6 +1,6 @@
 // This file was generated from "convert-to-enums.js" script
-import { type SoundDefinition } from "../entity/components/actor-audio/audio-actor-component";
 import { AudioSprites } from "./audio-sprites";
+import type { SoundDefinition } from "../entity/components/actor-audio/sound-definition";
 
 export enum EnvironmentSfx {
   BIRDS_1 = "birds 1",

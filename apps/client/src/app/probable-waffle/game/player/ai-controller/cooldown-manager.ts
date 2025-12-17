@@ -1,11 +1,7 @@
 // Centralize gating of expensive / high-level AI actions.
 // Existing direct timestamp comparisons can be refactored progressively to use this manager.
 
-export interface CooldownEntry {
-  nextReadyAt: number;
-  intervalMs: number;
-  jitterMs?: number;
-}
+import type { CooldownEntry } from "./cooldown-entry";
 
 export class CooldownManager {
   private entries = new Map<string, CooldownEntry>();

@@ -11,11 +11,8 @@ import { getSceneService } from "../../world/services/scene-component-helpers";
 import { DebuggingService } from "../../world/services/DebuggingService";
 import { Subscription } from "rxjs";
 import { type BackboardComponentData } from "@fuzzy-waddle/api-interfaces";
-
-export interface PawnAiDefinition {
-  type: AiType;
-  stepInterval?: number;
-}
+import type { PawnAiDefinition } from "./pawn-ai-definition";
+import { AiType } from "./ai-type";
 
 export class PawnAiController {
   readonly blackboard: PawnAiBlackboard = new PawnAiBlackboard(); // todo it's actually blackboard that should replicate
@@ -123,8 +120,4 @@ export class PawnAiController {
     this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
     this.aiDebuggingSubscription?.unsubscribe();
   }
-}
-
-export enum AiType {
-  Character = "Character"
 }
