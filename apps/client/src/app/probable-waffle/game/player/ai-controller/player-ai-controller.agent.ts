@@ -43,6 +43,7 @@ import { TargetingManager } from "./ai-behavior/targeting-manager";
 import { SupplyPlanner } from "./ai-behavior/supply-planner";
 import { IsoHelper } from "../../world/tilemap/iso-helper";
 import GameObject = Phaser.GameObjects.GameObject;
+import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
 
 export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   private displayDebugInfo = false;
@@ -196,20 +197,53 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     const workers: GameObject[] = [];
     const units: GameObject[] = [];
     const production: GameObject[] = [];
+    const defense: GameObject[] = [];
+    const housing: GameObject[] = [];
+
+    // Get tech tree service for actor classification
+    const techTree = getSceneService(this.scene, TechTreeService);
 
     owned.forEach((go) => {
       const gatherer = getActorComponent(go, GathererComponent);
       const prod = getActorComponent(go, ProductionComponent);
       const attack = getActorComponent(go, AttackComponent);
+      const actorName = go.name as ObjectNames;
+
       if (gatherer) workers.push(go);
       if (prod) production.push(go);
       if (attack && !gatherer) units.push(go);
+
+      const faction = this.player.factionType!;
+      // Identify defensive structures using tech tree: has attack + production component
+      if (techTree?.isDefensiveBuilding(faction, actorName)) {
+        defense.push(go);
+      }
+
+      // Identify housing buildings using tech tree: has housing component
+      if (techTree?.isHousingBuilding(faction, actorName)) {
+        housing.push(go);
+      }
     });
 
+    // Update primary actor lists
     this.blackboard.workers = workers;
     this.blackboard.productionBuildings = production;
     this.blackboard.trainingBuildings = production;
     this.blackboard.units = units;
+    this.blackboard.defensiveStructures = defense;
+
+    // Calculate housing capacity from housing buildings using tech tree definitions
+    let totalHousingCapacity = 0;
+    if (techTree) {
+      housing.forEach((housingBuilding) => {
+        const actorName = housingBuilding.name as ObjectNames;
+        totalHousingCapacity += pwActorDefinitions[actorName]?.components?.housing?.housingCapacity || 0;
+      });
+    }
+    this.blackboard.housingCapacity = totalHousingCapacity;
+
+    // Estimate base size as total building count (production + defense + housing)
+    this.blackboard.baseSize = production.length;
 
     // Supply estimate
     this.blackboard.production.supply.used = units.length + workers.length;
@@ -219,6 +253,16 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       if (prod) queued += prod.itemsFromAllQueues.length;
     });
     this.blackboard.production.supply.pendingFromQueued = queued;
+
+    // Sync production slice with updated values
+    this.blackboard.production.housingCapacity = this.blackboard.housingCapacity;
+    this.blackboard.production.defensiveStructures = defense;
+    this.blackboard.production.trainingBuildings = production;
+    this.blackboard.production.productionBuildings = production;
+    this.blackboard.production.supply.max = this.blackboard.housingCapacity;
+
+    // Sync economy slice
+    this.blackboard.economy.housing.maxHousing = this.blackboard.housingCapacity;
 
     // Derive enemy visibility & defense assignment
     const enemyCandidates: GameObject[] = [];
@@ -772,76 +816,79 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   }
 
   AssignHousingBuilding(): State {
-    // Faction-aware housing building assignment
+    // Get tech tree to find available housing buildings for this faction
+    const techTree = getSceneService(this.scene, TechTreeService);
+    if (!techTree) return State.FAILED;
+
     const faction = this.player.factionType;
-    let housingBuilding: ObjectNames;
+    if (!faction) return State.FAILED;
 
-    switch (faction) {
-      case FactionType.Tivara:
-        housingBuilding = ObjectNames.Olival;
-        break;
-      case FactionType.Skaduwee:
-        housingBuilding = ObjectNames.Emberstone;
-        break;
-      default:
-        throw new Error("Unsupported faction for housing building assignment.");
-    }
+    // Get all available housing buildings for this faction
+    const housingBuildings = techTree.getHousingBuildings(faction);
 
-    return this.assignBuilding(housingBuilding);
+    // Filter to only those we can currently build (tech unlocked)
+    const availableHousing = housingBuildings.filter((building) => {
+      if (!this.productionValidator) return false;
+      const validation = this.productionValidator.validate(building);
+      return validation.canQueue;
+    });
+
+    if (availableHousing.length === 0) return State.FAILED;
+
+    // Prefer buildings we don't have many of (variety)
+    const sorted = this.sortBuildingsByVariety(availableHousing);
+    return this.assignBuilding(sorted[0]!);
   }
 
   AssignProductionBuilding(): State {
     // Use tech tree to determine available production buildings
     if (!this.productionValidator) return State.FAILED;
 
-    const faction = this.player.factionType;
-    const candidateBuildings: ObjectNames[] = [];
+    const techTree = getSceneService(this.scene, TechTreeService);
+    if (!techTree) return State.FAILED;
 
-    // Get all buildings with production component from actor definitions
-    Object.entries(pwActorDefinitions).forEach(([objectName, def]) => {
-      // Check if building has production component and is constructable
-      if (def?.components?.production && def?.components?.constructable) {
-        // Validate if this building can be constructed by checking tech tree
-        const validation = this.productionValidator!.validate(objectName as ObjectNames);
-        if (validation.canQueue) {
-          candidateBuildings.push(objectName as ObjectNames);
-        }
-      }
+    const faction = this.player.factionType;
+    if (!faction) return State.FAILED;
+
+    // Get all production buildings for this faction
+    const candidateBuildings = techTree.getProductionBuildings(faction);
+
+    // Filter to only those we can currently build
+    const availableProduction = candidateBuildings.filter((building) => {
+      const validation = this.productionValidator!.validate(building);
+      return validation.canQueue;
     });
 
-    // Sort by variety (prefer buildings we don't already have much of)
-    const sortedByVariety = this.sortBuildingsByVariety(candidateBuildings);
+    if (availableProduction.length === 0) return State.FAILED;
 
-    // Use first available production building, fallback to Owlery if none found
-    const selectedBuilding = sortedByVariety.length > 0 ? sortedByVariety[0]! : ObjectNames.Owlery;
-    return this.assignBuilding(selectedBuilding);
+    // Sort by variety (prefer buildings we don't already have much of)
+    const sortedByVariety = this.sortBuildingsByVariety(availableProduction);
+    return this.assignBuilding(sortedByVariety[0]!);
   }
 
   AssignDefenseBuilding(): State {
-    // Only assign buildings with attack component (defensive structures)
-    const candidateDefenseBuildings: ObjectNames[] = [];
+    // Get tech tree to determine defensive buildings
+    const techTree = getSceneService(this.scene, TechTreeService);
+    if (!techTree) return State.FAILED;
 
-    Object.entries(pwActorDefinitions).forEach(([objectName, def]) => {
-      // Check if building has attack component and is constructable
-      if (def?.components?.attack && def?.components?.constructable) {
-        // Validate if this building can be constructed
-        if (this.productionValidator) {
-          const validation = this.productionValidator.validate(objectName as ObjectNames);
-          if (validation.canQueue) {
-            candidateDefenseBuildings.push(objectName as ObjectNames);
-          }
-        } else {
-          candidateDefenseBuildings.push(objectName as ObjectNames);
-        }
-      }
+    const faction = this.player.factionType;
+    if (!faction) return State.FAILED;
+
+    // Get all defensive buildings for this faction
+    const candidateDefenseBuildings = techTree.getDefensiveBuildings(faction);
+
+    // Filter to only those we can currently build
+    const availableDefense = candidateDefenseBuildings.filter((building) => {
+      if (!this.productionValidator) return false;
+      const validation = this.productionValidator.validate(building);
+      return validation.canQueue;
     });
 
-    // Sort by variety (prefer buildings we don't already have much of)
-    const sortedByVariety = this.sortBuildingsByVariety(candidateDefenseBuildings);
+    if (availableDefense.length === 0) return State.FAILED;
 
-    // Use first available defense building, fallback to WatchTower if none found
-    const selectedBuilding = sortedByVariety.length > 0 ? sortedByVariety[0]! : ObjectNames.WatchTower;
-    return this.assignBuilding(selectedBuilding);
+    // Sort by variety (prefer buildings we don't already have much of)
+    const sortedByVariety = this.sortBuildingsByVariety(availableDefense);
+    return this.assignBuilding(sortedByVariety[0]!);
   }
 
   NeedToScout() {

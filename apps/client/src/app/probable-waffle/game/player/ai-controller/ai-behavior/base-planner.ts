@@ -5,6 +5,7 @@ import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { NavigationService } from "../../../world/services/navigation.service";
 import { pwActorDefinitions } from "../../../prefabs/definitions/actor-definitions";
 import { PlayerAiBlackboard } from "../player-ai-blackboard";
+import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
 
 interface PlannedBuilding {
   id: string;
@@ -141,7 +142,7 @@ export class BasePlanner {
   }
 
   consumePlanForType(buildingType: string): PlannedBuilding | null {
-    // Retrieve highest priority plan for the requested type
+    // Retrieve the highest priority plan for the requested type
     let idx = -1;
     let best: PlannedBuilding | null = null;
     this.plans.forEach((p, i) => {
@@ -301,28 +302,29 @@ export class BasePlanner {
   }
 
   /**
-   * Translate need type to concrete object enum value.
-   * Now faction-aware for housing buildings.
+   * Translate need type to concrete object enum value using tech tree.
+   * Data-driven approach: finds first available building of required type.
    */
   mapNeedTypeToObjectName(needType: NeedType): ObjectNames | null {
+    const techTree = getSceneService(this.analyzer.scene, TechTreeService);
+    if (!techTree || !this.factionType) return null;
+
+    let candidates: ObjectNames[] = [];
+
     switch (needType) {
       case NeedType.Housing:
-        // Faction-aware housing building
-        if (this.factionType) {
-          if (this.factionType === FactionType.Tivara) {
-            return ObjectNames.Olival;
-          } else if (this.factionType === FactionType.Skaduwee) {
-            return ObjectNames.Emberstone;
-          }
-        }
-        return ObjectNames.WorkMill; // fallback
+        candidates = techTree.getHousingBuildings(this.factionType);
+        break;
       case NeedType.Production:
-        return ObjectNames.Owlery;
+        candidates = techTree.getProductionBuildings(this.factionType);
+        break;
       case NeedType.Defense:
-        return ObjectNames.WatchTower; // Changed to WatchTower (has attack component)
-      default:
-        return null;
+        candidates = techTree.getDefensiveBuildings(this.factionType);
+        break;
     }
+
+    // Return first available candidate, or null if none
+    return candidates.length > 0 ? candidates[0]! : null;
   }
 
   /**

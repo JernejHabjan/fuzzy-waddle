@@ -4,6 +4,7 @@ import { FactionType, ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { TechTreeBuilder } from "./tech-tree.builder";
 import { getCanonicalActorNameCached } from "./canonical-actor-name";
 import { BuilderComponent } from "../../entity/components/construction/builder-component";
+import { environment } from "../../../../../environments/environment";
 
 export class TechTreeService {
   private readonly graphs: Record<FactionType, TechTreeGraph>;
@@ -13,7 +14,9 @@ export class TechTreeService {
   constructor() {
     this.graphs = TechTreeBuilder.build();
     // Validate tech tree structure on initialization
-    this.validateAllTechTrees();
+    if (!environment.production) {
+      this.validateAllTechTrees();
+    }
   }
 
   /**
@@ -161,6 +164,22 @@ export class TechTreeService {
     return this.graphs[faction]?.nodes[buildingId]?.produces || [];
   }
 
+  isDefensiveBuilding(faction: FactionType, buildingId: ObjectNames): boolean {
+    const node = this.graphs[faction]?.nodes[buildingId];
+    if (!node) return false;
+
+    const attackComponent = node.definition?.components?.attack;
+    return attackComponent !== undefined;
+  }
+
+  isHousingBuilding(faction: FactionType, buildingId: ObjectNames): boolean {
+    const node = this.graphs[faction]?.nodes[buildingId];
+    if (!node) return false;
+
+    const housingComponent = node.definition?.components?.housing;
+    return housingComponent !== undefined;
+  }
+
   /**
    * Get all buildings that can be constructed by a specific unit.
    */
@@ -178,6 +197,101 @@ export class TechTreeService {
     if (!builderComponent?.constructableBuildings) return [];
 
     return BuilderComponent.getFlatConstructableBuildings(builderComponent.constructableBuildings);
+  }
+
+  /**
+   * Get all housing buildings for a faction.
+   * Returns array of ObjectNames that have housing components.
+   */
+  getHousingBuildings(faction: FactionType): ObjectNames[] {
+    const graph = this.graphs[faction];
+    if (!graph) return [];
+
+    return Object.entries(graph.nodes)
+      .filter(([, node]) => node.definition.components?.housing !== undefined)
+      .map(([id]) => id as ObjectNames);
+  }
+
+  /**
+   * Get all defensive buildings (have attack component) for a faction.
+   */
+  getDefensiveBuildings(faction: FactionType): ObjectNames[] {
+    const graph = this.graphs[faction];
+    if (!graph) return [];
+
+    return Object.entries(graph.nodes)
+      .filter(
+        ([, node]) =>
+          node.definition.components?.attack !== undefined && node.definition.components?.production !== undefined
+      )
+      .map(([id]) => id as ObjectNames);
+  }
+
+  /**
+   * Get all worker unit types for a faction.
+   * Workers have gatherer component.
+   */
+  getWorkerUnits(faction: FactionType): ObjectNames[] {
+    const graph = this.graphs[faction];
+    if (!graph) return [];
+
+    return Object.entries(graph.nodes)
+      .filter(([, node]) => node.definition.components?.gatherer !== undefined)
+      .map(([id]) => id as ObjectNames);
+  }
+
+  /**
+   * Get all military units (have attack component, no production).
+   */
+  getMilitaryUnits(faction: FactionType): ObjectNames[] {
+    const graph = this.graphs[faction];
+    if (!graph) return [];
+
+    return Object.entries(graph.nodes)
+      .filter(([, node]) => node.definition.components?.attack !== undefined && !node.definition.components?.production)
+      .map(([id]) => id as ObjectNames);
+  }
+
+  /**
+   * Get all ranged units (have attack component with ranged property).
+   */
+  getRangedUnits(faction: FactionType): ObjectNames[] {
+    const graph = this.graphs[faction];
+    if (!graph) return [];
+
+    return Object.entries(graph.nodes)
+      .filter(([, node]) => {
+        const attack = node.definition.components?.attack;
+        return attack && attack.attacks.find((attackData) => attackData.range > 2) !== undefined;
+      })
+      .map(([id]) => id as ObjectNames);
+  }
+
+  /**
+   * Get all melee units (have attack component with no range or range 0).
+   */
+  getMeleeUnits(faction: FactionType): ObjectNames[] {
+    const graph = this.graphs[faction];
+    if (!graph) return [];
+
+    return Object.entries(graph.nodes)
+      .filter(([, node]) => {
+        const attack = node.definition.components?.attack;
+        return attack && !attack.attacks.find((attackData) => attackData.range > 2);
+      })
+      .map(([id]) => id as ObjectNames);
+  }
+
+  /**
+   * Get production buildings (have production component).
+   */
+  getProductionBuildings(faction: FactionType): ObjectNames[] {
+    const graph = this.graphs[faction];
+    if (!graph) return [];
+
+    return Object.entries(graph.nodes)
+      .filter(([, node]) => node.definition.components?.production !== undefined)
+      .map(([id]) => id as ObjectNames);
   }
 
   /**
