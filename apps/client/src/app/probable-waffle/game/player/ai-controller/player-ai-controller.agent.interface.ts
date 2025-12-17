@@ -28,22 +28,15 @@ export interface IPlayerControllerAgent {
   AssignWorkersToGather(): State;
   TrainWorker(): State;
   GatherResources(): State;
-  AssignWorkerToBuild(): State;
   AssignWorkersToResource(): State;
   ReassignWorkersToResource(): State;
   ContinueNormalGathering(): State;
   NeedMoreWorkers(): boolean;
 
   // Building and construction
-  IsBaseExpansionNeeded(): boolean;
-  ChooseStructureToBuild(): State;
-  StartBuildingStructure(): State;
   NeedMoreHousing(): boolean;
   NeedMoreProduction(): boolean;
   NeedMoreDefense(): boolean;
-  AssignHousingBuilding(): State;
-  AssignProductionBuilding(): State;
-  AssignDefenseBuilding(): State;
 
   // Upgrades and improvements
   StartUpgrade(): State;

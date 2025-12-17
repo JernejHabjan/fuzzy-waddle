@@ -31,7 +31,6 @@ root {
         branch [AdjustStrategyBasedOnGameState]
         branch [DefendBase]
         branch [AttackEnemy]
-        branch [ExpandBase]
         branch [ManageEconomy]
         branch [ManageLogistics]
         branch [AdvanceTech]
@@ -135,15 +134,6 @@ root [AttackEnemy] {
     }
 }
 
-root [ExpandBase] {
-    sequence {
-        condition [IsBaseExpansionNeeded]
-        condition [HasSufficientResources]
-        branch [ChooseStructureToBuild]
-        branch [BuildStructure]
-    }
-}
-
 root [ManageEconomy] {
     fail {
         sequence {
@@ -219,30 +209,6 @@ root [OptimizeResourceGathering] {
             }
             action [ContinueNormalGathering]
         }
-    }
-}
-
-root [ChooseStructureToBuild] {
-    selector {
-        sequence {
-            condition [NeedMoreHousing]
-            action [AssignHousingBuilding]
-        }
-        sequence {
-            condition [NeedMoreProduction]
-            action [AssignProductionBuilding]
-        }
-        sequence {
-            condition [NeedMoreDefense]
-            action [AssignDefenseBuilding]
-        }
-    }
-}
-
-root [BuildStructure] {
-    sequence {
-        action [AssignWorkerToBuild]
-        action [StartBuildingStructure]
     }
 }
 

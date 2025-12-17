@@ -208,7 +208,9 @@ export class TechTreeService {
     if (!graph) return [];
 
     return Object.entries(graph.nodes)
-      .filter(([, node]) => node.definition.components?.housing !== undefined)
+      .filter(
+        ([, node]) => node.definition.components?.housing !== undefined && node.definition.meta?.isMainBuilding !== true
+      )
       .map(([id]) => id as ObjectNames);
   }
 
@@ -222,7 +224,9 @@ export class TechTreeService {
     return Object.entries(graph.nodes)
       .filter(
         ([, node]) =>
-          node.definition.components?.attack !== undefined && node.definition.components?.production !== undefined
+          node.definition.components?.attack !== undefined &&
+          node.definition.components?.production !== undefined &&
+          node.definition.meta?.isMainBuilding !== true
       )
       .map(([id]) => id as ObjectNames);
   }
@@ -290,7 +294,10 @@ export class TechTreeService {
     if (!graph) return [];
 
     return Object.entries(graph.nodes)
-      .filter(([, node]) => node.definition.components?.production !== undefined)
+      .filter(
+        ([, node]) =>
+          node.definition.components?.production !== undefined && node.definition.meta?.isMainBuilding !== true
+      )
       .map(([id]) => id as ObjectNames);
   }
 

@@ -243,6 +243,12 @@ export class ActorManager {
     actor = new actorConstructor(scene);
     setCoreActorDataFromName(actor, actorDefinition);
     setConstructingActorDataFromName(actor, actorDefinition);
+
+    const sceneActorCreator = getSceneService(scene, SceneActorCreator);
+    if (!sceneActorCreator) {
+      throw new Error("SceneActorCreator not found in scene");
+    }
+    sceneActorCreator.registerAndSaveNewActor(actor);
     return actor;
   }
 }

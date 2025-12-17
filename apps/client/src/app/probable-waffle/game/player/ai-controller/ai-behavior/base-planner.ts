@@ -156,14 +156,6 @@ export class BasePlanner {
     return best;
   }
 
-  chooseNextBuildingAndLocation(): { buildingName: string; tile: Vector2Simple } | null {
-    // Placeholder heuristic: if fewer than 3 reservations, queue generic "House"
-    if (this.plans.length >= 3) return null;
-    const tile = this.planBuilding("House", 0);
-    if (!tile) return null;
-    return { buildingName: "House", tile };
-  }
-
   /**
    * High-level helper: if needs are stale, recompute and update the blackboard's plannedBuildingTypes.
    */
@@ -172,7 +164,7 @@ export class BasePlanner {
     this.recomputeNeedsAndUpdateBlackboard(blackboard);
     // Fallback: if no explicit high-priority needs, opportunistically stage a generic reservation
     if (this.buildingNeeds.length === 0) {
-      this.chooseNextBuildingAndLocation();
+      const tile = this.planBuilding("House", 0); // Simplified fallback
     }
     return true;
   }
@@ -279,26 +271,6 @@ export class BasePlanner {
 
   getCurrentNeeds(): BuildingNeed[] {
     return this.buildingNeeds;
-  }
-
-  /**
-   * Translate highest priority need into a concrete buildable type label.
-   * Mapping can later become data-driven.
-   */
-  getNextNeededType(): string | null {
-    if (this.buildingNeeds.length === 0) return null;
-    const top = this.buildingNeeds[0];
-    if (!top) return null;
-    switch (top.type) {
-      case "Housing":
-        return "WorkMill"; // placeholder mapping
-      case "Production":
-        return "Owlery"; // placeholder mapping
-      case "Defense":
-        return "InfantryInn"; // placeholder mapping
-      default:
-        return null;
-    }
   }
 
   /**

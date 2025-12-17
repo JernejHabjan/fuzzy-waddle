@@ -204,9 +204,15 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     const techTree = getSceneService(this.scene, TechTreeService);
 
     owned.forEach((go) => {
-      const gatherer = getActorComponent(go, GathererComponent);
-      const prod = getActorComponent(go, ProductionComponent);
-      const attack = getActorComponent(go, AttackComponent);
+      const gatherer =
+        getActorComponent(go, GathererComponent) &&
+        pwActorDefinitions[go.name as ObjectNames].meta?.isMainBuilding !== true;
+      const prod =
+        getActorComponent(go, ProductionComponent) &&
+        pwActorDefinitions[go.name as ObjectNames].meta?.isMainBuilding !== true;
+      const attack =
+        getActorComponent(go, AttackComponent) &&
+        pwActorDefinitions[go.name as ObjectNames].meta?.isMainBuilding !== true;
       const actorName = go.name as ObjectNames;
 
       if (gatherer) workers.push(go);
@@ -434,10 +440,6 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     ); // extracted fallback 5000
   }
 
-  IsBaseExpansionNeeded() {
-    return this.blackboard.baseSize < this.blackboard.desiredBaseSize;
-  }
-
   HasSufficientResources() {
     return (
       this.blackboard.getTotalResources() >=
@@ -450,16 +452,6 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       this.blackboard.getTotalResources() <
       (this.adaptiveThresholds?.getResourceGatheringThreshold() ?? AI_CONFIG.resourceShortageThreshold)
     ); // extracted fallback 300
-  }
-
-  ChooseStructureToBuild() {
-    const availableStructures = this.blackboard.availableStructures();
-    if (availableStructures.length > 0) {
-      this.blackboard.selectedStructure = availableStructures[0]; // Choose the first available structure
-      this.logDebugInfo("Selected structure to build:", this.blackboard.selectedStructure);
-      return State.SUCCEEDED;
-    }
-    return State.FAILED;
   }
 
   AssignWorkersToGather() {
@@ -555,31 +547,6 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
         // todo gathererComponent.gather(gathererComponent.getClosestResourceSource(ResourceType.Wood, 100)!);
       });
       this.logDebugInfo("Workers are gathering resources.");
-      return State.SUCCEEDED;
-    }
-    return State.FAILED;
-  }
-
-  AssignWorkerToBuild() {
-    const idleWorkers = this.blackboard.workers.filter((worker) => {
-      const builderComponent = getActorComponent(worker, BuilderComponent);
-      if (!builderComponent) return false;
-      return builderComponent.isIdle();
-    });
-    if (idleWorkers.length > 0 && this.blackboard.selectedStructure) {
-      const builderComponent = getActorComponent(idleWorkers[0]!, BuilderComponent);
-      builderComponent?.assignToConstructionSite(this.blackboard.selectedStructure);
-      this.logDebugInfo("Assigned worker to build structure.");
-      return State.SUCCEEDED;
-    }
-    return State.FAILED;
-  }
-
-  StartBuildingStructure() {
-    const selectedStructure = this.blackboard.selectedStructure;
-    if (selectedStructure && this.HasSufficientResources()) {
-      selectedStructure.startConstruction();
-      this.logDebugInfo("Started building:", selectedStructure.name);
       return State.SUCCEEDED;
     }
     return State.FAILED;
@@ -815,82 +782,6 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     return State.SUCCEEDED;
   }
 
-  AssignHousingBuilding(): State {
-    // Get tech tree to find available housing buildings for this faction
-    const techTree = getSceneService(this.scene, TechTreeService);
-    if (!techTree) return State.FAILED;
-
-    const faction = this.player.factionType;
-    if (!faction) return State.FAILED;
-
-    // Get all available housing buildings for this faction
-    const housingBuildings = techTree.getHousingBuildings(faction);
-
-    // Filter to only those we can currently build (tech unlocked)
-    const availableHousing = housingBuildings.filter((building) => {
-      if (!this.productionValidator) return false;
-      const validation = this.productionValidator.validate(building);
-      return validation.canQueue;
-    });
-
-    if (availableHousing.length === 0) return State.FAILED;
-
-    // Prefer buildings we don't have many of (variety)
-    const sorted = this.sortBuildingsByVariety(availableHousing);
-    return this.assignBuilding(sorted[0]!);
-  }
-
-  AssignProductionBuilding(): State {
-    // Use tech tree to determine available production buildings
-    if (!this.productionValidator) return State.FAILED;
-
-    const techTree = getSceneService(this.scene, TechTreeService);
-    if (!techTree) return State.FAILED;
-
-    const faction = this.player.factionType;
-    if (!faction) return State.FAILED;
-
-    // Get all production buildings for this faction
-    const candidateBuildings = techTree.getProductionBuildings(faction);
-
-    // Filter to only those we can currently build
-    const availableProduction = candidateBuildings.filter((building) => {
-      const validation = this.productionValidator!.validate(building);
-      return validation.canQueue;
-    });
-
-    if (availableProduction.length === 0) return State.FAILED;
-
-    // Sort by variety (prefer buildings we don't already have much of)
-    const sortedByVariety = this.sortBuildingsByVariety(availableProduction);
-    return this.assignBuilding(sortedByVariety[0]!);
-  }
-
-  AssignDefenseBuilding(): State {
-    // Get tech tree to determine defensive buildings
-    const techTree = getSceneService(this.scene, TechTreeService);
-    if (!techTree) return State.FAILED;
-
-    const faction = this.player.factionType;
-    if (!faction) return State.FAILED;
-
-    // Get all defensive buildings for this faction
-    const candidateDefenseBuildings = techTree.getDefensiveBuildings(faction);
-
-    // Filter to only those we can currently build
-    const availableDefense = candidateDefenseBuildings.filter((building) => {
-      if (!this.productionValidator) return false;
-      const validation = this.productionValidator.validate(building);
-      return validation.canQueue;
-    });
-
-    if (availableDefense.length === 0) return State.FAILED;
-
-    // Sort by variety (prefer buildings we don't already have much of)
-    const sortedByVariety = this.sortBuildingsByVariety(availableDefense);
-    return this.assignBuilding(sortedByVariety[0]!);
-  }
-
   NeedToScout() {
     return this.scoutingManager?.needToScout() ?? false;
   }
@@ -1043,7 +934,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   HasPlannedBuildingNeed(): boolean {
     const needs = this.basePlanner.getCurrentNeeds();
     if (needs.length > 0) {
-      const nextType = this.basePlanner.getNextNeededType();
+      const nextType = needs[0]?.type;
       if (nextType) this.logDebugInfo("Next needed building type:", nextType);
       return true;
     }
