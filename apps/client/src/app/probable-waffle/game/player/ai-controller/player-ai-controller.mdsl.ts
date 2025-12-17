@@ -105,33 +105,42 @@ root [RepairBase] {
 }
 
 root [AdjustStrategyBasedOnGameState] {
-    selector {
-        sequence {
-            condition [IsEnemyPlayerWeak]
-            action [ShiftToAggressiveStrategy]
-        }
-        sequence {
-            condition [IsBaseUnderHeavyAttack]
-            action [ShiftToDefensiveStrategy]
-        }
-        sequence {
-            condition [HasSurplusResources]
-            action [ShiftToEconomicStrategy]
+    /* Adjusts overall AI strategy based on game state (non-blocking).*/
+    fail {
+        selector {
+            sequence {
+                condition [IsEnemyPlayerWeak]
+                action [ShiftToAggressiveStrategy]
+            }
+            sequence {
+                condition [IsBaseUnderHeavyAttack]
+                action [ShiftToDefensiveStrategy]
+            }
+            sequence {
+                condition [HasSurplusResources]
+                action [ShiftToEconomicStrategy]
+            }
         }
     }
 }
 
 root [DefendBase] {
-    sequence {
-        condition [IsBaseUnderAttack]
-        action [AssignDefenders]
+    /* Assigns defenders if base is under attack (non-blocking).*/
+    fail {
+        sequence {
+            condition [IsBaseUnderAttack]
+            action [AssignDefenders]
+        }
     }
 }
 
 root [AttackEnemy] {
-    sequence {
-        condition [HasEnoughMilitaryPower]
-        action [AttackEnemyBase]
+    /* Initiates attacks on enemy bases when conditions are met (non-blocking).*/
+    fail {
+        sequence {
+            condition [HasEnoughMilitaryPower]
+            action [AttackEnemyBase]
+        }
     }
 }
 
@@ -215,24 +224,28 @@ root [OptimizeResourceGathering] {
 }
 
 root [ScoutEnemy] {
-    sequence {
-        condition [NeedToScout]
-        action [AssignScoutUnits]
-        selector {
-            sequence {
-                condition [EnemySpotted]
-                action [AnalyzeEnemyBase]
+    fail {
+        sequence {
+            condition [NeedToScout]
+            action [AssignScoutUnits]
+            selector {
+                sequence {
+                    condition [EnemySpotted]
+                    action [AnalyzeEnemyBase]
+                }
+                action [ContinueScouting]
             }
-            action [ContinueScouting]
         }
     }
 }
 
 root [CombatTactics] {
-    selector {
-        sequence {
-            condition [IsInCombat]
-            branch [ExecuteCombatMicro]
+    fail {
+        selector {
+            sequence {
+                condition [IsInCombat]
+                branch [ExecuteCombatMicro]
+            }
         }
     }
 }
