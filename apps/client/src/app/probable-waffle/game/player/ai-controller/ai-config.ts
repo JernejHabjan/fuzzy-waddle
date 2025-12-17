@@ -19,14 +19,12 @@ export const AI_CONFIG = {
   defenderFallbackMaxCount: 4,
   // Default thresholds (fallbacks when adaptive system not available)
   baseHeavyAttackDefaultThreshold: 10,
-  militaryPowerDefaultThreshold: 3,
   resourceSurplusDefaultThreshold: 500,
   needMoreResourcesThreshold: 5000,
   hasSufficientResourcesThreshold: 500,
   resourceShortageThreshold: 300,
   gatherSearchRadius: 100,
   hasEnoughResourcesForWorkerThreshold: 100,
-  sufficientResourcesForUpgradeThreshold: 1000,
   needMoreWorkersThreshold: 5,
   housingBuffer: 3,
   // Production / supply planning
