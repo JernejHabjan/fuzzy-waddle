@@ -2050,32 +2050,6 @@
             "flipY": false
         },
         {
-            "prefabId": "f85960b3-fbc6-4971-adb9-ac3bc4ebea8e",
-            "id": "5a95c24b-83fe-4d3c-8166-c19138749895",
-            "unlock": [
-                "x",
-                "y",
-                "z"
-            ],
-            "label": "treeBird",
-            "z": 64,
-            "x": -424,
-            "y": 640
-        },
-        {
-            "prefabId": "f85960b3-fbc6-4971-adb9-ac3bc4ebea8e",
-            "id": "08255594-dbd0-49ad-b30a-981ea76a91e5",
-            "unlock": [
-                "x",
-                "y",
-                "z"
-            ],
-            "label": "treeBird_1",
-            "z": 64,
-            "x": 264,
-            "y": 440
-        },
-        {
             "prefabId": "2f74d672-6d97-4e2a-8913-3eefd7aa3471",
             "id": "62113924-7a9d-4c00-b677-5771ccaf8d99",
             "unlock": [

@@ -74,7 +74,6 @@ import SkaduweeMagicianFemale from "../../../prefabs/characters/skaduwee/skaduwe
 import FenceRightCorner from "../../../prefabs/outside/architecture/obstruction/FenceRightCorner";
 import FenceLeftCorner from "../../../prefabs/outside/architecture/obstruction/FenceLeftCorner";
 import ToxicFrog from "../../../prefabs/animals/toxic-frog/ToxicFrog";
-import TreeBird from "../../../prefabs/animals/tree-bird/TreeBird";
 import Wolf from "../../../prefabs/animals/wolf/Wolf";
 import Stag from "../../../prefabs/animals/stag/Stag";
 import Boar from "../../../prefabs/animals/boar/Boar";
@@ -85,6 +84,7 @@ import MiningCamp from "../../../prefabs/buildings/tivara/MiningCamp";
 /* END-USER-IMPORTS */
 
 export default class MapRiverCrossing extends GameProbableWaffleScene {
+
   constructor() {
     super("MapRiverCrossing");
 
@@ -94,13 +94,14 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
   }
 
   editorCreate(): void {
+
     // tilemap
     const tilemap = this.add.tilemap("tiles_river_crossing");
     tilemap.addTilesetImage("tiles", "tiles_1");
     tilemap.addTilesetImage("tiles_2", "tiles_2");
 
     // tilemap_level_1
-    tilemap.createLayer("TileMap_level_1", ["tiles", "tiles_2"], 0, 0);
+    tilemap.createLayer("TileMap_level_1", ["tiles","tiles_2"], 0, 0);
 
     // spawn
     const spawn = new Spawn(this, 96, 608);
@@ -776,14 +777,6 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     toxicFrog_3.flipX = true;
     toxicFrog_3.flipY = false;
 
-    // treeBird
-    const treeBird = new TreeBird(this, -424, 640);
-    this.add.existing(treeBird);
-
-    // treeBird_1
-    const treeBird_1 = new TreeBird(this, 264, 440);
-    this.add.existing(treeBird_1);
-
     // wolf
     const wolf = new Wolf(this, -320, 1216);
     this.add.existing(wolf);
@@ -961,12 +954,6 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // skaduweeOwl_1 (components)
     const skaduweeOwl_1EditorOwner = new EditorOwner(skaduweeOwl_1);
     skaduweeOwl_1EditorOwner.owner_id = "1";
-
-    // treeBird (prefab fields)
-    treeBird.z = 64;
-
-    // treeBird_1 (prefab fields)
-    treeBird_1.z = 64;
 
     // emberstone (components)
     const emberstoneEditorOwner = new EditorOwner(emberstone);
