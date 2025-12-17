@@ -42,9 +42,9 @@ import { ScoutingManager } from "./ai-behavior/scouting-manager";
 import { TargetingManager } from "./ai-behavior/targeting-manager";
 import { SupplyPlanner } from "./ai-behavior/supply-planner";
 import { IsoHelper } from "../../world/tilemap/iso-helper";
-import GameObject = Phaser.GameObjects.GameObject;
 import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   private displayDebugInfo = false;
@@ -242,6 +242,9 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     this.blackboard.units = units;
     this.blackboard.defensiveStructures = defense;
 
+    // todo: replace with a more sophisticated military strength calculation (e.g. based on unit cost or dps)
+    this.blackboard.militaryStrength = units.length;
+
     // Calculate housing capacity from housing buildings using tech tree definitions
     // Estimate base size as total building count (production + defense + housing)
     this.blackboard.baseSize = production.length;
@@ -292,8 +295,16 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       if (visible) enemyCandidates.push(obj);
     });
 
+    const enemyInfantryUnits = enemyCandidates.filter((e) => {
+      const attackComp = getActorComponent(e, AttackComponent);
+      const gathererComp = getActorComponent(e, GathererComponent);
+      return attackComp && !gathererComp;
+    });
+
     // Update blackboard enemy-related fields
     this.blackboard.visibleEnemies = enemyCandidates;
+    // todo: replace with a more sophisticated enemy military strength calculation
+    this.blackboard.enemyMilitaryStrength = enemyInfantryUnits.length;
     if (baseCenter) {
       const near: GameObject[] = [];
       enemyCandidates.forEach((e) => {
@@ -304,6 +315,11 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     } else {
       this.blackboard.enemiesNearBase = enemyCandidates.slice(0, AI_CONFIG.fallbackVisibleEnemyLimit);
     }
+
+    // todo: implement proper enemy base detection
+    this.blackboard.enemyBase = this.blackboard.primaryTarget;
+    // todo: implement proper enemy flank detection
+    this.blackboard.enemyFlankOpen = false;
 
     // Choose defending units: subset of friendly units near base center (or first few)
     const defenders: GameObject[] = [];
