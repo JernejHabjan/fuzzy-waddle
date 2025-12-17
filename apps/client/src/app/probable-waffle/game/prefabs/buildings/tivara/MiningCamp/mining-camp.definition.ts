@@ -42,7 +42,7 @@ export const miningCampDefinition = {
         [ResourceType.Wood]: 150
       },
       refundFactor: 0.5,
-      productionTime: 10000,
+      productionTime: 5000,
       costType: PaymentType.PayImmediately
     },
     resourceDrain: {

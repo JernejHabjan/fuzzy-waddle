@@ -1,4 +1,6 @@
 // You can write more code here
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 
 /* START OF COMPILED CODE */
 
@@ -78,6 +80,7 @@ import Stag from "../../../prefabs/animals/stag/Stag";
 import Boar from "../../../prefabs/animals/boar/Boar";
 import Badger from "../../../prefabs/animals/badger/Badger";
 import Emberstone from "../../../prefabs/buildings/skaduwee/Emberstone";
+import MiningCamp from "../../../prefabs/buildings/tivara/MiningCamp";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -817,6 +820,10 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     const emberstone = new Emberstone(this, 896, 864);
     this.add.existing(emberstone);
 
+    // miningCamp
+    const miningCamp = new MiningCamp(this, -96, 160);
+    this.add.existing(miningCamp);
+
     // spawn (components)
     const spawnEditorOwner = new EditorOwner(spawn);
     spawnEditorOwner.owner_id = "1";
@@ -965,12 +972,16 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     const emberstoneEditorOwner = new EditorOwner(emberstone);
     emberstoneEditorOwner.owner_id = "2";
 
+    // miningCamp (components)
+    const miningCampEditorOwner = new EditorOwner(miningCamp);
+    miningCampEditorOwner.owner_id = "1";
+
     this.tilemap = tilemap;
 
     this.events.emit("scene-awake");
   }
 
-  public override tilemap!: Phaser.Tilemaps.Tilemap;
+  public tilemap!: Phaser.Tilemaps.Tilemap;
 
   /* START-USER-CODE */
 
@@ -979,11 +990,11 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
   createGradientSky() {
     // Create a graphics object
     const graphics = this.add.graphics();
-    
+
     // Get camera bounds to ensure the gradient covers the entire viewable area
     const camera = this.cameras.main;
     const cameraBounds = camera.getBounds();
-    
+
     // Make the gradient significantly larger to account for camera zoom out
     // Use the camera bounds with a generous multiplier to ensure coverage
     const width = Math.max(this.scale.width, cameraBounds.width) * 3;
@@ -1003,7 +1014,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
 
     // Keep the gradient fixed to the camera (doesn't scroll with the world)
     graphics.setScrollFactor(0);
-    
+
     // Set depth to ensure it's behind everything else
     graphics.setDepth(-1000);
   }
