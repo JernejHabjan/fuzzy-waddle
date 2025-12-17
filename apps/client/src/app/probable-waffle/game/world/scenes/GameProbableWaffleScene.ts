@@ -9,11 +9,9 @@ import HudProbableWaffle from "./hud-scenes/HudProbableWaffle";
 import { GameObjectSelectionHandler } from "../../player/human-controller/game-object-selection.handler";
 import { SceneGameState } from "../state/scene-game-state";
 import { GameSettings } from "../../core/gameSettings";
-import { type ProbableWaffleGameData } from "../../core/probable-waffle-game-data";
 import { SaveGame } from "../../data/save-game";
 import { SceneActorCreator } from "../services/scene-actor-creator";
 import { NavigationService } from "../services/navigation.service";
-import { BehaviorSubject } from "rxjs";
 import { AudioService } from "../services/audio.service";
 import { TilemapComponent } from "../tilemap/tilemap.component";
 import { RestartGame } from "../../data/restart-game";
@@ -33,16 +31,6 @@ import { PlayerActionsHandler } from "../../player/human-controller/player-actio
 import { ActorIndexSystem } from "../services/ActorIndexSystem";
 import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
 import { SelectionTabHandler } from "../../player/human-controller/selection-tab-handler";
-
-export interface ProbableWaffleSceneData {
-  baseGameData: ProbableWaffleGameData;
-  systems: any[];
-  components: any[];
-  services: any[];
-  initializers: {
-    sceneInitialized: BehaviorSubject<boolean>;
-  };
-}
 
 export default class GameProbableWaffleScene extends ProbableWaffleScene {
   tilemap!: Phaser.Tilemaps.Tilemap;
