@@ -2177,6 +2177,21 @@
             "EditorOwner.owner_id": "2",
             "x": 896,
             "y": 864
+        },
+        {
+            "prefabId": "6a6c7316-bc2e-4e51-b0e5-68ad2522321f",
+            "id": "d41dc134-f9f3-484d-9cbb-6e322888fb91",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "miningCamp",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -96,
+            "y": 160
         }
     ],
     "plainObjects": [
