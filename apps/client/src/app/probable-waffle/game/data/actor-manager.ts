@@ -59,6 +59,7 @@ import { getSceneService } from "../world/services/scene-component-helpers";
 import { SceneActorCreator } from "../world/services/scene-actor-creator";
 import GameObject = Phaser.GameObjects.GameObject;
 import MiningCamp from "../prefabs/buildings/tivara/MiningCamp";
+import Emberstone from "../prefabs/buildings/skaduwee/Emberstone";
 
 export type ActorConstructor = new (scene: Phaser.Scene) => GameObject;
 export type ActorMap = { [name: string]: ActorConstructor };
@@ -113,6 +114,7 @@ export class ActorManager {
     [ObjectNames.Owlery]: Owlery,
     [ObjectNames.WorkMill]: WorkMill,
     [ObjectNames.WatchTower]: WatchTower,
+    [ObjectNames.Emberstone]: Emberstone,
     [ObjectNames.Wall]: Wall,
     [ObjectNames.Stairs]: Stairs,
     [ObjectNames.MiningCamp]: MiningCamp

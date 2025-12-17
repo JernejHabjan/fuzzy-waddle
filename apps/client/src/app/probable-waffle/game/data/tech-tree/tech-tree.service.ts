@@ -34,11 +34,9 @@ export class TechTreeService {
     });
 
     if (allErrors.length > 0) {
-      // eslint-disable-next-line no-console
       console.warn("[TechTreeService] Tech tree validation errors:", allErrors);
     } else {
-      // eslint-disable-next-line no-console
-      console.log("[TechTreeService] Tech tree validation passed for all factions");
+      // console.log("[TechTreeService] Tech tree validation passed for all factions");
     }
   }
 

@@ -41,8 +41,8 @@ import { CombatMicroManager } from "./ai-behavior/combat-micro-manager";
 import { ScoutingManager } from "./ai-behavior/scouting-manager";
 import { TargetingManager } from "./ai-behavior/targeting-manager";
 import { SupplyPlanner } from "./ai-behavior/supply-planner";
-import GameObject = Phaser.GameObjects.GameObject;
 import { IsoHelper } from "../../world/tilemap/iso-helper";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   private displayDebugInfo = false;
@@ -550,7 +550,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     // Dynamic worker threshold based on strategy and economy state
     const currentWorkers = this.blackboard.workers.length;
     const currentStrategy = this.blackboard.currentStrategy;
-    
+
     // Strategy-based worker targets
     let targetWorkers: number;
     switch (currentStrategy) {
@@ -566,16 +566,16 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       default:
         targetWorkers = AI_CONFIG.needMoreWorkersThreshold; // fallback 5
     }
-    
+
     // Also consider if we have production buildings that need workers
     const productionBuildingCount = this.blackboard.productionBuildings.length;
     const minWorkersPerBuilding = 2;
     const minBaseWorkers = 4;
     const buildingBasedTarget = Math.max(minBaseWorkers, productionBuildingCount * minWorkersPerBuilding);
-    
+
     // Use the higher of the two targets
     const finalTarget = Math.max(targetWorkers, buildingBasedTarget);
-    
+
     return currentWorkers < finalTarget;
   }
 
@@ -665,7 +665,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       const name = building.name as ObjectNames;
       buildingCounts.set(name, (buildingCounts.get(name) ?? 0) + 1);
     });
-    
+
     // Sort by count (ascending) to build variety
     return [...buildings].sort((a, b) => {
       const countA = buildingCounts.get(a) || 0;
@@ -775,7 +775,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     // Faction-aware housing building assignment
     const faction = this.player.factionType;
     let housingBuilding: ObjectNames;
-    
+
     switch (faction) {
       case FactionType.Tivara:
         housingBuilding = ObjectNames.Olival;
@@ -784,66 +784,63 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
         housingBuilding = ObjectNames.Emberstone;
         break;
       default:
-        // Fallback to WorkMill if faction is unknown
-        housingBuilding = ObjectNames.WorkMill;
+        throw new Error("Unsupported faction for housing building assignment.");
     }
-    
+
     return this.assignBuilding(housingBuilding);
   }
 
   AssignProductionBuilding(): State {
     // Use tech tree to determine available production buildings
     if (!this.productionValidator) return State.FAILED;
-    
+
     const faction = this.player.factionType;
     const candidateBuildings: ObjectNames[] = [];
-    
+
     // Get all buildings with production component from actor definitions
     Object.entries(pwActorDefinitions).forEach(([objectName, def]) => {
-      
       // Check if building has production component and is constructable
       if (def?.components?.production && def?.components?.constructable) {
         // Validate if this building can be constructed by checking tech tree
-        const validation = this.productionValidator!.validate(objectName);
+        const validation = this.productionValidator!.validate(objectName as ObjectNames);
         if (validation.canQueue) {
-          candidateBuildings.push(objectName);
+          candidateBuildings.push(objectName as ObjectNames);
         }
       }
     });
-    
+
     // Sort by variety (prefer buildings we don't already have much of)
     const sortedByVariety = this.sortBuildingsByVariety(candidateBuildings);
-    
+
     // Use first available production building, fallback to Owlery if none found
-    const selectedBuilding = sortedByVariety.length > 0 ? sortedByVariety[0] : ObjectNames.Owlery;
+    const selectedBuilding = sortedByVariety.length > 0 ? sortedByVariety[0]! : ObjectNames.Owlery;
     return this.assignBuilding(selectedBuilding);
   }
 
   AssignDefenseBuilding(): State {
     // Only assign buildings with attack component (defensive structures)
     const candidateDefenseBuildings: ObjectNames[] = [];
-    
+
     Object.entries(pwActorDefinitions).forEach(([objectName, def]) => {
-      
       // Check if building has attack component and is constructable
       if (def?.components?.attack && def?.components?.constructable) {
         // Validate if this building can be constructed
         if (this.productionValidator) {
-          const validation = this.productionValidator.validate(objectName);
+          const validation = this.productionValidator.validate(objectName as ObjectNames);
           if (validation.canQueue) {
-            candidateDefenseBuildings.push(objectName);
+            candidateDefenseBuildings.push(objectName as ObjectNames);
           }
         } else {
-          candidateDefenseBuildings.push(objectName);
+          candidateDefenseBuildings.push(objectName as ObjectNames);
         }
       }
     });
-    
+
     // Sort by variety (prefer buildings we don't already have much of)
     const sortedByVariety = this.sortBuildingsByVariety(candidateDefenseBuildings);
-    
+
     // Use first available defense building, fallback to WatchTower if none found
-    const selectedBuilding = sortedByVariety.length > 0 ? sortedByVariety[0] : ObjectNames.WatchTower;
+    const selectedBuilding = sortedByVariety.length > 0 ? sortedByVariety[0]! : ObjectNames.WatchTower;
     return this.assignBuilding(selectedBuilding);
   }
 
@@ -1064,26 +1061,26 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       return prod?.isIdle;
     });
     if (!building) return State.FAILED;
-    
+
     const prod = getActorComponent(building, ProductionComponent);
     if (!prod) return State.FAILED;
-    
+
     // Get available units that this building can produce
-    const availableUnits = prod.availableProduceActors || [];
+    const availableUnits = prod.productionDefinition.availableProduceActors || [];
     if (availableUnits.length === 0) return State.FAILED;
-    
+
     // Filter to units with attack component (military units)
     const militaryUnits = availableUnits.filter((unitName) => {
       const def = pwActorDefinitions[unitName as ObjectNames];
       return def?.components?.attack !== undefined;
     });
-    
+
     if (militaryUnits.length === 0) return State.FAILED;
-    
+
     // Try to queue the first affordable and tech-available military unit
     for (const unitName of militaryUnits) {
       const candidate = unitName as ObjectNames;
-      
+
       // Validate tech and building prerequisites
       if (this.productionValidator) {
         const validation = this.productionValidator.validate(candidate);
@@ -1094,16 +1091,16 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
           continue; // Try next unit
         }
       }
-      
+
       // Check if we have resources
       const def = pwActorDefinitions[candidate];
       const costData = def?.components?.productionCost;
       if (!costData) continue;
-      
+
       if (!this.blackboard.hasAtLeastResources(costData.resources || {})) {
         continue; // Try next unit
       }
-      
+
       // Queue the production
       try {
         prod.startProduction({
@@ -1116,20 +1113,20 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
         continue;
       }
     }
-    
+
     return State.FAILED;
   }
-  
+
   // ================= Surrender Logic =================
   ShouldOfferSurrender(): boolean {
     // Don't offer surrender if already offered or rejected
     if (this.blackboard.wantsToSurrender || this.blackboard.surrenderRejected) return false;
-    
+
     // Check if AI is in a losing position
     const totalUnits = this.blackboard.units.length + this.blackboard.workers.length;
     const totalBuildings = this.blackboard.productionBuildings.length;
     const resources = this.blackboard.getTotalResources();
-    
+
     // Surrender conditions:
     // 1. Very low unit count (< 3 units)
     // 2. Low building count (< 2 buildings)
@@ -1137,18 +1134,18 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     // 4. Very low resources (< 100 total)
     const veryLowUnits = totalUnits < 3;
     const fewBuildings = totalBuildings < 2;
-    const enemyAdvantage = 
-      this.blackboard.militaryStrength === 0 && this.blackboard.enemyMilitaryStrength > 0 ||
-      (this.blackboard.militaryStrength > 0 && 
-       this.blackboard.enemyMilitaryStrength > this.blackboard.militaryStrength * 3);
+    const enemyAdvantage =
+      (this.blackboard.militaryStrength === 0 && this.blackboard.enemyMilitaryStrength > 0) ||
+      (this.blackboard.militaryStrength > 0 &&
+        this.blackboard.enemyMilitaryStrength > this.blackboard.militaryStrength * 3);
     const lowResources = resources < 100;
-    
+
     // AI should surrender if it meets multiple losing conditions
     const losingConditionsMet = [veryLowUnits, fewBuildings, enemyAdvantage, lowResources].filter(Boolean).length >= 2;
-    
+
     return losingConditionsMet;
   }
-  
+
   OfferSurrender(): State {
     const now = performance.now();
     this.blackboard.wantsToSurrender = true;
