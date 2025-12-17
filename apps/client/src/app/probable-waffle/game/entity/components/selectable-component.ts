@@ -47,7 +47,10 @@ export class SelectableComponent {
   private createSelectionCircle() {
     const bounds = getGameObjectBounds(this.gameObject);
     if (!bounds) return;
-    const ellipse = new Phaser.Geom.Ellipse(0, 0, bounds.width, bounds.width / 2);
+    const reduction = this.selectableDefinition?.sizeFactorReduction ?? 0;
+    const width = bounds.width * (1 - reduction);
+    const height = (bounds.width / 2) * (1 - reduction);
+    const ellipse = new Phaser.Geom.Ellipse(0, 0, width, height);
     ellipse.y = this.selectableDefinition?.offsetY ?? 0;
     const graphics = this.gameObject.scene.add.graphics();
     graphics.lineStyle(2, 0xffffff);
