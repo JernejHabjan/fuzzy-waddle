@@ -29,14 +29,17 @@ export class PlayerAiController {
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.onShutdown, this);
   }
 
-  private update(time: number, dt: number) {
+  private async update(time: number, dt: number) {
     if (!PlayerAiController.AI_ENABLED) return;
     this.elapsedTime += dt;
     if (this.elapsedTime >= this.stepInterval) {
       this.telemetry.nextFrame();
       const frameBeforeSnapshot = this.telemetry.snapshot().frame; // capture frame index
       try {
-        this.telemetry.withSpan("ai.preTick", () => this.playerAiControllerAgent.preTick(performance.now()));
+        await this.telemetry.withSpanAsync(
+          "ai.preTick",
+          async () => await this.playerAiControllerAgent.preTick(performance.now())
+        );
         this.telemetry.withSpan("ai.behaviourTreeStep", () => this.behaviourTree.step());
         if (this.telemetryFrameModulo && frameBeforeSnapshot % this.telemetryFrameModulo === 0) {
           this.blackboard.diagnostics.telemetry = this.telemetry.snapshot();

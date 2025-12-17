@@ -110,13 +110,13 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   }
 
   /** Pre-tick lifecycle hook called by controller before behaviour tree step. */
-  preTick(now: number) {
-    this.updateManagers(now);
+  async preTick(now: number): Promise<void> {
+    await this.updateManagers(now);
   }
 
-  private updateManagers(now: number) {
+  private async updateManagers(now: number): Promise<void> {
     // Refresh unit / production snapshots via ActorIndexSystem (replaces UnitDiscoveryManager)
-    this.refreshOwnedActors(now);
+    await this.refreshOwnedActors(now);
     // Update scouting vision sampling
     this.scoutingManager.updateVisionSampling(now);
     // Update primary target cache
@@ -187,7 +187,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   private ownedScanInitialized = false;
   private lastOwnedRefreshAt = 0;
   private readonly ownedRefreshIntervalMs = AI_CONFIG.ownedRefreshIntervalMs;
-  private refreshOwnedActors(now: number) {
+  private async refreshOwnedActors(now: number) {
     if (now - this.lastOwnedRefreshAt < this.ownedRefreshIntervalMs) return;
     const index = getSceneService(this.scene, ActorIndexSystem);
     if (!index) return;
@@ -264,39 +264,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     this.blackboard.production.trainingBuildings = production;
     this.blackboard.production.productionBuildings = production;
 
-    // Derive enemy visibility & defense assignment
-    const enemyCandidates: GameObject[] = [];
-    const ownedSet = new Set(owned);
-    const allActors = index.getAllIdActors();
-    const baseCenter = this.blackboard.baseCenterTile;
-    allActors.forEach((obj) => {
-      if (ownedSet.has(obj)) return;
-      const health = getActorComponent(obj, HealthComponent);
-      if (!health) return;
-      const ownerComponent = getActorComponent(obj, OwnerComponent);
-      if (!ownerComponent) return;
-      // Basic visibility heuristic: distance to any unit or base center < visionRadius
-      const visionRadius = AI_CONFIG.enemyVisionRadiusTiles;
-      let visible = false;
-      if (baseCenter) {
-        const anyObj: any = obj.body || obj;
-        if (anyObj?.x != null) {
-          const dx = anyObj.x - baseCenter.x;
-          const dy = anyObj.y - baseCenter.y;
-          if (dx * dx + dy * dy <= visionRadius * visionRadius) visible = true;
-        }
-      }
-      if (!visible) {
-        for (const u of units) {
-          const d = DistanceHelper.getTileDistanceBetweenGameObjects(u, obj);
-          if (d !== null && d <= visionRadius) {
-            visible = true;
-            break;
-          }
-        }
-      }
-      if (visible) enemyCandidates.push(obj);
-    });
+    const enemyCandidates = await this.extractEnemyCandidates(owned, index, units);
 
     const enemyInfantryUnits = enemyCandidates.filter((e) => {
       const attackComp = getActorComponent(e, AttackComponent);
@@ -308,13 +276,9 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     this.blackboard.visibleEnemies = enemyCandidates;
     // todo: replace with a more sophisticated enemy military strength calculation
     this.blackboard.enemyMilitaryStrength = enemyInfantryUnits.length;
+    const baseCenter = this.blackboard.baseCenterTile;
     if (baseCenter) {
-      const near: GameObject[] = [];
-      enemyCandidates.forEach((e) => {
-        const d = DistanceHelper.getTileDistanceBetweenGameObjectAndTile(e, baseCenter);
-        if (d !== null && d <= AI_CONFIG.enemyNearBaseRadiusTiles) near.push(e);
-      });
-      this.blackboard.enemiesNearBase = near;
+      this.blackboard.enemiesNearBase = await this.getEnemiesNearBase(enemyCandidates, baseCenter);
     } else {
       this.blackboard.enemiesNearBase = enemyCandidates.slice(0, AI_CONFIG.fallbackVisibleEnemyLimit);
     }
@@ -336,6 +300,63 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     this.blackboard.defendingUnits = defenders;
 
     this.lastOwnedRefreshAt = now;
+  }
+
+  private async getEnemiesNearBase(enemyCandidates: GameObject[], baseCenter: Vector3Simple) {
+    const distancePromises = enemyCandidates.map((enemy) =>
+      DistanceHelper.getTileDistanceBetweenGameObjectAndTileNavigation(enemy, baseCenter).then(
+        (distance) => [enemy, distance] as [GameObject, number | null]
+      )
+    );
+
+    const enemiesWithDistances = await Promise.all(distancePromises);
+
+    const near: GameObject[] = [];
+    for (const [enemy, distance] of enemiesWithDistances) {
+      if (distance !== null && distance <= AI_CONFIG.enemyNearBaseRadiusTiles) {
+        near.push(enemy);
+      }
+    }
+    return near;
+  }
+
+  private async extractEnemyCandidates(owned: GameObject[], index: ActorIndexSystem, units: GameObject[]) {
+    // Derive enemy visibility & defense assignment
+    const ownedSet = new Set(owned);
+    const allActors = index.getAllIdActors();
+    const baseCenter = this.blackboard.baseCenterTile;
+    const visionRadius = AI_CONFIG.enemyVisionRadiusTiles;
+
+    const potentialEnemies = allActors.filter((obj) => {
+      if (ownedSet.has(obj)) return false;
+      const health = getActorComponent(obj, HealthComponent);
+      if (!health) return false;
+      const ownerComponent = getActorComponent(obj, OwnerComponent);
+      return !!ownerComponent;
+    });
+
+    const visibilityChecks = potentialEnemies.map(async (obj) => {
+      // Basic visibility heuristic: distance to any unit or base center < visionRadius
+      if (baseCenter) {
+        const anyObj: any = obj.body || obj;
+        if (anyObj?.x != null) {
+          const dx = anyObj.x - baseCenter.x;
+          const dy = anyObj.y - baseCenter.y;
+          if (dx * dx + dy * dy <= visionRadius * visionRadius) return obj;
+        }
+      }
+
+      for (const u of units) {
+        const d = await DistanceHelper.getTileDistanceBetweenGameObjectsNavigation(u, obj);
+        if (d !== null && d <= visionRadius) {
+          return obj;
+        }
+      }
+      return null;
+    });
+
+    const visibleEnemies = await Promise.all(visibilityChecks);
+    return visibleEnemies.filter((e): e is GameObject => e !== null);
   }
 
   // needed only when passing this agent to BehaviourTree constructor
