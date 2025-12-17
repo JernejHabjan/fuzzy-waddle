@@ -34,7 +34,8 @@ export const generalWorkerDefinitions: Partial<PrefabDefinition> = {
       cooldown: 1000
     },
     gatherer: {
-      resourceSweepRadius: 20,
+      // this high, so AI player can resume gathering resources if last resource source was far away
+      resourceSweepRadius: 100,
       resourceSourceGameObjectClasses: [
         ResourceType.Ambrosia,
         ResourceType.Wood,
