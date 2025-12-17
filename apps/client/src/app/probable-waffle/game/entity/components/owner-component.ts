@@ -139,7 +139,12 @@ export class OwnerComponent {
     }
     const gameScene = this.gameObject.scene as GameProbableWaffleScene;
     const maxPlayers = gameScene.mapInfo.mapInfo.startPositionsOnTile.length;
-    const { hue, saturation, lightness } = GameSetupHelpers.getHslColorForPlayer(this.owner, maxPlayers);
+    const gameInstanceId = gameScene.gameInstanceId;
+    const { hue, saturation, lightness } = GameSetupHelpers.getHslColorForPlayer(
+      this.owner,
+      maxPlayers,
+      gameInstanceId
+    );
     const { hueNormalized, saturationNormalized, lightnessNormalized } = {
       hueNormalized: hue / 360,
       saturationNormalized: saturation / 100,

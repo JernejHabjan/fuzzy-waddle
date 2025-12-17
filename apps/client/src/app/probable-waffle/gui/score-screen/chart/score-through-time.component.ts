@@ -75,7 +75,7 @@ export class ScoreThroughTimeComponent implements OnInit {
 
     const players = this.gameInstanceClientService.gameInstance.players;
     const allTimestamps = this.getAllTimestamps(players);
-
+    const gameInstanceId = this.gameInstanceClientService.gameInstance.gameInstanceMetadata.data.gameInstanceId;
     this.chartData.labels = allTimestamps.map((n) => n.toString());
 
     players.forEach((player) => {
@@ -86,7 +86,7 @@ export class ScoreThroughTimeComponent implements OnInit {
         label: playerName,
         data: buildingProduced,
         fill: false,
-        borderColor: GameSetupHelpers.getStringColorForPlayer(player.playerNumber!, players.length)
+        borderColor: GameSetupHelpers.getStringColorForPlayer(player.playerNumber!, players.length, gameInstanceId)
       });
     });
     this.ready = true;

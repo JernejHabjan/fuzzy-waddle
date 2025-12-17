@@ -98,6 +98,10 @@ export class MapDefinitionComponent implements OnInit, OnDestroy {
     return mapData;
   }
 
+  private getGameInstanceId(): string | undefined {
+    return this.gameInstanceClientService.gameInstance?.gameInstanceMetadata?.data?.gameInstanceId;
+  }
+
   private get players(): ProbableWafflePlayer[] {
     return this.gameInstanceClientService.gameInstance?.players ?? [];
   }
@@ -255,7 +259,7 @@ export class MapDefinitionComponent implements OnInit, OnDestroy {
         }
         const maxPlayers = this.mapData.mapInfo.startPositionsOnTile.length;
         const playerNumber = definition!.player.playerNumber;
-        const color = GameSetupHelpers.getStringColorForPlayer(playerNumber, maxPlayers);
+        const color = GameSetupHelpers.getStringColorForPlayer(playerNumber, maxPlayers, this.getGameInstanceId());
         this.createDraggablePlayerRectangle(i, playerPosition, isoCoordinate, color);
       }
     }
