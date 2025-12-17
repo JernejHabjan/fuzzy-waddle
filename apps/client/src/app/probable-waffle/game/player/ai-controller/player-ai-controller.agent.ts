@@ -46,6 +46,7 @@ import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import { OwnerComponent } from "../../entity/components/owner-component";
 import GameObject = Phaser.GameObjects.GameObject;
+import { ResourceDrainComponent } from "../../entity/components/resource/resource-drain-component";
 
 export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   private displayDebugInfo = false;
@@ -66,7 +67,6 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   private combatMicro: CombatMicroManager;
   private scoutingManager: ScoutingManager;
   private targetingManager: TargetingManager;
-  private supplyPlanner: SupplyPlanner;
   private productionValidator: ProductionValidator;
 
   constructor(
@@ -82,7 +82,8 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       });
     }
     this.mapAnalyzer = new MapAnalyzer(this.scene, this.player.playerNumber!);
-    this.basePlanner = new BasePlanner(this.mapAnalyzer, this.player.factionType);
+    const supplyPlanner = new SupplyPlanner(this.blackboard);
+    this.basePlanner = new BasePlanner(this.mapAnalyzer, this.player.factionType, supplyPlanner);
     this.cooldowns.configure("strategyShift", AI_CONFIG.strategyShiftIntervalMs);
     this.cooldowns.configure("analyzeMap", AI_CONFIG.mapAnalysisIntervalMs);
     this.cooldowns.configure("attackTrigger", AI_CONFIG.attackTriggerIntervalMs);
@@ -102,11 +103,10 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     );
     this.logisticsManager = new LogisticsManager(this.blackboard, this.logDebugInfo.bind(this));
     this.techManager = new TechProgressManager(this.blackboard, this.logDebugInfo.bind(this));
-    this.adaptiveThresholds = new AdaptiveThresholdManager(this.blackboard, this.basePlanner, this.player.factionType);
+    this.adaptiveThresholds = new AdaptiveThresholdManager(this.blackboard, this.basePlanner);
     this.combatMicro = new CombatMicroManager(this.scene, this.blackboard, this.logDebugInfo.bind(this));
     this.scoutingManager = new ScoutingManager(this.scene, this.blackboard, this.logDebugInfo.bind(this));
     this.targetingManager = new TargetingManager(this.blackboard);
-    this.supplyPlanner = new SupplyPlanner(this.blackboard);
   }
 
   /** Pre-tick lifecycle hook called by controller before behaviour tree step. */
@@ -121,17 +121,6 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     this.scoutingManager.updateVisionSampling(now);
     // Update primary target cache
     this.targetingManager.update(now);
-    // Assess supply & proactively plan housing if needed
-    const supply = this.supplyPlanner.assess(now);
-    if (supply && supply.urgency !== "none") {
-      const hasPlannedHousing = this.blackboard.production.plannedStructures.some(
-        (p) => p.name === ObjectNames.WorkMill
-      );
-      if (!hasPlannedHousing) {
-        const dynCost = getCostForObjectName(ObjectNames.WorkMill) || { wood: AI_CONFIG.defaultWorkMillWoodCost };
-        this.blackboard.beginPlannedStructure(ObjectNames.WorkMill, dynCost, now); // dynamic cost
-      }
-    }
     this.processPrerequisiteQueue(now);
   }
 
@@ -201,6 +190,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     const production: GameObject[] = [];
     const defense: GameObject[] = [];
     const housing: GameObject[] = [];
+    const gathering: GameObject[] = [];
 
     // Get tech tree service for actor classification
     const techTree = getSceneService(this.scene, TechTreeService);
@@ -213,6 +203,10 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       const attack =
         getActorComponent(go, AttackComponent) &&
         pwActorDefinitions[go.name as ObjectNames].meta?.isMainBuilding !== true;
+      const resourceDrain =
+        getActorComponent(go, ResourceDrainComponent) &&
+        pwActorDefinitions[go.name as ObjectNames].meta?.isMainBuilding !== true;
+
       const actorName = go.name as ObjectNames;
 
       if (gatherer) workers.push(go);
@@ -229,6 +223,8 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       if (techTree?.isHousingBuilding(faction, actorName)) {
         housing.push(go);
       }
+
+      if (resourceDrain) gathering.push(go);
     });
 
     // Update resources and housing from player state (world source of truth)
@@ -242,6 +238,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     this.blackboard.trainingBuildings = production;
     this.blackboard.units = units;
     this.blackboard.defensiveStructures = defense;
+    this.blackboard.gatheringStructures = gathering;
 
     // todo: replace with a more sophisticated military strength calculation (e.g. based on unit cost or dps)
     this.blackboard.militaryStrength = units.length;
@@ -682,36 +679,6 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       return State.SUCCEEDED;
     }
     return State.FAILED;
-  }
-
-  NeedMoreHousing() {
-    return this.blackboard.production.supply.max <= this.blackboard.units.length + AI_CONFIG.housingBuffer; // extracted +3 buffer
-  }
-
-  NeedMoreProduction() {
-    return this.blackboard.productionBuildings.length < this.blackboard.desiredProductionBuildings;
-  }
-
-  NeedMoreDefense() {
-    return this.blackboard.defensiveStructures.length < this.blackboard.desiredDefensiveStructures;
-  }
-
-  /**
-   * Helper method to sort buildings by variety - prefers buildings we don't have many of.
-   */
-  private sortBuildingsByVariety(buildings: ObjectNames[]): ObjectNames[] {
-    const buildingCounts = new Map<ObjectNames, number>();
-    this.blackboard.productionBuildings.forEach((building) => {
-      const name = building.name as ObjectNames;
-      buildingCounts.set(name, (buildingCounts.get(name) ?? 0) + 1);
-    });
-
-    // Sort by count (ascending) to build variety
-    return [...buildings].sort((a, b) => {
-      const countA = buildingCounts.get(a) || 0;
-      const countB = buildingCounts.get(b) || 0;
-      return countA - countB;
-    });
   }
 
   private assignBuilding(buildingType: ObjectNames, preferredLocationTileXY?: Vector3Simple): State {

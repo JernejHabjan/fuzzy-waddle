@@ -231,6 +231,18 @@ export class TechTreeService {
       .map(([id]) => id as ObjectNames);
   }
 
+  getResourceGatheringBuildingsExcludingMain(faction: FactionType): ObjectNames[] {
+    const graph = this.graphs[faction];
+    if (!graph) return [];
+
+    return Object.entries(graph.nodes)
+      .filter(
+        ([, node]) =>
+          node.definition.components?.resourceDrain !== undefined && node.definition.meta?.isMainBuilding !== true
+      )
+      .map(([id]) => id as ObjectNames);
+  }
+
   /**
    * Get all ranged units (have attack component with ranged property).
    */

@@ -33,11 +33,6 @@ export interface IPlayerControllerAgent {
   ContinueNormalGathering(): State;
   NeedMoreWorkers(): boolean;
 
-  // Building and construction
-  NeedMoreHousing(): boolean;
-  NeedMoreProduction(): boolean;
-  NeedMoreDefense(): boolean;
-
   // Upgrades and improvements
   StartUpgrade(): State;
   SufficientResourcesForUpgrade(): boolean;

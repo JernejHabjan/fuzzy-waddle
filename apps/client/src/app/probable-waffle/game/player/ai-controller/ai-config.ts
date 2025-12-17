@@ -28,7 +28,6 @@ export const AI_CONFIG = {
   needMoreWorkersThreshold: 5,
   housingBuffer: 3,
   // Production / supply planning
-  defaultWorkMillWoodCost: 120,
   unitQueueCooldownMs: 5000,
   militaryUnitTargetAggressive: 12,
   militaryUnitTargetDefensive: 8,

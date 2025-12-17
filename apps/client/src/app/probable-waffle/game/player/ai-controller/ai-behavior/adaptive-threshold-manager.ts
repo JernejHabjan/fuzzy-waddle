@@ -1,6 +1,6 @@
 import { PlayerAiBlackboard } from "../player-ai-blackboard";
 import { BasePlanner } from "./base-planner";
-import { ObjectNames, FactionType } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { getApproxWoodCost } from "../../../entity/components/production/cost-utils";
 
 /**
@@ -27,8 +27,7 @@ export class AdaptiveThresholdManager {
 
   constructor(
     private readonly blackboard: PlayerAiBlackboard,
-    private readonly basePlanner: BasePlanner,
-    private readonly factionType?: FactionType
+    private readonly basePlanner: BasePlanner
   ) {}
 
   /**

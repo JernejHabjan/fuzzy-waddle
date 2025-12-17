@@ -17,14 +17,16 @@ export class PlayerAiBlackboard extends Blackboard {
     public defendingUnits: GameObject[] = [], // Units assigned for base defense
     public visibleEnemies: GameObject[] = [], // Enemies visible to the player
     public enemiesNearBase: GameObject[] = [], // Enemies within a certain range of the base
-    public enemyBase: any = null, // Reference to the enemy base
+    public enemyBase: GameObject | null = null, // Reference to the enemy base
     public primaryTarget: GameObject | null = null, // The main target to attack (an enemy unit or building)
     public mapFullyExplored: boolean = false,
     public trainingBuildings: Phaser.GameObjects.GameObject[] = [], // Buildings that can train new units
-    public productionBuildings: any[] = [], // Buildings that produce resources or military units
-    public defensiveStructures: any[] = [], // Defensive buildings like towers, walls, etc.
-    public desiredProductionBuildings: number = 5, // Desired number of production buildings
+    public productionBuildings: GameObject[] = [], // Buildings that produce resources or military units
+    public defensiveStructures: GameObject[] = [], // Defensive buildings like towers, walls, etc.
+    public gatheringStructures: GameObject[] = [], // Resource gathering buildings
+    public desiredProductionBuildings: number = 3, // Desired number of production buildings
     public desiredDefensiveStructures: number = 3, // Desired number of defensive buildings
+    public desiredResourceGatheringBuildings: number = 1, // Desired number of resource gathering buildings
     public baseSize: number = 0, // Current size of the player's base (based on expansion)
     public desiredBaseSize: number = 3, // Desired size of the player's base (expansion goal)
     public upgradeBuilding: Phaser.GameObjects.GameObject | null = null, // Building responsible for upgrades (tech or unit)
@@ -32,7 +34,6 @@ export class PlayerAiBlackboard extends Blackboard {
     public enemyMilitaryStrength: number = 0, // Estimated enemy military strength
     public enemyFlankOpen: boolean = false, // Is the enemy's flank open for an attack?
     public enemiesInCombat: any[] = [], // Enemies currently engaged in combat
-    public selectedStructure: any = null, // The structure currently selected by the player
     public currentStrategy: string = "defensive", // Current strategy: "aggressive", "defensive", "economic"
     // Map analysis/cache (phase 1)
     public mapAnalysis: MapAnalysis | null = null,

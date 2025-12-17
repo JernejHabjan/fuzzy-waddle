@@ -6,10 +6,11 @@ import { NavigationService } from "../../../world/services/navigation.service";
 import { pwActorDefinitions } from "../../../prefabs/definitions/actor-definitions";
 import { PlayerAiBlackboard } from "../player-ai-blackboard";
 import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
+import { SupplyPlanner } from "./supply-planner";
 
 interface PlannedBuilding {
   id: string;
-  type: string;
+  type: NeedType;
   tile: Vector2Simple;
   priority: number;
   reservedAt: number;
@@ -24,7 +25,8 @@ interface BuildingNeed {
 enum NeedType {
   Housing = "Housing",
   Production = "Production",
-  Defense = "Defense"
+  Defense = "Defense",
+  Gathering = "Gathering"
 }
 
 /**
@@ -49,13 +51,14 @@ export class BasePlanner {
 
   constructor(
     private readonly analyzer: MapAnalyzer,
-    private readonly factionType?: FactionType
+    private readonly factionType: FactionType | undefined,
+    private readonly supplyPlanner: SupplyPlanner
   ) {}
 
   /**
    * Ensure a reservation exists for the given building type; returns its tile.
    */
-  async ensurePlan(buildingType: string, priority = 0): Promise<Vector2Simple | null> {
+  async ensurePlan(buildingType: NeedType, priority = 0): Promise<Vector2Simple | null> {
     this.pruneExpiredReservations();
     const existing = this.plans.find((p) => p.type === buildingType);
     if (existing) return existing.tile;
@@ -110,7 +113,7 @@ export class BasePlanner {
   /**
    * Reserve a spot for a building type. Returns chosen tile or null if none.
    */
-  planBuilding(buildingType: string, priority = 0): Vector2Simple | null {
+  planBuilding(buildingType: NeedType, priority = 0): Vector2Simple | null {
     const analysis = this.getLatestAnalysis();
     if (!analysis || !analysis.baseCenterTile) return null;
     const taken = new Set(this.plans.map((p) => `${p.tile.x},${p.tile.y}`));
@@ -164,7 +167,7 @@ export class BasePlanner {
     this.recomputeNeedsAndUpdateBlackboard(blackboard);
     // Fallback: if no explicit high-priority needs, opportunistically stage a generic reservation
     if (this.buildingNeeds.length === 0) {
-      const tile = this.planBuilding("House", 0); // Simplified fallback
+      const tile = this.planBuilding(NeedType.Housing, 0); // Simplified fallback
     }
     return true;
   }
@@ -232,12 +235,26 @@ export class BasePlanner {
     const now = Date.now();
     this.buildingNeeds = [];
 
+    // Assess supply & proactively plan housing if needed
+    const supply = this.supplyPlanner.assess(now);
+
     // Housing pressure
-    if (blackboard.production.supply.max <= blackboard.units.length + 3) {
+    let housingPriority = 0;
+    switch (supply.urgency) {
+      case "none":
+        break;
+      case "normal":
+        housingPriority = 80;
+        break;
+      case "emergency":
+        housingPriority = 100;
+        break;
+    }
+    if (housingPriority > 0) {
       this.buildingNeeds.push({
         type: NeedType.Housing,
         reason: "Low housing buffer",
-        priority: 90
+        priority: housingPriority
       });
     }
 
@@ -256,6 +273,15 @@ export class BasePlanner {
         type: NeedType.Defense,
         reason: "Below desired defense count",
         priority: 60
+      });
+    }
+
+    // Gathering boost
+    if (blackboard.gatheringStructures.length < blackboard.desiredResourceGatheringBuildings) {
+      this.buildingNeeds.push({
+        type: NeedType.Gathering,
+        reason: "Below desired gatherer count",
+        priority: 50
       });
     }
 
@@ -292,6 +318,9 @@ export class BasePlanner {
         break;
       case NeedType.Defense:
         candidates = techTree.getDefensiveBuildingsExcludingMain(this.factionType);
+        break;
+      case NeedType.Gathering:
+        candidates = techTree.getResourceGatheringBuildingsExcludingMain(this.factionType);
         break;
     }
 
