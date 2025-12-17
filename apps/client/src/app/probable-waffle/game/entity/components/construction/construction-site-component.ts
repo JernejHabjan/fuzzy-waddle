@@ -10,7 +10,6 @@ import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "../owner-component";
 import { emitResource, getPlayer } from "../../../data/scene-data";
 import { pwActorDefinitions } from "../../../prefabs/definitions/actor-definitions";
-import type { ProductionCostDefinition } from "../production/production-cost-component";
 import { getGameObjectVisibility, onObjectReady } from "../../../data/game-object-helper";
 import { BehaviorSubject, Subject } from "rxjs";
 import { upgradeFromConstructingToFullActorData } from "../../../data/actor-data";
@@ -24,28 +23,9 @@ import {
   SharedActorActionsSfxSelectionSounds
 } from "../../../sfx/shared-actor-actions-sfx";
 import { PawnAiController } from "../../../prefabs/ai-agents/pawn-ai-controller";
+import type { ConstructionSiteDefinition } from "./construction-site-definition";
+import type { ProductionCostDefinition } from "../production/production-cost-definition";
 import GameObject = Phaser.GameObjects.GameObject;
-
-export type ConstructionSiteDefinition = {
-  // Whether the building site consumes builders when building is finished
-  consumesBuilders: boolean;
-  maxAssignedBuilders: number;
-  maxAssignedRepairers: number;
-  // Factor to multiply all passed building time with, independent of any currently assigned builders
-  progressMadeAutomatically: number;
-  // Factor to multiply all passed building time with, dependent on the number of builders assigned
-  progressMadePerBuilder: number;
-  repairFactor: number;
-  initialHealthPercentage: number;
-  refundFactor: number;
-  // Whether to start building immediately after spawn, or not
-  startImmediately: boolean;
-  finishedSound?: {
-    key: string;
-  };
-  // Whether multiple buildings can be placed one after another by dragging the mouse - Wall building for example
-  canBeDragPlaced: boolean;
-};
 
 export class ConstructionSiteComponent {
   public progressPercentage = 0;

@@ -4,17 +4,14 @@
 
 import OnPointerDownScript from "../../../../../shared/game/phaser/script-nodes-basic/OnPointerDownScript";
 /* START-USER-IMPORTS */
-import ActorAction, { type ActorActionSetup } from "./ActorAction";
+import ActorAction from "./ActorAction";
 import { getCommunicator, getCurrentPlayerNumber, getPlayer, listenToSelectionEvents } from "../../../data/scene-data";
 import HudProbableWaffle from "../../../world/scenes/hud-scenes/HudProbableWaffle";
 import { Subscription } from "rxjs";
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { getActorComponent } from "../../../data/actor-component";
 import { AttackComponent } from "../../../entity/components/combat/components/attack-component";
-import {
-  AssignProductionErrorCode,
-  ProductionComponent
-} from "../../../entity/components/production/production-component";
+import { ProductionComponent } from "../../../entity/components/production/production-component";
 import { ActorTranslateComponent } from "../../../entity/components/movement/actor-translate-component";
 import { pwActorDefinitions } from "../../definitions/actor-definitions";
 import { HealthComponent } from "../../../entity/components/combat/components/health-component";
@@ -44,6 +41,8 @@ import {
 import { SelectionTabHandler } from "../../../player/human-controller/selection-tab-handler";
 import { ProductionInvalidReason } from "../../../data/tech-tree/production-invalid-reason";
 import type { ProductionValidationResult } from "../../../data/tech-tree/production-validation-result";
+import { AssignProductionErrorCode } from "../../../entity/components/production/assign-production-error-code";
+import type { ActorActionSetup } from "./actor-action-setup";
 /* END-USER-IMPORTS */
 
 export default class ActorActions extends Phaser.GameObjects.Container {

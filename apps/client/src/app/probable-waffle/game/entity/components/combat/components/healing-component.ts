@@ -5,12 +5,7 @@ import { getSceneService } from "../../../../world/services/scene-component-help
 import { AudioService } from "../../../../world/services/audio.service";
 import { SharedActorActionsSfxHealSounds } from "../../../../sfx/shared-actor-actions-sfx";
 import { type HealingComponentData } from "@fuzzy-waddle/api-interfaces";
-
-export type HealingDefinition = {
-  healPerCooldown: number;
-  cooldown: number;
-  range: number;
-};
+import type { HealingDefinition } from "./healing-definition";
 
 export class HealingComponent {
   // onCooldownReady: EventEmitter<GameObject> = new EventEmitter<GameObject>();

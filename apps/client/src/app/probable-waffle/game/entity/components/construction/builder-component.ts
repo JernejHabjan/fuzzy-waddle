@@ -20,16 +20,8 @@ import { IdComponent } from "../id-component";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { ConstructableDefinition } from "./constructable-category";
 import type { AnimationOptions } from "../animation/animation-options";
+import type { BuilderDefinition } from "./builder-definition";
 import GameObject = Phaser.GameObjects.GameObject;
-
-export type BuilderDefinition = {
-  // types of building the gameObject can produce
-  constructableBuildings: ConstructableDefinition;
-  // Whether the builder enters the building site while working on it, or not.
-  enterConstructionSite: boolean;
-  // from how far a builder builds building site
-  constructionSiteOffset: number;
-};
 
 // Allows the actor to construct building
 export class BuilderComponent {

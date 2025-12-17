@@ -8,10 +8,7 @@ import type { ContainerComponentData } from "@fuzzy-waddle/api-interfaces";
 import { IdComponent } from "../id-component";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
-
-export type ContainerDefinition = {
-  capacity: number;
-};
+import type { ContainerDefinition } from "./container-definition";
 
 /**
  * apply to resource source that needs gameObjects to enter to gather

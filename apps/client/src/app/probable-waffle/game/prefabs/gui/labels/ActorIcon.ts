@@ -9,6 +9,8 @@ import EmitEventActionScript from "../../../../../shared/game/phaser/script-node
 /* START-USER-IMPORTS */
 import { IconHelper } from "./IconHelper";
 import { Subject } from "rxjs";
+import type { ActorIconClickAction } from "./actor-icon-click-action";
+import type { ActorIconObjectDefinition } from "./actor-icon-object-definition";
 /* END-USER-IMPORTS */
 
 export default class ActorIcon extends Phaser.GameObjects.Container {
@@ -123,18 +125,5 @@ export default class ActorIcon extends Phaser.GameObjects.Container {
 
   /* END-USER-CODE */
 }
-
-/* END OF COMPILED CODE */
-export type ActorIconClickAction = {
-  definition: ActorIconObjectDefinition;
-  keys: {
-    ctrl: boolean;
-    shift: boolean;
-  };
-};
-export type ActorIconObjectDefinition = {
-  actorObjectId?: string;
-  iconIndex?: number;
-};
 
 // You can write more code here

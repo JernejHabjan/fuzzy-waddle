@@ -3,13 +3,8 @@ import { ContainerComponent } from "../building/container-component";
 import { Subject } from "rxjs";
 import { getActorComponent } from "../../../data/actor-component";
 import { getGameObjectRenderedTransform } from "../../../data/game-object-helper";
+import type { ResourceSourceDefinition } from "./resource-source-definition";
 import GameObject = Phaser.GameObjects.GameObject;
-
-export type ResourceSourceDefinition = {
-  resourceType: ResourceType;
-  maximumResources: number;
-  gatheringFactor: number;
-};
 
 export class ResourceSourceComponent {
   private static readonly debug = false;

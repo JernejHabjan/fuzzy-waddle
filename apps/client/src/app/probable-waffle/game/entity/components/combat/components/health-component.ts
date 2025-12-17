@@ -3,7 +3,7 @@ import { EventEmitter } from "@angular/core";
 import { HealthUiComponent } from "./health-ui-component";
 import { Subject, Subscription } from "rxjs";
 import { type HealthComponentData } from "@fuzzy-waddle/api-interfaces";
-import { ComponentSyncSystem, type SyncOptions } from "../../../systems/component-sync.system";
+import { ComponentSyncSystem } from "../../../systems/component-sync.system";
 import { ContainerComponent } from "../../building/container-component";
 import Phaser from "phaser";
 import { getActorComponent } from "../../../../data/actor-component";
@@ -33,14 +33,8 @@ import { AnimationType } from "../../animation/animation-type";
 import { SoundType } from "../../actor-audio/sound-type";
 import { ActorPhysicalType } from "./actor-physical-type";
 import type { SoundDefinition } from "../../actor-audio/sound-definition";
-
-export type HealthDefinition = {
-  maxHealth: number;
-  maxArmour?: number;
-  regenerateHealthRate?: number;
-  healthDisplayBehavior?: "always" | "onDamage";
-  physicalState: ActorPhysicalType;
-};
+import type { HealthDefinition } from "./health-definition";
+import type { SyncOptions } from "../../../systems/sync.options";
 
 export class HealthComponent {
   static readonly DEBUG = false;

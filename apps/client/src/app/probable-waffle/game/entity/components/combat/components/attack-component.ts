@@ -25,11 +25,8 @@ import { type AttackComponentData } from "@fuzzy-waddle/api-interfaces";
 import { ProjectileType } from "../projectile-type";
 import type { AnimationOptions } from "../../animation/animation-options";
 import type { ProjectileData } from "../projectile-data";
+import type { AttackDefinition } from "./attack-definition";
 import GameObject = Phaser.GameObjects.GameObject;
-
-export type AttackDefinition = {
-  attacks: AttackData[];
-};
 
 export class AttackComponent {
   remainingCooldown = 0;

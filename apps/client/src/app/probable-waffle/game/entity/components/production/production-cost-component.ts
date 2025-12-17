@@ -1,13 +1,5 @@
-import { PaymentType } from "./payment-type";
-import { ResourceType } from "@fuzzy-waddle/api-interfaces";
+import type { ProductionCostDefinition } from "./production-cost-definition";
 import GameObject = Phaser.GameObjects.GameObject;
-
-export type ProductionCostDefinition = {
-  costType: PaymentType;
-  productionTime: number;
-  resources: Partial<Record<ResourceType, number>>;
-  refundFactor: number;
-};
 
 export class ProductionCostComponent {
   finishedSound?: string;

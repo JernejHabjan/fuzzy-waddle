@@ -1,4 +1,5 @@
-import { type MatchmakingLevel, type MatchmakingOptions } from "./matchmaking.component";
+import type { MatchmakingLevel } from "./matchmaking-level";
+import type { MatchmakingOptions } from "./matchmaking-options";
 
 export interface IMatchmakingService {
   searching: boolean;

@@ -57,12 +57,11 @@ import { PawnAiController } from "../prefabs/ai-agents/pawn-ai-controller";
 import { HousingComponent } from "../entity/components/building/housing-component";
 import { getSceneService } from "../world/services/scene-component-helpers";
 import { SceneActorCreator } from "../world/services/scene-actor-creator";
-import GameObject = Phaser.GameObjects.GameObject;
 import MiningCamp from "../prefabs/buildings/tivara/MiningCamp";
 import Emberstone from "../prefabs/buildings/skaduwee/Emberstone";
+import GameObject = Phaser.GameObjects.GameObject;
 
-export type ActorConstructor = new (scene: Phaser.Scene) => GameObject;
-export type ActorMap = { [name: string]: ActorConstructor };
+type ActorMap = { [name: string]: new (scene: Phaser.Scene) => GameObject };
 export class ActorManager {
   private static animals: ActorMap = {
     [ObjectNames.Hedgehog]: Hedgehog,

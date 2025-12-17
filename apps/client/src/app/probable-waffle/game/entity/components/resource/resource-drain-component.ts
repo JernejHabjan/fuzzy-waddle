@@ -5,11 +5,8 @@ import { getActorComponent } from "../../../data/actor-component";
 import { emitResource } from "../../../data/scene-data";
 import { onObjectReady } from "../../../data/game-object-helper";
 import { OwnerComponent } from "../owner-component";
+import type { ResourceDrainDefinition } from "./resource-drain-definition";
 import GameObject = Phaser.GameObjects.GameObject;
-
-export type ResourceDrainDefinition = {
-  resourceTypes: ResourceType[];
-};
 
 // this is to be applied to townHall/mine/lodge where resources can be returned to
 export class ResourceDrainComponent {
@@ -57,9 +54,14 @@ export class ResourceDrainComponent {
 
     const ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
     const owner = ownerComponent?.getOwner();
-    emitResource(this.gameObject.scene, "resource.added", {
-      [resourceType]: amount
-    } satisfies Partial<PlayerStateResources>, owner);
+    emitResource(
+      this.gameObject.scene,
+      "resource.added",
+      {
+        [resourceType]: amount
+      } satisfies Partial<PlayerStateResources>,
+      owner
+    );
 
     // notify listeners
     this.onResourcesReturned.next([resourceType, amount, gatherer]);

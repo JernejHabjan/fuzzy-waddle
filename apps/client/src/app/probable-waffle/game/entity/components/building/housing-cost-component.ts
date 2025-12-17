@@ -4,10 +4,7 @@ import { onObjectReady } from "../../../data/game-object-helper";
 import { HealthComponent } from "../combat/components/health-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "../owner-component";
-
-export type HousingCostDefinition = {
-  housingNeeded: number;
-};
+import type { HousingCostDefinition } from "./housing-cost-definition";
 
 /**
  * Component that provides housing capacity to buildings
@@ -33,9 +30,14 @@ export class HousingCostComponent {
 
     const ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
     const owner = ownerComponent?.getOwner();
-    emitHousing(this.gameObject.scene, "housing.current.increased", {
-      currentHousing: this.housingCostDefinition.housingNeeded
-    }, owner);
+    emitHousing(
+      this.gameObject.scene,
+      "housing.current.increased",
+      {
+        currentHousing: this.housingCostDefinition.housingNeeded
+      },
+      owner
+    );
 
     this.housingCostProvided = true;
   }
@@ -45,9 +47,14 @@ export class HousingCostComponent {
 
     const ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
     const owner = ownerComponent?.getOwner();
-    emitHousing(this.gameObject.scene, "housing.current.decreased", {
-      currentHousing: this.housingCostDefinition.housingNeeded
-    }, owner);
+    emitHousing(
+      this.gameObject.scene,
+      "housing.current.decreased",
+      {
+        currentHousing: this.housingCostDefinition.housingNeeded
+      },
+      owner
+    );
 
     this.housingCostProvided = false;
   }

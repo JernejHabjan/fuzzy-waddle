@@ -15,10 +15,7 @@ import { HealthComponent } from "./combat/components/health-component";
 import { ContainerComponent } from "./building/container-component";
 import { VisionComponent } from "./vision-component";
 import type { SelectableComponentData } from "@fuzzy-waddle/api-interfaces";
-
-export type SelectableDefinition = {
-  offsetY?: number;
-};
+import type { SelectableDefinition } from "./selectable-definition";
 
 export class SelectableComponent {
   private selected: boolean = false;

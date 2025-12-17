@@ -1,20 +1,4 @@
-import type { OwnerDefinition } from "../../entity/components/owner-component";
-import type { HealthDefinition } from "../../entity/components/combat/components/health-component";
-import type { AttackDefinition } from "../../entity/components/combat/components/attack-component";
-import type { ProductionCostDefinition } from "../../entity/components/production/production-cost-component";
-import type { RequirementsDefinition } from "../../entity/components/requirements-component";
-import type { BuilderDefinition } from "../../entity/components/construction/builder-component";
-import type { ConstructionSiteDefinition } from "../../entity/components/construction/construction-site-component";
-import type { GathererDefinition } from "../../entity/components/resource/gatherer-component";
-import type { ContainerDefinition } from "../../entity/components/building/container-component";
-import type { ResourceDrainDefinition } from "../../entity/components/resource/resource-drain-component";
-import type { ResourceSourceDefinition } from "../../entity/components/resource/resource-source-component";
-import type { ProductionDefinition } from "../../entity/components/production/production-component";
-import type { HealingDefinition } from "../../entity/components/combat/components/healing-component";
-import type { SelectableDefinition } from "../../entity/components/selectable-component";
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
-import { type HousingCostDefinition } from "../../entity/components/building/housing-cost-component";
-import type { HousingDefinition } from "../../entity/components/building/housing-component";
 import { type BuildingPrerequisitesDefinition } from "../../data/tech-tree/actor-prerequisites";
 import type { InfoDefinition } from "../../entity/components/info-definition";
 import type { ObjectDescriptorDefinition } from "../../entity/components/object-descriptor-definition";
@@ -27,6 +11,22 @@ import type { ColliderDefinition } from "../../entity/components/movement/collid
 import type { FlightDefinition } from "../../entity/components/movement/flight-definition";
 import type { WalkableDefinition } from "../../entity/components/movement/walkable-definition";
 import type { PawnAiDefinition } from "../ai-agents/pawn-ai-definition";
+import type { OwnerDefinition } from "../../entity/components/owner-definition";
+import type { RequirementsDefinition } from "../../entity/components/requirements-definition";
+import type { SelectableDefinition } from "../../entity/components/selectable-definition";
+import type { ContainerDefinition } from "../../entity/components/building/container-definition";
+import type { HousingDefinition } from "../../entity/components/building/housing-definition";
+import type { HousingCostDefinition } from "../../entity/components/building/housing-cost-definition";
+import type { AttackDefinition } from "../../entity/components/combat/components/attack-definition";
+import type { HealingDefinition } from "../../entity/components/combat/components/healing-definition";
+import type { HealthDefinition } from "../../entity/components/combat/components/health-definition";
+import type { BuilderDefinition } from "../../entity/components/construction/builder-definition";
+import type { ConstructionSiteDefinition } from "../../entity/components/construction/construction-site-definition";
+import type { ProductionDefinition } from "../../entity/components/production/production-definition";
+import type { ProductionCostDefinition } from "../../entity/components/production/production-cost-definition";
+import type { GathererDefinition } from "../../entity/components/resource/gatherer-definition";
+import type { ResourceDrainDefinition } from "../../entity/components/resource/resource-drain-definition";
+import type { ResourceSourceDefinition } from "../../entity/components/resource/resource-source-definition";
 
 export type PrefabDefinition = Partial<{
   components: Partial<{

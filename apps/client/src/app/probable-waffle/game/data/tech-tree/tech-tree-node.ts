@@ -1,6 +1,7 @@
 import { FactionType, ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import type { PrefabDefinition } from "../../prefabs/definitions/prefab-definition";
-import type { TechNodeKind } from "./tech-tree-graph";
+
+import type { TechNodeKind } from "./tech-node-kind";
 
 export interface TechTreeNode {
   id: ObjectNames; // Upgrades may be synthetic strings

@@ -24,14 +24,8 @@ import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { AnimationType } from "../animation/animation-type";
 import { SoundType } from "../actor-audio/sound-type";
 import type { SoundDefinition } from "../actor-audio/sound-definition";
+import type { GathererDefinition } from "./gatherer-definition";
 import GameObject = Phaser.GameObjects.GameObject;
-
-export type GathererDefinition = {
-  // types of gameObjects the gatherer can gather resourcesFrom
-  resourceSourceGameObjectClasses: string[];
-  // radius in which gameObject will automatically gather resourcesFrom
-  resourceSweepRadius: number;
-};
 
 export class GathererComponent {
   private static readonly debug = false;

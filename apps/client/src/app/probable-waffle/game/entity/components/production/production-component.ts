@@ -2,12 +2,10 @@ import { PaymentType } from "./payment-type";
 import { ProductionQueue } from "./production-queue";
 import { OwnerComponent } from "../owner-component";
 import { getActorComponent } from "../../../data/actor-component";
-import { type ProductionCostDefinition } from "./production-cost-component";
 import { emitResource, getCommunicator, getCurrentPlayerNumber, getPlayer } from "../../../data/scene-data";
 import {
   type ActorDefinition,
   ConstructionStateEnum,
-  ObjectNames,
   type ProductionComponentData,
   ResourceType,
   type Vector3Simple
@@ -28,14 +26,10 @@ import { ConstructionSiteComponent } from "../construction/construction-site-com
 import { pwActorDefinitions } from "../../../prefabs/definitions/actor-definitions";
 import type { ProductionProgressEvent, ProductionQueueChangeEvent } from "./production-events";
 import type { ProductionQueueItem } from "./game-object";
+import type { ProductionDefinition } from "./production-definition";
+import { AssignProductionErrorCode } from "./assign-production-error-code";
+import type { ProductionCostDefinition } from "./production-cost-definition";
 import GameObject = Phaser.GameObjects.GameObject;
-
-export type ProductionDefinition = {
-  availableProduceActors: ObjectNames[];
-  // How many products can be produced simultaneously - for example 2 marines (SC2)
-  queueCount: number;
-  capacityPerQueue: number;
-};
 
 export class ProductionComponent {
   productionQueues: ProductionQueue[] = [];
@@ -504,12 +498,4 @@ export class ProductionComponent {
 
     if (data.rallyPoint) this.rallyPoint.setRallyData(data.rallyPoint);
   }
-}
-
-export enum AssignProductionErrorCode {
-  NotEnoughResources = 1,
-  QueueFull = 2,
-  InvalidProduct = 3,
-  NoOwner = 4,
-  NotFinished
 }

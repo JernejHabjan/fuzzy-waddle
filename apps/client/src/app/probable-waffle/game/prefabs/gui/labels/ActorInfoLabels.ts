@@ -3,7 +3,7 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import ActorIcon, { type ActorIconClickAction } from "./ActorIcon";
+import ActorIcon from "./ActorIcon";
 import { pwActorDefinitions } from "../../definitions/actor-definitions";
 import { getActorComponent } from "../../../data/actor-component";
 import { ProductionComponent } from "../../../entity/components/production/production-component";
@@ -15,6 +15,7 @@ import { IdComponent } from "../../../entity/components/id-component";
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import HudProbableWaffle from "../../../world/scenes/hud-scenes/HudProbableWaffle";
 import type { ProductionQueueItem } from "../../../entity/components/production/game-object";
+import type { ActorIconClickAction } from "./actor-icon-click-action";
 /* END-USER-IMPORTS */
 
 export default class ActorInfoLabels extends Phaser.GameObjects.Container {
@@ -199,7 +200,10 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
     this.visibilityChanged.next(producingActors > 0);
   }
 
-  setLabelsForDisplayingActors(selectedActors: Phaser.GameObjects.GameObject[], highlightActors?: Phaser.GameObjects.GameObject[]) {
+  setLabelsForDisplayingActors(
+    selectedActors: Phaser.GameObjects.GameObject[],
+    highlightActors?: Phaser.GameObjects.GameObject[]
+  ) {
     this.icons.forEach((icon, index) => {
       if (index >= selectedActors.length) {
         icon.visible = false;
@@ -222,7 +226,7 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
         infoComponent.smallImage.origin
       );
       icon.visible = true;
-      
+
       // Set highlight if this actor is in the highlight list
       if (highlightActors) {
         const isHighlighted = highlightActors.includes(actor);

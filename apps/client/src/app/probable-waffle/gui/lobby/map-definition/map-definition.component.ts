@@ -17,13 +17,11 @@ import {
   ProbableWafflePlayer,
   type ProbableWafflePlayerDataChangeEventProperty
 } from "@fuzzy-waddle/api-interfaces";
-import {
-  type ProbableWaffleCommunicators,
-  SceneCommunicatorClientService
-} from "../../../communicators/scene-communicator-client.service";
+import { SceneCommunicatorClientService } from "../../../communicators/scene-communicator-client.service";
 import { Subscription } from "rxjs";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { AuthService } from "../../../../auth/auth.service";
+import type { ProbableWaffleCommunicators } from "../../../communicators/probable-waffle.communicators";
 
 /**
  * canvas element containing info about current player and position.

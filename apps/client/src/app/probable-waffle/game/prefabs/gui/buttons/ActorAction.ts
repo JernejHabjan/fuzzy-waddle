@@ -7,10 +7,12 @@ import PushActionScript from "../../../../../shared/game/phaser/script-nodes/Pus
 import OnPointerUpScript from "../../../../../shared/game/phaser/script-nodes-basic/OnPointerUpScript";
 import EmitEventActionScript from "../../../../../shared/game/phaser/script-nodes-basic/EmitEventActionScript";
 /* START-USER-IMPORTS */
-import ActorDefinitionTooltip, { type TooltipInfo } from "../labels/ActorDefinitionTooltip";
+import ActorDefinitionTooltip from "../labels/ActorDefinitionTooltip";
 import HudProbableWaffle from "../../../world/scenes/hud-scenes/HudProbableWaffle";
 import { getGameObjectBounds } from "../../../data/game-object-helper";
 import { IconHelper } from "../labels/IconHelper";
+import type { ActorActionSetup } from "./actor-action-setup";
+import type { TooltipInfo } from "../labels/tooltip-info";
 /* END-USER-IMPORTS */
 
 export default class ActorAction extends Phaser.GameObjects.Container {
@@ -216,22 +218,5 @@ export default class ActorAction extends Phaser.GameObjects.Container {
 }
 
 /* END OF COMPILED CODE */
-
-export type ActorActionSetup = {
-  icon?: {
-    key: string;
-    frame: string;
-    origin?: {
-      x: number;
-      y: number;
-    };
-  };
-  disabled?: boolean;
-  visible: boolean;
-  action?: () => void;
-  tooltipInfo?: TooltipInfo;
-  // Optional shortcut label (e.g., "A", "M", "1")
-  shortcut?: string;
-};
 
 // You can write more code here
