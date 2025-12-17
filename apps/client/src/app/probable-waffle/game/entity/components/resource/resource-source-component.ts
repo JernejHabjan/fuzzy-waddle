@@ -27,7 +27,7 @@ export class ResourceSourceComponent {
 
   constructor(
     private readonly gameObject: GameObject,
-    private readonly resourceSourceDefinition: ResourceSourceDefinition
+    public readonly resourceSourceDefinition: ResourceSourceDefinition
   ) {
     this.currentResources = this.resourceSourceDefinition.maximumResources;
     this.init();
