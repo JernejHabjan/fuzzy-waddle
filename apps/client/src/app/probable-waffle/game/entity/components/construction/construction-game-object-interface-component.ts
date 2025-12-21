@@ -3,16 +3,19 @@ import { HealthComponent } from "../combat/components/health-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { ConstructionSiteComponent } from "./construction-site-component";
 import { Subscription } from "rxjs";
+import { onObjectReady } from "../../../data/game-object-helper";
 
 export class ConstructionGameObjectInterfaceComponent {
   private constructionSiteHandlerSetup = false;
   private constructionSubscription?: Subscription;
+  private initialized: boolean = false;
 
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,
     private handlePrefabVisibility: (progress: number | null) => void,
     private readonly cursorPrefab: Phaser.GameObjects.GameObject
   ) {
+    onObjectReady(gameObject, this.init, this);
     gameObject.on(ActorDataChangedEvent, this.actorDataChanged, this);
     gameObject.once(HealthComponent.KilledEvent, this.onDestroy, this);
   }
@@ -21,8 +24,14 @@ export class ConstructionGameObjectInterfaceComponent {
     this.constructionSiteHandler();
   }
 
+  private init() {
+    this.initialized = true;
+    this.constructionSiteHandler();
+  }
+
   private constructionSiteHandler() {
     if (this.constructionSiteHandlerSetup) return;
+    if (!this.initialized) return;
     const constructionSiteComponent = getActorComponent(this.gameObject, ConstructionSiteComponent);
     if (!constructionSiteComponent) {
       this.constructionSubscription?.unsubscribe();

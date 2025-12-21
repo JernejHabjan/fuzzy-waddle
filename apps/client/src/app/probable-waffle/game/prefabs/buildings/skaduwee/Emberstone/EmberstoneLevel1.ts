@@ -3,66 +3,44 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { getTilesAroundGameObjectsOfShape } from "../../../../data/tile-map-helpers";
+import { TileMapTintComponent } from "../../../../entity/components/construction/tile-map-tint.component";
 /* END-USER-IMPORTS */
 
-export default class EmberstoneLevel1 extends Phaser.GameObjects.Container {
+export default class EmberstoneLevel1 extends Phaser.GameObjects.Sprite {
+  constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
+    super(
+      scene,
+      x ?? 32,
+      y ?? 95.90208743516723,
+      texture || "factions",
+      frame ?? "buildings/skaduwee/ember_stone/ember_stone1.png"
+    );
 
-	constructor(scene: Phaser.Scene, x?: number, y?: number) {
-		super(scene, x ?? 16, y ?? 55);
+    this.setInteractive(
+      new Phaser.Geom.Polygon(
+        "9.788372063149147 27.988150775023485 33.51043684446447 14.491113916688903 55.596497158102885 27.17014854118503 55.05050388928409 88.43623088666114 64.04852846150715 97.84325657580341 32.14644134180722 115.83930572024953 0.2443542221072903 97.84325657580341 8.833377677411114 88.43623088666114"
+      ),
+      Phaser.Geom.Polygon.Contains
+    );
+    this.setOrigin(0.5, 0.749235058087244);
+    this.play("buildings/skaduwee/ember_stone/ember_stone");
 
-		this.setInteractive(new Phaser.Geom.Polygon("-12.788011962835393 -30.360902541923828 0.5188883965774025 -42.99403579453091 13.657346979288771 -31.70843675553525 15.004881192900193 -10.484772891155345 13.994230532691624 5.854079448883155 -14.809313283252527 5.685637672181727 -15.819963943461094 -10.484772891155345"), Phaser.Geom.Polygon.Contains);
-
-		// buildings_skaduwee_emberstone_floor
-		const buildings_skaduwee_emberstone_floor = scene.add.image(0.008459511735509295, 4.464746540021096, "factions", "buildings/tivara/olival/olival-floor.png");
-		this.add(buildings_skaduwee_emberstone_floor);
-
-		// buildings_skaduwee_emberstone
-		const buildings_skaduwee_emberstone = scene.add.image(0, -22, "factions", "buildings/tivara/olival/olival.png");
-		this.add(buildings_skaduwee_emberstone);
-
-		this.buildings_skaduwee_emberstone = buildings_skaduwee_emberstone;
-
-		/* START-USER-CTR-CODE */
+    /* START-USER-CTR-CODE */
+    this.tileMapTintComponent = new TileMapTintComponent(0xb5f5fa, 6);
     /* END-USER-CTR-CODE */
-	}
-
-	private buildings_skaduwee_emberstone: Phaser.GameObjects.Image;
-
-	/* START-USER-CODE */
-  private bounceTweens?: Phaser.Tweens.Tween;
-
-  private init() {
-    this.bounce(this.buildings_skaduwee_emberstone);
-    this.tintTilemapAroundTransform(this.scene, 0x7eb3cb, 6);
   }
 
-  private bounce = (image: Phaser.GameObjects.Image) => {
-    // bounce the sprite up and down forever with a 2 seconds duration
-    this.bounceTweens = this.scene.tweens.add({
-      targets: image,
-      y: "-=4", // move up by 4
-      duration: 1000, // takes 1000ms
-      ease: "Sine.InOut",
-      yoyo: true, // reverse the animation after it completes
-      loop: -1 // loop indefinitely
-    });
-  };
-
-  private tintTilemapAroundTransform = (scene: Phaser.Scene, tint: number, radius: number) => {
-    const { tiles } = getTilesAroundGameObjectsOfShape(this.parentContainer, scene, radius, "circle");
-    tiles.forEach((tile) => {
-      tile.tint = tint;
-    });
-  };
+  /* START-USER-CODE */
+  private tileMapTintComponent: TileMapTintComponent;
+  private init() {
+    this.tileMapTintComponent.tintTilemapAroundTransform(this.parentContainer);
+  }
 
   start() {
     this.init();
   }
 
   override destroy(fromScene?: boolean) {
-    this.bounceTweens?.stop();
-    this.bounceTweens?.remove();
     super.destroy(fromScene);
   }
 
