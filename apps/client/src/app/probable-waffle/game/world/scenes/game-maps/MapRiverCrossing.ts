@@ -81,10 +81,12 @@ import Boar from "../../../prefabs/animals/boar/Boar";
 import Badger from "../../../prefabs/animals/badger/Badger";
 import Emberstone from "../../../prefabs/buildings/skaduwee/Emberstone";
 import MiningCamp from "../../../prefabs/buildings/tivara/MiningCamp";
+import FrostForge from "../../../prefabs/buildings/skaduwee/FrostForge";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
 export default class MapRiverCrossing extends GameProbableWaffleScene {
+
   constructor() {
     super("MapRiverCrossing");
 
@@ -94,13 +96,14 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
   }
 
   editorCreate(): void {
+
     // tilemap
     const tilemap = this.add.tilemap("tiles_river_crossing");
     tilemap.addTilesetImage("tiles", "tiles_1");
     tilemap.addTilesetImage("tiles_2", "tiles_2");
 
     // tilemap_level_1
-    tilemap.createLayer("TileMap_level_1", ["tiles", "tiles_2"], 0, 0);
+    tilemap.createLayer("TileMap_level_1", ["tiles","tiles_2"], 0, 0);
 
     // spawn
     const spawn = new Spawn(this, 96, 608);
@@ -175,7 +178,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(generalWarrior);
 
     // tivaraSlingshotFemale
-    const tivaraSlingshotFemale = new TivaraSlingshotFemale(this, -256, 528);
+    const tivaraSlingshotFemale = new TivaraSlingshotFemale(this, -512, 624);
     this.add.existing(tivaraSlingshotFemale);
 
     // tallGrass_7
@@ -419,7 +422,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(skaduweeOwl);
 
     // tree10
-    const tree10 = new Tree10(this, 640, 576);
+    const tree10 = new Tree10(this, 320, 672);
     this.add.existing(tree10);
 
     // tree9
@@ -427,7 +430,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(tree9);
 
     // tree_14
-    const tree_14 = new Tree11(this, -384, 672);
+    const tree_14 = new Tree11(this, -256, 176);
     this.add.existing(tree_14);
 
     // sheep
@@ -623,11 +626,11 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(reeds_4);
 
     // tivaraWorkerFemale
-    const tivaraWorkerFemale = new TivaraWorkerFemale(this, -224, 704);
+    const tivaraWorkerFemale = new TivaraWorkerFemale(this, -672, 624);
     this.add.existing(tivaraWorkerFemale);
 
     // tivaraWorkerMale
-    const tivaraWorkerMale = new TivaraWorkerMale(this, -352, 464);
+    const tivaraWorkerMale = new TivaraWorkerMale(this, -512, 672);
     this.add.existing(tivaraWorkerMale);
 
     // workMill_1
@@ -675,11 +678,11 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(birds_1);
 
     // skaduweeRangedFemale_1
-    const skaduweeRangedFemale_1 = new SkaduweeRangedFemale(this, -116, 698);
+    const skaduweeRangedFemale_1 = new SkaduweeRangedFemale(this, -224, 768);
     this.add.existing(skaduweeRangedFemale_1);
 
     // skaduweeMagicianFemale
-    const skaduweeMagicianFemale = new SkaduweeMagicianFemale(this, -256, 608);
+    const skaduweeMagicianFemale = new SkaduweeMagicianFemale(this, -640, 560);
     this.add.existing(skaduweeMagicianFemale);
 
     // skaduweeWarriorMale_1
@@ -687,7 +690,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(skaduweeWarriorMale_1);
 
     // skaduweeWorkerFemale_1
-    const skaduweeWorkerFemale_1 = new SkaduweeWorkerFemale(this, -480, 608);
+    const skaduweeWorkerFemale_1 = new SkaduweeWorkerFemale(this, -576, 656);
     this.add.existing(skaduweeWorkerFemale_1);
 
     // skaduweeWorkerMale_1
@@ -823,6 +826,22 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // miningCamp
     const miningCamp = new MiningCamp(this, -96, 160);
     this.add.existing(miningCamp);
+
+    // frostForge
+    const frostForge = new FrostForge(this, 672, 560);
+    this.add.existing(frostForge);
+
+    // infantryInn_1
+    const infantryInn_1 = new InfantryInn(this, 704, 688);
+    this.add.existing(infantryInn_1);
+
+    // owlery_1
+    const owlery_1 = new Owlery(this, 480, 544);
+    this.add.existing(owlery_1);
+
+    // emberstone_1
+    const emberstone_1 = new Emberstone(this, 512, 640);
+    this.add.existing(emberstone_1);
 
     // spawn (components)
     const spawnEditorOwner = new EditorOwner(spawn);
@@ -975,6 +994,22 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // miningCamp (components)
     const miningCampEditorOwner = new EditorOwner(miningCamp);
     miningCampEditorOwner.owner_id = "1";
+
+    // frostForge (components)
+    const frostForgeEditorOwner = new EditorOwner(frostForge);
+    frostForgeEditorOwner.owner_id = "1";
+
+    // infantryInn_1 (components)
+    const infantryInn_1EditorOwner = new EditorOwner(infantryInn_1);
+    infantryInn_1EditorOwner.owner_id = "1";
+
+    // owlery_1 (components)
+    const owlery_1EditorOwner = new EditorOwner(owlery_1);
+    owlery_1EditorOwner.owner_id = "1";
+
+    // emberstone_1 (components)
+    const emberstone_1EditorOwner = new EditorOwner(emberstone_1);
+    emberstone_1EditorOwner.owner_id = "1";
 
     this.tilemap = tilemap;
 

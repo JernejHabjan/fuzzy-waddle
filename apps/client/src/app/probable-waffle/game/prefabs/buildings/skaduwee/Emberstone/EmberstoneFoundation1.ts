@@ -5,23 +5,23 @@
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
-export default class EmberstoneFoundation1 extends Phaser.GameObjects.Container {
-  constructor(scene: Phaser.Scene, x?: number, y?: number) {
-    super(scene, x ?? 16, y ?? 55);
+export default class EmberstoneFoundation1 extends Phaser.GameObjects.Image {
+  constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
+    super(
+      scene,
+      x ?? 32,
+      y ?? 94.99635088693671,
+      texture || "factions",
+      frame ?? "buildings/skaduwee/ember_stone/foundation/foundation_1.png"
+    );
 
     this.setInteractive(
-      new Phaser.Geom.Rectangle(-15.99154048826449, -0.5352534599789038, 32, 10),
-      Phaser.Geom.Rectangle.Contains
+      new Phaser.Geom.Polygon(
+        "5.079261247023986 87.94931847019735 24.963712896279517 80.34643989842318 31.396917841626895 39.992699786698736 42.50881729268146 75.0829085795026 64.14777938157718 91.45833934947775 33.15142828126709 117.19115913086726 1.5702403677435974 101.40056517410551"
+      ),
+      Phaser.Geom.Polygon.Contains
     );
-
-    // buildings_skaduwee_emberstone_floor
-    const buildings_skaduwee_emberstone_floor = scene.add.image(
-      0.008459511735509295,
-      4.464746540021096,
-      "factions",
-      "buildings/tivara/olival/olival-floor.png"
-    );
-    this.add(buildings_skaduwee_emberstone_floor);
+    this.setOrigin(0.5, 0.742158991304193);
 
     /* START-USER-CTR-CODE */
     // Write your code here.

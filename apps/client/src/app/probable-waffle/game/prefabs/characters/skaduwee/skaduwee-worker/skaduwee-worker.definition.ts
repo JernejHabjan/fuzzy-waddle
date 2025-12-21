@@ -45,7 +45,8 @@ export const skaduweeWorkerDefinition: PrefabDefinition = {
           // keep this in sync with actor-manager
           ObjectNames.FrostForge,
           ObjectNames.InfantryInn,
-          ObjectNames.Owlery
+          ObjectNames.Owlery,
+          ObjectNames.Emberstone
         ],
         [
           new ConstructableCategory("gui", "action_icons/category_resource_gathering.png", "Resource Gathering", [
