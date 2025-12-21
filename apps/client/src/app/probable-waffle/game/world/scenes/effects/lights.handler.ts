@@ -23,14 +23,14 @@ export class LightsHandler {
 
     // add lights2d pipeline to all children
     children.each((child: any) => {
-      if (child.setPipeline) {
-        child.setPipeline("Light2D");
+      if (child.setLighting) {
+        child.setLighting(true);
       }
       // if instanceOf ActorContainer, then add lights2d pipeline to all children of the container
       if (child instanceof Container) {
         child.each((child: any) => {
-          if (child.setPipeline) {
-            child.setPipeline("Light2D");
+          if (child.setLighting) {
+            child.setLighting(true);
           }
         });
       }
