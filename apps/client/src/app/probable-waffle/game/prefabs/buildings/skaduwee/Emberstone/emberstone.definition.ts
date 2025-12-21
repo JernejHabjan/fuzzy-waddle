@@ -9,8 +9,8 @@ import { SkaduweeEmberstoneSfxSelectionSounds } from "./SkaduweeEmberstoneSfx";
 export const emberstoneDefinition = {
   components: {
     representable: {
-      width: 32,
-      height: 64
+      width: 64,
+      height: 128
     },
     objectDescriptor: {
       color: 0xc2a080
@@ -18,7 +18,7 @@ export const emberstoneDefinition = {
     owner: {
       color: [
         {
-          originalColor: 0x265b17,
+          originalColor: 0xbf990f,
           epsilon: 0.1
         }
       ]
@@ -32,7 +32,7 @@ export const emberstoneDefinition = {
         "A sentient monument where fire and ice intertwine, drawing power from the void to sustain the tribe’s dark ascent.",
       smallImage: {
         key: "factions",
-        frame: "buildings/tivara/olival/olival.png",
+        frame: "buildings/skaduwee/ember_stone/ember_stone1.png",
         origin: { x: 0.5, y: 0.5 }
       }
     },

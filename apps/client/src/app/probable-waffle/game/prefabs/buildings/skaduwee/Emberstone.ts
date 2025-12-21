@@ -12,44 +12,40 @@ import { setActorData } from "../../../data/actor-data";
 /* END-USER-IMPORTS */
 
 export default class Emberstone extends Phaser.GameObjects.Container {
-  constructor(scene: Phaser.Scene, x?: number, y?: number) {
-    super(scene, x ?? 15.99154048826449, y ?? 54.535253459978904);
 
-    this.setInteractive(
-      new Phaser.Geom.Polygon(
-        "-12.788011962835393 -30.360902541923828 0.5188883965774025 -42.99403579453091 13.657346979288771 -31.70843675553525 15.004881192900193 -10.484772891155345 13.994230532691624 5.854079448883155 -14.809313283252527 5.685637672181727 -15.819963943461094 -10.484772891155345"
-      ),
-      Phaser.Geom.Polygon.Contains
-    );
+	constructor(scene: Phaser.Scene, x?: number, y?: number) {
+		super(scene, x ?? 15.99154048826449, y ?? 54.535253459978904);
 
-    // emberStoneCursor
-    const emberStoneCursor = new EmberstoneCursor(scene, 0, 0);
-    emberStoneCursor.visible = false;
-    this.add(emberStoneCursor);
+		this.setInteractive(new Phaser.Geom.Polygon("-23.458392181796142 -67.23014929027885 0.0015186356688623448 -84.92122957885901 22.3076633473569 -69.53768150183278 26.15355036661346 -6.46513438602522 32.30696959742395 3.1495831621161727 -0.5751191417874324 19.805161133512343 -32.56631031021266 2.9370785174335907"), Phaser.Geom.Polygon.Contains);
 
-    // emberStoneFoundation1
-    const emberStoneFoundation1 = new EmberstoneFoundation1(scene, 0, 0);
-    emberStoneFoundation1.visible = false;
-    this.add(emberStoneFoundation1);
+		// emberStoneCursor
+		const emberStoneCursor = new EmberstoneCursor(scene, 0, 0);
+		emberStoneCursor.visible = false;
+		this.add(emberStoneCursor);
 
-    // emberStoneLevel1
-    const emberStoneLevel1 = new EmberstoneLevel1(scene, 0, 0);
-    this.add(emberStoneLevel1);
+		// emberStoneFoundation1
+		const emberStoneFoundation1 = new EmberstoneFoundation1(scene, 0, 0);
+		emberStoneFoundation1.visible = false;
+		this.add(emberStoneFoundation1);
 
-    this.emberStoneCursor = emberStoneCursor;
-    this.emberStoneFoundation1 = emberStoneFoundation1;
-    this.emberStoneLevel1 = emberStoneLevel1;
+		// emberStoneLevel1
+		const emberStoneLevel1 = new EmberstoneLevel1(scene, 0, 0);
+		this.add(emberStoneLevel1);
 
-    /* START-USER-CTR-CODE */
+		this.emberStoneCursor = emberStoneCursor;
+		this.emberStoneFoundation1 = emberStoneFoundation1;
+		this.emberStoneLevel1 = emberStoneLevel1;
+
+		/* START-USER-CTR-CODE */
     this.setup();
     /* END-USER-CTR-CODE */
-  }
+	}
 
-  private emberStoneCursor: EmberstoneCursor;
-  private emberStoneFoundation1: EmberstoneFoundation1;
-  private emberStoneLevel1: EmberstoneLevel1;
+	private emberStoneCursor: EmberstoneCursor;
+	private emberStoneFoundation1: EmberstoneFoundation1;
+	private emberStoneLevel1: EmberstoneLevel1;
 
-  /* START-USER-CODE */
+	/* START-USER-CODE */
   override name = ObjectNames.Emberstone;
 
   private setup() {

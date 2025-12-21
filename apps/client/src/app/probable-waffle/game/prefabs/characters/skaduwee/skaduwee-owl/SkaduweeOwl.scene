@@ -17,12 +17,12 @@
             "id": "7426080b-ba13-466a-8bd4-1fda3e24ba97",
             "label": "owl",
             "hitArea.shape": "CIRCLE",
-            "hitArea.x": 24,
-            "hitArea.y": 24,
-            "hitArea.radius": 24,
+            "hitArea.x": 47,
+            "hitArea.y": 31,
+            "hitArea.radius": 29.195268358338527,
             "texture": {
                 "key": "units",
-                "frame": "skaduwee/owl/idle/down_1.png"
+                "frame": "skaduwee/owl/flying/down_1.png"
             },
             "x": 24,
             "y": 24,

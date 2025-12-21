@@ -8,9 +8,9 @@ import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 
 export default class SkaduweeOwl extends Phaser.GameObjects.Sprite {
   constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
-    super(scene, x ?? 24, y ?? 24, texture || "units", frame ?? "skaduwee/owl/idle/down_1.png");
+    super(scene, x ?? 24, y ?? 24, texture || "units", frame ?? "skaduwee/owl/flying/down_1.png");
 
-    this.setInteractive(new Phaser.Geom.Circle(24, 24, 24), Phaser.Geom.Circle.Contains);
+    this.setInteractive(new Phaser.Geom.Circle(47, 31, 29.195268358338527), Phaser.Geom.Circle.Contains);
     this.play("skaduwee/owl/idle/down");
 
     /* START-USER-CTR-CODE */

@@ -1,587 +1,482 @@
 {
-  "textures": [
-    {
-      "image": "units.png",
-      "format": "RGBA8888",
-      "size": {
-        "w": 68,
-        "h": 26
-      },
-      "scale": 1,
-      "frames": [
-        {
-          "filename": "skaduwee/owl/attack/down_1.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 12,
-            "y": 12,
-            "w": 24,
-            "h": 24
-          },
-          "frame": {
-            "x": 1,
-            "y": 1,
-            "w": 24,
-            "h": 24
-          }
-        },
-        {
-          "filename": "skaduwee/owl/attack/left_1.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 12,
-            "y": 12,
-            "w": 24,
-            "h": 24
-          },
-          "frame": {
-            "x": 1,
-            "y": 1,
-            "w": 24,
-            "h": 24
-          }
-        },
-        {
-          "filename": "skaduwee/owl/attack/right_1.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 12,
-            "y": 12,
-            "w": 24,
-            "h": 24
-          },
-          "frame": {
-            "x": 1,
-            "y": 1,
-            "w": 24,
-            "h": 24
-          }
-        },
-        {
-          "filename": "skaduwee/owl/attack/up_1.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 12,
-            "y": 12,
-            "w": 24,
-            "h": 24
-          },
-          "frame": {
-            "x": 1,
-            "y": 1,
-            "w": 24,
-            "h": 24
-          }
-        },
-        {
-          "filename": "skaduwee/owl/die/down_1.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 12,
-            "y": 12,
-            "w": 24,
-            "h": 24
-          },
-          "frame": {
-            "x": 1,
-            "y": 1,
-            "w": 24,
-            "h": 24
-          }
-        },
-        {
-          "filename": "skaduwee/owl/idle/down_1.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 12,
-            "y": 12,
-            "w": 24,
-            "h": 24
-          },
-          "frame": {
-            "x": 1,
-            "y": 1,
-            "w": 24,
-            "h": 24
-          }
-        },
-        {
-          "filename": "skaduwee/owl/idle/left_1.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 12,
-            "y": 12,
-            "w": 24,
-            "h": 24
-          },
-          "frame": {
-            "x": 1,
-            "y": 1,
-            "w": 24,
-            "h": 24
-          }
-        },
-        {
-          "filename": "skaduwee/owl/idle/right_1.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 12,
-            "y": 12,
-            "w": 24,
-            "h": 24
-          },
-          "frame": {
-            "x": 1,
-            "y": 1,
-            "w": 24,
-            "h": 24
-          }
-        },
-        {
-          "filename": "skaduwee/owl/idle/up_1.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 12,
-            "y": 12,
-            "w": 24,
-            "h": 24
-          },
-          "frame": {
-            "x": 1,
-            "y": 1,
-            "w": 24,
-            "h": 24
-          }
-        },
-        {
-          "filename": "skaduwee/owl/move/down_1.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 12,
-            "y": 12,
-            "w": 24,
-            "h": 24
-          },
-          "frame": {
-            "x": 1,
-            "y": 1,
-            "w": 24,
-            "h": 24
-          }
-        },
-        {
-          "filename": "skaduwee/owl/move/left_1.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 12,
-            "y": 12,
-            "w": 24,
-            "h": 24
-          },
-          "frame": {
-            "x": 1,
-            "y": 1,
-            "w": 24,
-            "h": 24
-          }
-        },
-        {
-          "filename": "skaduwee/owl/move/right_1.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 12,
-            "y": 12,
-            "w": 24,
-            "h": 24
-          },
-          "frame": {
-            "x": 1,
-            "y": 1,
-            "w": 24,
-            "h": 24
-          }
-        },
-        {
-          "filename": "skaduwee/owl/move/up_1.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 12,
-            "y": 12,
-            "w": 24,
-            "h": 24
-          },
-          "frame": {
-            "x": 1,
-            "y": 1,
-            "w": 24,
-            "h": 24
-          }
-        },
-        {
-          "filename": "skaduwee/owl/attack/down_2.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 13,
-            "y": 12,
-            "w": 22,
-            "h": 24
-          },
-          "frame": {
-            "x": 27,
-            "y": 1,
-            "w": 22,
-            "h": 24
-          }
-        },
-        {
-          "filename": "skaduwee/owl/attack/left_2.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 13,
-            "y": 12,
-            "w": 22,
-            "h": 24
-          },
-          "frame": {
-            "x": 27,
-            "y": 1,
-            "w": 22,
-            "h": 24
-          }
-        },
-        {
-          "filename": "skaduwee/owl/attack/right_2.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 13,
-            "y": 12,
-            "w": 22,
-            "h": 24
-          },
-          "frame": {
-            "x": 27,
-            "y": 1,
-            "w": 22,
-            "h": 24
-          }
-        },
-        {
-          "filename": "skaduwee/owl/attack/up_2.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 13,
-            "y": 12,
-            "w": 22,
-            "h": 24
-          },
-          "frame": {
-            "x": 27,
-            "y": 1,
-            "w": 22,
-            "h": 24
-          }
-        },
-        {
-          "filename": "skaduwee/owl/die/down_2.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 13,
-            "y": 12,
-            "w": 22,
-            "h": 24
-          },
-          "frame": {
-            "x": 27,
-            "y": 1,
-            "w": 22,
-            "h": 24
-          }
-        },
-        {
-          "filename": "skaduwee/owl/idle/down_2.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 13,
-            "y": 12,
-            "w": 22,
-            "h": 24
-          },
-          "frame": {
-            "x": 27,
-            "y": 1,
-            "w": 22,
-            "h": 24
-          }
-        },
-        {
-          "filename": "skaduwee/owl/idle/left_2.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 13,
-            "y": 12,
-            "w": 22,
-            "h": 24
-          },
-          "frame": {
-            "x": 27,
-            "y": 1,
-            "w": 22,
-            "h": 24
-          }
-        },
-        {
-          "filename": "skaduwee/owl/idle/right_2.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 13,
-            "y": 12,
-            "w": 22,
-            "h": 24
-          },
-          "frame": {
-            "x": 27,
-            "y": 1,
-            "w": 22,
-            "h": 24
-          }
-        },
-        {
-          "filename": "skaduwee/owl/idle/up_2.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 13,
-            "y": 12,
-            "w": 22,
-            "h": 24
-          },
-          "frame": {
-            "x": 27,
-            "y": 1,
-            "w": 22,
-            "h": 24
-          }
-        },
-        {
-          "filename": "skaduwee/owl/move/down_2.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 13,
-            "y": 12,
-            "w": 22,
-            "h": 24
-          },
-          "frame": {
-            "x": 27,
-            "y": 1,
-            "w": 22,
-            "h": 24
-          }
-        },
-        {
-          "filename": "skaduwee/owl/move/left_2.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 13,
-            "y": 12,
-            "w": 22,
-            "h": 24
-          },
-          "frame": {
-            "x": 27,
-            "y": 1,
-            "w": 22,
-            "h": 24
-          }
-        },
-        {
-          "filename": "skaduwee/owl/move/right_2.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 13,
-            "y": 12,
-            "w": 22,
-            "h": 24
-          },
-          "frame": {
-            "x": 27,
-            "y": 1,
-            "w": 22,
-            "h": 24
-          }
-        },
-        {
-          "filename": "skaduwee/owl/move/up_2.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 13,
-            "y": 12,
-            "w": 22,
-            "h": 24
-          },
-          "frame": {
-            "x": 27,
-            "y": 1,
-            "w": 22,
-            "h": 24
-          }
-        },
-        {
-          "filename": "skaduwee/owl/projectile/furball/1.png",
-          "rotated": false,
-          "trimmed": false,
-          "sourceSize": {
-            "w": 16,
-            "h": 16
-          },
-          "spriteSourceSize": {
-            "x": 0,
-            "y": 0,
-            "w": 16,
-            "h": 16
-          },
-          "frame": {
-            "x": 51,
-            "y": 1,
-            "w": 16,
-            "h": 16
-          }
-        }
-      ]
-    }
-  ],
-  "meta": {
-    "app": "https://www.codeandweb.com/texturepacker",
-    "version": "3.0",
-    "smartupdate": "$TexturePacker:SmartUpdate:b0a1764716df2c5d9942a68718d887d4:605511971d181bbcedc1fe9541d86376:f2a24b8f3894bf9bf01b668fabf88373$"
-  }
+	"textures": [
+		{
+			"image": "units.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 504,
+				"h": 135
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "skaduwee/owl/flying/down_1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 92,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 10,
+						"w": 89,
+						"h": 47
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 89,
+						"h": 47
+					}
+				},
+				{
+					"filename": "skaduwee/owl/flying/up_1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 92,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 10,
+						"w": 89,
+						"h": 47
+					},
+					"frame": {
+						"x": 1,
+						"y": 50,
+						"w": 89,
+						"h": 47
+					}
+				},
+				{
+					"filename": "skaduwee/owl/flying/move_down_1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 92,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 15,
+						"w": 82,
+						"h": 35
+					},
+					"frame": {
+						"x": 1,
+						"y": 99,
+						"w": 82,
+						"h": 35
+					}
+				},
+				{
+					"filename": "skaduwee/owl/death/death_4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 92,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 8,
+						"w": 82,
+						"h": 52
+					},
+					"frame": {
+						"x": 92,
+						"y": 1,
+						"w": 82,
+						"h": 52
+					}
+				},
+				{
+					"filename": "skaduwee/owl/flying/move_down_2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 92,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 10,
+						"w": 89,
+						"h": 40
+					},
+					"frame": {
+						"x": 176,
+						"y": 1,
+						"w": 89,
+						"h": 40
+					}
+				},
+				{
+					"filename": "skaduwee/owl/flying/up_2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 92,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 18,
+						"w": 86,
+						"h": 39
+					},
+					"frame": {
+						"x": 267,
+						"y": 1,
+						"w": 86,
+						"h": 39
+					}
+				},
+				{
+					"filename": "skaduwee/owl/flying/down_2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 92,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 15,
+						"w": 82,
+						"h": 41
+					},
+					"frame": {
+						"x": 92,
+						"y": 55,
+						"w": 82,
+						"h": 41
+					}
+				},
+				{
+					"filename": "skaduwee/owl/flying/left_1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 92,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 11,
+						"w": 87,
+						"h": 36
+					},
+					"frame": {
+						"x": 92,
+						"y": 98,
+						"w": 87,
+						"h": 36
+					}
+				},
+				{
+					"filename": "skaduwee/owl/flying/right_1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 92,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 11,
+						"w": 87,
+						"h": 36
+					},
+					"frame": {
+						"x": 355,
+						"y": 1,
+						"w": 87,
+						"h": 36
+					}
+				},
+				{
+					"filename": "skaduwee/owl/death/death_3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 92,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 12,
+						"y": 10,
+						"w": 65,
+						"h": 48
+					},
+					"frame": {
+						"x": 176,
+						"y": 43,
+						"w": 65,
+						"h": 48
+					}
+				},
+				{
+					"filename": "skaduwee/owl/death/death_2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 92,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 16,
+						"y": 9,
+						"w": 59,
+						"h": 43
+					},
+					"frame": {
+						"x": 444,
+						"y": 1,
+						"w": 59,
+						"h": 43
+					}
+				},
+				{
+					"filename": "skaduwee/owl/flying/up_3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 92,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 17,
+						"y": 22,
+						"w": 59,
+						"h": 38
+					},
+					"frame": {
+						"x": 181,
+						"y": 93,
+						"w": 59,
+						"h": 38
+					}
+				},
+				{
+					"filename": "skaduwee/owl/flying/move_down_4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 92,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 18,
+						"y": 0,
+						"w": 56,
+						"h": 48
+					},
+					"frame": {
+						"x": 243,
+						"y": 43,
+						"w": 56,
+						"h": 48
+					}
+				},
+				{
+					"filename": "skaduwee/owl/flying/up_4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 92,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 13,
+						"y": 2,
+						"w": 67,
+						"h": 55
+					},
+					"frame": {
+						"x": 301,
+						"y": 42,
+						"w": 67,
+						"h": 55
+					}
+				},
+				{
+					"filename": "skaduwee/owl/flying/left_2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 92,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 13,
+						"y": 0,
+						"w": 63,
+						"h": 47
+					},
+					"frame": {
+						"x": 370,
+						"y": 39,
+						"w": 63,
+						"h": 47
+					}
+				},
+				{
+					"filename": "skaduwee/owl/flying/left_3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 92,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 14,
+						"y": 22,
+						"w": 56,
+						"h": 39
+					},
+					"frame": {
+						"x": 242,
+						"y": 93,
+						"w": 56,
+						"h": 39
+					}
+				},
+				{
+					"filename": "skaduwee/owl/death/death_1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 92,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 24,
+						"y": 12,
+						"w": 46,
+						"h": 35
+					},
+					"frame": {
+						"x": 300,
+						"y": 99,
+						"w": 46,
+						"h": 35
+					}
+				},
+				{
+					"filename": "skaduwee/owl/flying/right_2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 92,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 16,
+						"y": 0,
+						"w": 63,
+						"h": 47
+					},
+					"frame": {
+						"x": 435,
+						"y": 46,
+						"w": 63,
+						"h": 47
+					}
+				},
+				{
+					"filename": "skaduwee/owl/flying/move_down_3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 92,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 18,
+						"y": 21,
+						"w": 57,
+						"h": 31
+					},
+					"frame": {
+						"x": 370,
+						"y": 88,
+						"w": 57,
+						"h": 31
+					}
+				},
+				{
+					"filename": "skaduwee/owl/flying/right_3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 92,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 22,
+						"y": 22,
+						"w": 56,
+						"h": 39
+					},
+					"frame": {
+						"x": 429,
+						"y": 95,
+						"w": 56,
+						"h": 39
+					}
+				},
+				{
+					"filename": "skaduwee/owl/projectile/furball/1.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 16,
+						"h": 16
+					},
+					"frame": {
+						"x": 348,
+						"y": 99,
+						"w": 16,
+						"h": 16
+					}
+				},
+				{
+					"filename": "skaduwee/owl/death/death_5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 92,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 3,
+						"h": 3
+					},
+					"frame": {
+						"x": 176,
+						"y": 93,
+						"w": 3,
+						"h": 3
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "3.0",
+		"smartupdate": "$TexturePacker:SmartUpdate:d2261dcbd4076a58f958ccf8a95a62d1:bd13db5acc0021b0a03fb210d866a1c9:f2a24b8f3894bf9bf01b668fabf88373$"
+	}
 }

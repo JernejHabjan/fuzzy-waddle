@@ -3,7 +3,7 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { getTilesAroundGameObjectsOfShape } from "../../../../data/tile-map-helpers";
+import { TileMapTintComponent } from "../../../../entity/components/construction/tile-map-tint.component";
 /* END-USER-IMPORTS */
 
 export default class OlivalLevel1 extends Phaser.GameObjects.Container {
@@ -33,6 +33,8 @@ export default class OlivalLevel1 extends Phaser.GameObjects.Container {
     this.buildings_tivara_olival = buildings_tivara_olival;
 
     /* START-USER-CTR-CODE */
+    this.tileMapTintComponent = new TileMapTintComponent(0x7eb3cb, 6);
+
     /* END-USER-CTR-CODE */
   }
 
@@ -40,10 +42,11 @@ export default class OlivalLevel1 extends Phaser.GameObjects.Container {
 
   /* START-USER-CODE */
   private bounceTweens?: Phaser.Tweens.Tween;
+  private tileMapTintComponent: TileMapTintComponent;
 
   private init() {
     this.bounce(this.buildings_tivara_olival);
-    this.tintTilemapAroundTransform(this.scene, 0x7eb3cb, 6);
+    this.tileMapTintComponent.tintTilemapAroundTransform(this.parentContainer);
   }
 
   private bounce = (image: Phaser.GameObjects.Image) => {
@@ -57,14 +60,6 @@ export default class OlivalLevel1 extends Phaser.GameObjects.Container {
       loop: -1 // loop indefinitely
     });
   };
-
-  private tintTilemapAroundTransform = (scene: Phaser.Scene, tint: number, radius: number) => {
-    const { tiles } = getTilesAroundGameObjectsOfShape(this.parentContainer, scene, radius, "circle");
-    tiles.forEach((tile) => {
-      tile.tint = tint;
-    });
-  };
-
   start() {
     this.init();
   }

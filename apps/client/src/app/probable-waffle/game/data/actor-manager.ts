@@ -15,7 +15,8 @@ import SkaduweeRangedFemale from "../prefabs/characters/skaduwee/skaduwee-ranged
 import SkaduweeMagicianFemale from "../prefabs/characters/skaduwee/skaduwee-magician-female/SkaduweeMagicianFemale";
 import SkaduweeWarriorMale from "../prefabs/characters/skaduwee/skaduwee-warrior-male/SkaduweeWarriorMale";
 import SkaduweeWorkerMale from "../prefabs/characters/skaduwee/skaduwee-worker/skaduwee-worker-male/SkaduweeWorkerMale";
-import SkaduweeWorkerFemale from "../prefabs/characters/skaduwee/skaduwee-worker/skaduwee-worker-female/SkaduweeWorkerFemale";
+import SkaduweeWorkerFemale
+  from "../prefabs/characters/skaduwee/skaduwee-worker/skaduwee-worker-female/SkaduweeWorkerFemale";
 import FrostForge from "../prefabs/buildings/skaduwee/FrostForge";
 import InfantryInn from "../prefabs/buildings/skaduwee/InfantryInn";
 import Owlery from "../prefabs/buildings/skaduwee/Owlery";
@@ -111,9 +112,9 @@ export class ActorManager {
     [ObjectNames.FrostForge]: FrostForge,
     [ObjectNames.InfantryInn]: InfantryInn,
     [ObjectNames.Owlery]: Owlery,
+    [ObjectNames.Emberstone]: Emberstone,
     [ObjectNames.WorkMill]: WorkMill,
     [ObjectNames.WatchTower]: WatchTower,
-    [ObjectNames.Emberstone]: Emberstone,
     [ObjectNames.Wall]: Wall,
     [ObjectNames.Stairs]: Stairs,
     [ObjectNames.MiningCamp]: MiningCamp

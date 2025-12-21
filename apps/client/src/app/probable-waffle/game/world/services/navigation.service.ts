@@ -682,6 +682,10 @@ export class NavigationService {
     return this.easyStarNavigationGrid[tile.y]?.[tile.x] === 0; // Check if the tile is walkable (0 means walkable)
   }
 
+  public isTileGridWithoutBlockingObjectsWalkable(tile: Vector2Simple): boolean {
+    return this.tilemapGrid[tile.y]?.[tile.x] === 0; // Check if the tile is walkable in the base tilemap grid
+  }
+
   isAreaBeneathGameObjectWalkable(gameObject: Phaser.GameObjects.GameObject): boolean {
     const tileIndexesUnderObject = getTileCoordsUnderObject(this.tilemap, gameObject);
     const actualTilesUnderObject = tileIndexesUnderObject.map((tileIndex) =>

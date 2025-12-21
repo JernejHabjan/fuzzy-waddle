@@ -279,8 +279,8 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "1",
-            "x": -256,
-            "y": 528
+            "x": -512,
+            "y": 624
         },
         {
             "prefabId": "28fbd043-faa7-45c4-a8d9-fd89f37b15d5",
@@ -983,8 +983,8 @@
                 "y"
             ],
             "label": "tree10",
-            "x": 640,
-            "y": 576
+            "x": 320,
+            "y": 672
         },
         {
             "prefabId": "e5ae5fa0-6dc1-48d5-b040-80ec53ee9f1b",
@@ -1005,8 +1005,8 @@
                 "y"
             ],
             "label": "tree_14",
-            "x": -384,
-            "y": 672
+            "x": -256,
+            "y": 176
         },
         {
             "prefabId": "2e708e33-ee95-41cc-b479-aaf17a1a8225",
@@ -1548,8 +1548,8 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "1",
-            "x": -224,
-            "y": 704
+            "x": -672,
+            "y": 624
         },
         {
             "prefabId": "edf32147-e546-4f6e-91ba-1720c6b75ac9",
@@ -1563,8 +1563,8 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "1",
-            "x": -352,
-            "y": 464
+            "x": -512,
+            "y": 672
         },
         {
             "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f23",
@@ -1727,8 +1727,8 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "1",
-            "x": -116,
-            "y": 698
+            "x": -224,
+            "y": 768
         },
         {
             "prefabId": "a07ac02b-e308-4dc3-94e7-722e0dd9a98c",
@@ -1742,8 +1742,8 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "1",
-            "x": -256,
-            "y": 608
+            "x": -640,
+            "y": 560
         },
         {
             "prefabId": "6b5df2a7-6f41-4fc7-a3bb-96dc39de0188",
@@ -1772,8 +1772,8 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "1",
-            "x": -480,
-            "y": 608
+            "x": -576,
+            "y": 656
         },
         {
             "prefabId": "26b5870f-03c5-447e-8a4a-b1142f25ac1c",
@@ -2166,6 +2166,66 @@
             "EditorOwner.owner_id": "1",
             "x": -96,
             "y": 160
+        },
+        {
+            "prefabId": "56d62d59-15b0-4017-b986-1f24c1040cb6",
+            "id": "c43995da-205b-4fc9-8e8b-0b15024236e2",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "frostForge",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": 672,
+            "y": 560
+        },
+        {
+            "prefabId": "56d62d59-15b0-4007-b986-1f24c1040cb6",
+            "id": "0e77e4ff-0b11-492c-b7b5-549a507f4764",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "infantryInn_1",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": 704,
+            "y": 688
+        },
+        {
+            "prefabId": "3e9f68eb-dfb2-48a6-9297-29d66e962fa4",
+            "id": "82a520b5-1f9a-4fa6-9d33-2a289510db5a",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "owlery_1",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": 480,
+            "y": 544
+        },
+        {
+            "prefabId": "562e6de3-f2af-48c3-b297-7d67a34dfe91",
+            "id": "afac9062-8034-4a12-916d-bff9c4efbb2d",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "emberstone_1",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": 512,
+            "y": 640
         }
     ],
     "plainObjects": [
