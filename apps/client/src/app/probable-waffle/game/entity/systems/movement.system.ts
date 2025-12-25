@@ -357,6 +357,11 @@ export class MovementSystem {
       y: tileWorldXY.y,
       z: vec3.z
     } as Vector3Simple;
+    const currentTile = getGameObjectCurrentTile(this.gameObject);
+    // The multiplier scales duration by tile distance so long flying moves don't complete in the same time as short hops.
+    const tileDistanceMultiplier = currentTile
+      ? Math.max(Math.abs(vec3.x - currentTile.x), Math.abs(vec3.y - currentTile.y), 1)
+      : 1;
 
     const onComplete = () => {
       pathMoveConfig?.onComplete?.();
@@ -368,14 +373,15 @@ export class MovementSystem {
       if (!pathMoveConfig?.ignoreAnimations) this.playMovementAnimation(false, pathMoveConfig);
     };
 
-    return this.startMovementTween(newLogicalTransform, pathMoveConfig, onComplete, onStop);
+    return this.startMovementTween(newLogicalTransform, pathMoveConfig, onComplete, onStop, tileDistanceMultiplier);
   }
 
   private startMovementTween(
     newLogicalTransform: Vector3Simple,
     config: PathMoveConfig | Partial<PathMoveConfig> | undefined,
     onComplete?: (() => void) | (() => Promise<void>),
-    onStop?: () => void
+    onStop?: () => void,
+    tileDistanceMultiplier: number = 1
   ): Promise<void> {
     const actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
     const throttledTweenUpdate = config?.onUpdateThrottled
@@ -387,14 +393,16 @@ export class MovementSystem {
       const representableComponent = getActorComponent(this.gameObject, RepresentableComponent);
       if (!representableComponent) return reject("No representable component");
       const logicalTransform = { ...representableComponent.logicalWorldTransform };
+      const baseDuration = actorTranslateComponent?.actorTranslateDefinition?.tileMoveDuration;
+      if (typeof baseDuration !== "number") return reject("No tile move duration defined");
+      const duration = Math.max(baseDuration * (tileDistanceMultiplier || 1), baseDuration);
+      // Apply scaled duration to keep per-tile timing consistent for direct (flying) movement.
       this._currentTween = this.gameObject.scene.tweens.add({
         targets: logicalTransform,
         x: newLogicalTransform.x,
         y: newLogicalTransform.y,
         z: newLogicalTransform.z,
-        duration:
-          actorTranslateComponent?.actorTranslateDefinition?.tileMoveDuration ??
-          new Error("No tile move duration defined"),
+        duration,
         onComplete: async () => {
           if (onComplete) {
             await onComplete();
@@ -408,7 +416,6 @@ export class MovementSystem {
             config?.onStop?.();
             if (!config?.ignoreAnimations) this.playMovementAnimation(false, config);
           }
-          // reject("Movement stopped");
           resolve();
         },
         onUpdate: () => {

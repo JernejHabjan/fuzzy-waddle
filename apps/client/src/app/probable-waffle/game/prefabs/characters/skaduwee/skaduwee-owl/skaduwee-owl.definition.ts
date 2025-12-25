@@ -67,7 +67,7 @@ export const skaduweeOwlDefinition = {
       actors: [ObjectNames.Owlery]
     },
     translatable: {
-      tileMoveDuration: 4000
+      tileMoveDuration: 300
     },
     flying: {
       height: 128
