@@ -13,20 +13,27 @@
     },
     "displayList": [
         {
-            "type": "Sprite",
-            "id": "1b8b0379-15de-4525-84fe-007bf084092d",
-            "label": "buildings_skaduwee_ember_stone_ember_stone",
+            "type": "Container",
+            "id": "17d5cbc1-9e48-4c5f-9ca5-f58e74dd6f78",
+            "label": "container_2",
             "hitArea.shape": "POLYGON",
-            "hitArea.points": "9.788372063149147 27.988150775023485 33.51043684446447 14.491113916688903 55.596497158102885 27.17014854118503 55.05050388928409 88.43623088666114 64.04852846150715 97.84325657580341 32.14644134180722 115.83930572024953 0.2443542221072903 97.84325657580341 8.833377677411114 88.43623088666114",
-            "texture": {
-                "key": "factions",
-                "frame": "buildings/skaduwee/ember_stone/ember_stone1.png"
-            },
+            "hitArea.points": "-24.402698920542555 -66.32343174744562 0.16862688641111845 -81.86881142737215 23.57192387826992 -65.70837248079418 21.93176583386608 -7.687781660008142 31.157654833637707 -3.5873865489985235 31.88592104464726 2.8076344446160846 0.4596112364866798 19.684726748998614 -32.42162032205171 3.098618794691646 -31.78341012035986 -3.7924063045490044 -22.55752112058823 -6.252643371154775",
             "x": 32,
-            "y": 95.90208743516723,
-            "originY": 0.749235058087244,
-            "animationPlayMethod": 1,
-            "animationKey": "buildings/skaduwee/ember_stone/ember_stone"
+            "y": 96.44864925818341,
+            "list": [
+                {
+                    "type": "Sprite",
+                    "id": "77b5f59b-f4cb-4c7f-9e0e-ea1ff6c235b2",
+                    "label": "buildings_skaduwee_ember_stone_ember_stone",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/skaduwee/ember_stone/ember_stone1.png"
+                    },
+                    "y": -32.44865158816356,
+                    "animationPlayMethod": 1,
+                    "animationKey": "buildings/skaduwee/ember_stone/ember_stone"
+                }
+            ]
         }
     ],
     "plainObjects": [],
