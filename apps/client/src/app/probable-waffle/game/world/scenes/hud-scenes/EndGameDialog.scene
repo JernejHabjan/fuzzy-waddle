@@ -139,7 +139,7 @@
                     "align": "center",
                     "fontFamily": "disposabledroid",
                     "fontSize": "32px",
-                    "color": "#000000ff",
+                    "color": "#ffffffff",
                     "maxLines": 5,
                     "wordWrapWidth": 200
                 }

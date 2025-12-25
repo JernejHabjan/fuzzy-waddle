@@ -7,12 +7,9 @@ import EmitEventActionScript from "../../../../../shared/game/phaser/script-node
 import OnPointerDownScript from "../../../../../shared/game/phaser/script-nodes-basic/OnPointerDownScript";
 import PushActionScript from "../../../../../shared/game/phaser/script-nodes/PushActionScript";
 /* START-USER-IMPORTS */
-import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
-import { GameSessionState } from "@fuzzy-waddle/api-interfaces";
 /* END-USER-IMPORTS */
 
 export default class EndGameDialog extends Phaser.Scene {
-
   constructor() {
     super("EndGameDialog");
 
@@ -22,12 +19,22 @@ export default class EndGameDialog extends Phaser.Scene {
   }
 
   editorCreate(): void {
-
     // dialog_container
     const dialog_container = this.add.container(0, 0);
 
     // game_actions_bg
-    const game_actions_bg = this.add.nineslice(-112.60605580401727, -190.29550515717648, "gui", "cryos_mini_gui/surfaces/surface_dark.png", 20, 25, 1, 1, 1, 1);
+    const game_actions_bg = this.add.nineslice(
+      -112.60605580401727,
+      -190.29550515717648,
+      "gui",
+      "cryos_mini_gui/surfaces/surface_dark.png",
+      20,
+      25,
+      1,
+      1,
+      1,
+      1
+    );
     game_actions_bg.scaleX = 10.948325638168216;
     game_actions_bg.scaleY = 10.305188906705764;
     game_actions_bg.setOrigin(0, 0);
@@ -35,13 +42,27 @@ export default class EndGameDialog extends Phaser.Scene {
 
     // continue_button
     const continue_button = this.add.container(-5, 22);
-    continue_button.setInteractive(new Phaser.Geom.Rectangle(-42, -13, 85.7117848223629, 25.429332302435576), Phaser.Geom.Rectangle.Contains);
+    continue_button.setInteractive(
+      new Phaser.Geom.Rectangle(-42, -13, 85.7117848223629, 25.429332302435576),
+      Phaser.Geom.Rectangle.Contains
+    );
     continue_button.scaleX = 2;
     continue_button.scaleY = 2;
     dialog_container.add(continue_button);
 
     // game_actions_quit_bg_2
-    const game_actions_quit_bg_2 = this.add.nineslice(0, 0, "gui", "cryos_mini_gui/buttons/button_small.png", 40, 20, 3, 3, 3, 3);
+    const game_actions_quit_bg_2 = this.add.nineslice(
+      0,
+      0,
+      "gui",
+      "cryos_mini_gui/buttons/button_small.png",
+      40,
+      20,
+      3,
+      3,
+      3,
+      3
+    );
     game_actions_quit_bg_2.scaleX = 2.3521289589041787;
     game_actions_quit_bg_2.scaleY = 1.5492262688240692;
     continue_button.add(game_actions_quit_bg_2);
@@ -50,7 +71,14 @@ export default class EndGameDialog extends Phaser.Scene {
     const text_1 = this.add.text(-1, 0, "", {});
     text_1.setOrigin(0.5, 0.5);
     text_1.text = "Continue";
-    text_1.setStyle({ "align": "center", "color": "#000000ff", "fontFamily": "disposabledroid", "fontSize": "18px", "stroke": "#ffffffff", "resolution": 10 });
+    text_1.setStyle({
+      align: "center",
+      color: "#000000ff",
+      fontFamily: "disposabledroid",
+      fontSize: "18px",
+      stroke: "#ffffffff",
+      resolution: 10
+    });
     continue_button.add(text_1);
 
     // onPointerUpScript_continue
@@ -68,7 +96,14 @@ export default class EndGameDialog extends Phaser.Scene {
     // message
     const message = this.add.text(-95, -96, "", {});
     message.setOrigin(0, 0.5);
-    message.setStyle({ "align": "center", "color": "#000000ff", "fontFamily": "disposabledroid", "fontSize": "32px", "maxLines": 5, "resolution": 10 });
+    message.setStyle({
+      align: "center",
+      color: "#ffffffff",
+      fontFamily: "disposabledroid",
+      fontSize: "32px",
+      maxLines: 5,
+      resolution: 10
+    });
     message.setWordWrapWidth(200);
     dialog_container.add(message);
 
