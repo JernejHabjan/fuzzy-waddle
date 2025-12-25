@@ -5,4 +5,5 @@ export type ResourceSourceDefinition = {
   maximumResources: number;
   gatheringFactor: number;
   maxGatherers?: number;
+  cooldown: number;
 };

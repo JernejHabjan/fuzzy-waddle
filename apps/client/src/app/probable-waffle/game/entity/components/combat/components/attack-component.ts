@@ -160,7 +160,7 @@ export class AttackComponent {
 
     this.playSharedAttackLogic(attack, enemy);
 
-    setTimeout(() => {
+    this.gameObject.scene.time.delayedCall(attack.delays.fire, () => {
       if (!this.gameObject.active || !enemy.active) return;
       const healthComponent = getActorComponent(this.gameObject, HealthComponent);
       if (!healthComponent || healthComponent.killed) return;
@@ -236,7 +236,7 @@ export class AttackComponent {
           repeat: -1
         });
       }
-    }, attack.delays.fire);
+    });
   }
 
   private projectileHitEnemy(
@@ -330,7 +330,7 @@ export class AttackComponent {
         );
       }
     }
-    setTimeout(() => {
+    this.gameObject.scene.time.delayedCall(attack.delays.fire, () => {
       if (fire) {
         const visibilityComponent = getGameObjectVisibility(this.gameObject);
         if (visibilityComponent && visibilityComponent.visible) {
@@ -338,11 +338,11 @@ export class AttackComponent {
           this.audioService!.playSpatialAudioSprite(this.gameObject, randomFireSound.key, randomFireSound.spriteName);
         }
       }
-    }, attack.delays.fire);
+    });
 
     if (!attack.projectile) {
       // if not a projectile, play hit sound
-      setTimeout(() => {
+      this.gameObject.scene.time.delayedCall(attack.delays.hit, () => {
         if (hit) {
           const visibilityComponent = getGameObjectVisibility(this.gameObject);
           if (visibilityComponent && visibilityComponent.visible) {
@@ -354,7 +354,7 @@ export class AttackComponent {
             );
           }
         }
-      }, attack.delays.hit);
+      });
     }
   }
 

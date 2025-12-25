@@ -51,9 +51,9 @@ export default class OwleryLevel1 extends Phaser.GameObjects.Container {
       owlSprite.play(ANIM_SKADUWEE_BUILDINGS_OWLERY_OWL, true);
     });
     const randomDelay = Phaser.Math.Between(20000, 40000);
-    setTimeout(() => {
+    this.scene.time.delayedCall(randomDelay, () => {
       this.flapRandomly(owlSprite);
-    }, randomDelay);
+    });
   };
   /* END-USER-CODE */
 }

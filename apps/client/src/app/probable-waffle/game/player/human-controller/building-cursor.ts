@@ -266,7 +266,7 @@ export class BuildingCursor {
         }
 
         // Not complete yet, check again later
-        setTimeout(checkMovementComplete, checkInterval);
+        this.scene.time.delayedCall(checkInterval, checkMovementComplete);
       };
 
       // Start checking

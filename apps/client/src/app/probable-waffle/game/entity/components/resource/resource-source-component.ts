@@ -40,8 +40,10 @@ export class ResourceSourceComponent {
       this.containerComponent?.loadGameObject(gatherer);
     }
 
-    await new Promise((resolve) => {
-      setTimeout(resolve, 1000); // todo read cooldown from elsewhere
+    await new Promise<void>((resolve) => {
+      this.gameObject.scene.time.delayedCall(this.resourceSourceDefinition.cooldown, () => {
+        resolve();
+      });
     });
 
     if (this.gathererMustEnter) {

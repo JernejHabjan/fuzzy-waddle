@@ -43,8 +43,10 @@ export class ResourceDrainComponent {
       this.containerComponent?.loadGameObject(gatherer);
     }
 
-    await new Promise((resolve) => {
-      setTimeout(resolve, 1000); // todo read cooldown from elsewhere
+    await new Promise<void>((resolve) => {
+      this.gameObject.scene.time.delayedCall(this.resourceDrainDefinition.cooldown, () => {
+        resolve();
+      });
     });
 
     if (this.gathererMustEnter) {

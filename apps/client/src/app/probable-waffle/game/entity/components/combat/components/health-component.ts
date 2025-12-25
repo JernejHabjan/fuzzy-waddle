@@ -54,6 +54,7 @@ export class HealthComponent {
     damage: number;
     damageType: DamageType;
     timestamp: Date;
+    sceneTime: number;
   };
   private syncConfig = {
     eventPrefix: "health",
@@ -88,7 +89,7 @@ export class HealthComponent {
   uiComponentsVisibilityChanged: Subject<boolean> = new Subject<boolean>();
   private shouldUiElementsBeVisible: boolean = false;
   private constructionProgressSubscription?: Subscription;
-  private healthUiHideOnTimeout?: number;
+  private healthUiHideOnTimeout?: Phaser.Time.TimerEvent;
   private damageKey?: Phaser.Input.Keyboard.Key | undefined;
   private attackKey?: Phaser.Input.Keyboard.Key | undefined;
   private animationActorComponent?: AnimationActorComponent;
@@ -208,7 +209,7 @@ export class HealthComponent {
   }
 
   private bindAttackAnimKey() {
-    this.attackKey = this.gameObject.scene.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.L);
+    this.attackKey = this.gameObject.scene.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.N);
     if (!this.attackKey) return;
     this.attackKey.on(Phaser.Input.Keyboard.Events.DOWN, this.playAttack, this);
   }
@@ -271,7 +272,8 @@ export class HealthComponent {
       damage,
       damageType,
       damageInitiator,
-      timestamp: new Date()
+      timestamp: new Date(),
+      sceneTime: this.gameObject.scene.time.now
     };
 
     if (this.healthComponentData.armour > 0) {
@@ -283,10 +285,10 @@ export class HealthComponent {
     if (this.healthDefinition.healthDisplayBehavior === "onDamage") {
       this.setVisibilityUiComponent(true);
       // Hide the UI component after a delay if it's set to "onDamage"
-      clearTimeout(this.healthUiHideOnTimeout);
-      this.healthUiHideOnTimeout = window.setTimeout(() => {
+      this.healthUiHideOnTimeout?.remove();
+      this.healthUiHideOnTimeout = this.gameObject.scene.time.delayedCall(3000, () => {
         if (this.gameObject.active) this.setVisibilityUiComponent(false);
-      }, 3000);
+      });
     }
   }
 

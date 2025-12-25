@@ -46,7 +46,8 @@ export const miningCampDefinition = {
       costType: PaymentType.PayImmediately
     },
     resourceDrain: {
-      resourceTypes: [ResourceType.Minerals, ResourceType.Stone]
+      resourceTypes: [ResourceType.Minerals, ResourceType.Stone],
+      cooldown: 1000
     },
     selectable: {},
     collider: { enabled: true },

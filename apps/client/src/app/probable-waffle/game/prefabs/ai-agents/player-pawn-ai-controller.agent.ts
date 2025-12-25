@@ -389,11 +389,21 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
   }
 
   Attacked() {
-    const attackedCooldown = 1000;
+    const attackedCooldown = 1000; // milliseconds
     const healthComponent = getActorComponent(this.gameObject, HealthComponent);
     if (!healthComponent) return false;
+
+    const latestDamage = healthComponent.latestDamage;
+    if (!latestDamage) return false;
+
+    // Use scene time for proper timeScale support
+    const scene = this.gameObject.scene;
+    const currentSceneTime = scene.time.now;
+    const damageSceneTime = latestDamage.sceneTime;
+    const sceneTimeSinceDamage = currentSceneTime - damageSceneTime;
+
     // noinspection UnnecessaryLocalVariableJS
-    const attacked = (healthComponent.latestDamage?.timestamp.getTime() ?? 0) > new Date().getTime() - attackedCooldown;
+    const attacked = sceneTimeSinceDamage < attackedCooldown;
     return attacked;
   }
 

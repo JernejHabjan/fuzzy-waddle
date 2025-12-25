@@ -30,6 +30,14 @@ export class AnimationActorComponent {
   }
 
   playOrderAnimation(orderType: OrderType, animationOptions?: AnimationOptions) {
+    const healthComponent = getActorComponent(this.gameObject, HealthComponent);
+    if (healthComponent?.killed === true) {
+      console.error(
+        `AnimationActorComponent: Tried to play order animation ${orderType} for dead actor`,
+        this.gameObject
+      );
+      return; // Don't play animations for dead actors
+    }
     this.playAnimation(this.mapOrderTypeToAnimationType(orderType), animationOptions);
   }
 
