@@ -15,8 +15,7 @@ import SkaduweeRangedFemale from "../prefabs/characters/skaduwee/skaduwee-ranged
 import SkaduweeMagicianFemale from "../prefabs/characters/skaduwee/skaduwee-magician-female/SkaduweeMagicianFemale";
 import SkaduweeWarriorMale from "../prefabs/characters/skaduwee/skaduwee-warrior-male/SkaduweeWarriorMale";
 import SkaduweeWorkerMale from "../prefabs/characters/skaduwee/skaduwee-worker/skaduwee-worker-male/SkaduweeWorkerMale";
-import SkaduweeWorkerFemale
-  from "../prefabs/characters/skaduwee/skaduwee-worker/skaduwee-worker-female/SkaduweeWorkerFemale";
+import SkaduweeWorkerFemale from "../prefabs/characters/skaduwee/skaduwee-worker/skaduwee-worker-female/SkaduweeWorkerFemale";
 import FrostForge from "../prefabs/buildings/skaduwee/FrostForge";
 import InfantryInn from "../prefabs/buildings/skaduwee/InfantryInn";
 import Owlery from "../prefabs/buildings/skaduwee/Owlery";
@@ -61,12 +60,20 @@ import { SceneActorCreator } from "../world/services/scene-actor-creator";
 import MiningCamp from "../prefabs/buildings/tivara/MiningCamp";
 import Emberstone from "../prefabs/buildings/skaduwee/Emberstone";
 import GameObject = Phaser.GameObjects.GameObject;
+import Wolf from "../prefabs/animals/wolf/Wolf";
+import Boar from "../prefabs/animals/boar/Boar";
+import Stag from "../prefabs/animals/stag/Stag";
+import Badger from "../prefabs/animals/badger/Badger";
 
 type ActorMap = { [name: string]: new (scene: Phaser.Scene) => GameObject };
 export class ActorManager {
   private static animals: ActorMap = {
     [ObjectNames.Hedgehog]: Hedgehog,
-    [ObjectNames.Sheep]: Sheep
+    [ObjectNames.Sheep]: Sheep,
+    [ObjectNames.Wolf]: Wolf,
+    [ObjectNames.Boar]: Boar,
+    [ObjectNames.Stag]: Stag,
+    [ObjectNames.Badger]: Badger
   };
 
   private static general: ActorMap = {
