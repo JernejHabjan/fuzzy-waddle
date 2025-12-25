@@ -1,11 +1,11 @@
-import { type AfterViewInit, Component, ElementRef, inject, Input, ViewChild } from "@angular/core";
+import { type AfterViewInit, Component, ElementRef, inject, input, viewChild } from "@angular/core";
 
 import { AtlasService } from "../../services/atlas/atlas.service";
 
 @Component({
   selector: "fuzzy-waddle-atlas-sprite",
   standalone: true,
-  template: ` <canvas #canvas [width]="width" [height]="height"></canvas> `,
+  template: ` <canvas #canvas [width]="width()" [height]="height()"></canvas> `,
   styles: [
     `
       canvas {
@@ -15,11 +15,11 @@ import { AtlasService } from "../../services/atlas/atlas.service";
   ]
 })
 export class AtlasSpriteComponent implements AfterViewInit {
-  @Input() spriteName!: string;
-  @Input() width: number = 32;
-  @Input() height: number = 32;
+  readonly spriteName = input.required<string>();
+  readonly width = input<number>(32);
+  readonly height = input<number>(32);
 
-  @ViewChild("canvas") canvasRef!: ElementRef<HTMLCanvasElement>;
+  readonly canvasRef = viewChild.required<ElementRef<HTMLCanvasElement>>("canvas");
 
   private ctx!: CanvasRenderingContext2D;
 
@@ -31,23 +31,26 @@ export class AtlasSpriteComponent implements AfterViewInit {
   }
 
   private initCanvas() {
-    const canvas = this.canvasRef.nativeElement;
+    const canvas = this.canvasRef().nativeElement;
     this.ctx = canvas.getContext("2d")!;
   }
 
   private async renderSprite() {
-    if (!this.spriteName) return;
+    const spriteName = this.spriteName();
+    if (!spriteName) return;
 
-    const frame = await this.atlasService.getSpriteFrame(this.spriteName);
+    const frame = await this.atlasService.getSpriteFrame(spriteName);
     if (!frame) {
-      console.warn(`Sprite not found: ${this.spriteName}`);
+      console.warn(`Sprite not found: ${spriteName}`);
       return;
     }
 
     // Clear canvas
-    this.ctx.clearRect(0, 0, this.width, this.height);
+    const width = this.width();
+    const height = this.height();
+    this.ctx.clearRect(0, 0, width, height);
 
     // Draw the sprite from atlas to canvas with proper scaling
-    this.ctx.drawImage(this.atlasService.atlasImage, frame.x, frame.y, frame.w, frame.h, 0, 0, this.width, this.height);
+    this.ctx.drawImage(this.atlasService.atlasImage, frame.x, frame.y, frame.w, frame.h, 0, 0, width, height);
   }
 }

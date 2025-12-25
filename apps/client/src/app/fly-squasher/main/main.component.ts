@@ -1,4 +1,4 @@
-import { Component, inject, Input, type OnDestroy, type OnInit } from "@angular/core";
+import { Component, inject, type OnDestroy, type OnInit, input } from "@angular/core";
 import { flySquasherGameConfig } from "../game/consts/game-config";
 import { FlySquasherGameInstance, FlySquasherLevels, FlySquasherUserInfo } from "@fuzzy-waddle/api-interfaces";
 import { AuthService } from "../../auth/auth.service";
@@ -27,7 +27,7 @@ export class MainComponent implements OnInit, OnDestroy {
 
   protected readonly flySquasherGameConfig = flySquasherGameConfig;
   protected gameData!: FlySquasherGameData;
-  @Input({ required: true }) level!: string;
+  readonly level = input.required<string>();
   private preventNavigateBack = new PreventNavigateBack(this.router);
   protected leaveModalConfirm: ModalConfig = {
     modalTitle: "Leave the game?",
@@ -37,7 +37,7 @@ export class MainComponent implements OnInit, OnDestroy {
   };
 
   ngOnInit(): void {
-    const levelData = Object.values(FlySquasherLevels).find((level) => level.id === Number.parseInt(this.level))!;
+    const levelData = Object.values(FlySquasherLevels).find((level) => level.id === Number.parseInt(this.level()))!;
 
     const gameSessionInstance = new FlySquasherGameInstance({
       gameModeData: {

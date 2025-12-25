@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, input } from "@angular/core";
 
 import { RouterLink } from "@angular/router";
 
@@ -9,7 +9,7 @@ import { RouterLink } from "@angular/router";
   imports: [RouterLink]
 })
 export class HomeNavComponent {
-  @Input() routerLink: string = "/";
-  @Input() title: string = "Fuzzy Waddle";
-  @Input() imgSrc: string = "assets/icons/fuzzy-waddle.svg";
+  readonly routerLink = input<string>("/");
+  readonly title = input<string>("Fuzzy Waddle");
+  readonly imgSrc = input<string>("assets/icons/fuzzy-waddle.svg");
 }

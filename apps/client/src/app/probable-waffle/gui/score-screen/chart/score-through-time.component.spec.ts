@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ScoreThroughTimeComponent } from "./score-through-time.component";
-import { Component, Input } from "@angular/core";
+import { Component, input } from "@angular/core";
 
 import {
   createPlayerLobbyDefinition,
@@ -27,7 +27,7 @@ import { GameInstanceClientService } from "../../../communicators/game-instance-
   styleUrls: ["./score-through-time.component.scss"]
 })
 export class ScoreThroughTimeTestingComponent {
-  @Input({ required: true }) summaryType!: "units" | "buildings" | "resources";
+  readonly summaryType = input.required<"units" | "buildings" | "resources">();
 }
 describe("ScoreThroughTimeComponent", () => {
   let component: ScoreThroughTimeComponent;

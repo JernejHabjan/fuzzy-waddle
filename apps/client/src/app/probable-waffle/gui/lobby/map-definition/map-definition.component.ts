@@ -216,7 +216,7 @@ export class MapDefinitionComponent implements OnInit, OnDestroy {
     return isoCoordinates;
   }
 
-  @HostListener("window:resize", ["$event"])
+  @HostListener("window:resize")
   onResize() {
     this.refresh();
   }

@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MapBrowserComponent } from "./map-browser.component";
 import { CommonModule } from "@angular/common";
-import { Component, EventEmitter, input, model, Output } from "@angular/core";
+import { Component, input, model, output } from "@angular/core";
 import { SceneCommunicatorClientService } from "../../../communicators/scene-communicator-client.service";
 import { AuthService } from "../../../../auth/auth.service";
 import { authServiceStub } from "../../../../auth/auth.service.stub";
@@ -19,7 +19,7 @@ import { ProbableWaffleMapEnum } from "@fuzzy-waddle/api-interfaces";
 export class MapBrowserTestingComponent {
   searchQuery = input<string>("");
   selectedMapId = model<ProbableWaffleMapEnum | null>(null);
-  @Output() selectedMapIdChange = new EventEmitter<ProbableWaffleMapEnum>();
+  readonly selectedMapIdChange = output<ProbableWaffleMapEnum>();
 }
 
 describe("MapBrowserComponent", () => {

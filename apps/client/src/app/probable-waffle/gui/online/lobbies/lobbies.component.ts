@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, type OnDestroy, type OnInit, Output } from "@angular/core";
+import { Component, inject, type OnDestroy, type OnInit, output } from "@angular/core";
 import {
   GameSessionState,
   ProbableWaffleGameInstanceType,
@@ -29,7 +29,7 @@ export class LobbiesComponent implements OnInit, OnDestroy {
   protected selectedRoom?: ProbableWaffleRoom;
   private readonly roomsService = inject(RoomsService);
   private readonly gameInstanceClientService = inject(GameInstanceClientService);
-  @Output() requestNavigateToHostLobby: EventEmitter<void> = new EventEmitter<void>();
+  readonly requestNavigateToHostLobby = output<void>();
 
   async ngOnInit(): Promise<void> {
     await this.roomsService.init();
