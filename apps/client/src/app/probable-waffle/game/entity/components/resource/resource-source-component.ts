@@ -14,7 +14,6 @@ export class ResourceSourceComponent {
   private currentResources: number;
   private containerComponent?: ContainerComponent;
   private gathererMustEnter = false;
-  private maximumCapacity = 0;
   private currentCapacity = 0;
   private depletedImage?: Phaser.GameObjects.Image;
   private scene?: Phaser.Scene;
@@ -30,7 +29,6 @@ export class ResourceSourceComponent {
 
   init(): void {
     this.containerComponent = getActorComponent(this.gameObject, ContainerComponent);
-    this.maximumCapacity = this.containerComponent?.containerDefinition.capacity ?? 0;
     this.gathererMustEnter = !!this.containerComponent;
     this.scene = this.gameObject.scene;
     this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
@@ -162,6 +160,22 @@ export class ResourceSourceComponent {
    */
   getAssignedGatherersCount(): number {
     return this.assignedGatherers.size;
+  }
+
+  /**
+   * Check if this resource source can accept another gatherer
+   */
+  canAcceptGatherer(): boolean {
+    const maxGatherers = this.resourceSourceDefinition.maxGatherers;
+    if (maxGatherers === undefined) return true;
+    return this.assignedGatherers.size < maxGatherers;
+  }
+
+  /**
+   * Get the maximum number of gatherers allowed
+   */
+  getMaxGatherers(): number | undefined {
+    return this.resourceSourceDefinition.maxGatherers;
   }
 
   setData(data: Partial<ResourceSourceComponentData>) {

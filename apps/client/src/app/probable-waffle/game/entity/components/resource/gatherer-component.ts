@@ -129,7 +129,9 @@ export class GathererComponent {
     if (this.carriedResourceAmount >= resourceSourceComponent.getMaximumResources()) {
       return false;
     }
-    // todo
+    // check if resource source can accept more gatherers
+    // noinspection RedundantIfStatementJS
+    if (!resourceSourceComponent.canAcceptGatherer()) return false;
 
     return true;
   }
@@ -140,6 +142,7 @@ export class GathererComponent {
   startGatheringResources(resourceSource: GameObject): boolean {
     if (this.currentResourceSource === resourceSource) return true;
 
+    // Check again if we can gather from this resource source (including maxGatherers check)
     if (!this.canGatherFrom(resourceSource)) return false;
 
     // Unassign from previous resource source if switching
@@ -256,8 +259,10 @@ export class GathererComponent {
       // if not correct resource type
       if (resourceType && resourceSourceComponent.getResourceType() !== resourceType) return false;
       // check amount of resources
-      // noinspection RedundantIfStatementJS
       if (resourceSourceComponent.getCurrentResources() <= 0) return false;
+      // check if resource source can accept more gatherers
+      // noinspection RedundantIfStatementJS
+      if (!resourceSourceComponent.canAcceptGatherer()) return false;
       return true;
     });
 
@@ -306,6 +311,15 @@ export class GathererComponent {
     const gatherData = this.getGatherDataForResourceSource(resourceSource);
     if (!gatherData) return 0;
 
+    // Check again if we can gather (resource source might have changed)
+    const resourceSourceComponent = getActorComponent(resourceSource, ResourceSourceComponent);
+    if (!resourceSourceComponent) {
+      return 0;
+    }
+    if (!resourceSourceComponent.canAcceptGatherer() && resourceSource !== this.currentResourceSource) {
+      return 0;
+    }
+
     // determine amount to gather
     let amountToGather = gatherData.amountPerGathering;
     if (this.carriedResourceAmount + amountToGather > gatherData.capacity) {
@@ -313,10 +327,6 @@ export class GathererComponent {
     }
 
     // gather resources
-    const resourceSourceComponent = getActorComponent(resourceSource, ResourceSourceComponent);
-    if (!resourceSourceComponent) {
-      return 0;
-    }
     const gatheredAmount = await resourceSourceComponent.extractResources(this.gameObject, amountToGather);
     this.setCarriedResourceAmount(this.carriedResourceAmount + gatheredAmount);
 
