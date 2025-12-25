@@ -1,4 +1,5 @@
 import { ProbableWafflePlayer, ProbableWafflePlayerType } from "../game-instance/probable-waffle/player";
+import { Math as PhaserMath } from "phaser";
 
 export class GameSetupHelpers {
   private static colors = [
@@ -36,7 +37,8 @@ export class GameSetupHelpers {
 
     // 2. If a seed is provided, shuffle the array deterministically
     if (gameInstanceId) {
-      sessionColors = this.seededShuffle(sessionColors, gameInstanceId);
+      const seededRng = new PhaserMath.RandomDataGenerator([gameInstanceId]);
+      sessionColors = seededRng.shuffle(sessionColors);
     }
 
     // 3. Return the color based on player number (1-indexed)
@@ -48,35 +50,6 @@ export class GameSetupHelpers {
       throw new Error("Color not found for player");
     }
     return colors;
-  }
-
-  /**
-   * Shuffles an array based on a string seed so the result is
-   * the same for everyone with the same gameInstanceId.
-   */
-  private static seededShuffle(array: any[], seed: string): any[] {
-    const result = [...array];
-
-    // Create a simple numeric hash from the string
-    let seedNum = 0;
-    for (let i = 0; i < seed.length; i++) {
-      seedNum = (seedNum << 5) - seedNum + seed.charCodeAt(i);
-      seedNum |= 0; // Convert to 32bit integer
-    }
-
-    // Linear Congruential Generator (standard seeded random math)
-    const random = () => {
-      seedNum = (seedNum * 1664525 + 1013904223) % 4294967296;
-      return seedNum / 4294967296;
-    };
-
-    // Fisher-Yates shuffle
-    for (let i = result.length - 1; i > 0; i--) {
-      const j = Math.floor(random() * (i + 1));
-      [result[i], result[j]] = [result[j], result[i]];
-    }
-
-    return result;
   }
 
   public static getFirstFreePosition(players: ProbableWafflePlayer[]) {
