@@ -239,6 +239,13 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
           }
           break;
       }
+
+      // cancel any ongoing attack (e.g., active projectile flight)
+      const attackComponent = getActorComponent(this.gameObject, AttackComponent);
+      if (attackComponent) {
+        attackComponent.cancelCurrentAttack();
+      }
+
       this.blackboard.resetCurrentOrder(false);
       const animationActorComponent = getActorComponent(this.gameObject, AnimationActorComponent);
       if (animationActorComponent) animationActorComponent.playOrderAnimation(OrderType.Stop);
@@ -394,7 +401,6 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
     if (!constructionSiteComponent) return State.FAILED;
     if (!constructionSiteComponent.canAssignBuilder()) return State.FAILED;
     if (builderComponent.remainingCooldown > 0) return State.FAILED;
-    // defensive: ensure in-range before constructing
     builderComponent.assignToConstructionSite(target);
     return State.SUCCEEDED;
   }

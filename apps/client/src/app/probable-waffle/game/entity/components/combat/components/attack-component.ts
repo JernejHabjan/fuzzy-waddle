@@ -37,6 +37,8 @@ export class AttackComponent {
   private rotationTween?: Phaser.Tweens.Tween;
   currentAttack: AttackData | null = null;
   private projectileSprite?: Phaser.GameObjects.Image;
+  // track delayed fire so we can cancel before projectile spawns
+  private fireTimer?: Phaser.Time.TimerEvent;
 
   constructor(
     private readonly gameObject: GameObject,
@@ -58,6 +60,11 @@ export class AttackComponent {
     this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
     this.gameObject.off(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     this.gameObject.off(HealthComponent.KilledEvent, this.destroy, this);
+    // cancel pending spawn timer (if any)
+    if (this.fireTimer) {
+      this.fireTimer.remove(false);
+      this.fireTimer = undefined;
+    }
     this.stopProjectile();
   }
 
@@ -160,7 +167,11 @@ export class AttackComponent {
 
     this.playSharedAttackLogic(attack, enemy);
 
-    this.gameObject.scene.time.delayedCall(attack.delays.fire, () => {
+    // schedule projectile spawn; keep a reference so Stop can cancel it
+    this.fireTimer = this.gameObject.scene.time.delayedCall(attack.delays.fire, () => {
+      // clear timer reference when it fires
+      this.fireTimer = undefined;
+
       if (!this.gameObject.active || !enemy.active) return;
       const healthComponent = getActorComponent(this.gameObject, HealthComponent);
       if (!healthComponent || healthComponent.killed) return;
@@ -288,6 +299,22 @@ export class AttackComponent {
       this.rotationTween = undefined;
     }
     this.projectileSprite?.destroy();
+    this.projectileSprite = undefined;
+  }
+
+  /**
+   * Cancel any ongoing attack scheduling
+   * - If projectile hasn't spawned yet, cancel delayed spawn so no projectile or hit logic runs.
+   * - If projectile has already spawned and is travelling, do NOT cancel it.
+   * Does not modify cooldowns.
+   */
+  public cancelCurrentAttack(): void {
+    // cancel only pre-spawn scheduling
+    if (!this.projectileSprite && this.fireTimer) {
+      this.fireTimer.remove(false);
+      this.fireTimer = undefined;
+    }
+    // do not call stopProjectile here if projectile is already travelling
   }
 
   // gameObject will automatically select and attack targets
