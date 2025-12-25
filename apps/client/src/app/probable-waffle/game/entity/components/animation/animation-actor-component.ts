@@ -11,6 +11,7 @@ import type { IsoDirection } from "../movement/iso-directions";
 import { oneTimeAnimations } from "./one-time-animations";
 import type { ActorAnimationsDefinition } from "./actor-animations-definition";
 import type { AnimationOptions } from "./animation-options";
+import { environment } from "../../../../../../environments/environment";
 
 export class AnimationActorComponent {
   private sprite?: Phaser.GameObjects.Sprite;
@@ -30,14 +31,6 @@ export class AnimationActorComponent {
   }
 
   playOrderAnimation(orderType: OrderType, animationOptions?: AnimationOptions) {
-    const healthComponent = getActorComponent(this.gameObject, HealthComponent);
-    if (healthComponent?.killed === true) {
-      console.error(
-        `AnimationActorComponent: Tried to play order animation ${orderType} for dead actor`,
-        this.gameObject
-      );
-      return; // Don't play animations for dead actors
-    }
     this.playAnimation(this.mapOrderTypeToAnimationType(orderType), animationOptions);
   }
 
@@ -85,6 +78,14 @@ export class AnimationActorComponent {
 
   private playAnimation(type: AnimationType | string | null, animationOptions?: AnimationOptions) {
     if (!this.sprite || !this.animationsDefinition || !type) return;
+
+    if (!environment.production) {
+      const healthComponent = getActorComponent(this.gameObject, HealthComponent);
+      if (healthComponent?.killed === true && type !== AnimationType.Death) {
+        console.error(`AnimationActorComponent: Tried to play order animation ${type} for dead actor`, this.gameObject);
+        return; // Don't play animations for dead actors
+      }
+    }
 
     const animationsByType = this.animationsDefinition.animations[type];
     if (!animationsByType) {
@@ -175,7 +176,10 @@ export class AnimationActorComponent {
 
       // If this was a one-time animation like attack, return to idle
       if (oneTimeAnimations.includes(type as AnimationType)) {
-        this.playAnimation(AnimationType.Idle, animationOptions);
+        const healthComponent = getActorComponent(this.gameObject, HealthComponent);
+        if (this.gameObject && this.gameObject.scene && (!healthComponent || !healthComponent.killed)) {
+          this.playAnimation(AnimationType.Idle, animationOptions);
+        }
       }
     });
   }
