@@ -1,6 +1,6 @@
 /// <reference types="@angular/localize" />
 
-import { enableProdMode, importProvidersFrom, isDevMode } from "@angular/core";
+import { enableProdMode, importProvidersFrom, isDevMode, provideZoneChangeDetection } from "@angular/core";
 
 import { environment } from "./environments/environment";
 import { AppComponent } from "./app/app.component";
@@ -21,6 +21,7 @@ if (environment.production) {
 
 bootstrapApplication(AppComponent, {
   providers: [
+    provideZoneChangeDetection(),
     importProvidersFrom(
       BrowserModule,
       // app routing module must be included last, as it contains the wildcard route
