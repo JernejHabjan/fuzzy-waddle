@@ -146,6 +146,18 @@ root [Attack] {
                     }
                 }
 
+                /* validate again if I'm alive, if target is alive or target is reachable, etc */
+                /* consolidate liveness validations: stop if any fail */
+                sequence {
+                    flip {
+                        parallel {
+                            condition [SelfIsAlive]
+                            condition [TargetIsAlive]
+                        }
+                    }
+                    action [Stop]
+                }
+
                 /* cooldown ready, attack */
                 action [Attack]
             }
@@ -260,6 +272,19 @@ root [Gather] {
                     }
                 }
 
+                /* validate again if I'm alive and target is alive */
+                /* consolidate liveness + resource validations: stop if any fail */
+                sequence {
+                    flip {
+                        parallel {
+                            condition [SelfIsAlive]
+                            condition [TargetIsAlive]
+                            condition [TargetHasResources]
+                        }
+                    }
+                    action [Stop]
+                }
+
                 /* cooldown ready, gather */
                 action [GatherResource]
             }
@@ -319,6 +344,17 @@ root [ReturnResources] {
                       action [InRange, "dropOff"]
                     }
                     action [MoveToTarget, "dropOff"]
+                }
+
+                sequence {
+                    /* consolidate liveness validations: stop if any fail */
+                    flip {
+                        parallel {
+                            condition [SelfIsAlive]
+                            condition [TargetIsAlive]
+                        }
+                    }
+                    action [Stop]
                 }
 
                 /* deposit resources */
@@ -382,6 +418,19 @@ root [Build] {
                         wait [100] until [CooldownReady, "construct"]
                         /* action [Log, "Done waiting in construct"] */
                     }
+                }
+
+                /* validate again if I'm alive and target exists */
+                /* consolidate validations: stop if any fail */
+                sequence {
+                    flip {
+                        parallel {
+                            condition [SelfIsAlive]
+                            condition [TargetExists]
+                            condition [CanAssignBuilder]
+                        }
+                    }
+                    action [Stop]
                 }
 
                 succeed {
@@ -467,6 +516,19 @@ root [Repair] {
                     }
                 }
 
+                /* validate again if I'm alive and target is alive */
+                /* consolidate validations: stop if any fail */
+                sequence {
+                    flip {
+                        parallel {
+                            condition [SelfIsAlive]
+                            condition [TargetIsAlive]
+                            condition [CanAssignRepairer]
+                        }
+                    }
+                    action [Stop]
+                }
+
                 /* cooldown ready, repair */
                 action [RepairBuilding]
             }
@@ -534,6 +596,23 @@ root [Heal] {
                         wait [100] until [CooldownReady, "heal"]
                         /* action [Log, "Done waiting in heal"] */
                     }
+                }
+
+                /* validate again if I'm alive and target is alive */
+                /* consolidate validations: stop if any fail (including full health) */
+                sequence {
+                    flip {
+                        parallel {
+                            condition [SelfIsAlive]
+                            condition [TargetIsAlive]
+                            condition [CanHeal]
+                            /* stop when TargetHealthFull is true */
+                            flip {
+                                condition [TargetHealthFull]
+                            }
+                        }
+                    }
+                    action [Stop]
                 }
 
                 /* cooldown ready, heal */

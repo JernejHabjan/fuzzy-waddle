@@ -443,6 +443,8 @@ export class MovementSystem {
   private playMovementAnimation(isMoving: boolean, config?: PathMoveConfig) {
     if (!this.animationActorComponent) return;
     if (config?.ignoreAnimations) return;
+    const isKilled = getActorComponent(this.gameObject, HealthComponent)?.killed ?? false;
+    if (isKilled) return;
     this.animationActorComponent.playOrderAnimation(isMoving ? OrderType.Move : OrderType.Stop);
   }
 
