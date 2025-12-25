@@ -7,7 +7,7 @@ import {
 } from "@fuzzy-waddle/api-interfaces";
 import { ServerHealthService } from "../../shared/services/server-health.service";
 import { AuthService } from "../../auth/auth.service";
-import { CommonModule } from "@angular/common";
+import { KeyValuePipe } from "@angular/common";
 import { SpectateComponent } from "./spectate/spectate.component";
 import { AngularHost } from "../../shared/consts";
 import { HomeNavComponent } from "../../shared/components/home-nav/home-nav.component";
@@ -16,7 +16,7 @@ import { HomeNavComponent } from "../../shared/components/home-nav/home-nav.comp
   selector: "little-muncher-home",
   templateUrl: "./home.component.html",
   styleUrls: ["./home.component.scss"],
-  imports: [CommonModule, SpectateComponent, HomeNavComponent],
+  imports: [SpectateComponent, HomeNavComponent, KeyValuePipe],
   host: AngularHost.contentFlexFullHeight
 })
 export class HomeComponent {

@@ -1,6 +1,6 @@
 import { Component, inject } from "@angular/core";
 import type { OnInit } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { AsyncPipe } from "@angular/common";
 import { map, Observable } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { type Attribution } from "./attribution";
@@ -13,7 +13,7 @@ interface GroupedAttribution {
 
 @Component({
   selector: "fuzzy-waddle-attribution",
-  imports: [CommonModule, HomeNavComponent],
+  imports: [HomeNavComponent, AsyncPipe],
   templateUrl: "./attribution.component.html"
 })
 export class AttributionComponent implements OnInit {

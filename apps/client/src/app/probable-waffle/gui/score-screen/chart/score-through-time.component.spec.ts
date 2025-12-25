@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ScoreThroughTimeComponent } from "./score-through-time.component";
 import { Component, Input } from "@angular/core";
-import { CommonModule } from "@angular/common";
+
 import {
   createPlayerLobbyDefinition,
   FactionType,
@@ -22,7 +22,7 @@ import { GameInstanceClientService } from "../../../communicators/game-instance-
 @Component({
   selector: "probable-waffle-score-through-time",
   standalone: true,
-  imports: [CommonModule, BaseChartDirective],
+  imports: [BaseChartDirective],
   templateUrl: "./score-through-time.component.html",
   styleUrls: ["./score-through-time.component.scss"]
 })

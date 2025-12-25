@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { AuthService } from "../../auth/auth.service";
 import { UserInstanceService } from "./user-instance.service";
-import { CommonModule } from "@angular/common";
+import { DatePipe } from "@angular/common";
 import { ProfileNavComponent } from "./profile-nav/profile-nav.component";
 import { AngularHost } from "../../shared/consts";
 
@@ -9,7 +9,7 @@ import { AngularHost } from "../../shared/consts";
   templateUrl: "./profile.component.html",
   styleUrls: ["./profile.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, ProfileNavComponent],
+  imports: [ProfileNavComponent, DatePipe],
   host: AngularHost.contentFlexFullHeight
 })
 export class ProfileComponent {
