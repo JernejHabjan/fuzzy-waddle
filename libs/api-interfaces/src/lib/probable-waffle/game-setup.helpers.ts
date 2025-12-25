@@ -40,7 +40,14 @@ export class GameSetupHelpers {
     }
 
     // 3. Return the color based on player number (1-indexed)
-    return sessionColors[(playerNumber - 1) % sessionColors.length]!;
+    const colors = sessionColors[(playerNumber - 1) % sessionColors.length]!;
+    if (!colors) {
+      console.error(
+        `No color found for player number ${playerNumber}. Total players: ${totalPlayers}, GameInstanceId: ${gameInstanceId}`
+      );
+      throw new Error("Color not found for player");
+    }
+    return colors;
   }
 
   /**
