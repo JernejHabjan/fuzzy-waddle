@@ -30,6 +30,7 @@ export class GameSetupHelpers {
     saturation: number;
     lightness: number;
   } {
+    if (playerNumber === 0 || playerNumber === undefined) throw new Error("Player number must be 1 or higher");
     // 1. Start with the default order
     let sessionColors = [...this.colors];
 

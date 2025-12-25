@@ -129,7 +129,7 @@ export class MovementDecalCursorService {
         worldXY.x,
         worldXY.y,
         "gui",
-        "decal_cursors/inaccessible-marker.png"
+        "decals/inaccessible-marker.png"
       );
       this.inaccessibleMarkerSprite.setDepth(1000);
       this.inaccessibleMarkerSprite.setOrigin(0.5, 0.5);

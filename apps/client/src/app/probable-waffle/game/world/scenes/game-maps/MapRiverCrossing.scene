@@ -51,6 +51,10 @@
                 "y"
             ],
             "label": "wall_6",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
             "x": -448,
             "y": 256
         },
@@ -132,6 +136,10 @@
                 "y"
             ],
             "label": "wall_7",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
             "x": -416,
             "y": 272
         },
@@ -1589,6 +1597,10 @@
                 "y"
             ],
             "label": "wall",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
             "x": 512,
             "y": 768
         },
@@ -1600,6 +1612,10 @@
                 "y"
             ],
             "label": "stairs",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
             "x": 480,
             "y": 784
         },
@@ -1611,6 +1627,10 @@
                 "y"
             ],
             "label": "stairs_1",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
             "x": 544,
             "y": 752
         },
@@ -1622,6 +1642,10 @@
                 "y"
             ],
             "label": "stairs_2",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
             "x": -480,
             "y": 272
         },

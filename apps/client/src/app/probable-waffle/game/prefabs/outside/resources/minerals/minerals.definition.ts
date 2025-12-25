@@ -29,7 +29,8 @@ export const mineralsDefinition = {
     resourceSource: {
       resourceType: ResourceType.Minerals,
       maximumResources: 500,
-      gatheringFactor: 6
+      gatheringFactor: 6,
+      maxGatherers: 2
     },
     audio: {
       sounds: {

@@ -28,7 +28,8 @@ export const stonePileDefinition = {
     resourceSource: {
       resourceType: ResourceType.Stone,
       maximumResources: 500,
-      gatheringFactor: 6
+      gatheringFactor: 6,
+      maxGatherers: 2
     },
     audio: {
       sounds: {

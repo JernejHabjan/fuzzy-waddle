@@ -4,4 +4,5 @@ export type ResourceSourceDefinition = {
   resourceType: ResourceType;
   maximumResources: number;
   gatheringFactor: number;
+  maxGatherers?: number;
 };

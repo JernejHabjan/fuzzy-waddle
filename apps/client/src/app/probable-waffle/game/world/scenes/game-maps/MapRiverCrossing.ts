@@ -85,7 +85,6 @@ import FrostForge from "../../../prefabs/buildings/skaduwee/FrostForge";
 /* END-USER-IMPORTS */
 
 export default class MapRiverCrossing extends GameProbableWaffleScene {
-
   constructor() {
     super("MapRiverCrossing");
 
@@ -95,14 +94,13 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
   }
 
   editorCreate(): void {
-
     // tilemap
     const tilemap = this.add.tilemap("tiles_river_crossing");
     tilemap.addTilesetImage("tiles", "tiles_1");
     tilemap.addTilesetImage("tiles_2", "tiles_2");
 
     // tilemap_level_1
-    tilemap.createLayer("TileMap_level_1", ["tiles","tiles_2"], 0, 0);
+    tilemap.createLayer("TileMap_level_1", ["tiles", "tiles_2"], 0, 0);
 
     // spawn
     const spawn = new Spawn(this, 96, 608);
@@ -838,9 +836,17 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     const spawnEditorOwner = new EditorOwner(spawn);
     spawnEditorOwner.owner_id = "1";
 
+    // wall_6 (components)
+    const wall_6EditorOwner = new EditorOwner(wall_6);
+    wall_6EditorOwner.owner_id = "1";
+
     // spawn_1 (components)
     const spawn_1EditorOwner = new EditorOwner(spawn_1);
     spawn_1EditorOwner.owner_id = "2";
+
+    // wall_7 (components)
+    const wall_7EditorOwner = new EditorOwner(wall_7);
+    wall_7EditorOwner.owner_id = "1";
 
     // owlery (components)
     const owleryEditorOwner = new EditorOwner(owlery);
@@ -929,6 +935,22 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // workMill_1 (components)
     const workMill_1EditorOwner = new EditorOwner(workMill_1);
     workMill_1EditorOwner.owner_id = "2";
+
+    // wall (components)
+    const wallEditorOwner = new EditorOwner(wall);
+    wallEditorOwner.owner_id = "1";
+
+    // stairs (components)
+    const stairsEditorOwner = new EditorOwner(stairs);
+    stairsEditorOwner.owner_id = "1";
+
+    // stairs_1 (components)
+    const stairs_1EditorOwner = new EditorOwner(stairs_1);
+    stairs_1EditorOwner.owner_id = "1";
+
+    // stairs_2 (components)
+    const stairs_2EditorOwner = new EditorOwner(stairs_2);
+    stairs_2EditorOwner.owner_id = "1";
 
     // seagulls (prefab fields)
     seagulls.sfxType = "seagulls";
