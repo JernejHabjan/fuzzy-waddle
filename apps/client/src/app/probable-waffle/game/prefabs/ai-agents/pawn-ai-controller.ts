@@ -22,6 +22,7 @@ export class PawnAiController {
   private nodeDebugger?: NodeDebugger;
   private aiDebuggingSubscription?: Subscription;
   private defaultStepInterval: number = 100;
+  private static readonly AI_ENABLED = true;
 
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,
@@ -69,6 +70,7 @@ export class PawnAiController {
   }
 
   private update(_: number, delta: number) {
+    if (!PawnAiController.AI_ENABLED) return;
     const deltaWithTimeScale = delta * this.gameObject.scene.time.timeScale;
     this.elapsedTime += deltaWithTimeScale;
     const stepInterval = this.pawnAiDefinition.stepInterval ?? this.defaultStepInterval;
