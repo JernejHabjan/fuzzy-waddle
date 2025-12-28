@@ -834,12 +834,13 @@ export class NavigationService {
   /**
    * Finds the unoccupied and walkable tile around the given game object.
    * Searches in expanding radii up to maxRange for a truly free tile.
-   * Prefers tiles with higher y (bottom) and higher x (right).
+   * Prefers tiles with higher y (bottom) and higher x (right), or towards targetTile if provided.
    * If no free tile found within maxRange, allows placement on occupied tiles.
    */
   public getSpawnPointAroundGameObject(
     gameObject: GameObjects.GameObject,
-    maxRange: number = 10
+    maxRange: number = 10,
+    targetTile?: Vector2Simple
   ): Vector2Simple | undefined {
     // Compute footprint bounds
     const tiles = getTileCoordsUnderObject(this.tilemap, gameObject);
@@ -878,11 +879,21 @@ export class NavigationService {
         }
       }
 
-      // Sort by y descending (higher y first), then by x descending (higher x first)
-      candidates.sort((a, b) => {
-        if (a.y !== b.y) return b.y - a.y; // Higher y first
-        return b.x - a.x; // Higher x first
-      });
+      // Sort candidates: prefer direction towards targetTile if provided, otherwise by position
+      if (targetTile) {
+        // Sort by distance to targetTile (closest first)
+        candidates.sort((a, b) => {
+          const distA = this.getTileDistance(a, targetTile);
+          const distB = this.getTileDistance(b, targetTile);
+          return distA - distB;
+        });
+      } else {
+        // Sort by y descending (higher y first), then by x descending (higher x first)
+        candidates.sort((a, b) => {
+          if (a.y !== b.y) return b.y - a.y; // Higher y first
+          return b.x - a.x; // Higher x first
+        });
+      }
 
       // Check candidates for this radius
       const allowOccupied = radius > maxRange;

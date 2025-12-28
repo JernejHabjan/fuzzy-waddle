@@ -283,7 +283,13 @@ export class ProductionComponent {
     } satisfies Vector3Simple;
     let validSpawnLocationFound = false;
 
-    const unoccupiedTile = this.navigationService.getSpawnPointAroundGameObject(this.gameObject);
+    // Determine target tile preference based on rally point if it's set
+    let targetTile: Vector3Simple | undefined;
+    if (this.rallyPoint.isSet()) {
+      targetTile = this.rallyPoint.tileVec3;
+    }
+
+    const unoccupiedTile = this.navigationService.getSpawnPointAroundGameObject(this.gameObject, undefined, targetTile);
     if (unoccupiedTile) {
       const unoccupiedWorldPosition = IsoHelper.isometricTileToWorldXY(
         this.gameObject.scene,
