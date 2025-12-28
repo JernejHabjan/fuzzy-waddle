@@ -18,7 +18,7 @@ import { ColliderComponent } from "../../entity/components/movement/collider-com
 import { getCenterTileCoordUnderObject, getTileCoordsUnderObject } from "../../library/tile-under-object";
 import { drawDebugPath } from "../../debug/debug-path";
 import { drawDebugPoint } from "../../debug/debug-point";
-import { getSceneComponent } from "./scene-component-helpers";
+import { getSceneComponent, getSceneService } from "./scene-component-helpers";
 import { TilemapComponent } from "../tilemap/tilemap.component";
 import { getSelectableGameObject, onSceneInitialized } from "../../data/game-object-helper";
 import { throttleWithTrailing } from "../../library/throttle";
@@ -26,6 +26,7 @@ import { environment } from "../../../../../environments/environment";
 import { RepresentableComponent } from "../../entity/components/representable-component";
 import type { WalkablePath } from "../../entity/components/movement/walkable-path";
 import { WalkablePathDirection } from "../../entity/components/movement/walkable-path-direction";
+import { ActorIndexSystem } from "./ActorIndexSystem";
 
 export enum TerrainType {
   Grass = "grass",
@@ -49,6 +50,7 @@ export class NavigationService {
   private readonly terrainTypes = Object.values(TerrainType);
   static UpdateNavigationEvent = "updateNavigation";
   private readonly easyStar: EasyStar;
+  private actorIndex!: ActorIndexSystem;
   private easyStarNavigationGrid: number[][] = [];
   private tilemapGrid: number[][] = [];
   private heightMapGrid: HeightMapCell[][] = [];
@@ -68,6 +70,8 @@ export class NavigationService {
   }
 
   private initNavigationService() {
+    this.actorIndex = getSceneService(this.scene, ActorIndexSystem)!;
+
     this.extractTilemapGrid();
 
     this.updateNavigation();
@@ -745,9 +749,9 @@ export class NavigationService {
   private getOccupiedTilesByActors(): Set<string> {
     const occupiedTiles = new Set<string>();
 
-    const actorsWithRepresentable = this.scene.children.list.filter((child) =>
-      getActorComponent(child, RepresentableComponent)
-    );
+    const actorsWithRepresentable = this.actorIndex
+      .getAllIdActors()
+      .filter((child) => getActorComponent(child, RepresentableComponent));
     for (const actor of actorsWithRepresentable) {
       const tiles = getTileCoordsUnderObject(this.tilemap, actor);
       tiles.forEach(({ x, y }) => {

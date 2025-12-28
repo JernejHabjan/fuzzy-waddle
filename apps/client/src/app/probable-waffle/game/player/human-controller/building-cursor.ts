@@ -35,6 +35,7 @@ import { OrderType } from "../../ai/order-type";
 import { getCostForObjectName } from "../../entity/components/production/cost-utils";
 import { IsoHelper } from "../../world/tilemap/iso-helper";
 import Vector2 = Phaser.Math.Vector2;
+import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 
 export class BuildingCursor {
   placementGrid?: GameObjects.Graphics;
@@ -51,6 +52,7 @@ export class BuildingCursor {
   private navigationService?: NavigationService;
   private audioService?: AudioService;
   private fogOfWarComponent?: FogOfWarComponent;
+  private actorIndex!: ActorIndexSystem;
   private escKey: Phaser.Input.Keyboard.Key | undefined;
   private shiftKey: Phaser.Input.Keyboard.Key | undefined;
   private downPointerLocation?: Vector2Simple;
@@ -87,6 +89,7 @@ export class BuildingCursor {
     this.navigationService = getSceneService(this.scene, NavigationService);
     this.audioService = getSceneService(this.scene, AudioService);
     this.fogOfWarComponent = getSceneComponent(this.scene, FogOfWarComponent);
+    this.actorIndex = getSceneService(this.scene, ActorIndexSystem)!;
   }
 
   get placingBuilding() {
@@ -446,9 +449,8 @@ export class BuildingCursor {
     const objectsToIgnore = new Set<GameObjects.GameObject>([building, ...ignoreGameObjects]);
 
     // Check for collisions with existing game objects (excluding those in the ignore list)
-    const children = this.scene.children.list.filter((c) => {
+    const children = this.actorIndex.getAllIdActors().filter((c) => {
       if (objectsToIgnore.has(c)) return false;
-      if (c instanceof Phaser.GameObjects.Graphics) return false;
 
       // pulling logical transform from the game object, so we know on which tile he is standing (z axis invariant)
       const logicalTransform = getGameObjectLogicalTransform(c);
@@ -526,10 +528,9 @@ export class BuildingCursor {
       if (!isWalkable) return true;
 
       // Check for collisions with existing game objects at this specific tile
-      const children = this.scene.children.list.filter((c) => {
+      const children = this.actorIndex.getAllIdActors().filter((c) => {
         if (c === this.building) return false;
         if (this.spawnedCursorGameObjects.includes(c as GameObjects.GameObject)) return false;
-        if (c instanceof Phaser.GameObjects.Graphics) return false;
 
         const logicalTransform = getGameObjectLogicalTransform(c);
         if (!logicalTransform) return false;
