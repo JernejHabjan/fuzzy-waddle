@@ -785,6 +785,8 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     for (let i = 0; i < this.actor_actions.length; i++) {
       this.actor_actions[i]!.setup({ visible: false });
     }
+    this.buildingMode = false;
+    this.categoryNavigationStack = [];
   }
 
   private showBuildableIcons(
