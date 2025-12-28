@@ -30,8 +30,8 @@ import type { ProductionDefinition } from "./production-definition";
 import { AssignProductionErrorCode } from "./assign-production-error-code";
 import type { ProductionCostDefinition } from "./production-cost-definition";
 import { NavigationService } from "../../../world/services/navigation.service";
-import GameObject = Phaser.GameObjects.GameObject;
 import { IsoHelper } from "../../../world/tilemap/iso-helper";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export class ProductionComponent {
   productionQueues: ProductionQueue[] = [];

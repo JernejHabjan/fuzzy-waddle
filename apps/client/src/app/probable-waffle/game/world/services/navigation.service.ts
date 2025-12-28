@@ -745,14 +745,15 @@ export class NavigationService {
   private getOccupiedTilesByActors(): Set<string> {
     const occupiedTiles = new Set<string>();
 
-    this.scene.children.each((child) => {
-      const representableComponent = getActorComponent(child, RepresentableComponent);
-      if (!representableComponent) return;
-      const tiles = getTileCoordsUnderObject(this.tilemap, child);
+    const actorsWithRepresentable = this.scene.children.list.filter((child) =>
+      getActorComponent(child, RepresentableComponent)
+    );
+    for (const actor of actorsWithRepresentable) {
+      const tiles = getTileCoordsUnderObject(this.tilemap, actor);
       tiles.forEach(({ x, y }) => {
         occupiedTiles.add(`${x},${y}`);
       });
-    });
+    }
 
     return occupiedTiles;
   }
@@ -831,9 +832,15 @@ export class NavigationService {
   }
 
   /**
-   * Finds the unoccupied and walkable tile around the given game object
+   * Finds the unoccupied and walkable tile around the given game object.
+   * Searches in expanding radii up to maxRange for a truly free tile.
+   * Prefers tiles with higher y (bottom) and higher x (right).
+   * If no free tile found within maxRange, allows placement on occupied tiles.
    */
-  public getSpawnPointAroundGameObject(gameObject: GameObjects.GameObject): Vector2Simple | undefined {
+  public getSpawnPointAroundGameObject(
+    gameObject: GameObjects.GameObject,
+    maxRange: number = 10
+  ): Vector2Simple | undefined {
     // Compute footprint bounds
     const tiles = getTileCoordsUnderObject(this.tilemap, gameObject);
     if (tiles.length === 0) return undefined;
@@ -843,57 +850,48 @@ export class NavigationService {
     const minY = Math.min(...tiles.map((t) => t.y));
     const maxY = Math.max(...tiles.map((t) => t.y));
 
-    // Helper to order positions from center outwards on a line
-    const rangeFromCenter = (start: number, end: number): number[] => {
-      const arr: number[] = [];
-      const center = Math.floor((start + end) / 2);
-      // include center first, then expand left/right
-      let left = center - 1;
-      let right = center + 1;
-      arr.push(center);
-      while (left >= start || right <= end) {
-        if (left >= start) arr.push(left--);
-        if (right <= end) arr.push(right++);
-      }
-      return arr;
-    };
-
     const occupied = this.getOccupiedTilesByActors();
 
-    const candidates: Vector2Simple[] = [];
+    // Try progressively larger radii
+    for (let radius = 0; radius <= maxRange; radius++) {
+      const candidates: Vector2Simple[] = [];
 
-    // 1) Bottom row just below object (prefer higher y and center)
-    const bottomY = maxY + 1;
-    rangeFromCenter(minX, maxX).forEach((x) => candidates.push({ x, y: bottomY }));
-    // Outside bottom corners
-    candidates.push({ x: minX - 1, y: bottomY });
-    candidates.push({ x: maxX + 1, y: bottomY });
+      const expandedMinX = minX - (radius === 0 ? 1 : radius);
+      const expandedMaxX = maxX + (radius === 0 ? 1 : radius);
+      const expandedMinY = minY - (radius === 0 ? 1 : radius);
+      const expandedMaxY = maxY + (radius === 0 ? 1 : radius);
 
-    // 2) Right side (prefer higher y, then upwards)
-    const rightX = maxX + 1;
-    for (let y = maxY; y >= minY; y--) {
-      candidates.push({ x: rightX, y });
-    }
+      // Collect all tiles in the perimeter of the current radius
+      for (let y = expandedMinY; y <= expandedMaxY; y++) {
+        for (let x = expandedMinX; x <= expandedMaxX; x++) {
+          // Skip tiles that are inside the object's footprint
+          if (radius === 0) {
+            // Include only the immediate surrounding tiles
+            if (x >= minX && x <= maxX && y >= minY && y <= maxY) continue;
+          } else {
+            // For larger radii, only include perimeter tiles
+            const isPerimeter = x === expandedMinX || x === expandedMaxX || y === expandedMinY || y === expandedMaxY;
+            if (!isPerimeter) continue;
+          }
 
-    // 3) Left side (prefer higher y, then upwards)
-    const leftX = minX - 1;
-    for (let y = maxY; y >= minY; y--) {
-      candidates.push({ x: leftX, y });
-    }
+          candidates.push({ x, y });
+        }
+      }
 
-    // 4) Top row just above object (least preferred; center first)
-    const topY = minY - 1;
-    rangeFromCenter(minX, maxX).forEach((x) => candidates.push({ x, y: topY }));
-    // Outside top corners
-    candidates.push({ x: minX - 1, y: topY });
-    candidates.push({ x: maxX + 1, y: topY });
+      // Sort by y descending (higher y first), then by x descending (higher x first)
+      candidates.sort((a, b) => {
+        if (a.y !== b.y) return b.y - a.y; // Higher y first
+        return b.x - a.x; // Higher x first
+      });
 
-    // Return first candidate that is within bounds, walkable, and not occupied
-    for (const c of candidates) {
-      if (!this.isWithinGridBounds(c)) continue;
-      if (!this.isTileWalkable(c)) continue;
-      if (occupied.has(`${c.x},${c.y}`)) continue;
-      return c;
+      // Check candidates for this radius
+      const allowOccupied = radius > maxRange;
+      for (const c of candidates) {
+        if (!this.isWithinGridBounds(c)) continue;
+        if (!this.isTileWalkable(c)) continue;
+        if (!allowOccupied && occupied.has(`${c.x},${c.y}`)) continue;
+        return c;
+      }
     }
 
     return undefined;
