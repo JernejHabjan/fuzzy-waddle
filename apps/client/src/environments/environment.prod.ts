@@ -1,4 +1,6 @@
 import { type Environment } from "./environment-type";
+// eslint-disable-next-line @nx/enforce-module-boundaries
+import packageJson from "../../../../package.json";
 
 export const environment: Environment = {
   production: true,
@@ -10,5 +12,6 @@ export const environment: Environment = {
   socketIoConfig: {
     url: "https://fuzzy-waddle-api.onrender.com",
     options: {}
-  }
+  },
+  version: packageJson.version
 };

@@ -83,7 +83,9 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
         createdBy: this.authService.userId,
         type,
         visibility,
-        startOptions: {}
+        startOptions: {},
+        version: environment.version,
+        rndSeed: Math.floor(Math.random() * 1000000)
       } satisfies ProbableWaffleGameInstanceMetadataData,
       gameModeData: {
         tieConditions: {

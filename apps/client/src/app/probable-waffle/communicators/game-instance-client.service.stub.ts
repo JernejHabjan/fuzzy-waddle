@@ -34,7 +34,9 @@ export const gameInstanceClientServiceStub = {
         createdBy: "1",
         type,
         visibility,
-        startOptions: {}
+        startOptions: {},
+        version: "1.0.0",
+        rndSeed: 12
       } satisfies ProbableWaffleGameInstanceMetadataData,
       gameModeData: {
         tieConditions: {

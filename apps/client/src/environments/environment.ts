@@ -3,6 +3,8 @@
 // The list of file replacements can be found in `angular.json`.
 
 import type { Environment } from "./environment-type";
+// eslint-disable-next-line @nx/enforce-module-boundaries
+import packageJson from "../../../../package.json";
 
 export const environment: Environment = {
   production: false,
@@ -14,7 +16,8 @@ export const environment: Environment = {
   socketIoConfig: {
     url: "http://localhost:3333",
     options: {}
-  }
+  },
+  version: packageJson.version
 };
 
 /*
