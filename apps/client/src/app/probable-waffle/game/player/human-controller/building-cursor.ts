@@ -512,61 +512,56 @@ export class BuildingCursor {
       return !this._canPlaceAt([tileCoord], ignoreList, false);
     };
 
-    // Helper function to draw a single isometric diamond with specific color
-    const drawIsoDiamond = (isoX: number, isoY: number, fill: boolean, color: number, drawFill: boolean) => {
-      if (drawFill) {
-        if (fill) {
-          gridGraphics.fillStyle(color, 0.3);
-          gridGraphics.beginPath();
-          gridGraphics.moveTo(isoX, isoY - tileSize / 4);
-          gridGraphics.lineTo(isoX + tileSize / 2, isoY);
-          gridGraphics.lineTo(isoX, isoY + tileSize / 4);
-          gridGraphics.lineTo(isoX - tileSize / 2, isoY);
-          gridGraphics.closePath();
-          gridGraphics.fillPath();
-        }
-      } else {
-        // Set line style for the outline
-        gridGraphics.lineStyle(2, color, 1);
+    const drawDiamond = (isoX: number, isoY: number, color: number, fill: boolean, outline: boolean) => {
+      const path = new Phaser.Geom.Polygon([
+        isoX,
+        isoY - tileSize / 4,
+        isoX + tileSize / 2,
+        isoY,
+        isoX,
+        isoY + tileSize / 4,
+        isoX - tileSize / 2,
+        isoY
+      ]);
 
-        // Draw the outline
-        gridGraphics.beginPath();
-        gridGraphics.moveTo(isoX, isoY - tileSize / 4);
-        gridGraphics.lineTo(isoX + tileSize / 2, isoY);
-        gridGraphics.lineTo(isoX, isoY + tileSize / 4);
-        gridGraphics.lineTo(isoX - tileSize / 2, isoY);
-        gridGraphics.closePath();
-        gridGraphics.stroke();
+      if (fill) {
+        gridGraphics.fillStyle(color, 0.3);
+        gridGraphics.fillPoints(path.points, true);
+      }
+      if (outline) {
+        gridGraphics.lineStyle(2, color, 1);
+        gridGraphics.strokePoints(path.points, true);
       }
     };
 
+    const tilesToDraw: { x: number; y: number; color: number; isInner: boolean; occupied: boolean }[] = [];
+    for (let i = -outerRangeX; i <= outerRangeX; i++) {
+      for (let j = -outerRangeY; j <= outerRangeY; j++) {
+        const isoX = xPos + (i - j) * (tileSize / 2);
+        const isoY = yPos + (i + j) * (tileSize / 4);
+        const occupied = isTileOccupied(isoX, isoY);
+        tilesToDraw.push({
+          x: isoX,
+          y: isoY,
+          color: occupied ? 0xff0000 : 0x00ff00,
+          isInner: Math.abs(i) <= innerRangeX && Math.abs(j) <= innerRangeY,
+          occupied
+        });
+      }
+    }
+
     // Draw fills first
-    for (let i = -outerRangeX; i <= outerRangeX; i++) {
-      for (let j = -outerRangeY; j <= outerRangeY; j++) {
-        const isoX = xPos + (i - j) * (tileSize / 2);
-        const isoY = yPos + (i + j) * (tileSize / 4);
-
-        const isInnerTile = Math.abs(i) <= innerRangeX && Math.abs(j) <= innerRangeY;
-        const tileOccupied = isTileOccupied(isoX, isoY);
-        const tileColor = tileOccupied ? 0xff0000 : 0x00ff00;
-
-        drawIsoDiamond(isoX, isoY, isInnerTile, tileColor, true);
+    tilesToDraw.forEach((t) => {
+      if (t.isInner) {
+        drawDiamond(t.x, t.y, t.color, true, false);
       }
-    }
+    });
 
-    // Draw outlines second, in correct isometric order (back to front)
-    for (let i = -outerRangeX; i <= outerRangeX; i++) {
-      for (let j = -outerRangeY; j <= outerRangeY; j++) {
-        const isoX = xPos + (i - j) * (tileSize / 2);
-        const isoY = yPos + (i + j) * (tileSize / 4);
-
-        const isInnerTile = Math.abs(i) <= innerRangeX && Math.abs(j) <= innerRangeY;
-        const tileOccupied = isTileOccupied(isoX, isoY);
-        const tileColor = tileOccupied ? 0xff0000 : 0x00ff00;
-
-        drawIsoDiamond(isoX, isoY, isInnerTile, tileColor, false);
-      }
-    }
+    // Then draw outlines, ensuring red is on top of green
+    const greenTiles = tilesToDraw.filter((t) => !t.occupied);
+    const redTiles = tilesToDraw.filter((t) => t.occupied);
+    greenTiles.forEach((t) => drawDiamond(t.x, t.y, t.color, false, true));
+    redTiles.forEach((t) => drawDiamond(t.x, t.y, t.color, false, true));
 
     this.placementGrid = gridGraphics;
   }
