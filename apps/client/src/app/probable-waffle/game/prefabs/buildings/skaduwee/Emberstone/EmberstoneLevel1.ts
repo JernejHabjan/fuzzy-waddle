@@ -35,7 +35,7 @@ export default class EmberstoneLevel1 extends Phaser.GameObjects.Container {
   /* START-USER-CODE */
   private tileMapTintComponent: TileMapTintComponent;
   private init() {
-    this.tileMapTintComponent.tintTilemapAroundTransform(this.parentContainer);
+    this.tileMapTintComponent.init(this.parentContainer);
   }
 
   start() {
