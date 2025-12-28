@@ -116,9 +116,9 @@ export class ProbableWafflePlayerState extends BasePlayerState<ProbableWafflePla
     this.data = {
       resources: {
         [ResourceType.Ambrosia]: 0,
-        [ResourceType.Minerals]: 5000,
-        [ResourceType.Stone]: 5000,
-        [ResourceType.Wood]: 5000
+        [ResourceType.Minerals]: 50000,
+        [ResourceType.Stone]: 50000,
+        [ResourceType.Wood]: 50000
       },
       housing: {
         currentHousing: 3,
