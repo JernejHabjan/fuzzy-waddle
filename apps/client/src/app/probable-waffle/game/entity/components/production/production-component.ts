@@ -29,12 +29,15 @@ import type { ProductionQueueItem } from "./game-object";
 import type { ProductionDefinition } from "./production-definition";
 import { AssignProductionErrorCode } from "./assign-production-error-code";
 import type { ProductionCostDefinition } from "./production-cost-definition";
+import { NavigationService } from "../../../world/services/navigation.service";
 import GameObject = Phaser.GameObjects.GameObject;
+import { IsoHelper } from "../../../world/tilemap/iso-helper";
 
 export class ProductionComponent {
   productionQueues: ProductionQueue[] = [];
   private readonly rallyPoint: RallyPoint;
-  private ownerComponent!: OwnerComponent;
+  private ownerComponent?: OwnerComponent;
+  private navigationService!: NavigationService;
   private playerChangedSubscription?: Subscription;
   private productionProgressSubject = new Subject<ProductionProgressEvent>();
   private queueChangeSubject = new Subject<ProductionQueueChangeEvent>();
@@ -59,7 +62,8 @@ export class ProductionComponent {
   }
 
   initOnObjectReady() {
-    this.ownerComponent = getActorComponent(this.gameObject, OwnerComponent)!;
+    this.ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
+    this.navigationService = getSceneService(this.gameObject.scene, NavigationService)!;
     this.rallyPoint.init(this.gameObject);
   }
 
@@ -225,7 +229,7 @@ export class ProductionComponent {
 
   private handleImmediatePayment(queueItem: ProductionQueueItem): void {
     if (queueItem.costData.costType === PaymentType.PayImmediately) {
-      const owner = this.ownerComponent.getOwner();
+      const owner = this.ownerComponent?.getOwner();
       if (!owner) return;
 
       const player = getPlayer(this.gameObject.scene, owner);
@@ -237,7 +241,7 @@ export class ProductionComponent {
   }
 
   private handlePayOverTimePayment(resources: Partial<Record<ResourceType, number>>): boolean {
-    const owner = this.ownerComponent.getOwner();
+    const owner = this.ownerComponent?.getOwner();
     if (!owner) {
       throw new Error("Owner not found");
     }
@@ -257,20 +261,11 @@ export class ProductionComponent {
     return productionCostPaid;
   }
 
-  private finishProduction(queue: ProductionQueue, queueIndex: number) {
+  private async finishProduction(queue: ProductionQueue, queueIndex: number) {
     if (queueIndex >= queue.queuedItems.length) {
       throw new Error("Invalid queue index");
     }
     const { actorName } = queue.queuedItems[queueIndex]!;
-
-    queue.queuedItems.splice(queueIndex, 1);
-    this.resetQueue(queue);
-    this.queueChangeSubject.next({
-      itemsFromAllQueues: this.itemsFromAllQueues,
-      type: "completed"
-    });
-
-    // spawn gameObject
 
     const logicalTransform = getGameObjectLogicalTransform(this.gameObject);
     if (!logicalTransform) throw new Error("Transform not found");
@@ -280,18 +275,49 @@ export class ProductionComponent {
     if (!bounds) throw new Error("Bounds not found");
     const { width, height } = bounds;
 
-    const spawnPosition: Vector3Simple = {
+    // Get NavigationService to find a valid spawn location
+    let finalSpawnPosition = {
       x: logicalTransform.x + width / 2,
       y: logicalTransform.y + height / 4,
       z: logicalTransform.z
-    };
+    } satisfies Vector3Simple;
+    let validSpawnLocationFound = false;
 
-    const originalOwner = this.ownerComponent.getOwner();
+    const unoccupiedTile = this.navigationService.getSpawnPointAroundGameObject(this.gameObject);
+    if (unoccupiedTile) {
+      const unoccupiedWorldPosition = IsoHelper.isometricTileToWorldXY(
+        this.gameObject.scene,
+        unoccupiedTile.x,
+        unoccupiedTile.y
+      )!;
+      finalSpawnPosition = {
+        x: unoccupiedWorldPosition.x,
+        y: unoccupiedWorldPosition.y,
+        z: finalSpawnPosition.z
+      } satisfies Vector3Simple;
+      validSpawnLocationFound = true;
+    }
+
+    // If no valid spawn location found, keep item in queue as nearly finished but don't spawn
+    if (!validSpawnLocationFound) {
+      // do not spawn
+      return;
+    }
+
+    queue.queuedItems.splice(queueIndex, 1);
+    this.resetQueue(queue);
+    this.queueChangeSubject.next({
+      itemsFromAllQueues: this.itemsFromAllQueues,
+      type: "completed"
+    });
+
+    // spawn gameObject
+    const originalOwner = this.ownerComponent?.getOwner();
 
     const actorDefinition = {
       name: actorName,
       representable: {
-        logicalWorldTransform: spawnPosition
+        logicalWorldTransform: finalSpawnPosition
       },
       ...(originalOwner && {
         owner: {
@@ -351,7 +377,7 @@ export class ProductionComponent {
     // noinspection RedundantIfStatementJS
     if (!queue) return AssignProductionErrorCode.QueueFull;
 
-    const owner = this.ownerComponent.getOwner();
+    const owner = this.ownerComponent?.getOwner();
     if (!owner) return AssignProductionErrorCode.NoOwner;
 
     // check if player has enough resources
@@ -421,7 +447,7 @@ export class ProductionComponent {
 
   private refund(costData: ProductionCostDefinition, queue: ProductionQueue) {
     // Refund resources based on payment type and progress
-    const owner = this.ownerComponent.getOwner();
+    const owner = this.ownerComponent?.getOwner();
     if (!owner) return;
     const player = getPlayer(this.gameObject.scene, owner);
     if (!player) return;

@@ -11,7 +11,7 @@ import {
   TOP_RIGHT
 } from "easystarjs";
 import type { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
-import Phaser from "phaser";
+import Phaser, { GameObjects } from "phaser";
 import { getActorComponent } from "../../data/actor-component";
 import { WalkableComponent } from "../../entity/components/movement/walkable-component";
 import { ColliderComponent } from "../../entity/components/movement/collider-component";
@@ -825,6 +825,75 @@ export class NavigationService {
           }
         }
       }
+    }
+
+    return undefined;
+  }
+
+  /**
+   * Finds the unoccupied and walkable tile around the given game object
+   */
+  public getSpawnPointAroundGameObject(gameObject: GameObjects.GameObject): Vector2Simple | undefined {
+    // Compute footprint bounds
+    const tiles = getTileCoordsUnderObject(this.tilemap, gameObject);
+    if (tiles.length === 0) return undefined;
+
+    const minX = Math.min(...tiles.map((t) => t.x));
+    const maxX = Math.max(...tiles.map((t) => t.x));
+    const minY = Math.min(...tiles.map((t) => t.y));
+    const maxY = Math.max(...tiles.map((t) => t.y));
+
+    // Helper to order positions from center outwards on a line
+    const rangeFromCenter = (start: number, end: number): number[] => {
+      const arr: number[] = [];
+      const center = Math.floor((start + end) / 2);
+      // include center first, then expand left/right
+      let left = center - 1;
+      let right = center + 1;
+      arr.push(center);
+      while (left >= start || right <= end) {
+        if (left >= start) arr.push(left--);
+        if (right <= end) arr.push(right++);
+      }
+      return arr;
+    };
+
+    const occupied = this.getOccupiedTilesByActors();
+
+    const candidates: Vector2Simple[] = [];
+
+    // 1) Bottom row just below object (prefer higher y and center)
+    const bottomY = maxY + 1;
+    rangeFromCenter(minX, maxX).forEach((x) => candidates.push({ x, y: bottomY }));
+    // Outside bottom corners
+    candidates.push({ x: minX - 1, y: bottomY });
+    candidates.push({ x: maxX + 1, y: bottomY });
+
+    // 2) Right side (prefer higher y, then upwards)
+    const rightX = maxX + 1;
+    for (let y = maxY; y >= minY; y--) {
+      candidates.push({ x: rightX, y });
+    }
+
+    // 3) Left side (prefer higher y, then upwards)
+    const leftX = minX - 1;
+    for (let y = maxY; y >= minY; y--) {
+      candidates.push({ x: leftX, y });
+    }
+
+    // 4) Top row just above object (least preferred; center first)
+    const topY = minY - 1;
+    rangeFromCenter(minX, maxX).forEach((x) => candidates.push({ x, y: topY }));
+    // Outside top corners
+    candidates.push({ x: minX - 1, y: topY });
+    candidates.push({ x: maxX + 1, y: topY });
+
+    // Return first candidate that is within bounds, walkable, and not occupied
+    for (const c of candidates) {
+      if (!this.isWithinGridBounds(c)) continue;
+      if (!this.isTileWalkable(c)) continue;
+      if (occupied.has(`${c.x},${c.y}`)) continue;
+      return c;
     }
 
     return undefined;
