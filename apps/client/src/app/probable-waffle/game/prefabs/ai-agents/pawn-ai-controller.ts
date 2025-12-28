@@ -68,8 +68,9 @@ export class PawnAiController {
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.onShutdown, this);
   }
 
-  private update(_: number, dt: number) {
-    this.elapsedTime += dt * this.gameObject.scene.time.timeScale;
+  private update(_: number, delta: number) {
+    const deltaWithTimeScale = delta * this.gameObject.scene.time.timeScale;
+    this.elapsedTime += deltaWithTimeScale;
     const stepInterval = this.pawnAiDefinition.stepInterval ?? this.defaultStepInterval;
     if (this.elapsedTime >= stepInterval) {
       try {

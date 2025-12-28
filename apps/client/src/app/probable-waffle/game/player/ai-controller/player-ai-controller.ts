@@ -29,9 +29,11 @@ export class PlayerAiController {
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.onShutdown, this);
   }
 
-  private async update(time: number, dt: number) {
+  private async update(_: number, delta: number) {
+    const deltaWithTimeScale = delta * this.scene.time.timeScale;
+
     if (!PlayerAiController.AI_ENABLED) return;
-    this.elapsedTime += dt;
+    this.elapsedTime += deltaWithTimeScale;
     if (this.elapsedTime >= this.stepInterval) {
       this.telemetry.nextFrame();
       const frameBeforeSnapshot = this.telemetry.snapshot().frame; // capture frame index
