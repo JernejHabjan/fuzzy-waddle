@@ -32,11 +32,17 @@ export class IsoHelper {
     return { x: clickedTileXY.x, y: clickedTileXY.y };
   }
 
-  static isometricTileToWorldXY(scene: Phaser.Scene, tileX: number, tileY: number): Vector2Simple | null {
+  static isometricTileToWorldXY(scene: Phaser.Scene, tileX: number, tileY: number): Vector2Simple {
     const tileMapComponent = getSceneComponent(scene, TilemapComponent);
     if (!tileMapComponent) throw new Error("TilemapComponent not found in scene");
 
-    const worldXY = new Phaser.Math.Vector2();
-    return tileMapComponent.tilemap.tileToWorldXY(tileX, tileY);
+    const tilemap = tileMapComponent.tilemap;
+    const world = tilemap.tileToWorldXY(tileX, tileY);
+    if (!world) throw new Error("Tile not found in tilemap");
+
+    return {
+      x: world.x + tilemap.tileWidth / 2,
+      y: world.y + tilemap.tileHeight / 2
+    };
   }
 }
