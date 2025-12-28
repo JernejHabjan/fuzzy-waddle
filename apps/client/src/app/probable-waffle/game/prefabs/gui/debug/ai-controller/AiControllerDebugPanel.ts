@@ -88,9 +88,15 @@ export default class AiControllerDebugPanel extends Phaser.GameObjects.Container
   /* START-USER-CODE */
   private enabled = false;
   private labels: AiControllerDebugLabel[] = [];
+  private labelsContainer!: Phaser.GameObjects.Container;
+
   private init() {
     this.button.on("action", this.toggleLabels, this);
     this.aiControllerDebugLabel.destroy();
+
+    this.labelsContainer = this.scene.add.container(0, 50);
+    this.labelsContainer.setVisible(false);
+    this.add(this.labelsContainer);
   }
 
   private onUpdate() {
@@ -108,25 +114,28 @@ export default class AiControllerDebugPanel extends Phaser.GameObjects.Container
       aiDebuggingService.debugChanged.next(this.enabled);
     }
 
+    this.labelsContainer.setVisible(this.enabled);
+
     if (this.enabled) {
-      this.aiControllerDebugLabel.setVisible(true);
-      const buttonHeight = this.button.getBounds().height;
+      this.labels.forEach((label) => label.destroy());
+      this.labels = [];
+      this.labelsContainer.removeAll(true);
+
       const aiPlayers = getPlayers(this.mainScene).filter(
         (p) => p.playerController.data.playerDefinition?.playerType === ProbableWafflePlayerType.AI
       );
-      // create new labels for each ai player and put them below the button
-      let currentY = buttonHeight;
+      let currentY = 0;
       aiPlayers.forEach((player) => {
         const aiControllerDebugLabel = new AiControllerDebugLabel(this.scene, 0, currentY);
         aiControllerDebugLabel.setPlayer(player.playerNumber!);
-        this.add(aiControllerDebugLabel);
-        currentY += aiControllerDebugLabel.getBounds().height;
+        this.labelsContainer.add(aiControllerDebugLabel);
+        currentY += 350; // Adjust spacing as needed
         this.labels.push(aiControllerDebugLabel);
       });
     } else {
-      this.aiControllerDebugLabel.setVisible(false);
       this.labels.forEach((label) => label.destroy());
       this.labels = [];
+      this.labelsContainer.removeAll(true);
     }
   }
 
@@ -138,6 +147,7 @@ export default class AiControllerDebugPanel extends Phaser.GameObjects.Container
     this.button.off("action", this.toggleLabels, this);
     this.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.onUpdate, this);
     this.labels.forEach((label) => label.destroy());
+    if (this.labelsContainer) this.labelsContainer.destroy();
     super.destroy();
   }
   /* END-USER-CODE */

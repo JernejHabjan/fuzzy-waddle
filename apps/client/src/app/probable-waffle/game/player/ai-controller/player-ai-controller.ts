@@ -12,7 +12,7 @@ export class PlayerAiController {
   public blackboard: PlayerAiBlackboard = new PlayerAiBlackboard();
   private behaviourTree: BehaviourTree;
   private elapsedTime: number = 0;
-  private static readonly AI_ENABLED = false; // todo
+  private static readonly AI_ENABLED = true;
   private readonly stepInterval: number = AI_CONFIG.controllerStepIntervalMs;
   telemetry = new TelemetrySink();
   private telemetryFrameModulo = AI_CONFIG.telemetryFrameModulo;

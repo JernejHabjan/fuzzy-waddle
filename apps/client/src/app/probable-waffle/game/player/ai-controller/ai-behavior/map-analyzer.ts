@@ -2,6 +2,8 @@ import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces"
 import { NavigationService } from "../../../world/services/navigation.service";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
+import { NeedType } from "./need-type";
+import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 import GameObject = Phaser.GameObjects.GameObject;
 
 // Lightweight result of a map analysis pass
@@ -47,12 +49,60 @@ export class MapAnalyzer {
     return this.lastResult;
   }
 
-  scoreBuildSpot(tile: Vector2Simple, baseCenter?: Vector2Simple): number {
+  scoreBuildSpot(
+    tile: Vector2Simple,
+    baseCenter?: Vector2Simple,
+    buildingType?: NeedType,
+    resourceType?: ResourceType
+  ): number {
     if (!baseCenter) return 0;
-    // Prefer moderate distance (not too close, not too far)
-    const d = this.manhattan(tile, baseCenter);
-    const ideal = 6;
-    return Math.max(0, 10 - Math.abs(ideal - d));
+
+    let score = 0;
+    const distanceToBase = this.manhattan(tile, baseCenter);
+    const navigation = getSceneService(this.scene, NavigationService);
+    if (!navigation) return 0;
+
+    switch (buildingType) {
+      case NeedType.Gathering:
+        // score based on proximity to the specified resource
+        const actorIndex = getSceneService(this.scene, ActorIndexSystem);
+        if (actorIndex && resourceType) {
+          const resourceNodes = actorIndex.getResourceSourcesFiltered(resourceType);
+          let minDistance = Infinity;
+          for (const node of resourceNodes) {
+            const nodeTile = navigation.getCenterTileCoordUnderObject(node);
+            if (nodeTile) {
+              const d = this.manhattan(tile, nodeTile);
+              if (d < minDistance) {
+                minDistance = d;
+              }
+            }
+          }
+          // Higher score for being closer to a resource node.
+          score += Math.max(0, 50 - minDistance * 2);
+        }
+        // also some score for being not too far from base
+        score += Math.max(0, 20 - distanceToBase);
+        break;
+      case NeedType.Production:
+        // score based on proximity to base center
+        score += Math.max(0, 30 - distanceToBase);
+        break;
+      case NeedType.Defense:
+        // score based on being on the perimeter
+        const idealDefenseDistance = 10; // for example
+        score += Math.max(0, 20 - Math.abs(distanceToBase - idealDefenseDistance));
+        // could also add score for being on a choke point or path to enemy
+        break;
+      case NeedType.Housing:
+      default:
+        // Prefer moderate distance (not too close, not too far)
+        const ideal = 6;
+        score += Math.max(0, 10 - Math.abs(distanceToBase - ideal));
+        break;
+    }
+
+    return score;
   }
 
   private async computeAnalysis(): Promise<MapAnalysis> {

@@ -29,9 +29,6 @@ export const AI_CONFIG = {
   housingBuffer: 3,
   // Production / supply planning
   unitQueueCooldownMs: 5000,
-  militaryUnitTargetAggressive: 12,
-  militaryUnitTargetDefensive: 8,
-  militaryUnitTargetEconomic: 6,
   hasEnoughResourcesForMilitaryUnitThreshold: 150,
   // Building placement search parameters
   buildingPlacementSearchStartRadius: 2,

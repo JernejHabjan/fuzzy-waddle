@@ -8,6 +8,7 @@ import { ProbableWaffleScene } from "../../../../core/probable-waffle.scene";
 import { getPlayer } from "../../../../data/scene-data";
 import { getSceneSystem } from "../../../../world/services/scene-component-helpers";
 import { AiPlayerHandler } from "../../../../player/ai-controller/ai-player-handler";
+import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 /* END-USER-IMPORTS */
 
 export default class AiControllerDebugLabel extends Phaser.GameObjects.Container {
@@ -99,30 +100,53 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
     const aiHandlerSystem = getSceneSystem(this.mainSceneWithActors, AiPlayerHandler);
     const controller = aiHandlerSystem?.getAiPlayerController(this.playerNum);
     if (!controller) return;
-    const snap: any = controller.getTelemetrySnapshot?.() || controller.telemetry?.snapshot?.();
     const bb = controller.blackboard;
-
-    // Build spans summary (top 3 by avg)
-    const spanEntries = Object.entries(snap?.spans || {});
-    spanEntries.sort((a: any, b: any) => b[1].avg - a[1].avg);
-    const topSpans = spanEntries.slice(0, 3).map(([k, v]: any) => `${k}:${v.last.toFixed(1)}ms`);
-
-    // Counters summary (first few)
-    const counterEntries = Object.entries(snap?.counters || {})
-      .slice(0, 4)
-      .map(([k, v]) => `${k}:${v}`);
+    const agent = controller.playerAiControllerAgent;
 
     const lines: string[] = [];
-    lines.push(`frame:${snap?.frame ?? 0}`);
-    lines.push(`units:${bb.units.length} wrk:${bb.workers.length} visE:${bb.visibleEnemies.length}`);
-    lines.push(
-      `supply:${bb.production.supply.used}/${bb.production.supply.max || 0} (+${bb.production.supply.pendingFromQueued})`
-    );
-    lines.push(`strat:${bb.currentStrategy}`);
-    if (topSpans.length) lines.push(`spans ${topSpans.join(" ")}`);
-    if (counterEntries.length) lines.push(`cnt ${counterEntries.join(" ")}`);
 
-    this.telemetryText.text = lines.join("\n");
+    // Strategy
+    lines.push(`--- Strategy: ${bb.currentStrategy} ---`);
+    const attackPowerRatio = bb.getAttackPowerRatio(now);
+    lines.push(`Atk Power Ratio: ${attackPowerRatio.toFixed(2)}`);
+    const militaryPowerThreshold = agent.adaptiveThresholds.getMilitaryPowerThreshold();
+    lines.push(`Military Power Threshold: ${militaryPowerThreshold}`);
+    const baseHeavyAttackThreshold = agent.adaptiveThresholds.getBaseHeavyAttackThreshold();
+    lines.push(`Base Heavy Attack Threshold: ${baseHeavyAttackThreshold}`);
+
+    // Resources
+    lines.push("--- Resources ---");
+    for (const key in bb.resources) {
+      const r = key as ResourceType;
+      const incomeI = bb.economy.incomeInstant[r]?.toFixed(1) ?? "N/A";
+      const incomeS = bb.economy.incomeSmoothed[r]?.toFixed(1) ?? "N/A";
+      lines.push(`${r}: ${bb.resources[r]} (i: ${incomeI}, s: ${incomeS})`);
+    }
+
+    // Building
+    lines.push("--- Building ---");
+    const reserved = agent.basePlanner.getReservedBuilding();
+    if (reserved) {
+      lines.push(`Reserved: ${reserved.objectName} at ${reserved.tile.x},${reserved.tile.y}`);
+    }
+    const needs = agent.basePlanner.getCurrentNeeds();
+    if (needs.length > 0) {
+      const need = needs[0]!;
+      lines.push(`Need: ${need.type} (${need.reason})`);
+    }
+
+    // Enemy Intel
+    lines.push("--- Enemy Intel ---");
+    for (const player in bb.enemyIntel) {
+      const intel = bb.enemyIntel[player]!;
+      lines.push(`P${player}: Str ${intel.strength.toFixed(0)}`);
+    }
+    if (bb.primaryTarget) {
+      lines.push(`Target: ${bb.primaryTarget.name}`);
+    }
+
+    this.telemetryText.text = lines.join("\\n");
+    this.playerAction.text = controller?.blackboard.currentStrategy || "";
   }
   /* END-USER-CODE */
 }

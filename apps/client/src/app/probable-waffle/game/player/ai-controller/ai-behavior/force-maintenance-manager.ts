@@ -10,6 +10,7 @@ import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { AI_CONFIG } from "../ai-config";
 import { FlyingComponent } from "../../../entity/components/movement/flying-component";
+import { AdaptiveThresholdManager } from "./adaptive-threshold-manager";
 
 /**
  * ForceMaintenanceManager
@@ -25,16 +26,12 @@ export class ForceMaintenanceManager {
     private readonly player: ProbableWafflePlayer,
     private readonly blackboard: PlayerAiBlackboard,
     private readonly log: (...args: any[]) => void,
-    private readonly productionValidator: ProductionValidator
+    private readonly productionValidator: ProductionValidator,
+    private readonly adaptiveThresholds: AdaptiveThresholdManager
   ) {}
 
   shouldProduceMilitaryUnit(): boolean {
-    const target =
-      this.blackboard.currentStrategy === "aggressive"
-        ? AI_CONFIG.militaryUnitTargetAggressive
-        : this.blackboard.currentStrategy === "defensive"
-          ? AI_CONFIG.militaryUnitTargetDefensive
-          : AI_CONFIG.militaryUnitTargetEconomic;
+    const target = this.adaptiveThresholds.getMilitaryUnitTarget();
     const now = performance.now();
     if (now - this.lastUnitQueueTime < AI_CONFIG.unitQueueCooldownMs) return false;
     return this.blackboard.units.length < target;
@@ -43,7 +40,9 @@ export class ForceMaintenanceManager {
   hasResourcesForQueuedUnit(): boolean {
     // A simple check to see if we have enough for a basic unit.
     // The main queueing logic does a more specific check.
-    return this.blackboard.getTotalResources() >= AI_CONFIG.hasEnoughResourcesForMilitaryUnitThreshold;
+    return (
+      this.blackboard.getTotalResources() >= this.adaptiveThresholds.getHasEnoughResourcesForMilitaryUnitThreshold()
+    );
   }
 
   isSupplyCapped(): boolean {
@@ -53,6 +52,9 @@ export class ForceMaintenanceManager {
   queueMilitaryUnitProduction(): State {
     const now = performance.now();
     if (!this.hasResourcesForQueuedUnit()) return State.FAILED;
+    if (this.blackboard.getTotalResources() < this.adaptiveThresholds.getResourceGatheringThreshold()) {
+      return State.FAILED; // economy is low
+    }
 
     const buildings = this.blackboard.trainingBuildings.filter((b) => {
       const prod = getActorComponent(b, ProductionComponent);

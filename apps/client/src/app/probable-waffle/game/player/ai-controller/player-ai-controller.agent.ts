@@ -1,6 +1,5 @@
 import { State } from "mistreevous";
 import { type IPlayerControllerAgent } from "./player-ai-controller.agent.interface";
-import { PlayerAiBlackboard } from "./player-ai-blackboard";
 import {
   FactionType,
   ObjectNames,
@@ -31,7 +30,6 @@ import { ForceMaintenanceManager } from "./ai-behavior/force-maintenance-manager
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 import { AttackComponent } from "../../entity/components/combat/components/attack-component";
 import { ProductionValidator } from "../../data/tech-tree/production-validator";
-import { getCostForObjectName } from "../../entity/components/production/cost-utils";
 import { AI_CONFIG } from "./ai-config";
 import { RepairManager } from "./ai-behavior/repair-manager";
 import { LogisticsManager } from "./ai-behavior/logistics-manager";
@@ -45,14 +43,17 @@ import { IsoHelper } from "../../world/tilemap/iso-helper";
 import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import { OwnerComponent } from "../../entity/components/owner-component";
-import GameObject = Phaser.GameObjects.GameObject;
 import { ResourceDrainComponent } from "../../entity/components/resource/resource-drain-component";
+import { EconomyManager } from "./ai-behavior/economy-manager";
+import { WorldStateSnapshotManager } from "./ai-behavior/world-state-snapshot-manager";
+import GameObject = Phaser.GameObjects.GameObject;
+import { type EnemyIntel, PlayerAiBlackboard } from "./player-ai-blackboard";
 
 export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   private displayDebugInfo = false;
   private aiDebuggingSubscription?: Subscription;
   private mapAnalyzer?: MapAnalyzer;
-  private basePlanner: BasePlanner;
+  public basePlanner: BasePlanner;
   private cooldowns = new CooldownManager();
   private hysteresisAggressive = makeHysteresisTracker({
     enter: AI_CONFIG.hysteresisAggressiveEnter,
@@ -62,7 +63,9 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   private repairManager: RepairManager;
   private logisticsManager: LogisticsManager;
   private techManager: TechProgressManager;
-  private adaptiveThresholds: AdaptiveThresholdManager;
+  public adaptiveThresholds: AdaptiveThresholdManager;
+  private economyManager: EconomyManager;
+  private worldStateSnapshotManager: WorldStateSnapshotManager;
 
   private combatMicro: CombatMicroManager;
   private scoutingManager: ScoutingManager;
@@ -83,17 +86,27 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     }
     this.mapAnalyzer = new MapAnalyzer(this.scene, this.player.playerNumber!);
     const supplyPlanner = new SupplyPlanner(this.blackboard);
-    this.basePlanner = new BasePlanner(this.mapAnalyzer, this.player.factionType, supplyPlanner);
+    this.productionValidator = new ProductionValidator(this.scene, this.player, this.blackboard);
+    this.logisticsManager = new LogisticsManager(this.blackboard, this.logDebugInfo.bind(this));
+    this.basePlanner = new BasePlanner(
+      this.mapAnalyzer,
+      this.player.factionType,
+      supplyPlanner,
+      this.productionValidator,
+      this.logisticsManager
+    );
+    this.adaptiveThresholds = new AdaptiveThresholdManager(this.blackboard, this.basePlanner);
     this.cooldowns.configure("strategyShift", AI_CONFIG.strategyShiftIntervalMs);
     this.cooldowns.configure("analyzeMap", AI_CONFIG.mapAnalysisIntervalMs);
     this.cooldowns.configure("attackTrigger", AI_CONFIG.attackTriggerIntervalMs);
-    this.productionValidator = new ProductionValidator(this.scene, this.player, this.blackboard);
+    this.cooldowns.configure("adaptiveThresholds", 500); // as per request
     this.forceMaintenance = new ForceMaintenanceManager(
       this.scene,
       this.player,
       this.blackboard,
       this.logDebugInfo.bind(this),
-      this.productionValidator
+      this.productionValidator,
+      this.adaptiveThresholds
     );
     this.repairManager = new RepairManager(
       this.scene,
@@ -103,7 +116,8 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     );
     this.logisticsManager = new LogisticsManager(this.blackboard, this.logDebugInfo.bind(this));
     this.techManager = new TechProgressManager(this.blackboard, this.logDebugInfo.bind(this));
-    this.adaptiveThresholds = new AdaptiveThresholdManager(this.blackboard, this.basePlanner);
+    this.economyManager = new EconomyManager(this.blackboard);
+    this.worldStateSnapshotManager = new WorldStateSnapshotManager(this.scene, this.player, this.blackboard);
     this.combatMicro = new CombatMicroManager(this.scene, this.blackboard, this.logDebugInfo.bind(this));
     this.scoutingManager = new ScoutingManager(this.scene, this.blackboard, this.logDebugInfo.bind(this));
     this.targetingManager = new TargetingManager(this.blackboard);
@@ -115,13 +129,17 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   }
 
   private async updateManagers(now: number): Promise<void> {
-    // Refresh unit / production snapshots via ActorIndexSystem (replaces UnitDiscoveryManager)
-    await this.refreshOwnedActors(now);
+    this.worldStateSnapshotManager.update(now);
+    this.economyManager.update(now);
     // Update scouting vision sampling
     this.scoutingManager.updateVisionSampling(now);
     // Update primary target cache
     this.targetingManager.update(now);
     this.processPrerequisiteQueue(now);
+    if (this.cooldowns.canRun("adaptiveThresholds", now)) {
+      this.adaptiveThresholds.update();
+      this.cooldowns.markRun("adaptiveThresholds", now);
+    }
   }
 
   private processPrerequisiteQueue(now: number) {
@@ -263,16 +281,31 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
 
     const enemyCandidates = await this.extractEnemyCandidates(owned, index, units);
 
-    const enemyInfantryUnits = enemyCandidates.filter((e) => {
-      const attackComp = getActorComponent(e, AttackComponent);
-      const gathererComp = getActorComponent(e, GathererComponent);
-      return attackComp && !gathererComp;
-    });
+    const enemyIntel: Record<number, EnemyIntel> = {};
+    let totalEnemyStrength = 0;
+
+    for (const enemy of enemyCandidates) {
+      const owner = getActorComponent(enemy, OwnerComponent)?.getOwner();
+      if (owner === undefined || owner === this.player.playerNumber) continue;
+
+      if (!enemyIntel[owner]) {
+        enemyIntel[owner] = { strength: 0, unitsInCombat: 0, flankOpen: false };
+      }
+
+      const isCombatUnit = getActorComponent(enemy, AttackComponent) && !getActorComponent(enemy, GathererComponent);
+      if (isCombatUnit) {
+        const strength = this.getUnitStrength(enemy);
+        enemyIntel[owner]!.strength += strength;
+        totalEnemyStrength += strength;
+      }
+    }
+
+    this.blackboard.enemyIntel = enemyIntel;
 
     // Update blackboard enemy-related fields
     this.blackboard.visibleEnemies = enemyCandidates;
     // todo: replace with a more sophisticated enemy military strength calculation
-    this.blackboard.enemyMilitaryStrength = enemyInfantryUnits.length;
+    this.blackboard.enemyMilitaryStrength = totalEnemyStrength;
     const baseCenter = this.blackboard.baseCenterTile;
     if (baseCenter) {
       this.blackboard.enemiesNearBase = await this.getEnemiesNearBase(enemyCandidates, baseCenter);
@@ -297,6 +330,23 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     this.blackboard.defendingUnits = defenders;
 
     this.lastOwnedRefreshAt = now;
+  }
+
+  private getUnitStrength(unit: GameObject): number {
+    const definition = pwActorDefinitions[unit.name as ObjectNames];
+    if (!definition) return 1; // default strength
+
+    const cost = definition.components?.productionCost?.resources;
+    const totalCost = cost ? Object.values(cost).reduce((a, b) => a + b, 0) : 0;
+
+    const health = getActorComponent(unit, HealthComponent)?.healthDefinition.maxHealth ?? 0;
+
+    const attack = getActorComponent(unit, AttackComponent);
+    const attackData = attack?.getAttacks()[0]; // simplified: using first attack
+    const dps = attackData ? attackData.damage / (attackData.cooldown / 1000) : 0;
+
+    // Simple weighting. Can be adjusted.
+    return totalCost + health + dps * 10;
   }
 
   private async getEnemiesNearBase(enemyCandidates: GameObject[], baseCenter: Vector3Simple) {
@@ -390,19 +440,16 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   }
 
   IsBaseUnderHeavyAttack() {
-    return (
-      this.blackboard.enemiesNearBase.length >
-      (this.adaptiveThresholds.getBaseHeavyAttackThreshold() ?? AI_CONFIG.baseHeavyAttackDefaultThreshold)
-    ); // extracted fallback 10
+    return this.blackboard.enemiesNearBase.length > this.adaptiveThresholds.getBaseHeavyAttackThreshold();
   }
 
   HasEnoughMilitaryPower() {
     // Unit discovery manager keeps units list current; no temp reassignment
-    return this.blackboard.units.length >= this.adaptiveThresholds.getMilitaryPowerThreshold(); // extracted fallback 3
+    return this.blackboard.units.length >= this.adaptiveThresholds.getMilitaryPowerThreshold();
   }
 
   HasSurplusResources() {
-    return this.blackboard.getTotalResources() > this.adaptiveThresholds.getResourceSurplusThreshold(); // extracted fallback 500
+    return this.blackboard.getTotalResources() > this.adaptiveThresholds.getResourceSurplusThreshold();
   }
 
   AssignDefendersToEnemies() {
@@ -455,24 +502,15 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   }
 
   NeedMoreResources() {
-    return (
-      this.blackboard.getTotalResources() <
-      (this.adaptiveThresholds.getNeedMoreResourcesThreshold() ?? AI_CONFIG.needMoreResourcesThreshold)
-    ); // extracted fallback 5000
+    return this.blackboard.getTotalResources() < this.adaptiveThresholds.getNeedMoreResourcesThreshold();
   }
 
   HasSufficientResources() {
-    return (
-      this.blackboard.getTotalResources() >=
-      (this.adaptiveThresholds.getHasSufficientResourcesThreshold() ?? AI_CONFIG.hasSufficientResourcesThreshold)
-    ); // extracted fallback 500
+    return this.blackboard.getTotalResources() >= this.adaptiveThresholds.getHasSufficientResourcesThreshold();
   }
 
   ResourceShortage() {
-    return (
-      this.blackboard.getTotalResources() <
-      (this.adaptiveThresholds.getResourceGatheringThreshold() ?? AI_CONFIG.resourceShortageThreshold)
-    ); // extracted fallback 300
+    return this.blackboard.getTotalResources() < this.adaptiveThresholds.getResourceGatheringThreshold();
   }
 
   async AssignWorkersToGather(): Promise<State> {
@@ -482,11 +520,12 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       return !gathererComponent.isGathering;
     });
     if (idleWorkers.length > 0) {
+      const criticalResource = this.logisticsManager.getMostConstrainedResource() ?? ResourceType.Wood;
       for (const worker of idleWorkers) {
         const gathererComponent = getActorComponent(worker, GathererComponent);
         if (!gathererComponent) continue;
         const closestResourceSource = await gathererComponent.getClosestResourceSource(
-          ResourceType.Wood,
+          criticalResource,
           AI_CONFIG.gatherSearchRadius
         ); // todo hardcoded replaced 100
         if (!closestResourceSource) continue;
@@ -582,40 +621,34 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   }
 
   NeedMoreWorkers(): boolean {
-    // Dynamic worker threshold based on strategy and economy state
     const currentWorkers = this.blackboard.workers.length;
-    const currentStrategy = this.blackboard.currentStrategy;
+    const baseSize = this.blackboard.baseSize;
+    const enemyStrength = this.blackboard.enemyMilitaryStrength;
+    const strategy = this.blackboard.currentStrategy;
 
-    // Strategy-based worker targets
-    let targetWorkers: number;
-    switch (currentStrategy) {
-      case "economic":
-        targetWorkers = 12; // Focus on economy - train more workers
-        break;
-      case "aggressive":
-        targetWorkers = 6; // Less workers, more military
-        break;
-      case "defensive":
-        targetWorkers = 8; // Balanced approach
-        break;
-      default:
-        targetWorkers = AI_CONFIG.needMoreWorkersThreshold; // fallback 5
+    let targetWorkers = 5 + baseSize * 2; // base workers + 2 per building
+
+    if (strategy === "economic") {
+      targetWorkers *= 1.5;
+    } else if (strategy === "aggressive") {
+      targetWorkers *= 0.8;
     }
 
-    // Also consider if we have production buildings that need workers
-    const productionBuildingCount = this.blackboard.productionBuildings.length;
-    const minWorkersPerBuilding = 2;
-    const minBaseWorkers = 4;
-    const buildingBasedTarget = Math.max(minBaseWorkers, productionBuildingCount * minWorkersPerBuilding);
+    // if we are under attack, we need less workers
+    if (this.blackboard.enemiesNearBase.length > 0) {
+      targetWorkers *= 0.7;
+    }
 
-    // Use the higher of the two targets
-    const finalTarget = Math.max(targetWorkers, buildingBasedTarget);
+    // if enemy is strong, we need more military, so less workers
+    if (enemyStrength > this.blackboard.militaryStrength) {
+      targetWorkers *= 0.8;
+    }
 
-    return currentWorkers < finalTarget;
+    return currentWorkers < targetWorkers;
   }
 
   async ReassignWorkersToResource(): Promise<State> {
-    const criticalResource = this.blackboard.getMostNeededResource();
+    const criticalResource = this.logisticsManager.getMostConstrainedResource();
     const workers = this.blackboard.workers.filter((worker) => {
       const gathererComponent = getActorComponent(worker, GathererComponent);
       if (!gathererComponent) return false;
@@ -626,7 +659,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
         const gathererComponent = getActorComponent(worker, GathererComponent);
         if (!gathererComponent) continue;
         const closestResourceSource = await gathererComponent.getClosestResourceSource(
-          criticalResource.type,
+          criticalResource,
           AI_CONFIG.gatherSearchRadius
         ); // replaced 100
         if (!closestResourceSource) continue;
@@ -918,7 +951,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   }
   ReplanBase(): State {
     try {
-      this.basePlanner.planBaseIfStale(this.blackboard, AI_CONFIG.baseReplanStaleMs); // extracted 4000
+      this.basePlanner.planBaseIfStale(this.blackboard, AI_CONFIG.baseReplanStaleMs, this.adaptiveThresholds); // extracted 4000
       // Debug: show how many plan reservations currently tracked
       const planCount = this.basePlanner.getPlannedBuildings().length;
       this.logDebugInfo("ReplanBase executed. Active plan reservations:", planCount);
@@ -987,6 +1020,18 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   }
   QueueMilitaryUnitProduction(): State {
     return this.forceMaintenance.queueMilitaryUnitProduction();
+  }
+
+  public getTelemetrySnapshot() {
+    // a bit of a hack to get telemetry... but it works for now
+    const bb = this.blackboard as any;
+    if (!bb.diagnostics.telemetry) {
+      bb.diagnostics.telemetry = {
+        spans: {},
+        counters: {}
+      };
+    }
+    return bb.diagnostics.telemetry;
   }
 
   // ================= Surrender Logic =================

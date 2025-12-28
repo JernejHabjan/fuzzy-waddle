@@ -3,6 +3,8 @@ import { getActorComponent } from "../../../data/actor-component";
 import { HealthComponent } from "../../../entity/components/combat/components/health-component";
 import { DistanceHelper } from "../../../library/distance-helper";
 import GameObject = Phaser.GameObjects.GameObject;
+import { OwnerComponent } from "../../../entity/components/owner-component";
+import { AttackComponent } from "../../../entity/components/combat/components/attack-component";
 
 /**
  * TargetingManager
@@ -26,6 +28,21 @@ export class TargetingManager {
       return null;
     }
     const center = this.blackboard.baseCenterTile;
+    const strategy = this.blackboard.currentStrategy;
+    const enemyIntel = this.blackboard.enemyIntel;
+
+    // find weakest player
+    let weakestPlayer: number | undefined;
+    let minStrength = Infinity;
+    if (enemyIntel) {
+      for (const player in enemyIntel) {
+        if (enemyIntel[player]!.strength < minStrength) {
+          minStrength = enemyIntel[player]!.strength;
+          weakestPlayer = parseInt(player);
+        }
+      }
+    }
+
     let best: { score: number; obj: GameObject } | undefined;
     enemies.forEach((e) => {
       if (!e.active) return;
@@ -39,8 +56,19 @@ export class TargetingManager {
         const d = DistanceHelper.getTileDistanceBetweenGameObjectAndTile(e, center) || 20;
         score += 30 / d; // nearer to our base center slightly higher priority
       }
-      // Add simple threat proxy: stored enemyMilitaryStrength not per-unit yet, so approximate with 10
-      score += 10;
+
+      const owner = getActorComponent(e, OwnerComponent)?.getOwner();
+      if (owner === weakestPlayer) {
+        score += 20; // bonus for targeting weakest player
+      }
+
+      if (strategy === "aggressive") {
+        // prefer high value targets. For now, let's just add to score of combat units
+        if (getActorComponent(e, AttackComponent)) {
+          score += 10;
+        }
+      }
+
       if (!best || score > best.score) {
         best = { score, obj: e };
       }

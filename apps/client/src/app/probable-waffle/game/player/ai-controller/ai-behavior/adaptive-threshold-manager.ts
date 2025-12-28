@@ -1,7 +1,7 @@
 import { PlayerAiBlackboard } from "../player-ai-blackboard";
 import { BasePlanner } from "./base-planner";
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
-import { getApproxWoodCost } from "../../../entity/components/production/cost-utils";
+import { getCostForObjectName } from "../../../entity/components/production/cost-utils";
 
 /**
  * AdaptiveThresholdManager
@@ -13,12 +13,14 @@ export class AdaptiveThresholdManager {
   // Internal dynamic thresholds (public getters below)
   private baseHeavyAttackThreshold = 10;
   private militaryPowerThreshold = 3;
+  private militaryUnitTarget = 6;
   private resourceSurplusThreshold = 500;
   private resourceGatheringThreshold = 300;
   private needMoreResourcesThreshold = 5000;
   private hasSufficientResourcesThreshold = 500;
   private hasEnoughResourcesForWorkerThreshold = 100;
   private sufficientResourcesForUpgradeThreshold = 1000;
+  private hasEnoughResourcesForMilitaryUnitThreshold = 150;
 
   // Cached last update timestamp
   private lastUpdatedAt = 0;
@@ -43,6 +45,7 @@ export class AdaptiveThresholdManager {
     // Enemy strength heuristics
     const enemyStr = Math.max(1, bb.enemyMilitaryStrength || 1);
     const ourUnits = bb.units.length || 0;
+    const baseSize = bb.baseSize;
 
     // Military power threshold:
     // - Aggressive: push closer to enemy power (80%)
@@ -50,6 +53,9 @@ export class AdaptiveThresholdManager {
     // - Economic: 50%
     const strategyFactor = bb.currentStrategy === "aggressive" ? 0.8 : bb.currentStrategy === "defensive" ? 0.6 : 0.5;
     this.militaryPowerThreshold = Math.max(3, Math.round(enemyStr * strategyFactor));
+
+    // Military unit target:
+    this.militaryUnitTarget = Math.round(this.militaryPowerThreshold * 1.5) + baseSize;
 
     // Heavy attack threshold:
     // Scales with enemy strength plus buffer, ensures >= militaryPowerThreshold * 1.5
@@ -85,6 +91,9 @@ export class AdaptiveThresholdManager {
 
     // Upgrade threshold scales with upcomingCosts + base factor
     this.sufficientResourcesForUpgradeThreshold = Math.max(600, Math.round(upcomingCosts.total * 0.5 + 400));
+
+    // Military unit threshold: slightly above military power threshold
+    this.hasEnoughResourcesForMilitaryUnitThreshold = Math.max(150, Math.round(this.militaryPowerThreshold * 1.2));
   }
 
   private estimatePendingBuildingCosts(): { byType: Record<string, number>; total: number } {
@@ -103,8 +112,9 @@ export class AdaptiveThresholdManager {
   }
 
   private roughCostFor(obj: ObjectNames): number {
-    // Per-Definition Supply Costing Integration - dynamically sources costs from actor definitions
-    return getApproxWoodCost(obj, 100);
+    const cost = getCostForObjectName(obj);
+    if (!cost) return 100; // fallback
+    return Object.values(cost).reduce((a, b) => a + (b ?? 0), 0);
   }
 
   // ---- Getters (Agent queries) ----
@@ -113,6 +123,9 @@ export class AdaptiveThresholdManager {
   }
   getMilitaryPowerThreshold() {
     return this.militaryPowerThreshold;
+  }
+  getMilitaryUnitTarget() {
+    return this.militaryUnitTarget;
   }
   getResourceSurplusThreshold() {
     return this.resourceSurplusThreshold;
@@ -131,5 +144,8 @@ export class AdaptiveThresholdManager {
   }
   getSufficientResourcesForUpgradeThreshold() {
     return this.sufficientResourcesForUpgradeThreshold;
+  }
+  getHasEnoughResourcesForMilitaryUnitThreshold() {
+    return this.hasEnoughResourcesForMilitaryUnitThreshold;
   }
 }
