@@ -172,6 +172,11 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     this.playerActionsHandler = getSceneService(this.mainSceneWithActors, PlayerActionsHandler)!;
     this.subscribeToPlayerSelection();
     this.hideAllActions();
+    this.mainSceneWithActors.events.on(
+      PlayerActionsHandler.BUILDING_MODE_SHORTCUT_PRESSED,
+      this.onBuildModeKeyDown,
+      this
+    );
     /* END-USER-CTR-CODE */
   }
 
@@ -246,6 +251,22 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         this.refreshForCurrentSelection();
       });
     }
+  }
+
+  private onBuildModeKeyDown(hotkeyIndex: number) {
+    if (!this.buildingMode) return;
+
+    if (hotkeyIndex === -1) return;
+
+    // Find and trigger the corresponding action button
+    const action = this.actor_actions[hotkeyIndex];
+    if (action && action.visible) {
+      action.triggerAction();
+    }
+  }
+
+  private mapKeyToCode(k: string): string {
+    return k.length === 1 ? `Key${k.toUpperCase()}` : k;
   }
 
   private refreshForCurrentSelection() {
@@ -1042,6 +1063,11 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     this.resourceChangedSubscription?.unsubscribe();
     this.categoryNavigationStack = [];
     this.tabHandlerSubscription?.unsubscribe();
+    this.mainSceneWithActors.events.off(
+      PlayerActionsHandler.BUILDING_MODE_SHORTCUT_PRESSED,
+      this.onBuildModeKeyDown,
+      this
+    );
   }
 
   /* END-USER-CODE */

@@ -71,7 +71,7 @@ export default class ActorAction extends Phaser.GameObjects.Container {
     this.once(Phaser.Input.Events.DESTROY, this.destroyCore);
     this.on(Phaser.Input.Events.POINTER_OVER, this.onPointerOver);
     this.on(Phaser.Input.Events.POINTER_OUT, this.onPointerOut);
-    this.on("actor-action", this.onAction);
+    this.on("actor-action", this.triggerAction);
     /* END-USER-CTR-CODE */
   }
 
@@ -201,14 +201,14 @@ export default class ActorAction extends Phaser.GameObjects.Container {
     this.tooltip?.destroy();
   }
 
-  private onAction = () => {
+  triggerAction = () => {
     // do not actually disable the button, as we want to react to it on click
     // if (this.disabled) return;
     this.action?.();
   };
 
   private destroyCore = () => {
-    this.off("actor-action", this.onAction);
+    this.off("actor-action", this.triggerAction);
     this.off(Phaser.Input.Events.POINTER_OVER, this.onPointerOver);
     this.off(Phaser.Input.Events.POINTER_OUT, this.onPointerOut);
     this.destroyTooltip();

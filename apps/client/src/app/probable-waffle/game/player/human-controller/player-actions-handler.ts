@@ -2,7 +2,7 @@ import { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { OrderType } from "../../ai/order-type";
 import { CursorHandler, CursorType } from "./cursor.handler";
 import { getSceneComponent } from "../../world/services/scene-component-helpers";
-import type { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
+import { type Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 import {
   emitEventIssueActorCommandToSelectedActors,
   emitEventIssueMoveCommandToSelectedActors,
@@ -29,6 +29,7 @@ import { findProductionBuildingWithLeastRemainingTime } from "../../entity/compo
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class PlayerActionsHandler {
+  public static BUILDING_MODE_SHORTCUT_PRESSED = "hotkey-build-list-selection";
   private handlingActions?: {
     orderType: OrderType;
   };
@@ -100,16 +101,10 @@ export class PlayerActionsHandler {
     const listIndex = this.HOTKEYS.findIndex((h) => this.mapKeyToCode(h) === code);
     if (listIndex !== -1) {
       if (this.buildingModeActive) {
-        // Building selection
-        const actor = this.primarySelectedActor;
-        const builder = actor ? getActorComponent(actor, BuilderComponent) : undefined;
-        const building = builder?.constructableBuildings[listIndex];
-        if (building) {
-          const buildingCursor = getSceneComponent(this.scene, BuildingCursor);
-          buildingCursor?.startPlacingBuilding.emit(building);
-          e.preventDefault();
-          return;
-        }
+        // In build mode, don't handle here - let ActorActions handle it via button emission
+        this.scene.events.emit(PlayerActionsHandler.BUILDING_MODE_SHORTCUT_PRESSED, listIndex);
+        e.preventDefault();
+        return;
       } else {
         // Production selection
         const actor = this.primarySelectedActor;
