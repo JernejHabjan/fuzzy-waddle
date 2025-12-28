@@ -512,49 +512,59 @@ export class BuildingCursor {
       return !this._canPlaceAt([tileCoord], ignoreList, false);
     };
 
-    // Helper function to draw a single isometric diamond with specific color (lines only)
-    const drawIsoDiamond = (isoX: number, isoY: number, fill: boolean, color: number) => {
-      // Set line style for the outline
-      gridGraphics.lineStyle(2, color, 1);
+    // Helper function to draw a single isometric diamond with specific color
+    const drawIsoDiamond = (isoX: number, isoY: number, fill: boolean, color: number, drawFill: boolean) => {
+      if (drawFill) {
+        if (fill) {
+          gridGraphics.fillStyle(color, 0.3);
+          gridGraphics.beginPath();
+          gridGraphics.moveTo(isoX, isoY - tileSize / 4);
+          gridGraphics.lineTo(isoX + tileSize / 2, isoY);
+          gridGraphics.lineTo(isoX, isoY + tileSize / 4);
+          gridGraphics.lineTo(isoX - tileSize / 2, isoY);
+          gridGraphics.closePath();
+          gridGraphics.fillPath();
+        }
+      } else {
+        // Set line style for the outline
+        gridGraphics.lineStyle(2, color, 1);
 
-      // Draw the outline
-      gridGraphics.beginPath();
-      gridGraphics.moveTo(isoX, isoY - tileSize / 4);
-      gridGraphics.lineTo(isoX + tileSize / 2, isoY);
-      gridGraphics.lineTo(isoX, isoY + tileSize / 4);
-      gridGraphics.lineTo(isoX - tileSize / 2, isoY);
-      gridGraphics.closePath();
-      gridGraphics.stroke();
-
-      // Fill only for inner tiles and only when they can be placed (green)
-      if (fill && color === 0x00ff00) {
-        gridGraphics.fillStyle(color, 0.3);
+        // Draw the outline
         gridGraphics.beginPath();
         gridGraphics.moveTo(isoX, isoY - tileSize / 4);
         gridGraphics.lineTo(isoX + tileSize / 2, isoY);
         gridGraphics.lineTo(isoX, isoY + tileSize / 4);
         gridGraphics.lineTo(isoX - tileSize / 2, isoY);
         gridGraphics.closePath();
-        gridGraphics.fillPath();
+        gridGraphics.stroke();
       }
     };
 
-    // Draw the entire grid, checking each tile individually
+    // Draw fills first
     for (let i = -outerRangeX; i <= outerRangeX; i++) {
       for (let j = -outerRangeY; j <= outerRangeY; j++) {
         const isoX = xPos + (i - j) * (tileSize / 2);
         const isoY = yPos + (i + j) * (tileSize / 4);
 
-        // Determine if this is part of the inner area (building footprint)
         const isInnerTile = Math.abs(i) <= innerRangeX && Math.abs(j) <= innerRangeY;
-
-        // Check if this specific tile is occupied
         const tileOccupied = isTileOccupied(isoX, isoY);
-
-        // Determine color: red if occupied, green if free
         const tileColor = tileOccupied ? 0xff0000 : 0x00ff00;
 
-        drawIsoDiamond(isoX, isoY, isInnerTile, tileColor);
+        drawIsoDiamond(isoX, isoY, isInnerTile, tileColor, true);
+      }
+    }
+
+    // Draw outlines second, in correct isometric order (back to front)
+    for (let i = -outerRangeX; i <= outerRangeX; i++) {
+      for (let j = -outerRangeY; j <= outerRangeY; j++) {
+        const isoX = xPos + (i - j) * (tileSize / 2);
+        const isoY = yPos + (i + j) * (tileSize / 4);
+
+        const isInnerTile = Math.abs(i) <= innerRangeX && Math.abs(j) <= innerRangeY;
+        const tileOccupied = isTileOccupied(isoX, isoY);
+        const tileColor = tileOccupied ? 0xff0000 : 0x00ff00;
+
+        drawIsoDiamond(isoX, isoY, isInnerTile, tileColor, false);
       }
     }
 
