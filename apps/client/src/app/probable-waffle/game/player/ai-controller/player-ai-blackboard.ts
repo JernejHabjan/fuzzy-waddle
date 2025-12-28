@@ -3,6 +3,8 @@ import { ObjectNames, ResourceType, type Vector2Simple, type Vector3Simple } fro
 import type { MapAnalysis } from "./ai-behavior/map-analyzer";
 import { ReservationPool } from "./resource-reservations";
 import GameObject = Phaser.GameObjects.GameObject;
+import { GathererComponent } from "../../entity/components/resource/gatherer-component";
+import { getActorComponent } from "../../data/actor-component";
 
 export interface EnemyIntel {
   strength: number;
@@ -13,7 +15,6 @@ export interface EnemyIntel {
 export class PlayerAiBlackboard extends Blackboard {
   constructor(
     public resources: Record<ResourceType, number> = {
-      ambrosia: 0,
       minerals: 0,
       stone: 0,
       wood: 0
@@ -58,13 +59,13 @@ export class PlayerAiBlackboard extends Blackboard {
     this.economy = {
       resources: this.resources,
       // Placeholder income/surplus structures (populated via updateFromWorld)
-      incomeInstant: { ambrosia: 0, minerals: 0, stone: 0, wood: 0 },
-      incomeSmoothed: { ambrosia: 0, minerals: 0, stone: 0, wood: 0 },
+      incomeInstant: { minerals: 0, stone: 0, wood: 0 },
+      incomeSmoothed: { minerals: 0, stone: 0, wood: 0 },
       lastIncomeSampleAt: 0,
-      lastIncomeSnapshot: { ambrosia: 0, minerals: 0, stone: 0, wood: 0 },
-      reserved: { ambrosia: 0, minerals: 0, stone: 0, wood: 0 },
+      lastIncomeSnapshot: { minerals: 0, stone: 0, wood: 0 },
+      reserved: { minerals: 0, stone: 0, wood: 0 },
       get available() {
-        const out: Record<ResourceType, number> = { ambrosia: 0, minerals: 0, stone: 0, wood: 0 };
+        const out: Record<ResourceType, number> = { minerals: 0, stone: 0, wood: 0 };
         for (const k in out) {
           const r = k as ResourceType;
           out[r] = (this.resources[r] ?? 0) - (this.reserved[r] ?? 0);
@@ -175,6 +176,16 @@ export class PlayerAiBlackboard extends Blackboard {
   }
   setData(data: Partial<Record<string, any>>, scene: Phaser.Scene): void {
     throw new Error("Method not implemented.");
+  }
+
+  /**
+   * Returns a list of workers that are currently idle.
+   */
+  getIdleWorkers(): GameObject[] {
+    return this.workers.filter((worker) => {
+      const gathererComponent = getActorComponent(worker, GathererComponent);
+      return gathererComponent && !gathererComponent.isGathering;
+    });
   }
 
   // Slices

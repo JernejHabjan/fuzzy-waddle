@@ -115,10 +115,9 @@ export class ProbableWafflePlayerState extends BasePlayerState<ProbableWafflePla
     super.resetData();
     this.data = {
       resources: {
-        [ResourceType.Ambrosia]: 0,
-        [ResourceType.Minerals]: 50000,
-        [ResourceType.Stone]: 50000,
-        [ResourceType.Wood]: 50000
+        [ResourceType.Minerals]: 200,
+        [ResourceType.Stone]: 200,
+        [ResourceType.Wood]: 200
       },
       housing: {
         currentHousing: 3,

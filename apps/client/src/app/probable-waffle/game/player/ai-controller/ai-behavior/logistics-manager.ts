@@ -102,7 +102,7 @@ export class LogisticsManager {
     const resourceData: { [key in ResourceType]?: { score: number } } = {};
 
     // 1. Projected spend
-    const projectedSpend: Record<ResourceType, number> = { wood: 0, stone: 0, minerals: 0, ambrosia: 0 };
+    const projectedSpend: Record<ResourceType, number> = { wood: 0, stone: 0, minerals: 0 };
     // from queues
     this.blackboard.trainingBuildings.forEach((b) => {
       const prod = getActorComponent(b, ProductionComponent);

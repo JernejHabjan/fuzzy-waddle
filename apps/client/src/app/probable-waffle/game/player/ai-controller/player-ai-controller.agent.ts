@@ -45,9 +45,9 @@ import { HealthComponent } from "../../entity/components/combat/components/healt
 import { OwnerComponent } from "../../entity/components/owner-component";
 import { ResourceDrainComponent } from "../../entity/components/resource/resource-drain-component";
 import { EconomyManager } from "./ai-behavior/economy-manager";
-import { WorldStateSnapshotManager } from "./ai-behavior/world-state-snapshot-manager";
 import GameObject = Phaser.GameObjects.GameObject;
 import { type EnemyIntel, PlayerAiBlackboard } from "./player-ai-blackboard";
+import { WorldStateSnapshotManager } from "./ai-behavior/world-state-snapshot-manager";
 
 export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   private displayDebugInfo = false;
@@ -514,27 +514,50 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   }
 
   async AssignWorkersToGather(): Promise<State> {
-    const idleWorkers = this.blackboard.workers.filter((worker) => {
-      const gathererComponent = getActorComponent(worker, GathererComponent);
-      if (!gathererComponent) return false;
-      return !gathererComponent.isGathering;
-    });
-    if (idleWorkers.length > 0) {
-      const criticalResource = this.logisticsManager.getMostConstrainedResource() ?? ResourceType.Wood;
-      for (const worker of idleWorkers) {
-        const gathererComponent = getActorComponent(worker, GathererComponent);
-        if (!gathererComponent) continue;
-        const closestResourceSource = await gathererComponent.getClosestResourceSource(
-          criticalResource,
-          AI_CONFIG.gatherSearchRadius
-        ); // todo hardcoded replaced 100
-        if (!closestResourceSource) continue;
-        gathererComponent.startGatheringResources(closestResourceSource);
-      }
-      this.logDebugInfo("Assigned idle workers to gather resources.");
-      return State.SUCCEEDED;
+    const idleWorkers = this.blackboard.getIdleWorkers();
+    if (idleWorkers.length === 0) {
+      return State.FAILED;
     }
-    return State.FAILED;
+
+    // Use LogisticsManager to determine the most constrained (needed) resource.
+    const neededResource = this.logisticsManager.getMostConstrainedResource();
+    const targetResource = neededResource ?? ResourceType.Wood;
+
+    if (!neededResource) {
+      this.logDebugInfo(
+        "No specific resource computed, assigning idle workers to gather based on constraints/fallback."
+      );
+    } else {
+      this.logDebugInfo(`Assigning idle workers to gather ${neededResource}`);
+    }
+
+    let assigned = 0;
+    for (const worker of idleWorkers) {
+      const gathererComponent = getActorComponent(worker, GathererComponent);
+      if (!gathererComponent) continue;
+
+      // Skip if already gathering the target resource (avoid redundant reassignment)
+      const currentTarget = gathererComponent.currentResourceSource;
+      if (currentTarget && currentTarget.name && currentTarget.name.includes(targetResource)) {
+        continue;
+      }
+
+      const closestResourceSource = await gathererComponent.getClosestResourceSource(
+        targetResource,
+        AI_CONFIG.gatherSearchRadius
+      );
+      if (closestResourceSource) {
+        const aiController = getActorComponent(worker, PawnAiController);
+        const newOrder = new OrderData(OrderType.Gather, { targetGameObject: closestResourceSource });
+        if (aiController) {
+          aiController.blackboard.overrideOrderQueueAndActiveOrder(newOrder);
+          aiController.blackboard.setCurrentOrder(newOrder);
+        }
+        assigned++;
+      }
+    }
+
+    return assigned > 0 ? State.SUCCEEDED : State.FAILED;
   }
 
   HasIdleTrainingBuilding() {
@@ -663,7 +686,12 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
           AI_CONFIG.gatherSearchRadius
         ); // replaced 100
         if (!closestResourceSource) continue;
-        gathererComponent.startGatheringResources(closestResourceSource);
+        const aiController = getActorComponent(worker, PawnAiController);
+        const newOrder = new OrderData(OrderType.Gather, { targetGameObject: closestResourceSource });
+        if (aiController) {
+          aiController.blackboard.overrideOrderQueueAndActiveOrder(newOrder);
+          aiController.blackboard.setCurrentOrder(newOrder);
+        }
       }
       this.logDebugInfo("Reassigned workers to gather the most critical resource.");
       return State.SUCCEEDED;
@@ -672,32 +700,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   }
 
   async AssignWorkersToResource(): Promise<State> {
-    let anyAssigned = false;
-    for (const worker of this.blackboard.workers) {
-      const aiController = getActorComponent(worker, PawnAiController);
-      if (!aiController) {
-        continue;
-      }
-      if (aiController.blackboard.getCurrentOrder()) {
-        continue; // currently busy
-      }
-      const gathererComponent = getActorComponent(worker, GathererComponent);
-      if (!gathererComponent) continue;
-      const closestResourceSource = await gathererComponent.getClosestResourceSource(
-        ResourceType.Wood,
-        AI_CONFIG.gatherSearchRadius
-      ); // TODO resource targeting logic (replaced 100)
-      if (!closestResourceSource) continue;
-      const newOrder = new OrderData(OrderType.Gather, { targetGameObject: closestResourceSource });
-      aiController.blackboard.overrideOrderQueueAndActiveOrder(newOrder);
-      aiController.blackboard.setCurrentOrder(newOrder);
-      anyAssigned = true;
-    }
-    if (anyAssigned) {
-      this.logDebugInfo("Assigned workers to gather the closest resource.");
-      return State.SUCCEEDED;
-    }
-    return State.FAILED;
+    return this.AssignWorkersToGather();
   }
 
   SufficientResourcesForUpgrade() {

@@ -64,7 +64,7 @@ export const sandholdDefinition = {
       capacity: 2
     },
     resourceDrain: {
-      resourceTypes: [ResourceType.Wood, ResourceType.Minerals, ResourceType.Stone, ResourceType.Ambrosia],
+      resourceTypes: [ResourceType.Wood, ResourceType.Minerals, ResourceType.Stone],
       cooldown: 1000
     },
     production: {
