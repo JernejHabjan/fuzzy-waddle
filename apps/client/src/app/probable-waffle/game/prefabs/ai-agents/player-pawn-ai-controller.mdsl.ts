@@ -141,7 +141,7 @@ root [Attack] {
                     sequence {
                         /* cooldown may not be ready - wait until it is ms */
                         /* action [Log, "Waiting in attack"] */
-                        wait [100] until [CooldownReady, "attack"]
+                        wait [5] until [CooldownReady, "attack"]
                         /* action [Log, "Done waiting in attack"] */
                     }
                 }
@@ -267,7 +267,7 @@ root [Gather] {
                     sequence {
                         /* cooldown may not be ready - wait until it is ms */
                         /* action [Log, "Waiting in gather"] */
-                        wait [100] until [CooldownReady, "gather"]
+                        wait [5] until [CooldownReady, "gather"]
                         /* action [Log, "Done waiting in gather"] */
                     }
                 }
@@ -415,7 +415,7 @@ root [Build] {
                     sequence {
                         /* cooldown may not be ready - wait until it is ms */
                         /* action [Log, "Waiting in construct"] */
-                        wait [100] until [CooldownReady, "construct"]
+                        wait [5] until [CooldownReady, "construct"]
                         /* action [Log, "Done waiting in construct"] */
                     }
                 }
@@ -511,7 +511,7 @@ root [Repair] {
                     sequence {
                         /* cooldown may not be ready - wait until it is ms */
                         /* action [Log, "Waiting in repair"] */
-                        wait [100] until [CooldownReady, "repair"]
+                        wait [5] until [CooldownReady, "repair"]
                         /* action [Log, "Done waiting in repair"] */
                     }
                 }
@@ -593,7 +593,7 @@ root [Heal] {
                     sequence {
                         /* cooldown may not be ready - wait until it is ms */
                         /* action [Log, "Waiting in heal"] */
-                        wait [100] until [CooldownReady, "heal"]
+                        wait [5] until [CooldownReady, "heal"]
                         /* action [Log, "Done waiting in heal"] */
                     }
                 }

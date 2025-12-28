@@ -71,16 +71,18 @@ export class ConstructionSiteComponent {
     return definition.components?.productionCost ?? null;
   }
 
-  update(time: number, delta: number): void {
+  update(_: number, delta: number): void {
+    const deltaWithTimeScale = delta * this.gameObject.scene.time.timeScale;
+
     if (this.constructionSiteData.state == ConstructionStateEnum.Finished) {
-      this.tryRepair(delta);
+      this.tryRepair(deltaWithTimeScale);
       return;
     }
 
-    this.tryBuild(delta);
+    this.tryBuild(deltaWithTimeScale);
   }
 
-  private tryBuild(delta: number) {
+  private tryBuild(deltaWithTimeScale: number) {
     if (
       this.constructionSiteData.state === ConstructionStateEnum.NotStarted &&
       this.constructionSiteDefinition.startImmediately
@@ -99,8 +101,11 @@ export class ConstructionSiteComponent {
 
     const speedBoost = 1.0;
     const constructionProgress =
-      delta * this.constructionSiteDefinition.progressMadeAutomatically * speedBoost +
-      delta * this.constructionSiteDefinition.progressMadePerBuilder * this.assignedBuilders.length * speedBoost;
+      deltaWithTimeScale * this.constructionSiteDefinition.progressMadeAutomatically * speedBoost +
+      deltaWithTimeScale *
+        this.constructionSiteDefinition.progressMadePerBuilder *
+        this.assignedBuilders.length *
+        speedBoost;
 
     const productionDefinition = this.productionDefinition;
     if (!productionDefinition) throw new Error("Production definition not found");
@@ -269,14 +274,15 @@ export class ConstructionSiteComponent {
     }
   }
 
-  private tryRepair(delta: number) {
+  private tryRepair(deltaWithTimeScale: number) {
     const healthComponent = getActorComponent(this.gameObject, HealthComponent);
     if (!healthComponent) return;
 
     if (this.assignedRepairers.length === 0) return;
     if (healthComponent.healthComponentData.health >= healthComponent.healthDefinition.maxHealth) return;
 
-    const repairAmount = delta * this.constructionSiteDefinition.repairFactor * this.assignedRepairers.length;
+    const repairAmount =
+      deltaWithTimeScale * this.constructionSiteDefinition.repairFactor * this.assignedRepairers.length;
     healthComponent.healthComponentData.health += repairAmount;
     healthComponent.healthComponentData.health = Math.min(
       healthComponent.healthComponentData.health,

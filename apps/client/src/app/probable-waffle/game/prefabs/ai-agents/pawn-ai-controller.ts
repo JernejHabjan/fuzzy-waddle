@@ -69,8 +69,9 @@ export class PawnAiController {
   }
 
   private update(_: number, dt: number) {
-    this.elapsedTime += dt;
-    if (this.elapsedTime >= (this.pawnAiDefinition.stepInterval ?? this.defaultStepInterval)) {
+    this.elapsedTime += dt * this.gameObject.scene.time.timeScale;
+    const stepInterval = this.pawnAiDefinition.stepInterval ?? this.defaultStepInterval;
+    if (this.elapsedTime >= stepInterval) {
       try {
         this.behaviourTree.step();
       } catch (e) {

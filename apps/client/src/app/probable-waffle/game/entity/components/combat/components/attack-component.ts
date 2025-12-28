@@ -69,10 +69,12 @@ export class AttackComponent {
   }
 
   private update(_: number, delta: number): void {
+    const deltaWithTimeScale = delta * this.gameObject.scene.time.timeScale;
     if (this.remainingCooldown <= 0) {
       return;
     }
-    this.remainingCooldown -= delta;
+    this.remainingCooldown -= deltaWithTimeScale;
+
     this.remainingCooldown = Math.max(this.remainingCooldown, 0);
     // if (this.remainingCooldown <= 0) {
     //   this.onCooldownReady.emit(this.gameObject);

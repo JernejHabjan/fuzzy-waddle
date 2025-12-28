@@ -79,7 +79,9 @@ export class ProductionComponent {
     return getActorComponent(this.gameObject, ConstructionSiteComponent)?.isFinished ?? true;
   }
 
-  update(time: number, delta: number): void {
+  update(_: number, delta: number): void {
+    const deltaWithTimeScale = delta * this.gameObject.scene.time.timeScale;
+
     if (!this.isFinished) return;
     // process all queues
     for (let i = 0; i < this.productionQueues.length; i++) {
@@ -103,7 +105,7 @@ export class ProductionComponent {
         }
 
         // update production progress
-        queue.remainingProductionTime -= delta;
+        queue.remainingProductionTime -= deltaWithTimeScale;
         queue.remainingProductionTime = Math.max(queue.remainingProductionTime, 0);
 
         const progress = ((costData.productionTime - queue.remainingProductionTime) / costData.productionTime) * 100;

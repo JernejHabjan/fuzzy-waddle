@@ -248,7 +248,10 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
 
       this.blackboard.resetCurrentOrder(false);
       const animationActorComponent = getActorComponent(this.gameObject, AnimationActorComponent);
-      if (animationActorComponent) animationActorComponent.playOrderAnimation(OrderType.Stop);
+      if (animationActorComponent) {
+        const healthComponent = getActorComponent(this.gameObject, HealthComponent);
+        if (!healthComponent || healthComponent.alive) animationActorComponent.playOrderAnimation(OrderType.Stop);
+      }
       const movementSystem = getActorSystem(this.gameObject, MovementSystem);
       movementSystem?.cancelMovement();
     }
