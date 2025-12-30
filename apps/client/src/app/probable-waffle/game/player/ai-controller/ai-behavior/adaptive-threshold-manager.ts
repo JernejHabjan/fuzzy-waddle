@@ -12,8 +12,8 @@ import { getCostForObjectName } from "../../../entity/components/production/cost
 export class AdaptiveThresholdManager {
   // Internal dynamic thresholds (public getters below)
   private baseHeavyAttackThreshold = 0;
-  private militaryPowerThreshold = 0;
-  private militaryUnitTarget = 0;
+  private militaryPowerStrengthThreshold = 0;
+  private militaryUnitTargetStrength = 0;
   private resourceSurplusThreshold = 0;
   private resourceGatheringThreshold = 0;
   private needMoreResourcesThreshold = 0;
@@ -92,18 +92,18 @@ export class AdaptiveThresholdManager {
     const supplyDriven = Math.max(6, Math.round(supplyMax * 0.55 + baseSize * 0.4));
     const enemyDriven = Math.round(enemyStr * strategyFactor + defensiveStructures * 0.4);
     const economyDriven = Math.round(Math.max(0, incomePerSecond * 0.25 + productionBuildings * 1.5));
-    const oldMilitaryPower = this.militaryPowerThreshold;
-    this.militaryPowerThreshold = Math.max(6, enemyDriven, supplyDriven) + Math.round(economyDriven * 0.3);
+    const oldMilitaryPower = this.militaryPowerStrengthThreshold;
+    this.militaryPowerStrengthThreshold = Math.max(6, enemyDriven, supplyDriven) + Math.round(economyDriven * 0.3);
     this.log(
-      `Military Power: ${oldMilitaryPower} → ${this.militaryPowerThreshold} (supply=${supplyDriven}, enemy=${enemyDriven}, economy=${economyDriven})`
+      `Military Power: ${oldMilitaryPower} → ${this.militaryPowerStrengthThreshold} (supply=${supplyDriven}, enemy=${enemyDriven}, economy=${economyDriven})`
     );
 
     // Target units scales with power threshold, base footprint, and defense commitments
     const baseScaling = 1 + Math.min(0.35, Math.log1p(baseSize) * 0.2);
-    const oldUnitTarget = this.militaryUnitTarget;
-    this.militaryUnitTarget =
-      Math.round(this.militaryPowerThreshold * (1.1 * baseScaling)) + Math.round(defendingUnits * 0.3);
-    this.log(`Unit Target: ${oldUnitTarget} → ${this.militaryUnitTarget}`);
+    const oldUnitTarget = this.militaryUnitTargetStrength;
+    this.militaryUnitTargetStrength =
+      Math.round(this.militaryPowerStrengthThreshold * (1.1 * baseScaling)) + Math.round(defendingUnits * 0.3);
+    this.log(`Unit Target: ${oldUnitTarget} → ${this.militaryUnitTargetStrength}`);
 
     // Heavy attack threshold grows with base footprint and defenses but tightens when out-powered
     const defenseCapacity = defensiveStructures * 1.5 + defendingUnits * 0.5;
@@ -128,7 +128,7 @@ export class AdaptiveThresholdManager {
     this.log(`Need More Resources: ${oldNeedMore} → ${this.needMoreResourcesThreshold}`);
 
     const surplusBase = Math.round((projectedSpend + totalResources) * 0.35 + incomePerSecond * 4 + baseSize * 60);
-    const armyWeight = Math.max(1, militaryCount * 0.25 + this.militaryPowerThreshold * 0.1);
+    const armyWeight = Math.max(1, militaryCount * 0.25 + this.militaryPowerStrengthThreshold * 0.1);
     const oldSurplus = this.resourceSurplusThreshold;
     this.resourceSurplusThreshold = Math.min(
       8000,
@@ -172,7 +172,7 @@ export class AdaptiveThresholdManager {
     const oldMilitaryUnit = this.hasEnoughResourcesForMilitaryUnitThreshold;
     this.hasEnoughResourcesForMilitaryUnitThreshold = Math.max(
       cheapestMilitary + supplyTax,
-      Math.round(this.militaryPowerThreshold * 1.1)
+      Math.round(this.militaryPowerStrengthThreshold * 1.1)
     );
     this.log(`Military Unit Cost: ${oldMilitaryUnit} → ${this.hasEnoughResourcesForMilitaryUnitThreshold}`);
   }
@@ -240,11 +240,11 @@ export class AdaptiveThresholdManager {
   getBaseHeavyAttackThreshold() {
     return this.baseHeavyAttackThreshold;
   }
-  getMilitaryPowerThreshold() {
-    return this.militaryPowerThreshold;
+  getMilitaryPowerStrengthThreshold() {
+    return this.militaryPowerStrengthThreshold;
   }
-  getMilitaryUnitTarget() {
-    return this.militaryUnitTarget;
+  getMilitaryUnitTargetStrength() {
+    return this.militaryUnitTargetStrength;
   }
   getResourceSurplusThreshold() {
     return this.resourceSurplusThreshold;

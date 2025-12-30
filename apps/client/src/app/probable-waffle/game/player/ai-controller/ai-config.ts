@@ -37,6 +37,5 @@ export const AI_CONFIG = {
   buildingPlacementSearchStep: 2,
   buildingPlacementRandomOffsetRange: 10,
   // Base planning stale timing
-  baseReplanStaleMs: 4000,
-  fallbackVisibleEnemyLimit: 3
+  baseReplanStaleMs: 4000
 };

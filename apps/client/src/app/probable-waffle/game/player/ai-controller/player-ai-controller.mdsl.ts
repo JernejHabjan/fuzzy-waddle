@@ -185,7 +185,7 @@ root [AdvanceTech] {
 root [GatherResources] {
     succeed {
         sequence {
-            condition [NeedMoreResources]
+            /* condition [NeedMoreResources] */
             branch [AssignWorkersToGather]
         }
     }

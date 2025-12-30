@@ -28,7 +28,6 @@ import { CooldownManager } from "./cooldown-manager";
 import { makeHysteresisTracker } from "./hysteresis-threshold";
 import { ForceMaintenanceManager } from "./ai-behavior/force-maintenance-manager";
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
-import { AttackComponent } from "../../entity/components/combat/components/attack-component";
 import { ProductionValidator } from "../../data/tech-tree/production-validator";
 import { AI_CONFIG } from "./ai-config";
 import { RepairManager } from "./ai-behavior/repair-manager";
@@ -40,14 +39,11 @@ import { ScoutingManager } from "./ai-behavior/scouting-manager";
 import { TargetingManager } from "./ai-behavior/targeting-manager";
 import { SupplyPlanner } from "./ai-behavior/supply-planner";
 import { IsoHelper } from "../../world/tilemap/iso-helper";
-import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
-import { HealthComponent } from "../../entity/components/combat/components/health-component";
-import { OwnerComponent } from "../../entity/components/owner-component";
-import { ResourceDrainComponent } from "../../entity/components/resource/resource-drain-component";
 import { EconomyManager } from "./ai-behavior/economy-manager";
-import GameObject = Phaser.GameObjects.GameObject;
-import { type EnemyIntel, PlayerAiBlackboard } from "./player-ai-blackboard";
+import { PlayerAiBlackboard } from "./player-ai-blackboard";
 import { WorldStateSnapshotManager } from "./ai-behavior/world-state-snapshot-manager";
+import { getUnitStrength } from "./ai-utils";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   private displayDebugInfo = false;
@@ -226,6 +222,13 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     }
   }
 
+  HasIdleProductionBuilding() {
+    return this.blackboard.productionBuildings.some((building) => {
+      const productionComponent = getActorComponent(building, ProductionComponent);
+      return productionComponent?.isIdle;
+    });
+  }
+
   IsBaseUnderAttack() {
     const underAttack = this.blackboard.enemiesNearBase.length > 0;
     if (underAttack) {
@@ -246,11 +249,11 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
 
   HasEnoughMilitaryPower() {
     // Unit discovery manager keeps units list current; no temp reassignment
-    const threshold = this.adaptiveThresholds.getMilitaryPowerThreshold();
-    const unitCount = this.blackboard.units.length;
-    const hasEnough = unitCount >= threshold;
+    const thresholdStrength = this.adaptiveThresholds.getMilitaryPowerStrengthThreshold();
+    const unitStrength = this.blackboard.units.reduce((sum, u) => sum + getUnitStrength(u), 0);
+    const hasEnough = unitStrength >= thresholdStrength;
     this.logDebugInfo(
-      `[Military] Power check: ${unitCount} units vs threshold ${threshold} = ${hasEnough ? "SUFFICIENT" : "INSUFFICIENT"}`
+      `[Military] Power check: ${unitStrength} strength vs threshold strength ${thresholdStrength} = ${hasEnough ? "SUFFICIENT" : "INSUFFICIENT"}`
     );
     return hasEnough;
   }

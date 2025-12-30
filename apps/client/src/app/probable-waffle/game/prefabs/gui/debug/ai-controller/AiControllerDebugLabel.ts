@@ -179,8 +179,8 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
 
     lines.push(``);
     lines.push(`--- Power Analysis ---`);
-    lines.push(`Own Military: ${bb.militaryStrength.toFixed(0)}`);
-    lines.push(`Enemy Military: ${bb.enemyMilitaryStrength.toFixed(0)}`);
+    lines.push(`Own Military Strength: ${bb.militaryStrength.toFixed(0)}`);
+    lines.push(`Enemy Military Strength: ${bb.enemyMilitaryStrength.toFixed(0)}`);
     const attackPowerRatio = bb.getAttackPowerRatio(now);
     lines.push(`Power Ratio: ${attackPowerRatio.toFixed(2)}`);
 
@@ -188,6 +188,7 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
     lines.push(`--- Units ---`);
     lines.push(`Total Units: ${bb.units.length}`);
     lines.push(`Military: ${bb.units.length - bb.workers.length}`);
+    lines.push(`Workers: ${bb.workers.length}`);
     lines.push(`Defending: ${bb.defendingUnits.length}`);
     lines.push(`In Combat: ${bb.enemiesInCombat.length}`);
 
@@ -447,8 +448,8 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
 
     lines.push(`--- Military Thresholds ---`);
     lines.push(`Heavy Attack: ${thresholds.getBaseHeavyAttackThreshold()}`);
-    lines.push(`Military Power: ${thresholds.getMilitaryPowerThreshold()}`);
-    lines.push(`Unit Target: ${thresholds.getMilitaryUnitTarget()}`);
+    lines.push(`Military Power Strength: ${thresholds.getMilitaryPowerStrengthThreshold()}`);
+    lines.push(`Unit Target Strength: ${thresholds.getMilitaryUnitTargetStrength()}`);
     lines.push(`Military Unit Cost: ${thresholds.getHasEnoughResourcesForMilitaryUnitThreshold()}`);
 
     lines.push(``);

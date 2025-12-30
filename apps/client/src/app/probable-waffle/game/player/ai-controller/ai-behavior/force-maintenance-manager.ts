@@ -11,6 +11,7 @@ import { getSceneService } from "../../../world/services/scene-component-helpers
 import { AI_CONFIG } from "../ai-config";
 import { FlyingComponent } from "../../../entity/components/movement/flying-component";
 import { AdaptiveThresholdManager } from "./adaptive-threshold-manager";
+import { getUnitStrength } from "../ai-utils";
 
 /**
  * ForceMaintenanceManager
@@ -31,10 +32,11 @@ export class ForceMaintenanceManager {
   ) {}
 
   shouldProduceMilitaryUnit(): boolean {
-    const target = this.adaptiveThresholds.getMilitaryUnitTarget();
+    const targetStrength = this.adaptiveThresholds.getMilitaryUnitTargetStrength();
     const now = performance.now();
     if (now - this.lastUnitQueueTime < AI_CONFIG.unitQueueCooldownMs) return false;
-    return this.blackboard.units.length < target;
+    const unitsStrength = this.blackboard.units.reduce((sum, u) => sum + getUnitStrength(u), 0);
+    return unitsStrength < targetStrength;
   }
 
   hasResourcesForQueuedUnit(): boolean {
