@@ -152,7 +152,7 @@ export class MovementSystem {
     gameObject: GameObject,
     pathMoveConfig?: Partial<PathMoveConfig>
   ): Promise<boolean> {
-    const flyingComponent = getActorComponent(gameObject, FlyingComponent);
+    const flyingComponent = getActorComponent(this.gameObject, FlyingComponent);
     const usePathfinding = !flyingComponent;
     if (!usePathfinding) {
       const vec3 = getGameObjectCurrentTile(gameObject);
@@ -499,7 +499,7 @@ export class MovementSystem {
     targetGameObject: Phaser.GameObjects.GameObject,
     range?: number
   ): Promise<Vector2Simple[] | null> {
-    if (!this.navigationService) return [];
+    if (!this.navigationService) throw new Error("No navigationService");
     return this.navigationService.findAndUseWalkablePathBetweenGameObjectsWithRadius(
       this.gameObject,
       targetGameObject,

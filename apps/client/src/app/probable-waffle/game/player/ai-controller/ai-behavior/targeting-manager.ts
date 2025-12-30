@@ -27,11 +27,14 @@ export class TargetingManager {
       this.blackboard.primaryTarget = null;
       return;
     }
-    const center = this.blackboard.baseCenterTile;
-    const strategy = this.blackboard.currentStrategy;
-    const enemyIntel = this.blackboard.enemyIntel;
 
-    // find weakest player
+    this.cachedTarget = await this.findTarget(enemies);
+    this.blackboard.primaryTarget = this.cachedTarget;
+  }
+
+  private findWeakestPlayer(): number | undefined {
+    // find the weakest player
+    const enemyIntel = this.blackboard.enemyIntel;
     let weakestPlayer: number | undefined;
     let minStrength = Infinity;
     if (enemyIntel) {
@@ -42,10 +45,17 @@ export class TargetingManager {
         }
       }
     }
+    return weakestPlayer;
+  }
+
+  private async findTarget(enemies: GameObject[]): Promise<GameObject | null> {
+    const center = this.blackboard.baseCenterTile;
+    const strategy = this.blackboard.currentStrategy;
+    const weakestPlayer = this.findWeakestPlayer();
 
     let best: { score: number; obj: GameObject } | undefined;
-    await enemies.forEach(async (e) => {
-      if (!e.active) return;
+    for (const e of enemies) {
+      if (!e.active) continue;
       let score = 0;
       const hc = getActorComponent(e, HealthComponent);
       if (hc) {
@@ -53,7 +63,10 @@ export class TargetingManager {
         score += (1 - ratio) * 50; // prefer lower health
       }
       if (center) {
-        const d = (await DistanceHelper.getTileDistanceBetweenGameObjectAndTileNavigation(e, center)) || 20;
+        const d = await DistanceHelper.getTileDistanceBetweenGameObjectAndTileNavigation(e, center);
+        if (d === null) {
+          continue; // ignore this target if distance cannot be calculated
+        }
         score += 30 / d; // nearer to our base center slightly higher priority
       }
 
@@ -72,8 +85,7 @@ export class TargetingManager {
       if (!best || score > best.score) {
         best = { score, obj: e };
       }
-    });
-    this.cachedTarget = best?.obj || null;
-    this.blackboard.primaryTarget = this.cachedTarget;
+    }
+    return best?.obj || null;
   }
 }

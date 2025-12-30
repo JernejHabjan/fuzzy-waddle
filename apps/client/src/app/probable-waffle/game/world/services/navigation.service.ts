@@ -615,7 +615,7 @@ export class NavigationService {
     radiusTiles?: number
   ): Promise<Vector2Simple[] | null> {
     const fromTile = getCenterTileCoordUnderObject(this.tilemap, gameObject);
-    if (!fromTile) return Promise.resolve([]);
+    if (!fromTile) return null;
 
     // Step 2: Find the closest walkable tile around the building within the radius
     const closestWalkableTile = this.closestWalkableTileBetweenGameObjectsInRadius(
@@ -625,7 +625,7 @@ export class NavigationService {
     );
 
     if (!closestWalkableTile) {
-      return []; // Return an empty array if no walkable tile was found
+      return null; // Return an empty array if no walkable tile was found
     }
 
     // Step 3: Use EasyStar to find the path to the closest walkable tile

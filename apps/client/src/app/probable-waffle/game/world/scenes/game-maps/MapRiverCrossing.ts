@@ -697,7 +697,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(skaduweeWorkerMale_1);
 
     // skaduweeOwl_1
-    const skaduweeOwl_1 = new SkaduweeOwl(this, -832, 528);
+    const skaduweeOwl_1 = new SkaduweeOwl(this, -416, 592);
     this.add.existing(skaduweeOwl_1);
 
     // fenceRight_2
