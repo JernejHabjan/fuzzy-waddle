@@ -2,9 +2,9 @@ import { PlayerAiBlackboard } from "../player-ai-blackboard";
 import { getActorComponent } from "../../../data/actor-component";
 import { HealthComponent } from "../../../entity/components/combat/components/health-component";
 import { DistanceHelper } from "../../../library/distance-helper";
-import GameObject = Phaser.GameObjects.GameObject;
 import { OwnerComponent } from "../../../entity/components/owner-component";
 import { AttackComponent } from "../../../entity/components/combat/components/attack-component";
+import GameObject = Phaser.GameObjects.GameObject;
 
 /**
  * TargetingManager
@@ -18,14 +18,14 @@ export class TargetingManager {
 
   constructor(private readonly blackboard: PlayerAiBlackboard) {}
 
-  update(now: number = performance.now()): GameObject | null {
-    if (now - this.lastEvalAt < this.evalCooldownMs && this.cachedTarget) return this.cachedTarget;
+  async update(now: number = performance.now()): Promise<void> {
+    if (now - this.lastEvalAt < this.evalCooldownMs && this.cachedTarget) return;
     this.lastEvalAt = now;
     const enemies = this.blackboard.visibleEnemies as GameObject[];
     if (!enemies || enemies.length === 0) {
       this.cachedTarget = null;
       this.blackboard.primaryTarget = null;
-      return null;
+      return;
     }
     const center = this.blackboard.baseCenterTile;
     const strategy = this.blackboard.currentStrategy;
@@ -44,7 +44,7 @@ export class TargetingManager {
     }
 
     let best: { score: number; obj: GameObject } | undefined;
-    enemies.forEach((e) => {
+    await enemies.forEach(async (e) => {
       if (!e.active) return;
       let score = 0;
       const hc = getActorComponent(e, HealthComponent);
@@ -53,7 +53,7 @@ export class TargetingManager {
         score += (1 - ratio) * 50; // prefer lower health
       }
       if (center) {
-        const d = DistanceHelper.getTileDistanceBetweenGameObjectAndTile(e, center) || 20;
+        const d = (await DistanceHelper.getTileDistanceBetweenGameObjectAndTileNavigation(e, center)) || 20;
         score += 30 / d; // nearer to our base center slightly higher priority
       }
 
@@ -75,6 +75,5 @@ export class TargetingManager {
     });
     this.cachedTarget = best?.obj || null;
     this.blackboard.primaryTarget = this.cachedTarget;
-    return this.cachedTarget;
   }
 }

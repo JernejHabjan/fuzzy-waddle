@@ -252,14 +252,8 @@ root [CombatTactics] {
 
 root [ExecuteCombatMicro] {
     parallel {
-        sequence {
-            condition [LowHealthUnit]
-            action [RetreatUnit]
-        }
-        sequence {
-            condition [EnemyInRange]
-            action [FocusFire]
-        }
+        action [RetreatLowHealthUnitsInCombat]
+        action [FocusFireForUnitsInCombat]
         sequence {
             condition [EnemyFlankOpen]
             action [FlankEnemy]

@@ -135,7 +135,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     // Update scouting vision sampling
     this.scoutingManager.updateVisionSampling(now);
     // Update primary target cache
-    this.targetingManager.update(now);
+    await this.targetingManager.update(now);
     this.processPrerequisiteQueue(now);
     if (this.cooldowns.canRun("adaptiveThresholds", now)) {
       this.adaptiveThresholds.update();
@@ -301,7 +301,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     return State.FAILED;
   }
 
-  AttackEnemyBase() {
+  async AttackEnemyBase(): Promise<State> {
     const now = performance.now();
     if (!this.cooldowns.canRun("attackTrigger", now)) {
       this.logDebugInfo("[Attack] Attack trigger on cooldown");
@@ -312,7 +312,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       return State.FAILED;
     }
     // Ensure target updated
-    this.targetingManager.update(now);
+    await this.targetingManager.update(now);
     const target = this.blackboard.primaryTarget;
     if (!target) {
       this.logDebugInfo("[Attack] No primary target identified");
@@ -695,17 +695,13 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     return this.combatMicro.isInCombat();
   }
 
-  LowHealthUnit(): boolean {
-    return this.combatMicro.hasLowHealthUnit();
-  }
-
-  RetreatUnit() {
-    if (this.combatMicro.retreatLowHealthUnits()) return State.SUCCEEDED;
+  RetreatLowHealthUnitsInCombat() {
+    if (this.combatMicro.retreatLowHealthUnitsInCombat()) return State.SUCCEEDED;
     return State.FAILED;
   }
 
-  FocusFire() {
-    if (this.combatMicro.focusFire()) return State.SUCCEEDED;
+  FocusFireForUnitsInCombat() {
+    if (this.combatMicro.focusFireForUnitsInCombat()) return State.SUCCEEDED;
     return State.FAILED;
   }
 
@@ -713,11 +709,6 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     if (this.combatMicro.flankEnemy()) return State.SUCCEEDED;
     return State.FAILED;
   }
-
-  EnemyInRange(): boolean {
-    return this.combatMicro.enemyInRange() ?? false;
-  }
-
   EnemyFlankOpen(): boolean {
     return this.blackboard.enemyFlankOpen;
   }
@@ -918,9 +909,9 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   async AnalyzeEnemyBase(): Promise<State> {
     return await this.AnalyzeGameMap();
   }
-  GatherEnemyData(): State {
+  async GatherEnemyData(): Promise<State> {
     // Placeholder: simply succeed after ensuring targeting manager updated.
-    this.targetingManager.update(performance.now());
+    await this.targetingManager.update(performance.now());
     return State.SUCCEEDED;
   }
   ShouldProduceMilitaryUnit(): boolean {

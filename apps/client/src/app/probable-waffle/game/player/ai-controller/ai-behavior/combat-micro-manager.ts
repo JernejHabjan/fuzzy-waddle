@@ -44,26 +44,7 @@ export class CombatMicroManager {
     return false;
   }
 
-  hasLowHealthUnit(): boolean {
-    return this.getLowHealthUnits().length > 0;
-  }
-
-  enemyInRange(): boolean {
-    const enemies = this.blackboard.visibleEnemies;
-    if (enemies.length === 0) return false;
-    for (const u of this.blackboard.units) {
-      const attack = getActorComponent(u, AttackComponent);
-      if (!attack) continue;
-      for (const e of enemies) {
-        if (!e.active || !e.scene || !u.active || !u.scene) continue;
-        const d = DistanceHelper.getTileDistanceBetweenGameObjects(u, e);
-        if (d !== null && d <= 8 /* coarse fallback range */) return true;
-      }
-    }
-    return false;
-  }
-
-  focusFire(): boolean {
+  focusFireForUnitsInCombat(): boolean {
     const now = performance.now();
     if (now - this.lastFocusFireAt < this.focusFireCooldownMs) return false;
 
@@ -78,9 +59,11 @@ export class CombatMicroManager {
       const pawnAi = getActorComponent(unit, PawnAiController);
       if (!pawnAi) return;
 
-      // Check if current target is still valid to prevent constant switching
       const currentOrder = pawnAi.blackboard.getCurrentOrder();
-      if (currentOrder?.orderType === OrderType.Attack && currentOrder.data.targetGameObject) {
+      if (currentOrder?.orderType !== OrderType.Attack) return;
+
+      // Check if current target is still valid to prevent constant switching
+      if (currentOrder.data?.targetGameObject) {
         const target = currentOrder.data.targetGameObject;
         const isTargetStillValid = target.active && enemies.some((e) => e === target);
         if (isTargetStillValid) {
@@ -93,22 +76,11 @@ export class CombatMicroManager {
       let maxScore = -Infinity;
 
       enemies.forEach((enemy) => {
-        const healthComponent = getActorComponent(enemy, HealthComponent);
-        if (!healthComponent) return; // a non-killable target is not a valid target
-
-        const hasAttackComponent = !!getActorComponent(enemy, AttackComponent);
-        const healthRatio =
-          healthComponent.healthComponentData.health / (healthComponent.healthDefinition.maxHealth || 1);
-        const distance = DistanceHelper.getTileDistanceBetweenGameObjects(unit, enemy) ?? 1000;
-
         // Scoring:
         // - hasAttackComponent is a huge bonus
         // - closer is better (for this specific unit)
         // - lower health is better
-        const score =
-          (hasAttackComponent ? 1000 : 0) + // Priority for threats
-          (100 - distance) * 5 + // Closer targets are much better
-          (1 - healthRatio) * 50; // Low health targets are better
+        const score = this.scoreTargetForUnit(unit, enemy);
 
         if (score > maxScore) {
           maxScore = score;
@@ -164,7 +136,7 @@ export class CombatMicroManager {
     return true;
   }
 
-  retreatLowHealthUnits(): boolean {
+  retreatLowHealthUnitsInCombat(): boolean {
     const now = performance.now();
     if (now - this.lastRetreatCheckAt < this.retreatCooldownMs) return false;
     const lows = this.getLowHealthUnits();
@@ -173,6 +145,8 @@ export class CombatMicroManager {
     lows.forEach((u) => {
       const pawnAi = getActorComponent(u, PawnAiController);
       if (!pawnAi) return;
+      const currentOrder = pawnAi.blackboard.getCurrentOrder();
+      if (currentOrder?.orderType !== OrderType.Attack) return;
       const order = new OrderData(OrderType.Move, { targetTileLocation: fallback });
       pawnAi.blackboard.overrideOrderQueueAndActiveOrder(order);
       pawnAi.blackboard.setCurrentOrder(order);
@@ -180,6 +154,17 @@ export class CombatMicroManager {
     this.lastRetreatCheckAt = now;
     this.log("Retreat order issued to low-health units.");
     return true;
+  }
+
+  private scoreTargetForUnit(unit: GameObject, enemy: GameObject): number {
+    const healthComponent = getActorComponent(enemy, HealthComponent);
+    if (!healthComponent) return -Infinity;
+
+    const hasAttackComponent = !!getActorComponent(enemy, AttackComponent);
+    const healthRatio = healthComponent.healthComponentData.health / (healthComponent.healthDefinition.maxHealth || 1);
+    const distance = DistanceHelper.getTileDistanceBetweenGameObjects(unit, enemy) ?? 1000;
+
+    return (hasAttackComponent ? 1000 : 0) + (100 - distance) * 5 + (1 - healthRatio) * 50;
   }
 
   private getLowHealthUnits(): GameObject[] {
