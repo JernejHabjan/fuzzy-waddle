@@ -216,17 +216,6 @@ export class MovementSystem {
       // Start moving along the first step of the path
       if (path.length > 0) {
         const nextTile = path[0]!;
-        const tileWorldXY = this.navigationService?.getTileWorldCenter(nextTile);
-        if (!tileWorldXY) return false;
-
-        // Get the walkable height at the destination tile
-        const walkableHeight = this.navigationService?.getWalkableHeightAtTile(nextTile) ?? 0;
-        const newLogicalTransform = {
-          x: tileWorldXY.x,
-          y: tileWorldXY.y,
-          z: walkableHeight
-        } as Vector3Simple;
-
         const onComplete = () => {
           // After completing one step, call the callback
           pathMoveConfig?.onComplete?.();
@@ -249,7 +238,7 @@ export class MovementSystem {
           // no need to stop animation, otherwise it's not smooth
         };
 
-        await this.startMovementTween(newLogicalTransform, pathMoveConfig, onComplete, onStop);
+        await this.moveActorToTileWithTween(nextTile, pathMoveConfig, onComplete, onStop);
       }
 
       return true;
@@ -289,14 +278,9 @@ export class MovementSystem {
     }
     const nextTile = path.shift();
     if (!nextTile) return Promise.reject("No next tile to move to");
-    const tileWorldXY = this.navigationService?.getTileWorldCenter(nextTile);
-    if (!tileWorldXY) return Promise.reject("No tile world xy to move to");
+
     this.cancelMovement();
     config?.onPathUpdate?.(nextTile);
-
-    // Get the walkable height at the destination tile
-    const walkableHeight = this.navigationService?.getWalkableHeightAtTile(nextTile) ?? 0;
-    const newLogicalTransform = { ...tileWorldXY, z: walkableHeight } as Vector3Simple;
 
     const onComplete = async () => {
       await this.moveAlongPathByFollowingPreCalculatedStaticPath(path, config);
@@ -306,6 +290,32 @@ export class MovementSystem {
       config?.onStop?.();
       this.playMovementAnimation(false, config);
     };
+
+    return this.moveActorToTileWithTween(nextTile, config, onComplete, onStop);
+  }
+
+  /**
+   * Common movement handler for moving an actor to a specific tile using tweens.
+   * Extracts the tile-to-world conversion and tween setup logic used across multiple movement methods.
+   *
+   * @param tile The destination tile coordinates
+   * @param config Optional movement configuration
+   * @param onComplete Optional callback when movement completes
+   * @param onStop Optional callback when movement is stopped
+   * @returns Promise<void> - resolves when movement is completed
+   */
+  private async moveActorToTileWithTween(
+    tile: Vector2Simple,
+    config?: PathMoveConfig | Partial<PathMoveConfig>,
+    onComplete?: (() => void) | (() => Promise<void>),
+    onStop?: () => void
+  ): Promise<void> {
+    const tileWorldXY = this.navigationService?.getTileWorldCenter(tile);
+    if (!tileWorldXY) return Promise.reject("No tile world xy to move to");
+
+    // Get the walkable height at the destination tile
+    const walkableHeight = this.navigationService?.getWalkableHeightAtTile(tile) ?? 0;
+    const newLogicalTransform = { ...tileWorldXY, z: walkableHeight } as Vector3Simple;
 
     return this.startMovementTween(newLogicalTransform, config, onComplete, onStop);
   }
