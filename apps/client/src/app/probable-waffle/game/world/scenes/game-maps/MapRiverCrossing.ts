@@ -835,23 +835,23 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(emberstone_1);
 
     // minerals_6
-    const minerals_6 = new Minerals(this, 928, 1136);
+    const minerals_6 = new Minerals(this, 928, 1120);
     this.add.existing(minerals_6);
 
     // minerals_7
-    const minerals_7 = new Minerals(this, 896, 1152);
+    const minerals_7 = new Minerals(this, 896, 1136);
     this.add.existing(minerals_7);
 
     // minerals_8
-    const minerals_8 = new Minerals(this, 864, 1136);
+    const minerals_8 = new Minerals(this, 864, 1120);
     this.add.existing(minerals_8);
 
     // minerals_9
-    const minerals_9 = new Minerals(this, 896, 1120);
+    const minerals_9 = new Minerals(this, 896, 1104);
     this.add.existing(minerals_9);
 
     // minerals_10
-    const minerals_10 = new Minerals(this, 832, 1120);
+    const minerals_10 = new Minerals(this, 832, 1104);
     this.add.existing(minerals_10);
 
     // spawn (components)

@@ -89,6 +89,10 @@ export default class AiControllerDebugPanel extends Phaser.GameObjects.Container
   private enabled = false;
   private labels: AiControllerDebugLabel[] = [];
   private labelsContainer!: Phaser.GameObjects.Container;
+  private categoryButtons: Map<string, Phaser.GameObjects.Container> = new Map();
+  private categoryButtonsContainer!: Phaser.GameObjects.Container;
+  private backButton?: Phaser.GameObjects.Container;
+  private selectedCategory: string | null = null;
 
   private init() {
     this.button.on("action", this.toggleLabels, this);
@@ -97,6 +101,10 @@ export default class AiControllerDebugPanel extends Phaser.GameObjects.Container
     this.labelsContainer = this.scene.add.container(0, 50);
     this.labelsContainer.setVisible(false);
     this.add(this.labelsContainer);
+
+    this.categoryButtonsContainer = this.scene.add.container(0, 50);
+    this.categoryButtonsContainer.setVisible(false);
+    this.add(this.categoryButtonsContainer);
   }
 
   private onUpdate() {
@@ -114,28 +122,151 @@ export default class AiControllerDebugPanel extends Phaser.GameObjects.Container
       aiDebuggingService.debugChanged.next(this.enabled);
     }
 
-    this.labelsContainer.setVisible(this.enabled);
+    this.categoryButtonsContainer.setVisible(this.enabled);
+    this.labelsContainer.setVisible(false);
 
     if (this.enabled) {
-      this.labels.forEach((label) => label.destroy());
-      this.labels = [];
-      this.labelsContainer.removeAll(true);
-
-      const aiPlayers = getPlayers(this.mainScene).filter(
-        (p) => p.playerController.data.playerDefinition?.playerType === ProbableWafflePlayerType.AI
-      );
-      let currentY = 0;
-      aiPlayers.forEach((player) => {
-        const aiControllerDebugLabel = new AiControllerDebugLabel(this.scene, 0, currentY);
-        aiControllerDebugLabel.setPlayer(player.playerNumber!);
-        this.labelsContainer.add(aiControllerDebugLabel);
-        currentY += 350; // Adjust spacing as needed
-        this.labels.push(aiControllerDebugLabel);
-      });
+      this.selectedCategory = null;
+      this.showCategorySelection();
     } else {
+      this.hideCategorySelection();
       this.labels.forEach((label) => label.destroy());
       this.labels = [];
       this.labelsContainer.removeAll(true);
+    }
+  }
+
+  private showCategorySelection() {
+    this.categoryButtonsContainer.removeAll(true);
+    this.categoryButtons.clear();
+
+    const categories = [
+      { id: "strategy", label: "Strategy & Combat" },
+      { id: "resources", label: "Resources & Economy" },
+      { id: "production", label: "Production & Tech" },
+      { id: "logistics", label: "Logistics & Workers" },
+      { id: "intel", label: "Enemy Intel & Scouting" },
+      { id: "thresholds", label: "Adaptive Thresholds" }
+    ];
+
+    let currentY = 0;
+    categories.forEach((category) => {
+      const button = this.createCategoryButton(category.label, category.id, 0, currentY);
+      const buttonWidth = button.getBounds().width;
+      button.x = -(buttonWidth / 2 + buttonWidth / 4);
+
+      this.categoryButtonsContainer.add(button);
+      this.categoryButtons.set(category.id, button);
+      currentY += 35;
+    });
+  }
+
+  private createCategoryButton(label: string, categoryId: string, x: number, y: number): Phaser.GameObjects.Container {
+    const container = this.scene.add.container(x, y);
+    container.setInteractive(new Phaser.Geom.Rectangle(-32, -13, 220, 25), Phaser.Geom.Rectangle.Contains);
+
+    const bg = this.scene.add.nineslice(60, 0, "gui", "cryos_mini_gui/buttons/button_small.png", 110, 20, 3, 3, 3, 3);
+    bg.scaleX = 2;
+    bg.scaleY = 1.3;
+    container.add(bg);
+
+    const text = this.scene.add.text(70, -1, label, {
+      color: "#000000ff",
+      fontFamily: "disposabledroid",
+      fontSize: "18px",
+      resolution: 10
+    });
+    text.setOrigin(0.5, 0.5);
+    container.add(text);
+
+    container.on("pointerdown", () => {
+      this.selectCategory(categoryId);
+    });
+
+    return container;
+  }
+
+  private createBackButton(x: number, y: number): Phaser.GameObjects.Container {
+    const container = this.scene.add.container(x, y);
+    container.setInteractive(new Phaser.Geom.Rectangle(-32, -13, 120, 25), Phaser.Geom.Rectangle.Contains);
+
+    const bg = this.scene.add.nineslice(40, 0, "gui", "cryos_mini_gui/buttons/button_small.png", 70, 20, 3, 3, 3, 3);
+    bg.scaleX = 1.5;
+    bg.scaleY = 1.3;
+    container.add(bg);
+
+    const text = this.scene.add.text(40, -1, "← Back", {
+      color: "#000000ff",
+      fontFamily: "disposabledroid",
+      fontSize: "18px",
+      resolution: 10
+    });
+    text.setOrigin(0.5, 0.5);
+    container.add(text);
+
+    container.on("pointerdown", () => {
+      this.deselectCategory();
+    });
+
+    const buttonWidth = container.getBounds().width;
+    container.x = -(buttonWidth / 2 + buttonWidth / 4 + 10);
+
+    return container;
+  }
+
+  private selectCategory(categoryId: string) {
+    this.selectedCategory = categoryId;
+    this.categoryButtonsContainer.setVisible(false);
+    this.labelsContainer.setVisible(true);
+
+    // Clear previous labels
+    this.labels.forEach((label) => label.destroy());
+    this.labels = [];
+    this.labelsContainer.removeAll(true);
+
+    // Add back button
+    if (this.backButton) {
+      this.backButton.destroy();
+    }
+    this.backButton = this.createBackButton(0, 0);
+    this.labelsContainer.add(this.backButton);
+
+    // Create labels for each AI player
+    const aiPlayers = getPlayers(this.mainScene).filter(
+      (p) => p.playerController.data.playerDefinition?.playerType === ProbableWafflePlayerType.AI
+    );
+
+    let currentY = 40;
+    aiPlayers.forEach((player) => {
+      const aiControllerDebugLabel = new AiControllerDebugLabel(this.scene, 0, currentY);
+      aiControllerDebugLabel.setPlayer(player.playerNumber!, categoryId);
+      this.labelsContainer.add(aiControllerDebugLabel);
+      currentY += 400; // Increased spacing for more detailed info
+      this.labels.push(aiControllerDebugLabel);
+    });
+  }
+
+  private deselectCategory() {
+    this.selectedCategory = null;
+    this.categoryButtonsContainer.setVisible(true);
+    this.labelsContainer.setVisible(false);
+
+    if (this.backButton) {
+      this.backButton.destroy();
+      this.backButton = undefined;
+    }
+
+    this.labels.forEach((label) => label.destroy());
+    this.labels = [];
+    this.labelsContainer.removeAll(true);
+  }
+
+  private hideCategorySelection() {
+    this.categoryButtonsContainer.removeAll(true);
+    this.categoryButtons.clear();
+    if (this.backButton) {
+      this.backButton.destroy();
+      this.backButton = undefined;
     }
   }
 
@@ -148,6 +279,9 @@ export default class AiControllerDebugPanel extends Phaser.GameObjects.Container
     this.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.onUpdate, this);
     this.labels.forEach((label) => label.destroy());
     if (this.labelsContainer) this.labelsContainer.destroy();
+    if (this.categoryButtonsContainer) this.categoryButtonsContainer.destroy();
+    if (this.backButton) this.backButton.destroy();
+    this.categoryButtons.clear();
     super.destroy();
   }
   /* END-USER-CODE */

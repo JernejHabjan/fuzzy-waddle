@@ -129,7 +129,7 @@ export class MovementSystem {
     if (!this.navigationService) return false;
 
     const path = await this.navigationService.findPathFromGameObjectToTile(this.gameObject, tileVec3);
-    if (!path.length) return false;
+    if (!path || !path.length) return false;
 
     if (this.DEBUG) console.log(`Moving to tile ${tileVec3.x}, ${tileVec3.y}`);
 
@@ -201,7 +201,7 @@ export class MovementSystem {
       destinationGameObject,
       pathMoveConfig?.radiusTilesAroundDestination
     );
-    if (!path.length) return false;
+    if (!path || !path.length) return false;
 
     if (this.DEBUG) this.navigationService.drawDebugPath(path);
 
@@ -450,6 +450,7 @@ export class MovementSystem {
   private playMovementAnimation(isMoving: boolean, config?: PathMoveConfig) {
     if (!this.animationActorComponent) return;
     if (config?.ignoreAnimations) return;
+    if (!this.gameObject.active) return;
     const isKilled = getActorComponent(this.gameObject, HealthComponent)?.killed ?? false;
     if (isKilled) return;
     this.animationActorComponent.playOrderAnimation(isMoving ? OrderType.Move : OrderType.Stop);
@@ -491,15 +492,15 @@ export class MovementSystem {
 
   async canMoveTo(targetGameObject: Phaser.GameObjects.GameObject, range?: number): Promise<boolean> {
     const path = await this.getPathToClosestWalkableTileBetweenGameObjectsInRadius(targetGameObject, range);
-    return path.length > 0;
+    return !!path && path.length > 0;
   }
 
   async getPathToClosestWalkableTileBetweenGameObjectsInRadius(
     targetGameObject: Phaser.GameObjects.GameObject,
     range?: number
-  ): Promise<Vector2Simple[]> {
+  ): Promise<Vector2Simple[] | null> {
     if (!this.navigationService) return [];
-    return await this.navigationService.findAndUseWalkablePathBetweenGameObjectsWithRadius(
+    return this.navigationService.findAndUseWalkablePathBetweenGameObjectsWithRadius(
       this.gameObject,
       targetGameObject,
       range
@@ -583,17 +584,13 @@ export class MovementSystem {
 
       // Check if the assigned point is valid and reachable
       if (this.navigationService.isTileWalkable(destinationTile)) {
-        try {
-          const path = await this.navigationService.findPathFromGameObjectToTile(this.gameObject, destinationTile);
-          if (path.length > 0) {
-            return {
-              x: destinationTile.x,
-              y: destinationTile.y,
-              z: tileVec3.z // Keep the original Z coordinate
-            } satisfies Vector3Simple;
-          }
-        } catch (e) {
-          // Path not found, will fallback
+        const path = await this.navigationService.findPathFromGameObjectToTile(this.gameObject, destinationTile);
+        if (path !== null && path.length > 0) {
+          return {
+            x: destinationTile.x,
+            y: destinationTile.y,
+            z: tileVec3.z // Keep the original Z coordinate
+          } satisfies Vector3Simple;
         }
       }
     }
@@ -629,7 +626,7 @@ export class MovementSystem {
 export async function getRandomTileInNavigableRadius(
   gameObject: Phaser.GameObjects.GameObject,
   radius: number
-): Promise<Vector2Simple | undefined> {
+): Promise<Vector2Simple | null> {
   const movementSystem = getActorSystem<MovementSystem>(gameObject, MovementSystem);
   if (!movementSystem) return Promise.reject("No movement system found");
   const flyingComponent = getActorComponent(gameObject, FlyingComponent);

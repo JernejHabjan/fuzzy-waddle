@@ -71,6 +71,7 @@ export class PawnAiController {
 
   private update(_: number, delta: number) {
     if (!PawnAiController.AI_ENABLED) return;
+    if (!this.gameObject.active) return;
     const deltaWithTimeScale = delta * this.gameObject.scene.time.timeScale;
     this.elapsedTime += deltaWithTimeScale;
     const stepInterval = this.pawnAiDefinition.stepInterval ?? this.defaultStepInterval;

@@ -36,7 +36,7 @@ export class CombatMicroManager {
     if (enemies.length === 0) return false;
     for (const u of this.blackboard.units) {
       for (const e of enemies) {
-        if (!e.active || !e.scene) continue;
+        if (!e.active || !e.scene || !u.active || !u.scene) continue;
         const d = DistanceHelper.getTileDistanceBetweenGameObjects(u, e);
         if (d !== null && d <= 8) return true;
       }
@@ -55,7 +55,7 @@ export class CombatMicroManager {
       const attack = getActorComponent(u, AttackComponent);
       if (!attack) continue;
       for (const e of enemies) {
-        if (!e.active || !e.scene) continue;
+        if (!e.active || !e.scene || !u.active || !u.scene) continue;
         const d = DistanceHelper.getTileDistanceBetweenGameObjects(u, e);
         if (d !== null && d <= 8 /* coarse fallback range */) return true;
       }

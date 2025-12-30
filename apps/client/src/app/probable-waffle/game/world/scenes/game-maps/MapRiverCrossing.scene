@@ -2260,7 +2260,7 @@
             ],
             "label": "minerals_6",
             "x": 928,
-            "y": 1136
+            "y": 1120
         },
         {
             "prefabId": "3ffd00fc-90c4-4b37-b00e-9cf62e16c80c",
@@ -2271,7 +2271,7 @@
             ],
             "label": "minerals_7",
             "x": 896,
-            "y": 1152
+            "y": 1136
         },
         {
             "prefabId": "3ffd00fc-90c4-4b37-b00e-9cf62e16c80c",
@@ -2282,7 +2282,7 @@
             ],
             "label": "minerals_8",
             "x": 864,
-            "y": 1136
+            "y": 1120
         },
         {
             "prefabId": "3ffd00fc-90c4-4b37-b00e-9cf62e16c80c",
@@ -2293,7 +2293,7 @@
             ],
             "label": "minerals_9",
             "x": 896,
-            "y": 1120
+            "y": 1104
         },
         {
             "prefabId": "3ffd00fc-90c4-4b37-b00e-9cf62e16c80c",
@@ -2304,7 +2304,7 @@
             ],
             "label": "minerals_10",
             "x": 832,
-            "y": 1120
+            "y": 1104
         }
     ],
     "plainObjects": [

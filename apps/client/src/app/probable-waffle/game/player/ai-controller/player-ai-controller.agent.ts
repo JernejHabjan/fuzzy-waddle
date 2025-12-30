@@ -61,7 +61,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   });
   private forceMaintenance: ForceMaintenanceManager;
   private repairManager: RepairManager;
-  private logisticsManager: LogisticsManager;
+  logisticsManager: LogisticsManager;
   private techManager: TechProgressManager;
   public adaptiveThresholds: AdaptiveThresholdManager;
   private economyManager: EconomyManager;
@@ -78,12 +78,6 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     private readonly blackboard: PlayerAiBlackboard
   ) {
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.onShutdown, this);
-    if (!environment.production) {
-      const aiDebuggingService = getSceneService(this.scene, DebuggingService)!;
-      this.aiDebuggingSubscription = aiDebuggingService.debugChanged.subscribe((debug) => {
-        this.displayDebugInfo = debug;
-      });
-    }
     this.mapAnalyzer = new MapAnalyzer(this.scene, this.player.playerNumber!);
     const supplyPlanner = new SupplyPlanner(this.blackboard);
     this.productionValidator = new ProductionValidator(this.scene, this.player, this.blackboard);
@@ -121,6 +115,17 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     this.combatMicro = new CombatMicroManager(this.scene, this.blackboard, this.logDebugInfo.bind(this));
     this.scoutingManager = new ScoutingManager(this.scene, this.blackboard, this.logDebugInfo.bind(this));
     this.targetingManager = new TargetingManager(this.blackboard);
+    this.setupDebuggingSubscription();
+  }
+
+  private setupDebuggingSubscription() {
+    if (!environment.production) {
+      const aiDebuggingService = getSceneService(this.scene, DebuggingService)!;
+      this.aiDebuggingSubscription = aiDebuggingService.debugChanged.subscribe((debug) => {
+        this.displayDebugInfo = debug;
+        this.adaptiveThresholds.setLogging(debug);
+      });
+    }
   }
 
   /** Pre-tick lifecycle hook called by controller before behaviour tree step. */
@@ -412,18 +417,26 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   async AnalyzeGameMap(): Promise<State> {
     // Cooldown gating: avoid excessive map analyses.
     const now = performance.now();
-    if (!this.cooldowns.canRun("analyzeMap", now)) return State.FAILED;
+    if (!this.cooldowns.canRun("analyzeMap", now)) {
+      this.logDebugInfo("[Map] Analysis on cooldown");
+      return State.FAILED;
+    }
     try {
       if (!this.mapAnalyzer) this.mapAnalyzer = new MapAnalyzer(this.scene, this.player.playerNumber!);
+      this.logDebugInfo("[Map] Starting map analysis...");
       const result = await this.mapAnalyzer.analyzeIfStale(AI_CONFIG.mapAnalysisIntervalMs);
       this.blackboard.mapAnalysis = result;
       this.blackboard.baseCenterTile = result.baseCenterTile ?? null;
       this.blackboard.suggestedBuildTiles = result.candidateBuildSpots ?? [];
+      this.logDebugInfo(
+        `[Map] Analysis complete. Base center: ${result.baseCenterTile?.x},${result.baseCenterTile?.y}, Build spots: ${result.candidateBuildSpots?.length || 0}`
+      );
       await this.basePlanner.updateFromAnalysis(result);
       this.cooldowns.markRun("analyzeMap", now);
       this.blackboard.cooldowns.analyzeMap = now; // mirror timestamp for other systems
       return State.SUCCEEDED;
-    } catch {
+    } catch (error) {
+      this.logDebugInfo("[Map] Analysis failed:", error);
       return State.FAILED;
     }
   }
@@ -436,25 +449,50 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   }
 
   IsBaseUnderAttack() {
-    return this.blackboard.enemiesNearBase.length > 0;
+    const underAttack = this.blackboard.enemiesNearBase.length > 0;
+    if (underAttack) {
+      this.logDebugInfo(`[Combat] Base under attack! Enemies near base: ${this.blackboard.enemiesNearBase.length}`);
+    }
+    return underAttack;
   }
 
   IsBaseUnderHeavyAttack() {
-    return this.blackboard.enemiesNearBase.length > this.adaptiveThresholds.getBaseHeavyAttackThreshold();
+    const threshold = this.adaptiveThresholds.getBaseHeavyAttackThreshold();
+    const enemyCount = this.blackboard.enemiesNearBase.length;
+    const underHeavyAttack = enemyCount > threshold;
+    if (underHeavyAttack) {
+      this.logDebugInfo(`[Combat] Base under HEAVY attack! ${enemyCount} enemies (threshold: ${threshold})`);
+    }
+    return underHeavyAttack;
   }
 
   HasEnoughMilitaryPower() {
     // Unit discovery manager keeps units list current; no temp reassignment
-    return this.blackboard.units.length >= this.adaptiveThresholds.getMilitaryPowerThreshold();
+    const threshold = this.adaptiveThresholds.getMilitaryPowerThreshold();
+    const unitCount = this.blackboard.units.length;
+    const hasEnough = unitCount >= threshold;
+    this.logDebugInfo(
+      `[Military] Power check: ${unitCount} units vs threshold ${threshold} = ${hasEnough ? "SUFFICIENT" : "INSUFFICIENT"}`
+    );
+    return hasEnough;
   }
 
   HasSurplusResources() {
-    return this.blackboard.getTotalResources() > this.adaptiveThresholds.getResourceSurplusThreshold();
+    const threshold = this.adaptiveThresholds.getResourceSurplusThreshold();
+    const total = this.blackboard.getTotalResources();
+    const hasSurplus = total > threshold;
+    this.logDebugInfo(
+      `[Resources] Surplus check: ${total.toFixed(0)} vs threshold ${threshold} = ${hasSurplus ? "YES" : "NO"}`
+    );
+    return hasSurplus;
   }
 
   AssignDefendersToEnemies() {
     if (this.blackboard.defendingUnits.length > 0 && this.blackboard.enemiesNearBase.length > 0) {
-      this.logDebugInfo("Assigning defenders to engage nearby enemies.");
+      this.logDebugInfo(
+        `[Defense] Assigning ${this.blackboard.defendingUnits.length} defenders to engage ${this.blackboard.enemiesNearBase.length} enemies`
+      );
+      let assignedCount = 0;
       this.blackboard.defendingUnits.forEach((unit) => {
         const aiController = getActorComponent(unit, PawnAiController);
         if (!aiController) return;
@@ -473,21 +511,34 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
         const newOrder = new OrderData(OrderType.Attack, { targetGameObject: closestEnemy });
         aiController.blackboard.overrideOrderQueueAndActiveOrder(newOrder);
         aiController.blackboard.setCurrentOrder(newOrder);
+        assignedCount++;
       });
+      this.logDebugInfo(`[Defense] ${assignedCount} defenders assigned to targets`);
       return State.SUCCEEDED;
     }
+    this.logDebugInfo("[Defense] No defenders available or no enemies to engage");
     return State.FAILED;
   }
 
   AttackEnemyBase() {
     const now = performance.now();
-    if (!this.cooldowns.canRun("attackTrigger", now)) return State.FAILED;
-    if (!this.HasEnoughMilitaryPower()) return State.FAILED;
+    if (!this.cooldowns.canRun("attackTrigger", now)) {
+      this.logDebugInfo("[Attack] Attack trigger on cooldown");
+      return State.FAILED;
+    }
+    if (!this.HasEnoughMilitaryPower()) {
+      this.logDebugInfo("[Attack] Insufficient military power for attack");
+      return State.FAILED;
+    }
     // Ensure target updated
     this.targetingManager.update(now);
     const target = this.blackboard.primaryTarget;
-    if (!target) return State.FAILED;
-    this.logDebugInfo("Coordinated attack on primary target.");
+    if (!target) {
+      this.logDebugInfo("[Attack] No primary target identified");
+      return State.FAILED;
+    }
+    this.logDebugInfo(`[Attack] Coordinated attack on primary target: ${target.name}`);
+    let assignedCount = 0;
     this.blackboard.units.forEach((unit) => {
       const aiController = getActorComponent(unit, PawnAiController);
       if (!aiController) return;
@@ -495,27 +546,46 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       const newOrder = new OrderData(OrderType.Attack, { targetGameObject: target });
       aiController.blackboard.overrideOrderQueueAndActiveOrder(newOrder);
       aiController.blackboard.setCurrentOrder(newOrder);
+      assignedCount++;
     });
+    this.logDebugInfo(`[Attack] ${assignedCount} units assigned to attack ${target.name}`);
     this.cooldowns.markRun("attackTrigger", now);
     this.blackboard.cooldowns.attackTrigger = now;
     return State.SUCCEEDED;
   }
 
   NeedMoreResources() {
-    return this.blackboard.getTotalResources() < this.adaptiveThresholds.getNeedMoreResourcesThreshold();
+    const threshold = this.adaptiveThresholds.getNeedMoreResourcesThreshold();
+    const total = this.blackboard.getTotalResources();
+    const needMore = total < threshold;
+    this.logDebugInfo(`[Resources] Need more check: ${total.toFixed(0)} vs ${threshold} = ${needMore ? "YES" : "NO"}`);
+    return needMore;
   }
 
   HasSufficientResources() {
-    return this.blackboard.getTotalResources() >= this.adaptiveThresholds.getHasSufficientResourcesThreshold();
+    const threshold = this.adaptiveThresholds.getHasSufficientResourcesThreshold();
+    const total = this.blackboard.getTotalResources();
+    const sufficient = total >= threshold;
+    this.logDebugInfo(
+      `[Resources] Sufficient check: ${total.toFixed(0)} vs ${threshold} = ${sufficient ? "YES" : "NO"}`
+    );
+    return sufficient;
   }
 
   ResourceShortage() {
-    return this.blackboard.getTotalResources() < this.adaptiveThresholds.getResourceGatheringThreshold();
+    const threshold = this.adaptiveThresholds.getResourceGatheringThreshold();
+    const total = this.blackboard.getTotalResources();
+    const shortage = total < threshold;
+    if (shortage) {
+      this.logDebugInfo(`[Resources] SHORTAGE detected: ${total.toFixed(0)} < ${threshold}`);
+    }
+    return shortage;
   }
 
   async AssignWorkersToGather(): Promise<State> {
     const idleWorkers = this.blackboard.getIdleWorkers();
     if (idleWorkers.length === 0) {
+      this.logDebugInfo("[Workers] No idle workers to assign");
       return State.FAILED;
     }
 
@@ -525,10 +595,12 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
 
     if (!neededResource) {
       this.logDebugInfo(
-        "No specific resource computed, assigning idle workers to gather based on constraints/fallback."
+        `[Workers] No specific resource constraint, assigning ${idleWorkers.length} idle workers to ${targetResource} (fallback)`
       );
     } else {
-      this.logDebugInfo(`Assigning idle workers to gather ${neededResource}`);
+      this.logDebugInfo(
+        `[Workers] Assigning ${idleWorkers.length} idle workers to gather ${neededResource} (most constrained)`
+      );
     }
 
     let assigned = 0;
@@ -557,6 +629,9 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       }
     }
 
+    this.logDebugInfo(
+      `[Workers] Successfully assigned ${assigned}/${idleWorkers.length} workers to gather ${targetResource}`
+    );
     return assigned > 0 ? State.SUCCEEDED : State.FAILED;
   }
 
@@ -570,11 +645,19 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   HasEnoughResourcesForWorker() {
     // Evaluate against adaptive threshold (no longer spoofing resources)
     const threshold = this.adaptiveThresholds.getHasEnoughResourcesForWorkerThreshold();
-    return this.blackboard.getTotalResources() >= threshold;
+    const total = this.blackboard.getTotalResources();
+    const hasEnough = total >= threshold;
+    this.logDebugInfo(
+      `[Production] Worker cost check: ${total.toFixed(0)} vs ${threshold} = ${hasEnough ? "YES" : "NO"}`
+    );
+    return hasEnough;
   }
 
   TrainWorker() {
-    if (!this.HasEnoughResourcesForWorker()) return State.FAILED;
+    if (!this.HasEnoughResourcesForWorker()) {
+      this.logDebugInfo("[Production] Insufficient resources for worker training");
+      return State.FAILED;
+    }
     const faction = this.player.factionType;
     let workerName = null;
     switch (faction) {
@@ -585,18 +668,22 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
         workerName = ObjectNames.TivaraWorker;
         break;
       default:
+        this.logDebugInfo(`[Production] Unsupported faction for worker training: ${faction}`);
         return State.FAILED; // Unsupported faction
     }
     if (this.productionValidator) {
       const validation = this.productionValidator.validate(workerName);
       if (!validation.canQueue) {
         if (validation.techBlocked && validation.prereqs.length > 0) {
+          this.logDebugInfo(
+            `[Production] Worker training blocked by tech requirements. Scheduling ${validation.prereqs.length} prerequisites`
+          );
           this.productionValidator.schedulePrerequisites(validation.prereqs, workerName);
         }
         return State.FAILED;
       }
     }
-    this.logDebugInfo("Training a new worker...");
+    this.logDebugInfo(`[Production] Training new worker: ${workerName}`);
     // find a building that can train this worker
     const trainingBuildings = this.blackboard.trainingBuildings.filter((building) => {
       const productionComponent = getActorComponent(building, ProductionComponent);
@@ -880,40 +967,83 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   }
 
   ShiftToAggressiveStrategy() {
-    if (this.blackboard.currentStrategy === "aggressive") return State.FAILED;
+    if (this.blackboard.currentStrategy === "aggressive") {
+      this.logDebugInfo("[Strategy] Already in aggressive strategy");
+      return State.FAILED;
+    }
     const now = performance.now();
-    if (!this.cooldowns.canRun("strategyShift", now)) return State.FAILED; // cooldown gate
-    if (this.blackboard.isStrategyLocked(now)) return State.FAILED; // lock gate fixed
-    const hysteresis = this.hysteresisAggressive(this.blackboard.getAttackPowerRatio());
-    if (!hysteresis.entered) return State.FAILED; // require sustained superiority
+    if (!this.cooldowns.canRun("strategyShift", now)) {
+      this.logDebugInfo("[Strategy] Strategy shift on cooldown");
+      return State.FAILED; // cooldown gate
+    }
+    if (this.blackboard.isStrategyLocked(now)) {
+      const remainingMs = this.blackboard.strategy.modeLockedUntil - now;
+      this.logDebugInfo(`[Strategy] Strategy locked for ${(remainingMs / 1000).toFixed(1)}s more`);
+      return State.FAILED; // lock gate fixed
+    }
+    const ratio = this.blackboard.getAttackPowerRatio(now);
+    const hysteresis = this.hysteresisAggressive(ratio);
+    if (!hysteresis.entered) {
+      this.logDebugInfo(
+        `[Strategy] Power ratio ${ratio.toFixed(2)} insufficient for aggressive shift (hysteresis not satisfied)`
+      );
+      return State.FAILED; // require sustained superiority
+    }
     this.blackboard.lockStrategy("aggressive", now, AI_CONFIG.strategyLockMs);
     this.cooldowns.markRun("strategyShift", now);
     this.blackboard.currentStrategy = "aggressive"; // legacy field maintained
-    this.logDebugInfo("Switched to aggressive strategy.");
+    this.logDebugInfo(
+      `[Strategy] ✓ SHIFTED TO AGGRESSIVE (power ratio: ${ratio.toFixed(2)}, military: ${this.blackboard.militaryStrength.toFixed(0)} vs ${this.blackboard.enemyMilitaryStrength.toFixed(0)})`
+    );
     return State.SUCCEEDED;
   }
 
   ShiftToDefensiveStrategy() {
-    if (this.blackboard.currentStrategy === "defensive") return State.FAILED;
+    if (this.blackboard.currentStrategy === "defensive") {
+      this.logDebugInfo("[Strategy] Already in defensive strategy");
+      return State.FAILED;
+    }
     const now = performance.now();
-    if (!this.cooldowns.canRun("strategyShift", now)) return State.FAILED;
-    if (this.blackboard.isStrategyLocked(now)) return State.FAILED;
+    if (!this.cooldowns.canRun("strategyShift", now)) {
+      this.logDebugInfo("[Strategy] Strategy shift on cooldown");
+      return State.FAILED;
+    }
+    if (this.blackboard.isStrategyLocked(now)) {
+      const remainingMs = this.blackboard.strategy.modeLockedUntil - now;
+      this.logDebugInfo(`[Strategy] Strategy locked for ${(remainingMs / 1000).toFixed(1)}s more`);
+      return State.FAILED;
+    }
     this.blackboard.lockStrategy("defensive", now, AI_CONFIG.strategyLockMs);
     this.cooldowns.markRun("strategyShift", now);
     this.blackboard.currentStrategy = "defensive"; // legacy field maintained
-    this.logDebugInfo("Switched to defensive strategy.");
+    const ratio = this.blackboard.getAttackPowerRatio(now);
+    this.logDebugInfo(
+      `[Strategy] ✓ SHIFTED TO DEFENSIVE (power ratio: ${ratio.toFixed(2)}, military: ${this.blackboard.militaryStrength.toFixed(0)} vs ${this.blackboard.enemyMilitaryStrength.toFixed(0)})`
+    );
     return State.SUCCEEDED;
   }
 
   ShiftToEconomicStrategy() {
-    if (this.blackboard.currentStrategy === "economic") return State.FAILED;
+    if (this.blackboard.currentStrategy === "economic") {
+      this.logDebugInfo("[Strategy] Already in economic strategy");
+      return State.FAILED;
+    }
     const now = performance.now();
-    if (!this.cooldowns.canRun("strategyShift", now)) return State.FAILED;
-    if (this.blackboard.isStrategyLocked(now)) return State.FAILED;
+    if (!this.cooldowns.canRun("strategyShift", now)) {
+      this.logDebugInfo("[Strategy] Strategy shift on cooldown");
+      return State.FAILED;
+    }
+    if (this.blackboard.isStrategyLocked(now)) {
+      const remainingMs = this.blackboard.strategy.modeLockedUntil - now;
+      this.logDebugInfo(`[Strategy] Strategy locked for ${(remainingMs / 1000).toFixed(1)}s more`);
+      return State.FAILED;
+    }
     this.blackboard.lockStrategy("economic", now, AI_CONFIG.strategyLockMs);
     this.cooldowns.markRun("strategyShift", now);
     this.blackboard.currentStrategy = "economic"; // legacy field maintained
-    this.logDebugInfo("Switched to economic strategy.");
+    this.logDebugInfo(
+      `[Strategy] ✓ SHIFTED TO ECONOMIC (workers: ${this.blackboard.workers.length}, base size: ${this.blackboard.baseSize})`
+    );
     return State.SUCCEEDED;
   }
 

@@ -86,6 +86,15 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
           targetGameObject,
           range
         );
+        if (nrTiles === null) {
+          console.warn(
+            "InRange: Unable to calculate path to target game object. Current game object:",
+            this.gameObject,
+            "Target game object:",
+            targetGameObject
+          );
+          return State.FAILED;
+        }
         distance = nrTiles.length;
       } else {
         distance = DistanceHelper.getTileDistanceBetweenGameObjects(this.gameObject, targetGameObject);
@@ -500,7 +509,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
   async AssignMoveRandomlyInRange(range: number) {
     const movementSystem = getActorSystem(this.gameObject, MovementSystem);
     if (!movementSystem) return State.FAILED;
-    let randomTile: Vector2Simple | undefined = undefined;
+    let randomTile: Vector2Simple | null = null;
     try {
       randomTile = await getRandomTileInNavigableRadius(this.gameObject, range);
       if (!randomTile) return State.FAILED;

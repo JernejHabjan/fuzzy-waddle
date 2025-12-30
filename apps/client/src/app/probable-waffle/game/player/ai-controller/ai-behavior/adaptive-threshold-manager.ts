@@ -26,11 +26,26 @@ export class AdaptiveThresholdManager {
   private lastUpdatedAt = 0;
   // Minimum ms between expensive recomputations
   private readonly minUpdateIntervalMs = 750;
+  // Debug logging flag
+  private enableLogging = false;
 
   constructor(
     private readonly blackboard: PlayerAiBlackboard,
     private readonly basePlanner: BasePlanner
   ) {}
+
+  /**
+   * Enable or disable debug logging
+   */
+  setLogging(enabled: boolean): void {
+    this.enableLogging = enabled;
+  }
+
+  private log(...args: any[]): void {
+    if (this.enableLogging) {
+      console.log("[AdaptiveThresholds]", ...args);
+    }
+  }
 
   /**
    * Recompute all thresholds if needed.
@@ -59,6 +74,17 @@ export class AdaptiveThresholdManager {
     const queuedProductionCost = this.estimateQueuedProductionCosts();
     const projectedSpend = upcomingCosts.total + queuedProductionCost + reservedResources;
 
+    this.log("--- Updating Thresholds ---");
+    this.log(
+      `Context: base=${baseSize}, workers=${workerCount}, military=${militaryCount}, strategy=${bb.currentStrategy}`
+    );
+    this.log(
+      `Resources: total=${totalResources.toFixed(0)}, available=${availableResources.toFixed(0)}, reserved=${reservedResources.toFixed(0)}`
+    );
+    this.log(`Income/sec: ${incomePerSecond.toFixed(1)}, Supply: ${supplyUsed}/${supplyMax} (+${supplyHeadroom})`);
+    this.log(`Enemy strength: ${enemyStr.toFixed(0)}, Power ratio: ${attackPowerRatio.toFixed(2)}`);
+    this.log(`Projected spend: ${projectedSpend.toFixed(0)}`);
+
     // Strategy weighting for aggression/defense
     const strategyFactor = bb.currentStrategy === "aggressive" ? 1.05 : bb.currentStrategy === "defensive" ? 0.9 : 0.95;
 
@@ -66,65 +92,89 @@ export class AdaptiveThresholdManager {
     const supplyDriven = Math.max(6, Math.round(supplyMax * 0.55 + baseSize * 0.4));
     const enemyDriven = Math.round(enemyStr * strategyFactor + defensiveStructures * 0.4);
     const economyDriven = Math.round(Math.max(0, incomePerSecond * 0.25 + productionBuildings * 1.5));
+    const oldMilitaryPower = this.militaryPowerThreshold;
     this.militaryPowerThreshold = Math.max(6, enemyDriven, supplyDriven) + Math.round(economyDriven * 0.3);
+    this.log(
+      `Military Power: ${oldMilitaryPower} → ${this.militaryPowerThreshold} (supply=${supplyDriven}, enemy=${enemyDriven}, economy=${economyDriven})`
+    );
 
     // Target units scales with power threshold, base footprint, and defense commitments
     const baseScaling = 1 + Math.min(0.35, Math.log1p(baseSize) * 0.2);
+    const oldUnitTarget = this.militaryUnitTarget;
     this.militaryUnitTarget =
       Math.round(this.militaryPowerThreshold * (1.1 * baseScaling)) + Math.round(defendingUnits * 0.3);
+    this.log(`Unit Target: ${oldUnitTarget} → ${this.militaryUnitTarget}`);
 
     // Heavy attack threshold grows with base footprint and defenses but tightens when out-powered
     const defenseCapacity = defensiveStructures * 1.5 + defendingUnits * 0.5;
     const vulnerabilityFactor = attackPowerRatio < 1 ? 1.25 - attackPowerRatio * 0.35 : 1;
+    const oldHeavyAttack = this.baseHeavyAttackThreshold;
     this.baseHeavyAttackThreshold = Math.max(
       2,
       Math.round((2 + baseSize * 0.6 + defenseCapacity) * vulnerabilityFactor)
+    );
+    this.log(
+      `Heavy Attack: ${oldHeavyAttack} → ${this.baseHeavyAttackThreshold} (vulnerability=${vulnerabilityFactor.toFixed(2)})`
     );
 
     // Resource buffers scale with projected spend, income, and worker-driven growth
     const workerGrowthBias = bb.currentStrategy === "economic" ? 1.2 : bb.currentStrategy === "aggressive" ? 0.9 : 1;
     const supplyBuffer = Math.max(100, supplyHeadroom < 3 ? 200 : supplyHeadroom * 25);
+    const oldNeedMore = this.needMoreResourcesThreshold;
     this.needMoreResourcesThreshold = Math.max(
       500,
       Math.round(projectedSpend * 0.7 + incomePerSecond * 5 + workerCount * 15 * workerGrowthBias + supplyBuffer)
     );
+    this.log(`Need More Resources: ${oldNeedMore} → ${this.needMoreResourcesThreshold}`);
 
     const surplusBase = Math.round((projectedSpend + totalResources) * 0.35 + incomePerSecond * 4 + baseSize * 60);
     const armyWeight = Math.max(1, militaryCount * 0.25 + this.militaryPowerThreshold * 0.1);
+    const oldSurplus = this.resourceSurplusThreshold;
     this.resourceSurplusThreshold = Math.min(
       8000,
       Math.max(400, Math.round(surplusBase * workerGrowthBias + armyWeight * 20))
     );
+    this.log(`Resource Surplus: ${oldSurplus} → ${this.resourceSurplusThreshold}`);
 
     const incomeRelief = Math.round(incomePerSecond * 1.5);
+    const oldGathering = this.resourceGatheringThreshold;
     this.resourceGatheringThreshold = Math.max(200, Math.round(this.resourceSurplusThreshold * 0.6 - incomeRelief));
+    this.log(`Resource Gathering: ${oldGathering} → ${this.resourceGatheringThreshold}`);
 
+    const oldSufficient = this.hasSufficientResourcesThreshold;
     this.hasSufficientResourcesThreshold = Math.round(
       (this.resourceGatheringThreshold + this.resourceSurplusThreshold) / 2 + projectedSpend * 0.1
     );
+    this.log(`Sufficient Resources: ${oldSufficient} → ${this.hasSufficientResourcesThreshold}`);
 
     // Worker training cost scales with base footprint and current workforce; discounts when under-staffed
     const workerCostGuess = 90 + Math.min(120, baseSize * 12);
     const workforcePressure = workerCount < baseSize * 2 ? -40 : workerCount * 3;
+    const oldWorkerCost = this.hasEnoughResourcesForWorkerThreshold;
     this.hasEnoughResourcesForWorkerThreshold = Math.max(
       80,
       Math.round(workerCostGuess + workforcePressure - incomePerSecond * 0.4)
     );
+    this.log(`Worker Cost: ${oldWorkerCost} → ${this.hasEnoughResourcesForWorkerThreshold}`);
 
     // Upgrade threshold prefers saving if upgrades exist in queue or income is low
     const upgradeDrag = Math.max(0, bb.activeTechUpgrades * 150 - incomePerSecond * 2);
+    const oldUpgrade = this.sufficientResourcesForUpgradeThreshold;
     this.sufficientResourcesForUpgradeThreshold = Math.max(
       700,
       Math.round(projectedSpend * 0.4 + baseSize * 80 + upgradeDrag + availableResources * 0.2)
     );
+    this.log(`Upgrade Cost: ${oldUpgrade} → ${this.sufficientResourcesForUpgradeThreshold}`);
 
     // Military unit affordability scales with supply headroom and cheapest known production cost
     const cheapestMilitary = this.estimateCheapestMilitaryUnitCost();
     const supplyTax = supplyHeadroom <= 1 ? 120 : Math.max(0, (3 - supplyHeadroom) * 40);
+    const oldMilitaryUnit = this.hasEnoughResourcesForMilitaryUnitThreshold;
     this.hasEnoughResourcesForMilitaryUnitThreshold = Math.max(
       cheapestMilitary + supplyTax,
       Math.round(this.militaryPowerThreshold * 1.1)
     );
+    this.log(`Military Unit Cost: ${oldMilitaryUnit} → ${this.hasEnoughResourcesForMilitaryUnitThreshold}`);
   }
 
   private estimatePendingBuildingCosts(): { byType: Record<string, number>; total: number } {

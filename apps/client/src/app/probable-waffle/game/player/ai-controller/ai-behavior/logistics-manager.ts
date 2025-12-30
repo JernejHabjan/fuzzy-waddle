@@ -25,14 +25,27 @@ export class LogisticsManager {
 
   shouldRebalance(): boolean {
     const now = Date.now();
-    if (now - this.lastRebalanceAt < this.rebalanceCooldownMs) return false;
+    if (now - this.lastRebalanceAt < this.rebalanceCooldownMs) {
+      this.log("[Logistics] Rebalance on cooldown");
+      return false;
+    }
     const scarce = this.blackboard.getMostNeededResource();
-    if (!scarce) return false;
+    if (!scarce) {
+      this.log("[Logistics] No scarce resource identified");
+      return false;
+    }
     // If we have < 40% theoretical target (naive) we attempt rebalance
     const total = this.blackboard.getTotalResources();
-    if (total === 0) return true;
+    if (total === 0) {
+      this.log("[Logistics] No resources, rebalance needed");
+      return true;
+    }
     const share = (this.blackboard.resources[scarce.type] ?? 0) / total;
-    return share < 0.25;
+    const shouldRebalance = share < 0.25;
+    this.log(
+      `[Logistics] Resource share check: ${scarce.type} = ${(share * 100).toFixed(1)}%, rebalance = ${shouldRebalance}`
+    );
+    return shouldRebalance;
   }
 
   stockpileImbalanceDetected(): boolean {
@@ -41,19 +54,34 @@ export class LogisticsManager {
     if (values.length < 2) return false;
     const max = Math.max(...values);
     const min = Math.min(...values);
-    return max / (min || 1) >= this.severeImbalanceRatio;
+    const ratio = max / (min || 1);
+    const imbalanced = ratio >= this.severeImbalanceRatio;
+    if (imbalanced) {
+      this.log(
+        `[Logistics] Stockpile imbalance detected! Ratio: ${ratio.toFixed(2)} (threshold: ${this.severeImbalanceRatio})`
+      );
+    }
+    return imbalanced;
   }
 
   async redirectToScarce(): Promise<State> {
     const scarceResource = this.getMostConstrainedResource();
-    if (!scarceResource) return State.FAILED;
+    if (!scarceResource) {
+      this.log("[Logistics] No constrained resource identified for redirection");
+      return State.FAILED;
+    }
+
+    this.log(`[Logistics] Redirecting workers to scarce resource: ${scarceResource}`);
 
     const workers = this.blackboard.workers.filter((worker) => {
       const gatherer = getActorComponent(worker, GathererComponent);
       return gatherer && gatherer.isGathering;
     });
 
-    if (workers.length === 0) return State.FAILED;
+    if (workers.length === 0) {
+      this.log("[Logistics] No active gatherers to redirect");
+      return State.FAILED;
+    }
 
     // Reassign workers currently gathering other resources
     let reassignedCount = 0;
@@ -78,21 +106,29 @@ export class LogisticsManager {
     }
 
     if (reassignedCount > 0) {
-      this.log(`Redirected ${reassignedCount} workers to gather scarce resource: ${scarceResource}`);
+      this.log(`[Logistics] ✓ Redirected ${reassignedCount} workers to gather scarce resource: ${scarceResource}`);
       this.lastRebalanceAt = Date.now();
       return State.SUCCEEDED;
     }
 
+    this.log(`[Logistics] Failed to redirect any workers to ${scarceResource}`);
     return State.FAILED;
   }
 
   async rebalanceHarvesters(): Promise<State> {
     const now = Date.now();
-    if (now - this.lastRebalanceAt < this.rebalanceCooldownMs) return State.FAILED;
+    if (now - this.lastRebalanceAt < this.rebalanceCooldownMs) {
+      this.log("[Logistics] Rebalance on cooldown");
+      return State.FAILED;
+    }
 
     const scarceResource = this.getMostConstrainedResource();
-    if (!scarceResource) return State.FAILED;
+    if (!scarceResource) {
+      this.log("[Logistics] No constrained resource for rebalancing");
+      return State.FAILED;
+    }
 
+    this.log(`[Logistics] Starting harvester rebalance for ${scarceResource}`);
     // Redirect workers to scarce resource
     return this.redirectToScarce();
   }
@@ -153,6 +189,12 @@ export class LogisticsManager {
         maxScore = resourceData[r]!.score;
         mostConstrained = r;
       }
+    }
+
+    if (mostConstrained) {
+      this.log(
+        `[Logistics] Most constrained resource: ${mostConstrained} (score: ${maxScore.toFixed(2)}, stock: ${resources[mostConstrained]}, demand: ${projectedSpend[mostConstrained]})`
+      );
     }
 
     return mostConstrained;
