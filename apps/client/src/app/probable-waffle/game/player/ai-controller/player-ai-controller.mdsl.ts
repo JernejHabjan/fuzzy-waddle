@@ -1,17 +1,17 @@
 /**
- * sequence - (needs all succeeded in sequence) updates in sequence - moves to succeeded if all children have succeeded, moves to failed if any have failed
- * selector - (any succeed in sequence) updates in sequence - moves to failed if all have failed, moves to success if any have succeeded
- * parallel - runs multiple until all SUCCESS or any FAILURE
- * race - runs multiple until any SUCCESS or all FAILURE
- * all - runs multiple until all finish
+ * sequence - updates in sequence, succeeds if all children succeed, fails if any child fails
+ * selector - updates in sequence, succeeds if any child succeeds, fails if all children fail
+ * parallel - updates all children concurrently, succeeds if all succeed, fails if any fails
+ * race - updates all children concurrently, succeeds if any succeeds, fails if all fail
+ * all - updates all children concurrently until all finish
  * lotto - selects one child to run
  * repeat - runs N times or until child returns FAILURE
- * retry - runs N times if child returns FAILURE, if child returns SUCCESS, returns SUCCESS
- * flip - returns SUCCESS if child returns FAILURE, returns FAILURE if child returns SUCCESS
+ * retry - runs N times if child returns FAILURE, returns SUCCESS if child returns SUCCESS
+ * flip - inverts child result: SUCCESS becomes FAILURE, FAILURE becomes SUCCESS
  * succeed - returns SUCCESS
  * fail - returns FAILURE
  * action - runs a function
- * condition - checks a condition
+ * condition - checks a condition, returns SUCCESS or FAILURE based on result
  * wait - waits for N ms
  * branch - runs another tree
  * callbacks - entry, step, exit functions
