@@ -2,9 +2,9 @@ import { Blackboard } from "../../ai/blackboard";
 import { ObjectNames, ResourceType, type Vector2Simple, type Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import type { MapAnalysis } from "./ai-behavior/map-analyzer";
 import { ReservationPool } from "./resource-reservations";
-import GameObject = Phaser.GameObjects.GameObject;
-import { GathererComponent } from "../../entity/components/resource/gatherer-component";
 import { getActorComponent } from "../../data/actor-component";
+import { PawnAiController } from "../../prefabs/ai-agents/pawn-ai-controller";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export interface EnemyIntel {
   strength: number;
@@ -183,8 +183,10 @@ export class PlayerAiBlackboard extends Blackboard {
    */
   getIdleWorkers(): GameObject[] {
     return this.workers.filter((worker) => {
-      const gathererComponent = getActorComponent(worker, GathererComponent);
-      return gathererComponent && !gathererComponent.isGathering;
+      const payerPawnAiController = getActorComponent(worker, PawnAiController);
+      if (!payerPawnAiController) return false;
+      const order = payerPawnAiController.blackboard.getCurrentOrder();
+      return !order;
     });
   }
 

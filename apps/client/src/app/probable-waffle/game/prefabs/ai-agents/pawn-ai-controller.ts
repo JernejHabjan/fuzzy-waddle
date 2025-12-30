@@ -13,6 +13,7 @@ import { Subscription } from "rxjs";
 import { type BackboardComponentData } from "@fuzzy-waddle/api-interfaces";
 import type { PawnAiDefinition } from "./pawn-ai-definition";
 import { AiType } from "./ai-type";
+import { getActorComponent } from "../../data/actor-component";
 
 export class PawnAiController {
   readonly blackboard: PawnAiBlackboard = new PawnAiBlackboard(); // todo it's actually blackboard that should replicate
@@ -38,7 +39,7 @@ export class PawnAiController {
         this.agent = new PlayerPawnAiControllerAgent(this.gameObject, this.blackboard);
         this.behaviourTree = new BehaviourTree(PlayerPawnAiControllerMdsl, this.agent, options);
         this.blackboard.cancellationHandler = () => {
-          (this.agent as PlayerPawnAiControllerAgent).Stop();
+          (this.agent as PlayerPawnAiControllerAgent).Stop("Character AI Cancellation");
           this.behaviourTree.reset();
         };
         break;
@@ -46,7 +47,7 @@ export class PawnAiController {
         this.agent = new PlayerPawnAiControllerAgent(this.gameObject, this.blackboard);
         this.behaviourTree = new BehaviourTree(PlayerPawnAiControllerMdsl, this.agent, options);
         this.blackboard.cancellationHandler = () => {
-          (this.agent as PlayerPawnAiControllerAgent).Stop();
+          (this.agent as PlayerPawnAiControllerAgent).Stop("Default AI Cancellation");
           this.behaviourTree.reset();
         };
         break;
@@ -72,6 +73,8 @@ export class PawnAiController {
   private update(_: number, delta: number) {
     if (!PawnAiController.AI_ENABLED) return;
     if (!this.gameObject.active) return;
+    const healthComponent = getActorComponent(this.gameObject, HealthComponent);
+    if (healthComponent && healthComponent.killed) return;
     const deltaWithTimeScale = delta * this.gameObject.scene.time.timeScale;
     this.elapsedTime += deltaWithTimeScale;
     const stepInterval = this.pawnAiDefinition.stepInterval ?? this.defaultStepInterval;

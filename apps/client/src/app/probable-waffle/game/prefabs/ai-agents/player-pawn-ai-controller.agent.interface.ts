@@ -60,7 +60,7 @@ export interface IPlayerPawnControllerAgent {
   MoveToTarget(type: PlayerPawnRangeType): Promise<State>;
   MoveToTargetOrLocation(type: PlayerPawnRangeType): Promise<State>;
   MoveToLocation(): Promise<State>;
-  Stop(): State;
+  Stop(fromNode: string): State;
   TargetExists(): boolean;
   TargetOrLocationExists(): boolean;
 

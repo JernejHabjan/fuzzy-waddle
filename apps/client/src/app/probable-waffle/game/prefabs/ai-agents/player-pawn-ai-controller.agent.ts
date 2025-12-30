@@ -163,7 +163,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
           // if the target is not alive, stop moving
           const healthComponent = getActorComponent(target, HealthComponent);
           if (healthComponent && healthComponent.killed) {
-            this.Stop();
+            this.Stop("MoveToTarget");
           }
         }
       } satisfies Partial<PathMoveConfig>);
@@ -218,12 +218,14 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
       return success ? State.SUCCEEDED : State.FAILED;
     } catch (e) {
       // console.error("Error in MoveToLocation", e);
-      this.Stop();
+      this.Stop("MoveToLocation");
       return State.FAILED;
     }
   }
 
-  Stop = () => {
+  Stop = (fromNode: string) => {
+    console.log(`Stop called from node: ${fromNode}`);
+
     const currentOrder = this.blackboard.getCurrentOrder();
     if (currentOrder) {
       // exit container
