@@ -38,11 +38,12 @@ import { TilemapComponent } from "../../world/tilemap/tilemap.component";
 import type { IsoDirection } from "../components/movement/iso-directions";
 import type { PathMoveConfig } from "./path-move-config";
 import Tween = Phaser.Tweens.Tween;
+import TweenChain = Phaser.Tweens.TweenChain;
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class MovementSystem {
   private _navigationService?: NavigationService;
-  private _currentTween?: Tween;
+  private _currentTween?: Tween | TweenChain;
   private readonly DEBUG = false;
   private playerChangedSubscription?: Subscription;
   private actorTranslateComponent?: ActorTranslateComponent;
@@ -405,8 +406,15 @@ export class MovementSystem {
       const logicalTransform = { ...representableComponent.logicalWorldTransform };
       const baseDuration = actorTranslateComponent?.actorTranslateDefinition?.tileMoveDuration;
       if (typeof baseDuration !== "number") return reject("No tile move duration defined");
-      const duration = Math.max(baseDuration * (tileDistanceMultiplier || 1), baseDuration);
-      // Apply scaled duration to keep per-tile timing consistent for direct (flying) movement.
+      const standardStepDistance = this.getStandardStepDistance();
+      const duration = this.calculateDuration(
+        baseDuration,
+        logicalTransform,
+        newLogicalTransform,
+        standardStepDistance,
+        tileDistanceMultiplier
+      );
+
       this._currentTween = this.gameObject.scene.tweens.add({
         targets: logicalTransform,
         x: newLogicalTransform.x,
@@ -435,6 +443,26 @@ export class MovementSystem {
         }
       });
     });
+  }
+
+  private getStandardStepDistance(): number {
+    const tileWidth = this.tileMapComponent.tilemap.tileWidth;
+    const tileHeight = this.tileMapComponent.tilemap.tileHeight;
+    return tileWidth && tileHeight ? Math.sqrt(Math.pow(tileWidth / 2, 2) + Math.pow(tileHeight / 2, 2)) : 0;
+  }
+
+  private calculateDuration(
+    baseDuration: number,
+    from: { x: number; y: number },
+    to: { x: number; y: number },
+    standardStepDistance: number,
+    tileDistanceMultiplier: number = 1
+  ): number {
+    if (standardStepDistance > 0) {
+      const dist = Phaser.Math.Distance.Between(from.x, from.y, to.x, to.y);
+      return (dist / standardStepDistance) * baseDuration;
+    }
+    return Math.max(baseDuration * tileDistanceMultiplier, baseDuration);
   }
 
   private onMovementStart(newTileWorldXY: Vector3Simple, config?: PathMoveConfig | Partial<PathMoveConfig>) {
