@@ -932,6 +932,9 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // blockStone_11 (prefab fields)
     blockStone_11.z = 128;
 
+    // tree4 (prefab fields)
+    tree4.z = 160;
+
     // workMill_1 (components)
     const workMill_1EditorOwner = new EditorOwner(workMill_1);
     workMill_1EditorOwner.owner_id = "2";
