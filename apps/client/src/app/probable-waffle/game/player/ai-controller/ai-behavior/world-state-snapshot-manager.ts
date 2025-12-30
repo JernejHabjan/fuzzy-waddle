@@ -85,7 +85,7 @@ export class WorldStateSnapshotManager {
   }
 
   private updateBlackboardEconomy() {
-    this.blackboard.resources = this.player.getResources();
+    this.blackboard.economy.resources = this.player.getResources();
     this.blackboard.production.supply.max = this.player.playerState.data.housing.maxHousing;
     this.blackboard.production.supply.used = this.player.playerState.data.housing.currentHousing;
 

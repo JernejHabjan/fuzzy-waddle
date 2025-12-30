@@ -40,7 +40,7 @@ export class LogisticsManager {
       this.log("[Logistics] No resources, rebalance needed");
       return true;
     }
-    const share = (this.blackboard.resources[scarce.type] ?? 0) / total;
+    const share = (this.blackboard.economy.resources[scarce.type] ?? 0) / total;
     const shouldRebalance = share < 0.25;
     this.log(
       `[Logistics] Resource share check: ${scarce.type} = ${(share * 100).toFixed(1)}%, rebalance = ${shouldRebalance}`
@@ -49,7 +49,7 @@ export class LogisticsManager {
   }
 
   stockpileImbalanceDetected(): boolean {
-    const r = this.blackboard.resources;
+    const r = this.blackboard.economy.resources;
     const values = Object.values(r).filter((v) => v > 0);
     if (values.length < 2) return false;
     const max = Math.max(...values);
@@ -134,7 +134,7 @@ export class LogisticsManager {
   }
 
   getMostConstrainedResource(): ResourceType | null {
-    const { resources, economy, production } = this.blackboard;
+    const economy = this.blackboard.economy;
     const resourceData: { [key in ResourceType]?: { score: number } } = {};
 
     // 1. Projected spend
@@ -162,17 +162,17 @@ export class LogisticsManager {
       }
     });
 
-    for (const key in resources) {
+    for (const key in economy.resources) {
       const r = key as ResourceType;
       resourceData[r] = { score: 0 };
 
       // score based on current stock (lower is higher score)
-      resourceData[r]!.score += 1 / (resources[r] + 1);
+      resourceData[r]!.score += 1 / (economy.resources[r] + 1);
 
       // score based on demand
       const demand = projectedSpend[r];
       if (demand > 0) {
-        resourceData[r]!.score += demand / (resources[r] + 1);
+        resourceData[r]!.score += demand / (economy.resources[r] + 1);
       }
 
       // score based on income (lower income is higher score)
@@ -193,7 +193,7 @@ export class LogisticsManager {
 
     if (mostConstrained) {
       this.log(
-        `[Logistics] Most constrained resource: ${mostConstrained} (score: ${maxScore.toFixed(2)}, stock: ${resources[mostConstrained]}, demand: ${projectedSpend[mostConstrained]})`
+        `[Logistics] Most constrained resource: ${mostConstrained} (score: ${maxScore.toFixed(2)}, stock: ${economy.resources[mostConstrained]}, demand: ${projectedSpend[mostConstrained]})`
       );
     }
 

@@ -219,9 +219,10 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
     lines.push(`=== RESOURCES & ECONOMY ===`);
 
     lines.push(`--- Current Resources ---`);
-    for (const key in bb.resources) {
+    const resources = bb.economy.resources;
+    for (const key in resources) {
       const r = key as ResourceType;
-      const current = bb.resources[r];
+      const current = resources[r];
       const reserved = bb.economy.reserved[r] || 0;
       const available = bb.economy.available[r];
       lines.push(`${r}: ${current} (avail: ${available}, res: ${reserved})`);
@@ -229,7 +230,7 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
 
     lines.push(``);
     lines.push(`--- Income (instant/smoothed) ---`);
-    for (const key in bb.resources) {
+    for (const key in resources) {
       const r = key as ResourceType;
       const instant = (bb.economy.incomeInstant[r] || 0).toFixed(1);
       const smoothed = (bb.economy.incomeSmoothed[r] || 0).toFixed(1);

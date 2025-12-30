@@ -14,11 +14,6 @@ export interface EnemyIntel {
 
 export class PlayerAiBlackboard extends Blackboard {
   constructor(
-    public resources: Record<ResourceType, number> = {
-      minerals: 0,
-      stone: 0,
-      wood: 0
-    },
     public units: Phaser.GameObjects.GameObject[] = [],
     public workers: Phaser.GameObjects.GameObject[] = [],
     public defendingUnits: GameObject[] = [], // Units assigned for base defense
@@ -57,7 +52,7 @@ export class PlayerAiBlackboard extends Blackboard {
   ) {
     super();
     this.economy = {
-      resources: this.resources,
+      resources: { minerals: 0, stone: 0, wood: 0 },
       // Placeholder income/surplus structures (populated via updateFromWorld)
       incomeInstant: { minerals: 0, stone: 0, wood: 0 },
       incomeSmoothed: { minerals: 0, stone: 0, wood: 0 },
@@ -156,8 +151,8 @@ export class PlayerAiBlackboard extends Blackboard {
 
   getTotalResources(): number {
     let total = 0;
-    for (const key in this.resources) {
-      total += this.resources[key as ResourceType] ?? 0;
+    for (const key in this.economy.resources) {
+      total += this.economy.resources[key as ResourceType] ?? 0;
     }
     return total;
   }
@@ -166,7 +161,7 @@ export class PlayerAiBlackboard extends Blackboard {
     for (const key in cost) {
       const r = key as ResourceType;
       const needed = cost[r] ?? 0;
-      if ((this.resources[r] ?? 0) < needed) return false;
+      if ((this.economy.resources[r] ?? 0) < needed) return false;
     }
     return true;
   }
@@ -330,7 +325,7 @@ export class PlayerAiBlackboard extends Blackboard {
     for (const k in cost) {
       const r = k as ResourceType;
       const needed = cost[r] || 0;
-      const available = (this.resources[r] || 0) - (this.economy.reserved[r] || 0);
+      const available = (this.economy.resources[r] || 0) - (this.economy.reserved[r] || 0);
       if (available < needed) {
         // track denial
         this.diagnostics.reservationsDenied = (this.diagnostics.reservationsDenied || 0) + 1;
@@ -343,10 +338,10 @@ export class PlayerAiBlackboard extends Blackboard {
     this.economy.reserved = totals; // overwrite (breaking change acceptable)
     this.diagnostics.reservationsGranted = (this.diagnostics.reservationsGranted || 0) + 1;
     // Sanity: negative available detection
-    for (const r of Object.keys(this.resources) as ResourceType[]) {
-      if ((this.resources[r] || 0) - (totals[r] || 0) < 0) {
+    for (const r of Object.keys(this.economy.resources) as ResourceType[]) {
+      if ((this.economy.resources[r] || 0) - (totals[r] || 0) < 0) {
         // eslint-disable-next-line no-console
-        console.warn("Reservation over-allocation detected", r, this.resources[r], totals[r]);
+        console.warn("Reservation over-allocation detected", r, this.economy.resources[r], totals[r]);
       }
     }
     return res.id;
