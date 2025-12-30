@@ -214,38 +214,91 @@ export class MovementSystem {
       // Remove the first tile, as it's the current tile
       path.shift();
 
-      // Start moving along the first step of the path
+      // Store the target for potential path recalculation
+      this.targetGameObject = destinationGameObject;
+
+      // Start moving along the path with smoother transitions
       if (path.length > 0) {
-        const nextTile = path[0]!;
-        const onComplete = () => {
-          // After completing one step, call the callback
-          pathMoveConfig?.onComplete?.();
-
-          // If still following, calculate a new path from the current position
-          if (this.targetGameObject) {
-            this.calculateAndFollowPathOfMovingTarget(this.targetGameObject, pathMoveConfig);
-          } else if (path.length > 1) {
-            // If not following but there are more steps, continue the path
-            path.shift(); // Remove the step we just completed
-            this.moveAlongPathByFollowingPreCalculatedStaticPath(path, pathMoveConfig);
-          } else {
-            // End of path and not following
-            this.playMovementAnimation(false, pathMoveConfig);
-          }
-        };
-
-        const onStop = () => {
-          pathMoveConfig?.onStop?.();
-          // no need to stop animation, otherwise it's not smooth
-        };
-
-        await this.moveActorToTileWithTween(nextTile, pathMoveConfig, onComplete, onStop);
+        await this.moveAlongDynamicPath(path, pathMoveConfig);
+      } else {
+        // Target is adjacent, complete immediately
+        pathMoveConfig?.onComplete?.();
+        this.playMovementAnimation(false, pathMoveConfig);
       }
 
       return true;
     } catch (e) {
       return false;
     }
+  }
+
+  /**
+   * Moves along a path while allowing for dynamic recalculation.
+   * This provides smoother movement than the recursive approach.
+   */
+  private async moveAlongDynamicPath(path: Vector2Simple[], config?: Partial<PathMoveConfig>): Promise<void> {
+    if (!path.length) {
+      config?.onComplete?.();
+      this.playMovementAnimation(false, config);
+      this.targetGameObject = undefined;
+      return;
+    }
+
+    const nextTile = path.shift();
+    if (!nextTile) return Promise.reject("No next tile to move to");
+
+    this.cancelMovement();
+    config?.onPathUpdate?.(nextTile);
+
+    const onComplete = async () => {
+      // Check if we still have a target to follow
+      if (this.targetGameObject && this.targetGameObject.active) {
+        // Recalculate path to the moving target
+        try {
+          const newPath = await this.getPathToClosestWalkableTileBetweenGameObjectsInRadius(
+            this.targetGameObject,
+            config?.radiusTilesAroundDestination
+          );
+
+          if (newPath && newPath.length > 1) {
+            // Remove current position from new path
+            newPath.shift();
+            // Continue with the new path
+            await this.moveAlongDynamicPath(newPath, config);
+          } else {
+            // Reached target or no path available
+            config?.onComplete?.();
+            this.playMovementAnimation(false, config);
+            this.targetGameObject = undefined;
+          }
+        } catch (error) {
+          // Path calculation failed, try to continue with remaining original path
+          if (path.length > 0) {
+            await this.moveAlongDynamicPath(path, config);
+          } else {
+            config?.onComplete?.();
+            this.playMovementAnimation(false, config);
+            this.targetGameObject = undefined;
+          }
+        }
+      } else if (path.length > 0) {
+        // Continue with remaining path if no target to follow
+        await this.moveAlongDynamicPath(path, config);
+      } else {
+        // End of path
+        config?.onComplete?.();
+        this.playMovementAnimation(false, config);
+        this.targetGameObject = undefined;
+      }
+    };
+
+    const onStop = () => {
+      config?.onStop?.();
+      this.playMovementAnimation(false, config);
+      this.targetGameObject = undefined;
+    };
+
+    return this.moveActorToTileWithTween(nextTile, config, onComplete, onStop);
   }
 
   /**
@@ -524,6 +577,7 @@ export class MovementSystem {
 
   private destroy() {
     this.cancelMovement();
+    this.targetGameObject = undefined;
     this.shiftKey?.destroy();
     this.playerChangedSubscription?.unsubscribe();
   }
