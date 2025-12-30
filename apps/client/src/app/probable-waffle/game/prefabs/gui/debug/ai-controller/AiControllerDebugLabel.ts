@@ -145,7 +145,7 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
       lines.push(`Target: ${bb.primaryTarget.name}`);
     }
 
-    this.telemetryText.text = lines.join("\\n");
+    this.telemetryText.text = lines.join("\n");
     this.playerAction.text = controller?.blackboard.currentStrategy || "";
   }
   /* END-USER-CODE */
