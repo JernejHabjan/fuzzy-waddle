@@ -9,12 +9,3 @@ export function getCostForObjectName(objectName: ObjectNames): Partial<Record<Re
   const definition = pwActorDefinitions[objectName];
   return definition?.components?.productionCost?.resources;
 }
-
-/**
- * return wood-only fallback for legacy heuristics.
- */
-export function getApproxWoodCost(objectName: ObjectNames, fallback: number): number {
-  const cost = getCostForObjectName(objectName);
-  if (!cost) return fallback;
-  return (cost[ResourceType.Wood] ?? Object.values(cost)[0] ?? fallback) as number;
-}

@@ -55,14 +55,6 @@ export class GathererComponent {
       resourceType: ResourceType.Minerals,
       amountPerGathering: 1,
       needsReturnToDrain: true
-    },
-    {
-      capacity: 3,
-      cooldown: 1000,
-      range: 1,
-      resourceType: ResourceType.Ambrosia,
-      amountPerGathering: 1,
-      needsReturnToDrain: true
     }
   ];
   // amount the gameObject is carrying
@@ -463,8 +455,6 @@ export class GathererComponent {
     if (!resourceType) return;
     let sounds: SoundDefinition[] = [];
     switch (resourceType) {
-      case ResourceType.Ambrosia:
-        break;
       case ResourceType.Wood:
         sounds = SharedActorActionsSfxChoppingSounds;
         break;
@@ -492,8 +482,6 @@ export class GathererComponent {
     const resourceType = this.carriedResourceType;
     if (!resourceType) return null;
     switch (resourceType) {
-      case ResourceType.Ambrosia:
-        return AnimationType.Mine;
       case ResourceType.Wood:
         return AnimationType.Chop;
       case ResourceType.Stone:
@@ -508,8 +496,6 @@ export class GathererComponent {
     const resourceType = this.carriedResourceType;
     if (!resourceType) return null;
     switch (resourceType) {
-      case ResourceType.Ambrosia:
-        return SoundType.Mine;
       case ResourceType.Wood:
         return SoundType.Chop;
       case ResourceType.Stone:

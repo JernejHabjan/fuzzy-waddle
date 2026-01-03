@@ -38,11 +38,10 @@ export class RepairManager {
     const now = Date.now();
     if (now - this.lastRepairAssignTime < this.repairCooldownMs) return State.FAILED;
 
-    this.blackboard.workers = getSceneService(this.scene, ActorIndexSystem)!
-      .getAllIdActors()
-      .filter((go) => getActorComponent(go, BuilderComponent));
+    const currentPlayerActors = getSceneService(this.scene, ActorIndexSystem)!.getOwnedActors(this.playerNumber);
 
-    const { currentPlayerActors } = ScenePlayerHelpers.getActorsByPlayer(this.scene, this.playerNumber);
+    this.blackboard.workers = currentPlayerActors.filter((go) => getActorComponent(go, BuilderComponent));
+
     const damaged = currentPlayerActors.filter((go) => {
       const health = getActorComponent(go, HealthComponent);
       return health && !health.killed && health.healthComponentData.health < health.healthDefinition.maxHealth;

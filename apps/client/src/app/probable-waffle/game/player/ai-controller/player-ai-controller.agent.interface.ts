@@ -5,14 +5,12 @@ export interface IPlayerControllerAgent {
   IsBaseUnderAttack(): boolean;
   IsBaseUnderHeavyAttack(): boolean;
   AssignDefendersToEnemies(): State;
-  AttackEnemyBase(): State;
+  AttackEnemyBase(): Promise<State>;
   IsInCombat(): boolean;
-  LowHealthUnit(): boolean;
-  RetreatUnit(): State;
-  FocusFire(): State;
+  RetreatLowHealthUnitsInCombat(): State;
+  FocusFireForUnitsInCombat(): State;
   FlankEnemy(): State;
   EnemySpotted(): boolean;
-  EnemyInRange(): boolean;
   EnemyFlankOpen(): boolean;
 
   // Resource management
@@ -41,7 +39,7 @@ export interface IPlayerControllerAgent {
   NeedToScout(): boolean;
   AssignScoutUnits(): State;
   AnalyzeEnemyBase(): Promise<State>;
-  GatherEnemyData(): State;
+  GatherEnemyData(): Promise<State>;
   ContinueScouting(): State;
   AnalyzeGameMap(): Promise<State>;
   ShouldReanalyzeMap(): boolean;

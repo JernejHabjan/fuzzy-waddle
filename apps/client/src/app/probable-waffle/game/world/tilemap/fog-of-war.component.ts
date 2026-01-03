@@ -232,8 +232,8 @@ export class FogOfWarComponent {
         alphaUnexplored = this.ALPHA_UNEXPLORED_PE_EXPLORED_MODE;
         break;
       case FogOfWarMode.ALL_VISIBLE:
-        alphaUnexplored = 0; // No fog
-        break;
+        // no fog
+        return;
     }
 
     // Draw fog for the entire map

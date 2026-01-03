@@ -25,6 +25,8 @@ export default class Tree4 extends Phaser.GameObjects.Image {
     /* END-USER-CTR-CODE */
   }
 
+  public override z: number = 0;
+
   /* START-USER-CODE */
   override name = ObjectNames.Tree4;
   // Write your code here.

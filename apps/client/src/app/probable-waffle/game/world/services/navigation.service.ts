@@ -327,12 +327,12 @@ export class NavigationService {
     return false;
   }
 
-  private async findPath(fromTileXY: Vector2Simple, toTileXY: Vector2Simple): Promise<Vector2Simple[]> {
+  private async findPath(fromTileXY: Vector2Simple, toTileXY: Vector2Simple): Promise<Vector2Simple[] | null> {
     return new Promise((resolve) => {
       this.easyStar.findPath(fromTileXY.x, fromTileXY.y, toTileXY.x, toTileXY.y, (path) => {
         if (!path) {
           // console.log("Path was not found.");
-          resolve([]);
+          resolve(null);
         } else {
           if (path.length === 0) {
             resolve([]);
@@ -456,13 +456,13 @@ export class NavigationService {
   async randomTileInNavigableRadius(
     currentTile: Vector2Simple,
     radiusFromCurrentTile: number
-  ): Promise<Vector2Simple | undefined> {
+  ): Promise<Vector2Simple | null> {
     // 1. Get a list of valid tile coordinates within the radius
     const validTiles = this.validTilesInRadiusOfCurrentTile(currentTile, radiusFromCurrentTile, true);
 
     // 2. Ensure there are valid tiles within the radius
     if (validTiles.length === 0) {
-      return;
+      return null;
     }
 
     // 3. Randomly pick tiles until a reachable one within the radius is found
@@ -475,20 +475,22 @@ export class NavigationService {
       // Check path to the random tile
       const path = await this.findPath(currentTile, tile);
 
-      // Calculate path length based on XY distances:
-      const sumPathLengthByXY = path.reduce((sum, node, index) => {
-        const previousNode = index === 0 ? currentTile : path[index - 1]; // Use currentTile as the "previous" for the first node
-        if (!previousNode) return sum;
-        const dx = Math.abs(node.x - previousNode.x);
-        const dy = Math.abs(node.y - previousNode.y);
-        // If diagonal movement is allowed, count diagonal steps as 1.414 tiles (approximate square root of 2)
-        const diagonalCost = Math.sqrt(2); // Precalculate for efficiency
-        const distance = dx + dy + (dx * dy === 1 ? diagonalCost - 2 : 0);
-        return sum + distance;
-      }, 0);
+      if (!!path) {
+        // Calculate path length based on XY distances:
+        const sumPathLengthByXY = path.reduce((sum, node, index) => {
+          const previousNode = index === 0 ? currentTile : path[index - 1]; // Use currentTile as the "previous" for the first node
+          if (!previousNode) return sum;
+          const dx = Math.abs(node.x - previousNode.x);
+          const dy = Math.abs(node.y - previousNode.y);
+          // If diagonal movement is allowed, count diagonal steps as 1.414 tiles (approximate square root of 2)
+          const diagonalCost = Math.sqrt(2); // Precalculate for efficiency
+          const distance = dx + dy + (dx * dy === 1 ? diagonalCost - 2 : 0);
+          return sum + distance;
+        }, 0);
 
-      if (path.length > 0 && sumPathLengthByXY <= radiusFromCurrentTile) {
-        return tile; // Reachable tile within radius found, return it
+        if (path.length > 0 && sumPathLengthByXY <= radiusFromCurrentTile) {
+          return tile; // Reachable tile within radius found, return it
+        }
       }
 
       attempts++;
@@ -496,7 +498,7 @@ export class NavigationService {
     }
 
     // all attempts failed
-    return;
+    return null;
   }
 
   public randomTileInRadius(currentTile: Vector2Simple, radiusTiles: number): Vector2Simple | undefined {
@@ -581,7 +583,7 @@ export class NavigationService {
   findPathFromGameObjectToTile(
     gameObject: Phaser.GameObjects.GameObject,
     toTile: Vector2Simple
-  ): Promise<Vector2Simple[]> {
+  ): Promise<Vector2Simple[] | null> {
     const currentTile = getCenterTileCoordUnderObject(this.tilemap, gameObject);
     if (!currentTile) return Promise.resolve([]);
     return this.findPath(currentTile, toTile);
@@ -591,11 +593,11 @@ export class NavigationService {
     gameObject: Phaser.GameObjects.GameObject,
     targetGameObject: Phaser.GameObjects.GameObject,
     radiusTiles: number | undefined = undefined
-  ): Promise<Vector2Simple[]> {
+  ): Promise<Vector2Simple[] | null> {
     return this.findAndUseWalkablePathBetweenGameObjectsWithRadius(gameObject, targetGameObject, radiusTiles);
   }
 
-  async findPathBetweenTiles(fromTile: Vector2Simple, toTile: Vector2Simple): Promise<Vector2Simple[]> {
+  async findPathBetweenTiles(fromTile: Vector2Simple, toTile: Vector2Simple): Promise<Vector2Simple[] | null> {
     return this.findPath(fromTile, toTile);
   }
 
@@ -611,9 +613,9 @@ export class NavigationService {
     gameObject: Phaser.GameObjects.GameObject,
     targetGameObject: Phaser.GameObjects.GameObject,
     radiusTiles?: number
-  ): Promise<Vector2Simple[]> {
+  ): Promise<Vector2Simple[] | null> {
     const fromTile = getCenterTileCoordUnderObject(this.tilemap, gameObject);
-    if (!fromTile) return Promise.resolve([]);
+    if (!fromTile) return null;
 
     // Step 2: Find the closest walkable tile around the building within the radius
     const closestWalkableTile = this.closestWalkableTileBetweenGameObjectsInRadius(
@@ -623,7 +625,7 @@ export class NavigationService {
     );
 
     if (!closestWalkableTile) {
-      return []; // Return an empty array if no walkable tile was found
+      return null; // Return an empty array if no walkable tile was found
     }
 
     // Step 3: Use EasyStar to find the path to the closest walkable tile
@@ -812,21 +814,22 @@ export class NavigationService {
         // Test each candidate tile for pathfinding reachability
         for (const candidate of candidateTiles) {
           const path = await this.findPath(targetTile, candidate);
+          if (path) {
+            // Calculate actual path length to ensure it's within radius
+            const pathLength = path.reduce((sum, node, index) => {
+              const previousNode = index === 0 ? targetTile : path[index - 1];
+              if (!previousNode) return sum;
+              const dx = Math.abs(node.x - previousNode.x);
+              const dy = Math.abs(node.y - previousNode.y);
+              // If diagonal movement is allowed, count diagonal steps as 1.414 tiles (approximate square root of 2)
+              const diagonalCost = Math.sqrt(2);
+              const distance = dx + dy + (dx * dy === 1 ? diagonalCost - 2 : 0);
+              return sum + distance;
+            }, 0);
 
-          // Calculate actual path length to ensure it's within radius
-          const pathLength = path.reduce((sum, node, index) => {
-            const previousNode = index === 0 ? targetTile : path[index - 1];
-            if (!previousNode) return sum;
-            const dx = Math.abs(node.x - previousNode.x);
-            const dy = Math.abs(node.y - previousNode.y);
-            // If diagonal movement is allowed, count diagonal steps as 1.414 tiles (approximate square root of 2)
-            const diagonalCost = Math.sqrt(2);
-            const distance = dx + dy + (dx * dy === 1 ? diagonalCost - 2 : 0);
-            return sum + distance;
-          }, 0);
-
-          if (path.length > 0 && pathLength <= maxRadius) {
-            return candidate; // Found reachable unoccupied tile within radius
+            if (path.length > 0 && pathLength <= maxRadius) {
+              return candidate; // Found reachable unoccupied tile within radius
+            }
           }
         }
       }

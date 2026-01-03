@@ -38,11 +38,12 @@ import { TilemapComponent } from "../../world/tilemap/tilemap.component";
 import type { IsoDirection } from "../components/movement/iso-directions";
 import type { PathMoveConfig } from "./path-move-config";
 import Tween = Phaser.Tweens.Tween;
+import TweenChain = Phaser.Tweens.TweenChain;
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class MovementSystem {
   private _navigationService?: NavigationService;
-  private _currentTween?: Tween;
+  private _currentTween?: Tween | TweenChain;
   private readonly DEBUG = false;
   private playerChangedSubscription?: Subscription;
   private actorTranslateComponent?: ActorTranslateComponent;
@@ -129,7 +130,7 @@ export class MovementSystem {
     if (!this.navigationService) return false;
 
     const path = await this.navigationService.findPathFromGameObjectToTile(this.gameObject, tileVec3);
-    if (!path.length) return false;
+    if (!path || !path.length) return false;
 
     if (this.DEBUG) console.log(`Moving to tile ${tileVec3.x}, ${tileVec3.y}`);
 
@@ -152,7 +153,7 @@ export class MovementSystem {
     gameObject: GameObject,
     pathMoveConfig?: Partial<PathMoveConfig>
   ): Promise<boolean> {
-    const flyingComponent = getActorComponent(gameObject, FlyingComponent);
+    const flyingComponent = getActorComponent(this.gameObject, FlyingComponent);
     const usePathfinding = !flyingComponent;
     if (!usePathfinding) {
       const vec3 = getGameObjectCurrentTile(gameObject);
@@ -201,7 +202,7 @@ export class MovementSystem {
       destinationGameObject,
       pathMoveConfig?.radiusTilesAroundDestination
     );
-    if (!path.length) return false;
+    if (!path || !path.length) return false;
 
     if (this.DEBUG) this.navigationService.drawDebugPath(path);
 
@@ -213,49 +214,91 @@ export class MovementSystem {
       // Remove the first tile, as it's the current tile
       path.shift();
 
-      // Start moving along the first step of the path
+      // Store the target for potential path recalculation
+      this.targetGameObject = destinationGameObject;
+
+      // Start moving along the path with smoother transitions
       if (path.length > 0) {
-        const nextTile = path[0]!;
-        const tileWorldXY = this.navigationService?.getTileWorldCenter(nextTile);
-        if (!tileWorldXY) return false;
-
-        // Get the walkable height at the destination tile
-        const walkableHeight = this.navigationService?.getWalkableHeightAtTile(nextTile) ?? 0;
-        const newLogicalTransform = {
-          x: tileWorldXY.x,
-          y: tileWorldXY.y,
-          z: walkableHeight
-        } as Vector3Simple;
-
-        const onComplete = () => {
-          // After completing one step, call the callback
-          pathMoveConfig?.onComplete?.();
-
-          // If still following, calculate a new path from the current position
-          if (this.targetGameObject) {
-            this.calculateAndFollowPathOfMovingTarget(this.targetGameObject, pathMoveConfig);
-          } else if (path.length > 1) {
-            // If not following but there are more steps, continue the path
-            path.shift(); // Remove the step we just completed
-            this.moveAlongPathByFollowingPreCalculatedStaticPath(path, pathMoveConfig);
-          } else {
-            // End of path and not following
-            this.playMovementAnimation(false, pathMoveConfig);
-          }
-        };
-
-        const onStop = () => {
-          pathMoveConfig?.onStop?.();
-          // no need to stop animation, otherwise it's not smooth
-        };
-
-        await this.startMovementTween(newLogicalTransform, pathMoveConfig, onComplete, onStop);
+        await this.moveAlongDynamicPath(path, pathMoveConfig);
+      } else {
+        // Target is adjacent, complete immediately
+        pathMoveConfig?.onComplete?.();
+        this.playMovementAnimation(false, pathMoveConfig);
       }
 
       return true;
     } catch (e) {
       return false;
     }
+  }
+
+  /**
+   * Moves along a path while allowing for dynamic recalculation.
+   * This provides smoother movement than the recursive approach.
+   */
+  private async moveAlongDynamicPath(path: Vector2Simple[], config?: Partial<PathMoveConfig>): Promise<void> {
+    if (!path.length) {
+      config?.onComplete?.();
+      this.playMovementAnimation(false, config);
+      this.targetGameObject = undefined;
+      return;
+    }
+
+    const nextTile = path.shift();
+    if (!nextTile) return Promise.reject("No next tile to move to");
+
+    this.cancelMovement();
+    config?.onPathUpdate?.(nextTile);
+
+    const onComplete = async () => {
+      // Check if we still have a target to follow
+      if (this.targetGameObject && this.targetGameObject.active) {
+        // Recalculate path to the moving target
+        try {
+          const newPath = await this.getPathToClosestWalkableTileBetweenGameObjectsInRadius(
+            this.targetGameObject,
+            config?.radiusTilesAroundDestination
+          );
+
+          if (newPath && newPath.length > 1) {
+            // Remove current position from new path
+            newPath.shift();
+            // Continue with the new path
+            await this.moveAlongDynamicPath(newPath, config);
+          } else {
+            // Reached target or no path available
+            config?.onComplete?.();
+            this.playMovementAnimation(false, config);
+            this.targetGameObject = undefined;
+          }
+        } catch (error) {
+          // Path calculation failed, try to continue with remaining original path
+          if (path.length > 0) {
+            await this.moveAlongDynamicPath(path, config);
+          } else {
+            config?.onComplete?.();
+            this.playMovementAnimation(false, config);
+            this.targetGameObject = undefined;
+          }
+        }
+      } else if (path.length > 0) {
+        // Continue with remaining path if no target to follow
+        await this.moveAlongDynamicPath(path, config);
+      } else {
+        // End of path
+        config?.onComplete?.();
+        this.playMovementAnimation(false, config);
+        this.targetGameObject = undefined;
+      }
+    };
+
+    const onStop = () => {
+      config?.onStop?.();
+      this.playMovementAnimation(false, config);
+      this.targetGameObject = undefined;
+    };
+
+    return this.moveActorToTileWithTween(nextTile, config, onComplete, onStop);
   }
 
   /**
@@ -289,14 +332,9 @@ export class MovementSystem {
     }
     const nextTile = path.shift();
     if (!nextTile) return Promise.reject("No next tile to move to");
-    const tileWorldXY = this.navigationService?.getTileWorldCenter(nextTile);
-    if (!tileWorldXY) return Promise.reject("No tile world xy to move to");
+
     this.cancelMovement();
     config?.onPathUpdate?.(nextTile);
-
-    // Get the walkable height at the destination tile
-    const walkableHeight = this.navigationService?.getWalkableHeightAtTile(nextTile) ?? 0;
-    const newLogicalTransform = { ...tileWorldXY, z: walkableHeight } as Vector3Simple;
 
     const onComplete = async () => {
       await this.moveAlongPathByFollowingPreCalculatedStaticPath(path, config);
@@ -306,6 +344,32 @@ export class MovementSystem {
       config?.onStop?.();
       this.playMovementAnimation(false, config);
     };
+
+    return this.moveActorToTileWithTween(nextTile, config, onComplete, onStop);
+  }
+
+  /**
+   * Common movement handler for moving an actor to a specific tile using tweens.
+   * Extracts the tile-to-world conversion and tween setup logic used across multiple movement methods.
+   *
+   * @param tile The destination tile coordinates
+   * @param config Optional movement configuration
+   * @param onComplete Optional callback when movement completes
+   * @param onStop Optional callback when movement is stopped
+   * @returns Promise<void> - resolves when movement is completed
+   */
+  private async moveActorToTileWithTween(
+    tile: Vector2Simple,
+    config?: PathMoveConfig | Partial<PathMoveConfig>,
+    onComplete?: (() => void) | (() => Promise<void>),
+    onStop?: () => void
+  ): Promise<void> {
+    const tileWorldXY = this.navigationService?.getTileWorldCenter(tile);
+    if (!tileWorldXY) return Promise.reject("No tile world xy to move to");
+
+    // Get the walkable height at the destination tile
+    const walkableHeight = this.navigationService?.getWalkableHeightAtTile(tile) ?? 0;
+    const newLogicalTransform = { ...tileWorldXY, z: walkableHeight } as Vector3Simple;
 
     return this.startMovementTween(newLogicalTransform, config, onComplete, onStop);
   }
@@ -395,8 +459,15 @@ export class MovementSystem {
       const logicalTransform = { ...representableComponent.logicalWorldTransform };
       const baseDuration = actorTranslateComponent?.actorTranslateDefinition?.tileMoveDuration;
       if (typeof baseDuration !== "number") return reject("No tile move duration defined");
-      const duration = Math.max(baseDuration * (tileDistanceMultiplier || 1), baseDuration);
-      // Apply scaled duration to keep per-tile timing consistent for direct (flying) movement.
+      const standardStepDistance = this.getStandardStepDistance();
+      const duration = this.calculateDuration(
+        baseDuration,
+        logicalTransform,
+        newLogicalTransform,
+        standardStepDistance,
+        tileDistanceMultiplier
+      );
+
       this._currentTween = this.gameObject.scene.tweens.add({
         targets: logicalTransform,
         x: newLogicalTransform.x,
@@ -427,6 +498,26 @@ export class MovementSystem {
     });
   }
 
+  private getStandardStepDistance(): number {
+    const tileWidth = this.tileMapComponent.tilemap.tileWidth;
+    const tileHeight = this.tileMapComponent.tilemap.tileHeight;
+    return tileWidth && tileHeight ? Math.sqrt(Math.pow(tileWidth / 2, 2) + Math.pow(tileHeight / 2, 2)) : 0;
+  }
+
+  private calculateDuration(
+    baseDuration: number,
+    from: { x: number; y: number },
+    to: { x: number; y: number },
+    standardStepDistance: number,
+    tileDistanceMultiplier: number = 1
+  ): number {
+    if (standardStepDistance > 0) {
+      const dist = Phaser.Math.Distance.Between(from.x, from.y, to.x, to.y);
+      return (dist / standardStepDistance) * baseDuration;
+    }
+    return Math.max(baseDuration * tileDistanceMultiplier, baseDuration);
+  }
+
   private onMovementStart(newTileWorldXY: Vector3Simple, config?: PathMoveConfig | Partial<PathMoveConfig>) {
     this.playMovementSound();
     if (this.actorTranslateComponent) this.actorTranslateComponent.updateDirection(newTileWorldXY);
@@ -450,6 +541,7 @@ export class MovementSystem {
   private playMovementAnimation(isMoving: boolean, config?: PathMoveConfig) {
     if (!this.animationActorComponent) return;
     if (config?.ignoreAnimations) return;
+    if (!this.gameObject.active) return;
     const isKilled = getActorComponent(this.gameObject, HealthComponent)?.killed ?? false;
     if (isKilled) return;
     this.animationActorComponent.playOrderAnimation(isMoving ? OrderType.Move : OrderType.Stop);
@@ -485,21 +577,22 @@ export class MovementSystem {
 
   private destroy() {
     this.cancelMovement();
+    this.targetGameObject = undefined;
     this.shiftKey?.destroy();
     this.playerChangedSubscription?.unsubscribe();
   }
 
   async canMoveTo(targetGameObject: Phaser.GameObjects.GameObject, range?: number): Promise<boolean> {
     const path = await this.getPathToClosestWalkableTileBetweenGameObjectsInRadius(targetGameObject, range);
-    return path.length > 0;
+    return !!path && path.length > 0;
   }
 
   async getPathToClosestWalkableTileBetweenGameObjectsInRadius(
     targetGameObject: Phaser.GameObjects.GameObject,
     range?: number
-  ): Promise<Vector2Simple[]> {
-    if (!this.navigationService) return [];
-    return await this.navigationService.findAndUseWalkablePathBetweenGameObjectsWithRadius(
+  ): Promise<Vector2Simple[] | null> {
+    if (!this.navigationService) throw new Error("No navigationService");
+    return this.navigationService.findAndUseWalkablePathBetweenGameObjectsWithRadius(
       this.gameObject,
       targetGameObject,
       range
@@ -583,17 +676,13 @@ export class MovementSystem {
 
       // Check if the assigned point is valid and reachable
       if (this.navigationService.isTileWalkable(destinationTile)) {
-        try {
-          const path = await this.navigationService.findPathFromGameObjectToTile(this.gameObject, destinationTile);
-          if (path.length > 0) {
-            return {
-              x: destinationTile.x,
-              y: destinationTile.y,
-              z: tileVec3.z // Keep the original Z coordinate
-            } satisfies Vector3Simple;
-          }
-        } catch (e) {
-          // Path not found, will fallback
+        const path = await this.navigationService.findPathFromGameObjectToTile(this.gameObject, destinationTile);
+        if (path !== null && path.length > 0) {
+          return {
+            x: destinationTile.x,
+            y: destinationTile.y,
+            z: tileVec3.z // Keep the original Z coordinate
+          } satisfies Vector3Simple;
         }
       }
     }
@@ -629,7 +718,7 @@ export class MovementSystem {
 export async function getRandomTileInNavigableRadius(
   gameObject: Phaser.GameObjects.GameObject,
   radius: number
-): Promise<Vector2Simple | undefined> {
+): Promise<Vector2Simple | null> {
   const movementSystem = getActorSystem<MovementSystem>(gameObject, MovementSystem);
   if (!movementSystem) return Promise.reject("No movement system found");
   const flyingComponent = getActorComponent(gameObject, FlyingComponent);

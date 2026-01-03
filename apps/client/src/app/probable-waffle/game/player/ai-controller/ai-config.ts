@@ -29,9 +29,6 @@ export const AI_CONFIG = {
   housingBuffer: 3,
   // Production / supply planning
   unitQueueCooldownMs: 5000,
-  militaryUnitTargetAggressive: 12,
-  militaryUnitTargetDefensive: 8,
-  militaryUnitTargetEconomic: 6,
   hasEnoughResourcesForMilitaryUnitThreshold: 150,
   // Building placement search parameters
   buildingPlacementSearchStartRadius: 2,
@@ -40,6 +37,5 @@ export const AI_CONFIG = {
   buildingPlacementSearchStep: 2,
   buildingPlacementRandomOffsetRange: 10,
   // Base planning stale timing
-  baseReplanStaleMs: 4000,
-  fallbackVisibleEnemyLimit: 3
+  baseReplanStaleMs: 4000
 };

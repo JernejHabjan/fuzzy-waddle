@@ -2,16 +2,18 @@ import { Blackboard } from "../../ai/blackboard";
 import { ObjectNames, ResourceType, type Vector2Simple, type Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import type { MapAnalysis } from "./ai-behavior/map-analyzer";
 import { ReservationPool } from "./resource-reservations";
+import { getActorComponent } from "../../data/actor-component";
+import { PawnAiController } from "../../prefabs/ai-agents/pawn-ai-controller";
 import GameObject = Phaser.GameObjects.GameObject;
+
+export interface EnemyIntel {
+  strength: number;
+  unitsInCombat: number;
+  flankOpen: boolean;
+}
 
 export class PlayerAiBlackboard extends Blackboard {
   constructor(
-    public resources: Record<ResourceType, number> = {
-      ambrosia: 0,
-      minerals: 0,
-      stone: 0,
-      wood: 0
-    },
     public units: Phaser.GameObjects.GameObject[] = [],
     public workers: Phaser.GameObjects.GameObject[] = [],
     public defendingUnits: GameObject[] = [], // Units assigned for base defense
@@ -24,15 +26,12 @@ export class PlayerAiBlackboard extends Blackboard {
     public productionBuildings: GameObject[] = [], // Buildings that produce resources or military units
     public defensiveStructures: GameObject[] = [], // Defensive buildings like towers, walls, etc.
     public gatheringStructures: GameObject[] = [], // Resource gathering buildings
-    public desiredProductionBuildings: number = 3, // Desired number of production buildings
-    public desiredDefensiveStructures: number = 3, // Desired number of defensive buildings
-    public desiredResourceGatheringBuildings: number = 1, // Desired number of resource gathering buildings
     public baseSize: number = 0, // Current size of the player's base (based on expansion)
-    public desiredBaseSize: number = 3, // Desired size of the player's base (expansion goal)
     public upgradeBuilding: Phaser.GameObjects.GameObject | null = null, // Building responsible for upgrades (tech or unit)
     public militaryStrength: number = 0, // Overall military power
     public enemyMilitaryStrength: number = 0, // Estimated enemy military strength
     public enemyFlankOpen: boolean = false, // Is the enemy's flank open for an attack?
+    public enemyIntel: Record<number, EnemyIntel> = {}, // Per-enemy intel
     public enemiesInCombat: any[] = [], // Enemies currently engaged in combat
     public currentStrategy: string = "defensive", // Current strategy: "aggressive", "defensive", "economic"
     // Map analysis/cache (phase 1)
@@ -53,14 +52,15 @@ export class PlayerAiBlackboard extends Blackboard {
   ) {
     super();
     this.economy = {
-      resources: this.resources,
+      resources: { minerals: 0, stone: 0, wood: 0 },
       // Placeholder income/surplus structures (populated via updateFromWorld)
-      incomePerSecond: { ambrosia: 0, minerals: 0, stone: 0, wood: 0 },
+      incomeInstant: { minerals: 0, stone: 0, wood: 0 },
+      incomeSmoothed: { minerals: 0, stone: 0, wood: 0 },
       lastIncomeSampleAt: 0,
-      lastIncomeSnapshot: { ambrosia: 0, minerals: 0, stone: 0, wood: 0 },
-      reserved: { ambrosia: 0, minerals: 0, stone: 0, wood: 0 },
+      lastIncomeSnapshot: { minerals: 0, stone: 0, wood: 0 },
+      reserved: { minerals: 0, stone: 0, wood: 0 },
       get available() {
-        const out: Record<ResourceType, number> = { ambrosia: 0, minerals: 0, stone: 0, wood: 0 };
+        const out: Record<ResourceType, number> = { minerals: 0, stone: 0, wood: 0 };
         for (const k in out) {
           const r = k as ResourceType;
           out[r] = (this.resources[r] ?? 0) - (this.reserved[r] ?? 0);
@@ -73,8 +73,6 @@ export class PlayerAiBlackboard extends Blackboard {
       trainingBuildings: this.trainingBuildings,
       productionBuildings: this.productionBuildings,
       defensiveStructures: this.defensiveStructures,
-      desiredProductionBuildings: this.desiredProductionBuildings,
-      desiredDefensiveStructures: this.desiredDefensiveStructures,
       supply: {
         used: 0,
         max: 0,
@@ -88,6 +86,7 @@ export class PlayerAiBlackboard extends Blackboard {
     this.army = {
       militaryStrength: this.militaryStrength,
       enemyMilitaryStrength: this.enemyMilitaryStrength,
+      enemyIntel: this.enemyIntel,
       defendingUnits: this.defendingUnits,
       enemiesInCombat: this.enemiesInCombat,
       visibleEnemies: this.visibleEnemies,
@@ -110,7 +109,6 @@ export class PlayerAiBlackboard extends Blackboard {
 
     this.strategy = {
       current: this.currentStrategy,
-      desiredBaseSize: this.desiredBaseSize,
       baseSize: this.baseSize,
       modeLockedUntil: 0
     };
@@ -144,27 +142,17 @@ export class PlayerAiBlackboard extends Blackboard {
   }
 
   getMostNeededResource(): { type: ResourceType; amount: number } | null {
-    // Example heuristic based on wood only (placeholder)
-    // Enhanced: now examines all tracked resources and returns the lowest stock (excluding zero-total case).
-    let lowest: { type: ResourceType; amount: number } | null = null;
-    for (const key in this.resources) {
-      const r = key as ResourceType;
-      const amt = this.resources[r] ?? 0;
-      if (lowest === null || amt < lowest.amount) {
-        lowest = { type: r, amount: amt };
-      }
-    }
-    if (!lowest) return null;
-    // Target buffer logic (very naive): request enough to bring to tier thresholds
-    if (lowest.amount < 200) return { type: lowest.type, amount: 300 };
-    if (lowest.amount < 500) return { type: lowest.type, amount: 200 };
+    // This method is kept for backward compatibility but currently returns null
+    // The actual logic is in LogisticsManager.getMostConstrainedResource()
+    // If you need urgency calculation here, pass the logistics manager as a parameter
+    // to methods that call this, or refactor to use LogisticsManager directly
     return null;
   }
 
   getTotalResources(): number {
     let total = 0;
-    for (const key in this.resources) {
-      total += this.resources[key as ResourceType] ?? 0;
+    for (const key in this.economy.resources) {
+      total += this.economy.resources[key as ResourceType] ?? 0;
     }
     return total;
   }
@@ -173,7 +161,7 @@ export class PlayerAiBlackboard extends Blackboard {
     for (const key in cost) {
       const r = key as ResourceType;
       const needed = cost[r] ?? 0;
-      if ((this.resources[r] ?? 0) < needed) return false;
+      if ((this.economy.resources[r] ?? 0) < needed) return false;
     }
     return true;
   }
@@ -185,10 +173,23 @@ export class PlayerAiBlackboard extends Blackboard {
     throw new Error("Method not implemented.");
   }
 
+  /**
+   * Returns a list of workers that are currently idle.
+   */
+  getIdleWorkers(): GameObject[] {
+    return this.workers.filter((worker) => {
+      const payerPawnAiController = getActorComponent(worker, PawnAiController);
+      if (!payerPawnAiController) return false;
+      const order = payerPawnAiController.blackboard.getCurrentOrder();
+      return !order;
+    });
+  }
+
   // Slices
   public readonly economy!: {
     resources: Record<ResourceType, number>;
-    incomePerSecond: Record<ResourceType, number>;
+    incomeInstant: Record<ResourceType, number>;
+    incomeSmoothed: Record<ResourceType, number>;
     lastIncomeSampleAt: number;
     lastIncomeSnapshot: Record<ResourceType, number>;
     reserved: Record<ResourceType, number>;
@@ -198,8 +199,6 @@ export class PlayerAiBlackboard extends Blackboard {
     trainingBuildings: Phaser.GameObjects.GameObject[];
     productionBuildings: any[]; // align w/ existing field type
     defensiveStructures: any[];
-    desiredProductionBuildings: number;
-    desiredDefensiveStructures: number;
     supply: {
       used: number;
       max: number;
@@ -222,6 +221,7 @@ export class PlayerAiBlackboard extends Blackboard {
   public readonly army!: {
     militaryStrength: number;
     enemyMilitaryStrength: number;
+    enemyIntel: Record<number, EnemyIntel>;
     defendingUnits: any[];
     enemiesInCombat: any[];
     visibleEnemies: any[];
@@ -241,7 +241,6 @@ export class PlayerAiBlackboard extends Blackboard {
   };
   public readonly strategy!: {
     current: string;
-    desiredBaseSize: number;
     baseSize: number;
     modeLockedUntil: number; // ms timestamp until which strategy is locked
   };
@@ -288,9 +287,9 @@ export class PlayerAiBlackboard extends Blackboard {
     if (cache.horizonMs === horizonMs && now - cache.lastComputedAt < 250) return cache.value;
     const seconds = horizonMs / 1000;
     let total = 0;
-    for (const k in this.economy.incomePerSecond) {
+    for (const k in this.economy.incomeSmoothed) {
       const r = k as ResourceType;
-      total += (this.economy.incomePerSecond[r] || 0) * seconds;
+      total += (this.economy.incomeSmoothed[r] || 0) * seconds;
     }
     cache.value = total;
     cache.horizonMs = horizonMs;
@@ -326,7 +325,7 @@ export class PlayerAiBlackboard extends Blackboard {
     for (const k in cost) {
       const r = k as ResourceType;
       const needed = cost[r] || 0;
-      const available = (this.resources[r] || 0) - (this.economy.reserved[r] || 0);
+      const available = (this.economy.resources[r] || 0) - (this.economy.reserved[r] || 0);
       if (available < needed) {
         // track denial
         this.diagnostics.reservationsDenied = (this.diagnostics.reservationsDenied || 0) + 1;
@@ -339,10 +338,10 @@ export class PlayerAiBlackboard extends Blackboard {
     this.economy.reserved = totals; // overwrite (breaking change acceptable)
     this.diagnostics.reservationsGranted = (this.diagnostics.reservationsGranted || 0) + 1;
     // Sanity: negative available detection
-    for (const r of Object.keys(this.resources) as ResourceType[]) {
-      if ((this.resources[r] || 0) - (totals[r] || 0) < 0) {
+    for (const r of Object.keys(this.economy.resources) as ResourceType[]) {
+      if ((this.economy.resources[r] || 0) - (totals[r] || 0) < 0) {
         // eslint-disable-next-line no-console
-        console.warn("Reservation over-allocation detected", r, this.resources[r], totals[r]);
+        console.warn("Reservation over-allocation detected", r, this.economy.resources[r], totals[r]);
       }
     }
     return res.id;

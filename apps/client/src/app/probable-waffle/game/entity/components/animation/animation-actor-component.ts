@@ -69,6 +69,7 @@ export class AnimationActorComponent {
   }
 
   private setDirection(direction: IsoDirection) {
+    if (this.currentDirection === direction) return;
     this.currentDirection = direction;
     // If there's a current animation playing, update it with the new direction
     if (this.currentAnimation && this.sprite) {

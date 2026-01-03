@@ -301,8 +301,6 @@ export class CursorHandler {
     if (resourceSource) {
       if (hasSelectedActors && selectedActors.some((actor) => !!getActorComponent(actor, GathererComponent))) {
         switch (resourceSource.resourceSourceDefinition.resourceType) {
-          case ResourceType.Ambrosia:
-            return CursorType.MagicUseGreen;
           case ResourceType.Wood:
             return CursorType.ChopGreen;
           case ResourceType.Stone:
