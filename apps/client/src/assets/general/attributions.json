@@ -1095,5 +1095,26 @@
     "name": "Cryo's Mini GUI",
     "author": "https://paperhatlizard.itch.io/",
     "reason": "GUI assets for Ashes of the Ancients"
+  },
+  {
+    "type": "Art",
+    "url": "https://minzinn.itch.io/pixel-boats-top-down-game-assets-32x32-64x64-pixel-art-free",
+    "name": "Pixel Boats - Top Down Game Assets - 32x32 - 64x64 Pixel Art - Free",
+    "author": "https://minzinn.itch.io/",
+    "reason": "Boat assets for Ashes of the Ancients"
+  },
+  {
+    "type": "Art",
+    "url": "https://helianthus-games.itch.io/pixel-art-viking-ship-16-directions",
+    "name": "FREE pixel art Viking ship 16 directions",
+    "author": "https://helianthus-games.itch.io/",
+    "reason": "Boat assets for Ashes of the Ancients"
+  },
+  {
+    "type": "Art",
+    "url": "https://rdallafior.itch.io/frozen-depths",
+    "name": "Exploration of the Frozen Depths",
+    "author": "https://rdallafior.itch.io/",
+    "reason": "Environment assets for Ashes of the Ancients"
   }
 ]
