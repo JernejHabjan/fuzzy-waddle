@@ -1116,5 +1116,16 @@
     "name": "Exploration of the Frozen Depths",
     "author": "https://rdallafior.itch.io/",
     "reason": "Environment assets for Ashes of the Ancients"
+  },
+  {
+    "type": "Art",
+    "url": "https://opengameart.org/content/lpc-siege-weapons",
+    "name": "[LPC] Siege Weapons",
+    "author": "https://opengameart.org/users/bluecarrot16",
+    "reason": "Siege weapons for Ashes of the Ancients",
+    "license": {
+      "url": "https://creativecommons.org/licenses/by/4.0/",
+      "name": "CC-BY-4.0"
+    }
   }
 ]
