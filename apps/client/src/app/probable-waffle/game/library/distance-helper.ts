@@ -1,5 +1,7 @@
 import { getGameObjectCurrentTile } from "../data/game-object-helper";
 import type { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import { getSceneService } from "../world/services/scene-component-helpers";
+import { NavigationService } from "../world/services/navigation.service";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class DistanceHelper {
@@ -27,5 +29,29 @@ export class DistanceHelper {
     // noinspection UnnecessaryLocalVariableJS
     const distance = Math.sqrt(Math.pow(actorTile.x - tile.x, 2) + Math.pow(actorTile.y - tile.y, 2));
     return Math.floor(distance);
+  }
+
+  static async getTileDistanceBetweenGameObjectsNavigation(
+    actor1: GameObject,
+    actor2: GameObject
+  ): Promise<number | null> {
+    const navigationService = getSceneService(actor1.scene, NavigationService);
+    if (!navigationService) return null;
+
+    const path = await navigationService.findPathBetweenGameObjects(actor1, actor2);
+    if (!path) return null;
+    return path.length;
+  }
+
+  static async getTileDistanceBetweenGameObjectAndTileNavigation(
+    actor: GameObject,
+    tile: Vector3Simple
+  ): Promise<number | null> {
+    const navigationService = getSceneService(actor.scene, NavigationService);
+    if (!navigationService) return null;
+
+    const path = await navigationService.findPathFromGameObjectToTile(actor, tile);
+    if (!path) return null;
+    return path.length;
   }
 }

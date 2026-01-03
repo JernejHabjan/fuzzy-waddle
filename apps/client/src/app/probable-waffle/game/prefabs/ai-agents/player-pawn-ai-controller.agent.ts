@@ -9,11 +9,7 @@ import { VisionComponent } from "../../entity/components/vision-component";
 import { DistanceHelper } from "../../library/distance-helper";
 import { AttackComponent } from "../../entity/components/combat/components/attack-component";
 import { getActorSystem } from "../../data/actor-system";
-import {
-  getRandomTileInNavigableRadius,
-  MovementSystem,
-  type PathMoveConfig
-} from "../../entity/systems/movement.system";
+import { getRandomTileInNavigableRadius, MovementSystem } from "../../entity/systems/movement.system";
 import { OrderLabelToTypeMap, OrderType } from "../../ai/order-type";
 import { PawnAiBlackboard } from "./pawn-ai-blackboard";
 import { GathererComponent } from "../../entity/components/resource/gatherer-component";
@@ -27,6 +23,7 @@ import { OrderData } from "../../ai/OrderData";
 import { HealingComponent } from "../../entity/components/combat/components/healing-component";
 import { ConstructionSiteComponent } from "../../entity/components/construction/construction-site-component";
 import { AnimationActorComponent } from "../../entity/components/animation/animation-actor-component";
+import type { PathMoveConfig } from "../../entity/systems/path-move-config";
 
 export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
   constructor(
@@ -68,6 +65,12 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
     return healthComponent.alive;
   }
 
+  SelfIsAlive() {
+    const healthComponent = getActorComponent(this.gameObject, HealthComponent);
+    if (!healthComponent) return true; // if no health component, assume alive
+    return healthComponent.alive;
+  }
+
   async InRange(type: PlayerPawnRangeType): Promise<State> {
     const currentOrder = this.blackboard.getCurrentOrder();
     if (!currentOrder) return State.FAILED;
@@ -83,6 +86,15 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
           targetGameObject,
           range
         );
+        if (nrTiles === null) {
+          console.warn(
+            "InRange: Unable to calculate path to target game object. Current game object:",
+            this.gameObject,
+            "Target game object:",
+            targetGameObject
+          );
+          return State.FAILED;
+        }
         distance = nrTiles.length;
       } else {
         distance = DistanceHelper.getTileDistanceBetweenGameObjects(this.gameObject, targetGameObject);
@@ -151,7 +163,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
           // if the target is not alive, stop moving
           const healthComponent = getActorComponent(target, HealthComponent);
           if (healthComponent && healthComponent.killed) {
-            this.Stop();
+            this.Stop("MoveToTarget");
           }
         }
       } satisfies Partial<PathMoveConfig>);
@@ -206,12 +218,14 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
       return success ? State.SUCCEEDED : State.FAILED;
     } catch (e) {
       // console.error("Error in MoveToLocation", e);
-      this.Stop();
+      this.Stop("MoveToLocation");
       return State.FAILED;
     }
   }
 
-  Stop = () => {
+  Stop = (fromNode: string) => {
+    // console.log(`Stop called from node: ${fromNode}`);
+
     const currentOrder = this.blackboard.getCurrentOrder();
     if (currentOrder) {
       // exit container
@@ -236,9 +250,19 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
           }
           break;
       }
+
+      // cancel any ongoing attack (e.g., active projectile flight)
+      const attackComponent = getActorComponent(this.gameObject, AttackComponent);
+      if (attackComponent) {
+        attackComponent.cancelCurrentAttack();
+      }
+
       this.blackboard.resetCurrentOrder(false);
       const animationActorComponent = getActorComponent(this.gameObject, AnimationActorComponent);
-      if (animationActorComponent) animationActorComponent.playOrderAnimation(OrderType.Stop);
+      if (animationActorComponent) {
+        const healthComponent = getActorComponent(this.gameObject, HealthComponent);
+        if (!healthComponent || healthComponent.alive) animationActorComponent.playOrderAnimation(OrderType.Stop);
+      }
       const movementSystem = getActorSystem(this.gameObject, MovementSystem);
       movementSystem?.cancelMovement();
     }
@@ -250,10 +274,14 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
   Attack() {
     const currentOrder = this.blackboard.getCurrentOrder();
     if (!currentOrder) return State.FAILED;
+    if (!this.SelfIsAlive()) return State.FAILED;
     const target = currentOrder.data.targetGameObject;
     if (!target) return State.FAILED;
+    const targetHealth = getActorComponent(target, HealthComponent);
+    if (targetHealth && !targetHealth.alive) return State.FAILED;
     const attackComponent = getActorComponent(this.gameObject, AttackComponent);
     if (!attackComponent) return State.FAILED;
+    if (attackComponent.remainingCooldown > 0) return State.FAILED;
     attackComponent.useAttack(target);
     return State.SUCCEEDED;
   }
@@ -287,15 +315,15 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
     return await movementSystem.canMoveTo(target, range);
   }
 
-  AcquireNewResourceSource() {
+  async AcquireNewResourceSource() {
     const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
     if (!gathererComponent) return State.FAILED;
-    let resourceSource = gathererComponent.getPreferredResourceSource();
+    let resourceSource = await gathererComponent.getPreferredResourceSource();
     const currentResources = resourceSource?.active
       ? getActorComponent(resourceSource, ResourceSourceComponent)?.getCurrentResources()
       : 0;
     if (!currentResources || currentResources <= 0) {
-      resourceSource = gathererComponent.getNewResourceSource();
+      resourceSource = await gathererComponent.getNewResourceSource();
     }
     if (!resourceSource) return State.FAILED;
     const currentOrder = this.blackboard.getCurrentOrder();
@@ -304,10 +332,10 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
     return State.SUCCEEDED;
   }
 
-  AcquireNewResourceDrain() {
+  async AcquireNewResourceDrain(): Promise<State> {
     const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
     if (!gathererComponent) return State.FAILED;
-    const resourceDrain = gathererComponent.getPreferredResourceDrain();
+    const resourceDrain = await gathererComponent.getPreferredResourceDrain();
     if (!resourceDrain) return State.FAILED;
     const currentOrder = this.blackboard.getCurrentOrder();
     if (!currentOrder) return State.FAILED;
@@ -318,10 +346,19 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
   async GatherResource(): Promise<State> {
     const currentOrder = this.blackboard.getCurrentOrder();
     if (!currentOrder) return State.FAILED;
+    if (!this.SelfIsAlive()) return State.FAILED;
+    const inRange = await this.InRange("gather");
+    if (inRange !== State.SUCCEEDED) return State.FAILED;
     const target = currentOrder.data.targetGameObject;
     if (!target) return State.FAILED;
+    const targetHealth = getActorComponent(target, HealthComponent);
+    if (targetHealth && !targetHealth.alive) return State.FAILED;
     const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
     if (!gathererComponent) return State.FAILED;
+    if (gathererComponent.remainingCooldown > 0) return State.FAILED;
+    if (gathererComponent.isCapacityFull()) return State.FAILED;
+    const resourceSourceComponent = getActorComponent(target, ResourceSourceComponent);
+    if (!resourceSourceComponent || resourceSourceComponent.getCurrentResources() <= 0) return State.FAILED;
     const successfullyStarted = gathererComponent.startGatheringResources(target);
     if (!successfullyStarted) return State.FAILED;
     await gathererComponent.gatherResources(target);
@@ -331,6 +368,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
   async DropOffResources() {
     const currentOrder = this.blackboard.getCurrentOrder();
     if (!currentOrder) return State.FAILED;
+    if (!this.SelfIsAlive()) return State.FAILED;
     const target = currentOrder.data.targetGameObject;
     if (!target) return State.FAILED;
     const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
@@ -368,11 +406,15 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
   ConstructBuilding() {
     const builderComponent = getActorComponent(this.gameObject, BuilderComponent);
     if (!builderComponent) return State.FAILED;
+    if (!this.SelfIsAlive()) return State.FAILED;
     const currentOrder = this.blackboard.getCurrentOrder();
     if (!currentOrder) return State.FAILED;
     const target = currentOrder.data.targetGameObject;
     if (!target) return State.FAILED;
-    if (!this.CanAssignBuilder()) return State.FAILED;
+    const constructionSiteComponent = getActorComponent(target, ConstructionSiteComponent);
+    if (!constructionSiteComponent) return State.FAILED;
+    if (!constructionSiteComponent.canAssignBuilder()) return State.FAILED;
+    if (builderComponent.remainingCooldown > 0) return State.FAILED;
     builderComponent.assignToConstructionSite(target);
     return State.SUCCEEDED;
   }
@@ -392,21 +434,36 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
   }
 
   Attacked() {
-    const attackedCooldown = 1000;
+    const attackedCooldown = 1000; // milliseconds
     const healthComponent = getActorComponent(this.gameObject, HealthComponent);
     if (!healthComponent) return false;
+
+    const latestDamage = healthComponent.latestDamage;
+    if (!latestDamage) return false;
+
+    // Use scene time for proper timeScale support
+    const scene = this.gameObject.scene;
+    const currentSceneTime = scene.time.now;
+    const damageSceneTime = latestDamage.sceneTime;
+    const sceneTimeSinceDamage = currentSceneTime - damageSceneTime;
+
     // noinspection UnnecessaryLocalVariableJS
-    const attacked = (healthComponent.latestDamage?.timestamp.getTime() ?? 0) > new Date().getTime() - attackedCooldown;
+    const attacked = sceneTimeSinceDamage < attackedCooldown;
     return attacked;
   }
 
   Heal(): State {
     const currentOrder = this.blackboard.getCurrentOrder();
     if (!currentOrder) return State.FAILED;
+    if (!this.SelfIsAlive()) return State.FAILED;
     const target = currentOrder.data.targetGameObject;
     if (!target) return State.FAILED;
+    const targetHealth = getActorComponent(target, HealthComponent);
+    if (!targetHealth || !targetHealth.alive) return State.FAILED;
+    if (targetHealth.healthIsFull) return State.FAILED;
     const healingComponent = getActorComponent(this.gameObject, HealingComponent);
     if (!healingComponent) return State.FAILED;
+    if (healingComponent.remainingCooldown > 0) return State.FAILED;
     healingComponent.heal(target);
     return State.SUCCEEDED;
   }
@@ -454,7 +511,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
   async AssignMoveRandomlyInRange(range: number) {
     const movementSystem = getActorSystem(this.gameObject, MovementSystem);
     if (!movementSystem) return State.FAILED;
-    let randomTile: Vector2Simple | undefined = undefined;
+    let randomTile: Vector2Simple | null = null;
     try {
       randomTile = await getRandomTileInNavigableRadius(this.gameObject, range);
       if (!randomTile) return State.FAILED;
@@ -550,14 +607,14 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
     return gathererComponent.isCapacityFull();
   }
 
-  AssignDropOffResourcesOrder(): State {
+  async AssignDropOffResourcesOrder(): Promise<State> {
     const currentOrder = this.blackboard.getCurrentOrder();
     if (!currentOrder) return State.FAILED;
 
     const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
     if (!gathererComponent) return State.FAILED;
 
-    const preferredResourceDrain = gathererComponent.getPreferredResourceDrain();
+    const preferredResourceDrain = await gathererComponent.getPreferredResourceDrain();
     if (!preferredResourceDrain) return State.FAILED;
 
     currentOrder.orderType = OrderType.ReturnResources;
@@ -565,14 +622,14 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
     return State.SUCCEEDED;
   }
 
-  AssignGatherResourcesOrder(): State {
+  async AssignGatherResourcesOrder(): Promise<State> {
     const currentOrder = this.blackboard.getCurrentOrder();
     if (!currentOrder) return State.FAILED;
 
     const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
     if (!gathererComponent) return State.FAILED;
 
-    const preferredResourceSource = gathererComponent.getPreferredResourceSource();
+    const preferredResourceSource = await gathererComponent.getPreferredResourceSource();
     if (!preferredResourceSource) return State.FAILED;
 
     currentOrder.orderType = OrderType.Gather;
@@ -601,10 +658,17 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
   RepairBuilding(): State {
     const currentOrder = this.blackboard.getCurrentOrder();
     if (!currentOrder) return State.FAILED;
+    if (!this.SelfIsAlive()) return State.FAILED;
     const target = currentOrder.data.targetGameObject;
     if (!target) return State.FAILED;
+    const targetHealth = getActorComponent(target, HealthComponent);
+    if (targetHealth && !targetHealth.alive) return State.FAILED;
     const builderComponent = getActorComponent(this.gameObject, BuilderComponent);
     if (!builderComponent) return State.FAILED;
+    const constructionSiteComponent = getActorComponent(target, ConstructionSiteComponent);
+    if (!constructionSiteComponent) return State.FAILED;
+    if (!constructionSiteComponent.canAssignRepairer()) return State.FAILED;
+    if (builderComponent.remainingCooldown > 0) return State.FAILED;
     builderComponent.assignToRepairSite(target);
     return State.SUCCEEDED;
   }

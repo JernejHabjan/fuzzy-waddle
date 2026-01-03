@@ -3,13 +3,8 @@ import { ContainerComponent } from "../building/container-component";
 import { Subject } from "rxjs";
 import { getActorComponent } from "../../../data/actor-component";
 import { getGameObjectRenderedTransform } from "../../../data/game-object-helper";
+import type { ResourceSourceDefinition } from "./resource-source-definition";
 import GameObject = Phaser.GameObjects.GameObject;
-
-export type ResourceSourceDefinition = {
-  resourceType: ResourceType;
-  maximumResources: number;
-  gatheringFactor: number;
-};
 
 export class ResourceSourceComponent {
   private static readonly debug = false;
@@ -19,7 +14,6 @@ export class ResourceSourceComponent {
   private currentResources: number;
   private containerComponent?: ContainerComponent;
   private gathererMustEnter = false;
-  private maximumCapacity = 0;
   private currentCapacity = 0;
   private depletedImage?: Phaser.GameObjects.Image;
   private scene?: Phaser.Scene;
@@ -27,7 +21,7 @@ export class ResourceSourceComponent {
 
   constructor(
     private readonly gameObject: GameObject,
-    private readonly resourceSourceDefinition: ResourceSourceDefinition
+    public readonly resourceSourceDefinition: ResourceSourceDefinition
   ) {
     this.currentResources = this.resourceSourceDefinition.maximumResources;
     this.init();
@@ -35,7 +29,6 @@ export class ResourceSourceComponent {
 
   init(): void {
     this.containerComponent = getActorComponent(this.gameObject, ContainerComponent);
-    this.maximumCapacity = this.containerComponent?.containerDefinition.capacity ?? 0;
     this.gathererMustEnter = !!this.containerComponent;
     this.scene = this.gameObject.scene;
     this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
@@ -47,8 +40,10 @@ export class ResourceSourceComponent {
       this.containerComponent?.loadGameObject(gatherer);
     }
 
-    await new Promise((resolve) => {
-      setTimeout(resolve, 1000); // todo read cooldown from elsewhere
+    await new Promise<void>((resolve) => {
+      this.gameObject.scene.time.delayedCall(this.resourceSourceDefinition.cooldown, () => {
+        resolve();
+      });
     });
 
     if (this.gathererMustEnter) {
@@ -167,6 +162,22 @@ export class ResourceSourceComponent {
    */
   getAssignedGatherersCount(): number {
     return this.assignedGatherers.size;
+  }
+
+  /**
+   * Check if this resource source can accept another gatherer
+   */
+  canAcceptGatherer(): boolean {
+    const maxGatherers = this.resourceSourceDefinition.maxGatherers;
+    if (maxGatherers === undefined) return true;
+    return this.assignedGatherers.size < maxGatherers;
+  }
+
+  /**
+   * Get the maximum number of gatherers allowed
+   */
+  getMaxGatherers(): number | undefined {
+    return this.resourceSourceDefinition.maxGatherers;
   }
 
   setData(data: Partial<ResourceSourceComponentData>) {

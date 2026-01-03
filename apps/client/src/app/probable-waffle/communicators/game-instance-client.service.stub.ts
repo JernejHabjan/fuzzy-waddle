@@ -14,8 +14,8 @@ import {
   type ProbableWaffleGameStateData
 } from "@fuzzy-waddle/api-interfaces";
 import { Observable, Subject } from "rxjs";
-import { type MatchmakingOptions } from "../gui/online/matchmaking/matchmaking.component";
 import { type GameInstanceClientServiceInterface } from "./game-instance-client.service.interface";
+import { MatchmakingOptions } from "../gui/online/matchmaking/matchmaking-options";
 
 export const gameInstanceClientServiceStub = {
   gameInstance: undefined as ProbableWaffleGameInstance | undefined,
@@ -34,7 +34,9 @@ export const gameInstanceClientServiceStub = {
         createdBy: "1",
         type,
         visibility,
-        startOptions: {}
+        startOptions: {},
+        version: "1.0.0",
+        rndSeed: 12
       } satisfies ProbableWaffleGameInstanceMetadataData,
       gameModeData: {
         tieConditions: {

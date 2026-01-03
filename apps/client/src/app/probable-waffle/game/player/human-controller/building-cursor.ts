@@ -35,6 +35,7 @@ import { OrderType } from "../../ai/order-type";
 import { getCostForObjectName } from "../../entity/components/production/cost-utils";
 import { IsoHelper } from "../../world/tilemap/iso-helper";
 import Vector2 = Phaser.Math.Vector2;
+import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 
 export class BuildingCursor {
   placementGrid?: GameObjects.Graphics;
@@ -51,6 +52,7 @@ export class BuildingCursor {
   private navigationService?: NavigationService;
   private audioService?: AudioService;
   private fogOfWarComponent?: FogOfWarComponent;
+  private actorIndex!: ActorIndexSystem;
   private escKey: Phaser.Input.Keyboard.Key | undefined;
   private shiftKey: Phaser.Input.Keyboard.Key | undefined;
   private downPointerLocation?: Vector2Simple;
@@ -87,6 +89,7 @@ export class BuildingCursor {
     this.navigationService = getSceneService(this.scene, NavigationService);
     this.audioService = getSceneService(this.scene, AudioService);
     this.fogOfWarComponent = getSceneComponent(this.scene, FogOfWarComponent);
+    this.actorIndex = getSceneService(this.scene, ActorIndexSystem)!;
   }
 
   get placingBuilding() {
@@ -266,7 +269,7 @@ export class BuildingCursor {
         }
 
         // Not complete yet, check again later
-        setTimeout(checkMovementComplete, checkInterval);
+        this.scene.time.delayedCall(checkInterval, checkMovementComplete);
       };
 
       // Start checking
@@ -400,13 +403,56 @@ export class BuildingCursor {
     }
   }
 
+  private _canPlaceAt(
+    tiles: Vector2Simple[],
+    ignoreGameObjects: GameObjects.GameObject[] = [],
+    trackActorsToMove: boolean = false
+  ): boolean {
+    if (!this.tileMapComponent || !this.navigationService || !this.fogOfWarComponent) return false;
+
+    // 1. Check Fog of War
+    const allTilesVisible = tiles.every((tile) => {
+      const tileVisible = this.fogOfWarComponent!.getTileVisibility(tile.x, tile.y);
+      return tileVisible === "visible";
+    });
+    if (!allTilesVisible) return false;
+
+    // 2. Check Walkability
+    const allTilesWalkable = tiles.every((tile) => this.navigationService!.isTileWalkable(tile));
+    if (!allTilesWalkable) return false;
+
+    // 3. Check for collisions with other actors
+    const objectsToIgnore = new Set<GameObjects.GameObject>(ignoreGameObjects);
+    const children = this.actorIndex.getAllIdActors().filter((c) => {
+      if (objectsToIgnore.has(c)) return false;
+
+      const tilesUnderChild = getTileCoordsUnderObject(this.tileMapComponent!.tilemap, c);
+      if (!tilesUnderChild.length) return false;
+
+      const overlaps = tiles.some((tile) =>
+        tilesUnderChild.some((childTile) => childTile.x === tile.x && childTile.y === tile.y)
+      );
+
+      if (overlaps && this.canActorBeAutoMoved(c)) {
+        if (trackActorsToMove) {
+          this.actorsToMove.add(c);
+        }
+        return false; // Don't count as a collision
+      }
+
+      return overlaps;
+    });
+
+    return children.length === 0;
+  }
+
   getCanConstructBuildingAt(
     building?: GameObjects.GameObject,
     ignoreGameObjects: GameObjects.GameObject[] = [],
     currentCost: Partial<Record<ResourceType, number>> = {},
     trackActorsToMove: boolean = false
   ): boolean {
-    if (!this.tileMapComponent || !this.navigationService || !this.fogOfWarComponent || !building) return false;
+    if (!this.tileMapComponent || !building) return false;
 
     const playerNumber = getCurrentPlayerNumber(this.scene);
     if (playerNumber) {
@@ -424,65 +470,10 @@ export class BuildingCursor {
     const tilesUnderBuilding = getTileCoordsUnderObject(this.tileMapComponent.tilemap, building);
     if (!tilesUnderBuilding.length) return false;
 
-    const isAreaBeneathGameObjectWalkable = this.navigationService.isAreaBeneathGameObjectWalkable(building);
-    if (!isAreaBeneathGameObjectWalkable) return false;
-
-    const bounds = getGameObjectBounds(building);
-    if (!bounds) return false;
-
-    const minX = Math.floor(bounds.x);
-    const minY = Math.floor(bounds.y);
-    const maxX = Math.floor(bounds.x + bounds.width);
-    const maxY = Math.floor(bounds.y + bounds.height);
-
-    const allTileVisible = tilesUnderBuilding.every((tile) => {
-      const tileVisible = this.fogOfWarComponent!.getTileVisibility(tile.x, tile.y);
-      return tileVisible === "visible";
-    });
-
-    if (!allTileVisible) return false;
-
     // Create the list of objects to ignore (don't collide with self or with objects in the ignore list)
-    const objectsToIgnore = new Set<GameObjects.GameObject>([building, ...ignoreGameObjects]);
+    const objectsToIgnore = [building, ...ignoreGameObjects];
 
-    // Check for collisions with existing game objects (excluding those in the ignore list)
-    const children = this.scene.children.list.filter((c) => {
-      if (objectsToIgnore.has(c)) return false;
-      if (c instanceof Phaser.GameObjects.Graphics) return false;
-
-      // pulling logical transform from the game object, so we know on which tile he is standing (z axis invariant)
-      const logicalTransform = getGameObjectLogicalTransform(c);
-      if (!logicalTransform) return false;
-
-      // Quick bounds check
-      if (
-        logicalTransform.x < minX ||
-        logicalTransform.x > maxX ||
-        logicalTransform.y < minY ||
-        logicalTransform.y > maxY
-      )
-        return false;
-
-      // More precise tile-based collision check
-      const tilesUnderChild = getTileCoordsUnderObject(this.tileMapComponent!.tilemap, c);
-      if (!tilesUnderChild.length) return false;
-
-      const overlaps = tilesUnderBuilding.some((tile) =>
-        tilesUnderChild.some((childTile) => childTile.x === tile.x && childTile.y === tile.y)
-      );
-
-      // If the child overlaps and can be auto-moved, track it and don't count it as a collision
-      if (overlaps && this.canActorBeAutoMoved(c)) {
-        if (trackActorsToMove) {
-          this.actorsToMove.add(c);
-        }
-        return false;
-      }
-
-      return overlaps;
-    });
-
-    return children.length === 0;
+    return this._canPlaceAt(tilesUnderBuilding, objectsToIgnore, trackActorsToMove);
   }
 
   private drawPlacementGrid(location: Vector2Simple) {
@@ -509,7 +500,7 @@ export class BuildingCursor {
 
     // Helper function to check if a specific tile position is occupied
     const isTileOccupied = (worldX: number, worldY: number): boolean => {
-      if (!this.tileMapComponent || !this.navigationService || !this.fogOfWarComponent) return true;
+      if (!this.tileMapComponent) return true;
 
       // Convert world coordinates to tile coordinates
       const tileCoord = IsoHelper.isometricWorldToTileXY(this.scene, worldX, worldY, false);
@@ -517,85 +508,60 @@ export class BuildingCursor {
       tileCoord.x = Math.ceil(tileCoord.x);
       tileCoord.y = Math.ceil(tileCoord.y);
 
-      // Check if tile is visible - if not visible, consider it occupied
-      const tileVisible = this.fogOfWarComponent.getTileVisibility(tileCoord.x, tileCoord.y);
-      if (tileVisible !== "visible") return true;
-
-      // Check if tile is walkable using tile coordinates (not world coordinates)
-      const isWalkable = this.navigationService.isTileWalkable(tileCoord);
-      if (!isWalkable) return true;
-
-      // Check for collisions with existing game objects at this specific tile
-      const children = this.scene.children.list.filter((c) => {
-        if (c === this.building) return false;
-        if (this.spawnedCursorGameObjects.includes(c as GameObjects.GameObject)) return false;
-        if (c instanceof Phaser.GameObjects.Graphics) return false;
-
-        const logicalTransform = getGameObjectLogicalTransform(c);
-        if (!logicalTransform) return false;
-
-        // Check if this object occupies the tile we're checking
-        const tilesUnderChild = getTileCoordsUnderObject(this.tileMapComponent!.tilemap, c);
-        const overlaps = tilesUnderChild.some(
-          (childTile) => childTile.x === tileCoord.x && childTile.y === tileCoord.y
-        );
-
-        // If the child overlaps but can be auto-moved, don't count it as an obstacle
-        if (overlaps && this.canActorBeAutoMoved(c)) {
-          return false;
-        }
-
-        return overlaps;
-      });
-
-      return children.length > 0;
+      const ignoreList = [this.building!, ...this.spawnedCursorGameObjects];
+      return !this._canPlaceAt([tileCoord], ignoreList, false);
     };
 
-    // Helper function to draw a single isometric diamond with specific color (lines only)
-    const drawIsoDiamond = (isoX: number, isoY: number, fill: boolean, color: number) => {
-      // Set line style for the outline
-      gridGraphics.lineStyle(2, color, 1);
+    const drawDiamond = (isoX: number, isoY: number, color: number, fill: boolean, outline: boolean) => {
+      const path = new Phaser.Geom.Polygon([
+        isoX,
+        isoY - tileSize / 4,
+        isoX + tileSize / 2,
+        isoY,
+        isoX,
+        isoY + tileSize / 4,
+        isoX - tileSize / 2,
+        isoY
+      ]);
 
-      // Draw the outline
-      gridGraphics.beginPath();
-      gridGraphics.moveTo(isoX, isoY - tileSize / 4);
-      gridGraphics.lineTo(isoX + tileSize / 2, isoY);
-      gridGraphics.lineTo(isoX, isoY + tileSize / 4);
-      gridGraphics.lineTo(isoX - tileSize / 2, isoY);
-      gridGraphics.closePath();
-      gridGraphics.stroke();
-
-      // Fill only for inner tiles and only when they can be placed (green)
-      if (fill && color === 0x00ff00) {
+      if (fill) {
         gridGraphics.fillStyle(color, 0.3);
-        gridGraphics.beginPath();
-        gridGraphics.moveTo(isoX, isoY - tileSize / 4);
-        gridGraphics.lineTo(isoX + tileSize / 2, isoY);
-        gridGraphics.lineTo(isoX, isoY + tileSize / 4);
-        gridGraphics.lineTo(isoX - tileSize / 2, isoY);
-        gridGraphics.closePath();
-        gridGraphics.fillPath();
+        gridGraphics.fillPoints(path.points, true);
+      }
+      if (outline) {
+        gridGraphics.lineStyle(2, color, 1);
+        gridGraphics.strokePoints(path.points, true);
       }
     };
 
-    // Draw the entire grid, checking each tile individually
+    const tilesToDraw: { x: number; y: number; color: number; isInner: boolean; occupied: boolean }[] = [];
     for (let i = -outerRangeX; i <= outerRangeX; i++) {
       for (let j = -outerRangeY; j <= outerRangeY; j++) {
         const isoX = xPos + (i - j) * (tileSize / 2);
         const isoY = yPos + (i + j) * (tileSize / 4);
-
-        // Determine if this is part of the inner area (building footprint)
-        const isInnerTile = Math.abs(i) <= innerRangeX && Math.abs(j) <= innerRangeY;
-
-        // Check if this specific tile is occupied
-        const tileOccupied = isTileOccupied(isoX, isoY);
-
-        // Determine color: red if occupied, green if free
-        const tileColor = tileOccupied ? 0xff0000 : 0x00ff00;
-
-        drawIsoDiamond(isoX, isoY, isInnerTile, tileColor);
+        const occupied = isTileOccupied(isoX, isoY);
+        tilesToDraw.push({
+          x: isoX,
+          y: isoY,
+          color: occupied ? 0xff0000 : 0x00ff00,
+          isInner: Math.abs(i) <= innerRangeX && Math.abs(j) <= innerRangeY,
+          occupied
+        });
       }
     }
+
+    // Draw fills first
+    tilesToDraw.forEach((t) => {
+      if (t.isInner) {
+        drawDiamond(t.x, t.y, t.color, true, false);
+      }
+    });
+
+    // Then draw outlines, ensuring red is on top of green
+    const greenTiles = tilesToDraw.filter((t) => !t.occupied);
+    const redTiles = tilesToDraw.filter((t) => t.occupied);
+    greenTiles.forEach((t) => drawDiamond(t.x, t.y, t.color, false, true));
+    redTiles.forEach((t) => drawDiamond(t.x, t.y, t.color, false, true));
 
     this.placementGrid = gridGraphics;
   }

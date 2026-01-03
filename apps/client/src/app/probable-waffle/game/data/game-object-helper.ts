@@ -73,13 +73,13 @@ export function getGameObjectVisibility(
 export async function getGameObjectTileInNavigableRadius(
   gameObject: Phaser.GameObjects.GameObject,
   radius: number
-): Promise<Vector2Simple | undefined> {
+): Promise<Vector2Simple | null> {
   const navigationService = getSceneService(gameObject.scene, NavigationService);
   if (!navigationService) throw new Error("NavigationService not found");
 
   const currentTile = getGameObjectCurrentTile(gameObject);
-  if (!currentTile) return;
-  return await navigationService.randomTileInNavigableRadius(currentTile, radius);
+  if (!currentTile) return null;
+  return navigationService.randomTileInNavigableRadius(currentTile, radius);
 }
 
 export function getGameObjectTileInRadius(

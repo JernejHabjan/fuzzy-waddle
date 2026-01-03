@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ScoreThroughTimeComponent } from "./score-through-time.component";
-import { Component, Input } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { Component, input } from "@angular/core";
+
 import {
   createPlayerLobbyDefinition,
   FactionType,
@@ -22,12 +22,12 @@ import { GameInstanceClientService } from "../../../communicators/game-instance-
 @Component({
   selector: "probable-waffle-score-through-time",
   standalone: true,
-  imports: [CommonModule, BaseChartDirective],
+  imports: [BaseChartDirective],
   templateUrl: "./score-through-time.component.html",
   styleUrls: ["./score-through-time.component.scss"]
 })
 export class ScoreThroughTimeTestingComponent {
-  @Input({ required: true }) summaryType!: "units" | "buildings" | "resources";
+  readonly summaryType = input.required<"units" | "buildings" | "resources">();
 }
 describe("ScoreThroughTimeComponent", () => {
   let component: ScoreThroughTimeComponent;
@@ -60,18 +60,18 @@ describe("ScoreThroughTimeComponent", () => {
     await gameInstanceService.addAiPlayer();
     await gameInstanceService.addAiPlayer();
     const players = gameInstanceService.gameInstance!.players!;
-    players[0].playerController.data.playerDefinition = {
+    players[0]!.playerController.data.playerDefinition = {
       player: createPlayerLobbyDefinition(1, 1),
       factionType: FactionType.Skaduwee,
       playerType: ProbableWafflePlayerType.AI
     } satisfies PositionPlayerDefinition;
-    players[1].playerController.data.playerDefinition = {
+    players[1]!.playerController.data.playerDefinition = {
       player: createPlayerLobbyDefinition(2, 2),
       factionType: FactionType.Skaduwee,
       playerType: ProbableWafflePlayerType.AI
     } satisfies PositionPlayerDefinition;
 
-    players[0].playerState.data.summary.push(
+    players[0]!.playerState.data.summary.push(
       {
         data: {
           unitName: "test"
@@ -96,7 +96,7 @@ describe("ScoreThroughTimeComponent", () => {
         type: "unit_killed"
       } satisfies PlayerStateActionUnitKilled
     );
-    players[1].playerState.data.summary.push(
+    players[1]!.playerState.data.summary.push(
       {
         data: {
           unitName: "test"
@@ -120,14 +120,14 @@ describe("ScoreThroughTimeComponent", () => {
       } satisfies PlayerStateActionUnitProduced
     );
 
-    players[0].playerState.data.summary.push({
+    players[0]!.playerState.data.summary.push({
       data: {
         buildingName: "test"
       },
       time: 1000,
       type: "building_constructed"
     } satisfies PlayerStateActionBuildingConstructed);
-    players[1].playerState.data.summary.push(
+    players[1]!.playerState.data.summary.push(
       {
         data: {
           buildingName: "test"

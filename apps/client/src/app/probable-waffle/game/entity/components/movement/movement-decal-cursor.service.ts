@@ -7,6 +7,8 @@ import { SelectableComponent } from "../selectable-component";
 import { PawnAiController } from "../../../prefabs/ai-agents/pawn-ai-controller";
 import type { Subscription } from "rxjs";
 import { OrderType } from "../../../ai/order-type";
+import { OwnerComponent } from "../owner-component";
+import { getCurrentPlayerNumber } from "../../../data/scene-data";
 
 export class MovementDecalCursorService {
   private moveMarkerSprite?: Phaser.GameObjects.Image;
@@ -18,6 +20,7 @@ export class MovementDecalCursorService {
   private pawnAiController?: PawnAiController;
   private selectionChangedSubscription?: Subscription;
   private currentOrderChangedSubscription?: Subscription;
+  private ownerComponent?: OwnerComponent;
 
   constructor(private readonly gameObject: Phaser.GameObjects.GameObject) {
     onObjectReady(gameObject, this.init, this);
@@ -28,6 +31,7 @@ export class MovementDecalCursorService {
     this.navigationService = getSceneService(this.gameObject.scene, NavigationService);
     this.selectableComponent = getActorComponent(this.gameObject, SelectableComponent);
     this.pawnAiController = getActorComponent(this.gameObject, PawnAiController);
+    this.ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
     this.subscribeOnSelectionChanges();
     this.subscribeOnAIDestinationChanges();
   }
@@ -42,6 +46,10 @@ export class MovementDecalCursorService {
   private handleVisibility(): void {
     if (!this.currentDestination) return;
     const selected = this.selectableComponent?.getSelected();
+    if (!this.ownerComponent || this.ownerComponent.getOwner() !== getCurrentPlayerNumber(this.gameObject.scene)) {
+      this.hideMoveMarker();
+      return;
+    }
     if (!selected) {
       this.hideMoveMarker();
     } else {
@@ -121,7 +129,7 @@ export class MovementDecalCursorService {
         worldXY.x,
         worldXY.y,
         "gui",
-        "decal_cursors/inaccessible-marker.png"
+        "decals/inaccessible-marker.png"
       );
       this.inaccessibleMarkerSprite.setDepth(1000);
       this.inaccessibleMarkerSprite.setOrigin(0.5, 0.5);

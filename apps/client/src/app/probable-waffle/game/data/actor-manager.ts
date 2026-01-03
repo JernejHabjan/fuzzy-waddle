@@ -57,16 +57,23 @@ import { PawnAiController } from "../prefabs/ai-agents/pawn-ai-controller";
 import { HousingComponent } from "../entity/components/building/housing-component";
 import { getSceneService } from "../world/services/scene-component-helpers";
 import { SceneActorCreator } from "../world/services/scene-actor-creator";
-import GameObject = Phaser.GameObjects.GameObject;
 import MiningCamp from "../prefabs/buildings/tivara/MiningCamp";
 import Emberstone from "../prefabs/buildings/skaduwee/Emberstone";
+import GameObject = Phaser.GameObjects.GameObject;
+import Wolf from "../prefabs/animals/wolf/Wolf";
+import Boar from "../prefabs/animals/boar/Boar";
+import Stag from "../prefabs/animals/stag/Stag";
+import Badger from "../prefabs/animals/badger/Badger";
 
-export type ActorConstructor = new (scene: Phaser.Scene) => GameObject;
-export type ActorMap = { [name: string]: ActorConstructor };
+type ActorMap = { [name: string]: new (scene: Phaser.Scene) => GameObject };
 export class ActorManager {
   private static animals: ActorMap = {
     [ObjectNames.Hedgehog]: Hedgehog,
-    [ObjectNames.Sheep]: Sheep
+    [ObjectNames.Sheep]: Sheep,
+    [ObjectNames.Wolf]: Wolf,
+    [ObjectNames.Boar]: Boar,
+    [ObjectNames.Stag]: Stag,
+    [ObjectNames.Badger]: Badger
   };
 
   private static general: ActorMap = {
@@ -243,6 +250,12 @@ export class ActorManager {
     actor = new actorConstructor(scene);
     setCoreActorDataFromName(actor, actorDefinition);
     setConstructingActorDataFromName(actor, actorDefinition);
+
+    const sceneActorCreator = getSceneService(scene, SceneActorCreator);
+    if (!sceneActorCreator) {
+      throw new Error("SceneActorCreator not found in scene");
+    }
+    sceneActorCreator.registerAndSaveNewActor(actor);
     return actor;
   }
 }

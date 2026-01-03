@@ -1,7 +1,7 @@
 import { ANIM_WOLF_DEFINITION } from "./anims-wolf";
-import { weaponDefinitions } from "../../../entity/components/combat/attack-data";
 import type { PrefabDefinition } from "../../definitions/prefab-definition";
 import { ActorPhysicalType } from "../../../entity/components/combat/components/actor-physical-type";
+import { weaponDefinitions } from "../../../entity/components/combat/weapon-definitions";
 
 export const wolfDefinition = {
   components: {
@@ -11,6 +11,10 @@ export const wolfDefinition = {
     },
     objectDescriptor: {
       color: 0x3b4a50
+    },
+    collider: {
+      enabled: false,
+      colliderFactorReduction: 0.5
     },
     vision: {
       range: 10
@@ -26,7 +30,8 @@ export const wolfDefinition = {
     },
     health: {
       physicalState: ActorPhysicalType.Biological,
-      maxHealth: 100
+      maxHealth: 100,
+      healthDisplayBehavior: "onDamage"
     },
     translatable: {
       tileMoveDuration: 300

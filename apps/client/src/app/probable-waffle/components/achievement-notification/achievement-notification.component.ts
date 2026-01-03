@@ -1,4 +1,4 @@
-import { Component, inject, Input, type OnDestroy, type OnInit } from "@angular/core";
+import { Component, inject, type OnDestroy, type OnInit, input } from "@angular/core";
 import { animate, style, transition, trigger } from "@angular/animations";
 
 import { AtlasSpriteComponent } from "../atlas-sprite/atlas-sprite.component";
@@ -26,11 +26,11 @@ import { AudioAtlasService } from "../../services/audio-atlas/audio-atlas.servic
   ]
 })
 export class AchievementNotificationComponent implements OnInit, OnDestroy {
-  @Input() title: string = "";
-  @Input() description: string = "";
-  @Input() spriteId: string = "";
-  @Input() autoHide: boolean = true;
-  @Input() autoHideDuration: number = 5000; // 5 seconds default
+  readonly title = input<string>("");
+  readonly description = input<string>("");
+  readonly spriteId = input<string>("");
+  readonly autoHide = input<boolean>(true);
+  readonly autoHideDuration = input<number>(5000); // 5 seconds default
 
   visible = false;
   private hideTimeout?: number;
@@ -66,10 +66,10 @@ export class AchievementNotificationComponent implements OnInit, OnDestroy {
 
     this.visible = true;
 
-    if (this.autoHide) {
+    if (this.autoHide()) {
       this.hideTimeout = window.setTimeout(() => {
         this.hide();
-      }, this.autoHideDuration);
+      }, this.autoHideDuration());
     }
   }
 

@@ -1,5 +1,5 @@
-import { type ProbableWaffleCommunicators } from "./scene-communicator-client.service";
 import { type SceneCommunicatorClientServiceInterface } from "./scene-communicator-client.service.interface";
+import { ProbableWaffleCommunicators } from "./probable-waffle.communicators";
 
 export const SceneCommunicatorClientServiceStub = {
   createCommunicators(gameInstanceId: string): Promise<ProbableWaffleCommunicators> {

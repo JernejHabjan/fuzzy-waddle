@@ -5,14 +5,12 @@ export interface IPlayerControllerAgent {
   IsBaseUnderAttack(): boolean;
   IsBaseUnderHeavyAttack(): boolean;
   AssignDefendersToEnemies(): State;
-  AttackEnemyBase(): State;
+  AttackEnemyBase(): Promise<State>;
   IsInCombat(): boolean;
-  LowHealthUnit(): boolean;
-  RetreatUnit(): State;
-  FocusFire(): State;
+  RetreatLowHealthUnitsInCombat(): State;
+  FocusFireForUnitsInCombat(): State;
   FlankEnemy(): State;
   EnemySpotted(): boolean;
-  EnemyInRange(): boolean;
   EnemyFlankOpen(): boolean;
 
   // Resource management
@@ -25,25 +23,13 @@ export interface IPlayerControllerAgent {
   HasEnoughResourcesForWorker(): boolean;
 
   // Worker and resource gathering
-  AssignWorkersToGather(): State;
+  AssignWorkersToGather(): Promise<State>;
   TrainWorker(): State;
   GatherResources(): State;
-  AssignWorkerToBuild(): State;
-  AssignWorkersToResource(): State;
-  ReassignWorkersToResource(): State;
+  AssignWorkersToResource(): Promise<State>;
+  ReassignWorkersToResource(): Promise<State>;
   ContinueNormalGathering(): State;
   NeedMoreWorkers(): boolean;
-
-  // Building and construction
-  IsBaseExpansionNeeded(): boolean;
-  ChooseStructureToBuild(): State;
-  StartBuildingStructure(): State;
-  NeedMoreHousing(): boolean;
-  NeedMoreProduction(): boolean;
-  NeedMoreDefense(): boolean;
-  AssignHousingBuilding(): State;
-  AssignProductionBuilding(): State;
-  AssignDefenseBuilding(): State;
 
   // Upgrades and improvements
   StartUpgrade(): State;
@@ -53,7 +39,7 @@ export interface IPlayerControllerAgent {
   NeedToScout(): boolean;
   AssignScoutUnits(): State;
   AnalyzeEnemyBase(): Promise<State>;
-  GatherEnemyData(): State;
+  GatherEnemyData(): Promise<State>;
   ContinueScouting(): State;
   AnalyzeGameMap(): Promise<State>;
   ShouldReanalyzeMap(): boolean;

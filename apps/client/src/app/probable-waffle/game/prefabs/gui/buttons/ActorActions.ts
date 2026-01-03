@@ -4,17 +4,14 @@
 
 import OnPointerDownScript from "../../../../../shared/game/phaser/script-nodes-basic/OnPointerDownScript";
 /* START-USER-IMPORTS */
-import ActorAction, { type ActorActionSetup } from "./ActorAction";
+import ActorAction from "./ActorAction";
 import { getCommunicator, getCurrentPlayerNumber, getPlayer, listenToSelectionEvents } from "../../../data/scene-data";
 import HudProbableWaffle from "../../../world/scenes/hud-scenes/HudProbableWaffle";
 import { Subscription } from "rxjs";
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { getActorComponent } from "../../../data/actor-component";
 import { AttackComponent } from "../../../entity/components/combat/components/attack-component";
-import {
-  AssignProductionErrorCode,
-  ProductionComponent
-} from "../../../entity/components/production/production-component";
+import { ProductionComponent } from "../../../entity/components/production/production-component";
 import { ActorTranslateComponent } from "../../../entity/components/movement/actor-translate-component";
 import { pwActorDefinitions } from "../../definitions/actor-definitions";
 import { HealthComponent } from "../../../entity/components/combat/components/health-component";
@@ -35,17 +32,17 @@ import { OrderType } from "../../../ai/order-type";
 import { HealingComponent } from "../../../entity/components/combat/components/healing-component";
 import { GathererComponent } from "../../../entity/components/resource/gatherer-component";
 import { getPrimarySelectedActor } from "../../../data/selection-helpers";
-import {
-  ProductionInvalidReason,
-  type ProductionValidationResult,
-  ProductionValidator
-} from "../../../data/tech-tree/production-validator";
+import { ProductionValidator } from "../../../data/tech-tree/production-validator";
 import { findProductionBuildingWithLeastRemainingTime } from "../../../entity/components/production/production-helpers";
 import {
   type ConstructableCategory,
   ConstructableDefinition
 } from "../../../entity/components/construction/constructable-category";
 import { SelectionTabHandler } from "../../../player/human-controller/selection-tab-handler";
+import { ProductionInvalidReason } from "../../../data/tech-tree/production-invalid-reason";
+import type { ProductionValidationResult } from "../../../data/tech-tree/production-validation-result";
+import { AssignProductionErrorCode } from "../../../entity/components/production/assign-production-error-code";
+import type { ActorActionSetup } from "./actor-action-setup";
 /* END-USER-IMPORTS */
 
 export default class ActorActions extends Phaser.GameObjects.Container {
@@ -175,6 +172,11 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     this.playerActionsHandler = getSceneService(this.mainSceneWithActors, PlayerActionsHandler)!;
     this.subscribeToPlayerSelection();
     this.hideAllActions();
+    this.mainSceneWithActors.events.on(
+      PlayerActionsHandler.BUILDING_MODE_SHORTCUT_PRESSED,
+      this.onBuildModeKeyDown,
+      this
+    );
     /* END-USER-CTR-CODE */
   }
 
@@ -249,6 +251,22 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         this.refreshForCurrentSelection();
       });
     }
+  }
+
+  private onBuildModeKeyDown(hotkeyIndex: number) {
+    if (!this.buildingMode) return;
+
+    if (hotkeyIndex === -1) return;
+
+    // Find and trigger the corresponding action button
+    const action = this.actor_actions[hotkeyIndex];
+    if (action && action.visible) {
+      action.triggerAction();
+    }
+  }
+
+  private mapKeyToCode(k: string): string {
+    return k.length === 1 ? `Key${k.toUpperCase()}` : k;
   }
 
   private refreshForCurrentSelection() {
@@ -1045,6 +1063,11 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     this.resourceChangedSubscription?.unsubscribe();
     this.categoryNavigationStack = [];
     this.tabHandlerSubscription?.unsubscribe();
+    this.mainSceneWithActors.events.off(
+      PlayerActionsHandler.BUILDING_MODE_SHORTCUT_PRESSED,
+      this.onBuildModeKeyDown,
+      this
+    );
   }
 
   /* END-USER-CODE */

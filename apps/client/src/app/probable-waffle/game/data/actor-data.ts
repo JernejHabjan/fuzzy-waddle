@@ -35,6 +35,8 @@ import GameObject = Phaser.GameObjects.GameObject;
 import { HousingComponent } from "../entity/components/building/housing-component";
 import { HousingCostComponent } from "../entity/components/building/housing-cost-component";
 import { MovementDecalCursorService } from "../entity/components/movement/movement-decal-cursor.service";
+import { getSceneService } from "../world/services/scene-component-helpers";
+import { SceneActorCreator } from "../world/services/scene-actor-creator";
 
 export const ActorDataKey = "actorData";
 export class ActorData {
@@ -236,6 +238,11 @@ export function upgradeFromCoreToConstructingActorData(
   }
 
   setActorProperties(actor, actorDefinition);
+  const sceneActorCreator = getSceneService(actor.scene, SceneActorCreator);
+  if (!sceneActorCreator) {
+    throw new Error("SceneActorCreator not found in scene");
+  }
+  sceneActorCreator.registerAndSaveNewActor(actor);
 
   actor.emit(ActorDataChangedEvent, actorData);
 }

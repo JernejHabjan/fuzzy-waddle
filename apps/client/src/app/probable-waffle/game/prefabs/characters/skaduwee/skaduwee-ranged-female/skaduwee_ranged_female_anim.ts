@@ -1,4 +1,5 @@
 import { AnimationType } from "../../../../entity/components/animation/animation-type";
+import type { AnimationDefinitionMap } from "../../../../entity/components/animation/animation-definition-map";
 
 const ANIM_SKADUWEE_RANGED_FEMALE_HURT = "skaduwee_ranged_female_hurt";
 const ANIM_SKADUWEE_RANGED_FEMALE_IDLE_UP = "skaduwee_ranged_female_idle_up";
@@ -13,8 +14,6 @@ const ANIM_SKADUWEE_RANGED_FEMALE_WALK_UP = "skaduwee_ranged_female_walk_up";
 const ANIM_SKADUWEE_RANGED_FEMALE_WALK_LEFT = "skaduwee_ranged_female_walk_left";
 const ANIM_SKADUWEE_RANGED_FEMALE_WALK_DOWN = "skaduwee_ranged_female_walk_down";
 const ANIM_SKADUWEE_RANGED_FEMALE_WALK_RIGHT = "skaduwee_ranged_female_walk_right";
-
-import { type AnimationDefinitionMap } from "../../../../entity/components/animation/animation-actor-component";
 
 export const ANIM_SKADUWEE_RANGED_FEMALE_DEFINITION: AnimationDefinitionMap = {
   [AnimationType.Idle]: {

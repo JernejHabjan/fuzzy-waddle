@@ -7,14 +7,14 @@ import {
   SkaduweeMagicianSfxMoveSounds,
   SkaduweeMagicianSfxSelectionSounds
 } from "./SkaduweeMagicianSfx";
-import { weaponDefinitions } from "../../../../entity/components/combat/attack-data";
 import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PaymentType } from "../../../../entity/components/production/payment-type";
-import { AiType } from "../../../ai-agents/pawn-ai-controller";
 import { ANIM_SKADUWEE_MAGICIAN_FEMALE_DEFINITION } from "./skaduwee_magician_female_anim";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 import { SoundType } from "../../../../entity/components/actor-audio/sound-type";
 import { ActorPhysicalType } from "../../../../entity/components/combat/components/actor-physical-type";
+import { weaponDefinitions } from "../../../../entity/components/combat/weapon-definitions";
+import { AiType } from "../../../ai-agents/ai-type";
 
 export const skaduweeMagicianFemaleDefinition = {
   components: {

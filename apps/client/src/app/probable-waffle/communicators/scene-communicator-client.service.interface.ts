@@ -1,5 +1,6 @@
 import { Subscription } from "rxjs";
-import { type ProbableWaffleCommunicators } from "./scene-communicator-client.service";
+
+import type { ProbableWaffleCommunicators } from "./probable-waffle.communicators";
 
 export interface SceneCommunicatorClientServiceInterface {
   createCommunicators(gameInstanceId: string): Promise<ProbableWaffleCommunicators>;

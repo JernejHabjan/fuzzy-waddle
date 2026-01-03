@@ -9,4 +9,5 @@ export type Environment = {
     key: string;
   };
   socketIoConfig: SocketIoConfig;
+  version: string;
 };

@@ -5,10 +5,8 @@
 /* START-USER-IMPORTS */
 import { setActorData } from "../../../../data/actor-data";
 import { ColliderComponent } from "../../../../entity/components/movement/collider-component";
-import {
-  ObjectDescriptorComponent,
-  type ObjectDescriptorDefinition
-} from "../../../../entity/components/object-descriptor-component";
+import { ObjectDescriptorComponent } from "../../../../entity/components/object-descriptor-component";
+import { ObjectDescriptorDefinition } from "../../../../entity/components/object-descriptor-definition";
 /* END-USER-IMPORTS */
 
 export default class BlockObsidian1 extends Phaser.GameObjects.Image {
@@ -37,7 +35,7 @@ export default class BlockObsidian1 extends Phaser.GameObjects.Image {
     /* END-USER-CTR-CODE */
   }
 
-  public z: number = 0;
+  public override z: number = 0;
 
   /* START-USER-CODE */
 

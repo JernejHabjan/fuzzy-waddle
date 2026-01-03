@@ -1,7 +1,10 @@
 import { PlayerAiBlackboard } from "../player-ai-blackboard";
 import { getActorComponent } from "../../../data/actor-component";
-import { GathererComponent } from "../../../entity/components/resource/gatherer-component";
 import { ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { ProductionComponent } from "../../../entity/components/production/production-component";
+import { getCostForObjectName } from "../../../entity/components/production/cost-utils";
+import { GathererComponent } from "../../../entity/components/resource/gatherer-component";
+import { AI_CONFIG } from "../ai-config";
 import { State } from "mistreevous";
 
 /**
@@ -22,76 +25,178 @@ export class LogisticsManager {
 
   shouldRebalance(): boolean {
     const now = Date.now();
-    if (now - this.lastRebalanceAt < this.rebalanceCooldownMs) return false;
+    if (now - this.lastRebalanceAt < this.rebalanceCooldownMs) {
+      this.log("[Logistics] Rebalance on cooldown");
+      return false;
+    }
     const scarce = this.blackboard.getMostNeededResource();
-    if (!scarce) return false;
+    if (!scarce) {
+      this.log("[Logistics] No scarce resource identified");
+      return false;
+    }
     // If we have < 40% theoretical target (naive) we attempt rebalance
     const total = this.blackboard.getTotalResources();
-    if (total === 0) return true;
-    const share = (this.blackboard.resources[scarce.type] ?? 0) / total;
-    return share < 0.25;
+    if (total === 0) {
+      this.log("[Logistics] No resources, rebalance needed");
+      return true;
+    }
+    const share = (this.blackboard.economy.resources[scarce.type] ?? 0) / total;
+    const shouldRebalance = share < 0.25;
+    this.log(
+      `[Logistics] Resource share check: ${scarce.type} = ${(share * 100).toFixed(1)}%, rebalance = ${shouldRebalance}`
+    );
+    return shouldRebalance;
   }
 
   stockpileImbalanceDetected(): boolean {
-    const r = this.blackboard.resources;
+    const r = this.blackboard.economy.resources;
     const values = Object.values(r).filter((v) => v > 0);
     if (values.length < 2) return false;
     const max = Math.max(...values);
     const min = Math.min(...values);
-    return max / (min || 1) >= this.severeImbalanceRatio;
+    const ratio = max / (min || 1);
+    const imbalanced = ratio >= this.severeImbalanceRatio;
+    if (imbalanced) {
+      this.log(
+        `[Logistics] Stockpile imbalance detected! Ratio: ${ratio.toFixed(2)} (threshold: ${this.severeImbalanceRatio})`
+      );
+    }
+    return imbalanced;
   }
 
-  redirectToScarce(): State {
-    const scarce = this.blackboard.getMostNeededResource();
-    if (!scarce) return State.FAILED;
-    let reassigned = 0;
-    this.blackboard.workers.forEach((w) => {
-      if (reassigned >= 3) return;
-      const g = getActorComponent(w, GathererComponent);
-      if (!g) return;
-      // Skip if already gathering target resource
-      if (g.currentResourceSource?.type === scarce.type) return;
-      const source = g.getClosestResourceSource(scarce.type, 120);
-      if (!source) return;
-      g.startGatheringResources(source);
-      reassigned++;
+  async redirectToScarce(): Promise<State> {
+    const scarceResource = this.getMostConstrainedResource();
+    if (!scarceResource) {
+      this.log("[Logistics] No constrained resource identified for redirection");
+      return State.FAILED;
+    }
+
+    this.log(`[Logistics] Redirecting workers to scarce resource: ${scarceResource}`);
+
+    const workers = this.blackboard.workers.filter((worker) => {
+      const gatherer = getActorComponent(worker, GathererComponent);
+      return gatherer && gatherer.isGathering;
     });
-    if (reassigned > 0) {
-      this.log("Redirected workers to scarce resource:", scarce.type);
+
+    if (workers.length === 0) {
+      this.log("[Logistics] No active gatherers to redirect");
+      return State.FAILED;
+    }
+
+    // Reassign workers currently gathering other resources
+    let reassignedCount = 0;
+    for (const worker of workers) {
+      const gatherer = getActorComponent(worker, GathererComponent);
+      if (!gatherer) continue;
+
+      // Skip if already gathering the scarce resource
+      const currentTarget = gatherer.currentResourceSource;
+      if (currentTarget && currentTarget.name.includes(scarceResource)) {
+        continue;
+      }
+
+      const closestResourceSource = await gatherer.getClosestResourceSource(
+        scarceResource,
+        AI_CONFIG.gatherSearchRadius
+      );
+      if (!closestResourceSource) continue;
+
+      gatherer.startGatheringResources(closestResourceSource);
+      reassignedCount++;
+    }
+
+    if (reassignedCount > 0) {
+      this.log(`[Logistics] ✓ Redirected ${reassignedCount} workers to gather scarce resource: ${scarceResource}`);
+      this.lastRebalanceAt = Date.now();
       return State.SUCCEEDED;
     }
+
+    this.log(`[Logistics] Failed to redirect any workers to ${scarceResource}`);
     return State.FAILED;
   }
 
-  rebalanceHarvesters(): State {
+  async rebalanceHarvesters(): Promise<State> {
     const now = Date.now();
-    if (!this.shouldRebalance()) return State.FAILED;
-    const scarce = this.blackboard.getMostNeededResource();
-    if (!scarce) return State.FAILED;
+    if (now - this.lastRebalanceAt < this.rebalanceCooldownMs) {
+      this.log("[Logistics] Rebalance on cooldown");
+      return State.FAILED;
+    }
 
-    // Release a few workers from the resource with highest stock
-    const entries = Object.entries(this.blackboard.resources) as [ResourceType, number][];
-    entries.sort((a, b) => b[1] - a[1]);
-    const richest = entries[0]?.[0];
+    const scarceResource = this.getMostConstrainedResource();
+    if (!scarceResource) {
+      this.log("[Logistics] No constrained resource for rebalancing");
+      return State.FAILED;
+    }
 
-    if (richest && richest !== scarce.type) {
-      let switched = 0;
-      this.blackboard.workers.forEach((w) => {
-        if (switched >= 2) return;
-        const g = getActorComponent(w, GathererComponent);
-        if (!g) return;
-        if (g.currentResourceSource?.type !== richest) return;
-        const source = g.getClosestResourceSource(scarce.type, 120);
-        if (!source) return;
-        g.startGatheringResources(source);
-        switched++;
-      });
-      if (switched > 0) {
-        this.lastRebalanceAt = now;
-        this.log("Rebalanced harvesters from", richest, "to", scarce.type);
-        return State.SUCCEEDED;
+    this.log(`[Logistics] Starting harvester rebalance for ${scarceResource}`);
+    // Redirect workers to scarce resource
+    return this.redirectToScarce();
+  }
+
+  getMostConstrainedResource(): ResourceType | null {
+    const economy = this.blackboard.economy;
+    const resourceData: { [key in ResourceType]?: { score: number } } = {};
+
+    // 1. Projected spend
+    const projectedSpend: Record<ResourceType, number> = { wood: 0, stone: 0, minerals: 0 };
+    // from queues
+    this.blackboard.trainingBuildings.forEach((b) => {
+      const prod = getActorComponent(b, ProductionComponent);
+      if (prod) {
+        prod.itemsFromAllQueues.forEach((item) => {
+          const cost = getCostForObjectName(item.actorName);
+          if (cost) {
+            for (const key in cost) {
+              const r = key as ResourceType;
+              projectedSpend[r] += cost[r] ?? 0;
+            }
+          }
+        });
+      }
+    });
+    // from planned buildings
+    this.blackboard.production.plannedStructures.forEach((p) => {
+      for (const key in p.cost) {
+        const r = key as ResourceType;
+        projectedSpend[r] += p.cost[r] ?? 0;
+      }
+    });
+
+    for (const key in economy.resources) {
+      const r = key as ResourceType;
+      resourceData[r] = { score: 0 };
+
+      // score based on current stock (lower is higher score)
+      resourceData[r]!.score += 1 / (economy.resources[r] + 1);
+
+      // score based on demand
+      const demand = projectedSpend[r];
+      if (demand > 0) {
+        resourceData[r]!.score += demand / (economy.resources[r] + 1);
+      }
+
+      // score based on income (lower income is higher score)
+      const income = economy.incomeSmoothed[r] || 0;
+      resourceData[r]!.score += 1 / (income + 1);
+    }
+
+    // find resource with highest score
+    let maxScore = -1;
+    let mostConstrained: ResourceType | null = null;
+    for (const key in resourceData) {
+      const r = key as ResourceType;
+      if (resourceData[r]!.score > maxScore) {
+        maxScore = resourceData[r]!.score;
+        mostConstrained = r;
       }
     }
-    return State.FAILED;
+
+    if (mostConstrained) {
+      this.log(
+        `[Logistics] Most constrained resource: ${mostConstrained} (score: ${maxScore.toFixed(2)}, stock: ${economy.resources[mostConstrained]}, demand: ${projectedSpend[mostConstrained]})`
+      );
+    }
+
+    return mostConstrained;
   }
 }

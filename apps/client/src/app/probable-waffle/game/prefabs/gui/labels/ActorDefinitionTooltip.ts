@@ -4,13 +4,13 @@
 
 /* START-USER-IMPORTS */
 import { IconHelper } from "./IconHelper";
-import type { ObjectNames, ResourceType, Vector2Simple } from "@fuzzy-waddle/api-interfaces";
-import type { PrefabDefinition } from "../../definitions/prefab-definition";
+import type { ResourceType } from "@fuzzy-waddle/api-interfaces";
 import ActorInfoLabel from "./ActorInfoLabel";
 import ActorDetails from "./ActorDetails";
 import Resource from "./Resource";
 import { getCurrentPlayerNumber, getPlayer } from "../../../data/scene-data";
 import { pwActorDefinitions } from "../../definitions/actor-definitions";
+import type { TooltipInfo } from "./tooltip-info";
 /* END-USER-IMPORTS */
 
 export default class ActorDefinitionTooltip extends Phaser.GameObjects.Container {
@@ -279,14 +279,4 @@ export default class ActorDefinitionTooltip extends Phaser.GameObjects.Container
   /* END-USER-CODE */
 }
 
-/* END OF COMPILED CODE */
-export type TooltipInfo = {
-  iconKey: string;
-  iconFrame: string;
-  iconOrigin: Vector2Simple;
-  title: string;
-  description: string;
-  definition?: PrefabDefinition;
-  unmetRequirements?: ObjectNames[];
-};
 // You can write more code here

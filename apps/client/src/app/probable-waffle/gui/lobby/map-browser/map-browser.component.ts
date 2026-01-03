@@ -1,13 +1,12 @@
 import {
   Component,
   effect,
-  EventEmitter,
   inject,
   input,
   model,
   type OnDestroy,
   type OnInit,
-  Output
+  output
 } from "@angular/core";
 
 import { ProbableWaffleLevels, type ProbableWaffleMapData, ProbableWaffleMapEnum } from "@fuzzy-waddle/api-interfaces";
@@ -27,7 +26,7 @@ export class MapBrowserComponent implements OnInit, OnDestroy {
   // Using the new input signal approach
   searchQuery = input<string>("");
   selectedMapId = model<ProbableWaffleMapEnum | null>(null);
-  @Output() selectedMapIdChange = new EventEmitter<ProbableWaffleMapEnum>();
+  readonly selectedMapIdChange = output<ProbableWaffleMapEnum>();
 
   maps: ProbableWaffleMapData[] = [];
   filteredMaps: ProbableWaffleMapData[] = [];

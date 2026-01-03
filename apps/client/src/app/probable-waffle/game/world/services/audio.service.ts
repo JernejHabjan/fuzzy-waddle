@@ -3,11 +3,7 @@ import { getGameObjectRenderedTransform, onSceneInitialized } from "../../data/g
 import { getSceneExternalComponent } from "./scene-component-helpers";
 import { OptionsService } from "../../../gui/options/options.service";
 import { filter, Subscription } from "rxjs";
-
-export interface AdditionalAudioConfig {
-  onComplete?: () => void;
-  waitIfLockedOrGameLostFocus?: boolean;
-}
+import type { AdditionalAudioConfig } from "./additionalAudioConfig";
 
 export class AudioService {
   private readonly playAudioAlsoOnBlur = true;

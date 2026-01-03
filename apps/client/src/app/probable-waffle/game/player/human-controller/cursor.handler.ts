@@ -9,7 +9,7 @@ import { HealingComponent } from "../../entity/components/combat/components/heal
 import { BuilderComponent } from "../../entity/components/construction/builder-component";
 import { ConstructionSiteComponent } from "../../entity/components/construction/construction-site-component";
 import { ContainerComponent } from "../../entity/components/building/container-component";
-import { getCurrentPlayerNumber } from "../../data/scene-data";
+import { getCurrentPlayerNumber, getSelectedActors } from "../../data/scene-data";
 import { getSelectableGameObject } from "../../data/game-object-helper";
 import { getSceneComponent, getSceneService } from "../../world/services/scene-component-helpers";
 import { PlayerActionsHandler } from "./player-actions-handler";
@@ -17,7 +17,10 @@ import { BuildingCursor } from "./building-cursor";
 import { MULTI_SELECTING } from "./multi-selection.handler";
 import { OrderType } from "../../ai/order-type";
 import { GameSettings } from "../../core/gameSettings";
+import { ContainableComponent } from "../../entity/components/building/containable-component";
+import { GathererComponent } from "../../entity/components/resource/gatherer-component";
 import GameObject = Phaser.GameObjects.GameObject;
+import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 
 export enum CursorType {
   Add = "add",
@@ -246,8 +249,14 @@ export class CursorHandler {
     // Get the first selectable game object under cursor
     const selectableObject = gameObjectsUnderCursor.map((go) => getSelectableGameObject(go)).find((go) => !!go);
 
+    const selectedActors = getSelectedActors(this.mainScene);
+
     if (selectableObject) {
-      const contextualCursor = this.determineContextualCursor(selectableObject, playerActionsHandler);
+      const contextualCursor = this.determineContextualCursor(
+        selectableObject,
+        selectedActors,
+        playerActionsHandler?.getCurrentOrderType()
+      );
       if (contextualCursor !== this.lastHoveredCursor) {
         this.lastHoveredCursor = contextualCursor;
         this.setCursor(contextualCursor);
@@ -264,7 +273,11 @@ export class CursorHandler {
   /**
    * Determine the appropriate cursor based on the actor under the cursor
    */
-  private determineContextualCursor(gameObject: GameObject, playerActionsHandler?: PlayerActionsHandler): CursorType {
+  private determineContextualCursor(
+    gameObject: GameObject,
+    selectedActors: GameObject[],
+    currentOrderType: OrderType | undefined
+  ): CursorType {
     if (!this.mainScene) return CursorType.Default;
 
     const currentPlayerNumber = getCurrentPlayerNumber(this.mainScene);
@@ -272,9 +285,6 @@ export class CursorHandler {
     const actorOwner = ownerComponent?.getOwner();
     const isEnemy = actorOwner !== undefined && actorOwner !== currentPlayerNumber;
     const isFriendly = actorOwner !== undefined && actorOwner === currentPlayerNumber;
-
-    // Check current action being handled
-    const currentOrderType = playerActionsHandler?.getCurrentOrderType();
 
     // If there's a current order, use cursor based on that
     if (currentOrderType) {
@@ -284,16 +294,31 @@ export class CursorHandler {
     // No active order - determine cursor based on actor type and relationship
     // Priority: resource source > enemy > friendly > construction site > container > default
 
+    const hasSelectedActors = selectedActors.length > 0;
+
     // Check if it's a resource source (tree, mine, etc.)
     const resourceSource = getActorComponent(gameObject, ResourceSourceComponent);
     if (resourceSource) {
-      return CursorType.ChopGreen;
+      if (hasSelectedActors && selectedActors.some((actor) => !!getActorComponent(actor, GathererComponent))) {
+        switch (resourceSource.resourceSourceDefinition.resourceType) {
+          case ResourceType.Wood:
+            return CursorType.ChopGreen;
+          case ResourceType.Stone:
+            return CursorType.PickaxeGreen;
+
+          case ResourceType.Minerals:
+            return CursorType.PickaxeGreen;
+          default:
+            throw new Error(
+              `Unhandled resource type for cursor: ${resourceSource.resourceSourceDefinition.resourceType}`
+            );
+        }
+      }
     }
 
     // Check if it's an enemy
     if (isEnemy) {
-      const attackComponent = getActorComponent(gameObject, AttackComponent);
-      if (attackComponent) {
+      if (hasSelectedActors && selectedActors.some((actor) => !!getActorComponent(actor, AttackComponent))) {
         return CursorType.AttackRed;
       }
       return CursorType.DefaultEnemy;
@@ -307,13 +332,17 @@ export class CursorHandler {
     // Check if it's a construction site
     const constructionSite = getActorComponent(gameObject, ConstructionSiteComponent);
     if (constructionSite) {
-      return CursorType.BuildGreen;
+      if (hasSelectedActors && selectedActors.some((actor) => !!getActorComponent(actor, BuilderComponent))) {
+        return CursorType.BuildGreen;
+      }
     }
 
     // Check if it's a container (e.g., building to enter)
     const container = getActorComponent(gameObject, ContainerComponent);
     if (container) {
-      return CursorType.QuestionGreen;
+      if (hasSelectedActors && selectedActors.some((actor) => !!getActorComponent(actor, ContainableComponent))) {
+        return CursorType.QuestionGreen;
+      }
     }
 
     return CursorType.Default;

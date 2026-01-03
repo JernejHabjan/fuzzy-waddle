@@ -130,6 +130,7 @@ export class BaseScene<
 
   private registerSceneDestroy() {
     this.events.once(Phaser.Scenes.Events.DESTROY, () => {
+      this._sceneShutdown();
       this.destroy();
     });
   }

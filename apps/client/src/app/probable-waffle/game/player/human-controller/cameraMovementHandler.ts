@@ -59,7 +59,7 @@ export class CameraMovementHandler {
     );
   }
 
-  update(time: number, delta: number) {
+  update(_: number, delta: number) {
     this.keyboardMovementControls?.update(delta);
     this.screenEdgeMovementUpdate();
   }

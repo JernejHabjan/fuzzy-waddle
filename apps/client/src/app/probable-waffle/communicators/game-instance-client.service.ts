@@ -32,19 +32,20 @@ import {
   type RequestGameSearchForMatchMakingDto
 } from "@fuzzy-waddle/api-interfaces";
 import { ServerHealthService } from "../../shared/services/server-health.service";
-import { type ProbableWaffleCommunicators, SceneCommunicatorClientService } from "./scene-communicator-client.service";
+import { SceneCommunicatorClientService } from "./scene-communicator-client.service";
 import { AuthService } from "../../auth/auth.service";
 import { type GameInstanceClientServiceInterface } from "./game-instance-client.service.interface";
-import { type MatchmakingOptions } from "../gui/online/matchmaking/matchmaking.component";
 import { Router } from "@angular/router";
 import { ProbableWaffleCommunicatorService } from "./probable-waffle-communicator.service";
 import { map } from "rxjs/operators";
 import { AuthenticatedSocketService } from "../../data-access/chat/authenticated-socket.service";
 import { GameInstanceStorageServiceInterface } from "./storage/game-instance-storage.service.interface";
-import { type SaveGamePayload } from "../game/data/save-game";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { LoadComponent } from "../gui/load/load.component";
 import { OptionsComponent } from "../gui/options/options.component";
+import type { SaveGamePayload } from "../game/data/save-game-payload";
+import type { ProbableWaffleCommunicators } from "./probable-waffle.communicators";
+import type { MatchmakingOptions } from "../gui/online/matchmaking/matchmaking-options";
 
 @Injectable({
   providedIn: "root"
@@ -82,7 +83,9 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
         createdBy: this.authService.userId,
         type,
         visibility,
-        startOptions: {}
+        startOptions: {},
+        version: environment.version,
+        rndSeed: Math.floor(Math.random() * 1000000)
       } satisfies ProbableWaffleGameInstanceMetadataData,
       gameModeData: {
         tieConditions: {

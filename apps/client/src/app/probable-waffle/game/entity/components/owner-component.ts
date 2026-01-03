@@ -1,7 +1,7 @@
 import GameObject = Phaser.GameObjects.GameObject;
 import { getActorComponent } from "../../data/actor-component";
 import { Plugins } from "../../world/const/Plugins";
-import { GameSetupHelpers, Guid, type OwnerComponentData, ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { GameSetupHelpers, Guid, ObjectNames, type OwnerComponentData } from "@fuzzy-waddle/api-interfaces";
 import GameProbableWaffleScene from "../../world/scenes/GameProbableWaffleScene";
 import { HealthComponent } from "./combat/components/health-component";
 import { getGameObjectDepth, onObjectReady } from "../../data/game-object-helper";
@@ -14,10 +14,7 @@ import { getSceneService } from "../../world/services/scene-component-helpers";
 import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
 import { getCanonicalActorNameCached } from "../../data/tech-tree/canonical-actor-name";
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
-
-export type OwnerDefinition = {
-  color: { originalColor: number; epsilon: number }[];
-};
+import type { OwnerDefinition } from "./owner-definition";
 
 export class OwnerComponent {
   static readonly ZIndex = 1;
@@ -142,7 +139,12 @@ export class OwnerComponent {
     }
     const gameScene = this.gameObject.scene as GameProbableWaffleScene;
     const maxPlayers = gameScene.mapInfo.mapInfo.startPositionsOnTile.length;
-    const { hue, saturation, lightness } = GameSetupHelpers.getHslColorForPlayer(this.owner, maxPlayers);
+    const gameInstanceId = gameScene.gameInstanceId;
+    const { hue, saturation, lightness } = GameSetupHelpers.getHslColorForPlayer(
+      this.owner,
+      maxPlayers,
+      gameInstanceId
+    );
     const { hueNormalized, saturationNormalized, lightnessNormalized } = {
       hueNormalized: hue / 360,
       saturationNormalized: saturation / 100,

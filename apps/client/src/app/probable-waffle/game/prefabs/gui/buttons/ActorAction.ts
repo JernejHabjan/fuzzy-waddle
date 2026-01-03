@@ -7,10 +7,12 @@ import PushActionScript from "../../../../../shared/game/phaser/script-nodes/Pus
 import OnPointerUpScript from "../../../../../shared/game/phaser/script-nodes-basic/OnPointerUpScript";
 import EmitEventActionScript from "../../../../../shared/game/phaser/script-nodes-basic/EmitEventActionScript";
 /* START-USER-IMPORTS */
-import ActorDefinitionTooltip, { type TooltipInfo } from "../labels/ActorDefinitionTooltip";
+import ActorDefinitionTooltip from "../labels/ActorDefinitionTooltip";
 import HudProbableWaffle from "../../../world/scenes/hud-scenes/HudProbableWaffle";
 import { getGameObjectBounds } from "../../../data/game-object-helper";
 import { IconHelper } from "../labels/IconHelper";
+import type { ActorActionSetup } from "./actor-action-setup";
+import type { TooltipInfo } from "../labels/tooltip-info";
 /* END-USER-IMPORTS */
 
 export default class ActorAction extends Phaser.GameObjects.Container {
@@ -69,7 +71,7 @@ export default class ActorAction extends Phaser.GameObjects.Container {
     this.once(Phaser.Input.Events.DESTROY, this.destroyCore);
     this.on(Phaser.Input.Events.POINTER_OVER, this.onPointerOver);
     this.on(Phaser.Input.Events.POINTER_OUT, this.onPointerOut);
-    this.on("actor-action", this.onAction);
+    this.on("actor-action", this.triggerAction);
     /* END-USER-CTR-CODE */
   }
 
@@ -199,14 +201,14 @@ export default class ActorAction extends Phaser.GameObjects.Container {
     this.tooltip?.destroy();
   }
 
-  private onAction = () => {
+  triggerAction = () => {
     // do not actually disable the button, as we want to react to it on click
     // if (this.disabled) return;
     this.action?.();
   };
 
   private destroyCore = () => {
-    this.off("actor-action", this.onAction);
+    this.off("actor-action", this.triggerAction);
     this.off(Phaser.Input.Events.POINTER_OVER, this.onPointerOver);
     this.off(Phaser.Input.Events.POINTER_OUT, this.onPointerOut);
     this.destroyTooltip();
@@ -216,22 +218,5 @@ export default class ActorAction extends Phaser.GameObjects.Container {
 }
 
 /* END OF COMPILED CODE */
-
-export type ActorActionSetup = {
-  icon?: {
-    key: string;
-    frame: string;
-    origin?: {
-      x: number;
-      y: number;
-    };
-  };
-  disabled?: boolean;
-  visible: boolean;
-  action?: () => void;
-  tooltipInfo?: TooltipInfo;
-  // Optional shortcut label (e.g., "A", "M", "1")
-  shortcut?: string;
-};
 
 // You can write more code here

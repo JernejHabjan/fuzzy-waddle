@@ -46,7 +46,8 @@ export const workMillDefinition = {
       costType: PaymentType.PayImmediately
     },
     resourceDrain: {
-      resourceTypes: [ResourceType.Wood]
+      resourceTypes: [ResourceType.Wood],
+      cooldown: 1000
     },
     selectable: {},
     collider: { enabled: true },

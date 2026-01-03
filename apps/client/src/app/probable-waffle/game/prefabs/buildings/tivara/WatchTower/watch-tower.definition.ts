@@ -1,9 +1,9 @@
 import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PaymentType } from "../../../../entity/components/production/payment-type";
-import { weaponDefinitions } from "../../../../entity/components/combat/attack-data";
 import { coreConstructionSiteDefinition } from "../../shared/core-construction-site.definition";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 import { ActorPhysicalType } from "../../../../entity/components/combat/components/actor-physical-type";
+import { weaponDefinitions } from "../../../../entity/components/combat/weapon-definitions";
 
 export const watchTowerDefinition = {
   components: {

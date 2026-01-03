@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild } from "@angular/core";
+import { Component, input, viewChild } from "@angular/core";
 
 import { RouterLink } from "@angular/router";
 import { ModalComponent } from "../modal/modal.component";
@@ -11,27 +11,28 @@ import type { ModalConfig } from "../modal/modal-config";
   styleUrl: "./leave-button.component.scss"
 })
 export class LeaveButtonComponent {
-  @Input() public routerLink?: string;
-  @Input() public text: string = "Leave";
-  @Input() public style: string = "left: 20px; top: 20px";
-  @Input() public class: string = "btn btn-danger m-1 position-absolute";
-  @Input() public modalConfig?: ModalConfig;
+  public readonly routerLink = input<string>();
+  public readonly text = input<string>("Leave");
+  public readonly style = input<string>("left: 20px; top: 20px");
+  public readonly class = input<string>("btn btn-danger m-1 position-absolute");
+  public readonly modalConfig = input<ModalConfig>();
 
-  @ViewChild("modal") private modalComponent!: ModalComponent;
+  private readonly modalComponent = viewChild.required<ModalComponent>("modal");
   protected leaveModalConfirm: ModalConfig = {
-    modalTitle: this.modalConfig?.modalTitle ?? "Leave the game?",
-    dismissButtonLabel: this.modalConfig?.dismissButtonLabel ?? "Continue",
-    closeButtonLabel: this.modalConfig?.closeButtonLabel ?? "Leave",
+    modalTitle: this.modalConfig()?.modalTitle ?? "Leave the game?",
+    dismissButtonLabel: this.modalConfig()?.dismissButtonLabel ?? "Continue",
+    closeButtonLabel: this.modalConfig()?.closeButtonLabel ?? "Leave",
     onClose: async () => {
-      if (this.modalConfig?.onClose) {
-        await this.modalConfig.onClose();
+      const modalConfig = this.modalConfig();
+      if (modalConfig?.onClose) {
+        await modalConfig.onClose();
       }
     }
   };
 
   protected onclick() {
-    if (!this.modalConfig) return;
+    if (!this.modalConfig()) return;
     // noinspection JSIgnoredPromiseFromCall
-    this.modalComponent.open();
+    this.modalComponent().open();
   }
 }

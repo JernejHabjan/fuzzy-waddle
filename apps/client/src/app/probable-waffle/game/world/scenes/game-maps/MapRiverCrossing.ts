@@ -74,7 +74,6 @@ import SkaduweeMagicianFemale from "../../../prefabs/characters/skaduwee/skaduwe
 import FenceRightCorner from "../../../prefabs/outside/architecture/obstruction/FenceRightCorner";
 import FenceLeftCorner from "../../../prefabs/outside/architecture/obstruction/FenceLeftCorner";
 import ToxicFrog from "../../../prefabs/animals/toxic-frog/ToxicFrog";
-import TreeBird from "../../../prefabs/animals/tree-bird/TreeBird";
 import Wolf from "../../../prefabs/animals/wolf/Wolf";
 import Stag from "../../../prefabs/animals/stag/Stag";
 import Boar from "../../../prefabs/animals/boar/Boar";
@@ -349,6 +348,10 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     const bushDownwardsSmall_1 = new BushDownwardsSmall(this, 224, 1312);
     this.add.existing(bushDownwardsSmall_1);
 
+    // workMill_1
+    const workMill_1 = new WorkMill(this, 384, 1184);
+    this.add.existing(workMill_1);
+
     // bushUpwardsSmall_1
     const bushUpwardsSmall_1 = new BushUpwardsSmall(this, 32, 1440);
     this.add.existing(bushUpwardsSmall_1);
@@ -490,27 +493,27 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(fenceBottom);
 
     // stonePile
-    const stonePile = new StonePile(this, -608, 768);
+    const stonePile = new StonePile(this, 736, 1200);
     this.add.existing(stonePile);
 
     // stonePile_1
-    const stonePile_1 = new StonePile(this, -640, 784);
+    const stonePile_1 = new StonePile(this, -544, 304);
     this.add.existing(stonePile_1);
 
     // stonePile_2
-    const stonePile_2 = new StonePile(this, -576, 784);
+    const stonePile_2 = new StonePile(this, -576, 320);
     this.add.existing(stonePile_2);
 
     // stonePile_3
-    const stonePile_3 = new StonePile(this, -608, 800);
+    const stonePile_3 = new StonePile(this, -544, 336);
     this.add.existing(stonePile_3);
 
     // stonePile_4
-    const stonePile_4 = new StonePile(this, -672, 768);
+    const stonePile_4 = new StonePile(this, 736, 1168);
     this.add.existing(stonePile_4);
 
     // stonePile_5
-    const stonePile_5 = new StonePile(this, -672, 800);
+    const stonePile_5 = new StonePile(this, 704, 1184);
     this.add.existing(stonePile_5);
 
     // minerals
@@ -633,10 +636,6 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     const tivaraWorkerMale = new TivaraWorkerMale(this, -512, 672);
     this.add.existing(tivaraWorkerMale);
 
-    // workMill_1
-    const workMill_1 = new WorkMill(this, 608, 1184);
-    this.add.existing(workMill_1);
-
     // wall
     const wall = new Wall(this, 512, 768);
     this.add.existing(wall);
@@ -698,7 +697,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(skaduweeWorkerMale_1);
 
     // skaduweeOwl_1
-    const skaduweeOwl_1 = new SkaduweeOwl(this, -832, 528);
+    const skaduweeOwl_1 = new SkaduweeOwl(this, -416, 592);
     this.add.existing(skaduweeOwl_1);
 
     // fenceRight_2
@@ -779,14 +778,6 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     toxicFrog_3.flipX = true;
     toxicFrog_3.flipY = false;
 
-    // treeBird
-    const treeBird = new TreeBird(this, -424, 640);
-    this.add.existing(treeBird);
-
-    // treeBird_1
-    const treeBird_1 = new TreeBird(this, 264, 440);
-    this.add.existing(treeBird_1);
-
     // wolf
     const wolf = new Wolf(this, -320, 1216);
     this.add.existing(wolf);
@@ -843,13 +834,41 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     const emberstone_1 = new Emberstone(this, 512, 640);
     this.add.existing(emberstone_1);
 
+    // minerals_6
+    const minerals_6 = new Minerals(this, 928, 1120);
+    this.add.existing(minerals_6);
+
+    // minerals_7
+    const minerals_7 = new Minerals(this, 896, 1136);
+    this.add.existing(minerals_7);
+
+    // minerals_8
+    const minerals_8 = new Minerals(this, 864, 1120);
+    this.add.existing(minerals_8);
+
+    // minerals_9
+    const minerals_9 = new Minerals(this, 896, 1104);
+    this.add.existing(minerals_9);
+
+    // minerals_10
+    const minerals_10 = new Minerals(this, 832, 1104);
+    this.add.existing(minerals_10);
+
     // spawn (components)
     const spawnEditorOwner = new EditorOwner(spawn);
     spawnEditorOwner.owner_id = "1";
 
+    // wall_6 (components)
+    const wall_6EditorOwner = new EditorOwner(wall_6);
+    wall_6EditorOwner.owner_id = "1";
+
     // spawn_1 (components)
     const spawn_1EditorOwner = new EditorOwner(spawn_1);
     spawn_1EditorOwner.owner_id = "2";
+
+    // wall_7 (components)
+    const wall_7EditorOwner = new EditorOwner(wall_7);
+    wall_7EditorOwner.owner_id = "1";
 
     // owlery (components)
     const owleryEditorOwner = new EditorOwner(owlery);
@@ -913,6 +932,13 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // blockStone_11 (prefab fields)
     blockStone_11.z = 128;
 
+    // tree4 (prefab fields)
+    tree4.z = 160;
+
+    // workMill_1 (components)
+    const workMill_1EditorOwner = new EditorOwner(workMill_1);
+    workMill_1EditorOwner.owner_id = "2";
+
     // workMill (components)
     const workMillEditorOwner = new EditorOwner(workMill);
     workMillEditorOwner.owner_id = "1";
@@ -935,9 +961,21 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     const tivaraWorkerMaleEditorOwner = new EditorOwner(tivaraWorkerMale);
     tivaraWorkerMaleEditorOwner.owner_id = "1";
 
-    // workMill_1 (components)
-    const workMill_1EditorOwner = new EditorOwner(workMill_1);
-    workMill_1EditorOwner.owner_id = "2";
+    // wall (components)
+    const wallEditorOwner = new EditorOwner(wall);
+    wallEditorOwner.owner_id = "1";
+
+    // stairs (components)
+    const stairsEditorOwner = new EditorOwner(stairs);
+    stairsEditorOwner.owner_id = "1";
+
+    // stairs_1 (components)
+    const stairs_1EditorOwner = new EditorOwner(stairs_1);
+    stairs_1EditorOwner.owner_id = "1";
+
+    // stairs_2 (components)
+    const stairs_2EditorOwner = new EditorOwner(stairs_2);
+    stairs_2EditorOwner.owner_id = "1";
 
     // seagulls (prefab fields)
     seagulls.sfxType = "seagulls";
@@ -980,12 +1018,6 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // skaduweeOwl_1 (components)
     const skaduweeOwl_1EditorOwner = new EditorOwner(skaduweeOwl_1);
     skaduweeOwl_1EditorOwner.owner_id = "1";
-
-    // treeBird (prefab fields)
-    treeBird.z = 64;
-
-    // treeBird_1 (prefab fields)
-    treeBird_1.z = 64;
 
     // emberstone (components)
     const emberstoneEditorOwner = new EditorOwner(emberstone);

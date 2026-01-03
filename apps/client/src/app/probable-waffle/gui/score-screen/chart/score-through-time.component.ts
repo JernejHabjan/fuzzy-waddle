@@ -1,4 +1,4 @@
-import { Component, inject, Input, type OnInit } from "@angular/core";
+import { Component, inject, type OnInit, input } from "@angular/core";
 
 import {
   GameSetupHelpers,
@@ -17,7 +17,7 @@ import { BaseChartDirective } from "ng2-charts";
   styleUrls: ["./score-through-time.component.scss"]
 })
 export class ScoreThroughTimeComponent implements OnInit {
-  @Input({ required: true }) summaryType!: "units" | "buildings" | "resources";
+  readonly summaryType = input.required<"units" | "buildings" | "resources">();
   protected ready = false;
   private readonly gameInstanceClientService = inject(GameInstanceClientService);
   protected readonly chartData: ChartData<"line", Array<number | DefaultDataPoint<keyof ChartTypeRegistry>>, string> = {
@@ -55,7 +55,7 @@ export class ScoreThroughTimeComponent implements OnInit {
   private prepareGraphData() {
     if (!this.gameInstanceClientService.gameInstance) return;
 
-    switch (this.summaryType) {
+    switch (this.summaryType()) {
       case "units":
         this.summaryAddType = "unit_produced";
         this.summaryRemoveType = "unit_killed";
@@ -75,7 +75,7 @@ export class ScoreThroughTimeComponent implements OnInit {
 
     const players = this.gameInstanceClientService.gameInstance.players;
     const allTimestamps = this.getAllTimestamps(players);
-
+    const gameInstanceId = this.gameInstanceClientService.gameInstance.gameInstanceMetadata.data.gameInstanceId;
     this.chartData.labels = allTimestamps.map((n) => n.toString());
 
     players.forEach((player) => {
@@ -86,7 +86,7 @@ export class ScoreThroughTimeComponent implements OnInit {
         label: playerName,
         data: buildingProduced,
         fill: false,
-        borderColor: GameSetupHelpers.getStringColorForPlayer(player.playerNumber!, players.length)
+        borderColor: GameSetupHelpers.getStringColorForPlayer(player.playerNumber!, players.length, gameInstanceId)
       });
     });
     this.ready = true;

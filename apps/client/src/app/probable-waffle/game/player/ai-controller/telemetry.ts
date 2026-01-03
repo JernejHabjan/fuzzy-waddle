@@ -29,6 +29,18 @@ export class TelemetrySink {
     }
   }
 
+  withSpanAsync<T>(name: string, fn: () => Promise<T>): Promise<T> {
+    const start = performance.now();
+    return fn().finally(() => {
+      const dur = performance.now() - start;
+      const acc = this.spanAcc[name] || { total: 0, count: 0, last: 0 };
+      acc.total += dur;
+      acc.count++;
+      acc.last = dur;
+      this.spanAcc[name] = acc;
+    });
+  }
+
   recordEvent(type: string, data?: any) {
     this.events.push({ t: performance.now(), type, data });
     if (this.events.length > 256) this.events.splice(0, this.events.length - 256);

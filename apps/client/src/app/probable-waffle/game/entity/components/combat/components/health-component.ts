@@ -3,7 +3,7 @@ import { EventEmitter } from "@angular/core";
 import { HealthUiComponent } from "./health-ui-component";
 import { Subject, Subscription } from "rxjs";
 import { type HealthComponentData } from "@fuzzy-waddle/api-interfaces";
-import { ComponentSyncSystem, type SyncOptions } from "../../../systems/component-sync.system";
+import { ComponentSyncSystem } from "../../../systems/component-sync.system";
 import { ContainerComponent } from "../../building/container-component";
 import Phaser from "phaser";
 import { getActorComponent } from "../../../../data/actor-component";
@@ -18,7 +18,7 @@ import { environment } from "../../../../../../../environments/environment";
 import { SelectableComponent } from "../../selectable-component";
 import { OwnerComponent } from "../../owner-component";
 import { getCurrentPlayerNumber } from "../../../../data/scene-data";
-import { AudioActorComponent, type SoundDefinition } from "../../actor-audio/audio-actor-component";
+import { AudioActorComponent } from "../../actor-audio/audio-actor-component";
 import { AnimationActorComponent } from "../../animation/animation-actor-component";
 import { EffectsAnims } from "../../../../animations/effects";
 import { ActorTranslateComponent } from "../../movement/actor-translate-component";
@@ -32,14 +32,9 @@ import { VisionComponent } from "../../vision-component";
 import { AnimationType } from "../../animation/animation-type";
 import { SoundType } from "../../actor-audio/sound-type";
 import { ActorPhysicalType } from "./actor-physical-type";
-
-export type HealthDefinition = {
-  maxHealth: number;
-  maxArmour?: number;
-  regenerateHealthRate?: number;
-  healthDisplayBehavior?: "always" | "onDamage";
-  physicalState: ActorPhysicalType;
-};
+import type { SoundDefinition } from "../../actor-audio/sound-definition";
+import type { HealthDefinition } from "./health-definition";
+import type { SyncOptions } from "../../../systems/sync.options";
 
 export class HealthComponent {
   static readonly DEBUG = false;
@@ -59,6 +54,7 @@ export class HealthComponent {
     damage: number;
     damageType: DamageType;
     timestamp: Date;
+    sceneTime: number;
   };
   private syncConfig = {
     eventPrefix: "health",
@@ -93,7 +89,7 @@ export class HealthComponent {
   uiComponentsVisibilityChanged: Subject<boolean> = new Subject<boolean>();
   private shouldUiElementsBeVisible: boolean = false;
   private constructionProgressSubscription?: Subscription;
-  private healthUiHideOnTimeout?: number;
+  private healthUiHideOnTimeout?: Phaser.Time.TimerEvent;
   private damageKey?: Phaser.Input.Keyboard.Key | undefined;
   private attackKey?: Phaser.Input.Keyboard.Key | undefined;
   private animationActorComponent?: AnimationActorComponent;
@@ -213,7 +209,7 @@ export class HealthComponent {
   }
 
   private bindAttackAnimKey() {
-    this.attackKey = this.gameObject.scene.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.L);
+    this.attackKey = this.gameObject.scene.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.N);
     if (!this.attackKey) return;
     this.attackKey.on(Phaser.Input.Keyboard.Events.DOWN, this.playAttack, this);
   }
@@ -276,7 +272,8 @@ export class HealthComponent {
       damage,
       damageType,
       damageInitiator,
-      timestamp: new Date()
+      timestamp: new Date(),
+      sceneTime: this.gameObject.scene.time.now
     };
 
     if (this.healthComponentData.armour > 0) {
@@ -288,10 +285,10 @@ export class HealthComponent {
     if (this.healthDefinition.healthDisplayBehavior === "onDamage") {
       this.setVisibilityUiComponent(true);
       // Hide the UI component after a delay if it's set to "onDamage"
-      clearTimeout(this.healthUiHideOnTimeout);
-      this.healthUiHideOnTimeout = window.setTimeout(() => {
+      this.healthUiHideOnTimeout?.remove();
+      this.healthUiHideOnTimeout = this.gameObject.scene.time.delayedCall(3000, () => {
         if (this.gameObject.active) this.setVisibilityUiComponent(false);
-      }, 3000);
+      });
     }
   }
 

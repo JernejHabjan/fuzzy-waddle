@@ -5,10 +5,7 @@ import { OwnerComponent } from "./owner-component";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 import { type VisionComponentData } from "@fuzzy-waddle/api-interfaces";
-
-export interface VisionDefinition {
-  range: number;
-}
+import type { VisionDefinition } from "./vision-definition";
 
 export class VisionComponent {
   private visibleEnemies?: GameObject[];

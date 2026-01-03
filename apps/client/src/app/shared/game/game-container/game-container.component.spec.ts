@@ -1,19 +1,15 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { GameContainerComponent } from "./game-container.component";
-import { Component, Input } from "@angular/core";
+import { Component, input } from "@angular/core";
 import { type BaseGameData } from "../phaser/game/base-game-data";
 import { LittleMuncherGameInstance, LittleMuncherUserInfo } from "@fuzzy-waddle/api-interfaces";
 import { LittleMuncherCommunicatorService } from "../../../little-muncher/main/communicators/little-muncher-communicator.service";
 
 @Component({ selector: "fuzzy-waddle-game-container", template: "", standalone: true, imports: [] })
 export class GameContainerTestingComponent {
-  @Input({ required: true }) gameConfig!: Phaser.Types.Core.GameConfig;
-  @Input({ required: true }) gameData!: BaseGameData<
-    LittleMuncherCommunicatorService,
-    LittleMuncherGameInstance,
-    LittleMuncherUserInfo
-  >;
+  readonly gameConfig = input.required<Phaser.Types.Core.GameConfig>();
+  readonly gameData = input.required<BaseGameData<LittleMuncherCommunicatorService, LittleMuncherGameInstance, LittleMuncherUserInfo>>();
 }
 
 describe("GameContainerComponent", () => {

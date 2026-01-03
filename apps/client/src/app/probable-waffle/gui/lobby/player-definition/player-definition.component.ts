@@ -98,9 +98,11 @@ export class PlayerDefinitionComponent {
   }
 
   getColorForPlayer(player: ProbableWafflePlayer): string {
+    const gameInstanceId = this.gameInstanceClientService.gameInstance?.gameInstanceMetadata?.data?.gameInstanceId;
     return GameSetupHelpers.getStringColorForPlayer(
       player.playerNumber!,
-      this.mapDetails!.mapInfo!.startPositionsOnTile.length
+      this.mapDetails!.mapInfo!.startPositionsOnTile.length,
+      gameInstanceId
     );
   }
 

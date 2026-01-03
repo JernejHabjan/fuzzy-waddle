@@ -46,7 +46,7 @@ export default class OlivalLevel1 extends Phaser.GameObjects.Container {
 
   private init() {
     this.bounce(this.buildings_tivara_olival);
-    this.tileMapTintComponent.tintTilemapAroundTransform(this.parentContainer);
+    this.tileMapTintComponent.init(this.parentContainer);
   }
 
   private bounce = (image: Phaser.GameObjects.Image) => {

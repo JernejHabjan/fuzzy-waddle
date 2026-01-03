@@ -12,23 +12,16 @@ import HudMessages, { HudVisualFeedbackMessageType } from "../../../prefabs/gui/
 import { CrossSceneCommunicationService } from "../../../world/services/CrossSceneCommunicationService";
 import { OwnerComponent } from "../owner-component";
 import { getCurrentPlayerNumber } from "../../../data/scene-data";
-import { AnimationActorComponent, type AnimationOptions } from "../animation/animation-actor-component";
+import { AnimationActorComponent } from "../animation/animation-actor-component";
 import { OrderType } from "../../../ai/order-type";
 import { ActorTranslateComponent } from "../movement/actor-translate-component";
 import { DistanceHelper } from "../../../library/distance-helper";
 import { IdComponent } from "../id-component";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { ConstructableDefinition } from "./constructable-category";
+import type { AnimationOptions } from "../animation/animation-options";
+import type { BuilderDefinition } from "./builder-definition";
 import GameObject = Phaser.GameObjects.GameObject;
-
-export type BuilderDefinition = {
-  // types of building the gameObject can produce
-  constructableBuildings: ConstructableDefinition;
-  // Whether the builder enters the building site while working on it, or not.
-  enterConstructionSite: boolean;
-  // from how far a builder builds building site
-  constructionSiteOffset: number;
-};
 
 // Allows the actor to construct building
 export class BuilderComponent {
@@ -64,10 +57,12 @@ export class BuilderComponent {
   }
 
   private update(_: number, delta: number): void {
+    const deltaWithTimeScale = delta * this.gameObject.scene.time.timeScale;
+
     if (this.remainingCooldown <= 0) {
       return;
     }
-    this.remainingCooldown -= delta;
+    this.remainingCooldown -= deltaWithTimeScale;
     this.remainingCooldown = Math.max(this.remainingCooldown, 0);
     // if (this.remainingCooldown <= 0) {
     //   this.onCooldownReady.emit(this.gameObject);

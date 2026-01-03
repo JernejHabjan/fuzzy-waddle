@@ -1,7 +1,7 @@
 import { type AttackData } from "../attack-data";
 import { HealthComponent } from "./health-component";
 import { getActorComponent } from "../../../../data/actor-component";
-import { AnimationActorComponent, type AnimationOptions } from "../../animation/animation-actor-component";
+import { AnimationActorComponent } from "../../animation/animation-actor-component";
 import {
   getGameObjectBounds,
   getGameObjectDepth,
@@ -22,12 +22,11 @@ import { EffectsAnims } from "../../../../animations/effects";
 import SkaduweeOwlFurball from "../../../../prefabs/weapons/SkaduweeOwlFurball";
 import { FlyingComponent } from "../../movement/flying-component";
 import { type AttackComponentData } from "@fuzzy-waddle/api-interfaces";
+import { ProjectileType } from "../projectile-type";
+import type { AnimationOptions } from "../../animation/animation-options";
+import type { ProjectileData } from "../projectile-data";
+import type { AttackDefinition } from "./attack-definition";
 import GameObject = Phaser.GameObjects.GameObject;
-import { type ProjectileData, ProjectileType } from "../projectile-type";
-
-export type AttackDefinition = {
-  attacks: AttackData[];
-};
 
 export class AttackComponent {
   remainingCooldown = 0;
@@ -38,6 +37,8 @@ export class AttackComponent {
   private rotationTween?: Phaser.Tweens.Tween;
   currentAttack: AttackData | null = null;
   private projectileSprite?: Phaser.GameObjects.Image;
+  // track delayed fire so we can cancel before projectile spawns
+  private fireTimer?: Phaser.Time.TimerEvent;
 
   constructor(
     private readonly gameObject: GameObject,
@@ -59,14 +60,21 @@ export class AttackComponent {
     this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
     this.gameObject.off(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     this.gameObject.off(HealthComponent.KilledEvent, this.destroy, this);
+    // cancel pending spawn timer (if any)
+    if (this.fireTimer) {
+      this.fireTimer.remove(false);
+      this.fireTimer = undefined;
+    }
     this.stopProjectile();
   }
 
   private update(_: number, delta: number): void {
+    const deltaWithTimeScale = delta * this.gameObject.scene.time.timeScale;
     if (this.remainingCooldown <= 0) {
       return;
     }
-    this.remainingCooldown -= delta;
+    this.remainingCooldown -= deltaWithTimeScale;
+
     this.remainingCooldown = Math.max(this.remainingCooldown, 0);
     // if (this.remainingCooldown <= 0) {
     //   this.onCooldownReady.emit(this.gameObject);
@@ -161,7 +169,11 @@ export class AttackComponent {
 
     this.playSharedAttackLogic(attack, enemy);
 
-    setTimeout(() => {
+    // schedule projectile spawn; keep a reference so Stop can cancel it
+    this.fireTimer = this.gameObject.scene.time.delayedCall(attack.delays.fire, () => {
+      // clear timer reference when it fires
+      this.fireTimer = undefined;
+
       if (!this.gameObject.active || !enemy.active) return;
       const healthComponent = getActorComponent(this.gameObject, HealthComponent);
       if (!healthComponent || healthComponent.killed) return;
@@ -237,7 +249,7 @@ export class AttackComponent {
           repeat: -1
         });
       }
-    }, attack.delays.fire);
+    });
   }
 
   private projectileHitEnemy(
@@ -289,6 +301,22 @@ export class AttackComponent {
       this.rotationTween = undefined;
     }
     this.projectileSprite?.destroy();
+    this.projectileSprite = undefined;
+  }
+
+  /**
+   * Cancel any ongoing attack scheduling
+   * - If projectile hasn't spawned yet, cancel delayed spawn so no projectile or hit logic runs.
+   * - If projectile has already spawned and is travelling, do NOT cancel it.
+   * Does not modify cooldowns.
+   */
+  public cancelCurrentAttack(): void {
+    // cancel only pre-spawn scheduling
+    if (!this.projectileSprite && this.fireTimer) {
+      this.fireTimer.remove(false);
+      this.fireTimer = undefined;
+    }
+    // do not call stopProjectile here if projectile is already travelling
   }
 
   // gameObject will automatically select and attack targets
@@ -331,7 +359,7 @@ export class AttackComponent {
         );
       }
     }
-    setTimeout(() => {
+    this.gameObject.scene.time.delayedCall(attack.delays.fire, () => {
       if (fire) {
         const visibilityComponent = getGameObjectVisibility(this.gameObject);
         if (visibilityComponent && visibilityComponent.visible) {
@@ -339,11 +367,11 @@ export class AttackComponent {
           this.audioService!.playSpatialAudioSprite(this.gameObject, randomFireSound.key, randomFireSound.spriteName);
         }
       }
-    }, attack.delays.fire);
+    });
 
     if (!attack.projectile) {
       // if not a projectile, play hit sound
-      setTimeout(() => {
+      this.gameObject.scene.time.delayedCall(attack.delays.hit, () => {
         if (hit) {
           const visibilityComponent = getGameObjectVisibility(this.gameObject);
           if (visibilityComponent && visibilityComponent.visible) {
@@ -355,7 +383,7 @@ export class AttackComponent {
             );
           }
         }
-      }, attack.delays.hit);
+      });
     }
   }
 

@@ -12,7 +12,9 @@ export const treeDefinitions = {
       enabled: true,
       colliderFactorReduction: 0.5
     },
-    selectable: {},
+    selectable: {
+      sizeFactorReduction: 0.5
+    },
     info: {
       name: "Tree",
       description: "A tree that can be chopped for wood",
@@ -24,8 +26,10 @@ export const treeDefinitions = {
     },
     resourceSource: {
       resourceType: ResourceType.Wood,
-      maximumResources: 1000,
-      gatheringFactor: 10
+      maximumResources: 120,
+      gatheringFactor: 10,
+      maxGatherers: 2,
+      cooldown: 2000
     },
     audio: {
       sounds: {

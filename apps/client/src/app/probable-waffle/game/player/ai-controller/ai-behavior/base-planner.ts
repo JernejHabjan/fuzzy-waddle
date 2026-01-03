@@ -1,14 +1,22 @@
 import { type MapAnalysis, MapAnalyzer } from "./map-analyzer";
-import { ObjectNames, ResourceType, type Vector2Simple } from "@fuzzy-waddle/api-interfaces";
+import { FactionType, ObjectNames, ResourceType, type Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { NavigationService } from "../../../world/services/navigation.service";
 import { pwActorDefinitions } from "../../../prefabs/definitions/actor-definitions";
 import { PlayerAiBlackboard } from "../player-ai-blackboard";
+import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
+import { SupplyPlanner } from "./supply-planner";
+import { ProductionValidator } from "../../../data/tech-tree/production-validator";
+import { NeedType } from "./need-type";
+import { AdaptiveThresholdManager } from "./adaptive-threshold-manager";
+import { getActorComponent } from "../../../data/actor-component";
+import { ProductionComponent } from "../../../entity/components/production/production-component";
+import { LogisticsManager } from "./logistics-manager";
 
 interface PlannedBuilding {
   id: string;
-  type: string;
+  type: NeedType;
   tile: Vector2Simple;
   priority: number;
   reservedAt: number;
@@ -18,12 +26,7 @@ interface BuildingNeed {
   type: NeedType;
   reason: string;
   priority: number;
-}
-
-enum NeedType {
-  Housing = "Housing",
-  Production = "Production",
-  Defense = "Defense"
+  resourceType?: ResourceType;
 }
 
 /**
@@ -42,16 +45,23 @@ export class BasePlanner {
     objectName: ObjectNames;
     tile: Vector2Simple;
     needType: string;
+    resourceType?: ResourceType; // for gathering buildings
     reservedAt: number;
     planId?: string; //link to blackboard plannedStructures reservation
   } | null = null;
 
-  constructor(private readonly analyzer: MapAnalyzer) {}
+  constructor(
+    private readonly analyzer: MapAnalyzer,
+    private readonly factionType: FactionType | undefined,
+    private readonly supplyPlanner: SupplyPlanner,
+    private readonly productionValidator: ProductionValidator,
+    private readonly logisticsManager: LogisticsManager
+  ) {}
 
   /**
    * Ensure a reservation exists for the given building type; returns its tile.
    */
-  async ensurePlan(buildingType: string, priority = 0): Promise<Vector2Simple | null> {
+  async ensurePlan(buildingType: NeedType, priority = 0, resourceType?: ResourceType): Promise<Vector2Simple | null> {
     this.pruneExpiredReservations();
     const existing = this.plans.find((p) => p.type === buildingType);
     if (existing) return existing.tile;
@@ -63,7 +73,7 @@ export class BasePlanner {
         await this.refineAccessibility(navigation, analysis.baseCenterTile);
       }
     }
-    return this.planBuilding(buildingType, priority);
+    return this.planBuilding(buildingType, priority, resourceType);
   }
 
   getPlannedTileForType(buildingType: string): Vector2Simple | null {
@@ -106,7 +116,7 @@ export class BasePlanner {
   /**
    * Reserve a spot for a building type. Returns chosen tile or null if none.
    */
-  planBuilding(buildingType: string, priority = 0): Vector2Simple | null {
+  planBuilding(buildingType: NeedType, priority = 0, resourceType?: ResourceType): Vector2Simple | null {
     const analysis = this.getLatestAnalysis();
     if (!analysis || !analysis.baseCenterTile) return null;
     const taken = new Set(this.plans.map((p) => `${p.tile.x},${p.tile.y}`));
@@ -116,7 +126,9 @@ export class BasePlanner {
       .filter((t) => !taken.has(`${t.x},${t.y}`))
       .map((t) => ({
         tile: t,
-        score: this.analyzer.scoreBuildSpot(t, analysis.baseCenterTile!) - this.distancePenalty(t)
+        score:
+          this.analyzer.scoreBuildSpot(t, analysis.baseCenterTile!, buildingType, resourceType) -
+          this.distancePenalty(t)
       }))
       .sort((a, b) => b.score - a.score);
 
@@ -138,7 +150,7 @@ export class BasePlanner {
   }
 
   consumePlanForType(buildingType: string): PlannedBuilding | null {
-    // Retrieve highest priority plan for the requested type
+    // Retrieve the highest priority plan for the requested type
     let idx = -1;
     let best: PlannedBuilding | null = null;
     this.plans.forEach((p, i) => {
@@ -152,23 +164,19 @@ export class BasePlanner {
     return best;
   }
 
-  chooseNextBuildingAndLocation(): { buildingName: string; tile: Vector2Simple } | null {
-    // Placeholder heuristic: if fewer than 3 reservations, queue generic "House"
-    if (this.plans.length >= 3) return null;
-    const tile = this.planBuilding("House", 0);
-    if (!tile) return null;
-    return { buildingName: "House", tile };
-  }
-
   /**
    * High-level helper: if needs are stale, recompute and update the blackboard's plannedBuildingTypes.
    */
-  planBaseIfStale(blackboard: PlayerAiBlackboard, ttlMs: number): boolean {
+  planBaseIfStale(
+    blackboard: PlayerAiBlackboard,
+    ttlMs: number,
+    adaptiveThresholds: AdaptiveThresholdManager
+  ): boolean {
     if (!this.isNeedsStale(ttlMs)) return false;
-    this.recomputeNeedsAndUpdateBlackboard(blackboard);
+    this.recomputeNeedsAndUpdateBlackboard(blackboard, adaptiveThresholds);
     // Fallback: if no explicit high-priority needs, opportunistically stage a generic reservation
     if (this.buildingNeeds.length === 0) {
-      this.chooseNextBuildingAndLocation();
+      const tile = this.planBuilding(NeedType.Housing, 0); // Simplified fallback
     }
     return true;
   }
@@ -176,8 +184,11 @@ export class BasePlanner {
   /**
    * Recompute building needs and update blackboard (write-through) – replaces previous agent-side logic.
    */
-  recomputeNeedsAndUpdateBlackboard(blackboard: PlayerAiBlackboard): BuildingNeed[] {
-    const needs = this.recomputeNeeds(blackboard);
+  recomputeNeedsAndUpdateBlackboard(
+    blackboard: PlayerAiBlackboard,
+    adaptiveThresholds: AdaptiveThresholdManager
+  ): BuildingNeed[] {
+    const needs = this.recomputeNeeds(blackboard, adaptiveThresholds);
     blackboard.plannedBuildingTypes = needs.map((n) => n.type);
     return needs;
   }
@@ -197,9 +208,9 @@ export class BasePlanner {
     if (this.reservedBuilding && this.reservedBuilding.needType === top.type) {
       return { objectName: this.reservedBuilding.objectName, tile: this.reservedBuilding.tile };
     }
-    const objectName = this.mapNeedTypeToObjectName(top.type);
+    const objectName = this.mapNeedTypeToObjectName(top.type, (top as any).resourceType);
     if (!objectName) return null;
-    const tile = await this.ensurePlan(top.type, top.priority);
+    const tile = await this.ensurePlan(top.type, top.priority, top.resourceType);
     if (!tile) return null;
     // Attempt resource reservation (best-effort)
     const cost = this.getCostForObjectName(objectName) || {};
@@ -208,6 +219,7 @@ export class BasePlanner {
       objectName,
       tile,
       needType: top.type,
+      resourceType: (top as any).resourceType,
       reservedAt: Date.now(),
       planId: plan ? plan.id : undefined
     };
@@ -232,35 +244,103 @@ export class BasePlanner {
    * Recompute building needs based on current blackboard snapshot.
    * (Phase 2 heuristic: simple thresholds)
    */
-  recomputeNeeds(blackboard: PlayerAiBlackboard): BuildingNeed[] {
+  recomputeNeeds(blackboard: PlayerAiBlackboard, adaptiveThresholds: AdaptiveThresholdManager): BuildingNeed[] {
     const now = Date.now();
     this.buildingNeeds = [];
 
+    // Assess supply & proactively plan housing if needed
+    const supply = this.supplyPlanner.assess(now);
+
     // Housing pressure
-    if (blackboard.housingCapacity <= blackboard.units.length + 3) {
+    let housingPriority = 0;
+    switch (supply.urgency) {
+      case "none":
+        break;
+      case "normal":
+        housingPriority = 80;
+        break;
+      case "emergency":
+        housingPriority = 100;
+        break;
+    }
+    if (housingPriority > 0) {
       this.buildingNeeds.push({
         type: NeedType.Housing,
         reason: "Low housing buffer",
-        priority: 90
+        priority: housingPriority
       });
     }
 
-    // Production expansion
-    if (blackboard.productionBuildings.length < blackboard.desiredProductionBuildings) {
-      this.buildingNeeds.push({
-        type: NeedType.Production,
-        reason: "Below desired production count",
-        priority: 70
-      });
-    }
+    // If economy is low, only focus on gathering and housing
+    const isEconomyLow = blackboard.getTotalResources() < adaptiveThresholds.getResourceGatheringThreshold();
+    if (isEconomyLow) {
+      // find most needed resource and add a gathering need
+      const mostNeeded = this.logisticsManager.getMostConstrainedResource();
+      if (mostNeeded) {
+        const resourceType = mostNeeded;
+        const hasGatheringBuildingForResource = blackboard.gatheringStructures.some((building) => {
+          const def = pwActorDefinitions[building.name as ObjectNames];
+          const drain = def?.components?.resourceDrain;
+          return drain?.resourceTypes.includes(resourceType);
+        });
 
-    // Defense gap
-    if (blackboard.defensiveStructures.length < blackboard.desiredDefensiveStructures) {
-      this.buildingNeeds.push({
-        type: NeedType.Defense,
-        reason: "Below desired defense count",
-        priority: 60
-      });
+        if (!hasGatheringBuildingForResource) {
+          this.buildingNeeds.push({
+            type: NeedType.Gathering,
+            reason: `Shortage of ${resourceType}`,
+            priority: 90, // high priority when economy is low
+            resourceType: resourceType
+          });
+        }
+      }
+    } else {
+      // Production expansion
+      const busyProductionBuildings = blackboard.productionBuildings.filter((b) => {
+        const prod = getActorComponent(b, ProductionComponent);
+        return prod && !prod.isIdle;
+      }).length;
+      const productionBuildingRatio =
+        blackboard.productionBuildings.length > 0 ? busyProductionBuildings / blackboard.productionBuildings.length : 0;
+
+      if (productionBuildingRatio > 0.7) {
+        // if more than 70% are busy
+        this.buildingNeeds.push({
+          type: NeedType.Production,
+          reason: "High production load",
+          priority: 70
+        });
+      }
+
+      // Defense gap
+      const desiredDefensiveStructures =
+        Math.floor(blackboard.baseSize / 3) + Math.floor(blackboard.enemyMilitaryStrength / 100); // e.g. 1 defense for every 3 buildings and some for enemy strength
+      if (blackboard.defensiveStructures.length < desiredDefensiveStructures) {
+        this.buildingNeeds.push({
+          type: NeedType.Defense,
+          reason: "Defense gap detected",
+          priority: 60
+        });
+      }
+
+      // Gathering boost based on resource shortages
+      const mostNeeded = this.logisticsManager.getMostConstrainedResource();
+      if (mostNeeded) {
+        const resourceType = mostNeeded;
+        const hasGatheringBuildingForResource = blackboard.gatheringStructures.some((building) => {
+          const def = pwActorDefinitions[building.name as ObjectNames];
+          const drain = def?.components?.resourceDrain;
+          return drain?.resourceTypes.includes(resourceType);
+        });
+
+        if (!hasGatheringBuildingForResource) {
+          this.buildingNeeds.push({
+            type: NeedType.Gathering,
+            reason: `Shortage of ${resourceType}`,
+            priority: 50, // This could be dynamic based on shortage severity
+            resourceType: resourceType
+          });
+        }
+      }
     }
 
     // Sort by priority descending
@@ -278,39 +358,64 @@ export class BasePlanner {
   }
 
   /**
-   * Translate highest priority need into a concrete buildable type label.
-   * Mapping can later become data-driven.
+   * Translate need type to concrete object enum value using tech tree.
+   * Data-driven approach: finds first available building of required type.
    */
-  getNextNeededType(): string | null {
-    if (this.buildingNeeds.length === 0) return null;
-    const top = this.buildingNeeds[0];
-    if (!top) return null;
-    switch (top.type) {
-      case "Housing":
-        return "WorkMill"; // placeholder mapping
-      case "Production":
-        return "Owlery"; // placeholder mapping
-      case "Defense":
-        return "InfantryInn"; // placeholder mapping
-      default:
-        return null;
-    }
-  }
+  mapNeedTypeToObjectName(needType: NeedType, resourceType?: ResourceType): ObjectNames | null {
+    const techTree = getSceneService(this.analyzer.scene, TechTreeService);
+    if (!techTree || !this.factionType) return null;
 
-  /**
-   * Translate need type to concrete object enum value.
-   */
-  mapNeedTypeToObjectName(needType: NeedType): ObjectNames | null {
+    let candidates: ObjectNames[] = [];
+
     switch (needType) {
       case NeedType.Housing:
-        return ObjectNames.WorkMill;
+        candidates = techTree.getHousingBuildingsExcludingMain(this.factionType);
+        break;
       case NeedType.Production:
-        return ObjectNames.Owlery;
+        candidates = techTree.getProductionBuildingsExcludingMain(this.factionType);
+        break;
       case NeedType.Defense:
-        return ObjectNames.InfantryInn;
-      default:
-        return null;
+        candidates = techTree.getDefensiveBuildingsExcludingMain(this.factionType);
+        break;
+      case NeedType.Gathering:
+        candidates = techTree.getResourceGatheringBuildingsExcludingMain(this.factionType);
+        if (resourceType) {
+          // Filter by resource type
+          candidates = candidates.filter((c) => {
+            const def = pwActorDefinitions[c];
+            const drain = def?.components?.resourceDrain;
+            return drain?.resourceTypes.includes(resourceType);
+          });
+        }
+        break;
     }
+
+    // Filter out tech-locked buildings
+    const unlockedCandidates = candidates.filter((candidate) => {
+      const validation = this.productionValidator.validate(candidate);
+      // allow queue if it can be queued or if it's not tech/building blocked (eg. just resource blocked)
+      return validation.canQueue || (!validation.techBlocked && !validation.buildingPrereqBlocked);
+    });
+
+    if (unlockedCandidates.length === 0) {
+      // consider scheduling prerequisites
+      if (candidates.length > 0) {
+        const validation = this.productionValidator.validate(candidates[0]!);
+        if (validation.prereqs.length > 0) {
+          this.productionValidator.schedulePrerequisites(validation.prereqs, candidates[0]!);
+        }
+      }
+      return null;
+    }
+
+    // Pick the cheapest one
+    unlockedCandidates.sort((a, b) => {
+      const costA = Object.values(this.getCostForObjectName(a) ?? {}).reduce((acc, val) => acc + (val ?? 0), 0);
+      const costB = Object.values(this.getCostForObjectName(b) ?? {}).reduce((acc, val) => acc + (val ?? 0), 0);
+      return costA - costB;
+    });
+
+    return unlockedCandidates.length > 0 ? unlockedCandidates[0]! : null;
   }
 
   /**
@@ -338,12 +443,8 @@ export class BasePlanner {
     //
     if (this.accessibilityChecked) return;
     this.candidateSpots = this.candidateSpots.filter(async (t) => {
-      try {
-        const path = await navigation.find(origin, t); // small path limit
-        return Array.isArray(path) && path.length > 0;
-      } catch {
-        return true;
-      }
+      const path = await navigation.findPathBetweenTiles(origin, t); // small path limit
+      return Array.isArray(path) && path.length > 0;
     });
     this.accessibilityChecked = true;
   }

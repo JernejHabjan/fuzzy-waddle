@@ -8,36 +8,10 @@ import { AttackComponent } from "../combat/components/attack-component";
 import { GathererComponent } from "../resource/gatherer-component";
 import { AnimationType } from "./animation-type";
 import type { IsoDirection } from "../movement/iso-directions";
-
-const oneTimeAnimations: AnimationType[] = [
-  AnimationType.Shoot,
-  AnimationType.Cast,
-  AnimationType.Slash,
-  AnimationType.InvertedSlash,
-  AnimationType.Smash,
-  AnimationType.Thrust,
-  AnimationType.LargeSlash,
-  AnimationType.LargeThrust,
-  AnimationType.Chop,
-  AnimationType.Mine
-];
-
-type AnimationDefinition = {
-  key: string;
-  frameRate?: number;
-  repeat?: number;
-};
-
-export type AnimationDefinitionMap = {
-  [key in AnimationType | string]?: {
-    [direction in IsoDirection]?: AnimationDefinition;
-  };
-};
-
-export interface ActorAnimationsDefinition {
-  animations: AnimationDefinitionMap;
-  defaultDirection?: IsoDirection;
-}
+import { oneTimeAnimations } from "./one-time-animations";
+import type { ActorAnimationsDefinition } from "./actor-animations-definition";
+import type { AnimationOptions } from "./animation-options";
+import { environment } from "../../../../../../environments/environment";
 
 export class AnimationActorComponent {
   private sprite?: Phaser.GameObjects.Sprite;
@@ -95,6 +69,7 @@ export class AnimationActorComponent {
   }
 
   private setDirection(direction: IsoDirection) {
+    if (this.currentDirection === direction) return;
     this.currentDirection = direction;
     // If there's a current animation playing, update it with the new direction
     if (this.currentAnimation && this.sprite) {
@@ -104,6 +79,14 @@ export class AnimationActorComponent {
 
   private playAnimation(type: AnimationType | string | null, animationOptions?: AnimationOptions) {
     if (!this.sprite || !this.animationsDefinition || !type) return;
+
+    if (!environment.production) {
+      const healthComponent = getActorComponent(this.gameObject, HealthComponent);
+      if (healthComponent?.killed === true && type !== AnimationType.Death) {
+        console.error(`AnimationActorComponent: Tried to play order animation ${type} for dead actor`, this.gameObject);
+        return; // Don't play animations for dead actors
+      }
+    }
 
     const animationsByType = this.animationsDefinition.animations[type];
     if (!animationsByType) {
@@ -194,7 +177,10 @@ export class AnimationActorComponent {
 
       // If this was a one-time animation like attack, return to idle
       if (oneTimeAnimations.includes(type as AnimationType)) {
-        this.playAnimation(AnimationType.Idle, animationOptions);
+        const healthComponent = getActorComponent(this.gameObject, HealthComponent);
+        if (this.gameObject && this.gameObject.scene && (!healthComponent || !healthComponent.killed)) {
+          this.playAnimation(AnimationType.Idle, animationOptions);
+        }
       }
     });
   }
@@ -242,10 +228,4 @@ export class AnimationActorComponent {
   private destroy() {
     this.directionChangedSubscription?.unsubscribe();
   }
-}
-
-export interface AnimationOptions {
-  forceRestart?: boolean;
-  onComplete?: () => void;
-  repeat?: number;
 }

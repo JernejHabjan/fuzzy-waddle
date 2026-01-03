@@ -2,22 +2,8 @@ import { inject, Injectable } from "@angular/core";
 import { AuthenticatedSocketService } from "../../data-access/chat/authenticated-socket.service";
 import { type SceneCommunicatorClientServiceInterface } from "./scene-communicator-client.service.interface";
 import { ProbableWaffleCommunicatorService } from "./probable-waffle-communicator.service";
-import { Observable, Subscription } from "rxjs";
-import {
-  type ProbableWaffleGameInstanceMetadataChangeEvent,
-  type ProbableWaffleGameModeDataChangeEvent,
-  type ProbableWaffleGameStateDataChangeEvent,
-  type ProbableWafflePlayerDataChangeEvent,
-  type ProbableWaffleSpectatorDataChangeEvent
-} from "@fuzzy-waddle/api-interfaces";
-
-export type ProbableWaffleCommunicators = {
-  gameInstanceObservable: Observable<ProbableWaffleGameInstanceMetadataChangeEvent>;
-  gameModeObservable: Observable<ProbableWaffleGameModeDataChangeEvent>;
-  playerObservable: Observable<ProbableWafflePlayerDataChangeEvent>;
-  spectatorObservable: Observable<ProbableWaffleSpectatorDataChangeEvent>;
-  gameStateObservable: Observable<ProbableWaffleGameStateDataChangeEvent>;
-} | null;
+import { Subscription } from "rxjs";
+import type { ProbableWaffleCommunicators } from "./probable-waffle.communicators";
 
 @Injectable({
   providedIn: "root"

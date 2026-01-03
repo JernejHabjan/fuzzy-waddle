@@ -1,4 +1,4 @@
-import { Component, ElementRef, type OnDestroy, type OnInit, ViewChild } from "@angular/core";
+import { Component, ElementRef, type OnDestroy, type OnInit, viewChild } from "@angular/core";
 import Phaser from "phaser";
 import TivaraMacemanMale from "../../../game/prefabs/characters/tivara/tivara-maceman-male/TivaraMacemanMale";
 import { baseGameConfig } from "../../../../shared/game/base-game.config";
@@ -37,7 +37,7 @@ import MiningCampCursor from "../../../game/prefabs/buildings/tivara/MiningCamp/
   template: `<div #gameContainer style="height: 95vh"></div> `
 })
 export class BannerComponent implements OnInit, OnDestroy {
-  @ViewChild("gameContainer", { static: true }) gameContainer!: ElementRef;
+  readonly gameContainer = viewChild.required<ElementRef>("gameContainer");
 
   private game!: Phaser.Game;
   ngOnInit(): void {
@@ -56,7 +56,7 @@ export class BannerComponent implements OnInit, OnDestroy {
       type: Phaser.AUTO,
       width: 300,
       height: window.innerHeight,
-      parent: this.gameContainer.nativeElement,
+      parent: this.gameContainer().nativeElement,
       transparent: true,
       pixelArt: true,
       fps: {

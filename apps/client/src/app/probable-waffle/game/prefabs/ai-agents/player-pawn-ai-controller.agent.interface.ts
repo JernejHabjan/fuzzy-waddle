@@ -10,8 +10,8 @@ export interface IPlayerPawnControllerAgent {
   PlayerOrderIs(orderType: string): boolean;
 
   // Assign orders
-  AssignDropOffResourcesOrder(): State;
-  AssignGatherResourcesOrder(): State;
+  AssignDropOffResourcesOrder(): Promise<State>;
+  AssignGatherResourcesOrder(): Promise<State>;
   AssignEnemy(source: string): State;
   AssignMoveRandomlyInRange(range: number): Promise<State>;
 
@@ -32,8 +32,8 @@ export interface IPlayerPawnControllerAgent {
   HasHealerComponent(): boolean;
 
   // Resource Gathering
-  AcquireNewResourceSource(): State;
-  AcquireNewResourceDrain(): State;
+  AcquireNewResourceSource(): Promise<State>;
+  AcquireNewResourceDrain(): Promise<State>;
   GatherResource(): Promise<State>;
   DropOffResources(): Promise<State>;
   ContinueGathering(): State;
@@ -60,7 +60,7 @@ export interface IPlayerPawnControllerAgent {
   MoveToTarget(type: PlayerPawnRangeType): Promise<State>;
   MoveToTargetOrLocation(type: PlayerPawnRangeType): Promise<State>;
   MoveToLocation(): Promise<State>;
-  Stop(): State;
+  Stop(fromNode: string): State;
   TargetExists(): boolean;
   TargetOrLocationExists(): boolean;
 

@@ -5,14 +5,11 @@ import { getActorComponent } from "../../../data/actor-component";
 import { ConstructionSiteComponent } from "../construction/construction-site-component";
 import { emitHousing } from "../../../data/scene-data";
 import { OwnerComponent } from "../owner-component";
-import GameObject = Phaser.GameObjects.GameObject;
 import { ConstructionGameObjectInterfaceComponent } from "../construction/construction-game-object-interface-component";
 import { ActorDataChangedEvent } from "../../../data/actor-data";
 import type { Subscription } from "rxjs";
-
-export type HousingDefinition = {
-  housingCapacity: number;
-};
+import type { HousingDefinition } from "./housing-definition";
+import GameObject = Phaser.GameObjects.GameObject;
 
 /**
  * Component that provides housing capacity to buildings
@@ -66,9 +63,14 @@ export class HousingComponent {
 
     const ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
     const owner = ownerComponent?.getOwner();
-    emitHousing(this.gameObject.scene, "housing.added", {
-      maxHousing: this.housingDefinition.housingCapacity
-    }, owner);
+    emitHousing(
+      this.gameObject.scene,
+      "housing.added",
+      {
+        maxHousing: this.housingDefinition.housingCapacity
+      },
+      owner
+    );
 
     this.housingProvided = true;
   }
@@ -78,9 +80,14 @@ export class HousingComponent {
 
     const ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
     const owner = ownerComponent?.getOwner();
-    emitHousing(this.gameObject.scene, "housing.removed", {
-      maxHousing: this.housingDefinition.housingCapacity
-    }, owner);
+    emitHousing(
+      this.gameObject.scene,
+      "housing.removed",
+      {
+        maxHousing: this.housingDefinition.housingCapacity
+      },
+      owner
+    );
 
     this.housingProvided = false;
   }

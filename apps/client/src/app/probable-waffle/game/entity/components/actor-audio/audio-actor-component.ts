@@ -1,22 +1,14 @@
 import { OrderData } from "../../../ai/OrderData";
 import { onObjectReady } from "../../../data/game-object-helper";
-import { type AdditionalAudioConfig, AudioService } from "../../../world/services/audio.service";
+import { AudioService } from "../../../world/services/audio.service";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { OrderType } from "../../../ai/order-type";
 import { getActorComponent } from "../../../data/actor-component";
 import { GathererComponent } from "../resource/gatherer-component";
 import { SoundType } from "./sound-type";
-
-export type SoundDefinition = {
-  key: string;
-  spriteName: string;
-};
-
-export interface AudioDefinition {
-  sounds: {
-    [key: string | SoundType]: SoundDefinition[];
-  };
-}
+import type { AudioDefinition } from "./audio-definition";
+import type { SoundDefinition } from "./sound-definition";
+import type { AdditionalAudioConfig } from "../../../world/services/additionalAudioConfig";
 
 export class AudioActorComponent {
   private audioService?: AudioService;

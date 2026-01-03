@@ -17,13 +17,11 @@ import {
   ProbableWafflePlayer,
   type ProbableWafflePlayerDataChangeEventProperty
 } from "@fuzzy-waddle/api-interfaces";
-import {
-  type ProbableWaffleCommunicators,
-  SceneCommunicatorClientService
-} from "../../../communicators/scene-communicator-client.service";
+import { SceneCommunicatorClientService } from "../../../communicators/scene-communicator-client.service";
 import { Subscription } from "rxjs";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { AuthService } from "../../../../auth/auth.service";
+import type { ProbableWaffleCommunicators } from "../../../communicators/probable-waffle.communicators";
 
 /**
  * canvas element containing info about current player and position.
@@ -98,6 +96,10 @@ export class MapDefinitionComponent implements OnInit, OnDestroy {
     // noinspection UnnecessaryLocalVariableJS
     const mapData = ProbableWaffleLevels[mapId];
     return mapData;
+  }
+
+  private getGameInstanceId(): string | undefined {
+    return this.gameInstanceClientService.gameInstance?.gameInstanceMetadata?.data?.gameInstanceId;
   }
 
   private get players(): ProbableWafflePlayer[] {
@@ -214,7 +216,7 @@ export class MapDefinitionComponent implements OnInit, OnDestroy {
     return isoCoordinates;
   }
 
-  @HostListener("window:resize", ["$event"])
+  @HostListener("window:resize")
   onResize() {
     this.refresh();
   }
@@ -257,7 +259,7 @@ export class MapDefinitionComponent implements OnInit, OnDestroy {
         }
         const maxPlayers = this.mapData.mapInfo.startPositionsOnTile.length;
         const playerNumber = definition!.player.playerNumber;
-        const color = GameSetupHelpers.getStringColorForPlayer(playerNumber, maxPlayers);
+        const color = GameSetupHelpers.getStringColorForPlayer(playerNumber, maxPlayers, this.getGameInstanceId());
         this.createDraggablePlayerRectangle(i, playerPosition, isoCoordinate, color);
       }
     }

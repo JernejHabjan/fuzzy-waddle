@@ -1,8 +1,8 @@
 import { PlayerAiBlackboard } from "../player-ai-blackboard";
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 
-export type SupplyUrgency = "none" | "normal" | "emergency";
-export interface SupplyAssessment {
+type SupplyUrgency = "none" | "normal" | "emergency";
+interface SupplyAssessment {
   urgency: SupplyUrgency;
   reason: string;
 }

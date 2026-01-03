@@ -6,13 +6,13 @@
 import { onSceneInitialized } from "../../../data/game-object-helper";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { AudioService } from "../../../world/services/audio.service";
-import { type SoundDefinition } from "../../../entity/components/actor-audio/audio-actor-component";
 import {
   EnvironmentSfxBirdsSounds,
   EnvironmentSfxLavaSounds,
   EnvironmentSfxSeagullsSounds,
   EnvironmentSfxWaterSounds
 } from "../../../sfx/environment-sfx";
+import type { SoundDefinition } from "../../../entity/components/actor-audio/sound-definition";
 /* END-USER-IMPORTS */
 
 export default class SoundEffectMarker extends Phaser.GameObjects.Ellipse {

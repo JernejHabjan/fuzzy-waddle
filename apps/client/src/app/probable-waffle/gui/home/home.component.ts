@@ -1,4 +1,4 @@
-import { Component, type OnInit, ViewChild } from "@angular/core";
+import { Component, type OnInit, viewChild } from "@angular/core";
 
 import { ConstellationEffectComponent } from "./constellation-effect/constellation-effect.component";
 import { AngularHost } from "../../../shared/consts";
@@ -15,7 +15,7 @@ import { type ModalConfig } from "../../../shared/components/modal/modal-config"
   host: AngularHost.contentFlexFullHeight
 })
 export class HomeComponent implements OnInit {
-  @ViewChild("mobileWarningModal") private mobileWarningModal?: ModalComponent;
+  private readonly mobileWarningModal = viewChild<ModalComponent>("mobileWarningModal");
 
   private readonly MOBILE_WARNING_DISMISSED_KEY = "aota_mobile_warning_dismissed";
 
@@ -43,7 +43,7 @@ export class HomeComponent implements OnInit {
     if (this.isMobileDevice() && !this.hasSeenMobileWarning()) {
       // Use setTimeout to ensure the view is initialized
       setTimeout(() => {
-        this.mobileWarningModal?.open();
+        this.mobileWarningModal()?.open();
       }, 0);
     }
   }

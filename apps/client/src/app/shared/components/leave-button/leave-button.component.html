@@ -1,5 +1,5 @@
-<button (click)="onclick()" [routerLink]="routerLink" [class]="class" [style]="style" type="button">
-  {{ text }}
+<button (click)="onclick()" [routerLink]="routerLink()" [class]="class()" [style]="style()" type="button">
+  {{ text() }}
 </button>
 
 <fuzzy-waddle-modal #modal [modalConfig]="leaveModalConfirm">

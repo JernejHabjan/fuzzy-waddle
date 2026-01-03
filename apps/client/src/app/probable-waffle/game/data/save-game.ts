@@ -2,6 +2,7 @@ import { filter, Subscription } from "rxjs";
 import GameProbableWaffleScene from "../world/scenes/GameProbableWaffleScene";
 import { getSceneService } from "../world/services/scene-component-helpers";
 import { SceneActorCreator } from "../world/services/scene-actor-creator";
+import type { SaveGamePayload } from "./save-game-payload";
 
 export class SaveGame {
   private saveGameSubscription: Subscription;
@@ -45,8 +46,4 @@ export class SaveGame {
   private destroy() {
     this.saveGameSubscription.unsubscribe();
   }
-}
-
-export interface SaveGamePayload {
-  thumbnail: string;
 }

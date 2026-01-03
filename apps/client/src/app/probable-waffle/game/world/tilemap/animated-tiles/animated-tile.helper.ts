@@ -28,7 +28,7 @@ export class AnimatedTilemap {
             // TileId in Tiled starts from 0.
             if (tile.index - tileset.firstgid === parseInt(tileId, 10)) {
               if (!tileData[tileId]!.animation) return;
-              animatedTiles.push(new AnimatedTile(tile, tileData[tileId]!.animation!, tileset.firstgid));
+              animatedTiles.push(new AnimatedTile(tile, tileData[tileId]!.animation!, tileset.firstgid, this.scene));
             }
           })
         );

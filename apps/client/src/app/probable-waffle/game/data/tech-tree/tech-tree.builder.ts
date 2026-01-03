@@ -1,8 +1,9 @@
 // Pure builder that infers tech graph from prefab actor definitions.
-import { type TechTreeGraph, type TechTreeNode } from "./tech-tree.types";
+import { type TechTreeGraph } from "./tech-tree-graph";
 import { FactionType, ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { pwActorDefinitions } from "../../prefabs/definitions/actor-definitions";
 import { BuilderComponent } from "../../entity/components/construction/builder-component";
+import type { TechTreeNode } from "./tech-tree-node";
 
 /**
  * Recursively gather all actors that belong to a faction starting from a main building.
