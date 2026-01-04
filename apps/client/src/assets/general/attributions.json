@@ -1164,9 +1164,27 @@
   {
     "type": "Art",
     "url": "https://free-game-assets.itch.io/golem-pixel-art-top-down-sprite-pack",
-    "name": "Golem Pixel Top-Down Sprite Sheets\n",
+    "name": "Golem Pixel Top-Down Sprite Sheets",
     "author": "https://free-game-assets.itch.io/",
     "reason": "A golem mob for Ashes of the Ancients",
+    "license": {
+      "url": "https://craftpix.net/file-licenses/"
+    }
+  },  {
+    "type": "Art",
+    "url": "https://craftpix.net/freebies/free-top-down-trees-pixel-art/",
+    "name": "Free Top-Down Trees Pixel Art",
+    "author": "https://free-game-assets.itch.io/",
+    "reason": "Tree assets for  Ashes of the Ancients",
+    "license": {
+      "url": "https://craftpix.net/file-licenses/"
+    }
+  },  {
+    "type": "Art",
+    "url": "https://craftpix.net/freebies/free-pixel-art-plants-for-farm",
+    "name": "Free Pixel Art Plants for Farm",
+    "author": "https://free-game-assets.itch.io/",
+    "reason": "Farming assets for Ashes of the Ancients",
     "license": {
       "url": "https://craftpix.net/file-licenses/"
     }
