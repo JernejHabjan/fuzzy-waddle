@@ -1127,5 +1127,15 @@
       "url": "https://creativecommons.org/licenses/by/4.0/",
       "name": "CC-BY-4.0"
     }
+  },
+  {
+    "type": "Art",
+    "url": "https://remos.itch.io/medieval-catapult",
+    "name": "Medieval Catapult",
+    "author": "https://remos.itch.io/",
+    "reason": "Siege weapons for Ashes of the Ancients",
+    "license": {
+      "name": "Can be used for commercial use"
+    }
   }
 ]
