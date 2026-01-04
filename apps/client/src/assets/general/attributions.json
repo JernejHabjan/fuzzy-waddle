@@ -282,7 +282,6 @@
       "name": "Attribution 4.0"
     }
   },
-
   {
     "type": "Sound effects",
     "url": "https://freesound.org/people/thecrow_br/sounds/574044/",
@@ -1160,6 +1159,17 @@
     "reason": "A slime mob for Ashes of the Ancients",
     "license": {
       "url": "https://craftpix.net/file-licenses/"
+    }
+  },
+  {
+    "type": "Art",
+    "url": "https://akari21.itch.io/rpg-asset-pack",
+    "name": "RPG Icon Pack (200+) – 16x16 & 32x32 Pixel Art",
+    "obtained": "Purchased",
+    "author": "https://akari21.itch.io/",
+    "reason": "Mobs for Ashes of the Ancients",
+    "license": {
+      "name": "You can use these assets in any personal or commercial project. You may edit or modify them to suit your needs.\nYou may not resell or redistribute the assets as-is or in modified form. Credits are very appreciated, but not required."
     }
   }
 ]
