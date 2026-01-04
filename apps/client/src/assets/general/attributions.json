@@ -1151,5 +1151,15 @@
     "license": {
       "name": "Can be used for commercial use"
     }
+  },
+  {
+    "type": "Art",
+    "url": "https://free-game-assets.itch.io/free-slime-mobs-pixel-art-top-down-sprite-pack",
+    "name": "Free Slime Mobs Pixel Art",
+    "author": "https://free-game-assets.itch.io/",
+    "reason": "A slime mob for Ashes of the Ancients",
+    "license": {
+      "url": "https://craftpix.net/file-licenses/"
+    }
   }
 ]
