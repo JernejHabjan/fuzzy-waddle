@@ -59,3 +59,11 @@
   `"C:\Program Files (x86)\Steam\steamapps\common\Tilesetter\Tilesetter.exe" --disable-gpu --disable-gpu-sandbox`
 ## Attribution
 Please see [attributions.json](apps/client/src/assets/general/attributions.json). They are also listed on the [Attributions Page](https://fuzzy-waddle.onrender.com/attributions).
+
+## License
+
+© Jernej Habjan. All rights reserved.
+
+- Forking, cloning, and contributing via pull requests is **allowed**.
+- Using or distributing this code outside of GitHub requires **explicit written permission**.
+- See [LICENSE.md](LICENSE)
