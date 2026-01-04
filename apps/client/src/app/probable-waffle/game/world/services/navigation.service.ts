@@ -475,7 +475,7 @@ export class NavigationService {
       // Check path to the random tile
       const path = await this.findPath(currentTile, tile);
 
-      if (!!path) {
+      if (path) {
         // Calculate path length based on XY distances:
         const sumPathLengthByXY = path.reduce((sum, node, index) => {
           const previousNode = index === 0 ? currentTile : path[index - 1]; // Use currentTile as the "previous" for the first node
