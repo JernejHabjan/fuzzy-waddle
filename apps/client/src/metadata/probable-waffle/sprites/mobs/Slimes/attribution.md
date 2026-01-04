@@ -1,0 +1,1 @@
+https://free-game-assets.itch.io/free-slime-mobs-pixel-art-top-down-sprite-pack
