@@ -1,6 +1,7 @@
 [
   {
     "type": "Voice Acting",
+    "obtained": "Purchased",
     "name": "Candace V.@kissvoices",
     "url": "https://www.fiverr.com/kissvoices",
     "reason": "Voice acting for the characters Skaduwee Ranged and Skaduwee Worker Female.",
@@ -11,6 +12,7 @@
   },
   {
     "type": "Voice Acting",
+    "obtained": "Purchased",
     "name": "Nick@nicks_voice",
     "url": "https://www.fiverr.com/nicks_voice",
     "reason": "Voice acting for the characters Skaduwee Warrior, Skaduwee Worker Male, Tivara Maceman, Tivara Worker Male.",
@@ -21,12 +23,24 @@
   },
   {
     "type": "Voice Acting",
+    "obtained": "Purchased",
     "name": "Katarina C.@contrerasvoice",
     "url": "https://www.fiverr.com/contrerasvoice",
     "reason": "Voice acting for the characters Skaduwee Magician, Tivara Slingshot, Tivara Worker Female.",
     "license": {
       "name": "Commercial license obtained via Fiverr order",
       "url": ""
+    }
+  },
+  {
+    "type": "Sound effects",
+    "obtained": "Purchased",
+    "name": "Medieval & Fantasy: Siege Warfare",
+    "author": "https://dt-sound.itch.io/",
+    "url": "https://dt-sound.itch.io/medieval-fantasy-siege-warfare",
+    "reason": "Siege engines sound effects",
+    "license": {
+      "name": "Commercial license obtained via purchase"
     }
   },
   {
@@ -149,7 +163,7 @@
     "reason": "Composed and prepared the music, some art and sound effects for the game."
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/alonsotm/sounds/396499/",
     "name": "IceSpell03.wav",
     "author": "alonsotm - https://freesound.org/people/alonsotm/",
@@ -159,7 +173,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/LiamG_SFX/sounds/334234/",
     "name": "Fireball Cast 1",
     "author": "LiamG_SFX - https://freesound.org/people/LiamG_SFX/",
@@ -169,7 +183,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/HighPixel/sounds/431174/",
     "name": "Fireball Explosion.wav",
     "author": "HighPixel - https://freesound.org/people/HighPixel/",
@@ -179,7 +193,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/lotteria001/sounds/709888/",
     "name": "Ice Magic Arrow_type 01",
     "author": "lotteria001 - https://freesound.org/people/lotteria001/",
@@ -189,7 +203,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/Lydmakeren/sounds/511489/",
     "name": "FX_bow&arrow2.wav",
     "author": "Lydmakeren - https://freesound.org/people/Lydmakeren/",
@@ -199,7 +213,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/dorian.mastin/sounds/381622/",
     "name": "snd_ImpactSmallMetal06.wav",
     "author": "dorian.mastin - https://freesound.org/people/dorian.mastin/",
@@ -209,7 +223,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/JustInvoke/sounds/446139/",
     "name": "Freeze Impact",
     "author": "JustInvoke - https://freesound.org/people/JustInvoke/",
@@ -219,7 +233,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/jakubp.jp/sounds/557110/",
     "name": "ICEImpt_Ice Piece Drop On Frozen Puddle_Jaku5.wav",
     "author": "jakubp.jp - https://freesound.org/people/jakubp.jp/",
@@ -229,7 +243,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/ryanconway/sounds/240801/",
     "name": "Pickaxe mining stone",
     "author": "ryanconway - https://freesound.org/people/ryanconway/",
@@ -239,7 +253,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/Loyalty_Freak_Music/sounds/407479/",
     "name": "heal.mp3",
     "author": "Loyalty_Freak_Music - https://freesound.org/people/Loyalty_Freak_Music/",
@@ -249,7 +263,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/potentjello/sounds/194056/",
     "name": "Buttons and Knobs 17.wav",
     "author": "potentjello - https://freesound.org/people/potentjello/",
@@ -259,7 +273,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/DWOBoyle/sounds/144266/",
     "name": "Impact-LeatherBelt-001.wav",
     "author": "DWOBoyle - https://freesound.org/people/DWOBoyle/",
@@ -270,7 +284,7 @@
   },
 
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/thecrow_br/sounds/574044/",
     "name": "Arrow.mp3",
     "author": "thecrow_br - https://freesound.org/people/thecrow_br/",
@@ -280,7 +294,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/aropson/sounds/429168/",
     "name": "heavy clang 2.wav",
     "author": "aropson - https://freesound.org/people/aropson/",
@@ -290,7 +304,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/deleted_user_7146007/sounds/383725/",
     "name": "Hand Saw Sawing Wood",
     "author": "deleted_user_7146007 - https://freesound.org/people/deleted_user_7146007/",
@@ -300,7 +314,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/marb7e/sounds/674386/",
     "name": "IcePick_StoneHit03.wav",
     "author": "marb7e - https://freesound.org/people/marb7e/",
@@ -310,7 +324,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/qubodup/sounds/751339/",
     "name": "Slime Attack 2",
     "author": "qubodup - https://freesound.org/people/qubodup/",
@@ -320,7 +334,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/qubodup/sounds/211605/",
     "name": "Chicken Meat Slime",
     "author": "qubodup - https://freesound.org/people/qubodup/",
@@ -330,7 +344,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/qubodup/sounds/127449/",
     "name": "Slime",
     "author": "qubodup - https://freesound.org/people/qubodup/",
@@ -340,7 +354,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/qubodup/sounds/751338/",
     "name": "Slime Attack 1",
     "author": "qubodup - https://freesound.org/people/qubodup/",
@@ -350,7 +364,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/qubodup/sounds/211605/",
     "name": "Chicken Meat Slime",
     "author": "qubodup - https://freesound.org/people/qubodup/",
@@ -360,7 +374,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/qubodup/sounds/127449/",
     "name": "Slime",
     "author": "qubodup - https://freesound.org/people/qubodup/",
@@ -370,7 +384,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/Duisterwho/sounds/641152/",
     "name": "Dirty throat spit sound",
     "author": "Duisterwho - https://freesound.org/people/Duisterwho/",
@@ -380,7 +394,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/Johnc/sounds/20684/",
     "name": "Owl.wav",
     "author": "Johnc - https://freesound.org/people/Johnc/",
@@ -390,7 +404,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/Reitanna/sounds/344055/",
     "name": "weird bird3.wav",
     "author": "Reitanna - https://freesound.org/people/Reitanna/",
@@ -400,7 +414,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/freakinbehemoth/sounds/243400/",
     "name": "woosh.wav",
     "author": "freakinbehemoth - https://freesound.org/people/freakinbehemoth/",
@@ -410,7 +424,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/qubodup/sounds/714257/",
     "name": "Puff of Smoke",
     "author": "qubodup - https://freesound.org/people/qubodup/",
@@ -420,7 +434,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/CaptainYulef/sounds/641241/",
     "name": "cloud-punch.wav",
     "author": "CaptainYulef - https://freesound.org/people/CaptainYulef/",
@@ -430,7 +444,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/puppetmaster685719/sounds/627733/",
     "name": "Gas Cloud.wav",
     "author": "puppetmaster685719 - https://freesound.org/people/puppetmaster685719/",
@@ -440,7 +454,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/Mateusz_Chenc/sounds/512217/",
     "name": "Poof in cloud",
     "author": "Mateusz_Chenc - https://freesound.org/people/Mateusz_Chenc/",
@@ -450,7 +464,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/ryansitz/sounds/387834/",
     "name": "Poof.wav",
     "author": "ryansitz - https://freesound.org/people/ryansitz/",
@@ -460,7 +474,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/OtisJames/sounds/249613/",
     "name": "explosionsfx.wav",
     "author": "OtisJames - https://freesound.org/people/OtisJames/",
@@ -470,7 +484,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/qubodup/sounds/50941/",
     "name": "Stupid Falls",
     "author": "qubodup - https://freesound.org/people/qubodup/",
@@ -480,7 +494,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/Sadiquecat/sounds/738646/",
     "name": "WD-40 Full can - Spray 2",
     "author": "Sadiquecat - https://freesound.org/people/Sadiquecat/",
@@ -490,7 +504,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/Hitrison/sounds/216675/",
     "name": "Stick-Swoosh Whoosh ",
     "author": "Hitrison - https://freesound.org/people/Hitrison/",
@@ -500,7 +514,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/qubodup/sounds/60009/",
     "name": "swosh-22.flac",
     "author": "qubodup - https://freesound.org/people/qubodup/",
@@ -510,7 +524,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/qubodup/sounds/60013/",
     "name": "Whoosh",
     "author": "qubodup - https://freesound.org/people/qubodup/",
@@ -520,7 +534,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/Hybrid_V/sounds/319590/",
     "name": "Shield Bash Impact",
     "author": "Hybrid_V - https://freesound.org/people/Hybrid_V/",
@@ -530,7 +544,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/PorkMuncher/sounds/263595/",
     "name": "swoosh.wav",
     "author": "PorkMuncher - https://freesound.org/people/PorkMuncher/",
@@ -540,7 +554,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/InspectorJ/sounds/406048/",
     "name": "Hammering Nails, Close, A.wav",
     "author": "InspectorJ - https://freesound.org/people/InspectorJ/",
@@ -550,7 +564,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/kyles/sounds/637555/",
     "name": "footsteps shoes walk hard floor stone patio nice.flac",
     "author": "kyles - https://freesound.org/people/kyles/",
@@ -560,7 +574,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/sillygrizzlies/sounds/635055/",
     "name": "Walking Footsteps on Grass",
     "author": "sillygrizzlies - https://freesound.org/people/sillygrizzlies/",
@@ -570,7 +584,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/MDRivet/sounds/333422/",
     "name": "Snow Walking Quiet.WAV",
     "author": "MDRivet - https://freesound.org/people/MDRivet/",
@@ -580,7 +594,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/Mossy4/sounds/388289/",
     "name": "foley_footsteps_desert_boots_sand.wav",
     "author": "Mossy4 - https://freesound.org/people/Mossy4/",
@@ -590,7 +604,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/duckduckpony/sounds/204030/",
     "name": "Foliage_Rustling_001.wav",
     "author": "duckduckpony - https://freesound.org/people/duckduckpony/",
@@ -600,7 +614,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/philRacoIndie/sounds/551543/",
     "name": "8-bit Deny/Error sound",
     "author": "philRacoIndie - https://freesound.org/people/philRacoIndie/",
@@ -610,7 +624,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/JanKoehl/sounds/85593/",
     "name": "hit-wood12.wav",
     "author": "JanKoehl - https://freesound.org/people/JanKoehl/",
@@ -620,7 +634,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/Baltiyar13/sounds/564046/",
     "name": "Game Over Again.mp3",
     "author": "Baltiyar13 - https://freesound.org/people/Baltiyar13/",
@@ -630,7 +644,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/Tuudurt/sounds/258142/",
     "name": "Level win.wav",
     "author": "Tuudurt - https://freesound.org/people/Tuudurt/",
@@ -640,7 +654,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/Mossy4/sounds/263133/",
     "name": "tone beep.wav",
     "author": "Mossy4 - https://freesound.org/people/Mossy4/",
@@ -650,7 +664,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/ThompsonMan/sounds/107341/",
     "name": "Beeps.wav",
     "author": "ThompsonMan - https://freesound.org/people/ThompsonMan/",
@@ -660,7 +674,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/original_sound/sounds/366102/",
     "name": "Confirmation Upward",
     "author": "original_sound - https://freesound.org/people/original_sound/",
@@ -670,7 +684,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/kwahmah_02/sounds/256116/",
     "name": "Click.wav",
     "author": "kwahmah_02 - https://freesound.org/people/kwahmah_02/",
@@ -680,7 +694,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/InspectorJ/sounds/339326/",
     "name": "Bird Whistling, A.wav",
     "author": "InspectorJ - https://freesound.org/people/InspectorJ/",
@@ -690,7 +704,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/DCPoke/sounds/387978/",
     "name": "Birds Singing 03.wav",
     "author": "DCPoke - https://freesound.org/people/DCPoke/",
@@ -700,7 +714,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/spoonbender/sounds/244942/",
     "name": "Wind Through Trees 3b",
     "author": "spoonbender - https://freesound.org/people/spoonbender/",
@@ -710,7 +724,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/jackthemurray/sounds/433589/",
     "name": "Stream River Water Up Close",
     "author": "jackthemurray - https://freesound.org/people/jackthemurray/",
@@ -720,7 +734,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/SilverIllusionist/sounds/472688/",
     "name": "Fire Burst.wav",
     "author": "SilverIllusionist - https://freesound.org/people/SilverIllusionist/",
@@ -730,7 +744,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/Audionautics/sounds/133901/",
     "name": "Lava loop.wav",
     "author": "Audionautics - https://freesound.org/people/Audionautics/",
@@ -740,7 +754,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/squashy555/sounds/353416/",
     "name": "Seagull on beach",
     "author": "squashy555 - https://freesound.org/people/squashy555/",
@@ -750,7 +764,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/onteca/sounds/197772/",
     "name": "building_collapse02_close.wav",
     "author": "onteca - https://freesound.org/people/onteca/",
@@ -760,7 +774,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/DylanTheFish/sounds/417994/",
     "name": "Body fall.wav",
     "author": "DylanTheFish - https://freesound.org/people/DylanTheFish/",
@@ -770,7 +784,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/yatoimtop/sounds/400858/",
     "name": "Rocks Sliding",
     "author": "yatoimtop - https://freesound.org/people/yatoimtop/",
@@ -780,7 +794,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/tomi_slav/sounds/465811/",
     "name": "stones",
     "author": "tomi_slav - https://freesound.org/people/tomi_slav/",
@@ -790,7 +804,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/jorickhoofd/sounds/169555/",
     "name": "Gravel sweep",
     "author": "jorickhoofd - https://freesound.org/people/jorickhoofd/",
@@ -800,7 +814,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/InspectorJ/sounds/345560/",
     "name": "Footsteps, Stones, A.wav",
     "author": "InspectorJ - https://freesound.org/people/InspectorJ/",
@@ -810,7 +824,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/yadronoff/sounds/320376/",
     "name": "Axe Chopping.wav",
     "author": "yadronoff - https://freesound.org/people/yadronoff/",
@@ -820,7 +834,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/EminYILDIRIM/sounds/553391/",
     "name": "Axe Wood Chopping",
     "author": "EminYILDIRIM - https://freesound.org/people/EminYILDIRIM/",
@@ -830,7 +844,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/tbhicba/sounds/148335/",
     "name": "Bench Creak 2.wav",
     "author": "tbhicba - https://freesound.org/people/tbhicba/",
@@ -840,7 +854,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/falcospizaetus/sounds/489914/",
     "name": "CrushingLeaves03",
     "author": "falcospizaetus - https://freesound.org/people/falcospizaetus/",
@@ -850,7 +864,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/zepurple/sounds/540278/",
     "name": "tree shake.wav",
     "author": "zepurple - https://freesound.org/people/zepurple/",
@@ -860,7 +874,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/Josethehedgehog/sounds/390363/",
     "name": "Se quiebra un rama.wav",
     "author": "Josethehedgehog - https://freesound.org/people/Josethehedgehog/",
@@ -870,7 +884,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/danielrutterfilms/sounds/134025/",
     "name": "Necksnap_build.wav",
     "author": "danielrutterfilms - https://freesound.org/people/danielrutterfilms/",
@@ -880,7 +894,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/Kinoton/sounds/494071/",
     "name": "Big Tree Fall in Forest",
     "author": "Kinoton - https://freesound.org/people/Kinoton/",
@@ -890,7 +904,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/adamwardin/sounds/244015/",
     "name": "Hedgehog in the bathtub.wav",
     "author": "adamwardin - https://freesound.org/people/adamwardin/",
@@ -900,7 +914,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/Geoff-Bremner-Audio/sounds/684174/",
     "name": "Scissors Cut 5.wav",
     "author": "Geoff-Bremner-Audio - https://freesound.org/people/Geoff-Bremner-Audio/",
@@ -910,7 +924,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/joeyws/sounds/202815/",
     "name": "Textile",
     "author": "joeyws - https://freesound.org/people/joeyws/",
@@ -920,7 +934,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/zachrau/sounds/362283/",
     "name": "Sheep bleating",
     "author": "zachrau - https://freesound.org/people/zachrau/",
@@ -930,7 +944,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/n_audioman/sounds/321967/",
     "name": "Sheep_Bleat.wav",
     "author": "n_audioman - https://freesound.org/people/n_audioman/",
@@ -940,7 +954,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/michaelperfect/sounds/710298/",
     "name": "Sheep baaing 3 - Norwegian sheep expressing itself concisely",
     "author": "michaelperfect - https://freesound.org/people/michaelperfect/",
@@ -950,7 +964,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/Mixedupmoviestuff/sounds/179222/",
     "name": "Knife Stab.wav",
     "author": "Mixedupmoviestuff - https://freesound.org/people/Mixedupmoviestuff/",
@@ -960,7 +974,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/thefsoundman/sounds/118513/",
     "name": "Punch_02.wav",
     "author_url": "thefsoundman - https://freesound.org/people/thefsoundman/",
@@ -970,7 +984,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/Huminaatio/sounds/390462/",
     "name": "Punch in the face",
     "author": "Huminaatio - https://freesound.org/people/Huminaatio/",
@@ -980,7 +994,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/Rudmer_Rotteveel/sounds/330997/",
     "name": "Stick Hitting a Dreadlock (Small thud)",
     "author": "Rudmer_Rotteveel - https://freesound.org/people/Rudmer_Rotteveel/",
@@ -990,7 +1004,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/copyc4t/sounds/222608/",
     "name": "Archers-shooting.wav",
     "author": "copyc4t - https://freesound.org/people/copyc4t/",
@@ -1000,7 +1014,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/Benboncan/sounds/85019/",
     "name": "Bow Releases.wav",
     "author": "Benboncan - https://freesound.org/people/Benboncan/",
@@ -1010,7 +1024,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/qubodup/sounds/60030/",
     "name": "Swosh / Whoosh / Air Cut",
     "author": "qubodup - https://freesound.org/people/qubodup/",
@@ -1020,7 +1034,7 @@
     }
   },
   {
-    "type": "Free Sound",
+    "type": "Sound effects",
     "url": "https://freesound.org/people/Anton/sounds/54/",
     "name": "bow_sound.wav",
     "author": "Anton - https://freesound.org/people/Anton/",
