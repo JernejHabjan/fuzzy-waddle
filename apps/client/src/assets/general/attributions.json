@@ -1181,5 +1181,16 @@
     "license": {
       "name": "You can use these assets in any personal or commercial project. You may edit or modify them to suit your needs.\nYou may not resell or redistribute the assets as-is or in modified form. Credits are very appreciated, but not required."
     }
+  },
+  {
+    "type": "Art",
+    "url": "https://captainskolot.itch.io/desert-pack-cactus-rock-palm-trees-top-down-assets-pixelart-pixel-art",
+    "name": "Desert Pack (Cactus, Rock, palm trees ) Top-down Assets - Pixelart / Pixel Art",
+    "obtained": "Purchased",
+    "author": "https://captainskolot.itch.io/",
+    "reason": "Desert assets for Ashes of the Ancients",
+    "license": {
+      "name": "We want you to have the freedom to use this asset pack in both your free and commercial projects. Feel free to modify the assets to suit your unique needs. While credit is not required, we genuinely appreciate any attribution given. You may not redistribute or resell the assets on their own, that includes NFT/images asset compilations."
+    }
   }
 ]
