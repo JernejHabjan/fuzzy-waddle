@@ -1163,6 +1163,16 @@
   },
   {
     "type": "Art",
+    "url": "https://free-game-assets.itch.io/golem-pixel-art-top-down-sprite-pack",
+    "name": "Golem Pixel Top-Down Sprite Sheets\n",
+    "author": "https://free-game-assets.itch.io/",
+    "reason": "A golem mob for Ashes of the Ancients",
+    "license": {
+      "url": "https://craftpix.net/file-licenses/"
+    }
+  },
+  {
+    "type": "Art",
     "url": "https://akari21.itch.io/rpg-asset-pack",
     "name": "RPG Icon Pack (200+) – 16x16 & 32x32 Pixel Art",
     "obtained": "Purchased",
