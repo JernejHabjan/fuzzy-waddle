@@ -1284,6 +1284,16 @@
     "license": {
       "name": "You can use these assets in any personal or commercial project. You may edit or modify them to suit your needs.\nYou may not resell or redistribute the assets as-is or in modified form. Credits are very appreciated, but not required."
     }
+  },  {
+    "type": "Art",
+    "url": "https://philtacular.itch.io/pixel-art-tileset-isometric-goblin-pack",
+    "name": "Goblin Camp - Isometric Tiles + Props",
+    "obtained": "Purchased",
+    "author": "https://philtacular.itch.io/",
+    "reason": "Environment for Ashes of the Ancients",
+    "license": {
+      "url": "https://itch.io/blog/500135/general-paid-asset-license"
+    }
   },
   {
     "type": "Art",
