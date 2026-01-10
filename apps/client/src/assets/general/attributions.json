@@ -1170,7 +1170,8 @@
     "license": {
       "url": "https://craftpix.net/file-licenses/"
     }
-  },  {
+  },
+  {
     "type": "Art",
     "url": "https://craftpix.net/freebies/free-top-down-trees-pixel-art/",
     "name": "Free Top-Down Trees Pixel Art",
@@ -1179,12 +1180,33 @@
     "license": {
       "url": "https://craftpix.net/file-licenses/"
     }
-  },  {
+  },
+  {
     "type": "Art",
     "url": "https://craftpix.net/freebies/free-pixel-art-plants-for-farm",
     "name": "Free Pixel Art Plants for Farm",
     "author": "https://free-game-assets.itch.io/",
     "reason": "Farming assets for Ashes of the Ancients",
+    "license": {
+      "url": "https://craftpix.net/file-licenses/"
+    }
+  },
+  {
+    "type": "Art",
+    "url": "https://craftpix.net/freebies/free-top-down-hunt-animals-pixel-sprite-pack/",
+    "name": "Free Top-Down Hunt Animals Pixel Sprite Pack",
+    "author": "https://free-game-assets.itch.io/",
+    "reason": "Animal assets for Ashes of the Ancients",
+    "license": {
+      "url": "https://craftpix.net/file-licenses/"
+    }
+  },
+  {
+    "type": "Art",
+    "url": "https://craftpix.net/freebies/free-top-down-animals-farm-pixel-art-sprites/",
+    "name": "Free Top-Down Hunt Animals Pixel Sprite Pack",
+    "author": "https://free-game-assets.itch.io/",
+    "reason": "Animal assets for Ashes of the Ancients",
     "license": {
       "url": "https://craftpix.net/file-licenses/"
     }
