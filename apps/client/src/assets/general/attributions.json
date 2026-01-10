@@ -1190,7 +1190,43 @@
     "license": {
       "url": "https://craftpix.net/file-licenses/"
     }
-  },
+  },  {
+    "type": "Art",
+    "url": "https://craftpix.net/freebies/free-rocky-area-objects-pixel-art/",
+    "name": "Free Rocky Area Objects Pixel Art",
+    "author": "https://free-game-assets.itch.io/",
+    "reason": "Environment assets for Ashes of the Ancients",
+    "license": {
+      "url": "https://craftpix.net/file-licenses/"
+    }
+  },  {
+  "type": "Art",
+  "url": "https://craftpix.net/freebies/free-top-down-pixel-art-cave-objects/",
+  "name": "Free Top-Down Pixel Art Cave Objects",
+  "author": "https://free-game-assets.itch.io/",
+  "reason": "Environment assets for Ashes of the Ancients",
+  "license": {
+    "url": "https://craftpix.net/file-licenses/"
+  }
+},{
+  "type": "Art",
+  "url": "https://craftpix.net/freebies/free-undead-tileset-top-down-pixel-art/",
+  "name": "Free Undead Tileset Top Down Pixel Art",
+  "author": "https://free-game-assets.itch.io/",
+  "reason": "Environment assets for Ashes of the Ancients",
+  "license": {
+    "url": "https://craftpix.net/file-licenses/"
+  }
+},{
+  "type": "Art",
+  "url": "https://craftpix.net/freebies/free-cursed-land-top-down-pixel-art-tileset/",
+  "name": "Free Cursed Land Top-Down Pixel Art Tileset",
+  "author": "https://free-game-assets.itch.io/",
+  "reason": "Environment assets for Ashes of the Ancients",
+  "license": {
+    "url": "https://craftpix.net/file-licenses/"
+  }
+},
   {
     "type": "Art",
     "url": "https://craftpix.net/freebies/free-top-down-hunt-animals-pixel-sprite-pack/",
