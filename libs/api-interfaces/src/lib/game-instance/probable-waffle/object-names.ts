@@ -6,6 +6,7 @@ export enum ObjectNames {
   Stag = "Stag",
   Badger = "Badger",
   GeneralWarrior = "GeneralWarrior",
+  Centurion = "Centurion",
   TivaraMacemanMale = "TivaraMacemanMale",
   TivaraSlingshotFemale = "TivaraSlingshotFemale",
   TivaraWorker = "TivaraWorker",

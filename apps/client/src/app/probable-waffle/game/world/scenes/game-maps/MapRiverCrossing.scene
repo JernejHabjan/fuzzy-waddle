@@ -2306,6 +2306,201 @@
             "label": "minerals_10",
             "x": 832,
             "y": 1104
+        },
+        {
+            "type": "Image",
+            "id": "3aa593f5-f1b5-4aa0-87a3-067487f901c4",
+            "label": "sit_down_1_png",
+            "texture": {
+                "key": "alchemist",
+                "frame": "sit/down/1.png"
+            },
+            "x": -1024,
+            "y": 560
+        },
+        {
+            "type": "Image",
+            "id": "ed9d54e7-1201-407e-b72b-7c2e9c3c6ec6",
+            "label": "cyclops_idle5",
+            "texture": {
+                "key": "cyclops_idle",
+                "frame": 5
+            },
+            "x": -1088,
+            "y": 560,
+            "scaleX": 2.5,
+            "scaleY": 2.5
+        },
+        {
+            "type": "Image",
+            "id": "daeea83f-4f33-4014-b8e1-51cd00ad4f9c",
+            "label": "mummy_cast17",
+            "texture": {
+                "key": "mummy_cast",
+                "frame": 17
+            },
+            "x": -992,
+            "y": 608
+        },
+        {
+            "type": "Image",
+            "id": "5428161d-74a9-4029-b389-61d68c17c172",
+            "label": "orc_boomerang_islash15",
+            "texture": {
+                "key": "orc_boomerang_islash",
+                "frame": 15
+            },
+            "x": -960,
+            "y": 624,
+            "scaleX": 1.2,
+            "scaleY": 1.2
+        },
+        {
+            "type": "Image",
+            "id": "401f3864-01c0-44bb-93a9-c14615186ac8",
+            "label": "orc_magician_idle4",
+            "texture": {
+                "key": "orc_magician_idle",
+                "frame": 4
+            },
+            "x": -896,
+            "y": 608,
+            "scaleX": 1.2,
+            "scaleY": 1.2
+        },
+        {
+            "type": "Image",
+            "id": "a692d755-89d7-4163-993f-fd20b8b27848",
+            "label": "orc_warrior_idle5",
+            "texture": {
+                "key": "orc_warrior_idle",
+                "frame": 5
+            },
+            "x": -864,
+            "y": 640,
+            "scaleX": 1.3,
+            "scaleY": 1.3
+        },
+        {
+            "type": "Image",
+            "id": "a499b0ff-2c13-43b5-9f07-5b9a81ee2de7",
+            "label": "pirate_scimitar_slash11",
+            "texture": {
+                "key": "pirate_scimitar_slash",
+                "frame": 11
+            },
+            "x": -960,
+            "y": 656
+        },
+        {
+            "type": "Image",
+            "id": "ad0894fa-6d15-4374-bc03-b1410ca498e7",
+            "label": "skeleton_scythe_idle5",
+            "texture": {
+                "key": "skeleton_scythe_idle",
+                "frame": 5
+            },
+            "x": -1032,
+            "y": 678
+        },
+        {
+            "type": "Image",
+            "id": "07c2797c-3f9e-48a9-96f6-0ef46a36e3cc",
+            "label": "skeleton_slash13",
+            "texture": {
+                "key": "skeleton_slash",
+                "frame": 13
+            },
+            "x": -928,
+            "y": 672
+        },
+        {
+            "type": "Image",
+            "id": "af63a934-60ff-4773-9673-1f63313211c1",
+            "label": "zombie1_idle5",
+            "texture": {
+                "key": "zombie1_idle",
+                "frame": 5
+            },
+            "x": -991,
+            "y": 706
+        },
+        {
+            "type": "Image",
+            "id": "99ab900b-851f-4202-ae6a-7af2c6297a86",
+            "label": "zombie2_slash12",
+            "texture": {
+                "key": "zombie2_slash",
+                "frame": 12
+            },
+            "x": -945,
+            "y": 717
+        },
+        {
+            "type": "Image",
+            "id": "cc7b1d36-6b16-410a-aa48-00068a0c53aa",
+            "label": "zombie3_slash10",
+            "texture": {
+                "key": "zombie3_slash",
+                "frame": 10
+            },
+            "x": -1056,
+            "y": 704
+        },
+        {
+            "type": "Image",
+            "id": "8ec650fb-7963-4a63-b744-cedbb47822bc",
+            "label": "pirate_swordsman_idle4",
+            "texture": {
+                "key": "pirate_swordsman_idle",
+                "frame": 4
+            },
+            "x": -883,
+            "y": 701
+        },
+        {
+            "type": "Image",
+            "id": "19c637f9-7279-4dfc-afd0-774095d38006",
+            "label": "skeleton_bowman_slash8",
+            "texture": {
+                "key": "skeleton_bowman_slash",
+                "frame": 8
+            },
+            "x": -800,
+            "y": 672
+        },
+        {
+            "type": "Image",
+            "id": "fc7a02fc-0210-48b9-9d3f-70dcde0e3100",
+            "label": "skeleton_bowman_walk8",
+            "texture": {
+                "key": "skeleton_bowman_walk",
+                "frame": 8
+            },
+            "x": -768,
+            "y": 688
+        },
+        {
+            "type": "Image",
+            "id": "d39280b9-c58e-4587-9da3-cd60ce43168a",
+            "label": "skeleton_swordsman_idle4",
+            "texture": {
+                "key": "skeleton_swordsman_idle",
+                "frame": 4
+            },
+            "x": -782,
+            "y": 716
+        },
+        {
+            "prefabId": "1457b917-a97a-463b-9989-e0ec3446c7b8",
+            "id": "63d63584-9a1f-4167-835c-1977ef236028",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "centurion",
+            "x": -960,
+            "y": 592
         }
     ],
     "plainObjects": [

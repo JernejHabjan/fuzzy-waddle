@@ -1,0 +1,31 @@
+// You can write more code here
+
+/* START OF COMPILED CODE */
+
+/* START-USER-IMPORTS */
+import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import Phaser from "phaser";
+/* END-USER-IMPORTS */
+
+export default class Centurion extends Phaser.GameObjects.Sprite {
+  constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
+    super(scene, x ?? 32, y ?? 54.45392844366228, texture || "centurion_idle", frame ?? 4);
+
+    this.setInteractive(new Phaser.Geom.Circle(96, 98, 32), Phaser.Geom.Circle.Contains);
+    this.setOrigin(0.5, 0.6204006413204773);
+    this.play("centurion_idle");
+
+    /* START-USER-CTR-CODE */
+    /* END-USER-CTR-CODE */
+  }
+
+  /* START-USER-CODE */
+  override name = ObjectNames.Centurion;
+  // Write your code here.
+
+  /* END-USER-CODE */
+}
+
+/* END OF COMPILED CODE */
+
+// You can write more code here

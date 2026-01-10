@@ -64,6 +64,7 @@ import Wolf from "../prefabs/animals/wolf/Wolf";
 import Boar from "../prefabs/animals/boar/Boar";
 import Stag from "../prefabs/animals/stag/Stag";
 import Badger from "../prefabs/animals/badger/Badger";
+import Centurion from "../prefabs/characters/general/centurion/Centurion";
 
 type ActorMap = { [name: string]: new (scene: Phaser.Scene) => GameObject };
 export class ActorManager {
@@ -77,7 +78,8 @@ export class ActorManager {
   };
 
   private static general: ActorMap = {
-    [ObjectNames.GeneralWarrior]: GeneralWarrior
+    [ObjectNames.GeneralWarrior]: GeneralWarrior,
+    [ObjectNames.Centurion]: Centurion
   };
 
   private static tivaraWorkers: ActorMap = {
