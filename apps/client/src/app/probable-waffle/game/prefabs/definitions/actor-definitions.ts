@@ -43,6 +43,21 @@ import { stonePileDefinition } from "../outside/resources/stone-pile/stone-pile.
 import type { PrefabDefinition } from "./prefab-definition";
 import { emberstoneDefinition } from "../buildings/skaduwee/Emberstone/emberstone.definition";
 import { centurionDefinition } from "../characters/general/centurion/centurion.definition";
+import { cyclopsDefinition } from "../characters/mobs/cyclops/cyclops.definition";
+import { minotaurDefinition } from "../characters/mobs/minotaur/minotaur.definition";
+import { orcWarriorDefinition } from "../characters/mobs/orcs/orc_warrior/orc-warrior.definition";
+import { pirateSwordsmanDefinition } from "../characters/mobs/pirates/pirate_swordsman/pirate-swordsman.definition";
+import { zombie1Definition } from "../characters/mobs/zombies/zombie1/zombie1.definition";
+import { zombie2Definition } from "../characters/mobs/zombies/zombie2/zombie2.definition";
+import { orcBoomerangDefinition } from "../characters/mobs/orcs/orc_boomerang/orc-boomerang.definition";
+import { zombie3Definition } from "../characters/mobs/zombies/zombie3/zombie3.definition";
+import { skeletonSwordsmanDefinition } from "../characters/mobs/skeleton/skeleton_swordsman/skeleton-swordsman.definition";
+import { skeletonScytheDefinition } from "../characters/mobs/skeleton/skeleton_scythe/skeleton-scythe.definition";
+import { skeletonMeleeDefinition } from "../characters/mobs/skeleton/skeleton_melee/skeleton-melee.definition";
+import { skeletonBowmanDefinition } from "../characters/mobs/skeleton/skeleton_bowman/skeleton-bowman.definition";
+import { pirateScimitarDefinition } from "../characters/mobs/pirates/pirate_scimitar/pirate-scimitar.definition";
+import { orcMagicianDefinition } from "../characters/mobs/orcs/orc_magician/orc-magician.definition";
+import { mummyDefinition } from "../characters/mobs/mummy/mummy.definition";
 
 export const pwActorDefinitions: {
   [key in ObjectNames]: PrefabDefinition;
@@ -55,6 +70,21 @@ export const pwActorDefinitions: {
   Wolf: wolfDefinition,
   GeneralWarrior: generalWarriorDefinition,
   Centurion: centurionDefinition,
+  Cyclops: cyclopsDefinition,
+  Minotaur: minotaurDefinition,
+  Mummy: mummyDefinition,
+  OrcBoomerang: orcBoomerangDefinition,
+  OrcMagician: orcMagicianDefinition,
+  OrcWarrior: orcWarriorDefinition,
+  PirateScimitar: pirateScimitarDefinition,
+  PirateSwordsman: pirateSwordsmanDefinition,
+  SkeletonBowman: skeletonBowmanDefinition,
+  SkeletonMelee: skeletonMeleeDefinition,
+  SkeletonScythe: skeletonScytheDefinition,
+  SkeletonSwordsman: skeletonSwordsmanDefinition,
+  Zombie1: zombie1Definition,
+  Zombie2: zombie2Definition,
+  Zombie3: zombie3Definition,
   TivaraMacemanMale: tivaraMacemanMaleDefinition,
   TivaraSlingshotFemale: tivaraSlingshotFemaleDefinition,
   TivaraWorker: tivaraWorkerDefinition,

@@ -65,6 +65,21 @@ import Boar from "../prefabs/animals/boar/Boar";
 import Stag from "../prefabs/animals/stag/Stag";
 import Badger from "../prefabs/animals/badger/Badger";
 import Centurion from "../prefabs/characters/general/centurion/Centurion";
+import Minotaur from "../prefabs/characters/mobs/minotaur/Minotaur";
+import Cyclops from "../prefabs/characters/mobs/cyclops/Cyclops";
+import Mummy from "../prefabs/characters/mobs/mummy/Mummy";
+import OrcBoomerang from "../prefabs/characters/mobs/orcs/orc_boomerang/OrcBoomerang";
+import OrcMagician from "../prefabs/characters/mobs/orcs/orc_magician/OrcMagician";
+import OrcWarrior from "../prefabs/characters/mobs/orcs/orc_warrior/OrcWarrior";
+import PirateSwordsman from "../prefabs/characters/mobs/pirates/pirate_swordsman/PirateSwordsman";
+import SkeletonBowman from "../prefabs/characters/mobs/skeleton/skeleton_bowman/SkeletonBowman";
+import SkeletonMelee from "../prefabs/characters/mobs/skeleton/skeleton_melee/SkeletonMelee";
+import PirateScimitar from "../prefabs/characters/mobs/pirates/pirate_scimitar/PirateScimitar";
+import SkeletonScythe from "../prefabs/characters/mobs/skeleton/skeleton_scythe/SkeletonScythe";
+import Zombie1 from "../prefabs/characters/mobs/zombies/zombie1/Zombie1";
+import Zombie2 from "../prefabs/characters/mobs/zombies/zombie2/Zombie2";
+import SkeletonSwordsman from "../prefabs/characters/mobs/skeleton/skeleton_swordsman/SkeletonSwordsman";
+import Zombie3 from "../prefabs/characters/mobs/zombies/zombie3/Zombie3";
 
 type ActorMap = { [name: string]: new (scene: Phaser.Scene) => GameObject };
 export class ActorManager {
@@ -80,6 +95,24 @@ export class ActorManager {
   private static general: ActorMap = {
     [ObjectNames.GeneralWarrior]: GeneralWarrior,
     [ObjectNames.Centurion]: Centurion
+  };
+
+  private static mobs: ActorMap = {
+    [ObjectNames.Cyclops]: Cyclops,
+    [ObjectNames.Minotaur]: Minotaur,
+    [ObjectNames.Mummy]: Mummy,
+    [ObjectNames.OrcBoomerang]: OrcBoomerang,
+    [ObjectNames.OrcMagician]: OrcMagician,
+    [ObjectNames.OrcWarrior]: OrcWarrior,
+    [ObjectNames.PirateScimitar]: PirateScimitar,
+    [ObjectNames.PirateSwordsman]: PirateSwordsman,
+    [ObjectNames.SkeletonBowman]: SkeletonBowman,
+    [ObjectNames.SkeletonMelee]: SkeletonMelee,
+    [ObjectNames.SkeletonScythe]: SkeletonScythe,
+    [ObjectNames.SkeletonSwordsman]: SkeletonSwordsman,
+    [ObjectNames.Zombie1]: Zombie1,
+    [ObjectNames.Zombie2]: Zombie2,
+    [ObjectNames.Zombie3]: Zombie3
   };
 
   private static tivaraWorkers: ActorMap = {
@@ -145,6 +178,7 @@ export class ActorManager {
   public static actorMap: ActorMap = {
     ...ActorManager.animals,
     ...ActorManager.general,
+    ...ActorManager.mobs,
     ...ActorManager.tivaraWorkers,
     ...ActorManager.tivaraUnits,
     ...ActorManager.tivaraBuildings,

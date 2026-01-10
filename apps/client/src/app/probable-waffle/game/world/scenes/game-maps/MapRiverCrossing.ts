@@ -82,6 +82,21 @@ import Emberstone from "../../../prefabs/buildings/skaduwee/Emberstone";
 import MiningCamp from "../../../prefabs/buildings/tivara/MiningCamp";
 import FrostForge from "../../../prefabs/buildings/skaduwee/FrostForge";
 import Centurion from "../../../prefabs/characters/general/centurion/Centurion";
+import Cyclops from "../../../prefabs/characters/mobs/cyclops/Cyclops";
+import Minotaur from "../../../prefabs/characters/mobs/minotaur/Minotaur";
+import Mummy from "../../../prefabs/characters/mobs/mummy/Mummy";
+import OrcBoomerang from "../../../prefabs/characters/mobs/orcs/orc_boomerang/OrcBoomerang";
+import OrcMagician from "../../../prefabs/characters/mobs/orcs/orc_magician/OrcMagician";
+import OrcWarrior from "../../../prefabs/characters/mobs/orcs/orc_warrior/OrcWarrior";
+import PirateScimitar from "../../../prefabs/characters/mobs/pirates/pirate_scimitar/PirateScimitar";
+import PirateSwordsman from "../../../prefabs/characters/mobs/pirates/pirate_swordsman/PirateSwordsman";
+import SkeletonBowman from "../../../prefabs/characters/mobs/skeleton/skeleton_bowman/SkeletonBowman";
+import SkeletonMelee from "../../../prefabs/characters/mobs/skeleton/skeleton_melee/SkeletonMelee";
+import SkeletonScythe from "../../../prefabs/characters/mobs/skeleton/skeleton_scythe/SkeletonScythe";
+import SkeletonSwordsman from "../../../prefabs/characters/mobs/skeleton/skeleton_swordsman/SkeletonSwordsman";
+import Zombie1 from "../../../prefabs/characters/mobs/zombies/zombie1/Zombie1";
+import Zombie2 from "../../../prefabs/characters/mobs/zombies/zombie2/Zombie2";
+import Zombie3 from "../../../prefabs/characters/mobs/zombies/zombie3/Zombie3";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -912,8 +927,68 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.image(-782, 716, "skeleton_swordsman_idle", 4);
 
     // centurion
-    const centurion = new Centurion(this, -960, 592);
+    const centurion = new Centurion(this, -1472, 800);
     this.add.existing(centurion);
+
+    // cyclops
+    const cyclops = new Cyclops(this, -1257, 910);
+    this.add.existing(cyclops);
+
+    // minotaur
+    const minotaur = new Minotaur(this, -1196, 900);
+    this.add.existing(minotaur);
+
+    // mummy
+    const mummy = new Mummy(this, -1173, 944);
+    this.add.existing(mummy);
+
+    // orcBoomerang
+    const orcBoomerang = new OrcBoomerang(this, -1135, 931);
+    this.add.existing(orcBoomerang);
+
+    // orcMagician
+    const orcMagician = new OrcMagician(this, -1112, 954);
+    this.add.existing(orcMagician);
+
+    // orcWarrior
+    const orcWarrior = new OrcWarrior(this, -1056, 992);
+    this.add.existing(orcWarrior);
+
+    // pirateScimitar
+    const pirateScimitar = new PirateScimitar(this, -1016, 1004);
+    this.add.existing(pirateScimitar);
+
+    // pirateSwordsman
+    const pirateSwordsman = new PirateSwordsman(this, -975, 1016);
+    this.add.existing(pirateSwordsman);
+
+    // skeletonBowman
+    const skeletonBowman = new SkeletonBowman(this, -908, 1019);
+    this.add.existing(skeletonBowman);
+
+    // skeletonMelee
+    const skeletonMelee = new SkeletonMelee(this, -870, 1034);
+    this.add.existing(skeletonMelee);
+
+    // skeletonScythe
+    const skeletonScythe = new SkeletonScythe(this, -841, 1060);
+    this.add.existing(skeletonScythe);
+
+    // skeletonSwordsman
+    const skeletonSwordsman = new SkeletonSwordsman(this, -800, 1067);
+    this.add.existing(skeletonSwordsman);
+
+    // zombie1
+    const zombie1 = new Zombie1(this, -942, 894);
+    this.add.existing(zombie1);
+
+    // zombie2
+    const zombie2 = new Zombie2(this, -918, 904);
+    this.add.existing(zombie2);
+
+    // zombie3
+    const zombie3 = new Zombie3(this, -886, 905);
+    this.add.existing(zombie3);
 
     // spawn (components)
     const spawnEditorOwner = new EditorOwner(spawn);

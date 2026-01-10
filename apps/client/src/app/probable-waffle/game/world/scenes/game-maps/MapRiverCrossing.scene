@@ -2499,8 +2499,173 @@
                 "y"
             ],
             "label": "centurion",
-            "x": -960,
-            "y": 592
+            "x": -1472,
+            "y": 800
+        },
+        {
+            "prefabId": "1457b917-a97a-463b-9989-10ec3446c7a8",
+            "id": "d3c30315-e137-454b-a990-c76964feb93e",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "cyclops",
+            "x": -1257,
+            "y": 910
+        },
+        {
+            "prefabId": "1457b917-a97a-463b-9989-20ec3446c7a8",
+            "id": "a4596b90-1bda-440d-a2ff-88e6ea88e6f0",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "minotaur",
+            "x": -1196,
+            "y": 900
+        },
+        {
+            "prefabId": "1457b917-a97a-463b-9989-30ec3446c7a8",
+            "id": "ec461e5d-dd34-4558-8092-917c9a28171e",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "mummy",
+            "x": -1173,
+            "y": 944
+        },
+        {
+            "prefabId": "1457b917-a97a-463b-9989-40ec3446c7a8",
+            "id": "f4d9dd9f-5a15-4ff5-ba2d-47463ff41653",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "orcBoomerang",
+            "x": -1135,
+            "y": 931
+        },
+        {
+            "prefabId": "1457b917-a97a-463b-9989-50ec3446c7a8",
+            "id": "52ab75a9-54fa-4be2-b96b-9102f70d96f4",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "orcMagician",
+            "x": -1112,
+            "y": 954
+        },
+        {
+            "prefabId": "1457b917-a97a-463b-9989-60ec3446c7a8",
+            "id": "5d93922c-5d49-436a-ac3e-67e7fdc48d44",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "orcWarrior",
+            "x": -1056,
+            "y": 992
+        },
+        {
+            "prefabId": "1457b917-a97a-463b-9989-70ec3446c7a8",
+            "id": "65b32761-fd0d-4eaa-9f55-4f9dd1435090",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "pirateScimitar",
+            "x": -1016,
+            "y": 1004
+        },
+        {
+            "prefabId": "1457b917-a97a-463b-9989-80ec3446c7a8",
+            "id": "0673eebc-6dc9-4144-9893-8c691ba782ba",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "pirateSwordsman",
+            "x": -975,
+            "y": 1016
+        },
+        {
+            "prefabId": "1457b917-a97a-463b-9989-90ec3446c7a8",
+            "id": "f25fd97c-b1cc-436c-ac74-9df147768a8a",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "skeletonBowman",
+            "x": -908,
+            "y": 1019
+        },
+        {
+            "prefabId": "1457b917-a97a-463b-1989-e0ec3446c7a8",
+            "id": "97ebd0c4-93ce-4342-ac6e-dc55b340ff9a",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "skeletonMelee",
+            "x": -870,
+            "y": 1034
+        },
+        {
+            "prefabId": "1457b917-a97a-463b-2989-e0ec3446c7a8",
+            "id": "1630d4a5-ca35-48a1-8477-aabda950e821",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "skeletonScythe",
+            "x": -841,
+            "y": 1060
+        },
+        {
+            "prefabId": "1457b917-a97a-463b-3989-e0ec3446c7a8",
+            "id": "6bf4f20c-c34b-44c3-a64b-f352577137ca",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "skeletonSwordsman",
+            "x": -800,
+            "y": 1067
+        },
+        {
+            "prefabId": "1457b917-a97a-463b-4989-e0ec3446c7a8",
+            "id": "f527e587-f032-466d-9cbe-ec20b980426d",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "zombie1",
+            "x": -942,
+            "y": 894
+        },
+        {
+            "prefabId": "1457b917-a97a-463b-5989-e0ec3446c7a8",
+            "id": "826b0676-2d65-443f-85f5-ced041aeae47",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "zombie2",
+            "x": -918,
+            "y": 904
+        },
+        {
+            "prefabId": "1457b917-a97a-463b-6989-e0ec3446c7a8",
+            "id": "1a8a0ffc-7cb7-4523-af7a-e6b7598a7485",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "zombie3",
+            "x": -886,
+            "y": 905
         }
     ],
     "plainObjects": [
