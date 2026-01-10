@@ -1,0 +1,54 @@
+* Shadow (shadow)
+
+  Textures
+
+  Author(s) : Dr. Jamgo
+  License(s): CC0
+  Url(s)    : https://opengameart.org/content/shadow-for-lpc-sprite
+
+  Fixed colors
+
+  Author(s) : Dr. Jamgo
+  License(s): CC0
+  Url(s)    : https://opengameart.org/content/shadow-for-lpc-sprite
+
+* Skeleton (body)
+
+  Textures
+
+  Author(s) : Johannes Sjölund (wulax)
+              Rhimlock
+  License(s): CC-BY-SA 3.0
+              GPL 3.0
+  Url(s)    : https://opengameart.org/content/lpc-medieval-fantasy-character-sprites
+              https://opengameart.org/content/lpc-skeleton
+
+  Primary colors
+
+  Author(s) : Johannes Sjölund (wulax)
+              Rhimlock
+  License(s): CC-BY-SA 3.0
+              GPL 3.0
+  Url(s)    : https://opengameart.org/content/lpc-medieval-fantasy-character-sprites
+              https://opengameart.org/content/lpc-skeleton
+
+* Skeleton (head)
+
+  Textures
+
+  Author(s) : Johannes Sjölund (wulax)
+              Rhimlock
+  License(s): CC-BY-SA 3.0
+              GPL 3.0
+  Url(s)    : https://opengameart.org/content/lpc-medieval-fantasy-character-sprites
+              https://opengameart.org/content/lpc-skeleton
+
+  Primary colors
+
+  Author(s) : Johannes Sjölund (wulax)
+              Rhimlock
+  License(s): CC-BY-SA 3.0
+              GPL 3.0
+  Url(s)    : https://opengameart.org/content/lpc-medieval-fantasy-character-sprites
+              https://opengameart.org/content/lpc-skeleton
+
