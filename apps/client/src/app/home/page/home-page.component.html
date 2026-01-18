@@ -1,7 +1,12 @@
 <fuzzy-waddle-home-page-nav />
 
 <a class="tile-featured cursor-pointer position-relative nav-link" routerLink="{{ featuredGame.route }}">
-  <img [alt]="featuredGame.name" [src]="'assets/games/images/' + featuredGame.bannerImage" class="featured-image" />
+  <img
+    [alt]="featuredGame.name"
+    [src]="'assets/games/images/' + featuredGame.bannerImage"
+    class="featured-image"
+    fetchpriority="high"
+  />
   <div class="featured-title">
     <div>Featured</div>
     <div style="margin-left: 30px">{{ featuredGame.name }}</div>
@@ -11,7 +16,12 @@
 <div class="card-row">
   @for (game of displayGames; track game) {
     <a class="tile-game nav-link card-container" routerLink="{{ game.route }}">
-      <img [alt]="game.name" class="game-image" src="{{ 'assets/games/images/' + game.image }}" />
+      <img
+        [alt]="game.name"
+        class="game-image"
+        src="{{ 'assets/games/images/' + game.image }}"
+        loading="lazy"
+      />
       <div class="game-title">
         <h2>{{ game.name }}</h2>
         @if (game.inDevelopment) {
