@@ -157,7 +157,7 @@ export class BuilderComponent {
    * will seek for new construction sites in this range
    */
   getConstructionSeekRange(): number {
-    return 10;
+    return 30;
   }
 
   getRepairRange() {
