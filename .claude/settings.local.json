@@ -4,7 +4,15 @@
       "WebFetch(domain:raw.githubusercontent.com)",
       "WebFetch(domain:github.com)",
       "Bash(claude mcp list:*)",
-      "Bash(git rm:*)"
+      "Bash(git rm:*)",
+      "Bash(.json \")",
+      "Bash(npx nx lint:*)",
+      "Bash(npx nx build:*)",
+      "Bash(node:*)",
+      "Bash(pnpm --version:*)",
+      "Bash(npx nx reset)",
+      "Bash(git stash push:*)",
+      "Bash(git stash:*)"
     ]
   }
 }
