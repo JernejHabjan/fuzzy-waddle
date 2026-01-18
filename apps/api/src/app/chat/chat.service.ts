@@ -43,12 +43,14 @@ export class ChatService implements IChatService {
     }
 
     // Map the data to ChatMessage format
-    const messages: ChatMessage[] = (data || []).map((msg: any) => ({
-      text: msg.text,
-      userId: msg.user_id,
-      fullName: msg.profiles?.full_name || "Unknown User",
-      createdAt: new Date(msg.created_at)
-    }));
+    const messages: ChatMessage[] = (data || []).map(
+      (msg: { text: string; user_id: string; created_at: string; profiles?: { full_name?: string } }) => ({
+        text: msg.text,
+        userId: msg.user_id,
+        fullName: msg.profiles?.full_name || "Unknown User",
+        createdAt: new Date(msg.created_at)
+      })
+    );
 
     // Reverse to get oldest first
     return messages.reverse();
