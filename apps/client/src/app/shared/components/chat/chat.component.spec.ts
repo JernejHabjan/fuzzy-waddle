@@ -6,6 +6,8 @@ import { AvatarProviderService } from "./avatar-provider/avatar-provider.service
 import { avatarProviderServiceStub } from "./avatar-provider/avatar-provider.service.stub";
 import { AuthService } from "../../../auth/auth.service";
 import { authServiceStub } from "../../../auth/auth.service.stub";
+import { Subject } from "rxjs";
+import { type ChatMessage } from "@fuzzy-waddle/api-interfaces";
 
 describe("ChatComponent", () => {
   let component: ChatComponent;
@@ -28,6 +30,7 @@ describe("ChatComponent", () => {
 
     fixture = TestBed.createComponent(ChatComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput("messageListener", new Subject<ChatMessage>());
     fixture.detectChanges();
   });
 
