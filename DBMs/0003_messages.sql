@@ -20,7 +20,6 @@ CREATE POLICY "Enable read access for all users" ON "public"."messages"
   TO authenticated
   USING (true);
 
-drop policy if exists "Enable read access for all users" on messages;
 CREATE POLICY "Enable insert for service_role only" ON "public"."messages"
   AS PERMISSIVE FOR INSERT
   TO service_role
