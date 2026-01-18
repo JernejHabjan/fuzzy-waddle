@@ -8,5 +8,8 @@ export const chatServiceStub = {
   },
   getMessageListener(): Promise<Observable<ChatMessage> | undefined> {
     return Promise.resolve(undefined);
+  },
+  getMessages(limit?: number): Promise<ChatMessage[]> {
+    return Promise.resolve([]);
   }
 } satisfies IChatService;

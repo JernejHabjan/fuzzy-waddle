@@ -4,4 +4,5 @@ import { Observable } from "rxjs";
 export interface IChatService {
   sendMessage(msg: ChatMessage): Promise<void>;
   getMessageListener(): Promise<Observable<ChatMessage> | undefined>;
+  getMessages(limit?: number): Promise<ChatMessage[]>;
 }

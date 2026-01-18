@@ -12,17 +12,13 @@ alter table messages
   add constraint messages_user_id_fkey foreign key (user_id) references auth.users (id);
 
 
-drop policy if exists "Enable read access for all users" on messages;
--- CREATE POLICY "Enable read access for all users" ON "public"."messages"
--- AS PERMISSIVE FOR SELECT
--- TO authenticated
--- USING (true)
-
 drop policy if exists "Enable select for users based on user_id" on messages;
-CREATE POLICY "Enable select for users based on user_id" ON "public"."messages"
+
+drop policy if exists "Enable read access for all users" on messages;
+CREATE POLICY "Enable read access for all users" ON "public"."messages"
   AS PERMISSIVE FOR SELECT
   TO authenticated
-  USING (auth.uid() = user_id);
+  USING (true);
 
 drop policy if exists "Enable read access for all users" on messages;
 CREATE POLICY "Enable insert for service_role only" ON "public"."messages"

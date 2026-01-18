@@ -28,4 +28,6 @@ export class ChatFloatComponent implements OnInit {
   async ngOnInit() {
     this.messageListener = await this.chatService.getMessageListener();
   }
+
+  protected loadPreviousMessages = () => this.chatService.getMessages();
 }
