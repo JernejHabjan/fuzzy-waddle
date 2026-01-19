@@ -88,3 +88,8 @@ export interface BackboardComponentData {
 export interface HousingComponentData {
   housingProvided?: boolean;
 }
+
+export interface ConvertibleComponentData {
+  detectionRange?: number;
+  checkInterval?: number;
+}

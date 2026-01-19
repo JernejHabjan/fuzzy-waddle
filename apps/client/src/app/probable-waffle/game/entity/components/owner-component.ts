@@ -87,6 +87,52 @@ export class OwnerComponent {
     this.tryToSetComponents();
   }
 
+  setOwnerWithBlink(playerNumber: number) {
+    const oldOwner = this.owner;
+    this.setOwner(playerNumber);
+
+    // Only blink if this was a conversion from no owner to owned
+    if (oldOwner === undefined && playerNumber !== undefined) {
+      this.playBlinkEffect();
+    }
+  }
+
+  private playBlinkEffect() {
+    // Get the sprite to apply tint effect
+    const sprite = this.gameObject as Phaser.GameObjects.Sprite;
+    if (!sprite || !sprite.scene || typeof sprite.setTint !== "function") return;
+
+    const ownerColorValue = this.ownerColor?.color ?? 0xffffff;
+
+    // Create a chain of tweens for the blink effect
+    sprite.scene.tweens.chain({
+      targets: sprite,
+      tweens: [
+        {
+          tint: 0xffffff,
+          duration: 150,
+          onStart: () => sprite.setTint(0xffffff)
+        },
+        {
+          tint: ownerColorValue,
+          duration: 150,
+          onStart: () => sprite.setTint(ownerColorValue)
+        },
+        {
+          tint: 0xffffff,
+          duration: 150,
+          onStart: () => sprite.setTint(0xffffff)
+        },
+        {
+          tint: ownerColorValue,
+          duration: 150,
+          onStart: () => sprite.setTint(ownerColorValue),
+          onComplete: () => sprite.clearTint()
+        }
+      ]
+    });
+  }
+
   private handleOwnerChangeForTechTree(oldOwner: number | undefined, newOwner: number | undefined) {
     const techTreeService = getSceneService(this.gameObject.scene, TechTreeService);
     if (!techTreeService) return;
