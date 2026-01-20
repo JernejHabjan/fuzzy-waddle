@@ -392,11 +392,11 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
     return State.SUCCEEDED;
   }
 
-  AssignNextBuildOrder(): State {
+  async AssignNextBuildOrder(): Promise<State> {
     const builderComponent = getActorComponent(this.gameObject, BuilderComponent);
     if (!builderComponent) return State.FAILED;
     const range = builderComponent.getConstructionSeekRange();
-    const target = builderComponent.getClosestConstructionSite(range);
+    const target = await builderComponent.getClosestConstructionSite(range);
     if (!target) return State.FAILED;
     this.blackboard.addOrder(new OrderData(OrderType.Build, { targetGameObject: target }));
 

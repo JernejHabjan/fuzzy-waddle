@@ -22,6 +22,7 @@ import { ConstructableDefinition } from "./constructable-category";
 import type { AnimationOptions } from "../animation/animation-options";
 import type { BuilderDefinition } from "./builder-definition";
 import GameObject = Phaser.GameObjects.GameObject;
+import { TilemapComponent } from "../../../world/tilemap/tilemap.component";
 
 // Allows the actor to construct building
 export class BuilderComponent {
@@ -235,10 +236,15 @@ export class BuilderComponent {
     return !this.assignedConstructionSite;
   }
 
-  getClosestConstructionSite(rangeInTiles: number): GameObject | null {
+  async getClosestConstructionSite(rangeInTiles: number): Promise<GameObject | null> {
     const owner = getActorComponent(this.gameObject, OwnerComponent)?.getOwner();
     const transform = getGameObjectLogicalTransform(this.gameObject);
     if (!owner || !transform) return null;
+
+    const tileSize = TilemapComponent.tileWidth;
+    const worldRange = rangeInTiles * tileSize;
+
+    // First filter by geometric distance and ownership
     const availableConstructionSites = this.gameObject.scene.children.list.filter((go) => {
       const constructionSiteComponent = getActorComponent(go, ConstructionSiteComponent);
       if (!constructionSiteComponent) return false;
@@ -247,33 +253,34 @@ export class BuilderComponent {
       if (!targetOwnerComponent) return false;
       const targetOwner = targetOwnerComponent.getOwner();
       if (!targetOwner) return false;
-      // noinspection RedundantIfStatementJS
       if (targetOwner !== owner) return false;
-      return true;
+
+      // Pre-filter by geometric distance to avoid unnecessary pathfinding
+      const targetPosition = getGameObjectLogicalTransform(go);
+      if (!targetPosition) return false;
+      const geometricDistance = DistanceHelper.distance3D(transform, targetPosition);
+      return geometricDistance <= worldRange;
     });
 
     if (availableConstructionSites.length === 0) return null;
 
-    const closestConstructionSite = availableConstructionSites.reduce((prev, curr) => {
-      const prevPosition = getGameObjectLogicalTransform(prev);
-      const currPosition = getGameObjectLogicalTransform(curr);
-      if (!prevPosition || !currPosition) return prev;
+    // Get navigation distances for all sites (filters out unreachable ones)
+    const sitesWithDistance: { site: GameObject; distance: number }[] = [];
 
-      const prevDistance = DistanceHelper.distance3D(transform, prevPosition);
-      const currDistance = DistanceHelper.distance3D(transform, currPosition);
+    for (const site of availableConstructionSites) {
+      const navDistance = await DistanceHelper.getTileDistanceBetweenGameObjectsNavigation(this.gameObject, site);
+      // Only include reachable sites (navDistance !== null)
+      if (navDistance !== null) {
+        sitesWithDistance.push({ site, distance: navDistance });
+      }
+    }
 
-      return prevDistance < currDistance ? prev : curr;
-    });
+    if (sitesWithDistance.length === 0) return null;
 
-    // Check if the closest site is within the specified range
-    const closestPosition = getGameObjectLogicalTransform(closestConstructionSite);
-    if (!closestPosition) return null;
+    // Find closest by navigation distance
+    const closest = sitesWithDistance.reduce((prev, curr) => (prev.distance < curr.distance ? prev : curr));
 
-    const distance = DistanceHelper.distance3D(transform, closestPosition);
-
-    const tileSize = 64;
-    const worldRange = rangeInTiles * tileSize;
-    return distance <= worldRange ? closestConstructionSite : null;
+    return closest.site;
   }
 
   setData(data: Partial<BuilderComponentData>) {
