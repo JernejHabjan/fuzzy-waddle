@@ -614,6 +614,16 @@ export class BuildingCursor {
 
     attackRangeGraphics.strokeEllipse(xPos, yPos, rangeRadiusX, rangeRadiusY);
 
+    // Draw high ground bonus range if the weapon has one
+    const highGroundBonus = primaryAttack.highGroundRangeBonus ?? 0;
+    if (highGroundBonus > 0) {
+      const bonusRangeRadiusX = (primaryAttack.range + highGroundBonus) * this.tileSize;
+      const bonusRangeRadiusY = bonusRangeRadiusX / 2;
+      // Use a lighter/dashed style for the potential high ground bonus range
+      attackRangeGraphics.lineStyle(1, 0xff6600, 0.5);
+      attackRangeGraphics.strokeEllipse(xPos, yPos, bonusRangeRadiusX, bonusRangeRadiusY);
+    }
+
     this.attackRangeCircle = attackRangeGraphics;
   }
 

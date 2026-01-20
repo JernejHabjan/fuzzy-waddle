@@ -158,9 +158,12 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
         });
       }
       const primaryAttackRange = primaryAttack?.range;
+      const highGroundBonus = primaryAttack?.highGroundRangeBonus ?? 0;
+      const rangeText =
+        highGroundBonus > 0 ? `${primaryAttackRange}+${highGroundBonus}` : primaryAttackRange?.toString();
       iconsAndTexts.push({
         icon: { key: "gui", frame: "actor_info_icons/bow.png" },
-        text: primaryAttackRange?.toString()
+        text: rangeText
       });
     }
 

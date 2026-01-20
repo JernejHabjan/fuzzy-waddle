@@ -13,6 +13,8 @@ export interface AttackData {
   // nr of tiles the attack can reach
   range: number;
   minRange: number;
+  // Bonus range (in tiles) granted when attacker has high ground advantage (z >= 64 above target)
+  highGroundRangeBonus?: number;
   // Type of the projectile to spawn - if not set, damage will be dealt instantly
   projectile?: ProjectileData;
   animationType: AnimationType;
