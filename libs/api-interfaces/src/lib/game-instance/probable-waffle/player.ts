@@ -5,6 +5,7 @@ import { BasePlayerState } from "../player/player-state";
 import { ResourceType } from "../../probable-waffle/resource-type-definition";
 import type { PlayerStateAction } from "../../probable-waffle/probable-waffle-player-state-action";
 import type { Vector3Simple } from "../../game/vector";
+import type { AIBehaviorTreeStateData, CameraStateData, SelectionGroupData } from "./component-data";
 
 export class ProbableWafflePlayer extends BasePlayer<
   ProbableWafflePlayerStateData,
@@ -104,6 +105,8 @@ export interface ProbableWafflePlayerStateData extends BaseData {
    * contains GUID from actors' IdComponent
    */
   selection: string[];
+  // AI behavior tree state for save/load (AI players only)
+  aiBehaviorTreeState?: AIBehaviorTreeStateData;
 }
 
 export class ProbableWafflePlayerState extends BasePlayerState<ProbableWafflePlayerStateData> {
@@ -138,6 +141,10 @@ export class ProbableWafflePlayerController extends BasePlayerController<Probabl
 export interface ProbableWafflePlayerControllerData extends BasePlayerControllerData {
   playerDefinition?: PositionPlayerDefinition;
   leftOrKilled?: boolean;
+  // Camera position for save/load (human players only)
+  cameraState?: CameraStateData;
+  // Selection groups for save/load (human players only)
+  selectionGroups?: SelectionGroupData[];
 }
 
 export enum ProbableWafflePlayerType {

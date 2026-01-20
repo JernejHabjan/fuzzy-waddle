@@ -1,5 +1,11 @@
 import { Blackboard } from "../../ai/blackboard";
-import { ObjectNames, ResourceType, type Vector2Simple, type Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import {
+  ObjectNames,
+  type PlayerAiBlackboardData,
+  ResourceType,
+  type Vector2Simple,
+  type Vector3Simple
+} from "@fuzzy-waddle/api-interfaces";
 import type { MapAnalysis } from "./ai-behavior/map-analyzer";
 import { ReservationPool } from "./resource-reservations";
 import { getActorComponent } from "../../data/actor-component";
@@ -166,11 +172,94 @@ export class PlayerAiBlackboard extends Blackboard {
     return true;
   }
 
-  getData(): Record<string, any> {
-    throw new Error("Method not implemented.");
+  getData(): PlayerAiBlackboardData {
+    return {
+      currentStrategy: this.currentStrategy,
+      baseSize: this.baseSize,
+      mapFullyExplored: this.mapFullyExplored,
+      wantsToSurrender: this.wantsToSurrender,
+      surrenderOfferedAt: this.surrenderOfferedAt,
+      surrenderRejected: this.surrenderRejected,
+      activeTechUpgrades: this.activeTechUpgrades,
+      lastTechUpgradeAt: this.lastTechUpgradeAt,
+      economy: {
+        resources: { ...this.economy.resources },
+        reserved: { ...this.economy.reserved }
+      },
+      production: {
+        supply: { ...this.production.supply }
+      },
+      strategy: {
+        current: this.strategy.current,
+        baseSize: this.strategy.baseSize,
+        modeLockedUntil: this.strategy.modeLockedUntil
+      },
+      cooldowns: { ...this.cooldowns }
+    };
   }
-  setData(data: Partial<Record<string, any>>, scene: Phaser.Scene): void {
-    throw new Error("Method not implemented.");
+
+  setData(data: Partial<PlayerAiBlackboardData>, _scene: Phaser.Scene): void {
+    if (data.currentStrategy !== undefined) {
+      this.currentStrategy = data.currentStrategy;
+    }
+    if (data.baseSize !== undefined) {
+      this.baseSize = data.baseSize;
+    }
+    if (data.mapFullyExplored !== undefined) {
+      this.mapFullyExplored = data.mapFullyExplored;
+    }
+    if (data.wantsToSurrender !== undefined) {
+      this.wantsToSurrender = data.wantsToSurrender;
+    }
+    if (data.surrenderOfferedAt !== undefined) {
+      this.surrenderOfferedAt = data.surrenderOfferedAt;
+    }
+    if (data.surrenderRejected !== undefined) {
+      this.surrenderRejected = data.surrenderRejected;
+    }
+    if (data.activeTechUpgrades !== undefined) {
+      this.activeTechUpgrades = data.activeTechUpgrades;
+    }
+    if (data.lastTechUpgradeAt !== undefined) {
+      this.lastTechUpgradeAt = data.lastTechUpgradeAt;
+    }
+
+    // Restore economy state
+    if (data.economy) {
+      if (data.economy.resources) {
+        for (const key in data.economy.resources) {
+          const resourceType = key as ResourceType;
+          this.economy.resources[resourceType] = data.economy.resources[key] ?? 0;
+        }
+      }
+      if (data.economy.reserved) {
+        for (const key in data.economy.reserved) {
+          const resourceType = key as ResourceType;
+          this.economy.reserved[resourceType] = data.economy.reserved[key] ?? 0;
+        }
+      }
+    }
+
+    // Restore production state
+    if (data.production?.supply) {
+      this.production.supply.used = data.production.supply.used ?? 0;
+      this.production.supply.max = data.production.supply.max ?? 0;
+      this.production.supply.pendingFromQueued = data.production.supply.pendingFromQueued ?? 0;
+    }
+
+    // Restore strategy state
+    if (data.strategy) {
+      this.strategy.current = data.strategy.current ?? "defensive";
+      this.strategy.baseSize = data.strategy.baseSize ?? 0;
+      this.strategy.modeLockedUntil = data.strategy.modeLockedUntil ?? 0;
+    }
+
+    // Restore cooldowns
+    if (data.cooldowns) {
+      for (const key in data.cooldowns) {
+        (this.cooldowns as Record<string, number>)[key] = data.cooldowns[key] ?? 0;
+      }
+    }
   }
 
   /**

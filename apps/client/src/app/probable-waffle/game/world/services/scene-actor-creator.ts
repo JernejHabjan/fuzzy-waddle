@@ -42,6 +42,8 @@ export class SceneActorCreator {
       // If loading, the initialActors should not be populated again in scene
       this.loadGame.loadActorsFromSaveGame();
       this.removeSpawnsAfterLoad();
+      // Restore player data (camera, selection groups, AI state) after actors are loaded
+      this.loadGame.restorePlayerData();
     } else {
       this.spawnFromSpawnList();
     }

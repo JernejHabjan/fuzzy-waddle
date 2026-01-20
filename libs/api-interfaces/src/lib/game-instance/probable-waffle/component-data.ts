@@ -88,3 +88,52 @@ export interface BackboardComponentData {
 export interface HousingComponentData {
   housingProvided?: boolean;
 }
+
+// Selection group data for save/load
+export interface SelectionGroupData {
+  groupKey: number;
+  actorIds: string[];
+  timestamp: number;
+}
+
+// Camera state data for save/load
+export interface CameraStateData {
+  scrollX?: number;
+  scrollY?: number;
+  zoom?: number;
+}
+
+// Player AI blackboard data for save/load
+export interface PlayerAiBlackboardData {
+  currentStrategy?: string;
+  baseSize?: number;
+  mapFullyExplored?: boolean;
+  wantsToSurrender?: boolean;
+  surrenderOfferedAt?: number;
+  surrenderRejected?: boolean;
+  activeTechUpgrades?: number;
+  lastTechUpgradeAt?: number;
+  economy?: {
+    resources: Record<string, number>;
+    reserved: Record<string, number>;
+  };
+  production?: {
+    supply: {
+      used: number;
+      max: number;
+      pendingFromQueued: number;
+    };
+  };
+  strategy?: {
+    current: string;
+    baseSize: number;
+    modeLockedUntil: number;
+  };
+  cooldowns?: Record<string, number>;
+}
+
+// AI behavior tree state data for save/load
+export interface AIBehaviorTreeStateData {
+  blackboard: PlayerAiBlackboardData;
+  telemetry?: unknown;
+}

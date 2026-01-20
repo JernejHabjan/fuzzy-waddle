@@ -46,11 +46,12 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     new SceneGameState(this);
     new ScaleHandler(this, this.tilemap, { margins: { left: 150, bottom: 100 }, maxLayers: 8 });
     const gameSettings = GameSettings.loadFromLocalStorage();
-    new CameraMovementHandler(this, {
+    const cameraMovementHandler = new CameraMovementHandler(this, {
       cameraEdgeMovementSpeed: 30,
       cameraKeyboardMovementSpeed: 2,
       enabledMouseCornerMovement: gameSettings.enabledMouseCornerMovement
     });
+    this.sceneGameData.components.push(cameraMovementHandler);
     new LightsHandler(this, { enableLights: false });
     new DepthHelper(this);
     new AnimatedTilemap(this, this.tilemap, this.tilemap.tilesets);
