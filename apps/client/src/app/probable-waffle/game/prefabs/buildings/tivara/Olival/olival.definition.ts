@@ -29,6 +29,7 @@ export const olivalDefinition = {
     info: {
       name: "Olival",
       description: "A living gem that transforms the barren sands into a foundation for dark power",
+      tooltipDescription: ["Provides additional housing", "Expands population capacity"],
       smallImage: {
         key: "factions",
         frame: "buildings/tivara/olival/olival.png",

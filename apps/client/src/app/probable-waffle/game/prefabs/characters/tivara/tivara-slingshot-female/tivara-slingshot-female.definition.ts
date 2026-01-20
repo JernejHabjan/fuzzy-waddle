@@ -39,6 +39,11 @@ export const tivaraSlingshotFemaleDefinition = {
     info: {
       name: "Cursed Banshee",
       description: "A silent stalker armed with ancient curses and deadly precision",
+      tooltipDescription: [
+        "Ranged attacker",
+        "Effective against light units",
+        "Vulnerable in melee combat"
+      ],
       smallImage: {
         key: "factions",
         frame: "character_icons/tivara/slingshot_female.png",

@@ -27,6 +27,11 @@ export const miningCampDefinition = {
     info: {
       name: "Mining Camp",
       description: "A camp for mining minerals and stone",
+      tooltipDescription: [
+        "Drop-off point for minerals and stone",
+        "Place near mineral deposits",
+        "Reduces worker travel time"
+      ],
       smallImage: {
         key: "factions",
         frame: "buildings/tivara/mining_camp/mining-camp.png",

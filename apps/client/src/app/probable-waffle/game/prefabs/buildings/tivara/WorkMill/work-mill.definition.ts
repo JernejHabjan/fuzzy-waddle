@@ -27,6 +27,11 @@ export const workMillDefinition = {
     info: {
       name: "Work Mill",
       description: "A sturdy mill that turns raw timber into vital resources",
+      tooltipDescription: [
+        "Drop-off point for wood",
+        "Place near forests",
+        "Reduces worker travel time"
+      ],
       smallImage: {
         key: "factions",
         frame: "buildings/tivara/workmill/workmill.png",

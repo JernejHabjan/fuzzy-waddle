@@ -20,6 +20,7 @@ export const mineralsDefinition = {
     info: {
       name: "Mineral Deposit",
       description: "A deposit of valuable minerals ready for extraction",
+      tooltipDescription: ["Provides minerals resource", "Send workers to harvest"],
       smallImage: {
         key: "outside",
         frame: "nature/resources/minerals_pile_1.png",
