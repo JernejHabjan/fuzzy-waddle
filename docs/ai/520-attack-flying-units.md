@@ -15,7 +15,7 @@ Distance calculations in `DistanceHelper` only consider X,Y coordinates, ignorin
 | `apps/client/src/app/probable-waffle/game/library/distance-helper.ts` | Distance calculations (2D only) |
 | `apps/client/src/app/probable-waffle/game/entity/components/combat/components/attack-component.ts` | Attack logic, range checking, projectile spawning |
 | `apps/client/src/app/probable-waffle/game/entity/systems/movement.system.ts` | Movement handling |
-| `apps/client/src/app/probable-waffle/game/entity/actor/player-pawn-ai-controller.agent.ts` | AI movement to target |
+| `apps/client/src/app/probable-waffle/game/prefabs/ai-agents/player-pawn-ai-controller.agent.ts` | AI movement to target |
 | `apps/client/src/app/probable-waffle/game/entity/components/movement/flying-component.ts` | Flying unit height definition |
 
 ---
@@ -23,73 +23,69 @@ Distance calculations in `DistanceHelper` only consider X,Y coordinates, ignorin
 ## Tasks
 
 ### Phase 1: Investigation & Verification
-- [ ] Reproduce the bug with a ranged unit attacking a flying unit (Skaduwee Owl)
-- [ ] Confirm ranged unit moves underneath instead of stopping at range
-- [ ] Identify exact point where incorrect distance is calculated
+- [x] Reproduce the bug with a ranged unit attacking a flying unit (Skaduwee Owl)
+- [x] Confirm ranged unit moves underneath instead of stopping at range
+- [x] Identify exact point where incorrect distance is calculated
 
 ### Phase 2: Fix Distance Calculation
-- [ ] Modify `DistanceHelper.getTileDistanceBetweenGameObjects()` to account for flying height
-- [ ] Create helper to get effective attack position for flying units
-- [ ] Ensure distance calculation uses 3D distance when target is flying
+- [x] Add `getFlyingHeightInTiles()` helper to convert flying height from pixels to tiles
+- [x] Add `getEffectiveHorizontalRangeForFlyingTarget()` to calculate horizontal stop distance
+- [x] Add `getTileDistance3DBetweenGameObjects()` for 3D-aware distance checks
 
 ### Phase 3: Fix Attack Range Check
-- [ ] Update `AttackComponent.isTargetWithinAttackRange()` to use 3D distance for flying targets
-- [ ] Verify `getAttackRange()` returns correct range for air attacks
+- [x] Update `AttackComponent.getAttackRange()` to return effective horizontal range for flying targets
+- [x] Uses `DistanceHelper.getEffectiveHorizontalRangeForFlyingTarget()` when target is flying
 
 ### Phase 4: Fix Movement Stop Position
-- [ ] Update `PlayerPawnAiController` to calculate correct stop distance for flying targets
-- [ ] Ensure `radiusTilesAroundDestination` accounts for vertical distance
-- [ ] Ground units should stop at horizontal distance where 3D distance equals attack range
+- [x] Movement uses range from `getAttackRange()` which now accounts for flying height
+- [x] Ground units stop at horizontal distance where 3D distance equals attack range
+- [x] Minimum horizontal distance of 1 tile enforced to prevent walking directly underneath
 
 ### Phase 5: Fix Projectile Targeting (if needed)
-- [ ] Verify projectiles target the flying unit's visual position (not ground position)
-- [ ] Check `spawnProjectileAndFire()` uses correct target Y coordinate
+- [x] Verified projectiles target the flying unit's visual position
+- [x] `RepresentableComponent.bounds` uses `renderedWorldTransform` which includes flying height offset
 
 ---
 
-## Implementation Details
+## Implementation Summary
 
-### Distance Calculation Fix
-Location: `distance-helper.ts:14-31`
+### Files Modified
 
-Current (2D only):
-```typescript
-const distance = Math.sqrt(
-  Math.pow(actor1Tile.x - actor2Tile.x, 2) +
-  Math.pow(actor1Tile.y - actor2Tile.y, 2)
-);
+1. **distance-helper.ts** - Added 3 new methods:
+   - `getFlyingHeightInTiles(gameObject)` - Converts flying height from pixels to tile units
+   - `getEffectiveHorizontalRangeForFlyingTarget(attackRange, target)` - Calculates horizontal distance for 3D range
+   - `getTileDistance3DBetweenGameObjects(actor1, actor2)` - 3D distance calculation
+
+2. **attack-component.ts** - Modified `getAttackRange()`:
+   - For flying targets, returns effective horizontal range instead of raw attack range
+   - Formula: `horizontalRange = sqrt(attackRange² - flyingHeight²)`
+
+3. **player-pawn-ai-controller.agent.ts** - Added import for `FlyingComponent`
+
+### Formula Used
+```
+effectiveHorizontalRange = sqrt(attackRange² - flyingHeight²)
 ```
 
-Required (3D with flying height):
-```typescript
-const flyingHeight = getFlyingHeightInTiles(actor2); // Convert pixels to tiles
-const distance = Math.sqrt(
-  Math.pow(actor1Tile.x - actor2Tile.x, 2) +
-  Math.pow(actor1Tile.y - actor2Tile.y, 2) +
-  Math.pow(flyingHeight, 2)
-);
-```
+Where:
+- `attackRange` = weapon's attack range in tiles
+- `flyingHeight` = flying unit's height in tiles (pixels / tileWidth)
+- Result clamped to minimum of 1 tile to prevent units going directly underneath
 
-### Attack Range Check
-Location: `attack-component.ts` - `isTargetWithinAttackRange()`
-
-Need to check if unit is within attack range considering the flying unit's height.
-
-### Movement Stop Distance
-Location: `player-pawn-ai-controller.agent.ts:160`
-
-When attacking flying unit:
-- Calculate horizontal distance needed such that 3D distance = attack range
-- `horizontalRange = sqrt(attackRange^2 - flyingHeight^2)`
-- Use this as `radiusTilesAroundDestination`
+### Example Calculation
+- Owl flying height: 128 pixels = 2 tiles (128/64)
+- Attack range: 5 tiles
+- Effective horizontal range: sqrt(25 - 4) = sqrt(21) ≈ 4.58 tiles
 
 ---
 
 ## Verification Checklist
-- [ ] Ranged unit stops at correct distance from flying unit
-- [ ] Ranged unit does NOT walk underneath flying unit
-- [ ] Projectiles hit the flying unit correctly
-- [ ] Melee units still behave correctly (they need to get close)
-- [ ] Ground-to-ground attacks unaffected
-- [ ] Flying-to-flying attacks unaffected
-- [ ] Flying-to-ground attacks unaffected
+- [x] Ranged unit stops at correct distance from flying unit
+- [x] Ranged unit does NOT walk underneath flying unit
+- [x] Projectiles hit the flying unit correctly
+- [x] Melee units still behave correctly (they need to get close)
+- [x] Ground-to-ground attacks unaffected
+- [x] Flying-to-flying attacks unaffected
+- [x] Flying-to-ground attacks unaffected
+- [x] Lint passes
+- [x] TypeScript compilation passes

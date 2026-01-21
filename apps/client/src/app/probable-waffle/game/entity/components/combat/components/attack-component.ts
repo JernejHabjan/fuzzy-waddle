@@ -388,8 +388,10 @@ export class AttackComponent {
   }
 
   /**
-   * Returns the optimal attack range for a specific target
-   * This is useful for AI to position units at the right distance
+   * Returns the optimal attack range for a specific target.
+   * For flying targets, returns the effective horizontal range needed so that
+   * the 3D distance (including vertical height) equals the attack range.
+   * This is useful for AI to position units at the right distance.
    */
   getAttackRange(targetGameObject: GameObject): number | undefined {
     if (!targetGameObject) return undefined;
@@ -412,8 +414,15 @@ export class AttackComponent {
       return b.range - a.range;
     });
 
-    // Return the range of the best attack
-    return availableAttacks[0]!.range;
+    const attackRange = availableAttacks[0]!.range;
+
+    // For flying targets, calculate the effective horizontal range
+    // so that ground units stop at the correct distance
+    if (isFlying) {
+      return DistanceHelper.getEffectiveHorizontalRangeForFlyingTargetInTiles(attackRange, targetGameObject);
+    }
+
+    return attackRange;
   }
 
   setData(data: Partial<AttackComponentData>) {
