@@ -173,7 +173,7 @@ AOE spell system supporting: damage, stun, slow, healing, persistent zones, and 
 ## Phase 3: Spell System
 
 ### 3.1 Spell Types & Data
-- [ ] Create `apps/client/src/app/probable-waffle/game/entity/components/combat/spell-type.ts`
+- [x] Create `apps/client/src/app/probable-waffle/game/entity/components/combat/spell-type.ts`
   ```typescript
   enum SpellType {
     // Damage spells
@@ -191,7 +191,7 @@ AOE spell system supporting: damage, stun, slow, healing, persistent zones, and 
     HealingTotem = 'healingTotem', // Spawns healing totem prefab
   }
   ```
-- [ ] Create `apps/client/src/app/probable-waffle/game/entity/components/combat/spell-data.ts`
+- [x] Create `apps/client/src/app/probable-waffle/game/entity/components/combat/spell-data.ts`
   ```typescript
   // Spell target type
   enum SpellTargetType {
@@ -260,23 +260,23 @@ AOE spell system supporting: damage, stun, slow, healing, persistent zones, and 
   ```
 
 ### 3.2 SpellComponent (New)
-- [ ] Create `apps/client/src/app/probable-waffle/game/entity/components/combat/components/spell-component.ts`
-  - [ ] `availableSpells: SpellType[]` - which spells this actor can cast
-  - [ ] `spellCooldowns: Map<SpellType, number>` - remaining cooldown per spell
-  - [ ] `autocastEnabled: Map<SpellType, boolean>` - autocast state per spell (**default: true** when spell unlocked)
-  - [ ] `canCastSpell(type: SpellType): boolean` - checks cooldown
-  - [ ] `isSpellResearched(type: SpellType): boolean` - checks tech tree
-  - [ ] `isAutocastEnabled(type: SpellType): boolean`
-  - [ ] `setAutocast(type: SpellType, enabled: boolean)`
-  - [ ] `toggleAutocast(type: SpellType)` - for UI toggle
-  - [ ] `startCooldown(type: SpellType)`
-  - [ ] `getCooldownRemaining(type: SpellType): number`
-  - [ ] `getCooldownProgress(type: SpellType): number` - 0-100% for UI
-  - [ ] `update(delta: number)` - tick down cooldowns
-  - [ ] `getData()` / `setData()` for save/load (cooldown state + autocast state)
+- [x] Create `apps/client/src/app/probable-waffle/game/entity/components/combat/components/spell-component.ts`
+  - [x] `availableSpells: SpellType[]` - which spells this actor can cast
+  - [x] `spellCooldowns: Map<SpellType, number>` - remaining cooldown per spell
+  - [x] `autocastEnabled: Map<SpellType, boolean>` - autocast state per spell (**default: true** when spell unlocked)
+  - [x] `canCastSpell(type: SpellType): boolean` - checks cooldown
+  - [x] `isSpellResearched(type: SpellType): boolean` - checks tech tree
+  - [x] `isAutocastEnabled(type: SpellType): boolean`
+  - [x] `setAutocast(type: SpellType, enabled: boolean)`
+  - [x] `toggleAutocast(type: SpellType)` - for UI toggle
+  - [x] `startCooldown(type: SpellType)`
+  - [x] `getCooldownRemaining(type: SpellType): number`
+  - [x] `getCooldownProgress(type: SpellType): number` - 0-100% for UI
+  - [x] `update(delta: number)` - tick down cooldowns
+  - [x] `getData()` / `setData()` for save/load (cooldown state + autocast state)
 
 ### 3.3 Spell Definitions
-- [ ] Create `apps/client/src/app/probable-waffle/game/entity/components/combat/spell-definitions.ts`
+- [x] Create `apps/client/src/app/probable-waffle/game/entity/components/combat/spell-definitions.ts`
   ```typescript
   export const spellDefinitions: Record<SpellType, SpellData> = {
 

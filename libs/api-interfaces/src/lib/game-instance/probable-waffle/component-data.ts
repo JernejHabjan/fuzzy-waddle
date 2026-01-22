@@ -92,3 +92,8 @@ export interface HousingComponentData {
 export interface StatusEffectComponentData {
   activeEffects?: import('../../probable-waffle/status-effect').StatusEffectData[];
 }
+
+export interface SpellComponentData {
+  cooldowns?: Record<string, number>; // spellType -> remaining cooldown
+  autocastEnabled?: Record<string, boolean>; // spellType -> enabled
+}
