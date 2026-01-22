@@ -43,6 +43,10 @@ import { ProductionInvalidReason } from "../../../data/tech-tree/production-inva
 import type { ProductionValidationResult } from "../../../data/tech-tree/production-validation-result";
 import { AssignProductionErrorCode } from "../../../entity/components/production/assign-production-error-code";
 import type { ActorActionSetup } from "./actor-action-setup";
+import { SpellComponent } from "../../../entity/components/combat/components/spell-component";
+import { spellDefinitions } from "../../../entity/components/combat/spell-definitions";
+import { SpellCursor } from "../../../player/human-controller/spell-cursor";
+import type { SpellType } from "../../../entity/components/combat/spell-type";
 /* END-USER-IMPORTS */
 
 export default class ActorActions extends Phaser.GameObjects.Container {
@@ -542,6 +546,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       index = this.showMoveIcons(actor, allActors, index);
       index = this.showRallyPointIcon(actor, allActors, index);
       index = this.showHealIcons(actor, allActors, index);
+      index = this.showSpellIcons(actor, allActors, index);
       index = this.showGatherIcons(actor, allActors, index);
       index = this.showProductionIcons(actor, allActors, index);
       index = this.showBuilderIcons(actor, allActors, index);
@@ -627,6 +632,63 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       action.setup(this.healAction(allActors));
       index++;
     }
+    return index;
+  }
+
+  private showSpellIcons(
+    actor: Phaser.GameObjects.GameObject,
+    allActors: Phaser.GameObjects.GameObject[],
+    index: number
+  ): number {
+    const spellComponent = getActorComponent(actor, SpellComponent);
+    if (!spellComponent) return index;
+
+    const spellCursor = getSceneService(this.mainSceneWithActors, SpellCursor);
+
+    for (const spellType of spellComponent.availableSpells) {
+      const spellData = spellDefinitions[spellType];
+      if (!spellData) continue;
+
+      const action = this.actor_actions[index];
+      if (!action) {
+        console.error("Action button not found at index", index);
+        return index;
+      }
+
+      const isResearched = spellComponent.isSpellResearched(spellType);
+      const canCast = spellComponent.canCastSpell(spellType);
+      const cooldownProgress = spellComponent.getCooldownProgress(spellType);
+
+      action.setup({
+        icon: {
+          key: spellData.icon.key,
+          frame: spellData.icon.frame,
+          origin: { x: 0.5, y: 0.5 }
+        },
+        visible: true,
+        disabled: !isResearched || !canCast,
+        cooldownProgress: cooldownProgress < 100 ? cooldownProgress : undefined,
+        action: () => {
+          if (!canCast) return;
+          // Activate spell cursor for ground-target spells
+          if (spellCursor) {
+            spellCursor.startCastingSpell.emit(spellType);
+          }
+        },
+        tooltipInfo: {
+          title: spellData.name,
+          description: !isResearched
+            ? `Requires: ${spellData.requiresResearch} research`
+            : spellData.description,
+          iconKey: spellData.icon.key,
+          iconFrame: spellData.icon.frame,
+          iconOrigin: { x: 0.5, y: 0.5 }
+        },
+        shortcut: spellData.shortcut
+      } satisfies ActorActionSetup);
+      index++;
+    }
+
     return index;
   }
 

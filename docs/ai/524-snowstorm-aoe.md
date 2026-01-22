@@ -522,16 +522,16 @@ AOE spell system supporting: damage, stun, slow, healing, persistent zones, and 
 ## Phase 7: Actor Actions Integration
 
 ### 7.1 Spell Action Button in ActorActions
-- [ ] Modify `apps/client/src/app/probable-waffle/game/prefabs/gui/buttons/ActorActions.ts`
-  - [ ] Add `showSpellIcons()` method similar to `showProductionIcons()`
-  - [ ] Show spell icon when magician selected (**always visible from spawn**)
-  - [ ] States:
-    - [ ] **Not researched**: Gray out icon, tooltip "Requires: Snowstorm research at Infantry Inn"
-    - [ ] **Researched, on cooldown**: Show cooldown overlay (sweeping clock), tooltip shows remaining time
-    - [ ] **Researched, ready**: Full color, clickable
-  - [ ] Left-click: activate SpellCursor for manual targeting
-  - [ ] Right-click: toggle autocast on/off
-  - [ ] Tooltip shows: name, description, cooldown, damage, AOE radius, shortcut
+- [x] Modify `apps/client/src/app/probable-waffle/game/prefabs/gui/buttons/ActorActions.ts`
+  - [x] Add `showSpellIcons()` method similar to `showProductionIcons()`
+  - [x] Show spell icon when magician selected (**always visible from spawn**)
+  - [x] States:
+    - [x] **Not researched**: Gray out icon, tooltip "Requires: Snowstorm research at Infantry Inn"
+    - [x] **Researched, on cooldown**: Show cooldown overlay (sweeping clock), tooltip shows remaining time
+    - [x] **Researched, ready**: Full color, clickable
+  - [x] Left-click: activate SpellCursor for manual targeting
+  - [ ] Right-click: toggle autocast on/off - **TODO**
+  - [x] Tooltip shows: name, description, shortcut
 
 ### 7.2 Autocast Indicator
 - [ ] Add autocast visual indicator to spell button
