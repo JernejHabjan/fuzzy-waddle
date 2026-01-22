@@ -8,7 +8,7 @@ AOE spell system supporting: damage, stun, slow, healing, persistent zones, and 
 ## Phase 1: Core Infrastructure
 
 ### 1.1 Status Effect Data (New)
-- [ ] Create `libs/api-interfaces/src/lib/probable-waffle/status-effect/status-effect-type.ts`
+- [x] Create `libs/api-interfaces/src/lib/probable-waffle/status-effect/status-effect-type.ts`
   ```typescript
   enum StatusEffectType {
     Stunned = 'stunned',      // Cannot move, attack, or use abilities
@@ -19,7 +19,7 @@ AOE spell system supporting: damage, stun, slow, healing, persistent zones, and 
     Regenerating = 'regenerating'  // Heal over time
   }
   ```
-- [ ] Create `libs/api-interfaces/src/lib/probable-waffle/status-effect/status-effect-data.ts`
+- [x] Create `libs/api-interfaces/src/lib/probable-waffle/status-effect/status-effect-data.ts`
   ```typescript
   interface StatusEffectData {
     type: StatusEffectType;
@@ -36,7 +36,7 @@ AOE spell system supporting: damage, stun, slow, healing, persistent zones, and 
     tintColor?: number;            // visual tint (0x6666FF for frost, 0xFF6600 for fire)
   }
   ```
-- [ ] Export from `libs/api-interfaces/src/lib/probable-waffle/index.ts`
+- [x] Export from `libs/api-interfaces/src/lib/probable-waffle/index.ts`
 
 ### 1.2 StatusEffectComponent (New)
 - [ ] Create `apps/client/src/app/probable-waffle/game/entity/components/status-effect/status-effect-component.ts`
