@@ -47,6 +47,9 @@ import { SpellComponent } from "../../../entity/components/combat/components/spe
 import { spellDefinitions } from "../../../entity/components/combat/spell-definitions";
 import { SpellCursor } from "../../../player/human-controller/spell-cursor";
 import type { SpellType } from "../../../entity/components/combat/spell-type";
+import { ResearchComponent } from "../../../entity/components/research/research-component";
+import { researchDefinitions } from "../../../entity/components/research/research-definitions";
+import type { ResearchType } from "../../../entity/components/research/research-type";
 /* END-USER-IMPORTS */
 
 export default class ActorActions extends Phaser.GameObjects.Container {
@@ -549,6 +552,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       index = this.showSpellIcons(actor, allActors, index);
       index = this.showGatherIcons(actor, allActors, index);
       index = this.showProductionIcons(actor, allActors, index);
+      index = this.showResearchIcons(actor, allActors, index);
       index = this.showBuilderIcons(actor, allActors, index);
       // Always show delete button at the bottom-right position
       this.showDeleteIcon(actor, allActors, index);
@@ -809,6 +813,85 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         index++;
       });
     }
+    return index;
+  }
+
+  private showResearchIcons(
+    actor: Phaser.GameObjects.GameObject,
+    _allActors: Phaser.GameObjects.GameObject[],
+    index: number
+  ): number {
+    const researchComponent = getActorComponent(actor, ResearchComponent);
+    if (!researchComponent || !researchComponent.isFinished) return index;
+
+    const currentPlayerNr = getCurrentPlayerNumber(this.mainSceneWithActors);
+    const player = getPlayer(this.mainSceneWithActors, currentPlayerNr);
+
+    for (const researchType of researchComponent.availableResearch) {
+      const researchData = researchDefinitions[researchType];
+      if (!researchData) continue;
+
+      const action = this.actor_actions[index];
+      if (!action) {
+        console.error("Action button not found at index", index);
+        return index;
+      }
+
+      const isAlreadyResearched = researchComponent.isResearched(researchType);
+      const isCurrentlyResearching = researchComponent.currentResearchType === researchType;
+      const { canStart, reason } = researchComponent.canStartResearch(researchType);
+      const progress = researchComponent.getResearchProgress(researchType);
+
+      // Skip already researched items
+      if (isAlreadyResearched) continue;
+
+      // Check if player can afford
+      const canAfford = player?.canPayAllResources(researchData.cost) ?? false;
+
+      let description = researchData.description;
+      if (!canAfford && !isCurrentlyResearching) {
+        description = 'Not enough resources';
+      } else if (reason) {
+        description = reason;
+      }
+
+      action.setup({
+        icon: {
+          key: researchData.icon.key,
+          frame: researchData.icon.frame,
+          origin: { x: 0.5, y: 0.5 }
+        },
+        visible: true,
+        disabled: !canStart && !isCurrentlyResearching,
+        cooldownProgress: isCurrentlyResearching ? progress : undefined,
+        action: () => {
+          if (isCurrentlyResearching) {
+            // Cancel research
+            researchComponent.cancelResearch();
+            this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.BUTTON_CLICK);
+          } else if (canStart) {
+            // Start research
+            const success = researchComponent.startResearch(researchType);
+            if (success) {
+              this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.BUTTON_CLICK);
+            } else {
+              this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.NOT_ENOUGH_RESOURCES);
+            }
+          } else if (!canAfford) {
+            this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.NOT_ENOUGH_RESOURCES);
+          }
+        },
+        tooltipInfo: {
+          title: researchData.name + (isCurrentlyResearching ? ' (Click to cancel)' : ''),
+          description,
+          iconKey: researchData.icon.key,
+          iconFrame: researchData.icon.frame,
+          iconOrigin: { x: 0.5, y: 0.5 }
+        }
+      } satisfies ActorActionSetup);
+      index++;
+    }
+
     return index;
   }
 

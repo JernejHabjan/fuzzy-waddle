@@ -614,7 +614,7 @@ AOE spell system supporting: damage, stun, slow, healing, persistent zones, and 
     availableResearch: [ResearchType.SnowstormSpell]
   }
   ```
-- [ ] Add research button to building's ActorActions UI
+- [x] Add research button to building's ActorActions UI
 
 ### 8.5 Research Definitions
 - [x] Create `apps/client/src/app/probable-waffle/game/entity/components/research/research-definitions.ts`
@@ -690,22 +690,22 @@ AOE spell system supporting: damage, stun, slow, healing, persistent zones, and 
   ```
 
 ### 8.6 Research UI in ActorActions
-- [ ] Modify `apps/client/src/app/probable-waffle/game/prefabs/gui/buttons/ActorActions.ts`
-  - [ ] Add `showResearchIcons()` method similar to `showProductionIcons()`
-  - [ ] Show research icons when building with `ResearchComponent` is selected
-  - [ ] States:
-    - [ ] **Already researched**: Hide icon OR show grayed out with checkmark
-    - [ ] **In progress**: Show progress bar overlay, tooltip shows remaining time
-    - [ ] **Available**: Full color, clickable to start research
-    - [ ] **Cannot afford**: Grayed out, tooltip shows missing resources
-  - [ ] Click: start research via `ResearchComponent.startResearch()`
-  - [ ] Right-click: cancel research in progress (with refund)
-  - [ ] Research progress bar shown similar to production progress
+- [x] Modify `apps/client/src/app/probable-waffle/game/prefabs/gui/buttons/ActorActions.ts`
+  - [x] Add `showResearchIcons()` method similar to `showProductionIcons()`
+  - [x] Show research icons when building with `ResearchComponent` is selected
+  - [x] States:
+    - [x] **Already researched**: Hide icon OR show grayed out with checkmark
+    - [x] **In progress**: Show progress bar overlay, tooltip shows remaining time
+    - [x] **Available**: Full color, clickable to start research
+    - [x] **Cannot afford**: Grayed out, tooltip shows missing resources
+  - [x] Click: start research via `ResearchComponent.startResearch()`
+  - [x] Right-click: cancel research in progress (with refund)
+  - [x] Research progress bar shown similar to production progress
 
 ### 8.7 Research Progress UI
-- [ ] Show research progress in building info panel (similar to production queue)
-- [ ] Progress bar with research icon and percentage
-- [ ] Cancel button to abort research
+- [x] Show research progress in building info panel (similar to production queue)
+- [x] Progress bar with research icon and percentage
+- [x] Cancel button to abort research
 
 ---
 
