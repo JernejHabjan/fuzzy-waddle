@@ -64,12 +64,12 @@ AOE spell system supporting: damage, stun, slow, healing, persistent zones, and 
   - [x] Support multiple effect bars (stacked vertically)
 
 ### 1.4 StatusEffectVisualComponent (New)
-- [ ] Create `apps/client/src/app/probable-waffle/game/entity/components/status-effect/status-effect-visual-component.ts`
-  - [ ] Apply tint to game object (0x6666FF for frost, 0xFF6600 for fire, 0x00FF00 for heal)
-  - [ ] Pause animation when stunned
-  - [ ] Store original tint/animation state for restoration
-  - [ ] **Future hook**: `attachParticleEffect(effectName)` - placeholder for ice crystals at feet
-  - [ ] Restore original state on effect removal
+- [x] Create `apps/client/src/app/probable-waffle/game/entity/components/status-effect/status-effect-visual-component.ts`
+  - [x] Apply tint to game object (0x6666FF for frost, 0xFF6600 for fire, 0x00FF00 for heal)
+  - [x] Pause animation when stunned
+  - [x] Store original tint/animation state for restoration
+  - [x] **Future hook**: `attachParticleEffect(effectName)` - placeholder for ice crystals at feet
+  - [x] Restore original state on effect removal
 
 ### 1.5 Movement Speed Integration
 - [ ] Modify `apps/client/src/app/probable-waffle/game/entity/components/movement/actor-translate-component.ts`
