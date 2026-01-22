@@ -460,14 +460,14 @@ AOE spell system supporting: damage, stun, slow, healing, persistent zones, and 
 ## Phase 4: Projectile & Visual Effects
 
 ### 4.1 Snowstorm Projectile
-- [ ] Add `SnowstormProjectile` to `apps/client/src/app/probable-waffle/game/entity/components/combat/projectile-type.ts`
-- [ ] Create projectile sprite/animation asset (can reuse frost bolt initially)
-- [ ] Projectile travels from caster to target position (not a specific actor)
+- [x] Add `SnowstormProjectile` to `apps/client/src/app/probable-waffle/game/entity/components/combat/projectile-type.ts`
+- [ ] Create projectile sprite/animation asset (can reuse frost bolt initially) - **ASSET NEEDED**
+- [x] Projectile travels from caster to target position (not a specific actor) - defined in spell-definitions.ts
 
 ### 4.2 Impact Visual
-- [ ] Create snowstorm impact animation in `apps/client/src/app/probable-waffle/game/animations/`
-- [ ] Circle of frost/snowflakes at impact location
-- [ ] Duration matches spell cast time
+- [ ] Create snowstorm impact animation in `apps/client/src/app/probable-waffle/game/animations/` - **ASSET NEEDED**
+- [ ] Circle of frost/snowflakes at impact location - **ASSET NEEDED**
+- [ ] Duration matches spell cast time - **ASSET NEEDED**
 
 ---
 
