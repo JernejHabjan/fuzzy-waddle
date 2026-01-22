@@ -88,3 +88,7 @@ export interface BackboardComponentData {
 export interface HousingComponentData {
   housingProvided?: boolean;
 }
+
+export interface StatusEffectComponentData {
+  activeEffects?: import('../../probable-waffle/status-effect').StatusEffectData[];
+}

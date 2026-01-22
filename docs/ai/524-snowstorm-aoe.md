@@ -39,20 +39,20 @@ AOE spell system supporting: damage, stun, slow, healing, persistent zones, and 
 - [x] Export from `libs/api-interfaces/src/lib/probable-waffle/index.ts`
 
 ### 1.2 StatusEffectComponent (New)
-- [ ] Create `apps/client/src/app/probable-waffle/game/entity/components/status-effect/status-effect-component.ts`
-  - [ ] `activeEffects: StatusEffectData[]` array
-  - [ ] `applyEffect(effect: StatusEffectData)` method
-  - [ ] `removeEffect(type: StatusEffectType)` method
-  - [ ] `hasEffect(type: StatusEffectType): boolean` method
-  - [ ] `isStunned(): boolean` - returns true if Stunned or Frozen effect active
-  - [ ] `isSlowed(): boolean` - returns true if Slowed effect active
-  - [ ] `getMovementSpeedModifier(): number` - returns combined modifier (default 1.0)
-  - [ ] `update(delta: number)` - tick down durations, apply DoT/HoT
-    - [ ] Apply damage via `HealthComponent.takeDamage()`
-    - [ ] Apply healing via `HealthComponent.heal()`
-  - [ ] **IMPORTANT**: DoT/HoT still applies even when stunned (units can die while stunned)
-  - [ ] `getData()` / `setData()` for save/load
-  - [ ] Event emitters: `effectApplied`, `effectRemoved`, `effectTick`
+- [x] Create `apps/client/src/app/probable-waffle/game/entity/components/status-effect/status-effect-component.ts`
+  - [x] `activeEffects: StatusEffectData[]` array
+  - [x] `applyEffect(effect: StatusEffectData)` method
+  - [x] `removeEffect(type: StatusEffectType)` method
+  - [x] `hasEffect(type: StatusEffectType): boolean` method
+  - [x] `isStunned(): boolean` - returns true if Stunned or Frozen effect active
+  - [x] `isSlowed(): boolean` - returns true if Slowed effect active
+  - [x] `getMovementSpeedModifier(): number` - returns combined modifier (default 1.0)
+  - [x] `update(delta: number)` - tick down durations, apply DoT/HoT
+    - [x] Apply damage via `HealthComponent.takeDamage()`
+    - [x] Apply healing via `HealthComponent.heal()`
+  - [x] **IMPORTANT**: DoT/HoT still applies even when stunned (units can die while stunned)
+  - [x] `getData()` / `setData()` for save/load
+  - [x] Event emitters: `effectApplied`, `effectRemoved`, `effectTick`
 
 ### 1.3 StatusEffectUiComponent (New)
 - [ ] Create `apps/client/src/app/probable-waffle/game/entity/components/status-effect/status-effect-ui-component.ts`
