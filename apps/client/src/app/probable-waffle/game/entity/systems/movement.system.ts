@@ -33,6 +33,7 @@ import { AnimationActorComponent } from "../components/animation/animation-actor
 import { FlyingComponent } from "../components/movement/flying-component";
 import { RepresentableComponent } from "../components/representable-component";
 import { IdComponent } from "../components/id-component";
+import { StatusEffectComponent } from "../components/status-effect/status-effect-component";
 import { getTileCoordsUnderObject } from "../../library/tile-under-object";
 import { TilemapComponent } from "../../world/tilemap/tilemap.component";
 import type { IsoDirection } from "../components/movement/iso-directions";
@@ -51,6 +52,7 @@ export class MovementSystem {
   private audioService: AudioService | undefined;
   private audioActorComponent: AudioActorComponent | undefined;
   private animationActorComponent?: AnimationActorComponent;
+  private statusEffectComponent?: StatusEffectComponent;
   private shiftKey: Phaser.Input.Keyboard.Key | undefined;
   private targetGameObject?: GameObject;
 
@@ -63,6 +65,7 @@ export class MovementSystem {
   private init() {
     this.actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
     this.animationActorComponent = getActorComponent(this.gameObject, AnimationActorComponent);
+    this.statusEffectComponent = getActorComponent(this.gameObject, StatusEffectComponent);
     this.audioService = getSceneService(this.gameObject.scene, AudioService);
     this.audioActorComponent = getActorComponent(this.gameObject, AudioActorComponent);
     this.tileMapComponent = getSceneComponent(this.gameObject.scene, TilemapComponent)!;
@@ -511,11 +514,23 @@ export class MovementSystem {
     standardStepDistance: number,
     tileDistanceMultiplier: number = 1
   ): number {
+    let duration: number;
     if (standardStepDistance > 0) {
       const dist = Phaser.Math.Distance.Between(from.x, from.y, to.x, to.y);
-      return (dist / standardStepDistance) * baseDuration;
+      duration = (dist / standardStepDistance) * baseDuration;
+    } else {
+      duration = Math.max(baseDuration * tileDistanceMultiplier, baseDuration);
     }
-    return Math.max(baseDuration * tileDistanceMultiplier, baseDuration);
+
+    // Apply movement speed modifier from status effects (slow effects)
+    const speedModifier = this.statusEffectComponent?.getMovementSpeedModifier() ?? 1.0;
+    // Higher modifier = faster = shorter duration
+    // Lower modifier (e.g., 0.5 for 50% slow) = slower = longer duration
+    if (speedModifier !== 1.0 && speedModifier > 0) {
+      duration = duration / speedModifier;
+    }
+
+    return duration;
   }
 
   private onMovementStart(newTileWorldXY: Vector3Simple, config?: PathMoveConfig | Partial<PathMoveConfig>) {

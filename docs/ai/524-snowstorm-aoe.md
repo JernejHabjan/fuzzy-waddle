@@ -72,10 +72,10 @@ AOE spell system supporting: damage, stun, slow, healing, persistent zones, and 
   - [x] Restore original state on effect removal
 
 ### 1.5 Movement Speed Integration
-- [ ] Modify `apps/client/src/app/probable-waffle/game/entity/components/movement/actor-translate-component.ts`
-  - [ ] Check `StatusEffectComponent.getMovementSpeedModifier()` when calculating move speed
-  - [ ] Apply modifier: `effectiveSpeed = baseSpeed * movementSpeedModifier`
-  - [ ] Handle modifier changes mid-movement
+- [x] Modify `apps/client/src/app/probable-waffle/game/entity/systems/movement.system.ts`
+  - [x] Check `StatusEffectComponent.getMovementSpeedModifier()` when calculating move speed
+  - [x] Apply modifier: `duration = baseDuration / movementSpeedModifier`
+  - [x] Handle modifier changes mid-movement (applied per tween step)
 
 ---
 
