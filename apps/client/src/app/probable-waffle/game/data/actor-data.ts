@@ -40,6 +40,7 @@ import { SceneActorCreator } from "../world/services/scene-actor-creator";
 import { StatusEffectComponent } from "../entity/components/status-effect/status-effect-component";
 import { SpellComponent } from "../entity/components/combat/components/spell-component";
 import { SpellCastingSystem } from "../entity/systems/spell-casting.system";
+import { ResearchComponent } from "../entity/components/research/research-component";
 
 export const ActorDataKey = "actorData";
 export class ActorData {
@@ -92,6 +93,7 @@ function setActorProperties(actor: GameObject, actorDefinition?: Partial<ActorDe
   if (actorDefinition.resourceSource)
     getActorComponent(actor, ResourceSourceComponent)?.setData(actorDefinition.resourceSource);
   if (actorDefinition.production) getActorComponent(actor, ProductionComponent)?.setData(actorDefinition.production);
+  if (actorDefinition.research) getActorComponent(actor, ResearchComponent)?.setData(actorDefinition.research);
   if (actorDefinition.representable)
     getActorComponent(actor, RepresentableComponent)?.setData(actorDefinition.representable);
   if (actorDefinition.blackboard) getActorComponent(actor, PawnAiController)?.setData(actorDefinition.blackboard);
@@ -146,6 +148,7 @@ function gatherConstructingActorData(actor: Phaser.GameObjects.GameObject): { co
       ? [new ConstructionSiteComponent(actor, componentDefinitions.constructable)]
       : []),
     ...(componentDefinitions?.production ? [new ProductionComponent(actor, componentDefinitions.production)] : []),
+    ...(componentDefinitions?.research ? [new ResearchComponent(actor, componentDefinitions.research)] : []),
     ...(componentDefinitions?.selectable ? [new SelectableComponent(actor, componentDefinitions.selectable)] : []),
     ...(componentDefinitions?.health ? [new HealthComponent(actor, componentDefinitions.health)] : []),
     ...(componentDefinitions?.collider ? [new ColliderComponent(actor, componentDefinitions.collider)] : [])

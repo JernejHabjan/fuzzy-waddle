@@ -5,11 +5,14 @@ import { TechTreeBuilder } from "./tech-tree.builder";
 import { getCanonicalActorNameCached } from "./canonical-actor-name";
 import { BuilderComponent } from "../../entity/components/construction/builder-component";
 import { environment } from "../../../../../environments/environment";
+import { ResearchType } from "../../entity/components/research/research-type";
 
 export class TechTreeService {
   private readonly graphs: Record<FactionType, TechTreeGraph>;
   // Per-player unlock tracking (keyed by player number)
   private readonly playerUnlocks = new Map<number, Set<ObjectNames>>();
+  // Per-player research tracking (keyed by player number)
+  private readonly playerResearch = new Map<number, Set<ResearchType>>();
 
   constructor() {
     this.graphs = TechTreeBuilder.build();
@@ -382,5 +385,52 @@ export class TechTreeService {
     });
 
     return errors;
+  }
+
+  // ========== Research Tracking ==========
+
+  /**
+   * Register a research as completed for a player.
+   */
+  registerResearchComplete(playerNumber: number, researchType: ResearchType): void {
+    let research = this.playerResearch.get(playerNumber);
+    if (!research) {
+      research = new Set<ResearchType>();
+      this.playerResearch.set(playerNumber, research);
+    }
+    research.add(researchType);
+  }
+
+  /**
+   * Check if a research has been completed by a player.
+   */
+  isResearched(playerNumber: number, researchType: ResearchType): boolean {
+    const research = this.playerResearch.get(playerNumber);
+    return research ? research.has(researchType) : false;
+  }
+
+  /**
+   * Get all completed research for a player.
+   */
+  getPlayerResearch(playerNumber: number): Set<ResearchType> {
+    return this.playerResearch.get(playerNumber) ?? new Set();
+  }
+
+  /**
+   * Initialize research state for a player from saved data.
+   */
+  setPlayerResearch(playerNumber: number, researchTypes: ResearchType[]): void {
+    this.playerResearch.set(playerNumber, new Set(researchTypes));
+  }
+
+  /**
+   * Get research data for saving.
+   */
+  getResearchData(): Map<number, ResearchType[]> {
+    const data = new Map<number, ResearchType[]>();
+    for (const [playerNumber, research] of this.playerResearch) {
+      data.set(playerNumber, Array.from(research));
+    }
+    return data;
   }
 }

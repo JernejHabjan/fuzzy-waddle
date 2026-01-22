@@ -4,6 +4,7 @@ import { PaymentType } from "../../../../entity/components/production/payment-ty
 import { coreConstructionSiteDefinition } from "../../shared/core-construction-site.definition";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 import { ActorPhysicalType } from "../../../../entity/components/combat/components/actor-physical-type";
+import { ResearchType } from "../../../../entity/components/research/research-type";
 
 export const infantryInnDefinition = {
   components: {
@@ -59,6 +60,9 @@ export const infantryInnDefinition = {
         ObjectNames.SkaduweeRangedFemale,
         ObjectNames.SkaduweeWarriorMale
       ]
+    },
+    research: {
+      availableResearch: [ResearchType.SnowstormSpell]
     },
     selectable: {},
     collider: { enabled: true },

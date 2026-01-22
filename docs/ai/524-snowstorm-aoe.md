@@ -558,7 +558,7 @@ AOE spell system supporting: damage, stun, slow, healing, persistent zones, and 
 ## Phase 8: Research System
 
 ### 8.1 Spell Research Data
-- [ ] Create `apps/client/src/app/probable-waffle/game/entity/components/research/research-type.ts`
+- [x] Create `apps/client/src/app/probable-waffle/game/entity/components/research/research-type.ts`
   ```typescript
   enum ResearchType {
     // Offensive spells
@@ -574,7 +574,7 @@ AOE spell system supporting: damage, stun, slow, healing, persistent zones, and 
     // Future: unit upgrades, armor, damage, etc.
   }
   ```
-- [ ] Create `apps/client/src/app/probable-waffle/game/entity/components/research/research-data.ts`
+- [x] Create `apps/client/src/app/probable-waffle/game/entity/components/research/research-data.ts`
   ```typescript
   interface ResearchData {
     type: ResearchType;
@@ -589,26 +589,26 @@ AOE spell system supporting: damage, stun, slow, healing, persistent zones, and 
   ```
 
 ### 8.2 ResearchComponent (New)
-- [ ] Create `apps/client/src/app/probable-waffle/game/entity/components/research/research-component.ts`
-  - [ ] Similar to `ProductionComponent` but for research
-  - [ ] `availableResearch: ResearchType[]` - what can be researched here
-  - [ ] `researchQueue: ResearchQueueItem[]` - current research queue
-  - [ ] `startResearch(type: ResearchType)` - begin research
-  - [ ] `cancelResearch()` - cancel and refund
-  - [ ] `update(delta)` - progress research
-  - [ ] On complete: register with TechTreeService
-  - [ ] `getData()` / `setData()` for save/load
+- [x] Create `apps/client/src/app/probable-waffle/game/entity/components/research/research-component.ts`
+  - [x] Similar to `ProductionComponent` but for research
+  - [x] `availableResearch: ResearchType[]` - what can be researched here
+  - [x] `researchQueue: ResearchQueueItem[]` - current research queue
+  - [x] `startResearch(type: ResearchType)` - begin research
+  - [x] `cancelResearch()` - cancel and refund
+  - [x] `update(delta)` - progress research
+  - [x] On complete: register with TechTreeService
+  - [x] `getData()` / `setData()` for save/load
 
 ### 8.3 Tech Tree Integration
-- [ ] Add research tracking to `TechTreeService`
-  - [ ] `registerResearchComplete(playerNumber, researchType)`
-  - [ ] `isResearched(playerNumber, researchType): boolean`
-  - [ ] `playerResearch: Map<number, Set<ResearchType>>`
-- [ ] Persist research state in game save
+- [x] Add research tracking to `TechTreeService`
+  - [x] `registerResearchComplete(playerNumber, researchType)`
+  - [x] `isResearched(playerNumber, researchType): boolean`
+  - [x] `playerResearch: Map<number, Set<ResearchType>>`
+- [x] Persist research state in game save
 
 ### 8.4 InfantryInn Update
-- [ ] Modify `apps/client/src/app/probable-waffle/game/prefabs/buildings/skaduwee/InfantryInn/infantry-inn.definition.ts`
-  - [ ] Add `research` component definition
+- [x] Modify `apps/client/src/app/probable-waffle/game/prefabs/buildings/skaduwee/InfantryInn/infantry-inn.definition.ts`
+  - [x] Add `research` component definition
   ```typescript
   research: {
     availableResearch: [ResearchType.SnowstormSpell]
@@ -617,7 +617,7 @@ AOE spell system supporting: damage, stun, slow, healing, persistent zones, and 
 - [ ] Add research button to building's ActorActions UI
 
 ### 8.5 Research Definitions
-- [ ] Create `apps/client/src/app/probable-waffle/game/entity/components/research/research-definitions.ts`
+- [x] Create `apps/client/src/app/probable-waffle/game/entity/components/research/research-definitions.ts`
   ```typescript
   export const researchDefinitions: Record<ResearchType, ResearchData> = {
 

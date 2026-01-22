@@ -18,6 +18,7 @@ import type {
   OwnerComponentData,
   ProductionComponentData,
   RepresentableComponentData,
+  ResearchComponentData,
   ResourceDrainComponentData,
   ResourceSourceComponentData,
   SelectableComponentData,
@@ -71,6 +72,7 @@ export interface ActorDefinition extends Record<string, any> {
   resourceDrain?: Partial<ResourceDrainComponentData>;
   resourceSource?: Partial<ResourceSourceComponentData>;
   production?: Partial<ProductionComponentData>;
+  research?: Partial<ResearchComponentData>;
   translatable?: Partial<ActorTranslateComponentData>;
   walkable?: Partial<WalkableComponentData>;
   representable?: Partial<RepresentableComponentData>;

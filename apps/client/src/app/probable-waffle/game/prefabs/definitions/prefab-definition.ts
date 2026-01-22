@@ -28,6 +28,7 @@ import type { GathererDefinition } from "../../entity/components/resource/gather
 import type { ResourceDrainDefinition } from "../../entity/components/resource/resource-drain-definition";
 import type { ResourceSourceDefinition } from "../../entity/components/resource/resource-source-definition";
 import type { SpellDefinition } from "../../entity/components/combat/spell-definition";
+import type { ResearchDefinition } from "../../entity/components/research/research-component";
 
 export type PrefabDefinition = Partial<{
   components: Partial<{
@@ -52,6 +53,7 @@ export type PrefabDefinition = Partial<{
     production: ProductionDefinition;
     healing: HealingDefinition;
     spell: SpellDefinition;
+    research: ResearchDefinition;
     translatable: ActorTranslateDefinition;
     flying: FlightDefinition;
     animatable: ActorAnimationsDefinition;

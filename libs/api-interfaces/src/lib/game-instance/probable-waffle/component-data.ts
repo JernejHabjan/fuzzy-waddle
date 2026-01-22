@@ -97,3 +97,8 @@ export interface SpellComponentData {
   cooldowns?: Record<string, number>; // spellType -> remaining cooldown
   autocastEnabled?: Record<string, boolean>; // spellType -> enabled
 }
+
+export interface ResearchComponentData {
+  currentResearch?: string; // ResearchType being researched
+  remainingTime?: number; // ms remaining
+}
