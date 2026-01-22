@@ -35,6 +35,11 @@ export interface IPlayerPawnControllerAgent {
   CanHeal(): boolean;
   HasHealerComponent(): boolean;
 
+  // Spell Casting
+  HasSpellComponent(): boolean;
+  HasAutocastSpellReady(): boolean;
+  CastAutocastSpell(): State;
+
   // Resource Gathering
   AcquireNewResourceSource(): Promise<State>;
   AcquireNewResourceDrain(): Promise<State>;

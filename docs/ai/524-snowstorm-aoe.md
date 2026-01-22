@@ -735,19 +735,21 @@ AOE spell system supporting: damage, stun, slow, healing, persistent zones, and 
 ## Phase 10: AI Spell Casting
 
 ### 10.1 AI Spell Manager (New)
-- [ ] Create `apps/client/src/app/probable-waffle/game/player/ai-controller/ai-behavior/spell-manager.ts`
-  - [ ] `shouldCastSpell(caster, spellType): boolean`
-    - [ ] Check: spell researched, not on cooldown, enemies in range
-  - [ ] `findBestSpellTarget(caster, spellType): Vector2 | null`
-    - [ ] Find cluster of enemies for AOE spells
-    - [ ] Prioritize groups over single targets
-  - [ ] `castSpell(caster, spellType, target)`
-    - [ ] Queue `CastSpell` order
+- [x] Create `apps/client/src/app/probable-waffle/game/player/ai-controller/ai-behavior/spell-manager.ts`
+  - [x] `shouldCastSpell(caster, spellType): boolean`
+    - [x] Check: spell researched, not on cooldown, enemies in range
+  - [x] `findBestSpellTarget(caster, spellType): Vector2 | null`
+    - [x] Find cluster of enemies for AOE spells
+    - [x] Prioritize groups over single targets
+  - [x] `castSpell(caster, spellType, target)`
+    - [x] Queue `CastSpell` order
+
+Note: AI spell casting implemented directly in player-pawn-ai-controller.agent.ts via HasAutocastSpellReady(), CastAutocastSpell() methods, integrated with behavior tree autocast logic.
 
 ### 10.2 Behavior Tree Integration
-- [ ] Add spell casting consideration to combat AI
-- [ ] Location: `apps/client/src/app/probable-waffle/game/entity/ai/` behavior trees
-- [ ] Priority: cast AOE spell if multiple enemies clustered > regular attack
+- [x] Add spell casting consideration to combat AI
+- [x] Location: `apps/client/src/app/probable-waffle/game/prefabs/ai-agents/player-pawn-ai-controller.mdsl.ts`
+- [x] Priority: cast AOE spell if multiple enemies clustered > regular attack
 
 ### 10.3 AI Research Manager
 - [ ] Add spell research to `tech-progress-manager.ts`

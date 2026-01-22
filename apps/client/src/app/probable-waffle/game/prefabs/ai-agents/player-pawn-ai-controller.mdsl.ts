@@ -61,6 +61,13 @@ root [ExecuteCurrentOrder] {
 root [AutoAssignNewOrder] {
     selector {
 
+        /* Autocast spells when ready */
+        sequence {
+            condition [HasSpellComponent]
+            condition [HasAutocastSpellReady]
+            action [CastAutocastSpell]
+        }
+
         /* Retaliation */
         sequence {
             condition [Attacked]
