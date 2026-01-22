@@ -474,22 +474,22 @@ AOE spell system supporting: damage, stun, slow, healing, persistent zones, and 
 ## Phase 5: Spell Casting System
 
 ### 5.1 SpellCastingSystem (New)
-- [ ] Create `apps/client/src/app/probable-waffle/game/entity/systems/spell-casting.system.ts`
-  - [ ] `castSpell(caster: GameObject, spellType: SpellType, targetPosition: Vector2)`
-  - [ ] Validate: range, cooldown, spell researched
-  - [ ] Play cast animation on caster
-  - [ ] Spawn projectile toward target position
-  - [ ] On projectile impact:
-    - [ ] Find actors in AOE radius using existing actor query methods
-    - [ ] Filter: enemy units, alive, ground/air based on spell
-    - [ ] Apply `StatusEffectData` to each via `StatusEffectComponent`
-    - [ ] Apply instant damage via `HealthComponent.takeDamage()`
-    - [ ] Play impact sound and animation
-  - [ ] Start cooldown on caster's `SpellComponent`
+- [x] Create `apps/client/src/app/probable-waffle/game/entity/systems/spell-casting.system.ts`
+  - [x] `castSpell(caster: GameObject, spellType: SpellType, targetPosition: Vector2)`
+  - [x] Validate: range, cooldown, spell researched
+  - [x] Play cast animation on caster
+  - [x] Spawn projectile toward target position
+  - [x] On projectile impact:
+    - [x] Find actors in AOE radius using existing actor query methods
+    - [x] Filter: enemy units, alive, ground/air based on spell
+    - [x] Apply `StatusEffectData` to each via `StatusEffectComponent`
+    - [x] Apply instant damage via `HealthComponent.takeDamage()`
+    - [x] Play impact sound and animation (placeholder)
+  - [x] Start cooldown on caster's `SpellComponent`
 
 ### 5.2 Projectile System Update
-- [ ] Modify projectile system to support ground-target projectiles (not just actor-target)
-- [ ] On impact at position, trigger AOE effect callback
+- [x] Modify projectile system to support ground-target projectiles (not just actor-target)
+- [x] On impact at position, trigger AOE effect callback
 
 ---
 
