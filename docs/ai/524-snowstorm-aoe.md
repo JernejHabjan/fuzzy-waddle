@@ -498,20 +498,20 @@ AOE spell system supporting: damage, stun, slow, healing, persistent zones, and 
 ## Phase 6: Spell Cursor (UI)
 
 ### 6.1 SpellCursor Class (New)
-- [ ] Create `apps/client/src/app/probable-waffle/game/player/human-controller/spell-cursor.ts`
-  - [ ] Similar pattern to `BuildingCursor`
-  - [ ] `activate(spellType: SpellType, casters: GameObject[])` - shows cursor with AOE radius
-  - [ ] `deactivate()` - hides cursor
-  - [ ] Draw AOE radius circle (tinted based on spell - blue for frost)
-  - [ ] Follow mouse position
-  - [ ] Show range circle from nearest valid caster
-  - [ ] Visual feedback: green circle if in range, red if out of range
-  - [ ] Handle click to cast
-  - [ ] Handle Shift+click for multi-cast:
-    - [ ] Cast spell from one available caster
-    - [ ] Keep cursor active for next cast
-    - [ ] Skip casters on cooldown
-  - [ ] ESC or right-click to cancel
+- [x] Create `apps/client/src/app/probable-waffle/game/player/human-controller/spell-cursor.ts`
+  - [x] Similar pattern to `BuildingCursor`
+  - [x] `activate(spellType: SpellType)` - shows cursor with AOE radius
+  - [x] `deactivate()` - hides cursor
+  - [x] Draw AOE radius circle (tinted based on spell - blue for frost)
+  - [x] Follow mouse position
+  - [ ] Show range circle from nearest valid caster - **TODO**
+  - [x] Visual feedback: green circle if in range, red if out of range
+  - [x] Handle click to cast
+  - [x] Handle Shift+click for multi-cast:
+    - [x] Cast spell from one available caster
+    - [x] Keep cursor active for next cast
+    - [x] Skip casters on cooldown
+  - [x] ESC to cancel
 
 ### 6.2 Input Integration
 - [ ] Register spell shortcut in input handler
