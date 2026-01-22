@@ -82,7 +82,7 @@ AOE spell system supporting: damage, stun, slow, healing, persistent zones, and 
 ## Phase 1B: Persistent AOE Zones
 
 ### 1B.1 AOE Zone Data
-- [ ] Create `libs/api-interfaces/src/lib/probable-waffle/spell/aoe-zone-data.ts`
+- [x] Create `libs/api-interfaces/src/lib/probable-waffle/spell/aoe-zone-data.ts`
   ```typescript
   interface AoeZoneData {
     id: string;                    // unique zone ID
@@ -103,24 +103,24 @@ AOE spell system supporting: damage, stun, slow, healing, persistent zones, and 
   ```
 
 ### 1B.2 AoeZoneManager (New)
-- [ ] Create `apps/client/src/app/probable-waffle/game/entity/systems/aoe-zone-manager.ts`
-  - [ ] `activeZones: AoeZoneData[]` - all active zones
-  - [ ] `createZone(data: AoeZoneData)` - spawn new zone
-  - [ ] `removeZone(id: string)` - destroy zone
-  - [ ] `update(delta: number)` - tick all zones:
-    - [ ] Decrement remaining time
-    - [ ] Find actors inside each zone radius
-    - [ ] Apply effects to actors (check ally/enemy)
-    - [ ] Remove expired zones
-  - [ ] `getZonesAtPosition(pos): AoeZoneData[]` - query zones at location
-  - [ ] Visual: render zone circles on ground (tinted, animated)
-  - [ ] `getData()` / `setData()` for save/load
+- [x] Create `apps/client/src/app/probable-waffle/game/entity/systems/aoe-zone-manager.ts`
+  - [x] `activeZones: AoeZoneData[]` - all active zones
+  - [x] `createZone(data: AoeZoneData)` - spawn new zone
+  - [x] `removeZone(id: string)` - destroy zone
+  - [x] `update(delta: number)` - tick all zones:
+    - [x] Decrement remaining time
+    - [x] Find actors inside each zone radius
+    - [x] Apply effects to actors (check ally/enemy)
+    - [x] Remove expired zones
+  - [x] `getZonesAtPosition(pos): AoeZoneData[]` - query zones at location
+  - [x] Visual: render zone circles on ground (tinted, animated)
+  - [x] `getData()` / `setData()` for save/load
 
 ### 1B.3 Zone Visual Renderer
-- [ ] Create zone visual as Phaser Graphics or Sprite
-- [ ] Animated edge (pulsing, particles)
-- [ ] Tint based on spell type (blue=frost, orange=fire, green=heal)
-- [ ] Fade out on expiration
+- [x] Create zone visual as Phaser Graphics or Sprite
+- [x] Animated edge (pulsing, particles)
+- [x] Tint based on spell type (blue=frost, orange=fire, green=heal)
+- [x] Fade out on expiration
 
 ---
 

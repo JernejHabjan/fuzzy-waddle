@@ -19,3 +19,4 @@ export * from "./lib/probable-waffle/probable-waffle-api";
 export * from "./lib/probable-waffle/game-setup.helpers";
 export * from "./lib/probable-waffle/achievement";
 export * from "./lib/probable-waffle/status-effect";
+export * from "./lib/probable-waffle/spell";
