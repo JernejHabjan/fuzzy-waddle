@@ -1,4 +1,4 @@
-import { AoeZoneData, StatusEffectData } from '@fuzzy-waddle/api-interfaces';
+import { type AoeZoneData, type StatusEffectData } from '@fuzzy-waddle/api-interfaces';
 import { onSceneInitialized } from '../../data/game-object-helper';
 import { getActorComponent } from '../../data/actor-component';
 import { OwnerComponent } from '../components/owner-component';

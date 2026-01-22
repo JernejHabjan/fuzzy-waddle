@@ -1,9 +1,8 @@
 import { SpellType } from './spell-type';
-import { SpellTargetType } from '@fuzzy-waddle/api-interfaces';
+import { SpellTargetType, type ObjectNames } from '@fuzzy-waddle/api-interfaces';
 import { DamageType } from './damage-type';
-import { ProjectileData } from './projectile-data';
+import type { ProjectileData } from './projectile-data';
 import { AnimationType } from '../animation/animation-type';
-import { ObjectNames } from '@fuzzy-waddle/api-interfaces';
 
 export interface SpellData {
   type: SpellType;

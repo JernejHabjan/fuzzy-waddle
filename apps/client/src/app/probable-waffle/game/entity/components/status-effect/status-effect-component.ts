@@ -1,10 +1,10 @@
 import { EventEmitter } from '@angular/core';
-import { StatusEffectData, StatusEffectType, type StatusEffectComponentData } from '@fuzzy-waddle/api-interfaces';
-import { getActorComponent } from '../../../../data/actor-component';
+import { type StatusEffectData, StatusEffectType, type StatusEffectComponentData } from '@fuzzy-waddle/api-interfaces';
+import { getActorComponent } from '../../../data/actor-component';
 import { HealthComponent } from '../combat/components/health-component';
 import { DamageType } from '../combat/damage-type';
 import Phaser from 'phaser';
-import { onObjectReady } from '../../../../data/game-object-helper';
+import { onObjectReady } from '../../../data/game-object-helper';
 
 export class StatusEffectComponent {
   static readonly EffectAppliedEvent = 'effectApplied';

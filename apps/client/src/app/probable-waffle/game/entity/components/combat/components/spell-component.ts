@@ -1,6 +1,6 @@
 import { EventEmitter } from '@angular/core';
 import { SpellType } from '../spell-type';
-import { SpellData } from '../spell-data';
+import type { SpellData } from '../spell-data';
 import { spellDefinitions } from '../spell-definitions';
 import { type SpellComponentData } from '@fuzzy-waddle/api-interfaces';
 import Phaser from 'phaser';

@@ -712,8 +712,8 @@ AOE spell system supporting: damage, stun, slow, healing, persistent zones, and 
 ## Phase 9: Magician Definition Update
 
 ### 9.1 Add Components
-- [ ] Modify `apps/client/src/app/probable-waffle/game/prefabs/characters/skaduwee/skaduwee-magician-female/skaduwee-magician-female.definition.ts`
-  - [ ] Add `spell` component
+- [x] Modify `apps/client/src/app/probable-waffle/game/prefabs/characters/skaduwee/skaduwee-magician-female/skaduwee-magician-female.definition.ts`
+  - [x] Add `spell` component
   ```typescript
   spell: {
     availableSpells: [SpellType.Snowstorm]
@@ -721,14 +721,14 @@ AOE spell system supporting: damage, stun, slow, healing, persistent zones, and 
     // Note: spell icon shown in ActorActions even before research (grayed out)
   }
   ```
-  - [ ] Add `statusEffect` component (so magician can also be affected by status effects)
+  - [x] Add `statusEffect` component (so magician can also be affected by status effects)
   ```typescript
   statusEffect: {}
   ```
 
 ### 9.2 Add to Other Units
-- [ ] Add `statusEffect: {}` component to all combat units (so they can be affected by spells)
-- [ ] Update `prefab-definition.ts` with new component types
+- [x] Add `statusEffect: {}` component to all combat units (so they can be affected by spells)
+- [x] Update `prefab-definition.ts` with new component types
 
 ---
 

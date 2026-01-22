@@ -1,5 +1,5 @@
 import { SpellType } from './spell-type';
-import { SpellData } from './spell-data';
+import type { SpellData } from './spell-data';
 import { DamageType } from './damage-type';
 import { ProjectileType } from './projectile-type';
 import { AnimationType } from '../animation/animation-type';

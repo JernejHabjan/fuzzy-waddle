@@ -1,7 +1,7 @@
 import { SpellType } from '../components/combat/spell-type';
-import { SpellData } from '../components/combat/spell-data';
+import type { SpellData } from '../components/combat/spell-data';
 import { spellDefinitions } from '../components/combat/spell-definitions';
-import { StatusEffectData, StatusEffectType, Vector2Simple } from '@fuzzy-waddle/api-interfaces';
+import { type StatusEffectData, StatusEffectType, type Vector2Simple } from '@fuzzy-waddle/api-interfaces';
 import { getActorComponent } from '../../data/actor-component';
 import { SpellComponent } from '../components/combat/components/spell-component';
 import { HealthComponent } from '../components/combat/components/health-component';

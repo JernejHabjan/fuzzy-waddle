@@ -37,6 +37,9 @@ import { HousingCostComponent } from "../entity/components/building/housing-cost
 import { MovementDecalCursorService } from "../entity/components/movement/movement-decal-cursor.service";
 import { getSceneService } from "../world/services/scene-component-helpers";
 import { SceneActorCreator } from "../world/services/scene-actor-creator";
+import { StatusEffectComponent } from "../entity/components/status-effect/status-effect-component";
+import { SpellComponent } from "../entity/components/combat/components/spell-component";
+import { SpellCastingSystem } from "../entity/systems/spell-casting.system";
 
 export const ActorDataKey = "actorData";
 export class ActorData {
@@ -92,6 +95,9 @@ function setActorProperties(actor: GameObject, actorDefinition?: Partial<ActorDe
   if (actorDefinition.representable)
     getActorComponent(actor, RepresentableComponent)?.setData(actorDefinition.representable);
   if (actorDefinition.blackboard) getActorComponent(actor, PawnAiController)?.setData(actorDefinition.blackboard);
+  if (actorDefinition.spell) getActorComponent(actor, SpellComponent)?.setData(actorDefinition.spell);
+  if (actorDefinition.statusEffects)
+    getActorComponent(actor, StatusEffectComponent)?.setData(actorDefinition.statusEffects);
 
   DepthHelper.setActorDepth(actor);
 }
@@ -166,6 +172,8 @@ function gatherCompletedActorData(actor: Phaser.GameObjects.GameObject): { compo
       ? [new ResourceSourceComponent(actor, componentDefinitions.resourceSource)]
       : []),
     ...(componentDefinitions?.healing ? [new HealingComponent(actor, componentDefinitions.healing)] : []),
+    ...(componentDefinitions?.health ? [new StatusEffectComponent(actor)] : []),
+    ...(componentDefinitions?.spell ? [new SpellComponent(actor, componentDefinitions.spell)] : []),
     ...(componentDefinitions?.builder ? [new BuilderComponent(actor, componentDefinitions.builder)] : []),
     ...(componentDefinitions?.gatherer ? [new GathererComponent(actor, componentDefinitions.gatherer)] : []),
     ...(componentDefinitions?.translatable
@@ -180,7 +188,8 @@ function gatherCompletedActorData(actor: Phaser.GameObjects.GameObject): { compo
   const systemDefinitions = definition.systems;
   const systems = [
     ...(systemDefinitions?.movement ? [new MovementSystem(actor)] : []),
-    ...(systemDefinitions?.action ? [new ActionSystem(actor)] : [])
+    ...(systemDefinitions?.action ? [new ActionSystem(actor)] : []),
+    ...(systemDefinitions?.spellCasting ? [new SpellCastingSystem(actor)] : [])
   ];
   return { components, systems };
 }

@@ -15,6 +15,7 @@ import { SoundType } from "../../../../entity/components/actor-audio/sound-type"
 import { ActorPhysicalType } from "../../../../entity/components/combat/components/actor-physical-type";
 import { weaponDefinitions } from "../../../../entity/components/combat/weapon-definitions";
 import { AiType } from "../../../ai-agents/ai-type";
+import { SpellType } from "../../../../entity/components/combat/spell-type";
 
 export const skaduweeMagicianFemaleDefinition = {
   components: {
@@ -49,7 +50,10 @@ export const skaduweeMagicianFemaleDefinition = {
       maxHealth: 50
     },
     attack: {
-      attacks: [weaponDefinitions.fireSpell, weaponDefinitions.staff]
+      attacks: [weaponDefinitions.frostSpell, weaponDefinitions.staff]
+    },
+    spell: {
+      availableSpells: [SpellType.Snowstorm]
     },
     productionCost: {
       resources: {
@@ -89,6 +93,7 @@ export const skaduweeMagicianFemaleDefinition = {
   },
   systems: {
     movement: { enabled: true },
-    action: { enabled: true }
+    action: { enabled: true },
+    spellCasting: { enabled: true }
   }
 } satisfies PrefabDefinition;

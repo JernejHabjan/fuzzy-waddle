@@ -138,6 +138,12 @@ export class NavigationService {
     return NavigationService.getTileWorldCenter(this.tilemap, tile);
   }
 
+  worldToTile(worldPos: Vector2Simple): Vector2Simple | null {
+    const tile = this.tilemap.getTileAtWorldXY(worldPos.x, worldPos.y);
+    if (!tile) return null;
+    return { x: tile.x, y: tile.y };
+  }
+
   private setup() {
     const objectsGrid = this.extractGridFromObjects();
     this.easyStarNavigationGrid = this.tilemapGrid.map((row, i) =>

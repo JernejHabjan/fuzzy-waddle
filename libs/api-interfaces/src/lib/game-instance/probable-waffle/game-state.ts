@@ -21,6 +21,8 @@ import type {
   ResourceDrainComponentData,
   ResourceSourceComponentData,
   SelectableComponentData,
+  SpellComponentData,
+  StatusEffectComponentData,
   VisionComponentData,
   WalkableComponentData
 } from "./component-data";
@@ -73,4 +75,6 @@ export interface ActorDefinition extends Record<string, any> {
   walkable?: Partial<WalkableComponentData>;
   representable?: Partial<RepresentableComponentData>;
   blackboard?: Partial<BackboardComponentData>;
+  spell?: Partial<SpellComponentData>;
+  statusEffects?: Partial<StatusEffectComponentData>;
 }

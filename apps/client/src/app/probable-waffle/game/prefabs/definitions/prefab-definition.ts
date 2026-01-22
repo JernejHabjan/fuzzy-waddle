@@ -27,6 +27,7 @@ import type { ProductionCostDefinition } from "../../entity/components/productio
 import type { GathererDefinition } from "../../entity/components/resource/gatherer-definition";
 import type { ResourceDrainDefinition } from "../../entity/components/resource/resource-drain-definition";
 import type { ResourceSourceDefinition } from "../../entity/components/resource/resource-source-definition";
+import type { SpellDefinition } from "../../entity/components/combat/spell-definition";
 
 export type PrefabDefinition = Partial<{
   components: Partial<{
@@ -50,6 +51,7 @@ export type PrefabDefinition = Partial<{
     resourceSource: ResourceSourceDefinition;
     production: ProductionDefinition;
     healing: HealingDefinition;
+    spell: SpellDefinition;
     translatable: ActorTranslateDefinition;
     flying: FlightDefinition;
     animatable: ActorAnimationsDefinition;
@@ -65,6 +67,9 @@ export type PrefabDefinition = Partial<{
       enabled: boolean;
     };
     action: {
+      enabled: boolean;
+    };
+    spellCasting: {
       enabled: boolean;
     };
   }>;
