@@ -23,14 +23,25 @@
 export const PlayerPawnAiControllerMdsl = `
 root {
     selector {
-        fail {
-            sequence {
-                condition [OrderExistsInQueue]
-                action [AssignNextOrderFromQueue]
+        /* If stunned, do nothing - just wait */
+        sequence {
+            condition [IsStunned]
+            succeed {}
+        }
+        /* Normal AI logic when not stunned */
+        sequence {
+            flip { condition [IsStunned] }
+            selector {
+                fail {
+                    sequence {
+                        condition [OrderExistsInQueue]
+                        action [AssignNextOrderFromQueue]
+                    }
+                }
+                branch [ExecuteCurrentOrder]
+                branch [AutoAssignNewOrder]
             }
         }
-        branch [ExecuteCurrentOrder]
-        branch [AutoAssignNewOrder]
     }
 }
 

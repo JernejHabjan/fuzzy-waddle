@@ -24,6 +24,7 @@ import { HealingComponent } from "../../entity/components/combat/components/heal
 import { ConstructionSiteComponent } from "../../entity/components/construction/construction-site-component";
 import { AnimationActorComponent } from "../../entity/components/animation/animation-actor-component";
 import type { PathMoveConfig } from "../../entity/systems/path-move-config";
+import { StatusEffectComponent } from "../../entity/components/status-effect/status-effect-component";
 
 export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
   constructor(
@@ -69,6 +70,26 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
     const healthComponent = getActorComponent(this.gameObject, HealthComponent);
     if (!healthComponent) return true; // if no health component, assume alive
     return healthComponent.alive;
+  }
+
+  /**
+   * Checks if the actor is currently stunned or frozen
+   * Stunned actors cannot move, attack, or cast spells
+   */
+  IsStunned() {
+    const statusEffectComponent = getActorComponent(this.gameObject, StatusEffectComponent);
+    if (!statusEffectComponent) return false;
+    return statusEffectComponent.isStunned();
+  }
+
+  /**
+   * Checks if the actor is currently slowed
+   * Slowed actors can still act but move slower
+   */
+  IsSlowed() {
+    const statusEffectComponent = getActorComponent(this.gameObject, StatusEffectComponent);
+    if (!statusEffectComponent) return false;
+    return statusEffectComponent.isSlowed();
   }
 
   async InRange(type: PlayerPawnRangeType): Promise<State> {

@@ -127,11 +127,13 @@ AOE spell system supporting: damage, stun, slow, healing, persistent zones, and 
 ## Phase 2: AI Integration
 
 ### 2.1 Stun Behavior Integration
-- [ ] Modify `apps/client/src/app/probable-waffle/game/entity/ai/pawn-ai-controller.ts`
-  - [ ] Check `statusEffectComponent?.isStunned()` before processing orders
-  - [ ] Skip order execution while stunned (but don't clear queue)
-  - [ ] Cancel current movement on stun apply
-  - [ ] **Note**: Health damage still processed normally - units can die while stunned
+- [x] Modify `apps/client/src/app/probable-waffle/game/prefabs/ai-agents/player-pawn-ai-controller.agent.ts`
+  - [x] Add `IsStunned()` method to check `statusEffectComponent?.isStunned()`
+  - [x] Add `IsSlowed()` method for slow effect checking
+- [x] Modify `apps/client/src/app/probable-waffle/game/prefabs/ai-agents/player-pawn-ai-controller.mdsl.ts`
+  - [x] Add stun check at root of behaviour tree
+  - [x] Skip order execution while stunned (but don't clear queue)
+  - [x] **Note**: Health damage still processed normally - units can die while stunned
 
 ### 2.3 Autocast Logic in PawnAiController
 - [ ] Add autocast spell check in `apps/client/src/app/probable-waffle/game/entity/ai/pawn-ai-controller.ts`

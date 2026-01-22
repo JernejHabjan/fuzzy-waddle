@@ -15,6 +15,10 @@ export interface IPlayerPawnControllerAgent {
   AssignEnemy(source: string): State;
   AssignMoveRandomlyInRange(range: number): Promise<State>;
 
+  // Status Effects
+  IsStunned(): boolean;
+  IsSlowed(): boolean;
+
   // Combat-related Actions
   HasAttackComponent(): boolean;
   TargetIsAlive(): boolean;
