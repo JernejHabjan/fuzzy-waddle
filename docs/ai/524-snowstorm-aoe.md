@@ -55,13 +55,13 @@ AOE spell system supporting: damage, stun, slow, healing, persistent zones, and 
   - [x] Event emitters: `effectApplied`, `effectRemoved`, `effectTick`
 
 ### 1.3 StatusEffectUiComponent (New)
-- [ ] Create `apps/client/src/app/probable-waffle/game/entity/components/status-effect/status-effect-ui-component.ts`
-  - [ ] Thin gray progress bar below health bar (similar pattern to HealthUiComponent)
-  - [ ] Subscribe to `StatusEffectComponent` events
-  - [ ] Position tracking via `ActorTranslateComponent`
-  - [ ] Bar shrinks as effect timer counts down
-  - [ ] Hide when effect expires
-  - [ ] Support multiple effect bars (stacked vertically)
+- [x] Create `apps/client/src/app/probable-waffle/game/entity/components/status-effect/status-effect-ui-component.ts`
+  - [x] Thin gray progress bar below health bar (similar pattern to HealthUiComponent)
+  - [x] Subscribe to `StatusEffectComponent` events
+  - [x] Position tracking via `ActorTranslateComponent`
+  - [x] Bar shrinks as effect timer counts down
+  - [x] Hide when effect expires
+  - [x] Support multiple effect bars (stacked vertically)
 
 ### 1.4 StatusEffectVisualComponent (New)
 - [ ] Create `apps/client/src/app/probable-waffle/game/entity/components/status-effect/status-effect-visual-component.ts`
