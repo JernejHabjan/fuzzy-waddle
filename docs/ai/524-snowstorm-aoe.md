@@ -763,24 +763,26 @@ Note: AI spell casting implemented directly in player-pawn-ai-controller.agent.t
 ## Phase 11: Save/Load Support
 
 ### 11.1 Component Serialization
-- [ ] `StatusEffectComponent.getData()` returns active effects array with remaining times
-- [ ] `StatusEffectComponent.setData()` restores effects (recalculate visuals)
-- [ ] `SpellComponent.getData()` returns cooldown state + autocast state per spell
-- [ ] `SpellComponent.setData()` restores cooldowns + autocast state
-- [ ] `ResearchComponent.getData()` returns research queue and progress
-- [ ] `ResearchComponent.setData()` restores research state
+- [x] `StatusEffectComponent.getData()` returns active effects array with remaining times
+- [x] `StatusEffectComponent.setData()` restores effects (recalculate visuals)
+- [x] `SpellComponent.getData()` returns cooldown state + autocast state per spell
+- [x] `SpellComponent.setData()` restores cooldowns + autocast state
+- [x] `ResearchComponent.getData()` returns research queue and progress
+- [x] `ResearchComponent.setData()` restores research state
 
 ### 11.2 AOE Zone Serialization
-- [ ] `AoeZoneManager.getData()` returns all active zones with remaining times
-- [ ] `AoeZoneManager.setData()` restores zones and recreates visuals
+- [x] `AoeZoneManager.getData()` returns all active zones with remaining times
+- [x] `AoeZoneManager.setData()` restores zones and recreates visuals
 
 ### 11.3 Tech Tree State
-- [ ] Add research state to game save payload
-- [ ] Restore on load via `TechTreeService`
+- [x] Add research state to game save payload
+- [x] Restore on load via `TechTreeService`
 
 ### 11.4 Spawned Prefabs
-- [ ] Totems and other spell-spawned prefabs saved as normal actors
-- [ ] Include `spawnedBySpell` flag and `remainingLifetime` if applicable
+- [x] Totems and other spell-spawned prefabs saved as normal actors
+- [x] Include `spawnedBySpell` flag and `remainingLifetime` if applicable
+
+Note: Spawned prefabs like HealingTotem are saved as regular actors in the actors array. The SpellCastingSystem spawns them as normal game objects with full component serialization.
 
 ---
 

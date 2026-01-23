@@ -27,6 +27,7 @@ import type {
   VisionComponentData,
   WalkableComponentData
 } from "./component-data";
+import type { AoeZoneData } from "../../probable-waffle/spell/aoe-zone-data";
 
 export interface ProbableWaffleGameCommand {
   command: string;
@@ -53,6 +54,10 @@ export interface ProbableWaffleGameStateData extends BaseData {
   actors: ActorDefinition[];
   pause: boolean;
   score: number;
+  /** Active AOE zones for save/load support */
+  aoeZones?: AoeZoneData[];
+  /** Research state per player for save/load support */
+  playerResearch?: Record<number, string[]>;
 }
 
 export interface ActorDefinition extends Record<string, any> {
