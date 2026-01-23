@@ -789,10 +789,12 @@ Note: Spawned prefabs like HealingTotem are saved as regular actors in the actor
 ## Phase 12: Polish
 
 ### 12.1 Sound Effects
-- [ ] Cast sound (ice forming)
-- [ ] Projectile travel sound (wind/ice)
-- [ ] Impact sound (ice crack/shatter)
-- [ ] Stun applied sound (crystallize)
+- [ ] Cast sound (ice forming) - **ASSET NEEDED** - spell definitions have `sounds.cast` field ready
+- [ ] Projectile travel sound (wind/ice) - **ASSET NEEDED**
+- [ ] Impact sound (ice crack/shatter) - **ASSET NEEDED** - spell definitions have `sounds.impact` field ready
+- [ ] Stun applied sound (crystallize) - **ASSET NEEDED**
+
+Note: Code structure for sound effects is complete. Spell definitions include `sounds: { cast, impact, loop }` properties. Implementation requires actual audio assets.
 
 ### 12.2 Architecture Supports
 - [x] `StatusEffectType`: Stunned, Frozen, Slowed, Burning, Poisoned, Regenerating
@@ -802,7 +804,7 @@ Note: Spawned prefabs like HealingTotem are saved as regular actors in the actor
 - [x] Prefab spawning (totems, turrets)
 - [x] Movement speed modifiers (slow effects)
 - [x] Heal over time effects
-- [ ] `StatusEffectVisualComponent.attachParticleEffect()` placeholder for ice crystals
+- [x] `StatusEffectVisualComponent.attachParticleEffect()` placeholder for ice crystals
 
 ### 12.3 Easy to Add Future Spells
 - Sandstorm (blind effect - reduce vision range?)
