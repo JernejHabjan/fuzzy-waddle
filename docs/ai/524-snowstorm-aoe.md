@@ -752,11 +752,11 @@ Note: AI spell casting implemented directly in player-pawn-ai-controller.agent.t
 - [x] Priority: cast AOE spell if multiple enemies clustered > regular attack
 
 ### 10.3 AI Research Manager
-- [ ] Add spell research to `tech-progress-manager.ts`
-- [ ] AI should research spells when:
-  - [ ] Has magician units
-  - [ ] Has resources
-  - [ ] Research building available
+- [x] Add spell research to `tech-progress-manager.ts`
+- [x] AI should research spells when:
+  - [x] Has magician units
+  - [x] Has resources
+  - [x] Research building available
 
 ---
 
