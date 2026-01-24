@@ -9,9 +9,8 @@ create table messages
 );
 
 -- add a foreign key constraint to the auth.users table
-ALTER TABLE messages
-  ADD CONSTRAINT messages_user_id_fkey
-    FOREIGN KEY (user_id) REFERENCES profiles(id);
+alter table messages
+  add constraint messages_user_id_fkey foreign key (user_id) references auth.users (id);
 
 -- add index on created_at for efficient pagination queries
 create index messages_created_at_idx on messages (created_at desc);
