@@ -239,13 +239,19 @@ export class BuilderComponent {
   async getClosestConstructionSite(rangeInTiles: number): Promise<GameObject | null> {
     const owner = getActorComponent(this.gameObject, OwnerComponent)?.getOwner();
     const transform = getGameObjectLogicalTransform(this.gameObject);
-    if (!owner || !transform) return null;
+    if (!owner || !transform) {
+      // console.log("[Build] getClosestConstructionSite: No owner or transform");
+      return null;
+    }
 
     const tileSize = TilemapComponent.tileWidth;
     const worldRange = rangeInTiles * tileSize;
 
     // First filter by geometric distance and ownership
     const availableConstructionSites = this.gameObject.scene.children.list.filter((go) => {
+      // Skip the currently assigned construction site (we're looking for the NEXT one)
+      if (go === this.assignedConstructionSite) return false;
+
       const constructionSiteComponent = getActorComponent(go, ConstructionSiteComponent);
       if (!constructionSiteComponent) return false;
       if (!constructionSiteComponent.canAssignBuilder()) return false;
@@ -262,6 +268,8 @@ export class BuilderComponent {
       return geometricDistance <= worldRange;
     });
 
+    // console.log("[Build] getClosestConstructionSite: Found", availableConstructionSites.length, "sites in geometric range (excluding current:", this.assignedConstructionSite, ")");
+
     if (availableConstructionSites.length === 0) return null;
 
     // Get navigation distances for all sites (filters out unreachable ones)
@@ -269,17 +277,21 @@ export class BuilderComponent {
 
     for (const site of availableConstructionSites) {
       const navDistance = await DistanceHelper.getTileDistanceBetweenGameObjectsNavigation(this.gameObject, site);
+      // console.log("[Build] getClosestConstructionSite: Site", site, "navDistance=", navDistance);
       // Only include reachable sites (navDistance !== null)
       if (navDistance !== null) {
         sitesWithDistance.push({ site, distance: navDistance });
       }
     }
 
+    // console.log("[Build] getClosestConstructionSite: Found", sitesWithDistance.length, "reachable sites");
+
     if (sitesWithDistance.length === 0) return null;
 
     // Find closest by navigation distance
     const closest = sitesWithDistance.reduce((prev, curr) => (prev.distance < curr.distance ? prev : curr));
 
+    // console.log("[Build] getClosestConstructionSite: Closest site", closest.site, "at distance", closest.distance);
     return closest.site;
   }
 
