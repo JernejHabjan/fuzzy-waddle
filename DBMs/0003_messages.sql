@@ -8,9 +8,9 @@ create table messages
   game_instance_id text                                   null
 );
 
--- add a foreign key constraint to the auth.users table
+-- add a foreign key constraint to the public.profiles table to improve join performance
 alter table messages
-  add constraint messages_user_id_fkey foreign key (user_id) references auth.users (id);
+  add constraint messages_profile_id_fkey foreign key (user_id) references public.profiles (id);
 
 -- add index on created_at for efficient pagination queries
 create index messages_created_at_idx on messages (created_at desc);

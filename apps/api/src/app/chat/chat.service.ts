@@ -47,7 +47,7 @@ export class ChatService implements IChatService {
         user_id,
         created_at,
         game_instance_id,
-        profiles!messages_user_id_fkey (name)
+        profiles:user_id(name)
       `,
         { count: "exact" }
       )
@@ -74,7 +74,7 @@ export class ChatService implements IChatService {
         id: row.id,
         text: row.text,
         userId: row.user_id,
-        fullName: row.profiles?.full_name || "Unknown",
+        fullName: row.profiles?.name || "Unknown",
         createdAt: new Date(row.created_at),
         gameInstanceId: row.game_instance_id
       }))
