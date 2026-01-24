@@ -7,7 +7,7 @@ import { MessageDto } from "./message.dto";
 import { GetMessagesDto } from "./get-messages.dto";
 import type { GetMessagesResponseDto } from "@fuzzy-waddle/api-interfaces";
 
-@Controller()
+@Controller("chat")
 export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 

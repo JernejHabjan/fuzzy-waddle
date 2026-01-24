@@ -47,7 +47,7 @@ export class ChatService implements IChatService {
         user_id,
         created_at,
         game_instance_id,
-        profiles!messages_user_id_fkey (full_name)
+        profiles!messages_user_id_fkey (name)
       `,
         { count: "exact" }
       )

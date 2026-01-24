@@ -53,6 +53,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   async ngOnInit(): Promise<void> {
     // Fetch previous messages
     await this.loadPreviousMessages();
+    this.scrollToBottomForce();
 
     this.messageSubscription = this.messageListener()?.subscribe((msg: ChatMessage) => {
       this.messages.push(msg);
@@ -64,7 +65,7 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.onScrollDebounced();
     });
 
-    this.newMessage?.emit(this.createMessage("Joined the chat"));
+    // this.newMessage?.emit(this.createMessage("Joined the chat"));
   }
 
   private async loadPreviousMessages(): Promise<void> {
@@ -107,13 +108,25 @@ export class ChatComponent implements OnInit, OnDestroy {
     }
   }
 
+  private scrollToBottomForce() {
+    setTimeout(() => {
+      const chatBody = this.chatBody();
+      if (chatBody) {
+        chatBody.nativeElement.scrollTop = chatBody.nativeElement.scrollHeight;
+      }
+    }, 0);
+  }
+
   private scrollToBottom() {
     const chatBody = this.chatBody();
     if (chatBody) {
       // scroll to bottom only if we are already at the bottom, otherwise stick to the current position
       const scrollBottom = chatBody.nativeElement.scrollTop + chatBody.nativeElement.clientHeight;
       setTimeout(() => {
-        if (scrollBottom + 1 >= this.chatBody().nativeElement.scrollHeight - this.chatBody().nativeElement.clientHeight) {
+        if (
+          scrollBottom + 1 >=
+          this.chatBody().nativeElement.scrollHeight - this.chatBody().nativeElement.clientHeight
+        ) {
           this.chatBody().nativeElement.scrollTop = this.chatBody().nativeElement.scrollHeight;
         }
       }, 0);
@@ -134,7 +147,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.newMessage?.emit(this.createMessage("Left the chat"));
+    // this.newMessage?.emit(this.createMessage("Left the chat"));
     this.messageSubscription?.unsubscribe();
     this.scrollSubscription?.unsubscribe();
   }
