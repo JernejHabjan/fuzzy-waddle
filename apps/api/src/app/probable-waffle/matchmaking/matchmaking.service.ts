@@ -145,7 +145,8 @@ export class MatchmakingService implements MatchmakingServiceInterface {
         createdBy: user.id,
         type: ProbableWaffleGameInstanceType.Matchmaking,
         visibility: ProbableWaffleGameInstanceVisibility.Public,
-        startOptions: {}
+        startOptions: {},
+        rndSeed: Math.floor(Math.random() * 1000000)
       },
       gameModeData: {
         tieConditions: {
@@ -217,10 +218,7 @@ export class MatchmakingService implements MatchmakingServiceInterface {
     );
 
     const playerDefinition = {
-      player: createPlayerLobbyDefinition(
-        gameInstance.players.length + 1,
-        gameInstance.players.length
-      ),
+      player: createPlayerLobbyDefinition(gameInstance.players.length + 1, gameInstance.players.length),
       factionType: factionType ?? randomFactionType,
       playerType: ProbableWafflePlayerType.Human
     } satisfies PositionPlayerDefinition;
