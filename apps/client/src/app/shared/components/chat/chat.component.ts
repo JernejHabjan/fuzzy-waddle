@@ -150,6 +150,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     // this.newMessage?.emit(this.createMessage("Left the chat"));
     this.messageSubscription?.unsubscribe();
     this.scrollSubscription?.unsubscribe();
+    this.scrollSubject.complete();
   }
 
   createMessage(message: string): ChatMessage {
