@@ -84,7 +84,6 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
         type,
         visibility,
         startOptions: {},
-        version: environment.version,
         rndSeed: Math.floor(Math.random() * 1000000)
       } satisfies ProbableWaffleGameInstanceMetadataData,
       gameModeData: {
