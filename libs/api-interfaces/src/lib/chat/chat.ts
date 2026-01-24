@@ -11,12 +11,6 @@ export enum GatewayChatEvent {
   CHAT_MESSAGE = "chat-message"
 }
 
-export interface GetMessagesQueryDto {
-  limit?: number;
-  offset?: number;
-  gameInstanceId?: string;
-}
-
 export interface GetMessagesResponseDto {
   messages: ChatMessage[];
   total: number;
