@@ -102,6 +102,16 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
       text: string;
     }[] = [];
 
+    const maxHealth = definition.components?.health?.maxHealth;
+    if (maxHealth) {
+      iconsAndTexts.push({ icon: { key: "gui", frame: "actor_info_icons/heart.png" }, text: maxHealth.toString() });
+    }
+
+    const maxArmour = definition.components?.health?.maxArmour;
+    if (maxArmour) {
+      iconsAndTexts.push({ icon: { key: "gui", frame: "actor_info_icons/shield.png" }, text: maxArmour.toString() });
+    }
+
     // Check if this is a resource source
     const resourceSourceComponent = actor ? getActorComponent(actor, ResourceSourceComponent) : undefined;
     if (resourceSourceComponent) {
@@ -157,22 +167,19 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
           text: primaryAttackDamage?.toString()
         });
       }
-      const primaryAttackRange = primaryAttack?.range;
       iconsAndTexts.push({
         icon: { key: "gui", frame: "actor_info_icons/bow.png" },
-        text: primaryAttackRange?.toString()
+        text: primaryAttack?.range.toString()
       });
+      const highGroundBonus = primaryAttack?.highGroundRangeBonus;
+      if (highGroundBonus && highGroundBonus > 0) {
+        iconsAndTexts.push({
+          icon: { key: "gui", frame: "actor_info_icons/high-ground.png" }, // todo
+          text: highGroundBonus.toString()
+        });
+      }
     }
 
-    const maxHealth = definition.components?.health?.maxHealth;
-    if (maxHealth) {
-      iconsAndTexts.push({ icon: { key: "gui", frame: "actor_info_icons/heart.png" }, text: maxHealth.toString() });
-    }
-
-    const maxArmour = definition.components?.health?.maxArmour;
-    if (maxArmour) {
-      iconsAndTexts.push({ icon: { key: "gui", frame: "actor_info_icons/shield.png" }, text: maxArmour.toString() });
-    }
     return iconsAndTexts;
   }
 

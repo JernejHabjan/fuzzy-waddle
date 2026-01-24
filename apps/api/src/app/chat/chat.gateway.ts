@@ -29,7 +29,7 @@ export class ChatGateway {
 
     // post to supabase
     // noinspection UnnecessaryLocalVariableJS
-    const sanitizedMessage = await this.chatService.postMessage(newPayload.text, user); // todo for demo
+    const sanitizedMessage = await this.chatService.postMessage(newPayload.text, user);
     newPayload.text = sanitizedMessage;
 
     // emit the message to all connected clients
