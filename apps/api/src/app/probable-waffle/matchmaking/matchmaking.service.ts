@@ -146,8 +146,7 @@ export class MatchmakingService implements MatchmakingServiceInterface {
         type: ProbableWaffleGameInstanceType.Matchmaking,
         visibility: ProbableWaffleGameInstanceVisibility.Public,
         startOptions: {},
-        rndSeed: Math.floor(Math.random() * 1000000),
-        version: "1.0.0" // todo
+        rndSeed: Math.floor(Math.random() * 1000000)
       },
       gameModeData: {
         tieConditions: {
