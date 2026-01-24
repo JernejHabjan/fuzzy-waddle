@@ -158,7 +158,7 @@ export class BuilderComponent {
    * will seek for new construction sites in this range
    */
   getConstructionSeekRange(): number {
-    return 30;
+    return 10;
   }
 
   getRepairRange() {
@@ -279,7 +279,7 @@ export class BuilderComponent {
       const navDistance = await DistanceHelper.getTileDistanceBetweenGameObjectsNavigation(this.gameObject, site);
       // console.log("[Build] getClosestConstructionSite: Site", site, "navDistance=", navDistance);
       // Only include reachable sites (navDistance !== null)
-      if (navDistance !== null) {
+      if (navDistance !== null && navDistance <= rangeInTiles) {
         sitesWithDistance.push({ site, distance: navDistance });
       }
     }

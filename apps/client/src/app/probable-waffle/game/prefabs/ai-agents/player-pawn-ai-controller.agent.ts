@@ -105,6 +105,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
         // console.log("[Build] InRange: Distance is null");
         return State.FAILED;
       }
+      // noinspection UnnecessaryLocalVariableJS
       const result = distance <= range ? State.SUCCEEDED : State.FAILED;
       // console.log(
       //   "[Build] InRange: type=",
@@ -505,6 +506,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
       // console.log("[Build] CanAssignBuilder: No construction site component on target");
       return false;
     }
+    // noinspection UnnecessaryLocalVariableJS
     const canAssign = constructionSiteComponent.canAssignBuilder();
     // console.log("[Build] CanAssignBuilder:", canAssign);
     return canAssign;
