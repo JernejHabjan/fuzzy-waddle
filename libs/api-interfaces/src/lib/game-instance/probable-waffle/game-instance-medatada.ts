@@ -17,7 +17,6 @@ export interface ProbableWaffleGameInstanceMetadataData extends GameInstanceMeta
   visibility: ProbableWaffleGameInstanceVisibility;
   name: string;
   startOptions: GameInstanceMetadataStartOptions;
-  version: string;
   rndSeed: number;
 }
 
