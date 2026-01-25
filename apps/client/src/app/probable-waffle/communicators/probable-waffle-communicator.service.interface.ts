@@ -1,5 +1,6 @@
 import { TwoWayCommunicator } from "../../shared/game/communicators/two-way-communicator";
 import {
+  type GameInstanceId,
   type ProbableWaffleCommunicatorMessageEvent,
   type ProbableWaffleCommunicatorType,
   type ProbableWaffleGameInstanceMetadataChangeEvent,
@@ -21,6 +22,6 @@ export interface ProbableWaffleCommunicatorServiceInterface {
   gameStateChanged?: TwoWayCommunicator<ProbableWaffleGameStateDataChangeEvent, ProbableWaffleCommunicatorType>;
   message?: TwoWayCommunicator<ProbableWaffleCommunicatorMessageEvent, ProbableWaffleCommunicatorType>;
 
-  startCommunication(gameInstanceId: string, socket: Socket): void;
-  stopCommunication(gameInstanceId: string, socket: Socket): void;
+  startCommunication(gameInstanceId: GameInstanceId, socket: Socket): void;
+  stopCommunication(gameInstanceId: GameInstanceId, socket: Socket): void;
 }

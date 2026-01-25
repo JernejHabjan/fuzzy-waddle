@@ -21,7 +21,7 @@ export class GameInstanceController {
   @UseGuards(SupabaseAuthGuard)
   async getGameInstance(
     @CurrentUser() user: AuthUser,
-    @Query("gameInstanceId") gameInstanceId: string
+    @Query("gameInstanceId") gameInstanceId: GameInstanceId
   ): Promise<ProbableWaffleGameInstanceData | null> {
     return this.gameInstanceService.getGameInstanceData(gameInstanceId);
   }

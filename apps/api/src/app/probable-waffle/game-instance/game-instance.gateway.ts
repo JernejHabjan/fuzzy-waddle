@@ -17,6 +17,7 @@ import { SupabaseAuthGuard } from "../../../auth/guards/supabase-auth.guard";
 import { CurrentUser } from "../../../auth/current-user";
 import { GameStateServerService } from "./game-state-server.service";
 import { RoomServerService } from "../game-room/room-server.service";
+import { ChatService } from "../../chat/chat.service";
 
 @WebSocketGateway({
   cors: {
@@ -29,7 +30,8 @@ export class GameInstanceGateway {
   constructor(
     private readonly gameStateServerService: GameStateServerService,
     private readonly probableWaffleChatService: ProbableWaffleChatService,
-    private readonly roomServerService: RoomServerService
+    private readonly roomServerService: RoomServerService,
+    private readonly chatService: ChatService
   ) {}
 
   emitGameFound(probableWaffleGameFoundEvent: ProbableWaffleGameFoundEvent) {
@@ -72,13 +74,20 @@ export class GameInstanceGateway {
 
     switch (newPayload.communicator) {
       case "message":
-        const body = newPayload.payload as ProbableWaffleCommunicatorMessageEvent;
-        const sanitizedMessage = this.probableWaffleChatService.cleanMessage(body.chatMessage.text);
-        body.chatMessage.text = sanitizedMessage;
+        const messagePayload = newPayload.payload as ProbableWaffleCommunicatorMessageEvent;
+        const sanitizedMessage = this.probableWaffleChatService.cleanMessage(messagePayload.chatMessage.text);
+        messagePayload.chatMessage.text = sanitizedMessage;
+
+        // Persist the message to the database
+        try {
+          await this.chatService.postMessage(sanitizedMessage, user, messagePayload.gameInstanceId);
+        } catch (error) {
+          console.error("Failed to persist lobby message:", error);
+        }
 
         // https://socket.io/docs/v3/emit-cheatsheet/
         socket
-          .to(`${ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance}${body.gameInstanceId}`)
+          .to(`${ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance}${messagePayload.gameInstanceId}`)
           .emit(ProbableWaffleGatewayEvent.ProbableWaffleMessage, newPayload);
         break;
       default:

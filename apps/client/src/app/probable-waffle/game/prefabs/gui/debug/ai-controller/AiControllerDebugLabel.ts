@@ -8,7 +8,7 @@ import { ProbableWaffleScene } from "../../../../core/probable-waffle.scene";
 import { getPlayer } from "../../../../data/scene-data";
 import { getSceneSystem } from "../../../../world/services/scene-component-helpers";
 import { AiPlayerHandler } from "../../../../player/ai-controller/ai-player-handler";
-import { ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { type PlayerNumber, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import type { PlayerAiController } from "../../../../player/ai-controller/player-ai-controller";
 import { getActorComponent } from "../../../../data/actor-component";
 import { GathererComponent } from "../../../../entity/components/resource/gatherer-component";
@@ -81,7 +81,7 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
   private lastTelemetryAt = 0; // throttle
   private readonly telemetryIntervalMs = 500; // Update more frequently for better debugging
 
-  setPlayer(playerNumber: number, category?: string) {
+  setPlayer(playerNumber: PlayerNumber, category?: string) {
     this.playerNum = playerNumber;
     this.category = category;
     const player = getPlayer(this.mainSceneWithActors, playerNumber);

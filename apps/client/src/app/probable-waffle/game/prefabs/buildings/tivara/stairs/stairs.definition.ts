@@ -16,6 +16,10 @@ export const stairsDefinition = {
     info: {
       name: "Stairs",
       description: "Used to move to top of the Wall and Watch Tower",
+      tooltipDescription: [
+        "Allows units to climb walls",
+        "Access point for elevated defenses"
+      ],
       smallImage: {
         key: "factions",
         frame: "buildings/tivara/stairs/stairs_top_left.png",

@@ -120,7 +120,13 @@ export class SelectableComponent {
   }
 
   setData(data: Partial<SelectableComponentData>) {
-    if (data.selected !== undefined) this.setSelected(data.selected);
+    const selected = data.selected;
+    if (selected !== undefined) {
+      setTimeout(() => {
+        // slight delay that ensures that other components have had a chance to update first
+        this.setSelected(selected);
+      });
+    }
   }
 
   getData(): SelectableComponentData {

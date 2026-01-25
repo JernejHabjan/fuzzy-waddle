@@ -45,10 +45,7 @@ describe("ScoreTableComponent", () => {
     gameInstanceClientServiceStub.addAiPlayer();
     const gameInstance = gameInstanceClientServiceStub.gameInstance!;
     const playerDefinition = {
-      player: createPlayerLobbyDefinition(
-        gameInstance.players.length + 1,
-        gameInstance.players.length
-      ),
+      player: createPlayerLobbyDefinition(gameInstance.players.length + 1, gameInstance.players.length),
       factionType: FactionType.Skaduwee,
       playerType: ProbableWafflePlayerType.AI
     } satisfies PositionPlayerDefinition;

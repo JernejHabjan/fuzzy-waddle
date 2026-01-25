@@ -39,6 +39,11 @@ export const skaduweeRangedFemaleDefinition = {
     info: {
       name: "Ravenmark",
       description: "Deadly and elusive, this warrior dispatches foes before they sense danger",
+      tooltipDescription: [
+        "Long-range archer",
+        "High damage output",
+        "Best protected behind melee units"
+      ],
       smallImage: {
         key: "factions",
         frame: "character_icons/skaduwee/ranged_female.png",

@@ -104,6 +104,10 @@ export class DistanceHelper {
     actor: GameObject,
     tile: Vector3Simple
   ): Promise<number | null> {
+    if (!actor.scene) {
+      // happens when actor is being destroyed
+      return null;
+    }
     const navigationService = getSceneService(actor.scene, NavigationService);
     if (!navigationService) return null;
 

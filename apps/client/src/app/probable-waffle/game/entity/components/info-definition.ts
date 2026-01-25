@@ -3,6 +3,8 @@ export interface InfoDefinition {
   name: string;
   // when single unit is selected, this is shown in HUD
   description: string;
+  // bullet points describing role and gameplay purpose (shown in tooltips)
+  tooltipDescription?: string[];
   // used in HUD to show large portrait of unit - switch between idle and action
   portraitAnimation?: {
     idle: string;
