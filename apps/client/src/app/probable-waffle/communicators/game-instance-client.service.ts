@@ -5,11 +5,13 @@ import { HttpClient } from "@angular/common/http";
 import {
   createPlayerLobbyDefinition,
   type DifficultyModifiers,
+  type GameInstanceId,
   GameSessionState,
   GameSetupHelpers,
   getRandomFactionType,
   type MapTuning,
   type PlayerLobbyDefinition,
+  type PlayerNumber,
   type PositionPlayerDefinition,
   ProbableWaffleAiDifficulty,
   type ProbableWaffleDataChangeEventProperty,
@@ -56,7 +58,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   /**
    * used to track which player number are we in the game
    */
-  currentPlayerNumber?: number;
+  currentPlayerNumber?: PlayerNumber;
 
   private readonly authService = inject(AuthService);
   private readonly httpClient = inject(HttpClient);
@@ -378,7 +380,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   /**
    * game instance is fully prepared on server, we're just joining it
    */
-  async joinGameInstanceAsPlayerForMatchmaking(gameInstanceId: string): Promise<void> {
+  async joinGameInstanceAsPlayerForMatchmaking(gameInstanceId: GameInstanceId): Promise<void> {
     const gameInstanceData = (await this.getGameInstanceData(gameInstanceId))!;
     this.gameInstance = new ProbableWaffleGameInstance(gameInstanceData);
     await this.startListeningToGameInstanceEvents();
@@ -387,7 +389,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   /**
    * owner only
    */
-  async joinGameInstanceAsPlayer(gameInstanceId: string): Promise<void> {
+  async joinGameInstanceAsPlayer(gameInstanceId: GameInstanceId): Promise<void> {
     if (this.currentGameInstanceId) throw new Error("Game instance already exists");
     if (!this.authService.isAuthenticated || !this.serverHealthService.serverAvailable)
       throw new Error("Not authenticated or server not available");
@@ -436,7 +438,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     return playerDefinition;
   }
 
-  async joinGameInstanceAsSpectator(gameInstanceId: string): Promise<void> {
+  async joinGameInstanceAsSpectator(gameInstanceId: GameInstanceId): Promise<void> {
     if (this.currentGameInstanceId) throw new Error("Game instance already exists");
     if (!this.authService.isAuthenticated || !this.serverHealthService.serverAvailable)
       throw new Error("Not authenticated or server not available");
@@ -449,7 +451,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     await this.addSelfAsSpectator();
   }
 
-  async getGameInstanceData(gameInstanceId: string): Promise<ProbableWaffleGameInstanceData | null> {
+  async getGameInstanceData(gameInstanceId: GameInstanceId): Promise<ProbableWaffleGameInstanceData | null> {
     if (!this.authService.isAuthenticated || !this.serverHealthService.serverAvailable)
       throw new Error("Not authenticated or server not available");
 
@@ -510,7 +512,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     });
   }
 
-  async removePlayer(playerNumber: number): Promise<void> {
+  async removePlayer(playerNumber: PlayerNumber): Promise<void> {
     await this.playerChanged("left", {
       playerControllerData: {
         playerDefinition: {

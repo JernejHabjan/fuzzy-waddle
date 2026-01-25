@@ -1,7 +1,7 @@
 import GameObject = Phaser.GameObjects.GameObject;
 import { getActorComponent } from "../../data/actor-component";
 import { Plugins } from "../../world/const/Plugins";
-import { GameSetupHelpers, Guid, ObjectNames, type OwnerComponentData } from "@fuzzy-waddle/api-interfaces";
+import { GameSetupHelpers, Guid, type OwnerComponentData, type PlayerNumber } from "@fuzzy-waddle/api-interfaces";
 import GameProbableWaffleScene from "../../world/scenes/GameProbableWaffleScene";
 import { HealthComponent } from "./combat/components/health-component";
 import { getGameObjectDepth, onObjectReady } from "../../data/game-object-helper";
@@ -11,8 +11,6 @@ import { ContainerComponent } from "./building/container-component";
 import { ConstructionSiteComponent } from "./construction/construction-site-component";
 import { VisionComponent } from "./vision-component";
 import { getSceneService } from "../../world/services/scene-component-helpers";
-import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
-import { getCanonicalActorNameCached } from "../../data/tech-tree/canonical-actor-name";
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 import type { OwnerDefinition } from "./owner-definition";
 
@@ -24,7 +22,7 @@ export class OwnerComponent {
    * Not using color replace as it adds huge load on GPU
    */
   static useColorReplace = false;
-  private owner?: number;
+  private owner?: PlayerNumber;
   ownerColor?: Phaser.Display.Color;
   private readonly colorReplacePipelinePlugin?: any;
   private colorPipelineInstances: any[] = [];
@@ -74,47 +72,66 @@ export class OwnerComponent {
     this.ownerUiElement?.setVisible(visible);
   }
 
-  setOwner(playerNumber?: number) {
+  setOwner(playerNumber?: PlayerNumber) {
     const oldOwner = this.owner;
     const newOwner = playerNumber;
 
     // Handle tech tree unlock changes when owner changes
-    if (oldOwner !== newOwner) {
-      this.handleOwnerChangeForTechTree(oldOwner, newOwner);
-    }
-
+    if (oldOwner === newOwner) return;
+    const actorIndexSystem = getSceneService(this.gameObject.scene, ActorIndexSystem);
+    actorIndexSystem?.updateActorOwnership(this.gameObject, oldOwner, newOwner);
     this.owner = playerNumber;
     this.tryToSetComponents();
   }
 
-  private handleOwnerChangeForTechTree(oldOwner: number | undefined, newOwner: number | undefined) {
-    const techTreeService = getSceneService(this.gameObject.scene, TechTreeService);
-    if (!techTreeService) return;
+  setOwnerWithBlink(playerNumber: PlayerNumber) {
+    const oldOwner = this.owner;
+    this.setOwner(playerNumber);
 
-    const actorName = this.gameObject.name as ObjectNames;
-    if (!actorName) return;
-
-    const canonicalName = getCanonicalActorNameCached(actorName);
-
-    // Get ActorIndexSystem to check actor counts
-    const actorIndexSystem = getSceneService(this.gameObject.scene, ActorIndexSystem);
-
-    // Remove from old owner's unlocks
-    if (oldOwner !== undefined && actorIndexSystem) {
-      const remainingCount = actorIndexSystem.getActorTypeCount(oldOwner, canonicalName) - 1;
-      if (remainingCount <= 0) {
-        techTreeService.unregisterActorUnlock(oldOwner, canonicalName, 0);
-      }
-    }
-
-    // Add to new owner's unlocks
-    if (newOwner !== undefined) {
-      techTreeService.registerActorUnlock(newOwner, canonicalName);
+    // Only blink if this was a conversion from no owner to owned
+    if (oldOwner === undefined && playerNumber !== undefined) {
+      this.playBlinkEffect();
     }
   }
 
+  private playBlinkEffect() {
+    // Get the sprite to apply tint effect
+    const sprite = this.gameObject as Phaser.GameObjects.Sprite;
+    if (!sprite || !sprite.scene || typeof sprite.setTint !== "function") return;
+
+    const ownerColorValue = this.ownerColor?.color ?? 0xffffff;
+
+    // Create a chain of tweens for the blink effect
+    sprite.scene.tweens.chain({
+      targets: sprite,
+      tweens: [
+        {
+          tint: 0xffffff,
+          duration: 150,
+          onStart: () => sprite.setTint(0xffffff)
+        },
+        {
+          tint: ownerColorValue,
+          duration: 150,
+          onStart: () => sprite.setTint(ownerColorValue)
+        },
+        {
+          tint: 0xffffff,
+          duration: 150,
+          onStart: () => sprite.setTint(0xffffff)
+        },
+        {
+          tint: ownerColorValue,
+          duration: 150,
+          onStart: () => sprite.setTint(ownerColorValue),
+          onComplete: () => sprite.clearTint()
+        }
+      ]
+    });
+  }
+
   clearOwner() {
-    this.owner = undefined;
+    this.setOwner(undefined);
     this.assignOwnerColor();
     this.setOwnerColorToActor();
   }

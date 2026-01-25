@@ -1,4 +1,5 @@
 import {
+  GameInstanceId,
   ProbableWaffleGameInstance,
   type ProbableWaffleGameInstanceData,
   type ProbableWaffleGameInstanceMetadataData
@@ -7,16 +8,16 @@ import { type GameInstanceServiceInterface } from "./game-instance.service.inter
 import { User } from "@supabase/supabase-js";
 
 export const GameInstanceServiceStub = {
-  findGameInstance(gameInstanceId: string): ProbableWaffleGameInstance | undefined {
+  findGameInstance(gameInstanceId: GameInstanceId): ProbableWaffleGameInstance | undefined {
     return undefined;
   },
   createGameInstance(gameInstanceMetadataData: ProbableWaffleGameInstanceMetadataData, user: User) {
     return Promise.resolve();
   },
-  getGameInstanceData(gameInstanceId: string): ProbableWaffleGameInstanceData | null {
+  getGameInstanceData(gameInstanceId: GameInstanceId): ProbableWaffleGameInstanceData | null {
     return null;
   },
-  async stopGameInstance(gameInstanceId: string, user: User) {
+  async stopGameInstance(gameInstanceId: GameInstanceId, user: User) {
     //
   }
 } satisfies GameInstanceServiceInterface;

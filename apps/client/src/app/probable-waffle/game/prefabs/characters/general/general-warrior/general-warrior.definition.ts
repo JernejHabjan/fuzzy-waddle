@@ -61,9 +61,15 @@ export const generalWarriorDefinition = {
     aiControlled: {
       type: AiType.Character
     },
+    audio: {
+      sounds: {
+        // todo
+      }
+    },
     animatable: { animations: ANIM_GENERAL_WARRIOR_DEFINITION }
   },
   systems: {
-    movement: { enabled: true }
+    movement: { enabled: true },
+    action: { enabled: true }
   }
 } satisfies PrefabDefinition;

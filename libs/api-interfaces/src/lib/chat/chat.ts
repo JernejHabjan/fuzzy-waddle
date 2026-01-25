@@ -1,7 +1,9 @@
+import type { UserId } from "../game-instance/player/player";
+
 export interface ChatMessage {
   id?: number;
   text: string;
-  userId: string;
+  userId: UserId;
   fullName: string;
   createdAt: Date;
   gameInstanceId?: string | null;

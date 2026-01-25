@@ -1,6 +1,7 @@
 import { Injectable, type OnDestroy } from "@angular/core";
 import { Socket } from "ngx-socket-io";
 import {
+  type GameInstanceId,
   type LittleMuncherCommunicatorClimbingEvent,
   type LittleMuncherCommunicatorPauseEvent,
   type LittleMuncherCommunicatorResetEvent,
@@ -22,7 +23,7 @@ export class LittleMuncherCommunicatorService implements CommunicatorService, On
   pause?: TwoWayCommunicator<LittleMuncherCommunicatorPauseEvent, LittleMuncherCommunicatorType>;
   reset?: TwoWayCommunicator<LittleMuncherCommunicatorResetEvent, LittleMuncherCommunicatorType>;
 
-  startCommunication(gameInstanceId: string, socket?: Socket) {
+  startCommunication(gameInstanceId: GameInstanceId, socket?: Socket) {
     this.move = new TwoWayCommunicator<LittleMuncherPosition, LittleMuncherCommunicatorType>(
       LittleMuncherGatewayEvent.LittleMuncherAction,
       "move",
