@@ -6,6 +6,10 @@ import { SelectionGroupsComponent } from "../player/human-controller/selection-g
 import { CameraMovementHandler } from "../player/human-controller/cameraMovementHandler";
 import { ProbableWafflePlayerType } from "@fuzzy-waddle/api-interfaces";
 import { AiPlayerHandler } from "../player/ai-controller/ai-player-handler";
+import { emitEventSelection, getSelectableSceneChildren } from "./scene-data";
+import { getActorComponent } from "./actor-component";
+import { SelectableComponent } from "../entity/components/selectable-component";
+import { IdComponent } from "../entity/components/id-component";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class LoadGame {
@@ -83,6 +87,33 @@ export class LoadGame {
           selectionGroupsComponent.setGroups(selectionGroups);
         }
       });
+    }
+
+    // Restore current selection - sync selected actors to player state
+    // SelectableComponent.setData() is called per-actor during load, but player state selection[] is not synced
+    this.scene.time.delayedCall(150, () => {
+      this.syncSelectionToPlayerState();
+    });
+  }
+
+  /**
+   * After actors are loaded with their selection state restored via setData(),
+   * we need to sync the selection to the player state so the UI updates correctly.
+   */
+  private syncSelectionToPlayerState(): void {
+    const selectableActors = getSelectableSceneChildren(this.scene);
+    const selectedActorIds: string[] = [];
+
+    for (const actor of selectableActors) {
+      const selectableComponent = getActorComponent(actor, SelectableComponent);
+      const idComponent = getActorComponent(actor, IdComponent);
+      if (selectableComponent?.getSelected() && idComponent?.id) {
+        selectedActorIds.push(idComponent.id);
+      }
+    }
+
+    if (selectedActorIds.length > 0) {
+      emitEventSelection(this.scene, "selection.set", selectedActorIds);
     }
   }
 
