@@ -35,7 +35,7 @@ export class LoadGame {
     this.scene.baseGameData.gameInstance.gameState!.data.actors.forEach((actorDefinition) => {
       sceneActorCreator.createActorFromDefinition(actorDefinition);
     });
-    console.log("Loaded game actors");
+    // console.log("Loaded game actors");
   }
 
   /**
@@ -51,7 +51,7 @@ export class LoadGame {
     // Restore AI players' behavior tree state
     this.restoreAiPlayersState();
 
-    console.log("Loaded player data");
+    // console.log("Loaded player data");
   }
 
   private restoreCurrentPlayerData(): void {
