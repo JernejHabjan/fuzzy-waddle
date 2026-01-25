@@ -4,7 +4,7 @@ import { Subscription } from "rxjs";
 import { getSceneExternalComponent } from "../../world/services/scene-component-helpers";
 import { OptionsService } from "../../../gui/options/options.service";
 import { GameSettings } from "../../core/gameSettings";
-import { applyPointerLockPatch } from "apps/client/src/app/shared/game/phaser/patches/pointer-lock-patch";
+import { applyPointerLockPatch } from "./pointer-lock-patch";
 
 export class LockedCursorHandler {
   private lockToScreen: boolean;
