@@ -1,4 +1,6 @@
 import {
+  type ActorId,
+  type PlayerNumber,
   type PlayerStateHousing,
   type PlayerStateResources,
   type ProbableWaffleGameStateDataChangeEvent,
@@ -26,7 +28,7 @@ import { HealthComponent } from "../entity/components/combat/components/health-c
 import { VisionComponent } from "../entity/components/vision-component";
 import { type GameObjectActionAssignerConfig } from "../prefabs/gui/game-object-action-assigner";
 
-export function getPlayer(scene: Scene, playerNumber?: number): ProbableWafflePlayer | undefined {
+export function getPlayer(scene: Scene, playerNumber?: PlayerNumber): ProbableWafflePlayer | undefined {
   if (!scene) {
     console.error("Scene is undefined");
     return undefined;
@@ -113,7 +115,7 @@ export function sendPlayerStateEvent(
   scene: Scene,
   property: ProbableWafflePlayerDataChangeEventProperty,
   payloadIn: ProbableWafflePlayerDataChangeEventPayload,
-  playerNumber?: number
+  playerNumber?: PlayerNumber
 ): void {
   if (!(scene instanceof BaseScene)) throw new Error("Scene is not of type BaseScene");
 
@@ -163,26 +165,36 @@ export function emitResource(
   scene: Scene,
   action: "resource.added" | "resource.removed",
   resources: Partial<PlayerStateResources>,
-  playerNumber?: number
+  playerNumber?: PlayerNumber
 ) {
-  sendPlayerStateEvent(scene, action, {
-    playerStateData: {
-      resources: resources as PlayerStateResources
-    }
-  }, playerNumber);
+  sendPlayerStateEvent(
+    scene,
+    action,
+    {
+      playerStateData: {
+        resources: resources as PlayerStateResources
+      }
+    },
+    playerNumber
+  );
 }
 
 export function emitHousing(
   scene: Scene,
   action: "housing.added" | "housing.removed" | "housing.current.increased" | "housing.current.decreased",
   housing: Partial<PlayerStateHousing>,
-  playerNumber?: number
+  playerNumber?: PlayerNumber
 ) {
-  sendPlayerStateEvent(scene, action, {
-    playerStateData: {
-      housing: housing as PlayerStateHousing
-    }
-  }, playerNumber);
+  sendPlayerStateEvent(
+    scene,
+    action,
+    {
+      playerStateData: {
+        housing: housing as PlayerStateHousing
+      }
+    },
+    playerNumber
+  );
 }
 
 export function listenToSelectionEvents(scene: Scene): Observable<ProbableWafflePlayerDataChangeEvent> | undefined {
@@ -197,7 +209,7 @@ export function emitEventIssueMoveCommandToSelectedActors(
   scene: Phaser.Scene,
   tileVec3: Vector3Simple,
   worldVec3: Vector3Simple,
-  selectedActorObjectIds: string[]
+  selectedActorObjectIds: ActorId[]
 ) {
   if (!(scene instanceof ProbableWaffleScene)) throw new Error("Scene is not of type ProbableWaffleScene");
   scene.communicator.playerChanged!.send({

@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { type User } from "@supabase/supabase-js";
 import {
   type GameInstanceDataDto,
+  GameInstanceId,
   GameSessionState,
   type LittleMuncherGameCreateDto,
   LittleMuncherGameInstance,
@@ -113,7 +114,7 @@ export class GameInstanceService implements GameInstanceServiceInterface {
   getSpectatorEvent(
     user: User,
     room: LittleMuncherRoom,
-    gameInstanceId: string,
+    gameInstanceId: GameInstanceId,
     action: SpectatorAction
   ): LittleMuncherSpectatorEvent {
     return {
@@ -145,7 +146,7 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     });
   }
 
-  findGameInstance(gameInstanceId: string): LittleMuncherGameInstance | undefined {
+  findGameInstance(gameInstanceId: GameInstanceId): LittleMuncherGameInstance | undefined {
     return this.openGameInstances.find(
       (gameInstance) => gameInstance.gameInstanceMetadata.data.gameInstanceId === gameInstanceId
     );

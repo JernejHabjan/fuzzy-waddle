@@ -1,5 +1,6 @@
 import {
   type GameInstanceDataDto,
+  GameInstanceId,
   type LittleMuncherGameCreateDto,
   LittleMuncherGameInstance,
   type LittleMuncherGameInstanceData,
@@ -28,8 +29,8 @@ export interface GameInstanceServiceInterface {
   getSpectatorEvent(
     user: User,
     room: LittleMuncherRoom,
-    gameInstanceId: string,
+    gameInstanceId: GameInstanceId,
     action: SpectatorAction
   ): LittleMuncherSpectatorEvent;
-  findGameInstance(gameInstanceId: string): LittleMuncherGameInstance | undefined;
+  findGameInstance(gameInstanceId: GameInstanceId): LittleMuncherGameInstance | undefined;
 }

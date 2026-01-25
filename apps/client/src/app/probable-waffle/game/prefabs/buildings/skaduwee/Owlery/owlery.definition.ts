@@ -31,6 +31,7 @@ export const owleryDefinition = {
     info: {
       name: "Owlery",
       description: "Produces Owls",
+      tooltipDescription: ["Trains flying units", "Produces fast aerial scouts and attackers"],
       portraitAnimation: {
         idle: ANIM_BUILDING_ICON_ANIMS_SKADUWEE_OWLERY_IDLE,
         action: ANIM_BUILDING_ICON_ANIMS_SKADUWEE_OWLERY_ACTION

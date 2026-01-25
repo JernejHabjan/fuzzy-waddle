@@ -1,5 +1,7 @@
+import type { UserId } from "./player/player";
+
 export interface BaseSpectatorData {
-  userId: string;
+  userId: UserId;
 }
 
 export abstract class BaseSpectator<TData extends BaseSpectatorData = BaseSpectatorData> {

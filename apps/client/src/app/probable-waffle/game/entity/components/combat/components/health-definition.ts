@@ -1,9 +1,9 @@
 import { ActorPhysicalType } from "./actor-physical-type";
 
 export type HealthDefinition = {
-  maxHealth: number;
-  maxArmour?: number;
-  regenerateHealthRate?: number;
-  healthDisplayBehavior?: "always" | "onDamage";
-  physicalState: ActorPhysicalType;
+  readonly maxHealth: number;
+  readonly maxArmour?: number;
+  readonly regenerateHealthRate?: number;
+  readonly healthDisplayBehavior?: "always" | "onDamage";
+  readonly physicalState: ActorPhysicalType;
 };

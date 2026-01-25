@@ -15,6 +15,7 @@ import { AttackComponent } from "../../entity/components/combat/components/attac
 import { ProductionCostComponent } from "../../entity/components/production/production-cost-component";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import {
+  type ActorId,
   ObjectNames,
   type ProbableWaffleDoubleSelectionData,
   type ProbableWaffleSelectionData
@@ -237,7 +238,7 @@ export class GameObjectSelectionHandler {
     }
   }
 
-  private playAudio(actorIds: string[]) {
+  private playAudio(actorIds: ActorId[]) {
     if (!actorIds.length) return;
     const firstActorId = actorIds[0]!;
     const firstActor = this.getActorsByIds([firstActorId])[0];
@@ -261,7 +262,7 @@ export class GameObjectSelectionHandler {
    * Gets game objects in current users viewport by the same actor name.
    * Used when double-clicking on an actor to select same actors on screen by type
    */
-  private getSameTypeActorsInViewportById(objectId: string): GameObject[] {
+  private getSameTypeActorsInViewportById(objectId: ActorId): GameObject[] {
     const selectableChildren = this.getSelectableChildren();
 
     // Find the original actor to get its type/name

@@ -45,6 +45,7 @@ describe("MainComponent", () => {
 
     fixture = TestBed.createComponent(MainComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput("level", "1");
     fixture.detectChanges();
   });
 

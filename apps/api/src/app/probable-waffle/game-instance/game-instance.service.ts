@@ -60,7 +60,7 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     );
   }
 
-  stopGameInstance(gameInstanceId: string, user: User) {
+  stopGameInstance(gameInstanceId: GameInstanceId, user: User) {
     const gameInstance = this.findGameInstance(gameInstanceId);
     if (!gameInstance) return;
     if (!this.checkIfPlayerIsCreator(gameInstance, user)) return;
@@ -97,11 +97,11 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     );
   }
 
-  findGameInstance(gameInstanceId: string): ProbableWaffleGameInstance | undefined {
+  findGameInstance(gameInstanceId: GameInstanceId): ProbableWaffleGameInstance | undefined {
     return this.gameInstanceHolderService.findGameInstance(gameInstanceId);
   }
 
-  getGameInstanceData(gameInstanceId: string): ProbableWaffleGameInstanceData | null {
+  getGameInstanceData(gameInstanceId: GameInstanceId): ProbableWaffleGameInstanceData | null {
     const gameInstance = this.findGameInstance(gameInstanceId);
     if (!gameInstance) return null;
     return gameInstance.data;
