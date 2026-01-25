@@ -41,8 +41,9 @@ export class TileMapTintComponent {
   };
 
   onKilled() {
-    this.restoreTint();
     this.gameObject.scene.events.off(this.rerenderTintEvent, this.tintTilemapAroundTransform, this);
+    if (!this.gameObject.scene.scene.isActive()) return;
+    this.restoreTint();
     // make sure others know to rerender tints as current tint may be overlapping with others
     this.gameObject.scene.events.emit(this.rerenderTintEvent);
   }

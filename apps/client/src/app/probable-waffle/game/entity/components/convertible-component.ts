@@ -94,10 +94,5 @@ export class ConvertibleComponent {
   private destroy() {
     this.ready = false;
     this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
-
-    // Remove this component from the actor
-    if (!this.converted) {
-      removeActorComponent(this.gameObject, this);
-    }
   }
 }
