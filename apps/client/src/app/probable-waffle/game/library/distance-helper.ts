@@ -38,13 +38,13 @@ export class DistanceHelper {
     // If flying height exceeds attack range, we can't reach it - return minimum of 1 tile
     // to avoid pathfinding directly underneath
     if (flyingHeight >= attackRange) {
-      return Math.max(1, attackRange * 0.5);
+      return Math.max(1, Math.floor(attackRange * 0.5));
     }
 
     // Calculate horizontal distance: sqrt(range² - height²)
     const horizontalRange = Math.sqrt(attackRange * attackRange - flyingHeight * flyingHeight);
     // Ensure we don't go directly underneath (minimum 1 tile horizontal distance)
-    return Math.max(1, horizontalRange);
+    return Math.max(1, Math.floor(horizontalRange));
   }
   static distance3D(a: Vector3Simple, b: Vector3Simple): number {
     const dx = b.x - a.x;

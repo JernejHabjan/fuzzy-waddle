@@ -432,10 +432,12 @@ export class AttackComponent {
     // For flying targets, calculate the effective horizontal range
     // so that ground units stop at the correct distance
     if (isFlying) {
-      return DistanceHelper.getEffectiveHorizontalRangeForFlyingTargetInTiles(
+      // noinspection UnnecessaryLocalVariableJS
+      const distanceForFlyingTargets = DistanceHelper.getEffectiveHorizontalRangeForFlyingTargetInTiles(
         attackRangeWithHighGroundBonus,
         targetGameObject
       );
+      return distanceForFlyingTargets;
     }
 
     return attackRangeWithHighGroundBonus;
