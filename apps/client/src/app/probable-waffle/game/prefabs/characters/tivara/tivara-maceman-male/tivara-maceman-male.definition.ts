@@ -39,7 +39,12 @@ export const tivaraMacemanMaleDefinition = {
     info: {
       name: "Anubian Mauler",
       description:
-        "Cursed warrior in ritual armor, wielding mace and shield to spread plague in service of Tivara’s dark will",
+        "Cursed warrior in ritual armor, wielding mace and shield to spread plague in service of Tivara's dark will",
+      tooltipDescription: [
+        "Strong melee fighter",
+        "Highly durable frontline unit",
+        "Effective against structures"
+      ],
       smallImage: {
         key: "factions",
         frame: "character_icons/tivara/maceman_male.png",
