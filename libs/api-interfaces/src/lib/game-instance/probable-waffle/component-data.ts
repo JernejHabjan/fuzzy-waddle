@@ -137,3 +137,8 @@ export interface AIBehaviorTreeStateData {
   blackboard: PlayerAiBlackboardData;
   telemetry?: unknown;
 }
+
+export interface ConvertibleComponentData {
+  detectionRange?: number;
+  checkInterval?: number;
+}

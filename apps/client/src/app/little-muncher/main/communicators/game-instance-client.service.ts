@@ -3,6 +3,7 @@ import { firstValueFrom } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import {
   type GameInstanceDataDto,
+  type GameInstanceId,
   type LittleMuncherGameCreate,
   type LittleMuncherGameCreateDto,
   LittleMuncherGameInstance,
@@ -75,7 +76,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     await this.openLevelCommunication(this.gameInstance.gameInstanceMetadata!.data.gameInstanceId!);
   }
 
-  private async openLevelCommunication(gameInstanceId: string): Promise<void> {
+  private async openLevelCommunication(gameInstanceId: GameInstanceId): Promise<void> {
     await this.sceneCommunicatorClientService.startListeningToEvents(gameInstanceId);
   }
 

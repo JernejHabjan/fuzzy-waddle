@@ -11,6 +11,7 @@ import type {
   BackboardComponentData,
   BuilderComponentData,
   ContainerComponentData,
+  ConvertibleComponentData,
   GathererComponentData,
   HealingComponentData,
   HousingComponentData,
@@ -73,4 +74,5 @@ export interface ActorDefinition extends Record<string, any> {
   walkable?: Partial<WalkableComponentData>;
   representable?: Partial<RepresentableComponentData>;
   blackboard?: Partial<BackboardComponentData>;
+  convertible?: Partial<ConvertibleComponentData>;
 }

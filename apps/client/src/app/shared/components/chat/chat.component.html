@@ -1,5 +1,8 @@
-<div #chatBody class="chat-body">
+<div #chatBody class="chat-body" (scroll)="onScroll()">
   <div class="chat-messages">
+    @if (isLoading) {
+      <div class="chat-loading">Loading...</div>
+    }
     @for (message of messages; track message) {
       <div class="chat-message">
         <div class="chat-message-content">

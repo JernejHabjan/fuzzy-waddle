@@ -1,4 +1,6 @@
 import type {
+  GameInstanceId,
+  PlayerNumber,
   PositionPlayerDefinition,
   ProbableWaffleDataChangeEventProperty,
   ProbableWaffleGameFoundEvent,
@@ -24,9 +26,9 @@ export interface GameInstanceClientServiceInterface {
   ): Promise<void>;
   stopGameInstance(): Promise<void>;
   startGame(): Promise<void>;
-  joinGameInstanceAsPlayerForMatchmaking(gameInstanceId: string): Promise<void>;
-  joinGameInstanceAsPlayer(gameInstanceId: string): Promise<void>;
-  joinGameInstanceAsSpectator(gameInstanceId: string): Promise<void>;
+  joinGameInstanceAsPlayerForMatchmaking(gameInstanceId: GameInstanceId): Promise<void>;
+  joinGameInstanceAsPlayer(gameInstanceId: GameInstanceId): Promise<void>;
+  joinGameInstanceAsSpectator(gameInstanceId: GameInstanceId): Promise<void>;
   get currentGameInstanceId(): string | null;
   gameInstanceMetadataChanged(
     property: ProbableWaffleDataChangeEventProperty<ProbableWaffleGameInstanceMetadataData>,
@@ -37,13 +39,13 @@ export interface GameInstanceClientServiceInterface {
     gameModeData: ProbableWaffleGameModeData
   ): Promise<void>;
   playerSlotOpened(playerDefinition: PositionPlayerDefinition): Promise<void>;
-  removePlayer(playerNumber: number): Promise<void>;
+  removePlayer(playerNumber: PlayerNumber): Promise<void>;
   addSelfAsSpectator(): Promise<void>;
   getGameFoundListener(): Promise<Observable<ProbableWaffleGameFoundEvent>>;
   requestGameSearchForMatchmaking(matchmakingOptions: MatchmakingOptions): Promise<void>;
   stopRequestGameSearchForMatchmaking(): Promise<void>;
   navigateToLobbyOrDirectlyToGame(): Promise<void>;
-  getGameInstanceData(gameInstanceId: string): Promise<ProbableWaffleGameInstanceData | null>;
+  getGameInstanceData(gameInstanceId: GameInstanceId): Promise<ProbableWaffleGameInstanceData | null>;
   addAiPlayer(): Promise<PositionPlayerDefinition>;
   addSelfAsPlayer(): Promise<PositionPlayerDefinition>;
   loadGameInstance(gameInstanceSaveData: ProbableWaffleGameInstanceSaveData): Promise<void>;

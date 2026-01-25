@@ -1,4 +1,4 @@
-import { BasePlayer } from "../player/player";
+import { BasePlayer, type PlayerNumber } from "../player/player";
 import type { BaseData } from "../data";
 import { BasePlayerController, type BasePlayerControllerData } from "../player/player-controller";
 import { BasePlayerState } from "../player/player-state";
@@ -33,7 +33,7 @@ export class ProbableWafflePlayer extends BasePlayer<
     this.playerState.data.selection = [];
   }
 
-  get playerNumber(): number | undefined {
+  get playerNumber(): PlayerNumber | undefined {
     return this.playerController.data.playerDefinition?.player.playerNumber ?? undefined;
   }
 
@@ -160,8 +160,7 @@ export enum ProbableWaffleAiDifficulty {
 }
 
 export interface PlayerLobbyDefinition {
-  // 1 - 8
-  playerNumber: number;
+  playerNumber: PlayerNumber;
   playerName?: string;
   playerPosition?: number;
   joined: boolean;
@@ -189,7 +188,7 @@ export function getRandomFactionType(): FactionType {
  * @returns A PlayerLobbyDefinition object
  */
 export function createPlayerLobbyDefinition(
-  playerNumber: number,
+  playerNumber: PlayerNumber,
   playerPosition?: number,
   playerName?: string
 ): PlayerLobbyDefinition {

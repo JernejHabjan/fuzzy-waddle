@@ -2,6 +2,7 @@ import { type AttackData } from "../attack-data";
 import { HealthComponent } from "./health-component";
 import { getActorComponent } from "../../../../data/actor-component";
 import { AnimationActorComponent } from "../../animation/animation-actor-component";
+import { getHighGroundRangeBonus } from "../high-ground.helper";
 import {
   getGameObjectBounds,
   getGameObjectDepth,
@@ -341,7 +342,14 @@ export class AttackComponent {
     return 0;
   }
 
-  getMaximumRange(): number {
+  getMaximumRange(targetGameObject?: GameObject): number {
+    if (targetGameObject) {
+      return Math.max(
+        ...this.attackDefinition.attacks.map(
+          (attack) => attack.range + getHighGroundRangeBonus(this.gameObject, targetGameObject, attack)
+        )
+      );
+    }
     return Math.max(...this.attackDefinition.attacks.map((attack) => attack.range));
   }
 
@@ -388,7 +396,7 @@ export class AttackComponent {
   }
 
   /**
-   * Returns the optimal attack range for a specific target
+   * Returns the optimal attack range for a specific target, including high ground bonus
    * This is useful for AI to position units at the right distance
    */
   getAttackRange(targetGameObject: GameObject): number | undefined {
@@ -402,18 +410,21 @@ export class AttackComponent {
 
     if (availableAttacks.length === 0) return undefined;
 
-    // Sort by damage (highest first) and then by range (prefer longer range)
+    // Sort by damage (highest first) and then by effective range (prefer longer range)
     availableAttacks.sort((a, b) => {
       // Prioritize damage first
       const damageDiff = b.damage - a.damage;
       if (damageDiff !== 0) return damageDiff;
 
-      // If damage is the same, prefer longer range
-      return b.range - a.range;
+      // If damage is the same, prefer longer effective range (including high ground bonus)
+      const aEffectiveRange = a.range + getHighGroundRangeBonus(this.gameObject, targetGameObject, a);
+      const bEffectiveRange = b.range + getHighGroundRangeBonus(this.gameObject, targetGameObject, b);
+      return bEffectiveRange - aEffectiveRange;
     });
 
-    // Return the range of the best attack
-    return availableAttacks[0]!.range;
+    // Return the effective range of the best attack (base range + high ground bonus)
+    const bestAttack = availableAttacks[0]!;
+    return bestAttack.range + getHighGroundRangeBonus(this.gameObject, targetGameObject, bestAttack);
   }
 
   setData(data: Partial<AttackComponentData>) {
