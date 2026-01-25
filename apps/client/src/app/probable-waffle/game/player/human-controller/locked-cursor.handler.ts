@@ -1,5 +1,5 @@
 import { Input } from "phaser";
-import { CursorHandler } from "./cursor.handler";
+import { CursorHandler, CursorType } from "./cursor.handler";
 import { Subscription } from "rxjs";
 import { getSceneExternalComponent } from "../../world/services/scene-component-helpers";
 import { OptionsService } from "../../../gui/options/options.service";
@@ -9,10 +9,11 @@ export class LockedCursorHandler {
   private lockToScreen: boolean;
   private readonly input: Input.InputPlugin;
 
-  private customCursor: Phaser.GameObjects.Graphics | null = null;
+  private customCursor: Phaser.GameObjects.Image | null = null;
   private cursorPosition = { x: 0, y: 0 };
   private optionsChangedSubscription?: Subscription;
-
+  private currentCursorType: CursorType = CursorType.Default;
+  private readonly assetsKey = "cursors";
   constructor(
     private readonly scene: Phaser.Scene,
     private readonly cursorHandler: CursorHandler,
@@ -83,6 +84,7 @@ export class LockedCursorHandler {
    */
   private onPointerMove(pointer: Phaser.Input.Pointer) {
     if (!this.input.mouse?.locked || !this.customCursor) return;
+
     // Update cursor position using movement deltas
     this.cursorPosition.x += pointer.movementX;
     this.cursorPosition.y += pointer.movementY;
@@ -96,6 +98,23 @@ export class LockedCursorHandler {
 
     // Update the visual cursor position
     this.customCursor.setPosition(this.cursorPosition.x, this.cursorPosition.y);
+  }
+
+  private getTextureKeyForCursorType(cursorType: CursorType): string {
+    return `${this.cursorHandler.cursors[cursorType]}.png`;
+  }
+
+  /**
+   * Called by CursorHandler whenever the cursor type changes
+   * Updates the custom cursor image to match the new cursor type
+   */
+  onCursorChanged() {
+    if (!this.input.mouse?.locked) return;
+    const newCursorType = this.cursorHandler.getCurrentCursorType();
+    if (newCursorType !== this.currentCursorType) {
+      this.currentCursorType = newCursorType;
+      this.updateCustomCursorImage();
+    }
   }
 
   /**
@@ -121,18 +140,32 @@ export class LockedCursorHandler {
     if (!this.cursorHandler) return;
     this.destroyCustomCursor(); // Ensure we don't create multiple cursors
 
-    const url = this.cursorHandler.getCurrentCursorUrl(); // todo - use this cursor instead - maybe you need to convert it to png first
-
-    this.customCursor = this.scene.add.graphics({ fillStyle: { color: 0xffffff } });
-    this.customCursor.fillCircle(0, 0, 5); // Draw a small white circle as the cursor
-    this.customCursor.setDepth(100); // Ensure it's on top
-
     // Initialize cursor position to current pointer position
     const pointerX = this.input.activePointer.x;
     const pointerY = this.input.activePointer.y;
-
     this.cursorPosition = { x: pointerX, y: pointerY };
-    this.customCursor.setPosition(this.cursorPosition.x, this.cursorPosition.y);
+
+    this.customCursor = this.scene.add.image(
+      this.cursorPosition.x,
+      this.cursorPosition.y,
+      this.assetsKey,
+      this.getTextureKeyForCursorType(this.currentCursorType)
+    );
+    this.customCursor.setOrigin(0, 0);
+    this.customCursor.setDepth(Number.MAX_SAFE_INTEGER);
+  }
+
+  private updateCustomCursorImage() {
+    if (!this.customCursor) return;
+
+    const textureKey = this.assetsKey;
+    const frameKey = this.getTextureKeyForCursorType(this.currentCursorType);
+    // update custom cursor texture
+    if (this.customCursor) {
+      this.customCursor.setTexture(textureKey, frameKey);
+    } else {
+      this.createCustomCursor();
+    }
   }
 
   destroy() {
@@ -154,6 +187,11 @@ export class LockedCursorHandler {
     });
   }
 
+  /**
+   * The lock needs to be released when opening a dialog to allow the user to interact with it
+   * Note that there's also a jump when lock is disabled, which may cause discomfort
+   * The native cursor will be shown on the point where the locked cursor was before releasing the lock
+   */
   static releasePointerLock(input: Input.InputPlugin) {
     if (!input.mouse?.locked) return;
     input.mouse.releasePointerLock();

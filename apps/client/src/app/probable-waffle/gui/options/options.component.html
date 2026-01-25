@@ -48,18 +48,23 @@
 
     <div class="card mt-3 p-3">
       <h5 class="mb-3">Game Controls:</h5>
-      @if (!environment.production) {
-        <div class="mb-3 form-check">
-          <input
-            type="checkbox"
-            [(ngModel)]="optionsService.gameSettings.lockToScreen"
-            (change)="saveToLocalStorage('game')"
-            class="form-check-input"
-            id="lockToScreen"
-          />
-          <label class="form-check-label" for="lockToScreen"> Lock cursor to screen (experimental) </label>
-        </div>
-      }
+      <div class="mb-3 form-check">
+        <input
+          type="checkbox"
+          [(ngModel)]="optionsService.gameSettings.lockToScreen"
+          (change)="saveToLocalStorage('game')"
+          class="form-check-input"
+          id="lockToScreen"
+        />
+        <label class="form-check-label" for="lockToScreen">
+          Lock cursor to screen (experimental)
+          <span
+            class="info-icon"
+            title="Locks cursor to game window. Automatically releases when dialogs open. Cursor position may jump when releasing lock."
+            >ⓘ</span
+          >
+        </label>
+      </div>
       <div class="mb-3 form-check">
         <input
           type="checkbox"
