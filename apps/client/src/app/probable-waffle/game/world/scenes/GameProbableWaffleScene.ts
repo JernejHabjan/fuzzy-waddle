@@ -32,6 +32,7 @@ import { ActorIndexSystem } from "../services/ActorIndexSystem";
 import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
 import { SelectionTabHandler } from "../../player/human-controller/selection-tab-handler";
 import { LockedCursorHandler } from "../../player/human-controller/locked-cursor.handler";
+import { SpellCursor } from "../../player/human-controller/spell-cursor";
 
 export default class GameProbableWaffleScene extends ProbableWaffleScene {
   tilemap!: Phaser.Tilemaps.Tilemap;
@@ -67,7 +68,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     const playerActionsHandler = new PlayerActionsHandler(this, hud);
     const actorIndex = new ActorIndexSystem(this);
     const techTreeService = new TechTreeService();
-
+    const spellCursor = new SpellCursor(this);
     this.sceneGameData.components.push(
       new TilemapComponent(this.tilemap),
       new BuildingCursor(this),
@@ -82,7 +83,8 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
       new DebuggingService(),
       new CrossSceneCommunicationService(),
       actorIndex,
-      techTreeService
+      techTreeService,
+      spellCursor
     );
     this.sceneGameData.systems.push(new AiPlayerHandler(this));
     this.sceneGameData.components.push(new FogOfWarComponent(this, this.tilemap));

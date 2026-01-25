@@ -1,32 +1,27 @@
-import { GameObjects, Input } from 'phaser';
-import { EventEmitter } from '@angular/core';
-import { onSceneInitialized } from '../../data/game-object-helper';
-import { SpellType } from '../../entity/components/combat/spell-type';
-import { spellDefinitions } from '../../entity/components/combat/spell-definitions';
-import { TilemapComponent } from '../../world/tilemap/tilemap.component';
-import { getSceneComponent, getSceneService } from '../../world/services/scene-component-helpers';
-import { NavigationService } from '../../world/services/navigation.service';
-import type { Vector2Simple } from '@fuzzy-waddle/api-interfaces';
-import GameProbableWaffleScene from '../../world/scenes/GameProbableWaffleScene';
-import { SpellCastingSystem } from '../../entity/systems/spell-casting.system';
-import { getActorSystem } from '../../data/actor-system';
-import { SelectableComponent } from '../../entity/components/selectable-component';
-import { getActorComponent } from '../../data/actor-component';
-import { SpellComponent } from '../../entity/components/combat/components/spell-component';
+import { GameObjects, Input } from "phaser";
+import { EventEmitter } from "@angular/core";
+import { SpellType } from "../../entity/components/combat/spell-type";
+import { spellDefinitions } from "../../entity/components/combat/spell-definitions";
+import { TilemapComponent } from "../../world/tilemap/tilemap.component";
+import type { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import GameProbableWaffleScene from "../../world/scenes/GameProbableWaffleScene";
+import { SpellCastingSystem } from "../../entity/systems/spell-casting.system";
+import { getActorSystem } from "../../data/actor-system";
+import { SelectableComponent } from "../../entity/components/selectable-component";
+import { getActorComponent } from "../../data/actor-component";
+import { SpellComponent } from "../../entity/components/combat/components/spell-component";
+import { IsoHelper } from "../../world/tilemap/iso-helper";
 
 export class SpellCursor {
   private aoeCircle?: GameObjects.Graphics;
   private rangeCircle?: GameObjects.Graphics;
   private spellType?: SpellType;
   private selectedCasters: Phaser.GameObjects.GameObject[] = [];
-  private tileMapComponent?: TilemapComponent;
-  private navigationService?: NavigationService;
   private escKey?: Phaser.Input.Keyboard.Key;
-  private pointerLocation?: Vector2Simple;
 
   startCastingSpell = new EventEmitter<SpellType>();
   stopCastingSpell = new EventEmitter<void>();
-  spellCast = new EventEmitter<{ spellType: SpellType; position: Vector2Simple }>();
+  spellCast = new EventEmitter<{ spellType: SpellType; tileXYZ: Vector3Simple }>();
 
   constructor(private scene: GameProbableWaffleScene) {
     this.startCastingSpell.subscribe((type) => this.activate(type));
@@ -34,19 +29,12 @@ export class SpellCursor {
     this.scene.input.on(Input.Events.POINTER_MOVE, this.handlePointerMove, this);
     this.scene.input.on(Input.Events.POINTER_DOWN, this.handlePointerDown, this);
     this.scene.input.on(Input.Events.GAME_OUT, this.deactivate, this);
-    onSceneInitialized(scene, this.init, this);
     scene.onShutdown.subscribe(() => this.destroy());
     this.subscribeToCancelAction();
   }
-
-  private init(): void {
-    this.tileMapComponent = getSceneComponent(this.scene, TilemapComponent);
-    this.navigationService = getSceneService(this.scene, NavigationService);
-  }
-
   private subscribeToCancelAction(): void {
     this.escKey = this.scene.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
-    this.escKey?.on('down', this.deactivate, this);
+    this.escKey?.on("down", this.deactivate, this);
   }
 
   get isCasting(): boolean {
@@ -138,14 +126,19 @@ export class SpellCursor {
     const worldX = pointer.worldX;
     const worldY = pointer.worldY;
 
-    this.pointerLocation = { x: worldX, y: worldY };
+    const worldPosition = this.scene.cameras.main.getWorldPoint(pointer.x, pointer.y);
+    const clickedTileXY = IsoHelper.isometricWorldToTileXY(this.scene, worldPosition.x, worldPosition.y, false);
 
     // Update AOE circle position
     this.aoeCircle.setPosition(worldX, worldY);
     this.aoeCircle.setVisible(true);
 
     // Check if position is in range
-    const isInRange = this.isPositionInRange(this.pointerLocation);
+    const isInRange = this.isPositionInRange({
+      x: clickedTileXY.x,
+      y: clickedTileXY.y,
+      z: 0
+    });
     const color = this.getSpellColor();
 
     // Update circle color based on range validity
@@ -154,29 +147,34 @@ export class SpellCursor {
 
     if (isInRange) {
       this.aoeCircle.fillStyle(color, 0.2);
-      this.aoeCircle.fillCircle(0, 0, radiusPixels);
+      this.aoeCircle.fillEllipse(0, 0, radiusPixels, radiusPixels / 2);
       this.aoeCircle.lineStyle(2, color, 0.6);
     } else {
       // Red tint when out of range
       this.aoeCircle.fillStyle(0xff0000, 0.2);
-      this.aoeCircle.fillCircle(0, 0, radiusPixels);
+      this.aoeCircle.fillEllipse(0, 0, radiusPixels, radiusPixels / 2);
       this.aoeCircle.lineStyle(2, 0xff0000, 0.6);
     }
-    this.aoeCircle.strokeCircle(0, 0, radiusPixels);
+    this.aoeCircle.strokeEllipse(0, 0, radiusPixels, radiusPixels / 2);
   }
 
   private handlePointerDown(pointer: Phaser.Input.Pointer): void {
     if (!this.isCasting || !this.spellType || pointer.button !== 0) return;
 
-    const worldPos = { x: pointer.worldX, y: pointer.worldY };
+    // convert pointerXY to worldXY including camera zoom
+    const worldPosition = this.scene.cameras.main.getWorldPoint(pointer.x, pointer.y);
+    const clickedTileXY = IsoHelper.isometricWorldToTileXY(this.scene, worldPosition.x, worldPosition.y, false);
+    if (!clickedTileXY) return;
 
-    // Convert world position to tile position
-    const tilePos = this.worldToTile(worldPos);
-    if (!tilePos) return;
+    const clickedTileXYZ = {
+      x: clickedTileXY.x,
+      y: clickedTileXY.y,
+      z: 0
+    } satisfies Vector3Simple;
 
     // Check if position is in range
-    if (!this.isPositionInRange(worldPos)) {
-      // Could play error sound here
+    if (!this.isPositionInRange(clickedTileXYZ)) {
+      // Could play error sound here // todo
       return;
     }
 
@@ -185,7 +183,7 @@ export class SpellCursor {
     for (const caster of this.selectedCasters) {
       const spellCastingSystem = getActorSystem(caster, SpellCastingSystem);
       if (spellCastingSystem) {
-        const success = spellCastingSystem.castSpell(this.spellType, tilePos);
+        const success = spellCastingSystem.castSpell(this.spellType, clickedTileXYZ);
         if (success) {
           castSuccess = true;
         }
@@ -193,7 +191,7 @@ export class SpellCursor {
     }
 
     if (castSuccess) {
-      this.spellCast.emit({ spellType: this.spellType, position: tilePos });
+      this.spellCast.emit({ spellType: this.spellType, tileXYZ: clickedTileXYZ });
     }
 
     // Deactivate cursor after cast (or keep active with shift key)
@@ -203,29 +201,21 @@ export class SpellCursor {
     }
   }
 
-  private isPositionInRange(worldPos: Vector2Simple): boolean {
+  private isPositionInRange(tileXYZ: Vector3Simple): boolean {
     if (!this.spellType) return false;
 
     const spellData = spellDefinitions[this.spellType];
     if (!spellData) return false;
 
-    const tilePos = this.worldToTile(worldPos);
-    if (!tilePos) return false;
-
     // Check if any caster can reach this position
     for (const caster of this.selectedCasters) {
       const spellCastingSystem = getActorSystem(caster, SpellCastingSystem);
-      if (spellCastingSystem?.isInRange(this.spellType, tilePos)) {
+      if (spellCastingSystem?.isInRange(this.spellType, tileXYZ)) {
         return true;
       }
     }
 
     return false;
-  }
-
-  private worldToTile(worldPos: Vector2Simple): Vector2Simple | null {
-    if (!this.navigationService) return null;
-    return this.navigationService.worldToTile(worldPos);
   }
 
   private getAoeRadiusPixels(): number {

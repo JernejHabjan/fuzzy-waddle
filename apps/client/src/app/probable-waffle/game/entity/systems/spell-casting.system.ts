@@ -1,24 +1,29 @@
-import { SpellType } from '../components/combat/spell-type';
-import type { SpellData } from '../components/combat/spell-data';
-import { spellDefinitions } from '../components/combat/spell-definitions';
-import { type StatusEffectData, StatusEffectType, type Vector2Simple } from '@fuzzy-waddle/api-interfaces';
-import { getActorComponent } from '../../data/actor-component';
-import { SpellComponent } from '../components/combat/components/spell-component';
-import { HealthComponent } from '../components/combat/components/health-component';
-import { StatusEffectComponent } from '../components/status-effect/status-effect-component';
-import { OwnerComponent } from '../components/owner-component';
-import { ActorTranslateComponent } from '../components/movement/actor-translate-component';
-import { AnimationActorComponent } from '../components/animation/animation-actor-component';
-import { getGameObjectBounds, getGameObjectLogicalTransform, onObjectReady } from '../../data/game-object-helper';
-import { getSceneService } from '../../world/services/scene-component-helpers';
-import { AudioService } from '../../world/services/audio.service';
-import { AoeZoneManager } from './aoe-zone-manager';
-import { NavigationService } from '../../world/services/navigation.service';
-import { DistanceHelper } from '../../library/distance-helper';
-import FrostBolt from '../../prefabs/weapons/FrostBolt';
-import { ProjectileType } from '../components/combat/projectile-type';
-import { DepthHelper } from '../../world/services/depth.helper';
-import Phaser from 'phaser';
+import { SpellType } from "../components/combat/spell-type";
+import type { SpellData } from "../components/combat/spell-data";
+import { spellDefinitions } from "../components/combat/spell-definitions";
+import {
+  type StatusEffectData,
+  StatusEffectType,
+  type Vector2Simple,
+  type Vector3Simple
+} from "@fuzzy-waddle/api-interfaces";
+import { getActorComponent } from "../../data/actor-component";
+import { SpellComponent } from "../components/combat/components/spell-component";
+import { HealthComponent } from "../components/combat/components/health-component";
+import { StatusEffectComponent } from "../components/status-effect/status-effect-component";
+import { OwnerComponent } from "../components/owner-component";
+import { ActorTranslateComponent } from "../components/movement/actor-translate-component";
+import { AnimationActorComponent } from "../components/animation/animation-actor-component";
+import { getGameObjectBounds, getGameObjectLogicalTransform, onObjectReady } from "../../data/game-object-helper";
+import { getSceneService } from "../../world/services/scene-component-helpers";
+import { AudioService } from "../../world/services/audio.service";
+import { AoeZoneManager } from "./aoe-zone-manager";
+import { NavigationService } from "../../world/services/navigation.service";
+import { DistanceHelper } from "../../library/distance-helper";
+import FrostBolt from "../../prefabs/weapons/FrostBolt";
+import { ProjectileType } from "../components/combat/projectile-type";
+import { DepthHelper } from "../../world/services/depth.helper";
+import Phaser from "phaser";
 
 export class SpellCastingSystem {
   private spellComponent?: SpellComponent;
@@ -75,18 +80,18 @@ export class SpellCastingSystem {
     return true;
   }
 
-  isInRange(spellType: SpellType, targetPosition: Vector2Simple): boolean {
+  isInRange(spellType: SpellType, targetTileXYZ: Vector3Simple): boolean {
     const spellData = spellDefinitions[spellType];
     if (!spellData) return false;
 
     const casterTransform = getGameObjectLogicalTransform(this.gameObject);
     if (!casterTransform) return false;
 
-    const distance = DistanceHelper.getTileDistanceBetweenPositions(casterTransform, targetPosition);
+    const distance = DistanceHelper.getTileDistanceBetweenGameObjectAndTile(this.gameObject, targetTileXYZ);
     return distance !== null && distance <= spellData.range;
   }
 
-  castSpell(spellType: SpellType, targetPosition: Vector2Simple): boolean {
+  castSpell(spellType: SpellType, targetTileXYZ: Vector3Simple): boolean {
     if (!this.canCastSpell(spellType)) {
       return false;
     }
@@ -95,13 +100,14 @@ export class SpellCastingSystem {
     if (!spellData) return false;
 
     // Check range
-    if (!this.isInRange(spellType, targetPosition)) {
+    if (!this.isInRange(spellType, targetTileXYZ)) {
       return false;
     }
 
     // Turn towards target
-    if (this.actorTranslateComponent) {
-      this.actorTranslateComponent.turnTowardsPosition(targetPosition);
+    const worldXY = this.navigationService?.getTileWorldCenter(targetTileXYZ);
+    if (this.actorTranslateComponent && worldXY) {
+      this.actorTranslateComponent.turnTowardsPosition(worldXY);
     }
 
     // Play cast animation
@@ -118,10 +124,10 @@ export class SpellCastingSystem {
 
     // Spawn projectile or apply effects immediately
     if (spellData.projectile) {
-      this.spawnProjectile(spellData, targetPosition);
+      this.spawnProjectile(spellData, targetTileXYZ);
     } else {
       // Instant cast - apply effects immediately
-      this.applySpellEffects(spellData, targetPosition);
+      this.applySpellEffects(spellData, targetTileXYZ);
     }
 
     // Start cooldown
@@ -181,7 +187,7 @@ export class SpellCastingSystem {
       x: targetWorld.x,
       y: targetWorld.y,
       duration: duration,
-      ease: 'Linear',
+      ease: "Linear",
       onComplete: () => {
         this.onProjectileImpact(spellData, targetPosition, targetWorld);
         this.stopProjectile();
@@ -189,7 +195,11 @@ export class SpellCastingSystem {
     });
   }
 
-  private onProjectileImpact(spellData: SpellData, targetTilePosition: Vector2Simple, targetWorldPosition: Vector2Simple): void {
+  private onProjectileImpact(
+    spellData: SpellData,
+    targetTilePosition: Vector2Simple,
+    targetWorldPosition: Vector2Simple
+  ): void {
     // Play impact animation
     if (spellData.projectile?.impactAnimation) {
       // TODO: Create impact animation at target position
@@ -247,7 +257,12 @@ export class SpellCastingSystem {
       if (!actorBounds) continue;
 
       // Check distance from target position
-      const distance = Phaser.Math.Distance.Between(targetWorld.x, targetWorld.y, actorBounds.centerX, actorBounds.centerY);
+      const distance = Phaser.Math.Distance.Between(
+        targetWorld.x,
+        targetWorld.y,
+        actorBounds.centerX,
+        actorBounds.centerY
+      );
 
       if (distance > aoeRadiusPixels) continue;
 
@@ -389,7 +404,7 @@ export class SpellCastingSystem {
 
     // TODO: Implement prefab spawning using the prefab system
     // This would create a new actor at the target position
-    console.warn('Prefab spawning not yet implemented:', spellData.spawnPrefab.prefabName);
+    console.warn("Prefab spawning not yet implemented:", spellData.spawnPrefab.prefabName);
   }
 
   private stopProjectile(): void {

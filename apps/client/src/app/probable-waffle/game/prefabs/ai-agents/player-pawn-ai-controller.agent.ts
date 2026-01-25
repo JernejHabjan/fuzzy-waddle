@@ -15,6 +15,7 @@ import { PawnAiBlackboard } from "./pawn-ai-blackboard";
 import { GathererComponent } from "../../entity/components/resource/gatherer-component";
 import { ResourceSourceComponent } from "../../entity/components/resource/resource-source-component";
 import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import { SpellTargetType } from "@fuzzy-waddle/api-interfaces";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import { ContainableComponent } from "../../entity/components/building/containable-component";
 import { ResourceDrainComponent } from "../../entity/components/resource/resource-drain-component";
@@ -28,7 +29,7 @@ import { StatusEffectComponent } from "../../entity/components/status-effect/sta
 import { SpellComponent } from "../../entity/components/combat/components/spell-component";
 import { SpellCastingSystem } from "../../entity/systems/spell-casting.system";
 import { spellDefinitions } from "../../entity/components/combat/spell-definitions";
-import { SpellTargetType } from "@fuzzy-waddle/api-interfaces";
+import { RepresentableComponent } from "../../entity/components/representable-component";
 
 export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
   constructor(
@@ -867,18 +868,18 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
       if (!spellData) continue;
 
       // Find target position based on spell target type
-      let targetPosition: { x: number; y: number } | null = null;
+      let targetPosition: Vector3Simple | null = null;
 
       switch (spellData.targetType) {
         case SpellTargetType.EnemyUnit:
         case SpellTargetType.Ground:
           // For offensive spells, target closest enemy position
           const enemy = visionComponent.getClosestVisibleEnemy();
-          if (enemy && enemy.body) {
-            targetPosition = {
-              x: (enemy.body as Phaser.Physics.Arcade.Body).x,
-              y: (enemy.body as Phaser.Physics.Arcade.Body).y
-            };
+          if (enemy) {
+            const representableComponentEnemy = getActorComponent(enemy, RepresentableComponent);
+            if (enemy && representableComponentEnemy) {
+              targetPosition = representableComponentEnemy.logicalWorldTransform;
+            }
           }
           break;
         case SpellTargetType.FriendlyUnit:
@@ -886,21 +887,22 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
           const friendlies = visionComponent.getVisibleFriendlies();
           for (const friendly of friendlies) {
             const healthComponent = getActorComponent(friendly, HealthComponent);
-            if (healthComponent && !healthComponent.healthIsFull && healthComponent.alive && friendly.body) {
-              targetPosition = {
-                x: (friendly.body as Phaser.Physics.Arcade.Body).x,
-                y: (friendly.body as Phaser.Physics.Arcade.Body).y
-              };
+            const representableComponentFriendly = getActorComponent(friendly, RepresentableComponent);
+            if (
+              healthComponent &&
+              !healthComponent.healthIsFull &&
+              healthComponent.alive &&
+              representableComponentFriendly
+            ) {
+              targetPosition = representableComponentFriendly.logicalWorldTransform;
               break;
             }
           }
           break;
         case SpellTargetType.Self:
-          if (this.gameObject.body) {
-            targetPosition = {
-              x: (this.gameObject.body as Phaser.Physics.Arcade.Body).x,
-              y: (this.gameObject.body as Phaser.Physics.Arcade.Body).y
-            };
+          const representableComponentSelf = getActorComponent(this.gameObject, RepresentableComponent);
+          if (representableComponentSelf) {
+            targetPosition = representableComponentSelf.logicalWorldTransform;
           }
           break;
       }

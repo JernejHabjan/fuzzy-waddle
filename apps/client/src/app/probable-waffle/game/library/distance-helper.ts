@@ -1,5 +1,5 @@
 import { getGameObjectCurrentTile } from "../data/game-object-helper";
-import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import type { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { getSceneService } from "../world/services/scene-component-helpers";
 import { NavigationService } from "../world/services/navigation.service";
 import { getActorComponent } from "../data/actor-component";
@@ -83,11 +83,6 @@ export class DistanceHelper {
 
     // noinspection UnnecessaryLocalVariableJS
     const distance = Math.sqrt(Math.pow(actorTile.x - tile.x, 2) + Math.pow(actorTile.y - tile.y, 2));
-    return Math.floor(distance);
-  }
-
-  static getTileDistanceBetweenPositions(pos1: Vector2Simple | Vector3Simple, pos2: Vector2Simple | Vector3Simple): number {
-    const distance = Math.sqrt(Math.pow(pos1.x - pos2.x, 2) + Math.pow(pos1.y - pos2.y, 2));
     return Math.floor(distance);
   }
 
