@@ -1,16 +1,15 @@
-import { EventEmitter } from '@angular/core';
-import { ResearchType } from './research-type';
-import { researchDefinitions } from './research-definitions';
-import { OwnerComponent } from '../owner-component';
-import { HealthComponent } from '../combat/components/health-component';
-import { ConstructionSiteComponent } from '../construction/construction-site-component';
-import { getActorComponent } from '../../../data/actor-component';
-import { emitResource, getPlayer } from '../../../data/scene-data';
-import { getSceneService } from '../../../world/services/scene-component-helpers';
-import { TechTreeService } from '../../../data/tech-tree/tech-tree.service';
-import { onObjectReady } from '../../../data/game-object-helper';
-import type { ResearchComponentData } from '@fuzzy-waddle/api-interfaces';
-import Phaser from 'phaser';
+import { EventEmitter } from "@angular/core";
+import { ResearchType } from "./research-type";
+import { researchDefinitions } from "./research-definitions";
+import { OwnerComponent } from "../owner-component";
+import { HealthComponent } from "../combat/components/health-component";
+import { getActorComponent } from "../../../data/actor-component";
+import { emitResource, getPlayer } from "../../../data/scene-data";
+import { getSceneService } from "../../../world/services/scene-component-helpers";
+import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
+import { onObjectReady } from "../../../data/game-object-helper";
+import type { ResearchComponentData } from "@fuzzy-waddle/api-interfaces";
+import Phaser from "phaser";
 
 export interface ResearchDefinition {
   availableResearch: ResearchType[];
@@ -22,10 +21,10 @@ export interface ResearchQueueItem {
 }
 
 export class ResearchComponent {
-  static readonly ResearchStartedEvent = 'researchStarted';
-  static readonly ResearchProgressEvent = 'researchProgress';
-  static readonly ResearchCompletedEvent = 'researchCompleted';
-  static readonly ResearchCancelledEvent = 'researchCancelled';
+  static readonly ResearchStartedEvent = "researchStarted";
+  static readonly ResearchProgressEvent = "researchProgress";
+  static readonly ResearchCompletedEvent = "researchCompleted";
+  static readonly ResearchCancelledEvent = "researchCancelled";
 
   researchStarted = new EventEmitter<ResearchType>();
   researchProgress = new EventEmitter<{ type: ResearchType; progress: number }>();
@@ -67,46 +66,38 @@ export class ResearchComponent {
     return this.currentResearch?.type;
   }
 
-  get isFinished(): boolean {
-    return getActorComponent(this.gameObject, ConstructionSiteComponent)?.isFinished ?? true;
-  }
-
   canStartResearch(type: ResearchType): { canStart: boolean; reason?: string } {
-    if (!this.isFinished) {
-      return { canStart: false, reason: 'Building not finished' };
-    }
-
     if (!this.availableResearch.includes(type)) {
-      return { canStart: false, reason: 'Research not available at this building' };
+      return { canStart: false, reason: "Research not available at this building" };
     }
 
     if (this.isResearching) {
-      return { canStart: false, reason: 'Already researching' };
+      return { canStart: false, reason: "Already researching" };
     }
 
     const owner = this.ownerComponent?.getOwner();
     if (owner === undefined) {
-      return { canStart: false, reason: 'No owner' };
+      return { canStart: false, reason: "No owner" };
     }
 
     // Check if already researched
     if (this.techTreeService?.isResearched(owner, type)) {
-      return { canStart: false, reason: 'Already researched' };
+      return { canStart: false, reason: "Already researched" };
     }
 
     // Check if player has enough resources
     const researchData = researchDefinitions[type];
     if (!researchData) {
-      return { canStart: false, reason: 'Unknown research type' };
+      return { canStart: false, reason: "Unknown research type" };
     }
 
     const player = getPlayer(this.gameObject.scene, owner);
     if (!player) {
-      return { canStart: false, reason: 'Player not found' };
+      return { canStart: false, reason: "Player not found" };
     }
 
     if (!player.canPayAllResources(researchData.cost)) {
-      return { canStart: false, reason: 'Not enough resources' };
+      return { canStart: false, reason: "Not enough resources" };
     }
 
     return { canStart: true };
@@ -129,7 +120,7 @@ export class ResearchComponent {
     }
 
     // Pay resources immediately
-    emitResource(this.gameObject.scene, 'resource.removed', researchData.cost, owner);
+    emitResource(this.gameObject.scene, "resource.removed", researchData.cost, owner);
 
     // Start research
     this.currentResearch = {
@@ -172,7 +163,7 @@ export class ResearchComponent {
       }
     }
 
-    emitResource(this.gameObject.scene, 'resource.added', refundedResources, owner);
+    emitResource(this.gameObject.scene, "resource.added", refundedResources, owner);
 
     this.currentResearch = undefined;
     this.researchCancelled.emit(type);
@@ -205,7 +196,7 @@ export class ResearchComponent {
   }
 
   private update(_time: number, delta: number): void {
-    if (!this.currentResearch || !this.isFinished) {
+    if (!this.currentResearch) {
       return;
     }
 

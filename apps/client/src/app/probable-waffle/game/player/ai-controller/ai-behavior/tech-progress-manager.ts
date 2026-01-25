@@ -96,14 +96,11 @@ export class TechProgressManager {
    * Find buildings with ResearchComponent that can research spells
    */
   getResearchBuildings(): Phaser.GameObjects.GameObject[] {
-    const allBuildings = [
-      ...this.blackboard.trainingBuildings,
-      ...this.blackboard.productionBuildings
-    ];
+    const allBuildings = [...this.blackboard.trainingBuildings, ...this.blackboard.productionBuildings];
 
     return allBuildings.filter((building) => {
       const researchComponent = getActorComponent(building, ResearchComponent);
-      return researchComponent !== undefined && researchComponent.isFinished;
+      return researchComponent !== undefined;
     });
   }
 

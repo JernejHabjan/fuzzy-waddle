@@ -681,9 +681,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         },
         tooltipInfo: {
           title: spellData.name,
-          description: !isResearched
-            ? `Requires: ${spellData.requiresResearch} research`
-            : spellData.description,
+          description: !isResearched ? `Requires: ${spellData.requiresResearch} research` : spellData.description,
           iconKey: spellData.icon.key,
           iconFrame: spellData.icon.frame,
           iconOrigin: { x: 0.5, y: 0.5 }
@@ -822,7 +820,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     index: number
   ): number {
     const researchComponent = getActorComponent(actor, ResearchComponent);
-    if (!researchComponent || !researchComponent.isFinished) return index;
+    if (!researchComponent) return index;
 
     const currentPlayerNr = getCurrentPlayerNumber(this.mainSceneWithActors);
     const player = getPlayer(this.mainSceneWithActors, currentPlayerNr);
@@ -850,7 +848,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
 
       let description = researchData.description;
       if (!canAfford && !isCurrentlyResearching) {
-        description = 'Not enough resources';
+        description = "Not enough resources";
       } else if (reason) {
         description = reason;
       }
@@ -882,7 +880,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
           }
         },
         tooltipInfo: {
-          title: researchData.name + (isCurrentlyResearching ? ' (Click to cancel)' : ''),
+          title: researchData.name + (isCurrentlyResearching ? " (Click to cancel)" : ""),
           description,
           iconKey: researchData.icon.key,
           iconFrame: researchData.icon.frame,
