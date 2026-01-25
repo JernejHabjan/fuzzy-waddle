@@ -3,7 +3,7 @@ import type { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { getSceneService } from "../world/services/scene-component-helpers";
 import { NavigationService } from "../world/services/navigation.service";
 import { getActorComponent } from "../data/actor-component";
-import { FlyingComponent } from "../entity/components/movement/flying-component";
+import { RepresentableComponent } from "../entity/components/representable-component";
 import { TilemapComponent } from "../world/tilemap/tilemap.component";
 import GameObject = Phaser.GameObjects.GameObject;
 
@@ -13,11 +13,9 @@ export class DistanceHelper {
    * Returns 0 if the object is not flying.
    */
   static getFlyingHeightInTiles(gameObject: GameObject): number {
-    // TODO  cant we get Z from RepresentableComponent instead? that logicalTransform should have correct Z already with this flying offset already in.
-    //   implementation
-    const flyingComponent = getActorComponent(gameObject, FlyingComponent);
-    if (!flyingComponent) return 0;
-    const heightPixels = flyingComponent.flightDefinition.height;
+    const representableComponent = getActorComponent(gameObject, RepresentableComponent);
+    if (!representableComponent) return 0;
+    const heightPixels = representableComponent.flyingHeightPixels;
     // Convert pixels to tile units (using tile width as the reference unit)
     return heightPixels / TilemapComponent.tileWidth;
   }
