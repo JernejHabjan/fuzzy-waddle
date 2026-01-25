@@ -21,6 +21,7 @@ import SkaduweeWorkerFemale from "../../../prefabs/characters/skaduwee/skaduwee-
 import SkaduweeRangedFemale from "../../../prefabs/characters/skaduwee/skaduwee-ranged-female/SkaduweeRangedFemale";
 import SkaduweeWarriorMale from "../../../prefabs/characters/skaduwee/skaduwee-warrior-male/SkaduweeWarriorMale";
 import GeneralWarrior from "../../../prefabs/characters/general/general-warrior/GeneralWarrior";
+import EditorConvertible from "../editor-components/EditorConvertible";
 import TivaraSlingshotFemale from "../../../prefabs/characters/tivara/tivara-slingshot-female/TivaraSlingshotFemale";
 import TallGrass1 from "../../../prefabs/outside/foliage/tall_grass/TallGrass1";
 import Olival from "../../../prefabs/buildings/tivara/Olival";
@@ -901,6 +902,9 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // skaduweeWarriorMale (components)
     const skaduweeWarriorMaleEditorOwner = new EditorOwner(skaduweeWarriorMale);
     skaduweeWarriorMaleEditorOwner.owner_id = "2";
+
+    // generalWarrior (components)
+    new EditorConvertible(generalWarrior);
 
     // tivaraSlingshotFemale (components)
     const tivaraSlingshotFemaleEditorOwner = new EditorOwner(tivaraSlingshotFemale);

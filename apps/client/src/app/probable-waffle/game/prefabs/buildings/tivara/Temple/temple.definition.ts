@@ -32,6 +32,7 @@ export const templeDefinition = {
       name: "Hall of Echoing Rites",
       description:
         "Ancient fabrics sway between crumbling pillars, and the air hums with ritual echoes long buried in the sand",
+      tooltipDescription: ["Advanced military building", "Trains specialized ranged units"],
       portraitAnimation: {
         idle: ANIM_BUILDING_ICON_ANIMS_TIVARA_TEMPLE_IDLE,
         action: ANIM_BUILDING_ICON_ANIMS_TIVARA_TEMPLE_ACTION

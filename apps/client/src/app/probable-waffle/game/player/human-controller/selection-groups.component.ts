@@ -5,6 +5,8 @@ import { CrossSceneCommunicationService } from "../../world/services/CrossSceneC
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { getActorComponent } from "../../data/actor-component";
 import { IdComponent } from "../../entity/components/id-component";
+import type { SelectionGroupData } from "@fuzzy-waddle/api-interfaces";
+import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 
 export interface SelectionGroup {
   actors: Phaser.GameObjects.GameObject[];
@@ -157,6 +159,70 @@ export class SelectionGroupsComponent {
   destroy(): void {
     this.scene?.input.keyboard?.off("keydown", this.handleKeyDown, this);
     this.scene?.events.off(HealthComponent.KilledEvent, this.handleActorKilled, this);
+    this.groups.clear();
+    this.lastTapTimestamp.clear();
+  }
+
+  /**
+   * Get all selection groups in a serializable format.
+   * Converts actor references to IDs.
+   */
+  getGroups(): SelectionGroupData[] {
+    const result: SelectionGroupData[] = [];
+    this.groups.forEach((group, key) => {
+      const actorIds = group.actors
+        .filter((actor) => actor.active)
+        .map((actor) => {
+          const idComponent = getActorComponent(actor, IdComponent);
+          return idComponent?.id;
+        })
+        .filter((id): id is string => !!id);
+
+      if (actorIds.length > 0) {
+        result.push({
+          groupKey: key,
+          actorIds,
+          timestamp: group.timestamp
+        });
+      }
+    });
+    return result;
+  }
+
+  /**
+   * Set selection groups from serialized data.
+   * Converts actor IDs back to game object references.
+   */
+  setGroups(groupsData: SelectionGroupData[]): void {
+    this.clearGroups();
+
+    const actorIndex = getSceneService(this.scene, ActorIndexSystem);
+    if (!actorIndex) return;
+
+    for (const groupData of groupsData) {
+      const actors: Phaser.GameObjects.GameObject[] = [];
+      for (const actorId of groupData.actorIds) {
+        const actor = actorIndex.getActorById(actorId);
+        if (actor && actor.active) {
+          actors.push(actor);
+        }
+      }
+
+      if (actors.length > 0) {
+        this.groups.set(groupData.groupKey, {
+          actors,
+          groupKey: groupData.groupKey,
+          timestamp: groupData.timestamp
+        });
+        this.emitGroupEvent(SelectionGroupsComponent.GroupCreatedEvent, groupData.groupKey);
+      }
+    }
+  }
+
+  /**
+   * Clear all selection groups.
+   */
+  clearGroups(): void {
     this.groups.clear();
     this.lastTapTimestamp.clear();
   }

@@ -1,3 +1,5 @@
+import type { UserId } from "../game-instance/player/player";
+
 export enum FlySquasherLevelEnum {
   StartSquashing = 1,
   BuzzkillBlitz = 2,
@@ -43,7 +45,7 @@ export class ScoreDto {
     public score: number,
     public level: FlySquasherLevelEnum,
     public userName: string,
-    public userId: string,
+    public userId: UserId,
     public date: Date = new Date()
   ) {}
 }

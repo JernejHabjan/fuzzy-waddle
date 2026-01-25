@@ -19,6 +19,7 @@ export const stonePileDefinition = {
     info: {
       name: "Stone Pile",
       description: "A pile of stone waiting to be gathered",
+      tooltipDescription: ["Provides stone resource", "Send workers to harvest"],
       smallImage: {
         key: "outside",
         frame: "nature/resources/stone_pile_1.png",

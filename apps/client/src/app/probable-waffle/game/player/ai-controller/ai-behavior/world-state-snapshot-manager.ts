@@ -173,7 +173,10 @@ export class WorldStateSnapshotManager {
       console.warn("AI Blackboard: No base center tile defined for enemy proximity check.");
       this.blackboard.enemiesNearBase = [];
     }
-
+    if (!this.scene.scene.isActive()) {
+      // after long async action, scene might be destroyed
+      return;
+    }
     this.blackboard.enemyBase = this.blackboard.primaryTarget;
     this.blackboard.enemyFlankOpen = false;
 

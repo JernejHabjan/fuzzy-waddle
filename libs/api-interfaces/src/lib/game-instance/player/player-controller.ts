@@ -1,7 +1,8 @@
 import type { BaseData } from "../data";
+import type { UserId } from "./player";
 
 export interface BasePlayerControllerData extends BaseData {
-  userId: string | null;
+  userId: UserId | null;
 }
 
 export abstract class BasePlayerController<TData extends BasePlayerControllerData = BasePlayerControllerData> {
