@@ -13,3 +13,8 @@ export abstract class BasePlayer<
     public playerController: TPlayerController
   ) {}
 }
+
+// 1 - 8
+export type PlayerNumber = number;
+export type GameInstanceId = string;
+export type UserId = string;

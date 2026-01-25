@@ -16,6 +16,7 @@ describe("AtlasSpriteComponent", () => {
 
     fixture = TestBed.createComponent(AtlasSpriteComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput("spriteName", "test-sprite");
     fixture.detectChanges();
   });
 

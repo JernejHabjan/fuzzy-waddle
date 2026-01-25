@@ -252,7 +252,7 @@ export class MovementSystem {
 
     const onComplete = async () => {
       // Check if we still have a target to follow
-      if (this.targetGameObject && this.targetGameObject.active) {
+      if (this.targetGameObject && this.targetGameObject.active && this.targetGameObject.scene.scene.isActive()) {
         // Recalculate path to the moving target
         try {
           const newPath = await this.getPathToClosestWalkableTileBetweenGameObjectsInRadius(
@@ -364,6 +364,9 @@ export class MovementSystem {
     onComplete?: (() => void) | (() => Promise<void>),
     onStop?: () => void
   ): Promise<void> {
+    if (!this.gameObject.scene.scene.isActive()) {
+      return Promise.reject("Scene is not active");
+    }
     const tileWorldXY = this.navigationService?.getTileWorldCenter(tile);
     if (!tileWorldXY) return Promise.reject("No tile world xy to move to");
 

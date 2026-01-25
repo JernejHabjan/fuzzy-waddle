@@ -1,4 +1,4 @@
-import { type LittleMuncherRoom, type LittleMuncherRoomEvent } from "@fuzzy-waddle/api-interfaces";
+import { type GameInstanceId, type LittleMuncherRoom, type LittleMuncherRoomEvent } from "@fuzzy-waddle/api-interfaces";
 import { Observable, Subject } from "rxjs";
 
 export interface SpectateServiceInterface {
@@ -13,9 +13,9 @@ export interface SpectateServiceInterface {
 
   getRoomEvent(): Promise<Observable<LittleMuncherRoomEvent> | undefined>;
 
-  joinRoom(gameInstanceId: string): void;
+  joinRoom(gameInstanceId: GameInstanceId): void;
 
-  leaveRoom(gameInstanceId: string): void;
+  leaveRoom(gameInstanceId: GameInstanceId): void;
 
   destroy(): void;
 }
