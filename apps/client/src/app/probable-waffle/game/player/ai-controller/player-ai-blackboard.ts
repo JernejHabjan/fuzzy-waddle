@@ -176,90 +176,200 @@ export class PlayerAiBlackboard extends Blackboard {
     return {
       currentStrategy: this.currentStrategy,
       baseSize: this.baseSize,
-      mapFullyExplored: this.mapFullyExplored,
       wantsToSurrender: this.wantsToSurrender,
       surrenderOfferedAt: this.surrenderOfferedAt,
       surrenderRejected: this.surrenderRejected,
+
       activeTechUpgrades: this.activeTechUpgrades,
       lastTechUpgradeAt: this.lastTechUpgradeAt,
+
       economy: {
         resources: { ...this.economy.resources },
-        reserved: { ...this.economy.reserved }
+        reserved: { ...this.economy.reserved },
+        incomeInstant: { ...this.economy.incomeInstant },
+        incomeSmoothed: { ...this.economy.incomeSmoothed },
+        lastIncomeSampleAt: this.economy.lastIncomeSampleAt,
+        lastIncomeSnapshot: { ...this.economy.lastIncomeSnapshot }
       },
+
       production: {
-        supply: { ...this.production.supply }
+        supply: { ...this.production.supply },
+        plannedStructures: this.production.plannedStructures.map((p) => ({ ...p })),
+        prereqQueue: this.production.prereqQueue.map((p) => ({ ...p }))
       },
+
+      army: {
+        militaryStrength: this.militaryStrength,
+        enemyMilitaryStrength: this.enemyMilitaryStrength,
+        enemyIntel: structuredClone(this.enemyIntel)
+      },
+
+      intel: {
+        enemyFlankOpen: this.enemyFlankOpen,
+        mapFullyExplored: this.mapFullyExplored,
+        enemyPowerTrend: [...this.intel.enemyPowerTrend],
+        lastScoutedAt: this.intel.lastScoutedAt
+      },
+
+      map: {
+        baseCenterTile: this.baseCenterTile,
+        suggestedBuildTiles: [...this.suggestedBuildTiles]
+      },
+
       strategy: {
         current: this.strategy.current,
         baseSize: this.strategy.baseSize,
         modeLockedUntil: this.strategy.modeLockedUntil
       },
+
+      combat: {
+        engagements: [...this.combat.engagements],
+        lastEngagementAt: this.combat.lastEngagementAt
+      },
+
       cooldowns: { ...this.cooldowns }
     };
   }
 
   setData(data: Partial<PlayerAiBlackboardData>, _scene: Phaser.Scene): void {
-    if (data.currentStrategy !== undefined) {
-      this.currentStrategy = data.currentStrategy;
-    }
-    if (data.baseSize !== undefined) {
-      this.baseSize = data.baseSize;
-    }
-    if (data.mapFullyExplored !== undefined) {
-      this.mapFullyExplored = data.mapFullyExplored;
-    }
-    if (data.wantsToSurrender !== undefined) {
-      this.wantsToSurrender = data.wantsToSurrender;
-    }
-    if (data.surrenderOfferedAt !== undefined) {
-      this.surrenderOfferedAt = data.surrenderOfferedAt;
-    }
-    if (data.surrenderRejected !== undefined) {
-      this.surrenderRejected = data.surrenderRejected;
-    }
-    if (data.activeTechUpgrades !== undefined) {
-      this.activeTechUpgrades = data.activeTechUpgrades;
-    }
-    if (data.lastTechUpgradeAt !== undefined) {
-      this.lastTechUpgradeAt = data.lastTechUpgradeAt;
-    }
+    if (!data) return;
 
-    // Restore economy state
+    // ---- Strategy & meta ----
+    this.currentStrategy = data.currentStrategy ?? this.currentStrategy;
+    this.baseSize = data.baseSize ?? this.baseSize;
+    this.wantsToSurrender = data.wantsToSurrender ?? this.wantsToSurrender;
+    this.surrenderOfferedAt = data.surrenderOfferedAt ?? this.surrenderOfferedAt;
+    this.surrenderRejected = data.surrenderRejected ?? this.surrenderRejected;
+
+    this.activeTechUpgrades = data.activeTechUpgrades ?? this.activeTechUpgrades;
+    this.lastTechUpgradeAt = data.lastTechUpgradeAt ?? this.lastTechUpgradeAt;
+
+    // ---- Economy ----
     if (data.economy) {
-      if (data.economy.resources) {
-        for (const key in data.economy.resources) {
-          const resourceType = key as ResourceType;
-          this.economy.resources[resourceType] = data.economy.resources[key] ?? 0;
-        }
-      }
-      if (data.economy.reserved) {
-        for (const key in data.economy.reserved) {
-          const resourceType = key as ResourceType;
-          this.economy.reserved[resourceType] = data.economy.reserved[key] ?? 0;
-        }
-      }
+      Object.assign(this.economy.resources, data.economy.resources);
+      Object.assign(this.economy.reserved, data.economy.reserved);
+      Object.assign(this.economy.incomeInstant, data.economy.incomeInstant);
+      Object.assign(this.economy.incomeSmoothed, data.economy.incomeSmoothed);
+      this.economy.lastIncomeSampleAt = data.economy.lastIncomeSampleAt ?? 0;
+      Object.assign(this.economy.lastIncomeSnapshot, data.economy.lastIncomeSnapshot);
     }
 
-    // Restore production state
-    if (data.production?.supply) {
-      this.production.supply.used = data.production.supply.used ?? 0;
-      this.production.supply.max = data.production.supply.max ?? 0;
-      this.production.supply.pendingFromQueued = data.production.supply.pendingFromQueued ?? 0;
+    // ---- Production ----
+    if (data.production) {
+      Object.assign(this.production.supply, data.production.supply);
+      this.production.plannedStructures = data.production.plannedStructures
+        ? [...data.production.plannedStructures]
+        : [];
+      this.production.prereqQueue = data.production.prereqQueue ? [...data.production.prereqQueue] : [];
     }
 
-    // Restore strategy state
+    // ---- Army (numbers only) ----
+    if (data.army) {
+      this.militaryStrength = data.army.militaryStrength ?? this.militaryStrength;
+      this.enemyMilitaryStrength = data.army.enemyMilitaryStrength ?? this.enemyMilitaryStrength;
+      this.enemyIntel = data.army.enemyIntel ? structuredClone(data.army.enemyIntel) : {};
+    }
+
+    // ---- Intel ----
+    if (data.intel) {
+      this.enemyFlankOpen = data.intel.enemyFlankOpen ?? this.enemyFlankOpen;
+      this.mapFullyExplored = data.intel.mapFullyExplored ?? this.mapFullyExplored;
+      this.intel.enemyPowerTrend = data.intel.enemyPowerTrend ? [...data.intel.enemyPowerTrend] : [];
+      this.intel.lastScoutedAt = data.intel.lastScoutedAt ?? 0;
+    }
+
+    // ---- Map ----
+    if (data.map) {
+      this.baseCenterTile = data.map.baseCenterTile ?? null;
+      this.suggestedBuildTiles = data.map.suggestedBuildTiles ? [...data.map.suggestedBuildTiles] : [];
+    }
+
+    // ---- Strategy slice ----
     if (data.strategy) {
-      this.strategy.current = data.strategy.current ?? "defensive";
-      this.strategy.baseSize = data.strategy.baseSize ?? 0;
+      this.strategy.current = data.strategy.current ?? this.strategy.current;
+      this.strategy.baseSize = data.strategy.baseSize ?? this.strategy.baseSize;
       this.strategy.modeLockedUntil = data.strategy.modeLockedUntil ?? 0;
     }
 
-    // Restore cooldowns
-    if (data.cooldowns) {
-      for (const key in data.cooldowns) {
-        (this.cooldowns as Record<string, number>)[key] = data.cooldowns[key] ?? 0;
-      }
+    // ---- Combat ----
+    if (data.combat) {
+      this.combat.engagements = data.combat.engagements ? [...data.combat.engagements] : [];
+      this.combat.lastEngagementAt = data.combat.lastEngagementAt ?? 0;
     }
+
+    // ---- Cooldowns ----
+    if (data.cooldowns) {
+      Object.assign(this.cooldowns, data.cooldowns);
+    }
+
+    // ---- Clear GameObject references (will be repopulated by world state update) ----
+    this.clearGameObjectReferences();
+
+    // ---- Rebuild ReservationPool from restored plannedStructures ----
+    this.rebuildReservationPool();
+  }
+
+  /**
+   * Clears all GameObject references.
+   * These will be repopulated by the AI's world state update mechanism
+   * which runs periodically and discovers units/buildings from the scene.
+   */
+  private clearGameObjectReferences(): void {
+    // Clear unit arrays
+    this.units.length = 0;
+    this.workers.length = 0;
+    this.defendingUnits.length = 0;
+
+    // Clear enemy arrays
+    this.visibleEnemies.length = 0;
+    this.enemiesNearBase.length = 0;
+    this.enemiesInCombat.length = 0;
+
+    // Clear building arrays
+    this.trainingBuildings.length = 0;
+    this.productionBuildings.length = 0;
+    this.defensiveStructures.length = 0;
+    this.gatheringStructures.length = 0;
+
+    // Clear single object references
+    this.enemyBase = null;
+    this.primaryTarget = null;
+    this.upgradeBuilding = null;
+
+    // Clear slice references that mirror arrays
+    this.army.defendingUnits.length = 0;
+    this.army.enemiesInCombat.length = 0;
+    this.army.visibleEnemies.length = 0;
+    this.army.primaryTarget = null;
+    this.intel.enemyBase = null;
+    this.logistics.workers.length = 0;
+    this.production.trainingBuildings.length = 0;
+    this.production.productionBuildings.length = 0;
+    this.production.defensiveStructures.length = 0;
+  }
+
+  /**
+   * Rebuilds the ReservationPool from production.plannedStructures.
+   * This restores resource reservations after loading a saved game.
+   */
+  private rebuildReservationPool(): void {
+    // Clear existing reservations by creating a new pool
+    this.reservationPool = new ReservationPool();
+
+    const now = performance.now();
+    const defaultTtlMs = 15000; // Same as beginPlannedStructure default
+
+    for (const plan of this.production.plannedStructures) {
+      // Calculate remaining TTL based on when reservation was made
+      // If reservedAt is old, use a fresh TTL to give time for the build to complete
+      const age = now - plan.reservedAt;
+      const remainingTtl = Math.max(defaultTtlMs - age, defaultTtlMs); // At least full TTL after load
+
+      this.reservationPool.reserve(plan.id, plan.cost, remainingTtl, now);
+    }
+
+    // Update economy.reserved to reflect rebuilt reservations
+    this.economy.reserved = this.reservationPool.getTotals();
   }
 
   /**
