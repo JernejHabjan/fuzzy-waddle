@@ -110,7 +110,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     this.worldStateSnapshotManager = new WorldStateSnapshotManager(this.scene, this.player, this.blackboard);
     this.combatMicro = new CombatMicroManager(this.scene, this.blackboard, this.logDebugInfo.bind(this));
     this.scoutingManager = new ScoutingManager(this.scene, this.blackboard, this.logDebugInfo.bind(this));
-    this.targetingManager = new TargetingManager(this.blackboard);
+    this.targetingManager = new TargetingManager(this.scene, this.blackboard);
     this.setupDebuggingSubscription();
   }
 
