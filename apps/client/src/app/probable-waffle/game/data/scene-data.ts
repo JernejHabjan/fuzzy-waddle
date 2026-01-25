@@ -1,4 +1,5 @@
 import {
+  type ActorId,
   type PlayerNumber,
   type PlayerStateHousing,
   type PlayerStateResources,
@@ -208,7 +209,7 @@ export function emitEventIssueMoveCommandToSelectedActors(
   scene: Phaser.Scene,
   tileVec3: Vector3Simple,
   worldVec3: Vector3Simple,
-  selectedActorObjectIds: string[]
+  selectedActorObjectIds: ActorId[]
 ) {
   if (!(scene instanceof ProbableWaffleScene)) throw new Error("Scene is not of type ProbableWaffleScene");
   scene.communicator.playerChanged!.send({

@@ -1,6 +1,6 @@
 import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 
 export type ResourceDrainDefinition = {
-  resourceTypes: ResourceType[];
-  cooldown: number;
+  readonly resourceTypes: ResourceType[];
+  readonly cooldown: number;
 };

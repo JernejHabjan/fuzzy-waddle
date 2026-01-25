@@ -37,10 +37,13 @@ export class OrderData {
     const actorIndex = getSceneService(scene, ActorIndexSystem);
     if (record.data?.targetGameObjectId) {
       const targetGameObjectId = record.data.targetGameObjectId as string;
-      const targetGameObject = actorIndex?.getActorById(targetGameObjectId);
-      if (targetGameObject) {
-        data.targetGameObject = targetGameObject;
-      }
+      setTimeout(() => {
+        // resolve asynchronously to avoid issues with actors not yet being created
+        const targetGameObject = actorIndex?.getActorById(targetGameObjectId);
+        if (targetGameObject) {
+          data.targetGameObject = targetGameObject;
+        }
+      }, 0);
     }
     return new OrderData(orderType, data);
   }

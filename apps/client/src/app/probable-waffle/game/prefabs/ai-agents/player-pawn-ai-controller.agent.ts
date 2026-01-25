@@ -258,7 +258,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
   }
 
   Stop = (fromNode: string) => {
-    // console.log(`[Build] Stop called from: ${fromNode}`);
+    // console.log(`Stop called from: ${fromNode}`);
 
     const currentOrder = this.blackboard.getCurrentOrder();
     if (currentOrder) {
@@ -465,13 +465,6 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
       return State.FAILED;
     }
     // Check if in range before trying to construct
-    const range = builderComponent.getConstructionRange();
-    const distance = DistanceHelper.getTileDistanceBetweenGameObjects(this.gameObject, target);
-    // console.log("[Build] ConstructBuilding: range=", range, "distance=", distance);
-    if (distance === null || distance > range) {
-      // console.log("[Build] ConstructBuilding: Not in range");
-      return State.FAILED;
-    }
     const constructionSiteComponent = getActorComponent(target, ConstructionSiteComponent);
     if (!constructionSiteComponent) {
       // console.log("[Build] ConstructBuilding: No construction site component");

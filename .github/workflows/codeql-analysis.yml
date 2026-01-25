@@ -41,7 +41,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
       with:
-        lfs: true
+        lfs: false
 
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL

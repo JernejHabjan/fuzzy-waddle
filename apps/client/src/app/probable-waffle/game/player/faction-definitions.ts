@@ -3,12 +3,20 @@ import { FactionType, ObjectNames } from "@fuzzy-waddle/api-interfaces";
 
 export class FactionDefinitions {
   static tivara: FactionInfo = new FactionInfo(FactionType.Tivara, "Tivara", [
-    ObjectNames.Sandhold,
-    ObjectNames.TivaraMacemanMale
+    {
+      actorName: ObjectNames.Sandhold
+    },
+    {
+      actorName: ObjectNames.TivaraMacemanMale
+    }
   ]);
   static skaduwee: FactionInfo = new FactionInfo(FactionType.Skaduwee, "Skaduwee", [
-    ObjectNames.FrostForge,
-    ObjectNames.SkaduweeMagicianFemale
+    {
+      actorName: ObjectNames.FrostForge
+    },
+    {
+      actorName: ObjectNames.SkaduweeMagicianFemale
+    }
   ]);
 
   static factions: { type: FactionType; value: FactionInfo }[] = [

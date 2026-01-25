@@ -1,6 +1,7 @@
 import type { Vector3Simple } from "../../game/vector";
 import { ResourceType } from "../../probable-waffle/resource-type-definition";
 import { ObjectNames } from "./object-names";
+import type { ActorId } from "../player/player";
 
 export interface VisionComponentData {
   visibilityByCurrentPlayer?: boolean;
@@ -17,8 +18,6 @@ export interface HealingComponentData {
 
 export interface BuilderComponentData {
   remainingCooldown?: number;
-  enterConstructionSite?: boolean;
-  constructionSiteOffset?: number;
   assignedConstructionSiteId?: string;
 }
 
@@ -29,7 +28,7 @@ export interface GathererComponentData {
 }
 
 export interface ContainerComponentData {
-  containedIds?: string[];
+  containedIds?: ActorId[];
 }
 
 export interface ResourceDrainComponentData {
@@ -50,7 +49,7 @@ export interface ProductionComponentData {
 export interface RallyPointComponentData {
   tileVec3?: Vector3Simple;
   worldVec3?: Vector3Simple;
-  actorId?: string;
+  actorId?: ActorId;
 }
 
 export interface ActorTranslateComponentData {
@@ -92,7 +91,7 @@ export interface HousingComponentData {
 // Selection group data for save/load
 export interface SelectionGroupData {
   groupKey: number;
-  actorIds: string[];
+  actorIds: ActorId[];
   timestamp: number;
 }
 
