@@ -26,7 +26,7 @@ root {
         /* If stunned, do nothing - just wait */
         sequence {
             condition [IsStunned]
-            succeed {}
+            action [Succeed]
         }
         /* Normal AI logic when not stunned */
         sequence {

@@ -875,7 +875,10 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
           // For offensive spells, target closest enemy position
           const enemy = visionComponent.getClosestVisibleEnemy();
           if (enemy && enemy.body) {
-            targetPosition = { x: (enemy.body as Phaser.Physics.Arcade.Body).x, y: (enemy.body as Phaser.Physics.Arcade.Body).y };
+            targetPosition = {
+              x: (enemy.body as Phaser.Physics.Arcade.Body).x,
+              y: (enemy.body as Phaser.Physics.Arcade.Body).y
+            };
           }
           break;
         case SpellTargetType.FriendlyUnit:
