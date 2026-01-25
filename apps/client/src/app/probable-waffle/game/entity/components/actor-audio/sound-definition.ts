@@ -1,4 +1,4 @@
 export type SoundDefinition = {
-  key: string;
-  spriteName: string;
+  readonly key: string;
+  readonly spriteName: string;
 };

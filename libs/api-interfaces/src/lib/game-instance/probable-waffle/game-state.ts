@@ -11,6 +11,7 @@ import type {
   BackboardComponentData,
   BuilderComponentData,
   ContainerComponentData,
+  ConvertibleComponentData,
   GathererComponentData,
   HealingComponentData,
   HousingComponentData,
@@ -27,7 +28,8 @@ import type {
   VisionComponentData,
   WalkableComponentData
 } from "./component-data";
-import type { AoeZoneData } from "../../probable-waffle/spell/aoe-zone-data";
+import type { AoeZoneData } from "../../probable-waffle/spell";
+import type { PlayerNumber } from "../player/player";
 
 export interface ProbableWaffleGameCommand {
   command: string;
@@ -57,7 +59,7 @@ export interface ProbableWaffleGameStateData extends BaseData {
   /** Active AOE zones for save/load support */
   aoeZones?: AoeZoneData[];
   /** Research state per player for save/load support */
-  playerResearch?: Record<number, string[]>;
+  playerResearch?: Record<PlayerNumber, string[]>;
 }
 
 export interface ActorDefinition extends Record<string, any> {
@@ -82,6 +84,7 @@ export interface ActorDefinition extends Record<string, any> {
   walkable?: Partial<WalkableComponentData>;
   representable?: Partial<RepresentableComponentData>;
   blackboard?: Partial<BackboardComponentData>;
+  convertible?: Partial<ConvertibleComponentData>;
   spell?: Partial<SpellComponentData>;
   statusEffects?: Partial<StatusEffectComponentData>;
 }

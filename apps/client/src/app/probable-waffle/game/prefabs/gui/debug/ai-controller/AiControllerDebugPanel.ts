@@ -10,7 +10,7 @@ import AiControllerDebugLabel from "./AiControllerDebugLabel";
 /* START-USER-IMPORTS */
 import { getPlayers } from "../../../../data/scene-data";
 import HudProbableWaffle from "../../../../world/scenes/hud-scenes/HudProbableWaffle";
-import { ProbableWafflePlayerType } from "@fuzzy-waddle/api-interfaces";
+import { type PlayerNumber, ProbableWafflePlayerType } from "@fuzzy-waddle/api-interfaces";
 import { getSceneService } from "../../../../world/services/scene-component-helpers";
 import { DebuggingService } from "../../../../world/services/DebuggingService";
 /* END-USER-IMPORTS */
@@ -97,7 +97,7 @@ export default class AiControllerDebugPanel extends Phaser.GameObjects.Container
   private playerBackButton?: Phaser.GameObjects.Container;
   private backButton?: Phaser.GameObjects.Container;
   private selectedCategory: string | null = null;
-  private selectedPlayerNumber: number | null = null;
+  private selectedPlayerNumber: PlayerNumber | null = null;
 
   private init() {
     this.button.on("action", this.toggleLabels, this);
@@ -167,7 +167,12 @@ export default class AiControllerDebugPanel extends Phaser.GameObjects.Container
     });
   }
 
-  private createPlayerButton(label: string, playerNumber: number, x: number, y: number): Phaser.GameObjects.Container {
+  private createPlayerButton(
+    label: string,
+    playerNumber: PlayerNumber,
+    x: number,
+    y: number
+  ): Phaser.GameObjects.Container {
     const container = this.scene.add.container(x, y);
     container.setInteractive(new Phaser.Geom.Rectangle(-32, -13, 220, 25), Phaser.Geom.Rectangle.Contains);
 
@@ -248,7 +253,7 @@ export default class AiControllerDebugPanel extends Phaser.GameObjects.Container
     return container;
   }
 
-  private selectPlayer(playerNumber: number) {
+  private selectPlayer(playerNumber: PlayerNumber) {
     this.selectedPlayerNumber = playerNumber;
     this.selectedCategory = null;
     this.showCategorySelection();

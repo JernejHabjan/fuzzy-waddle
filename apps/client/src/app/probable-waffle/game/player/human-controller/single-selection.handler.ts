@@ -4,6 +4,7 @@ import { getActorComponent } from "../../data/actor-component";
 import { IdComponent } from "../../entity/components/id-component";
 import { MULTI_SELECTING } from "./multi-selection.handler";
 import type {
+  ActorId,
   ProbableWaffleDoubleSelectionData,
   ProbableWaffleSelectionData,
   Vector3Simple
@@ -148,7 +149,7 @@ export class SingleSelectionHandler {
 
   public sendSelection(
     button: "left" | "right",
-    objectIds: string[],
+    objectIds: ActorId[],
     shiftKey: boolean = false,
     ctrlKey: boolean = false
   ) {
@@ -163,7 +164,7 @@ export class SingleSelectionHandler {
     });
   }
 
-  public sendDoubleClick(objectId: string) {
+  public sendDoubleClick(objectId: ActorId) {
     this.scene.communicator.allScenes!.emit({
       name: "selection.doubleSelect",
       data: {

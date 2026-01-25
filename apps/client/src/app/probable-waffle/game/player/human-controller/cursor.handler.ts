@@ -104,7 +104,7 @@ export enum CursorType {
 
 export class CursorHandler {
   // noinspection SpellCheckingInspection
-  private readonly cursors: Record<CursorType, string> = {
+  readonly cursors: Record<CursorType, string> = {
     [CursorType.Add]: "Cursor Add",
     [CursorType.AttackEnemy]: "Cursor Attack Enemy",
     [CursorType.AttackFriends]: "Cursor Attack Friends",
@@ -184,7 +184,8 @@ export class CursorHandler {
     [CursorType.TargetMoveB]: "Cursor Target Move B"
   };
 
-  private currentCursor?: string;
+  private currentCursor?: CursorType;
+  private currentCursorUrl?: string;
   private mainScene?: ProbableWaffleScene;
   private lastHoveredCursor: CursorType = CursorType.Default;
   private multiSelecting: boolean = false;
@@ -405,8 +406,12 @@ export class CursorHandler {
 
   setCursor(cursorType: CursorType) {
     const cursorName = this.cursors[cursorType];
-    this.currentCursor = this.getRawCursorUrl(cursorName);
+    this.currentCursor = cursorType;
+    this.currentCursorUrl = this.getRawCursorUrl(cursorName);
     this.scene.input.setDefaultCursor(this.getCursorUrl(cursorName));
+
+    // Notify locked cursor handler to update the custom cursor image
+    this.lockedCursorHandler.onCursorChanged();
   }
 
   private getRawCursorUrl(cursor: string): string {
@@ -418,7 +423,11 @@ export class CursorHandler {
   }
 
   getCurrentCursorUrl(): string {
-    return this.currentCursor || this.getRawCursorUrl(this.cursors.default);
+    return this.currentCursorUrl || this.getRawCursorUrl(this.cursors.default);
+  }
+
+  getCurrentCursorType(): CursorType {
+    return this.currentCursor || CursorType.Default;
   }
 
   private destroy() {

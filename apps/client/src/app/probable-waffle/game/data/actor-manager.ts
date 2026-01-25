@@ -184,7 +184,7 @@ export class ActorManager {
       blackboard: getActorComponent(actor, PawnAiController)?.getData(),
       spell: getActorComponent(actor, SpellComponent)?.getData(),
       statusEffects: getActorComponent(actor, StatusEffectComponent)?.getData()
-    };
+    } satisfies ActorDefinition;
 
     return actorDefinition;
   }

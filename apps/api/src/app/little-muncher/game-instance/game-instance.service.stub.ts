@@ -1,5 +1,6 @@
 import {
   type GameInstanceDataDto,
+  GameInstanceId,
   type LittleMuncherGameCreateDto,
   LittleMuncherGameInstance,
   type LittleMuncherGameInstanceData,
@@ -13,7 +14,7 @@ import { type GameInstanceServiceInterface } from "./game-instance.service.inter
 import { User } from "@supabase/supabase-js";
 
 export const GameInstanceServiceStub = {
-  findGameInstance(gameInstanceId: string): LittleMuncherGameInstance | undefined {
+  findGameInstance(gameInstanceId: GameInstanceId): LittleMuncherGameInstance | undefined {
     return undefined;
   },
   startGame(body: GameInstanceDataDto, user: User): Promise<void> {

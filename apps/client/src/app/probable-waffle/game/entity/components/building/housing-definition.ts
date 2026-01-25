@@ -1,3 +1,3 @@
 export type HousingDefinition = {
-  housingCapacity: number;
+  readonly housingCapacity: number;
 };

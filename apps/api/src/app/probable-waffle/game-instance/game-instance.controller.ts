@@ -4,6 +4,7 @@ import { CurrentUser } from "../../../auth/current-user";
 import { type AuthUser } from "@supabase/supabase-js";
 import { GameInstanceService } from "./game-instance.service";
 import {
+  GameInstanceId,
   type ProbableWaffleGameInstanceData,
   type ProbableWaffleGameInstanceMetadataData
 } from "@fuzzy-waddle/api-interfaces";
@@ -21,7 +22,7 @@ export class GameInstanceController {
   @UseGuards(SupabaseAuthGuard)
   async getGameInstance(
     @CurrentUser() user: AuthUser,
-    @Query("gameInstanceId") gameInstanceId: string
+    @Query("gameInstanceId") gameInstanceId: GameInstanceId
   ): Promise<ProbableWaffleGameInstanceData | null> {
     return this.gameInstanceService.getGameInstanceData(gameInstanceId);
   }

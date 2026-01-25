@@ -16,7 +16,10 @@ export class TargetingManager {
   private readonly evalCooldownMs = 750;
   private cachedTarget: GameObject | null = null;
 
-  constructor(private readonly blackboard: PlayerAiBlackboard) {}
+  constructor(
+    private readonly scene: Phaser.Scene,
+    private readonly blackboard: PlayerAiBlackboard
+  ) {}
 
   async update(now: number = performance.now()): Promise<void> {
     if (now - this.lastEvalAt < this.evalCooldownMs && this.cachedTarget) return;
@@ -68,6 +71,11 @@ export class TargetingManager {
           continue; // ignore this target if distance cannot be calculated
         }
         score += 30 / d; // nearer to our base center slightly higher priority
+      }
+
+      if (!this.scene.scene.isActive()) {
+        // after long async action, scene might be destroyed
+        return null;
       }
 
       const owner = getActorComponent(e, OwnerComponent)?.getOwner();

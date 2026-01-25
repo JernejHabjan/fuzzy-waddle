@@ -3,6 +3,7 @@ import { FactionDefinitions } from "../../../game/player/faction-definitions";
 import { faCheck, faSpinner, faTimes } from "@fortawesome/free-solid-svg-icons";
 import {
   GameSetupHelpers,
+  type PlayerNumber,
   type PositionPlayerDefinition,
   ProbableWaffleAiDifficulty,
   ProbableWaffleGameInstanceType,
@@ -64,7 +65,7 @@ export class PlayerDefinitionComponent {
     await this.gameInstanceClientService.playerSlotOpened();
   }
 
-  protected async removePlayer(playerNumber: number) {
+  protected async removePlayer(playerNumber: PlayerNumber) {
     await this.gameInstanceClientService.removePlayer(playerNumber);
   }
 

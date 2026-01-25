@@ -424,6 +424,16 @@ root [Build] {
                     action [MoveToTarget, "construct"]
                 }
 
+                /* if target is unreachable (MoveToTarget failed), stop and try next construction site */
+                sequence {
+                    flip {
+                      action [InRange, "construct"]
+                    }
+                    /* we're not in range and couldn't move there - target unreachable */
+                    action [Stop, "Build - Target Unreachable"]
+                    action [AssignNextBuildOrder]
+                }
+
                 sequence {
                     /* if cooldown not ready, wait */
                     flip {

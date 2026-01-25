@@ -1,10 +1,11 @@
-import { BasePlayer } from "../player/player";
+import { BasePlayer, type PlayerNumber } from "../player/player";
 import type { BaseData } from "../data";
 import { BasePlayerController, type BasePlayerControllerData } from "../player/player-controller";
 import { BasePlayerState } from "../player/player-state";
 import { ResourceType } from "../../probable-waffle/resource-type-definition";
 import type { PlayerStateAction } from "../../probable-waffle/probable-waffle-player-state-action";
 import type { Vector3Simple } from "../../game/vector";
+import type { AIBehaviorTreeStateData, CameraStateData, SelectionGroupData } from "./component-data";
 
 export class ProbableWafflePlayer extends BasePlayer<
   ProbableWafflePlayerStateData,
@@ -32,7 +33,7 @@ export class ProbableWafflePlayer extends BasePlayer<
     this.playerState.data.selection = [];
   }
 
-  get playerNumber(): number | undefined {
+  get playerNumber(): PlayerNumber | undefined {
     return this.playerController.data.playerDefinition?.player.playerNumber ?? undefined;
   }
 
@@ -104,6 +105,8 @@ export interface ProbableWafflePlayerStateData extends BaseData {
    * contains GUID from actors' IdComponent
    */
   selection: string[];
+  // AI behavior tree state for save/load (AI players only)
+  aiBehaviorTreeState?: AIBehaviorTreeStateData;
 }
 
 export class ProbableWafflePlayerState extends BasePlayerState<ProbableWafflePlayerStateData> {
@@ -138,6 +141,10 @@ export class ProbableWafflePlayerController extends BasePlayerController<Probabl
 export interface ProbableWafflePlayerControllerData extends BasePlayerControllerData {
   playerDefinition?: PositionPlayerDefinition;
   leftOrKilled?: boolean;
+  // Camera position for save/load (human players only)
+  cameraState?: CameraStateData;
+  // Selection groups for save/load (human players only)
+  selectionGroups?: SelectionGroupData[];
 }
 
 export enum ProbableWafflePlayerType {
@@ -153,8 +160,7 @@ export enum ProbableWaffleAiDifficulty {
 }
 
 export interface PlayerLobbyDefinition {
-  // 1 - 8
-  playerNumber: number;
+  playerNumber: PlayerNumber;
   playerName?: string;
   playerPosition?: number;
   joined: boolean;
@@ -182,7 +188,7 @@ export function getRandomFactionType(): FactionType {
  * @returns A PlayerLobbyDefinition object
  */
 export function createPlayerLobbyDefinition(
-  playerNumber: number,
+  playerNumber: PlayerNumber,
   playerPosition?: number,
   playerName?: string
 ): PlayerLobbyDefinition {

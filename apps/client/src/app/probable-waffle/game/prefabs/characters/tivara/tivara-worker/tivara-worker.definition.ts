@@ -14,6 +14,7 @@ export const tivaraWorkerDefinition: PrefabDefinition = {
     info: {
       name: "Tivara Scavenger",
       description: "Guardian of forgotten secrets, laboring in shadow to uphold the ancient cycle",
+      tooltipDescription: ["Gathers resources", "Constructs buildings", "Weak in combat"],
       smallImage: {
         key: "factions",
         frame: "character_icons/tivara/worker.png",

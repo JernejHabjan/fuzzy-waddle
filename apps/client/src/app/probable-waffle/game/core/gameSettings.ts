@@ -1,12 +1,12 @@
-import { environment } from "../../../../environments/environment";
-
 export class GameSettings {
   lockToScreen: boolean;
   enabledMouseCornerMovement: boolean;
 
   constructor() {
-    // lockToScreen is disabled in production as it's not working yet
-    this.lockToScreen = environment.production ? false : false;
+    // lockToScreen is disabled by default as it may be annoying for players in a browser environment
+    // Note that there's also a jump when lock is disabled, which may cause discomfort to some players
+    this.lockToScreen = false;
+    // enabledMouseCornerMovement is disabled by default as it works well only with lockToScreen
     this.enabledMouseCornerMovement = false;
   }
 

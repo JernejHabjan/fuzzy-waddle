@@ -29,6 +29,11 @@ export const infantryInnDefinition = {
     info: {
       name: "Infantry Inn",
       description: "Trains infantry units",
+      tooltipDescription: [
+        "Trains infantry units",
+        "Produces melee, ranged, and magic fighters",
+        "Core military production building"
+      ],
       portraitAnimation: {
         idle: ANIM_BUILDING_ICON_ANIMS_SKADUWEE_INFANTRY_INN,
         action: ANIM_BUILDING_ICON_ANIMS_SKADUWEE_INFANTRY_INN

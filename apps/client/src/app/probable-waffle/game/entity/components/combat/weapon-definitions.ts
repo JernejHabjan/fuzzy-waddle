@@ -49,6 +49,7 @@ export const weaponDefinitions: Record<WeaponType, AttackData> = {
     cooldown: 1400,
     range: 5,
     minRange: 2,
+    highGroundRangeBonus: 1,
     animationType: AnimationType.Shoot,
     sounds: {
       preparing: SharedActorActionsSfxLeatherNockSounds,
@@ -76,6 +77,7 @@ export const weaponDefinitions: Record<WeaponType, AttackData> = {
     cooldown: 1400,
     range: 7,
     minRange: 3,
+    highGroundRangeBonus: 2,
     animationType: AnimationType.Shoot,
     sounds: {
       preparing: SharedActorActionsSfxLeatherNockSounds,
@@ -107,6 +109,7 @@ export const weaponDefinitions: Record<WeaponType, AttackData> = {
     cooldown: 2000,
     range: 6,
     minRange: 3,
+    highGroundRangeBonus: 2,
     animationType: AnimationType.Cast,
     sounds: {
       preparing: null,
@@ -137,6 +140,7 @@ export const weaponDefinitions: Record<WeaponType, AttackData> = {
     cooldown: 2000,
     range: 6,
     minRange: 3,
+    highGroundRangeBonus: 2,
     animationType: AnimationType.Cast,
     sounds: {
       preparing: SharedActorActionsSfxFireSpellSounds,
@@ -156,6 +160,7 @@ export const weaponDefinitions: Record<WeaponType, AttackData> = {
     cooldown: 1000,
     range: 1,
     minRange: 0,
+    highGroundRangeBonus: 0,
     animationType: AnimationType.LargeSlash,
     sounds: {
       preparing: null,
@@ -175,6 +180,7 @@ export const weaponDefinitions: Record<WeaponType, AttackData> = {
     cooldown: 1000,
     range: 1,
     minRange: 0,
+    highGroundRangeBonus: 0,
     animationType: AnimationType.Smash,
     sounds: {
       preparing: null,
@@ -194,6 +200,7 @@ export const weaponDefinitions: Record<WeaponType, AttackData> = {
     cooldown: 1000,
     range: 2,
     minRange: 0,
+    highGroundRangeBonus: 0,
     animationType: AnimationType.LargeThrust,
     sounds: {
       preparing: null,
@@ -213,6 +220,7 @@ export const weaponDefinitions: Record<WeaponType, AttackData> = {
     cooldown: 1000,
     range: 2,
     minRange: 0,
+    highGroundRangeBonus: 0,
     animationType: AnimationType.Thrust,
     sounds: {
       preparing: null,
@@ -232,6 +240,7 @@ export const weaponDefinitions: Record<WeaponType, AttackData> = {
     cooldown: 1000,
     range: 1,
     minRange: 0,
+    highGroundRangeBonus: 0,
     animationType: AnimationType.Thrust,
     sounds: {
       preparing: null,
@@ -263,6 +272,7 @@ export const weaponDefinitions: Record<WeaponType, AttackData> = {
     cooldown: 3000,
     range: 6,
     minRange: 0,
+    highGroundRangeBonus: 1,
     animationType: AnimationType.Shoot,
     sounds: {
       preparing: null,
@@ -282,6 +292,7 @@ export const weaponDefinitions: Record<WeaponType, AttackData> = {
     cooldown: 1400,
     range: 7,
     minRange: 0,
+    highGroundRangeBonus: 2,
     animationType: AnimationType.Shoot,
     sounds: {
       preparing: SharedActorActionsSfxLeatherNockSounds,
@@ -301,6 +312,7 @@ export const weaponDefinitions: Record<WeaponType, AttackData> = {
     cooldown: 1000,
     range: 1,
     minRange: 0,
+    highGroundRangeBonus: 0,
     animationType: AnimationType.LargeSlash,
     sounds: {
       preparing: null,

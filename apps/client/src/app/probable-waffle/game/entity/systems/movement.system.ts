@@ -1,4 +1,4 @@
-import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import type { ActorId, Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { getSceneComponent, getSceneService } from "../../world/services/scene-component-helpers";
 import { NavigationService, TerrainType } from "../../world/services/navigation.service";
 import { throttle } from "../../library/throttle";
@@ -255,7 +255,7 @@ export class MovementSystem {
 
     const onComplete = async () => {
       // Check if we still have a target to follow
-      if (this.targetGameObject && this.targetGameObject.active) {
+      if (this.targetGameObject && this.targetGameObject.active && this.targetGameObject.scene.scene.isActive()) {
         // Recalculate path to the moving target
         try {
           const newPath = await this.getPathToClosestWalkableTileBetweenGameObjectsInRadius(
@@ -367,6 +367,9 @@ export class MovementSystem {
     onComplete?: (() => void) | (() => Promise<void>),
     onStop?: () => void
   ): Promise<void> {
+    if (!this.gameObject.scene.scene.isActive()) {
+      return Promise.reject("Scene is not active");
+    }
     const tileWorldXY = this.navigationService?.getTileWorldCenter(tile);
     if (!tileWorldXY) return Promise.reject("No tile world xy to move to");
 
@@ -456,6 +459,8 @@ export class MovementSystem {
       : undefined;
 
     return new Promise<void>((resolve, reject) => {
+      const isKilled = getActorComponent(this.gameObject, HealthComponent)?.killed ?? false;
+      if (isKilled) return reject("Actor is killed");
       this.onMovementStart(newLogicalTransform, config);
       const representableComponent = getActorComponent(this.gameObject, RepresentableComponent);
       if (!representableComponent) return reject("No representable component");
@@ -629,7 +634,7 @@ export class MovementSystem {
    */
   private async getTileVec3ByDynamicFlocking(
     tileVec3: Vector3Simple,
-    selectedActorObjectIds: string[]
+    selectedActorObjectIds: ActorId[]
   ): Promise<Vector3Simple> {
     const unitCount = selectedActorObjectIds.length;
     if (unitCount < 2) {

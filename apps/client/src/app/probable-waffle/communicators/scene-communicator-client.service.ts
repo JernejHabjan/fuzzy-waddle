@@ -4,6 +4,7 @@ import { type SceneCommunicatorClientServiceInterface } from "./scene-communicat
 import { ProbableWaffleCommunicatorService } from "./probable-waffle-communicator.service";
 import { Subscription } from "rxjs";
 import type { ProbableWaffleCommunicators } from "./probable-waffle.communicators";
+import type { GameInstanceId } from "@fuzzy-waddle/api-interfaces";
 
 @Injectable({
   providedIn: "root"
@@ -11,7 +12,7 @@ import type { ProbableWaffleCommunicators } from "./probable-waffle.communicator
 export class SceneCommunicatorClientService implements SceneCommunicatorClientServiceInterface {
   private readonly communicator = inject(ProbableWaffleCommunicatorService);
   private readonly authenticatedSocketService = inject(AuthenticatedSocketService);
-  async createCommunicators(gameInstanceId: string): Promise<ProbableWaffleCommunicators> {
+  async createCommunicators(gameInstanceId: GameInstanceId): Promise<ProbableWaffleCommunicators> {
     const socket = await this.authenticatedSocketService.getSocket();
     this.communicator.startCommunication(gameInstanceId, socket);
     return this.communicatorObservables;
@@ -35,7 +36,7 @@ export class SceneCommunicatorClientService implements SceneCommunicatorClientSe
     };
   }
 
-  async destroyCommunicators(gameInstanceId: string, subscriptions: Subscription[]): Promise<void> {
+  async destroyCommunicators(gameInstanceId: GameInstanceId, subscriptions: Subscription[]): Promise<void> {
     const socket = await this.authenticatedSocketService.getSocket();
     this.communicator.stopCommunication(gameInstanceId, socket);
     subscriptions.forEach((subscription) => subscription.unsubscribe());

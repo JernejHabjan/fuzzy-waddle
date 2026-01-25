@@ -1,3 +1,3 @@
 export type OwnerDefinition = {
-  color: { originalColor: number; epsilon: number }[];
+  readonly color: { originalColor: number; epsilon: number }[];
 };

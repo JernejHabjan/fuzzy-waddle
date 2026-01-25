@@ -1,9 +1,9 @@
 import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 
 export type ResourceSourceDefinition = {
-  resourceType: ResourceType;
-  maximumResources: number;
-  gatheringFactor: number;
-  maxGatherers?: number;
-  cooldown: number;
+  readonly resourceType: ResourceType;
+  readonly maximumResources: number;
+  readonly gatheringFactor: number;
+  readonly maxGatherers?: number;
+  readonly cooldown: number;
 };
