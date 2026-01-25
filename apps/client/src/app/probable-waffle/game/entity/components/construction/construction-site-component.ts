@@ -347,12 +347,12 @@ export class ConstructionSiteComponent {
       if (actorIndex && data.assignedBuilders) {
         this.assignedBuilders = data.assignedBuilders
           .map((id) => actorIndex.getActorById(id))
-          .filter((obj): obj is GameObject => obj !== undefined);
+          .filter((obj): obj is GameObject => obj !== null);
       }
       if (actorIndex && data.assignedRepairers) {
         this.assignedRepairers = data.assignedRepairers
           .map((id) => actorIndex.getActorById(id))
-          .filter((obj): obj is GameObject => obj !== undefined);
+          .filter((obj): obj is GameObject => obj !== null);
       }
     }, 50);
 

@@ -23,6 +23,7 @@ import { getSceneService } from "./scene-component-helpers";
 import { ActorIndexSystem } from "./ActorIndexSystem";
 import { LoadGame } from "../../data/load-game";
 import type { InitialActorConfig } from "../../player/faction-info";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export class SceneActorCreator {
   private readonly loadGame: LoadGame;
@@ -103,7 +104,7 @@ export class SceneActorCreator {
     if (!actorDefinition.name) return undefined;
 
     const shouldConstructFully = this.shouldConstructActorFully(actorDefinition);
-    let actor;
+    let actor: GameObject;
     if (shouldConstructFully) {
       actor = ActorManager.createActorFully(this.scene, actorDefinition.name as ObjectNames, actorDefinition);
     } else {

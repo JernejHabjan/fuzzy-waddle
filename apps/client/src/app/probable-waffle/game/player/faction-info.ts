@@ -15,8 +15,6 @@ export class FactionInfo {
     public name: string,
     /**
      * Actors to spawn for each player in the game.
-     * Can be ObjectNames[] for backwards compatibility (all spawn as Finished),
-     * or InitialActorConfig[] to specify construction states.
      */
     public readonly initialActors: InitialActorConfig[] = []
   ) {}
