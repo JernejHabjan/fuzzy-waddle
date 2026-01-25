@@ -3,11 +3,11 @@ import {
   createPlayerLobbyDefinition,
   type DifficultyModifiers,
   FactionType,
+  GameInstanceId,
   GameSessionState,
   getRandomFactionType,
   type MapTuning,
   type PendingMatchmakingGameInstance,
-  type PlayerLobbyDefinition,
   type PositionPlayerDefinition,
   ProbableWaffleGameInstance,
   ProbableWaffleGameInstanceType,
@@ -19,7 +19,8 @@ import {
   ProbableWaffleMapEnum,
   type ProbableWafflePlayerControllerData,
   ProbableWafflePlayerType,
-  type RequestGameSearchForMatchMakingDto
+  type RequestGameSearchForMatchMakingDto,
+  type UserId
 } from "@fuzzy-waddle/api-interfaces";
 import { type User } from "@supabase/supabase-js";
 import { Cron, CronExpression } from "@nestjs/schedule";
@@ -207,7 +208,7 @@ export class MatchmakingService implements MatchmakingServiceInterface {
     return foundGameInstanceWithCommonMap ?? null;
   }
 
-  private getNewPlayer(gameInstance: ProbableWaffleGameInstance, userId: string, factionType: FactionType | null) {
+  private getNewPlayer(gameInstance: ProbableWaffleGameInstance, userId: UserId, factionType: FactionType | null) {
     const randomFactionType = getRandomFactionType();
 
     console.log(
@@ -250,7 +251,7 @@ export class MatchmakingService implements MatchmakingServiceInterface {
     return new ProbableWaffleGameMode(gameModeData);
   }
 
-  private removePendingMatchmakingGameInstance(gameInstanceId: string) {
+  private removePendingMatchmakingGameInstance(gameInstanceId: GameInstanceId) {
     this.pendingMatchmakingGameInstances = this.pendingMatchmakingGameInstances.filter(
       (gi) => gi.gameInstance.gameInstanceMetadata.data.gameInstanceId !== gameInstanceId
     );

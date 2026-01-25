@@ -1,5 +1,7 @@
+import type { GameInstanceId } from "@fuzzy-waddle/api-interfaces";
+
 export interface SceneCommunicatorClientServiceInterface {
-  startListeningToEvents(gameInstanceId: string): Promise<void>;
+  startListeningToEvents(gameInstanceId: GameInstanceId): Promise<void>;
 
   stopListeningToEvents(): void;
 }

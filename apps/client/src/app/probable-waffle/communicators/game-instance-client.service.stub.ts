@@ -1,6 +1,8 @@
 import {
   type DifficultyModifiers,
+  GameInstanceId,
   type MapTuning,
+  type PlayerNumber,
   type PositionPlayerDefinition,
   type ProbableWaffleDataChangeEventProperty,
   type ProbableWaffleGameFoundEvent,
@@ -62,7 +64,7 @@ export const gameInstanceClientServiceStub = {
   async joinGameInstanceAsSpectator(): Promise<void> {
     return Promise.resolve();
   },
-  async joinGameInstanceAsPlayerForMatchmaking(gameInstanceId: string): Promise<void> {
+  async joinGameInstanceAsPlayerForMatchmaking(gameInstanceId: GameInstanceId): Promise<void> {
     return Promise.resolve();
   },
   async joinGameInstanceAsPlayer(): Promise<void> {
@@ -77,7 +79,7 @@ export const gameInstanceClientServiceStub = {
   async playerSlotOpened(playerDefinition: PositionPlayerDefinition): Promise<void> {
     return Promise.resolve();
   },
-  async removePlayer(playerNumber: number): Promise<void> {
+  async removePlayer(playerNumber: PlayerNumber): Promise<void> {
     return Promise.resolve();
   },
   async addSelfAsSpectator(): Promise<void> {
@@ -95,7 +97,7 @@ export const gameInstanceClientServiceStub = {
   async navigateToLobbyOrDirectlyToGame(): Promise<void> {
     return Promise.resolve();
   },
-  async getGameInstanceData(gameInstanceId: string): Promise<ProbableWaffleGameInstanceData | null> {
+  async getGameInstanceData(gameInstanceId: GameInstanceId): Promise<ProbableWaffleGameInstanceData | null> {
     return Promise.resolve(null);
   },
   async addAiPlayer(): Promise<PositionPlayerDefinition> {

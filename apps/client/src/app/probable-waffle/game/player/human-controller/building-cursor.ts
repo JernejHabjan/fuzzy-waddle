@@ -2,6 +2,7 @@ import { GameObjects, Input } from "phaser";
 import {
   type ActorDefinition,
   ObjectNames,
+  type PlayerNumber,
   ResourceType,
   type Vector2Simple,
   type Vector3Simple
@@ -892,7 +893,7 @@ export class BuildingCursor {
     scene: Phaser.Scene,
     name: ObjectNames,
     logicalWorldTransform: Vector3Simple,
-    playerNumber?: number
+    playerNumber?: PlayerNumber
   ) {
     const actorDefinition = {
       ...(playerNumber && {

@@ -51,10 +51,9 @@ export class ConvertibleComponent {
     const actorIndexSystem = getSceneService(this.gameObject.scene, ActorIndexSystem);
     if (!actorIndexSystem) return;
 
-    // Check all players (1-8)
-    for (let playerNumber = 1; playerNumber <= 8; playerNumber++) {
-      const ownedActors = actorIndexSystem.getOwnedActors(playerNumber);
+    const ownedActorsByPlayers = actorIndexSystem.getOwnedActorsByPlayers();
 
+    for (const [playerNumber, ownedActors] of ownedActorsByPlayers) {
       for (const ownedActor of ownedActors) {
         // Skip dead actors
         const health = getActorComponent(ownedActor, HealthComponent);

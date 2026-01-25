@@ -4,7 +4,7 @@ import { IdComponent } from "../../entity/components/id-component";
 import { OwnerComponent } from "../../entity/components/owner-component";
 import { ResourceSourceComponent } from "../../entity/components/resource/resource-source-component";
 import { ResourceDrainComponent } from "../../entity/components/resource/resource-drain-component";
-import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames, type PlayerNumber, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import { getTileCoordsUnderObject } from "../../library/tile-under-object";
 import { getSceneComponent, getSceneService } from "./scene-component-helpers";
@@ -14,12 +14,12 @@ import { getCanonicalActorNameCached } from "../../data/tech-tree/canonical-acto
 
 export class ActorIndexSystem {
   private readonly idActors = new Set<GameObject>();
-  private readonly ownedActors = new Map<number, Set<GameObject>>();
+  private readonly ownedActors = new Map<PlayerNumber, Set<GameObject>>();
   private readonly resourceSources = new Set<GameObject>();
   private readonly resourceDrains = new Set<GameObject>();
   // Track count of each actor type per player for tech unlock management
   // Uses canonical names to group variants (e.g., TivaraWorkerMale counts as TivaraWorker)
-  private readonly actorTypeCounts = new Map<number, Map<ObjectNames, number>>();
+  private readonly actorTypeCounts = new Map<PlayerNumber, Map<ObjectNames, number>>();
 
   constructor(private readonly scene: Phaser.Scene) {
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
@@ -109,7 +109,7 @@ export class ActorIndexSystem {
   /**
    * Increment the count of a specific actor type for a player.
    */
-  private incrementActorTypeCount(playerNumber: number, actorName: ObjectNames): number {
+  private incrementActorTypeCount(playerNumber: PlayerNumber, actorName: ObjectNames): number {
     let playerCounts = this.actorTypeCounts.get(playerNumber);
     if (!playerCounts) {
       playerCounts = new Map<ObjectNames, number>();
@@ -126,7 +126,7 @@ export class ActorIndexSystem {
    * Decrement the count of a specific actor type for a player.
    * Returns the remaining count.
    */
-  private decrementActorTypeCount(playerNumber: number, actorName: ObjectNames): number {
+  private decrementActorTypeCount(playerNumber: PlayerNumber, actorName: ObjectNames): number {
     const playerCounts = this.actorTypeCounts.get(playerNumber);
     if (!playerCounts) return 0;
 
@@ -146,7 +146,7 @@ export class ActorIndexSystem {
    * Get the count of a specific actor type for a player.
    * Uses canonical names (e.g., TivaraWorkerMale is counted as TivaraWorker).
    */
-  getActorTypeCount(playerNumber: number, actorName: ObjectNames): number {
+  getActorTypeCount(playerNumber: PlayerNumber, actorName: ObjectNames): number {
     const playerCounts = this.actorTypeCounts.get(playerNumber);
     return playerCounts?.get(actorName) || 0;
   }
@@ -192,10 +192,14 @@ export class ActorIndexSystem {
     return result;
   }
 
-  getOwnedActors(ownerNumber?: number): GameObject[] {
+  getOwnedActors(ownerNumber?: PlayerNumber): GameObject[] {
     if (ownerNumber === undefined) return [];
     const set = this.ownedActors.get(ownerNumber);
     return set ? Array.from(set) : [];
+  }
+
+  getOwnedActorsByPlayers(): Map<PlayerNumber, Set<GameObject>> {
+    return this.ownedActors;
   }
 
   getResourceSourcesFiltered(type?: ResourceType): GameObject[] {
@@ -207,7 +211,7 @@ export class ActorIndexSystem {
     });
   }
 
-  getResourceDrainsFiltered(ownerNumber?: number, type?: ResourceType): GameObject[] {
+  getResourceDrainsFiltered(ownerNumber?: PlayerNumber, type?: ResourceType): GameObject[] {
     let drains = Array.from(this.resourceDrains);
     if (ownerNumber !== undefined) {
       drains = drains.filter((go) => getActorComponent(go, OwnerComponent)?.getOwner() === ownerNumber);

@@ -1,7 +1,13 @@
 import GameObject = Phaser.GameObjects.GameObject;
 import { getActorComponent } from "../../data/actor-component";
 import { Plugins } from "../../world/const/Plugins";
-import { GameSetupHelpers, Guid, ObjectNames, type OwnerComponentData } from "@fuzzy-waddle/api-interfaces";
+import {
+  GameSetupHelpers,
+  Guid,
+  ObjectNames,
+  type OwnerComponentData,
+  type PlayerNumber
+} from "@fuzzy-waddle/api-interfaces";
 import GameProbableWaffleScene from "../../world/scenes/GameProbableWaffleScene";
 import { HealthComponent } from "./combat/components/health-component";
 import { getGameObjectDepth, onObjectReady } from "../../data/game-object-helper";
@@ -24,7 +30,7 @@ export class OwnerComponent {
    * Not using color replace as it adds huge load on GPU
    */
   static useColorReplace = false;
-  private owner?: number;
+  private owner?: PlayerNumber;
   ownerColor?: Phaser.Display.Color;
   private readonly colorReplacePipelinePlugin?: any;
   private colorPipelineInstances: any[] = [];
@@ -74,7 +80,7 @@ export class OwnerComponent {
     this.ownerUiElement?.setVisible(visible);
   }
 
-  setOwner(playerNumber?: number) {
+  setOwner(playerNumber?: PlayerNumber) {
     const oldOwner = this.owner;
     const newOwner = playerNumber;
 
@@ -87,7 +93,7 @@ export class OwnerComponent {
     this.tryToSetComponents();
   }
 
-  setOwnerWithBlink(playerNumber: number) {
+  setOwnerWithBlink(playerNumber: PlayerNumber) {
     const oldOwner = this.owner;
     this.setOwner(playerNumber);
 
@@ -133,7 +139,7 @@ export class OwnerComponent {
     });
   }
 
-  private handleOwnerChangeForTechTree(oldOwner: number | undefined, newOwner: number | undefined) {
+  private handleOwnerChangeForTechTree(oldOwner: PlayerNumber | undefined, newOwner: PlayerNumber | undefined) {
     const techTreeService = getSceneService(this.gameObject.scene, TechTreeService);
     if (!techTreeService) return;
 

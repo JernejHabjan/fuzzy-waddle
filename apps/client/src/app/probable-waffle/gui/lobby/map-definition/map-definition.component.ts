@@ -11,6 +11,7 @@ import {
 import {
   GameSetupHelpers,
   type PlayerLobbyDefinition,
+  type PlayerNumber,
   type PositionPlayerDefinition,
   ProbableWaffleLevels,
   type ProbableWaffleMapData,
@@ -28,7 +29,7 @@ import type { ProbableWaffleCommunicators } from "../../../communicators/probabl
  * Represented as a rectangle on canvas
  * */
 interface DisplayRect {
-  playerNumber: number;
+  playerNumber: PlayerNumber;
   positionNumber: number;
   tileX: number;
   tileY: number;
@@ -364,7 +365,7 @@ export class MapDefinitionComponent implements OnInit, OnDestroy {
    * Adds new draggable rectangle
    */
   private createDraggablePlayerRectangle(
-    playerNumber: number,
+    playerNumber: PlayerNumber,
     positionNumber: number,
     isoCoordinate: { x: number; y: number },
     fill: string

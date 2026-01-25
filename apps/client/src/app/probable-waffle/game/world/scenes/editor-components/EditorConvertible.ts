@@ -7,6 +7,7 @@ import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "../../../entity/components/owner-component";
 import { addActorComponent } from "../../../data/actor-data";
 import { ConvertibleComponent } from "../../../entity/components/convertible-component";
+import { onObjectReady } from "../../../data/game-object-helper";
 /* END-USER-IMPORTS */
 
 export default class EditorConvertible {
@@ -15,7 +16,7 @@ export default class EditorConvertible {
     (gameObject as any)["__EditorConvertible"] = this;
 
     /* START-USER-CTR-CODE */
-    gameObject.scene.events.once("scene-awake", this.awake, this);
+    onObjectReady(this.gameObject, this.init, this);
     /* END-USER-CTR-CODE */
   }
 
@@ -28,7 +29,7 @@ export default class EditorConvertible {
   public check_interval: number = 500;
 
   /* START-USER-CODE */
-  private awake() {
+  private init() {
     // Only add ConvertibleComponent if no owner is set
     const ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
     if (!ownerComponent || ownerComponent.getOwner() === undefined) {
