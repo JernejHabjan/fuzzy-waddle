@@ -297,10 +297,6 @@ export class BuilderComponent {
 
   setData(data: Partial<BuilderComponentData>) {
     if (data.remainingCooldown !== undefined) this.remainingCooldown = data.remainingCooldown;
-    if (data.enterConstructionSite !== undefined)
-      this.builderComponentDefinition.enterConstructionSite = data.enterConstructionSite;
-    if (data.constructionSiteOffset !== undefined)
-      this.builderComponentDefinition.constructionSiteOffset = data.constructionSiteOffset;
     if (data.assignedConstructionSiteId) {
       const actorIndex = getSceneService(this.gameObject.scene, ActorIndexSystem);
       const actorById = actorIndex?.getActorById(data.assignedConstructionSiteId);
@@ -313,8 +309,6 @@ export class BuilderComponent {
   getData(): BuilderComponentData {
     return {
       remainingCooldown: this.remainingCooldown,
-      enterConstructionSite: this.builderComponentDefinition.enterConstructionSite,
-      constructionSiteOffset: this.builderComponentDefinition.constructionSiteOffset,
       assignedConstructionSiteId: this.assignedConstructionSite
         ? getActorComponent(this.assignedConstructionSite, IdComponent)?.id
         : undefined

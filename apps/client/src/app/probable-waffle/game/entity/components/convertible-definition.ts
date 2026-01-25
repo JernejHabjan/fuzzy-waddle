@@ -1,4 +1,4 @@
 export type ConvertibleDefinition = {
-  detectionRange: number;
-  checkInterval: number;
+  readonly detectionRange: number;
+  readonly checkInterval: number;
 };

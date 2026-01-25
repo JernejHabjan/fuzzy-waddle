@@ -1,3 +1,3 @@
 export type ContainerDefinition = {
-  capacity: number;
+  readonly capacity: number;
 };

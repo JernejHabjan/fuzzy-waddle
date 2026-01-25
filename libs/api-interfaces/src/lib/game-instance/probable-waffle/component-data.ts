@@ -17,8 +17,6 @@ export interface HealingComponentData {
 
 export interface BuilderComponentData {
   remainingCooldown?: number;
-  enterConstructionSite?: boolean;
-  constructionSiteOffset?: number;
   assignedConstructionSiteId?: string;
 }
 

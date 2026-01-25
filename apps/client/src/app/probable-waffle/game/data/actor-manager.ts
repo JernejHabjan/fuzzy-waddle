@@ -178,7 +178,7 @@ export class ActorManager {
       production: getActorComponent(actor, ProductionComponent)?.getData(),
       representable: getActorComponent(actor, RepresentableComponent)?.getData(),
       blackboard: getActorComponent(actor, PawnAiController)?.getData()
-    };
+    } satisfies ActorDefinition;
 
     return actorDefinition;
   }
