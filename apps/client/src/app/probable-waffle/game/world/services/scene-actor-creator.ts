@@ -41,11 +41,8 @@ export class SceneActorCreator {
     // All additional changes should be emitted through SceneActorCreatorCommunicator event and actors themselves
     const isStartupLoad = this.scene.baseGameData.gameInstance.gameInstanceMetadata.isStartupLoad();
     if (isStartupLoad) {
-      // If loading, the initialActors should not be populated again in scene
-      this.loadGame.loadActorsFromSaveGame();
+      this.loadGame.load();
       this.removeSpawnsAfterLoad();
-      // Restore player data (camera, selection groups, AI state) after actors are loaded
-      this.loadGame.restorePlayerData();
     } else {
       this.spawnFromSpawnList();
     }

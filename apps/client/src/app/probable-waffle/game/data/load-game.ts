@@ -18,7 +18,17 @@ import GameObject = Phaser.GameObjects.GameObject;
 export class LoadGame {
   constructor(private readonly scene: GameProbableWaffleScene) {}
 
-  loadActorsFromSaveGame() {
+  load() {
+    // If loading, the initialActors should not be populated again in scene
+    this.loadActorsFromSaveGame();
+    // Restore player data (camera, selection groups, AI state) after actors are loaded
+    this.restorePlayerData();
+    // Load AOE zones
+    this.loadAoeZones();
+    // Load research state
+    this.loadResearchState();
+  }
+  private loadActorsFromSaveGame() {
     if (!this.scene.baseGameData.gameInstance.gameInstanceMetadata.isStartupLoad()) return;
 
     // destroy all actors on scene with this name
@@ -49,7 +59,7 @@ export class LoadGame {
    * Restore player-specific data after actors are loaded.
    * Call this after scene is fully initialized and actors are loaded.
    */
-  restorePlayerData(): void {
+  private restorePlayerData(): void {
     if (!this.scene.baseGameData.gameInstance.gameInstanceMetadata.isStartupLoad()) return;
 
     // Restore current player's camera and selection groups
@@ -171,10 +181,7 @@ export class LoadGame {
     }
 
     for (const [playerNumber, researchTypes] of Object.entries(gameState.playerResearch)) {
-      techTreeService.setPlayerResearch(
-        parseInt(playerNumber),
-        researchTypes as ResearchType[]
-      );
+      techTreeService.setPlayerResearch(parseInt(playerNumber), researchTypes as ResearchType[]);
     }
     console.log("Loaded research state");
   }
