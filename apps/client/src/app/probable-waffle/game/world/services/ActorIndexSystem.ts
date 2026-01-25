@@ -277,4 +277,54 @@ export class ActorIndexSystem {
     this.resourceSources.clear();
     this.resourceDrains.clear();
   }
+
+  updateActorOwnership(
+    gameObject: Phaser.GameObjects.GameObject,
+    oldOwner: PlayerNumber | undefined,
+    newOwner: PlayerNumber | undefined
+  ) {
+    // Only process if actor is indexed
+    if (!this.idActors.has(gameObject)) return;
+
+    const actorName = gameObject.name as ObjectNames;
+    const canonicalName = actorName ? getCanonicalActorNameCached(actorName) : null;
+    const techTreeService = getSceneService(this.scene, TechTreeService);
+
+    // Remove from old owner's collections
+    if (oldOwner !== undefined) {
+      const oldSet = this.ownedActors.get(oldOwner);
+      if (oldSet) {
+        oldSet.delete(gameObject);
+        if (oldSet.size === 0) {
+          this.ownedActors.delete(oldOwner);
+        }
+      }
+
+      // Decrement old owner's actor type count
+      if (canonicalName) {
+        const remainingCount = this.decrementActorTypeCount(oldOwner, canonicalName);
+        if (techTreeService) {
+          techTreeService.unregisterActorUnlock(oldOwner, canonicalName, remainingCount);
+        }
+      }
+    }
+
+    // Add to new owner's collections
+    if (newOwner !== undefined) {
+      let newSet = this.ownedActors.get(newOwner);
+      if (!newSet) {
+        newSet = new Set<GameObject>();
+        this.ownedActors.set(newOwner, newSet);
+      }
+      newSet.add(gameObject);
+
+      // Increment new owner's actor type count
+      if (canonicalName) {
+        this.incrementActorTypeCount(newOwner, canonicalName);
+        if (techTreeService) {
+          techTreeService.registerActorUnlock(newOwner, canonicalName);
+        }
+      }
+    }
+  }
 }

@@ -1,5 +1,5 @@
-import { Component, inject } from "@angular/core";
 import type { OnInit } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { type PlayerNumber, type PlayerStateActionType, ProbableWafflePlayer } from "@fuzzy-waddle/api-interfaces";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 
