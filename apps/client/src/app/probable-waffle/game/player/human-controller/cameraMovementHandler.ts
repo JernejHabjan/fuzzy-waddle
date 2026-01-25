@@ -21,6 +21,7 @@ export class CameraMovementHandler {
   private readonly cameraMinZoom = 30;
   private readonly cameraMaxZoom = 0.3;
   private optionsChangedSubscription?: Subscription;
+  private cameraStateSetFromData: boolean = false;
 
   constructor(
     private readonly scene: Phaser.Scene,
@@ -270,6 +271,7 @@ export class CameraMovementHandler {
   }
 
   private create() {
+    if (this.cameraStateSetFromData) return;
     this.centerCameraOnSpawnPoint();
   }
 
@@ -328,18 +330,9 @@ export class CameraMovementHandler {
    * Validates camera bounds to ensure the camera is within valid range.
    */
   setCameraState(state: CameraStateData): void {
-    if (state.zoom !== undefined && state.zoom >= this.cameraMaxZoom && state.zoom <= this.cameraMinZoom) {
-      this.mainCamera.zoom = this.findNearestValidZoom(state.zoom);
-    }
-
-    if (state.scrollX !== undefined) {
-      this.mainCamera.scrollX = state.scrollX;
-    }
-
-    if (state.scrollY !== undefined) {
-      this.mainCamera.scrollY = state.scrollY;
-    }
-
-    this.clampCameraToBounds();
+    if (state.scrollX !== undefined) this.mainCamera.scrollX = state.scrollX;
+    if (state.scrollY !== undefined) this.mainCamera.scrollY = state.scrollY;
+    if (state.zoom !== undefined) this.mainCamera.zoom = state.zoom;
+    if (state.scrollX !== undefined || state.scrollY !== undefined) this.cameraStateSetFromData = true;
   }
 }
