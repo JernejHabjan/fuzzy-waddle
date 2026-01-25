@@ -456,6 +456,8 @@ export class MovementSystem {
       : undefined;
 
     return new Promise<void>((resolve, reject) => {
+      const isKilled = getActorComponent(this.gameObject, HealthComponent)?.killed ?? false;
+      if (isKilled) return reject("Actor is killed");
       this.onMovementStart(newLogicalTransform, config);
       const representableComponent = getActorComponent(this.gameObject, RepresentableComponent);
       if (!representableComponent) return reject("No representable component");
