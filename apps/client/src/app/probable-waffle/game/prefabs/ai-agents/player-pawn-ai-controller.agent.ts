@@ -258,7 +258,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
   }
 
   Stop = (fromNode: string) => {
-    // console.log(`[Build] Stop called from: ${fromNode}`);
+    // console.log(`Stop called from: ${fromNode}`);
 
     const currentOrder = this.blackboard.getCurrentOrder();
     if (currentOrder) {

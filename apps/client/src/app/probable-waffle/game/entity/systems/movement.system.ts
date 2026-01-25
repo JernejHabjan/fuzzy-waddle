@@ -1,4 +1,4 @@
-import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import type { ActorId, Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { getSceneComponent, getSceneService } from "../../world/services/scene-component-helpers";
 import { NavigationService, TerrainType } from "../../world/services/navigation.service";
 import { throttle } from "../../library/throttle";
@@ -617,7 +617,7 @@ export class MovementSystem {
    */
   private async getTileVec3ByDynamicFlocking(
     tileVec3: Vector3Simple,
-    selectedActorObjectIds: string[]
+    selectedActorObjectIds: ActorId[]
   ): Promise<Vector3Simple> {
     const unitCount = selectedActorObjectIds.length;
     if (unitCount < 2) {

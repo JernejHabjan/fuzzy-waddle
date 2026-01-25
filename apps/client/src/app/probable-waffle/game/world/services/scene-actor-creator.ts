@@ -22,6 +22,7 @@ import { IdComponent } from "../../entity/components/id-component";
 import { getSceneService } from "./scene-component-helpers";
 import { ActorIndexSystem } from "./ActorIndexSystem";
 import { LoadGame } from "../../data/load-game";
+import type { InitialActorConfig } from "../../player/faction-info";
 
 export class SceneActorCreator {
   private readonly loadGame: LoadGame;
@@ -100,10 +101,24 @@ export class SceneActorCreator {
 
   public createActorFromDefinition(actorDefinition: ActorDefinition): Phaser.GameObjects.GameObject | undefined {
     if (!actorDefinition.name) return undefined;
-    const actor = ActorManager.createActorFully(this.scene, actorDefinition.name as ObjectNames, actorDefinition);
+
+    const shouldConstructFully = this.shouldConstructActorFully(actorDefinition);
+    let actor;
+    if (shouldConstructFully) {
+      actor = ActorManager.createActorFully(this.scene, actorDefinition.name as ObjectNames, actorDefinition);
+    } else {
+      // not fully built construction site
+      actor = ActorManager.createActorConstructing(this.scene, actorDefinition.name as ObjectNames, actorDefinition);
+    }
+
     const gameObject = this.scene.add.existing(actor);
     this.registerAndSaveNewActor(gameObject);
     return gameObject;
+  }
+
+  private shouldConstructActorFully(actorDefinition: ActorDefinition): boolean {
+    const constructionState = actorDefinition.constructionSite?.state;
+    return constructionState === ConstructionStateEnum.Finished || constructionState === undefined;
   }
 
   public registerAndSaveNewActor(actor: Phaser.GameObjects.GameObject) {
@@ -184,14 +199,14 @@ export class SceneActorCreator {
     let actor: Phaser.GameObjects.GameObject | undefined = undefined;
     switch (faction) {
       case FactionType.Skaduwee:
-        FactionDefinitions.skaduwee.initialActors.forEach((actorName, index) => {
-          actor = this.createInitialActors(actorName, logicalSpawnPoint, owner_id, index, actor);
+        FactionDefinitions.skaduwee.initialActors.forEach((actorConfig, index) => {
+          actor = this.createInitialActors(actorConfig, logicalSpawnPoint, owner_id, index, actor);
         });
         break;
 
       case FactionType.Tivara:
-        FactionDefinitions.tivara.initialActors.forEach((actorName, index) => {
-          actor = this.createInitialActors(actorName, logicalSpawnPoint, owner_id, index, actor);
+        FactionDefinitions.tivara.initialActors.forEach((actorConfig, index) => {
+          actor = this.createInitialActors(actorConfig, logicalSpawnPoint, owner_id, index, actor);
         });
         break;
       default:
@@ -200,12 +215,15 @@ export class SceneActorCreator {
   }
 
   private createInitialActors(
-    actorName: ObjectNames,
+    actorConfig: InitialActorConfig,
     logicalSpawnPoint: Vector3Simple,
     owner_id: number,
     index: number,
     previouslyCreatedActor: Phaser.GameObjects.GameObject | undefined
   ): Phaser.GameObjects.GameObject | undefined {
+    const actorName = actorConfig.actorName;
+    const constructionState = actorConfig.constructionState ?? ConstructionStateEnum.Finished;
+
     const previouslyCreatedActorBounds = getGameObjectBounds(previouslyCreatedActor);
     let newX = logicalSpawnPoint.x + index * 160;
     if (previouslyCreatedActorBounds) {
@@ -228,7 +246,7 @@ export class SceneActorCreator {
         ownerId: owner_id
       },
       constructionSite: {
-        state: ConstructionStateEnum.Finished
+        state: constructionState
       }
     } satisfies ActorDefinition;
 

@@ -4,7 +4,7 @@ import { IdComponent } from "../../entity/components/id-component";
 import { OwnerComponent } from "../../entity/components/owner-component";
 import { ResourceSourceComponent } from "../../entity/components/resource/resource-source-component";
 import { ResourceDrainComponent } from "../../entity/components/resource/resource-drain-component";
-import { ObjectNames, type PlayerNumber, ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { type ActorId, ObjectNames, type PlayerNumber, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import { getTileCoordsUnderObject } from "../../library/tile-under-object";
 import { getSceneComponent, getSceneService } from "./scene-component-helpers";
@@ -168,7 +168,7 @@ export class ActorIndexSystem {
     return Array.from(this.idActors);
   }
 
-  getActorById(id: string): GameObject | null {
+  getActorById(id: ActorId): GameObject | null {
     for (const obj of this.idActors) {
       const idComp = getActorComponent(obj, IdComponent);
       if (idComp?.id === id) {
@@ -178,7 +178,7 @@ export class ActorIndexSystem {
     return null;
   }
 
-  getActorsByIds(ids: string[]): GameObject[] {
+  getActorsByIds(ids: ActorId[]): GameObject[] {
     const result: GameObject[] = [];
     const idSet = new Set(ids);
     for (const obj of this.idActors) {

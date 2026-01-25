@@ -4,7 +4,7 @@ import { SceneActorCreator } from "../world/services/scene-actor-creator";
 import GameProbableWaffleScene from "../world/scenes/GameProbableWaffleScene";
 import { SelectionGroupsComponent } from "../player/human-controller/selection-groups.component";
 import { CameraMovementHandler } from "../player/human-controller/cameraMovementHandler";
-import { ProbableWafflePlayerType } from "@fuzzy-waddle/api-interfaces";
+import { type ActorId, ProbableWafflePlayerType } from "@fuzzy-waddle/api-interfaces";
 import { AiPlayerHandler } from "../player/ai-controller/ai-player-handler";
 import { emitEventSelection, getSelectableSceneChildren } from "./scene-data";
 import { getActorComponent } from "./actor-component";
@@ -102,7 +102,7 @@ export class LoadGame {
    */
   private syncSelectionToPlayerState(): void {
     const selectableActors = getSelectableSceneChildren(this.scene);
-    const selectedActorIds: string[] = [];
+    const selectedActorIds: ActorId[] = [];
 
     for (const actor of selectableActors) {
       const selectableComponent = getActorComponent(actor, SelectableComponent);

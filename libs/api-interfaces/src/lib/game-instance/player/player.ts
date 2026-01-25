@@ -18,3 +18,4 @@ export abstract class BasePlayer<
 export type PlayerNumber = number;
 export type GameInstanceId = string;
 export type UserId = string;
+export type ActorId = string;
