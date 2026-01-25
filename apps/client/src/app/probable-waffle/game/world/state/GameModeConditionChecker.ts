@@ -26,6 +26,7 @@ import type EndGameDialog from "../scenes/hud-scenes/EndGameDialog";
 import { getSceneSystem } from "../services/scene-component-helpers";
 import { AiPlayerHandler } from "../../player/ai-controller/ai-player-handler";
 import HudProbableWaffle from "../scenes/hud-scenes/HudProbableWaffle";
+import { SceneDialogHelper } from "../scenes/scene-dialog-helper";
 
 export class GameModeConditionChecker {
   private loseConditions: LoseConditions;
@@ -353,8 +354,7 @@ export class GameModeConditionChecker {
   }
 
   private createEndGameLayer = (message: string, callback: () => void) => {
-    const layer = this.scene.scene.get<EndGameDialog>("EndGameDialog") as EndGameDialog;
-    layer.scene.start();
+    const layer = SceneDialogHelper.showDialog<EndGameDialog>(this.scene, "EndGameDialog");
     setTimeout(() => {
       layer.setMessage(message);
       layer.setCallback(callback);

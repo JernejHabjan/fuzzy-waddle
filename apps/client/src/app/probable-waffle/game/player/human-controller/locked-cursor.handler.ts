@@ -62,8 +62,7 @@ export class LockedCursorHandler {
    * On Esc, release pointer lock (browsers handle this automatically, but you can also use Q)
    */
   private onEscKeyDown() {
-    if (!this.input.mouse?.locked) return;
-    this.input.mouse.releasePointerLock();
+    LockedCursorHandler.releasePointerLock(this.input);
   }
 
   /**
@@ -77,6 +76,10 @@ export class LockedCursorHandler {
   /**
    * Handle pointer movement while the mouse is locked
    * This updates the custom cursor position based on pointer movement deltas
+   *
+   * Note: Phaser's pointer position is automatically updated via the patched Pointer.move() method
+   * (see apps/client/src/app/shared/game/phaser/patches/pointer-lock-patch.ts)
+   * We only need to update the visual cursor position here
    */
   private onPointerMove(pointer: Phaser.Input.Pointer) {
     if (!this.input.mouse?.locked || !this.customCursor) return;
@@ -93,20 +96,6 @@ export class LockedCursorHandler {
 
     // Update the visual cursor position
     this.customCursor.setPosition(this.cursorPosition.x, this.cursorPosition.y);
-
-    this.updateInputPointerPosition();
-  }
-
-  /**
-   * Update the active pointer position so Phaser's input system knows where the cursor is
-   * TODO - seems like there's still an issue with pointer position being automatically set by Phaser on move, overriding my manual updates.
-   * TODO - see this: https://github.com/phaserjs/phaser/issues/7153
-   */
-  private updateInputPointerPosition() {
-    if (!this.customCursor) return;
-    this.input.activePointer.position.set(this.cursorPosition.x, this.cursorPosition.y);
-    const camera = this.scene.cameras.main;
-    this.input.activePointer.updateWorldPoint(camera);
   }
 
   /**
@@ -114,7 +103,6 @@ export class LockedCursorHandler {
    */
   private pointerLockChangeHandler() {
     const pointerIsLocked = this.input.mouse?.locked;
-    console.log("pointerIsLocked", pointerIsLocked);
 
     if (pointerIsLocked) {
       this.createCustomCursor(); // Create the custom cursor when pointer is locked
@@ -164,5 +152,10 @@ export class LockedCursorHandler {
         });
       }
     });
+  }
+
+  static releasePointerLock(input: Input.InputPlugin) {
+    if (!input.mouse?.locked) return;
+    input.mouse.releasePointerLock();
   }
 }
