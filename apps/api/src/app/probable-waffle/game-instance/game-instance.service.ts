@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { type User } from "@supabase/supabase-js";
 import {
   type DifficultyModifiers,
+  GameInstanceId,
   type MapTuning,
   ProbableWaffleGameInstance,
   type ProbableWaffleGameInstanceData,

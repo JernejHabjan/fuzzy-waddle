@@ -31,6 +31,7 @@ import { PlayerActionsHandler } from "../../player/human-controller/player-actio
 import { ActorIndexSystem } from "../services/ActorIndexSystem";
 import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
 import { SelectionTabHandler } from "../../player/human-controller/selection-tab-handler";
+import { LockedCursorHandler } from "../../player/human-controller/locked-cursor.handler";
 
 export default class GameProbableWaffleScene extends ProbableWaffleScene {
   tilemap!: Phaser.Tilemaps.Tilemap;
@@ -109,6 +110,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     this.sceneGameData.services = [];
     this.sceneGameData.systems = [];
     this.sceneGameData.initializers.sceneInitialized.next(false);
+    LockedCursorHandler.releasePointerLock(this.input);
   }
 
   protected override shutDown() {
