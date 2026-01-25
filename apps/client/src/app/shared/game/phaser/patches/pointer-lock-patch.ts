@@ -19,8 +19,29 @@ import Phaser from "phaser";
  * Related: https://github.com/phaserjs/phaser/issues/7153
  */
 export function applyPointerLockPatch(): void {
-  const InputManagerPrototype = (Phaser.Input as any).InputManager.prototype;
+  // Runtime guards to ensure Phaser's internal structure matches expectations
+  const phaserInput = (Phaser as unknown as { Input?: { InputManager?: { prototype?: unknown } } }).Input;
+  if (!phaserInput || !phaserInput.InputManager || !phaserInput.InputManager.prototype) {
+    console.error(
+      "[PointerLockPatch] Unable to apply patch: Phaser.Input.InputManager.prototype is not available. " +
+        "Phaser's internal structure may have changed."
+    );
+    return;
+  }
+  const InputManagerPrototype = phaserInput.InputManager.prototype as {
+    transformPointer: (pointer: Phaser.Input.Pointer, pageX: number, pageY: number, wasMove: boolean) => void;
+    _pointerLockPatched?: boolean;
+    scaleManager: Phaser.Scale.ScaleManager;
+    game: Phaser.Game;
+  };
   const originalTransformPointer = InputManagerPrototype.transformPointer;
+  if (typeof originalTransformPointer !== "function") {
+    console.error(
+      "[PointerLockPatch] Unable to apply patch: InputManager.prototype.transformPointer is not a function. " +
+        "Phaser's internal structure may have changed."
+    );
+    return;
+  }
 
   // Track if patch has already been applied
   if (InputManagerPrototype._pointerLockPatched) {

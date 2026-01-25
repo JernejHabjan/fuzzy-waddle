@@ -4,6 +4,7 @@ import { Subscription } from "rxjs";
 import { getSceneExternalComponent } from "../../world/services/scene-component-helpers";
 import { OptionsService } from "../../../gui/options/options.service";
 import { GameSettings } from "../../core/gameSettings";
+import { applyPointerLockPatch } from "apps/client/src/app/shared/game/phaser/patches/pointer-lock-patch";
 
 export class LockedCursorHandler {
   private lockToScreen: boolean;
@@ -71,6 +72,10 @@ export class LockedCursorHandler {
    */
   private onPointerDown() {
     if (!this.input.mouse || this.input.mouse.locked) return;
+    // Apply Phaser pointer lock patch
+    // This fixes pointer position updates when pointer lock is active
+    // See: apps/client/src/app/shared/game/phaser/patches/pointer-lock-patch.ts
+    applyPointerLockPatch();
     this.input.mouse.requestPointerLock();
   }
 
@@ -156,8 +161,6 @@ export class LockedCursorHandler {
   }
 
   private updateCustomCursorImage() {
-    if (!this.customCursor) return;
-
     const textureKey = this.assetsKey;
     const frameKey = this.getTextureKeyForCursorType(this.currentCursorType);
     // update custom cursor texture
