@@ -78,8 +78,8 @@ export class OwnerComponent {
 
     // Handle tech tree unlock changes when owner changes
     if (oldOwner === newOwner) return;
-    const actorIndexSystem = getSceneService(this.gameObject.scene, ActorIndexSystem)!;
-    actorIndexSystem.updateActorOwnership(this.gameObject, oldOwner, newOwner);
+    const actorIndexSystem = getSceneService(this.gameObject.scene, ActorIndexSystem);
+    actorIndexSystem?.updateActorOwnership(this.gameObject, oldOwner, newOwner);
     this.owner = playerNumber;
     this.tryToSetComponents();
   }

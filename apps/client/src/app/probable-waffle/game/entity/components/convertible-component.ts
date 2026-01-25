@@ -8,7 +8,7 @@ import { getSceneService } from "../../world/services/scene-component-helpers";
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 import { DistanceHelper } from "../../library/distance-helper";
 import type { ConvertibleDefinition } from "./convertible-definition";
-import type { ConvertibleComponentData } from "@fuzzy-waddle/api-interfaces";
+import type { ConvertibleComponentData, PlayerNumber } from "@fuzzy-waddle/api-interfaces";
 
 export class ConvertibleComponent {
   private accumulatedTime = 0;
@@ -68,19 +68,13 @@ export class ConvertibleComponent {
     }
   }
 
-  private convertToOwner(ownerNumber: number) {
+  private convertToOwner(ownerNumber: PlayerNumber) {
     if (this.converted) return;
     this.converted = true;
 
     const ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
     if (ownerComponent) {
       ownerComponent.setOwnerWithBlink(ownerNumber);
-    }
-
-    // Re-register actor with ActorIndexSystem now that it has an owner
-    const actorIndexSystem = getSceneService(this.gameObject.scene, ActorIndexSystem);
-    if (actorIndexSystem) {
-      actorIndexSystem.registerActor(this.gameObject);
     }
 
     this.destroy();

@@ -4,10 +4,9 @@ import { getActorComponent } from "../../../data/actor-component";
 import { BuilderComponent } from "../../../entity/components/construction/builder-component";
 import { HealthComponent } from "../../../entity/components/combat/components/health-component";
 import { ScenePlayerHelpers } from "../../../data/scene-player-helpers";
-import { ObjectNames, type PlayerNumber } from "@fuzzy-waddle/api-interfaces";
+import { type PlayerNumber } from "@fuzzy-waddle/api-interfaces";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
-import { GathererComponent } from "../../../entity/components/resource/gatherer-component";
 
 /**
  * RepairManager

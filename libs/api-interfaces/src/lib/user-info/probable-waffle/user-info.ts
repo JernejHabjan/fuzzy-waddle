@@ -6,7 +6,7 @@ export class ProbableWaffleUserInfo extends BaseUserInfo {
    * Current player number of human player
    */
   playerNumber?: PlayerNumber;
-  constructor(userId: UserId | null, playerNumber?: number) {
+  constructor(userId: UserId | null, playerNumber?: PlayerNumber) {
     super(userId);
     this.playerNumber = playerNumber;
   }
