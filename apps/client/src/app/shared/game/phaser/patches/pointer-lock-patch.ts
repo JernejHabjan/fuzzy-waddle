@@ -81,8 +81,8 @@ export function applyPointerLockPatch(): void {
         const newY = p0.y + deltaY / scaleY;
 
         // Clamp to game bounds
-        const gameWidth = this.game.config.width as number;
-        const gameHeight = this.game.config.height as number;
+        const gameWidth = this.game.scale.width;
+        const gameHeight = this.game.scale.height;
 
         const a = pointer.smoothFactor;
 
