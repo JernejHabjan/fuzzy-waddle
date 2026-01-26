@@ -1,5 +1,6 @@
 import { EventEmitter, Injectable, type OnDestroy } from "@angular/core";
 import {
+  type GameInstanceId,
   type ProbableWaffleCommunicatorMessageEvent,
   type ProbableWaffleCommunicatorType,
   type ProbableWaffleGameInstanceMetadataChangeEvent,
@@ -53,7 +54,7 @@ export class ProbableWaffleCommunicatorService
     data?: any;
   }>();
 
-  startCommunication(gameInstanceId: string, socket?: Socket) {
+  startCommunication(gameInstanceId: GameInstanceId, socket?: Socket) {
     this.gameInstanceMetadataChanged = new TwoWayCommunicator<
       ProbableWaffleGameInstanceMetadataChangeEvent,
       ProbableWaffleCommunicatorType
@@ -94,7 +95,7 @@ export class ProbableWaffleCommunicatorService
     } satisfies ProbableWaffleWebsocketRoomEvent);
   }
 
-  stopCommunication(gameInstanceId: string, socket?: Socket) {
+  stopCommunication(gameInstanceId: GameInstanceId, socket?: Socket) {
     this.destroySubscriptions();
     socket?.emit(ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance, {
       gameInstanceId,

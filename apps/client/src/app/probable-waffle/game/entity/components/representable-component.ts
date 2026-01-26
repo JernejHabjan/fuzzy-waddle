@@ -96,6 +96,14 @@ export class RepresentableComponent {
     return logicalZ + flightHeight;
   }
 
+  /**
+   * Get the flying height component only (in pixels).
+   * Returns the additional height from flying, not including base Z.
+   */
+  get flyingHeightPixels(): number {
+    return this.getActualLogicalZ(this.logicalWorldTransform) - this.logicalWorldTransform.z;
+  }
+
   get logicalWorldTransform(): Vector3Simple {
     if (!this._logicalWorldTransform) {
       this.setTransformInitially();

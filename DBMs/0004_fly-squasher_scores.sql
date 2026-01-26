@@ -11,7 +11,7 @@ CREATE TABLE fly_squasher_scores
 
 -- add a foreign key constraint to the auth.users table
 alter table fly_squasher_scores
-  add constraint test_user_id_fkey foreign key (user_id) references auth.users (id);
+  add constraint fly_squasher_scores_user_id_fkey foreign key (user_id) references auth.users (id);
 
 drop policy if exists "Enable read access for all users" on fly_squasher_scores;
 create policy "Enable read access for all users" on fly_squasher_scores for select using (true);

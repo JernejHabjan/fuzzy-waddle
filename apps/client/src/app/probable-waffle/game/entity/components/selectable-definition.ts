@@ -1,4 +1,4 @@
 export type SelectableDefinition = {
-  offsetY?: number;
-  sizeFactorReduction?: number;
+  readonly offsetY?: number;
+  readonly sizeFactorReduction?: number;
 };

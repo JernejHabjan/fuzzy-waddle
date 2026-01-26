@@ -22,6 +22,7 @@ export const wolfDefinition = {
     info: {
       name: "Grey Wolf",
       description: "(critter) A grey wolf",
+      tooltipDescription: ["Hostile critter", "Will attack nearby units"],
       smallImage: {
         key: "animals_2",
         frame: "wolf/idle/se/04.png",

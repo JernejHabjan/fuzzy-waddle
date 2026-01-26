@@ -7,15 +7,17 @@ import { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { OptionsService } from "./options.service";
 import { HomeNavComponent } from "../../../shared/components/home-nav/home-nav.component";
 import { CenterWrapperComponent } from "../../../shared/components/center-wrapper/center-wrapper.component";
-import { environment } from "../../../../environments/environment";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   templateUrl: "./options.component.html",
   styleUrls: ["./options.component.scss"],
-  imports: [FormsModule, RouterLink, HomeNavComponent, CenterWrapperComponent],
+  imports: [FormsModule, RouterLink, HomeNavComponent, CenterWrapperComponent, FaIconComponent],
   host: AngularHost.contentFlexFullHeight
 })
 export class OptionsComponent implements OnInit {
+  protected readonly faInfoCircle = faInfoCircle;
   fromGame: boolean = false;
   dialogRef?: NgbModalRef;
   private readonly cdr = inject(ChangeDetectorRef);
@@ -32,6 +34,4 @@ export class OptionsComponent implements OnInit {
   backToGame() {
     this.dialogRef?.close();
   }
-
-  protected readonly environment = environment;
 }

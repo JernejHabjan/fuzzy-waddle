@@ -1,5 +1,5 @@
 export type AnimationDefinition = {
-  key: string;
-  frameRate?: number;
-  repeat?: number;
+  readonly key: string;
+  readonly frameRate?: number;
+  readonly repeat?: number;
 };

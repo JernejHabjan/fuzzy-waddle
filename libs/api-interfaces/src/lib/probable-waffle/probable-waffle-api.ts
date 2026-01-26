@@ -11,18 +11,19 @@ import type {
   ProbableWaffleGameInstance,
   ProbableWaffleGameInstanceData
 } from "../game-instance/probable-waffle/game-instance";
+import type { GameInstanceId, PlayerNumber } from "../game-instance/player/player";
 
 export interface ProbableWaffleStartLevelDto extends GameInstanceDataDto {
-  gameInstanceId: string;
+  gameInstanceId: GameInstanceId;
 }
 
 export interface ProbableWaffleChangeGameModeDto extends GameInstanceDataDto {
-  gameInstanceId: string;
+  gameInstanceId: GameInstanceId;
   gameModeData: ProbableWaffleGameModeData;
 }
 
 export interface ProbableWaffleAddPlayerDto extends GameInstanceDataDto {
-  gameInstanceId: string;
+  gameInstanceId: GameInstanceId;
   player: {
     stateData: ProbableWafflePlayerStateData;
     controllerData: ProbableWafflePlayerControllerData;
@@ -30,7 +31,7 @@ export interface ProbableWaffleAddPlayerDto extends GameInstanceDataDto {
 }
 
 export interface ProbableWaffleAddSpectatorDto extends GameInstanceDataDto {
-  gameInstanceId: string;
+  gameInstanceId: GameInstanceId;
   spectator: {
     data: ProbableWaffleSpectatorData;
   };
@@ -41,8 +42,8 @@ export interface ProbableWaffleGetRoomsDto {
 }
 
 export interface ProbableWafflePlayerLeftDto extends GameInstanceDataDto {
-  gameInstanceId: string;
-  playerNumber: number;
+  gameInstanceId: GameInstanceId;
+  playerNumber: PlayerNumber;
 }
 
 export interface RequestGameSearchForMatchMakingDto {
