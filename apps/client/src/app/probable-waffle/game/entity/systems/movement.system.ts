@@ -551,6 +551,7 @@ export class MovementSystem {
     const movementSoundDefinition = this.getMovementSound();
     if (!movementSoundDefinition) return;
     // get random from movementSoundDefinition
+    // can be random as it doesn't need to be deterministic
     const randomIndex = Math.floor(Math.random() * movementSoundDefinition.length);
     const movementSound = movementSoundDefinition[randomIndex]!;
     this.audioService.playSpatialAudioSprite(this.gameObject, movementSound.key, movementSound.spriteName, {

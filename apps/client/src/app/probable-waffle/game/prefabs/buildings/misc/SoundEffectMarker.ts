@@ -64,6 +64,7 @@ export default class SoundEffectMarker extends Phaser.GameObjects.Ellipse {
     if (!this.active) return;
     const soundDefinitions = this.getSoundDefinitions();
     if (!soundDefinitions) return;
+    // we can use random here as it's just ambient variation
     const soundDefinition = soundDefinitions[Math.floor(Math.random() * soundDefinitions.length)]!;
     this.audioService.playSpatialAudioSprite(this, soundDefinition.key, soundDefinition.spriteName, undefined, {
       onComplete: () => {

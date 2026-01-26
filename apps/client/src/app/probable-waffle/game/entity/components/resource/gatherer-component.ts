@@ -468,6 +468,7 @@ export class GathererComponent {
         break;
     }
 
+    // can be random as it doesn't need to be deterministic
     const randomSound = sounds[Math.floor(Math.random() * sounds.length)]!;
     const visibilityComponent = getGameObjectVisibility(this.gameObject);
     if (visibilityComponent && visibilityComponent.visible) {

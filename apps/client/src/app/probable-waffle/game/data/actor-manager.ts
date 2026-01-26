@@ -67,6 +67,7 @@ import Wolf from "../prefabs/animals/wolf/Wolf";
 import Boar from "../prefabs/animals/boar/Boar";
 import Stag from "../prefabs/animals/stag/Stag";
 import Badger from "../prefabs/animals/badger/Badger";
+import { RandomService } from "../world/services/random.service";
 
 type ActorMap = { [name: string]: new (scene: Phaser.Scene) => GameObject };
 export class ActorManager {
@@ -197,8 +198,8 @@ export class ActorManager {
 
     if (definition.meta?.randomOfType?.length) {
       // If the actor definition has a randomOfType, we need to pick a random one from the list
-      const randomIndex = Math.floor(Math.random() * definition.meta.randomOfType.length);
-      name = definition.meta.randomOfType[randomIndex] as ObjectNames;
+      const randomService = getSceneService(scene, RandomService)!;
+      name = randomService.pick(definition.meta.randomOfType) as ObjectNames;
     }
 
     let actor: GameObject | undefined = undefined;

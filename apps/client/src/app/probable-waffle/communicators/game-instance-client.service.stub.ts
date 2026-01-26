@@ -37,7 +37,7 @@ export const gameInstanceClientServiceStub = {
         type,
         visibility,
         startOptions: {},
-        rndSeed: Math.floor(Math.random() * 1000000)
+        rndSeed: 1
       } satisfies ProbableWaffleGameInstanceMetadataData,
       gameModeData: {
         tieConditions: {
