@@ -140,6 +140,18 @@ export class RepresentableComponent {
     };
   }
 
+  private refreshRenderedPosition(): void {
+    if (!this._logicalWorldTransform) return;
+    const transform = this._logicalWorldTransform;
+    const transformComponent = this.gameObject as unknown as Phaser.GameObjects.Components.Transform;
+    if (!transformComponent.hasTransformComponent) return;
+
+    transformComponent.x = transform.x;
+    transformComponent.y = transform.y - this.getActualLogicalZ(transform);
+    DepthHelper.setActorDepth(this.gameObject);
+    this.refreshBounds();
+  }
+
   get visible(): boolean {
     if (this._visible === undefined) {
       const visibility = getGameObjectVisibility(this.gameObject);
@@ -157,9 +169,10 @@ export class RepresentableComponent {
 
   setData(data: Partial<RepresentableComponentData>) {
     if (data.logicalWorldTransform) {
-      this.logicalWorldTransform = data.logicalWorldTransform;
+      this._logicalWorldTransform = data.logicalWorldTransform;
+      // Defer rendered position calculation until all components are ready
+      onObjectReady(this.gameObject, this.refreshRenderedPosition, this);
     }
-
     this.refreshBounds();
   }
 
