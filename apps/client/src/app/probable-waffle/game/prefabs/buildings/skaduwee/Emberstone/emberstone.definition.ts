@@ -29,7 +29,8 @@ export const emberstoneDefinition = {
     info: {
       name: "Emberstone",
       description:
-        "A sentient monument where fire and ice intertwine, drawing power from the void to sustain the tribe’s dark ascent.",
+        "A sentient monument where fire and ice intertwine, drawing power from the void to sustain the tribe's dark ascent.",
+      tooltipDescription: ["Provides additional housing", "Expands population capacity"],
       smallImage: {
         key: "factions",
         frame: "buildings/skaduwee/ember_stone/ember_stone1.png",

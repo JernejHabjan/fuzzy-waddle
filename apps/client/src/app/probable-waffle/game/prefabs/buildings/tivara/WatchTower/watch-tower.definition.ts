@@ -28,6 +28,11 @@ export const watchTowerDefinition = {
     info: {
       name: "Watch Tower",
       description: "Main defense building",
+      tooltipDescription: [
+        "Defensive structure with ranged attack",
+        "Extended vision range",
+        "Units can walk on top"
+      ],
       smallImage: {
         key: "factions",
         frame: "buildings/tivara/watchtower/watchtower.png",

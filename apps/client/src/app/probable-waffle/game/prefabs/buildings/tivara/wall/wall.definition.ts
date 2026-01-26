@@ -27,6 +27,11 @@ export const wallDefinition = {
     info: {
       name: "Wall",
       description: "Defense building",
+      tooltipDescription: [
+        "Blocks enemy movement",
+        "Can be drag-placed for efficiency",
+        "Units can walk on top"
+      ],
       smallImage: {
         key: "factions",
         frame: "buildings/tivara/wall/wall_top_right_bottom_left.png",

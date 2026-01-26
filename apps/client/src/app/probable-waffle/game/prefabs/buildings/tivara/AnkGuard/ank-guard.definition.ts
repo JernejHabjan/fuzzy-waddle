@@ -30,7 +30,12 @@ export const ankGuardDefinition = {
     },
     info: {
       name: "Ank Guard",
-      description: "Oozing with ancient curse, this fortress births the mightiest of Tivara’s infantry",
+      description: "Oozing with ancient curse, this fortress births the mightiest of Tivara's infantry",
+      tooltipDescription: [
+        "Trains infantry units",
+        "Produces melee and ranged fighters",
+        "Core military production building"
+      ],
       portraitAnimation: {
         idle: ANIM_BUILDING_ICON_ANIMS_TIVARA_ANKGUARD_IDLE,
         action: ANIM_BUILDING_ICON_ANIMS_TIVARA_ANKGUARD_ACTION

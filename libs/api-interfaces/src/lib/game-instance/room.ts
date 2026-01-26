@@ -5,6 +5,7 @@ import type { ProbableWaffleGameInstanceMetadataData } from "./probable-waffle/g
 import type { ProbableWafflePlayerControllerData } from "./probable-waffle/player";
 import { ProbableWafflePlayerType } from "./probable-waffle/player";
 import type { ProbableWaffleSpectatorData } from "./probable-waffle/spectator";
+import type { GameInstanceId } from "./player/player";
 
 interface Room<TGameInstanceMetadataData, TGameModeData> {
   gameInstanceMetadataData: TGameInstanceMetadataData;
@@ -17,7 +18,7 @@ interface RoomEvent<TRoom> {
 }
 
 interface SpectatorEvent {
-  gameInstanceId: string;
+  gameInstanceId: GameInstanceId;
   action: SpectatorAction;
 }
 
@@ -60,7 +61,7 @@ export interface ProbableWaffleRoomEvent extends RoomEvent<ProbableWaffleRoom> {
 
 export interface ProbableWaffleGameFoundEvent {
   userIds: string[];
-  gameInstanceId: string;
+  gameInstanceId: GameInstanceId;
 }
 
 export class ProbableWaffleRoomHelper {

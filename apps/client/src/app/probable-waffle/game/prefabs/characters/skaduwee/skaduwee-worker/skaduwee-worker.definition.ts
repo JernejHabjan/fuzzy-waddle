@@ -13,6 +13,7 @@ export const skaduweeWorkerDefinition: PrefabDefinition = {
     info: {
       name: "Umbral Worker",
       description: "Shaping the realm of shadows with silent devotion",
+      tooltipDescription: ["Gathers resources", "Constructs buildings", "Weak in combat"],
       smallImage: {
         key: "factions",
         frame: "character_icons/skaduwee/worker.png",

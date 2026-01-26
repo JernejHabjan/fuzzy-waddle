@@ -322,6 +322,10 @@ export class GathererComponent {
 
     // gather resources
     const gatheredAmount = await resourceSourceComponent.extractResources(this.gameObject, amountToGather);
+    if (getActorComponent(this.gameObject, HealthComponent)?.killed) {
+      // actor died while gathering
+      return 0;
+    }
     this.setCarriedResourceAmount(this.carriedResourceAmount + gatheredAmount);
 
     this.playGatherSound();

@@ -11,8 +11,10 @@ import { MatchmakingService } from "./matchmaking/matchmaking.service";
 import { ProbableWaffleChatService } from "./chat/probable-waffle-chat.service";
 import { MatchmakingController } from "./matchmaking/matchmaking.controller";
 import { RoomServerService } from "./game-room/room-server.service";
+import { ChatModule } from "../chat/chat.module";
 
 @Module({
+  imports: [ChatModule],
   providers: [
     GameInstanceGateway,
     RoomGateway,

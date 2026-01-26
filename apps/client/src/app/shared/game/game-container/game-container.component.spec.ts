@@ -8,8 +8,8 @@ import { LittleMuncherCommunicatorService } from "../../../little-muncher/main/c
 
 @Component({ selector: "fuzzy-waddle-game-container", template: "", standalone: true, imports: [] })
 export class GameContainerTestingComponent {
-  readonly gameConfig = input.required<Phaser.Types.Core.GameConfig>();
-  readonly gameData = input.required<BaseGameData<LittleMuncherCommunicatorService, LittleMuncherGameInstance, LittleMuncherUserInfo>>();
+  readonly gameConfig = input<Phaser.Types.Core.GameConfig>();
+  readonly gameData = input<BaseGameData<LittleMuncherCommunicatorService, LittleMuncherGameInstance, LittleMuncherUserInfo>>();
 }
 
 describe("GameContainerComponent", () => {
@@ -23,6 +23,8 @@ describe("GameContainerComponent", () => {
 
     fixture = TestBed.createComponent(GameContainerComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput("gameConfig", {});
+    fixture.componentRef.setInput("gameData", {});
     fixture.detectChanges();
   });
 

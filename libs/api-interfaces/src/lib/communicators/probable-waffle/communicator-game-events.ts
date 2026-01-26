@@ -1,8 +1,9 @@
 import { ConstructionStateEnum } from "./construction-state-enum";
+import type { ActorId } from "../../game-instance/player/player";
 
 export interface ProbableWaffleSelectionData {
   button: "left" | "right";
-  objectIds?: string[];
+  objectIds?: ActorId[];
   selectedArea?: { x: number; y: number; width: number; height: number };
   terrainSelectedTileVec3?: { x: number; y: number; z: number };
   terrainSelectedWorldVec3?: { x: number; y: number; z: number };
@@ -11,7 +12,7 @@ export interface ProbableWaffleSelectionData {
 }
 
 export interface ProbableWaffleDoubleSelectionData {
-  objectId: string;
+  objectId: ActorId;
 }
 
 export type HealthComponentData = {
@@ -21,4 +22,9 @@ export type HealthComponentData = {
 
 export type ConstructionSiteComponentData = {
   state: ConstructionStateEnum;
+  remainingConstructionTime: number;
+  progressPercentage: number;
+  assignedBuilders: ActorId[];
+  assignedRepairers: ActorId[];
+  playingBuildSound: boolean;
 };

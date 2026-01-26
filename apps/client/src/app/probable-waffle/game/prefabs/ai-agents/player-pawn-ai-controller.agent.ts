@@ -73,11 +73,17 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
 
   async InRange(type: PlayerPawnRangeType): Promise<State> {
     const currentOrder = this.blackboard.getCurrentOrder();
-    if (!currentOrder) return State.FAILED;
+    if (!currentOrder) {
+      // console.log("[Build] InRange: No current order");
+      return State.FAILED;
+    }
     const targetGameObject = currentOrder.data.targetGameObject;
     const targetLocation = currentOrder.data.targetTileLocation;
     const range = this.getRangeToTarget(type);
-    if (range === undefined) return State.FAILED;
+    if (range === undefined) {
+      // console.log("[Build] InRange: Range undefined for type", type);
+      return State.FAILED;
+    }
     if (targetGameObject) {
       const movementSystem = getActorSystem(this.gameObject, MovementSystem);
       let distance: null | number;
@@ -87,20 +93,32 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
           range
         );
         if (nrTiles === null) {
-          console.warn(
-            "InRange: Unable to calculate path to target game object. Current game object:",
-            this.gameObject,
-            "Target game object:",
-            targetGameObject
-          );
+          // Target is unreachable - this is handled by the behavior tree
+          // console.log("[Build] InRange: Target unreachable (no path), type=", type);
           return State.FAILED;
         }
         distance = nrTiles.length;
       } else {
         distance = DistanceHelper.getTileDistanceBetweenGameObjects(this.gameObject, targetGameObject);
       }
-      if (distance === null) return State.FAILED;
-      return distance <= range ? State.SUCCEEDED : State.FAILED;
+      if (distance === null) {
+        // console.log("[Build] InRange: Distance is null");
+        return State.FAILED;
+      }
+      // noinspection UnnecessaryLocalVariableJS
+      const result = distance <= range ? State.SUCCEEDED : State.FAILED;
+      // console.log(
+      //   "[Build] InRange: type=",
+      //   type,
+      //   "distance=",
+      //   distance,
+      //   "range=",
+      //   range,
+      //   "result=",
+      //   result === State.SUCCEEDED ? "SUCCEEDED" : "FAILED"
+      // );
+
+      return result;
     } else if (targetLocation) {
       const movementSystem = getActorSystem(this.gameObject, MovementSystem);
       if (!movementSystem) return State.FAILED;
@@ -146,17 +164,32 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
 
   async MoveToTarget(type: PlayerPawnRangeType): Promise<State> {
     const currentOrder = this.blackboard.getCurrentOrder();
-    if (!currentOrder) return State.FAILED;
+    if (!currentOrder) {
+      // console.log("[Build] MoveToTarget: No current order");
+      return State.FAILED;
+    }
     const target = currentOrder.data.targetGameObject;
-    if (!target) return State.FAILED;
+    if (!target) {
+      // console.log("[Build] MoveToTarget: No target");
+      return State.FAILED;
+    }
     const range = this.getRangeToTarget(type);
-    if (range === undefined) return State.FAILED;
+    if (range === undefined) {
+      // console.log("[Build] MoveToTarget: Range undefined");
+      return State.FAILED;
+    }
     const movementSystem = getActorSystem(this.gameObject, MovementSystem);
-    if (!movementSystem) return State.FAILED;
+    if (!movementSystem) {
+      // console.log("[Build] MoveToTarget: No movement system");
+      return State.FAILED;
+    }
     try {
       const canMoveToTarget = await this.CanMoveToTarget(range);
-      if (!canMoveToTarget) return State.FAILED;
-      // console.log("Moving to target!");
+      if (!canMoveToTarget) {
+        // console.log("[Build] MoveToTarget: Cannot move to target (unreachable), type=", type);
+        return State.FAILED;
+      }
+      // console.log("[Build] MoveToTarget: Moving to target, type=", type);
       const success = await movementSystem.moveToActorByAdjustingPathDynamically(target, {
         radiusTilesAroundDestination: range,
         onUpdateThrottled: () => {
@@ -167,9 +200,10 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
           }
         }
       } satisfies Partial<PathMoveConfig>);
+      // console.log("[Build] MoveToTarget: Movement result=", success ? "SUCCESS" : "FAILED");
       return success ? State.SUCCEEDED : State.FAILED;
     } catch (e) {
-      console.error("Error in MoveToTarget", e);
+      console.error("[Build] MoveToTarget: Error", e);
       return State.FAILED;
     }
   }
@@ -224,7 +258,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
   }
 
   Stop = (fromNode: string) => {
-    // console.log(`Stop called from node: ${fromNode}`);
+    // console.log(`Stop called from: ${fromNode}`);
 
     const currentOrder = this.blackboard.getCurrentOrder();
     if (currentOrder) {
@@ -392,12 +426,19 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
     return State.SUCCEEDED;
   }
 
-  AssignNextBuildOrder(): State {
+  async AssignNextBuildOrder(): Promise<State> {
     const builderComponent = getActorComponent(this.gameObject, BuilderComponent);
-    if (!builderComponent) return State.FAILED;
+    if (!builderComponent) {
+      // console.log("[Build] AssignNextBuildOrder: No builder component");
+      return State.FAILED;
+    }
     const range = builderComponent.getConstructionSeekRange();
-    const target = builderComponent.getClosestConstructionSite(range);
-    if (!target) return State.FAILED;
+    const target = await builderComponent.getClosestConstructionSite(range);
+    if (!target) {
+      // console.log("[Build] AssignNextBuildOrder: No reachable construction site found");
+      return State.FAILED;
+    }
+    // console.log("[Build] AssignNextBuildOrder: Found target", target);
     this.blackboard.addOrder(new OrderData(OrderType.Build, { targetGameObject: target }));
 
     return State.SUCCEEDED;
@@ -405,28 +446,63 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
 
   ConstructBuilding() {
     const builderComponent = getActorComponent(this.gameObject, BuilderComponent);
-    if (!builderComponent) return State.FAILED;
-    if (!this.SelfIsAlive()) return State.FAILED;
+    if (!builderComponent) {
+      // console.log("[Build] ConstructBuilding: No builder component");
+      return State.FAILED;
+    }
+    if (!this.SelfIsAlive()) {
+      // console.log("[Build] ConstructBuilding: Self not alive");
+      return State.FAILED;
+    }
     const currentOrder = this.blackboard.getCurrentOrder();
-    if (!currentOrder) return State.FAILED;
+    if (!currentOrder) {
+      // console.log("[Build] ConstructBuilding: No current order");
+      return State.FAILED;
+    }
     const target = currentOrder.data.targetGameObject;
-    if (!target) return State.FAILED;
+    if (!target) {
+      // console.log("[Build] ConstructBuilding: No target");
+      return State.FAILED;
+    }
+    // Check if in range before trying to construct
     const constructionSiteComponent = getActorComponent(target, ConstructionSiteComponent);
-    if (!constructionSiteComponent) return State.FAILED;
-    if (!constructionSiteComponent.canAssignBuilder()) return State.FAILED;
-    if (builderComponent.remainingCooldown > 0) return State.FAILED;
+    if (!constructionSiteComponent) {
+      // console.log("[Build] ConstructBuilding: No construction site component");
+      return State.FAILED;
+    }
+    if (!constructionSiteComponent.canAssignBuilder()) {
+      // console.log("[Build] ConstructBuilding: Cannot assign builder");
+      return State.FAILED;
+    }
+    if (builderComponent.remainingCooldown > 0) {
+      // console.log("[Build] ConstructBuilding: Cooldown not ready");
+      return State.FAILED;
+    }
+    // console.log("[Build] ConstructBuilding: Assigning to construction site", target);
     builderComponent.assignToConstructionSite(target);
     return State.SUCCEEDED;
   }
 
   CanAssignBuilder(): boolean {
     const currentOrder = this.blackboard.getCurrentOrder();
-    if (!currentOrder) return false;
+    if (!currentOrder) {
+      // console.log("[Build] CanAssignBuilder: No current order");
+      return false;
+    }
     const target = currentOrder.data.targetGameObject;
-    if (!target) return false;
+    if (!target) {
+      // console.log("[Build] CanAssignBuilder: No target");
+      return false;
+    }
     const constructionSiteComponent = getActorComponent(target, ConstructionSiteComponent);
-    if (!constructionSiteComponent) return false;
-    return constructionSiteComponent.canAssignBuilder();
+    if (!constructionSiteComponent) {
+      // console.log("[Build] CanAssignBuilder: No construction site component on target");
+      return false;
+    }
+    // noinspection UnnecessaryLocalVariableJS
+    const canAssign = constructionSiteComponent.canAssignBuilder();
+    // console.log("[Build] CanAssignBuilder:", canAssign);
+    return canAssign;
   }
 
   HasBuilderComponent(): boolean {

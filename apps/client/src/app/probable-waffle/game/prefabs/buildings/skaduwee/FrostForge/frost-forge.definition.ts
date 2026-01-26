@@ -31,6 +31,12 @@ export const frostForgeDefinition = {
     info: {
       name: "Frost Forge",
       description: "Main building of the Skaduwee faction. It is used to produce workers and store resources.",
+      tooltipDescription: [
+        "Main base of operations",
+        "Trains workers for economy",
+        "Collects and stores resources",
+        "Provides housing for units"
+      ],
       portraitAnimation: {
         idle: ANIM_BUILDING_ICON_ANIMS_SKADUWEE_FROST_FORGE,
         action: ANIM_BUILDING_ICON_ANIMS_SKADUWEE_FROST_FORGE

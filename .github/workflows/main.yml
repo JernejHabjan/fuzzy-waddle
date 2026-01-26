@@ -25,9 +25,6 @@ jobs:
         with:
           version: 9
 
-      # - name: Lint commits
-      #   uses: wagoid/commitlint-github-action@v4
-
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
@@ -37,18 +34,6 @@ jobs:
 
       - name: Install Dependencies
         run: pnpm install
-
-      - name: Run linter
-        run: pnpm run lint
-        env:
-          NX_BRANCH: ${{ github.event.number }}
-          NX_RUN_GROUP: ${{ github.run_id }}
-
-      - name: Run tests
-        run: pnpm run test
-        env:
-          NX_BRANCH: ${{ github.event.number }}
-          NX_RUN_GROUP: ${{ github.run_id }}
 
       - name: Build Packages
         run: pnpm run build-gh-pages

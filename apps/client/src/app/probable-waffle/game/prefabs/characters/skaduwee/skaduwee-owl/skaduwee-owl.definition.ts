@@ -37,6 +37,11 @@ export const skaduweeOwlDefinition = {
     info: {
       name: "Mirk",
       description: "A tiny harbinger of decay, this swift flyer unleashes toxic venom that corrupts all it touches",
+      tooltipDescription: [
+        "Fast flying unit",
+        "Can attack ground targets",
+        "Good for scouting and harassment"
+      ],
       smallImage: {
         key: "factions",
         frame: "character_icons/skaduwee/owl.png",

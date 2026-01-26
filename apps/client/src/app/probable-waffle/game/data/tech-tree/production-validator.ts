@@ -1,5 +1,11 @@
 // Centralized production & queue validation using tech tree, supply & resource state.
-import { FactionType, ObjectNames, ProbableWafflePlayer, ResourceType } from "@fuzzy-waddle/api-interfaces";
+import {
+  FactionType,
+  ObjectNames,
+  type PlayerNumber,
+  ProbableWafflePlayer,
+  ResourceType
+} from "@fuzzy-waddle/api-interfaces";
 import { PlayerAiBlackboard } from "../../player/ai-controller/player-ai-blackboard";
 import { TechTreeService } from "./tech-tree.service";
 import { getCostForObjectName } from "../../entity/components/production/cost-utils";
@@ -148,7 +154,7 @@ export class ProductionValidator {
 
   private static validateTechPrerequisites(
     techSvc: TechTreeService | undefined,
-    playerNumber: number,
+    playerNumber: PlayerNumber,
     faction: FactionType | undefined,
     actorName: ObjectNames,
     result: ProductionValidationResult
@@ -169,7 +175,7 @@ export class ProductionValidator {
 
   private static validateBuildingPrerequisitesStatic(
     scene: Phaser.Scene,
-    playerNumber: number,
+    playerNumber: PlayerNumber,
     actorName: ObjectNames,
     result: ProductionValidationResult
   ): void {
@@ -231,7 +237,7 @@ export class ProductionValidator {
 
   static validateObject(
     scene: Phaser.Scene,
-    playerNumber: number,
+    playerNumber: PlayerNumber,
     actorName: ObjectNames,
     currentCost: Partial<Record<ResourceType, number>> = {}
   ): ProductionValidationResult {

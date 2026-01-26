@@ -1,9 +1,9 @@
-import { Guid, type IdComponentData } from "@fuzzy-waddle/api-interfaces";
+import { type ActorId, Guid, type IdComponentData } from "@fuzzy-waddle/api-interfaces";
 
 export class IdComponent {
-  id = new Guid().value;
+  id: ActorId = new Guid().value;
 
-  setId(id: string) {
+  setId(id: ActorId) {
     this.id = id;
   }
 

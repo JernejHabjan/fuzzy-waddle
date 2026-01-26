@@ -1,6 +1,7 @@
 import type { Vector3Simple } from "../../game/vector";
 import { ResourceType } from "../../probable-waffle/resource-type-definition";
 import { ObjectNames } from "./object-names";
+import type { ActorId } from "../player/player";
 
 export interface VisionComponentData {
   visibilityByCurrentPlayer?: boolean;
@@ -17,8 +18,6 @@ export interface HealingComponentData {
 
 export interface BuilderComponentData {
   remainingCooldown?: number;
-  enterConstructionSite?: boolean;
-  constructionSiteOffset?: number;
   assignedConstructionSiteId?: string;
 }
 
@@ -29,7 +28,7 @@ export interface GathererComponentData {
 }
 
 export interface ContainerComponentData {
-  containedIds?: string[];
+  containedIds?: ActorId[];
 }
 
 export interface ResourceDrainComponentData {
@@ -50,7 +49,7 @@ export interface ProductionComponentData {
 export interface RallyPointComponentData {
   tileVec3?: Vector3Simple;
   worldVec3?: Vector3Simple;
-  actorId?: string;
+  actorId?: ActorId;
 }
 
 export interface ActorTranslateComponentData {
@@ -87,4 +86,129 @@ export interface BackboardComponentData {
 
 export interface HousingComponentData {
   housingProvided?: boolean;
+}
+
+// Selection group data for save/load
+export interface SelectionGroupData {
+  groupKey: number;
+  actorIds: ActorId[];
+  timestamp: number;
+}
+
+// Camera state data for save/load
+export interface CameraStateData {
+  scrollX?: number;
+  scrollY?: number;
+  zoom?: number;
+}
+// Player AI blackboard data for save/load
+export interface PlayerAiBlackboardData {
+  // ---- Legacy / top-level ----
+  currentStrategy?: string;
+  baseSize?: number;
+  mapFullyExplored?: boolean;
+  wantsToSurrender?: boolean;
+  surrenderOfferedAt?: number;
+  surrenderRejected?: boolean;
+  activeTechUpgrades?: number;
+  lastTechUpgradeAt?: number;
+
+  // ---- Economy ----
+  economy?: {
+    resources: Record<string, number>;
+    reserved: Record<string, number>;
+
+    incomeInstant?: Record<string, number>;
+    incomeSmoothed?: Record<string, number>;
+    lastIncomeSampleAt?: number;
+    lastIncomeSnapshot?: Record<string, number>;
+  };
+
+  // ---- Production ----
+  production?: {
+    supply: {
+      used: number;
+      max: number;
+      pendingFromQueued: number;
+    };
+
+    // NEW
+    plannedStructures?: Array<{
+      id: string;
+      name: ObjectNames;
+      reservedAt: number;
+      cost: Partial<Record<ResourceType, number>>;
+    }>;
+
+    prereqQueue?: Array<{
+      id: string;
+      type: "produce" | "construct";
+      objectName: ObjectNames;
+      insertedAt: number;
+    }>;
+  };
+
+  // ---- Army (numbers only, no GameObjects) ----
+  army?: {
+    militaryStrength: number;
+    enemyMilitaryStrength: number;
+    enemyIntel: Record<
+      number,
+      {
+        strength: number;
+        unitsInCombat: number;
+        flankOpen: boolean;
+      }
+    >;
+  };
+
+  // ---- Intel ----
+  intel?: {
+    enemyFlankOpen: boolean;
+    mapFullyExplored: boolean;
+    enemyPowerTrend: Array<{
+      at: number;
+      own: number;
+      enemy: number;
+    }>;
+    lastScoutedAt: number;
+  };
+
+  // ---- Map / planning ----
+  map?: {
+    baseCenterTile: Vector3Simple | null;
+    suggestedBuildTiles: Array<{ x: number; y: number }>;
+  };
+
+  // ---- Strategy slice ----
+  strategy?: {
+    current: string;
+    baseSize: number;
+    modeLockedUntil: number;
+  };
+
+  // ---- Combat metadata ----
+  combat?: {
+    engagements: Array<{
+      id: string;
+      startedAt: number;
+      ourUnits: number;
+      enemyUnits: number;
+    }>;
+    lastEngagementAt: number;
+  };
+
+  // ---- Cooldowns ----
+  cooldowns?: Record<string, number>;
+}
+
+// AI behavior tree state data for save/load
+export interface AIBehaviorTreeStateData {
+  blackboard: PlayerAiBlackboardData;
+  telemetry?: unknown;
+}
+
+export interface ConvertibleComponentData {
+  detectionRange?: number;
+  checkInterval?: number;
 }

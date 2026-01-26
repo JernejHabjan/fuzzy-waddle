@@ -5,7 +5,6 @@ import { Component, input } from "@angular/core";
 import {
   createPlayerLobbyDefinition,
   FactionType,
-  type PlayerLobbyDefinition,
   type PlayerStateActionBuildingConstructed,
   type PlayerStateActionBuildingDestroyed,
   type PlayerStateActionUnitKilled,
@@ -16,18 +15,15 @@ import {
   ProbableWafflePlayerType
 } from "@fuzzy-waddle/api-interfaces";
 import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.stub";
-import { BaseChartDirective } from "ng2-charts";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 
 @Component({
   selector: "probable-waffle-score-through-time",
   standalone: true,
-  imports: [BaseChartDirective],
-  templateUrl: "./score-through-time.component.html",
-  styleUrls: ["./score-through-time.component.scss"]
+  template: ""
 })
 export class ScoreThroughTimeTestingComponent {
-  readonly summaryType = input.required<"units" | "buildings" | "resources">();
+  readonly summaryType = input<"units" | "buildings" | "resources">();
 }
 describe("ScoreThroughTimeComponent", () => {
   let component: ScoreThroughTimeComponent;
@@ -41,6 +37,7 @@ describe("ScoreThroughTimeComponent", () => {
 
     fixture = TestBed.createComponent(ScoreThroughTimeComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput("summaryType", "units");
     fixture.detectChanges();
   });
 

@@ -6,3 +6,16 @@
   width: fit-content;
   min-width: 300px;
 }
+
+.info-icon {
+  display: inline-block;
+  font-size: 0.875rem;
+  color: #6c757d;
+  cursor: help;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 1;
+  }
+}

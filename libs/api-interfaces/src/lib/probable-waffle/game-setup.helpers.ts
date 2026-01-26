@@ -1,5 +1,6 @@
 import { ProbableWafflePlayer, ProbableWafflePlayerType } from "../game-instance/probable-waffle/player";
-import { Math as PhaserMath } from "phaser";
+import { SeededRandom } from "./seeded-random";
+import type { GameInstanceId, PlayerNumber } from "../game-instance/player/player";
 
 export class GameSetupHelpers {
   private static colors = [
@@ -14,18 +15,18 @@ export class GameSetupHelpers {
   ];
 
   public static getStringColorForPlayer(
-    playerNumber: number,
+    playerNumber: PlayerNumber,
     totalPlayers: number = 8,
-    gameInstanceId: string | undefined
+    gameInstanceId: GameInstanceId | undefined
   ): string {
     const { hue, saturation, lightness } = this.getHslColorForPlayer(playerNumber, totalPlayers, gameInstanceId);
     return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
   }
 
   public static getHslColorForPlayer(
-    playerNumber: number,
+    playerNumber: PlayerNumber,
     totalPlayers: number = 8,
-    gameInstanceId: string | undefined
+    gameInstanceId: GameInstanceId | undefined
   ): {
     hue: number;
     saturation: number;
@@ -37,7 +38,7 @@ export class GameSetupHelpers {
 
     // 2. If a seed is provided, shuffle the array deterministically
     if (gameInstanceId) {
-      const seededRng = new PhaserMath.RandomDataGenerator([gameInstanceId]);
+      const seededRng = new SeededRandom(gameInstanceId);
       sessionColors = seededRng.shuffle(sessionColors);
     }
 

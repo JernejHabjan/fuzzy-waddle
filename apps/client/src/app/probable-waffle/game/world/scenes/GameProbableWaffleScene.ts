@@ -31,6 +31,7 @@ import { PlayerActionsHandler } from "../../player/human-controller/player-actio
 import { ActorIndexSystem } from "../services/ActorIndexSystem";
 import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
 import { SelectionTabHandler } from "../../player/human-controller/selection-tab-handler";
+import { LockedCursorHandler } from "../../player/human-controller/locked-cursor.handler";
 
 export default class GameProbableWaffleScene extends ProbableWaffleScene {
   tilemap!: Phaser.Tilemaps.Tilemap;
@@ -46,11 +47,12 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     new SceneGameState(this);
     new ScaleHandler(this, this.tilemap, { margins: { left: 150, bottom: 100 }, maxLayers: 8 });
     const gameSettings = GameSettings.loadFromLocalStorage();
-    new CameraMovementHandler(this, {
+    const cameraMovementHandler = new CameraMovementHandler(this, {
       cameraEdgeMovementSpeed: 30,
       cameraKeyboardMovementSpeed: 2,
       enabledMouseCornerMovement: gameSettings.enabledMouseCornerMovement
     });
+    this.sceneGameData.components.push(cameraMovementHandler);
     new LightsHandler(this, { enableLights: false });
     new DepthHelper(this);
     new AnimatedTilemap(this, this.tilemap, this.tilemap.tilesets);
@@ -108,6 +110,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     this.sceneGameData.services = [];
     this.sceneGameData.systems = [];
     this.sceneGameData.initializers.sceneInitialized.next(false);
+    LockedCursorHandler.releasePointerLock(this.input);
   }
 
   protected override shutDown() {

@@ -4,7 +4,7 @@ import { AchievementNotificationService } from "../achievement-notification.serv
 import { AudioAtlasService } from "../audio-atlas/audio-atlas.service";
 import { AuthService } from "../../../auth/auth.service";
 import { DataAccessService } from "../../../data-access/data-access.service";
-import type { AchievementDto } from "@fuzzy-waddle/api-interfaces";
+import type { AchievementDto, UserId } from "@fuzzy-waddle/api-interfaces";
 import { type AchievementServiceInterface } from "./achievement.service.interface";
 import { PROBABLE_WAFFLE_ACHIEVEMENTS } from "./PROBABLE_WAFFLE_ACHIEVEMENTS";
 import type { AchievementDefinition } from "./achievement-definition";
@@ -38,7 +38,7 @@ export class AchievementService implements AchievementServiceInterface {
   /**
    * Get all achievements for the current user
    */
-  async loadUserAchievements(userId?: string): Promise<AchievementDto[]> {
+  async loadUserAchievements(userId?: UserId): Promise<AchievementDto[]> {
     // If no userId is provided, use the current user's ID
     const targetUserId = userId || this.authService.userId;
 
