@@ -8,18 +8,18 @@ Add in-game chat to Probable Waffle. Chat button in Phaser HUD (above minimap) e
 ## Files to Modify/Create
 
 ### New Files (Phaser)
-- [ ] `apps/client/src/app/probable-waffle/game/prefabs/gui/buttons/ChatButton.ts` - Phaser button above minimap
-- [ ] `apps/client/src/app/probable-waffle/game/prefabs/gui/labels/ChatNotification.ts` - Phaser toast notification
+- [x] `apps/client/src/app/probable-waffle/game/prefabs/gui/buttons/ChatButton.ts` - Phaser button above minimap
+- [x] `apps/client/src/app/probable-waffle/game/prefabs/gui/labels/ChatNotification.ts` - Phaser toast notification
 
 ### New Files (Angular)
-- [ ] `apps/client/src/app/probable-waffle/gui/in-game-chat/in-game-chat.component.ts` - Chat modal component
-- [ ] `apps/client/src/app/probable-waffle/gui/in-game-chat/in-game-chat.component.html`
-- [ ] `apps/client/src/app/probable-waffle/gui/in-game-chat/in-game-chat.component.scss`
+- [x] `apps/client/src/app/probable-waffle/gui/in-game-chat/in-game-chat.component.ts` - Chat modal component
+- [x] `apps/client/src/app/probable-waffle/gui/in-game-chat/in-game-chat.component.html`
+- [x] `apps/client/src/app/probable-waffle/gui/in-game-chat/in-game-chat.component.scss`
 
 ### Modified Files
-- [ ] `apps/client/src/app/probable-waffle/game/world/scenes/hud-scenes/HudProbableWaffle.ts` - Add ChatButton and ChatNotification
-- [ ] `apps/client/src/app/probable-waffle/communicators/probable-waffle-communicator.service.ts` - Add "chat" to utilityEvents type
-- [ ] `apps/client/src/app/probable-waffle/communicators/game-instance-client.service.ts` - Handle "chat" event, open modal, listen to messages for notification
+- [x] `apps/client/src/app/probable-waffle/game/world/scenes/hud-scenes/HudProbableWaffle.ts` - Add ChatButton and ChatNotification
+- [x] `apps/client/src/app/probable-waffle/communicators/probable-waffle-communicator.service.ts` - Add "chat" to utilityEvents type
+- [x] `apps/client/src/app/probable-waffle/communicators/game-instance-client.service.ts` - Handle "chat" event, open modal, listen to messages for notification
 
 ---
 
@@ -27,7 +27,7 @@ Add in-game chat to Probable Waffle. Chat button in Phaser HUD (above minimap) e
 
 ### Phase 1: ChatButton Phaser Prefab
 
-- [ ] **1.1** Create `ChatButton.ts` in `prefabs/gui/buttons/`
+- [x] **1.1** Create `ChatButton.ts` in `prefabs/gui/buttons/`
   - Extend `Phaser.GameObjects.Container`
   - Structure similar to `IdleWorkersButton.ts`:
     - 9-slice button background (`cryos_mini_gui/buttons/button_small.png`)
@@ -38,7 +38,7 @@ Add in-game chat to Probable Waffle. Chat button in Phaser HUD (above minimap) e
   - Add unread badge indicator (small circle/dot) - hidden by default
   - Method: `showUnreadBadge()` / `hideUnreadBadge()`
 
-- [ ] **1.2** Add to `HudProbableWaffle.ts`
+- [x] **1.2** Add to `HudProbableWaffle.ts`
   - Import ChatButton
   - Create instance in `editorCreate()`: position below `idleWorkersButton`
   - Add to class fields
@@ -50,7 +50,7 @@ Add in-game chat to Probable Waffle. Chat button in Phaser HUD (above minimap) e
 
 ### Phase 2: ChatNotification Phaser Component
 
-- [ ] **2.1** Create `ChatNotification.ts` in `prefabs/gui/labels/`
+- [x] **2.1** Create `ChatNotification.ts` in `prefabs/gui/labels/`
   - Extend `Phaser.GameObjects.Container`
   - Semi-transparent dark background (9-slice or rectangle)
   - Player name text (bold/colored)
@@ -63,7 +63,7 @@ Add in-game chat to Probable Waffle. Chat button in Phaser HUD (above minimap) e
     - Auto-hide after 5 seconds via `this.scene.time.delayedCall(5000, ...)`
   - Method: `hide()`
 
-- [ ] **2.2** Add to `HudProbableWaffle.ts`
+- [x] **2.2** Add to `HudProbableWaffle.ts`
   - Import ChatNotification
   - Create instance in `editorCreate()`
   - Position in `updatePositionOfUiElements()`:
@@ -72,7 +72,7 @@ Add in-game chat to Probable Waffle. Chat button in Phaser HUD (above minimap) e
 
 ### Phase 3: Angular Chat Modal
 
-- [ ] **3.1** Create `InGameChatComponent`
+- [x] **3.1** Create `InGameChatComponent`
   - Standalone component
   - Wrap shared `ChatComponent` from `shared/components/chat/`
   - Inputs from modal: `fromGame`, `dialogRef`
@@ -82,7 +82,7 @@ Add in-game chat to Probable Waffle. Chat button in Phaser HUD (above minimap) e
   - On new message from user: send via `communicatorService.message?.send()`
   - Template: container with chat component, close button
 
-- [ ] **3.2** Style as modal
+- [x] **3.2** Style as modal
   - Dark semi-transparent background
   - Reasonable size (~400x500px)
   - Close button in header
@@ -90,31 +90,31 @@ Add in-game chat to Probable Waffle. Chat button in Phaser HUD (above minimap) e
 
 ### Phase 4: Wire Up Communication
 
-- [ ] **4.1** Update `ProbableWaffleCommunicatorService`
+- [x] **4.1** Update `ProbableWaffleCommunicatorService`
   - Add `"chat"` to utilityEvents type union:
     ```typescript
     utilityEvents = new EventEmitter<{ name: "save-game" | "load-game" | "settings" | "chat"; data?: any }>();
     ```
 
-- [ ] **4.2** Update `GameInstanceClientService.listenToUtilityGameEvents()`
+- [x] **4.2** Update `GameInstanceClientService.listenToUtilityGameEvents()`
   - Add `"chat"` to filter
   - Handle `"chat"` case: open `InGameChatComponent` modal via `NgbModal`
 
-- [ ] **4.3** Add message listener for notifications
+- [x] **4.3** Add message listener for notifications
   - In `GameInstanceClientService`, subscribe to `communicatorService.message?.on`
   - When message received:
     - Emit event to Phaser HUD to show notification (via communicator or scene event)
     - Set unread badge on ChatButton
   - When chat modal opens: clear unread state
 
-- [ ] **4.4** Communication from Angular to Phaser for notifications
+- [x] **4.4** Communication from Angular to Phaser for notifications
   - Add new event to `utilityEvents`: `"chat-message-received"` with ChatMessage data
   - OR add to `allScenes` EventEmitter
   - HudProbableWaffle subscribes and calls `chatNotification.showMessage()`
 
 ### Phase 5: Hide for Skirmish Mode
 
-- [ ] **5.1** In `HudProbableWaffle.updatePositionOfUiElements()`
+- [x] **5.1** In `HudProbableWaffle.updatePositionOfUiElements()`
   - Check `gameType !== ProbableWaffleGameInstanceType.Skirmish`
   - Set `chatButton.visible` accordingly
   - Also hide chatNotification for Skirmish
