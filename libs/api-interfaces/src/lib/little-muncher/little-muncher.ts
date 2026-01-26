@@ -1,4 +1,4 @@
-import type { GameInstanceId } from "../game-instance/player/player";
+import type { GameInstanceId, UserId } from "../game-instance/player/player";
 
 export enum LittleMuncherHillEnum {
   Stefka = 1,
@@ -61,4 +61,14 @@ export interface LittleMuncherGameCreate {
 
 export interface LittleMuncherGameCreateDto extends LittleMuncherGameCreate {
   gameInstanceId: GameInstanceId;
+}
+
+export class LittleMuncherScoreDto {
+  constructor(
+    public score: number,
+    public hill: LittleMuncherHillEnum,
+    public userName: string,
+    public userId: UserId,
+    public date: Date = new Date()
+  ) {}
 }

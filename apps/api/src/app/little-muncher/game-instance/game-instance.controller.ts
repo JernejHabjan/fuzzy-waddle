@@ -7,12 +7,17 @@ import {
   type GameInstanceDataDto,
   type LittleMuncherGameCreateDto,
   type LittleMuncherGameInstanceData,
-  type LittleMuncherRoom
+  type LittleMuncherRoom,
+  LittleMuncherScoreDto
 } from "@fuzzy-waddle/api-interfaces";
+import { LittleMuncherHighScoreService } from "../high-score/little-muncher-high-score.service";
 
 @Controller("little-muncher")
 export class GameInstanceController {
-  constructor(private readonly gameInstanceService: GameInstanceService) {}
+  constructor(
+    private readonly gameInstanceService: GameInstanceService,
+    private readonly highScoreService: LittleMuncherHighScoreService
+  ) {}
 
   @Post("start-game")
   @UseGuards(SupabaseAuthGuard)
@@ -57,5 +62,16 @@ export class GameInstanceController {
   @UseGuards(SupabaseAuthGuard)
   async getRooms(@CurrentUser() user: AuthUser): Promise<LittleMuncherRoom[]> {
     return await this.gameInstanceService.getSpectatorRooms(user);
+  }
+
+  @Post("post-score")
+  @UseGuards(SupabaseAuthGuard)
+  async postScore(@CurrentUser() user: AuthUser, @Body() body: LittleMuncherScoreDto): Promise<void> {
+    await this.highScoreService.postScore(body, user);
+  }
+
+  @Get("get-scores")
+  async getScores(): Promise<LittleMuncherScoreDto[]> {
+    return await this.highScoreService.getScores();
   }
 }

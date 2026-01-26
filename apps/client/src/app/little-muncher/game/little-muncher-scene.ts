@@ -525,9 +525,15 @@ export class LittleMuncherScene extends BaseScene<
     }
   }
 
+  private sendScore = () => {
+    const score = this.gameState.data.score;
+    this.communicator.score?.send({ score });
+  };
+
   private gameOver = (success: boolean) => {
     if (this.gameOverFlag) return;
     this.gameOverFlag = true;
+    this.sendScore();
     if (success) {
       this.fireworks = new Fireworks(this, true);
     }
