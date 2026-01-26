@@ -55,7 +55,7 @@ export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
     const gameInstance = this.gameInstanceClientService.gameInstance;
     if (!gameInstance) return;
 
-    // Derive seed from gameInstanceId for deterministic lock-stepping
+    // Derive seed from rndSeed for deterministic lock-stepping
     const seed = gameInstance.gameInstanceMetadata.data.rndSeed;
 
     // Create game config with seed
