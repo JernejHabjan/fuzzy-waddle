@@ -35,6 +35,7 @@ import { ActorPhysicalType } from "./actor-physical-type";
 import type { SoundDefinition } from "../../actor-audio/sound-definition";
 import type { HealthDefinition } from "./health-definition";
 import type { SyncOptions } from "../../../systems/sync.options";
+import { BuildingDestructionEffect } from "../../building/building-destruction-effect";
 
 export class HealthComponent {
   static readonly DEBUG = false;
@@ -304,6 +305,15 @@ export class HealthComponent {
     this.healthComponentData.health = 0;
     this.gameObject.scene.events.emit(HealthComponent.KilledEvent, this.gameObject);
     this.playDeathSound();
+
+    // Spawn building destruction effects (rubble and smoke) for structural actors
+    if (this.healthDefinition.physicalState === ActorPhysicalType.Structural) {
+      const constructionSiteComponent = getActorComponent(this.gameObject, ConstructionSiteComponent);
+      if (constructionSiteComponent) {
+        BuildingDestructionEffect.spawnDestructionEffects(this.gameObject);
+      }
+    }
+
     this.playDeathAnimation();
     this.gameObject.scene.time.delayedCall(this.destroyAfterMs, () => {
       this.gameObject.destroy();
