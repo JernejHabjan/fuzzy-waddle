@@ -2,7 +2,7 @@ import Phaser from "phaser";
 
 /**
  * RandomService provides deterministic random number generation using Phaser's
- * RandomDataGenerator seeded with the gameInstanceId.
+ * RandomDataGenerator seeded with the rndSeed.
  *
  * This ensures that all clients in a multiplayer game produce identical random
  * sequences, enabling deterministic lock-stepping for perfect synchronization.
@@ -11,7 +11,7 @@ export class RandomService {
   private readonly rng: Phaser.Math.RandomDataGenerator;
 
   /**
-   * @param seed - The seed value (derived from gameInstanceId) for deterministic randomness
+   * @param seed - The seed value (derived from rndSeed) for deterministic randomness
    */
   constructor(seed: string) {
     this.rng = new Phaser.Math.RandomDataGenerator([seed]);
@@ -58,14 +58,6 @@ export class RandomService {
    */
   shuffle<T>(array: T[]): T[] {
     return this.rng.shuffle(array);
-  }
-
-  /**
-   * Returns a random integer between 0 (inclusive) and maxExclusive (exclusive)
-   * @param maxExclusive - Maximum value (exclusive)
-   */
-  integerInRange(maxExclusive: number): number {
-    return Math.floor(this.rng.frac() * maxExclusive);
   }
 
   /**

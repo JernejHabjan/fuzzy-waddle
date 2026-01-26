@@ -52,7 +52,7 @@ export class NavigationService {
   static UpdateNavigationEvent = "updateNavigation";
   private readonly easyStar: EasyStar;
   private actorIndex!: ActorIndexSystem;
-  private randomService!: any; // RandomService injected after scene initialization
+  private randomService!: RandomService;
   private easyStarNavigationGrid: number[][] = [];
   private tilemapGrid: number[][] = [];
   private heightMapGrid: HeightMapCell[][] = [];

@@ -136,7 +136,7 @@ export class BasePlanner {
     if (scored.length === 0) return null;
 
     const chosen = scored[0]!.tile;
-    const randomService = getSceneService(this.analyzer["scene"], RandomService)!;
+    const randomService = getSceneService(this.analyzer.scene, RandomService)!;
     this.plans.push({
       id: `${Date.now()}-${randomService.random().toString(36).slice(2)}`,
       type: buildingType,

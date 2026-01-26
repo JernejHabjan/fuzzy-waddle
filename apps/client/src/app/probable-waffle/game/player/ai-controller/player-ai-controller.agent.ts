@@ -639,11 +639,11 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
         const transform = getGameObjectLogicalTransform(worker);
         const rx =
           transform!.x +
-          this.randomService.integerInRange(AI_CONFIG.buildingPlacementRandomOffsetRange) -
+          this.randomService.between(0, AI_CONFIG.buildingPlacementRandomOffsetRange) -
           AI_CONFIG.buildingPlacementRandomOffsetRange;
         const ry =
           transform!.y +
-          this.randomService.integerInRange(AI_CONFIG.buildingPlacementRandomOffsetRange) -
+          this.randomService.between(0, AI_CONFIG.buildingPlacementRandomOffsetRange) -
           AI_CONFIG.buildingPlacementRandomOffsetRange;
         tileLocationXYZ = { x: rx, y: ry, z: 0 } as Vector3Simple;
       }
