@@ -11,6 +11,8 @@ import { getActorComponent } from "../../../data/actor-component";
 import { AudioActorComponent } from "../../../entity/components/actor-audio/audio-actor-component";
 import { AnimationActorComponent } from "../../../entity/components/animation/animation-actor-component";
 import { SoundType } from "../../../entity/components/actor-audio/sound-type";
+import { RandomService } from "../../../world/services/random.service";
+import { getSceneService } from "../../../world/services/scene-component-helpers";
 /* END-USER-IMPORTS */
 
 export default class Hedgehog extends Phaser.GameObjects.Sprite {
@@ -73,7 +75,8 @@ export default class Hedgehog extends Phaser.GameObjects.Sprite {
         this.moveHedgehogAfterDelay();
       }
     });
-    const sound = Math.random() < 0.8 ? SoundType.Select : SoundType.SelectExtra;
+    const randomService = getSceneService(this.scene, RandomService)!;
+    const sound = randomService.random() < 0.8 ? SoundType.Select : SoundType.SelectExtra;
     this.actorAudioComponent?.playSpatialCustomSound(sound);
   }
 

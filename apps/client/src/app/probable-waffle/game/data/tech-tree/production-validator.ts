@@ -17,6 +17,7 @@ import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 import { ProductionComponent } from "../../entity/components/production/production-component";
 import { ProductionInvalidReason } from "./production-invalid-reason";
 import type { ProductionValidationResult } from "./production-validation-result";
+import { RandomService } from "../../world/services/random.service";
 
 export class ProductionValidator {
   private static readonly debugEnabled = false;
@@ -143,8 +144,9 @@ export class ProductionValidator {
     const now = performance.now();
     // Insert in reverse so that earliest prerequisite appears first in queue processing
     prereqs.reverse().forEach((p) => {
+      const randomService = getSceneService(this.scene, RandomService)!;
       this.blackboard.production.prereqQueue.push({
-        id: `${p}-${now}-${Math.random().toString(36).slice(2)}`,
+        id: `${p}-${now}-${randomService.random().toString(36).slice(2)}`,
         type: "construct", // default semantic; execution layer decides produce vs construct
         objectName: p,
         insertedAt: now

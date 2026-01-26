@@ -148,6 +148,7 @@ export class ConstructionSiteComponent {
     if (this.playingBuildSound) return;
     this.playingBuildSound = true;
     const soundDefinitions = [...SharedActorActionsSfxHammeringSounds, ...SharedActorActionsSfxSawingSounds];
+    // can be random as it doesn't need to be deterministic
     const soundDefinition = soundDefinitions[Math.floor(Math.random() * soundDefinitions.length)]!;
     this.audioService.playSpatialAudioSprite(
       this.gameObject,
@@ -305,6 +306,7 @@ export class ConstructionSiteComponent {
     const visibilityComponent = getGameObjectVisibility(this.gameObject);
     if (visibilityComponent && visibilityComponent.visible) {
       const soundDefinitions = SharedActorActionsSfxSelectionSounds;
+      // can be random as it doesn't need to be deterministic
       const soundDefinition = soundDefinitions[Math.floor(Math.random() * soundDefinitions.length)]!;
       this.audioService?.playSpatialAudioSprite(this.gameObject, soundDefinition.key, soundDefinition.spriteName);
     }

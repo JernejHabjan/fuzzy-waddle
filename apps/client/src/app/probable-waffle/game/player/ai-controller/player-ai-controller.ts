@@ -9,7 +9,7 @@ import { AI_CONFIG } from "./ai-config";
 
 export class PlayerAiController {
   readonly playerAiControllerAgent: PlayerAiControllerAgent;
-  public blackboard: PlayerAiBlackboard = new PlayerAiBlackboard();
+  public blackboard: PlayerAiBlackboard;
   private behaviourTree: BehaviourTree;
   private elapsedTime: number = 0;
   private static readonly AI_ENABLED = true;
@@ -20,6 +20,7 @@ export class PlayerAiController {
     public readonly scene: Phaser.Scene,
     public readonly player: ProbableWafflePlayer
   ) {
+    this.blackboard = new PlayerAiBlackboard(scene);
     this.playerAiControllerAgent = new PlayerAiControllerAgent(this.scene, this.player, this.blackboard);
     this.behaviourTree = new BehaviourTree(PlayerAiControllerMdsl, this.playerAiControllerAgent);
     // expose telemetry snapshot container in diagnostics if absent

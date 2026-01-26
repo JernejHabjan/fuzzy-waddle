@@ -3,6 +3,9 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
+import { RandomService } from "../../../world/services/random.service";
+import { getSceneService } from "../../../world/services/scene-component-helpers";
+import { onObjectReady } from "../../../data/game-object-helper";
 /* END-USER-IMPORTS */
 
 export default class ToxicFrog extends Phaser.GameObjects.Sprite {
@@ -14,18 +17,23 @@ export default class ToxicFrog extends Phaser.GameObjects.Sprite {
     this.play("ToxicFrogBlueBlue_Idle");
 
     /* START-USER-CTR-CODE */
-    this.assignType();
-    this.bindClickEvent();
-    this.playAnimation("idle");
+    onObjectReady(this, this.init, this);
     /* END-USER-CTR-CODE */
   }
 
   /* START-USER-CODE */
   private frogType?: ToxicFrogType;
+
+  private init() {
+    this.assignType();
+    this.bindClickEvent();
+    this.playAnimation("idle");
+  }
+
   private assignType() {
+    const randomService = getSceneService(this.scene, RandomService)!;
     const frogTypes = Object.keys(ToxicFrogAnimPrefixes) as ToxicFrogType[];
-    const randomIndex = Math.floor(Math.random() * frogTypes.length);
-    this.frogType = frogTypes[randomIndex];
+    this.frogType = randomService.pick(frogTypes);
   }
 
   private bindClickEvent() {
