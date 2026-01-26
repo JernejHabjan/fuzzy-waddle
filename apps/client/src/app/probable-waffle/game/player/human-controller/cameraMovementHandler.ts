@@ -133,6 +133,11 @@ export class CameraMovementHandler {
     this.input.off(Input.Events.POINTER_MOVE, this.handlePointerMove);
   }
 
+  /**
+   * Handle edge scrolling based on pointer position
+   * Note: Works automatically with pointer lock via patched Pointer.move()
+   * (see apps/client/src/app/shared/game/phaser/patches/pointer-lock-patch.ts)
+   */
   private screenEdgeMovementUpdate() {
     if (!this.config.enabledMouseCornerMovement || !this.cursorOverGameInstance) return;
 
