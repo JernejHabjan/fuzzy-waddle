@@ -1,12 +1,12 @@
-import { type AoeZoneData, type StatusEffectData } from '@fuzzy-waddle/api-interfaces';
-import { onSceneInitialized } from '../../data/game-object-helper';
-import { getActorComponent } from '../../data/actor-component';
-import { OwnerComponent } from '../components/owner-component';
-import { StatusEffectComponent } from '../components/status-effect/status-effect-component';
-import { HealthComponent } from '../components/combat/components/health-component';
-import { getSceneService } from '../../world/services/scene-component-helpers';
-import { NavigationService } from '../../world/services/navigation.service';
-import Phaser from 'phaser';
+import { type AoeZoneData, type StatusEffectData } from "@fuzzy-waddle/api-interfaces";
+import { onSceneInitialized } from "../../data/game-object-helper";
+import { getActorComponent } from "../../data/actor-component";
+import { OwnerComponent } from "../components/owner-component";
+import { StatusEffectComponent } from "../components/status-effect/status-effect-component";
+import { HealthComponent } from "../components/combat/components/health-component";
+import { getSceneService } from "../../world/services/scene-component-helpers";
+import Phaser from "phaser";
+import { RandomService } from "../../world/services/random.service";
 
 interface ZoneVisual {
   zoneId: string;
@@ -17,7 +17,7 @@ interface ZoneVisual {
 export class AoeZoneManager {
   private activeZones: AoeZoneData[] = [];
   private zoneVisuals: Map<string, ZoneVisual> = new Map();
-  private navigationService?: NavigationService;
+  private randomService!: RandomService;
 
   constructor(private readonly scene: Phaser.Scene) {
     onSceneInitialized(this.scene, this.init, this);
@@ -25,12 +25,12 @@ export class AoeZoneManager {
   }
 
   private init(): void {
-    this.navigationService = getSceneService(this.scene, NavigationService);
+    this.randomService = getSceneService(this.scene, RandomService)!;
     this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
   }
 
-  createZone(data: Omit<AoeZoneData, 'id' | 'remainingTime' | 'lastTickTime'>): string {
-    const zoneId = `zone_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  createZone(data: Omit<AoeZoneData, "id" | "remainingTime" | "lastTickTime">): string {
+    const zoneId = `zone_${Date.now()}_${this.randomService.random().toString(36).substr(2, 9)}`;
     const zone: AoeZoneData = {
       ...data,
       id: zoneId,
@@ -128,7 +128,12 @@ export class AoeZoneManager {
       if (!actorTransform) continue;
 
       // Check if within radius
-      const distance = Phaser.Math.Distance.Between(zone.position.x, zone.position.y, actorTransform.x, actorTransform.y);
+      const distance = Phaser.Math.Distance.Between(
+        zone.position.x,
+        zone.position.y,
+        actorTransform.x,
+        actorTransform.y
+      );
 
       if (distance <= radiusInPixels) {
         actors.push(gameObject);
@@ -139,7 +144,7 @@ export class AoeZoneManager {
   }
 
   private getActorWorldPosition(gameObject: Phaser.GameObjects.GameObject): { x: number; y: number } | null {
-    if ('x' in gameObject && 'y' in gameObject) {
+    if ("x" in gameObject && "y" in gameObject) {
       return { x: gameObject.x as number, y: gameObject.y as number };
     }
     return null;
@@ -173,7 +178,13 @@ export class AoeZoneManager {
     });
   }
 
-  private drawZoneCircle(graphics: Phaser.GameObjects.Graphics, x: number, y: number, radius: number, color: number): void {
+  private drawZoneCircle(
+    graphics: Phaser.GameObjects.Graphics,
+    x: number,
+    y: number,
+    radius: number,
+    color: number
+  ): void {
     graphics.clear();
 
     // Draw filled semi-transparent circle
@@ -200,7 +211,13 @@ export class AoeZoneManager {
     // Return to normal after short delay
     this.scene.time.delayedCall(100, () => {
       if (visual.graphics.active) {
-        this.drawZoneCircle(visual.graphics, zone.position.x, zone.position.y, radiusInPixels, zone.tintColor ?? 0xffffff);
+        this.drawZoneCircle(
+          visual.graphics,
+          zone.position.x,
+          zone.position.y,
+          radiusInPixels,
+          zone.tintColor ?? 0xffffff
+        );
       }
     });
   }
