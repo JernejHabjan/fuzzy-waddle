@@ -472,8 +472,8 @@ export class NavigationService {
     let attempts = 0;
     const maxAttempts = validTiles.length; // Limit attempts to prevent infinite loops
     while (attempts < maxAttempts) {
-      const randomIndex = this.randomService.integerInRange(validTiles.length);
-      const tile = validTiles[randomIndex]!;
+      const randomIndex = this.randomService.between(0, validTiles.length - 1);
+      const tile = this.randomService.pick(validTiles)!;
 
       // Check path to the random tile
       const path = await this.findPath(currentTile, tile);
@@ -514,7 +514,7 @@ export class NavigationService {
     }
 
     // 3. Randomly pick tiles until a reachable one within the radius is found
-    const randomIndex = this.randomService.integerInRange(validTiles.length);
+    const randomIndex = this.randomService.between(0, validTiles.length - 1);
     return validTiles[randomIndex];
   }
 
