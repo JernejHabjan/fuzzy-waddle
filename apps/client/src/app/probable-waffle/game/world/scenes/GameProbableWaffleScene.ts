@@ -13,6 +13,7 @@ import { SaveGame } from "../../data/save-game";
 import { SceneActorCreator } from "../services/scene-actor-creator";
 import { NavigationService } from "../services/navigation.service";
 import { AudioService } from "../services/audio.service";
+import { RandomService } from "../services/random.service";
 import { TilemapComponent } from "../tilemap/tilemap.component";
 import { RestartGame } from "../../data/restart-game";
 import { AiPlayerHandler } from "../../player/ai-controller/ai-player-handler";
@@ -68,6 +69,11 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     const actorIndex = new ActorIndexSystem(this);
     const techTreeService = new TechTreeService();
 
+    // Initialize RandomService with seed from game config for deterministic randomness
+    const seed = this.sys.game.config.seed?.[0];
+    if (!seed) throw new Error("Game seed is not defined");
+    const randomService = new RandomService(seed);
+
     this.sceneGameData.components.push(
       new TilemapComponent(this.tilemap),
       new BuildingCursor(this),
@@ -75,6 +81,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
       new SelectionTabHandler(this)
     );
     this.sceneGameData.services.push(
+      randomService,
       new NavigationService(this, this.tilemap),
       audioService,
       playerActionsHandler,

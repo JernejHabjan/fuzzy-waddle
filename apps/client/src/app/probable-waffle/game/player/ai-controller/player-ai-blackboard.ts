@@ -10,6 +10,8 @@ import type { MapAnalysis } from "./ai-behavior/map-analyzer";
 import { ReservationPool } from "./resource-reservations";
 import { getActorComponent } from "../../data/actor-component";
 import { PawnAiController } from "../../prefabs/ai-agents/pawn-ai-controller";
+import { RandomService } from "../../world/services/random.service";
+import { getSceneService } from "../../world/services/scene-component-helpers";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export interface EnemyIntel {
@@ -19,44 +21,45 @@ export interface EnemyIntel {
 }
 
 export class PlayerAiBlackboard extends Blackboard {
-  constructor(
-    public units: Phaser.GameObjects.GameObject[] = [],
-    public workers: Phaser.GameObjects.GameObject[] = [],
-    public defendingUnits: GameObject[] = [], // Units assigned for base defense
-    public visibleEnemies: GameObject[] = [], // Enemies visible to the player
-    public enemiesNearBase: GameObject[] = [], // Enemies within a certain range of the base
-    public enemyBase: GameObject | null = null, // Reference to the enemy base
-    public primaryTarget: GameObject | null = null, // The main target to attack (an enemy unit or building)
-    public mapFullyExplored: boolean = false,
-    public trainingBuildings: Phaser.GameObjects.GameObject[] = [], // Buildings that can train new units
-    public productionBuildings: GameObject[] = [], // Buildings that produce resources or military units
-    public defensiveStructures: GameObject[] = [], // Defensive buildings like towers, walls, etc.
-    public gatheringStructures: GameObject[] = [], // Resource gathering buildings
-    public baseSize: number = 0, // Current size of the player's base (based on expansion)
-    public upgradeBuilding: Phaser.GameObjects.GameObject | null = null, // Building responsible for upgrades (tech or unit)
-    public militaryStrength: number = 0, // Overall military power
-    public enemyMilitaryStrength: number = 0, // Estimated enemy military strength
-    public enemyFlankOpen: boolean = false, // Is the enemy's flank open for an attack?
-    public enemyIntel: Record<number, EnemyIntel> = {}, // Per-enemy intel
-    public enemiesInCombat: any[] = [], // Enemies currently engaged in combat
-    public currentStrategy: string = "defensive", // Current strategy: "aggressive", "defensive", "economic"
-    // Map analysis/cache (phase 1)
-    public mapAnalysis: MapAnalysis | null = null,
-    public baseCenterTile: Vector3Simple | null = null,
-    public suggestedBuildTiles: Vector2Simple[] = [],
-    // Planned building types (phase 2 planning output)
-    public plannedBuildingTypes: string[] = [],
-    // Logistics / tech (new lightweight fields)
-    public activeTechUpgrades: number = 0,
-    public lastTechUpgradeAt: number = 0,
-    // Surrender state
-    public wantsToSurrender: boolean = false,
-    public surrenderOfferedAt: number = 0,
-    public surrenderRejected: boolean = false,
-    // public nextReservedBuilding?: { name: string; tile: Vector2Simple } // (optional future use)
-    private reservationPool = new ReservationPool()
-  ) {
+  public units: Phaser.GameObjects.GameObject[] = [];
+  public workers: Phaser.GameObjects.GameObject[] = [];
+  public defendingUnits: GameObject[] = []; // Units assigned for base defense
+  public visibleEnemies: GameObject[] = []; // Enemies visible to the player
+  public enemiesNearBase: GameObject[] = []; // Enemies within a certain range of the base
+  public enemyBase: GameObject | null = null; // Reference to the enemy base
+  public primaryTarget: GameObject | null = null; // The main target to attack (an enemy unit or building)
+  public mapFullyExplored: boolean = false;
+  public trainingBuildings: Phaser.GameObjects.GameObject[] = []; // Buildings that can train new units
+  public productionBuildings: GameObject[] = []; // Buildings that produce resources or military units
+  public defensiveStructures: GameObject[] = []; // Defensive buildings like towers, walls, etc.
+  public gatheringStructures: GameObject[] = []; // Resource gathering buildings
+  public baseSize: number = 0; // Current size of the player's base (based on expansion)
+  public upgradeBuilding: Phaser.GameObjects.GameObject | null = null; // Building responsible for upgrades (tech or unit)
+  public militaryStrength: number = 0; // Overall military power
+  public enemyMilitaryStrength: number = 0; // Estimated enemy military strength
+  public enemyFlankOpen: boolean = false; // Is the enemy's flank open for an attack?
+  public enemyIntel: Record<number, EnemyIntel> = {}; // Per-enemy intel
+  public enemiesInCombat: any[] = []; // Enemies currently engaged in combat
+  public currentStrategy: string = "defensive"; // Current strategy: "aggressive", "defensive", "economic"
+  // Map analysis/cache
+  public mapAnalysis: MapAnalysis | null = null;
+  public baseCenterTile: Vector3Simple | null = null;
+  public suggestedBuildTiles: Vector2Simple[] = [];
+  // Planned building types (phase 2 planning output)
+  public plannedBuildingTypes: string[] = [];
+  // Logistics / tech (new lightweight fields)
+  public activeTechUpgrades: number = 0;
+  public lastTechUpgradeAt: number = 0;
+  // Surrender state
+  public wantsToSurrender: boolean = false;
+  public surrenderOfferedAt: number = 0;
+  public surrenderRejected: boolean = false;
+  // public nextReservedBuilding?: { name: string; tile: Vector2Simple } // (optional future use)
+  private reservationPool = new ReservationPool();
+  private randomService: RandomService;
+  constructor(public readonly scene: Phaser.Scene) {
     super();
+    this.randomService = getSceneService(scene, RandomService)!;
     this.economy = {
       resources: { minerals: 0, stone: 0, wood: 0 },
       // Placeholder income/surplus structures (populated via updateFromWorld)
@@ -548,7 +551,8 @@ export class PlayerAiBlackboard extends Blackboard {
 
   /** Begin a planned structure and record internal meta list. */
   beginPlannedStructure(name: ObjectNames, cost: Partial<Record<ResourceType, number>>, now: number, ttlMs = 15000) {
-    const id = `${name}-${now}-${Math.random().toString(36).slice(2)}`;
+    const randomValue = this.randomService.random();
+    const id = `${name}-${now}-${randomValue.toString(36).slice(2)}`;
     const token = this.reserveForPlan(id, cost, ttlMs, now);
     if (!token) return null;
     const plan = { id, name, reservedAt: now, cost };

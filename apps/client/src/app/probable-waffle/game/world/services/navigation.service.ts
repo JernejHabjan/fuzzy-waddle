@@ -21,6 +21,7 @@ import { drawDebugPoint } from "../../debug/debug-point";
 import { getSceneComponent, getSceneService } from "./scene-component-helpers";
 import { TilemapComponent } from "../tilemap/tilemap.component";
 import { getSelectableGameObject, onSceneInitialized } from "../../data/game-object-helper";
+import { RandomService } from "./random.service";
 import { throttleWithTrailing } from "../../library/throttle";
 import { environment } from "../../../../../environments/environment";
 import { RepresentableComponent } from "../../entity/components/representable-component";
@@ -51,6 +52,7 @@ export class NavigationService {
   static UpdateNavigationEvent = "updateNavigation";
   private readonly easyStar: EasyStar;
   private actorIndex!: ActorIndexSystem;
+  private randomService!: RandomService;
   private easyStarNavigationGrid: number[][] = [];
   private tilemapGrid: number[][] = [];
   private heightMapGrid: HeightMapCell[][] = [];
@@ -71,6 +73,7 @@ export class NavigationService {
 
   private initNavigationService() {
     this.actorIndex = getSceneService(this.scene, ActorIndexSystem)!;
+    this.randomService = getSceneService(this.scene, RandomService)!;
 
     this.extractTilemapGrid();
 
@@ -469,7 +472,7 @@ export class NavigationService {
     let attempts = 0;
     const maxAttempts = validTiles.length; // Limit attempts to prevent infinite loops
     while (attempts < maxAttempts) {
-      const randomIndex = Math.floor(Math.random() * validTiles.length);
+      const randomIndex = this.randomService.integerInRange(validTiles.length);
       const tile = validTiles[randomIndex]!;
 
       // Check path to the random tile
@@ -511,7 +514,7 @@ export class NavigationService {
     }
 
     // 3. Randomly pick tiles until a reachable one within the radius is found
-    const randomIndex = Math.floor(Math.random() * validTiles.length);
+    const randomIndex = this.randomService.integerInRange(validTiles.length);
     return validTiles[randomIndex];
   }
 

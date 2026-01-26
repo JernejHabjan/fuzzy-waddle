@@ -265,6 +265,7 @@ export default class MapEmberEnclave extends GameProbableWaffleScene {
 
       // Rotate cloud to be horizontal
       cloud.setAngle(90);
+      // we can use random here as it's just visual variation
       cloud.setAlpha(0.05 + Math.random() * 0.05);
       cloud.setOrigin(0, 0);
       cloud.setDepth(1000000);

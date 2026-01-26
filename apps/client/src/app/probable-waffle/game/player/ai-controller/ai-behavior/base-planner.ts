@@ -3,6 +3,7 @@ import { FactionType, ObjectNames, ResourceType, type Vector2Simple } from "@fuz
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { NavigationService } from "../../../world/services/navigation.service";
+import { RandomService } from "../../../world/services/random.service";
 import { pwActorDefinitions } from "../../../prefabs/definitions/actor-definitions";
 import { PlayerAiBlackboard } from "../player-ai-blackboard";
 import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
@@ -135,8 +136,9 @@ export class BasePlanner {
     if (scored.length === 0) return null;
 
     const chosen = scored[0]!.tile;
+    const randomService = getSceneService(this.analyzer.scene, RandomService)!;
     this.plans.push({
-      id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+      id: `${Date.now()}-${randomService.random().toString(36).slice(2)}`,
       type: buildingType,
       tile: chosen,
       priority,
