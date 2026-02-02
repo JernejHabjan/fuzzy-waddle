@@ -27,7 +27,6 @@ import SurrenderDialog from "../../../prefabs/gui/SurrenderDialog";
 /* END-USER-IMPORTS */
 
 export default class HudProbableWaffle extends ProbableWaffleScene {
-
   constructor() {
     super("HudProbableWaffle");
 
@@ -37,7 +36,6 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   }
 
   editorCreate(): void {
-
     // actor_actions_container
     const actor_actions_container = new ActorActions(this, 1280, 720);
     this.add.existing(actor_actions_container);
@@ -71,7 +69,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     // hudMessages
     const hudMessages = new HudMessages(this, 6, 472);
     this.add.existing(hudMessages);
-    hudMessages.setStyle({  });
+    hudMessages.setStyle({});
 
     // groupContainer
     const groupContainer = new GroupContainer(this, 552, 541);

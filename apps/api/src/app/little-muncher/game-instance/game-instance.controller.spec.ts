@@ -2,13 +2,18 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { GameInstanceController } from "./game-instance.controller";
 import { GameInstanceService } from "./game-instance.service";
 import { GameInstanceServiceStub } from "./game-instance.service.stub";
+import { LittleMuncherHighScoreService } from "../high-score/little-muncher-high-score.service";
+import { mockHighScoreServiceStub } from "../high-score/little-muncher-high-score.service.stub";
 
 describe("GameInstanceController", () => {
   let controller: GameInstanceController;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [{ provide: GameInstanceService, useValue: GameInstanceServiceStub }],
+      providers: [
+        { provide: GameInstanceService, useValue: GameInstanceServiceStub },
+        { provide: LittleMuncherHighScoreService, useValue: mockHighScoreServiceStub }
+      ],
       controllers: [GameInstanceController]
     }).compile();
 
