@@ -268,6 +268,7 @@ export class AttackComponent {
     if (this.audioService && attack.sounds.hit) {
       const visibilityComponent = getGameObjectVisibility(this.gameObject);
       if (visibilityComponent && visibilityComponent.visible) {
+        // can be random as it doesn't need to be deterministic
         const randomHitSound = attack.sounds.hit[Math.floor(Math.random() * attack.sounds.hit.length)]!;
         this.audioService.playSpatialAudioSprite(
           enemy, // enemy hit position
@@ -279,6 +280,7 @@ export class AttackComponent {
     this.stopProjectile();
     if (projectile.impactAnimation) {
       const anims = projectile.impactAnimation.anims;
+      // can be random as it's just visual effect
       const randomImpactAnim = anims[Math.floor(Math.random() * anims.length)]!;
       const impactSprite = EffectsAnims.createAndPlayEffectAnimation(
         this.gameObject.scene,
@@ -359,6 +361,7 @@ export class AttackComponent {
     if (preparing) {
       const visibilityComponent = getGameObjectVisibility(this.gameObject);
       if (visibilityComponent && visibilityComponent.visible) {
+        // can be random as it doesn't need to be deterministic
         const randomPreparingSound = preparing[Math.floor(Math.random() * preparing.length)]!;
         this.audioService.playSpatialAudioSprite(
           this.gameObject,
@@ -371,6 +374,7 @@ export class AttackComponent {
       if (fire) {
         const visibilityComponent = getGameObjectVisibility(this.gameObject);
         if (visibilityComponent && visibilityComponent.visible) {
+          // can be random as it doesn't need to be deterministic
           const randomFireSound = fire[Math.floor(Math.random() * fire.length)]!;
           this.audioService!.playSpatialAudioSprite(this.gameObject, randomFireSound.key, randomFireSound.spriteName);
         }
@@ -383,6 +387,7 @@ export class AttackComponent {
         if (hit) {
           const visibilityComponent = getGameObjectVisibility(this.gameObject);
           if (visibilityComponent && visibilityComponent.visible) {
+            // can be random as it doesn't need to be deterministic
             const randomHitSound = hit[Math.floor(Math.random() * hit.length)]!;
             this.audioService!.playSpatialAudioSprite(
               enemy, // enemy hit position

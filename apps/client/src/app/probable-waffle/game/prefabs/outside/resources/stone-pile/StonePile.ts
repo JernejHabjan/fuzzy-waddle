@@ -20,10 +20,12 @@ export default class StonePile extends Phaser.GameObjects.Image {
     this.setOrigin(0.5, 0.7378671494275097);
 
     /* START-USER-CTR-CODE */
+    // we can use random here as it's just visual variation
     this.setFrame(
       `nature/resources/${this.availableRockPiles[Math.floor(Math.random() * this.availableRockPiles.length)]}`
     );
     // randomly flip by Y axis
+    // we can use random here as it's just visual variation
     if (Math.random() > 0.5) {
       this.flipX = true;
     }

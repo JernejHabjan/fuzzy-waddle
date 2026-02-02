@@ -332,6 +332,7 @@ export class HealthComponent {
     switch (this.healthDefinition.physicalState) {
       case ActorPhysicalType.Organic:
       case ActorPhysicalType.Biological:
+        // can be random as it doesn't need to be deterministic
         randomSoundIndex = Math.floor(Math.random() * SharedActorActionsSfxBodyFallSounds.length);
         randomSound = SharedActorActionsSfxBodyFallSounds[randomSoundIndex]!;
         if (this.audioService)
@@ -339,6 +340,7 @@ export class HealthComponent {
         if (this.audioActorComponent) this.audioActorComponent.playCustomSound(SoundType.Death);
         break;
       case ActorPhysicalType.Structural:
+        // can be random as it doesn't need to be deterministic
         randomSoundIndex = Math.floor(Math.random() * SharedActorActionsSfxBuildingDestroySounds.length);
         randomSound = SharedActorActionsSfxBuildingDestroySounds[randomSoundIndex]!;
         if (this.audioService)

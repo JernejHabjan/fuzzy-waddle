@@ -10,6 +10,7 @@ import { AngularHost } from "../../../shared/consts";
 import { Subscription } from "rxjs";
 import { OptionsService } from "../options/options.service";
 import { AchievementService } from "../../services/achievement/achievement.service";
+import type { Types } from "phaser";
 
 @Component({
   templateUrl: "./probable-waffle-game.component.html",
@@ -18,7 +19,7 @@ import { AchievementService } from "../../services/achievement/achievement.servi
   host: AngularHost.contentFlexFullHeight
 })
 export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
-  protected readonly probableWaffleGameConfig = probableWaffleGameConfig;
+  protected gameConfig?: Types.Core.GameConfig;
   protected gameData?: BaseGameData<
     ProbableWaffleCommunicatorService,
     ProbableWaffleGameInstance,
@@ -53,6 +54,16 @@ export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
   private setData() {
     const gameInstance = this.gameInstanceClientService.gameInstance;
     if (!gameInstance) return;
+
+    // Derive seed from rndSeed for deterministic lock-stepping
+    const seed = gameInstance.gameInstanceMetadata.data.rndSeed;
+
+    // Create game config with seed
+    this.gameConfig = {
+      ...probableWaffleGameConfig,
+      seed: [seed.toString()]
+    };
+
     this.gameData = {
       gameInstance,
       communicator: this.communicatorService,
