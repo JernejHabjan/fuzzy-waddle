@@ -11,12 +11,13 @@ import { KeyValuePipe } from "@angular/common";
 import { SpectateComponent } from "./spectate/spectate.component";
 import { AngularHost } from "../../shared/consts";
 import { HomeNavComponent } from "../../shared/components/home-nav/home-nav.component";
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: "little-muncher-home",
   templateUrl: "./home.component.html",
   styleUrls: ["./home.component.scss"],
-  imports: [SpectateComponent, HomeNavComponent, KeyValuePipe],
+  imports: [SpectateComponent, HomeNavComponent, KeyValuePipe, RouterLink],
   host: AngularHost.contentFlexFullHeight
 })
 export class HomeComponent {

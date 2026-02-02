@@ -11,6 +11,7 @@ import { LittleMuncherCommunicatorService } from "../communicators/little-munche
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { WrapPipe } from "../../../shared/pipes/wrap.pipe";
 import { LeaveButtonComponent } from "../../../shared/components/leave-button/leave-button.component";
+import { HighScoreService } from "../../high-score/high-score.service";
 
 @Component({
   selector: "little-muncher-game-interface",
@@ -22,6 +23,7 @@ export class GameInterfaceComponent implements OnInit, OnDestroy {
   private readonly authService = inject(AuthService);
   private readonly gameInstanceClientService = inject(GameInstanceClientService);
   private readonly communicatorService = inject(LittleMuncherCommunicatorService);
+  private readonly highScoreService = inject(HighScoreService);
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
   private readonly router = inject(Router);
 
@@ -64,14 +66,19 @@ export class GameInterfaceComponent implements OnInit, OnDestroy {
     }
     // set initial score:
     this.score = this.gameInstanceClientService.gameInstance.players[0]!.playerState.data.score;
-    this.scoreSubscription = this.communicatorService.score?.on.subscribe((event) => {
+    this.scoreSubscription = this.communicatorService.score?.on.subscribe(async (event) => {
       this.score = event.score;
+      if (event.stage === "final") {
+        const hill = this.getHill();
+        if (!hill) return;
+        await this.highScoreService.postScore(Math.floor(this.score), hill);
+      }
       this.changeDetectorRef.detectChanges();
     });
   }
 
   private manageRemaining() {
-    const hill = this.gameInstanceClientService.gameInstance?.gameMode?.data.hill;
+    const hill = this.getHill();
     const gameState = this.gameInstanceClientService.gameInstance?.gameState;
     if (!hill || !gameState) {
       return;
@@ -79,12 +86,14 @@ export class GameInterfaceComponent implements OnInit, OnDestroy {
     // set initial remaining:
     this.remaining = this.getRemaining(hill, gameState.data.climbedHeight);
     this.scoreSubscription = this.communicatorService.timeClimbing?.on.subscribe((event) => {
-      if (!this.gameInstanceClientService.gameInstance?.gameMode?.data.hill) {
-        return;
-      }
+      if (!hill) return;
       this.remaining = this.getRemaining(hill, event.timeClimbing);
       this.changeDetectorRef.detectChanges();
     });
+  }
+
+  private getHill(): LittleMuncherHillEnum | null {
+    return this.gameInstanceClientService.gameInstance?.gameMode?.data.hill || null;
   }
 
   private getRemaining(hillType: LittleMuncherHillEnum, timeClimbing: number): number {

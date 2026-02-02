@@ -51,6 +51,7 @@ export class AudioService {
   }
 
   private shuffleOstQueue() {
+    // can be random as it doesn't need to be deterministic
     this.ostQueue = this.ost.sort(() => Math.random() - 0.5);
     this.currentTrackIndex = 0;
   }

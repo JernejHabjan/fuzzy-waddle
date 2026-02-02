@@ -13,6 +13,11 @@ const littleMuncherRoutes = [
         path: "",
         loadComponent: () => import("./little-muncher/little-muncher.component").then((m) => m.LittleMuncherComponent)
       },
+      {
+        path: "high-score",
+        loadComponent: () =>
+          import("./little-muncher/high-score/high-score.component").then((m) => m.HighScoreComponent)
+      },
       { path: "**", redirectTo: "" }
     ]
   }
