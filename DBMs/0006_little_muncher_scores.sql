@@ -2,7 +2,7 @@
 CREATE TABLE little_muncher_scores (
   id        SERIAL PRIMARY KEY,
   score     INT NOT NULL,
-  hill      INT NOT NULL,  -- LittleMuncherHillEnum (1-7)
+  hill      INT NOT NULL,  -- LittleMuncherHillEnum
   user_id   uuid NOT NULL,
   date      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES auth.users(id)

@@ -61,9 +61,13 @@ export class GameInstanceController {
   @Get("get-rooms")
   @UseGuards(SupabaseAuthGuard)
   async getRooms(@CurrentUser() user: AuthUser): Promise<LittleMuncherRoom[]> {
-    return await this.gameInstanceService.getSpectatorRooms(user);
+    return this.gameInstanceService.getSpectatorRooms(user);
   }
 
+  /**
+   * The score is posted when a player finishes a level.
+   * It is posted from FE, but as that is ofc not secure, we currently do not serve game logic on BE.
+   */
   @Post("post-score")
   @UseGuards(SupabaseAuthGuard)
   async postScore(@CurrentUser() user: AuthUser, @Body() body: LittleMuncherScoreDto): Promise<void> {
@@ -72,6 +76,6 @@ export class GameInstanceController {
 
   @Get("get-scores")
   async getScores(): Promise<LittleMuncherScoreDto[]> {
-    return await this.highScoreService.getScores();
+    return this.highScoreService.getScores();
   }
 }
