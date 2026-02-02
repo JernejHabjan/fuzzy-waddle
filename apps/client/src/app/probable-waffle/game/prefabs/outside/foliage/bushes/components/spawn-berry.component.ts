@@ -18,6 +18,7 @@ export class SpawnBerryComponent {
 
     const texture = "outside";
     const frames = ["foliage/fruits/blue-fruit.png", "foliage/fruits/red-fruit.png"];
+    // we can use random here as it's just visual variation
     const randomFrame = frames[Math.floor(Math.random() * frames.length)];
 
     const bounds = getGameObjectBounds(this.gameObject);
