@@ -84,6 +84,7 @@ export class SelectableComponent {
    * sets selection circle position based on the game object's rendered transform.
    */
   private setPosition() {
+    if (!this.selectionCircle) return;
     const renderedTransform = getGameObjectRenderedTransform(this.gameObject);
     if (!renderedTransform) throw new Error("Transform not found");
     if (renderedTransform.x === undefined || renderedTransform.y === undefined) return;
