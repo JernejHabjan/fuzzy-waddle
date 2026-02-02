@@ -39,8 +39,11 @@ export class RepresentableComponent {
     if (transformComponent) {
       this.logicalWorldTransform = {
         x: transformComponent.x ?? 0,
-        y: transformComponent.y ?? 0,
-        z: transformComponent.z ?? 0 // z component may be assigned in editor itself from prefab properties "z" property
+        // #519 - adjusted by flying height offset so spawned prefab from Phaser Editor gets correct "logical" transform
+        // This also fixes an issue where flying units would be weirdly offset from save-game
+        y: (transformComponent.y ?? 0) + this.flyingHeightOffset,
+        // z component may be assigned in editor itself from prefab properties "z" property
+        z: transformComponent.z ?? 0
       };
     } else {
       this.logicalWorldTransform = { x: 0, y: 0, z: 0 }; // default to origin if transform is not available
@@ -146,18 +149,6 @@ export class RepresentableComponent {
     };
   }
 
-  private refreshRenderedPosition(): void {
-    if (!this._logicalWorldTransform) return;
-    const transform = this._logicalWorldTransform;
-    const transformComponent = this.gameObject as unknown as Phaser.GameObjects.Components.Transform;
-    if (!transformComponent.hasTransformComponent) return;
-
-    transformComponent.x = transform.x;
-    transformComponent.y = transform.y - this.getActualLogicalZ(transform);
-    DepthHelper.setActorDepth(this.gameObject);
-    this.refreshBounds();
-  }
-
   get visible(): boolean {
     if (this._visible === undefined) {
       const visibility = getGameObjectVisibility(this.gameObject);
@@ -175,11 +166,7 @@ export class RepresentableComponent {
 
   setData(data: Partial<RepresentableComponentData>) {
     if (data.logicalWorldTransform) {
-      this.logicalWorldTransform = {
-        x: data.logicalWorldTransform.x,
-        y: data.logicalWorldTransform.y,
-        z: data.logicalWorldTransform.z - this.flyingHeightOffset
-      };
+      this.logicalWorldTransform = data.logicalWorldTransform;
     }
     this.refreshBounds();
   }
