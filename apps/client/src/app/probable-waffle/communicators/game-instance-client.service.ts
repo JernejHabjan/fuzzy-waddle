@@ -72,7 +72,6 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   private readonly ngZone = inject(NgZone);
   private communicators?: ProbableWaffleCommunicators;
   private communicatorSubscriptions: Subscription[] = [];
-  private chatModalOpen = false;
   gameInstanceToGameComponentCommunicator = new Subject<"refresh">();
 
   async createGameInstance(
@@ -149,13 +148,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     this.communicatorSubscriptions.push(
       this.probableWaffleCommunicatorService.utilityEvents
         .pipe(
-          filter(
-            (config) =>
-              config.name === "save-game" ||
-              config.name === "load-game" ||
-              config.name === "settings" ||
-              config.name === "chat"
-          )
+          filter((config) => config.name === "save-game" || config.name === "load-game" || config.name === "settings")
         )
         .subscribe(async (payload) => {
           let modalRef: NgbModalRef | undefined;
@@ -195,22 +188,6 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
           }
         })
     );
-  }
-
-  listenToChatMessagesForNotifications(): void {
-    const subscription = this.probableWaffleCommunicatorService.message?.on.subscribe((msg) => {
-      // Only show notification in Phaser HUD when chat modal is closed
-      if (!this.chatModalOpen && msg.chatMessage) {
-        // Emit to Phaser scene to show notification
-        this.probableWaffleCommunicatorService.allScenes.emit({
-          name: "chat-message-received",
-          data: msg.chatMessage
-        });
-      }
-    });
-    if (subscription) {
-      this.communicatorSubscriptions.push(subscription);
-    }
   }
 
   listenToGameModeDataEvents(): void {
@@ -288,7 +265,6 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     this.listenToSpectatorEvents();
     this.listenToGameStateChangedEvents();
     this.listenToUtilityGameEvents();
-    this.listenToChatMessagesForNotifications();
   }
 
   private async stopListeningToGameInstanceEvents() {

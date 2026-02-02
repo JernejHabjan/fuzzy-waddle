@@ -12,8 +12,6 @@ import GameSpeedModifier from "../../../prefabs/gui/buttons/GameSpeedModifier";
 import HudMessages from "../../../prefabs/gui/labels/HudMessages";
 import GroupContainer from "../../../prefabs/gui/labels/GroupContainer";
 import IdleWorkersButton from "../../../prefabs/gui/buttons/IdleWorkersButton";
-import ChatButton from "../../../prefabs/gui/buttons/ChatButton";
-import ChatNotification from "../../../prefabs/gui/labels/ChatNotification";
 /* START-USER-IMPORTS */
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { HudGameState } from "../../../hud/hud-game-state";
@@ -81,14 +79,6 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     const idleWorkersButton = new IdleWorkersButton(this, 13, 520);
     this.add.existing(idleWorkersButton);
 
-    // chatButton
-    const chatButton = new ChatButton(this, 13, 560);
-    this.add.existing(chatButton);
-
-    // chatNotification
-    const chatNotification = new ChatNotification(this, 13, 500);
-    this.add.existing(chatNotification);
-
     // lists
     const hudElements: Array<any> = [];
 
@@ -102,8 +92,6 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.hudMessages = hudMessages;
     this.groupContainer = groupContainer;
     this.idleWorkersButton = idleWorkersButton;
-    this.chatButton = chatButton;
-    this.chatNotification = chatNotification;
     this.hudElements = hudElements;
 
     this.events.emit("scene-awake");
@@ -119,15 +107,12 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   private hudMessages!: HudMessages;
   private groupContainer!: GroupContainer;
   private idleWorkersButton!: IdleWorkersButton;
-  private chatButton!: ChatButton;
-  private chatNotification!: ChatNotification;
   private hudElements!: Array<any>;
 
   /* START-USER-CODE */
   public confirmationDialog!: ConfirmationDialog;
   public surrenderDialog!: SurrenderDialog;
   private saveGameSubscription?: Subscription;
-  private chatMessageSubscription?: Subscription;
   private readonly actorInfoSmallScreenBreakpoint = 1200;
   private cursorHandler?: CursorHandler;
 
@@ -169,7 +154,6 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   initializeWithParentScene(probableWaffleScene: ProbableWaffleScene) {
     this.probableWaffleScene = probableWaffleScene;
     this.subscribeToSaveGameEvent();
-    this.subscribeToChatMessageEvents();
 
     // Initialize cursor handler with main scene if it was created before the parent scene was set
     if (this.cursorHandler) {
@@ -250,21 +234,6 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.idleWorkersButton.scale = sceneWidth > this.actorInfoSmallScreenBreakpoint ? 1 : 0.7;
     this.idleWorkersButton.visible = sceneWidth > this.minimap_container.minimapHideBreakpoint;
 
-    // position chat button below idle workers button on left side
-    // hide for Skirmish mode (single-player) and small screens
-    const isChatVisible =
-      this.gameType !== ProbableWaffleGameInstanceType.Skirmish &&
-      sceneWidth > this.minimap_container.minimapHideBreakpoint;
-    this.chatButton.x = 10;
-    this.chatButton.y = this.idleWorkersButton.y + 40;
-    this.chatButton.scale = sceneWidth > this.actorInfoSmallScreenBreakpoint ? 1 : 0.7;
-    this.chatButton.visible = isChatVisible;
-
-    // position chat notification above chat button on left side
-    this.chatNotification.x = 10;
-    this.chatNotification.y = this.chatButton.y - 10;
-    this.chatNotification.scale = sceneWidth > this.actorInfoSmallScreenBreakpoint ? 1 : 0.7;
-
     // position surrender dialog in center of screen
     this.surrenderDialog.x = this.scale.width / 2;
     this.surrenderDialog.y = this.scale.height / 2;
@@ -305,24 +274,8 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.saveGameSubscription = this.subscribeToGameEvent("save-game", "Game saved");
   }
 
-  private subscribeToChatMessageEvents() {
-    if (!this.probableWaffleScene) return;
-
-    // Subscribe to chat message received events from Angular
-    this.chatMessageSubscription = this.probableWaffleScene.communicator.allScenes
-      .pipe(filter((value) => value.name === "chat-message-received"))
-      .subscribe((event) => {
-        if (event.data && this.chatNotification) {
-          const { fullName, text } = event.data;
-          this.chatNotification.showMessage(fullName, text);
-          this.chatButton?.showUnreadBadge();
-        }
-      });
-  }
-
   override destroy() {
     this.saveGameSubscription?.unsubscribe();
-    this.chatMessageSubscription?.unsubscribe();
     super.destroy();
   }
   /* END-USER-CODE */

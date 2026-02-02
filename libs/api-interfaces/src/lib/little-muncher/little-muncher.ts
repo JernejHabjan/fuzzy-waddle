@@ -67,8 +67,8 @@ export class LittleMuncherScoreDto {
   constructor(
     public score: number,
     public hill: LittleMuncherHillEnum,
-    public userName: string,
-    public userId: UserId,
+    public user_name: string,
+    public user_id: UserId,
     public date: Date = new Date()
   ) {}
 }

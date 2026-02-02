@@ -9,8 +9,8 @@
         <div class="card p-2 m-1">
           <h3>{{ hill.data.name }} ({{ hill.data.height }}m)</h3>
           <ol>
-            @for (score of getTopScoresForHill(highScores, hill.enum); track score.userId) {
-              <li>{{ score.userName }} - {{ score.score }}</li>
+            @for (score of getTopScoresForHill(highScores, hill.enum); track score.user_id) {
+              <li>{{ score.user_name }} - {{ score.score }}</li>
             }
           </ol>
         </div>

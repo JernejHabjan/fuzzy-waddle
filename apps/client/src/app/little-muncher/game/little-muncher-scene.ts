@@ -1,5 +1,6 @@
 import { Scenes } from "./const/scenes";
 import {
+  type LittleMuncherCommunicatorScoreEvent,
   LittleMuncherGameMode,
   type LittleMuncherGameModeData,
   LittleMuncherGameState,
@@ -308,7 +309,7 @@ export class LittleMuncherScene extends BaseScene<
   private updateScore(scoreToAdd: number) {
     this.gameState.data.score += scoreToAdd;
 
-    const scoreData = { score: this.gameState.data.score };
+    const scoreData = { score: this.gameState.data.score, stage: "game" } satisfies LittleMuncherCommunicatorScoreEvent;
 
     if (
       Math.floor(this.gameState.data.score / this.scoreBroadcastIntervalLocally) >
@@ -527,7 +528,7 @@ export class LittleMuncherScene extends BaseScene<
 
   private sendScore = () => {
     const score = this.gameState.data.score;
-    this.communicator.score?.send({ score });
+    this.communicator.score?.send({ score, stage: "final" } satisfies LittleMuncherCommunicatorScoreEvent);
   };
 
   private gameOver = (success: boolean) => {

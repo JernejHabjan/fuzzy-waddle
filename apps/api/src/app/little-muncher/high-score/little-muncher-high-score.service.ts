@@ -30,7 +30,7 @@ export class LittleMuncherHighScoreService implements LittleMuncherHighScoreServ
   async getScores(): Promise<LittleMuncherScoreDto[]> {
     const { data, error } = await this.supabaseProviderService.supabaseClient
       .from("little_muncher_scores_with_user_meta")
-      .select("*");
+      .select("id, score, hill, user_id, user_name, date");
     if (error) {
       console.error(error);
       return Promise.reject(error);
@@ -38,7 +38,7 @@ export class LittleMuncherHighScoreService implements LittleMuncherHighScoreServ
 
     const recordData = data as ScoreRecord[];
     return recordData.map(
-      (item) => new LittleMuncherScoreDto(item.score, item.hill, item.user_id, item.user_name, new Date(item.date))
+      (item) => new LittleMuncherScoreDto(item.score, item.hill, item.user_name, item.user_id, new Date(item.date))
     );
   }
 }
