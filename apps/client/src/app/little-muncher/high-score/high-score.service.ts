@@ -26,7 +26,7 @@ export class HighScoreService implements HighScoreServiceInterface {
   async getScores(): Promise<LittleMuncherScoreDto[]> {
     if (this.serverHealthService.serverAvailable) {
       const url = environment.api + "api/little-muncher/get-scores";
-      return await firstValueFrom(this.httpClient.get<LittleMuncherScoreDto[]>(url));
+      return firstValueFrom(this.httpClient.get<LittleMuncherScoreDto[]>(url));
     }
     return [];
   }
