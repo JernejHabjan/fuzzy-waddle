@@ -20,12 +20,13 @@ import { HudGameState } from "../../../hud/hud-game-state";
 import { HudElementVisibilityHandler } from "../../../hud/hud-element-visibility.handler";
 import { CursorHandler } from "../../../player/human-controller/cursor.handler";
 import { MultiSelectionHandler } from "../../../player/human-controller/multi-selection.handler";
-import { ProbableWaffleGameInstanceType } from "@fuzzy-waddle/api-interfaces";
+import { ProbableWaffleGameInstanceType, ProbableWafflePlayerType } from "@fuzzy-waddle/api-interfaces";
 import { getGameObjectBounds } from "../../../data/game-object-helper";
 import { filter, Subscription } from "rxjs";
 import { environment } from "../../../../../../environments/environment";
 import ConfirmationDialog from "../../../prefabs/gui/dialogs/ConfirmationDialog";
 import SurrenderDialog from "../../../prefabs/gui/SurrenderDialog";
+import { getPlayers } from "../../../data/scene-data";
 /* END-USER-IMPORTS */
 
 export default class HudProbableWaffle extends ProbableWaffleScene {
@@ -202,7 +203,8 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.minimap_container.scaleX = sceneWidth > this.minimap_container.minimapSmallScreenBreakpoint ? 1.026 : 0.55;
     this.minimap_container.scaleY = sceneWidth > this.minimap_container.minimapSmallScreenBreakpoint ? 0.953 : 0.55;
     this.minimap_container.visible = sceneWidth > this.minimap_container.minimapHideBreakpoint;
-    const minimapHeight = getGameObjectBounds(this.minimap_container)!.height;
+    const minimapBounds = getGameObjectBounds(this.minimap_container)!;
+    const minimapHeight = minimapBounds!.height;
 
     // set hudMessages above minimap on left side
     this.hudMessages.x = 10;
@@ -250,13 +252,21 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.idleWorkersButton.scale = sceneWidth > this.actorInfoSmallScreenBreakpoint ? 1 : 0.7;
     this.idleWorkersButton.visible = sceneWidth > this.minimap_container.minimapHideBreakpoint;
 
-    // position chat button below idle workers button on left side
+    // position chat button at the top on right side of minimap
     // hide for Skirmish mode (single-player) and small screens
+    const nrOfRemainingHumanPlayers = getPlayers(this.probableWaffleScene!).filter(
+      (p) =>
+        p.playerController.data.playerDefinition?.playerType === ProbableWafflePlayerType.Human &&
+        !p.playerController.data.leftOrKilled
+    ).length;
+
     const isChatVisible =
-      this.gameType !== ProbableWaffleGameInstanceType.Skirmish &&
+      (this.gameType === ProbableWaffleGameInstanceType.Matchmaking ||
+        this.gameType === ProbableWaffleGameInstanceType.SelfHosted) &&
+      nrOfRemainingHumanPlayers > 1 &&
       sceneWidth > this.minimap_container.minimapHideBreakpoint;
-    this.chatButton.x = 10;
-    this.chatButton.y = this.idleWorkersButton.y + 40;
+    this.chatButton.x = minimapBounds.right - 60;
+    this.chatButton.y = this.scale.height - minimapHeight + 10;
     this.chatButton.scale = sceneWidth > this.actorInfoSmallScreenBreakpoint ? 1 : 0.7;
     this.chatButton.visible = isChatVisible;
 
@@ -318,6 +328,14 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
           this.chatButton?.showUnreadBadge();
         }
       });
+
+    // show example chat message on startup in dev mode after 2 seconds
+    // if (!environment.production) {
+    //   this.time.delayedCall(2000, () => {
+    //     this.chatNotification.showMessage("Test User", "Hello! This is an example chat message.");
+    //     this.chatButton?.showUnreadBadge();
+    //   });
+    // }
   }
 
   override destroy() {
