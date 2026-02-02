@@ -125,7 +125,8 @@ export class SelectableComponent {
       setTimeout(() => {
         // slight delay that ensures that other components have had a chance to update first
         this.setSelected(selected);
-      });
+        this.setPosition();
+      }, 1);
     }
   }
 
