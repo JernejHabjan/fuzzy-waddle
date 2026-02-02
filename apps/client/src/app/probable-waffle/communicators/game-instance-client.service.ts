@@ -45,7 +45,6 @@ import { GameInstanceStorageServiceInterface } from "./storage/game-instance-sto
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { LoadComponent } from "../gui/load/load.component";
 import { OptionsComponent } from "../gui/options/options.component";
-import { InGameChatComponent } from "../gui/in-game-chat/in-game-chat.component";
 import type { SaveGamePayload } from "../game/data/save-game-payload";
 import type { ProbableWaffleCommunicators } from "./probable-waffle.communicators";
 import type { MatchmakingOptions } from "../gui/online/matchmaking/matchmaking-options";
@@ -192,23 +191,6 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
               });
               (modalRef.componentInstance as OptionsComponent).fromGame = true;
               (modalRef.componentInstance as OptionsComponent).dialogRef = modalRef;
-              break;
-            case "chat":
-              if (this.DEBUG) {
-                console.log("chat requested", payload.data);
-              }
-              this.chatModalOpen = true;
-              modalRef = this.modalService.open(InGameChatComponent, {
-                size: "md",
-                scrollable: true,
-                centered: true,
-                modalDialogClass: "transparent-modal"
-              });
-              (modalRef.componentInstance as InGameChatComponent).fromGame = true;
-              (modalRef.componentInstance as InGameChatComponent).dialogRef = modalRef;
-              modalRef.result.finally(() => {
-                this.chatModalOpen = false;
-              });
               break;
           }
         })
