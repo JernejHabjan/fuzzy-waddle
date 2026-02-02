@@ -9,6 +9,7 @@ import { getActorComponent } from "../../data/actor-component";
 import { FlyingComponent } from "./movement/flying-component";
 import { DepthHelper } from "../../world/services/depth.helper";
 import type { RepresentableDefinition } from "./representable-definition";
+import { TilemapComponent } from "../../world/tilemap/tilemap.component";
 
 export class RepresentableComponent {
   /**
@@ -92,8 +93,13 @@ export class RepresentableComponent {
    */
   getActualLogicalZ(logicalWorldTransform: Vector3Simple): number {
     const logicalZ = logicalWorldTransform.z;
-    const flightHeight = getActorComponent(this.gameObject, FlyingComponent)?.flightDefinition?.height ?? 0;
-    return logicalZ + flightHeight;
+    return logicalZ + this.flyingHeightOffset;
+  }
+
+  private get flyingHeightOffset() {
+    const flightDefinition = getActorComponent(this.gameObject, FlyingComponent)?.flightDefinition;
+    if (!flightDefinition) return 0;
+    return flightDefinition.height + TilemapComponent.tileWidth / 2;
   }
 
   /**
@@ -169,9 +175,11 @@ export class RepresentableComponent {
 
   setData(data: Partial<RepresentableComponentData>) {
     if (data.logicalWorldTransform) {
-      this._logicalWorldTransform = data.logicalWorldTransform;
-      // Defer rendered position calculation until all components are ready
-      onObjectReady(this.gameObject, this.refreshRenderedPosition, this);
+      this.logicalWorldTransform = {
+        x: data.logicalWorldTransform.x,
+        y: data.logicalWorldTransform.y,
+        z: data.logicalWorldTransform.z - this.flyingHeightOffset
+      };
     }
     this.refreshBounds();
   }
