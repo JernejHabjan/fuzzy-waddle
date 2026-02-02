@@ -13,6 +13,11 @@
   overflow: hidden;
 }
 
+fuzzy-waddle-chat {
+  flex: 1;
+  min-height: 0;
+}
+
 .chat-header {
   display: flex;
   justify-content: space-between;
@@ -41,11 +46,4 @@
       opacity: 1;
     }
   }
-}
-
-.chat-content {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  overflow: hidden;
 }

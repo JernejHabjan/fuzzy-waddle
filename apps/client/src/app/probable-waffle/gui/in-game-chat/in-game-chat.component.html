@@ -5,11 +5,9 @@
       <button class="close-btn" (click)="backToGame()" title="Close chat">&times;</button>
     }
   </div>
-  <div class="chat-content">
-    <fuzzy-waddle-chat
-      [messageListener]="listenToMessages"
-      [gameInstanceId]="gameInstanceClientService.currentGameInstanceId"
-      (newMessage)="sendMessage($event)"
-    />
-  </div>
+  <fuzzy-waddle-chat
+    [messageListener]="listenToMessages"
+    [gameInstanceId]="gameInstanceClientService.currentGameInstanceId"
+    (newMessage)="sendMessage($event)"
+  />
 </div>
