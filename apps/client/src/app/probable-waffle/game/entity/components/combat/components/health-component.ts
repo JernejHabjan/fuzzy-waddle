@@ -36,6 +36,8 @@ import type { SoundDefinition } from "../../actor-audio/sound-definition";
 import type { HealthDefinition } from "./health-definition";
 import type { SyncOptions } from "../../../systems/sync.options";
 import { BuildingDestructionEffect } from "../../building/building-destruction-effect";
+import { FadeOutComponent } from "../../building/fade-out-component";
+import type { FadeOutDefinition } from "../../building/fade-out-definition";
 
 export class HealthComponent {
   static readonly DEBUG = false;
@@ -315,6 +317,12 @@ export class HealthComponent {
     }
 
     this.playDeathAnimation();
+
+    const fadeOutDurationMs = 5000;
+    new FadeOutComponent(this.gameObject, {
+      durationBeforeFadeOutMs: this.destroyAfterMs - fadeOutDurationMs,
+      fadeOutDurationMs
+    } satisfies FadeOutDefinition);
     this.gameObject.scene.time.delayedCall(this.destroyAfterMs, () => {
       this.gameObject.destroy();
     });

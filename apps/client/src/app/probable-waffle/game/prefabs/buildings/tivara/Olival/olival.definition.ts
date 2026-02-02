@@ -9,8 +9,8 @@ import { ActorPhysicalType } from "../../../../entity/components/combat/componen
 export const olivalDefinition = {
   components: {
     representable: {
-      width: 32,
-      height: 64
+      width: 64,
+      height: 128
     },
     objectDescriptor: {
       color: 0xc2a080

@@ -1,19 +1,19 @@
-import type { RubbleDefinition } from "./rubble-definition";
+import type { FadeOutDefinition } from "./fade-out-definition";
 import GameObject = Phaser.GameObjects.GameObject;
 
 /**
- * Component that manages rubble lifecycle after building destruction
+ * Component that manages fade-out
  */
-export class RubbleComponent {
+export class FadeOutComponent {
   private fadeTimer?: Phaser.Time.TimerEvent;
   private fadeTween?: Phaser.Tweens.Tween;
 
   constructor(
     private readonly gameObject: GameObject,
-    public readonly rubbleDefinition: RubbleDefinition
+    public readonly fadeOutDefinition: FadeOutDefinition
   ) {
     // Start fade-out timer
-    this.fadeTimer = gameObject.scene.time.delayedCall(rubbleDefinition.durationMs, () => {
+    this.fadeTimer = gameObject.scene.time.delayedCall(fadeOutDefinition.durationBeforeFadeOutMs, () => {
       this.startFadeOut();
     });
 
@@ -27,7 +27,7 @@ export class RubbleComponent {
     this.fadeTween = this.gameObject.scene.tweens.add({
       targets: this.gameObject,
       alpha: 0,
-      duration: this.rubbleDefinition.fadeOutDurationMs,
+      duration: this.fadeOutDefinition.fadeOutDurationMs,
       ease: "Linear",
       onComplete: () => {
         this.gameObject.destroy();

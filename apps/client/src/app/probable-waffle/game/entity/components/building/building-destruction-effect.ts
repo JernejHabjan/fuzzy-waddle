@@ -1,8 +1,11 @@
 import { getActorComponent } from "../../../data/actor-component";
-import { ActorTranslateComponent } from "../movement/actor-translate-component";
-import { getGameObjectBounds, getGameObjectDepth } from "../../../data/game-object-helper";
-import { RubbleComponent } from "./rubble-component";
-import type { RubbleDefinition } from "./rubble-definition";
+import { getGameObjectDepth } from "../../../data/game-object-helper";
+import { FadeOutComponent } from "./fade-out-component";
+import type { FadeOutDefinition } from "./fade-out-definition";
+import { RepresentableComponent } from "../representable-component";
+import { pwActorDefinitions } from "../../../prefabs/definitions/actor-definitions";
+import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import type { RepresentableDefinition } from "../representable-definition";
 import GameObject = Phaser.GameObjects.GameObject;
 
 /**
@@ -24,20 +27,20 @@ export class BuildingDestructionEffect {
     if (!scene) return;
 
     // Get building position and bounds for proper scaling
-    const actorTranslateComponent = getActorComponent(buildingGameObject, ActorTranslateComponent);
-    if (!actorTranslateComponent) return;
+    const representableComponent = getActorComponent(buildingGameObject, RepresentableComponent);
+    if (!representableComponent) return;
+    const renderedTransform = representableComponent.renderedWorldTransform;
 
-    const renderedTransform = actorTranslateComponent.renderedTransform;
-    const bounds = getGameObjectBounds(buildingGameObject);
-    if (!bounds) return;
+    const definition = pwActorDefinitions[buildingGameObject.name as ObjectNames]!.components?.representable;
+    if (!definition) throw new Error("BuildingDestructionEffect: Missing representable definition for building.");
 
     const buildingDepth = getGameObjectDepth(buildingGameObject) ?? undefined;
 
     // Spawn rubble
-    this.spawnRubble(scene, renderedTransform.x, renderedTransform.y, bounds, buildingDepth);
+    this.spawnRubble(scene, renderedTransform.x, renderedTransform.y, definition, buildingDepth);
 
     // Spawn smoke clouds
-    this.spawnSmokeClouds(scene, renderedTransform.x, renderedTransform.y, bounds);
+    this.spawnSmokeClouds(scene, renderedTransform.x, renderedTransform.y, definition);
   }
 
   /**
@@ -47,7 +50,7 @@ export class BuildingDestructionEffect {
     scene: Phaser.Scene,
     x: number,
     y: number,
-    bounds: Phaser.Geom.Rectangle,
+    representableDefinition: RepresentableDefinition,
     buildingDepth: number | undefined
   ): void {
     // Randomize rubble variation
@@ -59,23 +62,24 @@ export class BuildingDestructionEffect {
 
     // Scale to match building footprint
     const rubbleTexture = rubble.texture.get(rubbleSprite);
-    const scaleX = bounds.width / rubbleTexture.width;
-    const scaleY = bounds.height / rubbleTexture.height;
+    const scaleX = representableDefinition.width / rubbleTexture.width;
+    const scaleY = representableDefinition.width / 2 / rubbleTexture.height;
     rubble.setScale(scaleX, scaleY);
+    rubble.alpha = 0.5;
+    rubble.y -= representableDefinition.width / 4;
 
     // Set depth slightly below destroyed building
     if (buildingDepth !== undefined) {
       rubble.setDepth(buildingDepth - 1);
     }
 
-    // Add rubble component to manage lifecycle
-    const rubbleDefinition: RubbleDefinition = {
-      durationMs: 30000, // 30 seconds
-      fadeOutDurationMs: 5000, // 5 seconds
-      rubbleSprites: this.RUBBLE_SPRITES
-    };
+    // Add fade-out effect
+    const fadeOutDefinition = {
+      durationBeforeFadeOutMs: 30000, // 30 seconds
+      fadeOutDurationMs: 5000 // 5 seconds
+    } satisfies FadeOutDefinition;
 
-    new RubbleComponent(rubble, rubbleDefinition);
+    new FadeOutComponent(rubble, fadeOutDefinition);
   }
 
   /**
@@ -85,23 +89,25 @@ export class BuildingDestructionEffect {
     scene: Phaser.Scene,
     x: number,
     y: number,
-    bounds: Phaser.Geom.Rectangle
+    representableDefinition: RepresentableDefinition
   ): void {
-    const cloudCount = Phaser.Math.Between(2, 4);
+    const cloudCount = Phaser.Math.Between(representableDefinition.width / 20, representableDefinition.width / 2 / 20);
 
     for (let i = 0; i < cloudCount; i++) {
       // Random offset within building bounds
-      const offsetX = Phaser.Math.Between(-bounds.width / 2, bounds.width / 2);
-      const offsetY = Phaser.Math.Between(-bounds.height / 2, bounds.height / 2);
+      const offsetX = Phaser.Math.Between(-representableDefinition.width / 2, representableDefinition.width / 2);
+      const offsetY =
+        Phaser.Math.Between(-(representableDefinition.width / 2) / 2, representableDefinition.width / 2 / 2) -
+        representableDefinition.width / 4;
 
       const cloud = scene.add.image(x + offsetX, y + offsetY, "factions", this.SMOKE_SPRITE);
 
       // Rotate to horizontal orientation
       cloud.setAngle(90);
-      cloud.setAlpha(0);
+      cloud.setAlpha(0.8);
 
       // Scale based on building size
-      const scale = Math.min(bounds.width / 200, bounds.height / 200);
+      const scale = Math.min(representableDefinition.width / 100, representableDefinition.width / 2 / 100);
       cloud.setScale(scale);
 
       // High depth so smoke appears above everything
@@ -110,19 +116,10 @@ export class BuildingDestructionEffect {
       // Rising and fade-in animation
       scene.tweens.add({
         targets: cloud,
-        y: cloud.y - 100,
-        alpha: 0.5,
+        y: cloud.y - 40,
+        alpha: 0.0,
         duration: 2000,
-        ease: "Cubic.easeOut",
-        onComplete: () => {
-          // Fade out animation
-          scene.tweens.add({
-            targets: cloud,
-            alpha: 0,
-            duration: 1000,
-            onComplete: () => cloud.destroy()
-          });
-        }
+        ease: "Sine.easeOut"
       });
     }
   }
