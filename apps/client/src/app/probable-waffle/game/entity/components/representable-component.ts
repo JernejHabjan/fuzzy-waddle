@@ -9,6 +9,7 @@ import { getActorComponent } from "../../data/actor-component";
 import { FlyingComponent } from "./movement/flying-component";
 import { DepthHelper } from "../../world/services/depth.helper";
 import type { RepresentableDefinition } from "./representable-definition";
+import { TilemapComponent } from "../../world/tilemap/tilemap.component";
 
 export class RepresentableComponent {
   /**
@@ -38,8 +39,11 @@ export class RepresentableComponent {
     if (transformComponent) {
       this.logicalWorldTransform = {
         x: transformComponent.x ?? 0,
-        y: transformComponent.y ?? 0,
-        z: transformComponent.z ?? 0 // z component may be assigned in editor itself from prefab properties "z" property
+        // #519 - adjusted by flying height offset so spawned prefab from Phaser Editor gets correct "logical" transform
+        // This also fixes an issue where flying units would be weirdly offset from save-game
+        y: (transformComponent.y ?? 0) + this.flyingHeightOffset,
+        // z component may be assigned in editor itself from prefab properties "z" property
+        z: transformComponent.z ?? 0
       };
     } else {
       this.logicalWorldTransform = { x: 0, y: 0, z: 0 }; // default to origin if transform is not available
@@ -92,8 +96,13 @@ export class RepresentableComponent {
    */
   getActualLogicalZ(logicalWorldTransform: Vector3Simple): number {
     const logicalZ = logicalWorldTransform.z;
-    const flightHeight = getActorComponent(this.gameObject, FlyingComponent)?.flightDefinition?.height ?? 0;
-    return logicalZ + flightHeight;
+    return logicalZ + this.flyingHeightOffset;
+  }
+
+  private get flyingHeightOffset() {
+    const flightDefinition = getActorComponent(this.gameObject, FlyingComponent)?.flightDefinition;
+    if (!flightDefinition) return 0;
+    return flightDefinition.height + TilemapComponent.tileWidth / 2;
   }
 
   /**
@@ -159,7 +168,6 @@ export class RepresentableComponent {
     if (data.logicalWorldTransform) {
       this.logicalWorldTransform = data.logicalWorldTransform;
     }
-
     this.refreshBounds();
   }
 
