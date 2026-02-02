@@ -314,15 +314,16 @@ export class HealthComponent {
       if (constructionSiteComponent) {
         BuildingDestructionEffect.spawnDestructionEffects(this.gameObject);
       }
+    } else {
+      const fadeOutDurationMs = 5000;
+      new FadeOutComponent(this.gameObject, {
+        durationBeforeFadeOutMs: this.destroyAfterMs - fadeOutDurationMs,
+        fadeOutDurationMs
+      } satisfies FadeOutDefinition);
     }
 
     this.playDeathAnimation();
 
-    const fadeOutDurationMs = 5000;
-    new FadeOutComponent(this.gameObject, {
-      durationBeforeFadeOutMs: this.destroyAfterMs - fadeOutDurationMs,
-      fadeOutDurationMs
-    } satisfies FadeOutDefinition);
     this.gameObject.scene.time.delayedCall(this.destroyAfterMs, () => {
       this.gameObject.destroy();
     });
