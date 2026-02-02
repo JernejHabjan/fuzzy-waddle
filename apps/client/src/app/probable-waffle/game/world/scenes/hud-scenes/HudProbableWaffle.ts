@@ -249,6 +249,10 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     // position idle workers button below game speed modifier on left side
     this.idleWorkersButton.x = 10;
     this.idleWorkersButton.y = this.gameSpeedModifier.y + 40;
+    // if game speed modifier is hidden, position idle workers button at same height as game speed modifier
+    if (!this.gameSpeedModifier.visible) {
+      this.idleWorkersButton.y = this.gameSpeedModifier.y;
+    }
     this.idleWorkersButton.scale = sceneWidth > this.actorInfoSmallScreenBreakpoint ? 1 : 0.7;
     this.idleWorkersButton.visible = sceneWidth > this.minimap_container.minimapHideBreakpoint;
 
