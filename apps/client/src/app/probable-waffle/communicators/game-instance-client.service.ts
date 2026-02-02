@@ -45,6 +45,7 @@ import { GameInstanceStorageServiceInterface } from "./storage/game-instance-sto
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { LoadComponent } from "../gui/load/load.component";
 import { OptionsComponent } from "../gui/options/options.component";
+import { InGameChatComponent } from "../gui/in-game-chat/in-game-chat.component";
 import type { SaveGamePayload } from "../game/data/save-game-payload";
 import type { ProbableWaffleCommunicators } from "./probable-waffle.communicators";
 import type { MatchmakingOptions } from "../gui/online/matchmaking/matchmaking-options";
@@ -72,6 +73,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   private readonly ngZone = inject(NgZone);
   private communicators?: ProbableWaffleCommunicators;
   private communicatorSubscriptions: Subscription[] = [];
+  private chatModalOpen = false;
   gameInstanceToGameComponentCommunicator = new Subject<"refresh">();
 
   async createGameInstance(
@@ -148,7 +150,13 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     this.communicatorSubscriptions.push(
       this.probableWaffleCommunicatorService.utilityEvents
         .pipe(
-          filter((config) => config.name === "save-game" || config.name === "load-game" || config.name === "settings")
+          filter(
+            (config) =>
+              config.name === "save-game" ||
+              config.name === "load-game" ||
+              config.name === "settings" ||
+              config.name === "chat"
+          )
         )
         .subscribe(async (payload) => {
           let modalRef: NgbModalRef | undefined;
@@ -185,9 +193,42 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
               (modalRef.componentInstance as OptionsComponent).fromGame = true;
               (modalRef.componentInstance as OptionsComponent).dialogRef = modalRef;
               break;
+            case "chat":
+              if (this.DEBUG) {
+                console.log("chat requested", payload.data);
+              }
+              this.chatModalOpen = true;
+              modalRef = this.modalService.open(InGameChatComponent, {
+                size: "md",
+                scrollable: true,
+                centered: true,
+                modalDialogClass: "transparent-modal"
+              });
+              (modalRef.componentInstance as InGameChatComponent).fromGame = true;
+              (modalRef.componentInstance as InGameChatComponent).dialogRef = modalRef;
+              modalRef.result.finally(() => {
+                this.chatModalOpen = false;
+              });
+              break;
           }
         })
     );
+  }
+
+  listenToChatMessagesForNotifications(): void {
+    const subscription = this.probableWaffleCommunicatorService.message?.on.subscribe((msg) => {
+      // Only show notification in Phaser HUD when chat modal is closed
+      if (!this.chatModalOpen && msg.chatMessage) {
+        // Emit to Phaser scene to show notification
+        this.probableWaffleCommunicatorService.allScenes.emit({
+          name: "chat-message-received",
+          data: msg.chatMessage
+        });
+      }
+    });
+    if (subscription) {
+      this.communicatorSubscriptions.push(subscription);
+    }
   }
 
   listenToGameModeDataEvents(): void {
@@ -265,6 +306,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     this.listenToSpectatorEvents();
     this.listenToGameStateChangedEvents();
     this.listenToUtilityGameEvents();
+    this.listenToChatMessagesForNotifications();
   }
 
   private async stopListeningToGameInstanceEvents() {
