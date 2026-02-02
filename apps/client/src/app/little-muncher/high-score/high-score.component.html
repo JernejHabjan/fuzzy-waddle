@@ -32,9 +32,7 @@
           } @else {
             <div>Server unavailable</div>
             <div>Try again later</div>
-            @if (!this.serverHealthService.serverAvailable) {
-              <fa-icon [icon]="faExclamationTriangle" class="text-warning" />
-            }
+            <fa-icon [icon]="faExclamationTriangle" class="text-warning" />
           }
         }
         <!-- no scores -->

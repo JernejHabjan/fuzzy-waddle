@@ -21,8 +21,10 @@ CREATE POLICY "Allow read access for all users"
   ON little_muncher_scores FOR SELECT USING (true);
 
 -- Policy: Allow authenticated users to insert their own scores
+DROP POLICY IF EXISTS "Allow insert for authenticated users" ON little_muncher_scores;
 CREATE POLICY "Allow insert for authenticated users"
-  ON little_muncher_scores FOR INSERT TO authenticated WITH CHECK (true);
+  ON little_muncher_scores FOR INSERT TO authenticated
+  WITH CHECK (user_id = auth.uid());
 
 -- View: Top 3 unique users per hill (highest score per user)
 DROP VIEW IF EXISTS little_muncher_scores_with_user_meta;
