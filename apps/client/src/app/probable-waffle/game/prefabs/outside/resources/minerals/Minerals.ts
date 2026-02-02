@@ -26,10 +26,12 @@ export default class Minerals extends Phaser.GameObjects.Image {
     this.setOrigin(0.5, 0.7446013024804341);
 
     /* START-USER-CTR-CODE */
+    // we can use random here as it's just visual variation
     this.setFrame(
       `nature/resources/${this.availableMinerals[Math.floor(Math.random() * this.availableMinerals.length)]}`
     );
     // randomly flip by Y axis
+    // we can use random here as it's just visual variation
     if (Math.random() > 0.5) {
       this.flipX = true;
     }

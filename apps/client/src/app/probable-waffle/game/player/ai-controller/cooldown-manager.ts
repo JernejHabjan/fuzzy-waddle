@@ -2,9 +2,12 @@
 // Existing direct timestamp comparisons can be refactored progressively to use this manager.
 
 import type { CooldownEntry } from "./cooldown-entry";
+import type { RandomService } from "../../world/services/random.service";
 
 export class CooldownManager {
   private entries = new Map<string, CooldownEntry>();
+
+  constructor(private readonly randomService: RandomService) {}
 
   /** Configure or reconfigure a cooldown entry. */
   configure(id: string, intervalMs: number, jitterMs?: number): void {
@@ -29,7 +32,7 @@ export class CooldownManager {
   markRun(id: string, now: number): void {
     const e = this.entries.get(id);
     if (!e) return; // silently ignore if unconfigured
-    const jitter = e.jitterMs ? Math.random() * e.jitterMs : 0;
+    const jitter = e.jitterMs ? this.randomService.random() * e.jitterMs : 0;
     e.nextReadyAt = now + e.intervalMs + jitter;
   }
 

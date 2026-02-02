@@ -49,6 +49,7 @@ export class HealingComponent {
 
   private playHealSound() {
     const soundDefinitions = SharedActorActionsSfxHealSounds;
+    // can be random as it doesn't need to be deterministic
     const soundDefinition = soundDefinitions[Math.floor(Math.random() * soundDefinitions.length)]!;
     this.audioService?.playAudioSprite(soundDefinition.key, soundDefinition.spriteName);
   }
