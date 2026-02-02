@@ -10,7 +10,18 @@ export default class ChatNotification extends Phaser.GameObjects.Container {
     super(scene, x ?? 0, y ?? 0);
 
     // background
-    const background = scene.add.nineslice(0, 0, "gui", "cryos_mini_gui/surfaces/surface_dark.png", 250, 50, 3, 3, 3, 3);
+    const background = scene.add.nineslice(
+      0,
+      0,
+      "gui",
+      "cryos_mini_gui/surfaces/surface_dark.png",
+      250,
+      50,
+      3,
+      3,
+      3,
+      3
+    );
     background.setOrigin(0, 1);
     background.setAlpha(0.9);
     this.add(background);
@@ -26,6 +37,7 @@ export default class ChatNotification extends Phaser.GameObjects.Container {
       fontStyle: "bold",
       resolution: 10
     });
+    player_name.setWordWrapWidth(234);
     this.add(player_name);
 
     // message_text
@@ -62,7 +74,9 @@ export default class ChatNotification extends Phaser.GameObjects.Container {
   showMessage(playerName: string, messageText: string) {
     // Truncate message if too long
     const truncatedMessage =
-      messageText.length > this.maxMessageLength ? messageText.substring(0, this.maxMessageLength) + "..." : messageText;
+      messageText.length > this.maxMessageLength
+        ? messageText.substring(0, this.maxMessageLength) + "..."
+        : messageText;
 
     this.player_name.setText(playerName + ":");
     this.message_text.setText(truncatedMessage);
