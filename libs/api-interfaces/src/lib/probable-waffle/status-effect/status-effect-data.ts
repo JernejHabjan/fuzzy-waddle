@@ -1,11 +1,12 @@
 import { StatusEffectType } from "./status-effect-type";
+import { DamageType } from "./damage-type";
 import type { ActorId } from "../../game-instance/player/player";
 
 export interface StatusEffectData {
   type: StatusEffectType;
   duration: number; // total duration in ms
   remainingTime: number; // remaining time in ms
-  damageType?: string; // uses DamageType enum values (Frost, Fire, etc.)
+  damageType?: DamageType; // uses DamageType enum (Physical, Frost, Fire, Poison)
   damagePerTick?: number; // for DoT effects (negative = damage)
   healPerTick?: number; // for HoT effects (positive = heal)
   tickInterval?: number; // ms between damage/heal ticks

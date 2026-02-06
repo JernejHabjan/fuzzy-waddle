@@ -1,8 +1,7 @@
 import { EventEmitter } from '@angular/core';
-import { type StatusEffectData, StatusEffectType, type StatusEffectComponentData } from '@fuzzy-waddle/api-interfaces';
+import { type StatusEffectData, StatusEffectType, type StatusEffectComponentData, DamageType } from '@fuzzy-waddle/api-interfaces';
 import { getActorComponent } from '../../../data/actor-component';
 import { HealthComponent } from '../combat/components/health-component';
-import { DamageType } from '../combat/damage-type';
 import Phaser from 'phaser';
 import { onObjectReady } from '../../../data/game-object-helper';
 
@@ -54,8 +53,7 @@ export class StatusEffectComponent {
 
     // Apply instant damage/heal
     if (effect.instantDamage && this.healthComponent) {
-      const damageType = this.stringToDamageType(effect.damageType);
-      this.healthComponent.takeDamage(effect.instantDamage, damageType);
+      this.healthComponent.takeDamage(effect.instantDamage, effect.damageType ?? DamageType.Physical);
     }
     if (effect.instantHeal && this.healthComponent) {
       this.healthComponent.heal(effect.instantHeal);
@@ -148,28 +146,12 @@ export class StatusEffectComponent {
 
     // Apply damage per tick
     if (effect.damagePerTick) {
-      const damageType = this.stringToDamageType(effect.damageType);
-      this.healthComponent.takeDamage(effect.damagePerTick, damageType);
+      this.healthComponent.takeDamage(effect.damagePerTick, effect.damageType ?? DamageType.Physical);
     }
 
     // Apply heal per tick
     if (effect.healPerTick) {
       this.healthComponent.heal(effect.healPerTick);
-    }
-  }
-
-  private stringToDamageType(damageTypeStr?: string): DamageType {
-    if (!damageTypeStr) return DamageType.Physical;
-
-    switch (damageTypeStr.toLowerCase()) {
-      case 'frost':
-        return DamageType.Frost;
-      case 'fire':
-        return DamageType.Fire;
-      case 'poison':
-        return DamageType.Poison;
-      default:
-        return DamageType.Physical;
     }
   }
 

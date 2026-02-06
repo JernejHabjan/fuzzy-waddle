@@ -304,7 +304,7 @@ export class SpellCastingSystem {
         remainingTime: spellData.dotDuration,
         damagePerTick: spellData.dotDamage,
         tickInterval: spellData.dotTickInterval ?? 1000,
-        damageType: spellData.damageType !== undefined ? String(spellData.damageType) : undefined,
+        damageType: spellData.damageType,
         tintColor: spellData.tintColor
       };
       statusEffectComponent.applyEffect(dotEffect);

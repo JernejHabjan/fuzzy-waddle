@@ -1,6 +1,2 @@
-export enum DamageType {
-  Physical,
-  Frost,
-  Fire,
-  Poison
-}
+// Re-export from api-interfaces for backwards compatibility
+export { DamageType } from '@fuzzy-waddle/api-interfaces';
