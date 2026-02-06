@@ -59,6 +59,38 @@ class Circle {
   }
 }
 
+class Rectangle {
+  constructor(x, y, width, height) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+  }
+  
+  static Intersection(rectA, rectB) {
+    const x = Math.max(rectA.x, rectB.x);
+    const y = Math.max(rectA.y, rectB.y);
+    const width = Math.min(rectA.x + rectA.width, rectB.x + rectB.width) - x;
+    const height = Math.min(rectA.y + rectA.height, rectB.y + rectB.height) - y;
+    
+    return new Rectangle(
+      x,
+      y,
+      Math.max(0, width),
+      Math.max(0, height)
+    );
+  }
+  
+  static Overlaps(rectA, rectB) {
+    return (
+      rectA.x < rectB.x + rectB.width &&
+      rectA.x + rectA.width > rectB.x &&
+      rectA.y < rectB.y + rectB.height &&
+      rectA.y + rectA.height > rectB.y
+    );
+  }
+}
+
 const Scale = {
   RESIZE: "RESIZE"
 };
@@ -68,7 +100,8 @@ const MathUtils = {
 };
 
 const Geom = {
-  Circle
+  Circle,
+  Rectangle
 };
 
 const Types = {
