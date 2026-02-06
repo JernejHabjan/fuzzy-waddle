@@ -5,6 +5,10 @@ import { spellDefinitions } from '../spell-definitions';
 import { type SpellComponentData } from '@fuzzy-waddle/api-interfaces';
 import Phaser from 'phaser';
 import { onObjectReady } from '../../../../data/game-object-helper';
+import { getActorComponent } from '../../../../data/actor-component';
+import { OwnerComponent } from '../../owner-component';
+import { getSceneService } from '../../../../world/services/scene-component-helpers';
+import { TechTreeService } from '../../../../data/tech-tree/tech-tree.service';
 
 export interface SpellDefinition {
   availableSpells: SpellType[];
@@ -19,6 +23,8 @@ export class SpellComponent {
 
   private spellCooldowns: Map<SpellType, number> = new Map();
   private autocastEnabled: Map<SpellType, boolean> = new Map();
+  private ownerComponent?: OwnerComponent;
+  private techTreeService?: TechTreeService;
 
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,
@@ -39,7 +45,8 @@ export class SpellComponent {
   }
 
   private init(): void {
-    // Future initialization
+    this.ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
+    this.techTreeService = getSceneService(this.gameObject.scene, TechTreeService);
   }
 
   private destroy(): void {
@@ -63,10 +70,24 @@ export class SpellComponent {
     return remainingCooldown <= 0;
   }
 
-  isSpellResearched(_type: SpellType): boolean {
-    // TODO: Implement research check via TechTreeService
-    // For now, return true to allow testing
-    return true;
+  isSpellResearched(type: SpellType): boolean {
+    const spellData = spellDefinitions[type];
+    if (!spellData || !spellData.requiresResearch) {
+      // No research required, spell is always available
+      return true;
+    }
+
+    if (!this.techTreeService || !this.ownerComponent) {
+      // Services not available yet, assume not researched
+      return false;
+    }
+
+    const ownerData = this.ownerComponent.getData();
+    if (ownerData.ownerId === undefined) {
+      return false;
+    }
+
+    return this.techTreeService.isResearched(ownerData.ownerId, spellData.requiresResearch);
   }
 
   isAutocastEnabled(type: SpellType): boolean {

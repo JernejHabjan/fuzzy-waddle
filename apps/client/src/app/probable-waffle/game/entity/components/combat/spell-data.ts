@@ -3,6 +3,7 @@ import { SpellTargetType, type ObjectNames } from '@fuzzy-waddle/api-interfaces'
 import { DamageType } from './damage-type';
 import type { ProjectileData } from './projectile-data';
 import { AnimationType } from '../animation/animation-type';
+import { ResearchType } from '../research/research-type';
 
 export interface SpellData {
   type: SpellType;
@@ -59,5 +60,5 @@ export interface SpellData {
 
   // Research & Autocast
   autocastDefault?: boolean; // default autocast state (default: true)
-  requiresResearch?: string; // ResearchType enum value
+  requiresResearch?: ResearchType; // Research required to unlock this spell
 }

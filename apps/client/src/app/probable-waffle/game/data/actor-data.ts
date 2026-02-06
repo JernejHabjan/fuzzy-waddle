@@ -38,6 +38,8 @@ import { MovementDecalCursorService } from "../entity/components/movement/moveme
 import { getSceneService } from "../world/services/scene-component-helpers";
 import { SceneActorCreator } from "../world/services/scene-actor-creator";
 import { StatusEffectComponent } from "../entity/components/status-effect/status-effect-component";
+import { StatusEffectVisualComponent } from "../entity/components/status-effect/status-effect-visual-component";
+import { StatusEffectUiComponent } from "../entity/components/status-effect/status-effect-ui-component";
 import { SpellComponent } from "../entity/components/combat/components/spell-component";
 import { SpellCastingSystem } from "../entity/systems/spell-casting.system";
 import { ResearchComponent } from "../entity/components/research/research-component";
@@ -177,7 +179,9 @@ function gatherCompletedActorData(actor: Phaser.GameObjects.GameObject): { compo
       ? [new ResourceSourceComponent(actor, componentDefinitions.resourceSource)]
       : []),
     ...(componentDefinitions?.healing ? [new HealingComponent(actor, componentDefinitions.healing)] : []),
-    ...(componentDefinitions?.health ? [new StatusEffectComponent(actor)] : []),
+    ...(componentDefinitions?.health
+      ? [new StatusEffectComponent(actor), new StatusEffectVisualComponent(actor), new StatusEffectUiComponent(actor)]
+      : []),
     ...(componentDefinitions?.spell ? [new SpellComponent(actor, componentDefinitions.spell)] : []),
     ...(componentDefinitions?.builder ? [new BuilderComponent(actor, componentDefinitions.builder)] : []),
     ...(componentDefinitions?.gatherer ? [new GathererComponent(actor, componentDefinitions.gatherer)] : []),

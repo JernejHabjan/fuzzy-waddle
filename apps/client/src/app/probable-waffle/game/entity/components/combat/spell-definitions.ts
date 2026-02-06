@@ -4,6 +4,7 @@ import { DamageType } from './damage-type';
 import { ProjectileType } from './projectile-type';
 import { AnimationType } from '../animation/animation-type';
 import { ObjectNames, SpellTargetType } from '@fuzzy-waddle/api-interfaces';
+import { ResearchType } from '../research/research-type';
 
 export const spellDefinitions: Record<SpellType, SpellData> = {
   // ========== SNOWSTORM - AOE Freeze + DoT ==========
@@ -36,7 +37,7 @@ export const spellDefinitions: Record<SpellType, SpellData> = {
     icon: { key: 'factions', frame: 'spell_icons/snowstorm.png' },
     shortcut: 'W',
     autocastDefault: true,
-    requiresResearch: 'snowstormSpell'
+    requiresResearch: ResearchType.SnowstormSpell
   },
 
   // ========== FIRESTORM - Persistent AOE Burn Zone ==========
@@ -66,7 +67,7 @@ export const spellDefinitions: Record<SpellType, SpellData> = {
     icon: { key: 'factions', frame: 'spell_icons/firestorm.png' },
     shortcut: 'E',
     autocastDefault: false,
-    requiresResearch: 'firestormSpell'
+    requiresResearch: ResearchType.FirestormSpell
   },
 
   // ========== FROST NOVA - AOE Slow (no stun) ==========
@@ -97,7 +98,7 @@ export const spellDefinitions: Record<SpellType, SpellData> = {
     icon: { key: 'factions', frame: 'spell_icons/frost_nova.png' },
     shortcut: 'Q',
     autocastDefault: true,
-    requiresResearch: 'frostNovaSpell'
+    requiresResearch: ResearchType.FrostNovaSpell
   },
 
   // ========== HEALING LIGHT - Single Target Instant Heal ==========
@@ -119,7 +120,7 @@ export const spellDefinitions: Record<SpellType, SpellData> = {
     icon: { key: 'factions', frame: 'spell_icons/healing_light.png' },
     shortcut: 'H',
     autocastDefault: true,
-    requiresResearch: 'healingLightSpell'
+    requiresResearch: ResearchType.HealingLightSpell
   },
 
   // ========== HEALING RAIN - AOE Heal Over Time Zone ==========
@@ -148,7 +149,7 @@ export const spellDefinitions: Record<SpellType, SpellData> = {
     icon: { key: 'factions', frame: 'spell_icons/healing_rain.png' },
     shortcut: 'R',
     autocastDefault: false,
-    requiresResearch: 'healingRainSpell'
+    requiresResearch: ResearchType.HealingRainSpell
   },
 
   // ========== HEALING TOTEM - Spawn Prefab ==========
@@ -174,6 +175,6 @@ export const spellDefinitions: Record<SpellType, SpellData> = {
     icon: { key: 'factions', frame: 'spell_icons/healing_totem.png' },
     shortcut: 'T',
     autocastDefault: false,
-    requiresResearch: 'healingTotemSpell'
+    requiresResearch: ResearchType.HealingTotemSpell
   }
 };

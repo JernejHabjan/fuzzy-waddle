@@ -1,11 +1,11 @@
 import { GameObjects } from 'phaser';
 import { StatusEffectComponent } from './status-effect-component';
-import { getActorComponent } from '../../../../data/actor-component';
+import { getActorComponent } from '../../../data/actor-component';
 import { Subscription } from 'rxjs';
-import { getGameObjectBounds, getGameObjectDepth, onObjectReady } from '../../../../data/game-object-helper';
+import { getGameObjectBounds, getGameObjectDepth, onObjectReady } from '../../../data/game-object-helper';
 import { OwnerComponent } from '../owner-component';
 import { ActorTranslateComponent } from '../movement/actor-translate-component';
-import { StatusEffectData, StatusEffectType } from '@fuzzy-waddle/api-interfaces';
+import { type StatusEffectData, StatusEffectType } from '@fuzzy-waddle/api-interfaces';
 import { HealthComponent } from '../combat/components/health-component';
 import { HealthUiComponent } from '../combat/components/health-ui-component';
 
