@@ -208,12 +208,10 @@ export default class Minimap extends Phaser.GameObjects.Container {
 
     // Reuse existing diamonds if possible, only create/destroy as needed
     let diamondIndex = 0;
-    const totalTiles = widthInTiles * widthInTiles;
-
     for (let i = 0; i < widthInTiles; i++) {
       for (let j = 0; j < widthInTiles; j++) {
         const tile = layerData[i]![j]!;
-        
+
         // Get or compute base color once
         const cacheKey = `${tile.x},${tile.y}`;
         let baseColor = this.tileColorCache.get(cacheKey);
@@ -231,7 +229,7 @@ export default class Minimap extends Phaser.GameObjects.Container {
         // Reuse existing diamond or create new one
         let diamond: Phaser.GameObjects.Polygon;
         const needsRecreate = diamondIndex >= this.minimapDiamonds.length;
-        
+
         if (!needsRecreate) {
           diamond = this.minimapDiamonds[diamondIndex]!;
           // Update existing diamond's position, color, and points (in case size changed)
@@ -274,15 +272,6 @@ export default class Minimap extends Phaser.GameObjects.Container {
         diamondIndex++;
       }
     }
-
-    // Destroy excess diamonds if minimap shrunk
-    while (this.minimapDiamonds.length > totalTiles) {
-      const diamond = this.minimapDiamonds.pop();
-      if (diamond) {
-        this.diamondTileCoords.delete(diamond);
-        diamond.destroy();
-      }
-    }
   }
 
   /**
@@ -299,11 +288,11 @@ export default class Minimap extends Phaser.GameObjects.Container {
     color: Phaser.Display.Color
   ): void {
     // Update position
-    diamond.setPosition(x + isoX + pixelWidth / 2, y + isoY + pixelHeight / 2);
-    
+    diamond.setPosition(x, y);
+
     // Update color
     diamond.setFillStyle(color.color, 1);
-    
+
     // Update points to handle size changes (e.g., when minimap zooms)
     // Note: We recreate the points array here to handle dynamic size changes.
     // This is a trade-off - we accept the small cost of array creation to avoid
@@ -315,7 +304,7 @@ export default class Minimap extends Phaser.GameObjects.Container {
       { x: isoX + pixelWidth / 2, y: isoY + pixelHeight }
     ];
     diamond.setTo(diamondPoints);
-    
+
     // Ensure it's visible
     diamond.setVisible(true);
   }
@@ -453,7 +442,7 @@ export default class Minimap extends Phaser.GameObjects.Container {
             const isoY = (tile.x + tile.y) * (pixelHeight / 2);
             // Use higher alpha for last buildings to make them stand out
             const alpha = isLastBuilding ? 1.0 : 1.0;
-            
+
             // Reuse or create actor diamond
             let diamond: Phaser.GameObjects.Polygon;
             if (actorDiamondIndex < this.actorDiamonds.length) {
@@ -464,7 +453,7 @@ export default class Minimap extends Phaser.GameObjects.Container {
               diamond = this.createDiamondShape(x, y, isoX, isoY, pixelWidth, pixelHeight, color, alpha);
               this.actorDiamonds.push(diamond);
             }
-            
+
             actorDiamondIndex++;
           }
         }
