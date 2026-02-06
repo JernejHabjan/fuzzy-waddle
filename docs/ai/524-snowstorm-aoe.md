@@ -36,6 +36,8 @@ AOE spell system supporting: damage, stun, slow, healing, persistent zones, and 
     tintColor?: number;            // visual tint (0x6666FF for frost, 0xFF6600 for fire)
   }
   ```
+- [ ] **FIX**: `status-effect-data.ts` uses `damageType` as string, must use `DamageType` enum directly
+- [ ] **FIX**: `status-effect-component.ts` has `stringToDamageType()` helper - remove it and use enum directly
 - [x] Export from `libs/api-interfaces/src/lib/probable-waffle/index.ts`
 
 ### 1.2 StatusEffectComponent (New)
@@ -68,7 +70,8 @@ AOE spell system supporting: damage, stun, slow, healing, persistent zones, and 
   - [x] Apply tint to game object (0x6666FF for frost, 0xFF6600 for fire, 0x00FF00 for heal)
   - [x] Pause animation when stunned
   - [x] Store original tint/animation state for restoration
-  - [x] **Future hook**: `attachParticleEffect(effectName)` - placeholder for ice crystals at feet
+  - [ ] **FIX**: Component exists but is NOT instantiated/used anywhere - must be created when StatusEffectComponent is created
+  - [ ] **FIX**: `attachParticleEffect(effectName)` placeholder exists but never called - display sprite (e.g., `impact/1/5/23.png` from effects atlas) beneath target actor's feet
   - [x] Restore original state on effect removal
 
 ### 1.5 Movement Speed Integration
@@ -117,8 +120,9 @@ AOE spell system supporting: damage, stun, slow, healing, persistent zones, and 
   - [x] `getData()` / `setData()` for save/load
 
 ### 1B.3 Zone Visual Renderer
-- [x] Create zone visual as Phaser Graphics or Sprite
-- [x] Animated edge (pulsing, particles)
+- [ ] **FIX**: Currently draws circles - must draw **ellipses** for isometric RTS perspective
+- [ ] **FIX**: Replace basic ellipse with animated effects from `effects.json` - use `EffectsAnims` class from `effects.ts`
+- [ ] **FIX**: Add sound support for zone effects (looping ambient sounds while zone active)
 - [x] Tint based on spell type (blue=frost, orange=fire, green=heal)
 - [x] Fade out on expiration
 
@@ -267,12 +271,12 @@ AOE spell system supporting: damage, stun, slow, healing, persistent zones, and 
   - [x] `spellCooldowns: Map<SpellType, number>` - remaining cooldown per spell
   - [x] `autocastEnabled: Map<SpellType, boolean>` - autocast state per spell (**default: true** when spell unlocked)
   - [x] `canCastSpell(type: SpellType): boolean` - checks cooldown
-  - [x] `isSpellResearched(type: SpellType): boolean` - checks tech tree
+  - [ ] `isSpellResearched(type: SpellType): boolean` - **FIX**: Currently always returns true, must integrate with TechTreeService
   - [x] `isAutocastEnabled(type: SpellType): boolean`
-  - [x] `setAutocast(type: SpellType, enabled: boolean)`
-  - [x] `toggleAutocast(type: SpellType)` - for UI toggle
+  - [ ] `setAutocast(type: SpellType, enabled: boolean)` - **FIX**: Method exists but never called
+  - [ ] `toggleAutocast(type: SpellType)` - **FIX**: Method exists but never called (needs UI integration)
   - [x] `startCooldown(type: SpellType)`
-  - [x] `getCooldownRemaining(type: SpellType): number`
+  - [ ] `getCooldownRemaining(type: SpellType): number` - **FIX**: Method exists but never called
   - [x] `getCooldownProgress(type: SpellType): number` - 0-100% for UI
   - [x] `update(delta: number)` - tick down cooldowns
   - [x] `getData()` / `setData()` for save/load (cooldown state + autocast state)
@@ -464,7 +468,10 @@ AOE spell system supporting: damage, stun, slow, healing, persistent zones, and 
 ### 4.1 Snowstorm Projectile
 - [x] Add `SnowstormProjectile` to `apps/client/src/app/probable-waffle/game/entity/components/combat/projectile-type.ts`
 - [ ] Create projectile sprite/animation asset (can reuse frost bolt initially) - **ASSET NEEDED**
-- [x] Projectile travels from caster to target position (not a specific actor) - defined in spell-definitions.ts
+- [ ] **FIX**: Snowstorm is a "cast" spell - projectile should fall from **above** (from sky/top) down onto target zone, NOT fire from caster actor
+  - Spawn projectile at target position + high Y offset
+  - Animate falling straight down to target position
+  - Similar to meteor/artillery style spells
 
 ### 4.2 Impact Visual
 - [ ] Create snowstorm impact animation in `apps/client/src/app/probable-waffle/game/animations/` - **ASSET NEEDED**
@@ -502,9 +509,9 @@ AOE spell system supporting: damage, stun, slow, healing, persistent zones, and 
   - [x] Similar pattern to `BuildingCursor`
   - [x] `activate(spellType: SpellType)` - shows cursor with AOE radius
   - [x] `deactivate()` - hides cursor
-  - [x] Draw AOE radius circle (tinted based on spell - blue for frost)
+  - [ ] **FIX**: Draw AOE radius as **ellipse** (not circle) for isometric perspective
   - [x] Follow mouse position
-  - [ ] Show range circle from nearest valid caster - **TODO**
+  - [ ] **TODO**: Show range circle/ellipse from nearest valid caster (visual indicator of max cast range)
   - [x] Visual feedback: green circle if in range, red if out of range
   - [x] Handle click to cast
   - [x] Handle Shift+click for multi-cast:
@@ -512,10 +519,15 @@ AOE spell system supporting: damage, stun, slow, healing, persistent zones, and 
     - [x] Keep cursor active for next cast
     - [x] Skip casters on cooldown
   - [x] ESC to cancel
+  - [ ] **FIX**: For `spawnPrefab` spells (like HealingTotem):
+    - Show small preview circle/ellipse where prefab will be placed before click
+    - On click, spawn prefab using `SceneActorCreator.createActorFromDefinition()`
+    - Extract common actor creation code from `production-component.ts` for reuse
 
 ### 6.2 Input Integration
-- [ ] Register spell shortcut in input handler
-- [ ] When shortcut pressed with magician(s) selected, activate SpellCursor
+- [ ] **FIX**: Do NOT define shortcuts in `spell-definitions.ts` - remove `shortcut` field
+- [ ] Use `ActorActions.ts` hotkey system (Q, W, E, R, T, Y, U, I, O) for spell buttons like production
+- [ ] When hotkey pressed with magician(s) selected, activate SpellCursor
 
 ---
 
@@ -527,19 +539,25 @@ AOE spell system supporting: damage, stun, slow, healing, persistent zones, and 
   - [x] Show spell icon when magician selected (**always visible from spawn**)
   - [x] States:
     - [x] **Not researched**: Gray out icon, tooltip "Requires: Snowstorm research at Infantry Inn"
-    - [x] **Researched, on cooldown**: Show cooldown overlay (sweeping clock), tooltip shows remaining time
+    - [ ] **FIX - Researched, on cooldown**:
+      - Show cooldown overlay **mask** that decreases in height from top to bottom as cooldown progresses
+      - Mask should have some transparency (semi-transparent overlay)
+      - At 100% cooldown: full mask covers button
+      - As cooldown decreases: mask shrinks from top toward bottom
+      - **Add tiny countdown number** at bottom-right corner showing seconds remaining (e.g., "5s", "12s")
     - [x] **Researched, ready**: Full color, clickable
   - [x] Left-click: activate SpellCursor for manual targeting
   - [ ] Right-click: toggle autocast on/off - **TODO**
-  - [x] Tooltip shows: name, description, shortcut
+  - [x] Tooltip shows: name, description, hotkey (from position, not spell definition)
 
 ### 7.2 Autocast Indicator
-- [ ] Add autocast visual indicator to spell button
-  - [ ] When autocast ON: show small "recycle" / circular arrow icon overlay on button corner
+- [ ] **TODO**: Add autocast visual indicator to spell button
+  - [ ] When autocast ON: show small "recycle" / circular arrow icon overlay on button corner (golden border or glow effect)
   - [ ] When autocast OFF: no overlay
-  - [ ] Icon: `gui` atlas, frame `action_icons/autocast.png` (or similar recycling arrows icon)
-  - [ ] Position: bottom-right corner of spell button
+  - [ ] Icon: `gui` atlas, frame `action_icons/autocast.png` (or similar recycling arrows icon, or golden border)
+  - [ ] Position: bottom-right corner of spell button (or as border around entire button)
   - [ ] Toggle via right-click on spell button
+  - [ ] Call `SpellComponent.toggleAutocast()` when right-clicked
 
 ### 7.3 ActorAction Button Update
 - [ ] Modify `apps/client/src/app/probable-waffle/game/prefabs/gui/buttons/ActorAction.ts`
@@ -695,7 +713,7 @@ AOE spell system supporting: damage, stun, slow, healing, persistent zones, and 
   - [x] Show research icons when building with `ResearchComponent` is selected
   - [x] States:
     - [x] **Already researched**: Hide icon OR show grayed out with checkmark
-    - [x] **In progress**: Show progress bar overlay, tooltip shows remaining time
+    - [ ] **FIX - In progress**: Show progress bar overlay, tooltip shows remaining time, **button should be disabled/grayed during research**
     - [x] **Available**: Full color, clickable to start research
     - [x] **Cannot afford**: Grayed out, tooltip shows missing resources
   - [x] Click: start research via `ResearchComponent.startResearch()`
@@ -703,6 +721,9 @@ AOE spell system supporting: damage, stun, slow, healing, persistent zones, and 
   - [x] Research progress bar shown similar to production progress
 
 ### 8.7 Research Progress UI
+- [ ] **FIX**: `ActorInfoLabels.ts` does NOT subscribe to `ResearchComponent` events like it does for `ProductionComponent`
+  - Subscribe to research progress events
+  - Display research queue/progress similar to production queue display
 - [x] Show research progress in building info panel (similar to production queue)
 - [x] Progress bar with research icon and percentage
 - [x] Cancel button to abort research
@@ -729,6 +750,20 @@ AOE spell system supporting: damage, stun, slow, healing, persistent zones, and 
 ### 9.2 Add to Other Units
 - [x] Add `statusEffect: {}` component to all combat units (so they can be affected by spells)
 - [x] Update `prefab-definition.ts` with new component types
+
+### 9.3 HealingTotem Prefab Integration
+- [ ] **FIX**: `HealingTotem.ts` prefab exists but is NOT used/spawned
+  - Currently uses mock `OlivalCursor` prefab placeholder - needs proper totem visuals
+  - Integrate with `spell-cursor.ts` for spawn preview (show small circle where totem will appear)
+  - On terrain click in spell cursor, spawn totem using `SceneActorCreator`
+  - Extract common actor spawning code from `production-component.ts` into reusable helper:
+    ```typescript
+    const sceneActorCreator = getSceneService(this.gameObject.scene, SceneActorCreator);
+    if (!sceneActorCreator) throw new Error("SceneActorCreator not found");
+    const newGameObject = sceneActorCreator.createActorFromDefinition(actorDefinition);
+    ```
+  - Totem should have `HealthComponent` (can be destroyed)
+  - Totem should apply healing aura to nearby allies
 
 ---
 
@@ -925,3 +960,37 @@ apps/client/src/app/probable-waffle/game/player/ai-controller/ai-behavior/tech-p
 
 ### Polish
 16. **Phase 12** - Sound effects and visual polish
+
+---
+
+## Outstanding Fixes Summary
+
+### Critical Fixes (Functionality Broken)
+- [ ] **spell-component.ts**: `isSpellResearched()` always returns true - must integrate with `TechTreeService`
+- [ ] **status-effect-visual-component.ts**: Component never instantiated - must create when `StatusEffectComponent` is created
+- [ ] **aoe-zone-manager.ts**: Draws circles instead of ellipses for isometric view
+- [ ] **spell-cursor.ts**: HealingTotem (spawnPrefab spells) not implemented - show preview, spawn on click
+- [ ] **HealingTotem.ts**: Prefab exists but never spawned by spell system
+- [ ] **Snowstorm projectile**: Currently fires from caster - should fall from sky (cast spell visual)
+
+### UI Fixes
+- [ ] **ActorActions.ts - Spell Cooldown**: Need decreasing height mask overlay + countdown seconds number
+- [ ] **ActorActions.ts - Autocast Indicator**: No visual indication of autocast state
+- [ ] **ActorActions.ts - Research In Progress**: Button should be disabled during research
+- [ ] **ActorInfoLabels.ts**: Not subscribed to `ResearchComponent` like `ProductionComponent`
+- [ ] **spell-cursor.ts**: Show range ellipse from nearest valid caster
+
+### Data Model Fixes
+- [ ] **status-effect-data.ts**: `damageType` should be `DamageType` enum, not string
+- [ ] **status-effect-component.ts**: Remove `stringToDamageType()` helper, use enum directly
+- [ ] **spell-definitions.ts**: Remove `shortcut` field - use ActorActions hotkey positions instead
+
+### Visual/Audio Fixes
+- [ ] **aoe-zone-manager.ts**: Add animations from `effects.json` via `EffectsAnims` class
+- [ ] **aoe-zone-manager.ts**: Add looping sound support for zones
+- [ ] **status-effect-visual-component.ts**: `attachParticleEffect()` not called - display effect sprite at actor feet
+- [ ] **spell-cursor.ts**: Draw ellipse not circle for isometric perspective
+
+### Integration Fixes
+- [ ] **SpellComponent methods not called**: `setAutocast()`, `toggleAutocast()`, `getCooldownRemaining()` exist but unused
+- [ ] **Actor creation reuse**: Extract common code from `production-component.ts` for spell prefab spawning
