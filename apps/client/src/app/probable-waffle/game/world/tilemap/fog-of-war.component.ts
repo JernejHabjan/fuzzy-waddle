@@ -314,13 +314,9 @@ export class FogOfWarComponent {
         return;
     }
 
-    // If we have many dirty tiles (> 30% of map), do a full redraw
-    // Otherwise, redraw only dirty tiles
-    const totalTiles = this.gridWidth * this.gridHeight;
-    const shouldFullRedraw = this.dirtyTiles.size > totalTiles * 0.3;
-
     // Full redraw: clear everything and redraw all tiles
-    // Note: Even for "incremental" updates, we do a full clear because isometric tiles overlap
+    // Note: Due to overlapping isometric tiles, we always do a full clear and redraw
+    // The performance gain comes from the early exit above when there are no dirty tiles
     this.fowLayer.clear();
 
     const endX = this.startX + this.gridWidth;
