@@ -22,8 +22,8 @@ export enum FogOfWarMode {
 export class FogOfWarComponent {
   private fowMode: FogOfWarMode = FogOfWarMode.PRE_EXPLORED;
   private readonly fowLayer: Phaser.GameObjects.Graphics;
-  private exploredTiles: Set<string> = new Set();
-  private visibleTiles: Set<string> = new Set();
+  private exploredTiles: Set<number> = new Set();
+  private visibleTiles: Set<number> = new Set();
   private readonly tileWidth: number;
   private readonly tileHeight: number;
   private readonly gridWidth: number;
@@ -35,6 +35,14 @@ export class FogOfWarComponent {
 
   // Track actors with ID components for visibility management
   private playerActors: Map<string, GameObject> = new Map();
+
+  // Cache for tile world positions to avoid repeated coordinate transformations
+  private tileWorldPosCache: Map<number, { x: number; y: number }> = new Map();
+
+  // Track which tiles need to be redrawn (dirty tiles)
+  private dirtyTiles: Set<number> = new Set();
+  private previousVisibleTiles: Set<number> = new Set();
+  private previousExploredTiles: Set<number> = new Set();
 
   private actorIndex!: ActorIndexSystem;
 
@@ -60,6 +68,9 @@ export class FogOfWarComponent {
     this.fowLayer = this.scene.add.graphics();
     this.fowLayer.setDepth(FogOfWarComponent.depth);
 
+    // Pre-cache all tile world positions to avoid repeated coordinate transformations
+    this.precacheTileWorldPositions();
+
     // Initialize actor tracking
     this.actorIndex = getSceneService(this.scene, ActorIndexSystem)!;
     this.scanForPlayerActors();
@@ -71,6 +82,29 @@ export class FogOfWarComponent {
 
     // Initial draw of fog
     this.drawInitialFog();
+  }
+
+  /**
+   * Pre-cache tile world positions to avoid repeated tileToWorldXY calls
+   */
+  private precacheTileWorldPositions(): void {
+    for (let y = this.startY; y < this.gridHeight; y++) {
+      for (let x = this.startX; x < this.gridWidth; x++) {
+        const tileKey = this.getTileKey(x, y);
+        const worldPos = this.tilemap.tileToWorldXY(x, y);
+        if (worldPos) {
+          this.tileWorldPosCache.set(tileKey, { x: worldPos.x, y: worldPos.y });
+        }
+      }
+    }
+  }
+
+  /**
+   * Convert tile coordinates to a numeric key for efficient Set/Map operations
+   * Using numeric keys is faster than string concatenation
+   */
+  private getTileKey(x: number, y: number): number {
+    return y * this.gridWidth + x;
   }
 
   private scanForPlayerActors(): void {
@@ -108,6 +142,10 @@ export class FogOfWarComponent {
   private throttleUpdateFogOfWar = throttle(this.updateFogOfWar.bind(this), 100);
 
   public updateFogOfWar(): void {
+    // Store previous state for dirty tile tracking
+    this.previousVisibleTiles = new Set(this.visibleTiles);
+    this.previousExploredTiles = new Set(this.exploredTiles);
+
     // Clear previous visible tiles
     this.visibleTiles.clear();
 
@@ -137,18 +175,48 @@ export class FogOfWarComponent {
 
         // Add to visible and explored tiles
         tilesWithOutBounds.forEach((tile) => {
-          const tileKey = `${tile.x},${tile.y}`;
+          const tileKey = this.getTileKey(tile.x, tile.y);
           this.visibleTiles.add(tileKey);
           this.exploredTiles.add(tileKey);
         });
       }
     });
 
+    // Calculate dirty tiles (tiles that changed state)
+    this.calculateDirtyTiles();
+
     // Update actor visibility based on fog of war
     this.updateActorsVisibility();
 
-    // Redraw fog-of-war
+    // Redraw only changed fog-of-war tiles
     this.redrawFogOfWar();
+  }
+
+  /**
+   * Calculate which tiles need to be redrawn based on visibility changes
+   */
+  private calculateDirtyTiles(): void {
+    this.dirtyTiles.clear();
+
+    // Find tiles that changed visibility state
+    this.visibleTiles.forEach((tileKey) => {
+      if (!this.previousVisibleTiles.has(tileKey)) {
+        this.dirtyTiles.add(tileKey);
+      }
+    });
+
+    this.previousVisibleTiles.forEach((tileKey) => {
+      if (!this.visibleTiles.has(tileKey)) {
+        this.dirtyTiles.add(tileKey);
+      }
+    });
+
+    // Find tiles that changed explored state
+    this.exploredTiles.forEach((tileKey) => {
+      if (!this.previousExploredTiles.has(tileKey)) {
+        this.dirtyTiles.add(tileKey);
+      }
+    });
   }
 
   /**
@@ -179,7 +247,7 @@ export class FogOfWarComponent {
 
       if (!tilePos) return;
 
-      const tileKey = `${tilePos.x},${tilePos.y}`;
+      const tileKey = this.getTileKey(tilePos.x, tilePos.y);
       const isVisible = this.visibleTiles.has(tileKey);
 
       this.setActorVisibleByFow(actor, isVisible);
@@ -221,7 +289,10 @@ export class FogOfWarComponent {
   }
 
   private redrawFogOfWar(): void {
-    this.fowLayer.clear();
+    // Only clear and redraw if there are dirty tiles or if mode changed
+    if (this.dirtyTiles.size === 0 && this.fowMode !== FogOfWarMode.ALL_VISIBLE) {
+      return;
+    }
 
     let alphaUnexplored = 0;
     switch (this.fowMode) {
@@ -232,47 +303,76 @@ export class FogOfWarComponent {
         alphaUnexplored = this.ALPHA_UNEXPLORED_PE_EXPLORED_MODE;
         break;
       case FogOfWarMode.ALL_VISIBLE:
-        // no fog
+        // Clear all fog and return
+        this.fowLayer.clear();
         return;
     }
 
-    // Draw fog for the entire map
-    for (let y = this.startY; y < this.gridHeight; y++) {
-      for (let x = this.startX; x < this.gridWidth; x++) {
-        const tileKey = `${x},${y}`;
-        const worldPos = this.tilemap.tileToWorldXY(x, y);
+    // If we have many dirty tiles (> 30% of map), do a full redraw
+    // Otherwise, redraw only dirty tiles
+    const totalTiles = this.gridWidth * this.gridHeight;
+    const shouldFullRedraw = this.dirtyTiles.size > totalTiles * 0.3;
 
-        if (worldPos) {
-          if (this.visibleTiles.has(tileKey)) {
-            // Currently visible - no fog
-          } else if (this.exploredTiles.has(tileKey)) {
-            // Explored but not currently visible
-            this.drawIsometricTile(
-              worldPos.x,
-              worldPos.y,
-              this.tileWidth,
-              this.tileHeight,
-              this.COLOR_EXPLORED,
-              this.ALPHA_EXPLORED
-            );
-          } else {
-            // Unexplored
-            this.drawIsometricTile(
-              worldPos.x,
-              worldPos.y,
-              this.tileWidth,
-              this.tileHeight,
-              this.COLOR_UNEXPLORED,
-              alphaUnexplored
-            );
+    if (shouldFullRedraw) {
+      // Full redraw: clear everything and redraw all tiles
+      this.fowLayer.clear();
+
+      for (let y = this.startY; y < this.gridHeight; y++) {
+        for (let x = this.startX; x < this.gridWidth; x++) {
+          const tileKey = this.getTileKey(x, y);
+          const worldPos = this.tileWorldPosCache.get(tileKey);
+
+          if (worldPos) {
+            this.drawTileAtWorldPos(worldPos.x, worldPos.y, tileKey, alphaUnexplored);
           }
         }
       }
+    } else {
+      // Incremental redraw: only redraw dirty tiles
+      // Note: We need to clear each dirty tile area first, then redraw
+      this.dirtyTiles.forEach((tileKey) => {
+        const worldPos = this.tileWorldPosCache.get(tileKey);
+        if (worldPos) {
+          // Clear the tile area by drawing it with alpha 0
+          this.fowLayer.fillStyle(0x000000, 0);
+          const halfWidth = this.tileWidth / 2;
+          const halfHeight = this.tileHeight / 2;
+          this.fowLayer.fillRect(worldPos.x - halfWidth, worldPos.y - halfHeight, this.tileWidth, this.tileHeight);
+
+          // Redraw the tile with proper state
+          this.drawTileAtWorldPos(worldPos.x, worldPos.y, tileKey, alphaUnexplored);
+        }
+      });
+    }
+
+    // Clear dirty tiles set after redraw
+    this.dirtyTiles.clear();
+  }
+
+  /**
+   * Draw a single tile at the given world position
+   */
+  private drawTileAtWorldPos(worldX: number, worldY: number, tileKey: number, alphaUnexplored: number): void {
+    if (this.visibleTiles.has(tileKey)) {
+      // Currently visible - no fog
+    } else if (this.exploredTiles.has(tileKey)) {
+      // Explored but not currently visible
+      this.drawIsometricTile(worldX, worldY, this.tileWidth, this.tileHeight, this.COLOR_EXPLORED, this.ALPHA_EXPLORED);
+    } else {
+      // Unexplored
+      this.drawIsometricTile(
+        worldX,
+        worldY,
+        this.tileWidth,
+        this.tileHeight,
+        this.COLOR_UNEXPLORED,
+        alphaUnexplored
+      );
     }
   }
 
   public getTileVisibility(x: number, y: number): "visible" | "explored" | "unexplored" {
-    const tileKey = `${x},${y}`;
+    const tileKey = this.getTileKey(x, y);
 
     if (this.visibleTiles.has(tileKey)) {
       return "visible";
