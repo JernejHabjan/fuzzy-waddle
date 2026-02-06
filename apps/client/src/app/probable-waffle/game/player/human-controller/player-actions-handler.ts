@@ -46,6 +46,7 @@ export class PlayerActionsHandler {
   // Broadcast build mode changes to HUD/UI
   private readonly buildingModeSubject = new BehaviorSubject<boolean>(false);
   public readonly buildingModeObservable = this.buildingModeSubject.asObservable();
+  private externalModalSubscription?: Subscription;
 
   constructor(
     private readonly scene: ProbableWaffleScene,
@@ -71,7 +72,7 @@ export class PlayerActionsHandler {
     });
 
     // Listen to chat modal state changes
-    this.scene.communicator.allScenes.subscribe((event) => {
+    this.externalModalSubscription = this.scene.communicator.allScenes.subscribe((event) => {
       if (event.name === "external-modal-opened") {
         this.externalModalOpen = true;
       } else if (event.name === "external-modal-closed") {
@@ -271,6 +272,7 @@ export class PlayerActionsHandler {
     this.scene.input.off(Phaser.Input.Events.POINTER_UP, this.pointerHandler, this);
     this.hudScene.input.keyboard?.off("keydown", this.onKeyDown, this);
     this.selectionChangedSubscription?.unsubscribe();
+    this.externalModalSubscription?.unsubscribe();
   }
 
   isHandlingActions(): boolean {

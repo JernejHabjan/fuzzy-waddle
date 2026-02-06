@@ -126,3 +126,21 @@ export enum ProbableWaffleGatewayEvent {
   ProbableWaffleMessage = "probable-waffle-message",
   ProbableWaffleWebsocketRoom = "probable-waffle-websocket-room"
 }
+
+export interface AllScenesEventData {
+  name:
+    | "save-game"
+    | "restart-game"
+    | "selection.deselect"
+    | "selection.singleSelect"
+    | "selection.doubleSelect"
+    | "selection.multiSelect"
+    | "selection.multiSelectPreview"
+    | "selection.terrainSelect"
+    | "quit"
+    | "chat-message-received"
+    | "external-modal-opened"
+    | "external-modal-closed"
+    | "hud-scene-shutdown";
+  data?: any;
+}

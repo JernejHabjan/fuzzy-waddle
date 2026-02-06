@@ -215,7 +215,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.minimap_container.scaleY = sceneWidth > this.minimap_container.minimapSmallScreenBreakpoint ? 0.953 : 0.55;
     this.minimap_container.visible = sceneWidth > this.minimap_container.minimapHideBreakpoint;
     const minimapBounds = getGameObjectBounds(this.minimap_container)!;
-    const minimapHeight = minimapBounds!.height;
+    const minimapHeight = minimapBounds.height;
 
     // set hudMessages above minimap on left side
     this.hudMessages.x = 10;
