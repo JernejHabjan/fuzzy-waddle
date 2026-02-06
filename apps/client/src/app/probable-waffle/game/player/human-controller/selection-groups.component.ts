@@ -5,8 +5,9 @@ import { CrossSceneCommunicationService } from "../../world/services/CrossSceneC
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { getActorComponent } from "../../data/actor-component";
 import { IdComponent } from "../../entity/components/id-component";
-import type { SelectionGroupData } from "@fuzzy-waddle/api-interfaces";
+import type { AllScenesEventData, SelectionGroupData } from "@fuzzy-waddle/api-interfaces";
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
+import type { Subscription } from "rxjs";
 
 export interface SelectionGroup {
   actors: Phaser.GameObjects.GameObject[];
@@ -31,6 +32,7 @@ export class SelectionGroupsComponent {
   private lastTapTimestamp: Map<number, number> = new Map();
   private crossSceneCommunicationService?: CrossSceneCommunicationService;
   private externalModalOpen = false;
+  private externalModalSubscription?: Subscription;
 
   constructor(private scene: Phaser.Scene) {
     onSceneInitialized(scene, this.init, this);
@@ -46,7 +48,7 @@ export class SelectionGroupsComponent {
   private listenToChatModalEvents() {
     const scene = this.scene as any;
     if (scene.communicator?.allScenes) {
-      scene.communicator.allScenes.subscribe((event: any) => {
+      this.externalModalSubscription = scene.communicator.allScenes.subscribe((event: AllScenesEventData) => {
         if (event.name === "external-modal-opened") {
           this.externalModalOpen = true;
         } else if (event.name === "external-modal-closed") {
@@ -179,6 +181,7 @@ export class SelectionGroupsComponent {
     this.scene?.events.off(HealthComponent.KilledEvent, this.handleActorKilled, this);
     this.groups.clear();
     this.lastTapTimestamp.clear();
+    this.externalModalSubscription?.unsubscribe();
   }
 
   /**
