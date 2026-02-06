@@ -102,9 +102,12 @@ export class FogOfWarComponent {
   /**
    * Convert tile coordinates to a numeric key for efficient Set/Map operations
    * Using numeric keys is faster than string concatenation
+   * Accounts for negative starting coordinates by offsetting to 0-based indexing
    */
   private getTileKey(x: number, y: number): number {
-    return y * this.gridWidth + x;
+    const normalizedX = x - this.startX;
+    const normalizedY = y - this.startY;
+    return normalizedY * this.gridWidth + normalizedX;
   }
 
   private scanForPlayerActors(): void {
@@ -328,21 +331,21 @@ export class FogOfWarComponent {
         }
       }
     } else {
-      // Incremental redraw: only redraw dirty tiles
-      // Note: We need to clear each dirty tile area first, then redraw
-      this.dirtyTiles.forEach((tileKey) => {
-        const worldPos = this.tileWorldPosCache.get(tileKey);
-        if (worldPos) {
-          // Clear the tile area by drawing it with alpha 0
-          this.fowLayer.fillStyle(0x000000, 0);
-          const halfWidth = this.tileWidth / 2;
-          const halfHeight = this.tileHeight / 2;
-          this.fowLayer.fillRect(worldPos.x - halfWidth, worldPos.y - halfHeight, this.tileWidth, this.tileHeight);
+      // Incremental redraw: Since isometric tiles overlap, we need to clear and redraw affected regions
+      // For simplicity and correctness with diamond shapes, do a full clear and redraw
+      // This is still faster than before since we skip when there are no dirty tiles
+      this.fowLayer.clear();
 
-          // Redraw the tile with proper state
-          this.drawTileAtWorldPos(worldPos.x, worldPos.y, tileKey, alphaUnexplored);
+      for (let y = this.startY; y < this.gridHeight; y++) {
+        for (let x = this.startX; x < this.gridWidth; x++) {
+          const tileKey = this.getTileKey(x, y);
+          const worldPos = this.tileWorldPosCache.get(tileKey);
+
+          if (worldPos) {
+            this.drawTileAtWorldPos(worldPos.x, worldPos.y, tileKey, alphaUnexplored);
+          }
         }
-      });
+      }
     }
 
     // Clear dirty tiles set after redraw
