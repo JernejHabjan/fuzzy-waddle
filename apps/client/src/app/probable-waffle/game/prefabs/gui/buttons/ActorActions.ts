@@ -662,6 +662,8 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       const isResearched = spellComponent.isSpellResearched(spellType);
       const canCast = spellComponent.canCastSpell(spellType);
       const cooldownProgress = spellComponent.getCooldownProgress(spellType);
+      const cooldownRemaining = spellComponent.getCooldownRemaining(spellType);
+      const autocastEnabled = spellComponent.isAutocastEnabled(spellType);
 
       action.setup({
         icon: {
@@ -672,12 +674,21 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         visible: true,
         disabled: !isResearched || !canCast,
         cooldownProgress: cooldownProgress < 100 ? cooldownProgress : undefined,
+        cooldownRemaining: cooldownRemaining > 0 ? cooldownRemaining : undefined,
+        autocastEnabled: isResearched && autocastEnabled,
         action: () => {
           if (!canCast) return;
           // Activate spell cursor for ground-target spells
           if (spellCursor) {
             spellCursor.startCastingSpell.emit(spellType);
           }
+        },
+        onRightClick: () => {
+          // Toggle autocast on right-click
+          spellComponent.toggleAutocast(spellType);
+          // Update autocast indicator immediately
+          const newAutocastState = spellComponent.isAutocastEnabled(spellType);
+          action.setAutocastIndicator(newAutocastState);
         },
         tooltipInfo: {
           title: spellData.name,
