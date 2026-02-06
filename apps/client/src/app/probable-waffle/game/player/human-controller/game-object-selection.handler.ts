@@ -33,8 +33,10 @@ import { SoundType } from "../../entity/components/actor-audio/sound-type";
 export class GameObjectSelectionHandler {
   private readonly debug = false;
   private sub!: Subscription;
+  private externalModalOpen = false;
   constructor(private readonly scene: ProbableWaffleScene) {
     this.bindSelectionInput();
+    this.listenToChatModalEvents();
     this.scene.onShutdown.subscribe(() => this.destroy());
   }
 
@@ -228,7 +230,20 @@ export class GameObjectSelectionHandler {
     this.scene.input.keyboard?.off("keydown", this.onKeyDown, this);
   }
 
+  private listenToChatModalEvents() {
+    this.scene.communicator.allScenes.subscribe((event) => {
+      if (event.name === "external-modal-opened") {
+        this.externalModalOpen = true;
+      } else if (event.name === "external-modal-closed") {
+        this.externalModalOpen = false;
+      }
+    });
+  }
+
   private onKeyDown(e: KeyboardEvent) {
+    // Don't process keyboard events if chat modal is open
+    if (this.externalModalOpen) return;
+
     if (e.code !== "Escape") return;
     const actions = getSceneService(this.scene, PlayerActionsHandler);
     // If PlayerActionsHandler doesn't have any ongoing actions, then ESC key will cancel the current selection

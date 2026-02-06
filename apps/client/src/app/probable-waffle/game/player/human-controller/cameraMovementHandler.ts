@@ -81,12 +81,13 @@ export class CameraMovementHandler {
     if (!this.input.keyboard) return;
     const cursors = this.input.keyboard.createCursorKeys();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const wasdKeys = this.input.keyboard.addKeys({
-      up: Input.Keyboard.KeyCodes.W,
-      left: Input.Keyboard.KeyCodes.A,
-      down: Input.Keyboard.KeyCodes.S,
-      right: Input.Keyboard.KeyCodes.D
-    }) satisfies Partial<Types.Input.Keyboard.CursorKeys>;
+    // WASD disabled for camera movement as it conflicts with player controls, but can be easily re-enabled if needed in the future
+    // const wasdKeys = this.input.keyboard.addKeys({
+    //   up: Input.Keyboard.KeyCodes.W,
+    //   left: Input.Keyboard.KeyCodes.A,
+    //   down: Input.Keyboard.KeyCodes.S,
+    //   right: Input.Keyboard.KeyCodes.D
+    // }) satisfies Partial<Types.Input.Keyboard.CursorKeys>;
 
     // wasdKey can also be used here
     const controlConfig: Types.Cameras.Controls.FixedKeyControlConfig = {
