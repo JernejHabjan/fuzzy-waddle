@@ -1,84 +1,20 @@
 import { GameObjectSelectionHandler } from "./game-object-selection.handler";
 import { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { OwnerComponent } from "../../entity/components/owner-component";
+import { createMockScene } from "phaser";
 
 // Mock the dependencies
 jest.mock("../../data/scene-data");
 jest.mock("../../data/actor-component");
 jest.mock("../../data/game-object-helper");
 
-// Mock Phaser.Geom.Rectangle directly since the phaser mock might not be loaded yet
-global.Phaser = {
-  Geom: {
-    Rectangle: class Rectangle {
-      x: number;
-      y: number;
-      width: number;
-      height: number;
-      
-      constructor(x: number, y: number, width: number, height: number) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-      }
-      
-      static Intersection(rectA: any, rectB: any) {
-        const x = Math.max(rectA.x, rectB.x);
-        const y = Math.max(rectA.y, rectB.y);
-        const width = Math.min(rectA.x + rectA.width, rectB.x + rectB.width) - x;
-        const height = Math.min(rectA.y + rectA.height, rectB.y + rectB.height) - y;
-        
-        return {
-          x,
-          y,
-          width: Math.max(0, width),
-          height: Math.max(0, height)
-        };
-      }
-      
-      static Overlaps(rectA: any, rectB: any) {
-        return (
-          rectA.x < rectB.x + rectB.width &&
-          rectA.x + rectA.width > rectB.x &&
-          rectA.y < rectB.y + rectB.height &&
-          rectA.y + rectA.height > rectB.y
-        );
-      }
-    }
-  }
-} as any;
-
 describe("GameObjectSelectionHandler - Multi-select filtering", () => {
   let mockScene: any;
   let handler: GameObjectSelectionHandler;
 
   beforeEach(() => {
-    // Create mock scene
-    mockScene = {
-      input: {
-        keyboard: {
-          on: jest.fn(),
-          off: jest.fn()
-        }
-      },
-      cameras: {
-        main: {
-          getWorldPoint: jest.fn((x, y) => ({ x, y }))
-        }
-      },
-      communicator: {
-        allScenes: {
-          pipe: jest.fn(() => ({
-            subscribe: jest.fn(() => ({ unsubscribe: jest.fn() }))
-          })),
-          subscribe: jest.fn(() => ({ unsubscribe: jest.fn() }))
-        }
-      },
-      onShutdown: {
-        subscribe: jest.fn(() => ({ unsubscribe: jest.fn() }))
-      }
-    };
+    // Create mock scene using the helper
+    mockScene = createMockScene();
   });
 
   describe("getSelectableComponentsUnderSelectedArea", () => {
@@ -88,11 +24,11 @@ describe("GameObjectSelectionHandler - Multi-select filtering", () => {
       const { getGameObjectBounds } = require("../../data/game-object-helper");
 
       const currentPlayerNr = 1;
-      
+
       // Mock friendly units
       const friendlyUnit1 = { name: "Warrior", scene: mockScene };
       const friendlyUnit2 = { name: "Archer", scene: mockScene };
-      
+
       // Mock enemy units
       const enemyUnit1 = { name: "EnemyWarrior", scene: mockScene };
       const enemyUnit2 = { name: "EnemyArcher", scene: mockScene };
@@ -152,7 +88,7 @@ describe("GameObjectSelectionHandler - Multi-select filtering", () => {
       const { getGameObjectBounds } = require("../../data/game-object-helper");
 
       const currentPlayerNr = 1;
-      
+
       // Mock only enemy units
       const enemyUnit1 = { name: "EnemyWarrior", scene: mockScene };
       const enemyUnit2 = { name: "EnemyArcher", scene: mockScene };
