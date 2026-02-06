@@ -14,7 +14,6 @@ import {
   getGameObjectVisibility,
   onObjectReady
 } from "../../../../data/game-object-helper";
-import { environment } from "../../../../../../../environments/environment";
 import { SelectableComponent } from "../../selectable-component";
 import { OwnerComponent } from "../../owner-component";
 import { getCurrentPlayerNumber } from "../../../../data/scene-data";
@@ -90,8 +89,6 @@ export class HealthComponent {
   private shouldUiElementsBeVisible: boolean = false;
   private constructionProgressSubscription?: Subscription;
   private healthUiHideOnTimeout?: Phaser.Time.TimerEvent;
-  private damageKey?: Phaser.Input.Keyboard.Key | undefined;
-  private attackKey?: Phaser.Input.Keyboard.Key | undefined;
   private animationActorComponent?: AnimationActorComponent;
   private audioActorComponent?: AudioActorComponent;
   private actorTranslateComponent?: ActorTranslateComponent;
@@ -186,43 +183,10 @@ export class HealthComponent {
     }
     // Todo - now calling refreshVisibility on tick to update visibility due to FOW changes
     this.gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.refreshVisibility, this);
-
-    if (!environment.production) {
-      this.bindDamageKey();
-      this.bindAttackAnimKey();
-    }
   }
 
   private refreshVisibility() {
     this.setVisibilityUiComponent(this.shouldUiElementsBeVisible);
-  }
-
-  private bindDamageKey() {
-    this.damageKey = this.gameObject.scene.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.P);
-    if (!this.damageKey) return;
-    this.damageKey.on(Phaser.Input.Keyboard.Events.DOWN, this.damageSelected, this);
-  }
-
-  private damageSelected() {
-    if (!this.canDamageOrKillOnOwnerAction()) return;
-    this.takeDamage(10, DamageType.Physical);
-  }
-
-  private bindAttackAnimKey() {
-    this.attackKey = this.gameObject.scene.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.N);
-    if (!this.attackKey) return;
-    this.attackKey.on(Phaser.Input.Keyboard.Events.DOWN, this.playAttack, this);
-  }
-
-  /**
-   * Plays a large slash animation if the actor can damage or kill on keyboard action.
-   * This is for testing of jumping UI health up and down
-   */
-  private playAttack() {
-    if (!this.canDamageOrKillOnOwnerAction()) return;
-    const animationActorComponent = getActorComponent(this.gameObject, AnimationActorComponent);
-    if (!animationActorComponent) return;
-    animationActorComponent.playCustomAnimation(AnimationType.LargeSlash);
   }
 
   canDamageOrKillOnOwnerAction(): boolean {
@@ -376,8 +340,6 @@ export class HealthComponent {
     this.playerChangedSubscription?.unsubscribe();
     this.constructionProgressSubscription?.unsubscribe();
     this.gameObject.off(ContainerComponent.GameObjectVisibilityChanged, this.gameObjectVisibilityChanged, this);
-    this.damageKey?.off(Phaser.Input.Keyboard.Events.DOWN, this.damageSelected, this);
-    this.attackKey?.off(Phaser.Input.Keyboard.Events.DOWN, this.playAttack, this);
     this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.refreshVisibility, this);
   }
 

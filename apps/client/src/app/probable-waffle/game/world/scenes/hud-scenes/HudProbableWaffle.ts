@@ -171,11 +171,22 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.probableWaffleScene = probableWaffleScene;
     this.subscribeToSaveGameEvent();
     this.subscribeToChatMessageEvents();
+    this.subscribeToSceneShutdown();
 
     // Initialize cursor handler with main scene if it was created before the parent scene was set
     if (this.cursorHandler) {
       this.cursorHandler.initializeWithMainScene(probableWaffleScene);
     }
+  }
+
+  private subscribeToSceneShutdown() {
+    this.onShutdown.subscribe(() => {
+      // Emit event to close chat modal when leaving the game
+      this.communicator.allScenes.emit({
+        name: "hud-scene-shutdown",
+        data: undefined
+      });
+    });
   }
 
   private resize(gameSize: { height: number; width: number }) {

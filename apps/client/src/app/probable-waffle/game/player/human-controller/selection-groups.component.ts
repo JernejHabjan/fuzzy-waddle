@@ -30,6 +30,7 @@ export class SelectionGroupsComponent {
   private doubleTapDelay = 300; // ms
   private lastTapTimestamp: Map<number, number> = new Map();
   private crossSceneCommunicationService?: CrossSceneCommunicationService;
+  private externalModalOpen = false;
 
   constructor(private scene: Phaser.Scene) {
     onSceneInitialized(scene, this.init, this);
@@ -39,6 +40,20 @@ export class SelectionGroupsComponent {
   private init(): void {
     this.crossSceneCommunicationService = getSceneService(this.scene, CrossSceneCommunicationService);
     this.setupEventListeners();
+    this.listenToChatModalEvents();
+  }
+
+  private listenToChatModalEvents() {
+    const scene = this.scene as any;
+    if (scene.communicator?.allScenes) {
+      scene.communicator.allScenes.subscribe((event: any) => {
+        if (event.name === "external-modal-opened") {
+          this.externalModalOpen = true;
+        } else if (event.name === "external-modal-closed") {
+          this.externalModalOpen = false;
+        }
+      });
+    }
   }
 
   private setupEventListeners(): void {
@@ -52,6 +67,9 @@ export class SelectionGroupsComponent {
   }
 
   private handleKeyDown(event: KeyboardEvent): void {
+    // Don't process keyboard events if chat modal is open
+    if (this.externalModalOpen) return;
+
     // Check for Ctrl+1-9 combinations to create groups
     if (event.ctrlKey && event.key >= "1" && event.key <= "9") {
       const groupKey = parseInt(event.key);

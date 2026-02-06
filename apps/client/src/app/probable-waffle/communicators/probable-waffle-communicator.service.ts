@@ -51,7 +51,10 @@ export class ProbableWaffleCommunicatorService
       | "selection.multiSelectPreview"
       | "selection.terrainSelect"
       | "quit"
-      | "chat-message-received";
+      | "chat-message-received"
+      | "external-modal-opened"
+      | "external-modal-closed"
+      | "hud-scene-shutdown";
     data?: any;
   }>();
 

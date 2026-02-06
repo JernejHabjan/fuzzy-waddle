@@ -73,7 +73,8 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   private readonly ngZone = inject(NgZone);
   private communicators?: ProbableWaffleCommunicators;
   private communicatorSubscriptions: Subscription[] = [];
-  private chatModalOpen = false;
+  private externalModalOpen = false;
+  private externalModalRef?: NgbModalRef;
   gameInstanceToGameComponentCommunicator = new Subject<"refresh">();
 
   async createGameInstance(
@@ -197,17 +198,27 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
               if (this.DEBUG) {
                 console.log("chat requested", payload.data);
               }
-              this.chatModalOpen = true;
+              this.externalModalOpen = true;
+              this.probableWaffleCommunicatorService.allScenes.emit({
+                name: "external-modal-opened",
+                data: undefined
+              });
               modalRef = this.modalService.open(InGameChatComponent, {
                 size: "md",
                 scrollable: true,
                 centered: true,
                 modalDialogClass: "transparent-modal"
               });
+              this.externalModalRef = modalRef;
               (modalRef.componentInstance as InGameChatComponent).fromGame = true;
               (modalRef.componentInstance as InGameChatComponent).dialogRef = modalRef;
               modalRef.result.finally(() => {
-                this.chatModalOpen = false;
+                this.externalModalOpen = false;
+                this.externalModalRef = undefined;
+                this.probableWaffleCommunicatorService.allScenes.emit({
+                  name: "external-modal-closed",
+                  data: undefined
+                });
               });
               break;
           }
@@ -218,7 +229,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   listenToChatMessagesForNotifications(): void {
     const subscription = this.probableWaffleCommunicatorService.message?.on.subscribe((msg) => {
       // Only show notification in Phaser HUD when chat modal is closed
-      if (!this.chatModalOpen && msg.chatMessage) {
+      if (!this.externalModalOpen && msg.chatMessage) {
         // Emit to Phaser scene to show notification
         this.probableWaffleCommunicatorService.allScenes.emit({
           name: "chat-message-received",
@@ -229,6 +240,16 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     if (subscription) {
       this.communicatorSubscriptions.push(subscription);
     }
+  }
+
+  listenToSceneShutdown(): void {
+    const subscription = this.probableWaffleCommunicatorService.allScenes.subscribe((event) => {
+      if (event.name === "hud-scene-shutdown") {
+        // Close chat modal when HUD scene shuts down
+        this.closeExternalModal();
+      }
+    });
+    this.communicatorSubscriptions.push(subscription);
   }
 
   listenToGameModeDataEvents(): void {
@@ -307,6 +328,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     this.listenToGameStateChangedEvents();
     this.listenToUtilityGameEvents();
     this.listenToChatMessagesForNotifications();
+    this.listenToSceneShutdown();
   }
 
   private async stopListeningToGameInstanceEvents() {
@@ -636,5 +658,11 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     this.gameInstance = new ProbableWaffleGameInstance(gameInstanceSaveData.gameInstanceData);
     await this.startListeningToGameInstanceEvents();
     await this.navigateToLobbyOrDirectlyToGame();
+  }
+
+  closeExternalModal(): void {
+    if (this.externalModalRef) {
+      this.externalModalRef.close();
+    }
   }
 }
