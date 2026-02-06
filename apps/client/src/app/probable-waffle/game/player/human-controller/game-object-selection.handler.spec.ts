@@ -17,6 +17,13 @@ describe("GameObjectSelectionHandler - Multi-select filtering", () => {
     mockScene = createMockScene();
   });
 
+  afterEach(() => {
+    if (handler) {
+      (handler as any).destroy();
+      handler = undefined as unknown as GameObjectSelectionHandler;
+    }
+  });
+
   describe("getSelectableComponentsUnderSelectedArea", () => {
     it("should filter out enemy units when friendly units are present in selection", () => {
       const { getActorComponent } = require("../../data/actor-component");
