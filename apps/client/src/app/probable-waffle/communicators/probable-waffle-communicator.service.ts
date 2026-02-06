@@ -1,5 +1,6 @@
 import { EventEmitter, Injectable, type OnDestroy } from "@angular/core";
 import {
+  type AllScenesEventData,
   type GameInstanceId,
   type ProbableWaffleCommunicatorMessageEvent,
   type ProbableWaffleCommunicatorType,
@@ -40,23 +41,7 @@ export class ProbableWaffleCommunicatorService
   /**
    * cross scene events - internal phaser events that are not related to game instance and are broadcast to all scenes
    */
-  allScenes = new EventEmitter<{
-    name:
-      | "save-game"
-      | "restart-game"
-      | "selection.deselect"
-      | "selection.singleSelect"
-      | "selection.doubleSelect"
-      | "selection.multiSelect"
-      | "selection.multiSelectPreview"
-      | "selection.terrainSelect"
-      | "quit"
-      | "chat-message-received"
-      | "external-modal-opened"
-      | "external-modal-closed"
-      | "hud-scene-shutdown";
-    data?: any;
-  }>();
+  allScenes = new EventEmitter<AllScenesEventData>();
 
   startCommunication(gameInstanceId: GameInstanceId, socket?: Socket) {
     this.gameInstanceMetadataChanged = new TwoWayCommunicator<

@@ -34,6 +34,7 @@ export class GameObjectSelectionHandler {
   private readonly debug = false;
   private sub!: Subscription;
   private externalModalOpen = false;
+  private externalModalSubscription?: Subscription;
   constructor(private readonly scene: ProbableWaffleScene) {
     this.bindSelectionInput();
     this.listenToChatModalEvents();
@@ -243,10 +244,11 @@ export class GameObjectSelectionHandler {
   private destroy() {
     this.sub.unsubscribe();
     this.scene.input.keyboard?.off("keydown", this.onKeyDown, this);
+    this.externalModalSubscription?.unsubscribe();
   }
 
   private listenToChatModalEvents() {
-    this.scene.communicator.allScenes.subscribe((event) => {
+    this.externalModalSubscription = this.scene.communicator.allScenes.subscribe((event) => {
       if (event.name === "external-modal-opened") {
         this.externalModalOpen = true;
       } else if (event.name === "external-modal-closed") {
