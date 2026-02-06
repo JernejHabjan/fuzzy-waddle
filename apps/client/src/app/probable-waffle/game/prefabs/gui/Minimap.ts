@@ -230,9 +230,11 @@ export default class Minimap extends Phaser.GameObjects.Container {
 
         // Reuse existing diamond or create new one
         let diamond: Phaser.GameObjects.Polygon;
-        if (diamondIndex < this.minimapDiamonds.length) {
+        const needsRecreate = diamondIndex >= this.minimapDiamonds.length;
+        
+        if (!needsRecreate) {
           diamond = this.minimapDiamonds[diamondIndex]!;
-          // Update existing diamond's position and color
+          // Update existing diamond's position, color, and points (in case size changed)
           this.updateDiamondShape(diamond, x, y, isoX, isoY, pixelWidth, pixelHeight, color);
         } else {
           // Create new diamond
@@ -240,9 +242,9 @@ export default class Minimap extends Phaser.GameObjects.Container {
           this.minimapDiamonds.push(diamond);
         }
 
-        // Only update event handlers if tile coordinates changed
+        // Only update event handlers if tile coordinates changed or diamond was newly created
         const storedCoords = this.diamondTileCoords.get(diamond);
-        if (!storedCoords || storedCoords.i !== i || storedCoords.j !== j) {
+        if (needsRecreate || !storedCoords || storedCoords.i !== i || storedCoords.j !== j) {
           this.diamondTileCoords.set(diamond, { i, j });
           diamond.removeAllListeners();
 
@@ -302,9 +304,14 @@ export default class Minimap extends Phaser.GameObjects.Container {
     // Update color
     diamond.setFillStyle(color.color, 1);
     
-    // Note: We don't update points here as they're relative to the diamond's position
-    // and recreating them would defeat the purpose of object pooling.
-    // The points are set during creation and remain constant relative to the object.
+    // Update points to handle size changes (e.g., when minimap zooms)
+    const diamondPoints = [
+      { x: isoX, y: isoY + pixelHeight / 2 },
+      { x: isoX + pixelWidth / 2, y: isoY },
+      { x: isoX + pixelWidth, y: isoY + pixelHeight / 2 },
+      { x: isoX + pixelWidth / 2, y: isoY + pixelHeight }
+    ];
+    diamond.setTo(diamondPoints);
     
     // Ensure it's visible
     diamond.setVisible(true);

@@ -61,8 +61,9 @@ export class FogOfWarComponent {
     this.tileHeight = this.tilemap.tileHeight;
     this.startX = -this.margin;
     this.startY = -this.margin;
-    this.gridWidth = this.tilemap.width + this.margin;
-    this.gridHeight = this.tilemap.height + this.margin;
+    // Store the end coordinates for clarity
+    this.gridWidth = this.tilemap.width + this.margin * 2;
+    this.gridHeight = this.tilemap.height + this.margin * 2;
 
     // Create graphics layer for fog of war
     this.fowLayer = this.scene.add.graphics();
@@ -88,8 +89,10 @@ export class FogOfWarComponent {
    * Pre-cache tile world positions to avoid repeated tileToWorldXY calls
    */
   private precacheTileWorldPositions(): void {
-    for (let y = this.startY; y < this.gridHeight; y++) {
-      for (let x = this.startX; x < this.gridWidth; x++) {
+    const endX = this.startX + this.gridWidth;
+    const endY = this.startY + this.gridHeight;
+    for (let y = this.startY; y < endY; y++) {
+      for (let x = this.startX; x < endX; x++) {
         const tileKey = this.getTileKey(x, y);
         const worldPos = this.tilemap.tileToWorldXY(x, y);
         if (worldPos) {
@@ -292,8 +295,8 @@ export class FogOfWarComponent {
   }
 
   private redrawFogOfWar(): void {
-    // Only clear and redraw if there are dirty tiles or if mode changed
-    if (this.dirtyTiles.size === 0 && this.fowMode !== FogOfWarMode.ALL_VISIBLE) {
+    // Only clear and redraw if there are dirty tiles
+    if (this.dirtyTiles.size === 0) {
       return;
     }
 
@@ -316,34 +319,19 @@ export class FogOfWarComponent {
     const totalTiles = this.gridWidth * this.gridHeight;
     const shouldFullRedraw = this.dirtyTiles.size > totalTiles * 0.3;
 
-    if (shouldFullRedraw) {
-      // Full redraw: clear everything and redraw all tiles
-      this.fowLayer.clear();
+    // Full redraw: clear everything and redraw all tiles
+    // Note: Even for "incremental" updates, we do a full clear because isometric tiles overlap
+    this.fowLayer.clear();
 
-      for (let y = this.startY; y < this.gridHeight; y++) {
-        for (let x = this.startX; x < this.gridWidth; x++) {
-          const tileKey = this.getTileKey(x, y);
-          const worldPos = this.tileWorldPosCache.get(tileKey);
+    const endX = this.startX + this.gridWidth;
+    const endY = this.startY + this.gridHeight;
+    for (let y = this.startY; y < endY; y++) {
+      for (let x = this.startX; x < endX; x++) {
+        const tileKey = this.getTileKey(x, y);
+        const worldPos = this.tileWorldPosCache.get(tileKey);
 
-          if (worldPos) {
-            this.drawTileAtWorldPos(worldPos.x, worldPos.y, tileKey, alphaUnexplored);
-          }
-        }
-      }
-    } else {
-      // Incremental redraw: Since isometric tiles overlap, we need to clear and redraw affected regions
-      // For simplicity and correctness with diamond shapes, do a full clear and redraw
-      // This is still faster than before since we skip when there are no dirty tiles
-      this.fowLayer.clear();
-
-      for (let y = this.startY; y < this.gridHeight; y++) {
-        for (let x = this.startX; x < this.gridWidth; x++) {
-          const tileKey = this.getTileKey(x, y);
-          const worldPos = this.tileWorldPosCache.get(tileKey);
-
-          if (worldPos) {
-            this.drawTileAtWorldPos(worldPos.x, worldPos.y, tileKey, alphaUnexplored);
-          }
+        if (worldPos) {
+          this.drawTileAtWorldPos(worldPos.x, worldPos.y, tileKey, alphaUnexplored);
         }
       }
     }
