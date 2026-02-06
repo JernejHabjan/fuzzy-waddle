@@ -161,7 +161,7 @@ export class GameObjectSelectionHandler {
       worldXyEnd.y - worldXyStart.y
     );
 
-    return selectableChildren.filter((selectableChild) => {
+    const actorsInArea = selectableChildren.filter((selectableChild) => {
       const bounds = getGameObjectBounds(selectableChild);
       if (!bounds) return false;
       const actorBounds = new Phaser.Geom.Rectangle(bounds.x, bounds.y, bounds.width, bounds.height);
@@ -177,6 +177,21 @@ export class GameObjectSelectionHandler {
 
       return actorOverlapPercentageWidth > minOverlapPercentage && actorOverlapPercentageHeight > minOverlapPercentage;
     });
+
+    // Filter to only friendly units if any friendly units are in the selection
+    const currentPlayerNr = getCurrentPlayerNumber(this.scene);
+    const friendlyActors = actorsInArea.filter((actor) => {
+      const ownerComponent = getActorComponent(actor, OwnerComponent);
+      return ownerComponent?.getOwner() === currentPlayerNr;
+    });
+
+    // If any friendly units are selected, only return friendly units
+    if (friendlyActors.length > 0) {
+      return friendlyActors;
+    }
+
+    // Otherwise return all actors in the area
+    return actorsInArea;
   }
 
   /**
