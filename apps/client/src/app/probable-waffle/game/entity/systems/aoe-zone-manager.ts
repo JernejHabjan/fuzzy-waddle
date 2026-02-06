@@ -129,8 +129,8 @@ export class AoeZoneManager {
 
       // Check if within radius
       const distance = Phaser.Math.Distance.Between(
-        zone.position.x,
-        zone.position.y,
+        zone.worldPosition.x,
+        zone.worldPosition.y,
         actorTransform.x,
         actorTransform.y
       );
@@ -162,7 +162,13 @@ export class AoeZoneManager {
     const radiusInPixels = this.getRadiusInPixels(zone.radius);
 
     // Draw zone circle
-    this.drawZoneCircle(graphics, zone.position.x, zone.position.y, radiusInPixels, zone.tintColor ?? 0xffffff);
+    this.drawZoneCircle(
+      graphics,
+      zone.worldPosition.x,
+      zone.worldPosition.y,
+      radiusInPixels,
+      zone.tintColor ?? 0xffffff
+    );
 
     // Create pulse animation
     const pulseTimer = this.scene.time.addEvent({
@@ -206,15 +212,21 @@ export class AoeZoneManager {
 
     // Create pulse effect by briefly increasing radius
     const pulseRadius = radiusInPixels * 1.1;
-    this.drawZoneCircle(visual.graphics, zone.position.x, zone.position.y, pulseRadius, zone.tintColor ?? 0xffffff);
+    this.drawZoneCircle(
+      visual.graphics,
+      zone.worldPosition.x,
+      zone.worldPosition.y,
+      pulseRadius,
+      zone.tintColor ?? 0xffffff
+    );
 
     // Return to normal after short delay
     this.scene.time.delayedCall(100, () => {
       if (visual.graphics.active) {
         this.drawZoneCircle(
           visual.graphics,
-          zone.position.x,
-          zone.position.y,
+          zone.worldPosition.x,
+          zone.worldPosition.y,
           radiusInPixels,
           zone.tintColor ?? 0xffffff
         );
@@ -248,7 +260,7 @@ export class AoeZoneManager {
 
     for (const zone of this.activeZones) {
       const radiusInPixels = this.getRadiusInPixels(zone.radius);
-      const distance = Phaser.Math.Distance.Between(zone.position.x, zone.position.y, pos.x, pos.y);
+      const distance = Phaser.Math.Distance.Between(zone.worldPosition.x, zone.worldPosition.y, pos.x, pos.y);
 
       if (distance <= radiusInPixels) {
         zones.push(zone);

@@ -386,7 +386,7 @@ export class SpellCastingSystem {
 
     this.aoeZoneManager.createZone({
       spellType: spellData.type,
-      position: targetWorld,
+      worldPosition: targetWorld,
       radius: spellData.aoeRadius,
       duration: spellData.persistentZone.duration,
       tickInterval: spellData.persistentZone.tickInterval,

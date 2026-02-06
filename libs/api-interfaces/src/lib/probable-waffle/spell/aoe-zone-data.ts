@@ -1,9 +1,10 @@
-import type { StatusEffectData } from '../status-effect';
+import type { StatusEffectData } from "../status-effect";
+import type { Vector2Simple } from "../../game/vector";
 
 export interface AoeZoneData {
   id: string; // unique zone ID
   spellType: string; // which spell created this (SpellType enum value)
-  position: { x: number; y: number }; // world position
+  worldPosition: Vector2Simple; // world position
   radius: number; // tiles
   duration: number; // total duration in ms
   remainingTime: number; // remaining time in ms
