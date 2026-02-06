@@ -203,7 +203,9 @@ root [Move] {
                 }
 
                 /* move */
-                action [MoveToTargetOrLocation, "move"]
+                fail {
+                    action [MoveToTargetOrLocation, "move"]
+                }
 
                 /* if reached target, stop */
                 sequence {

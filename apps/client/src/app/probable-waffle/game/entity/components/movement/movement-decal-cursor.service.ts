@@ -9,6 +9,7 @@ import type { Subscription } from "rxjs";
 import { OrderType } from "../../../ai/order-type";
 import { OwnerComponent } from "../owner-component";
 import { getCurrentPlayerNumber } from "../../../data/scene-data";
+import { FlyingComponent } from "./flying-component";
 
 export class MovementDecalCursorService {
   private moveMarkerSprite?: Phaser.GameObjects.Image;
@@ -81,7 +82,8 @@ export class MovementDecalCursorService {
     if (!tileWorldXY) return;
 
     // Check if terrain is accessible
-    const isAccessible = this.navigationService.isTileWalkable({ x: tileVec3.x, y: tileVec3.y });
+    const flyingComponent = getActorComponent(this.gameObject, FlyingComponent);
+    const isAccessible = !!flyingComponent || this.navigationService.isTileWalkable({ x: tileVec3.x, y: tileVec3.y });
 
     if (isAccessible) {
       this.showAccessibleMarker(tileWorldXY, tileVec3);

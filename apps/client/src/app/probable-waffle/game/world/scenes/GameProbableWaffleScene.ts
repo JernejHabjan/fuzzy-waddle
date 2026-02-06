@@ -33,6 +33,7 @@ import { ActorIndexSystem } from "../services/ActorIndexSystem";
 import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
 import { SelectionTabHandler } from "../../player/human-controller/selection-tab-handler";
 import { LockedCursorHandler } from "../../player/human-controller/locked-cursor.handler";
+import { ActorDebugDamageSystem } from "../services/actor-debug-damage-system";
 import { SpellCursor } from "../../player/human-controller/spell-cursor";
 
 export default class GameProbableWaffleScene extends ProbableWaffleScene {
@@ -94,6 +95,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
       techTreeService,
       spellCursor
     );
+    new ActorDebugDamageSystem(this);
     this.sceneGameData.systems.push(new AiPlayerHandler(this));
     this.sceneGameData.components.push(new FogOfWarComponent(this, this.tilemap));
 

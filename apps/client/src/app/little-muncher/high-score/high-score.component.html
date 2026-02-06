@@ -1,0 +1,42 @@
+<fuzzy-waddle-home-nav routerLink="/little-muncher" title="Little Muncher" />
+
+<fuzzy-waddle-center-wrapper>
+  <div class="card-container">
+    <div class="general-title">High score:</div>
+
+    @if (highScores.length) {
+      @for (hill of getUniqueHills(highScores); track hill.data.name) {
+        <div class="card p-2 m-1">
+          <h3>{{ hill.data.name }} ({{ hill.data.height }}m)</h3>
+          <ol>
+            @for (score of getTopScoresForHill(highScores, hill.enum); track score.user_id) {
+              <li>{{ score.user_name }} - {{ score.score }}</li>
+            }
+          </ol>
+        </div>
+      }
+    } @else {
+      <div class="text-center">
+        <!-- check if loading -->
+        @if (loading) {
+          <div>
+            <fa-icon [icon]="faSpinner" animation="spin" />
+          </div>
+        } @else {
+          @if (this.serverHealthService.serverAvailable) {
+            <div>
+              <div>No scores yet</div>
+              <div>Be the first to play!</div>
+              <button routerLink="/little-muncher/choose-level" class="btn btn-danger m-1" type="button">Play</button>
+            </div>
+          } @else {
+            <div>Server unavailable</div>
+            <div>Try again later</div>
+            <fa-icon [icon]="faExclamationTriangle" class="text-warning" />
+          }
+        }
+        <!-- no scores -->
+      </div>
+    }
+  </div>
+</fuzzy-waddle-center-wrapper>
