@@ -179,12 +179,7 @@ export class GameObjectSelectionHandler {
     });
 
     // Filter to only friendly units if any friendly units are in the selection
-    const currentPlayerNr = getCurrentPlayerNumber(this.scene);
-    const friendlyActors = actorsInArea.filter((actor) => {
-      const ownerComponent = getActorComponent(actor, OwnerComponent);
-      return ownerComponent?.getOwner() === currentPlayerNr;
-    });
-
+    const friendlyActors = actorsInArea.filter((actor) => this.selectionIsForCurrentPlayer(actor));
     // If any friendly units are selected, only return friendly units
     if (friendlyActors.length > 0) {
       return friendlyActors;
