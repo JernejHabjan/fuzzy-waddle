@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars,no-undef */
 // src/test/mocks/phaser.js
 
 class Game {
