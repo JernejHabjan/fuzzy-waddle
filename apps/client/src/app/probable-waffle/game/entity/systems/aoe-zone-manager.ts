@@ -7,6 +7,7 @@ import { HealthComponent } from "../components/combat/components/health-componen
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import Phaser from "phaser";
 import { RandomService } from "../../world/services/random.service";
+import { TilemapComponent } from "../../world/tilemap/tilemap.component";
 
 interface ZoneVisual {
   zoneId: string;
@@ -153,8 +154,7 @@ export class AoeZoneManager {
   private getRadiusInPixels(radiusTiles: number): number {
     // Approximate conversion - in isometric, we use the diagonal distance
     // This should be calibrated based on actual tile dimensions
-    const tileWidth = 64; // Default tile width, should get from tilemap
-    return radiusTiles * tileWidth;
+    return radiusTiles * TilemapComponent.tileWidth;
   }
 
   private createZoneVisual(zone: AoeZoneData): void {

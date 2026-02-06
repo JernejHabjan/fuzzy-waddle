@@ -1,4 +1,5 @@
-import { StatusEffectType } from './status-effect-type';
+import { StatusEffectType } from "./status-effect-type";
+import type { ActorId } from "../../game-instance/player/player";
 
 export interface StatusEffectData {
   type: StatusEffectType;
@@ -11,7 +12,7 @@ export interface StatusEffectData {
   instantDamage?: number; // one-time damage on apply
   instantHeal?: number; // one-time heal on apply
   movementSpeedModifier?: number; // 0.5 = 50% slower, 1.5 = 50% faster
-  sourceActorId?: string; // who applied the effect
+  sourceActorId?: ActorId; // who applied the effect
   tintColor?: number; // visual tint (0x6666FF for frost, 0xFF6600 for fire)
   lastTickTime?: number; // timestamp of last tick
 }

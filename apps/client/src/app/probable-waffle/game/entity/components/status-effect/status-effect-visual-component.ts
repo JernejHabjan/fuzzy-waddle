@@ -1,10 +1,10 @@
-import { StatusEffectComponent } from './status-effect-component';
-import { getActorComponent } from '../../../../data/actor-component';
-import { Subscription } from 'rxjs';
-import { onObjectReady } from '../../../../data/game-object-helper';
-import { StatusEffectData, StatusEffectType } from '@fuzzy-waddle/api-interfaces';
-import { HealthComponent } from '../combat/components/health-component';
-import Phaser from 'phaser';
+import { StatusEffectComponent } from "./status-effect-component";
+import { Subscription } from "rxjs";
+import { StatusEffectData, StatusEffectType } from "@fuzzy-waddle/api-interfaces";
+import { HealthComponent } from "../combat/components/health-component";
+import Phaser from "phaser";
+import { onObjectReady } from "../../../data/game-object-helper";
+import { getActorComponent } from "../../../data/actor-component";
 
 export class StatusEffectVisualComponent {
   private statusEffectComponent?: StatusEffectComponent;

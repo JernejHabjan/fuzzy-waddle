@@ -39,11 +39,7 @@ export const skaduweeMagicianFemaleDefinition = {
     info: {
       name: "Umbramancer",
       description: "A conduit of shadow and void, this sorcerer commands dark energies that consume all light and hope",
-      tooltipDescription: [
-        "Ranged magic attacker",
-        "Deals elemental fire damage",
-        "Fragile but powerful"
-      ],
+      tooltipDescription: ["Ranged magic attacker", "Deals elemental fire damage", "Fragile but powerful"],
       smallImage: {
         key: "factions",
         frame: "character_icons/skaduwee/magician_female.png",
@@ -58,7 +54,14 @@ export const skaduweeMagicianFemaleDefinition = {
       attacks: [weaponDefinitions.frostSpell, weaponDefinitions.staff]
     },
     spell: {
-      availableSpells: [SpellType.Snowstorm]
+      availableSpells: [
+        SpellType.Snowstorm,
+        SpellType.Firestorm,
+        SpellType.FrostNova,
+        SpellType.HealingRain,
+        SpellType.HealingTotem,
+        SpellType.HealingLight
+      ]
     },
     productionCost: {
       resources: {
