@@ -56,6 +56,7 @@ export class ConvertibleComponent {
     for (const [playerNumber, ownedActors] of ownedActorsByPlayers) {
       for (const ownedActor of ownedActors) {
         // Skip dead actors
+        if (!ownedActor.active) return;
         const health = getActorComponent(ownedActor, HealthComponent);
         if (health?.killed) continue;
 
