@@ -5,7 +5,9 @@ import {
   type StatusEffectData,
   StatusEffectType,
   type Vector2Simple,
-  type Vector3Simple
+  type Vector3Simple,
+  type ActorDefinition,
+  ConstructionStateEnum
 } from "@fuzzy-waddle/api-interfaces";
 import { getActorComponent } from "../../data/actor-component";
 import { SpellComponent } from "../components/combat/components/spell-component";
@@ -14,15 +16,17 @@ import { StatusEffectComponent } from "../components/status-effect/status-effect
 import { OwnerComponent } from "../components/owner-component";
 import { ActorTranslateComponent } from "../components/movement/actor-translate-component";
 import { AnimationActorComponent } from "../components/animation/animation-actor-component";
-import { getGameObjectBounds, getGameObjectLogicalTransform, onObjectReady } from "../../data/game-object-helper";
+import { getGameObjectBounds, getGameObjectLogicalTransform, getGameObjectVisibility, onObjectReady } from "../../data/game-object-helper";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { AudioService } from "../../world/services/audio.service";
 import { AoeZoneManager } from "./aoe-zone-manager";
 import { NavigationService } from "../../world/services/navigation.service";
+import { SceneActorCreator } from "../../world/services/scene-actor-creator";
 import { DistanceHelper } from "../../library/distance-helper";
 import FrostBolt from "../../prefabs/weapons/FrostBolt";
 import { ProjectileType } from "../components/combat/projectile-type";
 import { DepthHelper } from "../../world/services/depth.helper";
+import { IsoHelper } from "../../world/tilemap/iso-helper";
 import Phaser from "phaser";
 
 export class SpellCastingSystem {
@@ -399,12 +403,63 @@ export class SpellCastingSystem {
     });
   }
 
-  private spawnPrefab(spellData: SpellData, _targetPosition: Vector2Simple): void {
+  private spawnPrefab(spellData: SpellData, targetPosition: Vector2Simple): void {
     if (!spellData.spawnPrefab) return;
 
-    // TODO: Implement prefab spawning using the prefab system
-    // This would create a new actor at the target position
-    console.warn("Prefab spawning not yet implemented:", spellData.spawnPrefab.prefabName);
+    const sceneActorCreator = getSceneService(this.gameObject.scene, SceneActorCreator);
+    if (!sceneActorCreator) {
+      console.error("SceneActorCreator not found");
+      return;
+    }
+
+    // Convert tile position to world position
+    const worldPosition = IsoHelper.isometricTileToWorldXY(
+      this.gameObject.scene,
+      targetPosition.x,
+      targetPosition.y
+    );
+
+    // Create actor definition
+    const actorDefinition: ActorDefinition = {
+      actorName: spellData.spawnPrefab.prefabName,
+      representable: {
+        logicalWorldTransform: {
+          x: worldPosition.x,
+          y: worldPosition.y,
+          z: 0
+        }
+      },
+      ...(spellData.spawnPrefab.inheritOwner && this.ownerComponent && {
+        owner: {
+          ownerId: this.ownerComponent.getOwner()
+        }
+      }),
+      constructionSite: {
+        state: ConstructionStateEnum.Finished
+      }
+    };
+
+    // Spawn the prefab
+    const newGameObject = sceneActorCreator.createActorFromDefinition(actorDefinition);
+    if (newGameObject) {
+      // Hide by default - fog-of-war will show it if visible for player
+      const visibilityComponent = getGameObjectVisibility(newGameObject);
+      if (visibilityComponent) {
+        visibilityComponent.setVisible(false);
+      }
+
+      // If the prefab has a duration, schedule its destruction
+      if (spellData.spawnPrefab.duration) {
+        this.gameObject.scene.time.delayedCall(spellData.spawnPrefab.duration, () => {
+          const healthComponent = getActorComponent(newGameObject, HealthComponent);
+          if (healthComponent) {
+            healthComponent.killActor();
+          } else {
+            newGameObject.destroy();
+          }
+        });
+      }
+    }
   }
 
   private stopProjectile(): void {
