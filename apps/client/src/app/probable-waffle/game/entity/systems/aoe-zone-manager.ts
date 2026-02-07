@@ -193,13 +193,17 @@ export class AoeZoneManager {
   ): void {
     graphics.clear();
 
-    // Draw filled semi-transparent circle
+    // Draw filled semi-transparent ellipse for isometric perspective
+    // Isometric view compresses the vertical axis by ~0.5
+    const ellipseWidth = radius * 2;
+    const ellipseHeight = radius * 2 * 0.5; // Compressed for isometric
+
     graphics.fillStyle(color, 0.2);
-    graphics.fillCircle(x, y, radius);
+    graphics.fillEllipse(x, y, ellipseWidth, ellipseHeight);
 
     // Draw border
     graphics.lineStyle(2, color, 0.6);
-    graphics.strokeCircle(x, y, radius);
+    graphics.strokeEllipse(x, y, ellipseWidth, ellipseHeight);
   }
 
   private pulseZone(zoneId: string): void {

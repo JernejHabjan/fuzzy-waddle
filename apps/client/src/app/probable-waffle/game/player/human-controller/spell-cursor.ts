@@ -104,19 +104,28 @@ export class SpellCursor {
     this.aoeCircle = this.scene.add.graphics();
     const radiusPixels = radiusTiles * TilemapComponent.tileWidth;
 
+    // Use ellipse for isometric perspective
     this.aoeCircle.fillStyle(color, 0.2);
-    this.aoeCircle.fillCircle(0, 0, radiusPixels);
+    this.aoeCircle.fillEllipse(0, 0, radiusPixels, radiusPixels / 2);
 
     this.aoeCircle.lineStyle(2, color, 0.6);
-    this.aoeCircle.strokeCircle(0, 0, radiusPixels);
+    this.aoeCircle.strokeEllipse(0, 0, radiusPixels, radiusPixels / 2);
 
     this.aoeCircle.setDepth(1000);
     this.aoeCircle.setVisible(false);
   }
 
-  private createRangeCircle(_rangeTiles: number, _color: number): void {
+  private createRangeCircle(rangeTiles: number, color: number): void {
     // Range circle shows the maximum range from caster
-    // Currently not drawn - could be added for more visual feedback
+    this.rangeCircle = this.scene.add.graphics();
+    const rangePixels = rangeTiles * TilemapComponent.tileWidth;
+
+    // Use ellipse for isometric perspective - thin dotted line
+    this.rangeCircle.lineStyle(1, color, 0.3);
+    this.rangeCircle.strokeEllipse(0, 0, rangePixels, rangePixels / 2);
+
+    this.rangeCircle.setDepth(999); // Below AOE circle
+    this.rangeCircle.setVisible(false);
   }
 
   private handlePointerMove(pointer: Phaser.Input.Pointer): void {
@@ -132,6 +141,17 @@ export class SpellCursor {
     // Update AOE circle position
     this.aoeCircle.setPosition(worldX, worldY);
     this.aoeCircle.setVisible(true);
+
+    // Update range circle position to nearest caster
+    if (this.rangeCircle) {
+      const nearestCaster = this.findNearestCaster(worldX, worldY);
+      if (nearestCaster && 'x' in nearestCaster && 'y' in nearestCaster) {
+        this.rangeCircle.setPosition(nearestCaster.x as number, nearestCaster.y as number);
+        this.rangeCircle.setVisible(true);
+      } else {
+        this.rangeCircle.setVisible(false);
+      }
+    }
 
     // Check if position is in range
     const isInRange = this.isPositionInRange({
@@ -229,6 +249,28 @@ export class SpellCursor {
     if (!this.spellType) return 0x6666ff;
     const spellData = spellDefinitions[this.spellType];
     return spellData?.tintColor ?? 0x6666ff;
+  }
+
+  private findNearestCaster(x: number, y: number): Phaser.GameObjects.GameObject | null {
+    if (this.selectedCasters.length === 0) return null;
+
+    let nearestCaster: Phaser.GameObjects.GameObject | null = null;
+    let minDistance = Infinity;
+
+    for (const caster of this.selectedCasters) {
+      if (!('x' in caster) || !('y' in caster)) continue;
+
+      const dx = (caster.x as number) - x;
+      const dy = (caster.y as number) - y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance < minDistance) {
+        minDistance = distance;
+        nearestCaster = caster;
+      }
+    }
+
+    return nearestCaster;
   }
 
   private destroy(): void {
