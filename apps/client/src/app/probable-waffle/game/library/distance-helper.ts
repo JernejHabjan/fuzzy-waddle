@@ -331,11 +331,13 @@ export class DistanceHelper {
         const actor2Tile = getGameObjectCurrentTile(actor2);
         if (!actor1Tile || !actor2Tile) continue;
 
-        // Create cache key (bidirectional)
-        const cacheKey =
-          actor1Tile.x <= actor2Tile.x
-            ? `${actor1Tile.x},${actor1Tile.y}->${actor2Tile.x},${actor2Tile.y}`
-            : `${actor2Tile.x},${actor2Tile.y}->${actor1Tile.x},${actor1Tile.y}`;
+        // Create cache key (use sorted coordinates to make bidirectional)
+        const actor1First =
+          actor1Tile.x < actor2Tile.x ||
+          (actor1Tile.x === actor2Tile.x && actor1Tile.y <= actor2Tile.y);
+        const cacheKey = actor1First
+          ? `${actor1Tile.x},${actor1Tile.y}->${actor2Tile.x},${actor2Tile.y}`
+          : `${actor2Tile.x},${actor2Tile.y}->${actor1Tile.x},${actor1Tile.y}`;
 
         // Check cache first
         const cached = navigationDistanceBetweenObjectsCache.get(cacheKey);

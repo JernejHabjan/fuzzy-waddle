@@ -53,7 +53,7 @@ interface PathCache {
   path: Vector2Simple[] | null;
   timestamp: number;
 }
-const pathCache = new Map<string, PathCache>();
+
 const PATH_CACHE_TTL_MS = 1000; // Cache paths for 1 second
 
 export class NavigationService {
@@ -69,6 +69,7 @@ export class NavigationService {
   private readonly DEBUG_DEMO = false;
   private readonly DEBUG_CLICK_INFO = false;
   private directionalConditions: Map<string, Direction[]> = new Map();
+  private pathCache = new Map<string, PathCache>();
 
   constructor(
     private readonly scene: Phaser.Scene,
@@ -345,7 +346,7 @@ export class NavigationService {
     const now = performance.now();
 
     // Check cache
-    const cached = pathCache.get(cacheKey);
+    const cached = this.pathCache.get(cacheKey);
     if (cached && (now - cached.timestamp) < PATH_CACHE_TTL_MS) {
       return cached.path;
     }
@@ -359,10 +360,10 @@ export class NavigationService {
         }
 
         // Cache the result
-        pathCache.set(cacheKey, { path: result, timestamp: now });
+        this.pathCache.set(cacheKey, { path: result, timestamp: now });
 
         // Periodically clean up old cache entries
-        if (pathCache.size > 1000) {
+        if (this.pathCache.size > 1000) {
           this.cleanPathCache(now);
         }
 
@@ -373,9 +374,9 @@ export class NavigationService {
   }
 
   private cleanPathCache(now: number = performance.now()): void {
-    for (const [key, value] of pathCache.entries()) {
+    for (const [key, value] of this.pathCache.entries()) {
       if ((now - value.timestamp) >= PATH_CACHE_TTL_MS) {
-        pathCache.delete(key);
+        this.pathCache.delete(key);
       }
     }
   }
@@ -481,7 +482,7 @@ export class NavigationService {
     this.setup();
     // Clear both the distance cache and path cache when navigation grid changes
     DistanceHelper.clearNavigationCache();
-    pathCache.clear();
+    this.pathCache.clear();
   }
 
   /**
@@ -742,6 +743,7 @@ export class NavigationService {
 
   private destroy() {
     this.scene?.events.off(NavigationService.UpdateNavigationEvent, this.throttleUpdateNavigation, this);
+    this.pathCache.clear();
   }
 
   getTerrainUnderActor(gameObject: Phaser.GameObjects.GameObject): TerrainType | undefined {

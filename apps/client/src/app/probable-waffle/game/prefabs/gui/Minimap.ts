@@ -272,6 +272,16 @@ export default class Minimap extends Phaser.GameObjects.Container {
         diamondIndex++;
       }
     }
+
+    // Hide/destroy excess diamonds if minimap shrunk (e.g., smaller map / reload)
+    while (diamondIndex < this.minimapDiamonds.length) {
+      const diamond = this.minimapDiamonds[diamondIndex];
+      if (diamond) {
+        diamond.setVisible(false);
+        this.diamondTileCoords.delete(diamond);
+      }
+      diamondIndex++;
+    }
   }
 
   /**
