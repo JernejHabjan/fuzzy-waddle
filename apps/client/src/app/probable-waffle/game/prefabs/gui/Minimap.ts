@@ -288,7 +288,7 @@ export default class Minimap extends Phaser.GameObjects.Container {
     color: Phaser.Display.Color
   ): void {
     // Update position
-    diamond.setPosition(x, y);
+    diamond.setPosition(x + pixelWidth / 2, y + pixelHeight / 2);
 
     // Update color
     diamond.setFillStyle(color.color, 1);
