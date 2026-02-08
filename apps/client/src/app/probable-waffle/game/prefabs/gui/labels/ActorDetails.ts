@@ -6,11 +6,11 @@ import ActorInfoLabel from "./ActorInfoLabel";
 /* START-USER-IMPORTS */
 import { getActorComponent } from "../../../data/actor-component";
 import { HealthComponent } from "../../../entity/components/combat/components/health-component";
-import { DamageType } from "../../../entity/components/combat/damage-type";
 import { Subscription } from "rxjs";
 import GameObject = Phaser.GameObjects.GameObject;
 import type { PrefabDefinition } from "../../definitions/prefab-definition";
 import { ResourceSourceComponent } from "../../../entity/components/resource/resource-source-component";
+import { DamageType } from "@fuzzy-waddle/api-interfaces";
 /* END-USER-IMPORTS */
 
 export default class ActorDetails extends Phaser.GameObjects.Container {

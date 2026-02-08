@@ -1,17 +1,16 @@
-import { SpellType } from './spell-type';
-import type { SpellData } from './spell-data';
-import { DamageType } from './damage-type';
-import { ProjectileType } from './projectile-type';
-import { AnimationType } from '../animation/animation-type';
-import { ObjectNames, SpellTargetType } from '@fuzzy-waddle/api-interfaces';
-import { ResearchType } from '../research/research-type';
+import { SpellType } from "./spell-type";
+import type { SpellData } from "./spell-data";
+import { ProjectileType } from "./projectile-type";
+import { AnimationType } from "../animation/animation-type";
+import { DamageType, ObjectNames, SpellTargetType } from "@fuzzy-waddle/api-interfaces";
+import { ResearchType } from "../research/research-type";
 
 export const spellDefinitions: Record<SpellType, SpellData> = {
   // ========== SNOWSTORM - AOE Freeze + DoT ==========
   [SpellType.Snowstorm]: {
     type: SpellType.Snowstorm,
-    name: 'Snowstorm',
-    description: 'Freezes enemies in an area, dealing frost damage over time',
+    name: "Snowstorm",
+    description: "Freezes enemies in an area, dealing frost damage over time",
     cooldown: 30000,
     range: 8,
     aoeRadius: 3,
@@ -30,12 +29,12 @@ export const spellDefinitions: Record<SpellType, SpellData> = {
       type: ProjectileType.SnowstormProjectile,
       speed: 400,
       orientation: { randomizeOrientation: false, pointingOrientation: 270 },
-      impactAnimation: { anims: ['snowstorm_impact'], tint: 0x6666ff }
+      impactAnimation: { anims: ["snowstorm_impact"], tint: 0x6666ff }
     },
     castAnimation: AnimationType.Cast,
-    sounds: { cast: 'frost_cast', impact: 'frost_impact' },
-    icon: { key: 'factions', frame: 'spell_icons/snowstorm.png' },
-    shortcut: 'W',
+    sounds: { cast: "frost_cast", impact: "frost_impact" },
+    icon: { key: "factions", frame: "spell_icons/snowstorm.png" },
+    shortcut: "W",
     autocastDefault: true,
     requiresResearch: ResearchType.SnowstormSpell
   },
@@ -43,8 +42,8 @@ export const spellDefinitions: Record<SpellType, SpellData> = {
   // ========== FIRESTORM - Persistent AOE Burn Zone ==========
   [SpellType.Firestorm]: {
     type: SpellType.Firestorm,
-    name: 'Firestorm',
-    description: 'Creates a burning zone that damages enemies who enter or remain inside',
+    name: "Firestorm",
+    description: "Creates a burning zone that damages enemies who enter or remain inside",
     cooldown: 45000,
     range: 10,
     aoeRadius: 4,
@@ -57,15 +56,15 @@ export const spellDefinitions: Record<SpellType, SpellData> = {
     persistentZone: {
       duration: 8000,
       tickInterval: 1000,
-      visualEffect: 'fire_zone_effect'
+      visualEffect: "fire_zone_effect"
     },
     dotDamage: 5,
     dotTickInterval: 1000,
     dotDuration: 2000,
     castAnimation: AnimationType.Cast,
-    sounds: { cast: 'fire_cast', impact: 'fire_ignite', loop: 'fire_burning' },
-    icon: { key: 'factions', frame: 'spell_icons/firestorm.png' },
-    shortcut: 'E',
+    sounds: { cast: "fire_cast", impact: "fire_ignite", loop: "fire_burning" },
+    icon: { key: "factions", frame: "spell_icons/firestorm.png" },
+    shortcut: "E",
     autocastDefault: false,
     requiresResearch: ResearchType.FirestormSpell
   },
@@ -73,8 +72,8 @@ export const spellDefinitions: Record<SpellType, SpellData> = {
   // ========== FROST NOVA - AOE Slow (no stun) ==========
   [SpellType.FrostNova]: {
     type: SpellType.FrostNova,
-    name: 'Frost Nova',
-    description: 'Slows all enemies in an area by 50% for 4 seconds',
+    name: "Frost Nova",
+    description: "Slows all enemies in an area by 50% for 4 seconds",
     cooldown: 20000,
     range: 6,
     aoeRadius: 3,
@@ -91,12 +90,12 @@ export const spellDefinitions: Record<SpellType, SpellData> = {
       type: ProjectileType.FrostBoltProjectile,
       speed: 500,
       orientation: { randomizeOrientation: false, pointingOrientation: 270 },
-      impactAnimation: { anims: ['frost_nova_impact'], tint: 0x99ccff }
+      impactAnimation: { anims: ["frost_nova_impact"], tint: 0x99ccff }
     },
     castAnimation: AnimationType.Cast,
-    sounds: { cast: 'frost_cast', impact: 'frost_slow' },
-    icon: { key: 'factions', frame: 'spell_icons/frost_nova.png' },
-    shortcut: 'Q',
+    sounds: { cast: "frost_cast", impact: "frost_slow" },
+    icon: { key: "factions", frame: "spell_icons/frost_nova.png" },
+    shortcut: "Q",
     autocastDefault: true,
     requiresResearch: ResearchType.FrostNovaSpell
   },
@@ -104,8 +103,8 @@ export const spellDefinitions: Record<SpellType, SpellData> = {
   // ========== HEALING LIGHT - Single Target Instant Heal ==========
   [SpellType.HealingLight]: {
     type: SpellType.HealingLight,
-    name: 'Healing Light',
-    description: 'Instantly restores 30 health to a friendly unit',
+    name: "Healing Light",
+    description: "Instantly restores 30 health to a friendly unit",
     cooldown: 15000,
     range: 6,
     aoeRadius: 0,
@@ -116,9 +115,9 @@ export const spellDefinitions: Record<SpellType, SpellData> = {
     instantHeal: 30,
     tintColor: 0x00ff88,
     castAnimation: AnimationType.Cast,
-    sounds: { cast: 'heal_cast', impact: 'heal_apply' },
-    icon: { key: 'factions', frame: 'spell_icons/healing_light.png' },
-    shortcut: 'H',
+    sounds: { cast: "heal_cast", impact: "heal_apply" },
+    icon: { key: "factions", frame: "spell_icons/healing_light.png" },
+    shortcut: "H",
     autocastDefault: true,
     requiresResearch: ResearchType.HealingLightSpell
   },
@@ -126,8 +125,8 @@ export const spellDefinitions: Record<SpellType, SpellData> = {
   // ========== HEALING RAIN - AOE Heal Over Time Zone ==========
   [SpellType.HealingRain]: {
     type: SpellType.HealingRain,
-    name: 'Healing Rain',
-    description: 'Creates a healing zone that restores health to allies inside',
+    name: "Healing Rain",
+    description: "Creates a healing zone that restores health to allies inside",
     cooldown: 60000,
     range: 8,
     aoeRadius: 4,
@@ -139,15 +138,15 @@ export const spellDefinitions: Record<SpellType, SpellData> = {
     persistentZone: {
       duration: 10000,
       tickInterval: 1000,
-      visualEffect: 'healing_rain_effect'
+      visualEffect: "healing_rain_effect"
     },
     hotHeal: 5,
     hotTickInterval: 1000,
     hotDuration: 0,
     castAnimation: AnimationType.Cast,
-    sounds: { cast: 'heal_cast', loop: 'rain_ambient' },
-    icon: { key: 'factions', frame: 'spell_icons/healing_rain.png' },
-    shortcut: 'R',
+    sounds: { cast: "heal_cast", loop: "rain_ambient" },
+    icon: { key: "factions", frame: "spell_icons/healing_rain.png" },
+    shortcut: "R",
     autocastDefault: false,
     requiresResearch: ResearchType.HealingRainSpell
   },
@@ -155,8 +154,8 @@ export const spellDefinitions: Record<SpellType, SpellData> = {
   // ========== HEALING TOTEM - Spawn Prefab ==========
   [SpellType.HealingTotem]: {
     type: SpellType.HealingTotem,
-    name: 'Healing Totem',
-    description: 'Summons a totem that heals nearby allies for 20 seconds',
+    name: "Healing Totem",
+    description: "Summons a totem that heals nearby allies for 20 seconds",
     cooldown: 90000,
     range: 5,
     aoeRadius: 0,
@@ -171,9 +170,9 @@ export const spellDefinitions: Record<SpellType, SpellData> = {
       inheritOwner: true
     },
     castAnimation: AnimationType.Cast,
-    sounds: { cast: 'totem_summon' },
-    icon: { key: 'factions', frame: 'spell_icons/healing_totem.png' },
-    shortcut: 'T',
+    sounds: { cast: "totem_summon" },
+    icon: { key: "factions", frame: "spell_icons/healing_totem.png" },
+    shortcut: "T",
     autocastDefault: false,
     requiresResearch: ResearchType.HealingTotemSpell
   }

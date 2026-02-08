@@ -1,6 +1,6 @@
 import { StatusEffectType } from "./status-effect-type";
-import { DamageType } from "./damage-type";
 import type { ActorId } from "../../game-instance/player/player";
+import type { DamageType } from "./damage-type";
 
 export interface StatusEffectData {
   type: StatusEffectType;

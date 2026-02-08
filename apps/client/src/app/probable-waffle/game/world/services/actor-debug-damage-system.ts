@@ -4,8 +4,8 @@ import { getActorComponent } from "../../data/actor-component";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import { AnimationActorComponent } from "../../entity/components/animation/animation-actor-component";
 import { AnimationType } from "../../entity/components/animation/animation-type";
-import { DamageType } from "../../entity/components/combat/damage-type";
 import { environment } from "../../../../../environments/environment";
+import { DamageType } from "@fuzzy-waddle/api-interfaces";
 
 export class ActorDebugDamageSystem {
   private externalModalOpen = false;
