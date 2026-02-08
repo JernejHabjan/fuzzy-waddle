@@ -325,7 +325,8 @@ export class FogOfWarComponent {
     }
 
     // Clear dirty actors set after processing
-    this.dirtyActors.clear();
+    // NOTE: dirtyActors is intentionally not cleared here anymore because it is not used by updateFogOfWar();
+    // clearing it would add overhead without affecting current fog-of-war behavior.
 
     // Calculate dirty tiles (tiles that changed state)
     this.calculateDirtyTiles();
