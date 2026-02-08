@@ -1,4 +1,4 @@
-import { ProbableWafflePlayer } from "@fuzzy-waddle/api-interfaces";
+import { type AIBehaviorTreeStateData, ProbableWafflePlayer } from "@fuzzy-waddle/api-interfaces";
 import { PlayerAiBlackboard } from "./player-ai-blackboard";
 import { PlayerAiControllerAgent } from "./player-ai-controller.agent";
 import { BehaviourTree } from "mistreevous";
@@ -9,7 +9,7 @@ import { AI_CONFIG } from "./ai-config";
 
 export class PlayerAiController {
   readonly playerAiControllerAgent: PlayerAiControllerAgent;
-  public blackboard: PlayerAiBlackboard = new PlayerAiBlackboard();
+  public blackboard: PlayerAiBlackboard;
   private behaviourTree: BehaviourTree;
   private elapsedTime: number = 0;
   private static readonly AI_ENABLED = true;
@@ -20,6 +20,7 @@ export class PlayerAiController {
     public readonly scene: Phaser.Scene,
     public readonly player: ProbableWafflePlayer
   ) {
+    this.blackboard = new PlayerAiBlackboard(scene);
     this.playerAiControllerAgent = new PlayerAiControllerAgent(this.scene, this.player, this.blackboard);
     this.behaviourTree = new BehaviourTree(PlayerAiControllerMdsl, this.playerAiControllerAgent);
     // expose telemetry snapshot container in diagnostics if absent
@@ -60,5 +61,24 @@ export class PlayerAiController {
 
   public getTelemetrySnapshot() {
     return this.telemetry.snapshot();
+  }
+
+  /**
+   * Get the AI behavior tree state for saving.
+   */
+  public getSaveState(): AIBehaviorTreeStateData {
+    return {
+      blackboard: this.blackboard.getData(),
+      telemetry: this.telemetry.snapshot()
+    };
+  }
+
+  /**
+   * Set the AI behavior tree state from saved data.
+   */
+  public setSaveState(state: AIBehaviorTreeStateData): void {
+    if (state.blackboard) {
+      this.blackboard.setData(state.blackboard, this.scene);
+    }
   }
 }

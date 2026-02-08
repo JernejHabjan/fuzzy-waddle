@@ -1,4 +1,4 @@
-import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import type { PlayerNumber, Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { NavigationService } from "../../../world/services/navigation.service";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
@@ -24,7 +24,7 @@ export class MapAnalyzer {
 
   constructor(
     public readonly scene: Phaser.Scene,
-    private readonly playerNumber: number
+    private readonly playerNumber: PlayerNumber
   ) {}
 
   /**

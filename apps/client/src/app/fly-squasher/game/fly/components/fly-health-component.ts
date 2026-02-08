@@ -4,7 +4,7 @@ import { type IFlyBase } from "../component.service";
 import { FlyBase } from "../FlyBase";
 
 export type HealthDefinition = {
-  maxHealth: number;
+  readonly maxHealth: number;
 };
 
 export class FlyHealthComponent implements IFlyBase {

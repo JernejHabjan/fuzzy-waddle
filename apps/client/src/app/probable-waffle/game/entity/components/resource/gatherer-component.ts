@@ -194,20 +194,17 @@ export class GathererComponent {
       return GathererComponent.isReadyToUse(resourceDrain);
     });
 
-    const distancePromises = validDrains.map((resourceDrain) =>
-      DistanceHelper.getTileDistanceBetweenGameObjectsNavigation(gatherer, resourceDrain).then(
-        (distance) => [resourceDrain, distance] as [GameObject, number | null]
-      )
-    );
-
-    const drainsWithDistances = await Promise.all(distancePromises);
+    // Use batch method for better performance
+    const pairs: [GameObject, GameObject][] = validDrains.map(drain => [gatherer, drain]);
+    const distances = await DistanceHelper.batchGetDistancesBetweenGameObjects(pairs);
 
     let closestResourceDrain: GameObject | null = null;
     let closestResourceDrainDistance = Infinity;
 
-    for (const [resourceDrain, distance] of drainsWithDistances) {
-      if (distance !== null && distance < closestResourceDrainDistance) {
-        closestResourceDrain = resourceDrain;
+    for (let i = 0; i < validDrains.length; i++) {
+      const distance = distances[i];
+      if (typeof distance === 'number' && distance < closestResourceDrainDistance) {
+        closestResourceDrain = validDrains[i]!;
         closestResourceDrainDistance = distance;
       }
     }
@@ -260,22 +257,19 @@ export class GathererComponent {
       return true;
     });
 
-    const distancePromises = validSources.map((gameObject) =>
-      DistanceHelper.getTileDistanceBetweenGameObjectsNavigation(this.gameObject, gameObject).then(
-        (distance) => [gameObject, distance] as [GameObject, number | null]
-      )
-    );
-
-    const sourcesWithDistances = await Promise.all(distancePromises);
+    // Use batch method for better performance
+    const pairs: [GameObject, GameObject][] = validSources.map(source => [this.gameObject, source]);
+    const distances = await DistanceHelper.batchGetDistancesBetweenGameObjects(pairs);
 
     let closestResourceSource: GameObject | undefined = undefined;
     let closestResourceSourceDistance = Infinity;
 
-    for (const [gameObject, distance] of sourcesWithDistances) {
-      if (distance === null) continue;
+    for (let i = 0; i < validSources.length; i++) {
+      const distance = distances[i];
+      if (typeof distance !== 'number') continue;
       if (maxDistance > 0 && distance > maxDistance) continue;
       if (distance < closestResourceSourceDistance) {
-        closestResourceSource = gameObject;
+        closestResourceSource = validSources[i];
         closestResourceSourceDistance = distance;
       }
     }
@@ -322,6 +316,10 @@ export class GathererComponent {
 
     // gather resources
     const gatheredAmount = await resourceSourceComponent.extractResources(this.gameObject, amountToGather);
+    if (getActorComponent(this.gameObject, HealthComponent)?.killed) {
+      // actor died while gathering
+      return 0;
+    }
     this.setCarriedResourceAmount(this.carriedResourceAmount + gatheredAmount);
 
     this.playGatherSound();
@@ -464,6 +462,7 @@ export class GathererComponent {
         break;
     }
 
+    // can be random as it doesn't need to be deterministic
     const randomSound = sounds[Math.floor(Math.random() * sounds.length)]!;
     const visibilityComponent = getGameObjectVisibility(this.gameObject);
     if (visibilityComponent && visibilityComponent.visible) {

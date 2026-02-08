@@ -272,6 +272,9 @@
                 "y"
             ],
             "label": "generalWarrior",
+            "components": [
+                "EditorConvertible"
+            ],
             "x": 128,
             "y": 1360
         },

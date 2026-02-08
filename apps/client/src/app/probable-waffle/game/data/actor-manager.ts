@@ -80,6 +80,7 @@ import Zombie1 from "../prefabs/characters/mobs/zombies/zombie1/Zombie1";
 import Zombie2 from "../prefabs/characters/mobs/zombies/zombie2/Zombie2";
 import SkeletonSwordsman from "../prefabs/characters/mobs/skeleton/skeleton_swordsman/SkeletonSwordsman";
 import Zombie3 from "../prefabs/characters/mobs/zombies/zombie3/Zombie3";
+import { RandomService } from "../world/services/random.service";
 
 type ActorMap = { [name: string]: new (scene: Phaser.Scene) => GameObject };
 export class ActorManager {
@@ -214,7 +215,7 @@ export class ActorManager {
       production: getActorComponent(actor, ProductionComponent)?.getData(),
       representable: getActorComponent(actor, RepresentableComponent)?.getData(),
       blackboard: getActorComponent(actor, PawnAiController)?.getData()
-    };
+    } satisfies ActorDefinition;
 
     return actorDefinition;
   }
@@ -227,8 +228,8 @@ export class ActorManager {
 
     if (definition.meta?.randomOfType?.length) {
       // If the actor definition has a randomOfType, we need to pick a random one from the list
-      const randomIndex = Math.floor(Math.random() * definition.meta.randomOfType.length);
-      name = definition.meta.randomOfType[randomIndex] as ObjectNames;
+      const randomService = getSceneService(scene, RandomService)!;
+      name = randomService.pick(definition.meta.randomOfType) as ObjectNames;
     }
 
     let actor: GameObject | undefined = undefined;

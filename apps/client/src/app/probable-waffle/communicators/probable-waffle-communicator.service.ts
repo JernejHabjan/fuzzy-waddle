@@ -1,5 +1,7 @@
 import { EventEmitter, Injectable, type OnDestroy } from "@angular/core";
 import {
+  type AllScenesEventData,
+  type GameInstanceId,
   type ProbableWaffleCommunicatorMessageEvent,
   type ProbableWaffleCommunicatorType,
   type ProbableWaffleGameInstanceMetadataChangeEvent,
@@ -35,25 +37,13 @@ export class ProbableWaffleCommunicatorService
   /**
    * utility events that are broadcast to game instance and other angular services - for example save game
    */
-  utilityEvents = new EventEmitter<{ name: "save-game" | "load-game" | "settings"; data?: any }>();
+  utilityEvents = new EventEmitter<{ name: "save-game" | "load-game" | "settings" | "chat"; data?: any }>();
   /**
    * cross scene events - internal phaser events that are not related to game instance and are broadcast to all scenes
    */
-  allScenes = new EventEmitter<{
-    name:
-      | "save-game"
-      | "restart-game"
-      | "selection.deselect"
-      | "selection.singleSelect"
-      | "selection.doubleSelect"
-      | "selection.multiSelect"
-      | "selection.multiSelectPreview"
-      | "selection.terrainSelect"
-      | "quit";
-    data?: any;
-  }>();
+  allScenes = new EventEmitter<AllScenesEventData>();
 
-  startCommunication(gameInstanceId: string, socket?: Socket) {
+  startCommunication(gameInstanceId: GameInstanceId, socket?: Socket) {
     this.gameInstanceMetadataChanged = new TwoWayCommunicator<
       ProbableWaffleGameInstanceMetadataChangeEvent,
       ProbableWaffleCommunicatorType
@@ -94,7 +84,7 @@ export class ProbableWaffleCommunicatorService
     } satisfies ProbableWaffleWebsocketRoomEvent);
   }
 
-  stopCommunication(gameInstanceId: string, socket?: Socket) {
+  stopCommunication(gameInstanceId: GameInstanceId, socket?: Socket) {
     this.destroySubscriptions();
     socket?.emit(ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance, {
       gameInstanceId,

@@ -152,6 +152,7 @@ export class ConstellationEffectComponent implements AfterViewInit, OnDestroy {
       y: undefined
     };
     const rect = this.canvas.getBoundingClientRect();
+    // can be random as it doesn't need to be deterministic
     const x = Math.random() * this.canvas.width;
     const y = Math.random() * this.canvas.height;
     mouse.x = x - rect.left;

@@ -18,7 +18,11 @@ export class AppComponent implements OnInit {
   protected readonly authService = inject(AuthService);
   private readonly serverHealthService = inject(ServerHealthService);
 
-  async ngOnInit() {
-    await Promise.all([this.serverHealthService.checkHealth(), this.authService.autoSignIn()]);
+  ngOnInit() {
+    // Don't block rendering - let health check and auth run in background
+    // noinspection JSIgnoredPromiseFromCall
+    this.serverHealthService.checkHealth();
+    // noinspection JSIgnoredPromiseFromCall
+    this.authService.autoSignIn();
   }
 }

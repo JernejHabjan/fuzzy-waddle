@@ -25,7 +25,9 @@ import {
 import { PawnAiController } from "../../../prefabs/ai-agents/pawn-ai-controller";
 import type { ConstructionSiteDefinition } from "./construction-site-definition";
 import type { ProductionCostDefinition } from "../production/production-cost-definition";
+import { IdComponent } from "../id-component";
 import GameObject = Phaser.GameObjects.GameObject;
+import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 
 export class ConstructionSiteComponent {
   public progressPercentage = 0;
@@ -33,9 +35,7 @@ export class ConstructionSiteComponent {
     this.progressPercentage
   );
   private remainingConstructionTime = 0;
-  private constructionSiteData: ConstructionSiteComponentData = {
-    state: ConstructionStateEnum.NotStarted
-  } satisfies ConstructionSiteComponentData;
+  private state: ConstructionStateEnum = ConstructionStateEnum.NotStarted;
   public constructionStateChanged: Subject<ConstructionStateEnum> = new Subject<ConstructionStateEnum>();
   private assignedBuilders: GameObject[] = [];
   private assignedRepairers: GameObject[] = [];
@@ -55,10 +55,10 @@ export class ConstructionSiteComponent {
   }
 
   private init() {
-    if (this.constructionSiteData.state === ConstructionStateEnum.NotStarted) {
+    if (this.state === ConstructionStateEnum.NotStarted) {
       this.setInitialHealth();
     }
-    if (this.constructionSiteData.state === ConstructionStateEnum.Finished) {
+    if (this.state === ConstructionStateEnum.Finished) {
       this.progressPercentage = 100;
       this.constructionProgressPercentageChanged.next(this.progressPercentage);
     }
@@ -74,7 +74,7 @@ export class ConstructionSiteComponent {
   update(_: number, delta: number): void {
     const deltaWithTimeScale = delta * this.gameObject.scene.time.timeScale;
 
-    if (this.constructionSiteData.state == ConstructionStateEnum.Finished) {
+    if (this.state == ConstructionStateEnum.Finished) {
       this.tryRepair(deltaWithTimeScale);
       return;
     }
@@ -83,19 +83,16 @@ export class ConstructionSiteComponent {
   }
 
   private tryBuild(deltaWithTimeScale: number) {
-    if (
-      this.constructionSiteData.state === ConstructionStateEnum.NotStarted &&
-      this.constructionSiteDefinition.startImmediately
-    ) {
+    if (this.state === ConstructionStateEnum.NotStarted && this.constructionSiteDefinition.startImmediately) {
       this.startConstruction();
       this.setInitialHealth();
     }
 
-    if (this.constructionSiteData.state === ConstructionStateEnum.NotStarted && this.assignedBuilders.length > 0) {
+    if (this.state === ConstructionStateEnum.NotStarted && this.assignedBuilders.length > 0) {
       this.startConstruction();
     }
 
-    if (this.constructionSiteData.state !== ConstructionStateEnum.Constructing) return;
+    if (this.state !== ConstructionStateEnum.Constructing) return;
 
     if (this.healthComponent?.killed) return;
 
@@ -151,6 +148,7 @@ export class ConstructionSiteComponent {
     if (this.playingBuildSound) return;
     this.playingBuildSound = true;
     const soundDefinitions = [...SharedActorActionsSfxHammeringSounds, ...SharedActorActionsSfxSawingSounds];
+    // can be random as it doesn't need to be deterministic
     const soundDefinition = soundDefinitions[Math.floor(Math.random() * soundDefinitions.length)]!;
     this.audioService.playSpatialAudioSprite(
       this.gameObject,
@@ -166,7 +164,7 @@ export class ConstructionSiteComponent {
   }
 
   startConstruction() {
-    if (this.constructionSiteData.state !== ConstructionStateEnum.NotStarted) {
+    if (this.state !== ConstructionStateEnum.NotStarted) {
       throw new Error("ConstructionSiteComponent can only be started once");
     }
     const productionDefinition = this.productionDefinition;
@@ -188,8 +186,8 @@ export class ConstructionSiteComponent {
 
     // start building
     this.remainingConstructionTime = productionDefinition.productionTime;
-    this.constructionSiteData.state = ConstructionStateEnum.Constructing;
-    this.constructionStateChanged.next(this.constructionSiteData.state);
+    this.state = ConstructionStateEnum.Constructing;
+    this.constructionStateChanged.next(this.state);
   }
 
   private setInitialHealth() {
@@ -234,7 +232,7 @@ export class ConstructionSiteComponent {
   }
 
   get isFinished() {
-    return this.constructionSiteData.state === ConstructionStateEnum.Finished;
+    return this.state === ConstructionStateEnum.Finished;
   }
 
   canAssignBuilder() {
@@ -302,12 +300,13 @@ export class ConstructionSiteComponent {
   }
 
   private finishConstruction() {
-    this.constructionSiteData.state = ConstructionStateEnum.Finished;
-    this.constructionStateChanged.next(this.constructionSiteData.state);
+    this.state = ConstructionStateEnum.Finished;
+    this.constructionStateChanged.next(this.state);
 
     const visibilityComponent = getGameObjectVisibility(this.gameObject);
     if (visibilityComponent && visibilityComponent.visible) {
       const soundDefinitions = SharedActorActionsSfxSelectionSounds;
+      // can be random as it doesn't need to be deterministic
       const soundDefinition = soundDefinitions[Math.floor(Math.random() * soundDefinitions.length)]!;
       this.audioService?.playSpatialAudioSprite(this.gameObject, soundDefinition.key, soundDefinition.spriteName);
     }
@@ -329,12 +328,38 @@ export class ConstructionSiteComponent {
   }
 
   getData(): ConstructionSiteComponentData {
-    return this.constructionSiteData;
+    return {
+      state: this.state,
+      remainingConstructionTime: this.remainingConstructionTime,
+      progressPercentage: this.progressPercentage,
+      assignedBuilders: this.assignedBuilders.map((builder) => getActorComponent(builder, IdComponent)!.id),
+      assignedRepairers: this.assignedRepairers.map((repairer) => getActorComponent(repairer, IdComponent)!.id),
+      playingBuildSound: this.playingBuildSound
+    } satisfies ConstructionSiteComponentData;
   }
 
   setData(data: Partial<ConstructionSiteComponentData>) {
-    this.constructionSiteData = { ...this.constructionSiteData, ...data };
-    this.constructionStateChanged.next(this.constructionSiteData.state);
+    if (data.state !== undefined) this.state = data.state;
+    if (data.remainingConstructionTime !== undefined) this.remainingConstructionTime = data.remainingConstructionTime;
+    if (data.progressPercentage !== undefined) this.progressPercentage = data.progressPercentage;
+    if (data.playingBuildSound !== undefined) this.playingBuildSound = data.playingBuildSound;
+    // assigned builders and repairers are set after all objects are loaded.
+    setTimeout(() => {
+      const actorIndex = getSceneService(this.gameObject.scene, ActorIndexSystem);
+      if (actorIndex && data.assignedBuilders) {
+        this.assignedBuilders = data.assignedBuilders
+          .map((id) => actorIndex.getActorById(id))
+          .filter((obj): obj is GameObject => obj !== null);
+      }
+      if (actorIndex && data.assignedRepairers) {
+        this.assignedRepairers = data.assignedRepairers
+          .map((id) => actorIndex.getActorById(id))
+          .filter((obj): obj is GameObject => obj !== null);
+      }
+    }, 50);
+
+    this.constructionProgressPercentageChanged.next(this.progressPercentage);
+    this.constructionStateChanged.next(this.state);
   }
 
   private onDestroy() {

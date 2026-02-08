@@ -39,6 +39,11 @@ export const skaduweeWarriorMaleDefinition = {
     info: {
       name: "Garruk",
       description: "Unyielding and fierce, he brings ruin to all who oppose him",
+      tooltipDescription: [
+        "Strong melee fighter",
+        "Highly durable frontline unit",
+        "Effective against armored targets"
+      ],
       smallImage: {
         key: "factions",
         frame: "character_icons/skaduwee/warrior_male.png",

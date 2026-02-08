@@ -16,7 +16,10 @@ export class TargetingManager {
   private readonly evalCooldownMs = 750;
   private cachedTarget: GameObject | null = null;
 
-  constructor(private readonly blackboard: PlayerAiBlackboard) {}
+  constructor(
+    private readonly scene: Phaser.Scene,
+    private readonly blackboard: PlayerAiBlackboard
+  ) {}
 
   async update(now: number = performance.now()): Promise<void> {
     if (now - this.lastEvalAt < this.evalCooldownMs && this.cachedTarget) return;
@@ -53,8 +56,15 @@ export class TargetingManager {
     const strategy = this.blackboard.currentStrategy;
     const weakestPlayer = this.findWeakestPlayer();
 
+    // Batch calculate all distances upfront if we have a center
+    let distances: (number | null)[] = [];
+    if (center) {
+      distances = await DistanceHelper.batchGetTileDistancesToTile(enemies, center);
+    }
+
     let best: { score: number; obj: GameObject } | undefined;
-    for (const e of enemies) {
+    for (let i = 0; i < enemies.length; i++) {
+      const e = enemies[i]!;
       if (!e.active) continue;
       let score = 0;
       const hc = getActorComponent(e, HealthComponent);
@@ -62,12 +72,18 @@ export class TargetingManager {
         const ratio = hc.healthComponentData.health / (hc.healthDefinition.maxHealth || 1);
         score += (1 - ratio) * 50; // prefer lower health
       }
+
       if (center) {
-        const d = await DistanceHelper.getTileDistanceBetweenGameObjectAndTileNavigation(e, center);
-        if (d === null) {
+        const distance = distances[i];
+        if (typeof distance !== 'number') {
           continue; // ignore this target if distance cannot be calculated
         }
-        score += 30 / d; // nearer to our base center slightly higher priority
+        score += 30 / distance; // nearer to our base center slightly higher priority
+      }
+
+      if (!this.scene.scene.isActive()) {
+        // after long async action, scene might be destroyed
+        return null;
       }
 
       const owner = getActorComponent(e, OwnerComponent)?.getOwner();

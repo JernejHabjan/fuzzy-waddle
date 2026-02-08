@@ -13,6 +13,7 @@ import { SaveGame } from "../../data/save-game";
 import { SceneActorCreator } from "../services/scene-actor-creator";
 import { NavigationService } from "../services/navigation.service";
 import { AudioService } from "../services/audio.service";
+import { RandomService } from "../services/random.service";
 import { TilemapComponent } from "../tilemap/tilemap.component";
 import { RestartGame } from "../../data/restart-game";
 import { AiPlayerHandler } from "../../player/ai-controller/ai-player-handler";
@@ -31,6 +32,8 @@ import { PlayerActionsHandler } from "../../player/human-controller/player-actio
 import { ActorIndexSystem } from "../services/ActorIndexSystem";
 import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
 import { SelectionTabHandler } from "../../player/human-controller/selection-tab-handler";
+import { LockedCursorHandler } from "../../player/human-controller/locked-cursor.handler";
+import { ActorDebugDamageSystem } from "../services/actor-debug-damage-system";
 
 export default class GameProbableWaffleScene extends ProbableWaffleScene {
   tilemap!: Phaser.Tilemaps.Tilemap;
@@ -46,11 +49,12 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     new SceneGameState(this);
     new ScaleHandler(this, this.tilemap, { margins: { left: 150, bottom: 100 }, maxLayers: 8 });
     const gameSettings = GameSettings.loadFromLocalStorage();
-    new CameraMovementHandler(this, {
+    const cameraMovementHandler = new CameraMovementHandler(this, {
       cameraEdgeMovementSpeed: 30,
       cameraKeyboardMovementSpeed: 2,
       enabledMouseCornerMovement: gameSettings.enabledMouseCornerMovement
     });
+    this.sceneGameData.components.push(cameraMovementHandler);
     new LightsHandler(this, { enableLights: false });
     new DepthHelper(this);
     new AnimatedTilemap(this, this.tilemap, this.tilemap.tilesets);
@@ -66,6 +70,11 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     const actorIndex = new ActorIndexSystem(this);
     const techTreeService = new TechTreeService();
 
+    // Initialize RandomService with seed from game config for deterministic randomness
+    const seed = this.sys.game.config.seed?.[0];
+    if (!seed) throw new Error("Game seed is not defined");
+    const randomService = new RandomService(seed);
+
     this.sceneGameData.components.push(
       new TilemapComponent(this.tilemap),
       new BuildingCursor(this),
@@ -73,6 +82,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
       new SelectionTabHandler(this)
     );
     this.sceneGameData.services.push(
+      randomService,
       new NavigationService(this, this.tilemap),
       audioService,
       playerActionsHandler,
@@ -82,6 +92,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
       actorIndex,
       techTreeService
     );
+    new ActorDebugDamageSystem(this);
     this.sceneGameData.systems.push(new AiPlayerHandler(this));
     this.sceneGameData.components.push(new FogOfWarComponent(this, this.tilemap));
 
@@ -108,6 +119,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     this.sceneGameData.services = [];
     this.sceneGameData.systems = [];
     this.sceneGameData.initializers.sceneInitialized.next(false);
+    LockedCursorHandler.releasePointerLock(this.input);
   }
 
   protected override shutDown() {

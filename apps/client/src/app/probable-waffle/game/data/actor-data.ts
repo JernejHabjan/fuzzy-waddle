@@ -71,9 +71,11 @@ export function setActorData(
 
 function setActorProperties(actor: GameObject, actorDefinition?: Partial<ActorDefinition>) {
   if (!actorDefinition) return;
+  if (actorDefinition.id) getActorComponent(actor, IdComponent)?.setData(actorDefinition.id);
+  if (actorDefinition.representable)
+    getActorComponent(actor, RepresentableComponent)?.setData(actorDefinition.representable);
   if (actorDefinition.owner) getActorComponent(actor, OwnerComponent)?.setData(actorDefinition.owner);
   if (actorDefinition.selected) getActorComponent(actor, SelectableComponent)?.setData(actorDefinition.selected);
-  if (actorDefinition.id) getActorComponent(actor, IdComponent)?.setData(actorDefinition.id);
   if (actorDefinition.constructionSite)
     getActorComponent(actor, ConstructionSiteComponent)?.setData(actorDefinition.constructionSite);
   if (actorDefinition.housing) getActorComponent(actor, HousingComponent)?.setData(actorDefinition.housing);
@@ -89,8 +91,6 @@ function setActorProperties(actor: GameObject, actorDefinition?: Partial<ActorDe
   if (actorDefinition.resourceSource)
     getActorComponent(actor, ResourceSourceComponent)?.setData(actorDefinition.resourceSource);
   if (actorDefinition.production) getActorComponent(actor, ProductionComponent)?.setData(actorDefinition.production);
-  if (actorDefinition.representable)
-    getActorComponent(actor, RepresentableComponent)?.setData(actorDefinition.representable);
   if (actorDefinition.blackboard) getActorComponent(actor, PawnAiController)?.setData(actorDefinition.blackboard);
 
   DepthHelper.setActorDepth(actor);

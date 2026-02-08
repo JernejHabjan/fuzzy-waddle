@@ -2,5 +2,9 @@
   gameInstanceClientService.gameInstance?.gameInstanceMetadata?.data?.type &&
   gameInstanceClientService.gameInstance!.gameInstanceMetadata!.data!.type !== ProbableWaffleGameInstanceType.Skirmish
 ) {
-  <fuzzy-waddle-chat [messageListener]="listenToMessages" (newMessage)="sendMessage($event)" />
+  <fuzzy-waddle-chat
+    [messageListener]="listenToMessages"
+    [gameInstanceId]="gameInstanceClientService.currentGameInstanceId"
+    (newMessage)="sendMessage($event)"
+  />
 }

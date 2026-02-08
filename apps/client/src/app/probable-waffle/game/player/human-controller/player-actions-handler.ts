@@ -38,6 +38,7 @@ export class PlayerActionsHandler {
   private currentSelectedActors: GameObject[] = [];
   private primarySelectedActor?: GameObject;
   buildingModeActive: boolean = false;
+  private externalModalOpen = false;
 
   // Letter hotkeys for lists (production/buildings)
   private readonly HOTKEYS: string[] = ["q", "w", "e", "r", "t", "y", "u", "i", "o"];
@@ -45,6 +46,7 @@ export class PlayerActionsHandler {
   // Broadcast build mode changes to HUD/UI
   private readonly buildingModeSubject = new BehaviorSubject<boolean>(false);
   public readonly buildingModeObservable = this.buildingModeSubject.asObservable();
+  private externalModalSubscription?: Subscription;
 
   constructor(
     private readonly scene: ProbableWaffleScene,
@@ -67,6 +69,15 @@ export class PlayerActionsHandler {
         // reset on selection change
         this.setBuildingMode(false);
       }, 0);
+    });
+
+    // Listen to chat modal state changes
+    this.externalModalSubscription = this.scene.communicator.allScenes.subscribe((event) => {
+      if (event.name === "external-modal-opened") {
+        this.externalModalOpen = true;
+      } else if (event.name === "external-modal-closed") {
+        this.externalModalOpen = false;
+      }
     });
 
     // Global keyboard shortcuts
@@ -94,6 +105,9 @@ export class PlayerActionsHandler {
   }
 
   private onKeyDown(e: KeyboardEvent) {
+    // Don't process keyboard events if chat modal is open
+    if (this.externalModalOpen) return;
+
     const code = e.code;
     if (!code) return;
 
@@ -258,6 +272,7 @@ export class PlayerActionsHandler {
     this.scene.input.off(Phaser.Input.Events.POINTER_UP, this.pointerHandler, this);
     this.hudScene.input.keyboard?.off("keydown", this.onKeyDown, this);
     this.selectionChangedSubscription?.unsubscribe();
+    this.externalModalSubscription?.unsubscribe();
   }
 
   isHandlingActions(): boolean {

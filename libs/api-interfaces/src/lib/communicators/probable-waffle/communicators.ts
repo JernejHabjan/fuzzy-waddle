@@ -8,6 +8,7 @@ import {
 } from "../../game-instance/probable-waffle/player";
 import type { ProbableWaffleSpectatorData } from "../../game-instance/probable-waffle/spectator";
 import type { ActorDefinition, ProbableWaffleGameStateData } from "../../game-instance/probable-waffle/game-state";
+import type { GameInstanceId, PlayerNumber, UserId } from "../../game-instance/player/player";
 
 export type ProbableWaffleGameCommunicatorType = "selection";
 
@@ -21,8 +22,8 @@ export type ProbableWaffleCommunicatorType =
   | ProbableWaffleGameCommunicatorType;
 
 export interface ProbableWaffleCommunicatorEvent {
-  gameInstanceId: string;
-  emitterUserId: string | null;
+  gameInstanceId: GameInstanceId;
+  emitterUserId: UserId | null;
 }
 
 export type RecursiveKeyOf<TObj extends object> = {
@@ -55,7 +56,7 @@ export interface ProbableWaffleGameModeDataChangeEvent extends ProbableWaffleCom
 
 export type ProbableWafflePlayerDataChangeEventPayload = Partial<{
   // provide player number only when updating player
-  playerNumber?: number;
+  playerNumber?: PlayerNumber;
   playerStateData: Partial<ProbableWafflePlayerStateData>;
   playerControllerData: Partial<ProbableWafflePlayerControllerData>;
   data: Record<string, any>;
@@ -115,7 +116,7 @@ export interface ProbableWaffleCommunicatorMessageEvent extends ProbableWaffleCo
 }
 
 export interface ProbableWaffleWebsocketRoomEvent {
-  gameInstanceId: string;
+  gameInstanceId: GameInstanceId;
   type: "join" | "leave";
 }
 
@@ -124,4 +125,22 @@ export enum ProbableWaffleGatewayEvent {
   ProbableWaffleAction = "probable-waffle-action",
   ProbableWaffleMessage = "probable-waffle-message",
   ProbableWaffleWebsocketRoom = "probable-waffle-websocket-room"
+}
+
+export interface AllScenesEventData {
+  name:
+    | "save-game"
+    | "restart-game"
+    | "selection.deselect"
+    | "selection.singleSelect"
+    | "selection.doubleSelect"
+    | "selection.multiSelect"
+    | "selection.multiSelectPreview"
+    | "selection.terrainSelect"
+    | "quit"
+    | "chat-message-received"
+    | "external-modal-opened"
+    | "external-modal-closed"
+    | "hud-scene-shutdown";
+  data?: any;
 }

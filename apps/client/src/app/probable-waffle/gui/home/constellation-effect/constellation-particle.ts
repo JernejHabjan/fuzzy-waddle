@@ -9,6 +9,7 @@ export class ConstellationParticle {
     public y: number,
     hueCol: number
   ) {
+    // can be random as it doesn't need to be deterministic
     this.speedX = Math.random() * 5 - 1.5;
     this.speedY = Math.random() * 5 - 1.5;
     this.color = "hsl(" + hueCol + ", 100%, 50%)";

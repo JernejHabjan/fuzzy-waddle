@@ -9,8 +9,8 @@ import { ActorPhysicalType } from "../../../../entity/components/combat/componen
 export const olivalDefinition = {
   components: {
     representable: {
-      width: 32,
-      height: 64
+      width: 64,
+      height: 128
     },
     objectDescriptor: {
       color: 0xc2a080
@@ -29,6 +29,7 @@ export const olivalDefinition = {
     info: {
       name: "Olival",
       description: "A living gem that transforms the barren sands into a foundation for dark power",
+      tooltipDescription: ["Provides additional housing", "Expands population capacity"],
       smallImage: {
         key: "factions",
         frame: "buildings/tivara/olival/olival.png",

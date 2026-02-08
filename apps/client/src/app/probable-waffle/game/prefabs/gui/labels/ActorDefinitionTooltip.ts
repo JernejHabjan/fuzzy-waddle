@@ -67,6 +67,20 @@ export default class ActorDefinitionTooltip extends Phaser.GameObjects.Container
     description.setWordWrapWidth(300);
     this.add(description);
 
+    // roleDescription
+    const roleDescription = scene.add.text(-169.6949719548286, -207.40274978740797, "", {});
+    roleDescription.setOrigin(0.5, 0);
+    roleDescription.setStyle({
+      align: "left",
+      fontFamily: "disposabledroid",
+      fontSize: "18px",
+      color: "#ffcc00",
+      maxLines: 5,
+      resolution: 10
+    });
+    roleDescription.setWordWrapWidth(300);
+    this.add(roleDescription);
+
     // attributesContainer
     const attributesContainer = scene.add.container(-169.6949719548286, -207.40274978740797);
     this.add(attributesContainer);
@@ -98,6 +112,7 @@ export default class ActorDefinitionTooltip extends Phaser.GameObjects.Container
     this.icon = icon;
     this.title = title;
     this.description = description;
+    this.roleDescription = roleDescription;
     this.attributesContainer = attributesContainer;
     this.resourcesNeeded = resourcesNeeded;
     this.resourcesContainer = resourcesContainer;
@@ -112,6 +127,7 @@ export default class ActorDefinitionTooltip extends Phaser.GameObjects.Container
   private icon: Phaser.GameObjects.Image;
   private title: Phaser.GameObjects.Text;
   private description: Phaser.GameObjects.Text;
+  private roleDescription: Phaser.GameObjects.Text;
   private attributesContainer: Phaser.GameObjects.Container;
   private resourcesNeeded: Phaser.GameObjects.Text;
   private resourcesContainer: Phaser.GameObjects.Container;
@@ -171,6 +187,18 @@ export default class ActorDefinitionTooltip extends Phaser.GameObjects.Container
 
     this.description.y = yOffset;
     yOffset += this.description.height + this.padding;
+
+    // role description
+    const tooltipDescription = tooltipInfo.definition?.components?.info?.tooltipDescription;
+    if (tooltipDescription && tooltipDescription.length > 0) {
+      this.roleDescription.visible = true;
+      this.roleDescription.y = yOffset;
+      const bulletText = tooltipDescription.map((item) => `\u2022 ${item}`).join("\n");
+      this.roleDescription.setText(bulletText);
+      yOffset += this.roleDescription.height + this.padding;
+    } else {
+      this.roleDescription.visible = false;
+    }
 
     // attributes
     const attributes = tooltipInfo.definition

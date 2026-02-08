@@ -5,7 +5,7 @@ import { filter, first } from "rxjs";
 import { GameObjects } from "phaser";
 import { SelectableComponent } from "../entity/components/selectable-component";
 import { IdComponent } from "../entity/components/id-component";
-import { getActorComponent } from "./actor-component";
+import { getActorComponent, getActorComponents } from "./actor-component";
 import { RepresentableComponent } from "../entity/components/representable-component";
 
 export function getGameObjectBounds(gameObject?: Phaser.GameObjects.GameObject): Phaser.Geom.Rectangle | null {
@@ -104,8 +104,8 @@ export function getGameObjectCurrentTile(gameObject: Phaser.GameObjects.GameObje
 export function getSelectableGameObject(
   go: GameObjects.GameObject
 ): (GameObjects.GameObject & { selectableComponent: SelectableComponent; idComponent: IdComponent }) | null {
-  const hasComp = !!getActorComponent(go, SelectableComponent) && !!getActorComponent(go, IdComponent);
-  if (hasComp) return go as any;
+  const [selectable, id] = getActorComponents(go, [SelectableComponent, IdComponent]);
+  if (selectable && id) return go as any;
 
   const parent = go.parentContainer;
   if (!parent) return null;

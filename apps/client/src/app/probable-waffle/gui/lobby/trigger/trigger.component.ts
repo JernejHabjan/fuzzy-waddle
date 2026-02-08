@@ -1,9 +1,9 @@
 import { Component, inject } from "@angular/core";
-import { Router } from "@angular/router";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { AuthService } from "../../../../auth/auth.service";
 import { ToastService } from "../../../../shared/services/toast.service";
-import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import { faCircle } from "@fortawesome/free-regular-svg-icons";
 import {
   type PositionPlayerDefinition,
   ProbableWaffleGameInstanceType,
@@ -21,9 +21,8 @@ import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 export class TriggerComponent {
   protected readonly gameInstanceClientService = inject(GameInstanceClientService);
   protected readonly authService = inject(AuthService);
-  private readonly router = inject(Router);
   private readonly toastService = inject(ToastService);
-  protected readonly faTimes = faTimes;
+  protected readonly faCircle = faCircle;
   protected readonly faCheck = faCheck;
 
   protected get mapSelected(): boolean {

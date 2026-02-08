@@ -2,6 +2,7 @@ import { GameObjects, Input } from "phaser";
 import {
   type ActorDefinition,
   ObjectNames,
+  type PlayerNumber,
   ResourceType,
   type Vector2Simple,
   type Vector3Simple
@@ -62,6 +63,8 @@ export class BuildingCursor {
   private canConstructBuildingAt: boolean = false;
   private invalidCursorPositions: Set<string> = new Set(); // Track positions where buildings can't be placed
   private actorsToMove: Set<GameObjects.GameObject> = new Set(); // Track actors that need to be moved when placing buildings
+  private externalModalOpen: boolean = false;
+  private chatModalSubscription?: Subscription;
 
   // Helper: stable key based on snapped logical position (avoids z-offset and float drift)
   private getSnappedLogicalKey(go: GameObjects.GameObject): string | undefined {
@@ -90,6 +93,15 @@ export class BuildingCursor {
     this.audioService = getSceneService(this.scene, AudioService);
     this.fogOfWarComponent = getSceneComponent(this.scene, FogOfWarComponent);
     this.actorIndex = getSceneService(this.scene, ActorIndexSystem)!;
+
+    // Listen to chat modal state changes
+    this.chatModalSubscription = this.scene.communicator.allScenes.subscribe((event) => {
+      if (event.name === "external-modal-opened") {
+        this.externalModalOpen = true;
+      } else if (event.name === "external-modal-closed") {
+        this.externalModalOpen = false;
+      }
+    });
   }
 
   get placingBuilding() {
@@ -614,6 +626,16 @@ export class BuildingCursor {
 
     attackRangeGraphics.strokeEllipse(xPos, yPos, rangeRadiusX, rangeRadiusY);
 
+    // Draw high ground bonus range if the weapon has one
+    const highGroundBonus = primaryAttack.highGroundRangeBonus ?? 0;
+    if (highGroundBonus > 0) {
+      const bonusRangeRadiusX = (primaryAttack.range + highGroundBonus) * this.tileSize;
+      const bonusRangeRadiusY = bonusRangeRadiusX / 2;
+      // Use a lighter/dashed style for the potential high ground bonus range
+      attackRangeGraphics.lineStyle(1, 0xff6600, 0.5);
+      attackRangeGraphics.strokeEllipse(xPos, yPos, bonusRangeRadiusX, bonusRangeRadiusY);
+    }
+
     this.attackRangeCircle = attackRangeGraphics;
   }
 
@@ -882,7 +904,7 @@ export class BuildingCursor {
     scene: Phaser.Scene,
     name: ObjectNames,
     logicalWorldTransform: Vector3Simple,
-    playerNumber?: number
+    playerNumber?: PlayerNumber
   ) {
     const actorDefinition = {
       ...(playerNumber && {
@@ -905,7 +927,13 @@ export class BuildingCursor {
   private subscribeToCancelAction() {
     this.escKey = this.scene.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
     if (!this.escKey) return;
-    this.escKey.on(Phaser.Input.Keyboard.Events.DOWN, this.stop, this);
+    this.escKey.on(Phaser.Input.Keyboard.Events.DOWN, this.onEscapeKeyDown, this);
+  }
+
+  private onEscapeKeyDown() {
+    // Don't process keyboard events if chat modal is open
+    if (this.externalModalOpen) return;
+    this.stop();
   }
 
   private subscribeToShiftKey() {
@@ -929,8 +957,9 @@ export class BuildingCursor {
     this.scene.input.off(Input.Events.POINTER_DOWN, this.onPointerDown, this);
     this.scene.input.off(Input.Events.POINTER_UP, this.onPointerUp, this);
     this.scene.input.off(Input.Events.GAME_OUT, this.stop, this);
-    this.escKey?.off(Phaser.Input.Keyboard.Events.DOWN, this.stop, this);
+    this.escKey?.off(Phaser.Input.Keyboard.Events.DOWN, this.onEscapeKeyDown, this);
     this.shiftKey?.destroy();
+    this.chatModalSubscription?.unsubscribe();
     this.startPlacingSubscription.unsubscribe();
     this.stopPlacingSubscription.unsubscribe();
   }

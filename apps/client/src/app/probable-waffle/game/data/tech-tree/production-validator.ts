@@ -1,5 +1,11 @@
 // Centralized production & queue validation using tech tree, supply & resource state.
-import { FactionType, ObjectNames, ProbableWafflePlayer, ResourceType } from "@fuzzy-waddle/api-interfaces";
+import {
+  FactionType,
+  ObjectNames,
+  type PlayerNumber,
+  ProbableWafflePlayer,
+  ResourceType
+} from "@fuzzy-waddle/api-interfaces";
 import { PlayerAiBlackboard } from "../../player/ai-controller/player-ai-blackboard";
 import { TechTreeService } from "./tech-tree.service";
 import { getCostForObjectName } from "../../entity/components/production/cost-utils";
@@ -11,6 +17,7 @@ import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 import { ProductionComponent } from "../../entity/components/production/production-component";
 import { ProductionInvalidReason } from "./production-invalid-reason";
 import type { ProductionValidationResult } from "./production-validation-result";
+import { RandomService } from "../../world/services/random.service";
 
 export class ProductionValidator {
   private static readonly debugEnabled = false;
@@ -135,10 +142,11 @@ export class ProductionValidator {
   /** Insert prerequisite tasks into blackboard production prereqQueue (order: earliest first). */
   schedulePrerequisites(prereqs: ObjectNames[], finalTarget: ObjectNames) {
     const now = performance.now();
+    const randomService = getSceneService(this.scene, RandomService)!;
     // Insert in reverse so that earliest prerequisite appears first in queue processing
     prereqs.reverse().forEach((p) => {
       this.blackboard.production.prereqQueue.push({
-        id: `${p}-${now}-${Math.random().toString(36).slice(2)}`,
+        id: `${p}-${now}-${randomService.random().toString(36).slice(2)}`,
         type: "construct", // default semantic; execution layer decides produce vs construct
         objectName: p,
         insertedAt: now
@@ -148,7 +156,7 @@ export class ProductionValidator {
 
   private static validateTechPrerequisites(
     techSvc: TechTreeService | undefined,
-    playerNumber: number,
+    playerNumber: PlayerNumber,
     faction: FactionType | undefined,
     actorName: ObjectNames,
     result: ProductionValidationResult
@@ -169,7 +177,7 @@ export class ProductionValidator {
 
   private static validateBuildingPrerequisitesStatic(
     scene: Phaser.Scene,
-    playerNumber: number,
+    playerNumber: PlayerNumber,
     actorName: ObjectNames,
     result: ProductionValidationResult
   ): void {
@@ -231,7 +239,7 @@ export class ProductionValidator {
 
   static validateObject(
     scene: Phaser.Scene,
-    playerNumber: number,
+    playerNumber: PlayerNumber,
     actorName: ObjectNames,
     currentCost: Partial<Record<ResourceType, number>> = {}
   ): ProductionValidationResult {

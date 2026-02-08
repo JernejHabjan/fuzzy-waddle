@@ -30,6 +30,7 @@ import { ForceMaintenanceManager } from "./ai-behavior/force-maintenance-manager
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 import { ProductionValidator } from "../../data/tech-tree/production-validator";
 import { AI_CONFIG } from "./ai-config";
+import { RandomService } from "../../world/services/random.service";
 import { RepairManager } from "./ai-behavior/repair-manager";
 import { LogisticsManager } from "./ai-behavior/logistics-manager";
 import { TechProgressManager } from "./ai-behavior/tech-progress-manager";
@@ -50,7 +51,8 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   private aiDebuggingSubscription?: Subscription;
   private mapAnalyzer?: MapAnalyzer;
   public basePlanner: BasePlanner;
-  private cooldowns = new CooldownManager();
+  private randomService: RandomService;
+  private cooldowns: CooldownManager;
   private hysteresisAggressive = makeHysteresisTracker({
     enter: AI_CONFIG.hysteresisAggressiveEnter,
     exit: AI_CONFIG.hysteresisAggressiveExit
@@ -74,6 +76,8 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     private readonly blackboard: PlayerAiBlackboard
   ) {
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.onShutdown, this);
+    this.randomService = getSceneService(this.scene, RandomService)!;
+    this.cooldowns = new CooldownManager(this.randomService);
     this.mapAnalyzer = new MapAnalyzer(this.scene, this.player.playerNumber!);
     const supplyPlanner = new SupplyPlanner(this.blackboard);
     this.productionValidator = new ProductionValidator(this.scene, this.player, this.blackboard);
@@ -110,7 +114,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     this.worldStateSnapshotManager = new WorldStateSnapshotManager(this.scene, this.player, this.blackboard);
     this.combatMicro = new CombatMicroManager(this.scene, this.blackboard, this.logDebugInfo.bind(this));
     this.scoutingManager = new ScoutingManager(this.scene, this.blackboard, this.logDebugInfo.bind(this));
-    this.targetingManager = new TargetingManager(this.blackboard);
+    this.targetingManager = new TargetingManager(this.scene, this.blackboard);
     this.setupDebuggingSubscription();
   }
 
@@ -635,11 +639,11 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
         const transform = getGameObjectLogicalTransform(worker);
         const rx =
           transform!.x +
-          Math.floor(Math.random() * AI_CONFIG.buildingPlacementRandomOffsetRange) -
+          this.randomService.between(0, AI_CONFIG.buildingPlacementRandomOffsetRange) -
           AI_CONFIG.buildingPlacementRandomOffsetRange;
         const ry =
           transform!.y +
-          Math.floor(Math.random() * AI_CONFIG.buildingPlacementRandomOffsetRange) -
+          this.randomService.between(0, AI_CONFIG.buildingPlacementRandomOffsetRange) -
           AI_CONFIG.buildingPlacementRandomOffsetRange;
         tileLocationXYZ = { x: rx, y: ry, z: 0 } as Vector3Simple;
       }

@@ -29,6 +29,35 @@
                     }
                 }
             ]
+        },
+        {
+            "name": "EditorConvertible",
+            "displayName": "EditorConvertible",
+            "objectDisplayFormat": "",
+            "baseClass": "",
+            "gameObjectType": "Phaser.GameObjects.GameObject",
+            "properties": [
+                {
+                    "name": "detection_range",
+                    "label": "Detection Range",
+                    "tooltip": "Range in tiles to detect nearby owned units",
+                    "defValue": 8,
+                    "customDefinition": false,
+                    "type": {
+                        "id": "number"
+                    }
+                },
+                {
+                    "name": "check_interval",
+                    "label": "Check Interval",
+                    "tooltip": "How often to check for nearby units (in milliseconds)",
+                    "defValue": 500,
+                    "customDefinition": false,
+                    "type": {
+                        "id": "number"
+                    }
+                }
+            ]
         }
     ],
     "meta": {

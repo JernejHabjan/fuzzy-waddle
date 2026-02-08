@@ -15,6 +15,7 @@ import { AttackComponent } from "../../entity/components/combat/components/attac
 import { ProductionCostComponent } from "../../entity/components/production/production-cost-component";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import {
+  type ActorId,
   ObjectNames,
   type ProbableWaffleDoubleSelectionData,
   type ProbableWaffleSelectionData
@@ -32,8 +33,11 @@ import { SoundType } from "../../entity/components/actor-audio/sound-type";
 export class GameObjectSelectionHandler {
   private readonly debug = false;
   private sub!: Subscription;
+  private externalModalOpen = false;
+  private externalModalSubscription?: Subscription;
   constructor(private readonly scene: ProbableWaffleScene) {
     this.bindSelectionInput();
+    this.listenToChatModalEvents();
     this.scene.onShutdown.subscribe(() => this.destroy());
   }
 
@@ -157,7 +161,7 @@ export class GameObjectSelectionHandler {
       worldXyEnd.y - worldXyStart.y
     );
 
-    return selectableChildren.filter((selectableChild) => {
+    const actorsInArea = selectableChildren.filter((selectableChild) => {
       const bounds = getGameObjectBounds(selectableChild);
       if (!bounds) return false;
       const actorBounds = new Phaser.Geom.Rectangle(bounds.x, bounds.y, bounds.width, bounds.height);
@@ -173,6 +177,16 @@ export class GameObjectSelectionHandler {
 
       return actorOverlapPercentageWidth > minOverlapPercentage && actorOverlapPercentageHeight > minOverlapPercentage;
     });
+
+    // Filter to only friendly units if any friendly units are in the selection
+    const friendlyActors = actorsInArea.filter((actor) => this.selectionIsForCurrentPlayer(actor));
+    // If any friendly units are selected, only return friendly units
+    if (friendlyActors.length > 0) {
+      return friendlyActors;
+    }
+
+    // Otherwise return all actors in the area
+    return actorsInArea;
   }
 
   /**
@@ -225,9 +239,23 @@ export class GameObjectSelectionHandler {
   private destroy() {
     this.sub.unsubscribe();
     this.scene.input.keyboard?.off("keydown", this.onKeyDown, this);
+    this.externalModalSubscription?.unsubscribe();
+  }
+
+  private listenToChatModalEvents() {
+    this.externalModalSubscription = this.scene.communicator.allScenes.subscribe((event) => {
+      if (event.name === "external-modal-opened") {
+        this.externalModalOpen = true;
+      } else if (event.name === "external-modal-closed") {
+        this.externalModalOpen = false;
+      }
+    });
   }
 
   private onKeyDown(e: KeyboardEvent) {
+    // Don't process keyboard events if chat modal is open
+    if (this.externalModalOpen) return;
+
     if (e.code !== "Escape") return;
     const actions = getSceneService(this.scene, PlayerActionsHandler);
     // If PlayerActionsHandler doesn't have any ongoing actions, then ESC key will cancel the current selection
@@ -237,7 +265,7 @@ export class GameObjectSelectionHandler {
     }
   }
 
-  private playAudio(actorIds: string[]) {
+  private playAudio(actorIds: ActorId[]) {
     if (!actorIds.length) return;
     const firstActorId = actorIds[0]!;
     const firstActor = this.getActorsByIds([firstActorId])[0];
@@ -261,7 +289,7 @@ export class GameObjectSelectionHandler {
    * Gets game objects in current users viewport by the same actor name.
    * Used when double-clicking on an actor to select same actors on screen by type
    */
-  private getSameTypeActorsInViewportById(objectId: string): GameObject[] {
+  private getSameTypeActorsInViewportById(objectId: ActorId): GameObject[] {
     const selectableChildren = this.getSelectableChildren();
 
     // Find the original actor to get its type/name

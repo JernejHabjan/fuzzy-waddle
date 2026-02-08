@@ -18,6 +18,7 @@ export const treeDefinitions = {
     info: {
       name: "Tree",
       description: "A tree that can be chopped for wood",
+      tooltipDescription: ["Provides wood resource", "Send workers to harvest"],
       smallImage: {
         key: "outside",
         frame: "foliage/trees/resources/tree1.png",

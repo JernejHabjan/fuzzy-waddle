@@ -185,7 +185,9 @@ root [Move] {
                 }
 
                 /* move */
-                action [MoveToTargetOrLocation, "move"]
+                fail {
+                    action [MoveToTargetOrLocation, "move"]
+                }
 
                 /* if reached target, stop */
                 sequence {
@@ -404,6 +406,16 @@ root [Build] {
                       action [InRange, "construct"]
                     }
                     action [MoveToTarget, "construct"]
+                }
+
+                /* if target is unreachable (MoveToTarget failed), stop and try next construction site */
+                sequence {
+                    flip {
+                      action [InRange, "construct"]
+                    }
+                    /* we're not in range and couldn't move there - target unreachable */
+                    action [Stop, "Build - Target Unreachable"]
+                    action [AssignNextBuildOrder]
                 }
 
                 sequence {

@@ -84,6 +84,7 @@ export class SelectableComponent {
    * sets selection circle position based on the game object's rendered transform.
    */
   private setPosition() {
+    if (!this.selectionCircle) return;
     const renderedTransform = getGameObjectRenderedTransform(this.gameObject);
     if (!renderedTransform) throw new Error("Transform not found");
     if (renderedTransform.x === undefined || renderedTransform.y === undefined) return;
@@ -120,7 +121,14 @@ export class SelectableComponent {
   }
 
   setData(data: Partial<SelectableComponentData>) {
-    if (data.selected !== undefined) this.setSelected(data.selected);
+    const selected = data.selected;
+    if (selected !== undefined) {
+      setTimeout(() => {
+        // slight delay that ensures that other components have had a chance to update first
+        this.setSelected(selected);
+        this.setPosition();
+      }, 1);
+    }
   }
 
   getData(): SelectableComponentData {

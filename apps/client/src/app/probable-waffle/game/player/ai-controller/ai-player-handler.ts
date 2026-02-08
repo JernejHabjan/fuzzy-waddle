@@ -1,5 +1,5 @@
 import GameProbableWaffleScene from "../../world/scenes/GameProbableWaffleScene";
-import { ProbableWafflePlayerType } from "@fuzzy-waddle/api-interfaces";
+import { type PlayerNumber, ProbableWafflePlayerType } from "@fuzzy-waddle/api-interfaces";
 import { PlayerAiController } from "./player-ai-controller";
 import { Subscription } from "rxjs";
 
@@ -30,7 +30,7 @@ export class AiPlayerHandler {
     this.aiPlayerControllers = [];
   }
 
-  getAiPlayerController(playerNumber: number) {
+  getAiPlayerController(playerNumber: PlayerNumber) {
     return this.aiPlayerControllers.find((controller) => controller.player.playerNumber === playerNumber);
   }
 }
