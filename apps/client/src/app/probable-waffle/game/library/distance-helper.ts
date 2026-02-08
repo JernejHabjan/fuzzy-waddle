@@ -108,10 +108,12 @@ export class DistanceHelper {
     if (!actor1Tile || !actor2Tile) return null;
 
     // Create cache key (use sorted coordinates to make bidirectional)
-    const cacheKey =
-      actor1Tile.x <= actor2Tile.x
-        ? `${actor1Tile.x},${actor1Tile.y}->${actor2Tile.x},${actor2Tile.y}`
-        : `${actor2Tile.x},${actor2Tile.y}->${actor1Tile.x},${actor1Tile.y}`;
+    const actor1First =
+      actor1Tile.x < actor2Tile.x ||
+      (actor1Tile.x === actor2Tile.x && actor1Tile.y <= actor2Tile.y);
+    const cacheKey = actor1First
+      ? `${actor1Tile.x},${actor1Tile.y}->${actor2Tile.x},${actor2Tile.y}`
+      : `${actor2Tile.x},${actor2Tile.y}->${actor1Tile.x},${actor1Tile.y}`;
     const now = performance.now();
 
     // Check cache
