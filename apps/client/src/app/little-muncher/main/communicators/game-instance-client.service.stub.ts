@@ -1,8 +1,6 @@
 import { type GameInstanceClientServiceInterface } from "./game-instance-client.service.interface";
-import { signal } from "@angular/core";
 
 export const gameInstanceClientServiceStub = {
-  gameInstance: signal(undefined),
   get gameInstanceId(): string | null {
     return null;
   },

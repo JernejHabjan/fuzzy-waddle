@@ -45,7 +45,7 @@ describe("GameInterfaceComponent", () => {
 
     // set empty game instance
     const gameInstanceClientService = fixture.debugElement.injector.get(GameInstanceClientService);
-    gameInstanceClientService.gameInstance.set(new LittleMuncherGameInstance());
+    gameInstanceClientService.gameInstance = new LittleMuncherGameInstance();
 
     fixture.detectChanges();
   });

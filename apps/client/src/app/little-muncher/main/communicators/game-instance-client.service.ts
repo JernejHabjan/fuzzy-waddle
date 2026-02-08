@@ -1,4 +1,4 @@
-import { inject, Injectable, signal } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import {
@@ -25,13 +25,13 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   private readonly serverHealthService = inject(ServerHealthService);
   private readonly sceneCommunicatorClientService = inject(SceneCommunicatorClientService);
 
-  gameInstance = signal<LittleMuncherGameInstance | undefined>(undefined);
+  gameInstance?: LittleMuncherGameInstance;
 
   async startGame(): Promise<void> {
-    this.gameInstance.set(new LittleMuncherGameInstance({
+    this.gameInstance = new LittleMuncherGameInstance({
       gameInstanceMetadataData: { createdBy: this.authService.userId },
       players: [{ playerControllerData: { userId: this.authService.userId } }]
-    }));
+    });
     if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
       const url = environment.api + "api/little-muncher/start-game";
       const body: GameInstanceDataDto = { gameInstanceId: this.gameInstanceId! };
@@ -63,18 +63,17 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   }
 
   async openLevel(littleMuncherLevel: LittleMuncherLevel): Promise<void> {
-    const instance = this.gameInstance();
-    if (!instance) return;
-    instance.initGame({
+    if (!this.gameInstance) return;
+    this.gameInstance.initGame({
       hill: littleMuncherLevel.hill
     });
-    await this.openLevelCommunication(instance.gameInstanceMetadata!.data.gameInstanceId!);
+    await this.openLevelCommunication(this.gameInstance.gameInstanceMetadata!.data.gameInstanceId!);
   }
 
   async openLevelSpectator(gameInstanceData: LittleMuncherGameInstanceData): Promise<void> {
     // create new game instance from data we received from server
-    this.gameInstance.set(new LittleMuncherGameInstance(gameInstanceData));
-    await this.openLevelCommunication(this.gameInstance()!.gameInstanceMetadata!.data.gameInstanceId!);
+    this.gameInstance = new LittleMuncherGameInstance(gameInstanceData);
+    await this.openLevelCommunication(this.gameInstance.gameInstanceMetadata!.data.gameInstanceId!);
   }
 
   private async openLevelCommunication(gameInstanceId: GameInstanceId): Promise<void> {
@@ -97,11 +96,11 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
       };
       await firstValueFrom(this.httpClient.delete<void>(url, { body }));
     }
-    this.gameInstance()!.stopLevel();
+    this.gameInstance!.stopLevel();
     this.sceneCommunicatorClientService.stopListeningToEvents();
   }
 
   get gameInstanceId(): string | null {
-    return this.gameInstance()?.gameInstanceMetadata?.data.gameInstanceId ?? null;
+    return this.gameInstance?.gameInstanceMetadata?.data.gameInstanceId ?? null;
   }
 }

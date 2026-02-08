@@ -1,4 +1,4 @@
-import { Component, HostListener, inject, type OnDestroy, type OnInit, signal } from "@angular/core";
+import { Component, HostListener, inject, type OnDestroy, type OnInit } from "@angular/core";
 import { GameSessionState, type LittleMuncherGameCreate } from "@fuzzy-waddle/api-interfaces";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { SpectateService } from "./home/spectate/spectate.service";
@@ -19,13 +19,13 @@ import { AngularHost } from "../shared/consts";
 })
 export class LittleMuncherComponent implements OnInit, OnDestroy {
   protected readonly faSpinner = faSpinner;
-  protected readonly loading = signal(false);
+  protected loading = false;
   private spectatorDisconnectedSubscription?: Subscription;
-  protected readonly toastData = signal({
+  protected toastData = {
     show: false,
     title: "",
     text: ""
-  });
+  };
   protected readonly userInstanceService = inject(UserInstanceService);
   protected readonly gameInstanceClientService = inject(GameInstanceClientService);
   private readonly spectateService = inject(SpectateService);
@@ -36,11 +36,11 @@ export class LittleMuncherComponent implements OnInit, OnDestroy {
   }
 
   async startLevel(gameCreate: LittleMuncherGameCreate): Promise<void> {
-    this.loading.set(true);
+    this.loading = true;
     try {
       await this.gameInstanceClientService.startLevel(gameCreate);
     } finally {
-      this.loading.set(false);
+      this.loading = false;
     }
   }
 
@@ -55,16 +55,16 @@ export class LittleMuncherComponent implements OnInit, OnDestroy {
     await this.gameInstanceClientService.startGame();
     await this.spectateService.listenToRoomEvents();
     this.spectatorDisconnectedSubscription = this.spectateService.spectatorDisconnected.subscribe(() => {
-      this.toastData.set({
+      this.toastData = {
         show: true,
         title: "Game Disconnected",
         text: "You have been disconnected from the game"
-      });
+      };
     });
   }
 
   get notPlaying() {
-    const currentState = this.gameInstanceClientService.gameInstance()!.gameInstanceMetadata!.data.sessionState!;
+    const currentState = this.gameInstanceClientService.gameInstance!.gameInstanceMetadata!.data.sessionState!;
     return currentState === GameSessionState.NotStarted;
   }
 }

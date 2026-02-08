@@ -1,13 +1,13 @@
-@if (loading() || !gameInstanceClientService.gameInstance()) {
+@if (loading || !gameInstanceClientService.gameInstance) {
   <div class="align-items-center d-flex h-100 justify-content-center" style="font-size: 70px">
     <fa-icon [icon]="faSpinner" animation="spin" />
   </div>
 } @else {
-  @if (gameInstanceClientService.gameInstance()) {
+  @if (gameInstanceClientService.gameInstance) {
     @if (notPlaying) {
       <little-muncher-home (startLevel)="startLevel($event)" />
     } @else {
-      @if (gameInstanceClientService.gameInstance()!.gameMode) {
+      @if (gameInstanceClientService.gameInstance.gameMode) {
         <little-muncher-main />
       }
     }
@@ -15,8 +15,8 @@
 }
 
 <!-- display nbg-toast center screen-->
-@if (toastData().show) {
-  <ngb-toast [header]="toastData().title" [autohide]="false" (hidden)="toastData.set({ show: false, title: '', text: '' })" class="toast-center">
-    {{ toastData().text }}
+@if (toastData.show) {
+  <ngb-toast [header]="toastData.title" [autohide]="false" (hidden)="toastData.show = false" class="toast-center">
+    {{ toastData.text }}
   </ngb-toast>
 }
