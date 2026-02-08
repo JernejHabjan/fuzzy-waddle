@@ -434,11 +434,8 @@ export class FogOfWarComponent {
   }
 
   private redrawFogOfWar(): void {
-    // Only clear and redraw if there are dirty tiles
-    if (this.dirtyTiles.size === 0) {
-      return;
-    }
-
+    // NOTE: We intentionally do not early-return when dirtyTiles is empty, to ensure
+    // required redraws on initialization and when the fog-of-war mode changes.
     let alphaUnexplored = 0;
     switch (this.fowMode) {
       case FogOfWarMode.FULL_EXPLORATION:
