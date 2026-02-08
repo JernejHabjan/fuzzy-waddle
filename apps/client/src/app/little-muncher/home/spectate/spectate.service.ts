@@ -53,11 +53,11 @@ export class SpectateService implements SpectateServiceInterface {
 
   private async handleRemovalOfSpectatedRoom(room: LittleMuncherRoom) {
     const currentGameInstanceId =
-      this.gameInstanceClientService.gameInstance?.gameInstanceMetadata?.data.gameInstanceId;
+      this.gameInstanceClientService.gameInstance()?.gameInstanceMetadata?.data.gameInstanceId;
     if (!currentGameInstanceId) return;
 
     // check if we're spectating the room that was removed
-    const currentlySpectating = this.gameInstanceClientService.gameInstance!.isSpectator(this.authService.userId);
+    const currentlySpectating = this.gameInstanceClientService.gameInstance()!.isSpectator(this.authService.userId);
     if (!currentlySpectating) return;
 
     // check if spectated room is the same as the room that was removed

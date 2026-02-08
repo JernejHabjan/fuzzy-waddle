@@ -54,18 +54,20 @@ export class GameInterfaceComponent implements OnInit, OnDestroy {
   }
 
   private manageUiElementVisibility() {
-    if (!this.gameInstanceClientService.gameInstance) {
+    const instance = this.gameInstanceClientService.gameInstance();
+    if (!instance) {
       return;
     }
-    this.isPlayer = this.gameInstanceClientService.gameInstance.isPlayer(this.authService.userId);
+    this.isPlayer = instance.isPlayer(this.authService.userId);
   }
 
   private manageScore() {
-    if (!this.gameInstanceClientService.gameInstance?.players.length) {
+    const instance = this.gameInstanceClientService.gameInstance();
+    if (!instance?.players.length) {
       return;
     }
     // set initial score:
-    this.score = this.gameInstanceClientService.gameInstance.players[0]!.playerState.data.score;
+    this.score = instance.players[0]!.playerState.data.score;
     this.scoreSubscription = this.communicatorService.score?.on.subscribe(async (event) => {
       this.score = event.score;
       if (event.stage === "final") {
@@ -79,7 +81,7 @@ export class GameInterfaceComponent implements OnInit, OnDestroy {
 
   private manageRemaining() {
     const hill = this.getHill();
-    const gameState = this.gameInstanceClientService.gameInstance?.gameState;
+    const gameState = this.gameInstanceClientService.gameInstance()?.gameState;
     if (!hill || !gameState) {
       return;
     }
@@ -93,7 +95,7 @@ export class GameInterfaceComponent implements OnInit, OnDestroy {
   }
 
   private getHill(): LittleMuncherHillEnum | null {
-    return this.gameInstanceClientService.gameInstance?.gameMode?.data.hill || null;
+    return this.gameInstanceClientService.gameInstance()?.gameMode?.data.hill || null;
   }
 
   private getRemaining(hillType: LittleMuncherHillEnum, timeClimbing: number): number {
@@ -103,11 +105,12 @@ export class GameInterfaceComponent implements OnInit, OnDestroy {
   }
 
   private managePause() {
-    if (!this.gameInstanceClientService.gameInstance?.gameState) {
+    const instance = this.gameInstanceClientService.gameInstance();
+    if (!instance?.gameState) {
       return;
     }
     // set initial pause:
-    this.paused = this.gameInstanceClientService.gameInstance.gameState.data.pause;
+    this.paused = instance.gameState.data.pause;
     this.pauseSubscription = this.communicatorService.pause?.on.subscribe((event) => {
       this.paused = event.pause;
       this.changeDetectorRef.detectChanges();

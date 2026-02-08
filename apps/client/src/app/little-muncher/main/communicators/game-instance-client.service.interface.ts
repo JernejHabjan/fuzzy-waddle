@@ -4,9 +4,10 @@ import {
   type LittleMuncherGameInstanceData,
   type LittleMuncherLevel
 } from "@fuzzy-waddle/api-interfaces";
+import type { WritableSignal } from "@angular/core";
 
 export interface GameInstanceClientServiceInterface {
-  gameInstance?: LittleMuncherGameInstance;
+  gameInstance: WritableSignal<LittleMuncherGameInstance | undefined>;
 
   startGame(): Promise<void>;
 

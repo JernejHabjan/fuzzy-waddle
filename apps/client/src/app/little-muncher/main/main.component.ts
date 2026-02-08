@@ -30,7 +30,7 @@ export class MainComponent implements OnInit {
     this.gameData = {
       communicator: this.communicator,
       components: [],
-      gameInstance: this.gameInstanceClientService.gameInstance!,
+      gameInstance: this.gameInstanceClientService.gameInstance()!,
       user: new LittleMuncherUserInfo(this.authService.userId)
     };
   }
