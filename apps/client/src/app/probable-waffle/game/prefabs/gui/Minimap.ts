@@ -315,10 +315,6 @@ export default class Minimap extends Phaser.GameObjects.Container {
     ];
     diamond.setTo(diamondPoints);
 
-    // Keep the interactive hit area (if any) in sync with the visual polygon points
-    if (diamond.input && diamond.input.hitArea && typeof (diamond.input.hitArea as any).setTo === "function") {
-      (diamond.input.hitArea as Phaser.Geom.Polygon).setTo(diamondPoints);
-    }
     // Ensure it's visible
     diamond.setVisible(true);
   }
