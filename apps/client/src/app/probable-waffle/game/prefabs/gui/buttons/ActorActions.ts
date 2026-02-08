@@ -659,11 +659,13 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         return index;
       }
 
-      const isResearched = spellComponent.isSpellResearched(spellType);
-      const canCast = spellComponent.canCastSpell(spellType);
       const cooldownProgress = spellComponent.getCooldownProgress(spellType);
       const cooldownRemaining = spellComponent.getCooldownRemaining(spellType);
       const autocastEnabled = spellComponent.isAutocastEnabled(spellType);
+      const isResearched = spellComponent.isSpellResearched(spellType);
+
+      // Use validation state similar to production
+      const { disabled, unmetRequirements } = this.getSpellValidationState(spellType, spellComponent);
 
       action.setup({
         icon: {
@@ -672,12 +674,12 @@ export default class ActorActions extends Phaser.GameObjects.Container {
           origin: { x: 0.5, y: 0.5 }
         },
         visible: true,
-        disabled: !isResearched || !canCast,
+        disabled,
         cooldownProgress: cooldownProgress < 100 ? cooldownProgress : undefined,
         cooldownRemaining: cooldownRemaining > 0 ? cooldownRemaining : undefined,
         autocastEnabled: isResearched && autocastEnabled,
         action: () => {
-          if (!canCast) return;
+          if (disabled) return;
           // Activate spell cursor for ground-target spells
           if (spellCursor) {
             spellCursor.startCastingSpell.emit(spellType);
@@ -692,10 +694,11 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         },
         tooltipInfo: {
           title: spellData.name,
-          description: !isResearched ? `Requires: ${spellData.requiresResearch} research` : spellData.description,
+          description: spellData.description,
           iconKey: spellData.icon.key,
           iconFrame: spellData.icon.frame,
-          iconOrigin: { x: 0.5, y: 0.5 }
+          iconOrigin: { x: 0.5, y: 0.5 },
+          unmetRequirements: unmetRequirements ?? undefined
         },
         shortcut: spellData.shortcut
       } satisfies ActorActionSetup);
@@ -738,7 +741,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
           throw new Error(`Info component not found for ${product}`);
         }
         // UI validation gating
-        const { disabled, disabledDescription, reason, validation } = this.getProductionValidationState(product);
+        const { disabled, reason, validation } = this.getProductionValidationState(product);
 
         const action = this.actor_actions[index];
         if (!action) {
@@ -812,7 +815,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
             iconKey: info.smallImage.key!,
             iconFrame: info.smallImage.frame,
             iconOrigin: info.smallImage.origin ?? { x: 0.5, y: 0.5 },
-            description: disabledDescription ?? info.description,
+            description: info.description,
             definition: actorDefinition,
             unmetRequirements: validation?.prereqs
           },
@@ -833,9 +836,6 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     const researchComponent = getActorComponent(actor, ResearchComponent);
     if (!researchComponent) return index;
 
-    const currentPlayerNr = getCurrentPlayerNumber(this.mainSceneWithActors);
-    const player = getPlayer(this.mainSceneWithActors, currentPlayerNr);
-
     for (const researchType of researchComponent.availableResearch) {
       const researchData = researchDefinitions[researchType];
       if (!researchData) continue;
@@ -848,21 +848,13 @@ export default class ActorActions extends Phaser.GameObjects.Container {
 
       const isAlreadyResearched = researchComponent.isResearched(researchType);
       const isCurrentlyResearching = researchComponent.currentResearchType === researchType;
-      const { canStart, reason } = researchComponent.canStartResearch(researchType);
       const progress = researchComponent.getResearchProgress(researchType);
 
       // Skip already researched items
       if (isAlreadyResearched) continue;
 
-      // Check if player can afford
-      const canAfford = player?.canPayAllResources(researchData.cost) ?? false;
-
-      let description = researchData.description;
-      if (!canAfford && !isCurrentlyResearching) {
-        description = "Not enough resources";
-      } else if (reason) {
-        description = reason;
-      }
+      // Use validation state similar to production
+      const { disabled, unmetRequirements } = this.getResearchValidationState(researchType, researchComponent);
 
       action.setup({
         icon: {
@@ -871,14 +863,14 @@ export default class ActorActions extends Phaser.GameObjects.Container {
           origin: { x: 0.5, y: 0.5 }
         },
         visible: true,
-        disabled: !canStart && !isCurrentlyResearching,
+        disabled: disabled && !isCurrentlyResearching,
         cooldownProgress: isCurrentlyResearching ? progress : undefined,
         action: () => {
           if (isCurrentlyResearching) {
             // Cancel research
             researchComponent.cancelResearch();
             this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.BUTTON_CLICK);
-          } else if (canStart) {
+          } else if (!disabled) {
             // Start research
             const success = researchComponent.startResearch(researchType);
             if (success) {
@@ -886,16 +878,17 @@ export default class ActorActions extends Phaser.GameObjects.Container {
             } else {
               this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.NOT_ENOUGH_RESOURCES);
             }
-          } else if (!canAfford) {
+          } else {
             this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.NOT_ENOUGH_RESOURCES);
           }
         },
         tooltipInfo: {
           title: researchData.name + (isCurrentlyResearching ? " (Click to cancel)" : ""),
-          description,
+          description: researchData.description,
           iconKey: researchData.icon.key,
           iconFrame: researchData.icon.frame,
-          iconOrigin: { x: 0.5, y: 0.5 }
+          iconOrigin: { x: 0.5, y: 0.5 },
+          unmetRequirements: unmetRequirements ?? undefined
         }
       } satisfies ActorActionSetup);
       index++;
@@ -1024,7 +1017,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         throw new Error(`Info component not found for ${building}`);
       }
       // UI validation gating
-      const { disabled, disabledDescription, reason, validation } = this.getProductionValidationState(building);
+      const { disabled, reason, validation } = this.getProductionValidationState(building);
 
       const action = this.actor_actions[index];
       if (!action) {
@@ -1052,7 +1045,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
           iconKey: info.smallImage.key!,
           iconFrame: info.smallImage.frame,
           iconOrigin: info.smallImage.origin ?? { x: 0.5, y: 0.5 },
-          description: disabledDescription ?? info.description,
+          description: info.description,
           definition: actorDefinition,
           unmetRequirements: validation?.prereqs
         },
@@ -1186,6 +1179,65 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     }
 
     return { disabled, disabledDescription, reason, validation };
+  }
+
+  private getSpellValidationState(
+    spellType: SpellType,
+    spellComponent: SpellComponent
+  ): {
+    disabled: boolean;
+    disabledDescription: string | null;
+    unmetRequirements: ResearchType[] | null;
+  } {
+    const spellData = spellDefinitions[spellType];
+    const isResearched = spellComponent.isSpellResearched(spellType);
+    const canCast = spellComponent.canCastSpell(spellType);
+
+    const disabled = !isResearched || !canCast;
+    let disabledDescription: string | null = null;
+    let unmetRequirements: ResearchType[] | null = null;
+
+    if (!isResearched && spellData.requiresResearch) {
+      const researchData = researchDefinitions[spellData.requiresResearch];
+      const researchName = researchData?.name ?? spellData.requiresResearch;
+      disabledDescription = `Requires: ${researchName}`;
+      unmetRequirements = [spellData.requiresResearch];
+    }
+
+    return { disabled, disabledDescription, unmetRequirements };
+  }
+
+  private getResearchValidationState(
+    researchType: ResearchType,
+    researchComponent: ResearchComponent
+  ): {
+    disabled: boolean;
+    disabledDescription: string | null;
+    unmetRequirements: ResearchType[] | null;
+  } {
+    const researchData = researchDefinitions[researchType];
+    const isAlreadyResearched = researchComponent.isResearched(researchType);
+    const isCurrentlyResearching = researchComponent.currentResearchType === researchType;
+    const { canStart, reason } = researchComponent.canStartResearch(researchType);
+
+    const currentPlayerNr = getCurrentPlayerNumber(this.mainSceneWithActors);
+    const player = getPlayer(this.mainSceneWithActors, currentPlayerNr);
+    const canAfford = player?.canPayAllResources(researchData.cost) ?? false;
+
+    const disabled = !canStart && !isCurrentlyResearching;
+    let disabledDescription: string | null = null;
+    const unmetRequirements: ResearchType[] | null = null;
+
+    if (!canAfford && !isCurrentlyResearching) {
+      disabledDescription = "Not enough resources";
+    } else if (reason) {
+      disabledDescription = reason;
+      // If there are prerequisite research items, add them to unmet requirements
+      // Note: This assumes the reason contains info about missing prerequisites
+      // You may need to extend ResearchComponent to expose prerequisite info
+    }
+
+    return { disabled, disabledDescription, unmetRequirements };
   }
 
   private playInvalidActionSfx(reason: ProductionInvalidReason | null) {

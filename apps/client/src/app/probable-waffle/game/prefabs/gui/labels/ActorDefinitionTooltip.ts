@@ -4,13 +4,15 @@
 
 /* START-USER-IMPORTS */
 import { IconHelper } from "./IconHelper";
-import type { ResourceType } from "@fuzzy-waddle/api-interfaces";
+import type { ResourceType, ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import ActorInfoLabel from "./ActorInfoLabel";
 import ActorDetails from "./ActorDetails";
 import Resource from "./Resource";
 import { getCurrentPlayerNumber, getPlayer } from "../../../data/scene-data";
 import { pwActorDefinitions } from "../../definitions/actor-definitions";
 import type { TooltipInfo } from "./tooltip-info";
+import { researchDefinitions } from "../../../entity/components/research/research-definitions";
+import type { ResearchType } from "../../../entity/components/research/research-type";
 /* END-USER-IMPORTS */
 
 export default class ActorDefinitionTooltip extends Phaser.GameObjects.Container {
@@ -290,7 +292,15 @@ export default class ActorDefinitionTooltip extends Phaser.GameObjects.Container
       this.requirementsList.visible = true;
       this.requirementsList.y = yOffset;
       const requirementNames = unmetRequirements
-        .map((req) => pwActorDefinitions[req]?.components?.info?.name ?? req)
+        .map((req) => {
+          // Check if it's an ObjectNames (actor/building) or ResearchType
+          if (typeof req === "string" && req in pwActorDefinitions) {
+            return pwActorDefinitions[req as ObjectNames]?.components?.info?.name ?? req;
+          } else {
+            // It's a ResearchType
+            return researchDefinitions[req as ResearchType]?.name ?? req;
+          }
+        })
         .join(", ");
       this.requirementsList.setText(requirementNames);
       yOffset += this.requirementsList.height;
