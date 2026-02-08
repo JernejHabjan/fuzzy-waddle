@@ -299,6 +299,10 @@ export class FogOfWarComponent {
               if (distSq <= radiusSq) {
                 const x = tilePos.x + dx;
                 const y = tilePos.y + dy;
+                // New guard to avoid generating tile keys for out-of-range coordinates
+                if (x < 0 || y < 0) {
+                  continue;
+                }
                 const tileKey = this.getTileKey(x, y);
                 visionTiles.add(tileKey);
               }
@@ -325,7 +329,8 @@ export class FogOfWarComponent {
     }
 
     // Clear dirty actors set after processing
-    this.dirtyActors.clear();
+    // NOTE: dirtyActors is intentionally not cleared here anymore because it is not used by updateFogOfWar();
+    // clearing it would add overhead without affecting current fog-of-war behavior.
 
     // Calculate dirty tiles (tiles that changed state)
     this.calculateDirtyTiles();
@@ -438,7 +443,6 @@ export class FogOfWarComponent {
     if (this.dirtyTiles.size === 0) {
       return;
     }
-
     let alphaUnexplored = 0;
     switch (this.fowMode) {
       case FogOfWarMode.FULL_EXPLORATION:

@@ -108,10 +108,12 @@ export class DistanceHelper {
     if (!actor1Tile || !actor2Tile) return null;
 
     // Create cache key (use sorted coordinates to make bidirectional)
-    const cacheKey =
-      actor1Tile.x <= actor2Tile.x
-        ? `${actor1Tile.x},${actor1Tile.y}->${actor2Tile.x},${actor2Tile.y}`
-        : `${actor2Tile.x},${actor2Tile.y}->${actor1Tile.x},${actor1Tile.y}`;
+    const actor1First =
+      actor1Tile.x < actor2Tile.x ||
+      (actor1Tile.x === actor2Tile.x && actor1Tile.y <= actor2Tile.y);
+    const cacheKey = actor1First
+      ? `${actor1Tile.x},${actor1Tile.y}->${actor2Tile.x},${actor2Tile.y}`
+      : `${actor2Tile.x},${actor2Tile.y}->${actor1Tile.x},${actor1Tile.y}`;
     const now = performance.now();
 
     // Check cache
@@ -167,7 +169,8 @@ export class DistanceHelper {
       // console.log(
       //   `Cache hit for distance from ${actor.name} to tile (${tile.x},${tile.y},${tile.z}): ${cached.distance}`
       // );
-      return cached.distance;
+      // Note: convert sentinel -1 back to null to preserve the Promise<number | null> contract
+      return cached.distance === -1 ? null : cached.distance;
     }
 
     const navigationService = getSceneService(actor.scene, NavigationService);
@@ -328,11 +331,13 @@ export class DistanceHelper {
         const actor2Tile = getGameObjectCurrentTile(actor2);
         if (!actor1Tile || !actor2Tile) continue;
 
-        // Create cache key (bidirectional)
-        const cacheKey =
-          actor1Tile.x <= actor2Tile.x
-            ? `${actor1Tile.x},${actor1Tile.y}->${actor2Tile.x},${actor2Tile.y}`
-            : `${actor2Tile.x},${actor2Tile.y}->${actor1Tile.x},${actor1Tile.y}`;
+        // Create cache key (use sorted coordinates to make bidirectional)
+        const actor1First =
+          actor1Tile.x < actor2Tile.x ||
+          (actor1Tile.x === actor2Tile.x && actor1Tile.y <= actor2Tile.y);
+        const cacheKey = actor1First
+          ? `${actor1Tile.x},${actor1Tile.y}->${actor2Tile.x},${actor2Tile.y}`
+          : `${actor2Tile.x},${actor2Tile.y}->${actor1Tile.x},${actor1Tile.y}`;
 
         // Check cache first
         const cached = navigationDistanceBetweenObjectsCache.get(cacheKey);
