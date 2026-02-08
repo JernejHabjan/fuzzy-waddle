@@ -167,7 +167,8 @@ export class DistanceHelper {
       // console.log(
       //   `Cache hit for distance from ${actor.name} to tile (${tile.x},${tile.y},${tile.z}): ${cached.distance}`
       // );
-      return cached.distance;
+      // Note: convert sentinel -1 back to null to preserve the Promise<number | null> contract
+      return cached.distance === -1 ? null : cached.distance;
     }
 
     const navigationService = getSceneService(actor.scene, NavigationService);
