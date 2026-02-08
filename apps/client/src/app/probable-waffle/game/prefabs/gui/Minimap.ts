@@ -319,41 +319,6 @@ export default class Minimap extends Phaser.GameObjects.Container {
     diamond.setVisible(true);
   }
 
-  /**
-   * Update an existing diamond's position and appearance
-   */
-  private updateDiamondShape(
-    diamond: Phaser.GameObjects.Polygon,
-    x: number,
-    y: number,
-    isoX: number,
-    isoY: number,
-    pixelWidth: number,
-    pixelHeight: number,
-    color: Phaser.Display.Color
-  ): void {
-    // Update position
-    diamond.setPosition(x, y);
-
-    // Update color
-    diamond.setFillStyle(color.color, 1);
-
-    // Update points to handle size changes (e.g., when minimap zooms)
-    // Note: We recreate the points array here to handle dynamic size changes.
-    // This is a trade-off - we accept the small cost of array creation to avoid
-    // needing to track and compare previous dimensions.
-    const diamondPoints = [
-      { x: isoX, y: isoY + pixelHeight / 2 },
-      { x: isoX + pixelWidth / 2, y: isoY },
-      { x: isoX + pixelWidth, y: isoY + pixelHeight / 2 },
-      { x: isoX + pixelWidth / 2, y: isoY + pixelHeight }
-    ];
-    diamond.setTo(diamondPoints);
-
-    // Ensure it's visible
-    diamond.setVisible(true);
-  }
-
   private getIsometricCoordinates(tileXY: Vector2Simple): { isoX: number; isoY: number } | null {
     const { x, y } = tileXY;
 
