@@ -1,4 +1,4 @@
-import { Component, inject, NgZone, type OnDestroy, type OnInit, ViewChild, input } from "@angular/core";
+import { Component, input, type OnDestroy, type OnInit, ViewChild } from "@angular/core";
 import { BaseGame } from "../phaser/game/base-game";
 import type { Types } from "phaser";
 import { type BaseGameData } from "../phaser/game/base-game-data";
@@ -21,8 +21,6 @@ export class GameContainerComponent implements OnInit, OnDestroy {
 
   private gameRef?: BaseGame;
 
-  private readonly ngZone = inject(NgZone);
-
   private _gameContainerElement!: HTMLDivElement;
 
   async ngOnInit(): Promise<void> {
@@ -44,9 +42,7 @@ export class GameContainerComponent implements OnInit, OnDestroy {
   }
 
   private async setupGameContainer() {
-    await this.ngZone.runOutsideAngular(async () => {
-      this.gameRef = new BaseGame(this.gameConfig(), this.gameData());
-    });
+    this.gameRef = new BaseGame(this.gameConfig(), this.gameData());
   }
 
   ngOnDestroy(): void {

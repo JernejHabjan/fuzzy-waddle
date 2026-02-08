@@ -1,8 +1,8 @@
 import "jest-canvas-mock";
-import { setupZoneTestEnv } from "jest-preset-angular/setup-env/zone";
 import failOnConsole from "jest-fail-on-console";
+import { setupZonelessTestEnv } from "jest-preset-angular/setup-env/zoneless";
 
-setupZoneTestEnv();
+setupZonelessTestEnv();
 
 failOnConsole();
 

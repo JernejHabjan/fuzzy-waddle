@@ -1,4 +1,4 @@
-import { inject, Injectable, NgZone } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { filter, firstValueFrom, Observable, Subject, Subscription } from "rxjs";
 import { environment } from "../../../environments/environment";
 import { HttpClient } from "@angular/common/http";
@@ -70,7 +70,6 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   private readonly gameInstanceStorageService = inject(GameInstanceStorageServiceInterface);
   private readonly modalService = inject(NgbModal);
   private readonly router = inject(Router);
-  private readonly ngZone = inject(NgZone);
   private communicators?: ProbableWaffleCommunicators;
   private communicatorSubscriptions: Subscription[] = [];
   private externalModalOpen = false;
@@ -131,9 +130,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
                 await this.router.navigate(["aota/game"]);
                 break;
               case GameSessionState.ToScoreScreen:
-                await this.ngZone.run(async () => {
-                  await this.router.navigate(["aota/score-screen"]);
-                });
+                await this.router.navigate(["aota/score-screen"]);
                 break;
               case GameSessionState.Stopped:
                 await this.stopListeningToGameInstanceEvents();
