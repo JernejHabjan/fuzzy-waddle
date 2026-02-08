@@ -15,7 +15,7 @@ import {
 import { Scene } from "phaser";
 import { ProbableWaffleScene } from "../core/probable-waffle.scene";
 import { ProbableWaffleCommunicatorService } from "../../communicators/probable-waffle-communicator.service";
-import { getActorComponent } from "./actor-component";
+import { getActorComponent, hasActorComponent } from "./actor-component";
 import { IdComponent } from "../entity/components/id-component";
 import { Observable } from "rxjs";
 import GameProbableWaffleScene from "../world/scenes/GameProbableWaffleScene";
@@ -260,7 +260,7 @@ export function getSelectedActors(scene: Phaser.Scene): Phaser.GameObjects.GameO
 
 export function getSelectableSceneChildren(scene: Phaser.Scene): Phaser.GameObjects.GameObject[] {
   return scene.children.list.filter(
-    (actor) => !!getActorComponent(actor, SelectableComponent) && !!getActorComponent(actor, IdComponent)
+    (actor) => hasActorComponent(actor, SelectableComponent) && hasActorComponent(actor, IdComponent)
   );
 }
 
