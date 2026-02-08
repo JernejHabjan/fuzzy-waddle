@@ -1,4 +1,4 @@
-import { getActorComponent } from "../data/actor-component";
+import { getActorComponent, hasActorComponent } from "../data/actor-component";
 import { ProductionComponent } from "../entity/components/production/production-component";
 import { ContainerComponent } from "../entity/components/building/container-component";
 import { OwnerComponent } from "../entity/components/owner-component";
@@ -11,10 +11,7 @@ import type { PlayerNumber } from "@fuzzy-waddle/api-interfaces";
  * Buildings typically have production or container components.
  */
 export function isBuilding(actor: GameObject): boolean {
-  const hasProduction = getActorComponent(actor, ProductionComponent) !== undefined;
-  const hasContainer = getActorComponent(actor, ContainerComponent) !== undefined;
-
-  return hasProduction || hasContainer;
+  return hasActorComponent(actor, ProductionComponent) || hasActorComponent(actor, ContainerComponent);
 }
 
 /**

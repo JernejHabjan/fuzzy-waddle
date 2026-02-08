@@ -28,6 +28,7 @@ import { RepresentableComponent } from "../../entity/components/representable-co
 import type { WalkablePath } from "../../entity/components/movement/walkable-path";
 import { WalkablePathDirection } from "../../entity/components/movement/walkable-path-direction";
 import { ActorIndexSystem } from "./ActorIndexSystem";
+import { DistanceHelper } from "../../library/distance-helper";
 
 export enum TerrainType {
   Grass = "grass",
@@ -47,6 +48,14 @@ interface HeightMapCell {
   walkableComponent?: WalkableComponent;
 }
 
+// Path cache for expensive pathfinding operations
+interface PathCache {
+  path: Vector2Simple[] | null;
+  timestamp: number;
+}
+
+const PATH_CACHE_TTL_MS = 1000; // Cache paths for 1 second
+
 export class NavigationService {
   private readonly terrainTypes = Object.values(TerrainType);
   static UpdateNavigationEvent = "updateNavigation";
@@ -60,6 +69,7 @@ export class NavigationService {
   private readonly DEBUG_DEMO = false;
   private readonly DEBUG_CLICK_INFO = false;
   private directionalConditions: Map<string, Direction[]> = new Map();
+  private pathCache = new Map<string, PathCache>();
 
   constructor(
     private readonly scene: Phaser.Scene,
@@ -331,25 +341,44 @@ export class NavigationService {
   }
 
   private async findPath(fromTileXY: Vector2Simple, toTileXY: Vector2Simple): Promise<Vector2Simple[] | null> {
+    // Create cache key
+    const cacheKey = `${fromTileXY.x},${fromTileXY.y}->${toTileXY.x},${toTileXY.y}`;
+    const now = performance.now();
+
+    // Check cache
+    const cached = this.pathCache.get(cacheKey);
+    if (cached && (now - cached.timestamp) < PATH_CACHE_TTL_MS) {
+      return cached.path;
+    }
+
     return new Promise((resolve) => {
       this.easyStar.findPath(fromTileXY.x, fromTileXY.y, toTileXY.x, toTileXY.y, (path) => {
-        if (!path) {
-          // console.log("Path was not found.");
-          resolve(null);
-        } else {
-          if (path.length === 0) {
-            resolve([]);
-            return;
-          }
+        const result = !path ? null : (path.length === 0 ? [] : path);
 
-          if (this.DEBUG) {
-            this.drawDebugPath(path);
-          }
-          resolve(path);
+        if (this.DEBUG && result) {
+          this.drawDebugPath(result);
         }
+
+        // Cache the result
+        this.pathCache.set(cacheKey, { path: result, timestamp: now });
+
+        // Periodically clean up old cache entries
+        if (this.pathCache.size > 1000) {
+          this.cleanPathCache(now);
+        }
+
+        resolve(result);
       });
       this.easyStar.calculate();
     });
+  }
+
+  private cleanPathCache(now: number = performance.now()): void {
+    for (const [key, value] of this.pathCache.entries()) {
+      if ((now - value.timestamp) >= PATH_CACHE_TTL_MS) {
+        this.pathCache.delete(key);
+      }
+    }
   }
 
   private extractTilemapGrid() {
@@ -451,6 +480,9 @@ export class NavigationService {
 
   private updateNavigation() {
     this.setup();
+    // Clear both the distance cache and path cache when navigation grid changes
+    DistanceHelper.clearNavigationCache();
+    this.pathCache.clear();
   }
 
   /**
@@ -711,6 +743,7 @@ export class NavigationService {
 
   private destroy() {
     this.scene?.events.off(NavigationService.UpdateNavigationEvent, this.throttleUpdateNavigation, this);
+    this.pathCache.clear();
   }
 
   getTerrainUnderActor(gameObject: Phaser.GameObjects.GameObject): TerrainType | undefined {
