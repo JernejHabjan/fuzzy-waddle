@@ -665,6 +665,17 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       const cooldownRemaining = spellComponent.getCooldownRemaining(spellType);
       const autocastEnabled = spellComponent.isAutocastEnabled(spellType);
 
+      // Build description based on research status
+      let description = spellData.description;
+      if (!isResearched && spellData.requiresResearch) {
+        const researchData = researchDefinitions[spellData.requiresResearch];
+        const researchName = researchData?.name ?? spellData.requiresResearch;
+        const buildingName = researchData?.requiredBuilding
+          ? pwActorDefinitions[researchData.requiredBuilding]?.components?.info?.name ?? researchData.requiredBuilding
+          : "building";
+        description = `Requires: ${researchName} research at ${buildingName}`;
+      }
+
       action.setup({
         icon: {
           key: spellData.icon.key,
@@ -692,7 +703,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         },
         tooltipInfo: {
           title: spellData.name,
-          description: !isResearched ? `Requires: ${spellData.requiresResearch} research` : spellData.description,
+          description: description,
           iconKey: spellData.icon.key,
           iconFrame: spellData.icon.frame,
           iconOrigin: { x: 0.5, y: 0.5 }
