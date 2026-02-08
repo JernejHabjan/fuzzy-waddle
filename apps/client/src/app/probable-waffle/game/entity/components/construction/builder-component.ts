@@ -272,15 +272,18 @@ export class BuilderComponent {
 
     if (availableConstructionSites.length === 0) return null;
 
-    // Get navigation distances for all sites (filters out unreachable ones)
+    // Get navigation distances for all sites using batch method
+    const pairs: [GameObject, GameObject][] = availableConstructionSites.map(site => [this.gameObject, site]);
+    const distances = await DistanceHelper.batchGetDistancesBetweenGameObjects(pairs);
+
     const sitesWithDistance: { site: GameObject; distance: number }[] = [];
 
-    for (const site of availableConstructionSites) {
-      const navDistance = await DistanceHelper.getTileDistanceBetweenGameObjectsNavigation(this.gameObject, site);
-      // console.log("[Build] getClosestConstructionSite: Site", site, "navDistance=", navDistance);
-      // Only include reachable sites (navDistance !== null)
-      if (navDistance !== null && navDistance <= rangeInTiles) {
-        sitesWithDistance.push({ site, distance: navDistance });
+    for (let i = 0; i < availableConstructionSites.length; i++) {
+      const distance = distances[i];
+      // console.log("[Build] getClosestConstructionSite: Site", availableConstructionSites[i], "navDistance=", distance);
+      // Only include reachable sites
+      if (typeof distance === 'number' && distance <= rangeInTiles) {
+        sitesWithDistance.push({ site: availableConstructionSites[i]!, distance });
       }
     }
 

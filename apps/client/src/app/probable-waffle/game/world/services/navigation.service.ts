@@ -28,6 +28,7 @@ import { RepresentableComponent } from "../../entity/components/representable-co
 import type { WalkablePath } from "../../entity/components/movement/walkable-path";
 import { WalkablePathDirection } from "../../entity/components/movement/walkable-path-direction";
 import { ActorIndexSystem } from "./ActorIndexSystem";
+import { DistanceHelper } from "../../library/distance-helper";
 
 export enum TerrainType {
   Grass = "grass",
@@ -46,6 +47,14 @@ interface HeightMapCell {
   isWalkable: boolean;
   walkableComponent?: WalkableComponent;
 }
+
+// Path cache for expensive pathfinding operations
+interface PathCache {
+  path: Vector2Simple[] | null;
+  timestamp: number;
+}
+const pathCache = new Map<string, PathCache>();
+const PATH_CACHE_TTL_MS = 1000; // Cache paths for 1 second
 
 export class NavigationService {
   private readonly terrainTypes = Object.values(TerrainType);
@@ -331,25 +340,44 @@ export class NavigationService {
   }
 
   private async findPath(fromTileXY: Vector2Simple, toTileXY: Vector2Simple): Promise<Vector2Simple[] | null> {
+    // Create cache key
+    const cacheKey = `${fromTileXY.x},${fromTileXY.y}->${toTileXY.x},${toTileXY.y}`;
+    const now = performance.now();
+
+    // Check cache
+    const cached = pathCache.get(cacheKey);
+    if (cached && (now - cached.timestamp) < PATH_CACHE_TTL_MS) {
+      return cached.path;
+    }
+
     return new Promise((resolve) => {
       this.easyStar.findPath(fromTileXY.x, fromTileXY.y, toTileXY.x, toTileXY.y, (path) => {
-        if (!path) {
-          // console.log("Path was not found.");
-          resolve(null);
-        } else {
-          if (path.length === 0) {
-            resolve([]);
-            return;
-          }
+        const result = !path ? null : (path.length === 0 ? [] : path);
 
-          if (this.DEBUG) {
-            this.drawDebugPath(path);
-          }
-          resolve(path);
+        if (this.DEBUG && result) {
+          this.drawDebugPath(result);
         }
+
+        // Cache the result
+        pathCache.set(cacheKey, { path: result, timestamp: now });
+
+        // Periodically clean up old cache entries
+        if (pathCache.size > 1000) {
+          this.cleanPathCache(now);
+        }
+
+        resolve(result);
       });
       this.easyStar.calculate();
     });
+  }
+
+  private cleanPathCache(now: number = performance.now()): void {
+    for (const [key, value] of pathCache.entries()) {
+      if ((now - value.timestamp) >= PATH_CACHE_TTL_MS) {
+        pathCache.delete(key);
+      }
+    }
   }
 
   private extractTilemapGrid() {
@@ -451,6 +479,9 @@ export class NavigationService {
 
   private updateNavigation() {
     this.setup();
+    // Clear both the distance cache and path cache when navigation grid changes
+    DistanceHelper.clearNavigationCache();
+    pathCache.clear();
   }
 
   /**
