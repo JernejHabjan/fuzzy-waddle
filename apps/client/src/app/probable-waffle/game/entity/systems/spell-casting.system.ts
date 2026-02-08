@@ -2,12 +2,12 @@ import { SpellType } from "../components/combat/spell-type";
 import type { SpellData } from "../components/combat/spell-data";
 import { spellDefinitions } from "../components/combat/spell-definitions";
 import {
+  type ActorDefinition,
+  ConstructionStateEnum,
   type StatusEffectData,
   StatusEffectType,
   type Vector2Simple,
-  type Vector3Simple,
-  type ActorDefinition,
-  ConstructionStateEnum
+  type Vector3Simple
 } from "@fuzzy-waddle/api-interfaces";
 import { getActorComponent } from "../../data/actor-component";
 import { SpellComponent } from "../components/combat/components/spell-component";
@@ -16,7 +16,12 @@ import { StatusEffectComponent } from "../components/status-effect/status-effect
 import { OwnerComponent } from "../components/owner-component";
 import { ActorTranslateComponent } from "../components/movement/actor-translate-component";
 import { AnimationActorComponent } from "../components/animation/animation-actor-component";
-import { getGameObjectBounds, getGameObjectLogicalTransform, getGameObjectVisibility, onObjectReady } from "../../data/game-object-helper";
+import {
+  getGameObjectBounds,
+  getGameObjectLogicalTransform,
+  getGameObjectVisibility,
+  onObjectReady
+} from "../../data/game-object-helper";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { AudioService } from "../../world/services/audio.service";
 import { AoeZoneManager } from "./aoe-zone-manager";
@@ -413,11 +418,7 @@ export class SpellCastingSystem {
     }
 
     // Convert tile position to world position
-    const worldPosition = IsoHelper.isometricTileToWorldXY(
-      this.gameObject.scene,
-      targetPosition.x,
-      targetPosition.y
-    );
+    const worldPosition = IsoHelper.isometricTileToWorldXY(this.gameObject.scene, targetPosition.x, targetPosition.y);
 
     // Create actor definition
     const actorDefinition: ActorDefinition = {
@@ -429,11 +430,12 @@ export class SpellCastingSystem {
           z: 0
         }
       },
-      ...(spellData.spawnPrefab.inheritOwner && this.ownerComponent && {
-        owner: {
-          ownerId: this.ownerComponent.getOwner()
-        }
-      }),
+      ...(spellData.spawnPrefab.inheritOwner &&
+        this.ownerComponent && {
+          owner: {
+            ownerId: this.ownerComponent.getOwner()
+          }
+        }),
       constructionSite: {
         state: ConstructionStateEnum.Finished
       }
@@ -451,6 +453,7 @@ export class SpellCastingSystem {
       // If the prefab has a duration, schedule its destruction
       if (spellData.spawnPrefab.duration) {
         this.gameObject.scene.time.delayedCall(spellData.spawnPrefab.duration, () => {
+          if (!newGameObject.active || !newGameObject.scene) return; // Already destroyed
           const healthComponent = getActorComponent(newGameObject, HealthComponent);
           if (healthComponent) {
             healthComponent.killActor();

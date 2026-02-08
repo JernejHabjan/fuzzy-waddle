@@ -11,6 +11,7 @@ import { SelectableComponent } from "../../entity/components/selectable-componen
 import { getActorComponent } from "../../data/actor-component";
 import { SpellComponent } from "../../entity/components/combat/components/spell-component";
 import { IsoHelper } from "../../world/tilemap/iso-helper";
+import { DistanceHelper } from "../../library/distance-helper";
 
 export class SpellCursor {
   private aoeCircle?: GameObjects.Graphics;
@@ -137,6 +138,10 @@ export class SpellCursor {
 
     const worldPosition = this.scene.cameras.main.getWorldPoint(pointer.x, pointer.y);
     const clickedTileXY = IsoHelper.isometricWorldToTileXY(this.scene, worldPosition.x, worldPosition.y, false);
+    const clickedTileXYZ = {
+      ...clickedTileXY,
+      z: 0
+    } satisfies Vector3Simple;
 
     // Update AOE circle position
     this.aoeCircle.setPosition(worldX, worldY);
@@ -144,9 +149,9 @@ export class SpellCursor {
 
     // Update range circle position to nearest caster
     if (this.rangeCircle) {
-      const nearestCaster = this.findNearestCaster(worldX, worldY);
-      if (nearestCaster && 'x' in nearestCaster && 'y' in nearestCaster) {
-        this.rangeCircle.setPosition(nearestCaster.x as number, nearestCaster.y as number);
+      const nearestCaster = this.findNearestCaster(clickedTileXYZ);
+      if (nearestCaster) {
+        this.rangeCircle.setPosition(nearestCaster.x, nearestCaster.y);
         this.rangeCircle.setVisible(true);
       } else {
         this.rangeCircle.setVisible(false);
@@ -154,11 +159,7 @@ export class SpellCursor {
     }
 
     // Check if position is in range
-    const isInRange = this.isPositionInRange({
-      x: clickedTileXY.x,
-      y: clickedTileXY.y,
-      z: 0
-    });
+    const isInRange = this.isPositionInRange(clickedTileXYZ);
     const color = this.getSpellColor();
 
     // Update circle color based on range validity
@@ -187,8 +188,7 @@ export class SpellCursor {
     if (!clickedTileXY) return;
 
     const clickedTileXYZ = {
-      x: clickedTileXY.x,
-      y: clickedTileXY.y,
+      ...clickedTileXY,
       z: 0
     } satisfies Vector3Simple;
 
@@ -251,22 +251,19 @@ export class SpellCursor {
     return spellData?.tintColor ?? 0x6666ff;
   }
 
-  private findNearestCaster(x: number, y: number): Phaser.GameObjects.GameObject | null {
+  private findNearestCaster(
+    tileXYZ: Vector3Simple
+  ): (Phaser.GameObjects.GameObject & Phaser.GameObjects.Components.Transform) | null {
     if (this.selectedCasters.length === 0) return null;
 
-    let nearestCaster: Phaser.GameObjects.GameObject | null = null;
+    let nearestCaster: (Phaser.GameObjects.GameObject & Phaser.GameObjects.Components.Transform) | null = null;
     let minDistance = Infinity;
 
     for (const caster of this.selectedCasters) {
-      if (!('x' in caster) || !('y' in caster)) continue;
-
-      const dx = (caster.x as number) - x;
-      const dy = (caster.y as number) - y;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-
-      if (distance < minDistance) {
+      const distance = DistanceHelper.getTileDistanceBetweenGameObjectAndTile(caster, tileXYZ);
+      if (distance !== null && distance < minDistance) {
         minDistance = distance;
-        nearestCaster = caster;
+        nearestCaster = caster as Phaser.GameObjects.GameObject & Phaser.GameObjects.Components.Transform;
       }
     }
 
