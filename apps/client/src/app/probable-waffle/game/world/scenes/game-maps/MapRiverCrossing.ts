@@ -1183,6 +1183,70 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     const emberstone_1EditorOwner = new EditorOwner(emberstone_1);
     emberstone_1EditorOwner.owner_id = "1";
 
+    // centurion (components)
+    const centurionEditorOwner = new EditorOwner(centurion);
+    centurionEditorOwner.owner_id = "1";
+
+    // cyclops (components)
+    const cyclopsEditorOwner = new EditorOwner(cyclops);
+    cyclopsEditorOwner.owner_id = "1";
+
+    // minotaur (components)
+    const minotaurEditorOwner = new EditorOwner(minotaur);
+    minotaurEditorOwner.owner_id = "1";
+
+    // mummy (components)
+    const mummyEditorOwner = new EditorOwner(mummy);
+    mummyEditorOwner.owner_id = "1";
+
+    // orcBoomerang (components)
+    const orcBoomerangEditorOwner = new EditorOwner(orcBoomerang);
+    orcBoomerangEditorOwner.owner_id = "1";
+
+    // orcMagician (components)
+    const orcMagicianEditorOwner = new EditorOwner(orcMagician);
+    orcMagicianEditorOwner.owner_id = "1";
+
+    // orcWarrior (components)
+    const orcWarriorEditorOwner = new EditorOwner(orcWarrior);
+    orcWarriorEditorOwner.owner_id = "1";
+
+    // pirateScimitar (components)
+    const pirateScimitarEditorOwner = new EditorOwner(pirateScimitar);
+    pirateScimitarEditorOwner.owner_id = "1";
+
+    // pirateSwordsman (components)
+    const pirateSwordsmanEditorOwner = new EditorOwner(pirateSwordsman);
+    pirateSwordsmanEditorOwner.owner_id = "1";
+
+    // skeletonBowman (components)
+    const skeletonBowmanEditorOwner = new EditorOwner(skeletonBowman);
+    skeletonBowmanEditorOwner.owner_id = "1";
+
+    // skeletonMelee (components)
+    const skeletonMeleeEditorOwner = new EditorOwner(skeletonMelee);
+    skeletonMeleeEditorOwner.owner_id = "1";
+
+    // skeletonScythe (components)
+    const skeletonScytheEditorOwner = new EditorOwner(skeletonScythe);
+    skeletonScytheEditorOwner.owner_id = "1";
+
+    // skeletonSwordsman (components)
+    const skeletonSwordsmanEditorOwner = new EditorOwner(skeletonSwordsman);
+    skeletonSwordsmanEditorOwner.owner_id = "1";
+
+    // zombie1 (components)
+    const zombie1EditorOwner = new EditorOwner(zombie1);
+    zombie1EditorOwner.owner_id = "1";
+
+    // zombie2 (components)
+    const zombie2EditorOwner = new EditorOwner(zombie2);
+    zombie2EditorOwner.owner_id = "1";
+
+    // zombie3 (components)
+    const zombie3EditorOwner = new EditorOwner(zombie3);
+    zombie3EditorOwner.owner_id = "1";
+
     this.tilemap = tilemap;
 
     this.events.emit("scene-awake");

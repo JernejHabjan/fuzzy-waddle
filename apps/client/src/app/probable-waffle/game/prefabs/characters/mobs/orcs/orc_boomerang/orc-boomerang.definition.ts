@@ -1,10 +1,10 @@
 import { ResourceType } from "@fuzzy-waddle/api-interfaces";
-import { PaymentType } from "../../../../entity/components/production/payment-type";
-import { ANIM_GENERAL_WARRIOR_DEFINITION } from "./orc_boomerang_anim";
-import type { PrefabDefinition } from "../../../definitions/prefab-definition";
-import { ActorPhysicalType } from "../../../../entity/components/combat/components/actor-physical-type";
-import { weaponDefinitions } from "../../../../entity/components/combat/weapon-definitions";
-import { AiType } from "../../../ai-agents/ai-type";
+import { ActorPhysicalType } from "../../../../../entity/components/combat/components/actor-physical-type";
+import { weaponDefinitions } from "../../../../../entity/components/combat/weapon-definitions";
+import { PaymentType } from "../../../../../entity/components/production/payment-type";
+import { AiType } from "../../../../ai-agents/ai-type";
+import type { PrefabDefinition } from "../../../../definitions/prefab-definition";
+import { ANIM_ORC_BOOMERANG_DEFINITION } from "./orc_boomerang_anim";
 
 export const orcBoomerangDefinition = {
   components: {
@@ -61,7 +61,7 @@ export const orcBoomerangDefinition = {
     aiControlled: {
       type: AiType.Character
     },
-    animatable: { animations: ANIM_GENERAL_WARRIOR_DEFINITION }
+    animatable: { animations: ANIM_ORC_BOOMERANG_DEFINITION }
   },
   systems: {
     movement: { enabled: true }

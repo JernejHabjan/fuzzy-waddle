@@ -4,7 +4,7 @@ import { weaponDefinitions } from "../../../../../entity/components/combat/weapo
 import { ActorPhysicalType } from "../../../../../entity/components/combat/components/actor-physical-type";
 import { PaymentType } from "../../../../../entity/components/production/payment-type";
 import { AiType } from "../../../../ai-agents/ai-type";
-import { PrefabDefinition } from "../../../../definitions/prefab-definition";
+import { type PrefabDefinition } from "../../../../definitions/prefab-definition";
 
 export const pirateSwordsmanDefinition = {
   components: {

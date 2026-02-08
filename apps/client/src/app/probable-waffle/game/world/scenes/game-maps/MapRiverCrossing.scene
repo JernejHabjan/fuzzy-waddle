@@ -2502,6 +2502,10 @@
                 "y"
             ],
             "label": "centurion",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
             "x": -1472,
             "y": 800
         },
@@ -2513,6 +2517,10 @@
                 "y"
             ],
             "label": "cyclops",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
             "x": -1257,
             "y": 910
         },
@@ -2524,6 +2532,10 @@
                 "y"
             ],
             "label": "minotaur",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
             "x": -1196,
             "y": 900
         },
@@ -2535,6 +2547,10 @@
                 "y"
             ],
             "label": "mummy",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
             "x": -1173,
             "y": 944
         },
@@ -2546,6 +2562,10 @@
                 "y"
             ],
             "label": "orcBoomerang",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
             "x": -1135,
             "y": 931
         },
@@ -2557,6 +2577,10 @@
                 "y"
             ],
             "label": "orcMagician",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
             "x": -1112,
             "y": 954
         },
@@ -2568,6 +2592,10 @@
                 "y"
             ],
             "label": "orcWarrior",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
             "x": -1056,
             "y": 992
         },
@@ -2579,6 +2607,10 @@
                 "y"
             ],
             "label": "pirateScimitar",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
             "x": -1016,
             "y": 1004
         },
@@ -2590,6 +2622,10 @@
                 "y"
             ],
             "label": "pirateSwordsman",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
             "x": -975,
             "y": 1016
         },
@@ -2601,6 +2637,10 @@
                 "y"
             ],
             "label": "skeletonBowman",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
             "x": -908,
             "y": 1019
         },
@@ -2612,6 +2652,10 @@
                 "y"
             ],
             "label": "skeletonMelee",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
             "x": -870,
             "y": 1034
         },
@@ -2623,6 +2667,10 @@
                 "y"
             ],
             "label": "skeletonScythe",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
             "x": -841,
             "y": 1060
         },
@@ -2634,6 +2682,10 @@
                 "y"
             ],
             "label": "skeletonSwordsman",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
             "x": -800,
             "y": 1067
         },
@@ -2645,6 +2697,10 @@
                 "y"
             ],
             "label": "zombie1",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
             "x": -942,
             "y": 894
         },
@@ -2656,6 +2712,10 @@
                 "y"
             ],
             "label": "zombie2",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
             "x": -918,
             "y": 904
         },
@@ -2667,6 +2727,10 @@
                 "y"
             ],
             "label": "zombie3",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
             "x": -886,
             "y": 905
         }
