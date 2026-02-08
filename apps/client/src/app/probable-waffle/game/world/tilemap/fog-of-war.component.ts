@@ -1,11 +1,10 @@
-import { getTilesAroundGameObjectsOfShape } from "../../data/tile-map-helpers";
 import { NavigationService } from "../services/navigation.service";
 import { throttle } from "../../library/throttle";
 import { VisionComponent } from "../../entity/components/vision-component";
 import { getActorComponent } from "../../data/actor-component";
 import { getCurrentPlayerNumber } from "../../data/scene-data";
 import { IdComponent } from "../../entity/components/id-component";
-import { getGameObjectBounds, getGameObjectVisibility } from "../../data/game-object-helper";
+import { getGameObjectBounds, getGameObjectVisibility, getGameObjectCurrentTile } from "../../data/game-object-helper";
 import { IsoHelper } from "./iso-helper";
 import { ResourceSourceComponent } from "../../entity/components/resource/resource-source-component";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
@@ -38,6 +37,9 @@ export class FogOfWarComponent {
 
   // Cache for tile world positions to avoid repeated coordinate transformations
   private tileWorldPosCache: Map<number, { x: number; y: number }> = new Map();
+
+  // Cache for vision tiles per object - key: "objectId:tileX,tileY:radius", value: Set<tileKey>
+  private visionTilesCache: Map<string, Set<number>> = new Map();
 
   // Track which tiles need to be redrawn (dirty tiles)
   private dirtyTiles: Set<number> = new Set();
@@ -173,20 +175,73 @@ export class FogOfWarComponent {
     }
 
     // Calculate visible tiles for all player-owned objects
-    playerOwnedObjects.forEach((obj) => {
-      const visionComponent = getActorComponent(obj, VisionComponent);
-      if (visionComponent) {
-        const radius = visionComponent.range;
-        const { tilesWithOutBounds } = getTilesAroundGameObjectsOfShape(obj, this.scene, radius, "circle");
+    // Group objects by vision radius for better cache efficiency
+    const objectsByRadius = new Map<number, Array<{ obj: GameObject; tilePos: { x: number; y: number } }>>();
 
-        // Add to visible and explored tiles
-        tilesWithOutBounds.forEach((tile) => {
-          const tileKey = this.getTileKey(tile.x, tile.y);
+    for (const obj of playerOwnedObjects) {
+      const visionComponent = getActorComponent(obj, VisionComponent);
+      if (!visionComponent) continue;
+
+      const radius = visionComponent.range;
+      if (radius <= 0) continue; // Skip objects with no vision
+
+      // Get object's tile position early to avoid repeated calls
+      const tilePos = getGameObjectCurrentTile(obj);
+      if (!tilePos) continue;
+
+      const group = objectsByRadius.get(radius) || [];
+      group.push({ obj, tilePos });
+      objectsByRadius.set(radius, group);
+    }
+
+    // Process objects grouped by radius
+    for (const [radius, objects] of objectsByRadius) {
+      for (const { obj, tilePos } of objects) {
+        const idComponent = getActorComponent(obj, IdComponent);
+        const cacheKey = idComponent?.id
+          ? `${idComponent.id}:${tilePos.x},${tilePos.y}:${radius}`
+          : `${tilePos.x},${tilePos.y}:${radius}`;
+
+        // Check cache first
+        let visionTiles = this.visionTilesCache.get(cacheKey);
+
+        if (!visionTiles) {
+          // Calculate tiles in vision radius using optimized circle algorithm
+          visionTiles = new Set<number>();
+
+          // Use Bresenham circle for edge tiles, then fill
+          const radiusSq = radius * radius;
+          for (let dx = -radius; dx <= radius; dx++) {
+            const dxSq = dx * dx;
+            for (let dy = -radius; dy <= radius; dy++) {
+              const distSq = dxSq + dy * dy;
+              if (distSq <= radiusSq) {
+                const x = tilePos.x + dx;
+                const y = tilePos.y + dy;
+                const tileKey = this.getTileKey(x, y);
+                visionTiles.add(tileKey);
+              }
+            }
+          }
+
+          // Cache the result
+          this.visionTilesCache.set(cacheKey, visionTiles);
+
+          // Limit cache size to prevent memory issues
+          if (this.visionTilesCache.size > 500) {
+            // Remove oldest entries (first entries in the map)
+            const keysToDelete = Array.from(this.visionTilesCache.keys()).slice(0, 100);
+            keysToDelete.forEach(key => this.visionTilesCache.delete(key));
+          }
+        }
+
+        // Add cached tiles to visible and explored
+        visionTiles.forEach((tileKey) => {
           this.visibleTiles.add(tileKey);
           this.exploredTiles.add(tileKey);
         });
       }
-    });
+    }
 
     // Calculate dirty tiles (tiles that changed state)
     this.calculateDirtyTiles();
@@ -373,6 +428,7 @@ export class FogOfWarComponent {
   public resetFogOfWar(): void {
     this.exploredTiles.clear();
     this.visibleTiles.clear();
+    this.visionTilesCache.clear();
     this.drawInitialFog();
   }
 
@@ -381,9 +437,21 @@ export class FogOfWarComponent {
     this.updateFogOfWar();
   }
 
+  /**
+   * Clear the vision tiles cache (useful when objects move significantly or are destroyed)
+   */
+  public clearVisionCache(): void {
+    this.visionTilesCache.clear();
+  }
+
   private destroy(): void {
     this.scene?.events.off(NavigationService.UpdateNavigationEvent, this.throttleUpdateFogOfWar, this);
     this.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.throttleUpdateFogOfWar, this);
+
+    // Clear caches
+    this.visionTilesCache.clear();
+    this.tileWorldPosCache.clear();
+    this.playerActors.clear();
 
     if (this.fowLayer) {
       this.fowLayer.destroy();
