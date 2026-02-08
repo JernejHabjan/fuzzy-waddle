@@ -13,7 +13,7 @@ export const orcWarriorDefinition = {
       height: 64
     },
     objectDescriptor: {
-      color: 0x75502d
+      color: 0x808000
     },
     owner: {
       color: [
@@ -24,11 +24,11 @@ export const orcWarriorDefinition = {
       ]
     },
     vision: {
-      range: 10
+      range: 9
     },
     info: {
-      name: "Bandit",
-      description: "A hardened rogue, quick with a blade and quicker to cause trouble",
+      name: "Orc Warrior",
+      description: "A brutish orc fighter armed with a deadly axe, eager for close combat",
       smallImage: {
         key: "factions",
         frame: "character_icons/general/warrior.png",
@@ -37,17 +37,17 @@ export const orcWarriorDefinition = {
     },
     health: {
       physicalState: ActorPhysicalType.Biological,
-      maxHealth: 150
+      maxHealth: 180
     },
     attack: {
-      attacks: [weaponDefinitions.spear]
+      attacks: [weaponDefinitions.OrcSword]
     },
     productionCost: {
       resources: {
-        [ResourceType.Minerals]: 80
+        [ResourceType.Minerals]: 100
       },
       refundFactor: 0.5,
-      productionTime: 5000,
+      productionTime: 6000,
       costType: PaymentType.PayImmediately
     },
     housingCost: {

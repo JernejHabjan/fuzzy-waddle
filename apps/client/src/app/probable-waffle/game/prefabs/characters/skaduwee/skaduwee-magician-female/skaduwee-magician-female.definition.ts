@@ -54,7 +54,7 @@ export const skaduweeMagicianFemaleDefinition = {
       maxHealth: 50
     },
     attack: {
-      attacks: [weaponDefinitions.fireSpell, weaponDefinitions.staff]
+      attacks: [weaponDefinitions.FireSpell, weaponDefinitions.SkaduweeMagicianStaff]
     },
     productionCost: {
       resources: {

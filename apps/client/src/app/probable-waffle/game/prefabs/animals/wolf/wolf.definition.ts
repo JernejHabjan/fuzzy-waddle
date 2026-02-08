@@ -44,7 +44,7 @@ export const wolfDefinition = {
     },
     animatable: { animations: ANIM_WOLF_DEFINITION },
     attack: {
-      attacks: [weaponDefinitions.wolfBite]
+      attacks: [weaponDefinitions.WolfBite]
     }
   },
   systems: {

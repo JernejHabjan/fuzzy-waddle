@@ -13,7 +13,7 @@ export const orcMagicianDefinition = {
       height: 64
     },
     objectDescriptor: {
-      color: 0x75502d
+      color: 0x556b2f
     },
     owner: {
       color: [
@@ -24,11 +24,11 @@ export const orcMagicianDefinition = {
       ]
     },
     vision: {
-      range: 10
+      range: 12
     },
     info: {
-      name: "Bandit",
-      description: "A hardened rogue, quick with a blade and quicker to cause trouble",
+      name: "Orc Magician",
+      description: "A powerful orc shaman wielding destructive fire magic to incinerate enemies from afar",
       smallImage: {
         key: "factions",
         frame: "character_icons/general/warrior.png",
@@ -37,17 +37,17 @@ export const orcMagicianDefinition = {
     },
     health: {
       physicalState: ActorPhysicalType.Biological,
-      maxHealth: 150
+      maxHealth: 100
     },
     attack: {
-      attacks: [weaponDefinitions.spear]
+      attacks: [weaponDefinitions.FireSpell]
     },
     productionCost: {
       resources: {
-        [ResourceType.Minerals]: 80
+        [ResourceType.Minerals]: 120
       },
       refundFactor: 0.5,
-      productionTime: 5000,
+      productionTime: 6500,
       costType: PaymentType.PayImmediately
     },
     housingCost: {
@@ -55,7 +55,7 @@ export const orcMagicianDefinition = {
     },
     selectable: {},
     translatable: {
-      tileMoveDuration: 500
+      tileMoveDuration: 450
     },
     containable: { enabled: true },
     aiControlled: {

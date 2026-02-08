@@ -55,7 +55,7 @@ export const skaduweeWarriorMaleDefinition = {
       maxHealth: 150
     },
     attack: {
-      attacks: [weaponDefinitions.axe]
+      attacks: [weaponDefinitions.SkaduweeAxe]
     },
     productionCost: {
       resources: {

@@ -13,7 +13,7 @@ export const skeletonMeleeDefinition = {
       height: 64
     },
     objectDescriptor: {
-      color: 0x75502d
+      color: 0xd3d3d3
     },
     owner: {
       color: [
@@ -24,11 +24,11 @@ export const skeletonMeleeDefinition = {
       ]
     },
     vision: {
-      range: 10
+      range: 8
     },
     info: {
-      name: "Bandit",
-      description: "A hardened rogue, quick with a blade and quicker to cause trouble",
+      name: "Skeleton Melee",
+      description: "A basic skeletal warrior clawing at enemies with bony hands, weak but numerous",
       smallImage: {
         key: "factions",
         frame: "character_icons/general/warrior.png",
@@ -36,18 +36,18 @@ export const skeletonMeleeDefinition = {
       }
     },
     health: {
-      physicalState: ActorPhysicalType.Biological,
-      maxHealth: 150
+      physicalState: ActorPhysicalType.Organic,
+      maxHealth: 70
     },
     attack: {
-      attacks: [weaponDefinitions.spear]
+      attacks: [weaponDefinitions.SkeletonHands]
     },
     productionCost: {
       resources: {
-        [ResourceType.Minerals]: 80
+        [ResourceType.Minerals]: 50
       },
       refundFactor: 0.5,
-      productionTime: 5000,
+      productionTime: 3500,
       costType: PaymentType.PayImmediately
     },
     housingCost: {
@@ -55,7 +55,7 @@ export const skeletonMeleeDefinition = {
     },
     selectable: {},
     translatable: {
-      tileMoveDuration: 500
+      tileMoveDuration: 550
     },
     containable: { enabled: true },
     aiControlled: {

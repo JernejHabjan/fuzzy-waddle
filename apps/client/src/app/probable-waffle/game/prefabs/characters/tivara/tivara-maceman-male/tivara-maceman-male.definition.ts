@@ -56,7 +56,7 @@ export const tivaraMacemanMaleDefinition = {
       maxHealth: 150
     },
     attack: {
-      attacks: [weaponDefinitions.mace]
+      attacks: [weaponDefinitions.TivaraMace]
     },
     productionCost: {
       resources: {

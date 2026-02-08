@@ -53,7 +53,7 @@ export const skaduweeOwlDefinition = {
       maxHealth: 80
     },
     attack: {
-      attacks: [weaponDefinitions.furball]
+      attacks: [weaponDefinitions.Furball]
     },
     selectable: {},
     productionCost: {

@@ -13,7 +13,7 @@ export const mummyDefinition = {
       height: 64
     },
     objectDescriptor: {
-      color: 0x75502d
+      color: 0xd2b48c
     },
     owner: {
       color: [
@@ -24,11 +24,11 @@ export const mummyDefinition = {
       ]
     },
     vision: {
-      range: 10
+      range: 7
     },
     info: {
-      name: "Bandit",
-      description: "A hardened rogue, quick with a blade and quicker to cause trouble",
+      name: "Mummy",
+      description: "An ancient undead warrior wrapped in decaying bandages, relentlessly shambling forward",
       smallImage: {
         key: "factions",
         frame: "character_icons/general/warrior.png",
@@ -36,18 +36,18 @@ export const mummyDefinition = {
       }
     },
     health: {
-      physicalState: ActorPhysicalType.Biological,
-      maxHealth: 150
+      physicalState: ActorPhysicalType.Organic,
+      maxHealth: 120
     },
     attack: {
-      attacks: [weaponDefinitions.spear]
+      attacks: [weaponDefinitions.MummyHands]
     },
     productionCost: {
       resources: {
-        [ResourceType.Minerals]: 80
+        [ResourceType.Minerals]: 60
       },
       refundFactor: 0.5,
-      productionTime: 5000,
+      productionTime: 4000,
       costType: PaymentType.PayImmediately
     },
     housingCost: {
@@ -55,7 +55,7 @@ export const mummyDefinition = {
     },
     selectable: {},
     translatable: {
-      tileMoveDuration: 500
+      tileMoveDuration: 800
     },
     containable: { enabled: true },
     aiControlled: {

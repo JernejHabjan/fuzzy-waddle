@@ -64,7 +64,7 @@ export const watchTowerDefinition = {
     //   capacity: 2
     // },
     attack: {
-      attacks: [weaponDefinitions.bowTower]
+      attacks: [weaponDefinitions.BowTower]
     },
     collider: { enabled: true },
     constructable: {

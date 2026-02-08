@@ -13,7 +13,7 @@ export const zombie1Definition = {
       height: 64
     },
     objectDescriptor: {
-      color: 0x75502d
+      color: 0x8fbc8f
     },
     owner: {
       color: [
@@ -24,11 +24,11 @@ export const zombie1Definition = {
       ]
     },
     vision: {
-      range: 10
+      range: 7
     },
     info: {
-      name: "Bandit",
-      description: "A hardened rogue, quick with a blade and quicker to cause trouble",
+      name: "Zombie",
+      description: "A shambling undead corpse, slow and mindless but relentless in its hunger",
       smallImage: {
         key: "factions",
         frame: "character_icons/general/warrior.png",
@@ -36,18 +36,18 @@ export const zombie1Definition = {
       }
     },
     health: {
-      physicalState: ActorPhysicalType.Biological,
-      maxHealth: 150
+      physicalState: ActorPhysicalType.Organic,
+      maxHealth: 100
     },
     attack: {
-      attacks: [weaponDefinitions.spear]
+      attacks: [weaponDefinitions.ZombieHands]
     },
     productionCost: {
       resources: {
-        [ResourceType.Minerals]: 80
+        [ResourceType.Minerals]: 55
       },
       refundFactor: 0.5,
-      productionTime: 5000,
+      productionTime: 3500,
       costType: PaymentType.PayImmediately
     },
     housingCost: {
@@ -55,7 +55,7 @@ export const zombie1Definition = {
     },
     selectable: {},
     translatable: {
-      tileMoveDuration: 500
+      tileMoveDuration: 750
     },
     containable: { enabled: true },
     aiControlled: {

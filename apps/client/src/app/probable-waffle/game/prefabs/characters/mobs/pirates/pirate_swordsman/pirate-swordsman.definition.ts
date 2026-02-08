@@ -13,7 +13,7 @@ export const pirateSwordsmanDefinition = {
       height: 64
     },
     objectDescriptor: {
-      color: 0x75502d
+      color: 0x2f4f4f
     },
     owner: {
       color: [
@@ -27,8 +27,8 @@ export const pirateSwordsmanDefinition = {
       range: 10
     },
     info: {
-      name: "Bandit",
-      description: "A hardened rogue, quick with a blade and quicker to cause trouble",
+      name: "Pirate Swordsman",
+      description: "A seasoned pirate brandishing a sharp sword, ready to plunder and fight",
       smallImage: {
         key: "factions",
         frame: "character_icons/general/warrior.png",
@@ -40,7 +40,7 @@ export const pirateSwordsmanDefinition = {
       maxHealth: 150
     },
     attack: {
-      attacks: [weaponDefinitions.spear]
+      attacks: [weaponDefinitions.PirateScimitar]
     },
     productionCost: {
       resources: {
@@ -55,7 +55,7 @@ export const pirateSwordsmanDefinition = {
     },
     selectable: {},
     translatable: {
-      tileMoveDuration: 500
+      tileMoveDuration: 400
     },
     containable: { enabled: true },
     aiControlled: {

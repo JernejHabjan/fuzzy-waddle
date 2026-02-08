@@ -40,7 +40,7 @@ export const centurionDefinition = {
       maxHealth: 200
     },
     attack: {
-      attacks: [weaponDefinitions.spear]
+      attacks: [weaponDefinitions.CenturionSpear]
     },
     productionCost: {
       resources: {

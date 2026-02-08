@@ -13,7 +13,7 @@ export const skeletonBowmanDefinition = {
       height: 64
     },
     objectDescriptor: {
-      color: 0x75502d
+      color: 0xf5f5dc
     },
     owner: {
       color: [
@@ -24,11 +24,11 @@ export const skeletonBowmanDefinition = {
       ]
     },
     vision: {
-      range: 10
+      range: 13
     },
     info: {
-      name: "Bandit",
-      description: "A hardened rogue, quick with a blade and quicker to cause trouble",
+      name: "Skeleton Bowman",
+      description: "An undead archer with deadly aim, firing arrows from beyond the grave",
       smallImage: {
         key: "factions",
         frame: "character_icons/general/warrior.png",
@@ -36,18 +36,18 @@ export const skeletonBowmanDefinition = {
       }
     },
     health: {
-      physicalState: ActorPhysicalType.Biological,
-      maxHealth: 150
+      physicalState: ActorPhysicalType.Organic,
+      maxHealth: 90
     },
     attack: {
-      attacks: [weaponDefinitions.spear]
+      attacks: [weaponDefinitions.SkeletonBow]
     },
     productionCost: {
       resources: {
-        [ResourceType.Minerals]: 80
+        [ResourceType.Minerals]: 75
       },
       refundFactor: 0.5,
-      productionTime: 5000,
+      productionTime: 4500,
       costType: PaymentType.PayImmediately
     },
     housingCost: {

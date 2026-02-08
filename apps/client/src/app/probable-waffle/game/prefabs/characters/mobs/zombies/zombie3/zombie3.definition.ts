@@ -13,7 +13,7 @@ export const zombie3Definition = {
       height: 64
     },
     objectDescriptor: {
-      color: 0x75502d
+      color: 0x6b4423
     },
     owner: {
       color: [
@@ -24,11 +24,11 @@ export const zombie3Definition = {
       ]
     },
     vision: {
-      range: 10
+      range: 8
     },
     info: {
-      name: "Bandit",
-      description: "A hardened rogue, quick with a blade and quicker to cause trouble",
+      name: "Hulking Zombie",
+      description: "A massive zombie with enhanced durability, lumbering toward its prey with unstoppable force",
       smallImage: {
         key: "factions",
         frame: "character_icons/general/warrior.png",
@@ -36,18 +36,18 @@ export const zombie3Definition = {
       }
     },
     health: {
-      physicalState: ActorPhysicalType.Biological,
-      maxHealth: 150
+      physicalState: ActorPhysicalType.Organic,
+      maxHealth: 160
     },
     attack: {
-      attacks: [weaponDefinitions.spear]
+      attacks: [weaponDefinitions.ZombieLargeHands]
     },
     productionCost: {
       resources: {
-        [ResourceType.Minerals]: 80
+        [ResourceType.Minerals]: 75
       },
       refundFactor: 0.5,
-      productionTime: 5000,
+      productionTime: 4500,
       costType: PaymentType.PayImmediately
     },
     housingCost: {
@@ -55,7 +55,7 @@ export const zombie3Definition = {
     },
     selectable: {},
     translatable: {
-      tileMoveDuration: 500
+      tileMoveDuration: 650
     },
     containable: { enabled: true },
     aiControlled: {

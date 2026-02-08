@@ -55,7 +55,7 @@ export const tivaraSlingshotFemaleDefinition = {
       maxHealth: 100
     },
     attack: {
-      attacks: [weaponDefinitions.slingshot]
+      attacks: [weaponDefinitions.TivaraSlingshot]
     },
     productionCost: {
       resources: {

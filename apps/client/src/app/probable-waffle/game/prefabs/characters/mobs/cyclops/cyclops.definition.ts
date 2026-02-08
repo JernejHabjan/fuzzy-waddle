@@ -13,7 +13,7 @@ export const cyclopsDefinition = {
       height: 64
     },
     objectDescriptor: {
-      color: 0x75502d
+      color: 0x8b4513
     },
     owner: {
       color: [
@@ -24,11 +24,11 @@ export const cyclopsDefinition = {
       ]
     },
     vision: {
-      range: 10
+      range: 8
     },
     info: {
-      name: "Bandit",
-      description: "A hardened rogue, quick with a blade and quicker to cause trouble",
+      name: "Cyclops",
+      description: "A massive one-eyed giant wielding a mighty halberd, slow but devastating in combat",
       smallImage: {
         key: "factions",
         frame: "character_icons/general/warrior.png",
@@ -37,25 +37,25 @@ export const cyclopsDefinition = {
     },
     health: {
       physicalState: ActorPhysicalType.Biological,
-      maxHealth: 150
+      maxHealth: 300
     },
     attack: {
-      attacks: [weaponDefinitions.spear]
+      attacks: [weaponDefinitions.CyclopsHalberd]
     },
     productionCost: {
       resources: {
-        [ResourceType.Minerals]: 80
+        [ResourceType.Minerals]: 150
       },
       refundFactor: 0.5,
-      productionTime: 5000,
+      productionTime: 8000,
       costType: PaymentType.PayImmediately
     },
     housingCost: {
-      housingNeeded: 1
+      housingNeeded: 2
     },
     selectable: {},
     translatable: {
-      tileMoveDuration: 500
+      tileMoveDuration: 700
     },
     containable: { enabled: true },
     aiControlled: {

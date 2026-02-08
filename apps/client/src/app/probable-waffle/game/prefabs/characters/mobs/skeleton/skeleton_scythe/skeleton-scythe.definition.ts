@@ -13,7 +13,7 @@ export const skeletonScytheDefinition = {
       height: 64
     },
     objectDescriptor: {
-      color: 0x75502d
+      color: 0xfffaf0
     },
     owner: {
       color: [
@@ -24,11 +24,11 @@ export const skeletonScytheDefinition = {
       ]
     },
     vision: {
-      range: 10
+      range: 9
     },
     info: {
-      name: "Bandit",
-      description: "A hardened rogue, quick with a blade and quicker to cause trouble",
+      name: "Skeleton Scythe",
+      description: "A formidable skeletal reaper wielding a wicked scythe, harvesting souls with brutal sweeps",
       smallImage: {
         key: "factions",
         frame: "character_icons/general/warrior.png",
@@ -36,18 +36,18 @@ export const skeletonScytheDefinition = {
       }
     },
     health: {
-      physicalState: ActorPhysicalType.Biological,
-      maxHealth: 150
+      physicalState: ActorPhysicalType.Organic,
+      maxHealth: 130
     },
     attack: {
-      attacks: [weaponDefinitions.spear]
+      attacks: [weaponDefinitions.SkeletonScythe]
     },
     productionCost: {
       resources: {
-        [ResourceType.Minerals]: 80
+        [ResourceType.Minerals]: 95
       },
       refundFactor: 0.5,
-      productionTime: 5000,
+      productionTime: 5500,
       costType: PaymentType.PayImmediately
     },
     housingCost: {
@@ -55,7 +55,7 @@ export const skeletonScytheDefinition = {
     },
     selectable: {},
     translatable: {
-      tileMoveDuration: 500
+      tileMoveDuration: 600
     },
     containable: { enabled: true },
     aiControlled: {

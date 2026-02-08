@@ -13,7 +13,7 @@ export const skeletonSwordsmanDefinition = {
       height: 64
     },
     objectDescriptor: {
-      color: 0x75502d
+      color: 0xfffff0
     },
     owner: {
       color: [
@@ -24,11 +24,11 @@ export const skeletonSwordsmanDefinition = {
       ]
     },
     vision: {
-      range: 10
+      range: 9
     },
     info: {
-      name: "Bandit",
-      description: "A hardened rogue, quick with a blade and quicker to cause trouble",
+      name: "Skeleton Swordsman",
+      description: "An undead warrior wielding a rusty blade, still deadly despite its decayed state",
       smallImage: {
         key: "factions",
         frame: "character_icons/general/warrior.png",
@@ -36,18 +36,18 @@ export const skeletonSwordsmanDefinition = {
       }
     },
     health: {
-      physicalState: ActorPhysicalType.Biological,
-      maxHealth: 150
+      physicalState: ActorPhysicalType.Organic,
+      maxHealth: 110
     },
     attack: {
-      attacks: [weaponDefinitions.spear]
+      attacks: [weaponDefinitions.SkeletonSword]
     },
     productionCost: {
       resources: {
-        [ResourceType.Minerals]: 80
+        [ResourceType.Minerals]: 70
       },
       refundFactor: 0.5,
-      productionTime: 5000,
+      productionTime: 4500,
       costType: PaymentType.PayImmediately
     },
     housingCost: {

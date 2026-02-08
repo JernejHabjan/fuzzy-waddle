@@ -55,7 +55,7 @@ export const skaduweeRangedFemaleDefinition = {
       maxHealth: 100
     },
     attack: {
-      attacks: [weaponDefinitions.bow]
+      attacks: [weaponDefinitions.SkaduweeBow]
     },
     productionCost: {
       resources: {

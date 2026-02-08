@@ -13,7 +13,7 @@ export const minotaurDefinition = {
       height: 64
     },
     objectDescriptor: {
-      color: 0x75502d
+      color: 0x654321
     },
     owner: {
       color: [
@@ -24,11 +24,11 @@ export const minotaurDefinition = {
       ]
     },
     vision: {
-      range: 10
+      range: 9
     },
     info: {
-      name: "Bandit",
-      description: "A hardened rogue, quick with a blade and quicker to cause trouble",
+      name: "Minotaur",
+      description: "A fearsome bull-headed warrior with tremendous strength",
       smallImage: {
         key: "factions",
         frame: "character_icons/general/warrior.png",
@@ -37,25 +37,25 @@ export const minotaurDefinition = {
     },
     health: {
       physicalState: ActorPhysicalType.Biological,
-      maxHealth: 150
+      maxHealth: 250
     },
     attack: {
-      attacks: [weaponDefinitions.spear]
+      attacks: [weaponDefinitions.MinotaurHands]
     },
     productionCost: {
       resources: {
-        [ResourceType.Minerals]: 80
+        [ResourceType.Minerals]: 130
       },
       refundFactor: 0.5,
-      productionTime: 5000,
+      productionTime: 7000,
       costType: PaymentType.PayImmediately
     },
     housingCost: {
-      housingNeeded: 1
+      housingNeeded: 2
     },
     selectable: {},
     translatable: {
-      tileMoveDuration: 500
+      tileMoveDuration: 600
     },
     containable: { enabled: true },
     aiControlled: {

@@ -13,7 +13,7 @@ export const pirateScimitarDefinition = {
       height: 64
     },
     objectDescriptor: {
-      color: 0x75502d
+      color: 0x1e3a5f
     },
     owner: {
       color: [
@@ -27,8 +27,8 @@ export const pirateScimitarDefinition = {
       range: 10
     },
     info: {
-      name: "Bandit",
-      description: "A hardened rogue, quick with a blade and quicker to cause trouble",
+      name: "Pirate Scimitar",
+      description: "A swift pirate wielding a curved blade, striking quickly with deadly precision",
       smallImage: {
         key: "factions",
         frame: "character_icons/general/warrior.png",
@@ -37,14 +37,14 @@ export const pirateScimitarDefinition = {
     },
     health: {
       physicalState: ActorPhysicalType.Biological,
-      maxHealth: 150
+      maxHealth: 140
     },
     attack: {
-      attacks: [weaponDefinitions.spear]
+      attacks: [weaponDefinitions.PirateScimitar]
     },
     productionCost: {
       resources: {
-        [ResourceType.Minerals]: 80
+        [ResourceType.Minerals]: 85
       },
       refundFactor: 0.5,
       productionTime: 5000,
@@ -55,7 +55,7 @@ export const pirateScimitarDefinition = {
     },
     selectable: {},
     translatable: {
-      tileMoveDuration: 500
+      tileMoveDuration: 350
     },
     containable: { enabled: true },
     aiControlled: {

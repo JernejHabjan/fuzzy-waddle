@@ -13,7 +13,7 @@ export const zombie2Definition = {
       height: 64
     },
     objectDescriptor: {
-      color: 0x75502d
+      color: 0x556b2f
     },
     owner: {
       color: [
@@ -24,11 +24,11 @@ export const zombie2Definition = {
       ]
     },
     vision: {
-      range: 10
+      range: 7
     },
     info: {
-      name: "Bandit",
-      description: "A hardened rogue, quick with a blade and quicker to cause trouble",
+      name: "Rotten Zombie",
+      description: "A more decayed zombie with stronger constitution",
       smallImage: {
         key: "factions",
         frame: "character_icons/general/warrior.png",
@@ -36,18 +36,18 @@ export const zombie2Definition = {
       }
     },
     health: {
-      physicalState: ActorPhysicalType.Biological,
-      maxHealth: 150
+      physicalState: ActorPhysicalType.Organic,
+      maxHealth: 130
     },
     attack: {
-      attacks: [weaponDefinitions.spear]
+      attacks: [weaponDefinitions.ZombieHands]
     },
     productionCost: {
       resources: {
-        [ResourceType.Minerals]: 80
+        [ResourceType.Minerals]: 65
       },
       refundFactor: 0.5,
-      productionTime: 5000,
+      productionTime: 4000,
       costType: PaymentType.PayImmediately
     },
     housingCost: {
@@ -55,7 +55,7 @@ export const zombie2Definition = {
     },
     selectable: {},
     translatable: {
-      tileMoveDuration: 500
+      tileMoveDuration: 700
     },
     containable: { enabled: true },
     aiControlled: {

@@ -40,7 +40,7 @@ export const generalWarriorDefinition = {
       maxHealth: 150
     },
     attack: {
-      attacks: [weaponDefinitions.spear]
+      attacks: [weaponDefinitions.GeneralWarriorSpear]
     },
     productionCost: {
       resources: {

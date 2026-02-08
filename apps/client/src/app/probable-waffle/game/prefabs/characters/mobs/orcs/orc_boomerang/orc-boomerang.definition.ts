@@ -13,7 +13,7 @@ export const orcBoomerangDefinition = {
       height: 64
     },
     objectDescriptor: {
-      color: 0x75502d
+      color: 0x6b8e23
     },
     owner: {
       color: [
@@ -24,11 +24,11 @@ export const orcBoomerangDefinition = {
       ]
     },
     vision: {
-      range: 10
+      range: 11
     },
     info: {
-      name: "Bandit",
-      description: "A hardened rogue, quick with a blade and quicker to cause trouble",
+      name: "Orc Boomerang Thrower",
+      description: "An agile orc skilled in ranged combat, hurling boomerang with deadly accuracy",
       smallImage: {
         key: "factions",
         frame: "character_icons/general/warrior.png",
@@ -37,17 +37,17 @@ export const orcBoomerangDefinition = {
     },
     health: {
       physicalState: ActorPhysicalType.Biological,
-      maxHealth: 150
+      maxHealth: 110
     },
     attack: {
-      attacks: [weaponDefinitions.spear]
+      attacks: [weaponDefinitions.OrcBoomerang]
     },
     productionCost: {
       resources: {
-        [ResourceType.Minerals]: 80
+        [ResourceType.Minerals]: 90
       },
       refundFactor: 0.5,
-      productionTime: 5000,
+      productionTime: 5500,
       costType: PaymentType.PayImmediately
     },
     housingCost: {
@@ -55,7 +55,7 @@ export const orcBoomerangDefinition = {
     },
     selectable: {},
     translatable: {
-      tileMoveDuration: 500
+      tileMoveDuration: 400
     },
     containable: { enabled: true },
     aiControlled: {
