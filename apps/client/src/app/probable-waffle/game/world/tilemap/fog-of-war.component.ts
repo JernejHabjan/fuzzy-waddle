@@ -41,6 +41,11 @@ export class FogOfWarComponent {
   // Cache for vision tiles per object - key: "objectId:tileX,tileY:radius", value: Set<tileKey>
   private visionTilesCache: Map<string, Set<number>> = new Map();
 
+  // Dirty tracking to avoid unnecessary actor rescanning
+  private actorPositionCache: Map<string, { x: number; y: number }> = new Map();
+  private dirtyActors: Set<string> = new Set(); // Actor IDs that moved or changed
+  private needsFullActorScan: boolean = true; // Force full scan on first update
+
   // Track which tiles need to be redrawn (dirty tiles)
   private dirtyTiles: Set<number> = new Set();
   private previousVisibleTiles: Set<number> = new Set();
@@ -120,6 +125,82 @@ export class FogOfWarComponent {
     this.playerActors.clear();
     const list = this.actorIndex.getAllIdActors();
     list.forEach(this.registerActors, this);
+    this.needsFullActorScan = false;
+  }
+
+  /**
+   * Smart actor scanning - only rescans when necessary (dirty tracking)
+   * Much more efficient than full scan every frame
+   */
+  private updatePlayerActorsIfNeeded(): void {
+    // Full scan needed on first update or when explicitly marked dirty
+    if (this.needsFullActorScan) {
+      this.scanForPlayerActors();
+      return;
+    }
+
+    // Otherwise, only check for new/removed actors (much cheaper)
+    const currentActors = this.actorIndex.getAllIdActors();
+    const currentActorIds = new Set<string>();
+
+    // Quick pass: identify new actors and mark moved actors as dirty
+    for (const actor of currentActors) {
+      const idComponent = getActorComponent(actor, IdComponent);
+      const resourceSourceComponent = getActorComponent(actor, ResourceSourceComponent);
+
+      if (idComponent && !resourceSourceComponent) {
+        const id = idComponent.id;
+        if (!id) continue;
+
+        currentActorIds.add(id);
+
+        // Check if this is a new actor
+        if (!this.playerActors.has(id)) {
+          this.playerActors.set(id, actor);
+          this.dirtyActors.add(id);
+        } else {
+          // Check if actor moved (only for actors with vision)
+          const visionComponent = getActorComponent(actor, VisionComponent);
+          if (visionComponent && visionComponent.range > 0) {
+            const currentTile = getGameObjectCurrentTile(actor);
+            if (currentTile) {
+              const cachedPos = this.actorPositionCache.get(id);
+              if (!cachedPos || cachedPos.x !== currentTile.x || cachedPos.y !== currentTile.y) {
+                // Actor moved - mark as dirty
+                this.dirtyActors.add(id);
+                this.actorPositionCache.set(id, { x: currentTile.x, y: currentTile.y });
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // Remove actors that no longer exist
+    for (const [id, actor] of this.playerActors) {
+      if (!currentActorIds.has(id) || !actor.active) {
+        this.playerActors.delete(id);
+        this.actorPositionCache.delete(id);
+        this.dirtyActors.add(id); // Mark as dirty to recalculate vision
+      }
+    }
+  }
+
+  /**
+   * Marks all actors as dirty, forcing vision recalculation
+   */
+  public markAllActorsDirty(): void {
+    this.dirtyActors.clear();
+    for (const id of this.playerActors.keys()) {
+      this.dirtyActors.add(id);
+    }
+  }
+
+  /**
+   * Forces a full actor rescan on next update
+   */
+  public markNeedsFullScan(): void {
+    this.needsFullActorScan = true;
   }
 
   private registerActors(obj: GameObject): void {
@@ -157,8 +238,8 @@ export class FogOfWarComponent {
     // Clear previous visible tiles
     this.visibleTiles.clear();
 
-    // Scan for any new actors with IdComponent
-    this.scanForPlayerActors();
+    // Smart actor scanning - only rescans when needed (new/removed/moved actors)
+    this.updatePlayerActorsIfNeeded();
 
     // Get player-owned game objects with vision
     const playerOwnedObjects: GameObject[] = [];
@@ -242,6 +323,9 @@ export class FogOfWarComponent {
         });
       }
     }
+
+    // Clear dirty actors set after processing
+    this.dirtyActors.clear();
 
     // Calculate dirty tiles (tiles that changed state)
     this.calculateDirtyTiles();
@@ -429,6 +513,9 @@ export class FogOfWarComponent {
     this.exploredTiles.clear();
     this.visibleTiles.clear();
     this.visionTilesCache.clear();
+    this.actorPositionCache.clear();
+    this.dirtyActors.clear();
+    this.needsFullActorScan = true;
     this.drawInitialFog();
   }
 
@@ -448,10 +535,12 @@ export class FogOfWarComponent {
     this.scene?.events.off(NavigationService.UpdateNavigationEvent, this.throttleUpdateFogOfWar, this);
     this.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.throttleUpdateFogOfWar, this);
 
-    // Clear caches
+    // Clear all caches
     this.visionTilesCache.clear();
     this.tileWorldPosCache.clear();
     this.playerActors.clear();
+    this.actorPositionCache.clear();
+    this.dirtyActors.clear();
 
     if (this.fowLayer) {
       this.fowLayer.destroy();
