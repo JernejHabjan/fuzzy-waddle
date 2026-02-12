@@ -9,8 +9,9 @@ import { ANIM_CYCLOPS_DEFINITION } from "./cyclops_anim";
 export const cyclopsDefinition = {
   components: {
     representable: {
-      width: 64,
-      height: 64
+      width: 32,
+      height: 48,
+      origin: { x: 0.5, y: 0.899286430676403 }
     },
     objectDescriptor: {
       color: 0x8b4513

@@ -8,7 +8,8 @@ export const mineralsDefinition = {
   components: {
     representable: {
       width: 64,
-      height: 64
+      height: 32,
+      origin: { x: 0.5, y: 0.7446013024804341 }
     },
     objectDescriptor: {
       color: 0xbea55b

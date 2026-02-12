@@ -11,8 +11,9 @@ import { ActorPhysicalType } from "../../../../entity/components/combat/componen
 export const sandholdDefinition = {
   components: {
     representable: {
-      width: 320,
-      height: 320
+      width: 256,
+      height: 280,
+      origin: { x: 0.5, y: 0.8 }
     },
     objectDescriptor: {
       color: 0xc2a080

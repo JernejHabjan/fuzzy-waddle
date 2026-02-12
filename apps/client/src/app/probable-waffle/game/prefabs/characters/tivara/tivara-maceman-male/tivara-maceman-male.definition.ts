@@ -19,8 +19,9 @@ import { AiType } from "../../../ai-agents/ai-type";
 export const tivaraMacemanMaleDefinition = {
   components: {
     representable: {
-      width: 64,
-      height: 64
+      width: 32,
+      height: 48,
+      origin: { x: 0.5, y: 0.899286430676403 }
     },
     objectDescriptor: {
       color: 0xc2a080
@@ -40,11 +41,7 @@ export const tivaraMacemanMaleDefinition = {
       name: "Anubian Mauler",
       description:
         "Cursed warrior in ritual armor, wielding mace and shield to spread plague in service of Tivara's dark will",
-      tooltipDescription: [
-        "Strong melee fighter",
-        "Highly durable frontline unit",
-        "Effective against structures"
-      ],
+      tooltipDescription: ["Strong melee fighter", "Highly durable frontline unit", "Effective against structures"],
       smallImage: {
         key: "factions",
         frame: "character_icons/tivara/maceman_male.png",

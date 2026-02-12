@@ -19,8 +19,9 @@ import { AiType } from "../../../ai-agents/ai-type";
 export const tivaraSlingshotFemaleDefinition = {
   components: {
     representable: {
-      width: 64,
-      height: 64
+      width: 32,
+      height: 48,
+      origin: { x: 0.5, y: 0.8995955734617012 }
     },
     objectDescriptor: {
       color: 0xc2a080
@@ -39,11 +40,7 @@ export const tivaraSlingshotFemaleDefinition = {
     info: {
       name: "Cursed Banshee",
       description: "A silent stalker armed with ancient curses and deadly precision",
-      tooltipDescription: [
-        "Ranged attacker",
-        "Effective against light units",
-        "Vulnerable in melee combat"
-      ],
+      tooltipDescription: ["Ranged attacker", "Effective against light units", "Vulnerable in melee combat"],
       smallImage: {
         key: "factions",
         frame: "character_icons/tivara/slingshot_female.png",

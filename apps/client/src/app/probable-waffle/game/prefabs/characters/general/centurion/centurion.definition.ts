@@ -9,8 +9,9 @@ import { ANIM_CENTURION_DEFINITION } from "./centurion_anim";
 export const centurionDefinition = {
   components: {
     representable: {
-      width: 64,
-      height: 64
+      width: 32,
+      height: 48,
+      origin: { x: 0.5, y: 0.6204006413204773 }
     },
     objectDescriptor: {
       color: 0xb91716

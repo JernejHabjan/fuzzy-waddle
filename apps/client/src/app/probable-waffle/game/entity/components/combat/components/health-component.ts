@@ -124,12 +124,6 @@ export class HealthComponent {
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.on(ContainerComponent.GameObjectVisibilityChanged, this.gameObjectVisibilityChanged, this);
 
-    if (!this.healthDefinition.healthDisplayBehavior || this.healthDefinition.healthDisplayBehavior === "always") {
-      this.setVisibilityUiComponent(true);
-    } else {
-      this.setVisibilityUiComponent(false);
-    }
-
     onObjectReady(gameObject, this.init, this);
   }
 
@@ -186,6 +180,12 @@ export class HealthComponent {
     }
     // Todo - now calling refreshVisibility on tick to update visibility due to FOW changes
     this.gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.refreshVisibility, this);
+
+    if (!this.healthDefinition.healthDisplayBehavior || this.healthDefinition.healthDisplayBehavior === "always") {
+      this.setVisibilityUiComponent(true);
+    } else {
+      this.setVisibilityUiComponent(false);
+    }
   }
 
   private refreshVisibility() {

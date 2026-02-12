@@ -19,8 +19,9 @@ import { AiType } from "../../../ai-agents/ai-type";
 export const skaduweeMagicianFemaleDefinition = {
   components: {
     representable: {
-      width: 64,
-      height: 64
+      width: 32,
+      height: 48,
+      origin: { x: 0.5, y: 0.899286430676403 }
     },
     objectDescriptor: {
       color: 0xf2f7fa
@@ -38,11 +39,7 @@ export const skaduweeMagicianFemaleDefinition = {
     info: {
       name: "Umbramancer",
       description: "A conduit of shadow and void, this sorcerer commands dark energies that consume all light and hope",
-      tooltipDescription: [
-        "Ranged magic attacker",
-        "Deals elemental fire damage",
-        "Fragile but powerful"
-      ],
+      tooltipDescription: ["Ranged magic attacker", "Deals elemental fire damage", "Fragile but powerful"],
       smallImage: {
         key: "factions",
         frame: "character_icons/skaduwee/magician_female.png",

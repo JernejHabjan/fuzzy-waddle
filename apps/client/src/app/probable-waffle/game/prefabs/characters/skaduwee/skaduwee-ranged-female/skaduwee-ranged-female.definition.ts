@@ -19,8 +19,9 @@ import { AiType } from "../../../ai-agents/ai-type";
 export const skaduweeRangedFemaleDefinition = {
   components: {
     representable: {
-      width: 64,
-      height: 64
+      width: 32,
+      height: 48,
+      origin: { x: 0.5, y: 0.9019612560038217 }
     },
     objectDescriptor: {
       color: 0xf2f7fa
@@ -39,11 +40,7 @@ export const skaduweeRangedFemaleDefinition = {
     info: {
       name: "Ravenmark",
       description: "Deadly and elusive, this warrior dispatches foes before they sense danger",
-      tooltipDescription: [
-        "Long-range archer",
-        "High damage output",
-        "Best protected behind melee units"
-      ],
+      tooltipDescription: ["Long-range archer", "High damage output", "Best protected behind melee units"],
       smallImage: {
         key: "factions",
         frame: "character_icons/skaduwee/ranged_female.png",
