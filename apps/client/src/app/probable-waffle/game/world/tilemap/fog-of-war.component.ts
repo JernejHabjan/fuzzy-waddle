@@ -299,8 +299,8 @@ export class FogOfWarComponent {
               if (distSq <= radiusSq) {
                 const x = tilePos.x + dx;
                 const y = tilePos.y + dy;
-                // New guard to avoid generating tile keys for out-of-range coordinates
-                if (x < 0 || y < 0) {
+                // Check if tile is within the valid grid bounds
+                if (x < this.startX || y < this.startY || x >= this.startX + this.gridWidth || y >= this.startY + this.gridHeight) {
                   continue;
                 }
                 const tileKey = this.getTileKey(x, y);
