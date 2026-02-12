@@ -175,33 +175,66 @@ export class SpellCastingSystem {
 
     this.projectileSprite = projectileSprite;
     this.gameObject.scene.add.existing(projectileSprite);
-    projectileSprite.setPosition(position.centerX, position.centerY);
     projectileSprite.setOrigin(0.5, 0.5);
     DepthHelper.setActorDepth(this.gameObject);
 
-    // Calculate flight time
-    const projectileSpeed = projectile.speed;
-    const distance = Phaser.Math.Distance.Between(position.centerX, position.centerY, targetWorld.x, targetWorld.y);
-    const duration = (distance / projectileSpeed) * 1000;
+    // Check spawn behavior config (default to 'launch')
+    const spawnBehavior = projectile.spawnBehavior ?? { type: "launch" };
 
-    // Rotate projectile towards target
-    if (!projectile.orientation.randomizeOrientation) {
-      const angle = Phaser.Math.Angle.Between(position.centerX, position.centerY, targetWorld.x, targetWorld.y);
-      projectileSprite.setRotation(angle);
-    }
+    if (spawnBehavior.type === "fall") {
+      // Projectile falls from above target
+      const spawnOffsetY = spawnBehavior.spawnOffsetY ?? -200; // Default 200 pixels above
+      projectileSprite.setPosition(targetWorld.x, targetWorld.y + spawnOffsetY);
 
-    // Animate projectile flight
-    this.projectileTween = this.gameObject.scene.tweens.add({
-      targets: projectileSprite,
-      x: targetWorld.x,
-      y: targetWorld.y,
-      duration: duration,
-      ease: "Linear",
-      onComplete: () => {
-        this.onProjectileImpact(spellData, targetPosition, targetWorld);
-        this.stopProjectile();
+      // Set rotation to point downward
+      if (!projectile.orientation.randomizeOrientation) {
+        projectileSprite.setRotation(Phaser.Math.DegToRad(90)); // Point straight down
       }
-    });
+
+      // Calculate flight time based on vertical distance
+      const projectileSpeed = projectile.speed;
+      const distance = Math.abs(spawnOffsetY);
+      const duration = (distance / projectileSpeed) * 1000;
+
+      // Animate projectile falling straight down
+      this.projectileTween = this.gameObject.scene.tweens.add({
+        targets: projectileSprite,
+        y: targetWorld.y,
+        duration: duration,
+        ease: spawnBehavior.ease ?? "Cubic.easeIn", // Default to gravity-like acceleration
+        onComplete: () => {
+          this.onProjectileImpact(spellData, targetPosition, targetWorld);
+          this.stopProjectile();
+        }
+      });
+    } else {
+      // Normal projectile behavior - launch from caster to target
+      projectileSprite.setPosition(position.centerX, position.centerY);
+
+      // Calculate flight time
+      const projectileSpeed = projectile.speed;
+      const distance = Phaser.Math.Distance.Between(position.centerX, position.centerY, targetWorld.x, targetWorld.y);
+      const duration = (distance / projectileSpeed) * 1000;
+
+      // Rotate projectile towards target
+      if (!projectile.orientation.randomizeOrientation) {
+        const angle = Phaser.Math.Angle.Between(position.centerX, position.centerY, targetWorld.x, targetWorld.y);
+        projectileSprite.setRotation(angle);
+      }
+
+      // Animate projectile flight
+      this.projectileTween = this.gameObject.scene.tweens.add({
+        targets: projectileSprite,
+        x: targetWorld.x,
+        y: targetWorld.y,
+        duration: duration,
+        ease: spawnBehavior.ease ?? "Linear", // Default to linear movement
+        onComplete: () => {
+          this.onProjectileImpact(spellData, targetPosition, targetWorld);
+          this.stopProjectile();
+        }
+      });
+    }
   }
 
   private onProjectileImpact(
@@ -419,37 +452,20 @@ export class SpellCastingSystem {
 
     // Convert tile position to world position
     const worldPosition = IsoHelper.isometricTileToWorldXY(this.gameObject.scene, targetPosition.x, targetPosition.y);
-
-    // Create actor definition
-    const actorDefinition: ActorDefinition = {
-      actorName: spellData.spawnPrefab.prefabName,
-      representable: {
-        logicalWorldTransform: {
-          x: worldPosition.x,
-          y: worldPosition.y,
-          z: 0
-        }
-      },
-      ...(spellData.spawnPrefab.inheritOwner &&
-        this.ownerComponent && {
-          owner: {
-            ownerId: this.ownerComponent.getOwner()
-          }
-        }),
-      constructionSite: {
-        state: ConstructionStateEnum.Finished
-      }
+    const position: Vector3Simple = {
+      x: worldPosition.x,
+      y: worldPosition.y,
+      z: 0
     };
 
-    // Spawn the prefab
-    const newGameObject = sceneActorCreator.createActorFromDefinition(actorDefinition);
-    if (newGameObject) {
-      // Hide by default - fog-of-war will show it if visible for player
-      const visibilityComponent = getGameObjectVisibility(newGameObject);
-      if (visibilityComponent) {
-        visibilityComponent.setVisible(false);
-      }
+    // Get owner if inheritOwner is set
+    const ownerId =
+      spellData.spawnPrefab.inheritOwner && this.ownerComponent ? this.ownerComponent.getOwner() : undefined;
 
+    // Spawn the prefab using helper
+    const newGameObject = sceneActorCreator.createFinishedActor(spellData.spawnPrefab.prefabName, position, ownerId);
+
+    if (newGameObject) {
       // If the prefab has a duration, schedule its destruction
       if (spellData.spawnPrefab.duration) {
         this.gameObject.scene.time.delayedCall(spellData.spawnPrefab.duration, () => {

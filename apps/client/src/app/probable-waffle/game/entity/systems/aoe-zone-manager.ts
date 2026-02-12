@@ -8,17 +8,22 @@ import { getSceneService } from "../../world/services/scene-component-helpers";
 import Phaser from "phaser";
 import { RandomService } from "../../world/services/random.service";
 import { TilemapComponent } from "../../world/tilemap/tilemap.component";
+import { EffectsAnims } from "../../animations/effects";
+import { AudioService } from "../../world/services/audio.service";
 
 interface ZoneVisual {
   zoneId: string;
   graphics: Phaser.GameObjects.Graphics;
   pulseTimer: Phaser.Time.TimerEvent;
+  animSprite?: Phaser.GameObjects.Sprite;
+  loopingSound?: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound | null;
 }
 
 export class AoeZoneManager {
   private activeZones: AoeZoneData[] = [];
   private zoneVisuals: Map<string, ZoneVisual> = new Map();
   private randomService!: RandomService;
+  private audioService?: AudioService;
 
   constructor(private readonly scene: Phaser.Scene) {
     onSceneInitialized(this.scene, this.init, this);
@@ -27,6 +32,7 @@ export class AoeZoneManager {
 
   private init(): void {
     this.randomService = getSceneService(this.scene, RandomService)!;
+    this.audioService = getSceneService(this.scene, AudioService);
     this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
   }
 
@@ -161,7 +167,7 @@ export class AoeZoneManager {
     const graphics = this.scene.add.graphics();
     const radiusInPixels = this.getRadiusInPixels(zone.radius);
 
-    // Draw zone circle
+    // Draw zone ellipse (for isometric perspective)
     this.drawZoneCircle(
       graphics,
       zone.worldPosition.x,
@@ -169,6 +175,20 @@ export class AoeZoneManager {
       radiusInPixels,
       zone.tintColor ?? 0xffffff
     );
+
+    // Create animated sprite effect if visualEffect is defined
+    let animSprite: Phaser.GameObjects.Sprite | undefined;
+    if (zone.visualEffect) {
+      animSprite = this.createZoneAnimation(zone);
+    }
+
+    // Play looping sound if defined (using spatial audio based on zone position)
+    let loopingSound: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound | null =
+      null;
+    if (zone.sounds?.loop && this.audioService) {
+      // Use the graphics object as the spatial position source
+      loopingSound = this.audioService.playSpatialAudio(graphics, zone.sounds.loop, { loop: true, volume: 50 });
+    }
 
     // Create pulse animation
     const pulseTimer = this.scene.time.addEvent({
@@ -180,8 +200,49 @@ export class AoeZoneManager {
     this.zoneVisuals.set(zone.id, {
       zoneId: zone.id,
       graphics,
-      pulseTimer
+      pulseTimer,
+      animSprite,
+      loopingSound
     });
+  }
+
+  private createZoneAnimation(zone: AoeZoneData): Phaser.GameObjects.Sprite | undefined {
+    // Map visual effect names to actual animations
+    const animationMap: Record<string, string> = {
+      fire_zone_effect: EffectsAnims.ANIM_IMPACT_5, // Fire effect
+      healing_rain_effect: EffectsAnims.ANIM_IMPACT_23 // Healing effect
+    };
+
+    const animName = zone.visualEffect ? animationMap[zone.visualEffect] : undefined;
+    if (!animName) return undefined;
+
+    // Create looping animated sprite at zone center
+    const sprite = EffectsAnims.createAndPlayEffectAnimation(
+      this.scene,
+      animName,
+      zone.worldPosition.x,
+      zone.worldPosition.y
+    );
+
+    // Make it loop instead of destroy on complete
+    sprite.off("animationcomplete");
+    sprite.on("animationcomplete", () => {
+      if (sprite.active) {
+        sprite.play(animName);
+      }
+    });
+
+    // Apply tint color if defined
+    if (zone.tintColor) {
+      sprite.setTint(zone.tintColor);
+    }
+
+    // Set blend mode for visual effect
+    sprite.setBlendMode(Phaser.BlendModes.ADD);
+    sprite.setAlpha(0.7);
+    sprite.setDepth(100);
+
+    return sprite;
   }
 
   private drawZoneCircle(
@@ -247,6 +308,24 @@ export class AoeZoneManager {
     if (zone.remainingTime < fadeThreshold) {
       const alpha = zone.remainingTime / fadeThreshold;
       visual.graphics.setAlpha(alpha);
+      // Also fade the animated sprite if it exists
+      if (visual.animSprite) {
+        visual.animSprite.setAlpha(0.7 * alpha);
+      }
+      // Fade out the looping sound using AudioService
+      if (
+        visual.loopingSound &&
+        visual.loopingSound !== null &&
+        !visual.loopingSound.isPaused &&
+        this.audioService &&
+        "volume" in visual.loopingSound
+      ) {
+        // Only start fading if we haven't already started
+        const soundWithVolume = visual.loopingSound as Phaser.Sound.WebAudioSound | Phaser.Sound.HTML5AudioSound;
+        if (soundWithVolume.volume > 0.01) {
+          this.audioService.fadeOut(visual.loopingSound, fadeThreshold);
+        }
+      }
     }
   }
 
@@ -255,6 +334,9 @@ export class AoeZoneManager {
     if (visual) {
       visual.pulseTimer.destroy();
       visual.graphics.destroy();
+      visual.animSprite?.destroy();
+      visual.loopingSound?.stop();
+      visual.loopingSound?.destroy();
       this.zoneVisuals.delete(zoneId);
     }
   }

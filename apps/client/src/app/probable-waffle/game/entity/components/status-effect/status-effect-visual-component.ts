@@ -3,8 +3,9 @@ import { Subscription } from "rxjs";
 import { type StatusEffectData, StatusEffectType } from "@fuzzy-waddle/api-interfaces";
 import { HealthComponent } from "../combat/components/health-component";
 import Phaser from "phaser";
-import { onObjectReady } from "../../../data/game-object-helper";
+import { onObjectReady, getGameObjectRenderedTransform } from "../../../data/game-object-helper";
 import { getActorComponent } from "../../../data/actor-component";
+import { EffectsAnims } from "../../../animations/effects";
 
 export class StatusEffectVisualComponent {
   private statusEffectComponent?: StatusEffectComponent;
@@ -12,6 +13,7 @@ export class StatusEffectVisualComponent {
   private originalTint?: number;
   private wasAnimationPlaying: boolean = false;
   private currentTint?: number;
+  private particleEffects: Map<StatusEffectType, Phaser.GameObjects.Sprite> = new Map();
 
   private effectAppliedSubscription?: Subscription;
   private effectRemovedSubscription?: Subscription;
@@ -23,6 +25,15 @@ export class StatusEffectVisualComponent {
     [StatusEffectType.Burning]: 0xff6600,
     [StatusEffectType.Poisoned]: 0x00ff00,
     [StatusEffectType.Regenerating]: 0x00ff88
+  };
+
+  private readonly effectAnimations: Record<StatusEffectType, string> = {
+    [StatusEffectType.Stunned]: EffectsAnims.ANIM_IMPACT_23, // todo
+    [StatusEffectType.Frozen]: EffectsAnims.ANIM_IMPACT_23, // todo
+    [StatusEffectType.Slowed]: EffectsAnims.ANIM_IMPACT_23, // todo
+    [StatusEffectType.Burning]: EffectsAnims.ANIM_IMPACT_5, // todo
+    [StatusEffectType.Poisoned]: EffectsAnims.ANIM_IMPACT_10, // todo
+    [StatusEffectType.Regenerating]: EffectsAnims.ANIM_IMPACT_23 // todo
   };
 
   constructor(private readonly gameObject: Phaser.GameObjects.GameObject) {
@@ -68,6 +79,9 @@ export class StatusEffectVisualComponent {
     if (effect.type === StatusEffectType.Stunned || effect.type === StatusEffectType.Frozen) {
       this.pauseAnimation();
     }
+
+    // Attach particle effect at actor's feet
+    this.attachParticleEffect(effect.type);
   }
 
   private onEffectRemoved(type: StatusEffectType): void {
@@ -86,6 +100,9 @@ export class StatusEffectVisualComponent {
 
     // Update tint based on remaining effects
     this.updateTintFromActiveEffects(activeEffects);
+
+    // Remove particle effect for this type
+    this.removeParticleEffect(type);
   }
 
   private applyTint(color: number): void {
@@ -166,12 +183,80 @@ export class StatusEffectVisualComponent {
   }
 
   /**
-   * Placeholder for future particle effects
-   * @param effectName The name of the particle effect to attach
+   * Attach a particle effect sprite at the actor's feet
+   * @param effectType The type of status effect to display
    */
-  attachParticleEffect(_effectName: string): void {
-    // TODO: Implement particle effects (ice crystals at feet, fire particles, etc.)
-    // This is a placeholder for future implementation
+  attachParticleEffect(effectType: StatusEffectType): void {
+    // Check if we already have an effect of this type
+    if (this.particleEffects.has(effectType)) {
+      return;
+    }
+
+    // Get the animation for this effect type
+    const animName = this.effectAnimations[effectType];
+    if (!animName) return;
+
+    // Get actor position
+    const actorTransform = getGameObjectRenderedTransform(this.gameObject);
+    if (!actorTransform) return;
+
+    // Create effect sprite at actor's feet (slightly below center)
+    const effectSprite = EffectsAnims.createAndPlayEffectAnimation(
+      this.gameObject.scene,
+      animName,
+      actorTransform.x,
+      actorTransform.y + 10 // Offset down to feet // todo
+    );
+
+    // Make it loop instead of destroy on complete
+    effectSprite.off("animationcomplete");
+    effectSprite.on("animationcomplete", () => {
+      if (effectSprite.active) {
+        effectSprite.play(animName);
+      }
+    });
+
+    // Apply tint color
+    const tintColor = this.effectTintColors[effectType];
+    if (tintColor !== undefined) {
+      effectSprite.setTint(tintColor);
+    }
+
+    // Set blend mode and alpha for visual effect
+    effectSprite.setBlendMode(Phaser.BlendModes.ADD);
+    effectSprite.setAlpha(0.6);
+    effectSprite.setDepth(1);
+    effectSprite.setScale(0.5); // Smaller size at feet
+
+    // Update position as actor moves
+    const updatePosition = () => {
+      if (!effectSprite.active) return;
+      const transform = getGameObjectRenderedTransform(this.gameObject);
+      if (transform) {
+        effectSprite.setPosition(transform.x, transform.y + 10);
+      }
+    };
+
+    // Update position on scene update
+    this.gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, updatePosition);
+    effectSprite.once(Phaser.GameObjects.Events.DESTROY, () => {
+      this.gameObject.scene.events.off(Phaser.Scenes.Events.UPDATE, updatePosition);
+    });
+
+    // Store reference
+    this.particleEffects.set(effectType, effectSprite);
+  }
+
+  /**
+   * Remove particle effect for a specific effect type
+   * @param effectType The type of status effect to remove
+   */
+  removeParticleEffect(effectType: StatusEffectType): void {
+    const effectSprite = this.particleEffects.get(effectType);
+    if (effectSprite) {
+      effectSprite.destroy();
+      this.particleEffects.delete(effectType);
+    }
   }
 
   private destroy(): void {
@@ -181,5 +266,11 @@ export class StatusEffectVisualComponent {
     // Restore original state on destroy
     this.removeTint();
     this.resumeAnimation();
+
+    // Clean up all particle effects
+    for (const [, effectSprite] of this.particleEffects) {
+      effectSprite.destroy();
+    }
+    this.particleEffects.clear();
   }
 }

@@ -196,9 +196,10 @@ export default class ActorAction extends Phaser.GameObjects.Container {
       this.add(this.cooldownText);
     }
 
-    // Draw mask that decreases from top to bottom
+    // Draw mask that decreases from top to bottom as cooldown progresses
+    // progress: 0% = just cast (full mask), 100% = ready (no mask)
     this.cooldownMask.clear();
-    const maskHeight = (progress / 100) * 26; // 26 is roughly the button height
+    const maskHeight = ((100 - progress) / 100) * 26; // 26 is roughly the button height
     this.cooldownMask.fillStyle(0x000000, 0.6);
     this.cooldownMask.fillRect(-17, -13, 34, maskHeight);
     this.cooldownMask.setVisible(true);

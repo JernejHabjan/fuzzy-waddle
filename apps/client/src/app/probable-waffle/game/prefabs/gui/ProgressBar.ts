@@ -5,6 +5,7 @@
 /* START-USER-IMPORTS */
 import { getActorComponent } from "../../data/actor-component";
 import { ProductionComponent } from "../../entity/components/production/production-component";
+import { ResearchComponent } from "../../entity/components/research/research-component";
 import { Subscription } from "rxjs";
 /* END-USER-IMPORTS */
 
@@ -63,42 +64,70 @@ export default class ProgressBar extends Phaser.GameObjects.Container {
   /* START-USER-CODE */
   private readonly maxWidth = 72;
   private productionProgressSubscription?: Subscription;
+  private researchProgressSubscription?: Subscription;
 
   setProgressBar(actor: Phaser.GameObjects.GameObject) {
-    // todo make this generic progress bar, this setter should pass in subject and currentPercentage, so we can subscribe to it
-    // Retrieve the ProductionComponent from the actor
+    // Clean up any existing subscriptions
+    this.cleanActor();
+
+    // Check for ProductionComponent
     const productionComponent = getActorComponent(actor, ProductionComponent);
-    if (!productionComponent) {
-      this.cleanActor();
-      return;
+    if (productionComponent) {
+      this.subscribeToProduction(productionComponent);
     }
 
-    // Clean up any existing subscription
-    this.productionProgressSubscription?.unsubscribe();
+    // Check for ResearchComponent
+    const researchComponent = getActorComponent(actor, ResearchComponent);
+    if (researchComponent) {
+      this.subscribeToResearch(researchComponent);
+    }
 
+    // If neither component exists, hide the progress bar
+    if (!productionComponent && !researchComponent) {
+      this.visible = false;
+    }
+  }
+
+  private subscribeToProduction(productionComponent: ProductionComponent) {
     // Subscribe to production progress updates
     this.productionProgressSubscription = productionComponent.productionProgressObservable.subscribe((event) => {
       const { progressInPercentage } = event;
-      this.handleProductionProgressUpdate(progressInPercentage);
+      this.handleProgressUpdate(progressInPercentage);
     });
 
     // Set initial state based on whether production is ongoing
     if (productionComponent.isProducing) {
       const percentage = productionComponent.getCurrentProgress() ?? 0;
-      this.handleProductionProgressUpdate(percentage);
+      this.handleProgressUpdate(percentage);
     } else {
       this.visible = false;
-      // do not clear subscription
     }
   }
 
-  private handleProductionProgressUpdate(progressInPercentage: number) {
+  private subscribeToResearch(researchComponent: ResearchComponent) {
+    // Subscribe to research progress updates
+    this.researchProgressSubscription = researchComponent.researchProgress.subscribe((event) => {
+      const { progress } = event;
+      this.handleProgressUpdate(progress);
+    });
+
+    // Set initial state based on whether research is ongoing
+    if (researchComponent.currentResearchType) {
+      const progress = researchComponent.getResearchProgress(researchComponent.currentResearchType);
+      this.handleProgressUpdate(progress);
+    } else {
+      this.visible = false;
+    }
+  }
+
+  private handleProgressUpdate(progressInPercentage: number) {
     this.visible = progressInPercentage > 0 && progressInPercentage < 100;
     this.setPercentage(progressInPercentage);
   }
 
   cleanActor() {
     this.productionProgressSubscription?.unsubscribe();
+    this.researchProgressSubscription?.unsubscribe();
     this.visible = false;
   }
 

@@ -649,14 +649,14 @@ export default class ActorActions extends Phaser.GameObjects.Container {
 
     const spellCursor = getSceneService(this.mainSceneWithActors, SpellCursor);
 
-    for (const spellType of spellComponent.availableSpells) {
+    spellComponent.availableSpells.forEach((spellType, localIndex) => {
       const spellData = spellDefinitions[spellType];
-      if (!spellData) continue;
+      if (!spellData) return;
 
       const action = this.actor_actions[index];
       if (!action) {
         console.error("Action button not found at index", index);
-        return index;
+        return;
       }
 
       const cooldownProgress = spellComponent.getCooldownProgress(spellType);
@@ -700,10 +700,11 @@ export default class ActorActions extends Phaser.GameObjects.Container {
           iconOrigin: { x: 0.5, y: 0.5 },
           unmetRequirements: unmetRequirements ?? undefined
         },
-        shortcut: spellData.shortcut
+        // Use hotkey from position (Q, W, E, R, T, Y, U, I, O)
+        shortcut: this.HOTKEYS[localIndex]
       } satisfies ActorActionSetup);
       index++;
-    }
+    });
 
     return index;
   }

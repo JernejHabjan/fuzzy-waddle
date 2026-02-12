@@ -12,7 +12,8 @@
       "Bash(pnpm --version:*)",
       "Bash(npx nx reset)",
       "Bash(git stash push:*)",
-      "Bash(git stash:*)"
+      "Bash(git stash:*)",
+      "Bash(nx build:*)"
     ]
   }
 }

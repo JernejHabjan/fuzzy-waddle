@@ -55,7 +55,6 @@ export interface SpellData {
   castAnimation?: AnimationType;
   sounds?: { cast?: string; impact?: string; loop?: string };
   icon: { key: string; frame: string };
-  shortcut?: string;
 
   // Research & Autocast
   autocastDefault?: boolean; // default autocast state (default: true)

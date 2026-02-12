@@ -317,32 +317,14 @@ export class ProductionComponent {
       type: "completed"
     });
 
-    // spawn gameObject
+    // Spawn gameObject using helper
     const originalOwner = this.ownerComponent?.getOwner();
-
-    const actorDefinition = {
-      name: actorName,
-      representable: {
-        logicalWorldTransform: finalSpawnPosition
-      },
-      ...(originalOwner && {
-        owner: {
-          ownerId: originalOwner
-        }
-      }),
-      constructionSite: {
-        state: ConstructionStateEnum.Finished
-      }
-    } satisfies ActorDefinition;
 
     const sceneActorCreator = getSceneService(this.gameObject.scene, SceneActorCreator);
     if (!sceneActorCreator) throw new Error("SceneActorCreator not found");
-    const newGameObject = sceneActorCreator.createActorFromDefinition(actorDefinition);
-    if (newGameObject) {
-      // hide by default - fog-of-war will show it if visible for player
-      const visibilityComponent = getGameObjectVisibility(newGameObject);
-      if (visibilityComponent) visibilityComponent.setVisible(false);
 
+    const newGameObject = sceneActorCreator.createFinishedActor(actorName, finalSpawnPosition, originalOwner);
+    if (newGameObject) {
       if (this.rallyPoint.isSet()) {
         // noinspection JSIgnoredPromiseFromCall
         this.rallyPoint.navigateGameObjectToRallyPoint(newGameObject);

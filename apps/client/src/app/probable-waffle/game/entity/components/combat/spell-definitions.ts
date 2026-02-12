@@ -29,12 +29,16 @@ export const spellDefinitions: Record<SpellType, SpellData> = {
       type: ProjectileType.SnowstormProjectile,
       speed: 400,
       orientation: { randomizeOrientation: false, pointingOrientation: 270 },
-      impactAnimation: { anims: ["snowstorm_impact"], tint: 0x6666ff }
+      impactAnimation: { anims: ["snowstorm_impact"], tint: 0x6666ff },
+      spawnBehavior: {
+        type: "fall",
+        spawnOffsetY: -200, // Spawn 200 pixels above target
+        ease: "Cubic.easeIn" // Accelerate as it falls
+      }
     },
     castAnimation: AnimationType.Cast,
     sounds: { cast: "frost_cast", impact: "frost_impact" },
     icon: { key: "factions", frame: "spell_icons/snowstorm.png" },
-    shortcut: "W",
     autocastDefault: true,
     requiresResearch: ResearchType.SnowstormSpell
   },
@@ -64,7 +68,6 @@ export const spellDefinitions: Record<SpellType, SpellData> = {
     castAnimation: AnimationType.Cast,
     sounds: { cast: "fire_cast", impact: "fire_ignite", loop: "fire_burning" },
     icon: { key: "factions", frame: "spell_icons/firestorm.png" },
-    shortcut: "E",
     autocastDefault: false,
     requiresResearch: ResearchType.FirestormSpell
   },
@@ -95,7 +98,6 @@ export const spellDefinitions: Record<SpellType, SpellData> = {
     castAnimation: AnimationType.Cast,
     sounds: { cast: "frost_cast", impact: "frost_slow" },
     icon: { key: "factions", frame: "spell_icons/frost_nova.png" },
-    shortcut: "Q",
     autocastDefault: true,
     requiresResearch: ResearchType.FrostNovaSpell
   },
@@ -117,7 +119,6 @@ export const spellDefinitions: Record<SpellType, SpellData> = {
     castAnimation: AnimationType.Cast,
     sounds: { cast: "heal_cast", impact: "heal_apply" },
     icon: { key: "factions", frame: "spell_icons/healing_light.png" },
-    shortcut: "H",
     autocastDefault: true,
     requiresResearch: ResearchType.HealingLightSpell
   },
@@ -146,7 +147,6 @@ export const spellDefinitions: Record<SpellType, SpellData> = {
     castAnimation: AnimationType.Cast,
     sounds: { cast: "heal_cast", loop: "rain_ambient" },
     icon: { key: "factions", frame: "spell_icons/healing_rain.png" },
-    shortcut: "R",
     autocastDefault: false,
     requiresResearch: ResearchType.HealingRainSpell
   },
@@ -172,7 +172,6 @@ export const spellDefinitions: Record<SpellType, SpellData> = {
     castAnimation: AnimationType.Cast,
     sounds: { cast: "totem_summon" },
     icon: { key: "factions", frame: "spell_icons/healing_totem.png" },
-    shortcut: "T",
     autocastDefault: false,
     requiresResearch: ResearchType.HealingTotemSpell
   }

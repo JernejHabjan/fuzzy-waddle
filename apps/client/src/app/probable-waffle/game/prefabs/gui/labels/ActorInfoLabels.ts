@@ -16,6 +16,8 @@ import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import HudProbableWaffle from "../../../world/scenes/hud-scenes/HudProbableWaffle";
 import type { ProductionQueueItem } from "../../../entity/components/production/game-object";
 import type { ActorIconClickAction } from "./actor-icon-click-action";
+import { ResearchComponent } from "../../../entity/components/research/research-component";
+import { researchDefinitions } from "../../../entity/components/research/research-definitions";
 /* END-USER-IMPORTS */
 
 export default class ActorInfoLabels extends Phaser.GameObjects.Container {
@@ -120,11 +122,19 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
   private readonly mainSceneWithActors?: ProbableWaffleScene;
   private visibilityChanged = new BehaviorSubject<boolean>(false);
   private queueChangedSubscription?: Subscription;
+  private researchSubscription?: Subscription;
+  private researchStartedSubscription?: Subscription;
+  private researchCompletedSubscription?: Subscription;
+  private researchCancelledSubscription?: Subscription;
   private clickSubscriptions: Subscription[] = [];
   private actor?: Phaser.GameObjects.GameObject;
 
   cleanActor() {
     this.queueChangedSubscription?.unsubscribe();
+    this.researchSubscription?.unsubscribe();
+    this.researchStartedSubscription?.unsubscribe();
+    this.researchCompletedSubscription?.unsubscribe();
+    this.researchCancelledSubscription?.unsubscribe();
     this.visible = false;
     this.actor = undefined;
   }
@@ -141,10 +151,15 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
 
   setLabelsForDisplayingActorsQueues(actor: Phaser.GameObjects.GameObject) {
     this.actor = actor;
-    // Clean up any existing subscription
+    // Clean up any existing subscriptions
     this.queueChangedSubscription?.unsubscribe();
+    this.researchSubscription?.unsubscribe();
+    this.researchStartedSubscription?.unsubscribe();
+    this.researchCompletedSubscription?.unsubscribe();
+    this.researchCancelledSubscription?.unsubscribe();
 
     this.handleProductionComponent();
+    this.handleResearchComponent();
   }
 
   private handleProductionComponent() {
@@ -198,6 +213,61 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
     });
 
     this.visibilityChanged.next(producingActors > 0);
+  }
+
+  private handleResearchComponent() {
+    const actor = this.actor;
+    if (!actor) return;
+    const researchComponent = getActorComponent(actor, ResearchComponent);
+    if (!researchComponent) {
+      // No research component, just return (production might still be active)
+      return;
+    }
+
+    // Subscribe to research progress updates
+    this.researchSubscription = researchComponent.researchProgress.subscribe((event) => {
+      this.handleResearchProgressUpdate(researchComponent);
+    });
+
+    // Also subscribe to research started/completed/cancelled
+    this.researchStartedSubscription = researchComponent.researchStarted.subscribe(() => {
+      this.handleResearchProgressUpdate(researchComponent);
+    });
+    this.researchCompletedSubscription = researchComponent.researchCompleted.subscribe(() => {
+      this.handleResearchProgressUpdate(researchComponent);
+    });
+    this.researchCancelledSubscription = researchComponent.researchCancelled.subscribe(() => {
+      this.handleResearchProgressUpdate(researchComponent);
+    });
+
+    this.handleResearchProgressUpdate(researchComponent);
+  }
+
+  private handleResearchProgressUpdate(researchComponent: ResearchComponent) {
+    const currentResearch = researchComponent.currentResearchType;
+
+    if (!currentResearch) {
+      // No active research, don't show anything
+      return;
+    }
+
+    const researchData = researchDefinitions[currentResearch];
+    if (!researchData || !researchData.icon) return;
+
+    // Show research in the first icon slot
+    const icon = this.icons[0];
+    if (icon) {
+      icon.setActorIcon(
+        {
+          iconIndex: 0
+        },
+        researchData.icon.key,
+        researchData.icon.frame,
+        { x: 0.5, y: 0.5 }
+      );
+      icon.visible = true;
+      this.visibilityChanged.next(true);
+    }
   }
 
   setLabelsForDisplayingActors(

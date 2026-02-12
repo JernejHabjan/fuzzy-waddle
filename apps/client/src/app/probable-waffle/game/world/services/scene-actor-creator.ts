@@ -12,7 +12,7 @@ import { getCommunicator } from "../../data/scene-data";
 import Spawn from "../../prefabs/buildings/misc/Spawn";
 import EditorOwner from "../scenes/editor-components/EditorOwner";
 import { FactionDefinitions } from "../../player/faction-definitions";
-import { getGameObjectBounds, getGameObjectLogicalTransform } from "../../data/game-object-helper";
+import { getGameObjectBounds, getGameObjectLogicalTransform, getGameObjectVisibility } from "../../data/game-object-helper";
 import { getActorSystem } from "../../data/actor-system";
 import { MovementSystem } from "../../entity/systems/movement.system";
 import { setFullActorDataFromName } from "../../data/actor-data";
@@ -112,6 +112,48 @@ export class SceneActorCreator {
     const gameObject = this.scene.add.existing(actor);
     this.registerAndSaveNewActor(gameObject);
     return gameObject;
+  }
+
+  /**
+   * Creates an actor at a specified position with optional owner.
+   * Commonly used for spawning actors from spells or production.
+   * The actor is created fully built and hidden by default (fog-of-war handles visibility).
+   *
+   * @param actorName - The name of the actor to create
+   * @param position - World position to spawn at
+   * @param ownerId - Optional owner ID
+   * @returns The created game object or undefined if creation failed
+   */
+  public createFinishedActor(
+    actorName: ObjectNames,
+    position: Vector3Simple,
+    ownerId?: number
+  ): Phaser.GameObjects.GameObject | undefined {
+    const actorDefinition: ActorDefinition = {
+      name: actorName,
+      representable: {
+        logicalWorldTransform: position
+      },
+      ...(ownerId !== undefined && {
+        owner: {
+          ownerId: ownerId
+        }
+      }),
+      constructionSite: {
+        state: ConstructionStateEnum.Finished
+      }
+    };
+
+    const newGameObject = this.createActorFromDefinition(actorDefinition);
+    if (newGameObject) {
+      // Hide by default - fog-of-war will show it if visible for player
+      const visibilityComponent = getGameObjectVisibility(newGameObject);
+      if (visibilityComponent) {
+        visibilityComponent.setVisible(false);
+      }
+    }
+
+    return newGameObject;
   }
 
   private shouldConstructActorFully(actorDefinition: ActorDefinition): boolean {

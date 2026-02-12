@@ -264,6 +264,27 @@ export class AudioService {
     this.scene.sound.stopByKey(key);
   }
 
+  /**
+   * Fade out a sound over a specified duration
+   * @param sound The sound to fade out
+   * @param duration Duration of fade in milliseconds
+   */
+  fadeOut(sound: Phaser.Sound.BaseSound, duration: number = 1000): void {
+    if (!("volume" in sound)) return;
+
+    const currentVolume = (sound as Phaser.Sound.WebAudioSound | Phaser.Sound.HTML5AudioSound).volume;
+
+    this.scene.tweens.add({
+      targets: sound,
+      volume: 0,
+      duration: duration,
+      ease: "Linear",
+      onComplete: () => {
+        sound.stop();
+      }
+    });
+  }
+
   private volumeChanged() {
     const soundManager = this.scene.sound;
     const sounds = (soundManager as any).sounds as Phaser.Sound.HTML5AudioSound[] | Phaser.Sound.WebAudioSound[];

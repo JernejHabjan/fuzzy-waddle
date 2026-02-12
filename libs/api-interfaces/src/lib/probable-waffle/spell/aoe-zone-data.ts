@@ -15,6 +15,7 @@ export interface AoeZoneData {
   affectsEnemies: boolean; // can affect enemy units
   visualEffect?: string; // animation/particle effect name
   tintColor?: number; // zone tint color
+  sounds?: { cast?: string; impact?: string; loop?: string }; // sound effects
   sourcePlayerId: number; // who created this zone
   lastTickTime?: number; // timestamp of last tick
 }

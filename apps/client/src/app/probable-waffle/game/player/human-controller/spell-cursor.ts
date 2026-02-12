@@ -3,7 +3,7 @@ import { EventEmitter } from "@angular/core";
 import { SpellType } from "../../entity/components/combat/spell-type";
 import { spellDefinitions } from "../../entity/components/combat/spell-definitions";
 import { TilemapComponent } from "../../world/tilemap/tilemap.component";
-import type { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import type { Vector3Simple, ActorDefinition } from "@fuzzy-waddle/api-interfaces";
 import GameProbableWaffleScene from "../../world/scenes/GameProbableWaffleScene";
 import { SpellCastingSystem } from "../../entity/systems/spell-casting.system";
 import { getActorSystem } from "../../data/actor-system";
@@ -12,6 +12,10 @@ import { getActorComponent } from "../../data/actor-component";
 import { SpellComponent } from "../../entity/components/combat/components/spell-component";
 import { IsoHelper } from "../../world/tilemap/iso-helper";
 import { DistanceHelper } from "../../library/distance-helper";
+import { SceneActorCreator } from "../../world/services/scene-actor-creator";
+import { getSceneService } from "../../world/services/scene-component-helpers";
+import { pwActorDefinitions } from "../../prefabs/definitions/actor-definitions";
+import { OwnerComponent } from "../../entity/components/owner-component";
 
 export class SpellCursor {
   private aoeCircle?: GameObjects.Graphics;
@@ -106,11 +110,15 @@ export class SpellCursor {
     const radiusPixels = radiusTiles * TilemapComponent.tileWidth;
 
     // Use ellipse for isometric perspective
+    // Phaser's fillEllipse/strokeEllipse use width/height (diameter), not radius
+    const ellipseWidth = radiusPixels * 2;
+    const ellipseHeight = radiusPixels * 2 * 0.5; // Compressed for isometric
+
     this.aoeCircle.fillStyle(color, 0.2);
-    this.aoeCircle.fillEllipse(0, 0, radiusPixels, radiusPixels / 2);
+    this.aoeCircle.fillEllipse(0, 0, ellipseWidth, ellipseHeight);
 
     this.aoeCircle.lineStyle(2, color, 0.6);
-    this.aoeCircle.strokeEllipse(0, 0, radiusPixels, radiusPixels / 2);
+    this.aoeCircle.strokeEllipse(0, 0, ellipseWidth, ellipseHeight);
 
     this.aoeCircle.setDepth(1000);
     this.aoeCircle.setVisible(false);
@@ -121,9 +129,13 @@ export class SpellCursor {
     this.rangeCircle = this.scene.add.graphics();
     const rangePixels = rangeTiles * TilemapComponent.tileWidth;
 
-    // Use ellipse for isometric perspective - thin dotted line
-    this.rangeCircle.lineStyle(1, color, 0.3);
-    this.rangeCircle.strokeEllipse(0, 0, rangePixels, rangePixels / 2);
+    // Use ellipse for isometric perspective - thin line
+    // Phaser's strokeEllipse uses width/height (diameter), not radius
+    const ellipseWidth = rangePixels * 2;
+    const ellipseHeight = rangePixels * 2 * 0.5; // Compressed for isometric
+
+    this.rangeCircle.lineStyle(2, color, 0.4);
+    this.rangeCircle.strokeEllipse(0, 0, ellipseWidth, ellipseHeight);
 
     this.rangeCircle.setDepth(999); // Below AOE circle
     this.rangeCircle.setVisible(false);
@@ -165,18 +177,20 @@ export class SpellCursor {
     // Update circle color based on range validity
     this.aoeCircle.clear();
     const radiusPixels = this.getAoeRadiusPixels();
+    const ellipseWidth = radiusPixels * 2;
+    const ellipseHeight = radiusPixels * 2 * 0.5; // Compressed for isometric
 
     if (isInRange) {
       this.aoeCircle.fillStyle(color, 0.2);
-      this.aoeCircle.fillEllipse(0, 0, radiusPixels, radiusPixels / 2);
+      this.aoeCircle.fillEllipse(0, 0, ellipseWidth, ellipseHeight);
       this.aoeCircle.lineStyle(2, color, 0.6);
     } else {
       // Red tint when out of range
       this.aoeCircle.fillStyle(0xff0000, 0.2);
-      this.aoeCircle.fillEllipse(0, 0, radiusPixels, radiusPixels / 2);
+      this.aoeCircle.fillEllipse(0, 0, ellipseWidth, ellipseHeight);
       this.aoeCircle.lineStyle(2, 0xff0000, 0.6);
     }
-    this.aoeCircle.strokeEllipse(0, 0, radiusPixels, radiusPixels / 2);
+    this.aoeCircle.strokeEllipse(0, 0, ellipseWidth, ellipseHeight);
   }
 
   private handlePointerDown(pointer: Phaser.Input.Pointer): void {
@@ -198,6 +212,15 @@ export class SpellCursor {
       return;
     }
 
+    const spellData = spellDefinitions[this.spellType];
+    if (!spellData) return;
+
+    // Check if this spell spawns a prefab (e.g., HealingTotem)
+    if (spellData.spawnPrefab) {
+      this.handleSpawnPrefab(clickedTileXYZ, spellData);
+      return;
+    }
+
     // Cast spell from each selected caster
     let castSuccess = false;
     for (const caster of this.selectedCasters) {
@@ -215,6 +238,62 @@ export class SpellCursor {
     }
 
     // Deactivate cursor after cast (or keep active with shift key)
+    const shiftKey = this.scene.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
+    if (!shiftKey?.isDown) {
+      this.deactivate();
+    }
+  }
+
+  private handleSpawnPrefab(tileXYZ: Vector3Simple, spellData: (typeof spellDefinitions)[SpellType]): void {
+    if (!spellData.spawnPrefab) return;
+
+    const { prefabName, inheritOwner } = spellData.spawnPrefab;
+    const prefabDefinition = pwActorDefinitions[prefabName];
+    if (!prefabDefinition) {
+      console.error(`Prefab definition not found: ${prefabName}`);
+      return;
+    }
+
+    // Get owner from first caster
+    let ownerId: number | undefined;
+    if (inheritOwner && this.selectedCasters.length > 0) {
+      const firstCaster = this.selectedCasters[0];
+      if (firstCaster) {
+        const ownerComponent = getActorComponent(firstCaster, OwnerComponent);
+        ownerId = ownerComponent?.getData().ownerId;
+      }
+    }
+
+    // Convert tile position to world position
+    const worldPos = IsoHelper.isometricTileToWorldXY(this.scene, tileXYZ.x, tileXYZ.y);
+    const position: Vector3Simple = {
+      x: worldPos.x,
+      y: worldPos.y,
+      z: tileXYZ.z
+    };
+
+    // Spawn the prefab using helper
+    const sceneActorCreator = getSceneService(this.scene, SceneActorCreator);
+    if (!sceneActorCreator) {
+      console.error("SceneActorCreator not found");
+      return;
+    }
+
+    const newGameObject = sceneActorCreator.createFinishedActor(prefabName, position, ownerId);
+    if (newGameObject) {
+      // Start cooldown on caster
+      if (this.selectedCasters.length > 0 && this.spellType) {
+        const firstCaster = this.selectedCasters[0];
+        if (firstCaster) {
+          const spellComponent = getActorComponent(firstCaster, SpellComponent);
+          spellComponent?.startCooldown(this.spellType);
+        }
+      }
+
+      this.spellCast.emit({ spellType: this.spellType!, tileXYZ });
+    }
+
+    // Deactivate cursor after spawn (or keep active with shift key)
     const shiftKey = this.scene.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
     if (!shiftKey?.isDown) {
       this.deactivate();
