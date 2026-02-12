@@ -9,11 +9,13 @@ import Phaser from "phaser";
 
 export default class Cyclops extends Phaser.GameObjects.Sprite {
   constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
-    super(scene, x ?? 32, y ?? 57.554331622949405, texture || "warrior_idle", frame ?? 4);
+    super(scene, x ?? 80, y ?? 144, texture || "cyclops_idle", frame ?? 4);
 
     this.setInteractive(new Phaser.Geom.Circle(32, 32, 32), Phaser.Geom.Circle.Contains);
+    this.scaleX = 2.5;
+    this.scaleY = 2.5;
     this.setOrigin(0.5, 0.899286430676403);
-    this.play("general_warrior_idle_down");
+    this.play("cyclops_idle");
 
     /* START-USER-CTR-CODE */
     /* END-USER-CTR-CODE */

@@ -1,43 +1,53 @@
 import { AnimationType } from "../../../../entity/components/animation/animation-type";
 import type { AnimationDefinitionMap } from "../../../../entity/components/animation/animation-definition-map";
 
-const ANIM_GENERAL_WARRIOR_HURT = "general_warrior_hurt";
-const ANIM_GENERAL_WARRIOR_IDLE_UP = "general_warrior_idle_up";
-const ANIM_GENERAL_WARRIOR_IDLE_LEFT = "general_warrior_idle_left";
-const ANIM_GENERAL_WARRIOR_IDLE_DOWN = "general_warrior_idle_down";
-const ANIM_GENERAL_WARRIOR_IDLE_RIGHT = "general_warrior_idle_right";
-const ANIM_GENERAL_WARRIOR_THRUST_UP = "general_warrior_thrust_up";
-const ANIM_GENERAL_WARRIOR_THRUST_LEFT = "general_warrior_thrust_left";
-const ANIM_GENERAL_WARRIOR_THRUST_DOWN = "general_warrior_thrust_down";
-const ANIM_GENERAL_WARRIOR_THRUST_RIGHT = "general_warrior_thrust_right";
-const ANIM_GENERAL_WARRIOR_WALK_UP = "general_warrior_walk_up";
-const ANIM_GENERAL_WARRIOR_WALK_LEFT = "general_warrior_walk_left";
-const ANIM_GENERAL_WARRIOR_WALK_DOWN = "general_warrior_walk_down";
-const ANIM_GENERAL_WARRIOR_WALK_RIGHT = "general_warrior_walk_right";
+const ANIM_CYCLOPS_HURT = "cyclops_hurt";
+const ANIM_CYCLOPS_IDLE_UP = "cyclops_idle";
+const ANIM_CYCLOPS_IDLE_LEFT = "cyclops_idle_1";
+const ANIM_CYCLOPS_IDLE_DOWN = "cyclops_idle_2";
+const ANIM_CYCLOPS_IDLE_RIGHT = "cyclops_idle_3";
+const ANIM_CYCLOPS_THRUST_UP = "cyclops_thrust";
+const ANIM_CYCLOPS_THRUST_LEFT = "cyclops_thrust_1";
+const ANIM_CYCLOPS_THRUST_DOWN = "cyclops_thrust_2";
+const ANIM_CYCLOPS_THRUST_RIGHT = "cyclops_thrust_3";
+const ANIM_CYCLOPS_WALK_UP = "cyclops_walk";
+const ANIM_CYCLOPS_WALK_LEFT = "cyclops_walk_1";
+const ANIM_CYCLOPS_WALK_DOWN = "cyclops_walk_2";
+const ANIM_CYCLOPS_WALK_RIGHT = "cyclops_walk_3";
+const ANIM_CYCLOPS_SLASH_UP = "cyclops_slash";
+const ANIM_CYCLOPS_SLASH_LEFT = "cyclops_slash_1";
+const ANIM_CYCLOPS_SLASH_DOWN = "cyclops_slash_2";
+const ANIM_CYCLOPS_SLASH_RIGHT = "cyclops_slash_3";
 
 export const ANIM_CYCLOPS_DEFINITION: AnimationDefinitionMap = {
   [AnimationType.Idle]: {
-    north: { key: ANIM_GENERAL_WARRIOR_IDLE_UP },
-    south: { key: ANIM_GENERAL_WARRIOR_IDLE_DOWN },
-    west: { key: ANIM_GENERAL_WARRIOR_IDLE_LEFT },
-    east: { key: ANIM_GENERAL_WARRIOR_IDLE_RIGHT }
+    north: { key: ANIM_CYCLOPS_IDLE_UP },
+    south: { key: ANIM_CYCLOPS_IDLE_DOWN },
+    west: { key: ANIM_CYCLOPS_IDLE_LEFT },
+    east: { key: ANIM_CYCLOPS_IDLE_RIGHT }
   },
   [AnimationType.Walk]: {
-    north: { key: ANIM_GENERAL_WARRIOR_WALK_UP },
-    south: { key: ANIM_GENERAL_WARRIOR_WALK_DOWN },
-    west: { key: ANIM_GENERAL_WARRIOR_WALK_LEFT },
-    east: { key: ANIM_GENERAL_WARRIOR_WALK_RIGHT }
+    north: { key: ANIM_CYCLOPS_WALK_UP },
+    south: { key: ANIM_CYCLOPS_WALK_DOWN },
+    west: { key: ANIM_CYCLOPS_WALK_LEFT },
+    east: { key: ANIM_CYCLOPS_WALK_RIGHT }
   },
   [AnimationType.Thrust]: {
-    north: { key: ANIM_GENERAL_WARRIOR_THRUST_UP },
-    south: { key: ANIM_GENERAL_WARRIOR_THRUST_DOWN },
-    west: { key: ANIM_GENERAL_WARRIOR_THRUST_LEFT },
-    east: { key: ANIM_GENERAL_WARRIOR_THRUST_RIGHT }
+    north: { key: ANIM_CYCLOPS_THRUST_UP },
+    south: { key: ANIM_CYCLOPS_THRUST_DOWN },
+    west: { key: ANIM_CYCLOPS_THRUST_LEFT },
+    east: { key: ANIM_CYCLOPS_THRUST_RIGHT }
+  },
+  [AnimationType.LargeSlash]: {
+    north: { key: ANIM_CYCLOPS_SLASH_UP },
+    south: { key: ANIM_CYCLOPS_SLASH_DOWN },
+    west: { key: ANIM_CYCLOPS_SLASH_LEFT },
+    east: { key: ANIM_CYCLOPS_SLASH_RIGHT }
   },
   [AnimationType.Death]: {
-    north: { key: ANIM_GENERAL_WARRIOR_HURT },
-    south: { key: ANIM_GENERAL_WARRIOR_HURT },
-    west: { key: ANIM_GENERAL_WARRIOR_HURT },
-    east: { key: ANIM_GENERAL_WARRIOR_HURT }
+    north: { key: ANIM_CYCLOPS_HURT },
+    south: { key: ANIM_CYCLOPS_HURT },
+    west: { key: ANIM_CYCLOPS_HURT },
+    east: { key: ANIM_CYCLOPS_HURT }
   }
 };

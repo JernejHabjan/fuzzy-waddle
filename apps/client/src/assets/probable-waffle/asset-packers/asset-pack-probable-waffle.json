@@ -134,6 +134,11 @@
         "key": "cursors"
       },
       {
+        "url": "assets/probable-waffle/spritesheets/characters/mobs/cyclops/cyclops_anim.json",
+        "type": "animation",
+        "key": "cyclops_anim"
+      },
+      {
         "url": "assets/probable-waffle/spritesheets/characters/mobs/cyclops/cyclops_hurt.png",
         "frameConfig": {
           "frameWidth": 64,
