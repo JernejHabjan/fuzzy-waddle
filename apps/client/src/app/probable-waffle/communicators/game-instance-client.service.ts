@@ -668,35 +668,59 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   }
 
   async leaveLobby(): Promise<void> {
-    // Remove current player or spectator from the game instance to notify others
+    const isSelfHosted =
+      this.gameInstance?.gameInstanceMetadata?.data.type === ProbableWaffleGameInstanceType.SelfHosted;
+    const isSkirmish = this.gameInstance?.gameInstanceMetadata?.data.type === ProbableWaffleGameInstanceType.Skirmish;
+    const isOffline = !this.authService.isAuthenticated || !this.serverHealthService.serverAvailable;
+    const isHost = this.gameInstance?.gameInstanceMetadata?.data.createdBy === this.authService.userId;
+
+    // Handle player or spectator leaving
     if (this.currentPlayerNumber !== undefined) {
-      // Player is in the game, remove them
-      await this.removePlayer(this.currentPlayerNumber);
+      // Convert player slot back to NetworkOpen for multiplayer games
+      if (isSelfHosted) {
+        // Player is in the game, remove them
+        await this.removePlayer(this.currentPlayerNumber);
+      }
     } else if (this.gameInstance?.spectators.some((s) => s.data.userId === this.authService.userId)) {
       // Player is a spectator, remove them
       await this.spectatorChanged("left", { userId: this.authService.userId! });
     }
 
-    // For offline/skirmish games or if we're the host, stop the game instance completely
-    const isOffline = !this.authService.isAuthenticated || !this.serverHealthService.serverAvailable;
-    const isHost =
-      this.gameInstance?.gameInstanceMetadata?.data.createdBy === this.authService.userId;
-    const isSelfHosted =
-      this.gameInstance?.gameInstanceMetadata?.data.type === ProbableWaffleGameInstanceType.SelfHosted;
-    const isSkirmish =
-      this.gameInstance?.gameInstanceMetadata?.data.type === ProbableWaffleGameInstanceType.Skirmish;
+    // Handle host transfer or game instance shutdown
+    if (isSelfHosted && isHost) {
+      // Find the earliest joined human player to transfer ownership to
+      const humanPlayers =
+        this.gameInstance?.players.filter(
+          (p) =>
+            p.playerController.data.playerDefinition?.playerType === ProbableWafflePlayerType.Human &&
+            p.playerController.data.userId !== this.authService.userId &&
+            p.playerController.data.userId !== null
+        ) || [];
 
-    if (isOffline || isSkirmish || (isSelfHosted && isHost)) {
-      // Stop the entire game instance
+      if (humanPlayers.length > 0) {
+        // Transfer ownership to the first human player
+        const newHost = humanPlayers[0]!;
+        const newHostUserId = newHost.playerController.data.userId!;
+
+        await this.gameInstanceMetadataChanged("createdBy", { createdBy: newHostUserId });
+
+        // Clean up local state and navigate away
+        await this.stopListeningToGameInstanceEvents();
+        this.gameInstance = undefined;
+        this.currentPlayerNumber = undefined;
+      } else {
+        // No human players left, destroy the game instance
+        await this.stopGameInstance();
+      }
+    } else if (isOffline || isSkirmish) {
+      // Stop the entire game instance for offline/skirmish
       await this.stopGameInstance();
     } else {
-      // Just clean up local state without stopping the server instance
+      // Just clean up local state without stopping the server instance (non-host player leaving)
       await this.stopListeningToGameInstanceEvents();
       this.gameInstance = undefined;
       this.currentPlayerNumber = undefined;
     }
-
-    // Navigate away
     await this.router.navigate(["aota"]);
   }
 }
