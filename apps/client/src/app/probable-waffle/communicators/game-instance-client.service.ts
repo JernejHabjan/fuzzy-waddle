@@ -682,7 +682,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     } else if (isOffline || isSkirmish) {
       await this.stopGameInstance();
     } else {
-      await this.handleNonHostPlayerLeaving();
+      await this.cleanupLocalGameState();
     }
 
     await this.router.navigate(["aota"]);
@@ -715,10 +715,6 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     } else {
       await this.stopGameInstance();
     }
-  }
-
-  private async handleNonHostPlayerLeaving(): Promise<void> {
-    await this.cleanupLocalGameState();
   }
 
   private async cleanupLocalGameState(): Promise<void> {
