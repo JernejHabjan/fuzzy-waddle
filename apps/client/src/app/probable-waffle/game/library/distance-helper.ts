@@ -7,6 +7,15 @@ import { RepresentableComponent } from "../entity/components/representable-compo
 import { TilemapComponent } from "../world/tilemap/tilemap.component";
 import GameObject = Phaser.GameObjects.GameObject;
 
+// Cache for navigation distances (key: "fromX,fromY->toX,toY,toZ", value: { distance, timestamp })
+interface NavigationDistanceCache {
+  distance: number;
+  timestamp: number;
+}
+const navigationDistanceCache = new Map<string, NavigationDistanceCache>();
+const navigationDistanceBetweenObjectsCache = new Map<string, NavigationDistanceCache>();
+const CACHE_TTL_MS = 1000; // Cache entries for 1 second
+
 export class DistanceHelper {
   /**
    * Gets the flying height of a game object in tile units.
@@ -90,12 +99,52 @@ export class DistanceHelper {
     actor1: GameObject,
     actor2: GameObject
   ): Promise<number | null> {
+    if (!actor1.scene || !actor2.scene) {
+      return null;
+    }
+
+    const actor1Tile = getGameObjectCurrentTile(actor1);
+    const actor2Tile = getGameObjectCurrentTile(actor2);
+    if (!actor1Tile || !actor2Tile) return null;
+
+    // Create cache key (use sorted coordinates to make bidirectional)
+    const actor1First =
+      actor1Tile.x < actor2Tile.x ||
+      (actor1Tile.x === actor2Tile.x && actor1Tile.y <= actor2Tile.y);
+    const cacheKey = actor1First
+      ? `${actor1Tile.x},${actor1Tile.y}->${actor2Tile.x},${actor2Tile.y}`
+      : `${actor2Tile.x},${actor2Tile.y}->${actor1Tile.x},${actor1Tile.y}`;
+    const now = performance.now();
+
+    // Check cache
+    const cached = navigationDistanceBetweenObjectsCache.get(cacheKey);
+    if (cached && now - cached.timestamp < CACHE_TTL_MS) {
+      if (cached.distance === -1) {
+        return null;
+      } else {
+        // console.log(`Cache hit for distance between ${actor1.name} and ${actor2.name}: ${cached.distance}`);
+        return cached.distance;
+      }
+    }
+
     const navigationService = getSceneService(actor1.scene, NavigationService);
     if (!navigationService) return null;
 
     const path = await navigationService.findPathBetweenGameObjects(actor1, actor2);
-    if (!path) return null;
-    return path.length;
+    if (!path) {
+      navigationDistanceBetweenObjectsCache.set(cacheKey, { distance: -1, timestamp: now });
+      return null;
+    }
+
+    const distance = path.length;
+    navigationDistanceBetweenObjectsCache.set(cacheKey, { distance, timestamp: now });
+
+    // Periodically clean up old cache entries
+    if (navigationDistanceBetweenObjectsCache.size > 1000) {
+      DistanceHelper.cleanNavigationBetweenObjectsCache(now);
+    }
+
+    return distance;
   }
 
   static async getTileDistanceBetweenGameObjectAndTileNavigation(
@@ -106,11 +155,217 @@ export class DistanceHelper {
       // happens when actor is being destroyed
       return null;
     }
+
+    const actorTile = getGameObjectCurrentTile(actor);
+    if (!actorTile) return null;
+
+    // Create cache key
+    const cacheKey = `${actorTile.x},${actorTile.y}->${tile.x},${tile.y},${tile.z}`;
+    const now = performance.now();
+
+    // Check cache
+    const cached = navigationDistanceCache.get(cacheKey);
+    if (cached && now - cached.timestamp < CACHE_TTL_MS) {
+      // console.log(
+      //   `Cache hit for distance from ${actor.name} to tile (${tile.x},${tile.y},${tile.z}): ${cached.distance}`
+      // );
+      // Note: convert sentinel -1 back to null to preserve the Promise<number | null> contract
+      return cached.distance === -1 ? null : cached.distance;
+    }
+
     const navigationService = getSceneService(actor.scene, NavigationService);
     if (!navigationService) return null;
 
     const path = await navigationService.findPathFromGameObjectToTile(actor, tile);
-    if (!path) return null;
-    return path.length;
+    if (!path) {
+      // Cache negative results too with a special marker
+      navigationDistanceCache.set(cacheKey, { distance: -1, timestamp: now });
+      return null;
+    }
+
+    const distance = path.length;
+
+    // Update cache
+    navigationDistanceCache.set(cacheKey, { distance, timestamp: now });
+
+    // Periodically clean up old cache entries to prevent memory leaks
+    if (navigationDistanceCache.size > 1000) {
+      DistanceHelper.cleanNavigationCache(now);
+    }
+
+    return distance;
+  }
+
+  /**
+   * Clean expired entries from the navigation distance cache
+   */
+  private static cleanNavigationCache(now: number = performance.now()): void {
+    for (const [key, value] of navigationDistanceCache.entries()) {
+      if (now - value.timestamp >= CACHE_TTL_MS) {
+        navigationDistanceCache.delete(key);
+      }
+    }
+  }
+
+  /**
+   * Clean expired entries from the GameObject-to-GameObject cache
+   */
+  private static cleanNavigationBetweenObjectsCache(now: number = performance.now()): void {
+    for (const [key, value] of navigationDistanceBetweenObjectsCache.entries()) {
+      if (now - value.timestamp >= CACHE_TTL_MS) {
+        navigationDistanceBetweenObjectsCache.delete(key);
+      }
+    }
+  }
+
+  /**
+   * Clear the entire navigation distance cache (useful when navigation grid changes)
+   */
+  static clearNavigationCache(): void {
+    navigationDistanceCache.clear();
+    navigationDistanceBetweenObjectsCache.clear();
+  }
+
+  /**
+   * Batch calculate navigation distances from multiple actors to a single tile.
+   * More efficient than calling getTileDistanceBetweenGameObjectAndTileNavigation in a loop
+   * because it leverages caching and avoids redundant scene service lookups.
+   *
+   * @returns Array of distances in the same order as actors (null if distance cannot be calculated)
+   */
+  static async batchGetTileDistancesToTile(actors: GameObject[], tile: Vector3Simple): Promise<(number | null)[]> {
+    if (actors.length === 0) return [];
+
+    // Group by scene to minimize service lookups
+    const actorsByScene = new Map<Phaser.Scene, GameObject[]>();
+    const actorIndices = new Map<GameObject, number>();
+
+    actors.forEach((actor, index) => {
+      if (!actor.scene) return;
+      actorIndices.set(actor, index);
+      const sceneActors = actorsByScene.get(actor.scene) || [];
+      sceneActors.push(actor);
+      actorsByScene.set(actor.scene, sceneActors);
+    });
+
+    const results: (number | null)[] = new Array(actors.length).fill(null);
+
+    for (const [scene, sceneActors] of actorsByScene) {
+      const navigationService = getSceneService(scene, NavigationService);
+      if (!navigationService) continue;
+
+      const now = performance.now();
+
+      for (const actor of sceneActors) {
+        const actorTile = getGameObjectCurrentTile(actor);
+        if (!actorTile) continue;
+
+        const index = actorIndices.get(actor)!;
+        const cacheKey = `${actorTile.x},${actorTile.y}->${tile.x},${tile.y},${tile.z}`;
+
+        // Check cache first
+        const cached = navigationDistanceCache.get(cacheKey);
+        if (cached && now - cached.timestamp < CACHE_TTL_MS) {
+          // console.log(
+          //   `Cache hit for distance from ${actor.name} to tile (${tile.x},${tile.y},${tile.z}): ${cached.distance}`
+          // );
+          results[index] = cached.distance === -1 ? null : cached.distance;
+          continue;
+        }
+
+        // Calculate path
+        const path = await navigationService.findPathFromGameObjectToTile(actor, tile);
+
+        if (!path) {
+          navigationDistanceCache.set(cacheKey, { distance: -1, timestamp: now });
+          results[index] = null;
+        } else {
+          const distance = path.length;
+          navigationDistanceCache.set(cacheKey, { distance, timestamp: now });
+          results[index] = distance;
+        }
+      }
+
+      // Clean up cache if needed
+      if (navigationDistanceCache.size > 1000) {
+        DistanceHelper.cleanNavigationCache(now);
+      }
+    }
+
+    return results;
+  }
+
+  /**
+   * Batch calculate navigation distances between pairs of GameObjects.
+   * More efficient than calling getTileDistanceBetweenGameObjectsNavigation in a loop.
+   *
+   * @param pairs Array of [actor1, actor2] pairs
+   * @returns Array of distances in the same order as pairs (null if distance cannot be calculated)
+   */
+  static async batchGetDistancesBetweenGameObjects(pairs: [GameObject, GameObject][]): Promise<(number | null)[]> {
+    if (pairs.length === 0) return [];
+
+    // Group by scene to minimize service lookups
+    const pairsByScene = new Map<Phaser.Scene, { pair: [GameObject, GameObject]; index: number }[]>();
+
+    pairs.forEach((pair, index) => {
+      const [actor1, actor2] = pair;
+      if (!actor1.scene || !actor2.scene) return;
+      // Use actor1's scene
+      const scenePairs = pairsByScene.get(actor1.scene) || [];
+      scenePairs.push({ pair, index });
+      pairsByScene.set(actor1.scene, scenePairs);
+    });
+
+    const results: (number | null)[] = new Array(pairs.length).fill(null);
+
+    for (const [scene, scenePairs] of pairsByScene) {
+      const navigationService = getSceneService(scene, NavigationService);
+      if (!navigationService) continue;
+
+      const now = performance.now();
+
+      for (const { pair, index } of scenePairs) {
+        const [actor1, actor2] = pair;
+        const actor1Tile = getGameObjectCurrentTile(actor1);
+        const actor2Tile = getGameObjectCurrentTile(actor2);
+        if (!actor1Tile || !actor2Tile) continue;
+
+        // Create cache key (use sorted coordinates to make bidirectional)
+        const actor1First =
+          actor1Tile.x < actor2Tile.x ||
+          (actor1Tile.x === actor2Tile.x && actor1Tile.y <= actor2Tile.y);
+        const cacheKey = actor1First
+          ? `${actor1Tile.x},${actor1Tile.y}->${actor2Tile.x},${actor2Tile.y}`
+          : `${actor2Tile.x},${actor2Tile.y}->${actor1Tile.x},${actor1Tile.y}`;
+
+        // Check cache first
+        const cached = navigationDistanceBetweenObjectsCache.get(cacheKey);
+        if (cached && now - cached.timestamp < CACHE_TTL_MS) {
+          // console.log(`Cache hit for distance between ${actor1.name} and ${actor2.name}: ${cached.distance}`);
+          results[index] = cached.distance === -1 ? null : cached.distance;
+          continue;
+        }
+
+        // Calculate path
+        const path = await navigationService.findPathBetweenGameObjects(actor1, actor2);
+
+        if (!path) {
+          navigationDistanceBetweenObjectsCache.set(cacheKey, { distance: -1, timestamp: now });
+          results[index] = null;
+        } else {
+          const distance = path.length;
+          navigationDistanceBetweenObjectsCache.set(cacheKey, { distance, timestamp: now });
+          results[index] = distance;
+        }
+      }
+
+      // Clean up cache if needed
+      if (navigationDistanceBetweenObjectsCache.size > 1000) {
+        DistanceHelper.cleanNavigationBetweenObjectsCache(now);
+      }
+    }
+
+    return results;
   }
 }

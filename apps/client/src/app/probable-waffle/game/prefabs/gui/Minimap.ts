@@ -91,6 +91,12 @@ export default class Minimap extends Phaser.GameObjects.Container {
   private playerActionsHandler?: PlayerActionsHandler;
   // Threshold for revealing last enemy buildings on minimap
   private readonly lastBuildingsThreshold = 3;
+  // Cache for tile visibility colors to avoid recalculating
+  private tileColorCache: Map<string, Phaser.Display.Color> = new Map();
+  // Reusable fallback color instead of creating new random colors
+  private readonly fallbackColor = new Phaser.Display.Color(128, 128, 128);
+  // Store tile coordinates for each diamond to avoid recreating listeners
+  private diamondTileCoords: Map<Phaser.GameObjects.Polygon, { i: number; j: number }> = new Map();
 
   initializeWithParentScene(probableWaffleScene: ProbableWaffleScene, hudProbableWaffle: HudProbableWaffle) {
     this.probableWaffleScene = probableWaffleScene;
@@ -196,49 +202,121 @@ export default class Minimap extends Phaser.GameObjects.Container {
     const centerX = widthInPixels / 2;
     const offsetX = centerX - pixelWidth / 2;
 
-    this.minimapDiamonds.forEach((diamond) => diamond.destroy());
-    this.minimapDiamonds = [];
-
     if (!this.hudProbableWaffle) throw new Error("Parent scene not set");
     const multiSelectionHandler = getSceneComponent(this.hudProbableWaffle, MultiSelectionHandler);
     if (!multiSelectionHandler) throw new Error("MultiSelectionHandler not found on parent");
 
+    // Reuse existing diamonds if possible, only create/destroy as needed
+    let diamondIndex = 0;
     for (let i = 0; i < widthInTiles; i++) {
       for (let j = 0; j < widthInTiles; j++) {
         const tile = layerData[i]![j]!;
-        const baseColor = this.getColorFromTiledProperty(tile) ?? Phaser.Display.Color.RandomRGB();
 
-        // Get tile visibility and apply appropriate color/alpha
+        // Get or compute base color once
+        const cacheKey = `${tile.x},${tile.y}`;
+        let baseColor = this.tileColorCache.get(cacheKey);
+        if (!baseColor) {
+          baseColor = this.getColorFromTiledProperty(tile) ?? this.fallbackColor;
+          this.tileColorCache.set(cacheKey, baseColor);
+        }
+
+        // Get tile visibility and apply appropriate color
         const color = this.getTileVisibilityColor(j, i, baseColor);
 
         const isoX = offsetX + (j - i) * (pixelWidth / 2);
         const isoY = (i + j) * (pixelHeight / 2);
-        const diamond = this.createDiamondShape(x, y, isoX, isoY, pixelWidth, pixelHeight, color);
 
-        // Pointer over is needed for continuous camera movement while dragging
-        diamond.on(Phaser.Input.Events.POINTER_OVER, (pointer: Phaser.Input.Pointer) => {
-          if (this.playerActionsHandler?.isHandlingActions()) return;
-          if (multiSelectionHandler?.multiSelecting) return;
-          if (pointer.leftButtonDown()) {
-            this.moveCameraToTileCoordinates({ x: i, y: j });
-          }
-        });
-        // pointer down is needed for single minimap click to move camera or assign action
-        diamond.on(Phaser.Input.Events.POINTER_DOWN, (pointer: Phaser.Input.Pointer) => {
-          if (multiSelectionHandler?.multiSelecting) return;
-          const isHandlingPlayerAction = this.playerActionsHandler?.isHandlingActions() === true;
-          if (pointer.rightButtonDown() || isHandlingPlayerAction) {
-            const tileVec3 = { x: j, y: i, z: 0 };
-            const orderType = this.playerActionsHandler?.getCurrentOrderType() ?? OrderType.Move;
-            this.assignActorActionToTileCoordinates(tileVec3, orderType);
-          } else if (pointer.leftButtonDown()) {
-            this.moveCameraToTileCoordinates({ x: i, y: j });
-          }
-          this.playerActionsHandler?.stopOrderCommand();
-        });
-        this.minimapDiamonds.push(diamond);
+        // Reuse existing diamond or create new one
+        let diamond: Phaser.GameObjects.Polygon;
+        const needsRecreate = diamondIndex >= this.minimapDiamonds.length;
+
+        if (!needsRecreate) {
+          diamond = this.minimapDiamonds[diamondIndex]!;
+          // Update existing diamond's position, color, and points (in case size changed)
+          this.updateDiamondShape(diamond, x, y, isoX, isoY, pixelWidth, pixelHeight, color);
+        } else {
+          // Create new diamond
+          diamond = this.createDiamondShape(x, y, isoX, isoY, pixelWidth, pixelHeight, color);
+          this.minimapDiamonds.push(diamond);
+        }
+
+        // Only update event handlers if tile coordinates changed or diamond was newly created
+        const storedCoords = this.diamondTileCoords.get(diamond);
+        if (needsRecreate || !storedCoords || storedCoords.i !== i || storedCoords.j !== j) {
+          this.diamondTileCoords.set(diamond, { i, j });
+          diamond.removeAllListeners();
+
+          // Pointer over is needed for continuous camera movement while dragging
+          diamond.on(Phaser.Input.Events.POINTER_OVER, (pointer: Phaser.Input.Pointer) => {
+            if (this.playerActionsHandler?.isHandlingActions()) return;
+            if (multiSelectionHandler?.multiSelecting) return;
+            if (pointer.leftButtonDown()) {
+              this.moveCameraToTileCoordinates({ x: i, y: j });
+            }
+          });
+          // pointer down is needed for single minimap click to move camera or assign action
+          diamond.on(Phaser.Input.Events.POINTER_DOWN, (pointer: Phaser.Input.Pointer) => {
+            if (multiSelectionHandler?.multiSelecting) return;
+            const isHandlingPlayerAction = this.playerActionsHandler?.isHandlingActions() === true;
+            if (pointer.rightButtonDown() || isHandlingPlayerAction) {
+              const tileVec3 = { x: j, y: i, z: 0 };
+              const orderType = this.playerActionsHandler?.getCurrentOrderType() ?? OrderType.Move;
+              this.assignActorActionToTileCoordinates(tileVec3, orderType);
+            } else if (pointer.leftButtonDown()) {
+              this.moveCameraToTileCoordinates({ x: i, y: j });
+            }
+            this.playerActionsHandler?.stopOrderCommand();
+          });
+        }
+
+        diamondIndex++;
       }
     }
+
+    // Hide/destroy excess diamonds if minimap shrunk (e.g., smaller map / reload)
+    while (diamondIndex < this.minimapDiamonds.length) {
+      const diamond = this.minimapDiamonds[diamondIndex];
+      if (diamond) {
+        diamond.setVisible(false);
+        this.diamondTileCoords.delete(diamond);
+      }
+      diamondIndex++;
+    }
+  }
+
+  /**
+   * Update an existing diamond's position and appearance
+   */
+  private updateDiamondShape(
+    diamond: Phaser.GameObjects.Polygon,
+    x: number,
+    y: number,
+    isoX: number,
+    isoY: number,
+    pixelWidth: number,
+    pixelHeight: number,
+    color: Phaser.Display.Color
+  ): void {
+    // Update position
+    diamond.setPosition(x + pixelWidth / 2, y + pixelHeight / 2);
+
+    // Update color
+    diamond.setFillStyle(color.color, 1);
+
+    // Update points to handle size changes (e.g., when minimap zooms)
+    // Note: We recreate the points array here to handle dynamic size changes.
+    // This is a trade-off - we accept the small cost of array creation to avoid
+    // needing to track and compare previous dimensions.
+    const diamondPoints = [
+      { x: isoX, y: isoY + pixelHeight / 2 },
+      { x: isoX + pixelWidth / 2, y: isoY },
+      { x: isoX + pixelWidth, y: isoY + pixelHeight / 2 },
+      { x: isoX + pixelWidth / 2, y: isoY + pixelHeight }
+    ];
+    diamond.setTo(diamondPoints);
+
+    // Ensure it's visible
+    diamond.setVisible(true);
   }
 
   private getIsometricCoordinates(tileXY: Vector2Simple): { isoX: number; isoY: number } | null {
@@ -303,13 +381,17 @@ export default class Minimap extends Phaser.GameObjects.Container {
     const centerX = widthInPixels / 2;
     const offsetX = centerX - pixelWidth / 2;
 
-    this.actorDiamonds.forEach((diamond) => diamond.destroy());
-    this.actorDiamonds = [];
+    // Instead of destroying all diamonds, we'll reuse them
+    let actorDiamondIndex = 0;
 
     // Use ActorIndexSystem to get all actors efficiently
     const actorIndexSystem = getSceneService(this.probableWaffleScene, ActorIndexSystem);
     if (!actorIndexSystem) {
       console.warn("ActorIndexSystem not found, skipping minimap actor rendering");
+      // Hide unused diamonds
+      for (let i = actorDiamondIndex; i < this.actorDiamonds.length; i++) {
+        this.actorDiamonds[i]!.setVisible(false);
+      }
       return;
     }
 
@@ -370,11 +452,27 @@ export default class Minimap extends Phaser.GameObjects.Container {
             const isoY = (tile.x + tile.y) * (pixelHeight / 2);
             // Use higher alpha for last buildings to make them stand out
             const alpha = isLastBuilding ? 1.0 : 1.0;
-            const diamond = this.createDiamondShape(x, y, isoX, isoY, pixelWidth, pixelHeight, color, alpha);
-            this.actorDiamonds.push(diamond);
+
+            // Reuse or create actor diamond
+            let diamond: Phaser.GameObjects.Polygon;
+            if (actorDiamondIndex < this.actorDiamonds.length) {
+              diamond = this.actorDiamonds[actorDiamondIndex]!;
+              this.updateDiamondShape(diamond, x, y, isoX, isoY, pixelWidth, pixelHeight, color);
+              diamond.setAlpha(alpha);
+            } else {
+              diamond = this.createDiamondShape(x, y, isoX, isoY, pixelWidth, pixelHeight, color, alpha);
+              this.actorDiamonds.push(diamond);
+            }
+
+            actorDiamondIndex++;
           }
         }
       }
+    }
+
+    // Hide excess actor diamonds instead of destroying them
+    for (let i = actorDiamondIndex; i < this.actorDiamonds.length; i++) {
+      this.actorDiamonds[i]!.setVisible(false);
     }
   }
 
@@ -390,6 +488,8 @@ export default class Minimap extends Phaser.GameObjects.Container {
   override destroy(fromScene?: boolean) {
     this.minimapDiamonds.forEach((diamond) => diamond.destroy());
     this.actorDiamonds.forEach((diamond) => diamond.destroy());
+    this.tileColorCache.clear();
+    this.diamondTileCoords.clear();
     this.probableWaffleScene?.events.off(NavigationService.UpdateNavigationEvent, this.throttleRedrawMinimap, this);
     super.destroy(fromScene);
   }

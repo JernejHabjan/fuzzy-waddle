@@ -185,10 +185,12 @@ export class WorldStateSnapshotManager {
 
   private async getEnemiesNearBase(enemies: GameObject[], baseCenter: { x: number; y: number; z: number }) {
     const near: GameObject[] = [];
-    for (const enemy of enemies) {
-      const d = await DistanceHelper.getTileDistanceBetweenGameObjectAndTileNavigation(enemy, baseCenter);
-      if (d !== null && d <= AI_CONFIG.enemyNearBaseRadiusTiles) {
-        near.push(enemy);
+    const distances = await DistanceHelper.batchGetTileDistancesToTile(enemies, baseCenter);
+
+    for (let i = 0; i < enemies.length; i++) {
+      const d = distances[i];
+      if (typeof d === 'number' && d <= AI_CONFIG.enemyNearBaseRadiusTiles) {
+        near.push(enemies[i]!);
       }
     }
     return near;

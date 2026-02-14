@@ -5,11 +5,12 @@ import { HealthComponent } from "../../entity/components/combat/components/healt
 import { AnimationActorComponent } from "../../entity/components/animation/animation-actor-component";
 import { AnimationType } from "../../entity/components/animation/animation-type";
 import { environment } from "../../../../../environments/environment";
+import type { Subscription } from "rxjs";
 import { DamageType } from "@fuzzy-waddle/api-interfaces";
 
 export class ActorDebugDamageSystem {
   private externalModalOpen = false;
-
+  private externalModalSubscription?: Subscription;
   constructor(private scene: ProbableWaffleScene) {
     if (!environment.production) {
       this.bindKeyboardListener();
@@ -19,7 +20,7 @@ export class ActorDebugDamageSystem {
   }
 
   private listenToChatModalEvents() {
-    this.scene.communicator.allScenes.subscribe((event) => {
+    this.externalModalSubscription = this.scene.communicator.allScenes.subscribe((event) => {
       if (event.name === "external-modal-opened") {
         this.externalModalOpen = true;
       } else if (event.name === "external-modal-closed") {
@@ -82,5 +83,6 @@ export class ActorDebugDamageSystem {
 
   private destroy() {
     this.scene.input.keyboard?.off("keydown", this.onKeyDown, this);
+    this.externalModalSubscription?.unsubscribe();
   }
 }
