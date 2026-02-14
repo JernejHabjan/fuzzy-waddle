@@ -622,7 +622,8 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     const url = environment.api + "api/probable-waffle/matchmaking/request-game-search-for-matchmaking";
     const body: RequestGameSearchForMatchMakingDto = {
       mapPoolIds: matchmakingOptions.levels.filter((l) => l.checked).map((l) => l.id),
-      factionType: matchmakingOptions.factionType
+      factionType: matchmakingOptions.factionType,
+      teamConfiguration: matchmakingOptions.teamConfiguration
     };
     await firstValueFrom(this.httpClient.post<void>(url, body));
   }
