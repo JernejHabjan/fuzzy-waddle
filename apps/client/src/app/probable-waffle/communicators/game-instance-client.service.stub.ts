@@ -122,5 +122,8 @@ export const gameInstanceClientServiceStub = {
   },
   async startReplay(gameInstanceSaveData: ProbableWaffleGameInstanceSaveData): Promise<void> {
     return Promise.resolve();
+  },
+  async leaveLobby(): Promise<void> {
+    return Promise.resolve();
   }
 } satisfies GameInstanceClientServiceInterface;

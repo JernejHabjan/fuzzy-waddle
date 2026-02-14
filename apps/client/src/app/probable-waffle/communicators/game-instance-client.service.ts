@@ -138,6 +138,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
               case GameSessionState.Stopped:
                 await this.stopListeningToGameInstanceEvents();
                 this.gameInstance = undefined;
+                this.currentPlayerNumber = undefined;
                 console.log("removed game instance");
                 break;
             }
@@ -664,5 +665,38 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     if (this.externalModalRef) {
       this.externalModalRef.close();
     }
+  }
+
+  async leaveLobby(): Promise<void> {
+    // Remove current player or spectator from the game instance to notify others
+    if (this.currentPlayerNumber !== undefined) {
+      // Player is in the game, remove them
+      await this.removePlayer(this.currentPlayerNumber);
+    } else if (this.gameInstance?.spectators.some((s) => s.data.userId === this.authService.userId)) {
+      // Player is a spectator, remove them
+      await this.spectatorChanged("left", { userId: this.authService.userId! });
+    }
+
+    // For offline/skirmish games or if we're the host, stop the game instance completely
+    const isOffline = !this.authService.isAuthenticated || !this.serverHealthService.serverAvailable;
+    const isHost =
+      this.gameInstance?.gameInstanceMetadata?.data.createdBy === this.authService.userId;
+    const isSelfHosted =
+      this.gameInstance?.gameInstanceMetadata?.data.type === ProbableWaffleGameInstanceType.SelfHosted;
+    const isSkirmish =
+      this.gameInstance?.gameInstanceMetadata?.data.type === ProbableWaffleGameInstanceType.Skirmish;
+
+    if (isOffline || isSkirmish || (isSelfHosted && isHost)) {
+      // Stop the entire game instance
+      await this.stopGameInstance();
+    } else {
+      // Just clean up local state without stopping the server instance
+      await this.stopListeningToGameInstanceEvents();
+      this.gameInstance = undefined;
+      this.currentPlayerNumber = undefined;
+    }
+
+    // Navigate away
+    await this.router.navigate(["aota"]);
   }
 }

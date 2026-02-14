@@ -51,4 +51,5 @@ export interface GameInstanceClientServiceInterface {
   loadGameInstance(gameInstanceSaveData: ProbableWaffleGameInstanceSaveData): Promise<void>;
   saveGameInstance(data: Record<string, any>): Promise<void>;
   startReplay(gameInstanceSaveData: ProbableWaffleGameInstanceSaveData): Promise<void>;
+  leaveLobby(): Promise<void>;
 }
