@@ -40,6 +40,7 @@ export class GameModeConditionChecker {
   private stopped: boolean = false;
   private surrenderCheckInterval = 2000; // Check every 2 seconds
   private lastSurrenderCheckTime = 0;
+  private currentDelay?: Phaser.Time.TimerEvent;
 
   constructor(private readonly scene: ProbableWaffleScene) {
     const gameModeData = getGameModeFromScene<ProbableWaffleGameMode>(scene).data;
@@ -47,9 +48,13 @@ export class GameModeConditionChecker {
     this.winConditions = gameModeData.winConditions;
     this.tieConditions = gameModeData.tieConditions;
 
-    this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.throttleCheck, this);
+    this.currentDelay = this.scene.time.delayedCall(1000, this.startChecking, [], this);
     this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
     this.listenToPlayerQuit();
+  }
+
+  private startChecking() {
+    this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.throttleCheck, this);
   }
 
   private throttleCheck = throttle(this.check.bind(this), 1000);
@@ -369,5 +374,6 @@ export class GameModeConditionChecker {
     this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.throttleCheck);
     this.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.destroy);
     this.selfQuitSubscription?.unsubscribe();
+    this.currentDelay?.destroy();
   }
 }
