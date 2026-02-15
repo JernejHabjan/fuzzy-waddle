@@ -1175,13 +1175,13 @@ ScoreScreenComponent
 4. Game result tracking (Task 4) ✅ COMPLETE
 5. Scene integration (Task 5) ✅ COMPLETE
 6. Score data service (Task 6) ✅ COMPLETE
-7. UI updates (Tasks 7-9) ✅ IN PROGRESS (Task 7 complete)
-8. Database schema - game sessions table (Task 10 - run migration 0007)
-9. Database schema - player scores table (Task 11 - run migration 0008)
-10. API service - game session tracking (Task 12)
-11. API controller - score submission & match history endpoints (Task 13)
-12. Client - score submission with last human player logic (Task 14)
-13. Client - match history UI components (Task 15)
+7. UI updates (Tasks 7-9) ✅ PARTIAL (Task 7 complete, 8-9 TODO)
+8. Database schema - game sessions table (Task 10) ✅ COMPLETE (migration ready)
+9. Database schema - player scores table (Task 11) ✅ COMPLETE (migration ready)
+10. API service - game session tracking (Task 12) ✅ COMPLETE
+11. API controller - score submission (Task 13) ✅ COMPLETE
+12. Client - score submission with last human player logic (Task 14) ✅ COMPLETE
+13. Client - match history UI components (Task 15) 🔄 TODO
 
 ---
 
