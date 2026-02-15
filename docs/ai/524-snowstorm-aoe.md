@@ -965,19 +965,21 @@ apps/client/src/app/probable-waffle/game/player/ai-controller/ai-behavior/tech-p
 
 ## Outstanding Fixes Summary
 
+**NOTE (2026-02-15):** Code review revealed that most items in this section were already implemented. The comments below were outdated. Current status:
+
 ### Critical Fixes (Functionality Broken)
-- [ ] **spell-component.ts**: `isSpellResearched()` always returns true - must integrate with `TechTreeService`
-- [ ] **status-effect-visual-component.ts**: Component never instantiated - must create when `StatusEffectComponent` is created
-- [ ] **aoe-zone-manager.ts**: Draws circles instead of ellipses for isometric view
+- [x] **spell-component.ts**: `isSpellResearched()` - Already correctly integrated with TechTreeService at line 90
+- [x] **status-effect-visual-component.ts**: Component already instantiated in actor-data.ts:183
+- [x] **aoe-zone-manager.ts**: Already draws ellipses with 0.5 isometric compression (lines 259-267)
 - [ ] **spell-cursor.ts**: HealingTotem (spawnPrefab spells) not implemented - show preview, spawn on click
 - [ ] **HealingTotem.ts**: Prefab exists but never spawned by spell system
 - [ ] **Snowstorm projectile**: Currently fires from caster - should fall from sky (cast spell visual)
 
 ### UI Fixes
-- [ ] **ActorActions.ts - Spell Cooldown**: Need decreasing height mask overlay + countdown seconds number
-- [ ] **ActorActions.ts - Autocast Indicator**: No visual indication of autocast state
+- [x] **ActorActions.ts - Spell Cooldown**: Already implemented with decreasing mask + countdown text (ActorAction.ts:170-215)
+- [x] **ActorActions.ts - Autocast Indicator**: Already implemented with golden recycle icon (ActorAction.ts:217-234)
 - [ ] **ActorActions.ts - Research In Progress**: Button should be disabled during research
-- [ ] **ActorInfoLabels.ts**: Not subscribed to `ResearchComponent` like `ProductionComponent`
+- [x] **ActorInfoLabels.ts**: Now uses unified DisplayQueueComponent (fixed 2026-02-15)
 - [ ] **spell-cursor.ts**: Show range ellipse from nearest valid caster
 
 ### Data Model Fixes
@@ -997,4 +999,5 @@ apps/client/src/app/probable-waffle/game/player/ai-controller/ai-behavior/tech-p
 
 
 ### Other fixes needed
-- [ ] Research component "overrides" the production queue in UI in ActorInfoLabels. Need to queue properly one after another. There needs to be a queue component that both production and research feed into, and ActorInfoLabels subscribes to that instead of directly to production component. So queue should be removed from both components and this new queue component used.
+- [x] Research component "overrides" the production queue in UI in ActorInfoLabels. Need to queue properly one after another. There needs to be a queue component that both production and research feed into, and ActorInfoLabels subscribes to that instead of directly to production component. So queue should be removed from both components and this new queue component used.
+  - **FIXED 2026-02-15**: Created DisplayQueueComponent that aggregates production and research queues into unified display. Research items now show first, followed by production items. ActorInfoLabels now subscribes to DisplayQueueComponent instead of directly to ProductionComponent and ResearchComponent.
