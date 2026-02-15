@@ -367,7 +367,7 @@ export class MovementSystem {
     onComplete?: (() => void) | (() => Promise<void>),
     onStop?: () => void
   ): Promise<void> {
-    if (!this.gameObject.scene.scene.isActive()) {
+    if (!this.gameObject.scene || !this.gameObject.scene.scene.isActive()) {
       return Promise.reject("Scene is not active");
     }
     const tileWorldXY = this.navigationService?.getTileWorldCenter(tile);
