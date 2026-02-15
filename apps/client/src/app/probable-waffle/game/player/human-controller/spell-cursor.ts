@@ -3,7 +3,7 @@ import { EventEmitter } from "@angular/core";
 import { SpellType } from "../../entity/components/combat/spell-type";
 import { spellDefinitions } from "../../entity/components/combat/spell-definitions";
 import { TilemapComponent } from "../../world/tilemap/tilemap.component";
-import type { Vector3Simple, ActorDefinition } from "@fuzzy-waddle/api-interfaces";
+import type { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import GameProbableWaffleScene from "../../world/scenes/GameProbableWaffleScene";
 import { SpellCastingSystem } from "../../entity/systems/spell-casting.system";
 import { getActorSystem } from "../../data/actor-system";

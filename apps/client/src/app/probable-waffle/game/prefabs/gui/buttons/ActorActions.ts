@@ -52,6 +52,9 @@ import { ResearchComponent } from "../../../entity/components/research/research-
 import { researchDefinitions } from "../../../entity/components/research/research-definitions";
 /* END-USER-IMPORTS */
 
+/**
+ * HUD component displaying action buttons for selected actors (attack, move, build, produce units, research, etc.)
+ */
 export default class ActorActions extends Phaser.GameObjects.Container {
   constructor(scene: Phaser.Scene, x?: number, y?: number) {
     super(scene, x ?? 256, y ?? 197);
@@ -198,25 +201,21 @@ export default class ActorActions extends Phaser.GameObjects.Container {
   private readonly hudScene: HudProbableWaffle;
   private readonly audioService: AudioService;
   private readonly playerActionsHandler: PlayerActionsHandler;
-  /**
-   * If true, building icons are displayed with back button
-   */
+  /** If true, building icons are displayed with back button */
   private buildingMode: boolean = false;
-  /**
-   * Navigation stack for building categories. Empty array means root level.
-   */
+  /** Navigation stack for building categories. Empty array means root level. */
   private categoryNavigationStack: ConstructableCategory[] = [];
 
   private get HOTKEYS(): readonly string[] {
     return this.playerActionsHandler.getListHotkeys();
   }
 
-  // keep UI in sync with handler
   private buildingModeSubscription?: Subscription;
   private resourceChangedSubscription?: Subscription;
   private actorUnlockSubscription?: Subscription;
   private researchEventSubscriptions: Subscription[] = [];
 
+  /** Subscribe to selection changes and update displayed actions accordingly */
   private subscribeToPlayerSelection() {
     this.selectionChangedSubscription = listenToSelectionEvents(this.scene)?.subscribe(() => {
       // Update tab handler with new selection
@@ -267,6 +266,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     }
   }
 
+  /** Handle hotkey presses when in building mode to trigger corresponding action buttons */
   private onBuildModeKeyDown(hotkeyIndex: number) {
     if (!this.buildingMode) return;
 
@@ -399,6 +399,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     });
   }
 
+  /** Action definition for attack command */
   private readonly attackAction = (actors: Phaser.GameObjects.GameObject[]) =>
     ({
       icon: {
@@ -568,6 +569,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       shortcut: "del"
     }) satisfies ActorActionSetup;
 
+  /** Main method to display action buttons based on selected actor's components */
   private showActorActions(actor: Phaser.GameObjects.GameObject, allActors: Phaser.GameObjects.GameObject[]) {
     this.hideAllIcons();
     let index = 0;
@@ -627,6 +629,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     }
   }
 
+  /** Check if the actor belongs to the current player */
   private canShowIcons(actor: Phaser.GameObjects.GameObject) {
     const currentPlayerNr = getCurrentPlayerNumber(this.mainSceneWithActors);
     const actorPlayerNr = getActorComponent(actor, OwnerComponent)?.getOwner();
@@ -972,6 +975,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     return index;
   }
 
+  /** Check if any research is currently in progress across all player buildings */
   private isResearchInProgressGlobally(): boolean {
     const playerNr = getCurrentPlayerNumber(this.mainSceneWithActors);
     if (!playerNr) return false;
@@ -1050,6 +1054,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     }
   }
 
+  /** Show buildable structures and categories when in building mode */
   private showBuildableIcons(
     actor: Phaser.GameObjects.GameObject,
     allActors: Phaser.GameObjects.GameObject[],
@@ -1194,9 +1199,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     return index;
   }
 
-  /**
-   * Get the constructable definition for the current navigation level
-   */
+  /** Get the constructable definition for the current navigation level */
   private getCurrentConstructableLevel(builderComponent: BuilderComponent): ConstructableDefinition {
     let current = builderComponent.constructableBuildingsNested;
 
@@ -1234,6 +1237,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     return current;
   }
 
+  /** Check if an object can be produced/built, including tech tree and resource requirements */
   private getProductionValidationState(objectName: ObjectNames): {
     disabled: boolean;
     disabledDescription: string | null;
@@ -1271,6 +1275,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     return { disabled, disabledDescription, validation };
   }
 
+  /** Check if a spell can be cast (cooldown, mana, research requirements) */
   private getSpellValidationState(
     spellType: SpellType,
     spellComponent: SpellComponent
@@ -1302,6 +1307,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     return { disabled, disabledDescription, unmetRequirements };
   }
 
+  /** Check if research can be started (resources, prerequisites) */
   private getResearchValidationState(
     researchType: ResearchType,
     researchComponent: ResearchComponent

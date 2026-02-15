@@ -57,7 +57,8 @@ export default class Wolf extends Phaser.GameObjects.Sprite {
       await moveGameObjectToRandomTileInNavigableRadius(this, this.radius);
       this.moveAfterDelay();
     } catch (e) {
-      console.error(e);
+      // just ignore
+      // console.error(e);
     }
   }
 
