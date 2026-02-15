@@ -124,7 +124,7 @@ export class MatchmakingService implements MatchmakingServiceInterface {
       .createSession({
         gameInstanceId,
         gameType: "Matchmaking",
-        mapId: gameInstance.gameMode?.data.map || "unknown",
+        mapId: gameInstance.gameMode?.data.map?.toString() || "unknown",
         createdByUserId: user.id,
         humanPlayerCount
       })

@@ -11,6 +11,8 @@ import { getPlayersFromScene } from "../../../../shared/game/phaser/scene/base.s
 import { getCurrentPlayerNumber } from "../../data/scene-data";
 import { ScenePlayerHelpers } from "../../data/scene-player-helpers";
 import { throttle } from "../../library/throttle";
+import { getActorComponent, hasActorComponent } from "../../data/actor-component";
+import { ConstructionSiteComponent } from "../../entity/components/construction/construction-site-component";
 
 /**
  * Tracks player scores throughout the game for the score screen.
@@ -161,8 +163,7 @@ export class ScoreTracker {
    * Check if an actor is a building
    */
   private isBuilding(actor: Phaser.GameObjects.GameObject): boolean {
-    // Check if actor has construction site component
-    return !!(actor as any).constructionSite;
+    return hasActorComponent(actor, ConstructionSiteComponent);
   }
 
   /**
