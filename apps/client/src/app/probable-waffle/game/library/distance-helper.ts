@@ -327,6 +327,8 @@ export class DistanceHelper {
 
       for (const { pair, index } of scenePairs) {
         const [actor1, actor2] = pair;
+        if(!actor1.scene || !actor2.scene) continue;
+
         const actor1Tile = getGameObjectCurrentTile(actor1);
         const actor2Tile = getGameObjectCurrentTile(actor2);
         if (!actor1Tile || !actor2Tile) continue;

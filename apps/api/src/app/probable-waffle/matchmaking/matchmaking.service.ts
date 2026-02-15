@@ -7,6 +7,7 @@ import {
   GameSessionState,
   getRandomFactionType,
   type MapTuning,
+  MatchmakingTeamConfiguration,
   type PendingMatchmakingGameInstance,
   type PositionPlayerDefinition,
   ProbableWaffleGameInstance,
@@ -120,7 +121,12 @@ export class MatchmakingService implements MatchmakingServiceInterface {
   ) {
     const gameInstance = pendingMatchmakingGameInstance.gameInstance;
     // PLAYER:
-    const player = this.getNewPlayer(gameInstance, user.id, matchMakingDto.factionType);
+    const player = this.getNewPlayer(
+      gameInstance,
+      user.id,
+      matchMakingDto.factionType,
+      pendingMatchmakingGameInstance.teamConfiguration
+    );
     gameInstance.addPlayer(player);
     this.roomServerService.roomEvent("player.joined", gameInstance, user);
 
@@ -165,12 +171,14 @@ export class MatchmakingService implements MatchmakingServiceInterface {
       gameStateData: {} as ProbableWaffleGameStateData
     });
 
-    const player = this.getNewPlayer(newGameInstance, user.id, matchMakingDto.factionType);
+    const teamConfiguration = matchMakingDto.teamConfiguration ?? MatchmakingTeamConfiguration.FreeForAll;
+    const player = this.getNewPlayer(newGameInstance, user.id, matchMakingDto.factionType, teamConfiguration);
     newGameInstance.addPlayer(player);
 
     this.pendingMatchmakingGameInstances.push({
       gameInstance: newGameInstance,
-      commonMapPoolIds: matchMakingDto.mapPoolIds
+      commonMapPoolIds: matchMakingDto.mapPoolIds,
+      teamConfiguration
     });
     this.gameInstanceService.addGameInstance(newGameInstance, user);
 
@@ -183,10 +191,12 @@ export class MatchmakingService implements MatchmakingServiceInterface {
   private findGameInstanceForMatchMaking(
     matchMakingDto: RequestGameSearchForMatchMakingDto
   ): PendingMatchmakingGameInstance | null {
+    const requestedTeamConfig = matchMakingDto.teamConfiguration ?? MatchmakingTeamConfiguration.FreeForAll;
     const availableMatchmakingGameInstances = this.pendingMatchmakingGameInstances.filter(
       (gi) =>
         gi.gameInstance.gameInstanceMetadata.data.sessionState === GameSessionState.NotStarted &&
-        gi.gameInstance.gameInstanceMetadata.data.type === ProbableWaffleGameInstanceType.Matchmaking
+        gi.gameInstance.gameInstanceMetadata.data.type === ProbableWaffleGameInstanceType.Matchmaking &&
+        gi.teamConfiguration === requestedTeamConfig
     );
 
     // find game instance that has at least 1 map in common
@@ -208,20 +218,33 @@ export class MatchmakingService implements MatchmakingServiceInterface {
     return foundGameInstanceWithCommonMap ?? null;
   }
 
-  private getNewPlayer(gameInstance: ProbableWaffleGameInstance, userId: UserId, factionType: FactionType | null) {
+  private getNewPlayer(
+    gameInstance: ProbableWaffleGameInstance,
+    userId: UserId,
+    factionType: FactionType | null,
+    teamConfiguration: MatchmakingTeamConfiguration
+  ) {
     const randomFactionType = getRandomFactionType();
+    const playerNumber = gameInstance.players.length + 1;
+    const playerPosition = gameInstance.players.length;
+
+    // Calculate team based on team configuration
+    const team = this.calculateTeamNumber(playerPosition, teamConfiguration);
 
     console.log(
       "Ashes of the Ancients - New player",
-      gameInstance.players.length + 1,
+      playerNumber,
       "FactionType",
-      factionType ?? randomFactionType
+      factionType ?? randomFactionType,
+      "Team",
+      team
     );
 
     const playerDefinition = {
-      player: createPlayerLobbyDefinition(gameInstance.players.length + 1, gameInstance.players.length),
+      player: createPlayerLobbyDefinition(playerNumber, playerPosition),
       factionType: factionType ?? randomFactionType,
-      playerType: ProbableWafflePlayerType.Human
+      playerType: ProbableWafflePlayerType.Human,
+      team
     } satisfies PositionPlayerDefinition;
     // noinspection UnnecessaryLocalVariableJS
     const player = gameInstance.initPlayer({
@@ -255,5 +278,35 @@ export class MatchmakingService implements MatchmakingServiceInterface {
     this.pendingMatchmakingGameInstances = this.pendingMatchmakingGameInstances.filter(
       (gi) => gi.gameInstance.gameInstanceMetadata.data.gameInstanceId !== gameInstanceId
     );
+  }
+
+  /**
+   * Calculate team number based on player position and team configuration
+   * @param playerPosition - 0-indexed player position
+   * @param teamConfiguration - The team configuration mode
+   * @returns The team number (1-indexed)
+   */
+  private calculateTeamNumber(playerPosition: number, teamConfiguration: MatchmakingTeamConfiguration): number {
+    switch (teamConfiguration) {
+      case MatchmakingTeamConfiguration.FreeForAll:
+        // Each player gets their own team (1-indexed)
+        return playerPosition + 1;
+
+      case MatchmakingTeamConfiguration.TwoVsTwo:
+        // Players 0,1 are team 1, players 2,3 are team 2
+        return playerPosition < 2 ? 1 : 2;
+
+      case MatchmakingTeamConfiguration.ThreeVsThree:
+        // Players 0,1,2 are team 1, players 3,4,5 are team 2
+        return playerPosition < 3 ? 1 : 2;
+
+      case MatchmakingTeamConfiguration.FourVsFour:
+        // Players 0,1,2,3 are team 1, players 4,5,6,7 are team 2
+        return playerPosition < 4 ? 1 : 2;
+
+      default:
+        // Default to FFA behavior
+        return playerPosition + 1;
+    }
   }
 }

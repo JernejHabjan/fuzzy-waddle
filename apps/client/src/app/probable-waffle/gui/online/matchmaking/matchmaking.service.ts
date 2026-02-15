@@ -2,7 +2,12 @@ import { inject, Injectable } from "@angular/core";
 import { Subscription } from "rxjs";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { RoomsService } from "../../../communicators/rooms/rooms.service";
-import { FactionType, type ProbableWaffleGameFoundEvent, ProbableWaffleLevels } from "@fuzzy-waddle/api-interfaces";
+import {
+  FactionType,
+  MatchmakingTeamConfiguration,
+  type ProbableWaffleGameFoundEvent,
+  ProbableWaffleLevels
+} from "@fuzzy-waddle/api-interfaces";
 import { type IMatchmakingService } from "./matchmaking.service.interface";
 import { environment } from "../../../../../environments/environment";
 import type { MatchmakingLevel } from "./matchmaking-level";
@@ -28,6 +33,7 @@ export class MatchmakingService implements IMatchmakingService {
     this.matchmakingOptions = {
       factionType: this.lastPlayedFactionType,
       nrOfPlayers: firstNrOfPlayersOption,
+      teamConfiguration: MatchmakingTeamConfiguration.FreeForAll,
       levels: this.levels
     };
     this.nrOfPlayersChanged(firstNrOfPlayersOption);
@@ -116,11 +122,85 @@ export class MatchmakingService implements IMatchmakingService {
 
   nrOfPlayersChanged(nr: number) {
     this.matchmakingOptions.nrOfPlayers = nr;
+    // Reset to FFA if invalid team configuration for this player count
+    if (!this.isTeamConfigurationValidForPlayerCount(this.matchmakingOptions.teamConfiguration, nr)) {
+      this.matchmakingOptions.teamConfiguration = MatchmakingTeamConfiguration.FreeForAll;
+    }
+    this.updateMapAvailability();
+  }
+
+  teamConfigurationChanged(teamConfig: MatchmakingTeamConfiguration) {
+    this.matchmakingOptions.teamConfiguration = teamConfig;
+    this.updateMapAvailability();
+  }
+
+  /**
+   * Update map availability based on current player count and team configuration
+   */
+  private updateMapAvailability() {
     const nrOfPlayers = this.matchmakingOptions.nrOfPlayers;
     this.matchmakingOptions.levels.forEach((level) => {
       level.enabled = level.nrOfPlayers === nrOfPlayers;
       level.checked = level.enabled;
     });
+  }
+
+  /**
+   * Get available team configurations for the current player count
+   */
+  get availableTeamConfigurations(): MatchmakingTeamConfiguration[] {
+    const nrOfPlayers = this.matchmakingOptions.nrOfPlayers;
+    const configs: MatchmakingTeamConfiguration[] = [MatchmakingTeamConfiguration.FreeForAll];
+
+    // Only add team modes for valid player counts
+    if (nrOfPlayers === 4) {
+      configs.push(MatchmakingTeamConfiguration.TwoVsTwo);
+    } else if (nrOfPlayers === 6) {
+      configs.push(MatchmakingTeamConfiguration.ThreeVsThree);
+    } else if (nrOfPlayers === 8) {
+      configs.push(MatchmakingTeamConfiguration.FourVsFour);
+    }
+
+    return configs;
+  }
+
+  /**
+   * Check if a team configuration is valid for a given player count
+   */
+  private isTeamConfigurationValidForPlayerCount(
+    teamConfig: MatchmakingTeamConfiguration,
+    playerCount: number
+  ): boolean {
+    switch (teamConfig) {
+      case MatchmakingTeamConfiguration.FreeForAll:
+        return true; // Always valid
+      case MatchmakingTeamConfiguration.TwoVsTwo:
+        return playerCount === 4;
+      case MatchmakingTeamConfiguration.ThreeVsThree:
+        return playerCount === 6;
+      case MatchmakingTeamConfiguration.FourVsFour:
+        return playerCount === 8;
+      default:
+        return false;
+    }
+  }
+
+  /**
+   * Get display name for team configuration
+   */
+  getTeamConfigurationName(config: MatchmakingTeamConfiguration): string {
+    switch (config) {
+      case MatchmakingTeamConfiguration.FreeForAll:
+        return "Free For All";
+      case MatchmakingTeamConfiguration.TwoVsTwo:
+        return "2v2";
+      case MatchmakingTeamConfiguration.ThreeVsThree:
+        return "3v3";
+      case MatchmakingTeamConfiguration.FourVsFour:
+        return "4v4";
+      default:
+        return config;
+    }
   }
 
   checkedChanged(level: MatchmakingLevel) {
