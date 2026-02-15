@@ -1,18 +1,7 @@
 import type { OnInit } from "@angular/core";
 import { Component, inject } from "@angular/core";
-import { type PlayerNumber, type PlayerStateActionType, ProbableWafflePlayer } from "@fuzzy-waddle/api-interfaces";
-import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
-
-export type PlayerSummary = {
-  playerNumber: PlayerNumber;
-  name: string;
-  unit_produced: number;
-  unit_killed: number;
-  building_constructed: number;
-  building_destroyed: number;
-  resource_collected: number;
-  resource_spent: number;
-};
+import { type PlayerScoreData, STANDARD_METRICS } from "@fuzzy-waddle/api-interfaces";
+import { ScoreDataService } from "../../../services/score-data.service";
 
 @Component({
   selector: "probable-waffle-score-table",
@@ -20,32 +9,15 @@ export type PlayerSummary = {
   styleUrls: ["./score-table.component.scss"]
 })
 export class ScoreTableComponent implements OnInit {
-  private readonly gameInstanceClientService = inject(GameInstanceClientService);
-  protected players: PlayerSummary[] = [];
+  private readonly scoreDataService = inject(ScoreDataService);
+  protected players: PlayerScoreData[] = [];
+  protected readonly METRICS = STANDARD_METRICS;
 
   ngOnInit(): void {
-    if (!this.gameInstanceClientService.gameInstance) return;
-    const players = this.gameInstanceClientService.gameInstance.players;
-    this.players = players.map((p) => {
-      return {
-        playerNumber: p.playerController.data.playerDefinition!.player.playerNumber,
-        name: p.playerController.data.playerDefinition!.player.playerName!,
-        unit_produced: this.getTotalForPlayer(p, "unit_produced"),
-        unit_killed: this.getTotalForPlayer(p, "unit_killed"),
-        building_constructed: this.getTotalForPlayer(p, "building_constructed"),
-        building_destroyed: this.getTotalForPlayer(p, "building_destroyed"),
-        resource_collected: this.getTotalForPlayer(p, "resource_collected"),
-        resource_spent: this.getTotalForPlayer(p, "resource_spent")
-      } satisfies PlayerSummary;
-    });
+    this.players = this.scoreDataService.getSortedPlayersByScore();
   }
 
-  private getTotalForPlayer(player: ProbableWafflePlayer, type: PlayerStateActionType): number {
-    const summary = player.playerState.data.summary;
-    return summary.filter((s) => s.type === type).length;
-  }
-
-  protected getTotal(type: PlayerStateActionType): number {
-    return this.players.map((p: PlayerSummary) => p[type]).reduce((a, b) => a + b, 0);
+  protected getMetric(player: PlayerScoreData, metricKey: string): number {
+    return player.metrics[metricKey] || 0;
   }
 }

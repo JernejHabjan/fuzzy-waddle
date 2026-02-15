@@ -2,36 +2,35 @@
   <thead>
     <tr>
       <th>Player Name</th>
+      <th>Result</th>
+      <th>Final Score</th>
       <th>Units Produced</th>
       <th>Units Killed</th>
-      <th>Buildings Constructed</th>
+      <th>Units Lost</th>
+      <th>Buildings Built</th>
       <th>Buildings Destroyed</th>
-      <th>Resources Collected</th>
-      <th>Resources Spent</th>
+      <th>Buildings Lost</th>
+      <th>Max Army</th>
     </tr>
   </thead>
   <tbody>
     @for (player of players; track player.playerNumber) {
-      <tr>
-        <td>{{ player.name }}</td>
-        <td>{{ player.unit_produced }}</td>
-        <td>{{ player.unit_killed }}</td>
-        <td>{{ player.building_constructed }}</td>
-        <td>{{ player.building_destroyed }}</td>
-        <td>{{ player.resource_collected }}</td>
-        <td>{{ player.resource_spent }}</td>
+      <tr [class.winner]="player.gameResult === 'win'" [class.loser]="player.gameResult === 'loss'">
+        <td>{{ player.playerName }}</td>
+        <td>
+          <span [class]="'result-badge result-' + player.gameResult">
+            {{ player.gameResult.toUpperCase() }}
+          </span>
+        </td>
+        <td><strong>{{ player.finalScore }}</strong></td>
+        <td>{{ getMetric(player, METRICS.UNITS_PRODUCED) }}</td>
+        <td>{{ getMetric(player, METRICS.UNITS_KILLED) }}</td>
+        <td>{{ getMetric(player, METRICS.UNITS_LOST) }}</td>
+        <td>{{ getMetric(player, METRICS.BUILDINGS_CONSTRUCTED) }}</td>
+        <td>{{ getMetric(player, METRICS.BUILDINGS_DESTROYED) }}</td>
+        <td>{{ getMetric(player, METRICS.BUILDINGS_LOST) }}</td>
+        <td>{{ getMetric(player, METRICS.MAX_ARMY_SIZE) }}</td>
       </tr>
     }
   </tbody>
-  <tfoot>
-    <tr>
-      <td>Total</td>
-      <td>{{ getTotal("unit_produced") }}</td>
-      <td>{{ getTotal("unit_killed") }}</td>
-      <td>{{ getTotal("building_constructed") }}</td>
-      <td>{{ getTotal("building_destroyed") }}</td>
-      <td>{{ getTotal("resource_collected") }}</td>
-      <td>{{ getTotal("resource_spent") }}</td>
-    </tr>
-  </tfoot>
 </table>
