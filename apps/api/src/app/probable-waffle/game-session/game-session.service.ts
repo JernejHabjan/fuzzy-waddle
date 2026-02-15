@@ -1,8 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { PlayerScoreDto } from "./dto/submit-scores.dto";
 import { SupabaseProviderService } from "../../../core/supabase-provider/supabase-provider.service";
-import { Database } from "@fuzzy-waddle/api-interfaces";
+import { Database, PlayerScoreDto } from "@fuzzy-waddle/api-interfaces";
 
 @Injectable()
 export class GameSessionService {

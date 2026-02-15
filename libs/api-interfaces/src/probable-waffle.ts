@@ -5,6 +5,7 @@ export * from "./lib/communicators/probable-waffle/construction-state-enum";
 export * from "./lib/user-info/probable-waffle/user-info";
 export * from "./lib/game-instance/probable-waffle/game-instance";
 export * from "./lib/game-instance/probable-waffle/game-mode";
+export * from "./lib/game-instance/probable-waffle/player-scores.dto";
 export * from "./lib/game-instance/probable-waffle/game-state";
 export * from "./lib/game-instance/probable-waffle/player";
 export * from "./lib/game-instance/probable-waffle/game-instance-medatada";

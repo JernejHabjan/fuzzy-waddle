@@ -3,8 +3,8 @@ import { SupabaseAuthGuard } from "../../../auth/guards/supabase-auth.guard";
 import { CurrentUser } from "../../../auth/current-user";
 import type { AuthUser } from "@supabase/supabase-js";
 import { GameSessionService } from "./game-session.service";
-import { SubmitScoresDto } from "./dto/submit-scores.dto";
-import { MatchHistoryQueryDto } from "./dto/match-history.dto";
+import { MatchHistoryQueryDto } from "./match-history.dto";
+import { SubmitScoresDto } from "./submit-scores.dto";
 
 @Controller("probable-waffle/game-session")
 export class GameSessionController {

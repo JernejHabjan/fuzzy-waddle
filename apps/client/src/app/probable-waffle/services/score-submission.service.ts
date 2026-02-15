@@ -2,14 +2,18 @@ import { inject, Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Observable, of } from "rxjs";
 import { catchError, map } from "rxjs/operators";
-import type { PlayerScoreData, ProbableWaffleGameInstance } from "@fuzzy-waddle/api-interfaces";
+import {
+  type PlayerScoreData,
+  type ProbableWaffleGameInstance,
+  ProbableWafflePlayerType
+} from "@fuzzy-waddle/api-interfaces";
+import { environment } from "../../../environments/environment";
 
 @Injectable({
   providedIn: "root"
 })
 export class ScoreSubmissionService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = "http://localhost:3000/api"; // TODO: Use environment config
 
   /**
    * Check if current user is the last human player to exit
@@ -18,7 +22,7 @@ export class ScoreSubmissionService {
   isLastHumanPlayer(gameInstance: ProbableWaffleGameInstance, currentUserId: string): boolean {
     // Get all human players
     const humanPlayers = gameInstance.players.filter(
-      (p) => p.playerController.data.playerDefinition?.playerType !== 1 // 1 = AI
+      (p) => p.playerController.data.playerDefinition?.playerType !== ProbableWafflePlayerType.AI
     );
 
     if (humanPlayers.length === 0) return false;
@@ -42,7 +46,7 @@ export class ScoreSubmissionService {
     playerScores: PlayerScoreData[],
     submittedByUserId: string
   ): Observable<{ success: boolean; message: string }> {
-    const url = `${this.apiUrl}/probable-waffle/game-session/submit-scores`;
+    const url = environment.api + "api/probable-waffle/game-session/submit-scores";
 
     const payload = {
       gameInstanceId,
