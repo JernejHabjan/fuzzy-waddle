@@ -15,7 +15,6 @@ import Tree7 from "../../../prefabs/outside/foliage/trees/resources/Tree7";
 import Owlery from "../../../prefabs/buildings/skaduwee/Owlery";
 import InfantryInn from "../../../prefabs/buildings/skaduwee/InfantryInn";
 import AnkGuard from "../../../prefabs/buildings/tivara/AnkGuard";
-import Temple from "../../../prefabs/buildings/tivara/Temple";
 import SkaduweeWorkerMale from "../../../prefabs/characters/skaduwee/skaduwee-worker/skaduwee-worker-male/SkaduweeWorkerMale";
 import SkaduweeWorkerFemale from "../../../prefabs/characters/skaduwee/skaduwee-worker/skaduwee-worker-female/SkaduweeWorkerFemale";
 import SkaduweeRangedFemale from "../../../prefabs/characters/skaduwee/skaduwee-ranged-female/SkaduweeRangedFemale";
@@ -152,10 +151,6 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // ankGuard
     const ankGuard = new AnkGuard(this, 0, 336);
     this.add.existing(ankGuard);
-
-    // temple
-    const temple = new Temple(this, -160, 464);
-    this.add.existing(temple);
 
     // skaduweeWorkerMale
     const skaduweeWorkerMale = new SkaduweeWorkerMale(this, 1472, 816);
@@ -882,10 +877,6 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // ankGuard (components)
     const ankGuardEditorOwner = new EditorOwner(ankGuard);
     ankGuardEditorOwner.owner_id = "1";
-
-    // temple (components)
-    const templeEditorOwner = new EditorOwner(temple);
-    templeEditorOwner.owner_id = "1";
 
     // skaduweeWorkerMale (components)
     const skaduweeWorkerMaleEditorOwner = new EditorOwner(skaduweeWorkerMale);

@@ -371,16 +371,16 @@ export class BasePlanner {
 
     switch (needType) {
       case NeedType.Housing:
-        candidates = techTree.getHousingBuildingsExcludingMain(this.factionType);
+        candidates = techTree.getHousingBuildingsExcludingMain();
         break;
       case NeedType.Production:
-        candidates = techTree.getProductionBuildingsExcludingMain(this.factionType);
+        candidates = techTree.getProductionBuildingsExcludingMain();
         break;
       case NeedType.Defense:
-        candidates = techTree.getDefensiveBuildingsExcludingMain(this.factionType);
+        candidates = techTree.getDefensiveBuildingsExcludingMain();
         break;
       case NeedType.Gathering:
-        candidates = techTree.getResourceGatheringBuildingsExcludingMain(this.factionType);
+        candidates = techTree.getResourceGatheringBuildingsExcludingMain();
         if (resourceType) {
           // Filter by resource type
           candidates = candidates.filter((c) => {
@@ -395,16 +395,24 @@ export class BasePlanner {
     // Filter out tech-locked buildings
     const unlockedCandidates = candidates.filter((candidate) => {
       const validation = this.productionValidator.validate(candidate);
-      // allow queue if it can be queued or if it's not tech/building blocked (eg. just resource blocked)
-      return validation.canQueue || (!validation.techBlocked && !validation.buildingPrereqBlocked);
+      // allow queue if it can be queued or if it's only blocked by resources/supply (not tech/building prereqs)
+      const hasObjectOrResearchPrereqs =
+        validation.prereqs.objectNames.length > 0 || validation.prereqs.researchTypes.length > 0;
+      return validation.canQueue || !hasObjectOrResearchPrereqs;
     });
 
     if (unlockedCandidates.length === 0) {
       // consider scheduling prerequisites
       if (candidates.length > 0) {
         const validation = this.productionValidator.validate(candidates[0]!);
-        if (validation.prereqs.length > 0) {
-          this.productionValidator.schedulePrerequisites(validation.prereqs, candidates[0]!);
+        const hasPrereqs =
+          validation.prereqs.objectNames.length > 0 ||
+          validation.prereqs.researchTypes.length > 0 ||
+          Object.keys(validation.prereqs.resources).length > 0 ||
+          (validation.prereqs.supply !== null && validation.prereqs.supply > 0);
+
+        if (hasPrereqs) {
+          this.productionValidator.schedulePrerequisites(validation, candidates[0]!);
         }
       }
       return null;

@@ -1,6 +1,5 @@
-import type { ResearchType } from './research-type';
-import type { SpellType } from '../combat/spell-type';
-import type { ObjectNames, ResourceType } from '@fuzzy-waddle/api-interfaces';
+import type { SpellType } from "../combat/spell-type";
+import { type ObjectNames, ResearchType, type ResourceType } from "@fuzzy-waddle/api-interfaces";
 
 export interface ResearchData {
   type: ResearchType;
@@ -11,4 +10,5 @@ export interface ResearchData {
   researchTime: number; // ms
   icon: { key: string; frame: string };
   requiredBuilding?: ObjectNames; // building that provides this research
+  refundFactor: number; // factor for calculating refunds when research is cancelled (e.g., 0.5 = 50% refund)
 }

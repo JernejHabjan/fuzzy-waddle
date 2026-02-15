@@ -270,10 +270,6 @@ export class AudioService {
    * @param duration Duration of fade in milliseconds
    */
   fadeOut(sound: Phaser.Sound.BaseSound, duration: number = 1000): void {
-    if (!("volume" in sound)) return;
-
-    const currentVolume = (sound as Phaser.Sound.WebAudioSound | Phaser.Sound.HTML5AudioSound).volume;
-
     this.scene.tweens.add({
       targets: sound,
       volume: 0,

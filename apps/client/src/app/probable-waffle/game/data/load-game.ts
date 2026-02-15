@@ -4,7 +4,7 @@ import { SceneActorCreator } from "../world/services/scene-actor-creator";
 import GameProbableWaffleScene from "../world/scenes/GameProbableWaffleScene";
 import { SelectionGroupsComponent } from "../player/human-controller/selection-groups.component";
 import { CameraMovementHandler } from "../player/human-controller/cameraMovementHandler";
-import { type ActorId, ProbableWafflePlayerType } from "@fuzzy-waddle/api-interfaces";
+import { type ActorId, ProbableWafflePlayerType, ResearchType } from "@fuzzy-waddle/api-interfaces";
 import { AiPlayerHandler } from "../player/ai-controller/ai-player-handler";
 import { emitEventSelection, getSelectableSceneChildren } from "./scene-data";
 import { getActorComponent } from "./actor-component";
@@ -12,7 +12,6 @@ import { SelectableComponent } from "../entity/components/selectable-component";
 import { IdComponent } from "../entity/components/id-component";
 import { AoeZoneManager } from "../entity/systems/aoe-zone-manager";
 import { TechTreeService } from "./tech-tree/tech-tree.service";
-import { ResearchType } from "../entity/components/research/research-type";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class LoadGame {

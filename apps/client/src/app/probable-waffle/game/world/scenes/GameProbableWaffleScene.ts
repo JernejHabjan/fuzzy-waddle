@@ -63,7 +63,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     const actorIndex = new ActorIndexSystem(this);
 
     this.sceneGameData.components.push(
-      this.newCameraMovementHandler(),
+      this.getCameraMovementHandler(),
       new SingleSelectionHandler(this, hud, this.tilemap),
       new TilemapComponent(this.tilemap),
       new BuildingCursor(this),
@@ -71,7 +71,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
       new SelectionTabHandler(this)
     );
     this.sceneGameData.services.push(
-      this.newRandomService(),
+      this.getRandomService(),
       new NavigationService(this, this.tilemap),
       new AudioService(this),
       new PlayerActionsHandler(this, hud),
@@ -105,7 +105,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     }
   }
 
-  private newCameraMovementHandler(): CameraMovementHandler {
+  private getCameraMovementHandler(): CameraMovementHandler {
     const gameSettings = GameSettings.loadFromLocalStorage();
     return new CameraMovementHandler(this, {
       cameraEdgeMovementSpeed: 30,
@@ -114,8 +114,10 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     });
   }
 
-  private newRandomService(): RandomService {
-    // Initialize RandomService with seed from game config for deterministic randomness
+  /**
+   * Initialize RandomService with seed from game config for deterministic randomness
+   */
+  private getRandomService(): RandomService {
     const seed = this.sys.game.config.seed?.[0];
     if (!seed) throw new Error("Game seed is not defined");
     return new RandomService(seed);

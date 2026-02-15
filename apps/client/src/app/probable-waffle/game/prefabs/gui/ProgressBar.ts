@@ -65,6 +65,8 @@ export default class ProgressBar extends Phaser.GameObjects.Container {
   private readonly maxWidth = 72;
   private productionProgressSubscription?: Subscription;
   private researchProgressSubscription?: Subscription;
+  private researchCancelledSubscription?: Subscription;
+  private researchCompletedSubscription?: Subscription;
 
   setProgressBar(actor: Phaser.GameObjects.GameObject) {
     // Clean up any existing subscriptions
@@ -111,6 +113,16 @@ export default class ProgressBar extends Phaser.GameObjects.Container {
       this.handleProgressUpdate(progress);
     });
 
+    // Subscribe to research cancelled - hide progress bar
+    this.researchCancelledSubscription = researchComponent.researchCancelled.subscribe(() => {
+      this.visible = false;
+    });
+
+    // Subscribe to research completed - hide progress bar
+    this.researchCompletedSubscription = researchComponent.researchCompleted.subscribe(() => {
+      this.visible = false;
+    });
+
     // Set initial state based on whether research is ongoing
     if (researchComponent.currentResearchType) {
       const progress = researchComponent.getResearchProgress(researchComponent.currentResearchType);
@@ -128,6 +140,8 @@ export default class ProgressBar extends Phaser.GameObjects.Container {
   cleanActor() {
     this.productionProgressSubscription?.unsubscribe();
     this.researchProgressSubscription?.unsubscribe();
+    this.researchCancelledSubscription?.unsubscribe();
+    this.researchCompletedSubscription?.unsubscribe();
     this.visible = false;
   }
 

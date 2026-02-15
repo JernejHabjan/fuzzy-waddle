@@ -1,5 +1,4 @@
 import { EventEmitter } from "@angular/core";
-import { ResearchType } from "./research-type";
 import { researchDefinitions } from "./research-definitions";
 import { OwnerComponent } from "../owner-component";
 import { HealthComponent } from "../combat/components/health-component";
@@ -8,7 +7,7 @@ import { emitResource, getPlayer } from "../../../data/scene-data";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
 import { onObjectReady } from "../../../data/game-object-helper";
-import type { ResearchComponentData } from "@fuzzy-waddle/api-interfaces";
+import type { ResearchComponentData, ResearchType } from "@fuzzy-waddle/api-interfaces";
 import Phaser from "phaser";
 
 export interface ResearchDefinition {
@@ -150,11 +149,11 @@ export class ResearchComponent {
       return false;
     }
 
-    // Calculate refund (50% based on progress)
+    // Calculate refund based on progress and refund factor from research data
     const totalTime = researchData.researchTime;
     const remainingTime = this.currentResearch.remainingTime;
     const progress = (totalTime - remainingTime) / totalTime;
-    const refundFactor = 0.5 * (1 - progress); // 50% base refund, reduced by progress
+    const refundFactor = researchData.refundFactor * (1 - progress);
 
     const refundedResources: Partial<Record<string, number>> = {};
     for (const [resourceType, amount] of Object.entries(researchData.cost)) {

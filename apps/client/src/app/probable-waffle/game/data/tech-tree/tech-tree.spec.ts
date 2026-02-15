@@ -80,7 +80,7 @@ describe("TechTree", () => {
 
     it("should get prerequisites for locked actors", () => {
       const testPlayerNumber = 1;
-      const prereqs = service.getPrerequisites(testPlayerNumber, FactionType.Tivara, ObjectNames.AnkGuard);
+      const prereqs = service.getPrerequisites(testPlayerNumber, ObjectNames.AnkGuard);
 
       // Should return a Set
       expect(prereqs).toBeInstanceOf(Set);
@@ -90,14 +90,14 @@ describe("TechTree", () => {
     });
 
     it("should get definition from tech tree", () => {
-      const definition = service.getDefinition(FactionType.Tivara, ObjectNames.TivaraWorker);
+      const definition = service.getDefinition(ObjectNames.TivaraWorker);
 
       expect(definition).toBeDefined();
       expect(definition?.components?.builder).toBeDefined();
     });
 
     it("should get producible units for buildings", () => {
-      const producible = service.getProducibleUnits(FactionType.Tivara, ObjectNames.Sandhold);
+      const producible = service.getProducibleUnits(ObjectNames.Sandhold);
 
       expect(producible).toContain(ObjectNames.TivaraWorker);
     });

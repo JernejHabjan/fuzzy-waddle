@@ -4,7 +4,7 @@
 
 /* START-USER-IMPORTS */
 import { IconHelper } from "./IconHelper";
-import type { ResourceType, ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { type ResourceType, type ObjectNames, ResearchType } from "@fuzzy-waddle/api-interfaces";
 import ActorInfoLabel from "./ActorInfoLabel";
 import ActorDetails from "./ActorDetails";
 import Resource from "./Resource";
@@ -12,7 +12,6 @@ import { getCurrentPlayerNumber, getPlayer } from "../../../data/scene-data";
 import { pwActorDefinitions } from "../../definitions/actor-definitions";
 import type { TooltipInfo } from "./tooltip-info";
 import { researchDefinitions } from "../../../entity/components/research/research-definitions";
-import type { ResearchType } from "../../../entity/components/research/research-type";
 /* END-USER-IMPORTS */
 
 export default class ActorDefinitionTooltip extends Phaser.GameObjects.Container {
@@ -284,17 +283,18 @@ export default class ActorDefinitionTooltip extends Phaser.GameObjects.Container
     }
 
     // requirements
-    const unmetRequirements = tooltipInfo.unmetRequirements ?? [];
-    if (unmetRequirements.length > 0) {
+    const unmetRequirements = tooltipInfo.unmetRequirements;
+    const allRequirements = [...(unmetRequirements?.objectNames ?? []), ...(unmetRequirements?.researchTypes ?? [])];
+    if (allRequirements.length) {
       this.requirements.visible = true;
       this.requirements.y = yOffset;
       yOffset += this.requirements.height + this.sectionPadding;
       this.requirementsList.visible = true;
       this.requirementsList.y = yOffset;
-      const requirementNames = unmetRequirements
+      const requirementNames = allRequirements
         .map((req) => {
           // Check if it's an ObjectNames (actor/building) or ResearchType
-          if (typeof req === "string" && req in pwActorDefinitions) {
+          if (req in pwActorDefinitions) {
             return pwActorDefinitions[req as ObjectNames]?.components?.info?.name ?? req;
           } else {
             // It's a ResearchType
@@ -303,7 +303,7 @@ export default class ActorDefinitionTooltip extends Phaser.GameObjects.Container
         })
         .join(", ");
       this.requirementsList.setText(requirementNames);
-      yOffset += this.requirementsList.height;
+      yOffset += this.requirementsList.height * 2;
     } else {
       this.requirements.visible = false;
       this.requirementsList.visible = false;

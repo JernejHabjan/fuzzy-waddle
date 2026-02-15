@@ -4,20 +4,20 @@ import { getActorComponent } from "../../../data/actor-component";
 import { ProductionComponent } from "../../../entity/components/production/production-component";
 import { ResearchComponent } from "../../../entity/components/research/research-component";
 import { SpellComponent } from "../../../entity/components/combat/components/spell-component";
-import { ResearchType } from "../../../entity/components/research/research-type";
 import { researchDefinitions } from "../../../entity/components/research/research-definitions";
 import { SpellType } from "../../../entity/components/combat/spell-type";
+import { ResearchType } from "@fuzzy-waddle/api-interfaces";
 
 /**
  * TechProgressManager
- * - Drives timing & execution of tech / upgrade tasks.
- * - Uses simple pacing: only one active upgrade, spaced by cooldown & resource threshold.
- * - Now includes spell research for AI players.
+ * - Drives timing & execution of research tasks (ResearchComponent-based).
+ * - Uses simple pacing: only one active research at a time, spaced by cooldown & resource threshold.
+ * - Currently prioritizes spell research based on AI's unit composition.
+ * - Extensible to support other research types in the future.
  */
 export class TechProgressManager {
-  private readonly techCooldownMs = 12000;
-  private readonly minResourcesForTech = 600;
   private readonly researchCooldownMs = 5000;
+  private readonly minResourcesForResearch = 600;
   private lastResearchAttemptAt = 0;
 
   constructor(
@@ -25,60 +25,16 @@ export class TechProgressManager {
     private readonly log: (...args: any[]) => void
   ) {}
 
-  shouldPursueNext(): boolean {
-    const now = Date.now();
-    if (this.blackboard.activeTechUpgrades > 0) return false;
-    if (now - this.blackboard.lastTechUpgradeAt < this.techCooldownMs) return false;
-    return this.blackboard.getTotalResources() >= this.minResourcesForTech;
-  }
-
-  haveIdleUpgradeBuilding(): boolean {
-    if (!this.blackboard.upgradeBuilding) return false;
-    const prod = getActorComponent(this.blackboard.upgradeBuilding, ProductionComponent);
-    return !!prod && prod.isIdle;
-  }
-
-  hasResourcesForNext(): boolean {
-    return this.blackboard.getTotalResources() >= this.minResourcesForTech;
-  }
-
-  startNext(): State {
-    if (!this.blackboard.upgradeBuilding) return State.FAILED;
-    const prod = getActorComponent(this.blackboard.upgradeBuilding, ProductionComponent);
-    if (!prod || !prod.isIdle) return State.FAILED;
-
-    return State.FAILED; // Placeholder until actual upgrade definitions are available
-
-    // Placeholder "tech upgrade" job (could map to actual upgrade definitions)
-    // todo const fakeUpgrade = {
-    // todo   actorName: "TechUpgrade_Lv1",
-    // todo   costData: { resources: { wood: 200, stone: 150 } }
-    // todo } satisfies ProductionQueueItem;
-    // todo
-    // todo try {
-    // todo   prod.startProduction(fakeUpgrade);
-    // todo   this.blackboard.activeTechUpgrades += 1;
-    // todo   this.blackboard.lastTechUpgradeAt = Date.now();
-    // todo   this.log("Started tech upgrade:", fakeUpgrade.actorName);
-    // todo   // Simulate completion callback (placeholder - should hook into production completion event)
-    // todo   setTimeout(() => {
-    // todo     this.blackboard.activeTechUpgrades = Math.max(0, this.blackboard.activeTechUpgrades - 1);
-    // todo   }, 4000);
-    // todo   return State.SUCCEEDED;
-    // todo } catch {
-    // todo   return State.FAILED;
-    // todo }
-  }
-
-  // ========== Spell Research Methods ==========
+  // ========== Research Methods ==========
 
   /**
-   * Check if we should attempt spell research
+   * Check if we should attempt research (currently prioritizes spell research)
    */
-  shouldResearchSpells(): boolean {
+  shouldPursueResearch(): boolean {
     const now = Date.now();
     if (now - this.lastResearchAttemptAt < this.researchCooldownMs) return false;
-    // Check if we have spell casters
+    if (this.blackboard.getTotalResources() < this.minResourcesForResearch) return false;
+    // Check if we have spell casters (can be extended for other research types)
     return this.hasSpellCasters();
   }
 
@@ -140,9 +96,9 @@ export class TechProgressManager {
   }
 
   /**
-   * Attempt to start spell research
+   * Attempt to start research (currently prioritizes spell research based on unit composition)
    */
-  tryStartSpellResearch(): State {
+  tryStartResearch(): State {
     this.lastResearchAttemptAt = Date.now();
 
     const researchType = this.getNextResearchPriority();
@@ -159,7 +115,7 @@ export class TechProgressManager {
         if (canStart) {
           const success = researchComponent.startResearch(researchType);
           if (success) {
-            this.log("AI started spell research:", researchType);
+            this.log("AI started research:", researchType);
             return State.SUCCEEDED;
           }
         }

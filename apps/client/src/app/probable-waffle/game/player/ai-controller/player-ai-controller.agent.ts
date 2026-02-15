@@ -152,14 +152,27 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     if (!queue || queue.length === 0) return;
     const next = queue[0];
     if (!next) return;
+
+    // Extract the target object name from the prereq
+    const targetObjectName =
+      next.preRequirement.prereqs.objectNames.length > 0
+        ? next.preRequirement.prereqs.objectNames[0]
+        : null;
+
+    if (!targetObjectName) {
+      // Handle research, supply, or resource prerequisites (not implemented yet)
+      queue.shift(); // Remove for now
+      return;
+    }
+
     // Heuristic: attempt construct via assignBuilding if building definition exists; else attempt production.
-    const isBuilding = pwActorDefinitions[next.objectName]?.components?.production; // buildings have production component usually
-    if (next.type === "construct" && isBuilding) {
-      const state = this.assignBuilding(next.objectName as ObjectNames);
+    const isBuilding = pwActorDefinitions[targetObjectName]?.components?.production; // buildings have production component usually
+    if (next.type === "prefab" && isBuilding) {
+      const state = this.assignBuilding(targetObjectName);
       if (state === State.SUCCEEDED) queue.shift();
       return;
     }
-    if (next.type === "produce" || !isBuilding) {
+    if (next.type === "prefab" || !isBuilding) {
       // Attempt to queue production in any idle training building
       const prodBuilding = this.blackboard.trainingBuildings.find((b) => {
         const prod = getActorComponent(b, ProductionComponent);
@@ -167,29 +180,24 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       });
       if (prodBuilding) {
         const prod = getActorComponent(prodBuilding, ProductionComponent);
-        const def = pwActorDefinitions[next.objectName as ObjectNames];
+        const def = pwActorDefinitions[targetObjectName];
         const costData = def?.components?.productionCost;
         if (prod && costData) {
-          const validation = this.productionValidator.validate(next.objectName as ObjectNames);
+          const validation = this.productionValidator.validate(targetObjectName);
           if (validation && !validation.canQueue) {
             // If still blocked (e.g., nested prereqs) schedule them (avoid infinite loop by checking difference)
-            if (validation.techBlocked && validation.prereqs.length > 0) {
-              this.productionValidator.schedulePrerequisites(validation.prereqs, next.objectName as ObjectNames);
-            }
-            // Handle building prerequisites
-            if (
-              validation.buildingPrereqBlocked &&
-              validation.missingBuildings &&
-              validation.missingBuildings.length > 0
-            ) {
-              this.productionValidator.schedulePrerequisites(
-                validation.missingBuildings,
-                next.objectName as ObjectNames
-              );
+            const hasPrereqs =
+              validation.prereqs.objectNames.length > 0 ||
+              validation.prereqs.researchTypes.length > 0 ||
+              Object.keys(validation.prereqs.resources).length > 0 ||
+              (validation.prereqs.supply !== null && validation.prereqs.supply > 0);
+
+            if (hasPrereqs) {
+              this.productionValidator.schedulePrerequisites(validation, targetObjectName);
             }
             return;
           }
-          prod.startProduction({ actorName: next.objectName as ObjectNames, costData });
+          prod.startProduction({ actorName: targetObjectName, costData });
           queue.shift();
         }
       }
@@ -459,11 +467,13 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     if (this.productionValidator) {
       const validation = this.productionValidator.validate(workerName);
       if (!validation.canQueue) {
-        if (validation.techBlocked && validation.prereqs.length > 0) {
+        const hasPrereqs = validation.prereqs.objectNames.length > 0 || validation.prereqs.researchTypes.length > 0;
+
+        if (hasPrereqs) {
           this.logDebugInfo(
-            `[Production] Worker training blocked by tech requirements. Scheduling ${validation.prereqs.length} prerequisites`
+            `[Production] Worker training blocked by prerequisites. Scheduling: ${JSON.stringify(validation.prereqs)}`
           );
-          this.productionValidator.schedulePrerequisites(validation.prereqs, workerName);
+          this.productionValidator.schedulePrerequisites(validation, workerName);
         }
         return State.FAILED;
       }
@@ -837,17 +847,14 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   async RedirectWorkersToScarceResource(): Promise<State> {
     return this.logisticsManager.redirectToScarce();
   }
-  ShouldPursueNextTech(): boolean {
-    return this.techManager.shouldPursueNext();
+  ShouldPursueResearch(): boolean {
+    return this.techManager.shouldPursueResearch();
   }
-  HaveIdleUpgradeBuilding(): boolean {
-    return this.techManager.haveIdleUpgradeBuilding();
+  IsResearchInProgress(): boolean {
+    return this.techManager.isResearchInProgress();
   }
-  HasResourcesForNextTech(): boolean {
-    return this.techManager.hasResourcesForNext();
-  }
-  StartNextTechUpgrade(): State {
-    return this.techManager.startNext();
+  TryStartResearch(): State {
+    return this.techManager.tryStartResearch();
   }
   ShouldReanalyzeMap(): boolean {
     if (!this.mapAnalyzer) return true;

@@ -312,17 +312,10 @@ export class AoeZoneManager {
       if (visual.animSprite) {
         visual.animSprite.setAlpha(0.7 * alpha);
       }
-      // Fade out the looping sound using AudioService
-      if (
-        visual.loopingSound &&
-        visual.loopingSound !== null &&
-        !visual.loopingSound.isPaused &&
-        this.audioService &&
-        "volume" in visual.loopingSound
-      ) {
+      // Fade out the looping sound
+      if (visual.loopingSound && !visual.loopingSound.isPaused && this.audioService) {
         // Only start fading if we haven't already started
-        const soundWithVolume = visual.loopingSound as Phaser.Sound.WebAudioSound | Phaser.Sound.HTML5AudioSound;
-        if (soundWithVolume.volume > 0.01) {
+        if (visual.loopingSound.volume > 0.01) {
           this.audioService.fadeOut(visual.loopingSound, fadeThreshold);
         }
       }

@@ -190,21 +190,6 @@
             "y": 336
         },
         {
-            "prefabId": "b425696b-ec20-4f72-9aaf-a4f2aaf3e65b",
-            "id": "02812b72-2a7e-49fa-b81b-3edaf9e35854",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "temple",
-            "components": [
-                "EditorOwner"
-            ],
-            "EditorOwner.owner_id": "1",
-            "x": -160,
-            "y": 464
-        },
-        {
             "prefabId": "26b5870f-03c5-447e-8a4a-b1142f25ac1c",
             "id": "51378d6e-7b97-410e-aa18-0462e8abbb64",
             "unlock": [

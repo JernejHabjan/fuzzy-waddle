@@ -2,8 +2,7 @@ import { SpellType } from "./spell-type";
 import type { SpellData } from "./spell-data";
 import { ProjectileType } from "./projectile-type";
 import { AnimationType } from "../animation/animation-type";
-import { DamageType, ObjectNames, SpellTargetType } from "@fuzzy-waddle/api-interfaces";
-import { ResearchType } from "../research/research-type";
+import { DamageType, ObjectNames, ResearchType, SpellTargetType } from "@fuzzy-waddle/api-interfaces";
 
 export const spellDefinitions: Record<SpellType, SpellData> = {
   // ========== SNOWSTORM - AOE Freeze + DoT ==========

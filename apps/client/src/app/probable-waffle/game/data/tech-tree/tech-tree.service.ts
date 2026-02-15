@@ -1,48 +1,27 @@
-// Runtime service that stores per-faction tech graphs & per-player unlock state.
+// Runtime service that stores unified tech graph & per-player unlock state.
 import type { TechTreeGraph } from "./tech-tree-graph";
-import { FactionType, ObjectNames, type PlayerNumber } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames, type PlayerNumber, PreRequirement, ResearchType } from "@fuzzy-waddle/api-interfaces";
 import { TechTreeBuilder } from "./tech-tree.builder";
 import { getCanonicalActorNameCached } from "./canonical-actor-name";
 import { BuilderComponent } from "../../entity/components/construction/builder-component";
 import { environment } from "../../../../../environments/environment";
-import { ResearchType } from "../../entity/components/research/research-type";
+import { shouldConsiderActorUnlocked } from "./actor-unlock-utils";
 
 export class TechTreeService {
-  private readonly graphs: Record<FactionType, TechTreeGraph>;
+  private readonly graph: TechTreeGraph;
   // Per-player unlock tracking (keyed by player number)
   private readonly playerUnlocks = new Map<number, Set<ObjectNames>>();
   // Per-player research tracking (keyed by player number)
   private readonly playerResearch = new Map<number, Set<ResearchType>>();
 
   constructor() {
-    this.graphs = TechTreeBuilder.build();
+    this.graph = TechTreeBuilder.build();
     // Validate tech tree structure on initialization
     if (!environment.production) {
-      this.validateAllTechTrees();
-    }
-  }
-
-  /**
-   * Validate tech trees for all factions and log any errors.
-   * This ensures the tech tree is properly constructed from definitions.
-   */
-  private validateAllTechTrees() {
-    const allErrors: string[] = [];
-
-    // Iterate over the actual faction values (not enum keys)
-    const factions = [FactionType.Tivara, FactionType.Skaduwee];
-
-    factions.forEach((faction) => {
-      const errors = this.validateTechTree(faction);
+      const errors = this.validateTechTree();
       if (errors.length > 0) {
-        allErrors.push(`[${FactionType[faction]}]`, ...errors);
+        console.warn("[TechTreeService] Tech tree validation errors:", errors);
       }
-    });
-
-    if (allErrors.length > 0) {
-      console.warn("[TechTreeService] Tech tree validation errors:", allErrors);
-    } else {
-      // console.log("[TechTreeService] Tech tree validation passed for all factions");
     }
   }
 
@@ -55,7 +34,7 @@ export class TechTreeService {
 
     existingActors.forEach((actor) => {
       const actorName = actor.name as ObjectNames;
-      if (actorName) {
+      if (actorName && shouldConsiderActorUnlocked(actor)) {
         // Use canonical name to group variants (e.g., TivaraWorkerMale -> TivaraWorker)
         const canonicalName = getCanonicalActorNameCached(actorName);
         unlocks.add(canonicalName);
@@ -68,6 +47,8 @@ export class TechTreeService {
   /**
    * Register an actor as unlocked for a player.
    * Called when an actor is created/spawned.
+   * Note: This should typically be called from ConstructionSiteComponent.finishConstruction
+   * to ensure buildings are only unlocked when finished, not when construction starts.
    */
   registerActorUnlock(playerNumber: PlayerNumber, actorName: ObjectNames) {
     let unlocks = this.playerUnlocks.get(playerNumber);
@@ -97,8 +78,8 @@ export class TechTreeService {
     }
   }
 
-  getGraph(faction: FactionType): TechTreeGraph | undefined {
-    return this.graphs[faction];
+  getGraph(): TechTreeGraph {
+    return this.graph;
   }
 
   isUnlocked(playerNumber: PlayerNumber, id: ObjectNames | string): boolean {
@@ -108,75 +89,102 @@ export class TechTreeService {
 
   /**
    * Get prerequisites for a target actor that are not yet unlocked.
-   * Returns a Set to avoid duplicates, and excludes the target itself.
+   * Returns both object and research prerequisites.
+   * @param playerNumber - The player to check unlocks for
+   * @param target - The actor to get prerequisites for
    */
-  getPrerequisites(playerNumber: PlayerNumber, faction: FactionType, target: ObjectNames): Set<ObjectNames> {
-    const graph = this.graphs[faction];
-    if (!graph) return new Set();
+  getPrerequisites(playerNumber: PlayerNumber, target: ObjectNames): PreRequirement {
+    const node = this.graph.nodes[target];
+    if (!node) throw new Error(`Tech tree node not found for ${target}`);
 
-    const node = graph.nodes[target];
-    if (!node) return new Set();
+    const neededObjects = new Set<ObjectNames>();
+    const neededResearch = new Set<ResearchType>();
+    const visitedObjects = new Set<ObjectNames>();
 
-    const needed = new Set<ObjectNames>();
-    const visited = new Set<ObjectNames>();
+    const visit = (objectName: ObjectNames) => {
+      if (visitedObjects.has(objectName)) return;
+      visitedObjects.add(objectName);
 
-    const visit = (id: ObjectNames) => {
-      if (visited.has(id)) return;
-      visited.add(id);
-
-      if (this.isUnlocked(playerNumber, id)) return;
-
-      const n = graph.nodes[id];
+      const n = this.graph.nodes[objectName];
       if (!n) return;
 
-      // Recursively visit prerequisites
-      for (const pre of n.prerequisites) {
-        visit(pre);
+      // Only skip if unlocked AND not the target itself
+      // We must always check the target's prerequisites, even if the target was built before
+      const isUnlocked = this.isUnlocked(playerNumber, objectName);
+      if (isUnlocked && objectName !== target) {
+        return;
+      }
+
+      // Recursively visit object prerequisites
+      for (const prereqObject of n.prerequisites.prereqs.objectNames) {
+        visit(prereqObject);
+      }
+
+      // Collect research prerequisites
+      for (const prereqResearch of n.prerequisites.prereqs.researchTypes) {
+        if (!this.isResearched(playerNumber, prereqResearch)) {
+          neededResearch.add(prereqResearch);
+        }
       }
 
       // Add to needed if not unlocked and not the target itself
-      if (!this.isUnlocked(playerNumber, id) && id !== target) {
-        needed.add(id);
+      if (!isUnlocked && objectName !== target) {
+        neededObjects.add(objectName);
       }
     };
 
     visit(target);
-    return needed;
+
+    // Also check target's own research requirements
+    for (const prereqResearch of node.prerequisites.prereqs.researchTypes) {
+      if (!this.isResearched(playerNumber, prereqResearch)) {
+        neededResearch.add(prereqResearch);
+      }
+    }
+
+    return new PreRequirement({
+      objectNames: Array.from(neededObjects),
+      researchTypes: Array.from(neededResearch),
+      resources: {},
+      supply: null
+    });
   }
 
-  getNode(faction: FactionType, id: string) {
-    return this.graphs[faction]?.nodes[id];
+  getNode(id: ObjectNames) {
+    return this.graph.nodes[id];
   }
 
-  isAvailable(playerNumber: PlayerNumber, faction: FactionType, id: ObjectNames): boolean {
-    return this.isUnlocked(playerNumber, id) || this.getPrerequisites(playerNumber, faction, id).size === 0;
+  isAvailable(playerNumber: PlayerNumber, id: ObjectNames): boolean {
+    if (this.isUnlocked(playerNumber, id)) return true;
+    const prereqs = this.getPrerequisites(playerNumber, id);
+    return prereqs.canProduce;
   }
 
   /**
    * Get the full definition for an actor from the tech tree.
    * This provides access to embedded definitions for validation.
    */
-  getDefinition(faction: FactionType, id: ObjectNames) {
-    return this.graphs[faction]?.nodes[id]?.definition;
+  getDefinition(id: ObjectNames) {
+    return this.graph.nodes[id]?.definition;
   }
 
   /**
    * Get all units that can be produced by a specific building.
    */
-  getProducibleUnits(faction: FactionType, buildingId: ObjectNames): ObjectNames[] {
-    return this.graphs[faction]?.nodes[buildingId]?.produces || [];
+  getProducibleUnits(buildingId: ObjectNames): ObjectNames[] {
+    return this.graph.nodes[buildingId]?.produces || [];
   }
 
-  isDefensiveBuilding(faction: FactionType, buildingId: ObjectNames): boolean {
-    const node = this.graphs[faction]?.nodes[buildingId];
+  isDefensiveBuilding(buildingId: ObjectNames): boolean {
+    const node = this.graph.nodes[buildingId];
     if (!node) return false;
 
     const attackComponent = node.definition?.components?.attack;
     return attackComponent !== undefined;
   }
 
-  isHousingBuilding(faction: FactionType, buildingId: ObjectNames): boolean {
-    const node = this.graphs[faction]?.nodes[buildingId];
+  isHousingBuilding(buildingId: ObjectNames): boolean {
+    const node = this.graph.nodes[buildingId];
     if (!node) return false;
 
     const housingComponent = node.definition?.components?.housing;
@@ -186,8 +194,8 @@ export class TechTreeService {
   /**
    * Get all buildings that can be constructed by a specific unit.
    */
-  getConstructableBuildings(faction: FactionType, unitId: ObjectNames): ObjectNames[] {
-    const node = this.graphs[faction]?.nodes[unitId];
+  getConstructableBuildings(unitId: ObjectNames): ObjectNames[] {
+    const node = this.graph.nodes[unitId];
     if (!node) return [];
 
     // If we already have a pre-computed list from the graph, return it
@@ -203,14 +211,11 @@ export class TechTreeService {
   }
 
   /**
-   * Get all housing buildings for a faction.
+   * Get all housing buildings.
    * Returns array of ObjectNames that have housing components.
    */
-  getHousingBuildingsExcludingMain(faction: FactionType): ObjectNames[] {
-    const graph = this.graphs[faction];
-    if (!graph) return [];
-
-    return Object.entries(graph.nodes)
+  getHousingBuildingsExcludingMain(): ObjectNames[] {
+    return Object.entries(this.graph.nodes)
       .filter(
         ([, node]) => node.definition.components?.housing !== undefined && node.definition.meta?.isMainBuilding !== true
       )
@@ -218,13 +223,10 @@ export class TechTreeService {
   }
 
   /**
-   * Get all defensive buildings (have attack component) for a faction.
+   * Get all defensive buildings (have attack component).
    */
-  getDefensiveBuildingsExcludingMain(faction: FactionType): ObjectNames[] {
-    const graph = this.graphs[faction];
-    if (!graph) return [];
-
-    return Object.entries(graph.nodes)
+  getDefensiveBuildingsExcludingMain(): ObjectNames[] {
+    return Object.entries(this.graph.nodes)
       .filter(
         ([, node]) =>
           node.definition.components?.attack !== undefined &&
@@ -234,11 +236,8 @@ export class TechTreeService {
       .map(([id]) => id as ObjectNames);
   }
 
-  getResourceGatheringBuildingsExcludingMain(faction: FactionType): ObjectNames[] {
-    const graph = this.graphs[faction];
-    if (!graph) return [];
-
-    return Object.entries(graph.nodes)
+  getResourceGatheringBuildingsExcludingMain(): ObjectNames[] {
+    return Object.entries(this.graph.nodes)
       .filter(
         ([, node]) =>
           node.definition.components?.resourceDrain !== undefined && node.definition.meta?.isMainBuilding !== true
@@ -249,11 +248,8 @@ export class TechTreeService {
   /**
    * Get all ranged units (have attack component with ranged property).
    */
-  getRangedInfantryUnits(faction: FactionType, filterFrom?: ObjectNames[]): ObjectNames[] {
-    const graph = this.graphs[faction];
-    if (!graph) return [];
-
-    const allRanged = Object.entries(graph.nodes)
+  getRangedInfantryUnits(filterFrom?: ObjectNames[]): ObjectNames[] {
+    const allRanged = Object.entries(this.graph.nodes)
       .filter(([, node]) => {
         const gatherer = node.definition.components?.gatherer;
         if (gatherer) return false; // Exclude gatherers
@@ -272,11 +268,8 @@ export class TechTreeService {
   /**
    * Get all melee units (have attack component with no range or range 0).
    */
-  getMeleeInfantryUnits(faction: FactionType, filterFrom?: ObjectNames[]): ObjectNames[] {
-    const graph = this.graphs[faction];
-    if (!graph) return [];
-
-    const allMelee = Object.entries(graph.nodes)
+  getMeleeInfantryUnits(filterFrom?: ObjectNames[]): ObjectNames[] {
+    const allMelee = Object.entries(this.graph.nodes)
       .filter(([, node]) => {
         const gatherer = node.definition.components?.gatherer;
         if (gatherer) return false; // Exclude gatherers
@@ -295,11 +288,8 @@ export class TechTreeService {
   /**
    * Get production buildings (have production component).
    */
-  getProductionBuildingsExcludingMain(faction: FactionType): ObjectNames[] {
-    const graph = this.graphs[faction];
-    if (!graph) return [];
-
-    return Object.entries(graph.nodes)
+  getProductionBuildingsExcludingMain(): ObjectNames[] {
+    return Object.entries(this.graph.nodes)
       .filter(
         ([, node]) =>
           node.definition.components?.production !== undefined && node.definition.meta?.isMainBuilding !== true
@@ -311,38 +301,40 @@ export class TechTreeService {
    * Validate that the tech tree is properly structured.
    * Returns any validation errors found.
    */
-  validateTechTree(faction: FactionType): string[] {
+  validateTechTree(): string[] {
     const errors: string[] = [];
-    const graph = this.graphs[faction];
-    if (!graph) {
-      errors.push(`No graph found for faction ${faction}`);
-      return errors;
-    }
 
     // Validate each node
-    Object.entries(graph.nodes).forEach(([id, node]) => {
+    Object.entries(this.graph.nodes).forEach(([id, node]) => {
       // Check that definition exists
       if (!node.definition) {
         errors.push(`Node ${id} missing definition`);
       }
 
       // Check that all prerequisites exist in the graph
-      node.prerequisites.forEach((prereq) => {
-        if (!graph.nodes[prereq]) {
+      node.prerequisites.prereqs.objectNames.forEach((prereq) => {
+        if (!this.graph.nodes[prereq]) {
           errors.push(`Node ${id} has prerequisite ${prereq} that doesn't exist in graph`);
+        }
+      });
+
+      node.prerequisites.prereqs.researchTypes.forEach((researchType) => {
+        // Research types are not nodes, so we just check that they are valid enum values
+        if (!Object.values(ResearchType).includes(researchType)) {
+          errors.push(`Node ${id} has prerequisite research ${researchType} that is not a valid ResearchType`);
         }
       });
 
       // Check that all produces targets exist
       node.produces.forEach((producible) => {
-        if (!graph.nodes[producible]) {
+        if (!this.graph.nodes[producible]) {
           errors.push(`Node ${id} produces ${producible} that doesn't exist in graph`);
         }
       });
 
       // Check that all constructs targets exist
       node.constructs.forEach((constructable) => {
-        if (!graph.nodes[constructable]) {
+        if (!this.graph.nodes[constructable]) {
           errors.push(`Node ${id} constructs ${constructable} that doesn't exist in graph`);
         }
       });
@@ -377,8 +369,8 @@ export class TechTreeService {
       if (node.definition.components?.requirements) {
         const requirements = node.definition.components.requirements.actors || [];
         requirements.forEach((req) => {
-          if (!node.prerequisites.includes(req)) {
-            errors.push(`Node ${id} has requirement ${req} but it's not in prerequisites`);
+          if (!node.prerequisites.prereqs.objectNames.includes(req as ObjectNames)) {
+            errors.push(`Node ${id} definition requires ${req} but it's not in node.prerequisites`);
           }
         });
       }

@@ -2,6 +2,9 @@ import type { Vector3Simple } from "../../game/vector";
 import { ResourceType } from "../../probable-waffle/resource-type-definition";
 import { ObjectNames } from "./object-names";
 import type { ActorId } from "../player/player";
+import type { PrerequisiteType } from "./prereque-type";
+import type { StatusEffectData } from "../../probable-waffle/status-effect";
+import type { PreRequirement } from "./pre-requirement";
 
 export interface VisionComponentData {
   visibilityByCurrentPlayer?: boolean;
@@ -142,8 +145,8 @@ export interface PlayerAiBlackboardData {
 
     prereqQueue?: Array<{
       id: string;
-      type: "produce" | "construct";
-      objectName: ObjectNames;
+      type: PrerequisiteType;
+      preRequirement: PreRequirement;
       insertedAt: number;
     }>;
   };
@@ -214,7 +217,7 @@ export interface ConvertibleComponentData {
 }
 
 export interface StatusEffectComponentData {
-  activeEffects?: import('../../probable-waffle/status-effect').StatusEffectData[];
+  activeEffects?: StatusEffectData[];
 }
 
 export interface SpellComponentData {

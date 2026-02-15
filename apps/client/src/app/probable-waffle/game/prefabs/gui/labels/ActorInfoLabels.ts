@@ -247,7 +247,13 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
     const currentResearch = researchComponent.currentResearchType;
 
     if (!currentResearch) {
-      // No active research, don't show anything
+      // No active research, hide the icon if it was showing research
+      const icon = this.icons[0];
+      if (icon) {
+        // Check if this icon was showing research (has iconIndex: 0 but no actorObjectId)
+        // We need to hide it when research completes
+        this.visibilityChanged.next(false);
+      }
       return;
     }
 
@@ -259,7 +265,8 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
     if (icon) {
       icon.setActorIcon(
         {
-          iconIndex: 0
+          iconIndex: 0,
+          researchType: currentResearch
         },
         researchData.icon.key,
         researchData.icon.frame,
@@ -314,6 +321,7 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
       const sub = icon.onClick.subscribe((action) => {
         this.tryHandleIconClickActor(action);
         this.tryHandleIconClickProduction(action);
+        this.tryHandleIconClickResearch(action);
       });
       this.clickSubscriptions.push(sub);
     });
@@ -343,6 +351,18 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
     const item = productionComponent.itemsFromAllQueues[action.definition.iconIndex];
     if (!item) return;
     productionComponent.cancelProduction(item);
+  }
+
+  private tryHandleIconClickResearch(action: ActorIconClickAction) {
+    if (action.definition.researchType === undefined) return;
+    const actor = this.actor;
+    if (!actor) return;
+    const researchComponent = getActorComponent(actor, ResearchComponent);
+    if (!researchComponent) return;
+    // Cancel the research if it's currently in progress
+    if (researchComponent.currentResearchType === action.definition.researchType) {
+      researchComponent.cancelResearch();
+    }
   }
   /* END-USER-CODE */
 }
