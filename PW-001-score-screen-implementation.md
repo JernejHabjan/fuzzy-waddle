@@ -31,7 +31,453 @@ Instead of a wide table with ~30 columns, we use a **3-table structure**:
 - ✅ Excellent query performance (materialized view pivots data into columns)
 - ✅ Easy to extend for new game modes or features
 
-**See** `DBMs/DATABASE_DESIGN_SCORES.md` for complete design documentation.
+**See detailed sections below for complete design documentation.**
+
+---
+
+## Database Design: Detailed Architecture
+
+### Why Hybrid Normalized Design?
+
+**Problem with Wide Table Approach:**
+- ❌ Need ALTER TABLE to add new metrics (downtime)
+- ❌ Sparse data if metrics don't apply to all game modes
+- ❌ No metadata about what each metric means
+- ❌ Hard to make metrics configurable
+- ❌ Every player record has ALL columns even if unused
+
+**Solution: 3-Table Hybrid Design**
+
+```
+probable_waffle_player_scores (Core - 13 columns)
+├── id, game_session_id, user_id, player_number
+├── player_name, player_type, team_number, faction_type
+├── game_result, eliminated, eliminated_at
+└── final_score, created_at
+
+probable_waffle_score_metric_types (Catalog)
+├── id, metric_key, metric_name, metric_category
+├── description, display_order, is_active
+└── 20 pre-populated metrics
+
+probable_waffle_player_score_metrics (EAV Values)
+├── id, player_score_id (FK), metric_type_id (FK)
+└── metric_value, created_at
+
+PLUS: Materialized View (Performance)
+└── probable_waffle_player_scores_full
+    └── Pivots EAV data into columns for fast queries
+```
+
+### Benefits of This Design
+
+✅ **Add New Metrics Without Schema Changes**
+```sql
+-- No ALTER TABLE needed!
+INSERT INTO probable_waffle_score_metric_types 
+VALUES ('workers_trained', 'Workers Trained', 'economy', ...);
+-- Immediately usable
+```
+
+✅ **Only Store Non-Zero Metrics** - Saves space, no sparse data
+
+✅ **Rich Metadata** - Each metric has name, category, description, display order
+
+✅ **Performance** - Materialized view provides columnar access like wide table
+
+✅ **Self-Documenting** - Query metric catalog to see what's tracked
+
+### Schema Details
+
+**Table 1: probable_waffle_player_scores (Core)**
+```sql
+- id BIGSERIAL PRIMARY KEY
+- game_session_id UUID FK to sessions
+- user_id UUID FK to profiles (NULL for AI)
+- player_number INT
+- player_name TEXT
+- player_type TEXT (Human/AI)
+- team_number INT
+- faction_type TEXT
+- game_result TEXT (win/loss/tie/quit)
+- eliminated BOOLEAN
+- eliminated_at TIMESTAMP
+- final_score INT
+- created_at TIMESTAMP
+```
+
+**Table 2: probable_waffle_score_metric_types (Catalog)**
+```sql
+- id SERIAL PRIMARY KEY
+- metric_key TEXT UNIQUE (e.g., 'units_produced')
+- metric_name TEXT (e.g., 'Units Produced')
+- metric_category TEXT (units/buildings/resources/combat/economy)
+- description TEXT
+- display_order INT
+- is_active BOOLEAN
+- created_at TIMESTAMP
+```
+
+**Pre-populated with 20 Metrics:**
+- Units: produced, killed, lost
+- Buildings: constructed, destroyed, lost
+- Resources: collected/spent/final (minerals, stone, wood)
+- Combat: damage_dealt, damage_received, healing_done
+- Economy: max_army_size, max_building_count
+
+**Table 3: probable_waffle_player_score_metrics (Values)**
+```sql
+- id BIGSERIAL PRIMARY KEY
+- player_score_id BIGINT FK to player_scores
+- metric_type_id INT FK to metric_types
+- metric_value BIGINT
+- created_at TIMESTAMP
+- UNIQUE (player_score_id, metric_type_id)
+```
+
+**Materialized View: probable_waffle_player_scores_full**
+```sql
+-- Pivots EAV data into columns
+SELECT ps.*, 
+  MAX(CASE WHEN mt.metric_key = 'units_produced' THEN m.metric_value END) as units_produced,
+  MAX(CASE WHEN mt.metric_key = 'units_killed' THEN m.metric_value END) as units_killed,
+  -- ... all 20 metrics as columns
+FROM probable_waffle_player_scores ps
+LEFT JOIN probable_waffle_player_score_metrics m ON ps.id = m.player_score_id
+LEFT JOIN probable_waffle_score_metric_types mt ON m.metric_type_id = mt.id
+GROUP BY ps.id;
+```
+
+**Helper Functions:**
+```sql
+-- Get metrics as JSON
+CREATE FUNCTION get_player_score_metrics(player_score_id BIGINT)
+RETURNS JSONB;
+
+-- Upsert single metric
+CREATE FUNCTION upsert_player_score_metric(
+  player_score_id BIGINT, 
+  metric_key TEXT, 
+  metric_value BIGINT
+) RETURNS VOID;
+
+-- Refresh materialized view
+CREATE FUNCTION refresh_probable_waffle_player_scores_full()
+RETURNS VOID;
+```
+
+### Usage Examples
+
+**Insert Player Score:**
+```sql
+-- 1. Insert core data
+INSERT INTO probable_waffle_player_scores 
+  (game_session_id, user_id, player_number, player_name, ...)
+VALUES ('uuid', 'user-uuid', 1, 'Player1', ...)
+RETURNING id; -- Returns: 123
+
+-- 2. Batch insert metrics
+INSERT INTO probable_waffle_player_score_metrics 
+  (player_score_id, metric_type_id, metric_value)
+SELECT 123, mt.id, v.value
+FROM (VALUES 
+  ('units_produced', 50),
+  ('units_killed', 30),
+  ('damage_dealt', 5000)
+) AS v(metric_key, value)
+JOIN probable_waffle_score_metric_types mt ON mt.metric_key = v.metric_key;
+
+-- 3. Refresh materialized view
+SELECT refresh_probable_waffle_player_scores_full();
+```
+
+**Query All Metrics:**
+```sql
+-- Use materialized view (fast)
+SELECT * FROM probable_waffle_player_scores_full
+WHERE game_session_id = 'uuid'
+ORDER BY final_score DESC;
+```
+
+**Query By Category:**
+```sql
+-- Get all combat metrics
+SELECT mt.metric_name, m.metric_value
+FROM probable_waffle_player_score_metrics m
+JOIN probable_waffle_score_metric_types mt ON m.metric_type_id = mt.id
+WHERE m.player_score_id = 123
+  AND mt.metric_category = 'combat'
+ORDER BY mt.display_order;
+```
+
+---
+
+## Multiplayer Score Submission: Last Human Player Strategy
+
+### Problem
+In multiplayer games, multiple human players see the score screen when they exit. We need **exactly one submission** to avoid duplicates.
+
+### Solution: Last Human Player Submits
+
+**Strategy:**
+1. Track `human_player_count` when game session created
+2. Each client checks if all other humans have `leftOrKilled = true`
+3. Only the last human player submits scores to API
+4. API is idempotent (safe for race conditions)
+
+### Implementation Flow
+
+**1. Game Session Creation**
+```typescript
+// API: When matchmaking/lobby creates game
+const humanPlayers = gameInstance.players.filter(
+  p => p.playerType === ProbableWafflePlayerType.Human
+);
+
+await gameSessionService.createSession({
+  gameInstanceId: uuid,
+  gameType: 'Matchmaking',
+  mapId: 'map_1',
+  createdByUserId: hostUserId,
+  humanPlayerCount: humanPlayers.length  // Track total humans
+});
+```
+
+**Database stores:**
+```sql
+- human_player_count = 3 (for example)
+- scores_submitted = false
+- scores_submitted_by = null
+```
+
+**2. Players Exit Game**
+```typescript
+// Each player's client tracks:
+player.playerController.data.leftOrKilled = true;
+```
+
+**3. Score Screen Detection**
+```typescript
+// Client: score-submission.service.ts
+isLastHumanPlayer(gameInstance, currentUserId): boolean {
+  const humanPlayers = gameInstance.players.filter(
+    p => p.playerType === ProbableWafflePlayerType.Human
+  );
+  
+  const otherHumans = humanPlayers.filter(
+    p => p.userId !== currentUserId
+  );
+  
+  // Check if all others have left/been eliminated
+  return otherHumans.every(p => p.leftOrKilled === true);
+}
+```
+
+**4. Conditional Submission**
+```typescript
+// Client: score-screen.component.ts
+async ngOnInit() {
+  const gameInstance = this.gameInstanceClientService.gameInstance;
+  const currentUserId = this.authService.getCurrentUserId();
+  
+  // Only submit if:
+  // 1. Game is online (has gameInstanceId)
+  // 2. Current user is the last human player
+  if (gameInstance.gameInstanceMetadata.data.gameInstanceId) {
+    const isLast = this.scoreSubmissionService.isLastHumanPlayer(
+      gameInstance, 
+      currentUserId
+    );
+    
+    if (isLast) {
+      console.log('Last human player - submitting scores');
+      await this.scoreSubmissionService.submitScores(
+        gameInstance.gameInstanceMetadata.data.gameInstanceId,
+        this.getAllPlayerScores(),
+        currentUserId
+      );
+    } else {
+      console.log('Not last player - skipping submission');
+    }
+  }
+}
+```
+
+**5. API Idempotency**
+```typescript
+// API: game-session.controller.ts
+async submitScores(dto: SubmitScoresDto) {
+  const session = await this.gameSessionService.getSession(dto.gameInstanceId);
+  
+  // Already submitted? Return success without error
+  if (session.scores_submitted) {
+    console.log('Scores already submitted - idempotent return');
+    return { success: true, message: 'Scores already recorded' };
+  }
+  
+  // First submission - process it
+  await this.db.transaction(async (trx) => {
+    // Insert all player scores + metrics
+    for (const playerScore of dto.playerScores) {
+      const scoreId = await insertPlayerScore(playerScore);
+      await insertPlayerMetrics(scoreId, playerScore.metrics);
+    }
+    
+    // Mark as submitted
+    await trx('probable_waffle_game_sessions')
+      .where({ game_instance_id: dto.gameInstanceId })
+      .update({
+        scores_submitted: true,
+        scores_submitted_by: dto.submittedByUserId,
+        scores_submitted_at: new Date(),
+        session_state: 'Completed',
+        ended_at: new Date()
+      });
+  });
+  
+  return { success: true };
+}
+```
+
+### Edge Cases Handled
+
+**Simultaneous Exit:** Both players think they're "last"
+- Both submit to API
+- First succeeds, second returns success (idempotent)
+- No duplicate data ✅
+
+**Last Player Crashes:** Scores not submitted
+- Game doesn't appear in match history (graceful degradation)
+- OR: Backend cron job detects abandoned games
+
+**Offline Game:** No server connection
+- No `gameInstanceId` exists
+- Client skips submission entirely
+- Score screen works locally ✅
+
+**Single Player vs AI:** Always submits
+- `human_player_count` = 1
+- Player is always "last"
+- Submits normally with AI scores included ✅
+
+### Multiplayer Flow Example (4 Players)
+
+```
+1. Game Starts → human_player_count = 4
+
+2. Player A exits → checks, not last, skips submission
+3. Player B exits → checks, not last, skips submission
+4. Player C exits → checks, not last, skips submission
+5. Player D exits → checks, IS LAST, SUBMITS all 4 players' scores ✅
+
+6. Database updated → scores_submitted = true
+7. All 4 players → can view match in history
+```
+
+---
+
+## Match History Feature
+
+### Database View
+```sql
+CREATE VIEW probable_waffle_match_history AS
+SELECT 
+  gs.*,
+  -- Aggregate all players into JSON
+  (SELECT json_agg(
+    json_build_object(
+      'player_number', ps.player_number,
+      'player_name', ps.player_name,
+      'game_result', ps.game_result,
+      'final_score', ps.final_score,
+      'is_current_user', ps.user_id = auth.uid()
+    )
+  ) FROM probable_waffle_player_scores ps
+   WHERE ps.game_session_id = gs.id) as players,
+  -- Current user's result
+  (SELECT game_result FROM probable_waffle_player_scores 
+   WHERE game_session_id = gs.id AND user_id = auth.uid()) as user_result
+FROM probable_waffle_game_sessions gs
+WHERE 
+  scores_submitted = true  -- Only completed games
+  AND EXISTS(  -- Only games user participated in
+    SELECT 1 FROM probable_waffle_player_scores 
+    WHERE game_session_id = gs.id AND user_id = auth.uid()
+  )
+ORDER BY ended_at DESC;
+```
+
+### API Endpoints
+
+**1. Get Match History (Paginated)**
+```
+GET /api/probable-waffle/game-session/match-history?limit=20&offset=0
+```
+
+**Response:**
+```json
+{
+  "matches": [
+    {
+      "id": "uuid-1",
+      "game_type": "Matchmaking",
+      "map_id": "map_1",
+      "started_at": "2026-02-15T10:00:00Z",
+      "ended_at": "2026-02-15T10:35:00Z",
+      "total_duration_seconds": 2100,
+      "human_player_count": 4,
+      "user_result": "win",
+      "players": [...]
+    }
+  ],
+  "total": 45,
+  "limit": 20,
+  "offset": 0
+}
+```
+
+**2. Get Match Details**
+```
+GET /api/probable-waffle/game-session/:gameInstanceId/details
+```
+
+**Response:**
+```json
+{
+  "gameSession": {...},
+  "playerScores": [
+    {
+      "playerNumber": 1,
+      "playerName": "Player1",
+      "gameResult": "win",
+      "finalScore": 1500,
+      "metrics": {
+        "units_produced": 50,
+        "damage_dealt": 5000,
+        ...
+      }
+    }
+  ]
+}
+```
+
+### UI Flow
+
+1. **User Opens Match History Page**
+   - GET /match-history
+   - Display table: Date, Map, Duration, Result, Players
+
+2. **User Clicks Match**
+   - Navigate to `/match-details/:gameInstanceId`
+   - GET /details
+   - Display using existing ScoreScreenComponent
+
+3. **Features:**
+   - List all past games (paginated)
+   - Sort by date (newest first)
+   - Filter by result (Win/Loss/Tie)
+   - Click to see detailed breakdown
+   - "Back to Match History" button
 
 ---
 
