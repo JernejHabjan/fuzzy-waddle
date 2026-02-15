@@ -17,7 +17,8 @@ import { pwActorDefinitions } from "../../definitions/actor-definitions";
 import { HealthComponent } from "../../../entity/components/combat/components/health-component";
 import { AudioService } from "../../../world/services/audio.service";
 import { BuilderComponent } from "../../../entity/components/construction/builder-component";
-import { ObjectNames, ResearchType, ConstructionStateEnum } from "@fuzzy-waddle/api-interfaces";
+import type { PreRequirement, PreRequirementType } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames, ResearchType } from "@fuzzy-waddle/api-interfaces";
 import { getSceneComponent, getSceneService } from "../../../world/services/scene-component-helpers";
 import { BuildingCursor } from "../../../player/human-controller/building-cursor";
 import { ConstructionSiteComponent } from "../../../entity/components/construction/construction-site-component";
@@ -34,14 +35,12 @@ import { GathererComponent } from "../../../entity/components/resource/gatherer-
 import { getPrimarySelectedActor } from "../../../data/selection-helpers";
 import { ProductionValidator } from "../../../data/tech-tree/production-validator";
 import { findProductionBuildingWithLeastRemainingTime } from "../../../entity/components/production/production-helpers";
-import { shouldConsiderActorUnlocked } from "../../../data/tech-tree/actor-unlock-utils";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import {
   type ConstructableCategory,
   ConstructableDefinition
 } from "../../../entity/components/construction/constructable-category";
 import { SelectionTabHandler } from "../../../player/human-controller/selection-tab-handler";
-import type { PreRequirement, PreRequirementType } from "@fuzzy-waddle/api-interfaces";
 import { AssignProductionErrorCode } from "../../../entity/components/production/assign-production-error-code";
 import type { ActorActionSetup } from "./actor-action-setup";
 import { SpellComponent } from "../../../entity/components/combat/components/spell-component";

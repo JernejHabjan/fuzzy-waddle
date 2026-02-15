@@ -994,3 +994,7 @@ apps/client/src/app/probable-waffle/game/player/ai-controller/ai-behavior/tech-p
 ### Integration Fixes
 - [ ] **SpellComponent methods not called**: `setAutocast()`, `toggleAutocast()`, `getCooldownRemaining()` exist but unused
 - [ ] **Actor creation reuse**: Extract common code from `production-component.ts` for spell prefab spawning
+
+
+### Other fixes needed
+- [ ] Research component "overrides" the production queue in UI in ActorInfoLabels. Need to queue properly one after another.
