@@ -997,3 +997,8 @@ apps/client/src/app/probable-waffle/game/player/ai-controller/ai-behavior/tech-p
 ### Other fixes needed
 - [x] Research component "overrides" the production queue in UI in ActorInfoLabels. Need to queue properly one after another. There needs to be a queue component that both production and research feed into, and ActorInfoLabels subscribes to that instead of directly to production component. So queue should be removed from both components and this new queue component used.
   - **FIXED 2026-02-15**: Created DisplayQueueComponent that aggregates production and research queues into unified display. Research items now show first, followed by production items. ActorInfoLabels now subscribes to DisplayQueueComponent instead of directly to ProductionComponent and ResearchComponent.
+- [x] **VERIFIED 2026-02-15**: logistics-manager.ts does NOT need to include research in projected spend calculation
+  - Research costs are paid immediately when research starts (ResearchComponent.ts:122)
+  - Production costs can be unpaid (queued items), so they belong in projected spend
+  - Research has no queue and no planning mechanism, so no "projected" costs exist
+  - Current resource stockpiles already reflect any paid research costs
