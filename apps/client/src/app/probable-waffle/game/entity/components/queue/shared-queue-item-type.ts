@@ -1,4 +1,4 @@
-export enum QueueItemType {
+export enum SharedQueueItemType {
   Production = 'production',
   Research = 'research'
 }

@@ -17,9 +17,9 @@ import HudProbableWaffle from "../../../world/scenes/hud-scenes/HudProbableWaffl
 import type { ProductionQueueItem } from "../../../entity/components/production/game-object";
 import type { ActorIconClickAction } from "./actor-icon-click-action";
 import { ResearchComponent } from "../../../entity/components/research/research-component";
-import { DisplayQueueComponent } from "../../../entity/components/queue/display-queue-component";
-import { QueueItemType } from "../../../entity/components/queue/queue-item-type";
-import type { UnifiedQueueItem } from "../../../entity/components/queue/unified-queue-item";
+import { SharedQueueComponent } from "../../../entity/components/queue/shared-queue-component";
+import { SharedQueueItemType } from "../../../entity/components/queue/shared-queue-item-type";
+import type { SharedQueueItem } from "../../../entity/components/queue/shared-queue-item";
 /* END-USER-IMPORTS */
 
 export default class ActorInfoLabels extends Phaser.GameObjects.Container {
@@ -126,12 +126,9 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
   private queueChangedSubscription?: Subscription;
   private clickSubscriptions: Subscription[] = [];
   private actor?: Phaser.GameObjects.GameObject;
-  private displayQueueComponent?: DisplayQueueComponent;
 
   cleanActor() {
     this.queueChangedSubscription?.unsubscribe();
-    this.displayQueueComponent?.clear();
-    this.displayQueueComponent = undefined;
     this.visible = false;
     this.actor = undefined;
   }
@@ -150,30 +147,21 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
     this.actor = actor;
     // Clean up any existing subscriptions
     this.queueChangedSubscription?.unsubscribe();
-    this.displayQueueComponent?.clear();
 
-    // Create or reuse DisplayQueueComponent
-    if (!this.displayQueueComponent) {
-      this.displayQueueComponent = new DisplayQueueComponent(actor);
+    // Get the SharedQueueComponent that was registered by ProductionComponent/ResearchComponent
+    const sharedQueue = getActorComponent(actor, SharedQueueComponent);
+    if (sharedQueue) {
+      // Subscribe to unified queue changes
+      this.queueChangedSubscription = sharedQueue.queueChangedObservable.subscribe((items) => {
+        this.handleQueueUpdate(items);
+      });
+
+      // Initial display
+      this.handleQueueUpdate(sharedQueue.items);
     }
-
-    // Set production and research components for the display queue to observe
-    const productionComponent = getActorComponent(actor, ProductionComponent);
-    const researchComponent = getActorComponent(actor, ResearchComponent);
-
-    this.displayQueueComponent.setProductionComponent(productionComponent);
-    this.displayQueueComponent.setResearchComponent(researchComponent);
-
-    // Subscribe to unified queue changes
-    this.queueChangedSubscription = this.displayQueueComponent.queueChangedObservable.subscribe((items) => {
-      this.handleQueueUpdate(items);
-    });
-
-    // Initial display
-    this.handleQueueUpdate(this.displayQueueComponent.items);
   }
 
-  private handleQueueUpdate(items: UnifiedQueueItem[]) {
+  private handleQueueUpdate(items: SharedQueueItem[]) {
     const actor = this.actor;
     if (!actor) return;
 
@@ -194,7 +182,7 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
       const item = items[index];
       if (item) {
         // Set icon based on queue item type
-        if (item.type === QueueItemType.Research) {
+        if (item.type === SharedQueueItemType.Research) {
           icon.setActorIcon(
             {
               iconIndex: index,
@@ -204,7 +192,7 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
             item.iconData.frame,
             item.iconData.origin ?? { x: 0.5, y: 0.5 }
           );
-        } else if (item.type === QueueItemType.Production) {
+        } else if (item.type === SharedQueueItemType.Production) {
           icon.setActorIcon(
             {
               iconIndex: index
@@ -294,12 +282,13 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
     const actor = this.actor;
     if (!actor) return;
 
-    // Get the unified queue item at this index
-    const queueItem = this.displayQueueComponent?.items[action.definition.iconIndex];
+    // Get the unified queue item at this index from SharedQueueComponent
+    const sharedQueue = getActorComponent(actor, SharedQueueComponent);
+    const queueItem = sharedQueue?.items[action.definition.iconIndex];
     if (!queueItem) return;
 
     // Only handle production items
-    if (queueItem.type !== QueueItemType.Production) return;
+    if (queueItem.type !== SharedQueueItemType.Production) return;
     if (!queueItem.productionData) return;
 
     const productionComponent = getActorComponent(actor, ProductionComponent);
@@ -313,12 +302,13 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
     const actor = this.actor;
     if (!actor) return;
 
-    // Get the unified queue item at this index
-    const queueItem = this.displayQueueComponent?.items[action.definition.iconIndex];
+    // Get the unified queue item at this index from SharedQueueComponent
+    const sharedQueue = getActorComponent(actor, SharedQueueComponent);
+    const queueItem = sharedQueue?.items[action.definition.iconIndex];
     if (!queueItem) return;
 
     // Only handle research items
-    if (queueItem.type !== QueueItemType.Research) return;
+    if (queueItem.type !== SharedQueueItemType.Research) return;
     if (!queueItem.researchData) return;
 
     const researchComponent = getActorComponent(actor, ResearchComponent);

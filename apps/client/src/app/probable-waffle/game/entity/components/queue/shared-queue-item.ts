@@ -1,9 +1,9 @@
 import type { ResearchType } from "@fuzzy-waddle/api-interfaces";
 import type { ProductionQueueItem } from "../production/game-object";
-import { QueueItemType } from "./queue-item-type";
+import { SharedQueueItemType } from "./shared-queue-item-type";
 
-export interface UnifiedQueueItem {
-  type: QueueItemType;
+export interface SharedQueueItem {
+  type: SharedQueueItemType;
   id: string; // Unique identifier for this queue item
   iconData: {
     key: string;

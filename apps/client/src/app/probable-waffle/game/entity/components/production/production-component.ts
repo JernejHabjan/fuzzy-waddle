@@ -2,7 +2,9 @@ import { PaymentType } from "./payment-type";
 import { ProductionQueue } from "./production-queue";
 import { OwnerComponent } from "../owner-component";
 import { getActorComponent } from "../../../data/actor-component";
+import { addActorComponent } from "../../../data/actor-data";
 import { emitResource, getCommunicator, getCurrentPlayerNumber, getPlayer } from "../../../data/scene-data";
+import { SharedQueueComponent } from "../queue/shared-queue-component";
 import {
   type ActorDefinition,
   ConstructionStateEnum,
@@ -65,6 +67,14 @@ export class ProductionComponent {
     this.ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
     this.navigationService = getSceneService(this.gameObject.scene, NavigationService)!;
     this.rallyPoint.init(this.gameObject);
+
+    // Create or get SharedQueueComponent and register this production component
+    let sharedQueue = getActorComponent(this.gameObject, SharedQueueComponent);
+    if (!sharedQueue) {
+      sharedQueue = new SharedQueueComponent(this.gameObject);
+      addActorComponent(this.gameObject, sharedQueue);
+    }
+    sharedQueue.registerProductionComponent(this);
   }
 
   get productionProgressObservable() {

@@ -1,21 +1,23 @@
 import { Subject, Subscription } from "rxjs";
-import type { UnifiedQueueItem } from "./unified-queue-item";
-import { QueueItemType } from "./queue-item-type";
-import type { ProductionComponent } from "../production/production-component";
-import type { ResearchComponent } from "../research/research-component";
+import type { SharedQueueItem } from "./shared-queue-item";
+import { SharedQueueItemType } from "./shared-queue-item-type";
+import { ProductionComponent } from "../production/production-component";
+import { ResearchComponent } from "../research/research-component";
 import { pwActorDefinitions } from "../../../prefabs/definitions/actor-definitions";
 import { researchDefinitions } from "../research/research-definitions";
+import { onObjectReady } from "../../../data/game-object-helper";
+import { getActorComponent } from "../../../data/actor-component";
 import Phaser from "phaser";
 
 /**
- * DisplayQueueComponent aggregates production and research queues
- * into a unified display queue for UI consumption.
+ * SharedQueueComponent aggregates production and research queues
+ * into a unified queue that represents all pending work for an actor.
  *
- * This component observes ProductionComponent and ResearchComponent
- * and combines their states into a single queue that ActorInfoLabels can subscribe to.
+ * This is a shared actor component that both ProductionComponent and ResearchComponent
+ * register with and update. It provides a single source of truth for queue state.
  */
-export class DisplayQueueComponent {
-  private queueChangedSubject = new Subject<UnifiedQueueItem[]>();
+export class SharedQueueComponent {
+  private queueChangedSubject = new Subject<SharedQueueItem[]>();
   private productionSubscription?: Subscription;
   private researchProgressSubscription?: Subscription;
   private researchStartedSubscription?: Subscription;
@@ -24,10 +26,30 @@ export class DisplayQueueComponent {
 
   private productionComponent?: ProductionComponent;
   private researchComponent?: ResearchComponent;
-  private unifiedQueue: UnifiedQueueItem[] = [];
+  private unifiedQueue: SharedQueueItem[] = [];
 
   constructor(private readonly gameObject: Phaser.GameObjects.GameObject) {
+    onObjectReady(gameObject, this.init, this);
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
+  }
+
+  private init(): void {
+    // Get production and research components if they exist
+    this.productionComponent = getActorComponent(this.gameObject, ProductionComponent);
+    this.researchComponent = getActorComponent(this.gameObject, ResearchComponent);
+
+    // Subscribe to production component if it exists
+    if (this.productionComponent) {
+      this.subscribeToProduction(this.productionComponent);
+    }
+
+    // Subscribe to research component if it exists
+    if (this.researchComponent) {
+      this.subscribeToResearch(this.researchComponent);
+    }
+
+    // Initial queue build
+    this.rebuildQueue();
   }
 
   /**
@@ -40,63 +62,75 @@ export class DisplayQueueComponent {
   /**
    * Get the current unified queue items
    */
-  get items(): UnifiedQueueItem[] {
+  get items(): SharedQueueItem[] {
     return [...this.unifiedQueue];
   }
 
   /**
-   * Set the production component to observe
+   * Get the total number of items in the queue
    */
-  setProductionComponent(productionComponent: ProductionComponent | undefined) {
+  get length(): number {
+    return this.unifiedQueue.length;
+  }
+
+  /**
+   * Get item at specific display index
+   */
+  getItemAt(index: number): SharedQueueItem | undefined {
+    return this.unifiedQueue[index];
+  }
+
+  /**
+   * Register production component (called by ProductionComponent on creation)
+   */
+  registerProductionComponent(productionComponent: ProductionComponent): void {
     // Unsubscribe from previous component
     this.productionSubscription?.unsubscribe();
     this.productionComponent = productionComponent;
-
-    if (productionComponent) {
-      // Subscribe to production queue changes
-      this.productionSubscription = productionComponent.queueChangeObservable.subscribe(() => {
-        this.rebuildQueue();
-      });
-    }
-
+    this.subscribeToProduction(productionComponent);
     this.rebuildQueue();
   }
 
   /**
-   * Set the research component to observe
+   * Register research component (called by ResearchComponent on creation)
    */
-  setResearchComponent(researchComponent: ResearchComponent | undefined) {
+  registerResearchComponent(researchComponent: ResearchComponent): void {
     // Unsubscribe from previous component
     this.researchProgressSubscription?.unsubscribe();
     this.researchStartedSubscription?.unsubscribe();
     this.researchCompletedSubscription?.unsubscribe();
     this.researchCancelledSubscription?.unsubscribe();
     this.researchComponent = researchComponent;
-
-    if (researchComponent) {
-      // Subscribe to research events
-      this.researchProgressSubscription = researchComponent.researchProgress.subscribe(() => {
-        this.rebuildQueue();
-      });
-      this.researchStartedSubscription = researchComponent.researchStarted.subscribe(() => {
-        this.rebuildQueue();
-      });
-      this.researchCompletedSubscription = researchComponent.researchCompleted.subscribe(() => {
-        this.rebuildQueue();
-      });
-      this.researchCancelledSubscription = researchComponent.researchCancelled.subscribe(() => {
-        this.rebuildQueue();
-      });
-    }
-
+    this.subscribeToResearch(researchComponent);
     this.rebuildQueue();
+  }
+
+  private subscribeToProduction(productionComponent: ProductionComponent): void {
+    this.productionSubscription = productionComponent.queueChangeObservable.subscribe(() => {
+      this.rebuildQueue();
+    });
+  }
+
+  private subscribeToResearch(researchComponent: ResearchComponent): void {
+    this.researchProgressSubscription = researchComponent.researchProgress.subscribe(() => {
+      this.rebuildQueue();
+    });
+    this.researchStartedSubscription = researchComponent.researchStarted.subscribe(() => {
+      this.rebuildQueue();
+    });
+    this.researchCompletedSubscription = researchComponent.researchCompleted.subscribe(() => {
+      this.rebuildQueue();
+    });
+    this.researchCancelledSubscription = researchComponent.researchCancelled.subscribe(() => {
+      this.rebuildQueue();
+    });
   }
 
   /**
    * Rebuild the unified queue from production and research components
    */
-  private rebuildQueue() {
-    const newQueue: UnifiedQueueItem[] = [];
+  private rebuildQueue(): void {
+    const newQueue: SharedQueueItem[] = [];
     let displayIndex = 0;
 
     // Add research items first (they take priority in display)
@@ -107,7 +141,7 @@ export class DisplayQueueComponent {
         if (researchData && researchData.icon) {
           const progress = this.researchComponent.getResearchProgress(currentResearchType);
           newQueue.push({
-            type: QueueItemType.Research,
+            type: SharedQueueItemType.Research,
             id: `research-${currentResearchType}`,
             iconData: {
               key: researchData.icon.key,
@@ -129,11 +163,8 @@ export class DisplayQueueComponent {
         const actorDefinition = pwActorDefinitions[item.actorName];
         const infoComponent = actorDefinition.components?.info;
         if (infoComponent?.smallImage) {
-          // Calculate progress for this production item
-          // Note: Progress calculation should come from production component events
-          // For now, we'll use 0 and rely on production progress events to update
           newQueue.push({
-            type: QueueItemType.Production,
+            type: SharedQueueItemType.Production,
             id: `production-${index}`,
             iconData: {
               key: infoComponent.smallImage.key,
@@ -153,20 +184,9 @@ export class DisplayQueueComponent {
   }
 
   /**
-   * Update progress for a specific item
-   */
-  updateProgress(id: string, progressPercent: number) {
-    const item = this.unifiedQueue.find(i => i.id === id);
-    if (item) {
-      item.progressPercent = progressPercent;
-      this.queueChangedSubject.next(this.unifiedQueue);
-    }
-  }
-
-  /**
    * Clear all subscriptions and state
    */
-  clear() {
+  private clear(): void {
     this.productionSubscription?.unsubscribe();
     this.researchProgressSubscription?.unsubscribe();
     this.researchStartedSubscription?.unsubscribe();
@@ -178,7 +198,7 @@ export class DisplayQueueComponent {
     this.queueChangedSubject.next([]);
   }
 
-  private destroy() {
+  private destroy(): void {
     this.clear();
   }
 }

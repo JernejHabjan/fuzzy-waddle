@@ -3,11 +3,13 @@ import { researchDefinitions } from "./research-definitions";
 import { OwnerComponent } from "../owner-component";
 import { HealthComponent } from "../combat/components/health-component";
 import { getActorComponent } from "../../../data/actor-component";
+import { addActorComponent } from "../../../data/actor-data";
 import { emitResource, getPlayer } from "../../../data/scene-data";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
 import { onObjectReady } from "../../../data/game-object-helper";
 import type { ResearchComponentData, ResearchType } from "@fuzzy-waddle/api-interfaces";
+import { SharedQueueComponent } from "../queue/shared-queue-component";
 import Phaser from "phaser";
 
 export interface ResearchDefinition {
@@ -47,6 +49,14 @@ export class ResearchComponent {
   private init(): void {
     this.ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
     this.techTreeService = getSceneService(this.gameObject.scene, TechTreeService);
+
+    // Create or get SharedQueueComponent and register this research component
+    let sharedQueue = getActorComponent(this.gameObject, SharedQueueComponent);
+    if (!sharedQueue) {
+      sharedQueue = new SharedQueueComponent(this.gameObject);
+      addActorComponent(this.gameObject, sharedQueue);
+    }
+    sharedQueue.registerResearchComponent(this);
   }
 
   private destroy(): void {
