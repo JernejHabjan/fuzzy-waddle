@@ -37,8 +37,8 @@ Instead of a wide table with ~30 columns, we use a **3-table structure**:
 
 ## Backend / API Interfaces
 
-### 1. Score Data Structures
-- [ ] Create `PlayerScoreData` interface in `libs/api-interfaces/src/lib/game-instance/probable-waffle/score-data.ts`
+### 1. Score Data Structures ✅ COMPLETE
+- [x] Create `PlayerScoreData` interface in `libs/api-interfaces/src/lib/game-instance/probable-waffle/score-data.ts`
   - [ ] `playerNumber: PlayerNumber`
   - [ ] `playerName: string`
   - [ ] `playerType: string` (Human/AI)

@@ -23,6 +23,7 @@ import { CrossSceneCommunicationService } from "../services/CrossSceneCommunicat
 import { FogOfWarComponent } from "../tilemap/fog-of-war.component";
 import { SelectionGroupsComponent } from "../../player/human-controller/selection-groups.component";
 import { GameModeConditionChecker } from "../state/GameModeConditionChecker";
+import { ScoreTracker } from "../state/ScoreTracker";
 import { getSceneExternalComponent } from "../services/scene-component-helpers";
 import { AchievementService } from "../../../services/achievement/achievement.service";
 import { AchievementType } from "../../../services/achievement/achievement-type";
@@ -64,6 +65,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     new SaveGame(this);
     new RestartGame(this, hud);
     new GameModeConditionChecker(this);
+    new ScoreTracker(this); // Track player scores for score screen
     const creator = new SceneActorCreator(this);
     const audioService = new AudioService(this);
     const playerActionsHandler = new PlayerActionsHandler(this, hud);

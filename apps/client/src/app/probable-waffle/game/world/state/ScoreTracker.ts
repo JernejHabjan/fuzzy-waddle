@@ -1,0 +1,281 @@
+import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
+import {
+  type PlayerNumber,
+  type PlayerScoreData,
+  type GameScoreSnapshot,
+  type PlayerScoreSnapshot,
+  STANDARD_METRICS,
+  type ProbableWafflePlayer
+} from "@fuzzy-waddle/api-interfaces";
+import { getPlayersFromScene, getCurrentPlayerNumber } from "../../data/scene-data";
+import { ScenePlayerHelpers } from "../../data/scene-player-helpers";
+import { throttle } from "../../library/throttle";
+
+/**
+ * Tracks player scores throughout the game for the score screen.
+ * Similar to GameModeConditionChecker, runs continuously and collects statistics.
+ */
+export class ScoreTracker {
+  private currentPlayerNumber!: PlayerNumber;
+  private players!: ProbableWafflePlayer[];
+  private stopped: boolean = false;
+  private snapshotInterval = 5000; // Create snapshot every 5 seconds
+  private lastSnapshotTime = 0;
+
+  constructor(private readonly scene: ProbableWaffleScene) {
+    this.initializePlayerScores();
+
+    // Start checking after 1 second delay
+    this.scene.time.delayedCall(1000, this.startTracking, [], this);
+    this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
+  }
+
+  private startTracking() {
+    this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.throttleUpdate, this);
+  }
+
+  private throttleUpdate = throttle(this.update.bind(this), 1000);
+
+  /**
+   * Initialize score data for all players
+   */
+  private initializePlayerScores() {
+    const players = getPlayersFromScene<ProbableWafflePlayer>(this.scene);
+    const scoreData = new Map<PlayerNumber, PlayerScoreData>();
+
+    players.forEach((player) => {
+      const playerNumber = player.playerNumber;
+      if (!playerNumber) return;
+
+      scoreData.set(playerNumber, {
+        playerNumber,
+        playerName: player.playerController.data.playerDefinition?.player.playerName || `Player ${playerNumber}`,
+        playerType: player.playerController.data.playerDefinition?.playerType === 1 ? "AI" : "Human",
+        teamNumber: player.playerController.data.playerDefinition?.team,
+        factionType: player.factionType || "Unknown",
+        gameResult: "quit", // Default, will be updated by GameModeConditionChecker
+        eliminated: false,
+        finalScore: 0,
+        metrics: {},
+        userId: player.playerController.data.userId
+      });
+    });
+
+    this.scene.baseGameData.gameInstance.gameState.data.scoreData = scoreData;
+    this.scene.baseGameData.gameInstance.gameState.data.scoreSnapshots = [];
+  }
+
+  /**
+   * Main update loop - tracks live metrics
+   */
+  private update() {
+    if (!this.scene.scene || !this.scene.scene.isActive()) return;
+    if (this.stopped) return;
+
+    this.currentPlayerNumber = getCurrentPlayerNumber(this.scene)!;
+    this.players = getPlayersFromScene<ProbableWafflePlayer>(this.scene);
+
+    this.updateLiveMetrics();
+    this.createSnapshotIfNeeded();
+  }
+
+  /**
+   * Update metrics that change during gameplay
+   */
+  private updateLiveMetrics() {
+    const { actorsByPlayer } = ScenePlayerHelpers.getActorsByPlayer(this.scene);
+
+    this.players.forEach((player) => {
+      const playerNumber = player.playerNumber;
+      if (!playerNumber) return;
+
+      const actors = actorsByPlayer.get(playerNumber) || [];
+      const units = actors.filter((actor) => !this.isBuilding(actor));
+      const buildings = actors.filter((actor) => this.isBuilding(actor));
+
+      // Update current counts
+      const currentUnits = units.length;
+      const currentBuildings = buildings.length;
+
+      // Track max values
+      const currentMax = this.getMetric(playerNumber, STANDARD_METRICS.MAX_ARMY_SIZE) || 0;
+      if (currentUnits > currentMax) {
+        this.setMetric(playerNumber, STANDARD_METRICS.MAX_ARMY_SIZE, currentUnits);
+      }
+
+      const currentMaxBuildings = this.getMetric(playerNumber, STANDARD_METRICS.MAX_BUILDING_COUNT) || 0;
+      if (currentBuildings > currentMaxBuildings) {
+        this.setMetric(playerNumber, STANDARD_METRICS.MAX_BUILDING_COUNT, currentBuildings);
+      }
+
+      // Update final resources
+      const resources = player.getResources();
+      this.setMetric(playerNumber, STANDARD_METRICS.FINAL_RESOURCES_MINERALS, resources.Minerals || 0);
+      this.setMetric(playerNumber, STANDARD_METRICS.FINAL_RESOURCES_STONE, resources.Stone || 0);
+      this.setMetric(playerNumber, STANDARD_METRICS.FINAL_RESOURCES_WOOD, resources.Wood || 0);
+    });
+  }
+
+  /**
+   * Create a snapshot for timeline charts
+   */
+  private createSnapshotIfNeeded() {
+    const now = Date.now();
+    if (now - this.lastSnapshotTime < this.snapshotInterval) return;
+    this.lastSnapshotTime = now;
+
+    const { actorsByPlayer } = ScenePlayerHelpers.getActorsByPlayer(this.scene);
+    const playerScores = new Map<PlayerNumber, PlayerScoreSnapshot>();
+
+    this.players.forEach((player) => {
+      const playerNumber = player.playerNumber;
+      if (!playerNumber) return;
+
+      const actors = actorsByPlayer.get(playerNumber) || [];
+      const units = actors.filter((actor) => !this.isBuilding(actor));
+      const buildings = actors.filter((actor) => this.isBuilding(actor));
+      const resources = player.getResources();
+
+      playerScores.set(playerNumber, {
+        unitsCount: units.length,
+        buildingsCount: buildings.length,
+        totalResources: (resources.Minerals || 0) + (resources.Stone || 0) + (resources.Wood || 0),
+        armyValue: units.length * 10 // Simplified army value calculation
+      });
+    });
+
+    const snapshot: GameScoreSnapshot = {
+      timestamp: now,
+      playerScores
+    };
+
+    this.scene.baseGameData.gameInstance.gameState.data.scoreSnapshots?.push(snapshot);
+  }
+
+  /**
+   * Check if an actor is a building
+   */
+  private isBuilding(actor: Phaser.GameObjects.GameObject): boolean {
+    // Check if actor has construction site component
+    return !!(actor as any).constructionSite;
+  }
+
+  /**
+   * Set a metric value for a player
+   */
+  public setMetric(playerNumber: PlayerNumber, metricKey: string, value: number) {
+    const scoreData = this.scene.baseGameData.gameInstance.gameState.data.scoreData;
+    if (!scoreData) return;
+
+    const playerScore = scoreData.get(playerNumber);
+    if (!playerScore) return;
+
+    playerScore.metrics[metricKey] = value;
+  }
+
+  /**
+   * Get a metric value for a player
+   */
+  public getMetric(playerNumber: PlayerNumber, metricKey: string): number | undefined {
+    const scoreData = this.scene.baseGameData.gameInstance.gameState.data.scoreData;
+    if (!scoreData) return undefined;
+
+    const playerScore = scoreData.get(playerNumber);
+    if (!playerScore) return undefined;
+
+    return playerScore.metrics[metricKey];
+  }
+
+  /**
+   * Increment a metric value for a player
+   */
+  public incrementMetric(playerNumber: PlayerNumber, metricKey: string, amount: number = 1) {
+    const current = this.getMetric(playerNumber, metricKey) || 0;
+    this.setMetric(playerNumber, metricKey, current + amount);
+  }
+
+  /**
+   * Set the game result for a player
+   */
+  public setPlayerResult(playerNumber: PlayerNumber, result: "win" | "loss" | "tie" | "quit") {
+    const scoreData = this.scene.baseGameData.gameInstance.gameState.data.scoreData;
+    if (!scoreData) return;
+
+    const playerScore = scoreData.get(playerNumber);
+    if (!playerScore) return;
+
+    playerScore.gameResult = result;
+  }
+
+  /**
+   * Mark a player as eliminated
+   */
+  public setPlayerEliminated(playerNumber: PlayerNumber, eliminatedAt: number) {
+    const scoreData = this.scene.baseGameData.gameInstance.gameState.data.scoreData;
+    if (!scoreData) return;
+
+    const playerScore = scoreData.get(playerNumber);
+    if (!playerScore) return;
+
+    playerScore.eliminated = true;
+    playerScore.eliminatedAt = eliminatedAt;
+  }
+
+  /**
+   * Calculate final score based on metrics
+   */
+  public calculateFinalScore(playerNumber: PlayerNumber): number {
+    const metrics = this.scene.baseGameData.gameInstance.gameState.data.scoreData?.get(playerNumber)?.metrics;
+    if (!metrics) return 0;
+
+    let score = 0;
+
+    // Units: 10 points per unit produced, 15 per kill
+    score += (metrics[STANDARD_METRICS.UNITS_PRODUCED] || 0) * 10;
+    score += (metrics[STANDARD_METRICS.UNITS_KILLED] || 0) * 15;
+
+    // Buildings: 50 points per building, 75 per enemy building destroyed
+    score += (metrics[STANDARD_METRICS.BUILDINGS_CONSTRUCTED] || 0) * 50;
+    score += (metrics[STANDARD_METRICS.BUILDINGS_DESTROYED] || 0) * 75;
+
+    // Resources: 1 point per 10 resources collected
+    const totalResourcesCollected =
+      (metrics[STANDARD_METRICS.RESOURCES_COLLECTED_MINERALS] || 0) +
+      (metrics[STANDARD_METRICS.RESOURCES_COLLECTED_STONE] || 0) +
+      (metrics[STANDARD_METRICS.RESOURCES_COLLECTED_WOOD] || 0);
+    score += Math.floor(totalResourcesCollected / 10);
+
+    // Combat: 1 point per 100 damage dealt
+    score += Math.floor((metrics[STANDARD_METRICS.DAMAGE_DEALT] || 0) / 100);
+
+    return score;
+  }
+
+  /**
+   * Finalize all scores before going to score screen
+   */
+  public finalizeScores() {
+    const scoreData = this.scene.baseGameData.gameInstance.gameState.data.scoreData;
+    if (!scoreData) return;
+
+    scoreData.forEach((playerScore, playerNumber) => {
+      playerScore.finalScore = this.calculateFinalScore(playerNumber);
+    });
+  }
+
+  /**
+   * Stop tracking
+   */
+  public stop() {
+    this.stopped = true;
+  }
+
+  /**
+   * Cleanup
+   */
+  private destroy() {
+    this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.throttleUpdate);
+    this.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.destroy);
+    this.stopped = true;
+  }
+}
