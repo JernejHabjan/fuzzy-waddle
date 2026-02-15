@@ -1,6 +1,5 @@
 // Centralized production & queue validation using tech tree, supply & resource state.
 import {
-  FactionType,
   ObjectNames,
   type PlayerNumber,
   PreRequirement,
@@ -221,10 +220,7 @@ export class ProductionValidator {
     const ownedActors = actorIndex.getOwnedActors(playerNumber);
     // Filter to only include production buildings that are finished and alive
     const productionBuildings = Array.from(ownedActors).filter((actor) => {
-      return (
-        getActorComponent(actor, ProductionComponent) !== undefined &&
-        shouldConsiderActorUnlocked(actor)
-      );
+      return getActorComponent(actor, ProductionComponent) !== undefined && shouldConsiderActorUnlocked(actor);
     });
 
     // Check requiresAnyOf

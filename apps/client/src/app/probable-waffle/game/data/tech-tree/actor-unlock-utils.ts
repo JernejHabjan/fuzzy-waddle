@@ -16,6 +16,7 @@ export function shouldConsiderActorUnlocked(actor: GameObject): boolean {
 
   // Check if actor is alive
   const health = getActorComponent(actor, HealthComponent);
+  // noinspection RedundantIfStatementJS
   if (health && !health.alive) {
     return false;
   }
