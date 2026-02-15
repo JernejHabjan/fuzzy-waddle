@@ -997,4 +997,4 @@ apps/client/src/app/probable-waffle/game/player/ai-controller/ai-behavior/tech-p
 
 
 ### Other fixes needed
-- [ ] Research component "overrides" the production queue in UI in ActorInfoLabels. Need to queue properly one after another.
+- [ ] Research component "overrides" the production queue in UI in ActorInfoLabels. Need to queue properly one after another. There needs to be a queue component that both production and research feed into, and ActorInfoLabels subscribes to that instead of directly to production component. So queue should be removed from both components and this new queue component used.
