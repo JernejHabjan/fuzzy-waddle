@@ -16,7 +16,7 @@ export class ScoreDataService {
    */
   getPlayerScore(playerNumber: PlayerNumber): PlayerScoreData | undefined {
     const gameInstance = this.gameInstanceClientService.gameInstance;
-    if (!gameInstance) return undefined;
+    if (!gameInstance?.gameState) return undefined;
 
     const scoreData = gameInstance.gameState.data.scoreData;
     if (!scoreData) return undefined;
@@ -29,7 +29,7 @@ export class ScoreDataService {
    */
   getAllPlayerScores(): PlayerScoreData[] {
     const gameInstance = this.gameInstanceClientService.gameInstance;
-    if (!gameInstance) return [];
+    if (!gameInstance?.gameState) return [];
 
     const scoreData = gameInstance.gameState.data.scoreData;
     if (!scoreData) return [];
@@ -49,7 +49,7 @@ export class ScoreDataService {
    */
   getScoreSnapshots() {
     const gameInstance = this.gameInstanceClientService.gameInstance;
-    if (!gameInstance) return [];
+    if (!gameInstance?.gameState) return [];
 
     return gameInstance.gameState.data.scoreSnapshots || [];
   }
@@ -59,7 +59,7 @@ export class ScoreDataService {
    */
   hasScoreData(): boolean {
     const gameInstance = this.gameInstanceClientService.gameInstance;
-    if (!gameInstance) return false;
+    if (!gameInstance?.gameState) return false;
 
     const scoreData = gameInstance.gameState.data.scoreData;
     return scoreData !== undefined && scoreData.size > 0;

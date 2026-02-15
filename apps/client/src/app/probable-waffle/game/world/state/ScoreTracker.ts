@@ -7,7 +7,8 @@ import {
   STANDARD_METRICS,
   type ProbableWafflePlayer
 } from "@fuzzy-waddle/api-interfaces";
-import { getPlayersFromScene, getCurrentPlayerNumber } from "../../data/scene-data";
+import { getPlayersFromScene } from "../../../../shared/game/phaser/scene/base.scene";
+import { getCurrentPlayerNumber } from "../../data/scene-data";
 import { ScenePlayerHelpers } from "../../data/scene-player-helpers";
 import { throttle } from "../../library/throttle";
 
@@ -43,7 +44,7 @@ export class ScoreTracker {
     const players = getPlayersFromScene<ProbableWafflePlayer>(this.scene);
     const scoreData = new Map<PlayerNumber, PlayerScoreData>();
 
-    players.forEach((player) => {
+    players.forEach((player: ProbableWafflePlayer) => {
       const playerNumber = player.playerNumber;
       if (!playerNumber) return;
 
@@ -61,8 +62,10 @@ export class ScoreTracker {
       });
     });
 
-    this.scene.baseGameData.gameInstance.gameState.data.scoreData = scoreData;
-    this.scene.baseGameData.gameInstance.gameState.data.scoreSnapshots = [];
+    if (this.scene.baseGameData.gameInstance.gameState) {
+      this.scene.baseGameData.gameInstance.gameState.data.scoreData = scoreData;
+      this.scene.baseGameData.gameInstance.gameState.data.scoreSnapshots = [];
+    }
   }
 
   /**
@@ -110,9 +113,9 @@ export class ScoreTracker {
 
       // Update final resources
       const resources = player.getResources();
-      this.setMetric(playerNumber, STANDARD_METRICS.FINAL_RESOURCES_MINERALS, resources.Minerals || 0);
-      this.setMetric(playerNumber, STANDARD_METRICS.FINAL_RESOURCES_STONE, resources.Stone || 0);
-      this.setMetric(playerNumber, STANDARD_METRICS.FINAL_RESOURCES_WOOD, resources.Wood || 0);
+      this.setMetric(playerNumber, STANDARD_METRICS.FINAL_RESOURCES_MINERALS, resources.minerals || 0);
+      this.setMetric(playerNumber, STANDARD_METRICS.FINAL_RESOURCES_STONE, resources.stone || 0);
+      this.setMetric(playerNumber, STANDARD_METRICS.FINAL_RESOURCES_WOOD, resources.wood || 0);
     });
   }
 
@@ -139,7 +142,7 @@ export class ScoreTracker {
       playerScores.set(playerNumber, {
         unitsCount: units.length,
         buildingsCount: buildings.length,
-        totalResources: (resources.Minerals || 0) + (resources.Stone || 0) + (resources.Wood || 0),
+        totalResources: (resources.minerals || 0) + (resources.stone || 0) + (resources.wood || 0),
         armyValue: units.length * 10 // Simplified army value calculation
       });
     });
@@ -149,7 +152,9 @@ export class ScoreTracker {
       playerScores
     };
 
-    this.scene.baseGameData.gameInstance.gameState.data.scoreSnapshots?.push(snapshot);
+    if (this.scene.baseGameData.gameInstance.gameState) {
+      this.scene.baseGameData.gameInstance.gameState.data.scoreSnapshots?.push(snapshot);
+    }
   }
 
   /**
@@ -164,6 +169,8 @@ export class ScoreTracker {
    * Set a metric value for a player
    */
   public setMetric(playerNumber: PlayerNumber, metricKey: string, value: number) {
+    if (!this.scene.baseGameData.gameInstance.gameState) return;
+
     const scoreData = this.scene.baseGameData.gameInstance.gameState.data.scoreData;
     if (!scoreData) return;
 
@@ -177,6 +184,8 @@ export class ScoreTracker {
    * Get a metric value for a player
    */
   public getMetric(playerNumber: PlayerNumber, metricKey: string): number | undefined {
+    if (!this.scene.baseGameData.gameInstance.gameState) return undefined;
+
     const scoreData = this.scene.baseGameData.gameInstance.gameState.data.scoreData;
     if (!scoreData) return undefined;
 
@@ -197,7 +206,9 @@ export class ScoreTracker {
   /**
    * Set the game result for a player
    */
-  public setPlayerResult(playerNumber: PlayerNumber, result: "win" | "loss" | "tie" | "quit") {
+  public setPlayerResult(playerNumber: PlayerNumber, result: 'win' | 'loss' | 'tie' | 'quit') {
+    if (!this.scene.baseGameData.gameInstance.gameState) return;
+
     const scoreData = this.scene.baseGameData.gameInstance.gameState.data.scoreData;
     if (!scoreData) return;
 
@@ -211,6 +222,8 @@ export class ScoreTracker {
    * Mark a player as eliminated
    */
   public setPlayerEliminated(playerNumber: PlayerNumber, eliminatedAt: number) {
+    if (!this.scene.baseGameData.gameInstance.gameState) return;
+
     const scoreData = this.scene.baseGameData.gameInstance.gameState.data.scoreData;
     if (!scoreData) return;
 
@@ -225,6 +238,8 @@ export class ScoreTracker {
    * Calculate final score based on metrics
    */
   public calculateFinalScore(playerNumber: PlayerNumber): number {
+    if (!this.scene.baseGameData.gameInstance.gameState) return 0;
+
     const metrics = this.scene.baseGameData.gameInstance.gameState.data.scoreData?.get(playerNumber)?.metrics;
     if (!metrics) return 0;
 
@@ -255,6 +270,8 @@ export class ScoreTracker {
    * Finalize all scores before going to score screen
    */
   public finalizeScores() {
+    if (!this.scene.baseGameData.gameInstance.gameState) return;
+
     const scoreData = this.scene.baseGameData.gameInstance.gameState.data.scoreData;
     if (!scoreData) return;
 

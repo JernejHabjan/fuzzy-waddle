@@ -33,11 +33,13 @@ export class ScoreScreenComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const currentUser = await this.authService.getCurrentUser();
-    if (!currentUser) {
+    const session = this.authService.session;
+    if (!session?.user) {
       console.log("No authenticated user - skipping score submission");
       return;
     }
+
+    const currentUser = session.user;
 
     // Check if current user is the last human player
     const isLast = this.scoreSubmissionService.isLastHumanPlayer(gameInstance, currentUser.id);
