@@ -1,0 +1,61 @@
+<div class="container mt-4 overflow-auto">
+  <div class="card-container">
+    <h2 class="text-center text-primary mb-4">Match History</h2>
+
+    @if (loading()) {
+      <div class="text-center">
+        <p>Loading matches...</p>
+      </div>
+    } @else if (error()) {
+      <div class="text-center text-danger">
+        <p>{{ error() }}</p>
+        <button class="btn btn-primary mt-2" (click)="loadMatches()">Retry</button>
+      </div>
+    } @else if (matches().length) {
+      <div class="match-history-table">
+        <div class="d-grid text-center match-history-header">
+          <div class="text-primary">Date</div>
+          <div class="text-primary">Map</div>
+          <div class="text-primary">Duration</div>
+          <div class="text-primary">Result</div>
+          <div class="text-primary">Players</div>
+          <div class="text-primary">Actions</div>
+        </div>
+
+        @for (match of matches(); track match.gameInstanceId) {
+          <div class="match-history-row d-grid" (click)="viewDetails(match.gameInstanceId)">
+            <div>{{ match.endedAt | date: "short" }}</div>
+            <div>{{ getMapName(match.mapId) }}</div>
+            <div>{{ formatDuration(match.totalDurationSeconds) }}</div>
+            <div>
+              <span class="result-badge" [class]="'result-' + match.userResult">
+                {{ match.userResult }}
+              </span>
+            </div>
+            <div>{{ match.humanPlayerCount }} player{{ match.humanPlayerCount > 1 ? "s" : "" }}</div>
+            <div>
+              <button class="btn btn-sm btn-primary" (click)="viewDetails(match.gameInstanceId); $event.stopPropagation()">
+                View Details
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="pagination-controls mt-4 d-flex justify-content-center align-items-center gap-3">
+        <button class="btn btn-primary" (click)="previousPage()" [disabled]="currentPage() === 1">Previous</button>
+        <span>Page {{ currentPage() }} of {{ Math.ceil(total() / limit) || 1 }}</span>
+        <button class="btn btn-primary" (click)="nextPage()" [disabled]="!hasMore">Next</button>
+      </div>
+    } @else {
+      <div class="text-center">
+        <p>No matches found.</p>
+        <p class="text-muted">Play some games to see your match history here!</p>
+      </div>
+    }
+
+    <div class="mt-4">
+      <button class="btn btn-primary" (click)="handleBack()">Back to Menu</button>
+    </div>
+  </div>
+</div>

@@ -6,7 +6,7 @@ create table probable_waffle_game_sessions
   id                      uuid primary key default gen_random_uuid(),
   game_instance_id        uuid                     not null unique,
   game_type               text                     not null,
-  map_id                  text                     not null,
+  map_id                  int                      not null,
   session_state           text                     not null,
   started_at              timestamp with time zone default now() not null,
   ended_at                timestamp with time zone null,

@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { SupabaseProviderService } from "../../../core/supabase-provider/supabase-provider.service";
-import { Database, PlayerScoreDto } from "@fuzzy-waddle/api-interfaces";
+import { Database, PlayerScoreDto, ProbableWaffleMapEnum } from "@fuzzy-waddle/api-interfaces";
 
 @Injectable()
 export class GameSessionService {
@@ -17,7 +17,7 @@ export class GameSessionService {
   async createSession(params: {
     gameInstanceId: string;
     gameType: string;
-    mapId: string;
+    mapId: ProbableWaffleMapEnum;
     createdByUserId: string;
     humanPlayerCount: number;
   }): Promise<void> {

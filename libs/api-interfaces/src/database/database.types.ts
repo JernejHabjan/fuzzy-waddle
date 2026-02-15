@@ -160,7 +160,7 @@ export type Database = {
           game_type: string;
           human_player_count: number;
           id: string;
-          map_id: string;
+          map_id: number;
           scores_submitted: boolean;
           scores_submitted_at: string | null;
           scores_submitted_by: string | null;
@@ -176,7 +176,7 @@ export type Database = {
           game_type: string;
           human_player_count?: number;
           id?: string;
-          map_id: string;
+          map_id: number;
           scores_submitted?: boolean;
           scores_submitted_at?: string | null;
           scores_submitted_by?: string | null;
@@ -192,7 +192,7 @@ export type Database = {
           game_type?: string;
           human_player_count?: number;
           id?: string;
-          map_id?: string;
+          map_id?: number;
           scores_submitted?: boolean;
           scores_submitted_at?: string | null;
           scores_submitted_by?: string | null;
@@ -409,7 +409,7 @@ export type Database = {
           game_type: string | null;
           human_player_count: number | null;
           id: string | null;
-          map_id: string | null;
+          map_id: number | null;
           players: Json | null;
           scores_submitted: boolean | null;
           session_state: string | null;
