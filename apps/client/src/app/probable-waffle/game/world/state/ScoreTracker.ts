@@ -53,12 +53,12 @@ export class ScoreTracker {
         playerName: player.playerController.data.playerDefinition?.player.playerName || `Player ${playerNumber}`,
         playerType: player.playerController.data.playerDefinition?.playerType === 1 ? "AI" : "Human",
         teamNumber: player.playerController.data.playerDefinition?.team,
-        factionType: player.factionType || "Unknown",
+        factionType: player.factionType?.toString() || "Unknown",
         gameResult: "quit", // Default, will be updated by GameModeConditionChecker
         eliminated: false,
         finalScore: 0,
         metrics: {},
-        userId: player.playerController.data.userId
+        userId: player.playerController.data.userId ?? undefined
       });
     });
 
@@ -199,17 +199,27 @@ export class ScoreTracker {
    * Increment a metric value for a player
    */
   public incrementMetric(playerNumber: PlayerNumber, metricKey: string, amount: number = 1) {
-    const current = this.getMetric(playerNumber, metricKey) || 0;
+    if (!this.scene.baseGameData.gameInstance.gameState) return;
+
+    const gameState = this.scene.baseGameData.gameInstance.gameState;
+    const scoreData = gameState.data.scoreData;
+    if (!scoreData) return;
+
+    const playerScore = scoreData.get(playerNumber);
+    if (!playerScore) return;
+
+    const current = playerScore.metrics[metricKey] || 0;
     this.setMetric(playerNumber, metricKey, current + amount);
   }
 
   /**
    * Set the game result for a player
    */
-  public setPlayerResult(playerNumber: PlayerNumber, result: 'win' | 'loss' | 'tie' | 'quit') {
+  public setPlayerResult(playerNumber: PlayerNumber, result: "win" | "loss" | "tie" | "quit") {
     if (!this.scene.baseGameData.gameInstance.gameState) return;
 
-    const scoreData = this.scene.baseGameData.gameInstance.gameState.data.scoreData;
+    const gameState = this.scene.baseGameData.gameInstance.gameState;
+    const scoreData = gameState.data.scoreData;
     if (!scoreData) return;
 
     const playerScore = scoreData.get(playerNumber);
@@ -224,7 +234,8 @@ export class ScoreTracker {
   public setPlayerEliminated(playerNumber: PlayerNumber, eliminatedAt: number) {
     if (!this.scene.baseGameData.gameInstance.gameState) return;
 
-    const scoreData = this.scene.baseGameData.gameInstance.gameState.data.scoreData;
+    const gameState = this.scene.baseGameData.gameInstance.gameState;
+    const scoreData = gameState.data.scoreData;
     if (!scoreData) return;
 
     const playerScore = scoreData.get(playerNumber);
@@ -240,7 +251,9 @@ export class ScoreTracker {
   public calculateFinalScore(playerNumber: PlayerNumber): number {
     if (!this.scene.baseGameData.gameInstance.gameState) return 0;
 
-    const metrics = this.scene.baseGameData.gameInstance.gameState.data.scoreData?.get(playerNumber)?.metrics;
+    const gameState = this.scene.baseGameData.gameInstance.gameState;
+    const scoreData = gameState.data.scoreData;
+    const metrics = scoreData?.get(playerNumber)?.metrics;
     if (!metrics) return 0;
 
     let score = 0;
@@ -272,7 +285,8 @@ export class ScoreTracker {
   public finalizeScores() {
     if (!this.scene.baseGameData.gameInstance.gameState) return;
 
-    const scoreData = this.scene.baseGameData.gameInstance.gameState.data.scoreData;
+    const gameState = this.scene.baseGameData.gameInstance.gameState;
+    const scoreData = gameState.data.scoreData;
     if (!scoreData) return;
 
     scoreData.forEach((playerScore, playerNumber) => {
