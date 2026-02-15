@@ -675,7 +675,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     const isOffline = !this.authService.isAuthenticated || !this.serverHealthService.serverAvailable;
     const isHost = this.gameInstance?.gameInstanceMetadata?.data.createdBy === this.authService.userId;
 
-    await this.handlePlayerOrSpectatorLeaving(isSelfHosted);
+    await this.handlePlayerOrSpectatorLeaving();
 
     if (isSelfHosted && isHost) {
       await this.handleHostLeavingSelfHostedGame();
@@ -688,8 +688,10 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     await this.router.navigate(["aota"]);
   }
 
-  private async handlePlayerOrSpectatorLeaving(isSelfHosted: boolean): Promise<void> {
+  private async handlePlayerOrSpectatorLeaving(): Promise<void> {
     if (this.currentPlayerNumber !== undefined) {
+      const isSelfHosted =
+        this.gameInstance?.gameInstanceMetadata?.data.type === ProbableWaffleGameInstanceType.SelfHosted;
       if (isSelfHosted) {
         await this.removePlayer(this.currentPlayerNumber);
       }
