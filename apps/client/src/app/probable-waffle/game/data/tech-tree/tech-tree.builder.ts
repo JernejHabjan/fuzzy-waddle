@@ -4,16 +4,12 @@ import { ObjectNames, PreRequirement } from "@fuzzy-waddle/api-interfaces";
 import { pwActorDefinitions } from "../../prefabs/definitions/actor-definitions";
 import { BuilderComponent } from "../../entity/components/construction/builder-component";
 import type { TechTreeNode } from "./tech-tree-node";
-import { spellDefinitions } from "../../entity/components/combat/spell-definitions";
 
 /**
  * Recursively gather all actors starting from main buildings.
  * This creates a unified tech tree containing actors from all factions.
  */
-function gatherAllActors(
-  mainBuildingNames: ObjectNames[],
-  definitions: typeof pwActorDefinitions
-): Set<ObjectNames> {
+function gatherAllActors(mainBuildingNames: ObjectNames[], definitions: typeof pwActorDefinitions): Set<ObjectNames> {
   const allActors = new Set<ObjectNames>();
   const visited = new Set<ObjectNames>();
 

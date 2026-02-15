@@ -1,6 +1,12 @@
 // Runtime service that stores unified tech graph & per-player unlock state.
 import type { TechTreeGraph } from "./tech-tree-graph";
-import { ObjectNames, type PlayerNumber, PreRequirement, ResearchType } from "@fuzzy-waddle/api-interfaces";
+import {
+  ObjectNames,
+  type PlayerNumber,
+  PreRequirement,
+  ResearchType,
+  FactionType
+} from "@fuzzy-waddle/api-interfaces";
 import { TechTreeBuilder } from "./tech-tree.builder";
 import { getCanonicalActorNameCached } from "./canonical-actor-name";
 import { BuilderComponent } from "../../entity/components/construction/builder-component";
@@ -13,6 +19,8 @@ export class TechTreeService {
   private readonly playerUnlocks = new Map<number, Set<ObjectNames>>();
   // Per-player research tracking (keyed by player number)
   private readonly playerResearch = new Map<number, Set<ResearchType>>();
+  // Faction membership cache to avoid recomputation
+  private readonly factionCache = new Map<FactionType, Set<ObjectNames>>();
 
   constructor() {
     this.graph = TechTreeBuilder.build();
@@ -23,6 +31,75 @@ export class TechTreeService {
         console.warn("[TechTreeService] Tech tree validation errors:", errors);
       }
     }
+  }
+
+  /**
+   * Build faction membership sets by traversing the graph from main buildings.
+   * This discovers all units and buildings reachable from a faction's starting point.
+   */
+  private buildFactionSets(): void {
+    for (const factionType of [FactionType.Tivara, FactionType.Skaduwee]) {
+      const factionObjects = new Set<ObjectNames>();
+      const mainBuilding = this.getMainBuilding(factionType);
+      const visited = new Set<ObjectNames>();
+      const toProcess = [mainBuilding];
+
+      // BFS to find all objects reachable from main building
+      while (toProcess.length > 0) {
+        const current = toProcess.shift()!;
+        if (visited.has(current)) continue;
+        visited.add(current);
+        factionObjects.add(current);
+
+        const node = this.graph.nodes[current];
+        if (!node) continue;
+
+        // Add all units this building can produce
+        for (const produced of node.produces) {
+          if (!visited.has(produced)) {
+            toProcess.push(produced);
+          }
+        }
+
+        // Add all buildings this unit/building can construct
+        for (const constructed of node.constructs) {
+          if (!visited.has(constructed)) {
+            toProcess.push(constructed);
+          }
+        }
+      }
+
+      this.factionCache.set(factionType, factionObjects);
+    }
+  }
+
+  /**
+   * Check if an object belongs to a specific faction.
+   * Uses cached faction sets built from graph traversal.
+   */
+  private isFactionMatch(objectName: ObjectNames, factionType: FactionType): boolean {
+    // Build faction sets on first access
+    if (this.factionCache.size === 0) {
+      this.buildFactionSets();
+    }
+
+    const factionSet = this.factionCache.get(factionType);
+    return factionSet ? factionSet.has(objectName) : false;
+  }
+
+  /**
+   * Get the main building for a faction.
+   * @param factionType - The faction type
+   * @returns ObjectNames of the main building (Sandhold for Tivara, FrostForge for Skaduwee)
+   */
+  getMainBuilding(factionType: FactionType): ObjectNames {
+    if (factionType === FactionType.Tivara) {
+      return ObjectNames.Sandhold;
+    } else if (factionType === FactionType.Skaduwee) {
+      return ObjectNames.FrostForge;
+    }
+
+    throw new Error(`Unknown faction type: ${factionType}`);
   }
 
   /**
@@ -213,19 +290,22 @@ export class TechTreeService {
   /**
    * Get all housing buildings.
    * Returns array of ObjectNames that have housing components.
+   * @param factionType - Optional faction filter (Tivara or Skaduwee)
    */
-  getHousingBuildingsExcludingMain(): ObjectNames[] {
+  getHousingBuildingsExcludingMain(factionType?: FactionType): ObjectNames[] {
     return Object.entries(this.graph.nodes)
       .filter(
         ([, node]) => node.definition.components?.housing !== undefined && node.definition.meta?.isMainBuilding !== true
       )
+      .filter(([id]) => !factionType || this.isFactionMatch(id as ObjectNames, factionType))
       .map(([id]) => id as ObjectNames);
   }
 
   /**
    * Get all defensive buildings (have attack component).
+   * @param factionType - Optional faction filter (Tivara or Skaduwee)
    */
-  getDefensiveBuildingsExcludingMain(): ObjectNames[] {
+  getDefensiveBuildingsExcludingMain(factionType?: FactionType): ObjectNames[] {
     return Object.entries(this.graph.nodes)
       .filter(
         ([, node]) =>
@@ -233,6 +313,21 @@ export class TechTreeService {
           node.definition.components?.production !== undefined &&
           node.definition.meta?.isMainBuilding !== true
       )
+      .filter(([id]) => !factionType || this.isFactionMatch(id as ObjectNames, factionType))
+      .map(([id]) => id as ObjectNames);
+  }
+
+  /**
+   * Get all production buildings (have production component).
+   * @param factionType - Optional faction filter (Tivara or Skaduwee)
+   */
+  getProductionBuildingsExcludingMain(factionType?: FactionType): ObjectNames[] {
+    return Object.entries(this.graph.nodes)
+      .filter(
+        ([, node]) =>
+          node.definition.components?.production !== undefined && node.definition.meta?.isMainBuilding !== true
+      )
+      .filter(([id]) => !factionType || this.isFactionMatch(id as ObjectNames, factionType))
       .map(([id]) => id as ObjectNames);
   }
 
@@ -286,14 +381,16 @@ export class TechTreeService {
   }
 
   /**
-   * Get production buildings (have production component).
+   * Get all resource buildings.
+   * @param factionType - Optional faction filter (Tivara or Skaduwee)
    */
-  getProductionBuildingsExcludingMain(): ObjectNames[] {
+  getResourceBuildingsExcludingMain(factionType?: FactionType): ObjectNames[] {
     return Object.entries(this.graph.nodes)
       .filter(
         ([, node]) =>
-          node.definition.components?.production !== undefined && node.definition.meta?.isMainBuilding !== true
+          node.definition.components?.resourceSource !== undefined && node.definition.meta?.isMainBuilding !== true
       )
+      .filter(([id]) => !factionType || this.isFactionMatch(id as ObjectNames, factionType))
       .map(([id]) => id as ObjectNames);
   }
 
