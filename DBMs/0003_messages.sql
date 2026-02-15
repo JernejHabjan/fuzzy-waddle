@@ -5,7 +5,7 @@ create table messages
   created_at       timestamp with time zone default now() not null,
   text             text                                   not null,
   user_id          uuid                                   not null,
-  game_instance_id text                                   null
+  game_instance_id uuid                                   null
 );
 
 -- add a foreign key constraint to the public.profiles table to improve join performance
