@@ -1,12 +1,12 @@
-import { inject, Injectable } from '@angular/core';
-import type { PlayerNumber, PlayerScoreData } from '@fuzzy-waddle/api-interfaces';
-import { GameInstanceClientService } from '../communicators/game-instance-client.service';
+import { inject, Injectable } from "@angular/core";
+import type { PlayerNumber, PlayerScoreData } from "@fuzzy-waddle/api-interfaces";
+import { GameInstanceClientService } from "../communicators/game-instance-client.service";
 
 /**
  * Service for accessing player score data in the client
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class ScoreDataService {
   private readonly gameInstanceClientService = inject(GameInstanceClientService);
@@ -65,5 +65,3 @@ export class ScoreDataService {
     return scoreData !== undefined && scoreData.size > 0;
   }
 }
-
-
