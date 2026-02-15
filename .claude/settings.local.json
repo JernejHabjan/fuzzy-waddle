@@ -13,7 +13,9 @@
       "Bash(npx nx reset)",
       "Bash(git stash push:*)",
       "Bash(git stash:*)",
-      "Bash(nx build:*)"
+      "Bash(nx build:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ]
   }
 }
