@@ -5,6 +5,8 @@ import type {
   HealthComponentData
 } from "../../communicators/probable-waffle/communicator-game-events";
 import { ObjectNames } from "./object-names";
+import type { PlayerScoreData, GameScoreSnapshot } from "./score-data";
+import type { PlayerNumber } from "../player/player";
 import type {
   ActorTranslateComponentData,
   AttackComponentData,
@@ -42,7 +44,9 @@ export class ProbableWaffleGameState extends BaseGameState<ProbableWaffleGameSta
     this.data = {
       actors: [],
       score: 0,
-      pause: false
+      pause: false,
+      scoreData: new Map(),
+      scoreSnapshots: []
     };
   }
 }
@@ -51,6 +55,8 @@ export interface ProbableWaffleGameStateData extends BaseData {
   actors: ActorDefinition[];
   pause: boolean;
   score: number;
+  scoreData?: Map<PlayerNumber, PlayerScoreData>;
+  scoreSnapshots?: GameScoreSnapshot[];
 }
 
 export interface ActorDefinition extends Record<string, any> {
