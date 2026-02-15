@@ -17,7 +17,9 @@ import HudProbableWaffle from "../../../world/scenes/hud-scenes/HudProbableWaffl
 import type { ProductionQueueItem } from "../../../entity/components/production/game-object";
 import type { ActorIconClickAction } from "./actor-icon-click-action";
 import { ResearchComponent } from "../../../entity/components/research/research-component";
-import { researchDefinitions } from "../../../entity/components/research/research-definitions";
+import { DisplayQueueComponent } from "../../../entity/components/queue/display-queue-component";
+import { QueueItemType } from "../../../entity/components/queue/queue-item-type";
+import type { UnifiedQueueItem } from "../../../entity/components/queue/unified-queue-item";
 /* END-USER-IMPORTS */
 
 export default class ActorInfoLabels extends Phaser.GameObjects.Container {
@@ -122,19 +124,14 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
   private readonly mainSceneWithActors?: ProbableWaffleScene;
   private visibilityChanged = new BehaviorSubject<boolean>(false);
   private queueChangedSubscription?: Subscription;
-  private researchSubscription?: Subscription;
-  private researchStartedSubscription?: Subscription;
-  private researchCompletedSubscription?: Subscription;
-  private researchCancelledSubscription?: Subscription;
   private clickSubscriptions: Subscription[] = [];
   private actor?: Phaser.GameObjects.GameObject;
+  private displayQueueComponent?: DisplayQueueComponent;
 
   cleanActor() {
     this.queueChangedSubscription?.unsubscribe();
-    this.researchSubscription?.unsubscribe();
-    this.researchStartedSubscription?.unsubscribe();
-    this.researchCompletedSubscription?.unsubscribe();
-    this.researchCancelledSubscription?.unsubscribe();
+    this.displayQueueComponent?.clear();
+    this.displayQueueComponent = undefined;
     this.visible = false;
     this.actor = undefined;
   }
@@ -153,128 +150,80 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
     this.actor = actor;
     // Clean up any existing subscriptions
     this.queueChangedSubscription?.unsubscribe();
-    this.researchSubscription?.unsubscribe();
-    this.researchStartedSubscription?.unsubscribe();
-    this.researchCompletedSubscription?.unsubscribe();
-    this.researchCancelledSubscription?.unsubscribe();
+    this.displayQueueComponent?.clear();
 
-    this.handleProductionComponent();
-    this.handleResearchComponent();
-  }
-
-  private handleProductionComponent() {
-    const actor = this.actor;
-    if (!actor) return;
-    const productionComponent = getActorComponent(actor, ProductionComponent);
-    if (!productionComponent) {
-      this.cleanActor();
-      return;
+    // Create or reuse DisplayQueueComponent
+    if (!this.displayQueueComponent) {
+      this.displayQueueComponent = new DisplayQueueComponent(actor);
     }
 
-    // Subscribe to production progress updates
-    this.queueChangedSubscription = productionComponent.queueChangeObservable.subscribe((event) => {
-      this.handleProductionProgressUpdate(productionComponent, event.itemsFromAllQueues);
+    // Set production and research components for the display queue to observe
+    const productionComponent = getActorComponent(actor, ProductionComponent);
+    const researchComponent = getActorComponent(actor, ResearchComponent);
+
+    this.displayQueueComponent.setProductionComponent(productionComponent);
+    this.displayQueueComponent.setResearchComponent(researchComponent);
+
+    // Subscribe to unified queue changes
+    this.queueChangedSubscription = this.displayQueueComponent.queueChangedObservable.subscribe((items) => {
+      this.handleQueueUpdate(items);
     });
 
-    this.handleProductionProgressUpdate(productionComponent, productionComponent.itemsFromAllQueues);
+    // Initial display
+    this.handleQueueUpdate(this.displayQueueComponent.items);
   }
 
-  private handleProductionProgressUpdate(
-    productionComponent: ProductionComponent,
-    itemsFromAllQueues: ProductionQueueItem[]
-  ) {
-    const totalProductionSize =
-      productionComponent.productionDefinition.queueCount * productionComponent.productionDefinition.capacityPerQueue;
-    let producingActors = 0;
+  private handleQueueUpdate(items: UnifiedQueueItem[]) {
+    const actor = this.actor;
+    if (!actor) return;
+
+    // Get production component to determine max queue size
+    const productionComponent = getActorComponent(actor, ProductionComponent);
+    const totalQueueSize = productionComponent
+      ? productionComponent.productionDefinition.queueCount * productionComponent.productionDefinition.capacityPerQueue
+      : items.length;
+
+    // Update icons based on unified queue items
+    let activeItems = 0;
     this.icons.forEach((icon, index) => {
-      if (index >= totalProductionSize) {
+      if (index >= totalQueueSize) {
         icon.visible = false;
         return;
       }
-      const item = itemsFromAllQueues[index];
+
+      const item = items[index];
       if (item) {
-        const actorName = item.actorName;
-        const actorDefinition = pwActorDefinitions[actorName];
-        const infoComponent = actorDefinition.components?.info;
-        if (!infoComponent?.smallImage) return;
-        icon.setActorIcon(
-          {
-            iconIndex: index
-          },
-          infoComponent.smallImage.key,
-          infoComponent.smallImage.frame,
-          infoComponent.smallImage.origin
-        );
-        producingActors++;
+        // Set icon based on queue item type
+        if (item.type === QueueItemType.Research) {
+          icon.setActorIcon(
+            {
+              iconIndex: index,
+              researchType: item.researchData
+            },
+            item.iconData.key,
+            item.iconData.frame,
+            item.iconData.origin ?? { x: 0.5, y: 0.5 }
+          );
+        } else if (item.type === QueueItemType.Production) {
+          icon.setActorIcon(
+            {
+              iconIndex: index
+            },
+            item.iconData.key,
+            item.iconData.frame,
+            item.iconData.origin ?? { x: 0.5, y: 0.5 }
+          );
+        }
+        icon.visible = true;
+        activeItems++;
       } else {
+        // Empty queue slot - show slot number
         icon.setNumber(index + 1);
+        icon.visible = true;
       }
-      icon.visible = true;
     });
 
-    this.visibilityChanged.next(producingActors > 0);
-  }
-
-  private handleResearchComponent() {
-    const actor = this.actor;
-    if (!actor) return;
-    const researchComponent = getActorComponent(actor, ResearchComponent);
-    if (!researchComponent) {
-      // No research component, just return (production might still be active)
-      return;
-    }
-
-    // Subscribe to research progress updates
-    this.researchSubscription = researchComponent.researchProgress.subscribe((event) => {
-      this.handleResearchProgressUpdate(researchComponent);
-    });
-
-    // Also subscribe to research started/completed/cancelled
-    this.researchStartedSubscription = researchComponent.researchStarted.subscribe(() => {
-      this.handleResearchProgressUpdate(researchComponent);
-    });
-    this.researchCompletedSubscription = researchComponent.researchCompleted.subscribe(() => {
-      this.handleResearchProgressUpdate(researchComponent);
-    });
-    this.researchCancelledSubscription = researchComponent.researchCancelled.subscribe(() => {
-      this.handleResearchProgressUpdate(researchComponent);
-    });
-
-    this.handleResearchProgressUpdate(researchComponent);
-  }
-
-  private handleResearchProgressUpdate(researchComponent: ResearchComponent) {
-    const currentResearch = researchComponent.currentResearchType;
-
-    if (!currentResearch) {
-      // No active research, hide the icon if it was showing research
-      const icon = this.icons[0];
-      if (icon) {
-        // Check if this icon was showing research (has iconIndex: 0 but no actorObjectId)
-        // We need to hide it when research completes
-        this.visibilityChanged.next(false);
-      }
-      return;
-    }
-
-    const researchData = researchDefinitions[currentResearch];
-    if (!researchData || !researchData.icon) return;
-
-    // Show research in the first icon slot
-    const icon = this.icons[0];
-    if (icon) {
-      icon.setActorIcon(
-        {
-          iconIndex: 0,
-          researchType: currentResearch
-        },
-        researchData.icon.key,
-        researchData.icon.frame,
-        { x: 0.5, y: 0.5 }
-      );
-      icon.visible = true;
-      this.visibilityChanged.next(true);
-    }
+    this.visibilityChanged.next(activeItems > 0);
   }
 
   setLabelsForDisplayingActors(
@@ -344,23 +293,39 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
     if (action.definition.iconIndex === undefined) return;
     const actor = this.actor;
     if (!actor) return;
+
+    // Get the unified queue item at this index
+    const queueItem = this.displayQueueComponent?.items[action.definition.iconIndex];
+    if (!queueItem) return;
+
+    // Only handle production items
+    if (queueItem.type !== QueueItemType.Production) return;
+    if (!queueItem.productionData) return;
+
     const productionComponent = getActorComponent(actor, ProductionComponent);
     if (!productionComponent) return;
-    const icon = this.icons[action.definition.iconIndex];
-    if (!icon) return;
-    const item = productionComponent.itemsFromAllQueues[action.definition.iconIndex];
-    if (!item) return;
-    productionComponent.cancelProduction(item);
+
+    productionComponent.cancelProduction(queueItem.productionData);
   }
 
   private tryHandleIconClickResearch(action: ActorIconClickAction) {
-    if (action.definition.researchType === undefined) return;
+    if (action.definition.iconIndex === undefined) return;
     const actor = this.actor;
     if (!actor) return;
+
+    // Get the unified queue item at this index
+    const queueItem = this.displayQueueComponent?.items[action.definition.iconIndex];
+    if (!queueItem) return;
+
+    // Only handle research items
+    if (queueItem.type !== QueueItemType.Research) return;
+    if (!queueItem.researchData) return;
+
     const researchComponent = getActorComponent(actor, ResearchComponent);
     if (!researchComponent) return;
+
     // Cancel the research if it's currently in progress
-    if (researchComponent.currentResearchType === action.definition.researchType) {
+    if (researchComponent.currentResearchType === queueItem.researchData) {
       researchComponent.cancelResearch();
     }
   }
