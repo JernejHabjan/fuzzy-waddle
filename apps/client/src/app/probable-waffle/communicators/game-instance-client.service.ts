@@ -138,7 +138,6 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
               case GameSessionState.Stopped:
                 await this.stopListeningToGameInstanceEvents();
                 this.gameInstance = undefined;
-                this.currentPlayerNumber = undefined;
                 console.log("removed game instance");
                 break;
             }
@@ -722,6 +721,5 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   private async cleanupLocalGameState(): Promise<void> {
     await this.stopListeningToGameInstanceEvents();
     this.gameInstance = undefined;
-    this.currentPlayerNumber = undefined;
   }
 }
