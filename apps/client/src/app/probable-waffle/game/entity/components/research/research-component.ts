@@ -229,39 +229,82 @@ export class ResearchComponent {
   }
 
   getData(): ResearchComponentData {
-    // Research state is now stored in SharedQueueComponent
+    // Get research state from SharedQueueComponent
+    const sharedQueue = getActorComponent(this.gameObject, SharedQueueComponent);
+    if (!sharedQueue) {
+      return {
+        researches: undefined,
+        remainingTime: 0
+      };
+    }
+
+    // Get all research items from the queue
+    const researchTypes = (sharedQueue.allItems)
+      .filter((item) => item.type === QueueItemType.Research && item.researchData)
+      .map((item) => item.researchData!);
+
+    if (researchTypes.length === 0) {
+      return {
+        researches: undefined,
+        remainingTime: 0
+      };
+    }
+
+    // Get remaining time from the first research item (currently processing)
+    let remainingTime = 0;
+    for (const queue of sharedQueue.queues) {
+      if (queue.queuedItems.length > 0) {
+        const firstItem = queue.queuedItems[0]!;
+        if (firstItem.type === QueueItemType.Research) {
+          remainingTime = queue.remainingProductionTime;
+          break;
+        }
+      }
+    }
+
     return {
-      currentResearch: undefined,
-      remainingTime: 0
+      researches: researchTypes,
+      remainingTime: remainingTime
     };
   }
 
   setData(data: Partial<ResearchComponentData>): void {
-    // Migrate old save data: if currentResearch exists, add it to SharedQueue
-    if (data.currentResearch) {
+    // Restore research state from save data
+    if (data.researches && data.researches.length > 0) {
       const sharedQueue = getActorComponent(this.gameObject, SharedQueueComponent);
-      if (sharedQueue) {
-        const researchData = researchDefinitions[data.currentResearch as ResearchType];
-        if (researchData) {
-          const unifiedItem: UnifiedQueueItem = {
-            type: QueueItemType.Research,
-            researchData: data.currentResearch as ResearchType,
-            totalTime: researchData.researchTime
-          };
+      if (!sharedQueue) return;
 
-          // Add to shared queue
-          sharedQueue.addItem(unifiedItem);
+      const items: UnifiedQueueItem[] = [];
 
-          // Update the queue's remaining time to match saved progress
-          if (sharedQueue.queues.length > 0) {
-            for (const queue of sharedQueue.queues) {
-              if (queue.queuedItems.length > 0) {
-                const lastItem = queue.queuedItems[queue.queuedItems.length - 1];
-                if (lastItem === unifiedItem) {
-                  queue.remainingProductionTime = data.remainingTime ?? researchData.researchTime;
-                  break;
-                }
-              }
+      // Build unified queue items from saved research types
+      data.researches.forEach((researchType) => {
+        const researchData = researchDefinitions[researchType];
+        if (!researchData) {
+          console.warn(`Unknown research type ${researchType}, skipping...`);
+          return;
+        }
+
+        const unifiedItem: UnifiedQueueItem = {
+          type: QueueItemType.Research,
+          researchData: researchType,
+          totalTime: researchData.researchTime
+        };
+        items.push(unifiedItem);
+      });
+
+      // Add all research items to the queue
+      items.forEach((item) => {
+        sharedQueue.addItem(item);
+      });
+
+      // Update the queue's remaining time for the first item to match saved progress
+      if (data.remainingTime !== undefined && sharedQueue.queues.length > 0) {
+        for (const queue of sharedQueue.queues) {
+          if (queue.queuedItems.length > 0) {
+            const firstItem = queue.queuedItems[0]!;
+            if (firstItem.type === QueueItemType.Research) {
+              queue.remainingProductionTime = data.remainingTime;
+              break;
             }
           }
         }

@@ -5,6 +5,7 @@ import type { ActorId } from "../player/player";
 import type { PrerequisiteType } from "./prereque-type";
 import type { StatusEffectData } from "../../probable-waffle/status-effect";
 import type { PreRequirement } from "./pre-requirement";
+import type { ResearchType } from "./research-type";
 
 export interface VisionComponentData {
   visibilityByCurrentPlayer?: boolean;
@@ -226,6 +227,6 @@ export interface SpellComponentData {
 }
 
 export interface ResearchComponentData {
-  currentResearch?: string; // ResearchType being researched
+  researches?: ResearchType[];
   remainingTime?: number; // ms remaining
 }

@@ -358,6 +358,7 @@ export class ProductionComponent {
     const sharedQueue = getActorComponent(this.gameObject, SharedQueueComponent);
 
     // Flatten all queues into a simple list of product names for save (production items only)
+    // Research items are saved separately in ResearchComponent
     const queueNames = (sharedQueue?.allItems ?? [])
       .filter((i) => i.type === QueueItemType.Production && i.productionData)
       .map((i) => i.productionData!.actorName);
@@ -377,7 +378,8 @@ export class ProductionComponent {
     if (data.queue) {
       const items: UnifiedQueueItem[] = [];
 
-      // Build unified queue items from saved names
+      // Build unified queue items from saved names (production items only)
+      // Research items are loaded separately by ResearchComponent
       data.queue.forEach((actorName) => {
         const def = pwActorDefinitions[actorName];
         const cost = def.components?.productionCost;
