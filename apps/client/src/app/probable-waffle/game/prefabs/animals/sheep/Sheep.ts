@@ -99,7 +99,8 @@ export default class Sheep extends Phaser.GameObjects.Sprite {
     try {
       await moveGameObjectToRandomTileInNavigableRadius(this, this.radius);
     } catch (e) {
-      console.error(e);
+      // just ignore
+      // console.error(e);
     }
     this.moveSheepAfterDelay();
   }

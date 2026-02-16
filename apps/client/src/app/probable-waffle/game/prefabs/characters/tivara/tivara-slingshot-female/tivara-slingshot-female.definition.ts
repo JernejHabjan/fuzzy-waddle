@@ -15,6 +15,7 @@ import { SoundType } from "../../../../entity/components/actor-audio/sound-type"
 import { ActorPhysicalType } from "../../../../entity/components/combat/components/actor-physical-type";
 import { weaponDefinitions } from "../../../../entity/components/combat/weapon-definitions";
 import { AiType } from "../../../ai-agents/ai-type";
+import { SpellType } from "../../../../entity/components/combat/spell-type";
 
 export const tivaraSlingshotFemaleDefinition = {
   components: {
@@ -39,11 +40,7 @@ export const tivaraSlingshotFemaleDefinition = {
     info: {
       name: "Cursed Banshee",
       description: "A silent stalker armed with ancient curses and deadly precision",
-      tooltipDescription: [
-        "Ranged attacker",
-        "Effective against light units",
-        "Vulnerable in melee combat"
-      ],
+      tooltipDescription: ["Ranged attacker", "Effective against light units", "Vulnerable in melee combat"],
       smallImage: {
         key: "factions",
         frame: "character_icons/tivara/slingshot_female.png",
@@ -70,7 +67,10 @@ export const tivaraSlingshotFemaleDefinition = {
       housingNeeded: 1
     },
     requirements: {
-      actors: [ObjectNames.AnkGuard]
+      actors: [ObjectNames.Temple]
+    },
+    spell: {
+      availableSpells: [SpellType.Firestorm, SpellType.FrostNova, SpellType.HealingRain]
     },
     selectable: {},
     translatable: {

@@ -81,11 +81,11 @@ export class WorldStateSnapshotManager {
       if (productionComp) production.push(go);
       if (resourceDrain) gathering.push(go);
 
-      if (techTree?.isDefensiveBuilding(faction, actorName)) {
+      if (techTree?.isDefensiveBuilding(actorName)) {
         defense.push(go);
       }
 
-      if (techTree?.isHousingBuilding(faction, actorName)) {
+      if (techTree?.isHousingBuilding(actorName)) {
         housing.push(go);
       }
     });
@@ -189,7 +189,7 @@ export class WorldStateSnapshotManager {
 
     for (let i = 0; i < enemies.length; i++) {
       const d = distances[i];
-      if (typeof d === 'number' && d <= AI_CONFIG.enemyNearBaseRadiusTiles) {
+      if (typeof d === "number" && d <= AI_CONFIG.enemyNearBaseRadiusTiles) {
         near.push(enemies[i]!);
       }
     }

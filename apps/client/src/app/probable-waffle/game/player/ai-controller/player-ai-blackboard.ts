@@ -2,6 +2,8 @@ import { Blackboard } from "../../ai/blackboard";
 import {
   ObjectNames,
   type PlayerAiBlackboardData,
+  PreRequirement,
+  type PrerequisiteType,
   ResourceType,
   type Vector2Simple,
   type Vector3Simple
@@ -263,7 +265,10 @@ export class PlayerAiBlackboard extends Blackboard {
       this.production.plannedStructures = data.production.plannedStructures
         ? [...data.production.plannedStructures]
         : [];
-      this.production.prereqQueue = data.production.prereqQueue ? [...data.production.prereqQueue] : [];
+      this.production.prereqQueue = (data.production.prereqQueue ?? []).map((p) => ({
+        ...p,
+        preRequirement: new PreRequirement(p.preRequirement.prereqs)
+      }));
     }
 
     // ---- Army (numbers only) ----
@@ -415,8 +420,8 @@ export class PlayerAiBlackboard extends Blackboard {
     }>;
     prereqQueue: Array<{
       id: string;
-      type: "produce" | "construct";
-      objectName: ObjectNames;
+      type: PrerequisiteType;
+      preRequirement: PreRequirement;
       insertedAt: number;
     }>;
   };

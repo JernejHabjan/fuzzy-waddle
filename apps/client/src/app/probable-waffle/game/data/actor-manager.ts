@@ -59,6 +59,9 @@ import { getSceneService } from "../world/services/scene-component-helpers";
 import { SceneActorCreator } from "../world/services/scene-actor-creator";
 import MiningCamp from "../prefabs/buildings/tivara/MiningCamp";
 import Emberstone from "../prefabs/buildings/skaduwee/Emberstone";
+import { SpellComponent } from "../entity/components/combat/components/spell-component";
+import { StatusEffectComponent } from "../entity/components/status-effect/status-effect-component";
+import { ResearchComponent } from "../entity/components/research/research-component";
 import GameObject = Phaser.GameObjects.GameObject;
 import Wolf from "../prefabs/animals/wolf/Wolf";
 import Boar from "../prefabs/animals/boar/Boar";
@@ -177,8 +180,11 @@ export class ActorManager {
       resourceDrain: getActorComponent(actor, ResourceDrainComponent)?.getData(),
       resourceSource: getActorComponent(actor, ResourceSourceComponent)?.getData(),
       production: getActorComponent(actor, ProductionComponent)?.getData(),
+      research: getActorComponent(actor, ResearchComponent)?.getData(),
       representable: getActorComponent(actor, RepresentableComponent)?.getData(),
-      blackboard: getActorComponent(actor, PawnAiController)?.getData()
+      blackboard: getActorComponent(actor, PawnAiController)?.getData(),
+      spell: getActorComponent(actor, SpellComponent)?.getData(),
+      statusEffects: getActorComponent(actor, StatusEffectComponent)?.getData()
     } satisfies ActorDefinition;
 
     return actorDefinition;

@@ -34,6 +34,8 @@ import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
 import { SelectionTabHandler } from "../../player/human-controller/selection-tab-handler";
 import { LockedCursorHandler } from "../../player/human-controller/locked-cursor.handler";
 import { ActorDebugDamageSystem } from "../services/actor-debug-damage-system";
+import { SpellCursor } from "../../player/human-controller/spell-cursor";
+import { AoeZoneManager } from "../../entity/systems/aoe-zone-manager";
 
 export default class GameProbableWaffleScene extends ProbableWaffleScene {
   tilemap!: Phaser.Tilemaps.Tilemap;
@@ -46,51 +48,40 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     const hud = this.scene.get<HudProbableWaffle>("HudProbableWaffle") as HudProbableWaffle;
     hud.scene.start();
     hud.initializeWithParentScene(this);
+
     new SceneGameState(this);
     new ScaleHandler(this, this.tilemap, { margins: { left: 150, bottom: 100 }, maxLayers: 8 });
-    const gameSettings = GameSettings.loadFromLocalStorage();
-    const cameraMovementHandler = new CameraMovementHandler(this, {
-      cameraEdgeMovementSpeed: 30,
-      cameraKeyboardMovementSpeed: 2,
-      enabledMouseCornerMovement: gameSettings.enabledMouseCornerMovement
-    });
-    this.sceneGameData.components.push(cameraMovementHandler);
     new LightsHandler(this, { enableLights: false });
     new DepthHelper(this);
     new AnimatedTilemap(this, this.tilemap, this.tilemap.tilesets);
-    this.sceneGameData.components.push(new SingleSelectionHandler(this, hud, this.tilemap));
     new GameObjectSelectionHandler(this);
     new GameObjectActionAssigner(this);
     new SaveGame(this);
     new RestartGame(this, hud);
     new GameModeConditionChecker(this);
     const creator = new SceneActorCreator(this);
-    const audioService = new AudioService(this);
-    const playerActionsHandler = new PlayerActionsHandler(this, hud);
     const actorIndex = new ActorIndexSystem(this);
-    const techTreeService = new TechTreeService();
-
-    // Initialize RandomService with seed from game config for deterministic randomness
-    const seed = this.sys.game.config.seed?.[0];
-    if (!seed) throw new Error("Game seed is not defined");
-    const randomService = new RandomService(seed);
 
     this.sceneGameData.components.push(
+      this.getCameraMovementHandler(),
+      new SingleSelectionHandler(this, hud, this.tilemap),
       new TilemapComponent(this.tilemap),
       new BuildingCursor(this),
       new SelectionGroupsComponent(this),
       new SelectionTabHandler(this)
     );
     this.sceneGameData.services.push(
-      randomService,
+      this.getRandomService(),
       new NavigationService(this, this.tilemap),
-      audioService,
-      playerActionsHandler,
+      new AudioService(this),
+      new PlayerActionsHandler(this, hud),
       creator,
       new DebuggingService(),
       new CrossSceneCommunicationService(),
       actorIndex,
-      techTreeService
+      new TechTreeService(),
+      new SpellCursor(this),
+      new AoeZoneManager(this)
     );
     new ActorDebugDamageSystem(this);
     this.sceneGameData.systems.push(new AiPlayerHandler(this));
@@ -112,6 +103,24 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
       const achievementService = getSceneExternalComponent(this.scene.scene, AchievementService);
       achievementService?.unlockAchievement(AchievementType.FIRST_VICTORY); // just for test
     }
+  }
+
+  private getCameraMovementHandler(): CameraMovementHandler {
+    const gameSettings = GameSettings.loadFromLocalStorage();
+    return new CameraMovementHandler(this, {
+      cameraEdgeMovementSpeed: 30,
+      cameraKeyboardMovementSpeed: 2,
+      enabledMouseCornerMovement: gameSettings.enabledMouseCornerMovement
+    });
+  }
+
+  /**
+   * Initialize RandomService with seed from game config for deterministic randomness
+   */
+  private getRandomService(): RandomService {
+    const seed = this.sys.game.config.seed?.[0];
+    if (!seed) throw new Error("Game seed is not defined");
+    return new RandomService(seed);
   }
 
   private cleanup() {
