@@ -43,10 +43,14 @@ export interface ResourceSourceComponentData {
   currentResources?: number;
 }
 
+export interface ProductionQueueItemData {
+  name: ObjectNames;
+  remainingTime: number; // ms remaining for this specific item
+}
+
 export interface ProductionComponentData {
-  queue?: ObjectNames[];
+  queue?: ProductionQueueItemData[]; // Array of items with per-item progress
   isProducing?: boolean;
-  progress?: number;
   rallyPoint?: RallyPointComponentData;
 }
 
@@ -226,7 +230,11 @@ export interface SpellComponentData {
   autocastEnabled?: Record<string, boolean>; // spellType -> enabled
 }
 
+export interface ResearchQueueItemData {
+  type: ResearchType;
+  remainingTime: number; // ms remaining for this specific item
+}
+
 export interface ResearchComponentData {
-  researches?: ResearchType[];
-  remainingTime?: number; // ms remaining
+  researches?: ResearchQueueItemData[]; // Array of items with per-item progress
 }

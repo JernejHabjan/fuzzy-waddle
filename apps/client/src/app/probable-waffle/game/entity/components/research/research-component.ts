@@ -7,10 +7,11 @@ import { emitResource, getPlayer } from "../../../data/scene-data";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
 import { onObjectReady } from "../../../data/game-object-helper";
-import type { ResearchComponentData, ResearchType } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames, type ResearchComponentData, type ResearchType } from "@fuzzy-waddle/api-interfaces";
 import { SharedQueueComponent } from "../queue/shared-queue-component";
 import { QueueItemType, type UnifiedQueueItem } from "../queue/queue-item";
-import Phaser from "phaser";
+import Phaser, { GameObjects } from "phaser";
+import { pwActorDefinitions } from "../../../prefabs/definitions/actor-definitions";
 
 export interface ResearchDefinition {
   availableResearch: ResearchType[];
@@ -40,11 +41,18 @@ export class ResearchComponent {
   private init(): void {
     this.ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
     this.techTreeService = getSceneService(this.gameObject.scene, TechTreeService);
+  }
 
+  private createSharedQueue() {
     // Create or get SharedQueueComponent and register this research component
     let sharedQueue = getActorComponent(this.gameObject, SharedQueueComponent);
     if (!sharedQueue) {
-      sharedQueue = new SharedQueueComponent(this.gameObject, 1, 1);
+      const productionActorDefinition = pwActorDefinitions[this.gameObject.name as ObjectNames]?.components?.production;
+      sharedQueue = new SharedQueueComponent(
+        this.gameObject,
+        productionActorDefinition?.queueCount ?? 1,
+        productionActorDefinition?.capacityPerQueue ?? 1
+      );
       addActorComponent(this.gameObject, sharedQueue);
     }
     sharedQueue.registerResearchComponent(this);
@@ -234,51 +242,44 @@ export class ResearchComponent {
     const sharedQueue = getActorComponent(this.gameObject, SharedQueueComponent);
     if (!sharedQueue) {
       return {
-        researches: undefined,
-        remainingTime: 0
+        researches: undefined
       };
     }
 
-    // Get all research items from the queue
-    const researchTypes = (sharedQueue.allItems)
+    // Get all research items with their remaining times
+    const researchItems = sharedQueue.allItems
       .filter((item) => item.type === QueueItemType.Research && item.researchData)
-      .map((item) => item.researchData!);
+      .map((item) => ({
+        type: item.researchData!,
+        remainingTime: item.remainingTime
+      }));
 
-    if (researchTypes.length === 0) {
+    if (researchItems.length === 0) {
       return {
-        researches: undefined,
-        remainingTime: 0
+        researches: undefined
       };
-    }
-
-    // Get remaining time from the first research item (currently processing)
-    let remainingTime = 0;
-    for (const queue of sharedQueue.queues) {
-      if (queue.queuedItems.length > 0) {
-        const firstItem = queue.queuedItems[0]!;
-        if (firstItem.type === QueueItemType.Research) {
-          remainingTime = firstItem.remainingTime;
-          break;
-        }
-      }
     }
 
     return {
-      researches: researchTypes,
-      remainingTime: remainingTime
+      researches: researchItems
     };
   }
 
   setData(data: Partial<ResearchComponentData>): void {
     // Restore research state from save data
     if (data.researches && data.researches.length > 0) {
+      this.createSharedQueue();
       const sharedQueue = getActorComponent(this.gameObject, SharedQueueComponent);
       if (!sharedQueue) return;
 
       const items: UnifiedQueueItem[] = [];
 
-      // Build unified queue items from saved research types
-      data.researches.forEach((researchType, index) => {
+      // Build unified queue items from saved data with per-item progress
+      data.researches.forEach((researchItem) => {
+        // Handle both new format (ResearchQueueItemData) and legacy format (ResearchType string)
+        const researchType = researchItem.type;
+        const savedRemainingTime = researchItem.remainingTime;
+
         const researchData = researchDefinitions[researchType];
         if (!researchData) {
           console.warn(`Unknown research type ${researchType}, skipping...`);
@@ -289,9 +290,7 @@ export class ResearchComponent {
           type: QueueItemType.Research,
           researchData: researchType,
           totalTime: researchData.researchTime,
-          remainingTime: index === 0 && data.remainingTime !== undefined
-            ? data.remainingTime // First item uses saved progress
-            : researchData.researchTime // Other items default to full time
+          remainingTime: savedRemainingTime ?? researchData.researchTime // Use saved time or default to full
         };
         items.push(unifiedItem);
       });

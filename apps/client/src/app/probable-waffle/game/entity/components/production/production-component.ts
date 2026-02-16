@@ -47,7 +47,10 @@ export class ProductionComponent {
     this.ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
     this.navigationService = getSceneService(this.gameObject.scene, NavigationService)!;
     this.rallyPoint.init(this.gameObject);
+    this.createSharedQueue();
+  }
 
+  private createSharedQueue(){
     // Create SharedQueueComponent with queue configuration
     let sharedQueue = getActorComponent(this.gameObject, SharedQueueComponent);
     if (!sharedQueue) {
@@ -357,30 +360,36 @@ export class ProductionComponent {
   getData(): ProductionComponentData {
     const sharedQueue = getActorComponent(this.gameObject, SharedQueueComponent);
 
-    // Flatten all queues into a simple list of product names for save (production items only)
-    // Research items are saved separately in ResearchComponent
-    const queueNames = (sharedQueue?.allItems ?? [])
+    // Get all production items with their remaining times
+    const queueItems = (sharedQueue?.allItems ?? [])
       .filter((i) => i.type === QueueItemType.Production && i.productionData)
-      .map((i) => i.productionData!.actorName);
+      .map((i) => ({
+        name: i.productionData!.actorName,
+        remainingTime: i.remainingTime
+      }));
 
     return {
-      queue: queueNames,
+      queue: queueItems,
       isProducing: this.isProducing,
-      progress: this.getCurrentProgress() ?? 0,
       rallyPoint: this.rallyPoint.getRallyData()
     } satisfies ProductionComponentData;
   }
 
   setData(data: Partial<ProductionComponentData>) {
-    const sharedQueue = getActorComponent(this.gameObject, SharedQueueComponent);
-    if (!sharedQueue) return;
 
-    if (data.queue) {
+    if (data.queue && data.queue.length > 0) {
+      this.createSharedQueue();
+      const sharedQueue = getActorComponent(this.gameObject, SharedQueueComponent);
+      if (!sharedQueue) return;
+
       const items: UnifiedQueueItem[] = [];
 
-      // Build unified queue items from saved names (production items only)
-      // Research items are loaded separately by ResearchComponent
-      data.queue.forEach((actorName) => {
+      // Build unified queue items from saved data with per-item progress
+      data.queue.forEach((queueItem) => {
+        // Handle both new format (ProductionQueueItemData) and legacy format (string)
+        const actorName = queueItem.name;
+        const savedRemainingTime = queueItem.remainingTime;
+
         const def = pwActorDefinitions[actorName];
         const cost = def.components?.productionCost;
         if (!cost) {
@@ -395,17 +404,10 @@ export class ProductionComponent {
           type: QueueItemType.Production,
           productionData: productionItem,
           totalTime: cost.productionTime,
-          remainingTime: cost.productionTime // Default to full time, will be updated by progress
+          remainingTime: savedRemainingTime ?? cost.productionTime // Use saved time or default to full
         };
         items.push(unifiedItem);
       });
-
-      // Update first item's remainingTime based on saved progress
-      if (items.length > 0 && data.progress !== undefined) {
-        const firstItem = items[0]!;
-        const progressFraction = data.progress / 100;
-        firstItem.remainingTime = firstItem.totalTime * (1 - progressFraction);
-      }
 
       // Delegate to SharedQueue
       sharedQueue.setData(items);

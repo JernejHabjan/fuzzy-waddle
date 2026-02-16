@@ -22,9 +22,8 @@ export class SharedQueueComponent {
   private queueCount: number = 0;
   private capacityPerQueue: number = 0;
 
-  // Display queue (for UI)
+  // Display queue notification (for UI)
   private queueChangedSubject = new Subject<SharedQueueItem[]>();
-  private unifiedQueue: SharedQueueItem[] = [];
 
   // Component references (set during registration)
   private productionComponent?: ProductionComponent;
@@ -167,7 +166,7 @@ export class SharedQueueComponent {
       });
     }
 
-    this.rebuildQueue();
+    this.notifyQueueChanged();
   }
 
   /**
@@ -195,7 +194,7 @@ export class SharedQueueComponent {
       });
     }
 
-    this.rebuildQueue();
+    this.notifyQueueChanged();
   }
 
   /**
@@ -222,7 +221,7 @@ export class SharedQueueComponent {
       });
     }
 
-    this.rebuildQueue();
+    this.notifyQueueChanged();
   }
 
   /**
@@ -263,7 +262,7 @@ export class SharedQueueComponent {
           }
         }
 
-        this.rebuildQueue();
+        this.notifyQueueChanged();
         return true;
       }
     }
@@ -301,7 +300,7 @@ export class SharedQueueComponent {
           });
         }
 
-        this.rebuildQueue();
+        this.notifyQueueChanged();
         return true;
       }
     }
@@ -406,7 +405,7 @@ export class SharedQueueComponent {
    */
   registerProductionComponent(productionComponent: ProductionComponent): void {
     this.productionComponent = productionComponent;
-    this.rebuildQueue();
+    this.notifyQueueChanged();
   }
 
   /**
@@ -414,7 +413,7 @@ export class SharedQueueComponent {
    */
   registerResearchComponent(researchComponent: ResearchComponent): void {
     this.researchComponent = researchComponent;
-    this.rebuildQueue();
+    this.notifyQueueChanged();
   }
 
   /**
@@ -426,33 +425,12 @@ export class SharedQueueComponent {
 
   /**
    * Get the current unified queue items (for UI display)
+   * Computed on-demand from productionQueues
    */
   get items(): SharedQueueItem[] {
-    return [...this.unifiedQueue];
-  }
-
-  /**
-   * Get the total number of items in the queue
-   */
-  get length(): number {
-    return this.unifiedQueue.length;
-  }
-
-  /**
-   * Get item at specific display index
-   */
-  getItemAt(index: number): SharedQueueItem | undefined {
-    return this.unifiedQueue[index];
-  }
-
-  /**
-   * Rebuild the unified queue for UI display
-   */
-  private rebuildQueue(): void {
-    const newQueue: SharedQueueItem[] = [];
+    const items: SharedQueueItem[] = [];
     let displayIndex = 0;
 
-    // Iterate through all production queues and collect items
     for (const queue of this.productionQueues) {
       for (let i = 0; i < queue.queuedItems.length; i++) {
         const item = queue.queuedItems[i]!;
@@ -465,7 +443,7 @@ export class SharedQueueComponent {
           const actorDefinition = pwActorDefinitions[item.productionData.actorName];
           const infoComponent = actorDefinition.components?.info;
           if (infoComponent?.smallImage) {
-            newQueue.push({
+            items.push({
               type: SharedQueueItemType.Production,
               id: `production-${displayIndex}`,
               iconData: {
@@ -483,7 +461,7 @@ export class SharedQueueComponent {
         else if (item.type === QueueItemType.Research && item.researchData) {
           const researchData = researchDefinitions[item.researchData];
           if (researchData && researchData.icon) {
-            newQueue.push({
+            items.push({
               type: SharedQueueItemType.Research,
               id: `research-${item.researchData}`,
               iconData: {
@@ -500,8 +478,28 @@ export class SharedQueueComponent {
       }
     }
 
-    this.unifiedQueue = newQueue;
-    this.queueChangedSubject.next(this.unifiedQueue);
+    return items;
+  }
+
+  /**
+   * Get the total number of items in the queue
+   */
+  get length(): number {
+    return this.allItems.length;
+  }
+
+  /**
+   * Get item at specific display index
+   */
+  getItemAt(index: number): SharedQueueItem | undefined {
+    return this.items[index];
+  }
+
+  /**
+   * Notify subscribers that the queue has changed
+   */
+  private notifyQueueChanged(): void {
+    this.queueChangedSubject.next(this.items);
   }
 
   /**
@@ -528,7 +526,7 @@ export class SharedQueueComponent {
       }
     });
 
-    this.rebuildQueue();
+    this.notifyQueueChanged();
   }
 
   /**
@@ -538,7 +536,6 @@ export class SharedQueueComponent {
     this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
     this.productionComponent = undefined;
     this.researchComponent = undefined;
-    this.unifiedQueue = [];
     this.queueChangedSubject.next([]);
   }
 }
