@@ -141,7 +141,8 @@ export class ResearchComponent {
     const unifiedItem: UnifiedQueueItem = {
       type: QueueItemType.Research,
       researchData: type,
-      totalTime: researchData.researchTime
+      totalTime: researchData.researchTime,
+      remainingTime: researchData.researchTime
     };
 
     sharedQueue.addItem(unifiedItem);
@@ -212,7 +213,7 @@ export class ResearchComponent {
       const firstItem = queue.queuedItems[0];
       if (firstItem && firstItem.type === QueueItemType.Research && firstItem.researchData === type) {
         const totalTime = firstItem.totalTime;
-        const remainingTime = queue.remainingProductionTime;
+        const remainingTime = firstItem.remainingTime;
         return ((totalTime - remainingTime) / totalTime) * 100;
       }
     }
@@ -256,7 +257,7 @@ export class ResearchComponent {
       if (queue.queuedItems.length > 0) {
         const firstItem = queue.queuedItems[0]!;
         if (firstItem.type === QueueItemType.Research) {
-          remainingTime = queue.remainingProductionTime;
+          remainingTime = firstItem.remainingTime;
           break;
         }
       }
@@ -277,7 +278,7 @@ export class ResearchComponent {
       const items: UnifiedQueueItem[] = [];
 
       // Build unified queue items from saved research types
-      data.researches.forEach((researchType) => {
+      data.researches.forEach((researchType, index) => {
         const researchData = researchDefinitions[researchType];
         if (!researchData) {
           console.warn(`Unknown research type ${researchType}, skipping...`);
@@ -287,7 +288,10 @@ export class ResearchComponent {
         const unifiedItem: UnifiedQueueItem = {
           type: QueueItemType.Research,
           researchData: researchType,
-          totalTime: researchData.researchTime
+          totalTime: researchData.researchTime,
+          remainingTime: index === 0 && data.remainingTime !== undefined
+            ? data.remainingTime // First item uses saved progress
+            : researchData.researchTime // Other items default to full time
         };
         items.push(unifiedItem);
       });
@@ -296,19 +300,6 @@ export class ResearchComponent {
       items.forEach((item) => {
         sharedQueue.addItem(item);
       });
-
-      // Update the queue's remaining time for the first item to match saved progress
-      if (data.remainingTime !== undefined && sharedQueue.queues.length > 0) {
-        for (const queue of sharedQueue.queues) {
-          if (queue.queuedItems.length > 0) {
-            const firstItem = queue.queuedItems[0]!;
-            if (firstItem.type === QueueItemType.Research) {
-              queue.remainingProductionTime = data.remainingTime;
-              break;
-            }
-          }
-        }
-      }
     }
   }
 }

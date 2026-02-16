@@ -1,9 +1,7 @@
-import type { ProductionQueueItem } from "./game-object";
 import type { UnifiedQueueItem } from "../queue/queue-item";
 
 export class ProductionQueue {
   queuedItems: UnifiedQueueItem[] = [];
-  remainingProductionTime = 0;
 
   constructor(private capacityPerQueue: number) {}
 

@@ -17,4 +17,5 @@ export interface UnifiedQueueItem {
 
   // Shared metadata
   totalTime: number; // For calculating refunds and progress
+  remainingTime: number; // Current remaining time for this item
 }

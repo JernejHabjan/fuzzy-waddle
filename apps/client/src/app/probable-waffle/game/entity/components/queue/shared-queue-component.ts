@@ -90,11 +90,11 @@ export class SharedQueueComponent {
 
     if (!paid) return;
 
-    // Update progress
-    queue.remainingProductionTime -= delta;
-    queue.remainingProductionTime = Math.max(queue.remainingProductionTime, 0);
+    // Update progress on the item itself
+    firstItem.remainingTime -= delta;
+    firstItem.remainingTime = Math.max(firstItem.remainingTime, 0);
 
-    const progress = ((firstItem.totalTime - queue.remainingProductionTime) / firstItem.totalTime) * 100;
+    const progress = ((firstItem.totalTime - firstItem.remainingTime) / firstItem.totalTime) * 100;
 
     // Emit progress event via ProductionComponent
     if (this.productionComponent) {
@@ -106,7 +106,7 @@ export class SharedQueueComponent {
     }
 
     // Check completion
-    if (queue.remainingProductionTime <= 0) {
+    if (firstItem.remainingTime <= 0) {
       this.completeProductionItem(queue, queueIndex);
     }
   }
@@ -118,11 +118,11 @@ export class SharedQueueComponent {
     const firstItem = queue.queuedItems[0]!;
     if (!firstItem.researchData) return;
 
-    // Update progress
-    queue.remainingProductionTime -= delta;
-    queue.remainingProductionTime = Math.max(queue.remainingProductionTime, 0);
+    // Update progress on the item itself
+    firstItem.remainingTime -= delta;
+    firstItem.remainingTime = Math.max(firstItem.remainingTime, 0);
 
-    const progress = ((firstItem.totalTime - queue.remainingProductionTime) / firstItem.totalTime) * 100;
+    const progress = ((firstItem.totalTime - firstItem.remainingTime) / firstItem.totalTime) * 100;
 
     // Emit progress for research
     if (this.researchComponent) {
@@ -137,7 +137,7 @@ export class SharedQueueComponent {
     }
 
     // Check completion
-    if (queue.remainingProductionTime <= 0) {
+    if (firstItem.remainingTime <= 0) {
       this.completeResearchItem(queue, queueIndex);
     }
   }
@@ -157,10 +157,7 @@ export class SharedQueueComponent {
       await this.productionComponent.handleProductionComplete(item.productionData);
     }
 
-    // Reset queue for next item
-    if (queue.queuedItems.length > 0) {
-      this.resetQueue(queue);
-    }
+    // No need to reset queue - items are self-contained with their own remainingTime
 
     // Emit queue change
     if (this.productionComponent) {
@@ -188,10 +185,7 @@ export class SharedQueueComponent {
       this.researchComponent.handleResearchComplete(item.researchData);
     }
 
-    // Reset queue for next item
-    if (queue.queuedItems.length > 0) {
-      this.resetQueue(queue);
-    }
+    // No need to reset queue - items are self-contained with their own remainingTime
 
     // Emit queue change
     if (this.productionComponent) {
@@ -213,11 +207,12 @@ export class SharedQueueComponent {
       throw new Error("No queue available");
     }
 
-    queue.queuedItems.push(item);
-
-    if (queue.queuedItems.length === 1) {
-      this.resetQueue(queue);
+    // Initialize remainingTime if not set
+    if (item.remainingTime === undefined || item.remainingTime === 0) {
+      item.remainingTime = item.totalTime;
     }
+
+    queue.queuedItems.push(item);
 
     // Emit queue change
     if (this.productionComponent) {
@@ -252,7 +247,7 @@ export class SharedQueueComponent {
 
         // Delegate refund to ProductionComponent
         if (this.productionComponent) {
-          this.productionComponent.handleProductionRefund(cancelledItem.productionData.costData, queue);
+          this.productionComponent.handleProductionRefund(cancelledItem.productionData.costData, cancelledItem);
           this.productionComponent.emitQueueChange({
             itemsFromAllQueues: this.allItems,
             type: "remove"
@@ -266,11 +261,6 @@ export class SharedQueueComponent {
               progressInPercentage: 0
             });
           }
-        }
-
-        // Reset queue if first item was cancelled
-        if (index === 0) {
-          this.resetQueue(queue);
         }
 
         this.rebuildQueue();
@@ -291,16 +281,11 @@ export class SharedQueueComponent {
 
         // Delegate refund to ResearchComponent
         if (this.researchComponent) {
-          this.researchComponent.handleResearchRefund(type, queue.remainingProductionTime, firstItem.totalTime);
+          this.researchComponent.handleResearchRefund(type, firstItem.remainingTime, firstItem.totalTime);
         }
 
         // Remove from queue
         queue.queuedItems.splice(0, 1);
-
-        // Reset queue if there are more items
-        if (queue.queuedItems.length > 0) {
-          this.resetQueue(queue);
-        }
 
         // Emit cancellation
         if (this.researchComponent) {
@@ -349,24 +334,15 @@ export class SharedQueueComponent {
   private getTotalRemainingTimeForQueue(queue: ProductionQueue): number {
     if (queue.queuedItems.length === 0) return 0;
 
-    let totalTime = queue.remainingProductionTime;
+    let totalTime = 0;
 
-    for (let i = 1; i < queue.queuedItems.length; i++) {
-      const item = queue.queuedItems[i]!;
-      totalTime += item.totalTime;
+    for (const item of queue.queuedItems) {
+      totalTime += item.remainingTime;
     }
 
     return totalTime;
   }
 
-  /**
-   * Reset queue to start processing next item
-   */
-  private resetQueue(queue: ProductionQueue): void {
-    if (queue.queuedItems.length === 0) return;
-    const firstItem = queue.queuedItems[0]!;
-    queue.remainingProductionTime = firstItem.totalTime;
-  }
 
   /**
    * Public API: Get queue with least remaining time (for validation)
@@ -394,7 +370,7 @@ export class SharedQueueComponent {
 
     const firstItem = queue.queuedItems[0]!;
     const totalTime = firstItem.totalTime;
-    const remainingTime = queue.remainingProductionTime;
+    const remainingTime = firstItem.remainingTime;
 
     return ((totalTime - remainingTime) / totalTime) * 100;
   }
@@ -542,20 +518,14 @@ export class SharedQueueComponent {
     // Clear existing queues
     this.productionQueues.forEach((queue) => {
       queue.queuedItems = [];
-      queue.remainingProductionTime = 0;
     });
 
-    // Rebuild queues from saved items
+    // Rebuild queues from saved items (items already have their remainingTime set)
     items.forEach((item) => {
       const queue = this.findQueueWithLeastTime();
       if (queue) {
         queue.queuedItems.push(item);
       }
-    });
-
-    // Reset production timers for all queues
-    this.productionQueues.forEach((queue) => {
-      this.resetQueue(queue);
     });
 
     this.rebuildQueue();

@@ -22,7 +22,6 @@ import { AssignProductionErrorCode } from "./assign-production-error-code";
 import type { ProductionCostDefinition } from "./production-cost-definition";
 import { NavigationService } from "../../../world/services/navigation.service";
 import { IsoHelper } from "../../../world/tilemap/iso-helper";
-import type { ProductionQueue } from "./production-queue";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class ProductionComponent {
@@ -147,7 +146,8 @@ export class ProductionComponent {
     const unifiedItem: UnifiedQueueItem = {
       type: QueueItemType.Production,
       productionData: queueItem,
-      totalTime: queueItem.costData.productionTime
+      totalTime: queueItem.costData.productionTime,
+      remainingTime: queueItem.costData.productionTime
     };
 
     sharedQueue.addItem(unifiedItem);
@@ -272,7 +272,7 @@ export class ProductionComponent {
   /**
    * Public method for SharedQueueComponent to handle production refunds
    */
-  public handleProductionRefund(costData: ProductionCostDefinition, queue: ProductionQueue): void {
+  public handleProductionRefund(costData: ProductionCostDefinition, item: UnifiedQueueItem): void {
     const owner = this.ownerComponent?.getOwner();
     if (!owner) return;
     const player = getPlayer(this.gameObject.scene, owner);
@@ -282,7 +282,7 @@ export class ProductionComponent {
     switch (costData.costType) {
       case PaymentType.PayOverTime: // For pay over time, calculate partial refund based on progress
         const totalProductionTime = costData.productionTime;
-        const remainingTime = queue.remainingProductionTime;
+        const remainingTime = item.remainingTime;
         const elapsedTime = totalProductionTime - remainingTime;
         const progressPercentage = elapsedTime / totalProductionTime;
 
@@ -394,10 +394,18 @@ export class ProductionComponent {
         const unifiedItem: UnifiedQueueItem = {
           type: QueueItemType.Production,
           productionData: productionItem,
-          totalTime: cost.productionTime
+          totalTime: cost.productionTime,
+          remainingTime: cost.productionTime // Default to full time, will be updated by progress
         };
         items.push(unifiedItem);
       });
+
+      // Update first item's remainingTime based on saved progress
+      if (items.length > 0 && data.progress !== undefined) {
+        const firstItem = items[0]!;
+        const progressFraction = data.progress / 100;
+        firstItem.remainingTime = firstItem.totalTime * (1 - progressFraction);
+      }
 
       // Delegate to SharedQueue
       sharedQueue.setData(items);
