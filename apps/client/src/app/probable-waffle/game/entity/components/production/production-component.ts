@@ -5,6 +5,8 @@ import { getActorComponent } from "../../../data/actor-component";
 import { addActorComponent } from "../../../data/actor-data";
 import { emitResource, getCommunicator, getCurrentPlayerNumber, getPlayer } from "../../../data/scene-data";
 import { SharedQueueComponent } from "../queue/shared-queue-component";
+import { QueueItemType, type UnifiedQueueItem } from "../queue/queue-item";
+import { ResearchComponent } from "../research/research-component";
 import {
   type ActorDefinition,
   ConstructionStateEnum,
@@ -86,7 +88,7 @@ export class ProductionComponent {
   }
 
   get itemsFromAllQueues() {
-    return this.productionQueues.reduce((acc, queue) => acc.concat(queue.queuedItems), [] as ProductionQueueItem[]);
+    return this.productionQueues.reduce((acc, queue) => acc.concat(queue.queuedItems), [] as UnifiedQueueItem[]);
   }
 
   get isFinished() {
@@ -97,18 +99,24 @@ export class ProductionComponent {
     const deltaWithTimeScale = delta * this.gameObject.scene.time.timeScale;
 
     if (!this.isFinished) return;
-    // process all queues
-    for (let i = 0; i < this.productionQueues.length; i++) {
-      const queue = this.productionQueues[i]!;
-      if (queue.queuedItems.length <= 0) {
-        continue;
-      }
 
-      for (let j = 0; j < queue.queuedItems.length; j++) {
-        const { costData } = queue.queuedItems[j]!;
+    // Process first item in each queue
+    for (let queueIndex = 0; queueIndex < this.productionQueues.length; queueIndex++) {
+      const queue = this.productionQueues[queueIndex]!;
+      if (queue.queuedItems.length === 0) continue;
+
+      const firstItem = queue.queuedItems[0]!;
+
+      // Handle production items
+      if (firstItem.type === QueueItemType.Production) {
+        if (!firstItem.productionData) {
+          throw new Error("Production item missing productionData");
+        }
+
+        const { costData } = firstItem.productionData;
 
         let productionCostPaid = false;
-        if (costData.costType == PaymentType.PayOverTime) {
+        if (costData.costType === PaymentType.PayOverTime) {
           productionCostPaid = this.handlePayOverTimePayment(costData.resources);
         } else {
           productionCostPaid = true;
@@ -118,7 +126,7 @@ export class ProductionComponent {
           continue;
         }
 
-        // update production progress
+        // Update production progress
         queue.remainingProductionTime -= deltaWithTimeScale;
         queue.remainingProductionTime = Math.max(queue.remainingProductionTime, 0);
 
@@ -126,14 +134,44 @@ export class ProductionComponent {
 
         // Emit progress event
         this.productionProgressSubject.next({
-          queueIndex: i,
-          queueItemIndex: j,
-          progressInPercentage: Math.min(progress, 100) // Ensure progress doesn't exceed 100%
+          queueIndex: queueIndex,
+          queueItemIndex: 0, // Always processing first item
+          progressInPercentage: Math.min(progress, 100)
         });
 
-        // check if production is ready
+        // Check if production is complete
         if (queue.remainingProductionTime <= 0) {
-          this.finishProduction(queue, j);
+          this.finishProduction(queue, 0);
+        }
+      }
+      // Handle research items
+      else if (firstItem.type === QueueItemType.Research) {
+        if (!firstItem.researchData) {
+          throw new Error("Research item missing researchData");
+        }
+
+        // Update research progress
+        queue.remainingProductionTime -= deltaWithTimeScale;
+        queue.remainingProductionTime = Math.max(queue.remainingProductionTime, 0);
+
+        const progress = ((firstItem.totalTime - queue.remainingProductionTime) / firstItem.totalTime) * 100;
+
+        // Emit progress for research
+        const researchComponent = getActorComponent(this.gameObject, ResearchComponent);
+        if (researchComponent) {
+          researchComponent.researchProgress.emit({
+            type: firstItem.researchData,
+            progress: Math.min(progress, 100)
+          });
+          this.gameObject.emit(ResearchComponent.ResearchProgressEvent, {
+            type: firstItem.researchData,
+            progress: Math.min(progress, 100)
+          });
+        }
+
+        // Check if research is complete
+        if (queue.remainingProductionTime <= 0) {
+          this.finishResearch(queue, 0);
         }
       }
     }
@@ -175,12 +213,25 @@ export class ProductionComponent {
 
     for (let i = 0; i < this.productionQueues.length; i++) {
       const queue = this.productionQueues[i]!;
-      if (queue.queuedItems.length > 0) {
-        const { costData } = queue.queuedItems[0]!;
-        return 100 - (queue.remainingProductionTime / costData.productionTime) * 100;
+      const progress = this.getQueueProgress(queue);
+      if (progress !== null) {
+        return progress;
       }
     }
     return null;
+  }
+
+  /**
+   * Get the progress percentage for a specific queue's first item
+   */
+  getQueueProgress(queue: ProductionQueue): number | null {
+    if (queue.queuedItems.length === 0) return null;
+
+    const firstItem = queue.queuedItems[0]!;
+    const totalTime = firstItem.totalTime;
+    const remainingTime = queue.remainingProductionTime;
+
+    return ((totalTime - remainingTime) / totalTime) * 100;
   }
 
   /**
@@ -192,16 +243,28 @@ export class ProductionComponent {
     let totalTime = 0;
 
     for (const queue of this.productionQueues) {
-      if (queue.queuedItems.length === 0) continue;
+      totalTime += this.getTotalRemainingTimeForQueue(queue);
+    }
 
-      // Add remaining time for the current (first) item in the queue
-      totalTime += queue.remainingProductionTime;
+    return totalTime;
+  }
 
-      // Add full production time for all other items in the queue
-      for (let i = 1; i < queue.queuedItems.length; i++) {
-        const { costData } = queue.queuedItems[i]!;
-        totalTime += costData.productionTime;
-      }
+  /**
+   * Get the total remaining time for a specific queue.
+   * This includes remaining time for the current item plus full time for all queued items.
+   */
+  private getTotalRemainingTimeForQueue(queue: ProductionQueue): number {
+    if (queue.queuedItems.length === 0) return 0;
+
+    let totalTime = 0;
+
+    // Add remaining time for the current (first) item in the queue
+    totalTime += queue.remainingProductionTime;
+
+    // Add full time for all other items in the queue
+    for (let i = 1; i < queue.queuedItems.length; i++) {
+      const item = queue.queuedItems[i]!;
+      totalTime += item.totalTime; // Use unified totalTime property
     }
 
     return totalTime;
@@ -222,8 +285,13 @@ export class ProductionComponent {
 
     this.handleImmediatePayment(queueItem);
 
-    // add to queue
-    queue.queuedItems.push(queueItem);
+    // Wrap production item in UnifiedQueueItem and add to queue
+    const unifiedItem: UnifiedQueueItem = {
+      type: QueueItemType.Production,
+      productionData: queueItem,
+      totalTime: queueItem.costData.productionTime
+    };
+    queue.queuedItems.push(unifiedItem);
     this.queueChangeSubject.next({
       itemsFromAllQueues: this.itemsFromAllQueues,
       type: "add"
@@ -235,6 +303,28 @@ export class ProductionComponent {
     }
 
     return null;
+  }
+
+  /**
+   * Add an item (production or research) to the queue with least remaining time.
+   * Used by ResearchComponent to add research items to production queues.
+   */
+  addToQueue(item: UnifiedQueueItem): void {
+    const queue = this.findQueueForProduct();
+    if (!queue) {
+      throw new Error("No queue available");
+    }
+
+    queue.queuedItems.push(item);
+
+    if (queue.queuedItems.length === 1) {
+      this.resetQueue(queue);
+    }
+
+    this.queueChangeSubject.next({
+      itemsFromAllQueues: this.itemsFromAllQueues,
+      type: "add"
+    });
   }
 
   private handleImmediatePayment(queueItem: ProductionQueueItem): void {
@@ -275,7 +365,11 @@ export class ProductionComponent {
     if (queueIndex >= queue.queuedItems.length) {
       throw new Error("Invalid queue index");
     }
-    const { actorName } = queue.queuedItems[queueIndex]!;
+    const item = queue.queuedItems[queueIndex]!;
+    if (item.type !== QueueItemType.Production || !item.productionData) {
+      throw new Error("Invalid production item");
+    }
+    const { actorName } = item.productionData;
 
     const logicalTransform = getGameObjectLogicalTransform(this.gameObject);
     if (!logicalTransform) throw new Error("Transform not found");
@@ -342,26 +436,56 @@ export class ProductionComponent {
     }
   }
 
+  private finishResearch(queue: ProductionQueue, queueIndex: number): void {
+    if (queueIndex >= queue.queuedItems.length) {
+      throw new Error("Invalid queue index");
+    }
+    const item = queue.queuedItems[queueIndex]!;
+    if (item.type !== QueueItemType.Research || !item.researchData) {
+      throw new Error("Invalid research item");
+    }
+
+    // Remove from queue
+    queue.queuedItems.splice(queueIndex, 1);
+
+    // Notify research component
+    const researchComponent = getActorComponent(this.gameObject, ResearchComponent);
+    if (researchComponent) {
+      researchComponent.handleResearchComplete(item.researchData);
+    }
+
+    // Reset queue for next item
+    if (queue.queuedItems.length > 0) {
+      this.resetQueue(queue);
+    }
+
+    this.queueChangeSubject.next({
+      itemsFromAllQueues: this.itemsFromAllQueues,
+      type: "completed"
+    });
+  }
+
   /**
-   * find queue with lest products that is not at capacity
+   * Find queue with least remaining time that is not at capacity
    */
   private findQueueForProduct(): ProductionQueue | undefined {
-    let queueWithLeastProducts: ProductionQueue | undefined = undefined;
-    let queueWithLeastProductsCount = Number.MAX_SAFE_INTEGER;
+    let queueWithLeastTime: ProductionQueue | undefined = undefined;
+    let leastTime = Number.MAX_SAFE_INTEGER;
 
     for (let i = 0; i < this.productionQueues.length; i++) {
       const queue = this.productionQueues[i]!;
 
       // Check if the queue is not at full capacity
       if (queue.queuedItems.length < this.productionDefinition.capacityPerQueue) {
-        if (queue.queuedItems.length < queueWithLeastProductsCount) {
-          queueWithLeastProducts = queue;
-          queueWithLeastProductsCount = queue.queuedItems.length;
+        const totalTime = this.getTotalRemainingTimeForQueue(queue);
+        if (totalTime < leastTime) {
+          queueWithLeastTime = queue;
+          leastTime = totalTime;
         }
       }
     }
 
-    return queueWithLeastProducts;
+    return queueWithLeastTime;
   }
 
   private canAssignProduction(item: ProductionQueueItem): AssignProductionErrorCode | null {
@@ -390,10 +514,10 @@ export class ProductionComponent {
     return null;
   }
 
-  private resetQueue(queue: ProductionQueue) {
+  resetQueue(queue: ProductionQueue): void {
     if (queue.queuedItems.length <= 0) return;
-    const { costData } = queue.queuedItems[0]!;
-    queue.remainingProductionTime = costData.productionTime;
+    const firstItem = queue.queuedItems[0]!;
+    queue.remainingProductionTime = firstItem.totalTime;
   }
 
   private destroy() {
@@ -406,12 +530,18 @@ export class ProductionComponent {
     if (!this.isFinished) return;
     for (let i = 0; i < this.productionQueues.length; i++) {
       const queue = this.productionQueues[i]!;
-      const index = queue.queuedItems.findIndex((i) => i.actorName === item.actorName);
+      const index = queue.queuedItems.findIndex(
+        (queueItem) => queueItem.type === QueueItemType.Production &&
+                       queueItem.productionData?.actorName === item.actorName
+      );
 
       if (index !== -1) {
         // Get the item being cancelled
         const cancelledItem = queue.queuedItems[index]!;
-        const { costData } = cancelledItem;
+        if (cancelledItem.type !== QueueItemType.Production || !cancelledItem.productionData) {
+          continue;
+        }
+        const { costData } = cancelledItem.productionData;
 
         // Remove the item from the queue
         queue.queuedItems.splice(index, 1);
@@ -480,8 +610,10 @@ export class ProductionComponent {
   }
 
   getData(): ProductionComponentData {
-    // Flatten all queues into a simple list of product names for save
-    const queueNames = this.itemsFromAllQueues.map((i) => i.actorName);
+    // Flatten all queues into a simple list of product names for save (production items only)
+    const queueNames = this.itemsFromAllQueues
+      .filter(i => i.type === QueueItemType.Production && i.productionData)
+      .map((i) => i.productionData!.actorName);
     return {
       queue: queueNames,
       isProducing: this.isProducing,
@@ -506,13 +638,19 @@ export class ProductionComponent {
           console.warn(`No production cost found for ${actorName}, skipping...`);
           return;
         }
-        const dummyItem: ProductionQueueItem = {
+        const productionItem: ProductionQueueItem = {
           actorName,
           costData: cost
         };
+        // Wrap in UnifiedQueueItem
+        const unifiedItem: UnifiedQueueItem = {
+          type: QueueItemType.Production,
+          productionData: productionItem,
+          totalTime: cost.productionTime
+        };
         const queue = this.findQueueForProduct();
         if (queue) {
-          queue.queuedItems.push(dummyItem);
+          queue.queuedItems.push(unifiedItem);
         }
       });
 

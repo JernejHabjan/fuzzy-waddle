@@ -1,16 +1,17 @@
 import type { ProductionQueueItem } from "./game-object";
+import type { UnifiedQueueItem } from "../queue/queue-item";
 
 export class ProductionQueue {
-  queuedItems: ProductionQueueItem[] = [];
+  queuedItems: UnifiedQueueItem[] = [];
   remainingProductionTime = 0;
 
   constructor(private capacityPerQueue: number) {}
 
-  add(actor: ProductionQueueItem) {
+  add(item: UnifiedQueueItem) {
     if (this.queuedItems.length >= this.capacityPerQueue) {
       throw new Error("Queue is full");
     }
-    this.queuedItems.push(actor);
+    this.queuedItems.push(item);
   }
 
   removeAt(index: number) {

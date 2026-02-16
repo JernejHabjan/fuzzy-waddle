@@ -10,6 +10,8 @@ import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
 import { onObjectReady } from "../../../data/game-object-helper";
 import type { ResearchComponentData, ResearchType } from "@fuzzy-waddle/api-interfaces";
 import { SharedQueueComponent } from "../queue/shared-queue-component";
+import { QueueItemType, type UnifiedQueueItem } from "../queue/queue-item";
+import { ProductionComponent } from "../production/production-component";
 import Phaser from "phaser";
 
 export interface ResearchDefinition {
@@ -32,7 +34,6 @@ export class ResearchComponent {
   researchCompleted = new EventEmitter<ResearchType>();
   researchCancelled = new EventEmitter<ResearchType>();
 
-  private currentResearch?: ResearchQueueItem;
   private ownerComponent?: OwnerComponent;
   private techTreeService?: TechTreeService;
 
@@ -42,7 +43,6 @@ export class ResearchComponent {
   ) {
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
-    gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
     onObjectReady(gameObject, this.init, this);
   }
 
@@ -60,7 +60,7 @@ export class ResearchComponent {
   }
 
   private destroy(): void {
-    this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
+    // Cleanup if needed
   }
 
   get availableResearch(): ResearchType[] {
@@ -68,20 +68,39 @@ export class ResearchComponent {
   }
 
   get isResearching(): boolean {
-    return this.currentResearch !== undefined;
+    const productionComponent = getActorComponent(this.gameObject, ProductionComponent);
+    if (!productionComponent) return false;
+
+    // Check if any production queue has a research item
+    for (const queue of productionComponent.productionQueues) {
+      for (const item of queue.queuedItems) {
+        if (item.type === QueueItemType.Research) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   get currentResearchType(): ResearchType | undefined {
-    return this.currentResearch?.type;
+    const productionComponent = getActorComponent(this.gameObject, ProductionComponent);
+    if (!productionComponent) return undefined;
+
+    // Find the first research item in any queue
+    for (const queue of productionComponent.productionQueues) {
+      if (queue.queuedItems.length > 0) {
+        const firstItem = queue.queuedItems[0]!;
+        if (firstItem.type === QueueItemType.Research) {
+          return firstItem.researchData;
+        }
+      }
+    }
+    return undefined;
   }
 
   canStartResearch(type: ResearchType): { canStart: boolean; reason?: string } {
     if (!this.availableResearch.includes(type)) {
       return { canStart: false, reason: "Research not available at this building" };
-    }
-
-    if (this.isResearching) {
-      return { canStart: false, reason: "Already researching" };
     }
 
     const owner = this.ownerComponent?.getOwner();
@@ -131,11 +150,20 @@ export class ResearchComponent {
     // Pay resources immediately
     emitResource(this.gameObject.scene, "resource.removed", researchData.cost, owner);
 
-    // Start research
-    this.currentResearch = {
-      type,
-      remainingTime: researchData.researchTime
+    // Add to production queue system
+    const productionComponent = getActorComponent(this.gameObject, ProductionComponent);
+    if (!productionComponent) {
+      console.error("ProductionComponent not found - research requires production queues");
+      return false;
+    }
+
+    const unifiedItem: UnifiedQueueItem = {
+      type: QueueItemType.Research,
+      researchData: type,
+      totalTime: researchData.researchTime
     };
+
+    productionComponent.addToQueue(unifiedItem);
 
     this.researchStarted.emit(type);
     this.gameObject.emit(ResearchComponent.ResearchStartedEvent, type);
@@ -143,14 +171,23 @@ export class ResearchComponent {
     return true;
   }
 
-  cancelResearch(): boolean {
-    if (!this.currentResearch) {
-      return false;
+  /**
+   * Called by ProductionComponent when research completes.
+   * Registers the research in the tech tree and emits completion events.
+   */
+  handleResearchComplete(type: ResearchType): void {
+    const owner = this.ownerComponent?.getOwner();
+    if (owner !== undefined) {
+      this.techTreeService?.registerResearchComplete(owner, type);
     }
 
-    const type = this.currentResearch.type;
-    const researchData = researchDefinitions[type];
-    if (!researchData) {
+    this.researchCompleted.emit(type);
+    this.gameObject.emit(ResearchComponent.ResearchCompletedEvent, type);
+  }
+
+  cancelResearch(): boolean {
+    const productionComponent = getActorComponent(this.gameObject, ProductionComponent);
+    if (!productionComponent) {
       return false;
     }
 
@@ -159,41 +196,64 @@ export class ResearchComponent {
       return false;
     }
 
-    // Calculate refund based on progress and refund factor from research data
-    const totalTime = researchData.researchTime;
-    const remainingTime = this.currentResearch.remainingTime;
-    const progress = (totalTime - remainingTime) / totalTime;
-    const refundFactor = researchData.refundFactor * (1 - progress);
+    // Find the first research item in queues (typically the currently processing one)
+    for (const queue of productionComponent.productionQueues) {
+      const firstItem = queue.queuedItems[0];
+      if (firstItem && firstItem.type === QueueItemType.Research && firstItem.researchData) {
+        const type = firstItem.researchData;
+        const researchData = researchDefinitions[type];
+        if (!researchData) {
+          return false;
+        }
 
-    const refundedResources: Partial<Record<string, number>> = {};
-    for (const [resourceType, amount] of Object.entries(researchData.cost)) {
-      if (amount !== undefined) {
-        refundedResources[resourceType] = Math.floor(amount * refundFactor);
+        // Calculate refund based on progress
+        const totalTime = researchData.researchTime;
+        const remainingTime = queue.remainingProductionTime;
+        const progress = (totalTime - remainingTime) / totalTime;
+        const refundFactor = researchData.refundFactor * (1 - progress);
+
+        const refundedResources: Partial<Record<string, number>> = {};
+        for (const [resourceType, amount] of Object.entries(researchData.cost)) {
+          if (amount !== undefined) {
+            refundedResources[resourceType] = Math.floor(amount * refundFactor);
+          }
+        }
+
+        emitResource(this.gameObject.scene, "resource.added", refundedResources, owner);
+
+        // Remove from queue
+        queue.queuedItems.splice(0, 1);
+
+        // Reset queue if there are more items
+        if (queue.queuedItems.length > 0) {
+          productionComponent.resetQueue(queue);
+        }
+
+        this.researchCancelled.emit(type);
+        this.gameObject.emit(ResearchComponent.ResearchCancelledEvent, type);
+
+        return true;
       }
     }
 
-    emitResource(this.gameObject.scene, "resource.added", refundedResources, owner);
-
-    this.currentResearch = undefined;
-    this.researchCancelled.emit(type);
-    this.gameObject.emit(ResearchComponent.ResearchCancelledEvent, type);
-
-    return true;
+    return false;
   }
 
   getResearchProgress(type: ResearchType): number {
-    if (!this.currentResearch || this.currentResearch.type !== type) {
-      return 0;
+    const productionComponent = getActorComponent(this.gameObject, ProductionComponent);
+    if (!productionComponent) return 0;
+
+    // Find the research item in queues
+    for (const queue of productionComponent.productionQueues) {
+      const firstItem = queue.queuedItems[0];
+      if (firstItem && firstItem.type === QueueItemType.Research && firstItem.researchData === type) {
+        const totalTime = firstItem.totalTime;
+        const remainingTime = queue.remainingProductionTime;
+        return ((totalTime - remainingTime) / totalTime) * 100;
+      }
     }
 
-    const researchData = researchDefinitions[type];
-    if (!researchData) {
-      return 0;
-    }
-
-    const totalTime = researchData.researchTime;
-    const remainingTime = this.currentResearch.remainingTime;
-    return ((totalTime - remainingTime) / totalTime) * 100;
+    return 0;
   }
 
   isResearched(type: ResearchType): boolean {
@@ -204,57 +264,39 @@ export class ResearchComponent {
     return this.techTreeService?.isResearched(owner, type) ?? false;
   }
 
-  private update(_time: number, delta: number): void {
-    if (!this.currentResearch) {
-      return;
-    }
-
-    const deltaWithTimeScale = delta * this.gameObject.scene.time.timeScale;
-    this.currentResearch.remainingTime -= deltaWithTimeScale;
-
-    const type = this.currentResearch.type;
-    const progress = this.getResearchProgress(type);
-
-    this.researchProgress.emit({ type, progress });
-    this.gameObject.emit(ResearchComponent.ResearchProgressEvent, { type, progress });
-
-    if (this.currentResearch.remainingTime <= 0) {
-      this.completeResearch();
-    }
-  }
-
-  private completeResearch(): void {
-    if (!this.currentResearch) {
-      return;
-    }
-
-    const type = this.currentResearch.type;
-    const owner = this.ownerComponent?.getOwner();
-
-    if (owner !== undefined) {
-      this.techTreeService?.registerResearchComplete(owner, type);
-    }
-
-    this.currentResearch = undefined;
-    this.researchCompleted.emit(type);
-    this.gameObject.emit(ResearchComponent.ResearchCompletedEvent, type);
-  }
-
   getData(): ResearchComponentData {
+    // Research state is now stored in ProductionComponent queues
     return {
-      currentResearch: this.currentResearch?.type,
-      remainingTime: this.currentResearch?.remainingTime ?? 0
+      currentResearch: undefined,
+      remainingTime: 0
     };
   }
 
   setData(data: Partial<ResearchComponentData>): void {
+    // Migrate old save data: if currentResearch exists, add it to production queues
     if (data.currentResearch) {
-      this.currentResearch = {
-        type: data.currentResearch as ResearchType,
-        remainingTime: data.remainingTime ?? 0
-      };
-    } else {
-      this.currentResearch = undefined;
+      const productionComponent = getActorComponent(this.gameObject, ProductionComponent);
+      if (productionComponent) {
+        const researchData = researchDefinitions[data.currentResearch as ResearchType];
+        if (researchData) {
+          const unifiedItem: UnifiedQueueItem = {
+            type: QueueItemType.Research,
+            researchData: data.currentResearch as ResearchType,
+            totalTime: researchData.researchTime
+          };
+          // Add to production queue and set remaining time
+          productionComponent.addToQueue(unifiedItem);
+          // Update the queue's remaining time to match saved progress
+          if (productionComponent.productionQueues.length > 0) {
+            for (const queue of productionComponent.productionQueues) {
+              if (queue.queuedItems.length > 0 && queue.queuedItems[queue.queuedItems.length - 1] === unifiedItem) {
+                queue.remainingProductionTime = data.remainingTime ?? researchData.researchTime;
+                break;
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

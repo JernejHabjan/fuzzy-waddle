@@ -7,6 +7,7 @@ import { pwActorDefinitions } from "../../../prefabs/definitions/actor-definitio
 import { researchDefinitions } from "../research/research-definitions";
 import { onObjectReady } from "../../../data/game-object-helper";
 import { getActorComponent } from "../../../data/actor-component";
+import { QueueItemType } from "./queue-item";
 import Phaser from "phaser";
 
 /**
@@ -127,56 +128,67 @@ export class SharedQueueComponent {
   }
 
   /**
-   * Rebuild the unified queue from production and research components
+   * Rebuild the unified queue from production component's queues
+   * (which now contain both production and research items)
    */
   private rebuildQueue(): void {
     const newQueue: SharedQueueItem[] = [];
     let displayIndex = 0;
 
-    // Add research items first (they take priority in display)
-    if (this.researchComponent) {
-      const currentResearchType = this.researchComponent.currentResearchType;
-      if (currentResearchType) {
-        const researchData = researchDefinitions[currentResearchType];
-        if (researchData && researchData.icon) {
-          const progress = this.researchComponent.getResearchProgress(currentResearchType);
-          newQueue.push({
-            type: SharedQueueItemType.Research,
-            id: `research-${currentResearchType}`,
-            iconData: {
-              key: researchData.icon.key,
-              frame: researchData.icon.frame,
-              origin: { x: 0.5, y: 0.5 }
-            },
-            progressPercent: progress,
-            displayIndex: displayIndex++,
-            researchData: currentResearchType
-          });
-        }
-      }
+    if (!this.productionComponent) {
+      this.unifiedQueue = newQueue;
+      this.queueChangedSubject.next(this.unifiedQueue);
+      return;
     }
 
-    // Add production items after research
-    if (this.productionComponent) {
-      const productionItems = this.productionComponent.itemsFromAllQueues;
-      productionItems.forEach((item, index) => {
-        const actorDefinition = pwActorDefinitions[item.actorName];
-        const infoComponent = actorDefinition.components?.info;
-        if (infoComponent?.smallImage) {
-          newQueue.push({
-            type: SharedQueueItemType.Production,
-            id: `production-${index}`,
-            iconData: {
-              key: infoComponent.smallImage.key,
-              frame: infoComponent.smallImage.frame,
-              origin: infoComponent.smallImage.origin
-            },
-            progressPercent: 0, // Will be updated by progress events
-            displayIndex: displayIndex++,
-            productionData: item
-          });
+    // Iterate through all production queues and collect items
+    for (const queue of this.productionComponent.productionQueues) {
+      for (let i = 0; i < queue.queuedItems.length; i++) {
+        const item = queue.queuedItems[i]!;
+
+        // Calculate progress (only for first item in queue)
+        const progress = i === 0
+          ? (this.productionComponent.getQueueProgress(queue) ?? 0)
+          : 0;
+
+        // Handle production items
+        if (item.type === QueueItemType.Production && item.productionData) {
+          const actorDefinition = pwActorDefinitions[item.productionData.actorName];
+          const infoComponent = actorDefinition.components?.info;
+          if (infoComponent?.smallImage) {
+            newQueue.push({
+              type: SharedQueueItemType.Production,
+              id: `production-${displayIndex}`,
+              iconData: {
+                key: infoComponent.smallImage.key,
+                frame: infoComponent.smallImage.frame,
+                origin: infoComponent.smallImage.origin
+              },
+              progressPercent: progress,
+              displayIndex: displayIndex++,
+              productionData: item.productionData
+            });
+          }
         }
-      });
+        // Handle research items
+        else if (item.type === QueueItemType.Research && item.researchData) {
+          const researchData = researchDefinitions[item.researchData];
+          if (researchData && researchData.icon) {
+            newQueue.push({
+              type: SharedQueueItemType.Research,
+              id: `research-${item.researchData}`,
+              iconData: {
+                key: researchData.icon.key,
+                frame: researchData.icon.frame,
+                origin: { x: 0.5, y: 0.5 }
+              },
+              progressPercent: progress,
+              displayIndex: displayIndex++,
+              researchData: item.researchData
+            });
+          }
+        }
+      }
     }
 
     this.unifiedQueue = newQueue;
