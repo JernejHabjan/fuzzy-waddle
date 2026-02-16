@@ -3,13 +3,13 @@ import { Subscription } from "rxjs";
 import { type StatusEffectData, StatusEffectType } from "@fuzzy-waddle/api-interfaces";
 import { HealthComponent } from "../combat/components/health-component";
 import Phaser from "phaser";
-import { onObjectReady, getGameObjectRenderedTransform } from "../../../data/game-object-helper";
+import { getGameObjectRenderedTransform, onObjectReady } from "../../../data/game-object-helper";
 import { getActorComponent } from "../../../data/actor-component";
 import { EffectsAnims } from "../../../animations/effects";
 
 export class StatusEffectVisualComponent {
   private statusEffectComponent?: StatusEffectComponent;
-  private sprite?: Phaser.GameObjects.Sprite;
+  private sprite?: Phaser.GameObjects.Sprite; // todo this is not the best way to handle this.
   private originalTint?: number;
   private wasAnimationPlaying: boolean = false;
   private currentTint?: number;

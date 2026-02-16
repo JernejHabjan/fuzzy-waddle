@@ -1,7 +1,6 @@
 import { PlayerAiBlackboard } from "../player-ai-blackboard";
 import { State } from "mistreevous";
 import { getActorComponent } from "../../../data/actor-component";
-import { ProductionComponent } from "../../../entity/components/production/production-component";
 import { ResearchComponent } from "../../../entity/components/research/research-component";
 import { SpellComponent } from "../../../entity/components/combat/components/spell-component";
 import { researchDefinitions } from "../../../entity/components/research/research-definitions";
@@ -115,7 +114,7 @@ export class TechProgressManager {
         if (canStart) {
           const success = researchComponent.startResearch(researchType);
           if (success) {
-            this.log("AI started research:", researchType);
+            // this.log("AI started research:", researchType);
             return State.SUCCEEDED;
           }
         }

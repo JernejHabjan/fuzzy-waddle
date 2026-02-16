@@ -1,5 +1,5 @@
 import { SpellType } from "./spell-type";
-import { SpellTargetType, type ObjectNames, DamageType, ResearchType } from "@fuzzy-waddle/api-interfaces";
+import { DamageType, type ObjectNames, ResearchType, SpellTargetType } from "@fuzzy-waddle/api-interfaces";
 import type { ProjectileData } from "./projectile-data";
 import { AnimationType } from "../animation/animation-type";
 
@@ -7,7 +7,7 @@ export interface SpellData {
   type: SpellType;
   name: string;
   description: string;
-  cooldown: number; // ms between casts
+  cooldown: number; // ms between casts. Must be non-zero positive integer
   range: number; // tiles (0 for self-cast)
   aoeRadius: number; // tiles (0 for single-target)
   targetType: SpellTargetType;

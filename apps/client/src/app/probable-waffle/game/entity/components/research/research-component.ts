@@ -2,16 +2,14 @@ import { EventEmitter } from "@angular/core";
 import { researchDefinitions } from "./research-definitions";
 import { OwnerComponent } from "../owner-component";
 import { getActorComponent } from "../../../data/actor-component";
-import { addActorComponent } from "../../../data/actor-data";
 import { emitResource, getPlayer } from "../../../data/scene-data";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
 import { onObjectReady } from "../../../data/game-object-helper";
-import { ObjectNames, type ResearchComponentData, type ResearchType } from "@fuzzy-waddle/api-interfaces";
-import { SharedQueueComponent } from "../queue/shared-queue-component";
+import { type ResearchComponentData, type ResearchType } from "@fuzzy-waddle/api-interfaces";
+import { QueueComponent } from "../queue/queue-component";
 import { QueueItemType, type UnifiedQueueItem } from "../queue/queue-item";
-import Phaser, { GameObjects } from "phaser";
-import { pwActorDefinitions } from "../../../prefabs/definitions/actor-definitions";
+import Phaser from "phaser";
 
 export interface ResearchDefinition {
   availableResearch: ResearchType[];
@@ -41,21 +39,12 @@ export class ResearchComponent {
   private init(): void {
     this.ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
     this.techTreeService = getSceneService(this.gameObject.scene, TechTreeService);
+    this.createSharedQueue();
   }
 
   private createSharedQueue() {
-    // Create or get SharedQueueComponent and register this research component
-    let sharedQueue = getActorComponent(this.gameObject, SharedQueueComponent);
-    if (!sharedQueue) {
-      const productionActorDefinition = pwActorDefinitions[this.gameObject.name as ObjectNames]?.components?.production;
-      sharedQueue = new SharedQueueComponent(
-        this.gameObject,
-        productionActorDefinition?.queueCount ?? 1,
-        productionActorDefinition?.capacityPerQueue ?? 1
-      );
-      addActorComponent(this.gameObject, sharedQueue);
-    }
-    sharedQueue.registerResearchComponent(this);
+    const queue = QueueComponent.createSharedQueue(this.gameObject);
+    queue.registerResearchComponent(this);
   }
 
   get availableResearch(): ResearchType[] {
@@ -63,14 +52,14 @@ export class ResearchComponent {
   }
 
   get isResearching(): boolean {
-    const sharedQueue = getActorComponent(this.gameObject, SharedQueueComponent);
+    const sharedQueue = getActorComponent(this.gameObject, QueueComponent);
     if (!sharedQueue) return false;
 
     return sharedQueue.allItems.some((item) => item.type === QueueItemType.Research);
   }
 
   get currentResearchType(): ResearchType | undefined {
-    const sharedQueue = getActorComponent(this.gameObject, SharedQueueComponent);
+    const sharedQueue = getActorComponent(this.gameObject, QueueComponent);
     if (!sharedQueue) return undefined;
 
     for (const queue of sharedQueue.queues) {
@@ -140,7 +129,7 @@ export class ResearchComponent {
     emitResource(this.gameObject.scene, "resource.removed", researchData.cost, owner);
 
     // Delegate to SharedQueueComponent
-    const sharedQueue = getActorComponent(this.gameObject, SharedQueueComponent);
+    const sharedQueue = getActorComponent(this.gameObject, QueueComponent);
     if (!sharedQueue) {
       console.error("SharedQueueComponent not found");
       return false;
@@ -204,7 +193,7 @@ export class ResearchComponent {
    * Cancel research - delegates to SharedQueueComponent
    */
   cancelResearch(): boolean {
-    const sharedQueue = getActorComponent(this.gameObject, SharedQueueComponent);
+    const sharedQueue = getActorComponent(this.gameObject, QueueComponent);
     if (!sharedQueue) {
       return false;
     }
@@ -213,7 +202,7 @@ export class ResearchComponent {
   }
 
   getResearchProgress(type: ResearchType): number {
-    const sharedQueue = getActorComponent(this.gameObject, SharedQueueComponent);
+    const sharedQueue = getActorComponent(this.gameObject, QueueComponent);
     if (!sharedQueue) return 0;
 
     // Find the research item in queues
@@ -239,7 +228,7 @@ export class ResearchComponent {
 
   getData(): ResearchComponentData {
     // Get research state from SharedQueueComponent
-    const sharedQueue = getActorComponent(this.gameObject, SharedQueueComponent);
+    const sharedQueue = getActorComponent(this.gameObject, QueueComponent);
     if (!sharedQueue) {
       return {
         researches: undefined
@@ -269,7 +258,7 @@ export class ResearchComponent {
     // Restore research state from save data
     if (data.researches && data.researches.length > 0) {
       this.createSharedQueue();
-      const sharedQueue = getActorComponent(this.gameObject, SharedQueueComponent);
+      const sharedQueue = getActorComponent(this.gameObject, QueueComponent);
       if (!sharedQueue) return;
 
       const items: UnifiedQueueItem[] = [];

@@ -1,4 +1,3 @@
-import type { ProductionQueueItem } from "./game-object";
 import type { UnifiedQueueItem } from "../queue/queue-item";
 
 export type ProductionProgressEvent = {

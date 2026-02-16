@@ -1,4 +1,4 @@
-import { type AoeZoneData, type StatusEffectData } from "@fuzzy-waddle/api-interfaces";
+import { type AoeZoneData, type StatusEffectData, type Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 import { onSceneInitialized } from "../../data/game-object-helper";
 import { getActorComponent } from "../../data/actor-component";
 import { OwnerComponent } from "../components/owner-component";
@@ -10,6 +10,7 @@ import { RandomService } from "../../world/services/random.service";
 import { TilemapComponent } from "../../world/tilemap/tilemap.component";
 import { EffectsAnims } from "../../animations/effects";
 import { AudioService } from "../../world/services/audio.service";
+import { RepresentableComponent } from "../components/representable-component";
 
 interface ZoneVisual {
   zoneId: string;
@@ -131,15 +132,15 @@ export class AoeZoneManager {
       if (!healthComponent || !healthComponent.alive) continue;
 
       // Get actor position
-      const actorTransform = this.getActorWorldPosition(gameObject);
-      if (!actorTransform) continue;
+      const actorWorldTransform = getActorComponent(gameObject, RepresentableComponent)!.logicalWorldTransform;
+      if (!actorWorldTransform) continue;
 
       // Check if within radius
       const distance = Phaser.Math.Distance.Between(
         zone.worldPosition.x,
         zone.worldPosition.y,
-        actorTransform.x,
-        actorTransform.y
+        actorWorldTransform.x,
+        actorWorldTransform.y
       );
 
       if (distance <= radiusInPixels) {
@@ -148,13 +149,6 @@ export class AoeZoneManager {
     }
 
     return actors;
-  }
-
-  private getActorWorldPosition(gameObject: Phaser.GameObjects.GameObject): { x: number; y: number } | null {
-    if ("x" in gameObject && "y" in gameObject) {
-      return { x: gameObject.x as number, y: gameObject.y as number };
-    }
-    return null;
   }
 
   private getRadiusInPixels(radiusTiles: number): number {
@@ -334,12 +328,12 @@ export class AoeZoneManager {
     }
   }
 
-  getZonesAtPosition(pos: { x: number; y: number }): AoeZoneData[] {
+  getZonesAtPosition(worldPosition: Vector2Simple): AoeZoneData[] {
     const zones: AoeZoneData[] = [];
 
     for (const zone of this.activeZones) {
       const radiusInPixels = this.getRadiusInPixels(zone.radius);
-      const distance = Phaser.Math.Distance.Between(zone.worldPosition.x, zone.worldPosition.y, pos.x, pos.y);
+      const distance = Phaser.Math.Distance.Between(zone.worldPosition.x, zone.worldPosition.y, worldPosition.x, worldPosition.y);
 
       if (distance <= radiusInPixels) {
         zones.push(zone);

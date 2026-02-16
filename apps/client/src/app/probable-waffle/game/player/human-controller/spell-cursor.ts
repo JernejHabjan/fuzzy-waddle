@@ -16,6 +16,7 @@ import { SceneActorCreator } from "../../world/services/scene-actor-creator";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { pwActorDefinitions } from "../../prefabs/definitions/actor-definitions";
 import { OwnerComponent } from "../../entity/components/owner-component";
+import { Subscription } from "rxjs";
 
 export class SpellCursor {
   private aoeCircle?: GameObjects.Graphics;
@@ -23,6 +24,8 @@ export class SpellCursor {
   private spellType?: SpellType;
   private selectedCasters: Phaser.GameObjects.GameObject[] = [];
   private escKey?: Phaser.Input.Keyboard.Key;
+  private externalModalOpen: boolean = false;
+  private externalModalSubscription?: Subscription;
 
   startCastingSpell = new EventEmitter<SpellType>();
   stopCastingSpell = new EventEmitter<void>();
@@ -36,7 +39,20 @@ export class SpellCursor {
     this.scene.input.on(Input.Events.GAME_OUT, this.deactivate, this);
     scene.onShutdown.subscribe(() => this.destroy());
     this.subscribeToCancelAction();
+    this.subscribeToExternalModalEvents();
   }
+
+  private subscribeToExternalModalEvents(): void {
+    // Listen to chat modal state changes
+    this.externalModalSubscription = this.scene.communicator.allScenes.subscribe((event) => {
+      if (event.name === "external-modal-opened") {
+        this.externalModalOpen = true;
+      } else if (event.name === "external-modal-closed") {
+        this.externalModalOpen = false;
+      }
+    });
+  }
+
   private subscribeToCancelAction(): void {
     this.escKey = this.scene.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
     this.escKey?.on("down", this.deactivate, this);
@@ -73,6 +89,9 @@ export class SpellCursor {
   }
 
   deactivate(): void {
+    // Don't process keyboard events if external modal is open
+    if (this.externalModalOpen) return;
+
     this.spellType = undefined;
     this.selectedCasters = [];
 
@@ -355,5 +374,6 @@ export class SpellCursor {
     this.scene.input.off(Input.Events.POINTER_DOWN, this.handlePointerDown, this);
     this.scene.input.off(Input.Events.GAME_OUT, this.deactivate, this);
     this.escKey?.destroy();
+    this.externalModalSubscription?.unsubscribe();
   }
 }

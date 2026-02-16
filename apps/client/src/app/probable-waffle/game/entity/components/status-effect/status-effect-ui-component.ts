@@ -1,13 +1,13 @@
-import { GameObjects } from 'phaser';
-import { StatusEffectComponent } from './status-effect-component';
-import { getActorComponent } from '../../../data/actor-component';
-import { Subscription } from 'rxjs';
-import { getGameObjectBounds, getGameObjectDepth, onObjectReady } from '../../../data/game-object-helper';
-import { OwnerComponent } from '../owner-component';
-import { ActorTranslateComponent } from '../movement/actor-translate-component';
-import { type StatusEffectData, StatusEffectType } from '@fuzzy-waddle/api-interfaces';
-import { HealthComponent } from '../combat/components/health-component';
-import { HealthUiComponent } from '../combat/components/health-ui-component';
+import { GameObjects } from "phaser";
+import { StatusEffectComponent } from "./status-effect-component";
+import { getActorComponent } from "../../../data/actor-component";
+import { Subscription } from "rxjs";
+import { getGameObjectBounds, getGameObjectDepth, onObjectReady } from "../../../data/game-object-helper";
+import { OwnerComponent } from "../owner-component";
+import { ActorTranslateComponent } from "../movement/actor-translate-component";
+import { type StatusEffectData, StatusEffectType } from "@fuzzy-waddle/api-interfaces";
+import { HealthComponent } from "../combat/components/health-component";
+import { HealthUiComponent } from "../combat/components/health-ui-component";
 
 interface EffectBar {
   effectType: StatusEffectType;
@@ -178,7 +178,12 @@ export class StatusEffectUiComponent {
   }
 
   private getBarDepth(): number {
-    return (getGameObjectDepth(this.gameObject) ?? 0) + OwnerComponent.ZIndex + HealthUiComponent.ZIndex + StatusEffectUiComponent.ZIndex;
+    return (
+      (getGameObjectDepth(this.gameObject) ?? 0) +
+      OwnerComponent.ZIndex +
+      HealthUiComponent.ZIndex +
+      StatusEffectUiComponent.ZIndex
+    );
   }
 
   private destroy(): void {

@@ -1,17 +1,18 @@
 // Runtime service that stores unified tech graph & per-player unlock state.
 import type { TechTreeGraph } from "./tech-tree-graph";
 import {
+  FactionType,
   ObjectNames,
   type PlayerNumber,
   PreRequirement,
-  ResearchType,
-  FactionType
+  ResearchType
 } from "@fuzzy-waddle/api-interfaces";
 import { TechTreeBuilder } from "./tech-tree.builder";
 import { getCanonicalActorNameCached } from "./canonical-actor-name";
 import { BuilderComponent } from "../../entity/components/construction/builder-component";
 import { environment } from "../../../../../environments/environment";
 import { shouldConsiderActorUnlocked } from "./actor-unlock-utils";
+import { FactionDefinitions } from "../../player/faction-definitions";
 
 export class TechTreeService {
   private readonly graph: TechTreeGraph;
@@ -38,9 +39,9 @@ export class TechTreeService {
    * This discovers all units and buildings reachable from a faction's starting point.
    */
   private buildFactionSets(): void {
-    for (const factionType of [FactionType.Tivara, FactionType.Skaduwee]) {
+    for (const faction of FactionDefinitions.factions) {
       const factionObjects = new Set<ObjectNames>();
-      const mainBuilding = this.getMainBuilding(factionType);
+      const mainBuilding = this.getMainBuildingForFaction(faction.type);
       const visited = new Set<ObjectNames>();
       const toProcess = [mainBuilding];
 
@@ -69,7 +70,7 @@ export class TechTreeService {
         }
       }
 
-      this.factionCache.set(factionType, factionObjects);
+      this.factionCache.set(faction.type, factionObjects);
     }
   }
 
@@ -87,18 +88,9 @@ export class TechTreeService {
     return factionSet ? factionSet.has(objectName) : false;
   }
 
-  /**
-   * Get the main building for a faction.
-   * @param factionType - The faction type
-   * @returns ObjectNames of the main building (Sandhold for Tivara, FrostForge for Skaduwee)
-   */
-  getMainBuilding(factionType: FactionType): ObjectNames {
-    if (factionType === FactionType.Tivara) {
-      return ObjectNames.Sandhold;
-    } else if (factionType === FactionType.Skaduwee) {
-      return ObjectNames.FrostForge;
-    }
-
+  getMainBuildingForFaction(factionType: FactionType): ObjectNames {
+    const objectName = FactionDefinitions.factions.find((f) => f.type === factionType)?.value.mainBuildingActorName;
+    if (objectName) return objectName;
     throw new Error(`Unknown faction type: ${factionType}`);
   }
 

@@ -14,12 +14,12 @@ export class ActorDebugDamageSystem {
   constructor(private scene: ProbableWaffleScene) {
     if (!environment.production) {
       this.bindKeyboardListener();
-      this.listenToChatModalEvents();
+      this.listenToExternalModalEvents();
     }
     scene.onShutdown.subscribe(() => this.destroy());
   }
 
-  private listenToChatModalEvents() {
+  private listenToExternalModalEvents() {
     this.externalModalSubscription = this.scene.communicator.allScenes.subscribe((event) => {
       if (event.name === "external-modal-opened") {
         this.externalModalOpen = true;

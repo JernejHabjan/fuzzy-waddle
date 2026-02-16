@@ -14,10 +14,9 @@ import { getSceneComponent } from "../../../world/services/scene-component-helpe
 import { IdComponent } from "../../../entity/components/id-component";
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import HudProbableWaffle from "../../../world/scenes/hud-scenes/HudProbableWaffle";
-import type { ProductionQueueItem } from "../../../entity/components/production/game-object";
 import type { ActorIconClickAction } from "./actor-icon-click-action";
 import { ResearchComponent } from "../../../entity/components/research/research-component";
-import { SharedQueueComponent } from "../../../entity/components/queue/shared-queue-component";
+import { QueueComponent } from "../../../entity/components/queue/queue-component";
 import { SharedQueueItemType } from "../../../entity/components/queue/shared-queue-item-type";
 import type { SharedQueueItem } from "../../../entity/components/queue/shared-queue-item";
 /* END-USER-IMPORTS */
@@ -149,7 +148,7 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
     this.queueChangedSubscription?.unsubscribe();
 
     // Get the SharedQueueComponent that was registered by ProductionComponent/ResearchComponent
-    const sharedQueue = getActorComponent(actor, SharedQueueComponent);
+    const sharedQueue = getActorComponent(actor, QueueComponent);
     if (sharedQueue) {
       // Subscribe to unified queue changes
       this.queueChangedSubscription = sharedQueue.queueChangedObservable.subscribe((items) => {
@@ -166,9 +165,9 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
     if (!actor) return;
 
     // Get production component to determine max queue size
-    const productionComponent = getActorComponent(actor, ProductionComponent);
-    const totalQueueSize = productionComponent
-      ? productionComponent.productionDefinition.queueCount * productionComponent.productionDefinition.capacityPerQueue
+    const queueComponent = getActorComponent(actor, QueueComponent);
+    const totalQueueSize = queueComponent
+      ? queueComponent.queueDefinition.queueCount * queueComponent.queueDefinition.capacityPerQueue
       : items.length;
 
     // Update icons based on unified queue items
@@ -283,7 +282,7 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
     if (!actor) return;
 
     // Get the unified queue item at this index from SharedQueueComponent
-    const sharedQueue = getActorComponent(actor, SharedQueueComponent);
+    const sharedQueue = getActorComponent(actor, QueueComponent);
     const queueItem = sharedQueue?.items[action.definition.iconIndex];
     if (!queueItem) return;
 
@@ -303,7 +302,7 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
     if (!actor) return;
 
     // Get the unified queue item at this index from SharedQueueComponent
-    const sharedQueue = getActorComponent(actor, SharedQueueComponent);
+    const sharedQueue = getActorComponent(actor, QueueComponent);
     const queueItem = sharedQueue?.items[action.definition.iconIndex];
     if (!queueItem) return;
 

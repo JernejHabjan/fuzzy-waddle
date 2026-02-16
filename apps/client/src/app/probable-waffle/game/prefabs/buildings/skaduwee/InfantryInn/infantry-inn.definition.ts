@@ -57,16 +57,18 @@ export const infantryInnDefinition = {
       costType: PaymentType.PayImmediately
     },
     production: {
-      queueCount: 1,
-      capacityPerQueue: 5,
       availableProduceActors: [
         ObjectNames.SkaduweeMagicianFemale,
         ObjectNames.SkaduweeRangedFemale,
         ObjectNames.SkaduweeWarriorMale
       ]
     },
+    queue: {
+      queueCount: 1,
+      capacityPerQueue: 5
+    },
     research: {
-      availableResearch: [ResearchType.SnowstormSpell]
+      availableResearch: [ResearchType.SnowstormSpell, ResearchType.HealingLightSpell, ResearchType.HealingTotemSpell]
     },
     selectable: {},
     collider: { enabled: true },

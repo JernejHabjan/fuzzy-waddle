@@ -1,6 +1,6 @@
 import type { UnifiedQueueItem } from "../queue/queue-item";
 
-export class ProductionQueue {
+export class SharedQueue {
   queuedItems: UnifiedQueueItem[] = [];
 
   constructor(private capacityPerQueue: number) {}

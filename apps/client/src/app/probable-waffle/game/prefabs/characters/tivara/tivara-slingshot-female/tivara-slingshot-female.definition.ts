@@ -15,6 +15,7 @@ import { SoundType } from "../../../../entity/components/actor-audio/sound-type"
 import { ActorPhysicalType } from "../../../../entity/components/combat/components/actor-physical-type";
 import { weaponDefinitions } from "../../../../entity/components/combat/weapon-definitions";
 import { AiType } from "../../../ai-agents/ai-type";
+import { SpellType } from "../../../../entity/components/combat/spell-type";
 
 export const tivaraSlingshotFemaleDefinition = {
   components: {
@@ -67,6 +68,9 @@ export const tivaraSlingshotFemaleDefinition = {
     },
     requirements: {
       actors: [ObjectNames.Temple]
+    },
+    spell: {
+      availableSpells: [SpellType.Firestorm, SpellType.FrostNova, SpellType.HealingRain]
     },
     selectable: {},
     translatable: {

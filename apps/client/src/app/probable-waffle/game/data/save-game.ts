@@ -28,7 +28,7 @@ export class SaveGame {
     // Save camera position and selection groups for the current player
     this.saveCurrentPlayerData();
 
-    // Save AI behavior tree state for all AI players
+    // Save AI behaviour tree state for all AI players
     this.saveAiPlayersState();
 
     // Save AOE zones
@@ -96,8 +96,7 @@ export class SaveGame {
     const aoeZoneManager = getSceneService(this.scene, AoeZoneManager);
     if (!aoeZoneManager) return;
 
-    const gameState = this.scene.baseGameData.gameInstance.gameState!.data;
-    gameState.aoeZones = aoeZoneManager.getData();
+    this.scene.baseGameData.gameInstance.gameState!.data.aoeZones = aoeZoneManager.getData();
   }
 
   private saveResearchState() {

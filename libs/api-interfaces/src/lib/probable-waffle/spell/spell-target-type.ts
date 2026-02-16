@@ -1,7 +1,12 @@
 export enum SpellTargetType {
-  Ground = 'ground', // target a position on the ground
-  Actor = 'actor', // target a specific actor (ally or enemy)
-  Self = 'self', // cast on self only
-  EnemyUnit = 'enemyUnit', // target enemy units only
-  FriendlyUnit = 'friendlyUnit' // target friendly units only
+  // target a position on the ground
+  Ground = "Ground",
+  // target a specific actor (ally or enemy)
+  Actor = "Actor",
+  // cast on self only
+  Self = "Self",
+  // target enemy units only
+  EnemyUnit = "EnemyUnit",
+  // target friendly units only
+  FriendlyUnit = "FriendlyUnit"
 }

@@ -1,5 +1,5 @@
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
-import { type BuildingPrerequisitesDefinition } from "../../data/tech-tree/actor-prerequisites";
+import type { BuildingPrerequisitesDefinition } from "../../data/tech-tree/actor-prerequisites";
 import type { InfoDefinition } from "../../entity/components/info-definition";
 import type { ObjectDescriptorDefinition } from "../../entity/components/object-descriptor-definition";
 import type { RepresentableDefinition } from "../../entity/components/representable-definition";
@@ -29,6 +29,7 @@ import type { ResourceDrainDefinition } from "../../entity/components/resource/r
 import type { ResourceSourceDefinition } from "../../entity/components/resource/resource-source-definition";
 import type { SpellDefinition } from "../../entity/components/combat/spell-definition";
 import type { ResearchDefinition } from "../../entity/components/research/research-component";
+import type { QueueDefinition } from "../../entity/components/production/queue-definition";
 
 export type PrefabDefinition = Partial<{
   components: Partial<{
@@ -51,6 +52,7 @@ export type PrefabDefinition = Partial<{
     resourceDrain: ResourceDrainDefinition;
     resourceSource: ResourceSourceDefinition;
     production: ProductionDefinition;
+    queue: QueueDefinition;
     healing: HealingDefinition;
     spell: SpellDefinition;
     research: ResearchDefinition;

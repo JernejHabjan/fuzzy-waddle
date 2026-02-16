@@ -128,13 +128,13 @@ describe("TechTree", () => {
     });
 
     it("should get main building for Tivara faction", () => {
-      const mainBuilding = service.getMainBuilding(FactionType.Tivara);
+      const mainBuilding = service.getMainBuildingForFaction(FactionType.Tivara);
 
       expect(mainBuilding).toBe(ObjectNames.Sandhold);
     });
 
     it("should get main building for Skaduwee faction", () => {
-      const mainBuilding = service.getMainBuilding(FactionType.Skaduwee);
+      const mainBuilding = service.getMainBuildingForFaction(FactionType.Skaduwee);
 
       expect(mainBuilding).toBe(ObjectNames.FrostForge);
     });

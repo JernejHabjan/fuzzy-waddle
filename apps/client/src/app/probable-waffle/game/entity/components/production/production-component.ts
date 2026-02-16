@@ -1,9 +1,8 @@
 import { PaymentType } from "./payment-type";
 import { OwnerComponent } from "../owner-component";
 import { getActorComponent } from "../../../data/actor-component";
-import { addActorComponent } from "../../../data/actor-data";
 import { emitResource, getCommunicator, getCurrentPlayerNumber, getPlayer } from "../../../data/scene-data";
-import { SharedQueueComponent } from "../queue/shared-queue-component";
+import { QueueComponent } from "../queue/queue-component";
 import { QueueItemType, type UnifiedQueueItem } from "../queue/queue-item";
 import { type ProductionComponentData, ResourceType, type Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { HealthComponent } from "../combat/components/health-component";
@@ -50,20 +49,9 @@ export class ProductionComponent {
     this.createSharedQueue();
   }
 
-  private createSharedQueue(){
-    // Create SharedQueueComponent with queue configuration
-    let sharedQueue = getActorComponent(this.gameObject, SharedQueueComponent);
-    if (!sharedQueue) {
-      sharedQueue = new SharedQueueComponent(
-        this.gameObject,
-        this.productionDefinition.queueCount,
-        this.productionDefinition.capacityPerQueue
-      );
-      addActorComponent(this.gameObject, sharedQueue);
-    }
-
-    // Register this component with SharedQueue
-    sharedQueue.registerProductionComponent(this);
+  private createSharedQueue() {
+    const queue = QueueComponent.createSharedQueue(this.gameObject);
+    queue.registerProductionComponent(this);
   }
 
   get productionProgressObservable() {
@@ -96,7 +84,7 @@ export class ProductionComponent {
   }
 
   get isProducing(): boolean {
-    const sharedQueue = getActorComponent(this.gameObject, SharedQueueComponent);
+    const sharedQueue = getActorComponent(this.gameObject, QueueComponent);
     return sharedQueue?.isProducing ?? false;
   }
 
@@ -105,17 +93,17 @@ export class ProductionComponent {
   }
 
   get itemsFromAllQueues() {
-    const sharedQueue = getActorComponent(this.gameObject, SharedQueueComponent);
+    const sharedQueue = getActorComponent(this.gameObject, QueueComponent);
     return sharedQueue?.allItems ?? [];
   }
 
   getTotalRemainingProductionTime(): number {
-    const sharedQueue = getActorComponent(this.gameObject, SharedQueueComponent);
+    const sharedQueue = getActorComponent(this.gameObject, QueueComponent);
     return sharedQueue?.getTotalRemainingProductionTime() ?? 0;
   }
 
   getCurrentProgress() {
-    const sharedQueue = getActorComponent(this.gameObject, SharedQueueComponent);
+    const sharedQueue = getActorComponent(this.gameObject, QueueComponent);
     if (!sharedQueue || !sharedQueue.isProducing) return null;
 
     for (const queue of sharedQueue.queues) {
@@ -141,7 +129,7 @@ export class ProductionComponent {
     this.handleImmediatePayment(queueItem);
 
     // Delegate to SharedQueueComponent
-    const sharedQueue = getActorComponent(this.gameObject, SharedQueueComponent);
+    const sharedQueue = getActorComponent(this.gameObject, QueueComponent);
     if (!sharedQueue) {
       throw new Error("SharedQueueComponent not found");
     }
@@ -312,7 +300,7 @@ export class ProductionComponent {
       return AssignProductionErrorCode.InvalidProduct;
 
     // check if queue is not full
-    const sharedQueue = getActorComponent(this.gameObject, SharedQueueComponent);
+    const sharedQueue = getActorComponent(this.gameObject, QueueComponent);
     if (!sharedQueue) return AssignProductionErrorCode.QueueFull;
 
     const queue = sharedQueue.findQueueForNewItem();
@@ -345,7 +333,7 @@ export class ProductionComponent {
   cancelProduction(item: ProductionQueueItem) {
     if (!this.isFinished) return;
 
-    const sharedQueue = getActorComponent(this.gameObject, SharedQueueComponent);
+    const sharedQueue = getActorComponent(this.gameObject, QueueComponent);
     if (!sharedQueue) return;
 
     sharedQueue.cancelProductionItem(item);
@@ -358,7 +346,7 @@ export class ProductionComponent {
   }
 
   getData(): ProductionComponentData {
-    const sharedQueue = getActorComponent(this.gameObject, SharedQueueComponent);
+    const sharedQueue = getActorComponent(this.gameObject, QueueComponent);
 
     // Get all production items with their remaining times
     const queueItems = (sharedQueue?.allItems ?? [])
@@ -376,10 +364,9 @@ export class ProductionComponent {
   }
 
   setData(data: Partial<ProductionComponentData>) {
-
     if (data.queue && data.queue.length > 0) {
       this.createSharedQueue();
-      const sharedQueue = getActorComponent(this.gameObject, SharedQueueComponent);
+      const sharedQueue = getActorComponent(this.gameObject, QueueComponent);
       if (!sharedQueue) return;
 
       const items: UnifiedQueueItem[] = [];

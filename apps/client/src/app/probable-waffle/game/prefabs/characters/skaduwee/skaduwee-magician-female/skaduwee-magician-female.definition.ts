@@ -56,9 +56,6 @@ export const skaduweeMagicianFemaleDefinition = {
     spell: {
       availableSpells: [
         SpellType.Snowstorm,
-        SpellType.Firestorm,
-        SpellType.FrostNova,
-        SpellType.HealingRain,
         SpellType.HealingTotem,
         SpellType.HealingLight
       ]

@@ -45,8 +45,8 @@ import { EconomyManager } from "./ai-behavior/economy-manager";
 import { PlayerAiBlackboard } from "./player-ai-blackboard";
 import { WorldStateSnapshotManager } from "./ai-behavior/world-state-snapshot-manager";
 import { getUnitStrength } from "./ai-utils";
-import GameObject = Phaser.GameObjects.GameObject;
 import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   private displayDebugInfo = false;
@@ -271,8 +271,8 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
           const supplyBuildingEntry = Object.entries(pwActorDefinitions)
             .filter(([_, def]) => !!def?.components?.housing?.housingCapacity)
             .sort(([, defA], [, defB]) => {
-              const capA = defA?.components?.housing?.housingCapacity!;
-              const capB = defB?.components?.housing?.housingCapacity!;
+              const capA = defA?.components?.housing?.housingCapacity ?? 0;
+              const capB = defB?.components?.housing?.housingCapacity ?? 0;
               return capB - capA; // Descending order (higher capacity first)
             })[0];
 

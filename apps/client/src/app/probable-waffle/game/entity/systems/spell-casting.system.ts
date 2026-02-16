@@ -2,8 +2,7 @@ import { SpellType } from "../components/combat/spell-type";
 import type { SpellData } from "../components/combat/spell-data";
 import { spellDefinitions } from "../components/combat/spell-definitions";
 import {
-  type ActorDefinition,
-  ConstructionStateEnum,
+  DamageType,
   type StatusEffectData,
   StatusEffectType,
   type Vector2Simple,
@@ -16,12 +15,7 @@ import { StatusEffectComponent } from "../components/status-effect/status-effect
 import { OwnerComponent } from "../components/owner-component";
 import { ActorTranslateComponent } from "../components/movement/actor-translate-component";
 import { AnimationActorComponent } from "../components/animation/animation-actor-component";
-import {
-  getGameObjectBounds,
-  getGameObjectLogicalTransform,
-  getGameObjectVisibility,
-  onObjectReady
-} from "../../data/game-object-helper";
+import { getGameObjectBounds, getGameObjectLogicalTransform, onObjectReady } from "../../data/game-object-helper";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { AudioService } from "../../world/services/audio.service";
 import { AoeZoneManager } from "./aoe-zone-manager";
@@ -82,6 +76,7 @@ export class SpellCastingSystem {
     }
 
     // Check cooldown
+    // noinspection RedundantIfStatementJS
     if (!this.spellComponent.canCastSpell(spellType)) {
       return false;
     }
@@ -391,22 +386,26 @@ export class SpellCastingSystem {
 
   private getDotEffectType(spellData: SpellData): StatusEffectType {
     switch (spellData.damageType) {
-      case 1: // Fire
+      case DamageType.Fire:
         return StatusEffectType.Burning;
-      case 3: // Poison
+      case DamageType.Poison:
         return StatusEffectType.Poisoned;
+      case DamageType.Frost:
+        return StatusEffectType.Frozen;
       default:
         return StatusEffectType.Burning;
     }
   }
 
   private getStunEffectType(spellData: SpellData): StatusEffectType {
-    // Frost spells use Frozen, others use Stunned
-    if (spellData.damageType === 1) {
-      // Frost
-      return StatusEffectType.Frozen;
+    switch (spellData.damageType) {
+      case DamageType.Frost:
+        return StatusEffectType.Frozen;
+      case DamageType.Fire:
+        return StatusEffectType.Burning;
+      default:
+        return StatusEffectType.Stunned;
     }
-    return StatusEffectType.Stunned;
   }
 
   private createPersistentZone(spellData: SpellData, targetPosition: Vector2Simple): void {

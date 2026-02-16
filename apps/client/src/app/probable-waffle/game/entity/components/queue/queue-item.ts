@@ -2,8 +2,8 @@ import type { ResearchType } from "@fuzzy-waddle/api-interfaces";
 import type { ProductionQueueItem } from "../production/game-object";
 
 export enum QueueItemType {
-  Production = 'production',
-  Research = 'research'
+  Production = "Production",
+  Research = "Research"
 }
 
 export interface UnifiedQueueItem {

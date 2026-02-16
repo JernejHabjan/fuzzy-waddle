@@ -6,21 +6,24 @@ import { ResearchComponent } from "../research/research-component";
 import { pwActorDefinitions } from "../../../prefabs/definitions/actor-definitions";
 import { researchDefinitions } from "../research/research-definitions";
 import { QueueItemType, type UnifiedQueueItem } from "./queue-item";
-import { ProductionQueue } from "../production/production-queue";
+import { SharedQueue } from "../production/shared-queue";
 import { PaymentType } from "../production/payment-type";
 import type { ProductionQueueItem } from "../production/game-object";
 import Phaser from "phaser";
+import type { QueueDefinition } from "../production/queue-definition";
+import { getActorComponent } from "../../../data/actor-component";
+import { addActorComponent } from "../../../data/actor-data";
+import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 
 /**
  * SharedQueueComponent is the queue owner and processor.
  * It owns the ProductionQueue[] array, runs the update loop,
  * and delegates completion to ProductionComponent/ResearchComponent.
  */
-export class SharedQueueComponent {
+export class QueueComponent {
   // Queue ownership
-  private productionQueues: ProductionQueue[] = [];
-  private queueCount: number = 0;
-  private capacityPerQueue: number = 0;
+  private sharedQueues: SharedQueue[] = [];
+  private readonly capacityPerQueue: number = 0;
 
   // Display queue notification (for UI)
   private queueChangedSubject = new Subject<SharedQueueItem[]>();
@@ -30,16 +33,14 @@ export class SharedQueueComponent {
   private researchComponent?: ResearchComponent;
 
   constructor(
-    private readonly gameObject: Phaser.GameObjects.GameObject,
-    queueCount: number,
-    capacityPerQueue: number
+    readonly gameObject: Phaser.GameObjects.GameObject,
+    public readonly queueDefinition: QueueDefinition
   ) {
-    this.queueCount = queueCount;
-    this.capacityPerQueue = capacityPerQueue;
+    this.capacityPerQueue = queueDefinition.capacityPerQueue;
 
     // Initialize queues
-    for (let i = 0; i < queueCount; i++) {
-      this.productionQueues.push(new ProductionQueue(capacityPerQueue));
+    for (let i = 0; i < queueDefinition.queueCount; i++) {
+      this.sharedQueues.push(new SharedQueue(queueDefinition.capacityPerQueue));
     }
 
     // Hook to Phaser UPDATE event
@@ -47,15 +48,34 @@ export class SharedQueueComponent {
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
   }
 
+  static createSharedQueue(gameObject: Phaser.GameObjects.GameObject): QueueComponent {
+    // Create SharedQueueComponent with queue configuration
+    let sharedQueue = getActorComponent(gameObject, QueueComponent);
+    const queueDefinition = pwActorDefinitions[gameObject.name as ObjectNames]?.components?.queue;
+    if (!sharedQueue) {
+      sharedQueue = new QueueComponent(
+        gameObject,
+        queueDefinition ??
+          ({
+            queueCount: 1,
+            capacityPerQueue: 5
+          } satisfies QueueDefinition)
+      );
+      addActorComponent(gameObject, sharedQueue);
+    }
+    return sharedQueue;
+  }
+
   /**
    * Main update loop - processes all queue items
    */
   private update(_time: number, delta: number): void {
+    if (!this.gameObject.scene) return;
     const deltaWithTimeScale = delta * this.gameObject.scene.time.timeScale;
 
     // Process each queue's first item
-    for (let queueIndex = 0; queueIndex < this.productionQueues.length; queueIndex++) {
-      const queue = this.productionQueues[queueIndex]!;
+    for (let queueIndex = 0; queueIndex < this.sharedQueues.length; queueIndex++) {
+      const queue = this.sharedQueues[queueIndex]!;
       if (queue.queuedItems.length === 0) continue;
 
       const firstItem = queue.queuedItems[0]!;
@@ -74,7 +94,7 @@ export class SharedQueueComponent {
   /**
    * Process a production item in the queue
    */
-  private processProductionItem(queue: ProductionQueue, queueIndex: number, delta: number): void {
+  private processProductionItem(queue: SharedQueue, queueIndex: number, delta: number): void {
     const firstItem = queue.queuedItems[0]!;
     if (!firstItem.productionData) return;
 
@@ -113,7 +133,7 @@ export class SharedQueueComponent {
   /**
    * Process a research item in the queue
    */
-  private processResearchItem(queue: ProductionQueue, queueIndex: number, delta: number): void {
+  private processResearchItem(queue: SharedQueue, queueIndex: number, delta: number): void {
     const firstItem = queue.queuedItems[0]!;
     if (!firstItem.researchData) return;
 
@@ -144,7 +164,7 @@ export class SharedQueueComponent {
   /**
    * Complete a production item - delegate to ProductionComponent for spawning
    */
-  private async completeProductionItem(queue: ProductionQueue, queueIndex: number): Promise<void> {
+  private async completeProductionItem(queue: SharedQueue, queueIndex: number): Promise<void> {
     const item = queue.queuedItems[0]!;
     if (item.type !== QueueItemType.Production || !item.productionData) return;
 
@@ -172,7 +192,7 @@ export class SharedQueueComponent {
   /**
    * Complete a research item - delegate to ResearchComponent for tech tree registration
    */
-  private completeResearchItem(queue: ProductionQueue, queueIndex: number): void {
+  private completeResearchItem(queue: SharedQueue, queueIndex: number): void {
     const item = queue.queuedItems[0]!;
     if (item.type !== QueueItemType.Research || !item.researchData) return;
 
@@ -228,8 +248,8 @@ export class SharedQueueComponent {
    * Public API: Cancel a production item
    */
   cancelProductionItem(item: ProductionQueueItem): boolean {
-    for (let i = 0; i < this.productionQueues.length; i++) {
-      const queue = this.productionQueues[i]!;
+    for (let i = 0; i < this.sharedQueues.length; i++) {
+      const queue = this.sharedQueues[i]!;
       const index = queue.queuedItems.findIndex(
         (queueItem) =>
           queueItem.type === QueueItemType.Production && queueItem.productionData?.actorName === item.actorName
@@ -273,7 +293,7 @@ export class SharedQueueComponent {
    * Public API: Cancel the first research item
    */
   cancelResearchItem(): boolean {
-    for (const queue of this.productionQueues) {
+    for (const queue of this.sharedQueues) {
       const firstItem = queue.queuedItems[0];
       if (firstItem && firstItem.type === QueueItemType.Research && firstItem.researchData) {
         const type = firstItem.researchData;
@@ -308,13 +328,13 @@ export class SharedQueueComponent {
   }
 
   /**
-   * Find queue with least remaining time that is not at capacity
+   * Find queue with the least remaining time that is not at capacity
    */
-  private findQueueWithLeastTime(): ProductionQueue | undefined {
-    let queueWithLeastTime: ProductionQueue | undefined = undefined;
+  private findQueueWithLeastTime(): SharedQueue | undefined {
+    let queueWithLeastTime: SharedQueue | undefined = undefined;
     let leastTime = Number.MAX_SAFE_INTEGER;
 
-    for (const queue of this.productionQueues) {
+    for (const queue of this.sharedQueues) {
       if (queue.queuedItems.length < this.capacityPerQueue) {
         const totalTime = this.getTotalRemainingTimeForQueue(queue);
         if (totalTime < leastTime) {
@@ -330,7 +350,7 @@ export class SharedQueueComponent {
   /**
    * Get total remaining time for a queue
    */
-  private getTotalRemainingTimeForQueue(queue: ProductionQueue): number {
+  private getTotalRemainingTimeForQueue(queue: SharedQueue): number {
     if (queue.queuedItems.length === 0) return 0;
 
     let totalTime = 0;
@@ -342,11 +362,10 @@ export class SharedQueueComponent {
     return totalTime;
   }
 
-
   /**
    * Public API: Get queue with least remaining time (for validation)
    */
-  findQueueForNewItem(): ProductionQueue | undefined {
+  findQueueForNewItem(): SharedQueue | undefined {
     return this.findQueueWithLeastTime();
   }
 
@@ -355,7 +374,7 @@ export class SharedQueueComponent {
    */
   getTotalRemainingProductionTime(): number {
     let totalTime = 0;
-    for (const queue of this.productionQueues) {
+    for (const queue of this.sharedQueues) {
       totalTime += this.getTotalRemainingTimeForQueue(queue);
     }
     return totalTime;
@@ -364,7 +383,7 @@ export class SharedQueueComponent {
   /**
    * Public API: Get progress for a specific queue
    */
-  getQueueProgress(queue: ProductionQueue): number | null {
+  getQueueProgress(queue: SharedQueue): number | null {
     if (queue.queuedItems.length === 0) return null;
 
     const firstItem = queue.queuedItems[0]!;
@@ -378,7 +397,7 @@ export class SharedQueueComponent {
    * Public API: Check if any queue is producing
    */
   get isProducing(): boolean {
-    for (const queue of this.productionQueues) {
+    for (const queue of this.sharedQueues) {
       if (queue.queuedItems.length > 0) {
         return true;
       }
@@ -390,14 +409,14 @@ export class SharedQueueComponent {
    * Public API: Get all items from all queues
    */
   get allItems(): UnifiedQueueItem[] {
-    return this.productionQueues.reduce((acc, queue) => acc.concat(queue.queuedItems), [] as UnifiedQueueItem[]);
+    return this.sharedQueues.reduce((acc, queue) => acc.concat(queue.queuedItems), [] as UnifiedQueueItem[]);
   }
 
   /**
    * Public API: Get the raw queues (for compatibility)
    */
-  get queues(): ProductionQueue[] {
-    return this.productionQueues;
+  get queues(): SharedQueue[] {
+    return this.sharedQueues;
   }
 
   /**
@@ -425,13 +444,13 @@ export class SharedQueueComponent {
 
   /**
    * Get the current unified queue items (for UI display)
-   * Computed on-demand from productionQueues
+   * Computed on-demand from sharedQueues
    */
   get items(): SharedQueueItem[] {
     const items: SharedQueueItem[] = [];
     let displayIndex = 0;
 
-    for (const queue of this.productionQueues) {
+    for (const queue of this.sharedQueues) {
       for (let i = 0; i < queue.queuedItems.length; i++) {
         const item = queue.queuedItems[i]!;
 
@@ -514,7 +533,7 @@ export class SharedQueueComponent {
    */
   setData(items: UnifiedQueueItem[]): void {
     // Clear existing queues
-    this.productionQueues.forEach((queue) => {
+    this.sharedQueues.forEach((queue) => {
       queue.queuedItems = [];
     });
 

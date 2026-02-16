@@ -43,6 +43,7 @@ import { StatusEffectUiComponent } from "../entity/components/status-effect/stat
 import { SpellComponent } from "../entity/components/combat/components/spell-component";
 import { SpellCastingSystem } from "../entity/systems/spell-casting.system";
 import { ResearchComponent } from "../entity/components/research/research-component";
+import { QueueComponent } from "../entity/components/queue/queue-component";
 
 export const ActorDataKey = "actorData";
 export class ActorData {

@@ -6,6 +6,7 @@ import { getCostForObjectName } from "../../../entity/components/production/cost
 import { GathererComponent } from "../../../entity/components/resource/gatherer-component";
 import { AI_CONFIG } from "../ai-config";
 import { State } from "mistreevous";
+import { QueueItemType } from "../../../entity/components/queue/queue-item";
 
 /**
  * LogisticsManager
@@ -145,7 +146,7 @@ export class LogisticsManager {
       if (prod) {
         prod.itemsFromAllQueues.forEach((item) => {
           // Only process production items (not research)
-          if (item.type === 'production' && item.productionData) {
+          if (item.type === QueueItemType.Production && item.productionData) {
             const cost = getCostForObjectName(item.productionData.actorName);
             if (cost) {
               for (const key in cost) {
