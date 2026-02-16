@@ -72,6 +72,7 @@ export default class ActorAction extends Phaser.GameObjects.Container {
     this.on(Phaser.Input.Events.POINTER_OVER, this.onPointerOver);
     this.on(Phaser.Input.Events.POINTER_OUT, this.onPointerOut);
     this.on("actor-action", this.triggerAction);
+    this.on(Phaser.Input.Events.POINTER_DOWN, this.onPointerDown);
     /* END-USER-CTR-CODE */
   }
 
@@ -85,10 +86,18 @@ export default class ActorAction extends Phaser.GameObjects.Container {
   private tooltip?: ActorDefinitionTooltip;
   private tooltipInfo?: TooltipInfo;
   private action: (() => void) | undefined;
+  private onRightClickAction: (() => void) | undefined;
   private tooltipTimeoutId?: number;
 
   // Small shortcut label rendered on top of the button
   private shortcutText?: Phaser.GameObjects.Text;
+
+  // Cooldown overlay mask and countdown text
+  private cooldownMask?: Phaser.GameObjects.Graphics;
+  private cooldownText?: Phaser.GameObjects.Text;
+
+  // Autocast indicator
+  private autocastIndicator?: Phaser.GameObjects.Image;
 
   setup(setup: ActorActionSetup) {
     if (setup.icon) {
@@ -98,7 +107,10 @@ export default class ActorAction extends Phaser.GameObjects.Container {
     this.setVisible(setup.visible);
     this.tooltipInfo = setup.tooltipInfo;
     this.action = setup.action;
+    this.onRightClickAction = setup.onRightClick;
     this.setShortcutLabel(setup.shortcut);
+    this.setCooldownProgress(setup.cooldownProgress, setup.cooldownRemaining);
+    this.setAutocastIndicator(setup.autocastEnabled ?? false);
   }
 
   private ensureShortcutText() {
@@ -155,6 +167,72 @@ export default class ActorAction extends Phaser.GameObjects.Container {
     this.shortcutText?.setAlpha(this.disabled ? 0.5 : 1);
   }
 
+  private setCooldownProgress(progress?: number, remainingMs?: number) {
+    if (progress === undefined || progress >= 100) {
+      // No cooldown, hide overlay
+      this.cooldownMask?.setVisible(false);
+      this.cooldownText?.setVisible(false);
+      return;
+    }
+
+    // Ensure cooldown mask exists
+    if (!this.cooldownMask) {
+      this.cooldownMask = this.scene.add.graphics();
+      this.cooldownMask.setDepth(5);
+      this.add(this.cooldownMask);
+    }
+
+    // Ensure cooldown text exists
+    if (!this.cooldownText) {
+      this.cooldownText = this.scene.add.text(10, 5, "", {
+        fontSize: "10px",
+        fontFamily: "disposabledroid",
+        color: "#ffffff",
+        resolution: 10
+      });
+      this.cooldownText.setOrigin(1, 1);
+      this.cooldownText.setDepth(10);
+      this.cooldownText.setShadow(1, 1, "#000000", 2, true, true);
+      this.add(this.cooldownText);
+    }
+
+    // Draw mask that decreases from top to bottom as cooldown progresses
+    // progress: 0% = just cast (full mask), 100% = ready (no mask)
+    this.cooldownMask.clear();
+    const maskHeight = ((100 - progress) / 100) * 26; // 26 is roughly the button height
+    this.cooldownMask.fillStyle(0x000000, 0.6);
+    this.cooldownMask.fillRect(-17, -13, 34, maskHeight);
+    this.cooldownMask.setVisible(true);
+
+    // Update countdown text
+    if (remainingMs !== undefined) {
+      const seconds = Math.ceil(remainingMs / 1000);
+      this.cooldownText.setText(`${seconds}s`);
+      this.cooldownText.setVisible(true);
+    } else {
+      this.cooldownText.setVisible(false);
+    }
+  }
+
+  setAutocastIndicator(enabled: boolean) {
+    if (!enabled) {
+      this.autocastIndicator?.setVisible(false);
+      return;
+    }
+
+    // Ensure autocast indicator exists
+    if (!this.autocastIndicator) {
+      this.autocastIndicator = this.scene.add.image(10, -8, "gui", "cryos_mini_gui/icons/recycle.png");
+      this.autocastIndicator.setOrigin(0.5, 0.5);
+      this.autocastIndicator.setScale(0.4);
+      this.autocastIndicator.setDepth(10);
+      this.autocastIndicator.setTint(0xffaa00); // Golden/orange tint
+      this.add(this.autocastIndicator);
+    }
+
+    this.autocastIndicator.setVisible(true);
+  }
+
   private onPointerOver = () => {
     this.pointerIn = true;
     this.setupTooltip();
@@ -207,10 +285,20 @@ export default class ActorAction extends Phaser.GameObjects.Container {
     this.action?.();
   };
 
+  private onPointerDown = (pointer: Phaser.Input.Pointer) => {
+    // Right-click (button 2) triggers the right-click action
+    if (pointer.rightButtonDown() && this.onRightClickAction) {
+      this.onRightClickAction();
+      // Prevent default action
+      pointer.event?.preventDefault();
+    }
+  };
+
   private destroyCore = () => {
     this.off("actor-action", this.triggerAction);
     this.off(Phaser.Input.Events.POINTER_OVER, this.onPointerOver);
     this.off(Phaser.Input.Events.POINTER_OUT, this.onPointerOut);
+    this.off(Phaser.Input.Events.POINTER_DOWN, this.onPointerDown);
     this.destroyTooltip();
   };
 

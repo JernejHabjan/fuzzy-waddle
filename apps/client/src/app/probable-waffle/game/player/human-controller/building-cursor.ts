@@ -18,7 +18,9 @@ import GameProbableWaffleScene from "../../world/scenes/GameProbableWaffleScene"
 import { Subscription } from "rxjs";
 import { TilemapComponent } from "../../world/tilemap/tilemap.component";
 import { getActorComponent } from "../../data/actor-component";
-import { ConstructionGameObjectInterfaceComponent } from "../../entity/components/construction/construction-game-object-interface-component";
+import {
+  ConstructionGameObjectInterfaceComponent
+} from "../../entity/components/construction/construction-game-object-interface-component";
 import { IdComponent } from "../../entity/components/id-component";
 import { getSceneComponent, getSceneService } from "../../world/services/scene-component-helpers";
 import { getTileCoordsUnderObject } from "../../library/tile-under-object";
@@ -35,8 +37,8 @@ import { OrderData } from "../../ai/OrderData";
 import { OrderType } from "../../ai/order-type";
 import { getCostForObjectName } from "../../entity/components/production/cost-utils";
 import { IsoHelper } from "../../world/tilemap/iso-helper";
-import Vector2 = Phaser.Math.Vector2;
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
+import Vector2 = Phaser.Math.Vector2;
 
 export class BuildingCursor {
   placementGrid?: GameObjects.Graphics;
@@ -64,7 +66,7 @@ export class BuildingCursor {
   private invalidCursorPositions: Set<string> = new Set(); // Track positions where buildings can't be placed
   private actorsToMove: Set<GameObjects.GameObject> = new Set(); // Track actors that need to be moved when placing buildings
   private externalModalOpen: boolean = false;
-  private chatModalSubscription?: Subscription;
+  private externalModalSubscription?: Subscription;
 
   // Helper: stable key based on snapped logical position (avoids z-offset and float drift)
   private getSnappedLogicalKey(go: GameObjects.GameObject): string | undefined {
@@ -93,9 +95,12 @@ export class BuildingCursor {
     this.audioService = getSceneService(this.scene, AudioService);
     this.fogOfWarComponent = getSceneComponent(this.scene, FogOfWarComponent);
     this.actorIndex = getSceneService(this.scene, ActorIndexSystem)!;
+    this.subscribeToExternalModalEvents();
+  }
 
+  private subscribeToExternalModalEvents(): void {
     // Listen to chat modal state changes
-    this.chatModalSubscription = this.scene.communicator.allScenes.subscribe((event) => {
+    this.externalModalSubscription = this.scene.communicator.allScenes.subscribe((event) => {
       if (event.name === "external-modal-opened") {
         this.externalModalOpen = true;
       } else if (event.name === "external-modal-closed") {
@@ -931,7 +936,7 @@ export class BuildingCursor {
   }
 
   private onEscapeKeyDown() {
-    // Don't process keyboard events if chat modal is open
+    // Don't process keyboard events if external modal is open
     if (this.externalModalOpen) return;
     this.stop();
   }
@@ -959,7 +964,7 @@ export class BuildingCursor {
     this.scene.input.off(Input.Events.GAME_OUT, this.stop, this);
     this.escKey?.off(Phaser.Input.Keyboard.Events.DOWN, this.onEscapeKeyDown, this);
     this.shiftKey?.destroy();
-    this.chatModalSubscription?.unsubscribe();
+    this.externalModalSubscription?.unsubscribe();
     this.startPlacingSubscription.unsubscribe();
     this.stopPlacingSubscription.unsubscribe();
   }

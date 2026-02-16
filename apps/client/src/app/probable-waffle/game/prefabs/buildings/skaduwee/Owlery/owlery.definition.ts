@@ -61,9 +61,11 @@ export const owleryDefinition = {
       requiresAnyOf: [ObjectNames.InfantryInn]
     },
     production: {
-      queueCount: 1,
-      capacityPerQueue: 5,
       availableProduceActors: [ObjectNames.SkaduweeOwl]
+    },
+    queue: {
+      queueCount: 1,
+      capacityPerQueue: 5
     },
     selectable: {},
     collider: { enabled: true },

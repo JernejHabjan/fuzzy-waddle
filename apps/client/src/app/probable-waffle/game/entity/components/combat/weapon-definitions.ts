@@ -1,7 +1,6 @@
 import { WeaponType } from "./weapon-type";
 import { ProjectileType } from "./projectile-type";
 import { EffectsAnims } from "../../../animations/effects";
-import { DamageType } from "./damage-type";
 import { AnimationType } from "../animation/animation-type";
 import {
   SharedActorActionsSfxArrowHitSounds,
@@ -27,6 +26,7 @@ import {
   SkaduweeOwlSfxFurballHitSounds
 } from "../../../prefabs/characters/skaduwee/skaduwee-owl/SkaduweeOwlSfx";
 import type { AttackData } from "./attack-data";
+import { DamageType } from "@fuzzy-waddle/api-interfaces";
 
 export const weaponDefinitions: Record<WeaponType, AttackData> = {
   [WeaponType.TivaraSlingshot]: {

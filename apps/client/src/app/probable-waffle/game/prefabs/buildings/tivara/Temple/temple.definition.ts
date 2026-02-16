@@ -65,9 +65,11 @@ export const templeDefinition = {
       actors: [ObjectNames.AnkGuard]
     },
     production: {
-      queueCount: 1,
-      capacityPerQueue: 5,
       availableProduceActors: [ObjectNames.TivaraSlingshotFemale]
+    },
+    queue: {
+      queueCount: 1,
+      capacityPerQueue: 5
     },
     selectable: {},
     collider: { enabled: true },

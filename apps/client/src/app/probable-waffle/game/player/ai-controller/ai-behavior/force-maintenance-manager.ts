@@ -79,21 +79,20 @@ export class ForceMaintenanceManager {
       if (!techTree) continue;
 
       const enemyHasFlight = this.blackboard.visibleEnemies.some((enemy) => getActorComponent(enemy, FlyingComponent));
-      const faction = this.player.factionType ?? FactionType.Tivara;
 
       let preferredUnits: ObjectNames[];
       if (enemyHasFlight) {
         this.log("Enemy has flying units, prioritizing ranged units.");
-        preferredUnits = techTree.getRangedInfantryUnits(faction, availableUnits);
+        preferredUnits = techTree.getRangedInfantryUnits(availableUnits);
         // Fallback to melee if no ranged are available from this building
         if (preferredUnits.length === 0) {
-          preferredUnits = techTree.getMeleeInfantryUnits(faction, availableUnits);
+          preferredUnits = techTree.getMeleeInfantryUnits(availableUnits);
         }
       } else {
-        preferredUnits = techTree.getMeleeInfantryUnits(faction, availableUnits);
+        preferredUnits = techTree.getMeleeInfantryUnits(availableUnits);
         // Fallback to ranged if no melee are available
         if (preferredUnits.length === 0) {
-          preferredUnits = techTree.getRangedInfantryUnits(faction, availableUnits);
+          preferredUnits = techTree.getRangedInfantryUnits(availableUnits);
         }
       }
 
@@ -102,8 +101,14 @@ export class ForceMaintenanceManager {
       for (const unitName of preferredUnits) {
         const validation = this.productionValidator.validate(unitName);
         if (!validation.canQueue) {
-          if (validation.prereqs.length > 0) {
-            this.productionValidator.schedulePrerequisites(validation.prereqs, unitName);
+          const hasPrereqs =
+            validation.prereqs.objectNames.length > 0 ||
+            validation.prereqs.researchTypes.length > 0 ||
+            Object.keys(validation.prereqs.resources).length > 0 ||
+            (validation.prereqs.supply !== null && validation.prereqs.supply > 0);
+
+          if (hasPrereqs) {
+            this.productionValidator.schedulePrerequisites(validation, unitName);
           }
           continue;
         }

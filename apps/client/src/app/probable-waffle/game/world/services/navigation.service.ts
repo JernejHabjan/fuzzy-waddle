@@ -139,16 +139,16 @@ export class NavigationService {
     }
   }
 
-  public static getTileWorldCenter(tilemap: Phaser.Tilemaps.Tilemap, vector: Vector2Simple): Vector2Simple | undefined {
-    const tileAtStart = tilemap.getTileAt(vector.x, vector.y);
+  public static getTileWorldCenter(tilemap: Phaser.Tilemaps.Tilemap, tileXY: Vector2Simple): Vector2Simple | undefined {
+    const tileAtStart = tilemap.getTileAt(tileXY.x, tileXY.y);
     if (!tileAtStart) return;
     const centerX = tileAtStart.getCenterX();
     const centerY = tileAtStart.getCenterY();
     return { x: centerX, y: centerY };
   }
 
-  getTileWorldCenter(tile: Vector2Simple): Vector2Simple | undefined {
-    return NavigationService.getTileWorldCenter(this.tilemap, tile);
+  getTileWorldCenter(tileXY: Vector2Simple): Vector2Simple | undefined {
+    return NavigationService.getTileWorldCenter(this.tilemap, tileXY);
   }
 
   private setup() {

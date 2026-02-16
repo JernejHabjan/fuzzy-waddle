@@ -58,6 +58,7 @@ import { skeletonBowmanDefinition } from "../characters/mobs/skeleton/skeleton_b
 import { pirateScimitarDefinition } from "../characters/mobs/pirates/pirate_scimitar/pirate-scimitar.definition";
 import { orcMagicianDefinition } from "../characters/mobs/orcs/orc_magician/orc-magician.definition";
 import { mummyDefinition } from "../characters/mobs/mummy/mummy.definition";
+import { healingTotemDefinition } from "../buildings/tivara/HealingTotem/healing-totem.definition";
 
 export const pwActorDefinitions: {
   [key in ObjectNames]: PrefabDefinition;
@@ -119,5 +120,6 @@ export const pwActorDefinitions: {
   WatchTower: watchTowerDefinition,
   Wall: wallDefinition,
   Minerals: mineralsDefinition,
-  StonePile: stonePileDefinition
+  StonePile: stonePileDefinition,
+  HealingTotem: healingTotemDefinition
 };

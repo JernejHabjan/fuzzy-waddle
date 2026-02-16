@@ -20,6 +20,10 @@ export const stagDefinition = {
         // todo
       }
     },
+    collider: {
+      enabled: false,
+      colliderFactorReduction: 0.5
+    },
     animatable: { animations: ANIM_STAG_DEFINITION }
   },
   systems: {

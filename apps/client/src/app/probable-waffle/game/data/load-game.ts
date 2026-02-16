@@ -4,18 +4,30 @@ import { SceneActorCreator } from "../world/services/scene-actor-creator";
 import GameProbableWaffleScene from "../world/scenes/GameProbableWaffleScene";
 import { SelectionGroupsComponent } from "../player/human-controller/selection-groups.component";
 import { CameraMovementHandler } from "../player/human-controller/cameraMovementHandler";
-import { type ActorId, ProbableWafflePlayerType } from "@fuzzy-waddle/api-interfaces";
+import { type ActorId, ProbableWafflePlayerType, ResearchType } from "@fuzzy-waddle/api-interfaces";
 import { AiPlayerHandler } from "../player/ai-controller/ai-player-handler";
 import { emitEventSelection, getSelectableSceneChildren } from "./scene-data";
 import { getActorComponent } from "./actor-component";
 import { SelectableComponent } from "../entity/components/selectable-component";
 import { IdComponent } from "../entity/components/id-component";
+import { AoeZoneManager } from "../entity/systems/aoe-zone-manager";
+import { TechTreeService } from "./tech-tree/tech-tree.service";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class LoadGame {
   constructor(private readonly scene: GameProbableWaffleScene) {}
 
-  loadActorsFromSaveGame() {
+  load() {
+    // If loading, the initialActors should not be populated again in scene
+    this.loadActorsFromSaveGame();
+    // Restore player data (camera, selection groups, AI state) after actors are loaded
+    this.restorePlayerData();
+    // Load AOE zones
+    this.loadAoeZones();
+    // Load research state
+    this.loadResearchState();
+  }
+  private loadActorsFromSaveGame() {
     if (!this.scene.baseGameData.gameInstance.gameInstanceMetadata.isStartupLoad()) return;
 
     // destroy all actors on scene with this name
@@ -46,7 +58,7 @@ export class LoadGame {
    * Restore player-specific data after actors are loaded.
    * Call this after scene is fully initialized and actors are loaded.
    */
-  restorePlayerData(): void {
+  private restorePlayerData(): void {
     if (!this.scene.baseGameData.gameInstance.gameInstanceMetadata.isStartupLoad()) return;
 
     // Restore current player's camera and selection groups
@@ -141,5 +153,35 @@ export class LoadGame {
         aiController.setSaveState(aiState);
       }
     });
+  }
+
+  private loadAoeZones() {
+    const gameState = this.scene.baseGameData.gameInstance.gameState!.data;
+    if (!gameState.aoeZones || gameState.aoeZones.length === 0) return;
+
+    const aoeZoneManager = getSceneService(this.scene, AoeZoneManager);
+    if (!aoeZoneManager) {
+      console.warn("AoeZoneManager not found, cannot restore AOE zones");
+      return;
+    }
+
+    aoeZoneManager.setData(gameState.aoeZones);
+    console.log(`Loaded ${gameState.aoeZones.length} AOE zones`);
+  }
+
+  private loadResearchState() {
+    const gameState = this.scene.baseGameData.gameInstance.gameState!.data;
+    if (!gameState.playerResearch) return;
+
+    const techTreeService = getSceneService(this.scene, TechTreeService);
+    if (!techTreeService) {
+      console.warn("TechTreeService not found, cannot restore research state");
+      return;
+    }
+
+    for (const [playerNumber, researchTypes] of Object.entries(gameState.playerResearch)) {
+      techTreeService.setPlayerResearch(parseInt(playerNumber), researchTypes as ResearchType[]);
+    }
+    console.log("Loaded research state");
   }
 }
