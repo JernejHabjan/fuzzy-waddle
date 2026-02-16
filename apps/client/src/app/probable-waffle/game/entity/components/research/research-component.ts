@@ -1,7 +1,6 @@
 import { EventEmitter } from "@angular/core";
 import { researchDefinitions } from "./research-definitions";
 import { OwnerComponent } from "../owner-component";
-import { HealthComponent } from "../combat/components/health-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { addActorComponent } from "../../../data/actor-data";
 import { emitResource, getPlayer } from "../../../data/scene-data";
@@ -11,16 +10,10 @@ import { onObjectReady } from "../../../data/game-object-helper";
 import type { ResearchComponentData, ResearchType } from "@fuzzy-waddle/api-interfaces";
 import { SharedQueueComponent } from "../queue/shared-queue-component";
 import { QueueItemType, type UnifiedQueueItem } from "../queue/queue-item";
-import { ProductionComponent } from "../production/production-component";
 import Phaser from "phaser";
 
 export interface ResearchDefinition {
   availableResearch: ResearchType[];
-}
-
-export interface ResearchQueueItem {
-  type: ResearchType;
-  remainingTime: number;
 }
 
 export class ResearchComponent {
@@ -41,8 +34,6 @@ export class ResearchComponent {
     private readonly gameObject: Phaser.GameObjects.GameObject,
     public readonly researchDefinition: ResearchDefinition
   ) {
-    gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
-    gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
     onObjectReady(gameObject, this.init, this);
   }
 
@@ -53,14 +44,10 @@ export class ResearchComponent {
     // Create or get SharedQueueComponent and register this research component
     let sharedQueue = getActorComponent(this.gameObject, SharedQueueComponent);
     if (!sharedQueue) {
-      sharedQueue = new SharedQueueComponent(this.gameObject);
+      sharedQueue = new SharedQueueComponent(this.gameObject, 1, 1);
       addActorComponent(this.gameObject, sharedQueue);
     }
     sharedQueue.registerResearchComponent(this);
-  }
-
-  private destroy(): void {
-    // Cleanup if needed
   }
 
   get availableResearch(): ResearchType[] {
@@ -68,26 +55,17 @@ export class ResearchComponent {
   }
 
   get isResearching(): boolean {
-    const productionComponent = getActorComponent(this.gameObject, ProductionComponent);
-    if (!productionComponent) return false;
+    const sharedQueue = getActorComponent(this.gameObject, SharedQueueComponent);
+    if (!sharedQueue) return false;
 
-    // Check if any production queue has a research item
-    for (const queue of productionComponent.productionQueues) {
-      for (const item of queue.queuedItems) {
-        if (item.type === QueueItemType.Research) {
-          return true;
-        }
-      }
-    }
-    return false;
+    return sharedQueue.allItems.some((item) => item.type === QueueItemType.Research);
   }
 
   get currentResearchType(): ResearchType | undefined {
-    const productionComponent = getActorComponent(this.gameObject, ProductionComponent);
-    if (!productionComponent) return undefined;
+    const sharedQueue = getActorComponent(this.gameObject, SharedQueueComponent);
+    if (!sharedQueue) return undefined;
 
-    // Find the first research item in any queue
-    for (const queue of productionComponent.productionQueues) {
+    for (const queue of sharedQueue.queues) {
       if (queue.queuedItems.length > 0) {
         const firstItem = queue.queuedItems[0]!;
         if (firstItem.type === QueueItemType.Research) {
@@ -131,6 +109,9 @@ export class ResearchComponent {
     return { canStart: true };
   }
 
+  /**
+   * Start research - delegates to SharedQueueComponent
+   */
   startResearch(type: ResearchType): boolean {
     const { canStart } = this.canStartResearch(type);
     if (!canStart) {
@@ -150,10 +131,10 @@ export class ResearchComponent {
     // Pay resources immediately
     emitResource(this.gameObject.scene, "resource.removed", researchData.cost, owner);
 
-    // Add to production queue system
-    const productionComponent = getActorComponent(this.gameObject, ProductionComponent);
-    if (!productionComponent) {
-      console.error("ProductionComponent not found - research requires production queues");
+    // Delegate to SharedQueueComponent
+    const sharedQueue = getActorComponent(this.gameObject, SharedQueueComponent);
+    if (!sharedQueue) {
+      console.error("SharedQueueComponent not found");
       return false;
     }
 
@@ -163,7 +144,7 @@ export class ResearchComponent {
       totalTime: researchData.researchTime
     };
 
-    productionComponent.addToQueue(unifiedItem);
+    sharedQueue.addItem(unifiedItem);
 
     this.researchStarted.emit(type);
     this.gameObject.emit(ResearchComponent.ResearchStartedEvent, type);
@@ -172,7 +153,7 @@ export class ResearchComponent {
   }
 
   /**
-   * Called by ProductionComponent when research completes.
+   * Called by SharedQueueComponent when research completes.
    * Registers the research in the tech tree and emits completion events.
    */
   handleResearchComplete(type: ResearchType): void {
@@ -185,66 +166,49 @@ export class ResearchComponent {
     this.gameObject.emit(ResearchComponent.ResearchCompletedEvent, type);
   }
 
-  cancelResearch(): boolean {
-    const productionComponent = getActorComponent(this.gameObject, ProductionComponent);
-    if (!productionComponent) {
-      return false;
-    }
-
+  /**
+   * Public method for SharedQueueComponent to handle research refunds.
+   * Called during cancellation.
+   */
+  public handleResearchRefund(type: ResearchType, remainingTime: number, totalTime: number): void {
     const owner = this.ownerComponent?.getOwner();
-    if (owner === undefined) {
-      return false;
-    }
+    if (owner === undefined) return;
 
-    // Find the first research item in queues (typically the currently processing one)
-    for (const queue of productionComponent.productionQueues) {
-      const firstItem = queue.queuedItems[0];
-      if (firstItem && firstItem.type === QueueItemType.Research && firstItem.researchData) {
-        const type = firstItem.researchData;
-        const researchData = researchDefinitions[type];
-        if (!researchData) {
-          return false;
-        }
+    const researchData = researchDefinitions[type];
+    if (!researchData) return;
 
-        // Calculate refund based on progress
-        const totalTime = researchData.researchTime;
-        const remainingTime = queue.remainingProductionTime;
-        const progress = (totalTime - remainingTime) / totalTime;
-        const refundFactor = researchData.refundFactor * (1 - progress);
+    // Calculate refund based on progress
+    const progress = (totalTime - remainingTime) / totalTime;
+    const refundFactor = researchData.refundFactor * (1 - progress);
 
-        const refundedResources: Partial<Record<string, number>> = {};
-        for (const [resourceType, amount] of Object.entries(researchData.cost)) {
-          if (amount !== undefined) {
-            refundedResources[resourceType] = Math.floor(amount * refundFactor);
-          }
-        }
-
-        emitResource(this.gameObject.scene, "resource.added", refundedResources, owner);
-
-        // Remove from queue
-        queue.queuedItems.splice(0, 1);
-
-        // Reset queue if there are more items
-        if (queue.queuedItems.length > 0) {
-          productionComponent.resetQueue(queue);
-        }
-
-        this.researchCancelled.emit(type);
-        this.gameObject.emit(ResearchComponent.ResearchCancelledEvent, type);
-
-        return true;
+    const refundedResources: Partial<Record<string, number>> = {};
+    for (const [resourceType, amount] of Object.entries(researchData.cost)) {
+      if (amount !== undefined) {
+        refundedResources[resourceType] = Math.floor(amount * refundFactor);
       }
     }
 
-    return false;
+    emitResource(this.gameObject.scene, "resource.added", refundedResources, owner);
+  }
+
+  /**
+   * Cancel research - delegates to SharedQueueComponent
+   */
+  cancelResearch(): boolean {
+    const sharedQueue = getActorComponent(this.gameObject, SharedQueueComponent);
+    if (!sharedQueue) {
+      return false;
+    }
+
+    return sharedQueue.cancelResearchItem();
   }
 
   getResearchProgress(type: ResearchType): number {
-    const productionComponent = getActorComponent(this.gameObject, ProductionComponent);
-    if (!productionComponent) return 0;
+    const sharedQueue = getActorComponent(this.gameObject, SharedQueueComponent);
+    if (!sharedQueue) return 0;
 
     // Find the research item in queues
-    for (const queue of productionComponent.productionQueues) {
+    for (const queue of sharedQueue.queues) {
       const firstItem = queue.queuedItems[0];
       if (firstItem && firstItem.type === QueueItemType.Research && firstItem.researchData === type) {
         const totalTime = firstItem.totalTime;
@@ -265,7 +229,7 @@ export class ResearchComponent {
   }
 
   getData(): ResearchComponentData {
-    // Research state is now stored in ProductionComponent queues
+    // Research state is now stored in SharedQueueComponent
     return {
       currentResearch: undefined,
       remainingTime: 0
@@ -273,10 +237,10 @@ export class ResearchComponent {
   }
 
   setData(data: Partial<ResearchComponentData>): void {
-    // Migrate old save data: if currentResearch exists, add it to production queues
+    // Migrate old save data: if currentResearch exists, add it to SharedQueue
     if (data.currentResearch) {
-      const productionComponent = getActorComponent(this.gameObject, ProductionComponent);
-      if (productionComponent) {
+      const sharedQueue = getActorComponent(this.gameObject, SharedQueueComponent);
+      if (sharedQueue) {
         const researchData = researchDefinitions[data.currentResearch as ResearchType];
         if (researchData) {
           const unifiedItem: UnifiedQueueItem = {
@@ -284,14 +248,19 @@ export class ResearchComponent {
             researchData: data.currentResearch as ResearchType,
             totalTime: researchData.researchTime
           };
-          // Add to production queue and set remaining time
-          productionComponent.addToQueue(unifiedItem);
+
+          // Add to shared queue
+          sharedQueue.addItem(unifiedItem);
+
           // Update the queue's remaining time to match saved progress
-          if (productionComponent.productionQueues.length > 0) {
-            for (const queue of productionComponent.productionQueues) {
-              if (queue.queuedItems.length > 0 && queue.queuedItems[queue.queuedItems.length - 1] === unifiedItem) {
-                queue.remainingProductionTime = data.remainingTime ?? researchData.researchTime;
-                break;
+          if (sharedQueue.queues.length > 0) {
+            for (const queue of sharedQueue.queues) {
+              if (queue.queuedItems.length > 0) {
+                const lastItem = queue.queuedItems[queue.queuedItems.length - 1];
+                if (lastItem === unifiedItem) {
+                  queue.remainingProductionTime = data.remainingTime ?? researchData.researchTime;
+                  break;
+                }
               }
             }
           }
