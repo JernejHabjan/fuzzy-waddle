@@ -68,6 +68,7 @@ import Boar from "../prefabs/animals/boar/Boar";
 import Stag from "../prefabs/animals/stag/Stag";
 import Badger from "../prefabs/animals/badger/Badger";
 import { RandomService } from "../world/services/random.service";
+import HealingTotem from "../prefabs/buildings/tivara/HealingTotem/HealingTotem";
 
 type ActorMap = { [name: string]: new (scene: Phaser.Scene) => GameObject };
 export class ActorManager {
@@ -144,6 +145,10 @@ export class ActorManager {
     [ObjectNames.StonePile]: StonePile
   };
 
+  private static spells: ActorMap = {
+    [ObjectNames.HealingTotem]: HealingTotem
+  };
+
   public static actorMap: ActorMap = {
     ...ActorManager.animals,
     ...ActorManager.general,
@@ -153,7 +158,8 @@ export class ActorManager {
     ...ActorManager.skaduweeWorkers,
     ...ActorManager.skaduweeUnits,
     ...ActorManager.skaduweeBuildings,
-    ...ActorManager.resources
+    ...ActorManager.resources,
+    ...ActorManager.spells
   } as const;
 
   static getActorDefinitionFromActor(actor: GameObject): ActorDefinition | undefined {
