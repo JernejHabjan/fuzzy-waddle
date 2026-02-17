@@ -215,6 +215,8 @@ export default class ActorActions extends Phaser.GameObjects.Container {
   private resourceChangedSubscription?: Subscription;
   private actorUnlockSubscription?: Subscription;
   private researchEventSubscriptions: Subscription[] = [];
+  private spellCooldownSubscriptions: Subscription[] = [];
+  private spellUpdateTimer?: Phaser.Time.TimerEvent;
 
   /** Subscribe to selection changes and update displayed actions accordingly */
   private subscribeToPlayerSelection() {
@@ -242,6 +244,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         this.subscribeToResourceChanges();
         this.subscribeToActorUnlockEvents();
         this.subscribeToResearchChanges();
+        this.subscribeToSpellCooldowns(actor);
       }
     });
 
@@ -299,6 +302,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       action.setup({ visible: false });
     });
     this.resourceChangedSubscription?.unsubscribe();
+    this.stopSpellCooldownTimer();
   }
 
   private subscribeToActorKillEvent(actor: Phaser.GameObjects.GameObject) {
@@ -1290,6 +1294,63 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     return { disabled, disabledDescription, validation };
   }
 
+  /** Subscribe to the selected actor's spell cooldown events and drive a refresh timer */
+  private subscribeToSpellCooldowns(actor: Phaser.GameObjects.GameObject) {
+    this.spellCooldownSubscriptions.forEach((sub) => sub.unsubscribe());
+    this.spellCooldownSubscriptions = [];
+    this.stopSpellCooldownTimer();
+
+    const spellComponent = getActorComponent(actor, SpellComponent);
+    if (!spellComponent) return;
+
+    // Start the timer when a cooldown begins
+    const startedSub = spellComponent.spellCooldownStarted.subscribe(() => {
+      this.startSpellCooldownTimer(spellComponent);
+    });
+    this.spellCooldownSubscriptions.push(startedSub);
+
+    // Stop the timer when the last cooldown expires
+    const endedSub = spellComponent.spellCooldownEnded.subscribe(() => {
+      const stillActive = spellComponent.availableSpells.some((s) => spellComponent.getCooldownRemaining(s) > 0);
+      if (!stillActive) {
+        this.stopSpellCooldownTimer();
+        // Final refresh to clear the cooldown overlays
+        this.refreshForCurrentSelection();
+      }
+    });
+    this.spellCooldownSubscriptions.push(endedSub);
+
+    // If there are already active cooldowns when the actor is selected, start timer immediately
+    const hasActiveCooldowns = spellComponent.availableSpells.some((s) => spellComponent.getCooldownRemaining(s) > 0);
+    if (hasActiveCooldowns) {
+      this.startSpellCooldownTimer(spellComponent);
+    }
+  }
+
+  private startSpellCooldownTimer(spellComponent: SpellComponent) {
+    if (this.spellUpdateTimer) return; // Already running
+
+    this.spellUpdateTimer = this.mainSceneWithActors.time.addEvent({
+      delay: 100,
+      loop: true,
+      callback: () => {
+        // Stop if no more active cooldowns
+        const stillActive = spellComponent?.availableSpells.some((s) => spellComponent.getCooldownRemaining(s) > 0);
+        if (!stillActive) {
+          this.stopSpellCooldownTimer();
+          this.refreshForCurrentSelection();
+          return;
+        }
+        this.refreshForCurrentSelection();
+      }
+    });
+  }
+
+  private stopSpellCooldownTimer() {
+    this.spellUpdateTimer?.remove(false);
+    this.spellUpdateTimer = undefined;
+  }
+
   /** Check if a spell can be cast (cooldown, mana, research requirements) */
   private getSpellValidationState(
     spellType: SpellType,
@@ -1374,6 +1435,8 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     this.resourceChangedSubscription?.unsubscribe();
     this.actorUnlockSubscription?.unsubscribe();
     this.researchEventSubscriptions.forEach((sub) => sub.unsubscribe());
+    this.spellCooldownSubscriptions.forEach((sub) => sub.unsubscribe());
+    this.stopSpellCooldownTimer();
     this.categoryNavigationStack = [];
     this.tabHandlerSubscription?.unsubscribe();
     this.mainSceneWithActors.events.off(
