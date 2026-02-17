@@ -49,6 +49,8 @@ import { SpellCursor } from "../../../player/human-controller/spell-cursor";
 import type { SpellType } from "../../../entity/components/combat/spell-type";
 import { ResearchComponent } from "../../../entity/components/research/research-component";
 import { researchDefinitions } from "../../../entity/components/research/research-definitions";
+import { QueueComponent } from "../../../entity/components/queue/queue-component";
+import { QueueItemType } from "../../../entity/components/queue/queue-item";
 /* END-USER-IMPORTS */
 
 /**
@@ -723,6 +725,13 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       const spellData = spellDefinitions[spellType];
       if (!spellData) return;
 
+      const isResearched = spellComponent.isSpellResearched(spellType);
+
+      // Hide spells that require research but haven't been researched yet
+      if (!isResearched && spellData.requiresResearch) {
+        return;
+      }
+
       const action = this.actor_actions[index];
       if (!action) {
         console.error("Action button not found at index", index);
@@ -732,7 +741,6 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       const cooldownProgress = spellComponent.getCooldownProgress(spellType);
       const cooldownRemaining = spellComponent.getCooldownRemaining(spellType);
       const autocastEnabled = spellComponent.isAutocastEnabled(spellType);
-      const isResearched = spellComponent.isSpellResearched(spellType);
 
       // Use validation state similar to production
       const { disabled, unmetRequirements } = this.getSpellValidationState(spellType, spellComponent);
@@ -907,9 +915,6 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     const researchComponent = getActorComponent(actor, ResearchComponent);
     if (!researchComponent) return index;
 
-    // Check if any research is in progress globally (across all player's buildings)
-    const isResearchInProgressGlobally = this.isResearchInProgressGlobally();
-
     for (const researchType of researchComponent.availableResearch) {
       const researchData = researchDefinitions[researchType];
       if (!researchData) continue;
@@ -920,18 +925,26 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         return index;
       }
 
+      // Skip if already fully completed in TechTree
       const isAlreadyResearched = researchComponent.isResearched(researchType);
-      const isCurrentlyResearching = researchComponent.currentResearchType === researchType;
-      const progress = researchComponent.getResearchProgress(researchType);
-
-      // Skip already researched items
       if (isAlreadyResearched) continue;
 
-      // Skip if any other research is in progress globally (only one research at a time)
-      if (isResearchInProgressGlobally && !isCurrentlyResearching) continue;
+      // Is this research currently the active (first) item being processed in this building?
+      const isActiveInThisBuilding = researchComponent.currentResearchType === researchType;
+      const progress = isActiveInThisBuilding ? researchComponent.getResearchProgress(researchType) : 0;
 
-      // Use validation state similar to production
-      const { disabled, unmetRequirements } = this.getResearchValidationState(researchType, researchComponent);
+      // Is this research already queued anywhere (this or another building)?
+      const isQueuedGlobally = this.isResearchTypeQueuedGlobally(researchType);
+
+      // Validation state (resources, prerequisites) - only relevant when not yet queued
+      const { disabled: isValidationDisabled, unmetRequirements } = this.getResearchValidationState(
+        researchType,
+        researchComponent
+      );
+
+      // Disable if already in queue globally or if validation fails
+      // But keep it interactable (not disabled) if it's the active item - so the player can cancel
+      const disabled = isQueuedGlobally || isValidationDisabled;
 
       action.setup({
         icon: {
@@ -940,15 +953,15 @@ export default class ActorActions extends Phaser.GameObjects.Container {
           origin: { x: 0.5, y: 0.5 }
         },
         visible: true,
-        disabled: disabled && !isCurrentlyResearching,
-        cooldownProgress: isCurrentlyResearching ? progress : undefined,
+        disabled: disabled && !isActiveInThisBuilding,
+        cooldownProgress: isActiveInThisBuilding ? progress : undefined,
         action: () => {
-          if (isCurrentlyResearching) {
-            // Cancel research
+          if (isActiveInThisBuilding) {
+            // Cancel the active research
             researchComponent.cancelResearch();
             this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.BUTTON_CLICK);
           } else if (!disabled) {
-            // Start research
+            // Start/queue research
             const success = researchComponent.startResearch(researchType);
             if (success) {
               this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.BUTTON_CLICK);
@@ -960,7 +973,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
           }
         },
         tooltipInfo: {
-          title: researchData.name + (isCurrentlyResearching ? " (Click to cancel)" : ""),
+          title: researchData.name + (isActiveInThisBuilding ? " (Click to cancel)" : ""),
           description: researchData.description,
           iconKey: researchData.icon.key,
           iconFrame: researchData.icon.frame,
@@ -974,8 +987,8 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     return index;
   }
 
-  /** Check if any research is currently in progress across all player buildings */
-  private isResearchInProgressGlobally(): boolean {
+  /** Check if a research type is currently queued in any owned building's queue */
+  private isResearchTypeQueuedGlobally(researchType: ResearchType): boolean {
     const playerNr = getCurrentPlayerNumber(this.mainSceneWithActors);
     if (!playerNr) return false;
 
@@ -984,16 +997,19 @@ export default class ActorActions extends Phaser.GameObjects.Container {
 
     const ownedActors = actorIndex.getOwnedActors(playerNr);
 
-    // Check if any owned building is currently researching
     for (const actor of ownedActors) {
-      const researchComponent = getActorComponent(actor, ResearchComponent);
-      if (researchComponent?.isResearching) {
-        return true;
+      const sharedQueue = getActorComponent(actor, QueueComponent);
+      if (sharedQueue) {
+        const hasInQueue = sharedQueue.allItems.some(
+          (item) => item.type === QueueItemType.Research && item.researchData === researchType
+        );
+        if (hasInQueue) return true;
       }
     }
 
     return false;
   }
+
 
   private showBuilderIcons(
     actor: Phaser.GameObjects.GameObject,
