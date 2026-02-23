@@ -21,20 +21,20 @@
             "hitArea.y": 32,
             "hitArea.radius": 32,
             "texture": {
-                "key": "warrior_idle",
+                "key": "zombie3_idle",
                 "frame": 4
             },
             "x": 32,
             "y": 57.554331622949405,
             "originY": 0.899286430676403,
             "animationPlayMethod": 1,
-            "animationKey": "general_warrior_idle_down"
+            "animationKey": "zombie3_idle"
         }
     ],
     "plainObjects": [],
     "meta": {
-        "app": "Phaser Editor 2D - Scene Editor",
-        "url": "https://phasereditor2d.com",
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
         "contentType": "phasereditor2d.core.scene.SceneContentType",
         "version": 5
     }

@@ -944,7 +944,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(mummy);
 
     // orcBoomerang
-    const orcBoomerang = new OrcBoomerang(this, -1135, 931);
+    const orcBoomerang = new OrcBoomerang(this, -1120, 928);
     this.add.existing(orcBoomerang);
 
     // orcMagician

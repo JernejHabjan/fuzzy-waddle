@@ -17,24 +17,24 @@
             "id": "e3527f1d-89a8-4604-b032-f9950fadd5d9",
             "label": "general_warrior_idle_down",
             "hitArea.shape": "CIRCLE",
-            "hitArea.x": 32,
-            "hitArea.y": 32,
+            "hitArea.x": 96,
+            "hitArea.y": 103,
             "hitArea.radius": 32,
             "texture": {
-                "key": "warrior_idle",
+                "key": "skeleton_swordsman_idle",
                 "frame": 4
             },
             "x": 32,
-            "y": 57.554331622949405,
-            "originY": 0.899286430676403,
+            "y": 52.0050654008063,
+            "originY": 0.6388961463056025,
             "animationPlayMethod": 1,
-            "animationKey": "general_warrior_idle_down"
+            "animationKey": "skeleton_swordsman_idle_2"
         }
     ],
     "plainObjects": [],
     "meta": {
-        "app": "Phaser Editor 2D - Scene Editor",
-        "url": "https://phasereditor2d.com",
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
         "contentType": "phasereditor2d.core.scene.SceneContentType",
         "version": 5
     }

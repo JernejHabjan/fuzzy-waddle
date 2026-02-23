@@ -1,35 +1,35 @@
 {
     "anims": [
         {
-            "key": "cyclops_hurt",
+            "key": "minotaur_hurt",
             "type": "frame",
             "frames": [
                 {
-                    "key": "cyclops_hurt",
+                    "key": "minotaur_hurt",
                     "frame": 0,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_hurt",
+                    "key": "minotaur_hurt",
                     "frame": 1,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_hurt",
+                    "key": "minotaur_hurt",
                     "frame": 2,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_hurt",
+                    "key": "minotaur_hurt",
                     "frame": 3,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_hurt",
+                    "key": "minotaur_hurt",
                     "frame": 4,
                     "duration": 0,
                     "keyframe": false
@@ -40,123 +40,35 @@
             "randomFrame": false
         },
         {
-            "key": "cyclops_idle",
+            "key": "minotaur_slash",
             "type": "frame",
             "frames": [
                 {
-                    "key": "cyclops_idle",
+                    "key": "minotaur_slash",
                     "frame": 0,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_idle",
-                    "frame": 1,
-                    "duration": 0,
-                    "keyframe": false
-                }
-            ],
-            "frameRate": 1,
-            "skipMissedFrames": true,
-            "repeat": -1,
-            "randomFrame": false
-        },
-        {
-            "key": "cyclops_idle_1",
-            "type": "frame",
-            "frames": [
-                {
-                    "key": "cyclops_idle",
-                    "frame": 2,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "cyclops_idle",
-                    "frame": 3,
-                    "duration": 0,
-                    "keyframe": false
-                }
-            ],
-            "frameRate": 1,
-            "skipMissedFrames": true,
-            "repeat": -1,
-            "randomFrame": false
-        },
-        {
-            "key": "cyclops_idle_2",
-            "type": "frame",
-            "frames": [
-                {
-                    "key": "cyclops_idle",
-                    "frame": 4,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "cyclops_idle",
-                    "frame": 5,
-                    "duration": 0,
-                    "keyframe": false
-                }
-            ],
-            "frameRate": 1,
-            "skipMissedFrames": true,
-            "repeat": -1,
-            "randomFrame": false
-        },
-        {
-            "key": "cyclops_idle_3",
-            "type": "frame",
-            "frames": [
-                {
-                    "key": "cyclops_idle",
-                    "frame": 6,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "cyclops_idle",
-                    "frame": 7,
-                    "duration": 0,
-                    "keyframe": false
-                }
-            ],
-            "frameRate": 1,
-            "skipMissedFrames": true,
-            "repeat": -1,
-            "randomFrame": false
-        },
-        {
-            "key": "cyclops_slash",
-            "type": "frame",
-            "frames": [
-                {
-                    "key": "cyclops_slash",
-                    "frame": 0,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "cyclops_slash",
+                    "key": "minotaur_slash",
                     "frame": 1,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_slash",
+                    "key": "minotaur_slash",
                     "frame": 2,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_slash",
+                    "key": "minotaur_slash",
                     "frame": 3,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_slash",
+                    "key": "minotaur_slash",
                     "frame": 4,
                     "duration": 0,
                     "keyframe": false
@@ -168,35 +80,35 @@
             "randomFrame": false
         },
         {
-            "key": "cyclops_slash_1",
+            "key": "minotaur_slash_1",
             "type": "frame",
             "frames": [
                 {
-                    "key": "cyclops_slash",
+                    "key": "minotaur_slash",
                     "frame": 5,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_slash",
+                    "key": "minotaur_slash",
                     "frame": 6,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_slash",
+                    "key": "minotaur_slash",
                     "frame": 7,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_slash",
+                    "key": "minotaur_slash",
                     "frame": 8,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_slash",
+                    "key": "minotaur_slash",
                     "frame": 9,
                     "duration": 0,
                     "keyframe": false
@@ -208,35 +120,35 @@
             "randomFrame": false
         },
         {
-            "key": "cyclops_slash_2",
+            "key": "minotaur_slash_2",
             "type": "frame",
             "frames": [
                 {
-                    "key": "cyclops_slash",
+                    "key": "minotaur_slash",
                     "frame": 10,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_slash",
+                    "key": "minotaur_slash",
                     "frame": 11,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_slash",
+                    "key": "minotaur_slash",
                     "frame": 12,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_slash",
+                    "key": "minotaur_slash",
                     "frame": 13,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_slash",
+                    "key": "minotaur_slash",
                     "frame": 14,
                     "duration": 0,
                     "keyframe": false
@@ -248,35 +160,35 @@
             "randomFrame": false
         },
         {
-            "key": "cyclops_slash_3",
+            "key": "minotaur_slash_3",
             "type": "frame",
             "frames": [
                 {
-                    "key": "cyclops_slash",
+                    "key": "minotaur_slash",
                     "frame": 15,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_slash",
+                    "key": "minotaur_slash",
                     "frame": 16,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_slash",
+                    "key": "minotaur_slash",
                     "frame": 17,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_slash",
+                    "key": "minotaur_slash",
                     "frame": 18,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_slash",
+                    "key": "minotaur_slash",
                     "frame": 19,
                     "duration": 0,
                     "keyframe": false
@@ -288,47 +200,47 @@
             "randomFrame": false
         },
         {
-            "key": "cyclops_thrust",
+            "key": "minotaur_thrust",
             "type": "frame",
             "frames": [
                 {
-                    "key": "cyclops_thrust",
+                    "key": "minotaur_thrust",
                     "frame": 0,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_thrust",
+                    "key": "minotaur_thrust",
                     "frame": 1,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_thrust",
+                    "key": "minotaur_thrust",
                     "frame": 2,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_thrust",
+                    "key": "minotaur_thrust",
                     "frame": 3,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_thrust",
+                    "key": "minotaur_thrust",
                     "frame": 4,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_thrust",
+                    "key": "minotaur_thrust",
                     "frame": 5,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_thrust",
+                    "key": "minotaur_thrust",
                     "frame": 6,
                     "duration": 0,
                     "keyframe": false
@@ -340,47 +252,47 @@
             "randomFrame": false
         },
         {
-            "key": "cyclops_thrust_1",
+            "key": "minotaur_thrust_1",
             "type": "frame",
             "frames": [
                 {
-                    "key": "cyclops_thrust",
+                    "key": "minotaur_thrust",
                     "frame": 7,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_thrust",
+                    "key": "minotaur_thrust",
                     "frame": 8,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_thrust",
+                    "key": "minotaur_thrust",
                     "frame": 9,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_thrust",
+                    "key": "minotaur_thrust",
                     "frame": 10,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_thrust",
+                    "key": "minotaur_thrust",
                     "frame": 11,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_thrust",
+                    "key": "minotaur_thrust",
                     "frame": 12,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_thrust",
+                    "key": "minotaur_thrust",
                     "frame": 13,
                     "duration": 0,
                     "keyframe": false
@@ -392,47 +304,47 @@
             "randomFrame": false
         },
         {
-            "key": "cyclops_thrust_2",
+            "key": "minotaur_thrust_2",
             "type": "frame",
             "frames": [
                 {
-                    "key": "cyclops_thrust",
+                    "key": "minotaur_thrust",
                     "frame": 14,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_thrust",
+                    "key": "minotaur_thrust",
                     "frame": 15,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_thrust",
+                    "key": "minotaur_thrust",
                     "frame": 16,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_thrust",
+                    "key": "minotaur_thrust",
                     "frame": 17,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_thrust",
+                    "key": "minotaur_thrust",
                     "frame": 18,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_thrust",
+                    "key": "minotaur_thrust",
                     "frame": 19,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_thrust",
+                    "key": "minotaur_thrust",
                     "frame": 20,
                     "duration": 0,
                     "keyframe": false
@@ -444,47 +356,47 @@
             "randomFrame": false
         },
         {
-            "key": "cyclops_thrust_3",
+            "key": "minotaur_thrust_3",
             "type": "frame",
             "frames": [
                 {
-                    "key": "cyclops_thrust",
+                    "key": "minotaur_thrust",
                     "frame": 21,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_thrust",
+                    "key": "minotaur_thrust",
                     "frame": 22,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_thrust",
+                    "key": "minotaur_thrust",
                     "frame": 23,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_thrust",
+                    "key": "minotaur_thrust",
                     "frame": 24,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_thrust",
+                    "key": "minotaur_thrust",
                     "frame": 25,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_thrust",
+                    "key": "minotaur_thrust",
                     "frame": 26,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_thrust",
+                    "key": "minotaur_thrust",
                     "frame": 27,
                     "duration": 0,
                     "keyframe": false
@@ -496,53 +408,53 @@
             "randomFrame": false
         },
         {
-            "key": "cyclops_walk",
+            "key": "minotaur_walk",
             "type": "frame",
             "frames": [
                 {
-                    "key": "cyclops_walk",
+                    "key": "minotaur_walk",
                     "frame": 0,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_walk",
+                    "key": "minotaur_walk",
                     "frame": 1,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_walk",
+                    "key": "minotaur_walk",
                     "frame": 2,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_walk",
+                    "key": "minotaur_walk",
                     "frame": 3,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_walk",
+                    "key": "minotaur_walk",
                     "frame": 4,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_walk",
+                    "key": "minotaur_walk",
                     "frame": 5,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_walk",
+                    "key": "minotaur_walk",
                     "frame": 6,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_walk",
+                    "key": "minotaur_walk",
                     "frame": 7,
                     "duration": 0,
                     "keyframe": false
@@ -554,53 +466,53 @@
             "randomFrame": false
         },
         {
-            "key": "cyclops_walk_1",
+            "key": "minotaur_walk_1",
             "type": "frame",
             "frames": [
                 {
-                    "key": "cyclops_walk",
+                    "key": "minotaur_walk",
                     "frame": 8,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_walk",
+                    "key": "minotaur_walk",
                     "frame": 9,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_walk",
+                    "key": "minotaur_walk",
                     "frame": 10,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_walk",
+                    "key": "minotaur_walk",
                     "frame": 11,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_walk",
+                    "key": "minotaur_walk",
                     "frame": 12,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_walk",
+                    "key": "minotaur_walk",
                     "frame": 13,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_walk",
+                    "key": "minotaur_walk",
                     "frame": 14,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_walk",
+                    "key": "minotaur_walk",
                     "frame": 15,
                     "duration": 0,
                     "keyframe": false
@@ -612,53 +524,53 @@
             "randomFrame": false
         },
         {
-            "key": "cyclops_walk_2",
+            "key": "minotaur_walk_2",
             "type": "frame",
             "frames": [
                 {
-                    "key": "cyclops_walk",
+                    "key": "minotaur_walk",
                     "frame": 16,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_walk",
+                    "key": "minotaur_walk",
                     "frame": 17,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_walk",
+                    "key": "minotaur_walk",
                     "frame": 18,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_walk",
+                    "key": "minotaur_walk",
                     "frame": 19,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_walk",
+                    "key": "minotaur_walk",
                     "frame": 20,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_walk",
+                    "key": "minotaur_walk",
                     "frame": 21,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_walk",
+                    "key": "minotaur_walk",
                     "frame": 22,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_walk",
+                    "key": "minotaur_walk",
                     "frame": 23,
                     "duration": 0,
                     "keyframe": false
@@ -670,59 +582,147 @@
             "randomFrame": false
         },
         {
-            "key": "cyclops_walk_3",
+            "key": "minotaur_walk_3",
             "type": "frame",
             "frames": [
                 {
-                    "key": "cyclops_walk",
+                    "key": "minotaur_walk",
                     "frame": 24,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_walk",
+                    "key": "minotaur_walk",
                     "frame": 25,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_walk",
+                    "key": "minotaur_walk",
                     "frame": 26,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_walk",
+                    "key": "minotaur_walk",
                     "frame": 27,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_walk",
+                    "key": "minotaur_walk",
                     "frame": 28,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_walk",
+                    "key": "minotaur_walk",
                     "frame": 29,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_walk",
+                    "key": "minotaur_walk",
                     "frame": 30,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "cyclops_walk",
+                    "key": "minotaur_walk",
                     "frame": 31,
                     "duration": 0,
                     "keyframe": false
                 }
             ],
             "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "minotaur_idle",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "minotaur_idle",
+                    "frame": 0,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "minotaur_idle",
+                    "frame": 1,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 1,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "minotaur_idle_1",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "minotaur_idle",
+                    "frame": 2,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "minotaur_idle",
+                    "frame": 3,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 1,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "minotaur_idle_2",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "minotaur_idle",
+                    "frame": 4,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "minotaur_idle",
+                    "frame": 5,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 1,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "minotaur_idle_3",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "minotaur_idle",
+                    "frame": 6,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "minotaur_idle",
+                    "frame": 7,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 1,
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false
