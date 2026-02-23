@@ -157,6 +157,9 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
 
       // Initial display
       this.handleQueueUpdate(sharedQueue.items);
+    } else {
+      // Actor has no queue (e.g. a unit) - clear any previously displayed icons
+      this.handleQueueUpdate([]);
     }
   }
 

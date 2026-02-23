@@ -3,7 +3,7 @@ import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 
 describe("ActorManager", () => {
   describe("actorMap", () => {
-    it("should contain all ObjectNames enum values", () => {
+    it("All ObjectNames should be contained in ActorManager", () => {
       const enumValues = Object.values(ObjectNames);
       const missingActors: string[] = [];
 

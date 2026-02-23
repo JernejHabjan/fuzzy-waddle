@@ -84,6 +84,7 @@ import Zombie2 from "../prefabs/characters/mobs/zombies/zombie2/Zombie2";
 import SkeletonSwordsman from "../prefabs/characters/mobs/skeleton/skeleton_swordsman/SkeletonSwordsman";
 import Zombie3 from "../prefabs/characters/mobs/zombies/zombie3/Zombie3";
 import { RandomService } from "../world/services/random.service";
+import HealingTotem from "../prefabs/buildings/tivara/HealingTotem/HealingTotem";
 
 type ActorMap = { [name: string]: new (scene: Phaser.Scene) => GameObject };
 export class ActorManager {
@@ -179,6 +180,10 @@ export class ActorManager {
     [ObjectNames.StonePile]: StonePile
   };
 
+  private static spells: ActorMap = {
+    [ObjectNames.HealingTotem]: HealingTotem
+  };
+
   public static actorMap: ActorMap = {
     ...ActorManager.animals,
     ...ActorManager.general,
@@ -189,7 +194,8 @@ export class ActorManager {
     ...ActorManager.skaduweeWorkers,
     ...ActorManager.skaduweeUnits,
     ...ActorManager.skaduweeBuildings,
-    ...ActorManager.resources
+    ...ActorManager.resources,
+    ...ActorManager.spells
   } as const;
 
   static getActorDefinitionFromActor(actor: GameObject): ActorDefinition | undefined {
