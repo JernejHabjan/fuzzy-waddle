@@ -22,6 +22,7 @@ export enum WeaponType {
   ZombieLargeHands = "ZombieLargeHands",
   MinotaurHands = "MinotaurHands",
   Furball = "Furball",
+  AlchemistVase = "AlchemistVase",
   BowTower = "BowTower",
   WolfBite = "WolfBite"
 }

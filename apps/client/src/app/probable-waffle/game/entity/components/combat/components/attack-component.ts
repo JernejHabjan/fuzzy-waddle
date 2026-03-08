@@ -28,6 +28,7 @@ import type { AnimationOptions } from "../../animation/animation-options";
 import type { ProjectileData } from "../projectile-data";
 import type { AttackDefinition } from "./attack-definition";
 import GameObject = Phaser.GameObjects.GameObject;
+import TivaraAlchemistVase from "../../../../prefabs/weapons/TivaraAlchemistVase";
 
 export class AttackComponent {
   remainingCooldown = 0;
@@ -194,6 +195,9 @@ export class AttackComponent {
           break;
         case ProjectileType.FurballProjectile:
           projectileSprite = new SkaduweeOwlFurball(this.gameObject.scene);
+          break;
+        case ProjectileType.VaseProjectile:
+          projectileSprite = new TivaraAlchemistVase(this.gameObject.scene);
           break;
         case ProjectileType.FrostBoltProjectile:
           projectileSprite = new FrostBolt(this.gameObject.scene);

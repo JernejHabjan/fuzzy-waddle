@@ -9,8 +9,8 @@ import { ANIM_ORC_BOOMERANG_DEFINITION } from "./orc_boomerang_anim";
 export const orcBoomerangDefinition = {
   components: {
     representable: {
-      width: 32,
-      height: 48,
+      width: 35.2,
+      height: 52.8,
       origin: { x: 0.5, y: 0.899286430676403 }
     },
     objectDescriptor: {

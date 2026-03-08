@@ -21,7 +21,7 @@ export class RepresentableComponent {
   private _logicalWorldTransform?: Vector3Simple;
   private _visible?: boolean;
   private _debugGraphics?: Phaser.GameObjects.Graphics;
-  private static readonly drawDebug = false;
+  private static readonly drawDebug = true; // todo
 
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,

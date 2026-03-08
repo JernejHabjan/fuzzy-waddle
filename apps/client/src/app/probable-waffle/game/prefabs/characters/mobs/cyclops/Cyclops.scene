@@ -30,7 +30,7 @@
             "scaleY": 2.5,
             "originY": 0.899286430676403,
             "animationPlayMethod": 1,
-            "animationKey": "cyclops_idle"
+            "animationKey": "cyclops_idle_2"
         }
     ],
     "plainObjects": [],

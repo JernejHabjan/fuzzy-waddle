@@ -393,23 +393,62 @@
             "randomFrame": false
         },
         {
-            "key": "zombie1_idle",
+            "key": "zombie1_hurt",
             "type": "frame",
             "frames": [
                 {
-                    "key": "zombie2_idle",
+                    "key": "zombie1_hurt",
                     "frame": 0,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "zombie2_idle",
+                    "key": "zombie1_hurt",
+                    "frame": 1,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "zombie1_hurt",
+                    "frame": 2,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "zombie1_hurt",
+                    "frame": 3,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "zombie1_hurt",
+                    "frame": 4,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 5,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "zombie1_idle",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "zombie1_idle",
+                    "frame": 0,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "zombie1_idle",
                     "frame": 1,
                     "duration": 0,
                     "keyframe": false
                 }
             ],
-            "frameRate": 1,
+            "frameRate": 0,
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false
@@ -419,19 +458,19 @@
             "type": "frame",
             "frames": [
                 {
-                    "key": "zombie2_idle",
+                    "key": "zombie1_idle",
                     "frame": 2,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "zombie2_idle",
+                    "key": "zombie1_idle",
                     "frame": 3,
                     "duration": 0,
                     "keyframe": false
                 }
             ],
-            "frameRate": 1,
+            "frameRate": 0,
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false
@@ -441,19 +480,19 @@
             "type": "frame",
             "frames": [
                 {
-                    "key": "zombie2_idle",
+                    "key": "zombie1_idle",
                     "frame": 4,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "zombie2_idle",
+                    "key": "zombie1_idle",
                     "frame": 5,
                     "duration": 0,
                     "keyframe": false
                 }
             ],
-            "frameRate": 1,
+            "frameRate": 0,
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false
@@ -463,60 +502,21 @@
             "type": "frame",
             "frames": [
                 {
-                    "key": "zombie2_idle",
+                    "key": "zombie1_idle",
                     "frame": 6,
                     "duration": 0,
                     "keyframe": false
                 },
                 {
-                    "key": "zombie2_idle",
+                    "key": "zombie1_idle",
                     "frame": 7,
                     "duration": 0,
                     "keyframe": false
                 }
             ],
-            "frameRate": 1,
+            "frameRate": 0,
             "skipMissedFrames": true,
             "repeat": -1,
-            "randomFrame": false
-        },
-        {
-            "key": "zombie1_hurt",
-            "type": "frame",
-            "frames": [
-                {
-                    "key": "zombie2_hurt",
-                    "frame": 0,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "zombie2_hurt",
-                    "frame": 1,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "zombie2_hurt",
-                    "frame": 2,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "zombie2_hurt",
-                    "frame": 3,
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "zombie2_hurt",
-                    "frame": 4,
-                    "duration": 0,
-                    "keyframe": false
-                }
-            ],
-            "frameRate": 5,
-            "skipMissedFrames": true,
             "randomFrame": false
         }
     ],

@@ -5,11 +5,6 @@
                 "url": "assets/icons/loaders/probable-waffle-loader.png",
                 "type": "image",
                 "key": "probable-waffle-loader"
-            },
-            {
-                "url": "assets/probable-waffle/spritesheets/characters/mobs/skeleton/skeleton_scythe/skeleton_scythe_anim.json",
-                "type": "animation",
-                "key": "skeleton_scythe_anim"
             }
         ]
     },

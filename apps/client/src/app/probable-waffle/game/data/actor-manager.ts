@@ -85,6 +85,7 @@ import SkeletonSwordsman from "../prefabs/characters/mobs/skeleton/skeleton_swor
 import Zombie3 from "../prefabs/characters/mobs/zombies/zombie3/Zombie3";
 import { RandomService } from "../world/services/random.service";
 import HealingTotem from "../prefabs/buildings/tivara/HealingTotem/HealingTotem";
+import TivaraAlchemist from "../prefabs/characters/tivara/tivara-alchemist/TivaraAlchemist";
 
 type ActorMap = { [name: string]: new (scene: Phaser.Scene) => GameObject };
 export class ActorManager {
@@ -128,7 +129,8 @@ export class ActorManager {
 
   private static tivaraUnits: ActorMap = {
     [ObjectNames.TivaraMacemanMale]: TivaraMacemanMale,
-    [ObjectNames.TivaraSlingshotFemale]: TivaraSlingshotFemale
+    [ObjectNames.TivaraSlingshotFemale]: TivaraSlingshotFemale,
+    [ObjectNames.TivaraAlchemist]: TivaraAlchemist
   };
 
   private static tivaraBuildings: ActorMap = {

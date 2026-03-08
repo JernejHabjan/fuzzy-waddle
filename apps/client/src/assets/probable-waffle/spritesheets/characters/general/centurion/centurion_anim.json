@@ -35,9 +35,8 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 5,
             "skipMissedFrames": true,
-            "repeat": -1,
             "randomFrame": false
         },
         {
@@ -57,13 +56,13 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 1,
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false
         },
         {
-            "key": "centurion_idle",
+            "key": "centurion_idle_left",
             "type": "frame",
             "frames": [
                 {
@@ -79,13 +78,13 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 1,
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false
         },
         {
-            "key": "centurion_idle_left",
+            "key": "centurion_idle_down",
             "type": "frame",
             "frames": [
                 {
@@ -101,7 +100,7 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 1,
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false
@@ -123,7 +122,7 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 1,
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false
@@ -175,7 +174,7 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 10,
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false
@@ -227,7 +226,7 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 10,
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false
@@ -279,7 +278,7 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 10,
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false
@@ -331,7 +330,7 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 10,
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false
@@ -389,7 +388,7 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 10,
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false
@@ -447,7 +446,7 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 10,
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false
@@ -505,7 +504,7 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 10,
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false
@@ -563,7 +562,7 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 10,
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false

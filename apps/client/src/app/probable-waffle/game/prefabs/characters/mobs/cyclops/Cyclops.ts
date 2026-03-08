@@ -8,20 +8,21 @@ import Phaser from "phaser";
 /* END-USER-IMPORTS */
 
 export default class Cyclops extends Phaser.GameObjects.Sprite {
-  constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
-    super(scene, x ?? 80, y ?? 144, texture || "cyclops_idle", frame ?? 4);
 
-    this.setInteractive(new Phaser.Geom.Circle(32, 32, 32), Phaser.Geom.Circle.Contains);
-    this.scaleX = 2.5;
-    this.scaleY = 2.5;
-    this.setOrigin(0.5, 0.899286430676403);
-    this.play("cyclops_idle");
+	constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
+		super(scene, x ?? 80, y ?? 144, texture || "cyclops_idle", frame ?? 4);
 
-    /* START-USER-CTR-CODE */
+		this.setInteractive(new Phaser.Geom.Circle(32, 32, 32), Phaser.Geom.Circle.Contains);
+		this.scaleX = 2.5;
+		this.scaleY = 2.5;
+		this.setOrigin(0.5, 0.899286430676403);
+		this.play("cyclops_idle_2");
+
+		/* START-USER-CTR-CODE */
     /* END-USER-CTR-CODE */
-  }
+	}
 
-  /* START-USER-CODE */
+	/* START-USER-CODE */
   override name = ObjectNames.Cyclops;
   // Write your code here.
 

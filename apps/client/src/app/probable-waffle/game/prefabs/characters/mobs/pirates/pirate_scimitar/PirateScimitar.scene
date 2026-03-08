@@ -21,20 +21,20 @@
             "hitArea.y": 32,
             "hitArea.radius": 32,
             "texture": {
-                "key": "warrior_idle",
+                "key": "pirate_scimitar_idle",
                 "frame": 4
             },
-            "x": 32,
-            "y": 57.554331622949405,
-            "originY": 0.899286430676403,
+            "x": 96,
+            "y": 120,
+            "originY": 0.6295196813175922,
             "animationPlayMethod": 1,
-            "animationKey": "general_warrior_idle_down"
+            "animationKey": "pirate_scimitar_idle_2"
         }
     ],
     "plainObjects": [],
     "meta": {
-        "app": "Phaser Editor 2D - Scene Editor",
-        "url": "https://phasereditor2d.com",
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
         "contentType": "phasereditor2d.core.scene.SceneContentType",
         "version": 5
     }

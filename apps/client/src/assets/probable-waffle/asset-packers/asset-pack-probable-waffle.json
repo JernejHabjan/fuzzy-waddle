@@ -32,6 +32,11 @@
                 "key": "alchemist"
             },
             {
+                "url": "assets/probable-waffle/spritesheets/characters/tivara/alchemist/alchemist_anim.json",
+                "type": "animation",
+                "key": "alchemist_anim"
+            },
+            {
                 "type": "multiatlas",
                 "url": "assets/probable-waffle/atlas/animals.json",
                 "path": "assets/probable-waffle/atlas",
@@ -1237,6 +1242,11 @@
                 "url": "assets/probable-waffle/spritesheets/characters/mobs/skeleton/skeleton/skeleton_melee_anim.json",
                 "type": "animation",
                 "key": "skeleton_melee_anim"
+            },
+            {
+                "url": "assets/probable-waffle/spritesheets/characters/mobs/skeleton/skeleton_scythe/skeleton_scythe_anim.json",
+                "type": "animation",
+                "key": "skeleton_scythe_anim"
             },
             {
                 "url": "assets/probable-waffle/spritesheets/characters/mobs/skeleton/skeleton_scythe/skeleton_scythe_hurt.png",

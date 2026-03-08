@@ -871,62 +871,6 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     const minerals_10 = new Minerals(this, 832, 1104);
     this.add.existing(minerals_10);
 
-    // sit_down_1_png
-    this.add.image(-1024, 560, "alchemist", "sit/down/1.png");
-
-    // cyclops_idle5
-    const cyclops_idle5 = this.add.image(-1088, 560, "cyclops_idle", 5);
-    cyclops_idle5.scaleX = 2.5;
-    cyclops_idle5.scaleY = 2.5;
-
-    // mummy_cast17
-    this.add.image(-992, 608, "mummy_cast", 17);
-
-    // orc_boomerang_islash15
-    const orc_boomerang_islash15 = this.add.image(-960, 624, "orc_boomerang_islash", 15);
-    orc_boomerang_islash15.scaleX = 1.2;
-    orc_boomerang_islash15.scaleY = 1.2;
-
-    // orc_magician_idle4
-    const orc_magician_idle4 = this.add.image(-896, 608, "orc_magician_idle", 4);
-    orc_magician_idle4.scaleX = 1.2;
-    orc_magician_idle4.scaleY = 1.2;
-
-    // orc_warrior_idle5
-    const orc_warrior_idle5 = this.add.image(-864, 640, "orc_warrior_idle", 5);
-    orc_warrior_idle5.scaleX = 1.3;
-    orc_warrior_idle5.scaleY = 1.3;
-
-    // pirate_scimitar_slash11
-    this.add.image(-960, 656, "pirate_scimitar_slash", 11);
-
-    // skeleton_scythe_idle5
-    this.add.image(-1032, 678, "skeleton_scythe_idle", 5);
-
-    // skeleton_slash13
-    this.add.image(-928, 672, "skeleton_slash", 13);
-
-    // zombie1_idle5
-    this.add.image(-991, 706, "zombie1_idle", 5);
-
-    // zombie2_slash12
-    this.add.image(-945, 717, "zombie2_slash", 12);
-
-    // zombie3_slash10
-    this.add.image(-1056, 704, "zombie3_slash", 10);
-
-    // pirate_swordsman_idle4
-    this.add.image(-883, 701, "pirate_swordsman_idle", 4);
-
-    // skeleton_bowman_slash8
-    this.add.image(-800, 672, "skeleton_bowman_slash", 8);
-
-    // skeleton_bowman_walk8
-    this.add.image(-768, 688, "skeleton_bowman_walk", 8);
-
-    // skeleton_swordsman_idle4
-    this.add.image(-782, 716, "skeleton_swordsman_idle", 4);
-
     // centurion
     const centurion = new Centurion(this, -1472, 800);
     this.add.existing(centurion);
@@ -936,7 +880,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(cyclops);
 
     // minotaur
-    const minotaur = new Minotaur(this, -1196, 900);
+    const minotaur = new Minotaur(this, -1344, 816);
     this.add.existing(minotaur);
 
     // mummy
@@ -944,7 +888,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(mummy);
 
     // orcBoomerang
-    const orcBoomerang = new OrcBoomerang(this, -1120, 928);
+    const orcBoomerang = new OrcBoomerang(this, -1088, 896);
     this.add.existing(orcBoomerang);
 
     // orcMagician

@@ -59,6 +59,7 @@ import { pirateScimitarDefinition } from "../characters/mobs/pirates/pirate_scim
 import { orcMagicianDefinition } from "../characters/mobs/orcs/orc_magician/orc-magician.definition";
 import { mummyDefinition } from "../characters/mobs/mummy/mummy.definition";
 import { healingTotemDefinition } from "../buildings/tivara/HealingTotem/healing-totem.definition";
+import { tivaraAlchemistDefinition } from "../characters/tivara/tivara-alchemist/tivara_alchemist.definition";
 
 export const pwActorDefinitions: {
   [key in ObjectNames]: PrefabDefinition;
@@ -87,6 +88,7 @@ export const pwActorDefinitions: {
   Zombie2: zombie2Definition,
   Zombie3: zombie3Definition,
   TivaraMacemanMale: tivaraMacemanMaleDefinition,
+  TivaraAlchemist: tivaraAlchemistDefinition,
   TivaraSlingshotFemale: tivaraSlingshotFemaleDefinition,
   TivaraWorker: tivaraWorkerDefinition,
   TivaraWorkerFemale: tivaraWorkerFemaleDefinition,

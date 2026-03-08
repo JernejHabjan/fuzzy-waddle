@@ -9,8 +9,8 @@ import { AiType } from "../../../ai-agents/ai-type";
 export const minotaurDefinition = {
   components: {
     representable: {
-      width: 32,
-      height: 48,
+      width: 80,
+      height: 120,
       origin: { x: 0.5, y: 0.899286430676403 }
     },
     objectDescriptor: {

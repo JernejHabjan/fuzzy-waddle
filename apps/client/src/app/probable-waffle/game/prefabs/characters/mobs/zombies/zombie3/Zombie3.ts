@@ -14,7 +14,7 @@ export default class Zombie3 extends Phaser.GameObjects.Sprite {
 
 		this.setInteractive(new Phaser.Geom.Circle(32, 32, 32), Phaser.Geom.Circle.Contains);
 		this.setOrigin(0.5, 0.899286430676403);
-		this.play("zombie3_idle");
+		this.play("zombie3_idle_2");
 
 		/* START-USER-CTR-CODE */
     /* END-USER-CTR-CODE */

@@ -65,7 +65,7 @@ export const templeDefinition = {
       actors: [ObjectNames.AnkGuard]
     },
     production: {
-      availableProduceActors: [ObjectNames.TivaraSlingshotFemale]
+      availableProduceActors: [ObjectNames.TivaraSlingshotFemale, ObjectNames.TivaraAlchemist]
     },
     queue: {
       queueCount: 1,

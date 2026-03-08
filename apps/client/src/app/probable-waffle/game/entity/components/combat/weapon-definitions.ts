@@ -564,6 +564,37 @@ export const weaponDefinitions: Record<WeaponType, AttackData> = {
       hit: 500
     }
   },
+  [WeaponType.AlchemistVase]: {
+    weaponType: WeaponType.AlchemistVase,
+    canTargetAir: true,
+    projectile: {
+      type: ProjectileType.VaseProjectile,
+      speed: 800,
+      orientation: {
+        randomizeOrientation: true,
+        pointingOrientation: 0
+      },
+      impactAnimation: {
+        anims: [EffectsAnims.ANIM_IMPACT_DEBRIS]
+      }
+    },
+    damage: 9,
+    damageType: DamageType.Physical,
+    cooldown: 3000,
+    range: 6,
+    minRange: 0,
+    highGroundRangeBonus: 1,
+    animationType: AnimationType.Shoot,
+    sounds: {
+      preparing: null,
+      fire: null, // todo
+      hit: null // todo
+    },
+    delays: {
+      fire: 200,
+      hit: 500
+    }
+  },
   [WeaponType.BowTower]: {
     weaponType: WeaponType.BowTower,
     canTargetAir: true,

@@ -409,7 +409,7 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 5,
+            "frameRate": 0,
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false
@@ -431,7 +431,7 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 5,
+            "frameRate": 0,
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false
@@ -453,7 +453,7 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 5,
+            "frameRate": 0,
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false
@@ -475,7 +475,7 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 5,
+            "frameRate": 0,
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false

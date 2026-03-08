@@ -1,5 +1,5 @@
 {
-    "id": "1457b917-a97a-463b-9989-e0ec3446c7b8",
+    "id": "1457b917-a97a-463b-1989-f0ec3446c7a8",
     "sceneType": "PREFAB",
     "settings": {
         "exportClass": true,
@@ -14,21 +14,21 @@
     "displayList": [
         {
             "type": "Sprite",
-            "id": "e3527f1d-89a8-4604-b132-f9950fadd5d9",
-            "label": "centurion_idle",
+            "id": "e3527f1d-89a8-4604-b032-f9950fadd5d9",
+            "label": "general_warrior_idle_down",
             "hitArea.shape": "CIRCLE",
-            "hitArea.x": 96,
-            "hitArea.y": 98,
+            "hitArea.x": 32,
+            "hitArea.y": 32,
             "hitArea.radius": 32,
             "texture": {
-                "key": "centurion_idle",
-                "frame": 4
+                "key": "alchemist",
+                "frame": "sit/left/1.png"
             },
             "x": 32,
-            "y": 54.45392844366228,
-            "originY": 0.6204006413204773,
+            "y": 57.554331622949405,
+            "originY": 0.899286430676403,
             "animationPlayMethod": 1,
-            "animationKey": "centurion_idle_down"
+            "animationKey": "idle_down"
         }
     ],
     "plainObjects": [],
