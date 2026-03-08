@@ -27,6 +27,7 @@ export enum ObjectNames {
   TivaraWorker = "TivaraWorker",
   TivaraWorkerFemale = "TivaraWorkerFemale",
   TivaraWorkerMale = "TivaraWorkerMale",
+  TivaraAlchemist = "TivaraAlchemist",
   AnkGuard = "AnkGuard",
   Olival = "Olival",
   Emberstone = "Emberstone",
