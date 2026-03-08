@@ -56,7 +56,7 @@ export const minotaurDefinition = {
     },
     selectable: {},
     translatable: {
-      tileMoveDuration: 600
+      tileMoveDuration: 200
     },
     containable: { enabled: true },
     aiControlled: {

@@ -1,6 +1,6 @@
 import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PaymentType } from "../../../../entity/components/production/payment-type";
-import { ANIM_GENERAL_WARRIOR_DEFINITION } from "./mummy_anim";
+import { ANIM_MUMMY_DEFINITION } from "./mummy_anim";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 import { ActorPhysicalType } from "../../../../entity/components/combat/components/actor-physical-type";
 import { weaponDefinitions } from "../../../../entity/components/combat/weapon-definitions";
@@ -62,7 +62,7 @@ export const mummyDefinition = {
     aiControlled: {
       type: AiType.Character
     },
-    animatable: { animations: ANIM_GENERAL_WARRIOR_DEFINITION }
+    animatable: { animations: ANIM_MUMMY_DEFINITION }
   },
   systems: {
     movement: { enabled: true }

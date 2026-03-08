@@ -1,43 +1,43 @@
 import { type AnimationDefinitionMap } from "../../../../../entity/components/animation/animation-definition-map";
 import { AnimationType } from "../../../../../entity/components/animation/animation-type";
 
-const ANIM_GENERAL_WARRIOR_HURT = "general_warrior_hurt";
-const ANIM_GENERAL_WARRIOR_IDLE_UP = "general_warrior_idle_up";
-const ANIM_GENERAL_WARRIOR_IDLE_LEFT = "general_warrior_idle_left";
-const ANIM_GENERAL_WARRIOR_IDLE_DOWN = "general_warrior_idle_down";
-const ANIM_GENERAL_WARRIOR_IDLE_RIGHT = "general_warrior_idle_right";
-const ANIM_GENERAL_WARRIOR_THRUST_UP = "general_warrior_thrust_up";
-const ANIM_GENERAL_WARRIOR_THRUST_LEFT = "general_warrior_thrust_left";
-const ANIM_GENERAL_WARRIOR_THRUST_DOWN = "general_warrior_thrust_down";
-const ANIM_GENERAL_WARRIOR_THRUST_RIGHT = "general_warrior_thrust_right";
-const ANIM_GENERAL_WARRIOR_WALK_UP = "general_warrior_walk_up";
-const ANIM_GENERAL_WARRIOR_WALK_LEFT = "general_warrior_walk_left";
-const ANIM_GENERAL_WARRIOR_WALK_DOWN = "general_warrior_walk_down";
-const ANIM_GENERAL_WARRIOR_WALK_RIGHT = "general_warrior_walk_right";
+const ANIM_ORC_BOOMERANG_HURT = "orc_boomerang_hurt";
+const ANIM_ORC_BOOMERANG_IDLE = "orc_boomerang_idle";
+const ANIM_ORC_BOOMERANG_IDLE_1 = "orc_boomerang_idle_1";
+const ANIM_ORC_BOOMERANG_IDLE_2 = "orc_boomerang_idle_2";
+const ANIM_ORC_BOOMERANG_IDLE_3 = "orc_boomerang_idle_3";
+const ANIM_ORC_BOOMERANG_SLASH = "orc_boomerang_slash";
+const ANIM_ORC_BOOMERANG_SLASH_1 = "orc_boomerang_slash_1";
+const ANIM_ORC_BOOMERANG_SLASH_2 = "orc_boomerang_slash_2";
+const ANIM_ORC_BOOMERANG_SLASH_3 = "orc_boomerang_slash_3";
+const ANIM_ORC_BOOMERANG_WALK = "orc_boomerang_walk";
+const ANIM_ORC_BOOMERANG_WALK_1 = "orc_boomerang_walk_1";
+const ANIM_ORC_BOOMERANG_WALK_2 = "orc_boomerang_walk_2";
+const ANIM_ORC_BOOMERANG_WALK_3 = "orc_boomerang_walk_3";
 
 export const ANIM_ORC_BOOMERANG_DEFINITION: AnimationDefinitionMap = {
   [AnimationType.Idle]: {
-    north: { key: ANIM_GENERAL_WARRIOR_IDLE_UP },
-    south: { key: ANIM_GENERAL_WARRIOR_IDLE_DOWN },
-    west: { key: ANIM_GENERAL_WARRIOR_IDLE_LEFT },
-    east: { key: ANIM_GENERAL_WARRIOR_IDLE_RIGHT }
+    north: { key: ANIM_ORC_BOOMERANG_IDLE },
+    south: { key: ANIM_ORC_BOOMERANG_IDLE_2 },
+    west: { key: ANIM_ORC_BOOMERANG_IDLE_1 },
+    east: { key: ANIM_ORC_BOOMERANG_IDLE_3 }
   },
   [AnimationType.Walk]: {
-    north: { key: ANIM_GENERAL_WARRIOR_WALK_UP },
-    south: { key: ANIM_GENERAL_WARRIOR_WALK_DOWN },
-    west: { key: ANIM_GENERAL_WARRIOR_WALK_LEFT },
-    east: { key: ANIM_GENERAL_WARRIOR_WALK_RIGHT }
+    north: { key: ANIM_ORC_BOOMERANG_WALK },
+    south: { key: ANIM_ORC_BOOMERANG_WALK_2 },
+    west: { key: ANIM_ORC_BOOMERANG_WALK_1 },
+    east: { key: ANIM_ORC_BOOMERANG_WALK_3 }
   },
-  [AnimationType.Thrust]: {
-    north: { key: ANIM_GENERAL_WARRIOR_THRUST_UP },
-    south: { key: ANIM_GENERAL_WARRIOR_THRUST_DOWN },
-    west: { key: ANIM_GENERAL_WARRIOR_THRUST_LEFT },
-    east: { key: ANIM_GENERAL_WARRIOR_THRUST_RIGHT }
+  [AnimationType.Slash]: {
+    north: { key: ANIM_ORC_BOOMERANG_SLASH },
+    south: { key: ANIM_ORC_BOOMERANG_SLASH_2 },
+    west: { key: ANIM_ORC_BOOMERANG_SLASH_1 },
+    east: { key: ANIM_ORC_BOOMERANG_SLASH_3 }
   },
   [AnimationType.Death]: {
-    north: { key: ANIM_GENERAL_WARRIOR_HURT },
-    south: { key: ANIM_GENERAL_WARRIOR_HURT },
-    west: { key: ANIM_GENERAL_WARRIOR_HURT },
-    east: { key: ANIM_GENERAL_WARRIOR_HURT }
+    north: { key: ANIM_ORC_BOOMERANG_HURT },
+    south: { key: ANIM_ORC_BOOMERANG_HURT },
+    west: { key: ANIM_ORC_BOOMERANG_HURT },
+    east: { key: ANIM_ORC_BOOMERANG_HURT }
   }
 };

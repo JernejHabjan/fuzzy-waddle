@@ -56,7 +56,7 @@ export const cyclopsDefinition = {
     },
     selectable: {},
     translatable: {
-      tileMoveDuration: 700
+      tileMoveDuration: 300
     },
     containable: { enabled: true },
     aiControlled: {

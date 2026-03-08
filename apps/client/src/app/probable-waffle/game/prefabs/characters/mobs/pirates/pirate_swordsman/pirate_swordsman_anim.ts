@@ -1,43 +1,43 @@
 import { type AnimationDefinitionMap } from "../../../../../entity/components/animation/animation-definition-map";
 import { AnimationType } from "../../../../../entity/components/animation/animation-type";
 
-const ANIM_GENERAL_WARRIOR_HURT = "general_warrior_hurt";
-const ANIM_GENERAL_WARRIOR_IDLE_UP = "general_warrior_idle_up";
-const ANIM_GENERAL_WARRIOR_IDLE_LEFT = "general_warrior_idle_left";
-const ANIM_GENERAL_WARRIOR_IDLE_DOWN = "general_warrior_idle_down";
-const ANIM_GENERAL_WARRIOR_IDLE_RIGHT = "general_warrior_idle_right";
-const ANIM_GENERAL_WARRIOR_THRUST_UP = "general_warrior_thrust_up";
-const ANIM_GENERAL_WARRIOR_THRUST_LEFT = "general_warrior_thrust_left";
-const ANIM_GENERAL_WARRIOR_THRUST_DOWN = "general_warrior_thrust_down";
-const ANIM_GENERAL_WARRIOR_THRUST_RIGHT = "general_warrior_thrust_right";
-const ANIM_GENERAL_WARRIOR_WALK_UP = "general_warrior_walk_up";
-const ANIM_GENERAL_WARRIOR_WALK_LEFT = "general_warrior_walk_left";
-const ANIM_GENERAL_WARRIOR_WALK_DOWN = "general_warrior_walk_down";
-const ANIM_GENERAL_WARRIOR_WALK_RIGHT = "general_warrior_walk_right";
+const ANIM_PIRATE_SWORDSMAN_HURT = "pirate_swordsman_hurt";
+const ANIM_PIRATE_SWORDSMAN_IDLE = "pirate_swordsman_idle";
+const ANIM_PIRATE_SWORDSMAN_IDLE_1 = "pirate_swordsman_idle_1";
+const ANIM_PIRATE_SWORDSMAN_IDLE_2 = "pirate_swordsman_idle_2";
+const ANIM_PIRATE_SWORDSMAN_IDLE_3 = "pirate_swordsman_idle_3";
+const ANIM_PIRATE_SWORDSMAN_SLASH = "pirate_swordsman_slash";
+const ANIM_PIRATE_SWORDSMAN_SLASH_1 = "pirate_swordsman_slash_1";
+const ANIM_PIRATE_SWORDSMAN_SLASH_2 = "pirate_swordsman_slash_2";
+const ANIM_PIRATE_SWORDSMAN_SLASH_3 = "pirate_swordsman_slash_3";
+const ANIM_PIRATE_SWORDSMAN_WALK = "pirate_swordsman_walk";
+const ANIM_PIRATE_SWORDSMAN_WALK_1 = "pirate_swordsman_walk_1";
+const ANIM_PIRATE_SWORDSMAN_WALK_2 = "pirate_swordsman_walk_2";
+const ANIM_PIRATE_SWORDSMAN_WALK_3 = "pirate_swordsman_walk_3";
 
-export const ANIM_GENERAL_WARRIOR_DEFINITION: AnimationDefinitionMap = {
+export const ANIM_PIRATE_SWORDSMAN_DEFINITION: AnimationDefinitionMap = {
   [AnimationType.Idle]: {
-    north: { key: ANIM_GENERAL_WARRIOR_IDLE_UP },
-    south: { key: ANIM_GENERAL_WARRIOR_IDLE_DOWN },
-    west: { key: ANIM_GENERAL_WARRIOR_IDLE_LEFT },
-    east: { key: ANIM_GENERAL_WARRIOR_IDLE_RIGHT }
+    north: { key: ANIM_PIRATE_SWORDSMAN_IDLE },
+    south: { key: ANIM_PIRATE_SWORDSMAN_IDLE_2 },
+    west: { key: ANIM_PIRATE_SWORDSMAN_IDLE_1 },
+    east: { key: ANIM_PIRATE_SWORDSMAN_IDLE_3 }
   },
   [AnimationType.Walk]: {
-    north: { key: ANIM_GENERAL_WARRIOR_WALK_UP },
-    south: { key: ANIM_GENERAL_WARRIOR_WALK_DOWN },
-    west: { key: ANIM_GENERAL_WARRIOR_WALK_LEFT },
-    east: { key: ANIM_GENERAL_WARRIOR_WALK_RIGHT }
+    north: { key: ANIM_PIRATE_SWORDSMAN_WALK },
+    south: { key: ANIM_PIRATE_SWORDSMAN_WALK_2 },
+    west: { key: ANIM_PIRATE_SWORDSMAN_WALK_1 },
+    east: { key: ANIM_PIRATE_SWORDSMAN_WALK_3 }
   },
-  [AnimationType.Thrust]: {
-    north: { key: ANIM_GENERAL_WARRIOR_THRUST_UP },
-    south: { key: ANIM_GENERAL_WARRIOR_THRUST_DOWN },
-    west: { key: ANIM_GENERAL_WARRIOR_THRUST_LEFT },
-    east: { key: ANIM_GENERAL_WARRIOR_THRUST_RIGHT }
+  [AnimationType.Slash]: {
+    north: { key: ANIM_PIRATE_SWORDSMAN_SLASH },
+    south: { key: ANIM_PIRATE_SWORDSMAN_SLASH_2 },
+    west: { key: ANIM_PIRATE_SWORDSMAN_SLASH_1 },
+    east: { key: ANIM_PIRATE_SWORDSMAN_SLASH_3 }
   },
   [AnimationType.Death]: {
-    north: { key: ANIM_GENERAL_WARRIOR_HURT },
-    south: { key: ANIM_GENERAL_WARRIOR_HURT },
-    west: { key: ANIM_GENERAL_WARRIOR_HURT },
-    east: { key: ANIM_GENERAL_WARRIOR_HURT }
+    north: { key: ANIM_PIRATE_SWORDSMAN_HURT },
+    south: { key: ANIM_PIRATE_SWORDSMAN_HURT },
+    west: { key: ANIM_PIRATE_SWORDSMAN_HURT },
+    east: { key: ANIM_PIRATE_SWORDSMAN_HURT }
   }
 };

@@ -1,5 +1,5 @@
 import { ResourceType } from "@fuzzy-waddle/api-interfaces";
-import { ANIM_GENERAL_WARRIOR_DEFINITION } from "./zombie3_anim";
+import { ANIM_ZOMBIE3_DEFINITION } from "./zombie3_anim";
 import { weaponDefinitions } from "../../../../../entity/components/combat/weapon-definitions";
 import { ActorPhysicalType } from "../../../../../entity/components/combat/components/actor-physical-type";
 import { PaymentType } from "../../../../../entity/components/production/payment-type";
@@ -62,7 +62,7 @@ export const zombie3Definition = {
     aiControlled: {
       type: AiType.Character
     },
-    animatable: { animations: ANIM_GENERAL_WARRIOR_DEFINITION }
+    animatable: { animations: ANIM_ZOMBIE3_DEFINITION }
   },
   systems: {
     movement: { enabled: true }

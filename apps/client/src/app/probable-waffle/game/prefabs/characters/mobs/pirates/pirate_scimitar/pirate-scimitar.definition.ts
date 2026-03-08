@@ -1,5 +1,5 @@
 import { ResourceType } from "@fuzzy-waddle/api-interfaces";
-import { ANIM_GENERAL_WARRIOR_DEFINITION } from "./pirate_scimitar_anim";
+import { ANIM_PIRATE_SCIMITAR_DEFINITION } from "./pirate_scimitar_anim";
 import { weaponDefinitions } from "../../../../../entity/components/combat/weapon-definitions";
 import { ActorPhysicalType } from "../../../../../entity/components/combat/components/actor-physical-type";
 import { PaymentType } from "../../../../../entity/components/production/payment-type";
@@ -62,7 +62,7 @@ export const pirateScimitarDefinition = {
     aiControlled: {
       type: AiType.Character
     },
-    animatable: { animations: ANIM_GENERAL_WARRIOR_DEFINITION }
+    animatable: { animations: ANIM_PIRATE_SCIMITAR_DEFINITION }
   },
   systems: {
     movement: { enabled: true }
