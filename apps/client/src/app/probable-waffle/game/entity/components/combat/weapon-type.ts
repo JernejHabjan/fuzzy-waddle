@@ -1,11 +1,12 @@
 export enum WeaponType {
   TivaraSlingshot = "TivaraSlingshot",
+  TivaraSlingshotShortRange = "TivaraSlingshotShortRange",
   OrcBoomerang = "OrcBoomerang",
   SkaduweeBow = "SkaduweeBow",
   SkeletonBow = "SkeletonBow",
   FrostSpell = "FrostSpell",
   FireSpell = "FireSpell",
-  Tivara = "TivaraMace",
+  TivaraMace = "TivaraMace",
   SkaduweeAxe = "SkaduweeAxe",
   SkeletonScythe = "SkeletonScythe",
   SkeletonSword = "SkeletonSword",

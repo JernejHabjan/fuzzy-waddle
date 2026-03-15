@@ -21,20 +21,20 @@
             "hitArea.y": 32,
             "hitArea.radius": 32,
             "texture": {
-                "key": "slingshot_female_idle",
+                "key": "slingshot_female_lvl1_long_range_idle",
                 "frame": 4
             },
             "x": 32,
             "y": 57.57411588434234,
             "originY": 0.8995955734617012,
             "animationPlayMethod": 1,
-            "animationKey": "tivara_slingshot_female_idle_down"
+            "animationKey": "slingshot_female_lvl1_long_range_idle_2"
         }
     ],
     "plainObjects": [],
     "meta": {
-        "app": "Phaser Editor 2D - Scene Editor",
-        "url": "https://phasereditor2d.com",
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
         "contentType": "phasereditor2d.core.scene.SceneContentType",
         "version": 5
     }

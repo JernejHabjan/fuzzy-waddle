@@ -9,7 +9,7 @@ import {
 } from "./TivaraSlingshotSfx";
 import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PaymentType } from "../../../../entity/components/production/payment-type";
-import { ANIM_TIVARA_SLINGSHOT_FEMALE_DEFINITION } from "./tivara_slingshot_female_anims";
+import { ANIM_TIVARA_MACEMAN_MALE_DEFINITION_LEVEL_1 } from "./tivara_slingshot_female_anims";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 import { SoundType } from "../../../../entity/components/actor-audio/sound-type";
 import { ActorPhysicalType } from "../../../../entity/components/combat/components/actor-physical-type";
@@ -53,7 +53,7 @@ export const tivaraSlingshotFemaleDefinition = {
       maxHealth: 100
     },
     attack: {
-      attacks: [weaponDefinitions.TivaraSlingshot]
+      attacks: [weaponDefinitions.TivaraSlingshot, weaponDefinitions.TivaraSlingshotShortRange]
     },
     productionCost: {
       resources: {
@@ -92,7 +92,7 @@ export const tivaraSlingshotFemaleDefinition = {
         [SoundType.LocationUnavailable]: TivaraSlingshotSfxLocationSounds
       }
     },
-    animatable: { animations: ANIM_TIVARA_SLINGSHOT_FEMALE_DEFINITION }
+    animatable: { animations: ANIM_TIVARA_MACEMAN_MALE_DEFINITION_LEVEL_1 }
   },
   systems: {
     movement: { enabled: true },

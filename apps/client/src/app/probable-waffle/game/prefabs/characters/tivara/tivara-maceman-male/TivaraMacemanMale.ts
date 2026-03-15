@@ -7,22 +7,19 @@ import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import Phaser from "phaser";
 /* END-USER-IMPORTS */
 
-export default class TivaraMacemanMale extends Phaser.GameObjects.Container {
-  constructor(scene: Phaser.Scene, x?: number, y?: number) {
-    super(scene, x ?? 32, y ?? 57.35487752340556);
+export default class TivaraMacemanMale extends Phaser.GameObjects.Sprite {
 
-    this.setInteractive(new Phaser.Geom.Circle(0, -25.354877574887297, 32), Phaser.Geom.Circle.Contains);
+	constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
+		super(scene, x ?? 0, y ?? 0, texture || "maceman_male_lvl1_idle", frame ?? 4);
 
-    // tivara_maceman_male_idle_down
-    const tivara_maceman_male_idle_down = scene.add.sprite(0, -25.354877523405563, "maceman_male_idle", 4);
-    tivara_maceman_male_idle_down.play("tivara_maceman_male_idle_down");
-    this.add(tivara_maceman_male_idle_down);
+		this.setInteractive(new Phaser.Geom.Circle(32, 32, 32), Phaser.Geom.Circle.Contains);
+		this.play("maceman_male_lvl1_idle_2");
 
-    /* START-USER-CTR-CODE */
+		/* START-USER-CTR-CODE */
     /* END-USER-CTR-CODE */
-  }
+	}
 
-  /* START-USER-CODE */
+	/* START-USER-CODE */
   override name = ObjectNames.TivaraMacemanMale;
   // Write your code here.
 

@@ -28,7 +28,7 @@ import {
 import type { AttackData } from "./attack-data";
 import { DamageType } from "@fuzzy-waddle/api-interfaces";
 
-export const weaponDefinitions: Record<WeaponType, AttackData> = {
+export const weaponDefinitions = {
   [WeaponType.TivaraSlingshot]: {
     weaponType: WeaponType.TivaraSlingshot,
     canTargetAir: true,
@@ -59,6 +59,26 @@ export const weaponDefinitions: Record<WeaponType, AttackData> = {
     delays: {
       fire: 1000,
       hit: 0
+    }
+  },
+  [WeaponType.TivaraSlingshotShortRange]: {
+    weaponType: WeaponType.TivaraSlingshotShortRange,
+    canTargetAir: false,
+    damage: 2,
+    damageType: DamageType.Physical,
+    cooldown: 1000,
+    range: 2,
+    minRange: 0,
+    highGroundRangeBonus: 0,
+    animationType: AnimationType.Thrust,
+    sounds: {
+      preparing: null,
+      fire: null,
+      hit: SharedActorActionsSfxSpearStabHitSounds
+    },
+    delays: {
+      fire: 200,
+      hit: 500
     }
   },
   [WeaponType.OrcBoomerang]: {
@@ -212,8 +232,8 @@ export const weaponDefinitions: Record<WeaponType, AttackData> = {
       hit: 0
     }
   },
-  [WeaponType.Tivara]: {
-    weaponType: WeaponType.Tivara,
+  [WeaponType.TivaraMace]: {
+    weaponType: WeaponType.TivaraMace,
     canTargetAir: false,
     damage: 6,
     damageType: DamageType.Physical,
@@ -221,7 +241,7 @@ export const weaponDefinitions: Record<WeaponType, AttackData> = {
     range: 1,
     minRange: 0,
     highGroundRangeBonus: 0,
-    animationType: AnimationType.LargeSlash,
+    animationType: AnimationType.Slash,
     sounds: {
       preparing: null,
       fire: SharedActorActionsSfxHeavyWeaponSwingSounds,

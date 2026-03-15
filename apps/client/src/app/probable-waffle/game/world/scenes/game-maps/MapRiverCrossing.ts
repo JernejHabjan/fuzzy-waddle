@@ -99,6 +99,7 @@ import Zombie1 from "../../../prefabs/characters/mobs/zombies/zombie1/Zombie1";
 import Zombie2 from "../../../prefabs/characters/mobs/zombies/zombie2/Zombie2";
 import Zombie3 from "../../../prefabs/characters/mobs/zombies/zombie3/Zombie3";
 import TivaraAlchemist from "../../../prefabs/characters/tivara/tivara-alchemist/TivaraAlchemist";
+import TivaraMacemanMale from "../../../prefabs/characters/tivara/tivara-maceman-male/TivaraMacemanMale";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -940,6 +941,10 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     const tivaraAlchemist = new TivaraAlchemist(this, -384, 656);
     this.add.existing(tivaraAlchemist);
 
+    // tivaraMacemanMale
+    const tivaraMacemanMale = new TivaraMacemanMale(this, -512, 544);
+    this.add.existing(tivaraMacemanMale);
+
     // spawn (components)
     const spawnEditorOwner = new EditorOwner(spawn);
     spawnEditorOwner.owner_id = "1";
@@ -1199,6 +1204,10 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // tivaraAlchemist (components)
     const tivaraAlchemistEditorOwner = new EditorOwner(tivaraAlchemist);
     tivaraAlchemistEditorOwner.owner_id = "1";
+
+    // tivaraMacemanMale (components)
+    const tivaraMacemanMaleEditorOwner = new EditorOwner(tivaraMacemanMale);
+    tivaraMacemanMaleEditorOwner.owner_id = "1";
 
     this.tilemap = tilemap;
 

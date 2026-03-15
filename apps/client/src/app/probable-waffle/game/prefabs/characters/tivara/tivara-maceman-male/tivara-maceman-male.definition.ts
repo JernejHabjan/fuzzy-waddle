@@ -9,7 +9,7 @@ import {
   TivaraMacemanSfxMoveSounds,
   TivaraMacemanSfxSelectionSounds
 } from "./TivaraMacemanSfx";
-import { ANIM_TIVARA_MACEMAN_MALE_DEFINITION } from "./tivara_maceman_male_anims";
+import { ANIM_TIVARA_MACEMAN_MALE_DEFINITION_LEVEL_1 } from "./tivara_maceman_male_anims";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 import { SoundType } from "../../../../entity/components/actor-audio/sound-type";
 import { ActorPhysicalType } from "../../../../entity/components/combat/components/actor-physical-type";
@@ -88,7 +88,7 @@ export const tivaraMacemanMaleDefinition = {
         [SoundType.LocationUnavailable]: TivaraMacemanSfxLocationSounds
       }
     },
-    animatable: { animations: ANIM_TIVARA_MACEMAN_MALE_DEFINITION }
+    animatable: { animations: ANIM_TIVARA_MACEMAN_MALE_DEFINITION_LEVEL_1 }
   },
   systems: {
     movement: { enabled: true },
