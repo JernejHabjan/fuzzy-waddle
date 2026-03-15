@@ -9,7 +9,7 @@ import {
 } from "./SkaduweeMagicianSfx";
 import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PaymentType } from "../../../../entity/components/production/payment-type";
-import { ANIM_SKADUWEE_MAGICIAN_FEMALE_DEFINITION } from "./skaduwee_magician_female_anim";
+import { ANIM_SKADUWEE_MAGICIAN_FEMALE_DEFINITION_LEVEL_1 } from "./skaduwee_magician_female_anim";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 import { SoundType } from "../../../../entity/components/actor-audio/sound-type";
 import { ActorPhysicalType } from "../../../../entity/components/combat/components/actor-physical-type";
@@ -55,11 +55,7 @@ export const skaduweeMagicianFemaleDefinition = {
       attacks: [weaponDefinitions.FrostSpell, weaponDefinitions.SkaduweeMagicianStaff]
     },
     spell: {
-      availableSpells: [
-        SpellType.Snowstorm,
-        SpellType.HealingTotem,
-        SpellType.HealingLight
-      ]
+      availableSpells: [SpellType.Snowstorm, SpellType.HealingTotem, SpellType.HealingLight]
     },
     productionCost: {
       resources: {
@@ -95,7 +91,7 @@ export const skaduweeMagicianFemaleDefinition = {
         [SoundType.LocationUnavailable]: SkaduweeMagicianSfxLocationSounds
       }
     },
-    animatable: { animations: ANIM_SKADUWEE_MAGICIAN_FEMALE_DEFINITION }
+    animatable: { animations: ANIM_SKADUWEE_MAGICIAN_FEMALE_DEFINITION_LEVEL_1 }
   },
   systems: {
     movement: { enabled: true },
