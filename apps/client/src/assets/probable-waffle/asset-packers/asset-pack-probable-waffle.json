@@ -2803,19 +2803,6 @@
                 "key": "warrior_male_lvl3_idle"
             },
             {
-                "url": "assets/probable-waffle/spritesheets/characters/skaduwee/warrior_male/level3/warrior_male_lvl3_islash.png",
-                "frameConfig": {
-                    "frameWidth": 64,
-                    "frameHeight": 64,
-                    "startFrame": 0,
-                    "endFrame": -1,
-                    "spacing": 0,
-                    "margin": 0
-                },
-                "type": "spritesheet",
-                "key": "warrior_male_lvl3_islash"
-            },
-            {
                 "url": "assets/probable-waffle/spritesheets/characters/skaduwee/warrior_male/level3/warrior_male_lvl3_slash.png",
                 "frameConfig": {
                     "frameWidth": 192,
