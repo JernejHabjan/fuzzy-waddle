@@ -12,7 +12,7 @@ export default class PirateScimitar extends Phaser.GameObjects.Sprite {
 	constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
 		super(scene, x ?? 96, y ?? 120, texture || "pirate_scimitar_idle", frame ?? 4);
 
-		this.setInteractive(new Phaser.Geom.Circle(32, 32, 32), Phaser.Geom.Circle.Contains);
+		this.setInteractive(new Phaser.Geom.Circle(95, 104, 32), Phaser.Geom.Circle.Contains);
 		this.setOrigin(0.5, 0.6295196813175922);
 		this.play("pirate_scimitar_idle_2");
 

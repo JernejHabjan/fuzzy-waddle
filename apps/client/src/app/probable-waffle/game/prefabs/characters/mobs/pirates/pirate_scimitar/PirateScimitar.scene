@@ -17,8 +17,8 @@
             "id": "e3527f1d-89a8-4604-b032-f9950fadd5d9",
             "label": "general_warrior_idle_down",
             "hitArea.shape": "CIRCLE",
-            "hitArea.x": 32,
-            "hitArea.y": 32,
+            "hitArea.x": 95,
+            "hitArea.y": 104,
             "hitArea.radius": 32,
             "texture": {
                 "key": "pirate_scimitar_idle",

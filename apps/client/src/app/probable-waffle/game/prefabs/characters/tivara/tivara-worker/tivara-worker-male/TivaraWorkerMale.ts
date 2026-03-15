@@ -8,18 +8,19 @@ import Phaser from "phaser";
 /* END-USER-IMPORTS */
 
 export default class TivaraWorkerMale extends Phaser.GameObjects.Sprite {
-  constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
-    super(scene, x ?? 32, y ?? 56.45402439680805, texture || "base_idle_3", frame ?? 4);
 
-    this.setInteractive(new Phaser.Geom.Circle(32, 32, 32), Phaser.Geom.Circle.Contains);
-    this.setOrigin(0.5, 0.8820941312001258);
-    this.play("base_idle_3");
+	constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
+		super(scene, x ?? 32, y ?? 56.45402439680805, texture || "base_idle_3", frame ?? 4);
 
-    /* START-USER-CTR-CODE */
+		this.setInteractive(new Phaser.Geom.Circle(32, 32, 32), Phaser.Geom.Circle.Contains);
+		this.setOrigin(0.5, 0.8820941312001258);
+		this.play("tivara_worker_male_base_idle_2");
+
+		/* START-USER-CTR-CODE */
     /* END-USER-CTR-CODE */
-  }
+	}
 
-  /* START-USER-CODE */
+	/* START-USER-CODE */
   override name = ObjectNames.TivaraWorkerMale;
   /* END-USER-CODE */
 }

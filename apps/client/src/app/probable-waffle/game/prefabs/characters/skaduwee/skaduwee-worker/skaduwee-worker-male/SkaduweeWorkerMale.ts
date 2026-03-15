@@ -8,18 +8,19 @@ import Phaser from "phaser";
 /* END-USER-IMPORTS */
 
 export default class SkaduweeWorkerMale extends Phaser.GameObjects.Sprite {
-  constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
-    super(scene, x ?? 32, y ?? 57.56281114690988, texture || "base_idle_1", frame ?? 4);
 
-    this.setInteractive(new Phaser.Geom.Circle(32, 32, 32), Phaser.Geom.Circle.Contains);
-    this.setOrigin(0.5, 0.8994189111288416);
-    this.play("base_idle_1");
+	constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
+		super(scene, x ?? 32, y ?? 57.56281114690988, texture || "base_idle_1", frame ?? 4);
 
-    /* START-USER-CTR-CODE */
+		this.setInteractive(new Phaser.Geom.Circle(32, 32, 32), Phaser.Geom.Circle.Contains);
+		this.setOrigin(0.5, 0.8994189111288416);
+		this.play("skaduwee_worker_male_base_idle_2");
+
+		/* START-USER-CTR-CODE */
     /* END-USER-CTR-CODE */
-  }
+	}
 
-  /* START-USER-CODE */
+	/* START-USER-CODE */
   override name = ObjectNames.SkaduweeWorkerMale;
   // Write your code here.
 

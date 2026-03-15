@@ -24,6 +24,9 @@
                 "key": "maceman_male_lvl1_idle",
                 "frame": 4
             },
+            "x": 32,
+            "y": 57,
+            "originY": 0.9,
             "animationPlayMethod": 1,
             "animationKey": "maceman_male_lvl1_idle_2"
         }

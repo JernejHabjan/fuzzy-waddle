@@ -1,7 +1,7 @@
 {
   "anims": [
     {
-      "key": "axe_logs_walk",
+      "key": "tivara_worker_male_axe_logs_walk",
       "type": "frame",
       "frames": [
         {
@@ -59,7 +59,7 @@
       "randomFrame": false
     },
     {
-      "key": "axe_logs_walk_1",
+      "key": "tivara_worker_male_axe_logs_walk_1",
       "type": "frame",
       "frames": [
         {
@@ -117,7 +117,7 @@
       "randomFrame": false
     },
     {
-      "key": "axe_logs_walk_2",
+      "key": "tivara_worker_male_axe_logs_walk_2",
       "type": "frame",
       "frames": [
         {
@@ -175,7 +175,7 @@
       "randomFrame": false
     },
     {
-      "key": "axe_logs_walk_3",
+      "key": "tivara_worker_male_axe_logs_walk_3",
       "type": "frame",
       "frames": [
         {
@@ -233,7 +233,7 @@
       "randomFrame": false
     },
     {
-      "key": "axe_smash",
+      "key": "tivara_worker_male_axe_smash",
       "type": "frame",
       "frames": [
         {
@@ -267,7 +267,7 @@
       "randomFrame": false
     },
     {
-      "key": "axe_smash_1",
+      "key": "tivara_worker_male_axe_smash_1",
       "type": "frame",
       "frames": [
         {
@@ -301,7 +301,7 @@
       "randomFrame": false
     },
     {
-      "key": "axe_smash_2",
+      "key": "tivara_worker_male_axe_smash_2",
       "type": "frame",
       "frames": [
         {
@@ -335,7 +335,7 @@
       "randomFrame": false
     },
     {
-      "key": "axe_smash_3",
+      "key": "tivara_worker_male_axe_smash_3",
       "type": "frame",
       "frames": [
         {
@@ -369,7 +369,7 @@
       "randomFrame": false
     },
     {
-      "key": "base_hurt",
+      "key": "tivara_worker_male_base_hurt",
       "type": "frame",
       "frames": [
         {
@@ -408,7 +408,7 @@
       "randomFrame": false
     },
     {
-      "key": "base_idle",
+      "key": "tivara_worker_male_base_idle",
       "type": "frame",
       "frames": [
         {
@@ -430,7 +430,7 @@
       "randomFrame": false
     },
     {
-      "key": "base_idle_1",
+      "key": "tivara_worker_male_base_idle_1",
       "type": "frame",
       "frames": [
         {
@@ -452,7 +452,7 @@
       "randomFrame": false
     },
     {
-      "key": "base_idle_2",
+      "key": "tivara_worker_male_base_idle_2",
       "type": "frame",
       "frames": [
         {
@@ -474,7 +474,7 @@
       "randomFrame": false
     },
     {
-      "key": "base_idle_3",
+      "key": "tivara_worker_male_base_idle_3",
       "type": "frame",
       "frames": [
         {
@@ -496,7 +496,7 @@
       "randomFrame": false
     },
     {
-      "key": "base_slash",
+      "key": "tivara_worker_male_base_slash",
       "type": "frame",
       "frames": [
         {
@@ -536,7 +536,7 @@
       "randomFrame": false
     },
     {
-      "key": "base_slash_1",
+      "key": "tivara_worker_male_base_slash_1",
       "type": "frame",
       "frames": [
         {
@@ -576,7 +576,7 @@
       "randomFrame": false
     },
     {
-      "key": "base_slash_2",
+      "key": "tivara_worker_male_base_slash_2",
       "type": "frame",
       "frames": [
         {
@@ -616,7 +616,7 @@
       "randomFrame": false
     },
     {
-      "key": "base_slash_3",
+      "key": "tivara_worker_male_base_slash_3",
       "type": "frame",
       "frames": [
         {
@@ -656,7 +656,7 @@
       "randomFrame": false
     },
     {
-      "key": "base_thrust",
+      "key": "tivara_worker_male_base_thrust",
       "type": "frame",
       "frames": [
         {
@@ -708,7 +708,7 @@
       "randomFrame": false
     },
     {
-      "key": "base_thrust_1",
+      "key": "tivara_worker_male_base_thrust_1",
       "type": "frame",
       "frames": [
         {
@@ -760,7 +760,7 @@
       "randomFrame": false
     },
     {
-      "key": "base_thrust_2",
+      "key": "tivara_worker_male_base_thrust_2",
       "type": "frame",
       "frames": [
         {
@@ -812,7 +812,7 @@
       "randomFrame": false
     },
     {
-      "key": "base_thrust_3",
+      "key": "tivara_worker_male_base_thrust_3",
       "type": "frame",
       "frames": [
         {
@@ -864,7 +864,7 @@
       "randomFrame": false
     },
     {
-      "key": "base_walk",
+      "key": "tivara_worker_male_base_walk",
       "type": "frame",
       "frames": [
         {
@@ -922,7 +922,7 @@
       "randomFrame": false
     },
     {
-      "key": "base_walk_1",
+      "key": "tivara_worker_male_base_walk_1",
       "type": "frame",
       "frames": [
         {
@@ -980,7 +980,7 @@
       "randomFrame": false
     },
     {
-      "key": "base_walk_2",
+      "key": "tivara_worker_male_base_walk_2",
       "type": "frame",
       "frames": [
         {
@@ -1038,7 +1038,7 @@
       "randomFrame": false
     },
     {
-      "key": "base_walk_3",
+      "key": "tivara_worker_male_base_walk_3",
       "type": "frame",
       "frames": [
         {
@@ -1096,7 +1096,7 @@
       "randomFrame": false
     },
     {
-      "key": "hammer_smash",
+      "key": "tivara_worker_male_hammer_smash",
       "type": "frame",
       "frames": [
         {
@@ -1130,7 +1130,7 @@
       "randomFrame": false
     },
     {
-      "key": "hammer_smash_1",
+      "key": "tivara_worker_male_hammer_smash_1",
       "type": "frame",
       "frames": [
         {
@@ -1164,7 +1164,7 @@
       "randomFrame": false
     },
     {
-      "key": "hammer_smash_2",
+      "key": "tivara_worker_male_hammer_smash_2",
       "type": "frame",
       "frames": [
         {
@@ -1198,7 +1198,7 @@
       "randomFrame": false
     },
     {
-      "key": "hammer_smash_3",
+      "key": "tivara_worker_male_hammer_smash_3",
       "type": "frame",
       "frames": [
         {
@@ -1232,7 +1232,7 @@
       "randomFrame": false
     },
     {
-      "key": "hoe_thrust",
+      "key": "tivara_worker_male_hoe_thrust",
       "type": "frame",
       "frames": [
         {
@@ -1284,7 +1284,7 @@
       "randomFrame": false
     },
     {
-      "key": "hoe_thrust_1",
+      "key": "tivara_worker_male_hoe_thrust_1",
       "type": "frame",
       "frames": [
         {
@@ -1336,7 +1336,7 @@
       "randomFrame": false
     },
     {
-      "key": "hoe_thrust_2",
+      "key": "tivara_worker_male_hoe_thrust_2",
       "type": "frame",
       "frames": [
         {
@@ -1388,7 +1388,7 @@
       "randomFrame": false
     },
     {
-      "key": "hoe_thrust_3",
+      "key": "tivara_worker_male_hoe_thrust_3",
       "type": "frame",
       "frames": [
         {
@@ -1440,7 +1440,7 @@
       "randomFrame": false
     },
     {
-      "key": "pickaxe_ore_walk",
+      "key": "tivara_worker_male_pickaxe_ore_walk",
       "type": "frame",
       "frames": [
         {
@@ -1498,7 +1498,7 @@
       "randomFrame": false
     },
     {
-      "key": "pickaxe_ore_walk_1",
+      "key": "tivara_worker_male_pickaxe_ore_walk_1",
       "type": "frame",
       "frames": [
         {
@@ -1556,7 +1556,7 @@
       "randomFrame": false
     },
     {
-      "key": "pickaxe_ore_walk_2",
+      "key": "tivara_worker_male_pickaxe_ore_walk_2",
       "type": "frame",
       "frames": [
         {
@@ -1614,7 +1614,7 @@
       "randomFrame": false
     },
     {
-      "key": "pickaxe_ore_walk_3",
+      "key": "tivara_worker_male_pickaxe_ore_walk_3",
       "type": "frame",
       "frames": [
         {
@@ -1672,7 +1672,7 @@
       "randomFrame": false
     },
     {
-      "key": "pickaxe_smash",
+      "key": "tivara_worker_male_pickaxe_smash",
       "type": "frame",
       "frames": [
         {
@@ -1706,7 +1706,7 @@
       "randomFrame": false
     },
     {
-      "key": "pickaxe_smash_1",
+      "key": "tivara_worker_male_pickaxe_smash_1",
       "type": "frame",
       "frames": [
         {
@@ -1740,7 +1740,7 @@
       "randomFrame": false
     },
     {
-      "key": "pickaxe_smash_2",
+      "key": "tivara_worker_male_pickaxe_smash_2",
       "type": "frame",
       "frames": [
         {
@@ -1774,7 +1774,7 @@
       "randomFrame": false
     },
     {
-      "key": "pickaxe_smash_3",
+      "key": "tivara_worker_male_pickaxe_smash_3",
       "type": "frame",
       "frames": [
         {
@@ -1808,7 +1808,7 @@
       "randomFrame": false
     },
     {
-      "key": "scythe_basket_slash",
+      "key": "tivara_worker_male_scythe_basket_slash",
       "type": "frame",
       "frames": [
         {
@@ -1848,7 +1848,7 @@
       "randomFrame": false
     },
     {
-      "key": "scythe_basket_slash_1",
+      "key": "tivara_worker_male_scythe_basket_slash_1",
       "type": "frame",
       "frames": [
         {
@@ -1888,7 +1888,7 @@
       "randomFrame": false
     },
     {
-      "key": "scythe_basket_slash_2",
+      "key": "tivara_worker_male_scythe_basket_slash_2",
       "type": "frame",
       "frames": [
         {
@@ -1928,7 +1928,7 @@
       "randomFrame": false
     },
     {
-      "key": "scythe_basket_slash_3",
+      "key": "tivara_worker_male_scythe_basket_slash_3",
       "type": "frame",
       "frames": [
         {
@@ -1968,7 +1968,7 @@
       "randomFrame": false
     },
     {
-      "key": "scythe_basket_walk",
+      "key": "tivara_worker_male_scythe_basket_walk",
       "type": "frame",
       "frames": [
         {
@@ -2026,7 +2026,7 @@
       "randomFrame": false
     },
     {
-      "key": "scythe_basket_walk_1",
+      "key": "tivara_worker_male_scythe_basket_walk_1",
       "type": "frame",
       "frames": [
         {
@@ -2084,7 +2084,7 @@
       "randomFrame": false
     },
     {
-      "key": "scythe_basket_walk_2",
+      "key": "tivara_worker_male_scythe_basket_walk_2",
       "type": "frame",
       "frames": [
         {
@@ -2142,7 +2142,7 @@
       "randomFrame": false
     },
     {
-      "key": "scythe_basket_walk_3",
+      "key": "tivara_worker_male_scythe_basket_walk_3",
       "type": "frame",
       "frames": [
         {

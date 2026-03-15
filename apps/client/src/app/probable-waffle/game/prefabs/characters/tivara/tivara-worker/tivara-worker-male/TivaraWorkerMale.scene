@@ -28,13 +28,13 @@
             "y": 56.45402439680805,
             "originY": 0.8820941312001258,
             "animationPlayMethod": 1,
-            "animationKey": "base_idle_3"
+            "animationKey": "tivara_worker_male_base_idle_2"
         }
     ],
     "plainObjects": [],
     "meta": {
-        "app": "Phaser Editor 2D - Scene Editor",
-        "url": "https://phasereditor2d.com",
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
         "contentType": "phasereditor2d.core.scene.SceneContentType",
         "version": 5
     }

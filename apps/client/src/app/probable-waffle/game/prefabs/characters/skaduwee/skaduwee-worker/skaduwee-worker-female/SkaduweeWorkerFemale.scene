@@ -28,13 +28,13 @@
             "y": 58.00236660260104,
             "originY": 0.9062870143450004,
             "animationPlayMethod": 1,
-            "animationKey": "base_idle"
+            "animationKey": "skaduwee_worker_female_base_idle_2"
         }
     ],
     "plainObjects": [],
     "meta": {
-        "app": "Phaser Editor 2D - Scene Editor",
-        "url": "https://phasereditor2d.com",
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
         "contentType": "phasereditor2d.core.scene.SceneContentType",
         "version": 5
     }
