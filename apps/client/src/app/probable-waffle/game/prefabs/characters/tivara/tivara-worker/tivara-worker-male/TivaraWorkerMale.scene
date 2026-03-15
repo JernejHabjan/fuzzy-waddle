@@ -21,14 +21,14 @@
             "hitArea.y": 32,
             "hitArea.radius": 32,
             "texture": {
-                "key": "tivara_worker_male_idle",
+                "key": "base_idle_3",
                 "frame": 4
             },
             "x": 32,
             "y": 56.45402439680805,
             "originY": 0.8820941312001258,
             "animationPlayMethod": 1,
-            "animationKey": "tivara_worker_male_idle_down"
+            "animationKey": "base_idle_3"
         }
     ],
     "plainObjects": [],

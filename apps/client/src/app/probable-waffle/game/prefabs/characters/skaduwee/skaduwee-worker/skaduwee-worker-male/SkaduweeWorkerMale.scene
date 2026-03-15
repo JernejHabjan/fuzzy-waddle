@@ -21,20 +21,20 @@
             "hitArea.y": 32,
             "hitArea.radius": 32,
             "texture": {
-                "key": "skaduwee_worker_male_idle",
+                "key": "base_idle_1",
                 "frame": 4
             },
             "x": 32,
             "y": 57.56281114690988,
             "originY": 0.8994189111288416,
             "animationPlayMethod": 1,
-            "animationKey": "skaduwee_worker_male_idle_down"
+            "animationKey": "base_idle_1"
         }
     ],
     "plainObjects": [],
     "meta": {
-        "app": "Phaser Editor 2D - Scene Editor",
-        "url": "https://phasereditor2d.com",
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
         "contentType": "phasereditor2d.core.scene.SceneContentType",
         "version": 5
     }

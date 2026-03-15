@@ -21,14 +21,14 @@
             "hitArea.y": 32,
             "hitArea.radius": 32,
             "texture": {
-                "key": "skaduwee_worker_female_idle",
+                "key": "base_idle",
                 "frame": 4
             },
             "x": 32,
             "y": 58.00236660260104,
             "originY": 0.9062870143450004,
             "animationPlayMethod": 1,
-            "animationKey": "skaduwee_worker_female_idle_down"
+            "animationKey": "base_idle"
         }
     ],
     "plainObjects": [],

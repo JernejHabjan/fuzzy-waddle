@@ -1,35 +1,403 @@
 {
   "anims": [
     {
-      "key": "skaduwee_worker_female_hurt",
+      "key": "axe_logs_walk",
       "type": "frame",
       "frames": [
         {
-          "key": "skaduwee_worker_female_hurt",
+          "key": "axe_logs_walk",
           "frame": 0,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_hurt",
+          "key": "axe_logs_walk",
           "frame": 1,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_hurt",
+          "key": "axe_logs_walk",
           "frame": 2,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_hurt",
+          "key": "axe_logs_walk",
           "frame": 3,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_hurt",
+          "key": "axe_logs_walk",
+          "frame": 4,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "axe_logs_walk",
+          "frame": 5,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "axe_logs_walk",
+          "frame": 6,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "axe_logs_walk",
+          "frame": 7,
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 10,
+      "skipMissedFrames": true,
+      "repeat": -1,
+      "randomFrame": false
+    },
+    {
+      "key": "axe_logs_walk_1",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "axe_logs_walk",
+          "frame": 8,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "axe_logs_walk",
+          "frame": 9,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "axe_logs_walk",
+          "frame": 10,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "axe_logs_walk",
+          "frame": 11,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "axe_logs_walk",
+          "frame": 12,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "axe_logs_walk",
+          "frame": 13,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "axe_logs_walk",
+          "frame": 14,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "axe_logs_walk",
+          "frame": 15,
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 10,
+      "skipMissedFrames": true,
+      "repeat": -1,
+      "randomFrame": false
+    },
+    {
+      "key": "axe_logs_walk_2",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "axe_logs_walk",
+          "frame": 16,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "axe_logs_walk",
+          "frame": 17,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "axe_logs_walk",
+          "frame": 18,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "axe_logs_walk",
+          "frame": 19,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "axe_logs_walk",
+          "frame": 20,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "axe_logs_walk",
+          "frame": 21,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "axe_logs_walk",
+          "frame": 22,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "axe_logs_walk",
+          "frame": 23,
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 10,
+      "skipMissedFrames": true,
+      "repeat": -1,
+      "randomFrame": false
+    },
+    {
+      "key": "axe_logs_walk_3",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "axe_logs_walk",
+          "frame": 24,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "axe_logs_walk",
+          "frame": 25,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "axe_logs_walk",
+          "frame": 26,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "axe_logs_walk",
+          "frame": 27,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "axe_logs_walk",
+          "frame": 28,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "axe_logs_walk",
+          "frame": 29,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "axe_logs_walk",
+          "frame": 30,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "axe_logs_walk",
+          "frame": 31,
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 10,
+      "skipMissedFrames": true,
+      "repeat": -1,
+      "randomFrame": false
+    },
+    {
+      "key": "axe_smash",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "axe_smash",
+          "frame": 0,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "axe_smash",
+          "frame": 1,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "axe_smash",
+          "frame": 2,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "axe_smash",
+          "frame": 3,
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 10,
+      "skipMissedFrames": true,
+      "repeat": -1,
+      "randomFrame": false
+    },
+    {
+      "key": "axe_smash_1",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "axe_smash",
+          "frame": 4,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "axe_smash",
+          "frame": 5,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "axe_smash",
+          "frame": 6,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "axe_smash",
+          "frame": 7,
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 10,
+      "skipMissedFrames": true,
+      "repeat": -1,
+      "randomFrame": false
+    },
+    {
+      "key": "axe_smash_2",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "axe_smash",
+          "frame": 8,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "axe_smash",
+          "frame": 9,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "axe_smash",
+          "frame": 10,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "axe_smash",
+          "frame": 11,
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 10,
+      "skipMissedFrames": true,
+      "repeat": -1,
+      "randomFrame": false
+    },
+    {
+      "key": "axe_smash_3",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "axe_smash",
+          "frame": 12,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "axe_smash",
+          "frame": 13,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "axe_smash",
+          "frame": 14,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "axe_smash",
+          "frame": 15,
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 10,
+      "skipMissedFrames": true,
+      "repeat": -1,
+      "randomFrame": false
+    },
+    {
+      "key": "base_hurt",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "base_hurt",
+          "frame": 0,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "base_hurt",
+          "frame": 1,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "base_hurt",
+          "frame": 2,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "base_hurt",
+          "frame": 3,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "base_hurt",
           "frame": 4,
           "duration": 0,
           "keyframe": false
@@ -40,17 +408,17 @@
       "randomFrame": false
     },
     {
-      "key": "skaduwee_worker_female_idle_up",
+      "key": "base_idle",
       "type": "frame",
       "frames": [
         {
-          "key": "skaduwee_worker_female_idle",
+          "key": "base_idle",
           "frame": 0,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_idle",
+          "key": "base_idle",
           "frame": 1,
           "duration": 0,
           "keyframe": false
@@ -62,17 +430,17 @@
       "randomFrame": false
     },
     {
-      "key": "skaduwee_worker_female_idle_left",
+      "key": "base_idle_1",
       "type": "frame",
       "frames": [
         {
-          "key": "skaduwee_worker_female_idle",
+          "key": "base_idle",
           "frame": 2,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_idle",
+          "key": "base_idle",
           "frame": 3,
           "duration": 0,
           "keyframe": false
@@ -84,17 +452,17 @@
       "randomFrame": false
     },
     {
-      "key": "skaduwee_worker_female_idle_down",
+      "key": "base_idle_2",
       "type": "frame",
       "frames": [
         {
-          "key": "skaduwee_worker_female_idle",
+          "key": "base_idle",
           "frame": 4,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_idle",
+          "key": "base_idle",
           "frame": 5,
           "duration": 0,
           "keyframe": false
@@ -106,17 +474,17 @@
       "randomFrame": false
     },
     {
-      "key": "skaduwee_worker_female_idle_right",
+      "key": "base_idle_3",
       "type": "frame",
       "frames": [
         {
-          "key": "skaduwee_worker_female_idle",
+          "key": "base_idle",
           "frame": 6,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_idle",
+          "key": "base_idle",
           "frame": 7,
           "duration": 0,
           "keyframe": false
@@ -128,35 +496,35 @@
       "randomFrame": false
     },
     {
-      "key": "skaduwee_worker_female_slash_up",
+      "key": "base_slash",
       "type": "frame",
       "frames": [
         {
-          "key": "skaduwee_worker_female_slash",
+          "key": "base_slash",
           "frame": 0,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_slash",
+          "key": "base_slash",
           "frame": 1,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_slash",
+          "key": "base_slash",
           "frame": 2,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_slash",
+          "key": "base_slash",
           "frame": 3,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_slash",
+          "key": "base_slash",
           "frame": 4,
           "duration": 0,
           "keyframe": false
@@ -164,38 +532,39 @@
       ],
       "frameRate": 10,
       "skipMissedFrames": true,
+      "repeat": -1,
       "randomFrame": false
     },
     {
-      "key": "skaduwee_worker_female_slash_left",
+      "key": "base_slash_1",
       "type": "frame",
       "frames": [
         {
-          "key": "skaduwee_worker_female_slash",
+          "key": "base_slash",
           "frame": 5,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_slash",
+          "key": "base_slash",
           "frame": 6,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_slash",
+          "key": "base_slash",
           "frame": 7,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_slash",
+          "key": "base_slash",
           "frame": 8,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_slash",
+          "key": "base_slash",
           "frame": 9,
           "duration": 0,
           "keyframe": false
@@ -203,38 +572,39 @@
       ],
       "frameRate": 10,
       "skipMissedFrames": true,
+      "repeat": -1,
       "randomFrame": false
     },
     {
-      "key": "skaduwee_worker_female_slash_down",
+      "key": "base_slash_2",
       "type": "frame",
       "frames": [
         {
-          "key": "skaduwee_worker_female_slash",
+          "key": "base_slash",
           "frame": 10,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_slash",
+          "key": "base_slash",
           "frame": 11,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_slash",
+          "key": "base_slash",
           "frame": 12,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_slash",
+          "key": "base_slash",
           "frame": 13,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_slash",
+          "key": "base_slash",
           "frame": 14,
           "duration": 0,
           "keyframe": false
@@ -242,38 +612,39 @@
       ],
       "frameRate": 10,
       "skipMissedFrames": true,
+      "repeat": -1,
       "randomFrame": false
     },
     {
-      "key": "skaduwee_worker_female_slash_right",
+      "key": "base_slash_3",
       "type": "frame",
       "frames": [
         {
-          "key": "skaduwee_worker_female_slash",
+          "key": "base_slash",
           "frame": 15,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_slash",
+          "key": "base_slash",
           "frame": 16,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_slash",
+          "key": "base_slash",
           "frame": 17,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_slash",
+          "key": "base_slash",
           "frame": 18,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_slash",
+          "key": "base_slash",
           "frame": 19,
           "duration": 0,
           "keyframe": false
@@ -281,50 +652,51 @@
       ],
       "frameRate": 10,
       "skipMissedFrames": true,
+      "repeat": -1,
       "randomFrame": false
     },
     {
-      "key": "skaduwee_worker_female_thrust_up",
+      "key": "base_thrust",
       "type": "frame",
       "frames": [
         {
-          "key": "skaduwee_worker_female_thrust",
+          "key": "base_thrust",
           "frame": 0,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_thrust",
+          "key": "base_thrust",
           "frame": 1,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_thrust",
+          "key": "base_thrust",
           "frame": 2,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_thrust",
+          "key": "base_thrust",
           "frame": 3,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_thrust",
+          "key": "base_thrust",
           "frame": 4,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_thrust",
+          "key": "base_thrust",
           "frame": 5,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_thrust",
+          "key": "base_thrust",
           "frame": 6,
           "duration": 0,
           "keyframe": false
@@ -332,50 +704,51 @@
       ],
       "frameRate": 10,
       "skipMissedFrames": true,
+      "repeat": -1,
       "randomFrame": false
     },
     {
-      "key": "skaduwee_worker_female_thrust_left",
+      "key": "base_thrust_1",
       "type": "frame",
       "frames": [
         {
-          "key": "skaduwee_worker_female_thrust",
+          "key": "base_thrust",
           "frame": 7,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_thrust",
+          "key": "base_thrust",
           "frame": 8,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_thrust",
+          "key": "base_thrust",
           "frame": 9,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_thrust",
+          "key": "base_thrust",
           "frame": 10,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_thrust",
+          "key": "base_thrust",
           "frame": 11,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_thrust",
+          "key": "base_thrust",
           "frame": 12,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_thrust",
+          "key": "base_thrust",
           "frame": 13,
           "duration": 0,
           "keyframe": false
@@ -383,50 +756,51 @@
       ],
       "frameRate": 10,
       "skipMissedFrames": true,
+      "repeat": -1,
       "randomFrame": false
     },
     {
-      "key": "skaduwee_worker_female_thrust_down",
+      "key": "base_thrust_2",
       "type": "frame",
       "frames": [
         {
-          "key": "skaduwee_worker_female_thrust",
+          "key": "base_thrust",
           "frame": 14,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_thrust",
+          "key": "base_thrust",
           "frame": 15,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_thrust",
+          "key": "base_thrust",
           "frame": 16,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_thrust",
+          "key": "base_thrust",
           "frame": 17,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_thrust",
+          "key": "base_thrust",
           "frame": 18,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_thrust",
+          "key": "base_thrust",
           "frame": 19,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_thrust",
+          "key": "base_thrust",
           "frame": 20,
           "duration": 0,
           "keyframe": false
@@ -434,50 +808,51 @@
       ],
       "frameRate": 10,
       "skipMissedFrames": true,
+      "repeat": -1,
       "randomFrame": false
     },
     {
-      "key": "skaduwee_worker_female_thrust_right",
+      "key": "base_thrust_3",
       "type": "frame",
       "frames": [
         {
-          "key": "skaduwee_worker_female_thrust",
+          "key": "base_thrust",
           "frame": 21,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_thrust",
+          "key": "base_thrust",
           "frame": 22,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_thrust",
+          "key": "base_thrust",
           "frame": 23,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_thrust",
+          "key": "base_thrust",
           "frame": 24,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_thrust",
+          "key": "base_thrust",
           "frame": 25,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_thrust",
+          "key": "base_thrust",
           "frame": 26,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_thrust",
+          "key": "base_thrust",
           "frame": 27,
           "duration": 0,
           "keyframe": false
@@ -485,56 +860,57 @@
       ],
       "frameRate": 10,
       "skipMissedFrames": true,
+      "repeat": -1,
       "randomFrame": false
     },
     {
-      "key": "skaduwee_worker_female_walk_up",
+      "key": "base_walk",
       "type": "frame",
       "frames": [
         {
-          "key": "skaduwee_worker_female_walk",
+          "key": "base_walk",
           "frame": 0,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_walk",
+          "key": "base_walk",
           "frame": 1,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_walk",
+          "key": "base_walk",
           "frame": 2,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_walk",
+          "key": "base_walk",
           "frame": 3,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_walk",
+          "key": "base_walk",
           "frame": 4,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_walk",
+          "key": "base_walk",
           "frame": 5,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_walk",
+          "key": "base_walk",
           "frame": 6,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_walk",
+          "key": "base_walk",
           "frame": 7,
           "duration": 0,
           "keyframe": false
@@ -546,53 +922,53 @@
       "randomFrame": false
     },
     {
-      "key": "skaduwee_worker_female_walk_left",
+      "key": "base_walk_1",
       "type": "frame",
       "frames": [
         {
-          "key": "skaduwee_worker_female_walk",
+          "key": "base_walk",
           "frame": 8,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_walk",
+          "key": "base_walk",
           "frame": 9,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_walk",
+          "key": "base_walk",
           "frame": 10,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_walk",
+          "key": "base_walk",
           "frame": 11,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_walk",
+          "key": "base_walk",
           "frame": 12,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_walk",
+          "key": "base_walk",
           "frame": 13,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_walk",
+          "key": "base_walk",
           "frame": 14,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_walk",
+          "key": "base_walk",
           "frame": 15,
           "duration": 0,
           "keyframe": false
@@ -604,53 +980,53 @@
       "randomFrame": false
     },
     {
-      "key": "skaduwee_worker_female_walk_down",
+      "key": "base_walk_2",
       "type": "frame",
       "frames": [
         {
-          "key": "skaduwee_worker_female_walk",
+          "key": "base_walk",
           "frame": 16,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_walk",
+          "key": "base_walk",
           "frame": 17,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_walk",
+          "key": "base_walk",
           "frame": 18,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_walk",
+          "key": "base_walk",
           "frame": 19,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_walk",
+          "key": "base_walk",
           "frame": 20,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_walk",
+          "key": "base_walk",
           "frame": 21,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_walk",
+          "key": "base_walk",
           "frame": 22,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_walk",
+          "key": "base_walk",
           "frame": 23,
           "duration": 0,
           "keyframe": false
@@ -662,53 +1038,1157 @@
       "randomFrame": false
     },
     {
-      "key": "skaduwee_worker_female_walk_right",
+      "key": "base_walk_3",
       "type": "frame",
       "frames": [
         {
-          "key": "skaduwee_worker_female_walk",
+          "key": "base_walk",
           "frame": 24,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_walk",
+          "key": "base_walk",
           "frame": 25,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_walk",
+          "key": "base_walk",
           "frame": 26,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_walk",
+          "key": "base_walk",
           "frame": 27,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_walk",
+          "key": "base_walk",
           "frame": 28,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_walk",
+          "key": "base_walk",
           "frame": 29,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_walk",
+          "key": "base_walk",
           "frame": 30,
           "duration": 0,
           "keyframe": false
         },
         {
-          "key": "skaduwee_worker_female_walk",
+          "key": "base_walk",
+          "frame": 31,
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 10,
+      "skipMissedFrames": true,
+      "repeat": -1,
+      "randomFrame": false
+    },
+    {
+      "key": "hammer_smash",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "hammer_smash",
+          "frame": 0,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "hammer_smash",
+          "frame": 1,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "hammer_smash",
+          "frame": 2,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "hammer_smash",
+          "frame": 3,
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 10,
+      "skipMissedFrames": true,
+      "repeat": -1,
+      "randomFrame": false
+    },
+    {
+      "key": "hammer_smash_1",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "hammer_smash",
+          "frame": 4,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "hammer_smash",
+          "frame": 5,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "hammer_smash",
+          "frame": 6,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "hammer_smash",
+          "frame": 7,
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 10,
+      "skipMissedFrames": true,
+      "repeat": -1,
+      "randomFrame": false
+    },
+    {
+      "key": "hammer_smash_2",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "hammer_smash",
+          "frame": 8,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "hammer_smash",
+          "frame": 9,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "hammer_smash",
+          "frame": 10,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "hammer_smash",
+          "frame": 11,
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 10,
+      "skipMissedFrames": true,
+      "repeat": -1,
+      "randomFrame": false
+    },
+    {
+      "key": "hammer_smash_3",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "hammer_smash",
+          "frame": 12,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "hammer_smash",
+          "frame": 13,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "hammer_smash",
+          "frame": 14,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "hammer_smash",
+          "frame": 15,
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 10,
+      "skipMissedFrames": true,
+      "repeat": -1,
+      "randomFrame": false
+    },
+    {
+      "key": "hoe_thrust",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "hoe_thrust",
+          "frame": 0,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "hoe_thrust",
+          "frame": 1,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "hoe_thrust",
+          "frame": 2,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "hoe_thrust",
+          "frame": 3,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "hoe_thrust",
+          "frame": 4,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "hoe_thrust",
+          "frame": 5,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "hoe_thrust",
+          "frame": 6,
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 10,
+      "skipMissedFrames": true,
+      "repeat": -1,
+      "randomFrame": false
+    },
+    {
+      "key": "hoe_thrust_1",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "hoe_thrust",
+          "frame": 7,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "hoe_thrust",
+          "frame": 8,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "hoe_thrust",
+          "frame": 9,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "hoe_thrust",
+          "frame": 10,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "hoe_thrust",
+          "frame": 11,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "hoe_thrust",
+          "frame": 12,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "hoe_thrust",
+          "frame": 13,
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 10,
+      "skipMissedFrames": true,
+      "repeat": -1,
+      "randomFrame": false
+    },
+    {
+      "key": "hoe_thrust_2",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "hoe_thrust",
+          "frame": 14,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "hoe_thrust",
+          "frame": 15,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "hoe_thrust",
+          "frame": 16,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "hoe_thrust",
+          "frame": 17,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "hoe_thrust",
+          "frame": 18,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "hoe_thrust",
+          "frame": 19,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "hoe_thrust",
+          "frame": 20,
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 10,
+      "skipMissedFrames": true,
+      "repeat": -1,
+      "randomFrame": false
+    },
+    {
+      "key": "hoe_thrust_3",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "hoe_thrust",
+          "frame": 21,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "hoe_thrust",
+          "frame": 22,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "hoe_thrust",
+          "frame": 23,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "hoe_thrust",
+          "frame": 24,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "hoe_thrust",
+          "frame": 25,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "hoe_thrust",
+          "frame": 26,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "hoe_thrust",
+          "frame": 27,
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 10,
+      "skipMissedFrames": true,
+      "repeat": -1,
+      "randomFrame": false
+    },
+    {
+      "key": "pickaxe_ore_walk",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "pickaxe_ore_walk",
+          "frame": 0,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "pickaxe_ore_walk",
+          "frame": 1,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "pickaxe_ore_walk",
+          "frame": 2,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "pickaxe_ore_walk",
+          "frame": 3,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "pickaxe_ore_walk",
+          "frame": 4,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "pickaxe_ore_walk",
+          "frame": 5,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "pickaxe_ore_walk",
+          "frame": 6,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "pickaxe_ore_walk",
+          "frame": 7,
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 10,
+      "skipMissedFrames": true,
+      "repeat": -1,
+      "randomFrame": false
+    },
+    {
+      "key": "pickaxe_ore_walk_1",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "pickaxe_ore_walk",
+          "frame": 8,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "pickaxe_ore_walk",
+          "frame": 9,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "pickaxe_ore_walk",
+          "frame": 10,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "pickaxe_ore_walk",
+          "frame": 11,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "pickaxe_ore_walk",
+          "frame": 12,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "pickaxe_ore_walk",
+          "frame": 13,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "pickaxe_ore_walk",
+          "frame": 14,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "pickaxe_ore_walk",
+          "frame": 15,
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 10,
+      "skipMissedFrames": true,
+      "repeat": -1,
+      "randomFrame": false
+    },
+    {
+      "key": "pickaxe_ore_walk_2",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "pickaxe_ore_walk",
+          "frame": 16,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "pickaxe_ore_walk",
+          "frame": 17,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "pickaxe_ore_walk",
+          "frame": 18,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "pickaxe_ore_walk",
+          "frame": 19,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "pickaxe_ore_walk",
+          "frame": 20,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "pickaxe_ore_walk",
+          "frame": 21,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "pickaxe_ore_walk",
+          "frame": 22,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "pickaxe_ore_walk",
+          "frame": 23,
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 10,
+      "skipMissedFrames": true,
+      "repeat": -1,
+      "randomFrame": false
+    },
+    {
+      "key": "pickaxe_ore_walk_3",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "pickaxe_ore_walk",
+          "frame": 24,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "pickaxe_ore_walk",
+          "frame": 25,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "pickaxe_ore_walk",
+          "frame": 26,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "pickaxe_ore_walk",
+          "frame": 27,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "pickaxe_ore_walk",
+          "frame": 28,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "pickaxe_ore_walk",
+          "frame": 29,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "pickaxe_ore_walk",
+          "frame": 30,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "pickaxe_ore_walk",
+          "frame": 31,
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 10,
+      "skipMissedFrames": true,
+      "repeat": -1,
+      "randomFrame": false
+    },
+    {
+      "key": "pickaxe_smash",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "pickaxe_smash",
+          "frame": 0,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "pickaxe_smash",
+          "frame": 1,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "pickaxe_smash",
+          "frame": 2,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "pickaxe_smash",
+          "frame": 3,
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 10,
+      "skipMissedFrames": true,
+      "repeat": -1,
+      "randomFrame": false
+    },
+    {
+      "key": "pickaxe_smash_1",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "pickaxe_smash",
+          "frame": 4,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "pickaxe_smash",
+          "frame": 5,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "pickaxe_smash",
+          "frame": 6,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "pickaxe_smash",
+          "frame": 7,
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 10,
+      "skipMissedFrames": true,
+      "repeat": -1,
+      "randomFrame": false
+    },
+    {
+      "key": "pickaxe_smash_2",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "pickaxe_smash",
+          "frame": 8,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "pickaxe_smash",
+          "frame": 9,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "pickaxe_smash",
+          "frame": 10,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "pickaxe_smash",
+          "frame": 11,
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 10,
+      "skipMissedFrames": true,
+      "repeat": -1,
+      "randomFrame": false
+    },
+    {
+      "key": "pickaxe_smash_3",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "pickaxe_smash",
+          "frame": 12,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "pickaxe_smash",
+          "frame": 13,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "pickaxe_smash",
+          "frame": 14,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "pickaxe_smash",
+          "frame": 15,
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 10,
+      "skipMissedFrames": true,
+      "repeat": -1,
+      "randomFrame": false
+    },
+    {
+      "key": "scythe_basket_slash",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "scythe_basket_slash",
+          "frame": 0,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "scythe_basket_slash",
+          "frame": 1,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "scythe_basket_slash",
+          "frame": 2,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "scythe_basket_slash",
+          "frame": 3,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "scythe_basket_slash",
+          "frame": 4,
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 10,
+      "skipMissedFrames": true,
+      "repeat": -1,
+      "randomFrame": false
+    },
+    {
+      "key": "scythe_basket_slash_1",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "scythe_basket_slash",
+          "frame": 5,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "scythe_basket_slash",
+          "frame": 6,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "scythe_basket_slash",
+          "frame": 7,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "scythe_basket_slash",
+          "frame": 8,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "scythe_basket_slash",
+          "frame": 9,
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 10,
+      "skipMissedFrames": true,
+      "repeat": -1,
+      "randomFrame": false
+    },
+    {
+      "key": "scythe_basket_slash_2",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "scythe_basket_slash",
+          "frame": 10,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "scythe_basket_slash",
+          "frame": 11,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "scythe_basket_slash",
+          "frame": 12,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "scythe_basket_slash",
+          "frame": 13,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "scythe_basket_slash",
+          "frame": 14,
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 10,
+      "skipMissedFrames": true,
+      "repeat": -1,
+      "randomFrame": false
+    },
+    {
+      "key": "scythe_basket_slash_3",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "scythe_basket_slash",
+          "frame": 15,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "scythe_basket_slash",
+          "frame": 16,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "scythe_basket_slash",
+          "frame": 17,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "scythe_basket_slash",
+          "frame": 18,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "scythe_basket_slash",
+          "frame": 19,
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 10,
+      "skipMissedFrames": true,
+      "repeat": -1,
+      "randomFrame": false
+    },
+    {
+      "key": "scythe_basket_walk",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "scythe_basket_walk",
+          "frame": 0,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "scythe_basket_walk",
+          "frame": 1,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "scythe_basket_walk",
+          "frame": 2,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "scythe_basket_walk",
+          "frame": 3,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "scythe_basket_walk",
+          "frame": 4,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "scythe_basket_walk",
+          "frame": 5,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "scythe_basket_walk",
+          "frame": 6,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "scythe_basket_walk",
+          "frame": 7,
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 10,
+      "skipMissedFrames": true,
+      "repeat": -1,
+      "randomFrame": false
+    },
+    {
+      "key": "scythe_basket_walk_1",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "scythe_basket_walk",
+          "frame": 8,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "scythe_basket_walk",
+          "frame": 9,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "scythe_basket_walk",
+          "frame": 10,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "scythe_basket_walk",
+          "frame": 11,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "scythe_basket_walk",
+          "frame": 12,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "scythe_basket_walk",
+          "frame": 13,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "scythe_basket_walk",
+          "frame": 14,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "scythe_basket_walk",
+          "frame": 15,
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 10,
+      "skipMissedFrames": true,
+      "repeat": -1,
+      "randomFrame": false
+    },
+    {
+      "key": "scythe_basket_walk_2",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "scythe_basket_walk",
+          "frame": 16,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "scythe_basket_walk",
+          "frame": 17,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "scythe_basket_walk",
+          "frame": 18,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "scythe_basket_walk",
+          "frame": 19,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "scythe_basket_walk",
+          "frame": 20,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "scythe_basket_walk",
+          "frame": 21,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "scythe_basket_walk",
+          "frame": 22,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "scythe_basket_walk",
+          "frame": 23,
+          "duration": 0,
+          "keyframe": false
+        }
+      ],
+      "frameRate": 10,
+      "skipMissedFrames": true,
+      "repeat": -1,
+      "randomFrame": false
+    },
+    {
+      "key": "scythe_basket_walk_3",
+      "type": "frame",
+      "frames": [
+        {
+          "key": "scythe_basket_walk",
+          "frame": 24,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "scythe_basket_walk",
+          "frame": 25,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "scythe_basket_walk",
+          "frame": 26,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "scythe_basket_walk",
+          "frame": 27,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "scythe_basket_walk",
+          "frame": 28,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "scythe_basket_walk",
+          "frame": 29,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "scythe_basket_walk",
+          "frame": 30,
+          "duration": 0,
+          "keyframe": false
+        },
+        {
+          "key": "scythe_basket_walk",
           "frame": 31,
           "duration": 0,
           "keyframe": false

@@ -5,6 +5,8 @@ export enum AnimationType {
   Build = "build",
   Chop = "chop",
   Mine = "mine",
+  Dig = "dig",
+  Harvest = "Harvest",
   Repair = "repair",
   Heal = "heal",
   Cast = "cast",
