@@ -9,12 +9,12 @@ import {
 } from "./SkaduweeRangedSfx";
 import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PaymentType } from "../../../../entity/components/production/payment-type";
-import { ANIM_SKADUWEE_RANGED_FEMALE_DEFINITION } from "./skaduwee_ranged_female_anim";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 import { SoundType } from "../../../../entity/components/actor-audio/sound-type";
 import { ActorPhysicalType } from "../../../../entity/components/combat/components/actor-physical-type";
 import { weaponDefinitions } from "../../../../entity/components/combat/weapon-definitions";
 import { AiType } from "../../../ai-agents/ai-type";
+import { ANIM_SKADUWEE_RANGED_FEMALE_DEFINITION_LEVEL_1 } from "./skaduwee_ranged_female_anim";
 
 export const skaduweeRangedFemaleDefinition = {
   components: {
@@ -52,7 +52,7 @@ export const skaduweeRangedFemaleDefinition = {
       maxHealth: 100
     },
     attack: {
-      attacks: [weaponDefinitions.SkaduweeBow]
+      attacks: [weaponDefinitions.SkaduweeRangedBow, weaponDefinitions.SkaduweeRangedShortRange]
     },
     productionCost: {
       resources: {
@@ -88,7 +88,7 @@ export const skaduweeRangedFemaleDefinition = {
         [SoundType.LocationUnavailable]: SkaduweeRangedSfxLocationSounds
       }
     },
-    animatable: { animations: ANIM_SKADUWEE_RANGED_FEMALE_DEFINITION }
+    animatable: { animations: ANIM_SKADUWEE_RANGED_FEMALE_DEFINITION_LEVEL_1 }
   },
   systems: {
     movement: { enabled: true },

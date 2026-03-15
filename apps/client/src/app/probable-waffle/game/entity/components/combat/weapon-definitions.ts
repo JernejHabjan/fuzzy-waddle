@@ -113,8 +113,8 @@ export const weaponDefinitions = {
       hit: 0
     }
   },
-  [WeaponType.SkaduweeBow]: {
-    weaponType: WeaponType.SkaduweeBow,
+  [WeaponType.SkaduweeRangedBow]: {
+    weaponType: WeaponType.SkaduweeRangedBow,
     canTargetAir: true,
     projectile: {
       type: ProjectileType.ArrowProjectile,
@@ -139,6 +139,26 @@ export const weaponDefinitions = {
     delays: {
       fire: 1000,
       hit: 0
+    }
+  },
+  [WeaponType.SkaduweeRangedShortRange]: {
+    weaponType: WeaponType.SkaduweeRangedShortRange,
+    canTargetAir: false,
+    damage: 3,
+    damageType: DamageType.Physical,
+    cooldown: 1000,
+    range: 1,
+    minRange: 0,
+    highGroundRangeBonus: 0,
+    animationType: AnimationType.Slash,
+    sounds: {
+      preparing: null,
+      fire: null,
+      hit: SharedActorActionsSfxSpearStabHitSounds
+    },
+    delays: {
+      fire: 200,
+      hit: 500
     }
   },
   [WeaponType.SkeletonBow]: {
@@ -261,7 +281,7 @@ export const weaponDefinitions = {
     range: 1,
     minRange: 0,
     highGroundRangeBonus: 0,
-    animationType: AnimationType.Smash,
+    animationType: AnimationType.Smash, // todo - there are also inverted slash, slash.
     sounds: {
       preparing: null,
       fire: SharedActorActionsSfxHeavyWeaponSwingSounds,
