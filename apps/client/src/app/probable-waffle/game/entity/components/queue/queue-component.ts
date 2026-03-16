@@ -3,7 +3,7 @@ import type { SharedQueueItem } from "./shared-queue-item";
 import { SharedQueueItemType } from "./shared-queue-item-type";
 import { ProductionComponent } from "../production/production-component";
 import { ResearchComponent } from "../research/research-component";
-import { pwActorDefinitions } from "../../../prefabs/definitions/actor-definitions";
+import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
 import { researchDefinitions } from "../research/research-definitions";
 import { QueueItemType, type UnifiedQueueItem } from "./queue-item";
 import { SharedQueue } from "../production/shared-queue";
@@ -51,7 +51,7 @@ export class QueueComponent {
   static createSharedQueue(gameObject: Phaser.GameObjects.GameObject): QueueComponent {
     // Create SharedQueueComponent with queue configuration
     let sharedQueue = getActorComponent(gameObject, QueueComponent);
-    const queueDefinition = pwActorDefinitions[gameObject.name as ObjectNames]?.components?.queue;
+    const queueDefinition = getPwActorDefinition(gameObject.name, null)?.components?.queue;
     if (!sharedQueue) {
       sharedQueue = new QueueComponent(
         gameObject,
@@ -459,8 +459,8 @@ export class QueueComponent {
 
         // Handle production items
         if (item.type === QueueItemType.Production && item.productionData) {
-          const actorDefinition = pwActorDefinitions[item.productionData.actorName];
-          const infoComponent = actorDefinition.components?.info;
+          const actorDefinition = getPwActorDefinition(item.productionData.actorName, null);
+          const infoComponent = actorDefinition?.components?.info;
           if (infoComponent?.smallImage) {
             items.push({
               type: SharedQueueItemType.Production,

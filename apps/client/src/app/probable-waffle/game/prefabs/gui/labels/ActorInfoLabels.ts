@@ -4,7 +4,7 @@
 
 /* START-USER-IMPORTS */
 import ActorIcon from "./ActorIcon";
-import { pwActorDefinitions } from "../../definitions/actor-definitions";
+import { getPwActorDefinition } from "../../definitions/actor-definitions";
 import { getActorComponent } from "../../../data/actor-component";
 import { ProductionComponent } from "../../../entity/components/production/production-component";
 import { BehaviorSubject, Subscription } from "rxjs";
@@ -229,10 +229,10 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
       const actor = selectedActors[index];
       if (!actor) throw new Error("Actor not found");
       const actorName = actor.name;
-      const actorDefinition = pwActorDefinitions[actorName as ObjectNames];
-      const infoComponent = actorDefinition.components!.info!;
+      const actorDefinition = getPwActorDefinition(actorName, null);
+      const infoComponent = actorDefinition?.components?.info;
       const actorIdComponent = getActorComponent(actor, IdComponent);
-      if (!actorIdComponent || !infoComponent.smallImage) return;
+      if (!actorIdComponent || !infoComponent?.smallImage) return;
       icon.setActorIcon(
         {
           actorObjectId: actorIdComponent.id

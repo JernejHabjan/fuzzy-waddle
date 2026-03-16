@@ -105,6 +105,16 @@ export class ResearchComponent {
       return { canStart: false, reason: "Not enough resources" };
     }
 
+    // Check prerequisite research
+    if (researchData.prerequisiteResearch && researchData.prerequisiteResearch.length > 0) {
+      for (const prereq of researchData.prerequisiteResearch) {
+        if (!this.techTreeService?.isResearched(owner, prereq)) {
+          const prereqData = researchDefinitions[prereq];
+          return { canStart: false, reason: `Requires "${prereqData?.name ?? prereq}" to be researched first` };
+        }
+      }
+    }
+
     return { canStart: true };
   }
 

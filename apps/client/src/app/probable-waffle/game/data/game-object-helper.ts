@@ -7,11 +7,12 @@ import { SelectableComponent } from "../entity/components/selectable-component";
 import { IdComponent } from "../entity/components/id-component";
 import { getActorComponent, getActorComponents } from "./actor-component";
 import { RepresentableComponent } from "../entity/components/representable-component";
-import { pwActorDefinitions } from "../prefabs/definitions/actor-definitions";
+import { getPwActorDefinition } from "../prefabs/definitions/actor-definitions";
+import { getResearchedLevelForActor } from "./actor-level-utils";
 
 export function getGameObjectBounds(gameObject?: Phaser.GameObjects.GameObject): Phaser.Geom.Rectangle | null {
   if (!gameObject) return null;
-  const representable = pwActorDefinitions[gameObject.name as ObjectNames]?.components?.representable;
+  const representable = getPwActorDefinition(gameObject.name, getResearchedLevelForActor(gameObject))?.components?.representable;
   if (!representable) {
     const rawBounds = getGameObjectBoundsRaw(gameObject);
     if (!rawBounds) throw new Error(`Bounds not found for gameObject ${gameObject.name}`);

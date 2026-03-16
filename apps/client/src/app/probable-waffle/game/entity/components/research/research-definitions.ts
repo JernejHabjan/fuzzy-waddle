@@ -96,6 +96,7 @@ export const researchDefinitions: Record<ResearchType, ResearchData> = {
     researchTime: 60000,
     icon: { key: "factions", frame: "character_icons/tivara/slingshot_female.png" },
     requiredBuilding: ObjectNames.Sandhold,
-    refundFactor: 0.5
+    refundFactor: 0.5,
+    prerequisiteResearch: [ResearchType.TivaraSlingshotUpgradeLevel2]
   }
 };

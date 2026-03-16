@@ -10,7 +10,7 @@ import {
 import { ActorManager } from "../../data/actor-manager";
 import { getGameObjectBounds, getGameObjectLogicalTransform, onSceneInitialized } from "../../data/game-object-helper";
 import { DepthHelper } from "../../world/services/depth.helper";
-import { pwActorDefinitions } from "../../prefabs/definitions/actor-definitions";
+import { getPwActorDefinition } from "../../prefabs/definitions/actor-definitions";
 import { upgradeFromCoreToConstructingActorData } from "../../data/actor-data";
 import { emitEventIssueActorCommandToSelectedActors, getCurrentPlayerNumber } from "../../data/scene-data";
 import { EventEmitter } from "@angular/core";
@@ -18,9 +18,7 @@ import GameProbableWaffleScene from "../../world/scenes/GameProbableWaffleScene"
 import { Subscription } from "rxjs";
 import { TilemapComponent } from "../../world/tilemap/tilemap.component";
 import { getActorComponent } from "../../data/actor-component";
-import {
-  ConstructionGameObjectInterfaceComponent
-} from "../../entity/components/construction/construction-game-object-interface-component";
+import { ConstructionGameObjectInterfaceComponent } from "../../entity/components/construction/construction-game-object-interface-component";
 import { IdComponent } from "../../entity/components/id-component";
 import { getSceneComponent, getSceneService } from "../../world/services/scene-component-helpers";
 import { getTileCoordsUnderObject } from "../../library/tile-under-object";
@@ -297,7 +295,7 @@ export class BuildingCursor {
   private spawn(name: ObjectNames) {
     if (this.building) this.stop();
 
-    const definition = pwActorDefinitions[name as ObjectNames]?.components?.constructable;
+    const definition = getPwActorDefinition(name, null)?.components?.constructable;
     if (!definition) return;
 
     this.canBeDragPlaced = definition.canBeDragPlaced;
@@ -608,7 +606,7 @@ export class BuildingCursor {
   private drawAttackRange(location: Vector2Simple) {
     if (!location || !this.building) return;
 
-    const definition = pwActorDefinitions[this.building.name as ObjectNames];
+    const definition = getPwActorDefinition(this.building.name, null);
     if (!definition) return;
 
     const attackDefinition = definition.components?.attack;

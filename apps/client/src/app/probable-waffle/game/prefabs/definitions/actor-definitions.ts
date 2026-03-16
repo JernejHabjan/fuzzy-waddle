@@ -1,4 +1,5 @@
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { applyLevelOverrides } from "./prefab-definition";
 import { tivaraWorkerDefinition } from "../characters/tivara/tivara-worker/tivara-worker.definition";
 import { skaduweeWorkerDefinition } from "../characters/skaduwee/skaduwee-worker/skaduwee-worker.definition";
 import { skaduweeWorkerMaleDefinition } from "../characters/skaduwee/skaduwee-worker/skaduwee-worker-male/skaduwee-worker-male.definition";
@@ -125,3 +126,16 @@ export const pwActorDefinitions: {
   StonePile: stonePileDefinition,
   HealingTotem: healingTotemDefinition
 };
+
+/**
+ * Returns the actor definition for the given name, optionally with level overrides applied.
+ * Use this everywhere instead of direct pwActorDefinitions[name] access.
+ * @param name - The actor ObjectName
+ * @param level - The level to apply overrides for (> 1 triggers level-specific overrides), or null for base definition
+ */
+export function getPwActorDefinition(name: ObjectNames | string, level: number | null): PrefabDefinition | undefined {
+  const base = pwActorDefinitions[name as ObjectNames];
+  if (!base) return undefined;
+  if (!level || level <= 1) return base;
+  return applyLevelOverrides(base, level);
+}

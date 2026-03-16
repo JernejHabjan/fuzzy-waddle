@@ -42,7 +42,7 @@ import Stairs from "../prefabs/buildings/tivara/stairs/Stairs";
 import StonePile from "../prefabs/outside/resources/stone-pile/StonePile";
 import { SkaduweeWorker } from "../prefabs/characters/skaduwee/skaduwee-worker/SkaduweeWorker";
 import { TivaraWorker } from "../prefabs/characters/tivara/tivara-worker/TivaraWorker";
-import { pwActorDefinitions } from "../prefabs/definitions/actor-definitions";
+import { getPwActorDefinition } from "../prefabs/definitions/actor-definitions";
 import { RepresentableComponent } from "../entity/components/representable-component";
 import { VisionComponent } from "../entity/components/vision-component";
 import { AttackComponent } from "../entity/components/combat/components/attack-component";
@@ -62,6 +62,7 @@ import Emberstone from "../prefabs/buildings/skaduwee/Emberstone";
 import { SpellComponent } from "../entity/components/combat/components/spell-component";
 import { StatusEffectComponent } from "../entity/components/status-effect/status-effect-component";
 import { ResearchComponent } from "../entity/components/research/research-component";
+import { LevelComponent } from "../entity/components/level/level-component";
 import GameObject = Phaser.GameObjects.GameObject;
 import Wolf from "../prefabs/animals/wolf/Wolf";
 import Boar from "../prefabs/animals/boar/Boar";
@@ -228,14 +229,15 @@ export class ActorManager {
       representable: getActorComponent(actor, RepresentableComponent)?.getData(),
       blackboard: getActorComponent(actor, PawnAiController)?.getData(),
       spell: getActorComponent(actor, SpellComponent)?.getData(),
-      statusEffects: getActorComponent(actor, StatusEffectComponent)?.getData()
+      statusEffects: getActorComponent(actor, StatusEffectComponent)?.getData(),
+      level: getActorComponent(actor, LevelComponent)?.getData()
     } satisfies ActorDefinition;
 
     return actorDefinition;
   }
 
   static createActorFully(scene: Phaser.Scene, name: ObjectNames, actorDefinition: ActorDefinition): GameObject {
-    const definition = pwActorDefinitions[name];
+    const definition = getPwActorDefinition(name, null);
     if (!definition) {
       throw new Error(`Actor definition for ${name} not found.`);
     }

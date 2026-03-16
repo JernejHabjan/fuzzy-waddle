@@ -1,5 +1,5 @@
-import { pwActorDefinitions } from "../prefabs/definitions/actor-definitions";
-import { type ActorDefinition, ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { getPwActorDefinition } from "../prefabs/definitions/actor-definitions";
+import { type ActorDefinition } from "@fuzzy-waddle/api-interfaces";
 import { VisionComponent } from "../entity/components/vision-component";
 import { InfoComponent } from "../entity/components/info-component";
 import { ObjectDescriptorComponent } from "../entity/components/object-descriptor-component";
@@ -31,7 +31,6 @@ import { AnimationActorComponent } from "../entity/components/animation/animatio
 import { RepresentableComponent } from "../entity/components/representable-component";
 import { FlyingComponent } from "../entity/components/movement/flying-component";
 import { WalkableComponent } from "../entity/components/movement/walkable-component";
-import GameObject = Phaser.GameObjects.GameObject;
 import { HousingComponent } from "../entity/components/building/housing-component";
 import { HousingCostComponent } from "../entity/components/building/housing-cost-component";
 import { MovementDecalCursorService } from "../entity/components/movement/movement-decal-cursor.service";
@@ -44,7 +43,7 @@ import { SpellComponent } from "../entity/components/combat/components/spell-com
 import { SpellCastingSystem } from "../entity/systems/spell-casting.system";
 import { ResearchComponent } from "../entity/components/research/research-component";
 import { LevelComponent } from "../entity/components/level/level-component";
-import { applyLevelOverrides } from "../prefabs/definitions/prefab-definition";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export const ActorDataKey = "actorData";
 export class ActorData {
@@ -112,7 +111,7 @@ function setActorProperties(actor: GameObject, actorDefinition?: Partial<ActorDe
 }
 
 function gatherCoreActorData(actor: Phaser.GameObjects.GameObject): { components: any[]; systems: any[] } {
-  const definition = pwActorDefinitions[actor.name as ObjectNames];
+  const definition = getPwActorDefinition(actor.name, null);
   if (!definition) {
     throw new Error(`Actor definition for ${actor.name} not found.`);
   }
@@ -141,7 +140,7 @@ function gatherCoreActorData(actor: Phaser.GameObjects.GameObject): { components
 }
 
 function gatherConstructingActorData(actor: Phaser.GameObjects.GameObject): { components: any[]; systems: any[] } {
-  const definition = pwActorDefinitions[actor.name as ObjectNames];
+  const definition = getPwActorDefinition(actor.name, null);
   if (!definition) {
     throw new Error(`Actor definition for ${actor.name} not found.`);
   }
@@ -165,7 +164,7 @@ function gatherConstructingActorData(actor: Phaser.GameObjects.GameObject): { co
 }
 
 function gatherCompletedActorData(actor: Phaser.GameObjects.GameObject): { components: any[]; systems: any[] } {
-  const definition = pwActorDefinitions[actor.name as ObjectNames];
+  const definition = getPwActorDefinition(actor.name, null);
   if (!definition) {
     throw new Error(`Actor definition for ${actor.name} not found.`);
   }
@@ -348,15 +347,12 @@ export function upgradeActorToLevel(actor: GameObject, newLevel: number) {
     return;
   }
 
-  // Get base definition
-  const baseDefinition = pwActorDefinitions[actor.name as ObjectNames];
-  if (!baseDefinition) {
+  // Get definition with level overrides applied
+  const levelConfig = getPwActorDefinition(actor.name, newLevel);
+  if (!levelConfig) {
     console.error(`No definition found for ${actor.name}`);
     return;
   }
-
-  // Apply level overrides to get level-specific definition
-  const levelConfig = applyLevelOverrides(baseDefinition, newLevel);
   const components = levelConfig.components;
 
   // Update animations if changed

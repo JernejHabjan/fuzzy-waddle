@@ -18,6 +18,10 @@ export class LevelComponent {
     }
   }
 
+  getData(): LevelDefinition {
+    return { level: this.levelData.level, maxLevel: this.levelData.maxLevel };
+  }
+
   get currentLevel(): number {
     return this.levelData.level;
   }

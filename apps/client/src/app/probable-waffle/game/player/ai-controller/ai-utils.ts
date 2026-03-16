@@ -1,12 +1,13 @@
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
-import { pwActorDefinitions } from "../../prefabs/definitions/actor-definitions";
+import { getPwActorDefinition } from "../../prefabs/definitions/actor-definitions";
 import { getActorComponent } from "../../data/actor-component";
 import { AttackComponent } from "../../entity/components/combat/components/attack-component";
+import { getResearchedLevelForActor } from "../../data/actor-level-utils";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export function getUnitStrength(unit: GameObject): number {
-  const definition = pwActorDefinitions[unit.name as ObjectNames];
+  const definition = getPwActorDefinition(unit.name, getResearchedLevelForActor(unit));
   if (!definition) return 1; // default strength
 
   const cost = definition.components?.productionCost?.resources;

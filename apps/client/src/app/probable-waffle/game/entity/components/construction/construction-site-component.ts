@@ -9,8 +9,9 @@ import { HealthComponent } from "../combat/components/health-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "../owner-component";
 import { emitResource, getPlayer } from "../../../data/scene-data";
-import { pwActorDefinitions } from "../../../prefabs/definitions/actor-definitions";
+import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
 import { getGameObjectVisibility, onObjectReady } from "../../../data/game-object-helper";
+import { getResearchedLevelForActor } from "../../../data/actor-level-utils";
 import { BehaviorSubject, Subject } from "rxjs";
 import { upgradeFromConstructingToFullActorData } from "../../../data/actor-data";
 import { ConstructionProgressUiComponent } from "./construction-progress-ui-component";
@@ -67,8 +68,8 @@ export class ConstructionSiteComponent {
   }
 
   private get productionDefinition(): ProductionCostDefinition | null {
-    const definition = pwActorDefinitions[this.gameObject.name as ObjectNames];
-    return definition.components?.productionCost ?? null;
+    const definition = getPwActorDefinition(this.gameObject.name, getResearchedLevelForActor(this.gameObject));
+    return definition?.components?.productionCost ?? null;
   }
 
   update(_: number, delta: number): void {

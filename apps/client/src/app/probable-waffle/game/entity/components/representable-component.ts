@@ -10,8 +10,9 @@ import { FlyingComponent } from "./movement/flying-component";
 import { DepthHelper } from "../../world/services/depth.helper";
 import { TilemapComponent } from "../../world/tilemap/tilemap.component";
 import type { RepresentableDefinition } from "./representable-definition";
-import { pwActorDefinitions } from "../../prefabs/definitions/actor-definitions";
+import { getPwActorDefinition } from "../../prefabs/definitions/actor-definitions";
 import { environment } from "../../../../../environments/environment";
+import { getResearchedLevelForActor } from "../../data/actor-level-utils";
 
 export class RepresentableComponent {
   /**
@@ -147,7 +148,7 @@ export class RepresentableComponent {
       return;
     }
 
-    const origin = pwActorDefinitions[this.gameObject.name as ObjectNames]?.components?.representable?.origin;
+    const origin = getPwActorDefinition(this.gameObject.name, getResearchedLevelForActor(this.gameObject))?.components?.representable?.origin;
     if (!origin) {
       console.warn("RepresentableComponent: Could not get origin for debug drawing");
       return;

@@ -12,4 +12,5 @@ export interface ResearchData {
   icon: { key: string; frame: string };
   requiredBuilding?: ObjectNames; // building that provides this research
   refundFactor: number; // factor for calculating refunds when research is cancelled (e.g., 0.5 = 50% refund)
+  prerequisiteResearch?: ResearchType[]; // research types that must be completed before this one
 }

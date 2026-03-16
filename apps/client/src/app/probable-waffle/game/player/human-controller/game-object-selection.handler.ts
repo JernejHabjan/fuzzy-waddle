@@ -25,7 +25,7 @@ import { MovementSystem } from "../../entity/systems/movement.system";
 import { AudioActorComponent } from "../../entity/components/actor-audio/audio-actor-component";
 import { OwnerComponent } from "../../entity/components/owner-component";
 import GameObject = Phaser.GameObjects.GameObject;
-import { pwActorDefinitions } from "../../prefabs/definitions/actor-definitions";
+import { getPwActorDefinition, pwActorDefinitions } from "../../prefabs/definitions/actor-definitions";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { PlayerActionsHandler } from "./player-actions-handler";
 import { SoundType } from "../../entity/components/actor-audio/sound-type";
@@ -328,8 +328,8 @@ export class GameObjectSelectionHandler {
    */
   private getParentType(actorName: ObjectNames): ObjectNames | undefined {
     for (const key in pwActorDefinitions) {
-      const actorDefinition = pwActorDefinitions[key as ObjectNames];
-      if (actorDefinition.meta?.randomOfType?.includes(actorName as ObjectNames)) {
+      const actorDefinition = getPwActorDefinition(key as ObjectNames, null);
+      if (actorDefinition?.meta?.randomOfType?.includes(actorName as ObjectNames)) {
         return key as ObjectNames;
       }
     }
