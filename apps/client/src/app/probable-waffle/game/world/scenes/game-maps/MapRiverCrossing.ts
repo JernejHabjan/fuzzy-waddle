@@ -72,6 +72,7 @@ import TivaraWorkerMale from "../../../prefabs/characters/tivara/tivara-worker/t
 import Stairs from "../../../prefabs/buildings/tivara/stairs/Stairs";
 import SoundEffectMarker from "../../../prefabs/buildings/misc/SoundEffectMarker";
 import SkaduweeMagicianFemale from "../../../prefabs/characters/skaduwee/skaduwee-magician-female/SkaduweeMagicianFemale";
+import EditorActorLevel from "../editor-components/EditorActorLevel";
 import FenceRightCorner from "../../../prefabs/outside/architecture/obstruction/FenceRightCorner";
 import FenceLeftCorner from "../../../prefabs/outside/architecture/obstruction/FenceLeftCorner";
 import ToxicFrog from "../../../prefabs/animals/toxic-frog/ToxicFrog";
@@ -1100,6 +1101,8 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // skaduweeWarriorMale_1 (components)
     const skaduweeWarriorMale_1EditorOwner = new EditorOwner(skaduweeWarriorMale_1);
     skaduweeWarriorMale_1EditorOwner.owner_id = "1";
+    const skaduweeWarriorMale_1EditorActorLevel = new EditorActorLevel(skaduweeWarriorMale_1);
+    skaduweeWarriorMale_1EditorActorLevel.level = 2;
 
     // skaduweeWorkerFemale_1 (components)
     const skaduweeWorkerFemale_1EditorOwner = new EditorOwner(skaduweeWorkerFemale_1);

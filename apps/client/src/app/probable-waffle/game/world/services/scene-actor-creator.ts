@@ -15,7 +15,7 @@ import { FactionDefinitions } from "../../player/faction-definitions";
 import { getGameObjectBounds, getGameObjectLogicalTransform, getGameObjectVisibility } from "../../data/game-object-helper";
 import { getActorSystem } from "../../data/actor-system";
 import { MovementSystem } from "../../entity/systems/movement.system";
-import { setFullActorDataFromName } from "../../data/actor-data";
+import { setFullActorDataFromName, upgradeActorToLevel } from "../../data/actor-data";
 import { pwActorDefinitions } from "../../prefabs/definitions/actor-definitions";
 import { getActorComponent } from "../../data/actor-component";
 import { IdComponent } from "../../entity/components/id-component";
@@ -23,6 +23,8 @@ import { getSceneService } from "./scene-component-helpers";
 import { ActorIndexSystem } from "./ActorIndexSystem";
 import { LoadGame } from "../../data/load-game";
 import type { InitialActorConfig } from "../../player/faction-info";
+import { LevelComponent } from "../../entity/components/level/level-component";
+import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class SceneActorCreator {
@@ -146,6 +148,18 @@ export class SceneActorCreator {
 
     const newGameObject = this.createActorFromDefinition(actorDefinition);
     if (newGameObject) {
+      // Apply researched upgrades if this unit has a level component
+      const levelComponent = getActorComponent(newGameObject, LevelComponent);
+      if (levelComponent && ownerId !== undefined) {
+        const techTreeService = getSceneService(this.scene, TechTreeService);
+        if (techTreeService) {
+          const researchedLevel = techTreeService.getResearchedLevelForUnit(ownerId, actorName);
+          if (researchedLevel > 1 && researchedLevel <= levelComponent.maxLevel) {
+            upgradeActorToLevel(newGameObject, researchedLevel);
+          }
+        }
+      }
+
       // Hide by default - fog-of-war will show it if visible for player
       const visibilityComponent = getGameObjectVisibility(newGameObject);
       if (visibilityComponent) {

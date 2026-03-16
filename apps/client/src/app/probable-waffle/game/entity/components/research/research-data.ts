@@ -6,6 +6,7 @@ export interface ResearchData {
   name: string;
   description: string;
   unlocksSpell?: SpellType; // spell unlocked by this research
+  upgradesUnit?: { unitType: ObjectNames; targetLevel: number }; // unit upgrade research
   cost: Partial<Record<ResourceType, number>>;
   researchTime: number; // ms
   icon: { key: string; frame: string };

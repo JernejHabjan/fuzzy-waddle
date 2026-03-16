@@ -7,7 +7,9 @@ export enum ResearchType {
   // Healing spells
   HealingLightSpell = 'healingLightSpell',
   HealingRainSpell = 'healingRainSpell',
-  HealingTotemSpell = 'healingTotemSpell'
+  HealingTotemSpell = 'healingTotemSpell',
 
-  // Future: unit upgrades, armor, damage, etc.
+  // Unit upgrades
+  TivaraSlingshotUpgradeLevel2 = 'tivaraSlingshotUpgradeLevel2',
+  TivaraSlingshotUpgradeLevel3 = 'tivaraSlingshotUpgradeLevel3'
 }

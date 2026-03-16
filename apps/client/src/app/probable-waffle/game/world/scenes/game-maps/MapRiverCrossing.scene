@@ -1782,9 +1782,11 @@
             ],
             "label": "skaduweeWarriorMale_1",
             "components": [
-                "EditorOwner"
+                "EditorOwner",
+                "EditorActorLevel"
             ],
             "EditorOwner.owner_id": "1",
+            "EditorActorLevel.level": 2,
             "x": -582,
             "y": 597
         },

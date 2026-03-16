@@ -7,6 +7,7 @@ import { PaymentType } from "../../../../entity/components/production/payment-ty
 import { coreConstructionSiteDefinition } from "../../shared/core-construction-site.definition";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 import { ActorPhysicalType } from "../../../../entity/components/combat/components/actor-physical-type";
+import { ResearchType } from "@fuzzy-waddle/api-interfaces";
 
 export const sandholdDefinition = {
   components: {
@@ -80,6 +81,12 @@ export const sandholdDefinition = {
     queue: {
       queueCount: 1,
       capacityPerQueue: 5
+    },
+    research: {
+      availableResearch: [
+        ResearchType.TivaraSlingshotUpgradeLevel2,
+        ResearchType.TivaraSlingshotUpgradeLevel3
+      ]
     },
     selectable: {},
     collider: { enabled: true },

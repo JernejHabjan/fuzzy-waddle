@@ -73,5 +73,29 @@ export const researchDefinitions: Record<ResearchType, ResearchData> = {
     icon: { key: "factions", frame: "spell_icons/healing_totem.png" },
     requiredBuilding: ObjectNames.InfantryInn,
     refundFactor: 0.5
+  },
+
+  [ResearchType.TivaraSlingshotUpgradeLevel2]: {
+    type: ResearchType.TivaraSlingshotUpgradeLevel2,
+    name: "Cursed Banshee Elite",
+    description: "Upgrades all Cursed Banshees to Elite rank with improved weapons and armor",
+    upgradesUnit: { unitType: ObjectNames.TivaraSlingshotFemale, targetLevel: 2 },
+    cost: { [ResourceType.Minerals]: 200, [ResourceType.Wood]: 150 },
+    researchTime: 40000,
+    icon: { key: "factions", frame: "character_icons/tivara/slingshot_female.png" },
+    requiredBuilding: ObjectNames.Sandhold,
+    refundFactor: 0.5
+  },
+
+  [ResearchType.TivaraSlingshotUpgradeLevel3]: {
+    type: ResearchType.TivaraSlingshotUpgradeLevel3,
+    name: "Cursed Banshee Master",
+    description: "Upgrades all Cursed Banshees to Master rank with devastating power",
+    upgradesUnit: { unitType: ObjectNames.TivaraSlingshotFemale, targetLevel: 3 },
+    cost: { [ResourceType.Minerals]: 400, [ResourceType.Wood]: 300, [ResourceType.Stone]: 200 },
+    researchTime: 60000,
+    icon: { key: "factions", frame: "character_icons/tivara/slingshot_female.png" },
+    requiredBuilding: ObjectNames.Sandhold,
+    refundFactor: 0.5
   }
 };
