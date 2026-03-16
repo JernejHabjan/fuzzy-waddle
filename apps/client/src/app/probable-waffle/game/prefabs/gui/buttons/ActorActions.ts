@@ -923,6 +923,9 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       const researchData = researchDefinitions[researchType];
       if (!researchData) continue;
 
+      // Hide research that has unmet prerequisites — those will appear once their prerequisite is done
+      if (researchData.prerequisiteResearch?.some((prereq) => !researchComponent.isResearched(prereq))) continue;
+
       const action = this.actor_actions[index];
       if (!action) {
         console.error("Action button not found at index", index);
