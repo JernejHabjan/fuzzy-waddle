@@ -13,24 +13,31 @@
     },
     "displayList": [
         {
-            "type": "Sprite",
-            "id": "e3527f1d-89a8-4604-b032-f9950fadd5d9",
-            "label": "general_warrior_idle_down",
+            "type": "Container",
+            "id": "e76c1fc5-9b94-46d4-bb7e-f2bc03ec42b6",
+            "label": "container_1",
             "hitArea.shape": "CIRCLE",
-            "hitArea.x": 32,
-            "hitArea.y": 32,
-            "hitArea.radius": 32,
-            "texture": {
-                "key": "orc_warrior_idle",
-                "frame": 4
-            },
+            "hitArea.x": -1,
+            "hitArea.y": -20,
+            "hitArea.radius": 25.142976744999586,
             "x": 38,
-            "y": 69,
+            "y": 68,
             "scaleX": 1.2,
             "scaleY": 1.2,
-            "originY": 0.899286430676403,
-            "animationPlayMethod": 1,
-            "animationKey": "orc_warrior_idle_2"
+            "list": [
+                {
+                    "type": "Sprite",
+                    "id": "e3527f1d-89a8-4604-b032-f9950fadd5d9",
+                    "label": "general_warrior_idle_down",
+                    "texture": {
+                        "key": "orc_warrior_idle",
+                        "frame": 4
+                    },
+                    "y": -25.077002702152576,
+                    "animationPlayMethod": 1,
+                    "animationKey": "orc_warrior_idle_2"
+                }
+            ]
         }
     ],
     "plainObjects": [],

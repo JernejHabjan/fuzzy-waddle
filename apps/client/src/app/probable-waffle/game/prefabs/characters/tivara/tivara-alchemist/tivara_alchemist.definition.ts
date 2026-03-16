@@ -11,7 +11,7 @@ export const tivaraAlchemistDefinition = {
     representable: {
       width: 48,
       height: 48,
-      origin: { x: 0.5, y: 0.5 }
+      origin: { x: 0.5, y: 0.8 }
     },
     objectDescriptor: {
       color: 0xe9ecf2

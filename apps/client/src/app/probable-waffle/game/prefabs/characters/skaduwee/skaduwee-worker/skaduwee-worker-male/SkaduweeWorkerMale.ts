@@ -7,14 +7,17 @@ import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import Phaser from "phaser";
 /* END-USER-IMPORTS */
 
-export default class SkaduweeWorkerMale extends Phaser.GameObjects.Sprite {
+export default class SkaduweeWorkerMale extends Phaser.GameObjects.Container {
 
-	constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
-		super(scene, x ?? 32, y ?? 57.56281114690988, texture || "base_idle_1", frame ?? 4);
+	constructor(scene: Phaser.Scene, x?: number, y?: number) {
+		super(scene, x ?? 32, y ?? 57.077002702152576);
 
-		this.setInteractive(new Phaser.Geom.Circle(32, 32, 32), Phaser.Geom.Circle.Contains);
-		this.setOrigin(0.5, 0.8994189111288416);
-		this.play("skaduwee_worker_male_base_idle_2");
+		this.setInteractive(new Phaser.Geom.Circle(0, -25.354877574887297, 32), Phaser.Geom.Circle.Contains);
+
+		// skaduwee_worker_male_idle_down
+		const skaduwee_worker_male_idle_down = scene.add.sprite(0, -25.077002702152576, "base_idle_1", 4);
+		skaduwee_worker_male_idle_down.play("skaduwee_worker_male_base_idle_2");
+		this.add(skaduwee_worker_male_idle_down);
 
 		/* START-USER-CTR-CODE */
     /* END-USER-CTR-CODE */

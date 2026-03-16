@@ -13,24 +13,31 @@
     },
     "displayList": [
         {
-            "type": "Sprite",
-            "id": "e3527f1d-89a8-4604-b032-f9950fadd5d9",
-            "label": "general_warrior_idle_down",
+            "type": "Container",
+            "id": "e76c1fc5-9b94-46d4-bb7e-f2bc03ec42b6",
+            "label": "container_1",
             "hitArea.shape": "CIRCLE",
-            "hitArea.x": 32,
-            "hitArea.y": 32,
-            "hitArea.radius": 32,
-            "texture": {
-                "key": "cyclops_idle",
-                "frame": 4
-            },
+            "hitArea.x": 1,
+            "hitArea.y": -51,
+            "hitArea.radius": 61.63986190864388,
             "x": 80,
-            "y": 144,
-            "scaleX": 2.5,
-            "scaleY": 2.5,
-            "originY": 0.899286430676403,
-            "animationPlayMethod": 1,
-            "animationKey": "cyclops_idle_2"
+            "y": 145.92508215626776,
+            "list": [
+                {
+                    "type": "Sprite",
+                    "id": "e3527f1d-89a8-4604-b032-f9950fadd5d9",
+                    "label": "general_warrior_idle_down",
+                    "texture": {
+                        "key": "cyclops_idle",
+                        "frame": 4
+                    },
+                    "y": -65.92508215626776,
+                    "scaleX": 2.5,
+                    "scaleY": 2.5,
+                    "animationPlayMethod": 1,
+                    "animationKey": "cyclops_idle_2"
+                }
+            ]
         }
     ],
     "plainObjects": [],

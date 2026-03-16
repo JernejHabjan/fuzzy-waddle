@@ -13,22 +13,28 @@
     },
     "displayList": [
         {
-            "type": "Sprite",
-            "id": "e3527f1d-89a8-4604-b132-f9950fadd5d9",
-            "label": "centurion_idle",
+            "type": "Container",
+            "id": "e76c1fc5-9b94-46d4-bb7e-f2bc03ec42b6",
+            "label": "container_1",
             "hitArea.shape": "CIRCLE",
-            "hitArea.x": 96,
-            "hitArea.y": 98,
+            "hitArea.y": -25.354877574887297,
             "hitArea.radius": 32,
-            "texture": {
-                "key": "centurion_idle",
-                "frame": 4
-            },
             "x": 32,
-            "y": 54.45392844366228,
-            "originY": 0.6204006413204773,
-            "animationPlayMethod": 1,
-            "animationKey": "centurion_idle_down"
+            "y": 57.077002702152576,
+            "list": [
+                {
+                    "type": "Sprite",
+                    "id": "e3527f1d-89a8-4604-b132-f9950fadd5d9",
+                    "label": "centurion_idle",
+                    "texture": {
+                        "key": "centurion_idle",
+                        "frame": 4
+                    },
+                    "y": -25.077002702152576,
+                    "animationPlayMethod": 1,
+                    "animationKey": "centurion_idle_down"
+                }
+            ]
         }
     ],
     "plainObjects": [],

@@ -13,22 +13,28 @@
     },
     "displayList": [
         {
-            "type": "Sprite",
-            "id": "63dfaa82-413b-4ba0-aeb4-392d6f3c9751",
-            "label": "tivara_worker_male_idle_down",
+            "type": "Container",
+            "id": "e76c1fc5-9b94-46d4-bb7e-f2bc03ec42b6",
+            "label": "container_1",
             "hitArea.shape": "CIRCLE",
-            "hitArea.x": 32,
-            "hitArea.y": 32,
+            "hitArea.y": -25.354877574887297,
             "hitArea.radius": 32,
-            "texture": {
-                "key": "base_idle_3",
-                "frame": 4
-            },
             "x": 32,
-            "y": 56.45402439680805,
-            "originY": 0.8820941312001258,
-            "animationPlayMethod": 1,
-            "animationKey": "tivara_worker_male_base_idle_2"
+            "y": 57.077002702152576,
+            "list": [
+                {
+                    "type": "Sprite",
+                    "id": "63dfaa82-413b-4ba0-aeb4-392d6f3c9751",
+                    "label": "tivara_worker_male_idle_down",
+                    "texture": {
+                        "key": "base_idle_3",
+                        "frame": 4
+                    },
+                    "y": -25.077002702152576,
+                    "animationPlayMethod": 1,
+                    "animationKey": "tivara_worker_male_base_idle_2"
+                }
+            ]
         }
     ],
     "plainObjects": [],

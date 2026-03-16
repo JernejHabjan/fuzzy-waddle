@@ -13,22 +13,28 @@
     },
     "displayList": [
         {
-            "type": "Sprite",
-            "id": "e3527f1d-89a8-4604-b032-f9950fadd5d9",
-            "label": "general_warrior_idle_down",
+            "type": "Container",
+            "id": "e76c1fc5-9b94-46d4-bb7e-f2bc03ec42b6",
+            "label": "container_1",
             "hitArea.shape": "CIRCLE",
-            "hitArea.x": 32,
-            "hitArea.y": 32,
+            "hitArea.y": -25.354877574887297,
             "hitArea.radius": 32,
-            "texture": {
-                "key": "pirate_swordsman_idle",
-                "frame": 4
-            },
             "x": 32,
-            "y": 57.554331622949405,
-            "originY": 0.899286430676403,
-            "animationPlayMethod": 1,
-            "animationKey": "pirate_swordsman_idle_2"
+            "y": 57.077002702152576,
+            "list": [
+                {
+                    "type": "Sprite",
+                    "id": "e3527f1d-89a8-4604-b032-f9950fadd5d9",
+                    "label": "general_warrior_idle_down",
+                    "texture": {
+                        "key": "pirate_swordsman_idle",
+                        "frame": 4
+                    },
+                    "y": -25.077002702152576,
+                    "animationPlayMethod": 1,
+                    "animationKey": "pirate_swordsman_idle_2"
+                }
+            ]
         }
     ],
     "plainObjects": [],

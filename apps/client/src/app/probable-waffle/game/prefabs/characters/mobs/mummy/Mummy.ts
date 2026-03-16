@@ -7,20 +7,23 @@ import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import Phaser from "phaser";
 /* END-USER-IMPORTS */
 
-export default class Mummy extends Phaser.GameObjects.Sprite {
+export default class Mummy extends Phaser.GameObjects.Container {
+  constructor(scene: Phaser.Scene, x?: number, y?: number) {
+    super(scene, x ?? 32, y ?? 57.077002702152576);
 
-	constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
-		super(scene, x ?? 32, y ?? 57.554331622949405, texture || "mummy_idle", frame ?? 4);
+    this.setInteractive(new Phaser.Geom.Circle(0, -25.354877574887297, 32), Phaser.Geom.Circle.Contains);
 
-		this.setInteractive(new Phaser.Geom.Circle(32, 32, 32), Phaser.Geom.Circle.Contains);
-		this.setOrigin(0.5, 0.899286430676403);
-		this.play("mummy_idle_1");
+    // general_warrior_idle_down
+    const general_warrior_idle_down = scene.add.sprite(0, -25.077002702152576, "mummy_idle", 4);
+    general_warrior_idle_down.setInteractive(new Phaser.Geom.Circle(32, 32, 32), Phaser.Geom.Circle.Contains);
+    general_warrior_idle_down.play("mummy_idle_5");
+    this.add(general_warrior_idle_down);
 
-		/* START-USER-CTR-CODE */
+    /* START-USER-CTR-CODE */
     /* END-USER-CTR-CODE */
-	}
+  }
 
-	/* START-USER-CODE */
+  /* START-USER-CODE */
   override name = ObjectNames.Mummy;
   // Write your code here.
 

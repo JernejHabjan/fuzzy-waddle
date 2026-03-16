@@ -7,16 +7,19 @@ import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import Phaser from "phaser";
 /* END-USER-IMPORTS */
 
-export default class Minotaur extends Phaser.GameObjects.Sprite {
+export default class Minotaur extends Phaser.GameObjects.Container {
 
-	constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
-		super(scene, x ?? 80, y ?? 144, texture || "minotaur_idle", frame ?? 4);
+	constructor(scene: Phaser.Scene, x?: number, y?: number) {
+		super(scene, x ?? 80, y ?? 144.6126720138045);
 
-		this.setInteractive(new Phaser.Geom.Circle(32, 32, 32), Phaser.Geom.Circle.Contains);
-		this.scaleX = 2.5;
-		this.scaleY = 2.5;
-		this.setOrigin(0.5, 0.899286430676403);
-		this.play("minotaur_idle_2");
+		this.setInteractive(new Phaser.Geom.Circle(-1, -57, 70.06050123719255), Phaser.Geom.Circle.Contains);
+
+		// general_warrior_idle_down
+		const general_warrior_idle_down = scene.add.sprite(0, -64.61267201380451, "minotaur_idle", 4);
+		general_warrior_idle_down.scaleX = 2.5;
+		general_warrior_idle_down.scaleY = 2.5;
+		general_warrior_idle_down.play("minotaur_idle_2");
+		this.add(general_warrior_idle_down);
 
 		/* START-USER-CTR-CODE */
     /* END-USER-CTR-CODE */

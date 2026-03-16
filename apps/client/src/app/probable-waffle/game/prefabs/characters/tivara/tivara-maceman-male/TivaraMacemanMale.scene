@@ -13,22 +13,28 @@
     },
     "displayList": [
         {
-            "type": "Sprite",
-            "id": "83c508f6-00d4-40c5-9330-6de0b4a034d6",
-            "label": "tivara_maceman_male_idle_down",
+            "type": "Container",
+            "id": "e76c1fc5-9b94-46d4-bb7e-f2bc03ec42b6",
+            "label": "container_1",
             "hitArea.shape": "CIRCLE",
-            "hitArea.x": 32,
-            "hitArea.y": 32,
+            "hitArea.y": -25.354877574887297,
             "hitArea.radius": 32,
-            "texture": {
-                "key": "maceman_male_lvl1_idle",
-                "frame": 4
-            },
             "x": 32,
-            "y": 57,
-            "originY": 0.9,
-            "animationPlayMethod": 1,
-            "animationKey": "maceman_male_lvl1_idle_2"
+            "y": 57.0471238601215,
+            "list": [
+                {
+                    "type": "Sprite",
+                    "id": "83c508f6-00d4-40c5-9330-6de0b4a034d6",
+                    "label": "tivara_maceman_male_idle_down",
+                    "texture": {
+                        "key": "maceman_male_lvl1_idle",
+                        "frame": 4
+                    },
+                    "y": -25.047123860121502,
+                    "animationPlayMethod": 1,
+                    "animationKey": "maceman_male_lvl1_idle_2"
+                }
+            ]
         }
     ],
     "plainObjects": [],

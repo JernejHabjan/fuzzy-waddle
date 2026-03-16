@@ -7,16 +7,19 @@ import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import Phaser from "phaser";
 /* END-USER-IMPORTS */
 
-export default class Cyclops extends Phaser.GameObjects.Sprite {
+export default class Cyclops extends Phaser.GameObjects.Container {
 
-	constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
-		super(scene, x ?? 80, y ?? 144, texture || "cyclops_idle", frame ?? 4);
+	constructor(scene: Phaser.Scene, x?: number, y?: number) {
+		super(scene, x ?? 80, y ?? 145.92508215626776);
 
-		this.setInteractive(new Phaser.Geom.Circle(32, 32, 32), Phaser.Geom.Circle.Contains);
-		this.scaleX = 2.5;
-		this.scaleY = 2.5;
-		this.setOrigin(0.5, 0.899286430676403);
-		this.play("cyclops_idle_2");
+		this.setInteractive(new Phaser.Geom.Circle(1, -51, 61.63986190864388), Phaser.Geom.Circle.Contains);
+
+		// general_warrior_idle_down
+		const general_warrior_idle_down = scene.add.sprite(0, -65.92508215626776, "cyclops_idle", 4);
+		general_warrior_idle_down.scaleX = 2.5;
+		general_warrior_idle_down.scaleY = 2.5;
+		general_warrior_idle_down.play("cyclops_idle_2");
+		this.add(general_warrior_idle_down);
 
 		/* START-USER-CTR-CODE */
     /* END-USER-CTR-CODE */
