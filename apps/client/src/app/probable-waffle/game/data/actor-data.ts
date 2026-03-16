@@ -43,7 +43,8 @@ import { StatusEffectUiComponent } from "../entity/components/status-effect/stat
 import { SpellComponent } from "../entity/components/combat/components/spell-component";
 import { SpellCastingSystem } from "../entity/systems/spell-casting.system";
 import { ResearchComponent } from "../entity/components/research/research-component";
-import { QueueComponent } from "../entity/components/queue/queue-component";
+import { LevelComponent } from "../entity/components/level/level-component";
+import { applyLevelOverrides } from "../prefabs/definitions/prefab-definition";
 
 export const ActorDataKey = "actorData";
 export class ActorData {
@@ -105,6 +106,7 @@ function setActorProperties(actor: GameObject, actorDefinition?: Partial<ActorDe
   if (actorDefinition.spell) getActorComponent(actor, SpellComponent)?.setData(actorDefinition.spell);
   if (actorDefinition.statusEffects)
     getActorComponent(actor, StatusEffectComponent)?.setData(actorDefinition.statusEffects);
+  if (actorDefinition.level) getActorComponent(actor, LevelComponent)?.setData(actorDefinition.level);
 
   DepthHelper.setActorDepth(actor);
 }
@@ -192,7 +194,8 @@ function gatherCompletedActorData(actor: Phaser.GameObjects.GameObject): { compo
     ...(componentDefinitions?.flying ? [new FlyingComponent(actor, componentDefinitions.flying)] : []),
     ...(componentDefinitions?.walkable ? [new WalkableComponent(actor, componentDefinitions.walkable)] : []),
     ...(componentDefinitions?.animatable ? [new AnimationActorComponent(actor, componentDefinitions.animatable)] : []),
-    ...(componentDefinitions?.aiControlled ? [new PawnAiController(actor, componentDefinitions.aiControlled)] : [])
+    ...(componentDefinitions?.aiControlled ? [new PawnAiController(actor, componentDefinitions.aiControlled)] : []),
+    ...(componentDefinitions?.level ? [new LevelComponent(actor, componentDefinitions.level)] : [])
   ];
 
   const systemDefinitions = definition.systems;
@@ -331,6 +334,62 @@ export function removeActorSystem(
   actorData.systems.delete(system.constructor);
   setActorProperties(actor, actorDefinition);
   actor.emit(ActorDataChangedEvent, actorData);
+}
+
+export function upgradeActorToLevel(actor: GameObject, newLevel: number) {
+  const levelComponent = getActorComponent(actor, LevelComponent);
+  if (!levelComponent) {
+    console.error("Cannot upgrade actor without LevelComponent");
+    return;
+  }
+
+  if (newLevel < 1 || newLevel > levelComponent.maxLevel) {
+    console.error(`Invalid level ${newLevel}, must be 1-${levelComponent.maxLevel}`);
+    return;
+  }
+
+  // Get base definition
+  const baseDefinition = pwActorDefinitions[actor.name as ObjectNames];
+  if (!baseDefinition) {
+    console.error(`No definition found for ${actor.name}`);
+    return;
+  }
+
+  // Apply level overrides to get level-specific definition
+  const levelConfig = applyLevelOverrides(baseDefinition, newLevel);
+  const components = levelConfig.components;
+
+  // Update animations if changed
+  if (components?.animatable) {
+    const animComp = getActorComponent(actor, AnimationActorComponent);
+    animComp?.swapAnimationSet(components.animatable.animations, components.animatable.defaultDirection);
+  }
+
+  // Update weapons if changed
+  if (components?.attack) {
+    const attackComp = getActorComponent(actor, AttackComponent);
+    attackComp?.setData(components.attack);
+  }
+
+  // Update health max if changed - only update maxHealth
+  if (components?.health?.maxHealth !== undefined) {
+    const healthComp = getActorComponent(actor, HealthComponent);
+    if (healthComp) {
+      healthComp.healthComponentData.health = components.health.maxHealth;
+      if (components.health.maxArmour) healthComp.healthComponentData.armour = components.health.maxArmour;
+    }
+  }
+
+  // Update vision range if changed
+  if (components?.vision?.range !== undefined) {
+    const visionComp = getActorComponent(actor, VisionComponent);
+    if (visionComp) {
+      visionComp.visionDefinition = components.vision;
+    }
+  }
+
+  // Finally update level component
+  levelComponent.setData({ level: newLevel });
 }
 
 export const ActorDataChangedEvent = "actorDataChanged";

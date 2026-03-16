@@ -235,7 +235,7 @@ export class ActorManager {
   }
 
   static createActorFully(scene: Phaser.Scene, name: ObjectNames, actorDefinition: ActorDefinition): GameObject {
-    const definition = pwActorDefinitions[name as ObjectNames];
+    const definition = pwActorDefinitions[name];
     if (!definition) {
       throw new Error(`Actor definition for ${name} not found.`);
     }

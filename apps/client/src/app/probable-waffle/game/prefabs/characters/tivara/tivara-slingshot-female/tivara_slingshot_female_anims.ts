@@ -53,7 +53,7 @@ const ANIM_SLINGSHOT_FEMALE_LVL3_THRUST_1 = "slingshot_female_lvl3_short_range_t
 const ANIM_SLINGSHOT_FEMALE_LVL3_THRUST_2 = "slingshot_female_lvl3_short_range_thrust_2";
 const ANIM_SLINGSHOT_FEMALE_LVL3_THRUST_3 = "slingshot_female_lvl3_short_range_thrust_3";
 
-export const ANIM_TIVARA_MACEMAN_MALE_DEFINITION_LEVEL_1: AnimationDefinitionMap = {
+export const ANIM_TIVARA_SLINGSHOT_FEMALE_DEFINITION_LEVEL_1: AnimationDefinitionMap = {
   [AnimationType.Idle]: {
     north: { key: ANIM_SLINGSHOT_FEMALE_LVL1_IDLE },
     south: { key: ANIM_SLINGSHOT_FEMALE_LVL1_IDLE_2 },
@@ -85,7 +85,7 @@ export const ANIM_TIVARA_MACEMAN_MALE_DEFINITION_LEVEL_1: AnimationDefinitionMap
     east: { key: ANIM_SLINGSHOT_FEMALE_LVL1_HURT }
   }
 };
-export const ANIM_TIVARA_MACEMAN_MALE_DEFINITION_LEVEL_2: AnimationDefinitionMap = {
+export const ANIM_TIVARA_SLINGSHOT_FEMALE_DEFINITION_LEVEL_2: AnimationDefinitionMap = {
   [AnimationType.Idle]: {
     north: { key: ANIM_SLINGSHOT_FEMALE_LVL2_IDLE },
     south: { key: ANIM_SLINGSHOT_FEMALE_LVL2_IDLE_2 },
@@ -117,7 +117,7 @@ export const ANIM_TIVARA_MACEMAN_MALE_DEFINITION_LEVEL_2: AnimationDefinitionMap
     east: { key: ANIM_SLINGSHOT_FEMALE_LVL2_HURT }
   }
 };
-export const ANIM_TIVARA_MACEMAN_MALE_DEFINITION_LEVEL_3: AnimationDefinitionMap = {
+export const ANIM_TIVARA_SLINGSHOT_FEMALE_DEFINITION_LEVEL_3: AnimationDefinitionMap = {
   [AnimationType.Idle]: {
     north: { key: ANIM_SLINGSHOT_FEMALE_LVL3_IDLE },
     south: { key: ANIM_SLINGSHOT_FEMALE_LVL3_IDLE_2 },

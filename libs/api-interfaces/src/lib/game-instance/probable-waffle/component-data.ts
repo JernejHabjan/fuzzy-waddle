@@ -238,3 +238,8 @@ export interface ResearchQueueItemData {
 export interface ResearchComponentData {
   researches?: ResearchQueueItemData[]; // Array of items with per-item progress
 }
+
+export interface LevelComponentData {
+  level?: number;
+  maxLevel?: number;
+}

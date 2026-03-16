@@ -42,10 +42,15 @@ export class AttackComponent {
   // track delayed fire so we can cancel before projectile spawns
   private fireTimer?: Phaser.Time.TimerEvent;
 
+  private attackDefinition: AttackDefinition;
+
   constructor(
     private readonly gameObject: GameObject,
-    private readonly attackDefinition: AttackDefinition
+    initialAttackDefinition: AttackDefinition
   ) {
+    this.attackDefinition = {
+      ...initialAttackDefinition
+    };
     gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
@@ -452,7 +457,8 @@ export class AttackComponent {
     return attackRangeWithHighGroundBonus;
   }
 
-  setData(data: Partial<AttackComponentData>) {
+  setData(data: Partial<AttackComponentData> & Partial<AttackDefinition>) {
+    // Update runtime state
     if (data.remainingCooldown !== undefined) this.remainingCooldown = data.remainingCooldown;
     if (data.currentAttackIndex !== undefined) {
       const idx = data.currentAttackIndex;
@@ -460,6 +466,15 @@ export class AttackComponent {
         this.currentAttack = null;
       } else if (idx >= 0 && idx < this.attackDefinition.attacks.length) {
         this.currentAttack = this.attackDefinition.attacks[idx]!;
+      }
+    }
+
+    // Update definition (for level upgrades)
+    if (data.attacks !== undefined) {
+      this.attackDefinition.attacks = data.attacks;
+      // Reset current attack if it's out of bounds
+      if (this.currentAttack && !this.attackDefinition.attacks.includes(this.currentAttack)) {
+        this.currentAttack = null;
       }
     }
   }

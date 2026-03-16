@@ -14,6 +14,7 @@ import type { ActorAnimationsDefinition } from "./actor-animations-definition";
 import type { AnimationOptions } from "./animation-options";
 import { environment } from "../../../../../../environments/environment";
 import { ResourceType } from "@fuzzy-waddle/api-interfaces";
+import type { AnimationDefinitionMap } from "./animation-definition-map";
 
 export class AnimationActorComponent {
   private sprite?: Phaser.GameObjects.Sprite;
@@ -48,6 +49,18 @@ export class AnimationActorComponent {
 
   playCustomAnimation(key: AnimationType | string, animationOptions?: AnimationOptions) {
     this.playAnimation(key, animationOptions);
+  }
+
+  swapAnimationSet(newAnimations: AnimationDefinitionMap, defaultDirection?: IsoDirection) {
+    this.animationsDefinition = {
+      animations: newAnimations,
+      defaultDirection: defaultDirection || this.animationsDefinition?.defaultDirection || "south"
+    };
+
+    // Restart current animation with new definition if one was playing
+    if (this.currentAnimation && this.isAnimating) {
+      this.playAnimation(this.currentAnimation, { forceRestart: true });
+    }
   }
 
   private init() {
