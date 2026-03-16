@@ -9,7 +9,11 @@ import {
 } from "./SkaduweeWarriorSfx";
 import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PaymentType } from "../../../../entity/components/production/payment-type";
-import { ANIM_TIVARA_MACEMAN_MALE_DEFINITION_LEVEL_1 } from "./skaduwee_warrior_male_anims";
+import {
+  ANIM_SKADUWEE_WARRIOR_MALE_DEFINITION_LEVEL_1,
+  ANIM_SKADUWEE_WARRIOR_MALE_DEFINITION_LEVEL_2,
+  ANIM_SKADUWEE_WARRIOR_MALE_DEFINITION_LEVEL_3
+} from "./skaduwee_warrior_male_anims";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 import { SoundType } from "../../../../entity/components/actor-audio/sound-type";
 import { ActorPhysicalType } from "../../../../entity/components/combat/components/actor-physical-type";
@@ -91,10 +95,36 @@ export const skaduweeWarriorMaleDefinition = {
         [SoundType.LocationUnavailable]: SkaduweeWarriorSfxLocationSounds
       }
     },
-    animatable: { animations: ANIM_TIVARA_MACEMAN_MALE_DEFINITION_LEVEL_1 }
+    animatable: { animations: ANIM_SKADUWEE_WARRIOR_MALE_DEFINITION_LEVEL_1 },
+    level: { level: 1, maxLevel: 3 }
   },
   systems: {
     movement: { enabled: true },
     action: { enabled: true }
+  },
+  meta: {
+    maxLevel: 3,
+    levelOverrides: {
+      2: {
+        components: {
+          health: { maxHealth: 200 },
+          attack: {
+            attacks: [{ ...weaponDefinitions.SkaduweeAxe, damage: 8, cooldown: 900 }]
+          },
+          animatable: { animations: ANIM_SKADUWEE_WARRIOR_MALE_DEFINITION_LEVEL_2 },
+          level: { level: 2 }
+        }
+      },
+      3: {
+        components: {
+          health: { maxHealth: 280 },
+          attack: {
+            attacks: [{ ...weaponDefinitions.SkaduweeAxe, damage: 11, cooldown: 800 }]
+          },
+          animatable: { animations: ANIM_SKADUWEE_WARRIOR_MALE_DEFINITION_LEVEL_3 },
+          level: { level: 3 }
+        }
+      }
+    }
   }
 } satisfies PrefabDefinition;

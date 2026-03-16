@@ -53,7 +53,7 @@ const ANIM_WARRIOR_MALE_LVL3_WALK_1 = "warrior_male_lvl3_walk_1";
 const ANIM_WARRIOR_MALE_LVL3_WALK_2 = "warrior_male_lvl3_walk_2";
 const ANIM_WARRIOR_MALE_LVL3_WALK_3 = "warrior_male_lvl3_walk_3";
 
-export const ANIM_TIVARA_MACEMAN_MALE_DEFINITION_LEVEL_1: AnimationDefinitionMap = {
+export const ANIM_SKADUWEE_WARRIOR_MALE_DEFINITION_LEVEL_1: AnimationDefinitionMap = {
   [AnimationType.Idle]: {
     north: { key: ANIM_WARRIOR_MALE_LVL1_IDLE },
     south: { key: ANIM_WARRIOR_MALE_LVL1_IDLE_2 },
@@ -91,7 +91,7 @@ export const ANIM_TIVARA_MACEMAN_MALE_DEFINITION_LEVEL_1: AnimationDefinitionMap
     east: { key: ANIM_WARRIOR_MALE_LVL1_HURT }
   }
 };
-export const ANIM_TIVARA_MACEMAN_MALE_DEFINITION_LEVEL_2: AnimationDefinitionMap = {
+export const ANIM_SKADUWEE_WARRIOR_MALE_DEFINITION_LEVEL_2: AnimationDefinitionMap = {
   [AnimationType.Idle]: {
     north: { key: ANIM_WARRIOR_MALE_LVL2_IDLE },
     south: { key: ANIM_WARRIOR_MALE_LVL2_IDLE_2 },
@@ -123,7 +123,7 @@ export const ANIM_TIVARA_MACEMAN_MALE_DEFINITION_LEVEL_2: AnimationDefinitionMap
     east: { key: ANIM_WARRIOR_MALE_LVL2_HURT }
   }
 };
-export const ANIM_TIVARA_MACEMAN_MALE_DEFINITION_LEVEL_3: AnimationDefinitionMap = {
+export const ANIM_SKADUWEE_WARRIOR_MALE_DEFINITION_LEVEL_3: AnimationDefinitionMap = {
   [AnimationType.Idle]: {
     north: { key: ANIM_WARRIOR_MALE_LVL3_IDLE },
     south: { key: ANIM_WARRIOR_MALE_LVL3_IDLE_2 },

@@ -85,7 +85,15 @@ export const sandholdDefinition = {
     research: {
       availableResearch: [
         ResearchType.TivaraSlingshotUpgradeLevel2,
-        ResearchType.TivaraSlingshotUpgradeLevel3
+        ResearchType.TivaraSlingshotUpgradeLevel3,
+        ResearchType.TivaraMacemanUpgradeLevel2,
+        ResearchType.TivaraMacemanUpgradeLevel3,
+        ResearchType.SkaduweeWarriorUpgradeLevel2,
+        ResearchType.SkaduweeWarriorUpgradeLevel3,
+        ResearchType.SkaduweeMagicianUpgradeLevel2,
+        ResearchType.SkaduweeMagicianUpgradeLevel3,
+        ResearchType.SkaduweeRangedUpgradeLevel2,
+        ResearchType.SkaduweeRangedUpgradeLevel3
       ]
     },
     selectable: {},

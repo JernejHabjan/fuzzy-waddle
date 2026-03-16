@@ -14,7 +14,11 @@ import { SoundType } from "../../../../entity/components/actor-audio/sound-type"
 import { ActorPhysicalType } from "../../../../entity/components/combat/components/actor-physical-type";
 import { weaponDefinitions } from "../../../../entity/components/combat/weapon-definitions";
 import { AiType } from "../../../ai-agents/ai-type";
-import { ANIM_SKADUWEE_RANGED_FEMALE_DEFINITION_LEVEL_1 } from "./skaduwee_ranged_female_anim";
+import {
+  ANIM_SKADUWEE_RANGED_FEMALE_DEFINITION_LEVEL_1,
+  ANIM_SKADUWEE_RANGED_FEMALE_DEFINITION_LEVEL_2,
+  ANIM_SKADUWEE_RANGED_FEMALE_DEFINITION_LEVEL_3
+} from "./skaduwee_ranged_female_anim";
 
 export const skaduweeRangedFemaleDefinition = {
   components: {
@@ -88,10 +92,42 @@ export const skaduweeRangedFemaleDefinition = {
         [SoundType.LocationUnavailable]: SkaduweeRangedSfxLocationSounds
       }
     },
-    animatable: { animations: ANIM_SKADUWEE_RANGED_FEMALE_DEFINITION_LEVEL_1 }
+    animatable: { animations: ANIM_SKADUWEE_RANGED_FEMALE_DEFINITION_LEVEL_1 },
+    level: { level: 1, maxLevel: 3 }
   },
   systems: {
     movement: { enabled: true },
     action: { enabled: true }
+  },
+  meta: {
+    maxLevel: 3,
+    levelOverrides: {
+      2: {
+        components: {
+          health: { maxHealth: 150 },
+          attack: {
+            attacks: [
+              { ...weaponDefinitions.SkaduweeRangedBow, damage: 6, range: 8 },
+              { ...weaponDefinitions.SkaduweeRangedShortRange, damage: 4 }
+            ]
+          },
+          animatable: { animations: ANIM_SKADUWEE_RANGED_FEMALE_DEFINITION_LEVEL_2 },
+          level: { level: 2 }
+        }
+      },
+      3: {
+        components: {
+          health: { maxHealth: 200 },
+          attack: {
+            attacks: [
+              { ...weaponDefinitions.SkaduweeRangedBow, damage: 9, range: 9, cooldown: 1200 },
+              { ...weaponDefinitions.SkaduweeRangedShortRange, damage: 6, cooldown: 800 }
+            ]
+          },
+          animatable: { animations: ANIM_SKADUWEE_RANGED_FEMALE_DEFINITION_LEVEL_3 },
+          level: { level: 3 }
+        }
+      }
+    }
   }
 } satisfies PrefabDefinition;
