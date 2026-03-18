@@ -74,9 +74,11 @@ export const sandholdDefinition = {
       cooldown: 1000
     },
     production: {
-      queueCount: 1,
-      capacityPerQueue: 5,
       availableProduceActors: [ObjectNames.TivaraWorker]
+    },
+    queue: {
+      queueCount: 1,
+      capacityPerQueue: 5
     },
     selectable: {},
     collider: { enabled: true },

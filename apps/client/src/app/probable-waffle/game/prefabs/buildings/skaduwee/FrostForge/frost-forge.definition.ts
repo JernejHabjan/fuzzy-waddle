@@ -71,9 +71,11 @@ export const frostForgeDefinition = {
       cooldown: 1000
     },
     production: {
-      queueCount: 1,
-      capacityPerQueue: 5,
       availableProduceActors: [ObjectNames.SkaduweeWorker]
+    },
+    queue: {
+      queueCount: 1,
+      capacityPerQueue: 5
     },
     collider: { enabled: true },
     constructable: {

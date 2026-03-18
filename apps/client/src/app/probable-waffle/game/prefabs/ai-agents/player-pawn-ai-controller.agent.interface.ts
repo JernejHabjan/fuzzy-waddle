@@ -15,6 +15,10 @@ export interface IPlayerPawnControllerAgent {
   AssignEnemy(source: string): State;
   AssignMoveRandomlyInRange(range: number): Promise<State>;
 
+  // Status Effects
+  IsStunned(): boolean;
+  IsSlowed(): boolean;
+
   // Combat-related Actions
   HasAttackComponent(): boolean;
   TargetIsAlive(): boolean;
@@ -30,6 +34,11 @@ export interface IPlayerPawnControllerAgent {
   Heal(): State;
   CanHeal(): boolean;
   HasHealerComponent(): boolean;
+
+  // Spell Casting
+  HasSpellComponent(): boolean;
+  HasAutocastSpellReady(): boolean;
+  CastAutocastSpell(): State;
 
   // Resource Gathering
   AcquireNewResourceSource(): Promise<State>;

@@ -16,6 +16,7 @@ export class FactionInfo {
     /**
      * Actors to spawn for each player in the game.
      */
-    public readonly initialActors: InitialActorConfig[] = []
+    public readonly initialActors: InitialActorConfig[] = [],
+    public readonly mainBuildingActorName?: ObjectNames
   ) {}
 }

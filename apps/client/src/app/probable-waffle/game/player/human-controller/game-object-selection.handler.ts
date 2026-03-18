@@ -37,7 +37,7 @@ export class GameObjectSelectionHandler {
   private externalModalSubscription?: Subscription;
   constructor(private readonly scene: ProbableWaffleScene) {
     this.bindSelectionInput();
-    this.listenToChatModalEvents();
+    this.listenToExternalModalEvents();
     this.scene.onShutdown.subscribe(() => this.destroy());
   }
 
@@ -242,7 +242,7 @@ export class GameObjectSelectionHandler {
     this.externalModalSubscription?.unsubscribe();
   }
 
-  private listenToChatModalEvents() {
+  private listenToExternalModalEvents() {
     this.externalModalSubscription = this.scene.communicator.allScenes.subscribe((event) => {
       if (event.name === "external-modal-opened") {
         this.externalModalOpen = true;

@@ -59,12 +59,16 @@ import { getSceneService } from "../world/services/scene-component-helpers";
 import { SceneActorCreator } from "../world/services/scene-actor-creator";
 import MiningCamp from "../prefabs/buildings/tivara/MiningCamp";
 import Emberstone from "../prefabs/buildings/skaduwee/Emberstone";
+import { SpellComponent } from "../entity/components/combat/components/spell-component";
+import { StatusEffectComponent } from "../entity/components/status-effect/status-effect-component";
+import { ResearchComponent } from "../entity/components/research/research-component";
 import GameObject = Phaser.GameObjects.GameObject;
 import Wolf from "../prefabs/animals/wolf/Wolf";
 import Boar from "../prefabs/animals/boar/Boar";
 import Stag from "../prefabs/animals/stag/Stag";
 import Badger from "../prefabs/animals/badger/Badger";
 import { RandomService } from "../world/services/random.service";
+import HealingTotem from "../prefabs/buildings/tivara/HealingTotem/HealingTotem";
 
 type ActorMap = { [name: string]: new (scene: Phaser.Scene) => GameObject };
 export class ActorManager {
@@ -141,6 +145,10 @@ export class ActorManager {
     [ObjectNames.StonePile]: StonePile
   };
 
+  private static spells: ActorMap = {
+    [ObjectNames.HealingTotem]: HealingTotem
+  };
+
   public static actorMap: ActorMap = {
     ...ActorManager.animals,
     ...ActorManager.general,
@@ -150,7 +158,8 @@ export class ActorManager {
     ...ActorManager.skaduweeWorkers,
     ...ActorManager.skaduweeUnits,
     ...ActorManager.skaduweeBuildings,
-    ...ActorManager.resources
+    ...ActorManager.resources,
+    ...ActorManager.spells
   } as const;
 
   static getActorDefinitionFromActor(actor: GameObject): ActorDefinition | undefined {
@@ -177,8 +186,11 @@ export class ActorManager {
       resourceDrain: getActorComponent(actor, ResourceDrainComponent)?.getData(),
       resourceSource: getActorComponent(actor, ResourceSourceComponent)?.getData(),
       production: getActorComponent(actor, ProductionComponent)?.getData(),
+      research: getActorComponent(actor, ResearchComponent)?.getData(),
       representable: getActorComponent(actor, RepresentableComponent)?.getData(),
-      blackboard: getActorComponent(actor, PawnAiController)?.getData()
+      blackboard: getActorComponent(actor, PawnAiController)?.getData(),
+      spell: getActorComponent(actor, SpellComponent)?.getData(),
+      statusEffects: getActorComponent(actor, StatusEffectComponent)?.getData()
     } satisfies ActorDefinition;
 
     return actorDefinition;

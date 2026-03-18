@@ -1,8 +1,8 @@
 // Centralized production & queue validation using tech tree, supply & resource state.
 import {
-  FactionType,
   ObjectNames,
   type PlayerNumber,
+  PreRequirement,
   ProbableWafflePlayer,
   ResourceType
 } from "@fuzzy-waddle/api-interfaces";
@@ -15,9 +15,8 @@ import { pwActorDefinitions } from "../../prefabs/definitions/actor-definitions"
 import { getActorComponent } from "../actor-component";
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 import { ProductionComponent } from "../../entity/components/production/production-component";
-import { ProductionInvalidReason } from "./production-invalid-reason";
-import type { ProductionValidationResult } from "./production-validation-result";
 import { RandomService } from "../../world/services/random.service";
+import { shouldConsiderActorUnlocked } from "./actor-unlock-utils";
 
 export class ProductionValidator {
   private static readonly debugEnabled = false;
@@ -28,33 +27,24 @@ export class ProductionValidator {
     private readonly blackboard: PlayerAiBlackboard
   ) {}
 
-  validate(actorName: ObjectNames): ProductionValidationResult {
-    const result: ProductionValidationResult = { canQueue: true, prereqs: [] };
+  validate(actorName: ObjectNames): PreRequirement {
+    const result: PreRequirement = new PreRequirement();
     const techSvc = getSceneService(this.scene, TechTreeService);
-    const faction = this.player.factionType;
     const playerNumber = this.player.playerNumber;
 
     // Validate player number exists
     if (playerNumber === undefined) {
-      result.canQueue = false;
-      result.reason = ProductionInvalidReason.TechLocked;
-      return result;
+      throw new Error("Player number is undefined for production validation");
     }
 
-    // Tech checks using tech tree (now player-based, not faction-based)
-    ProductionValidator.validateTechPrerequisites(techSvc, playerNumber, faction, actorName, result);
+    // Tech checks using unified tech tree (supports multi-faction gameplay)
+    ProductionValidator.validateTechPrerequisites(techSvc, playerNumber, actorName, result);
 
     // Additional validation: check if actor exists in tech tree
-    if (techSvc && faction != null) {
-      const definition = techSvc.getDefinition(faction, actorName);
+    if (techSvc) {
+      const definition = techSvc.getDefinition(actorName);
       if (!definition) {
-        result.canQueue = false;
-        result.reason = ProductionInvalidReason.TechLocked;
-        if (ProductionValidator.debugEnabled) {
-          // eslint-disable-next-line no-console
-          console.warn(`[ProductionValidator] Actor ${actorName} not found in tech tree for faction ${faction}`);
-        }
-        return result;
+        throw new Error(`TechTreeService is missing definition for ${actorName}`);
       }
     }
 
@@ -64,18 +54,14 @@ export class ProductionValidator {
     // Supply check (simple): if projected queued would exceed capacity
     const supply = this.blackboard.production.supply;
     if (supply.max > 0 && supply.used + supply.pendingFromQueued >= supply.max) {
-      result.canQueue = false;
-      result.supplyBlocked = true;
-      result.reason = result.reason || ProductionInvalidReason.SupplyBlocked;
+      result.prereqs.supply = supply.max - supply.used - supply.pendingFromQueued;
     }
 
     // Resource cost check (only if tech & supply OK)
     const cost = getCostForObjectName(actorName);
-    result.cost = cost;
     if (result.canQueue && cost) {
       if (!this.blackboard.hasAtLeastResources(cost)) {
-        result.canQueue = false;
-        result.reason = ProductionInvalidReason.NotEnoughResources;
+        result.prereqs.resources = cost;
       }
     }
 
@@ -83,15 +69,13 @@ export class ProductionValidator {
       // eslint-disable-next-line no-console
       console.debug("[ProductionValidator] block", {
         actorName,
-        reason: result.reason,
-        prereqs: result.prereqs,
-        missingBuildings: result.missingBuildings
+        reason: JSON.stringify(result.prereqs)
       });
     }
     return result;
   }
 
-  private validateBuildingPrerequisites(actorName: ObjectNames, result: ProductionValidationResult): void {
+  private validateBuildingPrerequisites(actorName: ObjectNames, result: PreRequirement): void {
     const def = pwActorDefinitions[actorName];
     const buildingPrereqs = def?.components?.buildingPrerequisites;
 
@@ -99,18 +83,20 @@ export class ProductionValidator {
 
     const missingBuildings: ObjectNames[] = [];
 
+    // Filter buildings to only include finished and alive ones
+    const validBuildings = this.blackboard.productionBuildings.filter((building) =>
+      shouldConsiderActorUnlocked(building)
+    );
+
     // Check requiresAnyOf
     if (buildingPrereqs.requiresAnyOf && buildingPrereqs.requiresAnyOf.length > 0) {
       const hasAnyRequired = buildingPrereqs.requiresAnyOf.some((requiredBuilding) =>
-        this.blackboard.productionBuildings.some((building) => {
+        validBuildings.some((building) => {
           return building.name === requiredBuilding;
         })
       );
 
       if (!hasAnyRequired) {
-        result.canQueue = false;
-        result.buildingPrereqBlocked = true;
-        result.reason = ProductionInvalidReason.BuildingPrerequisitesMissing;
         missingBuildings.push(...buildingPrereqs.requiresAnyOf);
       }
     }
@@ -119,59 +105,98 @@ export class ProductionValidator {
     if (buildingPrereqs.requiresAllOf && buildingPrereqs.requiresAllOf.length > 0) {
       const missingRequired = buildingPrereqs.requiresAllOf.filter(
         (requiredBuilding) =>
-          !this.blackboard.productionBuildings.some((building) => {
+          !validBuildings.some((building) => {
             return building.name === requiredBuilding;
           })
       );
 
       if (missingRequired.length > 0) {
-        result.canQueue = false;
-        result.buildingPrereqBlocked = true;
-        result.reason = ProductionInvalidReason.BuildingPrerequisitesMissing;
         missingBuildings.push(...missingRequired);
       }
     }
 
     if (missingBuildings.length > 0) {
-      result.missingBuildings = missingBuildings;
-      // Also populate prereqs to maintain consistency with tech prerequisite validation
-      result.prereqs = [...(result.prereqs || []), ...missingBuildings];
+      result.prereqs.objectNames.push(...missingBuildings);
     }
   }
 
   /** Insert prerequisite tasks into blackboard production prereqQueue (order: earliest first). */
-  schedulePrerequisites(prereqs: ObjectNames[], finalTarget: ObjectNames) {
+  schedulePrerequisites(prereqs: PreRequirement, finalTarget: ObjectNames) {
     const now = performance.now();
     const randomService = getSceneService(this.scene, RandomService)!;
     // Insert in reverse so that earliest prerequisite appears first in queue processing
-    prereqs.reverse().forEach((p) => {
+    const objectNames = [...prereqs.prereqs.objectNames];
+    const researchTypes = [...prereqs.prereqs.researchTypes];
+    const supply = prereqs.prereqs.supply;
+    const resources = prereqs.prereqs.resources;
+
+    objectNames.reverse().forEach((p) => {
       this.blackboard.production.prereqQueue.push({
         id: `${p}-${now}-${randomService.random().toString(36).slice(2)}`,
-        type: "construct", // default semantic; execution layer decides produce vs construct
-        objectName: p,
+        type: "prefab",
+        preRequirement: new PreRequirement({
+          objectNames: [p],
+          researchTypes: [],
+          resources: {},
+          supply: null
+        }),
         insertedAt: now
       });
     });
+    researchTypes.reverse().forEach((p) => {
+      this.blackboard.production.prereqQueue.push({
+        id: `${p}-${now}-${randomService.random().toString(36).slice(2)}`,
+        type: "research",
+        preRequirement: new PreRequirement({
+          objectNames: [],
+          researchTypes: [p],
+          resources: {},
+          supply: null
+        }),
+        insertedAt: now
+      });
+    });
+    if (supply) {
+      this.blackboard.production.prereqQueue.push({
+        id: `supply-${now}-${randomService.random().toString(36).slice(2)}`,
+        type: "supply",
+        preRequirement: new PreRequirement({
+          objectNames: [],
+          researchTypes: [],
+          resources: {},
+          supply
+        }),
+        insertedAt: now
+      });
+    }
+    if (resources && Object.keys(resources).length > 0) {
+      this.blackboard.production.prereqQueue.push({
+        id: `resources-${now}-${randomService.random().toString(36).slice(2)}`,
+        type: "resources",
+        preRequirement: new PreRequirement({
+          objectNames: [],
+          researchTypes: [],
+          resources,
+          supply: null
+        }),
+        insertedAt: now
+      });
+    }
   }
 
   private static validateTechPrerequisites(
     techSvc: TechTreeService | undefined,
     playerNumber: PlayerNumber,
-    faction: FactionType | undefined,
     actorName: ObjectNames,
-    result: ProductionValidationResult
-  ) {
-    if (techSvc && faction != null) {
-      // Check if unlocked for this specific player, not just faction
-      if (!techSvc.isUnlocked(playerNumber, actorName)) {
-        const prereqs = techSvc.getPrerequisites(playerNumber, faction, actorName);
-        if (prereqs.size > 0) {
-          result.canQueue = false;
-          result.techBlocked = true;
-          result.prereqs = Array.from(prereqs);
-          result.reason = ProductionInvalidReason.TechLocked;
-        }
-      }
+    result: PreRequirement
+  ): void {
+    if (techSvc) {
+      // Always check prerequisites, regardless of whether unit has been built before
+      // This ensures requirements are shown even for "unlocked" units
+      // Uses unified tech tree that supports multi-faction gameplay
+      const prereqs = techSvc.getPrerequisites(playerNumber, actorName);
+      result.prereqs.objectNames.push(...prereqs.prereqs.objectNames);
+      result.prereqs.researchTypes.push(...prereqs.prereqs.researchTypes);
     }
   }
 
@@ -179,7 +204,7 @@ export class ProductionValidator {
     scene: Phaser.Scene,
     playerNumber: PlayerNumber,
     actorName: ObjectNames,
-    result: ProductionValidationResult
+    result: PreRequirement
   ): void {
     const def = pwActorDefinitions[actorName];
     const buildingPrereqs = def?.components?.buildingPrerequisites;
@@ -193,8 +218,9 @@ export class ProductionValidator {
     if (!actorIndex) return;
 
     const ownedActors = actorIndex.getOwnedActors(playerNumber);
+    // Filter to only include production buildings that are finished and alive
     const productionBuildings = Array.from(ownedActors).filter((actor) => {
-      return getActorComponent(actor, ProductionComponent) !== undefined;
+      return getActorComponent(actor, ProductionComponent) !== undefined && shouldConsiderActorUnlocked(actor);
     });
 
     // Check requiresAnyOf
@@ -206,9 +232,6 @@ export class ProductionValidator {
       );
 
       if (!hasAnyRequired) {
-        result.canQueue = false;
-        result.buildingPrereqBlocked = true;
-        result.reason = ProductionInvalidReason.BuildingPrerequisitesMissing;
         missingBuildings.push(...buildingPrereqs.requiresAnyOf);
       }
     }
@@ -223,17 +246,12 @@ export class ProductionValidator {
       );
 
       if (missingRequired.length > 0) {
-        result.canQueue = false;
-        result.buildingPrereqBlocked = true;
-        result.reason = ProductionInvalidReason.BuildingPrerequisitesMissing;
         missingBuildings.push(...missingRequired);
       }
     }
 
     if (missingBuildings.length > 0) {
-      result.missingBuildings = missingBuildings;
-      // Also populate prereqs to maintain consistency with tech prerequisite validation
-      result.prereqs = [...(result.prereqs || []), ...missingBuildings];
+      result.prereqs.objectNames.push(...missingBuildings);
     }
   }
 
@@ -242,25 +260,22 @@ export class ProductionValidator {
     playerNumber: PlayerNumber,
     actorName: ObjectNames,
     currentCost: Partial<Record<ResourceType, number>> = {}
-  ): ProductionValidationResult {
-    const result: ProductionValidationResult = { canQueue: true, prereqs: [] };
+  ): PreRequirement {
+    const result: PreRequirement = new PreRequirement();
     const player = getPlayer(scene, playerNumber);
     if (!player) {
-      result.canQueue = false;
       return result;
     }
 
-    // Tech checks (now player-based)
+    // Tech checks using unified tech tree (supports multi-faction gameplay)
     const techSvc = getSceneService(scene, TechTreeService);
-    const faction = player.factionType;
-    ProductionValidator.validateTechPrerequisites(techSvc, playerNumber, faction, actorName, result);
+    ProductionValidator.validateTechPrerequisites(techSvc, playerNumber, actorName, result);
 
     // Check building prerequisites
     ProductionValidator.validateBuildingPrerequisitesStatic(scene, playerNumber, actorName, result);
 
     // Resource cost check
     const cost = getCostForObjectName(actorName);
-    result.cost = cost;
     if (cost) {
       const totalCost = { ...currentCost };
       for (const resource in cost) {
@@ -269,8 +284,7 @@ export class ProductionValidator {
       }
 
       if (!player.canPayAllResources(totalCost)) {
-        result.canQueue = false;
-        result.reason = ProductionInvalidReason.NotEnoughResources;
+        result.prereqs.resources = cost;
       }
     }
 

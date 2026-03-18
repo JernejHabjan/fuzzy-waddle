@@ -57,7 +57,8 @@ export default class Hedgehog extends Phaser.GameObjects.Sprite {
       await moveGameObjectToRandomTileInNavigableRadius(this, this.radius);
       this.moveHedgehogAfterDelay();
     } catch (e) {
-      console.error(e);
+      // just ignore
+      // console.error(e);
     }
   }
 

@@ -42,10 +42,10 @@ export class SelectionGroupsComponent {
   private init(): void {
     this.crossSceneCommunicationService = getSceneService(this.scene, CrossSceneCommunicationService);
     this.setupEventListeners();
-    this.listenToChatModalEvents();
+    this.listenToExternalModalEvents();
   }
 
-  private listenToChatModalEvents() {
+  private listenToExternalModalEvents() {
     const scene = this.scene as any;
     if (scene.communicator?.allScenes) {
       this.externalModalSubscription = scene.communicator.allScenes.subscribe((event: AllScenesEventData) => {

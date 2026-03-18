@@ -15,6 +15,7 @@ import { PawnAiBlackboard } from "./pawn-ai-blackboard";
 import { GathererComponent } from "../../entity/components/resource/gatherer-component";
 import { ResourceSourceComponent } from "../../entity/components/resource/resource-source-component";
 import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import { SpellTargetType } from "@fuzzy-waddle/api-interfaces";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import { ContainableComponent } from "../../entity/components/building/containable-component";
 import { ResourceDrainComponent } from "../../entity/components/resource/resource-drain-component";
@@ -24,6 +25,11 @@ import { HealingComponent } from "../../entity/components/combat/components/heal
 import { ConstructionSiteComponent } from "../../entity/components/construction/construction-site-component";
 import { AnimationActorComponent } from "../../entity/components/animation/animation-actor-component";
 import type { PathMoveConfig } from "../../entity/systems/path-move-config";
+import { StatusEffectComponent } from "../../entity/components/status-effect/status-effect-component";
+import { SpellComponent } from "../../entity/components/combat/components/spell-component";
+import { SpellCastingSystem } from "../../entity/systems/spell-casting.system";
+import { spellDefinitions } from "../../entity/components/combat/spell-definitions";
+import { RepresentableComponent } from "../../entity/components/representable-component";
 
 export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
   constructor(
@@ -69,6 +75,26 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
     const healthComponent = getActorComponent(this.gameObject, HealthComponent);
     if (!healthComponent) return true; // if no health component, assume alive
     return healthComponent.alive;
+  }
+
+  /**
+   * Checks if the actor is currently stunned or frozen
+   * Stunned actors cannot move, attack, or cast spells
+   */
+  IsStunned() {
+    const statusEffectComponent = getActorComponent(this.gameObject, StatusEffectComponent);
+    if (!statusEffectComponent) return false;
+    return statusEffectComponent.isStunned();
+  }
+
+  /**
+   * Checks if the actor is currently slowed
+   * Slowed actors can still act but move slower
+   */
+  IsSlowed() {
+    const statusEffectComponent = getActorComponent(this.gameObject, StatusEffectComponent);
+    if (!statusEffectComponent) return false;
+    return statusEffectComponent.isSlowed();
   }
 
   async InRange(type: PlayerPawnRangeType): Promise<State> {
@@ -769,5 +795,127 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
   Log(message: string): State {
     console.log(message);
     return State.SUCCEEDED;
+  }
+
+  // ========== Spell Casting AI ==========
+
+  HasSpellComponent(): boolean {
+    return !!getActorComponent(this.gameObject, SpellComponent);
+  }
+
+  HasAutocastSpellReady(): boolean {
+    const spellComponent = getActorComponent(this.gameObject, SpellComponent);
+    if (!spellComponent) return false;
+
+    const spellCastingSystem = getActorSystem(this.gameObject, SpellCastingSystem);
+    if (!spellCastingSystem) return false;
+
+    for (const spellType of spellComponent.availableSpells) {
+      if (!spellComponent.isAutocastEnabled(spellType)) continue;
+      if (!spellComponent.isSpellResearched(spellType)) continue;
+      if (!spellComponent.canCastSpell(spellType)) continue;
+
+      // Check if we have a valid target for this spell
+      const spellData = spellDefinitions[spellType];
+      if (!spellData) continue;
+
+      if (this.hasValidAutocastTarget(spellData.targetType)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private hasValidAutocastTarget(targetType: SpellTargetType): boolean {
+    const visionComponent = getActorComponent(this.gameObject, VisionComponent);
+    if (!visionComponent) return false;
+
+    switch (targetType) {
+      case SpellTargetType.Ground:
+      case SpellTargetType.EnemyUnit:
+        // For offensive spells, need visible enemy
+        return visionComponent.getVisibleEnemies().length > 0;
+      case SpellTargetType.FriendlyUnit:
+      case SpellTargetType.Self:
+        // For healing spells, need visible damaged friendly
+        const visibleFriendlies = visionComponent.getVisibleFriendlies();
+        return visibleFriendlies.some((friendly) => {
+          const healthComponent = getActorComponent(friendly, HealthComponent);
+          return healthComponent && !healthComponent.healthIsFull && healthComponent.alive;
+        });
+      default:
+        return false;
+    }
+  }
+
+  CastAutocastSpell(): State {
+    const spellComponent = getActorComponent(this.gameObject, SpellComponent);
+    if (!spellComponent) return State.FAILED;
+
+    const spellCastingSystem = getActorSystem(this.gameObject, SpellCastingSystem);
+    if (!spellCastingSystem) return State.FAILED;
+
+    const visionComponent = getActorComponent(this.gameObject, VisionComponent);
+    if (!visionComponent) return State.FAILED;
+
+    for (const spellType of spellComponent.availableSpells) {
+      if (!spellComponent.isAutocastEnabled(spellType)) continue;
+      if (!spellComponent.isSpellResearched(spellType)) continue;
+      if (!spellComponent.canCastSpell(spellType)) continue;
+
+      const spellData = spellDefinitions[spellType];
+      if (!spellData) continue;
+
+      // Find target position based on spell target type
+      let targetPosition: Vector3Simple | null = null;
+
+      switch (spellData.targetType) {
+        case SpellTargetType.EnemyUnit:
+        case SpellTargetType.Ground:
+          // For offensive spells, target closest enemy position
+          const enemy = visionComponent.getClosestVisibleEnemy();
+          if (enemy) {
+            const representableComponentEnemy = getActorComponent(enemy, RepresentableComponent);
+            if (enemy && representableComponentEnemy) {
+              targetPosition = representableComponentEnemy.logicalWorldTransform;
+            }
+          }
+          break;
+        case SpellTargetType.FriendlyUnit:
+          // Find damaged friendly
+          const friendlies = visionComponent.getVisibleFriendlies();
+          for (const friendly of friendlies) {
+            const healthComponent = getActorComponent(friendly, HealthComponent);
+            const representableComponentFriendly = getActorComponent(friendly, RepresentableComponent);
+            if (
+              healthComponent &&
+              !healthComponent.healthIsFull &&
+              healthComponent.alive &&
+              representableComponentFriendly
+            ) {
+              targetPosition = representableComponentFriendly.logicalWorldTransform;
+              break;
+            }
+          }
+          break;
+        case SpellTargetType.Self:
+          const representableComponentSelf = getActorComponent(this.gameObject, RepresentableComponent);
+          if (representableComponentSelf) {
+            targetPosition = representableComponentSelf.logicalWorldTransform;
+          }
+          break;
+      }
+
+      if (!targetPosition) continue;
+
+      // Cast the spell
+      const success = spellCastingSystem.castSpell(spellType, targetPosition);
+      if (success) {
+        return State.SUCCEEDED;
+      }
+    }
+
+    return State.FAILED;
   }
 }

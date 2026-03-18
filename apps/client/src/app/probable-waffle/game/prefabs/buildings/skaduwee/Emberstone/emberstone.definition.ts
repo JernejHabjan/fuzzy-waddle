@@ -50,7 +50,7 @@ export const emberstoneDefinition = {
       costType: PaymentType.PayImmediately
     },
     requirements: {
-      actors: [ObjectNames.Sandhold]
+      actors: [ObjectNames.FrostForge]
     },
     housing: {
       housingCapacity: 8
