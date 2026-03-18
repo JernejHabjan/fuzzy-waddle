@@ -6,10 +6,10 @@
 
 **Key Changes**:
 - ✅ Database migrations created/updated (2 new + 1 updated in `DBMs/` folder)
-- 🔄 Score tracking system (similar to `GameModeConditionChecker`)
-- 🔄 API endpoints for session and score persistence
-- 🔄 UI updates to display comprehensive player statistics
-- 🔄 Offline mode support (no persistence when server unavailable)
+- ✅ Score tracking system (similar to `GameModeConditionChecker`)
+- ✅ API endpoints for session and score persistence
+- ✅ UI updates to display comprehensive player statistics
+- ✅ Offline mode support (no persistence when server unavailable)
 
 ---
 
@@ -86,14 +86,13 @@ Instead of a wide table with ~30 columns, we use a **3-table structure**:
 
 ### 8. Update Score Table Component ✅ COMPLETE
 - [x] `score-table.component.ts` — accepts `playerScores` input, falls back to `ScoreDataService`
-- [x] Columns: Player Name, Result, Final Score, Units Produced/Killed/Lost, Buildings Built/Destroyed/Lost, Max Army
-- [ ] Add missing columns: Resources (Collected/Spent/Final), Damage Dealt/Received, Healing Done
+- [x] All columns: Player Name, Result, Final Score, Units Produced/Killed/Lost, Buildings Built/Destroyed/Lost, Resources Collected/Spent/Final (per mineral/stone/wood), Damage Dealt/Received, Healing Done, Max Army
+- [x] Group headers, horizontal scroll, result badge colours
 
-### 9. Update Chart Component 🔄 TODO
-- [ ] Modify `score-through-time.component.ts`
-  - [ ] Use snapshot data from `ScoreDataService.getScoreSnapshots()` instead of `playerState.data.summary`
-  - [ ] Support chart types: army size, building count, total resources, army value over time
-- [ ] Add chart type selector (dropdown/tabs to switch between metric types)
+### 9. Update Chart Component ✅ COMPLETE
+- [x] `score-through-time.component.ts` — uses `ScoreDataService.getScoreSnapshots()` (snapshot-based)
+- [x] Chart types: Unit Count, Building Count, Total Resources, Army Value (dropdown selector)
+- [x] Consolidated into single "Stats Over Time" tab
 
 ---
 
@@ -139,25 +138,13 @@ Instead of a wide table with ~30 columns, we use a **3-table structure**:
 4. Game result tracking (Task 4) ✅ COMPLETE
 5. Scene integration (Task 5) ✅ COMPLETE
 6. Score data service (Task 6) ✅ COMPLETE
-7. UI updates (Tasks 7-9) ✅ PARTIAL (7 complete, 8 partial, 9 TODO)
+7. UI updates (Tasks 7-9) ✅ COMPLETE
 8. Database schema - game sessions table (Task 10) ✅ COMPLETE
 9. Database schema - player scores table (Task 11) ✅ COMPLETE
 10. API service - game session tracking (Task 12) ✅ COMPLETE
 11. API controller - score submission (Task 13) ✅ COMPLETE
 12. Client - score submission with last human player logic (Task 14) ✅ COMPLETE
 13. Client - match history UI components (Task 15) ✅ COMPLETE
-
----
-
-## Remaining TODOs
-
-### Task 8 (partial): Add missing score table columns
-- [ ] Resources: Collected Minerals/Stone/Wood, Spent Minerals/Stone/Wood, Final Minerals/Stone/Wood
-- [ ] Combat: Damage Dealt, Damage Received, Healing Done
-
-### Task 9: Chart component — use snapshot data
-- [ ] `score-through-time.component.ts`: replace `playerState.data.summary` approach with `ScoreDataService.getScoreSnapshots()`
-- [ ] Add "Army Value" chart type alongside units/buildings/resources
 
 ---
 
