@@ -375,7 +375,7 @@ export const weaponDefinitions = {
   [WeaponType.CyclopsHalberd]: {
     weaponType: WeaponType.CyclopsHalberd,
     canTargetAir: false,
-    damage: 7,
+    damage: 70,
     damageType: DamageType.Physical,
     cooldown: 1000,
     range: 2,

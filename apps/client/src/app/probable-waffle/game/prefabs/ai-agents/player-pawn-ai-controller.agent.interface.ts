@@ -27,6 +27,9 @@ export interface IPlayerPawnControllerAgent {
   Attack(): State;
   NoEnemiesVisible(): boolean;
   AnyEnemyVisible(): boolean;
+  AnyAttackableEnemyVisible(): boolean;
+  AssignAttackableEnemyToCurrentOrder(): State;
+  CanAttackCurrentTarget(): boolean;
   CooldownReady(type: PlayerPawnCooldownType): boolean;
   Attacked(): boolean;
 

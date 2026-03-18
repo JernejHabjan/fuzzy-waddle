@@ -2338,7 +2338,6 @@
             "components": [
                 "EditorOwner"
             ],
-            "EditorOwner.owner_id": "1",
             "x": -1257,
             "y": 910
         },

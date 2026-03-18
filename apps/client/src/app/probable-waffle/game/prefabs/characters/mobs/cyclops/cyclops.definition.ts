@@ -38,7 +38,7 @@ export const cyclopsDefinition = {
     },
     health: {
       physicalState: ActorPhysicalType.Biological,
-      maxHealth: 300
+      maxHealth: 3000
     },
     attack: {
       attacks: [weaponDefinitions.CyclopsHalberd]

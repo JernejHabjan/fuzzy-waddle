@@ -1145,8 +1145,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     centurionEditorOwner.owner_id = "1";
 
     // cyclops (components)
-    const cyclopsEditorOwner = new EditorOwner(cyclops);
-    cyclopsEditorOwner.owner_id = "1";
+    new EditorOwner(cyclops);
 
     // minotaur (components)
     const minotaurEditorOwner = new EditorOwner(minotaur);
