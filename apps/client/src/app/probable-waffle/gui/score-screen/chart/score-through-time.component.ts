@@ -35,7 +35,8 @@ export class ScoreThroughTimeComponent implements OnInit {
 
   protected selectedMetric: SnapshotMetric = "units";
 
-  protected readonly chartData: ChartData<"line", Array<number | DefaultDataPoint<keyof ChartTypeRegistry>>, string> = {
+  // Reassigned on each build so ng2-charts detects the change
+  protected chartData: ChartData<"line", Array<number | DefaultDataPoint<keyof ChartTypeRegistry>>, string> = {
     datasets: [],
     labels: []
   };
@@ -46,8 +47,12 @@ export class ScoreThroughTimeComponent implements OnInit {
     string
   >["options"] = {
     responsive: true,
+    animation: false, // prevents crash when legend is clicked after chart destroys
     plugins: {
       legend: { position: "top" }
+    },
+    scales: {
+      y: { beginAtZero: true }
     }
   };
 
@@ -87,10 +92,10 @@ export class ScoreThroughTimeComponent implements OnInit {
 
     const startTime = snapshots[0]?.timestamp ?? 0;
     const labels = snapshots.map((s) => `${Math.floor((s.timestamp - startTime) / 1000)}s`);
+
     const datasets = playerNumbers.map((playerNumber) => {
       const player = players.find((p) => p.playerNumber === playerNumber);
-      const label =
-        player?.playerController?.data?.playerDefinition?.player?.playerName ?? `Player ${playerNumber}`;
+      const label = player?.playerController?.data?.playerDefinition?.player?.playerName ?? `Player ${playerNumber}`;
       const color = GameSetupHelpers.getStringColorForPlayer(playerNumber, players.length, gameInstanceId);
 
       const data = snapshots.map((snapshot) => {
@@ -108,11 +113,11 @@ export class ScoreThroughTimeComponent implements OnInit {
         }
       });
 
-      return { label, data, fill: false, borderColor: color, tension: 0.1 };
+      return { label, data, fill: false, borderColor: color, backgroundColor: color, tension: 0.1 };
     });
 
-    this.chartData.labels = labels;
-    this.chartData.datasets = datasets;
+    // Assign a new object so ng2-charts detects the reference change and redraws
+    this.chartData = { labels, datasets };
     this.ready = true;
   }
 }
