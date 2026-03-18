@@ -46,6 +46,7 @@ export class AttackComponent {
   private projectileSprite?: Phaser.GameObjects.Image;
   // track delayed fire so we can cancel before projectile spawns
   private fireTimer?: Phaser.Time.TimerEvent;
+  private hitTimer?: Phaser.Time.TimerEvent;
 
   private attackDefinition: AttackDefinition;
 
@@ -77,6 +78,10 @@ export class AttackComponent {
     if (this.fireTimer) {
       this.fireTimer.remove(false);
       this.fireTimer = undefined;
+    }
+    if (this.hitTimer) {
+      this.hitTimer.remove(false);
+      this.hitTimer = undefined;
     }
     this.stopProjectile();
   }
@@ -152,9 +157,8 @@ export class AttackComponent {
     if (attack.projectile) {
       this.spawnProjectileAndFire(attack, enemy);
     } else {
-      this.applyInstantAttackDamage(attack, enemy);
-
       this.playSharedAttackLogic(attack, enemy);
+      this.scheduleInstantAttackImpact(attack, enemy);
     }
 
     this.remainingCooldown = attack.cooldown;
@@ -169,6 +173,23 @@ export class AttackComponent {
       if (!targetHealthComponent || targetHealthComponent.killed) continue;
       targetHealthComponent.takeDamage(attack.damage, attack.damageType, this.gameObject);
     }
+  }
+
+  private scheduleInstantAttackImpact(attack: AttackData, enemy: GameObject) {
+    if (this.hitTimer) {
+      this.hitTimer.remove(false);
+      this.hitTimer = undefined;
+    }
+    this.hitTimer = this.gameObject.scene.time.delayedCall(attack.delays.hit, () => {
+      this.hitTimer = undefined;
+
+      if (!this.gameObject.active || !enemy.active) return;
+      const healthComponent = getActorComponent(this.gameObject, HealthComponent);
+      if (!healthComponent || healthComponent.killed) return;
+
+      this.playHitSound(attack, enemy);
+      this.applyInstantAttackDamage(attack, enemy);
+    });
   }
 
   private getInstantAttackTargets(attack: AttackData, enemy: GameObject): GameObject[] {
@@ -390,19 +411,7 @@ export class AttackComponent {
     if (!enemyHealthComponent || enemyHealthComponent.killed) return;
     enemyHealthComponent.takeDamage(attack.damage, attack.damageType, this.gameObject);
 
-    // play hit sound
-    if (this.audioService && attack.sounds.hit) {
-      const visibilityComponent = getGameObjectVisibility(this.gameObject);
-      if (visibilityComponent && visibilityComponent.visible) {
-        // can be random as it doesn't need to be deterministic
-        const randomHitSound = attack.sounds.hit[Math.floor(Math.random() * attack.sounds.hit.length)]!;
-        this.audioService.playSpatialAudioSprite(
-          enemy, // enemy hit position
-          randomHitSound.key,
-          randomHitSound.spriteName
-        );
-      }
-    }
+    this.playHitSound(attack, enemy);
     this.stopProjectile();
     if (projectile.impactAnimation) {
       const anims = projectile.impactAnimation.anims;
@@ -445,6 +454,10 @@ export class AttackComponent {
       this.fireTimer.remove(false);
       this.fireTimer = undefined;
     }
+    if (this.hitTimer) {
+      this.hitTimer.remove(false);
+      this.hitTimer = undefined;
+    }
     // do not call stopProjectile here if projectile is already travelling
   }
 
@@ -483,7 +496,7 @@ export class AttackComponent {
 
   private playAttackSound(attack: AttackData, enemy: GameObject) {
     if (!this.audioService) return;
-    const { preparing, fire, hit } = attack.sounds;
+    const { preparing, fire } = attack.sounds;
     if (preparing) {
       const visibilityComponent = getGameObjectVisibility(this.gameObject);
       if (visibilityComponent && visibilityComponent.visible) {
@@ -506,24 +519,21 @@ export class AttackComponent {
         }
       }
     });
+  }
 
-    if (!attack.projectile) {
-      // if not a projectile, play hit sound
-      this.gameObject.scene.time.delayedCall(attack.delays.hit, () => {
-        if (hit) {
-          const visibilityComponent = getGameObjectVisibility(this.gameObject);
-          if (visibilityComponent && visibilityComponent.visible) {
-            // can be random as it doesn't need to be deterministic
-            const randomHitSound = hit[Math.floor(Math.random() * hit.length)]!;
-            this.audioService!.playSpatialAudioSprite(
-              enemy, // enemy hit position
-              randomHitSound.key,
-              randomHitSound.spriteName
-            );
-          }
-        }
-      });
-    }
+  private playHitSound(attack: AttackData, enemy: GameObject) {
+    if (!this.audioService) return;
+    const hit = attack.sounds.hit;
+    if (!hit) return;
+    const visibilityComponent = getGameObjectVisibility(this.gameObject);
+    if (!visibilityComponent || !visibilityComponent.visible) return;
+    // can be random as it doesn't need to be deterministic
+    const randomHitSound = hit[Math.floor(Math.random() * hit.length)]!;
+    this.audioService.playSpatialAudioSprite(
+      enemy, // enemy hit position
+      randomHitSound.key,
+      randomHitSound.spriteName
+    );
   }
 
   /**
