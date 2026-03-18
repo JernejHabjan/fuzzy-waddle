@@ -1,3 +1,64 @@
+.score-table-wrapper {
+  overflow-x: auto;
+  margin-top: 1rem;
+}
+
 .table {
-  margin-top: 20px;
+  white-space: nowrap;
+  font-size: 0.85rem;
+
+  th,
+  td {
+    text-align: center;
+    padding: 0.4rem 0.5rem;
+    vertical-align: middle;
+  }
+
+  td:first-child,
+  th:first-child {
+    text-align: left;
+  }
+}
+
+.group-header {
+  background-color: rgba(0, 0, 0, 0.15);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.winner {
+  background-color: rgba(40, 167, 69, 0.1);
+}
+
+.loser {
+  background-color: rgba(220, 53, 69, 0.1);
+}
+
+.result-badge {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: 0.25rem;
+  font-weight: bold;
+  font-size: 0.75rem;
+
+  &.result-win {
+    background-color: #28a745;
+    color: white;
+  }
+
+  &.result-loss {
+    background-color: #dc3545;
+    color: white;
+  }
+
+  &.result-tie {
+    background-color: #ffc107;
+    color: black;
+  }
+
+  &.result-quit {
+    background-color: #6c757d;
+    color: white;
+  }
 }

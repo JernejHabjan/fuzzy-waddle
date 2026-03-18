@@ -1,43 +1,30 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ScoreThroughTimeComponent } from "./score-through-time.component";
-import { Component, input } from "@angular/core";
 
-import {
-  createPlayerLobbyDefinition,
-  FactionType,
-  type PlayerStateActionBuildingConstructed,
-  type PlayerStateActionBuildingDestroyed,
-  type PlayerStateActionUnitKilled,
-  type PlayerStateActionUnitProduced,
-  type PositionPlayerDefinition,
-  ProbableWaffleGameInstanceType,
-  ProbableWaffleGameInstanceVisibility,
-  ProbableWafflePlayerType
-} from "@fuzzy-waddle/api-interfaces";
+import { ProbableWaffleGameInstanceType, ProbableWaffleGameInstanceVisibility } from "@fuzzy-waddle/api-interfaces";
 import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.stub";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
+import { ScoreDataService } from "../../../services/score-data.service";
 
-@Component({
-  selector: "probable-waffle-score-through-time",
-  standalone: true,
-  template: ""
-})
-export class ScoreThroughTimeTestingComponent {
-  readonly summaryType = input<"units" | "buildings" | "resources">();
-}
 describe("ScoreThroughTimeComponent", () => {
   let component: ScoreThroughTimeComponent;
   let fixture: ComponentFixture<ScoreThroughTimeComponent>;
 
+  const scoreDataServiceStub = {
+    getScoreSnapshots: () => []
+  };
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ScoreThroughTimeComponent],
-      providers: [{ provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub }]
+      providers: [
+        { provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub },
+        { provide: ScoreDataService, useValue: scoreDataServiceStub }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ScoreThroughTimeComponent);
     component = fixture.componentInstance;
-    fixture.componentRef.setInput("summaryType", "units");
     fixture.detectChanges();
   });
 
@@ -45,101 +32,11 @@ describe("ScoreThroughTimeComponent", () => {
     expect(component).toBeTruthy();
   });
 
-  it("should create chart", async () => {
-    const gameInstanceService = gameInstanceClientServiceStub;
-
-    await gameInstanceService.createGameInstance(
+  it("should show no-data when snapshots are empty", async () => {
+    await gameInstanceClientServiceStub.createGameInstance(
       "test",
       ProbableWaffleGameInstanceVisibility.Private,
       ProbableWaffleGameInstanceType.Skirmish
-    );
-
-    await gameInstanceService.addAiPlayer();
-    await gameInstanceService.addAiPlayer();
-    const players = gameInstanceService.gameInstance!.players!;
-    players[0]!.playerController.data.playerDefinition = {
-      player: createPlayerLobbyDefinition(1, 1),
-      factionType: FactionType.Skaduwee,
-      playerType: ProbableWafflePlayerType.AI
-    } satisfies PositionPlayerDefinition;
-    players[1]!.playerController.data.playerDefinition = {
-      player: createPlayerLobbyDefinition(2, 2),
-      factionType: FactionType.Skaduwee,
-      playerType: ProbableWafflePlayerType.AI
-    } satisfies PositionPlayerDefinition;
-
-    players[0]!.playerState.data.summary.push(
-      {
-        data: {
-          unitName: "test"
-        },
-        time: 2000,
-        type: "unit_produced"
-      } satisfies PlayerStateActionUnitProduced,
-
-      {
-        data: {
-          unitName: "test_2"
-        },
-        time: 3000,
-        type: "unit_produced"
-      } satisfies PlayerStateActionUnitProduced,
-      {
-        data: {
-          unitName: "test_2",
-          killedPlayerNr: 1
-        },
-        time: 32000,
-        type: "unit_killed"
-      } satisfies PlayerStateActionUnitKilled
-    );
-    players[1]!.playerState.data.summary.push(
-      {
-        data: {
-          unitName: "test"
-        },
-        time: 1000,
-        type: "unit_produced"
-      } satisfies PlayerStateActionUnitProduced,
-      {
-        data: {
-          unitName: "test_3"
-        },
-        time: 8000,
-        type: "unit_produced"
-      } satisfies PlayerStateActionUnitProduced,
-      {
-        data: {
-          unitName: "test_3"
-        },
-        time: 10500,
-        type: "unit_produced"
-      } satisfies PlayerStateActionUnitProduced
-    );
-
-    players[0]!.playerState.data.summary.push({
-      data: {
-        buildingName: "test"
-      },
-      time: 1000,
-      type: "building_constructed"
-    } satisfies PlayerStateActionBuildingConstructed);
-    players[1]!.playerState.data.summary.push(
-      {
-        data: {
-          buildingName: "test"
-        },
-        time: 3000,
-        type: "building_constructed"
-      } satisfies PlayerStateActionBuildingConstructed,
-      {
-        data: {
-          buildingName: "test_3",
-          killedPlayerNr: 0
-        },
-        time: 8000,
-        type: "building_destroyed"
-      } satisfies PlayerStateActionBuildingDestroyed
     );
 
     component.ngOnInit();

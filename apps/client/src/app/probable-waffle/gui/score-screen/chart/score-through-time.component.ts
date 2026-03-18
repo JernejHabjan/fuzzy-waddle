@@ -1,14 +1,18 @@
-import { Component, inject, type OnInit, input } from "@angular/core";
+import { Component, inject, type OnInit } from "@angular/core";
 
-import {
-  GameSetupHelpers,
-  type PlayerStateAction,
-  type PlayerStateActionType,
-  ProbableWafflePlayer
-} from "@fuzzy-waddle/api-interfaces";
+import { type GameScoreSnapshot, type PlayerNumber } from "@fuzzy-waddle/api-interfaces";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
+import { ScoreDataService } from "../../../services/score-data.service";
+import { GameSetupHelpers } from "@fuzzy-waddle/api-interfaces";
 import { type ChartConfiguration, type ChartData, type ChartTypeRegistry, type DefaultDataPoint } from "chart.js";
 import { BaseChartDirective } from "ng2-charts";
+
+type SnapshotMetric = "units" | "buildings" | "resources" | "armyValue";
+
+interface MetricOption {
+  value: SnapshotMetric;
+  label: string;
+}
 
 @Component({
   selector: "probable-waffle-score-through-time",
@@ -17,9 +21,20 @@ import { BaseChartDirective } from "ng2-charts";
   styleUrls: ["./score-through-time.component.scss"]
 })
 export class ScoreThroughTimeComponent implements OnInit {
-  readonly summaryType = input.required<"units" | "buildings" | "resources">();
-  protected ready = false;
   private readonly gameInstanceClientService = inject(GameInstanceClientService);
+  private readonly scoreDataService = inject(ScoreDataService);
+
+  protected ready = false;
+
+  protected readonly metricOptions: MetricOption[] = [
+    { value: "units", label: "Unit Count" },
+    { value: "buildings", label: "Building Count" },
+    { value: "resources", label: "Total Resources" },
+    { value: "armyValue", label: "Army Value" }
+  ];
+
+  protected selectedMetric: SnapshotMetric = "units";
+
   protected readonly chartData: ChartData<"line", Array<number | DefaultDataPoint<keyof ChartTypeRegistry>>, string> = {
     datasets: [],
     labels: []
@@ -36,117 +51,73 @@ export class ScoreThroughTimeComponent implements OnInit {
         type: "linear",
         position: "bottom",
         ticks: {
-          callback: this.formatTimestampLabel
+          callback: (value: string | number) => Math.floor((value as number) / 1000) + "s"
         }
       }
     }
   };
 
   protected readonly chartLegend = true;
-  protected readonly chartType: "bar" | "line" | "scatter" | "bubble" | "pie" | "doughnut" | "polarArea" | "radar" =
-    "line";
-  private summaryAddType!: PlayerStateActionType;
-  private summaryRemoveType!: PlayerStateActionType;
-  protected chartTitle!: string;
+  protected readonly chartType: "line" = "line";
+
   ngOnInit(): void {
-    this.prepareGraphData();
+    this.buildChart();
   }
 
-  private prepareGraphData() {
-    if (!this.gameInstanceClientService.gameInstance) return;
+  protected onMetricChange(event: Event): void {
+    this.selectedMetric = (event.target as HTMLSelectElement).value as SnapshotMetric;
+    this.buildChart();
+  }
 
-    switch (this.summaryType()) {
-      case "units":
-        this.summaryAddType = "unit_produced";
-        this.summaryRemoveType = "unit_killed";
-        this.chartTitle = "Units produced";
-        break;
-      case "buildings":
-        this.summaryAddType = "building_constructed";
-        this.summaryRemoveType = "building_destroyed";
-        this.chartTitle = "Buildings constructed";
-        break;
-      case "resources":
-        this.summaryAddType = "resource_collected";
-        this.summaryRemoveType = "resource_spent";
-        this.chartTitle = "Resources collected";
-        break;
+  private buildChart(): void {
+    const snapshots = this.scoreDataService.getScoreSnapshots();
+
+    if (snapshots.length > 0) {
+      this.buildFromSnapshots(snapshots);
+    } else {
+      this.ready = false;
     }
+  }
 
-    const players = this.gameInstanceClientService.gameInstance.players;
-    const allTimestamps = this.getAllTimestamps(players);
-    const gameInstanceId = this.gameInstanceClientService.gameInstance.gameInstanceMetadata.data.gameInstanceId;
-    this.chartData.labels = allTimestamps.map((n) => n.toString());
+  private buildFromSnapshots(snapshots: GameScoreSnapshot[]): void {
+    const gameInstance = this.gameInstanceClientService.gameInstance;
+    const gameInstanceId = gameInstance?.gameInstanceMetadata?.data?.gameInstanceId;
+    const players = gameInstance?.players ?? [];
 
-    players.forEach((player) => {
-      const playerName = player.playerController.data.playerDefinition!.player.playerName!;
-      const buildingProduced = this.getBuildingProducedForPlayer(player, allTimestamps);
-
-      this.chartData.datasets.push({
-        label: playerName,
-        data: buildingProduced,
-        fill: false,
-        borderColor: GameSetupHelpers.getStringColorForPlayer(player.playerNumber!, players.length, gameInstanceId)
+    const playerNumbers: PlayerNumber[] = [];
+    snapshots.forEach((s) => {
+      s.playerScores.forEach((_, num) => {
+        if (!playerNumbers.includes(num)) playerNumbers.push(num);
       });
     });
-    this.ready = true;
-  }
 
-  private getBuildingProducedForPlayer(player: ProbableWafflePlayer, allTimestamps: number[]): number[] {
-    const timestamps = allTimestamps;
-    const buildingProduced: number[] = new Array(timestamps.length).fill(0);
+    const labels = snapshots.map((s) => s.timestamp.toString());
+    const datasets = playerNumbers.map((playerNumber) => {
+      const player = players.find((p) => p.playerNumber === playerNumber);
+      const label =
+        player?.playerController?.data?.playerDefinition?.player?.playerName ?? `Player ${playerNumber}`;
+      const color = GameSetupHelpers.getStringColorForPlayer(playerNumber, players.length, gameInstanceId);
 
-    let cumulativeCount = 0;
-    const summary = player.playerState.data.summary;
-
-    timestamps.forEach((timestamp, index) => {
-      const producedEvent = summary.find((s) => s.type === this.summaryAddType && s.time === timestamp);
-      if (producedEvent) {
-        cumulativeCount++;
-      }
-
-      const killedEvents = this.getOtherPlayers(player)
-        .map((p) => p.playerState.data.summary)
-        .flat()
-        .filter(
-          (s) =>
-            s.type === this.summaryRemoveType && s.time === timestamp && s.data.killedPlayerNr === player.playerNumber
-        );
-
-      cumulativeCount -= killedEvents.length;
-      buildingProduced[index] = cumulativeCount;
-    });
-
-    return buildingProduced;
-  }
-
-  getOtherPlayers(player: ProbableWafflePlayer): ProbableWafflePlayer[] {
-    return this.gameInstanceClientService.gameInstance!.players.filter((p) => p.playerNumber !== player.playerNumber);
-  }
-
-  private getAllTimestamps(players: ProbableWafflePlayer[]): number[] {
-    const timestamps: number[] = [];
-
-    players.forEach((player) => {
-      const summary = player.playerState.data.summary;
-
-      summary.forEach((s: PlayerStateAction) => {
-        if (!timestamps.includes(s.time)) {
-          timestamps.push(s.time);
+      const data = snapshots.map((snapshot) => {
+        const ps = snapshot.playerScores.get(playerNumber);
+        if (!ps) return 0;
+        switch (this.selectedMetric) {
+          case "units":
+            return ps.unitsCount;
+          case "buildings":
+            return ps.buildingsCount;
+          case "resources":
+            return ps.totalResources;
+          case "armyValue":
+            return ps.armyValue;
         }
       });
-    });
-    // Ensure that 0 is in the timestamps array
-    if (!timestamps.includes(0)) {
-      timestamps.unshift(0);
-    }
-    // Sort timestamps in ascending order
-    // noinspection UnnecessaryLocalVariableJS
-    const sortedTimestamps = timestamps.sort((a, b) => a - b);
-    return sortedTimestamps;
-  }
 
-  private formatTimestampLabel(value: string | number): string {
-    return Math.floor((value as number) / 1000).toString() + "s";
+      return { label, data, fill: false, borderColor: color, tension: 0.1 };
+    });
+
+    this.chartData.labels = labels;
+    this.chartData.datasets = datasets;
+    this.ready = true;
   }
 }
