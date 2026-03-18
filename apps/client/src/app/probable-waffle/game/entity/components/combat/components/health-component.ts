@@ -99,7 +99,7 @@ export class HealthComponent {
 
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,
-    public readonly healthDefinition: HealthDefinition
+    public healthDefinition: HealthDefinition
   ) {
     // Initial health and armor data
     const initialData: HealthComponentData = {
@@ -339,6 +339,14 @@ export class HealthComponent {
     this.healthComponentData.armour = this.healthDefinition.maxArmour ?? 0;
   }
 
+  setHealthDefinition(healthDefinition: HealthDefinition) {
+    this.healthDefinition = healthDefinition;
+    this.healthComponentData.health = healthDefinition.maxHealth;
+    this.healthComponentData.armour = healthDefinition.maxArmour ?? 0;
+    this.syncArmorUiComponent();
+    this.refreshUiComponents();
+  }
+
   setVisibilityUiComponent(visible: boolean) {
     if (!this.gameObject.active) return;
     this.shouldUiElementsBeVisible = visible;
@@ -401,5 +409,22 @@ export class HealthComponent {
     if (gameObjectDepth) {
       effect.setDepth(gameObjectDepth + 1);
     }
+  }
+
+  private syncArmorUiComponent() {
+    const hasArmor = (this.healthDefinition.maxArmour ?? 0) > 0;
+    if (hasArmor) {
+      this.armorUiComponent ??= new HealthUiComponent(this.gameObject, "armor");
+      this.armorUiComponent.setVisibility(this.uiComponentsVisible);
+      return;
+    }
+
+    this.armorUiComponent?.destroy();
+    this.armorUiComponent = undefined;
+  }
+
+  private refreshUiComponents() {
+    this.healthUiComponent.refresh();
+    this.armorUiComponent?.refresh();
   }
 }

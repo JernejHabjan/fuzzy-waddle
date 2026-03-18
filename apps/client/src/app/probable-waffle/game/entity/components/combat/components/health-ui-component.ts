@@ -124,6 +124,11 @@ export class HealthUiComponent {
     this.gameObject.off(OwnerComponent.OwnerColorAppliedEvent, this.draw, this);
   }
 
+  refresh() {
+    if (!this.bar.active) return;
+    this.draw();
+  }
+
   private draw() {
     this.bar.clear();
 

@@ -401,6 +401,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
         let closestEnemy: GameObject | null = null;
         let closestDist = Infinity;
         this.blackboard.enemiesNearBase.forEach((enemy) => {
+          if (!unit.active || enemy.active) return;
           const d = DistanceHelper.getTileDistanceBetweenGameObjects(unit, enemy);
           if (d !== null && d < closestDist) {
             closestDist = d;

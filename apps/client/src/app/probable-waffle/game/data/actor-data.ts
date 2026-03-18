@@ -367,12 +367,11 @@ export function upgradeActorToLevel(actor: GameObject, newLevel: number) {
     attackComp?.setData(components.attack);
   }
 
-  // Update health max if changed - only update maxHealth
-  if (components?.health?.maxHealth !== undefined) {
+  // Update health if changed
+  if (components?.health) {
     const healthComp = getActorComponent(actor, HealthComponent);
     if (healthComp) {
-      healthComp.healthComponentData.health = components.health.maxHealth;
-      if (components.health.maxArmour) healthComp.healthComponentData.armour = components.health.maxArmour;
+      healthComp.setHealthDefinition(components.health);
     }
   }
 
