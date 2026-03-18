@@ -7,7 +7,7 @@ const ANIM_CENTURION_HURT = "centurion_hurt";
 
 const ANIM_CENTURION_IDLE_UP = "centurion_idle_up";
 
-const ANIM_CENTURION_IDLE = "centurion_idle";
+const ANIM_CENTURION_IDLE_DOWN = "centurion_idle_down";
 
 const ANIM_CENTURION_IDLE_LEFT = "centurion_idle_left";
 
@@ -32,7 +32,7 @@ const ANIM_CENTURION_WALK_RIGHT = "centurion_walk_right";
 export const ANIM_CENTURION_DEFINITION: AnimationDefinitionMap = {
   [AnimationType.Idle]: {
     north: { key: ANIM_CENTURION_IDLE_UP },
-    south: { key: ANIM_CENTURION_IDLE },
+    south: { key: ANIM_CENTURION_IDLE_DOWN },
     west: { key: ANIM_CENTURION_IDLE_LEFT },
     east: { key: ANIM_CENTURION_IDLE_RIGHT }
   },

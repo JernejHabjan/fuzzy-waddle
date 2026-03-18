@@ -66,6 +66,10 @@ export class AnimationActorComponent {
   private init() {
     this.setSprite();
     this.listenToDirectionChange();
+    if (!this.currentAnimation) {
+      // play animation, so it plays with correct "level" if the animation gets swapped on startup
+      this.playAnimation(AnimationType.Idle);
+    }
   }
 
   private setSprite() {

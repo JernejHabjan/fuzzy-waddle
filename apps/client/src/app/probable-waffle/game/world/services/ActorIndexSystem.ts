@@ -302,7 +302,7 @@ export class ActorIndexSystem {
 
     // Register unlock immediately if it should be considered unlocked (finished buildings and alive actors)
     if (shouldConsiderActorUnlocked(gameObject)) {
-      console.log(`Registering actor unlock (${logContext}):`, { owner, canonicalName, gameObject });
+      // console.log(`Registering actor unlock (${logContext}):`, { owner, canonicalName, gameObject });
       techTreeService.registerActorUnlock(owner, canonicalName);
       // Emit event so UI can react to new unlocks
       this.actorUnlockRegistered.emit({ playerNumber: owner, actorName: canonicalName });
@@ -312,11 +312,11 @@ export class ActorIndexSystem {
       if (constructionSite) {
         const subscription = constructionSite.constructionStateChanged.subscribe((state) => {
           if (state === ConstructionStateEnum.Finished) {
-            console.log(`Registering actor unlock (${logContext}, construction finished):`, {
-              owner,
-              canonicalName,
-              gameObject
-            });
+            // console.log(`Registering actor unlock (${logContext}, construction finished):`, {
+            //   owner,
+            //   canonicalName,
+            //   gameObject
+            // });
             techTreeService.registerActorUnlock(owner, canonicalName);
             // Emit event so UI can react to new unlocks
             this.actorUnlockRegistered.emit({ playerNumber: owner, actorName: canonicalName });
