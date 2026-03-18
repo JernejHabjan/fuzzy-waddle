@@ -1,3 +1,4 @@
+import { Component } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ScoreThroughTimeComponent } from "./score-through-time.component";
 
@@ -5,6 +6,9 @@ import { ProbableWaffleGameInstanceType, ProbableWaffleGameInstanceVisibility } 
 import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.stub";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { ScoreDataService } from "../../../services/score-data.service";
+
+@Component({ selector: "probable-waffle-score-through-time", template: "" })
+export class ScoreThroughTimeTestingComponent {}
 
 describe("ScoreThroughTimeComponent", () => {
   let component: ScoreThroughTimeComponent;

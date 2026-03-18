@@ -318,6 +318,7 @@ export class ConstructionSiteComponent {
     }
 
     upgradeFromConstructingToFullActorData(this.gameObject);
+    this.gameObject.scene.events.emit("score.building_constructed", this.gameObject);
   }
 
   private getProgressFraction() {

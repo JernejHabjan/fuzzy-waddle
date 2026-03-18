@@ -248,6 +248,8 @@ export class HealthComponent {
       this.healthComponentData.health = Math.max(this.healthComponentData.health - damage, 0);
     }
 
+    this.gameObject.scene.events.emit("score.damage", this.gameObject, damage, damageInitiator);
+
     if (this.healthDefinition.healthDisplayBehavior === "onDamage") {
       this.setVisibilityUiComponent(true);
       // Hide the UI component after a delay if it's set to "onDamage"

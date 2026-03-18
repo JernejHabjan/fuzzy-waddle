@@ -13,6 +13,9 @@ import { ScenePlayerHelpers } from "../../data/scene-player-helpers";
 import { throttle } from "../../library/throttle";
 import { getActorComponent, hasActorComponent } from "../../data/actor-component";
 import { ConstructionSiteComponent } from "../../entity/components/construction/construction-site-component";
+import { HealthComponent } from "../../entity/components/combat/components/health-component";
+import { OwnerComponent } from "../../entity/components/owner-component";
+import type { Subscription } from "rxjs";
 
 /**
  * Tracks player scores throughout the game for the score screen.
@@ -24,6 +27,7 @@ export class ScoreTracker {
   private stopped: boolean = false;
   private snapshotInterval = 5000; // Create snapshot every 5 seconds
   private lastSnapshotTime = 0;
+  private resourceSubscription?: Subscription;
 
   constructor(private readonly scene: ProbableWaffleScene) {
     this.initializePlayerScores();
@@ -35,6 +39,11 @@ export class ScoreTracker {
 
   private startTracking() {
     this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.throttleUpdate, this);
+    this.scene.events.on(HealthComponent.KilledEvent, this.onActorKilled, this);
+    this.scene.events.on("score.damage", this.onDamage, this);
+    this.scene.events.on("score.unit_produced", this.onUnitProduced, this);
+    this.scene.events.on("score.building_constructed", this.onBuildingConstructed, this);
+    this.subscribeToResourceEvents();
   }
 
   private throttleUpdate = throttle(this.update.bind(this), 1000);
@@ -303,11 +312,81 @@ export class ScoreTracker {
   }
 
   /**
+   * Listen for resource.added and resource.removed events on the communicator to track all players
+   */
+  private subscribeToResourceEvents() {
+    const communicator = this.scene.baseGameData.communicator;
+    this.resourceSubscription = communicator.playerChanged?.on.subscribe((event) => {
+      const playerNumber = event.data.playerNumber;
+      const resources = event.data.playerStateData?.resources;
+      if (playerNumber === undefined || !resources) return;
+
+      if (event.property === "resource.added") {
+        if (resources.minerals) this.incrementMetric(playerNumber, STANDARD_METRICS.RESOURCES_COLLECTED_MINERALS, resources.minerals);
+        if (resources.stone) this.incrementMetric(playerNumber, STANDARD_METRICS.RESOURCES_COLLECTED_STONE, resources.stone);
+        if (resources.wood) this.incrementMetric(playerNumber, STANDARD_METRICS.RESOURCES_COLLECTED_WOOD, resources.wood);
+      } else if (event.property === "resource.removed") {
+        if (resources.minerals) this.incrementMetric(playerNumber, STANDARD_METRICS.RESOURCES_SPENT_MINERALS, resources.minerals);
+        if (resources.stone) this.incrementMetric(playerNumber, STANDARD_METRICS.RESOURCES_SPENT_STONE, resources.stone);
+        if (resources.wood) this.incrementMetric(playerNumber, STANDARD_METRICS.RESOURCES_SPENT_WOOD, resources.wood);
+      }
+    });
+  }
+
+  private onActorKilled(gameObject: Phaser.GameObjects.GameObject) {
+    if (!gameObject || !gameObject.active) return;
+    const isBuilding = this.isBuilding(gameObject);
+    const victimOwner = getActorComponent(gameObject, OwnerComponent)?.getOwner();
+    const hc = getActorComponent(gameObject, HealthComponent);
+    const attackerOwner = hc?.latestDamage?.damageInitiator
+      ? getActorComponent(hc.latestDamage.damageInitiator, OwnerComponent)?.getOwner()
+      : undefined;
+
+    if (victimOwner !== undefined) {
+      this.incrementMetric(victimOwner, isBuilding ? STANDARD_METRICS.BUILDINGS_LOST : STANDARD_METRICS.UNITS_LOST);
+    }
+    if (attackerOwner !== undefined && attackerOwner !== victimOwner) {
+      this.incrementMetric(attackerOwner, isBuilding ? STANDARD_METRICS.BUILDINGS_DESTROYED : STANDARD_METRICS.UNITS_KILLED);
+    }
+  }
+
+  private onDamage(gameObject: Phaser.GameObjects.GameObject, damage: number, damageInitiator?: Phaser.GameObjects.GameObject) {
+    const victimOwner = getActorComponent(gameObject, OwnerComponent)?.getOwner();
+    if (victimOwner !== undefined) {
+      this.incrementMetric(victimOwner, STANDARD_METRICS.DAMAGE_RECEIVED, damage);
+    }
+    if (damageInitiator) {
+      const attackerOwner = getActorComponent(damageInitiator, OwnerComponent)?.getOwner();
+      if (attackerOwner !== undefined) {
+        this.incrementMetric(attackerOwner, STANDARD_METRICS.DAMAGE_DEALT, damage);
+      }
+    }
+  }
+
+  private onUnitProduced(playerNumber: PlayerNumber) {
+    if (playerNumber !== undefined) {
+      this.incrementMetric(playerNumber, STANDARD_METRICS.UNITS_PRODUCED);
+    }
+  }
+
+  private onBuildingConstructed(gameObject: Phaser.GameObjects.GameObject) {
+    const owner = getActorComponent(gameObject, OwnerComponent)?.getOwner();
+    if (owner !== undefined) {
+      this.incrementMetric(owner, STANDARD_METRICS.BUILDINGS_CONSTRUCTED);
+    }
+  }
+
+  /**
    * Cleanup
    */
   private destroy() {
-    this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.throttleUpdate);
-    this.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.destroy);
+    this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.throttleUpdate, this);
+    this.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
+    this.scene.events.off(HealthComponent.KilledEvent, this.onActorKilled, this);
+    this.scene.events.off("score.damage", this.onDamage, this);
+    this.scene.events.off("score.unit_produced", this.onUnitProduced, this);
+    this.scene.events.off("score.building_constructed", this.onBuildingConstructed, this);
+    this.resourceSubscription?.unsubscribe();
     this.stopped = true;
   }
 }

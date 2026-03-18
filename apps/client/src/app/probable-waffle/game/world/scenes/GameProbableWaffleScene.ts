@@ -60,7 +60,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     new SaveGame(this);
     new RestartGame(this, hud);
     new GameModeConditionChecker(this);
-    new ScoreTracker(this); // Track player scores for score screen
+    this.sceneGameData.systems.push(new ScoreTracker(this)); // Track player scores for score screen
     const creator = new SceneActorCreator(this);
     const actorIndex = new ActorIndexSystem(this);
 
