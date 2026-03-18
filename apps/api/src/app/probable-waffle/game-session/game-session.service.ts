@@ -98,7 +98,7 @@ export class GameSessionService {
     // Get session ID
     const session = await this.getSession(gameInstanceId);
     if (!session) {
-      throw new Error("Game session not found");
+      return { success: false, message: "No session found - scores not persisted for this game type" };
     }
 
     try {

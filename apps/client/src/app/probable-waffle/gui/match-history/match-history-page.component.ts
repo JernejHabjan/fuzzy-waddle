@@ -1,19 +1,23 @@
 import { Component, inject, signal } from "@angular/core";
 import type { OnInit } from "@angular/core";
-import { Router } from "@angular/router";
+import { Router, RouterLink } from "@angular/router";
 import { DatePipe } from "@angular/common";
 import { type MatchHistorySummary, ProbableWaffleMapEnum } from "@fuzzy-waddle/api-interfaces";
 import { MatchHistoryService } from "../../services/match-history.service";
 import { ProbableWaffleLevels } from "@fuzzy-waddle/api-interfaces";
+import { AuthService } from "../../../auth/auth.service";
+import { ServerHealthService } from "../../../shared/services/server-health.service";
 
 @Component({
   selector: "probable-waffle-match-history-page",
-  imports: [DatePipe],
+  imports: [DatePipe, RouterLink],
   templateUrl: "./match-history-page.component.html",
   styleUrl: "./match-history-page.component.scss"
 })
 export class MatchHistoryPageComponent implements OnInit {
   private readonly matchHistoryService = inject(MatchHistoryService);
+  protected readonly authService = inject(AuthService);
+  protected readonly serverHealthService = inject(ServerHealthService);
   private readonly router = inject(Router);
 
   protected readonly matches = signal<MatchHistorySummary[]>([]);
@@ -25,7 +29,11 @@ export class MatchHistoryPageComponent implements OnInit {
   protected readonly Math = Math;
 
   async ngOnInit(): Promise<void> {
-    await this.loadMatches();
+    if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
+      await this.loadMatches();
+    } else {
+      this.loading.set(false);
+    }
   }
 
   protected async loadMatches(): Promise<void> {

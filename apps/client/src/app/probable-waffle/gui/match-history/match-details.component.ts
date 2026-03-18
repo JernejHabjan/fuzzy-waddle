@@ -1,20 +1,24 @@
 import { Component, inject, signal, input } from "@angular/core";
 import type { OnInit } from "@angular/core";
-import { Router } from "@angular/router";
+import { Router, RouterLink } from "@angular/router";
 import { DatePipe } from "@angular/common";
 import { type GameSessionDetails, ProbableWaffleMapEnum } from "@fuzzy-waddle/api-interfaces";
 import { MatchHistoryService } from "../../services/match-history.service";
 import { ScoreTableComponent } from "../score-screen/table/score-table.component";
 import { ProbableWaffleLevels } from "@fuzzy-waddle/api-interfaces";
+import { AuthService } from "../../../auth/auth.service";
+import { ServerHealthService } from "../../../shared/services/server-health.service";
 
 @Component({
   selector: "probable-waffle-match-details",
-  imports: [DatePipe, ScoreTableComponent],
+  imports: [DatePipe, ScoreTableComponent, RouterLink],
   templateUrl: "./match-details.component.html",
   styleUrl: "./match-details.component.scss"
 })
 export class MatchDetailsComponent implements OnInit {
   private readonly matchHistoryService = inject(MatchHistoryService);
+  protected readonly authService = inject(AuthService);
+  protected readonly serverHealthService = inject(ServerHealthService);
   private readonly router = inject(Router);
 
   // Route parameter
@@ -25,7 +29,11 @@ export class MatchDetailsComponent implements OnInit {
   protected readonly error = signal<string | null>(null);
 
   async ngOnInit(): Promise<void> {
-    await this.loadMatchDetails();
+    if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
+      await this.loadMatchDetails();
+    } else {
+      this.loading.set(false);
+    }
   }
 
   private async loadMatchDetails(): Promise<void> {

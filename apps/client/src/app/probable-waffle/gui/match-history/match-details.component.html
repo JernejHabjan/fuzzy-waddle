@@ -1,6 +1,19 @@
 <div class="container mt-4 overflow-auto">
   <div class="card-container">
-    @if (loading()) {
+    @if (!authService.isAuthenticated) {
+      <div class="text-center">
+        <p>Not authenticated. Please Login to continue</p>
+        <button routerLink="" class="btn btn-primary m-1" type="button">Home</button>
+      </div>
+    } @else if (serverHealthService.serverChecking) {
+      <div class="text-center">
+        <p>Checking server health...</p>
+      </div>
+    } @else if (!serverHealthService.serverAvailable) {
+      <div class="text-center">
+        <p>Server is not available</p>
+      </div>
+    } @else if (loading()) {
       <div class="text-center">
         <p>Loading match details...</p>
       </div>
