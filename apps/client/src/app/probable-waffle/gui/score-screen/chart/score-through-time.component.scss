@@ -1,3 +1,5 @@
+@use "../../../../../styles/_variables" as *;
+
 .chart-container {
   padding: 1rem 0;
 }
@@ -10,20 +12,28 @@
 
   label {
     font-weight: bold;
+    color: $primary;
   }
 
   select {
     padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    background-color: rgba(0, 0, 0, 0.3);
-    color: inherit;
+    border-radius: $app-border-radius;
+    border: 2px solid $tertiary;
+    background-color: white;
+    color: $primary;
     cursor: pointer;
+    font-size: 0.9rem;
+
+    &:focus {
+      border-color: $primary;
+      outline: none;
+    }
   }
 }
 
 .no-data {
   text-align: center;
   padding: 2rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: $secondary;
+  font-style: italic;
 }

@@ -1,8 +1,8 @@
-<div class="container mt-4">
+<div class="container mt-4 overflow-auto">
   <div class="card-container">
-    <h2>Score Screen</h2>
+    <h2 class="text-center text-primary mb-3">Score Screen</h2>
 
-    <ul class="nav nav-tabs">
+    <ul class="nav nav-tabs mb-3">
       <li class="nav-item">
         <a class="nav-link" [class.active]="activeTab === 'scoreTable'" (click)="changeTab('scoreTable')">Score Table</a>
       </li>
@@ -11,16 +11,14 @@
       </li>
     </ul>
 
-    <div class="overflow-auto">
-      @if (activeTab === "scoreTable") {
-        <probable-waffle-score-table />
-      }
-      @if (activeTab === "chart") {
-        <probable-waffle-score-through-time />
-      }
-    </div>
+    @if (activeTab === "scoreTable") {
+      <probable-waffle-score-table />
+    }
+    @if (activeTab === "chart") {
+      <probable-waffle-score-through-time />
+    }
 
-    <div class="container mt-4">
+    <div class="mt-4">
       <button class="btn btn-primary" routerLink="/aota">Leave</button>
     </div>
   </div>

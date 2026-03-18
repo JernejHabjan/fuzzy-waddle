@@ -46,14 +46,8 @@ export class ScoreThroughTimeComponent implements OnInit {
     string
   >["options"] = {
     responsive: true,
-    scales: {
-      x: {
-        type: "linear",
-        position: "bottom",
-        ticks: {
-          callback: (value: string | number) => Math.floor((value as number) / 1000) + "s"
-        }
-      }
+    plugins: {
+      legend: { position: "top" }
     }
   };
 
@@ -91,7 +85,8 @@ export class ScoreThroughTimeComponent implements OnInit {
       });
     });
 
-    const labels = snapshots.map((s) => s.timestamp.toString());
+    const startTime = snapshots[0]?.timestamp ?? 0;
+    const labels = snapshots.map((s) => `${Math.floor((s.timestamp - startTime) / 1000)}s`);
     const datasets = playerNumbers.map((playerNumber) => {
       const player = players.find((p) => p.playerNumber === playerNumber);
       const label =

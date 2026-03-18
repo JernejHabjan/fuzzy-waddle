@@ -1,6 +1,7 @@
 /// <reference types="@angular/localize" />
 
 import { enableProdMode, importProvidersFrom, isDevMode, provideZoneChangeDetection } from "@angular/core";
+import { provideCharts, withDefaultRegisterables } from "ng2-charts";
 
 import { environment } from "./environments/environment";
 import { AppComponent } from "./app/app.component";
@@ -38,6 +39,7 @@ bootstrapApplication(AppComponent, {
     { provide: HTTP_INTERCEPTORS, useClass: AccessTokenInterceptor, multi: true },
     { provide: GameInstanceStorageServiceInterface, useClass: GameInstanceIndexeddbStorageService },
     provideHttpClient(withInterceptorsFromDi()),
-    provideAnimationsAsync()
+    provideAnimationsAsync(),
+    provideCharts(withDefaultRegisterables())
   ]
 }).catch((err) => console.error(err));

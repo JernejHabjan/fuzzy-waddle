@@ -1,38 +1,57 @@
+@use "../../../../../styles/_variables" as *;
+
 .score-table-wrapper {
   overflow-x: auto;
-  margin-top: 1rem;
 }
 
 .table {
   white-space: nowrap;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
+  border-color: $tertiary;
 
   th,
   td {
     text-align: center;
-    padding: 0.4rem 0.5rem;
+    padding: 0.35rem 0.5rem;
     vertical-align: middle;
+    color: $primary;
+    border-color: $tertiary;
   }
 
   td:first-child,
   th:first-child {
     text-align: left;
+    font-weight: 600;
+  }
+
+  thead tr:first-child th {
+    background-color: $primary;
+    color: $quaternary;
+    border-color: $secondary;
+  }
+
+  thead tr:last-child th {
+    background-color: $secondary;
+    color: $quaternary;
+    font-size: 0.75rem;
+    border-color: $secondary;
+  }
+
+  tbody tr:nth-child(odd) {
+    background-color: $app-row-odd;
+  }
+
+  tbody tr:nth-child(even) {
+    background-color: $app-row-even;
   }
 }
 
-.group-header {
-  background-color: rgba(0, 0, 0, 0.15);
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
 .winner {
-  background-color: rgba(40, 167, 69, 0.1);
+  background-color: rgba(40, 167, 69, 0.15) !important;
 }
 
 .loser {
-  background-color: rgba(220, 53, 69, 0.1);
+  background-color: rgba(220, 53, 69, 0.08) !important;
 }
 
 .result-badge {
@@ -40,7 +59,7 @@
   padding: 0.15rem 0.5rem;
   border-radius: 0.25rem;
   font-weight: bold;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
 
   &.result-win {
     background-color: #28a745;
