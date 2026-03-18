@@ -1,3 +1,28 @@
+-- =============================================================================
+-- 0008: Probable Waffle Player Scores (Hybrid EAV Design)
+-- =============================================================================
+-- Stores per-player statistics for completed game sessions.
+-- Uses a 3-table hybrid design (core fields + EAV metrics catalog + metric values).
+--
+-- Tables:
+--   probable_waffle_player_scores        - core player info (result, score, faction…)
+--   probable_waffle_score_metric_types   - metric catalog; add new metrics with INSERT only
+--   probable_waffle_player_score_metrics - EAV values; only non-zero metrics stored
+--
+-- Materialized view (probable_waffle_player_scores_full):
+--   Pivots EAV rows into columns for fast score-screen and history queries.
+--   Refresh after bulk inserts: SELECT refresh_probable_waffle_player_scores_full();
+--
+-- Helper functions:
+--   get_player_score_metrics(player_score_id)             → JSONB of all metrics
+--   upsert_player_score_metric(id, metric_key, value)     → insert or update one metric
+--
+-- Stats view (probable_waffle_player_stats):
+--   Aggregates per-user wins/losses/averages from the materialized view.
+--
+-- Depends on: 0007_probable_waffle_game_sessions.sql
+-- =============================================================================
+
 -- Create player scores table with hybrid design
 -- Core metrics in main table, extended metrics in separate table for flexibility
 drop table if exists probable_waffle_player_scores cascade;

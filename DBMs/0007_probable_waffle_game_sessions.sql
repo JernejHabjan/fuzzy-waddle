@@ -1,4 +1,21 @@
--- Create game sessions table for tracking Probable Waffle multiplayer games
+-- =============================================================================
+-- 0007: Probable Waffle Game Sessions
+-- =============================================================================
+-- Tracks game sessions (online and offline) for score submission and match history.
+--
+-- Key fields:
+--   scores_submitted    - set to true when the last human player submits all scores
+--   scores_submitted_by - UUID of the player who submitted (idempotency tracking)
+--   human_player_count  - used by clients to determine who is "last" to submit
+--   session_state       - InProgress → ToScoreScreen → Completed / Abandoned
+--
+-- Multiplayer score submission strategy:
+--   Only the last human player to reach the score screen submits scores.
+--   API is idempotent: duplicate submissions return success without inserting again.
+--
+-- Depends on: 0001_profiles.sql, 0003_messages.sql (messages FK added here)
+-- =============================================================================
+
 drop table if exists probable_waffle_game_sessions cascade;
 
 create table probable_waffle_game_sessions
