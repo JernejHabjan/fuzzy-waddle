@@ -6,6 +6,7 @@ import { getHighGroundRangeBonus } from "../high-ground.helper";
 import {
   getGameObjectBounds,
   getGameObjectDepth,
+  getGameObjectLogicalTransform,
   getGameObjectVisibility,
   onObjectReady
 } from "../../../../data/game-object-helper";
@@ -14,6 +15,7 @@ import { ActorTranslateComponent } from "../../movement/actor-translate-componen
 import { getSceneService } from "../../../../world/services/scene-component-helpers";
 import { AudioService } from "../../../../world/services/audio.service";
 import { DepthHelper } from "../../../../world/services/depth.helper";
+import { ActorIndexSystem } from "../../../../world/services/ActorIndexSystem";
 import SlingshotRock from "../../../../prefabs/weapons/SlingshotRock";
 import Arrow from "../../../../prefabs/weapons/Arrow";
 import FireBall from "../../../../prefabs/weapons/FireBall";
@@ -27,6 +29,8 @@ import { ProjectileType } from "../projectile-type";
 import type { AnimationOptions } from "../../animation/animation-options";
 import type { ProjectileData } from "../projectile-data";
 import type { AttackDefinition } from "./attack-definition";
+import type { IsoDirection } from "../../movement/iso-directions";
+import { TilemapComponent } from "../../../../world/tilemap/tilemap.component";
 import GameObject = Phaser.GameObjects.GameObject;
 import TivaraAlchemistVase from "../../../../prefabs/weapons/TivaraAlchemistVase";
 
@@ -35,6 +39,7 @@ export class AttackComponent {
   private animationActorComponent?: AnimationActorComponent;
   private actorTranslateComponent?: ActorTranslateComponent;
   private audioService?: AudioService;
+  private actorIndexSystem?: ActorIndexSystem;
   private projectileTween?: Phaser.Tweens.Tween;
   private rotationTween?: Phaser.Tweens.Tween;
   currentAttack: AttackData | null = null;
@@ -61,6 +66,7 @@ export class AttackComponent {
     this.actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
     this.animationActorComponent = getActorComponent(this.gameObject, AnimationActorComponent);
     this.audioService = getSceneService(this.gameObject.scene, AudioService);
+    this.actorIndexSystem = getSceneService(this.gameObject.scene, ActorIndexSystem);
   }
 
   private destroy() {
@@ -146,14 +152,125 @@ export class AttackComponent {
     if (attack.projectile) {
       this.spawnProjectileAndFire(attack, enemy);
     } else {
-      const enemyHealthComponent = getActorComponent(enemy, HealthComponent);
-      if (!enemyHealthComponent) return;
-      enemyHealthComponent.takeDamage(attack.damage, attack.damageType, this.gameObject);
+      this.applyInstantAttackDamage(attack, enemy);
 
       this.playSharedAttackLogic(attack, enemy);
     }
 
     this.remainingCooldown = attack.cooldown;
+  }
+
+  private applyInstantAttackDamage(attack: AttackData, enemy: GameObject) {
+    const targets = this.getInstantAttackTargets(attack, enemy);
+    if (targets.length === 0) return;
+
+    for (const target of targets) {
+      const targetHealthComponent = getActorComponent(target, HealthComponent);
+      if (!targetHealthComponent || targetHealthComponent.killed) continue;
+      targetHealthComponent.takeDamage(attack.damage, attack.damageType, this.gameObject);
+    }
+  }
+
+  private getInstantAttackTargets(attack: AttackData, enemy: GameObject): GameObject[] {
+    const enemyHealthComponent = getActorComponent(enemy, HealthComponent);
+    if (!enemyHealthComponent || enemyHealthComponent.killed) return [];
+    if (!attack.meleeAoe) return [enemy];
+    if (!this.actorIndexSystem) return [enemy];
+
+    const attackerTransform = getGameObjectLogicalTransform(this.gameObject);
+    if (!attackerTransform) return [enemy];
+
+    this.actorTranslateComponent?.turnTowardsGameObject(enemy);
+
+    const facingVector = this.getFacingVector(attackerTransform, enemy);
+    if (!facingVector) return [enemy];
+
+    const halfAngleRadians = Phaser.Math.DegToRad(attack.meleeAoe.angleDegrees / 2);
+    const minimumDotProduct = Math.cos(halfAngleRadians);
+    const aoeRangePixels = attack.meleeAoe.range * TilemapComponent.tileWidth;
+    const targets: GameObject[] = [];
+
+    for (const candidate of this.actorIndexSystem.getEnemyCandidates(this.gameObject)) {
+      if (!attack.canTargetAir && this.isTargetFlying(candidate)) continue;
+
+      const candidateHealthComponent = getActorComponent(candidate, HealthComponent);
+      if (!candidateHealthComponent || candidateHealthComponent.killed) continue;
+
+      const candidateTransform = getGameObjectLogicalTransform(candidate);
+      if (!candidateTransform) continue;
+
+      const offsetX = candidateTransform.x - attackerTransform.x;
+      const offsetY = candidateTransform.y - attackerTransform.y;
+      const distance = Math.hypot(offsetX, offsetY);
+      if (distance === 0 || distance > aoeRangePixels) continue;
+
+      const dotProduct = (offsetX * facingVector.x + offsetY * facingVector.y) / distance;
+      if (dotProduct < minimumDotProduct) continue;
+
+      targets.push(candidate);
+    }
+
+    return targets.length > 0 ? targets : [enemy];
+  }
+
+  private getFacingVector(
+    attackerTransform: { x: number; y: number },
+    enemy: GameObject
+  ): { x: number; y: number } | null {
+    const currentDirection = this.actorTranslateComponent?.currentDirection;
+    if (currentDirection) {
+      return this.getFacingVectorFromDirection(currentDirection);
+    }
+
+    const enemyTransform = getGameObjectLogicalTransform(enemy);
+    if (!enemyTransform) return null;
+
+    const directionX = enemyTransform.x - attackerTransform.x;
+    const directionY = enemyTransform.y - attackerTransform.y;
+    const distance = Math.hypot(directionX, directionY);
+    if (distance === 0) return null;
+
+    return {
+      x: directionX / distance,
+      y: directionY / distance
+    };
+  }
+
+  private getFacingVectorFromDirection(direction: IsoDirection): { x: number; y: number } {
+    let directionVector: { x: number; y: number };
+
+    switch (direction) {
+      case "north":
+        directionVector = { x: 0, y: -1 };
+        break;
+      case "south":
+        directionVector = { x: 0, y: 1 };
+        break;
+      case "east":
+        directionVector = { x: 1, y: 0 };
+        break;
+      case "west":
+        directionVector = { x: -1, y: 0 };
+        break;
+      case "northeast":
+        directionVector = { x: 1, y: -0.5 };
+        break;
+      case "northwest":
+        directionVector = { x: -1, y: -0.5 };
+        break;
+      case "southeast":
+        directionVector = { x: 1, y: 0.5 };
+        break;
+      case "southwest":
+        directionVector = { x: -1, y: 0.5 };
+        break;
+    }
+
+    const magnitude = Math.hypot(directionVector.x, directionVector.y);
+    return {
+      x: directionVector.x / magnitude,
+      y: directionVector.y / magnitude
+    };
   }
 
   private playSharedAttackLogic(attack: AttackData, enemy: GameObject) {

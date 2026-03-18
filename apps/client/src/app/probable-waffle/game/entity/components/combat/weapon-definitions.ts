@@ -381,6 +381,10 @@ export const weaponDefinitions = {
     range: 2,
     minRange: 0,
     highGroundRangeBonus: 0,
+    meleeAoe: {
+      angleDegrees: 90,
+      range: 2
+    },
     animationType: AnimationType.LargeSlash,
     sounds: {
       preparing: null,
@@ -570,6 +574,10 @@ export const weaponDefinitions = {
     delays: {
       fire: 200,
       hit: 500
+    },
+    meleeAoe: {
+      angleDegrees: 90,
+      range: 2
     }
   },
   [WeaponType.Furball]: {
