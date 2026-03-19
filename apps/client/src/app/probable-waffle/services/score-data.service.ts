@@ -1,5 +1,5 @@
 import { inject, Injectable } from "@angular/core";
-import type { PlayerNumber, PlayerScoreData } from "@fuzzy-waddle/api-interfaces";
+import type { PlayerScoreData } from "@fuzzy-waddle/api-interfaces";
 import { GameInstanceClientService } from "../communicators/game-instance-client.service";
 
 /**
@@ -10,19 +10,6 @@ import { GameInstanceClientService } from "../communicators/game-instance-client
 })
 export class ScoreDataService {
   private readonly gameInstanceClientService = inject(GameInstanceClientService);
-
-  /**
-   * Get score data for a specific player
-   */
-  getPlayerScore(playerNumber: PlayerNumber): PlayerScoreData | undefined {
-    const gameInstance = this.gameInstanceClientService.gameInstance;
-    if (!gameInstance?.gameState) return undefined;
-
-    const scoreData = gameInstance.gameState.data.scoreData;
-    if (!scoreData) return undefined;
-
-    return scoreData.get(playerNumber);
-  }
 
   /**
    * Get all player scores
@@ -54,14 +41,4 @@ export class ScoreDataService {
     return gameInstance.gameState.data.scoreSnapshots || [];
   }
 
-  /**
-   * Check if score data is available
-   */
-  hasScoreData(): boolean {
-    const gameInstance = this.gameInstanceClientService.gameInstance;
-    if (!gameInstance?.gameState) return false;
-
-    const scoreData = gameInstance.gameState.data.scoreData;
-    return scoreData !== undefined && scoreData.size > 0;
-  }
 }

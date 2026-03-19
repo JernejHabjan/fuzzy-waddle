@@ -18,7 +18,9 @@ export class GameSessionService {
   }
 
   /**
-   * Create a new game session
+   * Creates a new game session row.
+   * Called on-the-fly during score submission when no prior session exists
+   * (e.g. skirmish games that were never tracked via matchmaking).
    */
   async createSession(params: {
     gameInstanceId: string;
@@ -43,32 +45,19 @@ export class GameSessionService {
   }
 
   /**
-   * Update session state
+   * Fetches a game session by its game_instance_id.
+   * Returns null when not found (no error thrown for missing rows).
    */
-  async updateSessionState(gameInstanceId: string, sessionState: string): Promise<void> {
-    const { error } = await this.supabase
-      .from("probable_waffle_game_sessions")
-      .update({ session_state: sessionState })
-      .eq("game_instance_id", gameInstanceId);
-
-    if (error) {
-      console.error("Failed to update session state:", error);
-      throw new Error(`Failed to update session state: ${error.message}`);
-    }
-  }
-
-  /**
-   * Get session by game instance ID
-   */
-  async getSession(gameInstanceId: string): Promise<any> {
+  async getSession(
+    gameInstanceId: string
+  ): Promise<Database["public"]["Tables"]["probable_waffle_game_sessions"]["Row"] | null> {
     const { data, error } = await this.supabase
       .from("probable_waffle_game_sessions")
       .select("*")
       .eq("game_instance_id", gameInstanceId)
-      .single();
+      .maybeSingle();
 
-    if (error && error.code !== "PGRST116") {
-      // PGRST116 = not found
+    if (error) {
       console.error("Failed to get session:", error);
       throw new Error(`Failed to get session: ${error.message}`);
     }
@@ -77,7 +66,8 @@ export class GameSessionService {
   }
 
   /**
-   * Check if scores are already submitted
+   * Returns true if scores have already been recorded for this game instance.
+   * Used to make score submission idempotent.
    */
   async checkScoresSubmitted(gameInstanceId: string): Promise<boolean> {
     const session = await this.getSession(gameInstanceId);
@@ -85,7 +75,18 @@ export class GameSessionService {
   }
 
   /**
-   * Submit player scores (idempotent)
+   * Records player scores and timeline snapshots for a completed game.
+   *
+   * Idempotent: calling this more than once for the same game instance is safe —
+   * the second call returns early without inserting duplicates.
+   *
+   * If no prior session row exists (e.g. offline skirmish), one is created
+   * on-the-fly using the provided `sessionMeta`. `sessionMeta.mapId` is required
+   * in that case.
+   *
+   * On any insertion failure the method returns `{ success: false }` rather than
+   * throwing, so the HTTP response always has a 2xx status and the caller can
+   * inspect the message.
    */
   async submitScores(
     gameInstanceId: string,
@@ -97,17 +98,14 @@ export class GameSessionService {
     // Check if already submitted
     const alreadySubmitted = await this.checkScoresSubmitted(gameInstanceId);
     if (alreadySubmitted) {
-      return {
-        success: true,
-        message: "Scores already recorded (idempotent)"
-      };
+      return { success: true, message: "Scores already recorded (idempotent)" };
     }
 
-    // Get session ID, or create one on-the-fly for games not tracked via matchmaking
+    // Resolve session row, creating one on-the-fly when missing
     let session = await this.getSession(gameInstanceId);
     if (!session) {
       if (!sessionMeta?.mapId) {
-        throw new Error("Game session not found and insufficient data to create one");
+        return { success: false, message: "Game session not found and insufficient data to create one" };
       }
       await this.createSession({
         gameInstanceId,
@@ -118,14 +116,13 @@ export class GameSessionService {
       });
       session = await this.getSession(gameInstanceId);
       if (!session) {
-        throw new Error("Failed to create game session");
+        return { success: false, message: "Failed to retrieve game session after creation" };
       }
     }
 
     try {
-      // Insert all player scores and metrics in a transaction-like manner
+      // Insert all player scores and their metrics
       for (const playerScore of playerScores) {
-        // Insert player score core data
         const { data: insertedScore, error: scoreError } = await this.supabase
           .from("probable_waffle_player_scores")
           .insert({
@@ -146,26 +143,16 @@ export class GameSessionService {
 
         if (scoreError) {
           console.error("Failed to insert player score:", scoreError);
-          throw new Error(`Failed to insert player score: ${scoreError.message}`);
+          return { success: false, message: `Failed to insert player score: ${scoreError.message}` };
         }
 
-        // Insert metrics for this player
         const playerScoreId = insertedScore.id;
-        const metricInserts = [];
-
-        for (const [metricKey, metricValue] of Object.entries(playerScore.metrics)) {
-          if (metricValue > 0) {
-            // Only insert non-zero metrics
-            metricInserts.push({
-              player_score_id: playerScoreId,
-              metric_key: metricKey,
-              metric_value: metricValue
-            });
-          }
-        }
+        const metricInserts = Object.entries(playerScore.metrics)
+          .filter(([, value]) => value > 0) // Only persist non-zero metrics
+          .map(([metric_key, metric_value]) => ({ player_score_id: playerScoreId, metric_key, metric_value }));
 
         if (metricInserts.length > 0) {
-          // Get metric type IDs
+          // Resolve metric_key → metric_type_id from the catalog table
           const { data: metricTypes, error: metricTypesError } = await this.supabase
             .from("probable_waffle_score_metric_types")
             .select("id, metric_key")
@@ -176,20 +163,20 @@ export class GameSessionService {
 
           if (metricTypesError) {
             console.error("Failed to get metric types:", metricTypesError);
-            throw new Error(`Failed to get metric types: ${metricTypesError.message}`);
+            return { success: false, message: `Failed to get metric types: ${metricTypesError.message}` };
           }
 
-          // Map metric keys to IDs
-          const metricKeyToId = new Map(metricTypes.map((mt: any) => [mt.metric_key, mt.id]));
+          const metricKeyToId = new Map(metricTypes.map((mt) => [mt.metric_key, mt.id]));
 
-          // Insert metrics with type IDs
           const metricsToInsert = metricInserts
             .map((m) => ({
               player_score_id: playerScoreId,
               metric_type_id: metricKeyToId.get(m.metric_key),
               metric_value: m.metric_value
             }))
-            .filter((m) => m.metric_type_id !== undefined);
+            .filter((m): m is { player_score_id: number; metric_type_id: number; metric_value: number } =>
+              m.metric_type_id !== undefined
+            );
 
           const { error: metricsError } = await this.supabase
             .from("probable_waffle_player_score_metrics")
@@ -197,30 +184,27 @@ export class GameSessionService {
 
           if (metricsError) {
             console.error("Failed to insert metrics:", metricsError);
-            throw new Error(`Failed to insert metrics: ${metricsError.message}`);
+            return { success: false, message: `Failed to insert metrics: ${metricsError.message}` };
           }
         }
       }
 
-      // Store score snapshots for timeline charts (single row per game)
+      // Store all timeline snapshots as a single JSONB row
       if (snapshots && snapshots.length > 0) {
-        const { error: snapshotError } = await this.supabase
-          .from("probable_waffle_score_snapshots")
-          .insert({
-            game_session_id: session.id,
-            snapshots: snapshots as unknown as Json
-          });
+        const { error: snapshotError } = await this.supabase.from("probable_waffle_score_snapshots").insert({
+          game_session_id: session.id,
+          snapshots: snapshots as unknown as Json
+        });
         if (snapshotError) {
           console.warn("Failed to insert snapshots (non-critical):", snapshotError);
         }
       }
 
-      // Calculate duration
+      // Calculate session duration and mark as complete
       const startedAt = new Date(session.started_at);
       const endedAt = new Date();
       const durationSeconds = Math.max(0, Math.floor((endedAt.getTime() - startedAt.getTime()) / 1000));
 
-      // Mark session as complete
       const { error: updateError } = await this.supabase
         .from("probable_waffle_game_sessions")
         .update({
@@ -235,38 +219,38 @@ export class GameSessionService {
 
       if (updateError) {
         console.error("Failed to update session:", updateError);
-        throw new Error(`Failed to update session: ${updateError.message}`);
+        return { success: false, message: `Failed to update session: ${updateError.message}` };
       }
 
-      // Refresh materialized view
+      // Refresh materialized view (best-effort)
       await this.refreshScoresView();
 
-      return {
-        success: true,
-        message: "Scores recorded successfully"
-      };
+      return { success: true, message: "Scores recorded successfully" };
     } catch (error) {
+      const message = error instanceof Error ? error.message : "Unknown error during score submission";
       console.error("Error submitting scores:", error);
-      throw error;
+      return { success: false, message };
     }
   }
 
   /**
-   * Refresh materialized view
+   * Refreshes the `probable_waffle_player_scores_full` materialized view.
+   * Failures are non-fatal — the view will be stale until the next refresh.
    */
   async refreshScoresView(): Promise<void> {
     try {
       await this.supabase.rpc("refresh_probable_waffle_player_scores_full");
     } catch (error) {
       console.warn("Failed to refresh materialized view:", error);
-      // Don't throw - view refresh is not critical
     }
   }
 
   /**
-   * Get match history for a user
+   * Returns paginated match history for a given user.
+   * Only sessions the user participated in (has a player_score row) are returned.
+   * Sessions without an ended_at are excluded (still in-progress).
    */
-  async getMatchHistory(userId: string, limit: number = 20, offset: number = 0): Promise<any> {
+  async getMatchHistory(userId: string, limit: number = 20, offset: number = 0): Promise<unknown> {
     // Step 1: find all session IDs this user participated in
     const { data: participations, error: partError } = await this.supabase
       .from("probable_waffle_player_scores")
@@ -311,7 +295,7 @@ export class GameSessionService {
     }
 
     // Step 3: get all players for the returned sessions
-    const pageSessionIds = sessions.map((s: any) => s.id);
+    const pageSessionIds = sessions.map((s) => s.id);
     const { data: allPlayers, error: playersError } = await this.supabase
       .from("probable_waffle_player_scores")
       .select("game_session_id, player_number, player_name, faction_type, game_result, final_score, user_id")
@@ -322,14 +306,14 @@ export class GameSessionService {
       throw new Error(`Failed to get players: ${playersError.message}`);
     }
 
-    const playersBySession = new Map<string, any[]>();
+    const playersBySession = new Map<string, typeof allPlayers>();
     for (const p of allPlayers ?? []) {
       const list = playersBySession.get(p.game_session_id) ?? [];
       list.push(p);
       playersBySession.set(p.game_session_id, list);
     }
 
-    const matches = sessions.map((session: any) => ({
+    const matches = sessions.map((session) => ({
       id: session.id,
       gameInstanceId: session.game_instance_id,
       gameType: session.game_type,
@@ -339,7 +323,7 @@ export class GameSessionService {
       totalDurationSeconds: session.total_duration_seconds,
       humanPlayerCount: session.human_player_count,
       userResult: userResultMap.get(session.id) ?? "quit",
-      players: (playersBySession.get(session.id) ?? []).map((ps: any) => ({
+      players: (playersBySession.get(session.id) ?? []).map((ps) => ({
         playerNumber: ps.player_number,
         playerName: ps.player_name,
         factionType: ps.faction_type,
@@ -353,10 +337,15 @@ export class GameSessionService {
   }
 
   /**
-   * Get match details
+   * Returns full score details for a single match.
+   *
+   * Access control: verifies the requesting user has a player_score row for
+   * this session before returning any data.
+   *
+   * Includes per-player metrics (joined from the metric catalog) and the
+   * full timeline snapshot array for the score-over-time chart.
    */
-  async getMatchDetails(gameInstanceId: string, userId: string): Promise<any> {
-    // Get session
+  async getMatchDetails(gameInstanceId: string, userId: string): Promise<unknown> {
     const session = await this.getSession(gameInstanceId);
     if (!session) {
       throw new Error("Game session not found");
@@ -368,13 +357,13 @@ export class GameSessionService {
       .select("id")
       .eq("game_session_id", session.id)
       .eq("user_id", userId)
-      .single();
+      .maybeSingle();
 
     if (participationError || !participation) {
       throw new Error("User did not participate in this game");
     }
 
-    // Get all player scores for this session from base table
+    // Fetch all player score rows for this session
     const { data: scores, error: scoresError } = await this.supabase
       .from("probable_waffle_player_scores")
       .select("*")
@@ -386,8 +375,8 @@ export class GameSessionService {
       throw new Error(`Failed to get player scores: ${scoresError.message}`);
     }
 
-    // Get metrics for all players in one query (FK relationship exists)
-    const scoreIds = (scores ?? []).map((s: any) => s.id);
+    // Fetch metrics for all players in a single query via FK join
+    const scoreIds = (scores ?? []).map((s) => s.id);
     const metricsMap = new Map<number, Record<string, number>>();
 
     if (scoreIds.length > 0) {
@@ -397,7 +386,7 @@ export class GameSessionService {
         .in("player_score_id", scoreIds);
 
       for (const m of metrics ?? []) {
-        const key = (m.probable_waffle_score_metric_types as any)?.metric_key;
+        const key = (m.probable_waffle_score_metric_types as { metric_key: string } | null)?.metric_key;
         if (!key) continue;
         const existing = metricsMap.get(m.player_score_id) ?? {};
         existing[key] = m.metric_value;
@@ -405,7 +394,7 @@ export class GameSessionService {
       }
     }
 
-    const playerScores = (scores ?? []).map((s: any) => ({
+    const playerScores = (scores ?? []).map((s) => ({
       playerNumber: s.player_number,
       playerName: s.player_name,
       playerType: s.player_type,
@@ -423,7 +412,7 @@ export class GameSessionService {
     const endedAt = session.ended_at ? new Date(session.ended_at) : new Date();
     const calculatedDuration = Math.max(0, Math.floor((endedAt.getTime() - startedAt.getTime()) / 1000));
 
-    // Retrieve snapshots for timeline chart (single row per game)
+    // Fetch the single timeline-snapshots row for this session
     const { data: snapshotRow } = await this.supabase
       .from("probable_waffle_score_snapshots")
       .select("snapshots")

@@ -2,7 +2,12 @@ import type { OnInit } from "@angular/core";
 import { Component, inject, input, signal } from "@angular/core";
 import { Router, RouterLink } from "@angular/router";
 import { DatePipe } from "@angular/common";
-import { type GameSessionDetails, ProbableWaffleLevels, ProbableWaffleMapEnum } from "@fuzzy-waddle/api-interfaces";
+import {
+  type GameSessionDetails,
+  ProbableWaffleGameInstanceType,
+  ProbableWaffleLevels,
+  ProbableWaffleMapEnum
+} from "@fuzzy-waddle/api-interfaces";
 import { MatchHistoryService } from "../../services/match-history.service";
 import { ScoreTableComponent } from "../score-screen/table/score-table.component";
 import { ScoreThroughTimeComponent } from "../score-screen/chart/score-through-time.component";
@@ -68,12 +73,12 @@ export class MatchDetailsComponent implements OnInit {
   }
 
   protected getGameTypeName(gameType: string): string {
-    const typeNames: Record<string, string> = {
-      "0": "Matchmaking",
-      "1": "Custom Game",
-      "2": "Skirmish",
-      "3": "Instant Game",
-      "4": "Replay"
+    const typeNames: Partial<Record<string, string>> = {
+      [ProbableWaffleGameInstanceType.Matchmaking]: "Matchmaking",
+      [ProbableWaffleGameInstanceType.SelfHosted]: "Custom Game",
+      [ProbableWaffleGameInstanceType.Skirmish]: "Skirmish",
+      [ProbableWaffleGameInstanceType.InstantGame]: "Instant Game",
+      [ProbableWaffleGameInstanceType.Replay]: "Replay"
     };
     return typeNames[gameType] ?? gameType;
   }

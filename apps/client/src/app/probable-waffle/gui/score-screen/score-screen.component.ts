@@ -1,5 +1,5 @@
 import { Component, HostListener, inject, type OnDestroy, type OnInit } from "@angular/core";
-
+import { Subscription } from "rxjs";
 import { RouterLink } from "@angular/router";
 import { ScoreTableComponent } from "./table/score-table.component";
 import { ScoreThroughTimeComponent } from "./chart/score-through-time.component";
@@ -18,6 +18,7 @@ export class ScoreScreenComponent implements OnInit, OnDestroy {
   private readonly gameInstanceClientService = inject(GameInstanceClientService);
   private readonly scoreSubmissionService = inject(ScoreSubmissionService);
   private readonly authService = inject(AuthService);
+  private scoreSubmissionSub?: Subscription;
 
   protected changeTab = (scoreTable: string) => {
     this.activeTab = scoreTable;
@@ -61,7 +62,7 @@ export class ScoreScreenComponent implements OnInit, OnDestroy {
         }))
       }));
 
-      this.scoreSubmissionService
+      this.scoreSubmissionSub = this.scoreSubmissionService
         .submitScores(
           gameInstanceId,
           playerScores,
@@ -96,6 +97,7 @@ export class ScoreScreenComponent implements OnInit, OnDestroy {
   }
 
   async ngOnDestroy() {
+    this.scoreSubmissionSub?.unsubscribe();
     await this.gameInstanceClientService.stopGameInstance();
   }
 }

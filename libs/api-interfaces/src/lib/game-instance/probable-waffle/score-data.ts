@@ -85,4 +85,3 @@ export const STANDARD_METRICS = {
   MAX_BUILDING_COUNT: "max_building_count"
 } as const;
 
-export type StandardMetricKey = (typeof STANDARD_METRICS)[keyof typeof STANDARD_METRICS];
