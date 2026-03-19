@@ -294,8 +294,9 @@ export default class ActorDefinitionTooltip extends Phaser.GameObjects.Container
       const requirementNames = allRequirements
         .map((req) => {
           // Check if it's an ObjectNames (actor/building) or ResearchType
-          if (getPwActorDefinition(req, null)) {
-            return getPwActorDefinition(req, null)?.components?.info?.name ?? req;
+          const actorDef = getPwActorDefinition(req, null);
+          if (actorDef) {
+            return actorDef.components?.info?.name ?? req;
           } else {
             // It's a ResearchType
             return researchDefinitions[req as ResearchType]?.name ?? req;
