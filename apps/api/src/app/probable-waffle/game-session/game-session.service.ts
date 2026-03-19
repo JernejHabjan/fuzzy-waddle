@@ -8,9 +8,10 @@ import {
   PlayerScoreDto,
   ProbableWaffleMapEnum
 } from "@fuzzy-waddle/api-interfaces";
+import { GameSessionServiceInterface } from "./game-session.service.interface";
 
 @Injectable()
-export class GameSessionService {
+export class GameSessionService implements GameSessionServiceInterface {
   private supabase: SupabaseClient<Database>;
 
   constructor(private readonly supabaseProvider: SupabaseProviderService) {
@@ -248,7 +249,7 @@ export class GameSessionService {
    * Refreshes the `probable_waffle_player_scores_full` materialized view.
    * Failures are non-fatal — the view will be stale until the next refresh.
    */
-  async refreshScoresView(): Promise<void> {
+  private async refreshScoresView(): Promise<void> {
     try {
       await this.supabase.rpc("refresh_probable_waffle_player_scores_full");
     } catch (error) {
