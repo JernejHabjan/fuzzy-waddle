@@ -1,12 +1,11 @@
-import { Component, inject, signal, input } from "@angular/core";
 import type { OnInit } from "@angular/core";
+import { Component, inject, input, signal } from "@angular/core";
 import { Router, RouterLink } from "@angular/router";
 import { DatePipe } from "@angular/common";
-import { type GameSessionDetails, ProbableWaffleMapEnum } from "@fuzzy-waddle/api-interfaces";
+import { type GameSessionDetails, ProbableWaffleLevels, ProbableWaffleMapEnum } from "@fuzzy-waddle/api-interfaces";
 import { MatchHistoryService } from "../../services/match-history.service";
 import { ScoreTableComponent } from "../score-screen/table/score-table.component";
 import { ScoreThroughTimeComponent } from "../score-screen/chart/score-through-time.component";
-import { ProbableWaffleLevels } from "@fuzzy-waddle/api-interfaces";
 import { AuthService } from "../../../auth/auth.service";
 import { ServerHealthService } from "../../../shared/services/server-health.service";
 

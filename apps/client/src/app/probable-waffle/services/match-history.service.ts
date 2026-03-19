@@ -1,7 +1,7 @@
 import { inject, Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
-import type { MatchHistoryResponse, GameSessionDetails } from "@fuzzy-waddle/api-interfaces";
+import type { GameSessionDetails, MatchHistoryResponse } from "@fuzzy-waddle/api-interfaces";
 import { environment } from "../../../environments/environment";
 
 /**

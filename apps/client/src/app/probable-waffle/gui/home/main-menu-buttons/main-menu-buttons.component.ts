@@ -14,7 +14,7 @@ export class MainMenuButtonsComponent {
   protected readonly enabledMultiplayer = !environment.production;
   protected readonly enabledReplay = !environment.production;
   protected readonly enabledLoadGame = true;
-  protected readonly enabledMatchHistory = !environment.production;
+  protected readonly enabledMatchHistory = true; // finished in #588
   protected readonly enabledCampaign = !environment.production;
   protected readonly enabledProgress = true; // finished in #414
   protected readonly enabledOptions = true;

@@ -1,9 +1,13 @@
 import { Component, inject, input, type OnInit } from "@angular/core";
 
-import { type GameScoreSnapshot, type GameScoreSnapshotDto, type PlayerNumber } from "@fuzzy-waddle/api-interfaces";
+import {
+  type GameScoreSnapshot,
+  type GameScoreSnapshotDto,
+  GameSetupHelpers,
+  type PlayerNumber
+} from "@fuzzy-waddle/api-interfaces";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { ScoreDataService } from "../../../services/score-data.service";
-import { GameSetupHelpers } from "@fuzzy-waddle/api-interfaces";
 import { type ChartConfiguration, type ChartData, type ChartTypeRegistry, type DefaultDataPoint } from "chart.js";
 import { BaseChartDirective } from "ng2-charts";
 
@@ -62,7 +66,7 @@ export class ScoreThroughTimeComponent implements OnInit {
   };
 
   protected readonly chartLegend = true;
-  protected readonly chartType: "line" = "line";
+  protected readonly chartType = "line" as const;
 
   ngOnInit(): void {
     this.buildChart();

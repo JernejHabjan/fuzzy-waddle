@@ -47,7 +47,10 @@
             </div>
             <div>{{ match.humanPlayerCount }} player{{ match.humanPlayerCount > 1 ? "s" : "" }}</div>
             <div>
-              <button class="btn btn-sm btn-primary" (click)="viewDetails(match.gameInstanceId); $event.stopPropagation()">
+              <button
+                class="btn btn-sm btn-primary"
+                (click)="viewDetails(match.gameInstanceId); $event.stopPropagation()"
+              >
                 View Details
               </button>
             </div>

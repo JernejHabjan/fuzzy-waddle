@@ -54,7 +54,7 @@ describe("ScoreTableComponent", () => {
       factionType: FactionType.Skaduwee,
       playerType: ProbableWafflePlayerType.AI
     } satisfies PositionPlayerDefinition;
-    gameInstance.players[0].playerController.data.playerDefinition = playerDefinition;
+    gameInstance.players[0]!.playerController.data.playerDefinition = playerDefinition;
 
     component.ngOnInit();
     expect(component["players"].length).toBe(0); // no score data in stub
@@ -81,6 +81,6 @@ describe("ScoreTableComponent", () => {
     fixture.detectChanges();
 
     expect(component["players"].length).toBe(1);
-    expect(component["players"][0].playerName).toBe("Player 1");
+    expect(component["players"][0]!.playerName).toBe("Player 1");
   });
 });

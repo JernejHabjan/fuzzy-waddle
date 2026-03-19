@@ -5,7 +5,7 @@ import type {
   HealthComponentData
 } from "../../communicators/probable-waffle/communicator-game-events";
 import { ObjectNames } from "./object-names";
-import type { PlayerScoreData, GameScoreSnapshot } from "./score-data";
+import type { GameScoreSnapshot, PlayerScoreData } from "./score-data";
 import type {
   ActorTranslateComponentData,
   AttackComponentData,

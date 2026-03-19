@@ -1,1 +1,1 @@
-// Created from https://supabase.com/dashboard/project/bhzetyxjimpabioxoodz/integrations/data_api/docs?page=tables-intro
+Created via `generate-supabase-types` script in `package.json`

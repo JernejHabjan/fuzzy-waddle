@@ -6,7 +6,7 @@ import { ScoreThroughTimeComponent } from "./chart/score-through-time.component"
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 import { ScoreSubmissionService } from "../../services/score-submission.service";
 import { AuthService } from "../../../auth/auth.service";
-import { ProbableWafflePlayerType, type GameScoreSnapshotDto } from "@fuzzy-waddle/api-interfaces";
+import { type GameScoreSnapshotDto, ProbableWafflePlayerType } from "@fuzzy-waddle/api-interfaces";
 
 @Component({
   imports: [RouterLink, ScoreTableComponent, ScoreThroughTimeComponent],
@@ -61,22 +61,30 @@ export class ScoreScreenComponent implements OnInit, OnDestroy {
         }))
       }));
 
-      this.scoreSubmissionService.submitScores(gameInstanceId, playerScores, currentUser.id, {
-        gameType: String(gameInstance.gameInstanceMetadata.data.type),
-        mapId: gameInstance.gameMode?.data?.map,
-        humanPlayerCount
-      }, snapshots).subscribe({
-        next: (result) => {
-          if (result.success) {
-            console.log("Scores submitted successfully");
-          } else {
-            console.warn("Score submission failed, but continuing");
+      this.scoreSubmissionService
+        .submitScores(
+          gameInstanceId,
+          playerScores,
+          currentUser.id,
+          {
+            gameType: String(gameInstance.gameInstanceMetadata.data.type),
+            mapId: gameInstance.gameMode?.data?.map,
+            humanPlayerCount
+          },
+          snapshots
+        )
+        .subscribe({
+          next: (result) => {
+            if (result.success) {
+              console.log("Scores submitted successfully");
+            } else {
+              console.warn("Score submission failed, but continuing");
+            }
+          },
+          error: (error) => {
+            console.error("Error submitting scores:", error);
           }
-        },
-        error: (error) => {
-          console.error("Error submitting scores:", error);
-        }
-      });
+        });
     } else {
       console.log("Not last human player - another player will submit scores");
     }

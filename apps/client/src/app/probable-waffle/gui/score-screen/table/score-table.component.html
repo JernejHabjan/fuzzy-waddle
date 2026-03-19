@@ -43,7 +43,9 @@
               {{ player.gameResult.toUpperCase() }}
             </span>
           </td>
-          <td><strong>{{ player.finalScore }}</strong></td>
+          <td>
+            <strong>{{ player.finalScore }}</strong>
+          </td>
           <td>{{ getMetric(player, METRICS.UNITS_PRODUCED) }}</td>
           <td>{{ getMetric(player, METRICS.UNITS_KILLED) }}</td>
           <td>{{ getMetric(player, METRICS.UNITS_LOST) }}</td>

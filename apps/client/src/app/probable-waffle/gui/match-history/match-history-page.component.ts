@@ -1,10 +1,9 @@
-import { Component, inject, signal } from "@angular/core";
 import type { OnInit } from "@angular/core";
+import { Component, inject, signal } from "@angular/core";
 import { Router, RouterLink } from "@angular/router";
 import { DatePipe } from "@angular/common";
-import { type MatchHistorySummary, ProbableWaffleMapEnum } from "@fuzzy-waddle/api-interfaces";
+import { type MatchHistorySummary, ProbableWaffleLevels, ProbableWaffleMapEnum } from "@fuzzy-waddle/api-interfaces";
 import { MatchHistoryService } from "../../services/match-history.service";
-import { ProbableWaffleLevels } from "@fuzzy-waddle/api-interfaces";
 import { AuthService } from "../../../auth/auth.service";
 import { ServerHealthService } from "../../../shared/services/server-health.service";
 
