@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { SupabaseProviderService } from "../../../core/supabase-provider/supabase-provider.service";
 import {
-  Database,
+  type Database,
   type GameScoreSnapshotDto,
   type Json,
   PlayerScoreDto,
@@ -29,14 +29,17 @@ export class GameSessionService {
     createdByUserId: string;
     humanPlayerCount: number;
   }): Promise<void> {
-    const { error } = await this.supabase.from("probable_waffle_game_sessions").insert({
-      game_instance_id: params.gameInstanceId,
-      game_type: params.gameType,
-      map_id: params.mapId,
-      created_by_user_id: params.createdByUserId,
-      human_player_count: params.humanPlayerCount,
-      session_state: "InProgress"
-    });
+    const { error } = await this.supabase.from("probable_waffle_game_sessions").upsert(
+      {
+        game_instance_id: params.gameInstanceId,
+        game_type: params.gameType,
+        map_id: params.mapId,
+        created_by_user_id: params.createdByUserId,
+        human_player_count: params.humanPlayerCount,
+        session_state: "InProgress"
+      },
+      { onConflict: "game_instance_id", ignoreDuplicates: true }
+    );
 
     if (error) {
       console.error("Failed to create game session:", error);
@@ -121,6 +124,29 @@ export class GameSessionService {
     }
 
     try {
+      // Collect all non-zero metric keys across all players in a single pass
+      const nonZeroMetricKeys = new Set<string>();
+      for (const ps of playerScores) {
+        for (const [key, value] of Object.entries(ps.metrics)) {
+          if (value > 0) nonZeroMetricKeys.add(key);
+        }
+      }
+      const allMetricKeys = [...nonZeroMetricKeys];
+      let metricKeyToId = new Map<string, number>();
+      if (allMetricKeys.length > 0) {
+        const { data: allMetricTypes, error: metricTypesError } = await this.supabase
+          .from("probable_waffle_score_metric_types")
+          .select("id, metric_key")
+          .in("metric_key", allMetricKeys);
+
+        if (metricTypesError) {
+          console.error("Failed to get metric types:", metricTypesError);
+          return { success: false, message: `Failed to get metric types: ${metricTypesError.message}` };
+        }
+
+        metricKeyToId = new Map(allMetricTypes.map((mt) => [mt.metric_key, mt.id]));
+      }
+
       // Insert all player scores and their metrics
       for (const playerScore of playerScores) {
         const { data: insertedScore, error: scoreError } = await this.supabase
@@ -152,30 +178,15 @@ export class GameSessionService {
           .map(([metric_key, metric_value]) => ({ player_score_id: playerScoreId, metric_key, metric_value }));
 
         if (metricInserts.length > 0) {
-          // Resolve metric_key → metric_type_id from the catalog table
-          const { data: metricTypes, error: metricTypesError } = await this.supabase
-            .from("probable_waffle_score_metric_types")
-            .select("id, metric_key")
-            .in(
-              "metric_key",
-              metricInserts.map((m) => m.metric_key)
-            );
-
-          if (metricTypesError) {
-            console.error("Failed to get metric types:", metricTypesError);
-            return { success: false, message: `Failed to get metric types: ${metricTypesError.message}` };
-          }
-
-          const metricKeyToId = new Map(metricTypes.map((mt) => [mt.metric_key, mt.id]));
-
           const metricsToInsert = metricInserts
             .map((m) => ({
               player_score_id: playerScoreId,
               metric_type_id: metricKeyToId.get(m.metric_key),
               metric_value: m.metric_value
             }))
-            .filter((m): m is { player_score_id: number; metric_type_id: number; metric_value: number } =>
-              m.metric_type_id !== undefined
+            .filter(
+              (m): m is { player_score_id: number; metric_type_id: number; metric_value: number } =>
+                m.metric_type_id !== undefined
             );
 
           const { error: metricsError } = await this.supabase

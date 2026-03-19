@@ -5,7 +5,8 @@ import {
   type GameScoreSnapshot,
   type PlayerScoreSnapshot,
   STANDARD_METRICS,
-  type ProbableWafflePlayer
+  type ProbableWafflePlayer,
+  ProbableWafflePlayerType
 } from "@fuzzy-waddle/api-interfaces";
 import { getPlayersFromScene } from "../../../../shared/game/phaser/scene/base.scene";
 import { getCurrentPlayerNumber } from "../../data/scene-data";
@@ -62,7 +63,7 @@ export class ScoreTracker {
       scoreData.set(playerNumber, {
         playerNumber,
         playerName: player.playerController.data.playerDefinition?.player.playerName || `Player ${playerNumber}`,
-        playerType: player.playerController.data.playerDefinition?.playerType === 1 ? "AI" : "Human",
+        playerType: player.playerController.data.playerDefinition?.playerType === ProbableWafflePlayerType.AI ? "AI" : "Human",
         teamNumber: player.playerController.data.playerDefinition?.team,
         factionType: player.factionType?.toString() || "Unknown",
         gameResult: "quit", // Default, will be updated by GameModeConditionChecker

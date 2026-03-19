@@ -45,7 +45,6 @@ export class ScoreSubmissionService {
   submitScores(
     gameInstanceId: string,
     playerScores: PlayerScoreData[],
-    submittedByUserId: string,
     sessionMeta?: { gameType?: string; mapId?: number; humanPlayerCount?: number },
     snapshots?: GameScoreSnapshotDto[]
   ): Observable<{ success: boolean; message: string }> {
@@ -54,7 +53,6 @@ export class ScoreSubmissionService {
     const payload = {
       gameInstanceId,
       playerScores,
-      submittedByUserId,
       ...sessionMeta,
       snapshots
     };
@@ -66,7 +64,7 @@ export class ScoreSubmissionService {
       }),
       catchError((error) => {
         console.error("Failed to submit scores:", error);
-        // Return success anyway - score submission is not critical
+        // Score submission is non-critical; return a non-fatal failure so callers can proceed
         return of({ success: false, message: "Failed to submit scores" });
       })
     );

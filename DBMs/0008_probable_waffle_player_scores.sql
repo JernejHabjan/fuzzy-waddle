@@ -133,7 +133,15 @@ drop policy if exists "Enable select for authenticated users" on probable_waffle
 create policy "Enable select for authenticated users" on probable_waffle_player_scores
   as permissive for select
   to authenticated
-  using (true);
+  using (
+    user_id = auth.uid()
+    or exists (
+      select 1
+      from probable_waffle_player_scores other_ps
+      where other_ps.game_session_id = probable_waffle_player_scores.game_session_id
+        and other_ps.user_id = auth.uid()
+    )
+  );
 
 drop policy if exists "Enable select for service_role" on probable_waffle_player_scores;
 create policy "Enable select for service_role" on probable_waffle_player_scores
@@ -155,7 +163,16 @@ drop policy if exists "Enable select for authenticated users" on probable_waffle
 create policy "Enable select for authenticated users" on probable_waffle_player_score_metrics
   as permissive for select
   to authenticated
-  using (true);
+  using (
+    exists (
+      select 1
+      from probable_waffle_player_scores ps
+      join probable_waffle_player_scores other_ps
+        on other_ps.game_session_id = ps.game_session_id
+           and other_ps.user_id = auth.uid()
+      where ps.id = probable_waffle_player_score_metrics.player_score_id
+    )
+  );
 
 drop policy if exists "Enable select for service_role" on probable_waffle_player_score_metrics;
 create policy "Enable select for service_role" on probable_waffle_player_score_metrics
