@@ -17,7 +17,17 @@ export class GameSessionController {
   @Post("submit-scores")
   @UseGuards(SupabaseAuthGuard)
   async submitScores(@CurrentUser() user: AuthUser, @Body() dto: SubmitScoresDto) {
-    return this.gameSessionService.submitScores(dto.gameInstanceId, dto.playerScores, dto.submittedByUserId);
+    return this.gameSessionService.submitScores(
+      dto.gameInstanceId,
+      dto.playerScores,
+      dto.submittedByUserId,
+      {
+        gameType: dto.gameType,
+        mapId: dto.mapId,
+        humanPlayerCount: dto.humanPlayerCount
+      },
+      dto.snapshots
+    );
   }
 
   /**

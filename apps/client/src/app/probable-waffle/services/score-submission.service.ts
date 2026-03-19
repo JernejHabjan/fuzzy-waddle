@@ -3,6 +3,7 @@ import { HttpClient } from "@angular/common/http";
 import { Observable, of } from "rxjs";
 import { catchError, map } from "rxjs/operators";
 import {
+  type GameScoreSnapshotDto,
   type PlayerScoreData,
   type ProbableWaffleGameInstance,
   ProbableWafflePlayerType
@@ -44,14 +45,18 @@ export class ScoreSubmissionService {
   submitScores(
     gameInstanceId: string,
     playerScores: PlayerScoreData[],
-    submittedByUserId: string
+    submittedByUserId: string,
+    sessionMeta?: { gameType?: string; mapId?: number; humanPlayerCount?: number },
+    snapshots?: GameScoreSnapshotDto[]
   ): Observable<{ success: boolean; message: string }> {
     const url = environment.api + "api/probable-waffle/game-session/submit-scores";
 
     const payload = {
       gameInstanceId,
       playerScores,
-      submittedByUserId
+      submittedByUserId,
+      ...sessionMeta,
+      snapshots
     };
 
     return this.http.post<{ success: boolean; message: string }>(url, payload).pipe(

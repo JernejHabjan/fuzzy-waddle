@@ -1,7 +1,13 @@
 import { Injectable } from "@nestjs/common";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { SupabaseProviderService } from "../../../core/supabase-provider/supabase-provider.service";
-import { Database, PlayerScoreDto, ProbableWaffleMapEnum } from "@fuzzy-waddle/api-interfaces";
+import {
+  Database,
+  type GameScoreSnapshotDto,
+  type Json,
+  PlayerScoreDto,
+  ProbableWaffleMapEnum
+} from "@fuzzy-waddle/api-interfaces";
 
 @Injectable()
 export class GameSessionService {
@@ -84,7 +90,9 @@ export class GameSessionService {
   async submitScores(
     gameInstanceId: string,
     playerScores: PlayerScoreDto[],
-    submittedByUserId: string
+    submittedByUserId: string,
+    sessionMeta?: { gameType?: string; mapId?: number; humanPlayerCount?: number },
+    snapshots?: GameScoreSnapshotDto[]
   ): Promise<{ success: boolean; message: string }> {
     // Check if already submitted
     const alreadySubmitted = await this.checkScoresSubmitted(gameInstanceId);
@@ -95,10 +103,23 @@ export class GameSessionService {
       };
     }
 
-    // Get session ID
-    const session = await this.getSession(gameInstanceId);
+    // Get session ID, or create one on-the-fly for games not tracked via matchmaking
+    let session = await this.getSession(gameInstanceId);
     if (!session) {
-      return { success: false, message: "No session found - scores not persisted for this game type" };
+      if (!sessionMeta?.mapId) {
+        throw new Error("Game session not found and insufficient data to create one");
+      }
+      await this.createSession({
+        gameInstanceId,
+        gameType: sessionMeta.gameType ?? "Skirmish",
+        mapId: sessionMeta.mapId as ProbableWaffleMapEnum,
+        createdByUserId: submittedByUserId,
+        humanPlayerCount: sessionMeta.humanPlayerCount ?? 1
+      });
+      session = await this.getSession(gameInstanceId);
+      if (!session) {
+        throw new Error("Failed to create game session");
+      }
     }
 
     try {
@@ -181,10 +202,25 @@ export class GameSessionService {
         }
       }
 
+      // Store score snapshots for timeline charts
+      if (snapshots && snapshots.length > 0) {
+        const snapshotRows = snapshots.map((s) => ({
+          game_session_id: session.id,
+          timestamp_ms: s.timestamp,
+          player_scores: s.playerScores as unknown as Json
+        }));
+        const { error: snapshotError } = await this.supabase
+          .from("probable_waffle_score_snapshots")
+          .insert(snapshotRows);
+        if (snapshotError) {
+          console.warn("Failed to insert snapshots (non-critical):", snapshotError);
+        }
+      }
+
       // Calculate duration
       const startedAt = new Date(session.started_at);
       const endedAt = new Date();
-      const durationSeconds = Math.floor((endedAt.getTime() - startedAt.getTime()) / 1000);
+      const durationSeconds = Math.max(0, Math.floor((endedAt.getTime() - startedAt.getTime()) / 1000));
 
       // Mark session as complete
       const { error: updateError } = await this.supabase
@@ -233,24 +269,89 @@ export class GameSessionService {
    * Get match history for a user
    */
   async getMatchHistory(userId: string, limit: number = 20, offset: number = 0): Promise<any> {
-    const { data, error, count } = await this.supabase
-      .from("probable_waffle_match_history")
-      .select("*", { count: "exact" })
-      .eq("user_participated", true)
+    // Step 1: find all session IDs this user participated in
+    const { data: participations, error: partError } = await this.supabase
+      .from("probable_waffle_player_scores")
+      .select("game_session_id, game_result")
+      .eq("user_id", userId);
+
+    if (partError) {
+      console.error("Failed to get match history:", partError);
+      throw new Error(`Failed to get match history: ${partError.message}`);
+    }
+
+    if (!participations || participations.length === 0) {
+      return { matches: [], total: 0, limit, offset };
+    }
+
+    const sessionIds = participations.map((p) => p.game_session_id);
+    const userResultMap = new Map(participations.map((p) => [p.game_session_id, p.game_result]));
+
+    // Step 2: get paginated sessions
+    const {
+      data: sessions,
+      error: sessError,
+      count
+    } = await this.supabase
+      .from("probable_waffle_game_sessions")
+      .select(
+        "id, game_instance_id, game_type, map_id, started_at, ended_at, total_duration_seconds, human_player_count",
+        { count: "exact" }
+      )
+      .in("id", sessionIds)
+      .not("ended_at", "is", null)
       .order("ended_at", { ascending: false })
       .range(offset, offset + limit - 1);
 
-    if (error) {
-      console.error("Failed to get match history:", error);
-      throw new Error(`Failed to get match history: ${error.message}`);
+    if (sessError) {
+      console.error("Failed to get match history:", sessError);
+      throw new Error(`Failed to get match history: ${sessError.message}`);
     }
 
-    return {
-      matches: data || [],
-      total: count || 0,
-      limit,
-      offset
-    };
+    if (!sessions || sessions.length === 0) {
+      return { matches: [], total: count ?? 0, limit, offset };
+    }
+
+    // Step 3: get all players for the returned sessions
+    const pageSessionIds = sessions.map((s: any) => s.id);
+    const { data: allPlayers, error: playersError } = await this.supabase
+      .from("probable_waffle_player_scores")
+      .select("game_session_id, player_number, player_name, faction_type, game_result, final_score, user_id")
+      .in("game_session_id", pageSessionIds);
+
+    if (playersError) {
+      console.error("Failed to get players:", playersError);
+      throw new Error(`Failed to get players: ${playersError.message}`);
+    }
+
+    const playersBySession = new Map<string, any[]>();
+    for (const p of allPlayers ?? []) {
+      const list = playersBySession.get(p.game_session_id) ?? [];
+      list.push(p);
+      playersBySession.set(p.game_session_id, list);
+    }
+
+    const matches = sessions.map((session: any) => ({
+      id: session.id,
+      gameInstanceId: session.game_instance_id,
+      gameType: session.game_type,
+      mapId: session.map_id,
+      startedAt: session.started_at,
+      endedAt: session.ended_at,
+      totalDurationSeconds: session.total_duration_seconds,
+      humanPlayerCount: session.human_player_count,
+      userResult: userResultMap.get(session.id) ?? "quit",
+      players: (playersBySession.get(session.id) ?? []).map((ps: any) => ({
+        playerNumber: ps.player_number,
+        playerName: ps.player_name,
+        factionType: ps.faction_type,
+        gameResult: ps.game_result,
+        finalScore: ps.final_score,
+        isCurrentUser: ps.user_id === userId
+      }))
+    }));
+
+    return { matches, total: count ?? 0, limit, offset };
   }
 
   /**
@@ -275,9 +376,9 @@ export class GameSessionService {
       throw new Error("User did not participate in this game");
     }
 
-    // Get all player scores with metrics (use materialized view)
-    const { data: playerScores, error: scoresError } = await this.supabase
-      .from("probable_waffle_player_scores_full")
+    // Get all player scores for this session from base table
+    const { data: scores, error: scoresError } = await this.supabase
+      .from("probable_waffle_player_scores")
       .select("*")
       .eq("game_session_id", session.id)
       .order("final_score", { ascending: false });
@@ -287,9 +388,71 @@ export class GameSessionService {
       throw new Error(`Failed to get player scores: ${scoresError.message}`);
     }
 
+    // Get metrics for all players in one query (FK relationship exists)
+    const scoreIds = (scores ?? []).map((s: any) => s.id);
+    const metricsMap = new Map<number, Record<string, number>>();
+
+    if (scoreIds.length > 0) {
+      const { data: metrics } = await this.supabase
+        .from("probable_waffle_player_score_metrics")
+        .select("player_score_id, metric_value, probable_waffle_score_metric_types(metric_key)")
+        .in("player_score_id", scoreIds);
+
+      for (const m of metrics ?? []) {
+        const key = (m.probable_waffle_score_metric_types as any)?.metric_key;
+        if (!key) continue;
+        const existing = metricsMap.get(m.player_score_id) ?? {};
+        existing[key] = m.metric_value;
+        metricsMap.set(m.player_score_id, existing);
+      }
+    }
+
+    const playerScores = (scores ?? []).map((s: any) => ({
+      playerNumber: s.player_number,
+      playerName: s.player_name,
+      playerType: s.player_type,
+      teamNumber: s.team_number ?? undefined,
+      factionType: s.faction_type,
+      gameResult: s.game_result,
+      eliminated: s.eliminated,
+      eliminatedAt: s.eliminated_at ? new Date(s.eliminated_at).getTime() : undefined,
+      finalScore: s.final_score,
+      metrics: metricsMap.get(s.id) ?? {},
+      userId: s.user_id ?? undefined
+    }));
+
+    const startedAt = new Date(session.started_at);
+    const endedAt = session.ended_at ? new Date(session.ended_at) : new Date();
+    const calculatedDuration = Math.max(0, Math.floor((endedAt.getTime() - startedAt.getTime()) / 1000));
+
+    // Retrieve snapshots for timeline chart
+    const { data: snapshotRows } = await this.supabase
+      .from("probable_waffle_score_snapshots" as any)
+      .select("timestamp_ms, player_scores")
+      .eq("game_session_id", session.id)
+      .order("timestamp_ms", { ascending: true });
+
+    const snapshots: GameScoreSnapshotDto[] = (snapshotRows ?? []).map((row: any) => ({
+      timestamp: row.timestamp_ms,
+      playerScores: row.player_scores
+    }));
+
     return {
-      gameSession: session,
-      playerScores: playerScores || []
+      gameSession: {
+        id: session.id,
+        gameInstanceId: session.game_instance_id,
+        gameType: session.game_type,
+        mapId: session.map_id,
+        startedAt: session.started_at,
+        endedAt: session.ended_at,
+        totalDurationSeconds:
+          session.total_duration_seconds != null && session.total_duration_seconds >= 0
+            ? session.total_duration_seconds
+            : calculatedDuration,
+        humanPlayerCount: session.human_player_count
+      },
+      playerScores,
+      snapshots
     };
   }
 }

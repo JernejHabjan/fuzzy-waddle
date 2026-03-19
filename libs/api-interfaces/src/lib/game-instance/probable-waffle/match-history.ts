@@ -1,4 +1,4 @@
-import type { PlayerScoreData } from "./score-data";
+import type { GameScoreSnapshotDto, PlayerScoreData } from "./score-data";
 import { ProbableWaffleMapEnum } from "../../probable-waffle/probable-waffle";
 
 /**
@@ -54,4 +54,5 @@ export interface GameSessionDetails {
     humanPlayerCount: number;
   };
   playerScores: PlayerScoreData[];
+  snapshots: GameScoreSnapshotDto[];
 }

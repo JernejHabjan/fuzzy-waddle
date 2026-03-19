@@ -45,7 +45,7 @@
             </div>
             <div class="info-item">
               <span class="info-label">Game Type:</span>
-              <span class="info-value">{{ gameDetails()!.gameSession.gameType }}</span>
+              <span class="info-value">{{ getGameTypeName(gameDetails()!.gameSession.gameType) }}</span>
             </div>
             <div class="info-item">
               <span class="info-label">Players:</span>
@@ -60,6 +60,15 @@
 
         <h3 class="text-primary mb-3">Player Scores</h3>
         <probable-waffle-score-table [playerScores]="gameDetails()!.playerScores"></probable-waffle-score-table>
+
+        @if (gameDetails()!.snapshots.length > 0) {
+          <h3 class="text-primary mt-4 mb-3">Stats Over Time</h3>
+          <probable-waffle-score-through-time
+            [externalSnapshots]="gameDetails()!.snapshots"
+            [externalPlayers]="gameDetails()!.playerScores"
+            [externalGameInstanceId]="gameDetails()!.gameSession.gameInstanceId"
+          />
+        }
       </div>
     }
   </div>

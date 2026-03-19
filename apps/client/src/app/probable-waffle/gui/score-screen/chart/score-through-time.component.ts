@@ -1,6 +1,6 @@
-import { Component, inject, type OnInit } from "@angular/core";
+import { Component, inject, input, type OnInit } from "@angular/core";
 
-import { type GameScoreSnapshot, type PlayerNumber } from "@fuzzy-waddle/api-interfaces";
+import { type GameScoreSnapshot, type GameScoreSnapshotDto, type PlayerNumber } from "@fuzzy-waddle/api-interfaces";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { ScoreDataService } from "../../../services/score-data.service";
 import { GameSetupHelpers } from "@fuzzy-waddle/api-interfaces";
@@ -23,6 +23,11 @@ interface MetricOption {
 export class ScoreThroughTimeComponent implements OnInit {
   private readonly gameInstanceClientService = inject(GameInstanceClientService);
   private readonly scoreDataService = inject(ScoreDataService);
+
+  // Optional external data for match history view
+  readonly externalSnapshots = input<GameScoreSnapshotDto[] | undefined>();
+  readonly externalPlayers = input<Array<{ playerNumber: number; playerName: string }> | undefined>();
+  readonly externalGameInstanceId = input<string | undefined>();
 
   protected ready = false;
 
@@ -69,13 +74,57 @@ export class ScoreThroughTimeComponent implements OnInit {
   }
 
   private buildChart(): void {
-    const snapshots = this.scoreDataService.getScoreSnapshots();
+    const external = this.externalSnapshots();
+    if (external && external.length > 0) {
+      this.buildFromSnapshotDtos(external);
+      return;
+    }
 
+    const snapshots = this.scoreDataService.getScoreSnapshots();
     if (snapshots.length > 0) {
       this.buildFromSnapshots(snapshots);
     } else {
       this.ready = false;
     }
+  }
+
+  private buildFromSnapshotDtos(snapshots: GameScoreSnapshotDto[]): void {
+    const players = this.externalPlayers() ?? [];
+    const gameInstanceId = this.externalGameInstanceId();
+    const totalPlayers = players.length || snapshots[0]?.playerScores.length || 1;
+
+    const playerNumbers = Array.from(
+      new Set(snapshots.flatMap((s) => s.playerScores.map((ps) => ps.playerNumber)))
+    ).sort((a, b) => a - b);
+
+    const startTime = snapshots[0]?.timestamp ?? 0;
+    const labels = snapshots.map((s) => `${Math.floor((s.timestamp - startTime) / 1000)}s`);
+
+    const datasets = playerNumbers.map((playerNumber) => {
+      const playerInfo = players.find((p) => p.playerNumber === playerNumber);
+      const label = playerInfo?.playerName ?? `Player ${playerNumber}`;
+      const color = GameSetupHelpers.getStringColorForPlayer(playerNumber, totalPlayers, gameInstanceId);
+
+      const data = snapshots.map((snapshot) => {
+        const ps = snapshot.playerScores.find((p) => p.playerNumber === playerNumber);
+        if (!ps) return 0;
+        switch (this.selectedMetric) {
+          case "units":
+            return ps.unitsCount;
+          case "buildings":
+            return ps.buildingsCount;
+          case "resources":
+            return ps.totalResources;
+          case "armyValue":
+            return ps.armyValue;
+        }
+      });
+
+      return { label, data, fill: false, borderColor: color, backgroundColor: color, tension: 0.1 };
+    });
+
+    this.chartData = { labels, datasets };
+    this.ready = true;
   }
 
   private buildFromSnapshots(snapshots: GameScoreSnapshot[]): void {

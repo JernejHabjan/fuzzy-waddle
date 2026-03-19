@@ -57,7 +57,7 @@ export class MatchHistoryPageComponent implements OnInit {
   }
 
   protected getMapName(mapId: ProbableWaffleMapEnum): string {
-    const level = Object.values(ProbableWaffleLevels).find((l) => l.id === mapId);
+    const level = Object.values(ProbableWaffleLevels).find((l) => l.id === Number(mapId));
     return level?.name || "Unknown Map";
   }
 

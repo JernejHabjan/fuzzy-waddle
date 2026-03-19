@@ -5,13 +5,14 @@ import { DatePipe } from "@angular/common";
 import { type GameSessionDetails, ProbableWaffleMapEnum } from "@fuzzy-waddle/api-interfaces";
 import { MatchHistoryService } from "../../services/match-history.service";
 import { ScoreTableComponent } from "../score-screen/table/score-table.component";
+import { ScoreThroughTimeComponent } from "../score-screen/chart/score-through-time.component";
 import { ProbableWaffleLevels } from "@fuzzy-waddle/api-interfaces";
 import { AuthService } from "../../../auth/auth.service";
 import { ServerHealthService } from "../../../shared/services/server-health.service";
 
 @Component({
   selector: "probable-waffle-match-details",
-  imports: [DatePipe, ScoreTableComponent, RouterLink],
+  imports: [DatePipe, ScoreTableComponent, ScoreThroughTimeComponent, RouterLink],
   templateUrl: "./match-details.component.html",
   styleUrl: "./match-details.component.scss"
 })
@@ -63,11 +64,23 @@ export class MatchDetailsComponent implements OnInit {
   }
 
   protected getMapName(mapId: ProbableWaffleMapEnum): string {
-    const level = Object.values(ProbableWaffleLevels).find((l) => l.id === mapId);
+    const level = Object.values(ProbableWaffleLevels).find((l) => l.id === Number(mapId));
     return level?.name ?? "Unknown Map";
   }
 
+  protected getGameTypeName(gameType: string): string {
+    const typeNames: Record<string, string> = {
+      "0": "Matchmaking",
+      "1": "Custom Game",
+      "2": "Skirmish",
+      "3": "Instant Game",
+      "4": "Replay"
+    };
+    return typeNames[gameType] ?? gameType;
+  }
+
   protected formatDuration(seconds: number): string {
+    if (!seconds || seconds <= 0) return "< 1m";
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     const secs = seconds % 60;

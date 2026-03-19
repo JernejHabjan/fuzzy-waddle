@@ -6,6 +6,7 @@ import { ScoreThroughTimeComponent } from "./chart/score-through-time.component"
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 import { ScoreSubmissionService } from "../../services/score-submission.service";
 import { AuthService } from "../../../auth/auth.service";
+import { ProbableWafflePlayerType, type GameScoreSnapshotDto } from "@fuzzy-waddle/api-interfaces";
 
 @Component({
   imports: [RouterLink, ScoreTableComponent, ScoreThroughTimeComponent],
@@ -47,8 +48,24 @@ export class ScoreScreenComponent implements OnInit, OnDestroy {
     if (isLast) {
       console.log("Last human player - submitting scores for all players");
       const playerScores = this.scoreSubmissionService.getAllPlayerScores(gameInstance);
+      const humanPlayerCount = gameInstance.players.filter(
+        (p) => p.playerController.data.playerDefinition?.playerType === ProbableWafflePlayerType.Human
+      ).length;
 
-      this.scoreSubmissionService.submitScores(gameInstanceId, playerScores, currentUser.id).subscribe({
+      const rawSnapshots = gameInstance.gameState?.data?.scoreSnapshots ?? [];
+      const snapshots: GameScoreSnapshotDto[] = rawSnapshots.map((s) => ({
+        timestamp: s.timestamp,
+        playerScores: Array.from(s.playerScores.entries()).map(([playerNumber, ps]) => ({
+          playerNumber,
+          ...ps
+        }))
+      }));
+
+      this.scoreSubmissionService.submitScores(gameInstanceId, playerScores, currentUser.id, {
+        gameType: String(gameInstance.gameInstanceMetadata.data.type),
+        mapId: gameInstance.gameMode?.data?.map,
+        humanPlayerCount
+      }, snapshots).subscribe({
         next: (result) => {
           if (result.success) {
             console.log("Scores submitted successfully");

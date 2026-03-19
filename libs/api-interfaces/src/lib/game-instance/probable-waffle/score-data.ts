@@ -36,6 +36,14 @@ export interface GameScoreSnapshot {
 }
 
 /**
+ * JSON-serializable snapshot (Maps replaced with arrays for API transport)
+ */
+export interface GameScoreSnapshotDto {
+  timestamp: number;
+  playerScores: Array<PlayerScoreSnapshot & { playerNumber: number }>;
+}
+
+/**
  * Metric type definition from database catalog
  */
 export interface ScoreMetricType {
