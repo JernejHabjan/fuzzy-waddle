@@ -20,7 +20,7 @@ export class GameSessionController {
     return this.gameSessionService.submitScores(
       dto.gameInstanceId,
       dto.playerScores,
-      dto.submittedByUserId,
+      user.id,
       {
         gameType: dto.gameType,
         mapId: dto.mapId,

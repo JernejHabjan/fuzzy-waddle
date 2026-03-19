@@ -36,12 +36,25 @@
         </div>
 
         @for (match of matches(); track match.gameInstanceId) {
-          <div class="match-history-row d-grid" (click)="viewDetails(match.gameInstanceId)">
+          <div
+            class="match-history-row d-grid"
+            role="button"
+            tabindex="0"
+            (click)="viewDetails(match.gameInstanceId)"
+            (keydown.enter)="viewDetails(match.gameInstanceId)"
+            (keydown.space)="viewDetails(match.gameInstanceId)"
+          >
             <div>{{ match.endedAt | date: "short" }}</div>
             <div>{{ getMapName(match.mapId) }}</div>
             <div>{{ formatDuration(match.totalDurationSeconds) }}</div>
             <div>
-              <span class="result-badge" [class]="'result-' + match.userResult">
+              <span
+                class="result-badge"
+                [class.result-win]="match.userResult === 'win'"
+                [class.result-loss]="match.userResult === 'loss'"
+                [class.result-tie]="match.userResult === 'tie'"
+                [class.result-quit]="match.userResult === 'quit'"
+              >
                 {{ match.userResult }}
               </span>
             </div>

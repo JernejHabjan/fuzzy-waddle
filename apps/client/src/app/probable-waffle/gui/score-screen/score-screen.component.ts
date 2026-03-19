@@ -31,11 +31,7 @@ export class ScoreScreenComponent implements OnInit, OnDestroy {
     const gameInstance = this.gameInstanceClientService.gameInstance;
     if (!gameInstance) return;
 
-    const gameInstanceId = gameInstance.gameInstanceMetadata.data.gameInstanceId;
-    if (!gameInstanceId) {
-      console.log("Offline game - skipping score submission");
-      return;
-    }
+    const gameInstanceId = gameInstance.gameInstanceMetadata.data.gameInstanceId!;
 
     const session = this.authService.session;
     if (!session?.user) {
@@ -68,7 +64,6 @@ export class ScoreScreenComponent implements OnInit, OnDestroy {
         .submitScores(
           gameInstanceId,
           playerScores,
-          currentUser.id,
           {
             gameType: String(gameInstance.gameInstanceMetadata.data.type),
             mapId: gameInstance.gameMode?.data?.map,

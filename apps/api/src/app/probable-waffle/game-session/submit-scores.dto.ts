@@ -6,9 +6,6 @@ export class SubmitScoresDto {
   @IsUUID()
   gameInstanceId!: string;
 
-  @IsUUID()
-  submittedByUserId!: string;
-
   @IsOptional()
   @IsString()
   gameType?: string;

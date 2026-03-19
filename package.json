@@ -39,7 +39,7 @@
     "generate-audio-sprites": "node ./apps/client/src/metadata/sfx/generate-audio-sprites.js",
     "prepare": "husky",
     "build-client-dev": "nx build client --source-map=true --named-chunks=true",
-    "serve-buid": "http-server dist/apps/client",
+    "serve-build": "http-server dist/apps/client",
     "_docs_generate-supabase-types": "see README.md",
     "generate-supabase-types": "supabase gen types typescript --project-id \"bhzetyxjimpabioxoodz\" --schema public > \"libs/api-interfaces/src/database/database.types.ts\""
   },

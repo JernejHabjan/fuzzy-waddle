@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import { type ISupabaseProviderService } from "./supabase-provider.service.interface";
-import { Database } from "@fuzzy-waddle/api-interfaces";
+import type { Database } from "@fuzzy-waddle/api-interfaces";
 
 @Injectable()
 export class SupabaseProviderService implements ISupabaseProviderService {

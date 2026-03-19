@@ -79,7 +79,15 @@ drop policy if exists "Enable select for authenticated users" on probable_waffle
 create policy "Enable select for authenticated users" on probable_waffle_game_sessions
   as permissive for select
   to authenticated
-  using (auth.uid() = created_by_user_id);
+  using (
+    auth.uid() = created_by_user_id
+    or exists (
+      select 1
+      from probable_waffle_player_scores ps
+      where ps.game_session_id = probable_waffle_game_sessions.id
+        and ps.user_id = auth.uid()
+    )
+  );
 
 drop policy if exists "Enable select for service_role" on probable_waffle_game_sessions;
 create policy "Enable select for service_role" on probable_waffle_game_sessions
