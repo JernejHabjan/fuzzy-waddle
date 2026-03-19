@@ -204,7 +204,7 @@ export class ResearchComponent {
       upgradeActorToLevel(actor, targetLevel);
     });
 
-    console.log(`Upgraded ${actorsToUpgrade.length} ${unitType} units to level ${targetLevel} for player ${owner}`);
+    // console.log(`Upgraded ${actorsToUpgrade.length} ${unitType} units to level ${targetLevel} for player ${owner}`);
   }
 
   /**
