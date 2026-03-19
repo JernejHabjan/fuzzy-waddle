@@ -4,6 +4,7 @@ import { RouterLink } from "@angular/router";
 import { ScoreTableComponent } from "./table/score-table.component";
 import { ScoreThroughTimeComponent } from "./chart/score-through-time.component";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
+import { ScoreDataService } from "../../services/score-data.service";
 import { ScoreSubmissionService } from "../../services/score-submission.service";
 import { AuthService } from "../../../auth/auth.service";
 import { type GameScoreSnapshotDto, ProbableWafflePlayerType } from "@fuzzy-waddle/api-interfaces";
@@ -16,6 +17,7 @@ import { type GameScoreSnapshotDto, ProbableWafflePlayerType } from "@fuzzy-wadd
 export class ScoreScreenComponent implements OnInit, OnDestroy {
   protected activeTab: string = "scoreTable";
   private readonly gameInstanceClientService = inject(GameInstanceClientService);
+  private readonly scoreDataService = inject(ScoreDataService);
   private readonly scoreSubmissionService = inject(ScoreSubmissionService);
   private readonly authService = inject(AuthService);
   private scoreSubmissionSub?: Subscription;
@@ -48,7 +50,7 @@ export class ScoreScreenComponent implements OnInit, OnDestroy {
 
     if (isLast) {
       console.log("Last human player - submitting scores for all players");
-      const playerScores = this.scoreSubmissionService.getAllPlayerScores(gameInstance);
+      const playerScores = this.scoreDataService.getAllPlayerScores();
       const humanPlayerCount = gameInstance.players.filter(
         (p) => p.playerController.data.playerDefinition?.playerType === ProbableWafflePlayerType.Human
       ).length;

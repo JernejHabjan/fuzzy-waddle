@@ -72,15 +72,4 @@ export class ScoreSubmissionService {
     );
   }
 
-  /**
-   * Get all player scores from game instance
-   */
-  getAllPlayerScores(gameInstance: ProbableWaffleGameInstance): PlayerScoreData[] {
-    if (!gameInstance.gameState) return [];
-
-    const scoreData = gameInstance.gameState.data.scoreData;
-    if (!scoreData) return [];
-
-    return Array.from(scoreData.values());
-  }
 }

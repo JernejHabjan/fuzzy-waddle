@@ -95,7 +95,7 @@ export class ScoreThroughTimeComponent implements OnInit {
   private buildFromSnapshotDtos(snapshots: GameScoreSnapshotDto[]): void {
     const players = this.externalPlayers() ?? [];
     const gameInstanceId = this.externalGameInstanceId();
-    const totalPlayers = players.length || snapshots[0]?.playerScores.length || 1;
+    const totalPlayers = players.length || snapshots[0]?.playerScores?.length || 1;
 
     const playerNumbers = Array.from(
       new Set(snapshots.flatMap((s) => s.playerScores.map((ps) => ps.playerNumber)))
