@@ -3,7 +3,7 @@ import { Type } from "class-transformer";
 import { type GameScoreSnapshotDto, PlayerScoreDto } from "@fuzzy-waddle/api-interfaces";
 
 export class SubmitScoresDto {
-  @IsString()
+  @IsUUID()
   gameInstanceId!: string;
 
   @IsUUID()
