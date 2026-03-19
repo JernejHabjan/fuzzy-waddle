@@ -263,9 +263,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
       if (isAttackMove) {
         success = await movementSystem.moveToLocationByFollowingStaticPath(location, {
           onUpdateThrottled: () => {
-            const vision = getActorComponent(this.gameObject, VisionComponent);
-            if (!vision) return;
-            const enemy = vision.getClosestVisibleEnemy();
+            const enemy = this.getClosestAttackableVisibleEnemy();
             if (enemy) {
               currentOrder.data.targetGameObject = enemy;
               movementSystem.cancelMovement();
@@ -341,6 +339,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
     if (targetHealth && !targetHealth.alive) return State.FAILED;
     const attackComponent = getActorComponent(this.gameObject, AttackComponent);
     if (!attackComponent) return State.FAILED;
+    if (!attackComponent.getAttack(target)) return State.FAILED;
     if (attackComponent.remainingCooldown > 0) return State.FAILED;
     attackComponent.useAttack(target);
     return State.SUCCEEDED;
@@ -352,16 +351,26 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
     return visionComponent.getVisibleEnemies().length > 0;
   }
 
+  AnyAttackableEnemyVisible() {
+    return !!this.getClosestAttackableVisibleEnemy();
+  }
+
   // Assign closest visible enemy to the CURRENT order (used for attack-move).
-  AssignVisibleEnemyToCurrentOrder(): State {
+  AssignAttackableEnemyToCurrentOrder(): State {
     const currentOrder = this.blackboard.getCurrentOrder();
     if (!currentOrder) return State.FAILED;
-    const vision = getActorComponent(this.gameObject, VisionComponent);
-    if (!vision) return State.FAILED;
-    const enemy = vision.getClosestVisibleEnemy();
+    const enemy = this.getClosestAttackableVisibleEnemy();
     if (!enemy) return State.FAILED;
     currentOrder.data.targetGameObject = enemy;
     return State.SUCCEEDED;
+  }
+
+  CanAttackCurrentTarget() {
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return false;
+    const target = currentOrder.data.targetGameObject;
+    if (!target) return false;
+    return this.canAttackTarget(target);
   }
 
   private async CanMoveToTarget(range: number): Promise<boolean> {
@@ -586,9 +595,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
   AssignEnemy(source: string): State {
     switch (source) {
       case "vision":
-        const visionComponent = getActorComponent(this.gameObject, VisionComponent);
-        if (!visionComponent) return State.FAILED;
-        const visibleEnemy = visionComponent.getClosestVisibleEnemy();
+        const visibleEnemy = this.getClosestAttackableVisibleEnemy();
         if (!visibleEnemy) return State.FAILED;
         this.blackboard.addOrder(new OrderData(OrderType.Attack, { targetGameObject: visibleEnemy }));
         return State.SUCCEEDED;
@@ -599,6 +606,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
         if (!latestDamage) return State.FAILED;
         const attacker = latestDamage.damageInitiator;
         if (!attacker) return State.FAILED;
+        if (!this.canAttackTarget(attacker)) return State.FAILED;
         this.blackboard.addOrder(new OrderData(OrderType.Attack, { targetGameObject: attacker }));
         return State.SUCCEEDED;
       default:
@@ -695,6 +703,29 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
   NoEnemiesVisible() {
     // Check if there are no enemies visible to the agent
     return false;
+  }
+
+  private getClosestAttackableVisibleEnemy(): Phaser.GameObjects.GameObject | null {
+    const visionComponent = getActorComponent(this.gameObject, VisionComponent);
+    if (!visionComponent) return null;
+
+    const attackableEnemies = visionComponent.getVisibleEnemies().filter((enemy) => this.canAttackTarget(enemy));
+    if (attackableEnemies.length === 0) return null;
+
+    attackableEnemies.sort((a, b) => {
+      const distanceA = DistanceHelper.getTileDistanceBetweenGameObjects(this.gameObject, a);
+      const distanceB = DistanceHelper.getTileDistanceBetweenGameObjects(this.gameObject, b);
+      if (distanceA === null || distanceB === null) return 0;
+      return distanceA - distanceB;
+    });
+
+    return attackableEnemies[0]!;
+  }
+
+  private canAttackTarget(target: Phaser.GameObjects.GameObject): boolean {
+    const attackComponent = getActorComponent(this.gameObject, AttackComponent);
+    if (!attackComponent) return false;
+    return !!attackComponent.getAttack(target);
   }
 
   HasHarvestComponent() {

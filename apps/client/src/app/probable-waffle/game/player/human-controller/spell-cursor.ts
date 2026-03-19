@@ -14,7 +14,7 @@ import { IsoHelper } from "../../world/tilemap/iso-helper";
 import { DistanceHelper } from "../../library/distance-helper";
 import { SceneActorCreator } from "../../world/services/scene-actor-creator";
 import { getSceneService } from "../../world/services/scene-component-helpers";
-import { pwActorDefinitions } from "../../prefabs/definitions/actor-definitions";
+import { getPwActorDefinition } from "../../prefabs/definitions/actor-definitions";
 import { OwnerComponent } from "../../entity/components/owner-component";
 import { Subscription } from "rxjs";
 
@@ -267,7 +267,7 @@ export class SpellCursor {
     if (!spellData.spawnPrefab) return;
 
     const { prefabName, inheritOwner } = spellData.spawnPrefab;
-    const prefabDefinition = pwActorDefinitions[prefabName];
+    const prefabDefinition = getPwActorDefinition(prefabName, null);
     if (!prefabDefinition) {
       console.error(`Prefab definition not found: ${prefabName}`);
       return;

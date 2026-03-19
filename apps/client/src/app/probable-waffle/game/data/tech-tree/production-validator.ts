@@ -11,7 +11,7 @@ import { TechTreeService } from "./tech-tree.service";
 import { getCostForObjectName } from "../../entity/components/production/cost-utils";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { getPlayer } from "../scene-data";
-import { pwActorDefinitions } from "../../prefabs/definitions/actor-definitions";
+import { getPwActorDefinition } from "../../prefabs/definitions/actor-definitions";
 import { getActorComponent } from "../actor-component";
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 import { ProductionComponent } from "../../entity/components/production/production-component";
@@ -76,7 +76,7 @@ export class ProductionValidator {
   }
 
   private validateBuildingPrerequisites(actorName: ObjectNames, result: PreRequirement): void {
-    const def = pwActorDefinitions[actorName];
+    const def = getPwActorDefinition(actorName, null);
     const buildingPrereqs = def?.components?.buildingPrerequisites;
 
     if (!buildingPrereqs) return;
@@ -206,7 +206,7 @@ export class ProductionValidator {
     actorName: ObjectNames,
     result: PreRequirement
   ): void {
-    const def = pwActorDefinitions[actorName];
+    const def = getPwActorDefinition(actorName, null);
     const buildingPrereqs = def?.components?.buildingPrerequisites;
 
     if (!buildingPrereqs) return;

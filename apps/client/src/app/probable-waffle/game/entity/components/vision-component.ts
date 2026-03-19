@@ -10,11 +10,16 @@ import type { VisionDefinition } from "./vision-definition";
 export class VisionComponent {
   private visibleEnemies?: GameObject[];
   public visibilityByCurrentPlayer: boolean = false;
+  public visionDefinition: VisionDefinition;
 
   constructor(
     private readonly gameObject: GameObject,
-    private readonly visionDefinition: VisionDefinition
-  ) {}
+    initialVisionDefinition: VisionDefinition
+  ) {
+    this.visionDefinition = {
+      ...initialVisionDefinition
+    };
+  }
 
   get range() {
     return this.visionDefinition.range;

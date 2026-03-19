@@ -13,7 +13,7 @@ import { getActorComponent } from "../../../data/actor-component";
 import { AttackComponent } from "../../../entity/components/combat/components/attack-component";
 import { ProductionComponent } from "../../../entity/components/production/production-component";
 import { ActorTranslateComponent } from "../../../entity/components/movement/actor-translate-component";
-import { pwActorDefinitions } from "../../definitions/actor-definitions";
+import { getPwActorDefinition } from "../../definitions/actor-definitions";
 import { HealthComponent } from "../../../entity/components/combat/components/health-component";
 import { AudioService } from "../../../world/services/audio.service";
 import { BuilderComponent } from "../../../entity/components/construction/builder-component";
@@ -546,7 +546,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       action: async () => {
         // Check if it's a main building
         const actorName = actor.name;
-        const actorDefinition = pwActorDefinitions[actorName as keyof typeof pwActorDefinitions];
+        const actorDefinition = getPwActorDefinition(actorName, null);
         const isMainBuilding = actorDefinition?.meta?.isMainBuilding ?? false;
 
         if (isMainBuilding) {
@@ -818,8 +818,8 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     if (productionComponent && productionComponent.isFinished) {
       const availableToProduce = productionComponent.productionDefinition.availableProduceActors;
       availableToProduce.forEach((product: ObjectNames, localIndex: number): void => {
-        const actorDefinition = pwActorDefinitions[product];
-        const info = actorDefinition.components?.info;
+        const actorDefinition = getPwActorDefinition(product, null);
+        const info = actorDefinition?.components?.info;
         if (!info || !info.smallImage) {
           throw new Error(`Info component not found for ${product}`);
         }
@@ -844,7 +844,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
               this.playInvalidActionSfx();
               return;
             }
-            if (!actorDefinition.components?.productionCost) {
+            if (!actorDefinition?.components?.productionCost) {
               throw new Error(`Production cost not found for ${product}`);
             }
 
@@ -857,7 +857,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
 
             const errorCode = targetComponent.startProduction({
               actorName: product,
-              costData: actorDefinition.components.productionCost
+              costData: actorDefinition!.components!.productionCost
             });
             const sound = this.mainSceneWithActors.sound;
 
@@ -922,6 +922,9 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     for (const researchType of researchComponent.availableResearch) {
       const researchData = researchDefinitions[researchType];
       if (!researchData) continue;
+
+      // Hide research that has unmet prerequisites — those will appear once their prerequisite is done
+      if (researchData.prerequisiteResearch?.some((prereq) => !researchComponent.isResearched(prereq))) continue;
 
       const action = this.actor_actions[index];
       if (!action) {
@@ -1130,8 +1133,8 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         console.error("Not enough slots for building icons");
         return;
       }
-      const actorDefinition = pwActorDefinitions[building];
-      const info = actorDefinition.components?.info;
+      const actorDefinition = getPwActorDefinition(building, null);
+      const info = actorDefinition?.components?.info;
       if (!info || !info.smallImage) {
         throw new Error(`Info component not found for ${building}`);
       }
@@ -1273,7 +1276,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
 
     if (hasObjectPrereqs || hasResearchPrereqs) {
       const requirementObjectNames =
-        validation.prereqs.objectNames?.map((req) => pwActorDefinitions[req]?.components?.info?.name ?? req) ?? [];
+        validation.prereqs.objectNames?.map((req) => getPwActorDefinition(req, null)?.components?.info?.name ?? req) ?? [];
       const requirementResearchNames =
         validation.prereqs.researchTypes?.map((req) => researchDefinitions[req]?.name ?? req) ?? [];
       const requirementNames = [...requirementObjectNames, ...requirementResearchNames].join(", ");

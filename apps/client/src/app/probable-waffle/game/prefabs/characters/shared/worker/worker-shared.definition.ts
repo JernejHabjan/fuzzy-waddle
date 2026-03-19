@@ -15,7 +15,7 @@ export const generalWorkerDefinitions: Partial<PrefabDefinition> = {
       maxHealth: 50
     },
     attack: {
-      attacks: [weaponDefinitions.hands]
+      attacks: [weaponDefinitions.WorkerHands]
     },
     productionCost: {
       resources: {

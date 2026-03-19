@@ -7,6 +7,7 @@ import { HealthComponent } from "../combat/components/health-component";
 export class TileMapTintComponent {
   private rerenderTintEvent = "rerender-tint-event";
   private gameObject!: GameObjects.GameObject;
+  private killed: boolean = false;
   constructor(
     private readonly tint: number,
     private readonly radius: number
@@ -15,7 +16,7 @@ export class TileMapTintComponent {
   init(gameObject: GameObjects.GameObject) {
     this.gameObject = gameObject;
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
-    gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
+    gameObject.once(HealthComponent.KilledEvent, this.onKilled, this);
     gameObject.scene.events.on(this.rerenderTintEvent, this.tintTilemapAroundTransform, this);
     this.tintTilemapAroundTransform();
   }
@@ -41,8 +42,10 @@ export class TileMapTintComponent {
   };
 
   onKilled() {
+    if (this.killed) return;
+    this.killed = true;
     this.gameObject.scene.events.off(this.rerenderTintEvent, this.tintTilemapAroundTransform, this);
-    if (!this.gameObject.scene.scene.isActive()) return;
+    if (!this.gameObject.active || !this.gameObject.scene.scene.isActive()) return;
     this.restoreTint();
     // make sure others know to rerender tints as current tint may be overlapping with others
     this.gameObject.scene.events.emit(this.rerenderTintEvent);

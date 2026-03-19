@@ -22,8 +22,9 @@ export const tivaraWorkerDefinition: PrefabDefinition = {
       }
     },
     representable: {
-      width: 64,
-      height: 64
+      width: 32,
+      height: 48,
+      origin: { x: 0.5, y: 0.5 }
     },
     objectDescriptor: {
       color: 0xc2a080

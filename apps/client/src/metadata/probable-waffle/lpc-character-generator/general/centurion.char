@@ -3,7 +3,7 @@
     "config": 12564766139509959748,
     "body": true,
     "bodyAdds": true,
-    "shadow": false,
+    "shadow": true,
     "slots": [
         {
             "slot": "shadow",

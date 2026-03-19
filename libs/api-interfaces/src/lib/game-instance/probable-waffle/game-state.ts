@@ -16,6 +16,7 @@ import type {
   HealingComponentData,
   HousingComponentData,
   IdComponentData,
+  LevelComponentData,
   OwnerComponentData,
   ProductionComponentData,
   RepresentableComponentData,
@@ -87,4 +88,5 @@ export interface ActorDefinition extends Record<string, any> {
   convertible?: Partial<ConvertibleComponentData>;
   spell?: Partial<SpellComponentData>;
   statusEffects?: Partial<StatusEffectComponentData>;
+  level?: Partial<LevelComponentData>;
 }

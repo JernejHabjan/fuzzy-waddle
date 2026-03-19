@@ -9,8 +9,9 @@ import { AiType } from "../../../ai-agents/ai-type";
 export const generalWarriorDefinition = {
   components: {
     representable: {
-      width: 64,
-      height: 64
+      width: 32,
+      height: 48,
+      origin: { x: 0.5, y: 0.899286430676403 }
     },
     objectDescriptor: {
       color: 0x75502d
@@ -40,7 +41,7 @@ export const generalWarriorDefinition = {
       maxHealth: 150
     },
     attack: {
-      attacks: [weaponDefinitions.spear]
+      attacks: [weaponDefinitions.GeneralWarriorSpear]
     },
     productionCost: {
       resources: {

@@ -10,10 +10,11 @@ import { ResourceDrainComponent } from "../../../entity/components/resource/reso
 import { OwnerComponent } from "../../../entity/components/owner-component";
 import { HealthComponent } from "../../../entity/components/combat/components/health-component";
 import { getActorComponent } from "../../../data/actor-component";
-import { pwActorDefinitions } from "../../../prefabs/definitions/actor-definitions";
+import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
 import { getUnitStrength } from "../ai-utils";
 import { DistanceHelper } from "../../../library/distance-helper";
 import { AI_CONFIG } from "../ai-config";
+import { getResearchedLevelForActor } from "../../../data/actor-level-utils";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class WorldStateSnapshotManager {
@@ -66,7 +67,7 @@ export class WorldStateSnapshotManager {
 
     owned.forEach((go) => {
       const actorName = go.name as ObjectNames;
-      const definition = pwActorDefinitions[actorName];
+      const definition = getPwActorDefinition(actorName, getResearchedLevelForActor(go));
       if (!definition) return;
 
       const isMainBuilding = definition.meta?.isMainBuilding === true;

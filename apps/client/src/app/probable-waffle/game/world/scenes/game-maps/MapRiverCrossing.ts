@@ -72,6 +72,7 @@ import TivaraWorkerMale from "../../../prefabs/characters/tivara/tivara-worker/t
 import Stairs from "../../../prefabs/buildings/tivara/stairs/Stairs";
 import SoundEffectMarker from "../../../prefabs/buildings/misc/SoundEffectMarker";
 import SkaduweeMagicianFemale from "../../../prefabs/characters/skaduwee/skaduwee-magician-female/SkaduweeMagicianFemale";
+import EditorActorLevel from "../editor-components/EditorActorLevel";
 import FenceRightCorner from "../../../prefabs/outside/architecture/obstruction/FenceRightCorner";
 import FenceLeftCorner from "../../../prefabs/outside/architecture/obstruction/FenceLeftCorner";
 import ToxicFrog from "../../../prefabs/animals/toxic-frog/ToxicFrog";
@@ -82,6 +83,24 @@ import Badger from "../../../prefabs/animals/badger/Badger";
 import Emberstone from "../../../prefabs/buildings/skaduwee/Emberstone";
 import MiningCamp from "../../../prefabs/buildings/tivara/MiningCamp";
 import FrostForge from "../../../prefabs/buildings/skaduwee/FrostForge";
+import Centurion from "../../../prefabs/characters/general/centurion/Centurion";
+import Cyclops from "../../../prefabs/characters/mobs/cyclops/Cyclops";
+import Minotaur from "../../../prefabs/characters/mobs/minotaur/Minotaur";
+import Mummy from "../../../prefabs/characters/mobs/mummy/Mummy";
+import OrcBoomerang from "../../../prefabs/characters/mobs/orcs/orc_boomerang/OrcBoomerang";
+import OrcMagician from "../../../prefabs/characters/mobs/orcs/orc_magician/OrcMagician";
+import OrcWarrior from "../../../prefabs/characters/mobs/orcs/orc_warrior/OrcWarrior";
+import PirateScimitar from "../../../prefabs/characters/mobs/pirates/pirate_scimitar/PirateScimitar";
+import PirateSwordsman from "../../../prefabs/characters/mobs/pirates/pirate_swordsman/PirateSwordsman";
+import SkeletonBowman from "../../../prefabs/characters/mobs/skeleton/skeleton_bowman/SkeletonBowman";
+import SkeletonMelee from "../../../prefabs/characters/mobs/skeleton/skeleton_melee/SkeletonMelee";
+import SkeletonScythe from "../../../prefabs/characters/mobs/skeleton/skeleton_scythe/SkeletonScythe";
+import SkeletonSwordsman from "../../../prefabs/characters/mobs/skeleton/skeleton_swordsman/SkeletonSwordsman";
+import Zombie1 from "../../../prefabs/characters/mobs/zombies/zombie1/Zombie1";
+import Zombie2 from "../../../prefabs/characters/mobs/zombies/zombie2/Zombie2";
+import Zombie3 from "../../../prefabs/characters/mobs/zombies/zombie3/Zombie3";
+import TivaraAlchemist from "../../../prefabs/characters/tivara/tivara-alchemist/TivaraAlchemist";
+import TivaraMacemanMale from "../../../prefabs/characters/tivara/tivara-maceman-male/TivaraMacemanMale";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -855,6 +874,78 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     const minerals_10 = new Minerals(this, 832, 1104);
     this.add.existing(minerals_10);
 
+    // centurion
+    const centurion = new Centurion(this, -1472, 800);
+    this.add.existing(centurion);
+
+    // cyclops
+    const cyclops = new Cyclops(this, -1257, 910);
+    this.add.existing(cyclops);
+
+    // minotaur
+    const minotaur = new Minotaur(this, -1344, 816);
+    this.add.existing(minotaur);
+
+    // mummy
+    const mummy = new Mummy(this, -1173, 944);
+    this.add.existing(mummy);
+
+    // orcBoomerang
+    const orcBoomerang = new OrcBoomerang(this, -1088, 896);
+    this.add.existing(orcBoomerang);
+
+    // orcMagician
+    const orcMagician = new OrcMagician(this, -1112, 954);
+    this.add.existing(orcMagician);
+
+    // orcWarrior
+    const orcWarrior = new OrcWarrior(this, -1056, 992);
+    this.add.existing(orcWarrior);
+
+    // pirateScimitar
+    const pirateScimitar = new PirateScimitar(this, -1016, 1004);
+    this.add.existing(pirateScimitar);
+
+    // pirateSwordsman
+    const pirateSwordsman = new PirateSwordsman(this, -975, 1016);
+    this.add.existing(pirateSwordsman);
+
+    // skeletonBowman
+    const skeletonBowman = new SkeletonBowman(this, -908, 1019);
+    this.add.existing(skeletonBowman);
+
+    // skeletonMelee
+    const skeletonMelee = new SkeletonMelee(this, -870, 1034);
+    this.add.existing(skeletonMelee);
+
+    // skeletonScythe
+    const skeletonScythe = new SkeletonScythe(this, -841, 1060);
+    this.add.existing(skeletonScythe);
+
+    // skeletonSwordsman
+    const skeletonSwordsman = new SkeletonSwordsman(this, -800, 1067);
+    this.add.existing(skeletonSwordsman);
+
+    // zombie1
+    const zombie1 = new Zombie1(this, -942, 894);
+    this.add.existing(zombie1);
+
+    // zombie2
+    const zombie2 = new Zombie2(this, -918, 904);
+    this.add.existing(zombie2);
+
+    // zombie3
+    const zombie3 = new Zombie3(this, -886, 905);
+    this.add.existing(zombie3);
+
+    // tivaraAlchemist
+    const tivaraAlchemist = new TivaraAlchemist(this, -384, 656);
+    this.add.existing(tivaraAlchemist);
+
+    // tivaraMacemanMale
+    const tivaraMacemanMale = new TivaraMacemanMale(this, -512, 544);
+    this.add.existing(tivaraMacemanMale);
+
     // spawn (components)
     const spawnEditorOwner = new EditorOwner(spawn);
     spawnEditorOwner.owner_id = "1";
@@ -1010,6 +1101,8 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // skaduweeWarriorMale_1 (components)
     const skaduweeWarriorMale_1EditorOwner = new EditorOwner(skaduweeWarriorMale_1);
     skaduweeWarriorMale_1EditorOwner.owner_id = "1";
+    const skaduweeWarriorMale_1EditorActorLevel = new EditorActorLevel(skaduweeWarriorMale_1);
+    skaduweeWarriorMale_1EditorActorLevel.level = 2;
 
     // skaduweeWorkerFemale_1 (components)
     const skaduweeWorkerFemale_1EditorOwner = new EditorOwner(skaduweeWorkerFemale_1);
@@ -1046,6 +1139,77 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // emberstone_1 (components)
     const emberstone_1EditorOwner = new EditorOwner(emberstone_1);
     emberstone_1EditorOwner.owner_id = "1";
+
+    // centurion (components)
+    const centurionEditorOwner = new EditorOwner(centurion);
+    centurionEditorOwner.owner_id = "1";
+
+    // cyclops (components)
+    new EditorOwner(cyclops);
+
+    // minotaur (components)
+    const minotaurEditorOwner = new EditorOwner(minotaur);
+    minotaurEditorOwner.owner_id = "1";
+
+    // mummy (components)
+    const mummyEditorOwner = new EditorOwner(mummy);
+    mummyEditorOwner.owner_id = "1";
+
+    // orcBoomerang (components)
+    const orcBoomerangEditorOwner = new EditorOwner(orcBoomerang);
+    orcBoomerangEditorOwner.owner_id = "1";
+
+    // orcMagician (components)
+    const orcMagicianEditorOwner = new EditorOwner(orcMagician);
+    orcMagicianEditorOwner.owner_id = "1";
+
+    // orcWarrior (components)
+    const orcWarriorEditorOwner = new EditorOwner(orcWarrior);
+    orcWarriorEditorOwner.owner_id = "1";
+
+    // pirateScimitar (components)
+    const pirateScimitarEditorOwner = new EditorOwner(pirateScimitar);
+    pirateScimitarEditorOwner.owner_id = "1";
+
+    // pirateSwordsman (components)
+    const pirateSwordsmanEditorOwner = new EditorOwner(pirateSwordsman);
+    pirateSwordsmanEditorOwner.owner_id = "1";
+
+    // skeletonBowman (components)
+    const skeletonBowmanEditorOwner = new EditorOwner(skeletonBowman);
+    skeletonBowmanEditorOwner.owner_id = "1";
+
+    // skeletonMelee (components)
+    const skeletonMeleeEditorOwner = new EditorOwner(skeletonMelee);
+    skeletonMeleeEditorOwner.owner_id = "1";
+
+    // skeletonScythe (components)
+    const skeletonScytheEditorOwner = new EditorOwner(skeletonScythe);
+    skeletonScytheEditorOwner.owner_id = "1";
+
+    // skeletonSwordsman (components)
+    const skeletonSwordsmanEditorOwner = new EditorOwner(skeletonSwordsman);
+    skeletonSwordsmanEditorOwner.owner_id = "1";
+
+    // zombie1 (components)
+    const zombie1EditorOwner = new EditorOwner(zombie1);
+    zombie1EditorOwner.owner_id = "1";
+
+    // zombie2 (components)
+    const zombie2EditorOwner = new EditorOwner(zombie2);
+    zombie2EditorOwner.owner_id = "1";
+
+    // zombie3 (components)
+    const zombie3EditorOwner = new EditorOwner(zombie3);
+    zombie3EditorOwner.owner_id = "1";
+
+    // tivaraAlchemist (components)
+    const tivaraAlchemistEditorOwner = new EditorOwner(tivaraAlchemist);
+    tivaraAlchemistEditorOwner.owner_id = "1";
+
+    // tivaraMacemanMale (components)
+    const tivaraMacemanMaleEditorOwner = new EditorOwner(tivaraMacemanMale);
+    tivaraMacemanMaleEditorOwner.owner_id = "1";
 
     this.tilemap = tilemap;
 

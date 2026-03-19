@@ -1,11 +1,12 @@
-import type { PrefabDefinition } from '../../../definitions/prefab-definition';
-import { ActorPhysicalType } from '../../../../entity/components/combat/components/actor-physical-type';
+import type { PrefabDefinition } from "../../../definitions/prefab-definition";
+import { ActorPhysicalType } from "../../../../entity/components/combat/components/actor-physical-type";
 
 export const healingTotemDefinition = {
   components: {
     representable: {
       width: 32,
-      height: 64
+      height: 64,
+      origin: { x: 0.5, y: 0.9 }
     },
     objectDescriptor: {
       color: 0x00ff88
@@ -17,11 +18,11 @@ export const healingTotemDefinition = {
       range: 4
     },
     info: {
-      name: 'Healing Totem',
-      description: 'A mystical totem that heals nearby allies',
+      name: "Healing Totem",
+      description: "A mystical totem that heals nearby allies",
       smallImage: {
-        key: 'factions',
-        frame: 'spell_icons/healing_totem.png',
+        key: "factions",
+        frame: "spell_icons/healing_totem.png",
         origin: { x: 0.5, y: 0.6 }
       }
     },

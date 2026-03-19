@@ -1,7 +1,7 @@
 // Pure builder that infers tech graph from prefab actor definitions.
 import { type TechTreeGraph } from "./tech-tree-graph";
 import { ObjectNames, PreRequirement } from "@fuzzy-waddle/api-interfaces";
-import { pwActorDefinitions } from "../../prefabs/definitions/actor-definitions";
+import { getPwActorDefinition } from "../../prefabs/definitions/actor-definitions";
 import { BuilderComponent } from "../../entity/components/construction/builder-component";
 import type { TechTreeNode } from "./tech-tree-node";
 
@@ -9,7 +9,7 @@ import type { TechTreeNode } from "./tech-tree-node";
  * Recursively gather all actors starting from main buildings.
  * This creates a unified tech tree containing actors from all factions.
  */
-function gatherAllActors(mainBuildingNames: ObjectNames[], definitions: typeof pwActorDefinitions): Set<ObjectNames> {
+function gatherAllActors(mainBuildingNames: ObjectNames[]): Set<ObjectNames> {
   const allActors = new Set<ObjectNames>();
   const visited = new Set<ObjectNames>();
 
@@ -18,7 +18,7 @@ function gatherAllActors(mainBuildingNames: ObjectNames[], definitions: typeof p
     visited.add(actorName);
     allActors.add(actorName);
 
-    const definition = definitions[actorName];
+    const definition = getPwActorDefinition(actorName, null);
     if (!definition) return;
 
     const components = definition.components || {};
@@ -54,13 +54,13 @@ export class TechTreeBuilder {
    */
   static build(): TechTreeGraph {
     // Step 1: Gather all actors from all factions
-    const allActors = gatherAllActors([ObjectNames.Sandhold, ObjectNames.FrostForge], pwActorDefinitions);
+    const allActors = gatherAllActors([ObjectNames.Sandhold, ObjectNames.FrostForge]);
 
     const graph: TechTreeGraph = { nodes: {} };
 
     // Step 2: Create nodes for all actors
     allActors.forEach((actorName: ObjectNames) => {
-      const definition = pwActorDefinitions[actorName];
+      const definition = getPwActorDefinition(actorName, null);
       if (!definition) return;
 
       const components = definition.components || {};
@@ -86,7 +86,7 @@ export class TechTreeBuilder {
       const node = graph.nodes[actorName];
       if (!node) return;
 
-      const definition = pwActorDefinitions[actorName];
+      const definition = getPwActorDefinition(actorName, null);
       const requirements = definition?.components?.requirements?.actors;
 
       // Add object (building/unit) prerequisites
@@ -110,7 +110,7 @@ export class TechTreeBuilder {
       const fromNode = graph.nodes[actorName];
       if (!fromNode) return;
 
-      const definition = pwActorDefinitions[actorName];
+      const definition = getPwActorDefinition(actorName, null);
       const components = definition?.components || {};
 
       // Production edges

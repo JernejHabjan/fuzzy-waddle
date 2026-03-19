@@ -17,7 +17,7 @@ import { PawnAiController } from "../../prefabs/ai-agents/pawn-ai-controller";
 import { BuilderComponent } from "../../entity/components/construction/builder-component";
 import { BuildingCursor } from "./building-cursor";
 import { ProductionComponent } from "../../entity/components/production/production-component";
-import { pwActorDefinitions } from "../../prefabs/definitions/actor-definitions";
+import { getPwActorDefinition } from "../../prefabs/definitions/actor-definitions";
 import { AttackComponent } from "../../entity/components/combat/components/attack-component";
 import { ActorTranslateComponent } from "../../entity/components/movement/actor-translate-component";
 import { GathererComponent } from "../../entity/components/resource/gatherer-component";
@@ -125,8 +125,8 @@ export class PlayerActionsHandler {
         const production = actor ? getActorComponent(actor, ProductionComponent) : undefined;
         const product = production?.productionDefinition.availableProduceActors[listIndex];
         if (production && production.isFinished && product) {
-          const def = pwActorDefinitions[product];
-          const cost = def.components?.productionCost;
+          const def = getPwActorDefinition(product, null);
+          const cost = def?.components?.productionCost;
           if (cost) {
             // Find the production building with the least total remaining production time
             const targetComponent = findProductionBuildingWithLeastRemainingTime(this.currentSelectedActors);
@@ -220,7 +220,7 @@ export class PlayerActionsHandler {
 
     // check if any of them in this.currentSelectedActors is a main building
     const anyIsMainBuilding = owningSelectedActors.some((actor) => {
-      const actorDefinition = pwActorDefinitions[actor.name as keyof typeof pwActorDefinitions];
+      const actorDefinition = getPwActorDefinition(actor.name, null);
       return actorDefinition?.meta?.isMainBuilding ?? false;
     });
 

@@ -11,19 +11,28 @@ import GameProbableWaffleScene from "../scenes/GameProbableWaffleScene";
 import { getCommunicator } from "../../data/scene-data";
 import Spawn from "../../prefabs/buildings/misc/Spawn";
 import EditorOwner from "../scenes/editor-components/EditorOwner";
+import EditorActorLevel from "../scenes/editor-components/EditorActorLevel";
 import { FactionDefinitions } from "../../player/faction-definitions";
-import { getGameObjectBounds, getGameObjectLogicalTransform, getGameObjectVisibility } from "../../data/game-object-helper";
+import {
+  getGameObjectBounds,
+  getGameObjectLogicalTransform,
+  getGameObjectVisibility
+} from "../../data/game-object-helper";
 import { getActorSystem } from "../../data/actor-system";
 import { MovementSystem } from "../../entity/systems/movement.system";
 import { setFullActorDataFromName } from "../../data/actor-data";
-import { pwActorDefinitions } from "../../prefabs/definitions/actor-definitions";
+import { getPwActorDefinition } from "../../prefabs/definitions/actor-definitions";
 import { getActorComponent } from "../../data/actor-component";
 import { IdComponent } from "../../entity/components/id-component";
 import { getSceneService } from "./scene-component-helpers";
 import { ActorIndexSystem } from "./ActorIndexSystem";
 import { LoadGame } from "../../data/load-game";
 import type { InitialActorConfig } from "../../player/faction-info";
+import { LevelComponent } from "../../entity/components/level/level-component";
+import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
 import GameObject = Phaser.GameObjects.GameObject;
+import { HealthComponent } from "../../entity/components/combat/components/health-component";
+import { upgradeActorToLevel } from "../../data/actor-level-utils";
 
 export class SceneActorCreator {
   private readonly loadGame: LoadGame;
@@ -60,21 +69,27 @@ export class SceneActorCreator {
         toDestroy.push(gameObject);
       }
       // ensure that game objects are fully created
-      const definition = pwActorDefinitions[gameObject.name as ObjectNames];
+      const definition = getPwActorDefinition(gameObject.name as ObjectNames, null);
       if (definition) {
         const idComponent = getActorComponent(gameObject, IdComponent);
         // only initialize those, that haven't been initialized yet
         if (!idComponent) {
           const ownerId = EditorOwner.getComponent(gameObject)?.owner_id;
+          const editorLevel = EditorActorLevel.getComponent(gameObject)?.level ?? 1;
           const actorDefinition = {
             constructionSite: {
               state: ConstructionStateEnum.Finished
             },
             owner: {
               ownerId: ownerId ? parseInt(ownerId) : undefined
-            }
+            },
+            level: editorLevel > 1 ? { level: editorLevel } : undefined
           } satisfies ActorDefinition;
           setFullActorDataFromName(gameObject, actorDefinition);
+          // Apply editor-specified level upgrade after components are set up
+          if (editorLevel > 1) {
+            upgradeActorToLevel(gameObject, editorLevel);
+          }
           // Register in the actor index after init
           actorIndex?.registerActor(gameObject);
         } else {
@@ -107,6 +122,23 @@ export class SceneActorCreator {
     } else {
       // not fully built construction site
       actor = ActorManager.createActorConstructing(this.scene, actorDefinition.name as ObjectNames, actorDefinition);
+    }
+
+    // Restore level-based upgrades (animations, stats) if saved level > 1.
+    // setFullActorDataFromName applies saved health/attack data but not animations.
+    // upgradeActorToLevel re-applies animations and stat maximums for the level,
+    // then we restore any saved health to preserve current HP below max.
+    const savedLevel = actorDefinition.level?.level;
+    if (savedLevel && savedLevel > 1) {
+      const levelComponent = getActorComponent(actor, LevelComponent);
+      if (levelComponent && savedLevel <= levelComponent.maxLevel) {
+        const savedHealth = actorDefinition.health;
+        upgradeActorToLevel(actor, savedLevel);
+        // Re-apply saved health so current HP is preserved (upgradeActorToLevel resets to max)
+        if (savedHealth) {
+          getActorComponent(actor, HealthComponent)?.setData(savedHealth);
+        }
+      }
     }
 
     const gameObject = this.scene.add.existing(actor);
@@ -146,6 +178,18 @@ export class SceneActorCreator {
 
     const newGameObject = this.createActorFromDefinition(actorDefinition);
     if (newGameObject) {
+      // Apply researched upgrades if this unit has a level component
+      const levelComponent = getActorComponent(newGameObject, LevelComponent);
+      if (levelComponent && ownerId !== undefined) {
+        const techTreeService = getSceneService(this.scene, TechTreeService);
+        if (techTreeService) {
+          const researchedLevel = techTreeService.getResearchedLevelForUnit(ownerId, actorName);
+          if (researchedLevel > 1 && researchedLevel <= levelComponent.maxLevel) {
+            upgradeActorToLevel(newGameObject, researchedLevel);
+          }
+        }
+      }
+
       // Hide by default - fog-of-war will show it if visible for player
       const visibilityComponent = getGameObjectVisibility(newGameObject);
       if (visibilityComponent) {

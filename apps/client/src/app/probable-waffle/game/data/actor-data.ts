@@ -1,5 +1,5 @@
-import { pwActorDefinitions } from "../prefabs/definitions/actor-definitions";
-import { type ActorDefinition, ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { getPwActorDefinition } from "../prefabs/definitions/actor-definitions";
+import { type ActorDefinition } from "@fuzzy-waddle/api-interfaces";
 import { VisionComponent } from "../entity/components/vision-component";
 import { InfoComponent } from "../entity/components/info-component";
 import { ObjectDescriptorComponent } from "../entity/components/object-descriptor-component";
@@ -31,7 +31,6 @@ import { AnimationActorComponent } from "../entity/components/animation/animatio
 import { RepresentableComponent } from "../entity/components/representable-component";
 import { FlyingComponent } from "../entity/components/movement/flying-component";
 import { WalkableComponent } from "../entity/components/movement/walkable-component";
-import GameObject = Phaser.GameObjects.GameObject;
 import { HousingComponent } from "../entity/components/building/housing-component";
 import { HousingCostComponent } from "../entity/components/building/housing-cost-component";
 import { MovementDecalCursorService } from "../entity/components/movement/movement-decal-cursor.service";
@@ -43,7 +42,8 @@ import { StatusEffectUiComponent } from "../entity/components/status-effect/stat
 import { SpellComponent } from "../entity/components/combat/components/spell-component";
 import { SpellCastingSystem } from "../entity/systems/spell-casting.system";
 import { ResearchComponent } from "../entity/components/research/research-component";
-import { QueueComponent } from "../entity/components/queue/queue-component";
+import { LevelComponent } from "../entity/components/level/level-component";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export const ActorDataKey = "actorData";
 export class ActorData {
@@ -105,12 +105,13 @@ function setActorProperties(actor: GameObject, actorDefinition?: Partial<ActorDe
   if (actorDefinition.spell) getActorComponent(actor, SpellComponent)?.setData(actorDefinition.spell);
   if (actorDefinition.statusEffects)
     getActorComponent(actor, StatusEffectComponent)?.setData(actorDefinition.statusEffects);
+  if (actorDefinition.level) getActorComponent(actor, LevelComponent)?.setData(actorDefinition.level);
 
   DepthHelper.setActorDepth(actor);
 }
 
 function gatherCoreActorData(actor: Phaser.GameObjects.GameObject): { components: any[]; systems: any[] } {
-  const definition = pwActorDefinitions[actor.name as ObjectNames];
+  const definition = getPwActorDefinition(actor.name, null);
   if (!definition) {
     throw new Error(`Actor definition for ${actor.name} not found.`);
   }
@@ -139,7 +140,7 @@ function gatherCoreActorData(actor: Phaser.GameObjects.GameObject): { components
 }
 
 function gatherConstructingActorData(actor: Phaser.GameObjects.GameObject): { components: any[]; systems: any[] } {
-  const definition = pwActorDefinitions[actor.name as ObjectNames];
+  const definition = getPwActorDefinition(actor.name, null);
   if (!definition) {
     throw new Error(`Actor definition for ${actor.name} not found.`);
   }
@@ -163,7 +164,7 @@ function gatherConstructingActorData(actor: Phaser.GameObjects.GameObject): { co
 }
 
 function gatherCompletedActorData(actor: Phaser.GameObjects.GameObject): { components: any[]; systems: any[] } {
-  const definition = pwActorDefinitions[actor.name as ObjectNames];
+  const definition = getPwActorDefinition(actor.name, null);
   if (!definition) {
     throw new Error(`Actor definition for ${actor.name} not found.`);
   }
@@ -192,7 +193,8 @@ function gatherCompletedActorData(actor: Phaser.GameObjects.GameObject): { compo
     ...(componentDefinitions?.flying ? [new FlyingComponent(actor, componentDefinitions.flying)] : []),
     ...(componentDefinitions?.walkable ? [new WalkableComponent(actor, componentDefinitions.walkable)] : []),
     ...(componentDefinitions?.animatable ? [new AnimationActorComponent(actor, componentDefinitions.animatable)] : []),
-    ...(componentDefinitions?.aiControlled ? [new PawnAiController(actor, componentDefinitions.aiControlled)] : [])
+    ...(componentDefinitions?.aiControlled ? [new PawnAiController(actor, componentDefinitions.aiControlled)] : []),
+    ...(componentDefinitions?.level ? [new LevelComponent(actor, componentDefinitions.level)] : [])
   ];
 
   const systemDefinitions = definition.systems;

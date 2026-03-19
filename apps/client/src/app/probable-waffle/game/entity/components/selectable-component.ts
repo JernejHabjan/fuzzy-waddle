@@ -14,7 +14,7 @@ import { ActorTranslateComponent } from "./movement/actor-translate-component";
 import { HealthComponent } from "./combat/components/health-component";
 import { ContainerComponent } from "./building/container-component";
 import { VisionComponent } from "./vision-component";
-import type { SelectableComponentData } from "@fuzzy-waddle/api-interfaces";
+import { type SelectableComponentData } from "@fuzzy-waddle/api-interfaces";
 import type { SelectableDefinition } from "./selectable-definition";
 
 export class SelectableComponent {
@@ -47,10 +47,8 @@ export class SelectableComponent {
   private createSelectionCircle() {
     const bounds = getGameObjectBounds(this.gameObject);
     if (!bounds) return;
-    const reduction = this.selectableDefinition?.sizeFactorReduction ?? 0;
-    const width = bounds.width * (1 - reduction);
-    const height = (bounds.width / 2) * (1 - reduction);
-    const ellipse = new Phaser.Geom.Ellipse(0, 0, width, height);
+    const width = bounds.width;
+    const ellipse = new Phaser.Geom.Ellipse(0, 0, width, width / 2);
     ellipse.y = this.selectableDefinition?.offsetY ?? 0;
     const graphics = this.gameObject.scene.add.graphics();
     graphics.lineStyle(2, 0xffffff);

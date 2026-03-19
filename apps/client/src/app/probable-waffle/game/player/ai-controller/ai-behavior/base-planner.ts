@@ -4,7 +4,7 @@ import { getSceneService } from "../../../world/services/scene-component-helpers
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { NavigationService } from "../../../world/services/navigation.service";
 import { RandomService } from "../../../world/services/random.service";
-import { pwActorDefinitions } from "../../../prefabs/definitions/actor-definitions";
+import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
 import { PlayerAiBlackboard } from "../player-ai-blackboard";
 import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
 import { SupplyPlanner } from "./supply-planner";
@@ -281,7 +281,7 @@ export class BasePlanner {
       if (mostNeeded) {
         const resourceType = mostNeeded;
         const hasGatheringBuildingForResource = blackboard.gatheringStructures.some((building) => {
-          const def = pwActorDefinitions[building.name as ObjectNames];
+          const def = getPwActorDefinition(building.name, null);
           const drain = def?.components?.resourceDrain;
           return drain?.resourceTypes.includes(resourceType);
         });
@@ -329,7 +329,7 @@ export class BasePlanner {
       if (mostNeeded) {
         const resourceType = mostNeeded;
         const hasGatheringBuildingForResource = blackboard.gatheringStructures.some((building) => {
-          const def = pwActorDefinitions[building.name as ObjectNames];
+          const def = getPwActorDefinition(building.name, null);
           const drain = def?.components?.resourceDrain;
           return drain?.resourceTypes.includes(resourceType);
         });
@@ -384,7 +384,7 @@ export class BasePlanner {
         if (resourceType) {
           // Filter by resource type
           candidates = candidates.filter((c) => {
-            const def = pwActorDefinitions[c];
+            const def = getPwActorDefinition(c, null);
             const drain = def?.components?.resourceDrain;
             return drain?.resourceTypes.includes(resourceType);
           });
@@ -471,7 +471,7 @@ export class BasePlanner {
   // --- Cost & resource helpers ---
 
   getCostForObjectName(objectName: ObjectNames): Partial<Record<ResourceType, number>> | undefined {
-    const definition = pwActorDefinitions[objectName];
+    const definition = getPwActorDefinition(objectName, null);
     return definition?.components?.productionCost?.resources;
   }
 

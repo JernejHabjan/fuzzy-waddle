@@ -17,6 +17,10 @@ export interface AttackData {
   highGroundRangeBonus?: number;
   // Type of the projectile to spawn - if not set, damage will be dealt instantly
   projectile?: ProjectileData;
+  meleeAoe?: {
+    angleDegrees: number;
+    range: number;
+  };
   animationType: AnimationType;
   sounds: {
     preparing: SoundDefinition[] | null;

@@ -11,8 +11,9 @@ import { ActorPhysicalType } from "../../../../entity/components/combat/componen
 export const templeDefinition = {
   components: {
     representable: {
-      width: 192,
-      height: 192
+      width: 176,
+      height: 176,
+      origin: { x: 0.5, y: 0.8 }
     },
     objectDescriptor: {
       color: 0xc2a080
@@ -64,7 +65,7 @@ export const templeDefinition = {
       actors: [ObjectNames.AnkGuard]
     },
     production: {
-      availableProduceActors: [ObjectNames.TivaraSlingshotFemale]
+      availableProduceActors: [ObjectNames.TivaraSlingshotFemale, ObjectNames.TivaraAlchemist]
     },
     queue: {
       queueCount: 1,

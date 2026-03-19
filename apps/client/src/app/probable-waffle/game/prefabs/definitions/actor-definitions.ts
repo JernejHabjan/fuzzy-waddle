@@ -1,4 +1,5 @@
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { applyLevelOverrides } from "./prefab-definition";
 import { tivaraWorkerDefinition } from "../characters/tivara/tivara-worker/tivara-worker.definition";
 import { skaduweeWorkerDefinition } from "../characters/skaduwee/skaduwee-worker/skaduwee-worker.definition";
 import { skaduweeWorkerMaleDefinition } from "../characters/skaduwee/skaduwee-worker/skaduwee-worker-male/skaduwee-worker-male.definition";
@@ -42,7 +43,24 @@ import { mineralsDefinition } from "../outside/resources/minerals/minerals.defin
 import { stonePileDefinition } from "../outside/resources/stone-pile/stone-pile.definition";
 import type { PrefabDefinition } from "./prefab-definition";
 import { emberstoneDefinition } from "../buildings/skaduwee/Emberstone/emberstone.definition";
+import { centurionDefinition } from "../characters/general/centurion/centurion.definition";
+import { cyclopsDefinition } from "../characters/mobs/cyclops/cyclops.definition";
+import { minotaurDefinition } from "../characters/mobs/minotaur/minotaur.definition";
+import { orcWarriorDefinition } from "../characters/mobs/orcs/orc_warrior/orc-warrior.definition";
+import { pirateSwordsmanDefinition } from "../characters/mobs/pirates/pirate_swordsman/pirate-swordsman.definition";
+import { zombie1Definition } from "../characters/mobs/zombies/zombie1/zombie1.definition";
+import { zombie2Definition } from "../characters/mobs/zombies/zombie2/zombie2.definition";
+import { orcBoomerangDefinition } from "../characters/mobs/orcs/orc_boomerang/orc-boomerang.definition";
+import { zombie3Definition } from "../characters/mobs/zombies/zombie3/zombie3.definition";
+import { skeletonSwordsmanDefinition } from "../characters/mobs/skeleton/skeleton_swordsman/skeleton-swordsman.definition";
+import { skeletonScytheDefinition } from "../characters/mobs/skeleton/skeleton_scythe/skeleton-scythe.definition";
+import { skeletonMeleeDefinition } from "../characters/mobs/skeleton/skeleton_melee/skeleton-melee.definition";
+import { skeletonBowmanDefinition } from "../characters/mobs/skeleton/skeleton_bowman/skeleton-bowman.definition";
+import { pirateScimitarDefinition } from "../characters/mobs/pirates/pirate_scimitar/pirate-scimitar.definition";
+import { orcMagicianDefinition } from "../characters/mobs/orcs/orc_magician/orc-magician.definition";
+import { mummyDefinition } from "../characters/mobs/mummy/mummy.definition";
 import { healingTotemDefinition } from "../buildings/tivara/HealingTotem/healing-totem.definition";
+import { tivaraAlchemistDefinition } from "../characters/tivara/tivara-alchemist/tivara_alchemist.definition";
 
 export const pwActorDefinitions: {
   [key in ObjectNames]: PrefabDefinition;
@@ -54,7 +72,24 @@ export const pwActorDefinitions: {
   Stag: stagDefinition,
   Wolf: wolfDefinition,
   GeneralWarrior: generalWarriorDefinition,
+  Centurion: centurionDefinition,
+  Cyclops: cyclopsDefinition,
+  Minotaur: minotaurDefinition,
+  Mummy: mummyDefinition,
+  OrcBoomerang: orcBoomerangDefinition,
+  OrcMagician: orcMagicianDefinition,
+  OrcWarrior: orcWarriorDefinition,
+  PirateScimitar: pirateScimitarDefinition,
+  PirateSwordsman: pirateSwordsmanDefinition,
+  SkeletonBowman: skeletonBowmanDefinition,
+  SkeletonMelee: skeletonMeleeDefinition,
+  SkeletonScythe: skeletonScytheDefinition,
+  SkeletonSwordsman: skeletonSwordsmanDefinition,
+  Zombie1: zombie1Definition,
+  Zombie2: zombie2Definition,
+  Zombie3: zombie3Definition,
   TivaraMacemanMale: tivaraMacemanMaleDefinition,
+  TivaraAlchemist: tivaraAlchemistDefinition,
   TivaraSlingshotFemale: tivaraSlingshotFemaleDefinition,
   TivaraWorker: tivaraWorkerDefinition,
   TivaraWorkerFemale: tivaraWorkerFemaleDefinition,
@@ -91,3 +126,16 @@ export const pwActorDefinitions: {
   StonePile: stonePileDefinition,
   HealingTotem: healingTotemDefinition
 };
+
+/**
+ * Returns the actor definition for the given name, optionally with level overrides applied.
+ * Use this everywhere instead of direct pwActorDefinitions[name] access.
+ * @param name - The actor ObjectName
+ * @param level - The level to apply overrides for (> 1 triggers level-specific overrides), or null for base definition
+ */
+export function getPwActorDefinition(name: ObjectNames | string, level: number | null): PrefabDefinition | undefined {
+  const base = pwActorDefinitions[name as ObjectNames];
+  if (!base) return undefined;
+  if (!level || level <= 1) return base;
+  return applyLevelOverrides(base, level);
+}

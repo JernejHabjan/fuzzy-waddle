@@ -30,55 +30,106 @@ import type { ResourceSourceDefinition } from "../../entity/components/resource/
 import type { SpellDefinition } from "../../entity/components/combat/spell-definition";
 import type { ResearchDefinition } from "../../entity/components/research/research-component";
 import type { QueueDefinition } from "../../entity/components/production/queue-definition";
+import type { LevelDefinition } from "../../entity/components/level/level-definition";
+
+// Extract components definition to reuse in both PrefabDefinition and LevelOverrides
+export type ComponentsDefinition = Partial<{
+  objectDescriptor: ObjectDescriptorDefinition;
+  representable: RepresentableDefinition;
+  owner: OwnerDefinition;
+  vision: VisionDefinition;
+  info: InfoDefinition;
+  health: HealthDefinition;
+  attack: AttackDefinition;
+  productionCost: ProductionCostDefinition;
+  housingCost: HousingCostDefinition;
+  housing: HousingDefinition;
+  requirements: RequirementsDefinition;
+  builder: BuilderDefinition;
+  constructable: ConstructionSiteDefinition;
+  walkable: WalkableDefinition;
+  gatherer: GathererDefinition;
+  container: ContainerDefinition;
+  resourceDrain: ResourceDrainDefinition;
+  resourceSource: ResourceSourceDefinition;
+  production: ProductionDefinition;
+  queue: QueueDefinition;
+  healing: HealingDefinition;
+  spell: SpellDefinition;
+  research: ResearchDefinition;
+  translatable: ActorTranslateDefinition;
+  flying: FlightDefinition;
+  animatable: ActorAnimationsDefinition;
+  aiControlled: PawnAiDefinition;
+  containable: { enabled: boolean };
+  selectable: SelectableDefinition;
+  collider: ColliderDefinition;
+  audio: AudioDefinition;
+  buildingPrerequisites: BuildingPrerequisitesDefinition;
+  level: LevelDefinition;
+}>;
+
+// Extract systems definition to reuse in both PrefabDefinition and LevelOverrides
+export type SystemsDefinition = Partial<{
+  movement: { enabled: boolean };
+  action: { enabled: boolean };
+  spellCasting: { enabled: boolean };
+}>;
+
+// Type for level overrides - only specify what changes per level
+// Reuses ComponentsDefinition and SystemsDefinition
+export type LevelOverrides = {
+  [level: number]: Partial<{
+    components: ComponentsDefinition;
+    systems: SystemsDefinition;
+  }>;
+};
 
 export type PrefabDefinition = Partial<{
-  components: Partial<{
-    objectDescriptor: ObjectDescriptorDefinition;
-    representable: RepresentableDefinition;
-    owner: OwnerDefinition;
-    vision: VisionDefinition;
-    info: InfoDefinition;
-    health: HealthDefinition;
-    attack: AttackDefinition;
-    productionCost: ProductionCostDefinition;
-    housingCost: HousingCostDefinition;
-    housing: HousingDefinition;
-    requirements: RequirementsDefinition;
-    builder: BuilderDefinition;
-    constructable: ConstructionSiteDefinition;
-    walkable: WalkableDefinition;
-    gatherer: GathererDefinition;
-    container: ContainerDefinition;
-    resourceDrain: ResourceDrainDefinition;
-    resourceSource: ResourceSourceDefinition;
-    production: ProductionDefinition;
-    queue: QueueDefinition;
-    healing: HealingDefinition;
-    spell: SpellDefinition;
-    research: ResearchDefinition;
-    translatable: ActorTranslateDefinition;
-    flying: FlightDefinition;
-    animatable: ActorAnimationsDefinition;
-    aiControlled: PawnAiDefinition;
-    containable: { enabled: boolean };
-    selectable: SelectableDefinition;
-    collider: ColliderDefinition;
-    audio: AudioDefinition;
-    buildingPrerequisites: BuildingPrerequisitesDefinition;
-  }>;
-  systems: Partial<{
-    movement: {
-      enabled: boolean;
-    };
-    action: {
-      enabled: boolean;
-    };
-    spellCasting: {
-      enabled: boolean;
-    };
-  }>;
+  components: ComponentsDefinition;
+  systems: SystemsDefinition;
   meta: Partial<{
     randomOfType: ObjectNames[];
     isMainBuilding: boolean;
+    maxLevel: number;
+    levelOverrides: LevelOverrides;
   }>;
 }>;
+
+/**
+ * Deep merge helper - merges override into base
+ */
+function deepMerge<T>(base: T, override: Partial<T>): T {
+  if (!override) return base;
+
+  const result = { ...base };
+
+  for (const key in override) {
+    const overrideValue = override[key];
+    const baseValue = result[key];
+
+    if (overrideValue !== undefined) {
+      if (typeof overrideValue === "object" && overrideValue !== null && !Array.isArray(overrideValue)) {
+        // Recursively merge objects
+        result[key] = deepMerge(baseValue as any, overrideValue as any);
+      } else {
+        // Replace primitive values and arrays
+        result[key] = overrideValue as any;
+      }
+    }
+  }
+
+  return result;
+}
+
+/**
+ * Apply level overrides to a base definition
+ */
+export function applyLevelOverrides(baseDef: PrefabDefinition, level: number): PrefabDefinition {
+  const levelOverrides = baseDef.meta?.levelOverrides;
+  if (!levelOverrides || !levelOverrides[level]) {
+    return baseDef;
+  }
+
+  return deepMerge(baseDef, levelOverrides[level]);
+}

@@ -6,6 +6,7 @@ import { getHighGroundRangeBonus } from "../high-ground.helper";
 import {
   getGameObjectBounds,
   getGameObjectDepth,
+  getGameObjectLogicalTransform,
   getGameObjectVisibility,
   onObjectReady
 } from "../../../../data/game-object-helper";
@@ -14,6 +15,7 @@ import { ActorTranslateComponent } from "../../movement/actor-translate-componen
 import { getSceneService } from "../../../../world/services/scene-component-helpers";
 import { AudioService } from "../../../../world/services/audio.service";
 import { DepthHelper } from "../../../../world/services/depth.helper";
+import { ActorIndexSystem } from "../../../../world/services/ActorIndexSystem";
 import SlingshotRock from "../../../../prefabs/weapons/SlingshotRock";
 import Arrow from "../../../../prefabs/weapons/Arrow";
 import FireBall from "../../../../prefabs/weapons/FireBall";
@@ -27,24 +29,34 @@ import { ProjectileType } from "../projectile-type";
 import type { AnimationOptions } from "../../animation/animation-options";
 import type { ProjectileData } from "../projectile-data";
 import type { AttackDefinition } from "./attack-definition";
+import type { IsoDirection } from "../../movement/iso-directions";
+import { TilemapComponent } from "../../../../world/tilemap/tilemap.component";
 import GameObject = Phaser.GameObjects.GameObject;
+import TivaraAlchemistVase from "../../../../prefabs/weapons/TivaraAlchemistVase";
 
 export class AttackComponent {
   remainingCooldown = 0;
   private animationActorComponent?: AnimationActorComponent;
   private actorTranslateComponent?: ActorTranslateComponent;
   private audioService?: AudioService;
+  private actorIndexSystem?: ActorIndexSystem;
   private projectileTween?: Phaser.Tweens.Tween;
   private rotationTween?: Phaser.Tweens.Tween;
   currentAttack: AttackData | null = null;
   private projectileSprite?: Phaser.GameObjects.Image;
   // track delayed fire so we can cancel before projectile spawns
   private fireTimer?: Phaser.Time.TimerEvent;
+  private hitTimer?: Phaser.Time.TimerEvent;
+
+  private attackDefinition: AttackDefinition;
 
   constructor(
     private readonly gameObject: GameObject,
-    private readonly attackDefinition: AttackDefinition
+    initialAttackDefinition: AttackDefinition
   ) {
+    this.attackDefinition = {
+      ...initialAttackDefinition
+    };
     gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
@@ -55,6 +67,7 @@ export class AttackComponent {
     this.actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
     this.animationActorComponent = getActorComponent(this.gameObject, AnimationActorComponent);
     this.audioService = getSceneService(this.gameObject.scene, AudioService);
+    this.actorIndexSystem = getSceneService(this.gameObject.scene, ActorIndexSystem);
   }
 
   private destroy() {
@@ -65,6 +78,10 @@ export class AttackComponent {
     if (this.fireTimer) {
       this.fireTimer.remove(false);
       this.fireTimer = undefined;
+    }
+    if (this.hitTimer) {
+      this.hitTimer.remove(false);
+      this.hitTimer = undefined;
     }
     this.stopProjectile();
   }
@@ -140,14 +157,141 @@ export class AttackComponent {
     if (attack.projectile) {
       this.spawnProjectileAndFire(attack, enemy);
     } else {
-      const enemyHealthComponent = getActorComponent(enemy, HealthComponent);
-      if (!enemyHealthComponent) return;
-      enemyHealthComponent.takeDamage(attack.damage, attack.damageType, this.gameObject);
-
       this.playSharedAttackLogic(attack, enemy);
+      this.scheduleInstantAttackImpact(attack, enemy);
     }
 
     this.remainingCooldown = attack.cooldown;
+  }
+
+  private applyInstantAttackDamage(attack: AttackData, enemy: GameObject) {
+    const targets = this.getInstantAttackTargets(attack, enemy);
+    if (targets.length === 0) return;
+
+    for (const target of targets) {
+      const targetHealthComponent = getActorComponent(target, HealthComponent);
+      if (!targetHealthComponent || targetHealthComponent.killed) continue;
+      targetHealthComponent.takeDamage(attack.damage, attack.damageType, this.gameObject);
+    }
+  }
+
+  private scheduleInstantAttackImpact(attack: AttackData, enemy: GameObject) {
+    if (this.hitTimer) {
+      this.hitTimer.remove(false);
+      this.hitTimer = undefined;
+    }
+    this.hitTimer = this.gameObject.scene.time.delayedCall(attack.delays.hit, () => {
+      this.hitTimer = undefined;
+
+      if (!this.gameObject.active || !enemy.active) return;
+      const healthComponent = getActorComponent(this.gameObject, HealthComponent);
+      if (!healthComponent || healthComponent.killed) return;
+
+      this.playHitSound(attack, enemy);
+      this.applyInstantAttackDamage(attack, enemy);
+    });
+  }
+
+  private getInstantAttackTargets(attack: AttackData, enemy: GameObject): GameObject[] {
+    const enemyHealthComponent = getActorComponent(enemy, HealthComponent);
+    if (!enemyHealthComponent || enemyHealthComponent.killed) return [];
+    if (!attack.meleeAoe) return [enemy];
+    if (!this.actorIndexSystem) return [enemy];
+
+    const attackerTransform = getGameObjectLogicalTransform(this.gameObject);
+    if (!attackerTransform) return [enemy];
+
+    this.actorTranslateComponent?.turnTowardsGameObject(enemy);
+
+    const facingVector = this.getFacingVector(attackerTransform, enemy);
+    if (!facingVector) return [enemy];
+
+    const halfAngleRadians = Phaser.Math.DegToRad(attack.meleeAoe.angleDegrees / 2);
+    const minimumDotProduct = Math.cos(halfAngleRadians);
+    const aoeRangePixels = attack.meleeAoe.range * TilemapComponent.tileWidth;
+    const targets: GameObject[] = [];
+
+    for (const candidate of this.actorIndexSystem.getEnemyCandidates(this.gameObject)) {
+      if (!attack.canTargetAir && this.isTargetFlying(candidate)) continue;
+
+      const candidateHealthComponent = getActorComponent(candidate, HealthComponent);
+      if (!candidateHealthComponent || candidateHealthComponent.killed) continue;
+
+      const candidateTransform = getGameObjectLogicalTransform(candidate);
+      if (!candidateTransform) continue;
+
+      const offsetX = candidateTransform.x - attackerTransform.x;
+      const offsetY = candidateTransform.y - attackerTransform.y;
+      const distance = Math.hypot(offsetX, offsetY);
+      if (distance === 0 || distance > aoeRangePixels) continue;
+
+      const dotProduct = (offsetX * facingVector.x + offsetY * facingVector.y) / distance;
+      if (dotProduct < minimumDotProduct) continue;
+
+      targets.push(candidate);
+    }
+
+    return targets.length > 0 ? targets : [enemy];
+  }
+
+  private getFacingVector(
+    attackerTransform: { x: number; y: number },
+    enemy: GameObject
+  ): { x: number; y: number } | null {
+    const currentDirection = this.actorTranslateComponent?.currentDirection;
+    if (currentDirection) {
+      return this.getFacingVectorFromDirection(currentDirection);
+    }
+
+    const enemyTransform = getGameObjectLogicalTransform(enemy);
+    if (!enemyTransform) return null;
+
+    const directionX = enemyTransform.x - attackerTransform.x;
+    const directionY = enemyTransform.y - attackerTransform.y;
+    const distance = Math.hypot(directionX, directionY);
+    if (distance === 0) return null;
+
+    return {
+      x: directionX / distance,
+      y: directionY / distance
+    };
+  }
+
+  private getFacingVectorFromDirection(direction: IsoDirection): { x: number; y: number } {
+    let directionVector: { x: number; y: number };
+
+    switch (direction) {
+      case "north":
+        directionVector = { x: 0, y: -1 };
+        break;
+      case "south":
+        directionVector = { x: 0, y: 1 };
+        break;
+      case "east":
+        directionVector = { x: 1, y: 0 };
+        break;
+      case "west":
+        directionVector = { x: -1, y: 0 };
+        break;
+      case "northeast":
+        directionVector = { x: 1, y: -0.5 };
+        break;
+      case "northwest":
+        directionVector = { x: -1, y: -0.5 };
+        break;
+      case "southeast":
+        directionVector = { x: 1, y: 0.5 };
+        break;
+      case "southwest":
+        directionVector = { x: -1, y: 0.5 };
+        break;
+    }
+
+    const magnitude = Math.hypot(directionVector.x, directionVector.y);
+    return {
+      x: directionVector.x / magnitude,
+      y: directionVector.y / magnitude
+    };
   }
 
   private playSharedAttackLogic(attack: AttackData, enemy: GameObject) {
@@ -194,6 +338,9 @@ export class AttackComponent {
           break;
         case ProjectileType.FurballProjectile:
           projectileSprite = new SkaduweeOwlFurball(this.gameObject.scene);
+          break;
+        case ProjectileType.VaseProjectile:
+          projectileSprite = new TivaraAlchemistVase(this.gameObject.scene);
           break;
         case ProjectileType.FrostBoltProjectile:
           projectileSprite = new FrostBolt(this.gameObject.scene);
@@ -264,19 +411,7 @@ export class AttackComponent {
     if (!enemyHealthComponent || enemyHealthComponent.killed) return;
     enemyHealthComponent.takeDamage(attack.damage, attack.damageType, this.gameObject);
 
-    // play hit sound
-    if (this.audioService && attack.sounds.hit) {
-      const visibilityComponent = getGameObjectVisibility(this.gameObject);
-      if (visibilityComponent && visibilityComponent.visible) {
-        // can be random as it doesn't need to be deterministic
-        const randomHitSound = attack.sounds.hit[Math.floor(Math.random() * attack.sounds.hit.length)]!;
-        this.audioService.playSpatialAudioSprite(
-          enemy, // enemy hit position
-          randomHitSound.key,
-          randomHitSound.spriteName
-        );
-      }
-    }
+    this.playHitSound(attack, enemy);
     this.stopProjectile();
     if (projectile.impactAnimation) {
       const anims = projectile.impactAnimation.anims;
@@ -319,6 +454,10 @@ export class AttackComponent {
       this.fireTimer.remove(false);
       this.fireTimer = undefined;
     }
+    if (this.hitTimer) {
+      this.hitTimer.remove(false);
+      this.hitTimer = undefined;
+    }
     // do not call stopProjectile here if projectile is already travelling
   }
 
@@ -357,7 +496,7 @@ export class AttackComponent {
 
   private playAttackSound(attack: AttackData, enemy: GameObject) {
     if (!this.audioService) return;
-    const { preparing, fire, hit } = attack.sounds;
+    const { preparing, fire } = attack.sounds;
     if (preparing) {
       const visibilityComponent = getGameObjectVisibility(this.gameObject);
       if (visibilityComponent && visibilityComponent.visible) {
@@ -380,24 +519,21 @@ export class AttackComponent {
         }
       }
     });
+  }
 
-    if (!attack.projectile) {
-      // if not a projectile, play hit sound
-      this.gameObject.scene.time.delayedCall(attack.delays.hit, () => {
-        if (hit) {
-          const visibilityComponent = getGameObjectVisibility(this.gameObject);
-          if (visibilityComponent && visibilityComponent.visible) {
-            // can be random as it doesn't need to be deterministic
-            const randomHitSound = hit[Math.floor(Math.random() * hit.length)]!;
-            this.audioService!.playSpatialAudioSprite(
-              enemy, // enemy hit position
-              randomHitSound.key,
-              randomHitSound.spriteName
-            );
-          }
-        }
-      });
-    }
+  private playHitSound(attack: AttackData, enemy: GameObject) {
+    if (!this.audioService) return;
+    const hit = attack.sounds.hit;
+    if (!hit) return;
+    const visibilityComponent = getGameObjectVisibility(this.gameObject);
+    if (!visibilityComponent || !visibilityComponent.visible) return;
+    // can be random as it doesn't need to be deterministic
+    const randomHitSound = hit[Math.floor(Math.random() * hit.length)]!;
+    this.audioService.playSpatialAudioSprite(
+      enemy, // enemy hit position
+      randomHitSound.key,
+      randomHitSound.spriteName
+    );
   }
 
   /**
@@ -448,7 +584,8 @@ export class AttackComponent {
     return attackRangeWithHighGroundBonus;
   }
 
-  setData(data: Partial<AttackComponentData>) {
+  setData(data: Partial<AttackComponentData> & Partial<AttackDefinition>) {
+    // Update runtime state
     if (data.remainingCooldown !== undefined) this.remainingCooldown = data.remainingCooldown;
     if (data.currentAttackIndex !== undefined) {
       const idx = data.currentAttackIndex;
@@ -456,6 +593,15 @@ export class AttackComponent {
         this.currentAttack = null;
       } else if (idx >= 0 && idx < this.attackDefinition.attacks.length) {
         this.currentAttack = this.attackDefinition.attacks[idx]!;
+      }
+    }
+
+    // Update definition (for level upgrades)
+    if (data.attacks !== undefined) {
+      this.attackDefinition.attacks = data.attacks;
+      // Reset current attack if it's out of bounds
+      if (this.currentAttack && !this.attackDefinition.attacks.includes(this.currentAttack)) {
+        this.currentAttack = null;
       }
     }
   }
