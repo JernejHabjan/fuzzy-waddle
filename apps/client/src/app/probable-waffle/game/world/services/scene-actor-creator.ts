@@ -20,7 +20,7 @@ import {
 } from "../../data/game-object-helper";
 import { getActorSystem } from "../../data/actor-system";
 import { MovementSystem } from "../../entity/systems/movement.system";
-import { setFullActorDataFromName, upgradeActorToLevel } from "../../data/actor-data";
+import { setFullActorDataFromName } from "../../data/actor-data";
 import { getPwActorDefinition } from "../../prefabs/definitions/actor-definitions";
 import { getActorComponent } from "../../data/actor-component";
 import { IdComponent } from "../../entity/components/id-component";
@@ -32,6 +32,7 @@ import { LevelComponent } from "../../entity/components/level/level-component";
 import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
 import GameObject = Phaser.GameObjects.GameObject;
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
+import { upgradeActorToLevel } from "../../data/actor-level-utils";
 
 export class SceneActorCreator {
   private readonly loadGame: LoadGame;

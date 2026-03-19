@@ -10,8 +10,8 @@ import { ObjectNames, type ResearchComponentData, type ResearchType } from "@fuz
 import { QueueComponent } from "../queue/queue-component";
 import { QueueItemType, type UnifiedQueueItem } from "../queue/queue-item";
 import Phaser from "phaser";
-import { upgradeActorToLevel } from "../../../data/actor-data";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
+import { upgradeActorToLevel } from "../../../data/actor-level-utils";
 
 export interface ResearchDefinition {
   availableResearch: ResearchType[];

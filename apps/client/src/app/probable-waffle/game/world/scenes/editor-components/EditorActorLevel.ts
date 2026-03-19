@@ -5,7 +5,7 @@
 /* START-USER-IMPORTS */
 import { getActorComponent } from "../../../data/actor-component";
 import { LevelComponent } from "../../../entity/components/level/level-component";
-import { upgradeActorToLevel } from "../../../data/actor-data";
+import { upgradeActorToLevel } from "../../../data/actor-level-utils";
 /* END-USER-IMPORTS */
 
 export default class EditorActorLevel {

@@ -63,7 +63,6 @@ import { SpellComponent } from "../entity/components/combat/components/spell-com
 import { StatusEffectComponent } from "../entity/components/status-effect/status-effect-component";
 import { ResearchComponent } from "../entity/components/research/research-component";
 import { LevelComponent } from "../entity/components/level/level-component";
-import GameObject = Phaser.GameObjects.GameObject;
 import Wolf from "../prefabs/animals/wolf/Wolf";
 import Boar from "../prefabs/animals/boar/Boar";
 import Stag from "../prefabs/animals/stag/Stag";
@@ -87,6 +86,7 @@ import Zombie3 from "../prefabs/characters/mobs/zombies/zombie3/Zombie3";
 import { RandomService } from "../world/services/random.service";
 import HealingTotem from "../prefabs/buildings/tivara/HealingTotem/HealingTotem";
 import TivaraAlchemist from "../prefabs/characters/tivara/tivara-alchemist/TivaraAlchemist";
+import GameObject = Phaser.GameObjects.GameObject;
 
 type ActorMap = { [name: string]: new (scene: Phaser.Scene) => GameObject };
 export class ActorManager {
