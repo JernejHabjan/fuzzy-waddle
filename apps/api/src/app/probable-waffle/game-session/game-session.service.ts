@@ -29,19 +29,17 @@ export class GameSessionService {
     createdByUserId: string;
     humanPlayerCount: number;
   }): Promise<void> {
-    const { error } = await this.supabase
-      .from("probable_waffle_game_sessions")
-      .insert(
-        {
-          game_instance_id: params.gameInstanceId,
-          game_type: params.gameType,
-          map_id: params.mapId,
-          created_by_user_id: params.createdByUserId,
-          human_player_count: params.humanPlayerCount,
-          session_state: "InProgress"
-        },
-        { onConflict: "game_instance_id", ignoreDuplicates: true }
-      );
+    const { error } = await this.supabase.from("probable_waffle_game_sessions").upsert(
+      {
+        game_instance_id: params.gameInstanceId,
+        game_type: params.gameType,
+        map_id: params.mapId,
+        created_by_user_id: params.createdByUserId,
+        human_player_count: params.humanPlayerCount,
+        session_state: "InProgress"
+      },
+      { onConflict: "game_instance_id", ignoreDuplicates: true }
+    );
 
     if (error) {
       console.error("Failed to create game session:", error);
@@ -186,8 +184,9 @@ export class GameSessionService {
               metric_type_id: metricKeyToId.get(m.metric_key),
               metric_value: m.metric_value
             }))
-            .filter((m): m is { player_score_id: number; metric_type_id: number; metric_value: number } =>
-              m.metric_type_id !== undefined
+            .filter(
+              (m): m is { player_score_id: number; metric_type_id: number; metric_value: number } =>
+                m.metric_type_id !== undefined
             );
 
           const { error: metricsError } = await this.supabase
