@@ -60,3 +60,4 @@ package-lock.json
 .github/instructions/nx.instructions.md
 /.idea/sqldialects.xml
 NUL
+supabase/.temp

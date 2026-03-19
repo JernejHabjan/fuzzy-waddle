@@ -5,8 +5,7 @@ create table probable_waffle_score_snapshots
 (
   id              bigserial primary key,
   game_session_id uuid                     not null,
-  timestamp_ms    bigint                   not null, -- absolute ms timestamp (Date.now())
-  player_scores   jsonb                    not null, -- Array of {playerNumber, unitsCount, buildingsCount, totalResources, armyValue}
+  snapshots       jsonb                    not null, -- Array of {timestamp_ms, playerScores[]}
   created_at      timestamp with time zone default now() not null
 );
 
@@ -14,8 +13,8 @@ alter table probable_waffle_score_snapshots
   add constraint probable_waffle_score_snapshots_game_session_id_fkey
   foreign key (game_session_id) references probable_waffle_game_sessions (id) on delete cascade;
 
-create index probable_waffle_score_snapshots_game_session_id_idx
-  on probable_waffle_score_snapshots (game_session_id, timestamp_ms asc);
+create unique index probable_waffle_score_snapshots_game_session_id_idx
+  on probable_waffle_score_snapshots (game_session_id);
 
 -- RLS: only service_role may insert; authenticated users may read
 drop policy if exists "Enable insert for service_role only" on probable_waffle_score_snapshots;

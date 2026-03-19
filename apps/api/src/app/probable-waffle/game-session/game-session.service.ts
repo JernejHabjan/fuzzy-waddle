@@ -202,16 +202,14 @@ export class GameSessionService {
         }
       }
 
-      // Store score snapshots for timeline charts
+      // Store score snapshots for timeline charts (single row per game)
       if (snapshots && snapshots.length > 0) {
-        const snapshotRows = snapshots.map((s) => ({
-          game_session_id: session.id,
-          timestamp_ms: s.timestamp,
-          player_scores: s.playerScores as unknown as Json
-        }));
         const { error: snapshotError } = await this.supabase
           .from("probable_waffle_score_snapshots")
-          .insert(snapshotRows);
+          .insert({
+            game_session_id: session.id,
+            snapshots: snapshots as unknown as Json
+          });
         if (snapshotError) {
           console.warn("Failed to insert snapshots (non-critical):", snapshotError);
         }
@@ -425,17 +423,16 @@ export class GameSessionService {
     const endedAt = session.ended_at ? new Date(session.ended_at) : new Date();
     const calculatedDuration = Math.max(0, Math.floor((endedAt.getTime() - startedAt.getTime()) / 1000));
 
-    // Retrieve snapshots for timeline chart
-    const { data: snapshotRows } = await this.supabase
-      .from("probable_waffle_score_snapshots" as any)
-      .select("timestamp_ms, player_scores")
+    // Retrieve snapshots for timeline chart (single row per game)
+    const { data: snapshotRow } = await this.supabase
+      .from("probable_waffle_score_snapshots")
+      .select("snapshots")
       .eq("game_session_id", session.id)
-      .order("timestamp_ms", { ascending: true });
+      .maybeSingle();
 
-    const snapshots: GameScoreSnapshotDto[] = (snapshotRows ?? []).map((row: any) => ({
-      timestamp: row.timestamp_ms,
-      playerScores: row.player_scores
-    }));
+    const snapshots: GameScoreSnapshotDto[] = snapshotRow
+      ? (snapshotRow.snapshots as unknown as GameScoreSnapshotDto[])
+      : [];
 
     return {
       gameSession: {

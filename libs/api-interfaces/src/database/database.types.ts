@@ -332,22 +332,19 @@ export type Database = {
           created_at: string;
           game_session_id: string;
           id: number;
-          player_scores: Json;
-          timestamp_ms: number;
+          snapshots: Json;
         };
         Insert: {
           created_at?: string;
           game_session_id: string;
           id?: number;
-          player_scores: Json;
-          timestamp_ms: number;
+          snapshots: Json;
         };
         Update: {
           created_at?: string;
           game_session_id?: string;
           id?: number;
-          player_scores?: Json;
-          timestamp_ms?: number;
+          snapshots?: Json;
         };
         Relationships: [
           {
