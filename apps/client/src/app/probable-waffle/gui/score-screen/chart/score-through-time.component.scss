@@ -1,6 +1,39 @@
-.chart-title {
-  font-size: 1.5rem;
-  font-weight: 500;
+@use "../../../../../styles/_variables" as *;
+
+.chart-container {
+  padding: 1rem 0;
+}
+
+.chart-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   margin-bottom: 1rem;
+
+  label {
+    font-weight: bold;
+    color: $primary;
+  }
+
+  select {
+    padding: 0.25rem 0.5rem;
+    border-radius: $app-border-radius;
+    border: 2px solid $tertiary;
+    background-color: white;
+    color: $primary;
+    cursor: pointer;
+    font-size: 0.9rem;
+
+    &:focus {
+      border-color: $primary;
+      outline: none;
+    }
+  }
+}
+
+.no-data {
   text-align: center;
+  padding: 2rem;
+  color: $secondary;
+  font-style: italic;
 }

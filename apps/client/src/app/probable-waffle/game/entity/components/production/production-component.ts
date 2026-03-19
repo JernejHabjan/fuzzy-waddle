@@ -239,6 +239,9 @@ export class ProductionComponent {
 
     const newGameObject = sceneActorCreator.createFinishedActor(actorName, finalSpawnPosition, originalOwner);
     if (newGameObject) {
+      if (originalOwner !== undefined) {
+        this.gameObject.scene.events.emit("score.unit_produced", originalOwner);
+      }
       if (this.rallyPoint.isSet()) {
         // noinspection JSIgnoredPromiseFromCall
         this.rallyPoint.navigateGameObjectToRallyPoint(newGameObject);

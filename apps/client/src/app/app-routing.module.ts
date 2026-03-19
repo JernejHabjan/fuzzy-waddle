@@ -74,6 +74,18 @@ const probableWaffleRoutes = [
             loadComponent: () => import("./probable-waffle/gui/replay/replay.component").then((m) => m.ReplayComponent)
           },
           {
+            path: "match-history",
+            loadComponent: () =>
+              import("./probable-waffle/gui/match-history/match-history-page.component").then(
+                (m) => m.MatchHistoryPageComponent
+              )
+          },
+          {
+            path: "match-details/:gameInstanceId",
+            loadComponent: () =>
+              import("./probable-waffle/gui/match-history/match-details.component").then((m) => m.MatchDetailsComponent)
+          },
+          {
             path: "progress",
             loadComponent: () =>
               import("./probable-waffle/gui/progress/progress.component").then((m) => m.ProgressComponent)

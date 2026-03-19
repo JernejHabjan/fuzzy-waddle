@@ -29,6 +29,7 @@ import { type MatchmakingServiceInterface } from "./matchmaking.service.interfac
 import { GameInstanceService } from "../game-instance/game-instance.service";
 import { RoomServerService } from "../game-room/room-server.service";
 import { GameInstanceGateway } from "../game-instance/game-instance.gateway";
+import { GameSessionService } from "../game-session/game-session.service";
 
 @Injectable()
 export class MatchmakingService implements MatchmakingServiceInterface {
@@ -37,7 +38,8 @@ export class MatchmakingService implements MatchmakingServiceInterface {
   constructor(
     private readonly gameInstanceService: GameInstanceService,
     private readonly roomServerService: RoomServerService,
-    private readonly gameInstanceGateway: GameInstanceGateway
+    private readonly gameInstanceGateway: GameInstanceGateway,
+    private readonly gameSessionService: GameSessionService
   ) {}
   /**
    * remove game instances that have been started more than N time ago
@@ -112,6 +114,24 @@ export class MatchmakingService implements MatchmakingServiceInterface {
     });
     this.roomServerService.roomEvent("game_instance_metadata", gameInstance, user);
     console.log("Ashes of the Ancients - Matchmaking game fully loaded", gameInstanceId);
+
+    // Create game session in database
+    const humanPlayerCount = gameInstance.players.filter(
+      (p) => p.playerController.data.playerDefinition?.playerType !== 1 // 1 = AI
+    ).length;
+
+    this.gameSessionService
+      .createSession({
+        gameInstanceId,
+        gameType: "Matchmaking",
+        mapId: gameInstance.gameMode!.data.map!,
+        createdByUserId: user.id,
+        humanPlayerCount
+      })
+      .catch((error) => {
+        console.error("Failed to create game session:", error);
+        // Don't throw - game can continue without DB tracking
+      });
   }
 
   private async joinGameInstanceForMatchmaking(

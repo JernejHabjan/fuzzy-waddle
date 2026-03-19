@@ -27,6 +27,7 @@ import { getSceneSystem } from "../services/scene-component-helpers";
 import { AiPlayerHandler } from "../../player/ai-controller/ai-player-handler";
 import HudProbableWaffle from "../scenes/hud-scenes/HudProbableWaffle";
 import { SceneDialogHelper } from "../scenes/scene-dialog-helper";
+import { ScoreTracker } from "./ScoreTracker";
 
 export class GameModeConditionChecker {
   private loseConditions: LoseConditions;
@@ -321,11 +322,36 @@ export class GameModeConditionChecker {
   private selfQuit() {
     this.currentPlayer.playerController.data.leftOrKilled = true;
     console.log(`Player ${this.currentPlayer.playerNumber} has quit the game.`);
+
+    // Update ScoreTracker
+    const scoreTracker = getSceneSystem(this.scene, ScoreTracker);
+    if (scoreTracker) {
+      scoreTracker.setPlayerResult(this.currentPlayerNumber, "quit");
+      scoreTracker.finalizeScores();
+      scoreTracker.stop();
+    }
+
     this.navigateToScoreScreen();
     this.stop();
   }
 
   private winGame() {
+    // Update ScoreTracker with results
+    const scoreTracker = getSceneSystem(this.scene, ScoreTracker);
+    if (scoreTracker) {
+      scoreTracker.setPlayerResult(this.currentPlayerNumber, "win");
+
+      // Set enemy results
+      this.players.forEach((player) => {
+        if (player.playerNumber !== this.currentPlayerNumber) {
+          scoreTracker.setPlayerResult(player.playerNumber!, "loss");
+        }
+      });
+
+      scoreTracker.finalizeScores();
+      scoreTracker.stop();
+    }
+
     this.createEndGameLayer("You have won the game!", () => {
       this.navigateToScoreScreen();
     });
@@ -333,6 +359,22 @@ export class GameModeConditionChecker {
   }
 
   private loseGame() {
+    // Update ScoreTracker with results
+    const scoreTracker = getSceneSystem(this.scene, ScoreTracker);
+    if (scoreTracker) {
+      scoreTracker.setPlayerResult(this.currentPlayerNumber, "loss");
+
+      // Set enemy results (they won)
+      this.players.forEach((player) => {
+        if (player.playerNumber !== this.currentPlayerNumber && !player.playerController.data.leftOrKilled) {
+          scoreTracker.setPlayerResult(player.playerNumber!, "win");
+        }
+      });
+
+      scoreTracker.finalizeScores();
+      scoreTracker.stop();
+    }
+
     this.createEndGameLayer("You have lost the game.", () => {
       this.navigateToScoreScreen();
     });
@@ -340,6 +382,17 @@ export class GameModeConditionChecker {
   }
 
   private tieGame() {
+    // Update ScoreTracker with tie results for all players
+    const scoreTracker = getSceneSystem(this.scene, ScoreTracker);
+    if (scoreTracker) {
+      this.players.forEach((player) => {
+        scoreTracker.setPlayerResult(player.playerNumber!, "tie");
+      });
+
+      scoreTracker.finalizeScores();
+      scoreTracker.stop();
+    }
+
     this.createEndGameLayer("The game ended in a tie!", () => {
       this.navigateToScoreScreen();
     });
