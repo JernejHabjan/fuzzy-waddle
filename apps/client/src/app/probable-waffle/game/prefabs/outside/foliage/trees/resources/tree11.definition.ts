@@ -10,8 +10,9 @@ export const tree11Definition = {
       maximumResources: 240
     },
     representable: {
-      width: 184,
-      height: 184
+      width: 128,
+      height: 152,
+      origin: { x: 0.5, y: 0.911458 }
     },
     info: {
       ...treeDefinitions.components!.info!,

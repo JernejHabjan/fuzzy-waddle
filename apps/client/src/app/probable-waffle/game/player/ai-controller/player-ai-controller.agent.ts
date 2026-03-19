@@ -14,7 +14,7 @@ import { Subscription } from "rxjs";
 import { getActorComponent } from "../../data/actor-component";
 import { ProductionComponent } from "../../entity/components/production/production-component";
 import { ResearchComponent } from "../../entity/components/research/research-component";
-import { pwActorDefinitions } from "../../prefabs/definitions/actor-definitions";
+import { getPwActorDefinition, pwActorDefinitions } from "../../prefabs/definitions/actor-definitions";
 import { GathererComponent } from "../../entity/components/resource/gatherer-component";
 import { BuilderComponent } from "../../entity/components/construction/builder-component";
 import { PawnAiController } from "../../prefabs/ai-agents/pawn-ai-controller";
@@ -168,7 +168,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
         }
 
         // Heuristic: attempt construct via assignBuilding if building definition exists; else attempt production.
-        const isBuilding = pwActorDefinitions[targetObjectName]?.components?.production; // buildings have production component usually
+        const isBuilding = getPwActorDefinition(targetObjectName, null)?.components?.production; // buildings have production component usually
         if (isBuilding) {
           const state = this.assignBuilding(targetObjectName);
           if (state === State.SUCCEEDED) queue.shift();
@@ -181,7 +181,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
           });
           if (prodBuilding) {
             const prod = getActorComponent(prodBuilding, ProductionComponent);
-            const def = pwActorDefinitions[targetObjectName];
+            const def = getPwActorDefinition(targetObjectName, null);
             const costData = def?.components?.productionCost;
             if (prod && costData) {
               const validation = this.productionValidator.validate(targetObjectName);
@@ -401,6 +401,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
         let closestEnemy: GameObject | null = null;
         let closestDist = Infinity;
         this.blackboard.enemiesNearBase.forEach((enemy) => {
+          if (!unit.active || !enemy.active) return;
           const d = DistanceHelper.getTileDistanceBetweenGameObjects(unit, enemy);
           if (d !== null && d < closestDist) {
             closestDist = d;
@@ -599,7 +600,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     if (trainingBuildings.length === 0) return State.FAILED;
     const prodComp = getActorComponent(trainingBuildings[0]!, ProductionComponent)!;
     // Dynamic cost sourcing
-    const def = pwActorDefinitions[workerName];
+    const def = getPwActorDefinition(workerName, null);
     const costData = def?.components?.productionCost;
     if (!costData) return State.FAILED;
     prodComp.startProduction({

@@ -13,6 +13,7 @@ import { BuilderComponent } from "../../entity/components/construction/builder-c
 import { environment } from "../../../../../environments/environment";
 import { shouldConsiderActorUnlocked } from "./actor-unlock-utils";
 import { FactionDefinitions } from "../../player/faction-definitions";
+import { researchDefinitions } from "../../entity/components/research/research-definitions";
 
 export class TechTreeService {
   private readonly graph: TechTreeGraph;
@@ -502,6 +503,29 @@ export class TechTreeService {
    */
   setPlayerResearch(playerNumber: number, researchTypes: ResearchType[]): void {
     this.playerResearch.set(playerNumber, new Set(researchTypes));
+  }
+
+  /**
+   * Get the highest researched level for a given unit type for a player.
+   * Returns 1 if no upgrades have been researched.
+   * @param playerNumber - The player to check
+   * @param unitType - The unit type to check upgrades for
+   */
+  getResearchedLevelForUnit(playerNumber: number, unitType: ObjectNames): number {
+    let highestLevel = 1;
+
+    // Get all completed research for this player
+    const completedResearch = this.getPlayerResearch(playerNumber);
+
+    // Check each completed research to see if it upgrades this unit type
+    completedResearch.forEach((researchType) => {
+      const researchData = researchDefinitions[researchType];
+      if (researchData?.upgradesUnit && researchData.upgradesUnit.unitType === unitType) {
+        highestLevel = Math.max(highestLevel, researchData.upgradesUnit.targetLevel);
+      }
+    });
+
+    return highestLevel;
   }
 
   /**

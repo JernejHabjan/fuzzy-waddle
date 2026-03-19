@@ -13,7 +13,7 @@ import { SelectableComponent } from "../selectable-component";
 import { Subject, Subscription } from "rxjs";
 import RallyPoint from "../../../prefabs/buildings/misc/RallyPoint";
 import { ConstructionSiteComponent } from "../construction/construction-site-component";
-import { pwActorDefinitions } from "../../../prefabs/definitions/actor-definitions";
+import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
 import type { ProductionProgressEvent, ProductionQueueChangeEvent } from "./production-events";
 import type { ProductionQueueItem } from "./game-object";
 import type { ProductionDefinition } from "./production-definition";
@@ -380,8 +380,8 @@ export class ProductionComponent {
         const actorName = queueItem.name;
         const savedRemainingTime = queueItem.remainingTime;
 
-        const def = pwActorDefinitions[actorName];
-        const cost = def.components?.productionCost;
+        const def = getPwActorDefinition(actorName, null);
+        const cost = def?.components?.productionCost;
         if (!cost) {
           console.warn(`No production cost found for ${actorName}, skipping...`);
           return;

@@ -8,7 +8,8 @@ export const hedgehogDefinition = {
   components: {
     representable: {
       width: 32,
-      height: 32
+      height: 32,
+      origin: { x: 0.5, y: 0.6748775087412171 }
     },
     objectDescriptor: {
       color: 0x896347

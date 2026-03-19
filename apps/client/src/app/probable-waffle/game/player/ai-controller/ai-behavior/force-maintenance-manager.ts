@@ -3,7 +3,7 @@ import { FactionType, ObjectNames, ProbableWafflePlayer } from "@fuzzy-waddle/ap
 import { PlayerAiBlackboard } from "../player-ai-blackboard";
 import { getActorComponent } from "../../../data/actor-component";
 import { ProductionComponent } from "../../../entity/components/production/production-component";
-import { pwActorDefinitions } from "../../../prefabs/definitions/actor-definitions";
+import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
 import { getCostForObjectName } from "../../../entity/components/production/cost-utils";
 import { ProductionValidator } from "../../../data/tech-tree/production-validator";
 import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
@@ -118,7 +118,7 @@ export class ForceMaintenanceManager {
           continue;
         }
 
-        const def = pwActorDefinitions[unitName];
+        const def = getPwActorDefinition(unitName, null);
         if (!def?.components?.productionCost) continue;
 
         productionComponent = prod;

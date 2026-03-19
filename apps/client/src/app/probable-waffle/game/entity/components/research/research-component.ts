@@ -6,10 +6,12 @@ import { emitResource, getPlayer } from "../../../data/scene-data";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
 import { onObjectReady } from "../../../data/game-object-helper";
-import { type ResearchComponentData, type ResearchType } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames, type ResearchComponentData, type ResearchType } from "@fuzzy-waddle/api-interfaces";
 import { QueueComponent } from "../queue/queue-component";
 import { QueueItemType, type UnifiedQueueItem } from "../queue/queue-item";
 import Phaser from "phaser";
+import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
+import { upgradeActorToLevel } from "../../../data/actor-level-utils";
 
 export interface ResearchDefinition {
   availableResearch: ResearchType[];
@@ -103,6 +105,16 @@ export class ResearchComponent {
       return { canStart: false, reason: "Not enough resources" };
     }
 
+    // Check prerequisite research
+    if (researchData.prerequisiteResearch && researchData.prerequisiteResearch.length > 0) {
+      for (const prereq of researchData.prerequisiteResearch) {
+        if (!this.techTreeService?.isResearched(owner, prereq)) {
+          const prereqData = researchDefinitions[prereq];
+          return { canStart: false, reason: `Requires "${prereqData?.name ?? prereq}" to be researched first` };
+        }
+      }
+    }
+
     return { canStart: true };
   }
 
@@ -160,8 +172,39 @@ export class ResearchComponent {
       this.techTreeService?.registerResearchComplete(owner, type);
     }
 
+    // Handle unit upgrades if this research upgrades units
+    const researchData = researchDefinitions[type];
+    if (researchData?.upgradesUnit) {
+      const { unitType, targetLevel } = researchData.upgradesUnit;
+      this.upgradeAllUnitsOfType(unitType, targetLevel, owner);
+    }
+
     this.researchCompleted.emit(type);
     this.gameObject.emit(ResearchComponent.ResearchCompletedEvent, type);
+  }
+
+  /**
+   * Upgrade all units of a specific type owned by a player to a target level
+   */
+  private upgradeAllUnitsOfType(unitType: ObjectNames, targetLevel: number, owner?: number): void {
+    if (owner === undefined) return;
+
+    const actorIndexSystem = getSceneService(this.gameObject.scene, ActorIndexSystem);
+    if (!actorIndexSystem) {
+      console.error("ActorIndexSystem not found");
+      return;
+    }
+
+    // Get all actors owned by this player
+    const ownedActors = actorIndexSystem.getOwnedActors(owner);
+
+    // Filter by unit type and upgrade each one
+    const actorsToUpgrade = ownedActors.filter((actor: Phaser.GameObjects.GameObject) => actor.name === unitType);
+    actorsToUpgrade.forEach((actor: Phaser.GameObjects.GameObject) => {
+      upgradeActorToLevel(actor, targetLevel);
+    });
+
+    // console.log(`Upgraded ${actorsToUpgrade.length} ${unitType} units to level ${targetLevel} for player ${owner}`);
   }
 
   /**

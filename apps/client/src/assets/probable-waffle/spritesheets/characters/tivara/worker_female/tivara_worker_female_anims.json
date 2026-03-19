@@ -1,734 +1,2214 @@
 {
-  "anims": [
-    {
-      "key": "tivara_worker_female_hurt",
-      "type": "frame",
-      "frames": [
+    "anims": [
         {
-          "key": "tivara_worker_female_hurt",
-          "frame": 0,
-          "duration": 0,
-          "keyframe": false
+            "key": "tivara_worker_female_axe_logs_walk",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "axe_logs_walk_2",
+                    "frame": 0,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "axe_logs_walk_2",
+                    "frame": 1,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "axe_logs_walk_2",
+                    "frame": 2,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "axe_logs_walk_2",
+                    "frame": 3,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "axe_logs_walk_2",
+                    "frame": 4,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "axe_logs_walk_2",
+                    "frame": 5,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "axe_logs_walk_2",
+                    "frame": 6,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "axe_logs_walk_2",
+                    "frame": 7,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
         },
         {
-          "key": "tivara_worker_female_hurt",
-          "frame": 1,
-          "duration": 0,
-          "keyframe": false
+            "key": "tivara_worker_female_axe_logs_walk_1",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "axe_logs_walk_2",
+                    "frame": 8,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "axe_logs_walk_2",
+                    "frame": 9,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "axe_logs_walk_2",
+                    "frame": 10,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "axe_logs_walk_2",
+                    "frame": 11,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "axe_logs_walk_2",
+                    "frame": 12,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "axe_logs_walk_2",
+                    "frame": 13,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "axe_logs_walk_2",
+                    "frame": 14,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "axe_logs_walk_2",
+                    "frame": 15,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
         },
         {
-          "key": "tivara_worker_female_hurt",
-          "frame": 2,
-          "duration": 0,
-          "keyframe": false
+            "key": "tivara_worker_female_axe_logs_walk_2",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "axe_logs_walk_2",
+                    "frame": 16,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "axe_logs_walk_2",
+                    "frame": 17,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "axe_logs_walk_2",
+                    "frame": 18,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "axe_logs_walk_2",
+                    "frame": 19,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "axe_logs_walk_2",
+                    "frame": 20,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "axe_logs_walk_2",
+                    "frame": 21,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "axe_logs_walk_2",
+                    "frame": 22,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "axe_logs_walk_2",
+                    "frame": 23,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
         },
         {
-          "key": "tivara_worker_female_hurt",
-          "frame": 3,
-          "duration": 0,
-          "keyframe": false
+            "key": "tivara_worker_female_axe_logs_walk_3",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "axe_logs_walk_2",
+                    "frame": 24,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "axe_logs_walk_2",
+                    "frame": 25,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "axe_logs_walk_2",
+                    "frame": 26,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "axe_logs_walk_2",
+                    "frame": 27,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "axe_logs_walk_2",
+                    "frame": 28,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "axe_logs_walk_2",
+                    "frame": 29,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "axe_logs_walk_2",
+                    "frame": 30,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "axe_logs_walk_2",
+                    "frame": 31,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
         },
         {
-          "key": "tivara_worker_female_hurt",
-          "frame": 4,
-          "duration": 0,
-          "keyframe": false
+            "key": "tivara_worker_female_axe_smash",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "axe_smash_2",
+                    "frame": 0,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "axe_smash_2",
+                    "frame": 1,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "axe_smash_2",
+                    "frame": 2,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "axe_smash_2",
+                    "frame": 3,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_female_axe_smash_1",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "axe_smash_2",
+                    "frame": 4,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "axe_smash_2",
+                    "frame": 5,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "axe_smash_2",
+                    "frame": 6,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "axe_smash_2",
+                    "frame": 7,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_female_axe_smash_2",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "axe_smash_2",
+                    "frame": 8,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "axe_smash_2",
+                    "frame": 9,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "axe_smash_2",
+                    "frame": 10,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "axe_smash_2",
+                    "frame": 11,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_female_axe_smash_3",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "axe_smash_2",
+                    "frame": 12,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "axe_smash_2",
+                    "frame": 13,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "axe_smash_2",
+                    "frame": 14,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "axe_smash_2",
+                    "frame": 15,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_female_base_hurt",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "base_hurt_2",
+                    "frame": 0,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_hurt_2",
+                    "frame": 1,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_hurt_2",
+                    "frame": 2,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_hurt_2",
+                    "frame": 3,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_hurt_2",
+                    "frame": 4,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 5,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_female_base_idle",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "base_idle_2",
+                    "frame": 0,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_idle_2",
+                    "frame": 1,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 1,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_female_base_idle_1",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "base_idle_2",
+                    "frame": 2,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_idle_2",
+                    "frame": 3,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 1,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_female_base_idle_2",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "base_idle_2",
+                    "frame": 4,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_idle_2",
+                    "frame": 5,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 1,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_female_base_idle_3",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "base_idle_2",
+                    "frame": 6,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_idle_2",
+                    "frame": 7,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 1,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_female_base_slash",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "base_slash_2",
+                    "frame": 0,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_slash_2",
+                    "frame": 1,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_slash_2",
+                    "frame": 2,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_slash_2",
+                    "frame": 3,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_slash_2",
+                    "frame": 4,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_female_base_slash_1",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "base_slash_2",
+                    "frame": 5,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_slash_2",
+                    "frame": 6,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_slash_2",
+                    "frame": 7,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_slash_2",
+                    "frame": 8,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_slash_2",
+                    "frame": 9,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_female_base_slash_2",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "base_slash_2",
+                    "frame": 10,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_slash_2",
+                    "frame": 11,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_slash_2",
+                    "frame": 12,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_slash_2",
+                    "frame": 13,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_slash_2",
+                    "frame": 14,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_female_base_slash_3",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "base_slash_2",
+                    "frame": 15,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_slash_2",
+                    "frame": 16,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_slash_2",
+                    "frame": 17,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_slash_2",
+                    "frame": 18,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_slash_2",
+                    "frame": 19,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_female_base_thrust",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "base_thrust_2",
+                    "frame": 0,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_thrust_2",
+                    "frame": 1,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_thrust_2",
+                    "frame": 2,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_thrust_2",
+                    "frame": 3,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_thrust_2",
+                    "frame": 4,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_thrust_2",
+                    "frame": 5,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_thrust_2",
+                    "frame": 6,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_female_base_thrust_1",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "base_thrust_2",
+                    "frame": 7,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_thrust_2",
+                    "frame": 8,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_thrust_2",
+                    "frame": 9,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_thrust_2",
+                    "frame": 10,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_thrust_2",
+                    "frame": 11,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_thrust_2",
+                    "frame": 12,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_thrust_2",
+                    "frame": 13,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_female_base_thrust_2",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "base_thrust_2",
+                    "frame": 14,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_thrust_2",
+                    "frame": 15,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_thrust_2",
+                    "frame": 16,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_thrust_2",
+                    "frame": 17,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_thrust_2",
+                    "frame": 18,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_thrust_2",
+                    "frame": 19,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_thrust_2",
+                    "frame": 20,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_female_base_thrust_3",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "base_thrust_2",
+                    "frame": 21,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_thrust_2",
+                    "frame": 22,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_thrust_2",
+                    "frame": 23,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_thrust_2",
+                    "frame": 24,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_thrust_2",
+                    "frame": 25,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_thrust_2",
+                    "frame": 26,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_thrust_2",
+                    "frame": 27,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_female_base_walk",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "base_walk_2",
+                    "frame": 0,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_walk_2",
+                    "frame": 1,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_walk_2",
+                    "frame": 2,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_walk_2",
+                    "frame": 3,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_walk_2",
+                    "frame": 4,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_walk_2",
+                    "frame": 5,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_walk_2",
+                    "frame": 6,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_walk_2",
+                    "frame": 7,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_female_base_walk_1",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "base_walk_2",
+                    "frame": 8,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_walk_2",
+                    "frame": 9,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_walk_2",
+                    "frame": 10,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_walk_2",
+                    "frame": 11,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_walk_2",
+                    "frame": 12,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_walk_2",
+                    "frame": 13,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_walk_2",
+                    "frame": 14,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_walk_2",
+                    "frame": 15,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_female_base_walk_2",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "base_walk_2",
+                    "frame": 16,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_walk_2",
+                    "frame": 17,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_walk_2",
+                    "frame": 18,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_walk_2",
+                    "frame": 19,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_walk_2",
+                    "frame": 20,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_walk_2",
+                    "frame": 21,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_walk_2",
+                    "frame": 22,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_walk_2",
+                    "frame": 23,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_female_base_walk_3",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "base_walk_2",
+                    "frame": 24,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_walk_2",
+                    "frame": 25,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_walk_2",
+                    "frame": 26,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_walk_2",
+                    "frame": 27,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_walk_2",
+                    "frame": 28,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_walk_2",
+                    "frame": 29,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_walk_2",
+                    "frame": 30,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "base_walk_2",
+                    "frame": 31,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_female_hammer_smash",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hammer_smash_2",
+                    "frame": 0,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hammer_smash_2",
+                    "frame": 1,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hammer_smash_2",
+                    "frame": 2,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hammer_smash_2",
+                    "frame": 3,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_female_hammer_smash_1",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hammer_smash_2",
+                    "frame": 4,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hammer_smash_2",
+                    "frame": 5,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hammer_smash_2",
+                    "frame": 6,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hammer_smash_2",
+                    "frame": 7,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_female_hammer_smash_2",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hammer_smash_2",
+                    "frame": 8,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hammer_smash_2",
+                    "frame": 9,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hammer_smash_2",
+                    "frame": 10,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hammer_smash_2",
+                    "frame": 11,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_female_hammer_smash_3",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hammer_smash_2",
+                    "frame": 12,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hammer_smash_2",
+                    "frame": 13,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hammer_smash_2",
+                    "frame": 14,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hammer_smash_2",
+                    "frame": 15,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_female_hoe_thrust",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hoe_thrust_2",
+                    "frame": 0,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hoe_thrust_2",
+                    "frame": 1,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hoe_thrust_2",
+                    "frame": 2,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hoe_thrust_2",
+                    "frame": 3,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hoe_thrust_2",
+                    "frame": 4,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hoe_thrust_2",
+                    "frame": 5,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hoe_thrust_2",
+                    "frame": 6,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_female_hoe_thrust_1",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hoe_thrust_2",
+                    "frame": 7,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hoe_thrust_2",
+                    "frame": 8,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hoe_thrust_2",
+                    "frame": 9,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hoe_thrust_2",
+                    "frame": 10,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hoe_thrust_2",
+                    "frame": 11,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hoe_thrust_2",
+                    "frame": 12,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hoe_thrust_2",
+                    "frame": 13,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_female_hoe_thrust_2",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hoe_thrust_2",
+                    "frame": 14,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hoe_thrust_2",
+                    "frame": 15,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hoe_thrust_2",
+                    "frame": 16,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hoe_thrust_2",
+                    "frame": 17,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hoe_thrust_2",
+                    "frame": 18,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hoe_thrust_2",
+                    "frame": 19,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hoe_thrust_2",
+                    "frame": 20,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_female_hoe_thrust_3",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hoe_thrust_2",
+                    "frame": 21,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hoe_thrust_2",
+                    "frame": 22,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hoe_thrust_2",
+                    "frame": 23,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hoe_thrust_2",
+                    "frame": 24,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hoe_thrust_2",
+                    "frame": 25,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hoe_thrust_2",
+                    "frame": 26,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hoe_thrust_2",
+                    "frame": 27,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_female_pickaxe_ore_walk",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "pickaxe_ore_walk_2",
+                    "frame": 0,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "pickaxe_ore_walk_2",
+                    "frame": 1,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "pickaxe_ore_walk_2",
+                    "frame": 2,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "pickaxe_ore_walk_2",
+                    "frame": 3,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "pickaxe_ore_walk_2",
+                    "frame": 4,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "pickaxe_ore_walk_2",
+                    "frame": 5,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "pickaxe_ore_walk_2",
+                    "frame": 6,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "pickaxe_ore_walk_2",
+                    "frame": 7,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_female_pickaxe_ore_walk_1",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "pickaxe_ore_walk_2",
+                    "frame": 8,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "pickaxe_ore_walk_2",
+                    "frame": 9,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "pickaxe_ore_walk_2",
+                    "frame": 10,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "pickaxe_ore_walk_2",
+                    "frame": 11,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "pickaxe_ore_walk_2",
+                    "frame": 12,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "pickaxe_ore_walk_2",
+                    "frame": 13,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "pickaxe_ore_walk_2",
+                    "frame": 14,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "pickaxe_ore_walk_2",
+                    "frame": 15,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_female_pickaxe_ore_walk_2",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "pickaxe_ore_walk_2",
+                    "frame": 16,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "pickaxe_ore_walk_2",
+                    "frame": 17,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "pickaxe_ore_walk_2",
+                    "frame": 18,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "pickaxe_ore_walk_2",
+                    "frame": 19,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "pickaxe_ore_walk_2",
+                    "frame": 20,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "pickaxe_ore_walk_2",
+                    "frame": 21,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "pickaxe_ore_walk_2",
+                    "frame": 22,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "pickaxe_ore_walk_2",
+                    "frame": 23,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_female_pickaxe_ore_walk_3",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "pickaxe_ore_walk_2",
+                    "frame": 24,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "pickaxe_ore_walk_2",
+                    "frame": 25,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "pickaxe_ore_walk_2",
+                    "frame": 26,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "pickaxe_ore_walk_2",
+                    "frame": 27,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "pickaxe_ore_walk_2",
+                    "frame": 28,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "pickaxe_ore_walk_2",
+                    "frame": 29,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "pickaxe_ore_walk_2",
+                    "frame": 30,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "pickaxe_ore_walk_2",
+                    "frame": 31,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_female_pickaxe_smash",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "pickaxe_smash_2",
+                    "frame": 0,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "pickaxe_smash_2",
+                    "frame": 1,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "pickaxe_smash_2",
+                    "frame": 2,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "pickaxe_smash_2",
+                    "frame": 3,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_female_pickaxe_smash_1",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "pickaxe_smash_2",
+                    "frame": 4,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "pickaxe_smash_2",
+                    "frame": 5,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "pickaxe_smash_2",
+                    "frame": 6,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "pickaxe_smash_2",
+                    "frame": 7,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_female_pickaxe_smash_2",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "pickaxe_smash_2",
+                    "frame": 8,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "pickaxe_smash_2",
+                    "frame": 9,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "pickaxe_smash_2",
+                    "frame": 10,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "pickaxe_smash_2",
+                    "frame": 11,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_female_pickaxe_smash_3",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "pickaxe_smash_2",
+                    "frame": 12,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "pickaxe_smash_2",
+                    "frame": 13,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "pickaxe_smash_2",
+                    "frame": 14,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "pickaxe_smash_2",
+                    "frame": 15,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_female_scythe_basket_slash",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "scythe_basket_slash_2",
+                    "frame": 0,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "scythe_basket_slash_2",
+                    "frame": 1,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "scythe_basket_slash_2",
+                    "frame": 2,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "scythe_basket_slash_2",
+                    "frame": 3,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "scythe_basket_slash_2",
+                    "frame": 4,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_female_scythe_basket_slash_1",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "scythe_basket_slash_2",
+                    "frame": 5,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "scythe_basket_slash_2",
+                    "frame": 6,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "scythe_basket_slash_2",
+                    "frame": 7,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "scythe_basket_slash_2",
+                    "frame": 8,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "scythe_basket_slash_2",
+                    "frame": 9,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_female_scythe_basket_slash_2",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "scythe_basket_slash_2",
+                    "frame": 10,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "scythe_basket_slash_2",
+                    "frame": 11,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "scythe_basket_slash_2",
+                    "frame": 12,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "scythe_basket_slash_2",
+                    "frame": 13,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "scythe_basket_slash_2",
+                    "frame": 14,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_female_scythe_basket_slash_3",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "scythe_basket_slash_2",
+                    "frame": 15,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "scythe_basket_slash_2",
+                    "frame": 16,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "scythe_basket_slash_2",
+                    "frame": 17,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "scythe_basket_slash_2",
+                    "frame": 18,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "scythe_basket_slash_2",
+                    "frame": 19,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_female_scythe_basket_walk",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "scythe_basket_walk_2",
+                    "frame": 0,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "scythe_basket_walk_2",
+                    "frame": 1,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "scythe_basket_walk_2",
+                    "frame": 2,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "scythe_basket_walk_2",
+                    "frame": 3,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "scythe_basket_walk_2",
+                    "frame": 4,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "scythe_basket_walk_2",
+                    "frame": 5,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "scythe_basket_walk_2",
+                    "frame": 6,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "scythe_basket_walk_2",
+                    "frame": 7,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_female_scythe_basket_walk_1",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "scythe_basket_walk_2",
+                    "frame": 8,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "scythe_basket_walk_2",
+                    "frame": 9,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "scythe_basket_walk_2",
+                    "frame": 10,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "scythe_basket_walk_2",
+                    "frame": 11,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "scythe_basket_walk_2",
+                    "frame": 12,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "scythe_basket_walk_2",
+                    "frame": 13,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "scythe_basket_walk_2",
+                    "frame": 14,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "scythe_basket_walk_2",
+                    "frame": 15,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_female_scythe_basket_walk_2",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "scythe_basket_walk_2",
+                    "frame": 16,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "scythe_basket_walk_2",
+                    "frame": 17,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "scythe_basket_walk_2",
+                    "frame": 18,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "scythe_basket_walk_2",
+                    "frame": 19,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "scythe_basket_walk_2",
+                    "frame": 20,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "scythe_basket_walk_2",
+                    "frame": 21,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "scythe_basket_walk_2",
+                    "frame": 22,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "scythe_basket_walk_2",
+                    "frame": 23,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "tivara_worker_female_scythe_basket_walk_3",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "scythe_basket_walk_2",
+                    "frame": 24,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "scythe_basket_walk_2",
+                    "frame": 25,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "scythe_basket_walk_2",
+                    "frame": 26,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "scythe_basket_walk_2",
+                    "frame": 27,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "scythe_basket_walk_2",
+                    "frame": 28,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "scythe_basket_walk_2",
+                    "frame": 29,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "scythe_basket_walk_2",
+                    "frame": 30,
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "scythe_basket_walk_2",
+                    "frame": 31,
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 10,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
         }
-      ],
-      "frameRate": 5,
-      "skipMissedFrames": true,
-      "randomFrame": false
+    ],
+    "globalTimeScale": 1,
+    "meta": {
+        "app": "Phaser Editor 2D v3",
+        "contentType": "Phaser v3 Animations"
     },
-    {
-      "key": "tivara_worker_female_idle_up",
-      "type": "frame",
-      "frames": [
-        {
-          "key": "tivara_worker_female_idle",
-          "frame": 0,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_idle",
-          "frame": 1,
-          "duration": 0,
-          "keyframe": false
-        }
-      ],
-      "frameRate": 1,
-      "skipMissedFrames": true,
-      "repeat": -1,
-      "randomFrame": false
-    },
-    {
-      "key": "tivara_worker_female_idle_left",
-      "type": "frame",
-      "frames": [
-        {
-          "key": "tivara_worker_female_idle",
-          "frame": 2,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_idle",
-          "frame": 3,
-          "duration": 0,
-          "keyframe": false
-        }
-      ],
-      "frameRate": 1,
-      "skipMissedFrames": true,
-      "repeat": -1,
-      "randomFrame": false
-    },
-    {
-      "key": "tivara_worker_female_idle_down",
-      "type": "frame",
-      "frames": [
-        {
-          "key": "tivara_worker_female_idle",
-          "frame": 4,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_idle",
-          "frame": 5,
-          "duration": 0,
-          "keyframe": false
-        }
-      ],
-      "frameRate": 1,
-      "skipMissedFrames": true,
-      "repeat": -1,
-      "randomFrame": false
-    },
-    {
-      "key": "tivara_worker_female_idle_right",
-      "type": "frame",
-      "frames": [
-        {
-          "key": "tivara_worker_female_idle",
-          "frame": 6,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_idle",
-          "frame": 7,
-          "duration": 0,
-          "keyframe": false
-        }
-      ],
-      "frameRate": 1,
-      "skipMissedFrames": true,
-      "repeat": -1,
-      "randomFrame": false
-    },
-    {
-      "key": "tivara_worker_female_slash_up",
-      "type": "frame",
-      "frames": [
-        {
-          "key": "tivara_worker_female_slash",
-          "frame": 0,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_slash",
-          "frame": 1,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_slash",
-          "frame": 2,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_slash",
-          "frame": 3,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_slash",
-          "frame": 4,
-          "duration": 0,
-          "keyframe": false
-        }
-      ],
-      "frameRate": 10,
-      "skipMissedFrames": true,
-      "randomFrame": false
-    },
-    {
-      "key": "tivara_worker_female_slash_left",
-      "type": "frame",
-      "frames": [
-        {
-          "key": "tivara_worker_female_slash",
-          "frame": 5,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_slash",
-          "frame": 6,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_slash",
-          "frame": 7,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_slash",
-          "frame": 8,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_slash",
-          "frame": 9,
-          "duration": 0,
-          "keyframe": false
-        }
-      ],
-      "frameRate": 10,
-      "skipMissedFrames": true,
-      "randomFrame": false
-    },
-    {
-      "key": "tivara_worker_female_slash_down",
-      "type": "frame",
-      "frames": [
-        {
-          "key": "tivara_worker_female_slash",
-          "frame": 10,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_slash",
-          "frame": 11,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_slash",
-          "frame": 12,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_slash",
-          "frame": 13,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_slash",
-          "frame": 14,
-          "duration": 0,
-          "keyframe": false
-        }
-      ],
-      "frameRate": 10,
-      "skipMissedFrames": true,
-      "randomFrame": false
-    },
-    {
-      "key": "tivara_worker_female_slash_right",
-      "type": "frame",
-      "frames": [
-        {
-          "key": "tivara_worker_female_slash",
-          "frame": 15,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_slash",
-          "frame": 16,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_slash",
-          "frame": 17,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_slash",
-          "frame": 18,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_slash",
-          "frame": 19,
-          "duration": 0,
-          "keyframe": false
-        }
-      ],
-      "frameRate": 10,
-      "skipMissedFrames": true,
-      "randomFrame": false
-    },
-    {
-      "key": "tivara_worker_female_thrust_up",
-      "type": "frame",
-      "frames": [
-        {
-          "key": "tivara_worker_female_thrust",
-          "frame": 0,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_thrust",
-          "frame": 1,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_thrust",
-          "frame": 2,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_thrust",
-          "frame": 3,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_thrust",
-          "frame": 4,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_thrust",
-          "frame": 5,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_thrust",
-          "frame": 6,
-          "duration": 0,
-          "keyframe": false
-        }
-      ],
-      "frameRate": 10,
-      "skipMissedFrames": true,
-      "randomFrame": false
-    },
-    {
-      "key": "tivara_worker_female_thrust_left",
-      "type": "frame",
-      "frames": [
-        {
-          "key": "tivara_worker_female_thrust",
-          "frame": 7,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_thrust",
-          "frame": 8,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_thrust",
-          "frame": 9,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_thrust",
-          "frame": 10,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_thrust",
-          "frame": 11,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_thrust",
-          "frame": 12,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_thrust",
-          "frame": 13,
-          "duration": 0,
-          "keyframe": false
-        }
-      ],
-      "frameRate": 10,
-      "skipMissedFrames": true,
-      "randomFrame": false
-    },
-    {
-      "key": "tivara_worker_female_thrust_down",
-      "type": "frame",
-      "frames": [
-        {
-          "key": "tivara_worker_female_thrust",
-          "frame": 14,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_thrust",
-          "frame": 15,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_thrust",
-          "frame": 16,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_thrust",
-          "frame": 17,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_thrust",
-          "frame": 18,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_thrust",
-          "frame": 19,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_thrust",
-          "frame": 20,
-          "duration": 0,
-          "keyframe": false
-        }
-      ],
-      "frameRate": 10,
-      "skipMissedFrames": true,
-      "randomFrame": false
-    },
-    {
-      "key": "tivara_worker_female_thrust_right",
-      "type": "frame",
-      "frames": [
-        {
-          "key": "tivara_worker_female_thrust",
-          "frame": 21,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_thrust",
-          "frame": 22,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_thrust",
-          "frame": 23,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_thrust",
-          "frame": 24,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_thrust",
-          "frame": 25,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_thrust",
-          "frame": 26,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_thrust",
-          "frame": 27,
-          "duration": 0,
-          "keyframe": false
-        }
-      ],
-      "frameRate": 10,
-      "skipMissedFrames": true,
-      "randomFrame": false
-    },
-    {
-      "key": "tivara_worker_female_walk_up",
-      "type": "frame",
-      "frames": [
-        {
-          "key": "tivara_worker_female_walk",
-          "frame": 0,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_walk",
-          "frame": 1,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_walk",
-          "frame": 2,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_walk",
-          "frame": 3,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_walk",
-          "frame": 4,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_walk",
-          "frame": 5,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_walk",
-          "frame": 6,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_walk",
-          "frame": 7,
-          "duration": 0,
-          "keyframe": false
-        }
-      ],
-      "frameRate": 10,
-      "skipMissedFrames": true,
-      "repeat": -1,
-      "randomFrame": false
-    },
-    {
-      "key": "tivara_worker_female_walk_left",
-      "type": "frame",
-      "frames": [
-        {
-          "key": "tivara_worker_female_walk",
-          "frame": 8,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_walk",
-          "frame": 9,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_walk",
-          "frame": 10,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_walk",
-          "frame": 11,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_walk",
-          "frame": 12,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_walk",
-          "frame": 13,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_walk",
-          "frame": 14,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_walk",
-          "frame": 15,
-          "duration": 0,
-          "keyframe": false
-        }
-      ],
-      "frameRate": 10,
-      "skipMissedFrames": true,
-      "repeat": -1,
-      "randomFrame": false
-    },
-    {
-      "key": "tivara_worker_female_walk_down",
-      "type": "frame",
-      "frames": [
-        {
-          "key": "tivara_worker_female_walk",
-          "frame": 16,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_walk",
-          "frame": 17,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_walk",
-          "frame": 18,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_walk",
-          "frame": 19,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_walk",
-          "frame": 20,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_walk",
-          "frame": 21,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_walk",
-          "frame": 22,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_walk",
-          "frame": 23,
-          "duration": 0,
-          "keyframe": false
-        }
-      ],
-      "frameRate": 10,
-      "skipMissedFrames": true,
-      "repeat": -1,
-      "randomFrame": false
-    },
-    {
-      "key": "tivara_worker_female_walk_right",
-      "type": "frame",
-      "frames": [
-        {
-          "key": "tivara_worker_female_walk",
-          "frame": 24,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_walk",
-          "frame": 25,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_walk",
-          "frame": 26,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_walk",
-          "frame": 27,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_walk",
-          "frame": 28,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_walk",
-          "frame": 29,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_walk",
-          "frame": 30,
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "tivara_worker_female_walk",
-          "frame": 31,
-          "duration": 0,
-          "keyframe": false
-        }
-      ],
-      "frameRate": 10,
-      "skipMissedFrames": true,
-      "repeat": -1,
-      "randomFrame": false
+    "settings": {
+        "sourceLang": "TYPE_SCRIPT",
+        "esModule": true,
+        "generateCode": true,
+        "outputFolder": "fuzzy-waddle/apps/client/src/app/probable-waffle/game/animations"
     }
-  ],
-  "globalTimeScale": 1,
-  "meta": {
-    "app": "Phaser Editor 2D v3",
-    "contentType": "Phaser v3 Animations"
-  },
-  "settings": {
-    "sourceLang": "TYPE_SCRIPT",
-    "esModule": true,
-    "generateCode": true,
-    "outputFolder": "fuzzy-waddle/apps/client/src/app/probable-waffle/game/animations"
-  }
 }

@@ -8,21 +8,22 @@ import Phaser from "phaser";
 /* END-USER-IMPORTS */
 
 export default class SkaduweeWarriorMale extends Phaser.GameObjects.Container {
-  constructor(scene: Phaser.Scene, x?: number, y?: number) {
-    super(scene, x ?? 32, y ?? 57.77331682786765);
 
-    this.setInteractive(new Phaser.Geom.Circle(0, 0, 32), Phaser.Geom.Circle.Contains);
+	constructor(scene: Phaser.Scene, x?: number, y?: number) {
+		super(scene, x ?? 32, y ?? 57.077002702152576);
 
-    // skaduwee_warrior_male_idle_down
-    const skaduwee_warrior_male_idle_down = scene.add.sprite(0, -25.773318048605454, "warrior_male_idle", 4);
-    skaduwee_warrior_male_idle_down.play("skaduwee_warrior_male_idle_down");
-    this.add(skaduwee_warrior_male_idle_down);
+		this.setInteractive(new Phaser.Geom.Circle(0, -25.354877574887297, 32), Phaser.Geom.Circle.Contains);
 
-    /* START-USER-CTR-CODE */
+		// skaduwee_warrior_male_idle_down
+		const skaduwee_warrior_male_idle_down = scene.add.sprite(0, -25.077002702152576, "warrior_male_lvl1_idle", 4);
+		skaduwee_warrior_male_idle_down.play("warrior_male_lvl1_idle_2");
+		this.add(skaduwee_warrior_male_idle_down);
+
+		/* START-USER-CTR-CODE */
     /* END-USER-CTR-CODE */
-  }
+	}
 
-  /* START-USER-CODE */
+	/* START-USER-CODE */
   override name = ObjectNames.SkaduweeWarriorMale;
   // Write your code here.
 

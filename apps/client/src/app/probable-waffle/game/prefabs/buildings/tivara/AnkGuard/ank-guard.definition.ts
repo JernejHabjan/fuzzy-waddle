@@ -12,7 +12,8 @@ export const ankGuardDefinition = {
   components: {
     representable: {
       width: 256,
-      height: 256
+      height: 176,
+      origin: { x: 0.5, y: 0.8 }
     },
     objectDescriptor: {
       color: 0xc2a080

@@ -80,7 +80,7 @@ root [AutoAssignNewOrder] {
 
         /* Attacking visible enemies */
         sequence {
-            condition [AnyEnemyVisible]
+            condition [AnyAttackableEnemyVisible]
             condition [HasAttackComponent]
             flip {
                 condition [HasHarvestComponent]
@@ -134,8 +134,17 @@ root [Attack] {
                     flip {
                         condition [TargetExists]
                     }
-                    condition [AnyEnemyVisible]
-                    action [AssignVisibleEnemyToCurrentOrder]
+                    condition [AnyAttackableEnemyVisible]
+                    action [AssignAttackableEnemyToCurrentOrder]
+                }
+
+                /* if target exists but cannot be attacked, stop */
+                sequence {
+                    condition [TargetExists]
+                    flip {
+                        condition [CanAttackCurrentTarget]
+                    }
+                    action [Stop, "Attack - Target Not Attackable"]
                 }
 
                 /* exit current container */

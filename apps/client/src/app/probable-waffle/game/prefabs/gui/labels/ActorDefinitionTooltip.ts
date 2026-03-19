@@ -9,7 +9,7 @@ import ActorInfoLabel from "./ActorInfoLabel";
 import ActorDetails from "./ActorDetails";
 import Resource from "./Resource";
 import { getCurrentPlayerNumber, getPlayer } from "../../../data/scene-data";
-import { pwActorDefinitions } from "../../definitions/actor-definitions";
+import { getPwActorDefinition } from "../../definitions/actor-definitions";
 import type { TooltipInfo } from "./tooltip-info";
 import { researchDefinitions } from "../../../entity/components/research/research-definitions";
 /* END-USER-IMPORTS */
@@ -294,8 +294,9 @@ export default class ActorDefinitionTooltip extends Phaser.GameObjects.Container
       const requirementNames = allRequirements
         .map((req) => {
           // Check if it's an ObjectNames (actor/building) or ResearchType
-          if (req in pwActorDefinitions) {
-            return pwActorDefinitions[req as ObjectNames]?.components?.info?.name ?? req;
+          const actorDef = getPwActorDefinition(req, null);
+          if (actorDef) {
+            return actorDef.components?.info?.name ?? req;
           } else {
             // It's a ResearchType
             return researchDefinitions[req as ResearchType]?.name ?? req;

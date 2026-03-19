@@ -1,20 +1,35 @@
 import { getSceneInitializers, getSceneService } from "../world/services/scene-component-helpers";
 import { NavigationService } from "../world/services/navigation.service";
-import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames, type Vector2Simple, type Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { filter, first } from "rxjs";
 import { GameObjects } from "phaser";
 import { SelectableComponent } from "../entity/components/selectable-component";
 import { IdComponent } from "../entity/components/id-component";
 import { getActorComponent, getActorComponents } from "./actor-component";
 import { RepresentableComponent } from "../entity/components/representable-component";
+import { getPwActorDefinition } from "../prefabs/definitions/actor-definitions";
+import { getResearchedLevelForActor } from "./actor-level-utils";
 
 export function getGameObjectBounds(gameObject?: Phaser.GameObjects.GameObject): Phaser.Geom.Rectangle | null {
   if (!gameObject) return null;
-  const representableComponent = getActorComponent(gameObject, RepresentableComponent);
-  if (representableComponent) {
-    return representableComponent.bounds;
+  const representable = getPwActorDefinition(gameObject.name, getResearchedLevelForActor(gameObject))?.components?.representable;
+  if (!representable) {
+    const rawBounds = getGameObjectBoundsRaw(gameObject);
+    if (!rawBounds) throw new Error(`Bounds not found for gameObject ${gameObject.name}`);
+    return rawBounds;
   }
-  return getGameObjectBoundsRaw(gameObject);
+  const representableComponent = getActorComponent(gameObject, RepresentableComponent);
+  if (!representableComponent) throw new Error(`Representable component not found on gameObject ${gameObject.name}`);
+
+  const worldTransform = representableComponent.renderedWorldTransform;
+  const origin = representable.origin;
+
+  // Calculate the top-left corner based on origin
+  // worldTransform is at the origin point, so we need to offset by the origin
+  const topLeftX = worldTransform.x - representable.width * origin.x;
+  const topLeftY = worldTransform.y - representable.height * origin.y;
+
+  return new Phaser.Geom.Rectangle(topLeftX, topLeftY, representable.width, representable.height);
 }
 
 export function getGameObjectBoundsRaw(gameObject?: Phaser.GameObjects.GameObject): Phaser.Geom.Rectangle | null {

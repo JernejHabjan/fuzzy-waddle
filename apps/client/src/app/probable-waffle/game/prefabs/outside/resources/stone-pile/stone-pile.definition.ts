@@ -7,7 +7,8 @@ export const stonePileDefinition = {
   components: {
     representable: {
       width: 64,
-      height: 64
+      height: 32,
+      origin: { x: 0.5, y: 0.7378671494275097 }
     },
     objectDescriptor: {
       color: 0xbea55b
