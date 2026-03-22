@@ -1,0 +1,938 @@
+{
+    "anims": [
+        {
+            "key": "mobs_medusa_death/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_medusa",
+                    "frame": "death/e/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "death/e/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "death/e/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "death/e/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "death/e/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "death/e/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_medusa_death/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_medusa",
+                    "frame": "death/n/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "death/n/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "death/n/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "death/n/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "death/n/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "death/n/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_medusa_death/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_medusa",
+                    "frame": "death/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "death/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "death/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "death/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "death/s/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "death/s/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_medusa_death/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_medusa",
+                    "frame": "death/w/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "death/w/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "death/w/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "death/w/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "death/w/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "death/w/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_medusa_gaze attack/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_medusa",
+                    "frame": "gaze attack/e/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "gaze attack/e/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "gaze attack/e/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "gaze attack/e/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "gaze attack/e/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "gaze attack/e/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "gaze attack/e/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_medusa_gaze attack/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_medusa",
+                    "frame": "gaze attack/n/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "gaze attack/n/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "gaze attack/n/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "gaze attack/n/24.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "gaze attack/n/25.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "gaze attack/n/26.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "gaze attack/n/27.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_medusa_gaze attack/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_medusa",
+                    "frame": "gaze attack/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "gaze attack/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "gaze attack/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "gaze attack/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "gaze attack/s/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "gaze attack/s/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "gaze attack/s/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_medusa_gaze attack/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_medusa",
+                    "frame": "gaze attack/w/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "gaze attack/w/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "gaze attack/w/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "gaze attack/w/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "gaze attack/w/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "gaze attack/w/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "gaze attack/w/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_medusa_hit/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_medusa",
+                    "frame": "hit/e/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "hit/e/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_medusa_hit/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_medusa",
+                    "frame": "hit/n/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "hit/n/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_medusa_hit/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_medusa",
+                    "frame": "hit/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "hit/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_medusa_hit/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_medusa",
+                    "frame": "hit/w/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "hit/w/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_medusa_idle/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_medusa",
+                    "frame": "idle/e/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "idle/e/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "idle/e/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "idle/e/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_medusa_idle/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_medusa",
+                    "frame": "idle/n/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "idle/n/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "idle/n/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "idle/n/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_medusa_idle/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_medusa",
+                    "frame": "idle/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "idle/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "idle/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "idle/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_medusa_idle/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_medusa",
+                    "frame": "idle/w/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "idle/w/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "idle/w/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "idle/w/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_medusa_move/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_medusa",
+                    "frame": "move/e/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "move/e/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "move/e/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "move/e/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_medusa_move/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_medusa",
+                    "frame": "move/n/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "move/n/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "move/n/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "move/n/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_medusa_move/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_medusa",
+                    "frame": "move/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "move/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "move/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "move/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_medusa_move/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_medusa",
+                    "frame": "move/w/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "move/w/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "move/w/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "move/w/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_medusa_snake attack/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_medusa",
+                    "frame": "snake attack/e/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "snake attack/e/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "snake attack/e/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "snake attack/e/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "snake attack/e/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "snake attack/e/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_medusa_snake attack/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_medusa",
+                    "frame": "snake attack/n/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "snake attack/n/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "snake attack/n/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "snake attack/n/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "snake attack/n/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "snake attack/n/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_medusa_snake attack/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_medusa",
+                    "frame": "snake attack/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "snake attack/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "snake attack/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "snake attack/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "snake attack/s/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "snake attack/s/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_medusa_snake attack/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_medusa",
+                    "frame": "snake attack/w/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "snake attack/w/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "snake attack/w/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "snake attack/w/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "snake attack/w/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_medusa",
+                    "frame": "snake attack/w/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        }
+    ],
+    "globalTimeScale": 1,
+    "meta": {
+        "app": "Phaser Editor 2D v3",
+        "contentType": "Phaser v3 Animations"
+    },
+    "settings": {
+        "sourceLang": "TYPE_SCRIPT",
+        "esModule": false,
+        "generateCode": true
+    }
+}

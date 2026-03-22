@@ -1239,6 +1239,100 @@
                 "key": "minotaur_walk"
             },
             {
+                "type": "multiatlas",
+                "url": "assets/probable-waffle/atlas/mobs_banshee.json",
+                "path": "assets/probable-waffle/atlas",
+                "key": "mobs_banshee"
+            },
+            {
+                "url": "assets/probable-waffle/atlas/mobs_banshee_anim.json",
+                "type": "animation",
+                "key": "mobs_banshee_anim"
+            },
+            {
+                "type": "multiatlas",
+                "url": "assets/probable-waffle/atlas/mobs_flower_monster.json",
+                "path": "assets/probable-waffle/atlas",
+                "key": "mobs_flower_monster"
+            },
+            {
+                "url": "assets/probable-waffle/atlas/mobs_flower_monster_anim.json",
+                "type": "animation",
+                "key": "mobs_flower_monster_anim"
+            },
+            {
+                "type": "multiatlas",
+                "url": "assets/probable-waffle/atlas/mobs_flying_demon_blue.json",
+                "path": "assets/probable-waffle/atlas",
+                "key": "mobs_flying_demon_blue"
+            },
+            {
+                "url": "assets/probable-waffle/atlas/mobs_flying_demon_blue_anim.json",
+                "type": "animation",
+                "key": "mobs_flying_demon_blue_anim"
+            },
+            {
+                "type": "multiatlas",
+                "url": "assets/probable-waffle/atlas/mobs_flying_demon_red.json",
+                "path": "assets/probable-waffle/atlas",
+                "key": "mobs_flying_demon_red"
+            },
+            {
+                "url": "assets/probable-waffle/atlas/mobs_flying_demon_red_anim.json",
+                "type": "animation",
+                "key": "mobs_flying_demon_red_anim"
+            },
+            {
+                "type": "multiatlas",
+                "url": "assets/probable-waffle/atlas/mobs_golems.json",
+                "path": "assets/probable-waffle/atlas",
+                "key": "mobs_golems"
+            },
+            {
+                "url": "assets/probable-waffle/atlas/mobs_golems_anim.json",
+                "type": "animation",
+                "key": "mobs_golems_anim"
+            },
+            {
+                "type": "multiatlas",
+                "url": "assets/probable-waffle/atlas/mobs_medusa.json",
+                "path": "assets/probable-waffle/atlas",
+                "key": "mobs_medusa"
+            },
+            {
+                "url": "assets/probable-waffle/atlas/mobs_medusa_anim.json",
+                "type": "animation",
+                "key": "mobs_medusa_anim"
+            },
+            {
+                "type": "multiatlas",
+                "url": "assets/probable-waffle/atlas/mobs_minotaur.json",
+                "path": "assets/probable-waffle/atlas",
+                "key": "mobs_minotaur"
+            },
+            {
+                "url": "assets/probable-waffle/atlas/mobs_minotaur2_anim.json",
+                "type": "animation",
+                "key": "mobs_minotaur2_anim"
+            },
+            {
+                "type": "multiatlas",
+                "url": "assets/probable-waffle/atlas/mobs_mushroom_warrior.json",
+                "path": "assets/probable-waffle/atlas",
+                "key": "mobs_mushroom_warrior"
+            },
+            {
+                "url": "assets/probable-waffle/atlas/mobs_mushroom_warrior_anim.json",
+                "type": "animation",
+                "key": "mobs_mushroom_warrior_anim"
+            },
+            {
+                "type": "multiatlas",
+                "url": "assets/probable-waffle/atlas/mobs_slimes.json",
+                "path": "assets/probable-waffle/atlas",
+                "key": "mobs_slimes"
+            },
+            {
                 "url": "assets/probable-waffle/spritesheets/characters/mobs/mummy/mummy_anim.json",
                 "type": "animation",
                 "key": "mummy_anim"
@@ -2342,6 +2436,11 @@
                 },
                 "type": "spritesheet",
                 "key": "skeleton_walk"
+            },
+            {
+                "url": "assets/probable-waffle/atlas/slimes_anim.json",
+                "type": "animation",
+                "key": "slimes_anim"
             },
             {
                 "url": "assets/probable-waffle/spritesheets/characters/tivara/slingshot_female/tivara_slingshot_female_anims.json",

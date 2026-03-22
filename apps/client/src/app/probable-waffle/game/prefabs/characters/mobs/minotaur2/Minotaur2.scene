@@ -1,0 +1,45 @@
+{
+    "id": "ff9fc477-3a20-4065-b9f9-9f52935c7102",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 120,
+        "borderHeight": 120
+    },
+    "displayList": [
+        {
+            "type": "Sprite",
+            "id": "ca297df7-0f22-4b0b-9f1d-89a99dca5a31",
+            "label": "minotaur2_idle_se",
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": 40,
+            "hitArea.y": 40,
+            "hitArea.radius": 24.516131994774362,
+            "texture": {
+                "key": "mobs_minotaur",
+                "frame": "idle/s/0.png"
+            },
+            "x": 60,
+            "y": 93,
+            "scaleX": 1.5,
+            "scaleY": 1.5,
+            "originY": 0.773612963520417,
+            "animationPlayMethod": 1,
+            "animationKey": "mobs_minotaur2_idle/s"
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

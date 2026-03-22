@@ -1,0 +1,45 @@
+{
+    "id": "109bf399-2e51-481a-984b-0fc0dbc89070",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 96,
+        "borderHeight": 96
+    },
+    "displayList": [
+        {
+            "type": "Sprite",
+            "id": "82de4238-5168-44d1-9ede-bda43371907b",
+            "label": "flower_monster_idle_se",
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": 32,
+            "hitArea.y": 36,
+            "hitArea.radius": 25.024464239525226,
+            "texture": {
+                "key": "mobs_flower_monster",
+                "frame": "idle/s/0.png"
+            },
+            "x": 48,
+            "y": 74,
+            "scaleX": 1.5,
+            "scaleY": 1.5,
+            "originY": 0.773612963520417,
+            "animationPlayMethod": 1,
+            "animationKey": "mobs_flower_monster_idle/s"
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

@@ -1,0 +1,46 @@
+{
+    "id": "2048aa1d-8bcd-4b27-8107-957cfd8f46d5",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 46,
+        "borderHeight": 32
+    },
+    "displayList": [
+        {
+            "type": "Sprite",
+            "id": "e6c68b14-923e-4f16-acb5-7739709302a6",
+            "label": "sand_worm_idle_se",
+            "hitArea.shape": "ELLIPSE",
+            "hitArea.x": 23,
+            "hitArea.y": 16,
+            "hitArea.width": 46,
+            "hitArea.height": 32,
+            "texture": {
+                "key": "animals_2",
+                "frame": "sand_worm/idle/se/00.png"
+            },
+            "x": 23,
+            "y": 29.133422248980015,
+            "scaleX": 1.5,
+            "scaleY": 1.5,
+            "originY": 0.773612963520417,
+            "animationPlayMethod": 1,
+            "animationKey": "sand_worm/idle/se"
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

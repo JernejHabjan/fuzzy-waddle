@@ -100,6 +100,19 @@ import Bull from "../prefabs/animals/bull/Bull";
 import Lamb from "../prefabs/animals/lamb/Lamb";
 import Piglet from "../prefabs/animals/piglet/Piglet";
 import GameObject = Phaser.GameObjects.GameObject;
+import Banshee from "../prefabs/characters/mobs/banshee/Banshee";
+import BigWaterSlime from "../prefabs/characters/mobs/big_water_slime/BigWaterSlime";
+import SmallWaterSlime from "../prefabs/characters/mobs/small_water_slime/SmallWaterSlime";
+import FireSlime from "../prefabs/characters/mobs/fire_slime/FireSlime";
+import StoneGolem from "../prefabs/characters/mobs/stone_golem/StoneGolem";
+import MetalGolem from "../prefabs/characters/mobs/metal_golem/MetalGolem";
+import EarthGolem from "../prefabs/characters/mobs/earth_golem/EarthGolem";
+import Medusa from "../prefabs/characters/mobs/medusa/Medusa";
+import Minotaur2 from "../prefabs/characters/mobs/minotaur2/Minotaur2";
+import FlyingDemonRed from "../prefabs/characters/mobs/flying_demon_red/FlyingDemonRed";
+import FlowerMonster from "../prefabs/characters/mobs/flower_monster/FlowerMonster";
+import FlyingDemonBlue from "../prefabs/characters/mobs/flying_demon_blue/FlyingDemonBlue";
+import MushroomWarrior from "../prefabs/characters/mobs/mushroom_warrior/MushroomWarrior";
 
 type ActorMap = { [name: string]: new (scene: Phaser.Scene) => GameObject };
 export class ActorManager {
@@ -145,7 +158,24 @@ export class ActorManager {
     [ObjectNames.SkeletonSwordsman]: SkeletonSwordsman,
     [ObjectNames.Zombie1]: Zombie1,
     [ObjectNames.Zombie2]: Zombie2,
-    [ObjectNames.Zombie3]: Zombie3
+    [ObjectNames.Zombie3]: Zombie3,
+    [ObjectNames.Banshee]: Banshee, // TODO - OD TUKEJ DOL - MORŠ ŠE actorDefinitione popravt - scale - in v njihove .ts file dodat objectNames.x za name
+    [ObjectNames.FlowerMonster]: FlowerMonster,
+    [ObjectNames.FlyingDemonBlue]: FlyingDemonBlue,
+    [ObjectNames.FlyingDemonRed]: FlyingDemonRed,
+    [ObjectNames.EarthGolem]: EarthGolem,
+    [ObjectNames.StoneGolem]: StoneGolem,
+    [ObjectNames.MetalGolem]: MetalGolem,
+    [ObjectNames.Medusa]: Medusa,
+    [ObjectNames.Minotaur2]: Minotaur2,
+    [ObjectNames.MushroomWarrior]: MushroomWarrior,
+    [ObjectNames.PumpkinWarlock]: PumpkinWarlock,
+    [ObjectNames.SandWorm]: SandWorm,
+    [ObjectNames.SmallWaterSlime]: SmallWaterSlime,
+    [ObjectNames.BigWaterSlime]: BigWaterSlime,
+    [ObjectNames.FireSlime]: FireSlime,
+    [ObjectNames.SnowWendigo]: SnowWendigo,
+    [ObjectNames.ForestWendigo]: ForestWendigo
   };
 
   private static tivaraWorkers: ActorMap = {

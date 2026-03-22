@@ -1,4 +1,5 @@
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import type { PrefabDefinition } from "./prefab-definition";
 import { applyLevelOverrides } from "./prefab-definition";
 import { tivaraWorkerDefinition } from "../characters/tivara/tivara-worker/tivara-worker.definition";
 import { skaduweeWorkerDefinition } from "../characters/skaduwee/skaduwee-worker/skaduwee-worker.definition";
@@ -41,7 +42,6 @@ import { tree10Definition } from "../outside/foliage/trees/resources/tree10.defi
 import { tree11Definition } from "../outside/foliage/trees/resources/tree11.definition";
 import { mineralsDefinition } from "../outside/resources/minerals/minerals.definition";
 import { stonePileDefinition } from "../outside/resources/stone-pile/stone-pile.definition";
-import type { PrefabDefinition } from "./prefab-definition";
 import { emberstoneDefinition } from "../buildings/skaduwee/Emberstone/emberstone.definition";
 import { centurionDefinition } from "../characters/general/centurion/centurion.definition";
 import { cyclopsDefinition } from "../characters/mobs/cyclops/cyclops.definition";
@@ -74,6 +74,23 @@ import { blackGrouseDefinition } from "../animals/black_grouse/black_grouse.defi
 import { boar2Definition } from "../animals/boar2/boar2.definition";
 import { deerDefinition } from "../animals/deer/deer.definition";
 import { foxDefinition } from "../animals/fox/fox.definition";
+import { sandWormDefinition } from "../characters/mobs/sand_worm/sand_worm.definition";
+import { mushroomWarriorDefinition } from "../characters/mobs/mushroom_warrior/mushroom_warrior.definition";
+import { medusaDefinition } from "../characters/mobs/medusa/medusa.definition";
+import { stoneGolemDefinition } from "../characters/mobs/stone_golem/stone_golem.definition";
+import { metalGolemDefinition } from "../characters/mobs/metal_golem/metal_golem.definition";
+import { flyingDemonRedDefinition } from "../characters/mobs/flying_demon_red/flying_demon_red.definition";
+import { flowerMonsterDefinition } from "../characters/mobs/flower_monster/flower_monster.definition";
+import { bansheeDefinition } from "../characters/mobs/banshee/banshee.definition";
+import { fireSlimeDefinition } from "../characters/mobs/fire_slime/fire_slime.definition";
+import { pumpkinWarlockDefinition } from "../characters/mobs/pumpkin_warlock/pumpkin_warlock.definition";
+import { forestWendigoDefinition } from "../characters/mobs/forest_wendigo/forest_wendigo.definition";
+import { minotaur2Definition } from "../characters/mobs/minotaur2/minotaur2.definition";
+import { flyingDemonBlueDefinition } from "../characters/mobs/flying_demon_blue/flying_demon_blue.definition";
+import { smallWaterSlimeDefinition } from "../characters/mobs/small_water_slime/small_water_slime.definition";
+import { bigWaterSlimeDefinition } from "../characters/mobs/big_water_slime/big_water_slime.definition";
+import { snowWendigoDefinition } from "../characters/mobs/snow_wendigo/snow_wendigo.definition";
+import { earthGolemDefinition } from "../characters/mobs/earth_golem/earth_golem.definition";
 
 export const pwActorDefinitions: {
   [key in ObjectNames]: PrefabDefinition;
@@ -116,6 +133,23 @@ export const pwActorDefinitions: {
   Zombie1: zombie1Definition,
   Zombie2: zombie2Definition,
   Zombie3: zombie3Definition,
+  Banshee: bansheeDefinition,
+  FlowerMonster: flowerMonsterDefinition,
+  FlyingDemonBlue: flyingDemonBlueDefinition,
+  FlyingDemonRed: flyingDemonRedDefinition,
+  EarthGolem: earthGolemDefinition,
+  StoneGolem: stoneGolemDefinition,
+  MetalGolem: metalGolemDefinition,
+  Medusa: medusaDefinition,
+  Minotaur2: minotaur2Definition,
+  MushroomWarrior: mushroomWarriorDefinition,
+  PumpkinWarlock: pumpkinWarlockDefinition,
+  SandWorm: sandWormDefinition,
+  SmallWaterSlime: smallWaterSlimeDefinition,
+  BigWaterSlime: bigWaterSlimeDefinition,
+  FireSlime: fireSlimeDefinition,
+  SnowWendigo: snowWendigoDefinition,
+  ForestWendigo: forestWendigoDefinition,
   // Tivara
   // Tivara buildings
   Sandhold: sandholdDefinition,

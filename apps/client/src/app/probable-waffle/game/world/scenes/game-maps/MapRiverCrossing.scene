@@ -2723,6 +2723,149 @@
             "label": "turkey",
             "x": -277,
             "y": 1088
+        },
+        {
+            "prefabId": "2da4ac72-30ff-4a63-a1c9-507ed4cda6ae",
+            "id": "2ac280e6-caa4-45fd-8ed3-9e0c9b1db237",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "banshee",
+            "x": -704,
+            "y": 1152
+        },
+        {
+            "prefabId": "3e523c8f-dd0d-4a4c-b982-5f7f09f0ac93",
+            "id": "f8ab98c4-0c97-4e93-8d29-3e8e7fc29281",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "bigWaterSlime",
+            "x": -708,
+            "y": 1060
+        },
+        {
+            "prefabId": "cdae2bce-1e9c-4851-b419-618b2202916b",
+            "id": "37e0e5c4-342c-48a8-a887-10c4f106074d",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "fireSlime",
+            "x": -638,
+            "y": 1021
+        },
+        {
+            "prefabId": "b92a494a-c702-4c97-905e-a705014eb4a1",
+            "id": "e582e11e-7e35-4fc3-8511-108b75a9db9b",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "smallWaterSlime",
+            "x": -640,
+            "y": 1088
+        },
+        {
+            "prefabId": "81a4a74d-1fea-420d-8093-8d62fbb4f83f",
+            "id": "1e7b4ae3-825f-459d-be66-1a4d2222c47c",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "eartGolem",
+            "x": -719,
+            "y": 956
+        },
+        {
+            "prefabId": "910c2f19-d3c6-4430-8993-d13ff8cec6e0",
+            "id": "b87d9232-9512-462c-8a28-76700d403eee",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "stoneGolem",
+            "x": -792,
+            "y": 1129
+        },
+        {
+            "prefabId": "f3cab382-58b4-47e3-bd7c-20b62bd38249",
+            "id": "e35acd4b-3d94-43d8-92fc-3bacdb75bac7",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "metalGolem",
+            "x": -640,
+            "y": 1168
+        },
+        {
+            "prefabId": "ff9fc477-3a20-4065-b9f9-9f52935c7102",
+            "id": "0a702033-ac71-4c67-9299-e352618567b7",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "minotaur2",
+            "x": -544,
+            "y": 1008
+        },
+        {
+            "prefabId": "51e80010-a576-4213-9615-120b8eaa2c83",
+            "id": "669ad046-340f-4a11-b5a8-eb7d262ba605",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "medusa",
+            "x": -736,
+            "y": 1024
+        },
+        {
+            "prefabId": "109bf399-2e51-481a-984b-0fc0dbc89070",
+            "id": "c926bdf5-bb68-4f20-8ff3-480cca50c25a",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "flowerMonster",
+            "x": -480,
+            "y": 1008
+        },
+        {
+            "prefabId": "579c629d-1200-40e0-87b8-a743851497cc",
+            "id": "3144339d-0745-46fc-98f0-6a00f4ed6ed4",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "flyingDemonBlue",
+            "x": -622,
+            "y": 932
+        },
+        {
+            "prefabId": "3b560720-482d-401a-ae33-5c7d4569b767",
+            "id": "13454a08-501e-4793-93b1-e3ea946649d8",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "flyingDemonRed",
+            "x": -340,
+            "y": 936
+        },
+        {
+            "prefabId": "2b029a68-119c-4dde-a522-b1037401604a",
+            "id": "24da6f31-9c68-4d55-b160-d1ede83fc1c3",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "mushroomWarrior",
+            "x": -288,
+            "y": 992
         }
     ],
     "plainObjects": [

@@ -1,0 +1,45 @@
+{
+    "id": "51e80010-a576-4213-9615-120b8eaa2c83",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 96,
+        "borderHeight": 96
+    },
+    "displayList": [
+        {
+            "type": "Sprite",
+            "id": "1953ff07-8a20-46f2-8e59-5b9ef6af5faf",
+            "label": "medusa_idle_se",
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": 32,
+            "hitArea.y": 29,
+            "hitArea.radius": 19.08396424027322,
+            "texture": {
+                "key": "mobs_medusa",
+                "frame": "idle/s/0.png"
+            },
+            "x": 48,
+            "y": 66.0750611159855,
+            "scaleX": 1.5,
+            "scaleY": 1.5,
+            "originY": 0.6910615168119327,
+            "animationPlayMethod": 1,
+            "animationKey": "mobs_medusa_idle/s"
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

@@ -1,0 +1,45 @@
+{
+    "id": "81a4a74d-1fea-420d-8093-8d62fbb4f83f",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 192,
+        "borderHeight": 192
+    },
+    "displayList": [
+        {
+            "type": "Sprite",
+            "id": "3e82cf72-de03-41f7-9957-551addb65287",
+            "label": "earth_golem_idle_se",
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": 63,
+            "hitArea.y": 62,
+            "hitArea.radius": 24.71519993855504,
+            "texture": {
+                "key": "mobs_golems",
+                "frame": "Golem1/Idle/s/0.png"
+            },
+            "x": 96,
+            "y": 111,
+            "scaleX": 1.5,
+            "scaleY": 1.5,
+            "originY": 0.5788316470952387,
+            "animationPlayMethod": 1,
+            "animationKey": "Golem1/Idle/s"
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}
