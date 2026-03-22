@@ -1,0 +1,45 @@
+{
+    "id": "47103186-b42a-4f02-8ab7-8a2adbd06343",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 96,
+        "borderHeight": 96
+    },
+    "displayList": [
+        {
+            "type": "Sprite",
+            "id": "33b450ca-6219-4d65-854c-ddd2e8413325",
+            "label": "bull_idle_se",
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": 32,
+            "hitArea.y": 29,
+            "hitArea.radius": 15.043701719257019,
+            "texture": {
+                "key": "farm_animals",
+                "frame": "Bull/Idle/front/Bull_front_Idle1.png"
+            },
+            "x": 48,
+            "y": 60,
+            "scaleX": 1.5,
+            "scaleY": 1.5,
+            "originY": 0.6282748966394707,
+            "animationPlayMethod": 1,
+            "animationKey": "Bull/Idle/front/Bull_front_Idle"
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

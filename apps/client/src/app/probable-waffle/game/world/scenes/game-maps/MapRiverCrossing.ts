@@ -101,11 +101,23 @@ import Zombie2 from "../../../prefabs/characters/mobs/zombies/zombie2/Zombie2";
 import Zombie3 from "../../../prefabs/characters/mobs/zombies/zombie3/Zombie3";
 import TivaraAlchemist from "../../../prefabs/characters/tivara/tivara-alchemist/TivaraAlchemist";
 import TivaraMacemanMale from "../../../prefabs/characters/tivara/tivara-maceman-male/TivaraMacemanMale";
+import BlackGrouse from "../../../prefabs/animals/black_grouse/BlackGrouse";
+import Boar2 from "../../../prefabs/animals/boar2/Boar2";
+import Bull from "../../../prefabs/animals/bull/Bull";
+import Calf from "../../../prefabs/animals/calf/Calf";
+import Chick from "../../../prefabs/animals/chick/Chick";
+import Deer from "../../../prefabs/animals/deer/Deer";
+import Fox from "../../../prefabs/animals/fox/Fox";
+import Hare from "../../../prefabs/animals/hare/Hare";
+import Lamb from "../../../prefabs/animals/lamb/Lamb";
+import Piglet from "../../../prefabs/animals/piglet/Piglet";
+import Rooster from "../../../prefabs/animals/rooster/Rooster";
+import Sheep2 from "../../../prefabs/animals/sheep2/Sheep2";
+import Turkey from "../../../prefabs/animals/turkey/Turkey";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
 export default class MapRiverCrossing extends GameProbableWaffleScene {
-
   constructor() {
     super("MapRiverCrossing");
 
@@ -115,14 +127,13 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
   }
 
   editorCreate(): void {
-
     // tilemap
     const tilemap = this.add.tilemap("tiles_river_crossing");
     tilemap.addTilesetImage("tiles", "tiles_1");
     tilemap.addTilesetImage("tiles_2", "tiles_2");
 
     // tilemap_level_1
-    tilemap.createLayer("TileMap_level_1", ["tiles","tiles_2"], 0, 0);
+    tilemap.createLayer("TileMap_level_1", ["tiles", "tiles_2"], 0, 0);
 
     // spawn
     const spawn = new Spawn(this, 96, 608);
@@ -945,6 +956,58 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // tivaraMacemanMale
     const tivaraMacemanMale = new TivaraMacemanMale(this, -512, 544);
     this.add.existing(tivaraMacemanMale);
+
+    // black_grouse
+    const black_grouse = new BlackGrouse(this, -481, 1169);
+    this.add.existing(black_grouse);
+
+    // boar2
+    const boar2 = new Boar2(this, -492, 1233);
+    this.add.existing(boar2);
+
+    // bull
+    const bull = new Bull(this, -446, 1127);
+    this.add.existing(bull);
+
+    // calf
+    const calf = new Calf(this, -516, 1112);
+    this.add.existing(calf);
+
+    // chick
+    const chick = new Chick(this, -580, 1135);
+    this.add.existing(chick);
+
+    // deer
+    const deer = new Deer(this, -555, 1085);
+    this.add.existing(deer);
+
+    // fox
+    const fox = new Fox(this, -384, 1104);
+    this.add.existing(fox);
+
+    // hare
+    const hare = new Hare(this, -527, 1204);
+    this.add.existing(hare);
+
+    // lamb
+    const lamb = new Lamb(this, -576, 1184);
+    this.add.existing(lamb);
+
+    // piglet
+    const piglet = new Piglet(this, -450, 1044);
+    this.add.existing(piglet);
+
+    // rooster
+    const rooster = new Rooster(this, -341, 1042);
+    this.add.existing(rooster);
+
+    // sheep2
+    const sheep2 = new Sheep2(this, -396, 1037);
+    this.add.existing(sheep2);
+
+    // turkey
+    const turkey = new Turkey(this, -277, 1088);
+    this.add.existing(turkey);
 
     // spawn (components)
     const spawnEditorOwner = new EditorOwner(spawn);

@@ -3,15 +3,15 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { moveGameObjectToRandomTileInNavigableRadius, MovementSystem } from "../../../entity/systems/movement.system";
 import { onObjectReady } from "../../../data/game-object-helper";
-import { getActorSystem } from "../../../data/actor-system";
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { getActorComponent } from "../../../data/actor-component";
 import { AudioActorComponent } from "../../../entity/components/actor-audio/audio-actor-component";
 import { AnimationActorComponent } from "../../../entity/components/animation/animation-actor-component";
 import { OrderType } from "../../../ai/order-type";
 import { SoundType } from "../../../entity/components/actor-audio/sound-type";
+import { RandomMovementComponent } from "../../../entity/components/movement/random-movement.component";
+import type { RandomMovementDefinition } from "../../../entity/components/movement/random-movement-definition";
 /* END-USER-IMPORTS */
 
 export default class Sheep extends Phaser.GameObjects.Sprite {
@@ -23,25 +23,31 @@ export default class Sheep extends Phaser.GameObjects.Sprite {
     this.play("sheep_idle_down");
 
     /* START-USER-CTR-CODE */
-    onObjectReady(this, this.postSceneCreate, this);
+    onObjectReady(this, this.init, this);
     /* END-USER-CTR-CODE */
   }
 
   /* START-USER-CODE */
   override name = ObjectNames.Sheep;
+  private randomMovementComponent!: RandomMovementComponent;
 
-  private postSceneCreate() {
+  private init() {
     this.actorAudioComponent = getActorComponent(this, AudioActorComponent);
     this.animationActorComponent = getActorComponent(this, AnimationActorComponent);
     this.handleWoolParticles(this.scene);
     this.on(Phaser.Input.Events.POINTER_DOWN, this.onClick, this);
-    this.moveSheepAfterDelay();
+    this.randomMovementComponent = new RandomMovementComponent(this, {
+      radius: 2,
+      shouldPreventMovementStart: () => this.sheared,
+      delay: {
+        min: 6000,
+        max: 6000
+      }
+    } satisfies RandomMovementDefinition);
   }
 
   private actorAudioComponent?: AudioActorComponent;
   private animationActorComponent?: AnimationActorComponent;
-  private readonly radius = 2;
-  private currentDelay: Phaser.Time.TimerEvent | null = null;
   private woolParticles?: Phaser.GameObjects.Particles.ParticleEmitter;
   private sheared = false;
   private shearedCount = 0;
@@ -63,7 +69,7 @@ export default class Sheep extends Phaser.GameObjects.Sprite {
   }
 
   private onClick() {
-    this.cancelMovement();
+    this.randomMovementComponent.cancelMovement();
     if (this.shearedCount < this.maxShearedCount) {
       this.woolParticles?.emitParticleAt(this.x, this.y - 25, Phaser.Math.Between(1, 4));
       this.actorAudioComponent?.playSpatialCustomSound("scissors");
@@ -72,7 +78,7 @@ export default class Sheep extends Phaser.GameObjects.Sprite {
     if (this.shearedCount === this.maxShearedCount) {
       this.setSheared();
     } else {
-      this.moveSheepAfterDelay();
+      this.randomMovementComponent.moveAfterDelay();
     }
   }
 
@@ -89,28 +95,8 @@ export default class Sheep extends Phaser.GameObjects.Sprite {
       this.actorAudioComponent?.playSpatialCustomSound("wool");
       this.sheared = false;
       this.animationActorComponent?.playOrderAnimation(OrderType.Stop);
-      this.moveSheepAfterDelay();
+      this.randomMovementComponent.moveAfterDelay();
     });
-  }
-
-  private async startMovement() {
-    if (!this.active) return;
-    if (this.sheared) return;
-    try {
-      await moveGameObjectToRandomTileInNavigableRadius(this, this.radius);
-    } catch (e) {
-      // just ignore
-      // console.error(e);
-    }
-    this.moveSheepAfterDelay();
-  }
-
-  private moveSheepAfterDelay() {
-    if (!this.active) return;
-    if (this.sheared) return;
-    this.removeDelay();
-    const randomDelay = Phaser.Math.Between(1000, 5000);
-    this.currentDelay = this.scene.time.delayedCall(randomDelay, this.startMovement, [], this);
   }
 
   override setDepth(value: number): this {
@@ -118,21 +104,10 @@ export default class Sheep extends Phaser.GameObjects.Sprite {
     return super.setDepth(value);
   }
 
-  private cancelMovement = () => {
-    const movementSystem = getActorSystem<MovementSystem>(this, MovementSystem);
-    if (movementSystem) movementSystem.cancelMovement();
-  };
-
-  private removeDelay() {
-    this.currentDelay?.remove(false);
-    this.currentDelay = null;
-  }
-
   override destroy(fromScene?: boolean) {
     super.destroy(fromScene);
     this.off(Phaser.Input.Events.POINTER_DOWN, this.onClick, this);
     this.woolParticles?.destroy();
-    this.currentDelay?.remove(false);
   }
 
   // Write your code here.

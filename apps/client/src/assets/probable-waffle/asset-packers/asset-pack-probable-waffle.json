@@ -608,6 +608,17 @@
                 "key": "factions"
             },
             {
+                "type": "multiatlas",
+                "url": "assets/probable-waffle/atlas/farm_animals.json",
+                "path": "assets/probable-waffle/atlas",
+                "key": "farm_animals"
+            },
+            {
+                "url": "assets/probable-waffle/atlas/farm_animals_anim.json",
+                "type": "animation",
+                "key": "farm_animals_anim"
+            },
+            {
                 "url": "assets/probable-waffle/spritesheets/characters/skaduwee/worker_female/fishing_pole_fish.png",
                 "frameConfig": {
                     "frameWidth": 192,
@@ -762,6 +773,17 @@
                 },
                 "type": "spritesheet",
                 "key": "hoe_thrust_3"
+            },
+            {
+                "type": "multiatlas",
+                "url": "assets/probable-waffle/atlas/hunt_animals.json",
+                "path": "assets/probable-waffle/atlas",
+                "key": "hunt_animals"
+            },
+            {
+                "url": "assets/probable-waffle/atlas/hunt_animals_anim.json",
+                "type": "animation",
+                "key": "hunt_animals_anim"
             },
             {
                 "url": [

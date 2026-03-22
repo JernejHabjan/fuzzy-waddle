@@ -86,6 +86,19 @@ import Zombie3 from "../prefabs/characters/mobs/zombies/zombie3/Zombie3";
 import { RandomService } from "../world/services/random.service";
 import HealingTotem from "../prefabs/buildings/tivara/HealingTotem/HealingTotem";
 import TivaraAlchemist from "../prefabs/characters/tivara/tivara-alchemist/TivaraAlchemist";
+import Hare from "../prefabs/animals/hare/Hare";
+import Deer from "../prefabs/animals/deer/Deer";
+import Boar2 from "../prefabs/animals/boar2/Boar2";
+import Turkey from "../prefabs/animals/turkey/Turkey";
+import BlackGrouse from "../prefabs/animals/black_grouse/BlackGrouse";
+import Fox from "../prefabs/animals/fox/Fox";
+import Sheep2 from "../prefabs/animals/sheep2/Sheep2";
+import Rooster from "../prefabs/animals/rooster/Rooster";
+import Chick from "../prefabs/animals/chick/Chick";
+import Calf from "../prefabs/animals/calf/Calf";
+import Bull from "../prefabs/animals/bull/Bull";
+import Lamb from "../prefabs/animals/lamb/Lamb";
+import Piglet from "../prefabs/animals/piglet/Piglet";
 import GameObject = Phaser.GameObjects.GameObject;
 
 type ActorMap = { [name: string]: new (scene: Phaser.Scene) => GameObject };
@@ -96,7 +109,20 @@ export class ActorManager {
     [ObjectNames.Wolf]: Wolf,
     [ObjectNames.Boar]: Boar,
     [ObjectNames.Stag]: Stag,
-    [ObjectNames.Badger]: Badger
+    [ObjectNames.Badger]: Badger,
+    [ObjectNames.Bull]: Bull,
+    [ObjectNames.Calf]: Calf,
+    [ObjectNames.Chick]: Chick,
+    [ObjectNames.Lamb]: Lamb,
+    [ObjectNames.Piglet]: Piglet,
+    [ObjectNames.Rooster]: Rooster,
+    [ObjectNames.Sheep2]: Sheep2,
+    [ObjectNames.Turkey]: Turkey,
+    [ObjectNames.Black_grouse]: BlackGrouse,
+    [ObjectNames.Boar2]: Boar2,
+    [ObjectNames.Deer]: Deer,
+    [ObjectNames.Fox]: Fox,
+    [ObjectNames.Hare]: Hare
   };
 
   private static general: ActorMap = {
