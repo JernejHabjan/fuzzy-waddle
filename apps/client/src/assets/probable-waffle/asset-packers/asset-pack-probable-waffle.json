@@ -1283,6 +1283,11 @@
                 "key": "mobs_flying_demon_red_anim"
             },
             {
+                "url": "assets/probable-waffle/atlas/mobs_forest_wendigo_anim.json",
+                "type": "animation",
+                "key": "mobs_forest_wendigo_anim"
+            },
+            {
                 "type": "multiatlas",
                 "url": "assets/probable-waffle/atlas/mobs_golems.json",
                 "path": "assets/probable-waffle/atlas",
@@ -1328,9 +1333,48 @@
             },
             {
                 "type": "multiatlas",
+                "url": "assets/probable-waffle/atlas/mobs_pumpkin_warlock.json",
+                "path": "assets/probable-waffle/atlas",
+                "key": "mobs_pumpkin_warlock"
+            },
+            {
+                "url": "assets/probable-waffle/atlas/mobs_pumpkin_warlock_anim.json",
+                "type": "animation",
+                "key": "mobs_pumpkin_warlock_anim"
+            },
+            {
+                "type": "multiatlas",
+                "url": "assets/probable-waffle/atlas/mobs_sand_work.json",
+                "path": "assets/probable-waffle/atlas",
+                "key": "mobs_sand_work"
+            },
+            {
+                "url": "assets/probable-waffle/atlas/mobs_sand_worm_anim.json",
+                "type": "animation",
+                "key": "mobs_sand_worm_anim"
+            },
+            {
+                "type": "multiatlas",
                 "url": "assets/probable-waffle/atlas/mobs_slimes.json",
                 "path": "assets/probable-waffle/atlas",
                 "key": "mobs_slimes"
+            },
+            {
+                "type": "multiatlas",
+                "url": "assets/probable-waffle/atlas/mobs_snow_wendigo.json",
+                "path": "assets/probable-waffle/atlas",
+                "key": "mobs_snow_wendigo"
+            },
+            {
+                "url": "assets/probable-waffle/atlas/mobs_snow_wendigo_anim.json",
+                "type": "animation",
+                "key": "mobs_snow_wendigo_anim"
+            },
+            {
+                "type": "multiatlas",
+                "url": "assets/probable-waffle/atlas/mobs_wendigo.json",
+                "path": "assets/probable-waffle/atlas",
+                "key": "mobs_wendigo"
             },
             {
                 "url": "assets/probable-waffle/spritesheets/characters/mobs/mummy/mummy_anim.json",

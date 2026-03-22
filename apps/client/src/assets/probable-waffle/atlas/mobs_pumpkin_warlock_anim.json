@@ -1,0 +1,2340 @@
+{
+    "anims": [
+        {
+            "key": "mobs_pumpkin_warlock_Bat/bat - appear/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Bat/bat - appear/e/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Bat/bat - appear/e/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Bat/bat - appear/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Bat/bat - appear/n/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Bat/bat - appear/n/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Bat/bat - appear/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Bat/bat - appear/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Bat/bat - appear/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Bat/bat - appear/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Bat/bat - appear/w/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Bat/bat - appear/w/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Bat/bat - death/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Bat/bat - death/e/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Bat/bat - death/e/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Bat/bat - death/e/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Bat/bat - death/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Bat/bat - death/n/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Bat/bat - death/n/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Bat/bat - death/n/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Bat/bat - death/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Bat/bat - death/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Bat/bat - death/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Bat/bat - death/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Bat/bat - death/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Bat/bat - death/w/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Bat/bat - death/w/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Bat/bat - death/w/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Bat/bat - fly/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Bat/bat - fly/e/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Bat/bat - fly/e/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Bat/bat - fly/e/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Bat/bat - fly/e/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Bat/bat - fly/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Bat/bat - fly/n/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Bat/bat - fly/n/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Bat/bat - fly/n/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Bat/bat - fly/n/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Bat/bat - fly/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Bat/bat - fly/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Bat/bat - fly/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Bat/bat - fly/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Bat/bat - fly/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Bat/bat - fly/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Bat/bat - fly/w/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Bat/bat - fly/w/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Bat/bat - fly/w/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Bat/bat - fly/w/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Bat/bat - hit/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Bat/bat - hit/e/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Bat/bat - hit/e/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Bat/bat - hit/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Bat/bat - hit/n/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Bat/bat - hit/n/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Bat/bat - hit/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Bat/bat - hit/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Bat/bat - hit/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Bat/bat - hit/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Bat/bat - hit/w/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Bat/bat - hit/w/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Pumpkin/pumpkin - attack/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - attack/e/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - attack/e/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - attack/e/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - attack/e/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - attack/e/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - attack/e/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Pumpkin/pumpkin - attack/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - attack/n/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - attack/n/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - attack/n/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - attack/n/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - attack/n/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - attack/n/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Pumpkin/pumpkin - attack/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - attack/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - attack/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - attack/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - attack/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - attack/s/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - attack/s/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Pumpkin/pumpkin - attack/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - attack/w/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - attack/w/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - attack/w/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - attack/w/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - attack/w/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - attack/w/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Pumpkin/pumpkin - death/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - death/e/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - death/e/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - death/e/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - death/e/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Pumpkin/pumpkin - death/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - death/n/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - death/n/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - death/n/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - death/n/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Pumpkin/pumpkin - death/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - death/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - death/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - death/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - death/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Pumpkin/pumpkin - death/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - death/w/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - death/w/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - death/w/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - death/w/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Pumpkin/pumpkin - hit/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - hit/e/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - hit/e/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Pumpkin/pumpkin - hit/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - hit/n/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - hit/n/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Pumpkin/pumpkin - hit/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - hit/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - hit/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Pumpkin/pumpkin - hit/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - hit/w/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - hit/w/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Pumpkin/pumpkin - jump/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - jump/e/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - jump/e/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - jump/e/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - jump/e/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - jump/e/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - jump/e/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Pumpkin/pumpkin - jump/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - jump/n/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - jump/n/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - jump/n/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - jump/n/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - jump/n/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - jump/n/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Pumpkin/pumpkin - jump/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - jump/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - jump/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - jump/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - jump/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - jump/s/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - jump/s/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Pumpkin/pumpkin - jump/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - jump/w/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - jump/w/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - jump/w/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - jump/w/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - jump/w/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - jump/w/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Warlock/attack/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/attack/e/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/attack/e/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/attack/e/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/attack/e/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/attack/e/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/attack/e/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Warlock/attack/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/attack/n/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/attack/n/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/attack/n/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/attack/n/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/attack/n/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/attack/n/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Warlock/attack/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/attack/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/attack/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/attack/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/attack/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/attack/s/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/attack/s/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Warlock/attack/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/attack/w/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/attack/w/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/attack/w/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/attack/w/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/attack/w/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/attack/w/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Warlock/cast/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/cast/e/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/cast/e/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/cast/e/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/cast/e/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/cast/e/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/cast/e/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/cast/e/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/cast/e/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Warlock/cast/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/cast/n/24.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/cast/n/25.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/cast/n/26.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/cast/n/27.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/cast/n/28.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/cast/n/29.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/cast/n/30.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/cast/n/31.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Warlock/cast/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/cast/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/cast/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/cast/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/cast/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/cast/s/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/cast/s/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/cast/s/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/cast/s/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Warlock/cast/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/cast/w/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/cast/w/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/cast/w/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/cast/w/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/cast/w/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/cast/w/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/cast/w/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/cast/w/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Warlock/death/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/death/e/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/death/e/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/death/e/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/death/e/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/death/e/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/death/e/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/death/e/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Warlock/death/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/death/n/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/death/n/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/death/n/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/death/n/24.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/death/n/25.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/death/n/26.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/death/n/27.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Warlock/death/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/death/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/death/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/death/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/death/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/death/s/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/death/s/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/death/s/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Warlock/death/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/death/w/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/death/w/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/death/w/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/death/w/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/death/w/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/death/w/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/death/w/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Warlock/hit/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/hit/e/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/hit/e/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Warlock/hit/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/hit/n/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/hit/n/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Warlock/hit/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/hit/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/hit/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Warlock/hit/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/hit/w/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/hit/w/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Warlock/idle/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/idle/e/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/idle/e/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/idle/e/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/idle/e/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Warlock/idle/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/idle/n/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/idle/n/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/idle/n/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/idle/n/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Warlock/idle/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/idle/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/idle/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/idle/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/idle/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Warlock/idle/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/idle/w/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/idle/w/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/idle/w/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/idle/w/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Warlock/spell",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/spell/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/spell/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/spell/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/spell/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/spell/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/spell/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Warlock/summon bat/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/summon bat/e/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/summon bat/e/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/summon bat/e/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/summon bat/e/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/summon bat/e/24.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/summon bat/e/25.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/summon bat/e/26.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/summon bat/e/27.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/summon bat/e/28.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/summon bat/e/29.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Warlock/summon bat/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/summon bat/n/30.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/summon bat/n/31.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/summon bat/n/32.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/summon bat/n/33.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/summon bat/n/34.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/summon bat/n/35.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/summon bat/n/36.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/summon bat/n/37.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/summon bat/n/38.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/summon bat/n/39.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Warlock/summon bat/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/summon bat/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/summon bat/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/summon bat/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/summon bat/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/summon bat/s/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/summon bat/s/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/summon bat/s/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/summon bat/s/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/summon bat/s/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/summon bat/s/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Warlock/summon bat/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/summon bat/w/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/summon bat/w/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/summon bat/w/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/summon bat/w/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/summon bat/w/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/summon bat/w/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/summon bat/w/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/summon bat/w/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/summon bat/w/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/summon bat/w/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Warlock/walk/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/walk/e/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/walk/e/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/walk/e/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/walk/e/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Warlock/walk/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/walk/n/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/walk/n/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/walk/n/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/walk/n/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Warlock/walk/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/walk/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/walk/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/walk/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/walk/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_Warlock/walk/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/walk/w/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/walk/w/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/walk/w/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Warlock/walk/w/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        }
+    ],
+    "globalTimeScale": 1,
+    "meta": {
+        "app": "Phaser Editor 2D v3",
+        "contentType": "Phaser v3 Animations"
+    },
+    "settings": {
+        "sourceLang": "TYPE_SCRIPT",
+        "esModule": false,
+        "generateCode": true
+    }
+}

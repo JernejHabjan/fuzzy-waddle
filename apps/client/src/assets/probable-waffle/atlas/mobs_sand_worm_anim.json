@@ -1,0 +1,1252 @@
+{
+    "anims": [
+        {
+            "key": "mobs_sand_worm_attack1/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack1/e/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack1/e/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack1/e/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack1/e/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack1/e/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack1/e/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack1/e/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_sand_worm_attack1/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack1/n/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack1/n/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack1/n/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack1/n/24.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack1/n/25.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack1/n/26.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack1/n/27.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_sand_worm_attack1/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack1/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack1/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack1/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack1/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack1/s/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack1/s/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack1/s/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_sand_worm_attack1/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack1/w/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack1/w/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack1/w/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack1/w/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack1/w/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack1/w/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack1/w/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_sand_worm_attack2/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack2/e/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack2/e/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack2/e/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack2/e/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack2/e/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack2/e/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_sand_worm_attack2/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack2/n/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack2/n/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack2/n/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack2/n/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack2/n/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack2/n/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_sand_worm_attack2/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack2/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack2/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack2/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack2/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack2/s/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack2/s/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_sand_worm_attack2/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack2/w/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack2/w/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack2/w/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack2/w/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack2/w/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "attack2/w/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_sand_worm_come out/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "come out/e/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "come out/e/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "come out/e/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "come out/e/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_sand_worm_come out/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "come out/n/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "come out/n/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "come out/n/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "come out/n/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_sand_worm_come out/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "come out/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "come out/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "come out/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "come out/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_sand_worm_come out/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "come out/w/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "come out/w/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "come out/w/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "come out/w/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_sand_worm_death/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "death/e/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "death/e/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "death/e/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "death/e/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "death/e/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "death/e/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "death/e/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_sand_worm_death/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "death/n/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "death/n/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "death/n/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "death/n/24.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "death/n/25.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "death/n/26.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "death/n/27.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_sand_worm_death/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "death/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "death/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "death/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "death/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "death/s/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "death/s/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "death/s/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_sand_worm_death/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "death/w/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "death/w/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "death/w/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "death/w/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "death/w/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "death/w/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "death/w/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_sand_worm_hide/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "hide/e/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "hide/e/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "hide/e/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "hide/e/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "hide/e/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "hide/e/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "hide/e/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "hide/e/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_sand_worm_hide/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "hide/n/24.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "hide/n/25.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "hide/n/26.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "hide/n/27.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "hide/n/28.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "hide/n/29.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "hide/n/30.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "hide/n/31.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_sand_worm_hide/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "hide/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "hide/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "hide/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "hide/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "hide/s/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "hide/s/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "hide/s/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "hide/s/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_sand_worm_hide/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "hide/w/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "hide/w/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "hide/w/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "hide/w/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "hide/w/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "hide/w/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "hide/w/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "hide/w/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_sand_worm_hit/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "hit/e/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "hit/e/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_sand_worm_hit/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "hit/n/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "hit/n/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_sand_worm_hit/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "hit/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "hit/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_sand_worm_hit/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "hit/w/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "hit/w/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_sand_worm_idle/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "idle/e/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "idle/e/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "idle/e/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "idle/e/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_sand_worm_idle/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "idle/n/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "idle/n/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "idle/n/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "idle/n/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_sand_worm_idle/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "idle/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "idle/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "idle/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "idle/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_sand_worm_idle/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "idle/w/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "idle/w/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "idle/w/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "idle/w/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_sand_worm_poison shot - full animation",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "poison shot - full animation/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "poison shot - full animation/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "poison shot - full animation/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "poison shot - full animation/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "poison shot - full animation/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_sand_work",
+                    "frame": "poison shot - full animation/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        }
+    ],
+    "globalTimeScale": 1,
+    "meta": {
+        "app": "Phaser Editor 2D v3",
+        "contentType": "Phaser v3 Animations"
+    },
+    "settings": {
+        "sourceLang": "TYPE_SCRIPT",
+        "esModule": false,
+        "generateCode": true
+    }
+}

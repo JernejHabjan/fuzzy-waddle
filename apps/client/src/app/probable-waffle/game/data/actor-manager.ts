@@ -170,6 +170,8 @@ export class ActorManager {
     [ObjectNames.Minotaur2]: Minotaur2,
     [ObjectNames.MushroomWarrior]: MushroomWarrior,
     [ObjectNames.PumpkinWarlock]: PumpkinWarlock,
+    [ObjectNames.Bat]: Bat,
+    [ObjectNames.Pumpkin]: Pumpkin,
     [ObjectNames.SandWorm]: SandWorm,
     [ObjectNames.SmallWaterSlime]: SmallWaterSlime,
     [ObjectNames.BigWaterSlime]: BigWaterSlime,
