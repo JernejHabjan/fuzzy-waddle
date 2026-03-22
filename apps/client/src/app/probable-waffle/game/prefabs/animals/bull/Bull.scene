@@ -10,8 +10,8 @@
         "preloadPackFiles": [],
         "createMethodName": "",
         "compilerOutputLanguage": "TYPE_SCRIPT",
-        "borderWidth": 64,
-        "borderHeight": 64
+        "borderWidth": 96,
+        "borderHeight": 96
     },
     "displayList": [
         {
@@ -26,8 +26,10 @@
                 "key": "farm_animals",
                 "frame": "Bull/Idle/front/Bull_front_Idle1.png"
             },
-            "x": 32,
-            "y": 39.69836371961944,
+            "x": 48,
+            "y": 60,
+            "scaleX": 1.5,
+            "scaleY": 1.5,
             "originY": 0.6282748966394707,
             "animationPlayMethod": 1,
             "animationKey": "Bull/Idle/front/Bull_front_Idle"

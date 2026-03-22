@@ -10,8 +10,8 @@
         "preloadPackFiles": [],
         "createMethodName": "",
         "compilerOutputLanguage": "TYPE_SCRIPT",
-        "borderWidth": 32,
-        "borderHeight": 32
+        "borderWidth": 48,
+        "borderHeight": 48
     },
     "displayList": [
         {
@@ -26,8 +26,10 @@
                 "key": "hunt_animals",
                 "frame": "Hare/Idle/front/Hare_Idle_front1.png"
             },
-            "x": 16,
-            "y": 25,
+            "x": 24,
+            "y": 37,
+            "scaleX": 1.5,
+            "scaleY": 1.5,
             "originY": 0.773612963520417,
             "animationPlayMethod": 1,
             "animationKey": "Hare/Idle/front/Hare_Idle_front"
