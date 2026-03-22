@@ -12,15 +12,15 @@ const ANIM_BULL_WALK_RIGHT_BULL_RIGHT_WALK = "Bull/Walk/right/Bull_right_Walk";
 
 export const ANIM_BULL_DEFINITION: AnimationDefinitionMap = {
   [AnimationType.Idle]: {
-    northwest: { key: ANIM_BULL_IDLE_BACK_BULL_BACK_IDLE },
-    southeast: { key: ANIM_BULL_IDLE_FRONT_BULL_FRONT_IDLE },
-    southwest: { key: ANIM_BULL_IDLE_LEFT_BULL_LEFT_IDLE },
-    northeast: { key: ANIM_BULL_IDLE_RIGHT_BULL_RIGHT_IDLE },
+    north: { key: ANIM_BULL_IDLE_BACK_BULL_BACK_IDLE },
+    south: { key: ANIM_BULL_IDLE_FRONT_BULL_FRONT_IDLE },
+    west: { key: ANIM_BULL_IDLE_LEFT_BULL_LEFT_IDLE },
+    east: { key: ANIM_BULL_IDLE_RIGHT_BULL_RIGHT_IDLE },
   },
   [AnimationType.Walk]: {
-    northwest: { key: ANIM_BULL_WALK_BACK_BULL_BACK_WALK },
-    southeast: { key: ANIM_BULL_WALK_FRONT_BULL_FRONT_WALK },
-    southwest: { key: ANIM_BULL_WALK_LEFT_BULL_LEFT_WALK },
-    northeast: { key: ANIM_BULL_WALK_RIGHT_BULL_RIGHT_WALK },
+    north: { key: ANIM_BULL_WALK_BACK_BULL_BACK_WALK },
+    south: { key: ANIM_BULL_WALK_FRONT_BULL_FRONT_WALK },
+    west: { key: ANIM_BULL_WALK_LEFT_BULL_LEFT_WALK },
+    east: { key: ANIM_BULL_WALK_RIGHT_BULL_RIGHT_WALK },
   },
 };

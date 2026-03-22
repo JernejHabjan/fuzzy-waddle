@@ -12,15 +12,15 @@ const ANIM_LAMB_LAMB_WALK_RIGHT_LAMB_WALK_RIGHT = "Lamb/Lamb_walk/right/Lamb_wal
 
 export const ANIM_LAMB_DEFINITION: AnimationDefinitionMap = {
   [AnimationType.Idle]: {
-    northwest: { key: ANIM_LAMB_LAMB_IDLE_BACK_LAMB_IDLE_BACK },
-    southeast: { key: ANIM_LAMB_LAMB_IDLE_FRONT_LAMB_IDLE_FRONT },
-    southwest: { key: ANIM_LAMB_LAMB_IDLE_LEFT_LAMB_IDLE_LEFT },
-    northeast: { key: ANIM_LAMB_LAMB_IDLE_RIGHT_LAMB_IDLE_RIGHT },
+    north: { key: ANIM_LAMB_LAMB_IDLE_BACK_LAMB_IDLE_BACK },
+    south: { key: ANIM_LAMB_LAMB_IDLE_FRONT_LAMB_IDLE_FRONT },
+    west: { key: ANIM_LAMB_LAMB_IDLE_LEFT_LAMB_IDLE_LEFT },
+    east: { key: ANIM_LAMB_LAMB_IDLE_RIGHT_LAMB_IDLE_RIGHT },
   },
   [AnimationType.Walk]: {
-    northwest: { key: ANIM_LAMB_LAMB_WALK_BACK_LAMB_WALK_BACK },
-    southeast: { key: ANIM_LAMB_LAMB_WALK_FRONT_LAMB_WALK_FRONT },
-    southwest: { key: ANIM_LAMB_LAMB_WALK_LEFT_LAMB_WALK_LEFT },
-    northeast: { key: ANIM_LAMB_LAMB_WALK_RIGHT_LAMB_WALK_RIGHT },
+    north: { key: ANIM_LAMB_LAMB_WALK_BACK_LAMB_WALK_BACK },
+    south: { key: ANIM_LAMB_LAMB_WALK_FRONT_LAMB_WALK_FRONT },
+    west: { key: ANIM_LAMB_LAMB_WALK_LEFT_LAMB_WALK_LEFT },
+    east: { key: ANIM_LAMB_LAMB_WALK_RIGHT_LAMB_WALK_RIGHT },
   },
 };

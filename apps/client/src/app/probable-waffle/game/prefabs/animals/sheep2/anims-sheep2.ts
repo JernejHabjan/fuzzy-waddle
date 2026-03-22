@@ -12,15 +12,15 @@ const ANIM_SHEEP_SHEEP_WALK_RIGHT_SHEEP_WALK_RIGHT = "Sheep/Sheep_Walk/right/She
 
 export const ANIM_SHEEP2_DEFINITION: AnimationDefinitionMap = {
   [AnimationType.Idle]: {
-    northwest: { key: ANIM_SHEEP_SHEEP_IDLE_BACK_SHEEP_IDLE_BACK },
-    southeast: { key: ANIM_SHEEP_SHEEP_IDLE_FRONT_SHEEP_IDLE_FRONT },
-    southwest: { key: ANIM_SHEEP_SHEEP_IDLE_LEFT_SHEEP_IDLE_LEFT },
-    northeast: { key: ANIM_SHEEP_SHEEP_IDLE_RIGHT_SHEEP_IDLE_RIGHT }
+    north: { key: ANIM_SHEEP_SHEEP_IDLE_BACK_SHEEP_IDLE_BACK },
+    south: { key: ANIM_SHEEP_SHEEP_IDLE_FRONT_SHEEP_IDLE_FRONT },
+    west: { key: ANIM_SHEEP_SHEEP_IDLE_LEFT_SHEEP_IDLE_LEFT },
+    east: { key: ANIM_SHEEP_SHEEP_IDLE_RIGHT_SHEEP_IDLE_RIGHT }
   },
   [AnimationType.Walk]: {
-    northwest: { key: ANIM_SHEEP_SHEEP_WALK_BACK_SHEEP_WALK_BACK },
-    southeast: { key: ANIM_SHEEP_SHEEP_WALK_FRONT_SHEEP_WALK_FRONT },
-    southwest: { key: ANIM_SHEEP_SHEEP_WALK_LEFT_SHEEP_WALK_LEFT },
-    northeast: { key: ANIM_SHEEP_SHEEP_WALK_RIGHT_SHEEP_WALK_RIGHT }
+    north: { key: ANIM_SHEEP_SHEEP_WALK_BACK_SHEEP_WALK_BACK },
+    south: { key: ANIM_SHEEP_SHEEP_WALK_FRONT_SHEEP_WALK_FRONT },
+    west: { key: ANIM_SHEEP_SHEEP_WALK_LEFT_SHEEP_WALK_LEFT },
+    east: { key: ANIM_SHEEP_SHEEP_WALK_RIGHT_SHEEP_WALK_RIGHT }
   }
 };

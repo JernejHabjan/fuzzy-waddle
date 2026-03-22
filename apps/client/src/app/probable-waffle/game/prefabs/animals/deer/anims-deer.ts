@@ -16,15 +16,15 @@ const ANIM_DEER_WALK_RIGHT_DEER_WALK_RIGHT = "Deer/Walk/right/Deer_Walk_right";
 
 export const ANIM_DEER_DEFINITION: AnimationDefinitionMap = {
   [AnimationType.Idle]: {
-    northwest: { key: ANIM_DEER_IDLE_BACK_DEER_IDLE_BACK },
-    southeast: { key: ANIM_DEER_IDLE_FRONT_DEER_IDLE_FRONT },
-    southwest: { key: ANIM_DEER_IDLE_LEFT_DEER_IDLE_LEFT },
-    northeast: { key: ANIM_DEER_IDLE_RIGHT_DEER_IDLE_RIGHT },
+    north: { key: ANIM_DEER_IDLE_BACK_DEER_IDLE_BACK },
+    south: { key: ANIM_DEER_IDLE_FRONT_DEER_IDLE_FRONT },
+    west: { key: ANIM_DEER_IDLE_LEFT_DEER_IDLE_LEFT },
+    east: { key: ANIM_DEER_IDLE_RIGHT_DEER_IDLE_RIGHT },
   },
   [AnimationType.Walk]: {
-    northwest: { key: ANIM_DEER_WALK_BACK_DEER_WALK_BACK },
-    southeast: { key: ANIM_DEER_WALK_FRONT_DEER_WALK_FRONT },
-    southwest: { key: ANIM_DEER_WALK_LEFT_DEER_WALK_LEFT },
-    northeast: { key: ANIM_DEER_WALK_RIGHT_DEER_WALK_RIGHT },
+    north: { key: ANIM_DEER_WALK_BACK_DEER_WALK_BACK },
+    south: { key: ANIM_DEER_WALK_FRONT_DEER_WALK_FRONT },
+    west: { key: ANIM_DEER_WALK_LEFT_DEER_WALK_LEFT },
+    east: { key: ANIM_DEER_WALK_RIGHT_DEER_WALK_RIGHT },
   },
 };

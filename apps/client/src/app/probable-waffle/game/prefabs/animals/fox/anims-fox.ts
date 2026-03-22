@@ -16,15 +16,15 @@ const ANIM_FOX_WALK_RIGHT_FOX_WALK_RIGHT = "Fox/Walk/right/Fox_walk_right";
 
 export const ANIM_FOX_DEFINITION: AnimationDefinitionMap = {
   [AnimationType.Idle]: {
-    northwest: { key: ANIM_FOX_IDLE_BACK_FOX_IDLE_BACK },
-    southeast: { key: ANIM_FOX_IDLE_FRONT_FOX_IDLE_FRONT },
-    southwest: { key: ANIM_FOX_IDLE_LEFT_FOX_IDLE_LEFT },
-    northeast: { key: ANIM_FOX_IDLE_RIGHT_FOX_IDLE_RIGHT },
+    north: { key: ANIM_FOX_IDLE_BACK_FOX_IDLE_BACK },
+    south: { key: ANIM_FOX_IDLE_FRONT_FOX_IDLE_FRONT },
+    west: { key: ANIM_FOX_IDLE_LEFT_FOX_IDLE_LEFT },
+    east: { key: ANIM_FOX_IDLE_RIGHT_FOX_IDLE_RIGHT },
   },
   [AnimationType.Walk]: {
-    northwest: { key: ANIM_FOX_WALK_BACK_FOX_WALK_BACK },
-    southeast: { key: ANIM_FOX_WALK_FRONT_FOX_WALK_FRONT },
-    southwest: { key: ANIM_FOX_WALK_LEFT_FOX_WALK_LEFT },
-    northeast: { key: ANIM_FOX_WALK_RIGHT_FOX_WALK_RIGHT },
+    north: { key: ANIM_FOX_WALK_BACK_FOX_WALK_BACK },
+    south: { key: ANIM_FOX_WALK_FRONT_FOX_WALK_FRONT },
+    west: { key: ANIM_FOX_WALK_LEFT_FOX_WALK_LEFT },
+    east: { key: ANIM_FOX_WALK_RIGHT_FOX_WALK_RIGHT },
   },
 };

@@ -12,15 +12,15 @@ const ANIM_CHICK_WALK_RIGHT_CHICK_WALK_RIGHT = "Chick/Walk/right/Chick_walk_righ
 
 export const ANIM_CHICK_DEFINITION: AnimationDefinitionMap = {
   [AnimationType.Idle]: {
-    northwest: { key: ANIM_CHICK_IDLE_BACK_CHICK_IDLE_BACK },
-    southeast: { key: ANIM_CHICK_IDLE_FRONT_CHICK_IDLE_FRONT },
-    southwest: { key: ANIM_CHICK_IDLE_LEFT_CHICK_IDLE_LEFT },
-    northeast: { key: ANIM_CHICK_IDLE_RIGHT_CHICK_IDLE_RIGHT },
+    north: { key: ANIM_CHICK_IDLE_BACK_CHICK_IDLE_BACK },
+    south: { key: ANIM_CHICK_IDLE_FRONT_CHICK_IDLE_FRONT },
+    west: { key: ANIM_CHICK_IDLE_LEFT_CHICK_IDLE_LEFT },
+    east: { key: ANIM_CHICK_IDLE_RIGHT_CHICK_IDLE_RIGHT },
   },
   [AnimationType.Walk]: {
-    northwest: { key: ANIM_CHICK_WALK_BACK_CHICK_WALK_BACK },
-    southeast: { key: ANIM_CHICK_WALK_FRONT_CHICK_WALK_FRONT },
-    southwest: { key: ANIM_CHICK_WALK_LEFT_CHICK_WALK_LEFT },
-    northeast: { key: ANIM_CHICK_WALK_RIGHT_CHICK_WALK_RIGHT },
+    north: { key: ANIM_CHICK_WALK_BACK_CHICK_WALK_BACK },
+    south: { key: ANIM_CHICK_WALK_FRONT_CHICK_WALK_FRONT },
+    west: { key: ANIM_CHICK_WALK_LEFT_CHICK_WALK_LEFT },
+    east: { key: ANIM_CHICK_WALK_RIGHT_CHICK_WALK_RIGHT },
   },
 };

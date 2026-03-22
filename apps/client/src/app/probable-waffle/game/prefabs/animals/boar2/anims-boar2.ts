@@ -20,27 +20,27 @@ const ANIM_BOAR_WALK_RIGHT_BOAR_WALK_RIGHT = "Boar/Walk/right/Boar_Walk_right";
 
 export const ANIM_BOAR2_DEFINITION: AnimationDefinitionMap = {
   [AnimationType.Thrust]: {
-    northwest: { key: ANIM_BOAR_ATTACK_BACK_BOAR_BACK_ATTACK },
-    southeast: { key: ANIM_BOAR_ATTACK_FRONT_BOAR_FRONT_ATTACK },
-    southwest: { key: ANIM_BOAR_ATTACK_LEFT_BOAR_LEFT_ATTACK },
-    northeast: { key: ANIM_BOAR_ATTACK_RIGHT_BOAR_ATTACK_RIGHT }
+    north: { key: ANIM_BOAR_ATTACK_BACK_BOAR_BACK_ATTACK },
+    south: { key: ANIM_BOAR_ATTACK_FRONT_BOAR_FRONT_ATTACK },
+    west: { key: ANIM_BOAR_ATTACK_LEFT_BOAR_LEFT_ATTACK },
+    east: { key: ANIM_BOAR_ATTACK_RIGHT_BOAR_ATTACK_RIGHT }
   },
   [AnimationType.Idle]: {
-    northwest: { key: ANIM_BOAR_IDLE_BACK_BOAR_BACK_IDLE },
-    southeast: { key: ANIM_BOAR_IDLE_FRONT_BOAR_FRONT_IDLE },
-    southwest: { key: ANIM_BOAR_IDLE_LEFT_BOAR_LEFT_IDLE },
-    northeast: { key: ANIM_BOAR_IDLE_RIGHT_BOAR_IDLE_RIGHT }
-  },
-  [AnimationType.Run]: {
-    northwest: { key: ANIM_BOAR_RUN_BACK_BOAR_BACK_RUN },
-    southeast: { key: ANIM_BOAR_RUN_FRONT_BOAR_FRONT_RUN },
-    southwest: { key: ANIM_BOAR_RUN_LEFT_BOAR_LEFT_RUN },
-    northeast: { key: ANIM_BOAR_RUN_RIGHT_BOAR_RUN_RIGHT }
+    north: { key: ANIM_BOAR_IDLE_BACK_BOAR_BACK_IDLE },
+    south: { key: ANIM_BOAR_IDLE_FRONT_BOAR_FRONT_IDLE },
+    west: { key: ANIM_BOAR_IDLE_LEFT_BOAR_LEFT_IDLE },
+    east: { key: ANIM_BOAR_IDLE_RIGHT_BOAR_IDLE_RIGHT }
   },
   [AnimationType.Walk]: {
-    northwest: { key: ANIM_BOAR_WALK_BACK_BOAR_BACK_WALK },
-    southeast: { key: ANIM_BOAR_WALK_FRONT_BOAR_FRONT_WALK },
-    southwest: { key: ANIM_BOAR_WALK_LEFT_BOAR_LEFT_WALK },
-    northeast: { key: ANIM_BOAR_WALK_RIGHT_BOAR_WALK_RIGHT }
+    north: { key: ANIM_BOAR_WALK_BACK_BOAR_BACK_WALK },
+    south: { key: ANIM_BOAR_WALK_FRONT_BOAR_FRONT_WALK },
+    west: { key: ANIM_BOAR_WALK_LEFT_BOAR_LEFT_WALK },
+    east: { key: ANIM_BOAR_WALK_RIGHT_BOAR_WALK_RIGHT }
+  },
+  [AnimationType.Run]: {
+    north: { key: ANIM_BOAR_RUN_BACK_BOAR_BACK_RUN },
+    south: { key: ANIM_BOAR_RUN_FRONT_BOAR_FRONT_RUN },
+    west: { key: ANIM_BOAR_RUN_LEFT_BOAR_LEFT_RUN },
+    east: { key: ANIM_BOAR_RUN_RIGHT_BOAR_RUN_RIGHT }
   }
 };

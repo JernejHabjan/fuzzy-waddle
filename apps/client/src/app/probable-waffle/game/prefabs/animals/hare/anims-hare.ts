@@ -16,15 +16,15 @@ const ANIM_HARE_WALK_RIGHT_HARE_WALK_RIGHT = "Hare/Walk/right/Hare_Walk_right";
 
 export const ANIM_HARE_DEFINITION: AnimationDefinitionMap = {
   [AnimationType.Idle]: {
-    northwest: { key: ANIM_HARE_IDLE_BACK_HARE_IDLE_BACK },
-    southeast: { key: ANIM_HARE_IDLE_FRONT_HARE_IDLE_FRONT },
-    southwest: { key: ANIM_HARE_IDLE_LEFT_HARE_IDLE_LEFT },
-    northeast: { key: ANIM_HARE_IDLE_RIGHT_HARE_IDLE_RIGHT },
+    north: { key: ANIM_HARE_IDLE_BACK_HARE_IDLE_BACK },
+    south: { key: ANIM_HARE_IDLE_FRONT_HARE_IDLE_FRONT },
+    west: { key: ANIM_HARE_IDLE_LEFT_HARE_IDLE_LEFT },
+    east: { key: ANIM_HARE_IDLE_RIGHT_HARE_IDLE_RIGHT },
   },
   [AnimationType.Walk]: {
-    northwest: { key: ANIM_HARE_WALK_BACK_HARE_WALK_BACK },
-    southeast: { key: ANIM_HARE_WALK_FRONT_HARE_WALK_FRONT },
-    southwest: { key: ANIM_HARE_WALK_LEFT_HARE_WALK_LEFT },
-    northeast: { key: ANIM_HARE_WALK_RIGHT_HARE_WALK_RIGHT },
+    north: { key: ANIM_HARE_WALK_BACK_HARE_WALK_BACK },
+    south: { key: ANIM_HARE_WALK_FRONT_HARE_WALK_FRONT },
+    west: { key: ANIM_HARE_WALK_LEFT_HARE_WALK_LEFT },
+    east: { key: ANIM_HARE_WALK_RIGHT_HARE_WALK_RIGHT },
   },
 };

@@ -12,15 +12,15 @@ const ANIM_CALF_CALF_WALK_RIGHT_CALF_RIGHT_WALK = "Calf/Calf_Walk/right/Calf_rig
 
 export const ANIM_CALF_DEFINITION: AnimationDefinitionMap = {
   [AnimationType.Idle]: {
-    northwest: { key: ANIM_CALF_CALF_IDLE_BACK_CALF_BACK_IDLE },
-    southeast: { key: ANIM_CALF_CALF_IDLE_FRONT_CALF_FRONT_IDLE },
-    southwest: { key: ANIM_CALF_CALF_IDLE_LEFT_CALF_LEFT_IDLE },
-    northeast: { key: ANIM_CALF_CALF_IDLE_RIGHT_CALF_RIGHT_IDLE },
+    north: { key: ANIM_CALF_CALF_IDLE_BACK_CALF_BACK_IDLE },
+    south: { key: ANIM_CALF_CALF_IDLE_FRONT_CALF_FRONT_IDLE },
+    west: { key: ANIM_CALF_CALF_IDLE_LEFT_CALF_LEFT_IDLE },
+    east: { key: ANIM_CALF_CALF_IDLE_RIGHT_CALF_RIGHT_IDLE },
   },
   [AnimationType.Walk]: {
-    northwest: { key: ANIM_CALF_CALF_WALK_BACK_CALF_BACK_WALK },
-    southeast: { key: ANIM_CALF_CALF_WALK_FRONT_CALF_FRONT_WALK },
-    southwest: { key: ANIM_CALF_CALF_WALK_LEFT_CALF_LEFT_WALK },
-    northeast: { key: ANIM_CALF_CALF_WALK_RIGHT_CALF_RIGHT_WALK },
+    north: { key: ANIM_CALF_CALF_WALK_BACK_CALF_BACK_WALK },
+    south: { key: ANIM_CALF_CALF_WALK_FRONT_CALF_FRONT_WALK },
+    west: { key: ANIM_CALF_CALF_WALK_LEFT_CALF_LEFT_WALK },
+    east: { key: ANIM_CALF_CALF_WALK_RIGHT_CALF_RIGHT_WALK },
   },
 };
