@@ -25,7 +25,7 @@ export default class Boar2 extends Phaser.GameObjects.Sprite {
   }
 
   /* START-USER-CODE */
-  override name = ObjectNames.Boar;
+  override name = ObjectNames.Boar2;
 
   private init() {
     new RandomMovementComponent(this, {
