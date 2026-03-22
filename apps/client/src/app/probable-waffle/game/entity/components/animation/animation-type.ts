@@ -1,5 +1,6 @@
 export enum AnimationType {
   Idle = "idle",
+  Run = "run",
   Walk = "walk",
   Shoot = "shoot",
   Build = "build",
