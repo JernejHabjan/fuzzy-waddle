@@ -10,7 +10,7 @@
         "preloadPackFiles": [],
         "createMethodName": "",
         "compilerOutputLanguage": "TYPE_SCRIPT",
-        "borderWidth": 46,
+        "borderWidth": 32,
         "borderHeight": 32
     },
     "displayList": [
@@ -18,22 +18,19 @@
             "type": "Sprite",
             "id": "08459ecd-bab2-4e8f-8215-8ef79e4e8cf5",
             "label": "fox_idle_se",
-            "hitArea.shape": "ELLIPSE",
-            "hitArea.x": 23,
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": 15,
             "hitArea.y": 16,
-            "hitArea.width": 46,
-            "hitArea.height": 32,
+            "hitArea.radius": 10.489290421213095,
             "texture": {
-                "key": "animals_2",
-                "frame": "fox/idle/se/00.png"
+                "key": "hunt_animals",
+                "frame": "Fox/Idle/front/Fox_Idle_front1.png"
             },
-            "x": 23,
-            "y": 29.133422248980015,
-            "scaleX": 1.5,
-            "scaleY": 1.5,
+            "x": 16,
+            "y": 25,
             "originY": 0.773612963520417,
             "animationPlayMethod": 1,
-            "animationKey": "fox/idle/se"
+            "animationKey": "Fox/Idle/front/Fox_Idle_front"
         }
     ],
     "plainObjects": [],

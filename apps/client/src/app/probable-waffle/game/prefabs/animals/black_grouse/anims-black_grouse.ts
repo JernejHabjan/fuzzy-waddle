@@ -26,7 +26,7 @@ const ANIM_BLACK_GROUSE_BLACK_GROUSE_WALK_LEFT_BLACK_GROUSE_WALK_LEFT =
 const ANIM_BLACK_GROUSE_BLACK_GROUSE_WALK_RIGHT_BLACK_GROUSE_WALK_RIGHT =
   "Black_grouse/Black_grouse_Walk/right/Black_grouse_Walk_right";
 
-export const ANIM_BLACK_DEFINITION: AnimationDefinitionMap = {
+export const ANIM_BLACK_GROUSE_DEFINITION: AnimationDefinitionMap = {
   [AnimationType.Thrust]: {
     north: { key: ANIM_BLACK_GROUSE_BLACK_GROUSE_FLIGHT_BACK_BLACK_GROUSE_FLIGHT_BACK },
     south: { key: ANIM_BLACK_GROUSE_BLACK_GROUSE_FLIGHT_FRONT_BLACK_GROUSE_FLIGHT_FRONT },

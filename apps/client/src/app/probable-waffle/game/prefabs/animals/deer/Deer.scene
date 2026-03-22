@@ -10,7 +10,7 @@
         "preloadPackFiles": [],
         "createMethodName": "",
         "compilerOutputLanguage": "TYPE_SCRIPT",
-        "borderWidth": 46,
+        "borderWidth": 32,
         "borderHeight": 32
     },
     "displayList": [
@@ -18,22 +18,19 @@
             "type": "Sprite",
             "id": "7610f50f-2182-4d08-9955-af59ed8352d5",
             "label": "deer_idle_se",
-            "hitArea.shape": "ELLIPSE",
-            "hitArea.x": 23,
-            "hitArea.y": 16,
-            "hitArea.width": 46,
-            "hitArea.height": 32,
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": 16,
+            "hitArea.y": 14,
+            "hitArea.radius": 12.754838061189425,
             "texture": {
-                "key": "animals_2",
-                "frame": "deer/idle/se/00.png"
+                "key": "hunt_animals",
+                "frame": "Deer/Idle/front/Deer_Idle_front1.png"
             },
-            "x": 23,
-            "y": 29.133422248980015,
-            "scaleX": 1.5,
-            "scaleY": 1.5,
+            "x": 16,
+            "y": 25,
             "originY": 0.773612963520417,
             "animationPlayMethod": 1,
-            "animationKey": "deer/idle/se"
+            "animationKey": "Deer/Idle/front/Deer_Idle_front"
         }
     ],
     "plainObjects": [],

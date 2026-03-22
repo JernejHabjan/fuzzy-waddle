@@ -1,11 +1,11 @@
 import { ANIM_BLACK_GROUSE_DEFINITION } from "./anims-black_grouse";
 import type { PrefabDefinition } from "../../definitions/prefab-definition";
 
-export const black_grouseDefinition = {
+export const blackGrouseDefinition = {
   components: {
     representable: {
-      width: 48,
-      height: 48,
+      width: 32,
+      height: 32,
       origin: { x: 0.5, y: 0.773612963520417 }
     },
     objectDescriptor: {

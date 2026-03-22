@@ -61,16 +61,44 @@ import { orcMagicianDefinition } from "../characters/mobs/orcs/orc_magician/orc-
 import { mummyDefinition } from "../characters/mobs/mummy/mummy.definition";
 import { healingTotemDefinition } from "../buildings/tivara/HealingTotem/healing-totem.definition";
 import { tivaraAlchemistDefinition } from "../characters/tivara/tivara-alchemist/tivara_alchemist.definition";
+import { roosterDefinition } from "../animals/rooster/rooster.definition";
+import { pigletDefinition } from "../animals/piglet/piglet.definition";
+import { chickDefinition } from "../animals/chick/chick.definition";
+import { bullDefinition } from "../animals/bull/bull.definition";
+import { calfDefinition } from "../animals/calf/calf.definition";
+import { lambDefinition } from "../animals/lamb/lamb.definition";
+import { hareDefinition } from "../animals/hare/hare.definition";
+import { sheep2Definition } from "../animals/sheep2/sheep2.definition";
+import { turkeyDefinition } from "../animals/turkey/turkey.definition";
+import { blackGrouseDefinition } from "../animals/black_grouse/black_grouse.definition";
+import { boar2Definition } from "../animals/boar2/boar2.definition";
+import { deerDefinition } from "../animals/deer/deer.definition";
+import { foxDefinition } from "../animals/fox/fox.definition";
 
 export const pwActorDefinitions: {
   [key in ObjectNames]: PrefabDefinition;
 } = {
+  // Animals
   Hedgehog: hedgehogDefinition,
   Sheep: sheepDefinition,
   Badger: badgerDefinition,
   Boar: boarDefinition,
   Stag: stagDefinition,
   Wolf: wolfDefinition,
+  Bull: bullDefinition,
+  Calf: calfDefinition,
+  Chick: chickDefinition,
+  Lamb: lambDefinition,
+  Piglet: pigletDefinition,
+  Rooster: roosterDefinition,
+  Sheep2: sheep2Definition,
+  Turkey: turkeyDefinition,
+  Black_grouse: blackGrouseDefinition,
+  Boar2: boar2Definition,
+  Deer: deerDefinition,
+  Fox: foxDefinition,
+  Hare: hareDefinition,
+  // Units - mobs and generic
   GeneralWarrior: generalWarriorDefinition,
   Centurion: centurionDefinition,
   Cyclops: cyclopsDefinition,
@@ -88,19 +116,26 @@ export const pwActorDefinitions: {
   Zombie1: zombie1Definition,
   Zombie2: zombie2Definition,
   Zombie3: zombie3Definition,
+  // Tivara
+  // Tivara buildings
+  Sandhold: sandholdDefinition,
+  AnkGuard: ankGuardDefinition,
+  Olival: olivalDefinition,
+  Temple: templeDefinition,
+  // Tivara units
   TivaraMacemanMale: tivaraMacemanMaleDefinition,
   TivaraAlchemist: tivaraAlchemistDefinition,
   TivaraSlingshotFemale: tivaraSlingshotFemaleDefinition,
   TivaraWorker: tivaraWorkerDefinition,
   TivaraWorkerFemale: tivaraWorkerFemaleDefinition,
   TivaraWorkerMale: tivaraWorkerMaleDefinition,
-  AnkGuard: ankGuardDefinition,
-  Olival: olivalDefinition,
+  // Skaduwee
+  // Skaduwee buildings
+  FrostForge: frostForgeDefinition,
   Emberstone: emberstoneDefinition,
-  Sandhold: sandholdDefinition,
-  Temple: templeDefinition,
-  WorkMill: workMillDefinition,
-  MiningCamp: miningCampDefinition,
+  InfantryInn: infantryInnDefinition,
+  Owlery: owleryDefinition,
+  // Skaduwee units
   SkaduweeOwl: skaduweeOwlDefinition,
   SkaduweeRangedFemale: skaduweeRangedFemaleDefinition,
   SkaduweeMagicianFemale: skaduweeMagicianFemaleDefinition,
@@ -108,9 +143,16 @@ export const pwActorDefinitions: {
   SkaduweeWorkerMale: skaduweeWorkerMaleDefinition,
   SkaduweeWorker: skaduweeWorkerDefinition,
   SkaduweeWorkerFemale: skaduweeWorkerFemaleDefinition,
-  FrostForge: frostForgeDefinition,
-  InfantryInn: infantryInnDefinition,
-  Owlery: owleryDefinition,
+  // Shared faction
+  WorkMill: workMillDefinition,
+  MiningCamp: miningCampDefinition,
+  Stairs: stairsDefinition,
+  WatchTower: watchTowerDefinition,
+  Wall: wallDefinition,
+  // Resources
+  Minerals: mineralsDefinition,
+  StonePile: stonePileDefinition,
+  // Trees
   Tree1: tree1Definition,
   Tree4: tree4Definition,
   Tree5: tree5Definition,
@@ -119,11 +161,7 @@ export const pwActorDefinitions: {
   Tree9: tree9Definition,
   Tree10: tree10Definition,
   Tree11: tree11Definition,
-  Stairs: stairsDefinition,
-  WatchTower: watchTowerDefinition,
-  Wall: wallDefinition,
-  Minerals: mineralsDefinition,
-  StonePile: stonePileDefinition,
+  // Spells
   HealingTotem: healingTotemDefinition
 };
 

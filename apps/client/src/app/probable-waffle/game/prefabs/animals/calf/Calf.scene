@@ -10,30 +10,27 @@
         "preloadPackFiles": [],
         "createMethodName": "",
         "compilerOutputLanguage": "TYPE_SCRIPT",
-        "borderWidth": 46,
-        "borderHeight": 32
+        "borderWidth": 64,
+        "borderHeight": 64
     },
     "displayList": [
         {
             "type": "Sprite",
             "id": "035504a5-0d17-4724-8773-5a9671e880d8",
             "label": "calf_idle_se",
-            "hitArea.shape": "ELLIPSE",
-            "hitArea.x": 23,
-            "hitArea.y": 16,
-            "hitArea.width": 46,
-            "hitArea.height": 32,
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": 32,
+            "hitArea.y": 33,
+            "hitArea.radius": 11.675469169716088,
             "texture": {
-                "key": "animals_2",
-                "frame": "calf/idle/se/00.png"
+                "key": "farm_animals",
+                "frame": "Calf/Calf_Idle/front/Calf_front_Idle1.png"
             },
-            "x": 23,
-            "y": 29.133422248980015,
-            "scaleX": 1.5,
-            "scaleY": 1.5,
-            "originY": 0.773612963520417,
+            "x": 32,
+            "y": 40.614631512706566,
+            "originY": 0.6269665809064571,
             "animationPlayMethod": 1,
-            "animationKey": "calf/idle/se"
+            "animationKey": "Calf/Calf_Idle/front/Calf_front_Idle"
         }
     ],
     "plainObjects": [],

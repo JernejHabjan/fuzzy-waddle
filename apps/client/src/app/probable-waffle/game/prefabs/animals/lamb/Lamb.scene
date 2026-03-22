@@ -10,7 +10,7 @@
         "preloadPackFiles": [],
         "createMethodName": "",
         "compilerOutputLanguage": "TYPE_SCRIPT",
-        "borderWidth": 46,
+        "borderWidth": 32,
         "borderHeight": 32
     },
     "displayList": [
@@ -18,22 +18,19 @@
             "type": "Sprite",
             "id": "a911d3fb-e4f4-49a5-b459-0b75feb57be3",
             "label": "lamb_idle_se",
-            "hitArea.shape": "ELLIPSE",
-            "hitArea.x": 23,
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": 16,
             "hitArea.y": 16,
-            "hitArea.width": 46,
-            "hitArea.height": 32,
+            "hitArea.radius": 10.051940577210255,
             "texture": {
-                "key": "animals_2",
-                "frame": "lamb/idle/se/00.png"
+                "key": "farm_animals",
+                "frame": "Lamb/Lamb_Idle/front/Lamb_Idle_front1.png"
             },
-            "x": 23,
-            "y": 29.133422248980015,
-            "scaleX": 1.5,
-            "scaleY": 1.5,
+            "x": 16,
+            "y": 25,
             "originY": 0.773612963520417,
             "animationPlayMethod": 1,
-            "animationKey": "lamb/idle/se"
+            "animationKey": "Lamb/Lamb_Idle/front/Lamb_Idle_front"
         }
     ],
     "plainObjects": [],

@@ -10,7 +10,7 @@
         "preloadPackFiles": [],
         "createMethodName": "",
         "compilerOutputLanguage": "TYPE_SCRIPT",
-        "borderWidth": 46,
+        "borderWidth": 32,
         "borderHeight": 32
     },
     "displayList": [
@@ -18,22 +18,19 @@
             "type": "Sprite",
             "id": "fe2914fc-dfb1-4395-8e6a-c6a1da150def",
             "label": "turkey_idle_se",
-            "hitArea.shape": "ELLIPSE",
-            "hitArea.x": 23,
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": 16,
             "hitArea.y": 16,
-            "hitArea.width": 46,
-            "hitArea.height": 32,
+            "hitArea.radius": 10.325289790596205,
             "texture": {
-                "key": "animals_2",
-                "frame": "turkey/idle/se/00.png"
+                "key": "farm_animals",
+                "frame": "Turkey/Turkey_Idle/front/Turkey_Idle_Front1.png"
             },
-            "x": 23,
-            "y": 29.133422248980015,
-            "scaleX": 1.5,
-            "scaleY": 1.5,
+            "x": 16,
+            "y": 25,
             "originY": 0.773612963520417,
             "animationPlayMethod": 1,
-            "animationKey": "turkey/idle/se"
+            "animationKey": "Turkey/Turkey_Idle/front/Turkey_Idle_Front"
         }
     ],
     "plainObjects": [],

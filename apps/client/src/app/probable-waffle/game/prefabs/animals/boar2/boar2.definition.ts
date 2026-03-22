@@ -4,8 +4,8 @@ import { ANIM_BOAR2_DEFINITION } from "./anims-boar2";
 export const boar2Definition = {
   components: {
     representable: {
-      width: 48,
-      height: 48,
+      width: 32,
+      height: 32,
       origin: { x: 0.5, y: 0.773612963520417 }
     },
     objectDescriptor: {
