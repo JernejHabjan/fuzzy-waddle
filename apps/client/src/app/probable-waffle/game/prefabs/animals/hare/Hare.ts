@@ -4,6 +4,9 @@
 
 /* START-USER-IMPORTS */
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { RandomMovementComponent } from "../../../entity/components/movement/random-movement.component";
+import { onObjectReady } from "../../../data/game-object-helper";
+import type { RandomMovementDefinition } from "../../../entity/components/movement/random-movement-definition";
 /* END-USER-IMPORTS */
 
 export default class Hare extends Phaser.GameObjects.Sprite {
@@ -17,12 +20,22 @@ export default class Hare extends Phaser.GameObjects.Sprite {
     this.play("Hare/Idle/front/Hare_Idle_front");
 
     /* START-USER-CTR-CODE */
-    // Write your code here.
+    onObjectReady(this, this.init, this);
     /* END-USER-CTR-CODE */
   }
 
   /* START-USER-CODE */
   override name = ObjectNames.Hare;
+  private init() {
+    new RandomMovementComponent(this, {
+      radius: 2,
+      shouldPreventMovementStart: () => false,
+      delay: {
+        min: 2000,
+        max: 5000
+      }
+    } satisfies RandomMovementDefinition);
+  }
   /* END-USER-CODE */
 }
 

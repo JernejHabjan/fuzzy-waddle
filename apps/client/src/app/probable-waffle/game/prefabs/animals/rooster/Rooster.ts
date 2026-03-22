@@ -4,6 +4,9 @@
 
 /* START-USER-IMPORTS */
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { onObjectReady } from "../../../data/game-object-helper";
+import { RandomMovementComponent } from "../../../entity/components/movement/random-movement.component";
+import type { RandomMovementDefinition } from "../../../entity/components/movement/random-movement-definition";
 /* END-USER-IMPORTS */
 
 export default class Rooster extends Phaser.GameObjects.Sprite {
@@ -23,12 +26,23 @@ export default class Rooster extends Phaser.GameObjects.Sprite {
     this.play("Rooster/Rooster_Idle/front/Rooster__front_Idle");
 
     /* START-USER-CTR-CODE */
-    // Write your code here.
+    onObjectReady(this, this.init, this);
+
     /* END-USER-CTR-CODE */
   }
 
   /* START-USER-CODE */
   override name = ObjectNames.Rooster;
+  private init() {
+    new RandomMovementComponent(this, {
+      radius: 2,
+      shouldPreventMovementStart: () => false,
+      delay: {
+        min: 2000,
+        max: 5000
+      }
+    } satisfies RandomMovementDefinition);
+  }
   /* END-USER-CODE */
 }
 

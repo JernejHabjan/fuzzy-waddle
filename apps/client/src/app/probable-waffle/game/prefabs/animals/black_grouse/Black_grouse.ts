@@ -4,6 +4,9 @@
 
 /* START-USER-IMPORTS */
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { onObjectReady } from "../../../data/game-object-helper";
+import { RandomMovementComponent } from "../../../entity/components/movement/random-movement.component";
+import type { RandomMovementDefinition } from "../../../entity/components/movement/random-movement-definition";
 /* END-USER-IMPORTS */
 
 export default class Black_grouse extends Phaser.GameObjects.Sprite {
@@ -23,13 +26,22 @@ export default class Black_grouse extends Phaser.GameObjects.Sprite {
     this.play("Black_grouse/Black_grouse_Idle/front/Black_grouse_Idle_Front");
 
     /* START-USER-CTR-CODE */
-    // Write your code here.
+    onObjectReady(this, this.init, this);
     /* END-USER-CTR-CODE */
   }
 
   /* START-USER-CODE */
   override name = ObjectNames.Black_grouse;
-
+  private init() {
+    new RandomMovementComponent(this, {
+      radius: 2,
+      shouldPreventMovementStart: () => false,
+      delay: {
+        min: 2000,
+        max: 5000
+      }
+    } satisfies RandomMovementDefinition);
+  }
   /* END-USER-CODE */
 }
 
