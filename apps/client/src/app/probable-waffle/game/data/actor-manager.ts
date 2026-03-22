@@ -90,7 +90,7 @@ import Hare from "../prefabs/animals/hare/Hare";
 import Deer from "../prefabs/animals/deer/Deer";
 import Boar2 from "../prefabs/animals/boar2/Boar2";
 import Turkey from "../prefabs/animals/turkey/Turkey";
-import Black_grouse from "../prefabs/animals/black_grouse/Black_grouse";
+import BlackGrouse from "../prefabs/animals/black_grouse/BlackGrouse";
 import Fox from "../prefabs/animals/fox/Fox";
 import Sheep2 from "../prefabs/animals/sheep2/Sheep2";
 import Rooster from "../prefabs/animals/rooster/Rooster";
@@ -118,7 +118,7 @@ export class ActorManager {
     [ObjectNames.Rooster]: Rooster,
     [ObjectNames.Sheep2]: Sheep2,
     [ObjectNames.Turkey]: Turkey,
-    [ObjectNames.Black_grouse]: Black_grouse,
+    [ObjectNames.Black_grouse]: BlackGrouse,
     [ObjectNames.Boar2]: Boar2,
     [ObjectNames.Deer]: Deer,
     [ObjectNames.Fox]: Fox,

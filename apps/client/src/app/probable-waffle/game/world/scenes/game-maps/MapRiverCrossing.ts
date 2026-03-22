@@ -101,7 +101,7 @@ import Zombie2 from "../../../prefabs/characters/mobs/zombies/zombie2/Zombie2";
 import Zombie3 from "../../../prefabs/characters/mobs/zombies/zombie3/Zombie3";
 import TivaraAlchemist from "../../../prefabs/characters/tivara/tivara-alchemist/TivaraAlchemist";
 import TivaraMacemanMale from "../../../prefabs/characters/tivara/tivara-maceman-male/TivaraMacemanMale";
-import Black_grouse from "../../../prefabs/animals/black_grouse/Black_grouse";
+import BlackGrouse from "../../../prefabs/animals/black_grouse/BlackGrouse";
 import Boar2 from "../../../prefabs/animals/boar2/Boar2";
 import Bull from "../../../prefabs/animals/bull/Bull";
 import Calf from "../../../prefabs/animals/calf/Calf";
@@ -118,7 +118,6 @@ import Turkey from "../../../prefabs/animals/turkey/Turkey";
 /* END-USER-IMPORTS */
 
 export default class MapRiverCrossing extends GameProbableWaffleScene {
-
   constructor() {
     super("MapRiverCrossing");
 
@@ -128,14 +127,13 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
   }
 
   editorCreate(): void {
-
     // tilemap
     const tilemap = this.add.tilemap("tiles_river_crossing");
     tilemap.addTilesetImage("tiles", "tiles_1");
     tilemap.addTilesetImage("tiles_2", "tiles_2");
 
     // tilemap_level_1
-    tilemap.createLayer("TileMap_level_1", ["tiles","tiles_2"], 0, 0);
+    tilemap.createLayer("TileMap_level_1", ["tiles", "tiles_2"], 0, 0);
 
     // spawn
     const spawn = new Spawn(this, 96, 608);
@@ -960,7 +958,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(tivaraMacemanMale);
 
     // black_grouse
-    const black_grouse = new Black_grouse(this, -481, 1169);
+    const black_grouse = new BlackGrouse(this, -481, 1169);
     this.add.existing(black_grouse);
 
     // boar2

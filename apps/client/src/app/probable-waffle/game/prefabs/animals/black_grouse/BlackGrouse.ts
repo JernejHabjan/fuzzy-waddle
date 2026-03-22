@@ -9,7 +9,7 @@ import { RandomMovementComponent } from "../../../entity/components/movement/ran
 import type { RandomMovementDefinition } from "../../../entity/components/movement/random-movement-definition";
 /* END-USER-IMPORTS */
 
-export default class Black_grouse extends Phaser.GameObjects.Sprite {
+export default class BlackGrouse extends Phaser.GameObjects.Sprite {
   constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
     super(
       scene,
