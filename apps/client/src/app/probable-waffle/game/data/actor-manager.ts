@@ -165,7 +165,7 @@ export class ActorManager {
     [ObjectNames.Zombie1]: Zombie1,
     [ObjectNames.Zombie2]: Zombie2,
     [ObjectNames.Zombie3]: Zombie3,
-    [ObjectNames.Banshee]: Banshee, // TODO - OD TUKEJ DOL - MORŠ ŠE actorDefinitione popravt - scale - in v njihove .ts file dodat objectNames.x za name
+    [ObjectNames.Banshee]: Banshee,
     [ObjectNames.FlowerMonster]: FlowerMonster,
     [ObjectNames.FlyingDemonBlue]: FlyingDemonBlue,
     [ObjectNames.FlyingDemonRed]: FlyingDemonRed,
