@@ -28,8 +28,8 @@
             },
             "x": 48,
             "y": 74,
-            "scaleX": 1.5,
-            "scaleY": 1.5,
+            "scaleX": 2,
+            "scaleY": 2,
             "originY": 0.773612963520417,
             "animationPlayMethod": 1,
             "animationKey": "mobs_flower_monster_idle/s"

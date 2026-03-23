@@ -28,8 +28,8 @@
             },
             "x": 60,
             "y": 93,
-            "scaleX": 1.5,
-            "scaleY": 1.5,
+            "scaleX": 2.5,
+            "scaleY": 2.5,
             "originY": 0.773612963520417,
             "animationPlayMethod": 1,
             "animationKey": "mobs_minotaur2_idle/s"

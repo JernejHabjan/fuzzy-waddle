@@ -20,8 +20,8 @@
             "hitArea.x": -1,
             "hitArea.y": -57,
             "hitArea.radius": 70.06050123719255,
-            "x": 80,
-            "y": 144.6126720138045,
+            "x": 64.07536195898811,
+            "y": 117.4242644869538,
             "list": [
                 {
                     "type": "Sprite",
@@ -31,9 +31,10 @@
                         "key": "minotaur_idle",
                         "frame": 4
                     },
-                    "y": -64.61267201380451,
-                    "scaleX": 2.5,
-                    "scaleY": 2.5,
+                    "x": -0.07536195898811116,
+                    "y": -53.8115935885163,
+                    "scaleX": 2,
+                    "scaleY": 2,
                     "animationPlayMethod": 1,
                     "animationKey": "minotaur_idle_2"
                 }

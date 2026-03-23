@@ -6,7 +6,7 @@ export const bansheeDefinition = {
     representable: {
       width: 80,
       height: 80,
-      origin: { x: 0.5, y: 0.773612963520417 }
+      origin: { x: 0.5, y: 0.9 }
     },
     objectDescriptor: {
       color: 0x222e37

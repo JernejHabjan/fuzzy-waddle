@@ -4,8 +4,8 @@ import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 export const mushroomWarriorDefinition = {
   components: {
     representable: {
-      width: 48,
-      height: 48,
+      width: 32,
+      height: 32,
       origin: { x: 0.5, y: 0.773612963520417 }
     },
     objectDescriptor: {

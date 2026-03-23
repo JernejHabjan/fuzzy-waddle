@@ -137,6 +137,7 @@ import SnowWendigo from "../../../prefabs/characters/mobs/snow_wendigo/SnowWendi
 /* END-USER-IMPORTS */
 
 export default class MapRiverCrossing extends GameProbableWaffleScene {
+
   constructor() {
     super("MapRiverCrossing");
 
@@ -146,13 +147,14 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
   }
 
   editorCreate(): void {
+
     // tilemap
     const tilemap = this.add.tilemap("tiles_river_crossing");
     tilemap.addTilesetImage("tiles", "tiles_1");
     tilemap.addTilesetImage("tiles_2", "tiles_2");
 
     // tilemap_level_1
-    tilemap.createLayer("TileMap_level_1", ["tiles", "tiles_2"], 0, 0);
+    tilemap.createLayer("TileMap_level_1", ["tiles","tiles_2"], 0, 0);
 
     // spawn
     const spawn = new Spawn(this, 96, 608);
@@ -679,7 +681,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(reeds_4);
 
     // tivaraWorkerFemale
-    const tivaraWorkerFemale = new TivaraWorkerFemale(this, -672, 624);
+    const tivaraWorkerFemale = new TivaraWorkerFemale(this, -672, 1024);
     this.add.existing(tivaraWorkerFemale);
 
     // tivaraWorkerMale
@@ -1021,7 +1023,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(rooster);
 
     // sheep2
-    const sheep2 = new Sheep2(this, -396, 1037);
+    const sheep2 = new Sheep2(this, -384, 1056);
     this.add.existing(sheep2);
 
     // turkey
@@ -1061,11 +1063,11 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(minotaur2);
 
     // medusa
-    const medusa = new Medusa(this, -736, 1024);
+    const medusa = new Medusa(this, -672, 800);
     this.add.existing(medusa);
 
     // flowerMonster
-    const flowerMonster = new FlowerMonster(this, -480, 1008);
+    const flowerMonster = new FlowerMonster(this, -544, 880);
     this.add.existing(flowerMonster);
 
     // flyingDemonBlue

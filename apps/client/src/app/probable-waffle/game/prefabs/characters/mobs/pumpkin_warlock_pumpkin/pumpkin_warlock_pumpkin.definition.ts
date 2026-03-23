@@ -4,8 +4,8 @@ import { ANIM_PUMPKIN_WARLOCK_PUMPKIN_DEFINITION } from "./anims-pumpkin-warlock
 export const pumpkinWarlockPumpkinDefinition = {
   components: {
     representable: {
-      width: 48,
-      height: 48,
+      width: 20,
+      height: 20,
       origin: { x: 0.5, y: 0.773612963520417 }
     },
     objectDescriptor: {

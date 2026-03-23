@@ -28,8 +28,8 @@
             },
             "x": 96,
             "y": 111,
-            "scaleX": 1.5,
-            "scaleY": 1.5,
+            "scaleX": 2.5,
+            "scaleY": 2.5,
             "originY": 0.5796935427053551,
             "animationPlayMethod": 1,
             "animationKey": "Golem2/Idle/s"

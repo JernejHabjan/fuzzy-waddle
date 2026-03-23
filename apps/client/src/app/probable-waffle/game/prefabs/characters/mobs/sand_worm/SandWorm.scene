@@ -29,8 +29,8 @@
             },
             "x": 60,
             "y": 90.94116220089873,
-            "scaleX": 1.5,
-            "scaleY": 1.5,
+            "scaleX": 2,
+            "scaleY": 2,
             "originY": 0.7564559818612397,
             "animationPlayMethod": 1,
             "animationKey": "mobs_sand_worm_idle/s"

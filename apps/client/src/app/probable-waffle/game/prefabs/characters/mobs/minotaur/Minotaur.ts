@@ -10,14 +10,14 @@ import Phaser from "phaser";
 export default class Minotaur extends Phaser.GameObjects.Container {
 
 	constructor(scene: Phaser.Scene, x?: number, y?: number) {
-		super(scene, x ?? 80, y ?? 144.6126720138045);
+		super(scene, x ?? 64.07536195898811, y ?? 117.4242644869538);
 
 		this.setInteractive(new Phaser.Geom.Circle(-1, -57, 70.06050123719255), Phaser.Geom.Circle.Contains);
 
 		// general_warrior_idle_down
-		const general_warrior_idle_down = scene.add.sprite(0, -64.61267201380451, "minotaur_idle", 4);
-		general_warrior_idle_down.scaleX = 2.5;
-		general_warrior_idle_down.scaleY = 2.5;
+		const general_warrior_idle_down = scene.add.sprite(-0.07536195898811116, -53.8115935885163, "minotaur_idle", 4);
+		general_warrior_idle_down.scaleX = 2;
+		general_warrior_idle_down.scaleY = 2;
 		general_warrior_idle_down.play("minotaur_idle_2");
 		this.add(general_warrior_idle_down);
 
