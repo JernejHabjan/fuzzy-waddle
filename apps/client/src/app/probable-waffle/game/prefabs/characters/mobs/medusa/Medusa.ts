@@ -1,13 +1,12 @@
-
 // You can write more code here
 
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
+import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 /* END-USER-IMPORTS */
 
 export default class Medusa extends Phaser.GameObjects.Sprite {
-
   constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
     super(scene, x ?? 48, y ?? 66.0750611159855, texture || "mobs_medusa", frame ?? "idle/s/0.png");
 
@@ -23,9 +22,7 @@ export default class Medusa extends Phaser.GameObjects.Sprite {
   }
 
   /* START-USER-CODE */
-
-  // Write your code here.
-
+  override name = ObjectNames.Medusa;
   /* END-USER-CODE */
 }
 

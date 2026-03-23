@@ -10,7 +10,7 @@
         "preloadPackFiles": [],
         "createMethodName": "",
         "compilerOutputLanguage": "TYPE_SCRIPT",
-        "borderWidth": 46,
+        "borderWidth": 32,
         "borderHeight": 32
     },
     "displayList": [
@@ -18,22 +18,19 @@
             "type": "Sprite",
             "id": "355c8cc4-7ee0-429f-a75d-af522a48fe21",
             "label": "pumpkin_idle_se",
-            "hitArea.shape": "ELLIPSE",
-            "hitArea.x": 23,
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": 16,
             "hitArea.y": 16,
-            "hitArea.width": 46,
-            "hitArea.height": 32,
+            "hitArea.radius": 10.185081989969195,
             "texture": {
-                "key": "animals_2",
-                "frame": "pumpkin/idle/se/00.png"
+                "key": "mobs_pumpkin_warlock",
+                "frame": "Pumpkin/pumpkin - jump/s/0.png"
             },
-            "x": 23,
-            "y": 29.133422248980015,
-            "scaleX": 1.5,
-            "scaleY": 1.5,
-            "originY": 0.773612963520417,
+            "x": 16,
+            "y": 22,
+            "originY": 0.6846058682524427,
             "animationPlayMethod": 1,
-            "animationKey": "pumpkin/idle/se"
+            "animationKey": "mobs_pumpkin_warlock_pumpkin_idle_sPumpkin/pumpkin - jump/s"
         }
     ],
     "plainObjects": [],

@@ -10,8 +10,8 @@
         "preloadPackFiles": [],
         "createMethodName": "",
         "compilerOutputLanguage": "TYPE_SCRIPT",
-        "borderWidth": 46,
-        "borderHeight": 32
+        "borderWidth": 100,
+        "borderHeight": 100
     },
     "displayList": [
         {
@@ -24,16 +24,14 @@
             "hitArea.width": 46,
             "hitArea.height": 32,
             "texture": {
-                "key": "animals_2",
-                "frame": "pumpkin_warlock/idle/se/00.png"
+                "key": "mobs_pumpkin_warlock",
+                "frame": "Warlock/idle/s/0.png"
             },
-            "x": 23,
-            "y": 29.133422248980015,
-            "scaleX": 1.5,
-            "scaleY": 1.5,
-            "originY": 0.773612963520417,
+            "x": 50,
+            "y": 71,
+            "originY": 0.7141412333833488,
             "animationPlayMethod": 1,
-            "animationKey": "pumpkin_warlock/idle/se"
+            "animationKey": "mobs_pumpkin_warlock_Warlock/idle/s"
         }
     ],
     "plainObjects": [],

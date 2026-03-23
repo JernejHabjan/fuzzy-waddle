@@ -48,6 +48,8 @@ export enum ObjectNames {
   Minotaur2 = "Minotaur2",
   MushroomWarrior = "MushroomWarrior",
   PumpkinWarlock = "PumpkinWarlock",
+  PumpkinWarlockBat = "PumpkinWarlockBat",
+  PumpkinWarlockPumpkin = "PumpkinWarlockPumpkin",
   SandWorm = "SandWorm",
   SmallWaterSlime = "SmallWaterSlime",
   BigWaterSlime = "BigWaterSlime",

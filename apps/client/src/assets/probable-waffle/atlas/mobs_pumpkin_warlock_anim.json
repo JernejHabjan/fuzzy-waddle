@@ -2325,6 +2325,70 @@
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_pumpkin_idle_ePumpkin/pumpkin - jump/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - jump/e/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_pumpkin_idle_nPumpkin/pumpkin - jump/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - jump/n/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_pumpkin_idle_sPumpkin/pumpkin - jump/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - jump/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_pumpkin_warlock_pumpkin_idle_wPumpkin/pumpkin - jump/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_pumpkin_warlock",
+                    "frame": "Pumpkin/pumpkin - jump/w/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 24,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
         }
     ],
     "globalTimeScale": 1,

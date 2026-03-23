@@ -2866,6 +2866,72 @@
             "label": "mushroomWarrior",
             "x": -288,
             "y": 992
+        },
+        {
+            "prefabId": "2c354ce2-b043-4d02-acfc-c8a581274268",
+            "id": "c07a4fe8-af8a-4601-9bbe-18bd131bdc5f",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "pumpkinWarlock",
+            "x": -416,
+            "y": 1264
+        },
+        {
+            "prefabId": "2c354ce2-b043-4d02-acfc-c8a581274368",
+            "id": "5bb8183d-b7ca-4595-981b-d1316acbbefb",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "pumpkinWarlockBat",
+            "x": -365,
+            "y": 1306
+        },
+        {
+            "prefabId": "2c354ce2-b043-4d02-acfa-c8a581274368",
+            "id": "4658ab70-dcb7-46dd-8836-dbfd33b9d403",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "pumpkinWarlockPumpkin",
+            "x": -448,
+            "y": 1312
+        },
+        {
+            "prefabId": "2048aa1d-8bcd-4b27-8107-957cfd8f46d5",
+            "id": "0002ed4f-8840-4191-bcb5-63cefd899159",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "sandWorm",
+            "x": -704,
+            "y": 864
+        },
+        {
+            "prefabId": "f64cc718-5fab-44b8-b0f7-14254f01b2bb",
+            "id": "8c4738ff-3cc2-4c3d-aaf2-45ebd9b93b12",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "forestWendigo",
+            "x": -608,
+            "y": 832
+        },
+        {
+            "prefabId": "4612164f-6867-4ecd-ac87-0273a25cbb5b",
+            "id": "ec4777a9-5733-4c31-aa5d-404391b00f13",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "snowWendigo",
+            "x": -768,
+            "y": 800
         }
     ],
     "plainObjects": [

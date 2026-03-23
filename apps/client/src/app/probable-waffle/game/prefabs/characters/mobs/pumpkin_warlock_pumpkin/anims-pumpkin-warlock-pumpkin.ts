@@ -17,17 +17,17 @@ const JUMP_E = "mobs_pumpkin_warlock_Pumpkin/pumpkin - jump/e";
 const JUMP_N = "mobs_pumpkin_warlock_Pumpkin/pumpkin - jump/n";
 const JUMP_S = "mobs_pumpkin_warlock_Pumpkin/pumpkin - jump/s";
 const JUMP_W = "mobs_pumpkin_warlock_Pumpkin/pumpkin - jump/w";
-
-export enum PumpkinWarlockPumpkinAnimationTypes {
-  Jump = "Jump"
-}
+const IDLE_E = "mobs_pumpkin_warlock_pumpkin_idle_ePumpkin/pumpkin - jump/e";
+const IDLE_N = "mobs_pumpkin_warlock_pumpkin_idle_nPumpkin/pumpkin - jump/n";
+const IDLE_S = "mobs_pumpkin_warlock_pumpkin_idle_sPumpkin/pumpkin - jump/s";
+const IDLE_W = "mobs_pumpkin_warlock_pumpkin_idle_wPumpkin/pumpkin - jump/w";
 
 export const ANIM_PUMPKIN_WARLOCK_PUMPKIN_DEFINITION: AnimationDefinitionMap = {
   [AnimationType.Idle]: {
-    south: { key: JUMP_S },
-    north: { key: JUMP_N },
-    west: { key: JUMP_W },
-    east: { key: JUMP_E }
+    south: { key: IDLE_S },
+    north: { key: IDLE_N },
+    west: { key: IDLE_W },
+    east: { key: IDLE_E }
   },
   [AnimationType.Walk]: {
     south: { key: JUMP_S },
@@ -52,11 +52,5 @@ export const ANIM_PUMPKIN_WARLOCK_PUMPKIN_DEFINITION: AnimationDefinitionMap = {
     north: { key: HIT_N },
     west: { key: HIT_W },
     east: { key: HIT_E }
-  },
-  [PumpkinWarlockPumpkinAnimationTypes.Jump]: {
-    south: { key: JUMP_S },
-    north: { key: JUMP_N },
-    west: { key: JUMP_W },
-    east: { key: JUMP_E }
   }
 };

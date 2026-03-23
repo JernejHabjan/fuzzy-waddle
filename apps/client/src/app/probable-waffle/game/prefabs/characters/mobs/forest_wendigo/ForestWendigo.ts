@@ -6,15 +6,15 @@
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 /* END-USER-IMPORTS */
 
-export default class StoneGolem extends Phaser.GameObjects.Sprite {
+export default class ForestWendigo extends Phaser.GameObjects.Sprite {
   constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
-    super(scene, x ?? 96, y ?? 111, texture || "mobs_golems", frame ?? "Golem2/Idle/s/0.png");
+    super(scene, x ?? 75, y ?? 107.32729416367076, texture || "mobs_wendigo", frame ?? "wendigo - idle/s/0.png");
 
-    this.setInteractive(new Phaser.Geom.Circle(64, 60, 24.744779552091174), Phaser.Geom.Circle.Contains);
+    this.setInteractive(new Phaser.Geom.Circle(50, 50, 27.39945381949527), Phaser.Geom.Circle.Contains);
     this.scaleX = 1.5;
     this.scaleY = 1.5;
-    this.setOrigin(0.5, 0.5796935427053551);
-    this.play("Golem2/Idle/s");
+    this.setOrigin(0.5, 0.7157949246115552);
+    this.play("mobs_forest_wendigo_wendigo - idle/s");
 
     /* START-USER-CTR-CODE */
     // Write your code here.
@@ -22,7 +22,7 @@ export default class StoneGolem extends Phaser.GameObjects.Sprite {
   }
 
   /* START-USER-CODE */
-  override name = ObjectNames.StoneGolem;
+  override name = ObjectNames.ForestWendigo;
   /* END-USER-CODE */
 }
 

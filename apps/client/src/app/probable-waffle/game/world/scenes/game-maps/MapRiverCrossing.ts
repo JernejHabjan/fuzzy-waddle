@@ -127,6 +127,12 @@ import Flower_Monster from "../../../prefabs/characters/mobs/flower_monster/Flow
 import FlyingDemonBlue from "../../../prefabs/characters/mobs/flying_demon_blue/FlyingDemonBlue";
 import FlyingDemonRed from "../../../prefabs/characters/mobs/flying_demon_red/FlyingDemonRed";
 import MushroomWarrior from "../../../prefabs/characters/mobs/mushroom_warrior/MushroomWarrior";
+import PumpkinWarlock from "../../../prefabs/characters/mobs/pumpkin_warlock/PumpkinWarlock";
+import PumpkinWarlockBat from "../../../prefabs/characters/mobs/pumpkin_warlock_bat/PumpkinWarlockBat";
+import PumpkinWarlockPumpkin from "../../../prefabs/characters/mobs/pumpkin_warlock_pumpkin/PumpkinWarlockPumpkin";
+import SandWorm from "../../../prefabs/characters/mobs/sand_worm/SandWorm";
+import ForestWendigo from "../../../prefabs/characters/mobs/forest_wendigo/ForestWendigo";
+import SnowWendigo from "../../../prefabs/characters/mobs/snow_wendigo/SnowWendigo";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -1075,6 +1081,30 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // mushroomWarrior
     const mushroomWarrior = new MushroomWarrior(this, -288, 992);
     this.add.existing(mushroomWarrior);
+
+    // pumpkinWarlock
+    const pumpkinWarlock = new PumpkinWarlock(this, -416, 1264);
+    this.add.existing(pumpkinWarlock);
+
+    // pumpkinWarlockBat
+    const pumpkinWarlockBat = new PumpkinWarlockBat(this, -365, 1306);
+    this.add.existing(pumpkinWarlockBat);
+
+    // pumpkinWarlockPumpkin
+    const pumpkinWarlockPumpkin = new PumpkinWarlockPumpkin(this, -448, 1312);
+    this.add.existing(pumpkinWarlockPumpkin);
+
+    // sandWorm
+    const sandWorm = new SandWorm(this, -704, 864);
+    this.add.existing(sandWorm);
+
+    // forestWendigo
+    const forestWendigo = new ForestWendigo(this, -608, 832);
+    this.add.existing(forestWendigo);
+
+    // snowWendigo
+    const snowWendigo = new SnowWendigo(this, -768, 800);
+    this.add.existing(snowWendigo);
 
     // spawn (components)
     const spawnEditorOwner = new EditorOwner(spawn);

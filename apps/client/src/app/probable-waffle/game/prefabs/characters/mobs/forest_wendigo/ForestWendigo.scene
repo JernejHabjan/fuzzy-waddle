@@ -10,30 +10,29 @@
         "preloadPackFiles": [],
         "createMethodName": "",
         "compilerOutputLanguage": "TYPE_SCRIPT",
-        "borderWidth": 46,
-        "borderHeight": 32
+        "borderWidth": 150,
+        "borderHeight": 150
     },
     "displayList": [
         {
             "type": "Sprite",
             "id": "2cf9674c-59cb-41cd-a083-61e1033b67a9",
             "label": "forest_wendigo_idle_se",
-            "hitArea.shape": "ELLIPSE",
-            "hitArea.x": 23,
-            "hitArea.y": 16,
-            "hitArea.width": 46,
-            "hitArea.height": 32,
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": 50,
+            "hitArea.y": 50,
+            "hitArea.radius": 27.39945381949527,
             "texture": {
-                "key": "animals_2",
-                "frame": "forest_wendigo/idle/se/00.png"
+                "key": "mobs_wendigo",
+                "frame": "wendigo - idle/s/0.png"
             },
-            "x": 23,
-            "y": 29.133422248980015,
+            "x": 75,
+            "y": 107.32729416367076,
             "scaleX": 1.5,
             "scaleY": 1.5,
-            "originY": 0.773612963520417,
+            "originY": 0.7157949246115552,
             "animationPlayMethod": 1,
-            "animationKey": "forest_wendigo/idle/se"
+            "animationKey": "mobs_forest_wendigo_wendigo - idle/s"
         }
     ],
     "plainObjects": [],

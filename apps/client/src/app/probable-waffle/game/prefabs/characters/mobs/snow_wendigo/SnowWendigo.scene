@@ -10,30 +10,29 @@
         "preloadPackFiles": [],
         "createMethodName": "",
         "compilerOutputLanguage": "TYPE_SCRIPT",
-        "borderWidth": 46,
-        "borderHeight": 32
+        "borderWidth": 150,
+        "borderHeight": 150
     },
     "displayList": [
         {
             "type": "Sprite",
             "id": "07012c4e-60e6-4c1a-9ece-8ae8f7ca5506",
             "label": "snow_wendigo_idle_se",
-            "hitArea.shape": "ELLIPSE",
-            "hitArea.x": 23,
-            "hitArea.y": 16,
-            "hitArea.width": 46,
-            "hitArea.height": 32,
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": 50,
+            "hitArea.y": 50,
+            "hitArea.radius": 27.75916886763959,
             "texture": {
-                "key": "animals_2",
-                "frame": "snow_wendigo/idle/se/00.png"
+                "key": "mobs_snow_wendigo",
+                "frame": "idle/s/0.png"
             },
-            "x": 23,
-            "y": 29.133422248980015,
+            "x": 75,
+            "y": 107.90850868905214,
             "scaleX": 1.5,
             "scaleY": 1.5,
-            "originY": 0.773612963520417,
+            "originY": 0.7196696881140978,
             "animationPlayMethod": 1,
-            "animationKey": "snow_wendigo/idle/se"
+            "animationKey": "mobs_snow_wendigo_idle/s"
         }
     ],
     "plainObjects": [],

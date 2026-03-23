@@ -91,6 +91,8 @@ import { smallWaterSlimeDefinition } from "../characters/mobs/small_water_slime/
 import { bigWaterSlimeDefinition } from "../characters/mobs/big_water_slime/big_water_slime.definition";
 import { snowWendigoDefinition } from "../characters/mobs/snow_wendigo/snow_wendigo.definition";
 import { earthGolemDefinition } from "../characters/mobs/earth_golem/earth_golem.definition";
+import { pumpkinWarlockBatDefinition } from "../characters/mobs/pumpkin_warlock_bat/pumpkin_warlock_bat.definition";
+import { pumpkinWarlockPumpkinDefinition } from "../characters/mobs/pumpkin_warlock_pumpkin/pumpkin_warlock_pumpkin.definition";
 
 export const pwActorDefinitions: {
   [key in ObjectNames]: PrefabDefinition;
@@ -144,6 +146,8 @@ export const pwActorDefinitions: {
   Minotaur2: minotaur2Definition,
   MushroomWarrior: mushroomWarriorDefinition,
   PumpkinWarlock: pumpkinWarlockDefinition,
+  PumpkinWarlockBat: pumpkinWarlockBatDefinition,
+  PumpkinWarlockPumpkin: pumpkinWarlockPumpkinDefinition,
   SandWorm: sandWormDefinition,
   SmallWaterSlime: smallWaterSlimeDefinition,
   BigWaterSlime: bigWaterSlimeDefinition,

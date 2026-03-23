@@ -113,6 +113,12 @@ import FlyingDemonRed from "../prefabs/characters/mobs/flying_demon_red/FlyingDe
 import FlowerMonster from "../prefabs/characters/mobs/flower_monster/FlowerMonster";
 import FlyingDemonBlue from "../prefabs/characters/mobs/flying_demon_blue/FlyingDemonBlue";
 import MushroomWarrior from "../prefabs/characters/mobs/mushroom_warrior/MushroomWarrior";
+import PumpkinWarlock from "../prefabs/characters/mobs/pumpkin_warlock/PumpkinWarlock";
+import PumpkinWarlockBat from "../prefabs/characters/mobs/pumpkin_warlock_bat/PumpkinWarlockBat";
+import PumpkinWarlockPumpkin from "../prefabs/characters/mobs/pumpkin_warlock_pumpkin/PumpkinWarlockPumpkin";
+import SandWorm from "../prefabs/characters/mobs/sand_worm/SandWorm";
+import ForestWendigo from "../prefabs/characters/mobs/forest_wendigo/ForestWendigo";
+import SnowWendigo from "../prefabs/characters/mobs/snow_wendigo/SnowWendigo";
 
 type ActorMap = { [name: string]: new (scene: Phaser.Scene) => GameObject };
 export class ActorManager {
@@ -170,8 +176,8 @@ export class ActorManager {
     [ObjectNames.Minotaur2]: Minotaur2,
     [ObjectNames.MushroomWarrior]: MushroomWarrior,
     [ObjectNames.PumpkinWarlock]: PumpkinWarlock,
-    [ObjectNames.Bat]: Bat,
-    [ObjectNames.Pumpkin]: Pumpkin,
+    [ObjectNames.PumpkinWarlockBat]: PumpkinWarlockBat,
+    [ObjectNames.PumpkinWarlockPumpkin]: PumpkinWarlockPumpkin,
     [ObjectNames.SandWorm]: SandWorm,
     [ObjectNames.SmallWaterSlime]: SmallWaterSlime,
     [ObjectNames.BigWaterSlime]: BigWaterSlime,

@@ -1,13 +1,12 @@
-
 // You can write more code here
 
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
+import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 /* END-USER-IMPORTS */
 
 export default class MushroomWarrior extends Phaser.GameObjects.Sprite {
-
   constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
     super(scene, x ?? 32, y ?? 49, texture || "mobs_mushroom_warrior", frame ?? "idle/s/0.png");
 
@@ -21,9 +20,7 @@ export default class MushroomWarrior extends Phaser.GameObjects.Sprite {
   }
 
   /* START-USER-CODE */
-
-  // Write your code here.
-
+  override name = ObjectNames.MushroomWarrior;
   /* END-USER-CODE */
 }
 
