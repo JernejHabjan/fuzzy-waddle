@@ -123,7 +123,7 @@ import StoneGolem from "../../../prefabs/characters/mobs/stone_golem/StoneGolem"
 import MetalGolem from "../../../prefabs/characters/mobs/metal_golem/MetalGolem";
 import Minotaur2 from "../../../prefabs/characters/mobs/minotaur2/Minotaur2";
 import Medusa from "../../../prefabs/characters/mobs/medusa/Medusa";
-import Flower_Monster from "../../../prefabs/characters/mobs/flower_monster/Flower_Monster";
+import FlowerMonster from "../../../prefabs/characters/mobs/flower_monster/FlowerMonster";
 import FlyingDemonBlue from "../../../prefabs/characters/mobs/flying_demon_blue/FlyingDemonBlue";
 import FlyingDemonRed from "../../../prefabs/characters/mobs/flying_demon_red/FlyingDemonRed";
 import MushroomWarrior from "../../../prefabs/characters/mobs/mushroom_warrior/MushroomWarrior";
@@ -137,7 +137,6 @@ import SnowWendigo from "../../../prefabs/characters/mobs/snow_wendigo/SnowWendi
 /* END-USER-IMPORTS */
 
 export default class MapRiverCrossing extends GameProbableWaffleScene {
-
   constructor() {
     super("MapRiverCrossing");
 
@@ -147,14 +146,13 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
   }
 
   editorCreate(): void {
-
     // tilemap
     const tilemap = this.add.tilemap("tiles_river_crossing");
     tilemap.addTilesetImage("tiles", "tiles_1");
     tilemap.addTilesetImage("tiles_2", "tiles_2");
 
     // tilemap_level_1
-    tilemap.createLayer("TileMap_level_1", ["tiles","tiles_2"], 0, 0);
+    tilemap.createLayer("TileMap_level_1", ["tiles", "tiles_2"], 0, 0);
 
     // spawn
     const spawn = new Spawn(this, 96, 608);
@@ -1067,7 +1065,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(medusa);
 
     // flowerMonster
-    const flowerMonster = new Flower_Monster(this, -480, 1008);
+    const flowerMonster = new FlowerMonster(this, -480, 1008);
     this.add.existing(flowerMonster);
 
     // flyingDemonBlue

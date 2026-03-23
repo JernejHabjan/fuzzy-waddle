@@ -1,5 +1,5 @@
 import { ANIM_METAL_GOLEM_DEFINITION } from "./anims-metal_golem";
-import { PrefabDefinition } from "../../../definitions/prefab-definition";
+import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 
 export const metalGolemDefinition = {
   components: {

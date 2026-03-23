@@ -1,5 +1,5 @@
 import { ANIM_FLYING_DEMON_BLUE_DEFINITION } from "./anims-flying_demon_blue";
-import { PrefabDefinition } from "../../../definitions/prefab-definition";
+import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 
 export const flyingDemonBlueDefinition = {
   components: {

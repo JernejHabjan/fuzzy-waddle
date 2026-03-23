@@ -1,4 +1,4 @@
-import { PrefabDefinition } from "../../../definitions/prefab-definition";
+import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 import { ANIM_PUMPKIN_WARLOCK_BAT_DEFINITION } from "./anims-pumpkin-warlock-bat";
 
 export const pumpkinWarlockBatDefinition = {

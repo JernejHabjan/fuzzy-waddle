@@ -1,5 +1,5 @@
 import { ANIM_SMALL_WATER_SLIME_DEFINITION } from "./anims-small_water_slime";
-import { PrefabDefinition } from "../../../definitions/prefab-definition";
+import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 
 export const smallWaterSlimeDefinition = {
   components: {

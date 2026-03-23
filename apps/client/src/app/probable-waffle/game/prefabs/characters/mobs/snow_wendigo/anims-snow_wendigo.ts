@@ -1,4 +1,4 @@
-import { AnimationDefinitionMap } from "../../../../entity/components/animation/animation-definition-map";
+import type { AnimationDefinitionMap } from "../../../../entity/components/animation/animation-definition-map";
 import { AnimationType } from "../../../../entity/components/animation/animation-type";
 
 const ATTACK_1_E = "mobs_snow_wendigo_attack 1/e";

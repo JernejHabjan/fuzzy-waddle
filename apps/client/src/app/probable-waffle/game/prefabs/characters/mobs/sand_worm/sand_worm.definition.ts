@@ -1,5 +1,5 @@
 import { ANIM_SAND_WORM_DEFINITION } from "./anims-sand_worm";
-import { PrefabDefinition } from "../../../definitions/prefab-definition";
+import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 
 export const sandWormDefinition = {
   components: {

@@ -1,5 +1,5 @@
 import { ANIM_PUMPKIN_WARLOCK_DEFINITION } from "./anims-pumpkin_warlock";
-import { PrefabDefinition } from "../../../definitions/prefab-definition";
+import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 
 export const pumpkinWarlockDefinition = {
   components: {

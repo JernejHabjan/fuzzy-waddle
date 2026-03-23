@@ -1,4 +1,4 @@
-import { AnimationDefinitionMap } from "../../../../entity/components/animation/animation-definition-map";
+import type { AnimationDefinitionMap } from "../../../../entity/components/animation/animation-definition-map";
 import { AnimationType } from "../../../../entity/components/animation/animation-type";
 
 const ANIM_FLYING_DEMON_RED_IDLE_NE = "flying_demon_red/idle/ne";

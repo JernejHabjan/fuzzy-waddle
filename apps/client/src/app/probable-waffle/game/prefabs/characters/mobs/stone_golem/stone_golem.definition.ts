@@ -1,5 +1,5 @@
 import { ANIM_STONE_GOLEM_DEFINITION } from "./anims-stone_golem";
-import { PrefabDefinition } from "../../../definitions/prefab-definition";
+import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 
 export const stoneGolemDefinition = {
   components: {

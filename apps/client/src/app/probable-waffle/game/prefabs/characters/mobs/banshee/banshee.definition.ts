@@ -1,5 +1,5 @@
 import { ANIM_BANSHEE_DEFINITION } from "./anims-banshee";
-import { PrefabDefinition } from "../../../definitions/prefab-definition";
+import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 
 export const bansheeDefinition = {
   components: {

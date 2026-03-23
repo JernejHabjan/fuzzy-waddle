@@ -1,5 +1,5 @@
 import { ANIM_FOREST_WENDIGO_DEFINITION } from "./anims-forest_wendigo";
-import { PrefabDefinition } from "../../../definitions/prefab-definition";
+import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 
 export const forestWendigoDefinition = {
   components: {

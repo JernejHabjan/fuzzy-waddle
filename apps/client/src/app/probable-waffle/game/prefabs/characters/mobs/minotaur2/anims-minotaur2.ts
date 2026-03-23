@@ -1,4 +1,4 @@
-import { AnimationDefinitionMap } from "../../../../entity/components/animation/animation-definition-map";
+import type { AnimationDefinitionMap } from "../../../../entity/components/animation/animation-definition-map";
 import { AnimationType } from "../../../../entity/components/animation/animation-type";
 
 const ANIM_MOBS_MINOTAUR2_DEATH_E = "mobs_minotaur2_death/e";

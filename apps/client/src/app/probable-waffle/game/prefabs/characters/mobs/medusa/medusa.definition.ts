@@ -1,5 +1,5 @@
 import { ANIM_MEDUSA_DEFINITION } from "./anims-medusa";
-import { PrefabDefinition } from "../../../definitions/prefab-definition";
+import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 
 export const medusaDefinition = {
   components: {

@@ -1,5 +1,5 @@
 import { ANIM_SNOW_WENDIGO_DEFINITION } from "./anims-snow_wendigo";
-import { PrefabDefinition } from "../../../definitions/prefab-definition";
+import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 
 export const snowWendigoDefinition = {
   components: {

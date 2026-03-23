@@ -1,5 +1,5 @@
 import { ANIM_FLOWER_MONSTER_DEFINITION } from "./anims-flower_monster";
-import { PrefabDefinition } from "../../../definitions/prefab-definition";
+import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 
 export const flowerMonsterDefinition = {
   components: {

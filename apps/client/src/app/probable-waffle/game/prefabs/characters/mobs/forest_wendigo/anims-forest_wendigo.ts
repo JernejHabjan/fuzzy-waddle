@@ -1,4 +1,4 @@
-import { AnimationDefinitionMap } from "../../../../entity/components/animation/animation-definition-map";
+import type { AnimationDefinitionMap } from "../../../../entity/components/animation/animation-definition-map";
 import { AnimationType } from "../../../../entity/components/animation/animation-type";
 
 const BRANCH_FULL_ANIMATION = "mobs_forest_wendigo_branch - full animation";

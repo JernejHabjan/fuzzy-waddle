@@ -1,5 +1,5 @@
 import { ANIM_MINOTAUR2_DEFINITION } from "./anims-minotaur2";
-import { PrefabDefinition } from "../../../definitions/prefab-definition";
+import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 
 export const minotaur2Definition = {
   components: {

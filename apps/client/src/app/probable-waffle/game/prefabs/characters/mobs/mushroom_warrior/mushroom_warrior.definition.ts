@@ -1,5 +1,5 @@
 import { ANIM_MUSHROOM_WARRIOR_DEFINITION } from "./anims-mushroom_warrior";
-import { PrefabDefinition } from "../../../definitions/prefab-definition";
+import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 
 export const mushroomWarriorDefinition = {
   components: {

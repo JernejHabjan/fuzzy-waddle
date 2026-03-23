@@ -1,5 +1,5 @@
 import { ANIM_FIRE_SLIME_DEFINITION } from "./anims-fire_slime";
-import { PrefabDefinition } from "../../../definitions/prefab-definition";
+import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 
 export const fireSlimeDefinition = {
   components: {

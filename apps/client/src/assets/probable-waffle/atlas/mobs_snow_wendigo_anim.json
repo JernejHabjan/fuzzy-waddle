@@ -47,7 +47,7 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 8,
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false
@@ -99,7 +99,7 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 8,
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false
@@ -151,7 +151,7 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 8,
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false
@@ -203,7 +203,7 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 8,
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false
@@ -285,7 +285,7 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 8,
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false
@@ -367,7 +367,7 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 8,
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false
@@ -449,7 +449,7 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 8,
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false
@@ -531,7 +531,7 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 8,
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false
@@ -589,7 +589,7 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 8,
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false
@@ -647,7 +647,7 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 8,
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false
@@ -705,7 +705,7 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 8,
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false
@@ -763,7 +763,7 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 8,
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false
@@ -821,9 +821,8 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 8,
             "skipMissedFrames": true,
-            "repeat": -1,
             "randomFrame": false
         },
         {
@@ -879,9 +878,8 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 8,
             "skipMissedFrames": true,
-            "repeat": -1,
             "randomFrame": false
         },
         {
@@ -937,9 +935,8 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 8,
             "skipMissedFrames": true,
-            "repeat": -1,
             "randomFrame": false
         },
         {
@@ -995,9 +992,8 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 8,
             "skipMissedFrames": true,
-            "repeat": -1,
             "randomFrame": false
         },
         {
@@ -1017,9 +1013,8 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 8,
             "skipMissedFrames": true,
-            "repeat": -1,
             "randomFrame": false
         },
         {
@@ -1039,9 +1034,8 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 8,
             "skipMissedFrames": true,
-            "repeat": -1,
             "randomFrame": false
         },
         {
@@ -1061,9 +1055,8 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 8,
             "skipMissedFrames": true,
-            "repeat": -1,
             "randomFrame": false
         },
         {
@@ -1083,9 +1076,8 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 8,
             "skipMissedFrames": true,
-            "repeat": -1,
             "randomFrame": false
         },
         {
@@ -1117,7 +1109,7 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 8,
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false
@@ -1151,7 +1143,7 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 8,
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false
@@ -1185,7 +1177,7 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 8,
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false
@@ -1219,7 +1211,7 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 8,
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false
@@ -1253,7 +1245,7 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 8,
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false
@@ -1287,7 +1279,7 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 8,
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false
@@ -1321,7 +1313,7 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 8,
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false
@@ -1355,7 +1347,7 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 24,
+            "frameRate": 8,
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false

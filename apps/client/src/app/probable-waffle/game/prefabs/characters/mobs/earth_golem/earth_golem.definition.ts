@@ -1,5 +1,5 @@
 import { ANIM_EARTH_GOLEM_DEFINITION } from "./anims-earth_golem";
-import { PrefabDefinition } from "../../../definitions/prefab-definition";
+import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 
 export const earthGolemDefinition = {
   components: {
