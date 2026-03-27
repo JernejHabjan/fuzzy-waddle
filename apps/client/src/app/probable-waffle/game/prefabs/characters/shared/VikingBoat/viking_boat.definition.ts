@@ -5,6 +5,7 @@ import { ActorPhysicalType } from "../../../../entity/components/combat/componen
 import { weaponDefinitions } from "../../../../entity/components/combat/weapon-definitions";
 import { AiType } from "../../../ai-agents/ai-type";
 import { ANIM_VIKING_BOAT_DEFINITION } from "./viking_boat_anims";
+import { MovementTerrainType } from "../../../../entity/components/movement/movement-terrain-type";
 
 export const vikingBoatDefinition = {
   components: {
@@ -69,7 +70,8 @@ export const vikingBoatDefinition = {
       actors: [ObjectNames.Sandhold]
     },
     translatable: {
-      tileMoveDuration: 450
+      tileMoveDuration: 450,
+      movementTerrainType: MovementTerrainType.Water
     },
     aiControlled: {
       type: AiType.Character

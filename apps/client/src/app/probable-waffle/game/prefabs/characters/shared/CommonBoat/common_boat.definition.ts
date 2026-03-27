@@ -5,6 +5,7 @@ import { ActorPhysicalType } from "../../../../entity/components/combat/componen
 import { weaponDefinitions } from "../../../../entity/components/combat/weapon-definitions";
 import { AiType } from "../../../ai-agents/ai-type";
 import { ANIM_COMMON_BOAT_DEFINITION } from "./common_boat_anims";
+import { MovementTerrainType } from "../../../../entity/components/movement/movement-terrain-type";
 
 export const commonBoatDefinition = {
   components: {
@@ -68,7 +69,8 @@ export const commonBoatDefinition = {
       actors: [ObjectNames.Sandhold]
     },
     translatable: {
-      tileMoveDuration: 350
+      tileMoveDuration: 350,
+      movementTerrainType: MovementTerrainType.Water
     },
     aiControlled: {
       type: AiType.Character

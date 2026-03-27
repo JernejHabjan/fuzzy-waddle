@@ -29,6 +29,10 @@ import type { WalkablePath } from "../../entity/components/movement/walkable-pat
 import { WalkablePathDirection } from "../../entity/components/movement/walkable-path-direction";
 import { ActorIndexSystem } from "./ActorIndexSystem";
 import { DistanceHelper } from "../../library/distance-helper";
+import { MovementTerrainType } from "../../entity/components/movement/movement-terrain-type";
+import { ActorTranslateComponent } from "../../entity/components/movement/actor-translate-component";
+import { TerrainGridBuilder } from "./terrain-grid-builder";
+import { WaterNavigationHelper } from "./water-navigation.helper";
 
 export enum TerrainType {
   Grass = "grass",
@@ -70,6 +74,7 @@ export class NavigationService {
   private readonly DEBUG_CLICK_INFO = false;
   private directionalConditions: Map<string, Direction[]> = new Map();
   private pathCache = new Map<string, PathCache>();
+  private readonly waterNavHelper = new WaterNavigationHelper();
 
   constructor(
     private readonly scene: Phaser.Scene,
@@ -385,15 +390,10 @@ export class NavigationService {
     const tileMapComponent = getSceneComponent(this.scene, TilemapComponent);
     if (!tileMapComponent) throw new Error("TilemapComponent not found");
     const data = tileMapComponent.data;
-    const grid: number[][] = [];
-    data.forEach((row) => {
-      const newRow: number[] = [];
-      row.forEach((tile) => {
-        newRow.push(tile.properties.navigationRestriction ? 1 : 0);
-      });
-      grid.push(newRow);
-    });
-    this.tilemapGrid = grid;
+    // Ground grid: block navigationRestriction tiles AND water terrain tiles
+    this.tilemapGrid = TerrainGridBuilder.buildGroundGrid(data);
+    // Water grid: only water terrain tiles are walkable
+    this.waterNavHelper.setup(data);
   }
 
   /**
@@ -483,6 +483,7 @@ export class NavigationService {
     // Clear both the distance cache and path cache when navigation grid changes
     DistanceHelper.clearNavigationCache();
     this.pathCache.clear();
+    this.waterNavHelper.clearCache();
   }
 
   /**
@@ -490,10 +491,11 @@ export class NavigationService {
    */
   async randomTileInNavigableRadius(
     currentTile: Vector2Simple,
-    radiusFromCurrentTile: number
+    radiusFromCurrentTile: number,
+    terrainType: MovementTerrainType = MovementTerrainType.Ground
   ): Promise<Vector2Simple | null> {
     // 1. Get a list of valid tile coordinates within the radius
-    const validTiles = this.validTilesInRadiusOfCurrentTile(currentTile, radiusFromCurrentTile, true);
+    const validTiles = this.validTilesInRadiusOfCurrentTile(currentTile, radiusFromCurrentTile, true, terrainType);
 
     // 2. Ensure there are valid tiles within the radius
     if (validTiles.length === 0) {
@@ -508,7 +510,7 @@ export class NavigationService {
       const tile = this.randomService.pick(validTiles)!;
 
       // Check path to the random tile
-      const path = await this.findPath(currentTile, tile);
+      const path = await this.findPathForTerrain(currentTile, tile, terrainType);
 
       if (path) {
         // Calculate path length based on XY distances:
@@ -561,6 +563,7 @@ export class NavigationService {
     const fromTile = getCenterTileCoordUnderObject(this.tilemap, gameObject);
     if (!fromTile) return undefined;
 
+    const terrainType = this.getUnitTerrainType(gameObject);
     const isWalkable = !!getActorComponent(destinationGameObject, WalkableComponent);
 
     let closestWalkableTile;
@@ -576,7 +579,12 @@ export class NavigationService {
 
       // Step 2: Find the closest walkable tile around the blocked tiles within the radius
       // noinspection UnnecessaryLocalVariableJS
-      closestWalkableTile = this.getClosestWalkableTileAroundBlockedTilesInRadius(fromTile, blockedTiles, radiusTiles);
+      closestWalkableTile = this.getClosestWalkableTileAroundBlockedTilesInRadius(
+        fromTile,
+        blockedTiles,
+        radiusTiles,
+        terrainType
+      );
     }
 
     return closestWalkableTile; // Return the closest walkable tile if found, or undefined
@@ -588,8 +596,12 @@ export class NavigationService {
   private validTilesInRadiusOfCurrentTile(
     currentTile: Vector2Simple,
     radiusTiles: number,
-    walkable: boolean = false
+    walkable: boolean = false,
+    terrainType: MovementTerrainType = MovementTerrainType.Ground
   ): Vector2Simple[] {
+    if (terrainType === MovementTerrainType.Water) {
+      return this.waterNavHelper.getWalkableTilesInRadius(currentTile, radiusTiles);
+    }
     // 1. Get a list of valid tile coordinates within the radius
     const validTiles: Vector2Simple[] = [];
     for (let y = currentTile.y - radiusTiles; y <= currentTile.y + radiusTiles; y++) {
@@ -612,6 +624,22 @@ export class NavigationService {
     return validTiles;
   }
 
+  /** Reads the MovementTerrainType from a gameObject's ActorTranslateComponent definition. */
+  private getUnitTerrainType(gameObject: Phaser.GameObjects.GameObject): MovementTerrainType {
+    const translate = getActorComponent(gameObject, ActorTranslateComponent);
+    return translate?.actorTranslateDefinition.movementTerrainType ?? MovementTerrainType.Ground;
+  }
+
+  /** Routes pathfinding to the correct grid based on the unit's terrain type. */
+  private findPathForTerrain(
+    from: Vector2Simple,
+    to: Vector2Simple,
+    terrainType: MovementTerrainType
+  ): Promise<Vector2Simple[] | null> {
+    if (terrainType === MovementTerrainType.Water) return this.waterNavHelper.findPath(from, to);
+    return this.findPath(from, to);
+  }
+
   /**
    * Returns a path from the current tile under the gameObject to the target tile
    */
@@ -621,7 +649,8 @@ export class NavigationService {
   ): Promise<Vector2Simple[] | null> {
     const currentTile = getCenterTileCoordUnderObject(this.tilemap, gameObject);
     if (!currentTile) return Promise.resolve([]);
-    return this.findPath(currentTile, toTile);
+    const terrainType = this.getUnitTerrainType(gameObject);
+    return this.findPathForTerrain(currentTile, toTile, terrainType);
   }
 
   async findPathBetweenGameObjects(
@@ -666,13 +695,15 @@ export class NavigationService {
     }
 
     // Step 3: Use EasyStar to find the path to the closest walkable tile
-    return this.findPath(fromTile, closestWalkableTile);
+    const terrainType = this.getUnitTerrainType(gameObject);
+    return this.findPathForTerrain(fromTile, closestWalkableTile, terrainType);
   }
 
   private getClosestWalkableTileAroundBlockedTilesInRadius(
     fromTile: Vector2Simple,
     blockedTiles: Vector2Simple[],
-    radiusTiles: number = 6 // Default radius if not specified
+    radiusTiles: number = 6, // Default radius if not specified
+    terrainType: MovementTerrainType = MovementTerrainType.Ground
   ): Vector2Simple | undefined {
     const walkableTiles: Set<string> = new Set(); // Use Set to avoid duplicates
 
@@ -686,8 +717,8 @@ export class NavigationService {
 
           // Check if the neighbor is within easyStarNavigationGrid bounds, walkable, and within radius
           if (
-            this.isWithinGridBounds(neighbor) && // Ensure it's within easyStarNavigationGrid bounds
-            this.isTileWalkable(neighbor) &&
+            this.isWithinGridBounds(neighbor, terrainType) &&
+            this.isTileWalkable(neighbor, terrainType) &&
             Math.abs(dx) + Math.abs(dy) <= radiusTiles // Use Manhattan distance
           ) {
             // Use a string representation to store the tile in the Set
@@ -715,13 +746,15 @@ export class NavigationService {
     return walkableTilesArray[0]!; // Return the closest tile
   }
 
-  isWithinGridBounds(tile: Vector2Simple): boolean {
+  isWithinGridBounds(tile: Vector2Simple, terrainType: MovementTerrainType = MovementTerrainType.Ground): boolean {
+    if (terrainType === MovementTerrainType.Water) return this.waterNavHelper.isWithinBounds(tile);
     const firstRow = this.easyStarNavigationGrid[0];
     if (!firstRow) return false;
     return tile.x >= 0 && tile.x < firstRow.length && tile.y >= 0 && tile.y < this.easyStarNavigationGrid.length;
   }
 
-  public isTileWalkable(tile: Vector2Simple): boolean {
+  public isTileWalkable(tile: Vector2Simple, terrainType: MovementTerrainType = MovementTerrainType.Ground): boolean {
+    if (terrainType === MovementTerrainType.Water) return this.waterNavHelper.isTileWalkable(tile);
     return this.easyStarNavigationGrid[tile.y]?.[tile.x] === 0; // Check if the tile is walkable (0 means walkable)
   }
 
@@ -809,14 +842,15 @@ export class NavigationService {
    */
   public async getClosestUnoccupiedTile(
     targetTile: Vector2Simple,
-    maxRadius: number = 10
+    maxRadius: number = 10,
+    terrainType: MovementTerrainType = MovementTerrainType.Ground
   ): Promise<Vector2Simple | undefined> {
     const occupiedTiles = this.getOccupiedTilesByActors();
 
     // First check if the target tile itself is unoccupied and walkable
     if (
-      this.isWithinGridBounds(targetTile) &&
-      this.isTileWalkable(targetTile) &&
+      this.isWithinGridBounds(targetTile, terrainType) &&
+      this.isTileWalkable(targetTile, terrainType) &&
       !occupiedTiles.has(`${targetTile.x},${targetTile.y}`)
     ) {
       return targetTile; // Target tile is perfect, return it immediately
@@ -836,8 +870,8 @@ export class NavigationService {
 
           // Check if tile is within bounds, walkable, and unoccupied
           if (
-            this.isWithinGridBounds(candidate) &&
-            this.isTileWalkable(candidate) &&
+            this.isWithinGridBounds(candidate, terrainType) &&
+            this.isTileWalkable(candidate, terrainType) &&
             !occupiedTiles.has(`${candidate.x},${candidate.y}`)
           ) {
             candidateTiles.push(candidate);
@@ -851,7 +885,7 @@ export class NavigationService {
 
         // Test each candidate tile for pathfinding reachability
         for (const candidate of candidateTiles) {
-          const path = await this.findPath(targetTile, candidate);
+          const path = await this.findPathForTerrain(targetTile, candidate, terrainType);
           if (path) {
             // Calculate actual path length to ensure it's within radius
             const pathLength = path.reduce((sum, node, index) => {
@@ -874,6 +908,14 @@ export class NavigationService {
     }
 
     return undefined;
+  }
+
+  /**
+   * Finds the nearest water tile to the given tile position (BFS outward).
+   * Used when spawning water units from land buildings.
+   */
+  public findNearestWaterTile(fromTile: Vector2Simple, maxRadius = 30): Vector2Simple | null {
+    return this.waterNavHelper.findNearestWaterTile(fromTile, maxRadius);
   }
 
   /**

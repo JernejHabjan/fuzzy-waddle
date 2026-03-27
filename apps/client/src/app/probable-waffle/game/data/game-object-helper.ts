@@ -9,6 +9,8 @@ import { getActorComponent, getActorComponents } from "./actor-component";
 import { RepresentableComponent } from "../entity/components/representable-component";
 import { getPwActorDefinition } from "../prefabs/definitions/actor-definitions";
 import { getResearchedLevelForActor } from "./actor-level-utils";
+import { ActorTranslateComponent } from "../entity/components/movement/actor-translate-component";
+import { MovementTerrainType } from "../entity/components/movement/movement-terrain-type";
 
 export function getGameObjectBounds(gameObject?: Phaser.GameObjects.GameObject): Phaser.Geom.Rectangle | null {
   if (!gameObject) return null;
@@ -94,7 +96,10 @@ export async function getGameObjectTileInNavigableRadius(
 
   const currentTile = getGameObjectCurrentTile(gameObject);
   if (!currentTile) return null;
-  return navigationService.randomTileInNavigableRadius(currentTile, radius);
+  const terrainType =
+    getActorComponent(gameObject, ActorTranslateComponent)?.actorTranslateDefinition.movementTerrainType ??
+    MovementTerrainType.Ground;
+  return navigationService.randomTileInNavigableRadius(currentTile, radius, terrainType);
 }
 
 export function getGameObjectTileInRadius(
