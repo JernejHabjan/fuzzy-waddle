@@ -10,14 +10,14 @@ import Phaser from "phaser";
 export default class Cyclops extends Phaser.GameObjects.Container {
 
 	constructor(scene: Phaser.Scene, x?: number, y?: number) {
-		super(scene, x ?? 80, y ?? 145.92508215626776);
+		super(scene, x ?? 64.18250450135464, y ?? 116.07593461438849);
 
 		this.setInteractive(new Phaser.Geom.Circle(1, -51, 61.63986190864388), Phaser.Geom.Circle.Contains);
 
 		// general_warrior_idle_down
-		const general_warrior_idle_down = scene.add.sprite(0, -65.92508215626776, "cyclops_idle", 4);
-		general_warrior_idle_down.scaleX = 2.5;
-		general_warrior_idle_down.scaleY = 2.5;
+		const general_warrior_idle_down = scene.add.sprite(-0.1825045013546429, -52.15085526868536, "cyclops_idle", 4);
+		general_warrior_idle_down.scaleX = 2;
+		general_warrior_idle_down.scaleY = 2;
 		general_warrior_idle_down.play("cyclops_idle_2");
 		this.add(general_warrior_idle_down);
 

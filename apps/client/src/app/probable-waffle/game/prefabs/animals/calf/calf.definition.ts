@@ -4,8 +4,8 @@ import type { PrefabDefinition } from "../../definitions/prefab-definition";
 export const calfDefinition = {
   components: {
     representable: {
-      width: 64,
-      height: 64,
+      width: 32,
+      height: 32,
       origin: { x: 0.5, y: 0.773612963520417 }
     },
     objectDescriptor: {

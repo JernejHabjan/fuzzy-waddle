@@ -20,8 +20,8 @@
             "hitArea.x": 1,
             "hitArea.y": -51,
             "hitArea.radius": 61.63986190864388,
-            "x": 80,
-            "y": 145.92508215626776,
+            "x": 64.18250450135464,
+            "y": 116.07593461438849,
             "list": [
                 {
                     "type": "Sprite",
@@ -31,9 +31,10 @@
                         "key": "cyclops_idle",
                         "frame": 4
                     },
-                    "y": -65.92508215626776,
-                    "scaleX": 2.5,
-                    "scaleY": 2.5,
+                    "x": -0.1825045013546429,
+                    "y": -52.15085526868536,
+                    "scaleX": 2,
+                    "scaleY": 2,
                     "animationPlayMethod": 1,
                     "animationKey": "cyclops_idle_2"
                 }

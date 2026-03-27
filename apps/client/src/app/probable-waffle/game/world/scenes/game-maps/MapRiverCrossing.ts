@@ -114,10 +114,30 @@ import Piglet from "../../../prefabs/animals/piglet/Piglet";
 import Rooster from "../../../prefabs/animals/rooster/Rooster";
 import Sheep2 from "../../../prefabs/animals/sheep2/Sheep2";
 import Turkey from "../../../prefabs/animals/turkey/Turkey";
+import Banshee from "../../../prefabs/characters/mobs/banshee/Banshee";
+import BigWaterSlime from "../../../prefabs/characters/mobs/big_water_slime/BigWaterSlime";
+import FireSlime from "../../../prefabs/characters/mobs/fire_slime/FireSlime";
+import SmallWaterSlime from "../../../prefabs/characters/mobs/small_water_slime/SmallWaterSlime";
+import EarthGolem from "../../../prefabs/characters/mobs/earth_golem/EarthGolem";
+import StoneGolem from "../../../prefabs/characters/mobs/stone_golem/StoneGolem";
+import MetalGolem from "../../../prefabs/characters/mobs/metal_golem/MetalGolem";
+import Minotaur2 from "../../../prefabs/characters/mobs/minotaur2/Minotaur2";
+import Medusa from "../../../prefabs/characters/mobs/medusa/Medusa";
+import FlowerMonster from "../../../prefabs/characters/mobs/flower_monster/FlowerMonster";
+import FlyingDemonBlue from "../../../prefabs/characters/mobs/flying_demon_blue/FlyingDemonBlue";
+import FlyingDemonRed from "../../../prefabs/characters/mobs/flying_demon_red/FlyingDemonRed";
+import MushroomWarrior from "../../../prefabs/characters/mobs/mushroom_warrior/MushroomWarrior";
+import PumpkinWarlock from "../../../prefabs/characters/mobs/pumpkin_warlock/PumpkinWarlock";
+import PumpkinWarlockBat from "../../../prefabs/characters/mobs/pumpkin_warlock_bat/PumpkinWarlockBat";
+import PumpkinWarlockPumpkin from "../../../prefabs/characters/mobs/pumpkin_warlock_pumpkin/PumpkinWarlockPumpkin";
+import SandWorm from "../../../prefabs/characters/mobs/sand_worm/SandWorm";
+import ForestWendigo from "../../../prefabs/characters/mobs/forest_wendigo/ForestWendigo";
+import SnowWendigo from "../../../prefabs/characters/mobs/snow_wendigo/SnowWendigo";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
 export default class MapRiverCrossing extends GameProbableWaffleScene {
+
   constructor() {
     super("MapRiverCrossing");
 
@@ -127,13 +147,14 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
   }
 
   editorCreate(): void {
+
     // tilemap
     const tilemap = this.add.tilemap("tiles_river_crossing");
     tilemap.addTilesetImage("tiles", "tiles_1");
     tilemap.addTilesetImage("tiles_2", "tiles_2");
 
     // tilemap_level_1
-    tilemap.createLayer("TileMap_level_1", ["tiles", "tiles_2"], 0, 0);
+    tilemap.createLayer("TileMap_level_1", ["tiles","tiles_2"], 0, 0);
 
     // spawn
     const spawn = new Spawn(this, 96, 608);
@@ -660,7 +681,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(reeds_4);
 
     // tivaraWorkerFemale
-    const tivaraWorkerFemale = new TivaraWorkerFemale(this, -672, 624);
+    const tivaraWorkerFemale = new TivaraWorkerFemale(this, -672, 1024);
     this.add.existing(tivaraWorkerFemale);
 
     // tivaraWorkerMale
@@ -1002,12 +1023,88 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(rooster);
 
     // sheep2
-    const sheep2 = new Sheep2(this, -396, 1037);
+    const sheep2 = new Sheep2(this, -384, 1056);
     this.add.existing(sheep2);
 
     // turkey
     const turkey = new Turkey(this, -277, 1088);
     this.add.existing(turkey);
+
+    // banshee
+    const banshee = new Banshee(this, -704, 1152);
+    this.add.existing(banshee);
+
+    // bigWaterSlime
+    const bigWaterSlime = new BigWaterSlime(this, -708, 1060);
+    this.add.existing(bigWaterSlime);
+
+    // fireSlime
+    const fireSlime = new FireSlime(this, -638, 1021);
+    this.add.existing(fireSlime);
+
+    // smallWaterSlime
+    const smallWaterSlime = new SmallWaterSlime(this, -640, 1088);
+    this.add.existing(smallWaterSlime);
+
+    // eartGolem
+    const eartGolem = new EarthGolem(this, -719, 956);
+    this.add.existing(eartGolem);
+
+    // stoneGolem
+    const stoneGolem = new StoneGolem(this, -792, 1129);
+    this.add.existing(stoneGolem);
+
+    // metalGolem
+    const metalGolem = new MetalGolem(this, -640, 1168);
+    this.add.existing(metalGolem);
+
+    // minotaur2
+    const minotaur2 = new Minotaur2(this, -544, 1008);
+    this.add.existing(minotaur2);
+
+    // medusa
+    const medusa = new Medusa(this, -672, 800);
+    this.add.existing(medusa);
+
+    // flowerMonster
+    const flowerMonster = new FlowerMonster(this, -544, 880);
+    this.add.existing(flowerMonster);
+
+    // flyingDemonBlue
+    const flyingDemonBlue = new FlyingDemonBlue(this, -622, 932);
+    this.add.existing(flyingDemonBlue);
+
+    // flyingDemonRed
+    const flyingDemonRed = new FlyingDemonRed(this, -340, 936);
+    this.add.existing(flyingDemonRed);
+
+    // mushroomWarrior
+    const mushroomWarrior = new MushroomWarrior(this, -288, 992);
+    this.add.existing(mushroomWarrior);
+
+    // pumpkinWarlock
+    const pumpkinWarlock = new PumpkinWarlock(this, -416, 1264);
+    this.add.existing(pumpkinWarlock);
+
+    // pumpkinWarlockBat
+    const pumpkinWarlockBat = new PumpkinWarlockBat(this, -365, 1306);
+    this.add.existing(pumpkinWarlockBat);
+
+    // pumpkinWarlockPumpkin
+    const pumpkinWarlockPumpkin = new PumpkinWarlockPumpkin(this, -448, 1312);
+    this.add.existing(pumpkinWarlockPumpkin);
+
+    // sandWorm
+    const sandWorm = new SandWorm(this, -704, 864);
+    this.add.existing(sandWorm);
+
+    // forestWendigo
+    const forestWendigo = new ForestWendigo(this, -608, 832);
+    this.add.existing(forestWendigo);
+
+    // snowWendigo
+    const snowWendigo = new SnowWendigo(this, -768, 800);
+    this.add.existing(snowWendigo);
 
     // spawn (components)
     const spawnEditorOwner = new EditorOwner(spawn);

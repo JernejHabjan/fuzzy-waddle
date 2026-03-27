@@ -1,0 +1,6026 @@
+{
+	"textures": [
+		{
+			"image": "mobs_pumpkin_warlock.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 1789,
+				"h": 252
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "Warlock/cast/s/3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 27,
+						"y": 28,
+						"w": 45,
+						"h": 66
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 45,
+						"h": 66
+					}
+				},
+				{
+					"filename": "Warlock/cast/s/4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 27,
+						"y": 28,
+						"w": 45,
+						"h": 66
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 45,
+						"h": 66
+					}
+				},
+				{
+					"filename": "Warlock/cast/s/5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 27,
+						"y": 28,
+						"w": 45,
+						"h": 66
+					},
+					"frame": {
+						"x": 1,
+						"y": 69,
+						"w": 45,
+						"h": 66
+					}
+				},
+				{
+					"filename": "Warlock/cast/s/6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 27,
+						"y": 28,
+						"w": 45,
+						"h": 65
+					},
+					"frame": {
+						"x": 1,
+						"y": 137,
+						"w": 45,
+						"h": 65
+					}
+				},
+				{
+					"filename": "Warlock/death/e/18.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 33,
+						"w": 67,
+						"h": 47
+					},
+					"frame": {
+						"x": 1,
+						"y": 204,
+						"w": 67,
+						"h": 47
+					}
+				},
+				{
+					"filename": "Warlock/cast/n/27.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 15,
+						"w": 43,
+						"h": 65
+					},
+					"frame": {
+						"x": 48,
+						"y": 1,
+						"w": 43,
+						"h": 65
+					}
+				},
+				{
+					"filename": "Warlock/cast/n/28.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 15,
+						"w": 43,
+						"h": 65
+					},
+					"frame": {
+						"x": 48,
+						"y": 1,
+						"w": 43,
+						"h": 65
+					}
+				},
+				{
+					"filename": "Warlock/cast/n/29.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 15,
+						"w": 43,
+						"h": 65
+					},
+					"frame": {
+						"x": 48,
+						"y": 68,
+						"w": 43,
+						"h": 65
+					}
+				},
+				{
+					"filename": "Warlock/death/s/1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 20,
+						"y": 16,
+						"w": 67,
+						"h": 64
+					},
+					"frame": {
+						"x": 48,
+						"y": 135,
+						"w": 67,
+						"h": 64
+					}
+				},
+				{
+					"filename": "Warlock/death/w/11.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 33,
+						"w": 67,
+						"h": 47
+					},
+					"frame": {
+						"x": 70,
+						"y": 201,
+						"w": 67,
+						"h": 47
+					}
+				},
+				{
+					"filename": "Warlock/cast/n/30.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 16,
+						"w": 43,
+						"h": 64
+					},
+					"frame": {
+						"x": 93,
+						"y": 1,
+						"w": 43,
+						"h": 64
+					}
+				},
+				{
+					"filename": "Warlock/cast/e/17.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 16,
+						"w": 39,
+						"h": 64
+					},
+					"frame": {
+						"x": 93,
+						"y": 67,
+						"w": 39,
+						"h": 64
+					}
+				},
+				{
+					"filename": "Warlock/cast/e/18.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 16,
+						"w": 39,
+						"h": 64
+					},
+					"frame": {
+						"x": 93,
+						"y": 67,
+						"w": 39,
+						"h": 64
+					}
+				},
+				{
+					"filename": "Warlock/cast/w/9.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 30,
+						"y": 16,
+						"w": 39,
+						"h": 64
+					},
+					"frame": {
+						"x": 117,
+						"y": 133,
+						"w": 39,
+						"h": 64
+					}
+				},
+				{
+					"filename": "Warlock/cast/w/10.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 30,
+						"y": 16,
+						"w": 39,
+						"h": 64
+					},
+					"frame": {
+						"x": 117,
+						"y": 133,
+						"w": 39,
+						"h": 64
+					}
+				},
+				{
+					"filename": "Warlock/death/s/4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 28,
+						"y": 28,
+						"w": 71,
+						"h": 52
+					},
+					"frame": {
+						"x": 139,
+						"y": 199,
+						"w": 71,
+						"h": 52
+					}
+				},
+				{
+					"filename": "Warlock/attack/e/13.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 16,
+						"w": 38,
+						"h": 64
+					},
+					"frame": {
+						"x": 134,
+						"y": 67,
+						"w": 38,
+						"h": 64
+					}
+				},
+				{
+					"filename": "Warlock/attack/e/14.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 16,
+						"w": 38,
+						"h": 64
+					},
+					"frame": {
+						"x": 134,
+						"y": 67,
+						"w": 38,
+						"h": 64
+					}
+				},
+				{
+					"filename": "Warlock/attack/w/7.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 16,
+						"w": 38,
+						"h": 64
+					},
+					"frame": {
+						"x": 158,
+						"y": 133,
+						"w": 38,
+						"h": 64
+					}
+				},
+				{
+					"filename": "Warlock/attack/w/8.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 16,
+						"w": 38,
+						"h": 64
+					},
+					"frame": {
+						"x": 158,
+						"y": 133,
+						"w": 38,
+						"h": 64
+					}
+				},
+				{
+					"filename": "Warlock/death/s/2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 19,
+						"y": 17,
+						"w": 73,
+						"h": 63
+					},
+					"frame": {
+						"x": 138,
+						"y": 1,
+						"w": 73,
+						"h": 63
+					}
+				},
+				{
+					"filename": "Warlock/attack/n/19.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 28,
+						"y": 17,
+						"w": 44,
+						"h": 63
+					},
+					"frame": {
+						"x": 174,
+						"y": 66,
+						"w": 44,
+						"h": 63
+					}
+				},
+				{
+					"filename": "Warlock/attack/n/20.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 28,
+						"y": 17,
+						"w": 44,
+						"h": 63
+					},
+					"frame": {
+						"x": 174,
+						"y": 66,
+						"w": 44,
+						"h": 63
+					}
+				},
+				{
+					"filename": "Warlock/attack/e/12.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 17,
+						"w": 38,
+						"h": 63
+					},
+					"frame": {
+						"x": 213,
+						"y": 1,
+						"w": 38,
+						"h": 63
+					}
+				},
+				{
+					"filename": "Warlock/attack/w/6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 17,
+						"w": 38,
+						"h": 63
+					},
+					"frame": {
+						"x": 198,
+						"y": 131,
+						"w": 38,
+						"h": 63
+					}
+				},
+				{
+					"filename": "Warlock/attack/n/22.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 25,
+						"w": 57,
+						"h": 55
+					},
+					"frame": {
+						"x": 212,
+						"y": 196,
+						"w": 57,
+						"h": 55
+					}
+				},
+				{
+					"filename": "Warlock/death/s/3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 26,
+						"y": 18,
+						"w": 72,
+						"h": 62
+					},
+					"frame": {
+						"x": 220,
+						"y": 66,
+						"w": 72,
+						"h": 62
+					}
+				},
+				{
+					"filename": "Warlock/death/s/0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 22,
+						"y": 18,
+						"w": 57,
+						"h": 62
+					},
+					"frame": {
+						"x": 253,
+						"y": 1,
+						"w": 57,
+						"h": 62
+					}
+				},
+				{
+					"filename": "Warlock/attack/s/1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 18,
+						"w": 46,
+						"h": 62
+					},
+					"frame": {
+						"x": 238,
+						"y": 130,
+						"w": 46,
+						"h": 62
+					}
+				},
+				{
+					"filename": "Warlock/attack/s/2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 18,
+						"w": 46,
+						"h": 62
+					},
+					"frame": {
+						"x": 238,
+						"y": 130,
+						"w": 46,
+						"h": 62
+					}
+				},
+				{
+					"filename": "Warlock/death/e/17.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 23,
+						"w": 65,
+						"h": 57
+					},
+					"frame": {
+						"x": 271,
+						"y": 194,
+						"w": 65,
+						"h": 57
+					}
+				},
+				{
+					"filename": "Warlock/attack/n/18.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 18,
+						"w": 43,
+						"h": 62
+					},
+					"frame": {
+						"x": 286,
+						"y": 130,
+						"w": 43,
+						"h": 62
+					}
+				},
+				{
+					"filename": "Warlock/death/e/16.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 19,
+						"w": 57,
+						"h": 61
+					},
+					"frame": {
+						"x": 294,
+						"y": 65,
+						"w": 57,
+						"h": 61
+					}
+				},
+				{
+					"filename": "Warlock/death/w/9.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 12,
+						"y": 19,
+						"w": 57,
+						"h": 61
+					},
+					"frame": {
+						"x": 312,
+						"y": 1,
+						"w": 57,
+						"h": 61
+					}
+				},
+				{
+					"filename": "Warlock/cast/s/1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 19,
+						"w": 48,
+						"h": 61
+					},
+					"frame": {
+						"x": 331,
+						"y": 128,
+						"w": 48,
+						"h": 61
+					}
+				},
+				{
+					"filename": "Warlock/cast/s/2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 19,
+						"w": 48,
+						"h": 61
+					},
+					"frame": {
+						"x": 331,
+						"y": 128,
+						"w": 48,
+						"h": 61
+					}
+				},
+				{
+					"filename": "Warlock/death/n/22.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 13,
+						"y": 20,
+						"w": 67,
+						"h": 60
+					},
+					"frame": {
+						"x": 338,
+						"y": 191,
+						"w": 67,
+						"h": 60
+					}
+				},
+				{
+					"filename": "Warlock/death/e/15.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 23,
+						"y": 20,
+						"w": 60,
+						"h": 60
+					},
+					"frame": {
+						"x": 353,
+						"y": 64,
+						"w": 60,
+						"h": 60
+					}
+				},
+				{
+					"filename": "Warlock/death/w/8.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 17,
+						"y": 20,
+						"w": 60,
+						"h": 60
+					},
+					"frame": {
+						"x": 371,
+						"y": 1,
+						"w": 60,
+						"h": 60
+					}
+				},
+				{
+					"filename": "Warlock/attack/s/0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 20,
+						"w": 47,
+						"h": 60
+					},
+					"frame": {
+						"x": 381,
+						"y": 126,
+						"w": 47,
+						"h": 60
+					}
+				},
+				{
+					"filename": "Warlock/death/n/23.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 8,
+						"y": 21,
+						"w": 72,
+						"h": 59
+					},
+					"frame": {
+						"x": 415,
+						"y": 63,
+						"w": 72,
+						"h": 59
+					}
+				},
+				{
+					"filename": "Warlock/cast/s/0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 21,
+						"w": 46,
+						"h": 59
+					},
+					"frame": {
+						"x": 433,
+						"y": 1,
+						"w": 46,
+						"h": 59
+					}
+				},
+				{
+					"filename": "Warlock/cast/n/31.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 21,
+						"w": 43,
+						"h": 59
+					},
+					"frame": {
+						"x": 481,
+						"y": 1,
+						"w": 43,
+						"h": 59
+					}
+				},
+				{
+					"filename": "Warlock/death/n/24.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 22,
+						"w": 73,
+						"h": 58
+					},
+					"frame": {
+						"x": 407,
+						"y": 188,
+						"w": 73,
+						"h": 58
+					}
+				},
+				{
+					"filename": "Warlock/death/n/21.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 20,
+						"y": 22,
+						"w": 59,
+						"h": 58
+					},
+					"frame": {
+						"x": 430,
+						"y": 124,
+						"w": 59,
+						"h": 58
+					}
+				},
+				{
+					"filename": "Warlock/death/e/14.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 25,
+						"y": 22,
+						"w": 52,
+						"h": 58
+					},
+					"frame": {
+						"x": 489,
+						"y": 62,
+						"w": 52,
+						"h": 58
+					}
+				},
+				{
+					"filename": "Warlock/death/w/7.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 23,
+						"y": 22,
+						"w": 52,
+						"h": 58
+					},
+					"frame": {
+						"x": 526,
+						"y": 1,
+						"w": 52,
+						"h": 58
+					}
+				},
+				{
+					"filename": "Warlock/cast/e/16.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 22,
+						"w": 43,
+						"h": 58
+					},
+					"frame": {
+						"x": 482,
+						"y": 184,
+						"w": 43,
+						"h": 58
+					}
+				},
+				{
+					"filename": "Bat/bat - death/n/11.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 18,
+						"w": 21,
+						"h": 7
+					},
+					"frame": {
+						"x": 482,
+						"y": 244,
+						"w": 21,
+						"h": 7
+					}
+				},
+				{
+					"filename": "Bat/bat - death/s/2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 19,
+						"w": 21,
+						"h": 7
+					},
+					"frame": {
+						"x": 482,
+						"y": 244,
+						"w": 21,
+						"h": 7
+					}
+				},
+				{
+					"filename": "Bat/bat - death/e/8.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 12,
+						"y": 16,
+						"w": 8,
+						"h": 7
+					},
+					"frame": {
+						"x": 505,
+						"y": 244,
+						"w": 8,
+						"h": 7
+					}
+				},
+				{
+					"filename": "Bat/bat - death/w/5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 12,
+						"y": 16,
+						"w": 8,
+						"h": 7
+					},
+					"frame": {
+						"x": 515,
+						"y": 244,
+						"w": 8,
+						"h": 7
+					}
+				},
+				{
+					"filename": "Bat/bat - appear/e/4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 14,
+						"y": 14,
+						"w": 5,
+						"h": 6
+					},
+					"frame": {
+						"x": 525,
+						"y": 244,
+						"w": 5,
+						"h": 6
+					}
+				},
+				{
+					"filename": "Bat/bat - appear/n/6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 13,
+						"y": 14,
+						"w": 5,
+						"h": 6
+					},
+					"frame": {
+						"x": 525,
+						"y": 244,
+						"w": 5,
+						"h": 6
+					}
+				},
+				{
+					"filename": "Bat/bat - appear/s/0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 13,
+						"y": 14,
+						"w": 5,
+						"h": 6
+					},
+					"frame": {
+						"x": 525,
+						"y": 244,
+						"w": 5,
+						"h": 6
+					}
+				},
+				{
+					"filename": "Bat/bat - appear/w/2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 13,
+						"y": 14,
+						"w": 5,
+						"h": 6
+					},
+					"frame": {
+						"x": 525,
+						"y": 244,
+						"w": 5,
+						"h": 6
+					}
+				},
+				{
+					"filename": "Warlock/cast/w/8.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 26,
+						"y": 22,
+						"w": 43,
+						"h": 58
+					},
+					"frame": {
+						"x": 491,
+						"y": 122,
+						"w": 43,
+						"h": 58
+					}
+				},
+				{
+					"filename": "Warlock/death/w/10.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 23,
+						"w": 65,
+						"h": 57
+					},
+					"frame": {
+						"x": 527,
+						"y": 182,
+						"w": 65,
+						"h": 57
+					}
+				},
+				{
+					"filename": "Bat/bat - death/n/9.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 14,
+						"w": 25,
+						"h": 10
+					},
+					"frame": {
+						"x": 532,
+						"y": 241,
+						"w": 25,
+						"h": 10
+					}
+				},
+				{
+					"filename": "Bat/bat - death/s/0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 14,
+						"w": 25,
+						"h": 10
+					},
+					"frame": {
+						"x": 559,
+						"y": 241,
+						"w": 25,
+						"h": 10
+					}
+				},
+				{
+					"filename": "Bat/bat - death/n/10.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 15,
+						"w": 25,
+						"h": 9
+					},
+					"frame": {
+						"x": 586,
+						"y": 241,
+						"w": 25,
+						"h": 9
+					}
+				},
+				{
+					"filename": "Bat/bat - death/s/1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 16,
+						"w": 25,
+						"h": 9
+					},
+					"frame": {
+						"x": 586,
+						"y": 241,
+						"w": 25,
+						"h": 9
+					}
+				},
+				{
+					"filename": "Warlock/hit/s/0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 25,
+						"y": 23,
+						"w": 55,
+						"h": 57
+					},
+					"frame": {
+						"x": 536,
+						"y": 122,
+						"w": 55,
+						"h": 57
+					}
+				},
+				{
+					"filename": "Warlock/hit/s/1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 25,
+						"y": 23,
+						"w": 55,
+						"h": 57
+					},
+					"frame": {
+						"x": 543,
+						"y": 61,
+						"w": 55,
+						"h": 57
+					}
+				},
+				{
+					"filename": "Warlock/attack/e/15.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 28,
+						"w": 49,
+						"h": 57
+					},
+					"frame": {
+						"x": 580,
+						"y": 1,
+						"w": 49,
+						"h": 57
+					}
+				},
+				{
+					"filename": "Warlock/attack/w/9.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 20,
+						"y": 28,
+						"w": 49,
+						"h": 57
+					},
+					"frame": {
+						"x": 593,
+						"y": 120,
+						"w": 49,
+						"h": 57
+					}
+				},
+				{
+					"filename": "Warlock/attack/e/16.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 27,
+						"w": 48,
+						"h": 57
+					},
+					"frame": {
+						"x": 600,
+						"y": 60,
+						"w": 48,
+						"h": 57
+					}
+				},
+				{
+					"filename": "Warlock/attack/w/10.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 21,
+						"y": 27,
+						"w": 48,
+						"h": 57
+					},
+					"frame": {
+						"x": 631,
+						"y": 1,
+						"w": 48,
+						"h": 57
+					}
+				},
+				{
+					"filename": "Warlock/hit/e/4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 30,
+						"y": 23,
+						"w": 42,
+						"h": 57
+					},
+					"frame": {
+						"x": 594,
+						"y": 179,
+						"w": 42,
+						"h": 57
+					}
+				},
+				{
+					"filename": "Bat/bat - fly/n/13.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 10,
+						"w": 25,
+						"h": 13
+					},
+					"frame": {
+						"x": 613,
+						"y": 238,
+						"w": 25,
+						"h": 13
+					}
+				},
+				{
+					"filename": "Warlock/hit/e/5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 30,
+						"y": 23,
+						"w": 42,
+						"h": 57
+					},
+					"frame": {
+						"x": 638,
+						"y": 179,
+						"w": 42,
+						"h": 57
+					}
+				},
+				{
+					"filename": "Bat/bat - fly/s/1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 10,
+						"w": 25,
+						"h": 13
+					},
+					"frame": {
+						"x": 640,
+						"y": 238,
+						"w": 25,
+						"h": 13
+					}
+				},
+				{
+					"filename": "Bat/bat - fly/n/14.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 11,
+						"w": 23,
+						"h": 13
+					},
+					"frame": {
+						"x": 667,
+						"y": 238,
+						"w": 23,
+						"h": 13
+					}
+				},
+				{
+					"filename": "Warlock/hit/w/2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 28,
+						"y": 23,
+						"w": 42,
+						"h": 57
+					},
+					"frame": {
+						"x": 644,
+						"y": 119,
+						"w": 42,
+						"h": 57
+					}
+				},
+				{
+					"filename": "Warlock/hit/w/3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 28,
+						"y": 23,
+						"w": 42,
+						"h": 57
+					},
+					"frame": {
+						"x": 650,
+						"y": 60,
+						"w": 42,
+						"h": 57
+					}
+				},
+				{
+					"filename": "Warlock/attack/n/21.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 24,
+						"w": 57,
+						"h": 56
+					},
+					"frame": {
+						"x": 681,
+						"y": 1,
+						"w": 57,
+						"h": 56
+					}
+				},
+				{
+					"filename": "Warlock/walk/e/11.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 24,
+						"w": 40,
+						"h": 56
+					},
+					"frame": {
+						"x": 682,
+						"y": 178,
+						"w": 40,
+						"h": 56
+					}
+				},
+				{
+					"filename": "Bat/bat - hit/e/4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 6,
+						"w": 17,
+						"h": 15
+					},
+					"frame": {
+						"x": 692,
+						"y": 236,
+						"w": 17,
+						"h": 15
+					}
+				},
+				{
+					"filename": "Bat/bat - hit/e/5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 6,
+						"w": 17,
+						"h": 15
+					},
+					"frame": {
+						"x": 711,
+						"y": 236,
+						"w": 17,
+						"h": 15
+					}
+				},
+				{
+					"filename": "Warlock/walk/w/7.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 24,
+						"w": 40,
+						"h": 56
+					},
+					"frame": {
+						"x": 688,
+						"y": 119,
+						"w": 40,
+						"h": 56
+					}
+				},
+				{
+					"filename": "Warlock/hit/n/6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 23,
+						"y": 25,
+						"w": 53,
+						"h": 55
+					},
+					"frame": {
+						"x": 724,
+						"y": 177,
+						"w": 53,
+						"h": 55
+					}
+				},
+				{
+					"filename": "Warlock/spell/3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 18,
+						"h": 20
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 2,
+						"w": 9,
+						"h": 17
+					},
+					"frame": {
+						"x": 730,
+						"y": 234,
+						"w": 9,
+						"h": 17
+					}
+				},
+				{
+					"filename": "Bat/bat - hit/n/6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 6,
+						"w": 28,
+						"h": 16
+					},
+					"frame": {
+						"x": 741,
+						"y": 234,
+						"w": 28,
+						"h": 16
+					}
+				},
+				{
+					"filename": "Bat/bat - hit/n/7.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 6,
+						"w": 28,
+						"h": 16
+					},
+					"frame": {
+						"x": 771,
+						"y": 234,
+						"w": 28,
+						"h": 16
+					}
+				},
+				{
+					"filename": "Warlock/hit/n/7.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 23,
+						"y": 25,
+						"w": 53,
+						"h": 55
+					},
+					"frame": {
+						"x": 694,
+						"y": 59,
+						"w": 53,
+						"h": 55
+					}
+				},
+				{
+					"filename": "Warlock/summon bat/n/33.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 21,
+						"y": 25,
+						"w": 51,
+						"h": 55
+					},
+					"frame": {
+						"x": 740,
+						"y": 1,
+						"w": 51,
+						"h": 55
+					}
+				},
+				{
+					"filename": "Warlock/summon bat/n/34.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 21,
+						"y": 25,
+						"w": 51,
+						"h": 55
+					},
+					"frame": {
+						"x": 740,
+						"y": 1,
+						"w": 51,
+						"h": 55
+					}
+				},
+				{
+					"filename": "Warlock/summon bat/n/35.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 21,
+						"y": 25,
+						"w": 51,
+						"h": 55
+					},
+					"frame": {
+						"x": 740,
+						"y": 1,
+						"w": 51,
+						"h": 55
+					}
+				},
+				{
+					"filename": "Warlock/summon bat/n/36.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 21,
+						"y": 25,
+						"w": 51,
+						"h": 55
+					},
+					"frame": {
+						"x": 740,
+						"y": 1,
+						"w": 51,
+						"h": 55
+					}
+				},
+				{
+					"filename": "Warlock/summon bat/n/37.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 21,
+						"y": 25,
+						"w": 51,
+						"h": 55
+					},
+					"frame": {
+						"x": 740,
+						"y": 1,
+						"w": 51,
+						"h": 55
+					}
+				},
+				{
+					"filename": "Warlock/summon bat/n/38.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 21,
+						"y": 25,
+						"w": 51,
+						"h": 55
+					},
+					"frame": {
+						"x": 740,
+						"y": 1,
+						"w": 51,
+						"h": 55
+					}
+				},
+				{
+					"filename": "Warlock/summon bat/n/39.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 23,
+						"y": 25,
+						"w": 49,
+						"h": 55
+					},
+					"frame": {
+						"x": 730,
+						"y": 116,
+						"w": 49,
+						"h": 55
+					}
+				},
+				{
+					"filename": "Warlock/summon bat/s/3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 25,
+						"w": 47,
+						"h": 55
+					},
+					"frame": {
+						"x": 749,
+						"y": 58,
+						"w": 47,
+						"h": 55
+					}
+				},
+				{
+					"filename": "Warlock/summon bat/s/4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 25,
+						"w": 47,
+						"h": 55
+					},
+					"frame": {
+						"x": 749,
+						"y": 58,
+						"w": 47,
+						"h": 55
+					}
+				},
+				{
+					"filename": "Warlock/summon bat/s/5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 25,
+						"w": 47,
+						"h": 55
+					},
+					"frame": {
+						"x": 749,
+						"y": 58,
+						"w": 47,
+						"h": 55
+					}
+				},
+				{
+					"filename": "Warlock/summon bat/s/6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 25,
+						"w": 47,
+						"h": 55
+					},
+					"frame": {
+						"x": 749,
+						"y": 58,
+						"w": 47,
+						"h": 55
+					}
+				},
+				{
+					"filename": "Warlock/summon bat/s/7.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 25,
+						"w": 47,
+						"h": 55
+					},
+					"frame": {
+						"x": 749,
+						"y": 58,
+						"w": 47,
+						"h": 55
+					}
+				},
+				{
+					"filename": "Warlock/summon bat/s/8.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 25,
+						"w": 47,
+						"h": 55
+					},
+					"frame": {
+						"x": 749,
+						"y": 58,
+						"w": 47,
+						"h": 55
+					}
+				},
+				{
+					"filename": "Warlock/summon bat/e/23.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 25,
+						"w": 45,
+						"h": 55
+					},
+					"frame": {
+						"x": 793,
+						"y": 1,
+						"w": 45,
+						"h": 55
+					}
+				},
+				{
+					"filename": "Warlock/summon bat/e/24.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 25,
+						"w": 45,
+						"h": 55
+					},
+					"frame": {
+						"x": 793,
+						"y": 1,
+						"w": 45,
+						"h": 55
+					}
+				},
+				{
+					"filename": "Warlock/summon bat/e/25.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 25,
+						"w": 45,
+						"h": 55
+					},
+					"frame": {
+						"x": 793,
+						"y": 1,
+						"w": 45,
+						"h": 55
+					}
+				},
+				{
+					"filename": "Warlock/summon bat/e/26.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 25,
+						"w": 45,
+						"h": 55
+					},
+					"frame": {
+						"x": 793,
+						"y": 1,
+						"w": 45,
+						"h": 55
+					}
+				},
+				{
+					"filename": "Warlock/summon bat/e/27.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 25,
+						"w": 45,
+						"h": 55
+					},
+					"frame": {
+						"x": 793,
+						"y": 1,
+						"w": 45,
+						"h": 55
+					}
+				},
+				{
+					"filename": "Warlock/summon bat/e/28.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 25,
+						"w": 45,
+						"h": 55
+					},
+					"frame": {
+						"x": 793,
+						"y": 1,
+						"w": 45,
+						"h": 55
+					}
+				},
+				{
+					"filename": "Warlock/summon bat/w/13.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 24,
+						"y": 25,
+						"w": 45,
+						"h": 55
+					},
+					"frame": {
+						"x": 779,
+						"y": 173,
+						"w": 45,
+						"h": 55
+					}
+				},
+				{
+					"filename": "Warlock/summon bat/w/14.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 24,
+						"y": 25,
+						"w": 45,
+						"h": 55
+					},
+					"frame": {
+						"x": 779,
+						"y": 173,
+						"w": 45,
+						"h": 55
+					}
+				},
+				{
+					"filename": "Warlock/summon bat/w/15.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 24,
+						"y": 25,
+						"w": 45,
+						"h": 55
+					},
+					"frame": {
+						"x": 779,
+						"y": 173,
+						"w": 45,
+						"h": 55
+					}
+				},
+				{
+					"filename": "Warlock/summon bat/w/16.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 24,
+						"y": 25,
+						"w": 45,
+						"h": 55
+					},
+					"frame": {
+						"x": 779,
+						"y": 173,
+						"w": 45,
+						"h": 55
+					}
+				},
+				{
+					"filename": "Warlock/summon bat/w/17.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 24,
+						"y": 25,
+						"w": 45,
+						"h": 55
+					},
+					"frame": {
+						"x": 779,
+						"y": 173,
+						"w": 45,
+						"h": 55
+					}
+				},
+				{
+					"filename": "Warlock/summon bat/w/18.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 24,
+						"y": 25,
+						"w": 45,
+						"h": 55
+					},
+					"frame": {
+						"x": 779,
+						"y": 173,
+						"w": 45,
+						"h": 55
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - death/n/14.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 4,
+						"w": 30,
+						"h": 21
+					},
+					"frame": {
+						"x": 801,
+						"y": 230,
+						"w": 30,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - death/s/2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 4,
+						"w": 30,
+						"h": 21
+					},
+					"frame": {
+						"x": 801,
+						"y": 230,
+						"w": 30,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Warlock/attack/n/23.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 25,
+						"w": 43,
+						"h": 55
+					},
+					"frame": {
+						"x": 781,
+						"y": 115,
+						"w": 43,
+						"h": 55
+					}
+				},
+				{
+					"filename": "Warlock/summon bat/s/9.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 25,
+						"w": 43,
+						"h": 55
+					},
+					"frame": {
+						"x": 798,
+						"y": 58,
+						"w": 43,
+						"h": 55
+					}
+				},
+				{
+					"filename": "Warlock/idle/e/8.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 25,
+						"w": 42,
+						"h": 55
+					},
+					"frame": {
+						"x": 840,
+						"y": 1,
+						"w": 42,
+						"h": 55
+					}
+				},
+				{
+					"filename": "Warlock/idle/e/9.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 25,
+						"w": 42,
+						"h": 55
+					},
+					"frame": {
+						"x": 826,
+						"y": 115,
+						"w": 42,
+						"h": 55
+					}
+				},
+				{
+					"filename": "Warlock/idle/e/10.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 25,
+						"w": 42,
+						"h": 55
+					},
+					"frame": {
+						"x": 843,
+						"y": 58,
+						"w": 42,
+						"h": 55
+					}
+				},
+				{
+					"filename": "Warlock/idle/e/11.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 25,
+						"w": 42,
+						"h": 55
+					},
+					"frame": {
+						"x": 884,
+						"y": 1,
+						"w": 42,
+						"h": 55
+					}
+				},
+				{
+					"filename": "Warlock/idle/w/4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 27,
+						"y": 25,
+						"w": 42,
+						"h": 55
+					},
+					"frame": {
+						"x": 826,
+						"y": 172,
+						"w": 42,
+						"h": 55
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - death/n/15.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 5,
+						"w": 32,
+						"h": 22
+					},
+					"frame": {
+						"x": 833,
+						"y": 229,
+						"w": 32,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - death/s/3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 5,
+						"w": 32,
+						"h": 22
+					},
+					"frame": {
+						"x": 833,
+						"y": 229,
+						"w": 32,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - attack/n/18.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 5,
+						"w": 23,
+						"h": 22
+					},
+					"frame": {
+						"x": 867,
+						"y": 229,
+						"w": 23,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Warlock/idle/w/5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 27,
+						"y": 25,
+						"w": 42,
+						"h": 55
+					},
+					"frame": {
+						"x": 870,
+						"y": 115,
+						"w": 42,
+						"h": 55
+					}
+				},
+				{
+					"filename": "Warlock/idle/w/6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 27,
+						"y": 25,
+						"w": 42,
+						"h": 55
+					},
+					"frame": {
+						"x": 887,
+						"y": 58,
+						"w": 42,
+						"h": 55
+					}
+				},
+				{
+					"filename": "Warlock/idle/w/7.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 27,
+						"y": 25,
+						"w": 42,
+						"h": 55
+					},
+					"frame": {
+						"x": 928,
+						"y": 1,
+						"w": 42,
+						"h": 55
+					}
+				},
+				{
+					"filename": "Warlock/walk/e/8.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 25,
+						"w": 42,
+						"h": 55
+					},
+					"frame": {
+						"x": 870,
+						"y": 172,
+						"w": 42,
+						"h": 55
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - attack/n/21.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 5,
+						"w": 23,
+						"h": 22
+					},
+					"frame": {
+						"x": 892,
+						"y": 229,
+						"w": 23,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - attack/n/22.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 5,
+						"w": 23,
+						"h": 22
+					},
+					"frame": {
+						"x": 892,
+						"y": 229,
+						"w": 23,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - jump/n/19.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 5,
+						"w": 23,
+						"h": 22
+					},
+					"frame": {
+						"x": 892,
+						"y": 229,
+						"w": 23,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Warlock/walk/w/4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 27,
+						"y": 25,
+						"w": 42,
+						"h": 55
+					},
+					"frame": {
+						"x": 914,
+						"y": 115,
+						"w": 42,
+						"h": 55
+					}
+				},
+				{
+					"filename": "Warlock/walk/e/10.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 25,
+						"w": 41,
+						"h": 55
+					},
+					"frame": {
+						"x": 931,
+						"y": 58,
+						"w": 41,
+						"h": 55
+					}
+				},
+				{
+					"filename": "Warlock/walk/w/6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 28,
+						"y": 25,
+						"w": 41,
+						"h": 55
+					},
+					"frame": {
+						"x": 972,
+						"y": 1,
+						"w": 41,
+						"h": 55
+					}
+				},
+				{
+					"filename": "Warlock/summon bat/e/29.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 25,
+						"w": 39,
+						"h": 55
+					},
+					"frame": {
+						"x": 914,
+						"y": 172,
+						"w": 39,
+						"h": 55
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - attack/n/23.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 5,
+						"w": 23,
+						"h": 22
+					},
+					"frame": {
+						"x": 917,
+						"y": 229,
+						"w": 23,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - jump/s/1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 5,
+						"w": 23,
+						"h": 22
+					},
+					"frame": {
+						"x": 942,
+						"y": 229,
+						"w": 23,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Warlock/summon bat/w/19.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 30,
+						"y": 25,
+						"w": 39,
+						"h": 55
+					},
+					"frame": {
+						"x": 955,
+						"y": 172,
+						"w": 39,
+						"h": 55
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - jump/e/13.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 5,
+						"w": 21,
+						"h": 22
+					},
+					"frame": {
+						"x": 967,
+						"y": 229,
+						"w": 21,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - jump/w/7.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 5,
+						"w": 21,
+						"h": 22
+					},
+					"frame": {
+						"x": 990,
+						"y": 229,
+						"w": 21,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Warlock/cast/e/19.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 26,
+						"w": 65,
+						"h": 54
+					},
+					"frame": {
+						"x": 958,
+						"y": 115,
+						"w": 65,
+						"h": 54
+					}
+				},
+				{
+					"filename": "Warlock/cast/e/20.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 26,
+						"w": 65,
+						"h": 54
+					},
+					"frame": {
+						"x": 958,
+						"y": 115,
+						"w": 65,
+						"h": 54
+					}
+				},
+				{
+					"filename": "Warlock/cast/e/21.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 26,
+						"w": 65,
+						"h": 54
+					},
+					"frame": {
+						"x": 974,
+						"y": 58,
+						"w": 65,
+						"h": 54
+					}
+				},
+				{
+					"filename": "Warlock/cast/w/11.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 26,
+						"w": 65,
+						"h": 54
+					},
+					"frame": {
+						"x": 1015,
+						"y": 1,
+						"w": 65,
+						"h": 54
+					}
+				},
+				{
+					"filename": "Warlock/cast/w/12.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 26,
+						"w": 65,
+						"h": 54
+					},
+					"frame": {
+						"x": 1015,
+						"y": 1,
+						"w": 65,
+						"h": 54
+					}
+				},
+				{
+					"filename": "Warlock/cast/w/13.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 26,
+						"w": 65,
+						"h": 54
+					},
+					"frame": {
+						"x": 996,
+						"y": 171,
+						"w": 65,
+						"h": 54
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - attack/s/1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 3,
+						"w": 23,
+						"h": 24
+					},
+					"frame": {
+						"x": 1013,
+						"y": 227,
+						"w": 23,
+						"h": 24
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - attack/s/2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 3,
+						"w": 23,
+						"h": 24
+					},
+					"frame": {
+						"x": 1013,
+						"y": 227,
+						"w": 23,
+						"h": 24
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - attack/s/5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 5,
+						"w": 23,
+						"h": 24
+					},
+					"frame": {
+						"x": 1038,
+						"y": 227,
+						"w": 23,
+						"h": 24
+					}
+				},
+				{
+					"filename": "Warlock/cast/e/22.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 26,
+						"w": 64,
+						"h": 54
+					},
+					"frame": {
+						"x": 1025,
+						"y": 114,
+						"w": 64,
+						"h": 54
+					}
+				},
+				{
+					"filename": "Warlock/cast/w/14.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 26,
+						"w": 64,
+						"h": 54
+					},
+					"frame": {
+						"x": 1041,
+						"y": 57,
+						"w": 64,
+						"h": 54
+					}
+				},
+				{
+					"filename": "Warlock/cast/e/23.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 26,
+						"w": 57,
+						"h": 54
+					},
+					"frame": {
+						"x": 1082,
+						"y": 1,
+						"w": 57,
+						"h": 54
+					}
+				},
+				{
+					"filename": "Warlock/cast/w/15.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 12,
+						"y": 26,
+						"w": 57,
+						"h": 54
+					},
+					"frame": {
+						"x": 1063,
+						"y": 170,
+						"w": 57,
+						"h": 54
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - attack/s/0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 2,
+						"w": 23,
+						"h": 25
+					},
+					"frame": {
+						"x": 1063,
+						"y": 226,
+						"w": 23,
+						"h": 25
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - hit/s/0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 2,
+						"w": 23,
+						"h": 25
+					},
+					"frame": {
+						"x": 1088,
+						"y": 226,
+						"w": 23,
+						"h": 25
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - hit/s/1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 2,
+						"w": 23,
+						"h": 25
+					},
+					"frame": {
+						"x": 1113,
+						"y": 226,
+						"w": 23,
+						"h": 25
+					}
+				},
+				{
+					"filename": "Warlock/idle/n/12.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 26,
+						"w": 43,
+						"h": 54
+					},
+					"frame": {
+						"x": 1091,
+						"y": 113,
+						"w": 43,
+						"h": 54
+					}
+				},
+				{
+					"filename": "Warlock/idle/n/15.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 26,
+						"w": 43,
+						"h": 54
+					},
+					"frame": {
+						"x": 1107,
+						"y": 57,
+						"w": 43,
+						"h": 54
+					}
+				},
+				{
+					"filename": "Warlock/idle/s/0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 26,
+						"w": 43,
+						"h": 54
+					},
+					"frame": {
+						"x": 1141,
+						"y": 1,
+						"w": 43,
+						"h": 54
+					}
+				},
+				{
+					"filename": "Warlock/idle/s/3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 26,
+						"w": 43,
+						"h": 54
+					},
+					"frame": {
+						"x": 1122,
+						"y": 169,
+						"w": 43,
+						"h": 54
+					}
+				},
+				{
+					"filename": "Warlock/summon bat/n/30.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 26,
+						"w": 43,
+						"h": 54
+					},
+					"frame": {
+						"x": 1136,
+						"y": 113,
+						"w": 43,
+						"h": 54
+					}
+				},
+				{
+					"filename": "Warlock/summon bat/s/0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 26,
+						"w": 43,
+						"h": 54
+					},
+					"frame": {
+						"x": 1152,
+						"y": 57,
+						"w": 43,
+						"h": 54
+					}
+				},
+				{
+					"filename": "Warlock/walk/e/9.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 26,
+						"w": 43,
+						"h": 54
+					},
+					"frame": {
+						"x": 1186,
+						"y": 1,
+						"w": 43,
+						"h": 54
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - jump/n/21.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 1,
+						"w": 23,
+						"h": 26
+					},
+					"frame": {
+						"x": 1138,
+						"y": 225,
+						"w": 23,
+						"h": 26
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - jump/s/3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 1,
+						"w": 23,
+						"h": 26
+					},
+					"frame": {
+						"x": 1163,
+						"y": 225,
+						"w": 23,
+						"h": 26
+					}
+				},
+				{
+					"filename": "Warlock/walk/n/12.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 26,
+						"w": 43,
+						"h": 54
+					},
+					"frame": {
+						"x": 1167,
+						"y": 169,
+						"w": 43,
+						"h": 54
+					}
+				},
+				{
+					"filename": "Warlock/walk/n/13.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 26,
+						"w": 43,
+						"h": 54
+					},
+					"frame": {
+						"x": 1181,
+						"y": 113,
+						"w": 43,
+						"h": 54
+					}
+				},
+				{
+					"filename": "Warlock/walk/n/14.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 26,
+						"w": 43,
+						"h": 54
+					},
+					"frame": {
+						"x": 1197,
+						"y": 57,
+						"w": 43,
+						"h": 54
+					}
+				},
+				{
+					"filename": "Warlock/walk/s/0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 26,
+						"w": 43,
+						"h": 54
+					},
+					"frame": {
+						"x": 1231,
+						"y": 1,
+						"w": 43,
+						"h": 54
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - jump/s/5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 1,
+						"w": 23,
+						"h": 26
+					},
+					"frame": {
+						"x": 1188,
+						"y": 225,
+						"w": 23,
+						"h": 26
+					}
+				},
+				{
+					"filename": "Warlock/walk/s/2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 26,
+						"w": 43,
+						"h": 54
+					},
+					"frame": {
+						"x": 1212,
+						"y": 169,
+						"w": 43,
+						"h": 54
+					}
+				},
+				{
+					"filename": "Warlock/walk/w/5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 26,
+						"y": 26,
+						"w": 43,
+						"h": 54
+					},
+					"frame": {
+						"x": 1226,
+						"y": 113,
+						"w": 43,
+						"h": 54
+					}
+				},
+				{
+					"filename": "Warlock/summon bat/e/20.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 26,
+						"w": 40,
+						"h": 54
+					},
+					"frame": {
+						"x": 1242,
+						"y": 57,
+						"w": 40,
+						"h": 54
+					}
+				},
+				{
+					"filename": "Warlock/summon bat/w/10.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 26,
+						"w": 40,
+						"h": 54
+					},
+					"frame": {
+						"x": 1276,
+						"y": 1,
+						"w": 40,
+						"h": 54
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - attack/e/12.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 1,
+						"w": 21,
+						"h": 26
+					},
+					"frame": {
+						"x": 1213,
+						"y": 225,
+						"w": 21,
+						"h": 26
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - attack/e/13.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 1,
+						"w": 21,
+						"h": 26
+					},
+					"frame": {
+						"x": 1236,
+						"y": 225,
+						"w": 21,
+						"h": 26
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - attack/e/14.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 1,
+						"w": 21,
+						"h": 26
+					},
+					"frame": {
+						"x": 1236,
+						"y": 225,
+						"w": 21,
+						"h": 26
+					}
+				},
+				{
+					"filename": "Warlock/attack/s/4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 20,
+						"y": 27,
+						"w": 52,
+						"h": 53
+					},
+					"frame": {
+						"x": 1257,
+						"y": 169,
+						"w": 52,
+						"h": 53
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - death/e/9.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 2,
+						"w": 30,
+						"h": 27
+					},
+					"frame": {
+						"x": 1259,
+						"y": 224,
+						"w": 30,
+						"h": 27
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - death/w/5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 2,
+						"w": 30,
+						"h": 27
+					},
+					"frame": {
+						"x": 1291,
+						"y": 224,
+						"w": 30,
+						"h": 27
+					}
+				},
+				{
+					"filename": "Warlock/attack/e/17.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 27,
+						"w": 48,
+						"h": 53
+					},
+					"frame": {
+						"x": 1271,
+						"y": 113,
+						"w": 48,
+						"h": 53
+					}
+				},
+				{
+					"filename": "Warlock/attack/w/11.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 21,
+						"y": 27,
+						"w": 48,
+						"h": 53
+					},
+					"frame": {
+						"x": 1311,
+						"y": 168,
+						"w": 48,
+						"h": 53
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - jump/n/22.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 0,
+						"w": 23,
+						"h": 27
+					},
+					"frame": {
+						"x": 1323,
+						"y": 223,
+						"w": 23,
+						"h": 27
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - jump/n/23.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 0,
+						"w": 23,
+						"h": 27
+					},
+					"frame": {
+						"x": 1348,
+						"y": 223,
+						"w": 23,
+						"h": 27
+					}
+				},
+				{
+					"filename": "Warlock/attack/s/5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 26,
+						"y": 27,
+						"w": 46,
+						"h": 53
+					},
+					"frame": {
+						"x": 1284,
+						"y": 57,
+						"w": 46,
+						"h": 53
+					}
+				},
+				{
+					"filename": "Warlock/walk/s/3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 27,
+						"y": 27,
+						"w": 45,
+						"h": 53
+					},
+					"frame": {
+						"x": 1321,
+						"y": 112,
+						"w": 45,
+						"h": 53
+					}
+				},
+				{
+					"filename": "Warlock/cast/n/24.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 28,
+						"y": 27,
+						"w": 44,
+						"h": 53
+					},
+					"frame": {
+						"x": 1361,
+						"y": 167,
+						"w": 44,
+						"h": 53
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - death/e/10.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 1,
+						"w": 32,
+						"h": 29
+					},
+					"frame": {
+						"x": 1373,
+						"y": 222,
+						"w": 32,
+						"h": 29
+					}
+				},
+				{
+					"filename": "Warlock/cast/n/25.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 28,
+						"y": 27,
+						"w": 44,
+						"h": 53
+					},
+					"frame": {
+						"x": 1318,
+						"y": 1,
+						"w": 44,
+						"h": 53
+					}
+				},
+				{
+					"filename": "Warlock/cast/n/26.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 28,
+						"y": 27,
+						"w": 44,
+						"h": 53
+					},
+					"frame": {
+						"x": 1318,
+						"y": 1,
+						"w": 44,
+						"h": 53
+					}
+				},
+				{
+					"filename": "Warlock/cast/s/7.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 28,
+						"y": 27,
+						"w": 44,
+						"h": 53
+					},
+					"frame": {
+						"x": 1332,
+						"y": 56,
+						"w": 44,
+						"h": 53
+					}
+				},
+				{
+					"filename": "Warlock/idle/n/13.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 27,
+						"w": 43,
+						"h": 53
+					},
+					"frame": {
+						"x": 1364,
+						"y": 1,
+						"w": 43,
+						"h": 53
+					}
+				},
+				{
+					"filename": "Warlock/idle/n/14.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 27,
+						"w": 43,
+						"h": 53
+					},
+					"frame": {
+						"x": 1368,
+						"y": 111,
+						"w": 43,
+						"h": 53
+					}
+				},
+				{
+					"filename": "Warlock/idle/s/1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 27,
+						"w": 43,
+						"h": 53
+					},
+					"frame": {
+						"x": 1378,
+						"y": 56,
+						"w": 43,
+						"h": 53
+					}
+				},
+				{
+					"filename": "Warlock/idle/s/2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 27,
+						"w": 43,
+						"h": 53
+					},
+					"frame": {
+						"x": 1409,
+						"y": 1,
+						"w": 43,
+						"h": 53
+					}
+				},
+				{
+					"filename": "Warlock/summon bat/n/31.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 27,
+						"w": 43,
+						"h": 53
+					},
+					"frame": {
+						"x": 1407,
+						"y": 166,
+						"w": 43,
+						"h": 53
+					}
+				},
+				{
+					"filename": "Warlock/summon bat/n/32.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 27,
+						"w": 43,
+						"h": 53
+					},
+					"frame": {
+						"x": 1413,
+						"y": 111,
+						"w": 43,
+						"h": 53
+					}
+				},
+				{
+					"filename": "Warlock/summon bat/s/1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 27,
+						"w": 43,
+						"h": 53
+					},
+					"frame": {
+						"x": 1423,
+						"y": 56,
+						"w": 43,
+						"h": 53
+					}
+				},
+				{
+					"filename": "Warlock/summon bat/s/2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 27,
+						"w": 43,
+						"h": 53
+					},
+					"frame": {
+						"x": 1454,
+						"y": 1,
+						"w": 43,
+						"h": 53
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - death/w/6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 1,
+						"w": 32,
+						"h": 29
+					},
+					"frame": {
+						"x": 1407,
+						"y": 221,
+						"w": 32,
+						"h": 29
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - jump/s/4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 0,
+						"w": 23,
+						"h": 27
+					},
+					"frame": {
+						"x": 1441,
+						"y": 221,
+						"w": 23,
+						"h": 27
+					}
+				},
+				{
+					"filename": "Warlock/walk/n/15.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 27,
+						"w": 43,
+						"h": 53
+					},
+					"frame": {
+						"x": 1452,
+						"y": 166,
+						"w": 43,
+						"h": 53
+					}
+				},
+				{
+					"filename": "Warlock/walk/s/1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 27,
+						"w": 43,
+						"h": 53
+					},
+					"frame": {
+						"x": 1458,
+						"y": 111,
+						"w": 43,
+						"h": 53
+					}
+				},
+				{
+					"filename": "Warlock/summon bat/e/21.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 27,
+						"w": 38,
+						"h": 53
+					},
+					"frame": {
+						"x": 1468,
+						"y": 56,
+						"w": 38,
+						"h": 53
+					}
+				},
+				{
+					"filename": "Warlock/summon bat/e/22.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 27,
+						"w": 38,
+						"h": 53
+					},
+					"frame": {
+						"x": 1499,
+						"y": 1,
+						"w": 38,
+						"h": 53
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - jump/e/15.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 0,
+						"w": 21,
+						"h": 27
+					},
+					"frame": {
+						"x": 1466,
+						"y": 221,
+						"w": 21,
+						"h": 27
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - jump/e/16.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 0,
+						"w": 21,
+						"h": 27
+					},
+					"frame": {
+						"x": 1489,
+						"y": 221,
+						"w": 21,
+						"h": 27
+					}
+				},
+				{
+					"filename": "Warlock/summon bat/w/11.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 27,
+						"w": 38,
+						"h": 53
+					},
+					"frame": {
+						"x": 1497,
+						"y": 166,
+						"w": 38,
+						"h": 53
+					}
+				},
+				{
+					"filename": "Warlock/summon bat/w/12.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 27,
+						"w": 38,
+						"h": 53
+					},
+					"frame": {
+						"x": 1503,
+						"y": 111,
+						"w": 38,
+						"h": 53
+					}
+				},
+				{
+					"filename": "Warlock/attack/s/3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 19,
+						"y": 28,
+						"w": 53,
+						"h": 52
+					},
+					"frame": {
+						"x": 1508,
+						"y": 56,
+						"w": 53,
+						"h": 52
+					}
+				},
+				{
+					"filename": "Warlock/death/n/25.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 29,
+						"w": 72,
+						"h": 51
+					},
+					"frame": {
+						"x": 1539,
+						"y": 1,
+						"w": 72,
+						"h": 51
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - jump/e/17.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 0,
+						"w": 21,
+						"h": 27
+					},
+					"frame": {
+						"x": 1512,
+						"y": 221,
+						"w": 21,
+						"h": 27
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - jump/w/9.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 0,
+						"w": 21,
+						"h": 27
+					},
+					"frame": {
+						"x": 1535,
+						"y": 221,
+						"w": 21,
+						"h": 27
+					}
+				},
+				{
+					"filename": "Warlock/death/s/5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 28,
+						"y": 40,
+						"w": 72,
+						"h": 40
+					},
+					"frame": {
+						"x": 1537,
+						"y": 166,
+						"w": 72,
+						"h": 40
+					}
+				},
+				{
+					"filename": "Warlock/spell/2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 18,
+						"h": 20
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 5,
+						"w": 18,
+						"h": 11
+					},
+					"frame": {
+						"x": 1537,
+						"y": 208,
+						"w": 18,
+						"h": 11
+					}
+				},
+				{
+					"filename": "Bat/bat - death/e/6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 11,
+						"w": 16,
+						"h": 11
+					},
+					"frame": {
+						"x": 1557,
+						"y": 208,
+						"w": 16,
+						"h": 11
+					}
+				},
+				{
+					"filename": "Warlock/death/e/19.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 40,
+						"w": 68,
+						"h": 40
+					},
+					"frame": {
+						"x": 1575,
+						"y": 208,
+						"w": 68,
+						"h": 40
+					}
+				},
+				{
+					"filename": "Bat/bat - fly/e/10.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 11,
+						"w": 15,
+						"h": 13
+					},
+					"frame": {
+						"x": 1558,
+						"y": 221,
+						"w": 15,
+						"h": 13
+					}
+				},
+				{
+					"filename": "Bat/bat - fly/w/6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 11,
+						"w": 15,
+						"h": 13
+					},
+					"frame": {
+						"x": 1558,
+						"y": 236,
+						"w": 15,
+						"h": 13
+					}
+				},
+				{
+					"filename": "Warlock/death/w/12.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 40,
+						"w": 68,
+						"h": 40
+					},
+					"frame": {
+						"x": 1543,
+						"y": 110,
+						"w": 68,
+						"h": 40
+					}
+				},
+				{
+					"filename": "Bat/bat - fly/n/12.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 10,
+						"w": 23,
+						"h": 12
+					},
+					"frame": {
+						"x": 1543,
+						"y": 152,
+						"w": 23,
+						"h": 12
+					}
+				},
+				{
+					"filename": "Bat/bat - fly/s/0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 10,
+						"w": 23,
+						"h": 12
+					},
+					"frame": {
+						"x": 1568,
+						"y": 152,
+						"w": 23,
+						"h": 12
+					}
+				},
+				{
+					"filename": "Bat/bat - death/w/3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 11,
+						"w": 16,
+						"h": 11
+					},
+					"frame": {
+						"x": 1593,
+						"y": 152,
+						"w": 16,
+						"h": 11
+					}
+				},
+				{
+					"filename": "Warlock/death/e/20.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 42,
+						"w": 69,
+						"h": 38
+					},
+					"frame": {
+						"x": 1611,
+						"y": 152,
+						"w": 69,
+						"h": 38
+					}
+				},
+				{
+					"filename": "Bat/bat - fly/n/15.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 10,
+						"w": 23,
+						"h": 14
+					},
+					"frame": {
+						"x": 1611,
+						"y": 192,
+						"w": 23,
+						"h": 14
+					}
+				},
+				{
+					"filename": "Bat/bat - fly/s/3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 10,
+						"w": 23,
+						"h": 14
+					},
+					"frame": {
+						"x": 1636,
+						"y": 192,
+						"w": 23,
+						"h": 14
+					}
+				},
+				{
+					"filename": "Warlock/death/w/13.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 42,
+						"w": 69,
+						"h": 38
+					},
+					"frame": {
+						"x": 1645,
+						"y": 208,
+						"w": 69,
+						"h": 38
+					}
+				},
+				{
+					"filename": "Bat/bat - fly/e/11.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 10,
+						"w": 16,
+						"h": 14
+					},
+					"frame": {
+						"x": 1661,
+						"y": 192,
+						"w": 16,
+						"h": 14
+					}
+				},
+				{
+					"filename": "Bat/bat - fly/w/7.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 10,
+						"w": 16,
+						"h": 14
+					},
+					"frame": {
+						"x": 1679,
+						"y": 192,
+						"w": 16,
+						"h": 14
+					}
+				},
+				{
+					"filename": "Warlock/death/s/6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 28,
+						"y": 45,
+						"w": 72,
+						"h": 35
+					},
+					"frame": {
+						"x": 1716,
+						"y": 1,
+						"w": 72,
+						"h": 35
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - death/e/11.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 32,
+						"h": 31
+					},
+					"frame": {
+						"x": 1682,
+						"y": 1,
+						"w": 32,
+						"h": 31
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - death/w/7.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 32,
+						"h": 31
+					},
+					"frame": {
+						"x": 1682,
+						"y": 34,
+						"w": 32,
+						"h": 31
+					}
+				},
+				{
+					"filename": "Warlock/death/n/26.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 43,
+						"w": 73,
+						"h": 37
+					},
+					"frame": {
+						"x": 1563,
+						"y": 67,
+						"w": 73,
+						"h": 37
+					}
+				},
+				{
+					"filename": "Bat/bat - death/e/7.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 14,
+						"w": 15,
+						"h": 9
+					},
+					"frame": {
+						"x": 1563,
+						"y": 54,
+						"w": 15,
+						"h": 9
+					}
+				},
+				{
+					"filename": "Bat/bat - death/w/4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 14,
+						"w": 15,
+						"h": 9
+					},
+					"frame": {
+						"x": 1580,
+						"y": 54,
+						"w": 15,
+						"h": 9
+					}
+				},
+				{
+					"filename": "Bat/bat - appear/e/5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 11,
+						"w": 11,
+						"h": 9
+					},
+					"frame": {
+						"x": 1597,
+						"y": 54,
+						"w": 11,
+						"h": 9
+					}
+				},
+				{
+					"filename": "Bat/bat - appear/w/3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 12,
+						"y": 11,
+						"w": 11,
+						"h": 9
+					},
+					"frame": {
+						"x": 1610,
+						"y": 54,
+						"w": 11,
+						"h": 9
+					}
+				},
+				{
+					"filename": "Warlock/death/n/27.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 46,
+						"w": 73,
+						"h": 34
+					},
+					"frame": {
+						"x": 1613,
+						"y": 106,
+						"w": 73,
+						"h": 34
+					}
+				},
+				{
+					"filename": "Bat/bat - appear/n/7.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 13,
+						"w": 13,
+						"h": 8
+					},
+					"frame": {
+						"x": 1613,
+						"y": 142,
+						"w": 13,
+						"h": 8
+					}
+				},
+				{
+					"filename": "Bat/bat - appear/s/1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 13,
+						"w": 13,
+						"h": 8
+					},
+					"frame": {
+						"x": 1628,
+						"y": 142,
+						"w": 13,
+						"h": 8
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - jump/w/10.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 0,
+						"w": 21,
+						"h": 27
+					},
+					"frame": {
+						"x": 1638,
+						"y": 67,
+						"w": 21,
+						"h": 27
+					}
+				},
+				{
+					"filename": "Warlock/spell/1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 18,
+						"h": 20
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 4,
+						"w": 18,
+						"h": 13
+					},
+					"frame": {
+						"x": 1661,
+						"y": 1,
+						"w": 18,
+						"h": 13
+					}
+				},
+				{
+					"filename": "Bat/bat - hit/w/2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 6,
+						"w": 17,
+						"h": 15
+					},
+					"frame": {
+						"x": 1661,
+						"y": 16,
+						"w": 17,
+						"h": 15
+					}
+				},
+				{
+					"filename": "Bat/bat - hit/w/3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 6,
+						"w": 17,
+						"h": 15
+					},
+					"frame": {
+						"x": 1661,
+						"y": 33,
+						"w": 17,
+						"h": 15
+					}
+				},
+				{
+					"filename": "Bat/bat - fly/s/2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 11,
+						"w": 23,
+						"h": 13
+					},
+					"frame": {
+						"x": 1623,
+						"y": 50,
+						"w": 23,
+						"h": 13
+					}
+				},
+				{
+					"filename": "Warlock/spell/5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 18,
+						"h": 20
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 0,
+						"w": 7,
+						"h": 20
+					},
+					"frame": {
+						"x": 1613,
+						"y": 1,
+						"w": 7,
+						"h": 20
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - hit/e/4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 2,
+						"w": 21,
+						"h": 25
+					},
+					"frame": {
+						"x": 1613,
+						"y": 23,
+						"w": 21,
+						"h": 25
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - death/n/12.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 6,
+						"w": 25,
+						"h": 20
+					},
+					"frame": {
+						"x": 1622,
+						"y": 1,
+						"w": 25,
+						"h": 20
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - jump/n/18.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 3,
+						"w": 23,
+						"h": 24
+					},
+					"frame": {
+						"x": 1636,
+						"y": 23,
+						"w": 23,
+						"h": 24
+					}
+				},
+				{
+					"filename": "Warlock/spell/4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 18,
+						"h": 20
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 0,
+						"w": 9,
+						"h": 20
+					},
+					"frame": {
+						"x": 1649,
+						"y": 1,
+						"w": 9,
+						"h": 20
+					}
+				},
+				{
+					"filename": "Bat/bat - fly/e/9.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 10,
+						"w": 17,
+						"h": 13
+					},
+					"frame": {
+						"x": 1648,
+						"y": 50,
+						"w": 17,
+						"h": 13
+					}
+				},
+				{
+					"filename": "Bat/bat - fly/w/5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 10,
+						"w": 17,
+						"h": 13
+					},
+					"frame": {
+						"x": 1661,
+						"y": 65,
+						"w": 17,
+						"h": 13
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - jump/s/0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 3,
+						"w": 23,
+						"h": 24
+					},
+					"frame": {
+						"x": 1661,
+						"y": 80,
+						"w": 23,
+						"h": 24
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - jump/w/11.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 0,
+						"w": 21,
+						"h": 27
+					},
+					"frame": {
+						"x": 1686,
+						"y": 67,
+						"w": 21,
+						"h": 27
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - attack/w/6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 1,
+						"w": 21,
+						"h": 26
+					},
+					"frame": {
+						"x": 1682,
+						"y": 142,
+						"w": 21,
+						"h": 26
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - death/s/0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 6,
+						"w": 25,
+						"h": 20
+					},
+					"frame": {
+						"x": 1682,
+						"y": 170,
+						"w": 25,
+						"h": 20
+					}
+				},
+				{
+					"filename": "Warlock/spell/0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 18,
+						"h": 20
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 4,
+						"w": 17,
+						"h": 13
+					},
+					"frame": {
+						"x": 1697,
+						"y": 192,
+						"w": 17,
+						"h": 13
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - attack/w/7.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 1,
+						"w": 21,
+						"h": 26
+					},
+					"frame": {
+						"x": 1688,
+						"y": 96,
+						"w": 21,
+						"h": 26
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - attack/w/8.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 1,
+						"w": 21,
+						"h": 26
+					},
+					"frame": {
+						"x": 1688,
+						"y": 96,
+						"w": 21,
+						"h": 26
+					}
+				},
+				{
+					"filename": "Bat/bat - hit/s/0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 7,
+						"w": 27,
+						"h": 16
+					},
+					"frame": {
+						"x": 1688,
+						"y": 124,
+						"w": 27,
+						"h": 16
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - hit/e/5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 2,
+						"w": 21,
+						"h": 25
+					},
+					"frame": {
+						"x": 1705,
+						"y": 142,
+						"w": 21,
+						"h": 25
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - death/n/13.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 5,
+						"w": 26,
+						"h": 21
+					},
+					"frame": {
+						"x": 1709,
+						"y": 169,
+						"w": 26,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - death/s/1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 5,
+						"w": 26,
+						"h": 21
+					},
+					"frame": {
+						"x": 1709,
+						"y": 169,
+						"w": 26,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - hit/w/2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 2,
+						"w": 21,
+						"h": 25
+					},
+					"frame": {
+						"x": 1709,
+						"y": 67,
+						"w": 21,
+						"h": 25
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - hit/w/3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 2,
+						"w": 21,
+						"h": 25
+					},
+					"frame": {
+						"x": 1716,
+						"y": 38,
+						"w": 21,
+						"h": 25
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - attack/e/17.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 3,
+						"w": 22,
+						"h": 24
+					},
+					"frame": {
+						"x": 1711,
+						"y": 94,
+						"w": 22,
+						"h": 24
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - attack/w/11.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 3,
+						"w": 22,
+						"h": 24
+					},
+					"frame": {
+						"x": 1732,
+						"y": 65,
+						"w": 22,
+						"h": 24
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - jump/e/12.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 3,
+						"w": 21,
+						"h": 24
+					},
+					"frame": {
+						"x": 1739,
+						"y": 38,
+						"w": 21,
+						"h": 24
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - death/e/8.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 5,
+						"w": 25,
+						"h": 21
+					},
+					"frame": {
+						"x": 1762,
+						"y": 38,
+						"w": 25,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - death/w/4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 5,
+						"w": 25,
+						"h": 21
+					},
+					"frame": {
+						"x": 1762,
+						"y": 61,
+						"w": 25,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Bat/bat - hit/s/1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 7,
+						"w": 27,
+						"h": 16
+					},
+					"frame": {
+						"x": 1717,
+						"y": 120,
+						"w": 27,
+						"h": 16
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - jump/w/6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 3,
+						"w": 21,
+						"h": 24
+					},
+					"frame": {
+						"x": 1735,
+						"y": 91,
+						"w": 21,
+						"h": 24
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - attack/e/15.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 4,
+						"w": 23,
+						"h": 23
+					},
+					"frame": {
+						"x": 1728,
+						"y": 138,
+						"w": 23,
+						"h": 23
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - attack/e/16.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 4,
+						"w": 23,
+						"h": 23
+					},
+					"frame": {
+						"x": 1728,
+						"y": 138,
+						"w": 23,
+						"h": 23
+					}
+				},
+				{
+					"filename": "Bat/bat - fly/e/8.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 9,
+						"w": 16,
+						"h": 13
+					},
+					"frame": {
+						"x": 1746,
+						"y": 117,
+						"w": 16,
+						"h": 13
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - attack/s/3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 6,
+						"w": 23,
+						"h": 23
+					},
+					"frame": {
+						"x": 1764,
+						"y": 84,
+						"w": 23,
+						"h": 23
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - attack/s/4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 6,
+						"w": 23,
+						"h": 23
+					},
+					"frame": {
+						"x": 1764,
+						"y": 84,
+						"w": 23,
+						"h": 23
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - attack/w/9.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 4,
+						"w": 23,
+						"h": 23
+					},
+					"frame": {
+						"x": 1764,
+						"y": 109,
+						"w": 23,
+						"h": 23
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - attack/w/10.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 4,
+						"w": 23,
+						"h": 23
+					},
+					"frame": {
+						"x": 1764,
+						"y": 109,
+						"w": 23,
+						"h": 23
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - hit/n/6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 4,
+						"w": 23,
+						"h": 23
+					},
+					"frame": {
+						"x": 1753,
+						"y": 134,
+						"w": 23,
+						"h": 23
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - hit/n/7.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 4,
+						"w": 23,
+						"h": 23
+					},
+					"frame": {
+						"x": 1753,
+						"y": 159,
+						"w": 23,
+						"h": 23
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - jump/n/20.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 4,
+						"w": 23,
+						"h": 23
+					},
+					"frame": {
+						"x": 1737,
+						"y": 184,
+						"w": 23,
+						"h": 23
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - jump/s/2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 4,
+						"w": 23,
+						"h": 23
+					},
+					"frame": {
+						"x": 1762,
+						"y": 184,
+						"w": 23,
+						"h": 23
+					}
+				},
+				{
+					"filename": "Bat/bat - fly/w/4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 9,
+						"w": 16,
+						"h": 13
+					},
+					"frame": {
+						"x": 1716,
+						"y": 192,
+						"w": 16,
+						"h": 13
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - jump/e/14.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 4,
+						"w": 21,
+						"h": 23
+					},
+					"frame": {
+						"x": 1716,
+						"y": 209,
+						"w": 21,
+						"h": 23
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - jump/w/8.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 4,
+						"w": 21,
+						"h": 23
+					},
+					"frame": {
+						"x": 1739,
+						"y": 209,
+						"w": 21,
+						"h": 23
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - attack/n/19.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 6,
+						"w": 23,
+						"h": 21
+					},
+					"frame": {
+						"x": 1762,
+						"y": 209,
+						"w": 23,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Pumpkin/pumpkin - attack/n/20.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 6,
+						"w": 23,
+						"h": 21
+					},
+					"frame": {
+						"x": 1762,
+						"y": 209,
+						"w": 23,
+						"h": 21
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "3.0",
+		"smartupdate": "$TexturePacker:SmartUpdate:5a59fe7b2dc96758c554d732db35e3a6:dfc3a3b15933bfa88f51d8b18411fb4e:488821caa4ef80f11211f896d72d2a15$"
+	}
+}
