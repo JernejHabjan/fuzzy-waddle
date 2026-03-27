@@ -2932,6 +2932,28 @@
             "label": "snowWendigo",
             "x": -768,
             "y": 800
+        },
+        {
+            "prefabId": "d2c78362-f855-4654-831b-3f77ecff7bfd",
+            "id": "26499226-3fd8-4650-829e-14d734efd643",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "commonBoat",
+            "x": 192,
+            "y": 272
+        },
+        {
+            "prefabId": "f99090e3-b951-48a3-9668-10051042ecd9",
+            "id": "dd6810b0-5d0f-42ab-923d-3e3344823c19",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "vikingBoat",
+            "x": 928,
+            "y": 496
         }
     ],
     "plainObjects": [

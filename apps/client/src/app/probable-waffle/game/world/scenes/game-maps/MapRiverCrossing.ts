@@ -133,6 +133,8 @@ import PumpkinWarlockPumpkin from "../../../prefabs/characters/mobs/pumpkin_warl
 import SandWorm from "../../../prefabs/characters/mobs/sand_worm/SandWorm";
 import ForestWendigo from "../../../prefabs/characters/mobs/forest_wendigo/ForestWendigo";
 import SnowWendigo from "../../../prefabs/characters/mobs/snow_wendigo/SnowWendigo";
+import CommonBoat from "../../../prefabs/characters/shared/CommonBoat";
+import VikingBoat from "../../../prefabs/characters/shared/VikingBoat";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -1105,6 +1107,14 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // snowWendigo
     const snowWendigo = new SnowWendigo(this, -768, 800);
     this.add.existing(snowWendigo);
+
+    // commonBoat
+    const commonBoat = new CommonBoat(this, 192, 272);
+    this.add.existing(commonBoat);
+
+    // vikingBoat
+    const vikingBoat = new VikingBoat(this, 928, 496);
+    this.add.existing(vikingBoat);
 
     // spawn (components)
     const spawnEditorOwner = new EditorOwner(spawn);
