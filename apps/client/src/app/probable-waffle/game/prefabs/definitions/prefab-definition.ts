@@ -60,6 +60,7 @@ export type ComponentsDefinition = Partial<{
   translatable: ActorTranslateDefinition;
   flying: FlightDefinition;
   animatable: ActorAnimationsDefinition;
+  shipAnimatable: ActorAnimationsDefinition;
   aiControlled: PawnAiDefinition;
   containable: { enabled: boolean };
   selectable: SelectableDefinition;

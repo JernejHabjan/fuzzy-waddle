@@ -81,7 +81,7 @@ export const vikingBoatDefinition = {
         // todo
       }
     },
-    animatable: { animations: ANIM_VIKING_BOAT_DEFINITION },
+    shipAnimatable: { animations: ANIM_VIKING_BOAT_DEFINITION },
     level: { level: 1, maxLevel: 2 }
   },
   systems: {

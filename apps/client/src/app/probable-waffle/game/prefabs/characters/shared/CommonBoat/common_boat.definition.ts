@@ -80,7 +80,7 @@ export const commonBoatDefinition = {
         // todo
       }
     },
-    animatable: { animations: ANIM_COMMON_BOAT_DEFINITION },
+    shipAnimatable: { animations: ANIM_COMMON_BOAT_DEFINITION },
     level: { level: 1, maxLevel: 2 }
   },
   systems: {
