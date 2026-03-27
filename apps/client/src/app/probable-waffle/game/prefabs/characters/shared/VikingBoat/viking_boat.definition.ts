@@ -9,8 +9,8 @@ import { ANIM_VIKING_BOAT_DEFINITION } from "./viking_boat_anims";
 export const vikingBoatDefinition = {
   components: {
     representable: {
-      width: 48,
-      height: 48,
+      width: 56,
+      height: 56,
       origin: { x: 0.5, y: 0.8 }
     },
     objectDescriptor: {
@@ -25,51 +25,51 @@ export const vikingBoatDefinition = {
       ]
     },
     vision: {
-      range: 14
+      range: 12
     },
     info: {
-      name: "Alchemist",
+      name: "Viking Boat",
       description:
-        "A master of potions and elixirs, this cunning character uses volatile concoctions to damage enemies and support allies",
+        "A fearsome longship of the north, built to weather storms and crush enemies. Its heavy hull and seasoned crew make it a formidable force on any sea.",
       tooltipDescription: [
-        "Can throw explosive potions to damage enemies",
-        "Can brew supportive elixirs for allies",
-        "Effective against groups of enemies"
+        "Heavy armoured warship",
+        "Fires powerful volleys at range",
+        "Upgrades to fire arrows at level 2",
+        "Cannot move on land"
       ],
       smallImage: {
-        key: "factions",
-        frame: "character_icons/tivara/alchemist.png",
+        key: "units",
+        frame: "common/viking-ship/ship9.png",
         origin: { x: 0.5, y: 0.5 }
       }
     },
     health: {
-      physicalState: ActorPhysicalType.Biological,
-      maxHealth: 80
+      physicalState: ActorPhysicalType.Structural,
+      maxHealth: 240,
+      maxArmour: 30
     },
     attack: {
-      attacks: [weaponDefinitions.AlchemistVase]
+      attacks: [weaponDefinitions.ShipVolley]
     },
     selectable: {},
     productionCost: {
       resources: {
-        [ResourceType.Stone]: 40,
-        [ResourceType.Minerals]: 100
+        [ResourceType.Wood]: 120,
+        [ResourceType.Stone]: 80,
+        [ResourceType.Minerals]: 60
       },
       refundFactor: 0.5,
-      productionTime: 10000,
+      productionTime: 25000,
       costType: PaymentType.PayImmediately
     },
     housingCost: {
-      housingNeeded: 1
+      housingNeeded: 2
     },
     requirements: {
-      actors: [ObjectNames.Temple]
+      actors: [ObjectNames.Sandhold]
     },
     translatable: {
-      tileMoveDuration: 300
-    },
-    flying: {
-      height: 128
+      tileMoveDuration: 450
     },
     aiControlled: {
       type: AiType.Character
@@ -79,10 +79,24 @@ export const vikingBoatDefinition = {
         // todo
       }
     },
-    animatable: { animations: ANIM_VIKING_BOAT_DEFINITION }
+    animatable: { animations: ANIM_VIKING_BOAT_DEFINITION },
+    level: { level: 1, maxLevel: 2 }
   },
   systems: {
     movement: { enabled: true },
     action: { enabled: true }
+  },
+  meta: {
+    maxLevel: 2,
+    levelOverrides: {
+      2: {
+        components: {
+          health: { maxHealth: 320, maxArmour: 45 },
+          attack: {
+            attacks: [weaponDefinitions.ShipFireVolley]
+          }
+        }
+      }
+    }
   }
 } satisfies PrefabDefinition;

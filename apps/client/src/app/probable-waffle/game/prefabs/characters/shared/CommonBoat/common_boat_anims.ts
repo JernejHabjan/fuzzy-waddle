@@ -1,12 +1,12 @@
 import type { AnimationDefinitionMap } from "../../../../entity/components/animation/animation-definition-map";
 
-// TODO - images for viking boat:
-// ship1.png - NORTH
-// ship15.png - NORTH EAST
-// ship13.png - EAST
-// ship11.png - SOUTH EAST
-// ship9.png - SOUTH
-// ship7.png - SOUTH WEST
-// ship5.png - WEST
-// ship3.png - NORTH WEST
-export const ANIM_TIVARA_ALCHEMIST_DEFINITION: AnimationDefinitionMap = {};
+// Directional frames for common boat:
+// common_boat-0.png  - NORTH
+// common_boat-6.png  - NORTH EAST
+// common_boat-12.png - EAST
+// common_boat-18.png - SOUTH EAST
+// common_boat-24.png - SOUTH
+// common_boat-30.png - SOUTH WEST
+// common_boat-36.png - WEST
+// common_boat-42.png - NORTH WEST
+export const ANIM_COMMON_BOAT_DEFINITION: AnimationDefinitionMap = {};

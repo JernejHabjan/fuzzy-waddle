@@ -18,6 +18,7 @@ import { DepthHelper } from "../../../../world/services/depth.helper";
 import { ActorIndexSystem } from "../../../../world/services/ActorIndexSystem";
 import SlingshotRock from "../../../../prefabs/weapons/SlingshotRock";
 import Arrow from "../../../../prefabs/weapons/Arrow";
+import FireArrow from "../../../../prefabs/weapons/FireArrow";
 import FireBall from "../../../../prefabs/weapons/FireBall";
 import FrostBolt from "../../../../prefabs/weapons/FrostBolt";
 import { DistanceHelper } from "../../../../library/distance-helper";
@@ -333,6 +334,9 @@ export class AttackComponent {
         case ProjectileType.ArrowProjectile:
           projectileSprite = new Arrow(this.gameObject.scene);
           break;
+        case ProjectileType.FireArrowProjectile:
+          projectileSprite = new FireArrow(this.gameObject.scene);
+          break;
         case ProjectileType.FireballProjectile:
           projectileSprite = new FireBall(this.gameObject.scene);
           break;
@@ -351,52 +355,125 @@ export class AttackComponent {
       }
       this.projectileSprite = projectileSprite;
       this.gameObject.scene.add.existing(projectileSprite);
-      projectileSprite.setPosition(position.centerX, position.centerY);
+      const startX = position.centerX;
+      const startY = position.centerY;
+      projectileSprite.setPosition(startX, startY);
       projectileSprite.setOrigin(0.5, 0.5);
       DepthHelper.setActorDepth(this.gameObject);
 
       const projectileSpeed = projectile.speed;
       const targetX = targetPosition.x + targetPosition.width / 2;
       const targetY = targetPosition.y + targetPosition.height / 2;
-      const distance = Phaser.Math.Distance.Between(position.x, position.y, targetX, targetY);
+      const distance = Phaser.Math.Distance.Between(startX, startY, targetX, targetY);
       const duration = (distance / projectileSpeed) * 1000; // convert to milliseconds
 
-      if (!projectile.orientation.randomizeOrientation) {
-        const currentAngle = Phaser.Math.Angle.Between(position.x, position.y, targetX, targetY);
-        projectileSprite.setRotation(currentAngle);
-      }
+      if (projectile.trajectoryType === "parabolic") {
+        this.projectileTween = this.spawnParabolicTween(
+          projectileSprite,
+          startX,
+          startY,
+          targetX,
+          targetY,
+          duration,
+          projectile,
+          attack,
+          enemy
+        );
+      } else {
+        if (!projectile.orientation.randomizeOrientation) {
+          const currentAngle = Phaser.Math.Angle.Between(startX, startY, targetX, targetY);
+          projectileSprite.setRotation(currentAngle);
+        }
 
-      this.projectileTween = this.gameObject.scene.tweens.add({
-        targets: projectileSprite,
-        x: targetX,
-        y: targetY,
-        duration: duration,
-        ease: "Linear",
-        onComplete: () => this.stopProjectile(),
-        onUpdate: () => {
-          if (!this.gameObject.active || !enemy.active) return;
-          // compare overlap of projectile and enemy
-          const projectileBounds = getGameObjectBounds(projectileSprite);
-          if (!projectileBounds) return;
-          const enemyBounds = getGameObjectBounds(enemy);
-          if (!enemyBounds) return;
-          const intersection = Phaser.Geom.Intersects.RectangleToRectangle(projectileBounds, enemyBounds);
-          if (intersection) {
-            // we hit
-            this.projectileHitEnemy(projectile, targetX, targetY, attack, enemy);
+        this.projectileTween = this.gameObject.scene.tweens.add({
+          targets: projectileSprite,
+          x: targetX,
+          y: targetY,
+          duration: duration,
+          ease: "Linear",
+          onComplete: () => this.stopProjectile(),
+          onUpdate: () => {
+            if (!this.gameObject.active || !enemy.active) return;
+            const projectileBounds = getGameObjectBounds(projectileSprite);
+            if (!projectileBounds) return;
+            const enemyBounds = getGameObjectBounds(enemy);
+            if (!enemyBounds) return;
+            if (Phaser.Geom.Intersects.RectangleToRectangle(projectileBounds, enemyBounds)) {
+              this.projectileHitEnemy(projectile, targetX, targetY, attack, enemy);
+            }
+          }
+        });
+
+        // spin projectile
+        if (projectile.orientation.randomizeOrientation && projectile.orientation.rotationSpeed) {
+          this.rotationTween = this.gameObject.scene.tweens.add({
+            targets: projectileSprite,
+            angle: 360,
+            duration: projectile.orientation.rotationSpeed,
+            repeat: -1
+          });
+        }
+      }
+    });
+  }
+
+  private spawnParabolicTween(
+    projectileSprite: Phaser.GameObjects.Image,
+    startX: number,
+    startY: number,
+    targetX: number,
+    targetY: number,
+    duration: number,
+    projectile: ProjectileData,
+    attack: AttackData,
+    enemy: GameObject
+  ): Phaser.Tweens.Tween {
+    const peakHeight = projectile.parabolicPeakHeight ?? 120;
+    let lastTrailTime = 0;
+
+    return this.gameObject.scene.tweens.addCounter({
+      from: 0,
+      to: 1,
+      duration,
+      onUpdate: (tween) => {
+        const t = tween.getValue() ?? 0;
+        const x = startX + (targetX - startX) * t;
+        const arcOffset = -peakHeight * 4 * t * (1 - t);
+        const y = startY + (targetY - startY) * t + arcOffset;
+        projectileSprite.setPosition(x, y);
+
+        // Rotate to match trajectory tangent
+        const dx = targetX - startX;
+        const dy = targetY - startY + peakHeight * 4 * (2 * t - 1);
+        projectileSprite.setRotation(Math.atan2(dy, dx));
+
+        // Cloud trail effect
+        if (projectile.trailEffect) {
+          const now = this.gameObject.scene.time.now;
+          if (now - lastTrailTime > projectile.trailEffect.intervalMs) {
+            lastTrailTime = now;
+            const trail = this.gameObject.scene.add.image(x, y, projectile.trailEffect.key, projectile.trailEffect.frame);
+            trail.setAlpha(0.6).setScale(0.5);
+            this.gameObject.scene.tweens.add({
+              targets: trail,
+              alpha: 0,
+              duration: 350,
+              onComplete: () => trail.destroy()
+            });
           }
         }
-      });
 
-      // spin projectile
-      if (projectile.orientation.randomizeOrientation && projectile.orientation.rotationSpeed) {
-        this.rotationTween = this.gameObject.scene.tweens.add({
-          targets: projectileSprite,
-          angle: 360,
-          duration: projectile.orientation.rotationSpeed,
-          repeat: -1
-        });
-      }
+        // Hit detection
+        if (!this.gameObject.active || !enemy.active) return;
+        const projectileBounds = getGameObjectBounds(projectileSprite);
+        if (!projectileBounds) return;
+        const enemyBounds = getGameObjectBounds(enemy);
+        if (!enemyBounds) return;
+        if (Phaser.Geom.Intersects.RectangleToRectangle(projectileBounds, enemyBounds)) {
+          this.projectileHitEnemy(projectile, targetX, targetY, attack, enemy);
+        }
+      },
+      onComplete: () => this.stopProjectile()
     });
   }
 
