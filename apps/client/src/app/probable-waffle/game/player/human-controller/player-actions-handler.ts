@@ -1,7 +1,7 @@
 import { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { OrderType } from "../../ai/order-type";
 import { CursorHandler, CursorType } from "./cursor.handler";
-import { getSceneComponent } from "../../world/services/scene-component-helpers";
+import { getSceneComponent, getSceneService } from "../../world/services/scene-component-helpers";
 import { type Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 import {
   emitEventIssueActorCommandToSelectedActors,
@@ -26,6 +26,8 @@ import { HealthComponent } from "../../entity/components/combat/components/healt
 import HudProbableWaffle from "../../world/scenes/hud-scenes/HudProbableWaffle";
 import { OwnerComponent } from "../../entity/components/owner-component";
 import { findProductionBuildingWithLeastRemainingTime } from "../../entity/components/production/production-helpers";
+import { NavigationService } from "../../world/services/navigation.service";
+import { MovementTerrainType } from "../../entity/components/movement/movement-terrain-type";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class PlayerActionsHandler {
@@ -383,12 +385,41 @@ export class PlayerActionsHandler {
     if (hasProductionRallyPointOrder && !!tileVec3 && !!worldVec3) {
       emitEventIssueMoveCommandToSelectedActors(this.scene, tileVec3, worldVec3, []);
     } else {
+      // Validate terrain compatibility before issuing Move commands
+      if (orderType === OrderType.Move && tileVec3 && !targetGameObjectId) {
+        if (this.isTerrainInvalidForSelectedActors(tileVec3)) {
+          const cursorHandler = getSceneComponent(this.hudScene, CursorHandler);
+          if (cursorHandler) {
+            cursorHandler.setCursor(CursorType.Impossible);
+            setTimeout(() => cursorHandler.setCursor(CursorType.Default), 400);
+          }
+          return;
+        }
+      }
       emitEventIssueActorCommandToSelectedActors(this.scene, {
         orderType,
         objectIds: targetGameObjectId ? [targetGameObjectId] : undefined,
         tileVec3
       });
     }
+  }
+
+  /**
+   * Returns true if ALL selected movable actors are terrain-incompatible with the target tile.
+   * Mixed selections (e.g., ground + water unit) are allowed — each unit will pathfind individually.
+   */
+  private isTerrainInvalidForSelectedActors(tileVec3: { x: number; y: number }): boolean {
+    const navigationService = getSceneService(this.scene, NavigationService);
+    if (!navigationService) return false;
+
+    const movableActors = this.currentSelectedActors.filter((a) => !!getActorComponent(a, ActorTranslateComponent));
+    if (movableActors.length === 0) return false;
+
+    return movableActors.every((actor) => {
+      const translate = getActorComponent(actor, ActorTranslateComponent);
+      const terrain = translate?.actorTranslateDefinition.movementTerrainType ?? MovementTerrainType.Ground;
+      return !navigationService.isTileWalkable(tileVec3, terrain);
+    });
   }
 
   stopOrderCommand() {

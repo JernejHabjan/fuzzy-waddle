@@ -1,7 +1,7 @@
 import { LockedCursorHandler } from "./locked-cursor.handler";
 import { Input } from "phaser";
 import { ProbableWaffleScene } from "../../core/probable-waffle.scene";
-import { getActorComponent } from "../../data/actor-component";
+import { getActorComponent, getActorComponents } from "../../data/actor-component";
 import { OwnerComponent } from "../../entity/components/owner-component";
 import { ResourceSourceComponent } from "../../entity/components/resource/resource-source-component";
 import { AttackComponent } from "../../entity/components/combat/components/attack-component";
@@ -21,6 +21,10 @@ import { ContainableComponent } from "../../entity/components/building/containab
 import { GathererComponent } from "../../entity/components/resource/gatherer-component";
 import GameObject = Phaser.GameObjects.GameObject;
 import { ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { NavigationService } from "../../world/services/navigation.service";
+import { IsoHelper } from "../../world/tilemap/iso-helper";
+import { ActorTranslateComponent } from "../../entity/components/movement/actor-translate-component";
+import { MovementTerrainType } from "../../entity/components/movement/movement-terrain-type";
 
 export enum CursorType {
   Add = "add",
@@ -244,6 +248,14 @@ export class CursorHandler {
     // Don't change cursor if PlayerActionsHandler is currently handling an action
     const playerActionsHandler = getSceneService(this.mainScene, PlayerActionsHandler);
     if (playerActionsHandler?.isHandlingActions()) {
+      // During a Move order, show terrain-mismatch feedback
+      if (playerActionsHandler.getCurrentOrderType() === OrderType.Move) {
+        const terrainCursor = this.getTerrainCursorForPointer(pointer);
+        if (terrainCursor !== this.lastHoveredCursor) {
+          this.lastHoveredCursor = terrainCursor;
+          this.setCursor(terrainCursor);
+        }
+      }
       return;
     }
 
@@ -402,6 +414,49 @@ export class CursorHandler {
       default:
         return CursorType.Default;
     }
+  }
+
+  /**
+   * Returns the appropriate cursor for the given pointer position based on terrain vs selected actors.
+   * Used during an active Move order to show whether the hovered tile is valid terrain.
+   */
+  private getTerrainCursorForPointer(pointer: Phaser.Input.Pointer): CursorType {
+    if (!this.mainScene) return CursorType.TargetMoveA;
+
+    const navigationService = getSceneService(this.mainScene, NavigationService);
+    if (!navigationService) return CursorType.TargetMoveA;
+
+    const selectedActors = getSelectedActors(this.mainScene);
+    // Check if any selected actor is a water-only unit
+    const hasWaterUnit = selectedActors.some((actor) => {
+      const [translate] = getActorComponents(actor, [ActorTranslateComponent]);
+      return translate?.actorTranslateDefinition.movementTerrainType === MovementTerrainType.Water;
+    });
+    const hasGroundUnit = selectedActors.some((actor) => {
+      const [translate] = getActorComponents(actor, [ActorTranslateComponent]);
+      const terrain = translate?.actorTranslateDefinition.movementTerrainType ?? MovementTerrainType.Ground;
+      return terrain === MovementTerrainType.Ground || terrain === MovementTerrainType.Amphibious;
+    });
+
+    if (!hasWaterUnit && !hasGroundUnit) return CursorType.TargetMoveA;
+
+    try {
+      const worldPos = this.mainScene.cameras.main.getWorldPoint(pointer.x, pointer.y);
+      const tileXY = IsoHelper.isometricWorldToTileXY(this.mainScene, worldPos.x, worldPos.y, false);
+
+      if (hasWaterUnit) {
+        const isValidForWater = navigationService.isTileWalkable(tileXY, MovementTerrainType.Water);
+        if (!isValidForWater) return CursorType.Impossible;
+      }
+      if (hasGroundUnit) {
+        const isValidForGround = navigationService.isTileWalkable(tileXY, MovementTerrainType.Ground);
+        if (!isValidForGround) return CursorType.Impossible;
+      }
+    } catch {
+      // If tile resolution fails, fall back to default move cursor
+    }
+
+    return CursorType.TargetMoveA;
   }
 
   setCursor(cursorType: CursorType) {
