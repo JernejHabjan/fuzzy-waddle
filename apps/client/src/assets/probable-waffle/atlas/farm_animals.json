@@ -1,0 +1,6908 @@
+{
+	"textures": [
+		{
+			"image": "farm_animals.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 1623,
+				"h": 128
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "Bull/Walk/left/Bull_left_Walk5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 11,
+						"w": 41,
+						"h": 35
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 41,
+						"h": 35
+					}
+				},
+				{
+					"filename": "Bull/Walk/right/Bull_right_Walk5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 14,
+						"y": 11,
+						"w": 41,
+						"h": 35
+					},
+					"frame": {
+						"x": 1,
+						"y": 38,
+						"w": 41,
+						"h": 35
+					}
+				},
+				{
+					"filename": "Bull/Walk/left/Bull_left_Walk4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 12,
+						"w": 41,
+						"h": 34
+					},
+					"frame": {
+						"x": 1,
+						"y": 75,
+						"w": 41,
+						"h": 34
+					}
+				},
+				{
+					"filename": "Chick/Idle/left/Chick_Idle_left2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 2,
+						"w": 12,
+						"h": 13
+					},
+					"frame": {
+						"x": 1,
+						"y": 111,
+						"w": 12,
+						"h": 13
+					}
+				},
+				{
+					"filename": "Chick/Idle/left/Chick_Idle_left3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 2,
+						"w": 12,
+						"h": 13
+					},
+					"frame": {
+						"x": 15,
+						"y": 111,
+						"w": 12,
+						"h": 13
+					}
+				},
+				{
+					"filename": "Chick/Idle/right/Chick_Idle_right2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 2,
+						"w": 12,
+						"h": 13
+					},
+					"frame": {
+						"x": 29,
+						"y": 111,
+						"w": 12,
+						"h": 13
+					}
+				},
+				{
+					"filename": "Chick/Idle/right/Chick_Idle_right3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 2,
+						"w": 12,
+						"h": 13
+					},
+					"frame": {
+						"x": 43,
+						"y": 111,
+						"w": 12,
+						"h": 13
+					}
+				},
+				{
+					"filename": "Bull/Walk/left/Bull_left_Walk6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 12,
+						"w": 41,
+						"h": 34
+					},
+					"frame": {
+						"x": 44,
+						"y": 1,
+						"w": 41,
+						"h": 34
+					}
+				},
+				{
+					"filename": "Bull/Walk/right/Bull_right_Walk4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 14,
+						"y": 12,
+						"w": 41,
+						"h": 34
+					},
+					"frame": {
+						"x": 44,
+						"y": 37,
+						"w": 41,
+						"h": 34
+					}
+				},
+				{
+					"filename": "Bull/Walk/right/Bull_right_Walk6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 14,
+						"y": 12,
+						"w": 41,
+						"h": 34
+					},
+					"frame": {
+						"x": 44,
+						"y": 73,
+						"w": 41,
+						"h": 34
+					}
+				},
+				{
+					"filename": "Piglet/Piglet_Idle/left/Piglet_left_Idle3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 11,
+						"w": 24,
+						"h": 18
+					},
+					"frame": {
+						"x": 57,
+						"y": 109,
+						"w": 24,
+						"h": 18
+					}
+				},
+				{
+					"filename": "Piglet/Piglet_Idle/left/Piglet_left_Idle4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 11,
+						"w": 24,
+						"h": 18
+					},
+					"frame": {
+						"x": 83,
+						"y": 109,
+						"w": 24,
+						"h": 18
+					}
+				},
+				{
+					"filename": "Bull/Idle/left/Bull_left_Idle4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 13,
+						"w": 42,
+						"h": 33
+					},
+					"frame": {
+						"x": 87,
+						"y": 1,
+						"w": 42,
+						"h": 33
+					}
+				},
+				{
+					"filename": "Bull/Idle/right/Bull_right_Idle4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 13,
+						"y": 13,
+						"w": 42,
+						"h": 33
+					},
+					"frame": {
+						"x": 87,
+						"y": 36,
+						"w": 42,
+						"h": 33
+					}
+				},
+				{
+					"filename": "Bull/Walk/left/Bull_left_Walk3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 13,
+						"w": 42,
+						"h": 33
+					},
+					"frame": {
+						"x": 87,
+						"y": 71,
+						"w": 42,
+						"h": 33
+					}
+				},
+				{
+					"filename": "Lamb/Lamb_walk/left/Lamb_walk_left6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 9,
+						"w": 25,
+						"h": 21
+					},
+					"frame": {
+						"x": 109,
+						"y": 106,
+						"w": 25,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Bull/Walk/right/Bull_right_Walk3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 13,
+						"y": 13,
+						"w": 42,
+						"h": 33
+					},
+					"frame": {
+						"x": 131,
+						"y": 1,
+						"w": 42,
+						"h": 33
+					}
+				},
+				{
+					"filename": "Bull/Idle/left/Bull_left_Idle1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 13,
+						"w": 41,
+						"h": 33
+					},
+					"frame": {
+						"x": 131,
+						"y": 36,
+						"w": 41,
+						"h": 33
+					}
+				},
+				{
+					"filename": "Bull/Idle/right/Bull_right_Idle1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 14,
+						"y": 13,
+						"w": 41,
+						"h": 33
+					},
+					"frame": {
+						"x": 131,
+						"y": 71,
+						"w": 41,
+						"h": 33
+					}
+				},
+				{
+					"filename": "Lamb/Lamb_walk/right/Lamb_walk_right6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 9,
+						"w": 25,
+						"h": 21
+					},
+					"frame": {
+						"x": 136,
+						"y": 106,
+						"w": 25,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Turkey/Turkey_Walk/left/Turkey_Walk_Left3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 7,
+						"w": 25,
+						"h": 21
+					},
+					"frame": {
+						"x": 163,
+						"y": 106,
+						"w": 25,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Bull/Walk/left/Bull_left_Walk1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 13,
+						"w": 41,
+						"h": 33
+					},
+					"frame": {
+						"x": 174,
+						"y": 36,
+						"w": 41,
+						"h": 33
+					}
+				},
+				{
+					"filename": "Bull/Walk/right/Bull_right_Walk1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 14,
+						"y": 13,
+						"w": 41,
+						"h": 33
+					},
+					"frame": {
+						"x": 175,
+						"y": 1,
+						"w": 41,
+						"h": 33
+					}
+				},
+				{
+					"filename": "Bull/Idle/left/Bull_left_Idle2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 14,
+						"w": 41,
+						"h": 32
+					},
+					"frame": {
+						"x": 174,
+						"y": 71,
+						"w": 41,
+						"h": 32
+					}
+				},
+				{
+					"filename": "Calf/Calf_Walk/left/Calf_left_Walk2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 14,
+						"y": 24,
+						"w": 33,
+						"h": 22
+					},
+					"frame": {
+						"x": 190,
+						"y": 105,
+						"w": 33,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Bull/Idle/left/Bull_left_Idle3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 14,
+						"w": 41,
+						"h": 32
+					},
+					"frame": {
+						"x": 217,
+						"y": 36,
+						"w": 41,
+						"h": 32
+					}
+				},
+				{
+					"filename": "Bull/Idle/right/Bull_right_Idle2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 14,
+						"y": 14,
+						"w": 41,
+						"h": 32
+					},
+					"frame": {
+						"x": 218,
+						"y": 1,
+						"w": 41,
+						"h": 32
+					}
+				},
+				{
+					"filename": "Bull/Idle/right/Bull_right_Idle3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 14,
+						"y": 14,
+						"w": 41,
+						"h": 32
+					},
+					"frame": {
+						"x": 217,
+						"y": 70,
+						"w": 41,
+						"h": 32
+					}
+				},
+				{
+					"filename": "Calf/Calf_Walk/left/Calf_left_Walk1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 14,
+						"y": 23,
+						"w": 33,
+						"h": 23
+					},
+					"frame": {
+						"x": 225,
+						"y": 104,
+						"w": 33,
+						"h": 23
+					}
+				},
+				{
+					"filename": "Bull/Walk/left/Bull_left_Walk2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 14,
+						"w": 41,
+						"h": 32
+					},
+					"frame": {
+						"x": 260,
+						"y": 35,
+						"w": 41,
+						"h": 32
+					}
+				},
+				{
+					"filename": "Bull/Walk/right/Bull_right_Walk2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 14,
+						"y": 14,
+						"w": 41,
+						"h": 32
+					},
+					"frame": {
+						"x": 261,
+						"y": 1,
+						"w": 41,
+						"h": 32
+					}
+				},
+				{
+					"filename": "Bull/Walk/back/Bull_back_Walk5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 20,
+						"y": 12,
+						"w": 24,
+						"h": 35
+					},
+					"frame": {
+						"x": 260,
+						"y": 69,
+						"w": 24,
+						"h": 35
+					}
+				},
+				{
+					"filename": "Turkey/Turkey_Walk/right/Turkey_Walk_Right3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 7,
+						"w": 25,
+						"h": 21
+					},
+					"frame": {
+						"x": 260,
+						"y": 106,
+						"w": 25,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Bull/Walk/front/Bull_front_Walk5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 20,
+						"y": 12,
+						"w": 24,
+						"h": 35
+					},
+					"frame": {
+						"x": 286,
+						"y": 69,
+						"w": 24,
+						"h": 35
+					}
+				},
+				{
+					"filename": "Lamb/Lamb_Idle/left/Lamb_Idle_left2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 9,
+						"w": 24,
+						"h": 21
+					},
+					"frame": {
+						"x": 287,
+						"y": 106,
+						"w": 24,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Calf/Calf_Walk/left/Calf_left_Walk5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 14,
+						"y": 21,
+						"w": 33,
+						"h": 25
+					},
+					"frame": {
+						"x": 303,
+						"y": 35,
+						"w": 33,
+						"h": 25
+					}
+				},
+				{
+					"filename": "Calf/Calf_Walk/right/Calf_right_Walk5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 17,
+						"y": 21,
+						"w": 33,
+						"h": 25
+					},
+					"frame": {
+						"x": 304,
+						"y": 1,
+						"w": 33,
+						"h": 25
+					}
+				},
+				{
+					"filename": "Bull/Walk/back/Bull_back_Walk4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 20,
+						"y": 13,
+						"w": 24,
+						"h": 34
+					},
+					"frame": {
+						"x": 312,
+						"y": 62,
+						"w": 24,
+						"h": 34
+					}
+				},
+				{
+					"filename": "Calf/Calf_Walk/left/Calf_left_Walk4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 14,
+						"y": 22,
+						"w": 33,
+						"h": 24
+					},
+					"frame": {
+						"x": 313,
+						"y": 98,
+						"w": 33,
+						"h": 24
+					}
+				},
+				{
+					"filename": "Bull/Walk/back/Bull_back_Walk6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 20,
+						"y": 13,
+						"w": 24,
+						"h": 34
+					},
+					"frame": {
+						"x": 338,
+						"y": 28,
+						"w": 24,
+						"h": 34
+					}
+				},
+				{
+					"filename": "Calf/Calf_Walk/left/Calf_left_Walk6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 14,
+						"y": 22,
+						"w": 33,
+						"h": 24
+					},
+					"frame": {
+						"x": 339,
+						"y": 1,
+						"w": 33,
+						"h": 24
+					}
+				},
+				{
+					"filename": "Calf/Calf_Walk/right/Calf_right_Walk4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 17,
+						"y": 22,
+						"w": 33,
+						"h": 24
+					},
+					"frame": {
+						"x": 338,
+						"y": 64,
+						"w": 33,
+						"h": 24
+					}
+				},
+				{
+					"filename": "Bull/Walk/front/Bull_front_Walk4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 20,
+						"y": 13,
+						"w": 24,
+						"h": 34
+					},
+					"frame": {
+						"x": 364,
+						"y": 27,
+						"w": 24,
+						"h": 34
+					}
+				},
+				{
+					"filename": "Calf/Calf_Walk/right/Calf_right_Walk6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 17,
+						"y": 22,
+						"w": 33,
+						"h": 24
+					},
+					"frame": {
+						"x": 374,
+						"y": 1,
+						"w": 33,
+						"h": 24
+					}
+				},
+				{
+					"filename": "Bull/Walk/front/Bull_front_Walk6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 20,
+						"y": 13,
+						"w": 24,
+						"h": 34
+					},
+					"frame": {
+						"x": 348,
+						"y": 90,
+						"w": 24,
+						"h": 34
+					}
+				},
+				{
+					"filename": "Calf/Calf_Walk/left/Calf_left_Walk3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 14,
+						"y": 23,
+						"w": 33,
+						"h": 23
+					},
+					"frame": {
+						"x": 373,
+						"y": 63,
+						"w": 33,
+						"h": 23
+					}
+				},
+				{
+					"filename": "Bull/Idle/back/Bull_back_Idle1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 20,
+						"y": 14,
+						"w": 24,
+						"h": 33
+					},
+					"frame": {
+						"x": 390,
+						"y": 27,
+						"w": 24,
+						"h": 33
+					}
+				},
+				{
+					"filename": "Calf/Calf_Walk/right/Calf_right_Walk1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 17,
+						"y": 23,
+						"w": 33,
+						"h": 23
+					},
+					"frame": {
+						"x": 409,
+						"y": 1,
+						"w": 33,
+						"h": 23
+					}
+				},
+				{
+					"filename": "Bull/Idle/back/Bull_back_Idle4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 20,
+						"y": 14,
+						"w": 24,
+						"h": 33
+					},
+					"frame": {
+						"x": 374,
+						"y": 88,
+						"w": 24,
+						"h": 33
+					}
+				},
+				{
+					"filename": "Bull/Idle/front/Bull_front_Idle1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 20,
+						"y": 14,
+						"w": 24,
+						"h": 33
+					},
+					"frame": {
+						"x": 400,
+						"y": 88,
+						"w": 24,
+						"h": 33
+					}
+				},
+				{
+					"filename": "Calf/Calf_Walk/right/Calf_right_Walk3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 17,
+						"y": 23,
+						"w": 33,
+						"h": 23
+					},
+					"frame": {
+						"x": 408,
+						"y": 62,
+						"w": 33,
+						"h": 23
+					}
+				},
+				{
+					"filename": "Bull/Idle/front/Bull_front_Idle4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 20,
+						"y": 14,
+						"w": 24,
+						"h": 33
+					},
+					"frame": {
+						"x": 416,
+						"y": 26,
+						"w": 24,
+						"h": 33
+					}
+				},
+				{
+					"filename": "Bull/Walk/back/Bull_back_Walk1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 20,
+						"y": 14,
+						"w": 24,
+						"h": 33
+					},
+					"frame": {
+						"x": 442,
+						"y": 26,
+						"w": 24,
+						"h": 33
+					}
+				},
+				{
+					"filename": "Calf/Calf_Idle/left/Calf_left_Idle1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 15,
+						"y": 23,
+						"w": 32,
+						"h": 23
+					},
+					"frame": {
+						"x": 444,
+						"y": 1,
+						"w": 32,
+						"h": 23
+					}
+				},
+				{
+					"filename": "Bull/Walk/back/Bull_back_Walk3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 20,
+						"y": 14,
+						"w": 24,
+						"h": 33
+					},
+					"frame": {
+						"x": 426,
+						"y": 87,
+						"w": 24,
+						"h": 33
+					}
+				},
+				{
+					"filename": "Calf/Calf_Idle/left/Calf_left_Idle4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 15,
+						"y": 23,
+						"w": 32,
+						"h": 23
+					},
+					"frame": {
+						"x": 443,
+						"y": 61,
+						"w": 32,
+						"h": 23
+					}
+				},
+				{
+					"filename": "Bull/Walk/front/Bull_front_Walk1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 20,
+						"y": 14,
+						"w": 24,
+						"h": 33
+					},
+					"frame": {
+						"x": 468,
+						"y": 26,
+						"w": 24,
+						"h": 33
+					}
+				},
+				{
+					"filename": "Calf/Calf_Idle/right/Calf_right_Idle1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 17,
+						"y": 23,
+						"w": 32,
+						"h": 23
+					},
+					"frame": {
+						"x": 478,
+						"y": 1,
+						"w": 32,
+						"h": 23
+					}
+				},
+				{
+					"filename": "Bull/Walk/front/Bull_front_Walk3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 20,
+						"y": 14,
+						"w": 24,
+						"h": 33
+					},
+					"frame": {
+						"x": 452,
+						"y": 86,
+						"w": 24,
+						"h": 33
+					}
+				},
+				{
+					"filename": "Calf/Calf_Idle/right/Calf_right_Idle4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 17,
+						"y": 23,
+						"w": 32,
+						"h": 23
+					},
+					"frame": {
+						"x": 477,
+						"y": 61,
+						"w": 32,
+						"h": 23
+					}
+				},
+				{
+					"filename": "Bull/Idle/back/Bull_back_Idle2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 20,
+						"y": 15,
+						"w": 24,
+						"h": 32
+					},
+					"frame": {
+						"x": 494,
+						"y": 26,
+						"w": 24,
+						"h": 32
+					}
+				},
+				{
+					"filename": "Calf/Calf_Walk/right/Calf_right_Walk2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 17,
+						"y": 24,
+						"w": 33,
+						"h": 22
+					},
+					"frame": {
+						"x": 512,
+						"y": 1,
+						"w": 33,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Bull/Idle/back/Bull_back_Idle3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 20,
+						"y": 15,
+						"w": 24,
+						"h": 32
+					},
+					"frame": {
+						"x": 478,
+						"y": 86,
+						"w": 24,
+						"h": 32
+					}
+				},
+				{
+					"filename": "Bull/Idle/front/Bull_front_Idle2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 20,
+						"y": 15,
+						"w": 24,
+						"h": 32
+					},
+					"frame": {
+						"x": 504,
+						"y": 86,
+						"w": 24,
+						"h": 32
+					}
+				},
+				{
+					"filename": "Calf/Calf_Idle/left/Calf_left_Idle2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 15,
+						"y": 24,
+						"w": 32,
+						"h": 22
+					},
+					"frame": {
+						"x": 511,
+						"y": 60,
+						"w": 32,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Bull/Idle/front/Bull_front_Idle3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 20,
+						"y": 15,
+						"w": 24,
+						"h": 32
+					},
+					"frame": {
+						"x": 520,
+						"y": 25,
+						"w": 24,
+						"h": 32
+					}
+				},
+				{
+					"filename": "Bull/Walk/back/Bull_back_Walk2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 20,
+						"y": 15,
+						"w": 24,
+						"h": 32
+					},
+					"frame": {
+						"x": 530,
+						"y": 84,
+						"w": 24,
+						"h": 32
+					}
+				},
+				{
+					"filename": "Calf/Calf_Idle/left/Calf_left_Idle3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 15,
+						"y": 24,
+						"w": 32,
+						"h": 22
+					},
+					"frame": {
+						"x": 545,
+						"y": 59,
+						"w": 32,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Bull/Walk/front/Bull_front_Walk2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 20,
+						"y": 15,
+						"w": 24,
+						"h": 32
+					},
+					"frame": {
+						"x": 546,
+						"y": 25,
+						"w": 24,
+						"h": 32
+					}
+				},
+				{
+					"filename": "Calf/Calf_Idle/right/Calf_right_Idle2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 17,
+						"y": 24,
+						"w": 32,
+						"h": 22
+					},
+					"frame": {
+						"x": 547,
+						"y": 1,
+						"w": 32,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Sheep/Sheep_Walk/left/Sheep_walk_left1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 3,
+						"w": 28,
+						"h": 26
+					},
+					"frame": {
+						"x": 572,
+						"y": 25,
+						"w": 28,
+						"h": 26
+					}
+				},
+				{
+					"filename": "Calf/Calf_Idle/right/Calf_right_Idle3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 17,
+						"y": 24,
+						"w": 32,
+						"h": 22
+					},
+					"frame": {
+						"x": 581,
+						"y": 1,
+						"w": 32,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Sheep/Sheep_Walk/left/Sheep_walk_left6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 3,
+						"w": 28,
+						"h": 26
+					},
+					"frame": {
+						"x": 556,
+						"y": 83,
+						"w": 28,
+						"h": 26
+					}
+				},
+				{
+					"filename": "Chick/Walk/left/Chick_walk_left2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 2,
+						"w": 12,
+						"h": 13
+					},
+					"frame": {
+						"x": 556,
+						"y": 111,
+						"w": 12,
+						"h": 13
+					}
+				},
+				{
+					"filename": "Chick/Walk/left/Chick_walk_left5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 2,
+						"w": 12,
+						"h": 13
+					},
+					"frame": {
+						"x": 570,
+						"y": 111,
+						"w": 12,
+						"h": 13
+					}
+				},
+				{
+					"filename": "Chick/Walk/right/Chick_walk_right2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 2,
+						"w": 12,
+						"h": 13
+					},
+					"frame": {
+						"x": 584,
+						"y": 111,
+						"w": 12,
+						"h": 13
+					}
+				},
+				{
+					"filename": "Sheep/Sheep_Walk/right/Sheep_walk_right1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 3,
+						"w": 28,
+						"h": 26
+					},
+					"frame": {
+						"x": 579,
+						"y": 53,
+						"w": 28,
+						"h": 26
+					}
+				},
+				{
+					"filename": "Sheep/Sheep_Walk/right/Sheep_walk_right6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 3,
+						"w": 28,
+						"h": 26
+					},
+					"frame": {
+						"x": 602,
+						"y": 25,
+						"w": 28,
+						"h": 26
+					}
+				},
+				{
+					"filename": "Lamb/Lamb_walk/left/Lamb_walk_left1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 8,
+						"w": 25,
+						"h": 22
+					},
+					"frame": {
+						"x": 615,
+						"y": 1,
+						"w": 25,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Sheep/Sheep_Idle/left/Sheep_Idle_left1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 4,
+						"w": 28,
+						"h": 25
+					},
+					"frame": {
+						"x": 586,
+						"y": 81,
+						"w": 28,
+						"h": 25
+					}
+				},
+				{
+					"filename": "Piglet/Piglet_Idle/left/Piglet_left_Idle1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 10,
+						"w": 24,
+						"h": 19
+					},
+					"frame": {
+						"x": 598,
+						"y": 108,
+						"w": 24,
+						"h": 19
+					}
+				},
+				{
+					"filename": "Sheep/Sheep_Idle/left/Sheep_Idle_left2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 4,
+						"w": 28,
+						"h": 25
+					},
+					"frame": {
+						"x": 609,
+						"y": 53,
+						"w": 28,
+						"h": 25
+					}
+				},
+				{
+					"filename": "Sheep/Sheep_Idle/left/Sheep_Idle_left4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 4,
+						"w": 28,
+						"h": 25
+					},
+					"frame": {
+						"x": 632,
+						"y": 25,
+						"w": 28,
+						"h": 25
+					}
+				},
+				{
+					"filename": "Lamb/Lamb_walk/right/Lamb_walk_right1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 8,
+						"w": 25,
+						"h": 22
+					},
+					"frame": {
+						"x": 642,
+						"y": 1,
+						"w": 25,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Sheep/Sheep_Idle/right/Sheep_Idle_right1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 4,
+						"w": 28,
+						"h": 25
+					},
+					"frame": {
+						"x": 616,
+						"y": 80,
+						"w": 28,
+						"h": 25
+					}
+				},
+				{
+					"filename": "Lamb/Lamb_walk/left/Lamb_walk_left3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 10,
+						"w": 24,
+						"h": 20
+					},
+					"frame": {
+						"x": 624,
+						"y": 107,
+						"w": 24,
+						"h": 20
+					}
+				},
+				{
+					"filename": "Sheep/Sheep_Idle/right/Sheep_Idle_right2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 4,
+						"w": 28,
+						"h": 25
+					},
+					"frame": {
+						"x": 639,
+						"y": 52,
+						"w": 28,
+						"h": 25
+					}
+				},
+				{
+					"filename": "Sheep/Sheep_Idle/right/Sheep_Idle_right4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 4,
+						"w": 28,
+						"h": 25
+					},
+					"frame": {
+						"x": 662,
+						"y": 25,
+						"w": 28,
+						"h": 25
+					}
+				},
+				{
+					"filename": "Lamb/Lamb_Idle/left/Lamb_Idle_left1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 8,
+						"w": 24,
+						"h": 22
+					},
+					"frame": {
+						"x": 669,
+						"y": 1,
+						"w": 24,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Sheep/Sheep_Walk/left/Sheep_walk_left2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 4,
+						"w": 28,
+						"h": 25
+					},
+					"frame": {
+						"x": 646,
+						"y": 79,
+						"w": 28,
+						"h": 25
+					}
+				},
+				{
+					"filename": "Lamb/Lamb_Idle/left/Lamb_Idle_left3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 9,
+						"w": 24,
+						"h": 21
+					},
+					"frame": {
+						"x": 650,
+						"y": 106,
+						"w": 24,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Sheep/Sheep_Walk/left/Sheep_walk_left5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 4,
+						"w": 28,
+						"h": 25
+					},
+					"frame": {
+						"x": 669,
+						"y": 52,
+						"w": 28,
+						"h": 25
+					}
+				},
+				{
+					"filename": "Sheep/Sheep_Walk/right/Sheep_walk_right2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 4,
+						"w": 28,
+						"h": 25
+					},
+					"frame": {
+						"x": 692,
+						"y": 25,
+						"w": 28,
+						"h": 25
+					}
+				},
+				{
+					"filename": "Lamb/Lamb_Idle/left/Lamb_Idle_left4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 8,
+						"w": 24,
+						"h": 22
+					},
+					"frame": {
+						"x": 695,
+						"y": 1,
+						"w": 24,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Lamb/Lamb_Idle/right/Lamb_Idle_right1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 8,
+						"w": 24,
+						"h": 22
+					},
+					"frame": {
+						"x": 721,
+						"y": 1,
+						"w": 24,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Sheep/Sheep_Walk/right/Sheep_walk_right5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 4,
+						"w": 28,
+						"h": 25
+					},
+					"frame": {
+						"x": 676,
+						"y": 79,
+						"w": 28,
+						"h": 25
+					}
+				},
+				{
+					"filename": "Lamb/Lamb_Idle/right/Lamb_Idle_right2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 9,
+						"w": 24,
+						"h": 21
+					},
+					"frame": {
+						"x": 676,
+						"y": 106,
+						"w": 24,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Lamb/Lamb_Idle/right/Lamb_Idle_right3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 9,
+						"w": 24,
+						"h": 21
+					},
+					"frame": {
+						"x": 702,
+						"y": 106,
+						"w": 24,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Sheep/Sheep_Idle/left/Sheep_Idle_left3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 5,
+						"w": 28,
+						"h": 24
+					},
+					"frame": {
+						"x": 699,
+						"y": 52,
+						"w": 28,
+						"h": 24
+					}
+				},
+				{
+					"filename": "Sheep/Sheep_Idle/right/Sheep_Idle_right3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 5,
+						"w": 28,
+						"h": 24
+					},
+					"frame": {
+						"x": 722,
+						"y": 25,
+						"w": 28,
+						"h": 24
+					}
+				},
+				{
+					"filename": "Lamb/Lamb_Idle/right/Lamb_Idle_right4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 8,
+						"w": 24,
+						"h": 22
+					},
+					"frame": {
+						"x": 747,
+						"y": 1,
+						"w": 24,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Sheep/Sheep_Walk/left/Sheep_walk_left3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 5,
+						"w": 28,
+						"h": 24
+					},
+					"frame": {
+						"x": 706,
+						"y": 78,
+						"w": 28,
+						"h": 24
+					}
+				},
+				{
+					"filename": "Turkey/Turkey_Walk/back/Turkey_Walk_Back3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 6,
+						"w": 25,
+						"h": 23
+					},
+					"frame": {
+						"x": 728,
+						"y": 104,
+						"w": 25,
+						"h": 23
+					}
+				},
+				{
+					"filename": "Sheep/Sheep_Walk/left/Sheep_walk_left4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 5,
+						"w": 28,
+						"h": 24
+					},
+					"frame": {
+						"x": 729,
+						"y": 51,
+						"w": 28,
+						"h": 24
+					}
+				},
+				{
+					"filename": "Sheep/Sheep_Walk/right/Sheep_walk_right3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 5,
+						"w": 28,
+						"h": 24
+					},
+					"frame": {
+						"x": 752,
+						"y": 25,
+						"w": 28,
+						"h": 24
+					}
+				},
+				{
+					"filename": "Lamb/Lamb_walk/left/Lamb_walk_left5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 8,
+						"w": 24,
+						"h": 22
+					},
+					"frame": {
+						"x": 773,
+						"y": 1,
+						"w": 24,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Sheep/Sheep_Walk/right/Sheep_walk_right4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 5,
+						"w": 28,
+						"h": 24
+					},
+					"frame": {
+						"x": 736,
+						"y": 77,
+						"w": 28,
+						"h": 24
+					}
+				},
+				{
+					"filename": "Turkey/Turkey_Walk/front/Turkey_Walk_Front3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 6,
+						"w": 25,
+						"h": 23
+					},
+					"frame": {
+						"x": 759,
+						"y": 51,
+						"w": 25,
+						"h": 23
+					}
+				},
+				{
+					"filename": "Sheep/Sheep_Walk/back/Sheep_walk_back3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 5,
+						"w": 23,
+						"h": 24
+					},
+					"frame": {
+						"x": 782,
+						"y": 25,
+						"w": 23,
+						"h": 24
+					}
+				},
+				{
+					"filename": "Lamb/Lamb_walk/right/Lamb_walk_right5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 8,
+						"w": 24,
+						"h": 22
+					},
+					"frame": {
+						"x": 799,
+						"y": 1,
+						"w": 24,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Sheep/Sheep_Walk/front/Sheep_walk_front3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 5,
+						"w": 23,
+						"h": 24
+					},
+					"frame": {
+						"x": 755,
+						"y": 103,
+						"w": 23,
+						"h": 24
+					}
+				},
+				{
+					"filename": "Sheep/Sheep_Walk/back/Sheep_walk_back4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 4,
+						"w": 24,
+						"h": 25
+					},
+					"frame": {
+						"x": 766,
+						"y": 76,
+						"w": 24,
+						"h": 25
+					}
+				},
+				{
+					"filename": "Turkey/Turkey_Idle/left/Turkey_Idle_Left2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 5,
+						"w": 24,
+						"h": 23
+					},
+					"frame": {
+						"x": 786,
+						"y": 51,
+						"w": 24,
+						"h": 23
+					}
+				},
+				{
+					"filename": "Turkey/Turkey_Idle/back/Turkey_Idle_Back2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 5,
+						"w": 23,
+						"h": 24
+					},
+					"frame": {
+						"x": 807,
+						"y": 25,
+						"w": 23,
+						"h": 24
+					}
+				},
+				{
+					"filename": "Turkey/Turkey_Idle/left/Turkey_Idle_Left1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 6,
+						"w": 24,
+						"h": 22
+					},
+					"frame": {
+						"x": 825,
+						"y": 1,
+						"w": 24,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Turkey/Turkey_Idle/front/Turkey_Idle_Front2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 5,
+						"w": 23,
+						"h": 24
+					},
+					"frame": {
+						"x": 780,
+						"y": 103,
+						"w": 23,
+						"h": 24
+					}
+				},
+				{
+					"filename": "Sheep/Sheep_Walk/front/Sheep_walk_front4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 4,
+						"w": 24,
+						"h": 25
+					},
+					"frame": {
+						"x": 792,
+						"y": 76,
+						"w": 24,
+						"h": 25
+					}
+				},
+				{
+					"filename": "Turkey/Turkey_Idle/left/Turkey_Idle_Left3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 5,
+						"w": 24,
+						"h": 23
+					},
+					"frame": {
+						"x": 812,
+						"y": 51,
+						"w": 24,
+						"h": 23
+					}
+				},
+				{
+					"filename": "Turkey/Turkey_Walk/back/Turkey_Walk_Back2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 5,
+						"w": 23,
+						"h": 24
+					},
+					"frame": {
+						"x": 832,
+						"y": 25,
+						"w": 23,
+						"h": 24
+					}
+				},
+				{
+					"filename": "Turkey/Turkey_Idle/left/Turkey_Idle_Left4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 6,
+						"w": 24,
+						"h": 22
+					},
+					"frame": {
+						"x": 851,
+						"y": 1,
+						"w": 24,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Turkey/Turkey_Walk/front/Turkey_Walk_Front2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 5,
+						"w": 23,
+						"h": 24
+					},
+					"frame": {
+						"x": 805,
+						"y": 103,
+						"w": 23,
+						"h": 24
+					}
+				},
+				{
+					"filename": "Sheep/Sheep_Idle/back/Sheep_Idle_back3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 4,
+						"w": 23,
+						"h": 25
+					},
+					"frame": {
+						"x": 818,
+						"y": 76,
+						"w": 23,
+						"h": 25
+					}
+				},
+				{
+					"filename": "Turkey/Turkey_Idle/right/Turkey_Idle_Right2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 5,
+						"w": 24,
+						"h": 23
+					},
+					"frame": {
+						"x": 838,
+						"y": 51,
+						"w": 24,
+						"h": 23
+					}
+				},
+				{
+					"filename": "Turkey/Turkey_Idle/right/Turkey_Idle_Right3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 5,
+						"w": 24,
+						"h": 23
+					},
+					"frame": {
+						"x": 857,
+						"y": 25,
+						"w": 24,
+						"h": 23
+					}
+				},
+				{
+					"filename": "Turkey/Turkey_Idle/right/Turkey_Idle_Right1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 6,
+						"w": 24,
+						"h": 22
+					},
+					"frame": {
+						"x": 877,
+						"y": 1,
+						"w": 24,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Turkey/Turkey_Walk/left/Turkey_Walk_Left2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 5,
+						"w": 24,
+						"h": 23
+					},
+					"frame": {
+						"x": 830,
+						"y": 103,
+						"w": 24,
+						"h": 23
+					}
+				},
+				{
+					"filename": "Sheep/Sheep_Idle/back/Sheep_Idle_back4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 4,
+						"w": 23,
+						"h": 25
+					},
+					"frame": {
+						"x": 843,
+						"y": 76,
+						"w": 23,
+						"h": 25
+					}
+				},
+				{
+					"filename": "Turkey/Turkey_Walk/left/Turkey_Walk_Left5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 5,
+						"w": 24,
+						"h": 23
+					},
+					"frame": {
+						"x": 864,
+						"y": 50,
+						"w": 24,
+						"h": 23
+					}
+				},
+				{
+					"filename": "Turkey/Turkey_Walk/right/Turkey_Walk_Right2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 5,
+						"w": 24,
+						"h": 23
+					},
+					"frame": {
+						"x": 883,
+						"y": 25,
+						"w": 24,
+						"h": 23
+					}
+				},
+				{
+					"filename": "Turkey/Turkey_Idle/right/Turkey_Idle_Right4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 6,
+						"w": 24,
+						"h": 22
+					},
+					"frame": {
+						"x": 903,
+						"y": 1,
+						"w": 24,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Turkey/Turkey_Walk/right/Turkey_Walk_Right5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 5,
+						"w": 24,
+						"h": 23
+					},
+					"frame": {
+						"x": 856,
+						"y": 103,
+						"w": 24,
+						"h": 23
+					}
+				},
+				{
+					"filename": "Sheep/Sheep_Idle/back/Sheep_Idle_back1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 3,
+						"w": 23,
+						"h": 26
+					},
+					"frame": {
+						"x": 868,
+						"y": 75,
+						"w": 23,
+						"h": 26
+					}
+				},
+				{
+					"filename": "Turkey/Turkey_Walk/back/Turkey_Walk_Back4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 6,
+						"w": 23,
+						"h": 23
+					},
+					"frame": {
+						"x": 890,
+						"y": 50,
+						"w": 23,
+						"h": 23
+					}
+				},
+				{
+					"filename": "Turkey/Turkey_Walk/front/Turkey_Walk_Front4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 6,
+						"w": 23,
+						"h": 23
+					},
+					"frame": {
+						"x": 909,
+						"y": 25,
+						"w": 23,
+						"h": 23
+					}
+				},
+				{
+					"filename": "Turkey/Turkey_Walk/left/Turkey_Walk_Left1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 6,
+						"w": 24,
+						"h": 22
+					},
+					"frame": {
+						"x": 929,
+						"y": 1,
+						"w": 24,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Turkey/Turkey_Walk/left/Turkey_Walk_Left4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 6,
+						"w": 24,
+						"h": 22
+					},
+					"frame": {
+						"x": 882,
+						"y": 103,
+						"w": 24,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Sheep/Sheep_Idle/back/Sheep_Idle_back2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 3,
+						"w": 23,
+						"h": 26
+					},
+					"frame": {
+						"x": 893,
+						"y": 75,
+						"w": 23,
+						"h": 26
+					}
+				},
+				{
+					"filename": "Turkey/Turkey_Walk/right/Turkey_Walk_Right1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 6,
+						"w": 24,
+						"h": 22
+					},
+					"frame": {
+						"x": 915,
+						"y": 50,
+						"w": 24,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Turkey/Turkey_Walk/right/Turkey_Walk_Right4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 6,
+						"w": 24,
+						"h": 22
+					},
+					"frame": {
+						"x": 934,
+						"y": 25,
+						"w": 24,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Lamb/Lamb_walk/left/Lamb_walk_left2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 9,
+						"w": 24,
+						"h": 21
+					},
+					"frame": {
+						"x": 955,
+						"y": 1,
+						"w": 24,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Turkey/Turkey_Idle/front/Turkey_Idle_Front3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 5,
+						"w": 21,
+						"h": 24
+					},
+					"frame": {
+						"x": 908,
+						"y": 103,
+						"w": 21,
+						"h": 24
+					}
+				},
+				{
+					"filename": "Sheep/Sheep_Idle/front/Sheep_Idle_front1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 3,
+						"w": 23,
+						"h": 26
+					},
+					"frame": {
+						"x": 918,
+						"y": 74,
+						"w": 23,
+						"h": 26
+					}
+				},
+				{
+					"filename": "Lamb/Lamb_walk/left/Lamb_walk_left4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 9,
+						"w": 24,
+						"h": 21
+					},
+					"frame": {
+						"x": 941,
+						"y": 49,
+						"w": 24,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Lamb/Lamb_walk/right/Lamb_walk_right2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 9,
+						"w": 24,
+						"h": 21
+					},
+					"frame": {
+						"x": 960,
+						"y": 24,
+						"w": 24,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Lamb/Lamb_walk/right/Lamb_walk_right4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 9,
+						"w": 24,
+						"h": 21
+					},
+					"frame": {
+						"x": 981,
+						"y": 1,
+						"w": 24,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Sheep/Sheep_Idle/front/Sheep_Idle_front3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 4,
+						"w": 23,
+						"h": 25
+					},
+					"frame": {
+						"x": 931,
+						"y": 102,
+						"w": 23,
+						"h": 25
+					}
+				},
+				{
+					"filename": "Sheep/Sheep_Idle/front/Sheep_Idle_front2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 3,
+						"w": 23,
+						"h": 26
+					},
+					"frame": {
+						"x": 943,
+						"y": 72,
+						"w": 23,
+						"h": 26
+					}
+				},
+				{
+					"filename": "Turkey/Turkey_Walk/left/Turkey_Walk_Left6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 7,
+						"w": 24,
+						"h": 21
+					},
+					"frame": {
+						"x": 967,
+						"y": 47,
+						"w": 24,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Turkey/Turkey_Walk/right/Turkey_Walk_Right6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 7,
+						"w": 24,
+						"h": 21
+					},
+					"frame": {
+						"x": 986,
+						"y": 24,
+						"w": 24,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Lamb/Lamb_walk/right/Lamb_walk_right3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 10,
+						"w": 24,
+						"h": 20
+					},
+					"frame": {
+						"x": 1007,
+						"y": 1,
+						"w": 24,
+						"h": 20
+					}
+				},
+				{
+					"filename": "Sheep/Sheep_Walk/back/Sheep_walk_back1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 3,
+						"w": 23,
+						"h": 26
+					},
+					"frame": {
+						"x": 956,
+						"y": 100,
+						"w": 23,
+						"h": 26
+					}
+				},
+				{
+					"filename": "Sheep/Sheep_Walk/back/Sheep_walk_back2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 3,
+						"w": 23,
+						"h": 26
+					},
+					"frame": {
+						"x": 968,
+						"y": 70,
+						"w": 23,
+						"h": 26
+					}
+				},
+				{
+					"filename": "Sheep/Sheep_Walk/front/Sheep_walk_front1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 3,
+						"w": 23,
+						"h": 26
+					},
+					"frame": {
+						"x": 981,
+						"y": 98,
+						"w": 23,
+						"h": 26
+					}
+				},
+				{
+					"filename": "Sheep/Sheep_Walk/front/Sheep_walk_front2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 3,
+						"w": 23,
+						"h": 26
+					},
+					"frame": {
+						"x": 993,
+						"y": 47,
+						"w": 23,
+						"h": 26
+					}
+				},
+				{
+					"filename": "Piglet/Piglet_Idle/left/Piglet_left_Idle2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 10,
+						"w": 24,
+						"h": 19
+					},
+					"frame": {
+						"x": 993,
+						"y": 75,
+						"w": 24,
+						"h": 19
+					}
+				},
+				{
+					"filename": "Turkey/Turkey_Walk/back/Turkey_Walk_Back6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 7,
+						"w": 21,
+						"h": 22
+					},
+					"frame": {
+						"x": 1012,
+						"y": 23,
+						"w": 21,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Piglet/Piglet_Idle/right/Piglet_right_Idle1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 10,
+						"w": 24,
+						"h": 19
+					},
+					"frame": {
+						"x": 1033,
+						"y": 1,
+						"w": 24,
+						"h": 19
+					}
+				},
+				{
+					"filename": "Sheep/Sheep_Idle/front/Sheep_Idle_front4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 4,
+						"w": 23,
+						"h": 25
+					},
+					"frame": {
+						"x": 1018,
+						"y": 47,
+						"w": 23,
+						"h": 25
+					}
+				},
+				{
+					"filename": "Turkey/Turkey_Idle/back/Turkey_Idle_Back1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 6,
+						"w": 21,
+						"h": 23
+					},
+					"frame": {
+						"x": 1035,
+						"y": 22,
+						"w": 21,
+						"h": 23
+					}
+				},
+				{
+					"filename": "Sheep/Sheep_Walk/back/Sheep_walk_back5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 4,
+						"w": 23,
+						"h": 25
+					},
+					"frame": {
+						"x": 1006,
+						"y": 96,
+						"w": 23,
+						"h": 25
+					}
+				},
+				{
+					"filename": "Piglet/Piglet_Idle/right/Piglet_right_Idle2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 10,
+						"w": 24,
+						"h": 19
+					},
+					"frame": {
+						"x": 1019,
+						"y": 74,
+						"w": 24,
+						"h": 19
+					}
+				},
+				{
+					"filename": "Sheep/Sheep_Walk/back/Sheep_walk_back6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 4,
+						"w": 23,
+						"h": 25
+					},
+					"frame": {
+						"x": 1043,
+						"y": 47,
+						"w": 23,
+						"h": 25
+					}
+				},
+				{
+					"filename": "Turkey/Turkey_Idle/back/Turkey_Idle_Back3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 6,
+						"w": 21,
+						"h": 23
+					},
+					"frame": {
+						"x": 1058,
+						"y": 22,
+						"w": 21,
+						"h": 23
+					}
+				},
+				{
+					"filename": "Piglet/Piglet_Walk/left/Piglet_left_Walk2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 10,
+						"w": 24,
+						"h": 19
+					},
+					"frame": {
+						"x": 1059,
+						"y": 1,
+						"w": 24,
+						"h": 19
+					}
+				},
+				{
+					"filename": "Sheep/Sheep_Walk/front/Sheep_walk_front5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 4,
+						"w": 23,
+						"h": 25
+					},
+					"frame": {
+						"x": 1031,
+						"y": 95,
+						"w": 23,
+						"h": 25
+					}
+				},
+				{
+					"filename": "Piglet/Piglet_Walk/left/Piglet_left_Walk3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 10,
+						"w": 24,
+						"h": 19
+					},
+					"frame": {
+						"x": 1045,
+						"y": 74,
+						"w": 24,
+						"h": 19
+					}
+				},
+				{
+					"filename": "Sheep/Sheep_Walk/front/Sheep_walk_front6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 4,
+						"w": 23,
+						"h": 25
+					},
+					"frame": {
+						"x": 1068,
+						"y": 47,
+						"w": 23,
+						"h": 25
+					}
+				},
+				{
+					"filename": "Turkey/Turkey_Idle/front/Turkey_Idle_Front1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 6,
+						"w": 21,
+						"h": 23
+					},
+					"frame": {
+						"x": 1081,
+						"y": 22,
+						"w": 21,
+						"h": 23
+					}
+				},
+				{
+					"filename": "Piglet/Piglet_Walk/right/Piglet_right_Walk2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 10,
+						"w": 24,
+						"h": 19
+					},
+					"frame": {
+						"x": 1085,
+						"y": 1,
+						"w": 24,
+						"h": 19
+					}
+				},
+				{
+					"filename": "Turkey/Turkey_Walk/front/Turkey_Walk_Front5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 5,
+						"w": 21,
+						"h": 24
+					},
+					"frame": {
+						"x": 1056,
+						"y": 95,
+						"w": 21,
+						"h": 24
+					}
+				},
+				{
+					"filename": "Piglet/Piglet_Walk/right/Piglet_right_Walk3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 10,
+						"w": 24,
+						"h": 19
+					},
+					"frame": {
+						"x": 1071,
+						"y": 74,
+						"w": 24,
+						"h": 19
+					}
+				},
+				{
+					"filename": "Turkey/Turkey_Walk/back/Turkey_Walk_Back1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 6,
+						"w": 21,
+						"h": 23
+					},
+					"frame": {
+						"x": 1093,
+						"y": 47,
+						"w": 21,
+						"h": 23
+					}
+				},
+				{
+					"filename": "Turkey/Turkey_Walk/back/Turkey_Walk_Back5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 6,
+						"w": 21,
+						"h": 23
+					},
+					"frame": {
+						"x": 1104,
+						"y": 22,
+						"w": 21,
+						"h": 23
+					}
+				},
+				{
+					"filename": "Piglet/Piglet_Idle/right/Piglet_right_Idle3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 11,
+						"w": 24,
+						"h": 18
+					},
+					"frame": {
+						"x": 1111,
+						"y": 1,
+						"w": 24,
+						"h": 18
+					}
+				},
+				{
+					"filename": "Calf/Calf_Walk/back/Calf_back_Walk6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 23,
+						"y": 21,
+						"w": 19,
+						"h": 26
+					},
+					"frame": {
+						"x": 1079,
+						"y": 95,
+						"w": 19,
+						"h": 26
+					}
+				},
+				{
+					"filename": "Piglet/Piglet_Idle/right/Piglet_right_Idle4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 11,
+						"w": 24,
+						"h": 18
+					},
+					"frame": {
+						"x": 1097,
+						"y": 72,
+						"w": 24,
+						"h": 18
+					}
+				},
+				{
+					"filename": "Turkey/Turkey_Walk/front/Turkey_Walk_Front1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 6,
+						"w": 21,
+						"h": 23
+					},
+					"frame": {
+						"x": 1116,
+						"y": 47,
+						"w": 21,
+						"h": 23
+					}
+				},
+				{
+					"filename": "Turkey/Turkey_Walk/front/Turkey_Walk_Front6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 7,
+						"w": 21,
+						"h": 22
+					},
+					"frame": {
+						"x": 1127,
+						"y": 21,
+						"w": 21,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Piglet/Piglet_Walk/left/Piglet_left_Walk1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 11,
+						"w": 24,
+						"h": 18
+					},
+					"frame": {
+						"x": 1137,
+						"y": 1,
+						"w": 24,
+						"h": 18
+					}
+				},
+				{
+					"filename": "Calf/Calf_Walk/front/Calf_front_Walk5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 23,
+						"y": 21,
+						"w": 19,
+						"h": 26
+					},
+					"frame": {
+						"x": 1100,
+						"y": 92,
+						"w": 19,
+						"h": 26
+					}
+				},
+				{
+					"filename": "Calf/Calf_Walk/back/Calf_back_Walk1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 23,
+						"y": 22,
+						"w": 19,
+						"h": 25
+					},
+					"frame": {
+						"x": 1121,
+						"y": 92,
+						"w": 19,
+						"h": 25
+					}
+				},
+				{
+					"filename": "Piglet/Piglet_Walk/left/Piglet_left_Walk4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 11,
+						"w": 24,
+						"h": 18
+					},
+					"frame": {
+						"x": 1123,
+						"y": 72,
+						"w": 24,
+						"h": 18
+					}
+				},
+				{
+					"filename": "Calf/Calf_Walk/back/Calf_back_Walk5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 23,
+						"y": 22,
+						"w": 19,
+						"h": 25
+					},
+					"frame": {
+						"x": 1139,
+						"y": 45,
+						"w": 19,
+						"h": 25
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Idle/left/Rooster__left_Idle2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 7,
+						"w": 20,
+						"h": 22
+					},
+					"frame": {
+						"x": 1150,
+						"y": 21,
+						"w": 20,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Piglet/Piglet_Walk/left/Piglet_left_Walk5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 11,
+						"w": 24,
+						"h": 18
+					},
+					"frame": {
+						"x": 1163,
+						"y": 1,
+						"w": 24,
+						"h": 18
+					}
+				},
+				{
+					"filename": "Calf/Calf_Walk/front/Calf_front_Walk4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 23,
+						"y": 22,
+						"w": 19,
+						"h": 25
+					},
+					"frame": {
+						"x": 1142,
+						"y": 92,
+						"w": 19,
+						"h": 25
+					}
+				},
+				{
+					"filename": "Piglet/Piglet_Walk/left/Piglet_left_Walk6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 11,
+						"w": 24,
+						"h": 18
+					},
+					"frame": {
+						"x": 1149,
+						"y": 72,
+						"w": 24,
+						"h": 18
+					}
+				},
+				{
+					"filename": "Calf/Calf_Walk/front/Calf_front_Walk6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 23,
+						"y": 22,
+						"w": 19,
+						"h": 25
+					},
+					"frame": {
+						"x": 1160,
+						"y": 45,
+						"w": 19,
+						"h": 25
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Idle/left/Rooster__left_Idle5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 7,
+						"w": 20,
+						"h": 22
+					},
+					"frame": {
+						"x": 1172,
+						"y": 21,
+						"w": 20,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Piglet/Piglet_Walk/right/Piglet_right_Walk1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 11,
+						"w": 24,
+						"h": 18
+					},
+					"frame": {
+						"x": 1189,
+						"y": 1,
+						"w": 24,
+						"h": 18
+					}
+				},
+				{
+					"filename": "Turkey/Turkey_Idle/back/Turkey_Idle_Back4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 6,
+						"w": 20,
+						"h": 23
+					},
+					"frame": {
+						"x": 1163,
+						"y": 92,
+						"w": 20,
+						"h": 23
+					}
+				},
+				{
+					"filename": "Piglet/Piglet_Walk/right/Piglet_right_Walk4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 11,
+						"w": 24,
+						"h": 18
+					},
+					"frame": {
+						"x": 1175,
+						"y": 72,
+						"w": 24,
+						"h": 18
+					}
+				},
+				{
+					"filename": "Turkey/Turkey_Idle/front/Turkey_Idle_Front4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 6,
+						"w": 20,
+						"h": 23
+					},
+					"frame": {
+						"x": 1181,
+						"y": 45,
+						"w": 20,
+						"h": 23
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Idle/right/Rooster__right_Idle2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 7,
+						"w": 20,
+						"h": 22
+					},
+					"frame": {
+						"x": 1194,
+						"y": 21,
+						"w": 20,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Piglet/Piglet_Walk/right/Piglet_right_Walk5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 11,
+						"w": 24,
+						"h": 18
+					},
+					"frame": {
+						"x": 1215,
+						"y": 1,
+						"w": 24,
+						"h": 18
+					}
+				},
+				{
+					"filename": "Calf/Calf_Walk/back/Calf_back_Walk2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 23,
+						"y": 23,
+						"w": 19,
+						"h": 24
+					},
+					"frame": {
+						"x": 1185,
+						"y": 92,
+						"w": 19,
+						"h": 24
+					}
+				},
+				{
+					"filename": "Piglet/Piglet_Walk/right/Piglet_right_Walk6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 11,
+						"w": 24,
+						"h": 18
+					},
+					"frame": {
+						"x": 1201,
+						"y": 70,
+						"w": 24,
+						"h": 18
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Idle/right/Rooster__right_Idle5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 7,
+						"w": 20,
+						"h": 22
+					},
+					"frame": {
+						"x": 1203,
+						"y": 45,
+						"w": 20,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Idle/left/Rooster__left_Idle1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 8,
+						"w": 20,
+						"h": 21
+					},
+					"frame": {
+						"x": 1216,
+						"y": 21,
+						"w": 20,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Calf/Calf_Walk/back/Calf_back_Walk4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 23,
+						"y": 23,
+						"w": 19,
+						"h": 24
+					},
+					"frame": {
+						"x": 1225,
+						"y": 44,
+						"w": 19,
+						"h": 24
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Idle/left/Rooster__left_Idle6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 8,
+						"w": 20,
+						"h": 21
+					},
+					"frame": {
+						"x": 1238,
+						"y": 21,
+						"w": 20,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Piglet/Piglet_Idle/back/Piglet_back_Idle1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 11,
+						"w": 19,
+						"h": 18
+					},
+					"frame": {
+						"x": 1241,
+						"y": 1,
+						"w": 19,
+						"h": 18
+					}
+				},
+				{
+					"filename": "Calf/Calf_Walk/front/Calf_front_Walk1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 23,
+						"y": 23,
+						"w": 19,
+						"h": 24
+					},
+					"frame": {
+						"x": 1206,
+						"y": 90,
+						"w": 19,
+						"h": 24
+					}
+				},
+				{
+					"filename": "Chick/Walk/left/Chick_walk_left3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 4,
+						"w": 12,
+						"h": 11
+					},
+					"frame": {
+						"x": 1206,
+						"y": 116,
+						"w": 12,
+						"h": 11
+					}
+				},
+				{
+					"filename": "Chick/Walk/left/Chick_walk_left6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 4,
+						"w": 12,
+						"h": 11
+					},
+					"frame": {
+						"x": 1220,
+						"y": 116,
+						"w": 12,
+						"h": 11
+					}
+				},
+				{
+					"filename": "Calf/Calf_Walk/front/Calf_front_Walk3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 23,
+						"y": 23,
+						"w": 19,
+						"h": 24
+					},
+					"frame": {
+						"x": 1227,
+						"y": 70,
+						"w": 19,
+						"h": 24
+					}
+				},
+				{
+					"filename": "Piglet/Piglet_Idle/back/Piglet_back_Idle4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 11,
+						"w": 19,
+						"h": 18
+					},
+					"frame": {
+						"x": 1227,
+						"y": 96,
+						"w": 19,
+						"h": 18
+					}
+				},
+				{
+					"filename": "Chick/Walk/right/Chick_walk_right3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 4,
+						"w": 12,
+						"h": 11
+					},
+					"frame": {
+						"x": 1234,
+						"y": 116,
+						"w": 12,
+						"h": 11
+					}
+				},
+				{
+					"filename": "Calf/Calf_Walk/back/Calf_back_Walk3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 23,
+						"y": 24,
+						"w": 19,
+						"h": 23
+					},
+					"frame": {
+						"x": 1246,
+						"y": 44,
+						"w": 19,
+						"h": 23
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Idle/right/Rooster__right_Idle1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 8,
+						"w": 20,
+						"h": 21
+					},
+					"frame": {
+						"x": 1260,
+						"y": 21,
+						"w": 20,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Piglet/Piglet_Idle/front/Piglet_front_Idle1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 11,
+						"w": 19,
+						"h": 18
+					},
+					"frame": {
+						"x": 1262,
+						"y": 1,
+						"w": 19,
+						"h": 18
+					}
+				},
+				{
+					"filename": "Calf/Calf_Idle/back/Calf_back_Idle1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 23,
+						"y": 22,
+						"w": 18,
+						"h": 25
+					},
+					"frame": {
+						"x": 1248,
+						"y": 69,
+						"w": 18,
+						"h": 25
+					}
+				},
+				{
+					"filename": "Calf/Calf_Walk/front/Calf_front_Walk2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 23,
+						"y": 24,
+						"w": 19,
+						"h": 23
+					},
+					"frame": {
+						"x": 1267,
+						"y": 44,
+						"w": 19,
+						"h": 23
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Idle/right/Rooster__right_Idle6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 8,
+						"w": 20,
+						"h": 21
+					},
+					"frame": {
+						"x": 1282,
+						"y": 21,
+						"w": 20,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Piglet/Piglet_Idle/front/Piglet_front_Idle4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 11,
+						"w": 19,
+						"h": 18
+					},
+					"frame": {
+						"x": 1283,
+						"y": 1,
+						"w": 19,
+						"h": 18
+					}
+				},
+				{
+					"filename": "Calf/Calf_Idle/back/Calf_back_Idle4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 23,
+						"y": 22,
+						"w": 18,
+						"h": 25
+					},
+					"frame": {
+						"x": 1248,
+						"y": 96,
+						"w": 18,
+						"h": 25
+					}
+				},
+				{
+					"filename": "Calf/Calf_Idle/front/Calf_front_Idle1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 23,
+						"y": 22,
+						"w": 18,
+						"h": 25
+					},
+					"frame": {
+						"x": 1268,
+						"y": 69,
+						"w": 18,
+						"h": 25
+					}
+				},
+				{
+					"filename": "Calf/Calf_Idle/front/Calf_front_Idle4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 23,
+						"y": 22,
+						"w": 18,
+						"h": 25
+					},
+					"frame": {
+						"x": 1268,
+						"y": 96,
+						"w": 18,
+						"h": 25
+					}
+				},
+				{
+					"filename": "Calf/Calf_Idle/back/Calf_back_Idle2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 23,
+						"y": 23,
+						"w": 18,
+						"h": 24
+					},
+					"frame": {
+						"x": 1288,
+						"y": 44,
+						"w": 18,
+						"h": 24
+					}
+				},
+				{
+					"filename": "Calf/Calf_Idle/back/Calf_back_Idle3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 23,
+						"y": 23,
+						"w": 18,
+						"h": 24
+					},
+					"frame": {
+						"x": 1304,
+						"y": 1,
+						"w": 18,
+						"h": 24
+					}
+				},
+				{
+					"filename": "Chick/Walk/right/Chick_walk_right5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 2,
+						"w": 12,
+						"h": 13
+					},
+					"frame": {
+						"x": 1304,
+						"y": 27,
+						"w": 12,
+						"h": 13
+					}
+				},
+				{
+					"filename": "Calf/Calf_Idle/front/Calf_front_Idle2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 23,
+						"y": 23,
+						"w": 18,
+						"h": 24
+					},
+					"frame": {
+						"x": 1288,
+						"y": 70,
+						"w": 18,
+						"h": 24
+					}
+				},
+				{
+					"filename": "Calf/Calf_Idle/front/Calf_front_Idle3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 23,
+						"y": 23,
+						"w": 18,
+						"h": 24
+					},
+					"frame": {
+						"x": 1288,
+						"y": 96,
+						"w": 18,
+						"h": 24
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Idle/left/Rooster__left_Idle3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 7,
+						"w": 19,
+						"h": 22
+					},
+					"frame": {
+						"x": 1308,
+						"y": 42,
+						"w": 19,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Chick/Idle/left/Chick_Idle_left1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 3,
+						"w": 12,
+						"h": 12
+					},
+					"frame": {
+						"x": 1318,
+						"y": 27,
+						"w": 12,
+						"h": 12
+					}
+				},
+				{
+					"filename": "Chick/Walk/left/Chick_walk_left4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 3,
+						"w": 12,
+						"h": 12
+					},
+					"frame": {
+						"x": 1318,
+						"y": 27,
+						"w": 12,
+						"h": 12
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Idle/left/Rooster__left_Idle4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 7,
+						"w": 19,
+						"h": 22
+					},
+					"frame": {
+						"x": 1324,
+						"y": 1,
+						"w": 19,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Idle/right/Rooster__right_Idle3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 7,
+						"w": 19,
+						"h": 22
+					},
+					"frame": {
+						"x": 1308,
+						"y": 66,
+						"w": 19,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Idle/right/Rooster__right_Idle4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 7,
+						"w": 19,
+						"h": 22
+					},
+					"frame": {
+						"x": 1308,
+						"y": 90,
+						"w": 19,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Chick/Idle/left/Chick_Idle_left4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 3,
+						"w": 12,
+						"h": 12
+					},
+					"frame": {
+						"x": 1308,
+						"y": 114,
+						"w": 12,
+						"h": 12
+					}
+				},
+				{
+					"filename": "Chick/Idle/right/Chick_Idle_right1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 3,
+						"w": 12,
+						"h": 12
+					},
+					"frame": {
+						"x": 1322,
+						"y": 114,
+						"w": 12,
+						"h": 12
+					}
+				},
+				{
+					"filename": "Chick/Walk/right/Chick_walk_right4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 3,
+						"w": 12,
+						"h": 12
+					},
+					"frame": {
+						"x": 1322,
+						"y": 114,
+						"w": 12,
+						"h": 12
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Walk/left/Rooster__left_Walk5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 7,
+						"w": 19,
+						"h": 22
+					},
+					"frame": {
+						"x": 1329,
+						"y": 41,
+						"w": 19,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Chick/Idle/right/Chick_Idle_right4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 3,
+						"w": 12,
+						"h": 12
+					},
+					"frame": {
+						"x": 1332,
+						"y": 25,
+						"w": 12,
+						"h": 12
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Walk/right/Rooster__right_Walk5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 7,
+						"w": 19,
+						"h": 22
+					},
+					"frame": {
+						"x": 1345,
+						"y": 1,
+						"w": 19,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Chick/Walk/left/Chick_walk_left1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 3,
+						"w": 12,
+						"h": 12
+					},
+					"frame": {
+						"x": 1346,
+						"y": 25,
+						"w": 12,
+						"h": 12
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Walk/left/Rooster__left_Walk3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 8,
+						"w": 19,
+						"h": 21
+					},
+					"frame": {
+						"x": 1329,
+						"y": 65,
+						"w": 19,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Walk/left/Rooster__left_Walk4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 8,
+						"w": 19,
+						"h": 21
+					},
+					"frame": {
+						"x": 1329,
+						"y": 88,
+						"w": 19,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Chick/Walk/right/Chick_walk_right1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 3,
+						"w": 12,
+						"h": 12
+					},
+					"frame": {
+						"x": 1336,
+						"y": 111,
+						"w": 12,
+						"h": 12
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Walk/left/Rooster__left_Walk6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 8,
+						"w": 19,
+						"h": 21
+					},
+					"frame": {
+						"x": 1350,
+						"y": 39,
+						"w": 19,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Chick/Walk/right/Chick_walk_right6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 4,
+						"w": 12,
+						"h": 11
+					},
+					"frame": {
+						"x": 1360,
+						"y": 25,
+						"w": 12,
+						"h": 11
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Walk/right/Rooster__right_Walk3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 8,
+						"w": 19,
+						"h": 21
+					},
+					"frame": {
+						"x": 1366,
+						"y": 1,
+						"w": 19,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Walk/right/Rooster__right_Walk4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 8,
+						"w": 19,
+						"h": 21
+					},
+					"frame": {
+						"x": 1350,
+						"y": 62,
+						"w": 19,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Walk/right/Rooster__right_Walk6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 8,
+						"w": 19,
+						"h": 21
+					},
+					"frame": {
+						"x": 1350,
+						"y": 85,
+						"w": 19,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Piglet/Piglet_Walk/back/Piglet_back_Walk1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 10,
+						"w": 19,
+						"h": 19
+					},
+					"frame": {
+						"x": 1350,
+						"y": 108,
+						"w": 19,
+						"h": 19
+					}
+				},
+				{
+					"filename": "Lamb/Lamb_Idle/back/Lamb_Idle_back1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 7,
+						"w": 18,
+						"h": 22
+					},
+					"frame": {
+						"x": 1371,
+						"y": 38,
+						"w": 18,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Chick/Walk/back/Chick_walk_back3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 4,
+						"w": 11,
+						"h": 11
+					},
+					"frame": {
+						"x": 1374,
+						"y": 24,
+						"w": 11,
+						"h": 11
+					}
+				},
+				{
+					"filename": "Lamb/Lamb_Idle/back/Lamb_Idle_back4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 7,
+						"w": 18,
+						"h": 22
+					},
+					"frame": {
+						"x": 1387,
+						"y": 1,
+						"w": 18,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Chick/Walk/back/Chick_walk_back6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 4,
+						"w": 11,
+						"h": 11
+					},
+					"frame": {
+						"x": 1387,
+						"y": 25,
+						"w": 11,
+						"h": 11
+					}
+				},
+				{
+					"filename": "Lamb/Lamb_Idle/front/Lamb_Idle_front1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 7,
+						"w": 18,
+						"h": 22
+					},
+					"frame": {
+						"x": 1371,
+						"y": 62,
+						"w": 18,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Lamb/Lamb_Idle/front/Lamb_Idle_front4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 7,
+						"w": 18,
+						"h": 22
+					},
+					"frame": {
+						"x": 1371,
+						"y": 86,
+						"w": 18,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Piglet/Piglet_Idle/back/Piglet_back_Idle2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 12,
+						"w": 19,
+						"h": 17
+					},
+					"frame": {
+						"x": 1371,
+						"y": 110,
+						"w": 19,
+						"h": 17
+					}
+				},
+				{
+					"filename": "Lamb/Lamb_walk/back/Lamb_walk_back1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 7,
+						"w": 18,
+						"h": 22
+					},
+					"frame": {
+						"x": 1391,
+						"y": 38,
+						"w": 18,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Chick/Walk/front/Chick_walk_front3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 4,
+						"w": 11,
+						"h": 11
+					},
+					"frame": {
+						"x": 1400,
+						"y": 25,
+						"w": 11,
+						"h": 11
+					}
+				},
+				{
+					"filename": "Lamb/Lamb_walk/front/Lamb_walk_front1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 7,
+						"w": 18,
+						"h": 22
+					},
+					"frame": {
+						"x": 1407,
+						"y": 1,
+						"w": 18,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Lamb/Lamb_walk/front/Lamb_walk_front5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 7,
+						"w": 18,
+						"h": 22
+					},
+					"frame": {
+						"x": 1391,
+						"y": 62,
+						"w": 18,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Lamb/Lamb_Idle/back/Lamb_Idle_back2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 8,
+						"w": 18,
+						"h": 21
+					},
+					"frame": {
+						"x": 1391,
+						"y": 86,
+						"w": 18,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Piglet/Piglet_Walk/back/Piglet_back_Walk2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 11,
+						"w": 19,
+						"h": 18
+					},
+					"frame": {
+						"x": 1392,
+						"y": 109,
+						"w": 19,
+						"h": 18
+					}
+				},
+				{
+					"filename": "Lamb/Lamb_Idle/back/Lamb_Idle_back3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 8,
+						"w": 18,
+						"h": 21
+					},
+					"frame": {
+						"x": 1411,
+						"y": 38,
+						"w": 18,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Chick/Walk/front/Chick_walk_front6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 4,
+						"w": 11,
+						"h": 11
+					},
+					"frame": {
+						"x": 1413,
+						"y": 25,
+						"w": 11,
+						"h": 11
+					}
+				},
+				{
+					"filename": "Chick/Idle/back/Chick_Idle_back3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 4,
+						"w": 10,
+						"h": 11
+					},
+					"frame": {
+						"x": 1426,
+						"y": 25,
+						"w": 10,
+						"h": 11
+					}
+				},
+				{
+					"filename": "Lamb/Lamb_Idle/front/Lamb_Idle_front2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 8,
+						"w": 18,
+						"h": 21
+					},
+					"frame": {
+						"x": 1427,
+						"y": 1,
+						"w": 18,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Lamb/Lamb_Idle/front/Lamb_Idle_front3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 8,
+						"w": 18,
+						"h": 21
+					},
+					"frame": {
+						"x": 1411,
+						"y": 61,
+						"w": 18,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Lamb/Lamb_walk/back/Lamb_walk_back2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 8,
+						"w": 18,
+						"h": 21
+					},
+					"frame": {
+						"x": 1411,
+						"y": 84,
+						"w": 18,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Piglet/Piglet_Walk/back/Piglet_back_Walk4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 10,
+						"w": 19,
+						"h": 19
+					},
+					"frame": {
+						"x": 1413,
+						"y": 107,
+						"w": 19,
+						"h": 19
+					}
+				},
+				{
+					"filename": "Lamb/Lamb_walk/back/Lamb_walk_back4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 8,
+						"w": 18,
+						"h": 21
+					},
+					"frame": {
+						"x": 1431,
+						"y": 38,
+						"w": 18,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Chick/Idle/back/Chick_Idle_back1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 3,
+						"w": 10,
+						"h": 12
+					},
+					"frame": {
+						"x": 1438,
+						"y": 24,
+						"w": 10,
+						"h": 12
+					}
+				},
+				{
+					"filename": "Lamb/Lamb_walk/back/Lamb_walk_back5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 8,
+						"w": 18,
+						"h": 21
+					},
+					"frame": {
+						"x": 1447,
+						"y": 1,
+						"w": 18,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Chick/Idle/back/Chick_Idle_back2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 3,
+						"w": 10,
+						"h": 12
+					},
+					"frame": {
+						"x": 1450,
+						"y": 24,
+						"w": 10,
+						"h": 12
+					}
+				},
+				{
+					"filename": "Chick/Walk/back/Chick_walk_back1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 3,
+						"w": 10,
+						"h": 12
+					},
+					"frame": {
+						"x": 1450,
+						"y": 24,
+						"w": 10,
+						"h": 12
+					}
+				},
+				{
+					"filename": "Lamb/Lamb_walk/front/Lamb_walk_front2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 8,
+						"w": 18,
+						"h": 21
+					},
+					"frame": {
+						"x": 1431,
+						"y": 61,
+						"w": 18,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Lamb/Lamb_walk/front/Lamb_walk_front4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 8,
+						"w": 18,
+						"h": 21
+					},
+					"frame": {
+						"x": 1431,
+						"y": 84,
+						"w": 18,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Piglet/Piglet_Walk/front/Piglet_front_Walk1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 10,
+						"w": 19,
+						"h": 19
+					},
+					"frame": {
+						"x": 1434,
+						"y": 107,
+						"w": 19,
+						"h": 19
+					}
+				},
+				{
+					"filename": "Lamb/Lamb_walk/front/Lamb_walk_front6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 8,
+						"w": 18,
+						"h": 21
+					},
+					"frame": {
+						"x": 1451,
+						"y": 38,
+						"w": 18,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Chick/Idle/front/Chick_Idle_front1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 3,
+						"w": 10,
+						"h": 12
+					},
+					"frame": {
+						"x": 1462,
+						"y": 24,
+						"w": 10,
+						"h": 12
+					}
+				},
+				{
+					"filename": "Chick/Walk/front/Chick_walk_front1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 3,
+						"w": 10,
+						"h": 12
+					},
+					"frame": {
+						"x": 1462,
+						"y": 24,
+						"w": 10,
+						"h": 12
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Walk/left/Rooster__left_Walk1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 8,
+						"w": 18,
+						"h": 21
+					},
+					"frame": {
+						"x": 1467,
+						"y": 1,
+						"w": 18,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Walk/left/Rooster__left_Walk2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 8,
+						"w": 18,
+						"h": 21
+					},
+					"frame": {
+						"x": 1451,
+						"y": 61,
+						"w": 18,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Walk/right/Rooster__right_Walk1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 8,
+						"w": 18,
+						"h": 21
+					},
+					"frame": {
+						"x": 1451,
+						"y": 84,
+						"w": 18,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Piglet/Piglet_Walk/front/Piglet_front_Walk4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 10,
+						"w": 19,
+						"h": 19
+					},
+					"frame": {
+						"x": 1455,
+						"y": 107,
+						"w": 19,
+						"h": 19
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Walk/right/Rooster__right_Walk2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 8,
+						"w": 18,
+						"h": 21
+					},
+					"frame": {
+						"x": 1471,
+						"y": 38,
+						"w": 18,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Chick/Idle/front/Chick_Idle_front4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 3,
+						"w": 10,
+						"h": 12
+					},
+					"frame": {
+						"x": 1474,
+						"y": 24,
+						"w": 10,
+						"h": 12
+					}
+				},
+				{
+					"filename": "Chick/Walk/back/Chick_walk_back4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 3,
+						"w": 10,
+						"h": 12
+					},
+					"frame": {
+						"x": 1486,
+						"y": 24,
+						"w": 10,
+						"h": 12
+					}
+				},
+				{
+					"filename": "Lamb/Lamb_walk/back/Lamb_walk_back3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 9,
+						"w": 18,
+						"h": 20
+					},
+					"frame": {
+						"x": 1487,
+						"y": 1,
+						"w": 18,
+						"h": 20
+					}
+				},
+				{
+					"filename": "Lamb/Lamb_walk/back/Lamb_walk_back6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 9,
+						"w": 18,
+						"h": 20
+					},
+					"frame": {
+						"x": 1471,
+						"y": 61,
+						"w": 18,
+						"h": 20
+					}
+				},
+				{
+					"filename": "Lamb/Lamb_walk/front/Lamb_walk_front3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 9,
+						"w": 18,
+						"h": 20
+					},
+					"frame": {
+						"x": 1471,
+						"y": 83,
+						"w": 18,
+						"h": 20
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Idle/back/Rooster__back_Idle3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 8,
+						"y": 7,
+						"w": 16,
+						"h": 22
+					},
+					"frame": {
+						"x": 1476,
+						"y": 105,
+						"w": 16,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Idle/back/Rooster__back_Idle4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 8,
+						"y": 7,
+						"w": 16,
+						"h": 22
+					},
+					"frame": {
+						"x": 1491,
+						"y": 38,
+						"w": 16,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Chick/Idle/front/Chick_Idle_front2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 2,
+						"w": 10,
+						"h": 13
+					},
+					"frame": {
+						"x": 1498,
+						"y": 23,
+						"w": 10,
+						"h": 13
+					}
+				},
+				{
+					"filename": "Piglet/Piglet_Walk/back/Piglet_back_Walk5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 11,
+						"w": 19,
+						"h": 18
+					},
+					"frame": {
+						"x": 1507,
+						"y": 1,
+						"w": 19,
+						"h": 18
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Idle/back/Rooster__back_Idle5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 8,
+						"y": 7,
+						"w": 16,
+						"h": 22
+					},
+					"frame": {
+						"x": 1491,
+						"y": 62,
+						"w": 16,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Piglet/Piglet_Idle/back/Piglet_back_Idle3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 12,
+						"w": 19,
+						"h": 17
+					},
+					"frame": {
+						"x": 1491,
+						"y": 86,
+						"w": 19,
+						"h": 17
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Idle/front/Rooster__front_Idle3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 8,
+						"y": 7,
+						"w": 16,
+						"h": 22
+					},
+					"frame": {
+						"x": 1494,
+						"y": 105,
+						"w": 16,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Idle/front/Rooster__front_Idle4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 8,
+						"y": 7,
+						"w": 16,
+						"h": 22
+					},
+					"frame": {
+						"x": 1509,
+						"y": 38,
+						"w": 16,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Chick/Idle/front/Chick_Idle_front3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 2,
+						"w": 10,
+						"h": 13
+					},
+					"frame": {
+						"x": 1510,
+						"y": 21,
+						"w": 10,
+						"h": 13
+					}
+				},
+				{
+					"filename": "Chick/Walk/back/Chick_walk_back2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 2,
+						"w": 10,
+						"h": 13
+					},
+					"frame": {
+						"x": 1522,
+						"y": 21,
+						"w": 10,
+						"h": 13
+					}
+				},
+				{
+					"filename": "Piglet/Piglet_Walk/front/Piglet_front_Walk2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 11,
+						"w": 19,
+						"h": 18
+					},
+					"frame": {
+						"x": 1528,
+						"y": 1,
+						"w": 19,
+						"h": 18
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Idle/front/Rooster__front_Idle5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 8,
+						"y": 7,
+						"w": 16,
+						"h": 22
+					},
+					"frame": {
+						"x": 1509,
+						"y": 62,
+						"w": 16,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Walk/back/Rooster__back_Walk2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 8,
+						"y": 7,
+						"w": 16,
+						"h": 22
+					},
+					"frame": {
+						"x": 1512,
+						"y": 86,
+						"w": 16,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Piglet/Piglet_Idle/front/Piglet_front_Idle2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 12,
+						"w": 19,
+						"h": 17
+					},
+					"frame": {
+						"x": 1512,
+						"y": 110,
+						"w": 19,
+						"h": 17
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Walk/front/Rooster__front_Walk2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 8,
+						"y": 7,
+						"w": 16,
+						"h": 22
+					},
+					"frame": {
+						"x": 1527,
+						"y": 36,
+						"w": 16,
+						"h": 22
+					}
+				},
+				{
+					"filename": "Chick/Walk/back/Chick_walk_back5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 2,
+						"w": 10,
+						"h": 13
+					},
+					"frame": {
+						"x": 1534,
+						"y": 21,
+						"w": 10,
+						"h": 13
+					}
+				},
+				{
+					"filename": "Piglet/Piglet_Walk/front/Piglet_front_Walk5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 11,
+						"w": 19,
+						"h": 18
+					},
+					"frame": {
+						"x": 1527,
+						"y": 60,
+						"w": 19,
+						"h": 18
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Idle/back/Rooster__back_Idle1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 8,
+						"y": 8,
+						"w": 16,
+						"h": 21
+					},
+					"frame": {
+						"x": 1545,
+						"y": 36,
+						"w": 16,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Chick/Walk/front/Chick_walk_front2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 2,
+						"w": 10,
+						"h": 13
+					},
+					"frame": {
+						"x": 1546,
+						"y": 21,
+						"w": 10,
+						"h": 13
+					}
+				},
+				{
+					"filename": "Piglet/Piglet_Idle/front/Piglet_front_Idle3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 12,
+						"w": 19,
+						"h": 17
+					},
+					"frame": {
+						"x": 1549,
+						"y": 1,
+						"w": 19,
+						"h": 17
+					}
+				},
+				{
+					"filename": "Chick/Walk/front/Chick_walk_front5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 2,
+						"w": 10,
+						"h": 13
+					},
+					"frame": {
+						"x": 1558,
+						"y": 20,
+						"w": 10,
+						"h": 13
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Idle/back/Rooster__back_Idle2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 8,
+						"y": 8,
+						"w": 16,
+						"h": 21
+					},
+					"frame": {
+						"x": 1530,
+						"y": 80,
+						"w": 16,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Idle/back/Rooster__back_Idle6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 8,
+						"y": 8,
+						"w": 16,
+						"h": 21
+					},
+					"frame": {
+						"x": 1533,
+						"y": 103,
+						"w": 16,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Idle/front/Rooster__front_Idle1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 8,
+						"y": 8,
+						"w": 16,
+						"h": 21
+					},
+					"frame": {
+						"x": 1548,
+						"y": 59,
+						"w": 16,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Idle/front/Rooster__front_Idle2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 8,
+						"y": 8,
+						"w": 16,
+						"h": 21
+					},
+					"frame": {
+						"x": 1563,
+						"y": 35,
+						"w": 16,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Piglet/Piglet_Walk/back/Piglet_back_Walk3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 12,
+						"w": 19,
+						"h": 17
+					},
+					"frame": {
+						"x": 1548,
+						"y": 82,
+						"w": 19,
+						"h": 17
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Idle/front/Rooster__front_Idle6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 8,
+						"y": 8,
+						"w": 16,
+						"h": 21
+					},
+					"frame": {
+						"x": 1566,
+						"y": 58,
+						"w": 16,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Walk/back/Rooster__back_Walk4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 8,
+						"y": 8,
+						"w": 16,
+						"h": 21
+					},
+					"frame": {
+						"x": 1570,
+						"y": 1,
+						"w": 16,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Walk/back/Rooster__back_Walk5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 8,
+						"y": 8,
+						"w": 16,
+						"h": 21
+					},
+					"frame": {
+						"x": 1581,
+						"y": 24,
+						"w": 16,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Walk/front/Rooster__front_Walk4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 8,
+						"y": 8,
+						"w": 16,
+						"h": 21
+					},
+					"frame": {
+						"x": 1588,
+						"y": 1,
+						"w": 16,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Walk/front/Rooster__front_Walk5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 8,
+						"y": 8,
+						"w": 16,
+						"h": 21
+					},
+					"frame": {
+						"x": 1551,
+						"y": 101,
+						"w": 16,
+						"h": 21
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Walk/back/Rooster__back_Walk1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 8,
+						"y": 9,
+						"w": 16,
+						"h": 20
+					},
+					"frame": {
+						"x": 1606,
+						"y": 1,
+						"w": 16,
+						"h": 20
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Walk/back/Rooster__back_Walk3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 8,
+						"y": 9,
+						"w": 16,
+						"h": 20
+					},
+					"frame": {
+						"x": 1606,
+						"y": 23,
+						"w": 16,
+						"h": 20
+					}
+				},
+				{
+					"filename": "Piglet/Piglet_Walk/back/Piglet_back_Walk6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 12,
+						"w": 19,
+						"h": 17
+					},
+					"frame": {
+						"x": 1599,
+						"y": 45,
+						"w": 19,
+						"h": 17
+					}
+				},
+				{
+					"filename": "Chick/Walk/front/Chick_walk_front4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 3,
+						"w": 10,
+						"h": 12
+					},
+					"frame": {
+						"x": 1584,
+						"y": 47,
+						"w": 10,
+						"h": 12
+					}
+				},
+				{
+					"filename": "Chick/Idle/back/Chick_Idle_back4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 16
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 4,
+						"w": 10,
+						"h": 11
+					},
+					"frame": {
+						"x": 1584,
+						"y": 61,
+						"w": 10,
+						"h": 11
+					}
+				},
+				{
+					"filename": "Piglet/Piglet_Walk/front/Piglet_front_Walk3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 12,
+						"w": 19,
+						"h": 17
+					},
+					"frame": {
+						"x": 1596,
+						"y": 64,
+						"w": 19,
+						"h": 17
+					}
+				},
+				{
+					"filename": "Piglet/Piglet_Walk/front/Piglet_front_Walk6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 12,
+						"w": 19,
+						"h": 17
+					},
+					"frame": {
+						"x": 1569,
+						"y": 81,
+						"w": 19,
+						"h": 17
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Walk/front/Rooster__front_Walk1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 8,
+						"y": 9,
+						"w": 16,
+						"h": 20
+					},
+					"frame": {
+						"x": 1569,
+						"y": 100,
+						"w": 16,
+						"h": 20
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Walk/front/Rooster__front_Walk3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 8,
+						"y": 9,
+						"w": 16,
+						"h": 20
+					},
+					"frame": {
+						"x": 1587,
+						"y": 100,
+						"w": 16,
+						"h": 20
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Walk/back/Rooster__back_Walk6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 8,
+						"y": 10,
+						"w": 16,
+						"h": 19
+					},
+					"frame": {
+						"x": 1605,
+						"y": 83,
+						"w": 16,
+						"h": 19
+					}
+				},
+				{
+					"filename": "Rooster/Rooster_Walk/front/Rooster__front_Walk6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 8,
+						"y": 10,
+						"w": 16,
+						"h": 19
+					},
+					"frame": {
+						"x": 1605,
+						"y": 104,
+						"w": 16,
+						"h": 19
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "3.0",
+		"smartupdate": "$TexturePacker:SmartUpdate:2d053d0348347adac78819214f8d7101:55465f598de8462bcad171a8bccdb23c:5e0198c5e383257e35102a800fccfd55$"
+	}
+}

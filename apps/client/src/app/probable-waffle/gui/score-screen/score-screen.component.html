@@ -1,48 +1,26 @@
-<div class="container mt-4">
+<div class="container mt-4 overflow-auto">
   <div class="card-container">
-    <h2>Score Screen</h2>
+    <h2 class="text-center text-primary mb-3">Score Screen</h2>
 
-    <ul class="nav nav-tabs">
+    <ul class="nav nav-tabs mb-3">
       <li class="nav-item">
         <a class="nav-link" [class.active]="activeTab === 'scoreTable'" (click)="changeTab('scoreTable')"
           >Score Table</a
         >
       </li>
       <li class="nav-item">
-        <a class="nav-link" [class.active]="activeTab === 'units'" (click)="changeTab('units')">Units</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" [class.active]="activeTab === 'buildings'" (click)="changeTab('buildings')">Buildings</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" [class.active]="activeTab === 'resources'" (click)="changeTab('resources')">Resources</a>
+        <a class="nav-link" [class.active]="activeTab === 'chart'" (click)="changeTab('chart')">Stats Over Time</a>
       </li>
     </ul>
 
-    <div class="overflow-auto">
-      @if (activeTab === "scoreTable") {
-        <div>
-          <probable-waffle-score-table />
-        </div>
-      }
-      @if (activeTab === "units") {
-        <div>
-          <probable-waffle-score-through-time summaryType="units" />
-        </div>
-      }
-      @if (activeTab === "buildings") {
-        <div>
-          <probable-waffle-score-through-time summaryType="buildings" />
-        </div>
-      }
-      @if (activeTab === "resources") {
-        <div>
-          <probable-waffle-score-through-time summaryType="resources" />
-        </div>
-      }
-    </div>
+    @if (activeTab === "scoreTable") {
+      <probable-waffle-score-table />
+    }
+    @if (activeTab === "chart") {
+      <probable-waffle-score-through-time />
+    }
 
-    <div class="container mt-4">
+    <div class="mt-4">
       <button class="btn btn-primary" routerLink="/aota">Leave</button>
     </div>
   </div>

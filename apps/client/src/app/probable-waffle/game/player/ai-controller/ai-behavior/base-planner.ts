@@ -4,7 +4,7 @@ import { getSceneService } from "../../../world/services/scene-component-helpers
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { NavigationService } from "../../../world/services/navigation.service";
 import { RandomService } from "../../../world/services/random.service";
-import { pwActorDefinitions } from "../../../prefabs/definitions/actor-definitions";
+import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
 import { PlayerAiBlackboard } from "../player-ai-blackboard";
 import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
 import { SupplyPlanner } from "./supply-planner";
@@ -281,7 +281,7 @@ export class BasePlanner {
       if (mostNeeded) {
         const resourceType = mostNeeded;
         const hasGatheringBuildingForResource = blackboard.gatheringStructures.some((building) => {
-          const def = pwActorDefinitions[building.name as ObjectNames];
+          const def = getPwActorDefinition(building.name, null);
           const drain = def?.components?.resourceDrain;
           return drain?.resourceTypes.includes(resourceType);
         });
@@ -329,7 +329,7 @@ export class BasePlanner {
       if (mostNeeded) {
         const resourceType = mostNeeded;
         const hasGatheringBuildingForResource = blackboard.gatheringStructures.some((building) => {
-          const def = pwActorDefinitions[building.name as ObjectNames];
+          const def = getPwActorDefinition(building.name, null);
           const drain = def?.components?.resourceDrain;
           return drain?.resourceTypes.includes(resourceType);
         });
@@ -380,11 +380,11 @@ export class BasePlanner {
         candidates = techTree.getDefensiveBuildingsExcludingMain(this.factionType);
         break;
       case NeedType.Gathering:
-        candidates = techTree.getResourceGatheringBuildingsExcludingMain(this.factionType);
+        candidates = techTree.getResourceGatheringBuildingsExcludingMain();
         if (resourceType) {
           // Filter by resource type
           candidates = candidates.filter((c) => {
-            const def = pwActorDefinitions[c];
+            const def = getPwActorDefinition(c, null);
             const drain = def?.components?.resourceDrain;
             return drain?.resourceTypes.includes(resourceType);
           });
@@ -395,16 +395,24 @@ export class BasePlanner {
     // Filter out tech-locked buildings
     const unlockedCandidates = candidates.filter((candidate) => {
       const validation = this.productionValidator.validate(candidate);
-      // allow queue if it can be queued or if it's not tech/building blocked (eg. just resource blocked)
-      return validation.canQueue || (!validation.techBlocked && !validation.buildingPrereqBlocked);
+      // allow queue if it can be queued or if it's only blocked by resources/supply (not tech/building prereqs)
+      const hasObjectOrResearchPrereqs =
+        validation.prereqs.objectNames.length > 0 || validation.prereqs.researchTypes.length > 0;
+      return validation.canQueue || !hasObjectOrResearchPrereqs;
     });
 
     if (unlockedCandidates.length === 0) {
       // consider scheduling prerequisites
       if (candidates.length > 0) {
         const validation = this.productionValidator.validate(candidates[0]!);
-        if (validation.prereqs.length > 0) {
-          this.productionValidator.schedulePrerequisites(validation.prereqs, candidates[0]!);
+        const hasPrereqs =
+          validation.prereqs.objectNames.length > 0 ||
+          validation.prereqs.researchTypes.length > 0 ||
+          Object.keys(validation.prereqs.resources).length > 0 ||
+          (validation.prereqs.supply !== null && validation.prereqs.supply > 0);
+
+        if (hasPrereqs) {
+          this.productionValidator.schedulePrerequisites(validation, candidates[0]!);
         }
       }
       return null;
@@ -463,7 +471,7 @@ export class BasePlanner {
   // --- Cost & resource helpers ---
 
   getCostForObjectName(objectName: ObjectNames): Partial<Record<ResourceType, number>> | undefined {
-    const definition = pwActorDefinitions[objectName];
+    const definition = getPwActorDefinition(objectName, null);
     return definition?.components?.productionCost?.resources;
   }
 

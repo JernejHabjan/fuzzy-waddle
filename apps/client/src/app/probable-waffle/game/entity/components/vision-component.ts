@@ -10,11 +10,16 @@ import type { VisionDefinition } from "./vision-definition";
 export class VisionComponent {
   private visibleEnemies?: GameObject[];
   public visibilityByCurrentPlayer: boolean = false;
+  public visionDefinition: VisionDefinition;
 
   constructor(
     private readonly gameObject: GameObject,
-    private readonly visionDefinition: VisionDefinition
-  ) {}
+    initialVisionDefinition: VisionDefinition
+  ) {
+    this.visionDefinition = {
+      ...initialVisionDefinition
+    };
+  }
 
   get range() {
     return this.visionDefinition.range;
@@ -61,6 +66,36 @@ export class VisionComponent {
       return distanceA - distanceB;
     });
     return visibleEnemies[0]!;
+  }
+
+  getVisibleFriendlies(): GameObject[] {
+    const currentActorOwnerComponent = getActorComponent(this.gameObject, OwnerComponent);
+    const owner = currentActorOwnerComponent?.getOwner();
+    if (owner === undefined) return [];
+
+    // Use indexed owned actors to get friendlies
+    const actorIndex = getSceneService(this.gameObject.scene, ActorIndexSystem);
+    if (!actorIndex) return [];
+
+    const ownedActors = actorIndex.getOwnedActors(owner);
+
+    return ownedActors.filter((actor) => {
+      if (actor === this.gameObject) return false; // exclude self
+      return this.isActorVisible(actor);
+    });
+  }
+
+  getClosestVisibleFriendly(): GameObject | null {
+    const visibleFriendlies = this.getVisibleFriendlies();
+    if (visibleFriendlies.length === 0) return null;
+    // find the closest friendly
+    visibleFriendlies.sort((a, b) => {
+      const distanceA = DistanceHelper.getTileDistanceBetweenGameObjects(this.gameObject, a);
+      const distanceB = DistanceHelper.getTileDistanceBetweenGameObjects(this.gameObject, b);
+      if (distanceA === null || distanceB === null) return 0;
+      return distanceA - distanceB;
+    });
+    return visibleFriendlies[0]!;
   }
 
   setData(data: Partial<VisionComponentData>) {

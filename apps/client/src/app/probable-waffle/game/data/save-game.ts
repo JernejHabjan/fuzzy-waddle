@@ -2,6 +2,8 @@ import { filter, Subscription } from "rxjs";
 import GameProbableWaffleScene from "../world/scenes/GameProbableWaffleScene";
 import { getSceneComponent, getSceneService, getSceneSystem } from "../world/services/scene-component-helpers";
 import { SceneActorCreator } from "../world/services/scene-actor-creator";
+import { AoeZoneManager } from "../entity/systems/aoe-zone-manager";
+import { TechTreeService } from "./tech-tree/tech-tree.service";
 import type { SaveGamePayload } from "./save-game-payload";
 import { SelectionGroupsComponent } from "../player/human-controller/selection-groups.component";
 import { CameraMovementHandler } from "../player/human-controller/cameraMovementHandler";
@@ -26,8 +28,14 @@ export class SaveGame {
     // Save camera position and selection groups for the current player
     this.saveCurrentPlayerData();
 
-    // Save AI behavior tree state for all AI players
+    // Save AI behaviour tree state for all AI players
     this.saveAiPlayersState();
+
+    // Save AOE zones
+    this.saveAoeZones();
+
+    // Save research state
+    this.saveResearchState();
 
     const thumbnail = await this.takeScreenshot();
     this.scene.communicator.utilityEvents.emit({
@@ -82,6 +90,28 @@ export class SaveGame {
         player.playerState.data.aiBehaviorTreeState = aiController.getSaveState();
       }
     });
+  }
+
+  private saveAoeZones() {
+    const aoeZoneManager = getSceneService(this.scene, AoeZoneManager);
+    if (!aoeZoneManager) return;
+
+    this.scene.baseGameData.gameInstance.gameState!.data.aoeZones = aoeZoneManager.getData();
+  }
+
+  private saveResearchState() {
+    const techTreeService = getSceneService(this.scene, TechTreeService);
+    if (!techTreeService) return;
+
+    const gameState = this.scene.baseGameData.gameInstance.gameState!.data;
+    const researchData = techTreeService.getResearchData();
+
+    // Convert Map to plain object for serialization
+    const playerResearch: Record<number, string[]> = {};
+    for (const [playerNumber, researchTypes] of researchData) {
+      playerResearch[playerNumber] = researchTypes;
+    }
+    gameState.playerResearch = playerResearch;
   }
 
   private async takeScreenshot() {

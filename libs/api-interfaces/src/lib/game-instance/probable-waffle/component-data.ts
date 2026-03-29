@@ -2,6 +2,10 @@ import type { Vector3Simple } from "../../game/vector";
 import { ResourceType } from "../../probable-waffle/resource-type-definition";
 import { ObjectNames } from "./object-names";
 import type { ActorId } from "../player/player";
+import type { PrerequisiteType } from "./prereque-type";
+import type { StatusEffectData } from "../../probable-waffle/status-effect";
+import type { PreRequirement } from "./pre-requirement";
+import type { ResearchType } from "./research-type";
 
 export interface VisionComponentData {
   visibilityByCurrentPlayer?: boolean;
@@ -39,10 +43,14 @@ export interface ResourceSourceComponentData {
   currentResources?: number;
 }
 
+export interface ProductionQueueItemData {
+  name: ObjectNames;
+  remainingTime: number; // ms remaining for this specific item
+}
+
 export interface ProductionComponentData {
-  queue?: ObjectNames[];
+  queue?: ProductionQueueItemData[]; // Array of items with per-item progress
   isProducing?: boolean;
-  progress?: number;
   rallyPoint?: RallyPointComponentData;
 }
 
@@ -142,8 +150,8 @@ export interface PlayerAiBlackboardData {
 
     prereqQueue?: Array<{
       id: string;
-      type: "produce" | "construct";
-      objectName: ObjectNames;
+      type: PrerequisiteType;
+      preRequirement: PreRequirement;
       insertedAt: number;
     }>;
   };
@@ -211,4 +219,27 @@ export interface AIBehaviorTreeStateData {
 export interface ConvertibleComponentData {
   detectionRange?: number;
   checkInterval?: number;
+}
+
+export interface StatusEffectComponentData {
+  activeEffects?: StatusEffectData[];
+}
+
+export interface SpellComponentData {
+  cooldowns?: Record<string, number>; // spellType -> remaining cooldown
+  autocastEnabled?: Record<string, boolean>; // spellType -> enabled
+}
+
+export interface ResearchQueueItemData {
+  type: ResearchType;
+  remainingTime: number; // ms remaining for this specific item
+}
+
+export interface ResearchComponentData {
+  researches?: ResearchQueueItemData[]; // Array of items with per-item progress
+}
+
+export interface LevelComponentData {
+  level?: number;
+  maxLevel?: number;
 }

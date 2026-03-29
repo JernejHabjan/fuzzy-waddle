@@ -8,7 +8,8 @@ export const wallDefinition = {
   components: {
     representable: {
       width: 64,
-      height: 96
+      height: 64,
+      origin: { x: 0.5, y: 0.75 }
     },
     objectDescriptor: {
       color: 0x95a083

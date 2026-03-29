@@ -26,20 +26,20 @@
                     "id": "7644270d-7181-4c1d-aff4-ae2f9bbb835c",
                     "label": "skaduwee_magician_female_idle_down",
                     "texture": {
-                        "key": "magician_female_idle",
+                        "key": "magician_female_lvl1_idle",
                         "frame": 4
                     },
                     "y": -25.571183923696843,
                     "animationPlayMethod": 1,
-                    "animationKey": "skaduwee_magician_female_idle_down"
+                    "animationKey": "magician_female_lvl1_idle_2"
                 }
             ]
         }
     ],
     "plainObjects": [],
     "meta": {
-        "app": "Phaser Editor 2D - Scene Editor",
-        "url": "https://phasereditor2d.com",
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
         "contentType": "phasereditor2d.core.scene.SceneContentType",
         "version": 5
     }

@@ -1,5 +1,5 @@
-import { pwActorDefinitions } from "../prefabs/definitions/actor-definitions";
-import { type ActorDefinition, ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { getPwActorDefinition } from "../prefabs/definitions/actor-definitions";
+import { type ActorDefinition } from "@fuzzy-waddle/api-interfaces";
 import { VisionComponent } from "../entity/components/vision-component";
 import { InfoComponent } from "../entity/components/info-component";
 import { ObjectDescriptorComponent } from "../entity/components/object-descriptor-component";
@@ -31,12 +31,19 @@ import { AnimationActorComponent } from "../entity/components/animation/animatio
 import { RepresentableComponent } from "../entity/components/representable-component";
 import { FlyingComponent } from "../entity/components/movement/flying-component";
 import { WalkableComponent } from "../entity/components/movement/walkable-component";
-import GameObject = Phaser.GameObjects.GameObject;
 import { HousingComponent } from "../entity/components/building/housing-component";
 import { HousingCostComponent } from "../entity/components/building/housing-cost-component";
 import { MovementDecalCursorService } from "../entity/components/movement/movement-decal-cursor.service";
 import { getSceneService } from "../world/services/scene-component-helpers";
 import { SceneActorCreator } from "../world/services/scene-actor-creator";
+import { StatusEffectComponent } from "../entity/components/status-effect/status-effect-component";
+import { StatusEffectVisualComponent } from "../entity/components/status-effect/status-effect-visual-component";
+import { StatusEffectUiComponent } from "../entity/components/status-effect/status-effect-ui-component";
+import { SpellComponent } from "../entity/components/combat/components/spell-component";
+import { SpellCastingSystem } from "../entity/systems/spell-casting.system";
+import { ResearchComponent } from "../entity/components/research/research-component";
+import { LevelComponent } from "../entity/components/level/level-component";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export const ActorDataKey = "actorData";
 export class ActorData {
@@ -91,13 +98,20 @@ function setActorProperties(actor: GameObject, actorDefinition?: Partial<ActorDe
   if (actorDefinition.resourceSource)
     getActorComponent(actor, ResourceSourceComponent)?.setData(actorDefinition.resourceSource);
   if (actorDefinition.production) getActorComponent(actor, ProductionComponent)?.setData(actorDefinition.production);
+  if (actorDefinition.research) getActorComponent(actor, ResearchComponent)?.setData(actorDefinition.research);
+  if (actorDefinition.representable)
+    getActorComponent(actor, RepresentableComponent)?.setData(actorDefinition.representable);
   if (actorDefinition.blackboard) getActorComponent(actor, PawnAiController)?.setData(actorDefinition.blackboard);
+  if (actorDefinition.spell) getActorComponent(actor, SpellComponent)?.setData(actorDefinition.spell);
+  if (actorDefinition.statusEffects)
+    getActorComponent(actor, StatusEffectComponent)?.setData(actorDefinition.statusEffects);
+  if (actorDefinition.level) getActorComponent(actor, LevelComponent)?.setData(actorDefinition.level);
 
   DepthHelper.setActorDepth(actor);
 }
 
 function gatherCoreActorData(actor: Phaser.GameObjects.GameObject): { components: any[]; systems: any[] } {
-  const definition = pwActorDefinitions[actor.name as ObjectNames];
+  const definition = getPwActorDefinition(actor.name, null);
   if (!definition) {
     throw new Error(`Actor definition for ${actor.name} not found.`);
   }
@@ -126,7 +140,7 @@ function gatherCoreActorData(actor: Phaser.GameObjects.GameObject): { components
 }
 
 function gatherConstructingActorData(actor: Phaser.GameObjects.GameObject): { components: any[]; systems: any[] } {
-  const definition = pwActorDefinitions[actor.name as ObjectNames];
+  const definition = getPwActorDefinition(actor.name, null);
   if (!definition) {
     throw new Error(`Actor definition for ${actor.name} not found.`);
   }
@@ -140,6 +154,7 @@ function gatherConstructingActorData(actor: Phaser.GameObjects.GameObject): { co
       ? [new ConstructionSiteComponent(actor, componentDefinitions.constructable)]
       : []),
     ...(componentDefinitions?.production ? [new ProductionComponent(actor, componentDefinitions.production)] : []),
+    ...(componentDefinitions?.research ? [new ResearchComponent(actor, componentDefinitions.research)] : []),
     ...(componentDefinitions?.selectable ? [new SelectableComponent(actor, componentDefinitions.selectable)] : []),
     ...(componentDefinitions?.health ? [new HealthComponent(actor, componentDefinitions.health)] : []),
     ...(componentDefinitions?.collider ? [new ColliderComponent(actor, componentDefinitions.collider)] : [])
@@ -149,7 +164,7 @@ function gatherConstructingActorData(actor: Phaser.GameObjects.GameObject): { co
 }
 
 function gatherCompletedActorData(actor: Phaser.GameObjects.GameObject): { components: any[]; systems: any[] } {
-  const definition = pwActorDefinitions[actor.name as ObjectNames];
+  const definition = getPwActorDefinition(actor.name, null);
   if (!definition) {
     throw new Error(`Actor definition for ${actor.name} not found.`);
   }
@@ -166,6 +181,10 @@ function gatherCompletedActorData(actor: Phaser.GameObjects.GameObject): { compo
       ? [new ResourceSourceComponent(actor, componentDefinitions.resourceSource)]
       : []),
     ...(componentDefinitions?.healing ? [new HealingComponent(actor, componentDefinitions.healing)] : []),
+    ...(componentDefinitions?.health
+      ? [new StatusEffectComponent(actor), new StatusEffectVisualComponent(actor), new StatusEffectUiComponent(actor)]
+      : []),
+    ...(componentDefinitions?.spell ? [new SpellComponent(actor, componentDefinitions.spell)] : []),
     ...(componentDefinitions?.builder ? [new BuilderComponent(actor, componentDefinitions.builder)] : []),
     ...(componentDefinitions?.gatherer ? [new GathererComponent(actor, componentDefinitions.gatherer)] : []),
     ...(componentDefinitions?.translatable
@@ -174,13 +193,15 @@ function gatherCompletedActorData(actor: Phaser.GameObjects.GameObject): { compo
     ...(componentDefinitions?.flying ? [new FlyingComponent(actor, componentDefinitions.flying)] : []),
     ...(componentDefinitions?.walkable ? [new WalkableComponent(actor, componentDefinitions.walkable)] : []),
     ...(componentDefinitions?.animatable ? [new AnimationActorComponent(actor, componentDefinitions.animatable)] : []),
-    ...(componentDefinitions?.aiControlled ? [new PawnAiController(actor, componentDefinitions.aiControlled)] : [])
+    ...(componentDefinitions?.aiControlled ? [new PawnAiController(actor, componentDefinitions.aiControlled)] : []),
+    ...(componentDefinitions?.level ? [new LevelComponent(actor, componentDefinitions.level)] : [])
   ];
 
   const systemDefinitions = definition.systems;
   const systems = [
     ...(systemDefinitions?.movement ? [new MovementSystem(actor)] : []),
-    ...(systemDefinitions?.action ? [new ActionSystem(actor)] : [])
+    ...(systemDefinitions?.action ? [new ActionSystem(actor)] : []),
+    ...(systemDefinitions?.spellCasting ? [new SpellCastingSystem(actor)] : [])
   ];
   return { components, systems };
 }

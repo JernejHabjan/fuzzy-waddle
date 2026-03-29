@@ -621,7 +621,8 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     const url = environment.api + "api/probable-waffle/matchmaking/request-game-search-for-matchmaking";
     const body: RequestGameSearchForMatchMakingDto = {
       mapPoolIds: matchmakingOptions.levels.filter((l) => l.checked).map((l) => l.id),
-      factionType: matchmakingOptions.factionType
+      factionType: matchmakingOptions.factionType,
+      teamConfiguration: matchmakingOptions.teamConfiguration
     };
     await firstValueFrom(this.httpClient.post<void>(url, body));
   }
@@ -664,5 +665,61 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     if (this.externalModalRef) {
       this.externalModalRef.close();
     }
+  }
+
+  async leaveLobby(): Promise<void> {
+    const isSelfHosted =
+      this.gameInstance?.gameInstanceMetadata?.data.type === ProbableWaffleGameInstanceType.SelfHosted;
+    const isSkirmish = this.gameInstance?.gameInstanceMetadata?.data.type === ProbableWaffleGameInstanceType.Skirmish;
+    const isOffline = !this.authService.isAuthenticated || !this.serverHealthService.serverAvailable;
+    const isHost = this.gameInstance?.gameInstanceMetadata?.data.createdBy === this.authService.userId;
+
+    await this.handlePlayerOrSpectatorLeaving();
+
+    if (isSelfHosted && isHost) {
+      await this.handleHostLeavingSelfHostedGame();
+    } else if (isOffline || isSkirmish) {
+      await this.stopGameInstance();
+    } else {
+      await this.cleanupLocalGameState();
+    }
+
+    await this.router.navigate(["aota"]);
+  }
+
+  private async handlePlayerOrSpectatorLeaving(): Promise<void> {
+    if (this.currentPlayerNumber !== undefined) {
+      const isSelfHosted =
+        this.gameInstance?.gameInstanceMetadata?.data.type === ProbableWaffleGameInstanceType.SelfHosted;
+      if (isSelfHosted) {
+        await this.removePlayer(this.currentPlayerNumber);
+      }
+    } else if (this.gameInstance?.spectators.some((s) => s.data.userId === this.authService.userId)) {
+      await this.spectatorChanged("left", { userId: this.authService.userId! });
+    }
+  }
+
+  private async handleHostLeavingSelfHostedGame(): Promise<void> {
+    const humanPlayers =
+      this.gameInstance?.players.filter(
+        (p) =>
+          p.playerController.data.playerDefinition?.playerType === ProbableWafflePlayerType.Human &&
+          p.playerController.data.userId !== this.authService.userId &&
+          p.playerController.data.userId !== null
+      ) || [];
+
+    if (humanPlayers.length > 0) {
+      const newHost = humanPlayers[0]!;
+      const newHostUserId = newHost.playerController.data.userId!;
+      await this.gameInstanceMetadataChanged("createdBy", { createdBy: newHostUserId });
+      await this.cleanupLocalGameState();
+    } else {
+      await this.stopGameInstance();
+    }
+  }
+
+  private async cleanupLocalGameState(): Promise<void> {
+    await this.stopListeningToGameInstanceEvents();
+    this.gameInstance = undefined;
   }
 }

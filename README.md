@@ -1,69 +1,86 @@
 # Fuzzy Waddle
 
+> A multiplayer browser game platform built with Angular, Phaser, and NestJS.
+
 [![Deploy on Render](https://img.shields.io/badge/Render-Deployed-brightgreen)](https://fuzzy-waddle.onrender.com/)
 [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Deployed-brightgreen)](https://jernejhabjan.github.io/fuzzy-waddle/)
 [![Open Issues](https://img.shields.io/github/issues/JernejHabjan/fuzzy-waddle)](https://github.com/JernejHabjan/fuzzy-waddle/issues)
 [![Open Pull Requests](https://img.shields.io/github/issues-pr/JernejHabjan/fuzzy-waddle)](https://github.com/JernejHabjan/fuzzy-waddle/pulls)
 [![Contributing](https://img.shields.io/badge/Contributing-Guidelines-blue)](CONTRIBUTING.md)
 
-## Setup Dev Environment
+**Play now:** [fuzzy-waddle.onrender.com](https://fuzzy-waddle.onrender.com/)
 
-### pnpm
-- [Install pnpm](https://pnpm.io/installation)
+---
 
-### API
+## Games
 
-- Copy the `.env.example` file to `.env.local` and fill in the values.
-  - For `CORS_ORIGIN`, set it to `http://localhost:4200`
-  - For Supabase, `service_role` as `SUPABASE_SERVICE_KEY` and `URL` are [shown here](https://supabase.com/dashboard/project/bhzetyxjimpabioxoodz/settings/api)
+| Game | Genre | Status |
+| ---- | ----- | ------ |
+| Probable Waffle | Real-time strategy | Active |
+| Little Muncher | Platformer | Active |
+| Fly Squasher | Arcade | Active |
+| Dungeon Crawler | RPG | In development |
 
-### Supabase Authentication
+---
 
-- Setup Google OAuth2: [Supabase Google OAuth2 Setup](https://supabase.io/docs/guides/auth#google)
-- URL config:
-  - Site URL: `https://fuzzy-waddle.onrender.com`
-  - Redirect URLs:
-    - `http://localhost:4200/`
-    - `https://fuzzy-waddle.onrender.com/`
-    - `https://jernejhabjan.github.io/fuzzy-waddle/`
+## Tech Stack
 
-## Deployment
+| Layer | Technology |
+| ----- | ---------- |
+| Frontend | Angular 21, Phaser 4, Bootstrap 5 |
+| Backend | NestJS 11, Socket.IO |
+| Database / Auth | Supabase (PostgreSQL + OAuth) |
+| Monorepo | Nx 22 |
+| Package manager | pnpm |
 
-### Client
-- URL: [https://fuzzy-waddle.onrender.com/](https://fuzzy-waddle.onrender.com/)
-- Build Command: `pnpm i; npm run nx-build-client`
-- Publish Directory: `./dist/apps/client`
-- Rewrite Rule:
-  - Destination: `/index.html`
-  - Action: `rewrite`
-  - Documentation:
-    - [Render](https://render.com/docs/deploy-create-react-app#using-client-side-routing)
-    - [Azure](https://learn.microsoft.com/en-us/azure/static-web-apps/configuration?WT.mc_id=javascript-17844-cxa#fallback-routes)
+---
 
-### Server
-- URL: [https://fuzzy-waddle-api.onrender.com/](https://fuzzy-waddle-api.onrender.com/)
-- Build Command: `pnpm i; nx build api`
-- Start Command: `node dist/apps/api/main.js`
-- Add Health Check: `/api/health`
-- Add Supabase Environmental Variables: `SUPABASE_URL` and `SUPABASE_SERVICE_KEY`
-- Add `CORS_ORIGIN` Environmental Variable: `https://fuzzy-waddle.onrender.com,https://jernejhabjan.github.io`
+## Quick Start
 
-## Other Notes
+```bash
+git clone https://github.com/JernejHabjan/fuzzy-waddle.git
+cd fuzzy-waddle
+pnpm install
+cp .env.example .env.local   # fill in Supabase credentials
+pnpm start
+```
 
-- Some artwork is also publicly available here: [Pixilart](https://www.pixilart.com/darkneess10)
-- Phaser Editor
-  - `.skip` files are used to skip files from being processed by Phaser Editor 2D
-  - Investigate Issues: `Ctrl+Shift+I`
-- TileSetter:
-  - there seem to be some issues with "chipped" tiles on certain GPUs. Workaround is to run the TileSetter.exe with 2 flags:
-  `"C:\Program Files (x86)\Steam\steamapps\common\Tilesetter\Tilesetter.exe" --disable-gpu --disable-gpu-sandbox`
+Client runs at `http://localhost:4200` · API at `http://localhost:3333`
+
+For full setup instructions see the [Getting Started guide](wiki/getting-started.md).
+
+---
+
+## Wiki
+
+| Page | Description |
+| ---- | ----------- |
+| [Getting Started](wiki/getting-started.md) | Prerequisites, install, common commands |
+| [Architecture](wiki/architecture.md) | Monorepo layout, game structure, real-time communication |
+| [Supabase Setup](wiki/supabase.md) | Auth, type generation, JDBC, local dev |
+| [Deployment](wiki/deployment.md) | Render and GitHub Pages deployment config |
+| [Troubleshooting](wiki/troubleshooting.md) | Common issues and fixes |
+
+---
+
+## Contributing
+
+Contributions are welcome — bug fixes, features, and compatibility improvements.
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) before opening a PR.
+
+---
+
 ## Attribution
-Please see [attributions.json](apps/client/src/assets/general/attributions.json). They are also listed on the [Attributions Page](https://fuzzy-waddle.onrender.com/attributions).
+
+Some artwork is publicly available on [Pixilart](https://www.pixilart.com/darkneess10).
+Full attribution list: [attributions.json](apps/client/src/assets/general/attributions.json) · [Attributions page](https://fuzzy-waddle.onrender.com/attributions)
+
+---
 
 ## License
 
 © Jernej Habjan. All rights reserved.
 
-- Forking, cloning, and contributing via pull requests is **allowed**.
-- Using or distributing this code outside of GitHub requires **explicit written permission**.
-- See [LICENSE.md](LICENSE)
+Forking and contributing via pull requests is **allowed**.
+Using or distributing this code outside of GitHub requires **explicit written permission**.
+See [LICENSE.md](LICENSE).

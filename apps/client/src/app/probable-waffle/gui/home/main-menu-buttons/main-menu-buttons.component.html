@@ -22,7 +22,7 @@
       </div>
     </div>
 
-    @if (enabledLoadGame || enabledReplay) {
+    @if (enabledLoadGame || enabledReplay || enabledMatchHistory) {
       <div class="menu-section">
         <h3 class="menu-section-title">Game Management</h3>
         <div class="section-buttons">
@@ -36,6 +36,12 @@
             <button class="menu-button" routerLink="replay">
               <span class="menu-button-text">Replay</span>
               <span class="menu-button-description">Watch recorded matches</span>
+            </button>
+          }
+          @if (enabledMatchHistory) {
+            <button class="menu-button" routerLink="match-history">
+              <span class="menu-button-text">Match History</span>
+              <span class="menu-button-description">View past matches</span>
             </button>
           }
         </div>

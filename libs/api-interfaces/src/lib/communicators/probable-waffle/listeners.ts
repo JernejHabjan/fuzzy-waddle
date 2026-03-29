@@ -41,6 +41,9 @@ export class ProbableWaffleListeners {
             throw new Error("Unknown session state: " + payload.data.sessionState);
         }
         break;
+      case "createdBy":
+        gameInstance.gameInstanceMetadata!.data.createdBy = payload.data.createdBy!;
+        break;
       default:
         throw new Error("Unknown communicator for gameInstanceMetadataDataChange: " + payload.property);
     }

@@ -23,14 +23,25 @@
 export const PlayerPawnAiControllerMdsl = `
 root {
     selector {
-        fail {
-            sequence {
-                condition [OrderExistsInQueue]
-                action [AssignNextOrderFromQueue]
+        /* If stunned, do nothing - just wait */
+        sequence {
+            condition [IsStunned]
+            action [Succeed]
+        }
+        /* Normal AI logic when not stunned */
+        sequence {
+            flip { condition [IsStunned] }
+            selector {
+                fail {
+                    sequence {
+                        condition [OrderExistsInQueue]
+                        action [AssignNextOrderFromQueue]
+                    }
+                }
+                branch [ExecuteCurrentOrder]
+                branch [AutoAssignNewOrder]
             }
         }
-        branch [ExecuteCurrentOrder]
-        branch [AutoAssignNewOrder]
     }
 }
 
@@ -50,6 +61,13 @@ root [ExecuteCurrentOrder] {
 root [AutoAssignNewOrder] {
     selector {
 
+        /* Autocast spells when ready */
+        sequence {
+            condition [HasSpellComponent]
+            condition [HasAutocastSpellReady]
+            action [CastAutocastSpell]
+        }
+
         /* Retaliation */
         sequence {
             condition [Attacked]
@@ -62,7 +80,7 @@ root [AutoAssignNewOrder] {
 
         /* Attacking visible enemies */
         sequence {
-            condition [AnyEnemyVisible]
+            condition [AnyAttackableEnemyVisible]
             condition [HasAttackComponent]
             flip {
                 condition [HasHarvestComponent]
@@ -116,8 +134,17 @@ root [Attack] {
                     flip {
                         condition [TargetExists]
                     }
-                    condition [AnyEnemyVisible]
-                    action [AssignVisibleEnemyToCurrentOrder]
+                    condition [AnyAttackableEnemyVisible]
+                    action [AssignAttackableEnemyToCurrentOrder]
+                }
+
+                /* if target exists but cannot be attacked, stop */
+                sequence {
+                    condition [TargetExists]
+                    flip {
+                        condition [CanAttackCurrentTarget]
+                    }
+                    action [Stop, "Attack - Target Not Attackable"]
                 }
 
                 /* exit current container */

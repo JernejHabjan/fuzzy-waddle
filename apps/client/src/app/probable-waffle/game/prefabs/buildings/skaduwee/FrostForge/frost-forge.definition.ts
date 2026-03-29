@@ -8,8 +8,9 @@ import { ActorPhysicalType } from "../../../../entity/components/combat/componen
 export const frostForgeDefinition = {
   components: {
     representable: {
-      width: 256,
-      height: 384
+      width: 192,
+      height: 288,
+      origin: { x: 0.5, y: 0.84 }
     },
     objectDescriptor: {
       color: 0xf2f7fa
@@ -71,9 +72,11 @@ export const frostForgeDefinition = {
       cooldown: 1000
     },
     production: {
-      queueCount: 1,
-      capacityPerQueue: 5,
       availableProduceActors: [ObjectNames.SkaduweeWorker]
+    },
+    queue: {
+      queueCount: 1,
+      capacityPerQueue: 5
     },
     collider: { enabled: true },
     constructable: {

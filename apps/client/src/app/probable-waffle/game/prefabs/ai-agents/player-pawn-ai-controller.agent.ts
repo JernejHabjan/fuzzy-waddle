@@ -15,6 +15,7 @@ import { PawnAiBlackboard } from "./pawn-ai-blackboard";
 import { GathererComponent } from "../../entity/components/resource/gatherer-component";
 import { ResourceSourceComponent } from "../../entity/components/resource/resource-source-component";
 import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import { SpellTargetType } from "@fuzzy-waddle/api-interfaces";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import { ContainableComponent } from "../../entity/components/building/containable-component";
 import { ResourceDrainComponent } from "../../entity/components/resource/resource-drain-component";
@@ -24,6 +25,11 @@ import { HealingComponent } from "../../entity/components/combat/components/heal
 import { ConstructionSiteComponent } from "../../entity/components/construction/construction-site-component";
 import { AnimationActorComponent } from "../../entity/components/animation/animation-actor-component";
 import type { PathMoveConfig } from "../../entity/systems/path-move-config";
+import { StatusEffectComponent } from "../../entity/components/status-effect/status-effect-component";
+import { SpellComponent } from "../../entity/components/combat/components/spell-component";
+import { SpellCastingSystem } from "../../entity/systems/spell-casting.system";
+import { spellDefinitions } from "../../entity/components/combat/spell-definitions";
+import { RepresentableComponent } from "../../entity/components/representable-component";
 
 export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
   constructor(
@@ -69,6 +75,26 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
     const healthComponent = getActorComponent(this.gameObject, HealthComponent);
     if (!healthComponent) return true; // if no health component, assume alive
     return healthComponent.alive;
+  }
+
+  /**
+   * Checks if the actor is currently stunned or frozen
+   * Stunned actors cannot move, attack, or cast spells
+   */
+  IsStunned() {
+    const statusEffectComponent = getActorComponent(this.gameObject, StatusEffectComponent);
+    if (!statusEffectComponent) return false;
+    return statusEffectComponent.isStunned();
+  }
+
+  /**
+   * Checks if the actor is currently slowed
+   * Slowed actors can still act but move slower
+   */
+  IsSlowed() {
+    const statusEffectComponent = getActorComponent(this.gameObject, StatusEffectComponent);
+    if (!statusEffectComponent) return false;
+    return statusEffectComponent.isSlowed();
   }
 
   async InRange(type: PlayerPawnRangeType): Promise<State> {
@@ -237,9 +263,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
       if (isAttackMove) {
         success = await movementSystem.moveToLocationByFollowingStaticPath(location, {
           onUpdateThrottled: () => {
-            const vision = getActorComponent(this.gameObject, VisionComponent);
-            if (!vision) return;
-            const enemy = vision.getClosestVisibleEnemy();
+            const enemy = this.getClosestAttackableVisibleEnemy();
             if (enemy) {
               currentOrder.data.targetGameObject = enemy;
               movementSystem.cancelMovement();
@@ -315,6 +339,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
     if (targetHealth && !targetHealth.alive) return State.FAILED;
     const attackComponent = getActorComponent(this.gameObject, AttackComponent);
     if (!attackComponent) return State.FAILED;
+    if (!attackComponent.getAttack(target)) return State.FAILED;
     if (attackComponent.remainingCooldown > 0) return State.FAILED;
     attackComponent.useAttack(target);
     return State.SUCCEEDED;
@@ -326,16 +351,26 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
     return visionComponent.getVisibleEnemies().length > 0;
   }
 
+  AnyAttackableEnemyVisible() {
+    return !!this.getClosestAttackableVisibleEnemy();
+  }
+
   // Assign closest visible enemy to the CURRENT order (used for attack-move).
-  AssignVisibleEnemyToCurrentOrder(): State {
+  AssignAttackableEnemyToCurrentOrder(): State {
     const currentOrder = this.blackboard.getCurrentOrder();
     if (!currentOrder) return State.FAILED;
-    const vision = getActorComponent(this.gameObject, VisionComponent);
-    if (!vision) return State.FAILED;
-    const enemy = vision.getClosestVisibleEnemy();
+    const enemy = this.getClosestAttackableVisibleEnemy();
     if (!enemy) return State.FAILED;
     currentOrder.data.targetGameObject = enemy;
     return State.SUCCEEDED;
+  }
+
+  CanAttackCurrentTarget() {
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return false;
+    const target = currentOrder.data.targetGameObject;
+    if (!target) return false;
+    return this.canAttackTarget(target);
   }
 
   private async CanMoveToTarget(range: number): Promise<boolean> {
@@ -560,9 +595,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
   AssignEnemy(source: string): State {
     switch (source) {
       case "vision":
-        const visionComponent = getActorComponent(this.gameObject, VisionComponent);
-        if (!visionComponent) return State.FAILED;
-        const visibleEnemy = visionComponent.getClosestVisibleEnemy();
+        const visibleEnemy = this.getClosestAttackableVisibleEnemy();
         if (!visibleEnemy) return State.FAILED;
         this.blackboard.addOrder(new OrderData(OrderType.Attack, { targetGameObject: visibleEnemy }));
         return State.SUCCEEDED;
@@ -573,6 +606,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
         if (!latestDamage) return State.FAILED;
         const attacker = latestDamage.damageInitiator;
         if (!attacker) return State.FAILED;
+        if (!this.canAttackTarget(attacker)) return State.FAILED;
         this.blackboard.addOrder(new OrderData(OrderType.Attack, { targetGameObject: attacker }));
         return State.SUCCEEDED;
       default:
@@ -669,6 +703,29 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
   NoEnemiesVisible() {
     // Check if there are no enemies visible to the agent
     return false;
+  }
+
+  private getClosestAttackableVisibleEnemy(): Phaser.GameObjects.GameObject | null {
+    const visionComponent = getActorComponent(this.gameObject, VisionComponent);
+    if (!visionComponent) return null;
+
+    const attackableEnemies = visionComponent.getVisibleEnemies().filter((enemy) => this.canAttackTarget(enemy));
+    if (attackableEnemies.length === 0) return null;
+
+    attackableEnemies.sort((a, b) => {
+      const distanceA = DistanceHelper.getTileDistanceBetweenGameObjects(this.gameObject, a);
+      const distanceB = DistanceHelper.getTileDistanceBetweenGameObjects(this.gameObject, b);
+      if (distanceA === null || distanceB === null) return 0;
+      return distanceA - distanceB;
+    });
+
+    return attackableEnemies[0]!;
+  }
+
+  private canAttackTarget(target: Phaser.GameObjects.GameObject): boolean {
+    const attackComponent = getActorComponent(this.gameObject, AttackComponent);
+    if (!attackComponent) return false;
+    return !!attackComponent.getAttack(target);
   }
 
   HasHarvestComponent() {
@@ -769,5 +826,127 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
   Log(message: string): State {
     console.log(message);
     return State.SUCCEEDED;
+  }
+
+  // ========== Spell Casting AI ==========
+
+  HasSpellComponent(): boolean {
+    return !!getActorComponent(this.gameObject, SpellComponent);
+  }
+
+  HasAutocastSpellReady(): boolean {
+    const spellComponent = getActorComponent(this.gameObject, SpellComponent);
+    if (!spellComponent) return false;
+
+    const spellCastingSystem = getActorSystem(this.gameObject, SpellCastingSystem);
+    if (!spellCastingSystem) return false;
+
+    for (const spellType of spellComponent.availableSpells) {
+      if (!spellComponent.isAutocastEnabled(spellType)) continue;
+      if (!spellComponent.isSpellResearched(spellType)) continue;
+      if (!spellComponent.canCastSpell(spellType)) continue;
+
+      // Check if we have a valid target for this spell
+      const spellData = spellDefinitions[spellType];
+      if (!spellData) continue;
+
+      if (this.hasValidAutocastTarget(spellData.targetType)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private hasValidAutocastTarget(targetType: SpellTargetType): boolean {
+    const visionComponent = getActorComponent(this.gameObject, VisionComponent);
+    if (!visionComponent) return false;
+
+    switch (targetType) {
+      case SpellTargetType.Ground:
+      case SpellTargetType.EnemyUnit:
+        // For offensive spells, need visible enemy
+        return visionComponent.getVisibleEnemies().length > 0;
+      case SpellTargetType.FriendlyUnit:
+      case SpellTargetType.Self:
+        // For healing spells, need visible damaged friendly
+        const visibleFriendlies = visionComponent.getVisibleFriendlies();
+        return visibleFriendlies.some((friendly) => {
+          const healthComponent = getActorComponent(friendly, HealthComponent);
+          return healthComponent && !healthComponent.healthIsFull && healthComponent.alive;
+        });
+      default:
+        return false;
+    }
+  }
+
+  CastAutocastSpell(): State {
+    const spellComponent = getActorComponent(this.gameObject, SpellComponent);
+    if (!spellComponent) return State.FAILED;
+
+    const spellCastingSystem = getActorSystem(this.gameObject, SpellCastingSystem);
+    if (!spellCastingSystem) return State.FAILED;
+
+    const visionComponent = getActorComponent(this.gameObject, VisionComponent);
+    if (!visionComponent) return State.FAILED;
+
+    for (const spellType of spellComponent.availableSpells) {
+      if (!spellComponent.isAutocastEnabled(spellType)) continue;
+      if (!spellComponent.isSpellResearched(spellType)) continue;
+      if (!spellComponent.canCastSpell(spellType)) continue;
+
+      const spellData = spellDefinitions[spellType];
+      if (!spellData) continue;
+
+      // Find target position based on spell target type
+      let targetPosition: Vector3Simple | null = null;
+
+      switch (spellData.targetType) {
+        case SpellTargetType.EnemyUnit:
+        case SpellTargetType.Ground:
+          // For offensive spells, target closest enemy position
+          const enemy = visionComponent.getClosestVisibleEnemy();
+          if (enemy) {
+            const representableComponentEnemy = getActorComponent(enemy, RepresentableComponent);
+            if (enemy && representableComponentEnemy) {
+              targetPosition = representableComponentEnemy.logicalWorldTransform;
+            }
+          }
+          break;
+        case SpellTargetType.FriendlyUnit:
+          // Find damaged friendly
+          const friendlies = visionComponent.getVisibleFriendlies();
+          for (const friendly of friendlies) {
+            const healthComponent = getActorComponent(friendly, HealthComponent);
+            const representableComponentFriendly = getActorComponent(friendly, RepresentableComponent);
+            if (
+              healthComponent &&
+              !healthComponent.healthIsFull &&
+              healthComponent.alive &&
+              representableComponentFriendly
+            ) {
+              targetPosition = representableComponentFriendly.logicalWorldTransform;
+              break;
+            }
+          }
+          break;
+        case SpellTargetType.Self:
+          const representableComponentSelf = getActorComponent(this.gameObject, RepresentableComponent);
+          if (representableComponentSelf) {
+            targetPosition = representableComponentSelf.logicalWorldTransform;
+          }
+          break;
+      }
+
+      if (!targetPosition) continue;
+
+      // Cast the spell
+      const success = spellCastingSystem.castSpell(spellType, targetPosition);
+      if (success) {
+        return State.SUCCEEDED;
+      }
+    }
+
+    return State.FAILED;
   }
 }

@@ -68,8 +68,8 @@ export class LobbyComponent implements OnInit {
     );
   }
 
-  leaveLobby() {
-    this.router.navigate(["aota"]);
+  async leaveLobby() {
+    await this.gameInstanceClientService.leaveLobby();
   }
 
   deselectMap() {

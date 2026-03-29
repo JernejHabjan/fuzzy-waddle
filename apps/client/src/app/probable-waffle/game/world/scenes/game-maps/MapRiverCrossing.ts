@@ -72,6 +72,7 @@ import TivaraWorkerMale from "../../../prefabs/characters/tivara/tivara-worker/t
 import Stairs from "../../../prefabs/buildings/tivara/stairs/Stairs";
 import SoundEffectMarker from "../../../prefabs/buildings/misc/SoundEffectMarker";
 import SkaduweeMagicianFemale from "../../../prefabs/characters/skaduwee/skaduwee-magician-female/SkaduweeMagicianFemale";
+import EditorActorLevel from "../editor-components/EditorActorLevel";
 import FenceRightCorner from "../../../prefabs/outside/architecture/obstruction/FenceRightCorner";
 import FenceLeftCorner from "../../../prefabs/outside/architecture/obstruction/FenceLeftCorner";
 import ToxicFrog from "../../../prefabs/animals/toxic-frog/ToxicFrog";
@@ -82,6 +83,56 @@ import Badger from "../../../prefabs/animals/badger/Badger";
 import Emberstone from "../../../prefabs/buildings/skaduwee/Emberstone";
 import MiningCamp from "../../../prefabs/buildings/tivara/MiningCamp";
 import FrostForge from "../../../prefabs/buildings/skaduwee/FrostForge";
+import Centurion from "../../../prefabs/characters/general/centurion/Centurion";
+import Cyclops from "../../../prefabs/characters/mobs/cyclops/Cyclops";
+import Minotaur from "../../../prefabs/characters/mobs/minotaur/Minotaur";
+import Mummy from "../../../prefabs/characters/mobs/mummy/Mummy";
+import OrcBoomerang from "../../../prefabs/characters/mobs/orcs/orc_boomerang/OrcBoomerang";
+import OrcMagician from "../../../prefabs/characters/mobs/orcs/orc_magician/OrcMagician";
+import OrcWarrior from "../../../prefabs/characters/mobs/orcs/orc_warrior/OrcWarrior";
+import PirateScimitar from "../../../prefabs/characters/mobs/pirates/pirate_scimitar/PirateScimitar";
+import PirateSwordsman from "../../../prefabs/characters/mobs/pirates/pirate_swordsman/PirateSwordsman";
+import SkeletonBowman from "../../../prefabs/characters/mobs/skeleton/skeleton_bowman/SkeletonBowman";
+import SkeletonMelee from "../../../prefabs/characters/mobs/skeleton/skeleton_melee/SkeletonMelee";
+import SkeletonScythe from "../../../prefabs/characters/mobs/skeleton/skeleton_scythe/SkeletonScythe";
+import SkeletonSwordsman from "../../../prefabs/characters/mobs/skeleton/skeleton_swordsman/SkeletonSwordsman";
+import Zombie1 from "../../../prefabs/characters/mobs/zombies/zombie1/Zombie1";
+import Zombie2 from "../../../prefabs/characters/mobs/zombies/zombie2/Zombie2";
+import Zombie3 from "../../../prefabs/characters/mobs/zombies/zombie3/Zombie3";
+import TivaraAlchemist from "../../../prefabs/characters/tivara/tivara-alchemist/TivaraAlchemist";
+import TivaraMacemanMale from "../../../prefabs/characters/tivara/tivara-maceman-male/TivaraMacemanMale";
+import BlackGrouse from "../../../prefabs/animals/black_grouse/BlackGrouse";
+import Boar2 from "../../../prefabs/animals/boar2/Boar2";
+import Bull from "../../../prefabs/animals/bull/Bull";
+import Calf from "../../../prefabs/animals/calf/Calf";
+import Chick from "../../../prefabs/animals/chick/Chick";
+import Deer from "../../../prefabs/animals/deer/Deer";
+import Fox from "../../../prefabs/animals/fox/Fox";
+import Hare from "../../../prefabs/animals/hare/Hare";
+import Lamb from "../../../prefabs/animals/lamb/Lamb";
+import Piglet from "../../../prefabs/animals/piglet/Piglet";
+import Rooster from "../../../prefabs/animals/rooster/Rooster";
+import Sheep2 from "../../../prefabs/animals/sheep2/Sheep2";
+import Turkey from "../../../prefabs/animals/turkey/Turkey";
+import Banshee from "../../../prefabs/characters/mobs/banshee/Banshee";
+import BigWaterSlime from "../../../prefabs/characters/mobs/big_water_slime/BigWaterSlime";
+import FireSlime from "../../../prefabs/characters/mobs/fire_slime/FireSlime";
+import SmallWaterSlime from "../../../prefabs/characters/mobs/small_water_slime/SmallWaterSlime";
+import EarthGolem from "../../../prefabs/characters/mobs/earth_golem/EarthGolem";
+import StoneGolem from "../../../prefabs/characters/mobs/stone_golem/StoneGolem";
+import MetalGolem from "../../../prefabs/characters/mobs/metal_golem/MetalGolem";
+import Minotaur2 from "../../../prefabs/characters/mobs/minotaur2/Minotaur2";
+import Medusa from "../../../prefabs/characters/mobs/medusa/Medusa";
+import FlowerMonster from "../../../prefabs/characters/mobs/flower_monster/FlowerMonster";
+import FlyingDemonBlue from "../../../prefabs/characters/mobs/flying_demon_blue/FlyingDemonBlue";
+import FlyingDemonRed from "../../../prefabs/characters/mobs/flying_demon_red/FlyingDemonRed";
+import MushroomWarrior from "../../../prefabs/characters/mobs/mushroom_warrior/MushroomWarrior";
+import PumpkinWarlock from "../../../prefabs/characters/mobs/pumpkin_warlock/PumpkinWarlock";
+import PumpkinWarlockBat from "../../../prefabs/characters/mobs/pumpkin_warlock_bat/PumpkinWarlockBat";
+import PumpkinWarlockPumpkin from "../../../prefabs/characters/mobs/pumpkin_warlock_pumpkin/PumpkinWarlockPumpkin";
+import SandWorm from "../../../prefabs/characters/mobs/sand_worm/SandWorm";
+import ForestWendigo from "../../../prefabs/characters/mobs/forest_wendigo/ForestWendigo";
+import SnowWendigo from "../../../prefabs/characters/mobs/snow_wendigo/SnowWendigo";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -630,7 +681,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(reeds_4);
 
     // tivaraWorkerFemale
-    const tivaraWorkerFemale = new TivaraWorkerFemale(this, -672, 624);
+    const tivaraWorkerFemale = new TivaraWorkerFemale(this, -672, 1024);
     this.add.existing(tivaraWorkerFemale);
 
     // tivaraWorkerMale
@@ -855,6 +906,206 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     const minerals_10 = new Minerals(this, 832, 1104);
     this.add.existing(minerals_10);
 
+    // centurion
+    const centurion = new Centurion(this, -1472, 800);
+    this.add.existing(centurion);
+
+    // cyclops
+    const cyclops = new Cyclops(this, -1257, 910);
+    this.add.existing(cyclops);
+
+    // minotaur
+    const minotaur = new Minotaur(this, -1344, 816);
+    this.add.existing(minotaur);
+
+    // mummy
+    const mummy = new Mummy(this, -1173, 944);
+    this.add.existing(mummy);
+
+    // orcBoomerang
+    const orcBoomerang = new OrcBoomerang(this, -1088, 896);
+    this.add.existing(orcBoomerang);
+
+    // orcMagician
+    const orcMagician = new OrcMagician(this, -1112, 954);
+    this.add.existing(orcMagician);
+
+    // orcWarrior
+    const orcWarrior = new OrcWarrior(this, -1056, 992);
+    this.add.existing(orcWarrior);
+
+    // pirateScimitar
+    const pirateScimitar = new PirateScimitar(this, -1016, 1004);
+    this.add.existing(pirateScimitar);
+
+    // pirateSwordsman
+    const pirateSwordsman = new PirateSwordsman(this, -975, 1016);
+    this.add.existing(pirateSwordsman);
+
+    // skeletonBowman
+    const skeletonBowman = new SkeletonBowman(this, -908, 1019);
+    this.add.existing(skeletonBowman);
+
+    // skeletonMelee
+    const skeletonMelee = new SkeletonMelee(this, -870, 1034);
+    this.add.existing(skeletonMelee);
+
+    // skeletonScythe
+    const skeletonScythe = new SkeletonScythe(this, -841, 1060);
+    this.add.existing(skeletonScythe);
+
+    // skeletonSwordsman
+    const skeletonSwordsman = new SkeletonSwordsman(this, -800, 1067);
+    this.add.existing(skeletonSwordsman);
+
+    // zombie1
+    const zombie1 = new Zombie1(this, -942, 894);
+    this.add.existing(zombie1);
+
+    // zombie2
+    const zombie2 = new Zombie2(this, -918, 904);
+    this.add.existing(zombie2);
+
+    // zombie3
+    const zombie3 = new Zombie3(this, -886, 905);
+    this.add.existing(zombie3);
+
+    // tivaraAlchemist
+    const tivaraAlchemist = new TivaraAlchemist(this, -384, 656);
+    this.add.existing(tivaraAlchemist);
+
+    // tivaraMacemanMale
+    const tivaraMacemanMale = new TivaraMacemanMale(this, -512, 544);
+    this.add.existing(tivaraMacemanMale);
+
+    // black_grouse
+    const black_grouse = new BlackGrouse(this, -481, 1169);
+    this.add.existing(black_grouse);
+
+    // boar2
+    const boar2 = new Boar2(this, -492, 1233);
+    this.add.existing(boar2);
+
+    // bull
+    const bull = new Bull(this, -446, 1127);
+    this.add.existing(bull);
+
+    // calf
+    const calf = new Calf(this, -516, 1112);
+    this.add.existing(calf);
+
+    // chick
+    const chick = new Chick(this, -580, 1135);
+    this.add.existing(chick);
+
+    // deer
+    const deer = new Deer(this, -555, 1085);
+    this.add.existing(deer);
+
+    // fox
+    const fox = new Fox(this, -384, 1104);
+    this.add.existing(fox);
+
+    // hare
+    const hare = new Hare(this, -527, 1204);
+    this.add.existing(hare);
+
+    // lamb
+    const lamb = new Lamb(this, -576, 1184);
+    this.add.existing(lamb);
+
+    // piglet
+    const piglet = new Piglet(this, -450, 1044);
+    this.add.existing(piglet);
+
+    // rooster
+    const rooster = new Rooster(this, -341, 1042);
+    this.add.existing(rooster);
+
+    // sheep2
+    const sheep2 = new Sheep2(this, -384, 1056);
+    this.add.existing(sheep2);
+
+    // turkey
+    const turkey = new Turkey(this, -277, 1088);
+    this.add.existing(turkey);
+
+    // banshee
+    const banshee = new Banshee(this, -704, 1152);
+    this.add.existing(banshee);
+
+    // bigWaterSlime
+    const bigWaterSlime = new BigWaterSlime(this, -708, 1060);
+    this.add.existing(bigWaterSlime);
+
+    // fireSlime
+    const fireSlime = new FireSlime(this, -638, 1021);
+    this.add.existing(fireSlime);
+
+    // smallWaterSlime
+    const smallWaterSlime = new SmallWaterSlime(this, -640, 1088);
+    this.add.existing(smallWaterSlime);
+
+    // eartGolem
+    const eartGolem = new EarthGolem(this, -719, 956);
+    this.add.existing(eartGolem);
+
+    // stoneGolem
+    const stoneGolem = new StoneGolem(this, -792, 1129);
+    this.add.existing(stoneGolem);
+
+    // metalGolem
+    const metalGolem = new MetalGolem(this, -640, 1168);
+    this.add.existing(metalGolem);
+
+    // minotaur2
+    const minotaur2 = new Minotaur2(this, -544, 1008);
+    this.add.existing(minotaur2);
+
+    // medusa
+    const medusa = new Medusa(this, -672, 800);
+    this.add.existing(medusa);
+
+    // flowerMonster
+    const flowerMonster = new FlowerMonster(this, -544, 880);
+    this.add.existing(flowerMonster);
+
+    // flyingDemonBlue
+    const flyingDemonBlue = new FlyingDemonBlue(this, -622, 932);
+    this.add.existing(flyingDemonBlue);
+
+    // flyingDemonRed
+    const flyingDemonRed = new FlyingDemonRed(this, -340, 936);
+    this.add.existing(flyingDemonRed);
+
+    // mushroomWarrior
+    const mushroomWarrior = new MushroomWarrior(this, -288, 992);
+    this.add.existing(mushroomWarrior);
+
+    // pumpkinWarlock
+    const pumpkinWarlock = new PumpkinWarlock(this, -416, 1264);
+    this.add.existing(pumpkinWarlock);
+
+    // pumpkinWarlockBat
+    const pumpkinWarlockBat = new PumpkinWarlockBat(this, -365, 1306);
+    this.add.existing(pumpkinWarlockBat);
+
+    // pumpkinWarlockPumpkin
+    const pumpkinWarlockPumpkin = new PumpkinWarlockPumpkin(this, -448, 1312);
+    this.add.existing(pumpkinWarlockPumpkin);
+
+    // sandWorm
+    const sandWorm = new SandWorm(this, -704, 864);
+    this.add.existing(sandWorm);
+
+    // forestWendigo
+    const forestWendigo = new ForestWendigo(this, -608, 832);
+    this.add.existing(forestWendigo);
+
+    // snowWendigo
+    const snowWendigo = new SnowWendigo(this, -768, 800);
+    this.add.existing(snowWendigo);
+
     // spawn (components)
     const spawnEditorOwner = new EditorOwner(spawn);
     spawnEditorOwner.owner_id = "1";
@@ -1010,6 +1261,8 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // skaduweeWarriorMale_1 (components)
     const skaduweeWarriorMale_1EditorOwner = new EditorOwner(skaduweeWarriorMale_1);
     skaduweeWarriorMale_1EditorOwner.owner_id = "1";
+    const skaduweeWarriorMale_1EditorActorLevel = new EditorActorLevel(skaduweeWarriorMale_1);
+    skaduweeWarriorMale_1EditorActorLevel.level = 2;
 
     // skaduweeWorkerFemale_1 (components)
     const skaduweeWorkerFemale_1EditorOwner = new EditorOwner(skaduweeWorkerFemale_1);
@@ -1046,6 +1299,77 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // emberstone_1 (components)
     const emberstone_1EditorOwner = new EditorOwner(emberstone_1);
     emberstone_1EditorOwner.owner_id = "1";
+
+    // centurion (components)
+    const centurionEditorOwner = new EditorOwner(centurion);
+    centurionEditorOwner.owner_id = "1";
+
+    // cyclops (components)
+    new EditorOwner(cyclops);
+
+    // minotaur (components)
+    const minotaurEditorOwner = new EditorOwner(minotaur);
+    minotaurEditorOwner.owner_id = "1";
+
+    // mummy (components)
+    const mummyEditorOwner = new EditorOwner(mummy);
+    mummyEditorOwner.owner_id = "1";
+
+    // orcBoomerang (components)
+    const orcBoomerangEditorOwner = new EditorOwner(orcBoomerang);
+    orcBoomerangEditorOwner.owner_id = "1";
+
+    // orcMagician (components)
+    const orcMagicianEditorOwner = new EditorOwner(orcMagician);
+    orcMagicianEditorOwner.owner_id = "1";
+
+    // orcWarrior (components)
+    const orcWarriorEditorOwner = new EditorOwner(orcWarrior);
+    orcWarriorEditorOwner.owner_id = "1";
+
+    // pirateScimitar (components)
+    const pirateScimitarEditorOwner = new EditorOwner(pirateScimitar);
+    pirateScimitarEditorOwner.owner_id = "1";
+
+    // pirateSwordsman (components)
+    const pirateSwordsmanEditorOwner = new EditorOwner(pirateSwordsman);
+    pirateSwordsmanEditorOwner.owner_id = "1";
+
+    // skeletonBowman (components)
+    const skeletonBowmanEditorOwner = new EditorOwner(skeletonBowman);
+    skeletonBowmanEditorOwner.owner_id = "1";
+
+    // skeletonMelee (components)
+    const skeletonMeleeEditorOwner = new EditorOwner(skeletonMelee);
+    skeletonMeleeEditorOwner.owner_id = "1";
+
+    // skeletonScythe (components)
+    const skeletonScytheEditorOwner = new EditorOwner(skeletonScythe);
+    skeletonScytheEditorOwner.owner_id = "1";
+
+    // skeletonSwordsman (components)
+    const skeletonSwordsmanEditorOwner = new EditorOwner(skeletonSwordsman);
+    skeletonSwordsmanEditorOwner.owner_id = "1";
+
+    // zombie1 (components)
+    const zombie1EditorOwner = new EditorOwner(zombie1);
+    zombie1EditorOwner.owner_id = "1";
+
+    // zombie2 (components)
+    const zombie2EditorOwner = new EditorOwner(zombie2);
+    zombie2EditorOwner.owner_id = "1";
+
+    // zombie3 (components)
+    const zombie3EditorOwner = new EditorOwner(zombie3);
+    zombie3EditorOwner.owner_id = "1";
+
+    // tivaraAlchemist (components)
+    const tivaraAlchemistEditorOwner = new EditorOwner(tivaraAlchemist);
+    tivaraAlchemistEditorOwner.owner_id = "1";
+
+    // tivaraMacemanMale (components)
+    const tivaraMacemanMaleEditorOwner = new EditorOwner(tivaraMacemanMale);
+    tivaraMacemanMaleEditorOwner.owner_id = "1";
 
     this.tilemap = tilemap;
 

@@ -10,7 +10,7 @@ import {
 import { ActorManager } from "../../data/actor-manager";
 import { getGameObjectBounds, getGameObjectLogicalTransform, onSceneInitialized } from "../../data/game-object-helper";
 import { DepthHelper } from "../../world/services/depth.helper";
-import { pwActorDefinitions } from "../../prefabs/definitions/actor-definitions";
+import { getPwActorDefinition } from "../../prefabs/definitions/actor-definitions";
 import { upgradeFromCoreToConstructingActorData } from "../../data/actor-data";
 import { emitEventIssueActorCommandToSelectedActors, getCurrentPlayerNumber } from "../../data/scene-data";
 import { EventEmitter } from "@angular/core";
@@ -35,8 +35,8 @@ import { OrderData } from "../../ai/OrderData";
 import { OrderType } from "../../ai/order-type";
 import { getCostForObjectName } from "../../entity/components/production/cost-utils";
 import { IsoHelper } from "../../world/tilemap/iso-helper";
-import Vector2 = Phaser.Math.Vector2;
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
+import Vector2 = Phaser.Math.Vector2;
 
 export class BuildingCursor {
   placementGrid?: GameObjects.Graphics;
@@ -64,7 +64,7 @@ export class BuildingCursor {
   private invalidCursorPositions: Set<string> = new Set(); // Track positions where buildings can't be placed
   private actorsToMove: Set<GameObjects.GameObject> = new Set(); // Track actors that need to be moved when placing buildings
   private externalModalOpen: boolean = false;
-  private chatModalSubscription?: Subscription;
+  private externalModalSubscription?: Subscription;
 
   // Helper: stable key based on snapped logical position (avoids z-offset and float drift)
   private getSnappedLogicalKey(go: GameObjects.GameObject): string | undefined {
@@ -93,9 +93,12 @@ export class BuildingCursor {
     this.audioService = getSceneService(this.scene, AudioService);
     this.fogOfWarComponent = getSceneComponent(this.scene, FogOfWarComponent);
     this.actorIndex = getSceneService(this.scene, ActorIndexSystem)!;
+    this.subscribeToExternalModalEvents();
+  }
 
+  private subscribeToExternalModalEvents(): void {
     // Listen to chat modal state changes
-    this.chatModalSubscription = this.scene.communicator.allScenes.subscribe((event) => {
+    this.externalModalSubscription = this.scene.communicator.allScenes.subscribe((event) => {
       if (event.name === "external-modal-opened") {
         this.externalModalOpen = true;
       } else if (event.name === "external-modal-closed") {
@@ -292,7 +295,7 @@ export class BuildingCursor {
   private spawn(name: ObjectNames) {
     if (this.building) this.stop();
 
-    const definition = pwActorDefinitions[name as ObjectNames]?.components?.constructable;
+    const definition = getPwActorDefinition(name, null)?.components?.constructable;
     if (!definition) return;
 
     this.canBeDragPlaced = definition.canBeDragPlaced;
@@ -603,7 +606,7 @@ export class BuildingCursor {
   private drawAttackRange(location: Vector2Simple) {
     if (!location || !this.building) return;
 
-    const definition = pwActorDefinitions[this.building.name as ObjectNames];
+    const definition = getPwActorDefinition(this.building.name, null);
     if (!definition) return;
 
     const attackDefinition = definition.components?.attack;
@@ -931,7 +934,7 @@ export class BuildingCursor {
   }
 
   private onEscapeKeyDown() {
-    // Don't process keyboard events if chat modal is open
+    // Don't process keyboard events if external modal is open
     if (this.externalModalOpen) return;
     this.stop();
   }
@@ -959,7 +962,7 @@ export class BuildingCursor {
     this.scene.input.off(Input.Events.GAME_OUT, this.stop, this);
     this.escKey?.off(Phaser.Input.Keyboard.Events.DOWN, this.onEscapeKeyDown, this);
     this.shiftKey?.destroy();
-    this.chatModalSubscription?.unsubscribe();
+    this.externalModalSubscription?.unsubscribe();
     this.startPlacingSubscription.unsubscribe();
     this.stopPlacingSubscription.unsubscribe();
   }

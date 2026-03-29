@@ -12,15 +12,17 @@ import HudProbableWaffle from "../../../world/scenes/hud-scenes/HudProbableWaffl
 import { Subscription } from "rxjs";
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { getCurrentPlayerNumber, getSelectedActors, listenToSelectionEvents } from "../../../data/scene-data";
-import { pwActorDefinitions } from "../../definitions/actor-definitions";
+import { getPwActorDefinition } from "../../definitions/actor-definitions";
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { getActorComponent } from "../../../data/actor-component";
 import { HealthComponent } from "../../../entity/components/combat/components/health-component";
 import { ConstructionSiteComponent } from "../../../entity/components/construction/construction-site-component";
 import { OwnerComponent } from "../../../entity/components/owner-component";
 import type { PrefabDefinition } from "../../definitions/prefab-definition";
-import { getSceneComponent } from "../../../world/services/scene-component-helpers";
+import { getSceneComponent, getSceneService } from "../../../world/services/scene-component-helpers";
 import { SelectionTabHandler } from "../../../player/human-controller/selection-tab-handler";
+import { ResearchComponent } from "../../../entity/components/research/research-component";
+import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 /* END-USER-IMPORTS */
 
 export default class ActorInfoContainer extends Phaser.GameObjects.Container {
@@ -92,30 +94,32 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
   private selectionChangedSubscription?: Subscription;
   private actorInfoLabelsVisibilitySubscription?: Subscription;
   private tabHandlerSubscription?: Subscription;
+  private researchEventSubscriptions: Subscription[] = [];
   private readonly mainSceneWithActors: ProbableWaffleScene;
 
   private subscribeToPlayerSelection() {
     this.selectionChangedSubscription = listenToSelectionEvents(this.scene)?.subscribe(() => {
       const selectedActors = getSelectedActors(this.mainSceneWithActors);
-      
+
       // Update tab handler with new selection
       const tabHandler = getSceneComponent(this.mainSceneWithActors, SelectionTabHandler);
       if (tabHandler) {
         tabHandler.updateGroupedActors();
       }
-      
+
       if (selectedActors.length === 0) {
         this.hideAllLabels();
         return;
       }
       const actor = selectedActors[0];
       if (!actor) throw new Error("Actor not found");
-      const definition = pwActorDefinitions[actor.name as ObjectNames];
-      this.setActorInfoLabel(definition);
+      const definition = getPwActorDefinition(actor.name, null);
+      if (definition) this.setActorInfoLabel(definition);
       if (selectedActors.length === 1) {
         this.setActorDetailLabels(actor);
         this.subscribeToActorKillEvent(actor);
         this.subscribeToActorConstructionEvent(actor);
+        this.subscribeToResearchChanges();
         return;
       }
       // multi-selection - always show all actors, highlight current tab group
@@ -124,7 +128,7 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
       this.actorDetails.hideAll();
       this.progress_bar.cleanActor();
     });
-    
+
     // Subscribe to tab changes to update display
     const tabHandler = getSceneComponent(this.mainSceneWithActors, SelectionTabHandler);
     if (tabHandler) {
@@ -133,25 +137,25 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
       });
     }
   }
-  
+
   private updateDisplayForCurrentTab() {
     const tabHandler = getSceneComponent(this.mainSceneWithActors, SelectionTabHandler);
     if (!tabHandler) return;
-    
+
     const selectedActors = getSelectedActors(this.mainSceneWithActors);
     const currentTabActors = tabHandler.currentTabActors;
-    
+
     if (selectedActors.length === 0 || currentTabActors.length === 0) {
       this.hideAllLabels();
       return;
     }
-    
+
     const actor = currentTabActors[0];
     if (!actor) return;
-    
-    const definition = pwActorDefinitions[actor.name as ObjectNames];
-    this.setActorInfoLabel(definition);
-    
+
+    const definition = getPwActorDefinition(actor.name, null);
+    if (definition) this.setActorInfoLabel(definition);
+
     if (currentTabActors.length === 1 && selectedActors.length === 1) {
       this.setActorDetailLabels(actor);
       this.subscribeToActorKillEvent(actor);
@@ -165,8 +169,8 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
   }
 
   private setActorDetailLabels(actor: Phaser.GameObjects.GameObject) {
-    const definition = pwActorDefinitions[actor.name as ObjectNames];
-    this.actorDetails.showActorAttributes(actor, definition);
+    const definition = getPwActorDefinition(actor.name, null);
+    if (definition) this.actorDetails.showActorAttributes(actor, definition);
     if (this.canShowIcons(actor)) {
       this.progress_bar.setProgressBar(actor);
       this.actorInfoLabels.setLabelsForDisplayingActorsQueues(actor);
@@ -255,6 +259,33 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
     return actorPlayerNr === currentPlayerNr;
   }
 
+  private subscribeToResearchChanges() {
+    // Unsubscribe from all previous research subscriptions
+    this.researchEventSubscriptions.forEach((sub) => sub.unsubscribe());
+    this.researchEventSubscriptions = [];
+
+    const playerNr = getCurrentPlayerNumber(this.mainSceneWithActors);
+    if (!playerNr) return;
+
+    // Get all owned actors with research components
+    const actorIndex = getSceneService(this.mainSceneWithActors, ActorIndexSystem);
+    if (!actorIndex) return;
+
+    const ownedActors = actorIndex.getOwnedActors(playerNr);
+
+    // Subscribe to research events for all owned buildings
+    ownedActors.forEach((actor) => {
+      const researchComponent = getActorComponent(actor, ResearchComponent);
+      if (researchComponent) {
+        // Research completed - refresh display
+        const completedSub = researchComponent.researchCompleted.subscribe(() => {
+          this.updateDisplayForCurrentTab();
+        });
+        this.researchEventSubscriptions.push(completedSub);
+      }
+    });
+  }
+
   override destroy(fromScene?: boolean) {
     super.destroy(fromScene);
     this.selectionChangedSubscription?.unsubscribe();
@@ -262,6 +293,7 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
     this.actorConstructionSubscription?.unsubscribe();
     this.actorInfoLabelsVisibilitySubscription?.unsubscribe();
     this.tabHandlerSubscription?.unsubscribe();
+    this.researchEventSubscriptions.forEach((sub) => sub.unsubscribe());
   }
   /* END-USER-CODE */
 }

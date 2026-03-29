@@ -1,8 +1,7 @@
-import { DamageType } from "../damage-type";
 import { EventEmitter } from "@angular/core";
 import { HealthUiComponent } from "./health-ui-component";
 import { Subject, Subscription } from "rxjs";
-import { type HealthComponentData } from "@fuzzy-waddle/api-interfaces";
+import { DamageType, type HealthComponentData } from "@fuzzy-waddle/api-interfaces";
 import { ComponentSyncSystem } from "../../../systems/component-sync.system";
 import { ContainerComponent } from "../../building/container-component";
 import Phaser from "phaser";
@@ -100,7 +99,7 @@ export class HealthComponent {
 
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,
-    public readonly healthDefinition: HealthDefinition
+    public healthDefinition: HealthDefinition
   ) {
     // Initial health and armor data
     const initialData: HealthComponentData = {
@@ -123,12 +122,6 @@ export class HealthComponent {
 
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.on(ContainerComponent.GameObjectVisibilityChanged, this.gameObjectVisibilityChanged, this);
-
-    if (!this.healthDefinition.healthDisplayBehavior || this.healthDefinition.healthDisplayBehavior === "always") {
-      this.setVisibilityUiComponent(true);
-    } else {
-      this.setVisibilityUiComponent(false);
-    }
 
     onObjectReady(gameObject, this.init, this);
   }
@@ -186,6 +179,12 @@ export class HealthComponent {
     }
     // Todo - now calling refreshVisibility on tick to update visibility due to FOW changes
     this.gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.refreshVisibility, this);
+
+    if (!this.healthDefinition.healthDisplayBehavior || this.healthDefinition.healthDisplayBehavior === "always") {
+      this.setVisibilityUiComponent(true);
+    } else {
+      this.setVisibilityUiComponent(false);
+    }
   }
 
   private refreshVisibility() {
@@ -248,6 +247,8 @@ export class HealthComponent {
     } else {
       this.healthComponentData.health = Math.max(this.healthComponentData.health - damage, 0);
     }
+
+    this.gameObject.scene.events.emit("score.damage", this.gameObject, damage, damageInitiator);
 
     if (this.healthDefinition.healthDisplayBehavior === "onDamage") {
       this.setVisibilityUiComponent(true);
@@ -340,6 +341,14 @@ export class HealthComponent {
     this.healthComponentData.armour = this.healthDefinition.maxArmour ?? 0;
   }
 
+  setHealthDefinition(healthDefinition: HealthDefinition) {
+    this.healthDefinition = healthDefinition;
+    this.healthComponentData.health = healthDefinition.maxHealth;
+    this.healthComponentData.armour = healthDefinition.maxArmour ?? 0;
+    this.syncArmorUiComponent();
+    this.refreshUiComponents();
+  }
+
   setVisibilityUiComponent(visible: boolean) {
     if (!this.gameObject.active) return;
     this.shouldUiElementsBeVisible = visible;
@@ -402,5 +411,22 @@ export class HealthComponent {
     if (gameObjectDepth) {
       effect.setDepth(gameObjectDepth + 1);
     }
+  }
+
+  private syncArmorUiComponent() {
+    const hasArmor = (this.healthDefinition.maxArmour ?? 0) > 0;
+    if (hasArmor) {
+      this.armorUiComponent ??= new HealthUiComponent(this.gameObject, "armor");
+      this.armorUiComponent.setVisibility(this.uiComponentsVisible);
+      return;
+    }
+
+    this.armorUiComponent?.destroy();
+    this.armorUiComponent = undefined;
+  }
+
+  private refreshUiComponents() {
+    this.healthUiComponent.refresh();
+    this.armorUiComponent?.refresh();
   }
 }

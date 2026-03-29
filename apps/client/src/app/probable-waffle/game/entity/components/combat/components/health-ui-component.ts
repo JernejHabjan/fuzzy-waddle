@@ -7,12 +7,13 @@ import { OwnerComponent } from "../../owner-component";
 import { ActorTranslateComponent } from "../../movement/actor-translate-component";
 
 export class HealthUiComponent {
-  static ZIndex = 1;
+  static readonly ZIndex = 1;
   private healthComponent?: HealthComponent;
   private readonly bar: GameObjects.Graphics;
   private barWidth = 25;
-  private barHeight = 8;
-  static barBorder = 2;
+  private readonly barHeight = 8;
+  static readonly barBorder = 2;
+  private readonly aboveGameObjectOffset = 12;
 
   private redThreshold = 0.3;
   private orangeThreshold = 0.5;
@@ -105,7 +106,7 @@ export class HealthUiComponent {
 
     const width = this.barWidth;
     const x = bounds.centerX - width / 2;
-    let y = bounds.centerY - bounds.height / 2;
+    let y = bounds.centerY - bounds.height / 2 - this.aboveGameObjectOffset;
     if (this.type === "armor") {
       y += this.barHeight - HealthUiComponent.barBorder;
     }
@@ -121,6 +122,11 @@ export class HealthUiComponent {
     this.changedSubscription?.unsubscribe();
     this.actorMovedSubscription?.unsubscribe();
     this.gameObject.off(OwnerComponent.OwnerColorAppliedEvent, this.draw, this);
+  }
+
+  refresh() {
+    if (!this.bar.active) return;
+    this.draw();
   }
 
   private draw() {

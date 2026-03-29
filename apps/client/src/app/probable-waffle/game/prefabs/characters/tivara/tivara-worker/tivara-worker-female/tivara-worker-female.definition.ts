@@ -20,6 +20,11 @@ export const tivaraWorkerFemaleDefinition = {
   ...tivaraWorkerDefinition,
   components: {
     ...tivaraWorkerDefinition.components,
+    representable: {
+      width: 32,
+      height: 48,
+      origin: { x: 0.5, y: 0.8922974795475218 }
+    },
     info: {
       name: "Dustbound",
       description: "Bound by ancient decree, they labor in the sand to honor what once was — and what must return",

@@ -1,0 +1,47 @@
+{
+    "id": "1457b917-a97a-463b-2989-e0ec3446c7a8",
+    "sceneType": "PREFAB",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 1280,
+        "borderHeight": 720
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "e76c1fc5-9b94-46d4-bb7e-f2bc03ec42b6",
+            "label": "container_1",
+            "hitArea.shape": "CIRCLE",
+            "hitArea.y": -25.354877574887297,
+            "hitArea.radius": 32,
+            "x": 32,
+            "y": 57.077002702152576,
+            "list": [
+                {
+                    "type": "Sprite",
+                    "id": "e3527f1d-89a8-4604-b032-f9950fadd5d9",
+                    "label": "general_warrior_idle_down",
+                    "texture": {
+                        "key": "skeleton_scythe_idle",
+                        "frame": 4
+                    },
+                    "y": -25.077002702152576,
+                    "animationPlayMethod": 1,
+                    "animationKey": "skeleton_scythe_idle_2"
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

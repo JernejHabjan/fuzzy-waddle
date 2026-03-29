@@ -1,6 +1,5 @@
 import { Component, inject } from "@angular/core";
 import { AuthService } from "../../auth/auth.service";
-import { DbAccessTestService } from "../../data-access/db-access-test/db-access-test.service";
 import { environment } from "../../../environments/environment";
 import { ServerHealthService } from "../../shared/services/server-health.service";
 
@@ -69,6 +68,5 @@ export class HomePageComponent {
   }
 
   protected readonly authService = inject(AuthService);
-  protected readonly dbAccessTestService = inject(DbAccessTestService);
   protected readonly serverHealthService = inject(ServerHealthService);
 }

@@ -13,7 +13,8 @@ import { DebuggingService } from "../../world/services/DebuggingService";
 import { Subscription } from "rxjs";
 import { getActorComponent } from "../../data/actor-component";
 import { ProductionComponent } from "../../entity/components/production/production-component";
-import { pwActorDefinitions } from "../../prefabs/definitions/actor-definitions";
+import { ResearchComponent } from "../../entity/components/research/research-component";
+import { getPwActorDefinition, pwActorDefinitions } from "../../prefabs/definitions/actor-definitions";
 import { GathererComponent } from "../../entity/components/resource/gatherer-component";
 import { BuilderComponent } from "../../entity/components/construction/builder-component";
 import { PawnAiController } from "../../prefabs/ai-agents/pawn-ai-controller";
@@ -44,6 +45,7 @@ import { EconomyManager } from "./ai-behavior/economy-manager";
 import { PlayerAiBlackboard } from "./player-ai-blackboard";
 import { WorldStateSnapshotManager } from "./ai-behavior/world-state-snapshot-manager";
 import { getUnitStrength } from "./ai-utils";
+import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class PlayerAiControllerAgent implements IPlayerControllerAgent {
@@ -140,58 +142,171 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     this.scoutingManager.updateVisionSampling(now);
     // Update primary target cache
     await this.targetingManager.update(now);
-    this.processPrerequisiteQueue(now);
+    this.processPrerequisiteQueue();
     if (this.cooldowns.canRun("adaptiveThresholds", now)) {
       this.adaptiveThresholds.update();
       this.cooldowns.markRun("adaptiveThresholds", now);
     }
   }
 
-  private processPrerequisiteQueue(now: number) {
+  private processPrerequisiteQueue() {
     const queue = this.blackboard.production.prereqQueue;
     if (!queue || queue.length === 0) return;
     const next = queue[0];
     if (!next) return;
-    // Heuristic: attempt construct via assignBuilding if building definition exists; else attempt production.
-    const isBuilding = pwActorDefinitions[next.objectName]?.components?.production; // buildings have production component usually
-    if (next.type === "construct" && isBuilding) {
-      const state = this.assignBuilding(next.objectName as ObjectNames);
-      if (state === State.SUCCEEDED) queue.shift();
-      return;
-    }
-    if (next.type === "produce" || !isBuilding) {
-      // Attempt to queue production in any idle training building
-      const prodBuilding = this.blackboard.trainingBuildings.find((b) => {
-        const prod = getActorComponent(b, ProductionComponent);
-        return prod?.isIdle;
-      });
-      if (prodBuilding) {
-        const prod = getActorComponent(prodBuilding, ProductionComponent);
-        const def = pwActorDefinitions[next.objectName as ObjectNames];
-        const costData = def?.components?.productionCost;
-        if (prod && costData) {
-          const validation = this.productionValidator.validate(next.objectName as ObjectNames);
-          if (validation && !validation.canQueue) {
-            // If still blocked (e.g., nested prereqs) schedule them (avoid infinite loop by checking difference)
-            if (validation.techBlocked && validation.prereqs.length > 0) {
-              this.productionValidator.schedulePrerequisites(validation.prereqs, next.objectName as ObjectNames);
-            }
-            // Handle building prerequisites
-            if (
-              validation.buildingPrereqBlocked &&
-              validation.missingBuildings &&
-              validation.missingBuildings.length > 0
-            ) {
-              this.productionValidator.schedulePrerequisites(
-                validation.missingBuildings,
-                next.objectName as ObjectNames
-              );
-            }
-            return;
-          }
-          prod.startProduction({ actorName: next.objectName as ObjectNames, costData });
-          queue.shift();
+
+    // Handle different prerequisite types
+    switch (next.type) {
+      case "prefab": {
+        // Extract the target object name from the prereq
+        const targetObjectName =
+          next.preRequirement.prereqs.objectNames.length > 0 ? next.preRequirement.prereqs.objectNames[0] : null;
+
+        if (!targetObjectName) {
+          queue.shift(); // Remove invalid entry
+          return;
         }
+
+        // Heuristic: attempt construct via assignBuilding if building definition exists; else attempt production.
+        const isBuilding = getPwActorDefinition(targetObjectName, null)?.components?.production; // buildings have production component usually
+        if (isBuilding) {
+          const state = this.assignBuilding(targetObjectName);
+          if (state === State.SUCCEEDED) queue.shift();
+          return;
+        } else {
+          // Attempt to queue production in any idle training building
+          const prodBuilding = this.blackboard.trainingBuildings.find((b) => {
+            const prod = getActorComponent(b, ProductionComponent);
+            return prod?.isIdle;
+          });
+          if (prodBuilding) {
+            const prod = getActorComponent(prodBuilding, ProductionComponent);
+            const def = getPwActorDefinition(targetObjectName, null);
+            const costData = def?.components?.productionCost;
+            if (prod && costData) {
+              const validation = this.productionValidator.validate(targetObjectName);
+              if (validation && !validation.canQueue) {
+                // If still blocked (e.g., nested prereqs) schedule them (avoid infinite loop by checking difference)
+                const hasPrereqs =
+                  validation.prereqs.objectNames.length > 0 ||
+                  validation.prereqs.researchTypes.length > 0 ||
+                  Object.keys(validation.prereqs.resources).length > 0 ||
+                  (validation.prereqs.supply !== null && validation.prereqs.supply > 0);
+
+                if (hasPrereqs) {
+                  this.productionValidator.schedulePrerequisites(validation, targetObjectName);
+                }
+                return;
+              }
+              prod.startProduction({ actorName: targetObjectName, costData });
+              queue.shift();
+            }
+          }
+        }
+        break;
+      }
+
+      case "research": {
+        const researchType =
+          next.preRequirement.prereqs.researchTypes.length > 0 ? next.preRequirement.prereqs.researchTypes[0] : null;
+
+        if (!researchType) {
+          queue.shift(); // Remove invalid entry
+          return;
+        }
+
+        // Check if already researched
+        const owner = this.player.playerNumber;
+        if (owner !== undefined && getSceneService(this.scene, TechTreeService)!.isResearched(owner, researchType)) {
+          queue.shift(); // Already completed
+          return;
+        }
+
+        // Find a building that can perform this research and is not currently researching
+        const researchBuilding = this.blackboard.productionBuildings.find((b) => {
+          const researchComponent = getActorComponent(b, ResearchComponent);
+          if (!researchComponent) return false;
+
+          // Check if building can perform this specific research and is not currently researching
+          return researchComponent.availableResearch.includes(researchType) && !researchComponent.isResearching;
+        });
+
+        if (researchBuilding) {
+          const researchComponent = getActorComponent(researchBuilding, ResearchComponent);
+          if (researchComponent) {
+            const started = researchComponent.startResearch(researchType);
+            if (started) {
+              this.logDebugInfo(`[AI] Started research: ${researchType}`);
+              queue.shift(); // Successfully started, remove from queue
+            } else {
+              const validation = researchComponent.canStartResearch(researchType);
+              this.logDebugInfo(`[AI] Cannot start research ${researchType}: ${validation.reason}`);
+              // Don't remove from queue, might become available later (e.g., when resources arrive)
+            }
+          }
+        } else {
+          // No building available for this research - might need to build one first
+          this.logDebugInfo(`[AI] No building available for research: ${researchType}`);
+        }
+        break;
+      }
+
+      case "supply": {
+        const requiredSupply = next.preRequirement.prereqs.supply;
+        if (!requiredSupply) {
+          queue.shift(); // Remove invalid entry
+          return;
+        }
+
+        // Check if we now have enough supply
+        const currentSupply = this.blackboard.production.supply.max;
+        const currentSupplyUsed = this.blackboard.production.supply.used;
+        const availableSupply = currentSupply - currentSupplyUsed;
+
+        if (availableSupply >= requiredSupply) {
+          queue.shift(); // Supply requirement met
+        } else {
+          // Try to build supply structures
+          // Find supply-providing building (e.g., house, farm, etc.)
+          const supplyBuildingEntry = Object.entries(pwActorDefinitions)
+            .filter(([_, def]) => !!def?.components?.housing?.housingCapacity)
+            .sort(([, defA], [, defB]) => {
+              const capA = defA?.components?.housing?.housingCapacity ?? 0;
+              const capB = defB?.components?.housing?.housingCapacity ?? 0;
+              return capB - capA; // Descending order (higher capacity first)
+            })[0];
+
+          if (supplyBuildingEntry) {
+            const [supplyBuildingName] = supplyBuildingEntry;
+            this.assignBuilding(supplyBuildingName as ObjectNames);
+            // Don't remove from queue until supply is actually available
+          }
+        }
+        break;
+      }
+
+      case "resources": {
+        const requiredResources = next.preRequirement.prereqs.resources;
+        if (!requiredResources || Object.keys(requiredResources).length === 0) {
+          queue.shift(); // Remove invalid entry
+          return;
+        }
+
+        // Check if we now have enough resources
+        let hasAllResources = true;
+        for (const [resourceType, amount] of Object.entries(requiredResources)) {
+          const currentAmount = this.blackboard.economy.resources[resourceType as ResourceType] || 0;
+          if (amount !== undefined && currentAmount < amount) {
+            hasAllResources = false;
+            break;
+          }
+        }
+
+        if (hasAllResources) {
+          queue.shift(); // Resource requirement met
+        }
+        // Otherwise wait for resources to accumulate
+        break;
       }
     }
   }
@@ -286,6 +401,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
         let closestEnemy: GameObject | null = null;
         let closestDist = Infinity;
         this.blackboard.enemiesNearBase.forEach((enemy) => {
+          if (!unit.active || !enemy.active) return;
           const d = DistanceHelper.getTileDistanceBetweenGameObjects(unit, enemy);
           if (d !== null && d < closestDist) {
             closestDist = d;
@@ -459,11 +575,13 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     if (this.productionValidator) {
       const validation = this.productionValidator.validate(workerName);
       if (!validation.canQueue) {
-        if (validation.techBlocked && validation.prereqs.length > 0) {
+        const hasPrereqs = validation.prereqs.objectNames.length > 0 || validation.prereqs.researchTypes.length > 0;
+
+        if (hasPrereqs) {
           this.logDebugInfo(
-            `[Production] Worker training blocked by tech requirements. Scheduling ${validation.prereqs.length} prerequisites`
+            `[Production] Worker training blocked by prerequisites. Scheduling: ${JSON.stringify(validation.prereqs)}`
           );
-          this.productionValidator.schedulePrerequisites(validation.prereqs, workerName);
+          this.productionValidator.schedulePrerequisites(validation, workerName);
         }
         return State.FAILED;
       }
@@ -482,7 +600,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     if (trainingBuildings.length === 0) return State.FAILED;
     const prodComp = getActorComponent(trainingBuildings[0]!, ProductionComponent)!;
     // Dynamic cost sourcing
-    const def = pwActorDefinitions[workerName];
+    const def = getPwActorDefinition(workerName, null);
     const costData = def?.components?.productionCost;
     if (!costData) return State.FAILED;
     prodComp.startProduction({
@@ -837,17 +955,14 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   async RedirectWorkersToScarceResource(): Promise<State> {
     return this.logisticsManager.redirectToScarce();
   }
-  ShouldPursueNextTech(): boolean {
-    return this.techManager.shouldPursueNext();
+  ShouldPursueResearch(): boolean {
+    return this.techManager.shouldPursueResearch();
   }
-  HaveIdleUpgradeBuilding(): boolean {
-    return this.techManager.haveIdleUpgradeBuilding();
+  IsResearchInProgress(): boolean {
+    return this.techManager.isResearchInProgress();
   }
-  HasResourcesForNextTech(): boolean {
-    return this.techManager.hasResourcesForNext();
-  }
-  StartNextTechUpgrade(): State {
-    return this.techManager.startNext();
+  TryStartResearch(): State {
+    return this.techManager.tryStartResearch();
   }
   ShouldReanalyzeMap(): boolean {
     if (!this.mapAnalyzer) return true;

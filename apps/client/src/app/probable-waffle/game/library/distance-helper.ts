@@ -108,9 +108,7 @@ export class DistanceHelper {
     if (!actor1Tile || !actor2Tile) return null;
 
     // Create cache key (use sorted coordinates to make bidirectional)
-    const actor1First =
-      actor1Tile.x < actor2Tile.x ||
-      (actor1Tile.x === actor2Tile.x && actor1Tile.y <= actor2Tile.y);
+    const actor1First = actor1Tile.x < actor2Tile.x || (actor1Tile.x === actor2Tile.x && actor1Tile.y <= actor2Tile.y);
     const cacheKey = actor1First
       ? `${actor1Tile.x},${actor1Tile.y}->${actor2Tile.x},${actor2Tile.y}`
       : `${actor2Tile.x},${actor2Tile.y}->${actor1Tile.x},${actor1Tile.y}`;
@@ -257,6 +255,7 @@ export class DistanceHelper {
       const now = performance.now();
 
       for (const actor of sceneActors) {
+        if (!actor.scene) continue; // Actor might have been destroyed since grouping
         const actorTile = getGameObjectCurrentTile(actor);
         if (!actorTile) continue;
 
@@ -327,14 +326,15 @@ export class DistanceHelper {
 
       for (const { pair, index } of scenePairs) {
         const [actor1, actor2] = pair;
+        if (!actor1.scene || !actor2.scene) continue;
+
         const actor1Tile = getGameObjectCurrentTile(actor1);
         const actor2Tile = getGameObjectCurrentTile(actor2);
         if (!actor1Tile || !actor2Tile) continue;
 
         // Create cache key (use sorted coordinates to make bidirectional)
         const actor1First =
-          actor1Tile.x < actor2Tile.x ||
-          (actor1Tile.x === actor2Tile.x && actor1Tile.y <= actor2Tile.y);
+          actor1Tile.x < actor2Tile.x || (actor1Tile.x === actor2Tile.x && actor1Tile.y <= actor2Tile.y);
         const cacheKey = actor1First
           ? `${actor1Tile.x},${actor1Tile.y}->${actor2Tile.x},${actor2Tile.y}`
           : `${actor2Tile.x},${actor2Tile.y}->${actor1Tile.x},${actor1Tile.y}`;

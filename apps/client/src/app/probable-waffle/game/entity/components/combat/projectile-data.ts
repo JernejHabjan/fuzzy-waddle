@@ -15,4 +15,14 @@ export interface ProjectileData {
     anims: string[];
     tint?: number;
   };
+  // Defines how projectile spawns and moves
+  spawnBehavior?: {
+    // 'launch' = normal projectile from caster to target
+    // 'fall' = spawn above target and fall straight down
+    type: "launch" | "fall";
+    // For 'fall' type: how far above target to spawn (in pixels)
+    spawnOffsetY?: number;
+    // Custom easing for movement (e.g., 'Cubic.easeIn' for falling)
+    ease?: string;
+  };
 }

@@ -39,7 +39,9 @@
     "generate-audio-sprites": "node ./apps/client/src/metadata/sfx/generate-audio-sprites.js",
     "prepare": "husky",
     "build-client-dev": "nx build client --source-map=true --named-chunks=true",
-    "serve-buid": "http-server dist/apps/client"
+    "serve-build": "http-server dist/apps/client",
+    "_docs_generate-supabase-types": "see README.md",
+    "generate-supabase-types": "supabase gen types typescript --project-id \"bhzetyxjimpabioxoodz\" --schema public > \"libs/api-interfaces/src/database/database.types.ts\""
   },
   "engines": {
     "node": ">=24.13.0",
@@ -50,7 +52,7 @@
     "@angular/animations": "21.1.0",
     "@angular/common": "21.1.0",
     "@angular/compiler": "21.1.0",
-    "@angular/core": "21.1.0",
+    "@angular/core": "21.1.6",
     "@angular/forms": "21.1.0",
     "@angular/localize": "21.1.0",
     "@angular/platform-browser": "21.1.0",
@@ -77,13 +79,13 @@
     "@nestjs/throttler": "^6.4.0",
     "@nestjs/websockets": "^11.1.6",
     "@ng-bootstrap/ng-bootstrap": "^19.0.1",
-    "@nx/angular": "22.3.3",
+    "@nx/angular": "22.5.4",
     "@popperjs/core": "^2.11.8",
     "@schematics/angular": "21.0.4",
     "@supabase/supabase-js": "^2.75.0",
     "@types/howler": "^2.2.12",
     "audiosprite-ffmpeg": "^0.8.1",
-    "axios": "^1.12.2",
+    "axios": "^1.13.5",
     "bootstrap": "^5.3.8",
     "chart.js": "^4.5.0",
     "class-transformer": "^0.5.1",
@@ -119,19 +121,19 @@
     "@nestjs/schematics": "11.0.9",
     "@nestjs/swagger": "11.2.0",
     "@nestjs/testing": "11.1.6",
-    "@nx/cypress": "22.3.3",
-    "@nx/eslint": "22.3.3",
-    "@nx/eslint-plugin": "22.3.3",
-    "@nx/jest": "22.3.3",
-    "@nx/js": "22.3.3",
-    "@nx/nest": "22.3.3",
-    "@nx/node": "22.3.3",
-    "@nx/web": "22.3.3",
-    "@nx/webpack": "22.3.3",
-    "@nx/workspace": "22.3.3",
-    "@swc-node/register": "~1.11.1",
-    "@swc/core": "~1.13.5",
-    "@swc/helpers": "~0.5.17",
+    "@nx/cypress": "22.5.4",
+    "@nx/eslint": "22.5.4",
+    "@nx/eslint-plugin": "22.5.4",
+    "@nx/jest": "22.5.4",
+    "@nx/js": "22.5.4",
+    "@nx/nest": "22.5.4",
+    "@nx/node": "22.5.4",
+    "@nx/web": "22.5.4",
+    "@nx/webpack": "22.5.4",
+    "@nx/workspace": "22.5.4",
+    "@swc-node/register": "1.11.1",
+    "@swc/core": "1.15.5",
+    "@swc/helpers": "0.5.18",
     "@types/jest": "30.0.0",
     "@types/node": "^24.7.2",
     "@types/passport-jwt": "^4.0.1",
@@ -151,17 +153,18 @@
     "jest-environment-node": "^30.2.0",
     "jest-fail-on-console": "^3.3.1",
     "jest-preset-angular": "16.0.0",
+    "jest-util": "~30.2.0",
     "lint-staged": "^16.2.4",
-    "nx": "22.3.3",
+    "nx": "22.5.4",
     "nx-cloud": "19.1.0",
     "phaser-asset-pack-hashing": "^1.0.6",
     "phasereditor2d-launcher": "^3.67.0",
     "prettier": "^3.6.2",
     "source-map-explorer": "^2.5.3",
+    "supabase": ">=1.8.1",
     "ts-jest": "29.4.5",
     "ts-node": "10.9.2",
-    "typescript": "5.9.3",
-    "jest-util": "~30.2.0"
+    "typescript": "5.9.3"
   },
   "pnpm": {
     "overrides": {
@@ -177,7 +180,10 @@
       "http-proxy-middleware@<2.0.8": ">=2.0.8",
       "@supabase/gotrue-js": "2.61.0",
       "@supabase/supabase-js>@supabase/auth-js": "2.61.0"
-    }
+    },
+    "onlyBuiltDependencies": [
+      "supabase"
+    ]
   },
   "lint-staged": {
     "*.{ts,js,json,css,scss,md}": "nx affected:lint"

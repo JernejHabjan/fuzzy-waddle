@@ -139,16 +139,16 @@ export class NavigationService {
     }
   }
 
-  public static getTileWorldCenter(tilemap: Phaser.Tilemaps.Tilemap, vector: Vector2Simple): Vector2Simple | undefined {
-    const tileAtStart = tilemap.getTileAt(vector.x, vector.y);
+  public static getTileWorldCenter(tilemap: Phaser.Tilemaps.Tilemap, tileXY: Vector2Simple): Vector2Simple | undefined {
+    const tileAtStart = tilemap.getTileAt(tileXY.x, tileXY.y);
     if (!tileAtStart) return;
     const centerX = tileAtStart.getCenterX();
     const centerY = tileAtStart.getCenterY();
     return { x: centerX, y: centerY };
   }
 
-  getTileWorldCenter(tile: Vector2Simple): Vector2Simple | undefined {
-    return NavigationService.getTileWorldCenter(this.tilemap, tile);
+  getTileWorldCenter(tileXY: Vector2Simple): Vector2Simple | undefined {
+    return NavigationService.getTileWorldCenter(this.tilemap, tileXY);
   }
 
   private setup() {
@@ -347,13 +347,13 @@ export class NavigationService {
 
     // Check cache
     const cached = this.pathCache.get(cacheKey);
-    if (cached && (now - cached.timestamp) < PATH_CACHE_TTL_MS) {
+    if (cached && now - cached.timestamp < PATH_CACHE_TTL_MS) {
       return cached.path;
     }
 
     return new Promise((resolve) => {
       this.easyStar.findPath(fromTileXY.x, fromTileXY.y, toTileXY.x, toTileXY.y, (path) => {
-        const result = !path ? null : (path.length === 0 ? [] : path);
+        const result = !path ? null : path.length === 0 ? [] : path;
 
         if (this.DEBUG && result) {
           this.drawDebugPath(result);
@@ -375,7 +375,7 @@ export class NavigationService {
 
   private cleanPathCache(now: number = performance.now()): void {
     for (const [key, value] of this.pathCache.entries()) {
-      if ((now - value.timestamp) >= PATH_CACHE_TTL_MS) {
+      if (now - value.timestamp >= PATH_CACHE_TTL_MS) {
         this.pathCache.delete(key);
       }
     }
@@ -649,6 +649,8 @@ export class NavigationService {
     targetGameObject: Phaser.GameObjects.GameObject,
     radiusTiles?: number
   ): Promise<Vector2Simple[] | null> {
+    if (!gameObject.active || !targetGameObject.active) return null;
+
     const fromTile = getCenterTileCoordUnderObject(this.tilemap, gameObject);
     if (!fromTile) return null;
 

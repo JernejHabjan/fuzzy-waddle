@@ -7,12 +7,14 @@ import { PaymentType } from "../../../../entity/components/production/payment-ty
 import { coreConstructionSiteDefinition } from "../../shared/core-construction-site.definition";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 import { ActorPhysicalType } from "../../../../entity/components/combat/components/actor-physical-type";
+import { ResearchType } from "@fuzzy-waddle/api-interfaces";
 
 export const sandholdDefinition = {
   components: {
     representable: {
-      width: 320,
-      height: 320
+      width: 288,
+      height: 280,
+      origin: { x: 0.5, y: 0.8 }
     },
     objectDescriptor: {
       color: 0xc2a080
@@ -74,9 +76,25 @@ export const sandholdDefinition = {
       cooldown: 1000
     },
     production: {
-      queueCount: 1,
-      capacityPerQueue: 5,
       availableProduceActors: [ObjectNames.TivaraWorker]
+    },
+    queue: {
+      queueCount: 1,
+      capacityPerQueue: 5
+    },
+    research: {
+      availableResearch: [
+        ResearchType.TivaraSlingshotUpgradeLevel2,
+        ResearchType.TivaraSlingshotUpgradeLevel3,
+        ResearchType.TivaraMacemanUpgradeLevel2,
+        ResearchType.TivaraMacemanUpgradeLevel3,
+        ResearchType.SkaduweeWarriorUpgradeLevel2,
+        ResearchType.SkaduweeWarriorUpgradeLevel3,
+        ResearchType.SkaduweeMagicianUpgradeLevel2,
+        ResearchType.SkaduweeMagicianUpgradeLevel3,
+        ResearchType.SkaduweeRangedUpgradeLevel2,
+        ResearchType.SkaduweeRangedUpgradeLevel3
+      ]
     },
     selectable: {},
     collider: { enabled: true },

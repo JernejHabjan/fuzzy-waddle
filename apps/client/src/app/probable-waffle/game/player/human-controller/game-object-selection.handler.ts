@@ -25,7 +25,7 @@ import { MovementSystem } from "../../entity/systems/movement.system";
 import { AudioActorComponent } from "../../entity/components/actor-audio/audio-actor-component";
 import { OwnerComponent } from "../../entity/components/owner-component";
 import GameObject = Phaser.GameObjects.GameObject;
-import { pwActorDefinitions } from "../../prefabs/definitions/actor-definitions";
+import { getPwActorDefinition, pwActorDefinitions } from "../../prefabs/definitions/actor-definitions";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { PlayerActionsHandler } from "./player-actions-handler";
 import { SoundType } from "../../entity/components/actor-audio/sound-type";
@@ -37,7 +37,7 @@ export class GameObjectSelectionHandler {
   private externalModalSubscription?: Subscription;
   constructor(private readonly scene: ProbableWaffleScene) {
     this.bindSelectionInput();
-    this.listenToChatModalEvents();
+    this.listenToExternalModalEvents();
     this.scene.onShutdown.subscribe(() => this.destroy());
   }
 
@@ -242,7 +242,7 @@ export class GameObjectSelectionHandler {
     this.externalModalSubscription?.unsubscribe();
   }
 
-  private listenToChatModalEvents() {
+  private listenToExternalModalEvents() {
     this.externalModalSubscription = this.scene.communicator.allScenes.subscribe((event) => {
       if (event.name === "external-modal-opened") {
         this.externalModalOpen = true;
@@ -328,8 +328,8 @@ export class GameObjectSelectionHandler {
    */
   private getParentType(actorName: ObjectNames): ObjectNames | undefined {
     for (const key in pwActorDefinitions) {
-      const actorDefinition = pwActorDefinitions[key as ObjectNames];
-      if (actorDefinition.meta?.randomOfType?.includes(actorName as ObjectNames)) {
+      const actorDefinition = getPwActorDefinition(key as ObjectNames, null);
+      if (actorDefinition?.meta?.randomOfType?.includes(actorName as ObjectNames)) {
         return key as ObjectNames;
       }
     }

@@ -14,6 +14,21 @@
     }
   </div>
   <div>
+    <div class="general-title">Team Configuration</div>
+    <div class="text-center">
+      @for (teamConfig of matchmakingService.availableTeamConfigurations; track teamConfig) {
+        <input
+          (change)="matchmakingService.teamConfigurationChanged(teamConfig)"
+          [disabled]="matchmakingService.searching"
+          [checked]="teamConfig === matchmakingService.matchmakingOptions.teamConfiguration"
+          name="teamConfiguration"
+          type="radio"
+          [value]="teamConfig"
+        />&nbsp;{{ matchmakingService.getTeamConfigurationName(teamConfig) }}&nbsp;&nbsp;
+      }
+    </div>
+  </div>
+  <div>
     <div class="general-title">Faction</div>
     <div class="text-center">
       <select

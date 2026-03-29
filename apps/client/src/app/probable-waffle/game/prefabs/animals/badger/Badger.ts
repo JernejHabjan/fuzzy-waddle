@@ -6,17 +6,15 @@
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { AnimationActorComponent } from "../../../entity/components/animation/animation-actor-component";
 import { getActorComponent } from "../../../data/actor-component";
-import {
-  getRandomTileInNavigableRadius,
-  moveGameObjectToRandomTileInNavigableRadius,
-  MovementSystem
-} from "../../../entity/systems/movement.system";
+import { getRandomTileInNavigableRadius, MovementSystem } from "../../../entity/systems/movement.system";
 import { getActorSystem } from "../../../data/actor-system";
 import { onObjectReady } from "../../../data/game-object-helper";
 import { ActorTranslateComponent } from "../../../entity/components/movement/actor-translate-component";
 import { OrderType } from "../../../ai/order-type";
 import type { AnimationOptions } from "../../../entity/components/animation/animation-options";
 import type { PathMoveConfig } from "../../../entity/systems/path-move-config";
+import { RandomMovementComponent } from "../../../entity/components/movement/random-movement.component";
+import type { RandomMovementDefinition } from "../../../entity/components/movement/random-movement-definition";
 /* END-USER-IMPORTS */
 
 export default class Badger extends Phaser.GameObjects.Sprite {
@@ -40,16 +38,22 @@ export default class Badger extends Phaser.GameObjects.Sprite {
   private animationActorComponent?: AnimationActorComponent;
   private actorTranslateComponent?: ActorTranslateComponent;
   private movementSystem?: MovementSystem;
-  private readonly radius = 5;
-  private currentDelay: Phaser.Time.TimerEvent | null = null;
   private tunneling = false;
+  private randomMovementComponent!: RandomMovementComponent;
 
   private postSceneCreate() {
     this.animationActorComponent = getActorComponent(this, AnimationActorComponent);
     this.actorTranslateComponent = getActorComponent(this, ActorTranslateComponent);
     this.movementSystem = getActorSystem(this, MovementSystem);
 
-    this.moveAfterDelay();
+    this.randomMovementComponent = new RandomMovementComponent(this, {
+      radius: 2,
+      shouldPreventMovementStart: () => this.tunneling,
+      delay: {
+        min: 2000,
+        max: 5000
+      }
+    } satisfies RandomMovementDefinition);
     this.handleClick();
   }
 
@@ -61,23 +65,11 @@ export default class Badger extends Phaser.GameObjects.Sprite {
     this.burrowAndTunnel();
   }
 
-  async move() {
-    if (!this.active) return;
-    if (this.tunneling) return;
-
-    try {
-      await moveGameObjectToRandomTileInNavigableRadius(this, this.radius);
-      this.moveAfterDelay();
-    } catch (e) {
-      console.error(e);
-    }
-  }
-
   private burrowAndTunnel() {
     if (!this.active) return;
     if (this.tunneling) return;
-    this.removeDelay();
-    this.cancelMovement();
+    this.randomMovementComponent.removeDelay();
+    this.randomMovementComponent.cancelMovement();
 
     this.tunneling = true;
 
@@ -94,7 +86,7 @@ export default class Badger extends Phaser.GameObjects.Sprite {
   private async tunnel() {
     if (!this.active) return;
 
-    const tileXY = await getRandomTileInNavigableRadius(this, this.radius);
+    const tileXY = await getRandomTileInNavigableRadius(this, 5);
     if (!tileXY) return;
     this.actorTranslateComponent?.turnTowardsTile(tileXY);
 
@@ -120,34 +112,13 @@ export default class Badger extends Phaser.GameObjects.Sprite {
         this.animationActorComponent?.playOrderAnimation(OrderType.Stop);
         this.tunneling = false;
 
-        this.moveAfterDelay();
+        this.randomMovementComponent.moveAfterDelay();
       }
     } satisfies AnimationOptions);
   }
-
-  private moveAfterDelay() {
-    if (!this.active) return;
-    if (this.tunneling) return;
-    this.removeDelay();
-    const randomDelay = Phaser.Math.Between(1000, 5000);
-    this.currentDelay = this.scene.time.delayedCall(randomDelay, this.move, [], this);
-  }
-
-  private removeDelay() {
-    this.currentDelay?.remove(false);
-    this.currentDelay = null;
-  }
-
-  private cancelMovement = () => {
-    const movementSystem = getActorSystem<MovementSystem>(this, MovementSystem);
-    if (movementSystem) movementSystem.cancelMovement();
-  };
-
   override destroy(fromScene?: boolean) {
     super.destroy(fromScene);
     this.off(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, this.onClick, this);
-    this.removeDelay();
-    this.cancelMovement();
   }
   /* END-USER-CODE */
 }

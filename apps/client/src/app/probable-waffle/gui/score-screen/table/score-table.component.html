@@ -1,37 +1,72 @@
-<table class="table">
-  <thead>
-    <tr>
-      <th>Player Name</th>
-      <th>Units Produced</th>
-      <th>Units Killed</th>
-      <th>Buildings Constructed</th>
-      <th>Buildings Destroyed</th>
-      <th>Resources Collected</th>
-      <th>Resources Spent</th>
-    </tr>
-  </thead>
-  <tbody>
-    @for (player of players; track player.playerNumber) {
+<div class="score-table-wrapper">
+  <table class="table">
+    <thead>
       <tr>
-        <td>{{ player.name }}</td>
-        <td>{{ player.unit_produced }}</td>
-        <td>{{ player.unit_killed }}</td>
-        <td>{{ player.building_constructed }}</td>
-        <td>{{ player.building_destroyed }}</td>
-        <td>{{ player.resource_collected }}</td>
-        <td>{{ player.resource_spent }}</td>
+        <th rowspan="2">Player</th>
+        <th rowspan="2">Result</th>
+        <th rowspan="2">Score</th>
+        <th colspan="3" class="group-header">Units</th>
+        <th colspan="3" class="group-header">Buildings</th>
+        <th colspan="3" class="group-header">Minerals</th>
+        <th colspan="3" class="group-header">Stone</th>
+        <th colspan="3" class="group-header">Wood</th>
+        <th colspan="3" class="group-header">Combat</th>
+        <th rowspan="2">Max Army</th>
       </tr>
-    }
-  </tbody>
-  <tfoot>
-    <tr>
-      <td>Total</td>
-      <td>{{ getTotal("unit_produced") }}</td>
-      <td>{{ getTotal("unit_killed") }}</td>
-      <td>{{ getTotal("building_constructed") }}</td>
-      <td>{{ getTotal("building_destroyed") }}</td>
-      <td>{{ getTotal("resource_collected") }}</td>
-      <td>{{ getTotal("resource_spent") }}</td>
-    </tr>
-  </tfoot>
-</table>
+      <tr>
+        <th title="Units Produced">Prod</th>
+        <th title="Units Killed">Kill</th>
+        <th title="Units Lost">Lost</th>
+        <th title="Buildings Constructed">Built</th>
+        <th title="Buildings Destroyed">Destr</th>
+        <th title="Buildings Lost">Lost</th>
+        <th title="Minerals Collected">Coll</th>
+        <th title="Minerals Spent">Spent</th>
+        <th title="Final Minerals">Final</th>
+        <th title="Stone Collected">Coll</th>
+        <th title="Stone Spent">Spent</th>
+        <th title="Final Stone">Final</th>
+        <th title="Wood Collected">Coll</th>
+        <th title="Wood Spent">Spent</th>
+        <th title="Final Wood">Final</th>
+        <th title="Damage Dealt">Dealt</th>
+        <th title="Damage Received">Recv</th>
+        <th title="Healing Done">Heal</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (player of players; track player.playerNumber) {
+        <tr [class.winner]="player.gameResult === 'win'" [class.loser]="player.gameResult === 'loss'">
+          <td>{{ player.playerName }}</td>
+          <td>
+            <span [class]="'result-badge result-' + player.gameResult">
+              {{ player.gameResult.toUpperCase() }}
+            </span>
+          </td>
+          <td>
+            <strong>{{ player.finalScore }}</strong>
+          </td>
+          <td>{{ getMetric(player, METRICS.UNITS_PRODUCED) }}</td>
+          <td>{{ getMetric(player, METRICS.UNITS_KILLED) }}</td>
+          <td>{{ getMetric(player, METRICS.UNITS_LOST) }}</td>
+          <td>{{ getMetric(player, METRICS.BUILDINGS_CONSTRUCTED) }}</td>
+          <td>{{ getMetric(player, METRICS.BUILDINGS_DESTROYED) }}</td>
+          <td>{{ getMetric(player, METRICS.BUILDINGS_LOST) }}</td>
+          <td>{{ getMetric(player, METRICS.RESOURCES_COLLECTED_MINERALS) }}</td>
+          <td>{{ getMetric(player, METRICS.RESOURCES_SPENT_MINERALS) }}</td>
+          <td>{{ getMetric(player, METRICS.FINAL_RESOURCES_MINERALS) }}</td>
+          <td>{{ getMetric(player, METRICS.RESOURCES_COLLECTED_STONE) }}</td>
+          <td>{{ getMetric(player, METRICS.RESOURCES_SPENT_STONE) }}</td>
+          <td>{{ getMetric(player, METRICS.FINAL_RESOURCES_STONE) }}</td>
+          <td>{{ getMetric(player, METRICS.RESOURCES_COLLECTED_WOOD) }}</td>
+          <td>{{ getMetric(player, METRICS.RESOURCES_SPENT_WOOD) }}</td>
+          <td>{{ getMetric(player, METRICS.FINAL_RESOURCES_WOOD) }}</td>
+          <td>{{ getMetric(player, METRICS.DAMAGE_DEALT) }}</td>
+          <td>{{ getMetric(player, METRICS.DAMAGE_RECEIVED) }}</td>
+          <td>{{ getMetric(player, METRICS.HEALING_DONE) }}</td>
+          <td>{{ getMetric(player, METRICS.MAX_ARMY_SIZE) }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

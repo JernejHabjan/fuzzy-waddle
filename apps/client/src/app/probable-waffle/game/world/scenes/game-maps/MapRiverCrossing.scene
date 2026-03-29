@@ -1576,7 +1576,7 @@
             ],
             "EditorOwner.owner_id": "1",
             "x": -672,
-            "y": 624
+            "y": 1024
         },
         {
             "prefabId": "edf32147-e546-4f6e-91ba-1720c6b75ac9",
@@ -1782,9 +1782,11 @@
             ],
             "label": "skaduweeWarriorMale_1",
             "components": [
-                "EditorOwner"
+                "EditorOwner",
+                "EditorActorLevel"
             ],
             "EditorOwner.owner_id": "1",
+            "EditorActorLevel.level": 2,
             "x": -582,
             "y": 597
         },
@@ -2309,6 +2311,627 @@
             "label": "minerals_10",
             "x": 832,
             "y": 1104
+        },
+        {
+            "prefabId": "1457b917-a97a-463b-9989-e0ec3446c7b8",
+            "id": "63d63584-9a1f-4167-835c-1977ef236028",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "centurion",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -1472,
+            "y": 800
+        },
+        {
+            "prefabId": "1457b917-a97a-463b-9989-10ec3446c7a8",
+            "id": "d3c30315-e137-454b-a990-c76964feb93e",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "cyclops",
+            "components": [
+                "EditorOwner"
+            ],
+            "x": -1257,
+            "y": 910
+        },
+        {
+            "prefabId": "1457b917-a97a-463b-9989-20ec3446c7a8",
+            "id": "a4596b90-1bda-440d-a2ff-88e6ea88e6f0",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "minotaur",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -1344,
+            "y": 816
+        },
+        {
+            "prefabId": "1457b917-a97a-463b-9989-30ec3446c7a8",
+            "id": "ec461e5d-dd34-4558-8092-917c9a28171e",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "mummy",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -1173,
+            "y": 944
+        },
+        {
+            "prefabId": "1457b917-a97a-463b-9989-40ec3446c7a8",
+            "id": "f4d9dd9f-5a15-4ff5-ba2d-47463ff41653",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "orcBoomerang",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -1088,
+            "y": 896
+        },
+        {
+            "prefabId": "1457b917-a97a-463b-9989-50ec3446c7a8",
+            "id": "52ab75a9-54fa-4be2-b96b-9102f70d96f4",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "orcMagician",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -1112,
+            "y": 954
+        },
+        {
+            "prefabId": "1457b917-a97a-463b-9989-60ec3446c7a8",
+            "id": "5d93922c-5d49-436a-ac3e-67e7fdc48d44",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "orcWarrior",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -1056,
+            "y": 992
+        },
+        {
+            "prefabId": "1457b917-a97a-463b-9989-70ec3446c7a8",
+            "id": "65b32761-fd0d-4eaa-9f55-4f9dd1435090",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "pirateScimitar",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -1016,
+            "y": 1004
+        },
+        {
+            "prefabId": "1457b917-a97a-463b-9989-80ec3446c7a8",
+            "id": "0673eebc-6dc9-4144-9893-8c691ba782ba",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "pirateSwordsman",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -975,
+            "y": 1016
+        },
+        {
+            "prefabId": "1457b917-a97a-463b-9989-90ec3446c7a8",
+            "id": "f25fd97c-b1cc-436c-ac74-9df147768a8a",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "skeletonBowman",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -908,
+            "y": 1019
+        },
+        {
+            "prefabId": "1457b917-a97a-463b-1989-e0ec3446c7a8",
+            "id": "97ebd0c4-93ce-4342-ac6e-dc55b340ff9a",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "skeletonMelee",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -870,
+            "y": 1034
+        },
+        {
+            "prefabId": "1457b917-a97a-463b-2989-e0ec3446c7a8",
+            "id": "1630d4a5-ca35-48a1-8477-aabda950e821",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "skeletonScythe",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -841,
+            "y": 1060
+        },
+        {
+            "prefabId": "1457b917-a97a-463b-3989-e0ec3446c7a8",
+            "id": "6bf4f20c-c34b-44c3-a64b-f352577137ca",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "skeletonSwordsman",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -800,
+            "y": 1067
+        },
+        {
+            "prefabId": "1457b917-a97a-463b-4989-e0ec3446c7a8",
+            "id": "f527e587-f032-466d-9cbe-ec20b980426d",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "zombie1",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -942,
+            "y": 894
+        },
+        {
+            "prefabId": "1457b917-a97a-463b-5989-e0ec3446c7a8",
+            "id": "826b0676-2d65-443f-85f5-ced041aeae47",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "zombie2",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -918,
+            "y": 904
+        },
+        {
+            "prefabId": "1457b917-a97a-463b-6989-e0ec3446c7a8",
+            "id": "1a8a0ffc-7cb7-4523-af7a-e6b7598a7485",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "zombie3",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -886,
+            "y": 905
+        },
+        {
+            "prefabId": "1457b917-a97a-463b-1989-f0ec3446c7a8",
+            "id": "c95bd19f-7383-4e78-b166-0d543a6450e0",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tivaraAlchemist",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -384,
+            "y": 656
+        },
+        {
+            "prefabId": "54836fe4-5089-4b7e-9db4-b71382bcb55f",
+            "id": "cfc464a1-7c8a-484c-926a-bc84537cbac9",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "tivaraMacemanMale",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -512,
+            "y": 544
+        },
+        {
+            "prefabId": "e7588d39-50b6-4ac5-b741-34487f3b5458",
+            "id": "827a0c3c-0158-4302-a032-7adbc6362233",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "black_grouse",
+            "x": -481,
+            "y": 1169
+        },
+        {
+            "prefabId": "d16c2db1-eaf1-4169-9860-660b454d5a82",
+            "id": "e3af1c4b-b7d2-4868-b655-97ee015b407f",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "boar2",
+            "x": -492,
+            "y": 1233
+        },
+        {
+            "prefabId": "47103186-b42a-4f02-8ab7-8a2adbd06343",
+            "id": "a8720633-7353-47d8-ad54-8137aefae74f",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "bull",
+            "x": -446,
+            "y": 1127
+        },
+        {
+            "prefabId": "72362523-e635-4131-bb62-e182126c08dd",
+            "id": "ea067644-1be4-454b-8a4e-d5a18b2596ec",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "calf",
+            "x": -516,
+            "y": 1112
+        },
+        {
+            "prefabId": "99549c2d-ba16-4b72-848b-8abfeabfb76d",
+            "id": "e8c0674f-8cd4-40bc-8cfa-bf4470427283",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "chick",
+            "x": -580,
+            "y": 1135
+        },
+        {
+            "prefabId": "340c0eb6-9550-4d11-9969-95b8b5513e91",
+            "id": "ead8e353-7228-4f8c-b271-3bdb3b4302c0",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "deer",
+            "x": -555,
+            "y": 1085
+        },
+        {
+            "prefabId": "b0f7af4f-991a-4608-a7b3-f1fff26fc576",
+            "id": "0e8eadd0-43f0-46da-8e5b-e7511e48080e",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "fox",
+            "x": -384,
+            "y": 1104
+        },
+        {
+            "prefabId": "65a5332e-4327-4c51-abd7-5f00da063b4c",
+            "id": "bfd851ec-ad26-4bc9-846c-de7c5bb06c16",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "hare",
+            "x": -527,
+            "y": 1204
+        },
+        {
+            "prefabId": "ae43caa5-e7cc-4b9c-b01c-3cf4172be61c",
+            "id": "3f9b1a64-266f-4977-bef4-00f814971186",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "lamb",
+            "x": -576,
+            "y": 1184
+        },
+        {
+            "prefabId": "85701e9d-5ffe-40d2-b6ba-4ef4a0255b72",
+            "id": "c6cd2bc4-b6c8-4f75-96fa-6bf9e2c35537",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "piglet",
+            "x": -450,
+            "y": 1044
+        },
+        {
+            "prefabId": "13862b00-323b-4e54-88cf-acf02ac08b10",
+            "id": "ef74575a-929a-4572-83a1-64736d64f122",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "rooster",
+            "x": -341,
+            "y": 1042
+        },
+        {
+            "prefabId": "701e1d93-9275-4663-9e7a-146b113a59ff",
+            "id": "c0d7e2a0-13ff-4df3-ac6a-3f2fbb0c5deb",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "sheep2",
+            "x": -384,
+            "y": 1056
+        },
+        {
+            "prefabId": "9341f192-75ca-48cf-af0e-0e48d3791a25",
+            "id": "be5fa7b4-1e3e-4d2a-b320-b31ceef7a1ae",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "turkey",
+            "x": -277,
+            "y": 1088
+        },
+        {
+            "prefabId": "2da4ac72-30ff-4a63-a1c9-507ed4cda6ae",
+            "id": "2ac280e6-caa4-45fd-8ed3-9e0c9b1db237",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "banshee",
+            "x": -704,
+            "y": 1152
+        },
+        {
+            "prefabId": "3e523c8f-dd0d-4a4c-b982-5f7f09f0ac93",
+            "id": "f8ab98c4-0c97-4e93-8d29-3e8e7fc29281",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "bigWaterSlime",
+            "x": -708,
+            "y": 1060
+        },
+        {
+            "prefabId": "cdae2bce-1e9c-4851-b419-618b2202916b",
+            "id": "37e0e5c4-342c-48a8-a887-10c4f106074d",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "fireSlime",
+            "x": -638,
+            "y": 1021
+        },
+        {
+            "prefabId": "b92a494a-c702-4c97-905e-a705014eb4a1",
+            "id": "e582e11e-7e35-4fc3-8511-108b75a9db9b",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "smallWaterSlime",
+            "x": -640,
+            "y": 1088
+        },
+        {
+            "prefabId": "81a4a74d-1fea-420d-8093-8d62fbb4f83f",
+            "id": "1e7b4ae3-825f-459d-be66-1a4d2222c47c",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "eartGolem",
+            "x": -719,
+            "y": 956
+        },
+        {
+            "prefabId": "910c2f19-d3c6-4430-8993-d13ff8cec6e0",
+            "id": "b87d9232-9512-462c-8a28-76700d403eee",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "stoneGolem",
+            "x": -792,
+            "y": 1129
+        },
+        {
+            "prefabId": "f3cab382-58b4-47e3-bd7c-20b62bd38249",
+            "id": "e35acd4b-3d94-43d8-92fc-3bacdb75bac7",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "metalGolem",
+            "x": -640,
+            "y": 1168
+        },
+        {
+            "prefabId": "ff9fc477-3a20-4065-b9f9-9f52935c7102",
+            "id": "0a702033-ac71-4c67-9299-e352618567b7",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "minotaur2",
+            "x": -544,
+            "y": 1008
+        },
+        {
+            "prefabId": "51e80010-a576-4213-9615-120b8eaa2c83",
+            "id": "669ad046-340f-4a11-b5a8-eb7d262ba605",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "medusa",
+            "x": -672,
+            "y": 800
+        },
+        {
+            "prefabId": "109bf399-2e51-481a-984b-0fc0dbc89070",
+            "id": "c926bdf5-bb68-4f20-8ff3-480cca50c25a",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "flowerMonster",
+            "x": -544,
+            "y": 880
+        },
+        {
+            "prefabId": "579c629d-1200-40e0-87b8-a743851497cc",
+            "id": "3144339d-0745-46fc-98f0-6a00f4ed6ed4",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "flyingDemonBlue",
+            "x": -622,
+            "y": 932
+        },
+        {
+            "prefabId": "3b560720-482d-401a-ae33-5c7d4569b767",
+            "id": "13454a08-501e-4793-93b1-e3ea946649d8",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "flyingDemonRed",
+            "x": -340,
+            "y": 936
+        },
+        {
+            "prefabId": "2b029a68-119c-4dde-a522-b1037401604a",
+            "id": "24da6f31-9c68-4d55-b160-d1ede83fc1c3",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "mushroomWarrior",
+            "x": -288,
+            "y": 992
+        },
+        {
+            "prefabId": "2c354ce2-b043-4d02-acfc-c8a581274268",
+            "id": "c07a4fe8-af8a-4601-9bbe-18bd131bdc5f",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "pumpkinWarlock",
+            "x": -416,
+            "y": 1264
+        },
+        {
+            "prefabId": "2c354ce2-b043-4d02-acfc-c8a581274368",
+            "id": "5bb8183d-b7ca-4595-981b-d1316acbbefb",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "pumpkinWarlockBat",
+            "x": -365,
+            "y": 1306
+        },
+        {
+            "prefabId": "2c354ce2-b043-4d02-acfa-c8a581274368",
+            "id": "4658ab70-dcb7-46dd-8836-dbfd33b9d403",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "pumpkinWarlockPumpkin",
+            "x": -448,
+            "y": 1312
+        },
+        {
+            "prefabId": "2048aa1d-8bcd-4b27-8107-957cfd8f46d5",
+            "id": "0002ed4f-8840-4191-bcb5-63cefd899159",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "sandWorm",
+            "x": -704,
+            "y": 864
+        },
+        {
+            "prefabId": "f64cc718-5fab-44b8-b0f7-14254f01b2bb",
+            "id": "8c4738ff-3cc2-4c3d-aaf2-45ebd9b93b12",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "forestWendigo",
+            "x": -608,
+            "y": 832
+        },
+        {
+            "prefabId": "4612164f-6867-4ecd-ac87-0273a25cbb5b",
+            "id": "ec4777a9-5733-4c31-aa5d-404391b00f13",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "snowWendigo",
+            "x": -768,
+            "y": 800
         }
     ],
     "plainObjects": [

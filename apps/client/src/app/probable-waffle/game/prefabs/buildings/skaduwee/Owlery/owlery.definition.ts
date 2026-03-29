@@ -12,7 +12,8 @@ export const owleryDefinition = {
   components: {
     representable: {
       width: 64,
-      height: 192
+      height: 196,
+      origin: { x: 0.5, y: 0.916666667 }
     },
     objectDescriptor: {
       color: 0xf2f7fa
@@ -60,9 +61,11 @@ export const owleryDefinition = {
       requiresAnyOf: [ObjectNames.InfantryInn]
     },
     production: {
-      queueCount: 1,
-      capacityPerQueue: 5,
       availableProduceActors: [ObjectNames.SkaduweeOwl]
+    },
+    queue: {
+      queueCount: 1,
+      capacityPerQueue: 5
     },
     selectable: {},
     collider: { enabled: true },
