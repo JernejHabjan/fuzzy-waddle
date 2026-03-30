@@ -33,7 +33,10 @@ export class ContainerComponent {
 
   /** Replaces the container definition (e.g. on actor level-up). */
   setContainerDefinition(def: ContainerDefinition): void {
-    this.containerDefinition = def;
+    this.containerDefinition = {
+      ...this.containerDefinition,
+      ...def
+    };
     this.containerChanged.next();
   }
 
@@ -130,4 +133,3 @@ export class ContainerComponent {
     } satisfies ContainerComponentData;
   }
 }
-
