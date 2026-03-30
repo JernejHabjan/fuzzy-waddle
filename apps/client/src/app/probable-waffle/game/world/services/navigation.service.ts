@@ -923,6 +923,11 @@ export class NavigationService {
     return this.waterNavHelper.isShoreTile(tile);
   }
 
+  /** BFS outward from `fromTile` to find the nearest shore tile. */
+  public findNearestShoreTile(fromTile: Vector2Simple, maxRadius = 30): Vector2Simple | null {
+    return this.waterNavHelper.findNearestShoreTile(fromTile, maxRadius);
+  }
+
   /**
    * Finds the unoccupied and walkable tile around the given game object.
    * Searches in expanding radii up to maxRange for a truly free tile.

@@ -191,9 +191,7 @@ export class ActionSystem {
 
           const selfContainableComponent = getActorComponent(this.gameObject, ContainableComponent);
           if (selfContainableComponent) {
-            // self is containable
-
-            console.warn("todo - this is not yet supported in player-pawn-ai-controller"); // todo
+            // self is containable — issue boarding order
             return new OrderData(OrderType.EnterContainer, { targetGameObject });
           }
         }

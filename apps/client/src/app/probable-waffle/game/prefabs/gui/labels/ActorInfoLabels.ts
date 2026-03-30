@@ -207,7 +207,8 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
       }
     });
 
-    this.visibilityChanged.next(capacity > 0);
+    // Only show the label area when units are actually aboard (not when container is empty)
+    this.visibilityChanged.next(contained.length > 0);
   }
 
   setLabelsForDisplayingActorsQueues(actor: Phaser.GameObjects.GameObject) {

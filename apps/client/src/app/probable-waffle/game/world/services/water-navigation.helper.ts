@@ -108,6 +108,43 @@ export class WaterNavigationHelper {
     return this.waterGrid[tile.y]?.[tile.x] === TerrainGridBuilder.SHORE_TILE;
   }
 
+  /**
+   * BFS outward from `from` to find the closest shore tile (value === SHORE_TILE).
+   * Returns null if none found within `maxRadius`.
+   */
+  findNearestShoreTile(from: Vector2Simple, maxRadius = 30): Vector2Simple | null {
+    const rows = this.waterGrid.length;
+    const cols = this.waterGrid[0]?.length ?? 0;
+    const visited = new Set<string>();
+    const queue: Vector2Simple[] = [{ x: from.x, y: from.y }];
+    visited.add(`${from.x},${from.y}`);
+
+    while (queue.length > 0) {
+      const current = queue.shift()!;
+      if (this.waterGrid[current.y]?.[current.x] === TerrainGridBuilder.SHORE_TILE) {
+        return current;
+      }
+
+      const dist = Math.abs(current.x - from.x) + Math.abs(current.y - from.y);
+      if (dist >= maxRadius) continue;
+
+      const neighbors: Vector2Simple[] = [
+        { x: current.x + 1, y: current.y },
+        { x: current.x - 1, y: current.y },
+        { x: current.x, y: current.y + 1 },
+        { x: current.x, y: current.y - 1 }
+      ];
+      for (const n of neighbors) {
+        const key = `${n.x},${n.y}`;
+        if (n.x >= 0 && n.x < cols && n.y >= 0 && n.y < rows && !visited.has(key)) {
+          visited.add(key);
+          queue.push(n);
+        }
+      }
+    }
+    return null;
+  }
+
   clearCache(): void {
     this.pathCache.clear();
   }

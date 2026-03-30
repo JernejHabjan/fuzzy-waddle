@@ -25,6 +25,7 @@ import { ResearchComponent } from "../../../entity/components/research/research-
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { ContainerComponent } from "../../../entity/components/building/container-component";
 import { NavigationService } from "../../../world/services/navigation.service";
+import { ActorTranslateComponent } from "../../../entity/components/movement/actor-translate-component";
 /* END-USER-IMPORTS */
 
 export default class ActorInfoContainer extends Phaser.GameObjects.Container {
@@ -98,6 +99,8 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
   private tabHandlerSubscription?: Subscription;
   private researchEventSubscriptions: Subscription[] = [];
   private containerChangedSubscription?: Subscription;
+  /** Re-evaluates shore state when the container actor moves to a new tile. */
+  private containerMovementSubscription?: Subscription;
   private readonly mainSceneWithActors: ProbableWaffleScene;
 
   private subscribeToPlayerSelection() {
@@ -190,6 +193,16 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
           const currentOnShore = this.isActorOnShoreTile(actor);
           this.actorInfoLabels.setLabelsForContainerContents(actor, currentOnShore);
         });
+
+        // Re-evaluate shore state as the container actor moves between tiles
+        this.containerMovementSubscription?.unsubscribe();
+        const translateComponent = getActorComponent(actor, ActorTranslateComponent);
+        if (translateComponent) {
+          this.containerMovementSubscription = translateComponent.actorMovedLogicalPosition.subscribe(() => {
+            const onShore = this.isActorOnShoreTile(actor);
+            this.actorInfoLabels.setLabelsForContainerContents(actor, onShore);
+          });
+        }
       }
     }
   }
@@ -256,6 +269,7 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
     this.progress_bar.cleanActor();
     this.actorDetails.hideAll();
     this.containerChangedSubscription?.unsubscribe();
+    this.containerMovementSubscription?.unsubscribe();
   }
 
   private subscribeToActorKillEvent(actor: Phaser.GameObjects.GameObject) {

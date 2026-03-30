@@ -220,6 +220,8 @@ export default class ActorActions extends Phaser.GameObjects.Container {
   private researchEventSubscriptions: Subscription[] = [];
   private spellCooldownSubscriptions: Subscription[] = [];
   private spellUpdateTimer?: Phaser.Time.TimerEvent;
+  /** Refreshes container Unload button when the container actor moves to/from shore. */
+  private containerMovementSubscription?: Subscription;
 
   /** Subscribe to selection changes and update displayed actions accordingly */
   private subscribeToPlayerSelection() {
@@ -305,6 +307,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       action.setup({ visible: false });
     });
     this.resourceChangedSubscription?.unsubscribe();
+    this.containerMovementSubscription?.unsubscribe();
     this.stopSpellCooldownTimer();
   }
 
@@ -854,6 +857,15 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       shortcut: "u"
     } satisfies ActorActionSetup);
     index++;
+
+    // Refresh the button when the ship moves to/from a shore tile
+    this.containerMovementSubscription?.unsubscribe();
+    const translateComponent = getActorComponent(actor, ActorTranslateComponent);
+    if (translateComponent) {
+      this.containerMovementSubscription = translateComponent.actorMovedLogicalPosition.subscribe(() => {
+        this.refreshForCurrentSelection();
+      });
+    }
 
     return index;
   }

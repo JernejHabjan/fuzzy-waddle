@@ -18,6 +18,7 @@ import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces"
 import { SpellTargetType } from "@fuzzy-waddle/api-interfaces";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import { ContainableComponent } from "../../entity/components/building/containable-component";
+import { ContainerComponent } from "../../entity/components/building/container-component";
 import { ResourceDrainComponent } from "../../entity/components/resource/resource-drain-component";
 import { BuilderComponent } from "../../entity/components/construction/builder-component";
 import { OrderData } from "../../ai/OrderData";
@@ -30,6 +31,8 @@ import { SpellComponent } from "../../entity/components/combat/components/spell-
 import { SpellCastingSystem } from "../../entity/systems/spell-casting.system";
 import { spellDefinitions } from "../../entity/components/combat/spell-definitions";
 import { RepresentableComponent } from "../../entity/components/representable-component";
+import { NavigationService } from "../../world/services/navigation.service";
+import { getSceneService } from "../../world/services/scene-component-helpers";
 
 export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
   constructor(
@@ -826,6 +829,160 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
   Log(message: string): State {
     console.log(message);
     return State.SUCCEEDED;
+  }
+
+  // ========== Container Boarding AI ==========
+
+  HasContainableComponent(): boolean {
+    return !!getActorComponent(this.gameObject, ContainableComponent);
+  }
+
+  IsAlreadyInContainer(): boolean {
+    return getActorComponent(this.gameObject, ContainableComponent)?.isContained() ?? false;
+  }
+
+  /** True if self and target container are both on shore and container still has capacity. */
+  CanBoardContainerNow(): boolean {
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return false;
+    const target = currentOrder.data.targetGameObject;
+    if (!target) return false;
+
+    const containerComp = getActorComponent(target, ContainerComponent);
+    if (!containerComp || !containerComp.canLoadGameObject(this.gameObject)) return false;
+
+    const navService = getSceneService(this.gameObject.scene, NavigationService);
+    if (!navService) return false;
+
+    const selfTile = navService.getCenterTileCoordUnderObject(this.gameObject);
+    const targetTile = navService.getCenterTileCoordUnderObject(target);
+    if (!selfTile || !targetTile) return false;
+
+    return navService.isShoreTile(selfTile) && navService.isShoreTile(targetTile);
+  }
+
+  /** Load self into the target container and cancel any pending boarding request. */
+  BoardContainer(): State {
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return State.FAILED;
+    const target = currentOrder.data.targetGameObject;
+    if (!target) return State.FAILED;
+
+    const containerComp = getActorComponent(target, ContainerComponent);
+    if (!containerComp) return State.FAILED;
+    if (!containerComp.canLoadGameObject(this.gameObject)) return State.FAILED;
+
+    containerComp.cancelBoardingRequest(this.gameObject);
+    containerComp.loadGameObject(this.gameObject);
+    getActorComponent(this.gameObject, ContainableComponent)?.setContainer(target);
+    return State.SUCCEEDED;
+  }
+
+  /**
+   * If the target container can be reached on foot, move next to it.
+   * If it is in water (unreachable), find the nearest shore tile near the container,
+   * move there, and register a boarding request so the container actor picks us up.
+   */
+  async MoveToContainerOrShore(): Promise<State> {
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return State.FAILED;
+    const target = currentOrder.data.targetGameObject;
+    if (!target) return State.FAILED;
+
+    const movementSystem = getActorSystem(this.gameObject, MovementSystem);
+    if (!movementSystem) return State.FAILED;
+
+    // First, try moving directly to the container (it may be on shore already)
+    const reachable = await movementSystem.canMoveTo(target, 1);
+    if (reachable) {
+      const success = await movementSystem.moveToActorByAdjustingPathDynamically(target, {
+        radiusTilesAroundDestination: 1
+      } satisfies Partial<PathMoveConfig>);
+      return success ? State.SUCCEEDED : State.FAILED;
+    }
+
+    // Container is in water — find the nearest shore tile to the container
+    const navService = getSceneService(this.gameObject.scene, NavigationService);
+    if (!navService) return State.FAILED;
+
+    const containerTile = navService.getCenterTileCoordUnderObject(target);
+    if (!containerTile) return State.FAILED;
+
+    const shoreTile = navService.findNearestShoreTile(containerTile);
+    if (!shoreTile) return State.FAILED;
+
+    // Move self to that shore tile
+    const shoreLocation: Vector3Simple = { x: shoreTile.x, y: shoreTile.y, z: 0 };
+    const success = await movementSystem.moveToLocationByFollowingStaticPath(shoreLocation);
+
+    if (success) {
+      // Register boarding intent so the container actor will come pick us up
+      const containerComp = getActorComponent(target, ContainerComponent);
+      containerComp?.registerBoardingRequest(this.gameObject);
+    }
+
+    return success ? State.SUCCEEDED : State.FAILED;
+  }
+
+  HasContainerComponent(): boolean {
+    return !!getActorComponent(this.gameObject, ContainerComponent);
+  }
+
+  HasPendingBoarders(): boolean {
+    return getActorComponent(this.gameObject, ContainerComponent)?.hasPendingBoarders() ?? false;
+  }
+
+  /**
+   * Navigate the container actor to the nearest shore tile adjacent to the first pending boarder.
+   */
+  async MoveToShoreForBoarding(): Promise<State> {
+    const containerComp = getActorComponent(this.gameObject, ContainerComponent);
+    if (!containerComp) return State.FAILED;
+    const boarders = containerComp.getPendingBoarders();
+    if (boarders.length === 0) return State.FAILED;
+
+    const navService = getSceneService(this.gameObject.scene, NavigationService);
+    if (!navService) return State.FAILED;
+    const movementSystem = getActorSystem(this.gameObject, MovementSystem);
+    if (!movementSystem) return State.FAILED;
+
+    const boarderTile = navService.getCenterTileCoordUnderObject(boarders[0]!);
+    if (!boarderTile) return State.FAILED;
+
+    const shoreTile = navService.findNearestShoreTile(boarderTile);
+    if (!shoreTile) return State.FAILED;
+
+    const shoreLocation: Vector3Simple = { x: shoreTile.x, y: shoreTile.y, z: 0 };
+    const success = await movementSystem.moveToLocationByFollowingStaticPath(shoreLocation);
+    return success ? State.SUCCEEDED : State.FAILED;
+  }
+
+  /**
+   * When self (container actor) is on a shore tile, load all pending boarders that are also on shore.
+   */
+  LoadPendingBoarders(): State {
+    const containerComp = getActorComponent(this.gameObject, ContainerComponent);
+    if (!containerComp) return State.FAILED;
+
+    const navService = getSceneService(this.gameObject.scene, NavigationService);
+    if (!navService) return State.FAILED;
+
+    const selfTile = navService.getCenterTileCoordUnderObject(this.gameObject);
+    if (!selfTile || !navService.isShoreTile(selfTile)) return State.FAILED;
+
+    const boarders = containerComp.getPendingBoarders();
+    let loaded = 0;
+    for (const boarder of boarders) {
+      if (!containerComp.canLoadGameObject(boarder)) continue;
+      const boarderTile = navService.getCenterTileCoordUnderObject(boarder);
+      if (!boarderTile || !navService.isShoreTile(boarderTile)) continue;
+      containerComp.cancelBoardingRequest(boarder);
+      containerComp.loadGameObject(boarder);
+      getActorComponent(boarder, ContainableComponent)?.setContainer(this.gameObject);
+      loaded++;
+    }
+
+    return loaded > 0 ? State.SUCCEEDED : State.FAILED;
   }
 
   // ========== Spell Casting AI ==========

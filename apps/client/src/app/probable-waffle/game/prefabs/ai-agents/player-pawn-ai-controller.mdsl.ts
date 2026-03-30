@@ -55,6 +55,7 @@ root [ExecuteCurrentOrder] {
         branch [Build]
         branch [Repair]
         branch [Heal]
+        branch [EnterContainerOrder]
     }
 }
 
@@ -66,6 +67,19 @@ root [AutoAssignNewOrder] {
             condition [HasSpellComponent]
             condition [HasAutocastSpellReady]
             action [CastAutocastSpell]
+        }
+
+        /* Load pending boarders when docked at shore */
+        sequence {
+            condition [HasContainerComponent]
+            condition [HasPendingBoarders]
+            selector {
+                action [LoadPendingBoarders]
+                sequence {
+                    action [MoveToShoreForBoarding]
+                    action [LoadPendingBoarders]
+                }
+            }
         }
 
         /* Retaliation */
@@ -95,6 +109,33 @@ root [AutoAssignNewOrder] {
         /*         wait [2000, 5000] */
         /*     } */
         /* } */
+    }
+}
+
+root [EnterContainerOrder] {
+    sequence {
+        condition [PlayerOrderIs, "enterContainer"]
+        succeed {
+            selector {
+                /* Already inside a container — nothing to do */
+                sequence {
+                    condition [IsAlreadyInContainer]
+                    action [Stop, "EnterContainer:AlreadyLoaded"]
+                }
+                /* Both self and target are on shore — board immediately */
+                sequence {
+                    condition [CanBoardContainerNow]
+                    action [BoardContainer]
+                    action [Stop, "EnterContainer:Boarded"]
+                }
+                /* Move to the container or the nearest shore, then register a boarding request */
+                sequence {
+                    action [MoveToContainerOrShore]
+                    action [Stop, "EnterContainer:MovedToShore"]
+                }
+                action [Stop, "EnterContainer:Failed"]
+            }
+        }
     }
 }
 

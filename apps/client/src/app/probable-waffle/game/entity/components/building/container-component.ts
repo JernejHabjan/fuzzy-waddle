@@ -10,6 +10,7 @@ import { getSceneService } from "../../../world/services/scene-component-helpers
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import type { ContainerDefinition } from "./container-definition";
 import { Subject } from "rxjs";
+import { ContainableComponent } from "./containable-component";
 
 /**
  * apply to resource source that needs gameObjects to enter to gather
@@ -17,15 +18,41 @@ import { Subject } from "rxjs";
 export class ContainerComponent {
   static readonly GameObjectVisibilityChanged = "GameObjectVisibilityChanged";
   private containedGameObjects = new Set<GameObject>();
+  /** Units that have issued a boarding request but not yet physically loaded. */
+  private pendingBoarders = new Set<GameObject>();
   /** Emits whenever units are loaded or unloaded, so HUD can refresh container display. */
   readonly containerChanged = new Subject<void>();
 
   constructor(
     private readonly gameObject: GameObject,
-    public readonly containerDefinition: ContainerDefinition
+    public containerDefinition: ContainerDefinition
   ) {
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.once(HealthComponent.KilledEvent, this.onKilled, this);
+  }
+
+  /** Replaces the container definition (e.g. on actor level-up). */
+  setContainerDefinition(def: ContainerDefinition): void {
+    this.containerDefinition = def;
+    this.containerChanged.next();
+  }
+
+  /** Unit registers intent to board this container (e.g. right-clicked while it's in water). */
+  registerBoardingRequest(unit: GameObject): void {
+    this.pendingBoarders.add(unit);
+    this.containerChanged.next();
+  }
+
+  cancelBoardingRequest(unit: GameObject): void {
+    this.pendingBoarders.delete(unit);
+  }
+
+  hasPendingBoarders(): boolean {
+    return this.pendingBoarders.size > 0;
+  }
+
+  getPendingBoarders(): GameObject[] {
+    return Array.from(this.pendingBoarders);
   }
 
   getContainedGameObjects(): GameObject[] {
@@ -50,6 +77,8 @@ export class ContainerComponent {
   unloadGameObject(gameObject: GameObject) {
     this.containedGameObjects.delete(gameObject);
     this.setGameObjectVisible(gameObject, true);
+    // Clear the containable link so the unit knows it left the container
+    getActorComponent(gameObject, ContainableComponent)?.leaveContainer();
     this.containerChanged.next();
   }
 
