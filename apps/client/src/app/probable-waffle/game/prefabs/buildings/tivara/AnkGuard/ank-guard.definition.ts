@@ -64,7 +64,13 @@ export const ankGuardDefinition = {
       availableProduceActors: [ObjectNames.TivaraSlingshotFemale, ObjectNames.TivaraMacemanMale]
     },
     research: {
-      availableResearch: [ResearchType.FirestormSpell, ResearchType.FrostNovaSpell, ResearchType.HealingRainSpell]
+      availableResearch: [
+        ResearchType.FirestormSpell,
+        ResearchType.FrostNovaSpell,
+        ResearchType.HealingRainSpell,
+        ResearchType.CommonBoatUpgradeLevel2,
+        ResearchType.VikingBoatUpgradeLevel2
+      ]
     },
     queue: {
       queueCount: 1,

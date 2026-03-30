@@ -6,6 +6,7 @@ import { HealthComponent } from "../combat/components/health-component";
 import { AnimationType } from "./animation-type";
 import type { IsoDirection } from "../movement/iso-directions";
 import type { ActorAnimationsDefinition } from "./actor-animations-definition";
+import { RepresentableComponent } from "../representable-component";
 
 /**
  * Lightweight animation component for ship units (Phaser.GameObjects.Image).
@@ -15,6 +16,9 @@ export class ShipAnimationComponent {
   private currentDirection: IsoDirection = "south";
   private directionChangedSubscription?: Subscription;
   private wobbleTween?: Phaser.Tweens.Tween;
+  /** Separate wobble offset object so the tween never touches image.y directly. */
+  private readonly wobbleData = { offset: 0 };
+  private representableComponent?: RepresentableComponent;
 
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,
@@ -26,6 +30,7 @@ export class ShipAnimationComponent {
   }
 
   private init() {
+    this.representableComponent = getActorComponent(this.gameObject, RepresentableComponent);
     this.listenToDirectionChange();
     this.updateFrame(this.currentDirection);
     this.startWobble();
@@ -65,13 +70,21 @@ export class ShipAnimationComponent {
 
   private startWobble() {
     const image = this.gameObject as Phaser.GameObjects.Image;
+    // Tween a separate offset value (never modifies image.y directly).
+    // onUpdate reads the current rendered Y from RepresentableComponent so the
+    // wobble is always relative to wherever the movement system placed the ship
+    // that frame — eliminating the first-frame position snap.
     this.wobbleTween = this.gameObject.scene.tweens.add({
-      targets: image,
-      y: "-=3",
+      targets: this.wobbleData,
+      offset: 3,
       duration: 1200,
       ease: "Sine.InOut",
       yoyo: true,
-      loop: -1
+      loop: -1,
+      onUpdate: () => {
+        if (!this.representableComponent) return;
+        image.y = this.representableComponent.renderedWorldTransform.y - this.wobbleData.offset;
+      }
     });
   }
 
