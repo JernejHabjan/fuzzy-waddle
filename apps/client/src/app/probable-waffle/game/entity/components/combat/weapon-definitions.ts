@@ -699,8 +699,8 @@ export const weaponDefinitions = {
       trajectoryType: "parabolic" as const,
       parabolicPeakHeight: 130,
       salvo: {
-        count: 8,
-        spreadPx: 50
+        count: 3,
+        spreadPx: 100
       }
     },
     damage: 12,
@@ -741,8 +741,8 @@ export const weaponDefinitions = {
         intervalMs: 80
       },
       salvo: {
-        count: 10,
-        spreadPx: 55
+        count: 3,
+        spreadPx: 100
       }
     },
     damage: 18,
