@@ -11,6 +11,8 @@ export class WaterNavigationHelper {
   private waterGrid: number[][] = [];
   private pathCache = new Map<string, { path: Vector2Simple[] | null; timestamp: number }>();
   private readonly CACHE_TTL_MS = 1000;
+  /** Cost multiplier applied to shore-adjacent tiles so ships prefer open water. */
+  private static readonly SHORE_COST = 8;
 
   constructor() {
     this.easyStar = new EasyStar();
@@ -19,7 +21,9 @@ export class WaterNavigationHelper {
   setup(tileData: Phaser.Tilemaps.Tile[][]): void {
     this.waterGrid = TerrainGridBuilder.buildWaterGrid(tileData);
     this.easyStar.setGrid(this.waterGrid);
-    this.easyStar.setAcceptableTiles([0]);
+    // Accept both deep water (0) and shore tiles (2); shore is costly to discourage coast-hugging
+    this.easyStar.setAcceptableTiles([0, TerrainGridBuilder.SHORE_TILE]);
+    this.easyStar.setTileCost(TerrainGridBuilder.SHORE_TILE, WaterNavigationHelper.SHORE_COST);
     this.easyStar.enableDiagonals();
     this.pathCache.clear();
   }
@@ -42,7 +46,9 @@ export class WaterNavigationHelper {
   }
 
   isTileWalkable(tile: Vector2Simple): boolean {
-    return this.waterGrid[tile.y]?.[tile.x] === 0;
+    const val = this.waterGrid[tile.y]?.[tile.x];
+    // Both deep water (0) and shore tiles (2) are navigable
+    return val === 0 || val === TerrainGridBuilder.SHORE_TILE;
   }
 
   isWithinBounds(tile: Vector2Simple): boolean {
