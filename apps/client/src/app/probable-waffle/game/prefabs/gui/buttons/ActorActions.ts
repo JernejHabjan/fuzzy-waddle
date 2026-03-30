@@ -821,6 +821,9 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     _allActors: Phaser.GameObjects.GameObject[],
     index: number
   ): number {
+    // Always clean up any stale movement subscription when rebuilding the action bar
+    this.containerMovementSubscription?.unsubscribe();
+
     const containerComponent = getActorComponent(actor, ContainerComponent);
     if (!containerComponent) return index;
 

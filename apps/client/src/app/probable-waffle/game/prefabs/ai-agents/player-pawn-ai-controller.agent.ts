@@ -289,10 +289,13 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
 
     const currentOrder = this.blackboard.getCurrentOrder();
     if (currentOrder) {
-      // exit container
-      const containableComponent = getActorComponent(this.gameObject, ContainableComponent);
-      if (containableComponent) {
-        containableComponent.leaveContainer();
+      // Exit any container the actor is in — but skip this when the order IS a boarding order
+      // (we never want to eject units we just successfully loaded)
+      if (currentOrder.orderType !== OrderType.EnterContainer) {
+        const containableComponent = getActorComponent(this.gameObject, ContainableComponent);
+        if (containableComponent) {
+          containableComponent.leaveContainer();
+        }
       }
       switch (currentOrder.orderType) {
         case OrderType.Move:
@@ -841,7 +844,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
     return getActorComponent(this.gameObject, ContainableComponent)?.isContained() ?? false;
   }
 
-  /** True if self and target container are both on shore and container still has capacity. */
+  /** True if self is adjacent to the target container and the container still has capacity. */
   CanBoardContainerNow(): boolean {
     const currentOrder = this.blackboard.getCurrentOrder();
     if (!currentOrder) return false;
@@ -851,14 +854,9 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
     const containerComp = getActorComponent(target, ContainerComponent);
     if (!containerComp || !containerComp.canLoadGameObject(this.gameObject)) return false;
 
-    const navService = getSceneService(this.gameObject.scene, NavigationService);
-    if (!navService) return false;
-
-    const selfTile = navService.getCenterTileCoordUnderObject(this.gameObject);
-    const targetTile = navService.getCenterTileCoordUnderObject(target);
-    if (!selfTile || !targetTile) return false;
-
-    return navService.isShoreTile(selfTile) && navService.isShoreTile(targetTile);
+    // Unit must be within boarding range (adjacent tile) of the container
+    const dist = DistanceHelper.getTileDistanceBetweenGameObjects(this.gameObject, target);
+    return dist !== null && dist <= 1;
   }
 
   /** Load self into the target container and cancel any pending boarding request. */
@@ -879,9 +877,9 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
   }
 
   /**
-   * If the target container can be reached on foot, move next to it.
-   * If it is in water (unreachable), find the nearest shore tile near the container,
-   * move there, and register a boarding request so the container actor picks us up.
+   * Move toward the container using land pathfinding with a wide radius so the unit stops
+   * on the nearest accessible (land) tile.  When close enough, register a boarding request
+   * so the container actor can navigate to shore and pick us up.
    */
   async MoveToContainerOrShore(): Promise<State> {
     const currentOrder = this.blackboard.getCurrentOrder();
@@ -892,31 +890,14 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
     const movementSystem = getActorSystem(this.gameObject, MovementSystem);
     if (!movementSystem) return State.FAILED;
 
-    // First, try moving directly to the container (it may be on shore already)
-    const reachable = await movementSystem.canMoveTo(target, 1);
-    if (reachable) {
-      const success = await movementSystem.moveToActorByAdjustingPathDynamically(target, {
-        radiusTilesAroundDestination: 1
-      } satisfies Partial<PathMoveConfig>);
-      return success ? State.SUCCEEDED : State.FAILED;
-    }
-
-    // Container is in water — find the nearest shore tile to the container
-    const navService = getSceneService(this.gameObject.scene, NavigationService);
-    if (!navService) return State.FAILED;
-
-    const containerTile = navService.getCenterTileCoordUnderObject(target);
-    if (!containerTile) return State.FAILED;
-
-    const shoreTile = navService.findNearestShoreTile(containerTile);
-    if (!shoreTile) return State.FAILED;
-
-    // Move self to that shore tile
-    const shoreLocation: Vector3Simple = { x: shoreTile.x, y: shoreTile.y, z: 0 };
-    const success = await movementSystem.moveToLocationByFollowingStaticPath(shoreLocation);
+    // Use a wide radius so the unit parks on the closest land tile near the boat
+    // even when the boat is on a shore/water tile
+    const success = await movementSystem.moveToActorByAdjustingPathDynamically(target, {
+      radiusTilesAroundDestination: 3
+    } satisfies Partial<PathMoveConfig>);
 
     if (success) {
-      // Register boarding intent so the container actor will come pick us up
+      // Register boarding intent so the container actor will come pick us up at shore
       const containerComp = getActorComponent(target, ContainerComponent);
       containerComp?.registerBoardingRequest(this.gameObject);
     }
@@ -958,7 +939,8 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
   }
 
   /**
-   * When self (container actor) is on a shore tile, load all pending boarders that are also on shore.
+   * When self (container actor) is on a shore tile, load all pending boarders that are
+   * adjacent (within boarding range) of the container.
    */
   LoadPendingBoarders(): State {
     const containerComp = getActorComponent(this.gameObject, ContainerComponent);
@@ -974,8 +956,9 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
     let loaded = 0;
     for (const boarder of boarders) {
       if (!containerComp.canLoadGameObject(boarder)) continue;
-      const boarderTile = navService.getCenterTileCoordUnderObject(boarder);
-      if (!boarderTile || !navService.isShoreTile(boarderTile)) continue;
+      // Boarder must be within boarding range of the container (adjacent tile)
+      const dist = DistanceHelper.getTileDistanceBetweenGameObjects(this.gameObject, boarder);
+      if (dist === null || dist > 2) continue;
       containerComp.cancelBoardingRequest(boarder);
       containerComp.loadGameObject(boarder);
       getActorComponent(boarder, ContainableComponent)?.setContainer(this.gameObject);
