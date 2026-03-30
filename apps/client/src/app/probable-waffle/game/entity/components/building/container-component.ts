@@ -9,6 +9,7 @@ import { IdComponent } from "../id-component";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import type { ContainerDefinition } from "./container-definition";
+import { Subject } from "rxjs";
 
 /**
  * apply to resource source that needs gameObjects to enter to gather
@@ -16,6 +17,8 @@ import type { ContainerDefinition } from "./container-definition";
 export class ContainerComponent {
   static readonly GameObjectVisibilityChanged = "GameObjectVisibilityChanged";
   private containedGameObjects = new Set<GameObject>();
+  /** Emits whenever units are loaded or unloaded, so HUD can refresh container display. */
+  readonly containerChanged = new Subject<void>();
 
   constructor(
     private readonly gameObject: GameObject,
@@ -35,6 +38,7 @@ export class ContainerComponent {
 
   destroy() {
     this.onKilled();
+    this.containerChanged.complete();
   }
 
   unloadAll() {
@@ -46,6 +50,7 @@ export class ContainerComponent {
   unloadGameObject(gameObject: GameObject) {
     this.containedGameObjects.delete(gameObject);
     this.setGameObjectVisible(gameObject, true);
+    this.containerChanged.next();
   }
 
   canLoadGameObject(gameObject: GameObject): boolean {
@@ -62,6 +67,7 @@ export class ContainerComponent {
     }
     this.containedGameObjects.add(gameObject);
     this.setGameObjectVisible(gameObject, false);
+    this.containerChanged.next();
   }
 
   setGameObjectVisible(gameObject: GameObject, visible: boolean) {
@@ -95,3 +101,4 @@ export class ContainerComponent {
     } satisfies ContainerComponentData;
   }
 }
+

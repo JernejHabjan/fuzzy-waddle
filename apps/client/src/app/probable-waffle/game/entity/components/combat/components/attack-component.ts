@@ -326,95 +326,128 @@ export class AttackComponent {
       const enemyHealthComponent = getActorComponent(enemy, HealthComponent);
       if (!enemyHealthComponent || enemyHealthComponent.killed) return;
 
-      let projectileSprite;
-      switch (projectile.type) {
-        case ProjectileType.SlingshotProjectile:
-          projectileSprite = new SlingshotRock(this.gameObject.scene);
-          break;
-        case ProjectileType.ArrowProjectile:
-          projectileSprite = new Arrow(this.gameObject.scene);
-          break;
-        case ProjectileType.FireArrowProjectile:
-          projectileSprite = new FireArrow(this.gameObject.scene);
-          break;
-        case ProjectileType.FireballProjectile:
-          projectileSprite = new FireBall(this.gameObject.scene);
-          break;
-        case ProjectileType.FurballProjectile:
-          projectileSprite = new SkaduweeOwlFurball(this.gameObject.scene);
-          break;
-        case ProjectileType.VaseProjectile:
-          projectileSprite = new TivaraAlchemistVase(this.gameObject.scene);
-          break;
-        case ProjectileType.FrostBoltProjectile:
-          projectileSprite = new FrostBolt(this.gameObject.scene);
-          break;
-        default:
-          console.error("Unknown projectile type", projectile.type);
-          return;
-      }
-      this.projectileSprite = projectileSprite;
-      this.gameObject.scene.add.existing(projectileSprite);
-      const startX = position.centerX;
-      const startY = position.centerY;
-      projectileSprite.setPosition(startX, startY);
-      projectileSprite.setOrigin(0.5, 0.5);
-      DepthHelper.setActorDepth(this.gameObject);
-
-      const projectileSpeed = projectile.speed;
       const targetX = targetPosition.x + targetPosition.width / 2;
       const targetY = targetPosition.y + targetPosition.height / 2;
-      const distance = Phaser.Math.Distance.Between(startX, startY, targetX, targetY);
-      const duration = (distance / projectileSpeed) * 1000; // convert to milliseconds
+      const baseStartX = position.centerX;
+      const baseStartY = position.centerY;
 
-      if (projectile.trajectoryType === "parabolic") {
-        this.projectileTween = this.spawnParabolicTween(
-          projectileSprite,
-          startX,
-          startY,
-          targetX,
-          targetY,
-          duration,
+      const salvoCount = projectile.salvo?.count ?? 1;
+      const spreadPx = projectile.salvo?.spreadPx ?? 0;
+
+      for (let i = 0; i < salvoCount; i++) {
+        // Distribute origins evenly across the hull width
+        const t = salvoCount > 1 ? i / (salvoCount - 1) : 0.5;
+        const offsetX = spreadPx > 0 ? (t - 0.5) * spreadPx : 0;
+        // Small stagger in Y to give a depth effect along the isometric hull
+        const offsetY = offsetX * 0.3;
+        this.spawnSingleProjectile(
           projectile,
           attack,
-          enemy
+          enemy,
+          baseStartX + offsetX,
+          baseStartY + offsetY,
+          targetX,
+          targetY,
+          i === 0 // only the first arrow is tracked for cancellation
         );
-      } else {
-        if (!projectile.orientation.randomizeOrientation) {
-          const currentAngle = Phaser.Math.Angle.Between(startX, startY, targetX, targetY);
-          projectileSprite.setRotation(currentAngle);
-        }
-
-        this.projectileTween = this.gameObject.scene.tweens.add({
-          targets: projectileSprite,
-          x: targetX,
-          y: targetY,
-          duration: duration,
-          ease: "Linear",
-          onComplete: () => this.stopProjectile(),
-          onUpdate: () => {
-            if (!this.gameObject.active || !enemy.active) return;
-            const projectileBounds = getGameObjectBounds(projectileSprite);
-            if (!projectileBounds) return;
-            const enemyBounds = getGameObjectBounds(enemy);
-            if (!enemyBounds) return;
-            if (Phaser.Geom.Intersects.RectangleToRectangle(projectileBounds, enemyBounds)) {
-              this.projectileHitEnemy(projectile, targetX, targetY, attack, enemy);
-            }
-          }
-        });
-
-        // spin projectile
-        if (projectile.orientation.randomizeOrientation && projectile.orientation.rotationSpeed) {
-          this.rotationTween = this.gameObject.scene.tweens.add({
-            targets: projectileSprite,
-            angle: 360,
-            duration: projectile.orientation.rotationSpeed,
-            repeat: -1
-          });
-        }
       }
     });
+  }
+
+  /** Spawns and animates a single projectile sprite. When `track` is true, stores references for cancellation. */
+  private spawnSingleProjectile(
+    projectile: ProjectileData,
+    attack: AttackData,
+    enemy: GameObject,
+    startX: number,
+    startY: number,
+    targetX: number,
+    targetY: number,
+    track: boolean
+  ) {
+    let projectileSprite;
+    switch (projectile.type) {
+      case ProjectileType.SlingshotProjectile:
+        projectileSprite = new SlingshotRock(this.gameObject.scene);
+        break;
+      case ProjectileType.ArrowProjectile:
+        projectileSprite = new Arrow(this.gameObject.scene);
+        break;
+      case ProjectileType.FireArrowProjectile:
+        projectileSprite = new FireArrow(this.gameObject.scene);
+        break;
+      case ProjectileType.FireballProjectile:
+        projectileSprite = new FireBall(this.gameObject.scene);
+        break;
+      case ProjectileType.FurballProjectile:
+        projectileSprite = new SkaduweeOwlFurball(this.gameObject.scene);
+        break;
+      case ProjectileType.VaseProjectile:
+        projectileSprite = new TivaraAlchemistVase(this.gameObject.scene);
+        break;
+      case ProjectileType.FrostBoltProjectile:
+        projectileSprite = new FrostBolt(this.gameObject.scene);
+        break;
+      default:
+        console.error("Unknown projectile type", projectile.type);
+        return;
+    }
+
+    if (track) this.projectileSprite = projectileSprite;
+    this.gameObject.scene.add.existing(projectileSprite);
+    projectileSprite.setPosition(startX, startY);
+    projectileSprite.setOrigin(0.5, 0.5);
+    DepthHelper.setActorDepth(this.gameObject);
+
+    const projectileSpeed = projectile.speed;
+    const distance = Phaser.Math.Distance.Between(startX, startY, targetX, targetY);
+    const duration = (distance / projectileSpeed) * 1000; // convert to milliseconds
+
+    const stopThis = () => {
+      tween.stop();
+      projectileSprite.destroy();
+    };
+
+    let tween: Phaser.Tweens.Tween;
+    if (projectile.trajectoryType === "parabolic") {
+      tween = this.spawnParabolicTween(projectileSprite, startX, startY, targetX, targetY, duration, projectile, attack, enemy, stopThis);
+    } else {
+      if (!projectile.orientation.randomizeOrientation) {
+        const currentAngle = Phaser.Math.Angle.Between(startX, startY, targetX, targetY);
+        projectileSprite.setRotation(currentAngle);
+      }
+
+      tween = this.gameObject.scene.tweens.add({
+        targets: projectileSprite,
+        x: targetX,
+        y: targetY,
+        duration: duration,
+        ease: "Linear",
+        onComplete: stopThis,
+        onUpdate: () => {
+          if (!this.gameObject.active || !enemy.active) return;
+          const projectileBounds = getGameObjectBounds(projectileSprite);
+          if (!projectileBounds) return;
+          const enemyBounds = getGameObjectBounds(enemy);
+          if (!enemyBounds) return;
+          if (Phaser.Geom.Intersects.RectangleToRectangle(projectileBounds, enemyBounds)) {
+            this.projectileHitEnemy(projectile, targetX, targetY, attack, enemy);
+          }
+        }
+      });
+
+      // spin projectile
+      if (projectile.orientation.randomizeOrientation && projectile.orientation.rotationSpeed) {
+        this.rotationTween = this.gameObject.scene.tweens.add({
+          targets: projectileSprite,
+          angle: 360,
+          duration: projectile.orientation.rotationSpeed,
+          repeat: -1
+        });
+      }
+    }
+
+    if (track) this.projectileTween = tween;
   }
 
   private spawnParabolicTween(
@@ -426,7 +459,8 @@ export class AttackComponent {
     duration: number,
     projectile: ProjectileData,
     attack: AttackData,
-    enemy: GameObject
+    enemy: GameObject,
+    stopFn: () => void = () => this.stopProjectile()
   ): Phaser.Tweens.Tween {
     const peakHeight = projectile.parabolicPeakHeight ?? 120;
     let lastTrailTime = 0;
@@ -473,7 +507,7 @@ export class AttackComponent {
           this.projectileHitEnemy(projectile, targetX, targetY, attack, enemy);
         }
       },
-      onComplete: () => this.stopProjectile()
+      onComplete: () => stopFn()
     });
   }
 

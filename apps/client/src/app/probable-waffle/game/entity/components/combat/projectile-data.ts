@@ -35,4 +35,14 @@ export interface ProjectileData {
     frame: string;
     intervalMs: number;
   };
+  /**
+   * When set, fire multiple projectiles in a single attack.
+   * Each projectile is launched from a slightly offset origin along the hull.
+   */
+  salvo?: {
+    /** Number of projectiles to fire. */
+    count: number;
+    /** Total horizontal spread in world pixels across all projectile origins. */
+    spreadPx: number;
+  };
 }

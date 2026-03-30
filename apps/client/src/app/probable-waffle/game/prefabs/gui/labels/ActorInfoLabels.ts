@@ -19,6 +19,8 @@ import { ResearchComponent } from "../../../entity/components/research/research-
 import { QueueComponent } from "../../../entity/components/queue/queue-component";
 import { SharedQueueItemType } from "../../../entity/components/queue/shared-queue-item-type";
 import type { SharedQueueItem } from "../../../entity/components/queue/shared-queue-item";
+import { ContainerComponent } from "../../../entity/components/building/container-component";
+import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 /* END-USER-IMPORTS */
 
 export default class ActorInfoLabels extends Phaser.GameObjects.Container {
@@ -123,11 +125,19 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
   private readonly mainSceneWithActors?: ProbableWaffleScene;
   private visibilityChanged = new BehaviorSubject<boolean>(false);
   private queueChangedSubscription?: Subscription;
+  private containerChangedSubscription?: Subscription;
   private clickSubscriptions: Subscription[] = [];
   private actor?: Phaser.GameObjects.GameObject;
+  /** When true, icons show container contents rather than a production/research queue. */
+  private containerMode = false;
+  /** Whether the container owner is currently docked at a shore tile. */
+  private isOnShore = false;
 
   cleanActor() {
     this.queueChangedSubscription?.unsubscribe();
+    this.containerChangedSubscription?.unsubscribe();
+    this.containerMode = false;
+    this.isOnShore = false;
     this.visible = false;
     this.actor = undefined;
   }
@@ -140,6 +150,64 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
     this.cleanActor();
     this.clickSubscriptions.forEach((sub) => sub.unsubscribe());
     super.destroy(fromScene);
+  }
+
+  /**
+   * Displays the units currently inside a container actor (e.g. transport boat).
+   * Each icon represents one contained unit and can be clicked to unload it (only when on shore).
+   */
+  setLabelsForContainerContents(actor: Phaser.GameObjects.GameObject, isOnShore: boolean) {
+    this.actor = actor;
+    this.containerMode = true;
+    this.isOnShore = isOnShore;
+
+    this.containerChangedSubscription?.unsubscribe();
+    const containerComponent = getActorComponent(actor, ContainerComponent);
+    if (containerComponent) {
+      this.containerChangedSubscription = containerComponent.containerChanged.subscribe(() => {
+        this.renderContainerIcons(actor, containerComponent);
+      });
+      this.renderContainerIcons(actor, containerComponent);
+    }
+  }
+
+  private renderContainerIcons(actor: Phaser.GameObjects.GameObject, containerComponent: ContainerComponent) {
+    if (!this.mainSceneWithActors) return;
+    const actorIndex = getSceneComponent(this.mainSceneWithActors, ActorIndexSystem);
+    const contained = containerComponent.getContainedGameObjects();
+    const capacity = containerComponent.containerDefinition.capacity;
+
+    this.icons.forEach((icon, index) => {
+      if (index >= capacity) {
+        icon.visible = false;
+        return;
+      }
+      const containedUnit = contained[index];
+      if (containedUnit) {
+        const unitName = containedUnit.name;
+        const unitDef = getPwActorDefinition(unitName, null);
+        const info = unitDef?.components?.info;
+        const idComponent = getActorComponent(containedUnit, IdComponent);
+        if (info?.smallImage && idComponent) {
+          icon.setActorIcon(
+            { containedActorId: idComponent.id },
+            info.smallImage.key,
+            info.smallImage.frame,
+            info.smallImage.origin ?? { x: 0.5, y: 0.5 }
+          );
+          // Dim icon when not at shore to indicate unloading is disabled
+          icon.setAlpha(this.isOnShore ? 1 : 0.4);
+          icon.visible = true;
+        }
+      } else {
+        // Empty slot
+        icon.setNumber(index + 1);
+        icon.setAlpha(0.3);
+        icon.visible = true;
+      }
+    });
+
+    this.visibilityChanged.next(capacity > 0);
   }
 
   setLabelsForDisplayingActorsQueues(actor: Phaser.GameObjects.GameObject) {
@@ -261,6 +329,7 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
         this.tryHandleIconClickActor(action);
         this.tryHandleIconClickProduction(action);
         this.tryHandleIconClickResearch(action);
+        this.tryHandleIconClickContainer(action);
       });
       this.clickSubscriptions.push(sub);
     });
@@ -319,6 +388,28 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
     // Cancel the research if it's currently in progress
     if (researchComponent.currentResearchType === queueItem.researchData) {
       researchComponent.cancelResearch();
+    }
+  }
+
+  /** Unloads the clicked unit from the container (only when ship is at shore). */
+  private tryHandleIconClickContainer(action: ActorIconClickAction) {
+    if (!action.definition.containedActorId) return;
+    if (!this.containerMode) return;
+    if (!this.isOnShore) return; // disabled when not at shore
+
+    const actor = this.actor;
+    if (!actor) return;
+    if (!this.mainSceneWithActors) return;
+
+    const containerComponent = getActorComponent(actor, ContainerComponent);
+    if (!containerComponent) return;
+
+    const actorIndex = getSceneComponent(this.mainSceneWithActors, ActorIndexSystem);
+    if (!actorIndex) return;
+
+    const containedActor = actorIndex.getActorById(action.definition.containedActorId);
+    if (containedActor) {
+      containerComponent.unloadGameObject(containedActor);
     }
   }
   /* END-USER-CODE */

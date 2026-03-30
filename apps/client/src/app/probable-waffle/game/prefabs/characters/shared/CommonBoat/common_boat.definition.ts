@@ -2,7 +2,6 @@ import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PaymentType } from "../../../../entity/components/production/payment-type";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 import { ActorPhysicalType } from "../../../../entity/components/combat/components/actor-physical-type";
-import { weaponDefinitions } from "../../../../entity/components/combat/weapon-definitions";
 import { AiType } from "../../../ai-agents/ai-type";
 import { ANIM_COMMON_BOAT_DEFINITION } from "./common_boat_anims";
 import { MovementTerrainType } from "../../../../entity/components/movement/movement-terrain-type";
@@ -31,11 +30,11 @@ export const commonBoatDefinition = {
     info: {
       name: "Common Boat",
       description:
-        "A nimble patrol vessel built for speed and versatility. Light-hulled and quick to maneuver, it harasses enemies with a barrage of arrows from range.",
+        "A sturdy transport vessel built to ferry troops across the water. Dock at shore to load and unload units.",
       tooltipDescription: [
-        "Fast light patrol boat",
-        "Fires volleys of arrows at range",
-        "Upgrades to fire arrows at level 2",
+        "Transport vessel — carries units across water",
+        "Load units while docked at shore",
+        "Unload units at any shore tile",
         "Cannot move on land"
       ],
       smallImage: {
@@ -49,8 +48,8 @@ export const commonBoatDefinition = {
       maxHealth: 120,
       maxArmour: 10
     },
-    attack: {
-      attacks: [weaponDefinitions.ShipVolley]
+    container: {
+      capacity: 4
     },
     selectable: {},
     productionCost: {
@@ -93,9 +92,7 @@ export const commonBoatDefinition = {
       2: {
         components: {
           health: { maxHealth: 160, maxArmour: 15 },
-          attack: {
-            attacks: [weaponDefinitions.ShipFireVolley]
-          }
+          container: { capacity: 6 }
         }
       }
     }

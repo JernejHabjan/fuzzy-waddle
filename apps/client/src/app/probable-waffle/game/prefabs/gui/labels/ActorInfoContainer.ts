@@ -23,6 +23,8 @@ import { getSceneComponent, getSceneService } from "../../../world/services/scen
 import { SelectionTabHandler } from "../../../player/human-controller/selection-tab-handler";
 import { ResearchComponent } from "../../../entity/components/research/research-component";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
+import { ContainerComponent } from "../../../entity/components/building/container-component";
+import { NavigationService } from "../../../world/services/navigation.service";
 /* END-USER-IMPORTS */
 
 export default class ActorInfoContainer extends Phaser.GameObjects.Container {
@@ -95,6 +97,7 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
   private actorInfoLabelsVisibilitySubscription?: Subscription;
   private tabHandlerSubscription?: Subscription;
   private researchEventSubscriptions: Subscription[] = [];
+  private containerChangedSubscription?: Subscription;
   private readonly mainSceneWithActors: ProbableWaffleScene;
 
   private subscribeToPlayerSelection() {
@@ -174,7 +177,30 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
     if (this.canShowIcons(actor)) {
       this.progress_bar.setProgressBar(actor);
       this.actorInfoLabels.setLabelsForDisplayingActorsQueues(actor);
+
+      // If actor has a container, overlay container contents in the labels area
+      const containerComponent = getActorComponent(actor, ContainerComponent);
+      if (containerComponent) {
+        const isOnShore = this.isActorOnShoreTile(actor);
+        this.actorInfoLabels.setLabelsForContainerContents(actor, isOnShore);
+
+        // Re-render shore state whenever the container changes (unit loaded/unloaded)
+        this.containerChangedSubscription?.unsubscribe();
+        this.containerChangedSubscription = containerComponent.containerChanged.subscribe(() => {
+          const currentOnShore = this.isActorOnShoreTile(actor);
+          this.actorInfoLabels.setLabelsForContainerContents(actor, currentOnShore);
+        });
+      }
     }
+  }
+
+  /** Returns whether the actor is currently positioned on a shore tile. */
+  private isActorOnShoreTile(actor: Phaser.GameObjects.GameObject): boolean {
+    const navigationService = getSceneService(this.mainSceneWithActors, NavigationService);
+    if (!navigationService) return false;
+    const tile = navigationService.getCenterTileCoordUnderObject(actor);
+    if (!tile) return false;
+    return navigationService.isShoreTile(tile);
   }
 
   private setActorInfoLabel(actorDefinition: PrefabDefinition) {
@@ -229,6 +255,7 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
     this.actorInfoLabels.cleanActor();
     this.progress_bar.cleanActor();
     this.actorDetails.hideAll();
+    this.containerChangedSubscription?.unsubscribe();
   }
 
   private subscribeToActorKillEvent(actor: Phaser.GameObjects.GameObject) {
@@ -294,6 +321,7 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
     this.actorInfoLabelsVisibilitySubscription?.unsubscribe();
     this.tabHandlerSubscription?.unsubscribe();
     this.researchEventSubscriptions.forEach((sub) => sub.unsubscribe());
+    this.containerChangedSubscription?.unsubscribe();
   }
   /* END-USER-CODE */
 }

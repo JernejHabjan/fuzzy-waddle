@@ -132,7 +132,7 @@ export class HealthComponent {
   }
 
   private reactToDamageVisually() {
-    let asTint;
+    let asTint: Phaser.GameObjects.Components.Tint & { clearTint?: () => void };
     switch (this.healthDefinition.physicalState) {
       case ActorPhysicalType.Biological:
         if (this.actorTranslateComponent) {
@@ -149,16 +149,25 @@ export class HealthComponent {
         }
         break;
       case ActorPhysicalType.Structural:
-        asTint = this.gameObject as any as Phaser.GameObjects.Components.Tint;
-        if (asTint.setTint) asTint.setTint(0xff0000);
-        // console.warn("this tint is not working "); // todo
-
+        asTint = this.gameObject as unknown as Phaser.GameObjects.Components.Tint & { clearTint?: () => void };
+        if (asTint.setTint) {
+          asTint.setTint(0xff0000);
+          // Clear the hit-flash tint after a short delay so it doesn't stick
+          this.gameObject.scene.time.delayedCall(500, () => {
+            if (this.gameObject.active) asTint.clearTint?.();
+          });
+        }
         // TODO SET RUBBLE IN ITS PLACE - use ConstructionGameObjectInterfaceComponent and rename it somehow
         break;
       case ActorPhysicalType.Organic:
-        asTint = this.gameObject as any as Phaser.GameObjects.Components.Tint;
-        if (asTint.setTint) asTint.setTint(0xff0000);
-        // console.warn("this tint is not working "); // todo
+        asTint = this.gameObject as unknown as Phaser.GameObjects.Components.Tint & { clearTint?: () => void };
+        if (asTint.setTint) {
+          asTint.setTint(0xff0000);
+          // console.warn("this tint is not working "); // todo
+          this.gameObject.scene.time.delayedCall(500, () => {
+            if (this.gameObject.active) asTint.clearTint?.();
+          });
+        }
         break;
     }
   }

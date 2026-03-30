@@ -72,9 +72,23 @@ export class WaterNavigationHelper {
 
   /**
    * BFS outward from a starting tile to find the nearest water tile.
+   * Prefers deep water (value 0) over shore tiles (value 2) to avoid spawning ships on the coast.
    * Used when spawning water units from a land building.
    */
   findNearestWaterTile(from: Vector2Simple, maxRadius = 30): Vector2Simple | null {
+    // First pass: deep water only
+    for (let radius = 0; radius <= maxRadius; radius++) {
+      for (let dx = -radius; dx <= radius; dx++) {
+        for (let dy = -radius; dy <= radius; dy++) {
+          if (Math.abs(dx) + Math.abs(dy) !== radius) continue;
+          const candidate = { x: from.x + dx, y: from.y + dy };
+          if (this.isWithinBounds(candidate) && this.waterGrid[candidate.y]?.[candidate.x] === 0) {
+            return candidate;
+          }
+        }
+      }
+    }
+    // Second pass: fall back to shore tiles if no deep water is found
     for (let radius = 0; radius <= maxRadius; radius++) {
       for (let dx = -radius; dx <= radius; dx++) {
         for (let dy = -radius; dy <= radius; dy++) {
@@ -87,6 +101,11 @@ export class WaterNavigationHelper {
       }
     }
     return null;
+  }
+
+  /** Returns true if the given tile is a shore tile (water adjacent to land). */
+  isShoreTile(tile: Vector2Simple): boolean {
+    return this.waterGrid[tile.y]?.[tile.x] === TerrainGridBuilder.SHORE_TILE;
   }
 
   clearCache(): void {

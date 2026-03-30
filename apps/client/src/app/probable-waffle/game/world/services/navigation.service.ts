@@ -918,6 +918,11 @@ export class NavigationService {
     return this.waterNavHelper.findNearestWaterTile(fromTile, maxRadius);
   }
 
+  /** Returns true if the tile is a shore tile (water adjacent to land). */
+  public isShoreTile(tile: Vector2Simple): boolean {
+    return this.waterNavHelper.isShoreTile(tile);
+  }
+
   /**
    * Finds the unoccupied and walkable tile around the given game object.
    * Searches in expanding radii up to maxRange for a truly free tile.

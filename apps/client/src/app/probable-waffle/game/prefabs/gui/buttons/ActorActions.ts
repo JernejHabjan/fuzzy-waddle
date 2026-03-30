@@ -51,6 +51,9 @@ import { ResearchComponent } from "../../../entity/components/research/research-
 import { researchDefinitions } from "../../../entity/components/research/research-definitions";
 import { QueueComponent } from "../../../entity/components/queue/queue-component";
 import { QueueItemType } from "../../../entity/components/queue/queue-item";
+import { ContainerComponent } from "../../../entity/components/building/container-component";
+import { ContainableComponent } from "../../../entity/components/building/containable-component";
+import { NavigationService } from "../../../world/services/navigation.service";
 /* END-USER-IMPORTS */
 
 /**
@@ -626,6 +629,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       index = this.showHealIcons(actor, allActors, index);
       index = this.showSpellIcons(actor, allActors, index);
       index = this.showGatherIcons(actor, allActors, index);
+      index = this.showContainerIcons(actor, allActors, index);
       index = this.showProductionIcons(actor, allActors, index);
       index = this.showResearchIcons(actor, allActors, index);
       index = this.showBuilderIcons(actor, allActors, index);
@@ -808,6 +812,52 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     }
     return index;
   }
+
+  private showContainerIcons(
+    actor: Phaser.GameObjects.GameObject,
+    _allActors: Phaser.GameObjects.GameObject[],
+    index: number
+  ): number {
+    const containerComponent = getActorComponent(actor, ContainerComponent);
+    if (!containerComponent) return index;
+
+    const navigationService = getSceneService(this.mainSceneWithActors, NavigationService);
+    const tile = navigationService?.getCenterTileCoordUnderObject(actor);
+    const isOnShore = tile ? (navigationService?.isShoreTile(tile) ?? false) : false;
+
+    const action = this.actor_actions[index];
+    if (!action) {
+      console.error("Action button not found at index", index);
+      return index;
+    }
+    action.setup({
+      icon: {
+        key: "gui",
+        frame: "action_icons/hand.png",
+        origin: { x: 0.5, y: 0.5 }
+      },
+      visible: true,
+      disabled: !isOnShore,
+      action: () => {
+        if (!isOnShore) return;
+        containerComponent.unloadAll();
+      },
+      tooltipInfo: {
+        title: "Unload All",
+        description: isOnShore
+          ? "Unload all carried units onto shore"
+          : "Must be docked at a shore tile to unload",
+        iconKey: "gui",
+        iconFrame: "action_icons/hand.png",
+        iconOrigin: { x: 0.5, y: 0.5 }
+      },
+      shortcut: "u"
+    } satisfies ActorActionSetup);
+    index++;
+
+    return index;
+  }
+
 
   private showProductionIcons(
     actor: Phaser.GameObjects.GameObject,

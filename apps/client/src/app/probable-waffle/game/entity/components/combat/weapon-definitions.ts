@@ -697,7 +697,11 @@ export const weaponDefinitions = {
         anims: EffectsAnims.debrisAnimations
       },
       trajectoryType: "parabolic" as const,
-      parabolicPeakHeight: 130
+      parabolicPeakHeight: 130,
+      salvo: {
+        count: 8,
+        spreadPx: 50
+      }
     },
     damage: 12,
     damageType: DamageType.Physical,
@@ -735,6 +739,10 @@ export const weaponDefinitions = {
         key: "factions",
         frame: "buildings/skaduwee/infantry_inn/cloud-vertical.png",
         intervalMs: 80
+      },
+      salvo: {
+        count: 10,
+        spreadPx: 55
       }
     },
     damage: 18,
