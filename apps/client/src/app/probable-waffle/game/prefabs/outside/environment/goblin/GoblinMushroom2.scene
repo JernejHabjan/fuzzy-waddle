@@ -1,0 +1,41 @@
+{
+    "id": "c79824f1-089f-4d05-aa63-bf4849bf9353",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "07590ef7-50ec-430f-81da-65b5ef73ac70",
+            "label": "goblin_mushroom2_png",
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": 8,
+            "hitArea.y": 8,
+            "hitArea.radius": 8,
+            "texture": {
+                "key": "environment_1",
+                "frame": "goblin/mushroom2.png"
+            },
+            "x": 32,
+            "y": 48,
+            "originY": 0.75
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}
