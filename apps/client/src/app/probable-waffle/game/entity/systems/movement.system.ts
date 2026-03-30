@@ -31,6 +31,7 @@ import {
 import { OwnerComponent } from "../components/owner-component";
 import { AnimationActorComponent } from "../components/animation/animation-actor-component";
 import { FlyingComponent } from "../components/movement/flying-component";
+import { MovementTerrainType } from "../components/movement/movement-terrain-type";
 import { RepresentableComponent } from "../components/representable-component";
 import { IdComponent } from "../components/id-component";
 import { StatusEffectComponent } from "../components/status-effect/status-effect-component";
@@ -696,7 +697,8 @@ export class MovementSystem {
       const destinationTile: Vector2Simple = { x: assignedPoint.x, y: assignedPoint.y };
 
       // Check if the assigned point is valid and reachable
-      if (this.navigationService.isTileWalkable(destinationTile)) {
+      const terrainType = this.actorTranslateComponent?.actorTranslateDefinition.movementTerrainType ?? MovementTerrainType.Ground;
+      if (this.navigationService.isTileWalkable(destinationTile, terrainType)) {
         const path = await this.navigationService.findPathFromGameObjectToTile(this.gameObject, destinationTile);
         if (path !== null && path.length > 0) {
           return {

@@ -133,13 +133,12 @@ import PumpkinWarlockPumpkin from "../../../prefabs/characters/mobs/pumpkin_warl
 import SandWorm from "../../../prefabs/characters/mobs/sand_worm/SandWorm";
 import ForestWendigo from "../../../prefabs/characters/mobs/forest_wendigo/ForestWendigo";
 import SnowWendigo from "../../../prefabs/characters/mobs/snow_wendigo/SnowWendigo";
-import CommonBoat from "../../../prefabs/characters/shared/CommonBoat";
-import VikingBoat from "../../../prefabs/characters/shared/VikingBoat";
+import VikingBoat from "../../../prefabs/characters/shared/VikingBoat/VikingBoat";
+import CommonBoat from "../../../prefabs/characters/shared/CommonBoat/CommonBoat";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
 export default class MapRiverCrossing extends GameProbableWaffleScene {
-
   constructor() {
     super("MapRiverCrossing");
 
@@ -149,14 +148,13 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
   }
 
   editorCreate(): void {
-
     // tilemap
     const tilemap = this.add.tilemap("tiles_river_crossing");
     tilemap.addTilesetImage("tiles", "tiles_1");
     tilemap.addTilesetImage("tiles_2", "tiles_2");
 
     // tilemap_level_1
-    tilemap.createLayer("TileMap_level_1", ["tiles","tiles_2"], 0, 0);
+    tilemap.createLayer("TileMap_level_1", ["tiles", "tiles_2"], 0, 0);
 
     // spawn
     const spawn = new Spawn(this, 96, 608);
@@ -1115,6 +1113,14 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // vikingBoat
     const vikingBoat = new VikingBoat(this, 928, 496);
     this.add.existing(vikingBoat);
+
+    // commonBoat (components)
+    const commonBoatEditorOwner = new EditorOwner(commonBoat);
+    commonBoatEditorOwner.owner_id = "1";
+
+    // vikingBoat (components)
+    const vikingBoatEditorOwner = new EditorOwner(vikingBoat);
+    vikingBoatEditorOwner.owner_id = "2";
 
     // spawn (components)
     const spawnEditorOwner = new EditorOwner(spawn);
