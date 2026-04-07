@@ -122,15 +122,16 @@ root [EnterContainerOrder] {
                     condition [IsAlreadyInContainer]
                     action [Stop, "EnterContainer:AlreadyLoaded"]
                 }
-                /* Both self and target are on shore — board immediately */
+                /* Walk adjacent to the container, then board if close enough */
                 sequence {
+                    action [MoveAdjacentToContainer]
                     condition [CanBoardContainerNow]
                     action [BoardContainer]
                     action [Stop, "EnterContainer:Boarded"]
                 }
-                /* Move to the container or the nearest shore, then register a boarding request */
+                /* Container not directly reachable (deep water) — walk to nearest shore and wait */
                 sequence {
-                    action [MoveToContainerOrShore]
+                    action [MoveToNearestShoreForContainer]
                     action [Stop, "EnterContainer:MovedToShore"]
                 }
                 action [Stop, "EnterContainer:Failed"]

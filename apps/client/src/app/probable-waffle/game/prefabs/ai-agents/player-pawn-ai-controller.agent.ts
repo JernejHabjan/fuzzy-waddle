@@ -50,6 +50,10 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
     const playerOrder = this.blackboard.peekNextPlayerOrder();
     if (!playerOrder) return State.FAILED;
     this.blackboard.setCurrentOrder(playerOrder);
+    // Cancel any pending boarding request when starting a non-boarding order
+    if (playerOrder.orderType !== OrderType.EnterContainer) {
+      getActorComponent(this.gameObject, ContainableComponent)?.cancelAnyPendingBoardingRequest();
+    }
     return State.SUCCEEDED;
   }
 
@@ -289,12 +293,19 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
 
     const currentOrder = this.blackboard.getCurrentOrder();
     if (currentOrder) {
-      // Exit any container the actor is in — but skip this when the order IS a boarding order
-      // (we never want to eject units we just successfully loaded)
       if (currentOrder.orderType !== OrderType.EnterContainer) {
+        // Exit any container the actor is in for non-boarding orders
         const containableComponent = getActorComponent(this.gameObject, ContainableComponent);
         if (containableComponent) {
           containableComponent.leaveContainer();
+        }
+        // Also cancel any pending boarding request registered while walking to shore
+        getActorComponent(this.gameObject, ContainableComponent)?.cancelAnyPendingBoardingRequest();
+      } else if (fromNode !== "EnterContainer:MovedToShore") {
+        // EnterContainer order cancelled before the unit reached shore — cancel boarding request
+        const target = currentOrder.data.targetGameObject;
+        if (target) {
+          getActorComponent(target, ContainerComponent)?.cancelBoardingRequest(this.gameObject);
         }
       }
       switch (currentOrder.orderType) {
@@ -877,11 +888,41 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
   }
 
   /**
-   * Move toward the container using land pathfinding with a wide radius so the unit stops
-   * on the nearest accessible (land) tile.  When close enough, register a boarding request
-   * so the container actor can navigate to shore and pick us up.
+   * Try to walk directly adjacent to the container using land pathfinding.
+   * Succeeds when the unit is (or gets) within boarding range of the ship.
+   * Fails when the ship is in deep water with no reachable land tiles nearby,
+   * which causes the MDSL to fall through to MoveToNearestShoreForContainer.
    */
-  async MoveToContainerOrShore(): Promise<State> {
+  async MoveAdjacentToContainer(): Promise<State> {
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return State.FAILED;
+    const target = currentOrder.data.targetGameObject;
+    if (!target) return State.FAILED;
+
+    // Already adjacent — skip movement entirely
+    if (this.CanBoardContainerNow()) return State.SUCCEEDED;
+
+    const movementSystem = getActorSystem(this.gameObject, MovementSystem);
+    if (!movementSystem) return State.FAILED;
+
+    try {
+      const success = await movementSystem.moveToActorByAdjustingPathDynamically(target, {
+        radiusTilesAroundDestination: 1
+      } satisfies Partial<PathMoveConfig>);
+      // Movement may return false when path is empty (unit already at destination tile).
+      // Accept that case too if we're now within boarding range.
+      return success || this.CanBoardContainerNow() ? State.SUCCEEDED : State.FAILED;
+    } catch {
+      return State.FAILED;
+    }
+  }
+
+  /**
+   * Fallback for when the container is not directly reachable (deep water).
+   * Finds the nearest shore tile to the ship and walks there, then registers a boarding request
+   * so the ship navigates to shore to pick us up.
+   */
+  async MoveToNearestShoreForContainer(): Promise<State> {
     const currentOrder = this.blackboard.getCurrentOrder();
     if (!currentOrder) return State.FAILED;
     const target = currentOrder.data.targetGameObject;
@@ -890,16 +931,28 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
     const movementSystem = getActorSystem(this.gameObject, MovementSystem);
     if (!movementSystem) return State.FAILED;
 
-    // Use a wide radius so the unit parks on the closest land tile near the boat
-    // even when the boat is on a shore/water tile
-    const success = await movementSystem.moveToActorByAdjustingPathDynamically(target, {
-      radiusTilesAroundDestination: 3
-    } satisfies Partial<PathMoveConfig>);
+    const navService = getSceneService(this.gameObject.scene, NavigationService);
+    if (!navService) return State.FAILED;
+
+    // Find the nearest shore tile from the ship's current position
+    const shipTile = navService.getCenterTileCoordUnderObject(target);
+    if (!shipTile) return State.FAILED;
+
+    const shoreTile = navService.findNearestShoreTile(shipTile);
+    if (!shoreTile) return State.FAILED;
+
+    const shoreLocation: Vector3Simple = { x: shoreTile.x, y: shoreTile.y, z: 0 };
+    const success = await movementSystem.moveToLocationByFollowingStaticPath(shoreLocation);
 
     if (success) {
-      // Register boarding intent so the container actor will come pick us up at shore
+      // Register boarding intent so the ship navigates to pick us up
       const containerComp = getActorComponent(target, ContainerComponent);
-      containerComp?.registerBoardingRequest(this.gameObject);
+      if (containerComp) {
+        containerComp.registerBoardingRequest(this.gameObject);
+        // Track the request so it can be cancelled if the unit gets a new order later
+        const containableComp = getActorComponent(this.gameObject, ContainableComponent);
+        if (containableComp) containableComp.pendingContainerBoardingRequest = target;
+      }
     }
 
     return success ? State.SUCCEEDED : State.FAILED;

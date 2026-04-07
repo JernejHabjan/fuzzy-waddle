@@ -9,9 +9,9 @@ import { MovementTerrainType } from "../../../../entity/components/movement/move
 export const commonBoatDefinition = {
   components: {
     representable: {
-      width: 48,
-      height: 48,
-      origin: { x: 0.5, y: 0.8 }
+      width: 64,
+      height: 64,
+      origin: { x: 0.5, y: 0.5 }
     },
     objectDescriptor: {
       color: 0xe9ecf2

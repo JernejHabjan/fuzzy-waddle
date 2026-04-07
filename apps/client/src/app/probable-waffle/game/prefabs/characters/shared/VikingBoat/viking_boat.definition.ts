@@ -10,9 +10,9 @@ import { MovementTerrainType } from "../../../../entity/components/movement/move
 export const vikingBoatDefinition = {
   components: {
     representable: {
-      width: 56,
-      height: 56,
-      origin: { x: 0.5, y: 0.8 }
+      width: 92,
+      height: 92,
+      origin: { x: 0.5, y: 0.5 }
     },
     objectDescriptor: {
       color: 0xe9ecf2

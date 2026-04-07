@@ -7,6 +7,8 @@ import GameObject = Phaser.GameObjects.GameObject;
  */
 export class ContainableComponent {
   private containerOwner: GameObject | null = null;
+  /** The container the unit has registered a boarding request with but hasn't boarded yet. */
+  pendingContainerBoardingRequest: GameObject | null = null;
 
   constructor(public owner: GameObject) {}
 
@@ -23,6 +25,13 @@ export class ContainableComponent {
 
   setContainer(containerOwner: GameObject) {
     this.containerOwner = containerOwner;
+  }
+
+  /** Cancel any pending boarding request registered on a container (called when unit takes a new order). */
+  cancelAnyPendingBoardingRequest() {
+    if (!this.pendingContainerBoardingRequest) return;
+    getActorComponent(this.pendingContainerBoardingRequest, ContainerComponent)?.cancelBoardingRequest(this.owner);
+    this.pendingContainerBoardingRequest = null;
   }
 
   /**
