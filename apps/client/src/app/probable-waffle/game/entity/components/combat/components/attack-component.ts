@@ -470,6 +470,7 @@ export class AttackComponent {
       to: 1,
       duration,
       onUpdate: (tween) => {
+        if (!this.gameObject.active || !enemy.active) return;
         const t = tween.getValue() ?? 0;
         const x = startX + (targetX - startX) * t;
         const arcOffset = -peakHeight * 4 * t * (1 - t);
@@ -498,7 +499,6 @@ export class AttackComponent {
         }
 
         // Hit detection
-        if (!this.gameObject.active || !enemy.active) return;
         const projectileBounds = getGameObjectBounds(projectileSprite);
         if (!projectileBounds) return;
         const enemyBounds = getGameObjectBounds(enemy);

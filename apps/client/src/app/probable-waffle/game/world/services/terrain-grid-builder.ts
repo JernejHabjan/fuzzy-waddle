@@ -58,8 +58,4 @@ export class TerrainGridBuilder {
 
   /** Tile value used for water tiles adjacent to land (shore). */
   static readonly SHORE_TILE = 2;
-
-  static isWaterTile(tile: Phaser.Tilemaps.Tile): boolean {
-    return tile.properties.terrainType === TerrainType.Water;
-  }
 }
