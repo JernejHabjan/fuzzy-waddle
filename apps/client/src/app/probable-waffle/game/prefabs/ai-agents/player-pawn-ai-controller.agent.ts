@@ -934,8 +934,9 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
 
   /**
    * Fallback for when the container is not directly reachable (deep water).
-   * Finds the nearest shore tile to the ship and walks there, then registers a boarding request
-   * (including the agreed shore tile) so the ship navigates to the exact same tile to pick us up.
+   * Finds the meeting point (water-side shore tile + adjacent land tile), registers the boarding
+   * request immediately so the boat starts heading to shore in parallel, then walks to the land tile.
+   * Cancels the request if movement fails.
    */
   async MoveToNearestShoreForContainer(): Promise<State> {
     const currentOrder = this.blackboard.getCurrentOrder();
@@ -960,19 +961,24 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
     const groundMeetingPoint = navService.findGroundTileAdjacentToShoreTile(shoreTile);
     if (!groundMeetingPoint) return State.FAILED;
 
+    const containerComp = getActorComponent(target, ContainerComponent);
+    const containableComp = getActorComponent(this.gameObject, ContainableComponent);
+
+    // Register boarding intent NOW so the boat starts navigating to shore in parallel
+    // while this unit is still walking to the meeting point.
+    // Pass the water-side shore tile so boat and unit converge on the same spot.
+    if (containerComp) {
+      containerComp.registerBoardingRequest(this.gameObject, shoreTile);
+      if (containableComp) containableComp.pendingContainerBoardingRequest = target;
+    }
+
     const shoreLocation: Vector3Simple = { x: groundMeetingPoint.x, y: groundMeetingPoint.y, z: 0 };
     const success = await movementSystem.moveToLocationByFollowingStaticPath(shoreLocation);
 
-    if (success) {
-      // Register boarding intent, passing the water-side shore tile so the boat navigates
-      // to that exact tile rather than independently computing its own nearest shore.
-      const containerComp = getActorComponent(target, ContainerComponent);
-      if (containerComp) {
-        containerComp.registerBoardingRequest(this.gameObject, shoreTile);
-        // Track the request so it can be cancelled if the unit gets a new order later
-        const containableComp = getActorComponent(this.gameObject, ContainableComponent);
-        if (containableComp) containableComp.pendingContainerBoardingRequest = target;
-      }
+    if (!success && containerComp) {
+      // Clean up if we couldn't reach the shore
+      containerComp.cancelBoardingRequest(this.gameObject);
+      if (containableComp) containableComp.pendingContainerBoardingRequest = null;
     }
 
     return success ? State.SUCCEEDED : State.FAILED;
