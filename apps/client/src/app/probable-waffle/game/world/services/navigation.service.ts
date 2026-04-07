@@ -929,6 +929,28 @@ export class NavigationService {
   }
 
   /**
+   * Given a shore tile (the water-side tile adjacent to land), finds the nearest
+   * ground-walkable tile among its 8 neighbours so a land unit can stand at the water's edge.
+   * Returns null if no walkable ground neighbour exists.
+   */
+  public findGroundTileAdjacentToShoreTile(shoreTile: Vector2Simple): Vector2Simple | null {
+    const neighbors: Vector2Simple[] = [
+      { x: shoreTile.x, y: shoreTile.y - 1 },
+      { x: shoreTile.x, y: shoreTile.y + 1 },
+      { x: shoreTile.x - 1, y: shoreTile.y },
+      { x: shoreTile.x + 1, y: shoreTile.y },
+      { x: shoreTile.x - 1, y: shoreTile.y - 1 },
+      { x: shoreTile.x + 1, y: shoreTile.y - 1 },
+      { x: shoreTile.x - 1, y: shoreTile.y + 1 },
+      { x: shoreTile.x + 1, y: shoreTile.y + 1 }
+    ];
+    for (const n of neighbors) {
+      if (this.easyStarNavigationGrid[n.y]?.[n.x] === 0) return n;
+    }
+    return null;
+  }
+
+  /**
    * Finds the unoccupied and walkable tile around the given game object.
    * Searches in expanding radii up to maxRange for a truly free tile.
    * Prefers tiles with higher y (bottom) and higher x (right), or towards targetTile if provided.

@@ -71,6 +71,7 @@ root [AutoAssignNewOrder] {
 
         /* Load pending boarders when docked at shore */
         sequence {
+            condition [IsWaterUnit]
             condition [HasContainerComponent]
             condition [HasPendingBoarders]
             selector {
@@ -122,15 +123,17 @@ root [EnterContainerOrder] {
                     condition [IsAlreadyInContainer]
                     action [Stop, "EnterContainer:AlreadyLoaded"]
                 }
-                /* Walk adjacent to the container, then board if close enough */
+                /* Land container: walk adjacent, then board if close enough */
                 sequence {
+                    flip { condition [IsWaterContainerTarget] }
                     action [MoveAdjacentToContainer]
                     condition [CanBoardContainerNow]
                     action [BoardContainer]
                     action [Stop, "EnterContainer:Boarded"]
                 }
-                /* Container not directly reachable (deep water) — walk to nearest shore and wait */
+                /* Water container (boat): walk to shore and register boarding request */
                 sequence {
+                    condition [IsWaterContainerTarget]
                     action [MoveToNearestShoreForContainer]
                     action [Stop, "EnterContainer:MovedToShore"]
                 }

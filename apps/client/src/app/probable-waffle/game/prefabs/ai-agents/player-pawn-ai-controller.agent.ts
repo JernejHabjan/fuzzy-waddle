@@ -33,6 +33,7 @@ import { spellDefinitions } from "../../entity/components/combat/spell-definitio
 import { RepresentableComponent } from "../../entity/components/representable-component";
 import { NavigationService } from "../../world/services/navigation.service";
 import { getSceneService } from "../../world/services/scene-component-helpers";
+import { isWaterUnit } from "../../data/game-object-helper";
 
 export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
   constructor(
@@ -851,6 +852,17 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
     return !!getActorComponent(this.gameObject, ContainableComponent);
   }
 
+  /** True if self is a water-terrain unit (e.g. a transport boat). */
+  IsWaterUnit(): boolean {
+    return isWaterUnit(this.gameObject);
+  }
+
+  /** True if the current order's target container is a water-terrain unit (e.g. a transport boat). */
+  IsWaterContainerTarget(): boolean {
+    const target = this.blackboard.getCurrentOrder()?.data.targetGameObject;
+    return !!target && isWaterUnit(target);
+  }
+
   IsAlreadyInContainer(): boolean {
     return getActorComponent(this.gameObject, ContainableComponent)?.isContained() ?? false;
   }
@@ -890,14 +902,17 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
   /**
    * Try to walk directly adjacent to the container using land pathfinding.
    * Succeeds when the unit is (or gets) within boarding range of the ship.
-   * Fails when the ship is in deep water with no reachable land tiles nearby,
-   * which causes the MDSL to fall through to MoveToNearestShoreForContainer.
+   * Fast-fails for water containers (boats in deep water) so the MDSL selector
+   * falls through immediately to MoveToNearestShoreForContainer.
    */
   async MoveAdjacentToContainer(): Promise<State> {
     const currentOrder = this.blackboard.getCurrentOrder();
     if (!currentOrder) return State.FAILED;
     const target = currentOrder.data.targetGameObject;
     if (!target) return State.FAILED;
+
+    // Water units cannot be reached via land pathfinding — skip the walk attempt
+    if (isWaterUnit(target)) return State.FAILED;
 
     // Already adjacent — skip movement entirely
     if (this.CanBoardContainerNow()) return State.SUCCEEDED;
@@ -920,7 +935,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
   /**
    * Fallback for when the container is not directly reachable (deep water).
    * Finds the nearest shore tile to the ship and walks there, then registers a boarding request
-   * so the ship navigates to shore to pick us up.
+   * (including the agreed shore tile) so the ship navigates to the exact same tile to pick us up.
    */
   async MoveToNearestShoreForContainer(): Promise<State> {
     const currentOrder = this.blackboard.getCurrentOrder();
@@ -934,21 +949,26 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
     const navService = getSceneService(this.gameObject.scene, NavigationService);
     if (!navService) return State.FAILED;
 
-    // Find the nearest shore tile from the ship's current position
+    // Find the nearest shore tile (water-side) from the ship's current position
     const shipTile = navService.getCenterTileCoordUnderObject(target);
     if (!shipTile) return State.FAILED;
 
     const shoreTile = navService.findNearestShoreTile(shipTile);
     if (!shoreTile) return State.FAILED;
 
-    const shoreLocation: Vector3Simple = { x: shoreTile.x, y: shoreTile.y, z: 0 };
+    // Shore tile is a water tile — the ground unit must walk to the adjacent land tile instead
+    const groundMeetingPoint = navService.findGroundTileAdjacentToShoreTile(shoreTile);
+    if (!groundMeetingPoint) return State.FAILED;
+
+    const shoreLocation: Vector3Simple = { x: groundMeetingPoint.x, y: groundMeetingPoint.y, z: 0 };
     const success = await movementSystem.moveToLocationByFollowingStaticPath(shoreLocation);
 
     if (success) {
-      // Register boarding intent so the ship navigates to pick us up
+      // Register boarding intent, passing the water-side shore tile so the boat navigates
+      // to that exact tile rather than independently computing its own nearest shore.
       const containerComp = getActorComponent(target, ContainerComponent);
       if (containerComp) {
-        containerComp.registerBoardingRequest(this.gameObject);
+        containerComp.registerBoardingRequest(this.gameObject, shoreTile);
         // Track the request so it can be cancelled if the unit gets a new order later
         const containableComp = getActorComponent(this.gameObject, ContainableComponent);
         if (containableComp) containableComp.pendingContainerBoardingRequest = target;
@@ -967,7 +987,10 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
   }
 
   /**
-   * Navigate the container actor to the nearest shore tile adjacent to the first pending boarder.
+   * Navigate the container actor to the shore tile where the first pending boarder is waiting.
+   * Uses the pre-agreed shore tile stored on the boarding request when available, so the boat
+   * converges on the exact same tile the boarder already walked to.
+   * Falls back to finding the nearest shore to the boarder's current position otherwise.
    */
   async MoveToShoreForBoarding(): Promise<State> {
     const containerComp = getActorComponent(this.gameObject, ContainerComponent);
@@ -980,10 +1003,15 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
     const movementSystem = getActorSystem(this.gameObject, MovementSystem);
     if (!movementSystem) return State.FAILED;
 
-    const boarderTile = navService.getCenterTileCoordUnderObject(boarders[0]!);
-    if (!boarderTile) return State.FAILED;
-
-    const shoreTile = navService.findNearestShoreTile(boarderTile);
+    const firstBoarder = boarders[0]!;
+    // Prefer the shore tile the boarder pre-negotiated when it registered
+    const registeredShore = containerComp.getTargetShoreForBoarder(firstBoarder);
+    let shoreTile = registeredShore;
+    if (!shoreTile) {
+      const boarderTile = navService.getCenterTileCoordUnderObject(firstBoarder);
+      if (!boarderTile) return State.FAILED;
+      shoreTile = navService.findNearestShoreTile(boarderTile) ?? undefined;
+    }
     if (!shoreTile) return State.FAILED;
 
     const shoreLocation: Vector3Simple = { x: shoreTile.x, y: shoreTile.y, z: 0 };

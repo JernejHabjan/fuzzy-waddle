@@ -14,6 +14,7 @@ import { ContainableComponent } from "./containable-component";
 import { NavigationService } from "../../../world/services/navigation.service";
 import { RepresentableComponent } from "../representable-component";
 import { ActorTranslateComponent } from "../movement/actor-translate-component";
+import type { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 
 /**
  * apply to resource source that needs gameObjects to enter to gather
@@ -23,6 +24,12 @@ export class ContainerComponent {
   private containedGameObjects = new Set<GameObject>();
   /** Units that have issued a boarding request but not yet physically loaded. */
   private pendingBoarders = new Set<GameObject>();
+  /**
+   * The agreed-upon shore tile where each pending boarder will wait.
+   * Stored when the boarder registers its request so the boat can navigate
+   * to the exact same tile instead of independently computing its own shore.
+   */
+  private pendingBoarderShores = new Map<GameObject, Vector2Simple>();
   /** Emits whenever units are loaded or unloaded, so HUD can refresh container display. */
   readonly containerChanged = new Subject<void>();
 
@@ -44,13 +51,23 @@ export class ContainerComponent {
   }
 
   /** Unit registers intent to board this container (e.g. right-clicked while it's in water). */
-  registerBoardingRequest(unit: GameObject): void {
+  registerBoardingRequest(unit: GameObject, targetShore?: Vector2Simple): void {
     this.pendingBoarders.add(unit);
+    if (targetShore) this.pendingBoarderShores.set(unit, targetShore);
     this.containerChanged.next();
   }
 
   cancelBoardingRequest(unit: GameObject): void {
     this.pendingBoarders.delete(unit);
+    this.pendingBoarderShores.delete(unit);
+  }
+
+  /**
+   * Returns the shore tile the boarder agreed to wait at, if one was registered.
+   * The boat uses this to navigate to the same tile instead of independently picking one.
+   */
+  getTargetShoreForBoarder(unit: GameObject): Vector2Simple | undefined {
+    return this.pendingBoarderShores.get(unit);
   }
 
   hasPendingBoarders(): boolean {
