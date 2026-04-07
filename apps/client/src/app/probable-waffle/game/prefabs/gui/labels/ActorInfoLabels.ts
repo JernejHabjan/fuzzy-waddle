@@ -21,6 +21,8 @@ import { SharedQueueItemType } from "../../../entity/components/queue/shared-que
 import type { SharedQueueItem } from "../../../entity/components/queue/shared-queue-item";
 import { ContainerComponent } from "../../../entity/components/building/container-component";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
+import { NavigationService } from "../../../world/services/navigation.service";
+import { isWaterUnit } from "../../../data/game-object-helper";
 /* END-USER-IMPORTS */
 
 export default class ActorInfoLabels extends Phaser.GameObjects.Container {
@@ -130,14 +132,11 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
   private actor?: Phaser.GameObjects.GameObject;
   /** When true, icons show container contents rather than a production/research queue. */
   private containerMode = false;
-  /** Whether the container owner is currently docked at a shore tile. */
-  private isOnShore = false;
 
   cleanActor() {
     this.queueChangedSubscription?.unsubscribe();
     this.containerChangedSubscription?.unsubscribe();
     this.containerMode = false;
-    this.isOnShore = false;
     this.visible = false;
     this.actor = undefined;
   }
@@ -154,12 +153,13 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
 
   /**
    * Displays the units currently inside a container actor (e.g. transport boat).
-   * Each icon represents one contained unit and can be clicked to unload it (only when on shore).
+   * Each icon represents one contained unit and can be clicked to unload it.
+   * For water units, unloading is only allowed when docked at a shore tile.
+   * For ground containers (buildings), unloading is always allowed.
    */
-  setLabelsForContainerContents(actor: Phaser.GameObjects.GameObject, isOnShore: boolean) {
+  setLabelsForContainerContents(actor: Phaser.GameObjects.GameObject) {
     this.actor = actor;
     this.containerMode = true;
-    this.isOnShore = isOnShore;
 
     this.containerChangedSubscription?.unsubscribe();
     const containerComponent = getActorComponent(actor, ContainerComponent);
@@ -176,6 +176,7 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
     const actorIndex = getSceneComponent(this.mainSceneWithActors, ActorIndexSystem);
     const contained = containerComponent.getContainedGameObjects();
     const capacity = containerComponent.containerDefinition.capacity;
+    const canUnload = this.canUnloadFromContainer(actor);
 
     this.icons.forEach((icon, index) => {
       if (index >= capacity) {
@@ -195,8 +196,8 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
             info.smallImage.frame,
             info.smallImage.origin ?? { x: 0.5, y: 0.5 }
           );
-          // Dim icon when not at shore to indicate unloading is disabled
-          icon.setAlpha(this.isOnShore ? 1 : 0.4);
+          // Dim icon when unloading is not possible to indicate it is disabled
+          icon.setAlpha(canUnload ? 1 : 0.4);
           icon.visible = true;
         }
       } else {
@@ -392,14 +393,15 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
     }
   }
 
-  /** Unloads the clicked unit from the container (only when ship is at shore). */
+  /** Unloads the clicked unit from the container (only when unloading is permitted). */
   private tryHandleIconClickContainer(action: ActorIconClickAction) {
     if (!action.definition.containedActorId) return;
     if (!this.containerMode) return;
-    if (!this.isOnShore) return; // disabled when not at shore
 
     const actor = this.actor;
     if (!actor) return;
+    if (!this.canUnloadFromContainer(actor)) return; // disabled when shore check fails for water units
+
     if (!this.mainSceneWithActors) return;
 
     const containerComponent = getActorComponent(actor, ContainerComponent);
@@ -412,6 +414,18 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
     if (containedActor) {
       containerComponent.unloadGameObject(containedActor);
     }
+  }
+
+  /** Returns true if unloading from the container actor is currently allowed. */
+  private canUnloadFromContainer(actor: Phaser.GameObjects.GameObject): boolean {
+    if (!isWaterUnit(actor)) return true;
+    // Water units require a shore tile to unload
+    if (!this.mainSceneWithActors) return false;
+    const navigationService = getSceneService(this.mainSceneWithActors, NavigationService);
+    if (!navigationService) return false;
+    const tile = navigationService.getCenterTileCoordUnderObject(actor);
+    if (!tile) return false;
+    return navigationService.isShoreTile(tile);
   }
   /* END-USER-CODE */
 }

@@ -52,8 +52,8 @@ import { researchDefinitions } from "../../../entity/components/research/researc
 import { QueueComponent } from "../../../entity/components/queue/queue-component";
 import { QueueItemType } from "../../../entity/components/queue/queue-item";
 import { ContainerComponent } from "../../../entity/components/building/container-component";
-import { ContainableComponent } from "../../../entity/components/building/containable-component";
 import { NavigationService } from "../../../world/services/navigation.service";
+import { isWaterUnit } from "../../../data/game-object-helper";
 /* END-USER-IMPORTS */
 
 /**
@@ -827,15 +827,30 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     const containerComponent = getActorComponent(actor, ContainerComponent);
     if (!containerComponent) return index;
 
-    const navigationService = getSceneService(this.mainSceneWithActors, NavigationService);
-    const tile = navigationService?.getCenterTileCoordUnderObject(actor);
-    const isOnShore = tile ? (navigationService?.isShoreTile(tile) ?? false) : false;
+    const hasUnits = containerComponent.getContainedGameObjects().length > 0;
+
+    // Shore check only applies to water units — ground containers can always unload
+    let isOnShore = true;
+    if (isWaterUnit(actor)) {
+      const navigationService = getSceneService(this.mainSceneWithActors, NavigationService);
+      const tile = navigationService?.getCenterTileCoordUnderObject(actor);
+      isOnShore = tile ? (navigationService?.isShoreTile(tile) ?? false) : false;
+    }
+
+    const canUnload = hasUnits && isOnShore;
 
     const action = this.actor_actions[index];
     if (!action) {
       console.error("Action button not found at index", index);
       return index;
     }
+
+    const tooltipDescription = !hasUnits
+      ? "No units to unload"
+      : isWaterUnit(actor) && !isOnShore
+        ? "Must be docked at a shore tile to unload"
+        : "Unload all carried units";
+
     action.setup({
       icon: {
         key: "gui",
@@ -843,16 +858,14 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         origin: { x: 0.5, y: 0.5 }
       },
       visible: true,
-      disabled: !isOnShore,
+      disabled: !canUnload,
       action: () => {
-        if (!isOnShore) return;
+        if (!canUnload) return;
         containerComponent.unloadAll();
       },
       tooltipInfo: {
         title: "Unload All",
-        description: isOnShore
-          ? "Unload all carried units onto shore"
-          : "Must be docked at a shore tile to unload",
+        description: tooltipDescription,
         iconKey: "gui",
         iconFrame: "action_icons/hand.png",
         iconOrigin: { x: 0.5, y: 0.5 }
@@ -861,7 +874,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     } satisfies ActorActionSetup);
     index++;
 
-    // Refresh the button when the ship moves to/from a shore tile
+    // Refresh the button when the actor moves to/from a shore tile
     this.containerMovementSubscription?.unsubscribe();
     const translateComponent = getActorComponent(actor, ActorTranslateComponent);
     if (translateComponent) {
@@ -872,7 +885,6 @@ export default class ActorActions extends Phaser.GameObjects.Container {
 
     return index;
   }
-
 
   private showProductionIcons(
     actor: Phaser.GameObjects.GameObject,
@@ -1081,7 +1093,6 @@ export default class ActorActions extends Phaser.GameObjects.Container {
 
     return false;
   }
-
 
   private showBuilderIcons(
     actor: Phaser.GameObjects.GameObject,
@@ -1341,7 +1352,8 @@ export default class ActorActions extends Phaser.GameObjects.Container {
 
     if (hasObjectPrereqs || hasResearchPrereqs) {
       const requirementObjectNames =
-        validation.prereqs.objectNames?.map((req) => getPwActorDefinition(req, null)?.components?.info?.name ?? req) ?? [];
+        validation.prereqs.objectNames?.map((req) => getPwActorDefinition(req, null)?.components?.info?.name ?? req) ??
+        [];
       const requirementResearchNames =
         validation.prereqs.researchTypes?.map((req) => researchDefinitions[req]?.name ?? req) ?? [];
       const requirementNames = [...requirementObjectNames, ...requirementResearchNames].join(", ");

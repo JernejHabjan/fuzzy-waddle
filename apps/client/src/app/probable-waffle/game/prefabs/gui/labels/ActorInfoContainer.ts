@@ -24,7 +24,6 @@ import { SelectionTabHandler } from "../../../player/human-controller/selection-
 import { ResearchComponent } from "../../../entity/components/research/research-component";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { ContainerComponent } from "../../../entity/components/building/container-component";
-import { NavigationService } from "../../../world/services/navigation.service";
 import { ActorTranslateComponent } from "../../../entity/components/movement/actor-translate-component";
 /* END-USER-IMPORTS */
 
@@ -184,36 +183,24 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
       // If actor has a container, overlay container contents in the labels area
       const containerComponent = getActorComponent(actor, ContainerComponent);
       if (containerComponent) {
-        const isOnShore = this.isActorOnShoreTile(actor);
-        this.actorInfoLabels.setLabelsForContainerContents(actor, isOnShore);
+        this.actorInfoLabels.setLabelsForContainerContents(actor);
 
-        // Re-render shore state whenever the container changes (unit loaded/unloaded)
+        // Re-render when the container changes (unit loaded/unloaded)
         this.containerChangedSubscription?.unsubscribe();
         this.containerChangedSubscription = containerComponent.containerChanged.subscribe(() => {
-          const currentOnShore = this.isActorOnShoreTile(actor);
-          this.actorInfoLabels.setLabelsForContainerContents(actor, currentOnShore);
+          this.actorInfoLabels.setLabelsForContainerContents(actor);
         });
 
-        // Re-evaluate shore state as the container actor moves between tiles
+        // Re-evaluate when the container actor moves between tiles (shore state may change for water units)
         this.containerMovementSubscription?.unsubscribe();
         const translateComponent = getActorComponent(actor, ActorTranslateComponent);
         if (translateComponent) {
           this.containerMovementSubscription = translateComponent.actorMovedLogicalPosition.subscribe(() => {
-            const onShore = this.isActorOnShoreTile(actor);
-            this.actorInfoLabels.setLabelsForContainerContents(actor, onShore);
+            this.actorInfoLabels.setLabelsForContainerContents(actor);
           });
         }
       }
     }
-  }
-
-  /** Returns whether the actor is currently positioned on a shore tile. */
-  private isActorOnShoreTile(actor: Phaser.GameObjects.GameObject): boolean {
-    const navigationService = getSceneService(this.mainSceneWithActors, NavigationService);
-    if (!navigationService) return false;
-    const tile = navigationService.getCenterTileCoordUnderObject(actor);
-    if (!tile) return false;
-    return navigationService.isShoreTile(tile);
   }
 
   private setActorInfoLabel(actorDefinition: PrefabDefinition) {

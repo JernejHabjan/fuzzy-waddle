@@ -196,3 +196,12 @@ export function onObjectReady(
       }
     });
 }
+
+/**
+ * Returns true if the given game object is a water-terrain unit (e.g. a transport ship).
+ * Water units can only move on water tiles and require shore access to load/unload.
+ */
+export function isWaterUnit(gameObject: Phaser.GameObjects.GameObject): boolean {
+  const translateComponent = getActorComponent(gameObject, ActorTranslateComponent);
+  return translateComponent?.actorTranslateDefinition.movementTerrainType === MovementTerrainType.Water;
+}

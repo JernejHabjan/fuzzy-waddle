@@ -3,7 +3,7 @@ import Phaser from "phaser";
 import { HealthComponent } from "../combat/components/health-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { VisionComponent } from "../vision-component";
-import { getGameObjectVisibility } from "../../../data/game-object-helper";
+import { getGameObjectVisibility, isWaterUnit } from "../../../data/game-object-helper";
 import type { ContainerComponentData } from "@fuzzy-waddle/api-interfaces";
 import { IdComponent } from "../id-component";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
@@ -13,6 +13,7 @@ import { Subject } from "rxjs";
 import { ContainableComponent } from "./containable-component";
 import { NavigationService } from "../../../world/services/navigation.service";
 import { RepresentableComponent } from "../representable-component";
+import { ActorTranslateComponent } from "../movement/actor-translate-component";
 
 /**
  * apply to resource source that needs gameObjects to enter to gather
@@ -64,7 +65,31 @@ export class ContainerComponent {
     return Array.from(this.containedGameObjects);
   }
 
+  private destroyActorsInContainer() {
+    const navigationService = getSceneService(this.gameObject.scene, NavigationService);
+    const tile = navigationService?.getCenterTileCoordUnderObject(this.gameObject);
+    const isOnShore = tile ? (navigationService?.isShoreTile(tile) ?? false) : false;
+    if (!isOnShore) {
+      // Silently destroy all contained actors — they go down with the ship
+      this.containedGameObjects.forEach((go) => {
+        getActorComponent(go, ContainableComponent)?.clearContainerReference();
+        const health = getActorComponent(go, HealthComponent);
+        if (health) {
+          health.destroyActorSilently();
+        } else {
+          go.destroy();
+        }
+      });
+      this.containedGameObjects.clear();
+      return;
+    }
+  }
+
   onKilled() {
+    // If this is a water unit sinking at sea, destroy contained actors silently (no animation/sfx)
+    if (isWaterUnit(this.gameObject)) {
+      this.destroyActorsInContainer();
+    }
     this.unloadAll();
   }
 
@@ -96,8 +121,14 @@ export class ContainerComponent {
     const worldPos = navigationService.getTileWorldCenter(spawnTile);
     if (!worldPos) return;
     const representable = getActorComponent(gameObject, RepresentableComponent);
-    if (representable) {
-      representable.logicalWorldTransform = { x: worldPos.x, y: worldPos.y, z: representable.logicalWorldTransform.z };
+    const z = representable?.logicalWorldTransform.z ?? 0;
+    const newTransform = { x: worldPos.x, y: worldPos.y, z };
+    // Use ActorTranslateComponent so listeners (e.g. OwnerComponent ellipsis) are notified of the position change
+    const actorTranslateComponent = getActorComponent(gameObject, ActorTranslateComponent);
+    if (actorTranslateComponent) {
+      actorTranslateComponent.moveActorToLogicalPosition(newTransform);
+    } else if (representable) {
+      representable.logicalWorldTransform = newTransform;
     }
   }
 
