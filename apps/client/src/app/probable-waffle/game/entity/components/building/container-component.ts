@@ -11,6 +11,8 @@ import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import type { ContainerDefinition } from "./container-definition";
 import { Subject } from "rxjs";
 import { ContainableComponent } from "./containable-component";
+import { NavigationService } from "../../../world/services/navigation.service";
+import { RepresentableComponent } from "../representable-component";
 
 /**
  * apply to resource source that needs gameObjects to enter to gather
@@ -79,10 +81,24 @@ export class ContainerComponent {
 
   unloadGameObject(gameObject: GameObject) {
     this.containedGameObjects.delete(gameObject);
+    this.repositionNearContainer(gameObject);
     this.setGameObjectVisible(gameObject, true);
-    // Clear the containable link so the unit knows it left the container
-    getActorComponent(gameObject, ContainableComponent)?.leaveContainer();
+    // Use clearContainerReference() — not leaveContainer() — to avoid infinite recursion
+    getActorComponent(gameObject, ContainableComponent)?.clearContainerReference();
     this.containerChanged.next();
+  }
+
+  private repositionNearContainer(gameObject: GameObject) {
+    const navigationService = getSceneService(this.gameObject.scene, NavigationService);
+    if (!navigationService) return;
+    const spawnTile = navigationService.getSpawnPointAroundGameObject(this.gameObject);
+    if (!spawnTile) return;
+    const worldPos = navigationService.getTileWorldCenter(spawnTile);
+    if (!worldPos) return;
+    const representable = getActorComponent(gameObject, RepresentableComponent);
+    if (representable) {
+      representable.logicalWorldTransform = { x: worldPos.x, y: worldPos.y, z: representable.logicalWorldTransform.z };
+    }
   }
 
   canLoadGameObject(gameObject: GameObject): boolean {

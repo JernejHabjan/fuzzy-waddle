@@ -18,9 +18,14 @@ export class ContainableComponent {
 
   leaveContainer() {
     if (!this.containerOwner) return;
+    const owner = this.containerOwner;
+    this.containerOwner = null; // clear before calling to prevent infinite recursion
+    getActorComponent(owner, ContainerComponent)?.unloadGameObject(this.owner);
+  }
 
-    const containerComponent = getActorComponent(this.containerOwner, ContainerComponent);
-    containerComponent?.unloadGameObject(this.owner);
+  /** Clears the container reference without triggering unload (called by ContainerComponent during unload). */
+  clearContainerReference() {
+    this.containerOwner = null;
   }
 
   setContainer(containerOwner: GameObject) {
@@ -38,10 +43,9 @@ export class ContainableComponent {
    * unload actor from container
    */
   onKilled() {
-    if (!this.containerOwner) {
-      return;
-    }
-    const containerComponent = getActorComponent(this.containerOwner, ContainerComponent);
-    containerComponent?.unloadGameObject(this.owner);
+    if (!this.containerOwner) return;
+    const owner = this.containerOwner;
+    this.containerOwner = null; // clear before calling to prevent infinite recursion
+    getActorComponent(owner, ContainerComponent)?.unloadGameObject(this.owner);
   }
 }

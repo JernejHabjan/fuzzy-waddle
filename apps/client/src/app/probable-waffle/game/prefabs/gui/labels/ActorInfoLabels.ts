@@ -10,7 +10,7 @@ import { ProductionComponent } from "../../../entity/components/production/produ
 import { BehaviorSubject, Subscription } from "rxjs";
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { SingleSelectionHandler } from "../../../player/human-controller/single-selection.handler";
-import { getSceneComponent } from "../../../world/services/scene-component-helpers";
+import { getSceneComponent, getSceneService } from "../../../world/services/scene-component-helpers";
 import { IdComponent } from "../../../entity/components/id-component";
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import HudProbableWaffle from "../../../world/scenes/hud-scenes/HudProbableWaffle";
@@ -405,7 +405,7 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
     const containerComponent = getActorComponent(actor, ContainerComponent);
     if (!containerComponent) return;
 
-    const actorIndex = getSceneComponent(this.mainSceneWithActors, ActorIndexSystem);
+    const actorIndex = getSceneService(this.mainSceneWithActors, ActorIndexSystem);
     if (!actorIndex) return;
 
     const containedActor = actorIndex.getActorById(action.definition.containedActorId);
