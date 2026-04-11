@@ -5,9 +5,7 @@
   "identifier": "com.fuzzywaddle.probablewaffle",
   "build": {
     "frontendDist": "../../dist/apps/probable-waffle-client",
-    "devUrl": "http://localhost:4200",
-    "beforeDevCommand": "pnpm nx serve probable-waffle-client --configuration=tauri",
-    "beforeBuildCommand": "pnpm nx build probable-waffle-client --configuration=tauri"
+    "devUrl": "http://localhost:4200"
   },
   "app": {
     "windows": [

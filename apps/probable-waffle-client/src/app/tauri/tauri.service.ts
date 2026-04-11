@@ -17,7 +17,7 @@ import { environment } from "../../environments/environment";
 export class TauriService {
   /** Returns true when both the build flag and the Tauri runtime are present. */
   get isTauri(): boolean {
-    return environment.isDesktop && typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
+    return environment.isDesktop && "__TAURI_INTERNALS__" in window;
   }
 
   /**

@@ -1,11 +1,12 @@
 import { Injectable } from "@angular/core";
+import { environment } from "../../../environments/environment";
 
 /**
  * Bridges Angular with Tauri native capabilities when running as a desktop app.
  *
- * Uses runtime detection (`window.__TAURI_INTERNALS__`) so the same service
- * code is safe to load in browser contexts — all methods become no-ops when
- * not running inside a Tauri webview.
+ * Uses both `environment.isDesktop` (build-time flag for tree-shaking) and
+ * `window.__TAURI_INTERNALS__` (runtime detection) to guard all Tauri calls.
+ * This makes the service a safe no-op in browser builds.
  *
  * The Tauri Rust commands are declared in
  * `apps/probable-waffle-client/src-tauri/src/lib.rs`.
@@ -16,7 +17,7 @@ import { Injectable } from "@angular/core";
 export class TauriService {
   /** Returns true when running inside a Tauri desktop window. */
   get isTauri(): boolean {
-    return typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
+    return environment.isDesktop && "__TAURI_INTERNALS__" in window;
   }
 
   /**

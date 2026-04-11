@@ -1,13 +1,12 @@
-import { NgModule } from "@angular/core";
-import { RouterModule, type Routes } from "@angular/router";
+import { type Routes } from "@angular/router";
 import { AuthGuard } from "@fuzzy-waddle/client/app/auth/auth.guard";
 import { GameInstanceGuard } from "@fuzzy-waddle/client/app/probable-waffle/gui/online/lobby-page/game-instance.guard";
 
-const routes = [
+export const routes: Routes = [
   {
     path: "",
     redirectTo: "aota",
-    pathMatch: "full" as const
+    pathMatch: "full"
   },
   {
     path: "aota",
@@ -128,14 +127,4 @@ const routes = [
     path: "**",
     redirectTo: "aota"
   }
-] satisfies Routes;
-
-@NgModule({
-  imports: [
-    RouterModule.forRoot(routes, {
-      bindToComponentInputs: true
-    })
-  ],
-  exports: [RouterModule]
-})
-export class AppRoutingModule {}
+];
