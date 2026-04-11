@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../dist/out-tsc",
+    "types": ["@angular/localize"],
+    "useDefineForClassFields": false,
+    "moduleResolution": "bundler",
+    "verbatimModuleSyntax": true
+  },
+  "files": ["src/main.ts", "src/polyfills.ts"],
+  "include": ["src/**/*.d.ts"],
+  "exclude": ["jest.config.ts", "**/*.test.ts", "**/*.spec.ts"]
+}

@@ -1,4 +1,4 @@
-import { type Environment } from "./environment-type";
+import type { Environment } from "./environment-type";
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import packageJson from "../../../../package.json";
 

@@ -11,12 +11,16 @@ import { Subscription } from "rxjs";
 import { OptionsService } from "../options/options.service";
 import { AchievementService } from "../../services/achievement/achievement.service";
 import type { Types } from "phaser";
+import { TauriService } from "../../../shared/services/tauri.service";
 
 @Component({
   templateUrl: "./probable-waffle-game.component.html",
   styleUrls: ["./probable-waffle-game.component.scss"],
   imports: [GameContainerComponent],
-  host: AngularHost.contentFlexFullHeight
+  host: {
+    ...AngularHost.contentFlexFullHeight,
+    "(window:blur)": "onWindowBlur()"
+  }
 })
 export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
   protected gameConfig?: Types.Core.GameConfig;
@@ -32,10 +36,14 @@ export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly optionsService = inject(OptionsService);
   private readonly achievementService = inject(AchievementService);
+  private readonly tauriService = inject(TauriService);
   private refreshSubscription?: Subscription;
 
   ngOnInit(): void {
     this.setData();
+    // Lock cursor to window for edge-scroll panning (Tauri desktop only — no-op in browser)
+    // noinspection JSIgnoredPromiseFromCall
+    this.tauriService.setCursorGrab(true);
 
     this.refreshSubscription = this.gameInstanceClientService.gameInstanceToGameComponentCommunicator.subscribe(
       (data) => {
@@ -49,6 +57,12 @@ export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
         }
       }
     );
+  }
+
+  /** Release cursor lock when the window loses focus (e.g. Alt+Tab). */
+  protected onWindowBlur(): void {
+    // noinspection JSIgnoredPromiseFromCall
+    this.tauriService.releaseCursor();
   }
 
   private setData() {
@@ -73,5 +87,8 @@ export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy(): void {
     this.refreshSubscription?.unsubscribe();
+    // Release cursor lock when leaving the game scene
+    // noinspection JSIgnoredPromiseFromCall
+    this.tauriService.releaseCursor();
   }
 }

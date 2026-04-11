@@ -1,10 +1,14 @@
-import { type Environment } from "./environment-type";
+// Tauri desktop environment — used when building with `nx build probable-waffle-client --configuration=tauri`.
+// Replace `environment.ts` with this file for Tauri desktop builds.
+
+import type { Environment } from "./environment-type";
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import packageJson from "../../../../package.json";
 
 export const environment: Environment = {
   production: true,
-  isDesktop: false,
+  isDesktop: true,
+  // The hosted NestJS API — desktop app connects to the same backend as the web app.
   api: "https://fuzzy-waddle-api.onrender.com/",
   supabase: {
     url: "https://bhzetyxjimpabioxoodz.supabase.co",
