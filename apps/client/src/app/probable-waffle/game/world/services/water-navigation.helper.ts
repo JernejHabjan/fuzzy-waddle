@@ -45,7 +45,7 @@ export class WaterNavigationHelper {
     });
   }
 
-  isTileWalkable(tile: Vector2Simple): boolean {
+  isTileNavigable(tile: Vector2Simple): boolean {
     const val = this.waterGrid[tile.y]?.[tile.x];
     // Both deep water (0) and shore tiles (2) are navigable
     return val === 0 || val === TerrainGridBuilder.SHORE_TILE;
@@ -57,12 +57,12 @@ export class WaterNavigationHelper {
     return tile.x >= 0 && tile.x < firstRow.length && tile.y >= 0 && tile.y < this.waterGrid.length;
   }
 
-  getWalkableTilesInRadius(center: Vector2Simple, radius: number): Vector2Simple[] {
+  getNavigableTilesInRadius(center: Vector2Simple, radius: number): Vector2Simple[] {
     const tiles: Vector2Simple[] = [];
     for (let y = center.y - radius; y <= center.y + radius; y++) {
       for (let x = center.x - radius; x <= center.x + radius; x++) {
         const tile = { x, y };
-        if (this.isWithinBounds(tile) && this.isTileWalkable(tile)) {
+        if (this.isWithinBounds(tile) && this.isTileNavigable(tile)) {
           tiles.push(tile);
         }
       }
@@ -94,7 +94,7 @@ export class WaterNavigationHelper {
         for (let dy = -radius; dy <= radius; dy++) {
           if (Math.abs(dx) + Math.abs(dy) !== radius) continue;
           const candidate = { x: from.x + dx, y: from.y + dy };
-          if (this.isWithinBounds(candidate) && this.isTileWalkable(candidate)) {
+          if (this.isWithinBounds(candidate) && this.isTileNavigable(candidate)) {
             return candidate;
           }
         }

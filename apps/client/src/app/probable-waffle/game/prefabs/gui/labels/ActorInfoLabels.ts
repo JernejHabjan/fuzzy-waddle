@@ -8,7 +8,6 @@ import { getPwActorDefinition } from "../../definitions/actor-definitions";
 import { getActorComponent } from "../../../data/actor-component";
 import { ProductionComponent } from "../../../entity/components/production/production-component";
 import { BehaviorSubject, Subscription } from "rxjs";
-import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { SingleSelectionHandler } from "../../../player/human-controller/single-selection.handler";
 import { getSceneComponent, getSceneService } from "../../../world/services/scene-component-helpers";
 import { IdComponent } from "../../../entity/components/id-component";
@@ -173,7 +172,6 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
 
   private renderContainerIcons(actor: Phaser.GameObjects.GameObject, containerComponent: ContainerComponent) {
     if (!this.mainSceneWithActors) return;
-    const actorIndex = getSceneComponent(this.mainSceneWithActors, ActorIndexSystem);
     const contained = containerComponent.getContainedGameObjects();
     const capacity = containerComponent.containerDefinition.capacity;
     const canUnload = this.canUnloadFromContainer(actor);

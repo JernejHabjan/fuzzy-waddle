@@ -23,7 +23,7 @@ import { getSceneService } from "../../world/services/scene-component-helpers";
 import { DebuggingService } from "../../world/services/DebuggingService";
 import { ContainableComponent } from "../components/building/containable-component";
 import { AudioActorComponent } from "../components/actor-audio/audio-actor-component";
-import { WalkableComponent } from "../components/movement/walkable-component";
+import { NavigableComponent } from "../components/movement/navigable-component";
 import { FlyingComponent } from "../components/movement/flying-component";
 import { type GameObjectActionAssignerConfig } from "../../prefabs/gui/game-object-action-assigner";
 
@@ -122,10 +122,10 @@ export class ActionSystem {
       if (selfPlayerNumber === targetPlayerNumber) {
         // ally
 
-        const targetIsWalkable = getActorComponent(targetGameObject, WalkableComponent);
+        const targetIsNavigable = getActorComponent(targetGameObject, NavigableComponent);
         const selfHasFlying = getActorComponent(this.gameObject, FlyingComponent);
-        if (targetIsWalkable && !selfHasFlying) {
-          // target is walkable and self is not flying
+        if (targetIsNavigable && !selfHasFlying) {
+          // target is navigable and self is not flying
           return new OrderData(OrderType.Move, { targetGameObject });
         }
 

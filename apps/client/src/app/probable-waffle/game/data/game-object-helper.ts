@@ -219,5 +219,5 @@ export function canActorTraverseTile(
   if (isFlyingUnit(gameObject)) return true;
   const translateComponent = getActorComponent(gameObject, ActorTranslateComponent);
   const terrainType = translateComponent?.actorTranslateDefinition.movementTerrainType ?? MovementTerrainType.Ground;
-  return navigationService.isTileWalkable(tile, terrainType);
+  return navigationService.isTileNavigable(tile, terrainType);
 }

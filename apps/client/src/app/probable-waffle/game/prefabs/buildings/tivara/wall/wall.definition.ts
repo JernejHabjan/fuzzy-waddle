@@ -58,8 +58,8 @@ export const wallDefinition = {
       ...coreConstructionSiteDefinition,
       canBeDragPlaced: true
     },
-    walkable: {
-      walkableHeight: 42,
+    navigable: {
+      navigableHeight: 42,
       exitHeight: 64,
       // can be accessed from the stairs
       acceptMinimumHeight: 64

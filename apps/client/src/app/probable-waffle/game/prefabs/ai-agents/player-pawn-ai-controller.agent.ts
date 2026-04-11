@@ -122,7 +122,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
       const movementSystem = getActorSystem(this.gameObject, MovementSystem);
       let distance: null | number;
       if (movementSystem) {
-        const nrTiles = await movementSystem.getPathToClosestWalkableTileBetweenGameObjectsInRadius(
+        const nrTiles = await movementSystem.getPathToClosestNavigableTileBetweenGameObjectsInRadius(
           targetGameObject,
           range
         );
@@ -1011,8 +1011,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
 
     const firstBoarder = boarders[0]!;
     // Prefer the shore tile the boarder pre-negotiated when it registered
-    const registeredShore = containerComp.getTargetShoreForBoarder(firstBoarder);
-    let shoreTile = registeredShore;
+    let shoreTile = containerComp.getTargetShoreForBoarder(firstBoarder);
     if (!shoreTile) {
       const boarderTile = navService.getCenterTileCoordUnderObject(firstBoarder);
       if (!boarderTile) return State.FAILED;

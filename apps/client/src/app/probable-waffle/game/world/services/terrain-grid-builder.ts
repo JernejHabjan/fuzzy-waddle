@@ -2,7 +2,7 @@ import { TerrainType } from "./navigation.service";
 
 /**
  * Builds per-terrain-category navigation grids from Phaser tilemap data.
- * 0 = walkable, 1 = blocked (EasyStar convention).
+ * 0 = navigable, 1 = blocked (EasyStar convention).
  */
 export class TerrainGridBuilder {
   /**
@@ -20,7 +20,7 @@ export class TerrainGridBuilder {
   }
 
   /**
-   * Water grid: only water terrain tiles are walkable.
+   * Water grid: only water terrain tiles are navigable.
    * Land tiles and navigationRestriction tiles are blocked.
    * Shore tiles (water adjacent to land) are marked with value 2 to discourage
    * ships from hugging the coastline — EasyStar applies a high cost to them.

@@ -96,8 +96,6 @@ export class ShipAnimationComponent {
 
   private destroy() {
     this.directionChangedSubscription?.unsubscribe();
-    this.wobbleTween?.stop();
-    this.wobbleTween?.remove();
-    this.wobbleTween = undefined;
+    this.onKilled();
   }
 }

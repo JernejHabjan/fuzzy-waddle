@@ -25,7 +25,6 @@ import {
   SkaduweeOwlSfxFurballFireSounds,
   SkaduweeOwlSfxFurballHitSounds
 } from "../../../prefabs/characters/skaduwee/skaduwee-owl/SkaduweeOwlSfx";
-import type { AttackData } from "./attack-data";
 import { DamageType } from "@fuzzy-waddle/api-interfaces";
 
 export const weaponDefinitions = {

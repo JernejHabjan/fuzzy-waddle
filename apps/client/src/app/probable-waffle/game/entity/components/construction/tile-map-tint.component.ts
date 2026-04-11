@@ -26,8 +26,8 @@ export class TileMapTintComponent {
     const { tiles } = getTilesAroundGameObjectsOfShape(this.gameObject, scene, this.radius, "circle");
     const navigationService = getSceneService(scene, NavigationService)!;
     tiles.forEach((tile) => {
-      const isWalkable = navigationService.isTileGridWithoutBlockingObjectsWalkable({ x: tile.x, y: tile.y });
-      if (isWalkable) tile.tint = this.tint;
+      const isNavigable = navigationService.isTileGridWithoutBlockingObjectsNavigable({ x: tile.x, y: tile.y });
+      if (isNavigable) tile.tint = this.tint;
     });
   };
 
@@ -36,8 +36,8 @@ export class TileMapTintComponent {
     const { tiles } = getTilesAroundGameObjectsOfShape(this.gameObject, scene, this.radius, "circle");
     const navigationService = getSceneService(scene, NavigationService)!;
     tiles.forEach((tile) => {
-      const isWalkable = navigationService.isTileGridWithoutBlockingObjectsWalkable({ x: tile.x, y: tile.y });
-      if (isWalkable) tile.tint = 0xffffff;
+      const isNavigable = navigationService.isTileGridWithoutBlockingObjectsNavigable({ x: tile.x, y: tile.y });
+      if (isNavigable) tile.tint = 0xffffff;
     });
   };
 

@@ -67,7 +67,7 @@ export interface ActorTranslateComponentData {
   facingAngle?: number;
 }
 
-export interface WalkableComponentData {
+export interface NavigableComponentData {
   speed?: number;
   pathingRadius?: number;
 }

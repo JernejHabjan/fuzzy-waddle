@@ -9,7 +9,7 @@ import type { ActorAnimationsDefinition } from "../../entity/components/animatio
 import type { ActorTranslateDefinition } from "../../entity/components/movement/actor-translate-definition";
 import type { ColliderDefinition } from "../../entity/components/movement/collider-definition";
 import type { FlightDefinition } from "../../entity/components/movement/flight-definition";
-import type { WalkableDefinition } from "../../entity/components/movement/walkable-definition";
+import type { NavigableDefinition } from "../../entity/components/movement/navigable-definition";
 import type { PawnAiDefinition } from "../ai-agents/pawn-ai-definition";
 import type { OwnerDefinition } from "../../entity/components/owner-definition";
 import type { RequirementsDefinition } from "../../entity/components/requirements-definition";
@@ -47,7 +47,7 @@ export type ComponentsDefinition = Partial<{
   requirements: RequirementsDefinition;
   builder: BuilderDefinition;
   constructable: ConstructionSiteDefinition;
-  walkable: WalkableDefinition;
+  navigable: NavigableDefinition;
   gatherer: GathererDefinition;
   container: ContainerDefinition;
   resourceDrain: ResourceDrainDefinition;

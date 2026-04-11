@@ -37,8 +37,8 @@ export const watchTowerDefinition = {
       }
     },
     selectable: {},
-    walkable: {
-      walkableHeight: 128,
+    navigable: {
+      navigableHeight: 128,
       exitHeight: 128,
       // can be accessed from the stairs or a wall
       acceptMinimumHeight: 64

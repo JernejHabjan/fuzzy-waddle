@@ -28,7 +28,7 @@ import type {
   SpellComponentData,
   StatusEffectComponentData,
   VisionComponentData,
-  WalkableComponentData
+  NavigableComponentData
 } from "./component-data";
 import type { AoeZoneData } from "../../probable-waffle/spell";
 import type { PlayerNumber } from "../player/player";
@@ -87,7 +87,7 @@ export interface ActorDefinition extends Record<string, any> {
   production?: Partial<ProductionComponentData>;
   research?: Partial<ResearchComponentData>;
   translatable?: Partial<ActorTranslateComponentData>;
-  walkable?: Partial<WalkableComponentData>;
+  navigable?: Partial<NavigableComponentData>;
   representable?: Partial<RepresentableComponentData>;
   blackboard?: Partial<BackboardComponentData>;
   convertible?: Partial<ConvertibleComponentData>;
