@@ -3,6 +3,7 @@ import {
   type CommunicatorEvent,
   GameSessionState,
   type ProbableWaffleCommunicatorType,
+  type ProbableWaffleGameCommandEvent,
   type ProbableWaffleGameInstanceMetadataChangeEvent,
   type ProbableWaffleGameModeDataChangeEvent,
   type ProbableWaffleGameStateDataChangeEvent,
@@ -12,10 +13,14 @@ import {
 } from "@fuzzy-waddle/api-interfaces";
 import { GameInstanceService } from "./game-instance.service";
 import { type User } from "@supabase/supabase-js";
+import { GameCommandValidatorService } from "./game-command-validator.service";
 
 @Injectable()
 export class GameStateServerService {
-  constructor(private readonly gameInstanceService: GameInstanceService) {}
+  constructor(
+    private readonly gameInstanceService: GameInstanceService,
+    private readonly commandValidator: GameCommandValidatorService
+  ) {}
 
   updateGameState(body: CommunicatorEvent<any, ProbableWaffleCommunicatorType>, user: User): boolean {
     const gameInstance = this.gameInstanceService.findGameInstance(body.gameInstanceId!);
@@ -35,6 +40,8 @@ export class GameStateServerService {
             switch (giMetadata.data.sessionState) {
               case GameSessionState.Stopped:
                 this.gameInstanceService.stopGameInstance(body.gameInstanceId!, user);
+                // Clean up per-instance validator state
+                this.commandValidator.cleanup(String(body.gameInstanceId));
                 break;
             }
             break;
@@ -57,9 +64,9 @@ export class GameStateServerService {
         ProbableWaffleListeners.gameStateDataChanged(gameInstance, gameStateData);
         break;
       case "game-command":
-        // Server relays command batches without mutating authoritative game state.
-        // Ownership and rate-limit validation are added in step 7.
-        break;
+        const cmdEvent = body.payload as ProbableWaffleGameCommandEvent;
+        // Validate ownership, rate limits, and sequence before relaying
+        return this.commandValidator.validate(cmdEvent, gameInstance, user);
       default:
         throw new Error("Unknown communicator");
     }
