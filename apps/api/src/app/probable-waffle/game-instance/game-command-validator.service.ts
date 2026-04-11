@@ -152,7 +152,15 @@ export class GameCommandValidatorService {
 
     const payload = command as Record<string, unknown>;
     const type = payload.type;
-    if (type !== "MOVE" && type !== "ACTOR_ACTION" && type !== "STOP") {
+    if (
+      type !== "MOVE" &&
+      type !== "ACTOR_ACTION" &&
+      type !== "STOP" &&
+      type !== "PRODUCTION" &&
+      type !== "CANCEL_PRODUCTION" &&
+      type !== "RESEARCH" &&
+      type !== "CANCEL_RESEARCH"
+    ) {
       this.logger.warn(`[GameCommand] Unknown command type ${String(type)} in ${gameInstanceId}`);
       return false;
     }
@@ -248,6 +256,47 @@ export class GameCommandValidatorService {
       }
       case "STOP":
         return true;
+      case "PRODUCTION": {
+        if (typeof payload.actorName !== "string") {
+          this.logger.warn(`[GameCommand] Invalid actorName for PRODUCTION in ${gameInstanceId}`);
+          return false;
+        }
+        if (!actorIds.every((actorId) => this.canActorProduce(actorIndex.get(actorId)!))) {
+          this.logger.warn(`[GameCommand] PRODUCTION issued by incapable actor in ${gameInstanceId}`);
+          return false;
+        }
+        return true;
+      }
+      case "CANCEL_PRODUCTION":
+        if (!Number.isInteger(payload.queueIndex) || (payload.queueIndex as number) < 0) {
+          this.logger.warn(`[GameCommand] Invalid queueIndex for CANCEL_PRODUCTION in ${gameInstanceId}`);
+          return false;
+        }
+        if (!actorIds.every((actorId) => actorIndex.get(actorId)?.production !== undefined)) {
+          this.logger.warn(`[GameCommand] CANCEL_PRODUCTION issued by actor without production in ${gameInstanceId}`);
+          return false;
+        }
+        return true;
+      case "RESEARCH":
+        if (typeof payload.researchType !== "string") {
+          this.logger.warn(`[GameCommand] Invalid researchType for RESEARCH in ${gameInstanceId}`);
+          return false;
+        }
+        if (
+          !actorIds.every((actorId) =>
+            this.canActorResearch(actorIndex.get(actorId)!)
+          )
+        ) {
+          this.logger.warn(`[GameCommand] RESEARCH issued by incapable actor in ${gameInstanceId}`);
+          return false;
+        }
+        return true;
+      case "CANCEL_RESEARCH":
+        if (!actorIds.every((actorId) => actorIndex.get(actorId)?.research !== undefined)) {
+          this.logger.warn(`[GameCommand] CANCEL_RESEARCH issued by actor without research in ${gameInstanceId}`);
+          return false;
+        }
+        return true;
     }
   }
 
@@ -273,6 +322,14 @@ export class GameCommandValidatorService {
 
   private canActorHandleMove(actor: ActorDefinition): boolean {
     return actor.translatable !== undefined || actor.production !== undefined;
+  }
+
+  private canActorProduce(actor: ActorDefinition): boolean {
+    return actor.production !== undefined;
+  }
+
+  private canActorResearch(actor: ActorDefinition): boolean {
+    return actor.research !== undefined;
   }
 
   private canActorHandleOrder(actor: ActorDefinition, orderType: OrderType): boolean {

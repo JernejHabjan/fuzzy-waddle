@@ -1,4 +1,4 @@
-import type { ActorId, PlayerNumber, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import type { ActorId, ObjectNames, PlayerNumber, ResearchType, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import type { OrderType } from "../../ai/order-type";
 
 /**
@@ -59,10 +59,73 @@ export interface StopCommand {
   readonly actorIds: readonly ActorId[];
 }
 
-export type GameCommand = MoveCommand | ActorActionCommand | StopCommand;
+/**
+ * Queues a production item in a specific production building.
+ * The actorIds array intentionally targets a concrete building so every client
+ * consumes the same queue slot instead of re-picking locally.
+ */
+export interface ProductionCommand {
+  readonly type: "PRODUCTION";
+  /** See MoveCommand.tick for details. */
+  readonly tick: number;
+  readonly playerNumber: PlayerNumber;
+  readonly actorIds: readonly ActorId[];
+  readonly actorName: ObjectNames;
+}
+
+/**
+ * Cancels a queued production item by deterministic queue index.
+ */
+export interface CancelProductionCommand {
+  readonly type: "CANCEL_PRODUCTION";
+  /** See MoveCommand.tick for details. */
+  readonly tick: number;
+  readonly playerNumber: PlayerNumber;
+  readonly actorIds: readonly ActorId[];
+  readonly queueIndex: number;
+}
+
+/**
+ * Starts a research item in a specific research-capable building.
+ */
+export interface ResearchCommand {
+  readonly type: "RESEARCH";
+  /** See MoveCommand.tick for details. */
+  readonly tick: number;
+  readonly playerNumber: PlayerNumber;
+  readonly actorIds: readonly ActorId[];
+  readonly researchType: ResearchType;
+}
+
+/**
+ * Cancels the active/queued research item in a specific building.
+ */
+export interface CancelResearchCommand {
+  readonly type: "CANCEL_RESEARCH";
+  /** See MoveCommand.tick for details. */
+  readonly tick: number;
+  readonly playerNumber: PlayerNumber;
+  readonly actorIds: readonly ActorId[];
+}
+
+export type GameCommand =
+  | MoveCommand
+  | ActorActionCommand
+  | StopCommand
+  | ProductionCommand
+  | CancelProductionCommand
+  | ResearchCommand
+  | CancelResearchCommand;
 
 /**
  * Command shape accepted by CommandBusService.dispatch().
  * The bus stamps the tick automatically; callers must not provide it.
  */
-export type GameCommandInput = Omit<MoveCommand, "tick"> | Omit<ActorActionCommand, "tick"> | Omit<StopCommand, "tick">;
+export type GameCommandInput =
+  | Omit<MoveCommand, "tick">
+  | Omit<ActorActionCommand, "tick">
+  | Omit<StopCommand, "tick">
+  | Omit<ProductionCommand, "tick">
+  | Omit<CancelProductionCommand, "tick">
+  | Omit<ResearchCommand, "tick">
+  | Omit<CancelResearchCommand, "tick">;

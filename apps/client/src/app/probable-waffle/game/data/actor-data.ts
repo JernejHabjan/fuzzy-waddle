@@ -44,6 +44,7 @@ import { SpellComponent } from "../entity/components/combat/components/spell-com
 import { SpellCastingSystem } from "../entity/systems/spell-casting.system";
 import { ResearchComponent } from "../entity/components/research/research-component";
 import { LevelComponent } from "../entity/components/level/level-component";
+import { QueueCommandSystem } from "../entity/systems/queue-command.system";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export const ActorDataKey = "actorData";
@@ -201,6 +202,7 @@ function gatherCompletedActorData(actor: Phaser.GameObjects.GameObject): { compo
 
   const systemDefinitions = definition.systems;
   const systems = [
+    ...(componentDefinitions?.production || componentDefinitions?.research ? [new QueueCommandSystem(actor)] : []),
     ...(systemDefinitions?.movement ? [new MovementSystem(actor)] : []),
     ...(systemDefinitions?.action ? [new ActionSystem(actor)] : []),
     ...(systemDefinitions?.spellCasting ? [new SpellCastingSystem(actor)] : [])

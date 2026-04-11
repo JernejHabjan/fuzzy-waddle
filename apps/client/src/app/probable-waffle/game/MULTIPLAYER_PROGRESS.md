@@ -1,7 +1,7 @@
 # Multiplayer Replication Progress
 
 ## Open questions / blockers
-- None at start. Update as they arise.
+- Build placement, pause commands, control groups, and real desync correction are still outstanding.
 
 ## Steps
 
@@ -22,6 +22,12 @@
 | 13 | [x] | **Spectator support** – spectators receive command stream, never emit; on mid-match join they request a targeted host snapshot; no fog-of-war for spectators |
 | 14 | [x] | **Replay recording/playback** – `ReplayRecorder` writes `{version, compatibilityVersion, mapId, seed, players, commands[]}` into replay records; playback reseeds from `rndSeed` and feeds recorded command batches back through `CommandBusService` at their original ticks |
 | 15 | [x] | **Host migration** – on host disconnect server elects the lowest connected human player number, broadcasts `host-migrated`, updates `currentHostUserId`, and the promoted client starts host-only AI/snapshot duties |
+| 16 | [x] | **Queue actions through CommandBus** – production/research start + cancel become deterministic commands consumed by buildings instead of direct local UI/AI method calls |
+| 17 | [ ] | **Server-side queue validation** – validate production/research queue payloads against actor ownership and building capabilities |
+| 18 | [ ] | **Pause / resume commands** – turn pause into a relayed player command with cooldown/limit enforcement |
+| 19 | [ ] | **Control groups in MP** – sync assign/recall commands while leaving local camera/selection visuals local |
+| 20 | [ ] | **Desync correction** – snapshot-backed host correction instead of pause-only detection |
+| 21 | [ ] | **Hash widening + determinism audit** – include economy/research/queues in hashes and remove multiplayer-relevant nondeterminism |
 
 ## Completed steps
 - **01** Added `CommandBusService` (RxJS Subject) + `GameCommand` union (`MOVE | ACTOR_ACTION | STOP`). Rewired all 5 dispatch sites and 2 system subscribers. Removed `emitEventIssueActorCommandToSelectedActors` / `emitEventIssueMoveCommandToSelectedActors` from scene-data. Shift-key state now captured at dispatch time, not receive time.
@@ -40,3 +46,4 @@
 - **14** Added replay metadata to `startOptions` and two services: `ReplayRecorderService` records deterministic command batches from `CommandBusService` into replay saves, while `ReplayPlaybackService` re-injects those batches on their recorded ticks in replay mode. Replay records are stored through the existing storage backend and the load/replay UIs now split save files from replay files by game type.
 - **15** Added `currentHostUserId` to metadata and a server-side host election path in `GameInstanceGateway`/`GameInstanceService`: when the current host leaves or disconnects, the server promotes the lowest connected human player number, emits metadata + `host-migrated`, and the promoted client starts snapshot serving plus AI controllers through `HostMigrationService`.
 - **07** Tightened server validation beyond the original thin guardrails: command checks now validate actor capability, target existence, and isometric tile/world consistency instead of a blunt coordinate cap, while a new `PlayerStateValidatorService` rejects impossible resource spends, unexplained resource gains, invalid housing deltas, and selection spoofing on mirrored player-state events.
+- **16** Production/research queue actions now use explicit `PRODUCTION | CANCEL_PRODUCTION | RESEARCH | CANCEL_RESEARCH` commands. UI queue clicks, hotkeys, and host-only AI all route through `CommandBusService`, `QueueCommandSystem` executes them on the targeted building, and the API now accepts and sanity-checks those command types.

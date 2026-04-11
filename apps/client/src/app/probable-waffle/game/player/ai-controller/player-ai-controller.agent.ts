@@ -33,6 +33,7 @@ import { ProductionValidator } from "../../data/tech-tree/production-validator";
 import { AI_CONFIG } from "./ai-config";
 import { RandomService } from "../../world/services/random.service";
 import { RepairManager } from "./ai-behavior/repair-manager";
+import { dispatchProductionCommand, dispatchResearchCommand } from "../../data/commands/queue-command-dispatch";
 import { LogisticsManager } from "./ai-behavior/logistics-manager";
 import { TechProgressManager } from "./ai-behavior/tech-progress-manager";
 import { AdaptiveThresholdManager } from "./ai-behavior/adaptive-threshold-manager";
@@ -112,7 +113,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       this.logDebugInfo.bind(this)
     );
     this.logisticsManager = new LogisticsManager(this.blackboard, this.logDebugInfo.bind(this));
-    this.techManager = new TechProgressManager(this.blackboard, this.logDebugInfo.bind(this));
+    this.techManager = new TechProgressManager(this.blackboard, player.playerNumber!, this.logDebugInfo.bind(this));
     this.economyManager = new EconomyManager(this.blackboard);
     this.worldStateSnapshotManager = new WorldStateSnapshotManager(this.scene, this.player, this.blackboard);
     this.combatMicro = new CombatMicroManager(this.scene, this.blackboard, this.logDebugInfo.bind(this));
@@ -182,9 +183,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
           });
           if (prodBuilding) {
             const prod = getActorComponent(prodBuilding, ProductionComponent);
-            const def = getPwActorDefinition(targetObjectName, null);
-            const costData = def?.components?.productionCost;
-            if (prod && costData) {
+            if (prod) {
               const validation = this.productionValidator.validate(targetObjectName);
               if (validation && !validation.canQueue) {
                 // If still blocked (e.g., nested prereqs) schedule them (avoid infinite loop by checking difference)
@@ -199,8 +198,9 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
                 }
                 return;
               }
-              prod.startProduction({ actorName: targetObjectName, costData });
-              queue.shift();
+              if (dispatchProductionCommand(this.scene, [prodBuilding], this.player.playerNumber!, targetObjectName)) {
+                queue.shift();
+              }
             }
           }
         }
@@ -235,7 +235,12 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
         if (researchBuilding) {
           const researchComponent = getActorComponent(researchBuilding, ResearchComponent);
           if (researchComponent) {
-            const started = researchComponent.startResearch(researchType);
+            const started = dispatchResearchCommand(
+              this.scene,
+              researchBuilding,
+              this.player.playerNumber!,
+              researchType
+            );
             if (started) {
               this.logDebugInfo(`[AI] Started research: ${researchType}`);
               queue.shift(); // Successfully started, remove from queue
@@ -596,16 +601,11 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     });
 
     if (trainingBuildings.length === 0) return State.FAILED;
-    const prodComp = getActorComponent(trainingBuildings[0]!, ProductionComponent)!;
-    // Dynamic cost sourcing
-    const def = getPwActorDefinition(workerName, null);
-    const costData = def?.components?.productionCost;
-    if (!costData) return State.FAILED;
-    prodComp.startProduction({
-      actorName: workerName,
-      costData
-    });
-    return State.SUCCEEDED;
+    const targetBuilding = trainingBuildings[0]!;
+    if (dispatchProductionCommand(this.scene, [targetBuilding], this.player.playerNumber!, workerName)) {
+      return State.SUCCEEDED;
+    }
+    return State.FAILED;
   }
 
   GatherResources() {

@@ -6,6 +6,7 @@ import { SpellComponent } from "../../../entity/components/combat/components/spe
 import { researchDefinitions } from "../../../entity/components/research/research-definitions";
 import { SpellType } from "../../../entity/components/combat/spell-type";
 import { ResearchType } from "@fuzzy-waddle/api-interfaces";
+import { dispatchResearchCommand } from "../../../data/commands/queue-command-dispatch";
 
 /**
  * TechProgressManager
@@ -21,6 +22,7 @@ export class TechProgressManager {
 
   constructor(
     private readonly blackboard: PlayerAiBlackboard,
+    private readonly playerNumber: number,
     private readonly log: (...args: any[]) => void
   ) {}
 
@@ -108,15 +110,15 @@ export class TechProgressManager {
     // Find a building that can perform this research
     const researchBuildings = this.getResearchBuildings();
     for (const building of researchBuildings) {
-      const researchComponent = getActorComponent(building, ResearchComponent);
-      if (researchComponent) {
-        const { canStart } = researchComponent.canStartResearch(researchType);
-        if (canStart) {
-          const success = researchComponent.startResearch(researchType);
-          if (success) {
-            // this.log("AI started research:", researchType);
-            return State.SUCCEEDED;
-          }
+        const researchComponent = getActorComponent(building, ResearchComponent);
+        if (researchComponent) {
+          const { canStart } = researchComponent.canStartResearch(researchType);
+          if (canStart) {
+            const success = dispatchResearchCommand(building.scene, building, this.playerNumber, researchType);
+            if (success) {
+              this.log("AI started research:", researchType);
+              return State.SUCCEEDED;
+            }
         }
       }
     }

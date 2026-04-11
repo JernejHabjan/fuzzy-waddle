@@ -28,6 +28,7 @@ import { findProductionBuildingWithLeastRemainingTime } from "../../entity/compo
 import { IdComponent } from "../../entity/components/id-component";
 import { CommandBusService } from "../../world/services/command-bus.service";
 import { NavigationService } from "../../world/services/navigation.service";
+import { dispatchProductionCommand } from "../../data/commands/queue-command-dispatch";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class PlayerActionsHandler {
@@ -130,16 +131,13 @@ export class PlayerActionsHandler {
         const production = actor ? getActorComponent(actor, ProductionComponent) : undefined;
         const product = production?.productionDefinition.availableProduceActors[listIndex];
         if (production && production.isFinished && product) {
-          const def = getPwActorDefinition(product, null);
-          const cost = def?.components?.productionCost;
-          if (cost) {
-            // Find the production building with the least total remaining production time
-            const targetComponent = findProductionBuildingWithLeastRemainingTime(this.currentSelectedActors);
-            if (targetComponent) {
-              targetComponent.startProduction({ actorName: product, costData: cost });
-              e.preventDefault();
-              return;
-            }
+          // Find the production building with the least total remaining production time
+          const targetComponent = findProductionBuildingWithLeastRemainingTime(this.currentSelectedActors);
+          const playerNumber = getCurrentPlayerNumber(this.scene);
+          if (targetComponent && playerNumber) {
+            dispatchProductionCommand(this.scene, this.currentSelectedActors, playerNumber, product);
+            e.preventDefault();
+            return;
           }
         }
       }
