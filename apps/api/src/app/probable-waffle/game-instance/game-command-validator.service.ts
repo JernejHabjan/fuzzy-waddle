@@ -1,6 +1,8 @@
 import { Injectable, Logger } from "@nestjs/common";
 import {
+  AllOrderTypes,
   type ActorDefinition,
+  OrderType,
   type ProbableWaffleGameCommandEvent,
   type ProbableWaffleGameInstance
 } from "@fuzzy-waddle/api-interfaces";
@@ -26,17 +28,7 @@ export class GameCommandValidatorService {
   private readonly logger = new Logger(GameCommandValidatorService.name);
   private static readonly ISO_HALF_TILE_WIDTH = 32;
   private static readonly ISO_HALF_TILE_HEIGHT = 16;
-  private static readonly KNOWN_ORDER_TYPES = new Set([
-    "Attack",
-    "Build",
-    "Gather",
-    "Move",
-    "ReturnResources",
-    "Stop",
-    "Repair",
-    "Heal",
-    "EnterContainer"
-  ]);
+  private static readonly KNOWN_ORDER_TYPES = new Set(AllOrderTypes);
 
   /** Maximum tick jump allowed in one batch — guards against far-future exploits. */
   private static readonly MAX_TICK_JUMP = 10;
@@ -212,6 +204,7 @@ export class GameCommandValidatorService {
       }
       case "ACTOR_ACTION": {
         const orderType = typeof payload.orderType === "string" ? payload.orderType : undefined;
+        const knownOrderType = this.toKnownOrderType(orderType);
         if (!(payload.queue === true || payload.queue === false)) {
           this.logger.warn(`[GameCommand] Invalid queue flag for ACTOR_ACTION in ${gameInstanceId}`);
           return false;
@@ -224,7 +217,7 @@ export class GameCommandValidatorService {
           this.logger.warn(`[GameCommand] Invalid orderType for ACTOR_ACTION in ${gameInstanceId}`);
           return false;
         }
-        if (orderType !== undefined && !GameCommandValidatorService.KNOWN_ORDER_TYPES.has(orderType)) {
+        if (orderType !== undefined && knownOrderType === undefined) {
           this.logger.warn(`[GameCommand] Unknown orderType ${orderType} in ${gameInstanceId}`);
           return false;
         }
@@ -244,7 +237,10 @@ export class GameCommandValidatorService {
             }
           }
         }
-        if (orderType !== undefined && !actorIds.every((actorId) => this.canActorHandleOrder(actorIndex.get(actorId)!, orderType))) {
+        if (
+          knownOrderType !== undefined &&
+          !actorIds.every((actorId) => this.canActorHandleOrder(actorIndex.get(actorId)!, knownOrderType))
+        ) {
           this.logger.warn(`[GameCommand] ACTOR_ACTION ${orderType} issued by incapable actor in ${gameInstanceId}`);
           return false;
         }
@@ -279,26 +275,32 @@ export class GameCommandValidatorService {
     return actor.translatable !== undefined || actor.production !== undefined;
   }
 
-  private canActorHandleOrder(actor: ActorDefinition, orderType: string): boolean {
+  private canActorHandleOrder(actor: ActorDefinition, orderType: OrderType): boolean {
     switch (orderType) {
-      case "Attack":
+      case OrderType.Attack:
         return actor.attack !== undefined;
-      case "Build":
-      case "Repair":
+      case OrderType.Build:
+      case OrderType.Repair:
         return actor.builder !== undefined;
-      case "Gather":
-      case "ReturnResources":
+      case OrderType.Gather:
+      case OrderType.ReturnResources:
         return actor.gatherer !== undefined;
-      case "Heal":
+      case OrderType.Heal:
         return actor.healing !== undefined;
-      case "Move":
+      case OrderType.Move:
         return this.canActorHandleMove(actor);
-      case "EnterContainer":
-      case "Stop":
+      case OrderType.EnterContainer:
+      case OrderType.Stop:
         return actor.translatable !== undefined;
-      default:
-        return false;
     }
+  }
+
+  private toKnownOrderType(orderType: string | undefined): OrderType | undefined {
+    if (!orderType || !GameCommandValidatorService.KNOWN_ORDER_TYPES.has(orderType as OrderType)) {
+      return undefined;
+    }
+
+    return orderType as OrderType;
   }
 
   private isValidTileVector3(value: unknown): boolean {
