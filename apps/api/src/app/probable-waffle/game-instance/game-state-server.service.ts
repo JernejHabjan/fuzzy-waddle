@@ -15,6 +15,7 @@ import {
 import { GameInstanceService } from "./game-instance.service";
 import { type User } from "@supabase/supabase-js";
 import { GameCommandValidatorService } from "./game-command-validator.service";
+import { PlayerStateValidatorService } from "./player-state-validator.service";
 
 @Injectable()
 export class GameStateServerService {
@@ -23,7 +24,8 @@ export class GameStateServerService {
 
   constructor(
     private readonly gameInstanceService: GameInstanceService,
-    private readonly commandValidator: GameCommandValidatorService
+    private readonly commandValidator: GameCommandValidatorService,
+    private readonly playerStateValidator: PlayerStateValidatorService
   ) {}
 
   updateGameState(body: CommunicatorEvent<any, ProbableWaffleCommunicatorType>, user: User): boolean {
@@ -56,6 +58,9 @@ export class GameStateServerService {
         break;
       case "playerDataChange":
         const playerData = body.payload as ProbableWafflePlayerDataChangeEvent;
+        if (!this.playerStateValidator.validate(playerData, gameInstance, user)) {
+          return false;
+        }
         ProbableWaffleListeners.playerChanged(gameInstance, playerData);
         break;
       case "spectatorDataChange":
@@ -102,6 +107,7 @@ export class GameStateServerService {
 
   cleanup(gameInstanceId: string): void {
     this.commandValidator.cleanup(gameInstanceId);
+    this.playerStateValidator.cleanup(gameInstanceId);
     this.recentCommandHistory.delete(gameInstanceId);
   }
 

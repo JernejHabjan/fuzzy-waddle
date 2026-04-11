@@ -15,6 +15,7 @@ import { RoomServerService } from "./game-room/room-server.service";
 import { ChatModule } from "../chat/chat.module";
 import { GameSessionModule } from "./game-session/game-session.module";
 import { PlayerDisconnectTrackerService } from "./game-instance/player-disconnect-tracker.service";
+import { PlayerStateValidatorService } from "./game-instance/player-state-validator.service";
 
 @Module({
   imports: [ChatModule, GameSessionModule],
@@ -25,6 +26,7 @@ import { PlayerDisconnectTrackerService } from "./game-instance/player-disconnec
     GameInstanceService,
     GameStateServerService,
     GameCommandValidatorService,
+    PlayerStateValidatorService,
     MatchmakingService,
     TextSanitizationService,
     ProbableWaffleChatService,

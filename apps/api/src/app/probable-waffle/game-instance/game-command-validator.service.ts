@@ -24,6 +24,19 @@ import type { User } from "@supabase/supabase-js";
 @Injectable()
 export class GameCommandValidatorService {
   private readonly logger = new Logger(GameCommandValidatorService.name);
+  private static readonly ISO_HALF_TILE_WIDTH = 32;
+  private static readonly ISO_HALF_TILE_HEIGHT = 16;
+  private static readonly KNOWN_ORDER_TYPES = new Set([
+    "Attack",
+    "Build",
+    "Gather",
+    "Move",
+    "ReturnResources",
+    "Stop",
+    "Repair",
+    "Heal",
+    "EnterContainer"
+  ]);
 
   /** Maximum tick jump allowed in one batch — guards against far-future exploits. */
   private static readonly MAX_TICK_JUMP = 10;
@@ -35,7 +48,6 @@ export class GameCommandValidatorService {
   private static readonly MAX_COMMANDS_PER_BATCH = 100;
   private static readonly MAX_ACTOR_IDS_PER_COMMAND = 100;
   private static readonly MAX_TARGET_IDS_PER_COMMAND = 32;
-  private static readonly MAX_WORLD_COORDINATE = 100_000;
 
   // last committed tick per (gameInstanceId → playerNumber)
   private readonly lastTick = new Map<string, Map<number, number>>();
@@ -80,17 +92,10 @@ export class GameCommandValidatorService {
       return false;
     }
 
-    const actorOwners = new Map<string, number | undefined>();
-    for (const actor of gameInstance.gameState?.data.actors ?? []) {
-      const actorId = actor.id?.id;
-      if (!actorId) {
-        continue;
-      }
-      actorOwners.set(actorId, actor.owner?.ownerId);
-    }
+    const actorIndex = this.getActorIndex(gameInstance);
 
     for (const command of commands) {
-      if (!this.validateCommandPayload(command, tick, playerNumber, actorOwners, gameInstanceId)) {
+      if (!this.validateCommandPayload(command, tick, playerNumber, actorIndex, gameInstanceId)) {
         return false;
       }
     }
@@ -145,7 +150,7 @@ export class GameCommandValidatorService {
     command: unknown,
     expectedTick: number,
     playerNumber: number,
-    actorOwners: Map<string, number | undefined>,
+    actorIndex: Map<string, ActorDefinition>,
     gameInstanceId: string
   ): boolean {
     if (!command || typeof command !== "object") {
@@ -172,8 +177,12 @@ export class GameCommandValidatorService {
       return false;
     }
     for (const actorId of actorIds) {
-      const ownerId = actorOwners.get(actorId);
-      if (ownerId !== playerNumber) {
+      const actor = actorIndex.get(actorId);
+      if (!actor) {
+        this.logger.warn(`[GameCommand] Unknown actor ${actorId} for player ${playerNumber} in ${gameInstanceId}`);
+        return false;
+      }
+      if (actor.owner?.ownerId !== playerNumber) {
         this.logger.warn(
           `[GameCommand] Ownership violation for actor ${actorId} by player ${playerNumber} in ${gameInstanceId}`
         );
@@ -182,21 +191,41 @@ export class GameCommandValidatorService {
     }
 
     switch (type) {
-      case "MOVE":
-        return (
-          payload.queue === true || payload.queue === false
-        ) && this.isValidVector3(payload.tileVec3) && this.isValidVector3(payload.worldVec3);
+      case "MOVE": {
+        if (!(payload.queue === true || payload.queue === false)) {
+          this.logger.warn(`[GameCommand] Invalid queue flag for MOVE in ${gameInstanceId}`);
+          return false;
+        }
+        if (!this.isValidTileVector3(payload.tileVec3) || !this.isValidWorldVector3(payload.worldVec3)) {
+          this.logger.warn(`[GameCommand] Invalid move vector payload in ${gameInstanceId}`);
+          return false;
+        }
+        if (!this.isConsistentTileAndWorld(payload.tileVec3, payload.worldVec3)) {
+          this.logger.warn(`[GameCommand] Inconsistent tile/world move payload in ${gameInstanceId}`);
+          return false;
+        }
+        if (!actorIds.every((actorId) => this.canActorHandleMove(actorIndex.get(actorId)!))) {
+          this.logger.warn(`[GameCommand] MOVE issued by non-movable actor in ${gameInstanceId}`);
+          return false;
+        }
+        return true;
+      }
       case "ACTOR_ACTION": {
+        const orderType = typeof payload.orderType === "string" ? payload.orderType : undefined;
         if (!(payload.queue === true || payload.queue === false)) {
           this.logger.warn(`[GameCommand] Invalid queue flag for ACTOR_ACTION in ${gameInstanceId}`);
           return false;
         }
-        if (payload.tileVec3 !== undefined && !this.isValidVector3(payload.tileVec3)) {
+        if (payload.tileVec3 !== undefined && !this.isValidTileVector3(payload.tileVec3)) {
           this.logger.warn(`[GameCommand] Invalid tileVec3 for ACTOR_ACTION in ${gameInstanceId}`);
           return false;
         }
         if (payload.orderType !== undefined && typeof payload.orderType !== "string") {
           this.logger.warn(`[GameCommand] Invalid orderType for ACTOR_ACTION in ${gameInstanceId}`);
+          return false;
+        }
+        if (orderType !== undefined && !GameCommandValidatorService.KNOWN_ORDER_TYPES.has(orderType)) {
+          this.logger.warn(`[GameCommand] Unknown orderType ${orderType} in ${gameInstanceId}`);
           return false;
         }
         if (payload.targetObjectIds !== undefined) {
@@ -208,6 +237,16 @@ export class GameCommandValidatorService {
             this.logger.warn(`[GameCommand] Invalid targetObjectIds for ACTOR_ACTION in ${gameInstanceId}`);
             return false;
           }
+          for (const targetId of targetIds) {
+            if (!actorIndex.has(targetId)) {
+              this.logger.warn(`[GameCommand] Unknown target ${targetId} for ACTOR_ACTION in ${gameInstanceId}`);
+              return false;
+            }
+          }
+        }
+        if (orderType !== undefined && !actorIds.every((actorId) => this.canActorHandleOrder(actorIndex.get(actorId)!, orderType))) {
+          this.logger.warn(`[GameCommand] ACTOR_ACTION ${orderType} issued by incapable actor in ${gameInstanceId}`);
+          return false;
         }
         return true;
       }
@@ -224,19 +263,84 @@ export class GameCommandValidatorService {
     return actorIds.length === value.length ? actorIds : null;
   }
 
-  private isValidVector3(value: unknown): boolean {
+  private getActorIndex(gameInstance: ProbableWaffleGameInstance): Map<string, ActorDefinition> {
+    const actorIndex = new Map<string, ActorDefinition>();
+    for (const actor of gameInstance.gameState?.data.actors ?? []) {
+      const actorId = actor.id?.id;
+      if (!actorId) {
+        continue;
+      }
+      actorIndex.set(actorId, actor);
+    }
+    return actorIndex;
+  }
+
+  private canActorHandleMove(actor: ActorDefinition): boolean {
+    return actor.translatable !== undefined || actor.production !== undefined;
+  }
+
+  private canActorHandleOrder(actor: ActorDefinition, orderType: string): boolean {
+    switch (orderType) {
+      case "Attack":
+        return actor.attack !== undefined;
+      case "Build":
+      case "Repair":
+        return actor.builder !== undefined;
+      case "Gather":
+      case "ReturnResources":
+        return actor.gatherer !== undefined;
+      case "Heal":
+        return actor.healing !== undefined;
+      case "Move":
+        return this.canActorHandleMove(actor);
+      case "EnterContainer":
+      case "Stop":
+        return actor.translatable !== undefined;
+      default:
+        return false;
+    }
+  }
+
+  private isValidTileVector3(value: unknown): boolean {
     if (!value || typeof value !== "object") {
       return false;
     }
     const vector = value as Record<string, unknown>;
-    return this.isFiniteCoordinate(vector.x) && this.isFiniteCoordinate(vector.y) && this.isFiniteCoordinate(vector.z);
+    return this.isFiniteInteger(vector.x) && this.isFiniteInteger(vector.y) && this.isFiniteInteger(vector.z);
   }
 
-  private isFiniteCoordinate(value: unknown): boolean {
-    return (
-      typeof value === "number" &&
-      Number.isFinite(value) &&
-      Math.abs(value) <= GameCommandValidatorService.MAX_WORLD_COORDINATE
-    );
+  private isValidWorldVector3(value: unknown): boolean {
+    if (!value || typeof value !== "object") {
+      return false;
+    }
+    const vector = value as Record<string, unknown>;
+    return this.isFiniteNumber(vector.x) && this.isFiniteNumber(vector.y) && this.isFiniteNumber(vector.z);
+  }
+
+  private isConsistentTileAndWorld(tileValue: unknown, worldValue: unknown): boolean {
+    if (!this.isValidTileVector3(tileValue) || !this.isValidWorldVector3(worldValue)) {
+      return false;
+    }
+
+    const tile = tileValue as { x: number; y: number };
+    const world = worldValue as { x: number; y: number };
+    const derivedTileX =
+      (world.x / GameCommandValidatorService.ISO_HALF_TILE_WIDTH -
+        world.y / GameCommandValidatorService.ISO_HALF_TILE_HEIGHT) /
+      2;
+    const derivedTileY =
+      (world.x / GameCommandValidatorService.ISO_HALF_TILE_WIDTH +
+        world.y / GameCommandValidatorService.ISO_HALF_TILE_HEIGHT) /
+      2;
+
+    return Math.abs(tile.x - derivedTileX) <= 1 && Math.abs(tile.y - derivedTileY) <= 1;
+  }
+
+  private isFiniteNumber(value: unknown): value is number {
+    return typeof value === "number" && Number.isFinite(value);
+  }
+
+  private isFiniteInteger(value: unknown): value is number {
+    return typeof value === "number" && Number.isFinite(value) && Number.isInteger(value);
   }
 }
