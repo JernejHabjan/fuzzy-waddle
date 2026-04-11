@@ -12,8 +12,6 @@ import {
 } from "../../data/game-object-helper";
 import { Subscription } from "rxjs";
 import { AudioService } from "../../world/services/audio.service";
-import { getCommunicator, getCurrentPlayerNumber } from "../../data/scene-data";
-import { SelectableComponent } from "../components/selectable-component";
 import { getActorComponent } from "../../data/actor-component";
 import { ActorTranslateComponent } from "../components/movement/actor-translate-component";
 import { HealthComponent } from "../components/combat/components/health-component";
@@ -38,6 +36,7 @@ import { getTileCoordsUnderObject } from "../../library/tile-under-object";
 import { TilemapComponent } from "../../world/tilemap/tilemap.component";
 import type { IsoDirection } from "../components/movement/iso-directions";
 import type { PathMoveConfig } from "./path-move-config";
+import { CommandBusService } from "../../world/services/command-bus.service";
 import Tween = Phaser.Tweens.Tween;
 import TweenChain = Phaser.Tweens.TweenChain;
 import GameObject = Phaser.GameObjects.GameObject;
@@ -46,14 +45,13 @@ export class MovementSystem {
   private _navigationService?: NavigationService;
   private _currentTween?: Tween | TweenChain;
   private readonly DEBUG = false;
-  private playerChangedSubscription?: Subscription;
+  private commandBusSubscription?: Subscription;
   private actorTranslateComponent?: ActorTranslateComponent;
   private tileMapComponent!: TilemapComponent;
   private audioService: AudioService | undefined;
   private audioActorComponent: AudioActorComponent | undefined;
   private animationActorComponent?: AnimationActorComponent;
   private statusEffectComponent?: StatusEffectComponent;
-  private shiftKey: Phaser.Input.Keyboard.Key | undefined;
   private targetGameObject?: GameObject;
 
   constructor(private readonly gameObject: Phaser.GameObjects.GameObject) {
@@ -69,38 +67,38 @@ export class MovementSystem {
     this.audioService = getSceneService(this.gameObject.scene, AudioService);
     this.audioActorComponent = getActorComponent(this.gameObject, AudioActorComponent);
     this.tileMapComponent = getSceneComponent(this.gameObject.scene, TilemapComponent)!;
-    this.subscribeToShiftKey();
-  }
-
-  private subscribeToShiftKey() {
-    this.shiftKey = this.gameObject.scene.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
   }
 
   private listenToMoveEvents() {
-    this.playerChangedSubscription = getCommunicator(this.gameObject.scene)
-      .playerChanged?.onWithFilter((p) => p.property === "command.issued.move") // todo it's actually blackboard that should replicate
-      .subscribe(async (payload) => {
-        const isSelected = getActorComponent(this.gameObject, SelectableComponent)?.getSelected();
-        if (!isSelected) return;
-        const canIssueCommand = this.canIssueCommand();
-        if (!canIssueCommand) return;
-        const tileVec3 = payload.data.data!["tileVec3"] as Vector3Simple;
-        const selectedActorObjectIds = payload.data.data!["selectedActorObjectIds"] as string[];
-        const newWorldVec3 = await this.getTileVec3ByDynamicFlocking(tileVec3, selectedActorObjectIds);
-        const payerPawnAiController = getActorComponent(this.gameObject, PawnAiController);
-        if (payerPawnAiController) {
-          const newOrder = new OrderData(OrderType.Move, { targetTileLocation: newWorldVec3 });
-          if (this.shiftKey?.isDown) {
-            payerPawnAiController.blackboard.addOrder(newOrder);
-          } else {
-            payerPawnAiController.blackboard.overrideOrderQueueAndActiveOrder(newOrder);
-          }
+    const commandBus = getSceneService(this.gameObject.scene, CommandBusService);
+    if (!commandBus) {
+      console.error("MovementSystem: CommandBusService not found — move commands will not be received");
+      return;
+    }
 
-          this.playOrderSound(payerPawnAiController.blackboard.peekNextPlayerOrder()!);
+    const myId = getActorComponent(this.gameObject, IdComponent)?.id;
+
+    this.commandBusSubscription = commandBus.command$.subscribe(async (cmd) => {
+      if (cmd.type !== "MOVE") return;
+
+      const actorId = myId ?? getActorComponent(this.gameObject, IdComponent)?.id;
+      if (!actorId || !cmd.actorIds.includes(actorId)) return;
+
+      const newWorldVec3 = await this.getTileVec3ByDynamicFlocking(cmd.tileVec3, cmd.actorIds as ActorId[]);
+      const payerPawnAiController = getActorComponent(this.gameObject, PawnAiController);
+      if (payerPawnAiController) {
+        const newOrder = new OrderData(OrderType.Move, { targetTileLocation: newWorldVec3 });
+        if (cmd.queue) {
+          payerPawnAiController.blackboard.addOrder(newOrder);
         } else {
-          this.moveToLocationByFollowingStaticPath(newWorldVec3);
+          payerPawnAiController.blackboard.overrideOrderQueueAndActiveOrder(newOrder);
         }
-      });
+
+        this.playOrderSound(payerPawnAiController.blackboard.peekNextPlayerOrder()!);
+      } else {
+        this.moveToLocationByFollowingStaticPath(newWorldVec3);
+      }
+    });
   }
 
   private playOrderSound(action: OrderData) {
@@ -599,8 +597,7 @@ export class MovementSystem {
   private destroy() {
     this.cancelMovement();
     this.targetGameObject = undefined;
-    this.shiftKey?.destroy();
-    this.playerChangedSubscription?.unsubscribe();
+    this.commandBusSubscription?.unsubscribe();
   }
 
   async canMoveTo(targetGameObject: Phaser.GameObjects.GameObject, range?: number): Promise<boolean> {
@@ -618,12 +615,6 @@ export class MovementSystem {
       targetGameObject,
       range
     );
-  }
-
-  private canIssueCommand() {
-    const currentPlayerNr = getCurrentPlayerNumber(this.gameObject.scene);
-    const actorPlayerNr = getActorComponent(this.gameObject, OwnerComponent)?.getOwner();
-    return actorPlayerNr === currentPlayerNr;
   }
 
   /**

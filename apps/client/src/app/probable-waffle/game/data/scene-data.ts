@@ -1,5 +1,4 @@
 import {
-  type ActorId,
   type PlayerNumber,
   type PlayerStateHousing,
   type PlayerStateResources,
@@ -9,8 +8,7 @@ import {
   ProbableWafflePlayer,
   type ProbableWafflePlayerDataChangeEvent,
   type ProbableWafflePlayerDataChangeEventPayload,
-  type ProbableWafflePlayerDataChangeEventProperty,
-  type Vector3Simple
+  type ProbableWafflePlayerDataChangeEventProperty
 } from "@fuzzy-waddle/api-interfaces";
 import { Scene } from "phaser";
 import { ProbableWaffleScene } from "../core/probable-waffle.scene";
@@ -26,7 +24,6 @@ import { GathererComponent } from "../entity/components/resource/gatherer-compon
 import { SelectableComponent } from "../entity/components/selectable-component";
 import { HealthComponent } from "../entity/components/combat/components/health-component";
 import { VisionComponent } from "../entity/components/vision-component";
-import { type GameObjectActionAssignerConfig } from "../prefabs/gui/game-object-action-assigner";
 
 export function getPlayer(scene: Scene, playerNumber?: PlayerNumber): ProbableWafflePlayer | undefined {
   if (!scene) {
@@ -203,41 +200,6 @@ export function listenToSelectionEvents(scene: Scene): Observable<ProbableWaffle
   return scene.communicator.playerChanged?.onWithFilter(
     (p) => p.data.playerNumber === player?.playerNumber && p.property.startsWith("selection.")
   );
-}
-
-export function emitEventIssueMoveCommandToSelectedActors(
-  scene: Phaser.Scene,
-  tileVec3: Vector3Simple,
-  worldVec3: Vector3Simple,
-  selectedActorObjectIds: ActorId[]
-) {
-  if (!(scene instanceof ProbableWaffleScene)) throw new Error("Scene is not of type ProbableWaffleScene");
-  scene.communicator.playerChanged!.send({
-    property: "command.issued.move",
-    data: {
-      playerNumber: getPlayer(scene)?.playerNumber,
-      data: {
-        tileVec3,
-        worldVec3,
-        selectedActorObjectIds
-      }
-    },
-    gameInstanceId: scene.gameInstanceId,
-    emitterUserId: scene.userId
-  });
-}
-
-export function emitEventIssueActorCommandToSelectedActors(scene: Phaser.Scene, data: GameObjectActionAssignerConfig) {
-  if (!(scene instanceof ProbableWaffleScene)) throw new Error("Scene is not of type ProbableWaffleScene");
-  scene.communicator.playerChanged!.send({
-    property: "command.issued.actor",
-    data: {
-      playerNumber: getPlayer(scene)?.playerNumber,
-      data
-    },
-    gameInstanceId: scene.gameInstanceId,
-    emitterUserId: scene.userId
-  });
 }
 
 export function getSelectedActors(scene: Phaser.Scene): Phaser.GameObjects.GameObject[] {

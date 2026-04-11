@@ -37,6 +37,7 @@ import { LockedCursorHandler } from "../../player/human-controller/locked-cursor
 import { ActorDebugDamageSystem } from "../services/actor-debug-damage-system";
 import { SpellCursor } from "../../player/human-controller/spell-cursor";
 import { AoeZoneManager } from "../../entity/systems/aoe-zone-manager";
+import { CommandBusService } from "../services/command-bus.service";
 
 export default class GameProbableWaffleScene extends ProbableWaffleScene {
   tilemap!: Phaser.Tilemaps.Tilemap;
@@ -74,6 +75,8 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     );
     this.sceneGameData.services.push(
       this.getRandomService(),
+      // CommandBusService must be registered first so it's available during initInitialActors()
+      new CommandBusService(),
       new NavigationService(this, this.tilemap),
       new AudioService(this),
       new PlayerActionsHandler(this, hud),
