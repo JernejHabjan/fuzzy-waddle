@@ -655,8 +655,9 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
    * todo this is a prototype
    */
   async startReplay(gameInstanceSaveData: ProbableWaffleGameInstanceSaveData): Promise<void> {
-    gameInstanceSaveData.gameInstanceData.gameInstanceMetadataData!.type = ProbableWaffleGameInstanceType.Replay;
-    this.gameInstance = new ProbableWaffleGameInstance(gameInstanceSaveData.gameInstanceData);
+    const replayGameInstanceData = structuredClone(gameInstanceSaveData.gameInstanceData);
+    replayGameInstanceData.gameInstanceMetadataData!.type = ProbableWaffleGameInstanceType.Replay;
+    this.gameInstance = new ProbableWaffleGameInstance(replayGameInstanceData);
     await this.startListeningToGameInstanceEvents();
     await this.navigateToLobbyOrDirectlyToGame();
   }

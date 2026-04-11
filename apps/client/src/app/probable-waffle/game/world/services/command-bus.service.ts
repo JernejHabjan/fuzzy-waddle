@@ -4,7 +4,11 @@ import { SimulationTickService } from "./simulation-tick.service";
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { CommandBuffer } from "./command-buffer";
 import { getCommunicator } from "../../data/scene-data";
-import { ProbableWafflePlayerType, type PlayerNumber } from "@fuzzy-waddle/api-interfaces";
+import {
+  ProbableWafflePlayerType,
+  type PlayerNumber,
+  type ProbableWaffleReplayCommandBatch
+} from "@fuzzy-waddle/api-interfaces";
 
 /**
  * Central command bus for all player- and AI-issued simulation commands.
@@ -32,6 +36,8 @@ export class CommandBusService {
 
   private readonly _command$ = new Subject<GameCommand>();
   readonly command$ = this._command$.asObservable();
+  private readonly _commandBatch$ = new Subject<ProbableWaffleReplayCommandBatch>();
+  readonly commandBatch$ = this._commandBatch$.asObservable();
 
   /** Injected after construction once SimulationTickService is registered. */
   tickService: SimulationTickService | null = null;
@@ -65,6 +71,11 @@ export class CommandBusService {
     this.subscriptions.push(
       communicator.gameCommandChanged!.on.subscribe((event) => {
         this.buffer.commit(event.tick, event.playerNumber, event.commands as GameCommand[]);
+        this.emitRecordedBatch({
+          tick: event.tick,
+          playerNumber: event.playerNumber,
+          commands: event.commands
+        });
         this.tryUnblockTick();
       })
     );
@@ -76,14 +87,20 @@ export class CommandBusService {
   }
 
   dispatch(command: GameCommandInput): void {
-    if (this.scene?.isSpectator) {
+    if (this.scene?.isSpectator || this.scene?.baseGameData.gameInstance.gameInstanceMetadata.isReplay()) {
       return;
     }
 
     if (!this.isMultiplayer) {
       // Single-player: stamp and emit immediately
       const tick = this.tickService?.currentTick ?? 0;
-      this._command$.next({ ...command, tick } as GameCommand);
+      const stamped = { ...command, tick } as GameCommand;
+      this.emitRecordedBatch({
+        tick,
+        playerNumber: stamped.playerNumber,
+        commands: [stamped]
+      });
+      this._command$.next(stamped);
       return;
     }
 
@@ -111,6 +128,11 @@ export class CommandBusService {
     if (this.localPlayerNumber !== null) {
       // Buffer our own commands locally so hasAll() counts us
       this.buffer.commit(futureTick, this.localPlayerNumber, outbound);
+      this.emitRecordedBatch({
+        tick: futureTick,
+        playerNumber: this.localPlayerNumber,
+        commands: outbound
+      });
       this.sendCommandBatch(futureTick, outbound);
     }
 
@@ -146,8 +168,24 @@ export class CommandBusService {
     return this.buffer.hasAll(tick, this.humanPlayerNumbers);
   }
 
+  playReplayBatch(batch: ProbableWaffleReplayCommandBatch): void {
+    const commands = batch.commands as GameCommand[];
+    for (const command of commands) {
+      this._command$.next(command);
+    }
+  }
+
+  private emitRecordedBatch(batch: ProbableWaffleReplayCommandBatch): void {
+    this._commandBatch$.next({
+      tick: batch.tick,
+      playerNumber: batch.playerNumber,
+      commands: structuredClone(batch.commands)
+    });
+  }
+
   destroy(): void {
     this.subscriptions.forEach((s) => s.unsubscribe());
+    this._commandBatch$.complete();
     this._command$.complete();
   }
 }

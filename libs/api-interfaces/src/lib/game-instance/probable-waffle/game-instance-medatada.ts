@@ -8,8 +8,30 @@ export enum ProbableWaffleGameInstanceType {
   Replay
 }
 
+export interface ProbableWaffleReplayPlayerData {
+  playerNumber: number;
+  playerName?: string;
+  userId?: string | null;
+}
+
+export interface ProbableWaffleReplayCommandBatch {
+  tick: number;
+  playerNumber: number;
+  commands: unknown[];
+}
+
+export interface ProbableWaffleReplayData {
+  version: string;
+  compatibilityVersion: string;
+  seed: number;
+  mapId?: number;
+  players: ProbableWaffleReplayPlayerData[];
+  commands: ProbableWaffleReplayCommandBatch[];
+}
+
 export interface GameInstanceMetadataStartOptions {
   loadFromSave?: boolean;
+  replayData?: ProbableWaffleReplayData;
 }
 
 export interface ProbableWaffleGameInstanceMetadataData extends GameInstanceMetadataData {
