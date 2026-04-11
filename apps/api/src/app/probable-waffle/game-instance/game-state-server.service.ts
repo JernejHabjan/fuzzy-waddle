@@ -70,6 +70,13 @@ export class GameStateServerService {
       case "state-hash":
         // No server-side processing needed; relay to all peers as-is.
         return true;
+      case "snapshot-request":
+        // Request is relayed to all peers; the host will respond directly.
+        // Server holds no snapshot state — routing only.
+        return true;
+      case "snapshot-response":
+        // Response is relayed to all peers (only the requester will consume it via userId filter).
+        return true;
       default:
         throw new Error("Unknown communicator");
     }

@@ -9,7 +9,9 @@ import {
   type ProbableWaffleGameStateDataChangeEvent,
   type ProbableWafflePlayerDataChangeEvent,
   type ProbableWaffleSpectatorDataChangeEvent,
-  type ProbableWaffleStateHashEvent
+  type ProbableWaffleStateHashEvent,
+  type ProbableWaffleSnapshotRequestEvent,
+  type ProbableWaffleSnapshotResponseEvent
 } from "@fuzzy-waddle/api-interfaces";
 import { Socket } from "ngx-socket-io";
 
@@ -27,6 +29,10 @@ export interface ProbableWaffleCommunicatorServiceInterface {
   gameCommandChanged?: TwoWayCommunicator<ProbableWaffleGameCommandEvent, ProbableWaffleCommunicatorType>;
   /** Periodic state-hash exchange; only initialised in multiplayer sessions. */
   stateHashChanged?: TwoWayCommunicator<ProbableWaffleStateHashEvent, ProbableWaffleCommunicatorType>;
+  /** Snapshot request (reconnecting/spectating client → host); only in MP. */
+  snapshotRequested?: TwoWayCommunicator<ProbableWaffleSnapshotRequestEvent, ProbableWaffleCommunicatorType>;
+  /** Snapshot response (host → requesting client); only in MP. */
+  snapshotResponse?: TwoWayCommunicator<ProbableWaffleSnapshotResponseEvent, ProbableWaffleCommunicatorType>;
 
   startCommunication(gameInstanceId: GameInstanceId, socket: Socket): void;
   stopCommunication(gameInstanceId: GameInstanceId, socket: Socket): void;

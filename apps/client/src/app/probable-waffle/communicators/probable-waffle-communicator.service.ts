@@ -11,6 +11,8 @@ import {
   ProbableWaffleGatewayEvent,
   ProbableWaffleGatewayRoomTypes,
   type ProbableWafflePlayerDataChangeEvent,
+  type ProbableWaffleSnapshotRequestEvent,
+  type ProbableWaffleSnapshotResponseEvent,
   type ProbableWaffleSpectatorDataChangeEvent,
   type ProbableWaffleStateHashEvent,
   type ProbableWaffleWebsocketRoomEvent
@@ -39,6 +41,10 @@ export class ProbableWaffleCommunicatorService
   gameCommandChanged?: TwoWayCommunicator<ProbableWaffleGameCommandEvent, ProbableWaffleCommunicatorType>;
   /** Periodic state-hash exchange; only initialised in multiplayer sessions. */
   stateHashChanged?: TwoWayCommunicator<ProbableWaffleStateHashEvent, ProbableWaffleCommunicatorType>;
+  /** Snapshot request (reconnecting/spectating client → host); only in MP. */
+  snapshotRequested?: TwoWayCommunicator<ProbableWaffleSnapshotRequestEvent, ProbableWaffleCommunicatorType>;
+  /** Snapshot response (host → requesting client); only in MP. */
+  snapshotResponse?: TwoWayCommunicator<ProbableWaffleSnapshotResponseEvent, ProbableWaffleCommunicatorType>;
 
   /**
    * utility events that are broadcast to game instance and other angular services - for example save game
@@ -98,6 +104,14 @@ export class ProbableWaffleCommunicatorService
         gameInstanceId,
         socket
       );
+      this.snapshotRequested = new TwoWayCommunicator<
+        ProbableWaffleSnapshotRequestEvent,
+        ProbableWaffleCommunicatorType
+      >(ProbableWaffleGatewayEvent.ProbableWaffleAction, "snapshot-request", gameInstanceId, socket);
+      this.snapshotResponse = new TwoWayCommunicator<
+        ProbableWaffleSnapshotResponseEvent,
+        ProbableWaffleCommunicatorType
+      >(ProbableWaffleGatewayEvent.ProbableWaffleAction, "snapshot-response", gameInstanceId, socket);
     }
 
     socket?.emit(ProbableWaffleGatewayEvent.ProbableWaffleWebsocketRoom, {
@@ -127,5 +141,7 @@ export class ProbableWaffleCommunicatorService
     this.message?.destroy();
     this.gameCommandChanged?.destroy();
     this.stateHashChanged?.destroy();
+    this.snapshotRequested?.destroy();
+    this.snapshotResponse?.destroy();
   }
 }

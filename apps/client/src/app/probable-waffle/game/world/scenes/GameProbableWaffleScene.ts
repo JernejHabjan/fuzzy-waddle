@@ -41,6 +41,7 @@ import { AoeZoneManager } from "../../entity/systems/aoe-zone-manager";
 import { CommandBusService } from "../services/command-bus.service";
 import { SimulationTickService } from "../services/simulation-tick.service";
 import { StateHashService } from "../services/state-hash.service";
+import { SnapshotService } from "../services/snapshot.service";
 
 export default class GameProbableWaffleScene extends ProbableWaffleScene {
   tilemap!: Phaser.Tilemaps.Tilemap;
@@ -117,6 +118,8 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
 
     // Desync detection: hash state every 60 ticks and compare with peers (MP only).
     new StateHashService().init(this);
+    // Snapshot service: host keeps a rolling snapshot for reconnect / late spectator catch-up.
+    new SnapshotService().init(this);
 
     super.create();
 

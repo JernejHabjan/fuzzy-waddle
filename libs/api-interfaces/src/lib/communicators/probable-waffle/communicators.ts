@@ -21,6 +21,8 @@ export type ProbableWaffleCommunicatorType =
   | "message"
   | "game-command"
   | "state-hash"
+  | "snapshot-request"
+  | "snapshot-response"
   | ProbableWaffleGameCommunicatorType;
 
 export interface ProbableWaffleCommunicatorEvent {
@@ -141,6 +143,32 @@ export interface ProbableWaffleStateHashEvent extends ProbableWaffleCommunicator
   playerNumber: PlayerNumber;
   /** djb2 hex hash of all actor states sorted by actor ID. */
   hash: string;
+}
+
+/** Full simulation snapshot for reconnect / spectator catch-up. Host → requesting client only. */
+export interface ProbableWaffleSnapshotData {
+  /** Simulation tick at the moment the snapshot was taken. */
+  tick: number;
+  /** All live actors serialised via ActorManager.getActorDefinitionFromActor(). */
+  actors: ActorDefinition[];
+  /**
+   * Per-player state (resources, housing, summary, selection).
+   * Keyed by playerNumber so receiver can restore each player independently.
+   */
+  playerStates: Record<PlayerNumber, ProbableWafflePlayerStateData>;
+  /** Research state keyed by playerNumber. */
+  playerResearch?: Record<PlayerNumber, string[]>;
+}
+
+/**
+ * Sent by a client that needs a catch-up snapshot (reconnect or late-join spectator).
+ * The host responds with `ProbableWaffleSnapshotResponseEvent`.
+ */
+export interface ProbableWaffleSnapshotRequestEvent extends ProbableWaffleCommunicatorEvent {}
+
+/** Host → requesting client: full simulation snapshot for catch-up. */
+export interface ProbableWaffleSnapshotResponseEvent extends ProbableWaffleCommunicatorEvent {
+  snapshot: ProbableWaffleSnapshotData;
 }
 
 export interface ProbableWaffleWebsocketRoomEvent {
