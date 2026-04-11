@@ -25,6 +25,7 @@ import { SelectionGroupsComponent } from "../../player/human-controller/selectio
 import { GameModeConditionChecker } from "../state/GameModeConditionChecker";
 import { ScoreTracker } from "../state/ScoreTracker";
 import { getSceneExternalComponent, getSceneService } from "../services/scene-component-helpers";
+import { ActorIdSeeder } from "../services/actor-id-seeder.service";
 import { AchievementService } from "../../../services/achievement/achievement.service";
 import { AchievementType } from "../../../services/achievement/achievement-type";
 import { environment } from "../../../../../environments/environment";
@@ -97,6 +98,9 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     creator.initInitialActors();
     // Populate the index after initial actors are in place
     actorIndex.scanExistingActors();
+    // ActorIdSeeder must run after actors are in place. On non-host it subscribes
+    // to the host's seed broadcast and patches actor ids to stay in sync.
+    new ActorIdSeeder(this);
 
     // Wire SimulationTickService into CommandBusService now that both are registered
     const commandBus = getSceneService(this, CommandBusService);
