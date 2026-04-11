@@ -278,6 +278,9 @@ export class ProbableWaffleListeners {
           }
           ProbableWaffleListeners.logDebugInfo("housing current decreased for player", player.playerNumber);
           break;
+        case "player.scene-ready" as ProbableWafflePlayerDataChangeEventProperty:
+          // Handled client-side by ReadyBarrier; server just relays the event.
+          break;
         default:
           throw new Error("Unknown communicator for playerDataChange: " + payload.property);
       }

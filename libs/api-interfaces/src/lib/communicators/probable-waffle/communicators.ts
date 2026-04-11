@@ -77,6 +77,7 @@ export type ProbableWafflePlayerDataChangeEventProperty =
   | "housing.removed"
   | "housing.current.increased"
   | "housing.current.decreased"
+  | "player.scene-ready"
   | "command.issued.move" // todo this command needs to be removed from here as it belongs to actor event
   | "command.issued.actor"; // todo this command needs to be removed from here as it belongs to actor event
 export interface ProbableWafflePlayerDataChangeEvent extends ProbableWaffleCommunicatorEvent {

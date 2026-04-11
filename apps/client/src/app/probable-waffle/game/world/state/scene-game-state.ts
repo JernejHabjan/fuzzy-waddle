@@ -2,6 +2,7 @@ import { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { GameSessionState } from "@fuzzy-waddle/api-interfaces";
 import { environment } from "../../../../../environments/environment";
 import { getCommunicator } from "../../data/scene-data";
+import { ReadyBarrier } from "../services/ready-barrier.service";
 
 export class SceneGameState {
   private sessionStateSubscription?: { unsubscribe(): void };
@@ -13,15 +14,18 @@ export class SceneGameState {
   private listen() {
     this.pauseUntilAllPlayersAreReady();
 
-    // after 3 seconds, change state to StartingTheGame
-    setTimeout(() => {
-      getCommunicator(this.scene).gameInstanceMetadataChanged?.send({
-        property: "sessionState",
-        gameInstanceId: this.scene.baseGameData.gameInstance.gameInstanceMetadata.data.gameInstanceId!,
-        data: { sessionState: GameSessionState.StartingTheGame },
-        emitterUserId: this.scene.baseGameData.user.userId
+    // ReadyBarrier signals when all human players have loaded.
+    // Only the host drives the StartingTheGame transition; peers wait.
+    if (this.scene.isHost) {
+      new ReadyBarrier(this.scene, () => {
+        getCommunicator(this.scene).gameInstanceMetadataChanged?.send({
+          property: "sessionState",
+          gameInstanceId: this.scene.baseGameData.gameInstance.gameInstanceMetadata.data.gameInstanceId!,
+          data: { sessionState: GameSessionState.StartingTheGame },
+          emitterUserId: this.scene.baseGameData.user.userId
+        });
       });
-    }, 100); // todo for test - later call this when all players have loaded the game
+    }
   }
 
   pauseUntilAllPlayersAreReady() {
