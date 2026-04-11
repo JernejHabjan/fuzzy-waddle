@@ -3,6 +3,7 @@ import {
   type GameInstanceId,
   type ProbableWaffleCommunicatorMessageEvent,
   type ProbableWaffleCommunicatorType,
+  type ProbableWaffleGameCommandEvent,
   type ProbableWaffleGameInstanceMetadataChangeEvent,
   type ProbableWaffleGameModeDataChangeEvent,
   type ProbableWaffleGameStateDataChangeEvent,
@@ -21,6 +22,8 @@ export interface ProbableWaffleCommunicatorServiceInterface {
   spectatorChanged?: TwoWayCommunicator<ProbableWaffleSpectatorDataChangeEvent, ProbableWaffleCommunicatorType>;
   gameStateChanged?: TwoWayCommunicator<ProbableWaffleGameStateDataChangeEvent, ProbableWaffleCommunicatorType>;
   message?: TwoWayCommunicator<ProbableWaffleCommunicatorMessageEvent, ProbableWaffleCommunicatorType>;
+  /** Command relay communicator; only initialised in multiplayer sessions. */
+  gameCommandChanged?: TwoWayCommunicator<ProbableWaffleGameCommandEvent, ProbableWaffleCommunicatorType>;
 
   startCommunication(gameInstanceId: GameInstanceId, socket: Socket): void;
   stopCommunication(gameInstanceId: GameInstanceId, socket: Socket): void;

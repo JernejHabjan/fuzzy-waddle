@@ -4,6 +4,7 @@ import {
   type GameInstanceId,
   type ProbableWaffleCommunicatorMessageEvent,
   type ProbableWaffleCommunicatorType,
+  type ProbableWaffleGameCommandEvent,
   type ProbableWaffleGameInstanceMetadataChangeEvent,
   type ProbableWaffleGameModeDataChangeEvent,
   type ProbableWaffleGameStateDataChangeEvent,
@@ -33,6 +34,8 @@ export class ProbableWaffleCommunicatorService
   spectatorChanged?: TwoWayCommunicator<ProbableWaffleSpectatorDataChangeEvent, ProbableWaffleCommunicatorType>;
   gameStateChanged?: TwoWayCommunicator<ProbableWaffleGameStateDataChangeEvent, ProbableWaffleCommunicatorType>;
   message?: TwoWayCommunicator<ProbableWaffleCommunicatorMessageEvent, ProbableWaffleCommunicatorType>;
+  /** Command relay communicator; only initialised in multiplayer sessions. */
+  gameCommandChanged?: TwoWayCommunicator<ProbableWaffleGameCommandEvent, ProbableWaffleCommunicatorType>;
 
   /**
    * utility events that are broadcast to game instance and other angular services - for example save game
@@ -78,6 +81,16 @@ export class ProbableWaffleCommunicatorService
       socket
     );
 
+    // Only initialise in multiplayer (socket present); single-player stays undefined.
+    if (socket) {
+      this.gameCommandChanged = new TwoWayCommunicator<ProbableWaffleGameCommandEvent, ProbableWaffleCommunicatorType>(
+        ProbableWaffleGatewayEvent.ProbableWaffleAction,
+        "game-command",
+        gameInstanceId,
+        socket
+      );
+    }
+
     socket?.emit(ProbableWaffleGatewayEvent.ProbableWaffleWebsocketRoom, {
       gameInstanceId,
       type: "join"
@@ -103,5 +116,6 @@ export class ProbableWaffleCommunicatorService
     this.spectatorChanged?.destroy();
     this.gameStateChanged?.destroy();
     this.message?.destroy();
+    this.gameCommandChanged?.destroy();
   }
 }

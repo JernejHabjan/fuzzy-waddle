@@ -56,6 +56,10 @@ export class GameStateServerService {
         const gameStateData = body.payload as ProbableWaffleGameStateDataChangeEvent;
         ProbableWaffleListeners.gameStateDataChanged(gameInstance, gameStateData);
         break;
+      case "game-command":
+        // Server relays command batches without mutating authoritative game state.
+        // Ownership and rate-limit validation are added in step 7.
+        break;
       default:
         throw new Error("Unknown communicator");
     }

@@ -107,6 +107,11 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     const simTick = getSceneService(this, SimulationTickService);
     if (commandBus && simTick) {
       commandBus.tickService = simTick;
+      // Activate the multiplayer relay path when a socket is present
+      const communicator = this.baseGameData.communicator;
+      if (communicator.gameCommandChanged) {
+        commandBus.initMultiplayer(this);
+      }
     }
 
     super.create();

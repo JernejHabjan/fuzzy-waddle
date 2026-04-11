@@ -19,6 +19,7 @@ export type ProbableWaffleCommunicatorType =
   | "spectatorDataChange"
   | "gameStateDataChange"
   | "message"
+  | "game-command"
   | ProbableWaffleGameCommunicatorType;
 
 export interface ProbableWaffleCommunicatorEvent {
@@ -114,6 +115,22 @@ export interface ProbableWaffleGameStateDataChangeEvent extends ProbableWaffleCo
 
 export interface ProbableWaffleCommunicatorMessageEvent extends ProbableWaffleCommunicatorEvent {
   chatMessage: ChatMessage;
+}
+
+/**
+ * Carries one player's committed command batch for a given simulation tick.
+ * Sent by every player on every tick (even if commands is empty) so peers can
+ * advance the lockstep barrier.
+ *
+ * Commands are typed as unknown[] here because GameCommand is defined in the
+ * client app. The receiving client casts them to GameCommand[] after validation.
+ */
+export interface ProbableWaffleGameCommandEvent extends ProbableWaffleCommunicatorEvent {
+  /** The simulation tick on which these commands should execute. */
+  tick: number;
+  playerNumber: PlayerNumber;
+  /** Serialised GameCommand objects. Cast to GameCommand[] on the client. */
+  commands: unknown[];
 }
 
 export interface ProbableWaffleWebsocketRoomEvent {
