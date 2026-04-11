@@ -9,6 +9,7 @@ import { HealthComponent } from "../entity/components/combat/components/health-c
 import { LevelComponent } from "../entity/components/level/level-component";
 import { getPwActorDefinition } from "../prefabs/definitions/actor-definitions";
 import { VisionComponent } from "../entity/components/vision-component";
+import { ContainerComponent } from "../entity/components/building/container-component";
 import GameObject = Phaser.GameObjects.GameObject;
 
 /**
@@ -72,6 +73,12 @@ export function upgradeActorToLevel(actor: GameObject, newLevel: number) {
     if (visionComp) {
       visionComp.visionDefinition = components.vision;
     }
+  }
+
+  // Update container capacity if changed
+  if (components?.container) {
+    const containerComp = getActorComponent(actor, ContainerComponent);
+    containerComp?.setContainerDefinition(components.container);
   }
 
   // Finally update level component

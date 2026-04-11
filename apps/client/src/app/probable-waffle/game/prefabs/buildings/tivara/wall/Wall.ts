@@ -29,8 +29,8 @@ import { getNeighboursByTypes } from "../../../../data/tile-map-helpers";
 import { TilemapComponent } from "../../../../world/tilemap/tilemap.component";
 import { setActorData } from "../../../../data/actor-data";
 import { getActorComponent } from "../../../../data/actor-component";
-import { WalkableComponent } from "../../../../entity/components/movement/walkable-component";
-import type { WalkablePath } from "../../../../entity/components/movement/walkable-path";
+import { NavigableComponent } from "../../../../entity/components/movement/navigable-component";
+import type { NavigablePath } from "../../../../entity/components/movement/navigable-path";
 /* END-USER-IMPORTS */
 
 export default class Wall extends Phaser.GameObjects.Container {
@@ -110,14 +110,14 @@ export default class Wall extends Phaser.GameObjects.Container {
       throw new Error("Wall type not found");
     }
 
-    const walkableComponent = getActorComponent(this, WalkableComponent);
-    if (walkableComponent) {
-      const walkablePath = this.getWalkablePath(wallType);
-      walkableComponent.allowWalkablePath(walkablePath);
+    const navigableComponent = getActorComponent(this, NavigableComponent);
+    if (navigableComponent) {
+      const navigablePath = this.getNavigablePath(wallType);
+      navigableComponent.allowNavigablePath(navigablePath);
     }
   }
 
-  private getWalkablePath(wallType: WallType): WalkablePath {
+  private getNavigablePath(wallType: WallType): NavigablePath {
     switch (wallType) {
       case WallType.TopRightBottomRight:
         return { topLeft: true, left: true, bottomLeft: true };

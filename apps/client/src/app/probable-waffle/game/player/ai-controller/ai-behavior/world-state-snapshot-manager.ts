@@ -15,6 +15,7 @@ import { getUnitStrength } from "../ai-utils";
 import { DistanceHelper } from "../../../library/distance-helper";
 import { AI_CONFIG } from "../ai-config";
 import { getResearchedLevelForActor } from "../../../data/actor-level-utils";
+import { ContainableComponent } from "../../../entity/components/building/containable-component";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class WorldStateSnapshotManager {
@@ -232,9 +233,10 @@ export class WorldStateSnapshotManager {
 
     const candidates = allActors.filter((obj) => {
       if (ownedSet.has(obj)) return false;
-      if (!getActorComponent(obj, HealthComponent)) return false;
-      // noinspection RedundantIfStatementJS
       if (!getActorComponent(obj, OwnerComponent)) return false;
+      // Skip actors that are inside a container — they are not targetable
+      // noinspection RedundantIfStatementJS
+      if (getActorComponent(obj, ContainableComponent)?.isContained()) return false;
       return true;
     });
 

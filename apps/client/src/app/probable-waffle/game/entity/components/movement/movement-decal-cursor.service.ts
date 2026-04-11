@@ -1,7 +1,7 @@
 import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { NavigationService } from "../../../world/services/navigation.service";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
-import { onObjectReady } from "../../../data/game-object-helper";
+import { canActorTraverseTile, onObjectReady } from "../../../data/game-object-helper";
 import { getActorComponent } from "../../../data/actor-component";
 import { SelectableComponent } from "../selectable-component";
 import { PawnAiController } from "../../../prefabs/ai-agents/pawn-ai-controller";
@@ -9,7 +9,6 @@ import type { Subscription } from "rxjs";
 import { OrderType } from "../../../ai/order-type";
 import { OwnerComponent } from "../owner-component";
 import { getCurrentPlayerNumber } from "../../../data/scene-data";
-import { FlyingComponent } from "./flying-component";
 
 export class MovementDecalCursorService {
   private moveMarkerSprite?: Phaser.GameObjects.Image;
@@ -81,9 +80,8 @@ export class MovementDecalCursorService {
     const tileWorldXY = this.navigationService.getTileWorldCenter(tileVec3);
     if (!tileWorldXY) return;
 
-    // Check if terrain is accessible
-    const flyingComponent = getActorComponent(this.gameObject, FlyingComponent);
-    const isAccessible = !!flyingComponent || this.navigationService.isTileWalkable({ x: tileVec3.x, y: tileVec3.y });
+    // Check if terrain is accessible using the unit's own terrain type
+    const isAccessible = canActorTraverseTile(this.gameObject, this.navigationService, { x: tileVec3.x, y: tileVec3.y });
 
     if (isAccessible) {
       this.showAccessibleMarker(tileWorldXY, tileVec3);

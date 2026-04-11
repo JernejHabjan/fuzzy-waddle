@@ -75,11 +75,12 @@ export class HealthComponent {
           this.reactToHeal();
         }
 
-        if (value <= 0) {
+        if (value <= 0 && !this.suppressReactions) {
           this.killActor(); // Custom logic when health reaches zero
         }
       },
       armour: (value: number, previousValue: number) => {
+        if (this.suppressReactions) return;
         if (this.audioActorComponent) this.audioActorComponent.playCustomSound(SoundType.Damage);
 
         if (HealthComponent.DEBUG) console.log(`Armor changed from ${previousValue} to ${value}`);
@@ -96,6 +97,8 @@ export class HealthComponent {
   private actorTranslateComponent?: ActorTranslateComponent;
   private audioService?: AudioService;
   hidden: boolean = false;
+  /** Suppresses visual/audio damage reactions when set (e.g. during a silent kill). */
+  private suppressReactions = false;
 
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,
@@ -127,12 +130,13 @@ export class HealthComponent {
   }
 
   private reactToDamage(): void {
+    if (this.suppressReactions) return;
     if (this.audioActorComponent) this.audioActorComponent.playCustomSound(SoundType.Damage);
     if (this.latestDamage?.damageType !== DamageType.Poison) this.reactToDamageVisually();
   }
 
   private reactToDamageVisually() {
-    let asTint;
+    let asTint: Phaser.GameObjects.Components.Tint & { clearTint?: () => void };
     switch (this.healthDefinition.physicalState) {
       case ActorPhysicalType.Biological:
         if (this.actorTranslateComponent) {
@@ -149,16 +153,25 @@ export class HealthComponent {
         }
         break;
       case ActorPhysicalType.Structural:
-        asTint = this.gameObject as any as Phaser.GameObjects.Components.Tint;
-        if (asTint.setTint) asTint.setTint(0xff0000);
-        // console.warn("this tint is not working "); // todo
-
+        asTint = this.gameObject as any as Phaser.GameObjects.Components.Tint & { clearTint?: () => void };
+        if (asTint.setTint) {
+          asTint.setTint(0xff0000);
+          // Clear the hit-flash tint after a short delay so it doesn't stick
+          this.gameObject.scene.time.delayedCall(500, () => {
+            if (this.gameObject.active) asTint.clearTint?.();
+          });
+        }
         // TODO SET RUBBLE IN ITS PLACE - use ConstructionGameObjectInterfaceComponent and rename it somehow
         break;
       case ActorPhysicalType.Organic:
-        asTint = this.gameObject as any as Phaser.GameObjects.Components.Tint;
-        if (asTint.setTint) asTint.setTint(0xff0000);
-        // console.warn("this tint is not working "); // todo
+        asTint = this.gameObject as any as Phaser.GameObjects.Components.Tint & { clearTint?: () => void };
+        if (asTint.setTint) {
+          asTint.setTint(0xff0000);
+          // console.warn("this tint is not working "); // todo
+          this.gameObject.scene.time.delayedCall(500, () => {
+            if (this.gameObject.active) asTint.clearTint?.();
+          });
+        }
         break;
     }
   }
@@ -265,6 +278,17 @@ export class HealthComponent {
       this.healthComponentData.health + amount,
       this.healthDefinition.maxHealth
     );
+  }
+
+  /** Destroys the actor immediately without playing death animations or sounds. */
+  destroyActorSilently() {
+    if (!this.gameObject.active || !this.gameObject.scene) return;
+    this.suppressReactions = true;
+    this.healthComponentData.health = 0;
+    this.gameObject.scene.events.emit(HealthComponent.KilledEvent, this.gameObject);
+    // emit last
+    this.gameObject.emit(HealthComponent.KilledEvent);
+    this.gameObject.destroy();
   }
 
   killActor() {

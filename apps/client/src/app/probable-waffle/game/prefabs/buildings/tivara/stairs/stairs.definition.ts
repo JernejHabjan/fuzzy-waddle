@@ -35,8 +35,8 @@ export const stairsDefinition = {
     vision: {
       range: 10
     },
-    walkable: {
-      walkableHeight: 24,
+    navigable: {
+      navigableHeight: 24,
       exitHeight: 64,
       acceptMinimumHeight: 0
     },
