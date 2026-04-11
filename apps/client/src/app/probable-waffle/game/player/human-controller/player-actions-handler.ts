@@ -109,6 +109,7 @@ export class PlayerActionsHandler {
   private onKeyDown(e: KeyboardEvent) {
     // Don't process keyboard events if chat modal is open
     if (this.externalModalOpen) return;
+    if (this.scene.isSpectator) return;
 
     const code = e.code;
     if (!code) return;
@@ -218,6 +219,8 @@ export class PlayerActionsHandler {
   }
 
   private async deleteSelectedActors() {
+    if (this.scene.isSpectator) return;
+
     const currentPlayerNumber = getCurrentPlayerNumber(this.scene);
     if (!currentPlayerNumber) return;
 
@@ -252,6 +255,7 @@ export class PlayerActionsHandler {
   }
 
   private pointerHandler(pointer: Phaser.Input.Pointer, gameObjectsUnderCursor: GameObject[]) {
+    if (this.scene.isSpectator) return;
     if (!this.handlingActions) return;
 
     const cursorHandler = getSceneComponent(this.hudScene, CursorHandler);
@@ -315,6 +319,10 @@ export class PlayerActionsHandler {
   }
 
   startOrderCommand(orderType: OrderType, actors: GameObject[]) {
+    if (this.scene.isSpectator) {
+      return;
+    }
+
     // Only start the order if at least one actor supports it
     if (!this.selectionSupportsOrder(orderType, actors)) {
       // silently ignore if no capable actor is selected

@@ -56,6 +56,10 @@ export class ReconnectService {
           this.applySnapshot(scene, e.snapshot);
         }
       );
+
+      if (scene.isSpectator) {
+        this.requestSnapshot(scene, "spectator catch-up");
+      }
     }
 
     // Hook into socket reconnect so we can re-join the room and catch up.
@@ -78,18 +82,23 @@ export class ReconnectService {
   }
 
   private onSocketReconnect(scene: ProbableWaffleScene): void {
-    const communicator = getCommunicator(scene);
-    if (!communicator.snapshotRequested) return;
-
     console.info("[Reconnect] Socket reconnected — re-joining room and requesting snapshot from host.");
 
     // Re-join the socket.io room with the new socket ID.
-    communicator.activeSocket?.emit(ProbableWaffleGatewayEvent.ProbableWaffleWebsocketRoom, {
+    getCommunicator(scene).activeSocket?.emit(ProbableWaffleGatewayEvent.ProbableWaffleWebsocketRoom, {
       gameInstanceId: scene.gameInstanceId,
       type: "join"
     } satisfies ProbableWaffleWebsocketRoomEvent);
 
-    // Request a full-state snapshot from the host.
+    this.requestSnapshot(scene, "reconnect");
+  }
+
+  private requestSnapshot(scene: ProbableWaffleScene, reason: string): void {
+    const communicator = getCommunicator(scene);
+    if (!communicator.snapshotRequested) return;
+
+    console.info(`[Reconnect] Requesting host snapshot for ${reason}.`);
+
     communicator.snapshotRequested.send({
       gameInstanceId: scene.gameInstanceId,
       emitterUserId: scene.userId

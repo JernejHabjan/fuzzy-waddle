@@ -76,6 +76,10 @@ export class CommandBusService {
   }
 
   dispatch(command: GameCommandInput): void {
+    if (this.scene?.isSpectator) {
+      return;
+    }
+
     if (!this.isMultiplayer) {
       // Single-player: stamp and emit immediately
       const tick = this.tickService?.currentTick ?? 0;

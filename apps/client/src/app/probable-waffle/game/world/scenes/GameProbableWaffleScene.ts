@@ -96,7 +96,9 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     );
     new ActorDebugDamageSystem(this);
     this.sceneGameData.systems.push(new AiPlayerHandler(this));
-    this.sceneGameData.components.push(new FogOfWarComponent(this, this.tilemap));
+    if (!this.isSpectator) {
+      this.sceneGameData.components.push(new FogOfWarComponent(this, this.tilemap));
+    }
 
     creator.initInitialActors();
     // Populate the index after initial actors are in place
