@@ -8,7 +8,7 @@
 | # | Status | What |
 |---|--------|------|
 | 01 | [x] | **CommandBus service** – central command dispatcher; wire PlayerActionsHandler + GameObjectActionAssigner → CommandBus; MovementSystem + ActionSystem subscribe to CommandBus; remove scattered `emitEventIssueActorCommandToSelectedActors` / `emitEventIssueMoveCommandToSelectedActors` |
-| 02 | [ ] | **Remove HealthComponent state-sync** – delete `sendActorEvent` calls for health/armor from HealthComponent (health is now a derived outcome, not a pushed delta); keep ComponentSyncSystem for future hashing |
+| 02 | [x] | **Remove HealthComponent state-sync** – delete `sendActorEvent` calls for health/armor from HealthComponent (health is now a derived outcome, not a pushed delta); keep ComponentSyncSystem for future hashing |
 | 03 | [ ] | **Fixed-timestep SimulationTickService** – 20 Hz deterministic tick from scene UPDATE; CommandBus stamps commands; single-player keeps zero input delay |
 | 04 | [ ] | **Initial actor ID seeding** – host generates IDs in `spawnFromSpawnList`, broadcasts seed map `[{spawnIndex, actorId}]`; non-host blocks until seed arrives then uses provided IDs |
 | 05 | [ ] | **`pauseUntilAllPlayersAreReady` barrier** – replace 100ms setTimeout hack with `ReadyBarrier`: each client sends `player.scene-ready`, host waits for all acks then broadcasts `StartingTheGame`; reusable primitive |
@@ -25,3 +25,4 @@
 
 ## Completed steps
 - **01** Added `CommandBusService` (RxJS Subject) + `GameCommand` union (`MOVE | ACTOR_ACTION | STOP`). Rewired all 5 dispatch sites and 2 system subscribers. Removed `emitEventIssueActorCommandToSelectedActors` / `emitEventIssueMoveCommandToSelectedActors` from scene-data. Shift-key state now captured at dispatch time, not receive time.
+- **02** Stripped `sendActorEvent` + `listenToActorEvents` socket I/O from `ComponentSyncSystem`; proxy/hooks kept for local UI reactivity. Removed dead `playerChangedSubscription` field from `HealthComponent`.

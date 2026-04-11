@@ -46,7 +46,6 @@ export class HealthComponent {
   healthComponentData: HealthComponentData;
   private healthUiComponent!: HealthUiComponent;
   private armorUiComponent?: HealthUiComponent;
-  private playerChangedSubscription?: Subscription;
 
   private destroyAfterMs = 30000;
 
@@ -365,7 +364,6 @@ export class HealthComponent {
   }
 
   private destroy() {
-    this.playerChangedSubscription?.unsubscribe();
     this.constructionProgressSubscription?.unsubscribe();
     this.gameObject.off(ContainerComponent.GameObjectVisibilityChanged, this.gameObjectVisibilityChanged, this);
     this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.refreshVisibility, this);
