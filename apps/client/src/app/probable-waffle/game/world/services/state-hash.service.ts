@@ -10,6 +10,15 @@ import { getGameObjectLogicalTransform } from "../../data/game-object-helper";
 import { getCommunicator } from "../../data/scene-data";
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 
+/** Payload emitted on the allScenes EventEmitter when a hash mismatch is confirmed. */
+export interface DesyncDetectedEvent {
+  tick: number;
+  /** Player number whose simulation state disagrees with ours. */
+  remotePlayerNumber: number | undefined;
+  localHash: string;
+  remoteHash: string;
+}
+
 /**
  * Hash every 60 ticks = 3 seconds at 20 Hz.
  * Gives a wide enough window to absorb network jitter while catching desyncs quickly.
@@ -36,6 +45,7 @@ export class StateHashService {
   private readonly localHashes = new Map<number, string>();
   private tickSub?: Subscription;
   private hashReceivedSub?: Subscription;
+  /** Lightweight debug overlay; shown immediately on mismatch for quick visual feedback. */
   private desyncText?: Phaser.GameObjects.Text;
 
   init(scene: ProbableWaffleScene): void {
@@ -104,7 +114,7 @@ export class StateHashService {
     tick: number,
     remoteHash: string,
     remotePlayerNumber: number | undefined,
-    scene: Phaser.Scene
+    scene: ProbableWaffleScene
   ): void {
     const localHash = this.localHashes.get(tick);
     if (localHash === undefined) {
@@ -118,7 +128,13 @@ export class StateHashService {
         `[DESYNC] tick=${tick} remotePlayer=${remotePlayerNumber} ` +
           `local=${localHash} remote=${remoteHash}`
       );
+      // Small inline overlay for immediate visual feedback while grace period runs.
       this.showDesyncIndicator(tick, remotePlayerNumber, scene);
+      // Notify the HUD so the recovery dialog can be triggered after the grace period.
+      scene.communicator.allScenes.emit({
+        name: "desync-detected",
+        data: { tick, remotePlayerNumber, localHash, remoteHash } satisfies DesyncDetectedEvent
+      });
     }
   }
 

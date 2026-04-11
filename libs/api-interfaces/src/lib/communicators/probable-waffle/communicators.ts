@@ -169,6 +169,7 @@ export interface AllScenesEventData {
     | "chat-message-received"
     | "external-modal-opened"
     | "external-modal-closed"
-    | "hud-scene-shutdown";
+    | "hud-scene-shutdown"
+    | "desync-detected";
   data?: any;
 }

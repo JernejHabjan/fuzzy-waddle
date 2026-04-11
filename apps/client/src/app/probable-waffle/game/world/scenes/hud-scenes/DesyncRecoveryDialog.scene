@@ -1,0 +1,192 @@
+{
+    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "sceneType": "SCENE",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadPackFiles": [],
+        "createMethodName": "editorCreate",
+        "sceneKey": "DesyncRecoveryDialog",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 300,
+        "borderHeight": 320
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "d1e2f3a4-b5c6-7890-abcd-ef1234567891",
+            "label": "dialog_container",
+            "displayName": "Dialog",
+            "scope": "CLASS",
+            "list": [
+                {
+                    "type": "NineSlice",
+                    "id": "e1f2a3b4-c5d6-7890-abcd-ef1234567892",
+                    "label": "dialog_bg",
+                    "displayName": "Background",
+                    "texture": {
+                        "key": "gui",
+                        "frame": "cryos_mini_gui/surfaces/surface_dark.png"
+                    },
+                    "x": -150,
+                    "y": -160,
+                    "scaleX": 15,
+                    "scaleY": 12.8,
+                    "originX": 0,
+                    "originY": 0,
+                    "leftWidth": 1,
+                    "rightWidth": 1,
+                    "topHeight": 1,
+                    "bottomHeight": 1,
+                    "width": 20,
+                    "height": 25
+                },
+                {
+                    "type": "Text",
+                    "id": "f1a2b3c4-d5e6-7890-abcd-ef1234567893",
+                    "label": "title_text",
+                    "displayName": "Title",
+                    "scope": "CLASS",
+                    "y": -120,
+                    "originX": 0.5,
+                    "originY": 0.5,
+                    "text": "Desync Detected",
+                    "resolution": 10,
+                    "align": "center",
+                    "fontFamily": "disposabledroid",
+                    "fontSize": "24px",
+                    "color": "#ff4444ff"
+                },
+                {
+                    "type": "Text",
+                    "id": "a2b3c4d5-e6f7-8901-bcde-f12345678904",
+                    "label": "message_text",
+                    "displayName": "Message",
+                    "scope": "CLASS",
+                    "y": -40,
+                    "originX": 0.5,
+                    "originY": 0.5,
+                    "text": "Player ? is out of sync",
+                    "resolution": 10,
+                    "align": "center",
+                    "fontFamily": "disposabledroid",
+                    "fontSize": "16px",
+                    "color": "#ffffffff",
+                    "maxLines": 3,
+                    "wordWrapWidth": 260
+                },
+                {
+                    "type": "Container",
+                    "id": "b3c4d5e6-f7a8-9012-cdef-123456789015",
+                    "label": "wait_button",
+                    "displayName": "Wait",
+                    "scope": "CLASS",
+                    "hitArea.shape": "RECTANGLE",
+                    "hitArea.x": -42,
+                    "hitArea.y": -13,
+                    "hitArea.width": 85.7117848223629,
+                    "hitArea.height": 25.429332302435576,
+                    "x": -55,
+                    "y": 80,
+                    "scaleX": 2,
+                    "scaleY": 2,
+                    "list": [
+                        {
+                            "type": "NineSlice",
+                            "id": "c4d5e6f7-a8b9-0123-defa-234567890126",
+                            "label": "wait_button_bg",
+                            "displayName": "Background",
+                            "texture": {
+                                "key": "gui",
+                                "frame": "cryos_mini_gui/buttons/button_small.png"
+                            },
+                            "scaleX": 2.3521289589041787,
+                            "scaleY": 1.5492262688240692,
+                            "leftWidth": 3,
+                            "rightWidth": 3,
+                            "topHeight": 3,
+                            "bottomHeight": 3,
+                            "width": 40,
+                            "height": 20
+                        },
+                        {
+                            "type": "Text",
+                            "id": "d5e6f7a8-b9c0-1234-efab-345678901237",
+                            "label": "wait_text",
+                            "displayName": "Text",
+                            "x": -1,
+                            "originX": 0.5,
+                            "originY": 0.5,
+                            "text": "Wait",
+                            "resolution": 10,
+                            "align": "center",
+                            "fontFamily": "disposabledroid",
+                            "fontSize": "18px",
+                            "color": "#000000ff"
+                        }
+                    ]
+                },
+                {
+                    "type": "Container",
+                    "id": "e6f7a8b9-c0d1-2345-fabc-456789012348",
+                    "label": "kick_button",
+                    "displayName": "Kick",
+                    "scope": "CLASS",
+                    "hitArea.shape": "RECTANGLE",
+                    "hitArea.x": -42,
+                    "hitArea.y": -13,
+                    "hitArea.width": 85.7117848223629,
+                    "hitArea.height": 25.429332302435576,
+                    "x": 55,
+                    "y": 80,
+                    "scaleX": 2,
+                    "scaleY": 2,
+                    "list": [
+                        {
+                            "type": "NineSlice",
+                            "id": "f7a8b9c0-d1e2-3456-abcd-567890123459",
+                            "label": "kick_button_bg",
+                            "displayName": "Background",
+                            "texture": {
+                                "key": "gui",
+                                "frame": "cryos_mini_gui/buttons/button_small.png"
+                            },
+                            "scaleX": 2.3521289589041787,
+                            "scaleY": 1.5492262688240692,
+                            "leftWidth": 3,
+                            "rightWidth": 3,
+                            "topHeight": 3,
+                            "bottomHeight": 3,
+                            "width": 40,
+                            "height": 20
+                        },
+                        {
+                            "type": "Text",
+                            "id": "a8b9c0d1-e2f3-4567-bcde-67890123456a",
+                            "label": "kick_text",
+                            "displayName": "Text",
+                            "x": -1,
+                            "originX": 0.5,
+                            "originY": 0.5,
+                            "text": "Kick",
+                            "resolution": 10,
+                            "align": "center",
+                            "fontFamily": "disposabledroid",
+                            "fontSize": "18px",
+                            "color": "#cc0000ff"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}
