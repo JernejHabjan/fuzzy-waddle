@@ -24,7 +24,7 @@ import { FogOfWarComponent } from "../tilemap/fog-of-war.component";
 import { SelectionGroupsComponent } from "../../player/human-controller/selection-groups.component";
 import { GameModeConditionChecker } from "../state/GameModeConditionChecker";
 import { ScoreTracker } from "../state/ScoreTracker";
-import { getSceneExternalComponent } from "../services/scene-component-helpers";
+import { getSceneExternalComponent, getSceneService } from "../services/scene-component-helpers";
 import { AchievementService } from "../../../services/achievement/achievement.service";
 import { AchievementType } from "../../../services/achievement/achievement-type";
 import { environment } from "../../../../../environments/environment";
@@ -38,6 +38,7 @@ import { ActorDebugDamageSystem } from "../services/actor-debug-damage-system";
 import { SpellCursor } from "../../player/human-controller/spell-cursor";
 import { AoeZoneManager } from "../../entity/systems/aoe-zone-manager";
 import { CommandBusService } from "../services/command-bus.service";
+import { SimulationTickService } from "../services/simulation-tick.service";
 
 export default class GameProbableWaffleScene extends ProbableWaffleScene {
   tilemap!: Phaser.Tilemaps.Tilemap;
@@ -75,8 +76,9 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     );
     this.sceneGameData.services.push(
       this.getRandomService(),
-      // CommandBusService must be registered first so it's available during initInitialActors()
+      // CommandBusService and SimulationTickService must be registered first so they're available during initInitialActors()
       new CommandBusService(),
+      new SimulationTickService(this),
       new NavigationService(this, this.tilemap),
       new AudioService(this),
       new PlayerActionsHandler(this, hud),
@@ -95,6 +97,13 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     creator.initInitialActors();
     // Populate the index after initial actors are in place
     actorIndex.scanExistingActors();
+
+    // Wire SimulationTickService into CommandBusService now that both are registered
+    const commandBus = getSceneService(this, CommandBusService);
+    const simTick = getSceneService(this, SimulationTickService);
+    if (commandBus && simTick) {
+      commandBus.tickService = simTick;
+    }
 
     super.create();
 

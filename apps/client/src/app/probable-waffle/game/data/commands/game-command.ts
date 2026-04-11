@@ -8,6 +8,13 @@ import type { OrderType } from "../../ai/order-type";
  */
 export interface MoveCommand {
   readonly type: "MOVE";
+  /**
+   * Simulation tick on which this command should execute.
+   * In single-player this equals the dispatch tick.
+   * In multiplayer this is set to dispatchTick + INPUT_DELAY_TICKS so every
+   * client executes the command in the same deterministic tick.
+   */
+  readonly tick: number;
   readonly playerNumber: PlayerNumber;
   /** IDs of actors that should execute this move */
   readonly actorIds: readonly ActorId[];
@@ -24,6 +31,11 @@ export interface MoveCommand {
  */
 export interface ActorActionCommand {
   readonly type: "ACTOR_ACTION";
+  /**
+   * Simulation tick on which this command should execute.
+   * See MoveCommand.tick for details.
+   */
+  readonly tick: number;
   readonly playerNumber: PlayerNumber;
   /** IDs of actors that should execute this order */
   readonly actorIds: readonly ActorId[];
@@ -41,8 +53,16 @@ export interface ActorActionCommand {
  */
 export interface StopCommand {
   readonly type: "STOP";
+  /** See MoveCommand.tick for details. */
+  readonly tick: number;
   readonly playerNumber: PlayerNumber;
   readonly actorIds: readonly ActorId[];
 }
 
 export type GameCommand = MoveCommand | ActorActionCommand | StopCommand;
+
+/**
+ * Command shape accepted by CommandBusService.dispatch().
+ * The bus stamps the tick automatically; callers must not provide it.
+ */
+export type GameCommandInput = Omit<MoveCommand, "tick"> | Omit<ActorActionCommand, "tick"> | Omit<StopCommand, "tick">;
