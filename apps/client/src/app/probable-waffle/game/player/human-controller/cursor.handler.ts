@@ -1,7 +1,7 @@
 import { LockedCursorHandler } from "./locked-cursor.handler";
 import { Input } from "phaser";
 import { ProbableWaffleScene } from "../../core/probable-waffle.scene";
-import { getActorComponent, getActorComponents } from "../../data/actor-component";
+import { getActorComponent } from "../../data/actor-component";
 import { OwnerComponent } from "../../entity/components/owner-component";
 import { ResourceSourceComponent } from "../../entity/components/resource/resource-source-component";
 import { AttackComponent } from "../../entity/components/combat/components/attack-component";
@@ -10,7 +10,7 @@ import { BuilderComponent } from "../../entity/components/construction/builder-c
 import { ConstructionSiteComponent } from "../../entity/components/construction/construction-site-component";
 import { ContainerComponent } from "../../entity/components/building/container-component";
 import { getCurrentPlayerNumber, getSelectedActors } from "../../data/scene-data";
-import { getSelectableGameObject } from "../../data/game-object-helper";
+import { canActorTraverseTile, getSelectableGameObject } from "../../data/game-object-helper";
 import { getSceneComponent, getSceneService } from "../../world/services/scene-component-helpers";
 import { PlayerActionsHandler } from "./player-actions-handler";
 import { BuildingCursor } from "./building-cursor";
@@ -24,7 +24,6 @@ import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { NavigationService } from "../../world/services/navigation.service";
 import { IsoHelper } from "../../world/tilemap/iso-helper";
 import { ActorTranslateComponent } from "../../entity/components/movement/actor-translate-component";
-import { MovementTerrainType } from "../../entity/components/movement/movement-terrain-type";
 
 export enum CursorType {
   Add = "add",
@@ -426,32 +425,18 @@ export class CursorHandler {
     const navigationService = getSceneService(this.mainScene, NavigationService);
     if (!navigationService) return CursorType.TargetMoveA;
 
-    const selectedActors = getSelectedActors(this.mainScene);
-    // Check if any selected actor is a water-only unit
-    const hasWaterUnit = selectedActors.some((actor) => {
-      const [translate] = getActorComponents(actor, [ActorTranslateComponent]);
-      return translate?.actorTranslateDefinition.movementTerrainType === MovementTerrainType.Water;
-    });
-    const hasGroundUnit = selectedActors.some((actor) => {
-      const [translate] = getActorComponents(actor, [ActorTranslateComponent]);
-      const terrain = translate?.actorTranslateDefinition.movementTerrainType ?? MovementTerrainType.Ground;
-      return terrain === MovementTerrainType.Ground || terrain === MovementTerrainType.Amphibious;
-    });
-
-    if (!hasWaterUnit && !hasGroundUnit) return CursorType.TargetMoveA;
+    const selectedMovableActors = getSelectedActors(this.mainScene).filter(
+      (actor) => !!getActorComponent(actor, ActorTranslateComponent)
+    );
+    if (selectedMovableActors.length === 0) return CursorType.TargetMoveA;
 
     try {
       const worldPos = this.mainScene.cameras.main.getWorldPoint(pointer.x, pointer.y);
       const tileXY = IsoHelper.isometricWorldToTileXY(this.mainScene, worldPos.x, worldPos.y, false);
-
-      if (hasWaterUnit) {
-        const isValidForWater = navigationService.isTileWalkable(tileXY, MovementTerrainType.Water);
-        if (!isValidForWater) return CursorType.Impossible;
-      }
-      if (hasGroundUnit) {
-        const isValidForGround = navigationService.isTileWalkable(tileXY, MovementTerrainType.Ground);
-        if (!isValidForGround) return CursorType.Impossible;
-      }
+      const allSelectedActorsBlocked = selectedMovableActors.every(
+        (actor) => !canActorTraverseTile(actor, navigationService, tileXY)
+      );
+      if (allSelectedActorsBlocked) return CursorType.Impossible;
     } catch {
       // If tile resolution fails, fall back to default move cursor
     }

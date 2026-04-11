@@ -11,6 +11,7 @@ import { getPwActorDefinition } from "../prefabs/definitions/actor-definitions";
 import { getResearchedLevelForActor } from "./actor-level-utils";
 import { ActorTranslateComponent } from "../entity/components/movement/actor-translate-component";
 import { MovementTerrainType } from "../entity/components/movement/movement-terrain-type";
+import { FlyingComponent } from "../entity/components/movement/flying-component";
 
 export function getGameObjectBounds(gameObject?: Phaser.GameObjects.GameObject): Phaser.Geom.Rectangle | null {
   if (!gameObject) return null;
@@ -204,4 +205,19 @@ export function onObjectReady(
 export function isWaterUnit(gameObject: Phaser.GameObjects.GameObject): boolean {
   const translateComponent = getActorComponent(gameObject, ActorTranslateComponent);
   return translateComponent?.actorTranslateDefinition.movementTerrainType === MovementTerrainType.Water;
+}
+
+export function isFlyingUnit(gameObject: Phaser.GameObjects.GameObject): boolean {
+  return !!getActorComponent(gameObject, FlyingComponent);
+}
+
+export function canActorTraverseTile(
+  gameObject: Phaser.GameObjects.GameObject,
+  navigationService: NavigationService,
+  tile: Vector2Simple
+): boolean {
+  if (isFlyingUnit(gameObject)) return true;
+  const translateComponent = getActorComponent(gameObject, ActorTranslateComponent);
+  const terrainType = translateComponent?.actorTranslateDefinition.movementTerrainType ?? MovementTerrainType.Ground;
+  return navigationService.isTileWalkable(tile, terrainType);
 }

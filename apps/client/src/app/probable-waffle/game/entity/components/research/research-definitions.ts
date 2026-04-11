@@ -203,7 +203,7 @@ export const researchDefinitions: Record<ResearchType, ResearchData> = {
   [ResearchType.CommonBoatUpgradeLevel2]: {
     type: ResearchType.CommonBoatUpgradeLevel2,
     name: "Common Boat Elite",
-    description: "Upgrades all Common Boats to Elite rank, replacing arrow volleys with fire arrow barrages",
+    description: "Upgrades all Common Boats to Elite rank with increased durability and carrying capacity",
     upgradesUnit: { unitType: ObjectNames.CommonBoat, targetLevel: 2 },
     cost: { [ResourceType.Wood]: 80, [ResourceType.Stone]: 50 },
     researchTime: 25000,

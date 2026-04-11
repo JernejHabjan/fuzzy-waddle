@@ -32,8 +32,8 @@ import type { ProjectileData } from "../projectile-data";
 import type { AttackDefinition } from "./attack-definition";
 import type { IsoDirection } from "../../movement/iso-directions";
 import { TilemapComponent } from "../../../../world/tilemap/tilemap.component";
-import GameObject = Phaser.GameObjects.GameObject;
 import TivaraAlchemistVase from "../../../../prefabs/weapons/TivaraAlchemistVase";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export class AttackComponent {
   remainingCooldown = 0;
@@ -403,14 +403,47 @@ export class AttackComponent {
     const distance = Phaser.Math.Distance.Between(startX, startY, targetX, targetY);
     const duration = (distance / projectileSpeed) * 1000; // convert to milliseconds
 
-    const stopThis = () => {
-      tween.stop();
+    let rotationTween: Phaser.Tweens.Tween | undefined;
+    let cleanedUp = false;
+    let tween: Phaser.Tweens.Tween;
+
+    const cleanupThis = () => {
+      if (cleanedUp) return;
+      cleanedUp = true;
+
+      rotationTween?.stop();
+      if (track && this.rotationTween === rotationTween) {
+        this.rotationTween = undefined;
+      }
+      if (track && this.projectileTween === tween) {
+        this.projectileTween = undefined;
+      }
+      if (track && this.projectileSprite === projectileSprite) {
+        this.projectileSprite = undefined;
+      }
       projectileSprite.destroy();
     };
 
-    let tween: Phaser.Tweens.Tween;
+    const stopThis = () => {
+      if (cleanedUp) return;
+      tween.stop();
+      cleanupThis();
+    };
+
     if (projectile.trajectoryType === "parabolic") {
-      tween = this.spawnParabolicTween(projectileSprite, startX, startY, targetX, targetY, duration, projectile, attack, enemy, stopThis);
+      tween = this.spawnParabolicTween(
+        projectileSprite,
+        startX,
+        startY,
+        targetX,
+        targetY,
+        duration,
+        projectile,
+        attack,
+        enemy,
+        stopThis,
+        cleanupThis
+      );
     } else {
       if (!projectile.orientation.randomizeOrientation) {
         const currentAngle = Phaser.Math.Angle.Between(startX, startY, targetX, targetY);
@@ -423,7 +456,7 @@ export class AttackComponent {
         y: targetY,
         duration: duration,
         ease: "Linear",
-        onComplete: stopThis,
+        onComplete: cleanupThis,
         onUpdate: () => {
           if (!this.gameObject.active || !enemy.active) return;
           const projectileBounds = getGameObjectBounds(projectileSprite);
@@ -431,19 +464,20 @@ export class AttackComponent {
           const enemyBounds = getGameObjectBounds(enemy);
           if (!enemyBounds) return;
           if (Phaser.Geom.Intersects.RectangleToRectangle(projectileBounds, enemyBounds)) {
-            this.projectileHitEnemy(projectile, targetX, targetY, attack, enemy);
+            this.projectileHitEnemy(projectile, targetX, targetY, attack, enemy, stopThis);
           }
         }
       });
 
       // spin projectile
       if (projectile.orientation.randomizeOrientation && projectile.orientation.rotationSpeed) {
-        this.rotationTween = this.gameObject.scene.tweens.add({
+        rotationTween = this.gameObject.scene.tweens.add({
           targets: projectileSprite,
           angle: 360,
           duration: projectile.orientation.rotationSpeed,
           repeat: -1
         });
+        if (track) this.rotationTween = rotationTween;
       }
     }
 
@@ -460,7 +494,8 @@ export class AttackComponent {
     projectile: ProjectileData,
     attack: AttackData,
     enemy: GameObject,
-    stopFn: () => void = () => this.stopProjectile()
+    stopFn: () => void = () => this.stopProjectile(),
+    onCompleteFn: () => void = stopFn
   ): Phaser.Tweens.Tween {
     const peakHeight = projectile.parabolicPeakHeight ?? 120;
     let lastTrailTime = 0;
@@ -487,7 +522,12 @@ export class AttackComponent {
           const now = this.gameObject.scene.time.now;
           if (now - lastTrailTime > projectile.trailEffect.intervalMs) {
             lastTrailTime = now;
-            const trail = this.gameObject.scene.add.image(x, y, projectile.trailEffect.key, projectile.trailEffect.frame);
+            const trail = this.gameObject.scene.add.image(
+              x,
+              y,
+              projectile.trailEffect.key,
+              projectile.trailEffect.frame
+            );
             trail.setAlpha(0.6).setScale(0.5);
             this.gameObject.scene.tweens.add({
               targets: trail,
@@ -504,10 +544,10 @@ export class AttackComponent {
         const enemyBounds = getGameObjectBounds(enemy);
         if (!enemyBounds) return;
         if (Phaser.Geom.Intersects.RectangleToRectangle(projectileBounds, enemyBounds)) {
-          this.projectileHitEnemy(projectile, targetX, targetY, attack, enemy);
+          this.projectileHitEnemy(projectile, targetX, targetY, attack, enemy, stopFn);
         }
       },
-      onComplete: () => stopFn()
+      onComplete: () => onCompleteFn()
     });
   }
 
@@ -516,14 +556,15 @@ export class AttackComponent {
     targetX: number,
     targetY: number,
     attack: AttackData,
-    enemy: GameObject
+    enemy: GameObject,
+    stopProjectile: () => void
   ) {
     const enemyHealthComponent = getActorComponent(enemy, HealthComponent);
     if (!enemyHealthComponent || enemyHealthComponent.killed) return;
     enemyHealthComponent.takeDamage(attack.damage, attack.damageType, this.gameObject);
 
     this.playHitSound(attack, enemy);
-    this.stopProjectile();
+    stopProjectile();
     if (projectile.impactAnimation) {
       const anims = projectile.impactAnimation.anims;
       // can be random as it's just visual effect

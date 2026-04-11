@@ -3,6 +3,7 @@ import { OrderType } from "../../ai/order-type";
 import { CursorHandler, CursorType } from "./cursor.handler";
 import { getSceneComponent, getSceneService } from "../../world/services/scene-component-helpers";
 import { type Vector2Simple } from "@fuzzy-waddle/api-interfaces";
+import { canActorTraverseTile } from "../../data/game-object-helper";
 import {
   emitEventIssueActorCommandToSelectedActors,
   emitEventIssueMoveCommandToSelectedActors,
@@ -27,7 +28,6 @@ import HudProbableWaffle from "../../world/scenes/hud-scenes/HudProbableWaffle";
 import { OwnerComponent } from "../../entity/components/owner-component";
 import { findProductionBuildingWithLeastRemainingTime } from "../../entity/components/production/production-helpers";
 import { NavigationService } from "../../world/services/navigation.service";
-import { MovementTerrainType } from "../../entity/components/movement/movement-terrain-type";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class PlayerActionsHandler {
@@ -415,11 +415,7 @@ export class PlayerActionsHandler {
     const movableActors = this.currentSelectedActors.filter((a) => !!getActorComponent(a, ActorTranslateComponent));
     if (movableActors.length === 0) return false;
 
-    return movableActors.every((actor) => {
-      const translate = getActorComponent(actor, ActorTranslateComponent);
-      const terrain = translate?.actorTranslateDefinition.movementTerrainType ?? MovementTerrainType.Ground;
-      return !navigationService.isTileWalkable(tileVec3, terrain);
-    });
+    return movableActors.every((actor) => !canActorTraverseTile(actor, navigationService, tileVec3));
   }
 
   stopOrderCommand() {
