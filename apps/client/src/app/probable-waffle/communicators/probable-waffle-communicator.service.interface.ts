@@ -33,6 +33,8 @@ export interface ProbableWaffleCommunicatorServiceInterface {
   snapshotRequested?: TwoWayCommunicator<ProbableWaffleSnapshotRequestEvent, ProbableWaffleCommunicatorType>;
   /** Snapshot response (host → requesting client); only in MP. */
   snapshotResponse?: TwoWayCommunicator<ProbableWaffleSnapshotResponseEvent, ProbableWaffleCommunicatorType>;
+  /** Active socket for reconnect handling; undefined in single-player. */
+  activeSocket?: Socket;
 
   startCommunication(gameInstanceId: GameInstanceId, socket: Socket): void;
   stopCommunication(gameInstanceId: GameInstanceId, socket: Socket): void;

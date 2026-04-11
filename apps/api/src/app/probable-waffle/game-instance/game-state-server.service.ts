@@ -77,6 +77,10 @@ export class GameStateServerService {
       case "snapshot-response":
         // Response is relayed to all peers (only the requester will consume it via userId filter).
         return true;
+      case "player-disconnected":
+      case "player-reconnected":
+        // Server-originated events — clients should never send these; return false to suppress relay.
+        return false;
       default:
         throw new Error("Unknown communicator");
     }

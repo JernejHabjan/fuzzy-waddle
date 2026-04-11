@@ -10,6 +10,7 @@ import type {
   PlayerNumber,
   ProbableWafflePlayerStateData,
   ProbableWaffleSnapshotData,
+  UserId,
   ProbableWaffleSnapshotResponseEvent
 } from "@fuzzy-waddle/api-interfaces";
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
@@ -62,8 +63,11 @@ export class SnapshotService {
     this.requestSub = communicator.snapshotRequested.on.pipe(
       // Ignore own echo (host sent nothing, but guard it anyway).
       filter((e) => e.emitterUserId !== scene.userId)
-    ).subscribe(() => {
-      this.serveSnapshot(scene);
+    ).subscribe((e) => {
+      if (!e.emitterUserId) {
+        return;
+      }
+      this.serveSnapshot(scene, e.emitterUserId);
     });
   }
 
@@ -112,11 +116,10 @@ export class SnapshotService {
     } satisfies ProbableWaffleSnapshotData;
   }
 
-  private serveSnapshot(scene: ProbableWaffleScene): void {
-    if (!this.latestSnapshot) {
-      // Race condition: snapshot not yet ready. Capture synchronously and serve immediately.
-      this.captureSnapshot(scene);
-    }
+  private serveSnapshot(scene: ProbableWaffleScene, targetUserId: UserId): void {
+    // Reconnect/spectator catch-up must reflect the host's current sim state, not the
+    // last periodic checkpoint, otherwise recent commands would be lost on restore.
+    this.captureSnapshot(scene);
 
     if (!this.latestSnapshot) {
       console.warn("[SnapshotService] Could not build snapshot for requesting client.");
@@ -127,6 +130,7 @@ export class SnapshotService {
     communicator.snapshotResponse?.send({
       gameInstanceId: scene.gameInstanceId,
       emitterUserId: scene.userId,
+      targetUserId,
       snapshot: this.latestSnapshot
     } satisfies ProbableWaffleSnapshotResponseEvent);
   }

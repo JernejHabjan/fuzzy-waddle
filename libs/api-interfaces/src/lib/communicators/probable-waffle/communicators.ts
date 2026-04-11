@@ -23,6 +23,8 @@ export type ProbableWaffleCommunicatorType =
   | "state-hash"
   | "snapshot-request"
   | "snapshot-response"
+  | "player-disconnected"
+  | "player-reconnected"
   | ProbableWaffleGameCommunicatorType;
 
 export interface ProbableWaffleCommunicatorEvent {
@@ -168,7 +170,20 @@ export interface ProbableWaffleSnapshotRequestEvent extends ProbableWaffleCommun
 
 /** Host → requesting client: full simulation snapshot for catch-up. */
 export interface ProbableWaffleSnapshotResponseEvent extends ProbableWaffleCommunicatorEvent {
+  targetUserId: UserId;
   snapshot: ProbableWaffleSnapshotData;
+}
+
+/** Broadcast by the server when a player's socket drops unexpectedly. */
+export interface ProbableWafflePlayerDisconnectedEvent extends ProbableWaffleCommunicatorEvent {
+  playerNumber: PlayerNumber;
+  /** Seconds remaining in the reconnect grace window. */
+  reconnectWindowSeconds: number;
+}
+
+/** Broadcast by the server when a disconnected player rejoins within the grace window. */
+export interface ProbableWafflePlayerReconnectedEvent extends ProbableWaffleCommunicatorEvent {
+  playerNumber: PlayerNumber;
 }
 
 export interface ProbableWaffleWebsocketRoomEvent {

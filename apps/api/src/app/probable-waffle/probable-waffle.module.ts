@@ -14,6 +14,7 @@ import { MatchmakingController } from "./matchmaking/matchmaking.controller";
 import { RoomServerService } from "./game-room/room-server.service";
 import { ChatModule } from "../chat/chat.module";
 import { GameSessionModule } from "./game-session/game-session.module";
+import { PlayerDisconnectTrackerService } from "./game-instance/player-disconnect-tracker.service";
 
 @Module({
   imports: [ChatModule, GameSessionModule],
@@ -27,7 +28,8 @@ import { GameSessionModule } from "./game-session/game-session.module";
     MatchmakingService,
     TextSanitizationService,
     ProbableWaffleChatService,
-    RoomServerService
+    RoomServerService,
+    PlayerDisconnectTrackerService
   ],
   controllers: [GameInstanceController, RoomController, MatchmakingController]
 })

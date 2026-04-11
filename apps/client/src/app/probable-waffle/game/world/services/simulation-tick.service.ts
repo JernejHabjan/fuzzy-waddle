@@ -41,6 +41,17 @@ export class SimulationTickService {
     this.ticking = true;
   }
 
+  /**
+   * Jump the sim clock to `tick` without emitting intermediate tick events.
+   * Used after applying a reconnect snapshot so the command sequence stays coherent.
+   */
+  fastForwardTo(tick: number): void {
+    if (tick > this.currentTick) {
+      this.currentTick = tick;
+      this.accumulated = 0;
+    }
+  }
+
   private onUpdate(_time: number, delta: number): void {
     if (!this.ticking) return;
     this.accumulated += delta;

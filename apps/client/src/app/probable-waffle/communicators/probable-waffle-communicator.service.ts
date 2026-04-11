@@ -55,7 +55,11 @@ export class ProbableWaffleCommunicatorService
    */
   allScenes = new EventEmitter<AllScenesEventData>();
 
+  /** The active socket, if running in multiplayer. Exposed for reconnect handling. */
+  activeSocket?: Socket;
+
   startCommunication(gameInstanceId: GameInstanceId, socket?: Socket) {
+    this.activeSocket = socket;
     this.gameInstanceMetadataChanged = new TwoWayCommunicator<
       ProbableWaffleGameInstanceMetadataChangeEvent,
       ProbableWaffleCommunicatorType
