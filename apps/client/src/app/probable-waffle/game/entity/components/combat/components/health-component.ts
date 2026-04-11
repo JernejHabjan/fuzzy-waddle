@@ -2,7 +2,6 @@ import { EventEmitter } from "@angular/core";
 import { HealthUiComponent } from "./health-ui-component";
 import { Subject, Subscription } from "rxjs";
 import { DamageType, type HealthComponentData } from "@fuzzy-waddle/api-interfaces";
-import { ComponentSyncSystem } from "../../../systems/component-sync.system";
 import { ContainerComponent } from "../../building/container-component";
 import Phaser from "phaser";
 import { getActorComponent } from "../../../../data/actor-component";
@@ -32,7 +31,6 @@ import { SoundType } from "../../actor-audio/sound-type";
 import { ActorPhysicalType } from "./actor-physical-type";
 import type { SoundDefinition } from "../../actor-audio/sound-definition";
 import type { HealthDefinition } from "./health-definition";
-import type { SyncOptions } from "../../../systems/sync.options";
 import { BuildingDestructionEffect } from "../../building/building-destruction-effect";
 import { FadeOutComponent } from "../../building/fade-out-component";
 import type { FadeOutDefinition } from "../../building/fade-out-definition";
@@ -56,36 +54,6 @@ export class HealthComponent {
     timestamp: Date;
     sceneTime: number;
   };
-  private syncConfig = {
-    eventPrefix: "health",
-    propertyMap: {
-      health: "health",
-      armour: "armor"
-    },
-    eventEmitters: {
-      health: this.healthChanged,
-      armour: this.armorChanged
-    },
-    hooks: {
-      health: (value: number, previousValue: number) => {
-        if (value < previousValue) {
-          this.reactToDamage();
-        } else {
-          this.reactToHeal();
-        }
-
-        if (value <= 0 && !this.suppressReactions) {
-          this.killActor(); // Custom logic when health reaches zero
-        }
-      },
-      armour: (value: number, previousValue: number) => {
-        if (this.suppressReactions) return;
-        if (this.audioActorComponent) this.audioActorComponent.playCustomSound(SoundType.Damage);
-
-        if (HealthComponent.DEBUG) console.log(`Armor changed from ${previousValue} to ${value}`);
-      }
-    }
-  } satisfies SyncOptions<HealthComponentData>;
   private uiComponentsVisible: boolean = true;
   uiComponentsVisibilityChanged: Subject<boolean> = new Subject<boolean>();
   private shouldUiElementsBeVisible: boolean = false;
@@ -109,12 +77,7 @@ export class HealthComponent {
       armour: healthDefinition.maxArmour ?? 0
     };
 
-    // Sync health and armor with external events, using hooks for custom logic
-    this.healthComponentData = new ComponentSyncSystem().syncComponent<HealthComponentData>(
-      gameObject,
-      initialData,
-      this.syncConfig
-    );
+    this.healthComponentData = initialData;
 
     // Initialize UI components for health and armor
     this.healthUiComponent = new HealthUiComponent(this.gameObject, "health");
@@ -255,9 +218,9 @@ export class HealthComponent {
     };
 
     if (this.healthComponentData.armour > 0) {
-      this.healthComponentData.armour = Math.max(this.healthComponentData.armour - damage, 0);
+      this.setArmorValue(Math.max(this.healthComponentData.armour - damage, 0));
     } else {
-      this.healthComponentData.health = Math.max(this.healthComponentData.health - damage, 0);
+      this.setHealthValue(Math.max(this.healthComponentData.health - damage, 0));
     }
 
     this.gameObject.scene.events.emit("score.damage", this.gameObject, damage, damageInitiator);
@@ -273,17 +236,14 @@ export class HealthComponent {
   }
 
   heal(amount: number) {
-    this.healthComponentData.health = Math.min(
-      this.healthComponentData.health + amount,
-      this.healthDefinition.maxHealth
-    );
+    this.setHealthValue(Math.min(this.healthComponentData.health + amount, this.healthDefinition.maxHealth));
   }
 
   /** Destroys the actor immediately without playing death animations or sounds. */
   destroyActorSilently() {
     if (!this.gameObject.active || !this.gameObject.scene) return;
     this.suppressReactions = true;
-    this.healthComponentData.health = 0;
+    this.setHealthValue(0, false);
     this.gameObject.scene.events.emit(HealthComponent.KilledEvent, this.gameObject);
     // emit last
     this.gameObject.emit(HealthComponent.KilledEvent);
@@ -292,7 +252,7 @@ export class HealthComponent {
 
   killActor() {
     if (!this.gameObject.active || !this.gameObject.scene) return;
-    this.healthComponentData.health = 0;
+    this.setHealthValue(0, false);
     this.gameObject.scene.events.emit(HealthComponent.KilledEvent, this.gameObject);
     this.playDeathSound();
 
@@ -357,17 +317,17 @@ export class HealthComponent {
   }
 
   resetHealth() {
-    this.healthComponentData.health = this.healthDefinition.maxHealth;
+    this.setHealthValue(this.healthDefinition.maxHealth, false);
   }
 
   resetArmor() {
-    this.healthComponentData.armour = this.healthDefinition.maxArmour ?? 0;
+    this.setArmorValue(this.healthDefinition.maxArmour ?? 0, false);
   }
 
   setHealthDefinition(healthDefinition: HealthDefinition) {
     this.healthDefinition = healthDefinition;
-    this.healthComponentData.health = healthDefinition.maxHealth;
-    this.healthComponentData.armour = healthDefinition.maxArmour ?? 0;
+    this.setHealthValue(healthDefinition.maxHealth, false);
+    this.setArmorValue(healthDefinition.maxArmour ?? 0, false);
     this.syncArmorUiComponent();
     this.refreshUiComponents();
   }
@@ -402,11 +362,18 @@ export class HealthComponent {
   }
 
   getData(): HealthComponentData {
-    return { ...this.healthComponentData }; // need to clone it so it's not a proxy object
+    return { ...this.healthComponentData };
   }
 
   setData(data: Partial<HealthComponentData>) {
-    this.healthComponentData = { ...this.healthComponentData, ...data };
+    if (data.health !== undefined) {
+      this.setHealthValue(data.health, false);
+    }
+    if (data.armour !== undefined) {
+      this.setArmorValue(data.armour, false);
+      this.syncArmorUiComponent();
+    }
+    this.refreshUiComponents();
   }
 
   get isDamaged() {
@@ -450,5 +417,38 @@ export class HealthComponent {
   private refreshUiComponents() {
     this.healthUiComponent.refresh();
     this.armorUiComponent?.refresh();
+  }
+
+  private setHealthValue(value: number, triggerReactions: boolean = true) {
+    const previousValue = this.healthComponentData.health;
+    if (previousValue === value) return;
+
+    this.healthComponentData.health = value;
+    this.healthChanged.emit(value);
+
+    if (!triggerReactions) return;
+
+    if (value < previousValue) {
+      this.reactToDamage();
+    } else {
+      this.reactToHeal();
+    }
+
+    if (value <= 0 && !this.suppressReactions) {
+      this.killActor();
+    }
+  }
+
+  private setArmorValue(value: number, triggerReactions: boolean = true) {
+    const previousValue = this.healthComponentData.armour;
+    if (previousValue === value) return;
+
+    this.healthComponentData.armour = value;
+    this.armorChanged.emit(value);
+
+    if (!triggerReactions || this.suppressReactions) return;
+    if (this.audioActorComponent) this.audioActorComponent.playCustomSound(SoundType.Damage);
+
+    if (HealthComponent.DEBUG) console.log(`Armor changed from ${previousValue} to ${value}`);
   }
 }

@@ -8,7 +8,7 @@
 | # | Status | What |
 |---|--------|------|
 | 01 | [x] | **CommandBus service** – central command dispatcher; wire PlayerActionsHandler + GameObjectActionAssigner → CommandBus; MovementSystem + ActionSystem subscribe to CommandBus; remove scattered `emitEventIssueActorCommandToSelectedActors` / `emitEventIssueMoveCommandToSelectedActors` |
-| 02 | [x] | **Remove HealthComponent state-sync** – delete `sendActorEvent` calls for health/armor from HealthComponent (health is now a derived outcome, not a pushed delta); keep ComponentSyncSystem for future hashing |
+| 02 | [x] | **Remove HealthComponent state-sync** – delete `sendActorEvent` calls for health/armor from HealthComponent (health is now a derived outcome, not a pushed delta); remove the old `ComponentSyncSystem` scaffolding |
 | 03 | [x] | **Fixed-timestep SimulationTickService** – 20 Hz deterministic tick from scene UPDATE; CommandBus stamps commands; single-player keeps zero input delay |
 | 04 | [x] | **Initial actor ID seeding** – host generates IDs in `spawnFromSpawnList`, broadcasts seed map `[{spawnIndex, actorId}]`; non-host blocks until seed arrives then uses provided IDs |
 | 05 | [x] | **`pauseUntilAllPlayersAreReady` barrier** – replace 100ms setTimeout hack with `ReadyBarrier`: each client sends `player.scene-ready`, host waits for all acks then broadcasts `StartingTheGame`; reusable primitive |
@@ -25,6 +25,7 @@
 
 ## Completed steps
 - **01** Added `CommandBusService` (RxJS Subject) + `GameCommand` union (`MOVE | ACTOR_ACTION | STOP`). Rewired all 5 dispatch sites and 2 system subscribers. Removed `emitEventIssueActorCommandToSelectedActors` / `emitEventIssueMoveCommandToSelectedActors` from scene-data. Shift-key state now captured at dispatch time, not receive time.
+- **02** Finished the cleanup fully: `HealthComponent` now owns its own health/armor change reactions directly and the old `ComponentSyncSystem` / sync-options proxy scaffolding is gone.
 - **03** Added `SimulationTickService` (20 Hz from Phaser UPDATE, `tick$`, `pauseTick`/`resumeTick`). CommandBus stamps tick at dispatch time. SP executes immediately, MP delays by INPUT_DELAY_TICKS=2.
 - **04** Added `ActorIdSeeder`; host-only calls `saveAllKnownActorsToGameState()`; non-host matches by (name, ownerNumber, x*10, y*10) and patches `IdComponent.id`.
 - **05** Added `ReadyBarrier`; replaced broken 100ms setTimeout in `SceneGameState.listen()`; added `player.scene-ready` communicator event.
