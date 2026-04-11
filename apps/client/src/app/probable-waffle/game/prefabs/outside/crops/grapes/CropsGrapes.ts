@@ -1,0 +1,31 @@
+
+// You can write more code here
+
+/* START OF COMPILED CODE */
+
+/* START-USER-IMPORTS */
+/* END-USER-IMPORTS */
+
+export default class CropsGrapes extends Phaser.GameObjects.Image {
+
+  constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
+    super(scene, x ?? 31.568981912365057, y ?? 50.58610852580966, texture || "crops", frame ?? "crops/grapes/0.png");
+
+    this.setInteractive(new Phaser.Geom.Rectangle(3, 0, 25.247387403538106, 42.945291313992186), Phaser.Geom.Rectangle.Contains);
+    this.setOrigin(0.48653068476140804, 0.7978908986261047);
+
+    /* START-USER-CTR-CODE */
+    // Write your code here.
+    /* END-USER-CTR-CODE */
+  }
+
+  /* START-USER-CODE */
+
+  // Write your code here.
+
+  /* END-USER-CODE */
+}
+
+/* END OF COMPILED CODE */
+
+// You can write more code here

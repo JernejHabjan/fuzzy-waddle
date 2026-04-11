@@ -1,0 +1,40 @@
+{
+    "id": "1756283b-d1b1-4672-8dcc-4b2c89fcf7c7",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Sprite",
+            "id": "46d979c2-e5fd-47c7-9ff1-1a0835d4ba0b",
+            "label": "undead_land_DeadTreeAnim2_Animation2-0_png",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "9.46585633674021 35.71162578307049 40.45914324980291 4.381455316604914 34.07620458569936 30.678994853735276 43.996420560532904 41.2702044142176 54.5556148178289 36.39461141062715 69.88122802281265 42.40631603799647 52.69283310230602 46.38589515752264 49.898660529021676 56.631194592898524 55.17992793304354 65.94907248864311 28.67326525862783 46.60303840318553 22.915576319738904 51.76802406895354 50.518614467941696 70.22649743186214 52.88942756042537 81.31851582883934 29.341985987508686 88.93922722072166 14.350667861081611 82.87532325947026 4.244161258995952 59.96724162807608",
+            "texture": {
+                "key": "environment_1",
+                "frame": "undead_land/DeadTreeAnim2/Animation2-0.png"
+            },
+            "x": 25.59921223494174,
+            "y": 53.221695282021216,
+            "originX": 0.4199901529367717,
+            "originY": 0.804392659187721
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

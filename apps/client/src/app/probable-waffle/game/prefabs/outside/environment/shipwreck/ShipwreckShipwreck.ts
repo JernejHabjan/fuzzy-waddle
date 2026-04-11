@@ -1,0 +1,31 @@
+
+// You can write more code here
+
+/* START OF COMPILED CODE */
+
+/* START-USER-IMPORTS */
+/* END-USER-IMPORTS */
+
+export default class ShipwreckShipwreck extends Phaser.GameObjects.Image {
+
+  constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
+    super(scene, x ?? 32, y ?? 48, texture || "environment_1", frame ?? "shipwreck/shipwreck.png");
+
+    this.setInteractive(new Phaser.Geom.Polygon("25.902964142914925 33.87593413534407 11.143612946685721 9.100911582762706 43.03438449543205 19.803695988633578 89.70336897259202 34.982114005291606 105.04886067444545 68.42154368395727 131.84621185529394 4.062093412004856 138.717327542691 9.558985961922517 118.67463032887882 76.14360857814802 160.4044332139048 117.88196680741368 176.56116601548936 122.64772685799022 188.03962105066614 155.01954948528652 147.03073167982728 167.90360985376103 156.42125645260325 177.9812461952767 141.5400515224054 181.3285164552235 20.396436172462984 128.71058251534953 29.47901572913844 85.05588331723163"), Phaser.Geom.Polygon.Contains);
+    this.setOrigin(0.5, 0.75);
+
+    /* START-USER-CTR-CODE */
+    // Write your code here.
+    /* END-USER-CTR-CODE */
+  }
+
+  /* START-USER-CODE */
+
+  // Write your code here.
+
+  /* END-USER-CODE */
+}
+
+/* END OF COMPILED CODE */
+
+// You can write more code here
