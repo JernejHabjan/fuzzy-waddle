@@ -9,12 +9,12 @@
 |---|--------|------|
 | 01 | [x] | **CommandBus service** – central command dispatcher; wire PlayerActionsHandler + GameObjectActionAssigner → CommandBus; MovementSystem + ActionSystem subscribe to CommandBus; remove scattered `emitEventIssueActorCommandToSelectedActors` / `emitEventIssueMoveCommandToSelectedActors` |
 | 02 | [x] | **Remove HealthComponent state-sync** – delete `sendActorEvent` calls for health/armor from HealthComponent (health is now a derived outcome, not a pushed delta); keep ComponentSyncSystem for future hashing |
-| 03 | [ ] | **Fixed-timestep SimulationTickService** – 20 Hz deterministic tick from scene UPDATE; CommandBus stamps commands; single-player keeps zero input delay |
-| 04 | [ ] | **Initial actor ID seeding** – host generates IDs in `spawnFromSpawnList`, broadcasts seed map `[{spawnIndex, actorId}]`; non-host blocks until seed arrives then uses provided IDs |
-| 05 | [ ] | **`pauseUntilAllPlayersAreReady` barrier** – replace 100ms setTimeout hack with `ReadyBarrier`: each client sends `player.scene-ready`, host waits for all acks then broadcasts `StartingTheGame`; reusable primitive |
-| 06 | [ ] | **Command relay over socket** – add `game-command` communicator type; `GameCommandCommunicator` in `ProbableWaffleCommunicatorService`; 2-tick input delay in MP; per-tick command buffer; stall before advancing tick until all players' commands are buffered |
-| 07 | [ ] | **Server-side validation** – gateway validates playerNumber ownership, enforces per-player seqNum monotonicity, rate-limits (≤30 cmds/tick), rejects unknown command types |
-| 08 | [ ] | **AI command relay** – `PlayerAiController` (host-only, already gated) emits orders through CommandBus with `playerNumber = AI player`; other clients receive and apply them identically |
+| 03 | [x] | **Fixed-timestep SimulationTickService** – 20 Hz deterministic tick from scene UPDATE; CommandBus stamps commands; single-player keeps zero input delay |
+| 04 | [x] | **Initial actor ID seeding** – host generates IDs in `spawnFromSpawnList`, broadcasts seed map `[{spawnIndex, actorId}]`; non-host blocks until seed arrives then uses provided IDs |
+| 05 | [x] | **`pauseUntilAllPlayersAreReady` barrier** – replace 100ms setTimeout hack with `ReadyBarrier`: each client sends `player.scene-ready`, host waits for all acks then broadcasts `StartingTheGame`; reusable primitive |
+| 06 | [x] | **Command relay over socket** – add `game-command` communicator type; `GameCommandCommunicator` in `ProbableWaffleCommunicatorService`; 2-tick input delay in MP; per-tick command buffer; stall before advancing tick until all players' commands are buffered |
+| 07 | [x] | **Server-side validation** – gateway validates playerNumber ownership, enforces per-player seqNum monotonicity, rate-limits (≤30 cmds/tick), rejects unknown command types |
+| 08 | [x] | **AI command relay** – `PlayerAiController` (host-only, already gated) emits orders through CommandBus with `playerNumber = AI player`; other clients receive and apply them identically |
 | 09 | [ ] | **Desync hash** – every 60 ticks hash `{id, health, logicalPos, owner}` for all actors; exchange via new `state-hash` communicator event; server or host compares; log mismatch with player/tick/subsystem; show visual indicator |
 | 10 | [ ] | **Desync recovery dialog** – after confirmed hash mismatch: 5s grace, then pause all + show "Player X desynced – Kick / Wait"; teleport correction; anti-grief: 1 pause/60s per player, 3 pauses/match max |
 | 11 | [ ] | **Snapshot serialisation** – `SnapshotService`: full state blob (actors + playerState + tickNumber); host refreshes every 60s; basis for reconnect + spectator join |
@@ -25,4 +25,9 @@
 
 ## Completed steps
 - **01** Added `CommandBusService` (RxJS Subject) + `GameCommand` union (`MOVE | ACTOR_ACTION | STOP`). Rewired all 5 dispatch sites and 2 system subscribers. Removed `emitEventIssueActorCommandToSelectedActors` / `emitEventIssueMoveCommandToSelectedActors` from scene-data. Shift-key state now captured at dispatch time, not receive time.
-- **02** Stripped `sendActorEvent` + `listenToActorEvents` socket I/O from `ComponentSyncSystem`; proxy/hooks kept for local UI reactivity. Removed dead `playerChangedSubscription` field from `HealthComponent`.
+- **03** Added `SimulationTickService` (20 Hz from Phaser UPDATE, `tick$`, `pauseTick`/`resumeTick`). CommandBus stamps tick at dispatch time. SP executes immediately, MP delays by INPUT_DELAY_TICKS=2.
+- **04** Added `ActorIdSeeder`; host-only calls `saveAllKnownActorsToGameState()`; non-host matches by (name, ownerNumber, x*10, y*10) and patches `IdComponent.id`.
+- **05** Added `ReadyBarrier`; replaced broken 100ms setTimeout in `SceneGameState.listen()`; added `player.scene-ready` communicator event.
+- **06** Added `game-command` TwoWayCommunicator; rewrote `CommandBusService` with MP path (INPUT_DELAY_TICKS=2, per-tick heartbeat, lockstep stall). Added `CommandBuffer` (per-tick per-player map).
+- **07** Added `GameCommandValidatorService` on API: ownership, monotonic sequence, rate-limit (40/s), schema. Wired into `GameStateServerService`.
+- **08** Added `dispatchAiOrder` utility; `PlayerAiControllerAgent` routes all 5 order-setting sites through CommandBus instead of directly mutating pawn blackboards. Non-host clients apply AI commands via existing `ActionSystem` → pawn blackboard path.

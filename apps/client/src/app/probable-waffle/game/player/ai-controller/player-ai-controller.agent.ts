@@ -46,6 +46,7 @@ import { PlayerAiBlackboard } from "./player-ai-blackboard";
 import { WorldStateSnapshotManager } from "./ai-behavior/world-state-snapshot-manager";
 import { getUnitStrength } from "./ai-utils";
 import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
+import { dispatchAiOrder } from "./dispatch-ai-order";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class PlayerAiControllerAgent implements IPlayerControllerAgent {
@@ -410,8 +411,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
         });
         if (!closestEnemy) return;
         const newOrder = new OrderData(OrderType.Attack, { targetGameObject: closestEnemy });
-        aiController.blackboard.overrideOrderQueueAndActiveOrder(newOrder);
-        aiController.blackboard.setCurrentOrder(newOrder);
+        dispatchAiOrder(this.scene, unit, newOrder, this.player.playerNumber!);
         assignedCount++;
       });
       this.logDebugInfo(`[Defense] ${assignedCount} defenders assigned to targets`);
@@ -445,8 +445,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       if (!aiController) return;
       if (aiController.blackboard.getCurrentOrder()) return;
       const newOrder = new OrderData(OrderType.Attack, { targetGameObject: target });
-      aiController.blackboard.overrideOrderQueueAndActiveOrder(newOrder);
-      aiController.blackboard.setCurrentOrder(newOrder);
+      dispatchAiOrder(this.scene, unit, newOrder, this.player.playerNumber!);
       assignedCount++;
     });
     this.logDebugInfo(`[Attack] ${assignedCount} units assigned to attack ${target.name}`);
@@ -523,8 +522,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
         const aiController = getActorComponent(worker, PawnAiController);
         const newOrder = new OrderData(OrderType.Gather, { targetGameObject: closestResourceSource });
         if (aiController) {
-          aiController.blackboard.overrideOrderQueueAndActiveOrder(newOrder);
-          aiController.blackboard.setCurrentOrder(newOrder);
+          dispatchAiOrder(this.scene, worker, newOrder, this.player.playerNumber!);
         }
         assigned++;
       }
@@ -679,8 +677,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
         const aiController = getActorComponent(worker, PawnAiController);
         const newOrder = new OrderData(OrderType.Gather, { targetGameObject: closestResourceSource });
         if (aiController) {
-          aiController.blackboard.overrideOrderQueueAndActiveOrder(newOrder);
-          aiController.blackboard.setCurrentOrder(newOrder);
+          dispatchAiOrder(this.scene, worker, newOrder, this.player.playerNumber!);
         }
       }
       this.logDebugInfo("Reassigned workers to gather the most critical resource.");
@@ -793,9 +790,9 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
 
     validWorkers.forEach((w) => {
       const aiController = getActorComponent(w, PawnAiController);
+      if (!aiController) return;
       const newOrder = new OrderData(OrderType.Build, { targetGameObject: building });
-      aiController!.blackboard.overrideOrderQueueAndActiveOrder(newOrder);
-      aiController!.blackboard.setCurrentOrder(newOrder);
+      dispatchAiOrder(this.scene, w, newOrder, this.player.playerNumber!);
     });
     // Mark reservation usage & release any lingering plan reservation reference
     this.basePlanner.markTileUsed({ x: tileLocationXYZ.x, y: tileLocationXYZ.y });
