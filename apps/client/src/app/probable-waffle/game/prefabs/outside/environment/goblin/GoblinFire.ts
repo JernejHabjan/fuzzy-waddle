@@ -20,7 +20,7 @@ export default class GoblinFire extends Phaser.GameObjects.Image {
   }
 
   /* START-USER-CODE */
-
+// todo note that this one also has GoblinFireLit sprite
   // Write your code here.
 
   /* END-USER-CODE */

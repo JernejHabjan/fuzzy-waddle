@@ -20,7 +20,7 @@ export default class GoblinCatapult extends Phaser.GameObjects.Image {
   }
 
   /* START-USER-CODE */
-
+// Todo note that this one has also "GoblinCatapultFired" sprite and "GoblinCatapultFiredEffect" sprite for wind
   // Write your code here.
 
   /* END-USER-CODE */

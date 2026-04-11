@@ -4,9 +4,10 @@
 
 /* START-USER-IMPORTS */
 import { initStaticActor } from "../../../../data/init-static-actor";
+import { RandomSpriteComponent } from "../../../../entity/components/random-sprite-component";
 /* END-USER-IMPORTS */
 
-export default class GoblinFenceNwSe extends Phaser.GameObjects.Sprite {
+export default class GoblinFenceNwSe extends Phaser.GameObjects.Image {
 
   constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
     super(scene, x ?? 32, y ?? 48, texture || "environment_1", frame ?? "goblin/fence_nw_se.png");
@@ -16,14 +17,11 @@ export default class GoblinFenceNwSe extends Phaser.GameObjects.Sprite {
 
     /* START-USER-CTR-CODE */
     initStaticActor(this, null);
+    new RandomSpriteComponent(this, ["goblin/fence_nw_se.png", "goblin/fence_nw_se_2.png", "goblin/fence_nw_se_3.png", "goblin/fence_nw_se_4.png"]);
     /* END-USER-CTR-CODE */
   }
 
   /* START-USER-CODE */
-  // TODO: Wire up remaining animation frames / asset variants:
-  //   - goblin/fence_nw_se_2.png
-  //   - goblin/fence_nw_se_3.png
-  //   - goblin/fence_nw_se_4.png
 
   // Write your code here.
 
