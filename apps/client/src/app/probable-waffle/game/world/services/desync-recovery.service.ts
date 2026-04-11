@@ -1,4 +1,6 @@
 import { filter, type Subscription } from "rxjs";
+import type { PlayerLobbyDefinition, PositionPlayerDefinition } from "@fuzzy-waddle/api-interfaces";
+import { getCommunicator } from "../../data/scene-data";
 import { getSceneService } from "./scene-component-helpers";
 import { SimulationTickService } from "./simulation-tick.service";
 import { SceneDialogHelper } from "../scenes/scene-dialog-helper";
@@ -13,8 +15,8 @@ import type { DesyncDetectedEvent } from "./state-hash.service";
  *   1. "desync-detected" arrives on allScenes.
  *   2. After GRACE_PERIOD_MS a recovery pause + dialog is triggered (unless suppressed by
  *      anti-grief rules).
- *   3. Player chooses Wait (resume) or Kick (log + resume; actual kick networking wired in
- *      step 12 when the disconnect/reconnect system is in place).
+ *   3. Player chooses Wait (resume) or Kick (remove the desynced player and
+ *      resume).
  *
  * Anti-grief:
  *   - At most 1 forced pause every MIN_PAUSE_INTERVAL_MS (60 s).
@@ -93,12 +95,21 @@ export class DesyncRecoveryService {
         this.dialogOpen = false;
       },
       onKick: () => {
-        // TODO (step 12): send a kick/remove-player event via communicator once the
-        // disconnect/reconnect system is in place. For now just resume so the game continues.
-        console.warn(
-          `[DESYNC] Kick requested for player ${data.remotePlayerNumber} at tick ${data.tick}. ` +
-            `Reconnect/kick networking not yet implemented.`
-        );
+        console.warn(`[DESYNC] Removing player ${data.remotePlayerNumber} after desync at tick ${data.tick}.`);
+        getCommunicator(probableWaffleScene).playerChanged?.send({
+          gameInstanceId: probableWaffleScene.gameInstanceId,
+          emitterUserId: probableWaffleScene.userId,
+          property: "left",
+          data: {
+            playerControllerData: {
+              playerDefinition: {
+                player: {
+                  playerNumber: data.remotePlayerNumber
+                } as PlayerLobbyDefinition
+              } as PositionPlayerDefinition
+            }
+          }
+        });
         simTick?.resumeTick();
         this.dialogOpen = false;
       }

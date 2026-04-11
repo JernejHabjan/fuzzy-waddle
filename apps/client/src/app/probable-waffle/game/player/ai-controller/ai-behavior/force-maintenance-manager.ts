@@ -33,7 +33,7 @@ export class ForceMaintenanceManager {
 
   shouldProduceMilitaryUnit(): boolean {
     const targetStrength = this.adaptiveThresholds.getMilitaryUnitTargetStrength();
-    const now = performance.now();
+    const now = this.blackboard.getNow();
     if (now - this.lastUnitQueueTime < AI_CONFIG.unitQueueCooldownMs) return false;
     const unitsStrength = this.blackboard.units.reduce((sum, u) => sum + getUnitStrength(u), 0);
     return unitsStrength < targetStrength;
@@ -52,7 +52,7 @@ export class ForceMaintenanceManager {
   }
 
   queueMilitaryUnitProduction(): State {
-    const now = performance.now();
+    const now = this.blackboard.getNow();
     if (!this.hasResourcesForQueuedUnit()) return State.FAILED;
     if (this.blackboard.getTotalResources() < this.adaptiveThresholds.getResourceGatheringThreshold()) {
       return State.FAILED; // economy is low

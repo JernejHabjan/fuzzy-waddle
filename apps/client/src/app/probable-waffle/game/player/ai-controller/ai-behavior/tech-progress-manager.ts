@@ -30,7 +30,7 @@ export class TechProgressManager {
    * Check if we should attempt research (currently prioritizes spell research)
    */
   shouldPursueResearch(): boolean {
-    const now = Date.now();
+    const now = this.blackboard.getNow();
     if (now - this.lastResearchAttemptAt < this.researchCooldownMs) return false;
     if (this.blackboard.getTotalResources() < this.minResourcesForResearch) return false;
     // Check if we have spell casters (can be extended for other research types)
@@ -98,7 +98,7 @@ export class TechProgressManager {
    * Attempt to start research (currently prioritizes spell research based on unit composition)
    */
   tryStartResearch(): State {
-    this.lastResearchAttemptAt = Date.now();
+    this.lastResearchAttemptAt = this.blackboard.getNow();
 
     const researchType = this.getNextResearchPriority();
     if (!researchType) {

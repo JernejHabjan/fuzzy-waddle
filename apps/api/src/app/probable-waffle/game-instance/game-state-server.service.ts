@@ -9,6 +9,7 @@ import {
   type ProbableWaffleGameStateDataChangeEvent,
   ProbableWaffleListeners,
   type ProbableWafflePlayerDataChangeEvent,
+  type ProbableWaffleSnapshotResponseEvent,
   type ProbableWaffleSpectatorDataChangeEvent
 } from "@fuzzy-waddle/api-interfaces";
 import { GameInstanceService } from "./game-instance.service";
@@ -17,6 +18,9 @@ import { GameCommandValidatorService } from "./game-command-validator.service";
 
 @Injectable()
 export class GameStateServerService {
+  private static readonly COMMAND_HISTORY_LIMIT = 256;
+  private readonly recentCommandHistory = new Map<string, ProbableWaffleGameCommandEvent[]>();
+
   constructor(
     private readonly gameInstanceService: GameInstanceService,
     private readonly commandValidator: GameCommandValidatorService
@@ -40,8 +44,7 @@ export class GameStateServerService {
             switch (giMetadata.data.sessionState) {
               case GameSessionState.Stopped:
                 this.gameInstanceService.stopGameInstance(body.gameInstanceId!, user);
-                // Clean up per-instance validator state
-                this.commandValidator.cleanup(String(body.gameInstanceId));
+                this.cleanup(String(body.gameInstanceId));
                 break;
             }
             break;
@@ -66,7 +69,11 @@ export class GameStateServerService {
       case "game-command":
         const cmdEvent = body.payload as ProbableWaffleGameCommandEvent;
         // Validate ownership, rate limits, and sequence before relaying
-        return this.commandValidator.validate(cmdEvent, gameInstance, user);
+        if (!this.commandValidator.validate(cmdEvent, gameInstance, user)) {
+          return false;
+        }
+        this.recordCommand(cmdEvent);
+        return true;
       case "state-hash":
         // No server-side processing needed; relay to all peers as-is.
         return true;
@@ -76,6 +83,11 @@ export class GameStateServerService {
         return true;
       case "snapshot-response":
         // Response is relayed to all peers (only the requester will consume it via userId filter).
+        const snapshotResponse = body.payload as ProbableWaffleSnapshotResponseEvent;
+        snapshotResponse.commandTail = this.getCommandTail(
+          gameInstance.gameInstanceMetadata.data.gameInstanceId!,
+          snapshotResponse.snapshot.tick
+        );
         return true;
       case "player-disconnected":
       case "player-reconnected":
@@ -86,5 +98,25 @@ export class GameStateServerService {
         throw new Error("Unknown communicator");
     }
     return true;
+  }
+
+  cleanup(gameInstanceId: string): void {
+    this.commandValidator.cleanup(gameInstanceId);
+    this.recentCommandHistory.delete(gameInstanceId);
+  }
+
+  private recordCommand(event: ProbableWaffleGameCommandEvent): void {
+    const history = this.recentCommandHistory.get(event.gameInstanceId) ?? [];
+    history.push(structuredClone(event));
+    if (history.length > GameStateServerService.COMMAND_HISTORY_LIMIT) {
+      history.splice(0, history.length - GameStateServerService.COMMAND_HISTORY_LIMIT);
+    }
+    this.recentCommandHistory.set(event.gameInstanceId, history);
+  }
+
+  private getCommandTail(gameInstanceId: string, snapshotTick: number): ProbableWaffleGameCommandEvent[] {
+    return (this.recentCommandHistory.get(gameInstanceId) ?? [])
+      .filter((event) => event.tick > snapshotTick)
+      .map((event) => structuredClone(event));
   }
 }

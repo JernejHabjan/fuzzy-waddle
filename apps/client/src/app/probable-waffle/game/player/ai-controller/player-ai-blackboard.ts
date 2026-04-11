@@ -14,6 +14,7 @@ import { getActorComponent } from "../../data/actor-component";
 import { PawnAiController } from "../../prefabs/ai-agents/pawn-ai-controller";
 import { RandomService } from "../../world/services/random.service";
 import { getSceneService } from "../../world/services/scene-component-helpers";
+import { getSimulationNow } from "./ai-time";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export interface EnemyIntel {
@@ -364,7 +365,7 @@ export class PlayerAiBlackboard extends Blackboard {
     // Clear existing reservations by creating a new pool
     this.reservationPool = new ReservationPool();
 
-    const now = performance.now();
+    const now = this.getNow();
     const defaultTtlMs = 15000; // Same as beginPlannedStructure default
 
     for (const plan of this.production.plannedStructures) {
@@ -478,7 +479,7 @@ export class PlayerAiBlackboard extends Blackboard {
   };
 
   /** Returns ratio (own/enemy) with graceful handling of zero enemy strength. */
-  getAttackPowerRatio(now: number = performance.now()): number {
+  getAttackPowerRatio(now: number = this.getNow()): number {
     const cache = this.diagnostics.caches.attackPowerRatio;
     if (now - cache.lastComputedAt < 250) return cache.value;
     const enemy = this.enemyMilitaryStrength || 1; // avoid div by zero
@@ -489,7 +490,7 @@ export class PlayerAiBlackboard extends Blackboard {
   }
 
   /** Aggregated income estimate across all resources for a future horizon (ms). Placeholder linear extrapolation. */
-  getAggregateIncomeEstimate(horizonMs: number, now: number = performance.now()): number {
+  getAggregateIncomeEstimate(horizonMs: number, now: number = this.getNow()): number {
     const cache = this.diagnostics.caches.aggregateIncome;
     if (cache.horizonMs === horizonMs && now - cache.lastComputedAt < 250) return cache.value;
     const seconds = horizonMs / 1000;
@@ -505,8 +506,12 @@ export class PlayerAiBlackboard extends Blackboard {
   }
 
   /** Whether current strategy is under a lock (preventing shifts). */
-  isStrategyLocked(now: number = performance.now()): boolean {
+  isStrategyLocked(now: number = this.getNow()): boolean {
     return now < this.strategy.modeLockedUntil;
+  }
+
+  getNow(): number {
+    return getSimulationNow(this.scene);
   }
 
   // Strategy control helpers appended for cooldown & hysteresis integration.

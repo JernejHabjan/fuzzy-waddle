@@ -1,5 +1,6 @@
 import { Injectable, Logger } from "@nestjs/common";
 import {
+  type ActorDefinition,
   type ProbableWaffleGameCommandEvent,
   type ProbableWaffleGameInstance
 } from "@fuzzy-waddle/api-interfaces";
@@ -32,6 +33,9 @@ export class GameCommandValidatorService {
 
   /** Maximum commands allowed in a single batch. */
   private static readonly MAX_COMMANDS_PER_BATCH = 100;
+  private static readonly MAX_ACTOR_IDS_PER_COMMAND = 100;
+  private static readonly MAX_TARGET_IDS_PER_COMMAND = 32;
+  private static readonly MAX_WORLD_COORDINATE = 100_000;
 
   // last committed tick per (gameInstanceId → playerNumber)
   private readonly lastTick = new Map<string, Map<number, number>>();
@@ -70,6 +74,25 @@ export class GameCommandValidatorService {
         `[GameCommand] Oversized batch (${commands.length}) from player ${playerNumber} — dropping`
       );
       return false;
+    }
+    if (!Number.isInteger(tick) || tick < 0) {
+      this.logger.warn(`[GameCommand] Invalid tick ${tick} from player ${playerNumber}`);
+      return false;
+    }
+
+    const actorOwners = new Map<string, number | undefined>();
+    for (const actor of gameInstance.gameState?.data.actors ?? []) {
+      const actorId = actor.id?.id;
+      if (!actorId) {
+        continue;
+      }
+      actorOwners.set(actorId, actor.owner?.ownerId);
+    }
+
+    for (const command of commands) {
+      if (!this.validateCommandPayload(command, tick, playerNumber, actorOwners, gameInstanceId)) {
+        return false;
+      }
     }
 
     // 3. Sequence: tick must advance (never go backwards, never jump too far)
@@ -116,5 +139,104 @@ export class GameCommandValidatorService {
   cleanup(gameInstanceId: string): void {
     this.lastTick.delete(gameInstanceId);
     this.rateBuckets.delete(gameInstanceId);
+  }
+
+  private validateCommandPayload(
+    command: unknown,
+    expectedTick: number,
+    playerNumber: number,
+    actorOwners: Map<string, number | undefined>,
+    gameInstanceId: string
+  ): boolean {
+    if (!command || typeof command !== "object") {
+      this.logger.warn(`[GameCommand] Non-object command in ${gameInstanceId}`);
+      return false;
+    }
+
+    const payload = command as Record<string, unknown>;
+    const type = payload.type;
+    if (type !== "MOVE" && type !== "ACTOR_ACTION" && type !== "STOP") {
+      this.logger.warn(`[GameCommand] Unknown command type ${String(type)} in ${gameInstanceId}`);
+      return false;
+    }
+    if (payload.tick !== expectedTick || payload.playerNumber !== playerNumber) {
+      this.logger.warn(
+        `[GameCommand] Inner command metadata mismatch for player ${playerNumber} in ${gameInstanceId}`
+      );
+      return false;
+    }
+
+    const actorIds = this.readActorIds(payload.actorIds);
+    if (!actorIds || actorIds.length === 0 || actorIds.length > GameCommandValidatorService.MAX_ACTOR_IDS_PER_COMMAND) {
+      this.logger.warn(`[GameCommand] Invalid actorIds for player ${playerNumber} in ${gameInstanceId}`);
+      return false;
+    }
+    for (const actorId of actorIds) {
+      const ownerId = actorOwners.get(actorId);
+      if (ownerId !== playerNumber) {
+        this.logger.warn(
+          `[GameCommand] Ownership violation for actor ${actorId} by player ${playerNumber} in ${gameInstanceId}`
+        );
+        return false;
+      }
+    }
+
+    switch (type) {
+      case "MOVE":
+        return (
+          payload.queue === true || payload.queue === false
+        ) && this.isValidVector3(payload.tileVec3) && this.isValidVector3(payload.worldVec3);
+      case "ACTOR_ACTION": {
+        if (!(payload.queue === true || payload.queue === false)) {
+          this.logger.warn(`[GameCommand] Invalid queue flag for ACTOR_ACTION in ${gameInstanceId}`);
+          return false;
+        }
+        if (payload.tileVec3 !== undefined && !this.isValidVector3(payload.tileVec3)) {
+          this.logger.warn(`[GameCommand] Invalid tileVec3 for ACTOR_ACTION in ${gameInstanceId}`);
+          return false;
+        }
+        if (payload.orderType !== undefined && typeof payload.orderType !== "string") {
+          this.logger.warn(`[GameCommand] Invalid orderType for ACTOR_ACTION in ${gameInstanceId}`);
+          return false;
+        }
+        if (payload.targetObjectIds !== undefined) {
+          const targetIds = this.readActorIds(payload.targetObjectIds);
+          if (
+            !targetIds ||
+            targetIds.length > GameCommandValidatorService.MAX_TARGET_IDS_PER_COMMAND
+          ) {
+            this.logger.warn(`[GameCommand] Invalid targetObjectIds for ACTOR_ACTION in ${gameInstanceId}`);
+            return false;
+          }
+        }
+        return true;
+      }
+      case "STOP":
+        return true;
+    }
+  }
+
+  private readActorIds(value: unknown): string[] | null {
+    if (!Array.isArray(value)) {
+      return null;
+    }
+    const actorIds = value.filter((actorId): actorId is string => typeof actorId === "string" && actorId.length > 0);
+    return actorIds.length === value.length ? actorIds : null;
+  }
+
+  private isValidVector3(value: unknown): boolean {
+    if (!value || typeof value !== "object") {
+      return false;
+    }
+    const vector = value as Record<string, unknown>;
+    return this.isFiniteCoordinate(vector.x) && this.isFiniteCoordinate(vector.y) && this.isFiniteCoordinate(vector.z);
+  }
+
+  private isFiniteCoordinate(value: unknown): boolean {
+    return (
+      typeof value === "number" &&
+      Number.isFinite(value) &&
+      Math.abs(value) <= GameCommandValidatorService.MAX_WORLD_COORDINATE
+    );
   }
 }

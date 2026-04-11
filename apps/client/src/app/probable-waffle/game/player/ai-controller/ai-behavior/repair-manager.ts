@@ -34,7 +34,7 @@ export class RepairManager {
   }
 
   assignRepairWorkers(): State {
-    const now = Date.now();
+    const now = this.blackboard.getNow();
     if (now - this.lastRepairAssignTime < this.repairCooldownMs) return State.FAILED;
 
     const currentPlayerActors = getSceneService(this.scene, ActorIndexSystem)!.getOwnedActors(this.playerNumber);

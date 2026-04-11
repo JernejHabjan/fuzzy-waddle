@@ -67,6 +67,12 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     const gameInstance = this.findGameInstance(gameInstanceId);
     if (!gameInstance) return;
     if (!this.checkIfPlayerIsCreator(gameInstance, user)) return;
+    this.forceStopGameInstance(gameInstanceId, user);
+  }
+
+  forceStopGameInstance(gameInstanceId: GameInstanceId, user: User | null = null) {
+    const gameInstance = this.findGameInstance(gameInstanceId);
+    if (!gameInstance) return;
     this.gameInstanceHolderService.removeGameInstance(gameInstanceId);
     this.roomServerService.roomEvent("removed", gameInstance, user);
     console.log(

@@ -9,6 +9,7 @@ import {
 import { Server, Socket } from "socket.io";
 import {
   type CommunicatorEvent,
+  GameSessionState,
   type ProbableWaffleCommunicatorMessageEvent,
   type ProbableWaffleCommunicatorType,
   type ProbableWaffleGameFoundEvent,
@@ -17,8 +18,11 @@ import {
   ProbableWaffleGameInstanceEvent,
   ProbableWaffleGatewayEvent,
   ProbableWaffleGatewayRoomTypes,
+  type ProbableWafflePlayerDataChangeEvent,
   type ProbableWafflePlayerDisconnectedEvent,
+  ProbableWafflePlayerType,
   type ProbableWafflePlayerReconnectedEvent,
+  type ProbableWaffleSpectatorDataChangeEvent,
   type ProbableWaffleWebsocketRoomEvent
 } from "@fuzzy-waddle/api-interfaces";
 import { ProbableWaffleChatService } from "../chat/probable-waffle-chat.service";
@@ -116,14 +120,18 @@ export class GameInstanceGateway implements OnGatewayDisconnect {
   ) {
     console.log("Ashes of the Ancients - GI action:", body.communicator, body.payload);
 
+    const removedPlayerUserId = this.getRemovedPlayerUserId(body);
+    const participantLeft = this.isParticipantLeaving(body);
     const success = this.gameStateServerService.updateGameState(body, user);
     if (success) {
+      const roomId = `${ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance}${body.gameInstanceId}`;
       // https://socket.io/docs/v3/emit-cheatsheet/
-      socket
-        .to(`${ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance}${body.gameInstanceId}`)
-        .emit(ProbableWaffleGatewayEvent.ProbableWaffleAction, body);
+      socket.to(roomId).emit(ProbableWaffleGatewayEvent.ProbableWaffleAction, body);
 
       this.roomServerService.emitCertainGameInstanceEventsToAllUsers(body, user);
+      if (participantLeft) {
+        this.handleParticipantLeft(body.gameInstanceId!, roomId, removedPlayerUserId);
+      }
     } else {
       // 400 error
     }
@@ -256,6 +264,72 @@ export class GameInstanceGateway implements OnGatewayDisconnect {
         currentHostUserId: migration.currentHostUserId,
         currentHostPlayerNumber: migration.currentHostPlayerNumber
       } satisfies ProbableWaffleHostMigratedEvent
+    });
+  }
+
+  private getRemovedPlayerUserId(body: CommunicatorEvent<any, ProbableWaffleCommunicatorType>): string | null {
+    if (body.communicator !== "playerDataChange") {
+      return null;
+    }
+
+    const payload = body.payload as ProbableWafflePlayerDataChangeEvent;
+    if (payload.property !== "left") {
+      return null;
+    }
+
+    const playerNumber = payload.data.playerControllerData?.playerDefinition?.player.playerNumber;
+    if (playerNumber === undefined) {
+      return null;
+    }
+
+    const gameInstance = this.gameInstanceService.findGameInstance(body.gameInstanceId!);
+    return gameInstance?.getPlayerByNumber(playerNumber)?.playerController.data.userId ?? null;
+  }
+
+  private isParticipantLeaving(body: CommunicatorEvent<any, ProbableWaffleCommunicatorType>): boolean {
+    if (body.communicator === "playerDataChange") {
+      return (body.payload as ProbableWafflePlayerDataChangeEvent).property === "left";
+    }
+    if (body.communicator === "spectatorDataChange") {
+      return (body.payload as ProbableWaffleSpectatorDataChangeEvent).property === "left";
+    }
+    return false;
+  }
+
+  private handleParticipantLeft(gameInstanceId: string, roomId: string, removedPlayerUserId: string | null): void {
+    const gameInstance = this.gameInstanceService.findGameInstance(gameInstanceId);
+    if (!gameInstance) {
+      return;
+    }
+
+    const currentHostUserId =
+      gameInstance.gameInstanceMetadata.data.currentHostUserId ?? gameInstance.gameInstanceMetadata.data.createdBy;
+    if (removedPlayerUserId && currentHostUserId === removedPlayerUserId) {
+      this.emitHostMigration(gameInstanceId, removedPlayerUserId);
+    }
+
+    const remainingHumanPlayers = gameInstance.players.filter(
+      (player) =>
+        player.playerController.data.playerDefinition?.playerType === ProbableWafflePlayerType.Human &&
+        player.playerController.data.userId !== null
+    ).length;
+    if (remainingHumanPlayers > 0) {
+      return;
+    }
+
+    this.gameInstanceService.forceStopGameInstance(gameInstanceId);
+    this.gameStateServerService.cleanup(gameInstanceId);
+    this.server.to(roomId).emit(ProbableWaffleGatewayEvent.ProbableWaffleAction, {
+      gameInstanceId,
+      communicator: "gameInstanceMetadataDataChange",
+      payload: {
+        gameInstanceId,
+        emitterUserId: null,
+        property: "sessionState",
+        data: {
+          sessionState: GameSessionState.Stopped
+        }
+      } satisfies ProbableWaffleGameInstanceMetadataChangeEvent
     });
   }
 }

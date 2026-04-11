@@ -42,13 +42,14 @@ export class RoomsService implements RoomsServiceInterface {
 
   matchmakingGamesInProgress: Signal<number> = computed(() => {
     // noinspection UnnecessaryLocalVariableJS
-    const rooms = this.rooms().filter(
-      (room) =>
-        room.gameInstanceMetadataData.type === ProbableWaffleGameInstanceType.Matchmaking &&
-        room.gameInstanceMetadataData.createdBy !== this.authService.userId &&
-        room.gameInstanceMetadataData.sessionState !== GameSessionState.NotStarted &&
-        room.gameInstanceMetadataData.sessionState !== GameSessionState.Stopped
-    ).length;
+      const rooms = this.rooms().filter(
+        (room) =>
+          room.gameInstanceMetadataData.type === ProbableWaffleGameInstanceType.Matchmaking &&
+          (room.gameInstanceMetadataData.currentHostUserId ?? room.gameInstanceMetadataData.createdBy) !==
+            this.authService.userId &&
+          room.gameInstanceMetadataData.sessionState !== GameSessionState.NotStarted &&
+          room.gameInstanceMetadataData.sessionState !== GameSessionState.Stopped
+      ).length;
     return rooms;
   });
 

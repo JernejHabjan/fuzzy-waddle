@@ -2,6 +2,7 @@ import { filter, type Subscription } from "rxjs";
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { getCommunicator } from "../../data/scene-data";
 import { getSceneService } from "./scene-component-helpers";
+import { CommandBusService } from "./command-bus.service";
 import { SimulationTickService } from "./simulation-tick.service";
 import { ActorIndexSystem } from "./ActorIndexSystem";
 import { SceneActorCreator } from "./scene-actor-creator";
@@ -53,7 +54,7 @@ export class ReconnectService {
           if (e.targetUserId !== scene.userId) {
             return;
           }
-          this.applySnapshot(scene, e.snapshot);
+          this.applySnapshot(scene, e);
         }
       );
 
@@ -105,9 +106,11 @@ export class ReconnectService {
     });
   }
 
-  private applySnapshot(scene: ProbableWaffleScene, snapshot: ProbableWaffleSnapshotData): void {
+  private applySnapshot(scene: ProbableWaffleScene, response: ProbableWaffleSnapshotResponseEvent): void {
+    const snapshot = response.snapshot;
     const simTick = getSceneService(scene, SimulationTickService);
     const actorIndex = getSceneService(scene, ActorIndexSystem);
+    const commandBus = getSceneService(scene, CommandBusService);
     const creator = getSceneService(scene, SceneActorCreator);
 
     if (!actorIndex || !creator) {
@@ -115,7 +118,10 @@ export class ReconnectService {
       return;
     }
 
-    console.info(`[Reconnect] Applying snapshot at tick ${snapshot.tick}. Actors: ${snapshot.actors.length}`);
+    console.info(
+      `[Reconnect] Applying snapshot at tick ${snapshot.tick}. Actors: ${snapshot.actors.length}. ` +
+        `Buffered tail batches: ${response.commandTail?.length ?? 0}`
+    );
 
     simTick?.pauseTick();
 
@@ -149,6 +155,13 @@ export class ReconnectService {
 
     // Advance sim clock to match the snapshot so command sequences stay coherent.
     simTick?.fastForwardTo(snapshot.tick);
+    for (const batch of [...(response.commandTail ?? [])].sort((a, b) => a.tick - b.tick || a.playerNumber - b.playerNumber)) {
+      commandBus?.bufferRemoteBatch({
+        tick: batch.tick,
+        playerNumber: batch.playerNumber,
+        commands: batch.commands
+      });
+    }
 
     simTick?.resumeTick();
 

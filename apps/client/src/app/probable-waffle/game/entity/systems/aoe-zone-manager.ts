@@ -6,7 +6,6 @@ import { StatusEffectComponent } from "../components/status-effect/status-effect
 import { HealthComponent } from "../components/combat/components/health-component";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import Phaser from "phaser";
-import { RandomService } from "../../world/services/random.service";
 import { TilemapComponent } from "../../world/tilemap/tilemap.component";
 import { EffectsAnims } from "../../animations/effects";
 import { AudioService } from "../../world/services/audio.service";
@@ -23,8 +22,8 @@ interface ZoneVisual {
 export class AoeZoneManager {
   private activeZones: AoeZoneData[] = [];
   private zoneVisuals: Map<string, ZoneVisual> = new Map();
-  private randomService!: RandomService;
   private audioService?: AudioService;
+  private nextZoneId = 0;
 
   constructor(private readonly scene: Phaser.Scene) {
     onSceneInitialized(this.scene, this.init, this);
@@ -32,13 +31,12 @@ export class AoeZoneManager {
   }
 
   private init(): void {
-    this.randomService = getSceneService(this.scene, RandomService)!;
     this.audioService = getSceneService(this.scene, AudioService);
     this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
   }
 
   createZone(data: Omit<AoeZoneData, "id" | "remainingTime" | "lastTickTime">): string {
-    const zoneId = `zone_${Date.now()}_${this.randomService.random().toString(36).substr(2, 9)}`;
+    const zoneId = `zone_${this.nextZoneId++}`;
     const zone: AoeZoneData = {
       ...data,
       id: zoneId,

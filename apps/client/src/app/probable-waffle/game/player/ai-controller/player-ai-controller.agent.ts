@@ -317,7 +317,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
 
   async AnalyzeGameMap(): Promise<State> {
     // Cooldown gating: avoid excessive map analyses.
-    const now = performance.now();
+    const now = this.blackboard.getNow();
     if (!this.cooldowns.canRun("analyzeMap", now)) {
       this.logDebugInfo("[Map] Analysis on cooldown");
       return State.FAILED;
@@ -422,7 +422,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   }
 
   async AttackEnemyBase(): Promise<State> {
-    const now = performance.now();
+    const now = this.blackboard.getNow();
     if (!this.cooldowns.canRun("attackTrigger", now)) {
       this.logDebugInfo("[Attack] Attack trigger on cooldown");
       return State.FAILED;
@@ -862,7 +862,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       this.logDebugInfo("[Strategy] Already in aggressive strategy");
       return State.FAILED;
     }
-    const now = performance.now();
+    const now = this.blackboard.getNow();
     if (!this.cooldowns.canRun("strategyShift", now)) {
       this.logDebugInfo("[Strategy] Strategy shift on cooldown");
       return State.FAILED; // cooldown gate
@@ -894,7 +894,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       this.logDebugInfo("[Strategy] Already in defensive strategy");
       return State.FAILED;
     }
-    const now = performance.now();
+    const now = this.blackboard.getNow();
     if (!this.cooldowns.canRun("strategyShift", now)) {
       this.logDebugInfo("[Strategy] Strategy shift on cooldown");
       return State.FAILED;
@@ -919,7 +919,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       this.logDebugInfo("[Strategy] Already in economic strategy");
       return State.FAILED;
     }
-    const now = performance.now();
+    const now = this.blackboard.getNow();
     if (!this.cooldowns.canRun("strategyShift", now)) {
       this.logDebugInfo("[Strategy] Strategy shift on cooldown");
       return State.FAILED;
@@ -1027,7 +1027,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   }
   async GatherEnemyData(): Promise<State> {
     // Placeholder: simply succeed after ensuring targeting manager updated.
-    await this.targetingManager.update(performance.now());
+    await this.targetingManager.update(this.blackboard.getNow());
     return State.SUCCEEDED;
   }
   ShouldProduceMilitaryUnit(): boolean {
@@ -1085,7 +1085,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   }
 
   OfferSurrender(): State {
-    const now = performance.now();
+    const now = this.blackboard.getNow();
     this.blackboard.wantsToSurrender = true;
     this.blackboard.surrenderOfferedAt = now;
     this.logDebugInfo("AI player offering surrender");

@@ -173,6 +173,13 @@ export interface ProbableWaffleSnapshotRequestEvent extends ProbableWaffleCommun
 export interface ProbableWaffleSnapshotResponseEvent extends ProbableWaffleCommunicatorEvent {
   targetUserId: UserId;
   snapshot: ProbableWaffleSnapshotData;
+  /**
+   * Short rolling tail of command batches committed after snapshot.tick.
+   * This closes the race between host snapshot capture and the reconnecting
+   * client's next live tick without pretending we can offline fast-forward the
+   * whole sim outside the normal Phaser update path.
+   */
+  commandTail?: ProbableWaffleGameCommandEvent[];
 }
 
 /** Broadcast by the server when a player's socket drops unexpectedly. */

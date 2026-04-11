@@ -175,6 +175,11 @@ export class CommandBusService {
     }
   }
 
+  bufferRemoteBatch(batch: ProbableWaffleReplayCommandBatch): void {
+    this.buffer.commit(batch.tick, batch.playerNumber, batch.commands as GameCommand[]);
+    this.tryUnblockTick();
+  }
+
   private emitRecordedBatch(batch: ProbableWaffleReplayCommandBatch): void {
     this._commandBatch$.next({
       tick: batch.tick,
@@ -189,4 +194,3 @@ export class CommandBusService {
     this._command$.complete();
   }
 }
-

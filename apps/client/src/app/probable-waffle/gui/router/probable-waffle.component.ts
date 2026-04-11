@@ -20,7 +20,7 @@ export class ProbableWaffleComponent implements OnInit, OnDestroy {
 
   @HostListener("window:beforeunload")
   async onBeforeUnload() {
-    await this.gameInstanceClientService.stopGameInstance();
+    await this.gameInstanceClientService.disconnectSelfFromCurrentGame();
   }
 
   async ngOnDestroy(): Promise<void> {

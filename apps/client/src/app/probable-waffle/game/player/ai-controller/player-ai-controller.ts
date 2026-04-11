@@ -6,6 +6,7 @@ import Phaser from "phaser";
 import { PlayerAiControllerMdsl } from "./player-ai-controller.mdsl";
 import { TelemetrySink } from "./telemetry";
 import { AI_CONFIG } from "./ai-config";
+import { getSimulationNow } from "./ai-time";
 
 export class PlayerAiController {
   readonly playerAiControllerAgent: PlayerAiControllerAgent;
@@ -41,7 +42,7 @@ export class PlayerAiController {
       try {
         await this.telemetry.withSpanAsync(
           "ai.preTick",
-          async () => await this.playerAiControllerAgent.preTick(performance.now())
+          async () => await this.playerAiControllerAgent.preTick(getSimulationNow(this.scene))
         );
         this.telemetry.withSpan("ai.behaviourTreeStep", () => this.behaviourTree.step());
         if (this.telemetryFrameModulo && frameBeforeSnapshot % this.telemetryFrameModulo === 0) {
