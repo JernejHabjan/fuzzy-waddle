@@ -44,6 +44,9 @@ export class ProbableWaffleListeners {
       case "createdBy":
         gameInstance.gameInstanceMetadata!.data.createdBy = payload.data.createdBy!;
         break;
+      case "currentHostUserId":
+        gameInstance.gameInstanceMetadata!.data.currentHostUserId = payload.data.currentHostUserId!;
+        break;
       default:
         throw new Error("Unknown communicator for gameInstanceMetadataDataChange: " + payload.property);
     }

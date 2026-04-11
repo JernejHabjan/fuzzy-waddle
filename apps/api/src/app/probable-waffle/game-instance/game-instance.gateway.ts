@@ -12,6 +12,8 @@ import {
   type ProbableWaffleCommunicatorMessageEvent,
   type ProbableWaffleCommunicatorType,
   type ProbableWaffleGameFoundEvent,
+  type ProbableWaffleHostMigratedEvent,
+  type ProbableWaffleGameInstanceMetadataChangeEvent,
   ProbableWaffleGameInstanceEvent,
   ProbableWaffleGatewayEvent,
   ProbableWaffleGatewayRoomTypes,
@@ -97,6 +99,11 @@ export class GameInstanceGateway implements OnGatewayDisconnect {
           reconnectWindowSeconds: RECONNECT_WINDOW_SECONDS
         } satisfies ProbableWafflePlayerDisconnectedEvent
       });
+
+      const currentHostUserId = gameInstance.gameInstanceMetadata.data.currentHostUserId ?? gameInstance.gameInstanceMetadata.data.createdBy;
+      if (currentHostUserId === playerInfo.userId) {
+        this.emitHostMigration(playerInfo.gameInstanceId, playerInfo.userId);
+      }
     }
   }
 
@@ -195,7 +202,15 @@ export class GameInstanceGateway implements OnGatewayDisconnect {
         break;
       case "leave":
         // Explicit leave — cancel any grace-period timer.
-        this.disconnectTracker.markExplicitQuit(socket.id);
+        {
+          const leavingPlayer = this.disconnectTracker.markExplicitQuit(socket.id);
+          const gameInstance = body.gameInstanceId ? this.gameInstanceService.findGameInstance(body.gameInstanceId) : null;
+          const currentHostUserId =
+            gameInstance?.gameInstanceMetadata?.data.currentHostUserId ?? gameInstance?.gameInstanceMetadata?.data.createdBy;
+          if (leavingPlayer && currentHostUserId === leavingPlayer.userId) {
+            this.emitHostMigration(leavingPlayer.gameInstanceId, leavingPlayer.userId);
+          }
+        }
         socket.leave(`${ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance}${body.gameInstanceId}`);
         console.log(
           user.id,
@@ -206,5 +221,41 @@ export class GameInstanceGateway implements OnGatewayDisconnect {
       default:
         throw new Error("Ashes of the Ancients - Web socket room broadcast - unknown communicator");
     }
+  }
+
+  private emitHostMigration(gameInstanceId: string, previousHostUserId: string): void {
+    const migration = this.gameInstanceService.electReplacementHost(
+      gameInstanceId,
+      previousHostUserId,
+      (userId, giId) => this.disconnectTracker.isUserDisconnected(userId, giId)
+    );
+    if (!migration) {
+      return;
+    }
+
+    const roomId = `${ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance}${gameInstanceId}`;
+    this.server.to(roomId).emit(ProbableWaffleGatewayEvent.ProbableWaffleAction, {
+      gameInstanceId,
+      communicator: "gameInstanceMetadataDataChange",
+      payload: {
+        gameInstanceId,
+        emitterUserId: null,
+        property: "currentHostUserId",
+        data: {
+          currentHostUserId: migration.currentHostUserId
+        }
+      } satisfies ProbableWaffleGameInstanceMetadataChangeEvent
+    });
+    this.server.to(roomId).emit(ProbableWaffleGatewayEvent.ProbableWaffleAction, {
+      gameInstanceId,
+      communicator: "host-migrated",
+      payload: {
+        gameInstanceId,
+        emitterUserId: null,
+        previousHostUserId,
+        currentHostUserId: migration.currentHostUserId,
+        currentHostPlayerNumber: migration.currentHostPlayerNumber
+      } satisfies ProbableWaffleHostMigratedEvent
+    });
   }
 }

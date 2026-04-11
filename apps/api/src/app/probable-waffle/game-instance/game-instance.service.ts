@@ -8,7 +8,9 @@ import {
   type ProbableWaffleGameInstanceData,
   type ProbableWaffleGameInstanceMetadataData,
   type ProbableWaffleGameModeData,
-  type ProbableWaffleGameStateData
+  type ProbableWaffleGameStateData,
+  ProbableWafflePlayerType,
+  type UserId
 } from "@fuzzy-waddle/api-interfaces";
 import { Cron, CronExpression } from "@nestjs/schedule";
 import { type GameInstanceServiceInterface } from "./game-instance.service.interface";
@@ -108,6 +110,40 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     return gameInstance.data;
   }
 
+  electReplacementHost(
+    gameInstanceId: GameInstanceId,
+    previousHostUserId: UserId,
+    isUserDisconnected: (userId: UserId, gameInstanceId: GameInstanceId) => boolean
+  ): { currentHostUserId: UserId; currentHostPlayerNumber: number } | null {
+    const gameInstance = this.findGameInstance(gameInstanceId);
+    if (!gameInstance) {
+      return null;
+    }
+
+    const nextHost = gameInstance.players
+      .filter(
+        (player) =>
+          player.playerController.data.playerDefinition?.playerType === ProbableWafflePlayerType.Human &&
+          player.playerController.data.userId !== null &&
+          player.playerController.data.userId !== previousHostUserId &&
+          player.playerNumber !== undefined &&
+          !isUserDisconnected(player.playerController.data.userId!, gameInstanceId)
+      )
+      .sort((a, b) => a.playerNumber! - b.playerNumber!)[0];
+
+    if (!nextHost?.playerController.data.userId || nextHost.playerNumber === undefined) {
+      return null;
+    }
+
+    gameInstance.gameInstanceMetadata.data.currentHostUserId = nextHost.playerController.data.userId;
+    gameInstance.gameInstanceMetadata.data.updatedOn = new Date();
+
+    return {
+      currentHostUserId: nextHost.playerController.data.userId,
+      currentHostPlayerNumber: nextHost.playerNumber
+    };
+  }
+
   private checkIfPlayerIsCreator(gameInstance: ProbableWaffleGameInstance, user: User) {
     return gameInstance.gameInstanceMetadata.data.createdBy === user.id;
   }
@@ -117,6 +153,7 @@ export class GameInstanceService implements GameInstanceServiceInterface {
   ): ProbableWaffleGameInstanceMetadataData {
     return {
       ...gameInstanceMetadataData,
+      currentHostUserId: gameInstanceMetadataData.currentHostUserId ?? gameInstanceMetadataData.createdBy,
       name: this.textSanitizationService.cleanBadWords(gameInstanceMetadataData.name)
     };
   }

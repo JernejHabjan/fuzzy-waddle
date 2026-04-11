@@ -5,6 +5,7 @@ import {
   type ProbableWaffleCommunicatorMessageEvent,
   type ProbableWaffleCommunicatorType,
   type ProbableWaffleGameCommandEvent,
+  type ProbableWaffleHostMigratedEvent,
   type ProbableWaffleGameInstanceMetadataChangeEvent,
   type ProbableWaffleGameModeDataChangeEvent,
   type ProbableWaffleGameStateDataChangeEvent,
@@ -45,6 +46,8 @@ export class ProbableWaffleCommunicatorService
   snapshotRequested?: TwoWayCommunicator<ProbableWaffleSnapshotRequestEvent, ProbableWaffleCommunicatorType>;
   /** Snapshot response (host → requesting client); only in MP. */
   snapshotResponse?: TwoWayCommunicator<ProbableWaffleSnapshotResponseEvent, ProbableWaffleCommunicatorType>;
+  /** Server-originated host migration event; only in MP. */
+  hostMigrated?: TwoWayCommunicator<ProbableWaffleHostMigratedEvent, ProbableWaffleCommunicatorType>;
 
   /**
    * utility events that are broadcast to game instance and other angular services - for example save game
@@ -116,6 +119,12 @@ export class ProbableWaffleCommunicatorService
         ProbableWaffleSnapshotResponseEvent,
         ProbableWaffleCommunicatorType
       >(ProbableWaffleGatewayEvent.ProbableWaffleAction, "snapshot-response", gameInstanceId, socket);
+      this.hostMigrated = new TwoWayCommunicator<ProbableWaffleHostMigratedEvent, ProbableWaffleCommunicatorType>(
+        ProbableWaffleGatewayEvent.ProbableWaffleAction,
+        "host-migrated",
+        gameInstanceId,
+        socket
+      );
     }
 
     socket?.emit(ProbableWaffleGatewayEvent.ProbableWaffleWebsocketRoom, {
@@ -147,5 +156,6 @@ export class ProbableWaffleCommunicatorService
     this.stateHashChanged?.destroy();
     this.snapshotRequested?.destroy();
     this.snapshotResponse?.destroy();
+    this.hostMigrated?.destroy();
   }
 }

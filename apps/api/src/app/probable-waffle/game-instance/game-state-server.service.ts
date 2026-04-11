@@ -79,6 +79,7 @@ export class GameStateServerService {
         return true;
       case "player-disconnected":
       case "player-reconnected":
+      case "host-migrated":
         // Server-originated events — clients should never send these; return false to suppress relay.
         return false;
       default:

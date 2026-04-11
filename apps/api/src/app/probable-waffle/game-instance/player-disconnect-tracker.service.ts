@@ -50,10 +50,12 @@ export class PlayerDisconnectTrackerService {
   }
 
   /** Called when a player explicitly leaves a room (tab close / navigate away). */
-  markExplicitQuit(socketId: string): void {
+  markExplicitQuit(socketId: string): { userId: UserId; gameInstanceId: GameInstanceId } | null {
+    const player = this.socketToPlayer.get(socketId) ?? null;
     // Remove the socket association — no grace window, the player chose to quit.
     this.socketToPlayer.delete(socketId);
     this.cancelPendingEviction(socketId);
+    return player;
   }
 
   /**
@@ -97,6 +99,15 @@ export class PlayerDisconnectTrackerService {
       clearTimeout(entry.timer);
       this.pendingEvictions.delete(socketId);
     }
+  }
+
+  isUserDisconnected(userId: UserId, gameInstanceId: GameInstanceId): boolean {
+    for (const entry of this.pendingEvictions.values()) {
+      if (entry.userId === userId && entry.gameInstanceId === gameInstanceId) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /** Clean up all state for a game instance when it ends. */

@@ -86,6 +86,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
       gameInstanceMetadataData: {
         name,
         createdBy: this.authService.userId,
+        currentHostUserId: this.authService.userId,
         type,
         visibility,
         startOptions: {},
@@ -673,7 +674,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
       this.gameInstance?.gameInstanceMetadata?.data.type === ProbableWaffleGameInstanceType.SelfHosted;
     const isSkirmish = this.gameInstance?.gameInstanceMetadata?.data.type === ProbableWaffleGameInstanceType.Skirmish;
     const isOffline = !this.authService.isAuthenticated || !this.serverHealthService.serverAvailable;
-    const isHost = this.gameInstance?.gameInstanceMetadata?.data.createdBy === this.authService.userId;
+    const isHost = this.gameInstance?.isHost(this.authService.userId) ?? false;
 
     await this.handlePlayerOrSpectatorLeaving();
 
@@ -712,7 +713,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     if (humanPlayers.length > 0) {
       const newHost = humanPlayers[0]!;
       const newHostUserId = newHost.playerController.data.userId!;
-      await this.gameInstanceMetadataChanged("createdBy", { createdBy: newHostUserId });
+      await this.gameInstanceMetadataChanged("currentHostUserId", { currentHostUserId: newHostUserId });
       await this.cleanupLocalGameState();
     } else {
       await this.stopGameInstance();

@@ -45,6 +45,7 @@ import { SnapshotService } from "../services/snapshot.service";
 import { ReconnectService } from "../services/reconnect.service";
 import { ReplayPlaybackService } from "../services/replay-playback.service";
 import { ReplayRecorderService } from "../services/replay-recorder.service";
+import { HostMigrationService } from "../services/host-migration.service";
 
 export default class GameProbableWaffleScene extends ProbableWaffleScene {
   tilemap!: Phaser.Tilemaps.Tilemap;
@@ -129,6 +130,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     new SnapshotService().init(this);
     // Reconnect service: non-host clients request a snapshot when they rejoin after a drop.
     new ReconnectService().init(this);
+    new HostMigrationService().init(this);
     new ReplayRecorderService().init(this);
     new ReplayPlaybackService().init(this);
 

@@ -40,6 +40,7 @@ export interface ProbableWaffleGameInstanceMetadataData extends GameInstanceMeta
   name: string;
   startOptions: GameInstanceMetadataStartOptions;
   rndSeed: number;
+  currentHostUserId?: string | null;
 }
 
 export class ProbableWaffleGameInstanceMetadata extends GameInstanceMetadata<ProbableWaffleGameInstanceMetadataData> {

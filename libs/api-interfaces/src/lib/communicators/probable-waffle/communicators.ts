@@ -25,6 +25,7 @@ export type ProbableWaffleCommunicatorType =
   | "snapshot-response"
   | "player-disconnected"
   | "player-reconnected"
+  | "host-migrated"
   | ProbableWaffleGameCommunicatorType;
 
 export interface ProbableWaffleCommunicatorEvent {
@@ -184,6 +185,13 @@ export interface ProbableWafflePlayerDisconnectedEvent extends ProbableWaffleCom
 /** Broadcast by the server when a disconnected player rejoins within the grace window. */
 export interface ProbableWafflePlayerReconnectedEvent extends ProbableWaffleCommunicatorEvent {
   playerNumber: PlayerNumber;
+}
+
+/** Broadcast by the server when host duties move to another player. */
+export interface ProbableWaffleHostMigratedEvent extends ProbableWaffleCommunicatorEvent {
+  previousHostUserId: UserId | null;
+  currentHostUserId: UserId;
+  currentHostPlayerNumber: PlayerNumber;
 }
 
 export interface ProbableWaffleWebsocketRoomEvent {
