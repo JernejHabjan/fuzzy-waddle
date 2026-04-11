@@ -4,7 +4,8 @@
 
 | Layer | Technology |
 | ----- | ---------- |
-| Frontend | Angular 21, Phaser 4, Bootstrap 5, Chart.js |
+| Frontend (web) | Angular 21, Phaser 4, Bootstrap 5, Chart.js |
+| Frontend (desktop) | Tauri 2 (Rust shell wrapping the Angular build) |
 | Backend | NestJS 11, Socket.IO |
 | Database / Auth | Supabase (PostgreSQL) |
 | Monorepo tooling | Nx 22 |
@@ -15,12 +16,16 @@
 ```
 fuzzy-waddle/
 ├── apps/
-│   ├── client/          # Angular SPA + Phaser games
-│   └── api/             # NestJS backend
+│   ├── client/                   # Angular SPA + all Phaser games (web)
+│   ├── probable-waffle-client/   # Standalone Angular app for desktop (Tauri)
+│   │   └── src-tauri/            # Tauri v2 Rust shell
+│   └── api/                      # NestJS backend
 ├── libs/
 │   └── api-interfaces/  # Shared TypeScript contracts (client ↔ server)
 ├── DBMs/                # SQL migration scripts
 ```
+
+`probable-waffle-client` reuses all game code, services, and assets from `apps/client` via the `@fuzzy-waddle/client/*` path alias — no code is duplicated.
 
 ## Games
 
@@ -46,6 +51,18 @@ Each game follows the same layout:
 - **Shared Phaser abstractions** are in `apps/client/src/app/shared/game/phaser/`
 - **Asset packs** (Phaser Editor 2D metadata) are in `apps/client/src/metadata/{game-name}/`
 - **Assets** (sprites, audio, tilemaps) are in `apps/client/src/assets/{game-name}/`
+
+## Desktop App Architecture (Tauri)
+
+`apps/probable-waffle-client` is a standalone Angular app that wraps only the Probable Waffle (AOTA) game for desktop distribution.
+
+- Bootstraps with its own `main.ts` and `app.routes.ts` — no service worker, no other games
+- Three build configurations: `production` (web), `development`, and `tauri` (sets `environment.isDesktop = true`)
+- `TauriService` (`apps/client/src/app/shared/services/tauri.service.ts`) provides cursor locking for RTS edge-scroll panning via a custom Rust command — is a no-op in browser builds
+- The Rust shell lives in `src-tauri/src/lib.rs` and exposes one command: `set_cursor_grab(grab: bool)`
+- Connects to the same hosted NestJS API as the web app
+
+See [Tauri Desktop](tauri-desktop.md) for prerequisites and build instructions.
 
 ## API Architecture
 

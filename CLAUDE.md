@@ -18,11 +18,16 @@ pnpm start
 # Start individual apps
 pnpm start:client     # Angular client at localhost:4200
 pnpm start:api        # NestJS API at localhost:3333
+pnpm start:probable-waffle  # Probable Waffle web dev at localhost:4200
 
 # Build
 pnpm build            # Build all projects
 nx build client       # Build client only
 nx build api          # Build API only
+
+# Tauri desktop (requires Rust — see wiki/tauri-desktop.md)
+pnpm tauri:dev        # Angular dev server + Tauri window (parallel)
+pnpm tauri:build      # Build platform installers (.msi/.dmg/.AppImage)
 
 # Test
 pnpm test             # Run all tests
@@ -43,6 +48,9 @@ pnpm e2e              # Run Cypress e2e tests
 
 ### Monorepo Structure
 - **apps/client**: Angular 21 SPA with Phaser 4 game engine integration
+- **apps/probable-waffle-client**: Standalone Angular app for Tauri desktop builds (Probable Waffle only)
+  - `src-tauri/`: Tauri v2 Rust shell with `set_cursor_grab` custom command
+  - Uses `@fuzzy-waddle/client/*` path alias to reuse code from `apps/client`
 - **apps/api**: NestJS 11 backend with WebSocket gateways
 - **libs/api-interfaces**: Shared TypeScript interfaces for client-server contracts
 

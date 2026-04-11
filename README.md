@@ -27,7 +27,8 @@
 
 | Layer | Technology |
 | ----- | ---------- |
-| Frontend | Angular 21, Phaser 4, Bootstrap 5 |
+| Frontend (web) | Angular 21, Phaser 4, Bootstrap 5 |
+| Frontend (desktop) | Tauri 2 (wraps the Angular build) |
 | Backend | NestJS 11, Socket.IO |
 | Database / Auth | Supabase (PostgreSQL + OAuth) |
 | Monorepo | Nx 22 |
@@ -57,6 +58,7 @@ For full setup instructions see the [Getting Started guide](wiki/getting-started
 | ---- | ----------- |
 | [Getting Started](wiki/getting-started.md) | Prerequisites, install, common commands |
 | [Architecture](wiki/architecture.md) | Monorepo layout, game structure, real-time communication |
+| [Tauri Desktop](wiki/tauri-desktop.md) | Desktop app prerequisites, dev workflow, build commands |
 | [Supabase Setup](wiki/supabase.md) | Auth, type generation, JDBC, local dev |
 | [Deployment](wiki/deployment.md) | Render and GitHub Pages deployment config |
 | [Troubleshooting](wiki/troubleshooting.md) | Common issues and fixes |
