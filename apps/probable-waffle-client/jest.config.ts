@@ -21,8 +21,8 @@ export default {
   ],
   moduleNameMapper: {
     "^lodash-es$": "lodash",
-    "^phaser$": "<rootDir>/src/test/mocks/phaser.js",
-    "^@supabase/supabase-js$": "<rootDir>/src/test/mocks/supabase-js.js",
+    "^phaser$": "<rootDir>/../../apps/client/src/test/mocks/phaser.js",
+    "^@supabase/supabase-js$": "<rootDir>/../../apps/client/src/test/mocks/supabase-js.js",
     "^@fuzzy-waddle/client/(.*)$": "<rootDir>/../../apps/client/src/$1"
   }
 };

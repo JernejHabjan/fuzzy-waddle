@@ -61,6 +61,7 @@ Outputs land in `apps/probable-waffle-client/src-tauri/target/release/bundle/`.
 | `apps/probable-waffle-client/src-tauri/tauri.conf.json` | Tauri window, bundle, and path config |
 | `apps/probable-waffle-client/src-tauri/src/lib.rs` | Rust commands (including `set_cursor_grab`) |
 | `apps/probable-waffle-client/src/environments/environment.tauri.ts` | `isDesktop: true` build environment |
+| `apps/probable-waffle-client/package.json` | Local scripts: `tauri:dev` and `tauri:build` (deps are in root `package.json`) |
 | `apps/client/src/app/shared/services/tauri.service.ts` | Angular service for invoking Tauri commands |
 
 ## Cursor Lock

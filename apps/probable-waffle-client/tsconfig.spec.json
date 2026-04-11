@@ -7,6 +7,6 @@
     "verbatimModuleSyntax": false,
     "moduleResolution": "bundler"
   },
-  "files": ["src/test-setup.ts", "src/test/mocks/phaser-module.d.ts"],
+  "files": ["src/test-setup.ts", "../../apps/client/src/test/mocks/phaser-module.d.ts"],
   "include": ["jest.config.ts", "**/*.test.ts", "**/*.spec.ts", "**/*.d.ts"]
 }
