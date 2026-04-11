@@ -20,6 +20,7 @@ export type ProbableWaffleCommunicatorType =
   | "gameStateDataChange"
   | "message"
   | "game-command"
+  | "state-hash"
   | ProbableWaffleGameCommunicatorType;
 
 export interface ProbableWaffleCommunicatorEvent {
@@ -131,6 +132,15 @@ export interface ProbableWaffleGameCommandEvent extends ProbableWaffleCommunicat
   playerNumber: PlayerNumber;
   /** Serialised GameCommand objects. Cast to GameCommand[] on the client. */
   commands: unknown[];
+}
+
+/** Periodic state-hash snapshot. Each client broadcasts its own hash; peers compare. */
+export interface ProbableWaffleStateHashEvent extends ProbableWaffleCommunicatorEvent {
+  /** The simulation tick at which this hash was computed. */
+  tick: number;
+  playerNumber: PlayerNumber;
+  /** djb2 hex hash of all actor states sorted by actor ID. */
+  hash: string;
 }
 
 export interface ProbableWaffleWebsocketRoomEvent {

@@ -67,6 +67,9 @@ export class GameStateServerService {
         const cmdEvent = body.payload as ProbableWaffleGameCommandEvent;
         // Validate ownership, rate limits, and sequence before relaying
         return this.commandValidator.validate(cmdEvent, gameInstance, user);
+      case "state-hash":
+        // No server-side processing needed; relay to all peers as-is.
+        return true;
       default:
         throw new Error("Unknown communicator");
     }

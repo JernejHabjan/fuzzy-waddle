@@ -12,6 +12,7 @@ import {
   ProbableWaffleGatewayRoomTypes,
   type ProbableWafflePlayerDataChangeEvent,
   type ProbableWaffleSpectatorDataChangeEvent,
+  type ProbableWaffleStateHashEvent,
   type ProbableWaffleWebsocketRoomEvent
 } from "@fuzzy-waddle/api-interfaces";
 import { TwoWayCommunicator } from "../../shared/game/communicators/two-way-communicator";
@@ -36,6 +37,8 @@ export class ProbableWaffleCommunicatorService
   message?: TwoWayCommunicator<ProbableWaffleCommunicatorMessageEvent, ProbableWaffleCommunicatorType>;
   /** Command relay communicator; only initialised in multiplayer sessions. */
   gameCommandChanged?: TwoWayCommunicator<ProbableWaffleGameCommandEvent, ProbableWaffleCommunicatorType>;
+  /** Periodic state-hash exchange; only initialised in multiplayer sessions. */
+  stateHashChanged?: TwoWayCommunicator<ProbableWaffleStateHashEvent, ProbableWaffleCommunicatorType>;
 
   /**
    * utility events that are broadcast to game instance and other angular services - for example save game
@@ -89,6 +92,12 @@ export class ProbableWaffleCommunicatorService
         gameInstanceId,
         socket
       );
+      this.stateHashChanged = new TwoWayCommunicator<ProbableWaffleStateHashEvent, ProbableWaffleCommunicatorType>(
+        ProbableWaffleGatewayEvent.ProbableWaffleAction,
+        "state-hash",
+        gameInstanceId,
+        socket
+      );
     }
 
     socket?.emit(ProbableWaffleGatewayEvent.ProbableWaffleWebsocketRoom, {
@@ -117,5 +126,6 @@ export class ProbableWaffleCommunicatorService
     this.gameStateChanged?.destroy();
     this.message?.destroy();
     this.gameCommandChanged?.destroy();
+    this.stateHashChanged?.destroy();
   }
 }

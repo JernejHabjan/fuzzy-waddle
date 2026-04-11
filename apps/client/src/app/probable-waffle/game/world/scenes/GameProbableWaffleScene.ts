@@ -40,6 +40,7 @@ import { SpellCursor } from "../../player/human-controller/spell-cursor";
 import { AoeZoneManager } from "../../entity/systems/aoe-zone-manager";
 import { CommandBusService } from "../services/command-bus.service";
 import { SimulationTickService } from "../services/simulation-tick.service";
+import { StateHashService } from "../services/state-hash.service";
 
 export default class GameProbableWaffleScene extends ProbableWaffleScene {
   tilemap!: Phaser.Tilemaps.Tilemap;
@@ -113,6 +114,9 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
         commandBus.initMultiplayer(this);
       }
     }
+
+    // Desync detection: hash state every 60 ticks and compare with peers (MP only).
+    new StateHashService().init(this);
 
     super.create();
 
