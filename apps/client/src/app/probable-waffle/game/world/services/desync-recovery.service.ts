@@ -80,7 +80,7 @@ export class DesyncRecoveryService {
     probableWaffleScene: ProbableWaffleScene
   ): void {
     const simTick = getSceneService(probableWaffleScene, SimulationTickService);
-    simTick?.pauseTick();
+    simTick?.pauseTick("desync");
 
     this.lastPauseMs = Date.now();
     this.pauseCount++;
@@ -91,7 +91,7 @@ export class DesyncRecoveryService {
       tick: data.tick,
       playerNumber: data.remotePlayerNumber,
       onWait: () => {
-        simTick?.resumeTick();
+        simTick?.resumeTick("desync");
         this.dialogOpen = false;
       },
       onKick: () => {
@@ -110,7 +110,7 @@ export class DesyncRecoveryService {
             }
           }
         });
-        simTick?.resumeTick();
+        simTick?.resumeTick("desync");
         this.dialogOpen = false;
       }
     });

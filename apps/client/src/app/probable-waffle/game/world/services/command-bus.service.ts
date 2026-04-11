@@ -138,7 +138,7 @@ export class CommandBusService {
 
     // 3. Gate the next tick: stall until all peers have committed for tick+1
     if (this.tickService && !this.hasAllForTick(tick + 1)) {
-      this.tickService.pauseTick();
+      this.tickService.pauseTick("lockstep");
     }
 
     this.buffer.gc(tick);
@@ -160,7 +160,7 @@ export class CommandBusService {
     if (!this.tickService) return;
     const nextTick = this.tickService.currentTick + 1;
     if (this.hasAllForTick(nextTick)) {
-      this.tickService.resumeTick();
+      this.tickService.resumeTick("lockstep");
     }
   }
 

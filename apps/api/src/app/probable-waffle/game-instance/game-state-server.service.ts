@@ -6,6 +6,7 @@ import {
   type ProbableWaffleGameCommandEvent,
   type ProbableWaffleGameInstanceMetadataChangeEvent,
   type ProbableWaffleGameModeDataChangeEvent,
+  type ProbableWafflePauseChangedEvent,
   type ProbableWaffleGameStateDataChangeEvent,
   ProbableWaffleListeners,
   type ProbableWafflePlayerDataChangeEvent,
@@ -16,6 +17,7 @@ import { GameInstanceService } from "./game-instance.service";
 import { type User } from "@supabase/supabase-js";
 import { GameCommandValidatorService } from "./game-command-validator.service";
 import { PlayerStateValidatorService } from "./player-state-validator.service";
+import { PauseStateValidatorService } from "./pause-state-validator.service";
 
 @Injectable()
 export class GameStateServerService {
@@ -25,7 +27,8 @@ export class GameStateServerService {
   constructor(
     private readonly gameInstanceService: GameInstanceService,
     private readonly commandValidator: GameCommandValidatorService,
-    private readonly playerStateValidator: PlayerStateValidatorService
+    private readonly playerStateValidator: PlayerStateValidatorService,
+    private readonly pauseStateValidator: PauseStateValidatorService
   ) {}
 
   updateGameState(body: CommunicatorEvent<any, ProbableWaffleCommunicatorType>, user: User): boolean {
@@ -94,6 +97,8 @@ export class GameStateServerService {
           snapshotResponse.snapshot.tick
         );
         return true;
+      case "pause-changed":
+        return this.pauseStateValidator.validate(body.payload as ProbableWafflePauseChangedEvent, gameInstance, user);
       case "player-disconnected":
       case "player-reconnected":
       case "host-migrated":
@@ -108,6 +113,7 @@ export class GameStateServerService {
   cleanup(gameInstanceId: string): void {
     this.commandValidator.cleanup(gameInstanceId);
     this.playerStateValidator.cleanup(gameInstanceId);
+    this.pauseStateValidator.cleanup(gameInstanceId);
     this.recentCommandHistory.delete(gameInstanceId);
   }
 

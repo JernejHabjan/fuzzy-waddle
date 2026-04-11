@@ -7,6 +7,7 @@ import {
   type ProbableWaffleHostMigratedEvent,
   type ProbableWaffleGameInstanceMetadataChangeEvent,
   type ProbableWaffleGameModeDataChangeEvent,
+  type ProbableWafflePauseChangedEvent,
   type ProbableWaffleGameStateDataChangeEvent,
   type ProbableWafflePlayerDataChangeEvent,
   type ProbableWaffleSpectatorDataChangeEvent,
@@ -34,6 +35,8 @@ export interface ProbableWaffleCommunicatorServiceInterface {
   snapshotRequested?: TwoWayCommunicator<ProbableWaffleSnapshotRequestEvent, ProbableWaffleCommunicatorType>;
   /** Snapshot response (host → requesting client); only in MP. */
   snapshotResponse?: TwoWayCommunicator<ProbableWaffleSnapshotResponseEvent, ProbableWaffleCommunicatorType>;
+  /** Multiplayer pause/resume relay; only in MP. */
+  pauseChanged?: TwoWayCommunicator<ProbableWafflePauseChangedEvent, ProbableWaffleCommunicatorType>;
   /** Server-originated host migration event; only in MP. */
   hostMigrated?: TwoWayCommunicator<ProbableWaffleHostMigratedEvent, ProbableWaffleCommunicatorType>;
   /** Active socket for reconnect handling; undefined in single-player. */

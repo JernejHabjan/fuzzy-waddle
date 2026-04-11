@@ -3,6 +3,7 @@ import { GameStateServerService } from "./game-state-server.service";
 import { GameInstanceService } from "./game-instance.service";
 import { GameInstanceServiceStub } from "./game-instance.service.stub";
 import { GameCommandValidatorService } from "./game-command-validator.service";
+import { PauseStateValidatorService } from "./pause-state-validator.service";
 import { PlayerStateValidatorService } from "./player-state-validator.service";
 
 describe("GameStateServerService", () => {
@@ -14,6 +15,7 @@ describe("GameStateServerService", () => {
         GameStateServerService,
         GameCommandValidatorService,
         PlayerStateValidatorService,
+        PauseStateValidatorService,
         { provide: GameInstanceService, useValue: GameInstanceServiceStub }
       ]
     }).compile();

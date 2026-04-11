@@ -24,7 +24,7 @@ export class SimulationTickService {
   readonly tick$ = new Subject<number>();
 
   private accumulated = 0;
-  private ticking = true;
+  private readonly pauseReasons = new Set<string>();
 
   constructor(private readonly scene: Phaser.Scene) {
     scene.events.on(Phaser.Scenes.Events.UPDATE, this.onUpdate, this);
@@ -32,13 +32,17 @@ export class SimulationTickService {
   }
 
   /** Called by CommandBusService in multiplayer when waiting for peers. */
-  pauseTick(): void {
-    this.ticking = false;
+  pauseTick(reason: string = "manual"): void {
+    this.pauseReasons.add(reason);
   }
 
   /** Called by CommandBusService when all peers' commands are buffered. */
-  resumeTick(): void {
-    this.ticking = true;
+  resumeTick(reason: string = "manual"): void {
+    this.pauseReasons.delete(reason);
+  }
+
+  get isPaused(): boolean {
+    return this.pauseReasons.size > 0;
   }
 
   /**
@@ -53,7 +57,7 @@ export class SimulationTickService {
   }
 
   private onUpdate(_time: number, delta: number): void {
-    if (!this.ticking) return;
+    if (this.isPaused) return;
     this.accumulated += delta;
     while (this.accumulated >= SimulationTickService.TICK_INTERVAL_MS) {
       this.accumulated -= SimulationTickService.TICK_INTERVAL_MS;

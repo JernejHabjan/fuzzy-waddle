@@ -8,6 +8,7 @@ import {
   type ProbableWaffleHostMigratedEvent,
   type ProbableWaffleGameInstanceMetadataChangeEvent,
   type ProbableWaffleGameModeDataChangeEvent,
+  type ProbableWafflePauseChangedEvent,
   type ProbableWaffleGameStateDataChangeEvent,
   ProbableWaffleGatewayEvent,
   ProbableWaffleGatewayRoomTypes,
@@ -46,6 +47,8 @@ export class ProbableWaffleCommunicatorService
   snapshotRequested?: TwoWayCommunicator<ProbableWaffleSnapshotRequestEvent, ProbableWaffleCommunicatorType>;
   /** Snapshot response (host → requesting client); only in MP. */
   snapshotResponse?: TwoWayCommunicator<ProbableWaffleSnapshotResponseEvent, ProbableWaffleCommunicatorType>;
+  /** Multiplayer pause/resume relay; only in MP. */
+  pauseChanged?: TwoWayCommunicator<ProbableWafflePauseChangedEvent, ProbableWaffleCommunicatorType>;
   /** Server-originated host migration event; only in MP. */
   hostMigrated?: TwoWayCommunicator<ProbableWaffleHostMigratedEvent, ProbableWaffleCommunicatorType>;
 
@@ -119,6 +122,12 @@ export class ProbableWaffleCommunicatorService
         ProbableWaffleSnapshotResponseEvent,
         ProbableWaffleCommunicatorType
       >(ProbableWaffleGatewayEvent.ProbableWaffleAction, "snapshot-response", gameInstanceId, socket);
+      this.pauseChanged = new TwoWayCommunicator<ProbableWafflePauseChangedEvent, ProbableWaffleCommunicatorType>(
+        ProbableWaffleGatewayEvent.ProbableWaffleAction,
+        "pause-changed",
+        gameInstanceId,
+        socket
+      );
       this.hostMigrated = new TwoWayCommunicator<ProbableWaffleHostMigratedEvent, ProbableWaffleCommunicatorType>(
         ProbableWaffleGatewayEvent.ProbableWaffleAction,
         "host-migrated",
@@ -156,6 +165,7 @@ export class ProbableWaffleCommunicatorService
     this.stateHashChanged?.destroy();
     this.snapshotRequested?.destroy();
     this.snapshotResponse?.destroy();
+    this.pauseChanged?.destroy();
     this.hostMigrated?.destroy();
   }
 }

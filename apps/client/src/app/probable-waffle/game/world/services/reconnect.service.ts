@@ -123,7 +123,7 @@ export class ReconnectService {
         `Buffered tail batches: ${response.commandTail?.length ?? 0}`
     );
 
-    simTick?.pauseTick();
+    simTick?.pauseTick("reconnect");
 
     // Destroy all current actors before re-creating from snapshot.
     const currentActors = [...actorIndex.getAllIdActors()];
@@ -163,7 +163,7 @@ export class ReconnectService {
       });
     }
 
-    simTick?.resumeTick();
+    simTick?.resumeTick("reconnect");
 
     console.info("[Reconnect] Snapshot applied. Simulation resumed.");
   }

@@ -23,6 +23,7 @@ export type ProbableWaffleCommunicatorType =
   | "state-hash"
   | "snapshot-request"
   | "snapshot-response"
+  | "pause-changed"
   | "player-disconnected"
   | "player-reconnected"
   | "host-migrated"
@@ -182,6 +183,12 @@ export interface ProbableWaffleSnapshotResponseEvent extends ProbableWaffleCommu
   commandTail?: ProbableWaffleGameCommandEvent[];
 }
 
+/** Player-issued pause or resume request relayed to the whole room. */
+export interface ProbableWafflePauseChangedEvent extends ProbableWaffleCommunicatorEvent {
+  playerNumber: PlayerNumber;
+  paused: boolean;
+}
+
 /** Broadcast by the server when a player's socket drops unexpectedly. */
 export interface ProbableWafflePlayerDisconnectedEvent extends ProbableWaffleCommunicatorEvent {
   playerNumber: PlayerNumber;
@@ -228,6 +235,7 @@ export interface AllScenesEventData {
     | "external-modal-opened"
     | "external-modal-closed"
     | "hud-scene-shutdown"
-    | "desync-detected";
+    | "desync-detected"
+    | "pause-toggle-requested";
   data?: any;
 }

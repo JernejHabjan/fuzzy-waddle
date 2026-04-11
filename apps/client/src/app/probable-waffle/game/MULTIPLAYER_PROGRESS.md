@@ -24,8 +24,8 @@
 | 15 | [x] | **Host migration** – on host disconnect server elects the lowest connected human player number, broadcasts `host-migrated`, updates `currentHostUserId`, and the promoted client starts host-only AI/snapshot duties |
 | 16 | [x] | **Queue actions through CommandBus** – production/research start + cancel become deterministic commands consumed by buildings instead of direct local UI/AI method calls |
 | 17 | [ ] | **Server-side queue validation** – validate production/research queue payloads against actor ownership and building capabilities |
-| 18 | [ ] | **Pause / resume commands** – turn pause into a relayed player command with cooldown/limit enforcement |
-| 19 | [ ] | **Control groups in MP** – sync assign/recall commands while leaving local camera/selection visuals local |
+| 18 | [x] | **Pause / resume commands** – turn pause into a relayed player command with cooldown/limit enforcement |
+| 19 | [~] | **Control groups in MP** – sync assign/recall commands while leaving local camera/selection visuals local |
 | 20 | [ ] | **Desync correction** – snapshot-backed host correction instead of pause-only detection |
 | 21 | [ ] | **Hash widening + determinism audit** – include economy/research/queues in hashes and remove multiplayer-relevant nondeterminism |
 
@@ -47,3 +47,4 @@
 - **15** Added `currentHostUserId` to metadata and a server-side host election path in `GameInstanceGateway`/`GameInstanceService`: when the current host leaves or disconnects, the server promotes the lowest connected human player number, emits metadata + `host-migrated`, and the promoted client starts snapshot serving plus AI controllers through `HostMigrationService`.
 - **07** Tightened server validation beyond the original thin guardrails: command checks now validate actor capability, target existence, and isometric tile/world consistency instead of a blunt coordinate cap, while a new `PlayerStateValidatorService` rejects impossible resource spends, unexplained resource gains, invalid housing deltas, and selection spoofing on mirrored player-state events.
 - **16** Production/research queue actions now use explicit `PRODUCTION | CANCEL_PRODUCTION | RESEARCH | CANCEL_RESEARCH` commands. UI queue clicks, hotkeys, and host-only AI all route through `CommandBusService`, `QueueCommandSystem` executes them on the targeted building, and the API now accepts and sanity-checks those command types.
+- **18** Added a relayed `pause-changed` multiplayer event with per-player cooldown/limit enforcement on the API, a `PauseSyncService` on the client, reason-based pause locking in `SimulationTickService`, and a HUD menu pause button that toggles pause/resume across all clients.

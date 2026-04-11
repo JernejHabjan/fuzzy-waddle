@@ -390,6 +390,7 @@ export default class GameActionsLayer extends ProbableWaffleScene {
   private game_action_restart!: Phaser.GameObjects.Container;
   private game_action_continue!: Phaser.GameObjects.Container;
   private game_actions_container!: Phaser.GameObjects.Container;
+  private pauseToggleButton?: Phaser.GameObjects.Container;
 
   /* START-USER-CODE */
   private readonly smallScreenBreakpoint = 800;
@@ -407,6 +408,7 @@ export default class GameActionsLayer extends ProbableWaffleScene {
     this.handleLoadGame();
     this.handleSettings();
     this.handleRestart();
+    this.createPauseToggleButton();
     this.handleButtonVisibility();
   }
 
@@ -473,6 +475,52 @@ export default class GameActionsLayer extends ProbableWaffleScene {
     });
   }
 
+  private createPauseToggleButton() {
+    const pauseButton = this.add.container(-3.6060558040172737, -214.29550515717648);
+    pauseButton.setInteractive(
+      new Phaser.Geom.Rectangle(-42, -13, 85.7117848223629, 25.429332302435576),
+      Phaser.Geom.Rectangle.Contains
+    );
+    pauseButton.scaleX = 2;
+    pauseButton.scaleY = 2;
+    this.game_actions_container.add(pauseButton);
+
+    const pauseButtonBg = this.add.nineslice(
+      0,
+      0,
+      "gui",
+      "cryos_mini_gui/buttons/button_small.png",
+      40,
+      20,
+      3,
+      3,
+      3,
+      3
+    );
+    pauseButtonBg.scaleX = 2.3521289589041787;
+    pauseButtonBg.scaleY = 1.5492262688240692;
+    pauseButton.add(pauseButtonBg);
+
+    const pauseText = this.add.text(-1, 0, "", {});
+    pauseText.setOrigin(0.5, 0.5);
+    pauseText.text = "Pause";
+    pauseText.setStyle({
+      align: "center",
+      color: "#000000ff",
+      fontFamily: "disposabledroid",
+      fontSize: "18px",
+      resolution: 10
+    });
+    pauseButton.add(pauseText);
+
+    pauseButton.on("pointerdown", () => {
+      this.communicator.allScenes.emit({ name: "pause-toggle-requested" });
+      this.destroySelf();
+    });
+
+    this.pauseToggleButton = pauseButton;
+  }
+
   private get isVisibleSaveButton() {
     return !this.isReplay;
   }
@@ -489,6 +537,9 @@ export default class GameActionsLayer extends ProbableWaffleScene {
     this.game_action_load.visible = this.isVisibleLoadButton;
     this.game_action_save.visible = this.isVisibleSaveButton;
     this.game_action_restart.visible = this.isVisibleRestartButton;
+    if (this.pauseToggleButton) {
+      this.pauseToggleButton.visible = !this.isReplay;
+    }
   }
 
   private get isReplay() {

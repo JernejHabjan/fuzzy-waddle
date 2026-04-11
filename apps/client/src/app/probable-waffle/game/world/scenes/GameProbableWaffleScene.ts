@@ -46,6 +46,7 @@ import { ReconnectService } from "../services/reconnect.service";
 import { ReplayPlaybackService } from "../services/replay-playback.service";
 import { ReplayRecorderService } from "../services/replay-recorder.service";
 import { HostMigrationService } from "../services/host-migration.service";
+import { PauseSyncService } from "../services/pause-sync.service";
 
 export default class GameProbableWaffleScene extends ProbableWaffleScene {
   tilemap!: Phaser.Tilemaps.Tilemap;
@@ -95,7 +96,8 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
       actorIndex,
       new TechTreeService(),
       new SpellCursor(this),
-      new AoeZoneManager(this)
+      new AoeZoneManager(this),
+      new PauseSyncService(this)
     );
     new ActorDebugDamageSystem(this);
     if (!this.baseGameData.gameInstance.gameInstanceMetadata.isReplay()) {
