@@ -23,6 +23,8 @@ import { getSceneComponent, getSceneService } from "../../../world/services/scen
 import { SelectionTabHandler } from "../../../player/human-controller/selection-tab-handler";
 import { ResearchComponent } from "../../../entity/components/research/research-component";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
+import { ContainerComponent } from "../../../entity/components/building/container-component";
+import { ActorTranslateComponent } from "../../../entity/components/movement/actor-translate-component";
 /* END-USER-IMPORTS */
 
 export default class ActorInfoContainer extends Phaser.GameObjects.Container {
@@ -95,6 +97,9 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
   private actorInfoLabelsVisibilitySubscription?: Subscription;
   private tabHandlerSubscription?: Subscription;
   private researchEventSubscriptions: Subscription[] = [];
+  private containerChangedSubscription?: Subscription;
+  /** Re-evaluates shore state when the container actor moves to a new tile. */
+  private containerMovementSubscription?: Subscription;
   private readonly mainSceneWithActors: ProbableWaffleScene;
 
   private subscribeToPlayerSelection() {
@@ -174,6 +179,27 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
     if (this.canShowIcons(actor)) {
       this.progress_bar.setProgressBar(actor);
       this.actorInfoLabels.setLabelsForDisplayingActorsQueues(actor);
+
+      // If actor has a container, overlay container contents in the labels area
+      const containerComponent = getActorComponent(actor, ContainerComponent);
+      if (containerComponent) {
+        this.actorInfoLabels.setLabelsForContainerContents(actor);
+
+        // Re-render when the container changes (unit loaded/unloaded)
+        this.containerChangedSubscription?.unsubscribe();
+        this.containerChangedSubscription = containerComponent.containerChanged.subscribe(() => {
+          this.actorInfoLabels.setLabelsForContainerContents(actor);
+        });
+
+        // Re-evaluate when the container actor moves between tiles (shore state may change for water units)
+        this.containerMovementSubscription?.unsubscribe();
+        const translateComponent = getActorComponent(actor, ActorTranslateComponent);
+        if (translateComponent) {
+          this.containerMovementSubscription = translateComponent.actorMovedLogicalPosition.subscribe(() => {
+            this.actorInfoLabels.setLabelsForContainerContents(actor);
+          });
+        }
+      }
     }
   }
 
@@ -229,6 +255,8 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
     this.actorInfoLabels.cleanActor();
     this.progress_bar.cleanActor();
     this.actorDetails.hideAll();
+    this.containerChangedSubscription?.unsubscribe();
+    this.containerMovementSubscription?.unsubscribe();
   }
 
   private subscribeToActorKillEvent(actor: Phaser.GameObjects.GameObject) {
@@ -294,6 +322,7 @@ export default class ActorInfoContainer extends Phaser.GameObjects.Container {
     this.actorInfoLabelsVisibilitySubscription?.unsubscribe();
     this.tabHandlerSubscription?.unsubscribe();
     this.researchEventSubscriptions.forEach((sub) => sub.unsubscribe());
+    this.containerChangedSubscription?.unsubscribe();
   }
   /* END-USER-CODE */
 }

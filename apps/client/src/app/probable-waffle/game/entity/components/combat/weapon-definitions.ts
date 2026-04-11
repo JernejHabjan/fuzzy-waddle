@@ -25,7 +25,6 @@ import {
   SkaduweeOwlSfxFurballFireSounds,
   SkaduweeOwlSfxFurballHitSounds
 } from "../../../prefabs/characters/skaduwee/skaduwee-owl/SkaduweeOwlSfx";
-import type { AttackData } from "./attack-data";
 import { DamageType } from "@fuzzy-waddle/api-interfaces";
 
 export const weaponDefinitions = {
@@ -681,6 +680,85 @@ export const weaponDefinitions = {
     delays: {
       fire: 200,
       hit: 500
+    }
+  },
+  [WeaponType.ShipVolley]: {
+    weaponType: WeaponType.ShipVolley,
+    canTargetAir: false,
+    projectile: {
+      type: ProjectileType.ArrowProjectile,
+      speed: 600,
+      orientation: {
+        randomizeOrientation: false,
+        pointingOrientation: 0
+      },
+      impactAnimation: {
+        anims: EffectsAnims.debrisAnimations
+      },
+      trajectoryType: "parabolic" as const,
+      parabolicPeakHeight: 130,
+      salvo: {
+        count: 3,
+        spreadPx: 100
+      }
+    },
+    damage: 12,
+    damageType: DamageType.Physical,
+    cooldown: 3000,
+    range: 7,
+    minRange: 2,
+    highGroundRangeBonus: 1,
+    animationType: AnimationType.Shoot,
+    sounds: {
+      preparing: SharedActorActionsSfxLeatherNockSounds,
+      fire: SharedActorActionsSfxArrowShootMultipleSounds,
+      hit: SharedActorActionsSfxArrowHitSounds
+    },
+    delays: {
+      fire: 400,
+      hit: 0
+    }
+  },
+  [WeaponType.ShipFireVolley]: {
+    weaponType: WeaponType.ShipFireVolley,
+    canTargetAir: false,
+    projectile: {
+      type: ProjectileType.FireArrowProjectile,
+      speed: 550,
+      orientation: {
+        randomizeOrientation: false,
+        pointingOrientation: 0
+      },
+      impactAnimation: {
+        anims: EffectsAnims.fireImpacts
+      },
+      trajectoryType: "parabolic" as const,
+      parabolicPeakHeight: 150,
+      trailEffect: {
+        key: "factions",
+        frame: "buildings/skaduwee/infantry_inn/cloud-vertical.png",
+        intervalMs: 80
+      },
+      salvo: {
+        count: 3,
+        spreadPx: 100
+      }
+    },
+    damage: 18,
+    damageType: DamageType.Fire,
+    cooldown: 3500,
+    range: 7,
+    minRange: 2,
+    highGroundRangeBonus: 1,
+    animationType: AnimationType.Shoot,
+    sounds: {
+      preparing: SharedActorActionsSfxLeatherNockSounds,
+      fire: SharedActorActionsSfxArrowShootMultipleSounds,
+      hit: SharedActorActionsSfxArrowHitSounds
+    },
+    delays: {
+      fire: 400,
+      hit: 0
     }
   }
 };

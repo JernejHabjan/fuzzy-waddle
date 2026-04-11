@@ -133,6 +133,8 @@ import PumpkinWarlockPumpkin from "../../../prefabs/characters/mobs/pumpkin_warl
 import SandWorm from "../../../prefabs/characters/mobs/sand_worm/SandWorm";
 import ForestWendigo from "../../../prefabs/characters/mobs/forest_wendigo/ForestWendigo";
 import SnowWendigo from "../../../prefabs/characters/mobs/snow_wendigo/SnowWendigo";
+import CommonBoat from "../../../prefabs/characters/shared/CommonBoat/CommonBoat";
+import VikingBoat from "../../../prefabs/characters/shared/VikingBoat/VikingBoat";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -201,7 +203,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(infantryInn);
 
     // ankGuard
-    const ankGuard = new AnkGuard(this, 0, 336);
+    const ankGuard = new AnkGuard(this, -224, 672);
     this.add.existing(ankGuard);
 
     // temple
@@ -975,7 +977,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(tivaraAlchemist);
 
     // tivaraMacemanMale
-    const tivaraMacemanMale = new TivaraMacemanMale(this, -512, 544);
+    const tivaraMacemanMale = new TivaraMacemanMale(this, -32, 272);
     this.add.existing(tivaraMacemanMale);
 
     // black_grouse
@@ -1105,6 +1107,14 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // snowWendigo
     const snowWendigo = new SnowWendigo(this, -768, 800);
     this.add.existing(snowWendigo);
+
+    // commonBoat
+    const commonBoat = new CommonBoat(this, 192, 272);
+    this.add.existing(commonBoat);
+
+    // vikingBoat
+    const vikingBoat = new VikingBoat(this, 928, 496);
+    this.add.existing(vikingBoat);
 
     // spawn (components)
     const spawnEditorOwner = new EditorOwner(spawn);
@@ -1305,7 +1315,8 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     centurionEditorOwner.owner_id = "1";
 
     // cyclops (components)
-    new EditorOwner(cyclops);
+    const cyclopsEditorOwner = new EditorOwner(cyclops);
+    cyclopsEditorOwner.owner_id = "1";
 
     // minotaur (components)
     const minotaurEditorOwner = new EditorOwner(minotaur);
@@ -1370,6 +1381,14 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // tivaraMacemanMale (components)
     const tivaraMacemanMaleEditorOwner = new EditorOwner(tivaraMacemanMale);
     tivaraMacemanMaleEditorOwner.owner_id = "1";
+
+    // commonBoat (components)
+    const commonBoatEditorOwner = new EditorOwner(commonBoat);
+    commonBoatEditorOwner.owner_id = "1";
+
+    // vikingBoat (components)
+    const vikingBoatEditorOwner = new EditorOwner(vikingBoat);
+    vikingBoatEditorOwner.owner_id = "1";
 
     this.tilemap = tilemap;
 

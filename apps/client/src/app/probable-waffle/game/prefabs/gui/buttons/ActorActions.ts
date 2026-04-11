@@ -51,6 +51,9 @@ import { ResearchComponent } from "../../../entity/components/research/research-
 import { researchDefinitions } from "../../../entity/components/research/research-definitions";
 import { QueueComponent } from "../../../entity/components/queue/queue-component";
 import { QueueItemType } from "../../../entity/components/queue/queue-item";
+import { ContainerComponent } from "../../../entity/components/building/container-component";
+import { NavigationService } from "../../../world/services/navigation.service";
+import { isWaterUnit } from "../../../data/game-object-helper";
 /* END-USER-IMPORTS */
 
 /**
@@ -217,6 +220,8 @@ export default class ActorActions extends Phaser.GameObjects.Container {
   private researchEventSubscriptions: Subscription[] = [];
   private spellCooldownSubscriptions: Subscription[] = [];
   private spellUpdateTimer?: Phaser.Time.TimerEvent;
+  /** Refreshes container Unload button when the container actor moves to/from shore. */
+  private containerMovementSubscription?: Subscription;
 
   /** Subscribe to selection changes and update displayed actions accordingly */
   private subscribeToPlayerSelection() {
@@ -302,6 +307,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       action.setup({ visible: false });
     });
     this.resourceChangedSubscription?.unsubscribe();
+    this.containerMovementSubscription?.unsubscribe();
     this.stopSpellCooldownTimer();
   }
 
@@ -626,6 +632,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       index = this.showHealIcons(actor, allActors, index);
       index = this.showSpellIcons(actor, allActors, index);
       index = this.showGatherIcons(actor, allActors, index);
+      index = this.showContainerIcons(actor, allActors, index);
       index = this.showProductionIcons(actor, allActors, index);
       index = this.showResearchIcons(actor, allActors, index);
       index = this.showBuilderIcons(actor, allActors, index);
@@ -806,6 +813,76 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       action.setup(this.gatherAction(allActors));
       index++;
     }
+    return index;
+  }
+
+  private showContainerIcons(
+    actor: Phaser.GameObjects.GameObject,
+    _allActors: Phaser.GameObjects.GameObject[],
+    index: number
+  ): number {
+    // Always clean up any stale movement subscription when rebuilding the action bar
+    this.containerMovementSubscription?.unsubscribe();
+
+    const containerComponent = getActorComponent(actor, ContainerComponent);
+    if (!containerComponent) return index;
+
+    const hasUnits = containerComponent.getContainedGameObjects().length > 0;
+
+    // Shore check only applies to water units — ground containers can always unload
+    let isOnShore = true;
+    if (isWaterUnit(actor)) {
+      const navigationService = getSceneService(this.mainSceneWithActors, NavigationService);
+      const tile = navigationService?.getCenterTileCoordUnderObject(actor);
+      isOnShore = tile ? (navigationService?.isShoreTile(tile) ?? false) : false;
+    }
+
+    const canUnload = hasUnits && isOnShore;
+
+    const action = this.actor_actions[index];
+    if (!action) {
+      console.error("Action button not found at index", index);
+      return index;
+    }
+
+    const tooltipDescription = !hasUnits
+      ? "No units to unload"
+      : isWaterUnit(actor) && !isOnShore
+        ? "Must be docked at a shore tile to unload"
+        : "Unload all carried units";
+
+    action.setup({
+      icon: {
+        key: "gui",
+        frame: "action_icons/hand.png",
+        origin: { x: 0.5, y: 0.5 }
+      },
+      visible: true,
+      disabled: !canUnload,
+      action: () => {
+        if (!canUnload) return;
+        containerComponent.unloadAll();
+      },
+      tooltipInfo: {
+        title: "Unload All",
+        description: tooltipDescription,
+        iconKey: "gui",
+        iconFrame: "action_icons/hand.png",
+        iconOrigin: { x: 0.5, y: 0.5 }
+      },
+      shortcut: "u"
+    } satisfies ActorActionSetup);
+    index++;
+
+    // Refresh the button when the actor moves to/from a shore tile
+    this.containerMovementSubscription?.unsubscribe();
+    const translateComponent = getActorComponent(actor, ActorTranslateComponent);
+    if (translateComponent) {
+      this.containerMovementSubscription = translateComponent.actorMovedLogicalPosition.subscribe(() => {
+        this.refreshForCurrentSelection();
+      });
+    }
+
     return index;
   }
 
@@ -1016,7 +1093,6 @@ export default class ActorActions extends Phaser.GameObjects.Container {
 
     return false;
   }
-
 
   private showBuilderIcons(
     actor: Phaser.GameObjects.GameObject,
@@ -1276,7 +1352,8 @@ export default class ActorActions extends Phaser.GameObjects.Container {
 
     if (hasObjectPrereqs || hasResearchPrereqs) {
       const requirementObjectNames =
-        validation.prereqs.objectNames?.map((req) => getPwActorDefinition(req, null)?.components?.info?.name ?? req) ?? [];
+        validation.prereqs.objectNames?.map((req) => getPwActorDefinition(req, null)?.components?.info?.name ?? req) ??
+        [];
       const requirementResearchNames =
         validation.prereqs.researchTypes?.map((req) => researchDefinitions[req]?.name ?? req) ?? [];
       const requirementNames = [...requirementObjectNames, ...requirementResearchNames].join(", ");

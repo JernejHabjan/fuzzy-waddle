@@ -4,7 +4,7 @@
         <key>fileFormatVersion</key>
         <int>6</int>
         <key>texturePackerVersion</key>
-        <string>7.1.0</string>
+        <string>7.4.0</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -173,6 +173,36 @@
         </struct>
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
+            <key type="filename">../sprites/units/common/boat/common_boat-0.png</key>
+            <key type="filename">../sprites/units/common/boat/common_boat-12.png</key>
+            <key type="filename">../sprites/units/common/boat/common_boat-18.png</key>
+            <key type="filename">../sprites/units/common/boat/common_boat-24.png</key>
+            <key type="filename">../sprites/units/common/boat/common_boat-30.png</key>
+            <key type="filename">../sprites/units/common/boat/common_boat-36.png</key>
+            <key type="filename">../sprites/units/common/boat/common_boat-42.png</key>
+            <key type="filename">../sprites/units/common/boat/common_boat-6.png</key>
+            <key type="filename">../sprites/units/common/viking-ship/ship1.png</key>
+            <key type="filename">../sprites/units/common/viking-ship/ship11.png</key>
+            <key type="filename">../sprites/units/common/viking-ship/ship13.png</key>
+            <key type="filename">../sprites/units/common/viking-ship/ship15.png</key>
+            <key type="filename">../sprites/units/common/viking-ship/ship3.png</key>
+            <key type="filename">../sprites/units/common/viking-ship/ship5.png</key>
+            <key type="filename">../sprites/units/common/viking-ship/ship7.png</key>
+            <key type="filename">../sprites/units/common/viking-ship/ship9.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>16,16,32,32</rect>
+                <key>scale9Paddings</key>
+                <rect>16,16,32,32</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">../sprites/units/skaduwee/owl/death/death_1.png</key>
             <key type="filename">../sprites/units/skaduwee/owl/death/death_2.png</key>
             <key type="filename">../sprites/units/skaduwee/owl/death/death_3.png</key>

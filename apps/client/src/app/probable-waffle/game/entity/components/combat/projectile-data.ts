@@ -25,4 +25,24 @@ export interface ProjectileData {
     // Custom easing for movement (e.g., 'Cubic.easeIn' for falling)
     ease?: string;
   };
+  // 'parabolic' makes the projectile arc through the air (like cannon/ship volley)
+  trajectoryType?: "linear" | "parabolic";
+  // Peak height (px) above the midpoint for parabolic trajectory (default: 120)
+  parabolicPeakHeight?: number;
+  // Spawns a trail image at intervals while the projectile travels
+  trailEffect?: {
+    key: string;
+    frame: string;
+    intervalMs: number;
+  };
+  /**
+   * When set, fire multiple projectiles in a single attack.
+   * Each projectile is launched from a slightly offset origin along the hull.
+   */
+  salvo?: {
+    /** Number of projectiles to fire. */
+    count: number;
+    /** Total horizontal spread in world pixels across all projectile origins. */
+    spreadPx: number;
+  };
 }

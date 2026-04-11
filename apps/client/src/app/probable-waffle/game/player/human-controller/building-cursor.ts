@@ -174,7 +174,7 @@ export class BuildingCursor {
           false
         );
 
-        // Find a nearby walkable tile to move the actor to
+        // Find a nearby navigable tile to move the actor to
         // Try tiles in a spiral pattern around the actor's current tile position
         let targetTile: Vector3Simple | undefined;
         const maxDistance = 5; // Search up to 5 tiles away
@@ -200,9 +200,9 @@ export class BuildingCursor {
                 continue;
               }
 
-              // Check if the tile is walkable
-              const isWalkable = this.navigationService!.isTileWalkable({ x: testTileX, y: testTileY });
-              if (isWalkable) {
+              // Check if the tile is navigable
+              const isNavigable = this.navigationService!.isTileNavigable({ x: testTileX, y: testTileY });
+              if (isNavigable) {
                 targetTile = { x: testTileX, y: testTileY, z: 0 } satisfies Vector3Simple;
               }
             }
@@ -434,8 +434,8 @@ export class BuildingCursor {
     if (!allTilesVisible) return false;
 
     // 2. Check Walkability
-    const allTilesWalkable = tiles.every((tile) => this.navigationService!.isTileWalkable(tile));
-    if (!allTilesWalkable) return false;
+    const allTilesNavigable = tiles.every((tile) => this.navigationService!.isTileNavigable(tile));
+    if (!allTilesNavigable) return false;
 
     // 3. Check for collisions with other actors
     const objectsToIgnore = new Set<GameObjects.GameObject>(ignoreGameObjects);

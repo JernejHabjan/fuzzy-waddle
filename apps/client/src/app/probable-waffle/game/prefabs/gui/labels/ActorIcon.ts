@@ -105,7 +105,8 @@ export default class ActorIcon extends Phaser.GameObjects.Container {
       definition: {
         actorObjectId: this.definition?.actorObjectId,
         iconIndex: this.definition?.iconIndex,
-        researchType: this.definition?.researchType
+        researchType: this.definition?.researchType,
+        containedActorId: this.definition?.containedActorId
       },
       keys: { ctrl: isCtrlPressed, shift: isShiftPressed }
     });

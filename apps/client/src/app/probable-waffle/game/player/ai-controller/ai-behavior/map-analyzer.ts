@@ -136,7 +136,7 @@ export class MapAnalyzer {
       analysis.baseCenterTile = this.averageTile(ownedTiles);
     }
 
-    // 2) Find candidate build spots around base center (walkable, spaced out)
+    // 2) Find candidate build spots around base center (navigable, spaced out)
     if (analysis.baseCenterTile) {
       analysis.candidateBuildSpots = await this.sampleCandidateBuildSpots(navigation, analysis.baseCenterTile);
     }
@@ -170,7 +170,7 @@ export class MapAnalyzer {
       const tile = navigation.randomTileInRadius(base, radius);
       if (!tile) continue;
 
-      if (!navigation.isWithinGridBounds(tile) || !navigation.isTileWalkable(tile)) continue;
+      if (!navigation.isWithinGridBounds(tile) || !navigation.isTileNavigable(tile)) continue;
 
       const path = await navigation.findPathBetweenTiles(base, tile);
       if (!path || !path.length) continue; // too close or unreachable

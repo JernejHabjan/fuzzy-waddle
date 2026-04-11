@@ -21,7 +21,7 @@ import { getSceneService } from "../../world/services/scene-component-helpers";
 import { DebuggingService } from "../../world/services/DebuggingService";
 import { ContainableComponent } from "../components/building/containable-component";
 import { AudioActorComponent } from "../components/actor-audio/audio-actor-component";
-import { WalkableComponent } from "../components/movement/walkable-component";
+import { NavigableComponent } from "../components/movement/navigable-component";
 import { FlyingComponent } from "../components/movement/flying-component";
 import { CommandBusService } from "../../world/services/command-bus.service";
 import type { ActorActionCommand } from "../../data/commands/game-command";
@@ -133,10 +133,10 @@ export class ActionSystem {
       if (selfPlayerNumber === targetPlayerNumber) {
         // ally
 
-        const targetIsWalkable = getActorComponent(targetGameObject, WalkableComponent);
+        const targetIsNavigable = getActorComponent(targetGameObject, NavigableComponent);
         const selfHasFlying = getActorComponent(this.gameObject, FlyingComponent);
-        if (targetIsWalkable && !selfHasFlying) {
-          // target is walkable and self is not flying
+        if (targetIsNavigable && !selfHasFlying) {
+          // target is navigable and self is not flying
           return new OrderData(OrderType.Move, { targetGameObject });
         }
 
@@ -202,9 +202,7 @@ export class ActionSystem {
 
           const selfContainableComponent = getActorComponent(this.gameObject, ContainableComponent);
           if (selfContainableComponent) {
-            // self is containable
-
-            console.warn("todo - this is not yet supported in player-pawn-ai-controller"); // todo
+            // self is containable — issue boarding order
             return new OrderData(OrderType.EnterContainer, { targetGameObject });
           }
         }

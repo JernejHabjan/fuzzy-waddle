@@ -28,9 +28,10 @@ import { ActionSystem } from "../entity/systems/action.system";
 import { HealingComponent } from "../entity/components/combat/components/healing-component";
 import { AudioActorComponent } from "../entity/components/actor-audio/audio-actor-component";
 import { AnimationActorComponent } from "../entity/components/animation/animation-actor-component";
+import { ShipAnimationComponent } from "../entity/components/animation/ship-animation-component";
 import { RepresentableComponent } from "../entity/components/representable-component";
 import { FlyingComponent } from "../entity/components/movement/flying-component";
-import { WalkableComponent } from "../entity/components/movement/walkable-component";
+import { NavigableComponent } from "../entity/components/movement/navigable-component";
 import { HousingComponent } from "../entity/components/building/housing-component";
 import { HousingCostComponent } from "../entity/components/building/housing-cost-component";
 import { MovementDecalCursorService } from "../entity/components/movement/movement-decal-cursor.service";
@@ -191,8 +192,9 @@ function gatherCompletedActorData(actor: Phaser.GameObjects.GameObject): { compo
       ? [new ActorTranslateComponent(actor, componentDefinitions.translatable), new MovementDecalCursorService(actor)]
       : []),
     ...(componentDefinitions?.flying ? [new FlyingComponent(actor, componentDefinitions.flying)] : []),
-    ...(componentDefinitions?.walkable ? [new WalkableComponent(actor, componentDefinitions.walkable)] : []),
+    ...(componentDefinitions?.navigable ? [new NavigableComponent(actor, componentDefinitions.navigable)] : []),
     ...(componentDefinitions?.animatable ? [new AnimationActorComponent(actor, componentDefinitions.animatable)] : []),
+    ...(componentDefinitions?.shipAnimatable ? [new ShipAnimationComponent(actor, componentDefinitions.shipAnimatable)] : []),
     ...(componentDefinitions?.aiControlled ? [new PawnAiController(actor, componentDefinitions.aiControlled)] : []),
     ...(componentDefinitions?.level ? [new LevelComponent(actor, componentDefinitions.level)] : [])
   ];

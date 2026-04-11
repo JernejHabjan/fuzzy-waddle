@@ -21,5 +21,9 @@ export enum ResearchType {
   SkaduweeMagicianUpgradeLevel2 = 'skaduweeMagicianUpgradeLevel2',
   SkaduweeMagicianUpgradeLevel3 = 'skaduweeMagicianUpgradeLevel3',
   SkaduweeRangedUpgradeLevel2 = 'skaduweeRangedUpgradeLevel2',
-  SkaduweeRangedUpgradeLevel3 = 'skaduweeRangedUpgradeLevel3'
+  SkaduweeRangedUpgradeLevel3 = 'skaduweeRangedUpgradeLevel3',
+
+  // Unit upgrades - Shared boats
+  CommonBoatUpgradeLevel2 = 'commonBoatUpgradeLevel2',
+  VikingBoatUpgradeLevel2 = 'vikingBoatUpgradeLevel2'
 }

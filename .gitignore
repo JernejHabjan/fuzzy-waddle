@@ -61,3 +61,5 @@ package-lock.json
 /.idea/sqldialects.xml
 NUL
 supabase/.temp
+.claude/settings.json
+.claude/settings.local.json
