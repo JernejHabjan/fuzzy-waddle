@@ -27,7 +27,9 @@
             "x": 19.873978855507353,
             "y": 48.47367270095675,
             "originX": 0.3105309196173024,
-            "originY": 0.7574011359524492
+            "originY": 0.7574011359524492,
+            "animationPlayMethod": 1,
+            "animationKey": "undead_land/DeadTreeAnim3/Animation"
         }
     ],
     "plainObjects": [],

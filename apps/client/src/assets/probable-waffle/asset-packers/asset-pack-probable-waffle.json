@@ -614,6 +614,11 @@
                 "key": "environment_1"
             },
             {
+                "url": "assets/probable-waffle/atlas/anims/environment_anims.json",
+                "type": "animation",
+                "key": "environment_anims"
+            },
+            {
                 "type": "multiatlas",
                 "url": "assets/probable-waffle/atlas/factions.json",
                 "path": "assets/probable-waffle/atlas",

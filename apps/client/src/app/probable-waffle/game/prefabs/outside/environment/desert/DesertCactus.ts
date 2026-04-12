@@ -4,6 +4,7 @@
 
 /* START-USER-IMPORTS */
 import { initStaticActor } from "../../../../data/init-static-actor";
+import { RandomSpriteComponent } from "../../../../entity/components/random-sprite-component";
 /* END-USER-IMPORTS */
 
 export default class DesertCactus extends Phaser.GameObjects.Sprite {
@@ -16,19 +17,20 @@ export default class DesertCactus extends Phaser.GameObjects.Sprite {
 
     /* START-USER-CTR-CODE */
     initStaticActor(this, null);
+    new RandomSpriteComponent(this, [
+      "desert/cactus/0.png",
+      "desert/cactus/1.png",
+      "desert/cactus/2.png",
+      "desert/cactus/3.png",
+      "desert/cactus/4.png",
+      "desert/cactus/5.png",
+      "desert/cactus/6.png",
+      "desert/cactus/7.png"
+    ]);
     /* END-USER-CTR-CODE */
   }
 
   /* START-USER-CODE */
-  // TODO: Wire up remaining animation frames / asset variants:
-  //   - desert/cactus/1.png
-  //   - desert/cactus/2.png
-  //   - desert/cactus/3.png
-  //   - desert/cactus/4.png
-  //   - desert/cactus/5.png
-  //   - desert/cactus/6.png
-  //   - desert/cactus/7.png
-
   // Write your code here.
 
   /* END-USER-CODE */

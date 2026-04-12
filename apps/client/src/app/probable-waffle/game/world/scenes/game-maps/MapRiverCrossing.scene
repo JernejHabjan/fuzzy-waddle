@@ -2962,6 +2962,39 @@
             "EditorOwner.owner_id": "1",
             "x": -127,
             "y": 690
+        },
+        {
+            "prefabId": "fe335e95-a540-43e1-9865-32bb3234755c",
+            "id": "4b8d3ddf-532b-4b89-bed8-d300ac3e021c",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "undeadLandDeadTreeAnim3",
+            "x": 181,
+            "y": 803
+        },
+        {
+            "prefabId": "1756283b-d1b1-4672-8dcc-4b2c89fcf7c7",
+            "id": "21d187e5-68d3-453d-ac7d-8cdd68f87078",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "undeadLandDeadTreeAnim2",
+            "x": 319,
+            "y": 808
+        },
+        {
+            "prefabId": "df5200a0-dc56-4e18-833c-f6030f96d011",
+            "id": "8c428628-9f58-4296-a1e8-ca9b1128d22a",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "undeadLandDeadTreeAnim1",
+            "x": 224,
+            "y": 912
         }
     ],
     "plainObjects": [

@@ -4,6 +4,7 @@
 
 /* START-USER-IMPORTS */
 import { initStaticActor } from "../../../../data/init-static-actor";
+import { RandomSpriteComponent } from "../../../../entity/components/random-sprite-component";
 /* END-USER-IMPORTS */
 
 export default class DesertPalm extends Phaser.GameObjects.Sprite {
@@ -16,16 +17,17 @@ export default class DesertPalm extends Phaser.GameObjects.Sprite {
 
     /* START-USER-CTR-CODE */
     initStaticActor(this, null);
+    new RandomSpriteComponent(this, [
+      "desert/palm/0.png",
+      "desert/palm/1.png",
+      "desert/palm/2.png",
+      "desert/palm/3.png",
+      "desert/palm/4.png"
+    ]);
     /* END-USER-CTR-CODE */
   }
 
   /* START-USER-CODE */
-  // TODO: Wire up remaining animation frames / asset variants:
-  //   - desert/palm/1.png
-  //   - desert/palm/2.png
-  //   - desert/palm/3.png
-  //   - desert/palm/4.png
-
   // Write your code here.
 
   /* END-USER-CODE */

@@ -135,6 +135,9 @@ import ForestWendigo from "../../../prefabs/characters/mobs/forest_wendigo/Fores
 import SnowWendigo from "../../../prefabs/characters/mobs/snow_wendigo/SnowWendigo";
 import Field from "../../../prefabs/buildings/shared/Field";
 import Granary from "../../../prefabs/buildings/shared/Granary";
+import UndeadLandDeadTreeAnim3 from "../../../prefabs/outside/environment/undead_land/UndeadLandDeadTreeAnim3";
+import UndeadLandDeadTreeAnim2 from "../../../prefabs/outside/environment/undead_land/UndeadLandDeadTreeAnim2";
+import UndeadLandDeadTreeAnim1 from "../../../prefabs/outside/environment/undead_land/UndeadLandDeadTreeAnim1";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -1115,6 +1118,18 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // granary
     const granary = new Granary(this, -127, 690);
     this.add.existing(granary);
+
+    // undeadLandDeadTreeAnim3
+    const undeadLandDeadTreeAnim3 = new UndeadLandDeadTreeAnim3(this, 181, 803);
+    this.add.existing(undeadLandDeadTreeAnim3);
+
+    // undeadLandDeadTreeAnim2
+    const undeadLandDeadTreeAnim2 = new UndeadLandDeadTreeAnim2(this, 319, 808);
+    this.add.existing(undeadLandDeadTreeAnim2);
+
+    // undeadLandDeadTreeAnim1
+    const undeadLandDeadTreeAnim1 = new UndeadLandDeadTreeAnim1(this, 224, 912);
+    this.add.existing(undeadLandDeadTreeAnim1);
 
     // spawn (components)
     const spawnEditorOwner = new EditorOwner(spawn);

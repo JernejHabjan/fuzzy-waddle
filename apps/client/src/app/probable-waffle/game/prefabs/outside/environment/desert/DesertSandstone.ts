@@ -4,10 +4,10 @@
 
 /* START-USER-IMPORTS */
 import { initStaticActor } from "../../../../data/init-static-actor";
+import { RandomSpriteComponent } from "../../../../entity/components/random-sprite-component";
 /* END-USER-IMPORTS */
 
 export default class DesertSandstone extends Phaser.GameObjects.Sprite {
-
   constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
     super(scene, x ?? 32, y ?? 48, texture || "environment_1", frame ?? "desert/sandstone/0.png");
 
@@ -16,22 +16,23 @@ export default class DesertSandstone extends Phaser.GameObjects.Sprite {
 
     /* START-USER-CTR-CODE */
     initStaticActor(this, null);
+    new RandomSpriteComponent(this, [
+      "desert/sandstone/0.png",
+      "desert/sandstone/1.png",
+      "desert/sandstone/2.png",
+      "desert/sandstone/3.png",
+      "desert/sandstone/4.png",
+      "desert/sandstone/5.png",
+      "desert/sandstone/6.png",
+      "desert/sandstone/7.png,",
+      "desert/sandstone/8.png",
+      "desert/sandstone/9.png",
+      "desert/sandstone/10.png"
+    ]);
     /* END-USER-CTR-CODE */
   }
 
   /* START-USER-CODE */
-  // TODO: Wire up remaining animation frames / asset variants:
-  //   - desert/sandstone/1.png
-  //   - desert/sandstone/2.png
-  //   - desert/sandstone/3.png
-  //   - desert/sandstone/4.png
-  //   - desert/sandstone/5.png
-  //   - desert/sandstone/6.png
-  //   - desert/sandstone/7.png
-  //   - desert/sandstone/8.png
-  //   - desert/sandstone/9.png
-  //   - desert/sandstone/10.png
-
   // Write your code here.
 
   /* END-USER-CODE */
