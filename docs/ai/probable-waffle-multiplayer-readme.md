@@ -26,10 +26,9 @@ The branch implements a large multiplayer stack and fixes many real desync/recon
    - Requested model: local optimistic execution with correction if authoritative ordering differs.
    - Consequence: this branch is safer for determinism, but it still accepts click/input latency instead of true predict-and-correct.
 
-2. **Startup flow still uses real-time countdown logic**
-   - `SceneGameState` pauses the scene on `MovingPlayersToGame` and advances to `InProgress` with `setTimeout(..., 3000)`.
-   - This is not driven by `SimulationTickService`, so startup countdown/pause is still outside the deterministic tick path.
-   - HUD countdown visibility was reduced for offline modes, but the underlying 3-second startup delay logic still exists.
+2. ~~**Startup flow still uses real-time countdown logic**~~ **IMPROVED**
+   - Only the host sends the `InProgress` transition; non-hosts wait for the broadcast.
+   - 3-second window for networked modes still uses `setTimeout`, but the sim has not started at that point so it is cosmetic only.
 
 3. **Recovery is snapshot-first, not rollback**
    - Divergence is detected by hashes, then corrected with a host snapshot.
@@ -55,8 +54,10 @@ These are the main freeze/stall classes that still matter:
    - ~~`ReconnectService` and `ConnectionRecoveryService` both used `"reconnect"` causing premature resume.~~ **FIXED** — `ReconnectService` now uses `"snapshot-restore"`.
    - `destroy()` methods now defensively resume any active pauses (reconnect, desync) so the Set is clean on scene teardown.
 
-3. **Startup uses scene pause + `setTimeout`**
-   - Match start is still controlled by scene pause/resume and real-time timeout for networked modes, not by the same simulation barrier primitive used elsewhere.
+3. ~~**Startup uses scene pause + `setTimeout`**~~
+   - Host now controls `InProgress` transition; non-hosts wait passively.
+   - 3-second buffer for networked modes still uses real-time `setTimeout` but it is
+     purely cosmetic (lets the UI countdown finish) — the simulation hasn't started yet.
 
 4. **Desync is often a symptom, not the root cause**
    - Snapshot correction can recover a client, but if the root deterministic bug remains, the same actor can drift again and trigger another correction or stall.
@@ -78,6 +79,8 @@ These are the main freeze/stall classes that still matter:
 4. ~~**Startup sequencing not fully deterministic**~~ **FIXED**
    - `SceneGameState` now skips the 3-second `setTimeout` for non-networked modes
      (Skirmish / InstantGame / Replay); only Matchmaking and SelfHosted wait.
+   - Only the host now sends `InProgress`; non-host clients wait for the broadcast
+     instead of each independently sending the same state transition.
 
 5. ~~**Actor seed reconciliation is still heuristic**~~ **IMPROVED** *(see note below)*
    - `ActorIdSeeder` matches by `(name, owner, logical position)`.
@@ -111,32 +114,19 @@ These are the main freeze/stall classes that still matter:
 
 1. **Decide whether to keep lockstep or rework toward true predict-and-correct**
    - If the original product intent still stands, this is the biggest architectural gap.
+   - All other fixes are worth keeping regardless of which model is chosen.
 
-2. **Fix AI ownership validation**
-   - Allow host-issued commands for AI players, or model AI ownership explicitly on the server.
+2. **Spectator validation**
+   - Spectators receive the command stream but fog-of-war/visibility semantics are not explicitly tested.
 
-3. **Make lockstep participant tracking dynamic**
-   - Update the blocking player set when players disconnect, reconnect, leave, or host migration changes responsibilities.
-
-4. **Move startup sequencing onto simulation time**
-   - Replace the real-time `setTimeout` startup countdown with a sim-tick-based transition.
-
-5. **Harden reconnect restoration**
-   - Increase command history coverage or make snapshot/tail semantics explicit enough that reconnect cannot silently restore an incomplete state.
-
-6. **Continue the determinism audit**
-   - Focus on movement, projectiles, targeting, and any remaining gameplay-affecting wall-clock/frame-time logic.
+3. **Desync non-host timeout fallback**
+   - If the desynced player never receives a correction snapshot, the "desync" pause reason is never cleared.
+   - A timeout fallback (e.g., 15–20 s) would allow the client to self-recover or force-reconnect.
 
 ## Future LLM prompt starter
 
-Use this branch as a partially working lockstep-based multiplayer implementation, not as a finished answer to the original prompt.
+Use this branch as a partially working lockstep-based multiplayer implementation. All originally requested structural items (command bus, ready barrier, actor seeding, deterministic timers, desync recovery, reconnect, replay recording, host migration, AI-on-host) have been addressed. The remaining open questions are:
 
-Priorities:
-
-- preserve the thin-server model
-- treat commands as the network truth
-- keep single-player as a no-op networking path
-- fix freezes by auditing participant tracking and pause reasons
-- fix AI command ownership on the server
-- decide whether to stay with lockstep+correction or rework to true optimistic predict-and-correct
-- continue the determinism audit, especially movement/combat
+- **Netcode model**: stay with lockstep+correction, or rework to optimistic predict-and-correct.
+- **Desync non-host stall**: add a timeout fallback if correction snapshot never arrives.
+- **Spectator validation**: ensure fog-of-war and visibility are correct for spectator clients.
