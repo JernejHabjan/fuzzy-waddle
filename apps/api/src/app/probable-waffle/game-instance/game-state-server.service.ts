@@ -3,6 +3,7 @@ import {
   type CommunicatorEvent,
   GameSessionState,
   type ProbableWaffleCommunicatorType,
+  type ProbableWaffleDesyncAlertEvent,
   type ProbableWaffleGameCommandEvent,
   type ProbableWaffleGameInstanceMetadataChangeEvent,
   type ProbableWaffleGameModeDataChangeEvent,
@@ -97,6 +98,8 @@ export class GameStateServerService {
           snapshotResponse.snapshot.tick
         );
         return true;
+      case "desync-alert":
+        return this.validateDesyncAlert(body.payload as ProbableWaffleDesyncAlertEvent, gameInstance, user);
       case "pause-changed":
         return this.pauseStateValidator.validate(body.payload as ProbableWafflePauseChangedEvent, gameInstance, user);
       case "player-disconnected":
@@ -130,5 +133,18 @@ export class GameStateServerService {
     return (this.recentCommandHistory.get(gameInstanceId) ?? [])
       .filter((event) => event.tick > snapshotTick)
       .map((event) => structuredClone(event));
+  }
+
+  private validateDesyncAlert(
+    event: ProbableWaffleDesyncAlertEvent,
+    gameInstance: ReturnType<GameInstanceService["findGameInstance"]>,
+    user: User
+  ): boolean {
+    const currentHostUserId = gameInstance?.gameInstanceMetadata.data.currentHostUserId ?? gameInstance?.gameInstanceMetadata.data.createdBy;
+    if (currentHostUserId !== user.id) {
+      return false;
+    }
+
+    return Number.isInteger(event.tick) && event.tick >= 0 && Number.isInteger(event.desyncedPlayerNumber);
   }
 }

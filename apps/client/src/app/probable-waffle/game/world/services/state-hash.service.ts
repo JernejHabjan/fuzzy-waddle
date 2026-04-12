@@ -9,6 +9,7 @@ import { OwnerComponent } from "../../entity/components/owner-component";
 import { getGameObjectLogicalTransform } from "../../data/game-object-helper";
 import { getCommunicator } from "../../data/scene-data";
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
+import { SnapshotService } from "./snapshot.service";
 
 /** Payload emitted on the allScenes EventEmitter when a hash mismatch is confirmed. */
 export interface DesyncDetectedEvent {
@@ -30,6 +31,14 @@ const HASH_INTERVAL_TICKS = 60;
  * In practice the peer hash arrives within 1–2 ticks of ours.
  */
 const HASH_STORE_TICKS = 120;
+const CORRECTION_GRACE_PERIOD_MS = 5_000;
+
+interface PendingCorrection {
+  emitterUserId: string;
+  playerNumber: number;
+  firstDetectedAtMs: number;
+  alertSent: boolean;
+}
 
 /**
  * Computes a periodic deterministic hash of all actor states and exchanges it with
@@ -47,6 +56,7 @@ export class StateHashService {
   private hashReceivedSub?: Subscription;
   /** Lightweight debug overlay; shown immediately on mismatch for quick visual feedback. */
   private desyncText?: Phaser.GameObjects.Text;
+  private readonly pendingCorrections = new Map<number, PendingCorrection>();
 
   init(scene: ProbableWaffleScene): void {
     const communicator = getCommunicator(scene);
@@ -61,7 +71,7 @@ export class StateHashService {
     this.hashReceivedSub = communicator.stateHashChanged.on.subscribe((event) => {
       // Ignore the echo of our own hash (TwoWayCommunicator fires sendLocally as well).
       if (event.emitterUserId === scene.userId) return;
-      this.compareRemoteHash(event.tick, event.hash, event.playerNumber, scene);
+      this.compareRemoteHash(event, scene);
     });
 
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.destroy());
@@ -111,31 +121,78 @@ export class StateHashService {
   }
 
   private compareRemoteHash(
-    tick: number,
-    remoteHash: string,
-    remotePlayerNumber: number | undefined,
+    event: { tick: number; hash: string; playerNumber: number | undefined; emitterUserId: string | null | undefined },
     scene: ProbableWaffleScene
   ): void {
-    const localHash = this.localHashes.get(tick);
+    const localHash = this.localHashes.get(event.tick);
     if (localHash === undefined) {
       // Peer hash arrived before our own was computed — shouldn't happen in lockstep
       // but guard it; the desync, if real, will be caught on the next interval.
       return;
     }
 
-    if (localHash !== remoteHash) {
-      console.error(
-        `[DESYNC] tick=${tick} remotePlayer=${remotePlayerNumber} ` +
-          `local=${localHash} remote=${remoteHash}`
-      );
-      // Small inline overlay for immediate visual feedback while grace period runs.
-      this.showDesyncIndicator(tick, remotePlayerNumber, scene);
-      // Notify the HUD so the recovery dialog can be triggered after the grace period.
-      scene.communicator.allScenes.emit({
-        name: "desync-detected",
-        data: { tick, remotePlayerNumber, localHash, remoteHash } satisfies DesyncDetectedEvent
-      });
+    if (localHash === event.hash) {
+      if (event.playerNumber !== undefined) {
+        this.pendingCorrections.delete(event.playerNumber);
+      }
+      this.clearDesyncIndicator();
+      return;
     }
+
+    const isRemoteHost =
+      event.emitterUserId !== undefined &&
+      event.emitterUserId !== null &&
+      event.emitterUserId === scene.baseGameData.gameInstance.gameInstanceMetadata.data.currentHostUserId;
+    const shouldHandleLocally = scene.isHost || isRemoteHost;
+    if (!shouldHandleLocally) {
+      return;
+    }
+
+    console.error(
+      `[DESYNC] tick=${event.tick} remotePlayer=${event.playerNumber} ` +
+        `local=${localHash} remote=${event.hash}`
+    );
+    this.showDesyncIndicator(event.tick, event.playerNumber, scene);
+
+    if (!scene.isHost || !event.emitterUserId || event.playerNumber === undefined) {
+      return;
+    }
+
+    this.handleHostDetectedDesync(event.tick, event.playerNumber, event.emitterUserId, scene);
+  }
+
+  private handleHostDetectedDesync(
+    tick: number,
+    remotePlayerNumber: number,
+    emitterUserId: string,
+    scene: ProbableWaffleScene
+  ): void {
+    const now = Date.now();
+    const existing = this.pendingCorrections.get(remotePlayerNumber);
+    if (!existing) {
+      getSceneService(scene, SnapshotService)?.sendSnapshot(scene, emitterUserId, "desync-correction");
+      this.pendingCorrections.set(remotePlayerNumber, {
+        emitterUserId,
+        playerNumber: remotePlayerNumber,
+        firstDetectedAtMs: now,
+        alertSent: false
+      });
+      console.warn(`[DESYNC] Sent correction snapshot to player ${remotePlayerNumber} at tick ${tick}.`);
+      return;
+    }
+
+    if (existing.alertSent || now - existing.firstDetectedAtMs < CORRECTION_GRACE_PERIOD_MS) {
+      return;
+    }
+
+    getCommunicator(scene).desyncAlert?.send({
+      gameInstanceId: scene.gameInstanceId,
+      emitterUserId: scene.userId,
+      tick,
+      desyncedPlayerNumber: remotePlayerNumber
+    });
+    existing.alertSent = true;
+    console.error(`[DESYNC] Player ${remotePlayerNumber} remained divergent after correction; opening recovery dialog.`);
   }
 
   /** Persistent on-screen overlay so the affected client immediately sees the desync. */
@@ -152,6 +209,11 @@ export class StateHashService {
       .setScrollFactor(0);
   }
 
+  private clearDesyncIndicator(): void {
+    this.desyncText?.destroy();
+    this.desyncText = undefined;
+  }
+
   private pruneOldHashes(currentTick: number): void {
     const cutoff = currentTick - HASH_STORE_TICKS;
     for (const tick of this.localHashes.keys()) {
@@ -162,7 +224,8 @@ export class StateHashService {
   destroy(): void {
     this.tickSub?.unsubscribe();
     this.hashReceivedSub?.unsubscribe();
-    this.desyncText?.destroy();
+    this.clearDesyncIndicator();
+    this.pendingCorrections.clear();
   }
 }
 

@@ -1,7 +1,7 @@
 # Multiplayer Replication Progress
 
 ## Open questions / blockers
-- Build placement, real desync correction, and the final hash/determinism pass are still outstanding.
+- Final queue/economy validation hardening and the hash/determinism pass are still outstanding.
 
 ## Steps
 
@@ -26,8 +26,8 @@
 | 17 | [ ] | **Server-side queue validation** – validate production/research queue payloads against actor ownership and building capabilities |
 | 18 | [x] | **Pause / resume commands** – turn pause into a relayed player command with cooldown/limit enforcement |
 | 19 | [x] | **Control groups in MP** – sync assign/recall commands while leaving local camera/selection visuals local |
-| 20 | [ ] | **Desync correction** – snapshot-backed host correction instead of pause-only detection |
-| 21 | [ ] | **Hash widening + determinism audit** – include economy/research/queues in hashes and remove multiplayer-relevant nondeterminism |
+| 20 | [x] | **Desync correction** – snapshot-backed host correction instead of pause-only detection |
+| 21 | [~] | **Hash widening + determinism audit** – include economy/research/queues in hashes and remove multiplayer-relevant nondeterminism |
 
 ## Completed steps
 - **01** Added `CommandBusService` (RxJS Subject) + `GameCommand` union (`MOVE | ACTOR_ACTION | STOP`). Rewired all 5 dispatch sites and 2 system subscribers. Removed `emitEventIssueActorCommandToSelectedActors` / `emitEventIssueMoveCommandToSelectedActors` from scene-data. Shift-key state now captured at dispatch time, not receive time.
@@ -49,3 +49,4 @@
 - **16** Production/research queue actions now use explicit `PRODUCTION | CANCEL_PRODUCTION | RESEARCH | CANCEL_RESEARCH` commands. UI queue clicks, hotkeys, and host-only AI all route through `CommandBusService`, `QueueCommandSystem` executes them on the targeted building, and the API now accepts and sanity-checks those command types.
 - **18** Added a relayed `pause-changed` multiplayer event with per-player cooldown/limit enforcement on the API, a `PauseSyncService` on the client, reason-based pause locking in `SimulationTickService`, and a HUD menu pause button that toggles pause/resume across all clients.
 - **19** Control-group assignment now mirrors through `playerController.data.selectionGroups` so reconnect/save/load and peers see the same group contents, while recall still uses the existing `selection.set` path and keeps camera jumps local. The API now validates group keys, size, duplicate IDs, and actor ownership before accepting updates.
+- **20** Hash mismatches now trigger host-driven correction instead of immediately escalating to a dialog: the host pushes a targeted `snapshot-response` with reason `desync-correction`, the affected client reapplies actors/player data/control groups in place, and only unresolved mismatches after the grace window broadcast a room-wide `desync-alert` that pauses everyone and opens the recovery dialog.

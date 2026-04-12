@@ -24,6 +24,7 @@ export type ProbableWaffleCommunicatorType =
   | "state-hash"
   | "snapshot-request"
   | "snapshot-response"
+  | "desync-alert"
   | "pause-changed"
   | "player-disconnected"
   | "player-reconnected"
@@ -177,6 +178,8 @@ export interface ProbableWaffleSnapshotRequestEvent extends ProbableWaffleCommun
 export interface ProbableWaffleSnapshotResponseEvent extends ProbableWaffleCommunicatorEvent {
   targetUserId: UserId;
   snapshot: ProbableWaffleSnapshotData;
+  /** Why this snapshot was pushed to the client. */
+  reason?: "reconnect" | "spectator-catch-up" | "desync-correction";
   /**
    * Short rolling tail of command batches committed after snapshot.tick.
    * This closes the race between host snapshot capture and the reconnecting
@@ -184,6 +187,12 @@ export interface ProbableWaffleSnapshotResponseEvent extends ProbableWaffleCommu
    * whole sim outside the normal Phaser update path.
    */
   commandTail?: ProbableWaffleGameCommandEvent[];
+}
+
+/** Broadcast by the host when a correction attempt failed and room-wide recovery must start. */
+export interface ProbableWaffleDesyncAlertEvent extends ProbableWaffleCommunicatorEvent {
+  tick: number;
+  desyncedPlayerNumber: PlayerNumber;
 }
 
 /** Player-issued pause or resume request relayed to the whole room. */

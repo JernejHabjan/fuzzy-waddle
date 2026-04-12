@@ -112,6 +112,7 @@ export class ReconnectService {
     const actorIndex = getSceneService(scene, ActorIndexSystem);
     const commandBus = getSceneService(scene, CommandBusService);
     const creator = getSceneService(scene, SceneActorCreator);
+    const pauseReason = response.reason === "desync-correction" ? "desync-correction" : "reconnect";
 
     if (!actorIndex || !creator) {
       console.error("[Reconnect] Required services not available; cannot apply snapshot.");
@@ -120,10 +121,10 @@ export class ReconnectService {
 
     console.info(
       `[Reconnect] Applying snapshot at tick ${snapshot.tick}. Actors: ${snapshot.actors.length}. ` +
-        `Buffered tail batches: ${response.commandTail?.length ?? 0}`
+        `Buffered tail batches: ${response.commandTail?.length ?? 0}. Reason: ${response.reason ?? "reconnect"}`
     );
 
-    simTick?.pauseTick("reconnect");
+    simTick?.pauseTick(pauseReason);
 
     // Destroy all current actors before re-creating from snapshot.
     const currentActors = [...actorIndex.getAllIdActors()];
@@ -177,8 +178,11 @@ export class ReconnectService {
       });
     }
 
-    simTick?.resumeTick("reconnect");
+    simTick?.resumeTick(pauseReason);
 
+    if (response.reason === "desync-correction") {
+      console.warn(`[DESYNC] Applied host correction snapshot at tick ${snapshot.tick}.`);
+    }
     console.info("[Reconnect] Snapshot applied. Simulation resumed.");
   }
 

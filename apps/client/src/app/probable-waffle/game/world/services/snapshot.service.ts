@@ -68,7 +68,7 @@ export class SnapshotService {
       if (!e.emitterUserId) {
         return;
       }
-      this.serveSnapshot(scene, e.emitterUserId);
+      this.sendSnapshot(scene, e.emitterUserId, "reconnect");
     });
   }
 
@@ -120,7 +120,11 @@ export class SnapshotService {
     } satisfies ProbableWaffleSnapshotData;
   }
 
-  private serveSnapshot(scene: ProbableWaffleScene, targetUserId: UserId): void {
+  sendSnapshot(
+    scene: ProbableWaffleScene,
+    targetUserId: UserId,
+    reason: "reconnect" | "spectator-catch-up" | "desync-correction"
+  ): void {
     // Reconnect/spectator catch-up must reflect the host's current sim state, not the
     // last periodic checkpoint, otherwise recent commands would be lost on restore.
     this.captureSnapshot(scene);
@@ -135,6 +139,7 @@ export class SnapshotService {
       gameInstanceId: scene.gameInstanceId,
       emitterUserId: scene.userId,
       targetUserId,
+      reason,
       snapshot: this.latestSnapshot
     } satisfies ProbableWaffleSnapshotResponseEvent);
   }

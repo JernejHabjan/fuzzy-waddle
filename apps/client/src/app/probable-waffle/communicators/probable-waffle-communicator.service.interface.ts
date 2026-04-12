@@ -1,5 +1,6 @@
 import { TwoWayCommunicator } from "../../shared/game/communicators/two-way-communicator";
 import {
+  type ProbableWaffleDesyncAlertEvent,
   type GameInstanceId,
   type ProbableWaffleCommunicatorMessageEvent,
   type ProbableWaffleCommunicatorType,
@@ -35,6 +36,8 @@ export interface ProbableWaffleCommunicatorServiceInterface {
   snapshotRequested?: TwoWayCommunicator<ProbableWaffleSnapshotRequestEvent, ProbableWaffleCommunicatorType>;
   /** Snapshot response (host → requesting client); only in MP. */
   snapshotResponse?: TwoWayCommunicator<ProbableWaffleSnapshotResponseEvent, ProbableWaffleCommunicatorType>;
+  /** Host-issued unresolved desync alert; only in MP. */
+  desyncAlert?: TwoWayCommunicator<ProbableWaffleDesyncAlertEvent, ProbableWaffleCommunicatorType>;
   /** Multiplayer pause/resume relay; only in MP. */
   pauseChanged?: TwoWayCommunicator<ProbableWafflePauseChangedEvent, ProbableWaffleCommunicatorType>;
   /** Server-originated host migration event; only in MP. */

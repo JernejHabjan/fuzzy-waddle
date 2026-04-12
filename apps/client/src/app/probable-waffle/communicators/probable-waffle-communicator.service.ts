@@ -2,6 +2,7 @@ import { EventEmitter, Injectable, type OnDestroy } from "@angular/core";
 import {
   type AllScenesEventData,
   type GameInstanceId,
+  type ProbableWaffleDesyncAlertEvent,
   type ProbableWaffleCommunicatorMessageEvent,
   type ProbableWaffleCommunicatorType,
   type ProbableWaffleGameCommandEvent,
@@ -47,6 +48,8 @@ export class ProbableWaffleCommunicatorService
   snapshotRequested?: TwoWayCommunicator<ProbableWaffleSnapshotRequestEvent, ProbableWaffleCommunicatorType>;
   /** Snapshot response (host → requesting client); only in MP. */
   snapshotResponse?: TwoWayCommunicator<ProbableWaffleSnapshotResponseEvent, ProbableWaffleCommunicatorType>;
+  /** Host-issued unresolved desync alert; only in MP. */
+  desyncAlert?: TwoWayCommunicator<ProbableWaffleDesyncAlertEvent, ProbableWaffleCommunicatorType>;
   /** Multiplayer pause/resume relay; only in MP. */
   pauseChanged?: TwoWayCommunicator<ProbableWafflePauseChangedEvent, ProbableWaffleCommunicatorType>;
   /** Server-originated host migration event; only in MP. */
@@ -122,6 +125,12 @@ export class ProbableWaffleCommunicatorService
         ProbableWaffleSnapshotResponseEvent,
         ProbableWaffleCommunicatorType
       >(ProbableWaffleGatewayEvent.ProbableWaffleAction, "snapshot-response", gameInstanceId, socket);
+      this.desyncAlert = new TwoWayCommunicator<ProbableWaffleDesyncAlertEvent, ProbableWaffleCommunicatorType>(
+        ProbableWaffleGatewayEvent.ProbableWaffleAction,
+        "desync-alert",
+        gameInstanceId,
+        socket
+      );
       this.pauseChanged = new TwoWayCommunicator<ProbableWafflePauseChangedEvent, ProbableWaffleCommunicatorType>(
         ProbableWaffleGatewayEvent.ProbableWaffleAction,
         "pause-changed",
@@ -165,6 +174,7 @@ export class ProbableWaffleCommunicatorService
     this.stateHashChanged?.destroy();
     this.snapshotRequested?.destroy();
     this.snapshotResponse?.destroy();
+    this.desyncAlert?.destroy();
     this.pauseChanged?.destroy();
     this.hostMigrated?.destroy();
   }

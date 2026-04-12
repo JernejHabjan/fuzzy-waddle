@@ -73,6 +73,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     this.sceneGameData.systems.push(new ScoreTracker(this)); // Track player scores for score screen
     const creator = new SceneActorCreator(this);
     const actorIndex = new ActorIndexSystem(this);
+    const snapshotService = new SnapshotService();
 
     this.sceneGameData.components.push(
       this.getCameraMovementHandler(),
@@ -97,7 +98,8 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
       new TechTreeService(),
       new SpellCursor(this),
       new AoeZoneManager(this),
-      new PauseSyncService(this)
+      new PauseSyncService(this),
+      snapshotService
     );
     new ActorDebugDamageSystem(this);
     if (!this.baseGameData.gameInstance.gameInstanceMetadata.isReplay()) {
@@ -129,7 +131,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     // Desync detection: hash state every 60 ticks and compare with peers (MP only).
     new StateHashService().init(this);
     // Snapshot service: host keeps a rolling snapshot for reconnect / late spectator catch-up.
-    new SnapshotService().init(this);
+    snapshotService.init(this);
     // Reconnect service: non-host clients request a snapshot when they rejoin after a drop.
     new ReconnectService().init(this);
     new HostMigrationService().init(this);

@@ -125,7 +125,7 @@ export class GameInstanceGateway implements OnGatewayDisconnect {
     const success = this.gameStateServerService.updateGameState(body, user);
     if (success) {
       const roomId = `${ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance}${body.gameInstanceId}`;
-      if (body.communicator === "pause-changed") {
+      if (body.communicator === "pause-changed" || body.communicator === "desync-alert") {
         this.server.to(roomId).emit(ProbableWaffleGatewayEvent.ProbableWaffleAction, body);
       } else {
         // https://socket.io/docs/v3/emit-cheatsheet/
