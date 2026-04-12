@@ -6,13 +6,23 @@
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
-export default class UndeadLandDeadTreeAnim1 extends Phaser.GameObjects.Sprite {
+export default class UndeadLandDeadTreeAnim1 extends Phaser.GameObjects.Container {
 
-  constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
-    super(scene, x ?? 18.462042776397354, y ?? 60.237456343963856, texture || "environment_1", frame ?? "undead_land/DeadTreeAnim1/Animation1-0.png");
+  constructor(scene: Phaser.Scene, x?: number, y?: number) {
+    super(scene, x ?? -23.8314053788544, y ?? 148.0491760631506);
 
-    this.setInteractive(new Phaser.Geom.Polygon("18.932400238167865 44.338084186594585 31.603812744918308 30.890870914124704 45.0510260173882 51.83749158854893 62.63584337369496 29.85646989316548 56.874207092416846 12.748691965391103 66.51484720229206 4.255044624424741 98 32 97.28827757582891 68.90510843437609 74.11310222976536 77.25699696887312 85.35274354579943 93.71518911267398 62.28378164721539 96.62588451612527 57.46383826889885 112.86715182514301 37.03441810495422 118.29775718517892 19.966801259127088 115.71175463278088 16.823459007684228 104.39539402358102 25.66295131112816 78.91685738424262 17.473421677055107 59.15799223536795"), Phaser.Geom.Polygon.Contains);
-    this.play("undead_land/DeadTreeAnim1/Animation");
+    this.setInteractive(new Phaser.Geom.Polygon("-12.74771091699725 -70.90219914851379 36.518638751830736 -102.61873327007686 70.77249560311884 -48.91206882423006 20.8718152518596 8.177692594583476 -19.5139048629307 8.389136155393885"), Phaser.Geom.Polygon.Contains);
+    this.scaleX = 1.5;
+    this.scaleY = 1.5;
+
+    // undead_land_DeadTreeAnim1_Animation1-0_png
+    const undead_land_DeadTreeAnim1_Animation1_0_png = scene.add.image(20.93291208890689, -43.98025974234983, "environment_1", "undead_land/DeadTreeBase1.png");
+    this.add(undead_land_DeadTreeAnim1_Animation1_0_png);
+
+    // undead_land_DeadTreeAnim1_Animation1-0_png_1
+    const undead_land_DeadTreeAnim1_Animation1_0_png_1 = scene.add.sprite(20.93291208890689, -43.98025974234983, "environment_1", "undead_land/DeadTreeAnim1/DeadTreeAnim1.png");
+    undead_land_DeadTreeAnim1_Animation1_0_png_1.play("undead_land/DeadTreeAnim1/DeadTreeAnim");
+    this.add(undead_land_DeadTreeAnim1_Animation1_0_png_1);
 
     /* START-USER-CTR-CODE */
     // Write your code here.

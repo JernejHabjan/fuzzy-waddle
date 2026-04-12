@@ -6,14 +6,23 @@
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
-export default class UndeadLandDeadTreeAnim2 extends Phaser.GameObjects.Sprite {
+export default class UndeadLandDeadTreeAnim2 extends Phaser.GameObjects.Container {
 
-  constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
-    super(scene, x ?? 25.59921223494174, y ?? 53.221695282021216, texture || "environment_1", frame ?? "undead_land/DeadTreeAnim2/Animation2-0.png");
+  constructor(scene: Phaser.Scene, x?: number, y?: number) {
+    super(scene, x ?? 19.786336332249633, y ?? 82.70128196847955);
 
-    this.setInteractive(new Phaser.Geom.Polygon("9.46585633674021 35.71162578307049 40.45914324980291 4.381455316604914 34.07620458569936 30.678994853735276 43.996420560532904 41.2702044142176 54.5556148178289 36.39461141062715 69.88122802281265 42.40631603799647 52.69283310230602 46.38589515752264 49.898660529021676 56.631194592898524 55.17992793304354 65.94907248864311 28.67326525862783 46.60303840318553 22.915576319738904 51.76802406895354 50.518614467941696 70.22649743186214 52.88942756042537 81.31851582883934 29.341985987508686 88.93922722072166 14.350667861081611 82.87532325947026 4.244161258995952 59.96724162807608"), Phaser.Geom.Polygon.Contains);
-    this.setOrigin(0.4199901529367717, 0.804392659187721);
-    this.play("undead_land/DeadTreeAnim2/Animation");
+    this.setInteractive(new Phaser.Geom.Polygon("-30.643296923372247 -20.73498592114659 -18.87438623627149 -50.754236369403586 5.812876880788821 -77.4795903041466 15.408962287022007 -46.31957437136562 35.70606912419578 -37.27968645228823 20.696443900067294 -23.29344476616849 18.82024074705123 8.60200883510457 -21.262281158291927 9.284264527110409"), Phaser.Geom.Polygon.Contains);
+    this.scaleX = 1.5;
+    this.scaleY = 1.5;
+
+    // image_1
+    const image_1 = scene.add.image(5.812876314234742, -29.479587022190486, "environment_1", "undead_land/DeadTreeBase2.png");
+    this.add(image_1);
+
+    // undead_land_DeadTreeAnim2_Animation2-0_png
+    const undead_land_DeadTreeAnim2_Animation2_0_png = scene.add.sprite(5.812876314234742, -29.479587022190486, "environment_1", "undead_land/DeadTreeAnim2/Animation2-0.png");
+    undead_land_DeadTreeAnim2_Animation2_0_png.play("undead_land/DeadTreeAnim2/Animation");
+    this.add(undead_land_DeadTreeAnim2_Animation2_0_png);
 
     /* START-USER-CTR-CODE */
     // Write your code here.

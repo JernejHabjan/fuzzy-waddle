@@ -402,22 +402,11 @@
             <key type="filename">../sprites/environment/undead_land/Crystal_shadow1_2.png</key>
             <key type="filename">../sprites/environment/undead_land/DeadTreeAnim3/Animation3-0.png</key>
             <key type="filename">../sprites/environment/undead_land/DeadTreeAnim3/Animation3-1.png</key>
-            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim3/Animation3-10.png</key>
-            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim3/Animation3-11.png</key>
-            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim3/Animation3-12.png</key>
-            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim3/Animation3-13.png</key>
-            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim3/Animation3-14.png</key>
-            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim3/Animation3-15.png</key>
-            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim3/Animation3-16.png</key>
-            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim3/Animation3-17.png</key>
             <key type="filename">../sprites/environment/undead_land/DeadTreeAnim3/Animation3-2.png</key>
             <key type="filename">../sprites/environment/undead_land/DeadTreeAnim3/Animation3-3.png</key>
             <key type="filename">../sprites/environment/undead_land/DeadTreeAnim3/Animation3-4.png</key>
             <key type="filename">../sprites/environment/undead_land/DeadTreeAnim3/Animation3-5.png</key>
-            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim3/Animation3-6.png</key>
-            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim3/Animation3-7.png</key>
-            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim3/Animation3-8.png</key>
-            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim3/Animation3-9.png</key>
+            <key type="filename">../sprites/environment/undead_land/DeadTreeBase3.png</key>
             <key type="filename">../sprites/environment/undead_land/Dead_arm_shadow1_1.png</key>
             <key type="filename">../sprites/environment/undead_land/Dead_arm_shadow1_2.png</key>
             <key type="filename">../sprites/environment/undead_land/Dead_arm_shadow1_3.png</key>
@@ -947,24 +936,13 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
-            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim1/Animation1-0.png</key>
-            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim1/Animation1-1.png</key>
-            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim1/Animation1-10.png</key>
-            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim1/Animation1-11.png</key>
-            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim1/Animation1-12.png</key>
-            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim1/Animation1-13.png</key>
-            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim1/Animation1-14.png</key>
-            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim1/Animation1-15.png</key>
-            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim1/Animation1-16.png</key>
-            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim1/Animation1-17.png</key>
-            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim1/Animation1-2.png</key>
-            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim1/Animation1-3.png</key>
-            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim1/Animation1-4.png</key>
-            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim1/Animation1-5.png</key>
-            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim1/Animation1-6.png</key>
-            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim1/Animation1-7.png</key>
-            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim1/Animation1-8.png</key>
-            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim1/Animation1-9.png</key>
+            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim1/DeadTreeAnim1.png</key>
+            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim1/DeadTreeAnim2.png</key>
+            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim1/DeadTreeAnim3.png</key>
+            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim1/DeadTreeAnim4.png</key>
+            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim1/DeadTreeAnim5.png</key>
+            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim1/DeadTreeAnim6.png</key>
+            <key type="filename">../sprites/environment/undead_land/DeadTreeBase1.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -973,30 +951,19 @@
                 <key>scale9Enabled</key>
                 <false/>
                 <key>scale9Borders</key>
-                <rect>25,32,49,64</rect>
+                <rect>28,32,56,64</rect>
                 <key>scale9Paddings</key>
-                <rect>25,32,49,64</rect>
+                <rect>28,32,56,64</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
             <key type="filename">../sprites/environment/undead_land/DeadTreeAnim2/Animation2-0.png</key>
             <key type="filename">../sprites/environment/undead_land/DeadTreeAnim2/Animation2-1.png</key>
-            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim2/Animation2-10.png</key>
-            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim2/Animation2-11.png</key>
-            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim2/Animation2-12.png</key>
-            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim2/Animation2-13.png</key>
-            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim2/Animation2-14.png</key>
-            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim2/Animation2-15.png</key>
-            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim2/Animation2-16.png</key>
-            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim2/Animation2-17.png</key>
             <key type="filename">../sprites/environment/undead_land/DeadTreeAnim2/Animation2-2.png</key>
             <key type="filename">../sprites/environment/undead_land/DeadTreeAnim2/Animation2-3.png</key>
             <key type="filename">../sprites/environment/undead_land/DeadTreeAnim2/Animation2-4.png</key>
             <key type="filename">../sprites/environment/undead_land/DeadTreeAnim2/Animation2-5.png</key>
-            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim2/Animation2-6.png</key>
-            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim2/Animation2-7.png</key>
-            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim2/Animation2-8.png</key>
-            <key type="filename">../sprites/environment/undead_land/DeadTreeAnim2/Animation2-9.png</key>
+            <key type="filename">../sprites/environment/undead_land/DeadTreeBase2.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>

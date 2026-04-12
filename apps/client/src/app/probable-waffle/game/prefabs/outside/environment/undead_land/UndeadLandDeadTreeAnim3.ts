@@ -6,14 +6,23 @@
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
-export default class UndeadLandDeadTreeAnim3 extends Phaser.GameObjects.Sprite {
+export default class UndeadLandDeadTreeAnim3 extends Phaser.GameObjects.Container {
 
-  constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
-    super(scene, x ?? 19.873978855507353, y ?? 48.47367270095675, texture || "environment_1", frame ?? "undead_land/DeadTreeAnim3/Animation3-0.png");
+  constructor(scene: Phaser.Scene, x?: number, y?: number) {
+    super(scene, x ?? 6.5782338961747175, y ?? 64.08844203973986);
 
-    this.setInteractive(new Phaser.Geom.Polygon("6.356696280702863 8.504961234448452 31.271880725018214 26.315055057761324 37.33489138827367 15.136379147384098 44.2505129260494 12.76801560704994 57.70281783514742 14.283768272863796 53.155559837705844 19.58890260321231 41.31374213603505 21.00992072741281 38.7136850986169 29.684447303577777 27.482499060483555 35.409571052644495 34.49285513987267 45.35669792204796 30.608738933724645 56.72484291565192 5.1251472397291025 53.503868500797466 5.465250361901312 41.07702365219735 19.524797564960785 27.64133864034845 9.672405237170686 21.00992072741281"), Phaser.Geom.Polygon.Contains);
-    this.setOrigin(0.3105309196173024, 0.7574011359524492);
-    this.play("undead_land/DeadTreeAnim3/Animation");
+    this.setInteractive(new Phaser.Geom.Polygon("-15.032378539869867 -42.71146599378769 13.144070206038379 -26.431740051707372 43.61637773865024 -42.607108776210254 13.144070206038379 7.588712878537393 -13.467020276208302 5.29285409183376"), Phaser.Geom.Polygon.Contains);
+    this.scaleX = 1.5;
+    this.scaleY = 1.5;
+
+    // image_1
+    const image_1 = scene.add.image(13.295745672306728, -15.614771080267204, "environment_1", "undead_land/DeadTreeBase3.png");
+    this.add(image_1);
+
+    // undead_land_DeadTreeAnim3_Animation3-0_png
+    const undead_land_DeadTreeAnim3_Animation3_0_png = scene.add.sprite(13.295745672306728, -15.614771080267204, "environment_1", "undead_land/DeadTreeAnim3/Animation3-0.png");
+    undead_land_DeadTreeAnim3_Animation3_0_png.play("undead_land/DeadTreeAnim3/Animation");
+    this.add(undead_land_DeadTreeAnim3_Animation3_0_png);
 
     /* START-USER-CTR-CODE */
     // Write your code here.

@@ -1,114 +1,42 @@
 {
     "anims": [
         {
-            "key": "undead_land/DeadTreeAnim1/Animation",
+            "key": "undead_land/DeadTreeAnim1/DeadTreeAnim",
             "type": "frame",
             "frames": [
                 {
                     "key": "environment_1",
-                    "frame": "undead_land/DeadTreeAnim1/Animation1-0.png",
+                    "frame": "undead_land/DeadTreeAnim1/DeadTreeAnim1.png",
                     "duration": 0,
                     "keyframe": false
                 },
                 {
                     "key": "environment_1",
-                    "frame": "undead_land/DeadTreeAnim1/Animation1-1.png",
+                    "frame": "undead_land/DeadTreeAnim1/DeadTreeAnim2.png",
                     "duration": 0,
                     "keyframe": false
                 },
                 {
                     "key": "environment_1",
-                    "frame": "undead_land/DeadTreeAnim1/Animation1-10.png",
+                    "frame": "undead_land/DeadTreeAnim1/DeadTreeAnim3.png",
                     "duration": 0,
                     "keyframe": false
                 },
                 {
                     "key": "environment_1",
-                    "frame": "undead_land/DeadTreeAnim1/Animation1-11.png",
+                    "frame": "undead_land/DeadTreeAnim1/DeadTreeAnim4.png",
                     "duration": 0,
                     "keyframe": false
                 },
                 {
                     "key": "environment_1",
-                    "frame": "undead_land/DeadTreeAnim1/Animation1-12.png",
+                    "frame": "undead_land/DeadTreeAnim1/DeadTreeAnim5.png",
                     "duration": 0,
                     "keyframe": false
                 },
                 {
                     "key": "environment_1",
-                    "frame": "undead_land/DeadTreeAnim1/Animation1-13.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "environment_1",
-                    "frame": "undead_land/DeadTreeAnim1/Animation1-14.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "environment_1",
-                    "frame": "undead_land/DeadTreeAnim1/Animation1-15.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "environment_1",
-                    "frame": "undead_land/DeadTreeAnim1/Animation1-16.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "environment_1",
-                    "frame": "undead_land/DeadTreeAnim1/Animation1-17.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "environment_1",
-                    "frame": "undead_land/DeadTreeAnim1/Animation1-2.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "environment_1",
-                    "frame": "undead_land/DeadTreeAnim1/Animation1-3.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "environment_1",
-                    "frame": "undead_land/DeadTreeAnim1/Animation1-4.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "environment_1",
-                    "frame": "undead_land/DeadTreeAnim1/Animation1-5.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "environment_1",
-                    "frame": "undead_land/DeadTreeAnim1/Animation1-6.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "environment_1",
-                    "frame": "undead_land/DeadTreeAnim1/Animation1-7.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "environment_1",
-                    "frame": "undead_land/DeadTreeAnim1/Animation1-8.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "environment_1",
-                    "frame": "undead_land/DeadTreeAnim1/Animation1-9.png",
+                    "frame": "undead_land/DeadTreeAnim1/DeadTreeAnim6.png",
                     "duration": 0,
                     "keyframe": false
                 }
@@ -136,54 +64,6 @@
                 },
                 {
                     "key": "environment_1",
-                    "frame": "undead_land/DeadTreeAnim2/Animation2-10.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "environment_1",
-                    "frame": "undead_land/DeadTreeAnim2/Animation2-11.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "environment_1",
-                    "frame": "undead_land/DeadTreeAnim2/Animation2-12.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "environment_1",
-                    "frame": "undead_land/DeadTreeAnim2/Animation2-13.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "environment_1",
-                    "frame": "undead_land/DeadTreeAnim2/Animation2-14.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "environment_1",
-                    "frame": "undead_land/DeadTreeAnim2/Animation2-15.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "environment_1",
-                    "frame": "undead_land/DeadTreeAnim2/Animation2-16.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "environment_1",
-                    "frame": "undead_land/DeadTreeAnim2/Animation2-17.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "environment_1",
                     "frame": "undead_land/DeadTreeAnim2/Animation2-2.png",
                     "duration": 0,
                     "keyframe": false
@@ -203,30 +83,6 @@
                 {
                     "key": "environment_1",
                     "frame": "undead_land/DeadTreeAnim2/Animation2-5.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "environment_1",
-                    "frame": "undead_land/DeadTreeAnim2/Animation2-6.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "environment_1",
-                    "frame": "undead_land/DeadTreeAnim2/Animation2-7.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "environment_1",
-                    "frame": "undead_land/DeadTreeAnim2/Animation2-8.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "environment_1",
-                    "frame": "undead_land/DeadTreeAnim2/Animation2-9.png",
                     "duration": 0,
                     "keyframe": false
                 }
@@ -254,54 +110,6 @@
                 },
                 {
                     "key": "environment_1",
-                    "frame": "undead_land/DeadTreeAnim3/Animation3-10.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "environment_1",
-                    "frame": "undead_land/DeadTreeAnim3/Animation3-11.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "environment_1",
-                    "frame": "undead_land/DeadTreeAnim3/Animation3-12.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "environment_1",
-                    "frame": "undead_land/DeadTreeAnim3/Animation3-13.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "environment_1",
-                    "frame": "undead_land/DeadTreeAnim3/Animation3-14.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "environment_1",
-                    "frame": "undead_land/DeadTreeAnim3/Animation3-15.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "environment_1",
-                    "frame": "undead_land/DeadTreeAnim3/Animation3-16.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "environment_1",
-                    "frame": "undead_land/DeadTreeAnim3/Animation3-17.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "environment_1",
                     "frame": "undead_land/DeadTreeAnim3/Animation3-2.png",
                     "duration": 0,
                     "keyframe": false
@@ -323,30 +131,6 @@
                     "frame": "undead_land/DeadTreeAnim3/Animation3-5.png",
                     "duration": 0,
                     "keyframe": false
-                },
-                {
-                    "key": "environment_1",
-                    "frame": "undead_land/DeadTreeAnim3/Animation3-6.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "environment_1",
-                    "frame": "undead_land/DeadTreeAnim3/Animation3-7.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "environment_1",
-                    "frame": "undead_land/DeadTreeAnim3/Animation3-8.png",
-                    "duration": 0,
-                    "keyframe": false
-                },
-                {
-                    "key": "environment_1",
-                    "frame": "undead_land/DeadTreeAnim3/Animation3-9.png",
-                    "duration": 0,
-                    "keyframe": false
                 }
             ],
             "frameRate": 4,
@@ -363,6 +147,6 @@
     "settings": {
         "sourceLang": "TYPE_SCRIPT",
         "esModule": false,
-        "generateCode": true
+        "generateCode": false
     }
 }
