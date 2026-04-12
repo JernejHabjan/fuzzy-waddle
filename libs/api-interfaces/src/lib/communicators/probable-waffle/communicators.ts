@@ -9,6 +9,7 @@ import {
 import type { ProbableWaffleSpectatorData } from "../../game-instance/probable-waffle/spectator";
 import type { ActorDefinition, ProbableWaffleGameStateData } from "../../game-instance/probable-waffle/game-state";
 import type { GameInstanceId, PlayerNumber, UserId } from "../../game-instance/player/player";
+import type { SelectionGroupData } from "../../game-instance/probable-waffle/component-data";
 
 export type ProbableWaffleGameCommunicatorType = "selection";
 
@@ -160,6 +161,8 @@ export interface ProbableWaffleSnapshotData {
    * Keyed by playerNumber so receiver can restore each player independently.
    */
   playerStates: Record<PlayerNumber, ProbableWafflePlayerStateData>;
+  /** Player-local control group state keyed by playerNumber. */
+  playerSelectionGroups?: Record<PlayerNumber, SelectionGroupData[]>;
   /** Research state keyed by playerNumber. */
   playerResearch?: Record<PlayerNumber, string[]>;
 }

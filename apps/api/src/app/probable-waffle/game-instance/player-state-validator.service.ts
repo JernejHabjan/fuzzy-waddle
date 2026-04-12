@@ -5,6 +5,7 @@ import {
   type PlayerStateResources,
   type ProbableWaffleGameInstance,
   type ProbableWafflePlayerDataChangeEvent,
+  type SelectionGroupData,
   ResourceType
 } from "@fuzzy-waddle/api-interfaces";
 import type { User } from "@supabase/supabase-js";
@@ -27,14 +28,18 @@ export class PlayerStateValidatorService {
     "selection.set",
     "selection.cleared"
   ]);
+  private static readonly CONTROL_GROUP_PROPERTY = "playerController.data.selectionGroups";
   private static readonly OWNER_ONLY_PROPERTIES = new Set([
     ...PlayerStateValidatorService.RESOURCE_PROPERTIES,
     ...PlayerStateValidatorService.HOUSING_PROPERTIES,
     ...PlayerStateValidatorService.SELECTION_PROPERTIES,
+    PlayerStateValidatorService.CONTROL_GROUP_PROPERTY,
     "player.scene-ready",
     "command.issued.move",
     "command.issued.actor"
   ]);
+  private static readonly MAX_CONTROL_GROUPS = 9;
+  private static readonly MAX_CONTROL_GROUP_SIZE = 200;
 
   validate(event: ProbableWafflePlayerDataChangeEvent, gameInstance: ProbableWaffleGameInstance, user: User): boolean {
     const playerNumber = event.data.playerNumber;
@@ -69,6 +74,8 @@ export class PlayerStateValidatorService {
       case "selection.set":
       case "selection.cleared":
         return this.validateSelectionChange(event, gameInstance);
+      case PlayerStateValidatorService.CONTROL_GROUP_PROPERTY:
+        return this.validateSelectionGroupsChange(event, gameInstance);
       default:
         return true;
     }
@@ -120,6 +127,30 @@ export class PlayerStateValidatorService {
       if (!actor || actor.owner?.ownerId !== event.data.playerNumber) {
         this.logger.warn(
           `[PlayerState] Player ${event.data.playerNumber} referenced non-owned actor ${actorId} in selection update`
+        );
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  private validateSelectionGroupsChange(
+    event: ProbableWafflePlayerDataChangeEvent,
+    gameInstance: ProbableWaffleGameInstance
+  ): boolean {
+    const selectionGroups = event.data.playerControllerData?.selectionGroups;
+    if (!Array.isArray(selectionGroups) || selectionGroups.length > PlayerStateValidatorService.MAX_CONTROL_GROUPS) {
+      this.logger.warn(`[PlayerState] Invalid selection groups payload in ${event.gameInstanceId}`);
+      return false;
+    }
+
+    const seenGroupKeys = new Set<number>();
+    const actorIndex = this.getActorIndex(gameInstance);
+    for (const group of selectionGroups) {
+      if (!this.isValidSelectionGroup(group, event.data.playerNumber!, actorIndex, seenGroupKeys)) {
+        this.logger.warn(
+          `[PlayerState] Invalid control group ${group?.groupKey ?? "unknown"} for player ${event.data.playerNumber}`
         );
         return false;
       }
@@ -249,6 +280,46 @@ export class PlayerStateValidatorService {
     }
 
     return normalized;
+  }
+
+  private isValidSelectionGroup(
+    group: SelectionGroupData,
+    playerNumber: number,
+    actorIndex: Map<string, ActorDefinition>,
+    seenGroupKeys: Set<number>
+  ): boolean {
+    if (
+      !Number.isInteger(group.groupKey) ||
+      group.groupKey < 1 ||
+      group.groupKey > PlayerStateValidatorService.MAX_CONTROL_GROUPS ||
+      seenGroupKeys.has(group.groupKey)
+    ) {
+      return false;
+    }
+    seenGroupKeys.add(group.groupKey);
+
+    if (!Array.isArray(group.actorIds) || group.actorIds.length > PlayerStateValidatorService.MAX_CONTROL_GROUP_SIZE) {
+      return false;
+    }
+
+    if (!Number.isFinite(group.timestamp)) {
+      return false;
+    }
+
+    const seenActorIds = new Set<string>();
+    for (const actorId of group.actorIds) {
+      if (typeof actorId !== "string" || actorId.length === 0 || seenActorIds.has(actorId)) {
+        return false;
+      }
+      seenActorIds.add(actorId);
+
+      const actor = actorIndex.get(actorId);
+      if (!actor || actor.owner?.ownerId !== playerNumber) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   private getCarriedResources(

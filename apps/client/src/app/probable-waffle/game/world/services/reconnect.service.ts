@@ -1,16 +1,16 @@
 import { filter, type Subscription } from "rxjs";
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { getCommunicator } from "../../data/scene-data";
-import { getSceneService } from "./scene-component-helpers";
+import { getSceneComponent, getSceneService } from "./scene-component-helpers";
 import { CommandBusService } from "./command-bus.service";
 import { SimulationTickService } from "./simulation-tick.service";
 import { ActorIndexSystem } from "./ActorIndexSystem";
 import { SceneActorCreator } from "./scene-actor-creator";
+import { SelectionGroupsComponent } from "../../player/human-controller/selection-groups.component";
 import {
   type ActorDefinition,
   type PlayerNumber,
   type ProbableWafflePlayerStateData,
-  type ProbableWaffleSnapshotData,
   ProbableWaffleGatewayEvent,
   type ProbableWaffleSnapshotResponseEvent,
   type ProbableWaffleWebsocketRoomEvent
@@ -142,6 +142,20 @@ export class ReconnectService {
       const player = scene.baseGameData.gameInstance.getPlayerByNumber(playerNumber);
       if (player) {
         Object.assign(player.playerState.data, stateData as ProbableWafflePlayerStateData);
+      }
+    }
+
+    // Restore mirrored control groups and repopulate the live local hotkey component.
+    for (const [playerNumberStr, selectionGroups] of Object.entries(snapshot.playerSelectionGroups ?? {})) {
+      const playerNumber = Number(playerNumberStr) as PlayerNumber;
+      const player = scene.baseGameData.gameInstance.getPlayerByNumber(playerNumber);
+      if (!player) {
+        continue;
+      }
+
+      player.playerController.data.selectionGroups = structuredClone(selectionGroups);
+      if (playerNumber === scene.player?.playerNumber) {
+        getSceneComponent(scene, SelectionGroupsComponent)?.setGroups(selectionGroups);
       }
     }
 

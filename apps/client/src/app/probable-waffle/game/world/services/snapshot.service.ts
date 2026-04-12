@@ -10,6 +10,7 @@ import type {
   PlayerNumber,
   ProbableWafflePlayerStateData,
   ProbableWaffleSnapshotData,
+  SelectionGroupData,
   UserId,
   ProbableWaffleSnapshotResponseEvent
 } from "@fuzzy-waddle/api-interfaces";
@@ -97,10 +98,12 @@ export class SnapshotService {
     // --- Player states ---
     // Deep-clone each player's state data so the snapshot is immutable.
     const playerStates: Record<PlayerNumber, ProbableWafflePlayerStateData> = {};
+    const playerSelectionGroups: Record<PlayerNumber, SelectionGroupData[]> = {};
     for (const player of scene.players) {
       const num = player.playerNumber;
       if (num !== undefined) {
         playerStates[num] = structuredClone(player.playerState.data) as ProbableWafflePlayerStateData;
+        playerSelectionGroups[num] = structuredClone(player.playerController.data.selectionGroups ?? []);
       }
     }
 
@@ -112,6 +115,7 @@ export class SnapshotService {
       tick,
       actors,
       playerStates,
+      playerSelectionGroups,
       playerResearch
     } satisfies ProbableWaffleSnapshotData;
   }

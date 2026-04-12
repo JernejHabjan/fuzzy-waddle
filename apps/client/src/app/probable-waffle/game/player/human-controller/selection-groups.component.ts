@@ -8,6 +8,7 @@ import { IdComponent } from "../../entity/components/id-component";
 import type { AllScenesEventData, SelectionGroupData } from "@fuzzy-waddle/api-interfaces";
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 import type { Subscription } from "rxjs";
+import GameProbableWaffleScene from "../../world/scenes/GameProbableWaffleScene";
 
 export interface SelectionGroup {
   actors: Phaser.GameObjects.GameObject[];
@@ -112,6 +113,7 @@ export class SelectionGroupsComponent {
     } satisfies SelectionGroup;
 
     this.groups.set(groupKey, group);
+    this.syncSelectionGroupsToPlayerController();
     this.emitGroupEvent(SelectionGroupsComponent.GroupCreatedEvent, groupKey);
     this.emitGroupEvent(SelectionGroupsComponent.GroupSelectedEvent, groupKey);
   }
@@ -162,6 +164,10 @@ export class SelectionGroupsComponent {
         this.emitGroupEvent(SelectionGroupsComponent.GroupUpdatedEvent, key);
       }
     });
+
+    if (updatedGroups) {
+      this.syncSelectionGroupsToPlayerController();
+    }
   }
 
   private emitGroupEvent(eventName: string, groupKey: number): void {
@@ -238,6 +244,8 @@ export class SelectionGroupsComponent {
         this.emitGroupEvent(SelectionGroupsComponent.GroupCreatedEvent, groupData.groupKey);
       }
     }
+
+    this.syncSelectionGroupsToPlayerController(false);
   }
 
   /**
@@ -246,5 +254,32 @@ export class SelectionGroupsComponent {
   clearGroups(): void {
     this.groups.clear();
     this.lastTapTimestamp.clear();
+  }
+
+  private syncSelectionGroupsToPlayerController(emitNetworkUpdate = true): void {
+    const probableWaffleScene = this.scene as GameProbableWaffleScene;
+    const currentPlayerNumber = probableWaffleScene.player?.playerNumber;
+    if (currentPlayerNumber === undefined) {
+      return;
+    }
+
+    const groups = this.getGroups();
+    probableWaffleScene.player!.playerController.data.selectionGroups = groups;
+
+    if (!emitNetworkUpdate || !probableWaffleScene.communicator.playerChanged) {
+      return;
+    }
+
+    probableWaffleScene.communicator.playerChanged.send({
+      gameInstanceId: probableWaffleScene.baseGameData.gameInstance.gameInstanceMetadata.data.gameInstanceId!,
+      emitterUserId: probableWaffleScene.player?.playerController.data.userId ?? null,
+      property: "playerController.data.selectionGroups",
+      data: {
+        playerNumber: currentPlayerNumber,
+        playerControllerData: {
+          selectionGroups: groups
+        }
+      }
+    });
   }
 }

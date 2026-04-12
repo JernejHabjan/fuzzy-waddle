@@ -1,10 +1,14 @@
-import { ResourceType, type ProbableWaffleGameInstance, type ProbableWafflePlayerDataChangeEvent } from "@fuzzy-waddle/api-interfaces";
+import {
+  ResourceType,
+  type ProbableWaffleGameInstance,
+  type ProbableWafflePlayerDataChangeEvent
+} from "@fuzzy-waddle/api-interfaces";
 import { PlayerStateValidatorService } from "./player-state-validator.service";
 
 describe("PlayerStateValidatorService", () => {
   const service = new PlayerStateValidatorService();
 
-  function createGameInstance(carriedWood: number = 0): ProbableWaffleGameInstance {
+  function createGameInstance(carriedWood: number = 0, selectionOwnerId: number = 1): ProbableWaffleGameInstance {
     return {
       getPlayerByNumber: jest.fn().mockReturnValue({
         playerController: {
@@ -45,7 +49,12 @@ describe("PlayerStateValidatorService", () => {
                   }
                 }
               ]
-            : []
+            : [
+                {
+                  id: { id: "unit-1" },
+                  owner: { ownerId: selectionOwnerId }
+                }
+              ]
         }
       }
     } as unknown as ProbableWaffleGameInstance;
@@ -63,6 +72,26 @@ describe("PlayerStateValidatorService", () => {
         playerNumber: 1,
         playerStateData: {
           resources
+        }
+      }
+    };
+  }
+
+  function createSelectionGroupsEvent(actorIds: string[]): ProbableWafflePlayerDataChangeEvent {
+    return {
+      gameInstanceId: "gi-1",
+      emitterUserId: "user-1",
+      property: "playerController.data.selectionGroups",
+      data: {
+        playerNumber: 1,
+        playerControllerData: {
+          selectionGroups: [
+            {
+              groupKey: 1,
+              actorIds,
+              timestamp: 123
+            }
+          ]
         }
       }
     };
@@ -95,6 +124,18 @@ describe("PlayerStateValidatorService", () => {
         createGameInstance(),
         { id: "user-1" } as never
       )
+    ).toBe(false);
+  });
+
+  it("accepts valid selection groups for owned actors", () => {
+    expect(service.validate(createSelectionGroupsEvent(["unit-1"]), createGameInstance(), { id: "user-1" } as never)).toBe(
+      true
+    );
+  });
+
+  it("rejects selection groups that reference actors owned by another player", () => {
+    expect(
+      service.validate(createSelectionGroupsEvent(["unit-1"]), createGameInstance(0, 2), { id: "user-1" } as never)
     ).toBe(false);
   });
 });

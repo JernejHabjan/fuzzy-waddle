@@ -1,7 +1,7 @@
 # Multiplayer Replication Progress
 
 ## Open questions / blockers
-- Build placement, pause commands, control groups, and real desync correction are still outstanding.
+- Build placement, real desync correction, and the final hash/determinism pass are still outstanding.
 
 ## Steps
 
@@ -25,7 +25,7 @@
 | 16 | [x] | **Queue actions through CommandBus** – production/research start + cancel become deterministic commands consumed by buildings instead of direct local UI/AI method calls |
 | 17 | [ ] | **Server-side queue validation** – validate production/research queue payloads against actor ownership and building capabilities |
 | 18 | [x] | **Pause / resume commands** – turn pause into a relayed player command with cooldown/limit enforcement |
-| 19 | [~] | **Control groups in MP** – sync assign/recall commands while leaving local camera/selection visuals local |
+| 19 | [x] | **Control groups in MP** – sync assign/recall commands while leaving local camera/selection visuals local |
 | 20 | [ ] | **Desync correction** – snapshot-backed host correction instead of pause-only detection |
 | 21 | [ ] | **Hash widening + determinism audit** – include economy/research/queues in hashes and remove multiplayer-relevant nondeterminism |
 
@@ -48,3 +48,4 @@
 - **07** Tightened server validation beyond the original thin guardrails: command checks now validate actor capability, target existence, and isometric tile/world consistency instead of a blunt coordinate cap, while a new `PlayerStateValidatorService` rejects impossible resource spends, unexplained resource gains, invalid housing deltas, and selection spoofing on mirrored player-state events.
 - **16** Production/research queue actions now use explicit `PRODUCTION | CANCEL_PRODUCTION | RESEARCH | CANCEL_RESEARCH` commands. UI queue clicks, hotkeys, and host-only AI all route through `CommandBusService`, `QueueCommandSystem` executes them on the targeted building, and the API now accepts and sanity-checks those command types.
 - **18** Added a relayed `pause-changed` multiplayer event with per-player cooldown/limit enforcement on the API, a `PauseSyncService` on the client, reason-based pause locking in `SimulationTickService`, and a HUD menu pause button that toggles pause/resume across all clients.
+- **19** Control-group assignment now mirrors through `playerController.data.selectionGroups` so reconnect/save/load and peers see the same group contents, while recall still uses the existing `selection.set` path and keeps camera jumps local. The API now validates group keys, size, duplicate IDs, and actor ownership before accepting updates.
