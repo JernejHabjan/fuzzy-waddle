@@ -1,5 +1,5 @@
 import { ProbableWaffleScene } from "../../core/probable-waffle.scene";
-import { GameSessionState } from "@fuzzy-waddle/api-interfaces";
+import { GameSessionState, ProbableWaffleGameInstanceType } from "@fuzzy-waddle/api-interfaces";
 import { getCommunicator } from "../../data/scene-data";
 import { ReadyBarrier } from "../services/ready-barrier.service";
 
@@ -50,7 +50,7 @@ export class SceneGameState {
       case GameSessionState.MovingPlayersToGame:
         this.scene.scene.pause();
         break;
-      case GameSessionState.StartingTheGame:
+      case GameSessionState.StartingTheGame: {
         const sendInProgress = () => {
           getCommunicator(this.scene).gameInstanceMetadataChanged?.send({
             property: "sessionState",
@@ -59,9 +59,20 @@ export class SceneGameState {
             emitterUserId: this.scene.userId
           });
         };
-        setTimeout(() => sendInProgress(), 3000);
-
+        // In multiplayer the 3-second window lets all clients finish loading before
+        // the simulation starts. For local-only modes there are no remote peers so
+        // we advance immediately rather than making the player wait needlessly.
+        const type = this.scene.baseGameData.gameInstance.gameInstanceMetadata.data.type;
+        const isNetworked =
+          type === ProbableWaffleGameInstanceType.Matchmaking ||
+          type === ProbableWaffleGameInstanceType.SelfHosted;
+        if (isNetworked) {
+          setTimeout(() => sendInProgress(), 3000);
+        } else {
+          sendInProgress();
+        }
         break;
+      }
       case GameSessionState.InProgress:
         this.scene.scene.resume();
         break;

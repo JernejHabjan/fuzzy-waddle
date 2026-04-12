@@ -51,7 +51,6 @@ export class CommandBusService {
   private isMultiplayer = false;
   private humanPlayerNumbers: PlayerNumber[] = [];
   private localPlayerNumber: PlayerNumber | null = null;
-
   /** Outbound commands indexed by execution tick (currentTick + INPUT_DELAY). */
   private pendingOutbound = new Map<number, GameCommand[]>();
   private readonly buffer = new CommandBuffer();
@@ -99,6 +98,20 @@ export class CommandBusService {
         this.tryUnblockTick();
       })
     );
+
+    // Remove gracefully-leaving players from the lockstep blocking set so remaining
+    // players are not stuck waiting for heartbeats that will never arrive.
+    if (communicator.playerChanged) {
+      this.subscriptions.push(
+        communicator.playerChanged.on.subscribe((event) => {
+          if (event.property === "left" && event.data.playerControllerData?.playerDefinition?.player?.playerNumber !== undefined) {
+            this.removePlayerFromLockstep(
+              event.data.playerControllerData.playerDefinition.player.playerNumber as PlayerNumber
+            );
+          }
+        })
+      );
+    }
 
     // On every tick: flush commands, send outbound batch, gate next tick
     if (this.tickService) {
@@ -273,6 +286,29 @@ export class CommandBusService {
       playerNumber: batch.playerNumber,
       commands: structuredClone(batch.commands)
     });
+  }
+
+  /**
+   * Removes a player from the blocking set used by the lockstep barrier.
+   *
+   * Call this when a player permanently leaves or is evicted — i.e., the server
+   * broadcasts `player-disconnected` with reconnectWindowSeconds === 0, or a
+   * graceful leave event is received for a human player.
+   *
+   * Removing a departed player prevents the lockstep from stalling indefinitely
+   * while waiting for batches that will never arrive.
+   */
+  removePlayerFromLockstep(playerNumber: PlayerNumber): void {
+    if (!this.isMultiplayer) {
+      return;
+    }
+    const before = this.humanPlayerNumbers.length;
+    this.humanPlayerNumbers = this.humanPlayerNumbers.filter((n) => n !== playerNumber);
+    if (this.humanPlayerNumbers.length !== before) {
+      this.debugLog(`removed player ${playerNumber} from lockstep set; remaining=${this.humanPlayerNumbers.join(",") || "none"}`);
+      // Try to unblock any tick that was waiting only on this departed player.
+      this.tryUnblockTick();
+    }
   }
 
   destroy(): void {

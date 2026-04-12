@@ -10,6 +10,7 @@ import { SceneDialogHelper } from "../scenes/scene-dialog-helper";
 import type ReconnectRecoveryDialog from "../scenes/hud-scenes/ReconnectRecoveryDialog";
 import { getSceneService } from "./scene-component-helpers";
 import { SimulationTickService } from "./simulation-tick.service";
+import { CommandBusService } from "./command-bus.service";
 
 type PendingReconnect = {
   timer: Phaser.Time.TimerEvent;
@@ -70,6 +71,12 @@ export class ConnectionRecoveryService {
 
   private onPlayerDisconnected(event: ProbableWafflePlayerDisconnectedEvent, local: boolean): void {
     if (!this.hudScene) return;
+
+    // reconnectWindowSeconds === 0 signals permanent eviction (grace window already expired on the server).
+    // Remove the player from the lockstep blocking set immediately so the sim can advance.
+    if (event.reconnectWindowSeconds === 0) {
+      this.removeFromLockstep(event.playerNumber);
+    }
 
     const generation = (this.reconnectGenerations.get(event.playerNumber) ?? 0) + 1;
     this.reconnectGenerations.set(event.playerNumber, generation);
@@ -184,4 +191,12 @@ export class ConnectionRecoveryService {
 
     this.onPlayerReconnected(playerNumber, true);
   };
+
+  private removeFromLockstep(playerNumber: PlayerNumber): void {
+    if (!this.probableWaffleScene) {
+      return;
+    }
+    const commandBus = getSceneService(this.probableWaffleScene, CommandBusService);
+    commandBus?.removePlayerFromLockstep(playerNumber);
+  }
 }

@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import {
   type CommunicatorEvent,
   GameSessionState,
@@ -22,8 +22,10 @@ import { PauseStateValidatorService } from "./pause-state-validator.service";
 
 @Injectable()
 export class GameStateServerService {
-  private static readonly COMMAND_HISTORY_LIMIT = 256;
+  // 1024 batches ≈ ~51 seconds at 20 ticks/s — enough to cover the full reconnect grace window.
+  private static readonly COMMAND_HISTORY_LIMIT = 1024;
   private readonly recentCommandHistory = new Map<string, ProbableWaffleGameCommandEvent[]>();
+  private readonly logger = new Logger(GameStateServerService.name);
 
   constructor(
     private readonly gameInstanceService: GameInstanceService,
@@ -128,6 +130,11 @@ export class GameStateServerService {
     const history = this.recentCommandHistory.get(event.gameInstanceId) ?? [];
     history.push(structuredClone(event));
     if (history.length > GameStateServerService.COMMAND_HISTORY_LIMIT) {
+      // History window exceeded — oldest batches are dropped. A reconnecting client
+      // that rejoins after this point will receive an incomplete command tail.
+      this.logger.warn(
+        `[CommandHistory] History limit hit for gameInstance ${event.gameInstanceId} — oldest batches dropped`
+      );
       history.splice(0, history.length - GameStateServerService.COMMAND_HISTORY_LIMIT);
     }
     this.recentCommandHistory.set(event.gameInstanceId, history);

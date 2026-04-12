@@ -56,7 +56,8 @@ export class GameCommandValidatorService {
   ): boolean {
     const { playerNumber, tick, commands, gameInstanceId } = event;
 
-    // 1. Ownership: the authenticated user must be the owner of this playerNumber
+    // 1. Ownership: the authenticated user must be the owner of this playerNumber.
+    //    AI players have userId = null; only the current host may submit commands on their behalf.
     const player = gameInstance.getPlayerByNumber(playerNumber);
     if (!player) {
       this.logger.warn(`[GameCommand] Unknown playerNumber ${playerNumber} in instance ${gameInstanceId}`);
@@ -64,10 +65,23 @@ export class GameCommandValidatorService {
     }
     const playerUserId = player.playerController.data.userId;
     if (playerUserId !== user.id) {
-      this.logger.warn(
-        `[GameCommand] Ownership violation: user ${user.id} tried to submit for player ${playerNumber} owned by ${playerUserId}`
-      );
-      return false;
+      if (playerUserId !== null) {
+        // Non-null userId mismatch — one human trying to control another human's units.
+        this.logger.warn(
+          `[GameCommand] Ownership violation: user ${user.id} tried to submit for player ${playerNumber} owned by ${playerUserId}`
+        );
+        return false;
+      }
+      // playerUserId === null → AI-owned slot. Only the current host may issue these commands.
+      const hostUserId =
+        (gameInstance.gameInstanceMetadata.data as { currentHostUserId?: string | null }).currentHostUserId ??
+        gameInstance.gameInstanceMetadata.data.createdBy;
+      if (hostUserId !== user.id) {
+        this.logger.warn(
+          `[GameCommand] AI-player command from non-host: user ${user.id} tried to submit for AI player ${playerNumber}, host is ${hostUserId}`
+        );
+        return false;
+      }
     }
 
     // 2. Schema: commands must be an array within size limits
