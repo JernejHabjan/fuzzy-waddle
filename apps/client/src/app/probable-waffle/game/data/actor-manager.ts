@@ -59,6 +59,8 @@ import { getSceneService } from "../world/services/scene-component-helpers";
 import { SceneActorCreator } from "../world/services/scene-actor-creator";
 import MiningCamp from "../prefabs/buildings/tivara/MiningCamp";
 import Emberstone from "../prefabs/buildings/skaduwee/Emberstone";
+import Granary from "../prefabs/buildings/shared/Granary";
+import Field from "../prefabs/buildings/shared/Field";
 import { SpellComponent } from "../entity/components/combat/components/spell-component";
 import { StatusEffectComponent } from "../entity/components/status-effect/status-effect-component";
 import { ResearchComponent } from "../entity/components/research/research-component";
@@ -207,7 +209,9 @@ export class ActorManager {
     [ObjectNames.WatchTower]: WatchTower,
     [ObjectNames.Wall]: Wall,
     [ObjectNames.WorkMill]: WorkMill,
-    [ObjectNames.MiningCamp]: MiningCamp
+    [ObjectNames.MiningCamp]: MiningCamp,
+    [ObjectNames.Granary]: Granary,
+    [ObjectNames.Field]: Field
   };
 
   private static skaduweeWorkers: ActorMap = {
@@ -231,7 +235,9 @@ export class ActorManager {
     [ObjectNames.WatchTower]: WatchTower,
     [ObjectNames.Wall]: Wall,
     [ObjectNames.Stairs]: Stairs,
-    [ObjectNames.MiningCamp]: MiningCamp
+    [ObjectNames.MiningCamp]: MiningCamp,
+    [ObjectNames.Granary]: Granary,
+    [ObjectNames.Field]: Field
   };
 
   private static resources: ActorMap = {

@@ -31,6 +31,7 @@ import type { SpellDefinition } from "../../entity/components/combat/spell-defin
 import type { ResearchDefinition } from "../../entity/components/research/research-component";
 import type { QueueDefinition } from "../../entity/components/production/queue-definition";
 import type { LevelDefinition } from "../../entity/components/level/level-definition";
+import type { TendableDefinition } from "../../entity/components/tendable/tendable-definition";
 
 // Extract components definition to reuse in both PrefabDefinition and LevelOverrides
 export type ComponentsDefinition = Partial<{
@@ -67,6 +68,7 @@ export type ComponentsDefinition = Partial<{
   audio: AudioDefinition;
   buildingPrerequisites: BuildingPrerequisitesDefinition;
   level: LevelDefinition;
+  tendable: TendableDefinition;
 }>;
 
 // Extract systems definition to reuse in both PrefabDefinition and LevelOverrides

@@ -4,9 +4,13 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
+import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import type { GrowthStageInterface } from "../../../../../entity/components/tendable/growth-stage.interface";
+import { AnimationType } from "../../../../../entity/components/animation/animation-type";
+import { SoundType } from "../../../../../entity/components/actor-audio/sound-type";
 /* END-USER-IMPORTS */
 
-export default class GroundTurnip extends Phaser.GameObjects.Image {
+export default class GroundTurnip extends Phaser.GameObjects.Image implements GrowthStageInterface {
 
   constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
     super(scene, x ?? 32, y ?? 48, texture || "crops", frame ?? "ground/turnip/6.png");
@@ -15,13 +19,20 @@ export default class GroundTurnip extends Phaser.GameObjects.Image {
     this.setOrigin(0.5, 0.75);
 
     /* START-USER-CTR-CODE */
-    // Write your code here.
     /* END-USER-CTR-CODE */
   }
 
   /* START-USER-CODE */
 
-  // Write your code here.
+  override name = ObjectNames.GroundTurnip;
+
+  readonly harvestAnimation = AnimationType.Thrust;
+  readonly harvestSound = SoundType.Chop;
+  readonly tendAnimation = AnimationType.Thrust;
+
+  setStage(stageIndex: number): void {
+    this.setVisible(stageIndex < 3);
+  }
 
   /* END-USER-CODE */
 }

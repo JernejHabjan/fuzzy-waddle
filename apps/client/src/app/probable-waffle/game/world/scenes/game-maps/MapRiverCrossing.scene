@@ -2932,6 +2932,36 @@
             "label": "snowWendigo",
             "x": -768,
             "y": 800
+        },
+        {
+            "prefabId": "a3f7b2c1-d4e5-4f6a-8b9c-0d1e2f3a4b5c",
+            "id": "d6d89c46-054f-4ae3-ba48-34a4399457ef",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "field",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -256,
+            "y": 560
+        },
+        {
+            "prefabId": "e7f8a9b0-c1d2-4e3f-4a5b-6c7d8e9f0a1b",
+            "id": "2bb663b1-6702-48a3-bd3e-072c1912aaca",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "granary",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -127,
+            "y": 690
         }
     ],
     "plainObjects": [

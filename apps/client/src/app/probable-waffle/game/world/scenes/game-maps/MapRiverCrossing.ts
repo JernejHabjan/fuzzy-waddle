@@ -133,6 +133,8 @@ import PumpkinWarlockPumpkin from "../../../prefabs/characters/mobs/pumpkin_warl
 import SandWorm from "../../../prefabs/characters/mobs/sand_worm/SandWorm";
 import ForestWendigo from "../../../prefabs/characters/mobs/forest_wendigo/ForestWendigo";
 import SnowWendigo from "../../../prefabs/characters/mobs/snow_wendigo/SnowWendigo";
+import Field from "../../../prefabs/buildings/shared/Field";
+import Granary from "../../../prefabs/buildings/shared/Granary";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -1106,6 +1108,14 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     const snowWendigo = new SnowWendigo(this, -768, 800);
     this.add.existing(snowWendigo);
 
+    // field
+    const field = new Field(this, -256, 560);
+    this.add.existing(field);
+
+    // granary
+    const granary = new Granary(this, -127, 690);
+    this.add.existing(granary);
+
     // spawn (components)
     const spawnEditorOwner = new EditorOwner(spawn);
     spawnEditorOwner.owner_id = "1";
@@ -1370,6 +1380,14 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // tivaraMacemanMale (components)
     const tivaraMacemanMaleEditorOwner = new EditorOwner(tivaraMacemanMale);
     tivaraMacemanMaleEditorOwner.owner_id = "1";
+
+    // field (components)
+    const fieldEditorOwner = new EditorOwner(field);
+    fieldEditorOwner.owner_id = "1";
+
+    // granary (components)
+    const granaryEditorOwner = new EditorOwner(granary);
+    granaryEditorOwner.owner_id = "1";
 
     this.tilemap = tilemap;
 

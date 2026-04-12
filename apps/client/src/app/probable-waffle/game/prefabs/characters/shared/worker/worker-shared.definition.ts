@@ -36,7 +36,7 @@ export const generalWorkerDefinitions: Partial<PrefabDefinition> = {
     gatherer: {
       // this high, so AI player can resume gathering resources if last resource source was far away
       resourceSweepRadius: 100,
-      resourceSourceGameObjectClasses: [ResourceType.Wood, ResourceType.Minerals, ResourceType.Stone]
+      resourceSourceGameObjectClasses: [ResourceType.Wood, ResourceType.Minerals, ResourceType.Stone, ResourceType.Food]
     },
     selectable: {},
     translatable: {

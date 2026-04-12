@@ -29,10 +29,19 @@ export default class Resources extends Phaser.GameObjects.Container {
       1,
       1
     );
-    resources_bg_1.scaleX = 3.7755996610027305;
+    resources_bg_1.scaleX = 4.62;
     resources_bg_1.scaleY = 2.8023638778148445;
     resources_bg_1.setOrigin(0, 0);
     resources_container.add(resources_bg_1);
+
+    // food
+    const food = new Resource(scene, 210, 21);
+    food.scaleX = 0.5;
+    food.scaleY = 0.5;
+    resources_container.add(food);
+    food.resource_icon.setTexture("gui", "resource_icons/food.png");
+    food.resource_icon.scaleX = 1;
+    food.resource_icon.scaleY = 1;
 
     // housing
     const housing = new Resource(scene, 168, 21);
@@ -69,6 +78,9 @@ export default class Resources extends Phaser.GameObjects.Container {
     wood.resource_icon.setTexture("gui", "resource_icons/wood.png");
     wood.resource_icon.scaleX = 1;
     wood.resource_icon.scaleY = 1;
+
+    // food (prefab fields)
+    food.type = "food";
 
     // housing (prefab fields)
     housing.type = "housing";

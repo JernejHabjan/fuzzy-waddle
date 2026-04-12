@@ -4,10 +4,13 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
+import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import type { GrowthStageInterface } from "../../../../entity/components/tendable/growth-stage.interface";
+import { AnimationType } from "../../../../entity/components/animation/animation-type";
+import { SoundType } from "../../../../entity/components/actor-audio/sound-type";
 /* END-USER-IMPORTS */
 
-export default class CropsZucchini extends Phaser.GameObjects.Image {
-
+export default class CropsZucchini extends Phaser.GameObjects.Image implements GrowthStageInterface {
   constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
     super(scene, x ?? 32.192928314208984, y ?? 40.75645580539479, texture || "crops", frame ?? "crops/zucchini/12.png");
 
@@ -15,13 +18,27 @@ export default class CropsZucchini extends Phaser.GameObjects.Image {
     this.setOrigin(0.5060289692054787, 0.5236392296187007);
 
     /* START-USER-CTR-CODE */
-    // Write your code here.
     /* END-USER-CTR-CODE */
   }
 
   /* START-USER-CODE */
 
-  // Write your code here.
+  override name = ObjectNames.CropsZucchini;
+
+  readonly stageFrames: readonly string[] = [
+    "crops/zucchini/12.png",
+    "crops/zucchini/13.png",
+    "crops/zucchini/14.png",
+    "crops/zucchini/15.png"
+  ];
+  readonly harvestAnimation = AnimationType.Harvest;
+  readonly harvestSound = SoundType.Chop;
+  readonly tendAnimation = AnimationType.Dig;
+
+  setStage(stageIndex: number): void {
+    const frame = this.stageFrames[stageIndex];
+    if (frame !== undefined) this.setFrame(frame);
+  }
 
   /* END-USER-CODE */
 }

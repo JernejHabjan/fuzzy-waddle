@@ -72,7 +72,7 @@ export const sandholdDefinition = {
       capacity: 2
     },
     resourceDrain: {
-      resourceTypes: [ResourceType.Wood, ResourceType.Minerals, ResourceType.Stone],
+      resourceTypes: [ResourceType.Wood, ResourceType.Minerals, ResourceType.Stone, ResourceType.Food],
       cooldown: 1000
     },
     production: {
