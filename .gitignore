@@ -63,3 +63,5 @@ NUL
 supabase/.temp
 .claude/settings.json
 .claude/settings.local.json
+
+.claude/worktrees
