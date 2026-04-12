@@ -45,7 +45,7 @@ export const skeletonMeleeDefinition = {
     },
     productionCost: {
       resources: {
-        [ResourceType.Minerals]: 50
+        [ResourceType.Food]: 50
       },
       refundFactor: 0.5,
       productionTime: 3500,

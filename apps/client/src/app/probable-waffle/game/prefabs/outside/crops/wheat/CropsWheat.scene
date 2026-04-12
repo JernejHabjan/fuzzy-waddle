@@ -1,0 +1,42 @@
+{
+    "id": "1d419963-050b-4fdf-80c6-4fa6bfb3a646",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "3768d504-2920-4b7a-9ccd-fc768783034a",
+            "label": "crops_wheat_20_png",
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": 15,
+            "hitArea.y": 19,
+            "hitArea.radius": 8.367578603626844,
+            "texture": {
+                "key": "crops",
+                "frame": "crops/wheat/20.png"
+            },
+            "x": 29.997023551109486,
+            "y": 49.50223233666789,
+            "originX": 0.4374069859721714,
+            "originY": 0.7969447605208715
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

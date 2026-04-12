@@ -1,0 +1,87 @@
+{
+    "id": "e7f8a9b0-c1d2-4e3f-4a5b-6c7d8e9f0a1b",
+    "sceneType": "PREFAB",
+    "settings": {
+        "snapEnabled": true,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 192,
+        "borderHeight": 256
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "f8a9b0c1-d2e3-4f4a-5b6c-7d8e9f0a1b2c",
+            "label": "container_1",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "-34.05122565396334 -17.337910058391813 0.6195975292908713 -33.070888645750856 32.085554704008985 -18.211964424356196 32.66825761465191 17.04156166954094 -1.1285112026379238 33.35724316754289 -33.75987419864188 15.584804392933606",
+            "x": 64,
+            "y": 96,
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "a9b0c1d2-e3f4-4a5b-6c7d-8e9f0a1b2c3d",
+                    "label": "granaryCursor",
+                    "scope": "CLASS",
+                    "texture": {
+                        "key": "outside",
+                        "frame": "architecture/blocks/doors_left.png"
+                    },
+                    "y": -16,
+                    "visible": false
+                },
+                {
+                    "type": "Image",
+                    "id": "b0c1d2e3-f4a5-4b6c-7d8e-9f0a1b2c3d4e",
+                    "label": "granaryFoundation1",
+                    "scope": "CLASS",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/misc/ruins-flat/ruins-flat-1.png"
+                    },
+                    "y": -16,
+                    "visible": false,
+                    "alpha": 0.5
+                },
+                {
+                    "type": "Image",
+                    "id": "c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f",
+                    "label": "granaryFoundation2",
+                    "scope": "CLASS",
+                    "texture": {
+                        "key": "outside",
+                        "frame": "architecture/blocks/doors_left.png"
+                    },
+                    "y": -16,
+                    "visible": false,
+                    "alpha": 0.75
+                },
+                {
+                    "type": "Image",
+                    "id": "d2e3f4a5-b6c7-4d8e-9f0a-1b2c3d4e5f6a",
+                    "label": "granaryLevel1",
+                    "scope": "CLASS",
+                    "texture": {
+                        "key": "outside",
+                        "frame": "architecture/blocks/doors_left.png"
+                    },
+                    "x": -0.5838393593655766,
+                    "y": 14.490227145160631,
+                    "originX": 0.49543875488244987,
+                    "originY": 0.7382048987857536
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

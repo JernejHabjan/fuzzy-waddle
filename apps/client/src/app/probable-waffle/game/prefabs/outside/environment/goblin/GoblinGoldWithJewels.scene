@@ -1,0 +1,41 @@
+{
+    "id": "6021d6d4-99a1-460e-9839-675772065449",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "597ce9f2-2a40-4aa9-99f7-521aee1dbc33",
+            "label": "goblin_gold_with_jewels_png",
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": 15.5,
+            "hitArea.y": 11.5,
+            "hitArea.radius": 11.5,
+            "texture": {
+                "key": "environment_1",
+                "frame": "goblin/gold_with_jewels.png"
+            },
+            "x": 32,
+            "y": 48,
+            "originY": 0.75
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

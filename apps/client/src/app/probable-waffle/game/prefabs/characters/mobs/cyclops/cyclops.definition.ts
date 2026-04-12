@@ -45,7 +45,7 @@ export const cyclopsDefinition = {
     },
     productionCost: {
       resources: {
-        [ResourceType.Minerals]: 150
+        [ResourceType.Food]: 150
       },
       refundFactor: 0.5,
       productionTime: 8000,

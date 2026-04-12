@@ -11,6 +11,7 @@ import GameObject = Phaser.GameObjects.GameObject;
 import type { PrefabDefinition } from "../../definitions/prefab-definition";
 import { ResourceSourceComponent } from "../../../entity/components/resource/resource-source-component";
 import { DamageType } from "@fuzzy-waddle/api-interfaces";
+import { TendableComponent } from "../../../entity/components/tendable/tendable-component";
 import { ContainerComponent } from "../../../entity/components/building/container-component";
 /* END-USER-IMPORTS */
 
@@ -84,6 +85,7 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
   private armourSubscription?: Subscription;
   private resourcesChangedSubscription?: Subscription;
   private assignedGatherersChangedSubscription?: Subscription;
+  private tendableProgressSubscription?: Subscription;
 
   static getActorAttributeIconsAndTexts(
     definition: PrefabDefinition,
@@ -111,6 +113,16 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
     const maxArmour = definition.components?.health?.maxArmour;
     if (maxArmour) {
       iconsAndTexts.push({ icon: { key: "gui", frame: "actor_info_icons/shield.png" }, text: maxArmour.toString() });
+    }
+
+    // Check if this is a tendable resource (e.g. Field) — shown instead of raw resource count
+    const tendableComponent = actor ? getActorComponent(actor, TendableComponent) : undefined;
+    if (tendableComponent) {
+      iconsAndTexts.push({
+        icon: { key: "gui", frame: "actor_info_icons/element.png" },
+        text: `${Math.round(tendableComponent.growthPercent)}%`
+      });
+      return iconsAndTexts;
     }
 
     // Check if this is a resource source
@@ -208,6 +220,19 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
   showActorAttributes(actor: GameObject, definition: PrefabDefinition) {
     const iconsAndTexts = ActorDetails.getActorAttributeIconsAndTexts(definition, actor);
 
+    // Check if this is a tendable actor (e.g. Field) — subscribe to live growth updates
+    this.tendableProgressSubscription?.unsubscribe();
+    const tendableComponent = getActorComponent(actor, TendableComponent);
+    if (tendableComponent) {
+      // attributes[0] = health (if any), attributes[1] = growth %
+      const growthIndex = definition.components?.health?.maxHealth ? 1 : 0;
+      this.tendableProgressSubscription = tendableComponent.growthProgressChanged.subscribe((percent) => {
+        const attribute = this.attributes[growthIndex];
+        if (!attribute) return;
+        attribute.setText(`${Math.round(percent)}%`);
+      });
+    }
+
     // Check if this is a resource source
     const resourceSourceComponent = getActorComponent(actor, ResourceSourceComponent);
     if (resourceSourceComponent) {
@@ -284,6 +309,7 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
     this.attributes.forEach((a) => (a.visible = false));
     this.resourcesChangedSubscription?.unsubscribe();
     this.assignedGatherersChangedSubscription?.unsubscribe();
+    this.tendableProgressSubscription?.unsubscribe();
   }
 
   override destroy(fromScene?: boolean) {
@@ -291,6 +317,7 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
     this.armourSubscription?.unsubscribe();
     this.resourcesChangedSubscription?.unsubscribe();
     this.assignedGatherersChangedSubscription?.unsubscribe();
+    this.tendableProgressSubscription?.unsubscribe();
     super.destroy(fromScene);
   }
 

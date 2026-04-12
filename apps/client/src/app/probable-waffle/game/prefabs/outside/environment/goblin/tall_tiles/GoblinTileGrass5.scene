@@ -1,0 +1,39 @@
+{
+    "id": "875e845a-1a1e-49ed-950a-ef9158d57a5c",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "59e7dd0d-7809-4084-9950-59a59b899a9d",
+            "label": "goblin_tall_tiles_grass_5_png",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "0 8 16 0 32 8 32 23.78514078322675 16.220698712494226 31.957883419963927 -0.06093649205248042 23.529742843492684",
+            "texture": {
+                "key": "environment_1",
+                "frame": "goblin/tall tiles/grass_5.png"
+            },
+            "x": 32,
+            "y": 48,
+            "originY": 0.75
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

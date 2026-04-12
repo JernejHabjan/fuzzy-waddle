@@ -63,15 +63,15 @@ export class PlayerAiBlackboard extends Blackboard {
     super();
     this.randomService = getSceneService(scene, RandomService)!;
     this.economy = {
-      resources: { minerals: 0, stone: 0, wood: 0 },
+      resources: { minerals: 0, stone: 0, wood: 0, food: 0 },
       // Placeholder income/surplus structures (populated via updateFromWorld)
-      incomeInstant: { minerals: 0, stone: 0, wood: 0 },
-      incomeSmoothed: { minerals: 0, stone: 0, wood: 0 },
+      incomeInstant: { minerals: 0, stone: 0, wood: 0, food: 0 },
+      incomeSmoothed: { minerals: 0, stone: 0, wood: 0, food: 0 },
       lastIncomeSampleAt: 0,
-      lastIncomeSnapshot: { minerals: 0, stone: 0, wood: 0 },
-      reserved: { minerals: 0, stone: 0, wood: 0 },
+      lastIncomeSnapshot: { minerals: 0, stone: 0, wood: 0, food: 0 },
+      reserved: { minerals: 0, stone: 0, wood: 0, food: 0 },
       get available() {
-        const out: Record<ResourceType, number> = { minerals: 0, stone: 0, wood: 0 };
+        const out: Record<ResourceType, number> = { minerals: 0, stone: 0, wood: 0, food: 0 };
         for (const k in out) {
           const r = k as ResourceType;
           out[r] = (this.resources[r] ?? 0) - (this.reserved[r] ?? 0);

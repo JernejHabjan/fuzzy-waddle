@@ -288,6 +288,39 @@ root [Gather] {
         /* ensure that action succeeds - we don't want to seek another action as current action is gather */
         succeed {
             selector { /* executes until first succeeds */
+
+                /* ── FARM FIELD TENDING PATH ────────────────────────────── */
+                /* Guards: target must be a tendable field AND crops not ready. */
+                /* While growing: walk to spot, animate, wait 1.5s — succeeds  */
+                /* so the outer succeed{selector} absorbs the tick and the root */
+                /* restarts, looping back here until GrowthReady.               */
+                /* When GrowthReady: flip{} fails → branch fails → selector     */
+                /* falls through to GatherCapacityFull / GatherResource below.  */
+                sequence {
+                    condition [TargetHasTendableComponent]
+                    /* Exit this branch when crops are ready → fall through to harvest */
+                    flip { condition [GrowthReady] }
+                    /* Assign self as tender (idempotent) */
+                    action [AssignSelfAsTender]
+                    /* Walk to a random spot on the field */
+                    action [MoveToRandomSpotOnTarget]
+                    /* Play correct animation depending on growth stage */
+                    selector {
+                        /* Seeding phase (0-33%): Thrust animation */
+                        sequence {
+                            condition [GrowthPercentBelow, 33]
+                            action [PlaySeedingAnimation]
+                        }
+                        /* Growing phase (33-99%): Dig animation */
+                        action [PlayTendingAnimation]
+                    }
+                    /* Pause at spot briefly; exits early when crops become ready */
+                    wait [1500] until [GrowthReady]
+                    /* Sequence succeeds → selector stops → succeed{} absorbs →  */
+                    /* outer root completes for this tick and restarts next tick. */
+                }
+                /* ─────────────────────────────────────────────────────── */
+
                 fail { /* marks itself as fail, so it doesn't exist selector branch */
                     sequence {
                         /* if target does not have resources, acquire new resource source */
@@ -520,6 +553,9 @@ root [Build] {
                     sequence {
                       /* cooldown ready, construct */
                       action [ConstructBuilding]
+
+                      /* if the just-finished building is a field (tendable), start tending it */
+                      action [AutoAssignTendOrderIfTendable]
 
                       action [AssignNextBuildOrder]
                     }

@@ -1,0 +1,40 @@
+{
+    "id": "8da18ce6-c843-4937-a15e-3608c430ab51",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "ae6f0145-ba88-4a7d-a568-0faacb3fbd54",
+            "label": "rocky_Dragon_bones_wing2_ground_shadow_png",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "0 32 7.1157685023614405 16.277058363773612 50.60627314159995 24.73354537695888 81.71406465438861 15.068988790461432 128 32 122.18439536034668 100.84192849562626 47.58609920831952 114.73472858871634",
+            "texture": {
+                "key": "environment_1",
+                "frame": "rocky/Dragon_bones_wing2_ground_shadow.png"
+            },
+            "x": 31.6979826031615,
+            "y": 9.341773204672016,
+            "originX": 0.4976404890871992,
+            "originY": 0.4479826031615001
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}
