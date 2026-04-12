@@ -1,6 +1,7 @@
 import type GameProbableWaffleScene from "../scenes/GameProbableWaffleScene";
 import { getCommunicator } from "../../data/scene-data";
 import { getActorComponent } from "../../data/actor-component";
+import { setFullActorDataFromName } from "../../data/actor-data";
 import { IdComponent } from "../../entity/components/id-component";
 import { OwnerComponent } from "../../entity/components/owner-component";
 import { getGameObjectLogicalTransform } from "../../data/game-object-helper";
@@ -8,6 +9,7 @@ import { GameSessionState, ProbableWaffleGameState, type ActorDefinition } from 
 import type { Subscription } from "rxjs";
 import Phaser from "phaser";
 import { getSceneService } from "./scene-component-helpers";
+import { ActorIndexSystem } from "./ActorIndexSystem";
 import { SceneActorCreator } from "./scene-actor-creator";
 
 /**
@@ -21,9 +23,10 @@ import { SceneActorCreator } from "./scene-actor-creator";
  *  - Host: after spawnFromSpawnList, broadcasts the full game state via
  *    gameStateChanged "all". The broadcast already happens in
  *    SceneActorCreator.saveAllKnownActorsToGameState (host-only).
- *  - Non-host: receives the "all" event, finds each Phaser actor by its
- *    logical position + owner + name (deterministic across clients), and
- *    patches the IdComponent to use the host's authoritative id.
+ *  - Non-host: receives the "all" event, reconciles Phaser actors by their
+ *    logical position + owner + name (deterministic across clients), patches
+ *    the IdComponent to use the host's authoritative id, and creates any
+ *    actor that is missing locally.
  *
  * After patching, the local gameState.data.actors is replaced with the
  * host's version so downstream systems see consistent ids.
@@ -97,8 +100,7 @@ export class ActorIdSeeder {
    * Coordinates are rounded to 1 decimal to absorb floating-point noise.
    */
   private patchActorIds(actorDefs: Partial<ActorDefinition>[]): void {
-    // Build lookup: key → authoritative actorId
-    const lookup = new Map<string, string>();
+    const lookup = new Map<string, Partial<ActorDefinition>>();
     const remappedIds = new Map<string, string>();
     for (const def of actorDefs) {
       const id = def.id?.id;
@@ -107,24 +109,52 @@ export class ActorIdSeeder {
       const pos = def.representable?.logicalWorldTransform;
       if (!id || !name || pos === undefined) continue;
       const key = seederKey(name, owner, pos.x, pos.y);
-      lookup.set(key, id);
+      lookup.set(key, def);
     }
 
+    const actorIndex = getSceneService(this.scene, ActorIndexSystem);
+    const creator = getSceneService(this.scene, SceneActorCreator);
+    const unmatchedChildren = new Map<string, Phaser.GameObjects.GameObject[]>();
     const children = this.scene.children.getChildren();
     for (const obj of children) {
-      const idComp = getActorComponent(obj, IdComponent);
-      if (!idComp) continue;
-
       const ownerComp = getActorComponent(obj, OwnerComponent);
       const owner = ownerComp?.getOwner();
       const pos = getGameObjectLogicalTransform(obj);
       if (!pos) continue;
 
       const key = seederKey(obj.name, owner, pos.x, pos.y);
-      const authId = lookup.get(key);
-      if (authId && idComp.id !== authId) {
-        remappedIds.set(idComp.id, authId);
-        idComp.setId(authId);
+      const existing = unmatchedChildren.get(key) ?? [];
+      existing.push(obj);
+      unmatchedChildren.set(key, existing);
+    }
+
+    for (const [key, def] of lookup.entries()) {
+      const localActor = unmatchedChildren.get(key)?.shift();
+      const authId = def.id?.id;
+      if (localActor) {
+        let idComp = getActorComponent(localActor, IdComponent);
+        if (!idComp) {
+          setFullActorDataFromName(localActor, def);
+          actorIndex?.registerActor(localActor);
+          idComp = getActorComponent(localActor, IdComponent);
+        }
+        if (authId && idComp && idComp.id !== authId) {
+          remappedIds.set(idComp.id, authId);
+          idComp.setId(authId);
+        }
+        continue;
+      }
+
+      if (creator && def.name) {
+        const created = creator.createActorFromDefinition(def as ActorDefinition);
+        const createdId = created ? getActorComponent(created, IdComponent)?.id : undefined;
+        if (created) {
+          actorIndex?.registerActor(created);
+        }
+        if (created && createdId && authId && createdId !== authId) {
+          remappedIds.set(createdId, authId);
+          getActorComponent(created, IdComponent)?.setId(authId);
+        }
       }
     }
 

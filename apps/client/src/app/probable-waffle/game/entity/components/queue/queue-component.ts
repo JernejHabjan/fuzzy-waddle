@@ -13,7 +13,7 @@ import Phaser from "phaser";
 import type { QueueDefinition } from "../production/queue-definition";
 import { getActorComponent } from "../../../data/actor-component";
 import { addActorComponent } from "../../../data/actor-data";
-import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { getSimulationDelta } from "../../../world/services/simulation-time";
 
 /**
  * SharedQueueComponent is the queue owner and processor.
@@ -31,6 +31,7 @@ export class QueueComponent {
   // Component references (set during registration)
   private productionComponent?: ProductionComponent;
   private researchComponent?: ResearchComponent;
+  private lastSimulationTimeMs?: number;
 
   constructor(
     readonly gameObject: Phaser.GameObjects.GameObject,
@@ -69,9 +70,11 @@ export class QueueComponent {
   /**
    * Main update loop - processes all queue items
    */
-  private update(_time: number, delta: number): void {
+  private update(): void {
     if (!this.gameObject.scene) return;
-    const deltaWithTimeScale = delta * this.gameObject.scene.time.timeScale;
+    const simulationDelta = getSimulationDelta(this.gameObject.scene, this.lastSimulationTimeMs);
+    this.lastSimulationTimeMs = simulationDelta.now;
+    const deltaWithTimeScale = simulationDelta.delta;
 
     // Process each queue's first item
     for (let queueIndex = 0; queueIndex < this.sharedQueues.length; queueIndex++) {

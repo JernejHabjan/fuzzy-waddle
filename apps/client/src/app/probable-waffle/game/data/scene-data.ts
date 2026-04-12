@@ -115,7 +115,10 @@ export function sendPlayerStateEvent(
   scene: Scene,
   property: ProbableWafflePlayerDataChangeEventProperty,
   payloadIn: ProbableWafflePlayerDataChangeEventPayload,
-  playerNumber?: PlayerNumber
+  playerNumber?: PlayerNumber,
+  options?: {
+    localOnlyInMultiplayer?: boolean;
+  }
 ): void {
   if (!(scene instanceof BaseScene)) throw new Error("Scene is not of type BaseScene");
 
@@ -125,12 +128,19 @@ export function sendPlayerStateEvent(
     ...payloadIn
   } satisfies ProbableWafflePlayerDataChangeEventPayload;
 
-  communicator.playerChanged?.send({
+  const event = {
     property,
     data,
     gameInstanceId: scene.gameInstanceId,
     emitterUserId: scene.userId
-  });
+  };
+
+  if (communicator.gameCommandChanged && options?.localOnlyInMultiplayer) {
+    communicator.playerChanged?.sendLocally(event);
+    return;
+  }
+
+  communicator.playerChanged?.send(event);
 }
 
 export function emitEventSelection(
@@ -215,7 +225,10 @@ export function emitResource(
         resources: resources as PlayerStateResources
       }
     },
-    playerNumber
+    playerNumber,
+    {
+      localOnlyInMultiplayer: true
+    }
   );
 }
 
@@ -233,7 +246,10 @@ export function emitHousing(
         housing: housing as PlayerStateHousing
       }
     },
-    playerNumber
+    playerNumber,
+    {
+      localOnlyInMultiplayer: true
+    }
   );
 }
 

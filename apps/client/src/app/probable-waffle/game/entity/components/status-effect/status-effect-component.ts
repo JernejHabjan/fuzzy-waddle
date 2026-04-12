@@ -1,14 +1,20 @@
-import { EventEmitter } from '@angular/core';
-import { type StatusEffectData, StatusEffectType, type StatusEffectComponentData, DamageType } from '@fuzzy-waddle/api-interfaces';
-import { getActorComponent } from '../../../data/actor-component';
-import { HealthComponent } from '../combat/components/health-component';
-import Phaser from 'phaser';
-import { onObjectReady } from '../../../data/game-object-helper';
+import { EventEmitter } from "@angular/core";
+import {
+  DamageType,
+  type StatusEffectComponentData,
+  type StatusEffectData,
+  StatusEffectType
+} from "@fuzzy-waddle/api-interfaces";
+import { getActorComponent } from "../../../data/actor-component";
+import { HealthComponent } from "../combat/components/health-component";
+import Phaser from "phaser";
+import { onObjectReady } from "../../../data/game-object-helper";
+import { getSimulationDelta, getSimulationNow } from "../../../world/services/simulation-time";
 
 export class StatusEffectComponent {
-  static readonly EffectAppliedEvent = 'effectApplied';
-  static readonly EffectRemovedEvent = 'effectRemoved';
-  static readonly EffectTickEvent = 'effectTick';
+  static readonly EffectAppliedEvent = "effectApplied";
+  static readonly EffectRemovedEvent = "effectRemoved";
+  static readonly EffectTickEvent = "effectTick";
 
   effectApplied: EventEmitter<StatusEffectData> = new EventEmitter<StatusEffectData>();
   effectRemoved: EventEmitter<StatusEffectType> = new EventEmitter<StatusEffectType>();
@@ -16,6 +22,7 @@ export class StatusEffectComponent {
 
   private activeEffects: StatusEffectData[] = [];
   private healthComponent?: HealthComponent;
+  private lastSimulationTimeMs?: number;
 
   constructor(private readonly gameObject: Phaser.GameObjects.GameObject) {
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
@@ -38,7 +45,7 @@ export class StatusEffectComponent {
     if (existingEffect) {
       // Refresh the effect - reset remaining time to full duration
       existingEffect.remainingTime = effect.duration;
-      existingEffect.lastTickTime = this.gameObject.scene.time.now;
+      existingEffect.lastTickTime = getSimulationNow(this.gameObject.scene);
       // Update other properties if the new effect is different
       Object.assign(existingEffect, { ...effect, remainingTime: effect.duration });
     } else {
@@ -46,7 +53,7 @@ export class StatusEffectComponent {
       const newEffect: StatusEffectData = {
         ...effect,
         remainingTime: effect.duration,
-        lastTickTime: this.gameObject.scene.time.now
+        lastTickTime: getSimulationNow(this.gameObject.scene)
       };
       this.activeEffects.push(newEffect);
     }
@@ -106,15 +113,18 @@ export class StatusEffectComponent {
     return Math.max(0.1, modifier);
   }
 
-  private update(_time: number, delta: number): void {
+  private update(): void {
     if (!this.gameObject.active) return;
 
-    const now = this.gameObject.scene.time.now;
+    const simulationDelta = getSimulationDelta(this.gameObject.scene, this.lastSimulationTimeMs);
+    this.lastSimulationTimeMs = simulationDelta.now;
+    const now = simulationDelta.now;
+    const elapsed = simulationDelta.delta;
     const effectsToRemove: StatusEffectType[] = [];
 
     for (const effect of this.activeEffects) {
       // Decrement remaining time
-      effect.remainingTime -= delta;
+      effect.remainingTime -= elapsed;
 
       // Check for tick-based effects (DoT/HoT)
       if (effect.tickInterval && effect.lastTickTime !== undefined) {
@@ -165,7 +175,7 @@ export class StatusEffectComponent {
     if (data.activeEffects) {
       this.activeEffects = data.activeEffects.map((e) => ({
         ...e,
-        lastTickTime: this.gameObject.scene?.time.now ?? 0
+        lastTickTime: getSimulationNow(this.gameObject.scene)
       }));
     }
   }

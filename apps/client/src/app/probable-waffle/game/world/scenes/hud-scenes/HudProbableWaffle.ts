@@ -28,6 +28,7 @@ import ConfirmationDialog from "../../../prefabs/gui/dialogs/ConfirmationDialog"
 import SurrenderDialog from "../../../prefabs/gui/SurrenderDialog";
 import { getPlayers } from "../../../data/scene-data";
 import { DesyncRecoveryService } from "../../services/desync-recovery.service";
+import { ConnectionRecoveryService } from "../../services/connection-recovery.service";
 /* END-USER-IMPORTS */
 
 export default class HudProbableWaffle extends ProbableWaffleScene {
@@ -133,6 +134,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   private readonly actorInfoSmallScreenBreakpoint = 1200;
   private cursorHandler?: CursorHandler;
   private desyncRecovery?: DesyncRecoveryService;
+  private connectionRecovery?: ConnectionRecoveryService;
 
   probableWaffleScene?: ProbableWaffleScene;
   override preload() {
@@ -177,6 +179,8 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
 
     this.desyncRecovery = new DesyncRecoveryService();
     this.desyncRecovery.init(this, probableWaffleScene);
+    this.connectionRecovery = new ConnectionRecoveryService();
+    this.connectionRecovery.init(this, probableWaffleScene);
 
     // Initialize cursor handler with main scene if it was created before the parent scene was set
     if (this.cursorHandler) {
@@ -362,6 +366,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.saveGameSubscription?.unsubscribe();
     this.chatMessageSubscription?.unsubscribe();
     this.desyncRecovery?.destroy();
+    this.connectionRecovery?.destroy();
     super.destroy();
   }
   /* END-USER-CODE */

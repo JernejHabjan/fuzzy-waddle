@@ -143,12 +143,19 @@ export interface ProbableWaffleGameCommandEvent extends ProbableWaffleCommunicat
 }
 
 /** Periodic state-hash snapshot. Each client broadcasts its own hash; peers compare. */
+export interface ProbableWaffleStateHashDiagnostics {
+  actorDigests?: Record<string, string>;
+  playerDigests?: string[];
+  researchDigest?: string;
+}
+
 export interface ProbableWaffleStateHashEvent extends ProbableWaffleCommunicatorEvent {
   /** The simulation tick at which this hash was computed. */
   tick: number;
   playerNumber: PlayerNumber;
   /** djb2 hex hash of all actor states sorted by actor ID. */
   hash: string;
+  diagnostics?: ProbableWaffleStateHashDiagnostics;
 }
 
 /** Full simulation snapshot for reconnect / spectator catch-up. Host → requesting client only. */
@@ -172,7 +179,9 @@ export interface ProbableWaffleSnapshotData {
  * Sent by a client that needs a catch-up snapshot (reconnect or late-join spectator).
  * The host responds with `ProbableWaffleSnapshotResponseEvent`.
  */
-export interface ProbableWaffleSnapshotRequestEvent extends ProbableWaffleCommunicatorEvent {}
+export interface ProbableWaffleSnapshotRequestEvent extends ProbableWaffleCommunicatorEvent {
+  reason?: "reconnect" | "spectator-catch-up" | "desync-correction";
+}
 
 /** Host → requesting client: full simulation snapshot for catch-up. */
 export interface ProbableWaffleSnapshotResponseEvent extends ProbableWaffleCommunicatorEvent {
@@ -193,6 +202,7 @@ export interface ProbableWaffleSnapshotResponseEvent extends ProbableWaffleCommu
 export interface ProbableWaffleDesyncAlertEvent extends ProbableWaffleCommunicatorEvent {
   tick: number;
   desyncedPlayerNumber: PlayerNumber;
+  reason?: string;
 }
 
 /** Player-issued pause or resume request relayed to the whole room. */

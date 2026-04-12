@@ -25,6 +25,7 @@ import { AnimationType } from "../animation/animation-type";
 import { SoundType } from "../actor-audio/sound-type";
 import type { SoundDefinition } from "../actor-audio/sound-definition";
 import type { GathererDefinition } from "./gatherer-definition";
+import { getSimulationDelta } from "../../../world/services/simulation-time";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class GathererComponent {
@@ -64,6 +65,7 @@ export class GathererComponent {
   previousResourceSource: GameObject | null = null;
   previousResourceType: ResourceType | null = null;
   remainingCooldown = 0;
+  private lastSimulationTimeMs?: number;
 
   onResourceGathered: Subject<[GameObject, GameObject, GatherData, number]> = new Subject<
     [GameObject, GameObject, GatherData, number]
@@ -89,8 +91,10 @@ export class GathererComponent {
     this.actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
   }
 
-  private update(_: number, delta: number): void {
-    const deltaWithTimeScale = delta * this.gameObject.scene.time.timeScale;
+  private update(): void {
+    const simulationDelta = getSimulationDelta(this.gameObject.scene, this.lastSimulationTimeMs);
+    this.lastSimulationTimeMs = simulationDelta.now;
+    const deltaWithTimeScale = simulationDelta.delta;
 
     if (this.remainingCooldown <= 0) {
       return;
@@ -195,7 +199,7 @@ export class GathererComponent {
     });
 
     // Use batch method for better performance
-    const pairs: [GameObject, GameObject][] = validDrains.map(drain => [gatherer, drain]);
+    const pairs: [GameObject, GameObject][] = validDrains.map((drain) => [gatherer, drain]);
     const distances = await DistanceHelper.batchGetDistancesBetweenGameObjects(pairs);
 
     let closestResourceDrain: GameObject | null = null;
@@ -203,7 +207,7 @@ export class GathererComponent {
 
     for (let i = 0; i < validDrains.length; i++) {
       const distance = distances[i];
-      if (typeof distance === 'number' && distance < closestResourceDrainDistance) {
+      if (typeof distance === "number" && distance < closestResourceDrainDistance) {
         closestResourceDrain = validDrains[i]!;
         closestResourceDrainDistance = distance;
       }
@@ -258,7 +262,7 @@ export class GathererComponent {
     });
 
     // Use batch method for better performance
-    const pairs: [GameObject, GameObject][] = validSources.map(source => [this.gameObject, source]);
+    const pairs: [GameObject, GameObject][] = validSources.map((source) => [this.gameObject, source]);
     const distances = await DistanceHelper.batchGetDistancesBetweenGameObjects(pairs);
 
     let closestResourceSource: GameObject | undefined = undefined;
@@ -266,7 +270,7 @@ export class GathererComponent {
 
     for (let i = 0; i < validSources.length; i++) {
       const distance = distances[i];
-      if (typeof distance !== 'number') continue;
+      if (typeof distance !== "number") continue;
       if (maxDistance > 0 && distance > maxDistance) continue;
       if (distance < closestResourceSourceDistance) {
         closestResourceSource = validSources[i];

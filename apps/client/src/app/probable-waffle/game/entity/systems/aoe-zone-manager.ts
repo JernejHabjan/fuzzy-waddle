@@ -10,6 +10,7 @@ import { TilemapComponent } from "../../world/tilemap/tilemap.component";
 import { EffectsAnims } from "../../animations/effects";
 import { AudioService } from "../../world/services/audio.service";
 import { RepresentableComponent } from "../components/representable-component";
+import { getSimulationDelta, getSimulationNow } from "../../world/services/simulation-time";
 
 interface ZoneVisual {
   zoneId: string;
@@ -24,6 +25,7 @@ export class AoeZoneManager {
   private zoneVisuals: Map<string, ZoneVisual> = new Map();
   private audioService?: AudioService;
   private nextZoneId = 0;
+  private lastSimulationTimeMs?: number;
 
   constructor(private readonly scene: Phaser.Scene) {
     onSceneInitialized(this.scene, this.init, this);
@@ -41,7 +43,7 @@ export class AoeZoneManager {
       ...data,
       id: zoneId,
       remainingTime: data.duration,
-      lastTickTime: this.scene.time.now
+      lastTickTime: getSimulationNow(this.scene)
     };
 
     this.activeZones.push(zone);
@@ -58,13 +60,16 @@ export class AoeZoneManager {
     }
   }
 
-  private update(_time: number, delta: number): void {
-    const now = this.scene.time.now;
+  private update(): void {
+    const simulationDelta = getSimulationDelta(this.scene, this.lastSimulationTimeMs);
+    this.lastSimulationTimeMs = simulationDelta.now;
+    const now = simulationDelta.now;
+    const elapsed = simulationDelta.delta;
     const zonesToRemove: string[] = [];
 
     for (const zone of this.activeZones) {
       // Decrement remaining time
-      zone.remainingTime -= delta;
+      zone.remainingTime -= elapsed;
 
       // Check for tick
       if (zone.lastTickTime !== undefined) {
@@ -331,7 +336,12 @@ export class AoeZoneManager {
 
     for (const zone of this.activeZones) {
       const radiusInPixels = this.getRadiusInPixels(zone.radius);
-      const distance = Phaser.Math.Distance.Between(zone.worldPosition.x, zone.worldPosition.y, worldPosition.x, worldPosition.y);
+      const distance = Phaser.Math.Distance.Between(
+        zone.worldPosition.x,
+        zone.worldPosition.y,
+        worldPosition.x,
+        worldPosition.y
+      );
 
       if (distance <= radiusInPixels) {
         zones.push(zone);
@@ -355,7 +365,7 @@ export class AoeZoneManager {
     for (const zone of zones) {
       this.activeZones.push({
         ...zone,
-        lastTickTime: this.scene.time.now
+        lastTickTime: getSimulationNow(this.scene)
       });
       this.createZoneVisual(zone);
     }

@@ -68,7 +68,7 @@ export class SnapshotService {
       if (!e.emitterUserId) {
         return;
       }
-      this.sendSnapshot(scene, e.emitterUserId, "reconnect");
+      this.sendSnapshot(scene, e.emitterUserId, e.reason === "desync-correction" ? "desync-correction" : "reconnect");
     });
   }
 

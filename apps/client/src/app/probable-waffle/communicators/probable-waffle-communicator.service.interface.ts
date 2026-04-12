@@ -9,8 +9,10 @@ import {
   type ProbableWaffleGameInstanceMetadataChangeEvent,
   type ProbableWaffleGameModeDataChangeEvent,
   type ProbableWafflePauseChangedEvent,
+  type ProbableWafflePlayerDisconnectedEvent,
   type ProbableWaffleGameStateDataChangeEvent,
   type ProbableWafflePlayerDataChangeEvent,
+  type ProbableWafflePlayerReconnectedEvent,
   type ProbableWaffleSpectatorDataChangeEvent,
   type ProbableWaffleStateHashEvent,
   type ProbableWaffleSnapshotRequestEvent,
@@ -40,6 +42,10 @@ export interface ProbableWaffleCommunicatorServiceInterface {
   desyncAlert?: TwoWayCommunicator<ProbableWaffleDesyncAlertEvent, ProbableWaffleCommunicatorType>;
   /** Multiplayer pause/resume relay; only in MP. */
   pauseChanged?: TwoWayCommunicator<ProbableWafflePauseChangedEvent, ProbableWaffleCommunicatorType>;
+  /** Server-originated disconnect notification; only in MP. */
+  playerDisconnected?: TwoWayCommunicator<ProbableWafflePlayerDisconnectedEvent, ProbableWaffleCommunicatorType>;
+  /** Server-originated reconnect notification; only in MP. */
+  playerReconnected?: TwoWayCommunicator<ProbableWafflePlayerReconnectedEvent, ProbableWaffleCommunicatorType>;
   /** Server-originated host migration event; only in MP. */
   hostMigrated?: TwoWayCommunicator<ProbableWaffleHostMigratedEvent, ProbableWaffleCommunicatorType>;
   /** Active socket for reconnect handling; undefined in single-player. */

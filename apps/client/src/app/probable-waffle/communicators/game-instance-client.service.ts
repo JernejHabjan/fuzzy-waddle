@@ -428,12 +428,19 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   ) {
     if (!this.currentGameInstanceId) return;
 
-    this.probableWaffleCommunicatorService.playerChanged?.send({
+    const payload = {
       property: property,
       gameInstanceId: this.currentGameInstanceId,
       emitterUserId: this.authService.userId,
       data
-    });
+    };
+
+    if (property === "joinedFromNetwork") {
+      this.probableWaffleCommunicatorService.playerChanged?.sendToServer(payload);
+      return;
+    }
+
+    this.probableWaffleCommunicatorService.playerChanged?.send(payload);
   }
 
   private async spectatorChanged(

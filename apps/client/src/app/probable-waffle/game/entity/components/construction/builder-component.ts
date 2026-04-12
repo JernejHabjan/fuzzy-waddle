@@ -23,6 +23,7 @@ import type { AnimationOptions } from "../animation/animation-options";
 import type { BuilderDefinition } from "./builder-definition";
 import GameObject = Phaser.GameObjects.GameObject;
 import { TilemapComponent } from "../../../world/tilemap/tilemap.component";
+import { getSimulationDelta } from "../../../world/services/simulation-time";
 
 // Allows the actor to construct building
 export class BuilderComponent {
@@ -37,6 +38,7 @@ export class BuilderComponent {
   onRemovedFromConstructionSite: Subject<[GameObject, GameObject]> = new Subject<[GameObject, GameObject]>();
   onConstructionSiteLeft: Subject<[GameObject, GameObject]> = new Subject<[GameObject, GameObject]>();
   remainingCooldown = 0;
+  private lastSimulationTimeMs?: number;
   private audioService?: AudioService;
   private animationActorComponent?: AnimationActorComponent;
   private actorTranslateComponent?: ActorTranslateComponent;
@@ -57,8 +59,10 @@ export class BuilderComponent {
     this.actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
   }
 
-  private update(_: number, delta: number): void {
-    const deltaWithTimeScale = delta * this.gameObject.scene.time.timeScale;
+  private update(): void {
+    const simulationDelta = getSimulationDelta(this.gameObject.scene, this.lastSimulationTimeMs);
+    this.lastSimulationTimeMs = simulationDelta.now;
+    const deltaWithTimeScale = simulationDelta.delta;
 
     if (this.remainingCooldown <= 0) {
       return;
@@ -273,7 +277,7 @@ export class BuilderComponent {
     if (availableConstructionSites.length === 0) return null;
 
     // Get navigation distances for all sites using batch method
-    const pairs: [GameObject, GameObject][] = availableConstructionSites.map(site => [this.gameObject, site]);
+    const pairs: [GameObject, GameObject][] = availableConstructionSites.map((site) => [this.gameObject, site]);
     const distances = await DistanceHelper.batchGetDistancesBetweenGameObjects(pairs);
 
     const sitesWithDistance: { site: GameObject; distance: number }[] = [];
@@ -282,7 +286,7 @@ export class BuilderComponent {
       const distance = distances[i];
       // console.log("[Build] getClosestConstructionSite: Site", availableConstructionSites[i], "navDistance=", distance);
       // Only include reachable sites
-      if (typeof distance === 'number' && distance <= rangeInTiles) {
+      if (typeof distance === "number" && distance <= rangeInTiles) {
         sitesWithDistance.push({ site: availableConstructionSites[i]!, distance });
       }
     }

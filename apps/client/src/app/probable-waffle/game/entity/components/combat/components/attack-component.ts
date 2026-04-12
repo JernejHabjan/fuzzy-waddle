@@ -32,6 +32,7 @@ import type { ProjectileData } from "../projectile-data";
 import type { AttackDefinition } from "./attack-definition";
 import type { IsoDirection } from "../../movement/iso-directions";
 import { TilemapComponent } from "../../../../world/tilemap/tilemap.component";
+import { getSimulationDelta } from "../../../../world/services/simulation-time";
 import TivaraAlchemistVase from "../../../../prefabs/weapons/TivaraAlchemistVase";
 import GameObject = Phaser.GameObjects.GameObject;
 
@@ -44,6 +45,7 @@ export class AttackComponent {
   private projectileTween?: Phaser.Tweens.Tween;
   private rotationTween?: Phaser.Tweens.Tween;
   currentAttack: AttackData | null = null;
+  private lastSimulationTimeMs?: number;
   private projectileSprite?: Phaser.GameObjects.Image;
   // track delayed fire so we can cancel before projectile spawns
   private fireTimer?: Phaser.Time.TimerEvent;
@@ -87,8 +89,10 @@ export class AttackComponent {
     this.stopProjectile();
   }
 
-  private update(_: number, delta: number): void {
-    const deltaWithTimeScale = delta * this.gameObject.scene.time.timeScale;
+  private update(): void {
+    const simulationDelta = getSimulationDelta(this.gameObject.scene, this.lastSimulationTimeMs);
+    this.lastSimulationTimeMs = simulationDelta.now;
+    const deltaWithTimeScale = simulationDelta.delta;
     if (this.remainingCooldown <= 0) {
       return;
     }

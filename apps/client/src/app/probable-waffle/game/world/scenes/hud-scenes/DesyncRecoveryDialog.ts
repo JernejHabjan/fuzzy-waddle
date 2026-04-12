@@ -175,6 +175,7 @@ export default class DesyncRecoveryDialog extends ProbableWaffleScene {
   private readonly smallScreenBreakpoint = 800;
   private onWaitCallback?: () => void;
   private onKickCallback?: () => void;
+  private pendingSetup?: { tick: number; playerNumber: number | undefined; reason?: string; onWait: () => void; onKick: () => void };
 
   override create() {
     this.editorCreate();
@@ -185,18 +186,36 @@ export default class DesyncRecoveryDialog extends ProbableWaffleScene {
     this.addBackgroundOverlay();
     this.handleWait();
     this.handleKick();
+    if (this.pendingSetup) {
+      this.applySetup(this.pendingSetup);
+    }
   }
 
   /**
    * Called before scene.start() to configure the dialog content and callbacks.
    * The recovery service sets this up immediately after getting the dialog reference.
    */
-  setup(opts: { tick: number; playerNumber: number | undefined; onWait: () => void; onKick: () => void }): void {
-    this.message_text.setText(
-      `Player ${opts.playerNumber ?? "?"} is out of sync\nat tick ${opts.tick}`
-    );
+  setup(opts: { tick: number; playerNumber: number | undefined; reason?: string; onWait: () => void; onKick: () => void }): void {
+    this.pendingSetup = opts;
+    this.applySetup(opts);
+  }
+
+  private applySetup(opts: {
+    tick: number;
+    playerNumber: number | undefined;
+    reason?: string;
+    onWait: () => void;
+    onKick: () => void;
+  }): void {
     this.onWaitCallback = opts.onWait;
     this.onKickCallback = opts.onKick;
+    if (!this.message_text) {
+      return;
+    }
+
+    this.message_text.setText(
+      `Player ${opts.playerNumber ?? "?"} is out of sync\nat tick ${opts.tick}${opts.reason ? `\n${opts.reason}` : ""}`
+    );
   }
 
   private resize(gameSize: { width: number; height: number }) {

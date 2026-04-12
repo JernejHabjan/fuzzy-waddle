@@ -38,6 +38,9 @@ import { TilemapComponent } from "../../world/tilemap/tilemap.component";
 import type { IsoDirection } from "../components/movement/iso-directions";
 import type { PathMoveConfig } from "./path-move-config";
 import { CommandBusService } from "../../world/services/command-bus.service";
+import { getCommunicator } from "../../data/scene-data";
+import { getBaseGameDataFromScene } from "../../../../shared/game/phaser/scene/base.scene";
+import type { ProbableWaffleGameData } from "../../core/probable-waffle-game-data";
 import Tween = Phaser.Tweens.Tween;
 import TweenChain = Phaser.Tweens.TweenChain;
 import GameObject = Phaser.GameObjects.GameObject;
@@ -155,6 +158,10 @@ export class MovementSystem {
     gameObject: GameObject,
     pathMoveConfig?: Partial<PathMoveConfig>
   ): Promise<boolean> {
+    if (this.usesDeterministicPursuit()) {
+      return this.moveToActorByFollowingDeterministicSnapshotPath(gameObject, pathMoveConfig);
+    }
+
     const flyingComponent = getActorComponent(this.gameObject, FlyingComponent);
     const usePathfinding = !flyingComponent;
     if (!usePathfinding) {
@@ -173,6 +180,44 @@ export class MovementSystem {
     }
 
     return this.calculateAndFollowPathOfMovingTarget(gameObject, pathMoveConfig);
+  }
+
+  private async moveToActorByFollowingDeterministicSnapshotPath(
+    destinationGameObject: GameObject,
+    pathMoveConfig?: Partial<PathMoveConfig>
+  ): Promise<boolean> {
+    const flyingComponent = getActorComponent(this.gameObject, FlyingComponent);
+    const usePathfinding = !flyingComponent;
+    if (!usePathfinding) {
+      const vec3 = getGameObjectCurrentTile(destinationGameObject);
+      if (!vec3) return false;
+      return this.moveDirectlyToLocationWithoutPathfinding(
+        {
+          x: vec3.x,
+          y: vec3.y,
+          z: 0
+        } satisfies Vector3Simple,
+        pathMoveConfig as PathMoveConfig
+      )
+        .then(() => true)
+        .catch(() => false);
+    }
+
+    const path = await this.getPathToClosestNavigableTileBetweenGameObjectsInRadius(
+      destinationGameObject,
+      pathMoveConfig?.radiusTilesAroundDestination
+    );
+    if (!path || !path.length) return false;
+
+    this.cancelMovement();
+
+    try {
+      path.shift();
+      await this.moveAlongPathByFollowingPreCalculatedStaticPath(path, pathMoveConfig as PathMoveConfig);
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   /**
@@ -599,6 +644,12 @@ export class MovementSystem {
     this.cancelMovement();
     this.targetGameObject = undefined;
     this.commandBusSubscription?.unsubscribe();
+  }
+
+  private usesDeterministicPursuit(): boolean {
+    const baseGameData = getBaseGameDataFromScene<ProbableWaffleGameData>(this.gameObject.scene);
+    return !!getCommunicator(this.gameObject.scene).gameCommandChanged &&
+      !baseGameData.gameInstance.gameInstanceMetadata.isReplay();
   }
 
   async canMoveTo(targetGameObject: Phaser.GameObjects.GameObject, range?: number): Promise<boolean> {

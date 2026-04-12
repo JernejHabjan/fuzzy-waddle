@@ -1,3 +1,4 @@
+import type { ProbableWaffleStateHashDiagnostics } from "@fuzzy-waddle/api-interfaces";
 import type { Subscription } from "rxjs";
 import { getSceneService } from "./scene-component-helpers";
 import { SimulationTickService } from "./simulation-tick.service";
@@ -5,12 +6,17 @@ import { ActorIndexSystem } from "./ActorIndexSystem";
 import { getActorComponent } from "../../data/actor-component";
 import { IdComponent } from "../../entity/components/id-component";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
+import { AttackComponent } from "../../entity/components/combat/components/attack-component";
+import { HealingComponent } from "../../entity/components/combat/components/healing-component";
+import { BuilderComponent } from "../../entity/components/construction/builder-component";
+import { GathererComponent } from "../../entity/components/resource/gatherer-component";
 import { OwnerComponent } from "../../entity/components/owner-component";
 import { getGameObjectCurrentTile, getGameObjectLogicalTransform } from "../../data/game-object-helper";
 import { getCommunicator } from "../../data/scene-data";
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { SnapshotService } from "./snapshot.service";
 import { ActorManager } from "../../data/actor-manager";
+import { PawnAiController } from "../../prefabs/ai-agents/pawn-ai-controller";
 
 /** Payload emitted on the allScenes EventEmitter when a hash mismatch is confirmed. */
 export interface DesyncDetectedEvent {
@@ -19,13 +25,19 @@ export interface DesyncDetectedEvent {
   remotePlayerNumber: number | undefined;
   localHash: string;
   remoteHash: string;
+  reason?: string;
+}
+
+interface HashSnapshot {
+  hash: string;
+  diagnostics: ProbableWaffleStateHashDiagnostics;
 }
 
 /**
- * Hash every 60 ticks = 3 seconds at 20 Hz.
- * Gives a wide enough window to absorb network jitter while catching desyncs quickly.
+ * Hash every 20 ticks = 1 second at 20 Hz.
+ * This catches divergence quickly enough for correction before actors drift too far apart.
  */
-const HASH_INTERVAL_TICKS = 60;
+const HASH_INTERVAL_TICKS = 20;
 
 /**
  * Keep local hashes for this many ticks in case a peer message arrives slightly late.
@@ -39,6 +51,7 @@ interface PendingCorrection {
   playerNumber: number;
   firstDetectedAtMs: number;
   alertSent: boolean;
+  reason?: string;
 }
 
 /**
@@ -52,7 +65,7 @@ interface PendingCorrection {
  * the desynced client. The recovery dialog is handled by Step 10 (DesyncRecoveryService).
  */
 export class StateHashService {
-  private readonly localHashes = new Map<number, string>();
+  private readonly localHashes = new Map<number, HashSnapshot>();
   private tickSub?: Subscription;
   private hashReceivedSub?: Subscription;
   /** Lightweight debug overlay; shown immediately on mismatch for quick visual feedback. */
@@ -81,8 +94,8 @@ export class StateHashService {
   private onTick(tick: number, scene: ProbableWaffleScene): void {
     if (tick % HASH_INTERVAL_TICKS !== 0) return;
 
-    const hash = this.computeHash(scene);
-    this.localHashes.set(tick, hash);
+    const snapshot = this.computeHashSnapshot(scene);
+    this.localHashes.set(tick, snapshot);
     this.pruneOldHashes(tick);
 
     const communicator = getCommunicator(scene);
@@ -94,7 +107,8 @@ export class StateHashService {
       emitterUserId: scene.userId ?? "",
       tick,
       playerNumber,
-      hash
+      hash: snapshot.hash,
+      diagnostics: snapshot.diagnostics
     });
   }
 
@@ -102,10 +116,20 @@ export class StateHashService {
    * Build the hash string from all tracked actors sorted by their stable ID.
    * Uses integer positions (Math.round) to avoid float divergence from display rounding.
    */
-  private computeHash(scene: Phaser.Scene): string {
+  private computeHashSnapshot(scene: Phaser.Scene): HashSnapshot {
     const actorIndex = getSceneService(scene, ActorIndexSystem);
-    if (!actorIndex) return "";
+    if (!actorIndex) {
+      return {
+        hash: "",
+        diagnostics: {
+          actorDigests: {},
+          playerDigests: [],
+          researchDigest: ""
+        }
+      };
+    }
 
+    const actorDigests: Record<string, string> = {};
     const entries = actorIndex.getAllIdActors().map((go) => {
       const id = getActorComponent(go, IdComponent)?.id ?? "";
       const health = getActorComponent(go, HealthComponent)?.healthComponentData.health ?? -1;
@@ -119,34 +143,54 @@ export class StateHashService {
       const actor = ActorManager.getActorDefinitionFromActor(go) ?? {};
       const queueState = this.serializeActorQueueState(actor);
       const economyState = this.serializeActorEconomyState(actor);
-      return `${id}:${go.name}:${Math.round(health)}:${Math.round(armour)}:${lx}:${ly}:${lz}:${owner}:${queueState}:${economyState}`;
+      const combatState = this.serializeActorCombatState(go);
+      const orderState = this.serializeActorOrderState(go);
+      const actorDigest =
+        `${id}:${go.name}:${Math.round(health)}:${Math.round(armour)}:${lx}:${ly}:${lz}:${owner}:${queueState}:${economyState}:${combatState}:${orderState}`;
+      actorDigests[id] = actorDigest;
+      return actorDigest;
     });
 
     // Sort by the ID prefix (first segment before ':') for deterministic ordering.
     entries.sort();
     const playerStateEntries = this.serializePlayerStates(scene);
     const researchEntries = this.serializeResearchState(scene);
-    return djb2(`${entries.join("|")}#${playerStateEntries.join("|")}#${researchEntries.join("|")}`);
+    return {
+      hash: djb2(`${entries.join("|")}#${playerStateEntries.join("|")}#${researchEntries.join("|")}`),
+      diagnostics: {
+        actorDigests,
+        playerDigests: playerStateEntries,
+        researchDigest: researchEntries.join("|")
+      }
+    };
   }
 
   private compareRemoteHash(
-    event: { tick: number; hash: string; playerNumber: number | undefined; emitterUserId: string | null | undefined },
+    event: {
+      tick: number;
+      hash: string;
+      playerNumber: number | undefined;
+      emitterUserId: string | null | undefined;
+      diagnostics?: ProbableWaffleStateHashDiagnostics;
+    },
     scene: ProbableWaffleScene
   ): void {
-    const localHash = this.localHashes.get(event.tick);
-    if (localHash === undefined) {
+    const localSnapshot = this.localHashes.get(event.tick);
+    if (localSnapshot === undefined) {
       // Peer hash arrived before our own was computed — shouldn't happen in lockstep
       // but guard it; the desync, if real, will be caught on the next interval.
       return;
     }
 
-    if (localHash === event.hash) {
+    if (localSnapshot.hash === event.hash) {
       if (event.playerNumber !== undefined) {
         this.pendingCorrections.delete(event.playerNumber);
       }
       this.clearDesyncIndicator();
       return;
     }
+
+    const mismatchReason = this.describeDiagnosticsMismatch(localSnapshot.diagnostics, event.diagnostics);
 
     const isRemoteHost =
       event.emitterUserId !== undefined &&
@@ -159,7 +203,7 @@ export class StateHashService {
 
     console.error(
       `[DESYNC] tick=${event.tick} remotePlayer=${event.playerNumber} ` +
-        `local=${localHash} remote=${event.hash}`
+        `local=${localSnapshot.hash} remote=${event.hash} reason=${mismatchReason}`
     );
     this.showDesyncIndicator(event.tick, event.playerNumber, scene);
 
@@ -167,13 +211,14 @@ export class StateHashService {
       return;
     }
 
-    this.handleHostDetectedDesync(event.tick, event.playerNumber, event.emitterUserId, scene);
+    this.handleHostDetectedDesync(event.tick, event.playerNumber, event.emitterUserId, mismatchReason, scene);
   }
 
   private handleHostDetectedDesync(
     tick: number,
     remotePlayerNumber: number,
     emitterUserId: string,
+    reason: string,
     scene: ProbableWaffleScene
   ): void {
     const now = Date.now();
@@ -184,10 +229,15 @@ export class StateHashService {
         emitterUserId,
         playerNumber: remotePlayerNumber,
         firstDetectedAtMs: now,
-        alertSent: false
+        alertSent: false,
+        reason
       });
-      console.warn(`[DESYNC] Sent correction snapshot to player ${remotePlayerNumber} at tick ${tick}.`);
+      console.warn(`[DESYNC] Sent correction snapshot to player ${remotePlayerNumber} at tick ${tick}. reason=${reason}`);
       return;
+    }
+
+    if (reason) {
+      existing.reason = reason;
     }
 
     if (existing.alertSent || now - existing.firstDetectedAtMs < CORRECTION_GRACE_PERIOD_MS) {
@@ -198,10 +248,13 @@ export class StateHashService {
       gameInstanceId: scene.gameInstanceId,
       emitterUserId: scene.userId,
       tick,
-      desyncedPlayerNumber: remotePlayerNumber
+      desyncedPlayerNumber: remotePlayerNumber,
+      reason: existing.reason
     });
     existing.alertSent = true;
-    console.error(`[DESYNC] Player ${remotePlayerNumber} remained divergent after correction; opening recovery dialog.`);
+    console.error(
+      `[DESYNC] Player ${remotePlayerNumber} remained divergent after correction; opening recovery dialog. reason=${existing.reason ?? "unknown"}`
+    );
   }
 
   /** Persistent on-screen overlay so the affected client immediately sees the desync. */
@@ -246,6 +299,87 @@ export class StateHashService {
     const drain = Math.round(actor.resourceDrain?.currentCapacity ?? -1);
     const container = (actor.container?.containedIds ?? []).slice().sort().join(",");
     return `${gathered}:${source}:${drain}:${container}`;
+  }
+
+  private serializeActorCombatState(actor: Phaser.GameObjects.GameObject): string {
+    const attackCooldown = Math.round(getActorComponent(actor, AttackComponent)?.remainingCooldown ?? -1);
+    const healingCooldown = Math.round(getActorComponent(actor, HealingComponent)?.remainingCooldown ?? -1);
+    const builderCooldown = Math.round(getActorComponent(actor, BuilderComponent)?.remainingCooldown ?? -1);
+    const gathererComponent = getActorComponent(actor, GathererComponent);
+    const gathererCooldown = Math.round(gathererComponent?.remainingCooldown ?? -1);
+    const gatherSourceId = gathererComponent?.currentResourceSource
+      ? (getActorComponent(gathererComponent.currentResourceSource, IdComponent)?.id ?? "")
+      : "";
+    return `${attackCooldown}:${healingCooldown}:${builderCooldown}:${gathererCooldown}:${gatherSourceId}`;
+  }
+
+  private serializeActorOrderState(actor: Phaser.GameObjects.GameObject): string {
+    const blackboard = getActorComponent(actor, PawnAiController)?.getData().blackboard;
+    if (!blackboard) {
+      return "";
+    }
+
+    return this.stableSerialize({
+      status: blackboard.status,
+      currentOrder: blackboard.currentOrder,
+      orderQueue: blackboard.orderQueue,
+      failedOrders: blackboard.failedOrders
+    });
+  }
+
+  private stableSerialize(value: unknown): string {
+    if (value === null) {
+      return "null";
+    }
+    if (value === undefined) {
+      return "undefined";
+    }
+    if (Array.isArray(value)) {
+      return `[${value.map((item) => this.stableSerialize(item)).join(",")}]`;
+    }
+    if (typeof value === "object") {
+      const record = value as Record<string, unknown>;
+      return `{${Object.keys(record)
+        .sort()
+        .map((key) => `${key}:${this.stableSerialize(record[key])}`)
+        .join(",")}}`;
+    }
+    return String(value);
+  }
+
+  private describeDiagnosticsMismatch(
+    localDiagnostics: ProbableWaffleStateHashDiagnostics,
+    remoteDiagnostics: ProbableWaffleStateHashDiagnostics | undefined
+  ): string {
+    if (!remoteDiagnostics) {
+      return "remote diagnostics unavailable";
+    }
+
+    const localActorDigests = localDiagnostics.actorDigests ?? {};
+    const remoteActorDigests = remoteDiagnostics.actorDigests ?? {};
+    const actorIds = [...new Set([...Object.keys(localActorDigests), ...Object.keys(remoteActorDigests)])].sort();
+    for (const actorId of actorIds) {
+      const localDigest = localActorDigests[actorId];
+      const remoteDigest = remoteActorDigests[actorId];
+      if (localDigest !== remoteDigest) {
+        return `actor=${actorId} local=${localDigest ?? "missing"} remote=${remoteDigest ?? "missing"}`;
+      }
+    }
+
+    const localPlayerDigests = localDiagnostics.playerDigests ?? [];
+    const remotePlayerDigests = remoteDiagnostics.playerDigests ?? [];
+    const playerDigestCount = Math.max(localPlayerDigests.length, remotePlayerDigests.length);
+    for (let index = 0; index < playerDigestCount; index++) {
+      if (localPlayerDigests[index] !== remotePlayerDigests[index]) {
+        return `player-state local=${localPlayerDigests[index] ?? "missing"} remote=${remotePlayerDigests[index] ?? "missing"}`;
+      }
+    }
+
+    if ((localDiagnostics.researchDigest ?? "") !== (remoteDiagnostics.researchDigest ?? "")) {
+      return `research local=${localDiagnostics.researchDigest ?? "missing"} remote=${remoteDiagnostics.researchDigest ?? "missing"}`;
+    }
+
+    return "hash mismatch without diagnostic delta";
   }
 
   private serializePlayerStates(scene: Phaser.Scene): string[] {

@@ -240,6 +240,33 @@ export class CommandBusService {
     this.tryUnblockTick();
   }
 
+  resetAfterSnapshot(snapshotTick: number, commandTail: readonly ProbableWaffleReplayCommandBatch[] = []): void {
+    this.buffer.clear();
+    this.pendingOutbound.clear();
+    this.clearPendingStallLog();
+    this.stallSignature = null;
+    this.lastSentExecutionTick = snapshotTick;
+
+    if (this.localPlayerNumber !== null) {
+      for (let tick = snapshotTick + 1; tick <= snapshotTick + CommandBusService.INPUT_DELAY_TICKS; tick++) {
+        this.buffer.commit(tick, this.localPlayerNumber, []);
+        this.emitRecordedBatch({
+          tick,
+          playerNumber: this.localPlayerNumber,
+          commands: []
+        });
+        this.lastSentExecutionTick = Math.max(this.lastSentExecutionTick, tick);
+        this.sendCommandBatch(tick, []);
+      }
+    }
+
+    for (const batch of [...commandTail].sort((a, b) => a.tick - b.tick || a.playerNumber - b.playerNumber)) {
+      this.buffer.commit(batch.tick, batch.playerNumber, batch.commands as GameCommand[]);
+    }
+
+    this.tryUnblockTick();
+  }
+
   private emitRecordedBatch(batch: ProbableWaffleReplayCommandBatch): void {
     this._commandBatch$.next({
       tick: batch.tick,

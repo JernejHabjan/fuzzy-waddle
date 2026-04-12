@@ -34,6 +34,8 @@ import type { HealthDefinition } from "./health-definition";
 import { BuildingDestructionEffect } from "../../building/building-destruction-effect";
 import { FadeOutComponent } from "../../building/fade-out-component";
 import type { FadeOutDefinition } from "../../building/fade-out-definition";
+import { SimulationTickService } from "../../../../world/services/simulation-tick.service";
+import { getSimulationNow } from "../../../../world/services/simulation-time";
 
 export class HealthComponent {
   static readonly DEBUG = false;
@@ -53,6 +55,7 @@ export class HealthComponent {
     damageType: DamageType;
     timestamp: Date;
     sceneTime: number;
+    simulationTick?: number;
   };
   private uiComponentsVisible: boolean = true;
   uiComponentsVisibilityChanged: Subject<boolean> = new Subject<boolean>();
@@ -209,12 +212,14 @@ export class HealthComponent {
   }
 
   takeDamage(damage: number, damageType: DamageType, damageInitiator?: Phaser.GameObjects.GameObject) {
+    const simulationTick = getSceneService(this.gameObject.scene, SimulationTickService)?.currentTick;
     this.latestDamage = {
       damage,
       damageType,
       damageInitiator,
       timestamp: new Date(),
-      sceneTime: this.gameObject.scene.time.now
+      sceneTime: getSimulationNow(this.gameObject.scene),
+      simulationTick
     };
 
     if (this.healthComponentData.armour > 0) {

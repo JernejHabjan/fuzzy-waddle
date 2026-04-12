@@ -9,11 +9,13 @@ import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 import { DistanceHelper } from "../../library/distance-helper";
 import type { ConvertibleDefinition } from "./convertible-definition";
 import type { ConvertibleComponentData, PlayerNumber } from "@fuzzy-waddle/api-interfaces";
+import { getSimulationDelta } from "../../world/services/simulation-time";
 
 export class ConvertibleComponent {
   private accumulatedTime = 0;
   private ready = false;
   private converted = false;
+  private lastSimulationTimeMs?: number;
 
   constructor(
     private readonly gameObject: GameObject,
@@ -36,10 +38,12 @@ export class ConvertibleComponent {
     this.gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
   }
 
-  private update(_time: number, delta: number) {
+  private update() {
     if (!this.ready || this.converted) return;
+    const simulationDelta = getSimulationDelta(this.gameObject.scene, this.lastSimulationTimeMs);
+    this.lastSimulationTimeMs = simulationDelta.now;
 
-    this.accumulatedTime += delta;
+    this.accumulatedTime += simulationDelta.delta;
 
     if (this.accumulatedTime >= this.convertibleDefinition.checkInterval) {
       this.accumulatedTime = 0;

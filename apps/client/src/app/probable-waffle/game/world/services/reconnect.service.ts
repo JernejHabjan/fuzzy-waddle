@@ -35,6 +35,7 @@ import {
 export class ReconnectService {
   private snapshotSub?: Subscription;
   private socketConnectHandler?: () => void;
+  private socketDisconnectHandler?: (reason: string) => void;
   /** Stored so destroy() can call removeListener. */
   private rawSocket?: any;
 
@@ -73,11 +74,15 @@ export class ReconnectService {
         // so any subsequent `connect` event is a reconnect.
         this.onSocketReconnect(scene);
       };
+      this.socketDisconnectHandler = (reason: string) => {
+        this.onSocketDisconnect(scene, reason);
+      };
       // Use the underlying socket.io socket via ngx-socket-io's ioSocket property.
       const rawSocket = (socket as any).ioSocket;
       if (rawSocket) {
         this.rawSocket = rawSocket;
         rawSocket.on("connect", this.socketConnectHandler);
+        rawSocket.on("disconnect", this.socketDisconnectHandler);
       }
     }
   }
@@ -102,7 +107,15 @@ export class ReconnectService {
 
     communicator.snapshotRequested.send({
       gameInstanceId: scene.gameInstanceId,
-      emitterUserId: scene.userId
+      emitterUserId: scene.userId,
+      reason: reason === "reconnect" ? "reconnect" : "spectator-catch-up"
+    });
+  }
+
+  private onSocketDisconnect(scene: ProbableWaffleScene, reason: string): void {
+    scene.events.emit("local-connection-lost", {
+      playerNumber: scene.playerOrNull?.playerNumber ?? scene.player?.playerNumber,
+      reason
     });
   }
 
@@ -170,19 +183,27 @@ export class ReconnectService {
 
     // Advance sim clock to match the snapshot so command sequences stay coherent.
     simTick?.fastForwardTo(snapshot.tick);
-    for (const batch of [...(response.commandTail ?? [])].sort((a, b) => a.tick - b.tick || a.playerNumber - b.playerNumber)) {
-      commandBus?.bufferRemoteBatch({
+    commandBus?.resetAfterSnapshot(
+      snapshot.tick,
+      (response.commandTail ?? []).map((batch) => ({
         tick: batch.tick,
         playerNumber: batch.playerNumber,
         commands: batch.commands
-      });
-    }
+      }))
+    );
 
     simTick?.resumeTick(pauseReason);
+    if (response.reason === "desync-correction") {
+      simTick?.resumeTick("desync");
+    }
 
     if (response.reason === "desync-correction") {
       console.warn(`[DESYNC] Applied host correction snapshot at tick ${snapshot.tick}.`);
     }
+    scene.events.emit("reconnect-snapshot-applied", {
+      reason: response.reason,
+      tick: snapshot.tick
+    });
     console.info("[Reconnect] Snapshot applied. Simulation resumed.");
   }
 
@@ -190,6 +211,9 @@ export class ReconnectService {
     this.snapshotSub?.unsubscribe();
     if (this.socketConnectHandler && this.rawSocket) {
       this.rawSocket.off("connect", this.socketConnectHandler);
+    }
+    if (this.socketDisconnectHandler && this.rawSocket) {
+      this.rawSocket.off("disconnect", this.socketDisconnectHandler);
     }
   }
 }

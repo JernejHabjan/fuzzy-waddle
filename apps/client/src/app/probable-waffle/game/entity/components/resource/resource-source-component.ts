@@ -4,6 +4,7 @@ import { Subject } from "rxjs";
 import { getActorComponent } from "../../../data/actor-component";
 import { getGameObjectRenderedTransform } from "../../../data/game-object-helper";
 import type { ResourceSourceDefinition } from "./resource-source-definition";
+import { waitForSimulationDuration } from "../../../world/services/simulation-time";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class ResourceSourceComponent {
@@ -40,11 +41,7 @@ export class ResourceSourceComponent {
       this.containerComponent?.loadGameObject(gatherer);
     }
 
-    await new Promise<void>((resolve) => {
-      this.gameObject.scene.time.delayedCall(this.resourceSourceDefinition.cooldown, () => {
-        resolve();
-      });
-    });
+    await waitForSimulationDuration(this.gameObject.scene, this.resourceSourceDefinition.cooldown);
 
     if (this.gathererMustEnter) {
       this.containerComponent?.unloadGameObject(gatherer);

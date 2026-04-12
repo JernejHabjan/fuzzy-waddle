@@ -29,6 +29,7 @@ import type { ProductionCostDefinition } from "../production/production-cost-def
 import { IdComponent } from "../id-component";
 import GameObject = Phaser.GameObjects.GameObject;
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
+import { getSimulationDelta } from "../../../world/services/simulation-time";
 
 export class ConstructionSiteComponent {
   public progressPercentage = 0;
@@ -43,6 +44,7 @@ export class ConstructionSiteComponent {
   constructionProgressUiComponent: ConstructionProgressUiComponent;
   private audioService?: AudioService;
   private healthComponent?: HealthComponent;
+  private lastSimulationTimeMs?: number;
   private playingBuildSound: boolean = false;
   constructor(
     private readonly gameObject: GameObject,
@@ -72,8 +74,10 @@ export class ConstructionSiteComponent {
     return definition?.components?.productionCost ?? null;
   }
 
-  update(_: number, delta: number): void {
-    const deltaWithTimeScale = delta * this.gameObject.scene.time.timeScale;
+  update(): void {
+    const simulationDelta = getSimulationDelta(this.gameObject.scene, this.lastSimulationTimeMs);
+    this.lastSimulationTimeMs = simulationDelta.now;
+    const deltaWithTimeScale = simulationDelta.delta;
 
     if (this.state == ConstructionStateEnum.Finished) {
       this.tryRepair(deltaWithTimeScale);

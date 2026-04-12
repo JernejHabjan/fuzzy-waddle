@@ -34,6 +34,8 @@ import { RepresentableComponent } from "../../entity/components/representable-co
 import { NavigationService } from "../../world/services/navigation.service";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { isWaterUnit } from "../../data/game-object-helper";
+import { SimulationTickService } from "../../world/services/simulation-tick.service";
+import { getSimulationNow } from "../../world/services/simulation-time";
 
 export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
   constructor(
@@ -564,15 +566,21 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
 
   Attacked() {
     const attackedCooldown = 1000; // milliseconds
+    const attackedCooldownTicks = Math.ceil(attackedCooldown / SimulationTickService.TICK_INTERVAL_MS);
     const healthComponent = getActorComponent(this.gameObject, HealthComponent);
     if (!healthComponent) return false;
 
     const latestDamage = healthComponent.latestDamage;
     if (!latestDamage) return false;
 
+    const simulationTickService = getSceneService(this.gameObject.scene, SimulationTickService);
+    if (simulationTickService && latestDamage.simulationTick !== undefined) {
+      const ticksSinceDamage = simulationTickService.currentTick - latestDamage.simulationTick;
+      return ticksSinceDamage < attackedCooldownTicks;
+    }
+
     // Use scene time for proper timeScale support
-    const scene = this.gameObject.scene;
-    const currentSceneTime = scene.time.now;
+    const currentSceneTime = getSimulationNow(this.gameObject.scene);
     const damageSceneTime = latestDamage.sceneTime;
     const sceneTimeSinceDamage = currentSceneTime - damageSceneTime;
 

@@ -3,6 +3,7 @@ import { HealthComponent } from "./health-component";
 import { onObjectReady } from "../../../../data/game-object-helper";
 import { getSceneService } from "../../../../world/services/scene-component-helpers";
 import { AudioService } from "../../../../world/services/audio.service";
+import { getSimulationDelta } from "../../../../world/services/simulation-time";
 import { SharedActorActionsSfxHealSounds } from "../../../../sfx/shared-actor-actions-sfx";
 import { type HealingComponentData } from "@fuzzy-waddle/api-interfaces";
 import type { HealingDefinition } from "./healing-definition";
@@ -10,6 +11,7 @@ import type { HealingDefinition } from "./healing-definition";
 export class HealingComponent {
   // onCooldownReady: EventEmitter<GameObject> = new EventEmitter<GameObject>();
   remainingCooldown = 0;
+  private lastSimulationTimeMs?: number;
   private audioService?: AudioService;
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,
@@ -25,8 +27,10 @@ export class HealingComponent {
     this.audioService = getSceneService(this.gameObject.scene, AudioService);
   }
 
-  private update(_: number, delta: number): void {
-    const deltaWithTimeScale = delta * this.gameObject.scene.time.timeScale;
+  private update(): void {
+    const simulationDelta = getSimulationDelta(this.gameObject.scene, this.lastSimulationTimeMs);
+    this.lastSimulationTimeMs = simulationDelta.now;
+    const deltaWithTimeScale = simulationDelta.delta;
 
     if (this.remainingCooldown <= 0) {
       return;

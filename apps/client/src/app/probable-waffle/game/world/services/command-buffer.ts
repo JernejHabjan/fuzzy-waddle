@@ -65,4 +65,8 @@ export class CommandBuffer {
       if (tick < currentTick - maxAge) this.buffer.delete(tick);
     }
   }
+
+  clear(): void {
+    this.buffer.clear();
+  }
 }

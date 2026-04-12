@@ -7,6 +7,7 @@ import type {
 import { getCommunicator } from "../../data/scene-data";
 import { getSceneService } from "./scene-component-helpers";
 import { SimulationTickService } from "./simulation-tick.service";
+import { SnapshotService } from "./snapshot.service";
 import { SceneDialogHelper } from "../scenes/scene-dialog-helper";
 import type DesyncRecoveryDialog from "../scenes/hud-scenes/DesyncRecoveryDialog";
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
@@ -45,6 +46,10 @@ export class DesyncRecoveryService {
     if (this.dialogOpen) return;
 
     const simTick = getSceneService(probableWaffleScene, SimulationTickService);
+    const snapshotService = getSceneService(probableWaffleScene, SnapshotService);
+    const desyncedPlayer = probableWaffleScene.baseGameData.gameInstance.getPlayerByNumber(data.desyncedPlayerNumber);
+    const desyncedUserId = desyncedPlayer?.playerController.data.userId ?? null;
+    const isLocalDesyncedPlayer = probableWaffleScene.playerOrNull?.playerNumber === data.desyncedPlayerNumber;
     simTick?.pauseTick("desync");
 
     this.dialogOpen = true;
@@ -53,8 +58,26 @@ export class DesyncRecoveryService {
     dialog.setup({
       tick: data.tick,
       playerNumber: data.desyncedPlayerNumber,
+      reason: data.reason,
       onWait: () => {
-        simTick?.resumeTick("desync");
+        if (probableWaffleScene.isHost && desyncedUserId) {
+          snapshotService?.sendSnapshot(probableWaffleScene, desyncedUserId, "desync-correction");
+          console.warn(
+            `[DESYNC] Host resent correction snapshot to player ${data.desyncedPlayerNumber} after wait vote. reason=${data.reason ?? "unknown"}`
+          );
+        }
+        if (isLocalDesyncedPlayer && !probableWaffleScene.isHost) {
+          getCommunicator(probableWaffleScene).snapshotRequested?.send({
+            gameInstanceId: probableWaffleScene.gameInstanceId,
+            emitterUserId: probableWaffleScene.userId,
+            reason: "desync-correction"
+          });
+          console.warn(
+            `[DESYNC] Player ${data.desyncedPlayerNumber} requested a fresh correction snapshot after wait vote. reason=${data.reason ?? "unknown"}`
+          );
+        } else {
+          simTick?.resumeTick("desync");
+        }
         this.dialogOpen = false;
       },
       onKick: () => {

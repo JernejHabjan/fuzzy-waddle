@@ -10,10 +10,12 @@ import {
   type ProbableWaffleGameInstanceMetadataChangeEvent,
   type ProbableWaffleGameModeDataChangeEvent,
   type ProbableWafflePauseChangedEvent,
+  type ProbableWafflePlayerDisconnectedEvent,
   type ProbableWaffleGameStateDataChangeEvent,
   ProbableWaffleGatewayEvent,
   ProbableWaffleGatewayRoomTypes,
   type ProbableWafflePlayerDataChangeEvent,
+  type ProbableWafflePlayerReconnectedEvent,
   type ProbableWaffleSnapshotRequestEvent,
   type ProbableWaffleSnapshotResponseEvent,
   type ProbableWaffleSpectatorDataChangeEvent,
@@ -52,6 +54,10 @@ export class ProbableWaffleCommunicatorService
   desyncAlert?: TwoWayCommunicator<ProbableWaffleDesyncAlertEvent, ProbableWaffleCommunicatorType>;
   /** Multiplayer pause/resume relay; only in MP. */
   pauseChanged?: TwoWayCommunicator<ProbableWafflePauseChangedEvent, ProbableWaffleCommunicatorType>;
+  /** Server-originated disconnect notification; only in MP. */
+  playerDisconnected?: TwoWayCommunicator<ProbableWafflePlayerDisconnectedEvent, ProbableWaffleCommunicatorType>;
+  /** Server-originated reconnect notification; only in MP. */
+  playerReconnected?: TwoWayCommunicator<ProbableWafflePlayerReconnectedEvent, ProbableWaffleCommunicatorType>;
   /** Server-originated host migration event; only in MP. */
   hostMigrated?: TwoWayCommunicator<ProbableWaffleHostMigratedEvent, ProbableWaffleCommunicatorType>;
 
@@ -145,6 +151,14 @@ export class ProbableWaffleCommunicatorService
         gameInstanceId,
         socket
       );
+      this.playerDisconnected = new TwoWayCommunicator<
+        ProbableWafflePlayerDisconnectedEvent,
+        ProbableWaffleCommunicatorType
+      >(ProbableWaffleGatewayEvent.ProbableWaffleAction, "player-disconnected", gameInstanceId, socket);
+      this.playerReconnected = new TwoWayCommunicator<
+        ProbableWafflePlayerReconnectedEvent,
+        ProbableWaffleCommunicatorType
+      >(ProbableWaffleGatewayEvent.ProbableWaffleAction, "player-reconnected", gameInstanceId, socket);
       this.hostMigrated = new TwoWayCommunicator<ProbableWaffleHostMigratedEvent, ProbableWaffleCommunicatorType>(
         ProbableWaffleGatewayEvent.ProbableWaffleAction,
         "host-migrated",
@@ -198,6 +212,8 @@ export class ProbableWaffleCommunicatorService
     this.snapshotResponse?.destroy();
     this.desyncAlert?.destroy();
     this.pauseChanged?.destroy();
+    this.playerDisconnected?.destroy();
+    this.playerReconnected?.destroy();
     this.hostMigrated?.destroy();
   }
 

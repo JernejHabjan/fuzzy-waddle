@@ -25,6 +25,7 @@ export class MatchmakingService implements IMatchmakingService {
   gameFound: boolean = false;
   navigatingText: string | undefined;
   private countdownTimers: number[] = [];
+  private readonly excludeDevMaps = true;
 
   constructor() {
     const firstNrOfPlayersOption = this.nrOfPlayersOptions[0];
@@ -79,7 +80,7 @@ export class MatchmakingService implements IMatchmakingService {
 
   private get levels(): MatchmakingLevel[] {
     return Object.values(ProbableWaffleLevels)
-      .filter((level) => (environment.production ? !level.devOnly : true))
+      .filter((level) => (environment.production || this.excludeDevMaps ? !level.devOnly : true))
       .map((level) => ({
         id: level.id,
         name: level.name,

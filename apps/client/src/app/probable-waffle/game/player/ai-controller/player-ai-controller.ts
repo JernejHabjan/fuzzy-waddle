@@ -7,8 +7,12 @@ import { PlayerAiControllerMdsl } from "./player-ai-controller.mdsl";
 import { TelemetrySink } from "./telemetry";
 import { AI_CONFIG } from "./ai-config";
 import { getSimulationNow } from "./ai-time";
+import { getSceneService } from "../../world/services/scene-component-helpers";
+import { SimulationTickService } from "../../world/services/simulation-tick.service";
+import type { Subscription } from "rxjs";
 
 export class PlayerAiController {
+  private static readonly MAX_SCHEDULED_STEPS_PER_RUN = 5;
   readonly playerAiControllerAgent: PlayerAiControllerAgent;
   public blackboard: PlayerAiBlackboard;
   private behaviourTree: BehaviourTree;
@@ -17,6 +21,9 @@ export class PlayerAiController {
   private readonly stepInterval: number = AI_CONFIG.controllerStepIntervalMs;
   telemetry = new TelemetrySink();
   private telemetryFrameModulo = AI_CONFIG.telemetryFrameModulo;
+  private tickSubscription?: Subscription;
+  private stepInFlight = false;
+  private stepQueued = false;
   constructor(
     public readonly scene: Phaser.Scene,
     public readonly player: ProbableWafflePlayer
@@ -27,7 +34,14 @@ export class PlayerAiController {
     // expose telemetry snapshot container in diagnostics if absent
     this.blackboard.diagnostics.telemetry = this.telemetry.snapshot();
 
-    scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
+    const simulationTickService = getSceneService(scene, SimulationTickService);
+    if (simulationTickService) {
+      this.tickSubscription = simulationTickService.tick$.subscribe(() => {
+        void this.updateOnSimulationTick();
+      });
+    } else {
+      scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
+    }
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.onShutdown, this);
   }
 
@@ -37,27 +51,63 @@ export class PlayerAiController {
     if (!PlayerAiController.AI_ENABLED) return;
     this.elapsedTime += deltaWithTimeScale;
     if (this.elapsedTime >= this.stepInterval) {
-      this.telemetry.nextFrame();
-      const frameBeforeSnapshot = this.telemetry.snapshot().frame; // capture frame index
-      try {
-        await this.telemetry.withSpanAsync(
-          "ai.preTick",
-          async () => await this.playerAiControllerAgent.preTick(getSimulationNow(this.scene))
-        );
-        this.telemetry.withSpan("ai.behaviourTreeStep", () => this.behaviourTree.step());
-        if (this.telemetryFrameModulo && frameBeforeSnapshot % this.telemetryFrameModulo === 0) {
-          this.blackboard.diagnostics.telemetry = this.telemetry.snapshot();
+      await this.runScheduledStep();
+    }
+  }
+
+  private async updateOnSimulationTick(): Promise<void> {
+    if (!PlayerAiController.AI_ENABLED) return;
+    this.elapsedTime += SimulationTickService.TICK_INTERVAL_MS;
+    if (this.elapsedTime >= this.stepInterval) {
+      await this.runScheduledStep();
+    }
+  }
+
+  private async runScheduledStep(): Promise<void> {
+    if (this.stepInFlight) {
+      this.stepQueued = true;
+      return;
+    }
+
+    this.stepInFlight = true;
+    try {
+      let processedSteps = 0;
+      do {
+        this.stepQueued = false;
+        this.telemetry.nextFrame();
+        const frameBeforeSnapshot = this.telemetry.snapshot().frame;
+        try {
+          await this.telemetry.withSpanAsync(
+            "ai.preTick",
+            async () => await this.playerAiControllerAgent.preTick(getSimulationNow(this.scene))
+          );
+          this.telemetry.withSpan("ai.behaviourTreeStep", () => this.behaviourTree.step());
+          if (this.telemetryFrameModulo && frameBeforeSnapshot % this.telemetryFrameModulo === 0) {
+            this.blackboard.diagnostics.telemetry = this.telemetry.snapshot();
+          }
+        } catch (e) {
+          console.log(e, "Error stepping behaviour tree");
+          this.telemetry.recordEvent("bt.error", { message: (e as any)?.message });
         }
-      } catch (e) {
-        console.log(e, "Error stepping behaviour tree");
-        this.telemetry.recordEvent("bt.error", { message: (e as any)?.message });
-      }
-      this.elapsedTime = 0;
+        this.elapsedTime = Math.max(0, this.elapsedTime - this.stepInterval);
+        processedSteps++;
+        if (processedSteps >= PlayerAiController.MAX_SCHEDULED_STEPS_PER_RUN) {
+          this.stepQueued = this.stepQueued || this.elapsedTime >= this.stepInterval;
+          break;
+        }
+      } while (this.elapsedTime >= this.stepInterval || this.stepQueued);
+    } finally {
+      this.stepInFlight = false;
+    }
+
+    if (this.stepQueued) {
+      void Promise.resolve().then(() => this.runScheduledStep());
     }
   }
 
   private onShutdown() {
     this.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
+    this.tickSubscription?.unsubscribe();
   }
 
   public getTelemetrySnapshot() {

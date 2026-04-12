@@ -1,22 +1,23 @@
-import { EventEmitter } from '@angular/core';
-import { SpellType } from '../spell-type';
-import type { SpellData } from '../spell-data';
-import { spellDefinitions } from '../spell-definitions';
-import { type SpellComponentData } from '@fuzzy-waddle/api-interfaces';
-import Phaser from 'phaser';
-import { onObjectReady } from '../../../../data/game-object-helper';
-import { getActorComponent } from '../../../../data/actor-component';
-import { OwnerComponent } from '../../owner-component';
-import { getSceneService } from '../../../../world/services/scene-component-helpers';
-import { TechTreeService } from '../../../../data/tech-tree/tech-tree.service';
+import { EventEmitter } from "@angular/core";
+import { SpellType } from "../spell-type";
+import type { SpellData } from "../spell-data";
+import { spellDefinitions } from "../spell-definitions";
+import { type SpellComponentData } from "@fuzzy-waddle/api-interfaces";
+import Phaser from "phaser";
+import { onObjectReady } from "../../../../data/game-object-helper";
+import { getActorComponent } from "../../../../data/actor-component";
+import { OwnerComponent } from "../../owner-component";
+import { getSceneService } from "../../../../world/services/scene-component-helpers";
+import { TechTreeService } from "../../../../data/tech-tree/tech-tree.service";
+import { getSimulationDelta } from "../../../../world/services/simulation-time";
 
 export interface SpellDefinition {
   availableSpells: SpellType[];
 }
 
 export class SpellComponent {
-  static readonly SpellCooldownStartedEvent = 'spellCooldownStarted';
-  static readonly SpellCooldownEndedEvent = 'spellCooldownEnded';
+  static readonly SpellCooldownStartedEvent = "spellCooldownStarted";
+  static readonly SpellCooldownEndedEvent = "spellCooldownEnded";
 
   spellCooldownStarted: EventEmitter<SpellType> = new EventEmitter<SpellType>();
   spellCooldownEnded: EventEmitter<SpellType> = new EventEmitter<SpellType>();
@@ -25,6 +26,7 @@ export class SpellComponent {
   private autocastEnabled: Map<SpellType, boolean> = new Map();
   private ownerComponent?: OwnerComponent;
   private techTreeService?: TechTreeService;
+  private lastSimulationTimeMs?: number;
 
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,
@@ -126,13 +128,15 @@ export class SpellComponent {
     return ((spellData.cooldown - remaining) / spellData.cooldown) * 100;
   }
 
-  private update(_time: number, delta: number): void {
+  private update(): void {
     if (!this.gameObject.active) return;
+    const simulationDelta = getSimulationDelta(this.gameObject.scene, this.lastSimulationTimeMs);
+    this.lastSimulationTimeMs = simulationDelta.now;
 
     // Tick down cooldowns
     for (const [spellType, remaining] of this.spellCooldowns.entries()) {
       if (remaining > 0) {
-        const newRemaining = remaining - delta;
+        const newRemaining = remaining - simulationDelta.delta;
         if (newRemaining <= 0) {
           this.spellCooldowns.set(spellType, 0);
           this.spellCooldownEnded.emit(spellType);
