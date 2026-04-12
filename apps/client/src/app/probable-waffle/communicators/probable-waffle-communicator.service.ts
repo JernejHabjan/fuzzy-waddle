@@ -66,9 +66,17 @@ export class ProbableWaffleCommunicatorService
 
   /** The active socket, if running in multiplayer. Exposed for reconnect handling. */
   activeSocket?: Socket;
+  private activeGameInstanceId?: GameInstanceId;
+  private socketConnectHandler?: () => void;
+  private rawSocket?: {
+    on: (event: string, handler: () => void) => void;
+    off?: (event: string, handler: () => void) => void;
+    removeListener?: (event: string, handler: () => void) => void;
+  };
 
   startCommunication(gameInstanceId: GameInstanceId, socket?: Socket) {
     this.activeSocket = socket;
+    this.activeGameInstanceId = gameInstanceId;
     this.gameInstanceMetadataChanged = new TwoWayCommunicator<
       ProbableWaffleGameInstanceMetadataChangeEvent,
       ProbableWaffleCommunicatorType
@@ -145,18 +153,25 @@ export class ProbableWaffleCommunicatorService
       );
     }
 
-    socket?.emit(ProbableWaffleGatewayEvent.ProbableWaffleWebsocketRoom, {
-      gameInstanceId,
-      type: "join"
-    } satisfies ProbableWaffleWebsocketRoomEvent);
+    if (socket) {
+      this.socketConnectHandler = () => {
+        console.info(`[Communicator] Joining game room after connect. gameInstanceId=${gameInstanceId}`);
+        this.emitRoomMembership(socket, gameInstanceId, "join");
+      };
+      const rawSocket = (socket as any).ioSocket;
+      if (rawSocket) {
+        this.rawSocket = rawSocket;
+        rawSocket.on("connect", this.socketConnectHandler);
+      }
+      this.emitRoomMembership(socket, gameInstanceId, "join");
+    }
   }
 
   stopCommunication(gameInstanceId: GameInstanceId, socket?: Socket) {
     this.destroySubscriptions();
-    socket?.emit(ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance, {
-      gameInstanceId,
-      type: "leave"
-    } satisfies ProbableWaffleWebsocketRoomEvent);
+    if (socket) {
+      this.emitRoomMembership(socket, gameInstanceId, "leave");
+    }
   }
 
   ngOnDestroy(): void {
@@ -164,6 +179,13 @@ export class ProbableWaffleCommunicatorService
   }
 
   private destroySubscriptions() {
+    if (this.rawSocket && this.socketConnectHandler) {
+      this.rawSocket.off?.("connect", this.socketConnectHandler);
+      this.rawSocket.removeListener?.("connect", this.socketConnectHandler);
+    }
+    this.rawSocket = undefined;
+    this.socketConnectHandler = undefined;
+    this.activeGameInstanceId = undefined;
     this.gameInstanceMetadataChanged?.destroy();
     this.gameModeChanged?.destroy();
     this.playerChanged?.destroy();
@@ -177,5 +199,16 @@ export class ProbableWaffleCommunicatorService
     this.desyncAlert?.destroy();
     this.pauseChanged?.destroy();
     this.hostMigrated?.destroy();
+  }
+
+  private emitRoomMembership(
+    socket: Socket,
+    gameInstanceId: GameInstanceId,
+    type: ProbableWaffleWebsocketRoomEvent["type"]
+  ): void {
+    socket.emit(ProbableWaffleGatewayEvent.ProbableWaffleWebsocketRoom, {
+      gameInstanceId,
+      type
+    } satisfies ProbableWaffleWebsocketRoomEvent);
   }
 }

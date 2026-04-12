@@ -108,6 +108,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
       } satisfies ProbableWaffleGameModeData,
       gameStateData: {} as ProbableWaffleGameStateData
     });
+    this.syncCurrentPlayerNumberFromGameInstance();
     if (this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
       const url = environment.api + "api/probable-waffle/start-game";
       const body: ProbableWaffleGameInstanceMetadataData = this.gameInstance.gameInstanceMetadata!.data;
@@ -455,6 +456,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   async joinGameInstanceAsPlayerForMatchmaking(gameInstanceId: GameInstanceId): Promise<void> {
     const gameInstanceData = (await this.getGameInstanceData(gameInstanceId))!;
     this.gameInstance = new ProbableWaffleGameInstance(gameInstanceData);
+    this.syncCurrentPlayerNumberFromGameInstance();
     await this.startListeningToGameInstanceEvents();
   }
 
@@ -470,6 +472,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     if (!gameInstanceData)
       throw new Error("Game instance not found in joinGameInstanceAsPlayer in GameInstanceClientService");
     this.gameInstance = new ProbableWaffleGameInstance(gameInstanceData);
+    this.syncCurrentPlayerNumberFromGameInstance();
     await this.startListeningToGameInstanceEvents();
 
     const userId = this.authService.userId;
@@ -519,6 +522,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     if (!gameInstanceData)
       throw new Error("Game instance not found in joinGameInstanceAsSpectator in GameInstanceClientService");
     this.gameInstance = new ProbableWaffleGameInstance(gameInstanceData);
+    this.syncCurrentPlayerNumberFromGameInstance();
     await this.startListeningToGameInstanceEvents();
     await this.addSelfAsSpectator();
   }
@@ -536,7 +540,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   async navigateToLobbyOrDirectlyToGame(): Promise<void> {
     if (!this.gameInstance)
       throw new Error("Game instance not found in navigateToLobbyOrDirectlyToGame in GameInstanceClientService");
-    switch (this.gameInstance.gameInstanceMetadata!.data.type) {
+    switch (this.getNormalizedGameInstanceType()) {
       case ProbableWaffleGameInstanceType.SelfHosted:
         // join lobby
         await this.router.navigate(["aota/lobby"]);
@@ -552,7 +556,12 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
         await this.router.navigate(["aota/game"]);
         break;
       default:
-        throw new Error("Not implemented");
+        console.warn(
+          "[GameInstanceClientService] Unknown game instance type, defaulting to direct game navigation:",
+          this.gameInstance.gameInstanceMetadata!.data.type
+        );
+        await this.router.navigate(["aota/game"]);
+        break;
     }
   }
 
@@ -661,6 +670,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   async loadGameInstance(gameInstanceSaveData: ProbableWaffleGameInstanceSaveData): Promise<void> {
     gameInstanceSaveData.gameInstanceData.gameInstanceMetadataData!.startOptions.loadFromSave = true;
     this.gameInstance = new ProbableWaffleGameInstance(gameInstanceSaveData.gameInstanceData);
+    this.syncCurrentPlayerNumberFromGameInstance();
     await this.startListeningToGameInstanceEvents();
     await this.navigateDirectlyToGame();
   }
@@ -683,6 +693,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     const replayGameInstanceData = structuredClone(gameInstanceSaveData.gameInstanceData);
     replayGameInstanceData.gameInstanceMetadataData!.type = ProbableWaffleGameInstanceType.Replay;
     this.gameInstance = new ProbableWaffleGameInstance(replayGameInstanceData);
+    this.syncCurrentPlayerNumberFromGameInstance();
     await this.startListeningToGameInstanceEvents();
     await this.navigateToLobbyOrDirectlyToGame();
   }
@@ -712,6 +723,38 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     this.gameInstance = undefined;
     this.currentPlayerNumber = undefined;
     this.selfExitInProgress = false;
+  }
+
+  private syncCurrentPlayerNumberFromGameInstance(): void {
+    if (!this.authService.userId) {
+      this.currentPlayerNumber = undefined;
+      return;
+    }
+
+    this.currentPlayerNumber = this.gameInstance?.players.find(
+      (player) => player.playerController.data.userId === this.authService.userId
+    )?.playerNumber;
+  }
+
+  private getNormalizedGameInstanceType(): ProbableWaffleGameInstanceType | undefined {
+    const rawType = this.gameInstance?.gameInstanceMetadata?.data.type;
+    if (typeof rawType === "number") {
+      return rawType;
+    }
+
+    if (typeof rawType === "string") {
+      const numericType = Number(rawType);
+      if (!Number.isNaN(numericType)) {
+        return numericType as ProbableWaffleGameInstanceType;
+      }
+
+      const enumValue = ProbableWaffleGameInstanceType[rawType as keyof typeof ProbableWaffleGameInstanceType];
+      if (typeof enumValue === "number") {
+        return enumValue;
+      }
+    }
+
+    return undefined;
   }
 
   private async handleSelfRemovedFromGameInstance(): Promise<void> {

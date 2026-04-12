@@ -18,6 +18,7 @@ export class ReplayRecorderService {
   private batchSub?: Subscription;
   private initialGameInstanceData?: ProbableWaffleGameInstanceData;
   private readonly recordedBatches: ProbableWaffleReplayCommandBatch[] = [];
+  private replayPersistStarted = false;
 
   init(scene: ProbableWaffleScene): void {
     if (scene.baseGameData.gameInstance.gameInstanceMetadata.isReplay()) {
@@ -40,9 +41,10 @@ export class ReplayRecorderService {
   }
 
   private async persistReplay(scene: ProbableWaffleScene): Promise<void> {
-    if (!this.initialGameInstanceData || this.recordedBatches.length === 0) {
+    if (this.replayPersistStarted || !this.initialGameInstanceData || this.recordedBatches.length === 0) {
       return;
     }
+    this.replayPersistStarted = true;
 
     const storage = getSceneExternalComponent(scene, GameInstanceIndexeddbStorageService);
     if (!storage) {
@@ -79,9 +81,10 @@ export class ReplayRecorderService {
       replayData
     };
 
+    const created = new Date();
     const replayRecord: ProbableWaffleGameInstanceSaveData = {
-      saveName: `${replayGameInstanceData.gameInstanceMetadataData!.name} Replay ${new Date().toLocaleString()}`,
-      created: new Date(),
+      saveName: `${replayGameInstanceData.gameInstanceMetadataData!.name} Replay ${created.toISOString()} ${scene.gameInstanceId}`,
+      created,
       gameInstanceData: replayGameInstanceData,
       thumbnail: ""
     };

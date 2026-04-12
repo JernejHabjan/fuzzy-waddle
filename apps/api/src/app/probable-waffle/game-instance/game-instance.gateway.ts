@@ -1,6 +1,7 @@
 import {
   ConnectedSocket,
   MessageBody,
+  OnGatewayConnection,
   OnGatewayDisconnect,
   SubscribeMessage,
   WebSocketGateway,
@@ -12,6 +13,7 @@ import {
   GameSessionState,
   type ProbableWaffleCommunicatorMessageEvent,
   type ProbableWaffleCommunicatorType,
+  type ProbableWaffleGameCommandEvent,
   type ProbableWaffleGameFoundEvent,
   type ProbableWaffleHostMigratedEvent,
   type ProbableWaffleGameInstanceMetadataChangeEvent,
@@ -43,7 +45,7 @@ const RECONNECT_WINDOW_SECONDS = 60;
     origin: process.env.CORS_ORIGIN?.split(",")
   }
 })
-export class GameInstanceGateway implements OnGatewayDisconnect {
+export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() private readonly server!: Server;
 
   constructor(
@@ -59,7 +61,15 @@ export class GameInstanceGateway implements OnGatewayDisconnect {
     this.server.emit(ProbableWaffleGameInstanceEvent.GameFound, probableWaffleGameFoundEvent);
   }
 
+  handleConnection(socket: Socket): void {
+    console.log(`[Gateway] socket connect socketId=${socket.id} transport=${socket.conn.transport.name}`);
+    socket.on("disconnect", (reason) => {
+      console.log(`[Gateway] socket disconnect reason socketId=${socket.id} reason=${reason}`);
+    });
+  }
+
   handleDisconnect(socket: Socket): void {
+    console.log(`[Gateway] socket disconnect socketId=${socket.id}`);
     // No auth context here — use the tracker to map socketId → player
     const playerInfo = this.disconnectTracker.handleDisconnect(socket.id, (userId, gameInstanceId) => {
       // Grace window expired — player did not reconnect in time.
@@ -123,8 +133,8 @@ export class GameInstanceGateway implements OnGatewayDisconnect {
     const removedPlayerUserId = this.getRemovedPlayerUserId(body);
     const participantLeft = this.isParticipantLeaving(body);
     const success = this.gameStateServerService.updateGameState(body, user);
+    const roomId = `${ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance}${body.gameInstanceId}`;
     if (success) {
-      const roomId = `${ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance}${body.gameInstanceId}`;
       if (body.communicator === "pause-changed" || body.communicator === "desync-alert") {
         this.server.to(roomId).emit(ProbableWaffleGatewayEvent.ProbableWaffleAction, body);
       } else {
@@ -137,7 +147,17 @@ export class GameInstanceGateway implements OnGatewayDisconnect {
         this.handleParticipantLeft(body.gameInstanceId!, roomId, removedPlayerUserId);
       }
     } else {
-      // 400 error
+      if (body.communicator === "game-command") {
+        const payload = body.payload as ProbableWaffleGameCommandEvent;
+        const rejectedAsEmptyBatch = {
+          ...body,
+          payload: {
+            ...payload,
+            commands: []
+          } satisfies ProbableWaffleGameCommandEvent
+        };
+        this.server.to(roomId).emit(ProbableWaffleGatewayEvent.ProbableWaffleAction, rejectedAsEmptyBatch);
+      }
     }
   }
 
@@ -189,9 +209,7 @@ export class GameInstanceGateway implements OnGatewayDisconnect {
         // Track socket ↔ player so we can handle disconnect gracefully.
         this.disconnectTracker.registerSocket(socket.id, user.id, body.gameInstanceId!);
         console.log(
-          user.id,
-          "joined room",
-          `${ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance}${body.gameInstanceId}`
+          `[Gateway] user=${user.id} socket=${socket.id} joined room ${ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance}${body.gameInstanceId}`
         );
         // If this player was previously disconnected, notify peers that they're back.
         {
@@ -225,9 +243,7 @@ export class GameInstanceGateway implements OnGatewayDisconnect {
         }
         socket.leave(`${ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance}${body.gameInstanceId}`);
         console.log(
-          user.id,
-          "left room",
-          `${ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance}${body.gameInstanceId}`
+          `[Gateway] user=${user.id} socket=${socket.id} left room ${ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance}${body.gameInstanceId}`
         );
         break;
       default:

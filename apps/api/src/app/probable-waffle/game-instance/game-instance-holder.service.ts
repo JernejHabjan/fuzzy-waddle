@@ -24,4 +24,10 @@ export class GameInstanceHolderService {
       (gameInstance) => gameInstance.gameInstanceMetadata.data.gameInstanceId === gameInstanceId
     );
   }
+
+  getOpenGameInstanceIds(): GameInstanceId[] {
+    return this.openGameInstances
+      .map((gameInstance) => gameInstance.gameInstanceMetadata.data.gameInstanceId)
+      .filter((gameInstanceId): gameInstanceId is GameInstanceId => !!gameInstanceId);
+  }
 }

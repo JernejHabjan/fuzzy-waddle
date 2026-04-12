@@ -1,5 +1,5 @@
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
-import { emitEventSelection, getSelectedActors } from "../../data/scene-data";
+import { emitEventSelection, getSelectedActors, sanitizeOwnedActorIds } from "../../data/scene-data";
 import { onSceneInitialized } from "../../data/game-object-helper";
 import { CrossSceneCommunicationService } from "../../world/services/CrossSceneCommunicationService";
 import { getSceneService } from "../../world/services/scene-component-helpers";
@@ -263,7 +263,10 @@ export class SelectionGroupsComponent {
       return;
     }
 
-    const groups = this.getGroups();
+    const groups = this.getGroups().map((group) => ({
+      ...group,
+      actorIds: sanitizeOwnedActorIds(this.scene, group.actorIds, currentPlayerNumber)
+    }));
     probableWaffleScene.player!.playerController.data.selectionGroups = groups;
 
     if (!emitNetworkUpdate || !probableWaffleScene.communicator.playerChanged) {

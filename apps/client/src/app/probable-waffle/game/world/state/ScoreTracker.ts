@@ -182,7 +182,7 @@ export class ScoreTracker {
   public setMetric(playerNumber: PlayerNumber, metricKey: string, value: number) {
     if (!this.scene.baseGameData.gameInstance.gameState) return;
 
-    const scoreData = this.scene.baseGameData.gameInstance.gameState.data.scoreData;
+    const scoreData = this.getScoreData();
     if (!scoreData) return;
 
     const playerScore = scoreData.get(playerNumber);
@@ -197,7 +197,7 @@ export class ScoreTracker {
   public getMetric(playerNumber: PlayerNumber, metricKey: string): number | undefined {
     if (!this.scene.baseGameData.gameInstance.gameState) return undefined;
 
-    const scoreData = this.scene.baseGameData.gameInstance.gameState.data.scoreData;
+    const scoreData = this.getScoreData();
     if (!scoreData) return undefined;
 
     const playerScore = scoreData.get(playerNumber);
@@ -212,8 +212,7 @@ export class ScoreTracker {
   public incrementMetric(playerNumber: PlayerNumber, metricKey: string, amount: number = 1) {
     if (!this.scene.baseGameData.gameInstance.gameState) return;
 
-    const gameState = this.scene.baseGameData.gameInstance.gameState;
-    const scoreData = gameState.data.scoreData;
+    const scoreData = this.getScoreData();
     if (!scoreData) return;
 
     const playerScore = scoreData.get(playerNumber);
@@ -229,8 +228,7 @@ export class ScoreTracker {
   public setPlayerResult(playerNumber: PlayerNumber, result: "win" | "loss" | "tie" | "quit") {
     if (!this.scene.baseGameData.gameInstance.gameState) return;
 
-    const gameState = this.scene.baseGameData.gameInstance.gameState;
-    const scoreData = gameState.data.scoreData;
+    const scoreData = this.getScoreData();
     if (!scoreData) return;
 
     const playerScore = scoreData.get(playerNumber);
@@ -245,8 +243,7 @@ export class ScoreTracker {
   public setPlayerEliminated(playerNumber: PlayerNumber, eliminatedAt: number) {
     if (!this.scene.baseGameData.gameInstance.gameState) return;
 
-    const gameState = this.scene.baseGameData.gameInstance.gameState;
-    const scoreData = gameState.data.scoreData;
+    const scoreData = this.getScoreData();
     if (!scoreData) return;
 
     const playerScore = scoreData.get(playerNumber);
@@ -262,8 +259,7 @@ export class ScoreTracker {
   public calculateFinalScore(playerNumber: PlayerNumber): number {
     if (!this.scene.baseGameData.gameInstance.gameState) return 0;
 
-    const gameState = this.scene.baseGameData.gameInstance.gameState;
-    const scoreData = gameState.data.scoreData;
+    const scoreData = this.getScoreData();
     const metrics = scoreData?.get(playerNumber)?.metrics;
     if (!metrics) return 0;
 
@@ -296,8 +292,7 @@ export class ScoreTracker {
   public finalizeScores() {
     if (!this.scene.baseGameData.gameInstance.gameState) return;
 
-    const gameState = this.scene.baseGameData.gameInstance.gameState;
-    const scoreData = gameState.data.scoreData;
+    const scoreData = this.getScoreData();
     if (!scoreData) return;
 
     scoreData.forEach((playerScore, playerNumber) => {
@@ -375,6 +370,42 @@ export class ScoreTracker {
     if (owner !== undefined) {
       this.incrementMetric(owner, STANDARD_METRICS.BUILDINGS_CONSTRUCTED);
     }
+  }
+
+  private getScoreData(): Map<PlayerNumber, PlayerScoreData> | undefined {
+    const gameState = this.scene.baseGameData.gameInstance.gameState;
+    if (!gameState) return undefined;
+
+    const rawScoreData = gameState.data.scoreData as unknown;
+    if (!rawScoreData) return undefined;
+    if (rawScoreData instanceof Map) {
+      return rawScoreData;
+    }
+
+    const normalized = new Map<PlayerNumber, PlayerScoreData>();
+    if (Array.isArray(rawScoreData)) {
+      rawScoreData.forEach((entry: unknown) => {
+        if (Array.isArray(entry) && entry.length === 2) {
+          const [playerNumber, playerScore] = entry;
+          if (typeof playerNumber === "number" && playerScore) {
+            normalized.set(playerNumber, playerScore as PlayerScoreData);
+          }
+          return;
+        }
+
+        if (entry && typeof entry === "object" && "playerNumber" in entry) {
+          const playerScore = entry as PlayerScoreData;
+          normalized.set(playerScore.playerNumber, playerScore);
+        }
+      });
+    } else {
+      Object.entries(rawScoreData as Record<string, PlayerScoreData>).forEach(([playerNumber, playerScore]) => {
+        normalized.set(Number(playerNumber), playerScore);
+      });
+    }
+
+    gameState.data.scoreData = normalized;
+    return normalized;
   }
 
   /**

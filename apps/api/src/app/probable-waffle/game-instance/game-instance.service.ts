@@ -110,6 +110,10 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     return this.gameInstanceHolderService.findGameInstance(gameInstanceId);
   }
 
+  getOpenGameInstanceIds(): GameInstanceId[] {
+    return this.gameInstanceHolderService.getOpenGameInstanceIds();
+  }
+
   getGameInstanceData(gameInstanceId: GameInstanceId): ProbableWaffleGameInstanceData | null {
     const gameInstance = this.findGameInstance(gameInstanceId);
     if (!gameInstance) return null;

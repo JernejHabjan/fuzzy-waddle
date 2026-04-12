@@ -36,25 +36,19 @@ export class PlayerDisconnectTrackerService {
    */
   registerSocket(socketId: string, userId: UserId, gameInstanceId: GameInstanceId): void {
     this.socketToPlayer.set(socketId, { userId, gameInstanceId });
-    // Cancel any pending eviction for the same player in the same game
-    for (const [sid, entry] of this.pendingEvictions.entries()) {
-      if (entry.userId === userId && entry.gameInstanceId === gameInstanceId) {
-        clearTimeout(entry.timer);
-        this.pendingEvictions.delete(sid);
-        console.log(
-          `[Reconnect] Player ${userId} reconnected to game ${gameInstanceId} within grace window.`
-        );
-        break;
-      }
-    }
+    console.log(`[DisconnectTracker] register socket=${socketId} user=${userId} game=${gameInstanceId}`);
+    this.cancelPendingEvictionForPlayer(userId, gameInstanceId);
   }
 
   /** Called when a player explicitly leaves a room (tab close / navigate away). */
   markExplicitQuit(socketId: string): { userId: UserId; gameInstanceId: GameInstanceId } | null {
     const player = this.socketToPlayer.get(socketId) ?? null;
-    // Remove the socket association — no grace window, the player chose to quit.
+    console.log(`[DisconnectTracker] explicit-quit socket=${socketId} found=${player ? "yes" : "no"}`);
     this.socketToPlayer.delete(socketId);
     this.cancelPendingEviction(socketId);
+    if (player && this.hasActiveSocketForPlayer(player.userId, player.gameInstanceId)) {
+      return null;
+    }
     return player;
   }
 
@@ -70,11 +64,17 @@ export class PlayerDisconnectTrackerService {
     this.socketToPlayer.delete(socketId);
 
     if (!player) {
+      console.log(`[DisconnectTracker] disconnect socket=${socketId} found=no`);
       return null;
     }
 
-    // Already have a pending eviction for this player? Shouldn't happen but guard it.
     this.cancelPendingEviction(socketId);
+    if (this.hasActiveSocketForPlayer(player.userId, player.gameInstanceId)) {
+      console.log(
+        `[Disconnect] Ignoring disconnect for player ${player.userId} in game ${player.gameInstanceId} because another socket is still active.`
+      );
+      return null;
+    }
 
     const timer = setTimeout(() => {
       this.pendingEvictions.delete(socketId);
@@ -86,7 +86,7 @@ export class PlayerDisconnectTrackerService {
 
     this.pendingEvictions.set(socketId, { ...player, timer });
     console.log(
-      `[Disconnect] Player ${player.userId} disconnected from game ${player.gameInstanceId}. ` +
+      `[Disconnect] Player ${player.userId} disconnected from game ${player.gameInstanceId} on socket ${socketId}. ` +
         `Holding slot for ${RECONNECT_WINDOW_MS / 1000}s.`
     );
 
@@ -99,6 +99,28 @@ export class PlayerDisconnectTrackerService {
       clearTimeout(entry.timer);
       this.pendingEvictions.delete(socketId);
     }
+  }
+
+  private cancelPendingEvictionForPlayer(userId: UserId, gameInstanceId: GameInstanceId): void {
+    for (const [sid, entry] of this.pendingEvictions.entries()) {
+      if (entry.userId === userId && entry.gameInstanceId === gameInstanceId) {
+        clearTimeout(entry.timer);
+        this.pendingEvictions.delete(sid);
+        console.log(
+          `[Reconnect] Player ${userId} reconnected to game ${gameInstanceId} within grace window.`
+        );
+        break;
+      }
+    }
+  }
+
+  private hasActiveSocketForPlayer(userId: UserId, gameInstanceId: GameInstanceId): boolean {
+    for (const player of this.socketToPlayer.values()) {
+      if (player.userId === userId && player.gameInstanceId === gameInstanceId) {
+        return true;
+      }
+    }
+    return false;
   }
 
   isUserDisconnected(userId: UserId, gameInstanceId: GameInstanceId): boolean {

@@ -6,7 +6,7 @@ import { getActorComponent } from "../../data/actor-component";
 import { IdComponent } from "../../entity/components/id-component";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import { OwnerComponent } from "../../entity/components/owner-component";
-import { getGameObjectLogicalTransform } from "../../data/game-object-helper";
+import { getGameObjectCurrentTile, getGameObjectLogicalTransform } from "../../data/game-object-helper";
 import { getCommunicator } from "../../data/scene-data";
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { SnapshotService } from "./snapshot.service";
@@ -45,7 +45,7 @@ interface PendingCorrection {
  * Computes a periodic deterministic hash of all actor states and exchanges it with
  * peers to detect simulation divergence. Only active in multiplayer — no-op in SP.
  *
- * Hash scope per actor: {id, health, logicalX, logicalY, owner}. Actors sorted by ID
+ * Hash scope per actor: {id, health, tileX, tileY, owner}. Actors sorted by ID
  * so every client produces an identical string for the same simulation state.
  *
  * On mismatch: logs a structured error and shows a persistent on-screen indicator on
@@ -110,9 +110,10 @@ export class StateHashService {
       const id = getActorComponent(go, IdComponent)?.id ?? "";
       const health = getActorComponent(go, HealthComponent)?.healthComponentData.health ?? -1;
       const armour = getActorComponent(go, HealthComponent)?.healthComponentData.armour ?? -1;
+      const tile = getGameObjectCurrentTile(go);
       const pos = getGameObjectLogicalTransform(go);
-      const lx = pos ? Math.round(pos.x) : 0;
-      const ly = pos ? Math.round(pos.y) : 0;
+      const lx = tile ? tile.x : pos ? Math.round(pos.x) : 0;
+      const ly = tile ? tile.y : pos ? Math.round(pos.y) : 0;
       const lz = pos ? Math.round(pos.z) : 0;
       const owner = getActorComponent(go, OwnerComponent)?.getOwner() ?? -1;
       const actor = ActorManager.getActorDefinitionFromActor(go) ?? {};

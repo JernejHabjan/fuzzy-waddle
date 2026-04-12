@@ -15,6 +15,7 @@ import { FlyingComponent } from "../entity/components/movement/flying-component"
 
 export function getGameObjectBounds(gameObject?: Phaser.GameObjects.GameObject): Phaser.Geom.Rectangle | null {
   if (!gameObject) return null;
+  if (!gameObject.active || !gameObject.scene) return getGameObjectBoundsRaw(gameObject);
   const representable = getPwActorDefinition(gameObject.name, getResearchedLevelForActor(gameObject))?.components?.representable;
   if (!representable) {
     const rawBounds = getGameObjectBoundsRaw(gameObject);
@@ -22,7 +23,9 @@ export function getGameObjectBounds(gameObject?: Phaser.GameObjects.GameObject):
     return rawBounds;
   }
   const representableComponent = getActorComponent(gameObject, RepresentableComponent);
-  if (!representableComponent) throw new Error(`Representable component not found on gameObject ${gameObject.name}`);
+  if (!representableComponent) {
+    return getGameObjectBoundsRaw(gameObject);
+  }
 
   const worldTransform = representableComponent.renderedWorldTransform;
   const origin = representable.origin;

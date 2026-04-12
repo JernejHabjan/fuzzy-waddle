@@ -2,7 +2,6 @@ import { Injectable, Logger } from "@nestjs/common";
 import {
   AllOrderTypes,
   type ActorDefinition,
-  getBuildingQueueCapabilities,
   ObjectNames,
   OrderType,
   type ProbableWaffleGameCommandEvent,
@@ -29,8 +28,6 @@ import type { User } from "@supabase/supabase-js";
 @Injectable()
 export class GameCommandValidatorService {
   private readonly logger = new Logger(GameCommandValidatorService.name);
-  private static readonly ISO_HALF_TILE_WIDTH = 32;
-  private static readonly ISO_HALF_TILE_HEIGHT = 16;
   private static readonly KNOWN_ORDER_TYPES = new Set(AllOrderTypes);
   private static readonly KNOWN_ACTOR_NAMES = new Set(Object.values(ObjectNames));
   private static readonly KNOWN_RESEARCH_TYPES = new Set(Object.values(ResearchType));
@@ -205,14 +202,6 @@ export class GameCommandValidatorService {
           this.logger.warn(`[GameCommand] Invalid move vector payload in ${gameInstanceId}`);
           return false;
         }
-        if (!this.isConsistentTileAndWorld(payload.tileVec3, payload.worldVec3)) {
-          this.logger.warn(`[GameCommand] Inconsistent tile/world move payload in ${gameInstanceId}`);
-          return false;
-        }
-        if (!actorIds.every((actorId) => this.canActorHandleMove(actorIndex.get(actorId)!))) {
-          this.logger.warn(`[GameCommand] MOVE issued by non-movable actor in ${gameInstanceId}`);
-          return false;
-        }
         return true;
       }
       case "ACTOR_ACTION": {
@@ -236,26 +225,10 @@ export class GameCommandValidatorService {
         }
         if (payload.targetObjectIds !== undefined) {
           const targetIds = this.readActorIds(payload.targetObjectIds);
-          if (
-            !targetIds ||
-            targetIds.length > GameCommandValidatorService.MAX_TARGET_IDS_PER_COMMAND
-          ) {
+          if (!targetIds || targetIds.length > GameCommandValidatorService.MAX_TARGET_IDS_PER_COMMAND) {
             this.logger.warn(`[GameCommand] Invalid targetObjectIds for ACTOR_ACTION in ${gameInstanceId}`);
             return false;
           }
-          for (const targetId of targetIds) {
-            if (!actorIndex.has(targetId)) {
-              this.logger.warn(`[GameCommand] Unknown target ${targetId} for ACTOR_ACTION in ${gameInstanceId}`);
-              return false;
-            }
-          }
-        }
-        if (
-          knownOrderType !== undefined &&
-          !actorIds.every((actorId) => this.canActorHandleOrder(actorIndex.get(actorId)!, knownOrderType))
-        ) {
-          this.logger.warn(`[GameCommand] ACTOR_ACTION ${orderType} issued by incapable actor in ${gameInstanceId}`);
-          return false;
         }
         return true;
       }
@@ -266,33 +239,11 @@ export class GameCommandValidatorService {
           this.logger.warn(`[GameCommand] Invalid actorName for PRODUCTION in ${gameInstanceId}`);
           return false;
         }
-        const actorName = payload.actorName;
-        if (
-          !actorIds.every((actorId) =>
-            this.canActorProduceActor(actorIndex.get(actorId)!, actorName)
-          )
-        ) {
-          this.logger.warn(`[GameCommand] PRODUCTION issued by incapable actor in ${gameInstanceId}`);
-          return false;
-        }
-        if (!actorIds.every((actorId) => this.hasQueueCapacity(actorIndex.get(actorId)!))) {
-          this.logger.warn(`[GameCommand] PRODUCTION issued to full queue in ${gameInstanceId}`);
-          return false;
-        }
         return true;
       }
       case "CANCEL_PRODUCTION":
         if (!Number.isInteger(payload.queueIndex) || (payload.queueIndex as number) < 0) {
           this.logger.warn(`[GameCommand] Invalid queueIndex for CANCEL_PRODUCTION in ${gameInstanceId}`);
-          return false;
-        }
-        if (
-          !actorIds.every((actorId) => {
-            const queue = actorIndex.get(actorId)?.production?.queue;
-            return queue !== undefined && (payload.queueIndex as number) < queue.length;
-          })
-        ) {
-          this.logger.warn(`[GameCommand] CANCEL_PRODUCTION issued by actor without production in ${gameInstanceId}`);
           return false;
         }
         return true;
@@ -301,30 +252,8 @@ export class GameCommandValidatorService {
           this.logger.warn(`[GameCommand] Invalid researchType for RESEARCH in ${gameInstanceId}`);
           return false;
         }
-        const researchType = payload.researchType;
-        if (
-          !actorIds.every((actorId) =>
-            this.canActorResearchType(actorIndex.get(actorId)!, researchType)
-          )
-        ) {
-          this.logger.warn(`[GameCommand] RESEARCH issued by incapable actor in ${gameInstanceId}`);
-          return false;
-        }
-        if (!actorIds.every((actorId) => this.hasQueueCapacity(actorIndex.get(actorId)!))) {
-          this.logger.warn(`[GameCommand] RESEARCH issued to full queue in ${gameInstanceId}`);
-          return false;
-        }
         return true;
       case "CANCEL_RESEARCH":
-        if (
-          !actorIds.every((actorId) => {
-            const researches = actorIndex.get(actorId)?.research?.researches;
-            return researches !== undefined && researches.length > 0;
-          })
-        ) {
-          this.logger.warn(`[GameCommand] CANCEL_RESEARCH issued by actor without research in ${gameInstanceId}`);
-          return false;
-        }
         return true;
     }
   }
@@ -347,69 +276,6 @@ export class GameCommandValidatorService {
       actorIndex.set(actorId, actor);
     }
     return actorIndex;
-  }
-
-  private canActorHandleMove(actor: ActorDefinition): boolean {
-    return actor.translatable !== undefined || actor.production !== undefined;
-  }
-
-  private canActorProduce(actor: ActorDefinition): boolean {
-    return actor.production !== undefined;
-  }
-
-  private canActorResearch(actor: ActorDefinition): boolean {
-    return actor.research !== undefined;
-  }
-
-  private canActorProduceActor(actor: ActorDefinition, actorName: ObjectNames): boolean {
-    if (!this.canActorProduce(actor)) {
-      return false;
-    }
-
-    return getBuildingQueueCapabilities(actor.name)?.availableProduceActors?.includes(actorName) ?? false;
-  }
-
-  private canActorResearchType(actor: ActorDefinition, researchType: ResearchType): boolean {
-    if (!this.canActorResearch(actor)) {
-      return false;
-    }
-
-    return getBuildingQueueCapabilities(actor.name)?.availableResearch?.includes(researchType) ?? false;
-  }
-
-  private hasQueueCapacity(actor: ActorDefinition): boolean {
-    const queueCapacity = getBuildingQueueCapabilities(actor.name)?.queueCapacity;
-    if (queueCapacity === undefined) {
-      return false;
-    }
-
-    return this.getQueueLength(actor) < queueCapacity;
-  }
-
-  private getQueueLength(actor: ActorDefinition): number {
-    const productionItems = actor.production?.queue?.length ?? 0;
-    const researchItems = actor.research?.researches?.length ?? 0;
-    return productionItems + researchItems;
-  }
-
-  private canActorHandleOrder(actor: ActorDefinition, orderType: OrderType): boolean {
-    switch (orderType) {
-      case OrderType.Attack:
-        return actor.attack !== undefined;
-      case OrderType.Build:
-      case OrderType.Repair:
-        return actor.builder !== undefined;
-      case OrderType.Gather:
-      case OrderType.ReturnResources:
-        return actor.gatherer !== undefined;
-      case OrderType.Heal:
-        return actor.healing !== undefined;
-      case OrderType.Move:
-        return this.canActorHandleMove(actor);
-      case OrderType.EnterContainer:
-      case OrderType.Stop:
-        return actor.translatable !== undefined;
-    }
   }
 
   private toKnownOrderType(orderType: string | undefined): OrderType | undefined {
@@ -442,25 +308,6 @@ export class GameCommandValidatorService {
     }
     const vector = value as Record<string, unknown>;
     return this.isFiniteNumber(vector.x) && this.isFiniteNumber(vector.y) && this.isFiniteNumber(vector.z);
-  }
-
-  private isConsistentTileAndWorld(tileValue: unknown, worldValue: unknown): boolean {
-    if (!this.isValidTileVector3(tileValue) || !this.isValidWorldVector3(worldValue)) {
-      return false;
-    }
-
-    const tile = tileValue as { x: number; y: number };
-    const world = worldValue as { x: number; y: number };
-    const derivedTileX =
-      (world.x / GameCommandValidatorService.ISO_HALF_TILE_WIDTH -
-        world.y / GameCommandValidatorService.ISO_HALF_TILE_HEIGHT) /
-      2;
-    const derivedTileY =
-      (world.x / GameCommandValidatorService.ISO_HALF_TILE_WIDTH +
-        world.y / GameCommandValidatorService.ISO_HALF_TILE_HEIGHT) /
-      2;
-
-    return Math.abs(tile.x - derivedTileX) <= 1 && Math.abs(tile.y - derivedTileY) <= 1;
   }
 
   private isFiniteNumber(value: unknown): value is number {

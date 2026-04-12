@@ -91,10 +91,7 @@ export class RoomsService implements RoomsServiceInterface {
         case "game_instance_metadata":
         case "game_mode":
           if (!roomLocally) {
-            console.warn(
-              "[RoomsService] Received update for room not in local list:",
-              room.gameInstanceMetadataData.gameInstanceId
-            );
+            this.rooms.update((rooms) => [...rooms, room]);
             return;
           }
           // console.log("[RoomsService] Updating room:", room.gameInstanceMetadataData.gameInstanceId);

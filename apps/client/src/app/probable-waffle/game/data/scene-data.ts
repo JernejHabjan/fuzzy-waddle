@@ -24,6 +24,9 @@ import { GathererComponent } from "../entity/components/resource/gatherer-compon
 import { SelectableComponent } from "../entity/components/selectable-component";
 import { HealthComponent } from "../entity/components/combat/components/health-component";
 import { VisionComponent } from "../entity/components/vision-component";
+import { ActorIndexSystem } from "../world/services/ActorIndexSystem";
+import { OwnerComponent } from "../entity/components/owner-component";
+import { getSceneService } from "../world/services/scene-component-helpers";
 
 export function getPlayer(scene: Scene, playerNumber?: PlayerNumber): ProbableWafflePlayer | undefined {
   if (!scene) {
@@ -137,17 +140,57 @@ export function emitEventSelection(
 ) {
   if (!(scene instanceof ProbableWaffleScene)) throw new Error("Scene is not of type ProbableWaffleScene");
   const player = getPlayer(scene);
+  if (player?.playerNumber === undefined) {
+    console.warn(`[Selection] Skipping ${property} because the local player is not ready yet.`);
+    return;
+  }
+  const sanitizedActorIds = sanitizeOwnedActorIds(scene, actorIds, player.playerNumber);
+  if (property !== "selection.cleared" && actorIds && sanitizedActorIds.length !== actorIds.length) {
+    console.warn(
+      `[Selection] Sanitized ${actorIds.length - sanitizedActorIds.length} stale actor IDs before sending ${property}.`
+    );
+  }
   scene.communicator.playerChanged!.send({
     property,
     data: {
-      playerNumber: player?.playerNumber,
+      playerNumber: player.playerNumber,
       playerStateData: {
-        selection: actorIds
+        selection: property === "selection.cleared" ? actorIds : sanitizedActorIds
       }
     },
     gameInstanceId: scene.gameInstanceId,
     emitterUserId: scene.userId
   });
+}
+
+export function sanitizeOwnedActorIds(
+  scene: Phaser.Scene,
+  actorIds: string[] | undefined,
+  playerNumber: PlayerNumber | undefined
+): string[] {
+  if (!actorIds?.length || playerNumber === undefined) {
+    return actorIds ?? [];
+  }
+
+  const actorIndex = getSceneService(scene, ActorIndexSystem);
+  if (!actorIndex) {
+    return actorIds;
+  }
+
+  const sanitized: string[] = [];
+  const seen = new Set<string>();
+  for (const actorId of actorIds) {
+    if (!actorId || seen.has(actorId)) {
+      continue;
+    }
+    const actor = actorIndex.getActorById(actorId);
+    const owner = actor ? getActorComponent(actor, OwnerComponent)?.getOwner() : undefined;
+    if (actor?.active && owner === playerNumber) {
+      sanitized.push(actorId);
+      seen.add(actorId);
+    }
+  }
+  return sanitized;
 }
 
 export function listenToPlayerChangedChanged(scene: Scene, searchString: string) {

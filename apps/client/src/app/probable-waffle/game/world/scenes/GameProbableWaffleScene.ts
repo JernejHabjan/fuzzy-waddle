@@ -47,6 +47,7 @@ import { ReplayPlaybackService } from "../services/replay-playback.service";
 import { ReplayRecorderService } from "../services/replay-recorder.service";
 import { HostMigrationService } from "../services/host-migration.service";
 import { PauseSyncService } from "../services/pause-sync.service";
+import { ProbableWafflePlayerType } from "@fuzzy-waddle/api-interfaces";
 
 export default class GameProbableWaffleScene extends ProbableWaffleScene {
   tilemap!: Phaser.Tilemaps.Tilemap;
@@ -109,12 +110,14 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
       this.sceneGameData.components.push(new FogOfWarComponent(this, this.tilemap));
     }
 
+    const actorIdSeeder = new ActorIdSeeder(this);
     creator.initInitialActors();
     // Populate the index after initial actors are in place
     actorIndex.scanExistingActors();
     // ActorIdSeeder must run after actors are in place. On non-host it subscribes
     // to the host's seed broadcast and patches actor ids to stay in sync.
-    new ActorIdSeeder(this);
+    // The subscription is armed earlier so a fast host cannot race past a slow peer.
+    actorIdSeeder.afterInitialActorsCreated();
 
     // Wire SimulationTickService into CommandBusService now that both are registered
     const commandBus = getSceneService(this, CommandBusService);
@@ -123,7 +126,10 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
       commandBus.tickService = simTick;
       // Activate the multiplayer relay path when a socket is present
       const communicator = this.baseGameData.communicator;
-      if (communicator.gameCommandChanged) {
+      const humanPlayerCount = this.baseGameData.gameInstance.players.filter(
+        (player) => player.playerController.data.playerDefinition?.playerType === ProbableWafflePlayerType.Human
+      ).length;
+      if (communicator.gameCommandChanged && humanPlayerCount > 1) {
         commandBus.initMultiplayer(this);
       }
     }

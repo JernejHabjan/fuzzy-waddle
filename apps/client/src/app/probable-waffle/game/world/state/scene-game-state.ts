@@ -1,6 +1,5 @@
 import { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { GameSessionState } from "@fuzzy-waddle/api-interfaces";
-import { environment } from "../../../../../environments/environment";
 import { getCommunicator } from "../../data/scene-data";
 import { ReadyBarrier } from "../services/ready-barrier.service";
 
@@ -15,17 +14,20 @@ export class SceneGameState {
     this.pauseUntilAllPlayersAreReady();
 
     // ReadyBarrier signals when all human players have loaded.
-    // Only the host drives the StartingTheGame transition; peers wait.
-    if (this.scene.isHost) {
-      new ReadyBarrier(this.scene, () => {
-        getCommunicator(this.scene).gameInstanceMetadataChanged?.send({
-          property: "sessionState",
-          gameInstanceId: this.scene.baseGameData.gameInstance.gameInstanceMetadata.data.gameInstanceId!,
-          data: { sessionState: GameSessionState.StartingTheGame },
-          emitterUserId: this.scene.baseGameData.user.userId
-        });
+    // Every client constructs the barrier so non-host peers emit their ready signal.
+    // Only the host callback advances the shared session state; peers just wait.
+    new ReadyBarrier(this.scene, () => {
+      if (!this.scene.isHost) {
+        return;
+      }
+
+      getCommunicator(this.scene).gameInstanceMetadataChanged?.send({
+        property: "sessionState",
+        gameInstanceId: this.scene.baseGameData.gameInstance.gameInstanceMetadata.data.gameInstanceId!,
+        data: { sessionState: GameSessionState.StartingTheGame },
+        emitterUserId: this.scene.baseGameData.user.userId
       });
-    }
+    });
   }
 
   pauseUntilAllPlayersAreReady() {
@@ -57,12 +59,7 @@ export class SceneGameState {
             emitterUserId: this.scene.userId
           });
         };
-        const handleCountdown = environment.production;
-        if (handleCountdown) {
-          setTimeout(() => sendInProgress(), 3000);
-        } else {
-          sendInProgress();
-        }
+        setTimeout(() => sendInProgress(), 3000);
 
         break;
       case GameSessionState.InProgress:

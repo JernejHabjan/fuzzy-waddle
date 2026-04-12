@@ -9,6 +9,11 @@ import {
   type PlayerNumber,
   type ProbableWaffleReplayCommandBatch
 } from "@fuzzy-waddle/api-interfaces";
+import { environment } from "../../../../../environments/environment";
+import { getSceneService } from "./scene-component-helpers";
+import { ActorIndexSystem } from "./ActorIndexSystem";
+import { getActorComponent } from "../../data/actor-component";
+import { OwnerComponent } from "../../entity/components/owner-component";
 
 /**
  * Central command bus for all player- and AI-issued simulation commands.
@@ -33,6 +38,7 @@ import {
 export class CommandBusService {
   /** 2-tick delay = 100 ms window for commands to reach all peers before execution. */
   static readonly INPUT_DELAY_TICKS = 2;
+  private static readonly STALL_LOG_DELAY_MS = 150;
 
   private readonly _command$ = new Subject<GameCommand>();
   readonly command$ = this._command$.asObservable();
@@ -51,6 +57,11 @@ export class CommandBusService {
   private readonly buffer = new CommandBuffer();
   private readonly subscriptions: Subscription[] = [];
   private scene: ProbableWaffleScene | null = null;
+  private readonly debug = !environment.production;
+  private lastSentExecutionTick = 0;
+  private stallSignature: string | null = null;
+  private stallLogTimer: number | null = null;
+  private pendingStallTick: number | null = null;
 
   /**
    * Activates the multiplayer relay path.
@@ -60,16 +71,25 @@ export class CommandBusService {
   initMultiplayer(scene: ProbableWaffleScene): void {
     this.scene = scene;
     this.isMultiplayer = true;
-    this.localPlayerNumber = scene.baseGameData.user.playerNumber ?? null;
+    this.localPlayerNumber = scene.playerOrNull?.playerNumber ?? scene.baseGameData.user.playerNumber ?? null;
     this.humanPlayerNumbers = scene.baseGameData.gameInstance.players
       .filter((p) => p.playerController.data.playerDefinition?.playerType === ProbableWafflePlayerType.Human)
       .map((p) => p.playerNumber!);
+
+    this.debugLog(
+      `init localPlayer=${this.localPlayerNumber ?? "none"} humans=${this.humanPlayerNumbers.join(",") || "none"}`
+    );
 
     const communicator = getCommunicator(scene);
 
     // Receive remote command batches and buffer them
     this.subscriptions.push(
       communicator.gameCommandChanged!.on.subscribe((event) => {
+        if (event.commands.length > 0) {
+          this.debugLog(
+            `received batch tick=${event.tick} player=${event.playerNumber} commands=${event.commands.length} types=${this.describeCommandTypes(event.commands as GameCommand[])}`
+          );
+        }
         this.buffer.commit(event.tick, event.playerNumber, event.commands as GameCommand[]);
         this.emitRecordedBatch({
           tick: event.tick,
@@ -82,8 +102,12 @@ export class CommandBusService {
 
     // On every tick: flush commands, send outbound batch, gate next tick
     if (this.tickService) {
+      this.tickService.pauseTick("lockstep");
       this.subscriptions.push(this.tickService.tick$.subscribe((tick) => this.onTick(tick)));
     }
+
+    this.seedInitialTicks();
+    this.tryUnblockTick();
   }
 
   dispatch(command: GameCommandInput): void {
@@ -91,10 +115,15 @@ export class CommandBusService {
       return;
     }
 
+    const normalizedCommand = this.normalizeCommand(command);
+    if (!normalizedCommand) {
+      return;
+    }
+
     if (!this.isMultiplayer) {
       // Single-player: stamp and emit immediately
       const tick = this.tickService?.currentTick ?? 0;
-      const stamped = { ...command, tick } as GameCommand;
+      const stamped = { ...normalizedCommand, tick } as GameCommand;
       this.emitRecordedBatch({
         tick,
         playerNumber: stamped.playerNumber,
@@ -104,13 +133,17 @@ export class CommandBusService {
       return;
     }
 
-    // Multiplayer: stamp with delay, queue for outbound
-    const tick = (this.tickService?.currentTick ?? 0) + CommandBusService.INPUT_DELAY_TICKS;
-    const stamped = { ...command, tick } as GameCommand;
+    // Multiplayer: stamp with delay, but never target a batch tick that has already been sent.
+    const requestedTick = (this.tickService?.currentTick ?? 0) + CommandBusService.INPUT_DELAY_TICKS;
+    const tick = Math.max(requestedTick, this.lastSentExecutionTick + 1);
+    const stamped = { ...normalizedCommand, tick } as GameCommand;
     if (!this.pendingOutbound.has(tick)) {
       this.pendingOutbound.set(tick, []);
     }
     this.pendingOutbound.get(tick)!.push(stamped);
+    this.debugLog(
+      `queued command type=${normalizedCommand.type} executeTick=${tick} requestedTick=${requestedTick} player=${stamped.playerNumber} actors=${stamped.actorIds.length}`
+    );
   }
 
   private onTick(tick: number): void {
@@ -126,18 +159,23 @@ export class CommandBusService {
     const outbound = this.pendingOutbound.get(futureTick) ?? [];
     this.pendingOutbound.delete(futureTick);
     if (this.localPlayerNumber !== null) {
-      // Buffer our own commands locally so hasAll() counts us
-      this.buffer.commit(futureTick, this.localPlayerNumber, outbound);
+      this.lastSentExecutionTick = Math.max(this.lastSentExecutionTick, futureTick);
       this.emitRecordedBatch({
         tick: futureTick,
         playerNumber: this.localPlayerNumber,
         commands: outbound
       });
+      if (outbound.length > 0) {
+        this.debugLog(
+          `sending batch tick=${futureTick} player=${this.localPlayerNumber} commands=${outbound.length} types=${this.describeCommandTypes(outbound)}`
+        );
+      }
       this.sendCommandBatch(futureTick, outbound);
     }
 
     // 3. Gate the next tick: stall until all peers have committed for tick+1
     if (this.tickService && !this.hasAllForTick(tick + 1)) {
+      this.scheduleStallLog(tick + 1);
       this.tickService.pauseTick("lockstep");
     }
 
@@ -160,12 +198,34 @@ export class CommandBusService {
     if (!this.tickService) return;
     const nextTick = this.tickService.currentTick + 1;
     if (this.hasAllForTick(nextTick)) {
+      this.clearPendingStallLog();
+      if (this.stallSignature !== null) {
+        this.debugLog(`resume nextTick=${nextTick}`);
+        this.stallSignature = null;
+      }
       this.tickService.resumeTick("lockstep");
     }
   }
 
   private hasAllForTick(tick: number): boolean {
     return this.buffer.hasAll(tick, this.humanPlayerNumbers);
+  }
+
+  private seedInitialTicks(): void {
+    if (!this.scene || this.localPlayerNumber === null) {
+      return;
+    }
+
+    for (let tick = 1; tick <= CommandBusService.INPUT_DELAY_TICKS; tick++) {
+      this.buffer.commit(tick, this.localPlayerNumber, []);
+      this.emitRecordedBatch({
+        tick,
+        playerNumber: this.localPlayerNumber,
+        commands: []
+      });
+      this.lastSentExecutionTick = Math.max(this.lastSentExecutionTick, tick);
+      this.sendCommandBatch(tick, []);
+    }
   }
 
   playReplayBatch(batch: ProbableWaffleReplayCommandBatch): void {
@@ -189,8 +249,100 @@ export class CommandBusService {
   }
 
   destroy(): void {
+    this.clearPendingStallLog();
     this.subscriptions.forEach((s) => s.unsubscribe());
     this._commandBatch$.complete();
     this._command$.complete();
+  }
+
+  private debugLog(message: string): void {
+    if (!this.debug) {
+      return;
+    }
+    console.info(`[CommandBus] ${message}`);
+  }
+
+  private logStall(nextTick: number): void {
+    const committed = this.buffer.getCommittedPlayers(nextTick);
+    const missing = this.humanPlayerNumbers.filter((playerNumber) => !committed.includes(playerNumber));
+    const signature = `${nextTick}|${committed.join(",")}|${missing.join(",")}`;
+    if (signature === this.stallSignature) {
+      return;
+    }
+    this.stallSignature = signature;
+    this.debugLog(
+      `stall nextTick=${nextTick} committed=${committed.join(",") || "none"} missing=${missing.join(",") || "none"}`
+    );
+  }
+
+  private scheduleStallLog(nextTick: number): void {
+    if (this.pendingStallTick === nextTick || this.stallSignature?.startsWith(`${nextTick}|`)) {
+      return;
+    }
+
+    this.clearPendingStallLog();
+    this.pendingStallTick = nextTick;
+    this.stallLogTimer = window.setTimeout(() => {
+      this.stallLogTimer = null;
+      this.pendingStallTick = null;
+      if (!this.tickService || this.hasAllForTick(nextTick)) {
+        return;
+      }
+      this.logStall(nextTick);
+    }, CommandBusService.STALL_LOG_DELAY_MS);
+  }
+
+  private clearPendingStallLog(): void {
+    if (this.stallLogTimer !== null) {
+      clearTimeout(this.stallLogTimer);
+      this.stallLogTimer = null;
+    }
+    this.pendingStallTick = null;
+  }
+
+  private describeCommandTypes(commands: readonly GameCommand[]): string {
+    return commands.map((command) => command.type).join(",");
+  }
+
+  private normalizeCommand(command: GameCommandInput): GameCommandInput | null {
+    if (!this.scene) {
+      return command;
+    }
+
+    const actorIndex = getSceneService(this.scene, ActorIndexSystem);
+    if (!actorIndex) {
+      return command;
+    }
+
+    const actorIds = [...new Set(command.actorIds)].filter((actorId) => {
+      const actor = actorIndex.getActorById(actorId);
+      const owner = actor ? getActorComponent(actor, OwnerComponent)?.getOwner() : undefined;
+      return actor?.active && owner === command.playerNumber;
+    });
+
+    if (actorIds.length === 0) {
+      this.debugLog(`dropping command type=${command.type} because no valid owned actors remained after sanitization`);
+      return null;
+    }
+
+    if ("targetObjectIds" in command) {
+      const targetObjectIds = command.targetObjectIds?.filter((targetId, index, ids) => {
+        if (ids.indexOf(targetId) !== index) {
+          return false;
+        }
+        return !!actorIndex.getActorById(targetId);
+      });
+
+      return {
+        ...command,
+        actorIds,
+        targetObjectIds
+      };
+    }
+
+    return {
+      ...command,
+      actorIds
+    };
   }
 }

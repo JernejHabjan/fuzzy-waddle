@@ -1,4 +1,5 @@
 import { ProbableWaffleGameInstance } from "../../game-instance/probable-waffle/game-instance";
+import { ProbableWaffleGameState } from "../../game-instance/probable-waffle/game-state";
 import type {
   ProbableWaffleGameInstanceMetadataChangeEvent,
   ProbableWaffleGameModeDataChangeEvent,
@@ -315,12 +316,12 @@ export class ProbableWaffleListeners {
   }
 
   static gameStateDataChanged(gameInstance: ProbableWaffleGameInstance, event: ProbableWaffleGameStateDataChangeEvent) {
-    switch (event.property) {
-      case "all": {
-        gameInstance.gameState!.data = event.data.gameState as any;
-        ProbableWaffleListeners.logDebugInfo("game state changed to", gameInstance.gameState!.data);
-        break;
-      }
+      switch (event.property) {
+        case "all": {
+          gameInstance.gameState = new ProbableWaffleGameState(event.data.gameState as any);
+          ProbableWaffleListeners.logDebugInfo("game state changed to", gameInstance.gameState!.data);
+          break;
+        }
       case "health.health":
         const actorHealth = this.getActorById(event.data.actorDefinition!.id!, gameInstance);
         if (!actorHealth) throw new Error("Actor not found with id " + event.data.actorDefinition!.id);

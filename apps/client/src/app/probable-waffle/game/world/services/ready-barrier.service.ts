@@ -21,10 +21,12 @@ import Phaser from "phaser";
 export class ReadyBarrier {
   static readonly READY_PROPERTY = "player.scene-ready" as const;
   private static readonly TIMEOUT_MS = 30_000;
+  private static readonly ANNOUNCE_INTERVAL_MS = 500;
 
-  private readyCount = 0;
+  private readonly readyPlayers = new Set<string>();
   private subscriptions: Subscription[] = [];
   private timer?: number;
+  private announceInterval?: number;
 
   constructor(
     private readonly scene: ProbableWaffleScene,
@@ -48,16 +50,23 @@ export class ReadyBarrier {
       this.subscriptions.push(
         communicator.playerChanged.on.subscribe((event) => {
           if (event.property !== ReadyBarrier.READY_PROPERTY) return;
-          this.readyCount++;
-          if (this.readyCount >= expectedCount) {
+          const readyKey = this.getReadyPlayerKey(event.emitterUserId, event.data.playerNumber);
+          if (!readyKey) {
+            return;
+          }
+          this.readyPlayers.add(readyKey);
+          if (this.readyPlayers.size >= expectedCount) {
             this.fireAllReady();
           }
         })
       );
 
       // Count the host itself as ready immediately
-      this.readyCount++;
-      if (this.readyCount >= expectedCount) {
+      const hostReadyKey = this.getReadyPlayerKey(this.scene.userId, this.scene.playerOrNull?.playerNumber);
+      if (hostReadyKey) {
+        this.readyPlayers.add(hostReadyKey);
+      }
+      if (this.readyPlayers.size >= expectedCount) {
         // Only one human (the host) — fire straight away
         this.fireAllReady();
         return;
@@ -66,18 +75,33 @@ export class ReadyBarrier {
       // Safety timeout: don't wait forever for a late/crashed peer
       this.timer = window.setTimeout(() => {
         console.warn(
-          `[ReadyBarrier] Timeout after ${ReadyBarrier.TIMEOUT_MS}ms — only ${this.readyCount}/${expectedCount} players ready. Starting anyway.`
+          `[ReadyBarrier] Timeout after ${ReadyBarrier.TIMEOUT_MS}ms — only ${this.readyPlayers.size}/${expectedCount} players ready. Starting anyway.`
         );
         this.fireAllReady();
       }, ReadyBarrier.TIMEOUT_MS);
     } else {
-      // Non-host: announce readiness to the host
-      communicator.playerChanged.send({
-        property: ReadyBarrier.READY_PROPERTY,
-        gameInstanceId: this.scene.gameInstanceId,
-        emitterUserId: this.scene.userId,
-        data: {}
-      });
+      // Non-host: keep announcing readiness until the host advances the session state.
+      this.sendReady(communicator);
+      this.announceInterval = window.setInterval(
+        () => this.sendReady(communicator),
+        ReadyBarrier.ANNOUNCE_INTERVAL_MS
+      );
+    }
+
+    if (communicator.gameInstanceMetadataChanged) {
+      this.subscriptions.push(
+        communicator.gameInstanceMetadataChanged.on.subscribe((event) => {
+          if (event.property !== "sessionState") return;
+          if (
+            event.data.sessionState === GameSessionState.StartingTheGame ||
+            event.data.sessionState === GameSessionState.InProgress ||
+            event.data.sessionState === GameSessionState.ToScoreScreen ||
+            event.data.sessionState === GameSessionState.Stopped
+          ) {
+            this.destroy();
+          }
+        })
+      );
     }
   }
 
@@ -94,8 +118,32 @@ export class ReadyBarrier {
     ).length;
   }
 
+  private getReadyPlayerKey(emitterUserId: string | null | undefined, playerNumber: number | undefined): string | null {
+    if (emitterUserId) {
+      return `user:${emitterUserId}`;
+    }
+
+    if (playerNumber !== undefined) {
+      return `player:${playerNumber}`;
+    }
+
+    return null;
+  }
+
+  private sendReady(communicator: ReturnType<typeof getCommunicator>): void {
+    communicator.playerChanged?.send({
+      property: ReadyBarrier.READY_PROPERTY,
+      gameInstanceId: this.scene.gameInstanceId,
+      emitterUserId: this.scene.userId,
+      data: {
+        playerNumber: this.scene.playerOrNull?.playerNumber
+      }
+    });
+  }
+
   private destroy(): void {
     clearTimeout(this.timer);
+    clearInterval(this.announceInterval);
     this.subscriptions.forEach((s) => s.unsubscribe());
     this.subscriptions = [];
   }

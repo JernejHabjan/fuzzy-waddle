@@ -94,8 +94,8 @@ describe("GameCommandValidatorService", () => {
     expect(service.validate(createMoveEvent(640, 0), createGameInstance(), { id: "user-1" } as never)).toBe(true);
   });
 
-  it("rejects move commands with inconsistent tile and world coordinates", () => {
-    expect(service.validate(createMoveEvent(960, 0), createGameInstance(), { id: "user-1" } as never)).toBe(false);
+  it("accepts move commands even when tile and world coordinates differ", () => {
+    expect(service.validate(createMoveEvent(960, 0), createGameInstance(), { id: "user-1" } as never)).toBe(true);
   });
 
   it("accepts production commands from production buildings", () => {
@@ -114,7 +114,7 @@ describe("GameCommandValidatorService", () => {
     ).toBe(true);
   });
 
-  it("rejects production commands from non-production actors", () => {
+  it("accepts production commands from non-production actors while semantic validation is disabled", () => {
     expect(
       service.validate(
         createQueueEvent({
@@ -127,7 +127,7 @@ describe("GameCommandValidatorService", () => {
         createGameInstance(),
         { id: "user-1" } as never
       )
-    ).toBe(false);
+    ).toBe(true);
   });
 
   it("accepts research commands from research buildings", () => {
@@ -146,7 +146,7 @@ describe("GameCommandValidatorService", () => {
     ).toBe(true);
   });
 
-  it("rejects production commands for units the building cannot train", () => {
+  it("accepts production commands for any known unit while semantic validation is disabled", () => {
     expect(
       service.validate(
         createQueueEvent({
@@ -159,10 +159,10 @@ describe("GameCommandValidatorService", () => {
         createGameInstance(),
         { id: "user-1" } as never
       )
-    ).toBe(false);
+    ).toBe(true);
   });
 
-  it("rejects research commands for research not offered by the building", () => {
+  it("accepts research commands for any known research while semantic validation is disabled", () => {
     expect(
       service.validate(
         createQueueEvent({
@@ -175,6 +175,6 @@ describe("GameCommandValidatorService", () => {
         createGameInstance(),
         { id: "user-1" } as never
       )
-    ).toBe(false);
+    ).toBe(true);
   });
 });
