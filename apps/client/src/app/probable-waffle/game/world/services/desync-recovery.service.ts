@@ -30,8 +30,10 @@ export class DesyncRecoveryService {
   /** True while the dialog is visible (prevents opening a second dialog). */
   private dialogOpen = false;
   private sub?: Subscription;
+  private probableWaffleScene?: ProbableWaffleScene;
 
   init(hudScene: Phaser.Scene, probableWaffleScene: ProbableWaffleScene): void {
+    this.probableWaffleScene = probableWaffleScene;
     const communicator = getCommunicator(probableWaffleScene);
     this.sub = communicator.desyncAlert?.on.subscribe((event) => {
       this.onDesyncDetected(event, hudScene, probableWaffleScene);
@@ -103,6 +105,13 @@ export class DesyncRecoveryService {
   }
 
   destroy(): void {
+    // If the scene tears down while the desync dialog is open, ensure the
+    // "desync" pause reason is released so SimulationTickService is not left stalled.
+    if (this.dialogOpen) {
+      const simTick = this.probableWaffleScene && getSceneService(this.probableWaffleScene, SimulationTickService);
+      simTick?.resumeTick("desync");
+      this.dialogOpen = false;
+    }
     this.sub?.unsubscribe();
   }
 }

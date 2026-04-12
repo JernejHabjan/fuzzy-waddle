@@ -52,10 +52,11 @@ These are the main freeze/stall classes that still matter:
 
 2. **Pause reasons stack**
    - `SimulationTickService` pauses by string reasons stored in a `Set`.
-   - If reconnect/desync/lockstep/startup pauses are not resumed symmetrically, the tick stays paused even after one recovery path completes.
+   - ~~`ReconnectService` and `ConnectionRecoveryService` both used `"reconnect"` causing premature resume.~~ **FIXED** — `ReconnectService` now uses `"snapshot-restore"`.
+   - `destroy()` methods now defensively resume any active pauses (reconnect, desync) so the Set is clean on scene teardown.
 
 3. **Startup uses scene pause + `setTimeout`**
-   - Match start is still controlled by scene pause/resume and real-time timeout, not by the same simulation barrier primitive used elsewhere.
+   - Match start is still controlled by scene pause/resume and real-time timeout for networked modes, not by the same simulation barrier primitive used elsewhere.
 
 4. **Desync is often a symptom, not the root cause**
    - Snapshot correction can recover a client, but if the root deterministic bug remains, the same actor can drift again and trigger another correction or stall.
@@ -78,25 +79,22 @@ These are the main freeze/stall classes that still matter:
    - `SceneGameState` now skips the 3-second `setTimeout` for non-networked modes
      (Skirmish / InstantGame / Replay); only Matchmaking and SelfHosted wait.
 
-5. **Actor seed reconciliation is still heuristic**
+5. ~~**Actor seed reconciliation is still heuristic**~~ **IMPROVED** *(see note below)*
    - `ActorIdSeeder` matches by `(name, owner, logical position)`.
    - Better than GUID divergence, but still brittle if multiple neutral/environment actors
      share equivalent keys or if authored map/runtime state drifts before reconciliation.
+   - Further hardening still desirable for maps with many identical actors at the same position.
 
-6. **Movement tween completion timing is nondeterministic** *(new finding)*
-   - `movement.system.ts` uses Phaser tweens for tile-to-tile animation. Tween durations are
-     in real-time milliseconds; the `onComplete` fires at a wall-clock time, not a fixed tick.
-   - Result: the tick at which a unit "arrives" at the next tile and starts chasing the next
-     waypoint can differ by 1 tick between clients.
-   - Fix path: drive tile arrival via `waitForSimulationDuration` (already exists in
-     `simulation-time.ts`) and use tweens only for visual interpolation between logical
-     tile positions. This is a non-trivial refactor.
+6. ~~**Movement tween completion timing is nondeterministic**~~ **FIXED**
+   - `movement.system.ts` now drives logical tile arrival via `CancelableSimDelay`.
+   - Phaser tween runs for visual interpolation only; onComplete chain fires at the same
+     simulation tick on all clients.
 
 ## Medium-risk / likely remaining divergence sources
 
 - Attack hit/fire delays were using `scene.time.delayedCall` (real-time). **FIXED** — now use
   `CancelableSimDelay` (in `simulation-time.ts`) which fires at the correct simulation tick.
-- Movement/pathfinding tile-arrival timing — see item 6 above (open).
+- Movement/pathfinding tile-arrival timing — **FIXED** — logical arrival via `CancelableSimDelay`.
 - `Math.random()` in movement sound selection and some spell audio is cosmetic-only; does not
   affect simulation state.
 - Ambient/random actor behavior was reduced, but this is mitigation, not proof.

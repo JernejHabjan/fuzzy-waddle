@@ -62,6 +62,13 @@ export class ConnectionRecoveryService {
       pending.timer.remove(false);
     }
     this.pendingReconnects.clear();
+
+    // If the scene tears down while a reconnect pause is active, release it so
+    // SimulationTickService doesn't keep "reconnect" in its paused Set.
+    if (this.activeReconnects.size > 0) {
+      const simTick = this.probableWaffleScene && getSceneService(this.probableWaffleScene, SimulationTickService);
+      simTick?.resumeTick("reconnect");
+    }
     this.activeReconnects.clear();
     this.closeDialog();
 

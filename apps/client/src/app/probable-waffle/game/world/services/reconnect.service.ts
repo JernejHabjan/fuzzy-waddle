@@ -125,7 +125,9 @@ export class ReconnectService {
     const actorIndex = getSceneService(scene, ActorIndexSystem);
     const commandBus = getSceneService(scene, CommandBusService);
     const creator = getSceneService(scene, SceneActorCreator);
-    const pauseReason = response.reason === "desync-correction" ? "desync-correction" : "reconnect";
+    // Use a distinct reason ("snapshot-restore") so this pause does not collide with
+    // ConnectionRecoveryService's "reconnect" pause, which has independent lifetime.
+    const pauseReason = response.reason === "desync-correction" ? "desync-correction" : "snapshot-restore";
 
     if (!actorIndex || !creator) {
       console.error("[Reconnect] Required services not available; cannot apply snapshot.");

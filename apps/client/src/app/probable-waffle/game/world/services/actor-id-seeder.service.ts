@@ -98,9 +98,14 @@ export class ActorIdSeeder {
    * Match Phaser game objects to actor definitions from the host by
    * (name, ownerNumber, logicalX, logicalY) and set the authoritative id.
    * Coordinates are rounded to 1 decimal to absorb floating-point noise.
+   *
+   * When multiple actors share the same (name, owner, pos) key the definitions
+   * are consumed in arrival order — so both sides must iterate in the same
+   * deterministic spawn order for disambiguation to work.
    */
   private patchActorIds(actorDefs: Partial<ActorDefinition>[]): void {
-    const lookup = new Map<string, Partial<ActorDefinition>>();
+    // Build host lookup: key → ordered array of defs (supports duplicate keys).
+    const lookup = new Map<string, Partial<ActorDefinition>[]>();
     const remappedIds = new Map<string, string>();
     for (const def of actorDefs) {
       const id = def.id?.id;
@@ -109,7 +114,14 @@ export class ActorIdSeeder {
       const pos = def.representable?.logicalWorldTransform;
       if (!id || !name || pos === undefined) continue;
       const key = seederKey(name, owner, pos.x, pos.y);
-      lookup.set(key, def);
+      const existing = lookup.get(key) ?? [];
+      if (existing.length > 0) {
+        console.warn(
+          `[ActorIdSeeder] Duplicate seeder key "${key}" — ${existing.length + 1} defs share same (name, owner, pos). IDs matched by arrival order.`
+        );
+      }
+      existing.push(def);
+      lookup.set(key, existing);
     }
 
     const actorIndex = getSceneService(this.scene, ActorIndexSystem);
@@ -128,32 +140,46 @@ export class ActorIdSeeder {
       unmatchedChildren.set(key, existing);
     }
 
-    for (const [key, def] of lookup.entries()) {
-      const localActor = unmatchedChildren.get(key)?.shift();
-      const authId = def.id?.id;
-      if (localActor) {
-        let idComp = getActorComponent(localActor, IdComponent);
-        if (!idComp) {
-          setFullActorDataFromName(localActor, def);
-          actorIndex?.registerActor(localActor);
-          idComp = getActorComponent(localActor, IdComponent);
+    for (const [key, defs] of lookup.entries()) {
+      for (const def of defs) {
+        const localActor = unmatchedChildren.get(key)?.shift();
+        const authId = def.id?.id;
+        if (localActor) {
+          let idComp = getActorComponent(localActor, IdComponent);
+          if (!idComp) {
+            setFullActorDataFromName(localActor, def);
+            actorIndex?.registerActor(localActor);
+            idComp = getActorComponent(localActor, IdComponent);
+          }
+          if (authId && idComp && idComp.id !== authId) {
+            remappedIds.set(idComp.id, authId);
+            idComp.setId(authId);
+          }
+          continue;
         }
-        if (authId && idComp && idComp.id !== authId) {
-          remappedIds.set(idComp.id, authId);
-          idComp.setId(authId);
-        }
-        continue;
-      }
 
-      if (creator && def.name) {
-        const created = creator.createActorFromDefinition(def as ActorDefinition);
-        const createdId = created ? getActorComponent(created, IdComponent)?.id : undefined;
-        if (created) {
-          actorIndex?.registerActor(created);
+        if (creator && def.name) {
+          const created = creator.createActorFromDefinition(def as ActorDefinition);
+          const createdId = created ? getActorComponent(created, IdComponent)?.id : undefined;
+          if (created) {
+            actorIndex?.registerActor(created);
+          }
+          if (created && createdId && authId && createdId !== authId) {
+            remappedIds.set(createdId, authId);
+            getActorComponent(created, IdComponent)?.setId(authId);
+          }
         }
-        if (created && createdId && authId && createdId !== authId) {
-          remappedIds.set(createdId, authId);
-          getActorComponent(created, IdComponent)?.setId(authId);
+      }
+    }
+
+    // Log any local actors that had no matching host definition (keeps random GUID).
+    for (const [key, orphans] of unmatchedChildren.entries()) {
+      for (const orphan of orphans) {
+        const idComp = getActorComponent(orphan, IdComponent);
+        if (idComp) {
+          console.warn(
+            `[ActorIdSeeder] Orphaned actor key="${key}" name="${orphan.name}" id=${idComp.id} — no host definition matched; ID may diverge.`
+          );
         }
       }
     }
