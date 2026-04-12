@@ -61,7 +61,7 @@ export const tivaraMacemanMaleDefinition = {
     },
     productionCost: {
       resources: {
-        [ResourceType.Minerals]: 100
+        [ResourceType.Food]: 100
       },
       refundFactor: 0.5,
       productionTime: 5000,

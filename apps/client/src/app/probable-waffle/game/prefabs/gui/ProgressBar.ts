@@ -6,6 +6,7 @@
 import { getActorComponent } from "../../data/actor-component";
 import { ProductionComponent } from "../../entity/components/production/production-component";
 import { ResearchComponent } from "../../entity/components/research/research-component";
+import { TendableComponent } from "../../entity/components/tendable/tendable-component";
 import { Subscription } from "rxjs";
 /* END-USER-IMPORTS */
 
@@ -67,10 +68,19 @@ export default class ProgressBar extends Phaser.GameObjects.Container {
   private researchProgressSubscription?: Subscription;
   private researchCancelledSubscription?: Subscription;
   private researchCompletedSubscription?: Subscription;
+  private tendableProgressSubscription?: Subscription;
+  private tendableResetSubscription?: Subscription;
 
   setProgressBar(actor: Phaser.GameObjects.GameObject) {
     // Clean up any existing subscriptions
     this.cleanActor();
+
+    // Check for TendableComponent (farm growth) — shown in preference to production/research
+    const tendableComponent = getActorComponent(actor, TendableComponent);
+    if (tendableComponent) {
+      this.subscribeToTendable(tendableComponent);
+      return;
+    }
 
     // Check for ProductionComponent
     const productionComponent = getActorComponent(actor, ProductionComponent);
@@ -88,6 +98,21 @@ export default class ProgressBar extends Phaser.GameObjects.Container {
     if (!productionComponent && !researchComponent) {
       this.visible = false;
     }
+  }
+
+  private subscribeToTendable(tendableComponent: TendableComponent) {
+    // Show growth 0–100% always (including 0 and 100)
+    const update = (percent: number) => {
+      this.visible = true;
+      this.setPercentage(percent);
+    };
+    this.tendableProgressSubscription = tendableComponent.growthProgressChanged.subscribe(update);
+    this.tendableResetSubscription = tendableComponent.onReset.subscribe(() => {
+      this.visible = true;
+      this.setPercentage(0);
+    });
+    // Set initial state
+    update(tendableComponent.growthPercent);
   }
 
   private subscribeToProduction(productionComponent: ProductionComponent) {
@@ -142,6 +167,8 @@ export default class ProgressBar extends Phaser.GameObjects.Container {
     this.researchProgressSubscription?.unsubscribe();
     this.researchCancelledSubscription?.unsubscribe();
     this.researchCompletedSubscription?.unsubscribe();
+    this.tendableProgressSubscription?.unsubscribe();
+    this.tendableResetSubscription?.unsubscribe();
     this.visible = false;
   }
 

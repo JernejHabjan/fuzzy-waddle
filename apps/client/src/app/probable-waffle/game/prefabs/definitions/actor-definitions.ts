@@ -16,6 +16,8 @@ import { sandholdDefinition } from "../buildings/tivara/Sandhold/sandhold.defini
 import { templeDefinition } from "../buildings/tivara/Temple/temple.definition";
 import { workMillDefinition } from "../buildings/tivara/WorkMill/work-mill.definition";
 import { miningCampDefinition } from "../buildings/tivara/MiningCamp/mining-camp.definition";
+import { granaryDefinition } from "../buildings/shared/Granary/granary.definition";
+import { fieldDefinition } from "../buildings/shared/Field/field.definition";
 import { owleryDefinition } from "../buildings/skaduwee/Owlery/owlery.definition";
 import { hedgehogDefinition } from "../animals/hedgehog/hedgehog.definition";
 import { sheepDefinition } from "../animals/sheep/sheep.definition";
@@ -43,6 +45,23 @@ import { tree11Definition } from "../outside/foliage/trees/resources/tree11.defi
 import { mineralsDefinition } from "../outside/resources/minerals/minerals.definition";
 import { stonePileDefinition } from "../outside/resources/stone-pile/stone-pile.definition";
 import { emberstoneDefinition } from "../buildings/skaduwee/Emberstone/emberstone.definition";
+import {
+  cropsBeanDefinition,
+  cropsCabbageDefinition,
+  cropsCucumbersDefinition,
+  cropsGrapesDefinition,
+  cropsLettuceDefinition,
+  cropsPeppersDefinition,
+  cropsPineappleDefinition,
+  cropsPumpkinDefinition,
+  cropsSunflowersDefinition,
+  cropsWheatDefinition,
+  cropsZucchiniDefinition,
+  groundBoletusDefinition,
+  groundCarrotDefinition,
+  groundChampignonsDefinition,
+  groundTurnipDefinition
+} from "../outside/crops/crops.definition";
 import { centurionDefinition } from "../characters/general/centurion/centurion.definition";
 import { cyclopsDefinition } from "../characters/mobs/cyclops/cyclops.definition";
 import { minotaurDefinition } from "../characters/mobs/minotaur/minotaur.definition";
@@ -188,6 +207,8 @@ export const pwActorDefinitions: {
   // Shared faction
   WorkMill: workMillDefinition,
   MiningCamp: miningCampDefinition,
+  Granary: granaryDefinition,
+  Field: fieldDefinition,
   Stairs: stairsDefinition,
   WatchTower: watchTowerDefinition,
   Wall: wallDefinition,
@@ -203,6 +224,22 @@ export const pwActorDefinitions: {
   Tree9: tree9Definition,
   Tree10: tree10Definition,
   Tree11: tree11Definition,
+  // Crops
+  CropsBeans: cropsBeanDefinition,
+  CropsCabbage: cropsCabbageDefinition,
+  CropsCucumbers: cropsCucumbersDefinition,
+  CropsGrapes: cropsGrapesDefinition,
+  CropsLettuce: cropsLettuceDefinition,
+  CropsPeppers: cropsPeppersDefinition,
+  CropsPineapple: cropsPineappleDefinition,
+  CropsPumpkin: cropsPumpkinDefinition,
+  CropsSunflowers: cropsSunflowersDefinition,
+  CropsWheat: cropsWheatDefinition,
+  CropsZucchini: cropsZucchiniDefinition,
+  GroundBoletus: groundBoletusDefinition,
+  GroundCarrot: groundCarrotDefinition,
+  GroundChampignons: groundChampignonsDefinition,
+  GroundTurnip: groundTurnipDefinition,
   // Spells
   HealingTotem: healingTotemDefinition
 };

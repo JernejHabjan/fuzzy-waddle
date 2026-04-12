@@ -45,7 +45,7 @@ export const mummyDefinition = {
     },
     productionCost: {
       resources: {
-        [ResourceType.Minerals]: 60
+        [ResourceType.Food]: 60
       },
       refundFactor: 0.5,
       productionTime: 4000,

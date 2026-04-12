@@ -45,7 +45,7 @@ export const zombie1Definition = {
     },
     productionCost: {
       resources: {
-        [ResourceType.Minerals]: 55
+        [ResourceType.Food]: 55
       },
       refundFactor: 0.5,
       productionTime: 3500,

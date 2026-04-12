@@ -317,9 +317,10 @@ export class CursorHandler {
             return CursorType.ChopGreen;
           case ResourceType.Stone:
             return CursorType.PickaxeGreen;
-
           case ResourceType.Minerals:
             return CursorType.PickaxeGreen;
+          case ResourceType.Food:
+            return CursorType.ScytheGreen;
           default:
             throw new Error(
               `Unhandled resource type for cursor: ${resourceSource.resourceSourceDefinition.resourceType}`

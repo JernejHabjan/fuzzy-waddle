@@ -1,0 +1,40 @@
+{
+    "id": "bd5e7b8a-0ec4-4d31-abe9-fce088c3b55a",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "1084842f-f0a4-4768-ba32-e143cec78a78",
+            "label": "rocky_Dragon_bones_full_ground_shadow_png",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "9.575388776945815 110.69733575477635 69.93063696054479 70.28556088401875 167.02386229937798 33.022755483709815 219.50668680685538 56.64002651207464 197.9887287587897 88.65454946163585 236.82601889432289 123.29321363657091 199.03838524893916 158.98153430165553 162.30040809370502 204.64159162316088 98.79619043965737 221.96092371062844",
+            "texture": {
+                "key": "environment_1",
+                "frame": "rocky/Dragon_bones_full_ground_shadow.png"
+            },
+            "x": 28.85103046096951,
+            "y": -34.3980362712977,
+            "originX": 0.48769933773816215,
+            "originY": 0.42813267081524337
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

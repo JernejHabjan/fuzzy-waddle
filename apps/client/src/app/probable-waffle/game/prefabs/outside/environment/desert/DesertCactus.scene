@@ -1,0 +1,43 @@
+{
+    "id": "1fc794c0-8494-497c-8253-f2eec80628cf",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Sprite",
+            "id": "1762ef64-7836-437a-8ed6-e4294794e3b6",
+            "label": "desert_cactus_0_png",
+            "hitArea.shape": "RECTANGLE",
+            "hitArea.x": 10,
+            "hitArea.y": 14,
+            "hitArea.width": 17.79736749071823,
+            "hitArea.height": 45.90528652595529,
+            "texture": {
+                "key": "environment_1",
+                "frame": "desert/cactus/0.png"
+            },
+            "x": 33.88174216533671,
+            "y": 58.161407692818244,
+            "originX": 0.5588044426667722,
+            "originY": 0.9087719952002851
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

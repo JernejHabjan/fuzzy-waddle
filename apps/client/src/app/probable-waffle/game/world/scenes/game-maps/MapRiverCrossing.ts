@@ -133,6 +133,11 @@ import PumpkinWarlockPumpkin from "../../../prefabs/characters/mobs/pumpkin_warl
 import SandWorm from "../../../prefabs/characters/mobs/sand_worm/SandWorm";
 import ForestWendigo from "../../../prefabs/characters/mobs/forest_wendigo/ForestWendigo";
 import SnowWendigo from "../../../prefabs/characters/mobs/snow_wendigo/SnowWendigo";
+import Field from "../../../prefabs/buildings/shared/Field";
+import Granary from "../../../prefabs/buildings/shared/Granary";
+import UndeadLandDeadTreeAnim3 from "../../../prefabs/outside/environment/undead_land/UndeadLandDeadTreeAnim3";
+import UndeadLandDeadTreeAnim2 from "../../../prefabs/outside/environment/undead_land/UndeadLandDeadTreeAnim2";
+import UndeadLandDeadTreeAnim1 from "../../../prefabs/outside/environment/undead_land/UndeadLandDeadTreeAnim1";
 import CommonBoat from "../../../prefabs/characters/shared/CommonBoat/CommonBoat";
 import VikingBoat from "../../../prefabs/characters/shared/VikingBoat/VikingBoat";
 /* START-USER-IMPORTS */
@@ -1108,6 +1113,26 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     const snowWendigo = new SnowWendigo(this, -768, 800);
     this.add.existing(snowWendigo);
 
+    // field
+    const field = new Field(this, -256, 560);
+    this.add.existing(field);
+
+    // granary
+    const granary = new Granary(this, -127, 690);
+    this.add.existing(granary);
+
+    // undeadLandDeadTreeAnim3
+    const undeadLandDeadTreeAnim3 = new UndeadLandDeadTreeAnim3(this, 181, 803);
+    this.add.existing(undeadLandDeadTreeAnim3);
+
+    // undeadLandDeadTreeAnim2
+    const undeadLandDeadTreeAnim2 = new UndeadLandDeadTreeAnim2(this, 319, 808);
+    this.add.existing(undeadLandDeadTreeAnim2);
+
+    // undeadLandDeadTreeAnim1
+    const undeadLandDeadTreeAnim1 = new UndeadLandDeadTreeAnim1(this, 224, 912);
+    this.add.existing(undeadLandDeadTreeAnim1);
+
     // commonBoat
     const commonBoat = new CommonBoat(this, 192, 272);
     this.add.existing(commonBoat);
@@ -1381,6 +1406,14 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // tivaraMacemanMale (components)
     const tivaraMacemanMaleEditorOwner = new EditorOwner(tivaraMacemanMale);
     tivaraMacemanMaleEditorOwner.owner_id = "1";
+
+    // field (components)
+    const fieldEditorOwner = new EditorOwner(field);
+    fieldEditorOwner.owner_id = "1";
+
+    // granary (components)
+    const granaryEditorOwner = new EditorOwner(granary);
+    granaryEditorOwner.owner_id = "1";
 
     // commonBoat (components)
     const commonBoatEditorOwner = new EditorOwner(commonBoat);

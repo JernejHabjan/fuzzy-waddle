@@ -1,0 +1,41 @@
+{
+    "id": "96560470-38de-4d2b-8579-b53af2b28988",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "7e7f1afe-f33f-4869-a18d-042b0d081866",
+            "label": "humid_Dinosaur_skeleton__head_dark_shadow_png",
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": 32,
+            "hitArea.y": 32,
+            "hitArea.radius": 18.1815465448436,
+            "texture": {
+                "key": "environment_1",
+                "frame": "humid/Dinosaur_skeleton__head_dark_shadow.png"
+            },
+            "x": 32,
+            "y": 33.16456987052969,
+            "originY": 0.5181964042270264
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

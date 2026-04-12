@@ -4,7 +4,7 @@
         <key>fileFormatVersion</key>
         <int>6</int>
         <key>texturePackerVersion</key>
-        <string>7.1.0</string>
+        <string>7.4.0</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -287,6 +287,15 @@
             <key type="filename">../sprites/outside/architecture/obstruction/fence/top.png</key>
             <key type="filename">../sprites/outside/architecture/obstruction/fence/top_left.png</key>
             <key type="filename">../sprites/outside/architecture/obstruction/fence/top_right.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/banana_tree/3.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/banana_tree/4.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/banana_tree/5.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/coconut_tree/2.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/coconut_tree/3.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/coconut_tree/4.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/plum_tree/2.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/plum_tree/3.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/plum_tree/4.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -350,8 +359,10 @@
             <key type="filename">../sprites/outside/nature/ramp/stone/top_right.png</key>
             <key type="filename">../sprites/outside/nature/resources/minerals_pile_1.png</key>
             <key type="filename">../sprites/outside/nature/resources/minerals_pile_2.png</key>
+            <key type="filename">../sprites/outside/nature/resources/minerals_pile_depleted_1.png</key>
             <key type="filename">../sprites/outside/nature/resources/stone_pile_1.png</key>
             <key type="filename">../sprites/outside/nature/resources/stone_pile_2.png</key>
+            <key type="filename">../sprites/outside/nature/resources/stone_pile_depleted_1.png</key>
             <key type="filename">../sprites/outside/nature/rock_piles/1_snow.png</key>
             <key type="filename">../sprites/outside/nature/rock_piles/1_snow_covered.png</key>
             <key type="filename">../sprites/outside/nature/rock_piles/2_snow.png</key>
@@ -362,6 +373,32 @@
             <key type="filename">../sprites/outside/nature/rock_piles/5_snow_covered.png</key>
             <key type="filename">../sprites/outside/nature/rock_piles/6_snow.png</key>
             <key type="filename">../sprites/outside/nature/rock_piles/6_snow_covered.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/Autumn_tree2.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/Autumn_tree3.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/Broken_tree4.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/Burned_tree2.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/Burned_tree3.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/Christmas_tree2.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/Flower_tree2-1.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/Flower_tree2.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/Fruit_tree3.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/Moss_tree2.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/Moss_tree3.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/Palm_tree1_2.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/Palm_tree1_3.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/Palm_tree2_2.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/Palm_tree2_3.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/Snow_christmass_tree2.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/Snow_tree2.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/Snow_tree3.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/Tree2.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/Tree3.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/lemon_tree/2.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/lemon_tree/3.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/lemon_tree/4.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/red_apple_tree/3.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/red_apple_tree/4.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/red_apple_tree/5.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -548,6 +585,120 @@
                 <rect>32,48,64,96</rect>
                 <key>scale9Paddings</key>
                 <rect>32,48,64,96</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/Autumn_tree1.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/Broken_tree7.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/Burned_tree1.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/Christmas_tree1.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/Flower_tree1.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/Fruit_tree1.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/Fruit_tree2.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/Moss_tree1.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/Palm_tree1_1.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/Palm_tree2_1.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/Snow_christmass_tree1.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/Snow_tree1.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/Tree1.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>32,32,64,64</rect>
+                <key>scale9Paddings</key>
+                <rect>32,32,64,64</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/Broken_tree1.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/Broken_tree2.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/Broken_tree5.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/Christmas_tree3.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/Snow_christmass_tree3.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>8,8,16,16</rect>
+                <key>scale9Paddings</key>
+                <rect>8,8,16,16</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/Broken_tree3.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>12,12,24,24</rect>
+                <key>scale9Paddings</key>
+                <rect>12,12,24,24</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/Broken_tree6.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>4,4,8,8</rect>
+                <key>scale9Paddings</key>
+                <rect>4,4,8,8</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/banana_tree/0.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/banana_tree/1.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/coconut_tree/0.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/coconut_tree/1.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/plum_tree/0.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/plum_tree/1.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>8,20,16,40</rect>
+                <key>scale9Paddings</key>
+                <rect>8,20,16,40</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/lemon_tree/0.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/lemon_tree/1.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/red_apple_tree/0.png</key>
+            <key type="filename">../sprites/outside/nature/trees_and_bushes/red_apple_tree/1.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>8,16,16,32</rect>
+                <key>scale9Paddings</key>
+                <rect>8,16,16,32</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
