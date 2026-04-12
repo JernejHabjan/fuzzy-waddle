@@ -2,9 +2,12 @@ import { Injectable, Logger } from "@nestjs/common";
 import {
   AllOrderTypes,
   type ActorDefinition,
+  getBuildingQueueCapabilities,
+  ObjectNames,
   OrderType,
   type ProbableWaffleGameCommandEvent,
-  type ProbableWaffleGameInstance
+  type ProbableWaffleGameInstance,
+  ResearchType
 } from "@fuzzy-waddle/api-interfaces";
 import type { User } from "@supabase/supabase-js";
 
@@ -29,6 +32,8 @@ export class GameCommandValidatorService {
   private static readonly ISO_HALF_TILE_WIDTH = 32;
   private static readonly ISO_HALF_TILE_HEIGHT = 16;
   private static readonly KNOWN_ORDER_TYPES = new Set(AllOrderTypes);
+  private static readonly KNOWN_ACTOR_NAMES = new Set(Object.values(ObjectNames));
+  private static readonly KNOWN_RESEARCH_TYPES = new Set(Object.values(ResearchType));
 
   /** Maximum tick jump allowed in one batch — guards against far-future exploits. */
   private static readonly MAX_TICK_JUMP = 10;
@@ -257,12 +262,21 @@ export class GameCommandValidatorService {
       case "STOP":
         return true;
       case "PRODUCTION": {
-        if (typeof payload.actorName !== "string") {
+        if (!this.isKnownActorName(payload.actorName)) {
           this.logger.warn(`[GameCommand] Invalid actorName for PRODUCTION in ${gameInstanceId}`);
           return false;
         }
-        if (!actorIds.every((actorId) => this.canActorProduce(actorIndex.get(actorId)!))) {
+        const actorName = payload.actorName;
+        if (
+          !actorIds.every((actorId) =>
+            this.canActorProduceActor(actorIndex.get(actorId)!, actorName)
+          )
+        ) {
           this.logger.warn(`[GameCommand] PRODUCTION issued by incapable actor in ${gameInstanceId}`);
+          return false;
+        }
+        if (!actorIds.every((actorId) => this.hasQueueCapacity(actorIndex.get(actorId)!))) {
+          this.logger.warn(`[GameCommand] PRODUCTION issued to full queue in ${gameInstanceId}`);
           return false;
         }
         return true;
@@ -272,27 +286,42 @@ export class GameCommandValidatorService {
           this.logger.warn(`[GameCommand] Invalid queueIndex for CANCEL_PRODUCTION in ${gameInstanceId}`);
           return false;
         }
-        if (!actorIds.every((actorId) => actorIndex.get(actorId)?.production !== undefined)) {
+        if (
+          !actorIds.every((actorId) => {
+            const queue = actorIndex.get(actorId)?.production?.queue;
+            return queue !== undefined && (payload.queueIndex as number) < queue.length;
+          })
+        ) {
           this.logger.warn(`[GameCommand] CANCEL_PRODUCTION issued by actor without production in ${gameInstanceId}`);
           return false;
         }
         return true;
       case "RESEARCH":
-        if (typeof payload.researchType !== "string") {
+        if (!this.isKnownResearchType(payload.researchType)) {
           this.logger.warn(`[GameCommand] Invalid researchType for RESEARCH in ${gameInstanceId}`);
           return false;
         }
+        const researchType = payload.researchType;
         if (
           !actorIds.every((actorId) =>
-            this.canActorResearch(actorIndex.get(actorId)!)
+            this.canActorResearchType(actorIndex.get(actorId)!, researchType)
           )
         ) {
           this.logger.warn(`[GameCommand] RESEARCH issued by incapable actor in ${gameInstanceId}`);
           return false;
         }
+        if (!actorIds.every((actorId) => this.hasQueueCapacity(actorIndex.get(actorId)!))) {
+          this.logger.warn(`[GameCommand] RESEARCH issued to full queue in ${gameInstanceId}`);
+          return false;
+        }
         return true;
       case "CANCEL_RESEARCH":
-        if (!actorIds.every((actorId) => actorIndex.get(actorId)?.research !== undefined)) {
+        if (
+          !actorIds.every((actorId) => {
+            const researches = actorIndex.get(actorId)?.research?.researches;
+            return researches !== undefined && researches.length > 0;
+          })
+        ) {
           this.logger.warn(`[GameCommand] CANCEL_RESEARCH issued by actor without research in ${gameInstanceId}`);
           return false;
         }
@@ -332,6 +361,37 @@ export class GameCommandValidatorService {
     return actor.research !== undefined;
   }
 
+  private canActorProduceActor(actor: ActorDefinition, actorName: ObjectNames): boolean {
+    if (!this.canActorProduce(actor)) {
+      return false;
+    }
+
+    return getBuildingQueueCapabilities(actor.name)?.availableProduceActors?.includes(actorName) ?? false;
+  }
+
+  private canActorResearchType(actor: ActorDefinition, researchType: ResearchType): boolean {
+    if (!this.canActorResearch(actor)) {
+      return false;
+    }
+
+    return getBuildingQueueCapabilities(actor.name)?.availableResearch?.includes(researchType) ?? false;
+  }
+
+  private hasQueueCapacity(actor: ActorDefinition): boolean {
+    const queueCapacity = getBuildingQueueCapabilities(actor.name)?.queueCapacity;
+    if (queueCapacity === undefined) {
+      return false;
+    }
+
+    return this.getQueueLength(actor) < queueCapacity;
+  }
+
+  private getQueueLength(actor: ActorDefinition): number {
+    const productionItems = actor.production?.queue?.length ?? 0;
+    const researchItems = actor.research?.researches?.length ?? 0;
+    return productionItems + researchItems;
+  }
+
   private canActorHandleOrder(actor: ActorDefinition, orderType: OrderType): boolean {
     switch (orderType) {
       case OrderType.Attack:
@@ -358,6 +418,14 @@ export class GameCommandValidatorService {
     }
 
     return orderType as OrderType;
+  }
+
+  private isKnownActorName(value: unknown): value is ObjectNames {
+    return typeof value === "string" && GameCommandValidatorService.KNOWN_ACTOR_NAMES.has(value as ObjectNames);
+  }
+
+  private isKnownResearchType(value: unknown): value is ResearchType {
+    return typeof value === "string" && GameCommandValidatorService.KNOWN_RESEARCH_TYPES.has(value as ResearchType);
   }
 
   private isValidTileVector3(value: unknown): boolean {

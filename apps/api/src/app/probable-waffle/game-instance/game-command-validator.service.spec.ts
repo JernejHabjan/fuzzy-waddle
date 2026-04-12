@@ -1,5 +1,10 @@
 import { GameCommandValidatorService } from "./game-command-validator.service";
-import type { ProbableWaffleGameCommandEvent, ProbableWaffleGameInstance } from "@fuzzy-waddle/api-interfaces";
+import {
+  ObjectNames,
+  type ProbableWaffleGameCommandEvent,
+  type ProbableWaffleGameInstance,
+  ResearchType
+} from "@fuzzy-waddle/api-interfaces";
 
 describe("GameCommandValidatorService", () => {
   let service: GameCommandValidatorService;
@@ -28,12 +33,24 @@ describe("GameCommandValidatorService", () => {
             {
               id: { id: "actor-2" },
               owner: { ownerId: 1 },
-              production: {}
+              name: ObjectNames.FrostForge,
+              production: {
+                queue: []
+              },
+              research: {
+                researches: []
+              }
             },
             {
               id: { id: "actor-3" },
               owner: { ownerId: 1 },
-              research: {}
+              name: ObjectNames.AnkGuard,
+              production: {
+                queue: []
+              },
+              research: {
+                researches: []
+              }
             }
           ]
         }
@@ -89,7 +106,7 @@ describe("GameCommandValidatorService", () => {
           tick: 0,
           playerNumber: 1,
           actorIds: ["actor-2"],
-          actorName: "SkaduweeWorker"
+          actorName: ObjectNames.SkaduweeWorker
         }),
         createGameInstance(),
         { id: "user-1" } as never
@@ -105,7 +122,7 @@ describe("GameCommandValidatorService", () => {
           tick: 0,
           playerNumber: 1,
           actorIds: ["actor-1"],
-          actorName: "SkaduweeWorker"
+          actorName: ObjectNames.SkaduweeWorker
         }),
         createGameInstance(),
         { id: "user-1" } as never
@@ -121,11 +138,43 @@ describe("GameCommandValidatorService", () => {
           tick: 0,
           playerNumber: 1,
           actorIds: ["actor-3"],
-          researchType: "firestormSpell"
+          researchType: ResearchType.FirestormSpell
         }),
         createGameInstance(),
         { id: "user-1" } as never
       )
     ).toBe(true);
+  });
+
+  it("rejects production commands for units the building cannot train", () => {
+    expect(
+      service.validate(
+        createQueueEvent({
+          type: "PRODUCTION",
+          tick: 0,
+          playerNumber: 1,
+          actorIds: ["actor-2"],
+          actorName: ObjectNames.TivaraMacemanMale
+        }),
+        createGameInstance(),
+        { id: "user-1" } as never
+      )
+    ).toBe(false);
+  });
+
+  it("rejects research commands for research not offered by the building", () => {
+    expect(
+      service.validate(
+        createQueueEvent({
+          type: "RESEARCH",
+          tick: 0,
+          playerNumber: 1,
+          actorIds: ["actor-3"],
+          researchType: ResearchType.HealingLightSpell
+        }),
+        createGameInstance(),
+        { id: "user-1" } as never
+      )
+    ).toBe(false);
   });
 });

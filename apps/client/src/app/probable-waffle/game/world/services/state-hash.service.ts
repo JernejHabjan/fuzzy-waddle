@@ -10,6 +10,7 @@ import { getGameObjectLogicalTransform } from "../../data/game-object-helper";
 import { getCommunicator } from "../../data/scene-data";
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { SnapshotService } from "./snapshot.service";
+import { ActorManager } from "../../data/actor-manager";
 
 /** Payload emitted on the allScenes EventEmitter when a hash mismatch is confirmed. */
 export interface DesyncDetectedEvent {
@@ -108,16 +109,23 @@ export class StateHashService {
     const entries = actorIndex.getAllIdActors().map((go) => {
       const id = getActorComponent(go, IdComponent)?.id ?? "";
       const health = getActorComponent(go, HealthComponent)?.healthComponentData.health ?? -1;
+      const armour = getActorComponent(go, HealthComponent)?.healthComponentData.armour ?? -1;
       const pos = getGameObjectLogicalTransform(go);
       const lx = pos ? Math.round(pos.x) : 0;
       const ly = pos ? Math.round(pos.y) : 0;
+      const lz = pos ? Math.round(pos.z) : 0;
       const owner = getActorComponent(go, OwnerComponent)?.getOwner() ?? -1;
-      return `${id}:${Math.round(health)}:${lx}:${ly}:${owner}`;
+      const actor = ActorManager.getActorDefinitionFromActor(go) ?? {};
+      const queueState = this.serializeActorQueueState(actor);
+      const economyState = this.serializeActorEconomyState(actor);
+      return `${id}:${go.name}:${Math.round(health)}:${Math.round(armour)}:${lx}:${ly}:${lz}:${owner}:${queueState}:${economyState}`;
     });
 
     // Sort by the ID prefix (first segment before ':') for deterministic ordering.
     entries.sort();
-    return djb2(entries.join("|"));
+    const playerStateEntries = this.serializePlayerStates(scene);
+    const researchEntries = this.serializeResearchState(scene);
+    return djb2(`${entries.join("|")}#${playerStateEntries.join("|")}#${researchEntries.join("|")}`);
   }
 
   private compareRemoteHash(
@@ -212,6 +220,50 @@ export class StateHashService {
   private clearDesyncIndicator(): void {
     this.desyncText?.destroy();
     this.desyncText = undefined;
+  }
+
+  private serializeActorQueueState(actor: { production?: any; research?: any }): string {
+    const productionQueue = actor.production?.queue ?? [];
+    const researchQueue = actor.research?.researches ?? [];
+    const serializedProduction = productionQueue
+      .map((item: { name?: string; remainingTime?: number }) => `${item.name ?? "?"}:${Math.round(item.remainingTime ?? 0)}`)
+      .join(",");
+    const serializedResearch = researchQueue
+      .map((item: { type?: string; remainingTime?: number }) => `${item.type ?? "?"}:${Math.round(item.remainingTime ?? 0)}`)
+      .join(",");
+    return `${serializedProduction};${serializedResearch}`;
+  }
+
+  private serializeActorEconomyState(actor: {
+    gatherer?: any;
+    resourceSource?: any;
+    resourceDrain?: any;
+    container?: any;
+  }): string {
+    const gathered = `${actor.gatherer?.carriedResourceType ?? "none"}:${Math.round(actor.gatherer?.carriedResourceAmount ?? 0)}`;
+    const source = Math.round(actor.resourceSource?.currentResources ?? -1);
+    const drain = Math.round(actor.resourceDrain?.currentCapacity ?? -1);
+    const container = (actor.container?.containedIds ?? []).slice().sort().join(",");
+    return `${gathered}:${source}:${drain}:${container}`;
+  }
+
+  private serializePlayerStates(scene: Phaser.Scene): string[] {
+    const probableWaffleScene = scene as ProbableWaffleScene;
+    return [...probableWaffleScene.players]
+      .sort((a, b) => (a.playerNumber ?? 0) - (b.playerNumber ?? 0))
+      .map((player) => {
+        const playerNumber = player.playerNumber ?? -1;
+        const resources = player.playerState.data.resources;
+        const housing = player.playerState.data.housing;
+        return `${playerNumber}:${resources.minerals ?? 0}:${resources.stone ?? 0}:${resources.wood ?? 0}:${housing.currentHousing}:${housing.maxHousing}`;
+      });
+  }
+
+  private serializeResearchState(scene: Phaser.Scene): string[] {
+    const playerResearch = (scene as ProbableWaffleScene).baseGameData.gameInstance.gameState?.data.playerResearch ?? {};
+    return Object.entries(playerResearch)
+      .sort(([left], [right]) => Number(left) - Number(right))
+      .map(([playerNumber, researches]) => `${playerNumber}:${[...(researches ?? [])].sort().join(",")}`);
   }
 
   private pruneOldHashes(currentTick: number): void {

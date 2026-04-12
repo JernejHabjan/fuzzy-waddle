@@ -23,11 +23,12 @@ import { ConstructionSiteComponent } from "../../entity/components/construction/
 import { filter, type Subscription } from "rxjs";
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import type EndGameDialog from "../scenes/hud-scenes/EndGameDialog";
-import { getSceneSystem } from "../services/scene-component-helpers";
+import { getSceneService, getSceneSystem } from "../services/scene-component-helpers";
 import { AiPlayerHandler } from "../../player/ai-controller/ai-player-handler";
 import HudProbableWaffle from "../scenes/hud-scenes/HudProbableWaffle";
 import { SceneDialogHelper } from "../scenes/scene-dialog-helper";
 import { ScoreTracker } from "./ScoreTracker";
+import { SimulationTickService } from "../services/simulation-tick.service";
 
 export class GameModeConditionChecker {
   private loseConditions: LoseConditions;
@@ -237,7 +238,7 @@ export class GameModeConditionChecker {
       }
     }
     if (this.winConditions.timeReachedInMinutes) {
-      const elapsedTime = this.scene.game.loop.time / 1000 / 60; // Convert to minutes
+      const elapsedTime = this.getElapsedGameMinutes();
       if (elapsedTime >= this.winConditions.timeReachedInMinutes) {
         return true; // Time limit reached, consider it a win
       }
@@ -310,13 +311,18 @@ export class GameModeConditionChecker {
 
   private checkTieConditions(): boolean {
     if (this.tieConditions.maximumTimeLimitInMinutes) {
-      const elapsedTime = this.scene.game.loop.time / 1000 / 60; // Convert to minutes
+      const elapsedTime = this.getElapsedGameMinutes();
       if (elapsedTime >= this.tieConditions.maximumTimeLimitInMinutes) {
         console.log("Maximum time limit reached, tie condition met.");
         return true; // Time limit reached, consider it a tie
       }
     }
     return false;
+  }
+
+  private getElapsedGameMinutes(): number {
+    const currentTick = getSceneService(this.scene, SimulationTickService)?.currentTick ?? 0;
+    return currentTick / 20 / 60;
   }
 
   private selfQuit() {

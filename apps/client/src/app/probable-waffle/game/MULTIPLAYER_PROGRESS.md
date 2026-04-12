@@ -1,7 +1,7 @@
 # Multiplayer Replication Progress
 
 ## Open questions / blockers
-- Final queue/economy validation hardening and the hash/determinism pass are still outstanding.
+- None currently tracked in the implementation plan.
 
 ## Steps
 
@@ -23,11 +23,11 @@
 | 14 | [x] | **Replay recording/playback** – `ReplayRecorder` writes `{version, compatibilityVersion, mapId, seed, players, commands[]}` into replay records; playback reseeds from `rndSeed` and feeds recorded command batches back through `CommandBusService` at their original ticks |
 | 15 | [x] | **Host migration** – on host disconnect server elects the lowest connected human player number, broadcasts `host-migrated`, updates `currentHostUserId`, and the promoted client starts host-only AI/snapshot duties |
 | 16 | [x] | **Queue actions through CommandBus** – production/research start + cancel become deterministic commands consumed by buildings instead of direct local UI/AI method calls |
-| 17 | [ ] | **Server-side queue validation** – validate production/research queue payloads against actor ownership and building capabilities |
+| 17 | [x] | **Server-side queue validation** – validate production/research queue payloads against actor ownership and building capabilities |
 | 18 | [x] | **Pause / resume commands** – turn pause into a relayed player command with cooldown/limit enforcement |
 | 19 | [x] | **Control groups in MP** – sync assign/recall commands while leaving local camera/selection visuals local |
 | 20 | [x] | **Desync correction** – snapshot-backed host correction instead of pause-only detection |
-| 21 | [~] | **Hash widening + determinism audit** – include economy/research/queues in hashes and remove multiplayer-relevant nondeterminism |
+| 21 | [x] | **Hash widening + determinism audit** – include economy/research/queues in hashes and remove multiplayer-relevant nondeterminism |
 
 ## Completed steps
 - **01** Added `CommandBusService` (RxJS Subject) + `GameCommand` union (`MOVE | ACTOR_ACTION | STOP`). Rewired all 5 dispatch sites and 2 system subscribers. Removed `emitEventIssueActorCommandToSelectedActors` / `emitEventIssueMoveCommandToSelectedActors` from scene-data. Shift-key state now captured at dispatch time, not receive time.
@@ -50,3 +50,5 @@
 - **18** Added a relayed `pause-changed` multiplayer event with per-player cooldown/limit enforcement on the API, a `PauseSyncService` on the client, reason-based pause locking in `SimulationTickService`, and a HUD menu pause button that toggles pause/resume across all clients.
 - **19** Control-group assignment now mirrors through `playerController.data.selectionGroups` so reconnect/save/load and peers see the same group contents, while recall still uses the existing `selection.set` path and keeps camera jumps local. The API now validates group keys, size, duplicate IDs, and actor ownership before accepting updates.
 - **20** Hash mismatches now trigger host-driven correction instead of immediately escalating to a dialog: the host pushes a targeted `snapshot-response` with reason `desync-correction`, the affected client reapplies actors/player data/control groups in place, and only unresolved mismatches after the grace window broadcast a room-wide `desync-alert` that pauses everyone and opens the recovery dialog.
+- **17** Production/research validation now uses a shared building-capability map instead of a loose “has production/research component” check. The API rejects unit/research requests that the named building cannot perform, rejects full queues/cancel requests against missing queue entries, and the client building definitions now read the same capability source.
+- **21** Desync hashes now include player resources/housing, research unlock state, queue contents, carried resources, source/drain values, and contained actors instead of just `{id, health, pos, owner}`. The determinism audit also removed multiplayer time-limit dependence on Phaser wall-clock time by switching win/tie checks to `SimulationTickService.currentTick`; remaining `Math.random`/`Date.now` hits are audio, particles, HUD, save metadata, or single-player-only flow.

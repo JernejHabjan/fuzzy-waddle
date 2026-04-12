@@ -1,4 +1,4 @@
-import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { getBuildingQueueCapabilities, ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import {
   ANIM_BUILDING_ICON_ANIMS_SKADUWEE_OWLERY_ACTION,
   ANIM_BUILDING_ICON_ANIMS_SKADUWEE_OWLERY_IDLE
@@ -61,7 +61,7 @@ export const owleryDefinition = {
       requiresAnyOf: [ObjectNames.InfantryInn]
     },
     production: {
-      availableProduceActors: [ObjectNames.SkaduweeOwl]
+      availableProduceActors: getBuildingQueueCapabilities(ObjectNames.Owlery)!.availableProduceActors!
     },
     queue: {
       queueCount: 1,

@@ -21,6 +21,7 @@ export * from "./lib/probable-waffle/probable-waffle";
 export * from "./lib/probable-waffle/probable-waffle-game-mode-lobby";
 export * from "./lib/probable-waffle/probable-waffle-player-state-action";
 export * from "./lib/probable-waffle/order-type";
+export * from "./lib/probable-waffle/building-capabilities";
 export * from "./lib/probable-waffle/resource-type-definition";
 export * from "./lib/probable-waffle/probable-waffle-api";
 export * from "./lib/probable-waffle/game-setup.helpers";

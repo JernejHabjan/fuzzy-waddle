@@ -1,5 +1,5 @@
 import { ANIM_BUILDING_ICON_ANIMS_SKADUWEE_FROST_FORGE } from "../../../icon-animations";
-import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { getBuildingQueueCapabilities, ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PaymentType } from "../../../../entity/components/production/payment-type";
 import { coreConstructionSiteDefinition } from "../../shared/core-construction-site.definition";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
@@ -72,7 +72,7 @@ export const frostForgeDefinition = {
       cooldown: 1000
     },
     production: {
-      availableProduceActors: [ObjectNames.SkaduweeWorker]
+      availableProduceActors: getBuildingQueueCapabilities(ObjectNames.FrostForge)!.availableProduceActors!
     },
     queue: {
       queueCount: 1,
