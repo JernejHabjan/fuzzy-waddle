@@ -51,6 +51,12 @@ export class SceneGameState {
         this.scene.scene.pause();
         break;
       case GameSessionState.StartingTheGame: {
+        // Only the host advances to InProgress — non-host clients wait for the
+        // host's broadcast via the gameInstanceMetadataChanged subscription.
+        // This avoids every client sending the same state transition independently.
+        if (!this.scene.isHost) {
+          break;
+        }
         const sendInProgress = () => {
           getCommunicator(this.scene).gameInstanceMetadataChanged?.send({
             property: "sessionState",
