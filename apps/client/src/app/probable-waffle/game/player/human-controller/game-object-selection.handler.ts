@@ -29,6 +29,7 @@ import { getPwActorDefinition, pwActorDefinitions } from "../../prefabs/definiti
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { PlayerActionsHandler } from "./player-actions-handler";
 import { SoundType } from "../../entity/components/actor-audio/sound-type";
+import { ContainableComponent } from "../../entity/components/building/containable-component";
 
 export class GameObjectSelectionHandler {
   private readonly debug = false;
@@ -162,6 +163,9 @@ export class GameObjectSelectionHandler {
     );
 
     const actorsInArea = selectableChildren.filter((selectableChild) => {
+      // Skip actors that are loaded inside a container
+      if (getActorComponent(selectableChild, ContainableComponent)?.isContained()) return false;
+
       const bounds = getGameObjectBounds(selectableChild);
       if (!bounds) return false;
       const actorBounds = new Phaser.Geom.Rectangle(bounds.x, bounds.y, bounds.width, bounds.height);

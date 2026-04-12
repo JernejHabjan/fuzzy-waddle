@@ -3,12 +3,18 @@ import Phaser from "phaser";
 import { HealthComponent } from "../combat/components/health-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { VisionComponent } from "../vision-component";
-import { getGameObjectVisibility } from "../../../data/game-object-helper";
+import { getGameObjectVisibility, isWaterUnit } from "../../../data/game-object-helper";
 import type { ContainerComponentData } from "@fuzzy-waddle/api-interfaces";
 import { IdComponent } from "../id-component";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import type { ContainerDefinition } from "./container-definition";
+import { Subject } from "rxjs";
+import { ContainableComponent } from "./containable-component";
+import { NavigationService } from "../../../world/services/navigation.service";
+import { RepresentableComponent } from "../representable-component";
+import { ActorTranslateComponent } from "../movement/actor-translate-component";
+import type { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 
 /**
  * apply to resource source that needs gameObjects to enter to gather
@@ -16,25 +22,97 @@ import type { ContainerDefinition } from "./container-definition";
 export class ContainerComponent {
   static readonly GameObjectVisibilityChanged = "GameObjectVisibilityChanged";
   private containedGameObjects = new Set<GameObject>();
+  /** Units that have issued a boarding request but not yet physically loaded. */
+  private pendingBoarders = new Set<GameObject>();
+  /**
+   * The agreed-upon shore tile where each pending boarder will wait.
+   * Stored when the boarder registers its request so the boat can navigate
+   * to the exact same tile instead of independently computing its own shore.
+   */
+  private pendingBoarderShores = new Map<GameObject, Vector2Simple>();
+  /** Emits whenever units are loaded or unloaded, so HUD can refresh container display. */
+  readonly containerChanged = new Subject<void>();
 
   constructor(
     private readonly gameObject: GameObject,
-    public readonly containerDefinition: ContainerDefinition
+    public containerDefinition: ContainerDefinition
   ) {
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.once(HealthComponent.KilledEvent, this.onKilled, this);
+  }
+
+  /** Replaces the container definition (e.g. on actor level-up). */
+  setContainerDefinition(def: ContainerDefinition): void {
+    this.containerDefinition = {
+      ...this.containerDefinition,
+      ...def
+    };
+    this.containerChanged.next();
+  }
+
+  /** Unit registers intent to board this container (e.g. right-clicked while it's in water). */
+  registerBoardingRequest(unit: GameObject, targetShore?: Vector2Simple): void {
+    this.pendingBoarders.add(unit);
+    if (targetShore) this.pendingBoarderShores.set(unit, targetShore);
+    this.containerChanged.next();
+  }
+
+  cancelBoardingRequest(unit: GameObject): void {
+    this.pendingBoarders.delete(unit);
+    this.pendingBoarderShores.delete(unit);
+  }
+
+  /**
+   * Returns the shore tile the boarder agreed to wait at, if one was registered.
+   * The boat uses this to navigate to the same tile instead of independently picking one.
+   */
+  getTargetShoreForBoarder(unit: GameObject): Vector2Simple | undefined {
+    return this.pendingBoarderShores.get(unit);
+  }
+
+  hasPendingBoarders(): boolean {
+    return this.pendingBoarders.size > 0;
+  }
+
+  getPendingBoarders(): GameObject[] {
+    return Array.from(this.pendingBoarders);
   }
 
   getContainedGameObjects(): GameObject[] {
     return Array.from(this.containedGameObjects);
   }
 
+  private destroyActorsInContainer() {
+    const navigationService = getSceneService(this.gameObject.scene, NavigationService);
+    const tile = navigationService?.getCenterTileCoordUnderObject(this.gameObject);
+    const isOnShore = tile ? (navigationService?.isShoreTile(tile) ?? false) : false;
+    if (!isOnShore) {
+      // Silently destroy all contained actors — they go down with the ship
+      this.containedGameObjects.forEach((go) => {
+        getActorComponent(go, ContainableComponent)?.clearContainerReference();
+        const health = getActorComponent(go, HealthComponent);
+        if (health) {
+          health.destroyActorSilently();
+        } else {
+          go.destroy();
+        }
+      });
+      this.containedGameObjects.clear();
+      return;
+    }
+  }
+
   onKilled() {
+    // If this is a water unit sinking at sea, destroy contained actors silently (no animation/sfx)
+    if (isWaterUnit(this.gameObject)) {
+      this.destroyActorsInContainer();
+    }
     this.unloadAll();
   }
 
   destroy() {
     this.onKilled();
+    this.containerChanged.complete();
   }
 
   unloadAll() {
@@ -45,7 +123,30 @@ export class ContainerComponent {
 
   unloadGameObject(gameObject: GameObject) {
     this.containedGameObjects.delete(gameObject);
+    this.repositionNearContainer(gameObject);
     this.setGameObjectVisible(gameObject, true);
+    // Use clearContainerReference() — not leaveContainer() — to avoid infinite recursion
+    getActorComponent(gameObject, ContainableComponent)?.clearContainerReference();
+    this.containerChanged.next();
+  }
+
+  private repositionNearContainer(gameObject: GameObject) {
+    const navigationService = getSceneService(this.gameObject.scene, NavigationService);
+    if (!navigationService) return;
+    const spawnTile = navigationService.getSpawnPointAroundGameObject(this.gameObject);
+    if (!spawnTile) return;
+    const worldPos = navigationService.getTileWorldCenter(spawnTile);
+    if (!worldPos) return;
+    const representable = getActorComponent(gameObject, RepresentableComponent);
+    const z = representable?.logicalWorldTransform.z ?? 0;
+    const newTransform = { x: worldPos.x, y: worldPos.y, z };
+    // Use ActorTranslateComponent so listeners (e.g. OwnerComponent ellipsis) are notified of the position change
+    const actorTranslateComponent = getActorComponent(gameObject, ActorTranslateComponent);
+    if (actorTranslateComponent) {
+      actorTranslateComponent.moveActorToLogicalPosition(newTransform);
+    } else if (representable) {
+      representable.logicalWorldTransform = newTransform;
+    }
   }
 
   canLoadGameObject(gameObject: GameObject): boolean {
@@ -62,6 +163,7 @@ export class ContainerComponent {
     }
     this.containedGameObjects.add(gameObject);
     this.setGameObjectVisible(gameObject, false);
+    this.containerChanged.next();
   }
 
   setGameObjectVisible(gameObject: GameObject, visible: boolean) {

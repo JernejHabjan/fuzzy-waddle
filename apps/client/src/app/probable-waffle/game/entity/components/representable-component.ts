@@ -148,7 +148,8 @@ export class RepresentableComponent {
       return;
     }
 
-    const origin = getPwActorDefinition(this.gameObject.name, getResearchedLevelForActor(this.gameObject))?.components?.representable?.origin;
+    const origin = getPwActorDefinition(this.gameObject.name, getResearchedLevelForActor(this.gameObject))?.components
+      ?.representable?.origin;
     if (!origin) {
       console.warn("RepresentableComponent: Could not get origin for debug drawing");
       return;

@@ -21,6 +21,8 @@ export enum ObjectNames {
   Hare = "Hare",
   // Units - mobs and generic
   GeneralWarrior = "GeneralWarrior",
+  VikingBoat = "VikingBoat",
+  CommonBoat = "CommonBoat",
   Centurion = "Centurion",
   Cyclops = "Cyclops",
   Minotaur = "Minotaur",

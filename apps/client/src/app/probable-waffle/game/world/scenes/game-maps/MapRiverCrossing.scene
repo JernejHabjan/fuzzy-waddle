@@ -186,8 +186,8 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "1",
-            "x": 0,
-            "y": 336
+            "x": -224,
+            "y": 672
         },
         {
             "prefabId": "b425696b-ec20-4f72-9aaf-a4f2aaf3e65b",
@@ -2338,6 +2338,7 @@
             "components": [
                 "EditorOwner"
             ],
+            "EditorOwner.owner_id": "1",
             "x": -1257,
             "y": 910
         },
@@ -2578,8 +2579,8 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "1",
-            "x": -512,
-            "y": 544
+            "x": -32,
+            "y": 272
         },
         {
             "prefabId": "e7588d39-50b6-4ac5-b741-34487f3b5458",
@@ -2995,6 +2996,36 @@
             "label": "undeadLandDeadTreeAnim1",
             "x": 224,
             "y": 912
+        },
+        {
+            "prefabId": "d2c78362-f855-4654-831b-3f77ecff7bfd",
+            "id": "26499226-3fd8-4650-829e-14d734efd643",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "commonBoat",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": 192,
+            "y": 272
+        },
+        {
+            "prefabId": "f99090e3-b951-48a3-9668-10051042ecd9",
+            "id": "dd6810b0-5d0f-42ab-923d-3e3344823c19",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "vikingBoat",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": 928,
+            "y": 496
         }
     ],
     "plainObjects": [

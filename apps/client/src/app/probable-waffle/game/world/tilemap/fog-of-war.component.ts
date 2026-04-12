@@ -10,6 +10,7 @@ import { ResourceSourceComponent } from "../../entity/components/resource/resour
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import { getSceneService } from "../services/scene-component-helpers";
 import { ActorIndexSystem } from "../services/ActorIndexSystem";
+import { ContainableComponent } from "../../entity/components/building/containable-component";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export enum FogOfWarMode {
@@ -413,6 +414,11 @@ export class FogOfWarComponent {
 
     const healthComponent = getActorComponent(actor, HealthComponent);
     if (healthComponent && healthComponent.hidden) {
+      visible = false;
+    }
+    // Keep units hidden when they are inside a container (e.g. loaded onto a ship)
+    const containableComponent = getActorComponent(actor, ContainableComponent);
+    if (containableComponent && containableComponent.isContained()) {
       visible = false;
     }
     visibilityComponent.setVisible(visible);

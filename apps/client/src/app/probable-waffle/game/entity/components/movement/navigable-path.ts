@@ -1,4 +1,4 @@
-export interface WalkablePath {
+export interface NavigablePath {
   top?: boolean;
   bottom?: boolean;
   left?: boolean;

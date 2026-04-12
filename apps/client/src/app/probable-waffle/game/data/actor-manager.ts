@@ -121,6 +121,8 @@ import PumpkinWarlockPumpkin from "../prefabs/characters/mobs/pumpkin_warlock_pu
 import SandWorm from "../prefabs/characters/mobs/sand_worm/SandWorm";
 import ForestWendigo from "../prefabs/characters/mobs/forest_wendigo/ForestWendigo";
 import SnowWendigo from "../prefabs/characters/mobs/snow_wendigo/SnowWendigo";
+import VikingBoat from "../prefabs/characters/shared/VikingBoat/VikingBoat";
+import CommonBoat from "../prefabs/characters/shared/CommonBoat/CommonBoat";
 
 type ActorMap = { [name: string]: new (scene: Phaser.Scene) => GameObject };
 export class ActorManager {
@@ -148,7 +150,9 @@ export class ActorManager {
 
   private static general: ActorMap = {
     [ObjectNames.GeneralWarrior]: GeneralWarrior,
-    [ObjectNames.Centurion]: Centurion
+    [ObjectNames.Centurion]: Centurion,
+    [ObjectNames.VikingBoat]: VikingBoat,
+    [ObjectNames.CommonBoat]: CommonBoat
   };
 
   private static mobs: ActorMap = {

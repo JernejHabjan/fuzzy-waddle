@@ -9,6 +9,9 @@ import { getActorComponent, getActorComponents } from "./actor-component";
 import { RepresentableComponent } from "../entity/components/representable-component";
 import { getPwActorDefinition } from "../prefabs/definitions/actor-definitions";
 import { getResearchedLevelForActor } from "./actor-level-utils";
+import { ActorTranslateComponent } from "../entity/components/movement/actor-translate-component";
+import { MovementTerrainType } from "../entity/components/movement/movement-terrain-type";
+import { FlyingComponent } from "../entity/components/movement/flying-component";
 
 export function getGameObjectBounds(gameObject?: Phaser.GameObjects.GameObject): Phaser.Geom.Rectangle | null {
   if (!gameObject) return null;
@@ -94,7 +97,10 @@ export async function getGameObjectTileInNavigableRadius(
 
   const currentTile = getGameObjectCurrentTile(gameObject);
   if (!currentTile) return null;
-  return navigationService.randomTileInNavigableRadius(currentTile, radius);
+  const terrainType =
+    getActorComponent(gameObject, ActorTranslateComponent)?.actorTranslateDefinition.movementTerrainType ??
+    MovementTerrainType.Ground;
+  return navigationService.randomTileInNavigableRadius(currentTile, radius, terrainType);
 }
 
 export function getGameObjectTileInRadius(
@@ -190,4 +196,28 @@ export function onObjectReady(
         gameObject.once(Phaser.GameObjects.Events.ADDED_TO_SCENE, () => executeCallback());
       }
     });
+}
+
+/**
+ * Returns true if the given game object is a water-terrain unit (e.g. a transport ship).
+ * Water units can only move on water tiles and require shore access to load/unload.
+ */
+export function isWaterUnit(gameObject: Phaser.GameObjects.GameObject): boolean {
+  const translateComponent = getActorComponent(gameObject, ActorTranslateComponent);
+  return translateComponent?.actorTranslateDefinition.movementTerrainType === MovementTerrainType.Water;
+}
+
+export function isFlyingUnit(gameObject: Phaser.GameObjects.GameObject): boolean {
+  return !!getActorComponent(gameObject, FlyingComponent);
+}
+
+export function canActorTraverseTile(
+  gameObject: Phaser.GameObjects.GameObject,
+  navigationService: NavigationService,
+  tile: Vector2Simple
+): boolean {
+  if (isFlyingUnit(gameObject)) return true;
+  const translateComponent = getActorComponent(gameObject, ActorTranslateComponent);
+  const terrainType = translateComponent?.actorTranslateDefinition.movementTerrainType ?? MovementTerrainType.Ground;
+  return navigationService.isTileNavigable(tile, terrainType);
 }

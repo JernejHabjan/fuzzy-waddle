@@ -112,6 +112,8 @@ import { snowWendigoDefinition } from "../characters/mobs/snow_wendigo/snow_wend
 import { earthGolemDefinition } from "../characters/mobs/earth_golem/earth_golem.definition";
 import { pumpkinWarlockBatDefinition } from "../characters/mobs/pumpkin_warlock_bat/pumpkin_warlock_bat.definition";
 import { pumpkinWarlockPumpkinDefinition } from "../characters/mobs/pumpkin_warlock_pumpkin/pumpkin_warlock_pumpkin.definition";
+import { vikingBoatDefinition } from "../characters/shared/VikingBoat/viking_boat.definition";
+import { commonBoatDefinition } from "../characters/shared/CommonBoat/common_boat.definition";
 
 export const pwActorDefinitions: {
   [key in ObjectNames]: PrefabDefinition;
@@ -138,6 +140,8 @@ export const pwActorDefinitions: {
   Hare: hareDefinition,
   // Units - mobs and generic
   GeneralWarrior: generalWarriorDefinition,
+  CommonBoat: commonBoatDefinition,
+  VikingBoat: vikingBoatDefinition,
   Centurion: centurionDefinition,
   Cyclops: cyclopsDefinition,
   Minotaur: minotaurDefinition,

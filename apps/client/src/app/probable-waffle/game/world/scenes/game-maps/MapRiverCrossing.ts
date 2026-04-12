@@ -133,11 +133,8 @@ import PumpkinWarlockPumpkin from "../../../prefabs/characters/mobs/pumpkin_warl
 import SandWorm from "../../../prefabs/characters/mobs/sand_worm/SandWorm";
 import ForestWendigo from "../../../prefabs/characters/mobs/forest_wendigo/ForestWendigo";
 import SnowWendigo from "../../../prefabs/characters/mobs/snow_wendigo/SnowWendigo";
-import Field from "../../../prefabs/buildings/shared/Field";
-import Granary from "../../../prefabs/buildings/shared/Granary";
-import UndeadLandDeadTreeAnim3 from "../../../prefabs/outside/environment/undead_land/UndeadLandDeadTreeAnim3";
-import UndeadLandDeadTreeAnim2 from "../../../prefabs/outside/environment/undead_land/UndeadLandDeadTreeAnim2";
-import UndeadLandDeadTreeAnim1 from "../../../prefabs/outside/environment/undead_land/UndeadLandDeadTreeAnim1";
+import CommonBoat from "../../../prefabs/characters/shared/CommonBoat/CommonBoat";
+import VikingBoat from "../../../prefabs/characters/shared/VikingBoat/VikingBoat";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -206,7 +203,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(infantryInn);
 
     // ankGuard
-    const ankGuard = new AnkGuard(this, 0, 336);
+    const ankGuard = new AnkGuard(this, -224, 672);
     this.add.existing(ankGuard);
 
     // temple
@@ -980,7 +977,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(tivaraAlchemist);
 
     // tivaraMacemanMale
-    const tivaraMacemanMale = new TivaraMacemanMale(this, -512, 544);
+    const tivaraMacemanMale = new TivaraMacemanMale(this, -32, 272);
     this.add.existing(tivaraMacemanMale);
 
     // black_grouse
@@ -1111,25 +1108,13 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     const snowWendigo = new SnowWendigo(this, -768, 800);
     this.add.existing(snowWendigo);
 
-    // field
-    const field = new Field(this, -256, 560);
-    this.add.existing(field);
+    // commonBoat
+    const commonBoat = new CommonBoat(this, 192, 272);
+    this.add.existing(commonBoat);
 
-    // granary
-    const granary = new Granary(this, -127, 690);
-    this.add.existing(granary);
-
-    // undeadLandDeadTreeAnim3
-    const undeadLandDeadTreeAnim3 = new UndeadLandDeadTreeAnim3(this, 181, 803);
-    this.add.existing(undeadLandDeadTreeAnim3);
-
-    // undeadLandDeadTreeAnim2
-    const undeadLandDeadTreeAnim2 = new UndeadLandDeadTreeAnim2(this, 319, 808);
-    this.add.existing(undeadLandDeadTreeAnim2);
-
-    // undeadLandDeadTreeAnim1
-    const undeadLandDeadTreeAnim1 = new UndeadLandDeadTreeAnim1(this, 224, 912);
-    this.add.existing(undeadLandDeadTreeAnim1);
+    // vikingBoat
+    const vikingBoat = new VikingBoat(this, 928, 496);
+    this.add.existing(vikingBoat);
 
     // spawn (components)
     const spawnEditorOwner = new EditorOwner(spawn);
@@ -1330,7 +1315,8 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     centurionEditorOwner.owner_id = "1";
 
     // cyclops (components)
-    new EditorOwner(cyclops);
+    const cyclopsEditorOwner = new EditorOwner(cyclops);
+    cyclopsEditorOwner.owner_id = "1";
 
     // minotaur (components)
     const minotaurEditorOwner = new EditorOwner(minotaur);
@@ -1396,13 +1382,13 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     const tivaraMacemanMaleEditorOwner = new EditorOwner(tivaraMacemanMale);
     tivaraMacemanMaleEditorOwner.owner_id = "1";
 
-    // field (components)
-    const fieldEditorOwner = new EditorOwner(field);
-    fieldEditorOwner.owner_id = "1";
+    // commonBoat (components)
+    const commonBoatEditorOwner = new EditorOwner(commonBoat);
+    commonBoatEditorOwner.owner_id = "1";
 
-    // granary (components)
-    const granaryEditorOwner = new EditorOwner(granary);
-    granaryEditorOwner.owner_id = "1";
+    // vikingBoat (components)
+    const vikingBoatEditorOwner = new EditorOwner(vikingBoat);
+    vikingBoatEditorOwner.owner_id = "1";
 
     this.tilemap = tilemap;
 

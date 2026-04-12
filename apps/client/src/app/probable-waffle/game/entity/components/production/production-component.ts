@@ -21,6 +21,7 @@ import { AssignProductionErrorCode } from "./assign-production-error-code";
 import type { ProductionCostDefinition } from "./production-cost-definition";
 import { NavigationService } from "../../../world/services/navigation.service";
 import { IsoHelper } from "../../../world/tilemap/iso-helper";
+import { MovementTerrainType } from "../movement/movement-terrain-type";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class ProductionComponent {
@@ -211,12 +212,25 @@ export class ProductionComponent {
       targetTile = this.rallyPoint.tileVec3;
     }
 
-    const unoccupiedTile = this.navigationService.getSpawnPointAroundGameObject(this.gameObject, undefined, targetTile);
-    if (unoccupiedTile) {
+    const unitDef = getPwActorDefinition(actorName, null);
+    const isWaterUnit =
+      unitDef?.components?.translatable?.movementTerrainType === MovementTerrainType.Water;
+
+    let spawnTile: { x: number; y: number } | null | undefined;
+    if (isWaterUnit) {
+      const buildingTile = this.navigationService.getCenterTileCoordUnderObject(this.gameObject);
+      if (buildingTile) {
+        spawnTile = this.navigationService.findNearestWaterTile(buildingTile);
+      }
+    } else {
+      spawnTile = this.navigationService.getSpawnPointAroundGameObject(this.gameObject, undefined, targetTile);
+    }
+
+    if (spawnTile) {
       const unoccupiedWorldPosition = IsoHelper.isometricTileToWorldXY(
         this.gameObject.scene,
-        unoccupiedTile.x,
-        unoccupiedTile.y
+        spawnTile.x,
+        spawnTile.y
       )!;
       finalSpawnPosition = {
         x: unoccupiedWorldPosition.x,

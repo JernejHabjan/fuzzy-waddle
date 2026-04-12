@@ -55,6 +55,7 @@ root [ExecuteCurrentOrder] {
         branch [Build]
         branch [Repair]
         branch [Heal]
+        branch [EnterContainerOrder]
     }
 }
 
@@ -66,6 +67,20 @@ root [AutoAssignNewOrder] {
             condition [HasSpellComponent]
             condition [HasAutocastSpellReady]
             action [CastAutocastSpell]
+        }
+
+        /* Load pending boarders when docked at shore */
+        sequence {
+            condition [IsWaterUnit]
+            condition [HasContainerComponent]
+            condition [HasPendingBoarders]
+            selector {
+                action [LoadPendingBoarders]
+                sequence {
+                    action [MoveToShoreForBoarding]
+                    action [LoadPendingBoarders]
+                }
+            }
         }
 
         /* Retaliation */
@@ -95,6 +110,36 @@ root [AutoAssignNewOrder] {
         /*         wait [2000, 5000] */
         /*     } */
         /* } */
+    }
+}
+
+root [EnterContainerOrder] {
+    sequence {
+        condition [PlayerOrderIs, "enterContainer"]
+        succeed {
+            selector {
+                /* Already inside a container — nothing to do */
+                sequence {
+                    condition [IsAlreadyInContainer]
+                    action [Stop, "EnterContainer:AlreadyLoaded"]
+                }
+                /* Land container: walk adjacent, then board if close enough */
+                sequence {
+                    flip { condition [IsWaterContainerTarget] }
+                    action [MoveAdjacentToContainer]
+                    condition [CanBoardContainerNow]
+                    action [BoardContainer]
+                    action [Stop, "EnterContainer:Boarded"]
+                }
+                /* Water container (boat): walk to shore and register boarding request */
+                sequence {
+                    condition [IsWaterContainerTarget]
+                    action [MoveToNearestShoreForContainer]
+                    action [Stop, "EnterContainer:MovedToShore"]
+                }
+                action [Stop, "EnterContainer:Failed"]
+            }
+        }
     }
 }
 

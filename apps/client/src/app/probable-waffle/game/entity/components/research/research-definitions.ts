@@ -198,5 +198,29 @@ export const researchDefinitions: Record<ResearchType, ResearchData> = {
     requiredBuilding: ObjectNames.Sandhold,
     refundFactor: 0.5,
     prerequisiteResearch: [ResearchType.SkaduweeRangedUpgradeLevel2]
+  },
+
+  [ResearchType.CommonBoatUpgradeLevel2]: {
+    type: ResearchType.CommonBoatUpgradeLevel2,
+    name: "Common Boat Elite",
+    description: "Upgrades all Common Boats to Elite rank with increased durability and carrying capacity",
+    upgradesUnit: { unitType: ObjectNames.CommonBoat, targetLevel: 2 },
+    cost: { [ResourceType.Wood]: 80, [ResourceType.Stone]: 50 },
+    researchTime: 25000,
+    icon: { key: "units", frame: "common/boat/common_boat-24.png" },
+    requiredBuilding: ObjectNames.Sandhold,
+    refundFactor: 0.5
+  },
+
+  [ResearchType.VikingBoatUpgradeLevel2]: {
+    type: ResearchType.VikingBoatUpgradeLevel2,
+    name: "Viking Boat Elite",
+    description: "Upgrades all Viking Boats to Elite rank, replacing volleys with devastating fire arrow salvos",
+    upgradesUnit: { unitType: ObjectNames.VikingBoat, targetLevel: 2 },
+    cost: { [ResourceType.Wood]: 150, [ResourceType.Stone]: 100, [ResourceType.Minerals]: 75 },
+    researchTime: 40000,
+    icon: { key: "units", frame: "common/viking-ship/ship9.png" },
+    requiredBuilding: ObjectNames.Sandhold,
+    refundFactor: 0.5
   }
 };

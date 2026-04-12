@@ -12,6 +12,7 @@ import type { PrefabDefinition } from "../../definitions/prefab-definition";
 import { ResourceSourceComponent } from "../../../entity/components/resource/resource-source-component";
 import { DamageType } from "@fuzzy-waddle/api-interfaces";
 import { TendableComponent } from "../../../entity/components/tendable/tendable-component";
+import { ContainerComponent } from "../../../entity/components/building/container-component";
 /* END-USER-IMPORTS */
 
 export default class ActorDetails extends Phaser.GameObjects.Container {
@@ -153,6 +154,17 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
       iconsAndTexts.push({
         icon: { key: "gui", frame: "actor_info_icons/boot.png" },
         text: movementSpeed
+      });
+    }
+
+    // Container capacity (transport vessels, buildings that hold units)
+    const containerComponent = actor ? getActorComponent(actor, ContainerComponent) : undefined;
+    if (containerComponent) {
+      const count = containerComponent.getContainedGameObjects().length;
+      const cap = containerComponent.containerDefinition.capacity;
+      iconsAndTexts.push({
+        icon: { key: "gui", frame: "actor_info_icons/element.png" }, // todo: cargo icon
+        text: `${count}/${cap}`
       });
     }
 

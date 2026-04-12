@@ -8,9 +8,8 @@ import { getPwActorDefinition } from "../../definitions/actor-definitions";
 import { getActorComponent } from "../../../data/actor-component";
 import { ProductionComponent } from "../../../entity/components/production/production-component";
 import { BehaviorSubject, Subscription } from "rxjs";
-import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { SingleSelectionHandler } from "../../../player/human-controller/single-selection.handler";
-import { getSceneComponent } from "../../../world/services/scene-component-helpers";
+import { getSceneComponent, getSceneService } from "../../../world/services/scene-component-helpers";
 import { IdComponent } from "../../../entity/components/id-component";
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import HudProbableWaffle from "../../../world/scenes/hud-scenes/HudProbableWaffle";
@@ -19,6 +18,10 @@ import { ResearchComponent } from "../../../entity/components/research/research-
 import { QueueComponent } from "../../../entity/components/queue/queue-component";
 import { SharedQueueItemType } from "../../../entity/components/queue/shared-queue-item-type";
 import type { SharedQueueItem } from "../../../entity/components/queue/shared-queue-item";
+import { ContainerComponent } from "../../../entity/components/building/container-component";
+import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
+import { NavigationService } from "../../../world/services/navigation.service";
+import { isWaterUnit } from "../../../data/game-object-helper";
 /* END-USER-IMPORTS */
 
 export default class ActorInfoLabels extends Phaser.GameObjects.Container {
@@ -123,11 +126,16 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
   private readonly mainSceneWithActors?: ProbableWaffleScene;
   private visibilityChanged = new BehaviorSubject<boolean>(false);
   private queueChangedSubscription?: Subscription;
+  private containerChangedSubscription?: Subscription;
   private clickSubscriptions: Subscription[] = [];
   private actor?: Phaser.GameObjects.GameObject;
+  /** When true, icons show container contents rather than a production/research queue. */
+  private containerMode = false;
 
   cleanActor() {
     this.queueChangedSubscription?.unsubscribe();
+    this.containerChangedSubscription?.unsubscribe();
+    this.containerMode = false;
     this.visible = false;
     this.actor = undefined;
   }
@@ -140,6 +148,66 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
     this.cleanActor();
     this.clickSubscriptions.forEach((sub) => sub.unsubscribe());
     super.destroy(fromScene);
+  }
+
+  /**
+   * Displays the units currently inside a container actor (e.g. transport boat).
+   * Each icon represents one contained unit and can be clicked to unload it.
+   * For water units, unloading is only allowed when docked at a shore tile.
+   * For ground containers (buildings), unloading is always allowed.
+   */
+  setLabelsForContainerContents(actor: Phaser.GameObjects.GameObject) {
+    this.actor = actor;
+    this.containerMode = true;
+
+    this.containerChangedSubscription?.unsubscribe();
+    const containerComponent = getActorComponent(actor, ContainerComponent);
+    if (containerComponent) {
+      this.containerChangedSubscription = containerComponent.containerChanged.subscribe(() => {
+        this.renderContainerIcons(actor, containerComponent);
+      });
+      this.renderContainerIcons(actor, containerComponent);
+    }
+  }
+
+  private renderContainerIcons(actor: Phaser.GameObjects.GameObject, containerComponent: ContainerComponent) {
+    if (!this.mainSceneWithActors) return;
+    const contained = containerComponent.getContainedGameObjects();
+    const capacity = containerComponent.containerDefinition.capacity;
+    const canUnload = this.canUnloadFromContainer(actor);
+
+    this.icons.forEach((icon, index) => {
+      if (index >= capacity) {
+        icon.visible = false;
+        return;
+      }
+      const containedUnit = contained[index];
+      if (containedUnit) {
+        const unitName = containedUnit.name;
+        const unitDef = getPwActorDefinition(unitName, null);
+        const info = unitDef?.components?.info;
+        const idComponent = getActorComponent(containedUnit, IdComponent);
+        if (info?.smallImage && idComponent) {
+          icon.setActorIcon(
+            { containedActorId: idComponent.id },
+            info.smallImage.key,
+            info.smallImage.frame,
+            info.smallImage.origin ?? { x: 0.5, y: 0.5 }
+          );
+          // Dim icon when unloading is not possible to indicate it is disabled
+          icon.setAlpha(canUnload ? 1 : 0.4);
+          icon.visible = true;
+        }
+      } else {
+        // Empty slot
+        icon.setNumber(index + 1);
+        icon.setAlpha(0.3);
+        icon.visible = true;
+      }
+    });
+
+    // Only show the label area when units are actually aboard (not when container is empty)
+    this.visibilityChanged.next(contained.length > 0);
   }
 
   setLabelsForDisplayingActorsQueues(actor: Phaser.GameObjects.GameObject) {
@@ -261,6 +329,7 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
         this.tryHandleIconClickActor(action);
         this.tryHandleIconClickProduction(action);
         this.tryHandleIconClickResearch(action);
+        this.tryHandleIconClickContainer(action);
       });
       this.clickSubscriptions.push(sub);
     });
@@ -320,6 +389,41 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
     if (researchComponent.currentResearchType === queueItem.researchData) {
       researchComponent.cancelResearch();
     }
+  }
+
+  /** Unloads the clicked unit from the container (only when unloading is permitted). */
+  private tryHandleIconClickContainer(action: ActorIconClickAction) {
+    if (!action.definition.containedActorId) return;
+    if (!this.containerMode) return;
+
+    const actor = this.actor;
+    if (!actor) return;
+    if (!this.canUnloadFromContainer(actor)) return; // disabled when shore check fails for water units
+
+    if (!this.mainSceneWithActors) return;
+
+    const containerComponent = getActorComponent(actor, ContainerComponent);
+    if (!containerComponent) return;
+
+    const actorIndex = getSceneService(this.mainSceneWithActors, ActorIndexSystem);
+    if (!actorIndex) return;
+
+    const containedActor = actorIndex.getActorById(action.definition.containedActorId);
+    if (containedActor) {
+      containerComponent.unloadGameObject(containedActor);
+    }
+  }
+
+  /** Returns true if unloading from the container actor is currently allowed. */
+  private canUnloadFromContainer(actor: Phaser.GameObjects.GameObject): boolean {
+    if (!isWaterUnit(actor)) return true;
+    // Water units require a shore tile to unload
+    if (!this.mainSceneWithActors) return false;
+    const navigationService = getSceneService(this.mainSceneWithActors, NavigationService);
+    if (!navigationService) return false;
+    const tile = navigationService.getCenterTileCoordUnderObject(actor);
+    if (!tile) return false;
+    return navigationService.isShoreTile(tile);
   }
   /* END-USER-CODE */
 }

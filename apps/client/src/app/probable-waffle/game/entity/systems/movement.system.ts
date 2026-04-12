@@ -31,6 +31,7 @@ import {
 import { OwnerComponent } from "../components/owner-component";
 import { AnimationActorComponent } from "../components/animation/animation-actor-component";
 import { FlyingComponent } from "../components/movement/flying-component";
+import { MovementTerrainType } from "../components/movement/movement-terrain-type";
 import { RepresentableComponent } from "../components/representable-component";
 import { IdComponent } from "../components/id-component";
 import { StatusEffectComponent } from "../components/status-effect/status-effect-component";
@@ -183,7 +184,7 @@ export class MovementSystem {
    * Unlike moveAlongPathByFollowingPreCalculatedStaticPath which follows a static pre-calculated path, this method:
    * - Recalculates the path dynamically after each step
    * - Handles moving targets that may change position
-   * - Finds the closest walkable tile within a specified radius of the target
+   * - Finds the closest navigable tile within a specified radius of the target
    * - Stops and recalculates if the target moves significantly
    *
    * Use cases:
@@ -201,7 +202,7 @@ export class MovementSystem {
   ): Promise<boolean> {
     if (!this.navigationService) return false;
 
-    const path = await this.getPathToClosestWalkableTileBetweenGameObjectsInRadius(
+    const path = await this.getPathToClosestNavigableTileBetweenGameObjectsInRadius(
       destinationGameObject,
       pathMoveConfig?.radiusTilesAroundDestination
     );
@@ -258,7 +259,7 @@ export class MovementSystem {
       if (this.targetGameObject && this.targetGameObject.active && this.targetGameObject.scene.scene.isActive()) {
         // Recalculate path to the moving target
         try {
-          const newPath = await this.getPathToClosestWalkableTileBetweenGameObjectsInRadius(
+          const newPath = await this.getPathToClosestNavigableTileBetweenGameObjectsInRadius(
             this.targetGameObject,
             config?.radiusTilesAroundDestination
           );
@@ -373,9 +374,9 @@ export class MovementSystem {
     const tileWorldXY = this.navigationService?.getTileWorldCenter(tile);
     if (!tileWorldXY) return Promise.reject("No tile world xy to move to");
 
-    // Get the walkable height at the destination tile
-    const walkableHeight = this.navigationService?.getWalkableHeightAtTile(tile) ?? 0;
-    const newLogicalTransform = { ...tileWorldXY, z: walkableHeight } as Vector3Simple;
+    // Get the navigable height at the destination tile
+    const navigableHeight = this.navigationService?.getNavigableHeightAtTile(tile) ?? 0;
+    const newLogicalTransform = { ...tileWorldXY, z: navigableHeight } as Vector3Simple;
 
     return this.startMovementTween(newLogicalTransform, config, onComplete, onStop);
   }
@@ -403,7 +404,7 @@ export class MovementSystem {
    * - Movement in open areas without obstacles
    *
    * The movement is handled as a single tween animation from current position to target,
-   * without considering navigation mesh or walkable tiles along the route.
+   * without considering navigation mesh or navigable tiles along the route.
    *
    * @param vec3 The target world coordinates (x, y, z) to move to
    * @param pathMoveConfig Optional configuration for movement behavior
@@ -604,16 +605,16 @@ export class MovementSystem {
   }
 
   async canMoveTo(targetGameObject: Phaser.GameObjects.GameObject, range?: number): Promise<boolean> {
-    const path = await this.getPathToClosestWalkableTileBetweenGameObjectsInRadius(targetGameObject, range);
+    const path = await this.getPathToClosestNavigableTileBetweenGameObjectsInRadius(targetGameObject, range);
     return !!path && path.length > 0;
   }
 
-  async getPathToClosestWalkableTileBetweenGameObjectsInRadius(
+  async getPathToClosestNavigableTileBetweenGameObjectsInRadius(
     targetGameObject: Phaser.GameObjects.GameObject,
     range?: number
   ): Promise<Vector2Simple[] | null> {
     if (!this.navigationService) throw new Error("No navigationService");
-    return this.navigationService.findAndUseWalkablePathBetweenGameObjectsWithRadius(
+    return this.navigationService.findAndUseNavigablePathBetweenGameObjectsWithRadius(
       this.gameObject,
       targetGameObject,
       range
@@ -696,7 +697,8 @@ export class MovementSystem {
       const destinationTile: Vector2Simple = { x: assignedPoint.x, y: assignedPoint.y };
 
       // Check if the assigned point is valid and reachable
-      if (this.navigationService.isTileWalkable(destinationTile)) {
+      const terrainType = this.actorTranslateComponent?.actorTranslateDefinition.movementTerrainType ?? MovementTerrainType.Ground;
+      if (this.navigationService.isTileNavigable(destinationTile, terrainType)) {
         const path = await this.navigationService.findPathFromGameObjectToTile(this.gameObject, destinationTile);
         if (path !== null && path.length > 0) {
           return {

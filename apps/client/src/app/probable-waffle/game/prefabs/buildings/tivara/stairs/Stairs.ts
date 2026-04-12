@@ -17,8 +17,8 @@ import StairsBottomLeft from "./StairsBottomLeft";
 import StairsBottomRight from "./StairsBottomRight";
 import { setActorData } from "../../../../data/actor-data";
 import { getActorComponent } from "../../../../data/actor-component";
-import { WalkableComponent } from "../../../../entity/components/movement/walkable-component";
-import type { WalkablePath } from "../../../../entity/components/movement/walkable-path";
+import { NavigableComponent } from "../../../../entity/components/movement/navigable-component";
+import type { NavigablePath } from "../../../../entity/components/movement/navigable-path";
 /* END-USER-IMPORTS */
 
 export default class Stairs extends Phaser.GameObjects.Container {
@@ -89,14 +89,14 @@ export default class Stairs extends Phaser.GameObjects.Container {
     } else {
       throw new Error("Stairs type not found");
     }
-    const walkableComponent = getActorComponent(this, WalkableComponent);
-    if (walkableComponent) {
-      const walkablePath = this.getWalkablePath(stairsType);
-      walkableComponent.allowWalkablePath(walkablePath);
+    const navigableComponent = getActorComponent(this, NavigableComponent);
+    if (navigableComponent) {
+      const navigablePath = this.getNavigablePath(stairsType);
+      navigableComponent.allowNavigablePath(navigablePath);
     }
   }
 
-  private getWalkablePath(stairsType: StairsType): WalkablePath {
+  private getNavigablePath(stairsType: StairsType): NavigablePath {
     switch (stairsType) {
       case StairsType.TopLeft:
         return {
