@@ -62,33 +62,44 @@ These are the main freeze/stall classes that still matter:
 
 ## Confirmed high-risk problems still on the branch
 
-1. **AI command ownership likely fails on the server**
-   - `dispatchAiOrder` sends commands with the AI player's `playerNumber`.
-   - `GameCommandValidatorService` currently requires `player.playerController.data.userId === user.id`.
-   - AI players are created with `userId = null` in `GameInstanceClientService.addSelfOrAiPlayer`.
-   - Result: host-issued AI commands appear incompatible with current server ownership validation unless another path rewrites ownership first.
+> **Updated**: Items 1–4 below have been fixed. Items 5 and 6 remain open.
 
-2. **Static lockstep participant set**
-   - `CommandBusService` does not appear to refresh the human-player blocking set after disconnect/leave/migration.
-   - This is a real candidate for "the game just stalls and never resumes."
+1. ~~**AI command ownership likely fails on the server**~~ **FIXED**
+   - Server now allows the current host to submit commands for AI-owned slots (userId=null).
 
-3. **Reconnect history window is small**
-   - Server-side `GameStateServerService` keeps only `COMMAND_HISTORY_LIMIT = 256` command batches.
-   - Long reconnect gaps or command-heavy periods can produce incomplete restoration tails.
+2. ~~**Static lockstep participant set**~~ **FIXED**
+   - `CommandBusService` now removes players from the blocking set on graceful leave and
+     on permanent eviction (`reconnectWindowSeconds === 0`).
 
-4. **Startup sequencing is not fully on the deterministic tick**
-   - `ReadyBarrier` exists, but `SceneGameState` still uses `setTimeout` and `scene.pause()`.
-   - This is a design mismatch and a recurring source of edge-case behavior.
+3. ~~**Reconnect history window is small**~~ **FIXED**
+   - `COMMAND_HISTORY_LIMIT` increased from 256 to 1024 (~51 s at 20 Hz); overflow now logged.
+
+4. ~~**Startup sequencing not fully deterministic**~~ **FIXED**
+   - `SceneGameState` now skips the 3-second `setTimeout` for non-networked modes
+     (Skirmish / InstantGame / Replay); only Matchmaking and SelfHosted wait.
 
 5. **Actor seed reconciliation is still heuristic**
    - `ActorIdSeeder` matches by `(name, owner, logical position)`.
-   - Better than GUID divergence, but still brittle if multiple neutral/environment actors share equivalent keys or if authored map/runtime state drifts before reconciliation.
+   - Better than GUID divergence, but still brittle if multiple neutral/environment actors
+     share equivalent keys or if authored map/runtime state drifts before reconciliation.
+
+6. **Movement tween completion timing is nondeterministic** *(new finding)*
+   - `movement.system.ts` uses Phaser tweens for tile-to-tile animation. Tween durations are
+     in real-time milliseconds; the `onComplete` fires at a wall-clock time, not a fixed tick.
+   - Result: the tick at which a unit "arrives" at the next tile and starts chasing the next
+     waypoint can differ by 1 tick between clients.
+   - Fix path: drive tile arrival via `waitForSimulationDuration` (already exists in
+     `simulation-time.ts`) and use tweens only for visual interpolation between logical
+     tile positions. This is a non-trivial refactor.
 
 ## Medium-risk / likely remaining divergence sources
 
-- Movement/pathfinding and moving-target reacquisition are still the biggest determinism suspects.
-- Projectile/combat timing still deserves another audit.
-- Ambient/random actor behavior was reduced, but this is mitigation, not proof that all neutral/environment divergence is gone.
+- Attack hit/fire delays were using `scene.time.delayedCall` (real-time). **FIXED** — now use
+  `CancelableSimDelay` (in `simulation-time.ts`) which fires at the correct simulation tick.
+- Movement/pathfinding tile-arrival timing — see item 6 above (open).
+- `Math.random()` in movement sound selection and some spell audio is cosmetic-only; does not
+  affect simulation state.
+- Ambient/random actor behavior was reduced, but this is mitigation, not proof.
 - Spectator behavior and fog-of-war semantics still need explicit validation.
 
 ## What is already good

@@ -22,6 +22,36 @@ export function getSimulationDelta(
   return { now, delta: Math.max(0, now - lastSimulationTimeMs) };
 }
 
+/**
+ * A cancellable simulation-time delay that replaces `scene.time.delayedCall` for
+ * simulation-affecting callbacks (damage application, projectile spawning, etc.).
+ *
+ * Unlike `scene.time.delayedCall` which uses wall-clock time, this fires when the
+ * simulation clock — driven by SimulationTickService — has advanced by `durationMs`.
+ * This guarantees all clients fire the callback at the same simulation tick, even
+ * if they are running at different render frame rates.
+ *
+ * Usage:
+ *   this.timer = new CancelableSimDelay(scene, 500, () => applyDamage());
+ *   this.timer.remove(); // cancel before it fires
+ */
+export class CancelableSimDelay {
+  private cancelled = false;
+
+  constructor(scene: Phaser.Scene, durationMs: number, callback: () => void) {
+    waitForSimulationDuration(scene, durationMs).then(() => {
+      if (!this.cancelled) {
+        callback();
+      }
+    });
+  }
+
+  /** Cancel the pending callback. Safe to call multiple times. */
+  remove(): void {
+    this.cancelled = true;
+  }
+}
+
 export function waitForSimulationDuration(scene: Phaser.Scene, durationMs: number): Promise<void> {
   const tickService = getSceneService(scene, SimulationTickService);
   if (!tickService) {

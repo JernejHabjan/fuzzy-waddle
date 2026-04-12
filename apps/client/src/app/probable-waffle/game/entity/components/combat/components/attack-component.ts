@@ -32,7 +32,7 @@ import type { ProjectileData } from "../projectile-data";
 import type { AttackDefinition } from "./attack-definition";
 import type { IsoDirection } from "../../movement/iso-directions";
 import { TilemapComponent } from "../../../../world/tilemap/tilemap.component";
-import { getSimulationDelta } from "../../../../world/services/simulation-time";
+import { getSimulationDelta, CancelableSimDelay } from "../../../../world/services/simulation-time";
 import TivaraAlchemistVase from "../../../../prefabs/weapons/TivaraAlchemistVase";
 import GameObject = Phaser.GameObjects.GameObject;
 
@@ -48,8 +48,8 @@ export class AttackComponent {
   private lastSimulationTimeMs?: number;
   private projectileSprite?: Phaser.GameObjects.Image;
   // track delayed fire so we can cancel before projectile spawns
-  private fireTimer?: Phaser.Time.TimerEvent;
-  private hitTimer?: Phaser.Time.TimerEvent;
+  private fireTimer?: CancelableSimDelay;
+  private hitTimer?: CancelableSimDelay;
 
   private attackDefinition: AttackDefinition;
 
@@ -79,11 +79,11 @@ export class AttackComponent {
     this.gameObject.off(HealthComponent.KilledEvent, this.destroy, this);
     // cancel pending spawn timer (if any)
     if (this.fireTimer) {
-      this.fireTimer.remove(false);
+      this.fireTimer.remove();
       this.fireTimer = undefined;
     }
     if (this.hitTimer) {
-      this.hitTimer.remove(false);
+      this.hitTimer.remove();
       this.hitTimer = undefined;
     }
     this.stopProjectile();
@@ -182,10 +182,12 @@ export class AttackComponent {
 
   private scheduleInstantAttackImpact(attack: AttackData, enemy: GameObject) {
     if (this.hitTimer) {
-      this.hitTimer.remove(false);
+      this.hitTimer.remove();
       this.hitTimer = undefined;
     }
-    this.hitTimer = this.gameObject.scene.time.delayedCall(attack.delays.hit, () => {
+    // Use CancelableSimDelay so damage fires at the same simulation tick on all clients,
+    // regardless of render frame rate.
+    this.hitTimer = new CancelableSimDelay(this.gameObject.scene, attack.delays.hit, () => {
       this.hitTimer = undefined;
 
       if (!this.gameObject.active || !enemy.active) return;
@@ -319,8 +321,8 @@ export class AttackComponent {
 
     this.playSharedAttackLogic(attack, enemy);
 
-    // schedule projectile spawn; keep a reference so Stop can cancel it
-    this.fireTimer = this.gameObject.scene.time.delayedCall(attack.delays.fire, () => {
+    // Use CancelableSimDelay so projectile spawns at the same simulation tick on all clients.
+    this.fireTimer = new CancelableSimDelay(this.gameObject.scene, attack.delays.fire, () => {
       // clear timer reference when it fires
       this.fireTimer = undefined;
 
@@ -607,11 +609,11 @@ export class AttackComponent {
   public cancelCurrentAttack(): void {
     // cancel only pre-spawn scheduling
     if (!this.projectileSprite && this.fireTimer) {
-      this.fireTimer.remove(false);
+      this.fireTimer.remove();
       this.fireTimer = undefined;
     }
     if (this.hitTimer) {
-      this.hitTimer.remove(false);
+      this.hitTimer.remove();
       this.hitTimer = undefined;
     }
     // do not call stopProjectile here if projectile is already travelling
