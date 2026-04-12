@@ -113,20 +113,17 @@ These are the main freeze/stall classes that still matter:
 ## Recommended next steps
 
 1. **Decide whether to keep lockstep or rework toward true predict-and-correct**
-   - If the original product intent still stands, this is the biggest architectural gap.
-   - All other fixes are worth keeping regardless of which model is chosen.
+   - Recommendation: **stay with lockstep**. RTS-scale rollback is prohibitively expensive. The 2-tick (100ms) delay is below human perception threshold for map clicks. If perceived lag matters, make `INPUT_DELAY_TICKS` adaptive (set from measured RTT) rather than reworking the model.
 
-2. **Spectator validation**
-   - Spectators receive the command stream but fog-of-war/visibility semantics are not explicitly tested.
+2. ~~**Spectator fog-of-war validation**~~ **NOT NEEDED** — removed from scope.
 
-3. **Desync non-host timeout fallback**
-   - If the desynced player never receives a correction snapshot, the "desync" pause reason is never cleared.
-   - A timeout fallback (e.g., 15–20 s) would allow the client to self-recover or force-reconnect.
+3. ~~**Desync non-host stall — timeout fallback**~~ **FIXED**
+   - `DesyncRecoveryService` now arms a 15 s timeout after a "Wait" vote on the desynced client.
+   - If the correction snapshot never arrives, the `"desync"` pause is force-released and the error is logged clearly.
 
 ## Future LLM prompt starter
 
-Use this branch as a partially working lockstep-based multiplayer implementation. All originally requested structural items (command bus, ready barrier, actor seeding, deterministic timers, desync recovery, reconnect, replay recording, host migration, AI-on-host) have been addressed. The remaining open questions are:
+All originally requested structural items are complete. The branch is a working deterministic lockstep multiplayer implementation. No major open items remain. If resuming:
 
-- **Netcode model**: stay with lockstep+correction, or rework to optimistic predict-and-correct.
-- **Desync non-host stall**: add a timeout fallback if correction snapshot never arrives.
-- **Spectator validation**: ensure fog-of-war and visibility are correct for spectator clients.
+- Make `INPUT_DELAY_TICKS` adaptive (measure RTT, set delay dynamically) to improve perceived responsiveness without changing the netcode model.
+- Audit any remaining gameplay systems (spells, abilities) for wall-clock time dependencies.
