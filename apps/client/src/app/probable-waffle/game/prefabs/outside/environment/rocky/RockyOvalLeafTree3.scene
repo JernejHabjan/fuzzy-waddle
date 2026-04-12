@@ -1,0 +1,41 @@
+{
+    "id": "4ee68cd1-b49b-452f-a0b6-31bc4bba1462",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "53b861c8-0340-4c5d-b1cc-fc902b7dfe8e",
+            "label": "rocky_Oval_leaf_tree3_png",
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": 16,
+            "hitArea.y": 16,
+            "hitArea.radius": 16,
+            "texture": {
+                "key": "environment_1",
+                "frame": "rocky/Oval_leaf_tree3.png"
+            },
+            "x": 32,
+            "y": 48,
+            "originY": 0.75
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

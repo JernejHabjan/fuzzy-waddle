@@ -1,0 +1,39 @@
+{
+    "id": "e6418d9c-b71e-4f29-a9d6-abb0c8abc14d",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "a74fb19d-6fae-446e-9784-b054fa869d39",
+            "label": "rocky_Liana_bridges3_ground_shadow_png",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "80.92329494518737 68.35541145886504 114.5737115886962 83.47371458855741 104.81996763405596 109.80882326608605 16.0608976468298 71.28153464525712 10.208651274045678 38.60649239721232 21.425456821881937 20.074378883395866",
+            "texture": {
+                "key": "environment_1",
+                "frame": "rocky/Liana_bridges3_ground_shadow.png"
+            },
+            "x": 32,
+            "y": 48,
+            "originY": 0.75
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

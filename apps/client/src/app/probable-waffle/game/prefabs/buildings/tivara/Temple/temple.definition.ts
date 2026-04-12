@@ -52,7 +52,6 @@ export const templeDefinition = {
     productionCost: {
       resources: {
         [ResourceType.Wood]: 150,
-        [ResourceType.Minerals]: 50
       },
       refundFactor: 0.5,
       productionTime: 30000,

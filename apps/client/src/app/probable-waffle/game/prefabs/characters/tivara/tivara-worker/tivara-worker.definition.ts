@@ -53,7 +53,12 @@ export const tivaraWorkerDefinition: PrefabDefinition = {
         ],
         [
           new ConstructableCategory("gui", "action_icons/category_resource_gathering.png", "Resource Gathering", [
-            new ConstructableDefinition([ObjectNames.WorkMill, ObjectNames.MiningCamp])
+            new ConstructableDefinition([
+              ObjectNames.WorkMill,
+              ObjectNames.MiningCamp,
+              ObjectNames.Granary,
+              ObjectNames.Field
+            ])
           ]),
           new ConstructableCategory("gui", "action_icons/category_defensive_buildings.png", "Defensive Structures", [
             new ConstructableDefinition([ObjectNames.WatchTower, ObjectNames.Wall, ObjectNames.Stairs])

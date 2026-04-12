@@ -23,6 +23,7 @@ import { getGameObjectVisibility, onObjectReady } from "../../../data/game-objec
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { AnimationType } from "../animation/animation-type";
 import { SoundType } from "../actor-audio/sound-type";
+import { isCropResourceSource } from "../tendable/growth-stage.interface";
 import type { SoundDefinition } from "../actor-audio/sound-definition";
 import type { GathererDefinition } from "./gatherer-definition";
 import { getSimulationDelta } from "../../../world/services/simulation-time";
@@ -56,6 +57,14 @@ export class GathererComponent {
       resourceType: ResourceType.Minerals,
       amountPerGathering: 1,
       needsReturnToDrain: true
+    },
+    {
+      capacity: 5,
+      cooldown: 2000,
+      range: 1,
+      resourceType: ResourceType.Food,
+      amountPerGathering: 2,
+      needsReturnToDrain: false
     }
   ];
   // amount the gameObject is carrying
@@ -339,7 +348,11 @@ export class GathererComponent {
 
     this.onResourceGathered.next([this.gameObject, resourceSource, gatherData, gatheredAmount]);
 
-    if (gatherData.needsReturnToDrain) {
+    // Allow the resource source definition to override the gatherer's default needsReturnToDrain
+    const needsReturnToDrain =
+      resourceSourceComponent.resourceSourceDefinition.needsReturnToDrain ?? gatherData.needsReturnToDrain;
+
+    if (needsReturnToDrain) {
       // check if we're at capacity
       if (this.carriedResourceAmount >= gatherData.capacity) {
         this.leaveCurrentResourceSource();
@@ -464,6 +477,9 @@ export class GathererComponent {
       case ResourceType.Minerals:
         sounds = SharedActorActionsSfxMiningSounds;
         break;
+      case ResourceType.Food:
+        sounds = SharedActorActionsSfxChoppingSounds;
+        break;
     }
 
     // can be random as it doesn't need to be deterministic
@@ -482,6 +498,11 @@ export class GathererComponent {
   }
 
   getGatherAnimation(): AnimationType | null {
+    // If the current resource source hosts crops, use the crop-specific animation
+    if (isCropResourceSource(this.currentResourceSource)) {
+      const cropAnim = this.currentResourceSource.getActiveCropHarvestAnimation();
+      if (cropAnim != null) return cropAnim;
+    }
     const resourceType = this.carriedResourceType;
     if (!resourceType) return null;
     switch (resourceType) {
@@ -491,11 +512,19 @@ export class GathererComponent {
         return AnimationType.Mine;
       case ResourceType.Minerals:
         return AnimationType.Mine;
+      case ResourceType.Food:
+        return AnimationType.Harvest;
+      default:
+        return null;
     }
-    return null;
   }
 
   getGatherSound(): SoundType | null {
+    // If the current resource source hosts crops, use the crop-specific sound
+    if (isCropResourceSource(this.currentResourceSource)) {
+      const cropSound = this.currentResourceSource.getActiveCropHarvestSound();
+      if (cropSound != null) return cropSound;
+    }
     const resourceType = this.carriedResourceType;
     if (!resourceType) return null;
     switch (resourceType) {
@@ -505,8 +534,11 @@ export class GathererComponent {
         return SoundType.Mine;
       case ResourceType.Minerals:
         return SoundType.Mine;
+      case ResourceType.Food:
+        return SoundType.Chop;
+      default:
+        return null;
     }
-    return null;
   }
 
   setData(data: Partial<GathererComponentData>) {

@@ -280,6 +280,8 @@ export class AnimationActorComponent {
       case ResourceType.Stone:
       case ResourceType.Minerals:
         return AnimationVariant.CarryingOre;
+      case ResourceType.Food:
+        return AnimationVariant.CarryingBasket;
       default:
         return null;
     }

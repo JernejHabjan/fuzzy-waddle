@@ -56,7 +56,6 @@ export const frostForgeDefinition = {
     productionCost: {
       resources: {
         [ResourceType.Wood]: 400,
-        [ResourceType.Minerals]: 300,
         [ResourceType.Stone]: 400
       },
       refundFactor: 0.5,
@@ -68,7 +67,7 @@ export const frostForgeDefinition = {
       capacity: 2
     },
     resourceDrain: {
-      resourceTypes: [ResourceType.Wood, ResourceType.Minerals, ResourceType.Stone],
+      resourceTypes: [ResourceType.Wood, ResourceType.Minerals, ResourceType.Stone, ResourceType.Food],
       cooldown: 1000
     },
     production: {

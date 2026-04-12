@@ -45,7 +45,7 @@ export const skeletonScytheDefinition = {
     },
     productionCost: {
       resources: {
-        [ResourceType.Minerals]: 95
+        [ResourceType.Food]: 95
       },
       refundFactor: 0.5,
       productionTime: 5500,

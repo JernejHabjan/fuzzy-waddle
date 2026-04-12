@@ -45,7 +45,7 @@ export const orcWarriorDefinition = {
     },
     productionCost: {
       resources: {
-        [ResourceType.Minerals]: 100
+        [ResourceType.Food]: 100
       },
       refundFactor: 0.5,
       productionTime: 6000,

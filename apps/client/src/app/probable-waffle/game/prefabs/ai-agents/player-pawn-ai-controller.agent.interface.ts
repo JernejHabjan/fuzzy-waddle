@@ -43,6 +43,16 @@ export interface IPlayerPawnControllerAgent {
   HasAutocastSpellReady(): boolean;
   CastAutocastSpell(): State;
 
+  // Farm tending
+  TargetHasTendableComponent(): boolean;
+  GrowthReady(): boolean;
+  GrowthPercentBelow(threshold: number): boolean;
+  AssignSelfAsTender(): State;
+  UnassignSelfAsTender(): State;
+  MoveToRandomSpotOnTarget(): Promise<State>;
+  PlaySeedingAnimation(): State;
+  PlayTendingAnimation(): State;
+
   // Resource Gathering
   AcquireNewResourceSource(): Promise<State>;
   AcquireNewResourceDrain(): Promise<State>;

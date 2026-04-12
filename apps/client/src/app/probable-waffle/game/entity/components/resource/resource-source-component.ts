@@ -72,12 +72,15 @@ export class ResourceSourceComponent {
     }
 
     this.onResourcesChanged.next([this.resourceSourceDefinition.resourceType, gatheredAmount, gatherer]);
-    // check if we're depleted
-    if (this.currentResources <= 0) {
+    // check if we're depleted — only trigger when something was actually gathered to avoid
+    // infinite reset when gather() is called on a locked (resources=0) field
+    if (gatheredAmount > 0 && this.currentResources <= 0) {
       this.onDepleted.next(this.gameObject);
-      const renderedTransform = getGameObjectRenderedTransform(this.gameObject);
-      this.gameObject.destroy();
-      this.spawnDepletedResourceSourceSprite(renderedTransform);
+      if (!this.resourceSourceDefinition.respawnOnDepletion) {
+        const renderedTransform = getGameObjectRenderedTransform(this.gameObject);
+        this.gameObject.destroy();
+        this.spawnDepletedResourceSourceSprite(renderedTransform);
+      }
     }
     return gatheredAmount;
   }
@@ -103,6 +106,9 @@ export class ResourceSourceComponent {
       case ResourceType.Minerals:
         texture = "outside";
         frame = "nature/resources/minerals_pile_depleted_1.png"; // todo - zip to spritesheet
+        break;
+      case ResourceType.Food:
+        // No depleted image for crops – they simply disappear when harvested
         break;
     }
     if (!texture || !frame) return;
@@ -175,6 +181,16 @@ export class ResourceSourceComponent {
    */
   getMaxGatherers(): number | undefined {
     return this.resourceSourceDefinition.maxGatherers;
+  }
+
+  /** Sets current resources to the definition maximum. Used by TendableComponent when crops are ready. */
+  refillResources(): void {
+    this.currentResources = this.resourceSourceDefinition.maximumResources;
+  }
+
+  /** Sets current resources to zero. Used by TendableComponent to lock a field before it is grown. */
+  lockResources(): void {
+    this.currentResources = 0;
   }
 
   setData(data: Partial<ResourceSourceComponentData>) {
