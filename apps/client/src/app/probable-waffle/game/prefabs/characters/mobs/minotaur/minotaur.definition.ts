@@ -45,7 +45,7 @@ export const minotaurDefinition = {
     },
     productionCost: {
       resources: {
-        [ResourceType.Minerals]: 130
+        [ResourceType.Food]: 130
       },
       refundFactor: 0.5,
       productionTime: 7000,

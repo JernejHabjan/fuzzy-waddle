@@ -58,7 +58,6 @@ export const sandholdDefinition = {
     productionCost: {
       resources: {
         [ResourceType.Wood]: 400,
-        [ResourceType.Minerals]: 300,
         [ResourceType.Stone]: 400
       },
       refundFactor: 0.5,

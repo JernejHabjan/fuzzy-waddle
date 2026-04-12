@@ -45,7 +45,7 @@ export const pirateScimitarDefinition = {
     },
     productionCost: {
       resources: {
-        [ResourceType.Minerals]: 85
+        [ResourceType.Food]: 85
       },
       refundFactor: 0.5,
       productionTime: 5000,

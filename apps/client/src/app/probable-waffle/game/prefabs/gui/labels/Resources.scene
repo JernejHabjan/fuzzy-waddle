@@ -50,41 +50,6 @@
                         },
                         {
                             "prefabId": "edf897fc-9092-48ca-ac2c-627b24dfcc37",
-                            "id": "c1a4e7f2-3b9d-4e8a-a1c5-6d2f0e9b3471",
-                            "unlock": [
-                                "x",
-                                "y",
-                                "scaleX",
-                                "scaleY",
-                                "type"
-                            ],
-                            "label": "food",
-                            "type": "food",
-                            "x": 210,
-                            "y": 21,
-                            "scaleX": 0.5,
-                            "scaleY": 0.5,
-                            "nestedPrefabs": [
-                                {
-                                    "prefabId": "a8db547c-2d98-4566-9764-46cedcab42e6",
-                                    "id": "d5e8f1a3-7c2b-4d9e-b3f6-8a1c4e7b2059",
-                                    "unlock": [
-                                        "texture",
-                                        "scaleX",
-                                        "scaleY"
-                                    ],
-                                    "label": "resource_icon",
-                                    "texture": {
-                                        "key": "gui",
-                                        "frame": "resource_icons/food.png"
-                                    },
-                                    "scaleX": 1,
-                                    "scaleY": 1
-                                }
-                            ]
-                        },
-                        {
-                            "prefabId": "edf897fc-9092-48ca-ac2c-627b24dfcc37",
                             "id": "503abec4-a5b5-448b-b4ba-3e5b291164b1",
                             "unlock": [
                                 "x",
@@ -95,7 +60,7 @@
                             ],
                             "label": "housing",
                             "type": "housing",
-                            "x": 168,
+                            "x": 210,
                             "y": 21,
                             "scaleX": 0.5,
                             "scaleY": 0.5,
@@ -130,7 +95,7 @@
                             ],
                             "label": "minerals",
                             "type": "minerals",
-                            "x": 126,
+                            "x": 168,
                             "y": 21,
                             "scaleX": 0.5,
                             "scaleY": 0.5,
@@ -165,7 +130,7 @@
                             ],
                             "label": "stone",
                             "type": "stone",
-                            "x": 84,
+                            "x": 126,
                             "y": 21,
                             "scaleX": 0.5,
                             "scaleY": 0.5,
@@ -200,7 +165,7 @@
                             ],
                             "label": "wood",
                             "type": "wood",
-                            "x": 42,
+                            "x": 84,
                             "y": 21,
                             "scaleX": 0.5,
                             "scaleY": 0.5,
@@ -217,6 +182,41 @@
                                     "texture": {
                                         "key": "gui",
                                         "frame": "resource_icons/wood.png"
+                                    },
+                                    "scaleX": 1,
+                                    "scaleY": 1
+                                }
+                            ]
+                        },
+                        {
+                            "prefabId": "edf897fc-9092-48ca-ac2c-627b24dfcc37",
+                            "id": "c1a4e7f2-3b9d-4e8a-a1c5-6d2f0e9b3471",
+                            "unlock": [
+                                "x",
+                                "y",
+                                "scaleX",
+                                "scaleY",
+                                "type"
+                            ],
+                            "label": "food",
+                            "type": "food",
+                            "x": 42,
+                            "y": 21,
+                            "scaleX": 0.5,
+                            "scaleY": 0.5,
+                            "nestedPrefabs": [
+                                {
+                                    "prefabId": "a8db547c-2d98-4566-9764-46cedcab42e6",
+                                    "id": "d5e8f1a3-7c2b-4d9e-b3f6-8a1c4e7b2059",
+                                    "unlock": [
+                                        "texture",
+                                        "scaleX",
+                                        "scaleY"
+                                    ],
+                                    "label": "resource_icon",
+                                    "texture": {
+                                        "key": "gui",
+                                        "frame": "resource_icons/food.png"
                                     },
                                     "scaleX": 1,
                                     "scaleY": 1

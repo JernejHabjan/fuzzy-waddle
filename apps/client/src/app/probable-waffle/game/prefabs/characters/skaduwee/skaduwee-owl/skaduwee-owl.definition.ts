@@ -56,7 +56,7 @@ export const skaduweeOwlDefinition = {
     productionCost: {
       resources: {
         [ResourceType.Stone]: 40,
-        [ResourceType.Minerals]: 100
+        [ResourceType.Food]: 100
       },
       refundFactor: 0.5,
       productionTime: 10000,

@@ -45,7 +45,7 @@ export const orcBoomerangDefinition = {
     },
     productionCost: {
       resources: {
-        [ResourceType.Minerals]: 90
+        [ResourceType.Food]: 90
       },
       refundFactor: 0.5,
       productionTime: 5500,

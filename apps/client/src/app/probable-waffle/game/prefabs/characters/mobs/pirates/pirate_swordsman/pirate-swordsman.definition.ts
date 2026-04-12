@@ -45,7 +45,7 @@ export const pirateSwordsmanDefinition = {
     },
     productionCost: {
       resources: {
-        [ResourceType.Minerals]: 80
+        [ResourceType.Food]: 80
       },
       refundFactor: 0.5,
       productionTime: 5000,
