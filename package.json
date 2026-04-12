@@ -60,7 +60,7 @@
     "@angular/pwa": "21.2.7",
     "@angular/router": "21.2.8",
     "@angular/service-worker": "21.2.8",
-    "@dicebear/core": "^9.2.4",
+    "@dicebear/core": "^9.4.1",
     "@dicebear/pixel-art": "^9.2.4",
     "@fortawesome/angular-fontawesome": "^3.0.0",
     "@fortawesome/fontawesome-svg-core": "^7.1.0",
