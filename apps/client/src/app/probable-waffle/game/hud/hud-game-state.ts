@@ -1,4 +1,4 @@
-import { GameSessionState } from "@fuzzy-waddle/api-interfaces";
+import { GameSessionState, ProbableWaffleGameInstanceType } from "@fuzzy-waddle/api-interfaces";
 import { ProbableWaffleScene } from "../core/probable-waffle.scene";
 import { Subscription } from "rxjs";
 import { getSceneService } from "../world/services/scene-component-helpers";
@@ -76,6 +76,11 @@ export class HudGameState {
         this.overlay.visible = true;
         break;
       case GameSessionState.StartingTheGame:
+        if (!this.shouldShowStartCountdown()) {
+          this.text.visible = false;
+          this.overlay.visible = false;
+          break;
+        }
         if (!this.text.active) return;
         this.text.text = "3";
         const soundDefinitionFinishBeep = UiFeedbackSfxCountdownFinalSound;
@@ -114,6 +119,14 @@ export class HudGameState {
         this.scene.destroy();
         break;
     }
+  }
+
+  private shouldShowStartCountdown(): boolean {
+    const gameType = this.probableWaffleScene.baseGameData.gameInstance.gameInstanceMetadata.data.type;
+    return (
+      gameType === ProbableWaffleGameInstanceType.Matchmaking ||
+      gameType === ProbableWaffleGameInstanceType.SelfHosted
+    );
   }
 
   private destroy() {
