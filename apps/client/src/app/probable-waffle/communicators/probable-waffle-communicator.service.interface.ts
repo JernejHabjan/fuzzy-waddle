@@ -51,6 +51,6 @@ export interface ProbableWaffleCommunicatorServiceInterface {
   /** Active socket for reconnect handling; undefined in single-player. */
   activeSocket?: Socket;
 
-  startCommunication(gameInstanceId: GameInstanceId, socket: Socket): void;
-  stopCommunication(gameInstanceId: GameInstanceId, socket: Socket): void;
+  startCommunication(gameInstanceId: GameInstanceId, socket?: Socket): void;
+  stopCommunication(gameInstanceId: GameInstanceId, socket?: Socket): void;
 }

@@ -326,7 +326,10 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   private async startListeningToGameInstanceEvents() {
     if (!this.currentGameInstanceId)
       throw new Error("Game instance not found in startListeningToGameInstanceEvents in GameInstanceClientService");
-    this.communicators = await this.sceneCommunicatorClientService.createCommunicators(this.currentGameInstanceId);
+    this.communicators = await this.sceneCommunicatorClientService.createCommunicators(
+      this.currentGameInstanceId,
+      this.shouldUseServerTransportForCurrentGame()
+    );
     this.listenToGameInstanceMetadataEvents();
     this.listenToGameModeDataEvents();
     this.listenToPlayerEvents();
@@ -343,7 +346,8 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     }
     await this.sceneCommunicatorClientService.destroyCommunicators(
       this.currentGameInstanceId,
-      this.communicatorSubscriptions
+      this.communicatorSubscriptions,
+      this.shouldUseServerTransportForCurrentGame()
     );
     this.communicatorSubscriptions = [];
     this.communicators = undefined;
@@ -769,5 +773,19 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     await this.ngZone.run(async () => {
       await this.router.navigate(["aota"]);
     });
+  }
+
+  private shouldUseServerTransportForCurrentGame(): boolean {
+    switch (this.getNormalizedGameInstanceType()) {
+      case ProbableWaffleGameInstanceType.SelfHosted:
+      case ProbableWaffleGameInstanceType.Matchmaking:
+        return true;
+      case ProbableWaffleGameInstanceType.Skirmish:
+      case ProbableWaffleGameInstanceType.InstantGame:
+      case ProbableWaffleGameInstanceType.Replay:
+        return false;
+      default:
+        return false;
+    }
   }
 }
