@@ -41,6 +41,7 @@ import { CommandBusService } from "../../world/services/command-bus.service";
 import { getCommunicator } from "../../data/scene-data";
 import { getBaseGameDataFromScene } from "../../../../shared/game/phaser/scene/base.scene";
 import type { ProbableWaffleGameData } from "../../core/probable-waffle-game-data";
+import { CancelableSimDelay } from "../../world/services/simulation-time";
 import Tween = Phaser.Tweens.Tween;
 import TweenChain = Phaser.Tweens.TweenChain;
 import GameObject = Phaser.GameObjects.GameObject;
@@ -48,6 +49,11 @@ import GameObject = Phaser.GameObjects.GameObject;
 export class MovementSystem {
   private _navigationService?: NavigationService;
   private _currentTween?: Tween | TweenChain;
+  // Sim-tick arrival timer — cancelled together with _currentTween on cancelMovement().
+  private _currentMovementDelay?: CancelableSimDelay;
+  // Held so cancelMovement() can resolve the promise when the tween already completed
+  // naturally but the sim-delay hadn't fired yet (edge case: duration < TICK_INTERVAL_MS).
+  private _resolveCurrentMovement?: () => void;
   private readonly DEBUG = false;
   private commandBusSubscription?: Subscription;
   private actorTranslateComponent?: ActorTranslateComponent;
@@ -430,10 +436,17 @@ export class MovementSystem {
   };
 
   cancelMovement() {
-    if (this._currentTween) {
-      this._currentTween.stop();
-      this._currentTween = undefined;
+    // Cancel the sim-tick arrival timer first so it can't fire after cancellation.
+    this._currentMovementDelay?.remove();
+    this._currentMovementDelay = undefined;
+    if (this._currentTween?.isPlaying()) {
+      this._currentTween.stop(); // triggers onStop → resolves the pending promise
+    } else if (this._resolveCurrentMovement) {
+      // Tween finished naturally but sim-delay hadn't fired; resolve the dangling promise.
+      this._resolveCurrentMovement();
     }
+    this._resolveCurrentMovement = undefined;
+    this._currentTween = undefined;
   }
 
   /**
@@ -520,19 +533,27 @@ export class MovementSystem {
         tileDistanceMultiplier
       );
 
+      // Store resolve so cancelMovement() can settle the promise even if the visual tween
+      // already finished naturally but the sim-delay timer hasn't fired yet.
+      this._resolveCurrentMovement = resolve;
+
+      // Visual tween — runs on wall-clock time for smooth rendering only.
+      // Logical tile arrival is driven by _currentMovementDelay below (same sim tick on all clients).
       this._currentTween = this.gameObject.scene.tweens.add({
         targets: logicalTransform,
         x: newLogicalTransform.x,
         y: newLogicalTransform.y,
         z: newLogicalTransform.z,
         duration,
-        onComplete: async () => {
-          if (onComplete) {
-            await onComplete();
-          }
-          resolve();
+        onComplete: () => {
+          // Visual tween reached destination; clear reference, logical arrival handled by sim-delay.
+          this._currentTween = undefined;
         },
         onStop: () => {
+          // Manual cancellation via cancelMovement() — cancel the sim-delay and settle.
+          this._currentMovementDelay?.remove();
+          this._currentMovementDelay = undefined;
+          this._resolveCurrentMovement = undefined;
           if (onStop) {
             onStop();
           } else {
@@ -546,6 +567,22 @@ export class MovementSystem {
           throttledTweenUpdate?.();
           config?.onUpdate?.();
         }
+      });
+
+      // Logical tile arrival — fires at the same simulation tick on all clients.
+      // Snaps logical position to destination in case the visual tween hasn't quite finished.
+      this._currentMovementDelay = new CancelableSimDelay(this.gameObject.scene, duration, async () => {
+        this._currentMovementDelay = undefined;
+        this._resolveCurrentMovement = undefined;
+        // Snap to destination so logical position is authoritative regardless of tween progress.
+        logicalTransform.x = newLogicalTransform.x;
+        logicalTransform.y = newLogicalTransform.y;
+        logicalTransform.z = newLogicalTransform.z;
+        this.tweenUpdate(logicalTransform);
+        if (onComplete) {
+          await onComplete();
+        }
+        resolve();
       });
     });
   }
