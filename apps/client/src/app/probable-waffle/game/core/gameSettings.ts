@@ -1,3 +1,5 @@
+import { isTauri } from "../../../shared/services/tauri.service";
+
 export class GameSettings {
   lockToScreen: boolean;
   enabledMouseCornerMovement: boolean;
@@ -6,8 +8,8 @@ export class GameSettings {
     // lockToScreen is disabled by default as it may be annoying for players in a browser environment
     // Note that there's also a jump when lock is disabled, which may cause discomfort to some players
     this.lockToScreen = false;
-    // enabledMouseCornerMovement is disabled by default as it works well only with lockToScreen
-    this.enabledMouseCornerMovement = false;
+    // In Tauri the whole window is the game canvas, so edge-scroll is always desirable
+    this.enabledMouseCornerMovement = isTauri();
   }
 
   init() {

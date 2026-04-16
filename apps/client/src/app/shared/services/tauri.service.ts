@@ -6,16 +6,20 @@ import { Injectable } from "@angular/core";
  * Uses `window.__TAURI_INTERNALS__` (runtime detection) to guard all Tauri calls.
  * This makes the service a safe no-op in browser builds.
  *
- * The Tauri Rust commands are declared in
- * `apps/probable-waffle-client/src-tauri/src/lib.rs`.
+ * The Tauri Rust commands are declared in `apps/client/src-tauri/src/lib.rs`.
  */
+/** Returns true when running inside a Tauri desktop window. */
+export function isTauri(): boolean {
+  return "__TAURI_INTERNALS__" in window;
+}
+
 @Injectable({
   providedIn: "root"
 })
 export class TauriService {
   /** Returns true when running inside a Tauri desktop window. */
   get isTauri(): boolean {
-    return "__TAURI_INTERNALS__" in window;
+    return isTauri();
   }
 
   /**

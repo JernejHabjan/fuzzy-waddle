@@ -9,7 +9,7 @@ import { HomeNavComponent } from "../../../shared/components/home-nav/home-nav.c
 import { CenterWrapperComponent } from "../../../shared/components/center-wrapper/center-wrapper.component";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
-import { TauriService } from "../../../shared/services/tauri.service";
+import { isTauri } from "../../../shared/services/tauri.service";
 
 @Component({
   templateUrl: "./options.component.html",
@@ -23,7 +23,7 @@ export class OptionsComponent implements OnInit {
   dialogRef?: NgbModalRef;
   private readonly cdr = inject(ChangeDetectorRef);
   protected readonly optionsService = inject(OptionsService);
-  protected readonly isTauri = inject(TauriService).isTauri;
+  protected readonly isTauri = isTauri();
   ngOnInit() {
     this.optionsService.init();
   }

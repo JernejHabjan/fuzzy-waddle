@@ -10,12 +10,14 @@ export interface CameraMovementHandlerConfig {
   cameraEdgeMovementSpeed: number;
   cameraKeyboardMovementSpeed: number;
   enabledMouseCornerMovement?: boolean;
+  /** Set to true when the cursor is guaranteed to already be inside the game window at startup (e.g. Tauri desktop). */
+  cursorOverGame?: boolean;
 }
 
 export class CameraMovementHandler {
   private readonly input: Input.InputPlugin;
   private readonly mainCamera: Cameras.Scene2D.Camera;
-  private cursorOverGameInstance = false;
+  private cursorOverGameInstance: boolean;
   private keyboardMovementControls: Cameras.Controls.FixedKeyControl | null = null;
   private readonly cameraEdgeMargin = 30;
   private readonly cameraMinZoom = 30;
@@ -30,6 +32,7 @@ export class CameraMovementHandler {
       cameraKeyboardMovementSpeed: 2
     }
   ) {
+    this.cursorOverGameInstance = config.cursorOverGame ?? false;
     this.mainCamera = scene.cameras.main;
     this.input = scene.input;
     this.createKeyboardControls();
@@ -274,10 +277,6 @@ export class CameraMovementHandler {
         });
       }
     });
-    // Apply saved settings immediately — the Subject only emits on future saves,
-    // so without this the config would only update after the user manually re-saves in Options.
-    const savedSettings = GameSettings.loadFromLocalStorage();
-    this.setConfig({ enabledMouseCornerMovement: savedSettings.enabledMouseCornerMovement });
   }
 
   private create() {

@@ -112,7 +112,8 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     return new CameraMovementHandler(this, {
       cameraEdgeMovementSpeed: 30,
       cameraKeyboardMovementSpeed: 2,
-      enabledMouseCornerMovement: gameSettings.enabledMouseCornerMovement
+      enabledMouseCornerMovement: gameSettings.enabledMouseCornerMovement,
+      cursorOverGame: true // by default assume we're in the game
     });
   }
 
