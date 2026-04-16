@@ -5,7 +5,7 @@
   "identifier": "com.fuzzywaddle.probablewaffle",
   "build": {
     "frontendDist": "../../dist/apps/probable-waffle-client",
-    "devUrl": "http://localhost:4200"
+    "devUrl": "http://localhost:4200/aota"
   },
   "app": {
     "windows": [
@@ -14,7 +14,7 @@
         "width": 1280,
         "height": 720,
         "resizable": true,
-        "fullscreen": false,
+        "fullscreen": true,
         "minWidth": 800,
         "minHeight": 600
       }

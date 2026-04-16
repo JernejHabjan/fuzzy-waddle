@@ -1,11 +1,9 @@
 import { Injectable } from "@angular/core";
-import { environment } from "../../../environments/environment";
 
 /**
  * Bridges Angular with Tauri native capabilities when running as a desktop app.
  *
- * Uses both `environment.isDesktop` (build-time flag for tree-shaking) and
- * `window.__TAURI_INTERNALS__` (runtime detection) to guard all Tauri calls.
+ * Uses `window.__TAURI_INTERNALS__` (runtime detection) to guard all Tauri calls.
  * This makes the service a safe no-op in browser builds.
  *
  * The Tauri Rust commands are declared in
@@ -17,7 +15,7 @@ import { environment } from "../../../environments/environment";
 export class TauriService {
   /** Returns true when running inside a Tauri desktop window. */
   get isTauri(): boolean {
-    return environment.isDesktop && "__TAURI_INTERNALS__" in window;
+    return "__TAURI_INTERNALS__" in window;
   }
 
   /**
@@ -49,5 +47,18 @@ export class TauriService {
    */
   async releaseCursor(): Promise<void> {
     await this.setCursorGrab(false);
+  }
+
+  /** Exits the desktop application. No-op in browser builds. */
+  async quit(): Promise<void> {
+    if (!this.isTauri) {
+      return;
+    }
+    try {
+      const { invoke } = await import("@tauri-apps/api/core");
+      await invoke("quit");
+    } catch (err) {
+      console.error("[TauriService] quit failed:", err);
+    }
   }
 }

@@ -8,7 +8,6 @@ import packageJson from "../../../../package.json";
 
 export const environment: Environment = {
   production: false,
-  isDesktop: false,
   api: "http://localhost:3333/",
   supabase: {
     url: "https://bhzetyxjimpabioxoodz.supabase.co",

@@ -4,7 +4,6 @@ import packageJson from "../../../../package.json";
 
 export const environment: Environment = {
   production: true,
-  isDesktop: false,
   api: "https://fuzzy-waddle-api.onrender.com/",
   supabase: {
     url: "https://bhzetyxjimpabioxoodz.supabase.co",

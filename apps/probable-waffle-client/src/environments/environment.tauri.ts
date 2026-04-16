@@ -7,7 +7,6 @@ import packageJson from "../../../../package.json";
 
 export const environment: Environment = {
   production: true,
-  isDesktop: true,
   // The hosted NestJS API — desktop app connects to the same backend as the web app.
   api: "https://fuzzy-waddle-api.onrender.com/",
   supabase: {

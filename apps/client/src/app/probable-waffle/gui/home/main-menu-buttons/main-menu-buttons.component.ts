@@ -1,7 +1,8 @@
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 
 import { environment } from "../../../../../environments/environment";
 import { RouterLink } from "@angular/router";
+import { TauriService } from "../../../../shared/services/tauri.service";
 
 @Component({
   selector: "probable-waffle-main-menu-buttons",
@@ -18,4 +19,12 @@ export class MainMenuButtonsComponent {
   protected readonly enabledCampaign = !environment.production;
   protected readonly enabledProgress = true; // finished in #414
   protected readonly enabledOptions = true;
+
+  private readonly tauriService = inject(TauriService);
+  protected readonly isTauri = this.tauriService.isTauri;
+
+  protected quit(): void {
+    // noinspection JSIgnoredPromiseFromCall
+    this.tauriService.quit();
+  }
 }
