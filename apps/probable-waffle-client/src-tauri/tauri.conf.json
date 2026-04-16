@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "identifier": "com.fuzzywaddle.probablewaffle",
   "build": {
-    "frontendDist": "../../dist/apps/probable-waffle-client",
+    "frontendDist": "../../../dist/apps/probable-waffle-client",
     "devUrl": "http://localhost:4200/aota"
   },
   "app": {
