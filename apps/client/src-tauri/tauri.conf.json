@@ -10,7 +10,6 @@
   "app": {
     "windows": [
       {
-        "url": "/aota",
         "title": "Ashes of the Ancients",
         "width": 1280,
         "height": 720,

@@ -3,9 +3,10 @@ import type { OnInit } from "@angular/core";
 import { AuthService } from "./auth/auth.service";
 import { ServerHealthService } from "./shared/services/server-health.service";
 import { SwRefreshComponent } from "./shared/components/sw-refresh/sw-refresh.component";
-import { RouterOutlet } from "@angular/router";
+import { Router, RouterOutlet } from "@angular/router";
 import { AngularHost } from "./shared/consts";
 import { ToastContainerComponent } from "./shared/components/toast-container.component";
+import { TauriService } from "./shared/services/tauri.service";
 
 @Component({
   selector: "fuzzy-waddle-root",
@@ -17,6 +18,8 @@ import { ToastContainerComponent } from "./shared/components/toast-container.com
 export class AppComponent implements OnInit {
   protected readonly authService = inject(AuthService);
   private readonly serverHealthService = inject(ServerHealthService);
+  private readonly tauriService = inject(TauriService);
+  private readonly router = inject(Router);
 
   ngOnInit() {
     // Don't block rendering - let health check and auth run in background
@@ -24,5 +27,9 @@ export class AppComponent implements OnInit {
     this.serverHealthService.checkHealth();
     // noinspection JSIgnoredPromiseFromCall
     this.authService.autoSignIn();
+    if (this.tauriService.isTauri) {
+      // noinspection JSIgnoredPromiseFromCall
+      this.router.navigateByUrl("/aota");
+    }
   }
 }
