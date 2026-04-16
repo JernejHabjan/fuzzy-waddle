@@ -64,7 +64,30 @@
       </div>
     }
 
-    <div class="menu-section">
+    @if (isTauri) {
+      <div class="menu-section">
+        <h3 class="menu-section-title">Account</h3>
+        <div class="section-buttons">
+          @if (!authService.processing && !authService.isAuthenticated) {
+            <button class="menu-button" (click)="authService.signInWithGoogle()">
+              <span class="menu-button-text"><fa-icon [icon]="faGoogle" /> Sign In</span>
+              <span class="menu-button-description">Sign in with Google</span>
+            </button>
+          }
+          @if (!authService.processing && authService.isAuthenticated) {
+            <a class="menu-button" routerLink="/profile">
+              <span class="menu-button-text">
+                <img alt="avatar" height="24" [src]="avatarProviderService.getAvatar(authService.userId!)" />
+                {{ authService.fullName! }}
+              </span>
+              <span class="menu-button-description">View profile</span>
+            </a>
+          }
+        </div>
+      </div>
+    }
+
+<div class="menu-section">
       <h3 class="menu-section-title">Options</h3>
       <div class="section-buttons">
         @if (enabledProgress) {

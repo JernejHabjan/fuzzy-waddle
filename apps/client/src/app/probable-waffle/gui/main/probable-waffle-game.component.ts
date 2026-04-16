@@ -19,6 +19,7 @@ import { TauriService } from "../../../shared/services/tauri.service";
   imports: [GameContainerComponent],
   host: {
     ...AngularHost.contentFlexFullHeight,
+    "(window:focus)": "onWindowFocus()",
     "(window:blur)": "onWindowBlur()"
   }
 })
@@ -57,6 +58,11 @@ export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
         }
       }
     );
+  }
+
+  protected onWindowFocus(): void {
+    // noinspection JSIgnoredPromiseFromCall
+    this.tauriService.setCursorGrab(true);
   }
 
   /** Release cursor lock when the window loses focus (e.g. Alt+Tab). */

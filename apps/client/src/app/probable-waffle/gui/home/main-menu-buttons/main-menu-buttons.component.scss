@@ -42,13 +42,9 @@
     flex-direction: column;
   }
 
-  // When there's only one button, it should take the right column
+  // When there's only one button, collapse to a single column (no gap)
   &:has(.menu-button:only-child) {
-    grid-template-columns: 0 1fr;
-
-    .menu-button {
-      grid-column: 2;
-    }
+    grid-template-columns: 1fr;
   }
 }
 
@@ -59,10 +55,6 @@
 
     &:has(.menu-button:only-child) {
       grid-template-columns: 1fr;
-
-      .menu-button {
-        grid-column: 1;
-      }
     }
   }
 }

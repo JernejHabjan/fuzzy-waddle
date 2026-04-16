@@ -3,10 +3,14 @@ import { Component, inject } from "@angular/core";
 import { environment } from "../../../../../environments/environment";
 import { RouterLink } from "@angular/router";
 import { TauriService } from "../../../../shared/services/tauri.service";
+import { AuthService } from "../../../../auth/auth.service";
+import { AvatarProviderService } from "../../../../shared/components/chat/avatar-provider/avatar-provider.service";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 
 @Component({
   selector: "probable-waffle-main-menu-buttons",
-  imports: [RouterLink],
+  imports: [RouterLink, FaIconComponent],
   templateUrl: "./main-menu-buttons.component.html",
   styleUrl: "./main-menu-buttons.component.scss"
 })
@@ -22,6 +26,9 @@ export class MainMenuButtonsComponent {
 
   private readonly tauriService = inject(TauriService);
   protected readonly isTauri = this.tauriService.isTauri;
+  protected readonly authService = inject(AuthService);
+  protected readonly avatarProviderService = inject(AvatarProviderService);
+  protected readonly faGoogle = faGoogle;
 
   protected quit(): void {
     // noinspection JSIgnoredPromiseFromCall

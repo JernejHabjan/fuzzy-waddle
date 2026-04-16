@@ -48,23 +48,25 @@
 
     <div class="card mt-3 p-3">
       <h5 class="mb-3">Game Controls:</h5>
-      <div class="mb-3 form-check">
-        <input
-          type="checkbox"
-          [(ngModel)]="optionsService.gameSettings.lockToScreen"
-          (change)="saveToLocalStorage('game')"
-          class="form-check-input"
-          id="lockToScreen"
-        />
-        <label class="form-check-label" for="lockToScreen">
-          Lock cursor to screen
-          <span
-            class="info-icon"
-            title="Locks cursor to game window. Automatically releases when dialogs open. Cursor position may jump when releasing lock."
-            ><fa-icon [icon]="faInfoCircle" />
-          </span>
-        </label>
-      </div>
+      @if (!isTauri) {
+        <div class="mb-3 form-check">
+          <input
+            type="checkbox"
+            [(ngModel)]="optionsService.gameSettings.lockToScreen"
+            (change)="saveToLocalStorage('game')"
+            class="form-check-input"
+            id="lockToScreen"
+          />
+          <label class="form-check-label" for="lockToScreen">
+            Lock cursor to screen
+            <span
+              class="info-icon"
+              title="Locks cursor to game window. Automatically releases when dialogs open. Cursor position may jump when releasing lock."
+              ><fa-icon [icon]="faInfoCircle" />
+            </span>
+          </label>
+        </div>
+      }
       <div class="mb-3 form-check">
         <input
           type="checkbox"
