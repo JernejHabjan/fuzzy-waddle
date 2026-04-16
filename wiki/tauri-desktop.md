@@ -27,4 +27,8 @@ pnpm tauri:dev
 pnpm tauri:build
 ```
 
-Output: `apps/client/src-tauri/target/release/bundle/nsis/Probable Waffle_<version>_x64-setup.exe`
+Output: `apps/client/src-tauri/target/release/bundle/nsis/Ashes of the Ancients_<version>_x64-setup.exe`
+
+## Notes
+
+- **CSP (`app.security.csp: null`)** — Content Security Policy is disabled in `tauri.conf.json`. Phaser inlines scripts/blobs and loads assets from `tauri://localhost` in ways that conflict with most restrictive CSP rules. Re-enable and tighten once a working policy is established.
