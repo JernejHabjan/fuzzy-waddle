@@ -27,4 +27,4 @@ pnpm tauri:dev
 pnpm tauri:build
 ```
 
-Output: `apps/probable-waffle-client/src-tauri/target/release/bundle/nsis/Probable Waffle_<version>_x64-setup.exe`
+Output: `apps/client/src-tauri/target/release/bundle/nsis/Probable Waffle_<version>_x64-setup.exe`

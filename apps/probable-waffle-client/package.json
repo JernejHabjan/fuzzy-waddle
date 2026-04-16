@@ -1,8 +1,0 @@
-{
-  "name": "probable-waffle-client-tauri",
-  "private": true,
-  "scripts": {
-    "tauri:dev": "tauri dev",
-    "tauri:build": "tauri build"
-  }
-}

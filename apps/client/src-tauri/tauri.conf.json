@@ -1,16 +1,17 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "Probable Waffle",
+  "productName": "Ashes of the Ancients",
   "version": "1.0.0",
   "identifier": "com.fuzzywaddle.probablewaffle",
   "build": {
-    "frontendDist": "../../../dist/apps/probable-waffle-client",
+    "frontendDist": "../../../dist/apps/client",
     "devUrl": "http://localhost:4200/aota"
   },
   "app": {
     "windows": [
       {
-        "title": "Probable Waffle — Age of the Architects",
+        "url": "/aota",
+        "title": "Ashes of the Ancients",
         "width": 1280,
         "height": 720,
         "resizable": true,

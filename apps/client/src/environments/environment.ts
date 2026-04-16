@@ -5,7 +5,6 @@
 import type { Environment } from "./environment-type";
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import packageJson from "../../../../package.json";
-
 export const environment: Environment = {
   production: false,
   api: "http://localhost:3333/",
