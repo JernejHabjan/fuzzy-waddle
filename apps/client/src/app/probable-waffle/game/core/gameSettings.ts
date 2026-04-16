@@ -1,4 +1,4 @@
-import { isTauri } from "../../../shared/services/tauri.service";
+import { isTauri } from "../../../shared/utils/tauri";
 
 export class GameSettings {
   lockToScreen: boolean;

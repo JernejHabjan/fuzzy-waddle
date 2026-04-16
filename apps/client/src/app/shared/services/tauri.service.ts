@@ -1,4 +1,7 @@
 import { Injectable } from "@angular/core";
+import { isTauri } from "../utils/tauri";
+
+export { isTauri };
 
 /**
  * Bridges Angular with Tauri native capabilities when running as a desktop app.
@@ -8,10 +11,6 @@ import { Injectable } from "@angular/core";
  *
  * The Tauri Rust commands are declared in `apps/client/src-tauri/src/lib.rs`.
  */
-/** Returns true when running inside a Tauri desktop window. */
-export function isTauri(): boolean {
-  return "__TAURI_INTERNALS__" in window;
-}
 
 @Injectable({
   providedIn: "root"

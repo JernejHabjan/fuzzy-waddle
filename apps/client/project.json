@@ -133,9 +133,12 @@
     },
     "tauri-build": {
       "executor": "nx:run-commands",
-      "dependsOn": ["build"],
       "options": {
-        "command": "cd apps/client && pnpm exec tauri build",
+        "commands": [
+          "nx build client --configuration=tauri",
+          "cd apps/client && pnpm exec tauri build"
+        ],
+        "parallel": false,
         "cwd": "{workspaceRoot}"
       }
     }
