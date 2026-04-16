@@ -14,8 +14,7 @@
     "emitDecoratorMetadata": false,
     "baseUrl": ".",
     "paths": {
-      "@fuzzy-waddle/api-interfaces": ["libs/api-interfaces/src/index.ts"],
-      "@fuzzy-waddle/client/*": ["apps/client/src/*"]
+      "@fuzzy-waddle/api-interfaces": ["libs/api-interfaces/src/index.ts"]
     },
     "strict": true,
     "noUnusedLocals": false,
