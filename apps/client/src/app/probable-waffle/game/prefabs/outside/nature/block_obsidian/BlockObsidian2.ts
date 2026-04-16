@@ -3,10 +3,7 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { setActorData } from "../../../../data/actor-data";
-import { ColliderComponent } from "../../../../entity/components/movement/collider-component";
-import { ObjectDescriptorComponent } from "../../../../entity/components/object-descriptor-component";
-import { ObjectDescriptorDefinition } from "../../../../entity/components/object-descriptor-definition";
+import { initStaticActor } from "../../../../data/init-static-actor";
 /* END-USER-IMPORTS */
 
 export default class BlockObsidian2 extends Phaser.GameObjects.Image {
@@ -22,16 +19,7 @@ export default class BlockObsidian2 extends Phaser.GameObjects.Image {
     this.setOrigin(0.5, 0.7522906265785319);
 
     /* START-USER-CTR-CODE */
-    setActorData(
-      this,
-      [
-        new ObjectDescriptorComponent({
-          color: 0x49463c
-        } satisfies ObjectDescriptorDefinition),
-        new ColliderComponent(this)
-      ],
-      []
-    );
+    initStaticActor(this, 0x49463c, true);
     /* END-USER-CTR-CODE */
   }
 

@@ -45,7 +45,7 @@ export const skeletonSwordsmanDefinition = {
     },
     productionCost: {
       resources: {
-        [ResourceType.Minerals]: 70
+        [ResourceType.Food]: 70
       },
       refundFactor: 0.5,
       productionTime: 4500,

@@ -435,6 +435,7 @@ export class NavigationService {
     this.scene.children.each((child) => {
       const colliderComponent = getActorComponent(child, ColliderComponent);
       if (!colliderComponent) return;
+      if (!colliderComponent.colliderDefinition?.enabled) return;
       const tilesUnderObject = getTileCoordsUnderObject(this.tilemap, child);
       colliders.push(...tilesUnderObject);
     });

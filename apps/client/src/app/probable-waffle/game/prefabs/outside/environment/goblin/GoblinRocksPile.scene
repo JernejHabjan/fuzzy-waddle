@@ -1,0 +1,40 @@
+{
+    "id": "5bd89917-dc5d-4cdb-b98e-1c4c8c91f36a",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "3e6a43e0-39dd-4251-8160-41806653ef55",
+            "label": "goblin_rocks_pile_png",
+            "hitArea.shape": "RECTANGLE",
+            "hitArea.width": 24,
+            "hitArea.height": 18,
+            "texture": {
+                "key": "environment_1",
+                "frame": "goblin/rocks_pile.png"
+            },
+            "x": 32,
+            "y": 48,
+            "originY": 0.75
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

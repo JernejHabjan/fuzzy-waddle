@@ -45,7 +45,7 @@ export const centurionDefinition = {
     },
     productionCost: {
       resources: {
-        [ResourceType.Minerals]: 140
+        [ResourceType.Food]: 140
       },
       refundFactor: 0.5,
       productionTime: 5000,

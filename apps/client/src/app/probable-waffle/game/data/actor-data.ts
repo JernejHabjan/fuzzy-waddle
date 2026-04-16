@@ -44,6 +44,7 @@ import { SpellComponent } from "../entity/components/combat/components/spell-com
 import { SpellCastingSystem } from "../entity/systems/spell-casting.system";
 import { ResearchComponent } from "../entity/components/research/research-component";
 import { LevelComponent } from "../entity/components/level/level-component";
+import { TendableComponent } from "../entity/components/tendable/tendable-component";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export const ActorDataKey = "actorData";
@@ -196,7 +197,8 @@ function gatherCompletedActorData(actor: Phaser.GameObjects.GameObject): { compo
     ...(componentDefinitions?.animatable ? [new AnimationActorComponent(actor, componentDefinitions.animatable)] : []),
     ...(componentDefinitions?.shipAnimatable ? [new ShipAnimationComponent(actor, componentDefinitions.shipAnimatable)] : []),
     ...(componentDefinitions?.aiControlled ? [new PawnAiController(actor, componentDefinitions.aiControlled)] : []),
-    ...(componentDefinitions?.level ? [new LevelComponent(actor, componentDefinitions.level)] : [])
+    ...(componentDefinitions?.level ? [new LevelComponent(actor, componentDefinitions.level)] : []),
+    ...(componentDefinitions?.tendable ? [new TendableComponent(actor, componentDefinitions.tendable)] : [])
   ];
 
   const systemDefinitions = definition.systems;

@@ -195,6 +195,15 @@ export class ActionSystem {
             return new OrderData(OrderType.EnterContainer, { targetGameObject });
           }
         }
+
+        // Player-owned resource sources (e.g. Field) — gatherer can harvest them
+        const targetResourceSourceComponent = getActorComponent(targetGameObject, ResourceSourceComponent);
+        if (targetResourceSourceComponent) {
+          const selfGathererComponent = getActorComponent(this.gameObject, GathererComponent);
+          if (selfGathererComponent) {
+            return new OrderData(OrderType.Gather, { targetGameObject });
+          }
+        }
       } else {
         // enemy
 

@@ -45,7 +45,7 @@ export const skeletonBowmanDefinition = {
     },
     productionCost: {
       resources: {
-        [ResourceType.Minerals]: 75
+        [ResourceType.Food]: 75
       },
       refundFactor: 0.5,
       productionTime: 4500,

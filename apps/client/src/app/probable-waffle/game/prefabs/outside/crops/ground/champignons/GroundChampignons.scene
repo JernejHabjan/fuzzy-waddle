@@ -1,0 +1,42 @@
+{
+    "id": "340a96bc-f568-4c33-b530-337e20b7938f",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "32628b20-2a1e-41cf-8a67-5299d6fdd319",
+            "label": "ground_champignons_9_png",
+            "hitArea.shape": "RECTANGLE",
+            "hitArea.x": 2,
+            "hitArea.y": 12,
+            "hitArea.width": 11.267511314512866,
+            "hitArea.height": 15.573882354433351,
+            "texture": {
+                "key": "crops",
+                "frame": "ground/champignons/9.png"
+            },
+            "x": 32,
+            "y": 48,
+            "originY": 0.75
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}
