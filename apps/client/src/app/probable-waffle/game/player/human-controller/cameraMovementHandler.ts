@@ -274,6 +274,10 @@ export class CameraMovementHandler {
         });
       }
     });
+    // Apply saved settings immediately — the Subject only emits on future saves,
+    // so without this the config would only update after the user manually re-saves in Options.
+    const savedSettings = GameSettings.loadFromLocalStorage();
+    this.setConfig({ enabledMouseCornerMovement: savedSettings.enabledMouseCornerMovement });
   }
 
   private create() {
