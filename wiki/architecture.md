@@ -16,16 +16,13 @@
 ```
 fuzzy-waddle/
 ├── apps/
-│   ├── client/                   # Angular SPA + all Phaser games (web)
-│   ├── probable-waffle-client/   # Standalone Angular app for desktop (Tauri)
-│   │   └── src-tauri/            # Tauri v2 Rust shell
-│   └── api/                      # NestJS backend
+│   ├── client/          # Angular SPA + all Phaser games (web + desktop)
+│   │   └── src-tauri/   # Tauri v2 Rust shell (Probable Waffle desktop)
+│   └── api/             # NestJS backend
 ├── libs/
 │   └── api-interfaces/  # Shared TypeScript contracts (client ↔ server)
 ├── DBMs/                # SQL migration scripts
 ```
-
-`probable-waffle-client` reuses all game code, services, and assets from `apps/client` via the `@fuzzy-waddle/client/*` path alias — no code is duplicated.
 
 ## Games
 
@@ -54,12 +51,13 @@ Each game follows the same layout:
 
 ## Desktop App Architecture (Tauri)
 
-`apps/probable-waffle-client` is a standalone Angular app that wraps only the Probable Waffle (AOTA) game for desktop distribution.
+The Probable Waffle desktop app is built directly from `apps/client` — no separate wrapper app.
 
-- Bootstraps with its own `main.ts` and `app.routes.ts` — no service worker, no other games
-- Three build configurations: `production` (web), `development`, and `tauri` (sets `environment.isDesktop = true`)
-- `TauriService` (`apps/client/src/app/shared/services/tauri.service.ts`) provides cursor locking for RTS edge-scroll panning via a custom Rust command — is a no-op in browser builds
-- The Rust shell lives in `src-tauri/src/lib.rs` and exposes one command: `set_cursor_grab(grab: bool)`
+- `apps/client/src-tauri/` contains the Tauri v2 Rust shell
+- `apps/client/project.json` has three build configs: `production` (web), `development`, and `tauri` (swaps `environment.ts` → `environment.prod.ts`, disables service worker)
+- `TauriService` (`apps/client/src/app/shared/services/tauri.service.ts`) and standalone `isTauri()` provide runtime Tauri detection — no-ops in browser builds
+- The Rust shell exposes two commands: `set_cursor_grab(grab: bool)` (RTS edge-scroll cursor lock) and `quit()`
+- On startup in Tauri, `AppComponent` automatically navigates to `/aota`
 - Connects to the same hosted NestJS API as the web app
 
 See [Tauri Desktop](tauri-desktop.md) for prerequisites and build instructions.
