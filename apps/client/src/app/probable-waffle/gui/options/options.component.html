@@ -46,6 +46,27 @@
       </div>
     </div>
 
+    @if (isTauri) {
+      <div class="card mt-3 p-3">
+        <h5 class="mb-3">Display:</h5>
+        <div class="mb-3 form-check form-switch">
+          <input
+            type="checkbox"
+            class="form-check-input"
+            id="fullscreenToggle"
+            [checked]="isFullscreen()"
+            (change)="toggleFullscreen()"
+          />
+          <label class="form-check-label" for="fullscreenToggle">
+            Fullscreen
+            <span class="info-icon" title="Toggle between fullscreen and windowed mode. You can also use the title bar button when windowed.">
+              <fa-icon [icon]="faInfoCircle" />
+            </span>
+          </label>
+        </div>
+      </div>
+    }
+
     <div class="card mt-3 p-3">
       <h5 class="mb-3">Game Controls:</h5>
       @if (!isTauri) {

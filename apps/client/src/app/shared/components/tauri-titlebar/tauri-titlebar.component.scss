@@ -1,0 +1,117 @@
+// ── Tokens (mirrors _variables.scss) ─────────────────────────────────────────
+$navy-deep:  #0a0e1a;
+$navy-dark:  #141a26;
+$navy:       #001f4d;
+$navy-mid:   #1a3060;
+$gold:       #c9a84c;
+$silver:     #b0c9e0;
+$white:      #f0f4ff;
+
+$bar-height: 32px;
+
+// ── Bar ───────────────────────────────────────────────────────────────────────
+:host {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10000;
+  height: $bar-height;
+}
+
+.titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: $bar-height;
+  background: linear-gradient(to right, $navy-deep, $navy);
+  border-bottom: 1px solid rgba($gold, 0.25);
+  user-select: none;
+  -webkit-user-select: none;
+  padding: 0;
+}
+
+// ── Left: icon + title ────────────────────────────────────────────────────────
+.titlebar-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  cursor: default;
+}
+
+.titlebar-icon {
+  font-size: 0.85rem;
+  color: $gold;
+  opacity: 0.8;
+  flex-shrink: 0;
+}
+
+.titlebar-title {
+  font-family: "EagleLake", serif;
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  color: rgba($silver, 0.75);
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// ── Controls ──────────────────────────────────────────────────────────────────
+.titlebar-controls {
+  display: flex;
+  height: 100%;
+  flex-shrink: 0;
+}
+
+.titlebar-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: $bar-height;
+  background: transparent;
+  border: none;
+  color: rgba($silver, 0.7);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+
+  &:hover {
+    background: rgba($silver, 0.1);
+    color: $white;
+  }
+
+  &:active {
+    background: rgba($silver, 0.18);
+  }
+
+  &--fullscreen {
+    font-size: 0.9rem;
+    color: rgba($silver, 0.5);
+
+    &:hover {
+      background: rgba($gold, 0.12);
+      color: $gold;
+    }
+  }
+
+  &--close {
+    &:hover {
+      background: #c0392b;
+      color: $white;
+    }
+
+    &:active {
+      background: #962d22;
+    }
+  }
+}

@@ -119,4 +119,8 @@
       </button>
     }
   </div>
+
+  @if (isTauri && appVersion()) {
+    <div class="app-version">v{{ appVersion() }}</div>
+  }
 </div>

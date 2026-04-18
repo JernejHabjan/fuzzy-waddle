@@ -1,0 +1,50 @@
+@if (shouldRender && !isFullscreen()) {
+  <div class="titlebar" data-tauri-drag-region>
+    <div class="titlebar-left" data-tauri-drag-region>
+      <span class="titlebar-icon" aria-hidden="true">⚔</span>
+      <span class="titlebar-title" data-tauri-drag-region>Ashes of the Ancients</span>
+    </div>
+
+    <div class="titlebar-controls">
+      <button
+        class="titlebar-btn titlebar-btn--fullscreen"
+        title="Toggle fullscreen"
+        (click)="toggleFullscreen()"
+        aria-label="Toggle fullscreen"
+      >
+        ⛶
+      </button>
+
+      <button
+        class="titlebar-btn titlebar-btn--minimize"
+        title="Minimize"
+        (click)="minimize()"
+        aria-label="Minimize"
+      >
+        &#x2013;
+      </button>
+
+      <button
+        class="titlebar-btn titlebar-btn--maximize"
+        [title]="isMaximized() ? 'Restore' : 'Maximize'"
+        (click)="toggleMaximize()"
+        [attr.aria-label]="isMaximized() ? 'Restore window' : 'Maximize window'"
+      >
+        @if (isMaximized()) {
+          &#x2752;
+        } @else {
+          &#x25A1;
+        }
+      </button>
+
+      <button
+        class="titlebar-btn titlebar-btn--close"
+        title="Close"
+        (click)="close()"
+        aria-label="Close"
+      >
+        &#x2715;
+      </button>
+    </div>
+  </div>
+}

@@ -193,6 +193,17 @@
   }
 }
 
+// Version badge (Tauri desktop only)
+.app-version {
+  font-family: $app-font-bold;
+  font-size: 0.65rem;
+  color: rgba($secondary, 0.45);
+  text-align: right;
+  letter-spacing: 0.08em;
+  padding-right: 4px;
+  margin-top: -1rem; // Tuck up under the quit button
+}
+
 // Custom scrollbar using variable colors
 .main-menu::-webkit-scrollbar {
   width: 8px;

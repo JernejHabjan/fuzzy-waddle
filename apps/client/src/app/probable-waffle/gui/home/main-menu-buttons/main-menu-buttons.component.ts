@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { Component, inject, signal, type OnInit } from "@angular/core";
 
 import { environment } from "../../../../../environments/environment";
 import { RouterLink } from "@angular/router";
@@ -14,7 +14,7 @@ import { faGoogle } from "@fortawesome/free-brands-svg-icons";
   templateUrl: "./main-menu-buttons.component.html",
   styleUrl: "./main-menu-buttons.component.scss"
 })
-export class MainMenuButtonsComponent {
+export class MainMenuButtonsComponent implements OnInit {
   protected readonly enabledInstantDemoGame = !environment.production;
   protected readonly enabledMultiplayer = !environment.production;
   protected readonly enabledReplay = !environment.production;
@@ -29,6 +29,14 @@ export class MainMenuButtonsComponent {
   protected readonly authService = inject(AuthService);
   protected readonly avatarProviderService = inject(AvatarProviderService);
   protected readonly faGoogle = faGoogle;
+  protected readonly appVersion = signal<string>("");
+
+  async ngOnInit(): Promise<void> {
+    if (this.isTauri) {
+      const version = await this.tauriService.getAppVersion();
+      this.appVersion.set(version);
+    }
+  }
 
   protected quit(): void {
     // noinspection JSIgnoredPromiseFromCall

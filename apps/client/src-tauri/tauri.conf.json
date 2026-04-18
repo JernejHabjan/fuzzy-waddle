@@ -11,16 +11,24 @@
     "windows": [
       {
         "title": "Ashes of the Ancients",
-        "width": 1280,
-        "height": 720,
+        "width": 1920,
+        "height": 1080,
         "resizable": true,
         "fullscreen": true,
-        "minWidth": 800,
-        "minHeight": 600
+        "minWidth": 1280,
+        "minHeight": 720,
+        "decorations": false
       }
     ],
     "security": {
       "csp": null
+    }
+  },
+  "plugins": {
+    "deep-link": {
+      "desktop": {
+        "schemes": ["com.fuzzywaddle.probablewaffle"]
+      }
     }
   },
   "bundle": {

@@ -22,14 +22,19 @@ export class ProbableWaffleComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.userInstanceService.setVisitedGame("aota");
-    // Lock cursor to window for edge-scroll panning (Tauri desktop only — no-op in browser)
     // noinspection JSIgnoredPromiseFromCall
-    this.tauriService.setCursorGrab(true);
+    this.applyCursorGrab();
   }
 
   protected onWindowFocus(): void {
     // noinspection JSIgnoredPromiseFromCall
-    this.tauriService.setCursorGrab(true);
+    this.applyCursorGrab();
+  }
+
+  /** Lock cursor only when running fullscreen — in windowed mode the cursor must be free. */
+  private async applyCursorGrab(): Promise<void> {
+    const fullscreen = await this.tauriService.isFullscreen();
+    await this.tauriService.setCursorGrab(fullscreen);
   }
 
   /** Release cursor lock when the window loses focus (e.g. Alt+Tab). */

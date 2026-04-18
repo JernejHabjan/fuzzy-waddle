@@ -1,0 +1,229 @@
+// ── Tokens ────────────────────────────────────────────────────────────────────
+$navy-deep: #0a0e1a;
+$navy-dark: #141a26;
+$navy-mid: #001f4d;
+$gold: #c9a84c;
+$gold-light: #e8c96a;
+$silver: #b0c9e0;
+$white: #f0f4ff;
+
+// ── Overlay ───────────────────────────────────────────────────────────────────
+.splash-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(ellipse at 50% 40%, #0e1626 0%, $navy-deep 70%);
+  overflow: hidden;
+
+  // Phase animations
+  opacity: 0;
+  transition: opacity 0.6s ease;
+
+  &.phase-entering {
+    animation: splash-fade-in 0.6s forwards;
+  }
+
+  &.phase-visible {
+    opacity: 1;
+  }
+
+  &.phase-leaving {
+    animation: splash-fade-out 0.8s forwards;
+  }
+}
+
+@keyframes splash-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes splash-fade-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+// ── Corner frames ─────────────────────────────────────────────────────────────
+.corner {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  border-color: $gold;
+  border-style: solid;
+  animation: corner-grow 0.8s 0.2s forwards;
+  opacity: 0;
+
+  &--tl { top: 32px;    left: 32px;    border-width: 2px 0 0 2px; }
+  &--tr { top: 32px;    right: 32px;   border-width: 2px 2px 0 0; }
+  &--bl { bottom: 32px; left: 32px;    border-width: 0 0 2px 2px; }
+  &--br { bottom: 32px; right: 32px;   border-width: 0 2px 2px 0; }
+}
+
+@keyframes corner-grow {
+  from { opacity: 0; transform: scale(0.4); }
+  to   { opacity: 0.7; transform: scale(1); }
+}
+
+// ── Particles ─────────────────────────────────────────────────────────────────
+.particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: $gold;
+  opacity: 0;
+  animation: particle-float calc(4s + var(--i, 0) * 0.3s) calc(var(--i, 0) * 0.2s) infinite ease-in-out;
+  left: calc(5% + var(--i, 0) * 8%);
+  top: 30%;
+}
+
+@keyframes particle-float {
+  0%   { opacity: 0;    transform: translateY(0)    scale(1); }
+  20%  { opacity: 0.6; }
+  80%  { opacity: 0.2; }
+  100% { opacity: 0;    transform: translateY(-120px) scale(0.4); }
+}
+
+// ── Emblem ────────────────────────────────────────────────────────────────────
+.emblem {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 1.5rem;
+}
+
+.emblem-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid rgba($gold, 0.5);
+  animation: ring-pulse 2s ease-in-out infinite;
+
+  &--inner {
+    inset: 14px;
+    border-color: rgba($gold, 0.3);
+    animation-delay: 0.5s;
+
+    &::after {
+      content: "⚔";
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: $gold;
+      opacity: 0.8;
+    }
+  }
+}
+
+@keyframes ring-pulse {
+  0%, 100% { transform: scale(1);    opacity: 0.7; }
+  50%       { transform: scale(1.08); opacity: 1;   }
+}
+
+// ── Content ───────────────────────────────────────────────────────────────────
+.splash-content {
+  text-align: center;
+  animation: content-rise 0.8s 0.3s forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+@keyframes content-rise {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.splash-title {
+  font-family: "EagleLake", serif;
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  font-weight: 400;
+  color: $white;
+  letter-spacing: 0.05em;
+  margin: 0 0 0.5rem;
+  text-shadow:
+    0 0 40px rgba($gold, 0.4),
+    0 2px 8px rgba(0, 0, 0, 0.8);
+  animation: title-glow 2.5s 0.8s ease-in-out infinite alternate;
+}
+
+@keyframes title-glow {
+  from { text-shadow: 0 0 30px rgba($gold, 0.3), 0 2px 8px rgba(0,0,0,0.8); }
+  to   { text-shadow: 0 0 60px rgba($gold, 0.6), 0 2px 8px rgba(0,0,0,0.8); }
+}
+
+.splash-tagline {
+  font-family: "WorkSans", sans-serif;
+  font-size: clamp(0.9rem, 2vw, 1.1rem);
+  font-weight: 400;
+  color: $silver;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  margin: 0 0 1.5rem;
+}
+
+// ── Divider ───────────────────────────────────────────────────────────────────
+.splash-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  justify-content: center;
+  margin: 0 0 1rem;
+  animation: divider-expand 0.6s 0.9s forwards;
+  opacity: 0;
+}
+
+@keyframes divider-expand {
+  from { opacity: 0; width: 0; }
+  to   { opacity: 1; width: auto; }
+}
+
+.divider-line {
+  display: block;
+  width: 80px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, $gold, transparent);
+  opacity: 0.6;
+}
+
+.divider-diamond {
+  display: block;
+  width: 6px;
+  height: 6px;
+  background: $gold;
+  transform: rotate(45deg);
+  opacity: 0.8;
+}
+
+// ── Studio label ─────────────────────────────────────────────────────────────
+.splash-studio {
+  font-family: "WorkSans", sans-serif;
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: rgba($silver, 0.5);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+// ── Version badge ─────────────────────────────────────────────────────────────
+.splash-version {
+  position: absolute;
+  bottom: 1.5rem;
+  right: 2rem;
+  font-family: "WorkSans", sans-serif;
+  font-size: 0.7rem;
+  color: rgba($silver, 0.4);
+  letter-spacing: 0.1em;
+  animation: content-rise 0.6s 1.2s forwards;
+  opacity: 0;
+}
