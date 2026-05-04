@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ashes of the Ancients — Sign In</title>
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        background: #0a0e1a;
+        font-family: Georgia, "Times New Roman", serif;
+        color: #e8d8a0;
+      }
+
+      .card {
+        text-align: center;
+        padding: 3rem 4rem;
+        background: linear-gradient(145deg, #0d1526, #162040);
+        border: 1px solid #c9a227;
+        border-radius: 4px;
+        box-shadow: 0 0 40px rgba(201, 162, 39, 0.15);
+        max-width: 420px;
+        width: 90%;
+      }
+
+      .emblem {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        filter: drop-shadow(0 0 8px rgba(201, 162, 39, 0.6));
+      }
+
+      h1 {
+        font-size: 1.4rem;
+        font-weight: 400;
+        letter-spacing: 0.12em;
+        color: #c9a227;
+        text-transform: uppercase;
+        margin-bottom: 1.5rem;
+      }
+
+      .status {
+        font-size: 1.05rem;
+        color: #7ecb9e;
+        margin-bottom: 0.75rem;
+      }
+
+      .status.error {
+        color: #e07070;
+      }
+
+      .hint {
+        font-size: 0.88rem;
+        color: #8899bb;
+        line-height: 1.7;
+      }
+
+      .note {
+        margin-top: 0.75rem;
+        font-size: 0.9rem;
+        color: #c9a227;
+      }
+    </style>
+  </head>
+  <body>
+      <div class="card">
+        <div class="emblem">⚔</div>
+        <h1>Ashes of the Ancients</h1>
+        <p class="status" id="status">Sign-in successful!</p>
+        <p class="hint" id="hint">Returning you to the app…</p>
+        <p class="note" id="note">You can close this tab.</p>
+      </div>
+
+    <script>
+      (function () {
+        var SCHEME = "com.fuzzywaddle.probablewaffle";
+        var search = window.location.search;
+        var hash = window.location.hash;
+        var callbackParams = search + hash;
+        var statusEl = document.getElementById("status");
+        var hintEl = document.getElementById("hint");
+        var noteEl = document.getElementById("note");
+        var allParams = new URLSearchParams(
+          (search ? search.slice(1) + "&" : "") + (hash ? hash.slice(1) : "")
+        );
+        var error = allParams.get("error");
+        var errorDescription = allParams.get("error_description");
+
+        if (!callbackParams) {
+          statusEl.textContent = "This sign-in link is incomplete.";
+          statusEl.className = "status error";
+          hintEl.textContent = "Return to the app and try signing in again.";
+          noteEl.textContent = "Close this tab and retry sign-in from the app.";
+        } else if (error) {
+          statusEl.textContent = "Sign-in did not complete.";
+          statusEl.className = "status error";
+          hintEl.textContent = errorDescription || "Return to the app for more details.";
+          noteEl.textContent = "Close this tab and return to the app.";
+        }
+
+        if (callbackParams) {
+          var deepLinkParams = new URLSearchParams(search ? search.slice(1) : "");
+
+          // Some browsers / OS protocol handlers drop the hash fragment when launching
+          // a custom URI scheme, so copy hash params into the deep-link query as well.
+          if (hash) {
+            var hashParams = new URLSearchParams(hash.slice(1));
+            hashParams.forEach(function (value, key) {
+              deepLinkParams.set(key, value);
+            });
+          }
+
+          var deepLinkUrl = SCHEME + "://auth/callback";
+          var serializedParams = deepLinkParams.toString();
+          if (serializedParams) {
+            deepLinkUrl += "?" + serializedParams;
+          }
+
+          // Preserve the original hash too for handlers that do receive it.
+          if (hash) {
+            deepLinkUrl += hash;
+          }
+
+          window.location.href = deepLinkUrl;
+        }
+      })();
+    </script>
+  </body>
+</html>

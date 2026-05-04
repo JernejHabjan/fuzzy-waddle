@@ -15,10 +15,12 @@ In your Supabase project under **Authentication → URL Configuration**:
 | Setting       | Value                                                                    |
 | ------------- | ------------------------------------------------------------------------ |
 | Site URL      | `https://fuzzy-waddle.onrender.com`                                      |
-| Redirect URLs | `http://localhost:4200/`                                                 |
-|               | `https://fuzzy-waddle.onrender.com/`                                     |
-|               | `https://jernejhabjan.github.io/fuzzy-waddle/`                           |
-|               | `com.fuzzywaddle.probablewaffle://auth/callback` ← desktop app deep link |
+| Redirect URLs | `http://localhost:4200/`                                                                    |
+|               | `https://fuzzy-waddle.onrender.com/`                                                        |
+|               | `https://jernejhabjan.github.io/fuzzy-waddle/`                                              |
+|               | `http://localhost:4200/assets/auth-callback.html` ← Tauri dev OAuth callback               |
+|               | `https://fuzzy-waddle.onrender.com/assets/auth-callback.html` ← Tauri prod OAuth callback  |
+|               | `com.fuzzywaddle.probablewaffle://auth/callback` ← Tauri deep-link (kept as fallback)      |
 
 ## Generating TypeScript Types
 

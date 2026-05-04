@@ -75,13 +75,17 @@ A tray icon appears while the app is running with two actions:
 
 Tauri's WebView cannot complete a standard browser OAuth redirect, so sign-in uses a deep-link flow:
 
-1. The app calls `signInWithOAuth` with `skipBrowserRedirect: true` and `redirectTo: "com.fuzzywaddle.probablewaffle://auth/callback"`.
+1. The app calls `signInWithOAuth` with `skipBrowserRedirect: true` and `redirectTo` pointing to `/assets/auth-callback.html` on the web app.
 2. The auth URL is opened in the **system browser** (Chrome / Edge / Safari).
-3. After the user authenticates, Google → Supabase → OS triggers the registered deep-link scheme.
-4. On Windows a second process is spawned; the single-instance plugin kills it and forwards its argv to the running app via a `"deep-link-received"` event.
-5. `AuthService` parses the `access_token` + `refresh_token` from the URL hash and calls `supabase.auth.setSession()`.
+3. After the user authenticates, Google → Supabase → browser lands on `/assets/auth-callback.html` — a plain HTML file (no Angular, no Supabase) that:
+   - Redirects to `com.fuzzywaddle.probablewaffle://auth/callback?...#...` to hand the full callback payload to the app.
+   - Tells the user to close the browser tab after the app handoff.
+4. OS triggers the registered deep-link → the single-instance plugin forwards it via `"deep-link-received"`.
+5. `AuthService` either parses `access_token` + `refresh_token` from the URL hash and calls `supabase.auth.setSession()`, or exchanges a `?code=...` callback for a session.
 
-The deep-link scheme must be registered in Supabase — see [supabase.md](supabase.md).
+Using a plain HTML file (not an Angular page) prevents Supabase's `detectSessionInUrl` from accidentally establishing a session in the browser tab instead of the app.
+
+The `/assets/auth-callback.html` redirect URL must also be registered in Supabase — see [supabase.md](supabase.md).
 
 ## Notes
 

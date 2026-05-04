@@ -6,7 +6,26 @@ import { isTauri, TauriService } from "../shared/services/tauri.service";
 
 /** Deep-link scheme registered in tauri.conf.json → plugins.deep-link.desktop.schemes */
 const TAURI_DEEP_LINK_SCHEME = "com.fuzzywaddle.probablewaffle";
-const TAURI_AUTH_REDIRECT = `${TAURI_DEEP_LINK_SCHEME}://auth/callback`;
+
+/**
+ * OAuth redirect target for the Tauri flow.
+ *
+ * Points to a plain static HTML file (not Angular) so Supabase's `detectSessionInUrl`
+ * cannot auto-establish a session in the browser tab.  The HTML page forwards the
+ * tokens to the registered app scheme and then closes itself.
+ *
+ * In dev the Angular dev server serves the file from /assets/.
+ * In prod the file is bundled into the Render deploy at the same path.
+ */
+function tauriAuthRedirect(): string {
+  // In `pnpm tauri:dev` the WebView loads the Angular dev server at localhost:4200.
+  // In a production Tauri build the origin is tauri://localhost or http://tauri.localhost.
+  // Check the actual runtime origin rather than isDevMode() (a compile-time constant).
+  const base = window.location.origin.includes("localhost:4200")
+    ? "http://localhost:4200"
+    : "https://fuzzy-waddle.onrender.com";
+  return `${base}/assets/auth-callback.html`;
+}
 
 @Injectable({
   providedIn: "root"
@@ -76,16 +95,19 @@ export class AuthService implements AuthServiceInterface {
    * 1. Ask Supabase for the Google auth URL (skipBrowserRedirect prevents the WebView
    *    from navigating to the OAuth page itself).
    * 2. Open the URL in the system browser via tauri-plugin-opener.
-   * 3. After the user authenticates, Google → Supabase → OS triggers the registered
-   *    deep-link scheme, which fires `TauriService.deepLink$`.
-   * 4. `handleDeepLinkAuthCallback` calls `setSession()` with the implicit-flow tokens.
+   * 3. After the user authenticates, Google → Supabase → browser lands on
+   *    `/assets/auth-callback.html` (plain HTML, no Angular/Supabase) which:
+   *      a. Redirects to `com.fuzzywaddle.probablewaffle://auth/callback#tokens`
+   *      b. Attempts `window.close()` to shut the tab; falls back to a close button.
+   * 4. OS triggers the registered deep-link → `TauriService.deepLink$` fires.
+   * 5. `handleDeepLinkAuthCallback` calls `setSession()` with the implicit-flow tokens.
    */
   private async signInWithGoogleTauri() {
     this.processing = (async () => {
       const { data, error } = await this.dataAccessService.supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: TAURI_AUTH_REDIRECT,
+          redirectTo: tauriAuthRedirect(),
           skipBrowserRedirect: true
         }
       });
@@ -121,29 +143,47 @@ export class AuthService implements AuthServiceInterface {
     }
 
     try {
+      const parsedCallbackUrl = new URL(callbackUrl);
+      const queryParams = parsedCallbackUrl.searchParams;
+      const hashParams = new URLSearchParams(parsedCallbackUrl.hash.slice(1));
+      const callbackError = queryParams.get("error") ?? hashParams.get("error");
+      const callbackErrorDescription =
+        queryParams.get("error_description") ?? hashParams.get("error_description");
+
+      if (callbackError) {
+        console.error(
+          "[AuthService] OAuth callback returned an error:",
+          callbackError,
+          callbackErrorDescription ?? ""
+        );
+        return;
+      }
+
       // Implicit flow: tokens arrive in the URL hash fragment
-      const hashIndex = callbackUrl.indexOf("#");
-      if (hashIndex !== -1) {
-        const params = new URLSearchParams(callbackUrl.slice(hashIndex + 1));
-        const accessToken = params.get("access_token");
-        const refreshToken = params.get("refresh_token");
-        if (accessToken && refreshToken) {
-          const { data, error } = await this.dataAccessService.supabase.auth.setSession({
-            access_token: accessToken,
-            refresh_token: refreshToken
-          });
-          if (error) {
-            console.error("[AuthService] setSession error:", error);
-            return;
-          }
-          console.log("[AuthService] session established (implicit):", data.session?.user?.email);
-          this._session = data.session;
+      const accessToken = queryParams.get("access_token") ?? hashParams.get("access_token");
+      const refreshToken = queryParams.get("refresh_token") ?? hashParams.get("refresh_token");
+      if (accessToken && refreshToken) {
+        const { data, error } = await this.dataAccessService.supabase.auth.setSession({
+          access_token: accessToken,
+          refresh_token: refreshToken
+        });
+        if (error) {
+          console.error("[AuthService] setSession error:", error);
           return;
         }
+        console.log("[AuthService] session established (implicit):", data.session?.user?.email);
+        this._session = data.session;
+        return;
       }
 
       // PKCE flow: auth code arrives as a query parameter
-      const { data, error } = await this.dataAccessService.supabase.auth.exchangeCodeForSession(callbackUrl);
+      const authCode = queryParams.get("code");
+      if (!authCode) {
+        console.warn("[AuthService] Callback URL did not contain auth tokens or code.");
+        return;
+      }
+
+      const { data, error } = await this.dataAccessService.supabase.auth.exchangeCodeForSession(authCode);
       if (error) {
         console.error("[AuthService] exchangeCodeForSession error:", error);
         return;
