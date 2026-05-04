@@ -21,7 +21,7 @@ export class TauriSplashComponent implements OnInit, OnDestroy {
   /** Controls CSS animation phase: 'entering' | 'visible' | 'leaving' | 'gone' */
   protected readonly phase = signal<"entering" | "visible" | "leaving" | "gone">("entering");
 
-  protected readonly appVersion = signal<string>("");
+  protected readonly appVersion = signal<string>("—");
 
   private readonly HOLD_MS = 1800;
   private readonly FADE_OUT_MS = 800;

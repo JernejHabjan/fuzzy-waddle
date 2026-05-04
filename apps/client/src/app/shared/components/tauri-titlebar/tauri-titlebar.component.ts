@@ -28,12 +28,12 @@ export class TauriTitlebarComponent implements OnInit, OnDestroy {
   /** Shared signal — kept in sync by TauriService so app.component can also react to it. */
   protected readonly isFullscreen = this.tauriService.windowIsFullscreen;
 
-  private unlistenResize?: () => void;
+  private unlistenResize: () => void = () => {};
 
   async ngOnInit(): Promise<void> {
     if (!this.shouldRender) return;
-    await this.syncWindowState();
     await this.listenForWindowChanges();
+    await this.syncWindowState();
   }
 
   async ngOnDestroy(): Promise<void> {

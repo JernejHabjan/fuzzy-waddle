@@ -4,6 +4,7 @@ import { DataAccessService } from "../data-access/data-access.service";
 import { type AuthServiceInterface } from "./auth.service.interface";
 import { isTauri, TauriService } from "../shared/services/tauri.service";
 import type { Subscription } from "rxjs";
+import { environment } from "../../environments/environment";
 
 /** Deep-link scheme registered in tauri.conf.json → plugins.deep-link.desktop.schemes */
 const TAURI_DEEP_LINK_SCHEME = "com.fuzzywaddle.probablewaffle";
@@ -22,9 +23,7 @@ function tauriAuthRedirect(): string {
   // In `pnpm tauri:dev` the WebView loads the Angular dev server at localhost:4200.
   // In a production Tauri build the origin is tauri://localhost or http://tauri.localhost.
   // Check the actual runtime origin rather than isDevMode() (a compile-time constant).
-  const base = window.location.origin.includes("localhost:4200")
-    ? "http://localhost:4200"
-    : "https://fuzzy-waddle.onrender.com";
+  const base = window.location.origin.includes("localhost:4200") ? "http://localhost:4200" : environment.clientUrl;
   return `${base}/assets/auth-callback.html`;
 }
 
