@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, type OnDestroy, type OnInit, signal } from "@angular/core";
-import { isTauri, TauriService } from "../../services/tauri.service";
+import { TauriService } from "../../services/tauri.service";
 
 /**
  * Custom frameless window title bar for the Tauri desktop app.
@@ -20,18 +20,13 @@ import { isTauri, TauriService } from "../../services/tauri.service";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TauriTitlebarComponent implements OnInit, OnDestroy {
-  protected readonly shouldRender = isTauri();
   protected readonly isMaximized = signal(false);
 
   private readonly tauriService = inject(TauriService);
 
-  /** Shared signal — kept in sync by TauriService so app.component can also react to it. */
-  protected readonly isFullscreen = this.tauriService.windowIsFullscreen;
-
   private unlistenResize: () => void = () => {};
 
   async ngOnInit(): Promise<void> {
-    if (!this.shouldRender) return;
     await this.listenForWindowChanges();
     await this.syncWindowState();
   }
@@ -65,9 +60,7 @@ export class TauriTitlebarComponent implements OnInit, OnDestroy {
   }
 
   protected async toggleFullscreen(): Promise<void> {
-    // Route through TauriService so cursor is released when going windowed.
-    const isNowFullscreen = await this.tauriService.toggleFullscreen();
-    this.isFullscreen.set(isNowFullscreen);
+    await this.tauriService.toggleFullscreen();
   }
 
   protected async close(): Promise<void> {
@@ -95,7 +88,14 @@ export class TauriTitlebarComponent implements OnInit, OnDestroy {
     try {
       const { getCurrentWindow } = await import("@tauri-apps/api/window");
       this.unlistenResize = await getCurrentWindow().onResized(async () => {
-        await this.syncWindowState();
+        // Only sync maximize — fullscreen is tracked explicitly via toggleFullscreen()
+        // to avoid a race where isFullscreen() returns false mid-transition.
+        try {
+          const win = getCurrentWindow();
+          this.isMaximized.set(await win.isMaximized());
+        } catch {
+          // cosmetic, ignore
+        }
       });
     } catch {
       // Ignore — fallback is to always show the bar

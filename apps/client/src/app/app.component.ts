@@ -21,6 +21,7 @@ export class AppComponent implements OnInit {
   protected readonly authService = inject(AuthService);
   private readonly serverHealthService = inject(ServerHealthService);
   protected readonly tauriService = inject(TauriService);
+  protected readonly isTauri = isTauri;
 
   /** Push content below the fixed title bar when it is visible (Tauri, windowed mode). */
   protected readonly titlebarPadding = computed(() =>

@@ -1,5 +1,7 @@
 <!-- Custom frameless title bar (Tauri desktop only, hidden in fullscreen) -->
-<fuzzy-waddle-tauri-titlebar />
+@if (isTauri() && !tauriService.windowIsFullscreen()) {
+  <fuzzy-waddle-tauri-titlebar />
+}
 
 <main class="h-100" [style.paddingTop]="titlebarPadding()">
   <router-outlet />
