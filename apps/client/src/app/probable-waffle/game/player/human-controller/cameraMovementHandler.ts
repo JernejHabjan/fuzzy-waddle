@@ -5,6 +5,7 @@ import { getSceneExternalComponent } from "../../world/services/scene-component-
 import { OptionsService } from "../../../gui/options/options.service";
 import { GameSettings } from "../../core/gameSettings";
 import type { CameraStateData } from "@fuzzy-waddle/api-interfaces";
+import { FULLSCREEN_TOP_EDGE_PX, isFullscreenTopEdgeExit } from "./fullscreen-edge-guard";
 
 export interface CameraMovementHandlerConfig {
   cameraEdgeMovementSpeed: number;
@@ -20,6 +21,7 @@ export class CameraMovementHandler {
   private cursorOverGameInstance: boolean;
   private keyboardMovementControls: Cameras.Controls.FixedKeyControl | null = null;
   private readonly cameraEdgeMargin = 30;
+  private readonly cameraEdgeMarginTop = FULLSCREEN_TOP_EDGE_PX;
   private readonly cameraMinZoom = 30;
   private readonly cameraMaxZoom = 0.3;
   private optionsChangedSubscription?: Subscription;
@@ -161,8 +163,9 @@ export class CameraMovementHandler {
       this.mainCamera.scrollX += speed * factor;
     }
     // Top
-    if (pointer.y < margin) {
-      const factor = 1 - pointer.y / margin;
+    const topMargin = this.cameraEdgeMarginTop;
+    if (pointer.y < topMargin) {
+      const factor = 1 - pointer.y / topMargin;
       this.mainCamera.scrollY -= speed * factor;
     }
     // Bottom
@@ -259,6 +262,7 @@ export class CameraMovementHandler {
 
   private screenEdgeListener() {
     this.input.on(Input.Events.GAME_OUT, () => {
+      if (isFullscreenTopEdgeExit(this.input)) return;
       this.cursorOverGameInstance = false;
       this.input.off(Input.Events.POINTER_MOVE, this.handlePointerMove);
     });

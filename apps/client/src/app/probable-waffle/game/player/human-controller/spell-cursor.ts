@@ -1,4 +1,5 @@
 import { GameObjects, Input } from "phaser";
+import { isFullscreenTopEdgeExit } from "./fullscreen-edge-guard";
 import { EventEmitter } from "@angular/core";
 import { SpellType } from "../../entity/components/combat/spell-type";
 import { spellDefinitions } from "../../entity/components/combat/spell-definitions";
@@ -36,7 +37,7 @@ export class SpellCursor {
     this.stopCastingSpell.subscribe(() => this.deactivate());
     this.scene.input.on(Input.Events.POINTER_MOVE, this.handlePointerMove, this);
     this.scene.input.on(Input.Events.POINTER_DOWN, this.handlePointerDown, this);
-    this.scene.input.on(Input.Events.GAME_OUT, this.deactivate, this);
+    this.scene.input.on(Input.Events.GAME_OUT, this.handleGameOut, this);
     scene.onShutdown.subscribe(() => this.destroy());
     this.subscribeToCancelAction();
     this.subscribeToExternalModalEvents();
@@ -86,6 +87,11 @@ export class SpellCursor {
     if (spellData.range > 0) {
       this.createRangeCircle(spellData.range, spellData.tintColor ?? 0x6666ff);
     }
+  }
+
+  private handleGameOut(): void {
+    if (isFullscreenTopEdgeExit(this.scene.input)) return;
+    this.deactivate();
   }
 
   deactivate(): void {
@@ -372,7 +378,7 @@ export class SpellCursor {
     this.deactivate();
     this.scene.input.off(Input.Events.POINTER_MOVE, this.handlePointerMove, this);
     this.scene.input.off(Input.Events.POINTER_DOWN, this.handlePointerDown, this);
-    this.scene.input.off(Input.Events.GAME_OUT, this.deactivate, this);
+    this.scene.input.off(Input.Events.GAME_OUT, this.handleGameOut, this);
     this.escKey?.destroy();
     this.externalModalSubscription?.unsubscribe();
   }
