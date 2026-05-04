@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, inject, signal, type OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, inject, type OnInit } from "@angular/core";
 
 import { FormsModule } from "@angular/forms";
 import { RouterLink } from "@angular/router";
@@ -23,15 +23,12 @@ export class OptionsComponent implements OnInit {
   dialogRef?: NgbModalRef;
   private readonly cdr = inject(ChangeDetectorRef);
   protected readonly optionsService = inject(OptionsService);
-  private readonly tauriService = inject(TauriService);
+  protected readonly tauriService = inject(TauriService);
   protected readonly isTauri = isTauri();
-  protected readonly isFullscreen = signal(false);
+  protected readonly isFullscreen = this.tauriService.windowIsFullscreen;
 
   async ngOnInit() {
     this.optionsService.init();
-    if (this.isTauri) {
-      this.isFullscreen.set(await this.tauriService.isFullscreen());
-    }
   }
 
   protected saveToLocalStorage(type: "volume" | "game") {
@@ -40,8 +37,7 @@ export class OptionsComponent implements OnInit {
   }
 
   protected async toggleFullscreen(): Promise<void> {
-    const newState = await this.tauriService.toggleFullscreen();
-    this.isFullscreen.set(newState);
+    await this.tauriService.toggleFullscreen();
     this.cdr.detectChanges();
   }
 

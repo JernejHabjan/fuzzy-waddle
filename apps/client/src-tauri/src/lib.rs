@@ -115,8 +115,11 @@ pub fn run() {
                 .item(&quit_item)
                 .build()?;
 
-            TrayIconBuilder::new()
-                .icon(app.default_window_icon().unwrap().clone())
+            let mut tray_builder = TrayIconBuilder::new();
+            if let Some(icon) = app.default_window_icon() {
+                tray_builder = tray_builder.icon(icon.clone());
+            }
+            tray_builder
                 .menu(&tray_menu)
                 .tooltip("Ashes of the Ancients")
                 // Left-click toggles window visibility; right-click opens the menu
