@@ -1,12 +1,5 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  signal,
-  type OnDestroy,
-  type OnInit
-} from "@angular/core";
-import { TauriService, isTauri } from "../../services/tauri.service";
+import { ChangeDetectionStrategy, Component, inject, type OnDestroy, type OnInit, signal } from "@angular/core";
+import { isTauri, TauriService } from "../../services/tauri.service";
 
 /**
  * Custom frameless window title bar for the Tauri desktop app.

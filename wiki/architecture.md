@@ -2,14 +2,14 @@
 
 ## Tech Stack
 
-| Layer | Technology |
-| ----- | ---------- |
-| Frontend (web) | Angular 21, Phaser 4, Bootstrap 5, Chart.js |
+| Layer              | Technology                                      |
+| ------------------ | ----------------------------------------------- |
+| Frontend (web)     | Angular 21, Phaser 4, Bootstrap 5, Chart.js     |
 | Frontend (desktop) | Tauri 2 (Rust shell wrapping the Angular build) |
-| Backend | NestJS 11, Socket.IO |
-| Database / Auth | Supabase (PostgreSQL) |
-| Monorepo tooling | Nx 22 |
-| Package manager | pnpm |
+| Backend            | NestJS 11, Socket.IO                            |
+| Database / Auth    | Supabase (PostgreSQL)                           |
+| Monorepo tooling   | Nx 22                                           |
+| Package manager    | pnpm                                            |
 
 ## Monorepo Structure
 
@@ -26,12 +26,12 @@ fuzzy-waddle/
 
 ## Games
 
-| Game | Genre | Directory |
-| ---- | ----- | --------- |
+| Game            | Genre              | Directory                              |
+| --------------- | ------------------ | -------------------------------------- |
 | Probable Waffle | Real-time strategy | `apps/client/src/app/probable-waffle/` |
-| Fly Squasher | Arcade | `apps/client/src/app/fly-squasher/` |
-| Little Muncher | Platformer | `apps/client/src/app/little-muncher/` |
-| Dungeon Crawler | RPG | `apps/client/src/app/dungeon-crawler/` |
+| Fly Squasher    | Arcade             | `apps/client/src/app/fly-squasher/`    |
+| Little Muncher  | Platformer         | `apps/client/src/app/little-muncher/`  |
+| Dungeon Crawler | RPG                | `apps/client/src/app/dungeon-crawler/` |
 
 Each game follows the same layout:
 

@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, signal, type OnDestroy, type OnInit } from "@angular/core";
-import { isTauri } from "../../services/tauri.service";
+import { ChangeDetectionStrategy, Component, type OnDestroy, type OnInit, signal } from "@angular/core";
+import { isTauri } from "../../utils/tauri";
 
 /**
  * Cinematic splash screen overlay shown on Tauri desktop app launch.
@@ -52,9 +52,12 @@ export class TauriSplashComponent implements OnInit, OnDestroy {
 
     // leaving → gone after fade-out
     this.timers.push(
-      setTimeout(() => {
-        this.phase.set("gone");
-      }, 600 + this.HOLD_MS + this.FADE_OUT_MS)
+      setTimeout(
+        () => {
+          this.phase.set("gone");
+        },
+        600 + this.HOLD_MS + this.FADE_OUT_MS
+      )
     );
   }
 

@@ -46,12 +46,14 @@ pnpm e2e              # Run Cypress e2e tests
 ## Architecture
 
 ### Monorepo Structure
+
 - **apps/client**: Angular 21 SPA with Phaser 4 game engine integration
   - `src-tauri/`: Tauri v2 Rust shell for the Probable Waffle desktop app
 - **apps/api**: NestJS 11 backend with WebSocket gateways
 - **libs/api-interfaces**: Shared TypeScript interfaces for client-server contracts
 
 ### Client (Angular + Phaser)
+
 - Four games: Probable Waffle (strategy), Fly Squasher (arcade), Little Muncher (platformer), Dungeon Crawler (RPG)
 - Game code lives in `apps/client/src/app/{game-name}/game/` (Phaser scenes)
 - UI/GUI for games in `apps/client/src/app/{game-name}/gui/`
@@ -60,22 +62,26 @@ pnpm e2e              # Run Cypress e2e tests
 - Asset pack metadata (Phaser Editor 2D) in `apps/client/src/metadata/{game-name}/`
 
 ### API (NestJS)
+
 - Game-specific modules in `apps/api/src/app/{game-name}/`
 - WebSocket gateways handle real-time game state sync
 - Auth via Supabase OAuth + JWT (guards in `apps/api/src/auth/`)
 
 ### Real-time Communication
+
 - Socket.IO for multiplayer game state synchronization
 - Client: `AuthenticatedSocketService` creates JWT-authenticated connections
 - Server: `@WebSocketGateway()` decorators with `SupabaseAuthGuard`
 - Event contracts defined in `libs/api-interfaces/src/lib/communicators/`
 
 ### State Management
+
 - Angular services with RxJS Subjects/Observables
 - Phaser game data via registry pattern (`BaseGame` class)
 - Game saves via IndexedDB (`GameInstanceIndexeddbStorageService`)
 
 ## Key Configuration Files
+
 - `nx.json`: Nx workspace config (default base is `develop` branch)
 - `apps/client/proxy.conf.json`: Dev server API proxy
 - `apps/client/ngsw-config.json`: Service worker config
@@ -103,10 +109,12 @@ pnpm e2e              # Run Cypress e2e tests
 ## File Organization Rules
 
 When generating files, place them in appropriate locations to keep the project tidy:
+
 - **Documentation/markdown files**: Place in `docs/ai/` (create if needed)
 - **Debug scripts and one-off test files**: Place in `tmp/` (already gitignored)
 - **Never create files in the project root** unless they are standard config files
 
 ## Task Master AI Instructions
+
 **Import Task Master's development workflow commands and guidelines, treat as if import is in the main CLAUDE.md file.**
 @./.taskmaster/CLAUDE.md

@@ -1,8 +1,9 @@
-import { inject, Injectable } from "@angular/core";
+import { inject, Injectable, type OnDestroy } from "@angular/core";
 import { type Session } from "@supabase/supabase-js";
 import { DataAccessService } from "../data-access/data-access.service";
 import { type AuthServiceInterface } from "./auth.service.interface";
 import { isTauri, TauriService } from "../shared/services/tauri.service";
+import type { Subscription } from "rxjs";
 
 /** Deep-link scheme registered in tauri.conf.json → plugins.deep-link.desktop.schemes */
 const TAURI_DEEP_LINK_SCHEME = "com.fuzzywaddle.probablewaffle";
@@ -30,18 +31,19 @@ function tauriAuthRedirect(): string {
 @Injectable({
   providedIn: "root"
 })
-export class AuthService implements AuthServiceInterface {
+export class AuthService implements AuthServiceInterface, OnDestroy {
   processing: Promise<unknown> | null = null;
 
   private readonly dataAccessService = inject(DataAccessService);
   private readonly tauriService = inject(TauriService);
+  private readonly tauriSubscription?: Subscription;
 
   private _session: Session | null = null;
 
   constructor() {
     // In Tauri, listen for deep-link callbacks to complete the OAuth PKCE flow.
     // The OS fires the deep-link after Google redirects back to the registered scheme.
-    this.tauriService.deepLink$.subscribe((url) => {
+    this.tauriSubscription = this.tauriService.deepLink$.subscribe((url) => {
       // noinspection JSIgnoredPromiseFromCall
       this.handleDeepLinkAuthCallback(url);
     });
@@ -147,15 +149,10 @@ export class AuthService implements AuthServiceInterface {
       const queryParams = parsedCallbackUrl.searchParams;
       const hashParams = new URLSearchParams(parsedCallbackUrl.hash.slice(1));
       const callbackError = queryParams.get("error") ?? hashParams.get("error");
-      const callbackErrorDescription =
-        queryParams.get("error_description") ?? hashParams.get("error_description");
+      const callbackErrorDescription = queryParams.get("error_description") ?? hashParams.get("error_description");
 
       if (callbackError) {
-        console.error(
-          "[AuthService] OAuth callback returned an error:",
-          callbackError,
-          callbackErrorDescription ?? ""
-        );
+        console.error("[AuthService] OAuth callback returned an error:", callbackError, callbackErrorDescription ?? "");
         return;
       }
 
@@ -216,5 +213,9 @@ export class AuthService implements AuthServiceInterface {
     this._session = data.session;
     this.processing = null;
     return data.session;
+  }
+
+  ngOnDestroy(): void {
+    this.tauriSubscription?.unsubscribe();
   }
 }

@@ -36,13 +36,21 @@ $white: #f0f4ff;
 }
 
 @keyframes splash-fade-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes splash-fade-out {
-  from { opacity: 1; }
-  to   { opacity: 0; }
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }
 
 // ── Corner frames ─────────────────────────────────────────────────────────────
@@ -55,15 +63,37 @@ $white: #f0f4ff;
   animation: corner-grow 0.8s 0.2s forwards;
   opacity: 0;
 
-  &--tl { top: 32px;    left: 32px;    border-width: 2px 0 0 2px; }
-  &--tr { top: 32px;    right: 32px;   border-width: 2px 2px 0 0; }
-  &--bl { bottom: 32px; left: 32px;    border-width: 0 0 2px 2px; }
-  &--br { bottom: 32px; right: 32px;   border-width: 0 2px 2px 0; }
+  &--tl {
+    top: 32px;
+    left: 32px;
+    border-width: 2px 0 0 2px;
+  }
+  &--tr {
+    top: 32px;
+    right: 32px;
+    border-width: 2px 2px 0 0;
+  }
+  &--bl {
+    bottom: 32px;
+    left: 32px;
+    border-width: 0 0 2px 2px;
+  }
+  &--br {
+    bottom: 32px;
+    right: 32px;
+    border-width: 0 2px 2px 0;
+  }
 }
 
 @keyframes corner-grow {
-  from { opacity: 0; transform: scale(0.4); }
-  to   { opacity: 0.7; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  to {
+    opacity: 0.7;
+    transform: scale(1);
+  }
 }
 
 // ── Particles ─────────────────────────────────────────────────────────────────
@@ -86,10 +116,20 @@ $white: #f0f4ff;
 }
 
 @keyframes particle-float {
-  0%   { opacity: 0;    transform: translateY(0)    scale(1); }
-  20%  { opacity: 0.6; }
-  80%  { opacity: 0.2; }
-  100% { opacity: 0;    transform: translateY(-120px) scale(0.4); }
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(1);
+  }
+  20% {
+    opacity: 0.6;
+  }
+  80% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-120px) scale(0.4);
+  }
 }
 
 // ── Emblem ────────────────────────────────────────────────────────────────────
@@ -127,8 +167,15 @@ $white: #f0f4ff;
 }
 
 @keyframes ring-pulse {
-  0%, 100% { transform: scale(1);    opacity: 0.7; }
-  50%       { transform: scale(1.08); opacity: 1;   }
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
 }
 
 // ── Content ───────────────────────────────────────────────────────────────────
@@ -140,7 +187,10 @@ $white: #f0f4ff;
 }
 
 @keyframes content-rise {
-  to { opacity: 1; transform: translateY(0); }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .splash-title {
@@ -157,8 +207,16 @@ $white: #f0f4ff;
 }
 
 @keyframes title-glow {
-  from { text-shadow: 0 0 30px rgba($gold, 0.3), 0 2px 8px rgba(0,0,0,0.8); }
-  to   { text-shadow: 0 0 60px rgba($gold, 0.6), 0 2px 8px rgba(0,0,0,0.8); }
+  from {
+    text-shadow:
+      0 0 30px rgba($gold, 0.3),
+      0 2px 8px rgba(0, 0, 0, 0.8);
+  }
+  to {
+    text-shadow:
+      0 0 60px rgba($gold, 0.6),
+      0 2px 8px rgba(0, 0, 0, 0.8);
+  }
 }
 
 .splash-tagline {
@@ -183,8 +241,14 @@ $white: #f0f4ff;
 }
 
 @keyframes divider-expand {
-  from { opacity: 0; width: 0; }
-  to   { opacity: 1; width: auto; }
+  from {
+    opacity: 0;
+    width: 0;
+  }
+  to {
+    opacity: 1;
+    width: auto;
+  }
 }
 
 .divider-line {

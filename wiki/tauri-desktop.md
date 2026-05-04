@@ -78,8 +78,10 @@ Tauri's WebView cannot complete a standard browser OAuth redirect, so sign-in us
 1. The app calls `signInWithOAuth` with `skipBrowserRedirect: true` and `redirectTo` pointing to `/assets/auth-callback.html` on the web app.
 2. The auth URL is opened in the **system browser** (Chrome / Edge / Safari).
 3. After the user authenticates, Google → Supabase → browser lands on `/assets/auth-callback.html` — a plain HTML file (no Angular, no Supabase) that:
-   - Redirects to `com.fuzzywaddle.probablewaffle://auth/callback?...#...` to hand the full callback payload to the app.
-   - Tells the user to close the browser tab after the app handoff.
+
+- Redirects to `com.fuzzywaddle.probablewaffle://auth/callback?...#...` to hand the full callback payload to the app.
+- Tells the user to close the browser tab after the app handoff.
+
 4. OS triggers the registered deep-link → the single-instance plugin forwards it via `"deep-link-received"`.
 5. `AuthService` either parses `access_token` + `refresh_token` from the URL hash and calls `supabase.auth.setSession()`, or exchanges a `?code=...` callback for a session.
 

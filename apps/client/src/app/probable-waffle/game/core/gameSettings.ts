@@ -18,10 +18,6 @@ export class GameSettings {
     this.enabledMouseCornerMovement = fromLocalStorage.enabledMouseCornerMovement;
   }
 
-  existGameSettings(): boolean {
-    return localStorage.getItem("probable-waffle-game-settings") !== null;
-  }
-
   saveToLocalStorage() {
     const settingsToSaveJSON = JSON.stringify(this);
     localStorage.setItem("probable-waffle-game-settings", settingsToSaveJSON);
