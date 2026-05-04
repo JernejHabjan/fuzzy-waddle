@@ -3,6 +3,7 @@ import type { SocketIoConfig } from "ngx-socket-io";
 export type Environment = {
   production: boolean;
   api: string;
+  clientUrl: string;
 
   supabase: {
     url: string;

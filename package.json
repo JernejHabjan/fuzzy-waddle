@@ -7,6 +7,8 @@
     "start:api": "nx serve api",
     "start:client": "nx serve client",
     "start:client-open": "nx serve client --host=0.0.0.0 --disable-host-check",
+    "tauri:dev": "nx run client:tauri-dev",
+    "tauri:build": "nx run client:tauri-build",
     "editor": "phasereditor2d-launcher -project . -port 1959",
     "editor-remote": "phasereditor2d-launcher -project . -disable-open-browser -public -port 1959",
     "build": "nx run-many --all --target=build",
@@ -106,7 +108,12 @@
     "rxjs": "^7.8.2",
     "socket.io": "^4.8.1",
     "tslib": "^2.8.1",
-    "zone.js": "0.16.0"
+    "zone.js": "0.16.0",
+    "@tauri-apps/api": "^2.0.0",
+    "@tauri-apps/plugin-deep-link": "^2.0.0",
+    "@tauri-apps/plugin-notification": "^2.0.0",
+    "@tauri-apps/plugin-window-state": "^2.0.0",
+    "@tauri-apps/plugin-opener": "^2.0.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "21.2.7",
@@ -161,7 +168,8 @@
     "supabase": ">=1.8.1",
     "ts-jest": "29.4.9",
     "ts-node": "10.9.2",
-    "typescript": "5.9.3"
+    "typescript": "5.9.3",
+    "@tauri-apps/cli": "^2.0.0"
   },
   "pnpm": {
     "overrides": {

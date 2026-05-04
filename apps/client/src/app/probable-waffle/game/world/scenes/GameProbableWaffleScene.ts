@@ -37,6 +37,7 @@ import { LockedCursorHandler } from "../../player/human-controller/locked-cursor
 import { ActorDebugDamageSystem } from "../services/actor-debug-damage-system";
 import { SpellCursor } from "../../player/human-controller/spell-cursor";
 import { AoeZoneManager } from "../../entity/systems/aoe-zone-manager";
+import { isTauri } from "../../../../shared/utils/tauri";
 
 export default class GameProbableWaffleScene extends ProbableWaffleScene {
   tilemap!: Phaser.Tilemaps.Tilemap;
@@ -112,7 +113,8 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     return new CameraMovementHandler(this, {
       cameraEdgeMovementSpeed: 30,
       cameraKeyboardMovementSpeed: 2,
-      enabledMouseCornerMovement: gameSettings.enabledMouseCornerMovement
+      enabledMouseCornerMovement: gameSettings.enabledMouseCornerMovement,
+      cursorOverGame: isTauri() // in Tauri the cursor is inside the window from startup; in browser let GAME_OVER set it
     });
   }
 
