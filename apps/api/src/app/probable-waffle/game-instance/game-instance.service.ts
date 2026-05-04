@@ -86,22 +86,25 @@ export class GameInstanceService implements GameInstanceServiceInterface {
    */
   @Cron(CronExpression.EVERY_5_MINUTES)
   handleCron() {
-    const toRemove = this.gameInstanceHolderService.openGameInstances.filter((gi) => {
+    const oldGameInstances = this.gameInstanceHolderService.openGameInstances.filter((gi) => {
       const minutesAgo = 1000 * 60 * 15; // 15 minutes
-      const started = gi.gameInstanceMetadata.data.createdOn;
-      const lastUpdated = gi.gameInstanceMetadata.data.updatedOn;
+      const started = this.toDateOrNull(gi.gameInstanceMetadata.data.createdOn);
+      const lastUpdated = this.toDateOrNull(gi.gameInstanceMetadata.data.updatedOn);
       const now = new Date();
       // is old if started is more than N minutes ago and lastUpdated is null or more than N minutes ago
-      const startedMoreThanNMinutesAgo = started!.getTime() + minutesAgo < now.getTime();
+      if (!started) {
+        return false;
+      }
+      const startedMoreThanNMinutesAgo = started.getTime() + minutesAgo < now.getTime();
       const lastUpdatedMoreThanNMinutesAgo = !lastUpdated || lastUpdated.getTime() + minutesAgo < now.getTime();
       const isOld = startedMoreThanNMinutesAgo && lastUpdatedMoreThanNMinutesAgo;
       if (isOld) {
         this.roomServerService.roomEvent("removed", gi, null);
         console.log("Ashes of the Ancients - Cron - Game instance removed");
       }
-      return !isOld;
+      return isOld;
     });
-    toRemove.forEach((gi) =>
+    oldGameInstances.forEach((gi) =>
       this.gameInstanceHolderService.removeGameInstance(gi.gameInstanceMetadata.data.gameInstanceId!)
     );
   }
@@ -166,5 +169,16 @@ export class GameInstanceService implements GameInstanceServiceInterface {
       currentHostUserId: gameInstanceMetadataData.currentHostUserId ?? gameInstanceMetadataData.createdBy,
       name: this.textSanitizationService.cleanBadWords(gameInstanceMetadataData.name)
     };
+  }
+
+  private toDateOrNull(value: Date | string | null | undefined): Date | null {
+    if (!value) {
+      return null;
+    }
+    if (value instanceof Date) {
+      return Number.isNaN(value.getTime()) ? null : value;
+    }
+    const parsed = new Date(value);
+    return Number.isNaN(parsed.getTime()) ? null : parsed;
   }
 }

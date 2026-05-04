@@ -81,9 +81,16 @@ export class CommandBusService {
 
     const communicator = getCommunicator(scene);
 
-    // Receive remote command batches and buffer them
+    // Receive remote command batches (including local player's server echo) and buffer them
     this.subscriptions.push(
       communicator.gameCommandChanged!.on.subscribe((event) => {
+        if (event.rejectionReason && event.playerNumber === this.localPlayerNumber) {
+          // The server rejected our batch (payload invalid) and relayed an empty one.
+          // Log clearly so the developer can see what caused the desync.
+          console.error(
+            `[CommandBus] Server rejected batch for tick=${event.tick} player=${event.playerNumber}: ${event.rejectionReason}`
+          );
+        }
         if (event.commands.length > 0) {
           this.debugLog(
             `received batch tick=${event.tick} player=${event.playerNumber} commands=${event.commands.length} types=${this.describeCommandTypes(event.commands as GameCommand[])}`
@@ -167,17 +174,15 @@ export class CommandBusService {
     }
 
     // 2. Commit our own commands for the future tick and send them to peers
-    //    (even if empty — this is the lockstep heartbeat)
+    //    (even if empty — this is the lockstep heartbeat).
+    //    NOTE: We do NOT directly commit to the buffer here. The local player's batch
+    //    is committed only when the server echoes it back via on.subscribe, which
+    //    prevents desync if the server rejects the payload.
     const futureTick = tick + CommandBusService.INPUT_DELAY_TICKS;
     const outbound = this.pendingOutbound.get(futureTick) ?? [];
     this.pendingOutbound.delete(futureTick);
     if (this.localPlayerNumber !== null) {
       this.lastSentExecutionTick = Math.max(this.lastSentExecutionTick, futureTick);
-      this.emitRecordedBatch({
-        tick: futureTick,
-        playerNumber: this.localPlayerNumber,
-        commands: outbound
-      });
       if (outbound.length > 0) {
         this.debugLog(
           `sending batch tick=${futureTick} player=${this.localPlayerNumber} commands=${outbound.length} types=${this.describeCommandTypes(outbound)}`
@@ -197,7 +202,10 @@ export class CommandBusService {
 
   private sendCommandBatch(tick: number, commands: GameCommand[]): void {
     if (!this.scene || this.localPlayerNumber === null) return;
-    getCommunicator(this.scene).gameCommandChanged!.send({
+    // Use sendToServer() instead of send() so the local buffer is NOT self-committed
+    // before server validation. The local player's batch is committed only when the
+    // server echoes it back (via on.subscribe below), preventing desync on rejection.
+    getCommunicator(this.scene).gameCommandChanged!.sendToServer({
       gameInstanceId: this.scene.gameInstanceId,
       emitterUserId: this.scene.userId,
       tick,
@@ -230,12 +238,11 @@ export class CommandBusService {
     }
 
     for (let tick = 1; tick <= CommandBusService.INPUT_DELAY_TICKS; tick++) {
+      // Directly commit empty batches for the initial grace ticks so the local
+      // player's lockstep slots are filled before the server can echo back.
+      // The server will echo these back too (and re-commit them), which is harmless
+      // because buffer.commit() merges rather than replaces.
       this.buffer.commit(tick, this.localPlayerNumber, []);
-      this.emitRecordedBatch({
-        tick,
-        playerNumber: this.localPlayerNumber,
-        commands: []
-      });
       this.lastSentExecutionTick = Math.max(this.lastSentExecutionTick, tick);
       this.sendCommandBatch(tick, []);
     }
@@ -262,12 +269,9 @@ export class CommandBusService {
 
     if (this.localPlayerNumber !== null) {
       for (let tick = snapshotTick + 1; tick <= snapshotTick + CommandBusService.INPUT_DELAY_TICKS; tick++) {
+        // Same as seedInitialTicks: directly commit here so the barrier doesn't
+        // stall before the server echo arrives.  Re-commit on echo is harmless.
         this.buffer.commit(tick, this.localPlayerNumber, []);
-        this.emitRecordedBatch({
-          tick,
-          playerNumber: this.localPlayerNumber,
-          commands: []
-        });
         this.lastSentExecutionTick = Math.max(this.lastSentExecutionTick, tick);
         this.sendCommandBatch(tick, []);
       }
@@ -328,13 +332,14 @@ export class CommandBusService {
   private logStall(nextTick: number): void {
     const committed = this.buffer.getCommittedPlayers(nextTick);
     const missing = this.humanPlayerNumbers.filter((playerNumber) => !committed.includes(playerNumber));
+    const pauseReasons = this.tickService?.getPauseReasons().join(",") || "none";
     const signature = `${nextTick}|${committed.join(",")}|${missing.join(",")}`;
     if (signature === this.stallSignature) {
       return;
     }
     this.stallSignature = signature;
     this.debugLog(
-      `stall nextTick=${nextTick} committed=${committed.join(",") || "none"} missing=${missing.join(",") || "none"}`
+      `stall nextTick=${nextTick} committed=${committed.join(",") || "none"} missing=${missing.join(",") || "none"} pauses=${pauseReasons}`
     );
   }
 

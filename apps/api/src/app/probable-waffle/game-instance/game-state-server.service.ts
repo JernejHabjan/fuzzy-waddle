@@ -16,9 +16,24 @@ import {
 } from "@fuzzy-waddle/api-interfaces";
 import { GameInstanceService } from "./game-instance.service";
 import { type User } from "@supabase/supabase-js";
-import { GameCommandValidatorService } from "./game-command-validator.service";
+import { GameCommandValidatorService, type GameCommandValidationResult } from "./game-command-validator.service";
 import { PlayerStateValidatorService } from "./player-state-validator.service";
 import { PauseStateValidatorService } from "./pause-state-validator.service";
+
+/**
+ * Result of a game-state update.
+ *
+ * - `{ success: true }` — state updated; relay the event to peers.
+ * - `{ success: false, relayEmpty: true, rejectionReason }` — tick is
+ *   authoritative but payload was invalid; relay an empty batch so the
+ *   lockstep barrier can advance without freeze.
+ * - `{ success: false, relayEmpty: false }` — security/protocol violation;
+ *   drop the message entirely (no relay).
+ */
+export type UpdateGameStateResult =
+  | { success: true }
+  | { success: false; relayEmpty: false }
+  | { success: false; relayEmpty: true; rejectionReason: string };
 
 @Injectable()
 export class GameStateServerService {
@@ -34,7 +49,7 @@ export class GameStateServerService {
     private readonly pauseStateValidator: PauseStateValidatorService
   ) {}
 
-  updateGameState(body: CommunicatorEvent<any, ProbableWaffleCommunicatorType>, user: User): boolean {
+  updateGameState(body: CommunicatorEvent<any, ProbableWaffleCommunicatorType>, user: User): UpdateGameStateResult {
     const gameInstance = this.gameInstanceService.findGameInstance(body.gameInstanceId!);
     if (!gameInstance) {
       console.warn(
@@ -42,7 +57,7 @@ export class GameStateServerService {
           `gameInstanceId=${body.gameInstanceId} user=${user.id}. ` +
           `Open instances: ${this.gameInstanceService.getOpenGameInstanceIds().join(",") || "none"}`
       );
-      return false;
+      return { success: false, relayEmpty: false };
     }
 
     gameInstance.gameInstanceMetadata.data.updatedOn = new Date();
@@ -69,7 +84,7 @@ export class GameStateServerService {
       case "playerDataChange":
         const playerData = body.payload as ProbableWafflePlayerDataChangeEvent;
         if (!this.playerStateValidator.validate(playerData, gameInstance, user)) {
-          return false;
+          return { success: false, relayEmpty: false };
         }
         ProbableWaffleListeners.playerChanged(gameInstance, playerData);
         break;
@@ -81,21 +96,29 @@ export class GameStateServerService {
         const gameStateData = body.payload as ProbableWaffleGameStateDataChangeEvent;
         ProbableWaffleListeners.gameStateDataChanged(gameInstance, gameStateData);
         break;
-      case "game-command":
+      case "game-command": {
         const cmdEvent = body.payload as ProbableWaffleGameCommandEvent;
-        // Validate ownership, rate limits, and sequence before relaying
-        if (!this.commandValidator.validate(cmdEvent, gameInstance, user)) {
-          return false;
+        const validationResult: GameCommandValidationResult = this.commandValidator.validate(cmdEvent, gameInstance, user);
+        if (!validationResult.valid) {
+          if (validationResult.relayEmpty) {
+            // Tick is authoritative but payload failed — record an empty batch
+            // in command history so reconnecting clients don't stall on a missing tick.
+            this.recordCommand({ ...cmdEvent, commands: [] });
+            return { success: false, relayEmpty: true, rejectionReason: validationResult.reason };
+          }
+          // Security/sequence violation — drop entirely.
+          return { success: false, relayEmpty: false };
         }
         this.recordCommand(cmdEvent);
-        return true;
+        return { success: true };
+      }
       case "state-hash":
         // No server-side processing needed; relay to all peers as-is.
-        return true;
+        break;
       case "snapshot-request":
         // Request is relayed to all peers; the host will respond directly.
         // Server holds no snapshot state — routing only.
-        return true;
+        break;
       case "snapshot-response":
         // Response is relayed to all peers (only the requester will consume it via userId filter).
         const snapshotResponse = body.payload as ProbableWaffleSnapshotResponseEvent;
@@ -103,20 +126,26 @@ export class GameStateServerService {
           gameInstance.gameInstanceMetadata.data.gameInstanceId!,
           snapshotResponse.snapshot.tick
         );
-        return true;
+        break;
       case "desync-alert":
-        return this.validateDesyncAlert(body.payload as ProbableWaffleDesyncAlertEvent, gameInstance, user);
+        if (!this.validateDesyncAlert(body.payload as ProbableWaffleDesyncAlertEvent, gameInstance, user)) {
+          return { success: false, relayEmpty: false };
+        }
+        break;
       case "pause-changed":
-        return this.pauseStateValidator.validate(body.payload as ProbableWafflePauseChangedEvent, gameInstance, user);
+        if (!this.pauseStateValidator.validate(body.payload as ProbableWafflePauseChangedEvent, gameInstance, user)) {
+          return { success: false, relayEmpty: false };
+        }
+        break;
       case "player-disconnected":
       case "player-reconnected":
       case "host-migrated":
         // Server-originated events — clients should never send these; return false to suppress relay.
-        return false;
+        return { success: false, relayEmpty: false };
       default:
         throw new Error("Unknown communicator");
     }
-    return true;
+    return { success: true };
   }
 
   cleanup(gameInstanceId: string): void {

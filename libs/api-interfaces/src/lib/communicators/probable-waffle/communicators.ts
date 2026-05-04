@@ -140,6 +140,13 @@ export interface ProbableWaffleGameCommandEvent extends ProbableWaffleCommunicat
   playerNumber: PlayerNumber;
   /** Serialised GameCommand objects. Cast to GameCommand[] on the client. */
   commands: unknown[];
+  /**
+   * Set by the server when a batch is rejected due to payload validation.
+   * The batch is still relayed as empty (commands: []) so the lockstep barrier
+   * can advance; the reason is logged on the sending client as a warning.
+   * Absent on valid relays.
+   */
+  rejectionReason?: string;
 }
 
 /** Periodic state-hash snapshot. Each client broadcasts its own hash; peers compare. */

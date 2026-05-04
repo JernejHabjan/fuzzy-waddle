@@ -35,6 +35,9 @@ export class ActorIdSeeder {
   private subscription?: Subscription;
   private pendingActorDefs?: Partial<ActorDefinition>[];
   private hostBroadcastHandle?: number;
+  private initialActorsCreated = false;
+  private seededAuthoritativeIds = false;
+  private readonly loggedOrphanKeys = new Set<string>();
 
   constructor(private readonly scene: GameProbableWaffleScene) {
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
@@ -46,10 +49,11 @@ export class ActorIdSeeder {
   }
 
   afterInitialActorsCreated(): void {
-    if (!this.pendingActorDefs?.length) {
+    this.initialActorsCreated = true;
+    if (!this.pendingActorDefs?.length || this.seededAuthoritativeIds) {
       return;
     }
-    this.patchActorIds(this.pendingActorDefs);
+    this.applyAuthoritativeSeed(this.pendingActorDefs);
   }
 
   private listenForHostSeed(): void {
@@ -62,10 +66,10 @@ export class ActorIdSeeder {
       if (!actorDefs?.length) return;
 
       this.pendingActorDefs = actorDefs;
-      this.patchActorIds(actorDefs);
-
-      // Replace local game state so all id-based lookups are consistent
-      this.scene.baseGameData.gameInstance.gameState = new ProbableWaffleGameState(event.data.gameState as any);
+      if (!this.initialActorsCreated || this.seededAuthoritativeIds) {
+        return;
+      }
+      this.applyAuthoritativeSeed(actorDefs);
     });
   }
 
@@ -73,6 +77,7 @@ export class ActorIdSeeder {
     const rebroadcast = () => {
       const sessionState = this.scene.baseGameData.gameInstance.gameInstanceMetadata.data.sessionState;
       if (
+        sessionState === GameSessionState.StartingTheGame ||
         sessionState === GameSessionState.InProgress ||
         sessionState === GameSessionState.ToScoreScreen ||
         sessionState === GameSessionState.Stopped
@@ -92,6 +97,19 @@ export class ActorIdSeeder {
 
     this.scene.time.delayedCall(0, rebroadcast);
     this.hostBroadcastHandle = window.setInterval(rebroadcast, 500);
+  }
+
+  private applyAuthoritativeSeed(actorDefs: Partial<ActorDefinition>[]): void {
+    this.patchActorIds(actorDefs);
+
+    const currentGameState = this.scene.baseGameData.gameInstance.gameState?.data;
+    const nextGameState = new ProbableWaffleGameState(currentGameState);
+    nextGameState.data.actors = structuredClone(actorDefs) as ActorDefinition[];
+    this.scene.baseGameData.gameInstance.gameState = nextGameState;
+
+    this.seededAuthoritativeIds = true;
+    this.subscription?.unsubscribe();
+    this.subscription = undefined;
   }
 
   /**
@@ -176,7 +194,9 @@ export class ActorIdSeeder {
     for (const [key, orphans] of unmatchedChildren.entries()) {
       for (const orphan of orphans) {
         const idComp = getActorComponent(orphan, IdComponent);
-        if (idComp) {
+        const orphanSignature = idComp ? `${key}|${idComp.id}` : undefined;
+        if (idComp && orphanSignature && !this.loggedOrphanKeys.has(orphanSignature)) {
+          this.loggedOrphanKeys.add(orphanSignature);
           console.warn(
             `[ActorIdSeeder] Orphaned actor key="${key}" name="${orphan.name}" id=${idComp.id} — no host definition matched; ID may diverge.`
           );

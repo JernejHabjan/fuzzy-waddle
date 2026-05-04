@@ -74,6 +74,8 @@ export class ProbableWaffleCommunicatorService
   activeSocket?: Socket;
   private activeGameInstanceId?: GameInstanceId;
   private socketConnectHandler?: () => void;
+  private joinedSocketId?: string;
+  private joinedGameInstanceId?: GameInstanceId;
   private rawSocket?: {
     on: (event: string, handler: () => void) => void;
     off?: (event: string, handler: () => void) => void;
@@ -81,6 +83,7 @@ export class ProbableWaffleCommunicatorService
   };
 
   startCommunication(gameInstanceId: GameInstanceId, socket?: Socket) {
+    this.destroySubscriptions();
     this.activeSocket = socket;
     this.activeGameInstanceId = gameInstanceId;
     this.gameInstanceMetadataChanged = new TwoWayCommunicator<
@@ -199,6 +202,9 @@ export class ProbableWaffleCommunicatorService
     }
     this.rawSocket = undefined;
     this.socketConnectHandler = undefined;
+    this.joinedSocketId = undefined;
+    this.joinedGameInstanceId = undefined;
+    this.activeSocket = undefined;
     this.activeGameInstanceId = undefined;
     this.gameInstanceMetadataChanged?.destroy();
     this.gameModeChanged?.destroy();
@@ -222,9 +228,30 @@ export class ProbableWaffleCommunicatorService
     gameInstanceId: GameInstanceId,
     type: ProbableWaffleWebsocketRoomEvent["type"]
   ): void {
+    const socketId = (socket as any).ioSocket?.id as string | undefined;
+    if (
+      type === "join" &&
+      socketId &&
+      this.joinedSocketId === socketId &&
+      this.joinedGameInstanceId === gameInstanceId
+    ) {
+      return;
+    }
+
     socket.emit(ProbableWaffleGatewayEvent.ProbableWaffleWebsocketRoom, {
       gameInstanceId,
       type
     } satisfies ProbableWaffleWebsocketRoomEvent);
+
+    if (type === "join") {
+      this.joinedSocketId = socketId;
+      this.joinedGameInstanceId = gameInstanceId;
+      return;
+    }
+
+    if (this.joinedGameInstanceId === gameInstanceId) {
+      this.joinedSocketId = undefined;
+      this.joinedGameInstanceId = undefined;
+    }
   }
 }

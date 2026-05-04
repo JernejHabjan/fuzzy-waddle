@@ -32,7 +32,7 @@ import { UseGuards } from "@nestjs/common";
 import { type AuthUser } from "@supabase/supabase-js";
 import { SupabaseAuthGuard } from "../../../auth/guards/supabase-auth.guard";
 import { CurrentUser } from "../../../auth/current-user";
-import { GameStateServerService } from "./game-state-server.service";
+import { GameStateServerService, type UpdateGameStateResult } from "./game-state-server.service";
 import { RoomServerService } from "../game-room/room-server.service";
 import { ChatService } from "../../chat/chat.service";
 import { PlayerDisconnectTrackerService } from "./player-disconnect-tracker.service";
@@ -132,10 +132,13 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
 
     const removedPlayerUserId = this.getRemovedPlayerUserId(body);
     const participantLeft = this.isParticipantLeaving(body);
-    const success = this.gameStateServerService.updateGameState(body, user);
+    const result: UpdateGameStateResult = this.gameStateServerService.updateGameState(body, user);
     const roomId = `${ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance}${body.gameInstanceId}`;
-    if (success) {
-      if (body.communicator === "pause-changed" || body.communicator === "desync-alert") {
+    if (result.success) {
+      if (body.communicator === "game-command") {
+        // Include the sender so it commits via the authoritative server echo instead of self-delivery.
+        this.server.to(roomId).emit(ProbableWaffleGatewayEvent.ProbableWaffleAction, body);
+      } else if (body.communicator === "pause-changed" || body.communicator === "desync-alert") {
         this.server.to(roomId).emit(ProbableWaffleGatewayEvent.ProbableWaffleAction, body);
       } else {
         // https://socket.io/docs/v3/emit-cheatsheet/
@@ -146,19 +149,21 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
       if (participantLeft) {
         this.handleParticipantLeft(body.gameInstanceId!, roomId, removedPlayerUserId);
       }
-    } else {
-      if (body.communicator === "game-command") {
-        const payload = body.payload as ProbableWaffleGameCommandEvent;
-        const rejectedAsEmptyBatch = {
-          ...body,
-          payload: {
-            ...payload,
-            commands: []
-          } satisfies ProbableWaffleGameCommandEvent
-        };
-        this.server.to(roomId).emit(ProbableWaffleGatewayEvent.ProbableWaffleAction, rejectedAsEmptyBatch);
-      }
+    } else if (!result.success && result.relayEmpty) {
+      // Tick is authoritative but payload was invalid.  Relay an empty batch
+      // WITH a rejectionReason so the sender can log what went wrong.
+      const payload = body.payload as ProbableWaffleGameCommandEvent;
+      const rejectedAsEmptyBatch = {
+        ...body,
+        payload: {
+          ...payload,
+          commands: [],
+          rejectionReason: result.rejectionReason
+        } satisfies ProbableWaffleGameCommandEvent
+      };
+      this.server.to(roomId).emit(ProbableWaffleGatewayEvent.ProbableWaffleAction, rejectedAsEmptyBatch);
     }
+    // else: security/sequence violation — drop entirely; no relay of any kind.
   }
 
   @UseGuards(SupabaseAuthGuard)
@@ -205,18 +210,20 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
   ) {
     switch (body.type) {
       case "join":
-        socket.join(`${ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance}${body.gameInstanceId}`);
-        // Track socket ↔ player so we can handle disconnect gracefully.
-        this.disconnectTracker.registerSocket(socket.id, user.id, body.gameInstanceId!);
-        console.log(
-          `[Gateway] user=${user.id} socket=${socket.id} joined room ${ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance}${body.gameInstanceId}`
-        );
-        // If this player was previously disconnected, notify peers that they're back.
         {
+          const roomId = `${ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance}${body.gameInstanceId}`;
+          if (socket.rooms.has(roomId)) {
+            console.log(`[Gateway] user=${user.id} socket=${socket.id} already joined room ${roomId}`);
+            break;
+          }
+          socket.join(roomId);
+          // Track socket ↔ player so we can handle disconnect gracefully.
+          this.disconnectTracker.registerSocket(socket.id, user.id, body.gameInstanceId!);
+          console.log(`[Gateway] user=${user.id} socket=${socket.id} joined room ${roomId}`);
+          // If this player was previously disconnected, notify peers that they're back.
           const gameInstance = this.gameInstanceService.findGameInstance(body.gameInstanceId!);
           const player = gameInstance?.players.find((p) => p.playerController.data.userId === user.id);
           if (player?.playerNumber !== undefined) {
-            const roomId = `${ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance}${body.gameInstanceId}`;
             // Notify other clients (not the rejoining socket itself)
             socket.to(roomId).emit(ProbableWaffleGatewayEvent.ProbableWaffleAction, {
               gameInstanceId: body.gameInstanceId,

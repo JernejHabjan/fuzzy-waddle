@@ -91,11 +91,11 @@ describe("GameCommandValidatorService", () => {
   }
 
   it("accepts move commands with consistent tile and world coordinates", () => {
-    expect(service.validate(createMoveEvent(640, 0), createGameInstance(), { id: "user-1" } as never)).toBe(true);
+    expect(service.validate(createMoveEvent(640, 0), createGameInstance(), { id: "user-1" } as never)).toEqual({ valid: true });
   });
 
   it("accepts move commands even when tile and world coordinates differ", () => {
-    expect(service.validate(createMoveEvent(960, 0), createGameInstance(), { id: "user-1" } as never)).toBe(true);
+    expect(service.validate(createMoveEvent(960, 0), createGameInstance(), { id: "user-1" } as never)).toEqual({ valid: true });
   });
 
   it("accepts production commands from production buildings", () => {
@@ -111,7 +111,7 @@ describe("GameCommandValidatorService", () => {
         createGameInstance(),
         { id: "user-1" } as never
       )
-    ).toBe(true);
+    ).toEqual({ valid: true });
   });
 
   it("accepts production commands from non-production actors while semantic validation is disabled", () => {
@@ -127,7 +127,7 @@ describe("GameCommandValidatorService", () => {
         createGameInstance(),
         { id: "user-1" } as never
       )
-    ).toBe(true);
+    ).toEqual({ valid: true });
   });
 
   it("accepts research commands from research buildings", () => {
@@ -143,7 +143,7 @@ describe("GameCommandValidatorService", () => {
         createGameInstance(),
         { id: "user-1" } as never
       )
-    ).toBe(true);
+    ).toEqual({ valid: true });
   });
 
   it("accepts production commands for any known unit while semantic validation is disabled", () => {
@@ -159,7 +159,7 @@ describe("GameCommandValidatorService", () => {
         createGameInstance(),
         { id: "user-1" } as never
       )
-    ).toBe(true);
+    ).toEqual({ valid: true });
   });
 
   it("accepts research commands for any known research while semantic validation is disabled", () => {
@@ -175,6 +175,55 @@ describe("GameCommandValidatorService", () => {
         createGameInstance(),
         { id: "user-1" } as never
       )
-    ).toBe(true);
+    ).toEqual({ valid: true });
+  });
+
+  it("drops (no relay) when user does not own the playerNumber", () => {
+    const result = service.validate(createMoveEvent(640, 0), createGameInstance(), { id: "other-user" } as never);
+    expect(result).toEqual({ valid: false, relayEmpty: false, reason: expect.any(String) });
+  });
+
+  it("drops (no relay) on stale tick", () => {
+    const instance = createGameInstance();
+    const user = { id: "user-1" } as never;
+    // First batch establishes tick 0
+    service.validate(createMoveEvent(640, 0), instance, user);
+    // Repeat tick 0 — must be dropped
+    const result = service.validate(createMoveEvent(640, 0), instance, user);
+    expect(result).toEqual({ valid: false, relayEmpty: false, reason: expect.stringContaining("stale tick") });
+  });
+
+  it("relays empty on unknown command type (payload error)", () => {
+    const event: ProbableWaffleGameCommandEvent = {
+      gameInstanceId: "gi-1",
+      emitterUserId: "user-1",
+      tick: 0,
+      playerNumber: 1,
+      commands: [{ type: "UNKNOWN_TYPE" } as never]
+    };
+    const result = service.validate(event, createGameInstance(), { id: "user-1" } as never);
+    expect(result).toEqual({ valid: false, relayEmpty: true, reason: expect.any(String) });
+  });
+
+  it("relays empty on unknown actor id (payload error)", () => {
+    const event: ProbableWaffleGameCommandEvent = {
+      gameInstanceId: "gi-1",
+      emitterUserId: "user-1",
+      tick: 0,
+      playerNumber: 1,
+      commands: [
+        {
+          type: "MOVE",
+          tick: 0,
+          playerNumber: 1,
+          actorIds: ["nonexistent-actor"],
+          tileVec3: { x: 10, y: 10, z: 0 },
+          worldVec3: { x: 640, y: 0, z: 0 },
+          queue: false
+        }
+      ]
+    };
+    const result = service.validate(event, createGameInstance(), { id: "user-1" } as never);
+    expect(result).toEqual({ valid: false, relayEmpty: true, reason: expect.stringContaining("unknown actor") });
   });
 });

@@ -45,6 +45,10 @@ export class SimulationTickService {
     return this.pauseReasons.size > 0;
   }
 
+  getPauseReasons(): string[] {
+    return [...this.pauseReasons].sort();
+  }
+
   /**
    * Jump the sim clock to `tick` without emitting intermediate tick events.
    * Used after applying a reconnect snapshot so the command sequence stays coherent.

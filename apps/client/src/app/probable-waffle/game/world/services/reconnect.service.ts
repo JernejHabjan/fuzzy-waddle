@@ -38,6 +38,7 @@ export class ReconnectService {
   private socketDisconnectHandler?: (reason: string) => void;
   /** Stored so destroy() can call removeListener. */
   private rawSocket?: any;
+  private awaitingReconnect = false;
 
   init(scene: ProbableWaffleScene): void {
     const communicator = getCommunicator(scene);
@@ -88,6 +89,10 @@ export class ReconnectService {
   }
 
   private onSocketReconnect(scene: ProbableWaffleScene): void {
+    if (!this.awaitingReconnect) {
+      return;
+    }
+    this.awaitingReconnect = false;
     console.info("[Reconnect] Socket reconnected — re-joining room and requesting snapshot from host.");
 
     // Re-join the socket.io room with the new socket ID.
@@ -113,6 +118,7 @@ export class ReconnectService {
   }
 
   private onSocketDisconnect(scene: ProbableWaffleScene, reason: string): void {
+    this.awaitingReconnect = true;
     scene.events.emit("local-connection-lost", {
       playerNumber: scene.playerOrNull?.playerNumber ?? scene.player?.playerNumber,
       reason
@@ -211,6 +217,7 @@ export class ReconnectService {
 
   destroy(): void {
     this.snapshotSub?.unsubscribe();
+    this.awaitingReconnect = false;
     if (this.socketConnectHandler && this.rawSocket) {
       this.rawSocket.off("connect", this.socketConnectHandler);
     }

@@ -11,19 +11,35 @@ import {
 import type { User } from "@supabase/supabase-js";
 
 /**
+ * Result of batch validation.
+ *
+ * - `{ valid: true }` — relay the batch as-is to all peers.
+ * - `{ valid: false, relayEmpty: true,  reason }` — the player and tick are
+ *   authoritative but the payload is bad; relay an empty batch so the lockstep
+ *   barrier can advance without desync.
+ * - `{ valid: false, relayEmpty: false, reason }` — security / sequence
+ *   violation; drop the message entirely (no relay of any kind).
+ */
+export type GameCommandValidationResult =
+  | { valid: true }
+  | { valid: false; relayEmpty: boolean; reason: string };
+
+/**
  * Cheap server-side validation for incoming command batches.
  *
  * The server never runs the simulation, so it can only check:
  *   1. Player ownership  — the JWT user must own the playerNumber they're
  *      submitting commands for.
- *   2. Rate limiting     — at most MAX_BATCHES_PER_SECOND batches per player
- *      per second (guards against flooding).
- *   3. Sequence numbers — each player's tick must advance monotonically
+ *   2. Sequence numbers — each player's tick must advance monotonically
  *      (prevents replaying old batches or submitting far-future ticks).
+ *      Failures here are security/protocol violations → DROP (no relay).
+ *   3. Rate limiting     — at most MAX_BATCHES_PER_SECOND batches per player
+ *      per second; once the tick is confirmed authoritative, excess batches
+ *      are replaced with an empty relay rather than dropped, so the lockstep
+ *      barrier still advances.
  *   4. Payload schema   — batch must be an array; individual command fields
- *      must not be wildly out of range.
- *
- * Rejects return false; callers should drop the message (no relay).
+ *      must not be wildly out of range.  Payload failures → RELAY EMPTY (the
+ *      tick is authoritative but the commands cannot be applied).
  */
 @Injectable()
 export class GameCommandValidatorService {
@@ -53,15 +69,20 @@ export class GameCommandValidatorService {
     event: ProbableWaffleGameCommandEvent,
     gameInstance: ProbableWaffleGameInstance,
     user: User
-  ): boolean {
+  ): GameCommandValidationResult {
     const { playerNumber, tick, commands, gameInstanceId } = event;
 
-    // 1. Ownership: the authenticated user must be the owner of this playerNumber.
+    // ── Phase 1: Security / authoritative checks ────────────────────────────
+    // Failures here are protocol violations.  The batch is DROPPED entirely
+    // (no relay) so a malicious sender cannot spoof a no-op commit for another
+    // player's slot or inject stale/far-future ticks.
+
+    // 1a. Ownership: the authenticated user must be the owner of this playerNumber.
     //    AI players have userId = null; only the current host may submit commands on their behalf.
     const player = gameInstance.getPlayerByNumber(playerNumber);
     if (!player) {
       this.logger.warn(`[GameCommand] Unknown playerNumber ${playerNumber} in instance ${gameInstanceId}`);
-      return false;
+      return { valid: false, relayEmpty: false, reason: `unknown playerNumber ${playerNumber}` };
     }
     const playerUserId = player.playerController.data.userId;
     if (playerUserId !== user.id) {
@@ -70,7 +91,7 @@ export class GameCommandValidatorService {
         this.logger.warn(
           `[GameCommand] Ownership violation: user ${user.id} tried to submit for player ${playerNumber} owned by ${playerUserId}`
         );
-        return false;
+        return { valid: false, relayEmpty: false, reason: `ownership violation for player ${playerNumber}` };
       }
       // playerUserId === null → AI-owned slot. Only the current host may issue these commands.
       const hostUserId =
@@ -80,35 +101,19 @@ export class GameCommandValidatorService {
         this.logger.warn(
           `[GameCommand] AI-player command from non-host: user ${user.id} tried to submit for AI player ${playerNumber}, host is ${hostUserId}`
         );
-        return false;
+        return { valid: false, relayEmpty: false, reason: `non-host AI command for player ${playerNumber}` };
       }
     }
 
-    // 2. Schema: commands must be an array within size limits
-    if (!Array.isArray(commands)) {
-      this.logger.warn(`[GameCommand] commands field is not an array from player ${playerNumber}`);
-      return false;
-    }
-    if (commands.length > GameCommandValidatorService.MAX_COMMANDS_PER_BATCH) {
-      this.logger.warn(
-        `[GameCommand] Oversized batch (${commands.length}) from player ${playerNumber} — dropping`
-      );
-      return false;
-    }
+    // 1b. Tick must be a valid non-negative integer.
     if (!Number.isInteger(tick) || tick < 0) {
       this.logger.warn(`[GameCommand] Invalid tick ${tick} from player ${playerNumber}`);
-      return false;
+      return { valid: false, relayEmpty: false, reason: `invalid tick value ${tick}` };
     }
 
-    const actorIndex = this.getActorIndex(gameInstance);
-
-    for (const command of commands) {
-      if (!this.validateCommandPayload(command, tick, playerNumber, actorIndex, gameInstanceId)) {
-        return false;
-      }
-    }
-
-    // 3. Sequence: tick must advance (never go backwards, never jump too far)
+    // 1c. Sequence: tick must advance (never go backwards, never jump too far).
+    //     Advance the sequence tracker only after ownership is confirmed so a
+    //     forged packet cannot poison another player's sequence state.
     const instanceKey = String(gameInstanceId);
     if (!this.lastTick.has(instanceKey)) this.lastTick.set(instanceKey, new Map());
     const playerTicks = this.lastTick.get(instanceKey)!;
@@ -117,17 +122,40 @@ export class GameCommandValidatorService {
       this.logger.warn(
         `[GameCommand] Stale batch: player ${playerNumber} sent tick ${tick} but last was ${prev}`
       );
-      return false;
+      return { valid: false, relayEmpty: false, reason: `stale tick ${tick} (last: ${prev})` };
     }
     if (tick > prev + GameCommandValidatorService.MAX_TICK_JUMP + 1) {
       this.logger.warn(
         `[GameCommand] Tick jump too large: player ${playerNumber} jumped from ${prev} to ${tick}`
       );
-      return false;
+      return { valid: false, relayEmpty: false, reason: `tick jump too large (${prev} → ${tick})` };
     }
+    // Sequence accepted — record the tick now so subsequent checks can treat
+    // this slot as authoritative even if the payload turns out to be invalid.
     playerTicks.set(playerNumber, tick);
 
-    // 4. Rate limiting: sliding 1-second window
+    // ── Phase 2: Payload / content checks ───────────────────────────────────
+    // The tick and player are now confirmed as authoritative.  Any failure
+    // below results in RELAY EMPTY so the lockstep barrier advances without
+    // desync: the sender committed this slot but with no valid commands.
+
+    // 2a. Schema: commands must be an array within size limits.
+    if (!Array.isArray(commands)) {
+      this.logger.warn(`[GameCommand] commands field is not an array from player ${playerNumber}`);
+      return { valid: false, relayEmpty: true, reason: `commands field is not an array` };
+    }
+    if (commands.length > GameCommandValidatorService.MAX_COMMANDS_PER_BATCH) {
+      this.logger.warn(
+        `[GameCommand] Oversized batch (${commands.length}) from player ${playerNumber} — dropping`
+      );
+      return {
+        valid: false,
+        relayEmpty: true,
+        reason: `oversized batch (${commands.length} > ${GameCommandValidatorService.MAX_COMMANDS_PER_BATCH})`
+      };
+    }
+
+    // 2b. Rate limiting: sliding 1-second window.
     if (!this.rateBuckets.has(instanceKey)) this.rateBuckets.set(instanceKey, new Map());
     const buckets = this.rateBuckets.get(instanceKey)!;
     const now = Date.now();
@@ -142,10 +170,23 @@ export class GameCommandValidatorService {
       this.logger.warn(
         `[GameCommand] Rate limit exceeded for player ${playerNumber} in instance ${gameInstanceId}`
       );
-      return false;
+      return {
+        valid: false,
+        relayEmpty: true,
+        reason: `rate limit exceeded (${bucket.count} batches/s)`
+      };
     }
 
-    return true;
+    // 2c. Per-command payload checks.
+    const actorIndex = this.getActorIndex(gameInstance);
+    for (const command of commands) {
+      const payloadError = this.validateCommandPayload(command, tick, playerNumber, actorIndex, gameInstanceId);
+      if (payloadError !== null) {
+        return { valid: false, relayEmpty: true, reason: payloadError };
+      }
+    }
+
+    return { valid: true };
   }
 
   /** Remove state for a game instance after it ends, to prevent memory leaks. */
@@ -154,16 +195,20 @@ export class GameCommandValidatorService {
     this.rateBuckets.delete(gameInstanceId);
   }
 
+  /**
+   * Validates a single command's payload.
+   * Returns null on success, or an error string describing the failure.
+   */
   private validateCommandPayload(
     command: unknown,
     expectedTick: number,
     playerNumber: number,
     actorIndex: Map<string, ActorDefinition>,
     gameInstanceId: string
-  ): boolean {
+  ): string | null {
     if (!command || typeof command !== "object") {
       this.logger.warn(`[GameCommand] Non-object command in ${gameInstanceId}`);
-      return false;
+      return `non-object command`;
     }
 
     const payload = command as Record<string, unknown>;
@@ -178,31 +223,31 @@ export class GameCommandValidatorService {
       type !== "CANCEL_RESEARCH"
     ) {
       this.logger.warn(`[GameCommand] Unknown command type ${String(type)} in ${gameInstanceId}`);
-      return false;
+      return `unknown command type "${String(type)}"`;
     }
     if (payload.tick !== expectedTick || payload.playerNumber !== playerNumber) {
       this.logger.warn(
         `[GameCommand] Inner command metadata mismatch for player ${playerNumber} in ${gameInstanceId}`
       );
-      return false;
+      return `command metadata mismatch (tick=${String(payload.tick)}, player=${String(payload.playerNumber)})`;
     }
 
     const actorIds = this.readActorIds(payload.actorIds);
     if (!actorIds || actorIds.length === 0 || actorIds.length > GameCommandValidatorService.MAX_ACTOR_IDS_PER_COMMAND) {
       this.logger.warn(`[GameCommand] Invalid actorIds for player ${playerNumber} in ${gameInstanceId}`);
-      return false;
+      return `invalid actorIds for player ${playerNumber}`;
     }
     for (const actorId of actorIds) {
       const actor = actorIndex.get(actorId);
       if (!actor) {
         this.logger.warn(`[GameCommand] Unknown actor ${actorId} for player ${playerNumber} in ${gameInstanceId}`);
-        return false;
+        return `unknown actor "${actorId}"`;
       }
       if (actor.owner?.ownerId !== playerNumber) {
         this.logger.warn(
           `[GameCommand] Ownership violation for actor ${actorId} by player ${playerNumber} in ${gameInstanceId}`
         );
-        return false;
+        return `actor "${actorId}" not owned by player ${playerNumber}`;
       }
     }
 
@@ -210,65 +255,65 @@ export class GameCommandValidatorService {
       case "MOVE": {
         if (!(payload.queue === true || payload.queue === false)) {
           this.logger.warn(`[GameCommand] Invalid queue flag for MOVE in ${gameInstanceId}`);
-          return false;
+          return `invalid queue flag for MOVE`;
         }
         if (!this.isValidTileVector3(payload.tileVec3) || !this.isValidWorldVector3(payload.worldVec3)) {
           this.logger.warn(`[GameCommand] Invalid move vector payload in ${gameInstanceId}`);
-          return false;
+          return `invalid move vector payload`;
         }
-        return true;
+        return null;
       }
       case "ACTOR_ACTION": {
         const orderType = typeof payload.orderType === "string" ? payload.orderType : undefined;
         const knownOrderType = this.toKnownOrderType(orderType);
         if (!(payload.queue === true || payload.queue === false)) {
           this.logger.warn(`[GameCommand] Invalid queue flag for ACTOR_ACTION in ${gameInstanceId}`);
-          return false;
+          return `invalid queue flag for ACTOR_ACTION`;
         }
         if (payload.tileVec3 !== undefined && !this.isValidTileVector3(payload.tileVec3)) {
           this.logger.warn(`[GameCommand] Invalid tileVec3 for ACTOR_ACTION in ${gameInstanceId}`);
-          return false;
+          return `invalid tileVec3 for ACTOR_ACTION`;
         }
         if (payload.orderType !== undefined && typeof payload.orderType !== "string") {
           this.logger.warn(`[GameCommand] Invalid orderType for ACTOR_ACTION in ${gameInstanceId}`);
-          return false;
+          return `invalid orderType for ACTOR_ACTION`;
         }
         if (orderType !== undefined && knownOrderType === undefined) {
           this.logger.warn(`[GameCommand] Unknown orderType ${orderType} in ${gameInstanceId}`);
-          return false;
+          return `unknown orderType "${orderType}"`;
         }
         if (payload.targetObjectIds !== undefined) {
           const targetIds = this.readActorIds(payload.targetObjectIds);
           if (!targetIds || targetIds.length > GameCommandValidatorService.MAX_TARGET_IDS_PER_COMMAND) {
             this.logger.warn(`[GameCommand] Invalid targetObjectIds for ACTOR_ACTION in ${gameInstanceId}`);
-            return false;
+            return `invalid targetObjectIds for ACTOR_ACTION`;
           }
         }
-        return true;
+        return null;
       }
       case "STOP":
-        return true;
+        return null;
       case "PRODUCTION": {
         if (!this.isKnownActorName(payload.actorName)) {
           this.logger.warn(`[GameCommand] Invalid actorName for PRODUCTION in ${gameInstanceId}`);
-          return false;
+          return `invalid actorName for PRODUCTION`;
         }
-        return true;
+        return null;
       }
       case "CANCEL_PRODUCTION":
         if (!Number.isInteger(payload.queueIndex) || (payload.queueIndex as number) < 0) {
           this.logger.warn(`[GameCommand] Invalid queueIndex for CANCEL_PRODUCTION in ${gameInstanceId}`);
-          return false;
+          return `invalid queueIndex for CANCEL_PRODUCTION`;
         }
-        return true;
+        return null;
       case "RESEARCH":
         if (!this.isKnownResearchType(payload.researchType)) {
           this.logger.warn(`[GameCommand] Invalid researchType for RESEARCH in ${gameInstanceId}`);
-          return false;
+          return `invalid researchType for RESEARCH`;
         }
-        return true;
+        return null;
       case "CANCEL_RESEARCH":
-        return true;
+        return null;
     }
   }
 
