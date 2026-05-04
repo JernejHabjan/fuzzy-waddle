@@ -7,7 +7,7 @@ import { isTauri } from "../../utils/tauri";
  * Shown only when running inside a Tauri window. Automatically fades out after
  * ~3 seconds and removes itself from the DOM so it has zero runtime cost after startup.
  *
- * Sequence: fade-in (0.6s) → hold → fade-out (0.8s) → hidden.
+ * Sequence: visible → fade-out (0.8s) → hidden.
  */
 @Component({
   selector: "fuzzy-waddle-tauri-splash",
@@ -18,8 +18,8 @@ import { isTauri } from "../../utils/tauri";
 export class TauriSplashComponent implements OnInit, OnDestroy {
   protected readonly shouldRender = isTauri();
 
-  /** Controls CSS animation phase: 'entering' | 'visible' | 'leaving' | 'gone' */
-  protected readonly phase = signal<"entering" | "visible" | "leaving" | "gone">("entering");
+  /** Controls CSS animation phase: 'visible' | 'leaving' | 'gone' */
+  protected readonly phase = signal<"visible" | "leaving" | "gone">("visible");
 
   protected readonly appVersion = signal<string>("—");
 
@@ -36,28 +36,16 @@ export class TauriSplashComponent implements OnInit, OnDestroy {
 
     this.loadVersion();
 
-    // entering → visible after CSS fade-in (600ms)
-    this.timers.push(
-      setTimeout(() => {
-        this.phase.set("visible");
-      }, 600)
-    );
-
-    // visible → leaving after hold time
     this.timers.push(
       setTimeout(() => {
         this.phase.set("leaving");
-      }, 600 + this.HOLD_MS)
+      }, this.HOLD_MS)
     );
 
-    // leaving → gone after fade-out
     this.timers.push(
-      setTimeout(
-        () => {
-          this.phase.set("gone");
-        },
-        600 + this.HOLD_MS + this.FADE_OUT_MS
-      )
+      setTimeout(() => {
+        this.phase.set("gone");
+      }, this.HOLD_MS + this.FADE_OUT_MS)
     );
   }
 

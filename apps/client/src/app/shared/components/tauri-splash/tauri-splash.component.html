@@ -1,8 +1,6 @@
 @if (shouldRender && phase() !== 'gone') {
   <div
     class="splash-overlay"
-    [class.phase-entering]="phase() === 'entering'"
-    [class.phase-visible]="phase() === 'visible'"
     [class.phase-leaving]="phase() === 'leaving'"
   >
     <!-- Decorative corner frames -->
