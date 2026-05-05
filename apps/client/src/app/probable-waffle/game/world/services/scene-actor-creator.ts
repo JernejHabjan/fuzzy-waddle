@@ -70,7 +70,6 @@ export class SceneActorCreator {
   private spawnFromSpawnList() {
     const list = this.scene.children.getChildren();
     const toDestroy: Phaser.GameObjects.GameObject[] = [];
-    const actorIndex = getSceneService(this.scene, ActorIndexSystem);
 
     list.forEach((gameObject: Phaser.GameObjects.GameObject) => {
       if (gameObject instanceof Spawn) {
@@ -99,12 +98,9 @@ export class SceneActorCreator {
           if (editorLevel > 1) {
             upgradeActorToLevel(gameObject, editorLevel);
           }
-          // Register in the actor index after init
-          actorIndex?.registerActor(gameObject);
-        } else {
-          // Already initialized - ensure it's indexed
-          actorIndex?.registerActor(gameObject);
         }
+        // Register in the actor index after init
+        this.registerAndSaveNewActor(gameObject);
       }
     });
     toDestroy.forEach((gameObject) => gameObject.destroy());

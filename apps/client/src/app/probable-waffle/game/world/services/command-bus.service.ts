@@ -62,6 +62,8 @@ export class CommandBusService {
   private stallLogTimer: number | null = null;
   private pendingStallTick: number | null = null;
   private queuedWhileStalledSignature: string | null = null;
+  private readonly lastReceivedTickByPlayer = new Map<PlayerNumber, number>();
+  private lastSentTickByLocalPlayer: number | null = null;
 
   /**
    * Activates the multiplayer relay path.
@@ -71,10 +73,18 @@ export class CommandBusService {
   initMultiplayer(scene: ProbableWaffleScene): void {
     this.scene = scene;
     this.isMultiplayer = true;
-    this.localPlayerNumber = scene.playerOrNull?.playerNumber ?? scene.baseGameData.user.playerNumber ?? null;
+    this.localPlayerNumber = this.resolveLocalPlayerNumber(scene);
     this.humanPlayerNumbers = scene.baseGameData.gameInstance.players
       .filter((p) => p.playerController.data.playerDefinition?.playerType === ProbableWafflePlayerType.Human)
       .map((p) => p.playerNumber!);
+    this.humanPlayerNumbers.sort((a, b) => a - b);
+    if (this.localPlayerNumber === null) {
+      console.error("[CommandBus] Could not resolve local player number. Local command batches cannot be sent.");
+    } else if (!this.humanPlayerNumbers.includes(this.localPlayerNumber)) {
+      console.error(
+        `[CommandBus] Local player ${this.localPlayerNumber} is not part of human lockstep set [${this.humanPlayerNumbers.join(",") || "none"}].`
+      );
+    }
 
     this.debugLog(
       `init localPlayer=${this.localPlayerNumber ?? "none"} humans=${this.humanPlayerNumbers.join(",") || "none"}`
@@ -96,7 +106,10 @@ export class CommandBusService {
           this.debugLog(
             `received batch tick=${event.tick} player=${event.playerNumber} commands=${event.commands.length} types=${this.describeCommandTypes(event.commands as GameCommand[])}`
           );
+        } else {
+          this.debugLog(`received heartbeat tick=${event.tick} player=${event.playerNumber}`);
         }
+        this.lastReceivedTickByPlayer.set(event.playerNumber, event.tick);
         this.buffer.commit(event.tick, event.playerNumber, event.commands as GameCommand[]);
         this.emitRecordedBatch({
           tick: event.tick,
@@ -185,10 +198,13 @@ export class CommandBusService {
     this.pendingOutbound.delete(futureTick);
     if (this.localPlayerNumber !== null) {
       this.lastSentExecutionTick = Math.max(this.lastSentExecutionTick, futureTick);
+      this.lastSentTickByLocalPlayer = futureTick;
       if (outbound.length > 0) {
         this.debugLog(
           `sending batch tick=${futureTick} player=${this.localPlayerNumber} commands=${outbound.length} types=${this.describeCommandTypes(outbound)}`
         );
+      } else {
+        this.debugLog(`sending heartbeat tick=${futureTick} player=${this.localPlayerNumber}`);
       }
       this.sendCommandBatch(futureTick, outbound);
     }
@@ -344,8 +360,14 @@ export class CommandBusService {
     this.debugLog(
       `stall nextTick=${nextTick} committed=${committed.join(",") || "none"} missing=${missing.join(",") || "none"} pauses=${pauseReasons}`
     );
+    const lastReceivedByPlayer = this.humanPlayerNumbers
+      .map((playerNumber) => `${playerNumber}:${this.lastReceivedTickByPlayer.get(playerNumber) ?? "none"}`)
+      .join(" ");
+    const socketConnected = this.scene?.baseGameData.communicator.activeSocket
+      ? ((this.scene.baseGameData.communicator.activeSocket as any).ioSocket?.connected ?? "unknown")
+      : "no-socket";
     console.warn(
-      `[CommandBus][STALL] nextTick=${nextTick} waitingForPlayers=${missing.join(",") || "none"} committedBy=${committed.join(",") || "none"} pauses=${pauseReasons}`
+      `[CommandBus][STALL] nextTick=${nextTick} waitingForPlayers=${missing.join(",") || "none"} committedBy=${committed.join(",") || "none"} pauses=${pauseReasons} localPlayer=${this.localPlayerNumber ?? "none"} lastSentLocalTick=${this.lastSentTickByLocalPlayer ?? "none"} lastReceivedByPlayer={${lastReceivedByPlayer}} socketConnected=${socketConnected}`
     );
   }
 
@@ -394,6 +416,30 @@ export class CommandBusService {
     console.warn(
       `[CommandBus][QUEUE-WHILE-STALLED] command=${commandType} player=${playerNumber} executeTick=${executeTick} blockedTick=${blockedTick} missingPlayers=${missing.join(",")} committedPlayers=${committed.join(",") || "none"}`
     );
+  }
+
+  private resolveLocalPlayerNumber(scene: ProbableWaffleScene): PlayerNumber | null {
+    const scenePlayerNumber = scene.playerOrNull?.playerNumber;
+    if (scenePlayerNumber !== undefined && scenePlayerNumber !== null) {
+      return scenePlayerNumber;
+    }
+
+    const basePlayerNumber = scene.baseGameData.user.playerNumber;
+    if (basePlayerNumber !== undefined && basePlayerNumber !== null) {
+      return basePlayerNumber;
+    }
+
+    const userId = scene.userId;
+    if (userId) {
+      const matchingPlayer = scene.baseGameData.gameInstance.players.find(
+        (player) => player.playerController.data.userId === userId
+      );
+      if (matchingPlayer?.playerNumber !== undefined) {
+        return matchingPlayer.playerNumber;
+      }
+    }
+
+    return null;
   }
 
   private describeCommandTypes(commands: readonly GameCommand[]): string {
