@@ -33,12 +33,17 @@ import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
 import GameObject = Phaser.GameObjects.GameObject;
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import { upgradeActorToLevel } from "../../data/actor-level-utils";
+import { ActorIdAuthorityService } from "./actor-id-authority.service";
 
 export class SceneActorCreator {
   private readonly loadGame: LoadGame;
+  private readonly actorIdAuthority: ActorIdAuthorityService;
+  private readonly lifecycleBoundActors = new WeakSet<GameObject>();
+  private pendingHostActorSyncTimeout: ReturnType<typeof setTimeout> | undefined;
   constructor(private readonly scene: GameProbableWaffleScene) {
     this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
     this.loadGame = new LoadGame(scene as GameProbableWaffleScene);
+    this.actorIdAuthority = new ActorIdAuthorityService(scene);
   }
 
   /**
@@ -146,7 +151,7 @@ export class SceneActorCreator {
     }
 
     const gameObject = this.scene.add.existing(actor);
-    this.registerAndSaveNewActor(gameObject);
+    this.registerAndSaveNewActor(gameObject, actorDefinition.id?.id);
     return gameObject;
   }
 
@@ -209,10 +214,22 @@ export class SceneActorCreator {
     return constructionState === ConstructionStateEnum.Finished || constructionState === undefined;
   }
 
-  public registerAndSaveNewActor(actor: Phaser.GameObjects.GameObject) {
+  public registerAndSaveNewActor(actor: Phaser.GameObjects.GameObject, authoritativeId?: string) {
+    const actorIdComponent = getActorComponent(actor, IdComponent);
+    const currentId = actorIdComponent?.id;
+    const alreadyTrackedInGameState =
+      !!currentId &&
+      this.scene.baseGameData.gameInstance.gameState?.data.actors.some((knownActor) => knownActor.id?.id === currentId);
+    if (!alreadyTrackedInGameState || authoritativeId) {
+      this.actorIdAuthority.applyAuthoritativeOrDeterministicId(actor, authoritativeId);
+    }
+
+    this.bindLifecycleHandlers(actor);
+
     const actorIndex = getSceneService(this.scene, ActorIndexSystem);
     actorIndex?.registerActor(actor);
     this.saveActorToGameState(actor);
+    this.scheduleHostActorSync();
   }
 
   public saveAllKnownActorsToGameState() {
@@ -262,7 +279,59 @@ export class SceneActorCreator {
     }
   }
 
-  private destroy() {}
+  private bindLifecycleHandlers(actor: Phaser.GameObjects.GameObject) {
+    if (this.lifecycleBoundActors.has(actor)) {
+      return;
+    }
+    this.lifecycleBoundActors.add(actor);
+    actor.once(Phaser.GameObjects.Events.DESTROY, () => this.handleActorDestroyed(actor));
+  }
+
+  private handleActorDestroyed(actor: Phaser.GameObjects.GameObject) {
+    const actorId = getActorComponent(actor, IdComponent)?.id;
+    if (!actorId) {
+      return;
+    }
+
+    if (!(this.scene instanceof GameProbableWaffleScene)) {
+      return;
+    }
+
+    const actors = this.scene.baseGameData.gameInstance.gameState?.data.actors;
+    if (!actors) {
+      return;
+    }
+
+    const actorIndex = actors.findIndex((entry) => entry.id?.id === actorId);
+    if (actorIndex === -1) {
+      return;
+    }
+
+    actors.splice(actorIndex, 1);
+    this.scheduleHostActorSync();
+  }
+
+  private scheduleHostActorSync() {
+    if (!this.scene.isHost || !this.scene.baseGameData.communicator.gameCommandChanged) {
+      return;
+    }
+
+    if (this.pendingHostActorSyncTimeout !== undefined) {
+      return;
+    }
+
+    this.pendingHostActorSyncTimeout = setTimeout(() => {
+      this.pendingHostActorSyncTimeout = undefined;
+      this.saveAllKnownActorsToGameState();
+    }, 0);
+  }
+
+  private destroy() {
+    if (this.pendingHostActorSyncTimeout !== undefined) {
+      clearTimeout(this.pendingHostActorSyncTimeout);
+      this.pendingHostActorSyncTimeout = undefined;
+    }
+  }
 
   private spawnActorsFromSpawnList(spawn: Spawn) {
     if (!(this.scene instanceof GameProbableWaffleScene)) return;
