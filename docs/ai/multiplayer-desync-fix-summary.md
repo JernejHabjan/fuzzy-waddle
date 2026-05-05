@@ -5,3 +5,8 @@
 - Updated `ActorManager` spawn paths (`createActorCore` / `createActorConstructing`) to pass through authoritative IDs when present, so non-standard creation flows (construction/foundation paths) stay consistent with the same ID authority model.
 - Added reconnect/correction diagnostics in `ReconnectService`: before snapshot-restore, it now logs which local actors will be removed because they are missing from the host snapshot; after restore, it logs any snapshot actor IDs that failed to re-create. This makes actor-loss during correction explicitly traceable by condition and reason.
 - Added a hard host-only guard and diagnostics in `dispatchAiOrder`. Non-host clients now explicitly skip AI command emission with a warning, and missing AI unit IDs are logged instead of failing silently, reinforcing host authority for AI actions and improving observability.
+- Hardened `ActorIdSeeder` reconciliation by matching actors by authoritative ID first (before positional key fallback), then only warning about true unmatched IDs. This prevents position-drifted actors from being falsely treated as orphaned during seeding.
+- Updated `SceneActorCreator` registration to always apply deterministic IDs when authoritative IDs are not provided, instead of preserving local random GUIDs that can diverge between clients.
+- Added explicit lockstep diagnostics in `CommandBusService`:
+  - `[CommandBus][STALL] ...` warns when the next tick is blocked and names missing players.
+  - `[CommandBus][QUEUE-WHILE-STALLED] ...` warns when commands are queued while lockstep is blocked, with blocked tick and missing-player context.
