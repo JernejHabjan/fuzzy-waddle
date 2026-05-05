@@ -3,11 +3,12 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
-    "preinstall": "npx only-allow pnpm",
     "start": "nx run-many --all --target=serve",
     "start:api": "nx serve api",
     "start:client": "nx serve client",
     "start:client-open": "nx serve client --host=0.0.0.0 --disable-host-check",
+    "tauri:dev": "nx run client:tauri-dev",
+    "tauri:build": "nx run client:tauri-build",
     "editor": "phasereditor2d-launcher -project . -port 1959",
     "editor-remote": "phasereditor2d-launcher -project . -disable-open-browser -public -port 1959",
     "build": "nx run-many --all --target=build",
@@ -37,7 +38,6 @@
     "workspace-schematic": "nx workspace-schematic",
     "sme": "nx build client --source-map=true --named-chunks=true && source-map-explorer dist/apps/client/**/*.js",
     "generate-audio-sprites": "node ./apps/client/src/metadata/sfx/generate-audio-sprites.js",
-    "prepare": "husky",
     "build-client-dev": "nx build client --source-map=true --named-chunks=true",
     "serve-build": "http-server dist/apps/client",
     "_docs_generate-supabase-types": "see README.md",
@@ -85,7 +85,7 @@
     "@supabase/supabase-js": "^2.75.0",
     "@types/howler": "^2.2.12",
     "audiosprite-ffmpeg": "^0.8.1",
-    "axios": "1.15.0",
+    "axios": "1.15.1",
     "bootstrap": "^5.3.8",
     "chart.js": "^4.5.0",
     "class-transformer": "^0.5.1",
@@ -108,7 +108,12 @@
     "rxjs": "^7.8.2",
     "socket.io": "^4.8.1",
     "tslib": "^2.8.1",
-    "zone.js": "0.16.0"
+    "zone.js": "0.16.0",
+    "@tauri-apps/api": "^2.0.0",
+    "@tauri-apps/plugin-deep-link": "^2.0.0",
+    "@tauri-apps/plugin-notification": "^2.0.0",
+    "@tauri-apps/plugin-window-state": "^2.0.0",
+    "@tauri-apps/plugin-opener": "^2.0.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "21.2.7",
@@ -146,7 +151,6 @@
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-cypress": "5.2.0",
     "http-server": "^14.1.1",
-    "husky": "^9.1.7",
     "jest": "30.2.0",
     "jest-canvas-mock": "^2.5.2",
     "jest-environment-jsdom": "30.2.0",
@@ -164,7 +168,8 @@
     "supabase": ">=1.8.1",
     "ts-jest": "29.4.9",
     "ts-node": "10.9.2",
-    "typescript": "5.9.3"
+    "typescript": "5.9.3",
+    "@tauri-apps/cli": "^2.0.0"
   },
   "pnpm": {
     "overrides": {

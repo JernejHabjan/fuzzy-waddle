@@ -21,15 +21,15 @@ References: [Render SPA routing](https://render.com/docs/deploy-create-react-app
 
 ## API
 
-| Setting                     | Value                                                                           |
-| --------------------------- | ------------------------------------------------------------------------------- |
-| URL                         | [https://fuzzy-waddle-api.onrender.com](https://fuzzy-waddle-api.onrender.com/) |
-| Build Command               | `pnpm i; nx build api`                                                          |
-| Start Command               | `node dist/apps/api/main.js`                                                    |
-| Health Check                | `/api/health`                                                                   |
-| Env: `SUPABASE_URL`         | Supabase project URL                                                            |
-| Env: `SUPABASE_SERVICE_KEY` | Supabase service role key                                                       |
-| Env: `CORS_ORIGIN`          | `https://fuzzy-waddle.onrender.com,https://jernejhabjan.github.io`              |
+| Setting                     | Value                                                                                                                             |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| URL                         | [https://fuzzy-waddle-api.onrender.com](https://fuzzy-waddle-api.onrender.com/)                                                   |
+| Build Command               | `pnpm i; nx build api`                                                                                                            |
+| Start Command               | `node dist/apps/api/main.js`                                                                                                      |
+| Health Check                | `/api/health`                                                                                                                     |
+| Env: `SUPABASE_URL`         | Supabase project URL                                                                                                              |
+| Env: `SUPABASE_SERVICE_KEY` | Supabase service role key                                                                                                         |
+| Env: `CORS_ORIGIN`          | `https://fuzzy-waddle.onrender.com,https://jernejhabjan.github.io,http://localhost:4200,http://tauri.localhost,tauri://localhost` |
 
 ## GitHub Pages (client mirror)
 

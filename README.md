@@ -14,24 +14,25 @@
 
 ## Games
 
-| Game | Genre | Status |
-| ---- | ----- | ------ |
-| Probable Waffle | Real-time strategy | Active |
-| Little Muncher | Platformer | Active |
-| Fly Squasher | Arcade | Active |
-| Dungeon Crawler | RPG | In development |
+| Game            | Genre              | Status         |
+| --------------- | ------------------ | -------------- |
+| Probable Waffle | Real-time strategy | Active         |
+| Little Muncher  | Platformer         | Active         |
+| Fly Squasher    | Arcade             | Active         |
+| Dungeon Crawler | RPG                | In development |
 
 ---
 
 ## Tech Stack
 
-| Layer | Technology |
-| ----- | ---------- |
-| Frontend | Angular 21, Phaser 4, Bootstrap 5 |
-| Backend | NestJS 11, Socket.IO |
-| Database / Auth | Supabase (PostgreSQL + OAuth) |
-| Monorepo | Nx 22 |
-| Package manager | pnpm |
+| Layer              | Technology                        |
+| ------------------ | --------------------------------- |
+| Frontend (web)     | Angular 21, Phaser 4, Bootstrap 5 |
+| Frontend (desktop) | Tauri 2 (wraps the Angular build) |
+| Backend            | NestJS 11, Socket.IO              |
+| Database / Auth    | Supabase (PostgreSQL + OAuth)     |
+| Monorepo           | Nx 22                             |
+| Package manager    | pnpm                              |
 
 ---
 
@@ -53,13 +54,14 @@ For full setup instructions see the [Getting Started guide](wiki/getting-started
 
 ## Wiki
 
-| Page | Description |
-| ---- | ----------- |
-| [Getting Started](wiki/getting-started.md) | Prerequisites, install, common commands |
-| [Architecture](wiki/architecture.md) | Monorepo layout, game structure, real-time communication |
-| [Supabase Setup](wiki/supabase.md) | Auth, type generation, JDBC, local dev |
-| [Deployment](wiki/deployment.md) | Render and GitHub Pages deployment config |
-| [Troubleshooting](wiki/troubleshooting.md) | Common issues and fixes |
+| Page                                       | Description                                              |
+| ------------------------------------------ | -------------------------------------------------------- |
+| [Getting Started](wiki/getting-started.md) | Prerequisites, install, common commands                  |
+| [Architecture](wiki/architecture.md)       | Monorepo layout, game structure, real-time communication |
+| [Tauri Desktop](wiki/tauri-desktop.md)     | Desktop app prerequisites, dev workflow, build commands  |
+| [Supabase Setup](wiki/supabase.md)         | Auth, type generation, JDBC, local dev                   |
+| [Deployment](wiki/deployment.md)           | Render and GitHub Pages deployment config                |
+| [Troubleshooting](wiki/troubleshooting.md) | Common issues and fixes                                  |
 
 ---
 
