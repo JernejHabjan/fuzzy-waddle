@@ -7,6 +7,8 @@
 - Added a hard host-only guard and diagnostics in `dispatchAiOrder`. Non-host clients now explicitly skip AI command emission with a warning, and missing AI unit IDs are logged instead of failing silently, reinforcing host authority for AI actions and improving observability.
 - Hardened `ActorIdSeeder` reconciliation by matching actors by authoritative ID first (before positional key fallback), then only warning about true unmatched IDs. This prevents position-drifted actors from being falsely treated as orphaned during seeding.
 - Updated `SceneActorCreator` registration to always apply deterministic IDs when authoritative IDs are not provided, instead of preserving local random GUIDs that can diverge between clients.
+- Updated startup actor registration in `SceneActorCreator.spawnFromSpawnList()` so pre-placed map actors also run through deterministic ID authority + game-state save path, preventing static actors (e.g., trees) from keeping per-client random GUIDs.
 - Added explicit lockstep diagnostics in `CommandBusService`:
   - `[CommandBus][STALL] ...` warns when the next tick is blocked and names missing players.
   - `[CommandBus][QUEUE-WHILE-STALLED] ...` warns when commands are queued while lockstep is blocked, with blocked tick and missing-player context.
+- Extended lockstep diagnostics with heartbeat tracing (`sending/received heartbeat`), local player-resolution fallback, last sent local tick, per-player last received tick, and socket connection status in stall logs, to pinpoint why a specific player tick never arrives.
