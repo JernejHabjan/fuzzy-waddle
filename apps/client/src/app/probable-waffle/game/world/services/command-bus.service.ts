@@ -61,6 +61,7 @@ export class CommandBusService {
   private stallSignature: string | null = null;
   private stallLogTimer: number | null = null;
   private pendingStallTick: number | null = null;
+  private queuedWhileStalledSignature: string | null = null;
 
   /**
    * Activates the multiplayer relay path.
@@ -164,6 +165,7 @@ export class CommandBusService {
     this.debugLog(
       `queued command type=${normalizedCommand.type} executeTick=${tick} requestedTick=${requestedTick} player=${stamped.playerNumber} actors=${stamped.actorIds.length}`
     );
+    this.logQueuedWhileStalled(normalizedCommand.type, tick, stamped.playerNumber);
   }
 
   private onTick(tick: number): void {
@@ -225,6 +227,7 @@ export class CommandBusService {
         this.stallSignature = null;
       }
       this.tickService.resumeTick("lockstep");
+      this.queuedWhileStalledSignature = null;
     }
   }
 
@@ -341,6 +344,9 @@ export class CommandBusService {
     this.debugLog(
       `stall nextTick=${nextTick} committed=${committed.join(",") || "none"} missing=${missing.join(",") || "none"} pauses=${pauseReasons}`
     );
+    console.warn(
+      `[CommandBus][STALL] nextTick=${nextTick} waitingForPlayers=${missing.join(",") || "none"} committedBy=${committed.join(",") || "none"} pauses=${pauseReasons}`
+    );
   }
 
   private scheduleStallLog(nextTick: number): void {
@@ -366,6 +372,28 @@ export class CommandBusService {
       this.stallLogTimer = null;
     }
     this.pendingStallTick = null;
+  }
+
+  private logQueuedWhileStalled(commandType: GameCommand["type"], executeTick: number, playerNumber: PlayerNumber): void {
+    if (!this.tickService || !this.tickService.getPauseReasons().includes("lockstep")) {
+      return;
+    }
+
+    const blockedTick = this.tickService.currentTick + 1;
+    const committed = this.buffer.getCommittedPlayers(blockedTick);
+    const missing = this.humanPlayerNumbers.filter((humanPlayerNumber) => !committed.includes(humanPlayerNumber));
+    if (missing.length === 0) {
+      return;
+    }
+
+    const signature = `${commandType}|${executeTick}|${blockedTick}|${missing.join(",")}|${committed.join(",")}`;
+    if (signature === this.queuedWhileStalledSignature) {
+      return;
+    }
+    this.queuedWhileStalledSignature = signature;
+    console.warn(
+      `[CommandBus][QUEUE-WHILE-STALLED] command=${commandType} player=${playerNumber} executeTick=${executeTick} blockedTick=${blockedTick} missingPlayers=${missing.join(",")} committedPlayers=${committed.join(",") || "none"}`
+    );
   }
 
   private describeCommandTypes(commands: readonly GameCommand[]): string {

@@ -215,15 +215,7 @@ export class SceneActorCreator {
   }
 
   public registerAndSaveNewActor(actor: Phaser.GameObjects.GameObject, authoritativeId?: string) {
-    const actorIdComponent = getActorComponent(actor, IdComponent);
-    const currentId = actorIdComponent?.id;
-    const alreadyTrackedInGameState =
-      !!currentId &&
-      this.scene.baseGameData.gameInstance.gameState?.data.actors.some((knownActor) => knownActor.id?.id === currentId);
-    if (!alreadyTrackedInGameState || authoritativeId) {
-      this.actorIdAuthority.applyAuthoritativeOrDeterministicId(actor, authoritativeId);
-    }
-
+    this.actorIdAuthority.applyAuthoritativeOrDeterministicId(actor, authoritativeId);
     this.bindLifecycleHandlers(actor);
 
     const actorIndex = getSceneService(this.scene, ActorIndexSystem);

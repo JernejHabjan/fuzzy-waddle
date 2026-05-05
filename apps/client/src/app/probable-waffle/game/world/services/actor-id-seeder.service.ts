@@ -11,6 +11,7 @@ import Phaser from "phaser";
 import { getSceneService } from "./scene-component-helpers";
 import { ActorIndexSystem } from "./ActorIndexSystem";
 import { SceneActorCreator } from "./scene-actor-creator";
+import { ActorIdAuthorityService } from "./actor-id-authority.service";
 
 /**
  * Ensures every actor on every client shares the same ActorId.
@@ -38,8 +39,10 @@ export class ActorIdSeeder {
   private initialActorsCreated = false;
   private seededAuthoritativeIds = false;
   private readonly loggedOrphanKeys = new Set<string>();
+  private readonly actorIdAuthority: ActorIdAuthorityService;
 
   constructor(private readonly scene: GameProbableWaffleScene) {
+    this.actorIdAuthority = new ActorIdAuthorityService(scene);
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
     if (scene.isHost) {
       this.startHostSeedBroadcast();
@@ -124,6 +127,7 @@ export class ActorIdSeeder {
   private patchActorIds(actorDefs: Partial<ActorDefinition>[]): void {
     // Build host lookup: key → ordered array of defs (supports duplicate keys).
     const lookup = new Map<string, Partial<ActorDefinition>[]>();
+    const hostActorIds = new Set<string>();
     const remappedIds = new Map<string, string>();
     for (const def of actorDefs) {
       const id = def.id?.id;
@@ -131,6 +135,7 @@ export class ActorIdSeeder {
       const owner = def.owner?.ownerId;
       const pos = def.representable?.logicalWorldTransform;
       if (!id || !name || pos === undefined) continue;
+      hostActorIds.add(id);
       const key = seederKey(name, owner, pos.x, pos.y);
       const existing = lookup.get(key) ?? [];
       if (existing.length > 0) {
@@ -145,6 +150,8 @@ export class ActorIdSeeder {
     const actorIndex = getSceneService(this.scene, ActorIndexSystem);
     const creator = getSceneService(this.scene, SceneActorCreator);
     const unmatchedChildren = new Map<string, Phaser.GameObjects.GameObject[]>();
+    const localActorsById = new Map<string, Phaser.GameObjects.GameObject>();
+    const actorToSeederKey = new Map<Phaser.GameObjects.GameObject, string>();
     const children = this.scene.children.getChildren();
     for (const obj of children) {
       const ownerComp = getActorComponent(obj, OwnerComponent);
@@ -156,12 +163,22 @@ export class ActorIdSeeder {
       const existing = unmatchedChildren.get(key) ?? [];
       existing.push(obj);
       unmatchedChildren.set(key, existing);
+      actorToSeederKey.set(obj, key);
+      const localActorId = getActorComponent(obj, IdComponent)?.id;
+      if (localActorId) {
+        localActorsById.set(localActorId, obj);
+      }
     }
 
     for (const [key, defs] of lookup.entries()) {
       for (const def of defs) {
-        const localActor = unmatchedChildren.get(key)?.shift();
         const authId = def.id?.id;
+        let localActor = authId ? localActorsById.get(authId) : undefined;
+        if (!localActor) {
+          localActor = unmatchedChildren.get(key)?.shift();
+        } else {
+          this.removeActorFromUnmatched(localActor, unmatchedChildren, actorToSeederKey);
+        }
         if (localActor) {
           let idComp = getActorComponent(localActor, IdComponent);
           if (!idComp) {
@@ -196,10 +213,20 @@ export class ActorIdSeeder {
         const idComp = getActorComponent(orphan, IdComponent);
         const orphanSignature = idComp ? `${key}|${idComp.id}` : undefined;
         if (idComp && orphanSignature && !this.loggedOrphanKeys.has(orphanSignature)) {
+          if (hostActorIds.has(idComp.id)) {
+            continue;
+          }
+          const deterministicId = this.actorIdAuthority.isDeterministicActorId(idComp.id);
           this.loggedOrphanKeys.add(orphanSignature);
-          console.warn(
-            `[ActorIdSeeder] Orphaned actor key="${key}" name="${orphan.name}" id=${idComp.id} — no host definition matched; ID may diverge.`
-          );
+          if (deterministicId) {
+            console.warn(
+              `[ActorIdSeeder] Orphaned actor key="${key}" name="${orphan.name}" id=${idComp.id} — no host key match, but deterministic ID is preserved.`
+            );
+          } else {
+            console.warn(
+              `[ActorIdSeeder] Orphaned actor key="${key}" name="${orphan.name}" id=${idComp.id} — no host definition matched; ID may diverge.`
+            );
+          }
         }
       }
     }
@@ -226,6 +253,29 @@ export class ActorIdSeeder {
   private destroy(): void {
     this.subscription?.unsubscribe();
     this.stopHostSeedBroadcast();
+  }
+
+  private removeActorFromUnmatched(
+    actor: Phaser.GameObjects.GameObject,
+    unmatchedChildren: Map<string, Phaser.GameObjects.GameObject[]>,
+    actorToSeederKey: Map<Phaser.GameObjects.GameObject, string>
+  ): void {
+    const key = actorToSeederKey.get(actor);
+    if (!key) {
+      return;
+    }
+    const list = unmatchedChildren.get(key);
+    if (!list?.length) {
+      return;
+    }
+    const actorIndex = list.indexOf(actor);
+    if (actorIndex === -1) {
+      return;
+    }
+    list.splice(actorIndex, 1);
+    if (list.length === 0) {
+      unmatchedChildren.delete(key);
+    }
   }
 
   private stopHostSeedBroadcast(): void {
