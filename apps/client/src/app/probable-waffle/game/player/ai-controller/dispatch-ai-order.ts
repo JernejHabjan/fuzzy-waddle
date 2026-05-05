@@ -27,11 +27,19 @@ export function dispatchAiOrder(
   order: OrderData,
   playerNumber: PlayerNumber
 ): void {
+  if ("isHost" in scene && scene.isHost === false) {
+    console.warn(`[AI] Skipping AI dispatch for player ${playerNumber} on non-host client.`);
+    return;
+  }
+
   const commandBus = getSceneService(scene, CommandBusService);
   if (!commandBus) return;
 
   const actorId = getActorComponent(unit, IdComponent)?.id;
-  if (!actorId) return;
+  if (!actorId) {
+    console.warn(`[AI] Missing actor ID for AI unit "${unit.name}" (player ${playerNumber}); command dropped.`);
+    return;
+  }
 
   const targetObject = order.data.targetGameObject;
   let targetObjectIds: string[] | undefined;

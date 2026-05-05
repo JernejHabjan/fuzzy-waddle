@@ -7,6 +7,10 @@ import { SimulationTickService } from "./simulation-tick.service";
 import { ActorIndexSystem } from "./ActorIndexSystem";
 import { SceneActorCreator } from "./scene-actor-creator";
 import { SelectionGroupsComponent } from "../../player/human-controller/selection-groups.component";
+import { getActorComponent } from "../../data/actor-component";
+import { IdComponent } from "../../entity/components/id-component";
+import { OwnerComponent } from "../../entity/components/owner-component";
+import { getGameObjectLogicalTransform } from "../../data/game-object-helper";
 import {
   type ActorDefinition,
   type PlayerNumber,
@@ -147,15 +151,54 @@ export class ReconnectService {
 
     simTick?.pauseTick(pauseReason);
 
+    const snapshotActorIds = new Set(snapshot.actors.map((actor) => actor.id?.id).filter((actorId): actorId is string => !!actorId));
+
     // Destroy all current actors before re-creating from snapshot.
     const currentActors = [...actorIndex.getAllIdActors()];
+    const removedActorDiagnostics = currentActors
+      .map((actor) => {
+        const id = getActorComponent(actor, IdComponent)?.id;
+        if (!id || snapshotActorIds.has(id)) {
+          return undefined;
+        }
+        const owner = getActorComponent(actor, OwnerComponent)?.getOwner();
+        const logicalTransform = getGameObjectLogicalTransform(actor);
+        return {
+          id,
+          name: actor.name,
+          owner,
+          x: logicalTransform ? Math.round(logicalTransform.x) : undefined,
+          y: logicalTransform ? Math.round(logicalTransform.y) : undefined,
+          z: logicalTransform ? Math.round(logicalTransform.z) : undefined
+        };
+      })
+      .filter((diagnostic) => diagnostic !== undefined);
+    if (removedActorDiagnostics.length > 0) {
+      console.warn(
+        `[Reconnect] Snapshot ${response.reason ?? "reconnect"} will remove ${removedActorDiagnostics.length} local actors not present on host snapshot.`,
+        removedActorDiagnostics
+      );
+    }
+
     for (const actor of currentActors) {
       actor.destroy();
     }
 
     // Re-create actors from the snapshot definitions.
+    const createdSnapshotActorIds = new Set<string>();
     for (const def of snapshot.actors) {
-      creator.createActorFromDefinition(def as ActorDefinition);
+      const created = creator.createActorFromDefinition(def as ActorDefinition);
+      const createdActorId = created ? getActorComponent(created, IdComponent)?.id : undefined;
+      if (createdActorId) {
+        createdSnapshotActorIds.add(createdActorId);
+      }
+    }
+    const missingAfterRestore = [...snapshotActorIds].filter((id) => !createdSnapshotActorIds.has(id));
+    if (missingAfterRestore.length > 0) {
+      console.error(
+        `[Reconnect] Snapshot restore missing ${missingAfterRestore.length} actors after recreation. reason=${response.reason ?? "reconnect"}.`,
+        missingAfterRestore
+      );
     }
 
     // Restore per-player state data (resources, housing, summary, selection).
