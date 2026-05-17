@@ -56,7 +56,8 @@ export class CommandBusService {
   private readonly buffer = new CommandBuffer();
   private readonly subscriptions: Subscription[] = [];
   private scene: ProbableWaffleScene | null = null;
-  private readonly debug = !environment.production;
+  private readonly USE_DEBUG = false;
+  private readonly debug = this.USE_DEBUG && !environment.production;
   private lastSentExecutionTick = 0;
   private stallSignature: string | null = null;
   private stallLogTimer: number | null = null;
