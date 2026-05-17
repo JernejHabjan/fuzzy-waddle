@@ -11,29 +11,31 @@ import {
 } from "@fuzzy-waddle/api-interfaces";
 import type { User } from "@supabase/supabase-js";
 
+type PlayerDataChangeProperty = ProbableWafflePlayerDataChangeEvent["property"];
+
 @Injectable()
 export class PlayerStateValidatorService {
   private readonly logger = new Logger(PlayerStateValidatorService.name);
 
   private static readonly MAX_SELECTION_SIZE = 200;
-  private static readonly RESOURCE_PROPERTIES = new Set([
+  private static readonly RESOURCE_PROPERTIES: ReadonlySet<PlayerDataChangeProperty> = new Set([
     ProbableWafflePlayerDataChangeProperties.ResourceAdded,
     ProbableWafflePlayerDataChangeProperties.ResourceRemoved
   ]);
-  private static readonly HOUSING_PROPERTIES = new Set([
+  private static readonly HOUSING_PROPERTIES: ReadonlySet<PlayerDataChangeProperty> = new Set([
     ProbableWafflePlayerDataChangeProperties.HousingAdded,
     ProbableWafflePlayerDataChangeProperties.HousingRemoved,
     ProbableWafflePlayerDataChangeProperties.HousingCurrentIncreased,
     ProbableWafflePlayerDataChangeProperties.HousingCurrentDecreased
   ]);
-  private static readonly SELECTION_PROPERTIES = new Set([
+  private static readonly SELECTION_PROPERTIES: ReadonlySet<PlayerDataChangeProperty> = new Set([
     ProbableWafflePlayerDataChangeProperties.SelectionAdded,
     ProbableWafflePlayerDataChangeProperties.SelectionRemoved,
     ProbableWafflePlayerDataChangeProperties.SelectionSet,
     ProbableWafflePlayerDataChangeProperties.SelectionCleared
   ]);
   private static readonly CONTROL_GROUP_PROPERTY = ProbableWafflePlayerDataChangeProperties.SelectionGroupsChanged;
-  private static readonly OWNER_ONLY_PROPERTIES = new Set([
+  private static readonly OWNER_ONLY_PROPERTIES: ReadonlySet<PlayerDataChangeProperty> = new Set([
     ...PlayerStateValidatorService.RESOURCE_PROPERTIES,
     ...PlayerStateValidatorService.HOUSING_PROPERTIES,
     ...PlayerStateValidatorService.SELECTION_PROPERTIES,
