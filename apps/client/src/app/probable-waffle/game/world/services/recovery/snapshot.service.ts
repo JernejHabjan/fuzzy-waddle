@@ -1,10 +1,10 @@
 import type { Subscription } from "rxjs";
 import { filter } from "rxjs";
-import { getSceneService } from "./scene-component-helpers";
-import { SimulationTickService } from "./simulation-tick.service";
-import { ActorIndexSystem } from "./ActorIndexSystem";
-import { ActorManager } from "../../data/actor-manager";
-import { getCommunicator } from "../../data/scene-data";
+import { getSceneService } from "../scene-component-helpers";
+import { SimulationTickService } from "../simulation-tick.service";
+import { ActorIndexSystem } from "../ActorIndexSystem";
+import { ActorManager } from "../../../data/actor-manager";
+import { getCommunicator } from "../../../data/scene-data";
 import type {
   ActorDefinition,
   PlayerNumber,
@@ -14,7 +14,7 @@ import type {
   UserId,
   ProbableWaffleSnapshotResponseEvent
 } from "@fuzzy-waddle/api-interfaces";
-import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
+import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 
 /** How often the host refreshes its stored snapshot (in milliseconds). */
 const SNAPSHOT_REFRESH_INTERVAL_MS = 60_000;
@@ -70,6 +70,8 @@ export class SnapshotService {
       }
       this.sendSnapshot(scene, e.emitterUserId, e.reason === "desync-correction" ? "desync-correction" : "reconnect");
     });
+
+    scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.destroy());
   }
 
   /** Returns the most recently captured snapshot, or null before the first capture. */

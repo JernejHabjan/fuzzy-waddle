@@ -1,16 +1,16 @@
 import { filter, type Subscription } from "rxjs";
-import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
-import { getCommunicator } from "../../data/scene-data";
-import { getSceneComponent, getSceneService } from "./scene-component-helpers";
-import { CommandBusService } from "./command-bus.service";
-import { SimulationTickService } from "./simulation-tick.service";
-import { ActorIndexSystem } from "./ActorIndexSystem";
-import { SceneActorCreator } from "./scene-actor-creator";
-import { SelectionGroupsComponent } from "../../player/human-controller/selection-groups.component";
-import { getActorComponent } from "../../data/actor-component";
-import { IdComponent } from "../../entity/components/id-component";
-import { OwnerComponent } from "../../entity/components/owner-component";
-import { getGameObjectLogicalTransform } from "../../data/game-object-helper";
+import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
+import { getCommunicator } from "../../../data/scene-data";
+import { getSceneComponent, getSceneService } from "../scene-component-helpers";
+import { CommandBusService } from "../command-bus.service";
+import { SimulationTickService } from "../simulation-tick.service";
+import { ActorIndexSystem } from "../ActorIndexSystem";
+import { SceneActorCreator } from "../scene-actor-creator";
+import { SelectionGroupsComponent } from "../../../player/human-controller/selection-groups.component";
+import { getActorComponent } from "../../../data/actor-component";
+import { IdComponent } from "../../../entity/components/id-component";
+import { OwnerComponent } from "../../../entity/components/owner-component";
+import { getGameObjectLogicalTransform } from "../../../data/game-object-helper";
 import {
   type ActorDefinition,
   type PlayerNumber,
@@ -88,6 +88,8 @@ export class ReconnectService {
         rawSocket.on("disconnect", this.socketDisconnectHandler);
       }
     }
+
+    scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.destroy());
   }
 
   private onSocketReconnect(scene: ProbableWaffleScene): void {

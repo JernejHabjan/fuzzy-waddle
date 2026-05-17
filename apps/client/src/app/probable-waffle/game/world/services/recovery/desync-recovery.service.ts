@@ -4,13 +4,13 @@ import type {
   PositionPlayerDefinition,
   ProbableWaffleDesyncAlertEvent
 } from "@fuzzy-waddle/api-interfaces";
-import { getCommunicator } from "../../data/scene-data";
-import { getSceneService } from "./scene-component-helpers";
-import { SimulationTickService } from "./simulation-tick.service";
+import { getCommunicator } from "../../../data/scene-data";
+import { getSceneService } from "../scene-component-helpers";
+import { SimulationTickService } from "../simulation-tick.service";
 import { SnapshotService } from "./snapshot.service";
-import { SceneDialogHelper } from "../scenes/scene-dialog-helper";
-import type DesyncRecoveryDialog from "../scenes/hud-scenes/DesyncRecoveryDialog";
-import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
+import { SceneDialogHelper } from "../../scenes/scene-dialog-helper";
+import type DesyncRecoveryDialog from "../../scenes/hud-scenes/DesyncRecoveryDialog";
+import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 
 /**
  * Handles the room-wide desync recovery flow triggered by the host once
@@ -48,6 +48,7 @@ export class DesyncRecoveryService {
     this.sub = communicator.desyncAlert?.on.subscribe((event) => {
       this.onDesyncDetected(event, hudScene, probableWaffleScene);
     });
+    probableWaffleScene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.destroy());
   }
 
   private onDesyncDetected(

@@ -1,12 +1,13 @@
 import type { Subscription } from "rxjs";
-import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
+import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { type ProbableWaffleReplayCommandBatch } from "@fuzzy-waddle/api-interfaces";
-import { getSceneService } from "./scene-component-helpers";
-import { CommandBusService } from "./command-bus.service";
-import { SimulationTickService } from "./simulation-tick.service";
+import { getSceneService } from "../scene-component-helpers";
+import { CommandBusService } from "../command-bus.service";
+import { SimulationTickService } from "../simulation-tick.service";
 
 const SUPPORTED_REPLAY_COMPATIBILITY_VERSIONS = new Set(["lockstep-v1"]);
 
+/** Replays recorded command batches deterministically by tick in replay matches. */
 export class ReplayPlaybackService {
   private tickSub?: Subscription;
   private readonly batchesByTick = new Map<number, ProbableWaffleReplayCommandBatch[]>();
@@ -44,8 +45,10 @@ export class ReplayPlaybackService {
         .sort((a, b) => a.playerNumber - b.playerNumber)
         .forEach((batch) => commandBus.playReplayBatch(batch));
     });
+    scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.destroy());
   }
 
+  /** Stops replay batch pumping for this scene. */
   destroy(): void {
     this.tickSub?.unsubscribe();
   }

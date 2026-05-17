@@ -1,11 +1,12 @@
 import type { Subscription } from "rxjs";
-import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
+import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { type ProbableWaffleHostMigratedEvent } from "@fuzzy-waddle/api-interfaces";
-import { getCommunicator } from "../../data/scene-data";
-import { getSceneSystem } from "./scene-component-helpers";
+import { getCommunicator } from "../../../data/scene-data";
+import { getSceneSystem } from "../scene-component-helpers";
 import { SnapshotService } from "./snapshot.service";
-import { AiPlayerHandler } from "../../player/ai-controller/ai-player-handler";
+import { AiPlayerHandler } from "../../../player/ai-controller/ai-player-handler";
 
+/** Handles ownership handoff so a newly promoted host immediately starts serving snapshots. */
 export class HostMigrationService {
   private hostMigrationSub?: Subscription;
   private snapshotService?: SnapshotService;
@@ -29,8 +30,11 @@ export class HostMigrationService {
       this.snapshotService.init(scene);
       getSceneSystem(scene, AiPlayerHandler)?.createAiPlayerControllersForAiPlayers();
     });
+
+    scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.destroy());
   }
 
+  /** Releases socket listeners and nested snapshot service state. */
   destroy(): void {
     this.hostMigrationSub?.unsubscribe();
     this.snapshotService?.destroy();

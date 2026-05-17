@@ -1,32 +1,22 @@
 import type { ProbableWaffleStateHashDiagnostics } from "@fuzzy-waddle/api-interfaces";
 import type { Subscription } from "rxjs";
-import { getSceneService } from "./scene-component-helpers";
-import { SimulationTickService } from "./simulation-tick.service";
-import { ActorIndexSystem } from "./ActorIndexSystem";
-import { getActorComponent } from "../../data/actor-component";
-import { IdComponent } from "../../entity/components/id-component";
-import { HealthComponent } from "../../entity/components/combat/components/health-component";
-import { AttackComponent } from "../../entity/components/combat/components/attack-component";
-import { HealingComponent } from "../../entity/components/combat/components/healing-component";
-import { BuilderComponent } from "../../entity/components/construction/builder-component";
-import { GathererComponent } from "../../entity/components/resource/gatherer-component";
-import { OwnerComponent } from "../../entity/components/owner-component";
-import { getGameObjectCurrentTile, getGameObjectLogicalTransform } from "../../data/game-object-helper";
-import { getCommunicator } from "../../data/scene-data";
-import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
+import { getSceneService } from "../scene-component-helpers";
+import { SimulationTickService } from "../simulation-tick.service";
+import { ActorIndexSystem } from "../ActorIndexSystem";
+import { getActorComponent } from "../../../data/actor-component";
+import { IdComponent } from "../../../entity/components/id-component";
+import { HealthComponent } from "../../../entity/components/combat/components/health-component";
+import { AttackComponent } from "../../../entity/components/combat/components/attack-component";
+import { HealingComponent } from "../../../entity/components/combat/components/healing-component";
+import { BuilderComponent } from "../../../entity/components/construction/builder-component";
+import { GathererComponent } from "../../../entity/components/resource/gatherer-component";
+import { OwnerComponent } from "../../../entity/components/owner-component";
+import { getGameObjectCurrentTile, getGameObjectLogicalTransform } from "../../../data/game-object-helper";
+import { getCommunicator } from "../../../data/scene-data";
+import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { SnapshotService } from "./snapshot.service";
-import { ActorManager } from "../../data/actor-manager";
-import { PawnAiController } from "../../prefabs/ai-agents/pawn-ai-controller";
-
-/** Payload emitted on the allScenes EventEmitter when a hash mismatch is confirmed. */
-export interface DesyncDetectedEvent {
-  tick: number;
-  /** Player number whose simulation state disagrees with ours. */
-  remotePlayerNumber: number | undefined;
-  localHash: string;
-  remoteHash: string;
-  reason?: string;
-}
+import { ActorManager } from "../../../data/actor-manager";
+import { PawnAiController } from "../../../prefabs/ai-agents/pawn-ai-controller";
 
 interface HashSnapshot {
   hash: string;

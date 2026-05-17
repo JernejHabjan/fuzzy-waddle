@@ -9,6 +9,10 @@ import GameObject = Phaser.GameObjects.GameObject;
 
 const SIM_ID_PREFIX = "sim-";
 
+/**
+ * Assigns deterministic actor ids when the host has not yet provided an authoritative id.
+ * This keeps lockstep clients consistent during spawn windows and reconnect correction.
+ */
 export class ActorIdAuthorityService {
   private readonly sequenceByTick = new Map<number, number>();
   private readonly sessionSalt: string;
@@ -20,6 +24,7 @@ export class ActorIdAuthorityService {
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
   }
 
+  /** Uses host id when present; otherwise derives and applies a deterministic local id. */
   applyAuthoritativeOrDeterministicId(actor: GameObject, authoritativeId?: ActorId): ActorId | undefined {
     const idComponent = getActorComponent(actor, IdComponent);
     if (!idComponent) {
@@ -42,10 +47,12 @@ export class ActorIdAuthorityService {
     return deterministicId;
   }
 
+  /** Identifies ids created by this service. */
   isDeterministicActorId(actorId: ActorId | undefined): boolean {
     return !!actorId && actorId.startsWith(SIM_ID_PREFIX);
   }
 
+  /** Builds a stable id from deterministic spawn context for this simulation tick. */
   private createDeterministicId(actor: GameObject): ActorId {
     const tick = getSceneService(this.scene, SimulationTickService)?.currentTick ?? 0;
     const nextSequence = (this.sequenceByTick.get(tick) ?? 0) + 1;
@@ -62,6 +69,7 @@ export class ActorIdAuthorityService {
     return `${SIM_ID_PREFIX}${fnv1a32(basis)}`;
   }
 
+  /** Keeps only recent per-tick counters to avoid unbounded memory growth. */
   private pruneOldTicks(currentTick: number): void {
     const cutoff = currentTick - 200;
     for (const tick of this.sequenceByTick.keys()) {
@@ -76,6 +84,7 @@ export class ActorIdAuthorityService {
   }
 }
 
+/** FNV-1a 32-bit hash used for fast deterministic id fingerprints across clients. */
 function fnv1a32(input: string): string {
   let hash = 0x811c9dc5;
   for (let index = 0; index < input.length; index++) {

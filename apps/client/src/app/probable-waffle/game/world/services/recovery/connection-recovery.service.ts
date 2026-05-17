@@ -1,12 +1,12 @@
 import type { PlayerNumber, ProbableWafflePlayerDisconnectedEvent } from "@fuzzy-waddle/api-interfaces";
 import type { Subscription } from "rxjs";
-import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
-import { getCommunicator } from "../../data/scene-data";
-import { SceneDialogHelper } from "../scenes/scene-dialog-helper";
-import type ReconnectRecoveryDialog from "../scenes/hud-scenes/ReconnectRecoveryDialog";
-import { getSceneService } from "./scene-component-helpers";
-import { SimulationTickService } from "./simulation-tick.service";
-import { CommandBusService } from "./command-bus.service";
+import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
+import { getCommunicator } from "../../../data/scene-data";
+import { SceneDialogHelper } from "../../scenes/scene-dialog-helper";
+import type ReconnectRecoveryDialog from "../../scenes/hud-scenes/ReconnectRecoveryDialog";
+import { getSceneService } from "../scene-component-helpers";
+import { SimulationTickService } from "../simulation-tick.service";
+import { CommandBusService } from "../command-bus.service";
 
 type PendingReconnect = {
   timer: Phaser.Time.TimerEvent;
@@ -49,6 +49,7 @@ export class ConnectionRecoveryService {
 
     probableWaffleScene.events.on("local-connection-lost", this.onLocalConnectionLost, this);
     probableWaffleScene.events.on("reconnect-snapshot-applied", this.onSnapshotApplied, this);
+    probableWaffleScene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.destroy());
   }
 
   destroy(): void {

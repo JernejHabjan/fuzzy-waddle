@@ -27,8 +27,13 @@ import { environment } from "../../../../../../environments/environment";
 import ConfirmationDialog from "../../../prefabs/gui/dialogs/ConfirmationDialog";
 import SurrenderDialog from "../../../prefabs/gui/SurrenderDialog";
 import { getPlayers } from "../../../data/scene-data";
-import { DesyncRecoveryService } from "../../services/desync-recovery.service";
-import { ConnectionRecoveryService } from "../../services/connection-recovery.service";
+import { DesyncRecoveryService } from "../../services/recovery/desync-recovery.service";
+import { ConnectionRecoveryService } from "../../services/recovery/connection-recovery.service";
+
+interface ChatMessageEventPayload {
+  fullName: string;
+  text: string;
+}
 /* END-USER-IMPORTS */
 
 export default class HudProbableWaffle extends ProbableWaffleScene {
@@ -195,6 +200,8 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
         name: "hud-scene-shutdown",
         data: undefined
       });
+      this.desyncRecovery?.destroy();
+      this.connectionRecovery?.destroy();
     });
   }
 
@@ -346,7 +353,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.chatMessageSubscription = this.probableWaffleScene.communicator.allScenes
       .pipe(filter((value) => value.name === "chat-message-received"))
       .subscribe((event) => {
-        if (event.data && this.chatNotification) {
+        if (this.isChatMessageEventPayload(event.data) && this.chatNotification) {
           const { fullName, text } = event.data;
           this.chatNotification.showMessage(fullName, text);
           this.chatButton?.showUnreadBadge();
@@ -368,6 +375,14 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.desyncRecovery?.destroy();
     this.connectionRecovery?.destroy();
     super.destroy();
+  }
+
+  private isChatMessageEventPayload(value: unknown): value is ChatMessageEventPayload {
+    if (typeof value !== "object" || value === null) {
+      return false;
+    }
+    const payload = value as Record<string, unknown>;
+    return typeof payload["fullName"] === "string" && typeof payload["text"] === "string";
   }
   /* END-USER-CODE */
 }

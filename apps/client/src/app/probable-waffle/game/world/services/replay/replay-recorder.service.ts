@@ -6,14 +6,15 @@ import {
   type ProbableWaffleReplayData
 } from "@fuzzy-waddle/api-interfaces";
 import type { Subscription } from "rxjs";
-import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
-import { GameInstanceIndexeddbStorageService } from "../../../communicators/storage/game-instance-indexeddb-storage.service";
-import { getSceneExternalComponent, getSceneService } from "./scene-component-helpers";
-import { CommandBusService } from "./command-bus.service";
+import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
+import { GameInstanceIndexeddbStorageService } from "../../../../communicators/storage/game-instance-indexeddb-storage.service";
+import { getSceneExternalComponent, getSceneService } from "../scene-component-helpers";
+import { CommandBusService } from "../command-bus.service";
 
 const REPLAY_FORMAT_VERSION = "1";
 const REPLAY_COMPATIBILITY_VERSION = "lockstep-v1";
 
+/** Captures lockstep command batches and persists a replay record when the match ends. */
 export class ReplayRecorderService {
   private batchSub?: Subscription;
   private initialGameInstanceData?: ProbableWaffleGameInstanceData;
@@ -38,6 +39,7 @@ export class ReplayRecorderService {
     scene.onShutdown.subscribe(() => {
       void this.persistReplay(scene);
     });
+    scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.destroy());
   }
 
   private async persistReplay(scene: ProbableWaffleScene): Promise<void> {
@@ -94,6 +96,7 @@ export class ReplayRecorderService {
     });
   }
 
+  /** Releases subscriptions after replay capture lifecycle ends. */
   destroy(): void {
     this.batchSub?.unsubscribe();
   }

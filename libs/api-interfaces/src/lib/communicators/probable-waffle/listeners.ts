@@ -18,6 +18,7 @@ import { ProbableWaffleGameMode, type ProbableWaffleGameModeData } from "../../g
 import { GameSessionState } from "../../game-instance/session";
 import { GameSetupHelpers } from "../../probable-waffle/game-setup.helpers";
 import type { ActorDefinition } from "../../game-instance/probable-waffle/game-state";
+import type { Vector3Simple } from "../../game/vector";
 
 export class ProbableWaffleListeners {
   private static readonly debug = false;
@@ -217,6 +218,9 @@ export class ProbableWaffleListeners {
           player = gameInstance.getPlayerByNumber(payload.data.playerNumber!);
           if (!player) throw new Error("Player not found with number " + payload.data.playerNumber);
           const tileVec3 = payload.data.data!["tileVec3"];
+          if (!isVector3Simple(tileVec3)) {
+            break;
+          }
 
           // get selected actors and issue move command to them
           const selectedActors = player.getSelection();
@@ -266,6 +270,14 @@ export class ProbableWaffleListeners {
           if (player.playerState.data.housing.maxHousing < 0) player.playerState.data.housing.maxHousing = 0;
           if (player.playerState.data.housing.currentHousing > player.playerState.data.housing.maxHousing) {
             player.playerState.data.housing.currentHousing = player.playerState.data.housing.maxHousing;
+          }
+
+          function isVector3Simple(value: unknown): value is Vector3Simple {
+            if (typeof value !== "object" || value === null) {
+              return false;
+            }
+            const vector = value as Record<string, unknown>;
+            return typeof vector["x"] === "number" && typeof vector["y"] === "number" && typeof vector["z"] === "number";
           }
 
           ProbableWaffleListeners.logDebugInfo("housing removed for player", player.playerNumber);

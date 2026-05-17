@@ -98,6 +98,8 @@ export class CommandBusService {
       return;
     }
 
+    scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.destroy());
+
     // Receive remote command batches (including local player's server echo) and buffer them
     this.subscriptions.push(
       commandRelay.on.subscribe((event) => {
@@ -286,11 +288,6 @@ export class CommandBusService {
     for (const command of commands) {
       this._command$.next(command);
     }
-  }
-
-  bufferRemoteBatch(batch: ProbableWaffleReplayCommandBatch): void {
-    this.buffer.commit(batch.tick, batch.playerNumber, batch.commands as GameCommand[]);
-    this.tryUnblockTick();
   }
 
   resetAfterSnapshot(snapshotTick: number, commandTail: readonly ProbableWaffleReplayCommandBatch[] = []): void {
