@@ -85,7 +85,7 @@ pnpm e2e              # Run Cypress e2e tests
 - `nx.json`: Nx workspace config (default base is `develop` branch)
 - `apps/client/proxy.conf.json`: Dev server API proxy
 - `apps/client/ngsw-config.json`: Service worker config
-- `.env.local`: API environment variables (copy from README instructions)
+- `.env`: API environment variables (copy from README instructions)
 
 ## Angular Conventions (from copilot-instructions.md)
 

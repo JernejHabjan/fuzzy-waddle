@@ -18,7 +18,7 @@ pnpm install
 
 ## 2. Configure Environment
 
-Copy `.env.example` to `.env.local` in the project root and fill in the values:
+Copy `.env.example` to `.env` in the project root and fill in the values:
 
 | Variable               | Value                                 |
 | ---------------------- | ------------------------------------- |

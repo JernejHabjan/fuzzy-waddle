@@ -1,7 +1,7 @@
 {
   "name": "fuzzy-waddle",
   "version": "1.0.0",
-  "license": "MIT",
+  "license": "UNLICENSED",
   "scripts": {
     "start": "nx run-many --all --target=serve",
     "start:api": "nx serve api",
