@@ -1,4 +1,11 @@
-import type { ActorId, ObjectNames, PlayerNumber, ResearchType, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import {
+  ProbableWaffleGameCommandTypes,
+  type ActorId,
+  type ObjectNames,
+  type PlayerNumber,
+  type ResearchType,
+  type Vector3Simple
+} from "@fuzzy-waddle/api-interfaces";
 import type { OrderType } from "../../ai/order-type";
 
 /**
@@ -7,7 +14,7 @@ import type { OrderType } from "../../ai/order-type";
  * The queue flag carries the shift-key state captured at dispatch time.
  */
 export interface MoveCommand {
-  readonly type: "MOVE";
+  readonly type: typeof ProbableWaffleGameCommandTypes.Move;
   /**
    * Simulation tick on which this command should execute.
    * In single-player this equals the dispatch tick.
@@ -30,7 +37,7 @@ export interface MoveCommand {
  * The queue flag carries the shift-key state captured at dispatch time.
  */
 export interface ActorActionCommand {
-  readonly type: "ACTOR_ACTION";
+  readonly type: typeof ProbableWaffleGameCommandTypes.ActorAction;
   /**
    * Simulation tick on which this command should execute.
    * See MoveCommand.tick for details.
@@ -52,7 +59,7 @@ export interface ActorActionCommand {
  * Immediately cancels all pending and active orders for the listed actors.
  */
 export interface StopCommand {
-  readonly type: "STOP";
+  readonly type: typeof ProbableWaffleGameCommandTypes.Stop;
   /** See MoveCommand.tick for details. */
   readonly tick: number;
   readonly playerNumber: PlayerNumber;
@@ -65,7 +72,7 @@ export interface StopCommand {
  * consumes the same queue slot instead of re-picking locally.
  */
 export interface ProductionCommand {
-  readonly type: "PRODUCTION";
+  readonly type: typeof ProbableWaffleGameCommandTypes.Production;
   /** See MoveCommand.tick for details. */
   readonly tick: number;
   readonly playerNumber: PlayerNumber;
@@ -77,7 +84,7 @@ export interface ProductionCommand {
  * Cancels a queued production item by deterministic queue index.
  */
 export interface CancelProductionCommand {
-  readonly type: "CANCEL_PRODUCTION";
+  readonly type: typeof ProbableWaffleGameCommandTypes.CancelProduction;
   /** See MoveCommand.tick for details. */
   readonly tick: number;
   readonly playerNumber: PlayerNumber;
@@ -89,7 +96,7 @@ export interface CancelProductionCommand {
  * Starts a research item in a specific research-capable building.
  */
 export interface ResearchCommand {
-  readonly type: "RESEARCH";
+  readonly type: typeof ProbableWaffleGameCommandTypes.Research;
   /** See MoveCommand.tick for details. */
   readonly tick: number;
   readonly playerNumber: PlayerNumber;
@@ -101,7 +108,7 @@ export interface ResearchCommand {
  * Cancels the active/queued research item in a specific building.
  */
 export interface CancelResearchCommand {
-  readonly type: "CANCEL_RESEARCH";
+  readonly type: typeof ProbableWaffleGameCommandTypes.CancelResearch;
   /** See MoveCommand.tick for details. */
   readonly tick: number;
   readonly playerNumber: PlayerNumber;

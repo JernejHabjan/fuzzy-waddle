@@ -3,6 +3,7 @@ import { getActorComponent } from "../../../data/actor-component";
 import { ResourceSourceComponent } from "../resource/resource-source-component";
 import { onObjectReady } from "../../../data/game-object-helper";
 import type { TendableDefinition } from "./tendable-definition";
+import { getSimulationDelta } from "../../../world/services/simulation-time";
 import GameObject = Phaser.GameObjects.GameObject;
 
 /**
@@ -31,6 +32,7 @@ export class TendableComponent {
   get phase(): TendablePhase { return this._currentPhase; }
   private tenders = new Set<GameObject>();
   private resourceSourceComponent?: ResourceSourceComponent;
+  private lastSimulationTimeMs?: number;
 
   constructor(
     private readonly gameObject: GameObject,
@@ -53,13 +55,17 @@ export class TendableComponent {
     });
   }
 
-  private update(_time: number, delta: number): void {
+  private update(): void {
     if (this.growthPercent >= 100) return;
     if (!this.definition.autoStart && this.tenders.size === 0) return;
 
+    const simulationDelta = getSimulationDelta(this.gameObject.scene, this.lastSimulationTimeMs);
+    this.lastSimulationTimeMs = simulationDelta.now;
+    if (simulationDelta.delta <= 0) return;
+
     const boostMultiplier = this.tenders.size > 0 ? this.definition.tenderBoostMultiplier : 1;
     const growthPerMs = 100 / this.definition.growthDurationMs;
-    const deltaScaled = delta * this.gameObject.scene.time.timeScale;
+    const deltaScaled = simulationDelta.delta;
     this.growthPercent = Math.min(100, this.growthPercent + growthPerMs * deltaScaled * boostMultiplier);
 
     this.growthProgressChanged.next(this.growthPercent);

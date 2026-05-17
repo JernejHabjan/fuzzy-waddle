@@ -1,6 +1,7 @@
 import type { ChatMessage } from "../../chat/chat";
 import type { ProbableWaffleGameInstanceMetadataData } from "../../game-instance/probable-waffle/game-instance-medatada";
 import type { ProbableWaffleGameModeData } from "../../game-instance/probable-waffle/game-mode";
+import type { CommunicatorEvent } from "../communicator";
 import {
   ProbableWafflePlayer,
   type ProbableWafflePlayerControllerData,
@@ -11,25 +12,34 @@ import type { ActorDefinition, ProbableWaffleGameStateData } from "../../game-in
 import type { GameInstanceId, PlayerNumber, UserId } from "../../game-instance/player/player";
 import type { SelectionGroupData } from "../../game-instance/probable-waffle/component-data";
 
-export type ProbableWaffleGameCommunicatorType = "selection";
+export const ProbableWaffleGameCommunicatorTypes = {
+  Selection: "selection"
+} as const;
+
+export type ProbableWaffleGameCommunicatorType =
+  (typeof ProbableWaffleGameCommunicatorTypes)[keyof typeof ProbableWaffleGameCommunicatorTypes];
+
+export const ProbableWaffleCommunicators = {
+  GameInstanceMetadataDataChange: "gameInstanceMetadataDataChange",
+  GameModeDataChange: "gameModeDataChange",
+  PlayerDataChange: "playerDataChange",
+  SpectatorDataChange: "spectatorDataChange",
+  GameStateDataChange: "gameStateDataChange",
+  Message: "message",
+  GameCommand: "game-command",
+  StateHash: "state-hash",
+  SnapshotRequest: "snapshot-request",
+  SnapshotResponse: "snapshot-response",
+  DesyncAlert: "desync-alert",
+  PauseChanged: "pause-changed",
+  PlayerDisconnected: "player-disconnected",
+  PlayerReconnected: "player-reconnected",
+  HostMigrated: "host-migrated",
+  Selection: ProbableWaffleGameCommunicatorTypes.Selection
+} as const;
 
 export type ProbableWaffleCommunicatorType =
-  | "gameInstanceMetadataDataChange"
-  | "gameModeDataChange"
-  | "playerDataChange"
-  | "spectatorDataChange"
-  | "gameStateDataChange"
-  | "message"
-  | "game-command"
-  | "state-hash"
-  | "snapshot-request"
-  | "snapshot-response"
-  | "desync-alert"
-  | "pause-changed"
-  | "player-disconnected"
-  | "player-reconnected"
-  | "host-migrated"
-  | ProbableWaffleGameCommunicatorType;
+  (typeof ProbableWaffleCommunicators)[keyof typeof ProbableWaffleCommunicators];
 
 export interface ProbableWaffleCommunicatorEvent {
   gameInstanceId: GameInstanceId;
@@ -37,7 +47,7 @@ export interface ProbableWaffleCommunicatorEvent {
 }
 
 export type RecursiveKeyOf<TObj extends object> = {
-  [TKey in keyof TObj & (string | number)]: TObj[TKey] extends any[]
+  [TKey in keyof TObj & (string | number)]: TObj[TKey] extends unknown[]
     ? `${TKey}`
     : TObj[TKey] extends object
       ? `${TKey}` | `${TKey}.${RecursiveKeyOf<TObj[TKey]>}`
@@ -48,7 +58,7 @@ export type RecursiveKeyOf<TObj extends object> = {
   Exclude<keyof TObj, keyof number> &
   Exclude<keyof TObj, keyof boolean> &
   Exclude<keyof TObj, keyof string> &
-  Exclude<keyof TObj, keyof Map<any, any>>];
+  Exclude<keyof TObj, keyof Map<unknown, unknown>>];
 
 export type ProbableWaffleAllChanged = "all";
 
@@ -64,32 +74,52 @@ export interface ProbableWaffleGameModeDataChangeEvent extends ProbableWaffleCom
   data: Partial<ProbableWaffleGameModeData>;
 }
 
+export const ProbableWafflePlayerDataChangeProperties = {
+  Joined: "joined",
+  Left: "left",
+  JoinedFromNetwork: "joinedFromNetwork",
+  SelectionAdded: "selection.added",
+  SelectionRemoved: "selection.removed",
+  SelectionSet: "selection.set",
+  SelectionCleared: "selection.cleared",
+  ResourceAdded: "resource.added",
+  ResourceRemoved: "resource.removed",
+  HousingAdded: "housing.added",
+  HousingRemoved: "housing.removed",
+  HousingCurrentIncreased: "housing.current.increased",
+  HousingCurrentDecreased: "housing.current.decreased",
+  PlayerSceneReady: "player.scene-ready",
+  CommandIssuedMove: "command.issued.move",
+  CommandIssuedActor: "command.issued.actor",
+  SelectionGroupsChanged: "playerController.data.selectionGroups"
+} as const;
+
 export type ProbableWafflePlayerDataChangeEventPayload = Partial<{
   // provide player number only when updating player
   playerNumber?: PlayerNumber;
   playerStateData: Partial<ProbableWafflePlayerStateData>;
   playerControllerData: Partial<ProbableWafflePlayerControllerData>;
-  data: Record<string, any>;
+  data: Record<string, unknown>;
 }>;
 
 export type ProbableWafflePlayerDataChangeEventProperty =
   | ProbableWaffleDataChangeEventProperty<ProbableWafflePlayer>
-  | "joined"
-  | "left"
-  | "joinedFromNetwork"
-  | "selection.added"
-  | "selection.removed"
-  | "selection.set"
-  | "selection.cleared"
-  | "resource.added"
-  | "resource.removed"
-  | "housing.added"
-  | "housing.removed"
-  | "housing.current.increased"
-  | "housing.current.decreased"
-  | "player.scene-ready"
-  | "command.issued.move" // todo this command needs to be removed from here as it belongs to actor event
-  | "command.issued.actor"; // todo this command needs to be removed from here as it belongs to actor event
+  | typeof ProbableWafflePlayerDataChangeProperties.Joined
+  | typeof ProbableWafflePlayerDataChangeProperties.Left
+  | typeof ProbableWafflePlayerDataChangeProperties.JoinedFromNetwork
+  | typeof ProbableWafflePlayerDataChangeProperties.SelectionAdded
+  | typeof ProbableWafflePlayerDataChangeProperties.SelectionRemoved
+  | typeof ProbableWafflePlayerDataChangeProperties.SelectionSet
+  | typeof ProbableWafflePlayerDataChangeProperties.SelectionCleared
+  | typeof ProbableWafflePlayerDataChangeProperties.ResourceAdded
+  | typeof ProbableWafflePlayerDataChangeProperties.ResourceRemoved
+  | typeof ProbableWafflePlayerDataChangeProperties.HousingAdded
+  | typeof ProbableWafflePlayerDataChangeProperties.HousingRemoved
+  | typeof ProbableWafflePlayerDataChangeProperties.HousingCurrentIncreased
+  | typeof ProbableWafflePlayerDataChangeProperties.HousingCurrentDecreased
+  | typeof ProbableWafflePlayerDataChangeProperties.PlayerSceneReady
+  | typeof ProbableWafflePlayerDataChangeProperties.CommandIssuedMove // todo this command needs to be removed from here as it belongs to actor event
+  | typeof ProbableWafflePlayerDataChangeProperties.CommandIssuedActor; // todo this command needs to be removed from here as it belongs to actor event
 export interface ProbableWafflePlayerDataChangeEvent extends ProbableWaffleCommunicatorEvent {
   property: ProbableWafflePlayerDataChangeEventProperty;
   data: ProbableWafflePlayerDataChangeEventPayload;
@@ -148,6 +178,19 @@ export interface ProbableWaffleGameCommandEvent extends ProbableWaffleCommunicat
    */
   rejectionReason?: string;
 }
+
+export const ProbableWaffleGameCommandTypes = {
+  Move: "MOVE",
+  ActorAction: "ACTOR_ACTION",
+  Stop: "STOP",
+  Production: "PRODUCTION",
+  CancelProduction: "CANCEL_PRODUCTION",
+  Research: "RESEARCH",
+  CancelResearch: "CANCEL_RESEARCH"
+} as const;
+
+export type ProbableWaffleGameCommandType =
+  (typeof ProbableWaffleGameCommandTypes)[keyof typeof ProbableWaffleGameCommandTypes];
 
 /** Periodic state-hash snapshot. Each client broadcasts its own hash; peers compare. */
 export interface ProbableWaffleStateHashDiagnostics {
@@ -266,5 +309,33 @@ export interface AllScenesEventData {
     | "hud-scene-shutdown"
     | "desync-detected"
     | "pause-toggle-requested";
-  data?: any;
+  data?: unknown;
 }
+
+export interface ProbableWaffleCommunicatorPayloadByType {
+  [ProbableWaffleCommunicators.GameInstanceMetadataDataChange]: ProbableWaffleGameInstanceMetadataChangeEvent;
+  [ProbableWaffleCommunicators.GameModeDataChange]: ProbableWaffleGameModeDataChangeEvent;
+  [ProbableWaffleCommunicators.PlayerDataChange]: ProbableWafflePlayerDataChangeEvent;
+  [ProbableWaffleCommunicators.SpectatorDataChange]: ProbableWaffleSpectatorDataChangeEvent;
+  [ProbableWaffleCommunicators.GameStateDataChange]: ProbableWaffleGameStateDataChangeEvent;
+  [ProbableWaffleCommunicators.Message]: ProbableWaffleCommunicatorMessageEvent;
+  [ProbableWaffleCommunicators.GameCommand]: ProbableWaffleGameCommandEvent;
+  [ProbableWaffleCommunicators.StateHash]: ProbableWaffleStateHashEvent;
+  [ProbableWaffleCommunicators.SnapshotRequest]: ProbableWaffleSnapshotRequestEvent;
+  [ProbableWaffleCommunicators.SnapshotResponse]: ProbableWaffleSnapshotResponseEvent;
+  [ProbableWaffleCommunicators.DesyncAlert]: ProbableWaffleDesyncAlertEvent;
+  [ProbableWaffleCommunicators.PauseChanged]: ProbableWafflePauseChangedEvent;
+  [ProbableWaffleCommunicators.PlayerDisconnected]: ProbableWafflePlayerDisconnectedEvent;
+  [ProbableWaffleCommunicators.PlayerReconnected]: ProbableWafflePlayerReconnectedEvent;
+  [ProbableWaffleCommunicators.HostMigrated]: ProbableWaffleHostMigratedEvent;
+  [ProbableWaffleCommunicators.Selection]: unknown;
+}
+
+export type ProbableWaffleCommunicatorEventByType<T extends ProbableWaffleCommunicatorType> = CommunicatorEvent<
+  ProbableWaffleCommunicatorPayloadByType[T],
+  T
+>;
+
+export type ProbableWaffleCommunicatorEventUnion = {
+  [T in ProbableWaffleCommunicatorType]: ProbableWaffleCommunicatorEventByType<T>;
+}[ProbableWaffleCommunicatorType];

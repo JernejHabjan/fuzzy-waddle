@@ -1,9 +1,9 @@
 import { Injectable, Logger } from "@nestjs/common";
 import {
-  type CommunicatorEvent,
   GameSessionState,
-  type ProbableWaffleCommunicatorType,
   type ProbableWaffleDesyncAlertEvent,
+  ProbableWaffleCommunicators,
+  type ProbableWaffleCommunicatorEventUnion,
   type ProbableWaffleGameCommandEvent,
   type ProbableWaffleGameInstanceMetadataChangeEvent,
   type ProbableWaffleGameModeDataChangeEvent,
@@ -49,7 +49,7 @@ export class GameStateServerService {
     private readonly pauseStateValidator: PauseStateValidatorService
   ) {}
 
-  updateGameState(body: CommunicatorEvent<any, ProbableWaffleCommunicatorType>, user: User): UpdateGameStateResult {
+  updateGameState(body: ProbableWaffleCommunicatorEventUnion, user: User): UpdateGameStateResult {
     const gameInstance = this.gameInstanceService.findGameInstance(body.gameInstanceId!);
     if (!gameInstance) {
       console.warn(
@@ -63,7 +63,7 @@ export class GameStateServerService {
     gameInstance.gameInstanceMetadata.data.updatedOn = new Date();
 
     switch (body.communicator) {
-      case "gameInstanceMetadataDataChange":
+      case ProbableWaffleCommunicators.GameInstanceMetadataDataChange:
         const giMetadata = body.payload as ProbableWaffleGameInstanceMetadataChangeEvent;
         ProbableWaffleListeners.gameInstanceMetadataChanged(gameInstance, giMetadata);
         switch (giMetadata.property) {
@@ -77,26 +77,26 @@ export class GameStateServerService {
             break;
         }
         break;
-      case "gameModeDataChange":
+      case ProbableWaffleCommunicators.GameModeDataChange:
         const gmData = body.payload as ProbableWaffleGameModeDataChangeEvent;
         ProbableWaffleListeners.gameModeChanged(gameInstance, gmData);
         break;
-      case "playerDataChange":
+      case ProbableWaffleCommunicators.PlayerDataChange:
         const playerData = body.payload as ProbableWafflePlayerDataChangeEvent;
         if (!this.playerStateValidator.validate(playerData, gameInstance, user)) {
           return { success: false, relayEmpty: false };
         }
         ProbableWaffleListeners.playerChanged(gameInstance, playerData);
         break;
-      case "spectatorDataChange":
+      case ProbableWaffleCommunicators.SpectatorDataChange:
         const spectatorData = body.payload as ProbableWaffleSpectatorDataChangeEvent;
         ProbableWaffleListeners.spectatorChanged(gameInstance, spectatorData);
         break;
-      case "gameStateDataChange":
+      case ProbableWaffleCommunicators.GameStateDataChange:
         const gameStateData = body.payload as ProbableWaffleGameStateDataChangeEvent;
         ProbableWaffleListeners.gameStateDataChanged(gameInstance, gameStateData);
         break;
-      case "game-command": {
+      case ProbableWaffleCommunicators.GameCommand: {
         const cmdEvent = body.payload as ProbableWaffleGameCommandEvent;
         const validationResult: GameCommandValidationResult = this.commandValidator.validate(
           cmdEvent,
@@ -116,14 +116,14 @@ export class GameStateServerService {
         this.recordCommand(cmdEvent);
         return { success: true };
       }
-      case "state-hash":
+      case ProbableWaffleCommunicators.StateHash:
         // No server-side processing needed; relay to all peers as-is.
         break;
-      case "snapshot-request":
+      case ProbableWaffleCommunicators.SnapshotRequest:
         // Request is relayed to all peers; the host will respond directly.
         // Server holds no snapshot state — routing only.
         break;
-      case "snapshot-response":
+      case ProbableWaffleCommunicators.SnapshotResponse:
         // Response is relayed to all peers (only the requester will consume it via userId filter).
         const snapshotResponse = body.payload as ProbableWaffleSnapshotResponseEvent;
         snapshotResponse.commandTail = this.getCommandTail(
@@ -131,19 +131,19 @@ export class GameStateServerService {
           snapshotResponse.snapshot.tick
         );
         break;
-      case "desync-alert":
+      case ProbableWaffleCommunicators.DesyncAlert:
         if (!this.validateDesyncAlert(body.payload as ProbableWaffleDesyncAlertEvent, gameInstance, user)) {
           return { success: false, relayEmpty: false };
         }
         break;
-      case "pause-changed":
+      case ProbableWaffleCommunicators.PauseChanged:
         if (!this.pauseStateValidator.validate(body.payload as ProbableWafflePauseChangedEvent, gameInstance, user)) {
           return { success: false, relayEmpty: false };
         }
         break;
-      case "player-disconnected":
-      case "player-reconnected":
-      case "host-migrated":
+      case ProbableWaffleCommunicators.PlayerDisconnected:
+      case ProbableWaffleCommunicators.PlayerReconnected:
+      case ProbableWaffleCommunicators.HostMigrated:
         // Server-originated events — clients should never send these; return false to suppress relay.
         return { success: false, relayEmpty: false };
       default:

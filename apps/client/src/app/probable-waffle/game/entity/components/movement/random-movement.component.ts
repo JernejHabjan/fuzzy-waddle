@@ -8,20 +8,21 @@ import { getSceneService } from "../../../world/services/scene-component-helpers
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 import { RandomService } from "../../../world/services/random.service";
 import { Subscription } from "rxjs";
-import { getCommunicator } from "../../../data/scene-data";
+import { hasMultiplayerCommandRelay } from "../../../data/scene-data";
 
 export class RandomMovementComponent {
   private currentDelay: Phaser.Time.TimerEvent | null = null;
   private tickSubscription?: Subscription;
   private nextMoveAtMs?: number;
   private randomService?: RandomService;
+  /** Random wandering is disabled in multiplayer so lockstep simulation stays deterministic. */
   private readonly disabledInMultiplayer: boolean;
 
   constructor(
     private readonly gameObject: GameObjects.GameObject,
     private readonly randomMovementDefinition: RandomMovementDefinition
   ) {
-    this.disabledInMultiplayer = !!getCommunicator(gameObject.scene).gameCommandChanged;
+    this.disabledInMultiplayer = hasMultiplayerCommandRelay(gameObject.scene);
     onObjectReady(gameObject, this.init, this);
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);

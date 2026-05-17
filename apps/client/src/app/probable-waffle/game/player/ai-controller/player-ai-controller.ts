@@ -37,7 +37,9 @@ export class PlayerAiController {
     const simulationTickService = getSceneService(scene, SimulationTickService);
     if (simulationTickService) {
       this.tickSubscription = simulationTickService.tick$.subscribe(() => {
-        void this.updateOnSimulationTick();
+        this.updateOnSimulationTick().catch((error: unknown) => {
+          console.error(error, "Error updating AI on simulation tick");
+        });
       });
     } else {
       scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
@@ -87,7 +89,8 @@ export class PlayerAiController {
           }
         } catch (e) {
           console.log(e, "Error stepping behaviour tree");
-          this.telemetry.recordEvent("bt.error", { message: (e as any)?.message });
+          const message = e instanceof Error ? e.message : String(e);
+          this.telemetry.recordEvent("bt.error", { message });
         }
         this.elapsedTime = Math.max(0, this.elapsedTime - this.stepInterval);
         processedSteps++;
@@ -101,7 +104,11 @@ export class PlayerAiController {
     }
 
     if (this.stepQueued) {
-      void Promise.resolve().then(() => this.runScheduledStep());
+      Promise.resolve()
+        .then(() => this.runScheduledStep())
+        .catch((error: unknown) => {
+          console.error(error, "Error scheduling next AI step");
+        });
     }
   }
 

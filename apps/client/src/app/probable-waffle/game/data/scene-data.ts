@@ -72,6 +72,18 @@ export function getCommunicator(scene: Scene): ProbableWaffleCommunicatorService
   return scene.baseGameData.communicator;
 }
 
+export function hasMultiplayerCommandRelay(scene: Scene): boolean {
+  return !!getCommunicator(scene).gameCommandChanged;
+}
+
+export function isRealtimeMultiplayerMatch(scene: Scene): boolean {
+  if (!(scene instanceof BaseScene)) {
+    return false;
+  }
+
+  return hasMultiplayerCommandRelay(scene) && !scene.baseGameData.gameInstance.gameInstanceMetadata.isReplay();
+}
+
 export function listenToActorEvents(
   gameObject: Phaser.GameObjects.GameObject,
   property: ProbableWaffleGameStateDataChangeEventProperty | null = null
@@ -117,6 +129,10 @@ export function sendPlayerStateEvent(
   payloadIn: ProbableWafflePlayerDataChangeEventPayload,
   playerNumber?: PlayerNumber,
   options?: {
+    /**
+     * When true in multiplayer, emit only locally and do not send to server.
+     * This is used for UI/local mirror state that should not enter lockstep relay.
+     */
     localOnlyInMultiplayer?: boolean;
   }
 ): void {
@@ -135,7 +151,7 @@ export function sendPlayerStateEvent(
     emitterUserId: scene.userId
   };
 
-  if (communicator.gameCommandChanged && options?.localOnlyInMultiplayer) {
+  if (hasMultiplayerCommandRelay(scene) && options?.localOnlyInMultiplayer) {
     communicator.playerChanged?.sendLocally(event);
     return;
   }

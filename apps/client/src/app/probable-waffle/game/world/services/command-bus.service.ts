@@ -3,7 +3,7 @@ import type { GameCommand, GameCommandInput } from "../../data/commands/game-com
 import { SimulationTickService } from "./simulation-tick.service";
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { CommandBuffer } from "./command-buffer";
-import { getCommunicator } from "../../data/scene-data";
+import { getCommunicator, hasMultiplayerCommandRelay } from "../../data/scene-data";
 import {
   type PlayerNumber,
   ProbableWafflePlayerType,
@@ -68,7 +68,7 @@ export class CommandBusService {
   /**
    * Activates the multiplayer relay path.
    * Must be called after tickService is set and the communicator is ready.
-   * Safe to call only in sessions where gameCommandChanged is defined.
+   * Safe to call only in sessions where multiplayer command relay is available.
    */
   initMultiplayer(scene: ProbableWaffleScene): void {
     this.scene = scene;
@@ -91,10 +91,16 @@ export class CommandBusService {
     );
 
     const communicator = getCommunicator(scene);
+    const commandRelay = communicator.gameCommandChanged;
+    if (!commandRelay || !hasMultiplayerCommandRelay(scene)) {
+      this.debugLog("init skipped: multiplayer command relay is not available");
+      this.isMultiplayer = false;
+      return;
+    }
 
     // Receive remote command batches (including local player's server echo) and buffer them
     this.subscriptions.push(
-      communicator.gameCommandChanged!.on.subscribe((event) => {
+      commandRelay.on.subscribe((event) => {
         if (event.rejectionReason && event.playerNumber === this.localPlayerNumber) {
           // The server rejected our batch (payload invalid) and relayed an empty one.
           // Log clearly so the developer can see what caused the desync.
@@ -226,7 +232,12 @@ export class CommandBusService {
     // Use sendToServer() instead of send() so the local buffer is NOT self-committed
     // before server validation. The local player's batch is committed only when the
     // server echoes it back (via on.subscribe below), preventing desync on rejection.
-    getCommunicator(this.scene).gameCommandChanged!.sendToServer({
+    const commandRelay = getCommunicator(this.scene).gameCommandChanged;
+    if (!commandRelay) {
+      return;
+    }
+
+    commandRelay.sendToServer({
       gameInstanceId: this.scene.gameInstanceId,
       emitterUserId: this.scene.userId,
       tick,

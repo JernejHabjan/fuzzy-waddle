@@ -5,6 +5,8 @@ import {
   ObjectNames,
   OrderType,
   type ProbableWaffleGameCommandEvent,
+  ProbableWaffleGameCommandTypes,
+  type ProbableWaffleGameCommandType,
   type ProbableWaffleGameInstance,
   ResearchType
 } from "@fuzzy-waddle/api-interfaces";
@@ -45,6 +47,9 @@ export class GameCommandValidatorService {
   private static readonly KNOWN_ORDER_TYPES = new Set(AllOrderTypes);
   private static readonly KNOWN_ACTOR_NAMES = new Set(Object.values(ObjectNames));
   private static readonly KNOWN_RESEARCH_TYPES = new Set(Object.values(ResearchType));
+  private static readonly KNOWN_COMMAND_TYPES = new Set<ProbableWaffleGameCommandType>(
+    Object.values(ProbableWaffleGameCommandTypes)
+  );
 
   /** Maximum tick jump allowed in one batch — guards against far-future exploits. */
   private static readonly MAX_TICK_JUMP = 10;
@@ -203,15 +208,7 @@ export class GameCommandValidatorService {
 
     const payload = command as Record<string, unknown>;
     const type = payload.type;
-    if (
-      type !== "MOVE" &&
-      type !== "ACTOR_ACTION" &&
-      type !== "STOP" &&
-      type !== "PRODUCTION" &&
-      type !== "CANCEL_PRODUCTION" &&
-      type !== "RESEARCH" &&
-      type !== "CANCEL_RESEARCH"
-    ) {
+    if (!this.isKnownCommandType(type)) {
       this.logger.warn(`[GameCommand] Unknown command type ${String(type)} in ${gameInstanceId}`);
       return `unknown command type "${String(type)}"`;
     }
@@ -240,7 +237,7 @@ export class GameCommandValidatorService {
     }
 
     switch (type) {
-      case "MOVE": {
+      case ProbableWaffleGameCommandTypes.Move: {
         if (!(payload.queue === true || payload.queue === false)) {
           this.logger.warn(`[GameCommand] Invalid queue flag for MOVE in ${gameInstanceId}`);
           return `invalid queue flag for MOVE`;
@@ -251,7 +248,7 @@ export class GameCommandValidatorService {
         }
         return null;
       }
-      case "ACTOR_ACTION": {
+      case ProbableWaffleGameCommandTypes.ActorAction: {
         const orderType = typeof payload.orderType === "string" ? payload.orderType : undefined;
         const knownOrderType = this.toKnownOrderType(orderType);
         if (!(payload.queue === true || payload.queue === false)) {
@@ -279,30 +276,34 @@ export class GameCommandValidatorService {
         }
         return null;
       }
-      case "STOP":
+      case ProbableWaffleGameCommandTypes.Stop:
         return null;
-      case "PRODUCTION": {
+      case ProbableWaffleGameCommandTypes.Production: {
         if (!this.isKnownActorName(payload.actorName)) {
           this.logger.warn(`[GameCommand] Invalid actorName for PRODUCTION in ${gameInstanceId}`);
           return `invalid actorName for PRODUCTION`;
         }
         return null;
       }
-      case "CANCEL_PRODUCTION":
+      case ProbableWaffleGameCommandTypes.CancelProduction:
         if (!Number.isInteger(payload.queueIndex) || (payload.queueIndex as number) < 0) {
           this.logger.warn(`[GameCommand] Invalid queueIndex for CANCEL_PRODUCTION in ${gameInstanceId}`);
           return `invalid queueIndex for CANCEL_PRODUCTION`;
         }
         return null;
-      case "RESEARCH":
+      case ProbableWaffleGameCommandTypes.Research:
         if (!this.isKnownResearchType(payload.researchType)) {
           this.logger.warn(`[GameCommand] Invalid researchType for RESEARCH in ${gameInstanceId}`);
           return `invalid researchType for RESEARCH`;
         }
         return null;
-      case "CANCEL_RESEARCH":
+      case ProbableWaffleGameCommandTypes.CancelResearch:
         return null;
     }
+  }
+
+  private isKnownCommandType(value: unknown): value is ProbableWaffleGameCommandType {
+    return typeof value === "string" && GameCommandValidatorService.KNOWN_COMMAND_TYPES.has(value as ProbableWaffleGameCommandType);
   }
 
   private readActorIds(value: unknown): string[] | null {

@@ -38,9 +38,6 @@ import { TilemapComponent } from "../../world/tilemap/tilemap.component";
 import type { IsoDirection } from "../components/movement/iso-directions";
 import type { PathMoveConfig } from "./path-move-config";
 import { CommandBusService } from "../../world/services/command-bus.service";
-import { getCommunicator } from "../../data/scene-data";
-import { getBaseGameDataFromScene } from "../../../../shared/game/phaser/scene/base.scene";
-import type { ProbableWaffleGameData } from "../../core/probable-waffle-game-data";
 import { CancelableSimDelay } from "../../world/services/simulation-time";
 import Tween = Phaser.Tweens.Tween;
 import TweenChain = Phaser.Tweens.TweenChain;
@@ -62,7 +59,6 @@ export class MovementSystem {
   private audioActorComponent: AudioActorComponent | undefined;
   private animationActorComponent?: AnimationActorComponent;
   private statusEffectComponent?: StatusEffectComponent;
-  private targetGameObject?: GameObject;
 
   constructor(private readonly gameObject: Phaser.GameObjects.GameObject) {
     this.listenToMoveEvents();
@@ -164,28 +160,7 @@ export class MovementSystem {
     gameObject: GameObject,
     pathMoveConfig?: Partial<PathMoveConfig>
   ): Promise<boolean> {
-    if (this.usesDeterministicPursuit()) {
-      return this.moveToActorByFollowingDeterministicSnapshotPath(gameObject, pathMoveConfig);
-    }
-
-    const flyingComponent = getActorComponent(this.gameObject, FlyingComponent);
-    const usePathfinding = !flyingComponent;
-    if (!usePathfinding) {
-      const vec3 = getGameObjectCurrentTile(gameObject);
-      if (!vec3) return false;
-      return this.moveDirectlyToLocationWithoutPathfinding(
-        {
-          x: vec3.x,
-          y: vec3.y,
-          z: 0
-        } satisfies Vector3Simple,
-        pathMoveConfig
-      )
-        .then(() => true)
-        .catch(() => false);
-    }
-
-    return this.calculateAndFollowPathOfMovingTarget(gameObject, pathMoveConfig);
+    return this.moveToActorByFollowingDeterministicSnapshotPath(gameObject, pathMoveConfig);
   }
 
   private async moveToActorByFollowingDeterministicSnapshotPath(
@@ -224,134 +199,6 @@ export class MovementSystem {
     } catch {
       return false;
     }
-  }
-
-  /**
-   * Calculates and follows a dynamic path to a moving target game object.
-   * This method is used for "following" behavior where the target may move during pathfinding.
-   *
-   * Unlike moveAlongPathByFollowingPreCalculatedStaticPath which follows a static pre-calculated path, this method:
-   * - Recalculates the path dynamically after each step
-   * - Handles moving targets that may change position
-   * - Finds the closest navigable tile within a specified radius of the target
-   * - Stops and recalculates if the target moves significantly
-   *
-   * Use cases:
-   * - Following another character/unit
-   * - Moving to interact with a movable object
-   * - AI units pursuing a target
-   *
-   * @param destinationGameObject The target game object to follow/move towards
-   * @param pathMoveConfig Optional configuration for movement behavior
-   * @returns Promise<boolean> - true if movement started successfully, false otherwise
-   */
-  private async calculateAndFollowPathOfMovingTarget(
-    destinationGameObject: GameObject,
-    pathMoveConfig?: Partial<PathMoveConfig>
-  ): Promise<boolean> {
-    if (!this.navigationService) return false;
-
-    const path = await this.getPathToClosestNavigableTileBetweenGameObjectsInRadius(
-      destinationGameObject,
-      pathMoveConfig?.radiusTilesAroundDestination
-    );
-    if (!path || !path.length) return false;
-
-    if (this.DEBUG) this.navigationService.drawDebugPath(path);
-
-    // Cancel any ongoing movement before starting new path
-    this.cancelMovement();
-
-    try {
-      if (!path.length) return false;
-      // Remove the first tile, as it's the current tile
-      path.shift();
-
-      // Store the target for potential path recalculation
-      this.targetGameObject = destinationGameObject;
-
-      // Start moving along the path with smoother transitions
-      if (path.length > 0) {
-        await this.moveAlongDynamicPath(path, pathMoveConfig);
-      } else {
-        // Target is adjacent, complete immediately
-        pathMoveConfig?.onComplete?.();
-        this.playMovementAnimation(false, pathMoveConfig);
-      }
-
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  /**
-   * Moves along a path while allowing for dynamic recalculation.
-   * This provides smoother movement than the recursive approach.
-   */
-  private async moveAlongDynamicPath(path: Vector2Simple[], config?: Partial<PathMoveConfig>): Promise<void> {
-    if (!path.length) {
-      config?.onComplete?.();
-      this.playMovementAnimation(false, config);
-      this.targetGameObject = undefined;
-      return;
-    }
-
-    const nextTile = path.shift();
-    if (!nextTile) return Promise.reject("No next tile to move to");
-
-    this.cancelMovement();
-    config?.onPathUpdate?.(nextTile);
-
-    const onComplete = async () => {
-      // Check if we still have a target to follow
-      if (this.targetGameObject && this.targetGameObject.active && this.targetGameObject.scene.scene.isActive()) {
-        // Recalculate path to the moving target
-        try {
-          const newPath = await this.getPathToClosestNavigableTileBetweenGameObjectsInRadius(
-            this.targetGameObject,
-            config?.radiusTilesAroundDestination
-          );
-
-          if (newPath && newPath.length > 1) {
-            // Remove current position from new path
-            newPath.shift();
-            // Continue with the new path
-            await this.moveAlongDynamicPath(newPath, config);
-          } else {
-            // Reached target or no path available
-            config?.onComplete?.();
-            this.playMovementAnimation(false, config);
-            this.targetGameObject = undefined;
-          }
-        } catch (error) {
-          // Path calculation failed, try to continue with remaining original path
-          if (path.length > 0) {
-            await this.moveAlongDynamicPath(path, config);
-          } else {
-            config?.onComplete?.();
-            this.playMovementAnimation(false, config);
-            this.targetGameObject = undefined;
-          }
-        }
-      } else if (path.length > 0) {
-        // Continue with remaining path if no target to follow
-        await this.moveAlongDynamicPath(path, config);
-      } else {
-        // End of path
-        config?.onComplete?.();
-        this.playMovementAnimation(false, config);
-        this.targetGameObject = undefined;
-      }
-    };
-
-    const onStop = () => {
-      config?.onStop?.();
-      this.playMovementAnimation(false, config);
-      this.targetGameObject = undefined;
-    };
-
-    return this.moveActorToTileWithTween(nextTile, config, onComplete, onStop);
   }
 
   /**
@@ -679,14 +526,7 @@ export class MovementSystem {
 
   private destroy() {
     this.cancelMovement();
-    this.targetGameObject = undefined;
     this.commandBusSubscription?.unsubscribe();
-  }
-
-  private usesDeterministicPursuit(): boolean {
-    const baseGameData = getBaseGameDataFromScene<ProbableWaffleGameData>(this.gameObject.scene);
-    return !!getCommunicator(this.gameObject.scene).gameCommandChanged &&
-      !baseGameData.gameInstance.gameInstanceMetadata.isReplay();
   }
 
   async canMoveTo(targetGameObject: Phaser.GameObjects.GameObject, range?: number): Promise<boolean> {

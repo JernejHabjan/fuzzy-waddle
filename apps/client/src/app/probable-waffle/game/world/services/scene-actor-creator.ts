@@ -8,7 +8,7 @@ import {
 } from "@fuzzy-waddle/api-interfaces";
 import { ActorManager } from "../../data/actor-manager";
 import GameProbableWaffleScene from "../scenes/GameProbableWaffleScene";
-import { getCommunicator } from "../../data/scene-data";
+import { getCommunicator, hasMultiplayerCommandRelay } from "../../data/scene-data";
 import Spawn from "../../prefabs/buildings/misc/Spawn";
 import EditorOwner from "../scenes/editor-components/EditorOwner";
 import EditorActorLevel from "../scenes/editor-components/EditorActorLevel";
@@ -300,7 +300,7 @@ export class SceneActorCreator {
   }
 
   private scheduleHostActorSync() {
-    if (!this.scene.isHost || !this.scene.baseGameData.communicator.gameCommandChanged) {
+    if (!this.scene.isHost || !hasMultiplayerCommandRelay(this.scene)) {
       return;
     }
 

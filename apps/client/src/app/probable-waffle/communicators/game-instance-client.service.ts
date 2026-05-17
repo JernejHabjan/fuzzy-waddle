@@ -294,7 +294,9 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
             if (payload.data.playerControllerData!.playerDefinition!.player.playerNumber === this.currentPlayerNumber) {
               this.currentPlayerNumber = undefined;
               if (!this.selfExitInProgress) {
-                void this.handleSelfRemovedFromGameInstance();
+                this.handleSelfRemovedFromGameInstance().catch((error: unknown) => {
+                  console.error("[GameInstanceClientService] Failed to handle self removal:", error);
+                });
               }
             }
             break;
@@ -749,23 +751,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
 
   private getNormalizedGameInstanceType(): ProbableWaffleGameInstanceType | undefined {
     const rawType = this.gameInstance?.gameInstanceMetadata?.data.type;
-    if (typeof rawType === "number") {
-      return rawType;
-    }
-
-    if (typeof rawType === "string") {
-      const numericType = Number(rawType);
-      if (!Number.isNaN(numericType)) {
-        return numericType as ProbableWaffleGameInstanceType;
-      }
-
-      const enumValue = ProbableWaffleGameInstanceType[rawType as keyof typeof ProbableWaffleGameInstanceType];
-      if (typeof enumValue === "number") {
-        return enumValue;
-      }
-    }
-
-    return undefined;
+    return rawType ?? undefined;
   }
 
   private async handleSelfRemovedFromGameInstance(): Promise<void> {

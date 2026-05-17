@@ -130,18 +130,4 @@ export class PlayerDisconnectTrackerService {
     return false;
   }
 
-  /** Clean up all state for a game instance when it ends. */
-  cleanupGame(gameInstanceId: GameInstanceId): void {
-    for (const [sid, player] of this.socketToPlayer.entries()) {
-      if (player.gameInstanceId === gameInstanceId) {
-        this.socketToPlayer.delete(sid);
-      }
-    }
-    for (const [sid, entry] of this.pendingEvictions.entries()) {
-      if (entry.gameInstanceId === gameInstanceId) {
-        clearTimeout(entry.timer);
-        this.pendingEvictions.delete(sid);
-      }
-    }
-  }
 }

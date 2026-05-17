@@ -47,6 +47,7 @@ import { ReplayPlaybackService } from "../services/replay-playback.service";
 import { ReplayRecorderService } from "../services/replay-recorder.service";
 import { HostMigrationService } from "../services/host-migration.service";
 import { PauseSyncService } from "../services/pause-sync.service";
+import { hasMultiplayerCommandRelay } from "../../data/scene-data";
 import { ProbableWafflePlayerType } from "@fuzzy-waddle/api-interfaces";
 import { isTauri } from "../../../../shared/utils/tauri";
 
@@ -126,11 +127,10 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     if (commandBus && simTick) {
       commandBus.tickService = simTick;
       // Activate the multiplayer relay path when a socket is present
-      const communicator = this.baseGameData.communicator;
       const humanPlayerCount = this.baseGameData.gameInstance.players.filter(
         (player) => player.playerController.data.playerDefinition?.playerType === ProbableWafflePlayerType.Human
       ).length;
-      if (communicator.gameCommandChanged && humanPlayerCount > 1) {
+      if (hasMultiplayerCommandRelay(this) && humanPlayerCount > 1) {
         commandBus.initMultiplayer(this);
       }
     }

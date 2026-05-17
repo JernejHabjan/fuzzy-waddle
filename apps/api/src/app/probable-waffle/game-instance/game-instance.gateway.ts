@@ -9,10 +9,10 @@ import {
 } from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
 import {
-  type CommunicatorEvent,
   GameSessionState,
   type ProbableWaffleCommunicatorMessageEvent,
-  type ProbableWaffleCommunicatorType,
+  ProbableWaffleCommunicators,
+  type ProbableWaffleCommunicatorEventUnion,
   type ProbableWaffleGameCommandEvent,
   type ProbableWaffleGameFoundEvent,
   type ProbableWaffleHostMigratedEvent,
@@ -84,7 +84,7 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
       const roomId = `${ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance}${gameInstanceId}`;
       this.server.to(roomId).emit(ProbableWaffleGatewayEvent.ProbableWaffleAction, {
         gameInstanceId,
-        communicator: "player-disconnected",
+        communicator: ProbableWaffleCommunicators.PlayerDisconnected,
         payload: {
           gameInstanceId,
           emitterUserId: null,
@@ -105,7 +105,7 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
       const roomId = `${ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance}${playerInfo.gameInstanceId}`;
       this.server.to(roomId).emit(ProbableWaffleGatewayEvent.ProbableWaffleAction, {
         gameInstanceId: playerInfo.gameInstanceId,
-        communicator: "player-disconnected",
+        communicator: ProbableWaffleCommunicators.PlayerDisconnected,
         payload: {
           gameInstanceId: playerInfo.gameInstanceId,
           emitterUserId: null,
@@ -126,7 +126,7 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
   @SubscribeMessage(ProbableWaffleGatewayEvent.ProbableWaffleAction)
   async broadcastProbableWaffleAction(
     @CurrentUser() user: AuthUser,
-    @MessageBody() body: CommunicatorEvent<any, ProbableWaffleCommunicatorType>,
+    @MessageBody() body: ProbableWaffleCommunicatorEventUnion,
     @ConnectedSocket() socket: Socket
   ) {
     console.log("Ashes of the Ancients - GI action:", body.communicator, body.payload);
@@ -136,10 +136,13 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
     const result: UpdateGameStateResult = this.gameStateServerService.updateGameState(body, user);
     const roomId = `${ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance}${body.gameInstanceId}`;
     if (result.success) {
-      if (body.communicator === "game-command") {
+      if (body.communicator === ProbableWaffleCommunicators.GameCommand) {
         // Include the sender so it commits via the authoritative server echo instead of self-delivery.
         this.server.to(roomId).emit(ProbableWaffleGatewayEvent.ProbableWaffleAction, body);
-      } else if (body.communicator === "pause-changed" || body.communicator === "desync-alert") {
+      } else if (
+        body.communicator === ProbableWaffleCommunicators.PauseChanged ||
+        body.communicator === ProbableWaffleCommunicators.DesyncAlert
+      ) {
         this.server.to(roomId).emit(ProbableWaffleGatewayEvent.ProbableWaffleAction, body);
       } else {
         // https://socket.io/docs/v3/emit-cheatsheet/
@@ -171,7 +174,7 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
   @SubscribeMessage(ProbableWaffleGatewayEvent.ProbableWaffleMessage)
   async broadcastProbableWaffleMessage(
     @CurrentUser() user: AuthUser,
-    @MessageBody() body: CommunicatorEvent<any, ProbableWaffleCommunicatorType>,
+    @MessageBody() body: ProbableWaffleCommunicatorEventUnion,
     @ConnectedSocket() socket: Socket
   ) {
     console.log(`Ashes of the Ancients - GI chat message ${body.gameInstanceId}`);
@@ -228,7 +231,7 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
             // Notify other clients (not the rejoining socket itself)
             socket.to(roomId).emit(ProbableWaffleGatewayEvent.ProbableWaffleAction, {
               gameInstanceId: body.gameInstanceId,
-              communicator: "player-reconnected",
+              communicator: ProbableWaffleCommunicators.PlayerReconnected,
               payload: {
                 gameInstanceId: body.gameInstanceId,
                 emitterUserId: null,
@@ -275,7 +278,7 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
     const roomId = `${ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance}${gameInstanceId}`;
     this.server.to(roomId).emit(ProbableWaffleGatewayEvent.ProbableWaffleAction, {
       gameInstanceId,
-      communicator: "gameInstanceMetadataDataChange",
+      communicator: ProbableWaffleCommunicators.GameInstanceMetadataDataChange,
       payload: {
         gameInstanceId,
         emitterUserId: null,
@@ -287,7 +290,7 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
     });
     this.server.to(roomId).emit(ProbableWaffleGatewayEvent.ProbableWaffleAction, {
       gameInstanceId,
-      communicator: "host-migrated",
+      communicator: ProbableWaffleCommunicators.HostMigrated,
       payload: {
         gameInstanceId,
         emitterUserId: null,
@@ -298,8 +301,8 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
     });
   }
 
-  private getRemovedPlayerUserId(body: CommunicatorEvent<any, ProbableWaffleCommunicatorType>): string | null {
-    if (body.communicator !== "playerDataChange") {
+  private getRemovedPlayerUserId(body: ProbableWaffleCommunicatorEventUnion): string | null {
+    if (body.communicator !== ProbableWaffleCommunicators.PlayerDataChange) {
       return null;
     }
 
@@ -317,11 +320,11 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
     return gameInstance?.getPlayerByNumber(playerNumber)?.playerController.data.userId ?? null;
   }
 
-  private isParticipantLeaving(body: CommunicatorEvent<any, ProbableWaffleCommunicatorType>): boolean {
-    if (body.communicator === "playerDataChange") {
+  private isParticipantLeaving(body: ProbableWaffleCommunicatorEventUnion): boolean {
+    if (body.communicator === ProbableWaffleCommunicators.PlayerDataChange) {
       return (body.payload as ProbableWafflePlayerDataChangeEvent).property === "left";
     }
-    if (body.communicator === "spectatorDataChange") {
+    if (body.communicator === ProbableWaffleCommunicators.SpectatorDataChange) {
       return (body.payload as ProbableWaffleSpectatorDataChangeEvent).property === "left";
     }
     return false;
@@ -352,7 +355,7 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
     this.gameStateServerService.cleanup(gameInstanceId);
     this.server.to(roomId).emit(ProbableWaffleGatewayEvent.ProbableWaffleAction, {
       gameInstanceId,
-      communicator: "gameInstanceMetadataDataChange",
+      communicator: ProbableWaffleCommunicators.GameInstanceMetadataDataChange,
       payload: {
         gameInstanceId,
         emitterUserId: null,

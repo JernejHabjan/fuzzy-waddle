@@ -15,6 +15,7 @@ import { ProductionComponent } from "../components/production/production-compone
 import { QueueComponent } from "../components/queue/queue-component";
 import { SharedQueueItemType } from "../components/queue/shared-queue-item-type";
 import { ResearchComponent } from "../components/research/research-component";
+import { ProbableWaffleGameCommandTypes } from "@fuzzy-waddle/api-interfaces";
 
 export class QueueCommandSystem {
   private commandBusSubscription?: Subscription;
@@ -38,16 +39,16 @@ export class QueueCommandSystem {
       if (!actorId || !cmd.actorIds.includes(actorId)) return;
 
       switch (cmd.type) {
-        case "PRODUCTION":
+        case ProbableWaffleGameCommandTypes.Production:
           this.handleProductionCommand(cmd);
           break;
-        case "CANCEL_PRODUCTION":
+        case ProbableWaffleGameCommandTypes.CancelProduction:
           this.handleCancelProductionCommand(cmd);
           break;
-        case "RESEARCH":
+        case ProbableWaffleGameCommandTypes.Research:
           this.handleResearchCommand(cmd);
           break;
-        case "CANCEL_RESEARCH":
+        case ProbableWaffleGameCommandTypes.CancelResearch:
           this.handleCancelResearchCommand(cmd);
           break;
       }

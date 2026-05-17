@@ -1,4 +1,9 @@
-import { ObjectNames, type PlayerNumber, type ResearchType } from "@fuzzy-waddle/api-interfaces";
+import {
+  ObjectNames,
+  ProbableWaffleGameCommandTypes,
+  type PlayerNumber,
+  type ResearchType
+} from "@fuzzy-waddle/api-interfaces";
 import { getActorComponent } from "../actor-component";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { CommandBusService } from "../../world/services/command-bus.service";
@@ -23,7 +28,7 @@ export function dispatchProductionCommand(
   }
 
   commandBus.dispatch({
-    type: "PRODUCTION",
+    type: ProbableWaffleGameCommandTypes.Production,
     playerNumber,
     actorIds: [actorId],
     actorName
@@ -44,7 +49,7 @@ export function dispatchResearchCommand(
   }
 
   commandBus.dispatch({
-    type: "RESEARCH",
+    type: ProbableWaffleGameCommandTypes.Research,
     playerNumber,
     actorIds: [actorId],
     researchType
@@ -65,7 +70,7 @@ export function dispatchCancelProductionCommand(
   }
 
   commandBus.dispatch({
-    type: "CANCEL_PRODUCTION",
+    type: ProbableWaffleGameCommandTypes.CancelProduction,
     playerNumber,
     actorIds: [actorId],
     queueIndex
@@ -85,7 +90,7 @@ export function dispatchCancelResearchCommand(
   }
 
   commandBus.dispatch({
-    type: "CANCEL_RESEARCH",
+    type: ProbableWaffleGameCommandTypes.CancelResearch,
     playerNumber,
     actorIds: [actorId]
   });

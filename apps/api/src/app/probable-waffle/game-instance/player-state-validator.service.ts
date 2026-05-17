@@ -5,6 +5,7 @@ import {
   type PlayerStateResources,
   type ProbableWaffleGameInstance,
   type ProbableWafflePlayerDataChangeEvent,
+  ProbableWafflePlayerDataChangeProperties,
   ResourceType,
   type SelectionGroupData
 } from "@fuzzy-waddle/api-interfaces";
@@ -15,28 +16,31 @@ export class PlayerStateValidatorService {
   private readonly logger = new Logger(PlayerStateValidatorService.name);
 
   private static readonly MAX_SELECTION_SIZE = 200;
-  private static readonly RESOURCE_PROPERTIES = new Set(["resource.added", "resource.removed"]);
+  private static readonly RESOURCE_PROPERTIES = new Set([
+    ProbableWafflePlayerDataChangeProperties.ResourceAdded,
+    ProbableWafflePlayerDataChangeProperties.ResourceRemoved
+  ]);
   private static readonly HOUSING_PROPERTIES = new Set([
-    "housing.added",
-    "housing.removed",
-    "housing.current.increased",
-    "housing.current.decreased"
+    ProbableWafflePlayerDataChangeProperties.HousingAdded,
+    ProbableWafflePlayerDataChangeProperties.HousingRemoved,
+    ProbableWafflePlayerDataChangeProperties.HousingCurrentIncreased,
+    ProbableWafflePlayerDataChangeProperties.HousingCurrentDecreased
   ]);
   private static readonly SELECTION_PROPERTIES = new Set([
-    "selection.added",
-    "selection.removed",
-    "selection.set",
-    "selection.cleared"
+    ProbableWafflePlayerDataChangeProperties.SelectionAdded,
+    ProbableWafflePlayerDataChangeProperties.SelectionRemoved,
+    ProbableWafflePlayerDataChangeProperties.SelectionSet,
+    ProbableWafflePlayerDataChangeProperties.SelectionCleared
   ]);
-  private static readonly CONTROL_GROUP_PROPERTY = "playerController.data.selectionGroups";
+  private static readonly CONTROL_GROUP_PROPERTY = ProbableWafflePlayerDataChangeProperties.SelectionGroupsChanged;
   private static readonly OWNER_ONLY_PROPERTIES = new Set([
     ...PlayerStateValidatorService.RESOURCE_PROPERTIES,
     ...PlayerStateValidatorService.HOUSING_PROPERTIES,
     ...PlayerStateValidatorService.SELECTION_PROPERTIES,
     PlayerStateValidatorService.CONTROL_GROUP_PROPERTY,
-    "player.scene-ready",
-    "command.issued.move",
-    "command.issued.actor"
+    ProbableWafflePlayerDataChangeProperties.PlayerSceneReady,
+    ProbableWafflePlayerDataChangeProperties.CommandIssuedMove,
+    ProbableWafflePlayerDataChangeProperties.CommandIssuedActor
   ]);
   private static readonly MAX_CONTROL_GROUPS = 9;
   private static readonly MAX_CONTROL_GROUP_SIZE = 200;
@@ -61,18 +65,18 @@ export class PlayerStateValidatorService {
     }
 
     switch (event.property) {
-      case "resource.added":
-      case "resource.removed":
+      case ProbableWafflePlayerDataChangeProperties.ResourceAdded:
+      case ProbableWafflePlayerDataChangeProperties.ResourceRemoved:
         return this.validateResourceChange(event, gameInstance);
-      case "housing.added":
-      case "housing.removed":
-      case "housing.current.increased":
-      case "housing.current.decreased":
+      case ProbableWafflePlayerDataChangeProperties.HousingAdded:
+      case ProbableWafflePlayerDataChangeProperties.HousingRemoved:
+      case ProbableWafflePlayerDataChangeProperties.HousingCurrentIncreased:
+      case ProbableWafflePlayerDataChangeProperties.HousingCurrentDecreased:
         return this.validateHousingChange(event, gameInstance);
-      case "selection.added":
-      case "selection.removed":
-      case "selection.set":
-      case "selection.cleared":
+      case ProbableWafflePlayerDataChangeProperties.SelectionAdded:
+      case ProbableWafflePlayerDataChangeProperties.SelectionRemoved:
+      case ProbableWafflePlayerDataChangeProperties.SelectionSet:
+      case ProbableWafflePlayerDataChangeProperties.SelectionCleared:
         return this.validateSelectionChange(event, gameInstance);
       case PlayerStateValidatorService.CONTROL_GROUP_PROPERTY:
         return this.validateSelectionGroupsChange(event, gameInstance);
@@ -89,7 +93,7 @@ export class PlayerStateValidatorService {
     playerUserId: string | null,
     emitterUserId: string
   ): boolean {
-    if (event.property === "left") {
+    if (event.property === ProbableWafflePlayerDataChangeProperties.Left) {
       const currentHostUserId =
         gameInstance.gameInstanceMetadata.data.currentHostUserId ?? gameInstance.gameInstanceMetadata.data.createdBy;
       return playerUserId === emitterUserId || currentHostUserId === emitterUserId;
@@ -106,7 +110,7 @@ export class PlayerStateValidatorService {
     event: ProbableWafflePlayerDataChangeEvent,
     gameInstance: ProbableWaffleGameInstance
   ): boolean {
-    if (event.property === "selection.cleared") {
+    if (event.property === ProbableWafflePlayerDataChangeProperties.SelectionCleared) {
       return true;
     }
 
@@ -181,25 +185,25 @@ export class PlayerStateValidatorService {
     } satisfies PlayerStateHousing;
 
     switch (event.property) {
-      case "housing.added":
+      case ProbableWafflePlayerDataChangeProperties.HousingAdded:
         if (!this.isFinitePositiveNumber(housing.maxHousing)) {
           return false;
         }
         projected.maxHousing += housing.maxHousing;
         break;
-      case "housing.removed":
+      case ProbableWafflePlayerDataChangeProperties.HousingRemoved:
         if (!this.isFinitePositiveNumber(housing.maxHousing)) {
           return false;
         }
         projected.maxHousing -= housing.maxHousing;
         break;
-      case "housing.current.increased":
+      case ProbableWafflePlayerDataChangeProperties.HousingCurrentIncreased:
         if (!this.isFinitePositiveNumber(housing.currentHousing)) {
           return false;
         }
         projected.currentHousing += housing.currentHousing;
         break;
-      case "housing.current.decreased":
+      case ProbableWafflePlayerDataChangeProperties.HousingCurrentDecreased:
         if (!this.isFinitePositiveNumber(housing.currentHousing)) {
           return false;
         }
@@ -231,7 +235,7 @@ export class PlayerStateValidatorService {
       return false;
     }
 
-    if (event.property === "resource.removed") {
+    if (event.property === ProbableWafflePlayerDataChangeProperties.ResourceRemoved) {
       for (const [resourceType, amount] of Object.entries(normalizedResources)) {
         if ((player.playerState.data.resources[resourceType as ResourceType] ?? 0) < amount) {
           this.logger.warn(
