@@ -50,6 +50,7 @@ Thumbs.db
 migrations.json
 
 # local env files
+.env
 .env.local
 # migration to pnpm
 package-lock.json

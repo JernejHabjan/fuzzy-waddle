@@ -43,4 +43,4 @@ Ensure the API is running and the proxy is configured. The dev proxy config is a
 
 ## Environment Variables Missing
 
-Copy `.env.example` to `.env.local` and fill in all values. The API will fail to start without `SUPABASE_URL` and `SUPABASE_SERVICE_KEY`. See [Getting Started](getting-started.md) for details.
+Copy `.env.example` to `.env` and fill in all values. The API will fail to start without `SUPABASE_URL` and `SUPABASE_SERVICE_KEY`. See [Getting Started](getting-started.md) for details.

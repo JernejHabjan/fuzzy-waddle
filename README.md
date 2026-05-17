@@ -10,6 +10,12 @@
 
 **Play now:** [fuzzy-waddle.onrender.com](https://fuzzy-waddle.onrender.com/)
 
+## Public Source and Reuse Policy
+
+This repository is public so anyone can view the code, learn from it, and contribute on GitHub.
+
+Reuse, redistribution, or commercial use outside of GitHub requires explicit written permission from the copyright holder, unless a specific file states otherwise.
+
 ---
 
 ## Games
@@ -42,7 +48,7 @@
 git clone https://github.com/JernejHabjan/fuzzy-waddle.git
 cd fuzzy-waddle
 pnpm install
-cp .env.example .env.local   # fill in Supabase credentials
+cp .env.example .env         # fill in Supabase credentials
 pnpm start
 ```
 
@@ -84,5 +90,5 @@ Full attribution list: [attributions.json](apps/client/src/assets/general/attrib
 © Jernej Habjan. All rights reserved.
 
 Forking and contributing via pull requests is **allowed**.
-Using or distributing this code outside of GitHub requires **explicit written permission**.
-See [LICENSE.md](LICENSE).
+Reuse, redistribution, or commercial use outside of GitHub requires **explicit written permission**.
+See [LICENSE](LICENSE).
