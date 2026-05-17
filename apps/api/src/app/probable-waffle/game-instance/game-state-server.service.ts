@@ -98,7 +98,11 @@ export class GameStateServerService {
         break;
       case "game-command": {
         const cmdEvent = body.payload as ProbableWaffleGameCommandEvent;
-        const validationResult: GameCommandValidationResult = this.commandValidator.validate(cmdEvent, gameInstance, user);
+        const validationResult: GameCommandValidationResult = this.commandValidator.validate(
+          cmdEvent,
+          gameInstance,
+          user
+        );
         if (!validationResult.valid) {
           if (validationResult.relayEmpty) {
             // Tick is authoritative but payload failed — record an empty batch
@@ -180,7 +184,8 @@ export class GameStateServerService {
     gameInstance: ReturnType<GameInstanceService["findGameInstance"]>,
     user: User
   ): boolean {
-    const currentHostUserId = gameInstance?.gameInstanceMetadata.data.currentHostUserId ?? gameInstance?.gameInstanceMetadata.data.createdBy;
+    const currentHostUserId =
+      gameInstance?.gameInstanceMetadata.data.currentHostUserId ?? gameInstance?.gameInstanceMetadata.data.createdBy;
     if (currentHostUserId !== user.id) {
       return false;
     }

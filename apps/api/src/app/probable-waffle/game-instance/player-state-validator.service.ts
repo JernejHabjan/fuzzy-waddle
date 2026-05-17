@@ -5,8 +5,8 @@ import {
   type PlayerStateResources,
   type ProbableWaffleGameInstance,
   type ProbableWafflePlayerDataChangeEvent,
-  type SelectionGroupData,
-  ResourceType
+  ResourceType,
+  type SelectionGroupData
 } from "@fuzzy-waddle/api-interfaces";
 import type { User } from "@supabase/supabase-js";
 
@@ -261,7 +261,9 @@ export class PlayerStateValidatorService {
     return true;
   }
 
-  private normalizeResources(resources: Partial<PlayerStateResources> | undefined): Partial<PlayerStateResources> | null {
+  private normalizeResources(
+    resources: Partial<PlayerStateResources> | undefined
+  ): Partial<PlayerStateResources> | null {
     if (!resources || typeof resources !== "object") {
       return null;
     }

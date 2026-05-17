@@ -20,9 +20,7 @@ import type { User } from "@supabase/supabase-js";
  * - `{ valid: false, relayEmpty: false, reason }` — security / sequence
  *   violation; drop the message entirely (no relay of any kind).
  */
-export type GameCommandValidationResult =
-  | { valid: true }
-  | { valid: false; relayEmpty: boolean; reason: string };
+export type GameCommandValidationResult = { valid: true } | { valid: false; relayEmpty: boolean; reason: string };
 
 /**
  * Cheap server-side validation for incoming command batches.
@@ -119,15 +117,11 @@ export class GameCommandValidatorService {
     const playerTicks = this.lastTick.get(instanceKey)!;
     const prev = playerTicks.get(playerNumber) ?? -1;
     if (tick <= prev) {
-      this.logger.warn(
-        `[GameCommand] Stale batch: player ${playerNumber} sent tick ${tick} but last was ${prev}`
-      );
+      this.logger.warn(`[GameCommand] Stale batch: player ${playerNumber} sent tick ${tick} but last was ${prev}`);
       return { valid: false, relayEmpty: false, reason: `stale tick ${tick} (last: ${prev})` };
     }
     if (tick > prev + GameCommandValidatorService.MAX_TICK_JUMP + 1) {
-      this.logger.warn(
-        `[GameCommand] Tick jump too large: player ${playerNumber} jumped from ${prev} to ${tick}`
-      );
+      this.logger.warn(`[GameCommand] Tick jump too large: player ${playerNumber} jumped from ${prev} to ${tick}`);
       return { valid: false, relayEmpty: false, reason: `tick jump too large (${prev} → ${tick})` };
     }
     // Sequence accepted — record the tick now so subsequent checks can treat
@@ -145,9 +139,7 @@ export class GameCommandValidatorService {
       return { valid: false, relayEmpty: true, reason: `commands field is not an array` };
     }
     if (commands.length > GameCommandValidatorService.MAX_COMMANDS_PER_BATCH) {
-      this.logger.warn(
-        `[GameCommand] Oversized batch (${commands.length}) from player ${playerNumber} — dropping`
-      );
+      this.logger.warn(`[GameCommand] Oversized batch (${commands.length}) from player ${playerNumber} — dropping`);
       return {
         valid: false,
         relayEmpty: true,
@@ -167,9 +159,7 @@ export class GameCommandValidatorService {
     bucket.count++;
     buckets.set(playerNumber, bucket);
     if (bucket.count > GameCommandValidatorService.MAX_BATCHES_PER_SECOND) {
-      this.logger.warn(
-        `[GameCommand] Rate limit exceeded for player ${playerNumber} in instance ${gameInstanceId}`
-      );
+      this.logger.warn(`[GameCommand] Rate limit exceeded for player ${playerNumber} in instance ${gameInstanceId}`);
       return {
         valid: false,
         relayEmpty: true,
@@ -226,9 +216,7 @@ export class GameCommandValidatorService {
       return `unknown command type "${String(type)}"`;
     }
     if (payload.tick !== expectedTick || payload.playerNumber !== playerNumber) {
-      this.logger.warn(
-        `[GameCommand] Inner command metadata mismatch for player ${playerNumber} in ${gameInstanceId}`
-      );
+      this.logger.warn(`[GameCommand] Inner command metadata mismatch for player ${playerNumber} in ${gameInstanceId}`);
       return `command metadata mismatch (tick=${String(payload.tick)}, player=${String(payload.playerNumber)})`;
     }
 

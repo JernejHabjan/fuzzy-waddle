@@ -1,8 +1,4 @@
-import type {
-  PlayerNumber,
-  ProbableWafflePlayerDisconnectedEvent,
-  ProbableWafflePlayerReconnectedEvent
-} from "@fuzzy-waddle/api-interfaces";
+import type { PlayerNumber, ProbableWafflePlayerDisconnectedEvent } from "@fuzzy-waddle/api-interfaces";
 import type { Subscription } from "rxjs";
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { getCommunicator } from "../../data/scene-data";

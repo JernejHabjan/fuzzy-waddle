@@ -5,8 +5,8 @@ import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { CommandBuffer } from "./command-buffer";
 import { getCommunicator } from "../../data/scene-data";
 import {
-  ProbableWafflePlayerType,
   type PlayerNumber,
+  ProbableWafflePlayerType,
   type ProbableWaffleReplayCommandBatch
 } from "@fuzzy-waddle/api-interfaces";
 import { environment } from "../../../../../environments/environment";
@@ -125,7 +125,10 @@ export class CommandBusService {
     if (communicator.playerChanged) {
       this.subscriptions.push(
         communicator.playerChanged.on.subscribe((event) => {
-          if (event.property === "left" && event.data.playerControllerData?.playerDefinition?.player?.playerNumber !== undefined) {
+          if (
+            event.property === "left" &&
+            event.data.playerControllerData?.playerDefinition?.player?.playerNumber !== undefined
+          ) {
             this.removePlayerFromLockstep(
               event.data.playerControllerData.playerDefinition.player.playerNumber as PlayerNumber
             );
@@ -328,7 +331,9 @@ export class CommandBusService {
     const before = this.humanPlayerNumbers.length;
     this.humanPlayerNumbers = this.humanPlayerNumbers.filter((n) => n !== playerNumber);
     if (this.humanPlayerNumbers.length !== before) {
-      this.debugLog(`removed player ${playerNumber} from lockstep set; remaining=${this.humanPlayerNumbers.join(",") || "none"}`);
+      this.debugLog(
+        `removed player ${playerNumber} from lockstep set; remaining=${this.humanPlayerNumbers.join(",") || "none"}`
+      );
       // Try to unblock any tick that was waiting only on this departed player.
       this.tryUnblockTick();
     }
@@ -396,7 +401,11 @@ export class CommandBusService {
     this.pendingStallTick = null;
   }
 
-  private logQueuedWhileStalled(commandType: GameCommand["type"], executeTick: number, playerNumber: PlayerNumber): void {
+  private logQueuedWhileStalled(
+    commandType: GameCommand["type"],
+    executeTick: number,
+    playerNumber: PlayerNumber
+  ): void {
     if (!this.tickService || !this.tickService.getPauseReasons().includes("lockstep")) {
       return;
     }

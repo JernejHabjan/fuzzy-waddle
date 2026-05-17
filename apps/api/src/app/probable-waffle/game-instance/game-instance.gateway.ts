@@ -114,7 +114,8 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
         } satisfies ProbableWafflePlayerDisconnectedEvent
       });
 
-      const currentHostUserId = gameInstance.gameInstanceMetadata.data.currentHostUserId ?? gameInstance.gameInstanceMetadata.data.createdBy;
+      const currentHostUserId =
+        gameInstance.gameInstanceMetadata.data.currentHostUserId ?? gameInstance.gameInstanceMetadata.data.createdBy;
       if (currentHostUserId === playerInfo.userId) {
         this.emitHostMigration(playerInfo.gameInstanceId, playerInfo.userId);
       }
@@ -241,9 +242,12 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
         // Explicit leave — cancel any grace-period timer.
         {
           const leavingPlayer = this.disconnectTracker.markExplicitQuit(socket.id);
-          const gameInstance = body.gameInstanceId ? this.gameInstanceService.findGameInstance(body.gameInstanceId) : null;
+          const gameInstance = body.gameInstanceId
+            ? this.gameInstanceService.findGameInstance(body.gameInstanceId)
+            : null;
           const currentHostUserId =
-            gameInstance?.gameInstanceMetadata?.data.currentHostUserId ?? gameInstance?.gameInstanceMetadata?.data.createdBy;
+            gameInstance?.gameInstanceMetadata?.data.currentHostUserId ??
+            gameInstance?.gameInstanceMetadata?.data.createdBy;
           if (leavingPlayer && currentHostUserId === leavingPlayer.userId) {
             this.emitHostMigration(leavingPlayer.gameInstanceId, leavingPlayer.userId);
           }

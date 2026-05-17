@@ -91,11 +91,15 @@ describe("GameCommandValidatorService", () => {
   }
 
   it("accepts move commands with consistent tile and world coordinates", () => {
-    expect(service.validate(createMoveEvent(640, 0), createGameInstance(), { id: "user-1" } as never)).toEqual({ valid: true });
+    expect(service.validate(createMoveEvent(640, 0), createGameInstance(), { id: "user-1" } as never)).toEqual({
+      valid: true
+    });
   });
 
   it("accepts move commands even when tile and world coordinates differ", () => {
-    expect(service.validate(createMoveEvent(960, 0), createGameInstance(), { id: "user-1" } as never)).toEqual({ valid: true });
+    expect(service.validate(createMoveEvent(960, 0), createGameInstance(), { id: "user-1" } as never)).toEqual({
+      valid: true
+    });
   });
 
   it("accepts production commands from production buildings", () => {

@@ -1,8 +1,5 @@
 import { Injectable, Logger } from "@nestjs/common";
-import {
-  type ProbableWaffleGameInstance,
-  type ProbableWafflePauseChangedEvent
-} from "@fuzzy-waddle/api-interfaces";
+import { type ProbableWaffleGameInstance, type ProbableWafflePauseChangedEvent } from "@fuzzy-waddle/api-interfaces";
 import type { User } from "@supabase/supabase-js";
 
 @Injectable()
@@ -11,10 +8,7 @@ export class PauseStateValidatorService {
   private static readonly MIN_PAUSE_INTERVAL_MS = 60_000;
   private static readonly MAX_PAUSES_PER_MATCH = 3;
 
-  private readonly playerPauseState = new Map<
-    string,
-    Map<number, { pauseCount: number; lastPauseAt: number }>
-  >();
+  private readonly playerPauseState = new Map<string, Map<number, { pauseCount: number; lastPauseAt: number }>>();
   private readonly currentPauseState = new Map<string, boolean>();
 
   validate(event: ProbableWafflePauseChangedEvent, gameInstance: ProbableWaffleGameInstance, user: User): boolean {

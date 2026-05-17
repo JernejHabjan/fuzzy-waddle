@@ -67,7 +67,6 @@ export function waitForSimulationDuration(scene: Phaser.Scene, durationMs: numbe
 
   return new Promise<void>((resolve) => {
     let settled = false;
-    let tickSubscription: { unsubscribe(): void } | undefined;
     const cleanup = () => {
       if (settled) {
         return;
@@ -80,7 +79,7 @@ export function waitForSimulationDuration(scene: Phaser.Scene, durationMs: numbe
       cleanup();
       resolve();
     };
-    tickSubscription = tickService.tick$.subscribe((tick) => {
+    const tickSubscription = tickService.tick$.subscribe((tick) => {
       if (tick * SimulationTickService.TICK_INTERVAL_MS < targetTime) {
         return;
       }

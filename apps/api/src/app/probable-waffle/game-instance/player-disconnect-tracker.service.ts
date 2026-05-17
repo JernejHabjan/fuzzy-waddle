@@ -106,9 +106,7 @@ export class PlayerDisconnectTrackerService {
       if (entry.userId === userId && entry.gameInstanceId === gameInstanceId) {
         clearTimeout(entry.timer);
         this.pendingEvictions.delete(sid);
-        console.log(
-          `[Reconnect] Player ${userId} reconnected to game ${gameInstanceId} within grace window.`
-        );
+        console.log(`[Reconnect] Player ${userId} reconnected to game ${gameInstanceId} within grace window.`);
         break;
       }
     }

@@ -55,14 +55,12 @@ export class ReconnectService {
     // back to all clients; only the one that actually requested it should apply it.
     // We gate on whether we are NOT the host — hosts serve, non-hosts apply.
     if (!scene.isHost) {
-      this.snapshotSub = communicator.snapshotResponse.on.subscribe(
-        (e: ProbableWaffleSnapshotResponseEvent) => {
-          if (e.targetUserId !== scene.userId) {
-            return;
-          }
-          this.applySnapshot(scene, e);
+      this.snapshotSub = communicator.snapshotResponse.on.subscribe((e: ProbableWaffleSnapshotResponseEvent) => {
+        if (e.targetUserId !== scene.userId) {
+          return;
         }
-      );
+        this.applySnapshot(scene, e);
+      });
 
       if (scene.isSpectator) {
         this.requestSnapshot(scene, "spectator catch-up");
@@ -151,7 +149,9 @@ export class ReconnectService {
 
     simTick?.pauseTick(pauseReason);
 
-    const snapshotActorIds = new Set(snapshot.actors.map((actor) => actor.id?.id).filter((actorId): actorId is string => !!actorId));
+    const snapshotActorIds = new Set(
+      snapshot.actors.map((actor) => actor.id?.id).filter((actorId): actorId is string => !!actorId)
+    );
 
     // Destroy all current actors before re-creating from snapshot.
     const currentActors = [...actorIndex.getAllIdActors()];
@@ -206,7 +206,7 @@ export class ReconnectService {
       const playerNumber = Number(playerNumberStr) as PlayerNumber;
       const player = scene.baseGameData.gameInstance.getPlayerByNumber(playerNumber);
       if (player) {
-        Object.assign(player.playerState.data, stateData as ProbableWafflePlayerStateData);
+        Object.assign(player.playerState.data, stateData);
       }
     }
 

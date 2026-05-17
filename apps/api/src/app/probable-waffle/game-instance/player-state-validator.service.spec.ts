@@ -1,7 +1,7 @@
 import {
-  ResourceType,
   type ProbableWaffleGameInstance,
-  type ProbableWafflePlayerDataChangeEvent
+  type ProbableWafflePlayerDataChangeEvent,
+  ResourceType
 } from "@fuzzy-waddle/api-interfaces";
 import { PlayerStateValidatorService } from "./player-state-validator.service";
 
@@ -71,7 +71,7 @@ describe("PlayerStateValidatorService", () => {
       data: {
         playerNumber: 1,
         playerStateData: {
-          resources
+          resources: resources as Record<ResourceType, number>
         }
       }
     };
@@ -99,38 +99,32 @@ describe("PlayerStateValidatorService", () => {
 
   it("rejects resource removals that exceed the mirrored player resources", () => {
     expect(
-      service.validate(
-        createEvent("resource.removed", { [ResourceType.Wood]: 200 }),
-        createGameInstance(),
-        { id: "user-1" } as never
-      )
+      service.validate(createEvent("resource.removed", { [ResourceType.Wood]: 200 }), createGameInstance(), {
+        id: "user-1"
+      } as never)
     ).toBe(false);
   });
 
   it("accepts gathered resource additions when the mirrored gatherer is carrying them", () => {
     expect(
-      service.validate(
-        createEvent("resource.added", { [ResourceType.Wood]: 20 }),
-        createGameInstance(25),
-        { id: "user-1" } as never
-      )
+      service.validate(createEvent("resource.added", { [ResourceType.Wood]: 20 }), createGameInstance(25), {
+        id: "user-1"
+      } as never)
     ).toBe(true);
   });
 
   it("rejects unexplained resource additions", () => {
     expect(
-      service.validate(
-        createEvent("resource.added", { [ResourceType.Wood]: 20 }),
-        createGameInstance(),
-        { id: "user-1" } as never
-      )
+      service.validate(createEvent("resource.added", { [ResourceType.Wood]: 20 }), createGameInstance(), {
+        id: "user-1"
+      } as never)
     ).toBe(false);
   });
 
   it("accepts valid selection groups for owned actors", () => {
-    expect(service.validate(createSelectionGroupsEvent(["unit-1"]), createGameInstance(), { id: "user-1" } as never)).toBe(
-      true
-    );
+    expect(
+      service.validate(createSelectionGroupsEvent(["unit-1"]), createGameInstance(), { id: "user-1" } as never)
+    ).toBe(true);
   });
 
   it("rejects selection groups that reference actors owned by another player", () => {
