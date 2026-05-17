@@ -11,6 +11,7 @@ import {
 } from "../../data/scene-data";
 import { AttackComponent } from "../../entity/components/combat/components/attack-component";
 import { ProductionCostComponent } from "../../entity/components/production/production-cost-component";
+import { ProductionComponent } from "../../entity/components/production/production-component";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import {
   type ActorId,
@@ -254,7 +255,9 @@ export class GameObjectSelectionHandler {
     if (selectedActors.length === 0) return [];
     const selectedActorsGameObjects = this.getActorsByIds(selectedActors);
     // noinspection UnnecessaryLocalVariableJS
-    const movableActors = selectedActorsGameObjects.filter((actor) => !!getActorSystem(actor, MovementSystem));
+    const movableActors = selectedActorsGameObjects.filter(
+      (actor) => !!getActorSystem(actor, MovementSystem) || !!getActorComponent(actor, ProductionComponent)
+    );
     return movableActors;
   }
 

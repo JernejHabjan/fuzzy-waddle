@@ -1,6 +1,6 @@
 # Probable Waffle — Netcode Reference
 
-Lean reference. All paths described here are live code.
+Canonical multiplayer/netcode reference. All paths described here are live code.
 
 ---
 
@@ -13,6 +13,21 @@ Lean reference. All paths described here are live code.
 
 Single-player uses the same code paths. All networking is a no-op when there are no peers
 (communicators are `undefined`; `CommandBusService` skips buffering and dispatches immediately).
+
+---
+
+## Service layout (current)
+
+- `game/world/services/command-bus.service.ts` — lockstep input delay, per-tick heartbeat, stall/unblock barrier
+- `game/world/services/simulation-tick.service.ts` — deterministic 20 Hz tick + reason-based pause set
+- `game/world/services/recovery/state-hash.service.ts` — periodic hash exchange + desync detection/escalation
+- `game/world/services/recovery/snapshot.service.ts` — host snapshot capture/serve
+- `game/world/services/recovery/reconnect.service.ts` — reconnect/snapshot restore on non-hosts
+- `game/world/services/recovery/connection-recovery.service.ts` — reconnect pause UX + lockstep unblock on leave
+- `game/world/services/recovery/desync-recovery.service.ts` — room-wide desync dialog flow (wait/kick)
+- `game/world/services/recovery/host-migration.service.ts` — host handoff hooks
+- `game/world/services/replay/replay-recorder.service.ts` — batch recording to replay saves
+- `game/world/services/replay/replay-playback.service.ts` — deterministic replay batch injection
 
 ---
 

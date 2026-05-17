@@ -24,14 +24,16 @@ export class PauseSyncService {
 
   private init(): void {
     const communicator = getCommunicator(this.scene);
-    if (!communicator.pauseChanged || this.scene.baseGameData.gameInstance.gameInstanceMetadata.isReplay()) {
+    if (this.scene.baseGameData.gameInstance.gameInstanceMetadata.isReplay()) {
       return;
     }
 
-    this.pauseChangedSub = communicator.pauseChanged.on.subscribe((event) => this.applyPauseEvent(event));
     this.pauseToggleRequestSub = communicator.allScenes
       .pipe(filter((event) => event.name === "pause-toggle-requested"))
       .subscribe(() => this.togglePause());
+    if (communicator.pauseChanged) {
+      this.pauseChangedSub = communicator.pauseChanged.on.subscribe((event) => this.applyPauseEvent(event));
+    }
   }
 
   private togglePause(): void {
@@ -41,12 +43,22 @@ export class PauseSyncService {
 
     const playerNumber = getCurrentPlayerNumber(this.scene);
     const communicator = getCommunicator(this.scene);
-    if (!playerNumber || !communicator.pauseChanged) {
+    if (!playerNumber) {
       return;
     }
 
     const nextPaused = !this.playerPaused;
     if (nextPaused && !this.canRequestPause()) {
+      return;
+    }
+
+    if (!communicator.pauseChanged) {
+      this.applyPauseEvent({
+        gameInstanceId: this.scene.gameInstanceId,
+        emitterUserId: this.scene.userId,
+        playerNumber,
+        paused: nextPaused
+      });
       return;
     }
 

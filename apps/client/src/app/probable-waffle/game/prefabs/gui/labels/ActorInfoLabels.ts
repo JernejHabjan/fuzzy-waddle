@@ -276,11 +276,13 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
             item.iconData.origin ?? { x: 0.5, y: 0.5 }
           );
         }
+        icon.setAlpha(1);
         icon.visible = true;
         activeItems++;
       } else {
         // Empty queue slot - show slot number
         icon.setNumber(index + 1);
+        icon.setAlpha(1);
         icon.visible = true;
       }
     });
@@ -313,6 +315,7 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
         infoComponent.smallImage.frame,
         infoComponent.smallImage.origin
       );
+      icon.setAlpha(1);
       icon.visible = true;
 
       // Set highlight if this actor is in the highlight list
