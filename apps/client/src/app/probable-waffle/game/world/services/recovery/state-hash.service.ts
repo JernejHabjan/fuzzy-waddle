@@ -34,12 +34,12 @@ const HASH_INTERVAL_TICKS = 20;
  * In practice the peer hash arrives within 1–2 ticks of ours.
  */
 const HASH_STORE_TICKS = 120;
-const CORRECTION_GRACE_PERIOD_MS = 5_000;
+const CORRECTION_GRACE_PERIOD_TICKS = 100;
 
 interface PendingCorrection {
   emitterUserId: string;
   playerNumber: number;
-  firstDetectedAtMs: number;
+  firstDetectedTick: number;
   alertSent: boolean;
   reason?: string;
 }
@@ -211,14 +211,14 @@ export class StateHashService {
     reason: string,
     scene: ProbableWaffleScene
   ): void {
-    const now = Date.now();
+    const currentTick = getSceneService(scene, SimulationTickService)?.currentTick ?? tick;
     const existing = this.pendingCorrections.get(remotePlayerNumber);
     if (!existing) {
       getSceneService(scene, SnapshotService)?.sendSnapshot(scene, emitterUserId, "desync-correction");
       this.pendingCorrections.set(remotePlayerNumber, {
         emitterUserId,
         playerNumber: remotePlayerNumber,
-        firstDetectedAtMs: now,
+        firstDetectedTick: currentTick,
         alertSent: false,
         reason
       });
@@ -230,7 +230,10 @@ export class StateHashService {
       existing.reason = reason;
     }
 
-    if (existing.alertSent || now - existing.firstDetectedAtMs < CORRECTION_GRACE_PERIOD_MS) {
+    if (
+      existing.alertSent ||
+      currentTick - existing.firstDetectedTick < CORRECTION_GRACE_PERIOD_TICKS
+    ) {
       return;
     }
 

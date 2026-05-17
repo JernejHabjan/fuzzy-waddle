@@ -35,7 +35,7 @@ import { BuildingDestructionEffect } from "../../building/building-destruction-e
 import { FadeOutComponent } from "../../building/fade-out-component";
 import type { FadeOutDefinition } from "../../building/fade-out-definition";
 import { SimulationTickService } from "../../../../world/services/simulation-tick.service";
-import { getSimulationNow } from "../../../../world/services/simulation-time";
+import { CancelableSimDelay, getSimulationNow } from "../../../../world/services/simulation-time";
 
 export class HealthComponent {
   static readonly DEBUG = false;
@@ -62,6 +62,7 @@ export class HealthComponent {
   private shouldUiElementsBeVisible: boolean = false;
   private constructionProgressSubscription?: Subscription;
   private healthUiHideOnTimeout?: Phaser.Time.TimerEvent;
+  private destroyActorOnDelay?: CancelableSimDelay;
   private animationActorComponent?: AnimationActorComponent;
   private audioActorComponent?: AudioActorComponent;
   private actorTranslateComponent?: ActorTranslateComponent;
@@ -277,7 +278,8 @@ export class HealthComponent {
 
     this.playDeathAnimation();
 
-    this.gameObject.scene.time.delayedCall(this.destroyAfterMs, () => {
+    this.destroyActorOnDelay?.remove();
+    this.destroyActorOnDelay = new CancelableSimDelay(this.gameObject.scene, this.destroyAfterMs, () => {
       this.gameObject.destroy();
     });
     // emit last
@@ -354,6 +356,8 @@ export class HealthComponent {
 
   private destroy() {
     this.constructionProgressSubscription?.unsubscribe();
+    this.healthUiHideOnTimeout?.remove();
+    this.destroyActorOnDelay?.remove();
     this.gameObject.off(ContainerComponent.GameObjectVisibilityChanged, this.gameObjectVisibilityChanged, this);
     this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.refreshVisibility, this);
   }

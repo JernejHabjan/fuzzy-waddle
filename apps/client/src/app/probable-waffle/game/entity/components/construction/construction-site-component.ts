@@ -46,6 +46,8 @@ export class ConstructionSiteComponent {
   private healthComponent?: HealthComponent;
   private lastSimulationTimeMs?: number;
   private playingBuildSound: boolean = false;
+  private pendingAssignedBuilderIds?: string[];
+  private pendingAssignedRepairerIds?: string[];
   constructor(
     private readonly gameObject: GameObject,
     private readonly constructionSiteDefinition: ConstructionSiteDefinition
@@ -75,6 +77,8 @@ export class ConstructionSiteComponent {
   }
 
   update(): void {
+    this.tryResolveAssignedActorReferences();
+
     const simulationDelta = getSimulationDelta(this.gameObject.scene, this.lastSimulationTimeMs);
     this.lastSimulationTimeMs = simulationDelta.now;
     const deltaWithTimeScale = simulationDelta.delta;
@@ -350,19 +354,9 @@ export class ConstructionSiteComponent {
     if (data.progressPercentage !== undefined) this.progressPercentage = data.progressPercentage;
     if (data.playingBuildSound !== undefined) this.playingBuildSound = data.playingBuildSound;
     // assigned builders and repairers are set after all objects are loaded.
-    setTimeout(() => {
-      const actorIndex = getSceneService(this.gameObject.scene, ActorIndexSystem);
-      if (actorIndex && data.assignedBuilders) {
-        this.assignedBuilders = data.assignedBuilders
-          .map((id) => actorIndex.getActorById(id))
-          .filter((obj): obj is GameObject => obj !== null);
-      }
-      if (actorIndex && data.assignedRepairers) {
-        this.assignedRepairers = data.assignedRepairers
-          .map((id) => actorIndex.getActorById(id))
-          .filter((obj): obj is GameObject => obj !== null);
-      }
-    }, 50);
+    this.pendingAssignedBuilderIds = data.assignedBuilders ? [...data.assignedBuilders] : undefined;
+    this.pendingAssignedRepairerIds = data.assignedRepairers ? [...data.assignedRepairers] : undefined;
+    this.tryResolveAssignedActorReferences();
 
     this.constructionProgressPercentageChanged.next(this.progressPercentage);
     this.constructionStateChanged.next(this.state);
@@ -371,5 +365,30 @@ export class ConstructionSiteComponent {
   private onDestroy() {
     this.cancelConstruction();
     this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
+  }
+
+  private tryResolveAssignedActorReferences(): void {
+    const actorIndex = getSceneService(this.gameObject.scene, ActorIndexSystem);
+    if (!actorIndex) {
+      return;
+    }
+
+    if (this.pendingAssignedBuilderIds) {
+      this.assignedBuilders = this.pendingAssignedBuilderIds
+        .map((id) => actorIndex.getActorById(id))
+        .filter((obj): obj is GameObject => obj !== null);
+      if (this.assignedBuilders.length === this.pendingAssignedBuilderIds.length) {
+        this.pendingAssignedBuilderIds = undefined;
+      }
+    }
+
+    if (this.pendingAssignedRepairerIds) {
+      this.assignedRepairers = this.pendingAssignedRepairerIds
+        .map((id) => actorIndex.getActorById(id))
+        .filter((obj): obj is GameObject => obj !== null);
+      if (this.assignedRepairers.length === this.pendingAssignedRepairerIds.length) {
+        this.pendingAssignedRepairerIds = undefined;
+      }
+    }
   }
 }
