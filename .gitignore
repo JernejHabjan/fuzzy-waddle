@@ -50,6 +50,7 @@ Thumbs.db
 migrations.json
 
 # local env files
+.env
 .env.local
 # migration to pnpm
 package-lock.json
@@ -65,3 +66,7 @@ supabase/.temp
 .claude/settings.local.json
 
 .claude/worktrees
+
+.nx/polygraph
+.nx/self-healing
+.ai/
