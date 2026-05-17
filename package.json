@@ -181,7 +181,9 @@
       "http-proxy-middleware@>=3.0.0 <3.0.5": ">=3.0.5",
       "http-proxy-middleware@<2.0.9": ">=2.0.9",
       "http-proxy-middleware@>=3.0.0 <3.0.4": ">=3.0.4",
-      "http-proxy-middleware@<2.0.8": ">=2.0.8"
+      "http-proxy-middleware@<2.0.8": ">=2.0.8",
+      "@supabase/gotrue-js": "2.61.0",
+      "@supabase/supabase-js>@supabase/auth-js": "2.61.0"
     }
   },
   "lint-staged": {
