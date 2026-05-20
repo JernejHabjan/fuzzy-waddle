@@ -1,11 +1,13 @@
 import type { FadeOutDefinition } from "./fade-out-definition";
+import { CancelableSimDelay } from "../../../world/services/simulation-time";
 import GameObject = Phaser.GameObjects.GameObject;
 
 /**
  * Component that manages fade-out
  */
 export class FadeOutComponent {
-  private fadeTimer?: Phaser.Time.TimerEvent;
+  private fadeTimer?: CancelableSimDelay;
+  private destroyTimer?: CancelableSimDelay;
   private fadeTween?: Phaser.Tweens.Tween;
 
   constructor(
@@ -13,7 +15,7 @@ export class FadeOutComponent {
     public readonly fadeOutDefinition: FadeOutDefinition
   ) {
     // Start fade-out timer
-    this.fadeTimer = gameObject.scene.time.delayedCall(fadeOutDefinition.durationBeforeFadeOutMs, () => {
+    this.fadeTimer = new CancelableSimDelay(gameObject.scene, fadeOutDefinition.durationBeforeFadeOutMs, () => {
       this.startFadeOut();
     });
 
@@ -28,15 +30,17 @@ export class FadeOutComponent {
       targets: this.gameObject,
       alpha: 0,
       duration: this.fadeOutDefinition.fadeOutDurationMs,
-      ease: "Linear",
-      onComplete: () => {
-        this.gameObject.destroy();
-      }
+      ease: "Linear"
+    });
+    this.destroyTimer?.remove();
+    this.destroyTimer = new CancelableSimDelay(this.gameObject.scene, this.fadeOutDefinition.fadeOutDurationMs, () => {
+      this.gameObject.destroy();
     });
   }
 
   private destroy() {
     this.fadeTimer?.remove();
+    this.destroyTimer?.remove();
     this.fadeTween?.stop();
   }
 }

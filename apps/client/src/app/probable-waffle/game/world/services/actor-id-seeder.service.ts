@@ -98,7 +98,7 @@ export class ActorIdSeeder {
       creator.saveAllKnownActorsToGameState();
     };
 
-    this.scene.time.delayedCall(0, rebroadcast);
+    rebroadcast();
     this.hostBroadcastHandle = window.setInterval(rebroadcast, 500);
   }
 

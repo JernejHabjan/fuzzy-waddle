@@ -29,6 +29,7 @@ import HudProbableWaffle from "../scenes/hud-scenes/HudProbableWaffle";
 import { SceneDialogHelper } from "../scenes/scene-dialog-helper";
 import { ScoreTracker } from "./ScoreTracker";
 import { SimulationTickService } from "../services/simulation-tick.service";
+import { CancelableSimDelay } from "../services/simulation-time";
 
 export class GameModeConditionChecker {
   private loseConditions: LoseConditions;
@@ -42,7 +43,7 @@ export class GameModeConditionChecker {
   private stopped: boolean = false;
   private surrenderCheckInterval = 2000; // Check every 2 seconds
   private lastSurrenderCheckTime = 0;
-  private currentDelay?: Phaser.Time.TimerEvent;
+  private currentDelay?: CancelableSimDelay;
 
   constructor(private readonly scene: ProbableWaffleScene) {
     const gameModeData = getGameModeFromScene<ProbableWaffleGameMode>(scene).data;
@@ -50,7 +51,7 @@ export class GameModeConditionChecker {
     this.winConditions = gameModeData.winConditions;
     this.tieConditions = gameModeData.tieConditions;
 
-    this.currentDelay = this.scene.time.delayedCall(1000, this.startChecking, [], this);
+    this.currentDelay = new CancelableSimDelay(this.scene, 1000, () => this.startChecking());
     this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
     this.listenToPlayerQuit();
   }
@@ -433,6 +434,6 @@ export class GameModeConditionChecker {
     this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.throttleCheck);
     this.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.destroy);
     this.selfQuitSubscription?.unsubscribe();
-    this.currentDelay?.destroy();
+    this.currentDelay?.remove();
   }
 }

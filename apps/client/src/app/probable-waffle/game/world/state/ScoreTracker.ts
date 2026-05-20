@@ -17,6 +17,7 @@ import { ConstructionSiteComponent } from "../../entity/components/construction/
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import { OwnerComponent } from "../../entity/components/owner-component";
 import type { Subscription } from "rxjs";
+import { CancelableSimDelay } from "../services/simulation-time";
 
 /**
  * Tracks player scores throughout the game for the score screen.
@@ -29,12 +30,13 @@ export class ScoreTracker {
   private snapshotInterval = 5000; // Create snapshot every 5 seconds
   private lastSnapshotTime = 0;
   private resourceSubscription?: Subscription;
+  private startTrackingDelay?: CancelableSimDelay;
 
   constructor(private readonly scene: ProbableWaffleScene) {
     this.initializePlayerScores();
 
     // Start checking after 1 second delay
-    this.scene.time.delayedCall(1000, this.startTracking, [], this);
+    this.startTrackingDelay = new CancelableSimDelay(this.scene, 1000, () => this.startTracking());
     this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
   }
 
@@ -412,6 +414,7 @@ export class ScoreTracker {
    * Cleanup
    */
   private destroy() {
+    this.startTrackingDelay?.remove();
     this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.throttleUpdate, this);
     this.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
     this.scene.events.off(HealthComponent.KilledEvent, this.onActorKilled, this);

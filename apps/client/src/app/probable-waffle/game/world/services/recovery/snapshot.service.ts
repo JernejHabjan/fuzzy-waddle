@@ -15,6 +15,7 @@ import type {
   ProbableWaffleSnapshotResponseEvent
 } from "@fuzzy-waddle/api-interfaces";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
+import { CancelableSimDelay } from "../simulation-time";
 
 /** How often the host refreshes its stored snapshot (in milliseconds). */
 const SNAPSHOT_REFRESH_INTERVAL_MS = 60_000;
@@ -56,7 +57,7 @@ export class SnapshotService {
 
     // Immediately take the first snapshot once the scene is running.
     // A small delay lets all actors finish spawning and registering.
-    scene.time.delayedCall(500, () => {
+    new CancelableSimDelay(scene, 500, () => {
       this.captureSnapshot(scene);
     });
 
