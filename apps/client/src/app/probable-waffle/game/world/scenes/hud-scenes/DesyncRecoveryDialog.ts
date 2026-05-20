@@ -2,15 +2,14 @@
 
 /* START OF COMPILED CODE */
 
+/* START-USER-IMPORTS */
 import OnPointerUpScript from "../../../../../shared/game/phaser/script-nodes-basic/OnPointerUpScript";
 import EmitEventActionScript from "../../../../../shared/game/phaser/script-nodes-basic/EmitEventActionScript";
 import OnPointerDownScript from "../../../../../shared/game/phaser/script-nodes-basic/OnPointerDownScript";
 import PushActionScript from "../../../../../shared/game/phaser/script-nodes/PushActionScript";
-/* START-USER-IMPORTS */
-import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 /* END-USER-IMPORTS */
 
-export default class DesyncRecoveryDialog extends ProbableWaffleScene {
+export default class DesyncRecoveryDialog extends Phaser.Scene {
   constructor() {
     super("DesyncRecoveryDialog");
 
@@ -62,14 +61,14 @@ export default class DesyncRecoveryDialog extends ProbableWaffleScene {
       align: "center",
       color: "#ffffffff",
       fontFamily: "disposabledroid",
-      fontSize: "16px",
+      maxLines: 3,
       resolution: 10
     });
     message_text.setWordWrapWidth(260);
     dialog_container.add(message_text);
 
     // wait_button
-    const wait_button = this.add.container(-55, 80);
+    const wait_button = this.add.container(-67, 80);
     wait_button.setInteractive(
       new Phaser.Geom.Rectangle(-42, -13, 85.7117848223629, 25.429332302435576),
       Phaser.Geom.Rectangle.Contains
@@ -79,8 +78,19 @@ export default class DesyncRecoveryDialog extends ProbableWaffleScene {
     dialog_container.add(wait_button);
 
     // wait_button_bg
-    const wait_button_bg = this.add.nineslice(0, 0, "gui", "cryos_mini_gui/buttons/button_small.png", 40, 20, 3, 3, 3, 3);
-    wait_button_bg.scaleX = 2.3521289589041787;
+    const wait_button_bg = this.add.nineslice(
+      0,
+      0,
+      "gui",
+      "cryos_mini_gui/buttons/button_small.png",
+      40,
+      20,
+      3,
+      3,
+      3,
+      3
+    );
+    wait_button_bg.scaleX = 1.5;
     wait_button_bg.scaleY = 1.5492262688240692;
     wait_button.add(wait_button_bg);
 
@@ -110,7 +120,7 @@ export default class DesyncRecoveryDialog extends ProbableWaffleScene {
     new PushActionScript(onPointerDownScript_wait);
 
     // kick_button
-    const kick_button = this.add.container(55, 80);
+    const kick_button = this.add.container(67, 80);
     kick_button.setInteractive(
       new Phaser.Geom.Rectangle(-42, -13, 85.7117848223629, 25.429332302435576),
       Phaser.Geom.Rectangle.Contains
@@ -120,8 +130,19 @@ export default class DesyncRecoveryDialog extends ProbableWaffleScene {
     dialog_container.add(kick_button);
 
     // kick_button_bg
-    const kick_button_bg = this.add.nineslice(0, 0, "gui", "cryos_mini_gui/buttons/button_small.png", 40, 20, 3, 3, 3, 3);
-    kick_button_bg.scaleX = 2.3521289589041787;
+    const kick_button_bg = this.add.nineslice(
+      0,
+      0,
+      "gui",
+      "cryos_mini_gui/buttons/button_small.png",
+      40,
+      20,
+      3,
+      3,
+      3,
+      3
+    );
+    kick_button_bg.scaleX = 1.5;
     kick_button_bg.scaleY = 1.5492262688240692;
     kick_button.add(kick_button_bg);
 
@@ -161,6 +182,7 @@ export default class DesyncRecoveryDialog extends ProbableWaffleScene {
     this.message_text = message_text;
     this.wait_button = wait_button;
     this.kick_button = kick_button;
+    this.dialog_container = dialog_container;
 
     this.events.emit("scene-awake");
   }
@@ -175,9 +197,15 @@ export default class DesyncRecoveryDialog extends ProbableWaffleScene {
   private readonly smallScreenBreakpoint = 800;
   private onWaitCallback?: () => void;
   private onKickCallback?: () => void;
-  private pendingSetup?: { tick: number; playerNumber: number | undefined; reason?: string; onWait: () => void; onKick: () => void };
+  private pendingSetup?: {
+    tick: number;
+    playerNumber: number | undefined;
+    reason?: string;
+    onWait: () => void;
+    onKick: () => void;
+  };
 
-  override create() {
+  create() {
     this.editorCreate();
 
     this.scale.on("resize", this.resize, this);
@@ -195,7 +223,13 @@ export default class DesyncRecoveryDialog extends ProbableWaffleScene {
    * Called before scene.start() to configure the dialog content and callbacks.
    * The recovery service sets this up immediately after getting the dialog reference.
    */
-  setup(opts: { tick: number; playerNumber: number | undefined; reason?: string; onWait: () => void; onKick: () => void }): void {
+  setup(opts: {
+    tick: number;
+    playerNumber: number | undefined;
+    reason?: string;
+    onWait: () => void;
+    onKick: () => void;
+  }): void {
     this.pendingSetup = opts;
     this.applySetup(opts);
   }
@@ -254,11 +288,6 @@ export default class DesyncRecoveryDialog extends ProbableWaffleScene {
   private destroySelf() {
     this.scene.stop();
   }
-
-  override destroy() {
-    super.destroy();
-  }
-
   /* END-USER-CODE */
 }
 

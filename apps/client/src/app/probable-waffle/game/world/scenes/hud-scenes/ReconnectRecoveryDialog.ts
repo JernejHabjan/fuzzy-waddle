@@ -1,118 +1,108 @@
-import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
+// You can write more code here
 
-export default class ReconnectRecoveryDialog extends ProbableWaffleScene {
-  private readonly smallScreenBreakpoint = 800;
-  private dialogContainer!: Phaser.GameObjects.Container;
-  private messageText!: Phaser.GameObjects.Text;
-  private leaveMatchButtonBg!: Phaser.GameObjects.NineSlice;
-  private leaveMatchButtonText!: Phaser.GameObjects.Text;
-  private pendingMessage?: string;
-  private pendingOnLeaveMatch?: () => void;
+/* START OF COMPILED CODE */
+
+/* START-USER-IMPORTS */
+/* END-USER-IMPORTS */
+
+export default class ReconnectRecoveryDialog extends Phaser.Scene {
 
   constructor() {
     super("ReconnectRecoveryDialog");
+
+    /* START-USER-CTR-CODE */
+    // Write your code here.
+    /* END-USER-CTR-CODE */
   }
 
-  override create() {
-    const dialogContainer = this.add.container(0, 0);
+  editorCreate(): void {
 
-    const dialogBg = this.add.nineslice(
-      -150,
-      -120,
-      "gui",
-      "cryos_mini_gui/surfaces/surface_dark.png",
-      20,
-      25,
-      1,
-      1,
-      1,
-      1
-    );
-    dialogBg.scaleX = 15;
-    dialogBg.scaleY = 10;
-    dialogBg.setOrigin(0, 0);
-    dialogContainer.add(dialogBg);
+    // dialog_container
+    const dialog_container = this.add.container(0, 0);
 
-    const titleText = this.add.text(0, -80, "Connection interrupted", {
-      align: "center",
-      color: "#ffcc66ff",
-      fontFamily: "disposabledroid",
-      fontSize: "24px",
-      resolution: 10
-    });
-    titleText.setOrigin(0.5, 0.5);
-    dialogContainer.add(titleText);
+    // dialog_bg
+    const dialog_bg = this.add.nineslice(-150, -120, "gui", "cryos_mini_gui/surfaces/surface_dark.png", 20, 25, 1, 1, 1, 1);
+    dialog_bg.scaleX = 15;
+    dialog_bg.scaleY = 10;
+    dialog_bg.setOrigin(0, 0);
+    dialog_container.add(dialog_bg);
 
-    this.messageText = this.add.text(0, -5, "", {
-      align: "center",
-      color: "#ffffffff",
-      fontFamily: "disposabledroid",
-      fontSize: "16px",
-      resolution: 10,
-      wordWrap: { width: 260 }
-    });
-    this.messageText.setOrigin(0.5, 0.5);
-    dialogContainer.add(this.messageText);
+    // title_text
+    const title_text = this.add.text(0, -80, "", {});
+    title_text.setOrigin(0.5, 0.5);
+    title_text.text = "Connection interrupted";
+    title_text.setStyle({ "align": "center", "color": "#ffcc66ff", "fontFamily": "disposabledroid", "fontSize": "24px", "resolution": 10 });
+    dialog_container.add(title_text);
 
-    const hintText = this.add.text(0, 75, "The match resumes automatically when sync recovers.", {
-      align: "center",
-      color: "#bbbbbbff",
-      fontFamily: "disposabledroid",
-      fontSize: "14px",
-      resolution: 10,
-      wordWrap: { width: 260 }
-    });
-    hintText.setOrigin(0.5, 0.5);
-    dialogContainer.add(hintText);
+    // message_text
+    const message_text = this.add.text(0, -19, "", {});
+    message_text.setOrigin(0.5, 0.5);
+    message_text.setStyle({ "align": "center", "color": "#ffffffff", "fontFamily": "disposabledroid", "resolution": 10 });
+    message_text.setWordWrapWidth(260);
+    dialog_container.add(message_text);
 
-    const leaveMatchButtonBg = this.add.nineslice(
-      0,
-      120,
-      "gui",
-      "cryos_mini_gui/surfaces/surface_wood.png",
-      180,
-      34,
-      4,
-      4,
-      4,
-      4
-    );
-    leaveMatchButtonBg.setOrigin(0.5, 0.5);
-    leaveMatchButtonBg.setInteractive({ useHandCursor: true });
-    leaveMatchButtonBg.on("pointerdown", () => {
-      this.pendingOnLeaveMatch?.();
-    });
-    dialogContainer.add(leaveMatchButtonBg);
+    // hint_text
+    const hint_text = this.add.text(0, 50, "", {});
+    hint_text.setOrigin(0.5, 0.5);
+    hint_text.text = "The match resumes automatically when sync recovers.";
+    hint_text.setStyle({ "align": "center", "color": "#bbbbbbff", "fontFamily": "disposabledroid", "fontSize": "14px", "resolution": 10 });
+    hint_text.setWordWrapWidth(260);
+    dialog_container.add(hint_text);
 
-    const leaveMatchButtonText = this.add.text(0, 120, "Leave match", {
-      align: "center",
-      color: "#ffffffff",
-      fontFamily: "disposabledroid",
-      fontSize: "16px",
-      resolution: 10
-    });
-    leaveMatchButtonText.setOrigin(0.5, 0.5);
-    dialogContainer.add(leaveMatchButtonText);
+    // leave_match_button_bg
+    const leave_match_button_bg = this.add.nineslice(0, 92, "gui", "cryos_mini_gui/buttons/button_small.png", 180, 34, 4, 4, 4, 4);
+    dialog_container.add(leave_match_button_bg);
 
-    this.dialogContainer = dialogContainer;
-    this.leaveMatchButtonBg = leaveMatchButtonBg;
-    this.leaveMatchButtonText = leaveMatchButtonText;
+    // leave_match_button_text
+    const leave_match_button_text = this.add.text(0, 91, "", {});
+    leave_match_button_text.setOrigin(0.5, 0.5);
+    leave_match_button_text.text = "Leave match";
+    leave_match_button_text.setStyle({ "align": "center", "color": "#000000ff", "fontFamily": "disposabledroid", "resolution": 10 });
+    dialog_container.add(leave_match_button_text);
+
+    this.message_text = message_text;
+    this.leave_match_button_bg = leave_match_button_bg;
+    this.leave_match_button_text = leave_match_button_text;
+    this.dialog_container = dialog_container;
+
+    this.events.emit("scene-awake");
+  }
+
+  private message_text!: Phaser.GameObjects.Text;
+  private leave_match_button_bg!: Phaser.GameObjects.NineSlice;
+  private leave_match_button_text!: Phaser.GameObjects.Text;
+  private dialog_container!: Phaser.GameObjects.Container;
+
+  /* START-USER-CODE */
+  private readonly smallScreenBreakpoint = 800;
+  private pendingMessage?: string;
+  private pendingOnLeaveMatch?: () => void;
+  // Write your code here
+
+  create() {
+    this.editorCreate();
 
     this.scale.on("resize", this.resize, this);
     this.resize({ width: this.scale.width, height: this.scale.height });
     this.addBackgroundOverlay();
     if (this.pendingMessage !== undefined) {
-      this.messageText.setText(this.pendingMessage);
+      this.message_text.setText(this.pendingMessage);
     }
+
+    this.leave_match_button_bg.setInteractive({ useHandCursor: true });
+    this.leave_match_button_bg.on("pointerdown", () => {
+      this.pendingOnLeaveMatch?.();
+    });
+    this.scene.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
   }
 
   setup(message: string, onLeaveMatch: () => void): void {
     this.pendingMessage = message;
     this.pendingOnLeaveMatch = onLeaveMatch;
-    if (!this.messageText) {
+    if (!this.message_text) {
       return;
     }
-    this.messageText.setText(message);
+    this.message_text.setText(message);
   }
 
   close(): void {
@@ -120,8 +110,8 @@ export default class ReconnectRecoveryDialog extends ProbableWaffleScene {
   }
 
   private resize(gameSize: { width: number; height: number }) {
-    this.dialogContainer.setPosition(gameSize.width / 2, gameSize.height / 2);
-    this.dialogContainer.scale = gameSize.width > this.smallScreenBreakpoint ? 1 : 0.8;
+    this.dialog_container.setPosition(gameSize.width / 2, gameSize.height / 2);
+    this.dialog_container.scale = gameSize.width > this.smallScreenBreakpoint ? 1 : 0.8;
   }
 
   private addBackgroundOverlay() {
@@ -137,9 +127,13 @@ export default class ReconnectRecoveryDialog extends ProbableWaffleScene {
     );
   }
 
-  override destroy() {
-    this.leaveMatchButtonBg?.off("pointerdown");
+  destroy() {
+    this.leave_match_button_bg?.off("pointerdown");
     this.scale.off("resize", this.resize, this);
-    super.destroy();
   }
+  /* END-USER-CODE */
 }
+
+/* END OF COMPILED CODE */
+
+// You can write more code here

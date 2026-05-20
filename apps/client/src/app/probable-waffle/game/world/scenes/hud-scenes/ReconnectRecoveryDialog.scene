@@ -64,14 +64,12 @@
                     "label": "message_text",
                     "displayName": "Message",
                     "scope": "CLASS",
-                    "y": -5,
+                    "y": -19,
                     "originX": 0.5,
                     "originY": 0.5,
-                    "text": "",
                     "resolution": 10,
                     "align": "center",
                     "fontFamily": "disposabledroid",
-                    "fontSize": "16px",
                     "color": "#ffffffff",
                     "wordWrapWidth": 260
                 },
@@ -80,7 +78,7 @@
                     "id": "90123456-7890-4678-f012-6789012345de",
                     "label": "hint_text",
                     "displayName": "Hint",
-                    "y": 75,
+                    "y": 50,
                     "originX": 0.5,
                     "originY": 0.5,
                     "text": "The match resumes automatically when sync recovers.",
@@ -99,11 +97,9 @@
                     "scope": "CLASS",
                     "texture": {
                         "key": "gui",
-                        "frame": "cryos_mini_gui/surfaces/surface_wood.png"
+                        "frame": "cryos_mini_gui/buttons/button_small.png"
                     },
-                    "y": 120,
-                    "originX": 0.5,
-                    "originY": 0.5,
+                    "y": 92,
                     "leftWidth": 4,
                     "rightWidth": 4,
                     "topHeight": 4,
@@ -117,15 +113,14 @@
                     "label": "leave_match_button_text",
                     "displayName": "Leave Match Text",
                     "scope": "CLASS",
-                    "y": 120,
+                    "y": 91,
                     "originX": 0.5,
                     "originY": 0.5,
                     "text": "Leave match",
                     "resolution": 10,
                     "align": "center",
                     "fontFamily": "disposabledroid",
-                    "fontSize": "16px",
-                    "color": "#ffffffff"
+                    "color": "#000000ff"
                 }
             ]
         }

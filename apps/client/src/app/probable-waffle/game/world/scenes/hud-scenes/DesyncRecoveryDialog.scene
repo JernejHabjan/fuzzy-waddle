@@ -72,7 +72,6 @@
                     "resolution": 10,
                     "align": "center",
                     "fontFamily": "disposabledroid",
-                    "fontSize": "16px",
                     "color": "#ffffffff",
                     "maxLines": 3,
                     "wordWrapWidth": 260
@@ -88,7 +87,7 @@
                     "hitArea.y": -13,
                     "hitArea.width": 85.7117848223629,
                     "hitArea.height": 25.429332302435576,
-                    "x": -55,
+                    "x": -67,
                     "y": 80,
                     "scaleX": 2,
                     "scaleY": 2,
@@ -102,7 +101,7 @@
                                 "key": "gui",
                                 "frame": "cryos_mini_gui/buttons/button_small.png"
                             },
-                            "scaleX": 2.3521289589041787,
+                            "scaleX": 1.5,
                             "scaleY": 1.5492262688240692,
                             "leftWidth": 3,
                             "rightWidth": 3,
@@ -139,7 +138,7 @@
                     "hitArea.y": -13,
                     "hitArea.width": 85.7117848223629,
                     "hitArea.height": 25.429332302435576,
-                    "x": 55,
+                    "x": 67,
                     "y": 80,
                     "scaleX": 2,
                     "scaleY": 2,
@@ -153,7 +152,7 @@
                                 "key": "gui",
                                 "frame": "cryos_mini_gui/buttons/button_small.png"
                             },
-                            "scaleX": 2.3521289589041787,
+                            "scaleX": 1.5,
                             "scaleY": 1.5492262688240692,
                             "leftWidth": 3,
                             "rightWidth": 3,
