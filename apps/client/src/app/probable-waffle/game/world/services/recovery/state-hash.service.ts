@@ -61,6 +61,7 @@ export class StateHashService {
   /** Lightweight debug overlay; shown immediately on mismatch for quick visual feedback. */
   private desyncText?: Phaser.GameObjects.Text;
   private readonly pendingCorrections = new Map<number, PendingCorrection>();
+  private readonly activeMismatches = new Map<number, string>();
 
   init(scene: ProbableWaffleScene): void {
     const communicator = getCommunicator(scene);
@@ -175,8 +176,17 @@ export class StateHashService {
     if (localSnapshot.hash === event.hash) {
       if (event.playerNumber !== undefined) {
         this.pendingCorrections.delete(event.playerNumber);
+        const hadMismatch = this.activeMismatches.delete(event.playerNumber);
+        if (hadMismatch) {
+          scene.events.emit("desync-state-changed", {
+            playerNumber: event.playerNumber,
+            state: "resolved"
+          });
+        }
       }
-      this.clearDesyncIndicator();
+      if (this.activeMismatches.size === 0) {
+        this.clearDesyncIndicator();
+      }
       return;
     }
 
@@ -191,10 +201,26 @@ export class StateHashService {
       return;
     }
 
-    console.error(
-      `[DESYNC] tick=${event.tick} remotePlayer=${event.playerNumber} ` +
-        `local=${localSnapshot.hash} remote=${event.hash} reason=${mismatchReason}`
-    );
+    if (event.playerNumber !== undefined) {
+      const previousMismatchReason = this.activeMismatches.get(event.playerNumber);
+      if (previousMismatchReason !== mismatchReason) {
+        console.error(
+          `[DESYNC] tick=${event.tick} remotePlayer=${event.playerNumber} ` +
+            `local=${localSnapshot.hash} remote=${event.hash} reason=${mismatchReason}`
+        );
+      }
+      this.activeMismatches.set(event.playerNumber, mismatchReason);
+      scene.events.emit("desync-state-changed", {
+        playerNumber: event.playerNumber,
+        state: "mismatch",
+        reason: mismatchReason
+      });
+    } else {
+      console.error(
+        `[DESYNC] tick=${event.tick} remotePlayer=${event.playerNumber} ` +
+          `local=${localSnapshot.hash} remote=${event.hash} reason=${mismatchReason}`
+      );
+    }
     this.showDesyncIndicator(event.tick, event.playerNumber, scene);
 
     if (!scene.isHost || !event.emitterUserId || event.playerNumber === undefined) {
@@ -406,6 +432,7 @@ export class StateHashService {
     this.hashReceivedSub?.unsubscribe();
     this.clearDesyncIndicator();
     this.pendingCorrections.clear();
+    this.activeMismatches.clear();
   }
 }
 

@@ -38,6 +38,8 @@ export class DesyncRecoveryService {
   private dialogOpen = false;
   private sub?: Subscription;
   private probableWaffleScene?: ProbableWaffleScene;
+  private dialog?: DesyncRecoveryDialog;
+  private activeDialogPlayerNumber?: number;
   /** Timeout handle for the correction-snapshot stall guard. */
   private correctionTimeoutHandle?: number;
   private snapshotAppliedHandler?: () => void;
@@ -48,6 +50,8 @@ export class DesyncRecoveryService {
     this.sub = communicator.desyncAlert?.on.subscribe((event) => {
       this.onDesyncDetected(event, hudScene, probableWaffleScene);
     });
+    probableWaffleScene.events.on("desync-state-changed", this.onDesyncStateChanged, this);
+    probableWaffleScene.events.on("reconnect-snapshot-applied", this.onReconnectSnapshotApplied, this);
     probableWaffleScene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.destroy());
   }
 
@@ -67,8 +71,9 @@ export class DesyncRecoveryService {
 
     this.dialogOpen = true;
 
-    const dialog = SceneDialogHelper.showDialog<DesyncRecoveryDialog>(hudScene, "DesyncRecoveryDialog");
-    dialog.setup({
+    this.activeDialogPlayerNumber = data.desyncedPlayerNumber;
+    this.dialog = SceneDialogHelper.showDialog<DesyncRecoveryDialog>(hudScene, "DesyncRecoveryDialog");
+    this.dialog.setup({
       tick: data.tick,
       playerNumber: data.desyncedPlayerNumber,
       reason: data.reason,
@@ -95,7 +100,7 @@ export class DesyncRecoveryService {
         } else {
           simTick?.resumeTick("desync");
         }
-        this.dialogOpen = false;
+        this.onDialogClosed();
       },
       onKick: () => {
         console.warn(`[DESYNC] Removing player ${data.desyncedPlayerNumber} after desync at tick ${data.tick}.`);
@@ -114,7 +119,7 @@ export class DesyncRecoveryService {
           }
         });
         simTick?.resumeTick("desync");
-        this.dialogOpen = false;
+        this.onDialogClosed();
       }
     });
   }
@@ -151,15 +156,55 @@ export class DesyncRecoveryService {
     }
   }
 
+  private onDialogClosed(): void {
+    this.dialogOpen = false;
+    this.dialog = undefined;
+    this.activeDialogPlayerNumber = undefined;
+  }
+
+  private closeDialogIfOpen(simTick: SimulationTickService | undefined): void {
+    if (!this.dialogOpen) {
+      return;
+    }
+    this.dialog?.scene.stop();
+    simTick?.resumeTick("desync");
+    this.clearCorrectionTimeout(this.probableWaffleScene);
+    this.onDialogClosed();
+  }
+
+  private readonly onDesyncStateChanged = (event: {
+    playerNumber: number;
+    state: "mismatch" | "resolved";
+    reason?: string;
+  }) => {
+    if (event.state !== "resolved" || !this.dialogOpen) {
+      return;
+    }
+    if (this.activeDialogPlayerNumber !== undefined && event.playerNumber !== this.activeDialogPlayerNumber) {
+      return;
+    }
+    const simTick = this.probableWaffleScene && getSceneService(this.probableWaffleScene, SimulationTickService);
+    this.closeDialogIfOpen(simTick);
+  };
+
+  private readonly onReconnectSnapshotApplied = (event: { reason?: "reconnect" | "spectator-catch-up" | "desync-correction" }) => {
+    if (event.reason !== "desync-correction") {
+      return;
+    }
+    const simTick = this.probableWaffleScene && getSceneService(this.probableWaffleScene, SimulationTickService);
+    this.closeDialogIfOpen(simTick);
+  };
+
   destroy(): void {
     // If the scene tears down while the desync dialog is open, ensure the
     // "desync" pause reason is released so SimulationTickService is not left stalled.
     if (this.dialogOpen) {
       const simTick = this.probableWaffleScene && getSceneService(this.probableWaffleScene, SimulationTickService);
-      simTick?.resumeTick("desync");
-      this.dialogOpen = false;
+      this.closeDialogIfOpen(simTick);
     }
     this.clearCorrectionTimeout(this.probableWaffleScene);
     this.sub?.unsubscribe();
+    this.probableWaffleScene?.events.off("desync-state-changed", this.onDesyncStateChanged, this);
+    this.probableWaffleScene?.events.off("reconnect-snapshot-applied", this.onReconnectSnapshotApplied, this);
   }
 }
