@@ -667,6 +667,7 @@ export class AttackComponent {
         );
       }
     }
+    // Intentional wall-clock timer: fire sound timing is cosmetic and does not drive hit resolution.
     this.gameObject.scene.time.delayedCall(attack.delays.fire, () => {
       if (fire) {
         const visibilityComponent = getGameObjectVisibility(this.gameObject);

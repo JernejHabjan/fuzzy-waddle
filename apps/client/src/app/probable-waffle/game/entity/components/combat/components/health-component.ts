@@ -123,6 +123,7 @@ export class HealthComponent {
         if (asTint.setTint) {
           asTint.setTint(0xff0000);
           // Clear the hit-flash tint after a short delay so it doesn't stick
+          // Intentional wall-clock timer: tint cleanup is visual-only.
           this.gameObject.scene.time.delayedCall(500, () => {
             if (this.gameObject.active) asTint.clearTint?.();
           });
@@ -134,6 +135,7 @@ export class HealthComponent {
         if (asTint.setTint) {
           asTint.setTint(0xff0000);
           // console.warn("this tint is not working "); // todo
+          // Intentional wall-clock timer: tint cleanup is visual-only.
           this.gameObject.scene.time.delayedCall(500, () => {
             if (this.gameObject.active) asTint.clearTint?.();
           });
@@ -235,6 +237,7 @@ export class HealthComponent {
       this.setVisibilityUiComponent(true);
       // Hide the UI component after a delay if it's set to "onDamage"
       this.healthUiHideOnTimeout?.remove();
+      // Intentional wall-clock timer: health bar visibility timeout is UI-only.
       this.healthUiHideOnTimeout = this.gameObject.scene.time.delayedCall(3000, () => {
         if (this.gameObject.active) this.setVisibilityUiComponent(false);
       });

@@ -283,6 +283,7 @@ export class AoeZoneManager {
     );
 
     // Return to normal after short delay
+    // Intentional wall-clock timer: pulse redraw is visual-only feedback.
     this.scene.time.delayedCall(100, () => {
       if (visual.graphics.active) {
         this.drawZoneCircle(

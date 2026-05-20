@@ -87,6 +87,7 @@ export class ConnectionRecoveryService {
     const existing = this.pendingReconnects.get(event.playerNumber);
     existing?.timer.remove(false);
 
+    // Intentional wall-clock grace window: reconnect UX should reflect real connection time, not sim tick.
     const timer = this.hudScene.time.delayedCall(ConnectionRecoveryService.PAUSE_AFTER_MS, () => {
       if (this.reconnectGenerations.get(event.playerNumber) !== generation) {
         return;

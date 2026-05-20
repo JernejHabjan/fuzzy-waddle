@@ -89,6 +89,7 @@ export default class Sheep extends Phaser.GameObjects.Sprite {
     this.sheared = true;
     this.animationActorComponent?.playCustomAnimation("sheared");
     // start timer to reset sheep
+    // Intentional wall-clock timer: sheep regrowth is ambient/local behavior only.
     this.scene.time.delayedCall(5000, () => {
       this.shearedCount = 0;
       this.woolParticles?.emitParticleAt(this.x, this.y - 20, 50);

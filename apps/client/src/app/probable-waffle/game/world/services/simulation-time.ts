@@ -56,6 +56,7 @@ export function waitForSimulationDuration(scene: Phaser.Scene, durationMs: numbe
   const tickService = getSceneService(scene, SimulationTickService);
   if (!tickService) {
     return new Promise<void>((resolve) => {
+      // Intentional wall-clock fallback for scenes that do not run SimulationTickService.
       scene.time.delayedCall(durationMs, () => resolve());
     });
   }

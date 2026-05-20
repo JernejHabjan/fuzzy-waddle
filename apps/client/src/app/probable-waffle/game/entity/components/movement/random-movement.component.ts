@@ -73,6 +73,7 @@ export class RandomMovementComponent {
       return;
     }
 
+    // Intentional wall-clock fallback for contexts without SimulationTickService.
     this.currentDelay = this.gameObject.scene.time.delayedCall(randomDelay, this.move, [], this);
   }
 

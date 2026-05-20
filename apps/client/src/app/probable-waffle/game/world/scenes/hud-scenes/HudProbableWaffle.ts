@@ -337,6 +337,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
             padding: { x: 20, y: 10 }
           });
           text.setOrigin(0.5);
+          // Intentional wall-clock timer for transient HUD toast cleanup.
           this.time.delayedCall(500, () => text.destroy());
         });
       });
@@ -362,6 +363,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
 
     // show example chat message on startup in dev mode after 2 seconds
     // if (!environment.production) {
+    //   // Intentional wall-clock timer: this sample notification is purely HUD debug behavior.
     //   this.time.delayedCall(2000, () => {
     //     this.chatNotification.showMessage("Test User", "Hello! This is an example chat message.");
     //     this.chatButton?.showUnreadBadge();

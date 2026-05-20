@@ -72,6 +72,7 @@ export default class InfantryInnLevel1 extends Phaser.GameObjects.Container {
         onComplete: () => {
           if (!this.active) return;
           // Waiting for 2-4 seconds
+          // Intentional wall-clock timer: cloud loop is ambient decoration only.
           this.scene.time.delayedCall(Phaser.Math.Between(1000, 8000), () => {
             if (!this.active) return;
             // Re-appearing and setting down

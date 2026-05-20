@@ -112,6 +112,7 @@ export class SpawnBerryComponent {
     };
 
     if (delay) {
+      // Intentional wall-clock timer: berry cleanup is purely cosmetic.
       this.gameObject.scene.time.delayedCall(1000, destroy);
     } else {
       destroy();

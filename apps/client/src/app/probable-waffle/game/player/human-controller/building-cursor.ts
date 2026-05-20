@@ -286,6 +286,7 @@ export class BuildingCursor {
         }
 
         // Not complete yet, check again later
+        // Intentional wall-clock polling: this is local placement UX, not lockstep simulation state.
         this.scene.time.delayedCall(checkInterval, checkMovementComplete);
       };
 
