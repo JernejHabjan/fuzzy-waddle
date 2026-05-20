@@ -61,8 +61,10 @@ export class StateHashService {
   /** Lightweight debug overlay; shown immediately on mismatch for quick visual feedback. */
   private desyncText?: Phaser.GameObjects.Text;
   private readonly pendingCorrections = new Map<number, PendingCorrection>();
+  /** Tracks current mismatch reason per remote player for log deduping and dialog auto-close signaling. */
   private readonly activeMismatches = new Map<number, string>();
 
+  /** Subscribes to sim ticks and peer hash relay; disabled automatically in singleplayer. */
   init(scene: ProbableWaffleScene): void {
     const communicator = getCommunicator(scene);
     if (!communicator.stateHashChanged) return; // SP: no-op
@@ -82,6 +84,7 @@ export class StateHashService {
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.destroy());
   }
 
+  /** Emits local hash snapshots on a fixed tick interval and retains a short comparison history. */
   private onTick(tick: number, scene: ProbableWaffleScene): void {
     if (tick % HASH_INTERVAL_TICKS !== 0) return;
 
@@ -136,8 +139,7 @@ export class StateHashService {
       const economyState = this.serializeActorEconomyState(actor);
       const combatState = this.serializeActorCombatState(go);
       const orderState = this.serializeActorOrderState(go);
-      const actorDigest =
-        `${id}:${go.name}:${Math.round(health)}:${Math.round(armour)}:${lx}:${ly}:${lz}:${owner}:${queueState}:${economyState}:${combatState}:${orderState}`;
+      const actorDigest = `${id}:${go.name}:${Math.round(health)}:${Math.round(armour)}:${lx}:${ly}:${lz}:${owner}:${queueState}:${economyState}:${combatState}:${orderState}`;
       actorDigests[id] = actorDigest;
       return actorDigest;
     });
@@ -230,6 +232,7 @@ export class StateHashService {
     this.handleHostDetectedDesync(event.tick, event.playerNumber, event.emitterUserId, mismatchReason, scene);
   }
 
+  /** Host-side escalation: send correction snapshot first, then alert room if mismatch persists past grace. */
   private handleHostDetectedDesync(
     tick: number,
     remotePlayerNumber: number,
@@ -248,7 +251,9 @@ export class StateHashService {
         alertSent: false,
         reason
       });
-      console.warn(`[DESYNC] Sent correction snapshot to player ${remotePlayerNumber} at tick ${tick}. reason=${reason}`);
+      console.warn(
+        `[DESYNC] Sent correction snapshot to player ${remotePlayerNumber} at tick ${tick}. reason=${reason}`
+      );
       return;
     }
 
@@ -256,10 +261,7 @@ export class StateHashService {
       existing.reason = reason;
     }
 
-    if (
-      existing.alertSent ||
-      currentTick - existing.firstDetectedTick < CORRECTION_GRACE_PERIOD_TICKS
-    ) {
+    if (existing.alertSent || currentTick - existing.firstDetectedTick < CORRECTION_GRACE_PERIOD_TICKS) {
       return;
     }
 
@@ -295,18 +297,26 @@ export class StateHashService {
     this.desyncText = undefined;
   }
 
+  /** Serializes production/research queues into deterministic textual digest segments. */
   private serializeActorQueueState(actor: { production?: any; research?: any }): string {
     const productionQueue = actor.production?.queue ?? [];
     const researchQueue = actor.research?.researches ?? [];
     const serializedProduction = productionQueue
-      .map((item: { name?: string; remainingTime?: number }) => `${item.name ?? "?"}:${Math.round(item.remainingTime ?? 0)}`)
+      .map(
+        (item: { name?: string; remainingTime?: number }) =>
+          `${item.name ?? "?"}:${Math.round(item.remainingTime ?? 0)}`
+      )
       .join(",");
     const serializedResearch = researchQueue
-      .map((item: { type?: string; remainingTime?: number }) => `${item.type ?? "?"}:${Math.round(item.remainingTime ?? 0)}`)
+      .map(
+        (item: { type?: string; remainingTime?: number }) =>
+          `${item.type ?? "?"}:${Math.round(item.remainingTime ?? 0)}`
+      )
       .join(",");
     return `${serializedProduction};${serializedResearch}`;
   }
 
+  /** Serializes carrying/resource/container values that commonly diverge in economy bugs. */
   private serializeActorEconomyState(actor: {
     gatherer?: any;
     resourceSource?: any;
@@ -320,6 +330,7 @@ export class StateHashService {
     return `${gathered}:${source}:${drain}:${container}`;
   }
 
+  /** Serializes cooldown/runtime combat state that influences future command execution deterministically. */
   private serializeActorCombatState(actor: Phaser.GameObjects.GameObject): string {
     const attackCooldown = Math.round(getActorComponent(actor, AttackComponent)?.remainingCooldown ?? -1);
     const healingCooldown = Math.round(getActorComponent(actor, HealingComponent)?.remainingCooldown ?? -1);
@@ -332,6 +343,7 @@ export class StateHashService {
     return `${attackCooldown}:${healingCooldown}:${builderCooldown}:${gathererCooldown}:${gatherSourceId}`;
   }
 
+  /** Serializes AI blackboard order state so path/order drift appears in hash diagnostics. */
   private serializeActorOrderState(actor: Phaser.GameObjects.GameObject): string {
     const blackboard = getActorComponent(actor, PawnAiController)?.getData().blackboard;
     if (!blackboard) {
@@ -346,6 +358,7 @@ export class StateHashService {
     });
   }
 
+  /** Deterministic serializer with stable object-key ordering to avoid hash noise from key order. */
   private stableSerialize(value: unknown): string {
     if (value === null) {
       return "null";
@@ -366,6 +379,7 @@ export class StateHashService {
     return String(value);
   }
 
+  /** Produces a human-readable first-difference explanation between local and remote hash diagnostics. */
   private describeDiagnosticsMismatch(
     localDiagnostics: ProbableWaffleStateHashDiagnostics,
     remoteDiagnostics: ProbableWaffleStateHashDiagnostics | undefined
@@ -401,6 +415,7 @@ export class StateHashService {
     return "hash mismatch without diagnostic delta";
   }
 
+  /** Serializes per-player resource/housing state used in deterministic economy progression. */
   private serializePlayerStates(scene: Phaser.Scene): string[] {
     const probableWaffleScene = scene as ProbableWaffleScene;
     return [...probableWaffleScene.players]
@@ -413,13 +428,16 @@ export class StateHashService {
       });
   }
 
+  /** Serializes sorted per-player research ownership to detect technology progression drift. */
   private serializeResearchState(scene: Phaser.Scene): string[] {
-    const playerResearch = (scene as ProbableWaffleScene).baseGameData.gameInstance.gameState?.data.playerResearch ?? {};
+    const playerResearch =
+      (scene as ProbableWaffleScene).baseGameData.gameInstance.gameState?.data.playerResearch ?? {};
     return Object.entries(playerResearch)
       .sort(([left], [right]) => Number(left) - Number(right))
       .map(([playerNumber, researches]) => `${playerNumber}:${[...(researches ?? [])].sort().join(",")}`);
   }
 
+  /** Drops old hash snapshots outside the rolling lookup window used for remote comparison. */
   private pruneOldHashes(currentTick: number): void {
     const cutoff = currentTick - HASH_STORE_TICKS;
     for (const tick of this.localHashes.keys()) {
@@ -427,6 +445,7 @@ export class StateHashService {
     }
   }
 
+  /** Unsubscribes and clears all desync UI/state caches on scene shutdown. */
   destroy(): void {
     this.tickSub?.unsubscribe();
     this.hashReceivedSub?.unsubscribe();

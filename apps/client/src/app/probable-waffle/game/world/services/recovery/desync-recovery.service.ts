@@ -44,6 +44,7 @@ export class DesyncRecoveryService {
   private correctionTimeoutHandle?: number;
   private snapshotAppliedHandler?: () => void;
 
+  /** Wires desync-alert subscriptions and lifecycle listeners for dialog auto-recovery. */
   init(hudScene: Phaser.Scene, probableWaffleScene: ProbableWaffleScene): void {
     this.probableWaffleScene = probableWaffleScene;
     const communicator = getCommunicator(probableWaffleScene);
@@ -55,6 +56,7 @@ export class DesyncRecoveryService {
     probableWaffleScene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.destroy());
   }
 
+  /** Opens the recovery dialog, pauses simulation, and attaches Wait/Kick actions. */
   private onDesyncDetected(
     data: ProbableWaffleDesyncAlertEvent,
     hudScene: Phaser.Scene,
@@ -124,6 +126,7 @@ export class DesyncRecoveryService {
     });
   }
 
+  /** Arms a fail-safe timeout so desync pause is not permanent when correction never arrives. */
   private armCorrectionTimeout(
     simTick: SimulationTickService | undefined,
     playerNumber: number,
@@ -147,6 +150,7 @@ export class DesyncRecoveryService {
     }, DesyncRecoveryService.CORRECTION_TIMEOUT_MS);
   }
 
+  /** Clears correction timeout and detaches one-shot snapshot listeners. */
   private clearCorrectionTimeout(scene?: ProbableWaffleScene): void {
     clearTimeout(this.correctionTimeoutHandle);
     this.correctionTimeoutHandle = undefined;
@@ -156,12 +160,14 @@ export class DesyncRecoveryService {
     }
   }
 
+  /** Resets in-memory dialog state after explicit close path finishes. */
   private onDialogClosed(): void {
     this.dialogOpen = false;
     this.dialog = undefined;
     this.activeDialogPlayerNumber = undefined;
   }
 
+  /** Closes dialog, resumes desync pause reason, and clears pending correction guard state. */
   private closeDialogIfOpen(simTick: SimulationTickService | undefined): void {
     if (!this.dialogOpen) {
       return;
@@ -172,6 +178,7 @@ export class DesyncRecoveryService {
     this.onDialogClosed();
   }
 
+  /** Auto-closes dialog once hash service reports the tracked player is back in sync. */
   private readonly onDesyncStateChanged = (event: {
     playerNumber: number;
     state: "mismatch" | "resolved";
@@ -187,6 +194,7 @@ export class DesyncRecoveryService {
     this.closeDialogIfOpen(simTick);
   };
 
+  /** Auto-closes dialog after desync-correction snapshot is applied locally. */
   private readonly onReconnectSnapshotApplied = (event: { reason?: "reconnect" | "spectator-catch-up" | "desync-correction" }) => {
     if (event.reason !== "desync-correction") {
       return;
@@ -195,6 +203,7 @@ export class DesyncRecoveryService {
     this.closeDialogIfOpen(simTick);
   };
 
+  /** Releases subscriptions/listeners and ensures desync pause cannot leak across scene teardown. */
   destroy(): void {
     // If the scene tears down while the desync dialog is open, ensure the
     // "desync" pause reason is released so SimulationTickService is not left stalled.
