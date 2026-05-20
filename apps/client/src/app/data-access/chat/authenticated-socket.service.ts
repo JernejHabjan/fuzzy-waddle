@@ -55,7 +55,7 @@ export class AuthenticatedSocketService implements IAuthenticatedSocketService {
       socket.connect();
       socket.on("connect", () => {
         const socketId = (socket as any).ioSocket?.id ?? "unknown";
-        console.info(`[Socket] Authenticated socket connected. socketId=${socketId}`);
+        console.debug(`[Socket] Authenticated socket connected. socketId=${socketId}`);
         resolve(socket);
       });
       socket.on("connect_error", (err: any) => reject(err));

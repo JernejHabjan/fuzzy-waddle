@@ -46,6 +46,7 @@ const RECONNECT_WINDOW_SECONDS = 60;
   }
 })
 export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDisconnect {
+  private readonly DEBUG = false;
   @WebSocketServer() private readonly server!: Server;
 
   constructor(
@@ -129,7 +130,9 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
     @MessageBody() body: ProbableWaffleCommunicatorEventUnion,
     @ConnectedSocket() socket: Socket
   ) {
-    console.log("Ashes of the Ancients - GI action:", body.communicator, body.payload);
+    if (this.DEBUG) {
+      console.log("Ashes of the Ancients - GI action:", body.communicator, body.payload);
+    }
 
     const removedPlayerUserId = this.getRemovedPlayerUserId(body);
     const participantLeft = this.isParticipantLeaving(body);
