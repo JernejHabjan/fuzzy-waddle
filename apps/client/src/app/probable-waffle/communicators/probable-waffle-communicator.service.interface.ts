@@ -5,6 +5,8 @@ import {
   type ProbableWaffleCommunicatorMessageEvent,
   type ProbableWaffleCommunicatorType,
   type ProbableWaffleGameCommandEvent,
+  type ProbableWaffleInstanceReseedEvent,
+  type ProbableWaffleInstanceReseedRequiredEvent,
   type ProbableWaffleHostMigratedEvent,
   type ProbableWaffleGameInstanceMetadataChangeEvent,
   type ProbableWaffleGameModeDataChangeEvent,
@@ -38,6 +40,13 @@ export interface ProbableWaffleCommunicatorServiceInterface {
   snapshotRequested?: TwoWayCommunicator<ProbableWaffleSnapshotRequestEvent, ProbableWaffleCommunicatorType>;
   /** Snapshot response (host → requesting client); only in MP. */
   snapshotResponse?: TwoWayCommunicator<ProbableWaffleSnapshotResponseEvent, ProbableWaffleCommunicatorType>;
+  /** Server-originated signal that game instance is missing and needs reseed. */
+  instanceReseedRequired?: TwoWayCommunicator<
+    ProbableWaffleInstanceReseedRequiredEvent,
+    ProbableWaffleCommunicatorType
+  >;
+  /** Client-originated payload used to recreate missing server game instance. */
+  instanceReseed?: TwoWayCommunicator<ProbableWaffleInstanceReseedEvent, ProbableWaffleCommunicatorType>;
   /** Host-issued unresolved desync alert; only in MP. */
   desyncAlert?: TwoWayCommunicator<ProbableWaffleDesyncAlertEvent, ProbableWaffleCommunicatorType>;
   /** Multiplayer pause/resume relay; only in MP. */

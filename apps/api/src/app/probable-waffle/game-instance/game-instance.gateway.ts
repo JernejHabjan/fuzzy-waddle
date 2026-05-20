@@ -142,6 +142,8 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
       if (body.communicator === ProbableWaffleCommunicators.GameCommand) {
         // Include the sender so it commits via the authoritative server echo instead of self-delivery.
         this.server.to(roomId).emit(ProbableWaffleGatewayEvent.ProbableWaffleAction, body);
+      } else if (body.communicator === ProbableWaffleCommunicators.InstanceReseed) {
+        // Reseed payload is server-ingestion only; do not rebroadcast full instance blobs.
       } else if (
         body.communicator === ProbableWaffleCommunicators.PauseChanged ||
         body.communicator === ProbableWaffleCommunicators.DesyncAlert
@@ -156,6 +158,16 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
       if (participantLeft) {
         this.handleParticipantLeft(body.gameInstanceId!, roomId, removedPlayerUserId);
       }
+    } else if (!result.success && result.relayEmpty === false && "reseedRequired" in result && result.reseedRequired) {
+      socket.emit(ProbableWaffleGatewayEvent.ProbableWaffleAction, {
+        gameInstanceId: body.gameInstanceId,
+        communicator: ProbableWaffleCommunicators.InstanceReseedRequired,
+        payload: {
+          gameInstanceId: body.gameInstanceId,
+          emitterUserId: null,
+          reason: "missing-game-instance"
+        }
+      });
     } else if (!result.success && result.relayEmpty) {
       // Tick is authoritative but payload was invalid.  Relay an empty batch
       // WITH a rejectionReason so the sender can log what went wrong.

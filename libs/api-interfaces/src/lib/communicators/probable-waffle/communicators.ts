@@ -11,6 +11,7 @@ import type { ProbableWaffleSpectatorData } from "../../game-instance/probable-w
 import type { ActorDefinition, ProbableWaffleGameStateData } from "../../game-instance/probable-waffle/game-state";
 import type { GameInstanceId, PlayerNumber, UserId } from "../../game-instance/player/player";
 import type { SelectionGroupData } from "../../game-instance/probable-waffle/component-data";
+import type { ProbableWaffleGameInstanceData } from "../../game-instance/probable-waffle/game-instance";
 
 export const ProbableWaffleGameCommunicatorTypes = {
   Selection: "selection"
@@ -30,6 +31,8 @@ export const ProbableWaffleCommunicators = {
   StateHash: "state-hash",
   SnapshotRequest: "snapshot-request",
   SnapshotResponse: "snapshot-response",
+  InstanceReseedRequired: "instance-reseed-required",
+  InstanceReseed: "instance-reseed",
   DesyncAlert: "desync-alert",
   PauseChanged: "pause-changed",
   PlayerDisconnected: "player-disconnected",
@@ -248,6 +251,19 @@ export interface ProbableWaffleSnapshotResponseEvent extends ProbableWaffleCommu
   commandTail?: ProbableWaffleGameCommandEvent[];
 }
 
+/**
+ * Server → client: indicates the authoritative in-memory game instance is missing
+ * (for example after backend restart) and a client should reseed it.
+ */
+export interface ProbableWaffleInstanceReseedRequiredEvent extends ProbableWaffleCommunicatorEvent {
+  reason: "missing-game-instance";
+}
+
+/** Client → server: full in-memory game instance payload used to recreate missing match state. */
+export interface ProbableWaffleInstanceReseedEvent extends ProbableWaffleCommunicatorEvent {
+  gameInstanceData: ProbableWaffleGameInstanceData;
+}
+
 /** Broadcast by the host when a correction attempt failed and room-wide recovery must start. */
 export interface ProbableWaffleDesyncAlertEvent extends ProbableWaffleCommunicatorEvent {
   tick: number;
@@ -323,6 +339,8 @@ export interface ProbableWaffleCommunicatorPayloadByType {
   [ProbableWaffleCommunicators.StateHash]: ProbableWaffleStateHashEvent;
   [ProbableWaffleCommunicators.SnapshotRequest]: ProbableWaffleSnapshotRequestEvent;
   [ProbableWaffleCommunicators.SnapshotResponse]: ProbableWaffleSnapshotResponseEvent;
+  [ProbableWaffleCommunicators.InstanceReseedRequired]: ProbableWaffleInstanceReseedRequiredEvent;
+  [ProbableWaffleCommunicators.InstanceReseed]: ProbableWaffleInstanceReseedEvent;
   [ProbableWaffleCommunicators.DesyncAlert]: ProbableWaffleDesyncAlertEvent;
   [ProbableWaffleCommunicators.PauseChanged]: ProbableWafflePauseChangedEvent;
   [ProbableWaffleCommunicators.PlayerDisconnected]: ProbableWafflePlayerDisconnectedEvent;

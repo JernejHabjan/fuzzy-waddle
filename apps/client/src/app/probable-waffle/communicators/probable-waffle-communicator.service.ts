@@ -6,6 +6,8 @@ import {
   type ProbableWaffleCommunicatorType,
   type ProbableWaffleDesyncAlertEvent,
   type ProbableWaffleGameCommandEvent,
+  type ProbableWaffleInstanceReseedEvent,
+  type ProbableWaffleInstanceReseedRequiredEvent,
   type ProbableWaffleGameInstanceMetadataChangeEvent,
   type ProbableWaffleGameModeDataChangeEvent,
   type ProbableWaffleGameStateDataChangeEvent,
@@ -49,6 +51,13 @@ export class ProbableWaffleCommunicatorService
   snapshotRequested?: TwoWayCommunicator<ProbableWaffleSnapshotRequestEvent, ProbableWaffleCommunicatorType>;
   /** Snapshot response (host → requesting client); only in MP. */
   snapshotResponse?: TwoWayCommunicator<ProbableWaffleSnapshotResponseEvent, ProbableWaffleCommunicatorType>;
+  /** Server-originated signal that game instance is missing and needs reseed. */
+  instanceReseedRequired?: TwoWayCommunicator<
+    ProbableWaffleInstanceReseedRequiredEvent,
+    ProbableWaffleCommunicatorType
+  >;
+  /** Client-originated payload used to recreate missing server game instance. */
+  instanceReseed?: TwoWayCommunicator<ProbableWaffleInstanceReseedEvent, ProbableWaffleCommunicatorType>;
   /** Host-issued unresolved desync alert; only in MP. */
   desyncAlert?: TwoWayCommunicator<ProbableWaffleDesyncAlertEvent, ProbableWaffleCommunicatorType>;
   /** Multiplayer pause/resume relay; only in MP. */
@@ -141,6 +150,16 @@ export class ProbableWaffleCommunicatorService
         ProbableWaffleSnapshotResponseEvent,
         ProbableWaffleCommunicatorType
       >(ProbableWaffleGatewayEvent.ProbableWaffleAction, "snapshot-response", gameInstanceId, socket);
+      this.instanceReseedRequired = new TwoWayCommunicator<
+        ProbableWaffleInstanceReseedRequiredEvent,
+        ProbableWaffleCommunicatorType
+      >(ProbableWaffleGatewayEvent.ProbableWaffleAction, "instance-reseed-required", gameInstanceId, socket);
+      this.instanceReseed = new TwoWayCommunicator<ProbableWaffleInstanceReseedEvent, ProbableWaffleCommunicatorType>(
+        ProbableWaffleGatewayEvent.ProbableWaffleAction,
+        "instance-reseed",
+        gameInstanceId,
+        socket
+      );
       this.desyncAlert = new TwoWayCommunicator<ProbableWaffleDesyncAlertEvent, ProbableWaffleCommunicatorType>(
         ProbableWaffleGatewayEvent.ProbableWaffleAction,
         "desync-alert",
@@ -215,6 +234,8 @@ export class ProbableWaffleCommunicatorService
     this.stateHashChanged?.destroy();
     this.snapshotRequested?.destroy();
     this.snapshotResponse?.destroy();
+    this.instanceReseedRequired?.destroy();
+    this.instanceReseed?.destroy();
     this.desyncAlert?.destroy();
     this.pauseChanged?.destroy();
     this.playerDisconnected?.destroy();

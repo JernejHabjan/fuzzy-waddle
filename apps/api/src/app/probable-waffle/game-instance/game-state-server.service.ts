@@ -1,10 +1,12 @@
 import { Injectable, Logger } from "@nestjs/common";
 import {
   GameSessionState,
+  ProbableWaffleGameInstance,
   type ProbableWaffleDesyncAlertEvent,
   ProbableWaffleCommunicators,
   type ProbableWaffleCommunicatorEventUnion,
   type ProbableWaffleGameCommandEvent,
+  type ProbableWaffleInstanceReseedEvent,
   type ProbableWaffleGameInstanceMetadataChangeEvent,
   type ProbableWaffleGameModeDataChangeEvent,
   type ProbableWafflePauseChangedEvent,
@@ -33,6 +35,7 @@ import { PauseStateValidatorService } from "./pause-state-validator.service";
 export type UpdateGameStateResult =
   | { success: true }
   | { success: false; relayEmpty: false }
+  | { success: false; relayEmpty: false; reseedRequired: true }
   | { success: false; relayEmpty: true; rejectionReason: string };
 
 @Injectable()
@@ -51,13 +54,16 @@ export class GameStateServerService {
 
   updateGameState(body: ProbableWaffleCommunicatorEventUnion, user: User): UpdateGameStateResult {
     const gameInstance = this.gameInstanceService.findGameInstance(body.gameInstanceId!);
+    if (!gameInstance && body.communicator === ProbableWaffleCommunicators.InstanceReseed) {
+      return this.handleInstanceReseed(body.payload as ProbableWaffleInstanceReseedEvent, user);
+    }
     if (!gameInstance) {
       console.warn(
         `[GameStateServer] Missing game instance for communicator=${body.communicator} ` +
           `gameInstanceId=${body.gameInstanceId} user=${user.id}. ` +
           `Open instances: ${this.gameInstanceService.getOpenGameInstanceIds().join(",") || "none"}`
       );
-      return { success: false, relayEmpty: false };
+      return { success: false, relayEmpty: false, reseedRequired: true };
     }
 
     gameInstance.gameInstanceMetadata.data.updatedOn = new Date();
@@ -144,6 +150,8 @@ export class GameStateServerService {
       case ProbableWaffleCommunicators.PlayerDisconnected:
       case ProbableWaffleCommunicators.PlayerReconnected:
       case ProbableWaffleCommunicators.HostMigrated:
+      case ProbableWaffleCommunicators.InstanceReseedRequired:
+      case ProbableWaffleCommunicators.InstanceReseed:
         // Server-originated events — clients should never send these; return false to suppress relay.
         return { success: false, relayEmpty: false };
       default:
@@ -191,5 +199,28 @@ export class GameStateServerService {
     }
 
     return Number.isInteger(event.tick) && event.tick >= 0 && Number.isInteger(event.desyncedPlayerNumber);
+  }
+
+  private handleInstanceReseed(event: ProbableWaffleInstanceReseedEvent, user: User): UpdateGameStateResult {
+    const metadata = event.gameInstanceData.gameInstanceMetadataData;
+    const gameInstanceId = metadata?.gameInstanceId;
+    if (!metadata || !gameInstanceId || gameInstanceId !== event.gameInstanceId) {
+      return { success: false, relayEmpty: false };
+    }
+
+    const isHostCandidate = metadata.createdBy === user.id || metadata.currentHostUserId === user.id;
+    const isParticipant = (event.gameInstanceData.players ?? []).some(
+      (player) => player.playerControllerData?.userId === user.id
+    );
+    if (!isHostCandidate && !isParticipant) {
+      return { success: false, relayEmpty: false };
+    }
+
+    const recreated = new ProbableWaffleGameInstance(event.gameInstanceData);
+    this.gameInstanceService.addGameInstance(recreated, user);
+    this.cleanup(String(gameInstanceId));
+    this.commandValidator.allowInitialTickBootstrap(String(gameInstanceId));
+    this.logger.warn(`[InstanceReseed] Recreated missing game instance ${gameInstanceId} from client payload.`);
+    return { success: true };
   }
 }

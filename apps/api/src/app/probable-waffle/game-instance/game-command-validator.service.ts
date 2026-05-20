@@ -64,6 +64,9 @@ export class GameCommandValidatorService {
 
   // last committed tick per (gameInstanceId → playerNumber)
   private readonly lastTick = new Map<string, Map<number, number>>();
+  // Game instances recreated from client reseed can resume at high ticks.
+  // Allow a one-time high initial tick per player for those instances only.
+  private readonly allowHighInitialTickAfterReseed = new Set<string>();
 
   // rate-limit counters per (gameInstanceId → playerNumber) with rolling window
   private readonly rateBuckets = new Map<string, Map<number, { count: number; windowStart: number }>>();
@@ -125,13 +128,16 @@ export class GameCommandValidatorService {
       this.logger.warn(`[GameCommand] Stale batch: player ${playerNumber} sent tick ${tick} but last was ${prev}`);
       return { valid: false, relayEmpty: false, reason: `stale tick ${tick} (last: ${prev})` };
     }
-    if (tick > prev + GameCommandValidatorService.MAX_TICK_JUMP + 1) {
+    if (prev === -1 && this.allowHighInitialTickAfterReseed.has(instanceKey)) {
+      playerTicks.set(playerNumber, tick);
+    } else if (tick > prev + GameCommandValidatorService.MAX_TICK_JUMP + 1) {
       this.logger.warn(`[GameCommand] Tick jump too large: player ${playerNumber} jumped from ${prev} to ${tick}`);
       return { valid: false, relayEmpty: false, reason: `tick jump too large (${prev} → ${tick})` };
+    } else {
+      // Sequence accepted — record the tick now so subsequent checks can treat
+      // this slot as authoritative even if the payload turns out to be invalid.
+      playerTicks.set(playerNumber, tick);
     }
-    // Sequence accepted — record the tick now so subsequent checks can treat
-    // this slot as authoritative even if the payload turns out to be invalid.
-    playerTicks.set(playerNumber, tick);
 
     // ── Phase 2: Payload / content checks ───────────────────────────────────
     // The tick and player are now confirmed as authoritative.  Any failure
@@ -188,6 +194,11 @@ export class GameCommandValidatorService {
   cleanup(gameInstanceId: string): void {
     this.lastTick.delete(gameInstanceId);
     this.rateBuckets.delete(gameInstanceId);
+    this.allowHighInitialTickAfterReseed.delete(gameInstanceId);
+  }
+
+  allowInitialTickBootstrap(gameInstanceId: string): void {
+    this.allowHighInitialTickAfterReseed.add(gameInstanceId);
   }
 
   /**

@@ -16,6 +16,7 @@ import {
   type PlayerNumber,
   type ProbableWafflePlayerStateData,
   ProbableWaffleGatewayEvent,
+  type ProbableWaffleInstanceReseedRequiredEvent,
   type ProbableWaffleSnapshotResponseEvent,
   type ProbableWaffleWebsocketRoomEvent
 } from "@fuzzy-waddle/api-interfaces";
@@ -40,9 +41,11 @@ export class ReconnectService {
   private snapshotSub?: Subscription;
   private socketConnectHandler?: () => void;
   private socketDisconnectHandler?: (reason: string) => void;
+  private instanceReseedRequiredSub?: Subscription;
   /** Stored so destroy() can call removeListener. */
   private rawSocket?: any;
   private awaitingReconnect = false;
+  private reseedSent = false;
 
   init(scene: ProbableWaffleScene): void {
     const communicator = getCommunicator(scene);
@@ -66,6 +69,10 @@ export class ReconnectService {
         this.requestSnapshot(scene, "spectator catch-up");
       }
     }
+
+    this.instanceReseedRequiredSub = communicator.instanceReseedRequired?.on
+      .pipe(filter((event: ProbableWaffleInstanceReseedRequiredEvent) => event.reason === "missing-game-instance"))
+      .subscribe(() => this.handleInstanceReseedRequired(scene));
 
     // Hook into socket reconnect so we can re-join the room and catch up.
     const socket = communicator.activeSocket;
@@ -105,7 +112,41 @@ export class ReconnectService {
       type: "join"
     } satisfies ProbableWaffleWebsocketRoomEvent);
 
+    if (scene.isHost) {
+      // Host is authoritative and does not consume snapshot responses, so reconnect
+      // should resume immediately after room rejoin. Also push a reseed payload to
+      // restore server-side in-memory instance after backend restart.
+      this.sendInstanceReseedPayload(scene);
+      scene.events.emit("reconnect-snapshot-applied", {
+        reason: "reconnect"
+      });
+      return;
+    }
+
     this.requestSnapshot(scene, "reconnect");
+  }
+
+  private handleInstanceReseedRequired(scene: ProbableWaffleScene): void {
+    if (this.reseedSent || !this.sendInstanceReseedPayload(scene)) {
+      return;
+    }
+
+    console.warn("[Reconnect] Server requested instance reseed. Sending current game instance payload.");
+    this.requestSnapshot(scene, "reconnect");
+  }
+
+  private sendInstanceReseedPayload(scene: ProbableWaffleScene): boolean {
+    const communicator = getCommunicator(scene);
+    if (!communicator.instanceReseed) {
+      return false;
+    }
+    this.reseedSent = true;
+    communicator.instanceReseed.sendToServer({
+      gameInstanceId: scene.gameInstanceId,
+      emitterUserId: scene.userId,
+      gameInstanceData: structuredClone(scene.baseGameData.gameInstance.data)
+    });
+    return true;
   }
 
   private requestSnapshot(scene: ProbableWaffleScene, reason: string): void {
@@ -253,6 +294,7 @@ export class ReconnectService {
     if (response.reason === "desync-correction") {
       console.warn(`[DESYNC] Applied host correction snapshot at tick ${snapshot.tick}.`);
     }
+    this.reseedSent = false;
     scene.events.emit("reconnect-snapshot-applied", {
       reason: response.reason,
       tick: snapshot.tick
@@ -262,7 +304,9 @@ export class ReconnectService {
 
   destroy(): void {
     this.snapshotSub?.unsubscribe();
+    this.instanceReseedRequiredSub?.unsubscribe();
     this.awaitingReconnect = false;
+    this.reseedSent = false;
     if (this.socketConnectHandler && this.rawSocket) {
       this.rawSocket.off("connect", this.socketConnectHandler);
     }

@@ -58,16 +58,16 @@ describe("GameCommandValidatorService", () => {
     } as unknown as ProbableWaffleGameInstance;
   }
 
-  function createMoveEvent(worldX: number, worldY: number): ProbableWaffleGameCommandEvent {
+  function createMoveEvent(worldX: number, worldY: number, tick = 0): ProbableWaffleGameCommandEvent {
     return {
       gameInstanceId: "gi-1",
       emitterUserId: "user-1",
-      tick: 0,
+      tick,
       playerNumber: 1,
       commands: [
         {
           type: "MOVE",
-          tick: 0,
+          tick,
           playerNumber: 1,
           actorIds: ["actor-1"],
           tileVec3: { x: 10, y: 10, z: 0 },
@@ -229,5 +229,11 @@ describe("GameCommandValidatorService", () => {
     };
     const result = service.validate(event, createGameInstance(), { id: "user-1" } as never);
     expect(result).toEqual({ valid: false, relayEmpty: true, reason: expect.stringContaining("unknown actor") });
+  });
+
+  it("accepts high first tick after reseed bootstrap is enabled", () => {
+    service.allowInitialTickBootstrap("gi-1");
+    const result = service.validate(createMoveEvent(640, 0, 93), createGameInstance(), { id: "user-1" } as never);
+    expect(result).toEqual({ valid: true });
   });
 });
