@@ -4,7 +4,10 @@ export default class ReconnectRecoveryDialog extends ProbableWaffleScene {
   private readonly smallScreenBreakpoint = 800;
   private dialogContainer!: Phaser.GameObjects.Container;
   private messageText!: Phaser.GameObjects.Text;
+  private leaveMatchButtonBg!: Phaser.GameObjects.NineSlice;
+  private leaveMatchButtonText!: Phaser.GameObjects.Text;
   private pendingMessage?: string;
+  private pendingOnLeaveMatch?: () => void;
 
   constructor() {
     super("ReconnectRecoveryDialog");
@@ -62,7 +65,38 @@ export default class ReconnectRecoveryDialog extends ProbableWaffleScene {
     hintText.setOrigin(0.5, 0.5);
     dialogContainer.add(hintText);
 
+    const leaveMatchButtonBg = this.add.nineslice(
+      0,
+      120,
+      "gui",
+      "cryos_mini_gui/surfaces/surface_wood.png",
+      180,
+      34,
+      4,
+      4,
+      4,
+      4
+    );
+    leaveMatchButtonBg.setOrigin(0.5, 0.5);
+    leaveMatchButtonBg.setInteractive({ useHandCursor: true });
+    leaveMatchButtonBg.on("pointerdown", () => {
+      this.pendingOnLeaveMatch?.();
+    });
+    dialogContainer.add(leaveMatchButtonBg);
+
+    const leaveMatchButtonText = this.add.text(0, 120, "Leave match", {
+      align: "center",
+      color: "#ffffffff",
+      fontFamily: "disposabledroid",
+      fontSize: "16px",
+      resolution: 10
+    });
+    leaveMatchButtonText.setOrigin(0.5, 0.5);
+    dialogContainer.add(leaveMatchButtonText);
+
     this.dialogContainer = dialogContainer;
+    this.leaveMatchButtonBg = leaveMatchButtonBg;
+    this.leaveMatchButtonText = leaveMatchButtonText;
 
     this.scale.on("resize", this.resize, this);
     this.resize({ width: this.scale.width, height: this.scale.height });
@@ -72,8 +106,9 @@ export default class ReconnectRecoveryDialog extends ProbableWaffleScene {
     }
   }
 
-  setup(message: string): void {
+  setup(message: string, onLeaveMatch: () => void): void {
     this.pendingMessage = message;
+    this.pendingOnLeaveMatch = onLeaveMatch;
     if (!this.messageText) {
       return;
     }
@@ -103,6 +138,7 @@ export default class ReconnectRecoveryDialog extends ProbableWaffleScene {
   }
 
   override destroy() {
+    this.leaveMatchButtonBg?.off("pointerdown");
     this.scale.off("resize", this.resize, this);
     super.destroy();
   }

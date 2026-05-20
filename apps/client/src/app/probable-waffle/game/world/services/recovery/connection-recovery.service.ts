@@ -126,7 +126,7 @@ export class ConnectionRecoveryService {
     const simTick = this.probableWaffleScene && getSceneService(this.probableWaffleScene, SimulationTickService);
     simTick?.pauseTick("reconnect");
     this.ensureDialog();
-    this.dialog?.setup(this.buildMessage());
+    this.dialog?.setup(this.buildMessage(), this.leaveMatch);
   }
 
   private updateDialogAndPause(): void {
@@ -138,7 +138,7 @@ export class ConnectionRecoveryService {
     }
 
     this.ensureDialog();
-    this.dialog?.setup(this.buildMessage());
+    this.dialog?.setup(this.buildMessage(), this.leaveMatch);
   }
 
   private ensureDialog(): void {
@@ -204,4 +204,15 @@ export class ConnectionRecoveryService {
     const commandBus = getSceneService(this.probableWaffleScene, CommandBusService);
     commandBus?.removePlayerFromLockstep(playerNumber);
   }
+
+  private readonly leaveMatch = () => {
+    if (!this.probableWaffleScene) {
+      return;
+    }
+
+    const simTick = getSceneService(this.probableWaffleScene, SimulationTickService);
+    simTick?.resumeTick("reconnect");
+    this.closeDialog();
+    this.probableWaffleScene.communicator.allScenes.emit({ name: "quit" });
+  };
 }
