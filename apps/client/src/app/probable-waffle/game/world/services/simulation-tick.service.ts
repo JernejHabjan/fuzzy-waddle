@@ -25,6 +25,7 @@ export class SimulationTickService {
 
   private accumulated = 0;
   private readonly pauseReasons = new Set<string>();
+  private simulationTimeScale = 1;
 
   constructor(private readonly scene: Phaser.Scene) {
     scene.events.on(Phaser.Scenes.Events.UPDATE, this.onUpdate, this);
@@ -50,6 +51,18 @@ export class SimulationTickService {
   }
 
   /**
+   * Scales how quickly simulation ticks advance relative to wall-clock frame delta.
+   * Used by single-player speed controls; multiplayer should remain at 1x lockstep.
+   */
+  setSimulationTimeScale(scale: number): void {
+    if (!Number.isFinite(scale) || scale <= 0) {
+      this.simulationTimeScale = 1;
+      return;
+    }
+    this.simulationTimeScale = scale;
+  }
+
+  /**
    * Jump the sim clock to `tick` without emitting intermediate tick events.
    * Used after applying a reconnect snapshot so the command sequence stays coherent.
    */
@@ -62,7 +75,7 @@ export class SimulationTickService {
 
   private onUpdate(_time: number, delta: number): void {
     if (this.isPaused) return;
-    this.accumulated += delta;
+    this.accumulated += delta * this.simulationTimeScale;
     while (this.accumulated >= SimulationTickService.TICK_INTERVAL_MS) {
       this.accumulated -= SimulationTickService.TICK_INTERVAL_MS;
       this.currentTick++;
