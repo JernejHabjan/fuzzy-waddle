@@ -44,6 +44,8 @@ interface PendingCorrection {
   emitterUserId: string;
   playerNumber: number;
   firstDetectedTick: number;
+  lastCorrectionTick: number;
+  correctionAttempts: number;
   alertSent: boolean;
   reason?: string;
 }
@@ -92,7 +94,13 @@ export class StateHashService {
   private onTick(tick: number, scene: ProbableWaffleScene): void {
     if (tick % HASH_INTERVAL_TICKS !== 0) return;
 
-    const snapshot = this.computeHashSnapshot(scene, INCLUDE_HASH_DIAGNOSTICS_IN_STEADY_STATE);
+    // Keep steady-state payload small, but switch to rich diagnostics while any
+    // mismatch/correction flow is active so logs can explain exactly what diverged.
+    const includeDiagnostics =
+      INCLUDE_HASH_DIAGNOSTICS_IN_STEADY_STATE ||
+      this.activeMismatches.size > 0 ||
+      this.pendingCorrections.size > 0;
+    const snapshot = this.computeHashSnapshot(scene, includeDiagnostics);
     this.localHashes.set(tick, snapshot);
     this.pruneOldHashes(tick);
 
@@ -188,8 +196,11 @@ export class StateHashService {
     if (localSnapshot.hash === event.hash) {
       if (event.playerNumber !== undefined) {
         this.pendingCorrections.delete(event.playerNumber);
-        const hadMismatch = this.activeMismatches.delete(event.playerNumber);
-        if (hadMismatch) {
+        const previousMismatchReason = this.activeMismatches.get(event.playerNumber);
+        if (this.activeMismatches.delete(event.playerNumber)) {
+          console.info(
+            `[DESYNC] Player ${event.playerNumber} hash converged at tick ${event.tick}. previousReason=${previousMismatchReason ?? "unknown"}`
+          );
           scene.events.emit(ProbableWaffleSceneEventName.DesyncStateChanged, {
             playerNumber: event.playerNumber,
             state: "resolved"
@@ -214,6 +225,11 @@ export class StateHashService {
     }
 
     const diagnosticsDiff = this.collectDiagnosticsDiffs(localSnapshot.diagnostics, event.diagnostics);
+    if (diagnosticsDiff.actorDiffs.length > 0 || diagnosticsDiff.playerDiffs.length > 0 || diagnosticsDiff.researchDiff) {
+      console.warn(
+        `[DESYNC][DIFF] tick=${event.tick} remotePlayer=${event.playerNumber ?? "unknown"} actorDiffs=${diagnosticsDiff.actorDiffs.join(" || ") || "none"} playerDiffs=${diagnosticsDiff.playerDiffs.join(" || ") || "none"} researchDiff=${diagnosticsDiff.researchDiff ?? "none"}`
+      );
+    }
     scene.events.emit(ProbableWaffleSceneEventName.DesyncDiagnostics, {
       tick: event.tick,
       remotePlayerNumber: event.playerNumber,
@@ -271,6 +287,8 @@ export class StateHashService {
         emitterUserId,
         playerNumber: remotePlayerNumber,
         firstDetectedTick: currentTick,
+        lastCorrectionTick: currentTick,
+        correctionAttempts: 1,
         alertSent: false,
         reason
       });
@@ -282,6 +300,15 @@ export class StateHashService {
 
     if (reason) {
       existing.reason = reason;
+    }
+
+    if (currentTick - existing.lastCorrectionTick >= HASH_INTERVAL_TICKS) {
+      getSceneService(scene, SnapshotService)?.sendSnapshot(scene, existing.emitterUserId, "desync-correction");
+      existing.lastCorrectionTick = currentTick;
+      existing.correctionAttempts += 1;
+      console.warn(
+        `[DESYNC] Retried correction snapshot to player ${remotePlayerNumber} at tick ${tick}. attempts=${existing.correctionAttempts} reason=${existing.reason ?? "unknown"}`
+      );
     }
 
     if (existing.alertSent || currentTick - existing.firstDetectedTick < CORRECTION_GRACE_PERIOD_TICKS) {
