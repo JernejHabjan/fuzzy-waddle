@@ -125,6 +125,14 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
 
   @UseGuards(SupabaseAuthGuard)
   @SubscribeMessage(ProbableWaffleGatewayEvent.ProbableWaffleAction)
+  /**
+   * Main relay path for gameplay events.
+   *
+   * Relay policy is intentionally communicator-specific:
+   * - authoritative lockstep streams (commands, pause, desync) are room-broadcast
+   * - lobby/state metadata uses sender-excluded relay to avoid duplicate local effects
+   * - reseed payload is ingestion-only and never echoed back by default
+   */
   async broadcastProbableWaffleAction(
     @CurrentUser() user: AuthUser,
     @MessageBody() body: ProbableWaffleCommunicatorEventUnion,
@@ -280,6 +288,7 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
     }
   }
 
+  /** Promotes the next eligible human player and broadcasts both metadata and migration events. */
   private emitHostMigration(gameInstanceId: string, previousHostUserId: string): void {
     const migration = this.gameInstanceService.electReplacementHost(
       gameInstanceId,
@@ -316,6 +325,7 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
     });
   }
 
+  /** Resolves the userId being removed by a `player.left` payload so host transfer logic can react. */
   private getRemovedPlayerUserId(body: ProbableWaffleCommunicatorEventUnion): string | null {
     if (body.communicator !== ProbableWaffleCommunicators.PlayerDataChange) {
       return null;
@@ -335,6 +345,7 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
     return gameInstance?.getPlayerByNumber(playerNumber)?.playerController.data.userId ?? null;
   }
 
+  /** True when this action removes a player or spectator from the game instance. */
   private isParticipantLeaving(body: ProbableWaffleCommunicatorEventUnion): boolean {
     if (body.communicator === ProbableWaffleCommunicators.PlayerDataChange) {
       return (body.payload as ProbableWafflePlayerDataChangeEvent).property === "left";
@@ -345,6 +356,11 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
     return false;
   }
 
+  /**
+   * Handles side effects of departures:
+   * - host migration when the current host left
+   * - forced game stop when no human players remain
+   */
   private handleParticipantLeft(gameInstanceId: string, roomId: string, removedPlayerUserId: string | null): void {
     const gameInstance = this.gameInstanceService.findGameInstance(gameInstanceId);
     if (!gameInstance) {

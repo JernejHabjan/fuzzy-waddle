@@ -126,6 +126,11 @@ export class ReconnectService {
     this.requestSnapshot(scene, "reconnect");
   }
 
+  /**
+   * Handles server "instance missing" signal after backend restart.
+   *
+   * The goal is to restore authoritative server-side state first, then request a fresh snapshot.
+   */
   private handleInstanceReseedRequired(scene: ProbableWaffleScene): void {
     if (this.reseedSent || !this.sendInstanceReseedPayload(scene)) {
       return;
@@ -135,6 +140,7 @@ export class ReconnectService {
     this.requestSnapshot(scene, "reconnect");
   }
 
+  /** Sends a full game-instance payload so the API can recreate missing in-memory state. */
   private sendInstanceReseedPayload(scene: ProbableWaffleScene): boolean {
     const communicator = getCommunicator(scene);
     if (!communicator.instanceReseed) {

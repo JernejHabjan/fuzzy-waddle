@@ -238,6 +238,16 @@ If the 60s grace timer expires without reconnect → server broadcasts playerLef
 
 ---
 
+## Authority assumptions (important)
+
+- There is **no external truth source** (no server simulation / no authoritative state machine on backend).
+- Deterministic lockstep means "truth" is the room's consensus stream, not one perfect machine snapshot.
+- For operational decisions that need one coordinator (host migration, desync recovery actions, snapshot serving),
+  the current host is treated as the coordinator and relay authority.
+- This is why desync-recovery control flow is host-driven even though state execution remains client-deterministic.
+
+---
+
 ## Server Validations
 
 Server rejects batches silently (no relay). What the client sees: **the batch is never applied**.

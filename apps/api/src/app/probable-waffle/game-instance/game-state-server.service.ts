@@ -160,6 +160,7 @@ export class GameStateServerService {
     return { success: true };
   }
 
+  /** Clears validator/history state when an instance ends or is recreated. */
   cleanup(gameInstanceId: string): void {
     this.commandValidator.cleanup(gameInstanceId);
     this.playerStateValidator.cleanup(gameInstanceId);
@@ -167,6 +168,7 @@ export class GameStateServerService {
     this.recentCommandHistory.delete(gameInstanceId);
   }
 
+  /** Appends one committed batch to rolling history used for reconnect command-tail replay. */
   private recordCommand(event: ProbableWaffleGameCommandEvent): void {
     const history = this.recentCommandHistory.get(event.gameInstanceId) ?? [];
     history.push(structuredClone(event));
@@ -181,12 +183,14 @@ export class GameStateServerService {
     this.recentCommandHistory.set(event.gameInstanceId, history);
   }
 
+  /** Returns post-snapshot batches so a reconnecting client can catch up deterministically. */
   private getCommandTail(gameInstanceId: string, snapshotTick: number): ProbableWaffleGameCommandEvent[] {
     return (this.recentCommandHistory.get(gameInstanceId) ?? [])
       .filter((event) => event.tick > snapshotTick)
       .map((event) => structuredClone(event));
   }
 
+  /** Accept desync alerts only from the current host; all other senders are rejected. */
   private validateDesyncAlert(
     event: ProbableWaffleDesyncAlertEvent,
     gameInstance: ReturnType<GameInstanceService["findGameInstance"]>,
@@ -201,6 +205,11 @@ export class GameStateServerService {
     return Number.isInteger(event.tick) && event.tick >= 0 && Number.isInteger(event.desyncedPlayerNumber);
   }
 
+  /**
+   * Recreates a missing in-memory game instance after backend restart.
+   *
+   * This path exists so reconnect can recover without requiring a new lobby/match bootstrap.
+   */
   private handleInstanceReseed(event: ProbableWaffleInstanceReseedEvent, user: User): UpdateGameStateResult {
     const metadata = event.gameInstanceData.gameInstanceMetadataData;
     const gameInstanceId = metadata?.gameInstanceId;
