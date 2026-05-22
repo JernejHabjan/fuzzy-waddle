@@ -57,6 +57,8 @@ export class ReconnectService {
     // Receive snapshot responses.  The host's SnapshotService echoes the snapshot
     // back to all clients; only the one that actually requested it should apply it.
     // We gate on whether we are NOT the host — hosts serve, non-hosts apply.
+    // Gateway now routes snapshot responses directly to targetUserId, but this
+    // guard is intentionally kept for compatibility with older relay behavior.
     if (!scene.isHost) {
       this.snapshotSub = communicator.snapshotResponse.on.subscribe((e: ProbableWaffleSnapshotResponseEvent) => {
         if (e.targetUserId !== scene.userId) {
@@ -132,6 +134,12 @@ export class ReconnectService {
    * The goal is to restore authoritative server-side state first, then request a fresh snapshot.
    */
   private handleInstanceReseedRequired(scene: ProbableWaffleScene): void {
+    if (!scene.isHost) {
+      console.warn(
+        "[Reconnect] Server requested reseed on non-host client. Waiting for host reseed before requesting snapshot."
+      );
+      return;
+    }
     if (this.reseedSent || !this.sendInstanceReseedPayload(scene)) {
       return;
     }

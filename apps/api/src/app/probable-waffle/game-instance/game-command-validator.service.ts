@@ -19,10 +19,12 @@ import type { User } from "@supabase/supabase-js";
  * - `{ valid: false, relayEmpty: true,  reason }` — the player and tick are
  *   authoritative but the payload is bad; relay an empty batch so the lockstep
  *   barrier can advance without desync.
- * - `{ valid: false, relayEmpty: false, reason }` — security / sequence
+ * - `{ valid: false, relayEmpty: false, reason }` — security / ownership
  *   violation; drop the message entirely (no relay of any kind).
  */
-export type GameCommandValidationResult = { valid: true } | { valid: false; relayEmpty: boolean; reason: string };
+export type GameCommandValidationResult =
+  | { valid: true }
+  | { valid: false; relayEmpty: boolean; reason: string; overrideTick?: number };
 
 /**
  * Cheap server-side validation for incoming command batches.
@@ -30,9 +32,9 @@ export type GameCommandValidationResult = { valid: true } | { valid: false; rela
  * The server never runs the simulation, so it can only check:
  *   1. Player ownership  — the JWT user must own the playerNumber they're
  *      submitting commands for.
- *   2. Sequence numbers — each player's tick must advance monotonically
- *      (prevents replaying old batches or submitting far-future ticks).
- *      Failures here are security/protocol violations → DROP (no relay).
+ *   2. Sequence numbers — each player's tick must advance monotonically.
+ *      On sequence mismatch, server relays an empty batch for the next
+ *      canonical tick so lockstep does not stall permanently.
  *   3. Rate limiting     — at most MAX_BATCHES_PER_SECOND batches per player
  *      per second; once the tick is confirmed authoritative, excess batches
  *      are replaced with an empty relay rather than dropped, so the lockstep
@@ -111,28 +113,49 @@ export class GameCommandValidatorService {
       }
     }
 
-    // 1b. Tick must be a valid non-negative integer.
-    if (!Number.isInteger(tick) || tick < 0) {
-      this.logger.warn(`[GameCommand] Invalid tick ${tick} from player ${playerNumber}`);
-      return { valid: false, relayEmpty: false, reason: `invalid tick value ${tick}` };
-    }
-
-    // 1c. Sequence: tick must advance (never go backwards, never jump too far).
+    // 1b. Sequence: tick must advance (never go backwards, never jump too far).
     //     Advance the sequence tracker only after ownership is confirmed so a
     //     forged packet cannot poison another player's sequence state.
     const instanceKey = String(gameInstanceId);
     if (!this.lastTick.has(instanceKey)) this.lastTick.set(instanceKey, new Map());
     const playerTicks = this.lastTick.get(instanceKey)!;
     const prev = playerTicks.get(playerNumber) ?? -1;
+    const canonicalTick = prev + 1;
+
+    // Invalid ticks are converted into empty commits for the next canonical tick
+    // so peers do not block forever on a missing slot from this player.
+    if (!Number.isInteger(tick) || tick < 0) {
+      this.logger.warn(`[GameCommand] Invalid tick ${tick} from player ${playerNumber}`);
+      playerTicks.set(playerNumber, canonicalTick);
+      return {
+        valid: false,
+        relayEmpty: true,
+        reason: `invalid tick value ${tick}`,
+        overrideTick: canonicalTick
+      };
+    }
+
     if (tick <= prev) {
       this.logger.warn(`[GameCommand] Stale batch: player ${playerNumber} sent tick ${tick} but last was ${prev}`);
-      return { valid: false, relayEmpty: false, reason: `stale tick ${tick} (last: ${prev})` };
+      playerTicks.set(playerNumber, canonicalTick);
+      return {
+        valid: false,
+        relayEmpty: true,
+        reason: `stale tick ${tick} (last: ${prev})`,
+        overrideTick: canonicalTick
+      };
     }
     if (prev === -1 && this.allowHighInitialTickAfterReseed.has(instanceKey)) {
       playerTicks.set(playerNumber, tick);
     } else if (tick > prev + GameCommandValidatorService.MAX_TICK_JUMP + 1) {
       this.logger.warn(`[GameCommand] Tick jump too large: player ${playerNumber} jumped from ${prev} to ${tick}`);
-      return { valid: false, relayEmpty: false, reason: `tick jump too large (${prev} → ${tick})` };
+      playerTicks.set(playerNumber, canonicalTick);
+      return {
+        valid: false,
+        relayEmpty: true,
+        reason: `tick jump too large (${prev} → ${tick})`,
+        overrideTick: canonicalTick
+      };
     } else {
       // Sequence accepted — record the tick now so subsequent checks can treat
       // this slot as authoritative even if the payload turns out to be invalid.

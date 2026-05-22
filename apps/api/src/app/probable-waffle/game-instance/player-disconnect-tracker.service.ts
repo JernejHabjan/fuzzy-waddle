@@ -102,13 +102,18 @@ export class PlayerDisconnectTrackerService {
   }
 
   private cancelPendingEvictionForPlayer(userId: UserId, gameInstanceId: GameInstanceId): void {
+    let cancelled = 0;
     for (const [sid, entry] of this.pendingEvictions.entries()) {
       if (entry.userId === userId && entry.gameInstanceId === gameInstanceId) {
         clearTimeout(entry.timer);
         this.pendingEvictions.delete(sid);
-        console.log(`[Reconnect] Player ${userId} reconnected to game ${gameInstanceId} within grace window.`);
-        break;
+        cancelled++;
       }
+    }
+    if (cancelled > 0) {
+      console.log(
+        `[Reconnect] Player ${userId} reconnected to game ${gameInstanceId} within grace window. Cleared ${cancelled} pending eviction timer(s).`
+      );
     }
   }
 
@@ -128,6 +133,20 @@ export class PlayerDisconnectTrackerService {
       }
     }
     return false;
+  }
+
+  /**
+   * Returns all currently active socket IDs for a player in one game instance.
+   * Used for targeted relays (e.g. snapshot response to one reconnecting user).
+   */
+  getActiveSocketIdsForPlayer(userId: UserId, gameInstanceId: GameInstanceId): string[] {
+    const socketIds: string[] = [];
+    for (const [socketId, player] of this.socketToPlayer.entries()) {
+      if (player.userId === userId && player.gameInstanceId === gameInstanceId) {
+        socketIds.push(socketId);
+      }
+    }
+    return socketIds;
   }
 
 }

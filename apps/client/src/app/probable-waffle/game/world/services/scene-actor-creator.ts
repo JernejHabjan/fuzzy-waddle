@@ -39,9 +39,7 @@ export class SceneActorCreator {
   private readonly loadGame: LoadGame;
   private readonly actorIdAuthority: ActorIdAuthorityService;
   private readonly lifecycleBoundActors = new WeakSet<GameObject>();
-  private pendingHostActorSyncTimeout: ReturnType<typeof setTimeout> | undefined;
   constructor(private readonly scene: GameProbableWaffleScene) {
-    this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
     this.loadGame = new LoadGame(scene as GameProbableWaffleScene);
     this.actorIdAuthority = new ActorIdAuthorityService(scene);
   }
@@ -217,7 +215,7 @@ export class SceneActorCreator {
     const actorIndex = getSceneService(this.scene, ActorIndexSystem);
     actorIndex?.registerActor(actor);
     this.saveActorToGameState(actor);
-    this.scheduleHostActorSync();
+    this.syncHostActorState();
   }
 
   public saveAllKnownActorsToGameState() {
@@ -296,29 +294,19 @@ export class SceneActorCreator {
     }
 
     actors.splice(actorIndex, 1);
-    this.scheduleHostActorSync();
+    this.syncHostActorState();
   }
 
-  private scheduleHostActorSync() {
+  /**
+   * Host-only actor sync must happen immediately so server validation can
+   * see newly created/destroyed actors in the same tick as command ingest.
+   */
+  private syncHostActorState() {
     if (!this.scene.isHost || !hasMultiplayerCommandRelay(this.scene)) {
       return;
     }
 
-    if (this.pendingHostActorSyncTimeout !== undefined) {
-      return;
-    }
-
-    this.pendingHostActorSyncTimeout = setTimeout(() => {
-      this.pendingHostActorSyncTimeout = undefined;
-      this.saveAllKnownActorsToGameState();
-    }, 0);
-  }
-
-  private destroy() {
-    if (this.pendingHostActorSyncTimeout !== undefined) {
-      clearTimeout(this.pendingHostActorSyncTimeout);
-      this.pendingHostActorSyncTimeout = undefined;
-    }
+    this.saveAllKnownActorsToGameState();
   }
 
   private spawnActorsFromSpawnList(spawn: Spawn) {

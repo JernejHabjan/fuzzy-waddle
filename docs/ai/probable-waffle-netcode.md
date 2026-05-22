@@ -197,7 +197,7 @@ Client re-joins socket.io room
        │
        ▼
 Host SnapshotService captures full state + command tail (last 1024 batches)
-  → sends snapshotResponse to reconnecting client
+  → sends snapshotResponse targeted to reconnecting client only
 
        │
        ▼
@@ -216,6 +216,15 @@ ConnectionRecoveryService:
 
 If the 60s grace timer expires without reconnect → server broadcasts playerLeft
 → `CommandBusService.removePlayerFromLockstep(playerNumber)` — game continues without them.
+
+---
+
+## Backend restart reseed
+
+- If server memory loses a game instance, next incoming action triggers `instance-reseed-required`.
+- This signal is room-broadcast so the current host can react even when another player was the original sender.
+- Only the current host may submit `instance-reseed` payloads; non-host reseed attempts are rejected.
+- Clients wait for host reseed, then continue normal snapshot recovery.
 
 ---
 
@@ -250,9 +259,11 @@ If the 60s grace timer expires without reconnect → server broadcasts playerLef
 
 ## Server Validations
 
-Server rejects batches silently (no relay). What the client sees: **the batch is never applied**.
-In multiplayer lockstep this means other clients committed for that tick but the source player's
-batch never arrives → `pauseTick("lockstep")` stall on all peers → visible freeze.
+Validation outcomes are split into two categories:
+
+- **Drop (no relay):** ownership/security violations.
+- **Relay empty commit:** tick slot is still authoritative, but payload/sequence is invalid.
+  Server relays an empty batch (with rejection reason) so lockstep keeps advancing.
 
 | Validation              | Limit / rule                                              |
 |-------------------------|-----------------------------------------------------------|
@@ -265,11 +276,17 @@ batch never arrives → `pauseTick("lockstep")` stall on all peers → visible f
 | **Command type**        | Must be one of: MOVE, ACTOR_ACTION, STOP, PRODUCTION, CANCEL_PRODUCTION, RESEARCH, CANCEL_RESEARCH |
 | **Payload fields**      | Type-specific field checks (vectors, queue flag, actorName, researchType) |
 
-**Frontend effect of a rejected batch:**  
-The sending client never receives its own batch echoed back. Its command is silently lost.
-Other clients stall on `"lockstep"` waiting for the missing tick. After ~150ms the stall is
-logged as a warning. After the stall resolves via an empty heartbeat (if any), the commands
-are simply absent — actors don't move.
+**Frontend effect of a rejected payload/sequence batch:**  
+The sender receives an echoed empty batch with `rejectionReason`, tick still commits, and the
+invalid commands are absent from execution. Ownership/security violations are still hard-dropped.
+
+---
+
+## State-hash payload policy
+
+- Hashes are exchanged every second as before.
+- Per-actor diagnostics payload is disabled in steady state to reduce network volume.
+- When diagnostics are absent, desync reason logs fall back to generic mismatch reporting.
 
 ---
 

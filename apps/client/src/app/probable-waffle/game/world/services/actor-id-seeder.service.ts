@@ -127,8 +127,10 @@ export class ActorIdSeeder {
   private patchActorIds(actorDefs: Partial<ActorDefinition>[]): void {
     // Build host lookup: key → ordered array of defs (supports duplicate keys).
     const lookup = new Map<string, Partial<ActorDefinition>[]>();
+    const duplicateKeys = new Set<string>();
     const hostActorIds = new Set<string>();
     const remappedIds = new Map<string, string>();
+    const loggedAmbiguousKeys = new Set<string>();
     for (const def of actorDefs) {
       const id = def.id?.id;
       const name = def.name;
@@ -139,6 +141,7 @@ export class ActorIdSeeder {
       const key = seederKey(name, owner, pos.x, pos.y);
       const existing = lookup.get(key) ?? [];
       if (existing.length > 0) {
+        duplicateKeys.add(key);
         console.warn(
           `[ActorIdSeeder] Duplicate seeder key "${key}" — ${existing.length + 1} defs share same (name, owner, pos). IDs matched by arrival order.`
         );
@@ -175,7 +178,17 @@ export class ActorIdSeeder {
         const authId = def.id?.id;
         let localActor = authId ? localActorsById.get(authId) : undefined;
         if (!localActor) {
-          localActor = unmatchedChildren.get(key)?.shift();
+          // Existing comment documents legacy order-based matching for duplicates.
+          // To avoid incorrect remaps when order diverges between peers, skip
+          // positional fallback for ambiguous keys and create from host data instead.
+          if (!duplicateKeys.has(key)) {
+            localActor = unmatchedChildren.get(key)?.shift();
+          } else if (!loggedAmbiguousKeys.has(key)) {
+            loggedAmbiguousKeys.add(key);
+            console.warn(
+              `[ActorIdSeeder] Ambiguous key "${key}" will not use order-based fallback; actors are recreated from authoritative definitions.`
+            );
+          }
         } else {
           this.removeActorFromUnmatched(localActor, unmatchedChildren, actorToSeederKey);
         }
@@ -196,9 +209,6 @@ export class ActorIdSeeder {
         if (creator && def.name) {
           const created = creator.createActorFromDefinition(def as ActorDefinition);
           const createdId = created ? getActorComponent(created, IdComponent)?.id : undefined;
-          if (created) {
-            actorIndex?.registerActor(created);
-          }
           if (created && createdId && authId && createdId !== authId) {
             remappedIds.set(createdId, authId);
             getActorComponent(created, IdComponent)?.setId(authId);

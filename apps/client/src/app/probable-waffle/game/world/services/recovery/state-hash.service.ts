@@ -35,6 +35,7 @@ const HASH_INTERVAL_TICKS = 20;
  */
 const HASH_STORE_TICKS = 120;
 const CORRECTION_GRACE_PERIOD_TICKS = 100;
+const INCLUDE_HASH_DIAGNOSTICS_IN_STEADY_STATE = false;
 
 interface PendingCorrection {
   emitterUserId: string;
@@ -102,7 +103,7 @@ export class StateHashService {
       tick,
       playerNumber,
       hash: snapshot.hash,
-      diagnostics: snapshot.diagnostics
+      diagnostics: INCLUDE_HASH_DIAGNOSTICS_IN_STEADY_STATE ? snapshot.diagnostics : undefined
     });
   }
 

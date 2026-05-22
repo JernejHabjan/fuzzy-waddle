@@ -28,7 +28,8 @@ import { PauseStateValidatorService } from "./pause-state-validator.service";
  * - `{ success: true }` — state updated; relay the event to peers.
  * - `{ success: false, relayEmpty: true, rejectionReason }` — tick is
  *   authoritative but payload was invalid; relay an empty batch so the
- *   lockstep barrier can advance without freeze.
+ *   lockstep barrier can advance without freeze (`overrideTick` is used when
+ *   sender tick had to be normalized to canonical sequence).
  * - `{ success: false, relayEmpty: false }` — security/protocol violation;
  *   drop the message entirely (no relay).
  */
@@ -36,7 +37,7 @@ export type UpdateGameStateResult =
   | { success: true }
   | { success: false; relayEmpty: false }
   | { success: false; relayEmpty: false; reseedRequired: true }
-  | { success: false; relayEmpty: true; rejectionReason: string };
+  | { success: false; relayEmpty: true; rejectionReason: string; overrideTick?: number };
 
 @Injectable()
 export class GameStateServerService {
@@ -111,10 +112,16 @@ export class GameStateServerService {
         );
         if (!validationResult.valid) {
           if (validationResult.relayEmpty) {
+            const relayTick = validationResult.overrideTick ?? cmdEvent.tick;
             // Tick is authoritative but payload failed — record an empty batch
             // in command history so reconnecting clients don't stall on a missing tick.
-            this.recordCommand({ ...cmdEvent, commands: [] });
-            return { success: false, relayEmpty: true, rejectionReason: validationResult.reason };
+            this.recordCommand({ ...cmdEvent, tick: relayTick, commands: [] });
+            return {
+              success: false,
+              relayEmpty: true,
+              rejectionReason: validationResult.reason,
+              overrideTick: validationResult.overrideTick
+            };
           }
           // Security/sequence violation — drop entirely.
           return { success: false, relayEmpty: false };
@@ -130,7 +137,13 @@ export class GameStateServerService {
         // Server holds no snapshot state — routing only.
         break;
       case ProbableWaffleCommunicators.SnapshotResponse:
-        // Response is relayed to all peers (only the requester will consume it via userId filter).
+        if (this.getCurrentHostUserId(gameInstance) !== user.id) {
+          this.logger.warn(
+            `[GameStateServer] Rejected snapshot-response from non-host user=${user.id} gameInstanceId=${body.gameInstanceId}`
+          );
+          return { success: false, relayEmpty: false };
+        }
+        // Response is routed by gateway to target user only.
         const snapshotResponse = body.payload as ProbableWaffleSnapshotResponseEvent;
         snapshotResponse.commandTail = this.getCommandTail(
           gameInstance.gameInstanceMetadata.data.gameInstanceId!,
@@ -196,8 +209,7 @@ export class GameStateServerService {
     gameInstance: ReturnType<GameInstanceService["findGameInstance"]>,
     user: User
   ): boolean {
-    const currentHostUserId =
-      gameInstance?.gameInstanceMetadata.data.currentHostUserId ?? gameInstance?.gameInstanceMetadata.data.createdBy;
+    const currentHostUserId = gameInstance ? this.getCurrentHostUserId(gameInstance) : undefined;
     if (currentHostUserId !== user.id) {
       return false;
     }
@@ -217,11 +229,8 @@ export class GameStateServerService {
       return { success: false, relayEmpty: false };
     }
 
-    const isHostCandidate = metadata.createdBy === user.id || metadata.currentHostUserId === user.id;
-    const isParticipant = (event.gameInstanceData.players ?? []).some(
-      (player) => player.playerControllerData?.userId === user.id
-    );
-    if (!isHostCandidate && !isParticipant) {
+    const authoritativeHostUserId = metadata.currentHostUserId ?? metadata.createdBy;
+    if (authoritativeHostUserId !== user.id) {
       return { success: false, relayEmpty: false };
     }
 
@@ -231,5 +240,9 @@ export class GameStateServerService {
     this.commandValidator.allowInitialTickBootstrap(String(gameInstanceId));
     this.logger.warn(`[InstanceReseed] Recreated missing game instance ${gameInstanceId} from client payload.`);
     return { success: true };
+  }
+
+  private getCurrentHostUserId(gameInstance: ProbableWaffleGameInstance): string | null | undefined {
+    return gameInstance.gameInstanceMetadata.data.currentHostUserId ?? gameInstance.gameInstanceMetadata.data.createdBy;
   }
 }

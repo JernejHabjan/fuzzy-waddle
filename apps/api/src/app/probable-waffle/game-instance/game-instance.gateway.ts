@@ -24,6 +24,7 @@ import {
   type ProbableWafflePlayerDisconnectedEvent,
   ProbableWafflePlayerType,
   type ProbableWafflePlayerReconnectedEvent,
+  type ProbableWaffleSnapshotResponseEvent,
   type ProbableWaffleSpectatorDataChangeEvent,
   type ProbableWaffleWebsocketRoomEvent
 } from "@fuzzy-waddle/api-interfaces";
@@ -152,6 +153,9 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
         this.server.to(roomId).emit(ProbableWaffleGatewayEvent.ProbableWaffleAction, body);
       } else if (body.communicator === ProbableWaffleCommunicators.InstanceReseed) {
         // Reseed payload is server-ingestion only; do not rebroadcast full instance blobs.
+      } else if (body.communicator === ProbableWaffleCommunicators.SnapshotResponse) {
+        const payload = body.payload as ProbableWaffleSnapshotResponseEvent;
+        this.emitTargetedActionToUser(roomId, payload.targetUserId, body);
       } else if (
         body.communicator === ProbableWaffleCommunicators.PauseChanged ||
         body.communicator === ProbableWaffleCommunicators.DesyncAlert
@@ -167,7 +171,7 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
         this.handleParticipantLeft(body.gameInstanceId!, roomId, removedPlayerUserId);
       }
     } else if (!result.success && result.relayEmpty === false && "reseedRequired" in result && result.reseedRequired) {
-      socket.emit(ProbableWaffleGatewayEvent.ProbableWaffleAction, {
+      this.server.to(roomId).emit(ProbableWaffleGatewayEvent.ProbableWaffleAction, {
         gameInstanceId: body.gameInstanceId,
         communicator: ProbableWaffleCommunicators.InstanceReseedRequired,
         payload: {
@@ -184,6 +188,7 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
         ...body,
         payload: {
           ...payload,
+          tick: result.overrideTick ?? payload.tick,
           commands: [],
           rejectionReason: result.rejectionReason
         } satisfies ProbableWaffleGameCommandEvent
@@ -285,6 +290,24 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
         break;
       default:
         throw new Error("Ashes of the Ancients - Web socket room broadcast - unknown communicator");
+    }
+  }
+
+  private emitTargetedActionToUser(
+    roomId: string,
+    targetUserId: string,
+    body: ProbableWaffleCommunicatorEventUnion
+  ): void {
+    const socketIds = this.disconnectTracker.getActiveSocketIdsForPlayer(targetUserId, body.gameInstanceId!);
+    if (socketIds.length === 0) {
+      console.warn(
+        `[Gateway] Unable to deliver targeted ${body.communicator} for game=${body.gameInstanceId} targetUser=${targetUserId}: no active socket in room ${roomId}`
+      );
+      return;
+    }
+
+    for (const socketId of socketIds) {
+      this.server.to(socketId).emit(ProbableWaffleGatewayEvent.ProbableWaffleAction, body);
     }
   }
 

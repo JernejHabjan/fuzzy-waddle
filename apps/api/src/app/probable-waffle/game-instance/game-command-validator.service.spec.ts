@@ -187,14 +187,19 @@ describe("GameCommandValidatorService", () => {
     expect(result).toEqual({ valid: false, relayEmpty: false, reason: expect.any(String) });
   });
 
-  it("drops (no relay) on stale tick", () => {
+  it("relays empty on stale tick using canonical next tick", () => {
     const instance = createGameInstance();
     const user = { id: "user-1" } as never;
     // First batch establishes tick 0
     service.validate(createMoveEvent(640, 0), instance, user);
     // Repeat tick 0 — must be dropped
     const result = service.validate(createMoveEvent(640, 0), instance, user);
-    expect(result).toEqual({ valid: false, relayEmpty: false, reason: expect.stringContaining("stale tick") });
+    expect(result).toEqual({
+      valid: false,
+      relayEmpty: true,
+      reason: expect.stringContaining("stale tick"),
+      overrideTick: 1
+    });
   });
 
   it("relays empty on unknown command type (payload error)", () => {
