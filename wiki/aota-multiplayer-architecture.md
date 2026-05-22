@@ -28,7 +28,7 @@ It is written for maintainers and future LLM-assisted changes.
 | Client lockstep core            | `apps/client/src/app/probable-waffle/game/world/services/command-bus.service.ts`         |
 | Client snapshot/reconnect       | `apps/client/src/app/probable-waffle/game/world/services/recovery/reconnect.service.ts`  |
 | Client desync/hash              | `apps/client/src/app/probable-waffle/game/world/services/recovery/state-hash.service.ts` |
-| Client actor-id authority       | `apps/client/src/app/probable-waffle/game/world/services/actor-id-seeder.service.ts`     |
+| Client actor-id authority       | `apps/client/src/app/probable-waffle/game/world/services/actor-id-authority.service.ts`   |
 | Server gateway relay policy     | `apps/api/src/app/probable-waffle/game-instance/game-instance.gateway.ts`                |
 | Server event validation/state   | `apps/api/src/app/probable-waffle/game-instance/game-state-server.service.ts`            |
 | Server command validation       | `apps/api/src/app/probable-waffle/game-instance/game-command-validator.service.ts`       |
@@ -184,7 +184,7 @@ Only deterministic state should influence lockstep validation, hashes, and snaps
 | `GameCommandValidatorService.allowInitialTickBootstrap(...)`      | Allows first post-reseed high tick so recreated instances do not fail sequence gate immediately.                         |
 | `PlayerDisconnectTrackerService.getActiveSocketIdsForPlayer(...)` | Enables targeted relay to a user that may have multiple active sockets.                                                  |
 | `SceneActorCreator.syncHostActorState()`                          | Immediate host actor-state sync after create/destroy to reduce validation races against actor index updates.             |
-| `ActorIdSeeder` ambiguous-key handling                            | Avoids unsafe order-based fallback when duplicate `(name, owner, position)` keys exist; recreates from host definitions. |
+| `ActorIdAuthorityService.createDeterministicId(...)`              | Derives actor IDs from shared simulation context so all peers compute identical IDs without host seed patching.            |
 | `StateHashService` diagnostics toggle                             | Reduces steady-state network volume by not shipping full diagnostics on every hash tick.                                 |
 
 ---
@@ -210,9 +210,7 @@ Treat this as a medium-trust multiplayer model, not a zero-trust competitive aut
   - relay scope (room vs targeted vs ingestion-only),
   - lockstep effect (commit vs control-plane only).
 4. Keep reconnect and desync pause reasons independent (`snapshot-restore`, `reconnect`, `desync`, `desync-correction`).
-5. If you change actor identity matching, update both:
-  - actor-id seeding behavior,
-  - selection/remap paths.
+5. If you change actor identity generation, keep deterministic-ID basis stable across peers and preserve replay/snapshot IDs when explicitly provided.
 
 ---
 

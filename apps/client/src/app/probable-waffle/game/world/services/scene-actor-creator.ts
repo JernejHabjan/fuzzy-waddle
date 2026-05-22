@@ -58,8 +58,7 @@ export class SceneActorCreator {
     } else {
       this.spawnFromSpawnList();
     }
-    // Only the host broadcasts the canonical actor-id seed to peers.
-    // Non-host clients receive it via ActorIdSeeder and patch their own objects.
+    // Host mirrors canonical actor state to server for validation/recovery flows.
     if (this.scene.isHost) {
       this.saveAllKnownActorsToGameState();
     }
