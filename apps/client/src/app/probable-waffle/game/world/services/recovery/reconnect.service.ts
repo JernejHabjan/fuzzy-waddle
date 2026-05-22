@@ -13,6 +13,7 @@ import { OwnerComponent } from "../../../entity/components/owner-component";
 import { getGameObjectLogicalTransform } from "../../../data/game-object-helper";
 import {
   type ActorDefinition,
+  GameSessionState,
   type PlayerNumber,
   type ProbableWafflePlayerStateData,
   ProbableWaffleGatewayEvent,
@@ -178,11 +179,27 @@ export class ReconnectService {
   }
 
   private onSocketDisconnect(scene: ProbableWaffleScene, reason: string): void {
+    if (!this.shouldHandleReconnectFlow(scene)) {
+      // Ignore disconnects during pre-game startup/lobby transitions.
+      // Those reconnects should not force a snapshot restore because simulation
+      // has not started yet and a fresh startup seed/metadata sync is sufficient.
+      return;
+    }
     this.awaitingReconnect = true;
     scene.events.emit(ProbableWaffleSceneEventName.LocalConnectionLost, {
       playerNumber: scene.playerOrNull?.playerNumber ?? scene.player?.playerNumber,
       reason
     });
+  }
+
+  /**
+   * Restricts reconnect snapshot flow to active gameplay phases.
+   * This avoids unnecessary startup snapshot restores while players are still
+   * joining/loading and no in-progress simulation state needs correction.
+   */
+  private shouldHandleReconnectFlow(scene: ProbableWaffleScene): boolean {
+    const sessionState = scene.baseGameData.gameInstance.gameInstanceMetadata.data.sessionState;
+    return sessionState === GameSessionState.InProgress || sessionState === GameSessionState.ToScoreScreen;
   }
 
   private applySnapshot(scene: ProbableWaffleScene, response: ProbableWaffleSnapshotResponseEvent): void {

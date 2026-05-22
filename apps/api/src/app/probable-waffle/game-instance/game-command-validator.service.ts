@@ -136,7 +136,10 @@ export class GameCommandValidatorService {
     }
 
     if (tick <= prev) {
-      this.logger.warn(`[GameCommand] Stale batch: player ${playerNumber} sent tick ${tick} but last was ${prev}`);
+      this.logger.warn(
+        `[GameCommand] Stale batch: game=${gameInstanceId} player=${playerNumber} user=${user.id} emitter=${event.emitterUserId ?? "n/a"} ` +
+          `sentTick=${tick} lastAcceptedTick=${prev} canonicalNextTick=${canonicalTick} commandCount=${commands.length}`
+      );
       playerTicks.set(playerNumber, canonicalTick);
       return {
         valid: false,

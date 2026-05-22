@@ -106,14 +106,28 @@ export class ActorIdSeeder {
     this.hostBroadcastHandle = window.setInterval(rebroadcast, 500);
   }
 
-  /** Applies one authoritative host seed and then detaches from further seed traffic. */
+  /**
+   * Applies authoritative host seed traffic during startup.
+   *
+   * Host can briefly publish partial actor lists while the map is still materializing.
+   * We keep listening until the host seed is at least as complete as the local indexed actor set,
+   * then finalize and detach to avoid mutating running in-progress state.
+   */
   private applyAuthoritativeSeed(actorDefs: Partial<ActorDefinition>[]): void {
-    this.patchActorIds(actorDefs);
+    const localActorCount = this.getLocalActorCount();
+    const authoritativeSeedLooksComplete = actorDefs.length >= localActorCount;
+
+    // Avoid noisy "orphan" logs while startup seeding is still incomplete.
+    this.patchActorIds(actorDefs, authoritativeSeedLooksComplete);
 
     const currentGameState = this.scene.baseGameData.gameInstance.gameState?.data;
     const nextGameState = new ProbableWaffleGameState(currentGameState);
     nextGameState.data.actors = structuredClone(actorDefs) as ActorDefinition[];
     this.scene.baseGameData.gameInstance.gameState = nextGameState;
+
+    if (!authoritativeSeedLooksComplete) {
+      return;
+    }
 
     this.seededAuthoritativeIds = true;
     this.subscription?.unsubscribe();
@@ -129,7 +143,7 @@ export class ActorIdSeeder {
    * are consumed in arrival order — so both sides must iterate in the same
    * deterministic spawn order for disambiguation to work.
    */
-  private patchActorIds(actorDefs: Partial<ActorDefinition>[]): void {
+  private patchActorIds(actorDefs: Partial<ActorDefinition>[], logOrphans: boolean): void {
     // Build host lookup: key → ordered array of defs (supports duplicate keys).
     const lookup = new Map<string, Partial<ActorDefinition>[]>();
     const duplicateKeys = new Set<string>();
@@ -227,7 +241,7 @@ export class ActorIdSeeder {
       for (const orphan of orphans) {
         const idComp = getActorComponent(orphan, IdComponent);
         const orphanSignature = idComp ? `${key}|${idComp.id}` : undefined;
-        if (idComp && orphanSignature && !this.loggedOrphanKeys.has(orphanSignature)) {
+        if (logOrphans && idComp && orphanSignature && !this.loggedOrphanKeys.has(orphanSignature)) {
           if (hostActorIds.has(idComp.id)) {
             continue;
           }
@@ -297,6 +311,15 @@ export class ActorIdSeeder {
   private stopHostSeedBroadcast(): void {
     clearInterval(this.hostBroadcastHandle);
     this.hostBroadcastHandle = undefined;
+  }
+
+  /**
+   * Counts local indexed actors to decide whether an incoming host seed likely
+   * represents a complete startup snapshot or a transient partial broadcast.
+   */
+  private getLocalActorCount(): number {
+    const actorIndex = getSceneService(this.scene, ActorIndexSystem);
+    return actorIndex?.getAllIdActors().length ?? 0;
   }
 }
 

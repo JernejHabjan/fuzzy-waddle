@@ -39,6 +39,8 @@ export class CommandBusService {
   /** 2-tick delay = 100 ms window for commands to reach all peers before execution. */
   static readonly INPUT_DELAY_TICKS = 2;
   private static readonly STALL_LOG_DELAY_MS = 150;
+  // Early startup ticks can briefly stall while first heartbeats converge; avoid noisy false alarms.
+  private static readonly MIN_TICK_FOR_STALL_WARNING = CommandBusService.INPUT_DELAY_TICKS + 2;
 
   private readonly _command$ = new Subject<GameCommand>();
   readonly command$ = this._command$.asObservable();
@@ -146,6 +148,18 @@ export class CommandBusService {
       );
     }
 
+    // Hard disconnect path is broadcast on playerDisconnected; remove player from lockstep
+    // when the server marks reconnect window as exhausted to prevent permanent stalls.
+    if (communicator.playerDisconnected) {
+      this.subscriptions.push(
+        communicator.playerDisconnected.on.subscribe((event) => {
+          if (event.reconnectWindowSeconds === 0) {
+            this.removePlayerFromLockstep(event.playerNumber);
+          }
+        })
+      );
+    }
+
     // On every tick: flush commands, send outbound batch, gate next tick
     if (this.tickService) {
       this.tickService.pauseTick("lockstep");
@@ -181,7 +195,11 @@ export class CommandBusService {
 
     // Multiplayer: stamp with delay, but never target a batch tick that has already been sent.
     const requestedTick = (this.tickService?.currentTick ?? 0) + CommandBusService.INPUT_DELAY_TICKS;
-    const tick = Math.max(requestedTick, this.lastSentExecutionTick + 1);
+    // Server echo is the source of truth for what it already accepted from us.
+    // Never enqueue a command into a tick that is <= last acknowledged local tick.
+    const acknowledgedLocalTick =
+      this.localPlayerNumber !== null ? (this.lastReceivedTickByPlayer.get(this.localPlayerNumber) ?? -1) : -1;
+    const tick = Math.max(requestedTick, this.lastSentExecutionTick + 1, acknowledgedLocalTick + 1);
     const stamped = { ...normalizedCommand, tick } as GameCommand;
     if (!this.pendingOutbound.has(tick)) {
       this.pendingOutbound.set(tick, []);
@@ -193,6 +211,15 @@ export class CommandBusService {
     this.logQueuedWhileStalled(normalizedCommand.type, tick, stamped.playerNumber);
   }
 
+  /**
+   * Tick pipeline for lockstep:
+   * 1) flush current committed commands,
+   * 2) send next authoritative local batch/heartbeat,
+   * 3) pause if next tick is missing any human commits.
+   *
+   * Outbound tick selection is clamped against both local send cursor and
+   * server-acknowledged local tick to prevent stale heartbeat ladders.
+   */
   private onTick(tick: number): void {
     // 1. Flush commands committed for this tick to command$ (in playerNumber order)
     const commands = this.buffer.flush(tick);
@@ -205,7 +232,16 @@ export class CommandBusService {
     //    NOTE: We do NOT directly commit to the buffer here. The local player's batch
     //    is committed only when the server echoes it back via on.subscribe, which
     //    prevents desync if the server rejects the payload.
-    const futureTick = tick + CommandBusService.INPUT_DELAY_TICKS;
+    // Keep outbound relay ticks monotonic even if local sim tick is temporarily behind
+    // (startup races, reconnect correction, or snapshot catch-up). If we send an
+    // older tick than one already accepted by the server, validator will reject it
+    // as stale and keep us in a permanent one-step-behind loop.
+    const requestedFutureTick = tick + CommandBusService.INPUT_DELAY_TICKS;
+    // Clamp against both local send cursor and server-ack cursor to prevent
+    // duplicate/stale heartbeats after reconnect/snapshot races.
+    const acknowledgedLocalTick =
+      this.localPlayerNumber !== null ? (this.lastReceivedTickByPlayer.get(this.localPlayerNumber) ?? -1) : -1;
+    const futureTick = Math.max(requestedFutureTick, this.lastSentExecutionTick + 1, acknowledgedLocalTick + 1);
     const outbound = this.pendingOutbound.get(futureTick) ?? [];
     this.pendingOutbound.delete(futureTick);
     if (this.localPlayerNumber !== null) {
@@ -291,15 +327,38 @@ export class CommandBusService {
     }
   }
 
+  /**
+   * Reinitializes lockstep buffers after host snapshot correction/reconnect.
+   *
+   * Baseline tick is chosen from the max of snapshot tick, server-acknowledged
+   * local tick, and local command-tail tick so post-reset heartbeats do not
+   * regress and get rejected as stale by the server.
+   */
   resetAfterSnapshot(snapshotTick: number, commandTail: readonly ProbableWaffleReplayCommandBatch[] = []): void {
     this.buffer.clear();
     this.pendingOutbound.clear();
     this.clearPendingStallLog();
     this.stallSignature = null;
-    this.lastSentExecutionTick = snapshotTick;
+    // Snapshot tick can lag behind the server's already-accepted local batches.
+    // If we blindly restart from snapshotTick+1 we can spam stale ticks after correction.
+    // Use the highest known accepted local tick as the post-reset baseline.
+    const acceptedLocalTick =
+      this.localPlayerNumber !== null ? (this.lastReceivedTickByPlayer.get(this.localPlayerNumber) ?? snapshotTick) : snapshotTick;
+    const localTailTick =
+      this.localPlayerNumber !== null
+        ? commandTail
+            .filter((batch) => batch.playerNumber === this.localPlayerNumber)
+            .reduce((maxTick, batch) => Math.max(maxTick, batch.tick), snapshotTick)
+        : snapshotTick;
+    const resetBaselineTick = Math.max(snapshotTick, acceptedLocalTick, localTailTick);
+    this.lastSentExecutionTick = resetBaselineTick;
 
     if (this.localPlayerNumber !== null) {
-      for (let tick = snapshotTick + 1; tick <= snapshotTick + CommandBusService.INPUT_DELAY_TICKS; tick++) {
+      for (
+        let tick = resetBaselineTick + 1;
+        tick <= resetBaselineTick + CommandBusService.INPUT_DELAY_TICKS;
+        tick++
+      ) {
         // Same as seedInitialTicks: directly commit here so the barrier doesn't
         // stall before the server echo arrives.  Re-commit on echo is harmless.
         this.buffer.commit(tick, this.localPlayerNumber, []);
@@ -386,6 +445,10 @@ export class CommandBusService {
   }
 
   private scheduleStallLog(nextTick: number): void {
+    if (nextTick < CommandBusService.MIN_TICK_FOR_STALL_WARNING) {
+      return;
+    }
+
     if (this.pendingStallTick === nextTick || this.stallSignature?.startsWith(`${nextTick}|`)) {
       return;
     }
