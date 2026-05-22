@@ -75,6 +75,7 @@ export class QueueComponent {
     const simulationDelta = getSimulationDelta(this.gameObject.scene, this.lastSimulationTimeMs);
     this.lastSimulationTimeMs = simulationDelta.now;
     const deltaWithTimeScale = simulationDelta.delta;
+    if (deltaWithTimeScale <= 0) return;
 
     // Process each queue's first item
     for (let queueIndex = 0; queueIndex < this.sharedQueues.length; queueIndex++) {
