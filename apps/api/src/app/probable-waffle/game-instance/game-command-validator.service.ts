@@ -140,12 +140,13 @@ export class GameCommandValidatorService {
         `[GameCommand] Stale batch: game=${gameInstanceId} player=${playerNumber} user=${user.id} emitter=${event.emitterUserId ?? "n/a"} ` +
           `sentTick=${tick} lastAcceptedTick=${prev} canonicalNextTick=${canonicalTick} commandCount=${commands.length}`
       );
-      playerTicks.set(playerNumber, canonicalTick);
+      // Do not advance sequence state for stale duplicates/out-of-order old packets.
+      // The authoritative slot for this tick already exists; advancing here can
+      // force canonical tick drift and create stale-loop cascades.
       return {
         valid: false,
-        relayEmpty: true,
-        reason: `stale tick ${tick} (last: ${prev})`,
-        overrideTick: canonicalTick
+        relayEmpty: false,
+        reason: `stale tick ${tick} (last: ${prev})`
       };
     }
     if (prev === -1 && this.allowHighInitialTickAfterReseed.has(instanceKey)) {
