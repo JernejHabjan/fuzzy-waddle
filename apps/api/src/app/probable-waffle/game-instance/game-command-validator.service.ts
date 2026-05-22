@@ -220,6 +220,10 @@ export class GameCommandValidatorService {
     this.allowHighInitialTickAfterReseed.delete(gameInstanceId);
   }
 
+  /**
+   * Allows one high initial tick after server-side instance recreation.
+   * Without this, the first post-reseed batch would be dropped as a tick jump.
+   */
   allowInitialTickBootstrap(gameInstanceId: string): void {
     this.allowHighInitialTickAfterReseed.add(gameInstanceId);
   }

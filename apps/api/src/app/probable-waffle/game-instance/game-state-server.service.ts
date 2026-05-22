@@ -242,6 +242,7 @@ export class GameStateServerService {
     return { success: true };
   }
 
+  /** Resolves current host authority used by server-side control-plane validations. */
   private getCurrentHostUserId(gameInstance: ProbableWaffleGameInstance): string | null | undefined {
     return gameInstance.gameInstanceMetadata.data.currentHostUserId ?? gameInstance.gameInstanceMetadata.data.createdBy;
   }

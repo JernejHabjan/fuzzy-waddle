@@ -155,7 +155,7 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
         // Reseed payload is server-ingestion only; do not rebroadcast full instance blobs.
       } else if (body.communicator === ProbableWaffleCommunicators.SnapshotResponse) {
         const payload = body.payload as ProbableWaffleSnapshotResponseEvent;
-        this.emitTargetedActionToUser(roomId, payload.targetUserId, body);
+        this.emitTargetedActionToUser(payload.targetUserId, body);
       } else if (
         body.communicator === ProbableWaffleCommunicators.PauseChanged ||
         body.communicator === ProbableWaffleCommunicators.DesyncAlert
@@ -293,15 +293,17 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
     }
   }
 
-  private emitTargetedActionToUser(
-    roomId: string,
-    targetUserId: string,
-    body: ProbableWaffleCommunicatorEventUnion
-  ): void {
+  /**
+   * Delivers one action to all active sockets of exactly one user.
+   *
+   * This exists for reconnect snapshot responses so large snapshot payloads are
+   * not room-broadcast and discarded client-side by non-target peers.
+   */
+  private emitTargetedActionToUser(targetUserId: string, body: ProbableWaffleCommunicatorEventUnion): void {
     const socketIds = this.disconnectTracker.getActiveSocketIdsForPlayer(targetUserId, body.gameInstanceId!);
     if (socketIds.length === 0) {
       console.warn(
-        `[Gateway] Unable to deliver targeted ${body.communicator} for game=${body.gameInstanceId} targetUser=${targetUserId}: no active socket in room ${roomId}`
+        `[Gateway] Unable to deliver targeted ${body.communicator} for game=${body.gameInstanceId} targetUser=${targetUserId}: no active socket`
       );
       return;
     }

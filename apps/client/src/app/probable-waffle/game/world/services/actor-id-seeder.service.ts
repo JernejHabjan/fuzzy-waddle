@@ -76,6 +76,10 @@ export class ActorIdSeeder {
     });
   }
 
+  /**
+   * Host keeps rebroadcasting canonical actor IDs during pre-game lobby/setup.
+   * This closes races where non-hosts finish scene boot after first seed packet.
+   */
   private startHostSeedBroadcast(): void {
     const rebroadcast = () => {
       const sessionState = this.scene.baseGameData.gameInstance.gameInstanceMetadata.data.sessionState;
@@ -102,6 +106,7 @@ export class ActorIdSeeder {
     this.hostBroadcastHandle = window.setInterval(rebroadcast, 500);
   }
 
+  /** Applies one authoritative host seed and then detaches from further seed traffic. */
   private applyAuthoritativeSeed(actorDefs: Partial<ActorDefinition>[]): void {
     this.patchActorIds(actorDefs);
 
@@ -246,6 +251,7 @@ export class ActorIdSeeder {
     }
   }
 
+  /** Keeps local selection references valid when actor IDs are remapped to host authority. */
   private remapPlayerSelections(remappedIds: Map<string, string>): void {
     for (const player of this.scene.baseGameData.gameInstance.players) {
       player.playerState.data.selection = player.playerState.data.selection.map((actorId) => remappedIds.get(actorId) ?? actorId);

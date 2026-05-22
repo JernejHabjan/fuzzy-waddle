@@ -20,7 +20,7 @@ import { PawnAiController } from "../../../prefabs/ai-agents/pawn-ai-controller"
 
 interface HashSnapshot {
   hash: string;
-  diagnostics: ProbableWaffleStateHashDiagnostics;
+  diagnostics?: ProbableWaffleStateHashDiagnostics;
 }
 
 /**
@@ -35,6 +35,7 @@ const HASH_INTERVAL_TICKS = 20;
  */
 const HASH_STORE_TICKS = 120;
 const CORRECTION_GRACE_PERIOD_TICKS = 100;
+/** Keep false in production-style play to avoid heavy hash payload fan-out. */
 const INCLUDE_HASH_DIAGNOSTICS_IN_STEADY_STATE = false;
 
 interface PendingCorrection {
@@ -89,7 +90,7 @@ export class StateHashService {
   private onTick(tick: number, scene: ProbableWaffleScene): void {
     if (tick % HASH_INTERVAL_TICKS !== 0) return;
 
-    const snapshot = this.computeHashSnapshot(scene);
+    const snapshot = this.computeHashSnapshot(scene, INCLUDE_HASH_DIAGNOSTICS_IN_STEADY_STATE);
     this.localHashes.set(tick, snapshot);
     this.pruneOldHashes(tick);
 
@@ -103,7 +104,7 @@ export class StateHashService {
       tick,
       playerNumber,
       hash: snapshot.hash,
-      diagnostics: INCLUDE_HASH_DIAGNOSTICS_IN_STEADY_STATE ? snapshot.diagnostics : undefined
+      diagnostics: snapshot.diagnostics
     });
   }
 
@@ -111,20 +112,22 @@ export class StateHashService {
    * Build the hash string from all tracked actors sorted by their stable ID.
    * Uses integer positions (Math.round) to avoid float divergence from display rounding.
    */
-  private computeHashSnapshot(scene: Phaser.Scene): HashSnapshot {
+  private computeHashSnapshot(scene: Phaser.Scene, includeDiagnostics: boolean): HashSnapshot {
     const actorIndex = getSceneService(scene, ActorIndexSystem);
     if (!actorIndex) {
       return {
         hash: "",
-        diagnostics: {
-          actorDigests: {},
-          playerDigests: [],
-          researchDigest: ""
-        }
+        diagnostics: includeDiagnostics
+          ? {
+              actorDigests: {},
+              playerDigests: [],
+              researchDigest: ""
+            }
+          : undefined
       };
     }
 
-    const actorDigests: Record<string, string> = {};
+    const actorDigests = includeDiagnostics ? ({} as Record<string, string>) : undefined;
     const entries = actorIndex.getAllIdActors().map((go) => {
       const id = getActorComponent(go, IdComponent)?.id ?? "";
       const health = getActorComponent(go, HealthComponent)?.healthComponentData.health ?? -1;
@@ -141,7 +144,9 @@ export class StateHashService {
       const combatState = this.serializeActorCombatState(go);
       const orderState = this.serializeActorOrderState(go);
       const actorDigest = `${id}:${go.name}:${Math.round(health)}:${Math.round(armour)}:${lx}:${ly}:${lz}:${owner}:${queueState}:${economyState}:${combatState}:${orderState}`;
-      actorDigests[id] = actorDigest;
+      if (actorDigests) {
+        actorDigests[id] = actorDigest;
+      }
       return actorDigest;
     });
 
@@ -151,11 +156,13 @@ export class StateHashService {
     const researchEntries = this.serializeResearchState(scene);
     return {
       hash: djb2(`${entries.join("|")}#${playerStateEntries.join("|")}#${researchEntries.join("|")}`),
-      diagnostics: {
-        actorDigests,
-        playerDigests: playerStateEntries,
-        researchDigest: researchEntries.join("|")
-      }
+      diagnostics: includeDiagnostics
+        ? {
+            actorDigests: actorDigests ?? {},
+            playerDigests: playerStateEntries,
+            researchDigest: researchEntries.join("|")
+          }
+        : undefined
     };
   }
 
@@ -382,9 +389,15 @@ export class StateHashService {
 
   /** Produces a human-readable first-difference explanation between local and remote hash diagnostics. */
   private describeDiagnosticsMismatch(
-    localDiagnostics: ProbableWaffleStateHashDiagnostics,
+    localDiagnostics: ProbableWaffleStateHashDiagnostics | undefined,
     remoteDiagnostics: ProbableWaffleStateHashDiagnostics | undefined
   ): string {
+    if (!localDiagnostics && !remoteDiagnostics) {
+      return "local and remote diagnostics unavailable";
+    }
+    if (!localDiagnostics) {
+      return "local diagnostics unavailable";
+    }
     if (!remoteDiagnostics) {
       return "remote diagnostics unavailable";
     }
