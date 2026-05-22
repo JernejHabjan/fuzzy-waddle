@@ -18,6 +18,7 @@ import { HealthComponent } from "../../entity/components/combat/components/healt
 import { OwnerComponent } from "../../entity/components/owner-component";
 import type { Subscription } from "rxjs";
 import { CancelableSimDelay } from "../services/simulation-time";
+import { ProbableWaffleSceneEventName } from "../services/recovery/probable-waffle-scene-events";
 
 /**
  * Tracks player scores throughout the game for the score screen.
@@ -43,9 +44,9 @@ export class ScoreTracker {
   private startTracking() {
     this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.throttleUpdate, this);
     this.scene.events.on(HealthComponent.KilledEvent, this.onActorKilled, this);
-    this.scene.events.on("score.damage", this.onDamage, this);
-    this.scene.events.on("score.unit_produced", this.onUnitProduced, this);
-    this.scene.events.on("score.building_constructed", this.onBuildingConstructed, this);
+    this.scene.events.on(ProbableWaffleSceneEventName.ScoreDamage, this.onDamage, this);
+    this.scene.events.on(ProbableWaffleSceneEventName.ScoreUnitProduced, this.onUnitProduced, this);
+    this.scene.events.on(ProbableWaffleSceneEventName.ScoreBuildingConstructed, this.onBuildingConstructed, this);
     this.subscribeToResourceEvents();
   }
 
@@ -418,9 +419,9 @@ export class ScoreTracker {
     this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.throttleUpdate, this);
     this.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
     this.scene.events.off(HealthComponent.KilledEvent, this.onActorKilled, this);
-    this.scene.events.off("score.damage", this.onDamage, this);
-    this.scene.events.off("score.unit_produced", this.onUnitProduced, this);
-    this.scene.events.off("score.building_constructed", this.onBuildingConstructed, this);
+    this.scene.events.off(ProbableWaffleSceneEventName.ScoreDamage, this.onDamage, this);
+    this.scene.events.off(ProbableWaffleSceneEventName.ScoreUnitProduced, this.onUnitProduced, this);
+    this.scene.events.off(ProbableWaffleSceneEventName.ScoreBuildingConstructed, this.onBuildingConstructed, this);
     this.resourceSubscription?.unsubscribe();
     this.stopped = true;
   }

@@ -22,6 +22,7 @@ import type { ProductionCostDefinition } from "./production-cost-definition";
 import { NavigationService } from "../../../world/services/navigation.service";
 import { IsoHelper } from "../../../world/tilemap/iso-helper";
 import { MovementTerrainType } from "../movement/movement-terrain-type";
+import { ProbableWaffleSceneEventName } from "../../../world/services/recovery/probable-waffle-scene-events";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class ProductionComponent {
@@ -254,7 +255,7 @@ export class ProductionComponent {
     const newGameObject = sceneActorCreator.createFinishedActor(actorName, finalSpawnPosition, originalOwner);
     if (newGameObject) {
       if (originalOwner !== undefined) {
-        this.gameObject.scene.events.emit("score.unit_produced", originalOwner);
+        this.gameObject.scene.events.emit(ProbableWaffleSceneEventName.ScoreUnitProduced, originalOwner);
       }
       if (this.rallyPoint.isSet()) {
         // noinspection JSIgnoredPromiseFromCall

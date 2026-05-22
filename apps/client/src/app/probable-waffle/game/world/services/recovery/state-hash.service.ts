@@ -1,4 +1,4 @@
-import type { ProbableWaffleStateHashDiagnostics } from "@fuzzy-waddle/api-interfaces";
+import type { ProbableWaffleReplayDesyncDiagnostic, ProbableWaffleStateHashDiagnostics } from "@fuzzy-waddle/api-interfaces";
 import type { Subscription } from "rxjs";
 import { getSceneService } from "../scene-component-helpers";
 import { SimulationTickService } from "../simulation-tick.service";
@@ -17,6 +17,7 @@ import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { SnapshotService } from "./snapshot.service";
 import { ActorManager } from "../../../data/actor-manager";
 import { PawnAiController } from "../../../prefabs/ai-agents/pawn-ai-controller";
+import { ProbableWaffleSceneEventName } from "./probable-waffle-scene-events";
 
 interface HashSnapshot {
   hash: string;
@@ -37,6 +38,7 @@ const HASH_STORE_TICKS = 120;
 const CORRECTION_GRACE_PERIOD_TICKS = 100;
 /** Keep false in production-style play to avoid heavy hash payload fan-out. */
 const INCLUDE_HASH_DIAGNOSTICS_IN_STEADY_STATE = false;
+const MAX_REPORTED_STATE_DIFFS = 6;
 
 interface PendingCorrection {
   emitterUserId: string;
@@ -188,7 +190,7 @@ export class StateHashService {
         this.pendingCorrections.delete(event.playerNumber);
         const hadMismatch = this.activeMismatches.delete(event.playerNumber);
         if (hadMismatch) {
-          scene.events.emit("desync-state-changed", {
+          scene.events.emit(ProbableWaffleSceneEventName.DesyncStateChanged, {
             playerNumber: event.playerNumber,
             state: "resolved"
           });
@@ -211,6 +213,19 @@ export class StateHashService {
       return;
     }
 
+    const diagnosticsDiff = this.collectDiagnosticsDiffs(localSnapshot.diagnostics, event.diagnostics);
+    scene.events.emit(ProbableWaffleSceneEventName.DesyncDiagnostics, {
+      tick: event.tick,
+      remotePlayerNumber: event.playerNumber,
+      remoteUserId: event.emitterUserId ?? undefined,
+      localHash: localSnapshot.hash,
+      remoteHash: event.hash,
+      mismatchReason,
+      actorDiffs: diagnosticsDiff.actorDiffs,
+      playerDiffs: diagnosticsDiff.playerDiffs,
+      researchDiff: diagnosticsDiff.researchDiff
+    } satisfies ProbableWaffleReplayDesyncDiagnostic);
+
     if (event.playerNumber !== undefined) {
       const previousMismatchReason = this.activeMismatches.get(event.playerNumber);
       if (previousMismatchReason !== mismatchReason) {
@@ -220,7 +235,7 @@ export class StateHashService {
         );
       }
       this.activeMismatches.set(event.playerNumber, mismatchReason);
-      scene.events.emit("desync-state-changed", {
+      scene.events.emit(ProbableWaffleSceneEventName.DesyncStateChanged, {
         playerNumber: event.playerNumber,
         state: "mismatch",
         reason: mismatchReason
@@ -427,6 +442,61 @@ export class StateHashService {
     }
 
     return "hash mismatch without diagnostic delta";
+  }
+
+  /**
+   * Produces structured state-diff snippets for deterministic debugging.
+   * The output is capped so logs/replays stay readable even on large mismatches.
+   */
+  private collectDiagnosticsDiffs(
+    localDiagnostics: ProbableWaffleStateHashDiagnostics | undefined,
+    remoteDiagnostics: ProbableWaffleStateHashDiagnostics | undefined
+  ): { actorDiffs: string[]; playerDiffs: string[]; researchDiff?: string } {
+    if (!localDiagnostics || !remoteDiagnostics) {
+      return {
+        actorDiffs: [],
+        playerDiffs: []
+      };
+    }
+
+    const actorDiffs: string[] = [];
+    const localActorDigests = localDiagnostics.actorDigests ?? {};
+    const remoteActorDigests = remoteDiagnostics.actorDigests ?? {};
+    const actorIds = [...new Set([...Object.keys(localActorDigests), ...Object.keys(remoteActorDigests)])].sort();
+    for (const actorId of actorIds) {
+      const localDigest = localActorDigests[actorId];
+      const remoteDigest = remoteActorDigests[actorId];
+      if (localDigest !== remoteDigest) {
+        actorDiffs.push(`actor=${actorId} local=${localDigest ?? "missing"} remote=${remoteDigest ?? "missing"}`);
+      }
+      if (actorDiffs.length >= MAX_REPORTED_STATE_DIFFS) {
+        break;
+      }
+    }
+
+    const playerDiffs: string[] = [];
+    const localPlayerDigests = localDiagnostics.playerDigests ?? [];
+    const remotePlayerDigests = remoteDiagnostics.playerDigests ?? [];
+    const playerDigestCount = Math.max(localPlayerDigests.length, remotePlayerDigests.length);
+    for (let index = 0; index < playerDigestCount; index++) {
+      if (localPlayerDigests[index] !== remotePlayerDigests[index]) {
+        playerDiffs.push(
+          `player-state local=${localPlayerDigests[index] ?? "missing"} remote=${remotePlayerDigests[index] ?? "missing"}`
+        );
+      }
+      if (playerDiffs.length >= MAX_REPORTED_STATE_DIFFS) {
+        break;
+      }
+    }
+
+    const localResearch = localDiagnostics.researchDigest ?? "";
+    const remoteResearch = remoteDiagnostics.researchDigest ?? "";
+    const researchDiff = localResearch === remoteResearch ? undefined : `research local=${localResearch || "missing"} remote=${remoteResearch || "missing"}`;
+    return {
+      actorDiffs,
+      playerDiffs,
+      researchDiff
+    };
   }
 
   /** Serializes per-player resource/housing state used in deterministic economy progression. */

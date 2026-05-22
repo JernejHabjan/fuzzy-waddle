@@ -1,9 +1,10 @@
 import type { Subscription } from "rxjs";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
-import { type ProbableWaffleReplayCommandBatch } from "@fuzzy-waddle/api-interfaces";
+import { type ProbableWaffleReplayCommandBatch, type ProbableWaffleReplayTickDigest } from "@fuzzy-waddle/api-interfaces";
 import { getSceneService } from "../scene-component-helpers";
 import { CommandBusService } from "../command-bus.service";
 import { SimulationTickService } from "../simulation-tick.service";
+import { buildReplayTickDigest } from "./replay-debug-tools";
 
 const SUPPORTED_REPLAY_COMPATIBILITY_VERSIONS = new Set(["lockstep-v1"]);
 
@@ -11,6 +12,8 @@ const SUPPORTED_REPLAY_COMPATIBILITY_VERSIONS = new Set(["lockstep-v1"]);
 export class ReplayPlaybackService {
   private tickSub?: Subscription;
   private readonly batchesByTick = new Map<number, ProbableWaffleReplayCommandBatch[]>();
+  private readonly expectedTickDigests = new Map<number, ProbableWaffleReplayTickDigest>();
+  private readonly authoritativeBatchPairs = new Set<string>();
 
   init(scene: ProbableWaffleScene): void {
     const replayData = scene.baseGameData.gameInstance.gameInstanceMetadata.data.startOptions.replayData;
@@ -22,7 +25,18 @@ export class ReplayPlaybackService {
       throw new Error(`Unsupported replay compatibility version: ${replayData.compatibilityVersion}`);
     }
 
+    for (const tickDigest of replayData.debugData?.tickDigests ?? []) {
+      this.expectedTickDigests.set(tickDigest.tick, tickDigest);
+    }
+
     for (const batch of replayData.commands) {
+      const authoritativeKey = `${batch.tick}:${batch.playerNumber}`;
+      if (this.authoritativeBatchPairs.has(authoritativeKey)) {
+        throw new Error(
+          `[ReplayPlayback] Duplicate authoritative replay batch detected for tick=${batch.tick} player=${batch.playerNumber}`
+        );
+      }
+      this.authoritativeBatchPairs.add(authoritativeKey);
       const existing = this.batchesByTick.get(batch.tick) ?? [];
       existing.push(batch);
       this.batchesByTick.set(batch.tick, existing);
@@ -38,6 +52,18 @@ export class ReplayPlaybackService {
       const tickBatches = this.batchesByTick.get(tick);
       if (!tickBatches?.length) {
         return;
+      }
+
+      const computedDigest = buildReplayTickDigest(tick, tickBatches);
+      const expectedDigest = this.expectedTickDigests.get(tick);
+      if (expectedDigest && expectedDigest.digest !== computedDigest.digest) {
+        console.error(
+          `[ReplayPlayback] Deterministic digest mismatch at tick=${tick}. expected=${expectedDigest.digest} actual=${computedDigest.digest}`,
+          {
+            expectedPlayerDigests: expectedDigest.playerDigests,
+            actualPlayerDigests: computedDigest.playerDigests
+          }
+        );
       }
 
       tickBatches

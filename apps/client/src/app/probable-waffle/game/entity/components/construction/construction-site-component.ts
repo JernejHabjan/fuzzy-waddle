@@ -30,6 +30,7 @@ import { IdComponent } from "../id-component";
 import GameObject = Phaser.GameObjects.GameObject;
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { getSimulationDelta } from "../../../world/services/simulation-time";
+import { ProbableWaffleSceneEventName } from "../../../world/services/recovery/probable-waffle-scene-events";
 
 export class ConstructionSiteComponent {
   public progressPercentage = 0;
@@ -327,7 +328,7 @@ export class ConstructionSiteComponent {
     }
 
     upgradeFromConstructingToFullActorData(this.gameObject);
-    this.gameObject.scene.events.emit("score.building_constructed", this.gameObject);
+    this.gameObject.scene.events.emit(ProbableWaffleSceneEventName.ScoreBuildingConstructed, this.gameObject);
   }
 
   private getProgressFraction() {

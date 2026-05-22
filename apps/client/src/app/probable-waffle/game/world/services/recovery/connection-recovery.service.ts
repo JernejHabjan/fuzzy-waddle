@@ -7,20 +7,16 @@ import type ReconnectRecoveryDialog from "../../scenes/hud-scenes/ReconnectRecov
 import { getSceneService } from "../scene-component-helpers";
 import { SimulationTickService } from "../simulation-tick.service";
 import { CommandBusService } from "../command-bus.service";
+import {
+  type LocalConnectionLostSceneEvent,
+  ProbableWaffleSceneEventName,
+  type ReconnectSnapshotAppliedSceneEvent
+} from "./probable-waffle-scene-events";
 
 type PendingReconnect = {
   timer: Phaser.Time.TimerEvent;
   local: boolean;
   reconnectWindowSeconds?: number;
-};
-
-type LocalConnectionLostEvent = {
-  playerNumber?: PlayerNumber | null;
-  reason?: string;
-};
-
-type SnapshotAppliedEvent = {
-  reason?: "reconnect" | "spectator-catch-up" | "desync-correction";
 };
 
 export class ConnectionRecoveryService {
@@ -47,8 +43,12 @@ export class ConnectionRecoveryService {
       this.onPlayerReconnected(event.playerNumber, false);
     });
 
-    probableWaffleScene.events.on("local-connection-lost", this.onLocalConnectionLost, this);
-    probableWaffleScene.events.on("reconnect-snapshot-applied", this.onSnapshotApplied, this);
+    probableWaffleScene.events.on(ProbableWaffleSceneEventName.LocalConnectionLost, this.onLocalConnectionLost, this);
+    probableWaffleScene.events.on(
+      ProbableWaffleSceneEventName.ReconnectSnapshotApplied,
+      this.onSnapshotApplied,
+      this
+    );
     probableWaffleScene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.destroy());
   }
 
@@ -69,8 +69,12 @@ export class ConnectionRecoveryService {
     this.activeReconnects.clear();
     this.closeDialog();
 
-    this.probableWaffleScene?.events.off("local-connection-lost", this.onLocalConnectionLost, this);
-    this.probableWaffleScene?.events.off("reconnect-snapshot-applied", this.onSnapshotApplied, this);
+    this.probableWaffleScene?.events.off(ProbableWaffleSceneEventName.LocalConnectionLost, this.onLocalConnectionLost, this);
+    this.probableWaffleScene?.events.off(
+      ProbableWaffleSceneEventName.ReconnectSnapshotApplied,
+      this.onSnapshotApplied,
+      this
+    );
   }
 
   private onPlayerDisconnected(event: ProbableWafflePlayerDisconnectedEvent, local: boolean): void {
@@ -167,7 +171,7 @@ export class ConnectionRecoveryService {
     return `Players ${playerNumbers.join(", ")} disconnected.\nWaiting for them to reconnect before continuing the match.`;
   }
 
-  private readonly onLocalConnectionLost = (event: LocalConnectionLostEvent) => {
+  private readonly onLocalConnectionLost = (event: LocalConnectionLostSceneEvent) => {
     const playerNumber = event.playerNumber ?? this.probableWaffleScene?.playerOrNull?.playerNumber;
     if (playerNumber === undefined || playerNumber === null) {
       return;
@@ -185,7 +189,7 @@ export class ConnectionRecoveryService {
     console.warn(`[Reconnect] Local socket disconnected. reason=${event.reason ?? "unknown"}`);
   };
 
-  private readonly onSnapshotApplied = (event: SnapshotAppliedEvent) => {
+  private readonly onSnapshotApplied = (event: ReconnectSnapshotAppliedSceneEvent) => {
     if (event.reason !== "reconnect") {
       return;
     }

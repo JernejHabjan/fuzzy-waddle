@@ -11,6 +11,11 @@ import { SnapshotService } from "./snapshot.service";
 import { SceneDialogHelper } from "../../scenes/scene-dialog-helper";
 import type DesyncRecoveryDialog from "../../scenes/hud-scenes/DesyncRecoveryDialog";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
+import {
+  type DesyncStateChangedSceneEvent,
+  ProbableWaffleSceneEventName,
+  type ReconnectSnapshotAppliedSceneEvent
+} from "./probable-waffle-scene-events";
 
 /**
  * Handles the room-wide desync recovery flow triggered by the host once
@@ -51,8 +56,12 @@ export class DesyncRecoveryService {
     this.sub = communicator.desyncAlert?.on.subscribe((event) => {
       this.onDesyncDetected(event, hudScene, probableWaffleScene);
     });
-    probableWaffleScene.events.on("desync-state-changed", this.onDesyncStateChanged, this);
-    probableWaffleScene.events.on("reconnect-snapshot-applied", this.onReconnectSnapshotApplied, this);
+    probableWaffleScene.events.on(ProbableWaffleSceneEventName.DesyncStateChanged, this.onDesyncStateChanged, this);
+    probableWaffleScene.events.on(
+      ProbableWaffleSceneEventName.ReconnectSnapshotApplied,
+      this.onReconnectSnapshotApplied,
+      this
+    );
     probableWaffleScene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.destroy());
   }
 
@@ -138,7 +147,7 @@ export class DesyncRecoveryService {
     this.snapshotAppliedHandler = () => {
       this.clearCorrectionTimeout();
     };
-    scene.events.once("reconnect-snapshot-applied", this.snapshotAppliedHandler);
+    scene.events.once(ProbableWaffleSceneEventName.ReconnectSnapshotApplied, this.snapshotAppliedHandler);
 
     this.correctionTimeoutHandle = window.setTimeout(() => {
       console.error(
@@ -155,7 +164,7 @@ export class DesyncRecoveryService {
     clearTimeout(this.correctionTimeoutHandle);
     this.correctionTimeoutHandle = undefined;
     if (this.snapshotAppliedHandler && scene) {
-      scene.events.off("reconnect-snapshot-applied", this.snapshotAppliedHandler);
+      scene.events.off(ProbableWaffleSceneEventName.ReconnectSnapshotApplied, this.snapshotAppliedHandler);
       this.snapshotAppliedHandler = undefined;
     }
   }
@@ -179,11 +188,7 @@ export class DesyncRecoveryService {
   }
 
   /** Auto-closes dialog once hash service reports the tracked player is back in sync. */
-  private readonly onDesyncStateChanged = (event: {
-    playerNumber: number;
-    state: "mismatch" | "resolved";
-    reason?: string;
-  }) => {
+  private readonly onDesyncStateChanged = (event: DesyncStateChangedSceneEvent) => {
     if (event.state !== "resolved" || !this.dialogOpen) {
       return;
     }
@@ -195,7 +200,7 @@ export class DesyncRecoveryService {
   };
 
   /** Auto-closes dialog after desync-correction snapshot is applied locally. */
-  private readonly onReconnectSnapshotApplied = (event: { reason?: "reconnect" | "spectator-catch-up" | "desync-correction" }) => {
+  private readonly onReconnectSnapshotApplied = (event: ReconnectSnapshotAppliedSceneEvent) => {
     if (event.reason !== "desync-correction") {
       return;
     }
@@ -213,7 +218,15 @@ export class DesyncRecoveryService {
     }
     this.clearCorrectionTimeout(this.probableWaffleScene);
     this.sub?.unsubscribe();
-    this.probableWaffleScene?.events.off("desync-state-changed", this.onDesyncStateChanged, this);
-    this.probableWaffleScene?.events.off("reconnect-snapshot-applied", this.onReconnectSnapshotApplied, this);
+    this.probableWaffleScene?.events.off(
+      ProbableWaffleSceneEventName.DesyncStateChanged,
+      this.onDesyncStateChanged,
+      this
+    );
+    this.probableWaffleScene?.events.off(
+      ProbableWaffleSceneEventName.ReconnectSnapshotApplied,
+      this.onReconnectSnapshotApplied,
+      this
+    );
   }
 }

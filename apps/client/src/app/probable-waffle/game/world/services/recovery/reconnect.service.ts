@@ -20,6 +20,7 @@ import {
   type ProbableWaffleSnapshotResponseEvent,
   type ProbableWaffleWebsocketRoomEvent
 } from "@fuzzy-waddle/api-interfaces";
+import { ProbableWaffleSceneEventName } from "./probable-waffle-scene-events";
 
 /**
  * Handles the reconnect flow for a client that drops and rejoins mid-game.
@@ -119,7 +120,7 @@ export class ReconnectService {
       // should resume immediately after room rejoin. Also push a reseed payload to
       // restore server-side in-memory instance after backend restart.
       this.sendInstanceReseedPayload(scene);
-      scene.events.emit("reconnect-snapshot-applied", {
+      scene.events.emit(ProbableWaffleSceneEventName.ReconnectSnapshotApplied, {
         reason: "reconnect"
       });
       return;
@@ -178,7 +179,7 @@ export class ReconnectService {
 
   private onSocketDisconnect(scene: ProbableWaffleScene, reason: string): void {
     this.awaitingReconnect = true;
-    scene.events.emit("local-connection-lost", {
+    scene.events.emit(ProbableWaffleSceneEventName.LocalConnectionLost, {
       playerNumber: scene.playerOrNull?.playerNumber ?? scene.player?.playerNumber,
       reason
     });
@@ -309,7 +310,7 @@ export class ReconnectService {
       console.warn(`[DESYNC] Applied host correction snapshot at tick ${snapshot.tick}.`);
     }
     this.reseedSent = false;
-    scene.events.emit("reconnect-snapshot-applied", {
+    scene.events.emit(ProbableWaffleSceneEventName.ReconnectSnapshotApplied, {
       reason: response.reason,
       tick: snapshot.tick
     });
