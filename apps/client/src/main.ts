@@ -17,7 +17,7 @@ import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from "@a
 import { AuthGuard } from "./app/auth/auth.guard";
 import { provideAnimationsAsync } from "@angular/platform-browser/animations/async";
 import Phaser from "phaser";
-
+// needed as Phaser 4.1.0 changed ESM builds - see https://phaser.io/news/2026/04/phaser-4-1-0-salusa-release
 Object.assign(window, { Phaser });
 
 if (environment.production) {

@@ -73,5 +73,8 @@ export class SimulationTickService {
   private destroy(): void {
     this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.onUpdate, this);
     this.tick$.complete();
+    this.currentTick = 0;
+    this.accumulated = 0;
+    this.pauseReasons.clear();
   }
 }
