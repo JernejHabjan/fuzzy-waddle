@@ -40,6 +40,7 @@ import { getSceneService } from "../../world/services/scene-component-helpers";
 import { isWaterUnit } from "../../data/game-object-helper";
 import { SimulationTickService } from "../../world/services/simulation-tick.service";
 import { getSimulationNow } from "../../world/services/simulation-time";
+import { IdComponent } from "../../entity/components/id-component";
 
 export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
   constructor(
@@ -845,11 +846,33 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
     attackableEnemies.sort((a, b) => {
       const distanceA = DistanceHelper.getTileDistanceBetweenGameObjects(this.gameObject, a);
       const distanceB = DistanceHelper.getTileDistanceBetweenGameObjects(this.gameObject, b);
-      if (distanceA === null || distanceB === null) return 0;
-      return distanceA - distanceB;
+      if (distanceA === null && distanceB === null) {
+        return this.compareEnemyTieBreaker(a, b);
+      }
+      if (distanceA === null) {
+        return 1;
+      }
+      if (distanceB === null) {
+        return -1;
+      }
+      if (distanceA !== distanceB) {
+        return distanceA - distanceB;
+      }
+      return this.compareEnemyTieBreaker(a, b);
     });
 
     return attackableEnemies[0]!;
+  }
+
+  private compareEnemyTieBreaker(a: Phaser.GameObjects.GameObject, b: Phaser.GameObjects.GameObject): number {
+    const aId = getActorComponent(a, IdComponent)?.id;
+    const bId = getActorComponent(b, IdComponent)?.id;
+    if (aId && bId && aId !== bId) {
+      return aId.localeCompare(bId);
+    }
+    const aStable = `${a.name}:${aId ?? ""}`;
+    const bStable = `${b.name}:${bId ?? ""}`;
+    return aStable.localeCompare(bStable);
   }
 
   private canAttackTarget(target: Phaser.GameObjects.GameObject): boolean {

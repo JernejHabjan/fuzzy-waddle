@@ -49,6 +49,7 @@ export class AttackComponent {
   currentAttack: AttackData | null = null;
   private cooldownTickSub?: Subscription;
   private projectileSprite?: Phaser.GameObjects.Image;
+  private readonly projectileImpactTimers = new Set<CancelableSimDelay>();
   // track delayed fire so we can cancel before projectile spawns
   private fireTimer?: CancelableSimDelay;
   private hitTimer?: CancelableSimDelay;
@@ -90,6 +91,10 @@ export class AttackComponent {
       this.hitTimer.remove();
       this.hitTimer = undefined;
     }
+    for (const timer of this.projectileImpactTimers) {
+      timer.remove();
+    }
+    this.projectileImpactTimers.clear();
     this.stopProjectile();
   }
 
@@ -315,10 +320,9 @@ export class AttackComponent {
     const projectile = attack.projectile;
     if (!projectile) return;
     if (!this.actorTranslateComponent) return;
-    const targetPosition = getGameObjectBounds(enemy);
-    if (!targetPosition) return;
-    const position = getGameObjectBounds(this.gameObject);
-    if (!position) return;
+    const attackerLogical = getGameObjectLogicalTransform(this.gameObject);
+    const enemyLogical = getGameObjectLogicalTransform(enemy);
+    if (!attackerLogical || !enemyLogical) return;
 
     this.playSharedAttackLogic(attack, enemy);
 
@@ -333,10 +337,10 @@ export class AttackComponent {
       const enemyHealthComponent = getActorComponent(enemy, HealthComponent);
       if (!enemyHealthComponent || enemyHealthComponent.killed) return;
 
-      const targetX = targetPosition.x + targetPosition.width / 2;
-      const targetY = targetPosition.y + targetPosition.height / 2;
-      const baseStartX = position.centerX;
-      const baseStartY = position.centerY;
+      const targetX = enemyLogical.x;
+      const targetY = enemyLogical.y;
+      const baseStartX = attackerLogical.x;
+      const baseStartY = attackerLogical.y;
 
       const salvoCount = projectile.salvo?.count ?? 1;
       const spreadPx = projectile.salvo?.spreadPx ?? 0;
@@ -408,11 +412,21 @@ export class AttackComponent {
 
     const projectileSpeed = projectile.speed;
     const distance = Phaser.Math.Distance.Between(startX, startY, targetX, targetY);
-    const duration = (distance / projectileSpeed) * 1000; // convert to milliseconds
+    const rawDurationMs = (distance / projectileSpeed) * 1000; // convert to milliseconds
+    const duration = Math.max(
+      SimulationTickService.TICK_INTERVAL_MS,
+      Math.ceil(rawDurationMs / SimulationTickService.TICK_INTERVAL_MS) * SimulationTickService.TICK_INTERVAL_MS
+    );
 
     let rotationTween: Phaser.Tweens.Tween | undefined;
     let cleanedUp = false;
     let tween: Phaser.Tweens.Tween;
+    const impactDelayMs = duration;
+    const impactTimer = new CancelableSimDelay(this.gameObject.scene, impactDelayMs, () => {
+      this.projectileImpactTimers.delete(impactTimer);
+      this.applyDeterministicProjectileImpact(projectile, targetX, targetY, attack, enemy, stopThis);
+    });
+    this.projectileImpactTimers.add(impactTimer);
 
     const cleanupThis = () => {
       if (cleanedUp) return;
@@ -446,9 +460,6 @@ export class AttackComponent {
         targetY,
         duration,
         projectile,
-        attack,
-        enemy,
-        stopThis,
         cleanupThis
       );
     } else {
@@ -463,17 +474,7 @@ export class AttackComponent {
         y: targetY,
         duration: duration,
         ease: "Linear",
-        onComplete: cleanupThis,
-        onUpdate: () => {
-          if (!this.gameObject.active || !enemy.active) return;
-          const projectileBounds = getGameObjectBounds(projectileSprite);
-          if (!projectileBounds) return;
-          const enemyBounds = getGameObjectBounds(enemy);
-          if (!enemyBounds) return;
-          if (Phaser.Geom.Intersects.RectangleToRectangle(projectileBounds, enemyBounds)) {
-            this.projectileHitEnemy(projectile, targetX, targetY, attack, enemy, stopThis);
-          }
-        }
+        onComplete: cleanupThis
       });
 
       // spin projectile
@@ -499,10 +500,7 @@ export class AttackComponent {
     targetY: number,
     duration: number,
     projectile: ProjectileData,
-    attack: AttackData,
-    enemy: GameObject,
-    stopFn: () => void = () => this.stopProjectile(),
-    onCompleteFn: () => void = stopFn
+    onCompleteFn: () => void = () => this.stopProjectile()
   ): Phaser.Tweens.Tween {
     const peakHeight = projectile.parabolicPeakHeight ?? 120;
     let lastTrailTime = 0;
@@ -512,7 +510,7 @@ export class AttackComponent {
       to: 1,
       duration,
       onUpdate: (tween) => {
-        if (!this.gameObject.active || !enemy.active) return;
+        if (!this.gameObject.active) return;
         const t = tween.getValue() ?? 0;
         const x = startX + (targetX - startX) * t;
         const arcOffset = -peakHeight * 4 * t * (1 - t);
@@ -544,21 +542,12 @@ export class AttackComponent {
             });
           }
         }
-
-        // Hit detection
-        const projectileBounds = getGameObjectBounds(projectileSprite);
-        if (!projectileBounds) return;
-        const enemyBounds = getGameObjectBounds(enemy);
-        if (!enemyBounds) return;
-        if (Phaser.Geom.Intersects.RectangleToRectangle(projectileBounds, enemyBounds)) {
-          this.projectileHitEnemy(projectile, targetX, targetY, attack, enemy, stopFn);
-        }
       },
       onComplete: () => onCompleteFn()
     });
   }
 
-  private projectileHitEnemy(
+  private applyDeterministicProjectileImpact(
     projectile: ProjectileData,
     targetX: number,
     targetY: number,
