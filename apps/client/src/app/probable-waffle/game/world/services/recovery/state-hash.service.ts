@@ -18,6 +18,7 @@ import { SnapshotService } from "./snapshot.service";
 import { ActorManager } from "../../../data/actor-manager";
 import { PawnAiController } from "../../../prefabs/ai-agents/pawn-ai-controller";
 import { ProbableWaffleSceneEventName } from "./probable-waffle-scene-events";
+import type { ReconnectSnapshotAppliedSceneEvent } from "./probable-waffle-scene-events";
 
 interface HashSnapshot {
   hash: string;
@@ -36,9 +37,8 @@ const HASH_INTERVAL_TICKS = 20;
  */
 const HASH_STORE_TICKS = 120;
 const CORRECTION_GRACE_PERIOD_TICKS = 100;
-/** Keep false in production-style play to avoid heavy hash payload fan-out. */
-const INCLUDE_HASH_DIAGNOSTICS_IN_STEADY_STATE = false;
-const MAX_REPORTED_STATE_DIFFS = 6;
+/** Keep enabled so mismatch logs can always explain exactly what diverged. */
+const INCLUDE_HASH_DIAGNOSTICS_IN_STEADY_STATE = true;
 
 interface PendingCorrection {
   emitterUserId: string;
@@ -64,14 +64,18 @@ export class StateHashService {
   private readonly localHashes = new Map<number, HashSnapshot>();
   private tickSub?: Subscription;
   private hashReceivedSub?: Subscription;
+  private scene?: ProbableWaffleScene;
   /** Lightweight debug overlay; shown immediately on mismatch for quick visual feedback. */
   private desyncText?: Phaser.GameObjects.Text;
   private readonly pendingCorrections = new Map<number, PendingCorrection>();
   /** Tracks current mismatch reason per remote player for log deduping and dialog auto-close signaling. */
   private readonly activeMismatches = new Map<number, string>();
+  /** Emits periodic mismatch logs even when reason text stays unchanged. */
+  private readonly lastMismatchLogTickByPlayer = new Map<number, number>();
 
   /** Subscribes to sim ticks and peer hash relay; disabled automatically in singleplayer. */
   init(scene: ProbableWaffleScene): void {
+    this.scene = scene;
     const communicator = getCommunicator(scene);
     if (!communicator.stateHashChanged) return; // SP: no-op
 
@@ -86,6 +90,7 @@ export class StateHashService {
       if (event.emitterUserId === scene.userId) return;
       this.compareRemoteHash(event, scene);
     });
+    scene.events.on(ProbableWaffleSceneEventName.ReconnectSnapshotApplied, this.onReconnectSnapshotApplied, this);
 
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.destroy());
   }
@@ -190,6 +195,13 @@ export class StateHashService {
     if (localSnapshot === undefined) {
       // Peer hash arrived before our own was computed — shouldn't happen in lockstep
       // but guard it; the desync, if real, will be caught on the next interval.
+      const knownTicks = [...this.localHashes.keys()].sort((left, right) => left - right);
+      const earliestTick = knownTicks[0] ?? "none";
+      const latestTick = knownTicks[knownTicks.length - 1] ?? "none";
+      console.warn(
+        `[DESYNC] Missing local hash for tick=${event.tick} (remotePlayer=${event.playerNumber ?? "unknown"} remoteHash=${event.hash}). ` +
+          `Known local hash ticks range: ${earliestTick}..${latestTick}.`
+      );
       return;
     }
 
@@ -198,6 +210,7 @@ export class StateHashService {
         this.pendingCorrections.delete(event.playerNumber);
         const previousMismatchReason = this.activeMismatches.get(event.playerNumber);
         if (this.activeMismatches.delete(event.playerNumber)) {
+          this.lastMismatchLogTickByPlayer.delete(event.playerNumber);
           console.info(
             `[DESYNC] Player ${event.playerNumber} hash converged at tick ${event.tick}. previousReason=${previousMismatchReason ?? "unknown"}`
           );
@@ -226,9 +239,13 @@ export class StateHashService {
 
     const diagnosticsDiff = this.collectDiagnosticsDiffs(localSnapshot.diagnostics, event.diagnostics);
     if (diagnosticsDiff.actorDiffs.length > 0 || diagnosticsDiff.playerDiffs.length > 0 || diagnosticsDiff.researchDiff) {
-      console.warn(
-        `[DESYNC][DIFF] tick=${event.tick} remotePlayer=${event.playerNumber ?? "unknown"} actorDiffs=${diagnosticsDiff.actorDiffs.join(" || ") || "none"} playerDiffs=${diagnosticsDiff.playerDiffs.join(" || ") || "none"} researchDiff=${diagnosticsDiff.researchDiff ?? "none"}`
-      );
+      console.warn(`[DESYNC][DIFF] tick=${event.tick} remotePlayer=${event.playerNumber ?? "unknown"}`, {
+        actorDiffCount: diagnosticsDiff.actorDiffs.length,
+        playerDiffCount: diagnosticsDiff.playerDiffs.length,
+        actorDiffs: diagnosticsDiff.actorDiffs,
+        playerDiffs: diagnosticsDiff.playerDiffs,
+        researchDiff: diagnosticsDiff.researchDiff ?? "none"
+      });
     }
     scene.events.emit(ProbableWaffleSceneEventName.DesyncDiagnostics, {
       tick: event.tick,
@@ -244,11 +261,13 @@ export class StateHashService {
 
     if (event.playerNumber !== undefined) {
       const previousMismatchReason = this.activeMismatches.get(event.playerNumber);
-      if (previousMismatchReason !== mismatchReason) {
+      const lastLoggedTick = this.lastMismatchLogTickByPlayer.get(event.playerNumber) ?? -Infinity;
+      if (previousMismatchReason !== mismatchReason || event.tick - lastLoggedTick >= HASH_INTERVAL_TICKS) {
         console.error(
           `[DESYNC] tick=${event.tick} remotePlayer=${event.playerNumber} ` +
             `local=${localSnapshot.hash} remote=${event.hash} reason=${mismatchReason}`
         );
+        this.lastMismatchLogTickByPlayer.set(event.playerNumber, event.tick);
       }
       this.activeMismatches.set(event.playerNumber, mismatchReason);
       scene.events.emit(ProbableWaffleSceneEventName.DesyncStateChanged, {
@@ -270,6 +289,21 @@ export class StateHashService {
 
     this.handleHostDetectedDesync(event.tick, event.playerNumber, event.emitterUserId, mismatchReason, scene);
   }
+
+  /**
+   * Snapshot correction replaces authoritative state/tick baseline.
+   * Clear hash caches so stale pre-correction hashes cannot trigger false mismatches.
+   */
+  private readonly onReconnectSnapshotApplied = (event: ReconnectSnapshotAppliedSceneEvent): void => {
+    this.localHashes.clear();
+    this.pendingCorrections.clear();
+    this.activeMismatches.clear();
+    this.lastMismatchLogTickByPlayer.clear();
+    this.clearDesyncIndicator();
+    console.info(
+      `[DESYNC] Hash baseline reset after snapshot apply. reason=${event.reason ?? "unknown"} tick=${event.tick ?? "unknown"}`
+    );
+  };
 
   /** Host-side escalation: send correction snapshot first, then alert room if mismatch persists past grace. */
   private handleHostDetectedDesync(
@@ -496,9 +530,6 @@ export class StateHashService {
       if (localDigest !== remoteDigest) {
         actorDiffs.push(`actor=${actorId} local=${localDigest ?? "missing"} remote=${remoteDigest ?? "missing"}`);
       }
-      if (actorDiffs.length >= MAX_REPORTED_STATE_DIFFS) {
-        break;
-      }
     }
 
     const playerDiffs: string[] = [];
@@ -510,9 +541,6 @@ export class StateHashService {
         playerDiffs.push(
           `player-state local=${localPlayerDigests[index] ?? "missing"} remote=${remotePlayerDigests[index] ?? "missing"}`
         );
-      }
-      if (playerDiffs.length >= MAX_REPORTED_STATE_DIFFS) {
-        break;
       }
     }
 
@@ -560,9 +588,12 @@ export class StateHashService {
   destroy(): void {
     this.tickSub?.unsubscribe();
     this.hashReceivedSub?.unsubscribe();
+    this.scene?.events.off(ProbableWaffleSceneEventName.ReconnectSnapshotApplied, this.onReconnectSnapshotApplied, this);
+    this.scene = undefined;
     this.clearDesyncIndicator();
     this.pendingCorrections.clear();
     this.activeMismatches.clear();
+    this.lastMismatchLogTickByPlayer.clear();
   }
 }
 
