@@ -6,7 +6,6 @@ import { CommandBusService } from "../command-bus.service";
 import { SimulationTickService } from "../simulation-tick.service";
 import { ActorIndexSystem } from "../ActorIndexSystem";
 import { SceneActorCreator } from "../scene-actor-creator";
-import { setFullActorDataFromName } from "../../../data/actor-data";
 import { SelectionGroupsComponent } from "../../../player/human-controller/selection-groups.component";
 import { getActorComponent } from "../../../data/actor-component";
 import { IdComponent } from "../../../entity/components/id-component";
@@ -236,8 +235,6 @@ export class ReconnectService {
           .map((actor) => [actor.id.id, actor])
       );
 
-      // NOTE: For desync-correction we now patch actors in place; the historical
-      // destroy/recreate path below remains for reconnect/spectator restore.
       // Destroy all current actors before re-creating from snapshot.
       const currentActors = [...actorIndex.getAllIdActors()];
       const removedActorDiagnostics = currentActors
@@ -265,23 +262,16 @@ export class ReconnectService {
         );
       }
 
-      if (response.reason === "desync-correction") {
-        const patchStats = this.applySnapshotActorsInPlace(actorIndex, creator, snapshot.actors as ActorDefinition[]);
-        console.info(
-          `[Reconnect] Applied in-place actor patch for desync correction. updated=${patchStats.updated} created=${patchStats.created} removed=${patchStats.removed}.`
-        );
-      } else {
-        for (const actor of currentActors) {
-          actor.destroy();
-        }
-
-        // Re-create actors from the snapshot definitions.
-        for (const def of snapshot.actors) {
-          creator.createActorFromDefinition(def as ActorDefinition);
-        }
-
-        this.reconcileSnapshotActorIds(actorIndex, snapshot.actors as ActorDefinition[]);
+      for (const actor of currentActors) {
+        actor.destroy();
       }
+
+      // Re-create actors from the snapshot definitions.
+      for (const def of snapshot.actors) {
+        creator.createActorFromDefinition(def as ActorDefinition);
+      }
+
+      this.reconcileSnapshotActorIds(actorIndex, snapshot.actors as ActorDefinition[]);
 
       const indexedActorIds = new Set(
         actorIndex
@@ -421,7 +411,6 @@ export class ReconnectService {
       if (!signature) {
         continue;
       }
-
       const bucket = localBySignature.get(signature) ?? [];
       bucket.push(actor);
       localBySignature.set(signature, bucket);
@@ -465,58 +454,6 @@ export class ReconnectService {
         `[Reconnect] Reconciled actor id by signature. oldId=${previousId ?? "none"} newId=${authoritativeId} signature=${signature}`
       );
     }
-  }
-
-  /**
-   * Desync correction should not hard-recreate every actor because that causes visible
-   * pop/fog flicker and unnecessary index churn. Patch by id in place instead.
-   */
-  private applySnapshotActorsInPlace(
-    actorIndex: ActorIndexSystem,
-    creator: SceneActorCreator,
-    snapshotActors: readonly ActorDefinition[]
-  ): { updated: number; created: number; removed: number } {
-    const snapshotById = new Map(
-      snapshotActors
-        .filter((actor): actor is ActorDefinition & { id: { id: string } } => !!actor.id?.id)
-        .map((actor) => [actor.id.id, actor] as const)
-    );
-    const currentActors = actorIndex.getAllIdActors();
-    const currentById = new Map(
-      currentActors
-        .map((actor) => [getActorComponent(actor, IdComponent)?.id, actor] as const)
-        .filter((entry): entry is [string, Phaser.GameObjects.GameObject] => !!entry[0])
-    );
-
-    let removed = 0;
-    for (const [actorId, actor] of currentById) {
-      if (snapshotById.has(actorId)) {
-        continue;
-      }
-      actor.destroy();
-      removed += 1;
-    }
-
-    let updated = 0;
-    let created = 0;
-    for (const snapshotActor of snapshotActors) {
-      const actorId = snapshotActor.id?.id;
-      if (!actorId) {
-        creator.createActorFromDefinition(snapshotActor);
-        created += 1;
-        continue;
-      }
-      const existing = currentById.get(actorId);
-      if (existing) {
-        setFullActorDataFromName(existing, snapshotActor);
-        updated += 1;
-        continue;
-      }
-      creator.createActorFromDefinition(snapshotActor);
-      created += 1;
-    }
-
-    return { updated, created, removed };
   }
 
   private buildSnapshotActorSignature(actorDefinition: ActorDefinition | undefined): string | null {
