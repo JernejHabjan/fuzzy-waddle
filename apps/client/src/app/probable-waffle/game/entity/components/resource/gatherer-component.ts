@@ -600,7 +600,8 @@ export class GathererComponent {
     }
     if (data.remainingCooldown !== undefined) {
       this.remainingCooldown = data.remainingCooldown;
-      this.cooldownStartedTick = null;
+      // Fixes gather cooldown drift by anchoring restored cooldown start to the current simulation tick.
+      this.cooldownStartedTick = this.remainingCooldown > 0 ? (this.simulationTickService?.currentTick ?? null) : null;
     }
   }
 

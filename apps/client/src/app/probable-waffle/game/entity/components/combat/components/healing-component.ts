@@ -81,7 +81,8 @@ export class HealingComponent {
   setData(data: Partial<HealingComponentData>) {
     if (data.remainingCooldown !== undefined) {
       this.remainingCooldown = data.remainingCooldown;
-      this.cooldownStartedTick = null;
+      // Fixes same-tick cooldown drift after snapshot apply.
+      this.cooldownStartedTick = this.remainingCooldown > 0 ? (this.simulationTickService?.currentTick ?? null) : null;
     }
   }
 

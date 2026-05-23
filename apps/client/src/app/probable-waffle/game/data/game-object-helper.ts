@@ -161,9 +161,10 @@ export function onSceneInitialized(scene: Phaser.Scene, callback: () => void, sc
       if (delay === null) {
         executeCallback();
       } else {
-        setTimeout(() => {
+        // Fixes nondeterministic init timing caused by setTimeout running outside Phaser's scene clock.
+        scene.time.delayedCall(delay, () => {
           executeCallback();
-        }, delay);
+        });
       }
     });
 }
@@ -181,10 +182,11 @@ export function onObjectReady(
     if (delay === null) {
       callback.call(scope);
     } else {
-      setTimeout(() => {
+      // Fixes nondeterministic object-ready callback ordering by scheduling on Phaser time instead of wall-clock timers.
+      gameObject.scene.time.delayedCall(delay, () => {
         if (!gameObject.active) return;
         callback.call(scope);
-      }, delay);
+      });
     }
   };
   getSceneInitializers(gameObject.scene)

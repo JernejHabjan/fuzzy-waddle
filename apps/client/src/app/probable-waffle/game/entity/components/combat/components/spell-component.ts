@@ -184,9 +184,16 @@ export class SpellComponent {
 
   setData(data: Partial<SpellComponentData>): void {
     if (data.cooldowns) {
+      const currentTick = this.simulationTickService?.currentTick;
       for (const [type, remaining] of Object.entries(data.cooldowns)) {
-        this.spellCooldowns.set(type as SpellType, remaining);
-        this.cooldownStartedTickBySpell.delete(type as SpellType);
+        const spellType = type as SpellType;
+        this.spellCooldowns.set(spellType, remaining);
+        // Fixes spell cooldown desync by aligning restored cooldown start with the current simulation tick.
+        if (remaining > 0 && currentTick !== undefined) {
+          this.cooldownStartedTickBySpell.set(spellType, currentTick);
+        } else {
+          this.cooldownStartedTickBySpell.delete(spellType);
+        }
       }
     }
 

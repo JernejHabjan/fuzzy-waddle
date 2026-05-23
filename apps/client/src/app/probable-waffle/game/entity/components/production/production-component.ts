@@ -391,7 +391,8 @@ export class ProductionComponent {
   }
 
   setData(data: Partial<ProductionComponentData>) {
-    if (data.queue && data.queue.length > 0) {
+    // Fixes stale local queue state when snapshot intentionally contains an empty queue.
+    if (data.queue !== undefined) {
       this.createSharedQueue();
       const sharedQueue = getActorComponent(this.gameObject, QueueComponent);
       if (!sharedQueue) return;

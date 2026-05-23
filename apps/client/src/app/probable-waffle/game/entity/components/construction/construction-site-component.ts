@@ -96,7 +96,7 @@ export class ConstructionSiteComponent {
       this.setInitialHealth();
     }
 
-    if (this.state === ConstructionStateEnum.NotStarted && this.assignedBuilders.length > 0) {
+    if (this.state === ConstructionStateEnum.NotStarted && this.getAssignedBuilderCountForProgress() > 0) {
       this.startConstruction();
     }
 
@@ -105,11 +105,12 @@ export class ConstructionSiteComponent {
     if (this.healthComponent?.killed) return;
 
     const speedBoost = 1.0;
+    // Fixes build-progress drift during partial restore by using pending assignment counts until references resolve.
     const constructionProgress =
       deltaWithTimeScale * this.constructionSiteDefinition.progressMadeAutomatically * speedBoost +
       deltaWithTimeScale *
         this.constructionSiteDefinition.progressMadePerBuilder *
-        this.assignedBuilders.length *
+        this.getAssignedBuilderCountForProgress() *
         speedBoost;
 
     const productionDefinition = this.productionDefinition;
@@ -284,11 +285,12 @@ export class ConstructionSiteComponent {
     const healthComponent = getActorComponent(this.gameObject, HealthComponent);
     if (!healthComponent) return;
 
-    if (this.assignedRepairers.length === 0) return;
+    if (this.getAssignedRepairerCountForProgress() === 0) return;
     if (healthComponent.healthComponentData.health >= healthComponent.healthDefinition.maxHealth) return;
 
+    // Fixes repair-rate drift from transiently missing repairer references during restore.
     const repairAmount =
-      deltaWithTimeScale * this.constructionSiteDefinition.repairFactor * this.assignedRepairers.length;
+      deltaWithTimeScale * this.constructionSiteDefinition.repairFactor * this.getAssignedRepairerCountForProgress();
     healthComponent.healthComponentData.health += repairAmount;
     healthComponent.healthComponentData.health = Math.min(
       healthComponent.healthComponentData.health,
@@ -373,21 +375,39 @@ export class ConstructionSiteComponent {
     }
 
     if (this.pendingAssignedBuilderIds) {
-      this.assignedBuilders = this.pendingAssignedBuilderIds
+      const resolvedBuilders = this.pendingAssignedBuilderIds
         .map((id) => actorIndex.getActorById(id))
         .filter((obj): obj is GameObject => obj !== null);
-      if (this.assignedBuilders.length === this.pendingAssignedBuilderIds.length) {
+      if (resolvedBuilders.length === this.pendingAssignedBuilderIds.length) {
+        // Fixes partial assignment state by applying builder references only after complete resolution.
+        this.assignedBuilders = resolvedBuilders;
         this.pendingAssignedBuilderIds = undefined;
       }
     }
 
     if (this.pendingAssignedRepairerIds) {
-      this.assignedRepairers = this.pendingAssignedRepairerIds
+      const resolvedRepairers = this.pendingAssignedRepairerIds
         .map((id) => actorIndex.getActorById(id))
         .filter((obj): obj is GameObject => obj !== null);
-      if (this.assignedRepairers.length === this.pendingAssignedRepairerIds.length) {
+      if (resolvedRepairers.length === this.pendingAssignedRepairerIds.length) {
+        // Fixes partial assignment state by applying repairer references only after complete resolution.
+        this.assignedRepairers = resolvedRepairers;
         this.pendingAssignedRepairerIds = undefined;
       }
     }
+  }
+
+  private getAssignedBuilderCountForProgress(): number {
+    if (this.pendingAssignedBuilderIds) {
+      return this.pendingAssignedBuilderIds.length;
+    }
+    return this.assignedBuilders.length;
+  }
+
+  private getAssignedRepairerCountForProgress(): number {
+    if (this.pendingAssignedRepairerIds) {
+      return this.pendingAssignedRepairerIds.length;
+    }
+    return this.assignedRepairers.length;
   }
 }

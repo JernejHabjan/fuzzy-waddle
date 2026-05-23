@@ -750,7 +750,8 @@ export class AttackComponent {
     // Update runtime state
     if (data.remainingCooldown !== undefined) {
       this.remainingCooldown = data.remainingCooldown;
-      this.cooldownStartedTick = null;
+      // Fixes same-tick cooldown drift after restore by marking cooldown as started on the current simulation tick.
+      this.cooldownStartedTick = this.remainingCooldown > 0 ? (this.simulationTickService?.currentTick ?? null) : null;
     }
     if (data.currentAttackIndex !== undefined) {
       const idx = data.currentAttackIndex;

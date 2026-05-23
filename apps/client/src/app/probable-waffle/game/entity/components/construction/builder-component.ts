@@ -38,6 +38,11 @@ export class BuilderComponent {
   onRemovedFromConstructionSite: Subject<[GameObject, GameObject]> = new Subject<[GameObject, GameObject]>();
   onConstructionSiteLeft: Subject<[GameObject, GameObject]> = new Subject<[GameObject, GameObject]>();
   remainingCooldown = 0;
+  // Fixes same-tick cooldown decrement right after setData/reconnect restore.
+  private cooldownStartedOnTick = -1;
+  // Fixes one-shot restore race when assigned site is not indexed yet.
+  private pendingAssignedConstructionSiteId?: string;
+  private simulationTickService?: SimulationTickService;
   private cooldownTickSub?: Subscription;
   private audioService?: AudioService;
   private animationActorComponent?: AnimationActorComponent;
@@ -56,17 +61,29 @@ export class BuilderComponent {
     this.audioService = getSceneService(this.gameObject.scene, AudioService);
     this.animationActorComponent = getActorComponent(this.gameObject, AnimationActorComponent);
     this.actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
-    this.cooldownTickSub = getSceneService(this.gameObject.scene, SimulationTickService)?.tick$.subscribe(() => {
+    this.simulationTickService = getSceneService(this.gameObject.scene, SimulationTickService);
+    this.cooldownTickSub = this.simulationTickService?.tick$.subscribe(() => {
       this.onSimulationTick();
     });
   }
 
   private onSimulationTick(): void {
+    // Fixes delayed actor-index population by retrying assigned-site resolution deterministically.
+    this.tryResolveAssignedConstructionSiteReference();
+
     if (this.remainingCooldown <= 0) {
       return;
     }
+
+    if (this.cooldownStartedOnTick === this.simulationTickService?.currentTick) {
+      return;
+    }
+
     this.remainingCooldown -= SimulationTickService.TICK_INTERVAL_MS;
     this.remainingCooldown = Math.max(this.remainingCooldown, 0);
+    if (this.remainingCooldown <= 0) {
+      this.cooldownStartedOnTick = -1;
+    }
     // if (this.remainingCooldown <= 0) {
     //   this.onCooldownReady.emit(this.gameObject);
     // }
@@ -232,6 +249,7 @@ export class BuilderComponent {
 
   private destroy() {
     this.cooldownTickSub?.unsubscribe();
+    this.simulationTickService = undefined;
   }
 
   isIdle() {
@@ -314,13 +332,35 @@ export class BuilderComponent {
   }
 
   setData(data: Partial<BuilderComponentData>) {
-    if (data.remainingCooldown !== undefined) this.remainingCooldown = data.remainingCooldown;
-    if (data.assignedConstructionSiteId) {
-      const actorIndex = getSceneService(this.gameObject.scene, ActorIndexSystem);
-      const actorById = actorIndex?.getActorById(data.assignedConstructionSiteId);
-      if (actorById) {
-        this.assignedConstructionSite = actorById;
+    if (data.remainingCooldown !== undefined) {
+      this.remainingCooldown = data.remainingCooldown;
+      if (this.remainingCooldown > 0) {
+        // Fixes immediate first-tick cooldown skew after restore.
+        this.cooldownStartedOnTick = this.simulationTickService?.currentTick ?? -1;
+      } else {
+        this.cooldownStartedOnTick = -1;
       }
+    }
+
+    this.assignedConstructionSite = undefined;
+    this.pendingAssignedConstructionSiteId = data.assignedConstructionSiteId;
+    this.tryResolveAssignedConstructionSiteReference();
+  }
+
+  private tryResolveAssignedConstructionSiteReference(): void {
+    if (!this.pendingAssignedConstructionSiteId) {
+      return;
+    }
+
+    const actorIndex = getSceneService(this.gameObject.scene, ActorIndexSystem);
+    if (!actorIndex) {
+      return;
+    }
+
+    const actorById = actorIndex.getActorById(this.pendingAssignedConstructionSiteId);
+    if (actorById) {
+      this.assignedConstructionSite = actorById;
+      this.pendingAssignedConstructionSiteId = undefined;
     }
   }
 
