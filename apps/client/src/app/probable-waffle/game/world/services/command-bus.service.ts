@@ -82,10 +82,12 @@ export class CommandBusService {
       .map((p) => p.playerNumber!);
     this.humanPlayerNumbers.sort((a, b) => a - b);
     if (this.localPlayerNumber === null) {
-      console.error("[CommandBus] Could not resolve local player number. Local command batches cannot be sent.");
+      console.error(
+        `[CommandBus] ${this.getMultiplayerLogContext()} Could not resolve local player number. Local command batches cannot be sent.`
+      );
     } else if (!this.humanPlayerNumbers.includes(this.localPlayerNumber)) {
       console.error(
-        `[CommandBus] Local player ${this.localPlayerNumber} is not part of human lockstep set [${this.humanPlayerNumbers.join(",") || "none"}].`
+        `[CommandBus] ${this.getMultiplayerLogContext()} Local player ${this.localPlayerNumber} is not part of human lockstep set [${this.humanPlayerNumbers.join(",") || "none"}].`
       );
     }
 
@@ -110,7 +112,7 @@ export class CommandBusService {
           // The server rejected our batch (payload invalid) and relayed an empty one.
           // Log clearly so the developer can see what caused the desync.
           console.error(
-            `[CommandBus] Server rejected batch for tick=${event.tick} player=${event.playerNumber}: ${event.rejectionReason}`
+            `[CommandBus] ${this.getMultiplayerLogContext()} Server rejected batch for tick=${event.tick} player=${event.playerNumber}: ${event.rejectionReason}`
           );
         }
         if (event.commands.length > 0) {
@@ -418,7 +420,7 @@ export class CommandBusService {
     if (!this.debug) {
       return;
     }
-    console.info(`[CommandBus] ${message}`);
+    console.info(`[CommandBus] ${this.getMultiplayerLogContext()} ${message}`);
   }
 
   private logStall(nextTick: number): void {
@@ -441,7 +443,7 @@ export class CommandBusService {
       : "no-socket";
     const missingReasons = this.describeMissingPlayers(nextTick, missing);
     console.warn(
-      `[CommandBus][STALL] nextTick=${nextTick} waitingForPlayers=${missing.join(",") || "none"} committedBy=${committed.join(",") || "none"} pauses=${pauseReasons} localPlayer=${this.localPlayerNumber ?? "none"} lastSentLocalTick=${this.lastSentTickByLocalPlayer ?? "none"} lastReceivedByPlayer={${lastReceivedByPlayer}} missingReasons={${missingReasons}} socketConnected=${socketConnected}`
+      `[CommandBus][STALL] ${this.getMultiplayerLogContext()} nextTick=${nextTick} waitingForPlayers=${missing.join(",") || "none"} committedBy=${committed.join(",") || "none"} pauses=${pauseReasons} localPlayer=${this.localPlayerNumber ?? "none"} lastSentLocalTick=${this.lastSentTickByLocalPlayer ?? "none"} lastReceivedByPlayer={${lastReceivedByPlayer}} missingReasons={${missingReasons}} socketConnected=${socketConnected}`
     );
   }
 
@@ -497,8 +499,19 @@ export class CommandBusService {
     this.queuedWhileStalledSignature = signature;
     const missingReasons = this.describeMissingPlayers(blockedTick, missing);
     console.warn(
-      `[CommandBus][QUEUE-WHILE-STALLED] command=${commandType} player=${playerNumber} executeTick=${executeTick} blockedTick=${blockedTick} missingPlayers=${missing.join(",")} committedPlayers=${committed.join(",") || "none"} missingReasons={${missingReasons}}`
+      `[CommandBus][QUEUE-WHILE-STALLED] ${this.getMultiplayerLogContext()} command=${commandType} player=${playerNumber} executeTick=${executeTick} blockedTick=${blockedTick} missingPlayers=${missing.join(",")} committedPlayers=${committed.join(",") || "none"} missingReasons={${missingReasons}}`
     );
+  }
+
+  private getMultiplayerLogContext(): string {
+    const scene = this.scene;
+    if (!scene) {
+      return "role=unknown isHost=unknown localPlayer=none";
+    }
+
+    const role = scene.isHost ? "authoritative-host" : "non-host";
+    const hostUserId = scene.baseGameData.gameInstance.gameInstanceMetadata.data.currentHostUserId ?? "unknown";
+    return `role=${role} isHost=${scene.isHost} localPlayer=${this.localPlayerNumber ?? "none"} hostUser=${hostUserId}`;
   }
 
   /** Explains, per missing player, why lockstep is still waiting on blockedTick. */

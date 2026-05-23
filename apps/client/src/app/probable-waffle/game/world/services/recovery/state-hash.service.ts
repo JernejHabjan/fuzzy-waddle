@@ -191,6 +191,7 @@ export class StateHashService {
     scene: ProbableWaffleScene
   ): void {
     const localPlayerNumber = scene.playerOrNull?.playerNumber ?? scene.player?.playerNumber ?? "unknown";
+    const localContext = this.getLocalAuthorityContext(scene);
     const localSnapshot = this.localHashes.get(event.tick);
     if (localSnapshot === undefined) {
       // Peer hash arrived before our own was computed — shouldn't happen in lockstep
@@ -205,7 +206,7 @@ export class StateHashService {
         this.missingLocalHashLogSignature = signature;
         console.warn(
           `[DESYNC] Missing local hash for tick=${event.tick} (remotePlayer=${event.playerNumber ?? "unknown"} remoteHash=${event.hash}). ` +
-            `Known local hash ticks range: ${earliestTick}..${latestTick}. localPlayer=${localPlayerNumber} ` +
+            `Known local hash ticks range: ${earliestTick}..${latestTick}. localPlayer=${localPlayerNumber} ${localContext} ` +
             `currentTick=${currentTick} pauses=${pauseReasons}. ` +
             `This usually means this client could not produce hash tick=${event.tick} yet (paused/stalled or just reset).`
         );
@@ -221,7 +222,7 @@ export class StateHashService {
         if (this.activeMismatches.delete(event.playerNumber)) {
           this.lastMismatchLogTickByPlayer.delete(event.playerNumber);
           console.info(
-            `[DESYNC] Player ${event.playerNumber} hash converged at tick ${event.tick}. previousReason=${previousMismatchReason ?? "unknown"}`
+            `[DESYNC] Player ${event.playerNumber} hash converged at tick ${event.tick}. ${this.getHashEventAuthorityContext(scene, event.playerNumber, event.emitterUserId)} previousReason=${previousMismatchReason ?? "unknown"}`
           );
           scene.events.emit(ProbableWaffleSceneEventName.DesyncStateChanged, {
             playerNumber: event.playerNumber,
@@ -250,6 +251,7 @@ export class StateHashService {
     const diagnosticsDiff = this.collectDiagnosticsDiffs(localSnapshot.diagnostics, event.diagnostics);
     if (diagnosticsDiff.actorDiffs.length > 0 || diagnosticsDiff.playerDiffs.length > 0 || diagnosticsDiff.researchDiff) {
       console.warn(`[DESYNC][DIFF] tick=${event.tick} remotePlayer=${event.playerNumber ?? "unknown"}`, {
+        authority: this.getHashEventAuthorityContext(scene, event.playerNumber, event.emitterUserId),
         actorDiffCount: diagnosticsDiff.actorDiffs.length,
         playerDiffCount: diagnosticsDiff.playerDiffs.length,
         actorDiffs: diagnosticsDiff.actorDiffs,
@@ -259,7 +261,7 @@ export class StateHashService {
     }
     if (classifiedMismatch) {
       console.warn(
-        `[DESYNC][CAUSE] tick=${event.tick} localPlayer=${localPlayerNumber} remotePlayer=${event.playerNumber ?? "unknown"} ${classifiedMismatch}`
+        `[DESYNC][CAUSE] tick=${event.tick} localPlayer=${localPlayerNumber} remotePlayer=${event.playerNumber ?? "unknown"} ${this.getHashEventAuthorityContext(scene, event.playerNumber, event.emitterUserId)} ${classifiedMismatch}`
       );
     }
     scene.events.emit(ProbableWaffleSceneEventName.DesyncDiagnostics, {
@@ -279,7 +281,7 @@ export class StateHashService {
       const lastLoggedTick = this.lastMismatchLogTickByPlayer.get(event.playerNumber) ?? -Infinity;
       if (previousMismatchReason !== mismatchReason || event.tick - lastLoggedTick >= HASH_INTERVAL_TICKS) {
         console.error(
-          `[DESYNC] tick=${event.tick} localPlayer=${localPlayerNumber} remotePlayer=${event.playerNumber} ` +
+          `[DESYNC] tick=${event.tick} localPlayer=${localPlayerNumber} remotePlayer=${event.playerNumber} ${this.getHashEventAuthorityContext(scene, event.playerNumber, event.emitterUserId)} ` +
             `local=${localSnapshot.hash} remote=${event.hash} reason=${mismatchReason}`
         );
         this.lastMismatchLogTickByPlayer.set(event.playerNumber, event.tick);
@@ -292,7 +294,7 @@ export class StateHashService {
       });
     } else {
       console.error(
-        `[DESYNC] tick=${event.tick} localPlayer=${localPlayerNumber} remotePlayer=${event.playerNumber} ` +
+        `[DESYNC] tick=${event.tick} localPlayer=${localPlayerNumber} remotePlayer=${event.playerNumber} ${this.getHashEventAuthorityContext(scene, event.playerNumber, event.emitterUserId)} ` +
           `local=${localSnapshot.hash} remote=${event.hash} reason=${mismatchReason}`
       );
     }
@@ -316,7 +318,7 @@ export class StateHashService {
     this.lastMismatchLogTickByPlayer.clear();
     this.clearDesyncIndicator();
     console.info(
-      `[DESYNC] Hash baseline reset after snapshot apply. reason=${event.reason ?? "unknown"} tick=${event.tick ?? "unknown"}`
+      `[DESYNC] Hash baseline reset after snapshot apply. ${this.getLocalAuthorityContext(this.scene)} reason=${event.reason ?? "unknown"} tick=${event.tick ?? "unknown"}`
     );
   };
 
@@ -341,7 +343,7 @@ export class StateHashService {
         reason
       });
       console.warn(
-        `[DESYNC] Sent correction snapshot to player ${remotePlayerNumber} at tick ${tick}. reason=${reason}`
+        `[DESYNC] Sent correction snapshot to player ${remotePlayerNumber} at tick ${tick}. ${this.getLocalAuthorityContext(scene)} reason=${reason}`
       );
       return;
     }
@@ -355,17 +357,37 @@ export class StateHashService {
       existing.lastCorrectionTick = currentTick;
       existing.correctionAttempts += 1;
       console.warn(
-        `[DESYNC] Retried correction snapshot to player ${remotePlayerNumber} at tick ${tick}. attempts=${existing.correctionAttempts} reason=${existing.reason ?? "unknown"}`
+        `[DESYNC] Retried correction snapshot to player ${remotePlayerNumber} at tick ${tick}. ${this.getLocalAuthorityContext(scene)} attempts=${existing.correctionAttempts} reason=${existing.reason ?? "unknown"}`
       );
     }
 
     if (currentTick - existing.firstDetectedTick >= HASH_INTERVAL_TICKS * 6) {
       console.error(
         `[DESYNC] Player ${remotePlayerNumber} is still divergent after ${existing.correctionAttempts} correction attempts. ` +
-          `Continuing automatic correction retries. reason=${existing.reason ?? "unknown"}`
+          `${this.getLocalAuthorityContext(scene)} Continuing automatic correction retries. reason=${existing.reason ?? "unknown"}`
       );
       existing.firstDetectedTick = currentTick;
     }
+  }
+
+  private getLocalAuthorityContext(scene: ProbableWaffleScene | undefined): string {
+    if (!scene) {
+      return "role=unknown isHost=unknown localPlayer=unknown";
+    }
+    const localPlayer = scene.playerOrNull?.playerNumber ?? scene.player?.playerNumber ?? "unknown";
+    const role = scene.isHost ? "authoritative-host" : "non-host";
+    const hostUserId = scene.baseGameData.gameInstance.gameInstanceMetadata.data.currentHostUserId ?? "unknown";
+    return `role=${role} isHost=${scene.isHost} localPlayer=${localPlayer} hostUser=${hostUserId}`;
+  }
+
+  private getHashEventAuthorityContext(
+    scene: ProbableWaffleScene,
+    remotePlayerNumber: number | undefined,
+    remoteUserId: string | null | undefined
+  ): string {
+    const hostUserId = scene.baseGameData.gameInstance.gameInstanceMetadata.data.currentHostUserId;
+    const remoteRole = remoteUserId && hostUserId && remoteUserId === hostUserId ? "remote-authoritative-host" : "remote-non-host";
+    return `${this.getLocalAuthorityContext(scene)} remotePlayer=${remotePlayerNumber ?? "unknown"} remoteRole=${remoteRole}`;
   }
 
   /** Persistent on-screen overlay so the affected client immediately sees the desync. */
