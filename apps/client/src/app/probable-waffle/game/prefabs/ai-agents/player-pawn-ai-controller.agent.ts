@@ -843,6 +843,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
     const attackableEnemies = visionComponent.getVisibleEnemies().filter((enemy) => this.canAttackTarget(enemy));
     if (attackableEnemies.length === 0) return null;
 
+    // Deterministic target ordering: closest first, then stable actor identity.
     attackableEnemies.sort((a, b) => {
       const distanceA = DistanceHelper.getTileDistanceBetweenGameObjects(this.gameObject, a);
       const distanceB = DistanceHelper.getTileDistanceBetweenGameObjects(this.gameObject, b);
@@ -870,6 +871,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
     if (aId && bId && aId !== bId) {
       return aId.localeCompare(bId);
     }
+    // Fallback key keeps ordering stable even when one side is missing an id.
     const aStable = `${a.name}:${aId ?? ""}`;
     const bStable = `${b.name}:${bId ?? ""}`;
     return aStable.localeCompare(bStable);

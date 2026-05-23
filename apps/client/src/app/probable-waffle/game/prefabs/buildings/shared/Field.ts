@@ -207,6 +207,7 @@ export default class Field extends Phaser.GameObjects.Container implements CropR
   }
 
   private getDeterministicCropTypeIndex(): number {
+    // Use seeded scene RNG so crop type picks stay identical across multiplayer peers.
     const randomService = getSceneService(this.scene, RandomService);
     if (!randomService) {
       return Phaser.Math.Between(0, Field.CROP_CONSTRUCTORS.length - 1);

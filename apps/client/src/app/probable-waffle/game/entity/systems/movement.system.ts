@@ -607,6 +607,7 @@ export class MovementSystem {
       const distA = Math.sqrt(Math.pow(a.x - tileVec3.x, 2) + Math.pow(a.y - tileVec3.y, 2));
       const distB = Math.sqrt(Math.pow(b.x - tileVec3.x, 2) + Math.pow(b.y - tileVec3.y, 2));
       if (distA !== distB) return distA - distB;
+      // Deterministic tie-break for equal-distance points keeps formation assignment stable.
       if (a.y !== b.y) return a.y - b.y;
       return a.x - b.x;
     });

@@ -44,6 +44,7 @@ export class CommandBuffer {
   }
 
   hasPlayerCommit(tick: number, playerNumber: PlayerNumber): boolean {
+    // Used by startup-gap backfill to avoid re-committing already received empty heartbeats.
     const tickMap = this.buffer.get(tick);
     if (!tickMap) return false;
     return tickMap.has(playerNumber);

@@ -508,6 +508,7 @@ export class NavigationService {
     const maxAttempts = validTiles.length; // Limit attempts to prevent infinite loops
     while (attempts < maxAttempts) {
       const randomIndex = this.randomService.between(0, validTiles.length - 1);
+      // Use the same sampled index for selection and removal to keep RNG progression deterministic.
       const tile = validTiles[randomIndex]!;
 
       // Check path to the random tile
@@ -786,6 +787,7 @@ export class NavigationService {
     if (distanceDelta !== 0) {
       return distanceDelta;
     }
+    // Deterministic tie-break for equal-distance tiles.
     if (a.y !== b.y) {
       return a.y - b.y;
     }

@@ -101,6 +101,7 @@ export class VisionComponent {
     if (normalizedDistanceA !== normalizedDistanceB) {
       return normalizedDistanceA - normalizedDistanceB;
     }
+    // Deterministic tie-break so equal-distance target picks cannot diverge between peers.
     const idA = this.getStableActorSortKey(a);
     const idB = this.getStableActorSortKey(b);
     return idA.localeCompare(idB);
