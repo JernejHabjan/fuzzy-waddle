@@ -10,10 +10,12 @@ import { SharedQueue } from "../production/shared-queue";
 import { PaymentType } from "../production/payment-type";
 import type { ProductionQueueItem } from "../production/game-object";
 import Phaser from "phaser";
+import type { Subscription } from "rxjs";
 import type { QueueDefinition } from "../production/queue-definition";
 import { getActorComponent } from "../../../data/actor-component";
 import { addActorComponent } from "../../../data/actor-data";
-import { getSimulationDelta } from "../../../world/services/simulation-time";
+import { SimulationTickService } from "../../../world/services/simulation-tick.service";
+import { getSceneService } from "../../../world/services/scene-component-helpers";
 
 /**
  * SharedQueueComponent is the queue owner and processor.
@@ -31,7 +33,7 @@ export class QueueComponent {
   // Component references (set during registration)
   private productionComponent?: ProductionComponent;
   private researchComponent?: ResearchComponent;
-  private lastSimulationTimeMs?: number;
+  private simulationTickSub?: Subscription;
 
   constructor(
     readonly gameObject: Phaser.GameObjects.GameObject,
@@ -44,8 +46,9 @@ export class QueueComponent {
       this.sharedQueues.push(new SharedQueue(queueDefinition.capacityPerQueue));
     }
 
-    // Hook to Phaser UPDATE event
-    gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
+    this.simulationTickSub = getSceneService(gameObject.scene, SimulationTickService)?.tick$.subscribe(() =>
+      this.update()
+    );
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
   }
 
@@ -72,9 +75,7 @@ export class QueueComponent {
    */
   private update(): void {
     if (!this.gameObject.scene) return;
-    const simulationDelta = getSimulationDelta(this.gameObject.scene, this.lastSimulationTimeMs);
-    this.lastSimulationTimeMs = simulationDelta.now;
-    const deltaWithTimeScale = simulationDelta.delta;
+    const deltaWithTimeScale = SimulationTickService.TICK_INTERVAL_MS;
     if (deltaWithTimeScale <= 0) return;
 
     // Process each queue's first item
@@ -556,7 +557,7 @@ export class QueueComponent {
    * Cleanup
    */
   private destroy(): void {
-    this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
+    this.simulationTickSub?.unsubscribe();
     this.productionComponent = undefined;
     this.researchComponent = undefined;
     this.queueChangedSubject.next([]);

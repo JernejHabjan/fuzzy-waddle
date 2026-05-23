@@ -1,7 +1,7 @@
 import { GatherData } from "./gather-data";
 import { ResourceSourceComponent } from "./resource-source-component";
 import { DistanceHelper } from "../../../library/distance-helper";
-import { Subject } from "rxjs";
+import { Subject, type Subscription } from "rxjs";
 import { ContainerComponent } from "../building/container-component";
 import { ResourceDrainComponent } from "./resource-drain-component";
 import { type GathererComponentData, ResourceType } from "@fuzzy-waddle/api-interfaces";
@@ -26,7 +26,7 @@ import { SoundType } from "../actor-audio/sound-type";
 import { isCropResourceSource } from "../tendable/growth-stage.interface";
 import type { SoundDefinition } from "../actor-audio/sound-definition";
 import type { GathererDefinition } from "./gatherer-definition";
-import { getSimulationDelta } from "../../../world/services/simulation-time";
+import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 import { IdComponent } from "../id-component";
 import GameObject = Phaser.GameObjects.GameObject;
 
@@ -75,7 +75,7 @@ export class GathererComponent {
   previousResourceSource: GameObject | null = null;
   previousResourceType: ResourceType | null = null;
   remainingCooldown = 0;
-  private lastSimulationTimeMs?: number;
+  private cooldownTickSub?: Subscription;
 
   onResourceGathered: Subject<[GameObject, GameObject, GatherData, number]> = new Subject<
     [GameObject, GameObject, GatherData, number]
@@ -89,7 +89,6 @@ export class GathererComponent {
     private readonly gameObject: GameObject,
     private readonly gathererComponentDefinition: GathererDefinition
   ) {
-    gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
     onObjectReady(this.gameObject, this.onObjectReady, this);
@@ -99,17 +98,16 @@ export class GathererComponent {
     this.audioService = getSceneService(this.gameObject.scene, AudioService);
     this.animationActorComponent = getActorComponent(this.gameObject, AnimationActorComponent);
     this.actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
+    this.cooldownTickSub = getSceneService(this.gameObject.scene, SimulationTickService)?.tick$.subscribe(() => {
+      this.onSimulationTick();
+    });
   }
 
-  private update(): void {
-    const simulationDelta = getSimulationDelta(this.gameObject.scene, this.lastSimulationTimeMs);
-    this.lastSimulationTimeMs = simulationDelta.now;
-    const deltaWithTimeScale = simulationDelta.delta;
-
+  private onSimulationTick(): void {
     if (this.remainingCooldown <= 0) {
       return;
     }
-    this.remainingCooldown -= deltaWithTimeScale;
+    this.remainingCooldown -= SimulationTickService.TICK_INTERVAL_MS;
     this.remainingCooldown = Math.max(this.remainingCooldown, 0);
     // if (this.remainingCooldown <= 0) {
     //   this.onCooldownReady.emit(this.gameObject);
@@ -117,7 +115,7 @@ export class GathererComponent {
   }
 
   private destroy() {
-    this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
+    this.cooldownTickSub?.unsubscribe();
     // Unassign from resource source
     if (this.currentResourceSource) {
       const resourceSourceComponent = getActorComponent(this.currentResourceSource, ResourceSourceComponent);

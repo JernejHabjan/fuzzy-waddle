@@ -137,13 +137,14 @@ export default class Stairs extends Phaser.GameObjects.Container {
     onObjectReady(
       this,
       () => {
-        this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.throttleRedrawStairs, this); // todo remove this later
+        // Intentional frame update: stairs mesh refresh is visual neighbor rendering only.
+        this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.throttleRedrawStairsFrameNonDeterministic, this); // todo remove this later
       },
       this
     );
   }
 
-  private throttleRedrawStairs = throttle(this.refreshStairsType.bind(this), 1000);
+  private throttleRedrawStairsFrameNonDeterministic = throttle(this.refreshStairsType.bind(this), 1000);
 
   private refreshStairsType() {
     if (!this.active) return;
@@ -225,7 +226,7 @@ export default class Stairs extends Phaser.GameObjects.Container {
   }
 
   override destroy(fromScene?: boolean) {
-    this.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.throttleRedrawStairs, this);
+    this.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.throttleRedrawStairsFrameNonDeterministic, this);
     super.destroy(fromScene);
   }
 

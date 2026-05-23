@@ -44,6 +44,7 @@ export class GameModeConditionChecker {
   private surrenderCheckInterval = 2000; // Check every 2 seconds
   private lastSurrenderCheckTime = 0;
   private currentDelay?: CancelableSimDelay;
+  private simulationTickSub?: Subscription;
 
   constructor(private readonly scene: ProbableWaffleScene) {
     const gameModeData = getGameModeFromScene<ProbableWaffleGameMode>(scene).data;
@@ -57,7 +58,7 @@ export class GameModeConditionChecker {
   }
 
   private startChecking() {
-    this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.throttleCheck, this);
+    this.simulationTickSub = getSceneService(this.scene, SimulationTickService)?.tick$.subscribe(() => this.throttleCheck());
   }
 
   private throttleCheck = throttle(this.check.bind(this), 1000);
@@ -431,7 +432,7 @@ export class GameModeConditionChecker {
   }
 
   private destroy() {
-    this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.throttleCheck);
+    this.simulationTickSub?.unsubscribe();
     this.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.destroy);
     this.selfQuitSubscription?.unsubscribe();
     this.currentDelay?.remove();

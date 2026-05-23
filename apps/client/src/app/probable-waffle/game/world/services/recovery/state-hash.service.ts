@@ -14,6 +14,7 @@ import { HealingComponent } from "../../../entity/components/combat/components/h
 import { BuilderComponent } from "../../../entity/components/construction/builder-component";
 import { GathererComponent } from "../../../entity/components/resource/gatherer-component";
 import { OwnerComponent } from "../../../entity/components/owner-component";
+import { ResourceSourceComponent } from "../../../entity/components/resource/resource-source-component";
 import { getGameObjectCurrentTile, getGameObjectLogicalTransform } from "../../../data/game-object-helper";
 import { getCommunicator } from "../../../data/scene-data";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
@@ -143,27 +144,30 @@ export class StateHashService {
     }
 
     const actorDigests = includeDiagnostics ? ({} as Record<string, string>) : undefined;
-    const entries = actorIndex.getAllIdActors().map((go) => {
-      const id = getActorComponent(go, IdComponent)?.id ?? "";
-      const health = getActorComponent(go, HealthComponent)?.healthComponentData.health ?? -1;
-      const armour = getActorComponent(go, HealthComponent)?.healthComponentData.armour ?? -1;
-      const tile = getGameObjectCurrentTile(go);
-      const pos = getGameObjectLogicalTransform(go);
-      const lx = tile ? tile.x : pos ? Math.round(pos.x) : 0;
-      const ly = tile ? tile.y : pos ? Math.round(pos.y) : 0;
-      const lz = pos ? Math.round(pos.z) : 0;
-      const owner = getActorComponent(go, OwnerComponent)?.getOwner() ?? -1;
-      const actor = ActorManager.getActorDefinitionFromActor(go) ?? {};
-      const queueState = this.serializeActorQueueState(actor);
-      const economyState = this.serializeActorEconomyState(actor);
-      const combatState = this.serializeActorCombatState(go);
-      const orderState = this.serializeActorOrderState(go);
-      const actorDigest = `${id}:${go.name}:${Math.round(health)}:${Math.round(armour)}:${lx}:${ly}:${lz}:${owner}:${queueState}:${economyState}:${combatState}:${orderState}`;
-      if (actorDigests) {
-        actorDigests[id] = actorDigest;
-      }
-      return actorDigest;
-    });
+    const entries = actorIndex
+      .getAllIdActors()
+      .filter((go) => !this.shouldIgnoreForStateHash(go))
+      .map((go) => {
+        const id = getActorComponent(go, IdComponent)?.id ?? "";
+        const health = getActorComponent(go, HealthComponent)?.healthComponentData.health ?? -1;
+        const armour = getActorComponent(go, HealthComponent)?.healthComponentData.armour ?? -1;
+        const tile = getGameObjectCurrentTile(go);
+        const pos = getGameObjectLogicalTransform(go);
+        const lx = tile ? tile.x : pos ? Math.round(pos.x) : 0;
+        const ly = tile ? tile.y : pos ? Math.round(pos.y) : 0;
+        const lz = pos ? Math.round(pos.z) : 0;
+        const owner = getActorComponent(go, OwnerComponent)?.getOwner() ?? -1;
+        const actor = ActorManager.getActorDefinitionFromActor(go) ?? {};
+        const queueState = this.serializeActorQueueState(actor);
+        const economyState = this.serializeActorEconomyState(actor);
+        const combatState = this.serializeActorCombatState(go);
+        const orderState = this.serializeActorOrderState(go);
+        const actorDigest = `${id}:${go.name}:${Math.round(health)}:${Math.round(armour)}:${lx}:${ly}:${lz}:${owner}:${queueState}:${economyState}:${combatState}:${orderState}`;
+        if (actorDigests) {
+          actorDigests[id] = actorDigest;
+        }
+        return actorDigest;
+      });
 
     // Sort by the ID prefix (first segment before ':') for deterministic ordering.
     entries.sort();
@@ -201,6 +205,7 @@ export class StateHashService {
         // client reaches the same tick. That's transport ordering, not desync.
         return;
       }
+
       // Peer hash arrived before our own was computed — shouldn't happen in lockstep
       // but guard it; the desync, if real, will be caught on the next interval.
       const knownTicks = [...this.localHashes.keys()].sort((left, right) => left - right);
@@ -390,6 +395,24 @@ export class StateHashService {
       );
       existing.firstDetectedTick = currentTick;
     }
+  }
+
+  /**
+   * Exhausted neutral resource nodes can legitimately be missing on one peer after
+   * prior divergence and do not affect future deterministic simulation decisions.
+   * Exclude them from hash to avoid permanent false desync loops.
+   */
+  private shouldIgnoreForStateHash(actor: Phaser.GameObjects.GameObject): boolean {
+    const owner = getActorComponent(actor, OwnerComponent)?.getOwner();
+    const isNeutral = owner === undefined || owner === -1;
+    if (!isNeutral) {
+      return false;
+    }
+    const resourceSource = getActorComponent(actor, ResourceSourceComponent);
+    if (!resourceSource) {
+      return false;
+    }
+    return resourceSource.getCurrentResources() <= 0;
   }
 
   private getLocalAuthorityContext(scene: ProbableWaffleScene | undefined): string {

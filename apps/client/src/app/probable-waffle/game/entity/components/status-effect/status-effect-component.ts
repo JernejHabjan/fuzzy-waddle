@@ -5,11 +5,14 @@ import {
   type StatusEffectData,
   StatusEffectType
 } from "@fuzzy-waddle/api-interfaces";
+import type { Subscription } from "rxjs";
 import { getActorComponent } from "../../../data/actor-component";
 import { HealthComponent } from "../combat/components/health-component";
 import Phaser from "phaser";
 import { onObjectReady } from "../../../data/game-object-helper";
-import { getSimulationDelta, getSimulationNow } from "../../../world/services/simulation-time";
+import { getSimulationNow } from "../../../world/services/simulation-time";
+import { SimulationTickService } from "../../../world/services/simulation-tick.service";
+import { getSceneService } from "../../../world/services/scene-component-helpers";
 
 export class StatusEffectComponent {
   static readonly EffectAppliedEvent = "effectApplied";
@@ -22,11 +25,13 @@ export class StatusEffectComponent {
 
   private activeEffects: StatusEffectData[] = [];
   private healthComponent?: HealthComponent;
-  private lastSimulationTimeMs?: number;
+  private simulationTickSub?: Subscription;
 
   constructor(private readonly gameObject: Phaser.GameObjects.GameObject) {
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
-    gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
+    this.simulationTickSub = getSceneService(gameObject.scene, SimulationTickService)?.tick$.subscribe(() =>
+      this.update()
+    );
 
     onObjectReady(gameObject, this.init, this);
   }
@@ -36,7 +41,7 @@ export class StatusEffectComponent {
   }
 
   private destroy(): void {
-    this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
+    this.simulationTickSub?.unsubscribe();
   }
 
   applyEffect(effect: StatusEffectData): void {
@@ -116,10 +121,8 @@ export class StatusEffectComponent {
   private update(): void {
     if (!this.gameObject.active) return;
 
-    const simulationDelta = getSimulationDelta(this.gameObject.scene, this.lastSimulationTimeMs);
-    this.lastSimulationTimeMs = simulationDelta.now;
-    const now = simulationDelta.now;
-    const elapsed = simulationDelta.delta;
+    const now = getSimulationNow(this.gameObject.scene);
+    const elapsed = SimulationTickService.TICK_INTERVAL_MS;
     const effectsToRemove: StatusEffectType[] = [];
 
     for (const effect of this.activeEffects) {

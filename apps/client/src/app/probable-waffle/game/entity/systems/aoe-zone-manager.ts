@@ -1,4 +1,5 @@
 import { type AoeZoneData, type StatusEffectData, type Vector2Simple } from "@fuzzy-waddle/api-interfaces";
+import type { Subscription } from "rxjs";
 import { onSceneInitialized } from "../../data/game-object-helper";
 import { getActorComponent } from "../../data/actor-component";
 import { OwnerComponent } from "../components/owner-component";
@@ -10,7 +11,8 @@ import { TilemapComponent } from "../../world/tilemap/tilemap.component";
 import { EffectsAnims } from "../../animations/effects";
 import { AudioService } from "../../world/services/audio.service";
 import { RepresentableComponent } from "../components/representable-component";
-import { getSimulationDelta, getSimulationNow } from "../../world/services/simulation-time";
+import { getSimulationNow } from "../../world/services/simulation-time";
+import { SimulationTickService } from "../../world/services/simulation-tick.service";
 
 interface ZoneVisual {
   zoneId: string;
@@ -25,7 +27,7 @@ export class AoeZoneManager {
   private zoneVisuals: Map<string, ZoneVisual> = new Map();
   private audioService?: AudioService;
   private nextZoneId = 0;
-  private lastSimulationTimeMs?: number;
+  private simulationTickSub?: Subscription;
 
   constructor(private readonly scene: Phaser.Scene) {
     onSceneInitialized(this.scene, this.init, this);
@@ -34,7 +36,7 @@ export class AoeZoneManager {
 
   private init(): void {
     this.audioService = getSceneService(this.scene, AudioService);
-    this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
+    this.simulationTickSub = getSceneService(this.scene, SimulationTickService)?.tick$.subscribe(() => this.update());
   }
 
   createZone(data: Omit<AoeZoneData, "id" | "remainingTime" | "lastTickTime">): string {
@@ -61,10 +63,8 @@ export class AoeZoneManager {
   }
 
   private update(): void {
-    const simulationDelta = getSimulationDelta(this.scene, this.lastSimulationTimeMs);
-    this.lastSimulationTimeMs = simulationDelta.now;
-    const now = simulationDelta.now;
-    const elapsed = simulationDelta.delta;
+    const now = getSimulationNow(this.scene);
+    const elapsed = SimulationTickService.TICK_INTERVAL_MS;
     const zonesToRemove: string[] = [];
 
     for (const zone of this.activeZones) {
@@ -373,7 +373,7 @@ export class AoeZoneManager {
   }
 
   private destroy(): void {
-    this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
+    this.simulationTickSub?.unsubscribe();
 
     // Clean up all zone visuals
     for (const [id] of this.zoneVisuals) {

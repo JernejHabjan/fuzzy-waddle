@@ -156,11 +156,12 @@ export class HealthComponent {
       this.setVisibilityUiComponent(false);
       this.shouldUiElementsBeVisible = shouldBeVisible;
       this.constructionProgressSubscription = constructionSiteComponent.constructionStateChanged.subscribe(() =>
-        this.refreshVisibility()
+        this.refreshVisibilityFrameNonDeterministic()
       );
     }
     // Todo - now calling refreshVisibility on tick to update visibility due to FOW changes
-    this.gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.refreshVisibility, this);
+    // Intentional frame update: health/armor bars are UI visibility, not simulation-authoritative state.
+    this.gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.refreshVisibilityFrameNonDeterministic, this);
 
     if (!this.healthDefinition.healthDisplayBehavior || this.healthDefinition.healthDisplayBehavior === "always") {
       this.setVisibilityUiComponent(true);
@@ -169,7 +170,7 @@ export class HealthComponent {
     }
   }
 
-  private refreshVisibility() {
+  private refreshVisibilityFrameNonDeterministic() {
     this.setVisibilityUiComponent(this.shouldUiElementsBeVisible);
   }
 
@@ -363,7 +364,7 @@ export class HealthComponent {
     this.healthUiHideOnTimeout?.remove();
     this.destroyActorOnDelay?.remove();
     this.gameObject.off(ContainerComponent.GameObjectVisibilityChanged, this.gameObjectVisibilityChanged, this);
-    this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.refreshVisibility, this);
+    this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.refreshVisibilityFrameNonDeterministic, this);
   }
 
   get alive(): boolean {

@@ -42,12 +42,14 @@ export class PlayerAiController {
         });
       });
     } else {
-      scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
+      // Fallback for environments without SimulationTickService (e.g. isolated tests).
+      // Runtime multiplayer must use simulation ticks for deterministic AI cadence.
+      scene.events.on(Phaser.Scenes.Events.UPDATE, this.updateFrameNonDeterministicFallback, this);
     }
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.onShutdown, this);
   }
 
-  private async update(_: number, delta: number) {
+  private async updateFrameNonDeterministicFallback(_: number, delta: number) {
     const deltaWithTimeScale = delta * this.scene.time.timeScale;
 
     if (!PlayerAiController.AI_ENABLED) return;
@@ -113,7 +115,7 @@ export class PlayerAiController {
   }
 
   private onShutdown() {
-    this.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
+    this.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.updateFrameNonDeterministicFallback, this);
     this.tickSubscription?.unsubscribe();
   }
 

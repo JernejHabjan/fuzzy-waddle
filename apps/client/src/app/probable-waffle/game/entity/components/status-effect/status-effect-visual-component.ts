@@ -229,7 +229,7 @@ export class StatusEffectVisualComponent {
     effectSprite.setScale(0.5); // Smaller size at feet
 
     // Update position as actor moves
-    const updatePosition = () => {
+    const updatePositionFrameNonDeterministic = () => {
       if (!effectSprite.active) return;
       const transform = getGameObjectRenderedTransform(this.gameObject);
       if (transform) {
@@ -238,9 +238,10 @@ export class StatusEffectVisualComponent {
     };
 
     // Update position on scene update
-    this.gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, updatePosition);
+    // Intentional frame update: particle sprite follows rendered transform and is visual-only.
+    this.gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, updatePositionFrameNonDeterministic);
     effectSprite.once(Phaser.GameObjects.Events.DESTROY, () => {
-      this.gameObject.scene.events.off(Phaser.Scenes.Events.UPDATE, updatePosition);
+      this.gameObject.scene.events.off(Phaser.Scenes.Events.UPDATE, updatePositionFrameNonDeterministic);
     });
 
     // Store reference

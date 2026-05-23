@@ -15,7 +15,6 @@ import type { PawnAiDefinition } from "./pawn-ai-definition";
 import { AiType } from "./ai-type";
 import { getActorComponent } from "../../data/actor-component";
 import { SimulationTickService } from "../../world/services/simulation-tick.service";
-import { getSimulationDelta } from "../../world/services/simulation-time";
 
 export class PawnAiController {
   readonly blackboard: PawnAiBlackboard = new PawnAiBlackboard();
@@ -27,7 +26,6 @@ export class PawnAiController {
   private tickSubscription?: Subscription;
   private defaultStepInterval: number = 100;
   private static readonly AI_ENABLED = true;
-  private lastSimulationTimeMs?: number;
 
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,
@@ -75,13 +73,15 @@ export class PawnAiController {
         this.updateOnSimulationTick();
       });
     } else {
-      gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
+      // Fallback for environments without SimulationTickService (e.g. isolated tests).
+      // Runtime multiplayer must use simulation ticks for deterministic AI cadence.
+      gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.updateFrameNonDeterministicFallback, this);
     }
     gameObject.once(HealthComponent.KilledEvent, this.onShutdown, this);
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.onShutdown, this);
   }
 
-  private update(_: number, delta: number) {
+  private updateFrameNonDeterministicFallback(_: number, delta: number) {
     if (!PawnAiController.AI_ENABLED) return;
     if (!this.gameObject.active) return;
     const healthComponent = getActorComponent(this.gameObject, HealthComponent);
@@ -98,9 +98,7 @@ export class PawnAiController {
     if (!this.gameObject.active) return;
     const healthComponent = getActorComponent(this.gameObject, HealthComponent);
     if (healthComponent && healthComponent.killed) return;
-    const simulationDelta = getSimulationDelta(this.gameObject.scene, this.lastSimulationTimeMs);
-    this.lastSimulationTimeMs = simulationDelta.now;
-    this.elapsedTime += simulationDelta.delta;
+    this.elapsedTime += SimulationTickService.TICK_INTERVAL_MS;
     const stepInterval = this.pawnAiDefinition.stepInterval ?? this.defaultStepInterval;
     if (this.elapsedTime >= stepInterval) {
       this.stepBehaviourTree();
@@ -153,7 +151,7 @@ export class PawnAiController {
   }
 
   private onShutdown() {
-    this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
+    this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.updateFrameNonDeterministicFallback, this);
     this.tickSubscription?.unsubscribe();
     this.aiDebuggingSubscription?.unsubscribe();
   }

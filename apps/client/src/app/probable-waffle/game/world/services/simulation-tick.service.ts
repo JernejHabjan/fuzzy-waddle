@@ -28,7 +28,7 @@ export class SimulationTickService {
   private simulationTimeScale = 1;
 
   constructor(private readonly scene: Phaser.Scene) {
-    scene.events.on(Phaser.Scenes.Events.UPDATE, this.onUpdate, this);
+    scene.events.on(Phaser.Scenes.Events.UPDATE, this.onUpdateFrameNonDeterministic, this);
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
   }
 
@@ -73,7 +73,7 @@ export class SimulationTickService {
     }
   }
 
-  private onUpdate(_time: number, delta: number): void {
+  private onUpdateFrameNonDeterministic(_time: number, delta: number): void {
     if (this.isPaused) return;
     this.accumulated += delta * this.simulationTimeScale;
     while (this.accumulated >= SimulationTickService.TICK_INTERVAL_MS) {
@@ -84,7 +84,7 @@ export class SimulationTickService {
   }
 
   private destroy(): void {
-    this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.onUpdate, this);
+    this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.onUpdateFrameNonDeterministic, this);
     this.tick$.complete();
     this.currentTick = 0;
     this.accumulated = 0;

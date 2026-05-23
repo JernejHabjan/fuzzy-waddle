@@ -12,7 +12,7 @@ import { emitResource, getPlayer } from "../../../data/scene-data";
 import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
 import { getGameObjectVisibility, onObjectReady } from "../../../data/game-object-helper";
 import { getResearchedLevelForActor } from "../../../data/actor-level-utils";
-import { BehaviorSubject, Subject } from "rxjs";
+import { BehaviorSubject, Subject, type Subscription } from "rxjs";
 import { upgradeFromConstructingToFullActorData } from "../../../data/actor-data";
 import { ConstructionProgressUiComponent } from "./construction-progress-ui-component";
 import { BuilderComponent } from "./builder-component";
@@ -29,7 +29,7 @@ import type { ProductionCostDefinition } from "../production/production-cost-def
 import { IdComponent } from "../id-component";
 import GameObject = Phaser.GameObjects.GameObject;
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
-import { getSimulationDelta } from "../../../world/services/simulation-time";
+import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 import { ProbableWaffleSceneEventName } from "../../../world/services/recovery/probable-waffle-scene-events";
 
 export class ConstructionSiteComponent {
@@ -45,7 +45,7 @@ export class ConstructionSiteComponent {
   constructionProgressUiComponent: ConstructionProgressUiComponent;
   private audioService?: AudioService;
   private healthComponent?: HealthComponent;
-  private lastSimulationTimeMs?: number;
+  private simulationTickSub?: Subscription;
   private playingBuildSound: boolean = false;
   private pendingAssignedBuilderIds?: string[];
   private pendingAssignedRepairerIds?: string[];
@@ -55,7 +55,7 @@ export class ConstructionSiteComponent {
   ) {
     this.constructionProgressUiComponent = new ConstructionProgressUiComponent(this.gameObject);
     onObjectReady(gameObject, this.init, this);
-    gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
+    this.simulationTickSub = getSceneService(gameObject.scene, SimulationTickService)?.tick$.subscribe(() => this.update());
     gameObject.on(Phaser.GameObjects.Events.DESTROY, this.onDestroy, this);
     gameObject.once(HealthComponent.KilledEvent, this.onDestroy, this);
   }
@@ -80,9 +80,7 @@ export class ConstructionSiteComponent {
   update(): void {
     this.tryResolveAssignedActorReferences();
 
-    const simulationDelta = getSimulationDelta(this.gameObject.scene, this.lastSimulationTimeMs);
-    this.lastSimulationTimeMs = simulationDelta.now;
-    const deltaWithTimeScale = simulationDelta.delta;
+    const deltaWithTimeScale = SimulationTickService.TICK_INTERVAL_MS;
 
     if (this.state == ConstructionStateEnum.Finished) {
       this.tryRepair(deltaWithTimeScale);
@@ -365,7 +363,7 @@ export class ConstructionSiteComponent {
 
   private onDestroy() {
     this.cancelConstruction();
-    this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
+    this.simulationTickSub?.unsubscribe();
   }
 
   private tryResolveAssignedActorReferences(): void {

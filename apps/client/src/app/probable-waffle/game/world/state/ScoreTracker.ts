@@ -19,6 +19,8 @@ import { OwnerComponent } from "../../entity/components/owner-component";
 import type { Subscription } from "rxjs";
 import { CancelableSimDelay } from "../services/simulation-time";
 import { ProbableWaffleSceneEventName } from "../services/recovery/probable-waffle-scene-events";
+import { getSceneService } from "../services/scene-component-helpers";
+import { SimulationTickService } from "../services/simulation-tick.service";
 
 /**
  * Tracks player scores throughout the game for the score screen.
@@ -32,6 +34,7 @@ export class ScoreTracker {
   private lastSnapshotTime = 0;
   private resourceSubscription?: Subscription;
   private startTrackingDelay?: CancelableSimDelay;
+  private simulationTickSub?: Subscription;
 
   constructor(private readonly scene: ProbableWaffleScene) {
     this.initializePlayerScores();
@@ -42,7 +45,7 @@ export class ScoreTracker {
   }
 
   private startTracking() {
-    this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.throttleUpdate, this);
+    this.simulationTickSub = getSceneService(this.scene, SimulationTickService)?.tick$.subscribe(() => this.throttleUpdate());
     this.scene.events.on(HealthComponent.KilledEvent, this.onActorKilled, this);
     this.scene.events.on(ProbableWaffleSceneEventName.ScoreDamage, this.onDamage, this);
     this.scene.events.on(ProbableWaffleSceneEventName.ScoreUnitProduced, this.onUnitProduced, this);
@@ -416,7 +419,7 @@ export class ScoreTracker {
    */
   private destroy() {
     this.startTrackingDelay?.remove();
-    this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.throttleUpdate, this);
+    this.simulationTickSub?.unsubscribe();
     this.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
     this.scene.events.off(HealthComponent.KilledEvent, this.onActorKilled, this);
     this.scene.events.off(ProbableWaffleSceneEventName.ScoreDamage, this.onDamage, this);

@@ -1,4 +1,5 @@
 import { EventEmitter } from "@angular/core";
+import type { Subscription } from "rxjs";
 import { SpellType } from "../spell-type";
 import type { SpellData } from "../spell-data";
 import { spellDefinitions } from "../spell-definitions";
@@ -9,7 +10,7 @@ import { getActorComponent } from "../../../../data/actor-component";
 import { OwnerComponent } from "../../owner-component";
 import { getSceneService } from "../../../../world/services/scene-component-helpers";
 import { TechTreeService } from "../../../../data/tech-tree/tech-tree.service";
-import { getSimulationDelta } from "../../../../world/services/simulation-time";
+import { SimulationTickService } from "../../../../world/services/simulation-tick.service";
 
 export interface SpellDefinition {
   availableSpells: SpellType[];
@@ -26,7 +27,7 @@ export class SpellComponent {
   private autocastEnabled: Map<SpellType, boolean> = new Map();
   private ownerComponent?: OwnerComponent;
   private techTreeService?: TechTreeService;
-  private lastSimulationTimeMs?: number;
+  private cooldownTickSub?: Subscription;
 
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,
@@ -39,9 +40,8 @@ export class SpellComponent {
         this.autocastEnabled.set(spellType, spellData.autocastDefault ?? true);
       }
     }
-
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
-    gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
+    gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
 
     onObjectReady(gameObject, this.init, this);
   }
@@ -49,10 +49,13 @@ export class SpellComponent {
   private init(): void {
     this.ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
     this.techTreeService = getSceneService(this.gameObject.scene, TechTreeService);
+    this.cooldownTickSub = getSceneService(this.gameObject.scene, SimulationTickService)?.tick$.subscribe(() => {
+      this.onSimulationTick();
+    });
   }
 
   private destroy(): void {
-    this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
+    this.cooldownTickSub?.unsubscribe();
   }
 
   get availableSpells(): SpellType[] {
@@ -128,15 +131,14 @@ export class SpellComponent {
     return ((spellData.cooldown - remaining) / spellData.cooldown) * 100;
   }
 
-  private update(): void {
+  private onSimulationTick(): void {
     if (!this.gameObject.active) return;
-    const simulationDelta = getSimulationDelta(this.gameObject.scene, this.lastSimulationTimeMs);
-    this.lastSimulationTimeMs = simulationDelta.now;
+    const deltaWithTimeScale = SimulationTickService.TICK_INTERVAL_MS;
 
     // Tick down cooldowns
     for (const [spellType, remaining] of this.spellCooldowns.entries()) {
       if (remaining > 0) {
-        const newRemaining = remaining - simulationDelta.delta;
+        const newRemaining = remaining - deltaWithTimeScale;
         if (newRemaining <= 0) {
           this.spellCooldowns.set(spellType, 0);
           this.spellCooldownEnded.emit(spellType);

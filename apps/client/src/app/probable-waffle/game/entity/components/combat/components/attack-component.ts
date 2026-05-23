@@ -1,6 +1,7 @@
 import { type AttackData } from "../attack-data";
 import { HealthComponent } from "./health-component";
 import { getActorComponent } from "../../../../data/actor-component";
+import type { Subscription } from "rxjs";
 import { AnimationActorComponent } from "../../animation/animation-actor-component";
 import { getHighGroundRangeBonus } from "../high-ground.helper";
 import {
@@ -32,7 +33,8 @@ import type { ProjectileData } from "../projectile-data";
 import type { AttackDefinition } from "./attack-definition";
 import type { IsoDirection } from "../../movement/iso-directions";
 import { TilemapComponent } from "../../../../world/tilemap/tilemap.component";
-import { getSimulationDelta, CancelableSimDelay } from "../../../../world/services/simulation-time";
+import { CancelableSimDelay } from "../../../../world/services/simulation-time";
+import { SimulationTickService } from "../../../../world/services/simulation-tick.service";
 import TivaraAlchemistVase from "../../../../prefabs/weapons/TivaraAlchemistVase";
 import GameObject = Phaser.GameObjects.GameObject;
 
@@ -45,7 +47,7 @@ export class AttackComponent {
   private projectileTween?: Phaser.Tweens.Tween;
   private rotationTween?: Phaser.Tweens.Tween;
   currentAttack: AttackData | null = null;
-  private lastSimulationTimeMs?: number;
+  private cooldownTickSub?: Subscription;
   private projectileSprite?: Phaser.GameObjects.Image;
   // track delayed fire so we can cancel before projectile spawns
   private fireTimer?: CancelableSimDelay;
@@ -60,7 +62,6 @@ export class AttackComponent {
     this.attackDefinition = {
       ...initialAttackDefinition
     };
-    gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
     onObjectReady(this.gameObject, this.init, this);
@@ -71,12 +72,15 @@ export class AttackComponent {
     this.animationActorComponent = getActorComponent(this.gameObject, AnimationActorComponent);
     this.audioService = getSceneService(this.gameObject.scene, AudioService);
     this.actorIndexSystem = getSceneService(this.gameObject.scene, ActorIndexSystem);
+    this.cooldownTickSub = getSceneService(this.gameObject.scene, SimulationTickService)?.tick$.subscribe(() => {
+      this.onSimulationTick();
+    });
   }
 
   private destroy() {
-    this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
     this.gameObject.off(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     this.gameObject.off(HealthComponent.KilledEvent, this.destroy, this);
+    this.cooldownTickSub?.unsubscribe();
     // cancel pending spawn timer (if any)
     if (this.fireTimer) {
       this.fireTimer.remove();
@@ -89,14 +93,11 @@ export class AttackComponent {
     this.stopProjectile();
   }
 
-  private update(): void {
-    const simulationDelta = getSimulationDelta(this.gameObject.scene, this.lastSimulationTimeMs);
-    this.lastSimulationTimeMs = simulationDelta.now;
-    const deltaWithTimeScale = simulationDelta.delta;
+  private onSimulationTick(): void {
     if (this.remainingCooldown <= 0) {
       return;
     }
-    this.remainingCooldown -= deltaWithTimeScale;
+    this.remainingCooldown -= SimulationTickService.TICK_INTERVAL_MS;
 
     this.remainingCooldown = Math.max(this.remainingCooldown, 0);
     // if (this.remainingCooldown <= 0) {

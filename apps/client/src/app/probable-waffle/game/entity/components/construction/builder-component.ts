@@ -1,6 +1,6 @@
 import { ConstructionSiteComponent } from "./construction-site-component";
 import { ContainerComponent } from "../building/container-component";
-import { Subject } from "rxjs";
+import { Subject, type Subscription } from "rxjs";
 import { getActorComponent } from "../../../data/actor-component";
 import { type BuilderComponentData, ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { HealthComponent } from "../combat/components/health-component";
@@ -23,7 +23,7 @@ import type { AnimationOptions } from "../animation/animation-options";
 import type { BuilderDefinition } from "./builder-definition";
 import GameObject = Phaser.GameObjects.GameObject;
 import { TilemapComponent } from "../../../world/tilemap/tilemap.component";
-import { getSimulationDelta } from "../../../world/services/simulation-time";
+import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 
 // Allows the actor to construct building
 export class BuilderComponent {
@@ -38,7 +38,7 @@ export class BuilderComponent {
   onRemovedFromConstructionSite: Subject<[GameObject, GameObject]> = new Subject<[GameObject, GameObject]>();
   onConstructionSiteLeft: Subject<[GameObject, GameObject]> = new Subject<[GameObject, GameObject]>();
   remainingCooldown = 0;
-  private lastSimulationTimeMs?: number;
+  private cooldownTickSub?: Subscription;
   private audioService?: AudioService;
   private animationActorComponent?: AnimationActorComponent;
   private actorTranslateComponent?: ActorTranslateComponent;
@@ -47,7 +47,6 @@ export class BuilderComponent {
     private readonly gameObject: GameObject,
     private readonly builderComponentDefinition: BuilderDefinition
   ) {
-    gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
     onObjectReady(this.gameObject, this.onObjectReady, this);
@@ -57,17 +56,16 @@ export class BuilderComponent {
     this.audioService = getSceneService(this.gameObject.scene, AudioService);
     this.animationActorComponent = getActorComponent(this.gameObject, AnimationActorComponent);
     this.actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
+    this.cooldownTickSub = getSceneService(this.gameObject.scene, SimulationTickService)?.tick$.subscribe(() => {
+      this.onSimulationTick();
+    });
   }
 
-  private update(): void {
-    const simulationDelta = getSimulationDelta(this.gameObject.scene, this.lastSimulationTimeMs);
-    this.lastSimulationTimeMs = simulationDelta.now;
-    const deltaWithTimeScale = simulationDelta.delta;
-
+  private onSimulationTick(): void {
     if (this.remainingCooldown <= 0) {
       return;
     }
-    this.remainingCooldown -= deltaWithTimeScale;
+    this.remainingCooldown -= SimulationTickService.TICK_INTERVAL_MS;
     this.remainingCooldown = Math.max(this.remainingCooldown, 0);
     // if (this.remainingCooldown <= 0) {
     //   this.onCooldownReady.emit(this.gameObject);
@@ -233,7 +231,7 @@ export class BuilderComponent {
   }
 
   private destroy() {
-    this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
+    this.cooldownTickSub?.unsubscribe();
   }
 
   isIdle() {

@@ -9,13 +9,14 @@ import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 import { DistanceHelper } from "../../library/distance-helper";
 import type { ConvertibleDefinition } from "./convertible-definition";
 import type { ConvertibleComponentData, PlayerNumber } from "@fuzzy-waddle/api-interfaces";
-import { getSimulationDelta } from "../../world/services/simulation-time";
+import { SimulationTickService } from "../../world/services/simulation-tick.service";
+import type { Subscription } from "rxjs";
 
 export class ConvertibleComponent {
   private accumulatedTime = 0;
   private ready = false;
   private converted = false;
-  private lastSimulationTimeMs?: number;
+  private simulationTickSub?: Subscription;
 
   constructor(
     private readonly gameObject: GameObject,
@@ -35,15 +36,14 @@ export class ConvertibleComponent {
     }
 
     this.ready = true;
-    this.gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
+    this.simulationTickSub = getSceneService(this.gameObject.scene, SimulationTickService)?.tick$.subscribe(() =>
+      this.update()
+    );
   }
 
   private update() {
     if (!this.ready || this.converted) return;
-    const simulationDelta = getSimulationDelta(this.gameObject.scene, this.lastSimulationTimeMs);
-    this.lastSimulationTimeMs = simulationDelta.now;
-
-    this.accumulatedTime += simulationDelta.delta;
+    this.accumulatedTime += SimulationTickService.TICK_INTERVAL_MS;
 
     if (this.accumulatedTime >= this.convertibleDefinition.checkInterval) {
       this.accumulatedTime = 0;
@@ -98,6 +98,6 @@ export class ConvertibleComponent {
 
   private destroy() {
     this.ready = false;
-    this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
+    this.simulationTickSub?.unsubscribe();
   }
 }
