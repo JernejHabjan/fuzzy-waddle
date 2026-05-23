@@ -510,7 +510,8 @@ export class CommandBusService {
     }
 
     const role = scene.isHost ? "authoritative-host" : "non-host";
-    const hostUserId = scene.baseGameData.gameInstance.gameInstanceMetadata.data.currentHostUserId ?? "unknown";
+    const metadataData = scene.baseGameData.gameInstance.gameInstanceMetadata.data;
+    const hostUserId = metadataData.currentHostUserId ?? metadataData.createdBy ?? "unknown";
     return `role=${role} isHost=${scene.isHost} localPlayer=${this.localPlayerNumber ?? "none"} hostUser=${hostUserId}`;
   }
 

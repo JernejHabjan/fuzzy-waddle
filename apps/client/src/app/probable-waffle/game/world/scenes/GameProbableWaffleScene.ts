@@ -103,6 +103,8 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
       new PauseSyncService(this),
       snapshotService
     );
+    const simTickService = getSceneService(this, SimulationTickService);
+    simTickService?.pauseTick("scene-bootstrap");
     new ActorDebugDamageSystem(this);
     if (!this.baseGameData.gameInstance.gameInstanceMetadata.isReplay()) {
       this.sceneGameData.systems.push(new AiPlayerHandler(this));
@@ -146,6 +148,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
       this.scene.scene.data.remove("justCreated");
     });
     this.sceneGameData.initializers.sceneInitialized.next(true);
+    simTickService?.resumeTick("scene-bootstrap");
 
     if (!environment.production) {
       const achievementService = getSceneExternalComponent(this.scene.scene, AchievementService);

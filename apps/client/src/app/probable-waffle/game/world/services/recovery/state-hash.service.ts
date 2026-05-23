@@ -242,7 +242,7 @@ export class StateHashService {
     const isRemoteHost =
       event.emitterUserId !== undefined &&
       event.emitterUserId !== null &&
-      event.emitterUserId === scene.baseGameData.gameInstance.gameInstanceMetadata.data.currentHostUserId;
+      event.emitterUserId === this.getKnownHostUserId(scene);
     const shouldHandleLocally = scene.isHost || isRemoteHost;
     if (!shouldHandleLocally) {
       return;
@@ -376,7 +376,7 @@ export class StateHashService {
     }
     const localPlayer = scene.playerOrNull?.playerNumber ?? scene.player?.playerNumber ?? "unknown";
     const role = scene.isHost ? "authoritative-host" : "non-host";
-    const hostUserId = scene.baseGameData.gameInstance.gameInstanceMetadata.data.currentHostUserId ?? "unknown";
+    const hostUserId = this.getKnownHostUserId(scene) ?? "unknown";
     return `role=${role} isHost=${scene.isHost} localPlayer=${localPlayer} hostUser=${hostUserId}`;
   }
 
@@ -385,9 +385,19 @@ export class StateHashService {
     remotePlayerNumber: number | undefined,
     remoteUserId: string | null | undefined
   ): string {
-    const hostUserId = scene.baseGameData.gameInstance.gameInstanceMetadata.data.currentHostUserId;
-    const remoteRole = remoteUserId && hostUserId && remoteUserId === hostUserId ? "remote-authoritative-host" : "remote-non-host";
+    const hostUserId = this.getKnownHostUserId(scene);
+    const remoteRole =
+      remoteUserId && hostUserId
+        ? remoteUserId === hostUserId
+          ? "remote-authoritative-host"
+          : "remote-non-host"
+        : "remote-role-unknown";
     return `${this.getLocalAuthorityContext(scene)} remotePlayer=${remotePlayerNumber ?? "unknown"} remoteRole=${remoteRole}`;
+  }
+
+  private getKnownHostUserId(scene: ProbableWaffleScene): string | null {
+    const metadataData = scene.baseGameData.gameInstance.gameInstanceMetadata.data;
+    return metadataData.currentHostUserId ?? metadataData.createdBy ?? null;
   }
 
   /** Persistent on-screen overlay so the affected client immediately sees the desync. */
@@ -555,6 +565,13 @@ export class StateHashService {
       return `cause=actor-state-drift actorId=${actorId}`;
     }
     if (reason.startsWith("player-state")) {
+      const parsed = /^player-state local=(.+) remote=(.+)$/.exec(reason);
+      if (parsed) {
+        const detail = this.describePlayerStateDigestDelta(parsed[1] ?? "", parsed[2] ?? "");
+        if (detail) {
+          return `cause=player-state-drift ${detail}`;
+        }
+      }
       return "cause=player-state-drift";
     }
     if (reason.startsWith("research")) {
@@ -615,6 +632,55 @@ export class StateHashService {
       dx: localX - remoteX,
       dy: localY - remoteY,
       dz: localZ - remoteZ
+    };
+  }
+
+  private describePlayerStateDigestDelta(localDigest: string, remoteDigest: string): string | null {
+    const local = this.parsePlayerStateDigest(localDigest);
+    const remote = this.parsePlayerStateDigest(remoteDigest);
+    if (!local || !remote) {
+      return null;
+    }
+    const diffs: string[] = [];
+    if (local.playerNumber !== remote.playerNumber) {
+      diffs.push(`player=${local.playerNumber}->${remote.playerNumber}`);
+    }
+    if (local.minerals !== remote.minerals) {
+      diffs.push(`minerals=${local.minerals}->${remote.minerals}`);
+    }
+    if (local.stone !== remote.stone) {
+      diffs.push(`stone=${local.stone}->${remote.stone}`);
+    }
+    if (local.wood !== remote.wood) {
+      diffs.push(`wood=${local.wood}->${remote.wood}`);
+    }
+    if (local.currentHousing !== remote.currentHousing) {
+      diffs.push(`housing.current=${local.currentHousing}->${remote.currentHousing}`);
+    }
+    if (local.maxHousing !== remote.maxHousing) {
+      diffs.push(`housing.max=${local.maxHousing}->${remote.maxHousing}`);
+    }
+    return diffs.length > 0 ? diffs.join(" ") : null;
+  }
+
+  private parsePlayerStateDigest(
+    digest: string
+  ): { playerNumber: number; minerals: number; stone: number; wood: number; currentHousing: number; maxHousing: number } | null {
+    const parts = digest.split(":");
+    if (parts.length < 6) {
+      return null;
+    }
+    const parsed = parts.slice(0, 6).map((part) => Number(part));
+    if (parsed.some((part) => !Number.isFinite(part))) {
+      return null;
+    }
+    return {
+      playerNumber: parsed[0] ?? -1,
+      minerals: parsed[1] ?? 0,
+      stone: parsed[2] ?? 0,
+      wood: parsed[3] ?? 0,
+      currentHousing: parsed[4] ?? 0,
+      maxHousing: parsed[5] ?? 0
     };
   }
 

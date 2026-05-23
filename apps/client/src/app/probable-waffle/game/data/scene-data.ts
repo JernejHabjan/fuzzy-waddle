@@ -134,9 +134,18 @@ export function sendPlayerStateEvent(
      * This is used for UI/local mirror state that should not enter lockstep relay.
      */
     localOnlyInMultiplayer?: boolean;
+    /**
+     * When true, suppresses this player-state event while a reconnect/desync snapshot
+     * is being applied, so transient actor recreation side-effects cannot perturb
+     * the restored authoritative state.
+     */
+    suppressDuringSnapshotRestore?: boolean;
   }
 ): void {
   if (!(scene instanceof BaseScene)) throw new Error("Scene is not of type BaseScene");
+  if (options?.suppressDuringSnapshotRestore && scene.data.get("snapshotApplyInProgress")) {
+    return;
+  }
 
   const communicator = getCommunicator(scene);
   const data = {
@@ -243,7 +252,8 @@ export function emitResource(
     },
     playerNumber,
     {
-      localOnlyInMultiplayer: true
+      localOnlyInMultiplayer: true,
+      suppressDuringSnapshotRestore: true
     }
   );
 }
@@ -264,7 +274,8 @@ export function emitHousing(
     },
     playerNumber,
     {
-      localOnlyInMultiplayer: true
+      localOnlyInMultiplayer: true,
+      suppressDuringSnapshotRestore: true
     }
   );
 }

@@ -223,115 +223,258 @@ export class ReconnectService {
     );
 
     simTick?.pauseTick(pauseReason);
+    scene.data.set("snapshotApplyInProgress", true);
 
-    const snapshotActorIds = new Set(
-      snapshot.actors.map((actor) => actor.id?.id).filter((actorId): actorId is string => !!actorId)
-    );
+    try {
+      const snapshotActorIds = new Set(
+        snapshot.actors.map((actor) => actor.id?.id).filter((actorId): actorId is string => !!actorId)
+      );
+      const snapshotActorById = new Map(
+        snapshot.actors
+          .filter((actor): actor is ActorDefinition & { id: { id: string } } => !!actor.id?.id)
+          .map((actor) => [actor.id.id, actor])
+      );
 
-    // Destroy all current actors before re-creating from snapshot.
-    const currentActors = [...actorIndex.getAllIdActors()];
-    const removedActorDiagnostics = currentActors
-      .map((actor) => {
-        const id = getActorComponent(actor, IdComponent)?.id;
-        if (!id || snapshotActorIds.has(id)) {
-          return undefined;
+      // Destroy all current actors before re-creating from snapshot.
+      const currentActors = [...actorIndex.getAllIdActors()];
+      const removedActorDiagnostics = currentActors
+        .map((actor) => {
+          const id = getActorComponent(actor, IdComponent)?.id;
+          if (!id || snapshotActorIds.has(id)) {
+            return undefined;
+          }
+          const owner = getActorComponent(actor, OwnerComponent)?.getOwner();
+          const logicalTransform = getGameObjectLogicalTransform(actor);
+          return {
+            id,
+            name: actor.name,
+            owner,
+            x: logicalTransform ? Math.round(logicalTransform.x) : undefined,
+            y: logicalTransform ? Math.round(logicalTransform.y) : undefined,
+            z: logicalTransform ? Math.round(logicalTransform.z) : undefined
+          };
+        })
+        .filter((diagnostic) => diagnostic !== undefined);
+      if (removedActorDiagnostics.length > 0) {
+        console.warn(
+          `[Reconnect] Snapshot ${response.reason ?? "reconnect"} will remove ${removedActorDiagnostics.length} local actors not present on host snapshot.`,
+          removedActorDiagnostics
+        );
+      }
+
+      for (const actor of currentActors) {
+        actor.destroy();
+      }
+
+      // Re-create actors from the snapshot definitions.
+      for (const def of snapshot.actors) {
+        creator.createActorFromDefinition(def as ActorDefinition);
+      }
+
+      this.reconcileSnapshotActorIds(actorIndex, snapshot.actors as ActorDefinition[]);
+
+      const indexedActorIds = new Set(
+        actorIndex
+          .getAllIdActors()
+          .map((actor) => getActorComponent(actor, IdComponent)?.id)
+          .filter((actorId): actorId is string => !!actorId)
+      );
+      const missingInIndexAfterReconcile = [...snapshotActorIds].filter((id) => !indexedActorIds.has(id));
+      if (missingInIndexAfterReconcile.length > 0) {
+        for (const missingId of missingInIndexAfterReconcile) {
+          const missingDef = snapshotActorById.get(missingId);
+          if (!missingDef) {
+            continue;
+          }
+          const recreated = creator.createActorFromDefinition(missingDef);
+          const recreatedId = recreated ? getActorComponent(recreated, IdComponent)?.id : undefined;
+          if (recreatedId === missingId) {
+            indexedActorIds.add(missingId);
+          }
         }
-        const owner = getActorComponent(actor, OwnerComponent)?.getOwner();
-        const logicalTransform = getGameObjectLogicalTransform(actor);
-        return {
+      }
+
+      const finalIndexedActorIds = new Set(
+        actorIndex
+          .getAllIdActors()
+          .map((actor) => getActorComponent(actor, IdComponent)?.id)
+          .filter((actorId): actorId is string => !!actorId)
+      );
+      const missingAfterRestore = [...snapshotActorIds].filter((id) => !finalIndexedActorIds.has(id));
+      const extrasAfterRestore = [...finalIndexedActorIds].filter((id) => !snapshotActorIds.has(id));
+      if (missingAfterRestore.length > 0 || extrasAfterRestore.length > 0) {
+        const missingSummaries = missingAfterRestore.map((id) => ({
           id,
-          name: actor.name,
-          owner,
-          x: logicalTransform ? Math.round(logicalTransform.x) : undefined,
-          y: logicalTransform ? Math.round(logicalTransform.y) : undefined,
-          z: logicalTransform ? Math.round(logicalTransform.z) : undefined
-        };
-      })
-      .filter((diagnostic) => diagnostic !== undefined);
-    if (removedActorDiagnostics.length > 0) {
-      console.warn(
-        `[Reconnect] Snapshot ${response.reason ?? "reconnect"} will remove ${removedActorDiagnostics.length} local actors not present on host snapshot.`,
-        removedActorDiagnostics
-      );
-    }
+          name: snapshotActorById.get(id)?.name ?? "unknown",
+          signature: this.buildSnapshotActorSignature(snapshotActorById.get(id))
+        }));
+        const extraSummaries = actorIndex
+          .getAllIdActors()
+          .map((actor) => {
+            const id = getActorComponent(actor, IdComponent)?.id;
+            if (!id || snapshotActorIds.has(id)) {
+              return undefined;
+            }
+            return {
+              id,
+              name: actor.name,
+              signature: this.buildLiveActorSignature(actor)
+            };
+          })
+          .filter((entry) => entry !== undefined);
+        console.error(
+          `[Reconnect] Snapshot restore mismatch after recreation. reason=${response.reason ?? "reconnect"} missing=${missingAfterRestore.length} extra=${extrasAfterRestore.length}.`,
+          {
+            missingActors: missingSummaries,
+            extraActors: extraSummaries
+          }
+        );
+      }
 
+      // Restore per-player state data (resources, housing, summary, selection).
+      for (const [playerNumberStr, stateData] of Object.entries(snapshot.playerStates)) {
+        const playerNumber = Number(playerNumberStr) as PlayerNumber;
+        const player = scene.baseGameData.gameInstance.getPlayerByNumber(playerNumber);
+        if (player) {
+          Object.assign(player.playerState.data, stateData);
+        }
+      }
+
+      // Restore mirrored control groups and repopulate the live local hotkey component.
+      for (const [playerNumberStr, selectionGroups] of Object.entries(snapshot.playerSelectionGroups ?? {})) {
+        const playerNumber = Number(playerNumberStr) as PlayerNumber;
+        const player = scene.baseGameData.gameInstance.getPlayerByNumber(playerNumber);
+        if (!player) {
+          continue;
+        }
+
+        player.playerController.data.selectionGroups = structuredClone(selectionGroups);
+        if (playerNumber === scene.player?.playerNumber) {
+          getSceneComponent(scene, SelectionGroupsComponent)?.setGroups(selectionGroups);
+        }
+      }
+
+      // Restore research state.
+      if (snapshot.playerResearch) {
+        const gameStateData = scene.baseGameData.gameInstance.gameState?.data;
+        if (gameStateData) {
+          gameStateData.playerResearch = snapshot.playerResearch;
+        }
+      }
+
+      // Advance sim clock to match the snapshot so command sequences stay coherent.
+      simTick?.fastForwardTo(snapshot.tick);
+      commandBus?.resetAfterSnapshot(
+        snapshot.tick,
+        (response.commandTail ?? []).map((batch) => ({
+          tick: batch.tick,
+          playerNumber: batch.playerNumber,
+          commands: batch.commands
+        }))
+      );
+
+      simTick?.resumeTick(pauseReason);
+      if (response.reason === "desync-correction") {
+        simTick?.resumeTick("desync");
+      }
+
+      if (response.reason === "desync-correction") {
+        console.warn(`[DESYNC] Applied host correction snapshot at tick ${snapshot.tick}.`);
+      }
+      this.reseedSent = false;
+      scene.events.emit(ProbableWaffleSceneEventName.ReconnectSnapshotApplied, {
+        reason: response.reason,
+        tick: snapshot.tick
+      });
+      // Suppress "late registration" diagnostics briefly after snapshot rebuild.
+      scene.data.set("snapshotApplySuppressedUntilTick", snapshot.tick + 5);
+      console.info("[Reconnect] Snapshot applied. Simulation resumed.");
+    } finally {
+      scene.data.set("snapshotApplyInProgress", false);
+    }
+  }
+
+  /**
+   * Some actors can exist locally with a different deterministic id but identical spawn signature.
+   * Reassign those ids to the authoritative host snapshot ids to stop endless actor-missing loops.
+   */
+  private reconcileSnapshotActorIds(actorIndex: ActorIndexSystem, snapshotActors: readonly ActorDefinition[]): void {
+    const currentActors = actorIndex.getAllIdActors();
+    const localById = new Map(
+      currentActors
+        .map((actor) => [getActorComponent(actor, IdComponent)?.id, actor] as const)
+        .filter((entry): entry is [string, Phaser.GameObjects.GameObject] => !!entry[0])
+    );
+    const localBySignature = new Map<string, Phaser.GameObjects.GameObject[]>();
     for (const actor of currentActors) {
-      actor.destroy();
-    }
-
-    // Re-create actors from the snapshot definitions.
-    const createdSnapshotActorIds = new Set<string>();
-    for (const def of snapshot.actors) {
-      const created = creator.createActorFromDefinition(def as ActorDefinition);
-      const createdActorId = created ? getActorComponent(created, IdComponent)?.id : undefined;
-      if (createdActorId) {
-        createdSnapshotActorIds.add(createdActorId);
+      const signature = this.buildLiveActorSignature(actor);
+      if (!signature) {
+        continue;
       }
-    }
-    const missingAfterRestore = [...snapshotActorIds].filter((id) => !createdSnapshotActorIds.has(id));
-    if (missingAfterRestore.length > 0) {
-      console.error(
-        `[Reconnect] Snapshot restore missing ${missingAfterRestore.length} actors after recreation. reason=${response.reason ?? "reconnect"}.`,
-        missingAfterRestore
-      );
+      const bucket = localBySignature.get(signature) ?? [];
+      bucket.push(actor);
+      localBySignature.set(signature, bucket);
     }
 
-    // Restore per-player state data (resources, housing, summary, selection).
-    for (const [playerNumberStr, stateData] of Object.entries(snapshot.playerStates)) {
-      const playerNumber = Number(playerNumberStr) as PlayerNumber;
-      const player = scene.baseGameData.gameInstance.getPlayerByNumber(playerNumber);
-      if (player) {
-        Object.assign(player.playerState.data, stateData);
-      }
-    }
-
-    // Restore mirrored control groups and repopulate the live local hotkey component.
-    for (const [playerNumberStr, selectionGroups] of Object.entries(snapshot.playerSelectionGroups ?? {})) {
-      const playerNumber = Number(playerNumberStr) as PlayerNumber;
-      const player = scene.baseGameData.gameInstance.getPlayerByNumber(playerNumber);
-      if (!player) {
+    for (const snapshotActor of snapshotActors) {
+      const authoritativeId = snapshotActor.id?.id;
+      if (!authoritativeId || localById.has(authoritativeId)) {
         continue;
       }
 
-      player.playerController.data.selectionGroups = structuredClone(selectionGroups);
-      if (playerNumber === scene.player?.playerNumber) {
-        getSceneComponent(scene, SelectionGroupsComponent)?.setGroups(selectionGroups);
+      const signature = this.buildSnapshotActorSignature(snapshotActor);
+      if (!signature) {
+        continue;
       }
-    }
-
-    // Restore research state.
-    if (snapshot.playerResearch) {
-      const gameStateData = scene.baseGameData.gameInstance.gameState?.data;
-      if (gameStateData) {
-        gameStateData.playerResearch = snapshot.playerResearch;
+      const candidates = localBySignature.get(signature);
+      if (!candidates || candidates.length === 0) {
+        continue;
       }
-    }
 
-    // Advance sim clock to match the snapshot so command sequences stay coherent.
-    simTick?.fastForwardTo(snapshot.tick);
-    commandBus?.resetAfterSnapshot(
-      snapshot.tick,
-      (response.commandTail ?? []).map((batch) => ({
-        tick: batch.tick,
-        playerNumber: batch.playerNumber,
-        commands: batch.commands
-      }))
-    );
+      const actorToRelabel = candidates.find((candidate) => {
+        const candidateId = getActorComponent(candidate, IdComponent)?.id;
+        return !!candidateId && !localById.has(candidateId);
+      });
+      if (!actorToRelabel) {
+        continue;
+      }
 
-    simTick?.resumeTick(pauseReason);
-    if (response.reason === "desync-correction") {
-      simTick?.resumeTick("desync");
-    }
+      const idComponent = getActorComponent(actorToRelabel, IdComponent);
+      const previousId = idComponent?.id;
+      if (!idComponent || previousId === authoritativeId) {
+        continue;
+      }
 
-    if (response.reason === "desync-correction") {
-      console.warn(`[DESYNC] Applied host correction snapshot at tick ${snapshot.tick}.`);
+      idComponent.setId(authoritativeId);
+      if (previousId) {
+        localById.delete(previousId);
+      }
+      localById.set(authoritativeId, actorToRelabel);
+      console.warn(
+        `[Reconnect] Reconciled actor id by signature. oldId=${previousId ?? "none"} newId=${authoritativeId} signature=${signature}`
+      );
     }
-    this.reseedSent = false;
-    scene.events.emit(ProbableWaffleSceneEventName.ReconnectSnapshotApplied, {
-      reason: response.reason,
-      tick: snapshot.tick
-    });
-    console.info("[Reconnect] Snapshot applied. Simulation resumed.");
+  }
+
+  private buildSnapshotActorSignature(actorDefinition: ActorDefinition | undefined): string | null {
+    if (!actorDefinition?.name) {
+      return null;
+    }
+    const logical = actorDefinition.representable?.logicalWorldTransform;
+    const x = logical ? Math.round(logical.x) : 0;
+    const y = logical ? Math.round(logical.y) : 0;
+    const z = logical ? Math.round(logical.z) : 0;
+    const owner = actorDefinition.owner?.ownerId ?? -1;
+    return `${actorDefinition.name}|${owner}|${x}|${y}|${z}`;
+  }
+
+  private buildLiveActorSignature(actor: Phaser.GameObjects.GameObject): string | null {
+    const logical = getGameObjectLogicalTransform(actor);
+    if (!logical) {
+      return null;
+    }
+    const owner = getActorComponent(actor, OwnerComponent)?.getOwner() ?? -1;
+    return `${actor.name}|${owner}|${Math.round(logical.x)}|${Math.round(logical.y)}|${Math.round(logical.z)}`;
   }
 
   destroy(): void {
