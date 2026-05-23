@@ -405,6 +405,26 @@ export class StateHashService {
   private shouldIgnoreForStateHash(actor: Phaser.GameObjects.GameObject): boolean {
     const owner = getActorComponent(actor, OwnerComponent)?.getOwner();
     const isNeutral = owner === undefined || owner === -1;
+
+    if (isNeutral) {
+      const hasHealth = !!getActorComponent(actor, HealthComponent);
+      const hasResourceSource = !!getActorComponent(actor, ResourceSourceComponent);
+      // Neutral scenery actors (no health/resource state) are visual map props and should
+      // not trigger desync correction loops when clients cull them differently.
+      if (!hasHealth && !hasResourceSource) {
+        return true;
+      }
+      // Neutral resources are map-owned economy sources. Hashing all idle sources causes
+      // persistent correction loops when static map resources diverge by presence only.
+      // Active harvesting still influences deterministic player-resource digests.
+      if (hasResourceSource) {
+        const resourceSource = getActorComponent(actor, ResourceSourceComponent);
+        if (resourceSource && resourceSource.getAssignedGatherersCount() === 0) {
+          return true;
+        }
+      }
+    }
+
     if (!isNeutral) {
       return false;
     }
@@ -604,7 +624,7 @@ export class StateHashService {
         return `cause=actor-missing actorId=${actorId} side=local`;
       }
       const parsed = this.extractActorPositionDelta(localDigest, remoteDigest);
-      if (parsed) {
+      if (parsed && (parsed.dx !== 0 || parsed.dy !== 0 || parsed.dz !== 0)) {
         return `cause=actor-position-drift actorId=${actorId} local=(${parsed.localX},${parsed.localY},${parsed.localZ}) remote=(${parsed.remoteX},${parsed.remoteY},${parsed.remoteZ}) delta=(${parsed.dx},${parsed.dy},${parsed.dz})`;
       }
       return `cause=actor-state-drift actorId=${actorId}`;

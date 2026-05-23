@@ -10,8 +10,10 @@ import type { TendablePhase } from "../../../entity/components/tendable/tendable
 import { setActorData } from "../../../data/actor-data";
 import { onObjectReady } from "../../../data/game-object-helper";
 import { getActorComponent } from "../../../data/actor-component";
+import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { ResourceSourceComponent } from "../../../entity/components/resource/resource-source-component";
 import type { Subscription } from "rxjs";
+import { RandomService } from "../../../world/services/random.service";
 import CropsWheat from "../../outside/crops/wheat/CropsWheat";
 import CropsBeans from "../../outside/crops/beans/CropsBeans";
 import CropsCabbage from "../../outside/crops/cabbage/CropsCabbage";
@@ -133,7 +135,7 @@ export default class Field extends Phaser.GameObjects.Container implements CropR
       []
     );
     // Pick random crop type once at construction time
-    this.selectedCropTypeIndex = Phaser.Math.Between(0, Field.CROP_CONSTRUCTORS.length - 1);
+    this.selectedCropTypeIndex = this.getDeterministicCropTypeIndex();
     // Subscribe to resource changes after actor data (and ResourceSourceComponent) is ready
     onObjectReady(this, this.subscribeToResourceChanges, this);
   }
@@ -171,7 +173,7 @@ export default class Field extends Phaser.GameObjects.Container implements CropR
     if (phase === null || phase === 0) {
       // Bare soil or not yet ready — destroy any crop instances and pick new type
       this.destroyCropInstances();
-      this.selectedCropTypeIndex = Phaser.Math.Between(0, Field.CROP_CONSTRUCTORS.length - 1);
+      this.selectedCropTypeIndex = this.getDeterministicCropTypeIndex();
       this.currentGrowthStageIndex = 0;
       return;
     }
@@ -202,6 +204,14 @@ export default class Field extends Phaser.GameObjects.Container implements CropR
   private destroyCropInstances() {
     this.cropInstances.forEach((crop) => crop.destroy());
     this.cropInstances = [];
+  }
+
+  private getDeterministicCropTypeIndex(): number {
+    const randomService = getSceneService(this.scene, RandomService);
+    if (!randomService) {
+      return Phaser.Math.Between(0, Field.CROP_CONSTRUCTORS.length - 1);
+    }
+    return randomService.between(0, Field.CROP_CONSTRUCTORS.length - 1);
   }
 
   /** Returns the harvest animation for the current crop type, or null if no crops are spawned. */

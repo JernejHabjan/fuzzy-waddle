@@ -606,7 +606,9 @@ export class MovementSystem {
     formationPoints.sort((a, b) => {
       const distA = Math.sqrt(Math.pow(a.x - tileVec3.x, 2) + Math.pow(a.y - tileVec3.y, 2));
       const distB = Math.sqrt(Math.pow(b.x - tileVec3.x, 2) + Math.pow(b.y - tileVec3.y, 2));
-      return distA - distB;
+      if (distA !== distB) return distA - distB;
+      if (a.y !== b.y) return a.y - b.y;
+      return a.x - b.x;
     });
 
     // Assign a unique formation point to this unit based on its sorted index
