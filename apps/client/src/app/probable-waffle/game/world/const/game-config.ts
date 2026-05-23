@@ -8,7 +8,6 @@ import MapEmberEnclave from "../scenes/game-maps/MapEmberEnclave";
 import HudProbableWaffle from "../scenes/hud-scenes/HudProbableWaffle";
 import GameActionsLayer from "../scenes/hud-scenes/GameActionsLayer";
 import EndGameDialog from "../scenes/hud-scenes/EndGameDialog";
-import DesyncRecoveryDialog from "../scenes/hud-scenes/DesyncRecoveryDialog";
 import ReconnectRecoveryDialog from "../scenes/hud-scenes/ReconnectRecoveryDialog";
 import MapSandbox from "../scenes/game-maps/MapSandbox";
 
@@ -24,7 +23,6 @@ export const probableWaffleGameConfig: Types.Core.GameConfig = {
     HudProbableWaffle,
     GameActionsLayer,
     EndGameDialog,
-    DesyncRecoveryDialog,
     ReconnectRecoveryDialog
   ],
   physics: {

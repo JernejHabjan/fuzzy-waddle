@@ -36,7 +36,6 @@ const HASH_INTERVAL_TICKS = 20;
  * In practice the peer hash arrives within 1–2 ticks of ours.
  */
 const HASH_STORE_TICKS = 120;
-const CORRECTION_GRACE_PERIOD_TICKS = 100;
 /** Keep enabled so mismatch logs can always explain exactly what diverged. */
 const INCLUDE_HASH_DIAGNOSTICS_IN_STEADY_STATE = true;
 
@@ -46,7 +45,6 @@ interface PendingCorrection {
   firstDetectedTick: number;
   lastCorrectionTick: number;
   correctionAttempts: number;
-  alertSent: boolean;
   reason?: string;
 }
 
@@ -58,7 +56,7 @@ interface PendingCorrection {
  * so every client produces an identical string for the same simulation state.
  *
  * On mismatch: logs a structured error and shows a persistent on-screen indicator on
- * the desynced client. The recovery dialog is handled by Step 10 (DesyncRecoveryService).
+ * the desynced client while automatic snapshot correction retries run.
  */
 export class StateHashService {
   private readonly localHashes = new Map<number, HashSnapshot>();
@@ -72,6 +70,7 @@ export class StateHashService {
   private readonly activeMismatches = new Map<number, string>();
   /** Emits periodic mismatch logs even when reason text stays unchanged. */
   private readonly lastMismatchLogTickByPlayer = new Map<number, number>();
+  private missingLocalHashLogSignature: string | null = null;
 
   /** Subscribes to sim ticks and peer hash relay; disabled automatically in singleplayer. */
   init(scene: ProbableWaffleScene): void {
@@ -191,6 +190,7 @@ export class StateHashService {
     },
     scene: ProbableWaffleScene
   ): void {
+    const localPlayerNumber = scene.playerOrNull?.playerNumber ?? scene.player?.playerNumber ?? "unknown";
     const localSnapshot = this.localHashes.get(event.tick);
     if (localSnapshot === undefined) {
       // Peer hash arrived before our own was computed — shouldn't happen in lockstep
@@ -198,12 +198,21 @@ export class StateHashService {
       const knownTicks = [...this.localHashes.keys()].sort((left, right) => left - right);
       const earliestTick = knownTicks[0] ?? "none";
       const latestTick = knownTicks[knownTicks.length - 1] ?? "none";
-      console.warn(
-        `[DESYNC] Missing local hash for tick=${event.tick} (remotePlayer=${event.playerNumber ?? "unknown"} remoteHash=${event.hash}). ` +
-          `Known local hash ticks range: ${earliestTick}..${latestTick}.`
-      );
+      const currentTick = getSceneService(scene, SimulationTickService)?.currentTick ?? "unknown";
+      const pauseReasons = getSceneService(scene, SimulationTickService)?.getPauseReasons().join(",") || "none";
+      const signature = `${event.tick}|${event.playerNumber ?? "unknown"}|${earliestTick}|${latestTick}|${pauseReasons}|${currentTick}`;
+      if (this.missingLocalHashLogSignature !== signature) {
+        this.missingLocalHashLogSignature = signature;
+        console.warn(
+          `[DESYNC] Missing local hash for tick=${event.tick} (remotePlayer=${event.playerNumber ?? "unknown"} remoteHash=${event.hash}). ` +
+            `Known local hash ticks range: ${earliestTick}..${latestTick}. localPlayer=${localPlayerNumber} ` +
+            `currentTick=${currentTick} pauses=${pauseReasons}. ` +
+            `This usually means this client could not produce hash tick=${event.tick} yet (paused/stalled or just reset).`
+        );
+      }
       return;
     }
+    this.missingLocalHashLogSignature = null;
 
     if (localSnapshot.hash === event.hash) {
       if (event.playerNumber !== undefined) {
@@ -227,6 +236,7 @@ export class StateHashService {
     }
 
     const mismatchReason = this.describeDiagnosticsMismatch(localSnapshot.diagnostics, event.diagnostics);
+    const classifiedMismatch = this.classifyMismatchReason(mismatchReason);
 
     const isRemoteHost =
       event.emitterUserId !== undefined &&
@@ -247,6 +257,11 @@ export class StateHashService {
         researchDiff: diagnosticsDiff.researchDiff ?? "none"
       });
     }
+    if (classifiedMismatch) {
+      console.warn(
+        `[DESYNC][CAUSE] tick=${event.tick} localPlayer=${localPlayerNumber} remotePlayer=${event.playerNumber ?? "unknown"} ${classifiedMismatch}`
+      );
+    }
     scene.events.emit(ProbableWaffleSceneEventName.DesyncDiagnostics, {
       tick: event.tick,
       remotePlayerNumber: event.playerNumber,
@@ -264,7 +279,7 @@ export class StateHashService {
       const lastLoggedTick = this.lastMismatchLogTickByPlayer.get(event.playerNumber) ?? -Infinity;
       if (previousMismatchReason !== mismatchReason || event.tick - lastLoggedTick >= HASH_INTERVAL_TICKS) {
         console.error(
-          `[DESYNC] tick=${event.tick} remotePlayer=${event.playerNumber} ` +
+          `[DESYNC] tick=${event.tick} localPlayer=${localPlayerNumber} remotePlayer=${event.playerNumber} ` +
             `local=${localSnapshot.hash} remote=${event.hash} reason=${mismatchReason}`
         );
         this.lastMismatchLogTickByPlayer.set(event.playerNumber, event.tick);
@@ -277,7 +292,7 @@ export class StateHashService {
       });
     } else {
       console.error(
-        `[DESYNC] tick=${event.tick} remotePlayer=${event.playerNumber} ` +
+        `[DESYNC] tick=${event.tick} localPlayer=${localPlayerNumber} remotePlayer=${event.playerNumber} ` +
           `local=${localSnapshot.hash} remote=${event.hash} reason=${mismatchReason}`
       );
     }
@@ -323,7 +338,6 @@ export class StateHashService {
         firstDetectedTick: currentTick,
         lastCorrectionTick: currentTick,
         correctionAttempts: 1,
-        alertSent: false,
         reason
       });
       console.warn(
@@ -345,21 +359,13 @@ export class StateHashService {
       );
     }
 
-    if (existing.alertSent || currentTick - existing.firstDetectedTick < CORRECTION_GRACE_PERIOD_TICKS) {
-      return;
+    if (currentTick - existing.firstDetectedTick >= HASH_INTERVAL_TICKS * 6) {
+      console.error(
+        `[DESYNC] Player ${remotePlayerNumber} is still divergent after ${existing.correctionAttempts} correction attempts. ` +
+          `Continuing automatic correction retries. reason=${existing.reason ?? "unknown"}`
+      );
+      existing.firstDetectedTick = currentTick;
     }
-
-    getCommunicator(scene).desyncAlert?.send({
-      gameInstanceId: scene.gameInstanceId,
-      emitterUserId: scene.userId,
-      tick,
-      desyncedPlayerNumber: remotePlayerNumber,
-      reason: existing.reason
-    });
-    existing.alertSent = true;
-    console.error(
-      `[DESYNC] Player ${remotePlayerNumber} remained divergent after correction; opening recovery dialog. reason=${existing.reason ?? "unknown"}`
-    );
   }
 
   /** Persistent on-screen overlay so the affected client immediately sees the desync. */
@@ -503,6 +509,91 @@ export class StateHashService {
     }
 
     return "hash mismatch without diagnostic delta";
+  }
+
+  /**
+   * Converts raw mismatch text into an explicit short cause label to speed up diagnosis.
+   */
+  private classifyMismatchReason(reason: string): string | null {
+    const actorMatch = /^actor=([^ ]+) local=(.+) remote=(.+)$/.exec(reason);
+    if (actorMatch) {
+      const actorId = actorMatch[1] ?? "unknown";
+      const localDigest = actorMatch[2] ?? "missing";
+      const remoteDigest = actorMatch[3] ?? "missing";
+      if (remoteDigest === "missing") {
+        return `cause=actor-missing actorId=${actorId} side=remote`;
+      }
+      if (localDigest === "missing") {
+        return `cause=actor-missing actorId=${actorId} side=local`;
+      }
+      const parsed = this.extractActorPositionDelta(localDigest, remoteDigest);
+      if (parsed) {
+        return `cause=actor-position-drift actorId=${actorId} local=(${parsed.localX},${parsed.localY},${parsed.localZ}) remote=(${parsed.remoteX},${parsed.remoteY},${parsed.remoteZ}) delta=(${parsed.dx},${parsed.dy},${parsed.dz})`;
+      }
+      return `cause=actor-state-drift actorId=${actorId}`;
+    }
+    if (reason.startsWith("player-state")) {
+      return "cause=player-state-drift";
+    }
+    if (reason.startsWith("research")) {
+      return "cause=research-drift";
+    }
+    if (reason.includes("diagnostics unavailable")) {
+      return "cause=diagnostics-unavailable";
+    }
+    return null;
+  }
+
+  /**
+   * Parses actor digest tuples and returns logical position delta when available.
+   * Digest format is generated in computeHashSnapshot().
+   */
+  private extractActorPositionDelta(
+    localDigest: string,
+    remoteDigest: string
+  ): {
+    localX: number;
+    localY: number;
+    localZ: number;
+    remoteX: number;
+    remoteY: number;
+    remoteZ: number;
+    dx: number;
+    dy: number;
+    dz: number;
+  } | null {
+    const localParts = localDigest.split(":");
+    const remoteParts = remoteDigest.split(":");
+    if (localParts.length < 7 || remoteParts.length < 7) {
+      return null;
+    }
+    const localX = Number(localParts[4]);
+    const localY = Number(localParts[5]);
+    const localZ = Number(localParts[6]);
+    const remoteX = Number(remoteParts[4]);
+    const remoteY = Number(remoteParts[5]);
+    const remoteZ = Number(remoteParts[6]);
+    if (
+      !Number.isFinite(localX) ||
+      !Number.isFinite(localY) ||
+      !Number.isFinite(localZ) ||
+      !Number.isFinite(remoteX) ||
+      !Number.isFinite(remoteY) ||
+      !Number.isFinite(remoteZ)
+    ) {
+      return null;
+    }
+    return {
+      localX,
+      localY,
+      localZ,
+      remoteX,
+      remoteY,
+      remoteZ,
+      dx: localX - remoteX,
+      dy: localY - remoteY,
+      dz: localZ - remoteZ
+    };
   }
 
   /**

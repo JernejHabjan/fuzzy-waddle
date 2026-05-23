@@ -27,7 +27,6 @@ import { environment } from "../../../../../../environments/environment";
 import ConfirmationDialog from "../../../prefabs/gui/dialogs/ConfirmationDialog";
 import SurrenderDialog from "../../../prefabs/gui/SurrenderDialog";
 import { getPlayers } from "../../../data/scene-data";
-import { DesyncRecoveryService } from "../../services/recovery/desync-recovery.service";
 import { ConnectionRecoveryService } from "../../services/recovery/connection-recovery.service";
 
 interface ChatMessageEventPayload {
@@ -138,7 +137,6 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   private chatMessageSubscription?: Subscription;
   private readonly actorInfoSmallScreenBreakpoint = 1200;
   private cursorHandler?: CursorHandler;
-  private desyncRecovery?: DesyncRecoveryService;
   private connectionRecovery?: ConnectionRecoveryService;
 
   probableWaffleScene?: ProbableWaffleScene;
@@ -182,8 +180,6 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.subscribeToChatMessageEvents();
     this.subscribeToSceneShutdown();
 
-    this.desyncRecovery = new DesyncRecoveryService();
-    this.desyncRecovery.init(this, probableWaffleScene);
     this.connectionRecovery = new ConnectionRecoveryService();
     this.connectionRecovery.init(this, probableWaffleScene);
 
@@ -200,7 +196,6 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
         name: "hud-scene-shutdown",
         data: undefined
       });
-      this.desyncRecovery?.destroy();
       this.connectionRecovery?.destroy();
     });
   }
@@ -374,7 +369,6 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   override destroy() {
     this.saveGameSubscription?.unsubscribe();
     this.chatMessageSubscription?.unsubscribe();
-    this.desyncRecovery?.destroy();
     this.connectionRecovery?.destroy();
     super.destroy();
   }

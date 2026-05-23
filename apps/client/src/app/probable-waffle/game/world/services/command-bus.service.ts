@@ -439,8 +439,9 @@ export class CommandBusService {
     const socketConnected = this.scene?.baseGameData.communicator.activeSocket
       ? ((this.scene.baseGameData.communicator.activeSocket as any).ioSocket?.connected ?? "unknown")
       : "no-socket";
+    const missingReasons = this.describeMissingPlayers(nextTick, missing);
     console.warn(
-      `[CommandBus][STALL] nextTick=${nextTick} waitingForPlayers=${missing.join(",") || "none"} committedBy=${committed.join(",") || "none"} pauses=${pauseReasons} localPlayer=${this.localPlayerNumber ?? "none"} lastSentLocalTick=${this.lastSentTickByLocalPlayer ?? "none"} lastReceivedByPlayer={${lastReceivedByPlayer}} socketConnected=${socketConnected}`
+      `[CommandBus][STALL] nextTick=${nextTick} waitingForPlayers=${missing.join(",") || "none"} committedBy=${committed.join(",") || "none"} pauses=${pauseReasons} localPlayer=${this.localPlayerNumber ?? "none"} lastSentLocalTick=${this.lastSentTickByLocalPlayer ?? "none"} lastReceivedByPlayer={${lastReceivedByPlayer}} missingReasons={${missingReasons}} socketConnected=${socketConnected}`
     );
   }
 
@@ -494,9 +495,38 @@ export class CommandBusService {
       return;
     }
     this.queuedWhileStalledSignature = signature;
+    const missingReasons = this.describeMissingPlayers(blockedTick, missing);
     console.warn(
-      `[CommandBus][QUEUE-WHILE-STALLED] command=${commandType} player=${playerNumber} executeTick=${executeTick} blockedTick=${blockedTick} missingPlayers=${missing.join(",")} committedPlayers=${committed.join(",") || "none"}`
+      `[CommandBus][QUEUE-WHILE-STALLED] command=${commandType} player=${playerNumber} executeTick=${executeTick} blockedTick=${blockedTick} missingPlayers=${missing.join(",")} committedPlayers=${committed.join(",") || "none"} missingReasons={${missingReasons}}`
     );
+  }
+
+  /** Explains, per missing player, why lockstep is still waiting on blockedTick. */
+  private describeMissingPlayers(blockedTick: number, missingPlayers: readonly PlayerNumber[]): string {
+    if (missingPlayers.length === 0) {
+      return "none";
+    }
+
+    return missingPlayers
+      .map((missingPlayer) => {
+        const lastReceived = this.lastReceivedTickByPlayer.get(missingPlayer);
+        if (lastReceived === undefined) {
+          return `${missingPlayer}:no-batch-received-yet(likely:not-joined-or-no-socket-traffic)`;
+        }
+        if (lastReceived < blockedTick) {
+          const ticksBehind = blockedTick - lastReceived;
+          const lagLabel =
+            ticksBehind === 1
+              ? "awaiting-next-commit(one-tick-lag)"
+              : "remote-not-advancing(multi-tick-lag)";
+          return `${missingPlayer}:last-received=${lastReceived},missing=${blockedTick},behind=${ticksBehind},cause=${lagLabel}`;
+        }
+        if (missingPlayer === this.localPlayerNumber) {
+          return `${missingPlayer}:last-received=${lastReceived},local-slot-missing-for-${blockedTick}(check-local-send-or-server-echo)`;
+        }
+        return `${missingPlayer}:last-received=${lastReceived},not-committed-in-buffer-for-${blockedTick}`;
+      })
+      .join(" ");
   }
 
   private resolveLocalPlayerNumber(scene: ProbableWaffleScene): PlayerNumber | null {
