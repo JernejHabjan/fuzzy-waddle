@@ -122,6 +122,7 @@ export class CommandBusService {
         } else {
           this.debugLog(`received heartbeat tick=${event.tick} player=${event.playerNumber}`);
         }
+        this.backfillStartupHeartbeatGap(event.playerNumber, event.tick);
         this.lastReceivedTickByPlayer.set(event.playerNumber, event.tick);
         this.buffer.commit(event.tick, event.playerNumber, event.commands as GameCommand[]);
         this.emitRecordedBatch({
@@ -304,6 +305,42 @@ export class CommandBusService {
 
   private hasAllForTick(tick: number): boolean {
     return this.buffer.hasAll(tick, this.humanPlayerNumbers);
+  }
+
+  /**
+   * During scene startup, seedInitialTicks() sends ticks 1..INPUT_DELAY immediately.
+   * If a peer's socket path is not fully ready yet, those initial empty heartbeats can
+   * be missed while later ticks are received, which would stall forever on blockedTick=1.
+   *
+   * Backfill only these startup grace ticks as empty commits when we observe a later
+   * remote tick from that player and the early slots are still absent.
+   */
+  private backfillStartupHeartbeatGap(playerNumber: PlayerNumber, receivedTick: number): void {
+    if (receivedTick <= CommandBusService.INPUT_DELAY_TICKS) {
+      return;
+    }
+    const currentTick = this.tickService?.currentTick ?? 0;
+    // Backfill is only valid during initial lockstep bootstrap.
+    // Once startup ticks have been flushed, re-inserting them would create log spam.
+    if (currentTick > CommandBusService.INPUT_DELAY_TICKS) {
+      return;
+    }
+
+    const filledTicks: number[] = [];
+    for (let tick = 1; tick <= CommandBusService.INPUT_DELAY_TICKS; tick++) {
+      if (this.buffer.hasPlayerCommit(tick, playerNumber)) {
+        continue;
+      }
+      this.buffer.commit(tick, playerNumber, []);
+      filledTicks.push(tick);
+    }
+
+    if (filledTicks.length === 0) {
+      return;
+    }
+    console.warn(
+      `[CommandBus][STARTUP-BACKFILL] ${this.getMultiplayerLogContext()} player=${playerNumber} receivedTick=${receivedTick} filledTicks=${filledTicks.join(",")}`
+    );
   }
 
   private seedInitialTicks(): void {

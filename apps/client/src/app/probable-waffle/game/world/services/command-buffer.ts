@@ -43,6 +43,12 @@ export class CommandBuffer {
     return [...tickMap.keys()].sort((a, b) => a - b);
   }
 
+  hasPlayerCommit(tick: number, playerNumber: PlayerNumber): boolean {
+    const tickMap = this.buffer.get(tick);
+    if (!tickMap) return false;
+    return tickMap.has(playerNumber);
+  }
+
   /**
    * Returns all committed commands for the tick sorted by playerNumber (deterministic),
    * then removes the tick entry from the buffer.
