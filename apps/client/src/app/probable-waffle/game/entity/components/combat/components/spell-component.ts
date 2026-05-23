@@ -28,6 +28,8 @@ export class SpellComponent {
   private ownerComponent?: OwnerComponent;
   private techTreeService?: TechTreeService;
   private cooldownTickSub?: Subscription;
+  private simulationTickService?: SimulationTickService;
+  private cooldownStartedTickBySpell = new Map<SpellType, number>();
 
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,
@@ -49,7 +51,8 @@ export class SpellComponent {
   private init(): void {
     this.ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
     this.techTreeService = getSceneService(this.gameObject.scene, TechTreeService);
-    this.cooldownTickSub = getSceneService(this.gameObject.scene, SimulationTickService)?.tick$.subscribe(() => {
+    this.simulationTickService = getSceneService(this.gameObject.scene, SimulationTickService);
+    this.cooldownTickSub = this.simulationTickService?.tick$.subscribe(() => {
       this.onSimulationTick();
     });
   }
@@ -112,6 +115,12 @@ export class SpellComponent {
     const spellData = spellDefinitions[type];
     if (spellData) {
       this.spellCooldowns.set(type, spellData.cooldown);
+      const currentTick = this.simulationTickService?.currentTick;
+      if (currentTick !== undefined) {
+        this.cooldownStartedTickBySpell.set(type, currentTick);
+      } else {
+        this.cooldownStartedTickBySpell.delete(type);
+      }
       this.spellCooldownStarted.emit(type);
       this.gameObject.emit(SpellComponent.SpellCooldownStartedEvent, type);
     }
@@ -134,13 +143,18 @@ export class SpellComponent {
   private onSimulationTick(): void {
     if (!this.gameObject.active) return;
     const deltaWithTimeScale = SimulationTickService.TICK_INTERVAL_MS;
+    const currentTick = this.simulationTickService?.currentTick;
 
     // Tick down cooldowns
     for (const [spellType, remaining] of this.spellCooldowns.entries()) {
       if (remaining > 0) {
+        if (currentTick !== undefined && this.cooldownStartedTickBySpell.get(spellType) === currentTick) {
+          continue;
+        }
         const newRemaining = remaining - deltaWithTimeScale;
         if (newRemaining <= 0) {
           this.spellCooldowns.set(spellType, 0);
+          this.cooldownStartedTickBySpell.delete(spellType);
           this.spellCooldownEnded.emit(spellType);
           this.gameObject.emit(SpellComponent.SpellCooldownEndedEvent, spellType);
         } else {
@@ -172,6 +186,7 @@ export class SpellComponent {
     if (data.cooldowns) {
       for (const [type, remaining] of Object.entries(data.cooldowns)) {
         this.spellCooldowns.set(type as SpellType, remaining);
+        this.cooldownStartedTickBySpell.delete(type as SpellType);
       }
     }
 

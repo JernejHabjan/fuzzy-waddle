@@ -76,6 +76,8 @@ export class GathererComponent {
   previousResourceType: ResourceType | null = null;
   remainingCooldown = 0;
   private cooldownTickSub?: Subscription;
+  private simulationTickService?: SimulationTickService;
+  private cooldownStartedTick: number | null = null;
 
   onResourceGathered: Subject<[GameObject, GameObject, GatherData, number]> = new Subject<
     [GameObject, GameObject, GatherData, number]
@@ -98,7 +100,8 @@ export class GathererComponent {
     this.audioService = getSceneService(this.gameObject.scene, AudioService);
     this.animationActorComponent = getActorComponent(this.gameObject, AnimationActorComponent);
     this.actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
-    this.cooldownTickSub = getSceneService(this.gameObject.scene, SimulationTickService)?.tick$.subscribe(() => {
+    this.simulationTickService = getSceneService(this.gameObject.scene, SimulationTickService);
+    this.cooldownTickSub = this.simulationTickService?.tick$.subscribe(() => {
       this.onSimulationTick();
     });
   }
@@ -107,8 +110,17 @@ export class GathererComponent {
     if (this.remainingCooldown <= 0) {
       return;
     }
+    const currentTick = this.simulationTickService?.currentTick;
+    // Guard against subscription-order drift: if cooldown was started this same tick,
+    // do not decrement it until the next simulation tick.
+    if (currentTick !== undefined && this.cooldownStartedTick === currentTick) {
+      return;
+    }
     this.remainingCooldown -= SimulationTickService.TICK_INTERVAL_MS;
     this.remainingCooldown = Math.max(this.remainingCooldown, 0);
+    if (this.remainingCooldown <= 0) {
+      this.cooldownStartedTick = null;
+    }
     // if (this.remainingCooldown <= 0) {
     //   this.onCooldownReady.emit(this.gameObject);
     // }
@@ -375,6 +387,7 @@ export class GathererComponent {
 
     // start cooldown timer
     this.remainingCooldown = gatherData.cooldown;
+    this.cooldownStartedTick = this.simulationTickService?.currentTick ?? null;
 
     if (GathererComponent.debug) {
       console.log(`Gathered ${gatheredAmount} ${gatherData.resourceType} from ${resourceSource.name}`);
@@ -585,7 +598,10 @@ export class GathererComponent {
     if (data.carriedResourceType !== undefined) {
       this.carriedResourceType = data.carriedResourceType;
     }
-    if (data.remainingCooldown !== undefined) this.remainingCooldown = data.remainingCooldown;
+    if (data.remainingCooldown !== undefined) {
+      this.remainingCooldown = data.remainingCooldown;
+      this.cooldownStartedTick = null;
+    }
   }
 
   getData(): GathererComponentData {

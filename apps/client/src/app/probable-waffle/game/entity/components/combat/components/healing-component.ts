@@ -13,6 +13,8 @@ export class HealingComponent {
   // onCooldownReady: EventEmitter<GameObject> = new EventEmitter<GameObject>();
   remainingCooldown = 0;
   private cooldownTickSub?: Subscription;
+  private simulationTickService?: SimulationTickService;
+  private cooldownStartedTick: number | null = null;
   private audioService?: AudioService;
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,
@@ -25,7 +27,8 @@ export class HealingComponent {
 
   private init() {
     this.audioService = getSceneService(this.gameObject.scene, AudioService);
-    this.cooldownTickSub = getSceneService(this.gameObject.scene, SimulationTickService)?.tick$.subscribe(() => {
+    this.simulationTickService = getSceneService(this.gameObject.scene, SimulationTickService);
+    this.cooldownTickSub = this.simulationTickService?.tick$.subscribe(() => {
       this.onSimulationTick();
     });
   }
@@ -34,8 +37,17 @@ export class HealingComponent {
     if (this.remainingCooldown <= 0) {
       return;
     }
+    const currentTick = this.simulationTickService?.currentTick;
+    // Guard against subscription-order drift: if cooldown was started this same tick,
+    // do not decrement it until the next simulation tick.
+    if (currentTick !== undefined && this.cooldownStartedTick === currentTick) {
+      return;
+    }
     this.remainingCooldown -= SimulationTickService.TICK_INTERVAL_MS;
     this.remainingCooldown = Math.max(this.remainingCooldown, 0);
+    if (this.remainingCooldown <= 0) {
+      this.cooldownStartedTick = null;
+    }
     // if (this.remainingCooldown <= 0) {
     //   this.onCooldownReady.emit(this.gameObject);
     // }
@@ -47,6 +59,7 @@ export class HealingComponent {
     if (!targetHealthComponent) return;
     targetHealthComponent.heal(this.healingDefinition.healPerCooldown);
     this.remainingCooldown = this.healingDefinition.cooldown;
+    this.cooldownStartedTick = this.simulationTickService?.currentTick ?? null;
     this.playHealSound();
   }
 
@@ -66,7 +79,10 @@ export class HealingComponent {
   }
 
   setData(data: Partial<HealingComponentData>) {
-    if (data.remainingCooldown !== undefined) this.remainingCooldown = data.remainingCooldown;
+    if (data.remainingCooldown !== undefined) {
+      this.remainingCooldown = data.remainingCooldown;
+      this.cooldownStartedTick = null;
+    }
   }
 
   getData(): HealingComponentData {

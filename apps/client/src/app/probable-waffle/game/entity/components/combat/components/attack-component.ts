@@ -48,6 +48,8 @@ export class AttackComponent {
   private rotationTween?: Phaser.Tweens.Tween;
   currentAttack: AttackData | null = null;
   private cooldownTickSub?: Subscription;
+  private simulationTickService?: SimulationTickService;
+  private cooldownStartedTick: number | null = null;
   private projectileSprite?: Phaser.GameObjects.Image;
   private readonly projectileImpactTimers = new Set<CancelableSimDelay>();
   // track delayed fire so we can cancel before projectile spawns
@@ -73,7 +75,8 @@ export class AttackComponent {
     this.animationActorComponent = getActorComponent(this.gameObject, AnimationActorComponent);
     this.audioService = getSceneService(this.gameObject.scene, AudioService);
     this.actorIndexSystem = getSceneService(this.gameObject.scene, ActorIndexSystem);
-    this.cooldownTickSub = getSceneService(this.gameObject.scene, SimulationTickService)?.tick$.subscribe(() => {
+    this.simulationTickService = getSceneService(this.gameObject.scene, SimulationTickService);
+    this.cooldownTickSub = this.simulationTickService?.tick$.subscribe(() => {
       this.onSimulationTick();
     });
   }
@@ -102,9 +105,18 @@ export class AttackComponent {
     if (this.remainingCooldown <= 0) {
       return;
     }
+    const currentTick = this.simulationTickService?.currentTick;
+    // Guard against subscription-order drift: if cooldown was started this same tick,
+    // do not decrement it until the next simulation tick.
+    if (currentTick !== undefined && this.cooldownStartedTick === currentTick) {
+      return;
+    }
     this.remainingCooldown -= SimulationTickService.TICK_INTERVAL_MS;
 
     this.remainingCooldown = Math.max(this.remainingCooldown, 0);
+    if (this.remainingCooldown <= 0) {
+      this.cooldownStartedTick = null;
+    }
     // if (this.remainingCooldown <= 0) {
     //   this.onCooldownReady.emit(this.gameObject);
     // }
@@ -173,6 +185,7 @@ export class AttackComponent {
     }
 
     this.remainingCooldown = attack.cooldown;
+    this.cooldownStartedTick = this.simulationTickService?.currentTick ?? null;
   }
 
   private applyInstantAttackDamage(attack: AttackData, enemy: GameObject) {
@@ -735,7 +748,10 @@ export class AttackComponent {
 
   setData(data: Partial<AttackComponentData> & Partial<AttackDefinition>) {
     // Update runtime state
-    if (data.remainingCooldown !== undefined) this.remainingCooldown = data.remainingCooldown;
+    if (data.remainingCooldown !== undefined) {
+      this.remainingCooldown = data.remainingCooldown;
+      this.cooldownStartedTick = null;
+    }
     if (data.currentAttackIndex !== undefined) {
       const idx = data.currentAttackIndex;
       if (idx === null || idx === undefined) {
