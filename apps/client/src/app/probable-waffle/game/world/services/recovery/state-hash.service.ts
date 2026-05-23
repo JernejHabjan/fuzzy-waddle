@@ -1,4 +1,7 @@
-import type { ProbableWaffleReplayDesyncDiagnostic, ProbableWaffleStateHashDiagnostics } from "@fuzzy-waddle/api-interfaces";
+import type {
+  ProbableWaffleReplayDesyncDiagnostic,
+  ProbableWaffleStateHashDiagnostics
+} from "@fuzzy-waddle/api-interfaces";
 import type { Subscription } from "rxjs";
 import { getSceneService } from "../scene-component-helpers";
 import { SimulationTickService } from "../simulation-tick.service";
@@ -101,9 +104,7 @@ export class StateHashService {
     // Keep steady-state payload small, but switch to rich diagnostics while any
     // mismatch/correction flow is active so logs can explain exactly what diverged.
     const includeDiagnostics =
-      INCLUDE_HASH_DIAGNOSTICS_IN_STEADY_STATE ||
-      this.activeMismatches.size > 0 ||
-      this.pendingCorrections.size > 0;
+      INCLUDE_HASH_DIAGNOSTICS_IN_STEADY_STATE || this.activeMismatches.size > 0 || this.pendingCorrections.size > 0;
     const snapshot = this.computeHashSnapshot(scene, includeDiagnostics);
     this.localHashes.set(tick, snapshot);
     this.pruneOldHashes(tick);
@@ -192,22 +193,28 @@ export class StateHashService {
   ): void {
     const localPlayerNumber = scene.playerOrNull?.playerNumber ?? scene.player?.playerNumber ?? "unknown";
     const localContext = this.getLocalAuthorityContext(scene);
+    const currentTick = getSceneService(scene, SimulationTickService)?.currentTick;
     const localSnapshot = this.localHashes.get(event.tick);
     if (localSnapshot === undefined) {
+      if (typeof currentTick === "number" && event.tick > currentTick) {
+        // Remote peer can occasionally report the next hash interval before this
+        // client reaches the same tick. That's transport ordering, not desync.
+        return;
+      }
       // Peer hash arrived before our own was computed — shouldn't happen in lockstep
       // but guard it; the desync, if real, will be caught on the next interval.
       const knownTicks = [...this.localHashes.keys()].sort((left, right) => left - right);
       const earliestTick = knownTicks[0] ?? "none";
       const latestTick = knownTicks[knownTicks.length - 1] ?? "none";
-      const currentTick = getSceneService(scene, SimulationTickService)?.currentTick ?? "unknown";
+      const currentTickLabel = currentTick ?? "unknown";
       const pauseReasons = getSceneService(scene, SimulationTickService)?.getPauseReasons().join(",") || "none";
-      const signature = `${event.tick}|${event.playerNumber ?? "unknown"}|${earliestTick}|${latestTick}|${pauseReasons}|${currentTick}`;
+      const signature = `${event.tick}|${event.playerNumber ?? "unknown"}|${earliestTick}|${latestTick}|${pauseReasons}|${currentTickLabel}`;
       if (this.missingLocalHashLogSignature !== signature) {
         this.missingLocalHashLogSignature = signature;
         console.warn(
           `[DESYNC] Missing local hash for tick=${event.tick} (remotePlayer=${event.playerNumber ?? "unknown"} remoteHash=${event.hash}). ` +
             `Known local hash ticks range: ${earliestTick}..${latestTick}. localPlayer=${localPlayerNumber} ${localContext} ` +
-            `currentTick=${currentTick} pauses=${pauseReasons}. ` +
+            `currentTick=${currentTickLabel} pauses=${pauseReasons}. ` +
             `This usually means this client could not produce hash tick=${event.tick} yet (paused/stalled or just reset).`
         );
       }
@@ -237,6 +244,17 @@ export class StateHashService {
     }
 
     const mismatchReason = this.describeDiagnosticsMismatch(localSnapshot.diagnostics, event.diagnostics);
+    const transientMovementDrift = this.isTransientMovementPositionDrift(mismatchReason);
+    if (transientMovementDrift) {
+      if (event.playerNumber !== undefined) {
+        this.pendingCorrections.delete(event.playerNumber);
+      }
+      console.info(
+        `[DESYNC] Ignored transient movement position drift at tick=${event.tick}. ` +
+          `${this.getHashEventAuthorityContext(scene, event.playerNumber, event.emitterUserId)} ${transientMovementDrift}`
+      );
+      return;
+    }
     const classifiedMismatch = this.classifyMismatchReason(mismatchReason);
 
     const isRemoteHost =
@@ -249,7 +267,11 @@ export class StateHashService {
     }
 
     const diagnosticsDiff = this.collectDiagnosticsDiffs(localSnapshot.diagnostics, event.diagnostics);
-    if (diagnosticsDiff.actorDiffs.length > 0 || diagnosticsDiff.playerDiffs.length > 0 || diagnosticsDiff.researchDiff) {
+    if (
+      diagnosticsDiff.actorDiffs.length > 0 ||
+      diagnosticsDiff.playerDiffs.length > 0 ||
+      diagnosticsDiff.researchDiff
+    ) {
       console.warn(`[DESYNC][DIFF] tick=${event.tick} remotePlayer=${event.playerNumber ?? "unknown"}`, {
         authority: this.getHashEventAuthorityContext(scene, event.playerNumber, event.emitterUserId),
         actorDiffCount: diagnosticsDiff.actorDiffs.length,
@@ -635,6 +657,71 @@ export class StateHashService {
     };
   }
 
+  /**
+   * Movement tween progress can differ slightly across clients between sim ticks.
+   * Ignore tiny actor position-only drift when both sides are executing the same move order.
+   */
+  private isTransientMovementPositionDrift(reason: string): string | null {
+    const actorMatch = /^actor=([^ ]+) local=(.+) remote=(.+)$/.exec(reason);
+    if (!actorMatch) {
+      return null;
+    }
+    const actorId = actorMatch[1] ?? "unknown";
+    const localDigest = actorMatch[2] ?? "";
+    const remoteDigest = actorMatch[3] ?? "";
+    if (!localDigest || !remoteDigest || localDigest === "missing" || remoteDigest === "missing") {
+      return null;
+    }
+
+    const localParts = localDigest.split(":");
+    const remoteParts = remoteDigest.split(":");
+    if (localParts.length < 13 || remoteParts.length < 13) {
+      return null;
+    }
+
+    // Compare everything except logical x/y/z (indices 4,5,6).
+    for (let index = 0; index < Math.min(localParts.length, remoteParts.length); index++) {
+      if (index >= 4 && index <= 6) {
+        continue;
+      }
+      if ((localParts[index] ?? "") !== (remoteParts[index] ?? "")) {
+        return null;
+      }
+    }
+
+    const localX = Number(localParts[4]);
+    const localY = Number(localParts[5]);
+    const localZ = Number(localParts[6]);
+    const remoteX = Number(remoteParts[4]);
+    const remoteY = Number(remoteParts[5]);
+    const remoteZ = Number(remoteParts[6]);
+    if (
+      !Number.isFinite(localX) ||
+      !Number.isFinite(localY) ||
+      !Number.isFinite(localZ) ||
+      !Number.isFinite(remoteX) ||
+      !Number.isFinite(remoteY) ||
+      !Number.isFinite(remoteZ)
+    ) {
+      return null;
+    }
+
+    const dx = Math.abs(localX - remoteX);
+    const dy = Math.abs(localY - remoteY);
+    const dz = Math.abs(localZ - remoteZ);
+    const smallDelta = dx <= 1 && dy <= 1 && dz <= 1;
+    if (!smallDelta) {
+      return null;
+    }
+
+    const moveOrderActive = localDigest.includes("orderType:Move") && remoteDigest.includes("orderType:Move");
+    if (!moveOrderActive) {
+      return null;
+    }
+
+    return `actorId=${actorId} delta=(${localX - remoteX},${localY - remoteY},${localZ - remoteZ})`;
+  }
+
   private describePlayerStateDigestDelta(localDigest: string, remoteDigest: string): string | null {
     const local = this.parsePlayerStateDigest(localDigest);
     const remote = this.parsePlayerStateDigest(remoteDigest);
@@ -654,23 +741,17 @@ export class StateHashService {
     if (local.wood !== remote.wood) {
       diffs.push(`wood=${local.wood}->${remote.wood}`);
     }
-    if (local.currentHousing !== remote.currentHousing) {
-      diffs.push(`housing.current=${local.currentHousing}->${remote.currentHousing}`);
-    }
-    if (local.maxHousing !== remote.maxHousing) {
-      diffs.push(`housing.max=${local.maxHousing}->${remote.maxHousing}`);
-    }
     return diffs.length > 0 ? diffs.join(" ") : null;
   }
 
   private parsePlayerStateDigest(
     digest: string
-  ): { playerNumber: number; minerals: number; stone: number; wood: number; currentHousing: number; maxHousing: number } | null {
+  ): { playerNumber: number; minerals: number; stone: number; wood: number } | null {
     const parts = digest.split(":");
-    if (parts.length < 6) {
+    if (parts.length < 4) {
       return null;
     }
-    const parsed = parts.slice(0, 6).map((part) => Number(part));
+    const parsed = parts.slice(0, 4).map((part) => Number(part));
     if (parsed.some((part) => !Number.isFinite(part))) {
       return null;
     }
@@ -678,9 +759,7 @@ export class StateHashService {
       playerNumber: parsed[0] ?? -1,
       minerals: parsed[1] ?? 0,
       stone: parsed[2] ?? 0,
-      wood: parsed[3] ?? 0,
-      currentHousing: parsed[4] ?? 0,
-      maxHousing: parsed[5] ?? 0
+      wood: parsed[3] ?? 0
     };
   }
 
@@ -725,7 +804,10 @@ export class StateHashService {
 
     const localResearch = localDiagnostics.researchDigest ?? "";
     const remoteResearch = remoteDiagnostics.researchDigest ?? "";
-    const researchDiff = localResearch === remoteResearch ? undefined : `research local=${localResearch || "missing"} remote=${remoteResearch || "missing"}`;
+    const researchDiff =
+      localResearch === remoteResearch
+        ? undefined
+        : `research local=${localResearch || "missing"} remote=${remoteResearch || "missing"}`;
     return {
       actorDiffs,
       playerDiffs,
@@ -733,7 +815,7 @@ export class StateHashService {
     };
   }
 
-  /** Serializes per-player resource/housing state used in deterministic economy progression. */
+  /** Serializes per-player resource state used in deterministic economy progression. */
   private serializePlayerStates(scene: Phaser.Scene): string[] {
     const probableWaffleScene = scene as ProbableWaffleScene;
     return [...probableWaffleScene.players]
@@ -741,8 +823,7 @@ export class StateHashService {
       .map((player) => {
         const playerNumber = player.playerNumber ?? -1;
         const resources = player.playerState.data.resources;
-        const housing = player.playerState.data.housing;
-        return `${playerNumber}:${resources.minerals ?? 0}:${resources.stone ?? 0}:${resources.wood ?? 0}:${housing.currentHousing}:${housing.maxHousing}`;
+        return `${playerNumber}:${resources.minerals ?? 0}:${resources.stone ?? 0}:${resources.wood ?? 0}`;
       });
   }
 
@@ -767,7 +848,11 @@ export class StateHashService {
   destroy(): void {
     this.tickSub?.unsubscribe();
     this.hashReceivedSub?.unsubscribe();
-    this.scene?.events.off(ProbableWaffleSceneEventName.ReconnectSnapshotApplied, this.onReconnectSnapshotApplied, this);
+    this.scene?.events.off(
+      ProbableWaffleSceneEventName.ReconnectSnapshotApplied,
+      this.onReconnectSnapshotApplied,
+      this
+    );
     this.scene = undefined;
     this.clearDesyncIndicator();
     this.pendingCorrections.clear();

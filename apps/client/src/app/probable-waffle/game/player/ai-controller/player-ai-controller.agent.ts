@@ -48,6 +48,7 @@ import { WorldStateSnapshotManager } from "./ai-behavior/world-state-snapshot-ma
 import { getUnitStrength } from "./ai-utils";
 import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
 import { dispatchAiOrder } from "./dispatch-ai-order";
+import { IdComponent } from "../../entity/components/id-component";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class PlayerAiControllerAgent implements IPlayerControllerAgent {
@@ -409,9 +410,20 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
         this.blackboard.enemiesNearBase.forEach((enemy) => {
           if (!unit.active || !enemy.active) return;
           const d = DistanceHelper.getTileDistanceBetweenGameObjects(unit, enemy);
-          if (d !== null && d < closestDist) {
+          if (d === null) {
+            return;
+          }
+          if (d < closestDist) {
             closestDist = d;
             closestEnemy = enemy;
+            return;
+          }
+          if (d === closestDist && closestEnemy) {
+            const closestId = getActorComponent(closestEnemy, IdComponent)?.id ?? "";
+            const candidateId = getActorComponent(enemy, IdComponent)?.id ?? "";
+            if (closestId && candidateId && candidateId.localeCompare(closestId) < 0) {
+              closestEnemy = enemy;
+            }
           }
         });
         if (!closestEnemy) return;

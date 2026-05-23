@@ -295,8 +295,21 @@ export class BuilderComponent {
 
     if (sitesWithDistance.length === 0) return null;
 
-    // Find closest by navigation distance
-    const closest = sitesWithDistance.reduce((prev, curr) => (prev.distance < curr.distance ? prev : curr));
+    // Find closest by navigation distance with deterministic tie-break by actor ID.
+    const closest = sitesWithDistance.reduce((prev, curr) => {
+      if (curr.distance < prev.distance) {
+        return curr;
+      }
+      if (curr.distance > prev.distance) {
+        return prev;
+      }
+      const prevId = getActorComponent(prev.site, IdComponent)?.id ?? "";
+      const currId = getActorComponent(curr.site, IdComponent)?.id ?? "";
+      if (!prevId || !currId || prevId === currId) {
+        return prev;
+      }
+      return currId.localeCompare(prevId) < 0 ? curr : prev;
+    });
 
     // console.log("[Build] getClosestConstructionSite: Closest site", closest.site, "at distance", closest.distance);
     return closest.site;
