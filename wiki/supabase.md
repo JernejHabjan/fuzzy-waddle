@@ -39,6 +39,8 @@ This script is defined in the root `package.json`.
 
 SQL migrations live in `DBMs/`. Apply them in order against your Supabase project using the Supabase dashboard SQL editor or the CLI.
 
+`DBMs/0010_supabase_create_grants.sql` adds explicit Data API grants required by Supabase's public schema exposure changes. Keep grants alongside table creation in future migrations.
+
 ## Connecting via JDBC
 
 Useful for inspecting the database with tools like DBeaver or IntelliJ DataGrip:
