@@ -3,9 +3,11 @@
 
 -- Service role access used by backend API.
 grant insert on table public.fly_squasher_scores to service_role;
+grant select (id, score, level, user_id, date) on table public.fly_squasher_scores to service_role;
 grant select on table public.fly_squasher_scores_with_user_meta to service_role;
 
 grant insert, select on table public.messages to service_role;
+grant select (id, name) on table public.profiles to service_role;
 
 grant insert on table public.little_muncher_scores to service_role;
 grant select on table public.little_muncher_scores_with_user_meta to service_role;
