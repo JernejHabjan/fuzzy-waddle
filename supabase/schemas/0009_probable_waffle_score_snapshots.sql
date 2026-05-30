@@ -32,7 +32,7 @@ create policy "Enable select for authenticated users" on probable_waffle_score_s
       select 1
       from probable_waffle_player_scores ps
       where ps.game_session_id = probable_waffle_score_snapshots.game_session_id
-        and ps.user_id = auth.uid()
+        and ps.user_id = (select auth.uid())
     )
   );
 

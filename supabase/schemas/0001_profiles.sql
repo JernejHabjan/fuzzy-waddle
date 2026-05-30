@@ -19,21 +19,21 @@ DROP POLICY IF EXISTS "Allow authenticated users to select their own profile" on
 CREATE POLICY "Allow authenticated users to select their own profile"
   ON public.profiles
   FOR SELECT
-  USING (auth.uid() = id);
+  USING ((select auth.uid()) = id);
 
 -- Create a policy to allow authenticated users to update their own profile
 DROP POLICY IF EXISTS "Allow authenticated users to update their own profile" on public.profiles;
 CREATE POLICY "Allow authenticated users to update their own profile"
   ON public.profiles
   FOR UPDATE
-  USING (auth.uid() = id);
+  USING ((select auth.uid()) = id);
 
 -- Create a policy to allow authenticated users to delete their own profile
 DROP POLICY IF EXISTS "Allow authenticated users to delete their own profile" on public.profiles;
 CREATE POLICY "Allow authenticated users to delete their own profile"
   ON public.profiles
   FOR DELETE
-  USING (auth.uid() = id);
+  USING ((select auth.uid()) = id);
 
 -- inserts a row into public.profiles
 CREATE OR REPLACE FUNCTION public.handle_new_user()

@@ -21,20 +21,14 @@ DROP POLICY IF EXISTS "Enable write access for authenticated users" ON fly_squas
 CREATE POLICY "Enable write access for authenticated users"
   ON fly_squasher_scores
   FOR INSERT
-  WITH CHECK (auth.uid() = user_id AND auth.role() = 'user');
+  WITH CHECK ((select auth.uid()) = user_id AND (select auth.role()) = 'user');
 
 -- enable row level security
 alter table fly_squasher_scores
   enable row level security;
 
--- Index for user_id, assisting in join operations
-CREATE INDEX idx_fly_squasher_scores_userid ON fly_squasher_scores (user_id);
-
--- Index for level, assisting in partitioning data within ranking operations
-CREATE INDEX idx_fly_squasher_scores_level ON fly_squasher_scores (level);
-
--- Index for score, assisting in ordering data within ranking operations
-CREATE INDEX idx_fly_squasher_scores_score ON fly_squasher_scores (score);
+create index fly_squasher_scores_user_id_idx
+  on fly_squasher_scores (user_id);
 
 -- create a view that joins the fly_squasher_scores table with the auth.users table to get the user's meta data (used full name)
 -- and only returns the top 3 unique users' scores for each level (maximum score for each user)

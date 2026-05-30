@@ -12,11 +12,7 @@ create table messages
 alter table messages
   add constraint messages_profile_id_fkey foreign key (user_id) references public.profiles (id);
 
--- add index on created_at for efficient pagination queries
-create index messages_created_at_idx on messages (created_at desc);
-
--- add index on game_instance_id for efficient filtering
-create index messages_game_instance_id_idx on messages (game_instance_id) where game_instance_id is not null;
+create index messages_user_id_idx on messages (user_id);
 
 drop policy if exists "Enable read access for all users" on messages;
 -- CREATE POLICY "Enable read access for all users" ON "public"."messages"
@@ -28,7 +24,7 @@ drop policy if exists "Enable select for users based on user_id" on messages;
 CREATE POLICY "Enable select for users based on user_id" ON "public"."messages"
   AS PERMISSIVE FOR SELECT
   TO authenticated
-  USING (auth.uid() = user_id);
+  USING ((select auth.uid()) = user_id);
 
 drop policy if exists "Enable read access for all users" on messages;
 CREATE POLICY "Enable insert for service_role only" ON "public"."messages"

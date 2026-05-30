@@ -46,21 +46,12 @@ alter table probable_waffle_game_sessions
   add constraint probable_waffle_game_sessions_scores_submitted_by_fkey
   foreign key (scores_submitted_by) references public.profiles (id);
 
--- add index on game_instance_id for efficient lookups
-create unique index probable_waffle_game_sessions_game_instance_id_idx
-  on probable_waffle_game_sessions (game_instance_id);
+create index probable_waffle_game_sessions_scores_submitted_by_idx
+  on probable_waffle_game_sessions (scores_submitted_by)
+  where scores_submitted_by is not null;
 
--- add index on started_at for efficient time-based queries
-create index probable_waffle_game_sessions_started_at_idx
-  on probable_waffle_game_sessions (started_at desc);
-
--- add index on created_by_user_id for user-specific queries
 create index probable_waffle_game_sessions_created_by_user_id_idx
   on probable_waffle_game_sessions (created_by_user_id);
-
--- add index on session_state for filtering by state
-create index probable_waffle_game_sessions_session_state_idx
-  on probable_waffle_game_sessions (session_state);
 
 -- RLS policies
 drop policy if exists "Enable insert for service_role only" on probable_waffle_game_sessions;

@@ -88,39 +88,20 @@ alter table probable_waffle_player_score_metrics
   foreign key (metric_type_id) references probable_waffle_score_metric_types (id);
 
 -- Indexes on main table
-create index probable_waffle_player_scores_game_session_id_idx
-  on probable_waffle_player_scores (game_session_id);
-
 create index probable_waffle_player_scores_user_id_idx
   on probable_waffle_player_scores (user_id)
   where user_id is not null;
 
-create index probable_waffle_player_scores_game_result_idx
-  on probable_waffle_player_scores (game_result);
-
 create unique index probable_waffle_player_scores_session_player_idx
   on probable_waffle_player_scores (game_session_id, player_number);
 
-create index probable_waffle_player_scores_created_at_idx
-  on probable_waffle_player_scores (created_at desc);
-
 -- Indexes on metrics table
-create index probable_waffle_player_score_metrics_player_score_id_idx
-  on probable_waffle_player_score_metrics (player_score_id);
-
 create index probable_waffle_player_score_metrics_metric_type_id_idx
   on probable_waffle_player_score_metrics (metric_type_id);
 
 -- Unique constraint: one value per metric per player score
 create unique index probable_waffle_player_score_metrics_unique_idx
   on probable_waffle_player_score_metrics (player_score_id, metric_type_id);
-
--- Index on metric types
-create unique index probable_waffle_score_metric_types_key_idx
-  on probable_waffle_score_metric_types (metric_key);
-
-create index probable_waffle_score_metric_types_category_idx
-  on probable_waffle_score_metric_types (metric_category);
 
 -- RLS policies for main scores table
 drop policy if exists "Enable insert for service_role only" on probable_waffle_player_scores;
@@ -134,12 +115,12 @@ create policy "Enable select for authenticated users" on probable_waffle_player_
   as permissive for select
   to authenticated
   using (
-    user_id = auth.uid()
+    user_id = (select auth.uid())
     or exists (
       select 1
       from probable_waffle_player_scores other_ps
       where other_ps.game_session_id = probable_waffle_player_scores.game_session_id
-        and other_ps.user_id = auth.uid()
+        and other_ps.user_id = (select auth.uid())
     )
   );
 
@@ -169,7 +150,7 @@ create policy "Enable select for authenticated users" on probable_waffle_player_
       from probable_waffle_player_scores ps
       join probable_waffle_player_scores other_ps
         on other_ps.game_session_id = ps.game_session_id
-           and other_ps.user_id = auth.uid()
+           and other_ps.user_id = (select auth.uid())
       where ps.id = probable_waffle_player_score_metrics.player_score_id
     )
   );
@@ -205,12 +186,12 @@ create policy "Enable select for authenticated users" on probable_waffle_game_se
   as permissive for select
   to authenticated
   using (
-    auth.uid() = created_by_user_id
+    (select auth.uid()) = created_by_user_id
     or exists (
       select 1
       from probable_waffle_player_scores ps
       where ps.game_session_id = probable_waffle_game_sessions.id
-        and ps.user_id = auth.uid()
+        and ps.user_id = (select auth.uid())
     )
   );
 
@@ -352,8 +333,6 @@ group by ps.id, ps.game_session_id, ps.user_id, ps.player_number, ps.player_name
 
 -- Index on materialized view
 create unique index probable_waffle_player_scores_full_id_idx on probable_waffle_player_scores_full (id);
-create index probable_waffle_player_scores_full_game_session_idx on probable_waffle_player_scores_full (game_session_id);
-create index probable_waffle_player_scores_full_user_idx on probable_waffle_player_scores_full (user_id) where user_id is not null;
 
 -- Create view for player statistics aggregation (uses materialized view for performance)
 drop view if exists probable_waffle_player_stats;

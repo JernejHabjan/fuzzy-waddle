@@ -8,11 +8,6 @@ CREATE TABLE little_muncher_scores (
   FOREIGN KEY (user_id) REFERENCES auth.users(id)
 );
 
--- Indexes for performance
-CREATE INDEX idx_little_muncher_scores_user_id ON little_muncher_scores(user_id);
-CREATE INDEX idx_little_muncher_scores_hill ON little_muncher_scores(hill);
-CREATE INDEX idx_little_muncher_scores_score ON little_muncher_scores(score);
-
 -- Row Level Security
 ALTER TABLE little_muncher_scores ENABLE ROW LEVEL SECURITY;
 
@@ -24,7 +19,10 @@ CREATE POLICY "Allow read access for all users"
 DROP POLICY IF EXISTS "Allow insert for authenticated users" ON little_muncher_scores;
 CREATE POLICY "Allow insert for authenticated users"
   ON little_muncher_scores FOR INSERT TO authenticated
-  WITH CHECK (user_id = auth.uid());
+  WITH CHECK (user_id = (select auth.uid()));
+
+create index little_muncher_scores_user_id_idx
+  on little_muncher_scores (user_id);
 
 -- View: Top 3 unique users per hill (highest score per user)
 DROP VIEW IF EXISTS little_muncher_scores_with_user_meta;
