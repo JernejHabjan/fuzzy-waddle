@@ -66,6 +66,10 @@ BEGIN
 END;
 $$;
 
+revoke execute on function public.handle_new_user() from public;
+revoke execute on function public.handle_new_user() from anon;
+revoke execute on function public.handle_new_user() from authenticated;
+
 
 -- trigger the function every time a user is created
 create trigger on_auth_user_created
