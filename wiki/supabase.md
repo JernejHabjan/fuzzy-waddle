@@ -37,9 +37,28 @@ This script is defined in the root `package.json`.
 
 ## Database Migrations
 
-SQL migrations live in `DBMs/`. Apply them in order against your Supabase project using the Supabase dashboard SQL editor or the CLI.
+Supabase migrations live in `supabase/migrations/` and should be created with the Supabase CLI so timestamps and metadata stay consistent.
 
-`DBMs/0010_supabase_create_grants.sql` adds explicit object-level Data API grants required by Supabase's public schema exposure changes. Keep per-object grants alongside table creation in future migrations.
+Recommended workflow:
+
+```bash
+# Create a new migration file
+supabase migration new describe_change
+
+# Review the generated SQL file in supabase/migrations/
+# Then apply all local migrations to the local database
+supabase db reset
+```
+
+After creating a migration:
+
+1. Edit the generated SQL file with the required schema/data changes.
+2. Manually review the SQL before running it.
+3. Verify it locally against the Supabase CLI stack before committing.
+
+Use the CLI for migration creation instead of writing ad-hoc SQL files by hand.
+
+The existing `supabase/migrations/20260530175708_initial_migration.sql` migration includes the explicit object-level Data API grants required by Supabase's public schema exposure rules. Keep per-object grants alongside table creation in future migrations.
 
 ## Connecting via JDBC
 
@@ -53,3 +72,55 @@ Useful for inspecting the database with tools like DBeaver or IntelliJ DataGrip:
 ## Local Supabase Development
 
 A local Supabase config is available under `supabase/`. See the [Supabase local development docs](https://supabase.com/docs/guides/local-development) for how to run Supabase locally with Docker.
+
+Short local workflow:
+
+```bash
+supabase start
+supabase status
+supabase stop
+```
+
+- `supabase start` starts the local Supabase Docker stack defined by `supabase/config.toml`.
+- `supabase status` prints the local API URL, Studio URL, database URL, and local keys.
+- `supabase stop` shuts the local stack down.
+
+Default local endpoints in this repo:
+
+- API: `http://127.0.0.1:54321`
+- Database: `postgresql://postgres:postgres@127.0.0.1:54322/postgres`
+- Studio: `http://127.0.0.1:54323`
+- Inbucket: `http://127.0.0.1:54324`
+
+### Applying migrations locally
+
+To update the local Supabase instance after adding or editing migrations, run:
+
+```bash
+supabase db reset
+```
+
+This recreates the local database, reapplies migrations from `supabase/migrations/`, and runs local seeds configured in `supabase/config.toml`.
+
+If you need to check the current local stack details before or after applying migrations, run:
+
+```bash
+supabase status
+```
+
+### Merge flow note
+
+The local instance only changes when you run the relevant Supabase CLI commands yourself. The other Supabase environment is updated separately and applies migrations after they are merged to the `main` branch, so verify migrations locally before opening or merging a PR.
+
+For this repo's app environment variables:
+
+- `SUPABASE_URL` should point to your Supabase API endpoint.
+  - Hosted Supabase: use your project URL from the dashboard.
+  - Local `supabase start`: use `http://127.0.0.1:54321`.
+- `SUPABASE_SERVICE_KEY` is the Supabase `service_role` key.
+  - Hosted Supabase: copy it from the project API settings.
+  - Self-hosted Supabase: copy `SERVICE_ROLE_KEY` from the Supabase Docker `.env`.
+- `SUPABASE_DB_PASSWORD` is only for self-hosted/local database access.
+  - Self-hosted Supabase: copy `POSTGRES_PASSWORD` from the Supabase Docker `.env`.
+  - It is separate from `SUPABASE_SERVICE_KEY` and should not be used as an API key.
+- `CORS_ORIGIN` is not a Supabase setting; it is this Nest API's allow-list for browser and WebSocket origins.

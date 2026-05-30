@@ -28,8 +28,10 @@ References: [Render SPA routing](https://render.com/docs/deploy-create-react-app
 | Start Command               | `node dist/apps/api/main.js`                                                                                                      |
 | Health Check                | `/api/health`                                                                                                                     |
 | Env: `SUPABASE_URL`         | Supabase project URL                                                                                                              |
-| Env: `SUPABASE_SERVICE_KEY` | Supabase service role key                                                                                                         |
+| Env: `SUPABASE_SERVICE_KEY` | Supabase service-role key                                                                                                         |
 | Env: `CORS_ORIGIN`          | `https://fuzzy-waddle.onrender.com,https://jernejhabjan.github.io,http://localhost:4200,http://tauri.localhost,tauri://localhost` |
+
+`SUPABASE_DB_PASSWORD` is not required on Render unless your deployment also connects directly to a self-hosted Supabase Postgres instance.
 
 ## GitHub Pages (client mirror)
 

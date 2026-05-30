@@ -20,11 +20,12 @@ pnpm install
 
 Copy `.env.example` to `.env` in the project root and fill in the values:
 
-| Variable               | Value                                 |
-| ---------------------- | ------------------------------------- |
-| `CORS_ORIGIN`          | `http://localhost:4200`               |
-| `SUPABASE_URL`         | From your Supabase project settings   |
-| `SUPABASE_SERVICE_KEY` | `service_role` key from Supabase dashboard |
+| Variable | Value |
+| -------- | ----- |
+| `CORS_ORIGIN` | `http://localhost:4200` for local web development; keep it because the API and WebSocket gateways read it for CORS |
+| `SUPABASE_DB_PASSWORD` | Only needed when you run self-hosted Supabase locally; copy the `POSTGRES_PASSWORD` value from the Supabase Docker `.env` |
+| `SUPABASE_URL` | Supabase project URL or local API URL such as `http://127.0.0.1:54321` |
+| `SUPABASE_SERVICE_KEY` | Supabase `service_role` key; in self-hosted Supabase this maps to `SERVICE_ROLE_KEY` |
 
 See the [Supabase setup guide](supabase.md) for how to obtain these values.
 

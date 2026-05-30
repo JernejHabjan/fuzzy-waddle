@@ -1,5 +1,9 @@
 # For detailed configuration reference documentation, visit:
 # https://supabase.com/docs/guides/local-development/cli/config
+# This file is loaded automatically by `supabase start` for local CLI development.
+# Use it for local Supabase services, ports, and auth provider settings.
+# Self-hosted Docker configuration such as the database password belongs in `.env` and
+# `docker-compose.yml`, not in this local CLI config.
 # A string used to distinguish different Supabase projects on the same host. Defaults to the
 # working directory name when running `supabase init`.
 project_id = "fuzzy-waddle"
@@ -26,6 +30,8 @@ enabled = false
 
 [db]
 # Port to use for the local database URL.
+# The local CLI database password is managed by the Supabase stack; if you need secrets inside
+# this file, reference root-level `.env` values via `env(...)`.
 port = 54322
 # Port used by db diff command to initialize the shadow database.
 shadow_port = 54320
