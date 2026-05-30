@@ -54,19 +54,18 @@ BEGIN
 
   -- if provider is Google
   IF NEW.raw_app_meta_data ->> 'provider' = 'google' THEN
-    INSERT INTO public.profiles (id, email, name, profile_image_url, created)
-    VALUES (NEW.id, NEW.email, NEW.raw_user_meta_data ->> 'name', NEW.raw_user_meta_data ->> 'avatar_url', CURRENT_TIMESTAMP);
+    INSERT INTO public.profiles (id, email, name, profile_image_url)
+    VALUES (NEW.id, NEW.email, NEW.raw_user_meta_data ->> 'name', NEW.raw_user_meta_data ->> 'avatar_url');
   ELSE
     -- else insert random name
-    INSERT INTO public.profiles (id, email, name, profile_image_url, created)
+    INSERT INTO public.profiles (id, email, name, profile_image_url)
     VALUES (NEW.id,
             NEW.email,
             substring(
               string_agg(chr(65 + floor(random() * 26)::int), ''), -- Random letters (A-Z)
               1, 10 -- 10-character random name
             ),
-            '',
-            CURRENT_TIMESTAMP);
+            '');
   END IF;
 
   RETURN NEW;
