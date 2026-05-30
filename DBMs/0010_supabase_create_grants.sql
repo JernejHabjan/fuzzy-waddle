@@ -25,7 +25,6 @@ grant select, insert on table public.probable_waffle_achievements to authenticat
 
 -- Sequence access required for INSERT defaults.
 grant usage, select on sequence public.fly_squasher_scores_id_seq to service_role;
-grant usage, select on sequence public.messages_id_seq to service_role;
 grant usage, select on sequence public.little_muncher_scores_id_seq to service_role;
 grant usage, select on sequence public.probable_waffle_player_scores_id_seq to service_role;
 grant usage, select on sequence public.probable_waffle_player_score_metrics_id_seq to service_role;
