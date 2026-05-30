@@ -55,17 +55,7 @@ max_client_conn = 100
 enabled = true
 # Specifies an ordered list of schema files that describe your database.
 # Supports glob patterns relative to supabase directory: "./schemas/*.sql"
-schema_paths = [
-  "./schemas/0001_profiles.sql",
-  "./schemas/0002_storage.sql",
-  "./schemas/0003_messages.sql",
-  "./schemas/0004_fly-squasher_scores.sql",
-  "./schemas/0005_probable_waffle_achievements.sql",
-  "./schemas/0006_little_muncher_scores.sql",
-  "./schemas/0007_probable_waffle_game_sessions.sql",
-  "./schemas/0008_probable_waffle_player_scores.sql",
-  "./schemas/0009_probable_waffle_score_snapshots.sql",
-]
+schema_paths = ["./schemas/*.sql"]
 
 [db.seed]
 # If enabled, seeds the database after migrations during a db reset.
