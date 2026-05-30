@@ -317,6 +317,13 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+grant select, insert on table public.probable_waffle_player_scores to service_role;
+grant select on table public.probable_waffle_score_metric_types to service_role;
+grant select, insert on table public.probable_waffle_player_score_metrics to service_role;
+grant execute on function public.refresh_probable_waffle_player_scores_full() to service_role;
+grant usage, select on sequence public.probable_waffle_player_scores_id_seq to service_role;
+grant usage, select on sequence public.probable_waffle_player_score_metrics_id_seq to service_role;
+
 -- 2. Get Metrics Helper
 CREATE OR REPLACE FUNCTION get_player_score_metrics(p_player_score_id bigint)
   RETURNS jsonb AS $$

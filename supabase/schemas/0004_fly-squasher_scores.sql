@@ -61,3 +61,8 @@ WITH scores AS (SELECT fss.id,
 SELECT *
 FROM scores
 WHERE level_rn <= 3;
+
+grant insert on table public.fly_squasher_scores to service_role;
+grant select (id, score, level, user_id, date) on table public.fly_squasher_scores to service_role;
+grant select on table public.fly_squasher_scores_with_user_meta to service_role;
+grant usage, select on sequence public.fly_squasher_scores_id_seq to service_role;

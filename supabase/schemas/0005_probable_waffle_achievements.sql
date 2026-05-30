@@ -37,3 +37,6 @@ ALTER TABLE probable_waffle_achievements
 -- Create indexes for efficient querying
 CREATE INDEX idx_probable_waffle_achievements_userid ON probable_waffle_achievements (user_id);
 CREATE INDEX idx_probable_waffle_achievements_id ON probable_waffle_achievements (achievement_id);
+
+grant select, insert on table public.probable_waffle_achievements to authenticated;
+grant usage, select on sequence public.probable_waffle_achievements_id_seq to authenticated;

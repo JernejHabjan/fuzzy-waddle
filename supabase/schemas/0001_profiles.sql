@@ -94,3 +94,5 @@ SELECT id,
          END
 FROM auth.users
 group by id;
+
+grant select (id, name) on table public.profiles to service_role;

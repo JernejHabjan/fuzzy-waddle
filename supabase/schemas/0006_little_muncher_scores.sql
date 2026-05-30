@@ -59,3 +59,7 @@ SELECT id, score, hill, user_id, user_name, date
 FROM hill_ranked
 WHERE hill_rn <= 3
 ORDER BY hill, hill_rn;
+
+grant insert on table public.little_muncher_scores to service_role;
+grant select on table public.little_muncher_scores_with_user_meta to service_role;
+grant usage, select on sequence public.little_muncher_scores_id_seq to service_role;

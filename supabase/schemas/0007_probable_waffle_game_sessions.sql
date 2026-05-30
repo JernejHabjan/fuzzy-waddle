@@ -174,4 +174,6 @@ alter table messages
 -- add comment explaining the relationship
 comment on column messages.game_instance_id is 'References the game instance UUID from probable_waffle_game_sessions';
 
+grant select, insert, update on table public.probable_waffle_game_sessions to service_role;
+
 
