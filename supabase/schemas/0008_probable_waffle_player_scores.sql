@@ -199,6 +199,80 @@ create policy "Enable all for service_role" on probable_waffle_score_metric_type
 alter table probable_waffle_score_metric_types
   enable row level security;
 
+-- Backfill game session access policy now that player scores exist
+drop policy if exists "Enable select for authenticated users" on probable_waffle_game_sessions;
+create policy "Enable select for authenticated users" on probable_waffle_game_sessions
+  as permissive for select
+  to authenticated
+  using (
+    auth.uid() = created_by_user_id
+    or exists (
+      select 1
+      from probable_waffle_player_scores ps
+      where ps.game_session_id = probable_waffle_game_sessions.id
+        and ps.user_id = auth.uid()
+    )
+  );
+
+-- Match history view depends on both sessions and player scores
+drop view if exists probable_waffle_match_history;
+create view probable_waffle_match_history
+  with (security_invoker=on)
+as
+select
+  gs.id,
+  gs.game_instance_id,
+  gs.game_type,
+  gs.map_id,
+  gs.session_state,
+  gs.started_at,
+  gs.ended_at,
+  gs.total_duration_seconds,
+  gs.scores_submitted,
+  gs.human_player_count,
+  creator.name as created_by_name,
+  submitter.name as submitted_by_name,
+  (
+    select json_agg(
+      json_build_object(
+        'player_number', ps.player_number,
+        'player_name', ps.player_name,
+        'player_type', ps.player_type,
+        'faction_type', ps.faction_type,
+        'game_result', ps.game_result,
+        'final_score', ps.final_score,
+        'is_current_user', ps.user_id = auth.uid()
+      )
+      order by ps.final_score desc
+    )
+    from probable_waffle_player_scores ps
+    where ps.game_session_id = gs.id
+  ) as players,
+  exists(
+    select 1
+    from probable_waffle_player_scores ps
+    where ps.game_session_id = gs.id
+      and ps.user_id = auth.uid()
+  ) as user_participated,
+  (
+    select ps.game_result
+    from probable_waffle_player_scores ps
+    where ps.game_session_id = gs.id
+      and ps.user_id = auth.uid()
+    limit 1
+  ) as user_result
+from probable_waffle_game_sessions gs
+left join public.profiles creator on gs.created_by_user_id = creator.id
+left join public.profiles submitter on gs.scores_submitted_by = submitter.id
+where gs.scores_submitted = true
+  and exists(
+    select 1
+    from probable_waffle_player_scores ps
+    where ps.game_session_id = gs.id
+      and ps.user_id = auth.uid()
+  )
+order by gs.ended_at desc nulls last, gs.started_at desc;
+
 -- Insert predefined metric types
 insert into probable_waffle_score_metric_types (metric_key, metric_name, metric_category, description, display_order) values
 -- Units category
