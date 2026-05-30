@@ -334,6 +334,10 @@ group by ps.id, ps.game_session_id, ps.user_id, ps.player_number, ps.player_name
 -- Index on materialized view
 create unique index probable_waffle_player_scores_full_id_idx on probable_waffle_player_scores_full (id);
 
+revoke all on table public.probable_waffle_player_scores_full from public;
+revoke all on table public.probable_waffle_player_scores_full from anon;
+revoke all on table public.probable_waffle_player_scores_full from authenticated;
+
 -- Create view for player statistics aggregation (uses materialized view for performance)
 drop view if exists probable_waffle_player_stats;
 create view probable_waffle_player_stats
@@ -364,27 +368,35 @@ group by ps.user_id, p.name;
 
 -- 1. Refresh Function
 CREATE OR REPLACE FUNCTION refresh_probable_waffle_player_scores_full()
-  RETURNS void AS $$
+  RETURNS void
+  LANGUAGE plpgsql
+  SET search_path = public, pg_temp
+AS $$
 BEGIN
   REFRESH MATERIALIZED VIEW CONCURRENTLY probable_waffle_player_scores_full;
 END;
-$$ LANGUAGE plpgsql;
+$$;
 
 grant select, insert on table public.probable_waffle_player_scores to service_role;
 grant select on table public.probable_waffle_score_metric_types to service_role;
 grant select, insert on table public.probable_waffle_player_score_metrics to service_role;
+grant select on table public.probable_waffle_player_scores_full to service_role;
 grant execute on function public.refresh_probable_waffle_player_scores_full() to service_role;
 grant usage, select on sequence public.probable_waffle_player_scores_id_seq to service_role;
 grant usage, select on sequence public.probable_waffle_player_score_metrics_id_seq to service_role;
 
 -- 2. Get Metrics Helper
 CREATE OR REPLACE FUNCTION get_player_score_metrics(p_player_score_id bigint)
-  RETURNS jsonb AS $$
+  RETURNS jsonb
+  LANGUAGE sql
+  STABLE
+  SET search_path = public, pg_temp
+AS $$
 SELECT jsonb_object_agg(mt.metric_key, m.metric_value)
 FROM probable_waffle_player_score_metrics m
        JOIN probable_waffle_score_metric_types mt ON m.metric_type_id = mt.id
 WHERE m.player_score_id = p_player_score_id;
-$$ LANGUAGE sql STABLE;
+$$;
 
 -- 3. Upsert Metric Helper
 CREATE OR REPLACE FUNCTION upsert_player_score_metric(
@@ -392,7 +404,10 @@ CREATE OR REPLACE FUNCTION upsert_player_score_metric(
   p_metric_key text,
   p_metric_value bigint
 )
-  RETURNS void AS $$
+  RETURNS void
+  LANGUAGE plpgsql
+  SET search_path = public, pg_temp
+AS $$
 DECLARE
   v_metric_type_id int;
 BEGIN
@@ -411,5 +426,5 @@ BEGIN
   ON CONFLICT (player_score_id, metric_type_id)
     DO UPDATE SET metric_value = EXCLUDED.metric_value;
 END;
-$$ LANGUAGE plpgsql;
+$$;
 
