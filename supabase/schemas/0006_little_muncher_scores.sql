@@ -28,7 +28,9 @@ CREATE POLICY "Allow insert for authenticated users"
 
 -- View: Top 3 unique users per hill (highest score per user)
 DROP VIEW IF EXISTS little_muncher_scores_with_user_meta;
-CREATE VIEW little_muncher_scores_with_user_meta AS
+CREATE VIEW little_muncher_scores_with_user_meta
+  with (security_invoker=on)
+AS
 WITH ranked_scores AS (
   SELECT
     s.id,
