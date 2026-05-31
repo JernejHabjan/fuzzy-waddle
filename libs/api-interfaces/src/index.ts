@@ -1,4 +1,5 @@
 export * from "./lib/chat/chat";
+export * from "./lib/database/database-enums";
 export * from "./game-instance";
 export * from "./little-muncher";
 export * from "./database";

@@ -14,7 +14,7 @@ interface AchievementRecord {
   id: number;
   achievement_id: string;
   user_id: string;
-  unlocked_date: string;
+  unlocked_at: string;
   metadata: any;
 }
 
@@ -50,7 +50,7 @@ export class AchievementService implements AchievementServiceInterface {
     try {
       // Get unlocked achievements from Supabase
       const { data: unlockedData, error: unlockedError } = await this.dataAccessService.supabase
-        .from("probable_waffle_achievements")
+        .from("user_achievement_unlocks")
         .select("*")
         .eq("user_id", targetUserId);
 
@@ -76,7 +76,7 @@ export class AchievementService implements AchievementServiceInterface {
           description: achievement.description,
           image: achievement.image,
           unlocked: !!unlockedRecord,
-          unlockedDate: unlockedRecord ? new Date(unlockedRecord.unlocked_date) : undefined,
+          unlockedDate: unlockedRecord ? new Date(unlockedRecord.unlocked_at) : undefined,
           metadata: unlockedRecord?.metadata,
           // Add additional properties from the definition
           category: achievement.category,
@@ -143,7 +143,7 @@ export class AchievementService implements AchievementServiceInterface {
       }
 
       // Insert the achievement record into Supabase
-      const { error } = await this.dataAccessService.supabase.from("probable_waffle_achievements").insert({
+      const { error } = await this.dataAccessService.supabase.from("user_achievement_unlocks").insert({
         achievement_id: achievementId,
         user_id: userId,
         metadata: metadata || {}

@@ -131,21 +131,25 @@ For the Angular client:
 
 Keep the shared types in `libs/api-interfaces/src/database/database.types.ts` in sync with your Supabase schema:
 
+Start the local stack first:
+
+```bash
+supabase start
+```
+
 Run:
 
 ```bash
 pnpm generate-supabase-types
 ```
 
-This script is defined in the root `package.json`.
+This script reads the local database. To generate types from the hosted project, use `pnpm generate-supabase-types:remote`.
 
 ## Database Migrations
 
 Supabase declarative schemas live in `supabase/schemas/`. Migration files live in `supabase/migrations/` and are what actually get applied to databases.
 
-Keep schema files numbered and grouped by feature/table. Keep object-level grants and revokes beside the objects they protect in the same schema file, then generate or update migrations from that schema state.
-
-The existing `supabase/migrations/20260530175708_initial_migration.sql` migration is the baseline migration. It includes explicit object-level Data API grants required by Supabase's public schema exposure rules.
+Schema files are numbered and grouped by subsystem. Keep object-level grants and revokes in the same schema file as the objects they protect.
 
 Recommended workflow:
 
@@ -158,7 +162,7 @@ supabase start
 # 3. Create a new migration file
 supabase migration new describe_change
 
-# 4. Add the required SQL to the generated file in supabase/migrations/
+# 4. Add the SQL to the generated file in supabase/migrations/
 
 # 5. Recreate the local database and apply all migrations locally
 supabase db reset
@@ -171,9 +175,10 @@ After creating a migration:
 
 1. Edit the generated SQL file with the required schema/data changes.
 2. Manually review the SQL before running it.
-3. Verify it locally against the Supabase CLI stack before committing.
+3. Run `supabase db reset`.
+4. Run `supabase db lint --local --schema public --level warning --fail-on none`.
 
-Use the CLI for migration creation instead of writing ad-hoc SQL files by hand.
+Use the CLI for migration creation so migration filenames stay timestamped consistently.
 
 ### Applying Migrations Locally
 
@@ -183,7 +188,7 @@ To update the local Supabase instance after adding or editing migrations, run:
 supabase db reset
 ```
 
-This recreates the local database, reapplies every migration from `supabase/migrations/`, and runs local seeds configured in `supabase/config.toml`. It is the cleanest local check because it proves the full migration history can build the database from scratch.
+This recreates the local database, reapplies every migration from `supabase/migrations/`, and runs local seeds configured in `supabase/config.toml`. It proves the full migration history can build an empty local database.
 
 If you only need the current local stack details before or after applying migrations, run:
 
@@ -195,7 +200,13 @@ supabase status
 
 Do not use `supabase db reset` on the hosted database. That command is for local development.
 
-The linked hosted Supabase project is updated by the project deployment flow after migrations are merged into the `main` branch. Treat local verification as the gate: run `supabase db reset` and `supabase db lint --local --schema public --level warning --fail-on none` before opening or merging the PR.
+The hosted Supabase project is updated after migrations are merged into `main`. Verify migrations locally before merging:
+
+```bash
+supabase db reset
+pnpm generate-supabase-types
+supabase db lint --local --schema public --level warning --fail-on none
+```
 
 If an urgent manual remote apply is ever needed outside the normal merge flow, preview first:
 

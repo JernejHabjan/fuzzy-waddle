@@ -9,7 +9,7 @@ import {
   output,
   viewChild
 } from "@angular/core";
-import type { ChatMessage } from "@fuzzy-waddle/api-interfaces";
+import { ChatReportReason, type ChatMessage } from "@fuzzy-waddle/api-interfaces";
 import { AvatarProviderService } from "./avatar-provider/avatar-provider.service";
 import { Observable, Subscription, Subject } from "rxjs";
 import { debounceTime } from "rxjs/operators";
@@ -40,6 +40,21 @@ export class ChatComponent implements OnInit, OnDestroy {
   protected readonly messages: ChatMessage[] = [];
   protected isLoading = false;
   protected hasMoreMessages = true;
+  protected reportingMessageId: number | null = null;
+  protected reportReason: ChatReportReason = ChatReportReason.Abuse;
+  protected reportDetails = "";
+  protected reportStatusMessage = "";
+  protected reportErrorMessage = "";
+  protected readonly reportReasons = Object.values(ChatReportReason);
+  protected readonly reportReasonLabels: Record<ChatReportReason, string> = {
+    [ChatReportReason.Spam]: "Spam",
+    [ChatReportReason.Abuse]: "Abuse",
+    [ChatReportReason.Harassment]: "Harassment",
+    [ChatReportReason.HateSpeech]: "Hate speech",
+    [ChatReportReason.Cheating]: "Cheating",
+    [ChatReportReason.PersonalInformation]: "Personal information",
+    [ChatReportReason.Other]: "Other"
+  };
   private messageSubscription?: Subscription;
   private scrollSubscription?: Subscription;
   private offset = 0;
@@ -139,6 +154,47 @@ export class ChatComponent implements OnInit, OnDestroy {
     }
     this.newMessage?.emit(this.createMessage(this.message));
     this.message = "";
+  }
+
+  protected openReportForm(message: ChatMessage): void {
+    if (!message.id || message.userId === this.authService.userId) {
+      return;
+    }
+
+    this.reportingMessageId = message.id;
+    this.reportReason = ChatReportReason.Abuse;
+    this.reportDetails = "";
+    this.reportStatusMessage = "";
+    this.reportErrorMessage = "";
+  }
+
+  protected cancelReport(): void {
+    this.reportingMessageId = null;
+    this.reportDetails = "";
+    this.reportStatusMessage = "";
+    this.reportErrorMessage = "";
+  }
+
+  protected async submitReport(message: ChatMessage): Promise<void> {
+    if (!message.id) {
+      return;
+    }
+
+    this.reportStatusMessage = "";
+    this.reportErrorMessage = "";
+
+    try {
+      await this.chatService.reportMessage(message.id, {
+        reason: this.reportReason,
+        details: this.reportDetails.trim() || undefined
+      });
+      this.reportStatusMessage = "Report submitted.";
+      this.reportingMessageId = null;
+      this.reportDetails = "";
+    } catch (error) {
+      console.error("Failed to report chat message:", error);
+      this.reportErrorMessage = "Could not submit report.";
+    }
   }
 
   @HostListener("window:beforeunload")

@@ -10,7 +10,8 @@ import { ChatService } from "../../../data-access/chat/chat.service";
 import { Subject } from "rxjs";
 
 const chatServiceStub = {
-  getMessages: () => Promise.resolve({ messages: [], total: 0, hasMore: false })
+  getMessages: () => Promise.resolve({ messages: [], total: 0, hasMore: false }),
+  reportMessage: () => Promise.resolve()
 };
 
 describe("ChatComponent", () => {

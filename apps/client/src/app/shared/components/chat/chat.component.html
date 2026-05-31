@@ -11,14 +11,46 @@
             <div class="chat-message-sender-name">{{ message.fullName }}</div>
           </div>
           <div class="chat-message-text">{{ message.text }}</div>
+          @if (message.id && message.userId !== authService.userId) {
+            <button class="chat-message-report-button" type="button" (click)="openReportForm(message)">Report</button>
+          }
+          @if (reportingMessageId === message.id) {
+            <form class="chat-message-report-form" (ngSubmit)="submitReport(message)">
+              <select
+                [(ngModel)]="reportReason"
+                [ngModelOptions]="{ standalone: true }"
+                class="chat-message-report-select"
+              >
+                @for (reason of reportReasons; track reason) {
+                  <option [ngValue]="reason">{{ reportReasonLabels[reason] }}</option>
+                }
+              </select>
+              <input
+                [(ngModel)]="reportDetails"
+                [ngModelOptions]="{ standalone: true }"
+                class="chat-message-report-details"
+                maxlength="1000"
+                placeholder="Optional details"
+                type="text"
+              />
+              <button class="chat-message-report-submit" type="submit">Submit</button>
+              <button class="chat-message-report-cancel" type="button" (click)="cancelReport()">Cancel</button>
+            </form>
+          }
         </div>
       </div>
+    }
+    @if (reportStatusMessage) {
+      <div class="chat-report-status">{{ reportStatusMessage }}</div>
+    }
+    @if (reportErrorMessage) {
+      <div class="chat-report-error">{{ reportErrorMessage }}</div>
     }
   </div>
 </div>
 
 <div class="chat-footer">
-  <form (submit)="sendMessage()" class="chat-form">
+  <form (ngSubmit)="sendMessage()" class="chat-form">
     <input
       [(ngModel)]="message"
       [ngModelOptions]="{ standalone: true }"

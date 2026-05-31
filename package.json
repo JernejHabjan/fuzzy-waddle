@@ -40,8 +40,9 @@
     "generate-audio-sprites": "node ./apps/client/src/metadata/sfx/generate-audio-sprites.js",
     "build-client-dev": "nx build client --source-map=true --named-chunks=true",
     "serve-build": "http-server dist/apps/client",
-    "_docs_generate-supabase-types": "see README.md",
-    "generate-supabase-types": "supabase gen types typescript --project-id \"bhzetyxjimpabioxoodz\" --schema public > \"libs/api-interfaces/src/database/database.types.ts\""
+    "_docs_generate-supabase-types": "requires local Supabase stack; run supabase start first",
+    "generate-supabase-types": "supabase gen types typescript --local --schema public > \"libs/api-interfaces/src/database/database.types.ts\"",
+    "generate-supabase-types:remote": "supabase gen types typescript --project-id \"bhzetyxjimpabioxoodz\" --schema public > \"libs/api-interfaces/src/database/database.types.ts\""
   },
   "engines": {
     "node": ">=24.13.0",

@@ -1,4 +1,5 @@
 import type { UserId } from "../game-instance/player/player";
+import type { ChatReportReason } from "../database/database-enums";
 
 export interface ChatMessage {
   id?: number;
@@ -17,4 +18,9 @@ export interface GetMessagesResponseDto {
   messages: ChatMessage[];
   total: number;
   hasMore: boolean;
+}
+
+export interface ReportChatMessageDto {
+  reason: ChatReportReason;
+  details?: string;
 }

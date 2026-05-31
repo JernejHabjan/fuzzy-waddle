@@ -34,7 +34,56 @@
           margin-top: 2px;
           margin-bottom: 2px;
         }
+
+        .chat-message-report-button {
+          align-self: flex-start;
+          padding: 2px 6px;
+          border: 1px solid $primary;
+          border-radius: 4px;
+          background-color: white;
+          color: $primary;
+          cursor: pointer;
+          font-size: 0.75rem;
+        }
+
+        .chat-message-report-form {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 4px;
+          margin: 4px 0 6px;
+
+          .chat-message-report-select,
+          .chat-message-report-details {
+            border: 1px solid $primary;
+            border-radius: 4px;
+            padding: 4px;
+          }
+
+          .chat-message-report-details {
+            min-width: 160px;
+            flex: 1;
+          }
+
+          .chat-message-report-submit,
+          .chat-message-report-cancel {
+            border: 1px solid $primary;
+            border-radius: 4px;
+            background-color: white;
+            cursor: pointer;
+            padding: 4px 8px;
+          }
+        }
       }
+    }
+
+    .chat-report-status,
+    .chat-report-error {
+      margin-top: 4px;
+      font-size: 0.8rem;
+    }
+
+    .chat-report-error {
+      color: #b00020;
     }
   }
 }

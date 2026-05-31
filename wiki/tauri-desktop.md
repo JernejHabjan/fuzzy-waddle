@@ -6,7 +6,7 @@ The app is a thin native shell around the same Angular build.
 ## Prerequisites
 
 | Tool                    | Install                                                                                                                         |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+|-------------------------|---------------------------------------------------------------------------------------------------------------------------------|
 | Rust (stable toolchain) | [rustup.rs](https://rustup.rs/)                                                                                                 |
 | Node.js + pnpm          | As for normal web dev (see [Getting Started](getting-started.md))                                                               |
 | **Windows**             | [Microsoft C++ Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) + WebView2 (bundled with Windows 10/11) |
@@ -99,7 +99,7 @@ The `/assets/auth-callback.html` redirect URL must also be registered in Supabas
 The Tauri app contacts the production API (`https://fuzzy-waddle-api.onrender.com`) from two different origins depending on how it runs:
 
 | Mode                             | Origin                   |
-| -------------------------------- | ------------------------ |
+|----------------------------------|--------------------------|
 | `pnpm tauri:dev` (all platforms) | `http://localhost:4200`  |
 | Production — Windows (WebView2)  | `http://tauri.localhost` |
 | Production — macOS / Linux       | `tauri://localhost`      |
