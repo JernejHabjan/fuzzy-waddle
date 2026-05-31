@@ -30,4 +30,12 @@ describe("HomeNavComponent", () => {
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector(".navbar-toggler")).toBeNull();
   });
+
+  it("should hide the logo and hint copy when back navigation is enabled", () => {
+    fixture.componentRef.setInput("showBack", true);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector(".home-nav-logo")).toBeNull();
+    expect(fixture.nativeElement.textContent).not.toContain("Return to previous hub");
+  });
 });

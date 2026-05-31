@@ -1,19 +1,20 @@
 <nav class="navbar navbar-expand-lg home-nav py-0">
   <div class="container-fluid home-nav-shell">
-    <a class="navbar-brand btn-home align-items-center d-flex" [routerLink]="routerLink()">
+    <a class="navbar-brand btn-home align-items-center d-flex" [class.btn-home-back]="showBack()" [routerLink]="routerLink()">
       @if (showBack()) {
         <span class="home-nav-backmark">
           <fa-icon [icon]="faChevronLeft" />
           <span>Back</span>
         </span>
+        <div class="title-wrap">
+          <div class="title">{{ title() }}</div>
+        </div>
+      } @else {
+        <img alt="Home Logo" class="home-nav-logo" height="46px" [src]="imgSrc()" width="46px" />
+        <div class="title-wrap">
+          <div class="title">{{ title() }}</div>
+        </div>
       }
-      <img alt="Home Logo" class="home-nav-logo" height="46px" [src]="imgSrc()" width="46px" />
-      <div class="title-wrap">
-        <div class="title">{{ title() }}</div>
-        @if (showBack()) {
-          <div class="title-hint">Return to previous hub</div>
-        }
-      </div>
     </a>
     @if (hasActions()) {
       <button

@@ -1,11 +1,5 @@
 // ── Tokens ────────────────────────────────────────────────────────────────────
-$navy-deep: #0a0e1a;
-$navy-dark: #141a26;
-$navy-mid: #001f4d;
-$gold: #c9a84c;
-$gold-light: #e8c96a;
-$silver: #b0c9e0;
-$white: #f0f4ff;
+@use "../../../../styles/_variables.scss" as *;
 
 // ── Overlay ───────────────────────────────────────────────────────────────────
 .splash-overlay {
@@ -15,8 +9,12 @@ $white: #f0f4ff;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(ellipse at 50% 40%, #0e1626 0%, $navy-deep 70%);
+  background:
+    radial-gradient(circle at top left, $app-overlay-warm, transparent 28%),
+    radial-gradient(circle at top right, $app-overlay-cool-gradient, transparent 36%),
+    linear-gradient(160deg, $primary 0%, $secondary 52%, #12305f 100%);
   overflow: hidden;
+  padding: 1.5rem;
 
   opacity: 1;
 
@@ -37,31 +35,31 @@ $white: #f0f4ff;
 // ── Corner frames ─────────────────────────────────────────────────────────────
 .corner {
   position: absolute;
-  width: 60px;
-  height: 60px;
-  border-color: $gold;
+  width: 84px;
+  height: 84px;
+  border-color: rgb(255 255 255 / 22%);
   border-style: solid;
   animation: corner-grow 0.8s 0.2s forwards;
   opacity: 0;
 
   &--tl {
-    top: 32px;
-    left: 32px;
+    top: 24px;
+    left: 24px;
     border-width: 2px 0 0 2px;
   }
   &--tr {
-    top: 32px;
-    right: 32px;
+    top: 24px;
+    right: 24px;
     border-width: 2px 2px 0 0;
   }
   &--bl {
-    bottom: 32px;
-    left: 32px;
+    bottom: 24px;
+    left: 24px;
     border-width: 0 0 2px 2px;
   }
   &--br {
-    bottom: 32px;
-    right: 32px;
+    bottom: 24px;
+    right: 24px;
     border-width: 0 2px 2px 0;
   }
 }
@@ -86,14 +84,15 @@ $white: #f0f4ff;
 
 .particle {
   position: absolute;
-  width: 3px;
-  height: 3px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  background: $gold;
+  background: radial-gradient(circle at 35% 35%, $app-accent-warm-contrast, $app-accent-warm);
   opacity: 0;
   animation: particle-float calc(4s + var(--i, 0) * 0.3s) calc(var(--i, 0) * 0.2s) infinite ease-in-out;
   left: calc(5% + var(--i, 0) * 8%);
-  top: 30%;
+  top: 62%;
+  box-shadow: 0 0 18px rgb(255 191 71 / 25%);
 }
 
 @keyframes particle-float {
@@ -116,51 +115,58 @@ $white: #f0f4ff;
 // ── Emblem ────────────────────────────────────────────────────────────────────
 .emblem {
   position: relative;
-  width: 80px;
-  height: 80px;
-  margin: 0 auto 1.5rem;
+  width: 112px;
+  height: 112px;
+  margin: 0 auto 1.25rem;
 }
 
-.emblem-ring {
+.emblem-glow {
   position: absolute;
   inset: 0;
-  border-radius: 50%;
-  border: 2px solid rgba($gold, 0.5);
-  animation: ring-pulse 2s ease-in-out infinite;
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 28% 28%, rgb(255 255 255 / 38%), transparent 42%),
+    linear-gradient(145deg, rgb(255 255 255 / 24%), rgb(255 122 24 / 24%));
+  box-shadow:
+    0 18px 45px $app-shadow-strong,
+    inset 0 1px 0 rgb(255 255 255 / 22%);
+  animation: ring-pulse 2.2s ease-in-out infinite;
+}
 
-  &--inner {
-    inset: 14px;
-    border-color: rgba($gold, 0.3);
-    animation-delay: 0.5s;
-
-    &::after {
-      content: "⚔";
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      color: $gold;
-      opacity: 0.8;
-    }
-  }
+.emblem-logo {
+  position: absolute;
+  inset: 20px;
+  width: calc(100% - 40px);
+  height: calc(100% - 40px);
+  object-fit: contain;
+  filter: drop-shadow(0 10px 18px rgb(0 31 77 / 24%));
 }
 
 @keyframes ring-pulse {
   0%,
   100% {
     transform: scale(1);
-    opacity: 0.7;
+    opacity: 0.88;
   }
   50% {
-    transform: scale(1.08);
+    transform: scale(1.04);
     opacity: 1;
   }
 }
 
 // ── Content ───────────────────────────────────────────────────────────────────
 .splash-content {
+  width: min(100%, 540px);
+  padding: clamp(1.75rem, 4vw, 2.6rem);
+  border: 1px solid rgb(255 255 255 / 18%);
+  border-radius: 28px;
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 13%), rgb(255 255 255 / 08%)),
+    $app-surface-dark;
+  box-shadow:
+    0 24px 60px $app-shadow-strong,
+    inset 0 1px 0 rgb(255 255 255 / 10%);
+  backdrop-filter: blur(14px);
   text-align: center;
   animation: content-rise 0.8s 0.3s forwards;
   opacity: 0;
@@ -174,39 +180,48 @@ $white: #f0f4ff;
   }
 }
 
+.splash-kicker {
+  margin: 0 0 0.5rem;
+  color: $app-accent-warm-contrast;
+  font-family: "WorkSans", sans-serif;
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
 .splash-title {
   font-family: "EagleLake", serif;
-  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  font-size: clamp(2.2rem, 5vw, 3.25rem);
   font-weight: 400;
-  color: $white;
-  letter-spacing: 0.05em;
-  margin: 0 0 0.5rem;
+  color: $app-text-on-dark;
+  letter-spacing: 0.04em;
+  margin: 0 0 0.65rem;
   text-shadow:
-    0 0 40px rgba($gold, 0.4),
-    0 2px 8px rgba(0, 0, 0, 0.8);
+    0 0 32px rgb(255 122 24 / 22%),
+    0 2px 8px rgb(0 0 0 / 35%);
   animation: title-glow 2.5s 0.8s ease-in-out infinite alternate;
 }
 
 @keyframes title-glow {
   from {
     text-shadow:
-      0 0 30px rgba($gold, 0.3),
-      0 2px 8px rgba(0, 0, 0, 0.8);
+      0 0 24px rgb(255 191 71 / 18%),
+      0 2px 8px rgb(0 0 0 / 35%);
   }
   to {
     text-shadow:
-      0 0 60px rgba($gold, 0.6),
-      0 2px 8px rgba(0, 0, 0, 0.8);
+      0 0 44px rgb(255 122 24 / 32%),
+      0 2px 8px rgb(0 0 0 / 35%);
   }
 }
 
 .splash-tagline {
   font-family: "WorkSans", sans-serif;
-  font-size: clamp(0.9rem, 2vw, 1.1rem);
+  font-size: clamp(0.95rem, 2vw, 1.08rem);
   font-weight: 400;
-  color: $silver;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
+  color: $app-text-on-dark-muted;
+  letter-spacing: 0.02em;
   margin: 0 0 1.5rem;
 }
 
@@ -234,28 +249,29 @@ $white: #f0f4ff;
 
 .divider-line {
   display: block;
-  width: 80px;
-  height: 1px;
-  background: linear-gradient(to right, transparent, $gold, transparent);
-  opacity: 0.6;
+  width: 92px;
+  height: 2px;
+  background: linear-gradient(to right, transparent, $app-accent-warm, transparent);
+  opacity: 0.72;
 }
 
 .divider-diamond {
   display: block;
-  width: 6px;
-  height: 6px;
-  background: $gold;
+  width: 8px;
+  height: 8px;
+  background: $app-accent-warm;
   transform: rotate(45deg);
-  opacity: 0.8;
+  opacity: 0.92;
+  box-shadow: 0 0 18px rgb(255 122 24 / 22%);
 }
 
 // ── Studio label ─────────────────────────────────────────────────────────────
 .splash-studio {
   font-family: "WorkSans", sans-serif;
-  font-size: 0.7rem;
-  font-weight: 400;
-  color: rgba($silver, 0.5);
-  letter-spacing: 0.25em;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: $app-text-on-dark-muted;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   margin: 0;
 }
@@ -264,11 +280,36 @@ $white: #f0f4ff;
 .splash-version {
   position: absolute;
   bottom: 1.5rem;
-  right: 2rem;
+  right: 1.5rem;
+  padding: 0.38rem 0.72rem;
+  border: 1px solid rgb(255 255 255 / 14%);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 8%);
   font-family: "WorkSans", sans-serif;
   font-size: 0.7rem;
-  color: rgba($silver, 0.4);
+  color: $app-text-on-dark-muted;
   letter-spacing: 0.1em;
   animation: content-rise 0.6s 1.2s forwards;
   opacity: 0;
+}
+
+@media (max-width: 640px) {
+  .splash-overlay {
+    padding: 1rem;
+  }
+
+  .corner {
+    width: 56px;
+    height: 56px;
+  }
+
+  .splash-content {
+    padding: 1.5rem 1.15rem;
+    border-radius: 22px;
+  }
+
+  .splash-version {
+    right: 1rem;
+    bottom: 1rem;
+  }
 }
