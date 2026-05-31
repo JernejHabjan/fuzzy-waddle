@@ -3,7 +3,7 @@ import { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { getCurrentPlayerNumber, getPlayer } from "../../data/scene-data";
 import type { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { OrderType } from "../../ai/order-type";
-import { CommandBusService } from "../../world/services/command-bus.service";
+import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 
 export interface GameObjectActionAssignerConfig {

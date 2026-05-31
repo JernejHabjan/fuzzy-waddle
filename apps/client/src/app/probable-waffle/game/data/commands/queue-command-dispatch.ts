@@ -6,7 +6,7 @@ import {
 } from "@fuzzy-waddle/api-interfaces";
 import { getActorComponent } from "../actor-component";
 import { getSceneService } from "../../world/services/scene-component-helpers";
-import { CommandBusService } from "../../world/services/command-bus.service";
+import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
 import { IdComponent } from "../../entity/components/id-component";
 import { findProductionBuildingGameObjectWithLeastRemainingTime } from "../../entity/components/production/production-helpers";
 

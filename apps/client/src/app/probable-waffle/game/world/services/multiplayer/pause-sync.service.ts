@@ -1,8 +1,8 @@
 import type { ProbableWafflePauseChangedEvent } from "@fuzzy-waddle/api-interfaces";
-import { getCurrentPlayerNumber, getCommunicator } from "../../data/scene-data";
-import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
-import { SimulationTickService } from "./simulation-tick.service";
-import { getSceneService } from "./scene-component-helpers";
+import { getCurrentPlayerNumber, getCommunicator } from "../../../data/scene-data";
+import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
+import { SimulationTickService } from "../simulation-tick.service";
+import { getSceneService } from "../scene-component-helpers";
 import { filter, type Subscription } from "rxjs";
 import Phaser from "phaser";
 

@@ -10,7 +10,7 @@ import type { Subscription } from "rxjs";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { GameInstanceIndexeddbStorageService } from "../../../../communicators/storage/game-instance-indexeddb-storage.service";
 import { getSceneExternalComponent, getSceneService } from "../scene-component-helpers";
-import { CommandBusService } from "../command-bus.service";
+import { CommandBusService } from "../multiplayer/command-bus.service";
 import { buildReplayTickDigest } from "./replay-debug-tools";
 import { ProbableWaffleSceneEventName } from "../recovery/probable-waffle-scene-events";
 

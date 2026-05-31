@@ -6,7 +6,7 @@ import { SceneDialogHelper } from "../../scenes/scene-dialog-helper";
 import type ReconnectRecoveryDialog from "../../scenes/hud-scenes/ReconnectRecoveryDialog";
 import { getSceneService } from "../scene-component-helpers";
 import { SimulationTickService } from "../simulation-tick.service";
-import { CommandBusService } from "../command-bus.service";
+import { CommandBusService } from "../multiplayer/command-bus.service";
 import {
   type LocalConnectionLostSceneEvent,
   ProbableWaffleSceneEventName,

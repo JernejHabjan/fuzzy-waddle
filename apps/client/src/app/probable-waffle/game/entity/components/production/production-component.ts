@@ -27,7 +27,7 @@ import { NavigationService } from "../../../world/services/navigation.service";
 import { IsoHelper } from "../../../world/tilemap/iso-helper";
 import { MovementTerrainType } from "../movement/movement-terrain-type";
 import { ProbableWaffleSceneEventName } from "../../../world/services/recovery/probable-waffle-scene-events";
-import { CommandBusService } from "../../../world/services/command-bus.service";
+import { CommandBusService } from "../../../world/services/multiplayer/command-bus.service";
 import { IdComponent } from "../id-component";
 import GameObject = Phaser.GameObjects.GameObject;
 

@@ -37,7 +37,7 @@ import { LockedCursorHandler } from "../../player/human-controller/locked-cursor
 import { ActorDebugDamageSystem } from "../services/actor-debug-damage-system";
 import { SpellCursor } from "../../player/human-controller/spell-cursor";
 import { AoeZoneManager } from "../../entity/systems/aoe-zone-manager";
-import { CommandBusService } from "../services/command-bus.service";
+import { CommandBusService } from "../services/multiplayer/command-bus.service";
 import { SimulationTickService } from "../services/simulation-tick.service";
 import { StateHashService } from "../services/recovery/state-hash.service";
 import { SnapshotService } from "../services/recovery/snapshot.service";
@@ -45,7 +45,7 @@ import { ReconnectService } from "../services/recovery/reconnect.service";
 import { ReplayPlaybackService } from "../services/replay/replay-playback.service";
 import { ReplayRecorderService } from "../services/replay/replay-recorder.service";
 import { HostMigrationService } from "../services/recovery/host-migration.service";
-import { PauseSyncService } from "../services/pause-sync.service";
+import { PauseSyncService } from "../services/multiplayer/pause-sync.service";
 import { hasMultiplayerCommandRelay } from "../../data/scene-data";
 import { ProbableWafflePlayerType } from "@fuzzy-waddle/api-interfaces";
 import { isTauri } from "../../../../shared/utils/tauri";

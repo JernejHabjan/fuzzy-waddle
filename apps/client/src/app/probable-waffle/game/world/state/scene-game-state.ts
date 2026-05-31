@@ -1,7 +1,7 @@
 import { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { GameSessionState, ProbableWaffleGameInstanceType } from "@fuzzy-waddle/api-interfaces";
 import { getCommunicator } from "../../data/scene-data";
-import { ReadyBarrier } from "../services/ready-barrier.service";
+import { ReadyBarrier } from "../services/multiplayer/ready-barrier.service";
 
 export class SceneGameState {
   private sessionStateSubscription?: { unsubscribe(): void };

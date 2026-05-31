@@ -33,7 +33,7 @@ import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
 import GameObject = Phaser.GameObjects.GameObject;
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import { upgradeActorToLevel } from "../../data/actor-level-utils";
-import { ActorIdAuthorityService } from "./actor-id-authority.service";
+import { ActorIdAuthorityService } from "./multiplayer/actor-id-authority.service";
 
 export class SceneActorCreator {
   private readonly loadGame: LoadGame;

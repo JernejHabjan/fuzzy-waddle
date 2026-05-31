@@ -37,7 +37,7 @@ import { getTileCoordsUnderObject } from "../../library/tile-under-object";
 import { TilemapComponent } from "../../world/tilemap/tilemap.component";
 import type { IsoDirection } from "../components/movement/iso-directions";
 import type { PathMoveConfig } from "./path-move-config";
-import { CommandBusService } from "../../world/services/command-bus.service";
+import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
 import { CancelableSimDelay } from "../../world/services/simulation-time";
 import Tween = Phaser.Tweens.Tween;
 import TweenChain = Phaser.Tweens.TweenChain;

@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import { getSceneService } from "../../world/services/scene-component-helpers";
-import { CommandBusService } from "../../world/services/command-bus.service";
+import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
 import { getActorComponent } from "../../data/actor-component";
 import { IdComponent } from "../../entity/components/id-component";
 import type { OrderData } from "../../ai/OrderData";

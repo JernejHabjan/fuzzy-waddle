@@ -2,7 +2,7 @@ import { filter, type Subscription } from "rxjs";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { getCommunicator } from "../../../data/scene-data";
 import { getSceneComponent, getSceneService } from "../scene-component-helpers";
-import { CommandBusService } from "../command-bus.service";
+import { CommandBusService } from "../multiplayer/command-bus.service";
 import { SimulationTickService } from "../simulation-tick.service";
 import { ActorIndexSystem } from "../ActorIndexSystem";
 import { SceneActorCreator } from "../scene-actor-creator";

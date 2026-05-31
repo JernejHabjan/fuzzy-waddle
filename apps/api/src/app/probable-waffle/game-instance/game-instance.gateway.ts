@@ -36,7 +36,7 @@ import { CurrentUser } from "../../../auth/current-user";
 import { GameStateServerService, type UpdateGameStateResult } from "./game-state-server.service";
 import { RoomServerService } from "../game-room/room-server.service";
 import { ChatService } from "../../chat/chat.service";
-import { PlayerDisconnectTrackerService } from "./player-disconnect-tracker.service";
+import { PlayerDisconnectTrackerService } from "./multiplayer/player-disconnect-tracker.service";
 import { GameInstanceService } from "./game-instance.service";
 
 const RECONNECT_WINDOW_SECONDS = 60;

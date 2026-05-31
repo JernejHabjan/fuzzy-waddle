@@ -1,19 +1,19 @@
 import { Subject, Subscription } from "rxjs";
-import type { GameCommand, GameCommandInput } from "../../data/commands/game-command";
-import { SimulationTickService } from "./simulation-tick.service";
-import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
+import type { GameCommand, GameCommandInput } from "../../../data/commands/game-command";
+import { SimulationTickService } from "../simulation-tick.service";
+import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { CommandBuffer } from "./command-buffer";
-import { getCommunicator, hasMultiplayerCommandRelay } from "../../data/scene-data";
+import { getCommunicator, hasMultiplayerCommandRelay } from "../../../data/scene-data";
 import {
   type PlayerNumber,
   ProbableWafflePlayerType,
   type ProbableWaffleReplayCommandBatch
 } from "@fuzzy-waddle/api-interfaces";
-import { environment } from "../../../../../environments/environment";
-import { getSceneService } from "./scene-component-helpers";
-import { ActorIndexSystem } from "./ActorIndexSystem";
-import { getActorComponent } from "../../data/actor-component";
-import { OwnerComponent } from "../../entity/components/owner-component";
+import { environment } from "../../../../../../environments/environment";
+import { getSceneService } from "../scene-component-helpers";
+import { ActorIndexSystem } from "../ActorIndexSystem";
+import { getActorComponent } from "../../../data/actor-component";
+import { OwnerComponent } from "../../../entity/components/owner-component";
 
 /**
  * Central command bus for all player- and AI-issued simulation commands.

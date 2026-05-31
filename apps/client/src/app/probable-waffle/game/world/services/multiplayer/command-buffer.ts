@@ -1,4 +1,4 @@
-import type { GameCommand } from "../../data/commands/game-command";
+import type { GameCommand } from "../../../data/commands/game-command";
 import type { PlayerNumber } from "@fuzzy-waddle/api-interfaces";
 
 /**

@@ -29,7 +29,7 @@ import { UiFeedbackBuildDeniedSound } from "../../hud/UiFeedbackSfx";
 import { FogOfWarComponent } from "../../world/tilemap/fog-of-war.component";
 import { RepresentableComponent } from "../../entity/components/representable-component";
 import { ProductionValidator } from "../../data/tech-tree/production-validator";
-import { CommandBusService } from "../../world/services/command-bus.service";
+import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
 import { ActorTranslateComponent } from "../../entity/components/movement/actor-translate-component";
 import { OwnerComponent } from "../../entity/components/owner-component";
 import { PawnAiController } from "../../prefabs/ai-agents/pawn-ai-controller";

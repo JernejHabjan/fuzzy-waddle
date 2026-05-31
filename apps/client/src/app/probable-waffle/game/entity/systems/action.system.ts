@@ -23,7 +23,7 @@ import { ContainableComponent } from "../components/building/containable-compone
 import { AudioActorComponent } from "../components/actor-audio/audio-actor-component";
 import { NavigableComponent } from "../components/movement/navigable-component";
 import { FlyingComponent } from "../components/movement/flying-component";
-import { CommandBusService } from "../../world/services/command-bus.service";
+import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
 import type { ActorActionCommand } from "../../data/commands/game-command";
 
 export class ActionSystem {

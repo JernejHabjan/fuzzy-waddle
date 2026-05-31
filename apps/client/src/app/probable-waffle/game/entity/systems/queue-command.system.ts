@@ -1,7 +1,7 @@
 import { Subscription } from "rxjs";
 import { getActorComponent } from "../../data/actor-component";
 import { getPwActorDefinition } from "../../prefabs/definitions/actor-definitions";
-import { CommandBusService } from "../../world/services/command-bus.service";
+import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { HealthComponent } from "../components/combat/components/health-component";
 import { IdComponent } from "../components/id-component";

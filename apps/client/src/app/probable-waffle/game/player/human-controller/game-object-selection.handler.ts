@@ -29,7 +29,7 @@ import { getSceneService } from "../../world/services/scene-component-helpers";
 import { PlayerActionsHandler } from "./player-actions-handler";
 import { SoundType } from "../../entity/components/actor-audio/sound-type";
 import { ContainableComponent } from "../../entity/components/building/containable-component";
-import { CommandBusService } from "../../world/services/command-bus.service";
+import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
 
 export class GameObjectSelectionHandler {
   private readonly debug = false;

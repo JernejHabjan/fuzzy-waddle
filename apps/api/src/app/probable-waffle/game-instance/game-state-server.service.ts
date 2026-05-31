@@ -18,9 +18,9 @@ import {
 } from "@fuzzy-waddle/api-interfaces";
 import { GameInstanceService } from "./game-instance.service";
 import { type User } from "@supabase/supabase-js";
-import { GameCommandValidatorService, type GameCommandValidationResult } from "./game-command-validator.service";
-import { PlayerStateValidatorService } from "./player-state-validator.service";
-import { PauseStateValidatorService } from "./pause-state-validator.service";
+import { GameCommandValidatorService, type GameCommandValidationResult } from "./multiplayer/game-command-validator.service";
+import { PlayerStateValidatorService } from "./multiplayer/player-state-validator.service";
+import { PauseStateValidatorService } from "./multiplayer/pause-state-validator.service";
 
 /**
  * Result of a game-state update.
