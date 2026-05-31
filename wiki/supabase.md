@@ -89,6 +89,7 @@ Default local endpoints in this repo:
 
 - API: `http://127.0.0.1:54321`
 - Database: `postgresql://postgres:postgres@127.0.0.1:54322/postgres`
+- Password by default is `postgres`
 - Studio: `http://127.0.0.1:54323`
 - Inbucket: `http://127.0.0.1:54324`
 
@@ -116,11 +117,7 @@ For this repo's app environment variables:
 
 - `SUPABASE_URL` should point to your Supabase API endpoint.
   - Hosted Supabase: use your project URL from the dashboard.
-  - Local `supabase start`: use `http://127.0.0.1:54321`.
+  - Local `supabase start`: use `http://127.0.0.1:54322`.
 - `SUPABASE_SERVICE_KEY` is the Supabase `service_role` key.
   - Hosted Supabase: copy it from the project API settings.
-  - Self-hosted Supabase: copy `SERVICE_ROLE_KEY` from the Supabase Docker `.env`.
-- `SUPABASE_DB_PASSWORD` is only for self-hosted/local database access.
-  - Self-hosted Supabase: copy `POSTGRES_PASSWORD` from the Supabase Docker `.env`.
-  - It is separate from `SUPABASE_SERVICE_KEY` and should not be used as an API key.
 - `CORS_ORIGIN` is not a Supabase setting; it is this Nest API's allow-list for browser and WebSocket origins.

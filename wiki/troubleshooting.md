@@ -43,4 +43,4 @@ Ensure the API is running and the proxy is configured. The dev proxy config is a
 
 ## Environment Variables Missing
 
-Copy `.env.example` to `.env` and fill in all values. The API will fail to start without `SUPABASE_URL` and `SUPABASE_SERVICE_KEY`. `SUPABASE_DB_PASSWORD` is only needed for self-hosted/local Supabase setups, while `CORS_ORIGIN` is required for browser and WebSocket access. See [Getting Started](getting-started.md) for details.
+Copy `.env.example` to `.env` and fill in all values. The API will fail to start without `SUPABASE_URL` and `SUPABASE_SERVICE_KEY`. `CORS_ORIGIN` is required for browser and WebSocket access. See [Getting Started](getting-started.md) for details.

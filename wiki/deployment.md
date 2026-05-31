@@ -5,7 +5,7 @@ Both the client and API are deployed on [Render](https://render.com).
 ## Client
 
 | Setting           | Value                                                                   |
-| ----------------- | ----------------------------------------------------------------------- |
+|-------------------|-------------------------------------------------------------------------|
 | URL               | [https://fuzzy-waddle.onrender.com](https://fuzzy-waddle.onrender.com/) |
 | Build Command     | `pnpm i; npm run nx-build-client`                                       |
 | Publish Directory | `./dist/apps/client`                                                    |
@@ -13,7 +13,7 @@ Both the client and API are deployed on [Render](https://render.com).
 **Rewrite rule** — required for Angular client-side routing:
 
 | Field       | Value         |
-| ----------- | ------------- |
+|-------------|---------------|
 | Destination | `/index.html` |
 | Action      | `rewrite`     |
 
@@ -22,7 +22,7 @@ References: [Render SPA routing](https://render.com/docs/deploy-create-react-app
 ## API
 
 | Setting                     | Value                                                                                                                             |
-| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+|-----------------------------|-----------------------------------------------------------------------------------------------------------------------------------|
 | URL                         | [https://fuzzy-waddle-api.onrender.com](https://fuzzy-waddle-api.onrender.com/)                                                   |
 | Build Command               | `pnpm i; nx build api`                                                                                                            |
 | Start Command               | `node dist/apps/api/main.js`                                                                                                      |
@@ -30,8 +30,6 @@ References: [Render SPA routing](https://render.com/docs/deploy-create-react-app
 | Env: `SUPABASE_URL`         | Supabase project URL                                                                                                              |
 | Env: `SUPABASE_SERVICE_KEY` | Supabase service-role key                                                                                                         |
 | Env: `CORS_ORIGIN`          | `https://fuzzy-waddle.onrender.com,https://jernejhabjan.github.io,http://localhost:4200,http://tauri.localhost,tauri://localhost` |
-
-`SUPABASE_DB_PASSWORD` is not required on Render unless your deployment also connects directly to a self-hosted Supabase Postgres instance.
 
 ## GitHub Pages (client mirror)
 

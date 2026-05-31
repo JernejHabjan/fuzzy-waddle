@@ -2,11 +2,11 @@
 
 ## Prerequisites
 
-| Tool | Requirement |
-| ---- | ----------- |
-| Node.js | LTS recommended |
-| pnpm | [Install pnpm](https://pnpm.io/installation) — **required**, npm/yarn are not supported |
-| Git | Latest stable |
+| Tool    | Requirement                                                                             |
+|---------|-----------------------------------------------------------------------------------------|
+| Node.js | LTS recommended                                                                         |
+| pnpm    | [Install pnpm](https://pnpm.io/installation) — **required**, npm/yarn are not supported |
+| Git     | Latest stable                                                                           |
 
 ## 1. Clone & Install
 
@@ -20,12 +20,11 @@ pnpm install
 
 Copy `.env.example` to `.env` in the project root and fill in the values:
 
-| Variable | Value |
-| -------- | ----- |
-| `CORS_ORIGIN` | `http://localhost:4200` for local web development; keep it because the API and WebSocket gateways read it for CORS |
-| `SUPABASE_DB_PASSWORD` | Only needed when you run self-hosted Supabase locally; copy the `POSTGRES_PASSWORD` value from the Supabase Docker `.env` |
-| `SUPABASE_URL` | Supabase project URL or local API URL such as `http://127.0.0.1:54321` |
-| `SUPABASE_SERVICE_KEY` | Supabase `service_role` key; in self-hosted Supabase this maps to `SERVICE_ROLE_KEY` |
+| Variable               | Value                                                                  |
+|------------------------|------------------------------------------------------------------------|
+| `CORS_ORIGIN`          | `http://localhost:4200`                                                |
+| `SUPABASE_URL`         | Supabase project URL or local API URL such as `http://127.0.0.1:54322` |
+| `SUPABASE_SERVICE_KEY` | `service_role` key from Supabase dashboard                             |
 
 See the [Supabase setup guide](supabase.md) for how to obtain these values.
 
@@ -44,16 +43,16 @@ pnpm start:api      # NestJS API     → http://localhost:3333
 
 ## Common Commands
 
-| Command | Description |
-| ------- | ----------- |
-| `pnpm build` | Build all projects |
-| `pnpm test` | Run all unit tests |
-| `pnpm lint` | Lint all projects |
-| `pnpm lint-fix` | Lint with auto-fix |
-| `pnpm e2e` | Run Cypress end-to-end tests |
-| `pnpm format` | Format code |
-| `pnpm dep-graph` | Open Nx dependency graph |
-| `pnpm editor` | Launch Phaser Editor 2D (port 1959) |
+| Command          | Description                         |
+|------------------|-------------------------------------|
+| `pnpm build`     | Build all projects                  |
+| `pnpm test`      | Run all unit tests                  |
+| `pnpm lint`      | Lint all projects                   |
+| `pnpm lint-fix`  | Lint with auto-fix                  |
+| `pnpm e2e`       | Run Cypress end-to-end tests        |
+| `pnpm format`    | Format code                         |
+| `pnpm dep-graph` | Open Nx dependency graph            |
+| `pnpm editor`    | Launch Phaser Editor 2D (port 1959) |
 
 To run a command for a single app:
 
