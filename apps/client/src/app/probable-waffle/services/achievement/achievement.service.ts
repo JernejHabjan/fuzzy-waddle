@@ -1,14 +1,16 @@
 import { inject, Injectable } from "@angular/core";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { BehaviorSubject, Observable } from "rxjs";
+import { firstValueFrom } from "rxjs";
 import { AchievementNotificationService } from "../achievement-notification.service";
 import { AudioAtlasService } from "../audio-atlas/audio-atlas.service";
 import { AuthService } from "../../../auth/auth.service";
-import { DataAccessService } from "../../../data-access/data-access.service";
 import type { AchievementDto, UserId } from "@fuzzy-waddle/api-interfaces";
 import { type AchievementServiceInterface } from "./achievement.service.interface";
 import { PROBABLE_WAFFLE_ACHIEVEMENTS } from "./PROBABLE_WAFFLE_ACHIEVEMENTS";
 import type { AchievementDefinition } from "./achievement-definition";
 import { AchievementType } from "./achievement-type";
+import { environment } from "../../../../environments/environment";
 
 interface AchievementRecord {
   id: number;
@@ -24,8 +26,8 @@ interface AchievementRecord {
 export class AchievementService implements AchievementServiceInterface {
   private readonly notificationService = inject(AchievementNotificationService);
   private readonly audioAtlasService = inject(AudioAtlasService);
-  private readonly dataAccessService = inject(DataAccessService);
   private readonly authService = inject(AuthService);
+  private readonly httpClient = inject(HttpClient);
 
   private achievements = new BehaviorSubject<AchievementDto[]>([]);
   private achievementsLoaded = false;
@@ -48,16 +50,9 @@ export class AchievementService implements AchievementServiceInterface {
     }
 
     try {
-      // Get unlocked achievements from Supabase
-      const { data: unlockedData, error: unlockedError } = await this.dataAccessService.supabase
-        .from("user_achievement_unlocks")
-        .select("*")
-        .eq("user_id", targetUserId);
-
-      if (unlockedError) {
-        console.error("Error fetching achievements:", unlockedError);
-        return [];
-      }
+      const url = `${environment.api}api/achievements/unlocks`;
+      const params = new HttpParams().set("userId", targetUserId);
+      const unlockedData = await firstValueFrom(this.httpClient.get<AchievementRecord[]>(url, { params }));
 
       const unlockedRecords = unlockedData as AchievementRecord[];
       const unlockedMap = new Map<string, AchievementRecord>();
@@ -142,24 +137,12 @@ export class AchievementService implements AchievementServiceInterface {
         return false;
       }
 
-      // Insert the achievement record into Supabase
-      const { error } = await this.dataAccessService.supabase.from("user_achievement_unlocks").insert({
-        achievement_id: achievementId,
-        user_id: userId,
-        metadata: metadata || {}
-      });
-
-      if (error) {
-        // If the error is a constraint violation (already exists), just ignore it
-        if (error.code === "23505") {
-          // Unique violation
-          console.log(`Achievement ${achievementId} already unlocked`);
-          return false;
-        }
-
-        console.error("Error unlocking achievement:", error);
-        return false;
-      }
+      await firstValueFrom(
+        this.httpClient.post<void>(`${environment.api}api/achievements/unlock`, {
+          achievementId,
+          metadata: metadata || {}
+        })
+      );
 
       // Reload achievements
       await this.loadUserAchievements();

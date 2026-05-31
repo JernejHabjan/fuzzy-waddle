@@ -2,7 +2,7 @@ import { MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from
 import { CurrentUser } from "../../auth/current-user";
 import { type AuthUser } from "@supabase/supabase-js";
 import { UseGuards } from "@nestjs/common";
-import { SupabaseAuthGuard } from "../../auth/guards/supabase-auth.guard";
+import { OnlineAccessGuard } from "../../auth/guards/online-access.guard";
 import { ChatService } from "./chat.service";
 import { type ChatMessage, GatewayChatEvent } from "@fuzzy-waddle/api-interfaces";
 import { Server } from "socket.io";
@@ -17,7 +17,7 @@ export class ChatGateway {
 
   constructor(private readonly chatService: ChatService) {}
   //subscribe to chat message and broadcast to all clients
-  @UseGuards(SupabaseAuthGuard)
+  @UseGuards(OnlineAccessGuard)
   @SubscribeMessage(GatewayChatEvent.CHAT_MESSAGE)
   async broadcastMessage(@CurrentUser() user: AuthUser, @MessageBody() payload: ChatMessage) {
     const persistedMessage = await this.chatService.postMessage(

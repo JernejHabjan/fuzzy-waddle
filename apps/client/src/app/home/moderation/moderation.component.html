@@ -1,0 +1,132 @@
+<fuzzy-waddle-home-nav title="Moderation" />
+
+<div class="moderation-page">
+  <section class="moderation-toolbar">
+    <div>
+      <h1>Reported messages</h1>
+      <p class="toolbar-subtitle">{{ queue.pendingReportCount }} open report(s) waiting for review.</p>
+    </div>
+    <button class="btn btn-primary" type="button" (click)="loadReports()">Refresh</button>
+  </section>
+
+  @if (isLoading) {
+    <p class="moderation-state">Loading...</p>
+  }
+
+  @if (errorMessage) {
+    <p class="moderation-error">{{ errorMessage }}</p>
+  }
+
+  @if (!isLoading && queue.groups.length === 0) {
+    <p class="moderation-state">No open reports.</p>
+  }
+
+  @if (!isLoading && queue.bannedUsers.length > 0) {
+    <section class="moderation-toolbar moderation-banned-section">
+      <div>
+        <h2>Banned players</h2>
+        <p class="toolbar-subtitle">Most recently updated restrictions first.</p>
+      </div>
+      <div class="banned-users-list">
+        @for (bannedUser of queue.bannedUsers; track bannedUser.userId) {
+          <article class="banned-user-row">
+            <div class="group-identity">
+              <div class="group-title-row">
+                <h3>{{ bannedUser.displayName }}</h3>
+                @if (getRoleIcon(bannedUser.role ?? null); as roleIcon) {
+                  <fa-icon [icon]="roleIcon" [title]="getRoleLabel(bannedUser.role ?? null) ?? ''"
+                           class="group-role-icon" />
+                }
+              </div>
+              <p class="group-email">{{ bannedUser.email || "No email available" }}</p>
+              @if (bannedUser.bannedUntil) {
+                <p class="group-status">Restricted until {{ bannedUser.bannedUntil | date: "medium" }}</p>
+              } @else {
+                <p class="group-status">Account disabled.</p>
+              }
+              @if (bannedUser.moderationNote) {
+                <p class="group-status">{{ bannedUser.moderationNote }}</p>
+              }
+            </div>
+            <div class="banned-user-actions">
+              <p class="group-status">Updated {{ bannedUser.updatedAt | date: "medium" }}</p>
+              <button class="btn btn-outline-primary" type="button" (click)="unbanUser(bannedUser.userId)">Unban</button>
+            </div>
+          </article>
+        }
+      </div>
+    </section>
+  }
+
+  @for (group of queue.groups; track group.reportedUserId) {
+    <section class="moderation-group">
+      <div class="moderation-group-header">
+        <div class="group-identity">
+          <div class="group-title-row">
+            <h2>{{ group.reportedUserDisplayName }}</h2>
+            @if (getRoleIcon(group.reportedUserRole ?? null); as roleIcon) {
+              <fa-icon [icon]="roleIcon" [title]="getRoleLabel(group.reportedUserRole ?? null) ?? ''"
+                       class="group-role-icon" />
+            }
+          </div>
+          <p class="group-email">{{ group.reportedUserEmail || "No email available" }}</p>
+          <p>{{ group.reports.length }} open report(s)</p>
+          @if (group.reportedUserBannedUntil) {
+            <p class="group-status">Restricted until {{ group.reportedUserBannedUntil | date: "medium" }}</p>
+          } @else if (group.reportedUserAccountStatus === UserAccountStatus.Disabled) {
+            <p class="group-status">Account disabled.</p>
+          }
+        </div>
+
+        @if (group.reportedUserId) {
+          <div class="ban-controls">
+            <label class="ban-until-field">
+              <span>Ban until</span>
+              <input
+                [(ngModel)]="banUntilByUserId[group.reportedUserId]"
+                [ngModelOptions]="{ standalone: true }"
+                class="form-control"
+                type="datetime-local"
+              />
+            </label>
+            <input
+              class="ban-note-input form-control"
+              [(ngModel)]="banNoteByUserId[group.reportedUserId]"
+              [ngModelOptions]="{ standalone: true }"
+              placeholder="Ban note"
+              type="text"
+            />
+            <button class="btn btn-danger" [disabled]="isUserBanned(group)" type="button" (click)="banUser(group)">
+              Ban player
+            </button>
+          </div>
+        }
+      </div>
+
+      @for (report of group.reports; track report.id) {
+        <article class="moderation-report">
+          <div class="report-meta">
+            <span>{{ report.reason }}</span>
+            <span>Reported by {{ report.reporterDisplayName }} ({{ report.reporterEmail || "no email" }})</span>
+            <span>{{ report.createdAt | date: "medium" }}</span>
+          </div>
+
+          <blockquote>{{ report.messageText }}</blockquote>
+
+          @if (report.details) {
+            <p class="report-details">{{ report.details }}</p>
+          }
+
+          <div class="report-actions">
+            <button class="btn btn-outline-primary" type="button" (click)="updateReport(report, ChatReportStatus.Reviewed)">
+              Mark reviewed
+            </button>
+            <button class="btn btn-danger" type="button" (click)="updateReport(report, ChatReportStatus.Actioned)">
+              Hide message
+            </button>
+          </div>
+        </article>
+      }
+    </section>
+  }
+</div>

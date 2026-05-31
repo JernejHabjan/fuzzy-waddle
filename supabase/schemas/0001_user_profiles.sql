@@ -2,9 +2,11 @@ drop trigger if exists on_auth_user_created on auth.users;
 drop function if exists public.handle_new_user();
 drop function if exists public.set_updated_at();
 drop table if exists public.user_profiles cascade;
+drop type if exists public.app_user_role cascade;
 drop type if exists public.user_account_status cascade;
 
 create type public.user_account_status as enum ('active', 'limited', 'disabled');
+create type public.app_user_role as enum ('user', 'moderator', 'admin');
 
 create or replace function public.set_updated_at()
   returns trigger
@@ -24,6 +26,7 @@ revoke execute on function public.set_updated_at() from authenticated;
 create table public.user_profiles
 (
   id             uuid primary key references auth.users (id) on delete cascade,
+  email          text null,
   display_name   text not null,
   username       text null,
   avatar_url     text null,
@@ -32,6 +35,9 @@ create table public.user_profiles
   timezone       text null,
   website_url    text null,
   account_status public.user_account_status not null default 'active',
+  app_role       public.app_user_role not null default 'user',
+  banned_until   timestamp with time zone null,
+  moderation_note text null,
   created_at     timestamp with time zone not null default now(),
   updated_at     timestamp with time zone not null default now(),
   constraint user_profiles_display_name_not_blank check (length(btrim(display_name)) > 0),
@@ -45,8 +51,15 @@ create unique index user_profiles_username_unique_idx
   on public.user_profiles (lower(username))
   where username is not null;
 
+create unique index user_profiles_email_unique_idx
+  on public.user_profiles (lower(email))
+  where email is not null;
+
 create index user_profiles_account_status_idx
   on public.user_profiles (account_status);
+
+create index user_profiles_app_role_idx
+  on public.user_profiles (app_role);
 
 create trigger user_profiles_set_updated_at
   before update on public.user_profiles
@@ -97,18 +110,21 @@ begin
 
   insert into public.user_profiles (
     id,
+    email,
     display_name,
     avatar_url,
     locale
   )
   values (
     new.id,
+    nullif(lower(new.email), ''),
     generated_name,
     coalesce(nullif(metadata ->> 'avatar_url', ''), nullif(metadata ->> 'picture', '')),
     nullif(metadata ->> 'locale', '')
   )
   on conflict (id) do update
     set display_name = excluded.display_name,
+        email = coalesce(public.user_profiles.email, excluded.email),
         avatar_url = coalesce(public.user_profiles.avatar_url, excluded.avatar_url),
         locale = coalesce(public.user_profiles.locale, excluded.locale);
 
@@ -125,9 +141,10 @@ create trigger on_auth_user_created
   for each row
 execute function public.handle_new_user();
 
-insert into public.user_profiles (id, display_name, avatar_url, locale, created_at, updated_at)
+insert into public.user_profiles (id, email, display_name, avatar_url, locale, created_at, updated_at)
 select
   u.id,
+  nullif(lower(u.email), ''),
   coalesce(
     nullif(btrim(u.raw_user_meta_data ->> 'full_name'), ''),
     nullif(btrim(u.raw_user_meta_data ->> 'name'), ''),
@@ -146,8 +163,4 @@ on conflict (id) do nothing;
 revoke all on table public.user_profiles from anon;
 revoke all on table public.user_profiles from authenticated;
 
-grant select (id, display_name, username, avatar_url, bio, locale, timezone, website_url, account_status, created_at, updated_at)
-  on table public.user_profiles to anon, authenticated;
-grant update (display_name, username, avatar_url, bio, locale, timezone, website_url)
-  on table public.user_profiles to authenticated;
 grant select, insert, update, delete on table public.user_profiles to service_role;

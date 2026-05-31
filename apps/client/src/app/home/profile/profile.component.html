@@ -3,16 +3,30 @@
   <div class="mx-auto" style="max-width: 500px">
     <h2 class="text-center">Profile Info</h2>
 
-    @if (identityData) {
-      <div class="my-3 text-center">
-        <img class="rounded-circle" src="{{ identityData.avatar_url }}" alt="avatar" width="100" height="100" />
-        <p>{{ identityData.full_name }}</p>
+    @if (currentUserProfile; as profile) {
+      <div class="profile-role-banner">
+        @if (getRoleIcon(profile.role); as roleIcon) {
+          <fa-icon [icon]="roleIcon" />
+        }
+        <span>{{ getRoleLabel(profile.role) ?? "Player" }}</span>
       </div>
     }
+
+    <div class="my-3 text-center">
+      <img class="rounded-circle" src="{{ profileAvatarUrl }}" alt="avatar" width="100" height="100" />
+      <p>{{ profileDisplayName }}</p>
+    </div>
     <div class="my-3">
       <h3 class="user-item-header">Joined:</h3>
       <p>{{ authService.session?.user?.created_at | date: "medium" }}</p>
     </div>
+
+    @if (currentUserProfile; as profile) {
+      <div class="my-3">
+        <h3 class="user-item-header">Email:</h3>
+        <p>{{ profile.email || "Unavailable" }}</p>
+      </div>
+    }
 
     @if (userInstanceService.getPreferredGame()) {
       <div class="my-3">

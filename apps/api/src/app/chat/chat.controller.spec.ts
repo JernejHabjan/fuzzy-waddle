@@ -18,7 +18,7 @@ describe("ChatController", () => {
   describe("getMessages", () => {
     it("should return empty messages", async () => {
       const controller = app.get(ChatController);
-      const result = await controller.getMessages({ limit: 10, offset: 0 });
+      const result = await controller.getMessages({ id: "user-id" } as AuthUser, { limit: 10, offset: 0 });
       expect(result).toEqual({ messages: [], total: 0, hasMore: false });
     });
   });

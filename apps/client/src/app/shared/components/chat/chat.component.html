@@ -4,16 +4,60 @@
       <div class="chat-loading">Loading...</div>
     }
     @for (message of messages; track message) {
-      <div class="chat-message">
+      <div class="chat-message" [class.chat-message-reported]="message.reportedByCurrentUser">
         <div class="chat-message-content">
-          <div class="chat-message-sender">
-            <img alt="avatar" class="avatar" height="20" src="{{ avatarProviderService.getAvatar(message.userId) }}" />
-            <div class="chat-message-sender-name">{{ message.fullName }}</div>
-          </div>
-          <div class="chat-message-text">{{ message.text }}</div>
           @if (message.id && message.userId !== authService.userId) {
-            <button class="chat-message-report-button" type="button" (click)="openReportForm(message)">Report</button>
+            <div class="chat-message-header">
+              <div class="chat-message-sender">
+                <img alt="avatar" class="avatar" height="20" src="{{ avatarProviderService.getAvatar(message.userId) }}" />
+                <div class="chat-message-sender-name">{{ message.fullName }}</div>
+                @if (getRoleIcon(message.senderRole ?? null); as roleIcon) {
+                  <fa-icon
+                    [icon]="roleIcon"
+                    [title]="getRoleLabel(message.senderRole ?? null) ?? ''"
+                    class="chat-message-role-icon"
+                  />
+                }
+                @if (message.reportedByCurrentUser) {
+                  <span class="chat-message-reported-label">Reported</span>
+                }
+              </div>
+              <div class="chat-message-menu">
+                <button class="chat-message-menu-button" type="button" (click)="toggleMessageMenu(message)">
+                  <fa-icon [icon]="faEllipsis" />
+                </button>
+                @if (openMessageMenuId === message.id) {
+                  <div class="chat-message-menu-panel">
+                    @if (canReportMessage(message)) {
+                      <button class="chat-message-report-button" type="button" (click)="openReportForm(message)">
+                        Report
+                      </button>
+                    } @else {
+                      <span class="chat-message-menu-muted">Already reported</span>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+          } @else {
+            <div class="chat-message-header">
+              <div class="chat-message-sender">
+                <img alt="avatar" class="avatar" height="20" src="{{ avatarProviderService.getAvatar(message.userId) }}" />
+                <div class="chat-message-sender-name">{{ message.fullName }}</div>
+                @if (getRoleIcon(message.senderRole ?? null); as roleIcon) {
+                  <fa-icon
+                    [icon]="roleIcon"
+                    [title]="getRoleLabel(message.senderRole ?? null) ?? ''"
+                    class="chat-message-role-icon"
+                  />
+                }
+                @if (message.reportedByCurrentUser) {
+                  <span class="chat-message-reported-label">Reported</span>
+                }
+              </div>
+            </div>
           }
+          <div class="chat-message-text">{{ message.text }}</div>
           @if (reportingMessageId === message.id) {
             <form class="chat-message-report-form" (ngSubmit)="submitReport(message)">
               <select
@@ -40,9 +84,6 @@
         </div>
       </div>
     }
-    @if (reportStatusMessage) {
-      <div class="chat-report-status">{{ reportStatusMessage }}</div>
-    }
     @if (reportErrorMessage) {
       <div class="chat-report-error">{{ reportErrorMessage }}</div>
     }
@@ -50,6 +91,9 @@
 </div>
 
 <div class="chat-footer">
+  @if (reportStatusMessage) {
+    <div class="chat-report-status">{{ reportStatusMessage }}</div>
+  }
   <form (ngSubmit)="sendMessage()" class="chat-form">
     <input
       [(ngModel)]="message"

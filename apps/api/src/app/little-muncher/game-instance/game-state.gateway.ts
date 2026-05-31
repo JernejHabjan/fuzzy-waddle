@@ -1,6 +1,6 @@
 import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { UseGuards } from "@nestjs/common";
-import { SupabaseAuthGuard } from "../../../auth/guards/supabase-auth.guard";
+import { OnlineAccessGuard } from "../../../auth/guards/online-access.guard";
 import { CurrentUser } from "../../../auth/current-user";
 import { type AuthUser } from "@supabase/supabase-js";
 import {
@@ -21,7 +21,7 @@ export class GameStateGateway {
 
   constructor(private readonly gameStateServerService: GameStateServerService) {}
 
-  @UseGuards(SupabaseAuthGuard)
+  @UseGuards(OnlineAccessGuard)
   @SubscribeMessage(LittleMuncherGatewayEvent.LittleMuncherAction)
   async broadcastLittleMuncherAction(
     @CurrentUser() user: AuthUser,

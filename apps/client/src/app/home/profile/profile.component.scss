@@ -2,3 +2,13 @@
   color: #17a2b8;
   margin-bottom: 0.5rem;
 }
+
+.profile-role-banner {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.75rem;
+  border: 2px solid #17a2b8;
+  border-radius: 999px;
+  font-weight: 700;
+}

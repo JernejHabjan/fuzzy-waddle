@@ -4,6 +4,12 @@ export enum GameKey {
   LittleMuncher = "little-muncher"
 }
 
+export enum AppUserRole {
+  User = "user",
+  Moderator = "moderator",
+  Admin = "admin"
+}
+
 export enum UserAccountStatus {
   Active = "active",
   Limited = "limited",
@@ -16,12 +22,6 @@ export enum ChatChannelType {
   GameSession = "game_session",
   Direct = "direct",
   System = "system"
-}
-
-export enum ChatMembershipRole {
-  Owner = "owner",
-  Moderator = "moderator",
-  Member = "member"
 }
 
 export enum ChatMessageStatus {
@@ -64,10 +64,4 @@ export enum GameResultStatus {
   Loss = "loss",
   Tie = "tie",
   Quit = "quit"
-}
-
-export enum AchievementDifficulty {
-  Easy = "easy",
-  Medium = "medium",
-  Hard = "hard"
 }

@@ -427,16 +427,6 @@ revoke all on sequence public.game_score_metric_values_id_seq from authenticated
 revoke all on sequence public.game_score_snapshots_id_seq from anon;
 revoke all on sequence public.game_score_snapshots_id_seq from authenticated;
 
-grant select on table public.game_score_records to anon, authenticated;
-grant select on table public.game_score_metric_definitions to anon, authenticated;
-grant select on table public.game_leaderboard_scores to anon, authenticated;
-grant select on table public.fly_squasher_leaderboard to anon, authenticated;
-grant select on table public.little_muncher_leaderboard to anon, authenticated;
-grant select on table public.game_sessions to authenticated;
-grant select on table public.game_session_participants to authenticated;
-grant select on table public.game_score_metric_values to authenticated;
-grant select on table public.game_score_snapshots to authenticated;
-
 grant select, insert, update, delete on table public.game_sessions to service_role;
 grant select, insert, update, delete on table public.game_session_participants to service_role;
 grant select, insert, update, delete on table public.game_score_records to service_role;

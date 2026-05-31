@@ -1,5 +1,18 @@
 <fuzzy-waddle-home-page-nav />
 
+@if (isBanned) {
+  <section class="ban-banner">
+    <h2>Account restricted</h2>
+    <p>Online features are disabled for this account.</p>
+    @if (bannedUntil) {
+      <p>Ban until {{ bannedUntil | date: "medium" }}.</p>
+    }
+    @if (moderationNote) {
+      <p>{{ moderationNote }}</p>
+    }
+  </section>
+}
+
 <a class="tile-featured cursor-pointer position-relative nav-link" routerLink="{{ featuredGame.route }}">
   <img
     [alt]="featuredGame.name"
@@ -40,8 +53,22 @@
     <fa-icon [icon]="faCopyright" size="2x" />
     <h2>Attributions</h2>
   </div>
+
+  @if (isModerator) {
+    <div
+      class="general-tile moderation-tile cursor-pointer nav-link card-container"
+      [class.needs-attention]="pendingModerationCount > 0"
+      routerLink="/moderation"
+    >
+      <fa-icon [icon]="faShieldHalved" size="2x" />
+      <h2>Moderation</h2>
+      @if (pendingModerationCount > 0) {
+        <div class="moderation-count">{{ pendingModerationCount }}</div>
+      }
+    </div>
+  }
 </div>
 
-@if (serverHealthService.serverAvailable && authService.isAuthenticated) {
+@if (serverHealthService.serverAvailable && authService.isAuthenticated && !isBanned) {
   <fuzzy-waddle-chat-float />
 }

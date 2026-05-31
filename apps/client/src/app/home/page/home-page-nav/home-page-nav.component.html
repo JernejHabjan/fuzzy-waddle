@@ -17,7 +17,10 @@
             height="32"
             src="{{ avatarProviderService.getAvatar(authService.userId!) }}"
           />
-          {{ authService.fullName! }}
+          {{ currentUserProfile?.displayName || authService.fullName || "Profile" }}
+          @if (getRoleIcon(currentUserProfile?.role ?? null); as roleIcon) {
+            <fa-icon [icon]="roleIcon" [title]="getRoleLabel(currentUserProfile?.role ?? null) ?? ''" class="role-icon" />
+          }
         </a>
       </li>
     }

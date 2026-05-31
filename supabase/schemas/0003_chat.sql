@@ -228,11 +228,6 @@ revoke all on sequence public.chat_channel_memberships_id_seq from authenticated
 revoke all on sequence public.chat_message_reports_id_seq from anon;
 revoke all on sequence public.chat_message_reports_id_seq from authenticated;
 
-grant select on table public.chat_channels to anon, authenticated;
-grant select on table public.chat_messages to anon, authenticated;
-grant select on table public.chat_channel_memberships to authenticated;
-grant update (last_read_at, muted_until, left_at) on table public.chat_channel_memberships to authenticated;
-
 grant select, insert, update, delete on table public.chat_channels to service_role;
 grant select, insert, update, delete on table public.chat_channel_memberships to service_role;
 grant select, insert, update, delete on table public.chat_messages to service_role;

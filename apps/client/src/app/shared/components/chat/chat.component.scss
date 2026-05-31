@@ -15,18 +15,47 @@
     .chat-message {
       display: flex;
       flex-direction: row;
+      opacity: 1;
+
+      &.chat-message-reported {
+        opacity: 0.72;
+      }
 
       .chat-message-content {
         display: flex;
         flex-direction: column;
+        position: relative;
+        width: 100%;
+
+        .chat-message-header {
+          display: flex;
+          align-items: flex-start;
+          justify-content: space-between;
+          gap: 8px;
+        }
 
         .chat-message-sender {
           font-family: $app-font-bold;
           display: flex;
+          align-items: center;
+          flex-wrap: wrap;
 
           .chat-message-sender-name {
             margin-left: 5px;
             margin-right: 5px;
+          }
+
+          .chat-message-role-icon {
+            color: $primary;
+            margin-right: 5px;
+          }
+
+          .chat-message-reported-label {
+            border: 1px solid $primary;
+            border-radius: 4px;
+            font-family: sans-serif;
+            font-size: 0.7rem;
+            padding: 0 4px;
           }
         }
 
@@ -35,15 +64,49 @@
           margin-bottom: 2px;
         }
 
-        .chat-message-report-button {
-          align-self: flex-start;
-          padding: 2px 6px;
-          border: 1px solid $primary;
-          border-radius: 4px;
-          background-color: white;
-          color: $primary;
-          cursor: pointer;
-          font-size: 0.75rem;
+        .chat-message-menu {
+          position: relative;
+          margin-left: auto;
+
+          .chat-message-menu-button {
+            border: 0;
+            background: transparent;
+            color: rgb(0 0 0 / 55%);
+            cursor: pointer;
+            font-size: 0.9rem;
+            line-height: 1;
+            padding: 0 2px;
+          }
+
+          .chat-message-menu-panel {
+            position: absolute;
+            z-index: 1;
+            right: 0;
+            top: 100%;
+            min-width: 110px;
+            border: 1px solid $primary;
+            border-radius: 4px;
+            background-color: white;
+            padding: 4px;
+            box-shadow: 0 2px 8px rgb(0 0 0 / 15%);
+          }
+
+          .chat-message-report-button {
+            width: 100%;
+            border: 0;
+            background-color: white;
+            color: $primary;
+            cursor: pointer;
+            font-size: 0.75rem;
+            text-align: left;
+          }
+
+          .chat-message-menu-muted {
+            display: block;
+            color: #666;
+            font-size: 0.75rem;
+            padding: 2px 4px;
+          }
         }
 
         .chat-message-report-form {
@@ -90,12 +153,16 @@
 
 .chat-footer {
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  align-items: stretch;
   padding: 10px;
   border-top: 2px solid $primary;
   background-color: $quaternary;
+
+  .chat-report-status {
+    margin-bottom: 8px;
+    font-size: 0.8rem;
+  }
 
   .chat-form {
     display: flex;

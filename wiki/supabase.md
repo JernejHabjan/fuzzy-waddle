@@ -180,6 +180,25 @@ After creating a migration:
 
 Use the CLI for migration creation so migration filenames stay timestamped consistently.
 
+## App Roles
+
+Application roles and moderation state are stored in `public.user_profiles`.
+
+To grant moderation access in Supabase Studio:
+
+1. Open **Table Editor > user_profiles**.
+2. Find the row for the user's email address, for example `jernej.habjan96@gmail.com`.
+3. Set `app_role` to `moderator` or `admin`.
+
+To ban or restrict a user in Supabase Studio:
+
+1. Open **Table Editor > user_profiles**.
+2. For a permanent ban, set `account_status` to `disabled`.
+3. For a temporary restriction, set `account_status` to `limited` and set `banned_until`.
+4. Optionally set `moderation_note` so the client can show the reason on the home page.
+
+The client reads the authenticated current-user profile endpoint (`GET /api/profile/me`) before loading moderator-only data. Moderation actions and ban changes still go through the Nest API service-role path.
+
 ### Applying Migrations Locally
 
 To update the local Supabase instance after adding or editing migrations, run:

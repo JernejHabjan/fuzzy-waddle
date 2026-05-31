@@ -13,7 +13,7 @@ import {
 import { ProbableWaffleChatService } from "../chat/probable-waffle-chat.service";
 import { UseGuards } from "@nestjs/common";
 import { type AuthUser } from "@supabase/supabase-js";
-import { SupabaseAuthGuard } from "../../../auth/guards/supabase-auth.guard";
+import { OnlineAccessGuard } from "../../../auth/guards/online-access.guard";
 import { CurrentUser } from "../../../auth/current-user";
 import { GameStateServerService } from "./game-state-server.service";
 import { RoomServerService } from "../game-room/room-server.service";
@@ -38,7 +38,7 @@ export class GameInstanceGateway {
     this.server.emit(ProbableWaffleGameInstanceEvent.GameFound, probableWaffleGameFoundEvent);
   }
 
-  @UseGuards(SupabaseAuthGuard)
+  @UseGuards(OnlineAccessGuard)
   @SubscribeMessage(ProbableWaffleGatewayEvent.ProbableWaffleAction)
   async broadcastProbableWaffleAction(
     @CurrentUser() user: AuthUser,
@@ -60,7 +60,7 @@ export class GameInstanceGateway {
     }
   }
 
-  @UseGuards(SupabaseAuthGuard)
+  @UseGuards(OnlineAccessGuard)
   @SubscribeMessage(ProbableWaffleGatewayEvent.ProbableWaffleMessage)
   async broadcastProbableWaffleMessage(
     @CurrentUser() user: AuthUser,
@@ -95,7 +95,7 @@ export class GameInstanceGateway {
     }
   }
 
-  @UseGuards(SupabaseAuthGuard)
+  @UseGuards(OnlineAccessGuard)
   @SubscribeMessage(ProbableWaffleGatewayEvent.ProbableWaffleWebsocketRoom)
   async broadcastProbableWaffleWebsocketRoom(
     @CurrentUser() user: AuthUser,

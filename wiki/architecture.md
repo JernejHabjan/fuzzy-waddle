@@ -65,7 +65,7 @@ See [Tauri Desktop](tauri-desktop.md) for prerequisites and build instructions.
 ## API Architecture
 
 - Game modules in `apps/api/src/app/{game-name}/`
-- Authentication via Supabase OAuth + JWT (`SupabaseAuthGuard`)
+- Authentication via Supabase OAuth + JWT
 - WebSocket gateways (`@WebSocketGateway()`) handle real-time multiplayer state
 
 ## Database Architecture
@@ -74,6 +74,8 @@ See [Tauri Desktop](tauri-desktop.md) for prerequisites and build instructions.
 - Game content lives in TypeScript and assets. Database rows store stable game, level, hill, and map keys.
 - Game history and scoring use shared session, participant, score, metric, and snapshot tables.
 - Chat uses shared channel and message tables for global lobby, game lobby, and in-game chat.
+- Moderation uses `user_profiles.app_role`; the client loads the current profile first and only requests moderation queues for `moderator` and `admin`.
+- Temporary restrictions use `user_profiles.account_status = limited` with `banned_until`; permanent bans use `account_status = disabled`.
 - Angular can use Supabase directly where RLS is sufficient; Nest API handles service-role, moderation, score submission, snapshots, and cross-user aggregation.
 
 ## Real-time Communication
@@ -81,7 +83,7 @@ See [Tauri Desktop](tauri-desktop.md) for prerequisites and build instructions.
 Socket.IO is used for multiplayer game state synchronization:
 
 - **Client**: `AuthenticatedSocketService` establishes a JWT-authenticated Socket.IO connection
-- **Server**: WebSocket gateways with `SupabaseAuthGuard` validate tokens on every event
+- **Server**: authenticated HTTP and WebSocket entrypoints validate JWTs, and online-only paths also check `user_profiles` so banned users cannot use chat or multiplayer features
 - **Event contracts**: defined in `libs/api-interfaces/src/lib/communicators/` — import these in both client and server to keep event names and payloads in sync
 
 ## Shared Interfaces

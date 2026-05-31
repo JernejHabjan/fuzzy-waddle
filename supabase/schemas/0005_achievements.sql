@@ -109,10 +109,6 @@ revoke all on table public.user_achievement_unlocks from authenticated;
 revoke all on sequence public.user_achievement_unlocks_id_seq from anon;
 revoke all on sequence public.user_achievement_unlocks_id_seq from authenticated;
 
-grant select on table public.achievement_definitions to anon, authenticated;
-grant select, insert on table public.user_achievement_unlocks to authenticated;
-grant usage on sequence public.user_achievement_unlocks_id_seq to authenticated;
-
 grant select, insert, update, delete on table public.achievement_definitions to service_role;
 grant select, insert, update, delete on table public.user_achievement_unlocks to service_role;
 grant usage, select on sequence public.user_achievement_unlocks_id_seq to service_role;

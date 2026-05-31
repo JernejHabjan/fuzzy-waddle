@@ -7,3 +7,4 @@ export * from "./fly-squasher";
 export * from "./probable-waffle";
 export * from "./lib/game/vector";
 export * from "./lib/uuid";
+export * from "./lib/user-info/current-user-profile";
