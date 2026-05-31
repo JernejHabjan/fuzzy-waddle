@@ -6,7 +6,6 @@
   gap: 20px;
   padding: 20px;
   overflow: auto;
-  background-color: $tertiary;
 }
 
 .moderation-toolbar,
@@ -27,10 +26,6 @@
 
 .moderation-toolbar,
 .moderation-group {
-  background-color: $quaternary;
-  border: 4px solid $primary;
-  border-radius: $app-border-radius;
-  box-shadow: 10px 10px 0 0 $primary;
   padding: 16px;
 }
 
@@ -39,7 +34,7 @@
 .group-status,
 .moderation-state {
   margin: 0;
-  color: rgb(46 46 46 / 80%);
+  color: $app-muted-ink;
 }
 
 .moderation-banned-section {
@@ -57,9 +52,6 @@
   justify-content: space-between;
   gap: 1rem;
   flex-wrap: wrap;
-  background-color: white;
-  border: 2px solid $primary;
-  border-radius: $app-border-radius;
   padding: 1rem;
 }
 
@@ -86,17 +78,14 @@
 }
 
 .moderation-report {
-  border: 2px solid $primary;
-  border-radius: $app-border-radius;
   padding: 10px;
-  background-color: white;
 }
 
 .report-meta {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  color: #555;
+  color: $app-text-muted;
   font-size: 0.85rem;
 }
 
@@ -130,7 +119,7 @@ blockquote {
 }
 
 .moderation-error {
-  color: #b00020;
+  color: $app-danger;
 }
 
 .btn {

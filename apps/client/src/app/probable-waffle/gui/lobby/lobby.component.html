@@ -39,13 +39,13 @@
 
     <div class="lobby-main" [class.hidden]="!selectedMapId">
       <!-- Players Configuration -->
-      <div class="players-section">
+      <div class="players-section app-surface-panel-soft">
         <probable-waffle-player-definition />
         <probable-waffle-spectators-grid />
       </div>
 
       <!-- Game Setup (Collapsible) -->
-      <div class="game-setup-section">
+      <div class="game-setup-section app-surface-panel-soft">
         <button class="btn btn-secondary toggle-setup" (click)="toggleGameSetup()">
           {{ showGameSetup ? "Hide" : "Show" }} Game Setup Options
         </button>
@@ -59,7 +59,7 @@
     <div class="lobby-chat-sidebar" [class.no-chat]="!isSelfHosted">
       <!-- Chat Section - Only show for self-hosted games -->
       @if (isSelfHosted) {
-        <div class="chat-section">
+        <div class="chat-section app-surface-panel-soft">
           <h3>Lobby Chat</h3>
           <div class="chat-container">
             <probable-waffle-lobby-chat />

@@ -194,9 +194,6 @@
 .players-section,
 .game-setup-section,
 .chat-section {
-  background-color: rgba(255, 255, 255, 0.5);
-  border: 1px solid $tertiary;
-  border-radius: $app-border-radius;
   padding: 1rem;
 
   h3 {
@@ -252,7 +249,7 @@
 .start-game-section {
   margin-top: 1.5rem;
   padding-top: 1rem;
-  border-top: 1px solid rgba($tertiary, 0.3);
+  border-top: 1px solid rgba($primary, 0.12);
 
   /* Remove top margin, padding and border when chat is not visible */
   .lobby-chat-sidebar.no-chat & {

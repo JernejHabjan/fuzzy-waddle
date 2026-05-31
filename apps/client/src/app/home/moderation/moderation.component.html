@@ -1,7 +1,7 @@
 <fuzzy-waddle-home-nav title="Moderation" />
 
-<div class="moderation-page">
-  <section class="moderation-toolbar">
+<div class="moderation-page app-page-surface">
+  <section class="moderation-toolbar app-surface-panel">
     <div>
       <h1>Reported messages</h1>
       <p class="toolbar-subtitle">{{ queue.pendingReportCount }} open report(s) waiting for review.</p>
@@ -22,14 +22,14 @@
   }
 
   @if (!isLoading && queue.bannedUsers.length > 0) {
-    <section class="moderation-toolbar moderation-banned-section">
+    <section class="moderation-toolbar moderation-banned-section app-surface-panel">
       <div>
         <h2>Banned players</h2>
         <p class="toolbar-subtitle">Most recently updated restrictions first.</p>
       </div>
       <div class="banned-users-list">
         @for (bannedUser of queue.bannedUsers; track bannedUser.userId) {
-          <article class="banned-user-row">
+          <article class="banned-user-row app-surface-panel-soft">
             <div class="group-identity">
               <div class="group-title-row">
                 <h3>{{ bannedUser.displayName }}</h3>
@@ -59,7 +59,7 @@
   }
 
   @for (group of queue.groups; track group.reportedUserId) {
-    <section class="moderation-group">
+    <section class="moderation-group app-surface-panel">
       <div class="moderation-group-header">
         <div class="group-identity">
           <div class="group-title-row">
@@ -104,7 +104,7 @@
       </div>
 
       @for (report of group.reports; track report.id) {
-        <article class="moderation-report">
+        <article class="moderation-report app-surface-panel-soft">
           <div class="report-meta">
             <span>{{ report.reason }}</span>
             <span>Reported by {{ report.reporterDisplayName }} ({{ report.reporterEmail || "no email" }})</span>

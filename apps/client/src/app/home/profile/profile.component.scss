@@ -1,23 +1,12 @@
+@use "../../../styles/_variables.scss" as *;
+
 :host {
-  --profile-bg: linear-gradient(180deg, #08131f 0%, #10263a 45%, #ece7d8 45%, #f6f3ea 100%);
-  --panel-dark: rgba(6, 19, 33, 0.82);
-  --panel-light: rgba(255, 250, 242, 0.88);
-  --panel-border: rgba(255, 255, 255, 0.12);
-  --accent: #ffb84d;
-  --accent-strong: #ff7a00;
-  --text-on-dark: #f5f7fb;
-  --text-main: #1f2b38;
-  --text-muted: #617186;
+  background-color: $tertiary;
 }
 
 .profile-page {
   flex: 1;
-  min-height: 100%;
   overflow: auto;
-  background:
-    radial-gradient(circle at top left, rgba(255, 184, 77, 0.18), transparent 28%),
-    radial-gradient(circle at top right, rgba(80, 190, 255, 0.16), transparent 20%),
-    var(--profile-bg);
 }
 
 .profile-shell {
@@ -30,8 +19,8 @@
 .info-card,
 .games-panel,
 .stat-card {
-  border: 1px solid var(--panel-border);
-  box-shadow: 0 24px 60px rgba(7, 18, 28, 0.18);
+  border: 1px solid $app-border-subtle;
+  box-shadow: 0 24px 60px $app-shadow-strong;
 }
 
 .hero-panel {
@@ -41,10 +30,10 @@
   padding: 1.75rem;
   border-radius: 28px;
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.06), transparent),
-    linear-gradient(135deg, rgba(255, 122, 0, 0.22), rgba(80, 190, 255, 0.18)),
-    var(--panel-dark);
-  color: var(--text-on-dark);
+    linear-gradient(135deg, $app-surface-glass-soft, transparent),
+    linear-gradient(135deg, $app-overlay-warm-gradient, $app-overlay-cool-gradient),
+    $app-surface-dark;
+  color: $app-text-on-dark;
 }
 
 .eyebrow,
@@ -59,7 +48,7 @@
   width: fit-content;
   padding: 0.45rem 0.85rem;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
+  background: $app-surface-glass;
   font-size: 0.85rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -73,14 +62,14 @@
 
 .handle {
   margin: 0 0 1rem;
-  color: rgba(245, 247, 251, 0.72);
+  color: $app-text-on-dark-muted;
   font-size: 1rem;
 }
 
 .hero-text {
   max-width: 48rem;
   margin: 0;
-  color: rgba(245, 247, 251, 0.84);
+  color: $app-text-on-dark-soft;
   font-size: 1rem;
 }
 
@@ -94,8 +83,8 @@
 .meta-pill {
   padding: 0.7rem 1rem;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--text-on-dark);
+  background: $app-surface-glass;
+  color: $app-text-on-dark;
 }
 
 .hero-sidebar {
@@ -108,17 +97,17 @@
 .profile-avatar {
   width: 128px;
   height: 128px;
-  border: 4px solid rgba(255, 255, 255, 0.24);
+  border: 4px solid $app-surface-glass-border;
   border-radius: 50%;
   object-fit: cover;
-  background: rgba(255, 255, 255, 0.12);
+  background: $app-border-subtle;
 }
 
 .profile-role-banner {
   padding: 0.55rem 0.95rem;
   border-radius: 999px;
-  background: rgba(255, 184, 77, 0.14);
-  color: #ffe3b0;
+  background: $app-overlay-warm;
+  color: $app-accent-warm-contrast;
   font-weight: 700;
 }
 
@@ -126,13 +115,13 @@
   width: 100%;
   padding: 1.1rem;
   border-radius: 22px;
-  background: rgba(255, 255, 255, 0.1);
+  background: $app-surface-glass-strong;
 }
 
 .preferred-label,
 .detail-label,
 .stat-label {
-  color: var(--text-muted);
+  color: $app-text-muted;
   font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -147,7 +136,7 @@
 
 .preferred-card p {
   margin: 0.35rem 0 0;
-  color: rgba(245, 247, 251, 0.72);
+  color: $app-text-on-dark-muted;
 }
 
 .preferred-link {
@@ -155,8 +144,8 @@
   margin-top: 1rem;
   padding: 0.7rem 1rem;
   border-radius: 999px;
-  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
-  color: #111;
+  background: linear-gradient(135deg, $app-accent-warm, $app-accent-warm-strong);
+  color: $app-text-on-accent;
   font-weight: 800;
   text-decoration: none;
 }
@@ -172,7 +161,7 @@
 .info-card,
 .games-panel {
   border-radius: 24px;
-  background: var(--panel-light);
+  background: $app-surface-light;
 }
 
 .stat-card {
@@ -181,7 +170,7 @@
 
 .stat-value {
   margin-top: 0.35rem;
-  color: var(--text-main);
+  color: $app-text-main;
   font-size: 2rem;
   font-weight: 800;
   line-height: 1;
@@ -197,7 +186,7 @@
 .info-card,
 .games-panel {
   padding: 1.35rem;
-  color: var(--text-main);
+  color: $app-text-main;
 }
 
 .section-heading {
@@ -230,7 +219,7 @@
   justify-content: space-between;
   gap: 1rem;
   padding: 0.8rem 0;
-  border-bottom: 1px solid rgba(31, 43, 56, 0.08);
+  border-bottom: 1px solid $app-border-dark-subtle;
 }
 
 .summary-line:last-of-type {
@@ -243,7 +232,7 @@
   margin-top: 1rem;
   padding: 0.9rem 1rem;
   border-radius: 18px;
-  background: rgba(255, 122, 0, 0.1);
+  background: $app-overlay-warm-strong;
 }
 
 .games-panel {
@@ -258,7 +247,7 @@
 .game-card {
   padding: 1.15rem;
   border-radius: 20px;
-  background: rgba(255, 255, 255, 0.7);
+  background: $app-surface-white-70;
 }
 
 .game-card-header {
@@ -274,14 +263,14 @@
 }
 
 .game-card-header p {
-  color: var(--text-muted);
+  color: $app-text-muted;
 }
 
 .game-badge {
   height: fit-content;
   padding: 0.45rem 0.8rem;
   border-radius: 999px;
-  background: rgba(16, 38, 58, 0.08);
+  background: $app-overlay-muted;
   font-weight: 700;
 }
 
@@ -303,8 +292,8 @@
   gap: 0.8rem;
   padding: 2rem 1rem;
   border-radius: 24px;
-  background: rgba(255, 255, 255, 0.7);
-  color: var(--text-main);
+  background: $app-surface-white-70;
+  color: $app-text-main;
   text-align: center;
 }
 
