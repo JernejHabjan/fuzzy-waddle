@@ -3,10 +3,11 @@
 ## Prerequisites
 
 | Tool    | Requirement                                                                             |
-|---------|-----------------------------------------------------------------------------------------|
-| Node.js | LTS recommended                                                                         |
-| pnpm    | [Install pnpm](https://pnpm.io/installation) — **required**, npm/yarn are not supported |
+| ------- | --------------------------------------------------------------------------------------- |
+| Node.js | `>=24.13.0`                                                                             |
+| pnpm    | `>=10.0`; npm/yarn are not supported for installs                                       |
 | Git     | Latest stable                                                                           |
+| Docker  | Required only when running the local Supabase stack                                     |
 
 ## 1. Clone & Install
 
@@ -18,17 +19,40 @@ pnpm install
 
 ## 2. Configure Environment
 
-Copy `.env.example` to `.env` in the project root and fill in the values:
+Copy the root env example for local Supabase Google OAuth:
 
-| Variable               | Value                                                                  |
-|------------------------|------------------------------------------------------------------------|
-| `CORS_ORIGIN`          | `http://localhost:4200`                                                |
-| `SUPABASE_URL`         | Supabase project URL or local API URL such as `http://127.0.0.1:54322` |
-| `SUPABASE_SERVICE_KEY` | `service_role` key from Supabase dashboard                             |
+```bash
+cp .env.example .env
+```
 
-See the [Supabase setup guide](supabase.md) for how to obtain these values.
+| Variable                                      | Local value / source                                      |
+| --------------------------------------------- | --------------------------------------------------------- |
+| `SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID`     | Google Cloud Console OAuth client ID                      |
+| `SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET`        | Google Cloud Console OAuth client secret                  |
+
+Copy the API env example for the Nest API:
+
+```bash
+cp apps/api/.env.example apps/api/.env.local
+```
+
+| Variable               | Local value / source                                      |
+| ---------------------- | --------------------------------------------------------- |
+| `CORS_ORIGIN`          | `http://localhost:4200`                                   |
+| `SUPABASE_URL`         | Local Supabase API URL, usually `http://127.0.0.1:54321`  |
+| `SUPABASE_SERVICE_KEY` | `supabase status` > `Authentication Keys` > `Secret`      |
+
+See the [Supabase setup guide](supabase.md) for local startup, Google OAuth, and hosted project values.
 
 ## 3. Start the Dev Servers
+
+If you are using local Supabase, start it first:
+
+```bash
+supabase start
+```
+
+Then start the app:
 
 ```bash
 pnpm start          # starts both client and API concurrently

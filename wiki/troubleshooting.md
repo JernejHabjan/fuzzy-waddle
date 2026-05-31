@@ -37,10 +37,34 @@ If you get TypeScript errors related to database types, regenerate them:
 pnpm generate-supabase-types
 ```
 
+## Google OAuth Provider Not Enabled Locally
+
+If local sign-in returns `Unsupported provider: provider is not enabled`, make sure the root `.env` exists and contains:
+
+```env
+SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID=...
+SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET=...
+```
+
+Then restart the local stack so `supabase/config.toml` is reloaded:
+
+```bash
+supabase stop
+supabase start
+```
+
+The Google OAuth client must allow this redirect URI:
+
+```text
+http://127.0.0.1:54321/auth/v1/callback
+```
+
 ## Angular Client Won't Start
 
 Ensure the API is running and the proxy is configured. The dev proxy config is at `apps/client/proxy.conf.json` and forwards `/api/*` to `http://localhost:3333`.
 
 ## Environment Variables Missing
 
-Copy `.env.example` to `.env` and fill in all values. The API will fail to start without `SUPABASE_URL` and `SUPABASE_SERVICE_KEY`. `CORS_ORIGIN` is required for browser and WebSocket access. See [Getting Started](getting-started.md) for details.
+For local Supabase OAuth, copy the root `.env.example` to `.env`; it contains only the Google OAuth values consumed by `supabase/config.toml`.
+
+For local API development, copy [apps/api/.env.example](../apps/api/.env.example) to `apps/api/.env.local` and fill in `CORS_ORIGIN`, `SUPABASE_URL`, and `SUPABASE_SERVICE_KEY`. The API will fail to start or fail Supabase requests without `SUPABASE_URL` and `SUPABASE_SERVICE_KEY`; `CORS_ORIGIN` is required for browser and WebSocket access.
