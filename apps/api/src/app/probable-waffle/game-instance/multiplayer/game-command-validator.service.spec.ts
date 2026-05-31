@@ -187,7 +187,7 @@ describe("GameCommandValidatorService", () => {
     expect(result).toEqual({ valid: false, relayEmpty: false, reason: expect.any(String) });
   });
 
-  it("relays empty on stale tick using canonical next tick", () => {
+  it("drops stale duplicate ticks without advancing the canonical tick", () => {
     const instance = createGameInstance();
     const user = { id: "user-1" } as never;
     // First batch establishes tick 0
@@ -196,9 +196,8 @@ describe("GameCommandValidatorService", () => {
     const result = service.validate(createMoveEvent(640, 0), instance, user);
     expect(result).toEqual({
       valid: false,
-      relayEmpty: true,
-      reason: expect.stringContaining("stale tick"),
-      overrideTick: 1
+      relayEmpty: false,
+      reason: expect.stringContaining("stale tick")
     });
   });
 
