@@ -8,11 +8,6 @@ CREATE TABLE little_muncher_scores (
   FOREIGN KEY (user_id) REFERENCES auth.users(id)
 );
 
--- Indexes for performance
-CREATE INDEX idx_little_muncher_scores_user_id ON little_muncher_scores(user_id);
-CREATE INDEX idx_little_muncher_scores_hill ON little_muncher_scores(hill);
-CREATE INDEX idx_little_muncher_scores_score ON little_muncher_scores(score);
-
 -- Row Level Security
 ALTER TABLE little_muncher_scores ENABLE ROW LEVEL SECURITY;
 
@@ -24,11 +19,16 @@ CREATE POLICY "Allow read access for all users"
 DROP POLICY IF EXISTS "Allow insert for authenticated users" ON little_muncher_scores;
 CREATE POLICY "Allow insert for authenticated users"
   ON little_muncher_scores FOR INSERT TO authenticated
-  WITH CHECK (user_id = auth.uid());
+  WITH CHECK (user_id = (select auth.uid()));
+
+create index little_muncher_scores_user_id_idx
+  on little_muncher_scores (user_id);
 
 -- View: Top 3 unique users per hill (highest score per user)
 DROP VIEW IF EXISTS little_muncher_scores_with_user_meta;
-CREATE VIEW little_muncher_scores_with_user_meta AS
+CREATE VIEW little_muncher_scores_with_user_meta
+  with (security_invoker=on)
+AS
 WITH ranked_scores AS (
   SELECT
     s.id,
@@ -59,3 +59,14 @@ SELECT id, score, hill, user_id, user_name, date
 FROM hill_ranked
 WHERE hill_rn <= 3
 ORDER BY hill, hill_rn;
+
+revoke all on table public.little_muncher_scores from anon;
+revoke all on table public.little_muncher_scores from authenticated;
+revoke all on table public.little_muncher_scores_with_user_meta from anon;
+revoke all on table public.little_muncher_scores_with_user_meta from authenticated;
+revoke all on sequence public.little_muncher_scores_id_seq from anon;
+revoke all on sequence public.little_muncher_scores_id_seq from authenticated;
+
+grant insert on table public.little_muncher_scores to service_role;
+grant select on table public.little_muncher_scores_with_user_meta to service_role;
+grant usage, select on sequence public.little_muncher_scores_id_seq to service_role;

@@ -1,5 +1,5 @@
 -- =============================================================================
--- 0008: Probable Waffle Player Scores (Hybrid EAV Design)
+-- Probable Waffle Player Scores (Hybrid EAV Design)
 -- =============================================================================
 -- Stores per-player statistics for completed game sessions.
 -- Uses a 3-table hybrid design (core fields + EAV metrics catalog + metric values).
@@ -20,7 +20,7 @@
 -- Stats view (probable_waffle_player_stats):
 --   Aggregates per-user wins/losses/averages from the materialized view.
 --
--- Depends on: 0007_probable_waffle_game_sessions.sql
+-- Depends on: probable_waffle_game_sessions.sql
 -- =============================================================================
 
 -- Create player scores table with hybrid design
@@ -88,39 +88,20 @@ alter table probable_waffle_player_score_metrics
   foreign key (metric_type_id) references probable_waffle_score_metric_types (id);
 
 -- Indexes on main table
-create index probable_waffle_player_scores_game_session_id_idx
-  on probable_waffle_player_scores (game_session_id);
-
 create index probable_waffle_player_scores_user_id_idx
   on probable_waffle_player_scores (user_id)
   where user_id is not null;
 
-create index probable_waffle_player_scores_game_result_idx
-  on probable_waffle_player_scores (game_result);
-
 create unique index probable_waffle_player_scores_session_player_idx
   on probable_waffle_player_scores (game_session_id, player_number);
 
-create index probable_waffle_player_scores_created_at_idx
-  on probable_waffle_player_scores (created_at desc);
-
 -- Indexes on metrics table
-create index probable_waffle_player_score_metrics_player_score_id_idx
-  on probable_waffle_player_score_metrics (player_score_id);
-
 create index probable_waffle_player_score_metrics_metric_type_id_idx
   on probable_waffle_player_score_metrics (metric_type_id);
 
 -- Unique constraint: one value per metric per player score
 create unique index probable_waffle_player_score_metrics_unique_idx
   on probable_waffle_player_score_metrics (player_score_id, metric_type_id);
-
--- Index on metric types
-create unique index probable_waffle_score_metric_types_key_idx
-  on probable_waffle_score_metric_types (metric_key);
-
-create index probable_waffle_score_metric_types_category_idx
-  on probable_waffle_score_metric_types (metric_category);
 
 -- RLS policies for main scores table
 drop policy if exists "Enable insert for service_role only" on probable_waffle_player_scores;
@@ -134,12 +115,12 @@ create policy "Enable select for authenticated users" on probable_waffle_player_
   as permissive for select
   to authenticated
   using (
-    user_id = auth.uid()
+    user_id = (select auth.uid())
     or exists (
       select 1
       from probable_waffle_player_scores other_ps
       where other_ps.game_session_id = probable_waffle_player_scores.game_session_id
-        and other_ps.user_id = auth.uid()
+        and other_ps.user_id = (select auth.uid())
     )
   );
 
@@ -169,7 +150,7 @@ create policy "Enable select for authenticated users" on probable_waffle_player_
       from probable_waffle_player_scores ps
       join probable_waffle_player_scores other_ps
         on other_ps.game_session_id = ps.game_session_id
-           and other_ps.user_id = auth.uid()
+           and other_ps.user_id = (select auth.uid())
       where ps.id = probable_waffle_player_score_metrics.player_score_id
     )
   );
@@ -198,6 +179,80 @@ create policy "Enable all for service_role" on probable_waffle_score_metric_type
 
 alter table probable_waffle_score_metric_types
   enable row level security;
+
+-- Backfill game session access policy now that player scores exist
+drop policy if exists "Enable select for authenticated users" on probable_waffle_game_sessions;
+create policy "Enable select for authenticated users" on probable_waffle_game_sessions
+  as permissive for select
+  to authenticated
+  using (
+    (select auth.uid()) = created_by_user_id
+    or exists (
+      select 1
+      from probable_waffle_player_scores ps
+      where ps.game_session_id = probable_waffle_game_sessions.id
+        and ps.user_id = (select auth.uid())
+    )
+  );
+
+-- Match history view depends on both sessions and player scores
+drop view if exists probable_waffle_match_history;
+create view probable_waffle_match_history
+  with (security_invoker=on)
+as
+select
+  gs.id,
+  gs.game_instance_id,
+  gs.game_type,
+  gs.map_id,
+  gs.session_state,
+  gs.started_at,
+  gs.ended_at,
+  gs.total_duration_seconds,
+  gs.scores_submitted,
+  gs.human_player_count,
+  creator.name as created_by_name,
+  submitter.name as submitted_by_name,
+  (
+    select json_agg(
+      json_build_object(
+        'player_number', ps.player_number,
+        'player_name', ps.player_name,
+        'player_type', ps.player_type,
+        'faction_type', ps.faction_type,
+        'game_result', ps.game_result,
+        'final_score', ps.final_score,
+        'is_current_user', ps.user_id = auth.uid()
+      )
+      order by ps.final_score desc
+    )
+    from probable_waffle_player_scores ps
+    where ps.game_session_id = gs.id
+  ) as players,
+  exists(
+    select 1
+    from probable_waffle_player_scores ps
+    where ps.game_session_id = gs.id
+      and ps.user_id = auth.uid()
+  ) as user_participated,
+  (
+    select ps.game_result
+    from probable_waffle_player_scores ps
+    where ps.game_session_id = gs.id
+      and ps.user_id = auth.uid()
+    limit 1
+  ) as user_result
+from probable_waffle_game_sessions gs
+left join public.profiles creator on gs.created_by_user_id = creator.id
+left join public.profiles submitter on gs.scores_submitted_by = submitter.id
+where gs.scores_submitted = true
+  and exists(
+    select 1
+    from probable_waffle_player_scores ps
+    where ps.game_session_id = gs.id
+      and ps.user_id = auth.uid()
+  )
+order by gs.ended_at desc nulls last, gs.started_at desc;
 
 -- Insert predefined metric types
 insert into probable_waffle_score_metric_types (metric_key, metric_name, metric_category, description, display_order) values
@@ -278,8 +333,10 @@ group by ps.id, ps.game_session_id, ps.user_id, ps.player_number, ps.player_name
 
 -- Index on materialized view
 create unique index probable_waffle_player_scores_full_id_idx on probable_waffle_player_scores_full (id);
-create index probable_waffle_player_scores_full_game_session_idx on probable_waffle_player_scores_full (game_session_id);
-create index probable_waffle_player_scores_full_user_idx on probable_waffle_player_scores_full (user_id) where user_id is not null;
+
+revoke all on table public.probable_waffle_player_scores_full from public;
+revoke all on table public.probable_waffle_player_scores_full from anon;
+revoke all on table public.probable_waffle_player_scores_full from authenticated;
 
 -- Create view for player statistics aggregation (uses materialized view for performance)
 drop view if exists probable_waffle_player_stats;
@@ -311,20 +368,50 @@ group by ps.user_id, p.name;
 
 -- 1. Refresh Function
 CREATE OR REPLACE FUNCTION refresh_probable_waffle_player_scores_full()
-  RETURNS void AS $$
+  RETURNS void
+  LANGUAGE plpgsql
+  SET search_path = public, pg_temp
+AS $$
 BEGIN
   REFRESH MATERIALIZED VIEW CONCURRENTLY probable_waffle_player_scores_full;
 END;
-$$ LANGUAGE plpgsql;
+$$;
+
+revoke all on table public.probable_waffle_player_scores from anon;
+revoke all on table public.probable_waffle_player_scores from authenticated;
+revoke all on table public.probable_waffle_score_metric_types from anon;
+revoke all on table public.probable_waffle_score_metric_types from authenticated;
+revoke all on table public.probable_waffle_player_score_metrics from anon;
+revoke all on table public.probable_waffle_player_score_metrics from authenticated;
+revoke all on table public.probable_waffle_match_history from anon;
+revoke all on table public.probable_waffle_match_history from authenticated;
+revoke all on table public.probable_waffle_player_stats from anon;
+revoke all on table public.probable_waffle_player_stats from authenticated;
+revoke all on sequence public.probable_waffle_player_scores_id_seq from anon;
+revoke all on sequence public.probable_waffle_player_scores_id_seq from authenticated;
+revoke all on sequence public.probable_waffle_player_score_metrics_id_seq from anon;
+revoke all on sequence public.probable_waffle_player_score_metrics_id_seq from authenticated;
+
+grant select, insert on table public.probable_waffle_player_scores to service_role;
+grant select on table public.probable_waffle_score_metric_types to service_role;
+grant select, insert on table public.probable_waffle_player_score_metrics to service_role;
+grant select on table public.probable_waffle_player_scores_full to service_role;
+grant execute on function public.refresh_probable_waffle_player_scores_full() to service_role;
+grant usage, select on sequence public.probable_waffle_player_scores_id_seq to service_role;
+grant usage, select on sequence public.probable_waffle_player_score_metrics_id_seq to service_role;
 
 -- 2. Get Metrics Helper
 CREATE OR REPLACE FUNCTION get_player_score_metrics(p_player_score_id bigint)
-  RETURNS jsonb AS $$
+  RETURNS jsonb
+  LANGUAGE sql
+  STABLE
+  SET search_path = public, pg_temp
+AS $$
 SELECT jsonb_object_agg(mt.metric_key, m.metric_value)
 FROM probable_waffle_player_score_metrics m
        JOIN probable_waffle_score_metric_types mt ON m.metric_type_id = mt.id
 WHERE m.player_score_id = p_player_score_id;
-$$ LANGUAGE sql STABLE;
+$$;
 
 -- 3. Upsert Metric Helper
 CREATE OR REPLACE FUNCTION upsert_player_score_metric(
@@ -332,7 +419,10 @@ CREATE OR REPLACE FUNCTION upsert_player_score_metric(
   p_metric_key text,
   p_metric_value bigint
 )
-  RETURNS void AS $$
+  RETURNS void
+  LANGUAGE plpgsql
+  SET search_path = public, pg_temp
+AS $$
 DECLARE
   v_metric_type_id int;
 BEGIN
@@ -351,5 +441,5 @@ BEGIN
   ON CONFLICT (player_score_id, metric_type_id)
     DO UPDATE SET metric_value = EXCLUDED.metric_value;
 END;
-$$ LANGUAGE plpgsql;
+$$;
 

@@ -28,12 +28,16 @@ DROP POLICY IF EXISTS "Enable insert access for authenticated users" ON probable
 CREATE POLICY "Enable insert access for own achievements"
   ON probable_waffle_achievements
   FOR INSERT
-  WITH CHECK (auth.uid() = user_id); -- Only require user_id match, not specific role
+  WITH CHECK ((select auth.uid()) = user_id); -- Only require user_id match, not specific role
 
 -- Enable row level security
 ALTER TABLE probable_waffle_achievements
   ENABLE ROW LEVEL SECURITY;
 
--- Create indexes for efficient querying
-CREATE INDEX idx_probable_waffle_achievements_userid ON probable_waffle_achievements (user_id);
-CREATE INDEX idx_probable_waffle_achievements_id ON probable_waffle_achievements (achievement_id);
+revoke all on table public.probable_waffle_achievements from anon;
+revoke all on table public.probable_waffle_achievements from authenticated;
+revoke all on sequence public.probable_waffle_achievements_id_seq from anon;
+revoke all on sequence public.probable_waffle_achievements_id_seq from authenticated;
+
+grant insert on table public.probable_waffle_achievements to authenticated;
+grant usage on sequence public.probable_waffle_achievements_id_seq to authenticated;
