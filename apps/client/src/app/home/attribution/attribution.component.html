@@ -1,4 +1,4 @@
-<fuzzy-waddle-home-nav />
+<fuzzy-waddle-home-nav [showBack]="true" />
 @if (groupedAttributions$ | async; as groupedAttributions) {
   <div class="container mt-4">
     @for (typeGroup of groupedAttributions; track typeGroup.type) {

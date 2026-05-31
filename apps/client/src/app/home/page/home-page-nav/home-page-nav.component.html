@@ -1,4 +1,4 @@
-<fuzzy-waddle-home-nav>
+<fuzzy-waddle-home-nav [hasActions]="true">
   <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
     @if (!authService.processing && !authService.isAuthenticated) {
       <li (click)="authService.signInWithGoogle()" class="nav-item">

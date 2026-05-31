@@ -25,4 +25,9 @@ describe("HomeNavComponent", () => {
   it("should create", () => {
     expect(component).toBeTruthy();
   });
+
+  it("should hide the toggler when there are no actions", () => {
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector(".navbar-toggler")).toBeNull();
+  });
 });
