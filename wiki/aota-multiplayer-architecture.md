@@ -21,19 +21,17 @@ It is written for maintainers and future LLM-assisted changes.
 
 ---
 
-## 2. Source-of-truth code map
+## 2. Source-of-truth areas
 
-| Area                            | Primary files                                                                            |
-|---------------------------------|------------------------------------------------------------------------------------------|
-| Client lockstep core            | `apps/client/src/app/probable-waffle/game/world/services/command-bus.service.ts`         |
-| Client snapshot/reconnect       | `apps/client/src/app/probable-waffle/game/world/services/recovery/reconnect.service.ts`  |
-| Client desync/hash              | `apps/client/src/app/probable-waffle/game/world/services/recovery/state-hash.service.ts` |
-| Client actor-id authority       | `apps/client/src/app/probable-waffle/game/world/services/actor-id-authority.service.ts`   |
-| Server gateway relay policy     | `apps/api/src/app/probable-waffle/game-instance/game-instance.gateway.ts`                |
-| Server event validation/state   | `apps/api/src/app/probable-waffle/game-instance/game-state-server.service.ts`            |
-| Server command validation       | `apps/api/src/app/probable-waffle/game-instance/game-command-validator.service.ts`       |
-| Server reconnect grace tracking | `apps/api/src/app/probable-waffle/game-instance/player-disconnect-tracker.service.ts`    |
-| Shared event contracts          | `libs/api-interfaces/src/lib/communicators/probable-waffle/communicators.ts`             |
+The multiplayer implementation is grouped by responsibility:
+
+- client lockstep, ready/pause coordination, and actor-id authority live under the multiplayer services area;
+- client reconnect, host migration, snapshots, and desync hashing live under recovery services;
+- replay recording/playback is separate from live multiplayer and consumes the same command batches;
+- API gateway code owns relay policy, while API multiplayer validators own command/player/pause/disconnect validation;
+- shared communicator contracts define every network event shape.
+
+Keep future code in those areas unless it is clearly presentation-only or single-player-only.
 
 ---
 
@@ -146,36 +144,55 @@ The current design relies on actor/player/research state plus command-tail repla
 1. Every second (20 ticks), each client emits deterministic state hash.
 2. Host compares remote hash vs local hash.
 3. On mismatch:
-  - host sends correction snapshot to divergent player
-  - if mismatch persists after grace window, host sends `desync-alert`
-4. Recovery dialog flow handles wait/kick.
+  - host sends correction snapshot to the divergent player
+  - receiver reconciles actors in place by authoritative actor id
+  - missing actors are created, extra actors are destroyed, matching actors are updated
+  - player resources, control groups, research, tick baseline, and command buffer are reset to the host baseline
+4. If mismatch persists, the host keeps retrying correction snapshots and logs the cause with hash diagnostics.
+
+Desync correction intentionally avoids whole-scene restore for matching actors because full rebuilds cause visible twitching and can hide the specific actor/state that diverged.
 
 ### Payload policy
 
-- Steady-state hash traffic keeps diagnostics disabled to reduce room-wide payload cost.
-- Mismatch reasoning falls back gracefully when diagnostics are absent.
+- Hash diagnostics include actor/player/research digests so mismatch logs identify the first divergent state.
+- Mismatch reasoning falls back gracefully when diagnostics are absent or stale.
+- Presentation-only drift, such as tiny movement interpolation differences while the same move order is active, is ignored.
 
 ---
 
 ## 9. Deterministic state vs presentation state
 
-Deterministic state must converge across peers and affects gameplay outcomes:
+Deterministic state must converge across peers and affects gameplay outcomes. It must update from simulation ticks, command batches, or host snapshots:
 
 - actor data used by sim commands and combat/economy processing
 - player resources/housing/research
 - command commit ordering/tick progression
+- AI decisions and AI-issued commands
+- score/game-end checks that influence match outcome
 
-Presentation state may differ safely and should not be treated as authority:
+Presentation state may differ safely and should not be treated as authority. It may use frame timing, wall-clock timers, or visual randomness when it does not feed gameplay state:
 
 - particles/animations/audio timing
 - UI-only widgets/dialog visibility
 - interpolation/smoothing artifacts
+- debug overlays and telemetry sampling
 
 Only deterministic state should influence lockstep validation, hashes, and snapshot correctness.
 
+When adding code, write short comments at the boundary if a wall-clock or random API is intentional presentation behavior. Gameplay-affecting code should use the simulation tick and deterministic random service.
+
+## 10. Debugging and observability
+
+Verbose multiplayer logs are opt-in:
+
+- Client: set `localStorage.probableWaffle.multiplayerDebug = "true"` or load with `?pwNetDebug=1` in a non-production build.
+- API: set `PROBABLE_WAFFLE_MULTIPLAYER_DEBUG=true`.
+
+Useful debug logs should include game instance, player number/user id, tick, host role, command type, and correction reason. Logs that do not help identify ordering, authority, reconnect, or desync cause should stay removed or behind the debug gate.
+
 ---
 
-## 10. Method rationale (branch additions/changes)
+## 11. Method rationale (branch additions/changes)
 
 | Method / block                                                    | Why it exists                                                                                                            |
 |-------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------|
@@ -184,12 +201,14 @@ Only deterministic state should influence lockstep validation, hashes, and snaps
 | `GameCommandValidatorService.allowInitialTickBootstrap(...)`      | Allows first post-reseed high tick so recreated instances do not fail sequence gate immediately.                         |
 | `PlayerDisconnectTrackerService.getActiveSocketIdsForPlayer(...)` | Enables targeted relay to a user that may have multiple active sockets.                                                  |
 | `SceneActorCreator.syncHostActorState()`                          | Immediate host actor-state sync after create/destroy to reduce validation races against actor index updates.             |
-| `ActorIdAuthorityService.createDeterministicId(...)`              | Derives actor IDs from shared simulation context so all peers compute identical IDs without host seed patching.            |
-| `StateHashService` diagnostics toggle                             | Reduces steady-state network volume by not shipping full diagnostics on every hash tick.                                 |
+| `ActorIdAuthorityService.createDeterministicId(...)`              | Derives actor IDs from shared simulation context so all peers compute identical IDs without host seed patching.           |
+| In-place desync correction                                        | Repairs only actors/state that differ from host snapshot and avoids full-scene twitch during auto-heal.                   |
+| Simulation-tick score/game-condition checks                       | Keeps match outcome checks on deterministic time instead of wall-clock throttles.                                        |
+| Multiplayer debug gates                                           | Allows verbose diagnosis locally without noisy production logs.                                                          |
 
 ---
 
-## 11. Anti-cheat and trust expectations
+## 12. Anti-cheat and trust expectations
 
 This architecture is intentionally not server-authoritative simulation.
 
@@ -201,7 +220,7 @@ Treat this as a medium-trust multiplayer model, not a zero-trust competitive aut
 
 ---
 
-## 12. Guardrails for future changes
+## 13. Guardrails for future changes
 
 1. Do not add server-side simulation assumptions unless architecture is intentionally changed.
 2. Do not bypass server echo for local command commits in multiplayer mode.
@@ -211,10 +230,12 @@ Treat this as a medium-trust multiplayer model, not a zero-trust competitive aut
   - lockstep effect (commit vs control-plane only).
 4. Keep reconnect and desync pause reasons independent (`snapshot-restore`, `reconnect`, `desync`, `desync-correction`).
 5. If you change actor identity generation, keep deterministic-ID basis stable across peers and preserve replay/snapshot IDs when explicitly provided.
+6. Host must remain the only source for AI-player command broadcasts in online matches.
+7. Use in-place actor reconciliation for desync correction unless a reconnect/spectator path genuinely needs a clean rebuild.
 
 ---
 
-## 13. LLM quick context
+## 14. LLM quick context
 
 When editing AOTA multiplayer code, start from these invariants:
 
@@ -222,5 +243,7 @@ When editing AOTA multiplayer code, start from these invariants:
 - Determinism comes from validated tick assembly, not socket arrival order.
 - Server validates and relays; it does not execute gameplay simulation.
 - Host is coordinator for recovery control-plane actions.
+- Host issues AI-player commands and hands that responsibility to the migrated host.
 - Snapshot-response is targeted; reseed is host-only.
+- Reconnect may rebuild the scene; desync correction should update matching actors in place.
 - Reconnect and desync must preserve deterministic command ordering guarantees.
