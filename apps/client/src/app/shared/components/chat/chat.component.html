@@ -10,7 +10,7 @@
             <div class="chat-message-header">
               <div class="chat-message-sender">
                 <img alt="avatar" class="avatar" height="20" src="{{ avatarProviderService.getAvatar(message.userId) }}" />
-                <div class="chat-message-sender-name">{{ message.fullName }}</div>
+                <button class="chat-message-sender-name" type="button" (click)="openProfile(message)">{{ message.fullName }}</button>
                 @if (getRoleIcon(message.senderRole ?? null); as roleIcon) {
                   <fa-icon
                     [icon]="roleIcon"
@@ -43,7 +43,7 @@
             <div class="chat-message-header">
               <div class="chat-message-sender">
                 <img alt="avatar" class="avatar" height="20" src="{{ avatarProviderService.getAvatar(message.userId) }}" />
-                <div class="chat-message-sender-name">{{ message.fullName }}</div>
+                <button class="chat-message-sender-name" type="button" (click)="openProfile(message)">{{ message.fullName }}</button>
                 @if (getRoleIcon(message.senderRole ?? null); as roleIcon) {
                   <fa-icon
                     [icon]="roleIcon"

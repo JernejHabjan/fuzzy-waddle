@@ -21,6 +21,7 @@ import { ChatService } from "../../../data-access/chat/chat.service";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import { getRoleIcon, getRoleLabel } from "../../utils/app-role-presentation";
+import { Router } from "@angular/router";
 
 const DEFAULT_PAGE_SIZE = 10;
 const SCROLL_THRESHOLD = 50;
@@ -73,6 +74,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   protected readonly avatarProviderService = inject(AvatarProviderService);
   protected readonly authService = inject(AuthService);
   private readonly chatService = inject(ChatService);
+  private readonly router = inject(Router);
 
   async ngOnInit(): Promise<void> {
     // Fetch previous messages
@@ -231,6 +233,14 @@ export class ChatComponent implements OnInit, OnDestroy {
       !message.reportedByCurrentUser &&
       !this.locallyReportedMessageIds.has(message.id)
     );
+  }
+
+  protected async openProfile(message: ChatMessage): Promise<void> {
+    if (!message.userId) {
+      return;
+    }
+
+    await this.router.navigate(message.userId === this.authService.userId ? ["/profile"] : ["/profile", message.userId]);
   }
 
   @HostListener("window:beforeunload")

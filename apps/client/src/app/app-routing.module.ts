@@ -188,6 +188,11 @@ const routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: "profile/:userId",
+    loadComponent: () => import("./home/profile/profile.component").then((m) => m.ProfileComponent),
+    canActivate: [AuthGuard]
+  },
+  {
     path: "music",
     loadComponent: () => import("./home/music/music.component").then((m) => m.MusicComponent)
   },

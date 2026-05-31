@@ -14,13 +14,33 @@ export class CurrentUserProfileService implements ICurrentUserProfileService {
   private readonly authService = inject(AuthService);
   private cachedProfile: CurrentUserProfileDto | null = null;
   private cachedForUserId: string | null = null;
+  private readonly profileCache = new Map<string, CurrentUserProfileDto | null>();
+
+  async getUserProfile(userId?: string | null, forceRefresh = false): Promise<CurrentUserProfileDto | null> {
+    await this.authService.ensureAuthReady();
+
+    const currentUserId = this.authService.userId;
+    if (!currentUserId) {
+      this.clearCache();
+      return null;
+    }
+
+    if (!userId || userId === currentUserId) {
+      return this.getCurrentUserProfile(forceRefresh);
+    }
+
+    if (!forceRefresh && this.profileCache.has(userId)) {
+      return this.profileCache.get(userId) ?? null;
+    }
+
+    const url = `${environment.api}api/profile/${userId}`;
+    const profile = await firstValueFrom(this.httpClient.get<CurrentUserProfileDto | null>(url));
+    this.profileCache.set(userId, profile);
+    return profile;
+  }
 
   async getCurrentUserProfile(forceRefresh = false): Promise<CurrentUserProfileDto | null> {
-    if (this.authService.processing) {
-      await this.authService.processing;
-    } else if (!this.authService.isAuthenticated) {
-      await this.authService.autoSignIn();
-    }
+    await this.authService.ensureAuthReady();
 
     const currentUserId = this.authService.userId;
     if (!currentUserId) {
@@ -41,5 +61,6 @@ export class CurrentUserProfileService implements ICurrentUserProfileService {
   clearCache(): void {
     this.cachedProfile = null;
     this.cachedForUserId = null;
+    this.profileCache.clear();
   }
 }

@@ -74,6 +74,25 @@
   color: $dark;
 }
 
+.player-name-button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+
+  &:hover {
+    color: $primary;
+  }
+}
+
+.host-badge {
+  margin-left: 0.5rem;
+  font-size: 0.75rem;
+  color: $primary;
+  text-transform: uppercase;
+}
+
 .player-actions {
   margin-left: auto;
 }

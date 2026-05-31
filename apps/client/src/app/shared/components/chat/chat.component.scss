@@ -43,6 +43,17 @@
           .chat-message-sender-name {
             margin-left: 5px;
             margin-right: 5px;
+            padding: 0;
+            border: 0;
+            background: transparent;
+            color: inherit;
+            cursor: pointer;
+            text-decoration: underline;
+            text-underline-offset: 2px;
+
+            &:hover {
+              color: $primary;
+            }
           }
 
           .chat-message-role-icon {

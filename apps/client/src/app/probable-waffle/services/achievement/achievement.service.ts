@@ -41,6 +41,8 @@ export class AchievementService implements AchievementServiceInterface {
    * Get all achievements for the current user
    */
   async loadUserAchievements(userId?: UserId): Promise<AchievementDto[]> {
+    await this.ensureAuthReady();
+
     // If no userId is provided, use the current user's ID
     const targetUserId = userId || this.authService.userId;
 
@@ -107,6 +109,8 @@ export class AchievementService implements AchievementServiceInterface {
    */
   async unlockAchievement(achievementId: AchievementType, showNotification = true, metadata?: any): Promise<boolean> {
     try {
+      await this.ensureAuthReady();
+
       // Make sure we're authenticated
       if (!this.authService.isAuthenticated) {
         console.warn("Cannot unlock achievement: Not authenticated");
@@ -166,6 +170,10 @@ export class AchievementService implements AchievementServiceInterface {
       console.error("Error unlocking achievement:", error);
       return false;
     }
+  }
+
+  private async ensureAuthReady(): Promise<void> {
+    await this.authService.ensureAuthReady();
   }
 
   /**

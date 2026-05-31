@@ -10,4 +10,5 @@ export interface AuthServiceInterface {
   signInWithGoogle(): Promise<void>;
   signOut(): Promise<void>;
   autoSignIn(): Promise<Session | null>;
+  ensureAuthReady(): Promise<Session | null>;
 }

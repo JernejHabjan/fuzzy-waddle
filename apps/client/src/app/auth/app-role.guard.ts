@@ -13,9 +13,7 @@ export class AppRoleGuard implements CanActivate {
   private readonly router = inject(Router);
 
   async canActivate(): Promise<boolean> {
-    if (this.authService.processing) {
-      await this.authService.processing;
-    }
+    await this.authService.ensureAuthReady();
 
     if (!this.authService.isAuthenticated) {
       await this.router.navigate(["/"]);
