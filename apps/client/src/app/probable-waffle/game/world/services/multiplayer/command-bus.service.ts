@@ -9,11 +9,11 @@ import {
   ProbableWafflePlayerType,
   type ProbableWaffleReplayCommandBatch
 } from "@fuzzy-waddle/api-interfaces";
-import { environment } from "../../../../../../environments/environment";
 import { getSceneService } from "../scene-component-helpers";
 import { ActorIndexSystem } from "../ActorIndexSystem";
 import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "../../../entity/components/owner-component";
+import { isMultiplayerDebugEnabled } from "./multiplayer-debug";
 
 /**
  * Central command bus for all player- and AI-issued simulation commands.
@@ -58,8 +58,7 @@ export class CommandBusService {
   private readonly buffer = new CommandBuffer();
   private readonly subscriptions: Subscription[] = [];
   private scene: ProbableWaffleScene | null = null;
-  private readonly USE_DEBUG = false;
-  private readonly debug = this.USE_DEBUG && !environment.production;
+  private readonly debug = isMultiplayerDebugEnabled();
   private lastSentExecutionTick = 0;
   private stallSignature: string | null = null;
   private stallLogTimer: number | null = null;

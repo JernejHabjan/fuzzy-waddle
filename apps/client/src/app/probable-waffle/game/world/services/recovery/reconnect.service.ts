@@ -11,6 +11,7 @@ import { getActorComponent } from "../../../data/actor-component";
 import { IdComponent } from "../../../entity/components/id-component";
 import { OwnerComponent } from "../../../entity/components/owner-component";
 import { getGameObjectLogicalTransform } from "../../../data/game-object-helper";
+import { applyActorDefinitionToActor } from "../../../data/actor-data";
 import {
   type ActorDefinition,
   GameSessionState,
@@ -235,32 +236,36 @@ export class ReconnectService {
           .map((actor) => [actor.id.id, actor])
       );
 
-      // Destroy all current actors before re-creating from snapshot.
       const currentActors = [...actorIndex.getAllIdActors()];
-      const removedActorDiagnostics = currentActors
-        .map((actor) => {
-          const id = getActorComponent(actor, IdComponent)?.id;
-          if (!id || snapshotActorIds.has(id)) {
-            return undefined;
-          }
-          const owner = getActorComponent(actor, OwnerComponent)?.getOwner();
-          const logicalTransform = getGameObjectLogicalTransform(actor);
-          return {
-            id,
-            name: actor.name,
-            owner,
-            x: logicalTransform ? Math.round(logicalTransform.x) : undefined,
-            y: logicalTransform ? Math.round(logicalTransform.y) : undefined,
-            z: logicalTransform ? Math.round(logicalTransform.z) : undefined
-          };
-        })
-        .filter((diagnostic) => diagnostic !== undefined);
-      if (removedActorDiagnostics.length > 0) {
-        console.warn(
-          `[Reconnect] Snapshot ${response.reason ?? "reconnect"} will remove ${removedActorDiagnostics.length} local actors not present on host snapshot.`,
-          removedActorDiagnostics
-        );
-      }
+      if (response.reason === "desync-correction") {
+        this.applyActorSnapshotInPlace(actorIndex, creator, currentActors, snapshot.actors as ActorDefinition[]);
+      } else {
+        // Reconnect and spectator catch-up rebuild from a clean baseline because the
+        // client may have missed arbitrary actor lifecycle events while offline.
+        const removedActorDiagnostics = currentActors
+          .map((actor) => {
+            const id = getActorComponent(actor, IdComponent)?.id;
+            if (!id || snapshotActorIds.has(id)) {
+              return undefined;
+            }
+            const owner = getActorComponent(actor, OwnerComponent)?.getOwner();
+            const logicalTransform = getGameObjectLogicalTransform(actor);
+            return {
+              id,
+              name: actor.name,
+              owner,
+              x: logicalTransform ? Math.round(logicalTransform.x) : undefined,
+              y: logicalTransform ? Math.round(logicalTransform.y) : undefined,
+              z: logicalTransform ? Math.round(logicalTransform.z) : undefined
+            };
+          })
+          .filter((diagnostic) => diagnostic !== undefined);
+        if (removedActorDiagnostics.length > 0) {
+          console.warn(
+            `[Reconnect] Snapshot ${response.reason ?? "reconnect"} will remove ${removedActorDiagnostics.length} local actors not present on host snapshot.`,
+            removedActorDiagnostics
+          );
+        }
 
       for (const actor of currentActors) {
         actor.destroy();
@@ -330,6 +335,7 @@ export class ReconnectService {
           }
         );
       }
+      }
 
       // Restore per-player state data (resources, housing, summary, selection).
       for (const [playerNumberStr, stateData] of Object.entries(snapshot.playerStates)) {
@@ -392,6 +398,73 @@ export class ReconnectService {
     } finally {
       scene.data.set("snapshotApplyInProgress", false);
     }
+  }
+
+  /**
+   * Desync correction updates only actors that differ from the host snapshot.
+   * This avoids the visible twitch caused by destroying and rebuilding the whole scene.
+   */
+  private applyActorSnapshotInPlace(
+    actorIndex: ActorIndexSystem,
+    creator: SceneActorCreator,
+    currentActors: readonly Phaser.GameObjects.GameObject[],
+    snapshotActors: readonly ActorDefinition[]
+  ): void {
+    const liveActorById = new Map(
+      currentActors
+        .map((actor) => [getActorComponent(actor, IdComponent)?.id, actor] as const)
+        .filter((entry): entry is [string, Phaser.GameObjects.GameObject] => !!entry[0])
+    );
+    const snapshotActorIds = new Set(
+      snapshotActors.map((actor) => actor.id?.id).filter((actorId): actorId is string => !!actorId)
+    );
+
+    let updated = 0;
+    let created = 0;
+    let destroyed = 0;
+    for (const snapshotActor of snapshotActors) {
+      const actorId = snapshotActor.id?.id;
+      if (!actorId) {
+        continue;
+      }
+      const liveActor = liveActorById.get(actorId);
+      if (liveActor) {
+        if (snapshotActor.name && liveActor.name !== snapshotActor.name) {
+          liveActor.destroy();
+          destroyed += 1;
+          if (creator.createActorFromDefinition(snapshotActor)) {
+            created += 1;
+          }
+          continue;
+        }
+        applyActorDefinitionToActor(liveActor, snapshotActor);
+        updated += 1;
+      } else if (creator.createActorFromDefinition(snapshotActor)) {
+        created += 1;
+      }
+    }
+
+    for (const liveActor of currentActors) {
+      const liveActorId = getActorComponent(liveActor, IdComponent)?.id;
+      if (liveActorId && !snapshotActorIds.has(liveActorId)) {
+        liveActor.destroy();
+        destroyed += 1;
+      }
+    }
+
+    const finalIds = new Set(
+      actorIndex
+        .getAllIdActors()
+        .map((actor) => getActorComponent(actor, IdComponent)?.id)
+        .filter((actorId): actorId is string => !!actorId)
+    );
+    const missing = [...snapshotActorIds].filter((actorId) => !finalIds.has(actorId));
+    if (missing.length > 0) {
+      console.error(`[DESYNC] In-place correction still missing ${missing.length} actors after apply.`, missing);
+    }
+    console.warn(
+      `[DESYNC] In-place host correction reconciled actors. updated=${updated} created=${created} destroyed=${destroyed}`
+    );
   }
 
   /**

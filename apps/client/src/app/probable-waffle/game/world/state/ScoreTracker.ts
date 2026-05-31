@@ -11,7 +11,6 @@ import {
 import { getPlayersFromScene } from "../../../../shared/game/phaser/scene/base.scene";
 import { getCurrentPlayerNumber } from "../../data/scene-data";
 import { ScenePlayerHelpers } from "../../data/scene-player-helpers";
-import { throttle } from "../../library/throttle";
 import { getActorComponent, hasActorComponent } from "../../data/actor-component";
 import { ConstructionSiteComponent } from "../../entity/components/construction/construction-site-component";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
@@ -30,8 +29,9 @@ export class ScoreTracker {
   private currentPlayerNumber!: PlayerNumber;
   private players!: ProbableWafflePlayer[];
   private stopped: boolean = false;
-  private snapshotInterval = 5000; // Create snapshot every 5 seconds
-  private lastSnapshotTime = 0;
+  private readonly updateIntervalTicks = 20; // 1 second at the fixed 20 Hz simulation rate.
+  private readonly snapshotIntervalTicks = 100; // 5 seconds at the fixed 20 Hz simulation rate.
+  private lastSnapshotTick = 0;
   private resourceSubscription?: Subscription;
   private startTrackingDelay?: CancelableSimDelay;
   private simulationTickSub?: Subscription;
@@ -45,15 +45,17 @@ export class ScoreTracker {
   }
 
   private startTracking() {
-    this.simulationTickSub = getSceneService(this.scene, SimulationTickService)?.tick$.subscribe(() => this.throttleUpdate());
+    this.simulationTickSub = getSceneService(this.scene, SimulationTickService)?.tick$.subscribe((tick) => {
+      if (tick % this.updateIntervalTicks === 0) {
+        this.update(tick);
+      }
+    });
     this.scene.events.on(HealthComponent.KilledEvent, this.onActorKilled, this);
     this.scene.events.on(ProbableWaffleSceneEventName.ScoreDamage, this.onDamage, this);
     this.scene.events.on(ProbableWaffleSceneEventName.ScoreUnitProduced, this.onUnitProduced, this);
     this.scene.events.on(ProbableWaffleSceneEventName.ScoreBuildingConstructed, this.onBuildingConstructed, this);
     this.subscribeToResourceEvents();
   }
-
-  private throttleUpdate = throttle(this.update.bind(this), 1000);
 
   /**
    * Initialize score data for all players
@@ -89,7 +91,7 @@ export class ScoreTracker {
   /**
    * Main update loop - tracks live metrics
    */
-  private update() {
+  private update(tick: number) {
     if (!this.scene.scene || !this.scene.scene.isActive()) return;
     if (this.stopped) return;
 
@@ -97,7 +99,7 @@ export class ScoreTracker {
     this.players = getPlayersFromScene<ProbableWafflePlayer>(this.scene);
 
     this.updateLiveMetrics();
-    this.createSnapshotIfNeeded();
+    this.createSnapshotIfNeeded(tick);
   }
 
   /**
@@ -140,10 +142,9 @@ export class ScoreTracker {
   /**
    * Create a snapshot for timeline charts
    */
-  private createSnapshotIfNeeded() {
-    const now = Date.now();
-    if (now - this.lastSnapshotTime < this.snapshotInterval) return;
-    this.lastSnapshotTime = now;
+  private createSnapshotIfNeeded(tick: number) {
+    if (tick - this.lastSnapshotTick < this.snapshotIntervalTicks) return;
+    this.lastSnapshotTick = tick;
 
     const { actorsByPlayer } = ScenePlayerHelpers.getActorsByPlayer(this.scene);
     const playerScores = new Map<PlayerNumber, PlayerScoreSnapshot>();
@@ -166,7 +167,7 @@ export class ScoreTracker {
     });
 
     const snapshot: GameScoreSnapshot = {
-      timestamp: now,
+      timestamp: tick * SimulationTickService.TICK_INTERVAL_MS,
       playerScores
     };
 

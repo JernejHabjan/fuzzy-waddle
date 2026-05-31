@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import type { GameInstanceId, UserId } from "@fuzzy-waddle/api-interfaces";
 
 /** How long (ms) to hold a player's slot after a network disconnect before evicting. */
@@ -23,6 +23,9 @@ interface DisconnectedEntry {
  */
 @Injectable()
 export class PlayerDisconnectTrackerService {
+  private readonly logger = new Logger(PlayerDisconnectTrackerService.name);
+  private readonly debug = process.env.PROBABLE_WAFFLE_MULTIPLAYER_DEBUG === "true";
+
   /** socketId → { userId, gameInstanceId } populated on room-join. */
   private readonly socketToPlayer = new Map<string, { userId: UserId; gameInstanceId: GameInstanceId }>();
 
@@ -36,14 +39,14 @@ export class PlayerDisconnectTrackerService {
    */
   registerSocket(socketId: string, userId: UserId, gameInstanceId: GameInstanceId): void {
     this.socketToPlayer.set(socketId, { userId, gameInstanceId });
-    console.log(`[DisconnectTracker] register socket=${socketId} user=${userId} game=${gameInstanceId}`);
+    this.debugLog(`register socket=${socketId} user=${userId} game=${gameInstanceId}`);
     this.cancelPendingEvictionForPlayer(userId, gameInstanceId);
   }
 
   /** Called when a player explicitly leaves a room (tab close / navigate away). */
   markExplicitQuit(socketId: string): { userId: UserId; gameInstanceId: GameInstanceId } | null {
     const player = this.socketToPlayer.get(socketId) ?? null;
-    console.log(`[DisconnectTracker] explicit-quit socket=${socketId} found=${player ? "yes" : "no"}`);
+    this.debugLog(`explicit-quit socket=${socketId} found=${player ? "yes" : "no"}`);
     this.socketToPlayer.delete(socketId);
     this.cancelPendingEviction(socketId);
     if (player && this.hasActiveSocketForPlayer(player.userId, player.gameInstanceId)) {
@@ -64,13 +67,13 @@ export class PlayerDisconnectTrackerService {
     this.socketToPlayer.delete(socketId);
 
     if (!player) {
-      console.log(`[DisconnectTracker] disconnect socket=${socketId} found=no`);
+      this.debugLog(`disconnect socket=${socketId} found=no`);
       return null;
     }
 
     this.cancelPendingEviction(socketId);
     if (this.hasActiveSocketForPlayer(player.userId, player.gameInstanceId)) {
-      console.log(
+      this.debugLog(
         `[Disconnect] Ignoring disconnect for player ${player.userId} in game ${player.gameInstanceId} because another socket is still active.`
       );
       return null;
@@ -78,14 +81,14 @@ export class PlayerDisconnectTrackerService {
 
     const timer = setTimeout(() => {
       this.pendingEvictions.delete(socketId);
-      console.log(
+      this.logger.warn(
         `[Disconnect] Grace period expired for player ${player.userId} in game ${player.gameInstanceId}. Evicting.`
       );
       onEvict(player.userId, player.gameInstanceId);
     }, RECONNECT_WINDOW_MS);
 
     this.pendingEvictions.set(socketId, { ...player, timer });
-    console.log(
+    this.logger.warn(
       `[Disconnect] Player ${player.userId} disconnected from game ${player.gameInstanceId} on socket ${socketId}. ` +
         `Holding slot for ${RECONNECT_WINDOW_MS / 1000}s.`
     );
@@ -111,7 +114,7 @@ export class PlayerDisconnectTrackerService {
       }
     }
     if (cancelled > 0) {
-      console.log(
+      this.logger.warn(
         `[Reconnect] Player ${userId} reconnected to game ${gameInstanceId} within grace window. Cleared ${cancelled} pending eviction timer(s).`
       );
     }
@@ -149,4 +152,10 @@ export class PlayerDisconnectTrackerService {
     return socketIds;
   }
 
+  private debugLog(message: string): void {
+    if (!this.debug) {
+      return;
+    }
+    this.logger.debug(`[DisconnectTracker] ${message}`);
+  }
 }

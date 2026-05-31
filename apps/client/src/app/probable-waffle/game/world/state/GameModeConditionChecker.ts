@@ -14,7 +14,6 @@ import {
   type TieConditions,
   type WinConditions
 } from "@fuzzy-waddle/api-interfaces";
-import { throttle } from "../../library/throttle";
 import { type ProbableWaffleGameData } from "../../core/probable-waffle-game-data";
 import { ScenePlayerHelpers } from "../../data/scene-player-helpers";
 import { getCurrentPlayerNumber } from "../../data/scene-data";
@@ -41,8 +40,9 @@ export class GameModeConditionChecker {
   private currentPlayer!: ProbableWafflePlayer;
   private selfQuitSubscription?: Subscription;
   private stopped: boolean = false;
-  private surrenderCheckInterval = 2000; // Check every 2 seconds
-  private lastSurrenderCheckTime = 0;
+  private readonly checkIntervalTicks = 20; // 1 second at the fixed 20 Hz simulation rate.
+  private readonly surrenderCheckIntervalTicks = 40; // 2 seconds at the fixed 20 Hz simulation rate.
+  private lastSurrenderCheckTick = 0;
   private currentDelay?: CancelableSimDelay;
   private simulationTickSub?: Subscription;
 
@@ -58,16 +58,18 @@ export class GameModeConditionChecker {
   }
 
   private startChecking() {
-    this.simulationTickSub = getSceneService(this.scene, SimulationTickService)?.tick$.subscribe(() => this.throttleCheck());
+    this.simulationTickSub = getSceneService(this.scene, SimulationTickService)?.tick$.subscribe((tick) => {
+      if (tick % this.checkIntervalTicks === 0) {
+        this.check(tick);
+      }
+    });
   }
 
-  private throttleCheck = throttle(this.check.bind(this), 1000);
-
-  private check() {
+  private check(tick: number) {
     if (!this.scene.scene || !this.scene.scene.isActive()) return;
     if (this.stopped) return;
     this.prepareData();
-    this.checkAiSurrender();
+    this.checkAiSurrender(tick);
     if (this.checkWinConditions()) {
       this.winGame();
       return;
@@ -119,10 +121,9 @@ export class GameModeConditionChecker {
     });
   }
 
-  private checkAiSurrender() {
-    const now = Date.now();
-    if (now - this.lastSurrenderCheckTime < this.surrenderCheckInterval) return;
-    this.lastSurrenderCheckTime = now;
+  private checkAiSurrender(tick: number) {
+    if (tick - this.lastSurrenderCheckTick < this.surrenderCheckIntervalTicks) return;
+    this.lastSurrenderCheckTick = tick;
 
     // Only check surrender in single-player mode (InstantGame or Skirmish)
     const baseGameData = getBaseGameDataFromScene<ProbableWaffleGameData>(this.scene);

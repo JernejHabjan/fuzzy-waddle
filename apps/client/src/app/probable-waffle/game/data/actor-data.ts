@@ -75,11 +75,11 @@ export function setActorData(
     actorData = new ActorData(componentMap, systemMap);
     actor.setData(ActorDataKey, actorData);
   }
-  setActorProperties(actor, actorDefinition);
+  applyActorDefinitionToActor(actor, actorDefinition);
   actor.emit(ActorDataChangedEvent, actorData);
 }
 
-function setActorProperties(actor: GameObject, actorDefinition?: Partial<ActorDefinition>) {
+export function applyActorDefinitionToActor(actor: GameObject, actorDefinition?: Partial<ActorDefinition>) {
   if (!actorDefinition) return;
   if (actorDefinition.id) getActorComponent(actor, IdComponent)?.setData(actorDefinition.id);
   if (actorDefinition.representable)
@@ -264,7 +264,7 @@ export function upgradeFromCoreToConstructingActorData(
     actorData.systems.set(system.constructor, system);
   }
 
-  setActorProperties(actor, actorDefinition);
+  applyActorDefinitionToActor(actor, actorDefinition);
   const sceneActorCreator = getSceneService(actor.scene, SceneActorCreator);
   if (!sceneActorCreator) {
     throw new Error("SceneActorCreator not found in scene");
@@ -292,7 +292,7 @@ export function upgradeFromConstructingToFullActorData(
     actorData.systems.set(system.constructor, system);
   }
 
-  setActorProperties(actor, actorDefinition);
+  applyActorDefinitionToActor(actor, actorDefinition);
 
   actor.emit(ActorDataChangedEvent, actorData);
 }
@@ -304,7 +304,7 @@ export function addActorComponent(
 ) {
   const actorData = actor.getData(ActorDataKey) as ActorData;
   actorData.components.set(component.constructor, component);
-  setActorProperties(actor, actorDefinition);
+  applyActorDefinitionToActor(actor, actorDefinition);
   actor.emit(ActorDataChangedEvent, actorData);
 }
 
@@ -315,7 +315,7 @@ export function addActorSystem(
 ) {
   const actorData = actor.getData(ActorDataKey) as ActorData;
   actorData.systems.set(system.constructor, system);
-  setActorProperties(actor, actorDefinition);
+  applyActorDefinitionToActor(actor, actorDefinition);
   actor.emit(ActorDataChangedEvent, actorData);
 }
 
@@ -326,7 +326,7 @@ export function removeActorComponent(
 ) {
   const actorData = actor.getData(ActorDataKey) as ActorData;
   actorData.components.delete(component.constructor);
-  setActorProperties(actor, actorDefinition);
+  applyActorDefinitionToActor(actor, actorDefinition);
   actor.emit(ActorDataChangedEvent, actorData);
 }
 
@@ -337,7 +337,7 @@ export function removeActorSystem(
 ) {
   const actorData = actor.getData(ActorDataKey) as ActorData;
   actorData.systems.delete(system.constructor);
-  setActorProperties(actor, actorDefinition);
+  applyActorDefinitionToActor(actor, actorDefinition);
   actor.emit(ActorDataChangedEvent, actorData);
 }
 
