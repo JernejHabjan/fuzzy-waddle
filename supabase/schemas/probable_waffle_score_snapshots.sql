@@ -45,5 +45,10 @@ create policy "Enable select for service_role" on probable_waffle_score_snapshot
 alter table probable_waffle_score_snapshots
   enable row level security;
 
+revoke all on table public.probable_waffle_score_snapshots from anon;
+revoke all on table public.probable_waffle_score_snapshots from authenticated;
+revoke all on sequence public.probable_waffle_score_snapshots_id_seq from anon;
+revoke all on sequence public.probable_waffle_score_snapshots_id_seq from authenticated;
+
 grant select, insert on table public.probable_waffle_score_snapshots to service_role;
 grant usage, select on sequence public.probable_waffle_score_snapshots_id_seq to service_role;

@@ -2,7 +2,7 @@
 -- Source of truth remains supabase/schemas/*.sql.
 
 -- =============================================
--- Source: 0001_profiles.sql
+-- Source: profiles.sql
 -- =============================================
 
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
@@ -105,10 +105,13 @@ SELECT id,
 FROM auth.users
 group by id;
 
+revoke all on table public.profiles from anon;
+revoke all on table public.profiles from authenticated;
+
 grant select (id, name) on table public.profiles to service_role;
 
 -- =============================================
--- Source: 0002_storage.sql
+-- Source: storage.sql
 -- =============================================
 
 CREATE POLICY "test bucket access to authenticated users for webp files"
@@ -121,7 +124,7 @@ CREATE POLICY "test bucket access to authenticated users for webp files"
   );
 
 -- =============================================
--- Source: 0003_messages.sql
+-- Source: messages.sql
 -- =============================================
 
 drop table if exists messages;
@@ -168,10 +171,13 @@ CREATE POLICY "Enable select for service_role" ON "public"."messages"
 alter table messages
   enable row level security;
 
+revoke all on table public.messages from anon;
+revoke all on table public.messages from authenticated;
+
 grant insert, select on table public.messages to service_role;
 
 -- =============================================
--- Source: 0004_fly-squasher_scores.sql
+-- Source: fly_squasher_scores.sql
 -- =============================================
 
 drop table if exists fly_squasher_scores;
@@ -232,13 +238,20 @@ SELECT *
 FROM scores
 WHERE level_rn <= 3;
 
+revoke all on table public.fly_squasher_scores from anon;
+revoke all on table public.fly_squasher_scores from authenticated;
+revoke all on table public.fly_squasher_scores_with_user_meta from anon;
+revoke all on table public.fly_squasher_scores_with_user_meta from authenticated;
+revoke all on sequence public.fly_squasher_scores_id_seq from anon;
+revoke all on sequence public.fly_squasher_scores_id_seq from authenticated;
+
 grant insert on table public.fly_squasher_scores to service_role;
 grant select (id, score, level, user_id, date) on table public.fly_squasher_scores to service_role;
 grant select on table public.fly_squasher_scores_with_user_meta to service_role;
 grant usage, select on sequence public.fly_squasher_scores_id_seq to service_role;
 
 -- =============================================
--- Source: 0005_probable_waffle_achievements.sql
+-- Source: probable_waffle_achievements.sql
 -- =============================================
 
 drop table if exists probable_waffle_achievements;
@@ -277,11 +290,16 @@ CREATE POLICY "Enable insert access for own achievements"
 ALTER TABLE probable_waffle_achievements
   ENABLE ROW LEVEL SECURITY;
 
-grant select, insert on table public.probable_waffle_achievements to authenticated;
-grant usage, select on sequence public.probable_waffle_achievements_id_seq to authenticated;
+revoke all on table public.probable_waffle_achievements from anon;
+revoke all on table public.probable_waffle_achievements from authenticated;
+revoke all on sequence public.probable_waffle_achievements_id_seq from anon;
+revoke all on sequence public.probable_waffle_achievements_id_seq from authenticated;
+
+grant insert on table public.probable_waffle_achievements to authenticated;
+grant usage on sequence public.probable_waffle_achievements_id_seq to authenticated;
 
 -- =============================================
--- Source: 0006_little_muncher_scores.sql
+-- Source: little_muncher_scores.sql
 -- =============================================
 
 -- Little Muncher High Scores Table
@@ -346,16 +364,23 @@ FROM hill_ranked
 WHERE hill_rn <= 3
 ORDER BY hill, hill_rn;
 
+revoke all on table public.little_muncher_scores from anon;
+revoke all on table public.little_muncher_scores from authenticated;
+revoke all on table public.little_muncher_scores_with_user_meta from anon;
+revoke all on table public.little_muncher_scores_with_user_meta from authenticated;
+revoke all on sequence public.little_muncher_scores_id_seq from anon;
+revoke all on sequence public.little_muncher_scores_id_seq from authenticated;
+
 grant insert on table public.little_muncher_scores to service_role;
 grant select on table public.little_muncher_scores_with_user_meta to service_role;
 grant usage, select on sequence public.little_muncher_scores_id_seq to service_role;
 
 -- =============================================
--- Source: 0007_probable_waffle_game_sessions.sql
+-- Source: probable_waffle_game_sessions.sql
 -- =============================================
 
 -- =============================================================================
--- 0007: Probable Waffle Game Sessions
+-- Probable Waffle Game Sessions
 -- =============================================================================
 -- Tracks game sessions (online and offline) for score submission and match history.
 --
@@ -369,7 +394,7 @@ grant usage, select on sequence public.little_muncher_scores_id_seq to service_r
 --   Only the last human player to reach the score screen submits scores.
 --   API is idempotent: duplicate submissions return success without inserting again.
 --
--- Depends on: 0001_profiles.sql, 0003_messages.sql (messages FK added here)
+-- Depends on: profiles.sql, messages.sql (messages FK added here)
 -- =============================================================================
 
 drop table if exists probable_waffle_game_sessions cascade;
@@ -434,7 +459,7 @@ alter table probable_waffle_game_sessions
 
 -- messages
 -- add foreign key constraint to game sessions table
--- Note: This constraint requires probable_waffle_game_sessions table to exist first (run 0007 migration before this)
+-- Note: This constraint requires probable_waffle_game_sessions table to exist first.
 alter table messages
   add constraint messages_game_instance_id_fkey
     foreign key (game_instance_id) references probable_waffle_game_sessions (game_instance_id) on delete set null;
@@ -442,16 +467,19 @@ alter table messages
 -- add comment explaining the relationship
 comment on column messages.game_instance_id is 'References the game instance UUID from probable_waffle_game_sessions';
 
+revoke all on table public.probable_waffle_game_sessions from anon;
+revoke all on table public.probable_waffle_game_sessions from authenticated;
+
 grant select, insert, update on table public.probable_waffle_game_sessions to service_role;
 
 
 
 -- =============================================
--- Source: 0008_probable_waffle_player_scores.sql
+-- Source: probable_waffle_player_scores.sql
 -- =============================================
 
 -- =============================================================================
--- 0008: Probable Waffle Player Scores (Hybrid EAV Design)
+-- Probable Waffle Player Scores (Hybrid EAV Design)
 -- =============================================================================
 -- Stores per-player statistics for completed game sessions.
 -- Uses a 3-table hybrid design (core fields + EAV metrics catalog + metric values).
@@ -472,7 +500,7 @@ grant select, insert, update on table public.probable_waffle_game_sessions to se
 -- Stats view (probable_waffle_player_stats):
 --   Aggregates per-user wins/losses/averages from the materialized view.
 --
--- Depends on: 0007_probable_waffle_game_sessions.sql
+-- Depends on: probable_waffle_game_sessions.sql
 -- =============================================================================
 
 -- Create player scores table with hybrid design
@@ -829,6 +857,21 @@ BEGIN
 END;
 $$;
 
+revoke all on table public.probable_waffle_player_scores from anon;
+revoke all on table public.probable_waffle_player_scores from authenticated;
+revoke all on table public.probable_waffle_score_metric_types from anon;
+revoke all on table public.probable_waffle_score_metric_types from authenticated;
+revoke all on table public.probable_waffle_player_score_metrics from anon;
+revoke all on table public.probable_waffle_player_score_metrics from authenticated;
+revoke all on table public.probable_waffle_match_history from anon;
+revoke all on table public.probable_waffle_match_history from authenticated;
+revoke all on table public.probable_waffle_player_stats from anon;
+revoke all on table public.probable_waffle_player_stats from authenticated;
+revoke all on sequence public.probable_waffle_player_scores_id_seq from anon;
+revoke all on sequence public.probable_waffle_player_scores_id_seq from authenticated;
+revoke all on sequence public.probable_waffle_player_score_metrics_id_seq from anon;
+revoke all on sequence public.probable_waffle_player_score_metrics_id_seq from authenticated;
+
 grant select, insert on table public.probable_waffle_player_scores to service_role;
 grant select on table public.probable_waffle_score_metric_types to service_role;
 grant select, insert on table public.probable_waffle_player_score_metrics to service_role;
@@ -882,7 +925,7 @@ $$;
 
 
 -- =============================================
--- Source: 0009_probable_waffle_score_snapshots.sql
+-- Source: probable_waffle_score_snapshots.sql
 -- =============================================
 
 -- Score snapshots for timeline charts in match history
@@ -931,6 +974,11 @@ create policy "Enable select for service_role" on probable_waffle_score_snapshot
 
 alter table probable_waffle_score_snapshots
   enable row level security;
+
+revoke all on table public.probable_waffle_score_snapshots from anon;
+revoke all on table public.probable_waffle_score_snapshots from authenticated;
+revoke all on sequence public.probable_waffle_score_snapshots_id_seq from anon;
+revoke all on sequence public.probable_waffle_score_snapshots_id_seq from authenticated;
 
 grant select, insert on table public.probable_waffle_score_snapshots to service_role;
 grant usage, select on sequence public.probable_waffle_score_snapshots_id_seq to service_role;

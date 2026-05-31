@@ -56,6 +56,13 @@ SELECT *
 FROM scores
 WHERE level_rn <= 3;
 
+revoke all on table public.fly_squasher_scores from anon;
+revoke all on table public.fly_squasher_scores from authenticated;
+revoke all on table public.fly_squasher_scores_with_user_meta from anon;
+revoke all on table public.fly_squasher_scores_with_user_meta from authenticated;
+revoke all on sequence public.fly_squasher_scores_id_seq from anon;
+revoke all on sequence public.fly_squasher_scores_id_seq from authenticated;
+
 grant insert on table public.fly_squasher_scores to service_role;
 grant select (id, score, level, user_id, date) on table public.fly_squasher_scores to service_role;
 grant select on table public.fly_squasher_scores_with_user_meta to service_role;

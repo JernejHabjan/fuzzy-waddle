@@ -98,4 +98,7 @@ SELECT id,
 FROM auth.users
 group by id;
 
+revoke all on table public.profiles from anon;
+revoke all on table public.profiles from authenticated;
+
 grant select (id, name) on table public.profiles to service_role;

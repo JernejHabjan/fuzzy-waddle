@@ -60,6 +60,13 @@ FROM hill_ranked
 WHERE hill_rn <= 3
 ORDER BY hill, hill_rn;
 
+revoke all on table public.little_muncher_scores from anon;
+revoke all on table public.little_muncher_scores from authenticated;
+revoke all on table public.little_muncher_scores_with_user_meta from anon;
+revoke all on table public.little_muncher_scores_with_user_meta from authenticated;
+revoke all on sequence public.little_muncher_scores_id_seq from anon;
+revoke all on sequence public.little_muncher_scores_id_seq from authenticated;
+
 grant insert on table public.little_muncher_scores to service_role;
 grant select on table public.little_muncher_scores_with_user_meta to service_role;
 grant usage, select on sequence public.little_muncher_scores_id_seq to service_role;

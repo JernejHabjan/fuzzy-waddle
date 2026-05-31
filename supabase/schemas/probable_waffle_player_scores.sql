@@ -1,5 +1,5 @@
 -- =============================================================================
--- 0008: Probable Waffle Player Scores (Hybrid EAV Design)
+-- Probable Waffle Player Scores (Hybrid EAV Design)
 -- =============================================================================
 -- Stores per-player statistics for completed game sessions.
 -- Uses a 3-table hybrid design (core fields + EAV metrics catalog + metric values).
@@ -20,7 +20,7 @@
 -- Stats view (probable_waffle_player_stats):
 --   Aggregates per-user wins/losses/averages from the materialized view.
 --
--- Depends on: 0007_probable_waffle_game_sessions.sql
+-- Depends on: probable_waffle_game_sessions.sql
 -- =============================================================================
 
 -- Create player scores table with hybrid design
@@ -376,6 +376,21 @@ BEGIN
   REFRESH MATERIALIZED VIEW CONCURRENTLY probable_waffle_player_scores_full;
 END;
 $$;
+
+revoke all on table public.probable_waffle_player_scores from anon;
+revoke all on table public.probable_waffle_player_scores from authenticated;
+revoke all on table public.probable_waffle_score_metric_types from anon;
+revoke all on table public.probable_waffle_score_metric_types from authenticated;
+revoke all on table public.probable_waffle_player_score_metrics from anon;
+revoke all on table public.probable_waffle_player_score_metrics from authenticated;
+revoke all on table public.probable_waffle_match_history from anon;
+revoke all on table public.probable_waffle_match_history from authenticated;
+revoke all on table public.probable_waffle_player_stats from anon;
+revoke all on table public.probable_waffle_player_stats from authenticated;
+revoke all on sequence public.probable_waffle_player_scores_id_seq from anon;
+revoke all on sequence public.probable_waffle_player_scores_id_seq from authenticated;
+revoke all on sequence public.probable_waffle_player_score_metrics_id_seq from anon;
+revoke all on sequence public.probable_waffle_player_score_metrics_id_seq from authenticated;
 
 grant select, insert on table public.probable_waffle_player_scores to service_role;
 grant select on table public.probable_waffle_score_metric_types to service_role;

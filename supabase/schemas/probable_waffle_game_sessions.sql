@@ -1,5 +1,5 @@
 -- =============================================================================
--- 0007: Probable Waffle Game Sessions
+-- Probable Waffle Game Sessions
 -- =============================================================================
 -- Tracks game sessions (online and offline) for score submission and match history.
 --
@@ -13,7 +13,7 @@
 --   Only the last human player to reach the score screen submits scores.
 --   API is idempotent: duplicate submissions return success without inserting again.
 --
--- Depends on: 0001_profiles.sql, 0003_messages.sql (messages FK added here)
+-- Depends on: profiles.sql, messages.sql (messages FK added here)
 -- =============================================================================
 
 drop table if exists probable_waffle_game_sessions cascade;
@@ -78,13 +78,16 @@ alter table probable_waffle_game_sessions
 
 -- messages
 -- add foreign key constraint to game sessions table
--- Note: This constraint requires probable_waffle_game_sessions table to exist first (run 0007 migration before this)
+-- Note: This constraint requires probable_waffle_game_sessions table to exist first.
 alter table messages
   add constraint messages_game_instance_id_fkey
     foreign key (game_instance_id) references probable_waffle_game_sessions (game_instance_id) on delete set null;
 
 -- add comment explaining the relationship
 comment on column messages.game_instance_id is 'References the game instance UUID from probable_waffle_game_sessions';
+
+revoke all on table public.probable_waffle_game_sessions from anon;
+revoke all on table public.probable_waffle_game_sessions from authenticated;
 
 grant select, insert, update on table public.probable_waffle_game_sessions to service_role;
 

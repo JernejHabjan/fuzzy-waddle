@@ -42,4 +42,7 @@ CREATE POLICY "Enable select for service_role" ON "public"."messages"
 alter table messages
   enable row level security;
 
+revoke all on table public.messages from anon;
+revoke all on table public.messages from authenticated;
+
 grant insert, select on table public.messages to service_role;
