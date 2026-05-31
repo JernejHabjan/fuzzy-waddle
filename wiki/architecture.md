@@ -21,7 +21,7 @@ fuzzy-waddle/
 │   └── api/             # NestJS backend
 ├── libs/
 │   └── api-interfaces/  # Shared TypeScript contracts (client ↔ server)
-├── DBMs/                # SQL migration scripts
+└── supabase/            # Local Supabase config, migrations, schemas, and seeds
 ```
 
 ## Games
@@ -56,7 +56,7 @@ The Probable Waffle desktop app is built directly from `apps/client` — no sepa
 - `apps/client/src-tauri/` contains the Tauri v2 Rust shell
 - `apps/client/project.json` has three build configs: `production` (web), `development`, and `tauri` (swaps `environment.ts` → `environment.prod.ts`, disables service worker)
 - `TauriService` (`apps/client/src/app/shared/services/tauri.service.ts`) and standalone `isTauri()` provide runtime Tauri detection — no-ops in browser builds
-- The Rust shell exposes two commands: `set_cursor_grab(grab: bool)` (RTS edge-scroll cursor lock) and `quit()`
+- The Rust shell exposes desktop commands for cursor grab, fullscreen toggling, app version lookup, and quitting
 - On startup in Tauri, `AppComponent` automatically navigates to `/aota`
 - Connects to the same hosted NestJS API as the web app
 

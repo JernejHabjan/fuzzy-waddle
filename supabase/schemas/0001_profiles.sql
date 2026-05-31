@@ -19,21 +19,21 @@ DROP POLICY IF EXISTS "Allow authenticated users to select their own profile" on
 CREATE POLICY "Allow authenticated users to select their own profile"
   ON public.profiles
   FOR SELECT
-  USING (auth.uid() = id);
+  USING ((select auth.uid()) = id);
 
 -- Create a policy to allow authenticated users to update their own profile
 DROP POLICY IF EXISTS "Allow authenticated users to update their own profile" on public.profiles;
 CREATE POLICY "Allow authenticated users to update their own profile"
   ON public.profiles
   FOR UPDATE
-  USING (auth.uid() = id);
+  USING ((select auth.uid()) = id);
 
 -- Create a policy to allow authenticated users to delete their own profile
 DROP POLICY IF EXISTS "Allow authenticated users to delete their own profile" on public.profiles;
 CREATE POLICY "Allow authenticated users to delete their own profile"
   ON public.profiles
   FOR DELETE
-  USING (auth.uid() = id);
+  USING ((select auth.uid()) = id);
 
 -- inserts a row into public.profiles
 CREATE OR REPLACE FUNCTION public.handle_new_user()
@@ -47,24 +47,27 @@ BEGIN
 
   -- if provider is Google
   IF NEW.raw_app_meta_data ->> 'provider' = 'google' THEN
-    INSERT INTO public.profiles (id, email, name, profile_image_url, created)
-    VALUES (NEW.id, NEW.email, NEW.raw_user_meta_data ->> 'name', NEW.raw_user_meta_data ->> 'avatar_url', CURRENT_TIMESTAMP);
+    INSERT INTO public.profiles (id, email, name, profile_image_url)
+    VALUES (NEW.id, NEW.email, NEW.raw_user_meta_data ->> 'name', NEW.raw_user_meta_data ->> 'avatar_url');
   ELSE
     -- else insert random name
-    INSERT INTO public.profiles (id, email, name, profile_image_url, created)
+    INSERT INTO public.profiles (id, email, name, profile_image_url)
     VALUES (NEW.id,
             NEW.email,
             substring(
               string_agg(chr(65 + floor(random() * 26)::int), ''), -- Random letters (A-Z)
               1, 10 -- 10-character random name
             ),
-            '',
-            CURRENT_TIMESTAMP);
+            '');
   END IF;
 
   RETURN NEW;
 END;
 $$;
+
+revoke execute on function public.handle_new_user() from public;
+revoke execute on function public.handle_new_user() from anon;
+revoke execute on function public.handle_new_user() from authenticated;
 
 
 -- trigger the function every time a user is created
@@ -94,3 +97,8 @@ SELECT id,
          END
 FROM auth.users
 group by id;
+
+revoke all on table public.profiles from anon;
+revoke all on table public.profiles from authenticated;
+
+grant select (id, name) on table public.profiles to service_role;
