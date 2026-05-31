@@ -12,10 +12,10 @@ Some GPU drivers cause tiles to appear "chipped" or have pixel gaps at tile edge
 
 ## Phaser Editor 2D
 
-| Issue | Solution |
-| ----- | -------- |
+| Issue                              | Solution                                                                           |
+|------------------------------------|------------------------------------------------------------------------------------|
 | Files being processed unexpectedly | Add a `.skip` file to the directory to exclude it from Phaser Editor 2D processing |
-| Unexpected editor behaviour | Open DevTools with `Ctrl+Shift+I` to investigate console errors |
+| Unexpected editor behaviour        | Open DevTools with `Ctrl+Shift+I` to investigate console errors                    |
 
 ## pnpm — Wrong Package Manager
 
@@ -65,6 +65,15 @@ Ensure the API is running and the proxy is configured. The dev proxy config is a
 
 ## Environment Variables Missing
 
-For local Supabase OAuth, copy the root `.env.example` to `.env`; it contains only the Google OAuth values consumed by `supabase/config.toml`.
+For local Supabase OAuth, copy the root `.env.example` to `.env`; it contains only the Google OAuth values consumed by `supabase/config.toml`:
 
-For local API development, copy [apps/api/.env.example](../apps/api/.env.example) to `apps/api/.env.local` and fill in `CORS_ORIGIN`, `SUPABASE_URL`, and `SUPABASE_SERVICE_KEY`. The API will fail to start or fail Supabase requests without `SUPABASE_URL` and `SUPABASE_SERVICE_KEY`; `CORS_ORIGIN` is required for browser and WebSocket access.
+- `SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID`
+- `SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET`
+
+For local API development, copy [apps/api/.env.example](../apps/api/.env.example) to `apps/api/.env.local` and fill in:
+
+- `CORS_ORIGIN`
+- `SUPABASE_URL`
+- `SUPABASE_SERVICE_KEY`
+
+The API will fail to start or fail Supabase requests without `SUPABASE_URL` and `SUPABASE_SERVICE_KEY`; `CORS_ORIGIN` is required for browser and WebSocket access.

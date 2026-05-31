@@ -21,7 +21,7 @@ See Supabase's current [Google OAuth guide](https://supabase.com/docs/guides/aut
 In your Supabase project under **Authentication → URL Configuration**:
 
 | Setting       | Value                                                                                     |
-| ------------- | ----------------------------------------------------------------------------------------- |
+|---------------|-------------------------------------------------------------------------------------------|
 | Site URL      | `https://fuzzy-waddle.onrender.com`                                                       |
 | Redirect URLs | `http://localhost:4200/`                                                                  |
 |               | `https://fuzzy-waddle.onrender.com/`                                                      |
@@ -33,6 +33,8 @@ In your Supabase project under **Authentication → URL Configuration**:
 ## Local Supabase Development
 
 A local Supabase config is available under `supabase/`. It is loaded by `supabase start` and uses Docker.
+
+The local Supabase CLI reads the root `.env` file because `supabase/config.toml` references its Google OAuth values with `env(...)`. The Nest API does not use the root `.env`; its local values belong in `apps/api/.env.local`.
 
 ### Local Google OAuth
 
@@ -81,12 +83,12 @@ supabase stop
 
 Default local endpoints in this repo:
 
-| Service  | URL / connection string                                      |
-| -------- | ------------------------------------------------------------ |
-| API      | `http://127.0.0.1:54321`                                     |
-| Database | `postgresql://postgres:postgres@127.0.0.1:54322/postgres`     |
-| Studio   | `http://127.0.0.1:54323`                                     |
-| Inbucket | `http://127.0.0.1:54324`                                     |
+| Service  | URL / connection string                                   |
+|----------|-----------------------------------------------------------|
+| API      | `http://127.0.0.1:54321`                                  |
+| Database | `postgresql://postgres:postgres@127.0.0.1:54322/postgres` |
+| Studio   | `http://127.0.0.1:54323`                                  |
+| Inbucket | `http://127.0.0.1:54324`                                  |
 
 The default local database password is `postgres`.
 
@@ -98,6 +100,14 @@ The local auth redirect allow-list in `supabase/config.toml` includes:
 - `http://127.0.0.1:4200/`
 
 ### App Environment Values
+
+Env ownership in this repo:
+
+| File                                           | Used by                  | Values                                                                                    |
+|------------------------------------------------|--------------------------|-------------------------------------------------------------------------------------------|
+| `.env`                                         | Supabase CLI local stack | `SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID`, `SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET`         |
+| `apps/api/.env.local`                          | Nest API                 | `CORS_ORIGIN`, `SUPABASE_URL`, `SUPABASE_SERVICE_KEY`                                     |
+| `apps/client/src/environments/environment*.ts` | Angular client           | public API URL, client URL, Supabase URL, Supabase anon/publishable key, Socket.IO config |
 
 For the Nest API:
 
@@ -131,17 +141,30 @@ This script is defined in the root `package.json`.
 
 ## Database Migrations
 
-Supabase migrations live in `supabase/migrations/` and should be created with the Supabase CLI so timestamps and metadata stay consistent.
+Supabase declarative schemas live in `supabase/schemas/`. Migration files live in `supabase/migrations/` and are what actually get applied to databases.
+
+Keep schema files numbered and grouped by feature/table. Keep object-level grants and revokes beside the objects they protect in the same schema file, then generate or update migrations from that schema state.
+
+The existing `supabase/migrations/20260530175708_initial_migration.sql` migration is the baseline migration. It includes explicit object-level Data API grants required by Supabase's public schema exposure rules.
 
 Recommended workflow:
 
 ```bash
-# Create a new migration file
+# 1. Start local Supabase if it is not already running
+supabase start
+
+# 2. Edit supabase/schemas/*.sql
+
+# 3. Create a new migration file
 supabase migration new describe_change
 
-# Review the generated SQL file in supabase/migrations/
-# Then apply all local migrations to the local database
+# 4. Add the required SQL to the generated file in supabase/migrations/
+
+# 5. Recreate the local database and apply all migrations locally
 supabase db reset
+
+# 6. Check local schema warnings
+supabase db lint --local --schema public --level warning --fail-on none
 ```
 
 After creating a migration:
@@ -152,7 +175,39 @@ After creating a migration:
 
 Use the CLI for migration creation instead of writing ad-hoc SQL files by hand.
 
-The existing `supabase/migrations/20260530175708_initial_migration.sql` migration includes the explicit object-level Data API grants required by Supabase's public schema exposure rules. Keep per-object grants alongside table creation in future migrations.
+### Applying Migrations Locally
+
+To update the local Supabase instance after adding or editing migrations, run:
+
+```bash
+supabase db reset
+```
+
+This recreates the local database, reapplies every migration from `supabase/migrations/`, and runs local seeds configured in `supabase/config.toml`. It is the cleanest local check because it proves the full migration history can build the database from scratch.
+
+If you only need the current local stack details before or after applying migrations, run:
+
+```bash
+supabase status
+```
+
+### Applying Migrations Remotely
+
+Do not use `supabase db reset` on the hosted database. That command is for local development.
+
+The linked hosted Supabase project is updated by the project deployment flow after migrations are merged into the `main` branch. Treat local verification as the gate: run `supabase db reset` and `supabase db lint --local --schema public --level warning --fail-on none` before opening or merging the PR.
+
+If an urgent manual remote apply is ever needed outside the normal merge flow, preview first:
+
+```bash
+supabase db push --dry-run
+```
+
+Then apply only after reviewing the SQL and confirming the target project:
+
+```bash
+supabase db push
+```
 
 ## Connecting via JDBC
 
@@ -162,23 +217,3 @@ Useful for inspecting the database with tools like DBeaver or IntelliJ DataGrip:
 2. Select **Transaction pooler**
 3. Select **JDBC**
 4. Copy the connection string into your database client
-
-### Applying migrations locally
-
-To update the local Supabase instance after adding or editing migrations, run:
-
-```bash
-supabase db reset
-```
-
-This recreates the local database, reapplies migrations from `supabase/migrations/`, and runs local seeds configured in `supabase/config.toml`.
-
-If you need to check the current local stack details before or after applying migrations, run:
-
-```bash
-supabase status
-```
-
-### Merge flow note
-
-The local instance only changes when you run the relevant Supabase CLI commands yourself. The other Supabase environment is updated separately and applies migrations after they are merged to the `main` branch, so verify migrations locally before opening or merging a PR.

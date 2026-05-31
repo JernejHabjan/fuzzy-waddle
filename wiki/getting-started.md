@@ -2,12 +2,12 @@
 
 ## Prerequisites
 
-| Tool    | Requirement                                                                             |
-| ------- | --------------------------------------------------------------------------------------- |
-| Node.js | `>=24.13.0`                                                                             |
-| pnpm    | `>=10.0`; npm/yarn are not supported for installs                                       |
-| Git     | Latest stable                                                                           |
-| Docker  | Required only when running the local Supabase stack                                     |
+| Tool    | Requirement                                         |
+| ------- | --------------------------------------------------- |
+| Node.js | `>=24.13.0`                                         |
+| pnpm    | `>=10.0`; npm/yarn are not supported for installs   |
+| Git     | Latest stable                                       |
+| Docker  | Required only when running the local Supabase stack |
 
 ## 1. Clone & Install
 
@@ -19,28 +19,33 @@ pnpm install
 
 ## 2. Configure Environment
 
-Copy the root env example for local Supabase Google OAuth:
+There are two env files for local development:
+
+- The root `.env` is read by the Supabase CLI while starting the local stack. It only contains the local Google OAuth provider values referenced from `supabase/config.toml`.
+- `apps/api/.env.local` is read by the Nest API. It contains API runtime values such as CORS and Supabase connection credentials.
+
+Copy the root env example:
 
 ```bash
 cp .env.example .env
 ```
 
-| Variable                                      | Local value / source                                      |
-| --------------------------------------------- | --------------------------------------------------------- |
-| `SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID`     | Google Cloud Console OAuth client ID                      |
-| `SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET`        | Google Cloud Console OAuth client secret                  |
+| Variable                                  | Local value / source                     |
+| ----------------------------------------- | ---------------------------------------- |
+| `SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID` | Google Cloud Console OAuth client ID     |
+| `SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET`    | Google Cloud Console OAuth client secret |
 
-Copy the API env example for the Nest API:
+Copy the API env example:
 
 ```bash
 cp apps/api/.env.example apps/api/.env.local
 ```
 
-| Variable               | Local value / source                                      |
-| ---------------------- | --------------------------------------------------------- |
-| `CORS_ORIGIN`          | `http://localhost:4200`                                   |
-| `SUPABASE_URL`         | Local Supabase API URL, usually `http://127.0.0.1:54321`  |
-| `SUPABASE_SERVICE_KEY` | `supabase status` > `Authentication Keys` > `Secret`      |
+| Variable               | Local value / source                                                       |
+| ---------------------- | -------------------------------------------------------------------------- |
+| `CORS_ORIGIN`          | `http://localhost:4200`                                                    |
+| `SUPABASE_URL`         | Local Supabase API URL, usually `http://127.0.0.1:54321`                   |
+| `SUPABASE_SERVICE_KEY` | Local secret key from `supabase status` > `Authentication Keys` > `Secret` |
 
 See the [Supabase setup guide](supabase.md) for local startup, Google OAuth, and hosted project values.
 
@@ -68,7 +73,7 @@ pnpm start:api      # NestJS API     → http://localhost:3333
 ## Common Commands
 
 | Command          | Description                         |
-|------------------|-------------------------------------|
+| ---------------- | ----------------------------------- |
 | `pnpm build`     | Build all projects                  |
 | `pnpm test`      | Run all unit tests                  |
 | `pnpm lint`      | Lint all projects                   |
