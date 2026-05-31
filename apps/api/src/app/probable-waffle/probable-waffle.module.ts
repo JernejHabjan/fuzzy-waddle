@@ -13,9 +13,10 @@ import { MatchmakingController } from "./matchmaking/matchmaking.controller";
 import { RoomServerService } from "./game-room/room-server.service";
 import { ChatModule } from "../chat/chat.module";
 import { GameSessionModule } from "./game-session/game-session.module";
+import { AuthModule } from "../../auth/auth.module";
 
 @Module({
-  imports: [ChatModule, GameSessionModule],
+  imports: [AuthModule, ChatModule, GameSessionModule],
   providers: [
     GameInstanceGateway,
     RoomGateway,
