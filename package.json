@@ -109,11 +109,11 @@
     "socket.io": "^4.8.1",
     "tslib": "^2.8.1",
     "zone.js": "0.16.0",
-    "@tauri-apps/api": "^2.0.0",
-    "@tauri-apps/plugin-deep-link": "^2.0.0",
-    "@tauri-apps/plugin-notification": "^2.0.0",
-    "@tauri-apps/plugin-window-state": "^2.0.0",
-    "@tauri-apps/plugin-opener": "^2.0.0"
+    "@tauri-apps/api": "2.10.1",
+    "@tauri-apps/plugin-deep-link": "2.4.9",
+    "@tauri-apps/plugin-notification": "2.3.3",
+    "@tauri-apps/plugin-window-state": "2.4.1",
+    "@tauri-apps/plugin-opener": "2.5.4"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "21.2.7",
@@ -169,7 +169,7 @@
     "ts-jest": "29.4.9",
     "ts-node": "10.9.2",
     "typescript": "5.9.3",
-    "@tauri-apps/cli": "^2.0.0"
+    "@tauri-apps/cli": "2.10.1"
   },
   "pnpm": {
     "overrides": {
