@@ -2,7 +2,7 @@
 -- Source of truth remains supabase/schemas/*.sql.
 
 -- =============================================
--- Source: profiles.sql
+-- Source: 0001_profiles.sql
 -- =============================================
 
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
@@ -111,7 +111,7 @@ revoke all on table public.profiles from authenticated;
 grant select (id, name) on table public.profiles to service_role;
 
 -- =============================================
--- Source: storage.sql
+-- Source: 0002_storage.sql
 -- =============================================
 
 CREATE POLICY "test bucket access to authenticated users for webp files"
@@ -124,7 +124,7 @@ CREATE POLICY "test bucket access to authenticated users for webp files"
   );
 
 -- =============================================
--- Source: messages.sql
+-- Source: 0003_messages.sql
 -- =============================================
 
 drop table if exists messages;
@@ -177,7 +177,7 @@ revoke all on table public.messages from authenticated;
 grant insert, select on table public.messages to service_role;
 
 -- =============================================
--- Source: fly_squasher_scores.sql
+-- Source: 0004_fly-squasher_scores.sql
 -- =============================================
 
 drop table if exists fly_squasher_scores;
@@ -251,7 +251,7 @@ grant select on table public.fly_squasher_scores_with_user_meta to service_role;
 grant usage, select on sequence public.fly_squasher_scores_id_seq to service_role;
 
 -- =============================================
--- Source: probable_waffle_achievements.sql
+-- Source: 0005_probable_waffle_achievements.sql
 -- =============================================
 
 drop table if exists probable_waffle_achievements;
@@ -299,7 +299,7 @@ grant insert on table public.probable_waffle_achievements to authenticated;
 grant usage on sequence public.probable_waffle_achievements_id_seq to authenticated;
 
 -- =============================================
--- Source: little_muncher_scores.sql
+-- Source: 0006_little_muncher_scores.sql
 -- =============================================
 
 -- Little Muncher High Scores Table
@@ -376,7 +376,7 @@ grant select on table public.little_muncher_scores_with_user_meta to service_rol
 grant usage, select on sequence public.little_muncher_scores_id_seq to service_role;
 
 -- =============================================
--- Source: probable_waffle_game_sessions.sql
+-- Source: 0007_probable_waffle_game_sessions.sql
 -- =============================================
 
 -- =============================================================================
@@ -475,7 +475,7 @@ grant select, insert, update on table public.probable_waffle_game_sessions to se
 
 
 -- =============================================
--- Source: probable_waffle_player_scores.sql
+-- Source: 0008_probable_waffle_player_scores.sql
 -- =============================================
 
 -- =============================================================================
@@ -925,7 +925,7 @@ $$;
 
 
 -- =============================================
--- Source: probable_waffle_score_snapshots.sql
+-- Source: 0009_probable_waffle_score_snapshots.sql
 -- =============================================
 
 -- Score snapshots for timeline charts in match history
@@ -982,4 +982,3 @@ revoke all on sequence public.probable_waffle_score_snapshots_id_seq from authen
 
 grant select, insert on table public.probable_waffle_score_snapshots to service_role;
 grant usage, select on sequence public.probable_waffle_score_snapshots_id_seq to service_role;
-
