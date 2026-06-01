@@ -2,39 +2,39 @@
 
 /* custom */
 $app-font-bold: "EagleLake", sans-serif;
-$app-row-odd: #d8e3ef;
-$app-row-even: #eef4fa;
+$app-row-odd: #e4efe9;
+$app-row-even: #f6f1e7;
 $app-border-radius: 10px !default;
-$tertiary: #b0c9e0;
-$quaternary: #dce7f3;
+$tertiary: #c7ddd1;
+$quaternary: #f3ebdc;
 $dark: #141a26;
-$app-surface-dark: rgb(0 31 77 / 88%);
+$app-surface-dark: rgb(20 35 61 / 88%);
 $app-surface-light: rgb(255 250 244 / 90%);
 $app-border-subtle: rgb(255 255 255 / 16%);
 $app-accent-warm: #ffbf47;
 $app-accent-warm-strong: #ff7a18;
 $app-text-on-dark: #f5f7fb;
-$app-text-main: #1b2d4a;
-$app-text-muted: #526784;
+$app-text-main: #21324f;
+$app-text-muted: #5d6678;
 $app-text-on-dark-muted: rgba(245, 247, 251, 0.72);
 $app-text-on-dark-soft: rgba(245, 247, 251, 0.84);
 $app-surface-glass-soft: rgba(255, 255, 255, 0.06);
 $app-surface-glass: rgba(255, 255, 255, 0.08);
 $app-surface-glass-strong: rgba(255, 255, 255, 0.1);
 $app-surface-glass-border: rgba(255, 255, 255, 0.24);
-$app-shadow-strong: rgb(0 31 77 / 18%);
-$app-shadow-soft: rgb(0 31 77 / 12%);
+$app-shadow-strong: rgb(20 35 61 / 18%);
+$app-shadow-soft: rgb(20 35 61 / 12%);
 $app-overlay-warm: rgb(255 191 71 / 18%);
 $app-overlay-warm-strong: rgb(255 122 24 / 12%);
 $app-overlay-warm-gradient: rgb(255 122 24 / 28%);
-$app-overlay-cool-gradient: rgb(86 179 255 / 22%);
-$app-overlay-muted: rgb(0 31 77 / 8%);
+$app-overlay-cool-gradient: rgb(35 187 161 / 20%);
+$app-overlay-muted: rgb(20 35 61 / 8%);
 $app-surface-white-70: rgba(255, 255, 255, 0.7);
 $app-border-dark-subtle: rgb(0 31 77 / 10%);
-$app-text-on-accent: #111;
+$app-text-on-accent: #14233d;
 $app-accent-warm-contrast: #fff1cc;
-$app-border-ui: rgb(0 31 77 / 18%);
-$app-border-ui-strong: rgb(0 31 77 / 28%);
+$app-border-ui: rgb(20 35 61 / 18%);
+$app-border-ui-strong: rgb(20 35 61 / 28%);
 $app-surface-plain: #ffffff;
 $app-surface-plain-soft: rgb(255 255 255 / 82%);
 $app-danger: #b00020;
@@ -43,8 +43,8 @@ $app-danger-text: #7a0016;
 $app-muted-ink: rgb(20 26 38 / 72%);
 
 /* bootstrap overrides */
-$primary: #001f4d;
-$secondary: #334d73;
+$primary: #16335f;
+$secondary: #188c7c;
 $font-family-base: "WorkSans", sans-serif !default;
 $btn-font-family: $app-font-bold !default;
 /* IMPORTANT - use these overrides then in overrides.scss */

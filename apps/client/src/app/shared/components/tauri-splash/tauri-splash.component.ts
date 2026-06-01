@@ -16,7 +16,7 @@ import { isTauri } from "../../utils/tauri";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TauriSplashComponent implements OnInit, OnDestroy {
-  protected readonly shouldRender = isTauri();
+  protected readonly shouldRender = true; // todo isTauri();
 
   /** Controls CSS animation phase: 'visible' | 'leaving' | 'gone' */
   protected readonly phase = signal<"visible" | "leaving" | "gone">("visible");

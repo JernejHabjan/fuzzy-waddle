@@ -89,7 +89,7 @@
   border-radius: 50%;
   background: radial-gradient(circle at 35% 35%, $app-accent-warm-contrast, $app-accent-warm);
   opacity: 0;
-  animation: particle-float calc(4s + var(--i, 0) * 0.3s) calc(var(--i, 0) * 0.2s) infinite ease-in-out;
+  animation: particle-float calc(2.4s + var(--i, 0) * 0.16s) calc(var(--i, 0) * 0.1s) infinite ease-in-out;
   left: calc(5% + var(--i, 0) * 8%);
   top: 62%;
   box-shadow: 0 0 18px rgb(255 191 71 / 25%);
@@ -178,16 +178,6 @@
     opacity: 1;
     transform: translateY(0);
   }
-}
-
-.splash-kicker {
-  margin: 0 0 0.5rem;
-  color: $app-accent-warm-contrast;
-  font-family: "WorkSans", sans-serif;
-  font-size: 0.74rem;
-  font-weight: 600;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
 }
 
 .splash-title {
