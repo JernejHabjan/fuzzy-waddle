@@ -1,7 +1,6 @@
 import { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { ScaleHandler } from "../../player/human-controller/scale.handler";
 import { CameraMovementHandler } from "../../player/human-controller/cameraMovementHandler";
-import { LightsHandler } from "./effects/lights.handler";
 import { DepthHelper } from "../services/depth.helper";
 import { AnimatedTilemap } from "../tilemap/animated-tiles/animated-tile.helper";
 import { SingleSelectionHandler } from "../../player/human-controller/single-selection.handler";
@@ -37,6 +36,7 @@ import { LockedCursorHandler } from "../../player/human-controller/locked-cursor
 import { ActorDebugDamageSystem } from "../services/actor-debug-damage-system";
 import { SpellCursor } from "../../player/human-controller/spell-cursor";
 import { AoeZoneManager } from "../../entity/systems/aoe-zone-manager";
+import { SceneLightingService } from "../services/lighting/scene-lighting.service";
 
 export default class GameProbableWaffleScene extends ProbableWaffleScene {
   tilemap!: Phaser.Tilemaps.Tilemap;
@@ -50,9 +50,10 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     hud.scene.start();
     hud.initializeWithParentScene(this);
 
+    const lightingService = new SceneLightingService(this);
+
     new SceneGameState(this);
     new ScaleHandler(this, this.tilemap, { margins: { left: 150, bottom: 100 }, maxLayers: 8 });
-    new LightsHandler(this, { enableLights: false });
     new DepthHelper(this);
     new AnimatedTilemap(this, this.tilemap, this.tilemap.tilesets);
     new GameObjectSelectionHandler(this);
@@ -77,6 +78,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
       new NavigationService(this, this.tilemap),
       new AudioService(this),
       new PlayerActionsHandler(this, hud),
+      lightingService,
       creator,
       new DebuggingService(),
       new CrossSceneCommunicationService(),
