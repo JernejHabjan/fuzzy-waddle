@@ -1,44 +1,61 @@
 <fuzzy-waddle-home-nav routerLink="/fly-squasher" title="Fly Squasher" [showBack]="true" />
 
 <fuzzy-waddle-center-wrapper>
-  <div class="card-container">
-    <div class="general-title">High score:</div>
+  <div class="leaderboard-page">
+    <section class="leaderboard-header">
+      <div>
+        <span class="eyebrow">Scoreboard</span>
+        <h1>Fly Squasher High Scores</h1>
+        <p>See which kitchens are producing the heaviest swat streaks and who is holding the top spots.</p>
+      </div>
+      <button routerLink="/fly-squasher/choose-level" class="btn btn-primary" type="button">Play a Level</button>
+    </section>
 
     @if (highScores.length) {
-      @for (level of getUniqueLevels(highScores); track level) {
-        <div class="card p-2 m-1">
-          <h3>{{ level.name }}</h3>
-          <ol>
-            @for (score of getTopScoresForLevel(highScores, level.id); track score) {
-              <li>{{ score.userName }} - {{ score.score }}</li>
-            }
-          </ol>
-        </div>
-      }
+      <section class="leaderboard-grid">
+        @for (level of getUniqueLevels(highScores); track level.id) {
+          <article class="leaderboard-card">
+            <div class="leaderboard-card-header">
+              <div>
+                <h2>{{ level.name }}</h2>
+                <p>{{ level.description }}</p>
+              </div>
+              <div class="leader-badge">Top {{ getTopScoreForLevel(level.id) }}</div>
+            </div>
+
+            <ol class="leaderboard-list">
+              @for (score of getTopScoresForLevel(highScores, level.id); track score.userName + score.score) {
+                <li>
+                  <span>{{ score.userName }}</span>
+                  <strong>{{ score.score }}</strong>
+                </li>
+              }
+            </ol>
+          </article>
+        }
+      </section>
     } @else {
-      <div class="text-center">
-        <!-- check if loading -->
+      <section class="leaderboard-empty">
         @if (loading) {
-          <div>
+          <div class="status-icon">
             <fa-icon [icon]="faSpinner" animation="spin" />
           </div>
+          <h2>Loading score data</h2>
+          <p>Checking the Fly Squasher leaderboard feed.</p>
         } @else {
           @if (this.serverHealthService.serverAvailable) {
-            <div>
-              <div>No scores yet</div>
-              <div>Be the first to play!</div>
-              <button routerLink="/fly-squasher/choose-level" class="btn btn-danger m-1" type="button">Play</button>
-            </div>
+            <h2>No scores posted yet</h2>
+            <p>The board is open. Start a kitchen run and claim the first slot.</p>
+            <button routerLink="/fly-squasher/choose-level" class="btn btn-primary" type="button">Start Playing</button>
           } @else {
-            <div>Server unavailable</div>
-            <div>Try again later</div>
-            @if (!this.serverHealthService.serverAvailable) {
+            <div class="status-icon">
               <fa-icon [icon]="faExclamationTriangle" class="text-warning" />
-            }
+            </div>
+            <h2>Server unavailable</h2>
+            <p>Leaderboard sync is offline right now. Try again later.</p>
           }
         }
-        <!-- no scores -->
-      </div>
+      </section>
     }
   </div>
 </fuzzy-waddle-center-wrapper>

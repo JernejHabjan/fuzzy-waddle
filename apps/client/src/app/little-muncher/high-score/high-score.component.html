@@ -1,42 +1,61 @@
 <fuzzy-waddle-home-nav routerLink="/little-muncher" title="Little Muncher" [showBack]="true" />
 
 <fuzzy-waddle-center-wrapper>
-  <div class="card-container">
-    <div class="general-title">High score:</div>
+  <div class="leaderboard-page">
+    <section class="leaderboard-header">
+      <div>
+        <span class="eyebrow">Hall of Fame</span>
+        <h1>Little Muncher High Scores</h1>
+        <p>Track the best cake runs by hill and see which routes are producing the strongest munch streaks.</p>
+      </div>
+      <button routerLink="/little-muncher" class="btn btn-primary" type="button">Back to Runner Hub</button>
+    </section>
 
     @if (highScores.length) {
-      @for (hill of getUniqueHills(highScores); track hill.data.name) {
-        <div class="card p-2 m-1">
-          <h3>{{ hill.data.name }} ({{ hill.data.height }}m)</h3>
-          <ol>
-            @for (score of getTopScoresForHill(highScores, hill.enum); track score.user_id) {
-              <li>{{ score.user_name }} - {{ score.score }}</li>
-            }
-          </ol>
-        </div>
-      }
+      <section class="leaderboard-grid">
+        @for (hill of getUniqueHills(highScores); track hill.data.name) {
+          <article class="leaderboard-card">
+            <div class="leaderboard-card-header">
+              <div>
+                <h2>{{ hill.data.name }}</h2>
+                <p>{{ hill.data.height }}m runner route</p>
+              </div>
+              <div class="leader-badge">Top {{ getTopScoreForHill(hill.enum) }}</div>
+            </div>
+
+            <ol class="leaderboard-list">
+              @for (score of getTopScoresForHill(highScores, hill.enum); track score.user_id) {
+                <li>
+                  <span>{{ score.user_name }}</span>
+                  <strong>{{ score.score }}</strong>
+                </li>
+              }
+            </ol>
+          </article>
+        }
+      </section>
     } @else {
-      <div class="text-center">
-        <!-- check if loading -->
+      <section class="leaderboard-empty">
         @if (loading) {
-          <div>
+          <div class="status-icon">
             <fa-icon [icon]="faSpinner" animation="spin" />
           </div>
+          <h2>Loading score data</h2>
+          <p>Checking the server for the current Little Muncher leaderboards.</p>
         } @else {
           @if (this.serverHealthService.serverAvailable) {
-            <div>
-              <div>No scores yet</div>
-              <div>Be the first to play!</div>
-              <button routerLink="/little-muncher/choose-level" class="btn btn-danger m-1" type="button">Play</button>
-            </div>
+            <h2>No scores posted yet</h2>
+            <p>The board is empty. Be the first one to put up a cake run worth chasing.</p>
+            <button routerLink="/little-muncher" class="btn btn-primary" type="button">Start a Run</button>
           } @else {
-            <div>Server unavailable</div>
-            <div>Try again later</div>
-            <fa-icon [icon]="faExclamationTriangle" class="text-warning" />
+            <div class="status-icon">
+              <fa-icon [icon]="faExclamationTriangle" class="text-warning" />
+            </div>
+            <h2>Server unavailable</h2>
+            <p>Leaderboard sync is offline right now. Try again later or play locally.</p>
           }
         }
-        <!-- no scores -->
-      </div>
+      </section>
     }
   </div>
 </fuzzy-waddle-center-wrapper>

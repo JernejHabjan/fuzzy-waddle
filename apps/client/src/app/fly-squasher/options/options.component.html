@@ -1,15 +1,27 @@
 <fuzzy-waddle-home-nav routerLink="/fly-squasher" title="Fly Squasher" [showBack]="true" />
 
 <fuzzy-waddle-center-wrapper>
-  <div class="card-container">
-    <div class="general-title">Options:</div>
+  <div class="options-page">
+    <section class="options-header">
+      <div>
+        <span class="eyebrow">Audio Rig</span>
+        <h1>Fly Squasher Options</h1>
+        <p>Dial the mix for kitchen ambience, soundtrack, and all the squishy feedback in between.</p>
+      </div>
+      <button routerLink="/fly-squasher" class="btn btn-outline-primary" type="button">Back to Lobby</button>
+    </section>
 
-    <div class="card mt-3 p-3">
-      <h5 class="mb-3">Volume Controls:</h5>
-      <div class="mb-3">
-        <label for="masterVolume" class="form-label form-label--volume"
-          >Master Volume: {{ volumeSettings.masterVolume }}</label
-        >
+    <section class="options-card">
+      <div class="section-heading">
+        <h2>Volume Controls</h2>
+        <p>Your settings are stored locally on this device for the next kitchen clean-up run.</p>
+      </div>
+
+      <div class="slider-group">
+        <label for="masterVolume" class="form-label form-label--volume">
+          <span>Master Volume</span>
+          <strong>{{ volumeSettings.masterVolume }}</strong>
+        </label>
         <input
           type="range"
           [(ngModel)]="volumeSettings.masterVolume"
@@ -18,8 +30,11 @@
           id="masterVolume"
         />
       </div>
-      <div class="mb-3">
-        <label for="sfxVolume" class="form-label form-label--volume">SFX Volume: {{ volumeSettings.sfxVolume }}</label>
+      <div class="slider-group">
+        <label for="sfxVolume" class="form-label form-label--volume">
+          <span>SFX Volume</span>
+          <strong>{{ volumeSettings.sfxVolume }}</strong>
+        </label>
         <input
           type="range"
           [(ngModel)]="volumeSettings.sfxVolume"
@@ -28,10 +43,11 @@
           id="sfxVolume"
         />
       </div>
-      <div class="mb-3">
-        <label for="musicVolume" class="form-label form-label--volume"
-          >Music Volume: {{ volumeSettings.musicVolume }}</label
-        >
+      <div class="slider-group">
+        <label for="musicVolume" class="form-label form-label--volume">
+          <span>Music Volume</span>
+          <strong>{{ volumeSettings.musicVolume }}</strong>
+        </label>
         <input
           type="range"
           [(ngModel)]="volumeSettings.musicVolume"
@@ -40,6 +56,6 @@
           id="musicVolume"
         />
       </div>
-    </div>
+    </section>
   </div>
 </fuzzy-waddle-center-wrapper>

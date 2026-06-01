@@ -1,22 +1,56 @@
 <fuzzy-waddle-home-nav routerLink="/" title="Fly Squasher" [showBack]="true" />
 
 <fuzzy-waddle-center-wrapper>
-  <div class="card-container d-flex flex-column">
+  <div class="fly-home">
+    <section class="fly-hero">
+      <div class="hero-copy">
+        <span class="eyebrow">Arcade Hunt</span>
+        <h1>Clear the kitchen before the swarm takes over.</h1>
+        <p>
+          Pick a level, track the best swat streaks, and tune your audio before the next wave of flies shows up.
+        </p>
+      </div>
+
+      <div class="hero-sidebar">
+        <h2>Kitchen Notes</h2>
+        <ul>
+          @for (feature of featureList; track feature) {
+            <li>{{ feature }}</li>
+          }
+        </ul>
+      </div>
+    </section>
+
     @if (!serverHealthService.serverChecking && !serverHealthService.serverAvailable) {
-      <div class="alert alert-warning d-flex align-items-center" role="alert">
+      <div class="status-banner" role="alert">
         <fa-icon [icon]="faExclamationTriangle" class="me-2" />
-        Warning! Server is not available. Your score will not be saved.
+        Server is unavailable. Runs are still playable, but score submissions are offline.
       </div>
     } @else {
       @if (!authService.isAuthenticated) {
-        <div class="alert alert-warning d-flex align-items-center" role="alert">
+        <div class="status-banner" role="alert">
           <fa-icon [icon]="faExclamationTriangle" class="me-2" />
-          Warning! You are not logged in. Your score will not be saved.
+          You are in guest mode. Sign in if you want leaderboard scores to stick.
         </div>
       }
     }
-    <button routerLink="choose-level" class="btn btn-primary m-1" type="button">Play</button>
-    <button routerLink="high-score" class="btn btn-primary m-1" type="button">High Scores</button>
-    <button routerLink="options" class="btn btn-primary m-1" type="button">Options</button>
+
+    <section class="action-grid">
+      <a class="action-card" routerLink="choose-level">
+        <span class="action-kicker">Start Run</span>
+        <h2>Choose Level</h2>
+        <p>Browse the kitchen setups and launch the one that fits your reflexes.</p>
+      </a>
+      <a class="action-card" routerLink="high-score">
+        <span class="action-kicker">Compete</span>
+        <h2>High Scores</h2>
+        <p>Check the current top runs and see which kitchen has the strongest squashing streaks.</p>
+      </a>
+      <a class="action-card" routerLink="options">
+        <span class="action-kicker">Tune Audio</span>
+        <h2>Options</h2>
+        <p>Adjust master, SFX, and soundtrack levels before the next attempt.</p>
+      </a>
+    </section>
   </div>
 </fuzzy-waddle-center-wrapper>

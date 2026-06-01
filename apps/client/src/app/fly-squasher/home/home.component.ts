@@ -18,6 +18,11 @@ import { CenterWrapperComponent } from "../../shared/components/center-wrapper/c
 })
 export class HomeComponent {
   protected readonly faExclamationTriangle = faExclamationTriangle;
+  protected readonly featureList = [
+    "Chain score runs across fly patterns and dirty kitchen layouts.",
+    "Push leaderboard attempts when you are signed in and the server is reachable.",
+    "Tune master, SFX, and music volume before you jump back into the swat zone."
+  ];
 
   protected readonly authService = inject(AuthService);
   protected readonly serverHealthService = inject(ServerHealthService);
