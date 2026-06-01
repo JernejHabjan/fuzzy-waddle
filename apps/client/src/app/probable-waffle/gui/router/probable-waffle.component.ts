@@ -3,19 +3,44 @@ import { GameInstanceClientService } from "../../communicators/game-instance-cli
 import { UserInstanceService } from "../../../home/profile/user-instance.service";
 import { RouterOutlet } from "@angular/router";
 import { AngularHost } from "../../../shared/consts";
+import { TauriService } from "../../../shared/services/tauri.service";
 
 @Component({
   templateUrl: "./probable-waffle.component.html",
   styleUrls: ["./probable-waffle.component.scss"],
   imports: [RouterOutlet],
-  host: AngularHost.contentFlexFullHeight
+  host: {
+    ...AngularHost.contentFlexFullHeight,
+    "(window:focus)": "onWindowFocus()",
+    "(window:blur)": "onWindowBlur()"
+  }
 })
 export class ProbableWaffleComponent implements OnInit, OnDestroy {
   private readonly gameInstanceClientService = inject(GameInstanceClientService);
   protected readonly userInstanceService = inject(UserInstanceService);
+  private readonly tauriService = inject(TauriService);
 
   ngOnInit(): void {
     this.userInstanceService.setVisitedGame("aota");
+    // noinspection JSIgnoredPromiseFromCall
+    this.applyCursorGrab();
+  }
+
+  protected onWindowFocus(): void {
+    // noinspection JSIgnoredPromiseFromCall
+    this.applyCursorGrab();
+  }
+
+  /** Lock cursor only when running fullscreen — in windowed mode the cursor must be free. */
+  private async applyCursorGrab(): Promise<void> {
+    const fullscreen = await this.tauriService.isFullscreen();
+    await this.tauriService.setCursorGrab(fullscreen);
+  }
+
+  /** Release cursor lock when the window loses focus (e.g. Alt+Tab). */
+  protected onWindowBlur(): void {
+    // noinspection JSIgnoredPromiseFromCall
+    this.tauriService.releaseCursor();
   }
 
   @HostListener("window:beforeunload")
@@ -24,6 +49,9 @@ export class ProbableWaffleComponent implements OnInit, OnDestroy {
   }
 
   async ngOnDestroy(): Promise<void> {
+    // Release cursor lock when leaving the game scene
+    // noinspection ES6MissingAwait
+    this.tauriService.releaseCursor();
     await this.onBeforeUnload();
   }
 }

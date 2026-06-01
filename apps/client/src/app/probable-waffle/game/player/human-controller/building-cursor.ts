@@ -1,4 +1,5 @@
 import { GameObjects, Input } from "phaser";
+import { isFullscreenTopEdgeExit } from "./fullscreen-edge-guard";
 import {
   type ActorDefinition,
   ObjectNames,
@@ -79,7 +80,7 @@ export class BuildingCursor {
     this.stopPlacingSubscription = this.stopPlacingBuilding.subscribe(() => this.stop());
     this.scene.input.on(Input.Events.POINTER_MOVE, this.handlePointerMove, this);
     this.scene.input.on(Input.Events.POINTER_DOWN, this.onPointerDown, this);
-    this.scene.input.on(Input.Events.GAME_OUT, this.stop, this);
+    this.scene.input.on(Input.Events.GAME_OUT, this.handleGameOut, this);
     this.scene.input.on(Input.Events.POINTER_UP, this.onPointerUp, this);
     onSceneInitialized(scene, this.init, this);
     scene.onShutdown.subscribe(() => this.destroy());
@@ -943,6 +944,11 @@ export class BuildingCursor {
     this.shiftKey = this.scene.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
   }
 
+  private handleGameOut() {
+    if (isFullscreenTopEdgeExit(this.scene.input)) return;
+    this.stop();
+  }
+
   stop() {
     this.building?.destroy();
     this.building = undefined;
@@ -959,7 +965,7 @@ export class BuildingCursor {
     this.scene.input.off(Input.Events.POINTER_MOVE, this.handlePointerMove, this);
     this.scene.input.off(Input.Events.POINTER_DOWN, this.onPointerDown, this);
     this.scene.input.off(Input.Events.POINTER_UP, this.onPointerUp, this);
-    this.scene.input.off(Input.Events.GAME_OUT, this.stop, this);
+    this.scene.input.off(Input.Events.GAME_OUT, this.handleGameOut, this);
     this.escKey?.off(Phaser.Input.Keyboard.Events.DOWN, this.onEscapeKeyDown, this);
     this.shiftKey?.destroy();
     this.externalModalSubscription?.unsubscribe();

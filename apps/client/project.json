@@ -62,6 +62,21 @@
           "extractLicenses": false,
           "sourceMap": true,
           "namedChunks": true
+        },
+        "tauri": {
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true,
+          "serviceWorker": false,
+          "fileReplacements": [
+            {
+              "replace": "apps/client/src/environments/environment.ts",
+              "with": "apps/client/src/environments/environment.prod.ts"
+            }
+          ]
         }
       },
       "defaultConfiguration": "production"
@@ -74,6 +89,9 @@
         },
         "development": {
           "buildTarget": "client:build:development"
+        },
+        "tauri": {
+          "buildTarget": "client:build:tauri"
         }
       },
       "defaultConfiguration": "development",
@@ -100,6 +118,28 @@
       "options": {
         "jestConfig": "apps/client/jest.config.ts",
         "tsConfig": "apps/client/tsconfig.spec.json"
+      }
+    },
+    "tauri-dev": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx serve client --configuration=tauri",
+          "cd apps/client && pnpm exec tauri dev"
+        ],
+        "parallel": true,
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "tauri-build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx build client --configuration=tauri",
+          "cd apps/client && pnpm exec tauri build"
+        ],
+        "parallel": false,
+        "cwd": "{workspaceRoot}"
       }
     }
   }

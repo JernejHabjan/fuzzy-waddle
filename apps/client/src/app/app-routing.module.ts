@@ -1,9 +1,13 @@
-import { NgModule } from "@angular/core";
-import { RouterModule, type Routes } from "@angular/router";
+import { inject, NgModule } from "@angular/core";
+import { Router, RouterModule, type Routes } from "@angular/router";
 import { AuthGuard } from "./auth/auth.guard";
 import { LevelGuard } from "./fly-squasher/choose-level/level.guard";
 import { environment } from "../environments/environment";
 import { GameInstanceGuard } from "./probable-waffle/gui/online/lobby-page/game-instance.guard";
+import { isTauri } from "./shared/utils/tauri";
+
+/** In Tauri the only published game is Probable Waffle — redirect root to /aota. */
+const tauriHomeRedirect = () => (isTauri() ? inject(Router).createUrlTree(["/aota"]) : true);
 
 const littleMuncherRoutes = [
   {
@@ -174,7 +178,8 @@ const dungeonCrawlerRoutes = [
 const routes = [
   {
     path: "",
-    loadComponent: () => import("./home/page/home-page.component").then((m) => m.HomePageComponent)
+    loadComponent: () => import("./home/page/home-page.component").then((m) => m.HomePageComponent),
+    canActivate: [tauriHomeRedirect]
   },
   {
     path: "profile",

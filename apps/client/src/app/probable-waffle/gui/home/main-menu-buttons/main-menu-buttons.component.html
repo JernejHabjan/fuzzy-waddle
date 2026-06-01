@@ -64,6 +64,29 @@
       </div>
     }
 
+    @if (isTauri) {
+      <div class="menu-section">
+        <h3 class="menu-section-title">Account</h3>
+        <div class="section-buttons">
+          @if (!authService.processing && !authService.isAuthenticated) {
+            <button class="menu-button" (click)="authService.signInWithGoogle()">
+              <span class="menu-button-text"><fa-icon [icon]="faGoogle" /> Sign In</span>
+              <span class="menu-button-description">Sign in with Google</span>
+            </button>
+          }
+          @if (!authService.processing && authService.isAuthenticated) {
+            <a class="menu-button" routerLink="/profile">
+              <span class="menu-button-text">
+                <img alt="avatar" height="24" [src]="avatarProviderService.getAvatar(authService.userId!)" />
+                {{ authService.fullName! }}
+              </span>
+              <span class="menu-button-description">View profile</span>
+            </a>
+          }
+        </div>
+      </div>
+    }
+
     <div class="menu-section">
       <h3 class="menu-section-title">Options</h3>
       <div class="section-buttons">
@@ -84,8 +107,20 @@
   </div>
 
   <div class="back-button-container">
-    <button class="menu-button back-button" routerLink="/">
-      <span class="menu-button-text">Back</span>
-    </button>
+    @if (isTauri) {
+      <button class="menu-button" (click)="quit()">
+        <span class="menu-button-text">Quit</span>
+        <span class="menu-button-description">Exit to desktop</span>
+      </button>
+    }
+    @else {
+      <button class="menu-button back-button" routerLink="/">
+        <span class="menu-button-text">Back</span>
+      </button>
+    }
   </div>
+
+  @if (isTauri && appVersion()) {
+    <div class="app-version">v{{ appVersion() }}</div>
+  }
 </div>

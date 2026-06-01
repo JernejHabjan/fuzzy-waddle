@@ -123,6 +123,21 @@ import ForestWendigo from "../prefabs/characters/mobs/forest_wendigo/ForestWendi
 import SnowWendigo from "../prefabs/characters/mobs/snow_wendigo/SnowWendigo";
 import VikingBoat from "../prefabs/characters/shared/VikingBoat/VikingBoat";
 import CommonBoat from "../prefabs/characters/shared/CommonBoat/CommonBoat";
+import CropsCabbage from "../prefabs/outside/crops/cabbage/CropsCabbage";
+import CropsPeppers from "../prefabs/outside/crops/peppers/CropsPeppers";
+import CropsBeans from "../prefabs/outside/crops/beans/CropsBeans";
+import CropsCucumbers from "../prefabs/outside/crops/cucumbers/CropsCucumbers";
+import CropsGrapes from "../prefabs/outside/crops/grapes/CropsGrapes";
+import CropsLettuce from "../prefabs/outside/crops/lettuce/CropsLettuce";
+import CropsPineapple from "../prefabs/outside/crops/pineapple/CropsPineapple";
+import CropsPumpkin from "../prefabs/outside/crops/pumpkin/CropsPumpkin";
+import CropsSunflowers from "../prefabs/outside/crops/sunflowers/CropsSunflowers";
+import CropsWheat from "../prefabs/outside/crops/wheat/CropsWheat";
+import CropsZucchini from "../prefabs/outside/crops/zucchini/CropsZucchini";
+import GroundBoletus from "../prefabs/outside/crops/ground/boletus/GroundBoletus";
+import GroundCarrot from "../prefabs/outside/crops/ground/carrot/GroundCarrot";
+import GroundChampignons from "../prefabs/outside/crops/ground/champignons/GroundChampignons";
+import GroundTurnip from "../prefabs/outside/crops/ground/turnip/GroundTurnip";
 
 type ActorMap = { [name: string]: new (scene: Phaser.Scene) => GameObject };
 export class ActorManager {
@@ -146,6 +161,24 @@ export class ActorManager {
     [ObjectNames.Deer]: Deer,
     [ObjectNames.Fox]: Fox,
     [ObjectNames.Hare]: Hare
+  };
+
+  private static crops: ActorMap = {
+    [ObjectNames.CropsBeans]: CropsBeans,
+    [ObjectNames.CropsCabbage]: CropsCabbage,
+    [ObjectNames.CropsCucumbers]: CropsCucumbers,
+    [ObjectNames.CropsGrapes]: CropsGrapes,
+    [ObjectNames.CropsLettuce]: CropsLettuce,
+    [ObjectNames.CropsPeppers]: CropsPeppers,
+    [ObjectNames.CropsPineapple]: CropsPineapple,
+    [ObjectNames.CropsPumpkin]: CropsPumpkin,
+    [ObjectNames.CropsSunflowers]: CropsSunflowers,
+    [ObjectNames.CropsWheat]: CropsWheat,
+    [ObjectNames.CropsZucchini]: CropsZucchini,
+    [ObjectNames.GroundBoletus]: GroundBoletus,
+    [ObjectNames.GroundCarrot]: GroundCarrot,
+    [ObjectNames.GroundChampignons]: GroundChampignons,
+    [ObjectNames.GroundTurnip]: GroundTurnip
   };
 
   private static general: ActorMap = {
@@ -263,6 +296,7 @@ export class ActorManager {
 
   public static actorMap: ActorMap = {
     ...ActorManager.animals,
+    ...ActorManager.crops,
     ...ActorManager.general,
     ...ActorManager.mobs,
     ...ActorManager.tivaraWorkers,

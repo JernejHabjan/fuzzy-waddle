@@ -1,6 +1,7 @@
 /// <reference types="@angular/localize" />
 
 import { enableProdMode, importProvidersFrom, isDevMode, provideZoneChangeDetection } from "@angular/core";
+import { isTauri } from "./app/shared/utils/tauri";
 import { provideCharts, withDefaultRegisterables } from "ng2-charts";
 
 import { environment } from "./environments/environment";
@@ -15,6 +16,9 @@ import { AccessTokenInterceptor } from "./app/auth/access-token.interceptor";
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { AuthGuard } from "./app/auth/auth.guard";
 import { provideAnimationsAsync } from "@angular/platform-browser/animations/async";
+import Phaser from "phaser";
+
+Object.assign(window, { Phaser });
 
 if (environment.production) {
   enableProdMode();
@@ -28,7 +32,9 @@ bootstrapApplication(AppComponent, {
       // app routing module must be included last, as it contains the wildcard route
       AppRoutingModule,
       ServiceWorkerModule.register("ngsw-worker.js", {
-        enabled: !isDevMode(),
+        // Disable in dev mode and in Tauri — Tauri has no web server to serve
+        // ngsw-worker.js from, so registration would always 404.
+        enabled: !isDevMode() && !isTauri(),
         // Register the ServiceWorker as soon as the application is stable
         // or after 30 seconds (whichever comes first).
         registrationStrategy: "registerWhenStable:30000"
