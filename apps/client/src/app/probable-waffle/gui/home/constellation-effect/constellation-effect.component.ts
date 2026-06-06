@@ -1,4 +1,4 @@
-import { type AfterViewInit, Component, type OnDestroy } from "@angular/core";
+import { ChangeDetectionStrategy, Component, ElementRef, type AfterViewInit, type OnDestroy, viewChild } from "@angular/core";
 import { ConstellationParticle } from "./constellation-particle";
 
 type MousePosition = { x?: number; y?: number };
@@ -6,11 +6,14 @@ type MousePosition = { x?: number; y?: number };
 @Component({
   selector: "probable-waffle-constellation-effect",
   templateUrl: "./constellation-effect.component.html",
-  styleUrls: ["./constellation-effect.component.scss"]
+  styleUrls: ["./constellation-effect.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ConstellationEffectComponent implements AfterViewInit, OnDestroy {
+  private readonly canvasRef = viewChild<ElementRef<HTMLCanvasElement>>("canvas");
   private clickListener?: (e: MouseEvent) => void;
   private mouseMoveListener?: (e: MouseEvent) => void;
+  private resizeListener?: () => void;
   private destroyed = false;
   private readonly spawnParticleAmount = 1;
   private hueColor = 0;
@@ -25,17 +28,22 @@ export class ConstellationEffectComponent implements AfterViewInit, OnDestroy {
   };
 
   ngAfterViewInit(): void {
-    this.canvas = document.getElementById("canvas1") as HTMLCanvasElement;
+    this.canvas = this.canvasRef()?.nativeElement;
+    if (!this.canvas) {
+      return;
+    }
+
     this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
     this.canvas.width = window.innerWidth;
     this.canvas.height = window.innerHeight;
     this.particles = [];
 
-    window.addEventListener("resize", () => {
+    this.resizeListener = () => {
       if (!this.canvas) return;
       this.canvas.width = window.innerWidth;
       this.canvas.height = window.innerHeight;
-    });
+    };
+    window.addEventListener("resize", this.resizeListener);
 
     this.clickListener = (e: MouseEvent) => this.handleMouseEvent(e);
     this.canvas.addEventListener("click", this.clickListener);
@@ -52,13 +60,14 @@ export class ConstellationEffectComponent implements AfterViewInit, OnDestroy {
     if (this.timer) {
       window.clearInterval(this.timer);
     }
+    if (this.resizeListener) {
+      window.removeEventListener("resize", this.resizeListener);
+    }
     if (this.clickListener) {
-      const canvas = (document.getElementById("canvas1") as HTMLCanvasElement) || undefined;
-      canvas?.removeEventListener("click", this.clickListener);
+      this.canvas?.removeEventListener("click", this.clickListener);
     }
     if (this.mouseMoveListener) {
-      const canvas = (document.getElementById("canvas1") as HTMLCanvasElement) || undefined;
-      canvas?.removeEventListener("mousemove", this.mouseMoveListener);
+      this.canvas?.removeEventListener("mousemove", this.mouseMoveListener);
     }
     this.destroyed = true;
   }

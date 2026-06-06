@@ -98,6 +98,18 @@
         />
         <label class="form-check-label" for="enabledMouseCornerMovement"> Enable mouse corner camera movement </label>
       </div>
+      <div class="mb-0">
+        <label class="form-label form-label--select" for="homeScreenBackground">Home screen background</label>
+        <select
+          id="homeScreenBackground"
+          class="form-select"
+          [(ngModel)]="optionsService.gameSettings.homeScreenBackground"
+          (change)="saveToLocalStorage('game')"
+        >
+          <option value="ashfall">Ashfall</option>
+          <option value="constellation">Constellation</option>
+        </select>
+      </div>
     </div>
 
     @if (fromGame) {

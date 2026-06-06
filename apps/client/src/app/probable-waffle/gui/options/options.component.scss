@@ -11,6 +11,12 @@
   letter-spacing: 0.06em;
 }
 
+.form-label--select {
+  color: #f0c46b;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
 .card {
   background-color: rgba(15, 18, 22, 0.7);
   border: 1px solid rgba(111, 85, 52, 0.45);
@@ -22,6 +28,12 @@
     font-family: "Cinzel", serif;
     letter-spacing: 0.05em;
   }
+}
+
+.form-select {
+  background-color: rgba(19, 23, 28, 0.92);
+  border: 1px solid rgba(111, 85, 52, 0.45);
+  color: #f5ecd9;
 }
 
 .info-icon {
