@@ -11,14 +11,14 @@
   overflow-y: auto;
   padding-right: 8px;
   padding-top: 4px;
-  padding-bottom: 8px; // Add padding at the bottom to prevent cutoff
+  padding-bottom: 8px;
 }
 
 .maps-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr)); // Ensure equal column width
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
-  padding: 4px; // Add padding to ensure transformed items don't get cut off
+  padding: 4px;
 
   @media (max-width: 1200px) {
     grid-template-columns: repeat(1, 1fr);
@@ -26,26 +26,25 @@
 }
 
 .map-item {
-  border: 2px solid $tertiary;
-  border-radius: $app-border-radius;
+  border: 1px solid rgba(111, 85, 52, 0.52);
+  border-radius: 1rem;
   padding: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
-  background-color: $app-surface-plain-soft;
-  margin: 3px; // Add margin to account for the transform
-  width: 100%; // Ensure items take full width of their grid cell
-  box-sizing: border-box; // Include padding and border in width calculation
+  background-color: rgba(15, 18, 22, 0.86);
+  margin: 3px;
+  width: 100%;
+  box-sizing: border-box;
 
   &:hover {
-    opacity: 0.9;
-    box-shadow: 0 4px 8px $app-shadow-soft;
-    border-color: $secondary;
+    box-shadow: 0 12px 18px rgba(0, 0, 0, 0.22);
+    border-color: rgba(240, 196, 107, 0.72);
   }
 
   &.selected {
-    border-color: $primary;
-    background-color: rgba($tertiary, 0.3);
-    box-shadow: 0 4px 8px $app-shadow-strong;
+    border-color: rgba(240, 196, 107, 0.82);
+    background-color: rgba(240, 196, 107, 0.08);
+    box-shadow: 0 12px 18px rgba(0, 0, 0, 0.26);
   }
 }
 
@@ -56,8 +55,9 @@
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  border-radius: $app-border-radius;
+  border-radius: 0.8rem;
   margin-bottom: 8px;
+  border: 1px solid rgba(111, 85, 52, 0.24);
 
   img {
     max-width: 100%;
@@ -68,16 +68,16 @@
 
 .map-name {
   text-align: center;
-  font-weight: bold;
+  font-weight: 700;
   font-size: 0.9rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: #f5ecd9;
 }
 
 .no-maps {
   padding: 20px;
   text-align: center;
-  color: $secondary;
-  font-style: italic;
+  color: #c8b89b;
 }

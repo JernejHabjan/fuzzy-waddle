@@ -1,6 +1,15 @@
+.aota-data-page {
+  padding-bottom: 2rem;
+}
+
+.aota-card-shell {
+  padding: 1.5rem;
+}
+
 .match-details {
   max-width: 1200px;
   margin: 0 auto;
+  color: #f5ecd9;
 }
 
 .match-header {
@@ -8,9 +17,10 @@
 }
 
 .game-info {
-  background-color: rgba(0, 0, 0, 0.1);
-  border-radius: 0.5rem;
+  background-color: rgba(15, 18, 22, 0.72);
+  border-radius: 1rem;
   padding: 1.5rem;
+  border: 1px solid rgba(111, 85, 52, 0.34);
 }
 
 .info-grid {
@@ -27,7 +37,7 @@
 
 .info-label {
   font-weight: bold;
-  color: var(--bs-primary);
+  color: #f0c46b;
   font-size: 0.875rem;
   text-transform: uppercase;
 }

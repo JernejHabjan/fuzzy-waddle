@@ -1,17 +1,17 @@
 <fuzzy-waddle-home-nav routerLink="/aota" title="Ashes of the Ancients" [showBack]="true" />
 
 @if (!authService.isAuthenticated) {
-  <div class="server-health d-flex align-items-center justify-content-center h-100 flex-column">
+  <div class="server-health aota-page d-flex align-items-center justify-content-center h-100 flex-column">
     <p>Not authenticated. Please Login to continue</p>
     <button routerLink="" class="btn btn-primary m-1" type="button">Home</button>
   </div>
 } @else {
   @if (serverHealthService.serverChecking) {
-    <div class="server-health">
+      <div class="server-health aota-page">
       <p>Checking server health...</p>
     </div>
   } @else if (serverHealthService.serverAvailable) {
-    <div class="online-container">
+    <div class="online-container aota-page">
       <div class="game-mode-selection">
         <div class="mode-card" (click)="selectMode('matchmaking')" [class.active]="selectedMode === 'matchmaking'">
           <h2>Matchmaking</h2>
@@ -47,7 +47,7 @@
       }
     </div>
   } @else {
-    <div class="server-health">
+    <div class="server-health aota-page">
       <p>Server is not available</p>
     </div>
   }

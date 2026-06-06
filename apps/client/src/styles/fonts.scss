@@ -120,3 +120,63 @@
     local("Chakra Petch Bold"),
     url("../fonts/ChakraPetch/ChakraPetch-Bold.ttf") format("truetype");
 }
+
+@font-face {
+  font-family: "Cinzel";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 600;
+  src:
+    local("Cinzel SemiBold"),
+    url("../fonts/Cinzel/Cinzel-SemiBold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Cinzel";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src:
+    local("Cinzel Bold"),
+    url("../fonts/Cinzel/Cinzel-Bold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Rajdhani";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src:
+    local("Rajdhani Regular"),
+    url("../fonts/Rajdhani/Rajdhani-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Rajdhani";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500;
+  src:
+    local("Rajdhani Medium"),
+    url("../fonts/Rajdhani/Rajdhani-Medium.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Rajdhani";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 600;
+  src:
+    local("Rajdhani SemiBold"),
+    url("../fonts/Rajdhani/Rajdhani-SemiBold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Rajdhani";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src:
+    local("Rajdhani Bold"),
+    url("../fonts/Rajdhani/Rajdhani-Bold.ttf") format("truetype");
+}

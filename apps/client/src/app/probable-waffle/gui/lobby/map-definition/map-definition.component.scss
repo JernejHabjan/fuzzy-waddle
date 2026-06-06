@@ -1,22 +1,26 @@
-@use "../../../../../styles/_variables.scss" as *;
-
 :host {
   text-align: center;
+  color: #f5ecd9;
 }
 
 .map-name {
   font-size: 1.6em;
-  font-family: $app-font-bold;
+  font-family: "Cinzel", serif;
+  color: #f0c46b;
+  letter-spacing: 0.04em;
 }
 
 .map-description {
   max-width: 600px;
+  margin: 0.75rem auto;
+  color: #c8b89b;
 }
 
 .tooltip-drag-and-drop {
-  background-color: $primary;
-  color: $app-text-on-dark;
+  background-color: rgba(240, 196, 107, 0.16);
+  color: #f5ecd9;
   border-radius: 1rem;
   padding: 0.5rem;
   font-size: 0.6em;
+  border: 1px solid rgba(240, 196, 107, 0.42);
 }
