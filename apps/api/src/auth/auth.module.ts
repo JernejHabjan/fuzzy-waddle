@@ -8,6 +8,7 @@ import { UserAuthCacheService } from "../core/cache/user-auth-cache.service.ts/u
 import { SupabaseProviderService } from "../core/supabase-provider/supabase-provider.service";
 import { SupabaseAuthGuard } from "./guards/supabase-auth.guard";
 import { OnlineAccessGuard } from "./guards/online-access.guard";
+import { ModeratorAccessGuard } from "./guards/moderator-access.guard";
 import { UserProfilesModule } from "../app/user-profiles/user-profiles.module";
 
 @Module({
@@ -20,7 +21,21 @@ import { UserProfilesModule } from "../app/user-profiles/user-profiles.module";
     }),
     ScheduleModule.forRoot()
   ],
-  providers: [SupabaseStrategy, UserAuthCacheService, SupabaseProviderService, SupabaseAuthGuard, OnlineAccessGuard],
-  exports: [UserProfilesModule, SupabaseStrategy, SupabaseAuthGuard, OnlineAccessGuard, SupabaseProviderService]
+  providers: [
+    SupabaseStrategy,
+    UserAuthCacheService,
+    SupabaseProviderService,
+    SupabaseAuthGuard,
+    OnlineAccessGuard,
+    ModeratorAccessGuard
+  ],
+  exports: [
+    UserProfilesModule,
+    SupabaseStrategy,
+    SupabaseAuthGuard,
+    OnlineAccessGuard,
+    ModeratorAccessGuard,
+    SupabaseProviderService
+  ]
 })
 export class AuthModule {}

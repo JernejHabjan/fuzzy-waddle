@@ -5,11 +5,12 @@ import { TextSanitizationService } from "../../core/content-filters/text-sanitiz
 import { ChatGateway } from "./chat.gateway";
 import { UserProfilesModule } from "../user-profiles/user-profiles.module";
 import { AuthModule } from "../../auth/auth.module";
+import { ChatModerationController } from "./chat-moderation.controller";
 
 @Module({
   imports: [UserProfilesModule, AuthModule],
   providers: [ChatService, TextSanitizationService, ChatGateway],
-  controllers: [ChatController],
+  controllers: [ChatController, ChatModerationController],
   exports: [ChatService]
 })
 export class ChatModule {}
