@@ -145,22 +145,7 @@ export class ChatService implements IChatService {
 
   async reportMessage(messageId: number, user: AuthUser, report: ReportChatMessageDto): Promise<void> {
     const supabase = this.supabaseProviderService.supabaseClient;
-
-    const { data: message, error: messageError } = await supabase
-      .from("chat_messages")
-      .select("id, sender_user_id")
-      .eq("id", messageId)
-      .eq("message_status", ChatMessageStatus.Visible)
-      .maybeSingle();
-
-    if (messageError) {
-      console.error(messageError);
-      throw messageError;
-    }
-
-    if (!message) {
-      throw new NotFoundException("Chat message not found");
-    }
+    const message = await this.getReportableMessage(messageId, user);
 
     if (message.sender_user_id === user.id) {
       throw new BadRequestException("You cannot report your own message");
@@ -380,22 +365,7 @@ export class ChatService implements IChatService {
 
   private async getOrCreateChannel(gameInstanceId?: string): Promise<{ id: string }> {
     const supabase = this.supabaseProviderService.supabaseClient;
-
-    const existingQuery = gameInstanceId
-      ? supabase
-          .from("chat_channels")
-          .select("id")
-          .eq("channel_type", ChatChannelType.GameSession)
-          .eq("game_key", GameKey.ProbableWaffle)
-          .eq("external_session_id", gameInstanceId)
-          .maybeSingle()
-      : supabase.from("chat_channels").select("id").eq("channel_type", ChatChannelType.GlobalLobby).maybeSingle();
-
-    const { data: existing, error: existingError } = await existingQuery;
-    if (existingError) {
-      console.error(existingError);
-      throw existingError;
-    }
+    const existing = await this.findChannel(gameInstanceId);
     if (existing) {
       return existing;
     }
@@ -418,6 +388,92 @@ export class ChatService implements IChatService {
       .select("id")
       .single();
 
+    if (error) {
+      // Two first-time callers can race; after a unique violation, re-read the winner.
+      if (error.code === POSTGRES_ERROR_CODES.UNIQUENESS_VIOLATION) {
+        const channel = await this.findChannel(gameInstanceId);
+        if (channel) {
+          return channel;
+        }
+      }
+
+      console.error(error);
+      throw error;
+    }
+
+    return data;
+  }
+
+  private async getReportableMessage(
+    messageId: number,
+    user: AuthUser
+  ): Promise<{
+    id: number;
+    sender_user_id: string | null;
+    chat_channels: {
+      channel_type: ChatChannelType;
+      external_session_id: string | null;
+    } | null;
+  }> {
+    const { data, error } = await this.supabaseProviderService.supabaseClient
+      .from("chat_messages")
+      .select("id, sender_user_id, chat_channels!inner(channel_type, external_session_id)")
+      .eq("id", messageId)
+      .eq("message_status", ChatMessageStatus.Visible)
+      .maybeSingle();
+
+    if (error) {
+      console.error(error);
+      throw error;
+    }
+
+    if (!data) {
+      throw new NotFoundException("Chat message not found");
+    }
+
+    const channel = Array.isArray(data.chat_channels) ? data.chat_channels[0] : data.chat_channels;
+    // Treat inaccessible private chat as "not found" so ids cannot be probed across rooms.
+    if (channel?.channel_type === ChatChannelType.GameSession) {
+      const gameInstanceId = channel.external_session_id ?? undefined;
+      if (!gameInstanceId) {
+        throw new NotFoundException("Chat message not found");
+      }
+
+      try {
+        this.ensureCanAccessGameChat(gameInstanceId, user);
+      } catch {
+        throw new NotFoundException("Chat message not found");
+      }
+    }
+
+    return {
+      id: data.id,
+      sender_user_id: data.sender_user_id,
+      chat_channels: channel
+        ? {
+            channel_type: channel.channel_type as ChatChannelType,
+            external_session_id: channel.external_session_id
+          }
+        : null
+    };
+  }
+
+  private async findChannel(gameInstanceId?: string): Promise<{ id: string } | null> {
+    const existingQuery = gameInstanceId
+      ? this.supabaseProviderService.supabaseClient
+          .from("chat_channels")
+          .select("id")
+          .eq("channel_type", ChatChannelType.GameSession)
+          .eq("game_key", GameKey.ProbableWaffle)
+          .eq("external_session_id", gameInstanceId)
+          .maybeSingle()
+      : this.supabaseProviderService.supabaseClient
+          .from("chat_channels")
+          .select("id")
+          .eq("channel_type", ChatChannelType.GlobalLobby)
+          .maybeSingle();
+
+    const { data, error } = await existingQuery;
     if (error) {
       console.error(error);
       throw error;

@@ -136,11 +136,7 @@ create policy "Public can read open lobby channels"
   to anon, authenticated
   using (archived_at is null and channel_type in ('global_lobby', 'game_lobby'));
 
-create policy "Authenticated users can read session channels"
-  on public.chat_channels
-  as permissive for select
-  to authenticated
-  using (archived_at is null and channel_type = 'game_session');
+-- Session chat stays behind Nest service-role queries; do not expose it via direct client reads.
 
 create policy "Service role can manage chat channels"
   on public.chat_channels
@@ -181,21 +177,6 @@ create policy "Users can read visible lobby messages"
       where c.id = chat_messages.channel_id
         and c.archived_at is null
         and c.channel_type in ('global_lobby', 'game_lobby')
-    )
-  );
-
-create policy "Authenticated users can read visible session messages"
-  on public.chat_messages
-  as permissive for select
-  to authenticated
-  using (
-    message_status = 'visible'
-    and exists (
-      select 1
-      from public.chat_channels c
-      where c.id = chat_messages.channel_id
-        and c.archived_at is null
-        and c.channel_type = 'game_session'
     )
   );
 
