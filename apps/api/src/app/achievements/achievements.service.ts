@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import type { AuthUser } from "@supabase/supabase-js";
 import { POSTGRES_ERROR_CODES } from "../../core/database/postgres-error-codes";
 import { SupabaseProviderService } from "../../core/supabase-provider/supabase-provider.service";
+import { Json } from "@fuzzy-waddle/api-interfaces";
 
 export interface AchievementUnlockDto {
   id: number;
@@ -34,7 +35,7 @@ export class AchievementsService {
     const { error } = await this.supabaseProviderService.supabaseClient.from("user_achievement_unlocks").insert({
       achievement_id: achievementId,
       user_id: user.id,
-      metadata: metadata || {}
+      metadata: (metadata || {}) as unknown as Json
     });
 
     if (error?.code === POSTGRES_ERROR_CODES.UNIQUENESS_VIOLATION) {

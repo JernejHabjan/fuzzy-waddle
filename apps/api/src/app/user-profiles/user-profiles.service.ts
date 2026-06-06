@@ -5,6 +5,7 @@ import {
   type BanUserDto,
   type CurrentUserProfileDto,
   GameKey,
+  GameKeys,
   UserAccountStatus
 } from "@fuzzy-waddle/api-interfaces";
 import { SupabaseProviderService } from "../../core/supabase-provider/supabase-provider.service";
@@ -201,7 +202,7 @@ export class UserProfilesService {
       throw achievementsResult.error;
     }
 
-    const knownGames = new Set<GameKey>([GameKey.ProbableWaffle, GameKey.LittleMuncher, GameKey.FlySquasher]);
+    const knownGames = new Set<GameKey>(GameKeys);
     const gameStats = new Map<
       GameKey,
       {
@@ -262,7 +263,7 @@ export class UserProfilesService {
     }
 
     for (const score of scoresResult.data ?? []) {
-      const gameKey = score.game_key;
+      const gameKey = score.game_key as GameKey;
       if (!gameKey || !knownGames.has(gameKey)) {
         continue;
       }

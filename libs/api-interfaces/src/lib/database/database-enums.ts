@@ -8,6 +8,8 @@ export const GameKey = {
 
 export type GameKey = (typeof GameKey)[keyof typeof GameKey];
 
+export const GameKeys = Object.values(GameKey) as readonly GameKey[];
+
 export const AppUserRole = {
   User: "user",
   Moderator: "moderator",
