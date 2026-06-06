@@ -2,9 +2,9 @@ import { BadRequestException, ForbiddenException, Injectable } from "@nestjs/com
 import { type AuthUser } from "@supabase/supabase-js";
 import {
   AppUserRole,
-  GameKey,
   type BanUserDto,
   type CurrentUserProfileDto,
+  GameKey,
   UserAccountStatus
 } from "@fuzzy-waddle/api-interfaces";
 import { SupabaseProviderService } from "../../core/supabase-provider/supabase-provider.service";
@@ -77,7 +77,7 @@ export class UserProfilesService {
   }
 
   async getUserProfile(user: AuthUser, targetUserId: string): Promise<CurrentUserProfileDto | null> {
-    const { data, error } = await (this.supabaseProviderService.supabaseClient as any)
+    const { data, error } = await this.supabaseProviderService.supabaseClient
       .from("user_profiles")
       .select(
         "email, display_name, username, avatar_url, bio, locale, timezone, website_url, app_role, account_status, banned_until, moderation_note, created_at, updated_at"
@@ -139,7 +139,7 @@ export class UserProfilesService {
     }
   }
 
-  async ensureModerator(userId: string): Promise<AppUserRole.Moderator | AppUserRole.Admin> {
+  async ensureModerator(userId: string): Promise<typeof AppUserRole.Moderator | typeof AppUserRole.Admin> {
     const profile = await this.getProfileAccessState(userId);
 
     if (profile.accountStatus === UserAccountStatus.Disabled) {
@@ -161,9 +161,11 @@ export class UserProfilesService {
 
     const bannedUntil = body.bannedUntil ?? null;
     const accountStatus =
-      bannedUntil && new Date(bannedUntil).getTime() > Date.now() ? UserAccountStatus.Limited : UserAccountStatus.Disabled;
+      bannedUntil && new Date(bannedUntil).getTime() > Date.now()
+        ? UserAccountStatus.Limited
+        : UserAccountStatus.Disabled;
 
-    const { error } = await (this.supabaseProviderService.supabaseClient as any)
+    const { error } = await this.supabaseProviderService.supabaseClient
       .from("user_profiles")
       .update({
         account_status: accountStatus,
@@ -184,7 +186,7 @@ export class UserProfilesService {
       throw new BadRequestException("You cannot unban yourself");
     }
 
-    const { error } = await (this.supabaseProviderService.supabaseClient as any)
+    const { error } = await this.supabaseProviderService.supabaseClient
       .from("user_profiles")
       .update({
         account_status: UserAccountStatus.Active,
@@ -204,7 +206,7 @@ export class UserProfilesService {
     appRole: AppUserRole;
     bannedUntil: string | null;
   }> {
-    const { data, error } = await (this.supabaseProviderService.supabaseClient as any)
+    const { data, error } = await this.supabaseProviderService.supabaseClient
       .from("user_profiles")
       .select("account_status, app_role, banned_until")
       .eq("id", userId)
@@ -217,7 +219,7 @@ export class UserProfilesService {
 
     return {
       accountStatus: data?.account_status ?? UserAccountStatus.Active,
-      appRole: data?.app_role ?? AppUserRole.User,
+      appRole: (data?.app_role as AppUserRole) ?? AppUserRole.User,
       bannedUntil: data?.banned_until ?? null
     };
   }
@@ -288,7 +290,9 @@ export class UserProfilesService {
     };
 
     for (const participant of (participantsResult.data ?? []) as ParticipantProfileRow[]) {
-      const session = Array.isArray(participant.game_sessions) ? participant.game_sessions[0] : participant.game_sessions;
+      const session = Array.isArray(participant.game_sessions)
+        ? participant.game_sessions[0]
+        : participant.game_sessions;
       const gameKey = session?.game_key;
       if (!gameKey || !knownGames.has(gameKey)) {
         continue;
@@ -322,7 +326,10 @@ export class UserProfilesService {
       if (score.score_value != null) {
         stat.bestScore = stat.bestScore == null ? score.score_value : Math.max(stat.bestScore, score.score_value);
       }
-      if (score.submitted_at && (!stat.lastPlayedAt || new Date(score.submitted_at).getTime() > new Date(stat.lastPlayedAt).getTime())) {
+      if (
+        score.submitted_at &&
+        (!stat.lastPlayedAt || new Date(score.submitted_at).getTime() > new Date(stat.lastPlayedAt).getTime())
+      ) {
         stat.lastPlayedAt = score.submitted_at;
       }
     }
@@ -358,10 +365,11 @@ export class UserProfilesService {
       scoreSubmissions: stats.reduce((sum, stat) => sum + stat.scoreSubmissions, 0),
       achievementsUnlocked: stats.reduce((sum, stat) => sum + stat.achievementsUnlocked, 0),
       preferredGame: stats[0]?.gameKey ?? null,
-      lastPlayedAt: stats
-        .map((stat) => stat.lastPlayedAt)
-        .filter((value): value is string => value != null)
-        .sort((left, right) => new Date(right).getTime() - new Date(left).getTime())[0] ?? null,
+      lastPlayedAt:
+        stats
+          .map((stat) => stat.lastPlayedAt)
+          .filter((value): value is string => value != null)
+          .sort((left, right) => new Date(right).getTime() - new Date(left).getTime())[0] ?? null,
       gameStats: stats
     };
   }

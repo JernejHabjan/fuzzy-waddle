@@ -18,7 +18,7 @@ import {
   type ProbableWaffleWebsocketRoomEvent
 } from "@fuzzy-waddle/api-interfaces";
 import { ProbableWaffleChatService } from "../chat/probable-waffle-chat.service";
-import { UseGuards } from "@nestjs/common";
+import { BadRequestException, UseGuards } from "@nestjs/common";
 import { type AuthUser } from "@supabase/supabase-js";
 import { OnlineAccessGuard } from "../../../auth/guards/online-access.guard";
 import { CurrentUser } from "../../../auth/current-user";
@@ -82,7 +82,10 @@ export class GameInstanceGateway implements OnGatewayConnection {
     @ConnectedSocket() socket: Socket
   ) {
     console.log(`Ashes of the Ancients - GI chat message ${body.gameInstanceId}`);
-    this.gameStateServerService.ensureCanAccessGameRoom(body.gameInstanceId!, user);
+    if (!body.gameInstanceId) {
+      throw new BadRequestException("Game instance ID is required");
+    }
+    this.gameStateServerService.ensureCanAccessGameRoom(body.gameInstanceId, user);
 
     // clone the payload
     const newPayload = { ...body };

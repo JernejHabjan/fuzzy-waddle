@@ -19,7 +19,7 @@ export class ReportChatMessageBodyDto implements ReportChatMessageDto {
 
 export class UpdateChatReportStatusBodyDto implements UpdateChatReportStatusDto {
   @IsIn([ChatReportStatus.Reviewed, ChatReportStatus.Actioned])
-  status!: ChatReportStatus.Reviewed | ChatReportStatus.Actioned;
+  status!: typeof ChatReportStatus.Reviewed | typeof ChatReportStatus.Actioned;
 }
 
 export class BanUserBodyDto implements BanUserDto {

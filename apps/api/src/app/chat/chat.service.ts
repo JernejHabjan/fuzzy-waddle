@@ -511,6 +511,4 @@ export class ChatService implements IChatService {
 
     this.probableWaffleGameInstanceService.ensureCanJoinGameRoom(gameInstanceId, user);
   }
-
-  /* Keep one local helper only for shaping moderation queue state. */
 }

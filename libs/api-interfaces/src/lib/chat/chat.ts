@@ -73,7 +73,7 @@ export interface ModerationQueueDto {
 }
 
 export interface UpdateChatReportStatusDto {
-  status: ChatReportStatus.Reviewed | ChatReportStatus.Actioned;
+  status: typeof ChatReportStatus.Reviewed | typeof ChatReportStatus.Actioned;
 }
 
 export interface BanUserDto {
