@@ -9,60 +9,6 @@ import {
 } from "@fuzzy-waddle/api-interfaces";
 import { SupabaseProviderService } from "../../core/supabase-provider/supabase-provider.service";
 
-type UserProfileRow = {
-  email: string | null;
-  display_name: string | null;
-  username: string | null;
-  avatar_url: string | null;
-  bio: string | null;
-  locale: string | null;
-  timezone: string | null;
-  website_url: string | null;
-  app_role: AppUserRole | null;
-  account_status: UserAccountStatus | null;
-  banned_until: string | null;
-  moderation_note: string | null;
-  created_at: string | null;
-  updated_at: string | null;
-};
-
-type ParticipantProfileRow = {
-  result_status: "win" | "loss" | "tie" | "quit" | null;
-  game_sessions:
-    | {
-        game_key: GameKey | null;
-        started_at: string | null;
-        completed_at: string | null;
-        ended_at: string | null;
-        session_status: string | null;
-      }
-    | {
-        game_key: GameKey | null;
-        started_at: string | null;
-        completed_at: string | null;
-        ended_at: string | null;
-        session_status: string | null;
-      }[]
-    | null;
-};
-
-type ScoreProfileRow = {
-  game_key: GameKey | null;
-  score_value: number | null;
-  submitted_at: string | null;
-};
-
-type AchievementUnlockRow = {
-  achievement_definitions:
-    | {
-        game_key: GameKey | null;
-      }
-    | {
-        game_key: GameKey | null;
-      }[]
-    | null;
-};
-
 @Injectable()
 export class UserProfilesService {
   constructor(private readonly supabaseProviderService: SupabaseProviderService) {}
