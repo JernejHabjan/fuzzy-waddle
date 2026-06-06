@@ -62,6 +62,12 @@
   min-width: 0;
 }
 
+.banner-placeholder {
+  width: 300px;
+  height: 95vh;
+  flex: 0 0 auto;
+}
+
 .menu-container {
   pointer-events: all;
   padding: 2rem 0;

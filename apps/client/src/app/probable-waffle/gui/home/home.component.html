@@ -3,7 +3,11 @@
   <div class="home-content">
     <div class="left-container">
       @if (isLargeScreen) {
-        <probable-waffle-banner />
+        @defer (on idle) {
+          <probable-waffle-banner />
+        } @placeholder {
+          <div class="banner-placeholder" aria-hidden="true"></div>
+        }
       }
       <probable-waffle-title />
     </div>
