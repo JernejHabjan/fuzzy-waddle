@@ -6,9 +6,9 @@ import { ModeratorAccessGuard } from "../../auth/guards/moderator-access.guard";
 import { ChatService } from "./chat.service";
 import { BanUserBodyDto, UpdateChatReportStatusBodyDto } from "./report-chat-message.dto";
 
-@Controller("chat/moderation")
+@Controller("moderation")
 @UseGuards(ModeratorAccessGuard)
-export class ChatModerationController {
+export class ModerationController {
   constructor(private readonly chatService: ChatService) {}
 
   @Get("summary")

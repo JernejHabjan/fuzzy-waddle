@@ -48,27 +48,27 @@ export class ChatService implements IChatService {
   }
 
   async getModerationSummary(): Promise<ModerationSummaryDto> {
-    const url = `${environment.api}api/chat/moderation/summary`;
+    const url = `${environment.api}api/moderation/summary`;
     return await firstValueFrom(this.httpClient.get<ModerationSummaryDto>(url));
   }
 
   async getModerationReports(): Promise<ModerationQueueDto> {
-    const url = `${environment.api}api/chat/moderation/reports`;
+    const url = `${environment.api}api/moderation/reports`;
     return await firstValueFrom(this.httpClient.get<ModerationQueueDto>(url));
   }
 
   async updateReportStatus(reportId: number, body: UpdateChatReportStatusDto): Promise<void> {
-    const url = `${environment.api}api/chat/moderation/reports/${reportId}/status`;
+    const url = `${environment.api}api/moderation/reports/${reportId}/status`;
     await firstValueFrom(this.httpClient.post<void>(url, body));
   }
 
   async banUser(userId: string, body: BanUserDto): Promise<void> {
-    const url = `${environment.api}api/chat/moderation/users/${userId}/ban`;
+    const url = `${environment.api}api/moderation/users/${userId}/ban`;
     await firstValueFrom(this.httpClient.post<void>(url, body));
   }
 
   async unbanUser(userId: string): Promise<void> {
-    const url = `${environment.api}api/chat/moderation/users/${userId}/unban`;
+    const url = `${environment.api}api/moderation/users/${userId}/unban`;
     await firstValueFrom(this.httpClient.post<void>(url, {}));
   }
 }

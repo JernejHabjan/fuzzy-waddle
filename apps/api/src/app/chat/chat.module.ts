@@ -5,13 +5,13 @@ import { TextSanitizationService } from "../../core/content-filters/text-sanitiz
 import { ChatGateway } from "./chat.gateway";
 import { UserProfilesModule } from "../user-profiles/user-profiles.module";
 import { AuthModule } from "../../auth/auth.module";
-import { ChatModerationController } from "./chat-moderation.controller";
+import { ModerationController } from "./moderation.controller";
 import { ProbableWaffleModule } from "../probable-waffle/probable-waffle.module";
 
 @Module({
   imports: [UserProfilesModule, AuthModule, forwardRef(() => ProbableWaffleModule)],
   providers: [ChatService, TextSanitizationService, ChatGateway],
-  controllers: [ChatController, ChatModerationController],
+  controllers: [ChatController, ModerationController],
   exports: [ChatService]
 })
 export class ChatModule {}
