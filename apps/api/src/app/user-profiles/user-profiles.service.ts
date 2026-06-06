@@ -90,7 +90,7 @@ export class UserProfilesService {
       throw error;
     }
 
-    const profile = data as UserProfileRow | null;
+    const profile = data;
     if (!profile) {
       return null;
     }
@@ -219,7 +219,7 @@ export class UserProfilesService {
 
     return {
       accountStatus: data?.account_status ?? UserAccountStatus.Active,
-      appRole: (data?.app_role as AppUserRole) ?? AppUserRole.User,
+      appRole: data?.app_role ?? AppUserRole.User,
       bannedUntil: data?.banned_until ?? null
     };
   }
@@ -289,7 +289,7 @@ export class UserProfilesService {
       return stat;
     };
 
-    for (const participant of (participantsResult.data ?? []) as ParticipantProfileRow[]) {
+    for (const participant of participantsResult.data ?? []) {
       const session = Array.isArray(participant.game_sessions)
         ? participant.game_sessions[0]
         : participant.game_sessions;
@@ -315,7 +315,7 @@ export class UserProfilesService {
       }
     }
 
-    for (const score of (scoresResult.data ?? []) as ScoreProfileRow[]) {
+    for (const score of scoresResult.data ?? []) {
       const gameKey = score.game_key;
       if (!gameKey || !knownGames.has(gameKey)) {
         continue;
@@ -334,7 +334,7 @@ export class UserProfilesService {
       }
     }
 
-    for (const unlock of (achievementsResult.data ?? []) as AchievementUnlockRow[]) {
+    for (const unlock of achievementsResult.data ?? []) {
       const definition = Array.isArray(unlock.achievement_definitions)
         ? unlock.achievement_definitions[0]
         : unlock.achievement_definitions;

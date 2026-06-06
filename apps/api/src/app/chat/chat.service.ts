@@ -1,16 +1,23 @@
-import { BadRequestException, ConflictException, forwardRef, Inject, Injectable, NotFoundException } from "@nestjs/common";
+import {
+  BadRequestException,
+  ConflictException,
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException
+} from "@nestjs/common";
 import { type IChatService } from "./chat.service.interface";
 import { type AuthUser } from "@supabase/supabase-js";
 import { SupabaseProviderService } from "../../core/supabase-provider/supabase-provider.service";
 import { TextSanitizationService } from "../../core/content-filters/text-sanitization.service";
 import {
+  AppUserRole,
+  type BanUserDto,
   ChatChannelType,
+  type ChatMessage,
   ChatMessageStatus,
   ChatReportStatus,
-  AppUserRole,
   GameKey,
-  type BanUserDto,
-  type ChatMessage,
   type GetMessagesResponseDto,
   type ModerationQueueDto,
   type ModerationReportDto,
@@ -64,11 +71,11 @@ export class ChatService implements IChatService {
       return Promise.reject(error);
     }
 
-    const row = data as any;
+    const row = data;
     return {
       id: row.id,
       text: row.body,
-      userId: row.sender_user_id,
+      userId: row.sender_user_id!,
       fullName: row.user_profiles?.display_name || "Unknown",
       senderRole: row.user_profiles?.app_role ?? AppUserRole.User,
       createdAt: new Date(row.created_at),
@@ -110,26 +117,26 @@ export class ChatService implements IChatService {
     }
 
     // Map the data to ChatMessage format and reverse to get chronological order
-    const rows = (data || []) as any[];
+    const rows = data || [];
     const reportStatusByMessageId = await this.getCurrentUserReportStatusByMessageId(
       rows.map((row) => row.id),
       user.id
     );
 
-    const messages: ChatMessage[] = rows
-      .map((row: any) => {
+    const messages = rows
+      .map((row) => {
         const reportStatus = reportStatusByMessageId.get(row.id) ?? null;
         return {
           id: row.id,
           text: row.body,
-          userId: row.sender_user_id,
+          userId: row.sender_user_id!,
           fullName: row.user_profiles?.display_name || "Unknown",
           senderRole: row.user_profiles?.app_role ?? AppUserRole.User,
           createdAt: new Date(row.created_at),
           gameInstanceId,
           reportedByCurrentUser: reportStatus != null,
           currentUserReportStatus: reportStatus
-        };
+        } satisfies ChatMessage;
       })
       .reverse();
 
@@ -201,7 +208,7 @@ export class ChatService implements IChatService {
       throw reportError;
     }
 
-    const reports = (reportRows || []) as any[];
+    const reports = reportRows || [];
     const messageIds = [...new Set(reports.map((report) => report.message_id))];
     const { data: messageRows, error: messageError } = await supabase
       .from("chat_messages")
@@ -213,14 +220,14 @@ export class ChatService implements IChatService {
       throw messageError;
     }
 
-    const messageById = new Map((messageRows || []).map((message: any) => [message.id, message]));
+    const messageById = new Map((messageRows || []).map((message) => [message.id, message]));
     const profileIds = [
       ...new Set(
         reports
           .flatMap((report) => [report.reporter_user_id, messageById.get(report.message_id)?.sender_user_id])
           .filter(Boolean)
       )
-    ];
+    ].filter((id): id is string => typeof id === "string");
     const { data: profileRows, error: profileError } = await supabase
       .from("user_profiles")
       .select("id, display_name, email, app_role, account_status, banned_until")
@@ -231,8 +238,8 @@ export class ChatService implements IChatService {
       throw profileError;
     }
 
-    const profileById = new Map((profileRows || []).map((profile: any) => [profile.id, profile]));
-    const reportDtos: ModerationReportDto[] = reports.map((report: any) => {
+    const profileById = new Map((profileRows || []).map((profile) => [profile.id, profile]));
+    const reportDtos: ModerationReportDto[] = reports.map((report) => {
       const message = messageById.get(report.message_id);
       const reportedUserId = message?.sender_user_id ?? null;
       return {
@@ -272,12 +279,10 @@ export class ChatService implements IChatService {
       throw bannedUsersError;
     }
 
-    const bannedUsers = ((bannedUsersRows || []) as any[])
+    const bannedUsers = (bannedUsersRows || [])
       .filter(
         (profile) =>
-          profile.account_status === "disabled" ||
-          profile.account_status === "limited" ||
-          profile.banned_until != null
+          profile.account_status === "disabled" || profile.account_status === "limited" || profile.banned_until != null
       )
       .sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())
       .map((profile) => ({
@@ -501,7 +506,7 @@ export class ChatService implements IChatService {
       throw error;
     }
 
-    return new Map((data || []).map((row: any) => [row.message_id, row.report_status]));
+    return new Map((data || []).map((row) => [row.message_id, row.report_status]));
   }
 
   private ensureCanAccessGameChat(gameInstanceId: string | undefined, user: AuthUser): void {

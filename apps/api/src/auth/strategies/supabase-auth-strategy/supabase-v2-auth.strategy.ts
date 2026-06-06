@@ -10,7 +10,7 @@ import { UserAuthCacheService } from "../../../core/cache/user-auth-cache.servic
 export class SupabaseV2AuthStrategy extends Strategy {
   override readonly name = SUPABASE_AUTH;
   private extractor: JwtFromRequestFunction;
-  override success!: (user: any, info: any) => void;
+  override success!: (user, info) => void;
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   override fail!: Strategy["fail"];
   private readonly userAuthCacheService: UserAuthCacheService;

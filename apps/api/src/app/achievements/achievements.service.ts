@@ -27,14 +27,14 @@ export class AchievementsService {
       throw error;
     }
 
-    return (data || []) as AchievementUnlockDto[];
+    return data || [];
   }
 
   async unlock(user: AuthUser, achievementId: string, metadata?: Record<string, unknown>): Promise<void> {
     const { error } = await this.supabaseProviderService.supabaseClient.from("user_achievement_unlocks").insert({
       achievement_id: achievementId,
       user_id: user.id,
-      metadata: (metadata || {}) as any
+      metadata: metadata || {}
     });
 
     if (error?.code === POSTGRES_ERROR_CODES.UNIQUENESS_VIOLATION) {

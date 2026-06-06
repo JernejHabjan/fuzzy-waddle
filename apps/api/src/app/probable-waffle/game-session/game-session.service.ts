@@ -105,7 +105,7 @@ export class GameSessionService implements GameSessionServiceInterface {
       await this.createSession({
         gameInstanceId,
         gameType: sessionMeta.gameType ?? "Skirmish",
-        mapId: sessionMeta.mapId as ProbableWaffleMapEnum,
+        mapId: sessionMeta.mapId ,
         createdByUserId: submittedByUserId,
         humanPlayerCount: sessionMeta.humanPlayerCount ?? 1
       });
@@ -242,12 +242,18 @@ export class GameSessionService implements GameSessionServiceInterface {
   }
 
   private async clearIncompleteSessionData(sessionId: string): Promise<void> {
-    const { error: snapshotsError } = await this.supabase.from("game_score_snapshots").delete().eq("game_session_id", sessionId);
+    const { error: snapshotsError } = await this.supabase
+      .from("game_score_snapshots")
+      .delete()
+      .eq("game_session_id", sessionId);
     if (snapshotsError) {
       throw new Error(`Failed to clear stale snapshots: ${snapshotsError.message}`);
     }
 
-    const { error: scoreRecordsError } = await this.supabase.from("game_score_records").delete().eq("game_session_id", sessionId);
+    const { error: scoreRecordsError } = await this.supabase
+      .from("game_score_records")
+      .delete()
+      .eq("game_session_id", sessionId);
     if (scoreRecordsError) {
       throw new Error(`Failed to clear stale score records: ${scoreRecordsError.message}`);
     }
@@ -455,7 +461,7 @@ export class GameSessionService implements GameSessionServiceInterface {
         .in("score_record_id", recordIds);
 
       for (const metric of metrics ?? []) {
-        const key = (metric.game_score_metric_definitions as { metric_key: string } | null)?.metric_key;
+        const key = (metric.game_score_metric_definitions )?.metric_key;
         if (!key) continue;
         const existing = metricsMap.get(metric.score_record_id) ?? {};
         existing[key] = metric.metric_value;
@@ -496,9 +502,7 @@ export class GameSessionService implements GameSessionServiceInterface {
       .eq("snapshot_kind", "score_timeline")
       .maybeSingle();
 
-    const snapshots: GameScoreSnapshotDto[] = snapshotRow
-      ? (snapshotRow.snapshots as unknown as GameScoreSnapshotDto[])
-      : [];
+    const snapshots = snapshotRow ? snapshotRow.snapshots : [];
 
     return {
       gameSession: {
