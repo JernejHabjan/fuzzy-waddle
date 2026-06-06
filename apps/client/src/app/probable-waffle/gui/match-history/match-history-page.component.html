@@ -44,10 +44,10 @@
             (keydown.enter)="viewDetails(match.gameInstanceId)"
             (keydown.space)="viewDetails(match.gameInstanceId)"
           >
-            <div>{{ match.endedAt | date: "short" }}</div>
-            <div>{{ getMapName(match.mapId) }}</div>
-            <div>{{ formatDuration(match.totalDurationSeconds) }}</div>
-            <div>
+            <div data-label="Date">{{ match.endedAt | date: "short" }}</div>
+            <div data-label="Map">{{ getMapName(match.mapId) }}</div>
+            <div data-label="Duration">{{ formatDuration(match.totalDurationSeconds) }}</div>
+            <div data-label="Result">
               <span
                 class="result-badge"
                 [class.result-win]="match.userResult === 'win'"
@@ -58,8 +58,8 @@
                 {{ match.userResult }}
               </span>
             </div>
-            <div>{{ match.humanPlayerCount }} player{{ match.humanPlayerCount > 1 ? "s" : "" }}</div>
-            <div>
+            <div data-label="Players">{{ match.humanPlayerCount }} player{{ match.humanPlayerCount > 1 ? "s" : "" }}</div>
+            <div data-label="Actions">
               <button
                 class="btn btn-sm btn-primary"
                 (click)="viewDetails(match.gameInstanceId); $event.stopPropagation()"

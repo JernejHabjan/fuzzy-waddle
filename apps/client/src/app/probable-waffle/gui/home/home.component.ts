@@ -31,6 +31,7 @@ export class HomeComponent implements OnInit {
     return {
       modalTitle: "Desktop Recommended",
       closeButtonLabel: "I Understand",
+      windowClass: "aota-mobile-warning-modal",
       hideDismissButton: () => true,
       onClose: () => {
         sessionStorage.setItem(this.MOBILE_WARNING_DISMISSED_KEY, "true");

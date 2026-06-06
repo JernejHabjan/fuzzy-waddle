@@ -393,8 +393,74 @@
   text-align: center;
 }
 
+.aota-mobile-warning-modal .modal-content {
+  background-color: #1b2128;
+  border: 1px solid rgba(111, 85, 52, 0.78);
+  color: #f5ecd9;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.46);
+}
+
+.aota-mobile-warning-modal .modal-header,
+.aota-mobile-warning-modal .modal-footer {
+  border-color: rgba(111, 85, 52, 0.42);
+  background-color: rgba(15, 18, 22, 0.82);
+}
+
+.aota-mobile-warning-modal .modal-title,
+.aota-mobile-warning-modal .modal-body {
+  color: #f5ecd9;
+}
+
+.aota-mobile-warning-modal .btn-outline-primary {
+  background-color: rgba(240, 196, 107, 0.14);
+  border-color: rgba(240, 196, 107, 0.58);
+  color: #f5ecd9;
+}
+
+.aota-mobile-warning-modal .btn-outline-primary:hover {
+  background-color: #d6a656;
+  border-color: #d6a656;
+  color: #1a1510;
+}
+
 @media (max-width: 768px) {
   .probable-waffle-theme {
     font-size: 0.98rem;
+  }
+
+  .probable-waffle-theme fuzzy-waddle-center-wrapper > div {
+    align-items: flex-start !important;
+    min-height: 100vh;
+    padding: 0 0 1rem;
+  }
+
+  .probable-waffle-theme .card-container,
+  .probable-waffle-theme .aota-card-shell,
+  .probable-waffle-theme .online-container,
+  .probable-waffle-theme .match-details,
+  .probable-waffle-theme .score-table-wrapper,
+  .probable-waffle-theme .chart-container {
+    width: min(100%, calc(100vw - 1rem));
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .probable-waffle-theme .card-container,
+  .probable-waffle-theme .online-container,
+  .probable-waffle-theme .match-details {
+    margin-top: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .probable-waffle-theme .nav-tabs {
+    flex-wrap: wrap;
+  }
+
+  .probable-waffle-theme .nav-tabs li {
+    min-width: calc(50% - 0.25rem);
+  }
+
+  .probable-waffle-theme .btn {
+    max-width: 100%;
   }
 }

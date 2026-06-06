@@ -17,7 +17,9 @@ export class ModalComponent {
 
   open(): Promise<boolean> {
     return new Promise<boolean>((resolve) => {
-      this.modalRef = this.modalService.open(this.modalContent());
+      this.modalRef = this.modalService.open(this.modalContent(), {
+        windowClass: this.modalConfig().windowClass
+      });
       this.modalRef.result.then(resolve, resolve);
     });
   }
