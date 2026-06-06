@@ -201,9 +201,23 @@ export class GameInstanceService implements GameInstanceServiceInterface {
         this.ensureUserOwnsTarget(payload.data.playerControllerData?.userId ?? null, user.id, "Player access denied");
         return;
       default:
+        // playerNumber-based events can target any slot, so non-host callers must
+        // also own the addressed player and not just "be a player somewhere".
         if (!gameInstance.isPlayer(user.id)) {
           throw new ForbiddenException("Only players can update their game state");
         }
+
+        const targetPlayerNumber = payload.data.playerNumber;
+        if (targetPlayerNumber == null) {
+          throw new ForbiddenException("Player mutation target missing");
+        }
+
+        const targetPlayer = gameInstance.getPlayerByNumber(targetPlayerNumber);
+        if (!targetPlayer) {
+          throw new ForbiddenException("Player access denied");
+        }
+
+        this.ensureUserOwnsTarget(targetPlayer.playerController.data.userId ?? null, user.id, "Player access denied");
         return;
     }
   }

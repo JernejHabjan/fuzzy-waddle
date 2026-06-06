@@ -116,6 +116,10 @@ export class GameSessionService implements GameSessionServiceInterface {
     }
 
     try {
+      // Retries must start from a clean slate because a previous partial write
+      // leaves the session "in_progress" but can already contain participants/scores.
+      await this.clearIncompleteSessionData(session.id);
+
       const metricKeyToId = await this.getMetricDefinitionIds(playerScores);
 
       for (const playerScore of playerScores) {
@@ -141,6 +145,7 @@ export class GameSessionService implements GameSessionServiceInterface {
 
         if (participantError) {
           console.error("Failed to insert participant:", participantError);
+          await this.clearIncompleteSessionData(session.id);
           return { success: false, message: `Failed to insert participant: ${participantError.message}` };
         }
 
@@ -167,6 +172,7 @@ export class GameSessionService implements GameSessionServiceInterface {
 
         if (scoreError) {
           console.error("Failed to insert score record:", scoreError);
+          await this.clearIncompleteSessionData(session.id);
           return { success: false, message: `Failed to insert score record: ${scoreError.message}` };
         }
 
@@ -187,6 +193,7 @@ export class GameSessionService implements GameSessionServiceInterface {
 
           if (metricsError) {
             console.error("Failed to insert metric values:", metricsError);
+            await this.clearIncompleteSessionData(session.id);
             return { success: false, message: `Failed to insert metric values: ${metricsError.message}` };
           }
         }
@@ -220,6 +227,7 @@ export class GameSessionService implements GameSessionServiceInterface {
 
       if (updateError) {
         console.error("Failed to update session:", updateError);
+        await this.clearIncompleteSessionData(session.id);
         return { success: false, message: `Failed to update session: ${updateError.message}` };
       }
 
@@ -230,6 +238,26 @@ export class GameSessionService implements GameSessionServiceInterface {
       const message = error instanceof Error ? error.message : "Unknown error during score submission";
       console.error("Error submitting scores:", error);
       return { success: false, message };
+    }
+  }
+
+  private async clearIncompleteSessionData(sessionId: string): Promise<void> {
+    const { error: snapshotsError } = await this.supabase.from("game_score_snapshots").delete().eq("game_session_id", sessionId);
+    if (snapshotsError) {
+      throw new Error(`Failed to clear stale snapshots: ${snapshotsError.message}`);
+    }
+
+    const { error: scoreRecordsError } = await this.supabase.from("game_score_records").delete().eq("game_session_id", sessionId);
+    if (scoreRecordsError) {
+      throw new Error(`Failed to clear stale score records: ${scoreRecordsError.message}`);
+    }
+
+    const { error: participantsError } = await this.supabase
+      .from("game_session_participants")
+      .delete()
+      .eq("game_session_id", sessionId);
+    if (participantsError) {
+      throw new Error(`Failed to clear stale participants: ${participantsError.message}`);
     }
   }
 
