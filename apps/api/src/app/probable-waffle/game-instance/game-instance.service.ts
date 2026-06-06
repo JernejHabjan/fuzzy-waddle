@@ -119,6 +119,10 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     return gameInstance.data;
   }
 
+  /**
+   * Public lobbies can be observed by any authenticated user. Private lobbies
+   * stay visible only to the host, current players, and current spectators.
+   */
   ensureCanAccessGameInstance(gameInstance: ProbableWaffleGameInstance, user: User): void {
     if (
       gameInstance.gameInstanceMetadata.data.visibility === ProbableWaffleGameInstanceVisibility.Public ||
@@ -133,19 +137,17 @@ export class GameInstanceService implements GameInstanceServiceInterface {
   }
 
   ensureCanJoinGameRoom(gameInstanceId: GameInstanceId, user: User): void {
-    const gameInstance = this.findGameInstance(gameInstanceId);
-    if (!gameInstance) {
-      throw new ForbiddenException("Game instance access denied");
-    }
-
+    const gameInstance = this.requireGameInstance(gameInstanceId);
     this.ensureCanAccessGameInstance(gameInstance, user);
   }
 
+  /**
+   * Mutations are intentionally narrower than reads:
+   * hosts manage lobby metadata, players manage active state, and join/leave
+   * events can only target the authenticated caller.
+   */
   ensureCanMutateGameInstance(body: CommunicatorEvent<any, ProbableWaffleCommunicatorType>, user: User): void {
-    const gameInstance = this.findGameInstance(body.gameInstanceId!);
-    if (!gameInstance) {
-      throw new ForbiddenException("Game instance access denied");
-    }
+    const gameInstance = this.requireGameInstance(body.gameInstanceId!);
 
     switch (body.communicator) {
       case "gameInstanceMetadataDataChange":
@@ -172,6 +174,15 @@ export class GameInstanceService implements GameInstanceServiceInterface {
 
   private checkIfPlayerIsCreator(gameInstance: ProbableWaffleGameInstance, user: User) {
     return gameInstance.gameInstanceMetadata.data.createdBy === user.id;
+  }
+
+  private requireGameInstance(gameInstanceId: GameInstanceId): ProbableWaffleGameInstance {
+    const gameInstance = this.findGameInstance(gameInstanceId);
+    if (!gameInstance) {
+      throw new ForbiddenException("Game instance access denied");
+    }
+
+    return gameInstance;
   }
 
   private ensureCanMutatePlayerData(

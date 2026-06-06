@@ -14,10 +14,7 @@ export class RoomGateway implements OnGatewayConnection {
   constructor(private readonly socketConnectionAuthService: SocketConnectionAuthService) {}
 
   async handleConnection(client: Socket): Promise<void> {
-    const authenticated = await this.socketConnectionAuthService.authenticateSocket(client);
-    if (!authenticated) {
-      client.disconnect(true);
-    }
+    await this.socketConnectionAuthService.disconnectUnauthenticatedClient(client);
   }
 
   emitRoom(roomEvent: ProbableWaffleRoomEvent) {

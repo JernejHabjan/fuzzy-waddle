@@ -44,10 +44,7 @@ export class GameInstanceGateway implements OnGatewayConnection {
   ) {}
 
   async handleConnection(client: Socket): Promise<void> {
-    const authenticated = await this.socketConnectionAuthService.authenticateSocket(client);
-    if (!authenticated) {
-      client.disconnect(true);
-    }
+    await this.socketConnectionAuthService.disconnectUnauthenticatedClient(client);
   }
 
   emitGameFound(probableWaffleGameFoundEvent: ProbableWaffleGameFoundEvent) {

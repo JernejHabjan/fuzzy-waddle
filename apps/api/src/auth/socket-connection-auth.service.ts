@@ -11,6 +11,11 @@ export class SocketConnectionAuthService {
     private readonly userProfilesService: UserProfilesService
   ) {}
 
+  /**
+   * Gateways use this helper so connection-time auth stays consistent with the
+   * request guards: the socket must carry a valid Supabase user and that user
+   * must still have online access.
+   */
   async authenticateSocket(client: Socket): Promise<boolean> {
     const accessToken = this.getAccessToken(client);
     if (!accessToken) {
@@ -28,6 +33,17 @@ export class SocketConnectionAuthService {
       return true;
     } catch {
       return false;
+    }
+  }
+
+  /**
+   * Shared connection hook for gateways that should reject passive listeners
+   * before they can subscribe to any server-pushed events.
+   */
+  async disconnectUnauthenticatedClient(client: Socket): Promise<void> {
+    const authenticated = await this.authenticateSocket(client);
+    if (!authenticated) {
+      client.disconnect(true);
     }
   }
 
