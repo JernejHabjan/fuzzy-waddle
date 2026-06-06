@@ -9,7 +9,7 @@ import {
   type ModerationReportGroupDto
 } from "@fuzzy-waddle/api-interfaces";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
-import { ChatService } from "../../data-access/chat/chat.service";
+import { ModerationService } from "../../data-access/moderation/moderation.service";
 import { HomeNavComponent } from "../../shared/components/home-nav/home-nav.component";
 import { getRoleIcon, getRoleLabel } from "../../shared/utils/app-role-presentation";
 
@@ -29,7 +29,7 @@ export class ModerationComponent implements OnInit {
   protected readonly UserAccountStatus = UserAccountStatus;
   protected readonly getRoleIcon = getRoleIcon;
   protected readonly getRoleLabel = getRoleLabel;
-  private readonly chatService = inject(ChatService);
+  private readonly moderationService = inject(ModerationService);
 
   async ngOnInit(): Promise<void> {
     await this.loadReports();
@@ -39,7 +39,7 @@ export class ModerationComponent implements OnInit {
     this.isLoading = true;
     this.errorMessage = "";
     try {
-      this.queue = await this.chatService.getModerationReports();
+      this.queue = await this.moderationService.getReports();
     } catch (error) {
       console.error("Failed to load moderation reports:", error);
       this.errorMessage = "Could not load moderation reports.";
@@ -49,7 +49,7 @@ export class ModerationComponent implements OnInit {
   }
 
   protected async updateReport(report: ModerationReportDto, status: ChatReportStatus): Promise<void> {
-    await this.chatService.updateReportStatus(report.id, {
+    await this.moderationService.updateReportStatus(report.id, {
       status: status as ChatReportStatus.Reviewed | ChatReportStatus.Actioned
     });
     await this.loadReports();
@@ -60,7 +60,7 @@ export class ModerationComponent implements OnInit {
       return;
     }
 
-    await this.chatService.banUser(group.reportedUserId, {
+    await this.moderationService.banUser(group.reportedUserId, {
       bannedUntil: this.banUntilByUserId[group.reportedUserId] || null,
       moderationNote: this.banNoteByUserId[group.reportedUserId] || "Banned from chat moderation queue"
     });
@@ -70,7 +70,7 @@ export class ModerationComponent implements OnInit {
   }
 
   protected async unbanUser(userId: string): Promise<void> {
-    await this.chatService.unbanUser(userId);
+    await this.moderationService.unbanUser(userId);
     await this.loadReports();
   }
 

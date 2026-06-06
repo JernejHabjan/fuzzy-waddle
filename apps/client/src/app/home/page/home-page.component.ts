@@ -10,9 +10,9 @@ import { HomePageNavComponent } from "./home-page-nav/home-page-nav.component";
 import { AngularHost } from "../../shared/consts";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { faCopyright, faMusic, faShieldHalved } from "@fortawesome/free-solid-svg-icons";
-import { ChatService } from "../../data-access/chat/chat.service";
 import { AppUserRole } from "@fuzzy-waddle/api-interfaces";
 import { CurrentUserProfileService } from "../../data-access/profile/current-user-profile.service";
+import { ModerationService } from "../../data-access/moderation/moderation.service";
 
 export type DisplayGame = {
   name: string;
@@ -79,7 +79,7 @@ export class HomePageComponent implements OnInit {
 
   protected readonly authService = inject(AuthService);
   protected readonly serverHealthService = inject(ServerHealthService);
-  private readonly chatService = inject(ChatService);
+  private readonly moderationService = inject(ModerationService);
   private readonly currentUserProfileService = inject(CurrentUserProfileService);
 
   async ngOnInit(): Promise<void> {
@@ -98,7 +98,7 @@ export class HomePageComponent implements OnInit {
         return;
       }
 
-      const summary = await this.chatService.getModerationSummary();
+      const summary = await this.moderationService.getSummary();
       this.pendingModerationCount = summary.pendingReportCount;
     } catch {
       this.isModerator = false;

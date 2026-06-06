@@ -8,11 +8,7 @@ import {
   type ChatMessage,
   GatewayChatEvent,
   type GetMessagesResponseDto,
-  type ModerationQueueDto,
-  type ModerationSummaryDto,
-  type ReportChatMessageDto,
-  type UpdateChatReportStatusDto,
-  type BanUserDto
+  type ReportChatMessageDto
 } from "@fuzzy-waddle/api-interfaces";
 import { environment } from "../../../environments/environment";
 
@@ -45,30 +41,5 @@ export class ChatService implements IChatService {
   async reportMessage(messageId: number, report: ReportChatMessageDto): Promise<void> {
     const url = `${environment.api}api/chat/messages/${messageId}/report`;
     await firstValueFrom(this.httpClient.post<void>(url, report));
-  }
-
-  async getModerationSummary(): Promise<ModerationSummaryDto> {
-    const url = `${environment.api}api/moderation/summary`;
-    return await firstValueFrom(this.httpClient.get<ModerationSummaryDto>(url));
-  }
-
-  async getModerationReports(): Promise<ModerationQueueDto> {
-    const url = `${environment.api}api/moderation/reports`;
-    return await firstValueFrom(this.httpClient.get<ModerationQueueDto>(url));
-  }
-
-  async updateReportStatus(reportId: number, body: UpdateChatReportStatusDto): Promise<void> {
-    const url = `${environment.api}api/moderation/reports/${reportId}/status`;
-    await firstValueFrom(this.httpClient.post<void>(url, body));
-  }
-
-  async banUser(userId: string, body: BanUserDto): Promise<void> {
-    const url = `${environment.api}api/moderation/users/${userId}/ban`;
-    await firstValueFrom(this.httpClient.post<void>(url, body));
-  }
-
-  async unbanUser(userId: string): Promise<void> {
-    const url = `${environment.api}api/moderation/users/${userId}/unban`;
-    await firstValueFrom(this.httpClient.post<void>(url, {}));
   }
 }
