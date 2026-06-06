@@ -50,7 +50,7 @@ export class ModerationComponent implements OnInit {
 
   protected async updateReport(report: ModerationReportDto, status: ChatReportStatus): Promise<void> {
     await this.moderationService.updateReportStatus(report.id, {
-      status: status as ChatReportStatus.Reviewed | ChatReportStatus.Actioned
+      status: status as (typeof ChatReportStatus.Reviewed | typeof ChatReportStatus.Actioned)
     });
     await this.loadReports();
   }
