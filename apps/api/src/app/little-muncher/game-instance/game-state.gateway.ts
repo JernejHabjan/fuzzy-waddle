@@ -28,7 +28,7 @@ export class GameStateGateway {
     @MessageBody() payload: CommunicatorEvent<any, LittleMuncherCommunicatorType>,
     @ConnectedSocket() socket: Socket
   ) {
-    console.log("Little Muncher - Action", payload.communicator);
+    // console.log("Little Muncher - Action", payload.communicator);
 
     const success = this.gameStateServerService.updateGameState(payload, user);
     if (success) {
