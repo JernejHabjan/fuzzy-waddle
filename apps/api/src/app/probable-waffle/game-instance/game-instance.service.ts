@@ -1,11 +1,15 @@
-import { Injectable } from "@nestjs/common";
+import { ForbiddenException, Injectable } from "@nestjs/common";
 import { type User } from "@supabase/supabase-js";
 import {
+  type CommunicatorEvent,
   type DifficultyModifiers,
   GameInstanceId,
   type MapTuning,
+  type ProbableWaffleCommunicatorType,
   ProbableWaffleGameInstance,
   type ProbableWaffleGameInstanceData,
+  ProbableWaffleGameInstanceVisibility,
+  type ProbableWafflePlayerDataChangeEvent,
   type ProbableWaffleGameInstanceMetadataData,
   type ProbableWaffleGameModeData,
   type ProbableWaffleGameStateData
@@ -108,8 +112,97 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     return gameInstance.data;
   }
 
+  getGameInstanceDataForUser(gameInstanceId: GameInstanceId, user: User): ProbableWaffleGameInstanceData | null {
+    const gameInstance = this.findGameInstance(gameInstanceId);
+    if (!gameInstance) return null;
+    this.ensureCanAccessGameInstance(gameInstance, user);
+    return gameInstance.data;
+  }
+
+  ensureCanAccessGameInstance(gameInstance: ProbableWaffleGameInstance, user: User): void {
+    if (
+      gameInstance.gameInstanceMetadata.data.visibility === ProbableWaffleGameInstanceVisibility.Public ||
+      gameInstance.isHost(user.id) ||
+      gameInstance.isPlayer(user.id) ||
+      gameInstance.isSpectator(user.id)
+    ) {
+      return;
+    }
+
+    throw new ForbiddenException("Game instance access denied");
+  }
+
+  ensureCanJoinGameRoom(gameInstanceId: GameInstanceId, user: User): void {
+    const gameInstance = this.findGameInstance(gameInstanceId);
+    if (!gameInstance) {
+      throw new ForbiddenException("Game instance access denied");
+    }
+
+    this.ensureCanAccessGameInstance(gameInstance, user);
+  }
+
+  ensureCanMutateGameInstance(body: CommunicatorEvent<any, ProbableWaffleCommunicatorType>, user: User): void {
+    const gameInstance = this.findGameInstance(body.gameInstanceId!);
+    if (!gameInstance) {
+      throw new ForbiddenException("Game instance access denied");
+    }
+
+    switch (body.communicator) {
+      case "gameInstanceMetadataDataChange":
+        if (!gameInstance.isHost(user.id)) {
+          throw new ForbiddenException("Only the host can update game metadata");
+        }
+        return;
+      case "gameModeDataChange":
+      case "gameStateDataChange":
+        if (!gameInstance.isPlayer(user.id)) {
+          throw new ForbiddenException("Only players can update active game state");
+        }
+        return;
+      case "playerDataChange":
+        this.ensureCanMutatePlayerData(gameInstance, body.payload as ProbableWafflePlayerDataChangeEvent, user);
+        return;
+      case "spectatorDataChange":
+        this.ensureUserOwnsTarget(body.payload.data?.userId ?? null, user.id, "Spectator access denied");
+        return;
+      default:
+        throw new ForbiddenException("Game instance mutation denied");
+    }
+  }
+
   private checkIfPlayerIsCreator(gameInstance: ProbableWaffleGameInstance, user: User) {
     return gameInstance.gameInstanceMetadata.data.createdBy === user.id;
+  }
+
+  private ensureCanMutatePlayerData(
+    gameInstance: ProbableWaffleGameInstance,
+    payload: ProbableWafflePlayerDataChangeEvent,
+    user: User
+  ): void {
+    if (gameInstance.isHost(user.id)) {
+      return;
+    }
+
+    switch (payload.property) {
+      case "joined":
+      case "joinedFromNetwork":
+      case "left":
+        this.ensureUserOwnsTarget(payload.data.playerControllerData?.userId ?? null, user.id, "Player access denied");
+        return;
+      default:
+        if (!gameInstance.isPlayer(user.id)) {
+          throw new ForbiddenException("Only players can update their game state");
+        }
+        return;
+    }
+  }
+
+  private ensureUserOwnsTarget(targetUserId: string | null, currentUserId: string, message: string): void {
+    if (targetUserId === currentUserId) {
+      return;
+    }
+
+    throw new ForbiddenException(message);
   }
 
   private sanitizeGameInstanceMetadataData(

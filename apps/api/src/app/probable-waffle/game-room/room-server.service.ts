@@ -41,6 +41,10 @@ export class RoomServerService implements RoomServerServiceInterface {
   }
 
   roomEvent(type: RoomAction, gameInstance: ProbableWaffleGameInstance, user: User | null) {
+    if (gameInstance.gameInstanceMetadata.data.visibility !== ProbableWaffleGameInstanceVisibility.Public) {
+      return;
+    }
+
     this.roomGateway.emitRoom({
       room: this.getGameInstanceToRoom(gameInstance),
       action: type

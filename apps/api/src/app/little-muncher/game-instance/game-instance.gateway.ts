@@ -1,19 +1,29 @@
-import { WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
-import { Server } from "net";
+import { OnGatewayConnection, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import {
   LittleMuncherGatewayEvent,
   type LittleMuncherRoomEvent,
   type LittleMuncherSpectatorEvent
 } from "@fuzzy-waddle/api-interfaces";
 import { type GameInstanceGatewayInterface } from "./game-instance.gateway.interface";
+import { Server, Socket } from "socket.io";
+import { SocketConnectionAuthService } from "../../../auth/socket-connection-auth.service";
 
 @WebSocketGateway({
   cors: {
     origin: process.env.CORS_ORIGIN?.split(",")
   }
 })
-export class GameInstanceGateway implements GameInstanceGatewayInterface {
+export class GameInstanceGateway implements GameInstanceGatewayInterface, OnGatewayConnection {
   @WebSocketServer() private readonly server!: Server;
+
+  constructor(private readonly socketConnectionAuthService: SocketConnectionAuthService) {}
+
+  async handleConnection(client: Socket): Promise<void> {
+    const authenticated = await this.socketConnectionAuthService.authenticateSocket(client);
+    if (!authenticated) {
+      client.disconnect(true);
+    }
+  }
 
   emitRoom(roomEvent: LittleMuncherRoomEvent): void {
     this.server.emit(LittleMuncherGatewayEvent.LittleMuncherRoom, roomEvent);

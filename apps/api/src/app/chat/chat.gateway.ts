@@ -1,21 +1,32 @@
-import { MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
+import { MessageBody, OnGatewayConnection, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { CurrentUser } from "../../auth/current-user";
 import { type AuthUser } from "@supabase/supabase-js";
 import { UseGuards } from "@nestjs/common";
 import { OnlineAccessGuard } from "../../auth/guards/online-access.guard";
 import { ChatService } from "./chat.service";
 import { type ChatMessage, GatewayChatEvent } from "@fuzzy-waddle/api-interfaces";
-import { Server } from "socket.io";
+import { Server, Socket } from "socket.io";
+import { SocketConnectionAuthService } from "../../auth/socket-connection-auth.service";
 
 @WebSocketGateway({
   cors: {
     origin: process.env.CORS_ORIGIN?.split(",")
   }
 })
-export class ChatGateway {
+export class ChatGateway implements OnGatewayConnection {
   @WebSocketServer() private readonly server!: Server;
 
-  constructor(private readonly chatService: ChatService) {}
+  constructor(
+    private readonly chatService: ChatService,
+    private readonly socketConnectionAuthService: SocketConnectionAuthService
+  ) {}
+
+  async handleConnection(client: Socket): Promise<void> {
+    const authenticated = await this.socketConnectionAuthService.authenticateSocket(client);
+    if (!authenticated) {
+      client.disconnect(true);
+    }
+  }
   //subscribe to chat message and broadcast to all clients
   @UseGuards(OnlineAccessGuard)
   @SubscribeMessage(GatewayChatEvent.CHAT_MESSAGE)

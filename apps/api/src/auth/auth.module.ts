@@ -9,6 +9,7 @@ import { SupabaseProviderService } from "../core/supabase-provider/supabase-prov
 import { SupabaseAuthGuard } from "./guards/supabase-auth.guard";
 import { OnlineAccessGuard } from "./guards/online-access.guard";
 import { ModeratorAccessGuard } from "./guards/moderator-access.guard";
+import { SocketConnectionAuthService } from "./socket-connection-auth.service";
 import { UserProfilesModule } from "../app/user-profiles/user-profiles.module";
 
 @Module({
@@ -27,7 +28,8 @@ import { UserProfilesModule } from "../app/user-profiles/user-profiles.module";
     SupabaseProviderService,
     SupabaseAuthGuard,
     OnlineAccessGuard,
-    ModeratorAccessGuard
+    ModeratorAccessGuard,
+    SocketConnectionAuthService
   ],
   exports: [
     UserProfilesModule,
@@ -35,6 +37,7 @@ import { UserProfilesModule } from "../app/user-profiles/user-profiles.module";
     SupabaseAuthGuard,
     OnlineAccessGuard,
     ModeratorAccessGuard,
+    SocketConnectionAuthService,
     SupabaseProviderService
   ]
 })

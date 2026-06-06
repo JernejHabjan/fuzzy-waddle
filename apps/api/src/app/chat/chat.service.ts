@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, ConflictException, forwardRef, Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { type IChatService } from "./chat.service.interface";
 import { type AuthUser } from "@supabase/supabase-js";
 import { SupabaseProviderService } from "../../core/supabase-provider/supabase-provider.service";
@@ -20,13 +20,16 @@ import {
 } from "@fuzzy-waddle/api-interfaces";
 import { POSTGRES_ERROR_CODES } from "../../core/database/postgres-error-codes";
 import { UserProfilesService } from "../user-profiles/user-profiles.service";
+import { GameInstanceService } from "../probable-waffle/game-instance/game-instance.service";
 
 @Injectable()
 export class ChatService implements IChatService {
   constructor(
     private readonly supabaseProviderService: SupabaseProviderService,
     private readonly textSanitizationService: TextSanitizationService,
-    private readonly userProfilesService: UserProfilesService
+    private readonly userProfilesService: UserProfilesService,
+    @Inject(forwardRef(() => GameInstanceService))
+    private readonly probableWaffleGameInstanceService: GameInstanceService
   ) {}
 
   /**
@@ -34,6 +37,7 @@ export class ChatService implements IChatService {
    */
   async postMessage(text: string, user: AuthUser, gameInstanceId?: string): Promise<ChatMessage> {
     const sanitizedMessage = this.textSanitizationService.cleanBadWords(text);
+    this.ensureCanAccessGameChat(gameInstanceId, user);
     const supabase = this.supabaseProviderService.supabaseClient;
     const channel = await this.getOrCreateChannel(gameInstanceId);
 
@@ -79,6 +83,7 @@ export class ChatService implements IChatService {
     user: AuthUser
   ): Promise<GetMessagesResponseDto> {
     const supabase = this.supabaseProviderService.supabaseClient;
+    this.ensureCanAccessGameChat(gameInstanceId, user);
     const channel = await this.getOrCreateChannel(gameInstanceId);
 
     const { data, count, error } = await supabase
@@ -441,6 +446,14 @@ export class ChatService implements IChatService {
     }
 
     return new Map((data || []).map((row: any) => [row.message_id, row.report_status]));
+  }
+
+  private ensureCanAccessGameChat(gameInstanceId: string | undefined, user: AuthUser): void {
+    if (!gameInstanceId) {
+      return;
+    }
+
+    this.probableWaffleGameInstanceService.ensureCanJoinGameRoom(gameInstanceId, user);
   }
 
   /* Keep one local helper only for shaping moderation queue state. */

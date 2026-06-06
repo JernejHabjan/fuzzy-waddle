@@ -24,6 +24,6 @@ export class GameInstanceController {
     @CurrentUser() user: AuthUser,
     @Query("gameInstanceId") gameInstanceId: GameInstanceId
   ): Promise<ProbableWaffleGameInstanceData | null> {
-    return this.gameInstanceService.getGameInstanceData(gameInstanceId);
+    return this.gameInstanceService.getGameInstanceDataForUser(gameInstanceId, user);
   }
 }

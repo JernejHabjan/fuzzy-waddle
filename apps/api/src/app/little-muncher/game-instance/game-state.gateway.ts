@@ -1,4 +1,11 @@
-import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
+import {
+  ConnectedSocket,
+  MessageBody,
+  OnGatewayConnection,
+  SubscribeMessage,
+  WebSocketGateway,
+  WebSocketServer
+} from "@nestjs/websockets";
 import { UseGuards } from "@nestjs/common";
 import { OnlineAccessGuard } from "../../../auth/guards/online-access.guard";
 import { CurrentUser } from "../../../auth/current-user";
@@ -10,16 +17,27 @@ import {
 } from "@fuzzy-waddle/api-interfaces";
 import { GameStateServerService } from "./game-state-server.service";
 import { Server, Socket } from "socket.io";
+import { SocketConnectionAuthService } from "../../../auth/socket-connection-auth.service";
 
 @WebSocketGateway({
   cors: {
     origin: process.env.CORS_ORIGIN?.split(",")
   }
 })
-export class GameStateGateway {
+export class GameStateGateway implements OnGatewayConnection {
   @WebSocketServer() private readonly server!: Server;
 
-  constructor(private readonly gameStateServerService: GameStateServerService) {}
+  constructor(
+    private readonly gameStateServerService: GameStateServerService,
+    private readonly socketConnectionAuthService: SocketConnectionAuthService
+  ) {}
+
+  async handleConnection(client: Socket): Promise<void> {
+    const authenticated = await this.socketConnectionAuthService.authenticateSocket(client);
+    if (!authenticated) {
+      client.disconnect(true);
+    }
+  }
 
   @UseGuards(OnlineAccessGuard)
   @SubscribeMessage(LittleMuncherGatewayEvent.LittleMuncherAction)

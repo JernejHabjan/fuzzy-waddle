@@ -1,4 +1,11 @@
-import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
+import {
+  ConnectedSocket,
+  MessageBody,
+  OnGatewayConnection,
+  SubscribeMessage,
+  WebSocketGateway,
+  WebSocketServer
+} from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
 import {
   type CommunicatorEvent,
@@ -18,21 +25,30 @@ import { CurrentUser } from "../../../auth/current-user";
 import { GameStateServerService } from "./game-state-server.service";
 import { RoomServerService } from "../game-room/room-server.service";
 import { ChatService } from "../../chat/chat.service";
+import { SocketConnectionAuthService } from "../../../auth/socket-connection-auth.service";
 
 @WebSocketGateway({
   cors: {
     origin: process.env.CORS_ORIGIN?.split(",")
   }
 })
-export class GameInstanceGateway {
+export class GameInstanceGateway implements OnGatewayConnection {
   @WebSocketServer() private readonly server!: Server;
 
   constructor(
     private readonly gameStateServerService: GameStateServerService,
     private readonly probableWaffleChatService: ProbableWaffleChatService,
     private readonly roomServerService: RoomServerService,
-    private readonly chatService: ChatService
+    private readonly chatService: ChatService,
+    private readonly socketConnectionAuthService: SocketConnectionAuthService
   ) {}
+
+  async handleConnection(client: Socket): Promise<void> {
+    const authenticated = await this.socketConnectionAuthService.authenticateSocket(client);
+    if (!authenticated) {
+      client.disconnect(true);
+    }
+  }
 
   emitGameFound(probableWaffleGameFoundEvent: ProbableWaffleGameFoundEvent) {
     this.server.emit(ProbableWaffleGameInstanceEvent.GameFound, probableWaffleGameFoundEvent);
@@ -46,6 +62,7 @@ export class GameInstanceGateway {
     @ConnectedSocket() socket: Socket
   ) {
     console.log("Ashes of the Ancients - GI action:", body.communicator, body.payload);
+    this.gameStateServerService.ensureAuthorizedMutation(body, user);
 
     const success = this.gameStateServerService.updateGameState(body, user);
     if (success) {
@@ -68,6 +85,7 @@ export class GameInstanceGateway {
     @ConnectedSocket() socket: Socket
   ) {
     console.log(`Ashes of the Ancients - GI chat message ${body.gameInstanceId}`);
+    this.gameStateServerService.ensureCanAccessGameRoom(body.gameInstanceId!, user);
 
     // clone the payload
     const newPayload = { ...body };
@@ -102,6 +120,8 @@ export class GameInstanceGateway {
     @MessageBody() body: ProbableWaffleWebsocketRoomEvent,
     @ConnectedSocket() socket: Socket
   ) {
+    this.gameStateServerService.ensureCanAccessGameRoom(body.gameInstanceId, user);
+
     switch (body.type) {
       case "join":
         socket.join(`${ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance}${body.gameInstanceId}`);
