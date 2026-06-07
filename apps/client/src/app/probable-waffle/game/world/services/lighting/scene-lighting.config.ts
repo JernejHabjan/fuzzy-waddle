@@ -18,6 +18,21 @@ const DEFAULT_AMBIENT_KEYFRAMES: ProbableWaffleLightingAmbientKeyframe[] = [
 export type ResolvedSceneLightingConfig = {
   enabled: boolean;
   ambientColor: number;
+  selfShadow: {
+    enabled: boolean | null;
+    penumbra: number;
+    diffuseFlatThreshold: number;
+  };
+  dropShadow: {
+    enabled: boolean;
+    x: number;
+    y: number;
+    decay: number;
+    power: number;
+    color: number;
+    samples: number;
+    intensity: number;
+  };
   dayNightCycle: {
     enabled: boolean;
     durationMs: number;
@@ -44,6 +59,21 @@ export function resolveSceneLightingConfig(
   return {
     enabled: mapLightingConfig?.enabled ?? true,
     ambientColor: mapLightingConfig?.ambientColor ?? DEFAULT_AMBIENT_COLOR,
+    selfShadow: {
+      enabled: mapLightingConfig?.selfShadow?.enabled ?? true,
+      penumbra: mapLightingConfig?.selfShadow?.penumbra ?? 0.45,
+      diffuseFlatThreshold: mapLightingConfig?.selfShadow?.diffuseFlatThreshold ?? 1 / 3
+    },
+    dropShadow: {
+      enabled: mapLightingConfig?.dropShadow?.enabled ?? true,
+      x: mapLightingConfig?.dropShadow?.x ?? 10,
+      y: mapLightingConfig?.dropShadow?.y ?? 8,
+      decay: mapLightingConfig?.dropShadow?.decay ?? 0.18,
+      power: mapLightingConfig?.dropShadow?.power ?? 1.3,
+      color: mapLightingConfig?.dropShadow?.color ?? 0x000000,
+      samples: mapLightingConfig?.dropShadow?.samples ?? 8,
+      intensity: mapLightingConfig?.dropShadow?.intensity ?? 0.42
+    },
     dayNightCycle: {
       enabled: dayNightConfig?.enabled ?? true,
       durationMs: dayNightConfig?.durationMs ?? DEFAULT_DAY_NIGHT_CYCLE_DURATION_MS,

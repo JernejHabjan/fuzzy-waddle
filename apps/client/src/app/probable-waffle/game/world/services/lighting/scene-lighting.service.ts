@@ -8,14 +8,27 @@ import {
 
 type LightingAwareGameObject = Phaser.GameObjects.GameObject & {
   setLighting?: (enable: boolean) => Phaser.GameObjects.GameObject;
+  setSelfShadow?: (
+    enabled?: boolean | undefined,
+    penumbra?: number,
+    diffuseFlatThreshold?: number
+  ) => Phaser.GameObjects.GameObject;
   visible?: boolean;
   active?: boolean;
+};
+
+type FilterAwareGameObject = Phaser.GameObjects.GameObject & {
+  enableFilters?: () => Phaser.GameObjects.GameObject;
+  filters?: Phaser.Types.GameObjects.FiltersInternalExternal | null;
 };
 
 type TrackedObject = {
   gameObject: Phaser.GameObjects.GameObject;
   lightingTarget: LightingAwareGameObject;
+  shadowTarget?: FilterAwareGameObject;
+  shadowFilter?: Phaser.Filters.Shadow;
   lightingEnabled: boolean;
+  shadowEnabled: boolean;
   onDestroy: () => void;
   onKilled: () => void;
 };
@@ -63,7 +76,9 @@ export class SceneLightingService {
     const tracked: TrackedObject = {
       gameObject,
       lightingTarget,
+      shadowTarget: this.asShadowTarget(gameObject),
       lightingEnabled: false,
+      shadowEnabled: false,
       onDestroy: () => this.unregisterGameObject(gameObject),
       onKilled: () => this.unregisterGameObject(gameObject)
     };
@@ -78,6 +93,7 @@ export class SceneLightingService {
     const tracked = this.trackedObjects.get(gameObject);
     if (!tracked) return;
     this.applyLighting(tracked, false);
+    this.applyShadow(tracked, false);
     tracked.gameObject.off(Phaser.GameObjects.Events.DESTROY, tracked.onDestroy);
     tracked.gameObject.off(HealthComponent.KilledEvent, tracked.onKilled);
     this.trackedObjects.delete(gameObject);
@@ -204,22 +220,59 @@ export class SceneLightingService {
   }
 
   private refreshTrackedObject(tracked: TrackedObject): void {
-    const shouldBeLit =
+    const shouldRenderEffects =
       tracked.gameObject.scene === this.scene &&
       (tracked.lightingTarget.active ?? true) &&
       (tracked.lightingTarget.visible ?? true);
-    this.applyLighting(tracked, shouldBeLit);
+    this.applyLighting(tracked, shouldRenderEffects);
+    this.applyShadow(tracked, shouldRenderEffects);
   }
 
   private applyLighting(tracked: TrackedObject, enabled: boolean): void {
     if (tracked.lightingEnabled === enabled) return;
     tracked.lightingTarget.setLighting?.(enabled);
+    if (enabled && tracked.lightingTarget.setSelfShadow) {
+      tracked.lightingTarget.setSelfShadow(
+        this.config.selfShadow.enabled ?? undefined,
+        this.config.selfShadow.penumbra,
+        this.config.selfShadow.diffuseFlatThreshold
+      );
+    }
     tracked.lightingEnabled = enabled;
+  }
+
+  private applyShadow(tracked: TrackedObject, enabled: boolean): void {
+    if (!this.config.dropShadow.enabled || !tracked.shadowTarget) return;
+    if (!tracked.shadowFilter) {
+      tracked.shadowTarget.enableFilters?.();
+      tracked.shadowFilter = tracked.shadowTarget.filters?.internal.addShadow(
+        this.config.dropShadow.x,
+        this.config.dropShadow.y,
+        this.config.dropShadow.decay,
+        this.config.dropShadow.power,
+        this.config.dropShadow.color,
+        this.config.dropShadow.samples,
+        this.config.dropShadow.intensity
+      );
+      tracked.shadowFilter?.setPaddingOverride(null);
+    }
+    if (!tracked.shadowFilter || tracked.shadowEnabled === enabled) return;
+    tracked.shadowFilter.setActive(enabled);
+    tracked.shadowEnabled = enabled;
   }
 
   private asLightingTarget(gameObject: Phaser.GameObjects.GameObject): LightingAwareGameObject | undefined {
     const target = gameObject as LightingAwareGameObject;
     if (typeof target.setLighting !== "function") return undefined;
+    return target;
+  }
+
+  private asShadowTarget(gameObject: Phaser.GameObjects.GameObject): FilterAwareGameObject | undefined {
+    if (gameObject instanceof Phaser.GameObjects.Container) return undefined;
+    if (gameObject instanceof Phaser.Tilemaps.TilemapLayer) return undefined;
+    if (gameObject instanceof Phaser.GameObjects.Particles.ParticleEmitter) return undefined;
+    const target = gameObject as FilterAwareGameObject;
+    if (typeof target.enableFilters !== "function") return undefined;
     return target;
   }
 

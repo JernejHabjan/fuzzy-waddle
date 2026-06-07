@@ -24,6 +24,21 @@ export type ProbableWaffleLightingConfig = {
    * Base ambient fallback color when day/night cycle is disabled.
    */
   ambientColor?: number;
+  selfShadow?: {
+    enabled?: boolean | null;
+    penumbra?: number;
+    diffuseFlatThreshold?: number;
+  };
+  dropShadow?: {
+    enabled?: boolean;
+    x?: number;
+    y?: number;
+    decay?: number;
+    power?: number;
+    color?: number;
+    samples?: number;
+    intensity?: number;
+  };
   dayNightCycle?: {
     enabled?: boolean;
     durationMs?: number;
@@ -83,6 +98,21 @@ export const ProbableWaffleLevels: ProbableWaffleMapType = {
     },
     lighting: {
       ambientColor: 0xe6edf5,
+      selfShadow: {
+        enabled: true,
+        penumbra: 0.45,
+        diffuseFlatThreshold: 0.3
+      },
+      dropShadow: {
+        enabled: true,
+        x: 10,
+        y: 8,
+        decay: 0.18,
+        power: 1.3,
+        color: 0x000000,
+        samples: 8,
+        intensity: 0.45
+      },
       dayNightCycle: {
         startTimeNormalized: 0.2,
         keyframes: [
@@ -123,6 +153,21 @@ export const ProbableWaffleLevels: ProbableWaffleMapType = {
     },
     lighting: {
       ambientColor: 0xe7eef8,
+      selfShadow: {
+        enabled: true,
+        penumbra: 0.45,
+        diffuseFlatThreshold: 0.32
+      },
+      dropShadow: {
+        enabled: true,
+        x: 9,
+        y: 7,
+        decay: 0.16,
+        power: 1.25,
+        color: 0x000000,
+        samples: 8,
+        intensity: 0.38
+      },
       dayNightCycle: {
         keyframes: [
           { time: 0, ambientColor: 0x30405f },
@@ -164,6 +209,21 @@ export const ProbableWaffleLevels: ProbableWaffleMapType = {
     },
     lighting: {
       ambientColor: 0xffd7b0,
+      selfShadow: {
+        enabled: true,
+        penumbra: 0.42,
+        diffuseFlatThreshold: 0.28
+      },
+      dropShadow: {
+        enabled: true,
+        x: 12,
+        y: 9,
+        decay: 0.2,
+        power: 1.4,
+        color: 0x1a0904,
+        samples: 8,
+        intensity: 0.52
+      },
       dayNightCycle: {
         startTimeNormalized: 0.1,
         keyframes: [
