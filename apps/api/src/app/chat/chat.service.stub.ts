@@ -1,15 +1,6 @@
 import { type AuthUser } from "@supabase/supabase-js";
 import { type IChatService } from "./chat.service.interface";
-import {
-  AppUserRole,
-  type BanUserDto,
-  type ChatMessage,
-  type GetMessagesResponseDto,
-  type ModerationQueueDto,
-  type ModerationSummaryDto,
-  type ReportChatMessageDto,
-  type UpdateChatReportStatusDto
-} from "@fuzzy-waddle/api-interfaces";
+import { type ChatMessage, type GetMessagesResponseDto, type ReportChatMessageDto } from "@fuzzy-waddle/api-interfaces";
 
 export const chatServiceStub = {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -33,21 +24,6 @@ export const chatServiceStub = {
   },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   reportMessage(messageId: number, user: AuthUser, report: ReportChatMessageDto): Promise<void> {
-    return Promise.resolve();
-  },
-  getModerationSummary(user: AuthUser): Promise<ModerationSummaryDto> {
-    return Promise.resolve({ role: AppUserRole.Moderator, pendingReportCount: 0 });
-  },
-  getModerationReports(user: AuthUser): Promise<ModerationQueueDto> {
-    return Promise.resolve({ groups: [], bannedUsers: [], pendingReportCount: 0 });
-  },
-  updateReportStatus(reportId: number, user: AuthUser, body: UpdateChatReportStatusDto): Promise<void> {
-    return Promise.resolve();
-  },
-  banUser(userId: string, user: AuthUser, body: BanUserDto): Promise<void> {
-    return Promise.resolve();
-  },
-  unbanUser(userId: string, user: AuthUser): Promise<void> {
     return Promise.resolve();
   }
 } satisfies IChatService;
