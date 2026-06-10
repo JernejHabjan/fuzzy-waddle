@@ -64,7 +64,7 @@
 
 .banner-placeholder {
   width: 300px;
-  height: calc(100dvh - 6rem);
+  height: clamp(28rem, 72vh, 48rem);
   flex: 0 0 auto;
 }
 

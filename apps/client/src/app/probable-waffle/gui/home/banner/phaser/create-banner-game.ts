@@ -3,11 +3,17 @@ import { baseGameConfig } from "../../../../../shared/game/base-game.config";
 import { BannerScene } from "./banner-scene";
 
 export function createBannerGame(parent: HTMLElement): Phaser.Game {
+  const parentHeight = Math.max(320, Math.floor(parent.getBoundingClientRect().height));
   const config: Phaser.Types.Core.GameConfig = {
     ...baseGameConfig,
     type: Phaser.AUTO,
     width: 300,
-    height: window.innerHeight,
+    height: parentHeight,
+    scale: {
+      mode: Phaser.Scale.NONE,
+      width: 300,
+      height: parentHeight
+    },
     parent,
     transparent: true,
     pixelArt: true,

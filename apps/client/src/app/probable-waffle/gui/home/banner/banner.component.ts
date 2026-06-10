@@ -3,7 +3,16 @@ import type Phaser from "phaser";
 
 @Component({
   selector: "probable-waffle-banner",
-  template: `<div #gameContainer style="height: calc(100dvh - 6rem)"></div> `,
+  template: `<div #gameContainer class="banner-game-container"></div> `,
+  styles: [
+    `
+      .banner-game-container {
+        width: 300px;
+        height: clamp(28rem, 72vh, 48rem);
+        overflow: hidden;
+      }
+    `
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BannerComponent implements OnInit, OnDestroy {
