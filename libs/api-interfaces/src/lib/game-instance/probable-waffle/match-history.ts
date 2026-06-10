@@ -1,5 +1,4 @@
 import type { GameScoreSnapshotDto, PlayerScoreData } from "./score-data";
-import { ProbableWaffleMapEnum } from "../../probable-waffle/probable-waffle";
 import { GameResultStatus } from "../../database/database-enums";
 
 /**
@@ -21,7 +20,7 @@ export interface MatchHistorySummary {
   id: string;
   gameInstanceId: string;
   gameType: string;
-  mapId: ProbableWaffleMapEnum;
+  mapKey: string | null;
   startedAt: string;
   endedAt: string;
   totalDurationSeconds: number;
@@ -48,7 +47,7 @@ export interface GameSessionDetails {
     id: string;
     gameInstanceId: string;
     gameType: string;
-    mapId: ProbableWaffleMapEnum;
+    mapKey: string | null;
     startedAt: string;
     endedAt: string;
     totalDurationSeconds: number;

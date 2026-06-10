@@ -390,7 +390,7 @@ export class GameSessionService implements GameSessionServiceInterface {
       id: session.id,
       gameInstanceId: session.external_session_id,
       gameType: session.game_mode_key ?? "Skirmish",
-      mapId: Number(session.map_key ?? 0),
+      mapKey: session.map_key,
       startedAt: session.started_at,
       endedAt: session.ended_at,
       totalDurationSeconds: session.total_duration_seconds,
@@ -509,7 +509,7 @@ export class GameSessionService implements GameSessionServiceInterface {
         id: session.id,
         gameInstanceId: session.external_session_id,
         gameType: session.game_mode_key ?? "Skirmish",
-        mapId: Number(session.map_key ?? 0),
+        mapKey: session.map_key,
         startedAt: session.started_at,
         endedAt: session.ended_at,
         totalDurationSeconds:

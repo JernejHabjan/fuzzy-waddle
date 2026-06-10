@@ -45,7 +45,7 @@
             (keydown.space)="viewDetails(match.gameInstanceId)"
           >
             <div data-label="Date">{{ match.endedAt | date: "short" }}</div>
-            <div data-label="Map">{{ getMapName(match.mapId) }}</div>
+            <div data-label="Map">{{ getMapName(match.mapKey) }}</div>
             <div data-label="Duration">{{ formatDuration(match.totalDurationSeconds) }}</div>
             <div data-label="Result">
               <span
