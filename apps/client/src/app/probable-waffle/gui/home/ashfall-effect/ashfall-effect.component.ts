@@ -34,9 +34,9 @@ export class AshfallEffectComponent implements AfterViewInit, OnDestroy {
   private ashParticles: DriftParticle[] = [];
   private emberParticles: DriftParticle[] = [];
   private readonly gems: GemPulse[] = [
-    { xFactor: 0.34, yFactor: 0.8, radius: 18, glowColor: "78, 199, 173", fillColor: "#4ec7ad", phase: 0 },
-    { xFactor: 0.5, yFactor: 0.74, radius: 20, glowColor: "240, 196, 107", fillColor: "#f0c46b", phase: 1.5 },
-    { xFactor: 0.66, yFactor: 0.8, radius: 18, glowColor: "217, 106, 63", fillColor: "#d96a3f", phase: 3 }
+    { xFactor: 0.34, yFactor: 0.86, radius: 18, glowColor: "78, 199, 173", fillColor: "#4ec7ad", phase: 0 },
+    { xFactor: 0.5, yFactor: 0.82, radius: 20, glowColor: "240, 196, 107", fillColor: "#f0c46b", phase: 1.5 },
+    { xFactor: 0.66, yFactor: 0.86, radius: 18, glowColor: "217, 106, 63", fillColor: "#d96a3f", phase: 3 }
   ];
   private frame = 0;
 
@@ -115,18 +115,28 @@ export class AshfallEffectComponent implements AfterViewInit, OnDestroy {
 
     const width = this.canvas.width;
     const height = this.canvas.height;
-    const craterWidth = width * 0.16;
-    const craterX = width * 0.5 + (Math.random() - 0.5) * craterWidth;
-    const craterY = height * 0.72 + Math.random() * height * 0.14;
+    const crater = this.getCraterMetrics(width, height);
+    const craterWidth = width * 0.1;
+    const craterX = crater.x + (Math.random() - 0.5) * craterWidth;
+    const craterY = crater.y + Math.random() * height * 0.015;
 
     return {
       x: craterX,
-      y: initial ? craterY - Math.random() * height * 0.45 : craterY,
+      y: initial ? craterY - Math.random() * height * 0.7 : craterY,
       radius: Math.random() * 2.8 + 0.8,
-      speedX: Math.random() * 0.7 - 0.35,
-      speedY: -(Math.random() * 1.6 + 0.5),
+      speedX: Math.random() * 0.8 - 0.4,
+      speedY: -(Math.random() * 2.4 + 1.2),
       opacity: Math.random() * 0.45 + 0.18,
       color: Math.random() > 0.55 ? "rgba(255, 163, 82, 1)" : "rgba(255, 102, 56, 1)"
+    };
+  }
+
+  private getCraterMetrics(width: number, height: number): { x: number; y: number; width: number; glowRadius: number } {
+    return {
+      x: width * 0.5,
+      y: height * 0.76,
+      width: width * 0.08,
+      glowRadius: width * 0.085
     };
   }
 
@@ -194,8 +204,9 @@ export class AshfallEffectComponent implements AfterViewInit, OnDestroy {
       return;
     }
 
-    const baseY = height * 0.88;
-    const craterY = height * 0.68;
+    const crater = this.getCraterMetrics(width, height);
+    const baseY = height * 0.95;
+    const craterY = crater.y;
 
     const mountain = this.ctx.createLinearGradient(0, craterY, 0, baseY);
     mountain.addColorStop(0, "#3c302d");
@@ -204,51 +215,51 @@ export class AshfallEffectComponent implements AfterViewInit, OnDestroy {
 
     this.ctx.fillStyle = mountain;
     this.ctx.beginPath();
-    this.ctx.moveTo(width * 0.18, baseY);
-    this.ctx.quadraticCurveTo(width * 0.32, height * 0.78, width * 0.42, craterY);
-    this.ctx.quadraticCurveTo(width * 0.48, height * 0.63, width * 0.5, craterY);
-    this.ctx.quadraticCurveTo(width * 0.52, height * 0.63, width * 0.58, craterY);
-    this.ctx.quadraticCurveTo(width * 0.68, height * 0.78, width * 0.82, baseY);
+    this.ctx.moveTo(width * 0.16, baseY);
+    this.ctx.quadraticCurveTo(width * 0.31, height * 0.84, width * 0.43, craterY);
+    this.ctx.quadraticCurveTo(width * 0.48, height * 0.71, crater.x, craterY);
+    this.ctx.quadraticCurveTo(width * 0.52, height * 0.71, width * 0.57, craterY);
+    this.ctx.quadraticCurveTo(width * 0.69, height * 0.84, width * 0.84, baseY);
     this.ctx.closePath();
     this.ctx.fill();
 
-    const lavaGlow = this.ctx.createRadialGradient(width * 0.5, craterY, 0, width * 0.5, craterY, width * 0.08);
+    const lavaGlow = this.ctx.createRadialGradient(crater.x, craterY, 0, crater.x, craterY, crater.glowRadius);
     lavaGlow.addColorStop(0, "rgba(255, 176, 82, 0.9)");
     lavaGlow.addColorStop(0.5, "rgba(255, 102, 56, 0.58)");
     lavaGlow.addColorStop(1, "rgba(0, 0, 0, 0)");
     this.ctx.fillStyle = lavaGlow;
     this.ctx.beginPath();
-    this.ctx.ellipse(width * 0.5, craterY, width * 0.08, height * 0.024, 0, 0, Math.PI * 2);
+    this.ctx.ellipse(crater.x, craterY, crater.width, height * 0.026, 0, 0, Math.PI * 2);
     this.ctx.fill();
   }
 
   private drawGems(width: number, height: number): void {
-    if (!this.ctx) {
-      return;
-    }
+    if (!this.ctx)      return;
 
     this.gems.forEach((gem) => {
+      const ctx = this.ctx;
+      if (!ctx)  return;
       const pulse = (Math.sin(this.frame * 0.03 + gem.phase) + 1) / 2;
       const x = width * gem.xFactor;
       const y = height * gem.yFactor;
       const glowRadius = gem.radius + pulse * 10;
 
-      const glow = this.ctx.createRadialGradient(x, y, 0, x, y, glowRadius * 2.2);
+      const glow = ctx.createRadialGradient(x, y, 0, x, y, glowRadius * 2.2);
       glow.addColorStop(0, `rgba(${gem.glowColor}, ${0.34 + pulse * 0.12})`);
       glow.addColorStop(1, "rgba(0, 0, 0, 0)");
-      this.ctx.fillStyle = glow;
-      this.ctx.beginPath();
-      this.ctx.arc(x, y, glowRadius * 2.2, 0, Math.PI * 2);
-      this.ctx.fill();
+      ctx.fillStyle = glow;
+      ctx.beginPath();
+      ctx.arc(x, y, glowRadius * 2.2, 0, Math.PI * 2);
+      ctx.fill();
 
-      this.ctx.fillStyle = gem.fillColor;
-      this.ctx.beginPath();
-      this.ctx.moveTo(x, y - gem.radius);
-      this.ctx.lineTo(x + gem.radius * 0.75, y);
-      this.ctx.lineTo(x, y + gem.radius);
-      this.ctx.lineTo(x - gem.radius * 0.75, y);
-      this.ctx.closePath();
-      this.ctx.fill();
+      ctx.fillStyle = gem.fillColor;
+      ctx.beginPath();
+      ctx.moveTo(x, y - gem.radius);
+      ctx.lineTo(x + gem.radius * 0.75, y);
+      ctx.lineTo(x, y + gem.radius);
+      ctx.lineTo(x - gem.radius * 0.75, y);
+      ctx.closePath();
+      ctx.fill();
     });
   }
 
@@ -292,7 +303,7 @@ export class AshfallEffectComponent implements AfterViewInit, OnDestroy {
       const nextX = particle.x + particle.speedX + Math.sin((this.frame + particle.y) * 0.01) * 0.2;
       const nextY = particle.y + particle.speedY;
       const nextOpacity = Math.max(0, particle.opacity - 0.0025);
-      const reset = nextY < height * 0.22 || nextOpacity <= 0.02;
+      const reset = nextY < height * 0.04 || nextOpacity <= 0.02;
 
       return reset
         ? this.createEmberParticle()

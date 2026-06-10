@@ -15,13 +15,13 @@ export class BannerScene extends Phaser.Scene {
     super({ key: "BannerScene" });
   }
 
-  override preload(): void {
+  preload(): void {
     for (const character of this.selectedCharacters) {
       this.preloadCharacter(character);
     }
   }
 
-  override create(): void {
+  create(): void {
     for (const character of this.selectedCharacters) {
       const sprite = this.add.sprite(0, 0, character.textureKey, character.frame);
       sprite.setAlpha(0);

@@ -1,4 +1,4 @@
-import type Phaser from "phaser";
+import Phaser from "phaser";
 
 export class BannerShowcaseLayout {
   static readonly CHARACTER_COUNT = 2;
