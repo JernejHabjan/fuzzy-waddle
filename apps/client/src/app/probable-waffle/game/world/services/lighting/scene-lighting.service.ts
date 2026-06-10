@@ -251,7 +251,7 @@ export class SceneLightingService {
       }
     });
 
-    this.animatedLightUpdaters.forEach((updater) => updater(time, delta));
+    this.animatedLightUpdaters.forEach((updater) => updater(_time, delta));
   }
 
   /**
@@ -260,9 +260,11 @@ export class SceneLightingService {
    */
   private updateKeyLight(cycleTime: number): void {
     if (!this.keyLight) return;
-    const position = this.getKeyLightPosition(cycleTime);
-    this.keyLight.x = position.x;
-    this.keyLight.y = position.y;
+    const state = this.getKeyLightState(cycleTime);
+    this.keyLight.x = state.x;
+    this.keyLight.y = state.y;
+    this.keyLight.radius = state.radius;
+    this.keyLight.intensity = state.intensity;
   }
 
   private getMapCenter(): { x: number; y: number } {
@@ -272,17 +274,26 @@ export class SceneLightingService {
     };
   }
 
-  private getKeyLightPosition(cycleTime: number): { x: number; y: number } {
+  /**
+   * Computes the moving key-light state for the current cycle position.
+   * The light stays high above the map and expands its radius so the sun reads broader and softer.
+   */
+  private getKeyLightState(cycleTime: number): { x: number; y: number; radius: number; intensity: number } {
     const width = this.scene.tilemap.widthInPixels;
     const height = this.scene.tilemap.heightInPixels;
     const travelMargin = Math.max(220, Math.floor(width * 0.2));
-    const verticalTravel = Math.max(180, Math.floor(height * 0.35));
-    const horizonY = height * 0.52;
+    const verticalTravel = Math.max(240, Math.floor(height * 0.48));
+    const horizonY = height * 0.3;
     const daylightArc = Math.sin(cycleTime * Math.PI);
+    const solarPresence = Math.max(0.18, daylightArc);
+    const radius = this.config.keyLight.radius * lerpNumber(1.25, 1.65, solarPresence);
+    const intensity = this.config.keyLight.intensity * lerpNumber(0.45, 0.78, solarPresence);
 
     return {
       x: lerpNumber(-travelMargin, width + travelMargin, cycleTime),
-      y: horizonY - daylightArc * verticalTravel
+      y: horizonY - daylightArc * verticalTravel,
+      radius,
+      intensity
     };
   }
 
