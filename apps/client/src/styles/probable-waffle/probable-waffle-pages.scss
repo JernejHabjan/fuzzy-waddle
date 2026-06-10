@@ -1,7 +1,466 @@
 @use "../variables" as *;
 
-.navbar-brand,
-.nav-item {
-  font-family: $app-font-bold;
-  cursor: pointer;
+.probable-waffle-theme {
+  --aota-bg: #14171c;
+  --aota-panel: #1d232a;
+  --aota-panel-alt: #262d35;
+  --aota-panel-heavy: #101317;
+  --aota-border: #6f5534;
+  --aota-border-soft: #3f3323;
+  --aota-gold: #f0c46b;
+  --aota-gold-soft: #d6a656;
+  --aota-ember: #d96a3f;
+  --aota-teal: #34a9a1;
+  --aota-text: #f5ecd9;
+  --aota-muted: #c8b89b;
+  --aota-success: #8dc96b;
+  --aota-danger: #d97066;
+  --aota-shadow: rgba(0, 0, 0, 0.42);
+  display: block;
+  min-height: 100vh;
+  height: auto;
+  overflow: auto;
+  color: var(--aota-text);
+  background-color: var(--aota-bg);
+  font-family: "Rajdhani", "WorkSans", sans-serif;
+  letter-spacing: 0.01em;
+}
+
+.probable-waffle-theme ::selection {
+  background-color: rgba(240, 196, 107, 0.28);
+}
+
+.probable-waffle-theme h1,
+.probable-waffle-theme h2,
+.probable-waffle-theme h3,
+.probable-waffle-theme h4,
+.probable-waffle-theme h5,
+.probable-waffle-theme h6,
+.probable-waffle-theme .general-title,
+.probable-waffle-theme .menu-section-title,
+.probable-waffle-theme .achievement-header,
+.probable-waffle-theme .chat-title {
+  font-family: "Cinzel", $app-font-bold, serif;
+  letter-spacing: 0.04em;
+}
+
+.probable-waffle-theme .general-title {
+  color: var(--aota-gold) !important;
+}
+
+.probable-waffle-theme p,
+.probable-waffle-theme span,
+.probable-waffle-theme div,
+.probable-waffle-theme label,
+.probable-waffle-theme input,
+.probable-waffle-theme select,
+.probable-waffle-theme button,
+.probable-waffle-theme textarea,
+.probable-waffle-theme a,
+.probable-waffle-theme li,
+.probable-waffle-theme td,
+.probable-waffle-theme th {
+  font-family: inherit;
+}
+
+.probable-waffle-theme .text-primary,
+.probable-waffle-theme .info-label,
+.probable-waffle-theme .detail-label,
+.probable-waffle-theme .achievement-header,
+.probable-waffle-theme .progress-percent {
+  color: var(--aota-gold) !important;
+}
+
+.probable-waffle-theme .text-muted,
+.probable-waffle-theme .server-health,
+.probable-waffle-theme .lobbies-tooltip,
+.probable-waffle-theme .matchmaking-tooltip,
+.probable-waffle-theme .achievement-description,
+.probable-waffle-theme .map-description {
+  color: var(--aota-muted) !important;
+}
+
+.probable-waffle-theme .card-container,
+.probable-waffle-theme .app-surface-panel-soft,
+.probable-waffle-theme .card,
+.probable-waffle-theme .game-info,
+.probable-waffle-theme .mode-card,
+.probable-waffle-theme .menu-button,
+.probable-waffle-theme .map-item,
+.probable-waffle-theme .player-card,
+.probable-waffle-theme .match-history-row,
+.probable-waffle-theme .match-history-header,
+.probable-waffle-theme .achievement,
+.probable-waffle-theme .chat-container,
+.probable-waffle-theme .score-table-wrapper,
+.probable-waffle-theme .chart-container {
+  background-color: var(--aota-panel);
+  color: var(--aota-text);
+  border: 1px solid var(--aota-border-soft);
+  box-shadow: 0 18px 32px var(--aota-shadow);
+}
+
+.probable-waffle-theme .card-container,
+.probable-waffle-theme .card,
+.probable-waffle-theme .app-surface-panel-soft,
+.probable-waffle-theme .game-info {
+  border-radius: 1rem;
+}
+
+.probable-waffle-theme .form-control,
+.probable-waffle-theme .form-select,
+.probable-waffle-theme .form-range,
+.probable-waffle-theme .form-check-input,
+.probable-waffle-theme input[type="text"],
+.probable-waffle-theme input[type="number"],
+.probable-waffle-theme input[type="search"],
+.probable-waffle-theme select {
+  background-color: var(--aota-panel-heavy);
+  border-color: var(--aota-border-soft);
+  color: var(--aota-text);
+}
+
+.probable-waffle-theme input[type="checkbox"],
+.probable-waffle-theme input[type="radio"],
+.probable-waffle-theme input[type="range"] {
+  accent-color: var(--aota-gold-soft);
+}
+
+.probable-waffle-theme .form-control::placeholder,
+.probable-waffle-theme input::placeholder {
+  color: rgba(200, 184, 155, 0.72);
+}
+
+.probable-waffle-theme .form-control:focus,
+.probable-waffle-theme .form-select:focus,
+.probable-waffle-theme .form-range:focus,
+.probable-waffle-theme .form-check-input:focus,
+.probable-waffle-theme input:focus,
+.probable-waffle-theme select:focus {
+  background-color: var(--aota-panel-heavy);
+  border-color: var(--aota-gold-soft);
+  box-shadow: 0 0 0 0.22rem rgba(240, 196, 107, 0.18);
+  color: var(--aota-text);
+}
+
+.probable-waffle-theme .form-check-input:checked {
+  background-color: var(--aota-gold-soft);
+  border-color: var(--aota-gold-soft);
+}
+
+.probable-waffle-theme fuzzy-waddle-chat .chat-body {
+  color: var(--aota-text);
+}
+
+.probable-waffle-theme fuzzy-waddle-chat .chat-body .chat-messages {
+  color: var(--aota-text);
+}
+
+.probable-waffle-theme fuzzy-waddle-chat .chat-body .chat-messages .chat-message-sender-name:hover,
+.probable-waffle-theme fuzzy-waddle-chat .chat-body .chat-messages .chat-message-role-icon,
+.probable-waffle-theme fuzzy-waddle-chat .chat-body .chat-messages .chat-message-report-button,
+.probable-waffle-theme fuzzy-waddle-chat .chat-body .chat-messages .chat-message-reported-label {
+  color: var(--aota-gold);
+}
+
+.probable-waffle-theme fuzzy-waddle-chat .chat-body .chat-messages .chat-message-menu-panel,
+.probable-waffle-theme fuzzy-waddle-chat .chat-body .chat-messages .chat-message-report-submit,
+.probable-waffle-theme fuzzy-waddle-chat .chat-body .chat-messages .chat-message-report-cancel,
+.probable-waffle-theme fuzzy-waddle-chat .chat-body .chat-messages .chat-message-report-select,
+.probable-waffle-theme fuzzy-waddle-chat .chat-body .chat-messages .chat-message-report-details {
+  background-color: var(--aota-panel-heavy);
+  border-color: var(--aota-border-soft);
+  color: var(--aota-text);
+}
+
+.probable-waffle-theme fuzzy-waddle-chat .chat-footer {
+  border-top: 1px solid rgba(111, 85, 52, 0.42);
+  background-color: rgba(19, 23, 28, 0.96);
+  color: var(--aota-text);
+}
+
+.probable-waffle-theme fuzzy-waddle-chat .chat-footer .chat-report-status {
+  color: var(--aota-muted);
+}
+
+.probable-waffle-theme fuzzy-waddle-chat .chat-footer .chat-form .chat-input,
+.probable-waffle-theme fuzzy-waddle-chat .chat-footer .chat-form input.chat-input,
+.probable-waffle-theme fuzzy-waddle-chat .chat-footer .chat-form input[type="text"] {
+  background-color: var(--aota-panel-heavy) !important;
+  border: 1px solid var(--aota-border-soft) !important;
+  color: var(--aota-text) !important;
+  caret-color: var(--aota-text) !important;
+}
+
+.probable-waffle-theme fuzzy-waddle-chat .chat-footer .chat-form .chat-input::placeholder,
+.probable-waffle-theme fuzzy-waddle-chat .chat-footer .chat-form input.chat-input::placeholder,
+.probable-waffle-theme fuzzy-waddle-chat .chat-footer .chat-form input[type="text"]::placeholder {
+  color: rgba(200, 184, 155, 0.72);
+}
+
+.probable-waffle-theme fuzzy-waddle-chat .chat-footer .chat-form .chat-input:focus,
+.probable-waffle-theme fuzzy-waddle-chat .chat-footer .chat-form input.chat-input:focus,
+.probable-waffle-theme fuzzy-waddle-chat .chat-footer .chat-form input[type="text"]:focus {
+  background-color: var(--aota-panel-heavy) !important;
+  border-color: var(--aota-gold-soft) !important;
+  box-shadow: 0 0 0 0.22rem rgba(240, 196, 107, 0.18) !important;
+  color: var(--aota-text) !important;
+}
+
+.probable-waffle-theme fuzzy-waddle-chat .chat-footer .chat-form .chat-button,
+.probable-waffle-theme fuzzy-waddle-chat .chat-footer .chat-form button.chat-button,
+.probable-waffle-theme fuzzy-waddle-chat .chat-footer .chat-form button[type="submit"] {
+  border: 1px solid rgba(240, 196, 107, 0.46) !important;
+  background-color: rgba(240, 196, 107, 0.12) !important;
+  color: var(--aota-text) !important;
+  box-shadow: none !important;
+}
+
+.probable-waffle-theme fuzzy-waddle-chat .chat-footer .chat-form .chat-button:not([disabled]):hover,
+.probable-waffle-theme fuzzy-waddle-chat .chat-footer .chat-form button.chat-button:not([disabled]):hover,
+.probable-waffle-theme fuzzy-waddle-chat .chat-footer .chat-form button[type="submit"]:not([disabled]):hover {
+  background-color: var(--aota-gold-soft) !important;
+  border-color: var(--aota-gold-soft) !important;
+  color: #1a1510 !important;
+}
+
+.probable-waffle-theme fuzzy-waddle-chat .chat-footer .chat-form .chat-button[disabled],
+.probable-waffle-theme fuzzy-waddle-chat .chat-footer .chat-form button.chat-button[disabled],
+.probable-waffle-theme fuzzy-waddle-chat .chat-footer .chat-form button[type="submit"][disabled] {
+  opacity: 0.45 !important;
+  cursor: not-allowed !important;
+}
+
+.probable-waffle-theme .btn {
+  border-radius: 0.8rem;
+  border-width: 1px;
+  box-shadow: none;
+  font-family: "Rajdhani", sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.probable-waffle-theme .btn-primary,
+.probable-waffle-theme .btn-outline-primary:hover,
+.probable-waffle-theme .btn-primary:focus,
+.probable-waffle-theme .btn-primary:active {
+  background-color: var(--aota-gold-soft);
+  border-color: var(--aota-gold-soft);
+  color: #1a1510;
+}
+
+.probable-waffle-theme .btn-secondary,
+.probable-waffle-theme .btn-outline-secondary:hover {
+  background-color: rgba(52, 169, 161, 0.18);
+  border-color: rgba(52, 169, 161, 0.65);
+  color: #d9f5f1;
+}
+
+.probable-waffle-theme .btn-success {
+  background-color: rgba(141, 201, 107, 0.18);
+  border-color: rgba(141, 201, 107, 0.75);
+  color: #edf9e5;
+}
+
+.probable-waffle-theme .btn-danger {
+  background-color: rgba(217, 106, 63, 0.16);
+  border-color: rgba(217, 106, 63, 0.72);
+  color: #ffe9df;
+}
+
+.probable-waffle-theme .btn-outline-primary,
+.probable-waffle-theme .btn-outline-secondary {
+  color: var(--aota-gold);
+  border-color: rgba(240, 196, 107, 0.45);
+}
+
+.probable-waffle-theme .btn:hover,
+.probable-waffle-theme .mode-card:hover,
+.probable-waffle-theme .menu-button:hover,
+.probable-waffle-theme .map-item:hover,
+.probable-waffle-theme .match-history-row:hover {
+  filter: brightness(1.04);
+}
+
+.probable-waffle-theme .nav-tabs,
+.probable-waffle-theme .nav {
+  border-bottom-color: var(--aota-border-soft);
+}
+
+.probable-waffle-theme .nav-link,
+.probable-waffle-theme .nav-tabs li a {
+  color: var(--aota-muted);
+}
+
+.probable-waffle-theme .nav-link.active,
+.probable-waffle-theme .nav-tabs li a.active {
+  color: var(--aota-text);
+  background-color: rgba(240, 196, 107, 0.12);
+  border-color: var(--aota-border-soft) var(--aota-border-soft) transparent;
+}
+
+.probable-waffle-theme .table {
+  color: var(--aota-text);
+  border-color: var(--aota-border-soft);
+}
+
+.probable-waffle-theme .table > :not(caption) > * > * {
+  background-color: transparent;
+  color: inherit;
+  border-bottom-color: var(--aota-border-soft);
+}
+
+.probable-waffle-theme .pagination-controls span,
+.probable-waffle-theme .progress-separator,
+.probable-waffle-theme .progress-total,
+.probable-waffle-theme .info-value {
+  color: var(--aota-text);
+}
+
+.probable-waffle-theme .result-badge.result-win {
+  background-color: rgba(141, 201, 107, 0.22);
+  color: #effae9;
+}
+
+.probable-waffle-theme .result-badge.result-loss {
+  background-color: rgba(217, 106, 63, 0.2);
+  color: #ffece4;
+}
+
+.probable-waffle-theme .result-badge.result-tie {
+  background-color: rgba(52, 169, 161, 0.2);
+  color: #e5fcfa;
+}
+
+.probable-waffle-theme .result-badge.result-quit {
+  background-color: rgba(112, 122, 134, 0.3);
+  color: #eef2f6;
+}
+
+.probable-waffle-theme .achievement-progress-bar,
+.probable-waffle-theme .achievement-progress-filled {
+  border-radius: 999px;
+}
+
+.probable-waffle-theme .achievement-progress-bar {
+  background-color: rgba(52, 169, 161, 0.12);
+}
+
+.probable-waffle-theme .achievement-progress-filled {
+  background-color: var(--aota-gold-soft);
+}
+
+.probable-waffle-theme fuzzy-waddle-center-wrapper,
+.probable-waffle-theme probable-waffle-home,
+.probable-waffle-theme probable-waffle-online,
+.probable-waffle-theme probable-waffle-lobby,
+.probable-waffle-theme probable-waffle-load,
+.probable-waffle-theme probable-waffle-replay,
+.probable-waffle-theme probable-waffle-score-screen,
+.probable-waffle-theme probable-waffle-progress,
+.probable-waffle-theme probable-waffle-match-history-page,
+.probable-waffle-theme probable-waffle-match-details,
+.probable-waffle-theme fuzzy-waddle-campaign {
+  display: block;
+  min-height: 100%;
+  height: auto;
+  overflow: auto;
+}
+
+.probable-waffle-theme fuzzy-waddle-center-wrapper > div {
+  min-height: 100%;
+  height: auto;
+}
+
+.probable-waffle-theme fuzzy-waddle-home-nav .navbar,
+.probable-waffle-theme fuzzy-waddle-home-nav nav {
+  background-color: #181c22 !important;
+  border-bottom: 1px solid var(--aota-border-soft);
+  box-shadow: 0 14px 26px rgba(0, 0, 0, 0.28);
+}
+
+.probable-waffle-theme fuzzy-waddle-home-nav .navbar-brand,
+.probable-waffle-theme fuzzy-waddle-home-nav .nav-item,
+.probable-waffle-theme fuzzy-waddle-home-nav .nav-link,
+.probable-waffle-theme fuzzy-waddle-home-nav .brand-title {
+  font-family: "Cinzel", serif !important;
+  color: var(--aota-text) !important;
+}
+
+.probable-waffle-theme .server-health {
+  padding: 2rem;
+  text-align: center;
+}
+
+.aota-mobile-warning-modal .modal-content {
+  background-color: #1b2128;
+  border: 1px solid rgba(111, 85, 52, 0.78);
+  color: #f5ecd9;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.46);
+}
+
+.aota-mobile-warning-modal .modal-header,
+.aota-mobile-warning-modal .modal-footer {
+  border-color: rgba(111, 85, 52, 0.42);
+  background-color: rgba(15, 18, 22, 0.82);
+}
+
+.aota-mobile-warning-modal .modal-title,
+.aota-mobile-warning-modal .modal-body {
+  color: #f5ecd9;
+}
+
+.aota-mobile-warning-modal .btn-outline-primary {
+  background-color: rgba(240, 196, 107, 0.14);
+  border-color: rgba(240, 196, 107, 0.58);
+  color: #f5ecd9;
+}
+
+.aota-mobile-warning-modal .btn-outline-primary:hover {
+  background-color: #d6a656;
+  border-color: #d6a656;
+  color: #1a1510;
+}
+
+@media (max-width: 768px) {
+  .probable-waffle-theme {
+    font-size: 0.98rem;
+  }
+
+  .probable-waffle-theme fuzzy-waddle-center-wrapper > div {
+    align-items: flex-start !important;
+    min-height: 100vh;
+    padding: 0 0 1rem;
+  }
+
+  .probable-waffle-theme .card-container,
+  .probable-waffle-theme .aota-card-shell,
+  .probable-waffle-theme .online-container,
+  .probable-waffle-theme .match-details,
+  .probable-waffle-theme .score-table-wrapper,
+  .probable-waffle-theme .chart-container {
+    width: min(100%, calc(100vw - 1rem));
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .probable-waffle-theme .card-container,
+  .probable-waffle-theme .online-container,
+  .probable-waffle-theme .match-details {
+    margin-top: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .probable-waffle-theme .nav-tabs {
+    flex-wrap: wrap;
+  }
+
+  .probable-waffle-theme .nav-tabs li {
+    min-width: calc(50% - 0.25rem);
+  }
+
+  .probable-waffle-theme .btn {
+    max-width: 100%;
+  }
 }

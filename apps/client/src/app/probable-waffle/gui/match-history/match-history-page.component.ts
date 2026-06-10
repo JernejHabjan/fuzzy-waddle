@@ -2,7 +2,7 @@ import type { OnInit } from "@angular/core";
 import { Component, inject, signal } from "@angular/core";
 import { Router, RouterLink } from "@angular/router";
 import { DatePipe } from "@angular/common";
-import { type MatchHistorySummary, ProbableWaffleLevels, ProbableWaffleMapEnum } from "@fuzzy-waddle/api-interfaces";
+import { type MatchHistorySummary, ProbableWaffleLevels } from "@fuzzy-waddle/api-interfaces";
 import { MatchHistoryService } from "../../services/match-history.service";
 import { AuthService } from "../../../auth/auth.service";
 import { ServerHealthService } from "../../../shared/services/server-health.service";
@@ -55,8 +55,8 @@ export class MatchHistoryPageComponent implements OnInit {
     });
   }
 
-  protected getMapName(mapId: ProbableWaffleMapEnum): string {
-    const level = Object.values(ProbableWaffleLevels).find((l) => l.id === Number(mapId));
+  protected getMapName(mapKey: string | null): string {
+    const level = Object.values(ProbableWaffleLevels).find((l) => l.id.toString() === mapKey);
     return level?.name || "Unknown Map";
   }
 

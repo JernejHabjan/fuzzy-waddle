@@ -1,23 +1,188 @@
-<fuzzy-waddle-profile-nav />
-<div class="d-flex flex-column flex-grow-1 overflow-auto align-items-center p-3">
-  <div class="mx-auto" style="max-width: 500px">
-    <h2 class="text-center">Profile Info</h2>
-
-    @if (identityData) {
-      <div class="my-3 text-center">
-        <img class="rounded-circle" src="{{ identityData.avatar_url }}" alt="avatar" width="100" height="100" />
-        <p>{{ identityData.full_name }}</p>
+@if (!embedded()) {
+  <fuzzy-waddle-profile-nav />
+}
+<div class="profile-page">
+  <div class="profile-shell">
+    @if (isLoadingProfile()) {
+      <div class="empty-state loading-state">
+        <fa-icon [icon]="faClock" />
+        <p>Loading profile data...</p>
       </div>
-    }
-    <div class="my-3">
-      <h3 class="user-item-header">Joined:</h3>
-      <p>{{ authService.session?.user?.created_at | date: "medium" }}</p>
-    </div>
+    } @else if (currentUserProfile(); as profile) {
+      <section class="hero-panel">
+        <div class="hero-copy">
+          <div class="eyebrow">
+            <fa-icon [icon]="faUserAstronaut" />
+            <span>Player HQ</span>
+          </div>
+          <h1>{{ profileDisplayName() }}</h1>
+          @if (profileHandle()) {
+            <p class="handle">{{ profileHandle() }}</p>
+          }
+          <p class="hero-text">
+            {{ profile.bio || "A game-hub pilot with progress, stats, and favorite battlegrounds all in one place." }}
+          </p>
 
-    @if (userInstanceService.getPreferredGame()) {
-      <div class="my-3">
-        <h3 class="user-item-header">Preferred Game:</h3>
-        <p>{{ userInstanceService.getPreferredGame() }}</p>
+          <div class="hero-meta">
+            <div class="meta-pill">
+              <fa-icon [icon]="faCalendarDays" />
+              <span>Joined {{ joinedAt() | date: "mediumDate" }}</span>
+            </div>
+            <div class="meta-pill">
+              <fa-icon [icon]="faGamepad" />
+              <span>{{ preferredGameLabel() }}</span>
+            </div>
+            @if (profile.playSummary.lastPlayedAt) {
+              <div class="meta-pill">
+                <fa-icon [icon]="faClock" />
+                <span>Last played {{ profile.playSummary.lastPlayedAt | date: "mediumDate" }}</span>
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="hero-sidebar">
+          <img class="profile-avatar" src="{{ profileAvatarUrl() }}" alt="avatar" width="128" height="128" />
+
+          <div class="profile-role-banner">
+            @if (getRoleIcon(profile.role); as roleIcon) {
+              <fa-icon [icon]="roleIcon" />
+            }
+            <span>{{ getRoleLabel(profile.role) ?? "Player" }}</span>
+          </div>
+
+          <div class="preferred-card">
+            <div class="preferred-label">Preferred game</div>
+            <div class="preferred-value">{{ preferredGameLabel() }}</div>
+            <p>{{ preferredGameSourceLabel() }}</p>
+            @if (preferredGameRoute(); as route) {
+              <a class="preferred-link" [routerLink]="route">Jump In</a>
+            }
+          </div>
+        </div>
+      </section>
+
+      <section class="stats-grid">
+        @for (stat of profileStats(); track stat.label) {
+          <article class="stat-card">
+            <div class="stat-label">{{ stat.label }}</div>
+            <div class="stat-value">{{ stat.value }}</div>
+          </article>
+        }
+      </section>
+
+      <section class="content-grid">
+        <article class="info-card">
+          <div class="section-heading">
+            <fa-icon [icon]="faGlobe" />
+            <h2>Account Details</h2>
+          </div>
+
+          <div class="detail-grid">
+            <div>
+              <span class="detail-label">Email</span>
+              <p>{{ profile.email || "Unavailable" }}</p>
+            </div>
+            <div>
+              <span class="detail-label">Account status</span>
+              <p>{{ profile.accountStatus }}</p>
+            </div>
+            <div>
+              <span class="detail-label">Last profile update</span>
+              <p>{{ profile.updatedAt ? (profile.updatedAt | date: "medium") : "Unknown" }}</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="info-card">
+          <div class="section-heading">
+            <fa-icon [icon]="faArrowTrendUp" />
+            <h2>Play Summary</h2>
+          </div>
+
+          <div class="summary-line">
+            <span>Completed sessions</span>
+            <strong>{{ profile.playSummary.completedSessions }}</strong>
+          </div>
+          <div class="summary-line">
+            <span>Wins recorded</span>
+            <strong>{{ profile.playSummary.wins }}</strong>
+          </div>
+          <div class="summary-line">
+            <span>Score submissions</span>
+            <strong>{{ profile.playSummary.scoreSubmissions }}</strong>
+          </div>
+          <div class="summary-line">
+            <span>Achievements unlocked</span>
+            <strong>{{ profile.playSummary.achievementsUnlocked }}</strong>
+          </div>
+          @if (profile.moderationNote) {
+            <div class="moderation-note">
+              <strong>Moderator note:</strong>
+              <span>{{ profile.moderationNote }}</span>
+            </div>
+          }
+        </article>
+      </section>
+
+      <section class="games-panel">
+        <div class="section-heading">
+          <fa-icon [icon]="faTrophy" />
+          <h2>Game Breakdown</h2>
+        </div>
+
+        @if (topGames().length > 0) {
+          <div class="game-list">
+            @for (game of topGames(); track game.gameKey) {
+              <article class="game-card">
+                <div class="game-card-header">
+                  <div>
+                    <h3>{{ getGameLabel(game.gameKey) }}</h3>
+                    <p>{{ getGameTagline(game.gameKey) }}</p>
+                  </div>
+                  <span class="game-badge">{{ game.sessionsPlayed }} sessions</span>
+                </div>
+
+                <div class="game-metrics">
+                  <div>
+                    <span class="detail-label">Wins</span>
+                    <strong>{{ game.wins }}</strong>
+                  </div>
+                  <div>
+                    <span class="detail-label">Completed</span>
+                    <strong>{{ game.completedSessions }}</strong>
+                  </div>
+                  <div>
+                    <span class="detail-label">Scores</span>
+                    <strong>{{ game.scoreSubmissions }}</strong>
+                  </div>
+                  <div>
+                    <span class="detail-label">Best score</span>
+                    <strong>{{ game.bestScore ?? "n/a" }}</strong>
+                  </div>
+                  <div>
+                    <span class="detail-label">Achievements</span>
+                    <strong>{{ game.achievementsUnlocked }}</strong>
+                  </div>
+                  <div>
+                    <span class="detail-label">Last played</span>
+                    <strong>{{ game.lastPlayedAt ? (game.lastPlayedAt | date: "mediumDate") : "n/a" }}</strong>
+                  </div>
+                </div>
+              </article>
+            }
+          </div>
+        } @else {
+          <div class="empty-state">
+            <fa-icon [icon]="faBolt" />
+            <p>No recorded sessions yet. Start a run and this page will begin to feel like a real game hub.</p>
+          </div>
+        }
+      </section>
+    } @else {
+      <div class="empty-state loading-state">
+        <fa-icon [icon]="faUserAstronaut" />
+        <p>Profile unavailable.</p>
       </div>
     }
   </div>

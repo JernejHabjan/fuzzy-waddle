@@ -17,6 +17,14 @@ import { type User } from "@supabase/supabase-js";
 export class GameStateServerService {
   constructor(private readonly gameInstanceService: GameInstanceService) {}
 
+  ensureAuthorizedMutation(body: CommunicatorEvent<any, ProbableWaffleCommunicatorType>, user: User): void {
+    this.gameInstanceService.ensureCanMutateGameInstance(body, user);
+  }
+
+  ensureCanAccessGameRoom(gameInstanceId: string, user: User): void {
+    this.gameInstanceService.ensureCanJoinGameRoom(gameInstanceId, user);
+  }
+
   updateGameState(body: CommunicatorEvent<any, ProbableWaffleCommunicatorType>, user: User): boolean {
     const gameInstance = this.gameInstanceService.findGameInstance(body.gameInstanceId!);
     if (!gameInstance) {

@@ -1,119 +1,172 @@
--- Initial schema migration generated from declarative schema files.
--- Source of truth remains supabase/schemas/*.sql.
+-- Source: 0001_user_profiles.sql
+drop trigger if exists on_auth_user_created on auth.users;
+drop function if exists public.handle_new_user();
+drop function if exists public.set_updated_at();
+drop table if exists public.user_profiles cascade;
+drop type if exists public.app_user_role cascade;
+drop type if exists public.user_account_status cascade;
 
--- =============================================
--- Source: 0001_profiles.sql
--- =============================================
+create type public.user_account_status as enum ('active', 'limited', 'disabled');
+create type public.app_user_role as enum ('user', 'moderator', 'admin');
 
-DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
-DROP FUNCTION IF EXISTS public.handle_new_user();
-DROP TABLE IF EXISTS public.profiles;
+create or replace function public.set_updated_at()
+  returns trigger
+  language plpgsql
+  set search_path = public, pg_temp
+as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$;
 
-create table public.profiles
+revoke execute on function public.set_updated_at() from public;
+revoke execute on function public.set_updated_at() from anon;
+revoke execute on function public.set_updated_at() from authenticated;
+
+create table public.user_profiles
 (
-  id                uuid not null references auth.users on delete cascade,
-  name              text,
-  profile_image_url text,
-  email             text,
-  primary key (id)
+  id             uuid primary key references auth.users (id) on delete cascade,
+  email          text null,
+  display_name   text not null,
+  username       text null,
+  avatar_url     text null,
+  bio            text null,
+  locale         text null,
+  timezone       text null,
+  website_url    text null,
+  account_status public.user_account_status not null default 'active',
+  app_role       public.app_user_role not null default 'user',
+  banned_until   timestamp with time zone null,
+  moderation_note text null,
+  created_at     timestamp with time zone not null default now(),
+  updated_at     timestamp with time zone not null default now(),
+  constraint user_profiles_display_name_not_blank check (length(btrim(display_name)) > 0),
+  constraint user_profiles_username_format check (
+    username is null
+    or username ~ '^[a-z0-9_][a-z0-9_-]{2,29}$'
+  )
 );
 
-alter table public.profiles
+create unique index user_profiles_username_unique_idx
+  on public.user_profiles (lower(username))
+  where username is not null;
+
+create unique index user_profiles_email_unique_idx
+  on public.user_profiles (lower(email))
+  where email is not null;
+
+create index user_profiles_account_status_idx
+  on public.user_profiles (account_status);
+
+create index user_profiles_app_role_idx
+  on public.user_profiles (app_role);
+
+create trigger user_profiles_set_updated_at
+  before update on public.user_profiles
+  for each row
+execute function public.set_updated_at();
+
+alter table public.user_profiles
   enable row level security;
 
--- Create a policy to allow authenticated users to select their own profile
-DROP POLICY IF EXISTS "Allow authenticated users to select their own profile" on public.profiles;
-CREATE POLICY "Allow authenticated users to select their own profile"
-  ON public.profiles
-  FOR SELECT
-  USING ((select auth.uid()) = id);
+create policy "Users can read active public profiles"
+  on public.user_profiles
+  as permissive for select
+  to anon, authenticated
+  using (account_status = 'active');
 
--- Create a policy to allow authenticated users to update their own profile
-DROP POLICY IF EXISTS "Allow authenticated users to update their own profile" on public.profiles;
-CREATE POLICY "Allow authenticated users to update their own profile"
-  ON public.profiles
-  FOR UPDATE
-  USING ((select auth.uid()) = id);
+create policy "Users can update their own profile"
+  on public.user_profiles
+  as permissive for update
+  to authenticated
+  using ((select auth.uid()) = id)
+  with check ((select auth.uid()) = id);
 
--- Create a policy to allow authenticated users to delete their own profile
-DROP POLICY IF EXISTS "Allow authenticated users to delete their own profile" on public.profiles;
-CREATE POLICY "Allow authenticated users to delete their own profile"
-  ON public.profiles
-  FOR DELETE
-  USING ((select auth.uid()) = id);
+create policy "Service role can manage profiles"
+  on public.user_profiles
+  as permissive for all
+  to service_role
+  using (true)
+  with check (true);
 
--- inserts a row into public.profiles
-CREATE OR REPLACE FUNCTION public.handle_new_user()
-  RETURNS trigger
-  LANGUAGE plpgsql
-  SECURITY DEFINER
-  SET search_path = ''
-AS
-$$
-BEGIN
+create or replace function public.handle_new_user()
+  returns trigger
+  language plpgsql
+  security definer
+  set search_path = public, pg_temp
+as $$
+declare
+  metadata jsonb := coalesce(new.raw_user_meta_data, '{}'::jsonb);
+  generated_name text;
+begin
+  generated_name := coalesce(
+    nullif(btrim(metadata ->> 'full_name'), ''),
+    nullif(btrim(metadata ->> 'name'), ''),
+    nullif(btrim(metadata ->> 'user_name'), ''),
+    nullif(btrim(metadata ->> 'preferred_username'), ''),
+    nullif(split_part(new.email, '@', 1), ''),
+    'Player ' || substr(replace(new.id::text, '-', ''), 1, 8)
+  );
 
-  -- if provider is Google
-  IF NEW.raw_app_meta_data ->> 'provider' = 'google' THEN
-    INSERT INTO public.profiles (id, email, name, profile_image_url)
-    VALUES (NEW.id, NEW.email, NEW.raw_user_meta_data ->> 'name', NEW.raw_user_meta_data ->> 'avatar_url');
-  ELSE
-    -- else insert random name
-    INSERT INTO public.profiles (id, email, name, profile_image_url)
-    VALUES (NEW.id,
-            NEW.email,
-            substring(
-              string_agg(chr(65 + floor(random() * 26)::int), ''), -- Random letters (A-Z)
-              1, 10 -- 10-character random name
-            ),
-            '');
-  END IF;
+  insert into public.user_profiles (
+    id,
+    email,
+    display_name,
+    avatar_url,
+    locale
+  )
+  values (
+    new.id,
+    nullif(lower(new.email), ''),
+    generated_name,
+    coalesce(nullif(metadata ->> 'avatar_url', ''), nullif(metadata ->> 'picture', '')),
+    nullif(metadata ->> 'locale', '')
+  )
+  on conflict (id) do update
+    set display_name = excluded.display_name,
+        email = coalesce(public.user_profiles.email, excluded.email),
+        avatar_url = coalesce(public.user_profiles.avatar_url, excluded.avatar_url),
+        locale = coalesce(public.user_profiles.locale, excluded.locale);
 
-  RETURN NEW;
-END;
+  return new;
+end;
 $$;
 
 revoke execute on function public.handle_new_user() from public;
 revoke execute on function public.handle_new_user() from anon;
 revoke execute on function public.handle_new_user() from authenticated;
 
-
--- trigger the function every time a user is created
 create trigger on_auth_user_created
-  after insert
-  on auth.users
+  after insert on auth.users
   for each row
-execute procedure public.handle_new_user();
+execute function public.handle_new_user();
 
--- Insert data into public.profiles from auth.users
-INSERT INTO public.profiles (id, email, name, profile_image_url)
-SELECT id,
-       email,
-       CASE
-         -- If provider is Google, use the name from raw_user_meta_data
-         WHEN raw_app_meta_data ->> 'provider' = 'google' THEN raw_user_meta_data ->> 'name'
-         -- Otherwise, generate a random name
-         ELSE substring(
-           string_agg(chr(65 + floor(random() * 26)::int), ''), -- Random letters (A-Z)
-           1, 10 -- 10-character random name
-              )
-         END,
-       CASE
-         -- If provider is Google, use the avatar_url from raw_user_meta_data
-         WHEN raw_app_meta_data ->> 'provider' = 'google' THEN raw_user_meta_data ->> 'avatar_url'
-         ELSE '' -- No profile image URL for non-Google users
-         END
-FROM auth.users
-group by id;
+insert into public.user_profiles (id, email, display_name, avatar_url, locale, created_at, updated_at)
+select
+  u.id,
+  nullif(lower(u.email), ''),
+  coalesce(
+    nullif(btrim(u.raw_user_meta_data ->> 'full_name'), ''),
+    nullif(btrim(u.raw_user_meta_data ->> 'name'), ''),
+    nullif(btrim(u.raw_user_meta_data ->> 'user_name'), ''),
+    nullif(btrim(u.raw_user_meta_data ->> 'preferred_username'), ''),
+    nullif(split_part(u.email, '@', 1), ''),
+    'Player ' || substr(replace(u.id::text, '-', ''), 1, 8)
+  ),
+  coalesce(nullif(u.raw_user_meta_data ->> 'avatar_url', ''), nullif(u.raw_user_meta_data ->> 'picture', '')),
+  nullif(u.raw_user_meta_data ->> 'locale', ''),
+  coalesce(u.created_at, now()),
+  now()
+from auth.users u
+on conflict (id) do nothing;
 
-revoke all on table public.profiles from anon;
-revoke all on table public.profiles from authenticated;
+revoke all on table public.user_profiles from anon;
+revoke all on table public.user_profiles from authenticated;
 
-grant select (id, name) on table public.profiles to service_role;
+grant select, insert, update, delete on table public.user_profiles to service_role;
 
--- =============================================
 -- Source: 0002_storage.sql
--- =============================================
-
 CREATE POLICY "test bucket access to authenticated users for webp files"
   ON storage.objects FOR SELECT USING (
   -- restrict bucket
@@ -123,862 +176,785 @@ CREATE POLICY "test bucket access to authenticated users for webp files"
     AND storage."extension"(name) = 'webp'
   );
 
--- =============================================
--- Source: 0003_messages.sql
--- =============================================
+-- Source: 0003_chat.sql
+drop table if exists public.chat_message_reports cascade;
+drop table if exists public.chat_messages cascade;
+drop table if exists public.chat_channel_memberships cascade;
+drop table if exists public.chat_channels cascade;
+drop type if exists public.chat_report_status cascade;
+drop type if exists public.chat_report_reason cascade;
+drop type if exists public.chat_message_status cascade;
+drop type if exists public.chat_membership_role cascade;
+drop type if exists public.chat_channel_type cascade;
 
-drop table if exists messages;
-create table messages
+create type public.chat_channel_type as enum ('global_lobby', 'game_lobby', 'game_session', 'direct', 'system');
+create type public.chat_membership_role as enum ('owner', 'moderator', 'member');
+create type public.chat_message_status as enum ('visible', 'hidden', 'deleted');
+create type public.chat_report_reason as enum ('spam', 'abuse', 'harassment', 'hate_speech', 'cheating', 'personal_information', 'other');
+create type public.chat_report_status as enum ('open', 'reviewed', 'dismissed', 'actioned');
+
+create table public.chat_channels
 (
-  id               bigint generated by default as identity primary key,
-  created_at       timestamp with time zone default now() not null,
-  text             text                                   not null,
-  user_id          uuid                                   not null,
-  game_instance_id uuid                                   null
+  id                  uuid primary key default gen_random_uuid(),
+  channel_type        public.chat_channel_type not null,
+  game_key            text null,
+  external_session_id uuid null,
+  title               text null,
+  metadata            jsonb not null default '{}'::jsonb,
+  created_by_user_id  uuid null references public.user_profiles (id) on delete set null,
+  archived_at         timestamp with time zone null,
+  created_at          timestamp with time zone not null default now(),
+  updated_at          timestamp with time zone not null default now(),
+  constraint chat_channels_context_check check (
+    (channel_type = 'global_lobby' and game_key is null and external_session_id is null)
+    or (channel_type = 'game_lobby' and game_key is not null and external_session_id is null)
+    or (channel_type = 'game_session' and game_key is not null and external_session_id is not null)
+    or (channel_type in ('direct', 'system'))
+  )
 );
 
--- add a foreign key constraint to the public.profiles table to improve join performance
-alter table messages
-  add constraint messages_profile_id_fkey foreign key (user_id) references public.profiles (id);
+create unique index chat_channels_global_lobby_unique_idx
+  on public.chat_channels ((channel_type))
+  where channel_type = 'global_lobby';
 
-create index messages_user_id_idx on messages (user_id);
+create unique index chat_channels_game_lobby_unique_idx
+  on public.chat_channels (game_key)
+  where channel_type = 'game_lobby';
 
-drop policy if exists "Enable read access for all users" on messages;
--- CREATE POLICY "Enable read access for all users" ON "public"."messages"
--- AS PERMISSIVE FOR SELECT
--- TO authenticated
--- USING (true)
+create unique index chat_channels_game_session_unique_idx
+  on public.chat_channels (game_key, external_session_id)
+  where channel_type = 'game_session';
 
-drop policy if exists "Enable select for users based on user_id" on messages;
-CREATE POLICY "Enable select for users based on user_id" ON "public"."messages"
-  AS PERMISSIVE FOR SELECT
-  TO authenticated
-  USING ((select auth.uid()) = user_id);
+create index chat_channels_lookup_idx
+  on public.chat_channels (channel_type, game_key, external_session_id);
 
-drop policy if exists "Enable read access for all users" on messages;
-CREATE POLICY "Enable insert for service_role only" ON "public"."messages"
-  AS PERMISSIVE FOR INSERT
-  TO service_role
-  WITH CHECK (true);
+create trigger chat_channels_set_updated_at
+  before update on public.chat_channels
+  for each row
+execute function public.set_updated_at();
 
-drop policy if exists "Enable select for service_role" on messages;
-CREATE POLICY "Enable select for service_role" ON "public"."messages"
-  AS PERMISSIVE FOR SELECT
-  TO service_role
-  USING (true);
-
--- enable row level security
-alter table messages
-  enable row level security;
-
-revoke all on table public.messages from anon;
-revoke all on table public.messages from authenticated;
-
-grant insert, select on table public.messages to service_role;
-
--- =============================================
--- Source: 0004_fly-squasher_scores.sql
--- =============================================
-
-drop table if exists fly_squasher_scores;
-
-CREATE TABLE fly_squasher_scores
+create table public.chat_channel_memberships
 (
-  id      SERIAL PRIMARY KEY,
-  score   INT  NOT NULL,
-  level   INT  NOT NULL,
-  user_id uuid not null,
-  date    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  id              bigserial primary key,
+  channel_id      uuid not null references public.chat_channels (id) on delete cascade,
+  user_id         uuid not null references public.user_profiles (id) on delete cascade,
+  membership_role public.chat_membership_role not null default 'member',
+  last_read_at    timestamp with time zone null,
+  muted_until     timestamp with time zone null,
+  joined_at       timestamp with time zone not null default now(),
+  left_at         timestamp with time zone null,
+  constraint chat_channel_memberships_join_leave_check check (left_at is null or left_at >= joined_at)
 );
 
--- add a foreign key constraint to the auth.users table
-alter table fly_squasher_scores
-  add constraint fly_squasher_scores_user_id_fkey foreign key (user_id) references auth.users (id);
+create unique index chat_channel_memberships_channel_user_idx
+  on public.chat_channel_memberships (channel_id, user_id);
 
-drop policy if exists "Enable read access for all users" on fly_squasher_scores;
-create policy "Enable read access for all users" on fly_squasher_scores for select using (true);
+create index chat_channel_memberships_user_id_idx
+  on public.chat_channel_memberships (user_id);
 
-DROP POLICY IF EXISTS "Enable write access for authenticated users" ON fly_squasher_scores;
-
-CREATE POLICY "Enable write access for authenticated users"
-  ON fly_squasher_scores
-  FOR INSERT
-  WITH CHECK ((select auth.uid()) = user_id AND (select auth.role()) = 'user');
-
--- enable row level security
-alter table fly_squasher_scores
-  enable row level security;
-
-create index fly_squasher_scores_user_id_idx
-  on fly_squasher_scores (user_id);
-
--- create a view that joins the fly_squasher_scores table with the auth.users table to get the user's meta data (used full name)
--- and only returns the top 3 unique users' scores for each level (maximum score for each user)
-drop view if exists fly_squasher_scores_with_user_meta;
-CREATE VIEW fly_squasher_scores_with_user_meta
-  with (security_invoker=on)
-AS
-WITH scores AS (SELECT fss.id,
-                       fss.score,
-                       fss.level,
-                       fss.user_id,
-                       fss.date,
-                       pr.name,
-                       ROW_NUMBER() OVER (PARTITION BY level ORDER BY score DESC) AS level_rn
-                FROM (SELECT id,
-                             score,
-                             level,
-                             user_id,
-                             date,
-                             DENSE_RANK() OVER (PARTITION BY level, user_id ORDER BY score DESC) AS rn
-                      FROM fly_squasher_scores) fss
-                       JOIN public.profiles pr ON fss.user_id = pr.id
-                WHERE fss.rn = 1)
-SELECT *
-FROM scores
-WHERE level_rn <= 3;
-
-revoke all on table public.fly_squasher_scores from anon;
-revoke all on table public.fly_squasher_scores from authenticated;
-revoke all on table public.fly_squasher_scores_with_user_meta from anon;
-revoke all on table public.fly_squasher_scores_with_user_meta from authenticated;
-revoke all on sequence public.fly_squasher_scores_id_seq from anon;
-revoke all on sequence public.fly_squasher_scores_id_seq from authenticated;
-
-grant insert on table public.fly_squasher_scores to service_role;
-grant select (id, score, level, user_id, date) on table public.fly_squasher_scores to service_role;
-grant select on table public.fly_squasher_scores_with_user_meta to service_role;
-grant usage, select on sequence public.fly_squasher_scores_id_seq to service_role;
-
--- =============================================
--- Source: 0005_probable_waffle_achievements.sql
--- =============================================
-
-drop table if exists probable_waffle_achievements;
-
-CREATE TABLE probable_waffle_achievements
+create table public.chat_messages
 (
-  id             SERIAL PRIMARY KEY,
-  achievement_id VARCHAR(50) NOT NULL,
-  user_id        uuid NOT NULL,
-  unlocked_date  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  metadata       JSONB -- Optional metadata about the achievement (e.g., progress data)
+  id                  bigserial primary key,
+  channel_id          uuid not null references public.chat_channels (id) on delete cascade,
+  sender_user_id      uuid null references public.user_profiles (id) on delete set null,
+  body                text not null,
+  message_status      public.chat_message_status not null default 'visible',
+  moderation_reason   text null,
+  reply_to_message_id bigint null references public.chat_messages (id) on delete set null,
+  metadata            jsonb not null default '{}'::jsonb,
+  created_at          timestamp with time zone not null default now(),
+  edited_at           timestamp with time zone null,
+  deleted_at          timestamp with time zone null,
+  constraint chat_messages_body_not_blank check (length(btrim(body)) > 0)
 );
 
--- Add a foreign key constraint to the auth.users table
-ALTER TABLE probable_waffle_achievements
-  ADD CONSTRAINT probable_waffle_achievements_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users (id);
+create index chat_messages_channel_created_idx
+  on public.chat_messages (channel_id, created_at desc);
 
--- Create a unique constraint to prevent duplicate achievements for a user
-ALTER TABLE probable_waffle_achievements
-  ADD CONSTRAINT probable_waffle_achievements_user_achievement_unique UNIQUE (user_id, achievement_id);
+create index chat_messages_sender_user_id_idx
+  on public.chat_messages (sender_user_id)
+  where sender_user_id is not null;
 
--- Row-level security policies
-DROP POLICY IF EXISTS "Enable read access for own achievements" ON probable_waffle_achievements;
-CREATE POLICY "Enable read access for all achievements"
-  ON probable_waffle_achievements
-  FOR SELECT
-  USING (true); -- Allow anyone to read any achievement
-
-DROP POLICY IF EXISTS "Enable insert access for authenticated users" ON probable_waffle_achievements;
-CREATE POLICY "Enable insert access for own achievements"
-  ON probable_waffle_achievements
-  FOR INSERT
-  WITH CHECK ((select auth.uid()) = user_id); -- Only require user_id match, not specific role
-
--- Enable row level security
-ALTER TABLE probable_waffle_achievements
-  ENABLE ROW LEVEL SECURITY;
-
-revoke all on table public.probable_waffle_achievements from anon;
-revoke all on table public.probable_waffle_achievements from authenticated;
-revoke all on sequence public.probable_waffle_achievements_id_seq from anon;
-revoke all on sequence public.probable_waffle_achievements_id_seq from authenticated;
-
-grant insert on table public.probable_waffle_achievements to authenticated;
-grant usage on sequence public.probable_waffle_achievements_id_seq to authenticated;
-
--- =============================================
--- Source: 0006_little_muncher_scores.sql
--- =============================================
-
--- Little Muncher High Scores Table
-CREATE TABLE little_muncher_scores (
-  id        SERIAL PRIMARY KEY,
-  score     INT NOT NULL,
-  hill      INT NOT NULL,  -- LittleMuncherHillEnum
-  user_id   uuid NOT NULL,
-  date      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (user_id) REFERENCES auth.users(id)
-);
-
--- Row Level Security
-ALTER TABLE little_muncher_scores ENABLE ROW LEVEL SECURITY;
-
--- Policy: Allow anyone to read scores
-CREATE POLICY "Allow read access for all users"
-  ON little_muncher_scores FOR SELECT USING (true);
-
--- Policy: Allow authenticated users to insert their own scores
-DROP POLICY IF EXISTS "Allow insert for authenticated users" ON little_muncher_scores;
-CREATE POLICY "Allow insert for authenticated users"
-  ON little_muncher_scores FOR INSERT TO authenticated
-  WITH CHECK (user_id = (select auth.uid()));
-
-create index little_muncher_scores_user_id_idx
-  on little_muncher_scores (user_id);
-
--- View: Top 3 unique users per hill (highest score per user)
-DROP VIEW IF EXISTS little_muncher_scores_with_user_meta;
-CREATE VIEW little_muncher_scores_with_user_meta
-  with (security_invoker=on)
-AS
-WITH ranked_scores AS (
-  SELECT
-    s.id,
-    s.score,
-    s.hill,
-    s.user_id,
-    s.date,
-    p.name AS user_name,
-    ROW_NUMBER() OVER (PARTITION BY s.hill, s.user_id ORDER BY s.score DESC) as user_rn
-  FROM little_muncher_scores s
-  JOIN profiles p ON s.user_id = p.id
-),
-unique_user_scores AS (
-  SELECT * FROM ranked_scores WHERE user_rn = 1
-),
-hill_ranked AS (
-  SELECT
-    id,
-    score,
-    hill,
-    user_id,
-    user_name,
-    date,
-    ROW_NUMBER() OVER (PARTITION BY hill ORDER BY score DESC) as hill_rn
-  FROM unique_user_scores
-)
-SELECT id, score, hill, user_id, user_name, date
-FROM hill_ranked
-WHERE hill_rn <= 3
-ORDER BY hill, hill_rn;
-
-revoke all on table public.little_muncher_scores from anon;
-revoke all on table public.little_muncher_scores from authenticated;
-revoke all on table public.little_muncher_scores_with_user_meta from anon;
-revoke all on table public.little_muncher_scores_with_user_meta from authenticated;
-revoke all on sequence public.little_muncher_scores_id_seq from anon;
-revoke all on sequence public.little_muncher_scores_id_seq from authenticated;
-
-grant insert on table public.little_muncher_scores to service_role;
-grant select on table public.little_muncher_scores_with_user_meta to service_role;
-grant usage, select on sequence public.little_muncher_scores_id_seq to service_role;
-
--- =============================================
--- Source: 0007_probable_waffle_game_sessions.sql
--- =============================================
-
--- =============================================================================
--- Probable Waffle Game Sessions
--- =============================================================================
--- Tracks game sessions (online and offline) for score submission and match history.
---
--- Key fields:
---   scores_submitted    - set to true when the last human player submits all scores
---   scores_submitted_by - UUID of the player who submitted (idempotency tracking)
---   human_player_count  - used by clients to determine who is "last" to submit
---   session_state       - InProgress → ToScoreScreen → Completed / Abandoned
---
--- Multiplayer score submission strategy:
---   Only the last human player to reach the score screen submits scores.
---   API is idempotent: duplicate submissions return success without inserting again.
---
--- Depends on: profiles.sql, messages.sql (messages FK added here)
--- =============================================================================
-
-drop table if exists probable_waffle_game_sessions cascade;
-
-create table probable_waffle_game_sessions
+create table public.chat_message_reports
 (
-  id                      uuid primary key default gen_random_uuid(),
-  game_instance_id        uuid                     not null unique,
-  game_type               text                     not null,
-  map_id                  int                      not null,
-  session_state           text                     not null,
-  started_at              timestamp with time zone default now() not null,
-  ended_at                timestamp with time zone null,
-  total_duration_seconds  int                      null,
-  created_by_user_id      uuid                     not null,
-  scores_submitted        boolean                  not null default false,
-  scores_submitted_by     uuid                     null,
-  scores_submitted_at     timestamp with time zone null,
-  human_player_count      int                      not null default 1,
-  created_at              timestamp with time zone default now() not null
+  id               bigserial primary key,
+  message_id       bigint not null references public.chat_messages (id) on delete cascade,
+  reporter_user_id uuid not null references public.user_profiles (id) on delete cascade,
+  reason           public.chat_report_reason not null,
+  details          text null,
+  report_status    public.chat_report_status not null default 'open',
+  metadata         jsonb not null default '{}'::jsonb,
+  created_at       timestamp with time zone not null default now(),
+  reviewed_at      timestamp with time zone null,
+  reviewed_by      uuid null references public.user_profiles (id) on delete set null,
+  constraint chat_message_reports_details_length_check check (details is null or length(details) <= 1000),
+  constraint chat_message_reports_review_state_check check (
+    (report_status = 'open' and reviewed_at is null and reviewed_by is null)
+    or (report_status <> 'open' and reviewed_at is not null)
+  )
 );
 
--- add foreign key constraint to the profiles table
-alter table probable_waffle_game_sessions
-  add constraint probable_waffle_game_sessions_created_by_user_id_fkey
-  foreign key (created_by_user_id) references public.profiles (id);
+create unique index chat_message_reports_message_reporter_idx
+  on public.chat_message_reports (message_id, reporter_user_id);
 
--- add foreign key constraint for scores_submitted_by
-alter table probable_waffle_game_sessions
-  add constraint probable_waffle_game_sessions_scores_submitted_by_fkey
-  foreign key (scores_submitted_by) references public.profiles (id);
+create index chat_message_reports_status_created_idx
+  on public.chat_message_reports (report_status, created_at desc);
 
-create index probable_waffle_game_sessions_scores_submitted_by_idx
-  on probable_waffle_game_sessions (scores_submitted_by)
-  where scores_submitted_by is not null;
+insert into public.chat_channels (channel_type, title)
+values ('global_lobby', 'Global Lobby')
+on conflict do nothing;
 
-create index probable_waffle_game_sessions_created_by_user_id_idx
-  on probable_waffle_game_sessions (created_by_user_id);
+alter table public.chat_channels enable row level security;
+alter table public.chat_channel_memberships enable row level security;
+alter table public.chat_messages enable row level security;
+alter table public.chat_message_reports enable row level security;
 
--- RLS policies
-drop policy if exists "Enable insert for service_role only" on probable_waffle_game_sessions;
-create policy "Enable insert for service_role only" on probable_waffle_game_sessions
-  as permissive for insert
+create policy "Public can read open lobby channels"
+  on public.chat_channels
+  as permissive for select
+  to anon, authenticated
+  using (archived_at is null and channel_type in ('global_lobby', 'game_lobby'));
+
+-- Session chat stays behind Nest service-role queries; do not expose it via direct client reads.
+
+create policy "Service role can manage chat channels"
+  on public.chat_channels
+  as permissive for all
   to service_role
+  using (true)
   with check (true);
 
-drop policy if exists "Enable update for service_role only" on probable_waffle_game_sessions;
-create policy "Enable update for service_role only" on probable_waffle_game_sessions
-  as permissive for update
-  to service_role
-  using (true);
-
-drop policy if exists "Enable select for service_role" on probable_waffle_game_sessions;
-create policy "Enable select for service_role" on probable_waffle_game_sessions
+create policy "Users can read their own memberships"
+  on public.chat_channel_memberships
   as permissive for select
+  to authenticated
+  using (user_id = (select auth.uid()));
+
+create policy "Users can update their own membership read state"
+  on public.chat_channel_memberships
+  as permissive for update
+  to authenticated
+  using (user_id = (select auth.uid()))
+  with check (user_id = (select auth.uid()));
+
+create policy "Service role can manage chat memberships"
+  on public.chat_channel_memberships
+  as permissive for all
   to service_role
-  using (true);
+  using (true)
+  with check (true);
 
--- enable row level security
-alter table probable_waffle_game_sessions
-  enable row level security;
+create policy "Users can read visible lobby messages"
+  on public.chat_messages
+  as permissive for select
+  to anon, authenticated
+  using (
+    message_status = 'visible'
+    and exists (
+      select 1
+      from public.chat_channels c
+      where c.id = chat_messages.channel_id
+        and c.archived_at is null
+        and c.channel_type in ('global_lobby', 'game_lobby')
+    )
+  );
 
--- messages
--- add foreign key constraint to game sessions table
--- Note: This constraint requires probable_waffle_game_sessions table to exist first.
-alter table messages
-  add constraint messages_game_instance_id_fkey
-    foreign key (game_instance_id) references probable_waffle_game_sessions (game_instance_id) on delete set null;
+create policy "Service role can manage chat messages"
+  on public.chat_messages
+  as permissive for all
+  to service_role
+  using (true)
+  with check (true);
 
--- add comment explaining the relationship
-comment on column messages.game_instance_id is 'References the game instance UUID from probable_waffle_game_sessions';
+create policy "Service role can manage message reports"
+  on public.chat_message_reports
+  as permissive for all
+  to service_role
+  using (true)
+  with check (true);
 
-revoke all on table public.probable_waffle_game_sessions from anon;
-revoke all on table public.probable_waffle_game_sessions from authenticated;
+revoke all on table public.chat_channels from anon;
+revoke all on table public.chat_channels from authenticated;
+revoke all on table public.chat_channel_memberships from anon;
+revoke all on table public.chat_channel_memberships from authenticated;
+revoke all on table public.chat_messages from anon;
+revoke all on table public.chat_messages from authenticated;
+revoke all on table public.chat_message_reports from anon;
+revoke all on table public.chat_message_reports from authenticated;
+revoke all on sequence public.chat_messages_id_seq from anon;
+revoke all on sequence public.chat_messages_id_seq from authenticated;
+revoke all on sequence public.chat_channel_memberships_id_seq from anon;
+revoke all on sequence public.chat_channel_memberships_id_seq from authenticated;
+revoke all on sequence public.chat_message_reports_id_seq from anon;
+revoke all on sequence public.chat_message_reports_id_seq from authenticated;
 
-grant select, insert, update on table public.probable_waffle_game_sessions to service_role;
+grant select, insert, update, delete on table public.chat_channels to service_role;
+grant select, insert, update, delete on table public.chat_channel_memberships to service_role;
+grant select, insert, update, delete on table public.chat_messages to service_role;
+grant select, insert, update, delete on table public.chat_message_reports to service_role;
+grant usage, select on sequence public.chat_messages_id_seq to service_role;
+grant usage, select on sequence public.chat_channel_memberships_id_seq to service_role;
+grant usage, select on sequence public.chat_message_reports_id_seq to service_role;
 
+-- Source: 0004_game_sessions_and_scores.sql
+drop view if exists public.little_muncher_leaderboard;
+drop view if exists public.fly_squasher_leaderboard;
+drop view if exists public.game_leaderboard_scores;
+drop function if exists public.refresh_game_score_records_full();
+drop materialized view if exists public.game_score_records_full;
+drop table if exists public.game_score_snapshots cascade;
+drop table if exists public.game_score_metric_values cascade;
+drop table if exists public.game_score_metric_definitions cascade;
+drop table if exists public.game_score_records cascade;
+drop table if exists public.game_session_participants cascade;
+drop table if exists public.game_sessions cascade;
+drop type if exists public.game_result_status cascade;
+drop type if exists public.game_participant_type cascade;
+drop type if exists public.game_session_status cascade;
 
+create type public.game_session_status as enum ('in_progress', 'completed', 'abandoned');
+create type public.game_participant_type as enum ('human', 'ai', 'spectator');
+create type public.game_result_status as enum ('win', 'loss', 'tie', 'quit');
 
--- =============================================
--- Source: 0008_probable_waffle_player_scores.sql
--- =============================================
-
--- =============================================================================
--- Probable Waffle Player Scores (Hybrid EAV Design)
--- =============================================================================
--- Stores per-player statistics for completed game sessions.
--- Uses a 3-table hybrid design (core fields + EAV metrics catalog + metric values).
---
--- Tables:
---   probable_waffle_player_scores        - core player info (result, score, faction…)
---   probable_waffle_score_metric_types   - metric catalog; add new metrics with INSERT only
---   probable_waffle_player_score_metrics - EAV values; only non-zero metrics stored
---
--- Materialized view (probable_waffle_player_scores_full):
---   Pivots EAV rows into columns for fast score-screen and history queries.
---   Refresh after bulk inserts: SELECT refresh_probable_waffle_player_scores_full();
---
--- Helper functions:
---   get_player_score_metrics(player_score_id)             → JSONB of all metrics
---   upsert_player_score_metric(id, metric_key, value)     → insert or update one metric
---
--- Stats view (probable_waffle_player_stats):
---   Aggregates per-user wins/losses/averages from the materialized view.
---
--- Depends on: probable_waffle_game_sessions.sql
--- =============================================================================
-
--- Create player scores table with hybrid design
--- Core metrics in main table, extended metrics in separate table for flexibility
-drop table if exists probable_waffle_player_scores cascade;
-drop table if exists probable_waffle_player_score_metrics cascade;
-drop table if exists probable_waffle_score_metric_types cascade;
-
--- Main player scores table - contains only core/common fields
-create table probable_waffle_player_scores
+create table public.game_sessions
 (
-  id                    bigserial primary key,
-  game_session_id       uuid                     not null,
-  user_id               uuid                     null,
-  player_number         int                      not null,
-  player_name           text                     not null,
-  player_type           text                     not null,
-  team_number           int                      null,
-  faction_type          text                     not null,
-  game_result           text                     not null,
-  eliminated            boolean                  not null default false,
-  eliminated_at         timestamp with time zone null,
-  final_score           int                      not null default 0,
-  created_at            timestamp with time zone default now() not null
+  id                     uuid primary key default gen_random_uuid(),
+  external_session_id    uuid null,
+  game_key               text not null,
+  game_mode_key          text null,
+  level_key              text null,
+  map_key                text null,
+  session_status         public.game_session_status not null default 'in_progress',
+  started_at             timestamp with time zone not null default now(),
+  ended_at               timestamp with time zone null,
+  total_duration_seconds int null,
+  created_by_user_id     uuid null references public.user_profiles (id) on delete set null,
+  completed_by_user_id   uuid null references public.user_profiles (id) on delete set null,
+  completed_at           timestamp with time zone null,
+  human_player_count     int not null default 1,
+  metadata               jsonb not null default '{}'::jsonb,
+  created_at             timestamp with time zone not null default now(),
+  updated_at             timestamp with time zone not null default now(),
+  constraint game_sessions_game_key_not_blank check (length(btrim(game_key)) > 0),
+  constraint game_sessions_human_player_count_check check (human_player_count >= 0)
 );
 
--- Metric types catalog - defines what metrics can be tracked
-create table probable_waffle_score_metric_types
+create unique index game_sessions_external_session_id_idx
+  on public.game_sessions (external_session_id)
+  where external_session_id is not null;
+
+create index game_sessions_game_level_idx
+  on public.game_sessions (game_key, level_key, map_key);
+
+create index game_sessions_created_by_user_id_idx
+  on public.game_sessions (created_by_user_id)
+  where created_by_user_id is not null;
+
+create trigger game_sessions_set_updated_at
+  before update on public.game_sessions
+  for each row
+execute function public.set_updated_at();
+
+create table public.game_session_participants
 (
-  id                    serial primary key,
-  metric_key            text                     not null unique,
-  metric_name           text                     not null,
-  metric_category       text                     not null, -- 'units', 'buildings', 'resources', 'combat', 'economy'
-  description           text                     null,
-  display_order         int                      not null default 0,
-  is_active             boolean                  not null default true,
-  created_at            timestamp with time zone default now() not null
+  id                bigserial primary key,
+  game_session_id   uuid not null references public.game_sessions (id) on delete cascade,
+  user_id           uuid null references public.user_profiles (id) on delete set null,
+  participant_number int not null,
+  display_name      text not null,
+  participant_type  public.game_participant_type not null default 'human',
+  team_key          text null,
+  faction_key       text null,
+  result_status     public.game_result_status null,
+  eliminated        boolean not null default false,
+  eliminated_at     timestamp with time zone null,
+  metadata          jsonb not null default '{}'::jsonb,
+  created_at        timestamp with time zone not null default now(),
+  constraint game_session_participants_eliminated_at_check check (eliminated_at is null or eliminated)
 );
 
--- Individual metric values - flexible EAV pattern for extended metrics
-create table probable_waffle_player_score_metrics
-(
-  id                    bigserial primary key,
-  player_score_id       bigint                   not null,
-  metric_type_id        int                      not null,
-  metric_value          bigint                   not null default 0,
-  created_at            timestamp with time zone default now() not null
-);
+create unique index game_session_participants_session_number_idx
+  on public.game_session_participants (game_session_id, participant_number);
 
--- Foreign key constraints
-alter table probable_waffle_player_scores
-  add constraint probable_waffle_player_scores_game_session_id_fkey
-  foreign key (game_session_id) references probable_waffle_game_sessions (id) on delete cascade;
-
-alter table probable_waffle_player_scores
-  add constraint probable_waffle_player_scores_user_id_fkey
-  foreign key (user_id) references public.profiles (id);
-
-alter table probable_waffle_player_score_metrics
-  add constraint probable_waffle_player_score_metrics_player_score_id_fkey
-  foreign key (player_score_id) references probable_waffle_player_scores (id) on delete cascade;
-
-alter table probable_waffle_player_score_metrics
-  add constraint probable_waffle_player_score_metrics_metric_type_id_fkey
-  foreign key (metric_type_id) references probable_waffle_score_metric_types (id);
-
--- Indexes on main table
-create index probable_waffle_player_scores_user_id_idx
-  on probable_waffle_player_scores (user_id)
+create index game_session_participants_user_id_idx
+  on public.game_session_participants (user_id)
   where user_id is not null;
 
-create unique index probable_waffle_player_scores_session_player_idx
-  on probable_waffle_player_scores (game_session_id, player_number);
+create table public.game_score_records
+(
+  id                  bigserial primary key,
+  game_session_id     uuid not null references public.game_sessions (id) on delete cascade,
+  participant_id      bigint null references public.game_session_participants (id) on delete cascade,
+  user_id             uuid null references public.user_profiles (id) on delete set null,
+  game_key            text not null,
+  score_value         int not null,
+  score_unit          text not null default 'points',
+  ranking_scope_key   text null,
+  submitted_by_user_id uuid null references public.user_profiles (id) on delete set null,
+  submitted_at        timestamp with time zone not null default now(),
+  metadata            jsonb not null default '{}'::jsonb,
+  created_at          timestamp with time zone not null default now(),
+  constraint game_score_records_game_key_not_blank check (length(btrim(game_key)) > 0)
+);
 
--- Indexes on metrics table
-create index probable_waffle_player_score_metrics_metric_type_id_idx
-  on probable_waffle_player_score_metrics (metric_type_id);
+create index game_score_records_game_scope_score_idx
+  on public.game_score_records (game_key, ranking_scope_key, score_value desc, submitted_at asc);
 
--- Unique constraint: one value per metric per player score
-create unique index probable_waffle_player_score_metrics_unique_idx
-  on probable_waffle_player_score_metrics (player_score_id, metric_type_id);
+create index game_score_records_user_id_idx
+  on public.game_score_records (user_id)
+  where user_id is not null;
 
--- RLS policies for main scores table
-drop policy if exists "Enable insert for service_role only" on probable_waffle_player_scores;
-create policy "Enable insert for service_role only" on probable_waffle_player_scores
-  as permissive for insert
+create index game_score_records_session_id_idx
+  on public.game_score_records (game_session_id);
+
+create table public.game_score_metric_definitions
+(
+  id              serial primary key,
+  game_key        text not null,
+  metric_key      text not null,
+  metric_name     text not null,
+  metric_category text not null,
+  description     text null,
+  display_order   int not null default 0,
+  is_active       boolean not null default true,
+  created_at      timestamp with time zone not null default now(),
+  constraint game_score_metric_definitions_unique unique (game_key, metric_key)
+);
+
+create table public.game_score_metric_values
+(
+  id                   bigserial primary key,
+  score_record_id       bigint not null references public.game_score_records (id) on delete cascade,
+  metric_definition_id  int not null references public.game_score_metric_definitions (id),
+  metric_value          bigint not null default 0,
+  created_at            timestamp with time zone not null default now()
+);
+
+create unique index game_score_metric_values_unique_idx
+  on public.game_score_metric_values (score_record_id, metric_definition_id);
+
+create table public.game_score_snapshots
+(
+  id              bigserial primary key,
+  game_session_id uuid not null references public.game_sessions (id) on delete cascade,
+  snapshot_kind   text not null default 'score_timeline',
+  snapshots       jsonb not null,
+  created_at      timestamp with time zone not null default now()
+);
+
+create unique index game_score_snapshots_session_kind_idx
+  on public.game_score_snapshots (game_session_id, snapshot_kind);
+
+insert into public.game_score_metric_definitions (game_key, metric_key, metric_name, metric_category, description, display_order) values
+('probable-waffle', 'units_produced', 'Units Produced', 'units', 'Total number of units created', 1),
+('probable-waffle', 'units_killed', 'Units Killed', 'units', 'Total enemy units destroyed', 2),
+('probable-waffle', 'units_lost', 'Units Lost', 'units', 'Total own units lost', 3),
+('probable-waffle', 'buildings_constructed', 'Buildings Constructed', 'buildings', 'Total buildings completed', 11),
+('probable-waffle', 'buildings_destroyed', 'Buildings Destroyed', 'buildings', 'Total enemy buildings destroyed', 12),
+('probable-waffle', 'buildings_lost', 'Buildings Lost', 'buildings', 'Total own buildings lost', 13),
+('probable-waffle', 'resources_collected_minerals', 'Minerals Collected', 'resources', 'Total minerals gathered', 21),
+('probable-waffle', 'resources_collected_stone', 'Stone Collected', 'resources', 'Total stone gathered', 22),
+('probable-waffle', 'resources_collected_wood', 'Wood Collected', 'resources', 'Total wood gathered', 23),
+('probable-waffle', 'resources_spent_minerals', 'Minerals Spent', 'resources', 'Total minerals used', 24),
+('probable-waffle', 'resources_spent_stone', 'Stone Spent', 'resources', 'Total stone used', 25),
+('probable-waffle', 'resources_spent_wood', 'Wood Spent', 'resources', 'Total wood used', 26),
+('probable-waffle', 'final_resources_minerals', 'Final Minerals', 'resources', 'Minerals remaining at end', 27),
+('probable-waffle', 'final_resources_stone', 'Final Stone', 'resources', 'Stone remaining at end', 28),
+('probable-waffle', 'final_resources_wood', 'Final Wood', 'resources', 'Wood remaining at end', 29),
+('probable-waffle', 'damage_dealt', 'Damage Dealt', 'combat', 'Total damage inflicted', 31),
+('probable-waffle', 'damage_received', 'Damage Received', 'combat', 'Total damage taken', 32),
+('probable-waffle', 'healing_done', 'Healing Done', 'combat', 'Total healing provided', 33),
+('probable-waffle', 'max_army_size', 'Max Army Size', 'economy', 'Peak unit count achieved', 41),
+('probable-waffle', 'max_building_count', 'Max Building Count', 'economy', 'Peak building count achieved', 42)
+on conflict (game_key, metric_key) do nothing;
+
+create view public.game_leaderboard_scores
+  with (security_invoker=on)
+as
+select
+  r.id,
+  r.game_key,
+  r.ranking_scope_key,
+  r.score_value,
+  r.user_id,
+  p.display_name,
+  r.submitted_at,
+  r.metadata,
+  row_number() over (
+    partition by r.game_key, r.ranking_scope_key
+    order by r.score_value desc, r.submitted_at asc
+  ) as scope_rank,
+  row_number() over (
+    partition by r.game_key, r.ranking_scope_key, r.user_id
+    order by r.score_value desc, r.submitted_at asc
+  ) as user_scope_rank
+from public.game_score_records r
+left join public.user_profiles p on p.id = r.user_id;
+
+create view public.fly_squasher_leaderboard
+  with (security_invoker=on)
+as
+select id,
+       score_value as score,
+       ranking_scope_key::int as level,
+       user_id,
+       display_name as name,
+       submitted_at as date
+from public.game_leaderboard_scores
+where game_key = 'fly-squasher'
+  and user_scope_rank = 1
+  and scope_rank <= 3;
+
+create view public.little_muncher_leaderboard
+  with (security_invoker=on)
+as
+select id,
+       score_value as score,
+       ranking_scope_key::int as hill,
+       user_id,
+       display_name as user_name,
+       submitted_at as date
+from public.game_leaderboard_scores
+where game_key = 'little-muncher'
+  and user_scope_rank = 1
+  and scope_rank <= 3;
+
+create materialized view public.game_score_records_full as
+select
+  r.id,
+  r.game_session_id,
+  r.participant_id,
+  r.user_id,
+  r.game_key,
+  r.score_value,
+  r.ranking_scope_key,
+  r.submitted_at,
+  p.participant_number,
+  p.display_name,
+  p.participant_type,
+  p.team_key,
+  p.faction_key,
+  p.result_status,
+  p.eliminated,
+  p.eliminated_at,
+  jsonb_object_agg(d.metric_key, v.metric_value) filter (where d.metric_key is not null) as metrics
+from public.game_score_records r
+left join public.game_session_participants p on p.id = r.participant_id
+left join public.game_score_metric_values v on v.score_record_id = r.id
+left join public.game_score_metric_definitions d on d.id = v.metric_definition_id
+group by r.id, p.id;
+
+create unique index game_score_records_full_id_idx
+  on public.game_score_records_full (id);
+
+create or replace function public.refresh_game_score_records_full()
+  returns void
+  language plpgsql
+  set search_path = public, pg_temp
+as $$
+begin
+  refresh materialized view concurrently public.game_score_records_full;
+end;
+$$;
+
+alter table public.game_sessions enable row level security;
+alter table public.game_session_participants enable row level security;
+alter table public.game_score_records enable row level security;
+alter table public.game_score_metric_definitions enable row level security;
+alter table public.game_score_metric_values enable row level security;
+alter table public.game_score_snapshots enable row level security;
+
+create policy "Users can read sessions they created or joined"
+  on public.game_sessions
+  as permissive for select
+  to authenticated
+  using (
+    created_by_user_id = (select auth.uid())
+    or exists (
+      select 1
+      from public.game_session_participants p
+      where p.game_session_id = game_sessions.id
+        and p.user_id = (select auth.uid())
+    )
+  );
+
+create policy "Service role can manage game sessions"
+  on public.game_sessions
+  as permissive for all
   to service_role
+  using (true)
   with check (true);
 
-drop policy if exists "Enable select for authenticated users" on probable_waffle_player_scores;
-create policy "Enable select for authenticated users" on probable_waffle_player_scores
+create policy "Users can read participants for their sessions"
+  on public.game_session_participants
   as permissive for select
   to authenticated
   using (
     user_id = (select auth.uid())
     or exists (
       select 1
-      from probable_waffle_player_scores other_ps
-      where other_ps.game_session_id = probable_waffle_player_scores.game_session_id
-        and other_ps.user_id = (select auth.uid())
+      from public.game_session_participants mine
+      where mine.game_session_id = game_session_participants.game_session_id
+        and mine.user_id = (select auth.uid())
     )
   );
 
-drop policy if exists "Enable select for service_role" on probable_waffle_player_scores;
-create policy "Enable select for service_role" on probable_waffle_player_scores
-  as permissive for select
-  to service_role
-  using (true);
-
-alter table probable_waffle_player_scores
-  enable row level security;
-
--- RLS policies for metrics table
-drop policy if exists "Enable insert for service_role only" on probable_waffle_player_score_metrics;
-create policy "Enable insert for service_role only" on probable_waffle_player_score_metrics
-  as permissive for insert
-  to service_role
-  with check (true);
-
-drop policy if exists "Enable select for authenticated users" on probable_waffle_player_score_metrics;
-create policy "Enable select for authenticated users" on probable_waffle_player_score_metrics
-  as permissive for select
-  to authenticated
-  using (
-    exists (
-      select 1
-      from probable_waffle_player_scores ps
-      join probable_waffle_player_scores other_ps
-        on other_ps.game_session_id = ps.game_session_id
-           and other_ps.user_id = (select auth.uid())
-      where ps.id = probable_waffle_player_score_metrics.player_score_id
-    )
-  );
-
-drop policy if exists "Enable select for service_role" on probable_waffle_player_score_metrics;
-create policy "Enable select for service_role" on probable_waffle_player_score_metrics
-  as permissive for select
-  to service_role
-  using (true);
-
-alter table probable_waffle_player_score_metrics
-  enable row level security;
-
--- RLS policies for metric types table (read-only for all authenticated users)
-drop policy if exists "Enable select for authenticated users" on probable_waffle_score_metric_types;
-create policy "Enable select for authenticated users" on probable_waffle_score_metric_types
-  as permissive for select
-  to authenticated
-  using (true);
-
-drop policy if exists "Enable all for service_role" on probable_waffle_score_metric_types;
-create policy "Enable all for service_role" on probable_waffle_score_metric_types
+create policy "Service role can manage game participants"
+  on public.game_session_participants
   as permissive for all
   to service_role
-  using (true);
+  using (true)
+  with check (true);
 
-alter table probable_waffle_score_metric_types
-  enable row level security;
+create policy "Public can read leaderboard score records"
+  on public.game_score_records
+  as permissive for select
+  to anon, authenticated
+  using (game_key in ('fly-squasher', 'little-muncher'));
 
--- Backfill game session access policy now that player scores exist
-drop policy if exists "Enable select for authenticated users" on probable_waffle_game_sessions;
-create policy "Enable select for authenticated users" on probable_waffle_game_sessions
+create policy "Users can read their own score records"
+  on public.game_score_records
   as permissive for select
   to authenticated
   using (
-    (select auth.uid()) = created_by_user_id
+    user_id = (select auth.uid())
     or exists (
       select 1
-      from probable_waffle_player_scores ps
-      where ps.game_session_id = probable_waffle_game_sessions.id
-        and ps.user_id = (select auth.uid())
+      from public.game_session_participants p
+      where p.game_session_id = game_score_records.game_session_id
+        and p.user_id = (select auth.uid())
     )
   );
 
--- Match history view depends on both sessions and player scores
-drop view if exists probable_waffle_match_history;
-create view probable_waffle_match_history
-  with (security_invoker=on)
-as
-select
-  gs.id,
-  gs.game_instance_id,
-  gs.game_type,
-  gs.map_id,
-  gs.session_state,
-  gs.started_at,
-  gs.ended_at,
-  gs.total_duration_seconds,
-  gs.scores_submitted,
-  gs.human_player_count,
-  creator.name as created_by_name,
-  submitter.name as submitted_by_name,
-  (
-    select json_agg(
-      json_build_object(
-        'player_number', ps.player_number,
-        'player_name', ps.player_name,
-        'player_type', ps.player_type,
-        'faction_type', ps.faction_type,
-        'game_result', ps.game_result,
-        'final_score', ps.final_score,
-        'is_current_user', ps.user_id = auth.uid()
-      )
-      order by ps.final_score desc
-    )
-    from probable_waffle_player_scores ps
-    where ps.game_session_id = gs.id
-  ) as players,
-  exists(
-    select 1
-    from probable_waffle_player_scores ps
-    where ps.game_session_id = gs.id
-      and ps.user_id = auth.uid()
-  ) as user_participated,
-  (
-    select ps.game_result
-    from probable_waffle_player_scores ps
-    where ps.game_session_id = gs.id
-      and ps.user_id = auth.uid()
-    limit 1
-  ) as user_result
-from probable_waffle_game_sessions gs
-left join public.profiles creator on gs.created_by_user_id = creator.id
-left join public.profiles submitter on gs.scores_submitted_by = submitter.id
-where gs.scores_submitted = true
-  and exists(
-    select 1
-    from probable_waffle_player_scores ps
-    where ps.game_session_id = gs.id
-      and ps.user_id = auth.uid()
-  )
-order by gs.ended_at desc nulls last, gs.started_at desc;
-
--- Insert predefined metric types
-insert into probable_waffle_score_metric_types (metric_key, metric_name, metric_category, description, display_order) values
--- Units category
-('units_produced', 'Units Produced', 'units', 'Total number of units created', 1),
-('units_killed', 'Units Killed', 'units', 'Total enemy units destroyed', 2),
-('units_lost', 'Units Lost', 'units', 'Total own units lost', 3),
-
--- Buildings category
-('buildings_constructed', 'Buildings Constructed', 'buildings', 'Total buildings completed', 11),
-('buildings_destroyed', 'Buildings Destroyed', 'buildings', 'Total enemy buildings destroyed', 12),
-('buildings_lost', 'Buildings Lost', 'buildings', 'Total own buildings lost', 13),
-
--- Resources category
-('resources_collected_minerals', 'Minerals Collected', 'resources', 'Total minerals gathered', 21),
-('resources_collected_stone', 'Stone Collected', 'resources', 'Total stone gathered', 22),
-('resources_collected_wood', 'Wood Collected', 'resources', 'Total wood gathered', 23),
-('resources_spent_minerals', 'Minerals Spent', 'resources', 'Total minerals used', 24),
-('resources_spent_stone', 'Stone Spent', 'resources', 'Total stone used', 25),
-('resources_spent_wood', 'Wood Spent', 'resources', 'Total wood used', 26),
-('final_resources_minerals', 'Final Minerals', 'resources', 'Minerals remaining at end', 27),
-('final_resources_stone', 'Final Stone', 'resources', 'Stone remaining at end', 28),
-('final_resources_wood', 'Final Wood', 'resources', 'Wood remaining at end', 29),
-
--- Combat category
-('damage_dealt', 'Damage Dealt', 'combat', 'Total damage inflicted', 31),
-('damage_received', 'Damage Received', 'combat', 'Total damage taken', 32),
-('healing_done', 'Healing Done', 'combat', 'Total healing provided', 33),
-
--- Economy category
-('max_army_size', 'Max Army Size', 'economy', 'Peak unit count achieved', 41),
-('max_building_count', 'Max Building Count', 'economy', 'Peak building count achieved', 42);
-
--- Create materialized view for efficient querying with all metrics pivoted
-drop materialized view if exists probable_waffle_player_scores_full;
-create materialized view probable_waffle_player_scores_full as
-select
-  ps.id,
-  ps.game_session_id,
-  ps.user_id,
-  ps.player_number,
-  ps.player_name,
-  ps.player_type,
-  ps.team_number,
-  ps.faction_type,
-  ps.game_result,
-  ps.eliminated,
-  ps.eliminated_at,
-  ps.final_score,
-  ps.created_at,
-  -- Pivot metrics into columns
-  max(case when mt.metric_key = 'units_produced' then m.metric_value else 0 end) as units_produced,
-  max(case when mt.metric_key = 'units_killed' then m.metric_value else 0 end) as units_killed,
-  max(case when mt.metric_key = 'units_lost' then m.metric_value else 0 end) as units_lost,
-  max(case when mt.metric_key = 'buildings_constructed' then m.metric_value else 0 end) as buildings_constructed,
-  max(case when mt.metric_key = 'buildings_destroyed' then m.metric_value else 0 end) as buildings_destroyed,
-  max(case when mt.metric_key = 'buildings_lost' then m.metric_value else 0 end) as buildings_lost,
-  max(case when mt.metric_key = 'resources_collected_minerals' then m.metric_value else 0 end) as resources_collected_minerals,
-  max(case when mt.metric_key = 'resources_collected_stone' then m.metric_value else 0 end) as resources_collected_stone,
-  max(case when mt.metric_key = 'resources_collected_wood' then m.metric_value else 0 end) as resources_collected_wood,
-  max(case when mt.metric_key = 'resources_spent_minerals' then m.metric_value else 0 end) as resources_spent_minerals,
-  max(case when mt.metric_key = 'resources_spent_stone' then m.metric_value else 0 end) as resources_spent_stone,
-  max(case when mt.metric_key = 'resources_spent_wood' then m.metric_value else 0 end) as resources_spent_wood,
-  max(case when mt.metric_key = 'final_resources_minerals' then m.metric_value else 0 end) as final_resources_minerals,
-  max(case when mt.metric_key = 'final_resources_stone' then m.metric_value else 0 end) as final_resources_stone,
-  max(case when mt.metric_key = 'final_resources_wood' then m.metric_value else 0 end) as final_resources_wood,
-  max(case when mt.metric_key = 'damage_dealt' then m.metric_value else 0 end) as damage_dealt,
-  max(case when mt.metric_key = 'damage_received' then m.metric_value else 0 end) as damage_received,
-  max(case when mt.metric_key = 'healing_done' then m.metric_value else 0 end) as healing_done,
-  max(case when mt.metric_key = 'max_army_size' then m.metric_value else 0 end) as max_army_size,
-  max(case when mt.metric_key = 'max_building_count' then m.metric_value else 0 end) as max_building_count
-from probable_waffle_player_scores ps
-left join probable_waffle_player_score_metrics m on ps.id = m.player_score_id
-left join probable_waffle_score_metric_types mt on m.metric_type_id = mt.id
-group by ps.id, ps.game_session_id, ps.user_id, ps.player_number, ps.player_name,
-         ps.player_type, ps.team_number, ps.faction_type, ps.game_result,
-         ps.eliminated, ps.eliminated_at, ps.final_score, ps.created_at;
-
--- Index on materialized view
-create unique index probable_waffle_player_scores_full_id_idx on probable_waffle_player_scores_full (id);
-
-revoke all on table public.probable_waffle_player_scores_full from public;
-revoke all on table public.probable_waffle_player_scores_full from anon;
-revoke all on table public.probable_waffle_player_scores_full from authenticated;
-
--- Create view for player statistics aggregation (uses materialized view for performance)
-drop view if exists probable_waffle_player_stats;
-create view probable_waffle_player_stats
-  with (security_invoker=on)
-as
-select
-  ps.user_id,
-  p.name as player_name,
-  count(*) as total_games,
-  count(*) filter (where ps.game_result = 'win') as wins,
-  count(*) filter (where ps.game_result = 'loss') as losses,
-  count(*) filter (where ps.game_result = 'tie') as ties,
-  round(
-    (count(*) filter (where ps.game_result = 'win')::decimal /
-     nullif(count(*) filter (where ps.game_result != 'quit'), 0)) * 100,
-    2
-  ) as win_rate_percentage,
-  sum(ps.units_produced) as total_units_produced,
-  sum(ps.units_killed) as total_units_killed,
-  sum(ps.buildings_constructed) as total_buildings_constructed,
-  sum(ps.buildings_destroyed) as total_buildings_destroyed,
-  avg(ps.final_score)::int as avg_final_score,
-  max(ps.final_score) as max_final_score
-from probable_waffle_player_scores_full ps
-left join public.profiles p on ps.user_id = p.id
-where ps.user_id is not null
-group by ps.user_id, p.name;
-
--- 1. Refresh Function
-CREATE OR REPLACE FUNCTION refresh_probable_waffle_player_scores_full()
-  RETURNS void
-  LANGUAGE plpgsql
-  SET search_path = public, pg_temp
-AS $$
-BEGIN
-  REFRESH MATERIALIZED VIEW CONCURRENTLY probable_waffle_player_scores_full;
-END;
-$$;
-
-revoke all on table public.probable_waffle_player_scores from anon;
-revoke all on table public.probable_waffle_player_scores from authenticated;
-revoke all on table public.probable_waffle_score_metric_types from anon;
-revoke all on table public.probable_waffle_score_metric_types from authenticated;
-revoke all on table public.probable_waffle_player_score_metrics from anon;
-revoke all on table public.probable_waffle_player_score_metrics from authenticated;
-revoke all on table public.probable_waffle_match_history from anon;
-revoke all on table public.probable_waffle_match_history from authenticated;
-revoke all on table public.probable_waffle_player_stats from anon;
-revoke all on table public.probable_waffle_player_stats from authenticated;
-revoke all on sequence public.probable_waffle_player_scores_id_seq from anon;
-revoke all on sequence public.probable_waffle_player_scores_id_seq from authenticated;
-revoke all on sequence public.probable_waffle_player_score_metrics_id_seq from anon;
-revoke all on sequence public.probable_waffle_player_score_metrics_id_seq from authenticated;
-
-grant select, insert on table public.probable_waffle_player_scores to service_role;
-grant select on table public.probable_waffle_score_metric_types to service_role;
-grant select, insert on table public.probable_waffle_player_score_metrics to service_role;
-grant select on table public.probable_waffle_player_scores_full to service_role;
-grant execute on function public.refresh_probable_waffle_player_scores_full() to service_role;
-grant usage, select on sequence public.probable_waffle_player_scores_id_seq to service_role;
-grant usage, select on sequence public.probable_waffle_player_score_metrics_id_seq to service_role;
-
--- 2. Get Metrics Helper
-CREATE OR REPLACE FUNCTION get_player_score_metrics(p_player_score_id bigint)
-  RETURNS jsonb
-  LANGUAGE sql
-  STABLE
-  SET search_path = public, pg_temp
-AS $$
-SELECT jsonb_object_agg(mt.metric_key, m.metric_value)
-FROM probable_waffle_player_score_metrics m
-       JOIN probable_waffle_score_metric_types mt ON m.metric_type_id = mt.id
-WHERE m.player_score_id = p_player_score_id;
-$$;
-
--- 3. Upsert Metric Helper
-CREATE OR REPLACE FUNCTION upsert_player_score_metric(
-  p_player_score_id bigint,
-  p_metric_key text,
-  p_metric_value bigint
-)
-  RETURNS void
-  LANGUAGE plpgsql
-  SET search_path = public, pg_temp
-AS $$
-DECLARE
-  v_metric_type_id int;
-BEGIN
-  -- Get metric type ID
-  SELECT id INTO v_metric_type_id
-  FROM probable_waffle_score_metric_types
-  WHERE metric_key = p_metric_key;
-
-  IF v_metric_type_id IS NULL THEN
-    RAISE EXCEPTION 'Metric type % does not exist', p_metric_key;
-  END IF;
-
-  -- Upsert metric value
-  INSERT INTO probable_waffle_player_score_metrics (player_score_id, metric_type_id, metric_value)
-  VALUES (p_player_score_id, v_metric_type_id, p_metric_value)
-  ON CONFLICT (player_score_id, metric_type_id)
-    DO UPDATE SET metric_value = EXCLUDED.metric_value;
-END;
-$$;
-
-
--- =============================================
--- Source: 0009_probable_waffle_score_snapshots.sql
--- =============================================
-
--- Score snapshots for timeline charts in match history
-drop table if exists probable_waffle_score_snapshots cascade;
-
-create table probable_waffle_score_snapshots
-(
-  id              bigserial primary key,
-  game_session_id uuid                     not null,
-  snapshots       jsonb                    not null, -- Array of {timestamp_ms, playerScores[]}
-  created_at      timestamp with time zone default now() not null
-);
-
-alter table probable_waffle_score_snapshots
-  add constraint probable_waffle_score_snapshots_game_session_id_fkey
-  foreign key (game_session_id) references probable_waffle_game_sessions (id) on delete cascade;
-
-create unique index probable_waffle_score_snapshots_game_session_id_idx
-  on probable_waffle_score_snapshots (game_session_id);
-
--- RLS: only service_role may insert; authenticated users may read
-drop policy if exists "Enable insert for service_role only" on probable_waffle_score_snapshots;
-create policy "Enable insert for service_role only" on probable_waffle_score_snapshots
-  as permissive for insert
+create policy "Service role can manage score records"
+  on public.game_score_records
+  as permissive for all
   to service_role
+  using (true)
   with check (true);
 
-drop policy if exists "Enable select for authenticated users" on probable_waffle_score_snapshots;
-create policy "Enable select for authenticated users" on probable_waffle_score_snapshots
+create policy "Public can read score metric definitions"
+  on public.game_score_metric_definitions
+  as permissive for select
+  to anon, authenticated
+  using (is_active);
+
+create policy "Service role can manage score metric definitions"
+  on public.game_score_metric_definitions
+  as permissive for all
+  to service_role
+  using (true)
+  with check (true);
+
+create policy "Users can read metric values for visible scores"
+  on public.game_score_metric_values
   as permissive for select
   to authenticated
   using (
     exists (
       select 1
-      from probable_waffle_player_scores ps
-      where ps.game_session_id = probable_waffle_score_snapshots.game_session_id
-        and ps.user_id = (select auth.uid())
+      from public.game_score_records r
+      where r.id = game_score_metric_values.score_record_id
+        and (
+          r.user_id = (select auth.uid())
+          or r.game_key in ('fly-squasher', 'little-muncher')
+          or exists (
+            select 1
+            from public.game_session_participants p
+            where p.game_session_id = r.game_session_id
+              and p.user_id = (select auth.uid())
+          )
+        )
     )
   );
 
-drop policy if exists "Enable select for service_role" on probable_waffle_score_snapshots;
-create policy "Enable select for service_role" on probable_waffle_score_snapshots
-  as permissive for select
+create policy "Service role can manage score metric values"
+  on public.game_score_metric_values
+  as permissive for all
   to service_role
-  using (true);
+  using (true)
+  with check (true);
 
-alter table probable_waffle_score_snapshots
-  enable row level security;
+create policy "Users can read snapshots for sessions they joined"
+  on public.game_score_snapshots
+  as permissive for select
+  to authenticated
+  using (
+    exists (
+      select 1
+      from public.game_session_participants p
+      where p.game_session_id = game_score_snapshots.game_session_id
+        and p.user_id = (select auth.uid())
+    )
+  );
 
-revoke all on table public.probable_waffle_score_snapshots from anon;
-revoke all on table public.probable_waffle_score_snapshots from authenticated;
-revoke all on sequence public.probable_waffle_score_snapshots_id_seq from anon;
-revoke all on sequence public.probable_waffle_score_snapshots_id_seq from authenticated;
+create policy "Service role can manage score snapshots"
+  on public.game_score_snapshots
+  as permissive for all
+  to service_role
+  using (true)
+  with check (true);
 
-grant select, insert on table public.probable_waffle_score_snapshots to service_role;
-grant usage, select on sequence public.probable_waffle_score_snapshots_id_seq to service_role;
+revoke all on table public.game_sessions from anon;
+revoke all on table public.game_sessions from authenticated;
+revoke all on table public.game_session_participants from anon;
+revoke all on table public.game_session_participants from authenticated;
+revoke all on table public.game_score_records from anon;
+revoke all on table public.game_score_records from authenticated;
+revoke all on table public.game_score_metric_definitions from anon;
+revoke all on table public.game_score_metric_definitions from authenticated;
+revoke all on table public.game_score_metric_values from anon;
+revoke all on table public.game_score_metric_values from authenticated;
+revoke all on table public.game_score_snapshots from anon;
+revoke all on table public.game_score_snapshots from authenticated;
+revoke all on table public.game_leaderboard_scores from anon;
+revoke all on table public.game_leaderboard_scores from authenticated;
+revoke all on table public.fly_squasher_leaderboard from anon;
+revoke all on table public.fly_squasher_leaderboard from authenticated;
+revoke all on table public.little_muncher_leaderboard from anon;
+revoke all on table public.little_muncher_leaderboard from authenticated;
+revoke all on table public.game_score_records_full from anon;
+revoke all on table public.game_score_records_full from authenticated;
+revoke all on sequence public.game_session_participants_id_seq from anon;
+revoke all on sequence public.game_session_participants_id_seq from authenticated;
+revoke all on sequence public.game_score_records_id_seq from anon;
+revoke all on sequence public.game_score_records_id_seq from authenticated;
+revoke all on sequence public.game_score_metric_definitions_id_seq from anon;
+revoke all on sequence public.game_score_metric_definitions_id_seq from authenticated;
+revoke all on sequence public.game_score_metric_values_id_seq from anon;
+revoke all on sequence public.game_score_metric_values_id_seq from authenticated;
+revoke all on sequence public.game_score_snapshots_id_seq from anon;
+revoke all on sequence public.game_score_snapshots_id_seq from authenticated;
+
+grant select, insert, update, delete on table public.game_sessions to service_role;
+grant select, insert, update, delete on table public.game_session_participants to service_role;
+grant select, insert, update, delete on table public.game_score_records to service_role;
+grant select, insert, update, delete on table public.game_score_metric_definitions to service_role;
+grant select, insert, update, delete on table public.game_score_metric_values to service_role;
+grant select, insert, update, delete on table public.game_score_snapshots to service_role;
+grant select on table public.game_leaderboard_scores to service_role;
+grant select on table public.fly_squasher_leaderboard to service_role;
+grant select on table public.little_muncher_leaderboard to service_role;
+grant select on table public.game_score_records_full to service_role;
+grant execute on function public.refresh_game_score_records_full() to service_role;
+grant usage, select on sequence public.game_session_participants_id_seq to service_role;
+grant usage, select on sequence public.game_score_records_id_seq to service_role;
+grant usage, select on sequence public.game_score_metric_definitions_id_seq to service_role;
+grant usage, select on sequence public.game_score_metric_values_id_seq to service_role;
+grant usage, select on sequence public.game_score_snapshots_id_seq to service_role;
+
+-- Source: 0005_achievements.sql
+drop table if exists public.user_achievement_unlocks cascade;
+drop table if exists public.achievement_definitions cascade;
+drop type if exists public.achievement_difficulty cascade;
+
+create type public.achievement_difficulty as enum ('easy', 'medium', 'hard');
+
+create table public.achievement_definitions
+(
+  id            text primary key,
+  game_key      text not null,
+  name          text not null,
+  description   text not null,
+  category      text null,
+  difficulty    public.achievement_difficulty null,
+  image_key     text null,
+  is_secret     boolean not null default false,
+  is_active     boolean not null default true,
+  metadata      jsonb not null default '{}'::jsonb,
+  created_at    timestamp with time zone not null default now(),
+  updated_at    timestamp with time zone not null default now(),
+  constraint achievement_definitions_game_key_not_blank check (length(btrim(game_key)) > 0)
+);
+
+create index achievement_definitions_game_key_idx
+  on public.achievement_definitions (game_key, is_active);
+
+create trigger achievement_definitions_set_updated_at
+  before update on public.achievement_definitions
+  for each row
+execute function public.set_updated_at();
+
+create table public.user_achievement_unlocks
+(
+  id             bigserial primary key,
+  achievement_id text not null references public.achievement_definitions (id) on delete cascade,
+  user_id        uuid not null references public.user_profiles (id) on delete cascade,
+  unlocked_at    timestamp with time zone not null default now(),
+  metadata       jsonb not null default '{}'::jsonb
+);
+
+create unique index user_achievement_unlocks_user_achievement_idx
+  on public.user_achievement_unlocks (user_id, achievement_id);
+
+create index user_achievement_unlocks_user_id_idx
+  on public.user_achievement_unlocks (user_id);
+
+insert into public.achievement_definitions (id, game_key, name, description, category, difficulty, image_key, is_secret) values
+('probable-waffle:first_steps', 'probable-waffle', 'First Steps', 'Complete the tutorial.', 'Progression', 'easy', 'actor_info_icons/element.png', false),
+('probable-waffle:campaigner', 'probable-waffle', 'Campaigner', 'Complete the first campaign mission.', 'Progression', 'easy', 'actor_info_icons/element.png', false),
+('probable-waffle:war_hero', 'probable-waffle', 'War Hero', 'Complete the entire campaign.', 'Progression', 'hard', 'actor_info_icons/element.png', false),
+('probable-waffle:first_victory', 'probable-waffle', 'First Victory', 'Win your first skirmish or multiplayer game.', 'Milestones', 'easy', 'actor_info_icons/element.png', false),
+('probable-waffle:the_architect', 'probable-waffle', 'The Architect', 'Construct one of every building type in a single match.', 'Milestones', 'medium', 'actor_info_icons/element.png', false),
+('probable-waffle:unit_collector', 'probable-waffle', 'Unit Collector', 'Train one of every unit type in a single match.', 'Milestones', 'medium', 'actor_info_icons/element.png', false),
+('probable-waffle:hundred_wins', 'probable-waffle', 'Centurion', 'Achieve 100 victories.', 'Milestones', 'hard', 'actor_info_icons/element.png', false),
+('probable-waffle:resourceful', 'probable-waffle', 'Resourceful', 'Gather 10,000 resources in a single game.', 'Economy', 'easy', 'actor_info_icons/element.png', false),
+('probable-waffle:master_economist', 'probable-waffle', 'Master Economist', 'End a match with over 50,000 resources in the bank.', 'Economy', 'medium', 'actor_info_icons/element.png', false),
+('probable-waffle:economic_powerhouse', 'probable-waffle', 'Economic Powerhouse', 'Win a game with double the resource income of all opponents.', 'Economy', 'hard', 'actor_info_icons/element.png', false),
+('probable-waffle:annihilator', 'probable-waffle', 'Annihilator', 'Destroy 1,000 enemy units across all games.', 'Military', 'medium', 'actor_info_icons/element.png', false),
+('probable-waffle:unstoppable_force', 'probable-waffle', 'Unstoppable Force', 'Build an army that reaches the maximum supply limit.', 'Military', 'medium', 'actor_info_icons/element.png', false),
+('probable-waffle:swift_victory', 'probable-waffle', 'Swift Victory', 'Win a game in under 10 minutes.', 'Military', 'medium', 'actor_info_icons/element.png', false),
+('probable-waffle:comeback_king', 'probable-waffle', 'Comeback King', 'Win a game after your main command center has been destroyed.', 'Military', 'hard', 'actor_info_icons/element.png', false),
+('probable-waffle:scouts_honor', 'probable-waffle', 'Scout''s Honor', 'Reveal the entire map in a single game.', 'Challenge', 'easy', 'actor_info_icons/element.png', false),
+('probable-waffle:no_fly_zone', 'probable-waffle', 'No-Fly Zone', 'Destroy 50 enemy air units in a single game.', 'Challenge', 'medium', 'actor_info_icons/element.png', false),
+('probable-waffle:death_from_above', 'probable-waffle', 'Death From Above', 'Win a game by only building air units (and necessary tech buildings).', 'Challenge', 'hard', 'actor_info_icons/element.png', false),
+('probable-waffle:turtle_power', 'probable-waffle', 'Turtle Power', 'Win a game that lasts longer than one hour.', 'Challenge', 'medium', 'actor_info_icons/element.png', false),
+('probable-waffle:master_tactician', 'probable-waffle', 'Master Tactician', 'Win a game without losing a single unit.', 'Secret', 'hard', 'actor_info_icons/element.png', true),
+('probable-waffle:click_happy', 'probable-waffle', 'Click Happy', 'Click on a single unit 50 times in a row.', 'Secret', 'easy', 'actor_info_icons/element.png', true)
+on conflict (id) do nothing;
+
+alter table public.achievement_definitions enable row level security;
+alter table public.user_achievement_unlocks enable row level security;
+
+create policy "Public can read active achievement definitions"
+  on public.achievement_definitions
+  as permissive for select
+  to anon, authenticated
+  using (is_active);
+
+create policy "Service role can manage achievement definitions"
+  on public.achievement_definitions
+  as permissive for all
+  to service_role
+  using (true)
+  with check (true);
+
+create policy "Users can read their own achievement unlocks"
+  on public.user_achievement_unlocks
+  as permissive for select
+  to authenticated
+  using (user_id = (select auth.uid()));
+
+create policy "Users can insert their own achievement unlocks"
+  on public.user_achievement_unlocks
+  as permissive for insert
+  to authenticated
+  with check (user_id = (select auth.uid()));
+
+create policy "Service role can manage achievement unlocks"
+  on public.user_achievement_unlocks
+  as permissive for all
+  to service_role
+  using (true)
+  with check (true);
+
+revoke all on table public.achievement_definitions from anon;
+revoke all on table public.achievement_definitions from authenticated;
+revoke all on table public.user_achievement_unlocks from anon;
+revoke all on table public.user_achievement_unlocks from authenticated;
+revoke all on sequence public.user_achievement_unlocks_id_seq from anon;
+revoke all on sequence public.user_achievement_unlocks_id_seq from authenticated;
+
+grant select, insert, update, delete on table public.achievement_definitions to service_role;
+grant select, insert, update, delete on table public.user_achievement_unlocks to service_role;
+grant usage, select on sequence public.user_achievement_unlocks_id_seq to service_role;

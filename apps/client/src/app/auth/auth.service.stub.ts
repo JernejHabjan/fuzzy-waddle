@@ -8,6 +8,9 @@ export const authServiceStub = {
   autoSignIn(): Promise<Session | null> {
     return Promise.resolve(null);
   },
+  ensureAuthReady(): Promise<Session | null> {
+    return Promise.resolve(null);
+  },
   get fullName(): string | null {
     return null;
   },

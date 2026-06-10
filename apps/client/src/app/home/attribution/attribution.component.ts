@@ -5,6 +5,7 @@ import { map, Observable } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { type Attribution } from "./attribution";
 import { HomeNavComponent } from "../../shared/components/home-nav/home-nav.component";
+import { AngularHost } from "../../shared/consts";
 
 interface GroupedAttribution {
   type: string;
@@ -14,7 +15,9 @@ interface GroupedAttribution {
 @Component({
   selector: "fuzzy-waddle-attribution",
   imports: [HomeNavComponent, AsyncPipe],
-  templateUrl: "./attribution.component.html"
+  templateUrl: "./attribution.component.html",
+  styleUrl: "./attribution.component.scss",
+  host: AngularHost.contentFlexFullHeight
 })
 export class AttributionComponent implements OnInit {
   groupedAttributions$?: Observable<GroupedAttribution[]>;
@@ -41,5 +44,9 @@ export class AttributionComponent implements OnInit {
       type,
       items: grouped[type]!.sort((a, b) => a.name.localeCompare(b.name))
     }));
+  }
+
+  protected getTotalEntries(groupedAttributions: GroupedAttribution[]): number {
+    return groupedAttributions.reduce((total, group) => total + group.items.length, 0);
   }
 }

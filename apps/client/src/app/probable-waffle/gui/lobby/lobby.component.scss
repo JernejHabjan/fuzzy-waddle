@@ -5,9 +5,9 @@
   flex-direction: column;
   height: 100%;
   width: 100%;
-  max-width: 1800px; /* Increased from 1400px to use more screen width */
+  max-width: 1800px;
   margin: 0 auto;
-  padding: 1rem;
+  padding: 1.25rem;
 }
 
 .lobby-header {
@@ -15,12 +15,12 @@
   justify-content: space-between;
   align-items: center;
   padding-bottom: 1rem;
-  border-bottom: 1px solid $tertiary;
-  margin-bottom: 1rem;
+  border-bottom: 1px solid rgba(111, 85, 52, 0.45);
+  margin-bottom: 1.25rem;
 
   h2 {
     margin: 0;
-    color: $primary;
+    color: #f0c46b;
   }
 }
 
@@ -30,6 +30,7 @@
   gap: 1.5rem;
   height: calc(100% - 70px);
   overflow: hidden;
+  align-items: stretch;
 
   @media (max-width: 1800px) {
     flex-direction: column;
@@ -40,21 +41,20 @@
 
 .lobby-sidebar {
   width: 600px;
-  min-width: 600px; /* Ensure it doesn't get smaller */
-  flex-shrink: 0; /* Prevent the sidebar from shrinking */
+  min-width: 600px;
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  border-right: 1px solid $tertiary;
-  padding-right: 1rem;
+  border-right: 1px solid rgba(111, 85, 52, 0.32);
+  padding-right: 1.25rem;
   overflow: hidden;
-  position: relative; /* Needed for absolute positioning of children */
+  position: relative;
 
   @media (max-width: 1800px) {
-    /* Changed from 992px to 1800px for earlier mobile breakpoint */
     width: 100%;
     min-width: auto;
     border-right: none;
-    border-bottom: 1px solid $tertiary;
+    border-bottom: 1px solid rgba(111, 85, 52, 0.32);
     padding-right: 0;
     padding-bottom: 1rem;
     margin-bottom: 1rem;
@@ -63,7 +63,7 @@
 
 .lobby-main {
   flex: 1;
-  min-width: 400px; /* Ensure a minimum width for the main content */
+  min-width: 400px;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -88,19 +88,18 @@
 
 .lobby-chat-sidebar {
   width: 350px;
-  min-width: 350px; /* Ensure chat sidebar doesn't get too narrow */
-  flex-shrink: 0; /* Prevent the chat sidebar from shrinking */
+  min-width: 350px;
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  border-left: 1px solid $tertiary;
-  padding-left: 1rem;
+  border-left: 1px solid rgba(111, 85, 52, 0.32);
+  padding-left: 1.25rem;
 
   @media (max-width: 1800px) {
-    /* Changed from 992px to 1800px for earlier mobile breakpoint */
     width: 100%;
     min-width: auto;
     border-left: none;
-    border-top: 1px solid $tertiary;
+    border-top: 1px solid rgba(111, 85, 52, 0.32);
     padding-left: 0;
     padding-top: 1rem;
     margin-top: 1rem;
@@ -126,7 +125,7 @@
   h3 {
     margin-top: 0;
     margin-bottom: 1rem;
-    color: $primary;
+    color: #f0c46b;
     font-size: 1.2rem;
     flex-shrink: 0;
   }
@@ -156,7 +155,7 @@
 
     h3 {
       margin: 0;
-      color: $primary;
+      color: #f0c46b;
       font-size: 1.2rem;
     }
 
@@ -168,19 +167,21 @@
 
 .map-search {
   margin-bottom: 1rem;
-  padding: 0 4px; /* Add horizontal padding */
+  padding: 0 4px;
 
   input {
     width: 100%;
-    border-radius: $app-border-radius;
-    padding: 8px;
-    border: 2px solid $tertiary;
+    border-radius: 0.9rem;
+    padding: 0.8rem 0.9rem;
+    border: 1px solid rgba(111, 85, 52, 0.58);
     transition: all 0.2s ease;
+    background-color: #101317;
+    color: #f5ecd9;
 
     &:focus {
-      border-color: $primary;
+      border-color: rgba(240, 196, 107, 0.72);
       outline: none;
-      box-shadow: 0 0 0 3px rgba($primary, 0.3);
+      box-shadow: 0 0 0 3px rgba(240, 196, 107, 0.12);
     }
   }
 }
@@ -194,15 +195,15 @@
 .players-section,
 .game-setup-section,
 .chat-section {
-  background-color: rgba(255, 255, 255, 0.5);
-  border: 1px solid $tertiary;
-  border-radius: $app-border-radius;
   padding: 1rem;
+  background-color: rgba(29, 35, 42, 0.94);
+  border-radius: 1rem;
+  border: 1px solid rgba(111, 85, 52, 0.45);
 
   h3 {
     margin-top: 0;
     margin-bottom: 1rem;
-    color: $primary;
+    color: #f0c46b;
     font-size: 1.2rem;
   }
 }
@@ -238,9 +239,8 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  height: 100%; /* Take up full height of parent */
+  height: 100%;
 
-  /* Make sure the lobby-chat component takes up full height */
   ::ng-deep probable-waffle-lobby-chat {
     display: flex;
     flex-direction: column;
@@ -252,9 +252,8 @@
 .start-game-section {
   margin-top: 1.5rem;
   padding-top: 1rem;
-  border-top: 1px solid rgba($tertiary, 0.3);
+  border-top: 1px solid rgba(111, 85, 52, 0.34);
 
-  /* Remove top margin, padding and border when chat is not visible */
   .lobby-chat-sidebar.no-chat & {
     margin-top: 0;
     padding-top: 0;
@@ -262,7 +261,6 @@
   }
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
   .lobby-container {
     padding: 0.5rem;

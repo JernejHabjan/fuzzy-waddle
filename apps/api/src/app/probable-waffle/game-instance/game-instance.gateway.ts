@@ -1,4 +1,11 @@
-import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
+import {
+  ConnectedSocket,
+  MessageBody,
+  OnGatewayConnection,
+  SubscribeMessage,
+  WebSocketGateway,
+  WebSocketServer
+} from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
 import {
   type CommunicatorEvent,
@@ -11,34 +18,40 @@ import {
   type ProbableWaffleWebsocketRoomEvent
 } from "@fuzzy-waddle/api-interfaces";
 import { ProbableWaffleChatService } from "../chat/probable-waffle-chat.service";
-import { UseGuards } from "@nestjs/common";
+import { BadRequestException, UseGuards } from "@nestjs/common";
 import { type AuthUser } from "@supabase/supabase-js";
-import { SupabaseAuthGuard } from "../../../auth/guards/supabase-auth.guard";
+import { OnlineAccessGuard } from "../../../auth/guards/online-access.guard";
 import { CurrentUser } from "../../../auth/current-user";
 import { GameStateServerService } from "./game-state-server.service";
 import { RoomServerService } from "../game-room/room-server.service";
 import { ChatService } from "../../chat/chat.service";
+import { SocketConnectionAuthService } from "../../../auth/socket-connection-auth.service";
 
 @WebSocketGateway({
   cors: {
     origin: process.env.CORS_ORIGIN?.split(",")
   }
 })
-export class GameInstanceGateway {
+export class GameInstanceGateway implements OnGatewayConnection {
   @WebSocketServer() private readonly server!: Server;
 
   constructor(
     private readonly gameStateServerService: GameStateServerService,
     private readonly probableWaffleChatService: ProbableWaffleChatService,
     private readonly roomServerService: RoomServerService,
-    private readonly chatService: ChatService
+    private readonly chatService: ChatService,
+    private readonly socketConnectionAuthService: SocketConnectionAuthService
   ) {}
+
+  async handleConnection(client: Socket): Promise<void> {
+    await this.socketConnectionAuthService.disconnectUnauthenticatedClient(client);
+  }
 
   emitGameFound(probableWaffleGameFoundEvent: ProbableWaffleGameFoundEvent) {
     this.server.emit(ProbableWaffleGameInstanceEvent.GameFound, probableWaffleGameFoundEvent);
   }
 
-  @UseGuards(SupabaseAuthGuard)
+  @UseGuards(OnlineAccessGuard)
   @SubscribeMessage(ProbableWaffleGatewayEvent.ProbableWaffleAction)
   async broadcastProbableWaffleAction(
     @CurrentUser() user: AuthUser,
@@ -46,6 +59,7 @@ export class GameInstanceGateway {
     @ConnectedSocket() socket: Socket
   ) {
     console.log("Ashes of the Ancients - GI action:", body.communicator, body.payload);
+    this.gameStateServerService.ensureAuthorizedMutation(body, user);
 
     const success = this.gameStateServerService.updateGameState(body, user);
     if (success) {
@@ -60,7 +74,7 @@ export class GameInstanceGateway {
     }
   }
 
-  @UseGuards(SupabaseAuthGuard)
+  @UseGuards(OnlineAccessGuard)
   @SubscribeMessage(ProbableWaffleGatewayEvent.ProbableWaffleMessage)
   async broadcastProbableWaffleMessage(
     @CurrentUser() user: AuthUser,
@@ -68,6 +82,10 @@ export class GameInstanceGateway {
     @ConnectedSocket() socket: Socket
   ) {
     console.log(`Ashes of the Ancients - GI chat message ${body.gameInstanceId}`);
+    if (!body.gameInstanceId) {
+      throw new BadRequestException("Game instance ID is required");
+    }
+    this.gameStateServerService.ensureCanAccessGameRoom(body.gameInstanceId, user);
 
     // clone the payload
     const newPayload = { ...body };
@@ -95,13 +113,15 @@ export class GameInstanceGateway {
     }
   }
 
-  @UseGuards(SupabaseAuthGuard)
+  @UseGuards(OnlineAccessGuard)
   @SubscribeMessage(ProbableWaffleGatewayEvent.ProbableWaffleWebsocketRoom)
   async broadcastProbableWaffleWebsocketRoom(
     @CurrentUser() user: AuthUser,
     @MessageBody() body: ProbableWaffleWebsocketRoomEvent,
     @ConnectedSocket() socket: Socket
   ) {
+    this.gameStateServerService.ensureCanAccessGameRoom(body.gameInstanceId, user);
+
     switch (body.type) {
       case "join":
         socket.join(`${ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance}${body.gameInstanceId}`);

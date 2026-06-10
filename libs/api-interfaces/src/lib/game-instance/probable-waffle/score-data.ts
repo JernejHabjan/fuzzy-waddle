@@ -1,4 +1,5 @@
 import type { PlayerNumber } from "../player/player";
+import { GameResultStatus } from "../../database/database-enums";
 
 /**
  * Core player score data structure
@@ -9,7 +10,7 @@ export interface PlayerScoreData {
   playerType: string; // 'Human' | 'AI'
   teamNumber?: number;
   factionType: string;
-  gameResult: "win" | "loss" | "tie" | "quit";
+  gameResult: GameResultStatus;
   eliminated: boolean;
   eliminatedAt?: number;
   finalScore: number;
@@ -84,4 +85,3 @@ export const STANDARD_METRICS = {
   MAX_ARMY_SIZE: "max_army_size",
   MAX_BUILDING_COUNT: "max_building_count"
 } as const;
-

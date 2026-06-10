@@ -1,4 +1,5 @@
-import { Component, inject } from "@angular/core";
+import { Component, inject, type OnInit } from "@angular/core";
+import { DatePipe } from "@angular/common";
 import { AuthService } from "../../auth/auth.service";
 import { environment } from "../../../environments/environment";
 import { ServerHealthService } from "../../shared/services/server-health.service";
@@ -8,7 +9,10 @@ import { RouterLink } from "@angular/router";
 import { HomePageNavComponent } from "./home-page-nav/home-page-nav.component";
 import { AngularHost } from "../../shared/consts";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
-import { faCopyright, faMusic } from "@fortawesome/free-solid-svg-icons";
+import { faCopyright, faMusic, faShieldHalved } from "@fortawesome/free-solid-svg-icons";
+import { AppUserRole } from "@fuzzy-waddle/api-interfaces";
+import { CurrentUserProfileService } from "../../data-access/profile/current-user-profile.service";
+import { ModerationService } from "../../data-access/moderation/moderation.service";
 
 export type DisplayGame = {
   name: string;
@@ -22,13 +26,19 @@ export type DisplayGame = {
 @Component({
   templateUrl: "./home-page.component.html",
   styleUrls: ["./home-page.component.scss"],
-  imports: [ChatFloatComponent, RouterLink, HomePageNavComponent, FaIconComponent],
+  imports: [ChatFloatComponent, RouterLink, HomePageNavComponent, FaIconComponent, DatePipe],
   host: AngularHost.contentFlexFullHeight
 })
-export class HomePageComponent {
+export class HomePageComponent implements OnInit {
   protected readonly faMusic = faMusic;
   protected readonly faCopyright = faCopyright;
+  protected readonly faShieldHalved = faShieldHalved;
   protected readonly environment = environment;
+  protected pendingModerationCount = 0;
+  protected isModerator = false;
+  protected isBanned = false;
+  protected bannedUntil: string | null = null;
+  protected moderationNote: string | null = null;
   private readonly currentlyFeaturedGame = "dungeon-crawler";
   displayGames: DisplayGame[] = [
     {
@@ -69,4 +79,29 @@ export class HomePageComponent {
 
   protected readonly authService = inject(AuthService);
   protected readonly serverHealthService = inject(ServerHealthService);
+  private readonly moderationService = inject(ModerationService);
+  private readonly currentUserProfileService = inject(CurrentUserProfileService);
+
+  async ngOnInit(): Promise<void> {
+    if (!this.authService.isAuthenticated) {
+      return;
+    }
+
+    try {
+      const profile = await this.currentUserProfileService.getCurrentUserProfile();
+      this.isBanned = profile?.isBanned ?? false;
+      this.bannedUntil = profile?.bannedUntil ?? null;
+      this.moderationNote = profile?.moderationNote ?? null;
+      this.isModerator =
+        !!profile && !profile.isBanned && (profile.role === AppUserRole.Moderator || profile.role === AppUserRole.Admin);
+      if (!this.isModerator) {
+        return;
+      }
+
+      const summary = await this.moderationService.getSummary();
+      this.pendingModerationCount = summary.pendingReportCount;
+    } catch {
+      this.isModerator = false;
+    }
+  }
 }

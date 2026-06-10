@@ -12,11 +12,11 @@ import { AppRoutingModule } from "./app/app-routing.module";
 import { bootstrapApplication, BrowserModule } from "@angular/platform-browser";
 import { GameInstanceIndexeddbStorageService } from "./app/probable-waffle/communicators/storage/game-instance-indexeddb-storage.service";
 import { GameInstanceStorageServiceInterface } from "./app/probable-waffle/communicators/storage/game-instance-storage.service.interface";
-import { AccessTokenInterceptor } from "./app/auth/access-token.interceptor";
-import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
+import { accessTokenInterceptor } from "./app/auth/access-token.interceptor";
+import { provideHttpClient, withInterceptors } from "@angular/common/http";
 import { AuthGuard } from "./app/auth/auth.guard";
-import { provideAnimationsAsync } from "@angular/platform-browser/animations/async";
 import Phaser from "phaser";
+import { authReadyInterceptor } from "./app/auth/auth-ready.interceptor";
 
 Object.assign(window, { Phaser });
 
@@ -42,10 +42,8 @@ bootstrapApplication(AppComponent, {
       SocketIoModule.forRoot(environment.socketIoConfig)
     ),
     AuthGuard,
-    { provide: HTTP_INTERCEPTORS, useClass: AccessTokenInterceptor, multi: true },
     { provide: GameInstanceStorageServiceInterface, useClass: GameInstanceIndexeddbStorageService },
-    provideHttpClient(withInterceptorsFromDi()),
-    provideAnimationsAsync(),
+    provideHttpClient(withInterceptors([authReadyInterceptor, accessTokenInterceptor])),
     provideCharts(withDefaultRegisterables())
   ]
 }).catch((err) => console.error(err));

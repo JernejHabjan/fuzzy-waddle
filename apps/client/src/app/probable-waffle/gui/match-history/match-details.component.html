@@ -1,5 +1,5 @@
-<div class="container mt-4 overflow-auto">
-  <div class="card-container">
+<div class="container mt-4 overflow-auto aota-data-page">
+  <div class="card-container aota-card-shell">
     @if (!authService.isAuthenticated) {
       <div class="text-center">
         <p>Not authenticated. Please Login to continue</p>
@@ -33,7 +33,7 @@
           <div class="info-grid">
             <div class="info-item">
               <span class="info-label">Map:</span>
-              <span class="info-value">{{ getMapName(gameDetails()!.gameSession.mapId) }}</span>
+              <span class="info-value">{{ getMapName(gameDetails()!.gameSession.mapKey) }}</span>
             </div>
             <div class="info-item">
               <span class="info-label">Date:</span>

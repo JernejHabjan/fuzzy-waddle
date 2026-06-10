@@ -1,11 +1,12 @@
 import { Module } from "@nestjs/common";
 import { GameSessionController } from "./game-session.controller";
 import { GameSessionService } from "./game-session.service";
-import { SupabaseProviderService } from "../../../core/supabase-provider/supabase-provider.service";
+import { AuthModule } from "../../../auth/auth.module";
 
 @Module({
   controllers: [GameSessionController],
-  providers: [GameSessionService, SupabaseProviderService],
+  providers: [GameSessionService],
+  imports: [AuthModule],
   exports: [GameSessionService]
 })
 export class GameSessionModule {}

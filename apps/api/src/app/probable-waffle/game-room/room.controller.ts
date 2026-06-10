@@ -1,5 +1,5 @@
 import { Body, Controller, Post, UseGuards } from "@nestjs/common";
-import { SupabaseAuthGuard } from "../../../auth/guards/supabase-auth.guard";
+import { OnlineAccessGuard } from "../../../auth/guards/online-access.guard";
 import { CurrentUser } from "../../../auth/current-user";
 import { type AuthUser } from "@supabase/supabase-js";
 import { type ProbableWaffleGetRoomsDto, type ProbableWaffleRoom } from "@fuzzy-waddle/api-interfaces";
@@ -19,7 +19,7 @@ export class RoomController {
   // }
 
   @Post("get-rooms")
-  @UseGuards(SupabaseAuthGuard)
+  @UseGuards(OnlineAccessGuard)
   async getRooms(
     @CurrentUser() user: AuthUser,
     @Body() body: ProbableWaffleGetRoomsDto

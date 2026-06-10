@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { Component, inject, signal, viewChild } from "@angular/core";
 import { FactionDefinitions } from "../../../game/player/faction-definitions";
 import { faCheck, faSpinner, faTimes } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -18,6 +18,9 @@ import { GameInstanceClientService } from "../../../communicators/game-instance-
 import { FormsModule } from "@angular/forms";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { AuthService } from "../../../../auth/auth.service";
+import { ModalComponent } from "../../../../shared/components/modal/modal.component";
+import { ProfileComponent } from "../../../../home/profile/profile.component";
+import type { ModalConfig } from "../../../../shared/components/modal/modal-config";
 
 export class PlayerTypeDefinitions {
   static playerTypes = [
@@ -44,9 +47,10 @@ export class DifficultyDefinitions {
   selector: "probable-waffle-player-definition",
   templateUrl: "./player-definition.component.html",
   styleUrls: ["./player-definition.component.scss"],
-  imports: [FormsModule, FaIconComponent]
+  imports: [FormsModule, FaIconComponent, ModalComponent, ProfileComponent]
 })
 export class PlayerDefinitionComponent {
+  private readonly profileModal = viewChild<ModalComponent>("profileModal");
   protected readonly gameInstanceClientService = inject(GameInstanceClientService);
   protected readonly authService = inject(AuthService);
   protected readonly faSpinner = faSpinner;
@@ -56,6 +60,12 @@ export class PlayerDefinitionComponent {
   protected PlayerType = ProbableWafflePlayerType;
   protected FactionDefinitions = FactionDefinitions;
   protected DifficultyDefinitions = DifficultyDefinitions;
+  protected readonly selectedProfileUserId = signal<string | null>(null);
+  protected readonly profileModalConfig: ModalConfig = {
+    modalTitle: "Player Profile",
+    dismissButtonLabel: "Close",
+    hideCloseButton: () => true
+  };
 
   protected async addAiPlayer() {
     await this.gameInstanceClientService.addAiPlayer();
@@ -185,6 +195,23 @@ export class PlayerDefinitionComponent {
     // noinspection UnnecessaryLocalVariableJS
     const name = isCurrentPlayer ? "You" : `Player ${playerNumber}`;
     return name;
+  }
+
+  protected canViewProfile(player: ProbableWafflePlayer): boolean {
+    return (
+      this.definition(player).playerType === ProbableWafflePlayerType.Human &&
+      !!player.playerController.data.userId
+    );
+  }
+
+  protected async openPlayerProfile(player: ProbableWafflePlayer): Promise<void> {
+    const userId = player.playerController.data.userId;
+    if (!userId || !this.canViewProfile(player)) {
+      return;
+    }
+
+    this.selectedProfileUserId.set(userId);
+    await this.profileModal()?.open();
   }
 
   getPlayerIsCurrentPlayer(player: ProbableWafflePlayer) {
