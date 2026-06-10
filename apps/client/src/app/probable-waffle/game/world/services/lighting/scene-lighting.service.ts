@@ -1,6 +1,12 @@
 import type { ProbableWaffleLightingAmbientKeyframe } from "@fuzzy-waddle/api-interfaces";
+import { getGameObjectBoundsRaw, getGameObjectDepth } from "../../../data/game-object-helper";
 import { HealthComponent } from "../../../entity/components/combat/components/health-component";
 import type GameProbableWaffleScene from "../../scenes/GameProbableWaffleScene";
+import {
+  markGameObjectIgnoreSceneLighting,
+  shouldCastSceneShadow,
+  shouldIgnoreSceneLighting
+} from "./lighting-game-object-meta";
 import {
   type ResolvedSceneLightingConfig,
   resolveSceneLightingConfig
@@ -17,16 +23,16 @@ type LightingAwareGameObject = Phaser.GameObjects.GameObject & {
   active?: boolean;
 };
 
-type FilterAwareGameObject = Phaser.GameObjects.GameObject & {
-  enableFilters?: () => Phaser.GameObjects.GameObject;
-  filters?: Phaser.Types.GameObjects.FiltersInternalExternal | null;
+type ShadowCasterGameObject = Phaser.GameObjects.GameObject & {
+  visible?: boolean;
+  active?: boolean;
 };
 
 type TrackedObject = {
   gameObject: Phaser.GameObjects.GameObject;
-  lightingTarget: LightingAwareGameObject;
-  shadowTarget?: FilterAwareGameObject;
-  shadowFilter?: Phaser.Filters.Shadow;
+  lightingTarget?: LightingAwareGameObject;
+  shadowCaster?: ShadowCasterGameObject;
+  shadowVisual?: Phaser.GameObjects.Ellipse;
   lightingEnabled: boolean;
   shadowEnabled: boolean;
   onDestroy: () => void;
@@ -42,6 +48,7 @@ export class SceneLightingService {
 
   private keyLight?: Phaser.GameObjects.Light;
   private ambientColor = 0xffffff;
+  private cycleTime = 0;
   private visibilityRefreshAccumulator = 0;
   private readonly visibilityRefreshIntervalMs = 200;
 
@@ -64,24 +71,25 @@ export class SceneLightingService {
   }
 
   registerGameObject(gameObject: Phaser.GameObjects.GameObject): void {
-    if (!this.config.enabled || !gameObject || this.trackedObjects.has(gameObject)) return;
+    if (!this.config.enabled || !gameObject || this.trackedObjects.has(gameObject) || shouldIgnoreSceneLighting(gameObject)) {
+      return;
+    }
 
     if (this.isContainer(gameObject)) {
       gameObject.list.forEach((child) => this.registerGameObject(child));
     }
 
-    const lightingTarget = this.asLightingTarget(gameObject);
-    if (!lightingTarget) return;
-
     const tracked: TrackedObject = {
       gameObject,
-      lightingTarget,
-      shadowTarget: this.asShadowTarget(gameObject),
+      lightingTarget: this.asLightingTarget(gameObject),
+      shadowCaster: this.asShadowCaster(gameObject),
       lightingEnabled: false,
       shadowEnabled: false,
       onDestroy: () => this.unregisterGameObject(gameObject),
       onKilled: () => this.unregisterGameObject(gameObject)
     };
+
+    if (!tracked.lightingTarget && !tracked.shadowCaster) return;
 
     this.trackedObjects.set(gameObject, tracked);
     gameObject.once(Phaser.GameObjects.Events.DESTROY, tracked.onDestroy);
@@ -94,6 +102,8 @@ export class SceneLightingService {
     if (!tracked) return;
     this.applyLighting(tracked, false);
     this.applyShadow(tracked, false);
+    tracked.shadowVisual?.destroy();
+    tracked.shadowVisual = undefined;
     tracked.gameObject.off(Phaser.GameObjects.Events.DESTROY, tracked.onDestroy);
     tracked.gameObject.off(HealthComponent.KilledEvent, tracked.onKilled);
     this.trackedObjects.delete(gameObject);
@@ -128,11 +138,10 @@ export class SceneLightingService {
   }
 
   private setupLighting(): void {
-    if (this.config.dayNightCycle.enabled) {
-      this.ambientColor = this.calculateAmbientColor(this.getNormalizedCycleTime(this.scene.time.now));
-    } else {
-      this.ambientColor = this.config.ambientColor;
-    }
+    this.cycleTime = this.config.dayNightCycle.enabled ? this.getNormalizedCycleTime(this.scene.time.now) : 0;
+    this.ambientColor = this.config.dayNightCycle.enabled
+      ? this.calculateAmbientColor(this.cycleTime)
+      : this.config.ambientColor;
     this.scene.lights.setAmbientColor(this.ambientColor);
 
     if (this.config.keyLight.enabled) {
@@ -145,18 +154,19 @@ export class SceneLightingService {
         this.config.keyLight.intensity,
         this.config.keyLight.z
       );
+      this.updateKeyLight(this.cycleTime);
     }
   }
 
   private update(time: number, delta: number): void {
     if (this.config.dayNightCycle.enabled) {
-      const cycleTime = this.getNormalizedCycleTime(time);
-      const nextAmbient = this.calculateAmbientColor(cycleTime);
+      this.cycleTime = this.getNormalizedCycleTime(time);
+      const nextAmbient = this.calculateAmbientColor(this.cycleTime);
       if (nextAmbient !== this.ambientColor) {
         this.ambientColor = nextAmbient;
         this.scene.lights.setAmbientColor(nextAmbient);
       }
-      this.updateKeyLight(cycleTime);
+      this.updateKeyLight(this.cycleTime);
     }
 
     this.visibilityRefreshAccumulator += delta;
@@ -164,6 +174,13 @@ export class SceneLightingService {
       this.visibilityRefreshAccumulator = 0;
       this.trackedObjects.forEach((tracked) => this.refreshTrackedObject(tracked));
     }
+
+    this.trackedObjects.forEach((tracked) => {
+      if (tracked.shadowEnabled) {
+        this.updateShadowTransform(tracked);
+      }
+    });
+
     this.animatedLightUpdaters.forEach((updater) => updater(time, delta));
   }
 
@@ -220,15 +237,24 @@ export class SceneLightingService {
   }
 
   private refreshTrackedObject(tracked: TrackedObject): void {
-    const shouldRenderEffects =
-      tracked.gameObject.scene === this.scene &&
-      (tracked.lightingTarget.active ?? true) &&
-      (tracked.lightingTarget.visible ?? true);
+    const shouldRenderEffects = this.shouldRenderEffects(tracked.gameObject);
     this.applyLighting(tracked, shouldRenderEffects);
     this.applyShadow(tracked, shouldRenderEffects);
   }
 
+  private shouldRenderEffects(gameObject: Phaser.GameObjects.GameObject): boolean {
+    if (gameObject.scene !== this.scene) return false;
+    const active = (gameObject as LightingAwareGameObject).active ?? true;
+    const visible = (gameObject as LightingAwareGameObject).visible ?? true;
+    if (!active || !visible) return false;
+
+    const bounds = this.getRenderableBounds(gameObject);
+    if (!bounds) return false;
+    return Phaser.Geom.Rectangle.Overlaps(this.scene.cameras.main.worldView, bounds);
+  }
+
   private applyLighting(tracked: TrackedObject, enabled: boolean): void {
+    if (!tracked.lightingTarget) return;
     if (tracked.lightingEnabled === enabled) return;
     tracked.lightingTarget.setLighting?.(enabled);
     if (enabled && tracked.lightingTarget.setSelfShadow) {
@@ -242,38 +268,147 @@ export class SceneLightingService {
   }
 
   private applyShadow(tracked: TrackedObject, enabled: boolean): void {
-    if (!this.config.dropShadow.enabled || !tracked.shadowTarget) return;
-    if (!tracked.shadowFilter) {
-      tracked.shadowTarget.enableFilters?.();
-      tracked.shadowFilter = tracked.shadowTarget.filters?.internal.addShadow(
-        this.config.dropShadow.x,
-        this.config.dropShadow.y,
-        this.config.dropShadow.decay,
-        this.config.dropShadow.power,
-        this.config.dropShadow.color,
-        this.config.dropShadow.samples,
-        this.config.dropShadow.intensity
-      );
-      tracked.shadowFilter?.setPaddingOverride(null);
+    if (!this.config.dropShadow.enabled || !tracked.shadowCaster) return;
+    const shadowVisual = this.ensureShadowVisual(tracked);
+    if (!shadowVisual) return;
+
+    if (!enabled) {
+      shadowVisual.setVisible(false);
+      tracked.shadowEnabled = false;
+      return;
     }
-    if (!tracked.shadowFilter || tracked.shadowEnabled === enabled) return;
-    tracked.shadowFilter.setActive(enabled);
-    tracked.shadowEnabled = enabled;
+
+    tracked.shadowEnabled = true;
+    shadowVisual.setVisible(true);
+    this.updateShadowTransform(tracked);
+  }
+
+  private ensureShadowVisual(tracked: TrackedObject): Phaser.GameObjects.Ellipse | undefined {
+    if (tracked.shadowVisual || !tracked.shadowCaster) return tracked.shadowVisual;
+
+    const ellipse = new Phaser.GameObjects.Ellipse(this.scene, 0, 0, 10, 10, this.config.dropShadow.color, 0);
+    markGameObjectIgnoreSceneLighting(ellipse);
+    ellipse.setBlendMode(Phaser.BlendModes.MULTIPLY);
+    ellipse.setVisible(false);
+    this.scene.add.existing(ellipse);
+    tracked.shadowVisual = ellipse;
+    return ellipse;
+  }
+
+  private updateShadowTransform(tracked: TrackedObject): void {
+    if (!tracked.shadowCaster || !tracked.shadowVisual) return;
+
+    const bounds = this.getRenderableBounds(tracked.shadowCaster);
+    if (!bounds) {
+      tracked.shadowVisual.setVisible(false);
+      tracked.shadowEnabled = false;
+      return;
+    }
+
+    const sun = this.getShadowLightPosition(bounds.centerX, bounds.bottom);
+    const directionX = bounds.centerX - sun.x;
+    const directionY = bounds.bottom - sun.y;
+    const directionLength = Math.hypot(directionX, directionY) || 1;
+    const normalX = directionX / directionLength;
+    const normalY = directionY / directionLength;
+
+    const solarStrength = Math.max(0, Math.sin(this.cycleTime * Math.PI));
+    const nightShadowFactor = solarStrength > 0.05 ? 0 : 0.35;
+    const opacity = lerpNumber(
+      this.config.dropShadow.opacityNight,
+      this.config.dropShadow.opacityDay,
+      Math.max(solarStrength, nightShadowFactor)
+    );
+    const offsetLength =
+      solarStrength > 0.05
+        ? lerpNumber(this.config.dropShadow.maxOffset, this.config.dropShadow.minOffset, solarStrength)
+        : lerpNumber(this.config.dropShadow.minOffset, this.config.dropShadow.maxOffset, 0.35);
+
+    const width = Math.max(14, bounds.width * this.config.dropShadow.widthScale * (1 + offsetLength * 0.015));
+    const height = Math.max(6, bounds.height * this.config.dropShadow.heightScale);
+    const x = bounds.centerX + normalX * offsetLength;
+    const y = bounds.bottom - height * 0.65 + normalY * offsetLength * 0.5;
+    const angle = Phaser.Math.RadToDeg(Math.atan2(normalY, normalX));
+    const depth = Math.max(-1000, (getGameObjectDepth(tracked.shadowCaster) ?? 0) - 0.5);
+
+    tracked.shadowVisual.setPosition(x, y);
+    tracked.shadowVisual.setSize(width, height);
+    tracked.shadowVisual.setDisplaySize(width, height);
+    tracked.shadowVisual.setRotation(Phaser.Math.DegToRad(angle));
+    tracked.shadowVisual.setFillStyle(this.config.dropShadow.color, opacity);
+    tracked.shadowVisual.setDepth(depth);
+  }
+
+  private getShadowLightPosition(fallbackX: number, fallbackY: number): { x: number; y: number } {
+    if (this.keyLight) {
+      return { x: this.keyLight.x, y: this.keyLight.y };
+    }
+
+    return {
+      x: fallbackX - this.config.dropShadow.maxOffset,
+      y: fallbackY - this.config.dropShadow.maxOffset * 0.75
+    };
   }
 
   private asLightingTarget(gameObject: Phaser.GameObjects.GameObject): LightingAwareGameObject | undefined {
+    if (shouldIgnoreSceneLighting(gameObject)) return undefined;
+    if (gameObject instanceof Phaser.GameObjects.Graphics) return undefined;
     const target = gameObject as LightingAwareGameObject;
     if (typeof target.setLighting !== "function") return undefined;
     return target;
   }
 
-  private asShadowTarget(gameObject: Phaser.GameObjects.GameObject): FilterAwareGameObject | undefined {
-    if (gameObject instanceof Phaser.GameObjects.Container) return undefined;
+  private asShadowCaster(gameObject: Phaser.GameObjects.GameObject): ShadowCasterGameObject | undefined {
+    if (shouldIgnoreSceneLighting(gameObject) || !shouldCastSceneShadow(gameObject)) return undefined;
+    if (gameObject instanceof Phaser.GameObjects.Graphics) return undefined;
+    if (gameObject instanceof Phaser.GameObjects.Text) return undefined;
+    if (gameObject instanceof Phaser.GameObjects.BitmapText) return undefined;
     if (gameObject instanceof Phaser.Tilemaps.TilemapLayer) return undefined;
     if (gameObject instanceof Phaser.GameObjects.Particles.ParticleEmitter) return undefined;
-    const target = gameObject as FilterAwareGameObject;
-    if (typeof target.enableFilters !== "function") return undefined;
-    return target;
+    if (gameObject.parentContainer && this.shouldContainerCastShadow(gameObject.parentContainer)) return undefined;
+    if (!this.getRenderableBounds(gameObject)) return undefined;
+    return gameObject as ShadowCasterGameObject;
+  }
+
+  private shouldContainerCastShadow(gameObject: Phaser.GameObjects.GameObject): boolean {
+    if (!(gameObject instanceof Phaser.GameObjects.Container)) return false;
+    if (shouldIgnoreSceneLighting(gameObject) || !shouldCastSceneShadow(gameObject)) return false;
+    return this.getRenderableBounds(gameObject) !== null;
+  }
+
+  private getRenderableBounds(gameObject: Phaser.GameObjects.GameObject): Phaser.Geom.Rectangle | null {
+    if (gameObject instanceof Phaser.GameObjects.Container) {
+      return this.getContainerRenderableBounds(gameObject);
+    }
+
+    if ((gameObject as LightingAwareGameObject).visible === false) return null;
+    return getGameObjectBoundsRaw(gameObject);
+  }
+
+  private getContainerRenderableBounds(container: Phaser.GameObjects.Container): Phaser.Geom.Rectangle | null {
+    let aggregateBounds: Phaser.Geom.Rectangle | null = null;
+
+    container.list.forEach((child) => {
+      if (shouldIgnoreSceneLighting(child)) return;
+      if ((child as LightingAwareGameObject).visible === false) return;
+      const childBounds = child instanceof Phaser.GameObjects.Container
+        ? this.getContainerRenderableBounds(child)
+        : getGameObjectBoundsRaw(child);
+      if (!childBounds) return;
+
+      if (!aggregateBounds) {
+        aggregateBounds = new Phaser.Geom.Rectangle(childBounds.x, childBounds.y, childBounds.width, childBounds.height);
+        return;
+      }
+
+      const left = Math.min(aggregateBounds.x, childBounds.x);
+      const top = Math.min(aggregateBounds.y, childBounds.y);
+      const right = Math.max(aggregateBounds.right, childBounds.right);
+      const bottom = Math.max(aggregateBounds.bottom, childBounds.bottom);
+      aggregateBounds.setTo(left, top, right - left, bottom - top);
+    });
+
+    return aggregateBounds;
   }
 
   private isContainer(gameObject: Phaser.GameObjects.GameObject): gameObject is Phaser.GameObjects.Container {
@@ -289,6 +424,7 @@ export class SceneLightingService {
       tracked.gameObject.off(Phaser.GameObjects.Events.DESTROY, tracked.onDestroy);
       tracked.gameObject.off(HealthComponent.KilledEvent, tracked.onKilled);
       this.applyLighting(tracked, false);
+      tracked.shadowVisual?.destroy();
     });
     this.trackedObjects.clear();
     this.animatedLightUpdaters.clear();
@@ -314,4 +450,9 @@ function lerpColor(from: number, to: number, amount: number): number {
   const g = Math.round(fromG + (toG - fromG) * t);
   const b = Math.round(fromB + (toB - fromB) * t);
   return (r << 16) | (g << 8) | b;
+}
+
+function lerpNumber(from: number, to: number, amount: number): number {
+  const t = Math.min(1, Math.max(0, amount));
+  return from + (to - from) * t;
 }

@@ -31,13 +31,13 @@ export type ProbableWaffleLightingConfig = {
   };
   dropShadow?: {
     enabled?: boolean;
-    x?: number;
-    y?: number;
-    decay?: number;
-    power?: number;
     color?: number;
-    samples?: number;
-    intensity?: number;
+    opacityDay?: number;
+    opacityNight?: number;
+    widthScale?: number;
+    heightScale?: number;
+    minOffset?: number;
+    maxOffset?: number;
   };
   dayNightCycle?: {
     enabled?: boolean;
@@ -105,13 +105,13 @@ export const ProbableWaffleLevels: ProbableWaffleMapType = {
       },
       dropShadow: {
         enabled: true,
-        x: 10,
-        y: 8,
-        decay: 0.18,
-        power: 1.3,
         color: 0x000000,
-        samples: 8,
-        intensity: 0.45
+        opacityDay: 0.26,
+        opacityNight: 0.1,
+        widthScale: 0.58,
+        heightScale: 0.18,
+        minOffset: 8,
+        maxOffset: 24
       },
       dayNightCycle: {
         startTimeNormalized: 0.2,
@@ -160,13 +160,13 @@ export const ProbableWaffleLevels: ProbableWaffleMapType = {
       },
       dropShadow: {
         enabled: true,
-        x: 9,
-        y: 7,
-        decay: 0.16,
-        power: 1.25,
         color: 0x000000,
-        samples: 8,
-        intensity: 0.38
+        opacityDay: 0.22,
+        opacityNight: 0.08,
+        widthScale: 0.56,
+        heightScale: 0.16,
+        minOffset: 7,
+        maxOffset: 20
       },
       dayNightCycle: {
         keyframes: [
@@ -216,13 +216,13 @@ export const ProbableWaffleLevels: ProbableWaffleMapType = {
       },
       dropShadow: {
         enabled: true,
-        x: 12,
-        y: 9,
-        decay: 0.2,
-        power: 1.4,
         color: 0x1a0904,
-        samples: 8,
-        intensity: 0.52
+        opacityDay: 0.3,
+        opacityNight: 0.12,
+        widthScale: 0.62,
+        heightScale: 0.2,
+        minOffset: 10,
+        maxOffset: 28
       },
       dayNightCycle: {
         startTimeNormalized: 0.1,

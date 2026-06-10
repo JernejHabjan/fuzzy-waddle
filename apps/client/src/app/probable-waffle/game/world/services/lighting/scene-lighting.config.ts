@@ -25,13 +25,13 @@ export type ResolvedSceneLightingConfig = {
   };
   dropShadow: {
     enabled: boolean;
-    x: number;
-    y: number;
-    decay: number;
-    power: number;
     color: number;
-    samples: number;
-    intensity: number;
+    opacityDay: number;
+    opacityNight: number;
+    widthScale: number;
+    heightScale: number;
+    minOffset: number;
+    maxOffset: number;
   };
   dayNightCycle: {
     enabled: boolean;
@@ -66,13 +66,13 @@ export function resolveSceneLightingConfig(
     },
     dropShadow: {
       enabled: mapLightingConfig?.dropShadow?.enabled ?? true,
-      x: mapLightingConfig?.dropShadow?.x ?? 10,
-      y: mapLightingConfig?.dropShadow?.y ?? 8,
-      decay: mapLightingConfig?.dropShadow?.decay ?? 0.18,
-      power: mapLightingConfig?.dropShadow?.power ?? 1.3,
       color: mapLightingConfig?.dropShadow?.color ?? 0x000000,
-      samples: mapLightingConfig?.dropShadow?.samples ?? 8,
-      intensity: mapLightingConfig?.dropShadow?.intensity ?? 0.42
+      opacityDay: mapLightingConfig?.dropShadow?.opacityDay ?? 0.24,
+      opacityNight: mapLightingConfig?.dropShadow?.opacityNight ?? 0.08,
+      widthScale: mapLightingConfig?.dropShadow?.widthScale ?? 0.56,
+      heightScale: mapLightingConfig?.dropShadow?.heightScale ?? 0.17,
+      minOffset: mapLightingConfig?.dropShadow?.minOffset ?? 8,
+      maxOffset: mapLightingConfig?.dropShadow?.maxOffset ?? 22
     },
     dayNightCycle: {
       enabled: dayNightConfig?.enabled ?? true,
