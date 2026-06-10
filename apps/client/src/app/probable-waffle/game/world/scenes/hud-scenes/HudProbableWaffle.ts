@@ -200,7 +200,8 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     // set resources top left
     this.resources_container.x = 10;
     this.resources_container.y = 10;
-    this.resources_container.scale = sceneWidth > this.actorInfoSmallScreenBreakpoint ? 1 : 0.9;
+    this.resources_container.scale = 1;
+    this.resources_container.setMobileLayout(sceneWidth <= this.actorInfoSmallScreenBreakpoint);
 
     // set game actions to top right
     this.game_actions_container.x = this.scale.width - 10;

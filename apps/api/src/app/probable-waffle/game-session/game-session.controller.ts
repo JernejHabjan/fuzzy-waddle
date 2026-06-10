@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Param, Post, Query, UseGuards } from "@nestjs/common";
-import { SupabaseAuthGuard } from "../../../auth/guards/supabase-auth.guard";
+import { OnlineAccessGuard } from "../../../auth/guards/online-access.guard";
 import { CurrentUser } from "../../../auth/current-user";
 import type { AuthUser } from "@supabase/supabase-js";
 import { GameSessionService } from "./game-session.service";
@@ -15,7 +15,7 @@ export class GameSessionController {
    * Idempotent - safe to call multiple times
    */
   @Post("submit-scores")
-  @UseGuards(SupabaseAuthGuard)
+  @UseGuards(OnlineAccessGuard)
   async submitScores(@CurrentUser() user: AuthUser, @Body() dto: SubmitScoresDto) {
     return this.gameSessionService.submitScores(
       dto.gameInstanceId,
@@ -35,7 +35,7 @@ export class GameSessionController {
    * Paginated results
    */
   @Get("match-history")
-  @UseGuards(SupabaseAuthGuard)
+  @UseGuards(OnlineAccessGuard)
   async getMatchHistory(@CurrentUser() user: AuthUser, @Query() query: MatchHistoryQueryDto) {
     return this.gameSessionService.getMatchHistory(user.id, query.limit, query.offset);
   }
@@ -45,7 +45,7 @@ export class GameSessionController {
    * Verifies user participated in the game
    */
   @Get(":gameInstanceId/details")
-  @UseGuards(SupabaseAuthGuard)
+  @UseGuards(OnlineAccessGuard)
   async getMatchDetails(@CurrentUser() user: AuthUser, @Param("gameInstanceId") gameInstanceId: string) {
     return this.gameSessionService.getMatchDetails(gameInstanceId, user.id);
   }

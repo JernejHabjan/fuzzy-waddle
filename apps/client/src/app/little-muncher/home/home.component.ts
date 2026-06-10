@@ -22,9 +22,15 @@ import { RouterLink } from "@angular/router";
 })
 export class HomeComponent {
   protected readonly LittleMuncherHills = LittleMuncherHills;
+  protected readonly hillCount = Object.keys(LittleMuncherHills).length;
+  protected readonly featureList = [
+    "Dash through cake-heavy lanes built around different hill routes.",
+    "Swap between shorter and longer runs with different pacing.",
+    "Jump into spectator rooms or save leaderboard attempts when the server is online."
+  ];
   readonly startLevel = output<LittleMuncherGameCreate>();
   protected readonly serverHealthService = inject(ServerHealthService);
-  private readonly authService = inject(AuthService);
+  protected readonly authService = inject(AuthService);
 
   climbOn(hillKey: unknown) {
     this.startLevel.emit({

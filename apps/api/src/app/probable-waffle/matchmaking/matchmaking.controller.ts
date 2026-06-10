@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Post, UseGuards } from "@nestjs/common";
-import { SupabaseAuthGuard } from "../../../auth/guards/supabase-auth.guard";
+import { OnlineAccessGuard } from "../../../auth/guards/online-access.guard";
 import { CurrentUser } from "../../../auth/current-user";
 import { type AuthUser } from "@supabase/supabase-js";
 import { type RequestGameSearchForMatchMakingDto } from "@fuzzy-waddle/api-interfaces";
@@ -10,7 +10,7 @@ export class MatchmakingController {
   constructor(private readonly matchmakingService: MatchmakingService) {}
 
   @Post("request-game-search-for-matchmaking")
-  @UseGuards(SupabaseAuthGuard)
+  @UseGuards(OnlineAccessGuard)
   async requestGameSearchForMatchmaking(
     @CurrentUser() user: AuthUser,
     @Body() body: RequestGameSearchForMatchMakingDto
@@ -19,7 +19,7 @@ export class MatchmakingController {
   }
 
   @Delete("stop-request-game-search-for-matchmaking")
-  @UseGuards(SupabaseAuthGuard)
+  @UseGuards(OnlineAccessGuard)
   async stopRequestGameSearchForMatchmaking(@CurrentUser() user: AuthUser): Promise<void> {
     await this.matchmakingService.stopRequestGameSearchForMatchmaking(user);
   }

@@ -2,20 +2,21 @@
 
 .score-table-wrapper {
   overflow-x: auto;
+  border-radius: 1rem;
 }
 
 .table {
   white-space: nowrap;
   font-size: 0.82rem;
-  border-color: $tertiary;
+  border-color: rgba(111, 85, 52, 0.34);
 
   th,
   td {
     text-align: center;
     padding: 0.35rem 0.5rem;
     vertical-align: middle;
-    color: $primary;
-    border-color: $tertiary;
+    color: #f5ecd9;
+    border-color: rgba(111, 85, 52, 0.24);
   }
 
   td:first-child,
@@ -25,33 +26,33 @@
   }
 
   thead tr:first-child th {
-    background-color: $primary;
-    color: $quaternary;
-    border-color: $secondary;
+    background-color: rgba(240, 196, 107, 0.14);
+    color: #f0c46b;
+    border-color: rgba(111, 85, 52, 0.4);
   }
 
   thead tr:last-child th {
-    background-color: $secondary;
-    color: $quaternary;
+    background-color: rgba(52, 169, 161, 0.16);
+    color: #e5fcfa;
     font-size: 0.75rem;
-    border-color: $secondary;
+    border-color: rgba(52, 169, 161, 0.22);
   }
 
   tbody tr:nth-child(odd) {
-    background-color: $app-row-odd;
+    background-color: rgba(21, 26, 31, 0.94);
   }
 
   tbody tr:nth-child(even) {
-    background-color: $app-row-even;
+    background-color: rgba(17, 21, 26, 0.94);
   }
 }
 
 .winner {
-  background-color: rgba(40, 167, 69, 0.15) !important;
+  background-color: rgba(141, 201, 107, 0.16) !important;
 }
 
 .loser {
-  background-color: rgba(220, 53, 69, 0.08) !important;
+  background-color: rgba(217, 106, 63, 0.12) !important;
 }
 
 .result-badge {
@@ -72,8 +73,8 @@
   }
 
   &.result-tie {
-    background-color: #ffc107;
-    color: black;
+    background-color: rgba(52, 169, 161, 0.2);
+    color: #e5fcfa;
   }
 
   &.result-quit {

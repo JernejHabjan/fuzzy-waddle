@@ -40,4 +40,4 @@ This is handled automatically by the CI workflow in `.github/workflows/`.
 
 The hosted Supabase project must allow the deployed client URLs in **Authentication > URL Configuration** and must have Google enabled under **Authentication > Providers**. Keep the URL list in sync with [supabase.md](supabase.md) when Render, GitHub Pages, or Tauri callback URLs change.
 
-Database migrations are verified locally with the Supabase CLI and applied to the hosted project through the project deployment flow after they are merged into `main`. See [supabase.md](supabase.md#database-migrations) for the local and remote migration workflow.
+Database migrations are verified locally with the Supabase CLI and applied to the hosted project after they are merged into `main`. See [supabase.md](supabase.md#database-migrations) for the local and remote migration workflow.

@@ -4,6 +4,7 @@ import { environment } from "../../../environments/environment";
 import { ApplicationRef, inject, Injectable } from "@angular/core";
 import { type IAuthenticatedSocketService } from "./authenticated-socket.service.interface";
 import { ServerHealthService } from "../../shared/services/server-health.service";
+import { CurrentUserProfileService } from "../profile/current-user-profile.service";
 
 @Injectable({
   providedIn: "root"
@@ -12,11 +13,21 @@ export class AuthenticatedSocketService implements IAuthenticatedSocketService {
   private readonly authService = inject(AuthService);
   private readonly serverHealthService = inject(ServerHealthService);
   private readonly appRef = inject(ApplicationRef);
+  private readonly currentUserProfileService = inject(CurrentUserProfileService);
   private authenticatedSocket?: Socket;
 
   async getSocket(): Promise<Socket | undefined> {
     await this.serverHealthService.checkHealth();
-    if (!this.authenticatedSocket && this.authService.isAuthenticated && this.serverHealthService.serverAvailable) {
+    if (!this.authService.isAuthenticated || !this.serverHealthService.serverAvailable) {
+      return this.authenticatedSocket;
+    }
+
+    const profile = await this.currentUserProfileService.getCurrentUserProfile();
+    if (profile?.isBanned) {
+      return undefined;
+    }
+
+    if (!this.authenticatedSocket) {
       try {
         this.authenticatedSocket = await this.createAuthSocket();
       } catch (error) {

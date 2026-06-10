@@ -1,6 +1,7 @@
 import { inject, NgModule } from "@angular/core";
 import { Router, RouterModule, type Routes } from "@angular/router";
 import { AuthGuard } from "./auth/auth.guard";
+import { AppRoleGuard } from "./auth/app-role.guard";
 import { LevelGuard } from "./fly-squasher/choose-level/level.guard";
 import { environment } from "../environments/environment";
 import { GameInstanceGuard } from "./probable-waffle/gui/online/lobby-page/game-instance.guard";
@@ -187,12 +188,22 @@ const routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: "profile/:userId",
+    loadComponent: () => import("./home/profile/profile.component").then((m) => m.ProfileComponent),
+    canActivate: [AuthGuard]
+  },
+  {
     path: "music",
     loadComponent: () => import("./home/music/music.component").then((m) => m.MusicComponent)
   },
   {
     path: "attributions",
     loadComponent: () => import("./home/attribution/attribution.component").then((m) => m.AttributionComponent)
+  },
+  {
+    path: "moderation",
+    loadComponent: () => import("./home/moderation/moderation.component").then((m) => m.ModerationComponent),
+    canActivate: [AuthGuard, AppRoleGuard]
   },
   ...littleMuncherRoutes,
   ...probableWaffleRoutes,

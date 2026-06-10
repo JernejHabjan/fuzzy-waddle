@@ -71,3 +71,7 @@ supabase/.temp
 .nx/self-healing
 .ai/
 .junie
+AGENTS.md
+CLAUDE.md
+plugins
+docs/ai/

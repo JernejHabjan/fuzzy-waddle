@@ -15,7 +15,7 @@ export class SupabaseStrategy extends PassportStrategy(SupabaseV2AuthStrategy, A
       supabaseClient: supabaseProviderService.supabaseClient,
       extractor: (req) => {
         // for socket-io extract token from handshake
-        const accessToken = (req as any)?.handshake?.auth?.token || (req as any)?.handshake?.query?.access_token;
+        const accessToken = req?.handshake?.auth?.token || req?.handshake?.query?.access_token;
         if (accessToken) {
           return accessToken;
         }
@@ -27,7 +27,7 @@ export class SupabaseStrategy extends PassportStrategy(SupabaseV2AuthStrategy, A
     } satisfies SupabaseAuthStrategyOptions);
   }
 
-  async validate(payload: AuthUser | null): Promise<any> {
+  async validate(payload: AuthUser | null): Promise<AuthUser | null> {
     return super.validate(payload);
   }
 

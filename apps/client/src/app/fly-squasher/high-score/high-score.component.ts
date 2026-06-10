@@ -14,6 +14,7 @@ import { CenterWrapperComponent } from "../../shared/components/center-wrapper/c
 @Component({
   selector: "fly-squasher-high-score",
   templateUrl: "./high-score.component.html",
+  styleUrls: ["./high-score.component.scss"],
   imports: [FaIconComponent, RouterLink, HomeNavComponent, CenterWrapperComponent],
   host: AngularHost.contentFlexFullHeight
 })
@@ -41,5 +42,9 @@ export class HighScoreComponent implements OnInit {
 
   protected getTopScoresForLevel(highScores: ScoreDto[], level: FlySquasherLevelEnum) {
     return highScores.filter((score) => score.level === level).sort((a, b) => b.score - a.score);
+  }
+
+  protected getTopScoreForLevel(level: FlySquasherLevelEnum): number {
+    return this.getTopScoresForLevel(this.highScores, level)[0]?.score ?? 0;
   }
 }
