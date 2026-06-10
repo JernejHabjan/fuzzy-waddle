@@ -49,6 +49,10 @@ export type ResolvedSceneLightingConfig = {
   };
 };
 
+/**
+ * Resolves per-map lighting data into a fully-populated runtime config.
+ * All defaults live here so the service can stay focused on runtime behavior.
+ */
 export function resolveSceneLightingConfig(
   mapLightingConfig: ProbableWaffleLightingConfig | undefined,
   fallbackRadius: number
@@ -91,6 +95,9 @@ export function resolveSceneLightingConfig(
   };
 }
 
+/**
+ * Ensures the ambient keyframe list is sorted and always spans the full 0..1 cycle range.
+ */
 function normalizeKeyframes(
   keyframes: ProbableWaffleLightingAmbientKeyframe[] | undefined
 ): ProbableWaffleLightingAmbientKeyframe[] {

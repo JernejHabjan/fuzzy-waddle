@@ -9,7 +9,8 @@ import { getSceneExternalComponent } from "../scene-component-helpers";
 import {
   markGameObjectIgnoreSceneLighting,
   shouldCastSceneShadow,
-  shouldIgnoreSceneLighting
+  shouldIgnoreSceneLighting,
+  shouldRespondToSceneAmbient
 } from "./lighting-game-object-meta";
 import {
   type ResolvedSceneLightingConfig,
@@ -32,12 +33,21 @@ type ShadowCasterGameObject = Phaser.GameObjects.GameObject & {
   active?: boolean;
 };
 
+type AmbientResponsiveGameObject = Phaser.GameObjects.GameObject & {
+  setAlpha?: (alpha?: number) => Phaser.GameObjects.GameObject;
+  alpha?: number;
+  visible?: boolean;
+  active?: boolean;
+};
+
 type TrackedObject = {
   gameObject: Phaser.GameObjects.GameObject;
   lightingTarget?: LightingAwareGameObject;
+  ambientTarget?: AmbientResponsiveGameObject;
   shadowCaster?: ShadowCasterGameObject;
   shadowVisual?: Phaser.GameObjects.Ellipse;
   lightingEnabled: boolean;
+  ambientAlpha: number;
   shadowEnabled: boolean;
   onDestroy: () => void;
   onKilled: () => void;
@@ -45,6 +55,16 @@ type TrackedObject = {
 
 type AnimatedLightUpdater = (time: number, delta: number) => void;
 
+/**
+ * Centralized Phaser 4 lighting coordinator for the Probable Waffle scene.
+ *
+ * Responsibilities:
+ * - enable / disable Phaser lighting on eligible world objects
+ * - manage the map ambient color and day-night cycle
+ * - maintain lightweight dropped shadows for registered casters
+ * - dim ambient-only overlays such as health and owner bars at night
+ * - react live to the user-facing lighting setting
+ */
 export class SceneLightingService {
   private readonly config: ResolvedSceneLightingConfig;
   private readonly trackedObjects = new Map<Phaser.GameObjects.GameObject, TrackedObject>();
@@ -79,6 +99,10 @@ export class SceneLightingService {
     this.subscribeToOptions();
   }
 
+  /**
+   * Re-scan a prefab root after it swaps internal renderable children.
+   * This is used by dynamic containers like walls and stairs.
+   */
   syncGameObjectTree(gameObject: Phaser.GameObjects.GameObject): void {
     if (!this.config.enabled || !this.effectsEnabled || shouldIgnoreSceneLighting(gameObject)) return;
     if (this.isContainer(gameObject)) {
@@ -92,6 +116,11 @@ export class SceneLightingService {
     }
   }
 
+  /**
+   * Registers one scene object with the lighting service.
+   * Registration is intentionally centralized so actor code does not need to
+   * contain scattered `setLighting(true)` calls.
+   */
   registerGameObject(gameObject: Phaser.GameObjects.GameObject): void {
     if (
       !this.config.enabled ||
@@ -110,14 +139,16 @@ export class SceneLightingService {
     const tracked: TrackedObject = {
       gameObject,
       lightingTarget: this.asLightingTarget(gameObject),
+      ambientTarget: this.asAmbientTarget(gameObject),
       shadowCaster: this.asShadowCaster(gameObject),
       lightingEnabled: false,
+      ambientAlpha: 1,
       shadowEnabled: false,
       onDestroy: () => this.unregisterGameObject(gameObject),
       onKilled: () => this.unregisterGameObject(gameObject)
     };
 
-    if (!tracked.lightingTarget && !tracked.shadowCaster) return;
+    if (!tracked.lightingTarget && !tracked.ambientTarget && !tracked.shadowCaster) return;
 
     this.trackedObjects.set(gameObject, tracked);
     gameObject.once(Phaser.GameObjects.Events.DESTROY, tracked.onDestroy);
@@ -129,6 +160,7 @@ export class SceneLightingService {
     const tracked = this.trackedObjects.get(gameObject);
     if (!tracked) return;
     this.applyLighting(tracked, false);
+    this.applyAmbient(tracked, false);
     this.applyShadow(tracked, false);
     tracked.shadowVisual?.destroy();
     tracked.shadowVisual = undefined;
@@ -166,6 +198,9 @@ export class SceneLightingService {
     this.scene.children.list.forEach((child) => this.registerGameObject(child));
   }
 
+  /**
+   * Reads the persisted user setting and sets up the scene-level ambient/key light state.
+   */
   private setupLighting(): void {
     this.effectsEnabled = GameSettings.loadFromLocalStorage().enableSceneLightingEffects;
     this.cycleTime = this.config.dayNightCycle.enabled ? this.getNormalizedCycleTime(this.scene.time.now) : 0;
@@ -217,6 +252,9 @@ export class SceneLightingService {
     this.animatedLightUpdaters.forEach((updater) => updater(time, delta));
   }
 
+  /**
+   * Moves the key light around the map center so the sun / moon direction changes over time.
+   */
   private updateKeyLight(cycleTime: number): void {
     if (!this.keyLight) return;
 
@@ -270,11 +308,17 @@ export class SceneLightingService {
   }
 
   private refreshTrackedObject(tracked: TrackedObject): void {
-    const shouldRenderEffects = this.effectsEnabled && this.shouldRenderEffects(tracked.gameObject);
-    this.applyLighting(tracked, shouldRenderEffects);
-    this.applyShadow(tracked, shouldRenderEffects);
+    const shouldRenderLightingAndShadow = this.effectsEnabled && this.shouldRenderEffects(tracked.gameObject);
+    const shouldRenderAmbient = this.effectsEnabled && this.shouldRenderAmbient(tracked);
+    this.applyLighting(tracked, shouldRenderLightingAndShadow);
+    this.applyAmbient(tracked, shouldRenderAmbient);
+    this.applyShadow(tracked, shouldRenderLightingAndShadow);
   }
 
+  /**
+   * Quick visibility gate used before any expensive effect work.
+   * When lighting is enabled we only update active, visible, on-camera objects.
+   */
   private shouldRenderEffects(gameObject: Phaser.GameObjects.GameObject): boolean {
     if (gameObject.scene !== this.scene) return false;
     const active = (gameObject as LightingAwareGameObject).active ?? true;
@@ -283,6 +327,21 @@ export class SceneLightingService {
 
     const bounds = this.getRenderableBounds(gameObject);
     if (!bounds) return false;
+    return Phaser.Geom.Rectangle.Overlaps(this.scene.cameras.main.worldView, bounds);
+  }
+
+  /**
+   * Ambient-only overlays such as health bars and owner bars should still dim at night,
+   * even if they are not normal lit renderables and do not expose stable bounds.
+   */
+  private shouldRenderAmbient(tracked: TrackedObject): boolean {
+    const target = tracked.ambientTarget;
+    if (!target) return false;
+    if (tracked.gameObject.scene !== this.scene) return false;
+    if ((target.active ?? true) === false || (target.visible ?? true) === false) return false;
+
+    const bounds = this.getRenderableBounds(tracked.gameObject) ?? this.getRenderableBounds(target);
+    if (!bounds) return true;
     return Phaser.Geom.Rectangle.Overlaps(this.scene.cameras.main.worldView, bounds);
   }
 
@@ -298,6 +357,14 @@ export class SceneLightingService {
       );
     }
     tracked.lightingEnabled = enabled;
+  }
+
+  private applyAmbient(tracked: TrackedObject, enabled: boolean): void {
+    if (!tracked.ambientTarget || typeof tracked.ambientTarget.setAlpha !== "function") return;
+    const nextAlpha = enabled ? this.getAmbientOverlayAlpha() : 1;
+    if (Math.abs(tracked.ambientAlpha - nextAlpha) < 0.01) return;
+    tracked.ambientTarget.setAlpha(nextAlpha);
+    tracked.ambientAlpha = nextAlpha;
   }
 
   private applyShadow(tracked: TrackedObject, enabled: boolean): void {
@@ -316,6 +383,10 @@ export class SceneLightingService {
     this.updateShadowTransform(tracked);
   }
 
+  /**
+   * Lazily creates a single soft shadow visual per caster.
+   * The shadow object is marked to fully ignore lighting so it never re-registers itself.
+   */
   private ensureShadowVisual(tracked: TrackedObject): Phaser.GameObjects.Ellipse | undefined {
     if (tracked.shadowVisual || !tracked.shadowCaster) return tracked.shadowVisual;
 
@@ -328,6 +399,10 @@ export class SceneLightingService {
     return ellipse;
   }
 
+  /**
+   * Projects the caster bounds away from the current light direction.
+   * This keeps dropped shadows cheap while still following the moving sun / moon.
+   */
   private updateShadowTransform(tracked: TrackedObject): void {
     if (!tracked.shadowCaster || !tracked.shadowVisual) return;
 
@@ -387,6 +462,18 @@ export class SceneLightingService {
     return this.config.dayNightCycle.enabled ? this.calculateAmbientColor(this.cycleTime) : this.config.ambientColor;
   }
 
+  /**
+   * Converts the current ambient color into an overlay alpha used by ambient-only UI elements.
+   */
+  private getAmbientOverlayAlpha(): number {
+    const color = Phaser.Display.Color.IntegerToColor(this.ambientColor);
+    const luminance = (0.2126 * color.red + 0.7152 * color.green + 0.0722 * color.blue) / 255;
+    return lerpNumber(0.3, 1, luminance);
+  }
+
+  /**
+   * Subscribes to persisted game setting changes so lighting can toggle live without a scene restart.
+   */
   private subscribeToOptions(): void {
     const optionsService = getSceneExternalComponent(this.scene, OptionsService);
     this.optionsChangedSubscription = optionsService?.settingsChanged.subscribe((change: { type: string; payload: unknown }) => {
@@ -396,6 +483,10 @@ export class SceneLightingService {
     });
   }
 
+  /**
+   * Switching off lighting clears all tracked runtime state so the disabled path stays cheap.
+   * Switching on lighting rebuilds tracking from the current scene graph.
+   */
   private setEffectsEnabled(enabled: boolean): void {
     if (this.effectsEnabled === enabled) return;
     this.effectsEnabled = enabled;
@@ -416,6 +507,7 @@ export class SceneLightingService {
       tracked.gameObject.off(Phaser.GameObjects.Events.DESTROY, tracked.onDestroy);
       tracked.gameObject.off(HealthComponent.KilledEvent, tracked.onKilled);
       this.applyLighting(tracked, false);
+      this.applyAmbient(tracked, false);
       tracked.shadowVisual?.destroy();
     });
     this.trackedObjects.clear();
@@ -427,6 +519,13 @@ export class SceneLightingService {
     if (gameObject instanceof Phaser.GameObjects.Graphics) return undefined;
     const target = gameObject as LightingAwareGameObject;
     if (typeof target.setLighting !== "function") return undefined;
+    return target;
+  }
+
+  private asAmbientTarget(gameObject: Phaser.GameObjects.GameObject): AmbientResponsiveGameObject | undefined {
+    if (!shouldRespondToSceneAmbient(gameObject)) return undefined;
+    const target = gameObject as AmbientResponsiveGameObject;
+    if (typeof target.setAlpha !== "function") return undefined;
     return target;
   }
 

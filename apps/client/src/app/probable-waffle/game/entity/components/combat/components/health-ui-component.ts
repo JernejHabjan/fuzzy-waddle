@@ -5,7 +5,7 @@ import { Subscription } from "rxjs";
 import { getGameObjectBounds, getGameObjectDepth, onObjectReady } from "../../../../data/game-object-helper";
 import { OwnerComponent } from "../../owner-component";
 import { ActorTranslateComponent } from "../../movement/actor-translate-component";
-import { markGameObjectIgnoreSceneLighting } from "../../../../world/services/lighting/lighting-game-object-meta";
+import { markGameObjectAmbientResponsive } from "../../../../world/services/lighting/lighting-game-object-meta";
 
 export class HealthUiComponent {
   static readonly ZIndex = 1;
@@ -41,7 +41,7 @@ export class HealthUiComponent {
     private readonly type: "health" | "armor"
   ) {
     this.bar = this.gameObject.scene.add.graphics();
-    markGameObjectIgnoreSceneLighting(this.bar);
+    markGameObjectAmbientResponsive(this.bar);
     onObjectReady(gameObject, this.init, this);
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
