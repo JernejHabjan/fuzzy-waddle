@@ -3,9 +3,10 @@ import { type AuthUser } from "@supabase/supabase-js";
 import { Socket } from "socket.io";
 import { UserProfilesService } from "../app/user-profiles/user-profiles.service";
 import { SupabaseProviderService } from "../core/supabase-provider/supabase-provider.service";
+import { type SocketConnectionAuthServiceInterface } from "./socket-connection-auth.service.interface";
 
 @Injectable()
-export class SocketConnectionAuthService {
+export class SocketConnectionAuthService implements SocketConnectionAuthServiceInterface {
   constructor(
     private readonly supabaseProviderService: SupabaseProviderService,
     private readonly userProfilesService: UserProfilesService

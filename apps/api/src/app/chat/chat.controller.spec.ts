@@ -4,6 +4,12 @@ import { chatServiceStub } from "./chat.service.stub";
 import { ChatController } from "./chat.controller";
 import { ChatReportReason } from "@fuzzy-waddle/api-interfaces";
 import type { AuthUser } from "@supabase/supabase-js";
+import { OnlineAccessGuard } from "../../auth/guards/online-access.guard";
+import { SupabaseAuthGuard } from "../../auth/guards/supabase-auth.guard";
+import { UserProfilesService } from "../user-profiles/user-profiles.service";
+import { onlineAccessGuardStub } from "../../auth/guards/online-access.guard.stub";
+import { supabaseAuthGuardStub } from "../../auth/guards/supabase-auth.guard.stub";
+import { userProfilesServiceStub } from "../user-profiles/user-profiles.service.stub";
 
 describe("ChatController", () => {
   let app: TestingModule;
@@ -11,7 +17,12 @@ describe("ChatController", () => {
   beforeAll(async () => {
     app = await Test.createTestingModule({
       controllers: [ChatController],
-      providers: [{ provide: ChatService, useValue: chatServiceStub }]
+      providers: [
+        { provide: ChatService, useValue: chatServiceStub },
+        { provide: OnlineAccessGuard, useValue: onlineAccessGuardStub },
+        { provide: SupabaseAuthGuard, useValue: supabaseAuthGuardStub },
+        { provide: UserProfilesService, useValue: userProfilesServiceStub }
+      ]
     }).compile();
   });
 

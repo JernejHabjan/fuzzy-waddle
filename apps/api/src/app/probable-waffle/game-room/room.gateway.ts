@@ -6,13 +6,14 @@ import {
 } from "@fuzzy-waddle/api-interfaces";
 import { Server, Socket } from "socket.io";
 import { SocketConnectionAuthService } from "../../../auth/socket-connection-auth.service";
+import { type RoomGatewayInterface } from "./room.gateway.interface";
 
 @WebSocketGateway({
   cors: {
     origin: process.env.CORS_ORIGIN?.split(",")
   }
 })
-export class RoomGateway implements OnGatewayConnection {
+export class RoomGateway implements OnGatewayConnection, RoomGatewayInterface {
   @WebSocketServer() private readonly server!: Server;
 
   constructor(private readonly socketConnectionAuthService: SocketConnectionAuthService) {}

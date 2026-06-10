@@ -9,9 +9,10 @@ import {
   UserAccountStatus
 } from "@fuzzy-waddle/api-interfaces";
 import { SupabaseProviderService } from "../../core/supabase-provider/supabase-provider.service";
+import { type UserProfilesServiceInterface } from "./user-profiles.service.interface";
 
 @Injectable()
-export class UserProfilesService {
+export class UserProfilesService implements UserProfilesServiceInterface {
   constructor(private readonly supabaseProviderService: SupabaseProviderService) {}
 
   async getCurrentUserProfile(user: AuthUser): Promise<CurrentUserProfileDto> {

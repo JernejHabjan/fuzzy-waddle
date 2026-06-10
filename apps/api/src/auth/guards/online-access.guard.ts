@@ -2,9 +2,10 @@ import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
 import { type AuthUser } from "@supabase/supabase-js";
 import { UserProfilesService } from "../../app/user-profiles/user-profiles.service";
 import { SupabaseAuthGuard } from "./supabase-auth.guard";
+import { type OnlineAccessGuardInterface } from "./online-access.guard.interface";
 
 @Injectable()
-export class OnlineAccessGuard implements CanActivate {
+export class OnlineAccessGuard implements CanActivate, OnlineAccessGuardInterface {
   constructor(
     private readonly supabaseAuthGuard: SupabaseAuthGuard,
     private readonly userProfilesService: UserProfilesService

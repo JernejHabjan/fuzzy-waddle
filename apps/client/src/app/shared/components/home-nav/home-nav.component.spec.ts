@@ -1,11 +1,17 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { HomeNavComponent } from "./home-nav.component";
-import { Component } from "@angular/core";
+import { Component, input } from "@angular/core";
 import { provideRouter } from "@angular/router";
 
-@Component({ selector: "fuzzy-waddle-home-nav", template: "", standalone: true, imports: [] })
-export class HomeNavTestingComponent {}
+@Component({ selector: "fuzzy-waddle-home-nav", template: "<ng-content />", standalone: true, imports: [] })
+export class HomeNavTestingComponent {
+  readonly routerLink = input<string>("/");
+  readonly title = input<string>("Fuzzy Waddle");
+  readonly imgSrc = input<string>("assets/icons/fuzzy-waddle.svg");
+  readonly showBack = input(false);
+  readonly hasActions = input(false);
+}
 
 describe("HomeNavComponent", () => {
   let component: HomeNavComponent;
