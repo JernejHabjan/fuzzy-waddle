@@ -73,6 +73,7 @@ export class SceneLightingService {
   private keyLight?: Phaser.GameObjects.Light;
   private ambientColor = 0xffffff;
   private cycleTime = 0;
+  private cycleElapsedMs = 0;
   private effectsEnabled = false;
   private visibilityRefreshAccumulator = 0;
   private readonly visibilityRefreshIntervalMs = 200;
@@ -203,7 +204,8 @@ export class SceneLightingService {
    */
   private setupLighting(): void {
     this.effectsEnabled = GameSettings.loadFromLocalStorage().enableSceneLightingEffects;
-    this.cycleTime = this.config.dayNightCycle.enabled ? this.getNormalizedCycleTime(this.scene.time.now) : 0;
+    this.cycleElapsedMs = this.getInitialCycleElapsedMs();
+    this.cycleTime = this.getCycleTimeFromElapsedMs(this.cycleElapsedMs);
     this.ambientColor = this.effectsEnabled ? this.getConfiguredAmbientColor() : 0xffffff;
     this.scene.lights.setAmbientColor(this.ambientColor);
 
@@ -222,13 +224,13 @@ export class SceneLightingService {
     }
   }
 
-  private update(time: number, delta: number): void {
+  private update(_time: number, delta: number): void {
     if (!this.effectsEnabled) {
       return;
     }
 
     if (this.config.dayNightCycle.enabled) {
-      this.cycleTime = this.getNormalizedCycleTime(time);
+      this.advanceCycle(delta);
       const nextAmbient = this.calculateAmbientColor(this.cycleTime);
       if (nextAmbient !== this.ambientColor) {
         this.ambientColor = nextAmbient;
@@ -253,15 +255,14 @@ export class SceneLightingService {
   }
 
   /**
-   * Moves the key light around the map center so the sun / moon direction changes over time.
+   * Moves the key light across the map width so the sun / moon direction reads as a sweep,
+   * rather than a small orbit near the map center.
    */
   private updateKeyLight(cycleTime: number): void {
     if (!this.keyLight) return;
-
-    const center = this.getMapCenter();
-    const radians = cycleTime * Math.PI * 2;
-    this.keyLight.x = center.x + Math.cos(radians) * this.config.keyLight.orbitRadius;
-    this.keyLight.y = center.y + Math.sin(radians) * this.config.keyLight.orbitRadius * 0.65;
+    const position = this.getKeyLightPosition(cycleTime);
+    this.keyLight.x = position.x;
+    this.keyLight.y = position.y;
   }
 
   private getMapCenter(): { x: number; y: number } {
@@ -271,11 +272,42 @@ export class SceneLightingService {
     };
   }
 
-  private getNormalizedCycleTime(time: number): number {
+  private getKeyLightPosition(cycleTime: number): { x: number; y: number } {
+    const width = this.scene.tilemap.widthInPixels;
+    const height = this.scene.tilemap.heightInPixels;
+    const travelMargin = Math.max(220, Math.floor(width * 0.2));
+    const verticalTravel = Math.max(180, Math.floor(height * 0.35));
+    const horizonY = height * 0.52;
+    const daylightArc = Math.sin(cycleTime * Math.PI);
+
+    return {
+      x: lerpNumber(-travelMargin, width + travelMargin, cycleTime),
+      y: horizonY - daylightArc * verticalTravel
+    };
+  }
+
+  /**
+   * Converts the map-configured start offset into runtime elapsed milliseconds.
+   */
+  private getInitialCycleElapsedMs(): number {
     const duration = Math.max(1, this.config.dayNightCycle.durationMs);
-    const startOffset = this.config.dayNightCycle.startTimeNormalized * duration;
-    const cyclePosition = (time + startOffset) % duration;
-    return cyclePosition / duration;
+    return this.config.dayNightCycle.startTimeNormalized * duration;
+  }
+
+  /**
+   * Advances the lighting clock using the same scaled delta as the rest of the simulation.
+   * This makes the day-night cycle respect the in-game time multiplier.
+   */
+  private advanceCycle(delta: number): void {
+    const duration = Math.max(1, this.config.dayNightCycle.durationMs);
+    const scaledDelta = delta * this.scene.time.timeScale;
+    this.cycleElapsedMs = (this.cycleElapsedMs + scaledDelta) % duration;
+    this.cycleTime = this.getCycleTimeFromElapsedMs(this.cycleElapsedMs);
+  }
+
+  private getCycleTimeFromElapsedMs(elapsedMs: number): number {
+    const duration = Math.max(1, this.config.dayNightCycle.durationMs);
+    return elapsedMs / duration;
   }
 
   private calculateAmbientColor(cycleTime: number): number {
