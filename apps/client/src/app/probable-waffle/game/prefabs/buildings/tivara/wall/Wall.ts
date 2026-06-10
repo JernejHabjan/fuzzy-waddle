@@ -31,6 +31,8 @@ import { setActorData } from "../../../../data/actor-data";
 import { getActorComponent } from "../../../../data/actor-component";
 import { NavigableComponent } from "../../../../entity/components/movement/navigable-component";
 import type { NavigablePath } from "../../../../entity/components/movement/navigable-path";
+import { getSceneService } from "../../../../world/services/scene-component-helpers";
+import { SceneLightingService } from "../../../../world/services/lighting/scene-lighting.service";
 /* END-USER-IMPORTS */
 
 export default class Wall extends Phaser.GameObjects.Container {
@@ -106,6 +108,7 @@ export default class Wall extends Phaser.GameObjects.Container {
     if (WallClass) {
       this.wall = new WallClass(this.scene, 0, 0);
       this.add(this.wall);
+      getSceneService(this.scene, SceneLightingService)?.syncGameObjectTree(this);
     } else {
       throw new Error("Wall type not found");
     }

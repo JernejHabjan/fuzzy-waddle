@@ -98,6 +98,18 @@
         />
         <label class="form-check-label" for="enabledMouseCornerMovement"> Enable mouse corner camera movement </label>
       </div>
+      <div class="mb-3 form-check">
+        <input
+          type="checkbox"
+          [(ngModel)]="optionsService.gameSettings.enableSceneLightingEffects"
+          (change)="saveToLocalStorage('game')"
+          class="form-check-input"
+          id="enableSceneLightingEffects"
+        />
+        <label class="form-check-label" for="enableSceneLightingEffects">
+          Enable dynamic lighting, shadows, and day/night cycle
+        </label>
+      </div>
       <div class="mb-0">
         <label class="form-label form-label--select" for="homeScreenBackground">Home screen background</label>
         <select

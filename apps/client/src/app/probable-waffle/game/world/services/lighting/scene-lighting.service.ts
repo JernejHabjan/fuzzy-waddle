@@ -1,7 +1,11 @@
 import type { ProbableWaffleLightingAmbientKeyframe } from "@fuzzy-waddle/api-interfaces";
+import { Subscription } from "rxjs";
+import { GameSettings } from "../../../core/gameSettings";
 import { getGameObjectBoundsRaw, getGameObjectDepth } from "../../../data/game-object-helper";
 import { HealthComponent } from "../../../entity/components/combat/components/health-component";
+import { OptionsService } from "../../../../gui/options/options.service";
 import type GameProbableWaffleScene from "../../scenes/GameProbableWaffleScene";
+import { getSceneExternalComponent } from "../scene-component-helpers";
 import {
   markGameObjectIgnoreSceneLighting,
   shouldCastSceneShadow,
@@ -49,8 +53,10 @@ export class SceneLightingService {
   private keyLight?: Phaser.GameObjects.Light;
   private ambientColor = 0xffffff;
   private cycleTime = 0;
+  private effectsEnabled = false;
   private visibilityRefreshAccumulator = 0;
   private readonly visibilityRefreshIntervalMs = 200;
+  private optionsChangedSubscription?: Subscription;
 
   constructor(private readonly scene: GameProbableWaffleScene) {
     const approximateRadius = Math.max(
@@ -66,12 +72,34 @@ export class SceneLightingService {
     this.scene.events.on(Phaser.Scenes.Events.REMOVED_FROM_SCENE, this.onRemovedFromScene, this);
     this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
 
-    this.registerExistingSceneObjects();
     this.setupLighting();
+    if (this.effectsEnabled) {
+      this.registerExistingSceneObjects();
+    }
+    this.subscribeToOptions();
+  }
+
+  syncGameObjectTree(gameObject: Phaser.GameObjects.GameObject): void {
+    if (!this.config.enabled || !this.effectsEnabled || shouldIgnoreSceneLighting(gameObject)) return;
+    if (this.isContainer(gameObject)) {
+      gameObject.list.forEach((child) => this.syncGameObjectTree(child));
+    }
+
+    this.registerGameObject(gameObject);
+    const tracked = this.trackedObjects.get(gameObject);
+    if (tracked) {
+      this.refreshTrackedObject(tracked);
+    }
   }
 
   registerGameObject(gameObject: Phaser.GameObjects.GameObject): void {
-    if (!this.config.enabled || !gameObject || this.trackedObjects.has(gameObject) || shouldIgnoreSceneLighting(gameObject)) {
+    if (
+      !this.config.enabled ||
+      !this.effectsEnabled ||
+      !gameObject ||
+      this.trackedObjects.has(gameObject) ||
+      shouldIgnoreSceneLighting(gameObject)
+    ) {
       return;
     }
 
@@ -126,6 +154,7 @@ export class SceneLightingService {
   }
 
   private onAddedToScene(gameObject: Phaser.GameObjects.GameObject): void {
+    if (!this.effectsEnabled) return;
     this.registerGameObject(gameObject);
   }
 
@@ -138,10 +167,9 @@ export class SceneLightingService {
   }
 
   private setupLighting(): void {
+    this.effectsEnabled = GameSettings.loadFromLocalStorage().enableSceneLightingEffects;
     this.cycleTime = this.config.dayNightCycle.enabled ? this.getNormalizedCycleTime(this.scene.time.now) : 0;
-    this.ambientColor = this.config.dayNightCycle.enabled
-      ? this.calculateAmbientColor(this.cycleTime)
-      : this.config.ambientColor;
+    this.ambientColor = this.effectsEnabled ? this.getConfiguredAmbientColor() : 0xffffff;
     this.scene.lights.setAmbientColor(this.ambientColor);
 
     if (this.config.keyLight.enabled) {
@@ -155,10 +183,15 @@ export class SceneLightingService {
         this.config.keyLight.z
       );
       this.updateKeyLight(this.cycleTime);
+      this.keyLight.setVisible(this.effectsEnabled);
     }
   }
 
   private update(time: number, delta: number): void {
+    if (!this.effectsEnabled) {
+      return;
+    }
+
     if (this.config.dayNightCycle.enabled) {
       this.cycleTime = this.getNormalizedCycleTime(time);
       const nextAmbient = this.calculateAmbientColor(this.cycleTime);
@@ -237,7 +270,7 @@ export class SceneLightingService {
   }
 
   private refreshTrackedObject(tracked: TrackedObject): void {
-    const shouldRenderEffects = this.shouldRenderEffects(tracked.gameObject);
+    const shouldRenderEffects = this.effectsEnabled && this.shouldRenderEffects(tracked.gameObject);
     this.applyLighting(tracked, shouldRenderEffects);
     this.applyShadow(tracked, shouldRenderEffects);
   }
@@ -350,6 +383,45 @@ export class SceneLightingService {
     };
   }
 
+  private getConfiguredAmbientColor(): number {
+    return this.config.dayNightCycle.enabled ? this.calculateAmbientColor(this.cycleTime) : this.config.ambientColor;
+  }
+
+  private subscribeToOptions(): void {
+    const optionsService = getSceneExternalComponent(this.scene, OptionsService);
+    this.optionsChangedSubscription = optionsService?.settingsChanged.subscribe((change: { type: string; payload: unknown }) => {
+      if (change.type !== "game") return;
+      const newGameSettings = change.payload as GameSettings;
+      this.setEffectsEnabled(newGameSettings.enableSceneLightingEffects);
+    });
+  }
+
+  private setEffectsEnabled(enabled: boolean): void {
+    if (this.effectsEnabled === enabled) return;
+    this.effectsEnabled = enabled;
+    this.scene.lights.setAmbientColor(enabled ? this.getConfiguredAmbientColor() : 0xffffff);
+    this.keyLight?.setVisible(enabled);
+
+    if (enabled) {
+      this.registerExistingSceneObjects();
+      this.trackedObjects.forEach((tracked) => this.refreshTrackedObject(tracked));
+      return;
+    }
+
+    this.clearTrackedObjects();
+  }
+
+  private clearTrackedObjects(): void {
+    this.trackedObjects.forEach((tracked) => {
+      tracked.gameObject.off(Phaser.GameObjects.Events.DESTROY, tracked.onDestroy);
+      tracked.gameObject.off(HealthComponent.KilledEvent, tracked.onKilled);
+      this.applyLighting(tracked, false);
+      tracked.shadowVisual?.destroy();
+    });
+    this.trackedObjects.clear();
+    this.visibilityRefreshAccumulator = 0;
+  }
+
   private asLightingTarget(gameObject: Phaser.GameObjects.GameObject): LightingAwareGameObject | undefined {
     if (shouldIgnoreSceneLighting(gameObject)) return undefined;
     if (gameObject instanceof Phaser.GameObjects.Graphics) return undefined;
@@ -419,14 +491,9 @@ export class SceneLightingService {
     this.scene.events.off(Phaser.Scenes.Events.ADDED_TO_SCENE, this.onAddedToScene, this);
     this.scene.events.off(Phaser.Scenes.Events.REMOVED_FROM_SCENE, this.onRemovedFromScene, this);
     this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
+    this.optionsChangedSubscription?.unsubscribe();
 
-    this.trackedObjects.forEach((tracked) => {
-      tracked.gameObject.off(Phaser.GameObjects.Events.DESTROY, tracked.onDestroy);
-      tracked.gameObject.off(HealthComponent.KilledEvent, tracked.onKilled);
-      this.applyLighting(tracked, false);
-      tracked.shadowVisual?.destroy();
-    });
-    this.trackedObjects.clear();
+    this.clearTrackedObjects();
     this.animatedLightUpdaters.clear();
 
     if (this.keyLight) {

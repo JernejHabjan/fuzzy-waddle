@@ -9,23 +9,27 @@ describe("GameSettings", () => {
     const settings = new GameSettings();
     expect(settings.lockToScreen).toBe(false);
     expect(settings.enabledMouseCornerMovement).toBe(false);
+    expect(settings.enableSceneLightingEffects).toBe(false);
   });
 
   it("should save and load from localStorage", () => {
     const settings = new GameSettings();
     settings.lockToScreen = true;
     settings.enabledMouseCornerMovement = true;
+    settings.enableSceneLightingEffects = true;
     settings.saveToLocalStorage();
 
     const loadedSettings = GameSettings.loadFromLocalStorage();
     expect(loadedSettings.lockToScreen).toBe(true);
     expect(loadedSettings.enabledMouseCornerMovement).toBe(true);
+    expect(loadedSettings.enableSceneLightingEffects).toBe(true);
   });
 
   it("should return default settings when localStorage is empty", () => {
     const settings = GameSettings.loadFromLocalStorage();
     expect(settings.lockToScreen).toBe(false);
     expect(settings.enabledMouseCornerMovement).toBe(false);
+    expect(settings.enableSceneLightingEffects).toBe(false);
   });
 
   it("should initialize from localStorage", () => {
