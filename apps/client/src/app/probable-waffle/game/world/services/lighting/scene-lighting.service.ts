@@ -284,13 +284,14 @@ export class SceneLightingService {
     const travelMargin = Math.max(220, Math.floor(width * 0.2));
     const verticalTravel = Math.max(240, Math.floor(height * 0.48));
     const horizonY = height * 0.3;
-    const daylightArc = Math.sin(cycleTime * Math.PI);
-    const solarPresence = Math.max(0.18, daylightArc);
-    const radius = this.config.keyLight.radius * lerpNumber(1.25, 1.65, solarPresence);
-    const intensity = this.config.keyLight.intensity * lerpNumber(0.45, 0.78, solarPresence);
+    const daylightArc = Math.max(0, Math.sin(cycleTime * Math.PI));
+    const solarPresence = easeInOut(daylightArc);
+    const horizontalProgress = easeIn(cycleTime);
+    const radius = this.config.keyLight.radius * lerpNumber(1.2, 1.7, solarPresence);
+    const intensity = this.config.keyLight.intensity * lerpNumber(0.02, 0.72, solarPresence);
 
     return {
-      x: lerpNumber(-travelMargin, width + travelMargin, cycleTime),
+      x: lerpNumber(-travelMargin * 1.35, width + travelMargin, horizontalProgress),
       y: horizonY - daylightArc * verticalTravel,
       radius,
       intensity
@@ -664,4 +665,14 @@ function lerpColor(from: number, to: number, amount: number): number {
 function lerpNumber(from: number, to: number, amount: number): number {
   const t = Math.min(1, Math.max(0, amount));
   return from + (to - from) * t;
+}
+
+function easeInOut(value: number): number {
+  const t = Math.min(1, Math.max(0, value));
+  return t * t * (3 - 2 * t);
+}
+
+function easeIn(value: number): number {
+  const t = Math.min(1, Math.max(0, value));
+  return t * t;
 }
