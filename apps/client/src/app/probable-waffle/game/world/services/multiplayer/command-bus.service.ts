@@ -256,7 +256,7 @@ export class CommandBusService {
       } else {
         this.debugLog(`sending heartbeat tick=${futureTick} player=${this.localPlayerNumber}`);
       }
-      this.sendCommandBatch(futureTick, outbound);
+      this.sendCommandBatch(futureTick, outbound, "steady-state-tick");
     }
 
     // 3. Gate the next tick: stall until all peers have committed for tick+1
@@ -268,7 +268,11 @@ export class CommandBusService {
     this.buffer.gc(tick);
   }
 
-  private sendCommandBatch(tick: number, commands: GameCommand[]): void {
+  private sendCommandBatch(
+    tick: number,
+    commands: GameCommand[],
+    source: "startup-seed" | "steady-state-tick" | "snapshot-reset"
+  ): void {
     if (!this.scene || this.localPlayerNumber === null) return;
     // Use sendToServer() instead of send() so the local buffer is NOT self-committed
     // before server validation. The local player's batch is committed only when the
@@ -276,6 +280,18 @@ export class CommandBusService {
     const commandRelay = getCommunicator(this.scene).gameCommandChanged;
     if (!commandRelay) {
       return;
+    }
+    const acknowledgedLocalTick = this.lastReceivedTickByPlayer.get(this.localPlayerNumber) ?? -1;
+    if (tick <= acknowledgedLocalTick) {
+      // Older-than-ack sends are the clearest signal that a recovery/startup path
+      // emitted a heartbeat after the server had already accepted a newer local tick.
+      console.warn(
+        `[CommandBus][LATE-LOCAL-SEND] ${this.getMultiplayerLogContext()} source=${source} tick=${tick} acknowledgedLocalTick=${acknowledgedLocalTick} lastSentExecutionTick=${this.lastSentExecutionTick} commands=${commands.length}`
+      );
+    } else {
+      this.debugLog(
+        `emit source=${source} tick=${tick} acknowledgedLocalTick=${acknowledgedLocalTick} lastSentExecutionTick=${this.lastSentExecutionTick} commands=${commands.length}`
+      );
     }
 
     commandRelay.sendToServer({
@@ -356,7 +372,7 @@ export class CommandBusService {
       // because buffer.commit() merges rather than replaces.
       this.buffer.commit(tick, this.localPlayerNumber, []);
       this.lastSentExecutionTick = Math.max(this.lastSentExecutionTick, tick);
-      this.sendCommandBatch(tick, []);
+      this.sendCommandBatch(tick, [], "startup-seed");
     }
   }
 
@@ -403,7 +419,7 @@ export class CommandBusService {
         // stall before the server echo arrives.  Re-commit on echo is harmless.
         this.buffer.commit(tick, this.localPlayerNumber, []);
         this.lastSentExecutionTick = Math.max(this.lastSentExecutionTick, tick);
-        this.sendCommandBatch(tick, []);
+        this.sendCommandBatch(tick, [], "snapshot-reset");
       }
     }
 
