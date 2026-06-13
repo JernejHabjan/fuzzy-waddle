@@ -51,6 +51,17 @@ export class SimulationTickService {
   }
 
   /**
+   * Smooth simulation time for render-side interpolation.
+   *
+   * Deterministic gameplay should still use `tick$` / `currentTick`. This value is
+   * for visuals that must freeze with lockstep pauses instead of continuing on
+   * wall-clock time and overshooting the authoritative simulation frontier.
+   */
+  getInterpolatedTimeMs(): number {
+    return this.currentTick * SimulationTickService.TICK_INTERVAL_MS + this.accumulated;
+  }
+
+  /**
    * Scales how quickly simulation ticks advance relative to wall-clock frame delta.
    * Used by single-player speed controls; multiplayer should remain at 1x lockstep.
    */

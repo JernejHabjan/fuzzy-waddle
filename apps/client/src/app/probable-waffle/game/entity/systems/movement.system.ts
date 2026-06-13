@@ -26,7 +26,6 @@ import {
   SharedActorActionsSfxSnowSounds,
   SharedActorActionsSfxStoneSounds
 } from "../../sfx/shared-actor-actions-sfx";
-import { OwnerComponent } from "../components/owner-component";
 import { AnimationActorComponent } from "../components/animation/animation-actor-component";
 import { FlyingComponent } from "../components/movement/flying-component";
 import { MovementTerrainType } from "../components/movement/movement-terrain-type";
@@ -38,19 +37,15 @@ import { TilemapComponent } from "../../world/tilemap/tilemap.component";
 import type { IsoDirection } from "../components/movement/iso-directions";
 import type { PathMoveConfig } from "./path-move-config";
 import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
-import { CancelableSimDelay } from "../../world/services/simulation-time";
-import Tween = Phaser.Tweens.Tween;
-import TweenChain = Phaser.Tweens.TweenChain;
+import { getInterpolatedSimulationNow } from "../../world/services/simulation-time";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class MovementSystem {
   private _navigationService?: NavigationService;
-  private _currentTween?: Tween | TweenChain;
-  // Sim-tick arrival timer — cancelled together with _currentTween on cancelMovement().
-  private _currentMovementDelay?: CancelableSimDelay;
-  // Held so cancelMovement() can resolve the promise when the tween already completed
-  // naturally but the sim-delay hadn't fired yet (edge case: duration < TICK_INTERVAL_MS).
-  private _resolveCurrentMovement?: () => void;
+  // Active movement is driven from interpolated simulation time so visuals freeze
+  // with lockstep instead of reaching the tile early and waiting for the next
+  // authoritative simulation tick to unlock the following step.
+  private _cancelCurrentMovement?: () => void;
   private readonly DEBUG = false;
   private commandBusSubscription?: Subscription;
   private actorTranslateComponent?: ActorTranslateComponent;
@@ -283,17 +278,8 @@ export class MovementSystem {
   };
 
   cancelMovement() {
-    // Cancel the sim-tick arrival timer first so it can't fire after cancellation.
-    this._currentMovementDelay?.remove();
-    this._currentMovementDelay = undefined;
-    if (this._currentTween?.isPlaying()) {
-      this._currentTween.stop(); // triggers onStop → resolves the pending promise
-    } else if (this._resolveCurrentMovement) {
-      // Tween finished naturally but sim-delay hadn't fired; resolve the dangling promise.
-      this._resolveCurrentMovement();
-    }
-    this._resolveCurrentMovement = undefined;
-    this._currentTween = undefined;
+    this._cancelCurrentMovement?.();
+    this._cancelCurrentMovement = undefined;
   }
 
   /**
@@ -379,49 +365,24 @@ export class MovementSystem {
         standardStepDistance,
         tileDistanceMultiplier
       );
+      const startTransform = { ...logicalTransform };
+      const startTime = getInterpolatedSimulationNow(this.gameObject.scene);
+      let settled = false;
 
-      // Store resolve so cancelMovement() can settle the promise even if the visual tween
-      // already finished naturally but the sim-delay timer hasn't fired yet.
-      this._resolveCurrentMovement = resolve;
-
-      // Visual tween — runs on wall-clock time for smooth rendering only.
-      // Logical tile arrival is driven by _currentMovementDelay below (same sim tick on all clients).
-      this._currentTween = this.gameObject.scene.tweens.add({
-        targets: logicalTransform,
-        x: newLogicalTransform.x,
-        y: newLogicalTransform.y,
-        z: newLogicalTransform.z,
-        duration,
-        onComplete: () => {
-          // Visual tween reached destination; clear reference, logical arrival handled by sim-delay.
-          this._currentTween = undefined;
-        },
-        onStop: () => {
-          // Manual cancellation via cancelMovement() — cancel the sim-delay and settle.
-          this._currentMovementDelay?.remove();
-          this._currentMovementDelay = undefined;
-          this._resolveCurrentMovement = undefined;
-          if (onStop) {
-            onStop();
-          } else {
-            config?.onStop?.();
-            if (!config?.ignoreAnimations) this.playMovementAnimation(false, config);
-          }
-          resolve();
-        },
-        onUpdate: () => {
-          this.tweenUpdate(logicalTransform);
-          throttledTweenUpdate?.();
-          config?.onUpdate?.();
+      const cleanup = () => {
+        this.gameObject.scene.events.off(Phaser.Scenes.Events.UPDATE, updateMovement);
+        this.gameObject.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, cancelMovement);
+        if (this._cancelCurrentMovement === cancelMovement) {
+          this._cancelCurrentMovement = undefined;
         }
-      });
+      };
 
-      // Logical tile arrival — fires at the same simulation tick on all clients.
-      // Snaps logical position to destination in case the visual tween hasn't quite finished.
-      this._currentMovementDelay = new CancelableSimDelay(this.gameObject.scene, duration, async () => {
-        this._currentMovementDelay = undefined;
-        this._resolveCurrentMovement = undefined;
-        // Snap to destination so logical position is authoritative regardless of tween progress.
+      const finishMovement = async () => {
+        if (settled) {
+          return;
+        }
+        settled = true;
+        cleanup();
         logicalTransform.x = newLogicalTransform.x;
         logicalTransform.y = newLogicalTransform.y;
         logicalTransform.z = newLogicalTransform.z;
@@ -430,7 +391,44 @@ export class MovementSystem {
           await onComplete();
         }
         resolve();
-      });
+      };
+
+      const cancelMovement = () => {
+        if (settled) {
+          return;
+        }
+        settled = true;
+        cleanup();
+        if (onStop) {
+          onStop();
+        } else {
+          config?.onStop?.();
+          if (!config?.ignoreAnimations) this.playMovementAnimation(false, config);
+        }
+        resolve();
+      };
+
+      const updateMovement = () => {
+        const elapsed = Math.max(0, getInterpolatedSimulationNow(this.gameObject.scene) - startTime);
+        const progress = duration <= 0 ? 1 : Phaser.Math.Clamp(elapsed / duration, 0, 1);
+        logicalTransform.x = Phaser.Math.Linear(startTransform.x, newLogicalTransform.x, progress);
+        logicalTransform.y = Phaser.Math.Linear(startTransform.y, newLogicalTransform.y, progress);
+        logicalTransform.z = Phaser.Math.Linear(startTransform.z, newLogicalTransform.z, progress);
+        this.tweenUpdate(logicalTransform);
+        throttledTweenUpdate?.();
+        config?.onUpdate?.();
+        if (progress >= 1) {
+          void finishMovement();
+        }
+      };
+
+      // Movement progression is computed from interpolated simulation time.
+      // That keeps visual travel smooth while also freezing exactly when lockstep
+      // pauses, so the next path segment cannot be delayed behind a wall-clock tween.
+      this._cancelCurrentMovement = cancelMovement;
+      this.gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, updateMovement);
+      this.gameObject.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, cancelMovement);
+      updateMovement();
     });
   }
 

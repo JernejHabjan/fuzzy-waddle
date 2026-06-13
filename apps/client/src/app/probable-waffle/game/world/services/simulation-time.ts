@@ -10,6 +10,15 @@ export function getSimulationNow(scene: Phaser.Scene): number {
   return tickService.currentTick * SimulationTickService.TICK_INTERVAL_MS;
 }
 
+export function getInterpolatedSimulationNow(scene: Phaser.Scene): number {
+  const tickService = getSceneService(scene, SimulationTickService);
+  if (!tickService) {
+    return scene.time.now;
+  }
+
+  return tickService.getInterpolatedTimeMs();
+}
+
 export function getSimulationDelta(
   scene: Phaser.Scene,
   lastSimulationTimeMs: number | undefined
