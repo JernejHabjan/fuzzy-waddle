@@ -747,6 +747,10 @@ export class AttackComponent {
   }
 
   setData(data: Partial<AttackComponentData> & Partial<AttackDefinition>) {
+    if (data.remainingCooldown !== undefined || data.currentAttackIndex !== undefined) {
+      this.resetTransientAttackExecutionState();
+    }
+
     // Update runtime state
     if (data.remainingCooldown !== undefined) {
       this.remainingCooldown = data.remainingCooldown;
@@ -780,5 +784,26 @@ export class AttackComponent {
       remainingCooldown: this.remainingCooldown,
       currentAttackIndex
     };
+  }
+
+  /**
+   * Snapshot/desync correction replaces the authoritative combat runtime state.
+   * Any locally scheduled fire/hit timers from the pre-correction timeline must
+   * be cancelled first or they can re-fire after restore and reintroduce drift.
+   */
+  private resetTransientAttackExecutionState(): void {
+    if (this.fireTimer) {
+      this.fireTimer.remove();
+      this.fireTimer = undefined;
+    }
+    if (this.hitTimer) {
+      this.hitTimer.remove();
+      this.hitTimer = undefined;
+    }
+    for (const timer of this.projectileImpactTimers) {
+      timer.remove();
+    }
+    this.projectileImpactTimers.clear();
+    this.stopProjectile();
   }
 }

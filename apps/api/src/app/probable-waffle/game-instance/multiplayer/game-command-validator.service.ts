@@ -282,11 +282,12 @@ export class GameCommandValidatorService {
       this.logger.warn(`[GameCommand] Invalid actorIds for player ${playerNumber} in ${gameInstanceId}`);
       return `invalid actorIds for player ${playerNumber}`;
     }
+    const unknownActorIds: string[] = [];
     for (const actorId of actorIds) {
       const actor = actorIndex.get(actorId);
       if (!actor) {
-        this.logger.warn(`[GameCommand] Unknown actor ${actorId} for player ${playerNumber} in ${gameInstanceId}`);
-        return `unknown actor "${actorId}"`;
+        unknownActorIds.push(actorId);
+        continue;
       }
       if (actor.owner?.ownerId !== playerNumber) {
         this.logger.warn(
@@ -294,6 +295,16 @@ export class GameCommandValidatorService {
         );
         return `actor "${actorId}" not owned by player ${playerNumber}`;
       }
+    }
+    if (unknownActorIds.length > 0) {
+      // The API mirrors game-instance state for validation/history, but the host
+      // scene is still the live authority for actor lifecycle during long-running
+      // matches and desync correction. Rejecting commands here on "unknown actor"
+      // would drop valid authoritative inputs whenever the server-side mirror lags.
+      this.logger.warn(
+        `[GameCommand] Allowing ${unknownActorIds.length} unknown actor id(s) for player ${playerNumber} in ${gameInstanceId}; ` +
+          `server actor mirror is behind authoritative sim. sample=${unknownActorIds.slice(0, 3).join(",")}`
+      );
     }
 
     switch (type) {

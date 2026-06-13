@@ -417,6 +417,7 @@ export class CommandBusService {
    * regress and get rejected as stale by the server.
    */
   resetAfterSnapshot(snapshotTick: number, commandTail: readonly ProbableWaffleReplayCommandBatch[] = []): void {
+    const preResetLastSentExecutionTick = this.lastSentExecutionTick;
     this.buffer.clear();
     this.pendingOutbound.clear();
     this.clearPendingStallLog();
@@ -432,7 +433,15 @@ export class CommandBusService {
             .filter((batch) => batch.playerNumber === this.localPlayerNumber)
             .reduce((maxTick, batch) => Math.max(maxTick, batch.tick), snapshotTick)
         : snapshotTick;
-    const resetBaselineTick = Math.max(snapshotTick, acceptedLocalTick, localTailTick);
+    // Snapshot correction can land after the steady-state sender already emitted
+    // one or more future heartbeats. Keep that pre-reset frontier in the baseline
+    // so recovery does not re-seed ticks the live sender already claimed.
+    const resetBaselineTick = Math.max(snapshotTick, acceptedLocalTick, localTailTick, preResetLastSentExecutionTick);
+    if (preResetLastSentExecutionTick > Math.max(snapshotTick, acceptedLocalTick, localTailTick)) {
+      this.logger.warn(
+        `[CommandBus][SNAPSHOT-RESET-CLAMP] ${this.getMultiplayerLogContext()} snapshotTick=${snapshotTick} acceptedLocalTick=${acceptedLocalTick} localTailTick=${localTailTick} preResetLastSentTick=${preResetLastSentExecutionTick} resetBaselineTick=${resetBaselineTick}`
+      );
+    }
     this.lastSentExecutionTick = resetBaselineTick;
 
     if (this.localPlayerNumber !== null) {
