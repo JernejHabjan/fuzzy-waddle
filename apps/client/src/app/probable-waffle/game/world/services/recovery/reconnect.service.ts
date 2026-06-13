@@ -52,6 +52,9 @@ export class ReconnectService {
   private awaitingReconnect = false;
   private reseedSent = false;
 
+  private static readonly AUTHORITATIVE_CORRECTION_STRUCTURAL_REBUILD_REASON =
+    "authoritative correction included structural actor churn";
+
   init(scene: ProbableWaffleScene): void {
     const communicator = getCommunicator(scene);
     if (!communicator.snapshotRequested || !communicator.snapshotResponse) {
@@ -240,107 +243,39 @@ export class ReconnectService {
 
       const currentActors = [...actorIndex.getAllIdActors()];
       if (response.reason === "desync-correction") {
-        // Desync correction preserves the live scene where possible so users do not
-        // see a full world rebuild for a small divergence. Reconnect/spectator
-        // catch-up instead rebuilds from scratch because arbitrary lifecycle events
-        // may have been missed while the client was away.
-        this.applyActorSnapshotInPlace(actorIndex, creator, currentActors, snapshot.actors as ActorDefinition[]);
-      } else {
-        // Reconnect and spectator catch-up rebuild from a clean baseline because the
-        // client may have missed arbitrary actor lifecycle events while offline.
-        const removedActorDiagnostics = currentActors
-          .map((actor) => {
-            const id = getActorComponent(actor, IdComponent)?.id;
-            if (!id || snapshotActorIds.has(id)) {
-              return undefined;
-            }
-            const owner = getActorComponent(actor, OwnerComponent)?.getOwner();
-            const logicalTransform = getGameObjectLogicalTransform(actor);
-            return {
-              id,
-              name: actor.name,
-              owner,
-              x: logicalTransform ? Math.round(logicalTransform.x) : undefined,
-              y: logicalTransform ? Math.round(logicalTransform.y) : undefined,
-              z: logicalTransform ? Math.round(logicalTransform.z) : undefined
-            };
-          })
-          .filter((diagnostic) => diagnostic !== undefined);
-        if (removedActorDiagnostics.length > 0) {
+        // In-place correction is only safe while actor identity/lifecycle stayed stable.
+        // Once correction needs create/destroy/relabel work, a full rebuild is required
+        // or old runtime references can survive and reintroduce the same desync.
+        const inPlaceResult = this.applyActorSnapshotInPlace(
+          actorIndex,
+          creator,
+          currentActors,
+          snapshot.actors as ActorDefinition[]
+        );
+        if (inPlaceResult.requiresFullRebuild) {
           this.logger.warn(
-            `[Reconnect] Snapshot ${response.reason ?? "reconnect"} will remove ${removedActorDiagnostics.length} local actors not present on host snapshot.`,
-            removedActorDiagnostics
+            `[Reconnect] Escalating desync correction to full rebuild. reason=${inPlaceResult.reason}`
+          );
+          this.rebuildActorsFromSnapshot(
+            actorIndex,
+            creator,
+            currentActors,
+            snapshot.actors as ActorDefinition[],
+            snapshotActorIds,
+            snapshotActorById,
+            response.reason ?? "reconnect"
           );
         }
-
-      for (const actor of currentActors) {
-        actor.destroy();
-      }
-
-      // Re-create actors from the snapshot definitions.
-      for (const def of snapshot.actors) {
-        creator.createActorFromDefinition(def as ActorDefinition);
-      }
-
-      this.reconcileSnapshotActorIds(actorIndex, snapshot.actors as ActorDefinition[]);
-
-      const indexedActorIds = new Set(
-        actorIndex
-          .getAllIdActors()
-          .map((actor) => getActorComponent(actor, IdComponent)?.id)
-          .filter((actorId): actorId is string => !!actorId)
-      );
-      const missingInIndexAfterReconcile = [...snapshotActorIds].filter((id) => !indexedActorIds.has(id));
-      if (missingInIndexAfterReconcile.length > 0) {
-        for (const missingId of missingInIndexAfterReconcile) {
-          const missingDef = snapshotActorById.get(missingId);
-          if (!missingDef) {
-            continue;
-          }
-          const recreated = creator.createActorFromDefinition(missingDef);
-          const recreatedId = recreated ? getActorComponent(recreated, IdComponent)?.id : undefined;
-          if (recreatedId === missingId) {
-            indexedActorIds.add(missingId);
-          }
-        }
-      }
-
-      const finalIndexedActorIds = new Set(
-        actorIndex
-          .getAllIdActors()
-          .map((actor) => getActorComponent(actor, IdComponent)?.id)
-          .filter((actorId): actorId is string => !!actorId)
-      );
-      const missingAfterRestore = [...snapshotActorIds].filter((id) => !finalIndexedActorIds.has(id));
-      const extrasAfterRestore = [...finalIndexedActorIds].filter((id) => !snapshotActorIds.has(id));
-      if (missingAfterRestore.length > 0 || extrasAfterRestore.length > 0) {
-        const missingSummaries = missingAfterRestore.map((id) => ({
-          id,
-          name: snapshotActorById.get(id)?.name ?? "unknown",
-          signature: this.buildSnapshotActorSignature(snapshotActorById.get(id))
-        }));
-        const extraSummaries = actorIndex
-          .getAllIdActors()
-          .map((actor) => {
-            const id = getActorComponent(actor, IdComponent)?.id;
-            if (!id || snapshotActorIds.has(id)) {
-              return undefined;
-            }
-            return {
-              id,
-              name: actor.name,
-              signature: this.buildLiveActorSignature(actor)
-            };
-          })
-          .filter((entry) => entry !== undefined);
-        this.logger.error(
-          `[Reconnect] Snapshot restore mismatch after recreation. reason=${response.reason ?? "reconnect"} missing=${missingAfterRestore.length} extra=${extrasAfterRestore.length}.`,
-          {
-            missingActors: missingSummaries,
-            extraActors: extraSummaries
-          }
+      } else {
+        this.rebuildActorsFromSnapshot(
+          actorIndex,
+          creator,
+          currentActors,
+          snapshot.actors as ActorDefinition[],
+          snapshotActorIds,
+          snapshotActorById,
+          response.reason ?? "reconnect"
         );
-      }
       }
 
       // Restore per-player state data (resources, housing, summary, selection).
@@ -415,7 +350,7 @@ export class ReconnectService {
     creator: SceneActorCreator,
     currentActors: readonly Phaser.GameObjects.GameObject[],
     snapshotActors: readonly ActorDefinition[]
-  ): void {
+  ): { requiresFullRebuild: boolean; reason?: string } {
     // The host snapshot is authoritative on ids, names, and transforms. Applying
     // in place avoids twitchy full-scene rebuilds while still converging every
     // actor to the host's deterministic state.
@@ -431,6 +366,7 @@ export class ReconnectService {
     let updated = 0;
     let created = 0;
     let destroyed = 0;
+    let replacedByNameMismatch = 0;
     for (const snapshotActor of snapshotActors) {
       const actorId = snapshotActor.id?.id;
       if (!actorId) {
@@ -441,6 +377,7 @@ export class ReconnectService {
         if (snapshotActor.name && liveActor.name !== snapshotActor.name) {
           liveActor.destroy();
           destroyed += 1;
+          replacedByNameMismatch += 1;
           if (creator.createActorFromDefinition(snapshotActor)) {
             created += 1;
           }
@@ -470,10 +407,129 @@ export class ReconnectService {
     const missing = [...snapshotActorIds].filter((actorId) => !finalIds.has(actorId));
     if (missing.length > 0) {
       this.logger.error(`[DESYNC] In-place correction still missing ${missing.length} actors after apply.`, missing);
+      return {
+        requiresFullRebuild: true,
+        reason: "in-place correction left authoritative actor ids missing"
+      };
     }
     this.logger.warn(
       `[DESYNC] In-place host correction reconciled actors. updated=${updated} created=${created} destroyed=${destroyed}`
     );
+    if (created > 0 || destroyed > 0 || replacedByNameMismatch > 0) {
+      return {
+        requiresFullRebuild: true,
+        reason: ReconnectService.AUTHORITATIVE_CORRECTION_STRUCTURAL_REBUILD_REASON
+      };
+    }
+    return { requiresFullRebuild: false };
+  }
+
+  /**
+   * Rebuilds the live scene from the authoritative snapshot when correction crosses
+   * an identity/lifecycle boundary. Command-tail replay can recover timing, but it
+   * cannot safely recover stale object references from a structurally divergent scene.
+   */
+  private rebuildActorsFromSnapshot(
+    actorIndex: ActorIndexSystem,
+    creator: SceneActorCreator,
+    currentActors: readonly Phaser.GameObjects.GameObject[],
+    snapshotActors: readonly ActorDefinition[],
+    snapshotActorIds: ReadonlySet<string>,
+    snapshotActorById: ReadonlyMap<string, ActorDefinition & { id: { id: string } }>,
+    reason: string
+  ): void {
+    const removedActorDiagnostics = currentActors
+      .map((actor) => {
+        const id = getActorComponent(actor, IdComponent)?.id;
+        if (!id || snapshotActorIds.has(id)) {
+          return undefined;
+        }
+        const owner = getActorComponent(actor, OwnerComponent)?.getOwner();
+        const logicalTransform = getGameObjectLogicalTransform(actor);
+        return {
+          id,
+          name: actor.name,
+          owner,
+          x: logicalTransform ? Math.round(logicalTransform.x) : undefined,
+          y: logicalTransform ? Math.round(logicalTransform.y) : undefined,
+          z: logicalTransform ? Math.round(logicalTransform.z) : undefined
+        };
+      })
+      .filter((diagnostic) => diagnostic !== undefined);
+    if (removedActorDiagnostics.length > 0) {
+      this.logger.warn(
+        `[Reconnect] Snapshot ${reason} will remove ${removedActorDiagnostics.length} local actors not present on host snapshot.`,
+        removedActorDiagnostics
+      );
+    }
+
+    for (const actor of currentActors) {
+      actor.destroy();
+    }
+
+    for (const def of snapshotActors) {
+      creator.createActorFromDefinition(def);
+    }
+
+    this.reconcileSnapshotActorIds(actorIndex, snapshotActors);
+
+    const indexedActorIds = new Set(
+      actorIndex
+        .getAllIdActors()
+        .map((actor) => getActorComponent(actor, IdComponent)?.id)
+        .filter((actorId): actorId is string => !!actorId)
+    );
+    const missingInIndexAfterReconcile = [...snapshotActorIds].filter((id) => !indexedActorIds.has(id));
+    if (missingInIndexAfterReconcile.length > 0) {
+      for (const missingId of missingInIndexAfterReconcile) {
+        const missingDef = snapshotActorById.get(missingId);
+        if (!missingDef) {
+          continue;
+        }
+        const recreated = creator.createActorFromDefinition(missingDef);
+        const recreatedId = recreated ? getActorComponent(recreated, IdComponent)?.id : undefined;
+        if (recreatedId === missingId) {
+          indexedActorIds.add(missingId);
+        }
+      }
+    }
+
+    const finalIndexedActorIds = new Set(
+      actorIndex
+        .getAllIdActors()
+        .map((actor) => getActorComponent(actor, IdComponent)?.id)
+        .filter((actorId): actorId is string => !!actorId)
+    );
+    const missingAfterRestore = [...snapshotActorIds].filter((id) => !finalIndexedActorIds.has(id));
+    const extrasAfterRestore = [...finalIndexedActorIds].filter((id) => !snapshotActorIds.has(id));
+    if (missingAfterRestore.length > 0 || extrasAfterRestore.length > 0) {
+      const missingSummaries = missingAfterRestore.map((id) => ({
+        id,
+        name: snapshotActorById.get(id)?.name ?? "unknown",
+        signature: this.buildSnapshotActorSignature(snapshotActorById.get(id))
+      }));
+      const extraSummaries = actorIndex
+        .getAllIdActors()
+        .map((actor) => {
+          const id = getActorComponent(actor, IdComponent)?.id;
+          if (!id || snapshotActorIds.has(id)) {
+            return undefined;
+          }
+          return {
+            id,
+            name: actor.name,
+            signature: this.buildLiveActorSignature(actor)
+          };
+        })
+        .filter((entry) => entry !== undefined);
+      this.logger.error(
+        `[Reconnect] Snapshot restore mismatch after recreation. reason=${reason} missing=${missingAfterRestore.length} extra=${extrasAfterRestore.length}.`,
+        {
+          missingActors: missingSummaries,
+          extraActors: extraSummaries
+        }
+      );
+    }
   }
 
   /**
