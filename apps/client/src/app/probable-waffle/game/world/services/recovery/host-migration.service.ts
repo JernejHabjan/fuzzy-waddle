@@ -5,11 +5,13 @@ import { getCommunicator } from "../../../data/scene-data";
 import { getSceneSystem } from "../scene-component-helpers";
 import { SnapshotService } from "./snapshot.service";
 import { AiPlayerHandler } from "../../../player/ai-controller/ai-player-handler";
+import { createMultiplayerClientLogger } from "../multiplayer/multiplayer-client-logger";
 
 /** Handles ownership handoff so a newly promoted host immediately starts serving snapshots. */
 export class HostMigrationService {
   private hostMigrationSub?: Subscription;
   private snapshotService?: SnapshotService;
+  private readonly logger = createMultiplayerClientLogger("HostMigration");
 
   init(scene: ProbableWaffleScene): void {
     const communicator = getCommunicator(scene);
@@ -22,7 +24,7 @@ export class HostMigrationService {
         return;
       }
 
-      console.info(
+      this.logger.info(
         `[HostMigration] Host moved from ${event.previousHostUserId ?? "unknown"} to ${event.currentHostUserId}.`
       );
 

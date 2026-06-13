@@ -12,6 +12,7 @@ import {
   ProbableWaffleSceneEventName,
   type ReconnectSnapshotAppliedSceneEvent
 } from "./probable-waffle-scene-events";
+import { createMultiplayerClientLogger } from "../multiplayer/multiplayer-client-logger";
 
 type PendingReconnect = {
   timer: Phaser.Time.TimerEvent;
@@ -21,6 +22,7 @@ type PendingReconnect = {
 
 export class ConnectionRecoveryService {
   private static readonly PAUSE_AFTER_MS = 3000;
+  private readonly logger = createMultiplayerClientLogger("Reconnect");
 
   private disconnectSub?: Subscription;
   private reconnectSub?: Subscription;
@@ -100,7 +102,7 @@ export class ConnectionRecoveryService {
       this.pendingReconnects.delete(event.playerNumber);
       this.activeReconnects.add(event.playerNumber);
       this.pauseAndShowDialog();
-      console.warn(
+      this.logger.warn(
         `[Reconnect] Pausing for disconnected player ${event.playerNumber}. reconnectWindowSeconds=${event.reconnectWindowSeconds}`
       );
     });
@@ -122,7 +124,7 @@ export class ConnectionRecoveryService {
       return;
     }
 
-    console.info(`[Reconnect] Player ${playerNumber} recovered. Resuming reconnect flow.`);
+    this.logger.info(`[Reconnect] Player ${playerNumber} recovered. Resuming reconnect flow.`);
     this.updateDialogAndPause();
   }
 
@@ -186,7 +188,7 @@ export class ConnectionRecoveryService {
       },
       true
     );
-    console.warn(`[Reconnect] Local socket disconnected. reason=${event.reason ?? "unknown"}`);
+    this.logger.warn(`[Reconnect] Local socket disconnected. reason=${event.reason ?? "unknown"}`);
   };
 
   private readonly onSnapshotApplied = (event: ReconnectSnapshotAppliedSceneEvent) => {

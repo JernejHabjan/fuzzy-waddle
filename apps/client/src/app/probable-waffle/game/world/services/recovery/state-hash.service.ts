@@ -23,6 +23,7 @@ import { ActorManager } from "../../../data/actor-manager";
 import { PawnAiController } from "../../../prefabs/ai-agents/pawn-ai-controller";
 import { ProbableWaffleSceneEventName } from "./probable-waffle-scene-events";
 import type { ReconnectSnapshotAppliedSceneEvent } from "./probable-waffle-scene-events";
+import { createMultiplayerClientLogger } from "../multiplayer/multiplayer-client-logger";
 
 interface HashSnapshot {
   hash: string;
@@ -63,6 +64,7 @@ interface PendingCorrection {
  * the desynced client while automatic snapshot correction retries run.
  */
 export class StateHashService {
+  private readonly logger = createMultiplayerClientLogger("StateHash");
   private readonly localHashes = new Map<number, HashSnapshot>();
   private tickSub?: Subscription;
   private hashReceivedSub?: Subscription;
@@ -216,7 +218,7 @@ export class StateHashService {
       const signature = `${event.tick}|${event.playerNumber ?? "unknown"}|${earliestTick}|${latestTick}|${pauseReasons}|${currentTickLabel}`;
       if (this.missingLocalHashLogSignature !== signature) {
         this.missingLocalHashLogSignature = signature;
-        console.warn(
+        this.logger.warn(
           `[DESYNC] Missing local hash for tick=${event.tick} (remotePlayer=${event.playerNumber ?? "unknown"} remoteHash=${event.hash}). ` +
             `Known local hash ticks range: ${earliestTick}..${latestTick}. localPlayer=${localPlayerNumber} ${localContext} ` +
             `currentTick=${currentTickLabel} pauses=${pauseReasons}. ` +
@@ -233,7 +235,7 @@ export class StateHashService {
         const previousMismatchReason = this.activeMismatches.get(event.playerNumber);
         if (this.activeMismatches.delete(event.playerNumber)) {
           this.lastMismatchLogTickByPlayer.delete(event.playerNumber);
-          console.info(
+          this.logger.info(
             `[DESYNC] Player ${event.playerNumber} hash converged at tick ${event.tick}. ${this.getHashEventAuthorityContext(scene, event.playerNumber, event.emitterUserId)} previousReason=${previousMismatchReason ?? "unknown"}`
           );
           scene.events.emit(ProbableWaffleSceneEventName.DesyncStateChanged, {
@@ -254,7 +256,7 @@ export class StateHashService {
       if (event.playerNumber !== undefined) {
         this.pendingCorrections.delete(event.playerNumber);
       }
-      console.info(
+      this.logger.info(
         `[DESYNC] Ignored transient movement position drift at tick=${event.tick}. ` +
           `${this.getHashEventAuthorityContext(scene, event.playerNumber, event.emitterUserId)} ${transientMovementDrift}`
       );
@@ -277,7 +279,7 @@ export class StateHashService {
       diagnosticsDiff.playerDiffs.length > 0 ||
       diagnosticsDiff.researchDiff
     ) {
-      console.warn(`[DESYNC][DIFF] tick=${event.tick} remotePlayer=${event.playerNumber ?? "unknown"}`, {
+      this.logger.warn(`[DESYNC][DIFF] tick=${event.tick} remotePlayer=${event.playerNumber ?? "unknown"}`, {
         authority: this.getHashEventAuthorityContext(scene, event.playerNumber, event.emitterUserId),
         actorDiffCount: diagnosticsDiff.actorDiffs.length,
         playerDiffCount: diagnosticsDiff.playerDiffs.length,
@@ -287,7 +289,7 @@ export class StateHashService {
       });
     }
     if (classifiedMismatch) {
-      console.warn(
+      this.logger.warn(
         `[DESYNC][CAUSE] tick=${event.tick} localPlayer=${localPlayerNumber} remotePlayer=${event.playerNumber ?? "unknown"} ${this.getHashEventAuthorityContext(scene, event.playerNumber, event.emitterUserId)} ${classifiedMismatch}`
       );
     }
@@ -307,7 +309,7 @@ export class StateHashService {
       const previousMismatchReason = this.activeMismatches.get(event.playerNumber);
       const lastLoggedTick = this.lastMismatchLogTickByPlayer.get(event.playerNumber) ?? -Infinity;
       if (previousMismatchReason !== mismatchReason || event.tick - lastLoggedTick >= HASH_INTERVAL_TICKS) {
-        console.error(
+        this.logger.error(
           `[DESYNC] tick=${event.tick} localPlayer=${localPlayerNumber} remotePlayer=${event.playerNumber} ${this.getHashEventAuthorityContext(scene, event.playerNumber, event.emitterUserId)} ` +
             `local=${localSnapshot.hash} remote=${event.hash} reason=${mismatchReason}`
         );
@@ -320,7 +322,7 @@ export class StateHashService {
         reason: mismatchReason
       });
     } else {
-      console.error(
+      this.logger.error(
         `[DESYNC] tick=${event.tick} localPlayer=${localPlayerNumber} remotePlayer=${event.playerNumber} ${this.getHashEventAuthorityContext(scene, event.playerNumber, event.emitterUserId)} ` +
           `local=${localSnapshot.hash} remote=${event.hash} reason=${mismatchReason}`
       );
@@ -344,7 +346,7 @@ export class StateHashService {
     this.activeMismatches.clear();
     this.lastMismatchLogTickByPlayer.clear();
     this.clearDesyncIndicator();
-    console.info(
+    this.logger.info(
       `[DESYNC] Hash baseline reset after snapshot apply. ${this.getLocalAuthorityContext(this.scene)} reason=${event.reason ?? "unknown"} tick=${event.tick ?? "unknown"}`
     );
   };
@@ -369,7 +371,7 @@ export class StateHashService {
         correctionAttempts: 1,
         reason
       });
-      console.warn(
+      this.logger.warn(
         `[DESYNC] Sent correction snapshot to player ${remotePlayerNumber} at tick ${tick}. ${this.getLocalAuthorityContext(scene)} reason=${reason}`
       );
       return;
@@ -383,13 +385,13 @@ export class StateHashService {
       getSceneService(scene, SnapshotService)?.sendSnapshot(scene, existing.emitterUserId, "desync-correction");
       existing.lastCorrectionTick = currentTick;
       existing.correctionAttempts += 1;
-      console.warn(
+      this.logger.warn(
         `[DESYNC] Retried correction snapshot to player ${remotePlayerNumber} at tick ${tick}. ${this.getLocalAuthorityContext(scene)} attempts=${existing.correctionAttempts} reason=${existing.reason ?? "unknown"}`
       );
     }
 
     if (currentTick - existing.firstDetectedTick >= HASH_INTERVAL_TICKS * 6) {
-      console.error(
+      this.logger.error(
         `[DESYNC] Player ${remotePlayerNumber} is still divergent after ${existing.correctionAttempts} correction attempts. ` +
           `${this.getLocalAuthorityContext(scene)} Continuing automatic correction retries. reason=${existing.reason ?? "unknown"}`
       );
@@ -537,12 +539,45 @@ export class StateHashService {
       return "";
     }
 
+    // Hash stable order intent only. Full blackboard/runtime blobs contain transient
+    // bookkeeping like status and failed-order history that can differ briefly after
+    // correction without changing future gameplay decisions. Keeping the hash focused
+    // on current/queued order intent makes desync reports point at actual sim drift.
     return this.stableSerialize({
-      status: blackboard.status,
-      currentOrder: blackboard.currentOrder,
-      orderQueue: blackboard.orderQueue,
-      failedOrders: blackboard.failedOrders
+      currentOrder: this.summarizeOrderForHash(blackboard.currentOrder),
+      orderQueue: (blackboard.orderQueue ?? []).map((order: unknown) => this.summarizeOrderForHash(order)),
+      queueLength: Array.isArray(blackboard.orderQueue) ? blackboard.orderQueue.length : 0
     });
+  }
+
+  /**
+   * Reduce an order object to the deterministic intent that should affect future sim:
+   * order type, stable actor target id, and logical tile target. Volatile runtime
+   * references and bookkeeping fields are intentionally excluded from the hash.
+   */
+  private summarizeOrderForHash(order: unknown): unknown {
+    if (!order || typeof order !== "object") {
+      return order ?? null;
+    }
+
+    const orderRecord = order as Record<string, unknown>;
+    const data = (orderRecord["data"] as Record<string, unknown> | undefined) ?? undefined;
+    const targetTileLocation =
+      data && typeof data["targetTileLocation"] === "object" && data["targetTileLocation"] !== null
+        ? {
+            x: Math.round(Number((data["targetTileLocation"] as Record<string, unknown>)["x"] ?? 0)),
+            y: Math.round(Number((data["targetTileLocation"] as Record<string, unknown>)["y"] ?? 0)),
+            z: Math.round(Number((data["targetTileLocation"] as Record<string, unknown>)["z"] ?? 0))
+          }
+        : undefined;
+
+    return {
+      orderType: orderRecord["orderType"] ?? null,
+      data: {
+        targetGameObjectId: data?.["targetGameObjectId"] ?? null,
+        targetTileLocation
+      }
+    };
   }
 
   /** Deterministic serializer with stable object-key ordering to avoid hash noise from key order. */

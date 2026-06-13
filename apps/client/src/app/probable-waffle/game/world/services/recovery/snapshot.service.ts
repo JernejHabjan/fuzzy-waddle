@@ -16,6 +16,7 @@ import type {
 } from "@fuzzy-waddle/api-interfaces";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { CancelableSimDelay } from "../simulation-time";
+import { createMultiplayerClientLogger } from "../multiplayer/multiplayer-client-logger";
 
 /** How often the host refreshes its stored snapshot (in milliseconds). */
 const SNAPSHOT_REFRESH_INTERVAL_MS = 60_000;
@@ -37,6 +38,7 @@ export class SnapshotService {
   private latestSnapshot: ProbableWaffleSnapshotData | null = null;
   private refreshHandle?: ReturnType<typeof setInterval>;
   private requestSub?: Subscription;
+  private readonly logger = createMultiplayerClientLogger("SnapshotService");
 
   init(scene: ProbableWaffleScene): void {
     // Only the host generates and serves snapshots.
@@ -141,7 +143,7 @@ export class SnapshotService {
     this.captureSnapshot(scene);
 
     if (!this.latestSnapshot) {
-      console.warn("[SnapshotService] Could not build snapshot for requesting client.");
+      this.logger.warn("[SnapshotService] Could not build snapshot for requesting client.");
       return;
     }
 

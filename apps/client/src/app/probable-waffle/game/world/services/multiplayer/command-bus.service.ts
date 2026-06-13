@@ -14,6 +14,7 @@ import { ActorIndexSystem } from "../ActorIndexSystem";
 import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "../../../entity/components/owner-component";
 import { isMultiplayerDebugEnabled } from "./multiplayer-debug";
+import { createMultiplayerClientLogger } from "./multiplayer-client-logger";
 
 /**
  * Central command bus for all player- and AI-issued simulation commands.
@@ -59,6 +60,10 @@ export class CommandBusService {
   private readonly subscriptions: Subscription[] = [];
   private scene: ProbableWaffleScene | null = null;
   private readonly debug = isMultiplayerDebugEnabled();
+  private readonly logger = createMultiplayerClientLogger("CommandBus");
+  // Keep a short recent timeline of local tick lifecycle events so stale-heartbeat
+  // and stall logs can show how a problematic tick moved through send/echo/commit.
+  private readonly localTickTimeline = new Map<number, string[]>();
   private lastSentExecutionTick = 0;
   private stallSignature: string | null = null;
   private stallLogTimer: number | null = null;
@@ -81,11 +86,11 @@ export class CommandBusService {
       .map((p) => p.playerNumber!);
     this.humanPlayerNumbers.sort((a, b) => a - b);
     if (this.localPlayerNumber === null) {
-      console.error(
+      this.logger.error(
         `[CommandBus] ${this.getMultiplayerLogContext()} Could not resolve local player number. Local command batches cannot be sent.`
       );
     } else if (!this.humanPlayerNumbers.includes(this.localPlayerNumber)) {
-      console.error(
+      this.logger.error(
         `[CommandBus] ${this.getMultiplayerLogContext()} Local player ${this.localPlayerNumber} is not part of human lockstep set [${this.humanPlayerNumbers.join(",") || "none"}].`
       );
     }
@@ -110,8 +115,8 @@ export class CommandBusService {
         if (event.rejectionReason && event.playerNumber === this.localPlayerNumber) {
           // The server rejected our batch (payload invalid) and relayed an empty one.
           // Log clearly so the developer can see what caused the desync.
-          console.error(
-            `[CommandBus] ${this.getMultiplayerLogContext()} Server rejected batch for tick=${event.tick} player=${event.playerNumber}: ${event.rejectionReason}`
+          this.logger.error(
+            `[CommandBus] ${this.getMultiplayerLogContext()} Server rejected batch for tick=${event.tick} player=${event.playerNumber}: ${event.rejectionReason} recentLocalTicks={${this.describeRecentLocalTickTimeline()}}`
           );
         }
         if (event.commands.length > 0) {
@@ -124,6 +129,12 @@ export class CommandBusService {
         this.backfillStartupHeartbeatGap(event.playerNumber, event.tick);
         this.lastReceivedTickByPlayer.set(event.playerNumber, event.tick);
         this.buffer.commit(event.tick, event.playerNumber, event.commands as GameCommand[]);
+        if (event.playerNumber === this.localPlayerNumber) {
+          this.recordLocalTickStage(
+            event.tick,
+            event.rejectionReason ? `echo-empty(${event.rejectionReason})` : `echo(${event.commands.length})`
+          );
+        }
         this.emitRecordedBatch({
           tick: event.tick,
           playerNumber: event.playerNumber,
@@ -249,6 +260,7 @@ export class CommandBusService {
     if (this.localPlayerNumber !== null) {
       this.lastSentExecutionTick = Math.max(this.lastSentExecutionTick, futureTick);
       this.lastSentTickByLocalPlayer = futureTick;
+      this.recordLocalTickStage(futureTick, outbound.length > 0 ? `scheduled(${outbound.length})` : "scheduled(0)");
       if (outbound.length > 0) {
         this.debugLog(
           `sending batch tick=${futureTick} player=${this.localPlayerNumber} commands=${outbound.length} types=${this.describeCommandTypes(outbound)}`
@@ -282,11 +294,13 @@ export class CommandBusService {
       return;
     }
     const acknowledgedLocalTick = this.lastReceivedTickByPlayer.get(this.localPlayerNumber) ?? -1;
+    this.recordLocalTickStage(tick, `${source}:${commands.length > 0 ? "send-batch" : "send-heartbeat"}`);
     if (tick <= acknowledgedLocalTick) {
       // Older-than-ack sends are the clearest signal that a recovery/startup path
       // emitted a heartbeat after the server had already accepted a newer local tick.
-      console.warn(
-        `[CommandBus][LATE-LOCAL-SEND] ${this.getMultiplayerLogContext()} source=${source} tick=${tick} acknowledgedLocalTick=${acknowledgedLocalTick} lastSentExecutionTick=${this.lastSentExecutionTick} commands=${commands.length}`
+      this.recordLocalTickStage(tick, `late-vs-ack(${acknowledgedLocalTick})`);
+      this.logger.warn(
+        `[CommandBus][LATE-LOCAL-SEND] ${this.getMultiplayerLogContext()} source=${source} tick=${tick} acknowledgedLocalTick=${acknowledgedLocalTick} lastSentExecutionTick=${this.lastSentExecutionTick} commands=${commands.length} recentLocalTicks={${this.describeRecentLocalTickTimeline()}}`
       );
     } else {
       this.debugLog(
@@ -355,7 +369,7 @@ export class CommandBusService {
     if (filledTicks.length === 0) {
       return;
     }
-    console.warn(
+    this.logger.warn(
       `[CommandBus][STARTUP-BACKFILL] ${this.getMultiplayerLogContext()} player=${playerNumber} receivedTick=${receivedTick} filledTicks=${filledTicks.join(",")}`
     );
   }
@@ -371,6 +385,7 @@ export class CommandBusService {
       // The server will echo these back too (and re-commit them), which is harmless
       // because buffer.commit() merges rather than replaces.
       this.buffer.commit(tick, this.localPlayerNumber, []);
+      this.recordLocalTickStage(tick, "seed-local-commit");
       this.lastSentExecutionTick = Math.max(this.lastSentExecutionTick, tick);
       this.sendCommandBatch(tick, [], "startup-seed");
     }
@@ -418,6 +433,7 @@ export class CommandBusService {
         // Same as seedInitialTicks: directly commit here so the barrier doesn't
         // stall before the server echo arrives.  Re-commit on echo is harmless.
         this.buffer.commit(tick, this.localPlayerNumber, []);
+        this.recordLocalTickStage(tick, "snapshot-local-commit");
         this.lastSentExecutionTick = Math.max(this.lastSentExecutionTick, tick);
         this.sendCommandBatch(tick, [], "snapshot-reset");
       }
@@ -474,7 +490,35 @@ export class CommandBusService {
     if (!this.debug) {
       return;
     }
-    console.info(`[CommandBus] ${this.getMultiplayerLogContext()} ${message}`);
+    this.logger.info(`[CommandBus] ${this.getMultiplayerLogContext()} ${message}`);
+  }
+
+  private recordLocalTickStage(tick: number, stage: string): void {
+    if (!Number.isInteger(tick) || tick < 0) {
+      return;
+    }
+    const stages = this.localTickTimeline.get(tick) ?? [];
+    stages.push(stage);
+    // Keep the per-tick sequence readable in logs without letting noisy repeats grow forever.
+    if (stages.length > 6) {
+      stages.shift();
+    }
+    this.localTickTimeline.set(tick, stages);
+
+    // Keep only a short tail around the latest local send cursor.
+    const floorTick = Math.max(0, this.lastSentExecutionTick - 8);
+    for (const knownTick of [...this.localTickTimeline.keys()]) {
+      if (knownTick < floorTick) {
+        this.localTickTimeline.delete(knownTick);
+      }
+    }
+  }
+
+  private describeRecentLocalTickTimeline(): string {
+    return [...this.localTickTimeline.entries()]
+      .sort((left, right) => left[0] - right[0])
+      .map(([tick, stages]) => `${tick}:${stages.join(">")}`)
+      .join(" | ");
   }
 
   private logStall(nextTick: number): void {
@@ -496,8 +540,9 @@ export class CommandBusService {
       ? ((this.scene.baseGameData.communicator.activeSocket as any).ioSocket?.connected ?? "unknown")
       : "no-socket";
     const missingReasons = this.describeMissingPlayers(nextTick, missing);
-    console.warn(
-      `[CommandBus][STALL] ${this.getMultiplayerLogContext()} nextTick=${nextTick} waitingForPlayers=${missing.join(",") || "none"} committedBy=${committed.join(",") || "none"} pauses=${pauseReasons} localPlayer=${this.localPlayerNumber ?? "none"} lastSentLocalTick=${this.lastSentTickByLocalPlayer ?? "none"} lastReceivedByPlayer={${lastReceivedByPlayer}} missingReasons={${missingReasons}} socketConnected=${socketConnected}`
+    const localTimeline = this.describeRecentLocalTickTimeline();
+    this.logger.warn(
+      `[CommandBus][STALL] ${this.getMultiplayerLogContext()} nextTick=${nextTick} waitingForPlayers=${missing.join(",") || "none"} committedBy=${committed.join(",") || "none"} pauses=${pauseReasons} localPlayer=${this.localPlayerNumber ?? "none"} lastSentLocalTick=${this.lastSentTickByLocalPlayer ?? "none"} lastReceivedByPlayer={${lastReceivedByPlayer}} missingReasons={${missingReasons}} recentLocalTicks={${localTimeline}} socketConnected=${socketConnected}`
     );
   }
 
@@ -552,8 +597,8 @@ export class CommandBusService {
     }
     this.queuedWhileStalledSignature = signature;
     const missingReasons = this.describeMissingPlayers(blockedTick, missing);
-    console.warn(
-      `[CommandBus][QUEUE-WHILE-STALLED] ${this.getMultiplayerLogContext()} command=${commandType} player=${playerNumber} executeTick=${executeTick} blockedTick=${blockedTick} missingPlayers=${missing.join(",")} committedPlayers=${committed.join(",") || "none"} missingReasons={${missingReasons}}`
+    this.logger.warn(
+      `[CommandBus][QUEUE-WHILE-STALLED] ${this.getMultiplayerLogContext()} command=${commandType} player=${playerNumber} executeTick=${executeTick} blockedTick=${blockedTick} missingPlayers=${missing.join(",")} committedPlayers=${committed.join(",") || "none"} missingReasons={${missingReasons}} recentLocalTicks={${this.describeRecentLocalTickTimeline()}}`
     );
   }
 

@@ -3,6 +3,7 @@ import { GameSessionState, ProbableWafflePlayerType } from "@fuzzy-waddle/api-in
 import { getCommunicator } from "../../../data/scene-data";
 import type { Subscription } from "rxjs";
 import Phaser from "phaser";
+import { createMultiplayerClientLogger } from "./multiplayer-client-logger";
 
 /**
  * Coordinates the "all players loaded" barrier before the game starts.
@@ -27,6 +28,7 @@ export class ReadyBarrier {
   private subscriptions: Subscription[] = [];
   private timer?: number;
   private announceInterval?: number;
+  private readonly logger = createMultiplayerClientLogger("ReadyBarrier");
 
   constructor(
     private readonly scene: ProbableWaffleScene,
@@ -74,7 +76,7 @@ export class ReadyBarrier {
 
       // Safety timeout: don't wait forever for a late/crashed peer
       this.timer = window.setTimeout(() => {
-        console.warn(
+        this.logger.warn(
           `[ReadyBarrier] Timeout after ${ReadyBarrier.TIMEOUT_MS}ms — only ${this.readyPlayers.size}/${expectedCount} players ready. Starting anyway.`
         );
         this.fireAllReady();

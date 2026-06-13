@@ -27,6 +27,7 @@ import { TwoWayCommunicator } from "../../shared/game/communicators/two-way-comm
 import { Socket } from "ngx-socket-io";
 import type { CommunicatorService } from "../../shared/game/communicators/CommunicatorService";
 import { type ProbableWaffleCommunicatorServiceInterface } from "./probable-waffle-communicator.service.interface";
+import { createMultiplayerClientLogger } from "../game/world/services/multiplayer/multiplayer-client-logger";
 
 @Injectable({
   providedIn: "root"
@@ -41,6 +42,7 @@ import { type ProbableWaffleCommunicatorServiceInterface } from "./probable-waff
 export class ProbableWaffleCommunicatorService
   implements CommunicatorService, OnDestroy, ProbableWaffleCommunicatorServiceInterface
 {
+  private readonly logger = createMultiplayerClientLogger("Communicator");
   gameInstanceMetadataChanged?: TwoWayCommunicator<
     ProbableWaffleGameInstanceMetadataChangeEvent,
     ProbableWaffleCommunicatorType
@@ -200,7 +202,7 @@ export class ProbableWaffleCommunicatorService
       // already-connected case, while the connect listener covers reconnects
       // that come back with a new socket id and would otherwise miss room relay.
       this.socketConnectHandler = () => {
-        console.info(`[Communicator] Joining game room after connect. gameInstanceId=${gameInstanceId}`);
+        this.logger.info(`[Communicator] Joining game room after connect. gameInstanceId=${gameInstanceId}`);
         this.emitRoomMembership(socket, gameInstanceId, "join");
       };
       const rawSocket = (socket as any).ioSocket;

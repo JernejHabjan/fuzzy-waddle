@@ -23,6 +23,7 @@ import {
   type ProbableWaffleWebsocketRoomEvent
 } from "@fuzzy-waddle/api-interfaces";
 import { ProbableWaffleSceneEventName } from "./probable-waffle-scene-events";
+import { createMultiplayerClientLogger } from "../multiplayer/multiplayer-client-logger";
 
 /**
  * Handles the reconnect flow for a client that drops and rejoins mid-game.
@@ -41,6 +42,7 @@ import { ProbableWaffleSceneEventName } from "./probable-waffle-scene-events";
  * Single-player: all communicators are undefined → this service is a no-op.
  */
 export class ReconnectService {
+  private readonly logger = createMultiplayerClientLogger("Reconnect");
   private snapshotSub?: Subscription;
   private socketConnectHandler?: () => void;
   private socketDisconnectHandler?: (reason: string) => void;
@@ -109,7 +111,7 @@ export class ReconnectService {
       return;
     }
     this.awaitingReconnect = false;
-    console.info("[Reconnect] Socket reconnected — re-joining room and requesting snapshot from host.");
+    this.logger.info("[Reconnect] Socket reconnected — re-joining room and requesting snapshot from host.");
 
     // Re-join the socket.io room with the new socket ID.
     getCommunicator(scene).activeSocket?.emit(ProbableWaffleGatewayEvent.ProbableWaffleWebsocketRoom, {
@@ -138,7 +140,7 @@ export class ReconnectService {
    */
   private handleInstanceReseedRequired(scene: ProbableWaffleScene): void {
     if (!scene.isHost) {
-      console.warn(
+      this.logger.warn(
         "[Reconnect] Server requested reseed on non-host client. Waiting for host reseed before requesting snapshot."
       );
       return;
@@ -147,7 +149,7 @@ export class ReconnectService {
       return;
     }
 
-    console.warn("[Reconnect] Server requested instance reseed. Sending current game instance payload.");
+    this.logger.warn("[Reconnect] Server requested instance reseed. Sending current game instance payload.");
     this.requestSnapshot(scene, "reconnect");
   }
 
@@ -170,7 +172,7 @@ export class ReconnectService {
     const communicator = getCommunicator(scene);
     if (!communicator.snapshotRequested) return;
 
-    console.info(`[Reconnect] Requesting host snapshot for ${reason}.`);
+    this.logger.info(`[Reconnect] Requesting host snapshot for ${reason}.`);
 
     communicator.snapshotRequested.send({
       gameInstanceId: scene.gameInstanceId,
@@ -214,11 +216,11 @@ export class ReconnectService {
     const pauseReason = response.reason === "desync-correction" ? "desync-correction" : "snapshot-restore";
 
     if (!actorIndex || !creator) {
-      console.error("[Reconnect] Required services not available; cannot apply snapshot.");
+      this.logger.error("[Reconnect] Required services not available; cannot apply snapshot.");
       return;
     }
 
-    console.info(
+    this.logger.info(
       `[Reconnect] Applying snapshot at tick ${snapshot.tick}. Actors: ${snapshot.actors.length}. ` +
         `Buffered tail batches: ${response.commandTail?.length ?? 0}. Reason: ${response.reason ?? "reconnect"}`
     );
@@ -265,7 +267,7 @@ export class ReconnectService {
           })
           .filter((diagnostic) => diagnostic !== undefined);
         if (removedActorDiagnostics.length > 0) {
-          console.warn(
+          this.logger.warn(
             `[Reconnect] Snapshot ${response.reason ?? "reconnect"} will remove ${removedActorDiagnostics.length} local actors not present on host snapshot.`,
             removedActorDiagnostics
           );
@@ -331,7 +333,7 @@ export class ReconnectService {
             };
           })
           .filter((entry) => entry !== undefined);
-        console.error(
+        this.logger.error(
           `[Reconnect] Snapshot restore mismatch after recreation. reason=${response.reason ?? "reconnect"} missing=${missingAfterRestore.length} extra=${extrasAfterRestore.length}.`,
           {
             missingActors: missingSummaries,
@@ -389,7 +391,7 @@ export class ReconnectService {
       }
 
       if (response.reason === "desync-correction") {
-        console.warn(`[DESYNC] Applied host correction snapshot at tick ${snapshot.tick}.`);
+        this.logger.warn(`[DESYNC] Applied host correction snapshot at tick ${snapshot.tick}.`);
       }
       this.reseedSent = false;
       scene.events.emit(ProbableWaffleSceneEventName.ReconnectSnapshotApplied, {
@@ -398,7 +400,7 @@ export class ReconnectService {
       });
       // Suppress "late registration" diagnostics briefly after snapshot rebuild.
       scene.data.set("snapshotApplySuppressedUntilTick", snapshot.tick + 5);
-      console.info("[Reconnect] Snapshot applied. Simulation resumed.");
+      this.logger.info("[Reconnect] Snapshot applied. Simulation resumed.");
     } finally {
       scene.data.set("snapshotApplyInProgress", false);
     }
@@ -467,9 +469,9 @@ export class ReconnectService {
     );
     const missing = [...snapshotActorIds].filter((actorId) => !finalIds.has(actorId));
     if (missing.length > 0) {
-      console.error(`[DESYNC] In-place correction still missing ${missing.length} actors after apply.`, missing);
+      this.logger.error(`[DESYNC] In-place correction still missing ${missing.length} actors after apply.`, missing);
     }
-    console.warn(
+    this.logger.warn(
       `[DESYNC] In-place host correction reconciled actors. updated=${updated} created=${created} destroyed=${destroyed}`
     );
   }
@@ -530,7 +532,7 @@ export class ReconnectService {
         localById.delete(previousId);
       }
       localById.set(authoritativeId, actorToRelabel);
-      console.warn(
+      this.logger.warn(
         `[Reconnect] Reconciled actor id by signature. oldId=${previousId ?? "none"} newId=${authoritativeId} signature=${signature}`
       );
     }
