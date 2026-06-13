@@ -126,9 +126,12 @@ export class CommandBusService {
         } else {
           this.debugLog(`received heartbeat tick=${event.tick} player=${event.playerNumber}`);
         }
-        this.backfillStartupHeartbeatGap(event.playerNumber, event.tick);
-        this.lastReceivedTickByPlayer.set(event.playerNumber, event.tick);
+        this.materializeAcceptedTickProgress(event.playerNumber, event.tick);
         this.buffer.commit(event.tick, event.playerNumber, event.commands as GameCommand[]);
+        this.lastReceivedTickByPlayer.set(
+          event.playerNumber,
+          Math.max(this.lastReceivedTickByPlayer.get(event.playerNumber) ?? -1, event.tick)
+        );
         if (event.playerNumber === this.localPlayerNumber) {
           this.recordLocalTickStage(
             event.tick,
@@ -261,6 +264,15 @@ export class CommandBusService {
       this.lastSentExecutionTick = Math.max(this.lastSentExecutionTick, futureTick);
       this.lastSentTickByLocalPlayer = futureTick;
       this.recordLocalTickStage(futureTick, outbound.length > 0 ? `scheduled(${outbound.length})` : "scheduled(0)");
+      if (outbound.length === 0 && !this.buffer.hasPlayerCommit(futureTick, this.localPlayerNumber)) {
+        // Empty heartbeats are the lockstep barrier token for this player's slot.
+        // If we wait only for the server echo here, a later accepted heartbeat can
+        // overtake an earlier empty one and leave the local buffer with a permanent
+        // hole even though the server already advanced past that tick. Real command
+        // batches still stay echo-gated so rejected gameplay payloads cannot self-commit.
+        this.buffer.commit(futureTick, this.localPlayerNumber, []);
+        this.recordLocalTickStage(futureTick, "local-heartbeat-commit");
+      }
       if (outbound.length > 0) {
         this.debugLog(
           `sending batch tick=${futureTick} player=${this.localPlayerNumber} commands=${outbound.length} types=${this.describeCommandTypes(outbound)}`
@@ -337,28 +349,19 @@ export class CommandBusService {
   }
 
   /**
-   * During scene startup, seedInitialTicks() sends ticks 1..INPUT_DELAY immediately.
-   * If a peer's socket path is not fully ready yet, one of those initial heartbeats can
-   * be missed while a later startup tick is still received, which would stall forever
-   * on the first missing blockedTick.
-   *
-   * Backfill only these startup grace ticks as empty commits when we observe a later
-   * remote startup tick from that player and the early slots are still absent.
+   * If we accept evidence that a remote player reached tick N, every earlier missing
+   * tick for that same player must already be interpreted as an empty commit. Without
+   * this receive-side repair, lastReceivedTickByPlayer can advance past a hole and
+   * lockstep will then freeze forever on "not-committed-in-buffer-for-X".
    */
-  private backfillStartupHeartbeatGap(playerNumber: PlayerNumber, receivedTick: number): void {
-    if (receivedTick <= 1) {
-      return;
-    }
-    const currentTick = this.tickService?.currentTick ?? 0;
-    // Backfill is only valid during initial lockstep bootstrap.
-    // Once startup ticks have been flushed, re-inserting them would create log spam.
-    if (currentTick > CommandBusService.INPUT_DELAY_TICKS) {
+  private materializeAcceptedTickProgress(playerNumber: PlayerNumber, receivedTick: number): void {
+    const previousReceivedTick = this.lastReceivedTickByPlayer.get(playerNumber) ?? 0;
+    if (receivedTick <= previousReceivedTick + 1) {
       return;
     }
 
     const filledTicks: number[] = [];
-    const highestMissingStartupTick = Math.min(receivedTick - 1, CommandBusService.INPUT_DELAY_TICKS);
-    for (let tick = 1; tick <= highestMissingStartupTick; tick++) {
+    for (let tick = previousReceivedTick + 1; tick < receivedTick; tick++) {
       if (this.buffer.hasPlayerCommit(tick, playerNumber)) {
         continue;
       }
@@ -369,8 +372,16 @@ export class CommandBusService {
     if (filledTicks.length === 0) {
       return;
     }
+    const isStartupGap = filledTicks.every((tick) => tick <= CommandBusService.INPUT_DELAY_TICKS);
+    if (isStartupGap) {
+      this.logger.warn(
+        `[CommandBus][STARTUP-BACKFILL] ${this.getMultiplayerLogContext()} player=${playerNumber} receivedTick=${receivedTick} filledTicks=${filledTicks.join(",")}`
+      );
+      return;
+    }
+
     this.logger.warn(
-      `[CommandBus][STARTUP-BACKFILL] ${this.getMultiplayerLogContext()} player=${playerNumber} receivedTick=${receivedTick} filledTicks=${filledTicks.join(",")}`
+      `[CommandBus][REMOTE-GAP-FILL] ${this.getMultiplayerLogContext()} player=${playerNumber} previousReceivedTick=${previousReceivedTick} receivedTick=${receivedTick} filledTicks=${filledTicks.join(",")}`
     );
   }
 
