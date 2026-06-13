@@ -136,24 +136,10 @@ export class GameCommandValidatorService {
     }
 
     if (tick <= prev) {
-      // Empty batches are lockstep heartbeats. In practice the server can
-      // occasionally observe the previous heartbeat after already accepting the
-      // next one from the same player during bootstrap or a transient one-tick
-      // skew. Dropping that stale empty batch leaves a permanent hole in peers'
-      // command buffers, so relay it as an empty backfill for its original tick.
-      if (commands.length === 0 && tick === prev - 1) {
-        this.logger.warn(
-          `[GameCommand] Heartbeat backfill: game=${gameInstanceId} player=${playerNumber} user=${user.id} emitter=${event.emitterUserId ?? "n/a"} ` +
-            `sentTick=${tick} lastAcceptedTick=${prev} relaying-empty-backfill`
-        );
-        return {
-          valid: false,
-          relayEmpty: true,
-          reason: `stale heartbeat backfill for tick ${tick}`,
-          overrideTick: tick
-        };
-      }
-
+      // Older heartbeats can still arrive after a newer tick was already
+      // accepted for the same player. Clients now repair those gaps locally
+      // when they observe accepted progress, so relaying the obsolete empty
+      // batch here only creates noisy late echoes without adding authority.
       this.logger.warn(
         `[GameCommand] Stale batch: game=${gameInstanceId} player=${playerNumber} user=${user.id} emitter=${event.emitterUserId ?? "n/a"} ` +
           `sentTick=${tick} lastAcceptedTick=${prev} canonicalNextTick=${canonicalTick} commandCount=${commands.length}`
