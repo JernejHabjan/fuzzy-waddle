@@ -7,6 +7,8 @@ import { GameInstanceClientService } from "../../communicators/game-instance-cli
 import { GameContainerComponent } from "../../../shared/game/game-container/game-container.component";
 import { AchievementService } from "../../services/achievement/achievement.service";
 import { achievementServiceStub } from "../../services/achievement/achievement.service.stub";
+import { GameInstanceStorageServiceInterface } from "../../communicators/storage/game-instance-storage.service.interface";
+import { gameInstanceIndexeddbStorageServiceStub } from "../../communicators/storage/game-instance-indexeddb-storage.service.stub";
 
 jest.mock("../../game/world/const/game-config", () => ({
   probableWaffleGameConfig: {}
@@ -20,7 +22,8 @@ describe("ProbableWaffleGameComponent", () => {
     await TestBed.configureTestingModule({
       providers: [
         { provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub },
-        { provide: AchievementService, useValue: achievementServiceStub }
+        { provide: AchievementService, useValue: achievementServiceStub },
+        { provide: GameInstanceStorageServiceInterface, useValue: gameInstanceIndexeddbStorageServiceStub }
       ],
       imports: [ProbableWaffleGameComponent]
     })

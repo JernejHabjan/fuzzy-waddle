@@ -1,7 +1,9 @@
+import { BadRequestException, Logger, UseGuards } from "@nestjs/common";
 import {
   ConnectedSocket,
   MessageBody,
   OnGatewayConnection,
+  OnGatewayDisconnect,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer
@@ -36,6 +38,7 @@ import { RoomServerService } from "../game-room/room-server.service";
 import { ChatService } from "../../chat/chat.service";
 import { PlayerDisconnectTrackerService } from "./multiplayer/player-disconnect-tracker.service";
 import { GameInstanceService } from "./game-instance.service";
+import { SocketConnectionAuthService } from "../../../auth/socket-connection-auth.service";
 
 const RECONNECT_WINDOW_SECONDS = 60;
 
@@ -59,15 +62,12 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
     private readonly socketConnectionAuthService: SocketConnectionAuthService
   ) {}
 
-  async handleConnection(client: Socket): Promise<void> {
-    await this.socketConnectionAuthService.disconnectUnauthenticatedClient(client);
-  }
-
   emitGameFound(probableWaffleGameFoundEvent: ProbableWaffleGameFoundEvent) {
     this.server.emit(ProbableWaffleGameInstanceEvent.GameFound, probableWaffleGameFoundEvent);
   }
 
-  handleConnection(socket: Socket): void {
+  async handleConnection(socket: Socket): Promise<void> {
+    await this.socketConnectionAuthService.disconnectUnauthenticatedClient(socket);
     this.debugLog(`socket connect socketId=${socket.id} transport=${socket.conn.transport.name}`);
     socket.on("disconnect", (reason) => {
       this.debugLog(`socket disconnect reason socketId=${socket.id} reason=${reason}`);
