@@ -13,7 +13,7 @@ Some GPU drivers cause tiles to appear "chipped" or have pixel gaps at tile edge
 ## Phaser Editor 2D
 
 | Issue                              | Solution                                                                           |
-|------------------------------------|------------------------------------------------------------------------------------|
+| ---------------------------------- | ---------------------------------------------------------------------------------- |
 | Files being processed unexpectedly | Add a `.skip` file to the directory to exclude it from Phaser Editor 2D processing |
 | Unexpected editor behaviour        | Open DevTools with `Ctrl+Shift+I` to investigate console errors                    |
 

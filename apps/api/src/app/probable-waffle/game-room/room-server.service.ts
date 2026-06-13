@@ -40,11 +40,23 @@ export class RoomServerService implements RoomServerServiceInterface {
     return gameInstanceToRoom;
   }
 
-  roomEvent(type: RoomAction, gameInstance: ProbableWaffleGameInstance, user: User | null) {
-    this.roomGateway.emitRoom({
+  roomEvent(type: RoomAction, gameInstance: ProbableWaffleGameInstance, _user: User | null) {
+    const roomEvent = {
       room: this.getGameInstanceToRoom(gameInstance),
       action: type
-    } satisfies ProbableWaffleRoomEvent);
+    } satisfies ProbableWaffleRoomEvent;
+
+    if (gameInstance.gameInstanceMetadata.data.visibility === ProbableWaffleGameInstanceVisibility.Public) {
+      this.roomGateway.emitRoom(roomEvent);
+      return;
+    }
+
+    const gameInstanceId = gameInstance.gameInstanceMetadata.data.gameInstanceId;
+    if (!gameInstanceId) {
+      return;
+    }
+
+    this.roomGateway.emitRoomToGameInstance(gameInstanceId, roomEvent);
   }
 
   emitCertainGameInstanceEventsToAllUsers(body: ProbableWaffleCommunicatorEventUnion, user: User) {

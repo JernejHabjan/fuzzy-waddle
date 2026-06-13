@@ -8,9 +8,11 @@ import { AuthService } from "../../../auth/auth.service";
 import { authServiceStub } from "../../../auth/auth.service.stub";
 import { ChatService } from "../../../data-access/chat/chat.service";
 import { Subject } from "rxjs";
+import { provideRouter } from "@angular/router";
 
 const chatServiceStub = {
-  getMessages: () => Promise.resolve({ messages: [], total: 0, hasMore: false })
+  getMessages: () => Promise.resolve({ messages: [], total: 0, hasMore: false }),
+  reportMessage: () => Promise.resolve()
 };
 
 describe("ChatComponent", () => {
@@ -20,6 +22,7 @@ describe("ChatComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
+        provideRouter([]),
         {
           provide: AvatarProviderService,
           useValue: avatarProviderServiceStub

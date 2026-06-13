@@ -1,22 +1,98 @@
-@use "../../../../../styles/_variables.scss" as *;
-
 :host {
   text-align: center;
+  color: #f5ecd9;
 }
 
 .map-name {
   font-size: 1.6em;
-  font-family: $app-font-bold;
+  font-family: "Cinzel", serif;
+  color: #f0c46b;
+  letter-spacing: 0.04em;
 }
 
 .map-description {
   max-width: 600px;
+  margin: 0.75rem auto;
+  color: #c8b89b;
 }
 
-.tooltip-drag-and-drop {
-  background-color: $primary;
-  color: white;
-  border-radius: 1rem;
-  padding: 0.5rem;
-  font-size: 0.6em;
+.map-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #c8b89b;
+}
+
+.map-help-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.3rem;
+  height: 1.3rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #c8b89b;
+  cursor: help;
+  opacity: 0.75;
+  transition: opacity 0.2s ease, color 0.2s ease;
+
+  &:hover {
+    opacity: 1;
+    color: #f0c46b;
+  }
+}
+
+.map-canvas {
+  display: block;
+}
+
+.drag-coachmark {
+  max-width: 220px;
+  padding: 0.75rem 0.85rem;
+  background: rgba(22, 18, 14, 0.94);
+  border: 1px solid rgba(240, 196, 107, 0.45);
+  border-radius: 0.65rem;
+  box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.3);
+  text-align: left;
+  color: #f5ecd9;
+  z-index: 1;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 1.25rem;
+    border-width: 0.45rem;
+    border-style: solid;
+    border-color: rgba(22, 18, 14, 0.94) transparent transparent transparent;
+  }
+}
+
+.drag-coachmark__title {
+  margin-bottom: 0.25rem;
+  color: #f0c46b;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.drag-coachmark__body {
+  font-size: 0.72rem;
+  line-height: 1.35;
+  color: #e2d6c0;
+}
+
+.drag-coachmark__dismiss {
+  margin-top: 0.55rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #f0c46b;
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    color: #f7d992;
+  }
 }

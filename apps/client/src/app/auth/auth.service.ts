@@ -214,6 +214,19 @@ export class AuthService implements AuthServiceInterface, OnDestroy {
     return data.session;
   }
 
+  async ensureAuthReady(): Promise<Session | null> {
+    if (this.processing) {
+      await this.processing;
+      return this._session;
+    }
+
+    if (!this.isAuthenticated) {
+      return this.autoSignIn();
+    }
+
+    return this._session;
+  }
+
   ngOnDestroy(): void {
     this.tauriSubscription?.unsubscribe();
   }

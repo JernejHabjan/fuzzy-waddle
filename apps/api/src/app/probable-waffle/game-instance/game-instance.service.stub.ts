@@ -17,6 +17,9 @@ export const GameInstanceServiceStub = {
   getGameInstanceData(gameInstanceId: GameInstanceId): ProbableWaffleGameInstanceData | null {
     return null;
   },
+  getGameInstanceDataForUser(gameInstanceId: GameInstanceId, user: User): ProbableWaffleGameInstanceData | null {
+    return null;
+  },
   async stopGameInstance(gameInstanceId: GameInstanceId, user: User) {
     //
   }

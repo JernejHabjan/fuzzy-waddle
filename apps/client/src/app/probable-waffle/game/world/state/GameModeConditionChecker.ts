@@ -6,6 +6,7 @@ import {
 } from "../../../../shared/game/phaser/scene/base.scene";
 import {
   GameSessionState,
+  GameResultStatus,
   type LoseConditions,
   ProbableWaffleGameInstanceType,
   ProbableWaffleGameMode,
@@ -335,7 +336,7 @@ export class GameModeConditionChecker {
     // Update ScoreTracker
     const scoreTracker = getSceneSystem(this.scene, ScoreTracker);
     if (scoreTracker) {
-      scoreTracker.setPlayerResult(this.currentPlayerNumber, "quit");
+      scoreTracker.setPlayerResult(this.currentPlayerNumber, GameResultStatus.Quit);
       scoreTracker.finalizeScores();
       scoreTracker.stop();
     }
@@ -348,12 +349,12 @@ export class GameModeConditionChecker {
     // Update ScoreTracker with results
     const scoreTracker = getSceneSystem(this.scene, ScoreTracker);
     if (scoreTracker) {
-      scoreTracker.setPlayerResult(this.currentPlayerNumber, "win");
+      scoreTracker.setPlayerResult(this.currentPlayerNumber, GameResultStatus.Win);
 
       // Set enemy results
       this.players.forEach((player) => {
         if (player.playerNumber !== this.currentPlayerNumber) {
-          scoreTracker.setPlayerResult(player.playerNumber!, "loss");
+          scoreTracker.setPlayerResult(player.playerNumber!, GameResultStatus.Loss);
         }
       });
 
@@ -371,12 +372,12 @@ export class GameModeConditionChecker {
     // Update ScoreTracker with results
     const scoreTracker = getSceneSystem(this.scene, ScoreTracker);
     if (scoreTracker) {
-      scoreTracker.setPlayerResult(this.currentPlayerNumber, "loss");
+      scoreTracker.setPlayerResult(this.currentPlayerNumber, GameResultStatus.Loss);
 
       // Set enemy results (they won)
       this.players.forEach((player) => {
         if (player.playerNumber !== this.currentPlayerNumber && !player.playerController.data.leftOrKilled) {
-          scoreTracker.setPlayerResult(player.playerNumber!, "win");
+          scoreTracker.setPlayerResult(player.playerNumber!, GameResultStatus.Win);
         }
       });
 
@@ -395,7 +396,7 @@ export class GameModeConditionChecker {
     const scoreTracker = getSceneSystem(this.scene, ScoreTracker);
     if (scoreTracker) {
       this.players.forEach((player) => {
-        scoreTracker.setPlayerResult(player.playerNumber!, "tie");
+        scoreTracker.setPlayerResult(player.playerNumber!, GameResultStatus.Tie);
       });
 
       scoreTracker.finalizeScores();

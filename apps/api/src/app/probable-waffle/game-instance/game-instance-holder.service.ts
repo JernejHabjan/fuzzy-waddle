@@ -1,8 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { GameInstanceId, ProbableWaffleGameInstance } from "@fuzzy-waddle/api-interfaces";
+import { type GameInstanceHolderServiceInterface } from "./game-instance-holder.service.interface";
 
 @Injectable()
-export class GameInstanceHolderService {
+export class GameInstanceHolderService implements GameInstanceHolderServiceInterface {
   private _openGameInstances: ProbableWaffleGameInstance[] = [];
 
   get openGameInstances(): ProbableWaffleGameInstance[] {

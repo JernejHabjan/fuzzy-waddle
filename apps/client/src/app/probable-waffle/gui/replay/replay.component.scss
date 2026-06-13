@@ -1,0 +1,17 @@
+.aota-data-page {
+  padding-bottom: 2rem;
+  color: #f5ecd9;
+}
+
+.aota-card-shell {
+  padding: 1.5rem;
+}
+
+.aota-data-grid {
+  align-items: center;
+
+  > div {
+    padding: 0.85rem 0.65rem;
+    border-bottom: 1px solid rgba(111, 85, 52, 0.18);
+  }
+}

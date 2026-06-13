@@ -6,7 +6,8 @@ import {
   type PlayerScoreSnapshot,
   STANDARD_METRICS,
   type ProbableWafflePlayer,
-  ProbableWafflePlayerType
+  ProbableWafflePlayerType,
+  GameResultStatus
 } from "@fuzzy-waddle/api-interfaces";
 import { getPlayersFromScene } from "../../../../shared/game/phaser/scene/base.scene";
 import { getCurrentPlayerNumber } from "../../data/scene-data";
@@ -71,10 +72,11 @@ export class ScoreTracker {
       scoreData.set(playerNumber, {
         playerNumber,
         playerName: player.playerController.data.playerDefinition?.player.playerName || `Player ${playerNumber}`,
-        playerType: player.playerController.data.playerDefinition?.playerType === ProbableWafflePlayerType.AI ? "AI" : "Human",
+        playerType:
+          player.playerController.data.playerDefinition?.playerType === ProbableWafflePlayerType.AI ? "AI" : "Human",
         teamNumber: player.playerController.data.playerDefinition?.team,
         factionType: player.factionType?.toString() || "Unknown",
-        gameResult: "quit", // Default, will be updated by GameModeConditionChecker
+        gameResult: GameResultStatus.Quit, // Default, will be updated by GameModeConditionChecker
         eliminated: false,
         finalScore: 0,
         metrics: {},
@@ -232,7 +234,7 @@ export class ScoreTracker {
   /**
    * Set the game result for a player
    */
-  public setPlayerResult(playerNumber: PlayerNumber, result: "win" | "loss" | "tie" | "quit") {
+  public setPlayerResult(playerNumber: PlayerNumber, result: GameResultStatus) {
     if (!this.scene.baseGameData.gameInstance.gameState) return;
 
     const scoreData = this.getScoreData();
@@ -325,12 +327,17 @@ export class ScoreTracker {
       if (playerNumber === undefined || !resources) return;
 
       if (event.property === "resource.added") {
-        if (resources.minerals) this.incrementMetric(playerNumber, STANDARD_METRICS.RESOURCES_COLLECTED_MINERALS, resources.minerals);
-        if (resources.stone) this.incrementMetric(playerNumber, STANDARD_METRICS.RESOURCES_COLLECTED_STONE, resources.stone);
-        if (resources.wood) this.incrementMetric(playerNumber, STANDARD_METRICS.RESOURCES_COLLECTED_WOOD, resources.wood);
+        if (resources.minerals)
+          this.incrementMetric(playerNumber, STANDARD_METRICS.RESOURCES_COLLECTED_MINERALS, resources.minerals);
+        if (resources.stone)
+          this.incrementMetric(playerNumber, STANDARD_METRICS.RESOURCES_COLLECTED_STONE, resources.stone);
+        if (resources.wood)
+          this.incrementMetric(playerNumber, STANDARD_METRICS.RESOURCES_COLLECTED_WOOD, resources.wood);
       } else if (event.property === "resource.removed") {
-        if (resources.minerals) this.incrementMetric(playerNumber, STANDARD_METRICS.RESOURCES_SPENT_MINERALS, resources.minerals);
-        if (resources.stone) this.incrementMetric(playerNumber, STANDARD_METRICS.RESOURCES_SPENT_STONE, resources.stone);
+        if (resources.minerals)
+          this.incrementMetric(playerNumber, STANDARD_METRICS.RESOURCES_SPENT_MINERALS, resources.minerals);
+        if (resources.stone)
+          this.incrementMetric(playerNumber, STANDARD_METRICS.RESOURCES_SPENT_STONE, resources.stone);
         if (resources.wood) this.incrementMetric(playerNumber, STANDARD_METRICS.RESOURCES_SPENT_WOOD, resources.wood);
       }
     });
@@ -349,11 +356,18 @@ export class ScoreTracker {
       this.incrementMetric(victimOwner, isBuilding ? STANDARD_METRICS.BUILDINGS_LOST : STANDARD_METRICS.UNITS_LOST);
     }
     if (attackerOwner !== undefined && attackerOwner !== victimOwner) {
-      this.incrementMetric(attackerOwner, isBuilding ? STANDARD_METRICS.BUILDINGS_DESTROYED : STANDARD_METRICS.UNITS_KILLED);
+      this.incrementMetric(
+        attackerOwner,
+        isBuilding ? STANDARD_METRICS.BUILDINGS_DESTROYED : STANDARD_METRICS.UNITS_KILLED
+      );
     }
   }
 
-  private onDamage(gameObject: Phaser.GameObjects.GameObject, damage: number, damageInitiator?: Phaser.GameObjects.GameObject) {
+  private onDamage(
+    gameObject: Phaser.GameObjects.GameObject,
+    damage: number,
+    damageInitiator?: Phaser.GameObjects.GameObject
+  ) {
     const victimOwner = getActorComponent(gameObject, OwnerComponent)?.getOwner();
     if (victimOwner !== undefined) {
       this.incrementMetric(victimOwner, STANDARD_METRICS.DAMAGE_RECEIVED, damage);

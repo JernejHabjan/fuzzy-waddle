@@ -1,304 +1,279 @@
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
 export type Database = {
-  // Allows to automatically instantiate createClient with right options
-  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
-  __InternalSupabase: {
-    PostgrestVersion: "13.0.5";
-  };
   public: {
     Tables: {
-      fly_squasher_scores: {
+      achievement_definitions: {
         Row: {
-          date: string | null;
-          id: number;
-          level: number;
-          score: number;
-          user_id: string;
-        };
-        Insert: {
-          date?: string | null;
-          id?: number;
-          level: number;
-          score: number;
-          user_id: string;
-        };
-        Update: {
-          date?: string | null;
-          id?: number;
-          level?: number;
-          score?: number;
-          user_id?: string;
-        };
-        Relationships: [];
-      };
-      little_muncher_scores: {
-        Row: {
-          date: string | null;
-          hill: number;
-          id: number;
-          score: number;
-          user_id: string;
-        };
-        Insert: {
-          date?: string | null;
-          hill: number;
-          id?: number;
-          score: number;
-          user_id: string;
-        };
-        Update: {
-          date?: string | null;
-          hill?: number;
-          id?: number;
-          score?: number;
-          user_id?: string;
-        };
-        Relationships: [];
-      };
-      messages: {
-        Row: {
+          category: string | null;
           created_at: string;
-          game_instance_id: string | null;
+          description: string;
+          difficulty: Database["public"]["Enums"]["achievement_difficulty"] | null;
+          game_key: string;
+          id: string;
+          image_key: string | null;
+          is_active: boolean;
+          is_secret: boolean;
+          metadata: Json;
+          name: string;
+          updated_at: string;
+        };
+        Insert: {
+          category?: string | null;
+          created_at?: string;
+          description: string;
+          difficulty?: Database["public"]["Enums"]["achievement_difficulty"] | null;
+          game_key: string;
+          id: string;
+          image_key?: string | null;
+          is_active?: boolean;
+          is_secret?: boolean;
+          metadata?: Json;
+          name: string;
+          updated_at?: string;
+        };
+        Update: {
+          category?: string | null;
+          created_at?: string;
+          description?: string;
+          difficulty?: Database["public"]["Enums"]["achievement_difficulty"] | null;
+          game_key?: string;
+          id?: string;
+          image_key?: string | null;
+          is_active?: boolean;
+          is_secret?: boolean;
+          metadata?: Json;
+          name?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      chat_channel_memberships: {
+        Row: {
+          channel_id: string;
           id: number;
-          text: string;
+          joined_at: string;
+          last_read_at: string | null;
+          left_at: string | null;
+          membership_role: Database["public"]["Enums"]["chat_membership_role"];
+          muted_until: string | null;
           user_id: string;
         };
         Insert: {
-          created_at?: string;
-          game_instance_id?: string | null;
+          channel_id: string;
           id?: number;
-          text: string;
+          joined_at?: string;
+          last_read_at?: string | null;
+          left_at?: string | null;
+          membership_role?: Database["public"]["Enums"]["chat_membership_role"];
+          muted_until?: string | null;
           user_id: string;
         };
         Update: {
-          created_at?: string;
-          game_instance_id?: string | null;
+          channel_id?: string;
           id?: number;
-          text?: string;
+          joined_at?: string;
+          last_read_at?: string | null;
+          left_at?: string | null;
+          membership_role?: Database["public"]["Enums"]["chat_membership_role"];
+          muted_until?: string | null;
           user_id?: string;
         };
         Relationships: [
           {
-            foreignKeyName: "messages_game_instance_id_fkey";
-            columns: ["game_instance_id"];
+            foreignKeyName: "chat_channel_memberships_channel_id_fkey";
+            columns: ["channel_id"];
             isOneToOne: false;
-            referencedRelation: "probable_waffle_game_sessions";
-            referencedColumns: ["game_instance_id"];
+            referencedRelation: "chat_channels";
+            referencedColumns: ["id"];
           },
           {
-            foreignKeyName: "messages_game_instance_id_fkey";
-            columns: ["game_instance_id"];
-            isOneToOne: false;
-            referencedRelation: "probable_waffle_match_history";
-            referencedColumns: ["game_instance_id"];
-          },
-          {
-            foreignKeyName: "messages_profile_id_fkey";
+            foreignKeyName: "chat_channel_memberships_user_id_fkey";
             columns: ["user_id"];
             isOneToOne: false;
-            referencedRelation: "profiles";
+            referencedRelation: "user_profiles";
             referencedColumns: ["id"];
           }
         ];
       };
-      probable_waffle_achievements: {
+      chat_channels: {
         Row: {
-          achievement_id: string;
-          id: number;
-          metadata: Json | null;
-          unlocked_date: string | null;
-          user_id: string;
-        };
-        Insert: {
-          achievement_id: string;
-          id?: number;
-          metadata?: Json | null;
-          unlocked_date?: string | null;
-          user_id: string;
-        };
-        Update: {
-          achievement_id?: string;
-          id?: number;
-          metadata?: Json | null;
-          unlocked_date?: string | null;
-          user_id?: string;
-        };
-        Relationships: [];
-      };
-      probable_waffle_game_sessions: {
-        Row: {
+          archived_at: string | null;
+          channel_type: Database["public"]["Enums"]["chat_channel_type"];
           created_at: string;
-          created_by_user_id: string;
-          ended_at: string | null;
-          game_instance_id: string;
-          game_type: string;
-          human_player_count: number;
+          created_by_user_id: string | null;
+          external_session_id: string | null;
+          game_key: string | null;
           id: string;
-          map_id: number;
-          scores_submitted: boolean;
-          scores_submitted_at: string | null;
-          scores_submitted_by: string | null;
-          session_state: string;
-          started_at: string;
-          total_duration_seconds: number | null;
+          metadata: Json;
+          title: string | null;
+          updated_at: string;
         };
         Insert: {
+          archived_at?: string | null;
+          channel_type: Database["public"]["Enums"]["chat_channel_type"];
           created_at?: string;
-          created_by_user_id: string;
-          ended_at?: string | null;
-          game_instance_id: string;
-          game_type: string;
-          human_player_count?: number;
+          created_by_user_id?: string | null;
+          external_session_id?: string | null;
+          game_key?: string | null;
           id?: string;
-          map_id: number;
-          scores_submitted?: boolean;
-          scores_submitted_at?: string | null;
-          scores_submitted_by?: string | null;
-          session_state: string;
-          started_at?: string;
-          total_duration_seconds?: number | null;
+          metadata?: Json;
+          title?: string | null;
+          updated_at?: string;
         };
         Update: {
+          archived_at?: string | null;
+          channel_type?: Database["public"]["Enums"]["chat_channel_type"];
           created_at?: string;
-          created_by_user_id?: string;
-          ended_at?: string | null;
-          game_instance_id?: string;
-          game_type?: string;
-          human_player_count?: number;
+          created_by_user_id?: string | null;
+          external_session_id?: string | null;
+          game_key?: string | null;
           id?: string;
-          map_id?: number;
-          scores_submitted?: boolean;
-          scores_submitted_at?: string | null;
-          scores_submitted_by?: string | null;
-          session_state?: string;
-          started_at?: string;
-          total_duration_seconds?: number | null;
+          metadata?: Json;
+          title?: string | null;
+          updated_at?: string;
         };
         Relationships: [
           {
-            foreignKeyName: "probable_waffle_game_sessions_created_by_user_id_fkey";
+            foreignKeyName: "chat_channels_created_by_user_id_fkey";
             columns: ["created_by_user_id"];
             isOneToOne: false;
-            referencedRelation: "profiles";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "probable_waffle_game_sessions_scores_submitted_by_fkey";
-            columns: ["scores_submitted_by"];
-            isOneToOne: false;
-            referencedRelation: "profiles";
+            referencedRelation: "user_profiles";
             referencedColumns: ["id"];
           }
         ];
       };
-      probable_waffle_player_score_metrics: {
+      chat_message_reports: {
         Row: {
           created_at: string;
+          details: string | null;
           id: number;
-          metric_type_id: number;
-          metric_value: number;
-          player_score_id: number;
+          message_id: number;
+          metadata: Json;
+          reason: Database["public"]["Enums"]["chat_report_reason"];
+          report_status: Database["public"]["Enums"]["chat_report_status"];
+          reporter_user_id: string;
+          reviewed_at: string | null;
+          reviewed_by: string | null;
         };
         Insert: {
           created_at?: string;
+          details?: string | null;
           id?: number;
-          metric_type_id: number;
-          metric_value?: number;
-          player_score_id: number;
+          message_id: number;
+          metadata?: Json;
+          reason: Database["public"]["Enums"]["chat_report_reason"];
+          report_status?: Database["public"]["Enums"]["chat_report_status"];
+          reporter_user_id: string;
+          reviewed_at?: string | null;
+          reviewed_by?: string | null;
         };
         Update: {
           created_at?: string;
+          details?: string | null;
           id?: number;
-          metric_type_id?: number;
-          metric_value?: number;
-          player_score_id?: number;
+          message_id?: number;
+          metadata?: Json;
+          reason?: Database["public"]["Enums"]["chat_report_reason"];
+          report_status?: Database["public"]["Enums"]["chat_report_status"];
+          reporter_user_id?: string;
+          reviewed_at?: string | null;
+          reviewed_by?: string | null;
         };
         Relationships: [
           {
-            foreignKeyName: "probable_waffle_player_score_metrics_metric_type_id_fkey";
-            columns: ["metric_type_id"];
+            foreignKeyName: "chat_message_reports_message_id_fkey";
+            columns: ["message_id"];
             isOneToOne: false;
-            referencedRelation: "probable_waffle_score_metric_types";
+            referencedRelation: "chat_messages";
             referencedColumns: ["id"];
           },
           {
-            foreignKeyName: "probable_waffle_player_score_metrics_player_score_id_fkey";
-            columns: ["player_score_id"];
+            foreignKeyName: "chat_message_reports_reporter_user_id_fkey";
+            columns: ["reporter_user_id"];
             isOneToOne: false;
-            referencedRelation: "probable_waffle_player_scores";
+            referencedRelation: "user_profiles";
             referencedColumns: ["id"];
           },
           {
-            foreignKeyName: "probable_waffle_player_score_metrics_player_score_id_fkey";
-            columns: ["player_score_id"];
+            foreignKeyName: "chat_message_reports_reviewed_by_fkey";
+            columns: ["reviewed_by"];
             isOneToOne: false;
-            referencedRelation: "probable_waffle_player_scores_full";
+            referencedRelation: "user_profiles";
             referencedColumns: ["id"];
           }
         ];
       };
-      probable_waffle_player_scores: {
+      chat_messages: {
         Row: {
+          body: string;
+          channel_id: string;
           created_at: string;
-          eliminated: boolean;
-          eliminated_at: string | null;
-          faction_type: string;
-          final_score: number;
-          game_result: string;
-          game_session_id: string;
+          deleted_at: string | null;
+          edited_at: string | null;
           id: number;
-          player_name: string;
-          player_number: number;
-          player_type: string;
-          team_number: number | null;
-          user_id: string | null;
+          message_status: Database["public"]["Enums"]["chat_message_status"];
+          metadata: Json;
+          moderation_reason: string | null;
+          reply_to_message_id: number | null;
+          sender_user_id: string | null;
         };
         Insert: {
+          body: string;
+          channel_id: string;
           created_at?: string;
-          eliminated?: boolean;
-          eliminated_at?: string | null;
-          faction_type: string;
-          final_score?: number;
-          game_result: string;
-          game_session_id: string;
+          deleted_at?: string | null;
+          edited_at?: string | null;
           id?: number;
-          player_name: string;
-          player_number: number;
-          player_type: string;
-          team_number?: number | null;
-          user_id?: string | null;
+          message_status?: Database["public"]["Enums"]["chat_message_status"];
+          metadata?: Json;
+          moderation_reason?: string | null;
+          reply_to_message_id?: number | null;
+          sender_user_id?: string | null;
         };
         Update: {
+          body?: string;
+          channel_id?: string;
           created_at?: string;
-          eliminated?: boolean;
-          eliminated_at?: string | null;
-          faction_type?: string;
-          final_score?: number;
-          game_result?: string;
-          game_session_id?: string;
+          deleted_at?: string | null;
+          edited_at?: string | null;
           id?: number;
-          player_name?: string;
-          player_number?: number;
-          player_type?: string;
-          team_number?: number | null;
-          user_id?: string | null;
+          message_status?: Database["public"]["Enums"]["chat_message_status"];
+          metadata?: Json;
+          moderation_reason?: string | null;
+          reply_to_message_id?: number | null;
+          sender_user_id?: string | null;
         };
         Relationships: [
           {
-            foreignKeyName: "probable_waffle_player_scores_user_id_fkey";
-            columns: ["user_id"];
+            foreignKeyName: "chat_messages_channel_id_fkey";
+            columns: ["channel_id"];
             isOneToOne: false;
-            referencedRelation: "profiles";
+            referencedRelation: "chat_channels";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "chat_messages_reply_to_message_id_fkey";
+            columns: ["reply_to_message_id"];
+            isOneToOne: false;
+            referencedRelation: "chat_messages";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "chat_messages_sender_user_id_fkey";
+            columns: ["sender_user_id"];
+            isOneToOne: false;
+            referencedRelation: "user_profiles";
             referencedColumns: ["id"];
           }
         ];
       };
-      probable_waffle_score_metric_types: {
+      game_score_metric_definitions: {
         Row: {
           created_at: string;
           description: string | null;
           display_order: number;
+          game_key: string;
           id: number;
           is_active: boolean;
           metric_category: string;
@@ -309,6 +284,7 @@ export type Database = {
           created_at?: string;
           description?: string | null;
           display_order?: number;
+          game_key: string;
           id?: number;
           is_active?: boolean;
           metric_category: string;
@@ -319,6 +295,7 @@ export type Database = {
           created_at?: string;
           description?: string | null;
           display_order?: number;
+          game_key?: string;
           id?: number;
           is_active?: boolean;
           metric_category?: string;
@@ -327,81 +304,499 @@ export type Database = {
         };
         Relationships: [];
       };
-      probable_waffle_score_snapshots: {
+      game_score_metric_values: {
+        Row: {
+          created_at: string;
+          id: number;
+          metric_definition_id: number;
+          metric_value: number;
+          score_record_id: number;
+        };
+        Insert: {
+          created_at?: string;
+          id?: number;
+          metric_definition_id: number;
+          metric_value?: number;
+          score_record_id: number;
+        };
+        Update: {
+          created_at?: string;
+          id?: number;
+          metric_definition_id?: number;
+          metric_value?: number;
+          score_record_id?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "game_score_metric_values_metric_definition_id_fkey";
+            columns: ["metric_definition_id"];
+            isOneToOne: false;
+            referencedRelation: "game_score_metric_definitions";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "game_score_metric_values_score_record_id_fkey";
+            columns: ["score_record_id"];
+            isOneToOne: false;
+            referencedRelation: "fly_squasher_leaderboard";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "game_score_metric_values_score_record_id_fkey";
+            columns: ["score_record_id"];
+            isOneToOne: false;
+            referencedRelation: "game_leaderboard_scores";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "game_score_metric_values_score_record_id_fkey";
+            columns: ["score_record_id"];
+            isOneToOne: false;
+            referencedRelation: "game_score_records";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "game_score_metric_values_score_record_id_fkey";
+            columns: ["score_record_id"];
+            isOneToOne: false;
+            referencedRelation: "game_score_records_full";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "game_score_metric_values_score_record_id_fkey";
+            columns: ["score_record_id"];
+            isOneToOne: false;
+            referencedRelation: "little_muncher_leaderboard";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      game_score_records: {
+        Row: {
+          created_at: string;
+          game_key: string;
+          game_session_id: string;
+          id: number;
+          metadata: Json;
+          participant_id: number | null;
+          ranking_scope_key: string | null;
+          score_unit: string;
+          score_value: number;
+          submitted_at: string;
+          submitted_by_user_id: string | null;
+          user_id: string | null;
+        };
+        Insert: {
+          created_at?: string;
+          game_key: string;
+          game_session_id: string;
+          id?: number;
+          metadata?: Json;
+          participant_id?: number | null;
+          ranking_scope_key?: string | null;
+          score_unit?: string;
+          score_value: number;
+          submitted_at?: string;
+          submitted_by_user_id?: string | null;
+          user_id?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          game_key?: string;
+          game_session_id?: string;
+          id?: number;
+          metadata?: Json;
+          participant_id?: number | null;
+          ranking_scope_key?: string | null;
+          score_unit?: string;
+          score_value?: number;
+          submitted_at?: string;
+          submitted_by_user_id?: string | null;
+          user_id?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "game_score_records_game_session_id_fkey";
+            columns: ["game_session_id"];
+            isOneToOne: false;
+            referencedRelation: "game_sessions";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "game_score_records_participant_id_fkey";
+            columns: ["participant_id"];
+            isOneToOne: false;
+            referencedRelation: "game_session_participants";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "game_score_records_submitted_by_user_id_fkey";
+            columns: ["submitted_by_user_id"];
+            isOneToOne: false;
+            referencedRelation: "user_profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "game_score_records_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "user_profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      game_score_snapshots: {
         Row: {
           created_at: string;
           game_session_id: string;
           id: number;
+          snapshot_kind: string;
           snapshots: Json;
         };
         Insert: {
           created_at?: string;
           game_session_id: string;
           id?: number;
+          snapshot_kind?: string;
           snapshots: Json;
         };
         Update: {
           created_at?: string;
           game_session_id?: string;
           id?: number;
+          snapshot_kind?: string;
           snapshots?: Json;
         };
         Relationships: [
           {
-            foreignKeyName: "probable_waffle_score_snapshots_game_session_id_fkey";
+            foreignKeyName: "game_score_snapshots_game_session_id_fkey";
             columns: ["game_session_id"];
             isOneToOne: false;
-            referencedRelation: "probable_waffle_game_sessions";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "probable_waffle_score_snapshots_game_session_id_fkey";
-            columns: ["game_session_id"];
-            isOneToOne: false;
-            referencedRelation: "probable_waffle_match_history";
+            referencedRelation: "game_sessions";
             referencedColumns: ["id"];
           }
         ];
       };
-      profiles: {
+      game_session_participants: {
         Row: {
-          created: string;
-          email: string | null;
-          id: string;
-          name: string | null;
-          profile_image_url: string | null;
+          created_at: string;
+          display_name: string;
+          eliminated: boolean;
+          eliminated_at: string | null;
+          faction_key: string | null;
+          game_session_id: string;
+          id: number;
+          metadata: Json;
+          participant_number: number;
+          participant_type: Database["public"]["Enums"]["game_participant_type"];
+          result_status: Database["public"]["Enums"]["game_result_status"] | null;
+          team_key: string | null;
+          user_id: string | null;
         };
         Insert: {
-          created?: string;
-          email?: string | null;
-          id: string;
-          name?: string | null;
-          profile_image_url?: string | null;
+          created_at?: string;
+          display_name: string;
+          eliminated?: boolean;
+          eliminated_at?: string | null;
+          faction_key?: string | null;
+          game_session_id: string;
+          id?: number;
+          metadata?: Json;
+          participant_number: number;
+          participant_type?: Database["public"]["Enums"]["game_participant_type"];
+          result_status?: Database["public"]["Enums"]["game_result_status"] | null;
+          team_key?: string | null;
+          user_id?: string | null;
         };
         Update: {
-          created?: string;
+          created_at?: string;
+          display_name?: string;
+          eliminated?: boolean;
+          eliminated_at?: string | null;
+          faction_key?: string | null;
+          game_session_id?: string;
+          id?: number;
+          metadata?: Json;
+          participant_number?: number;
+          participant_type?: Database["public"]["Enums"]["game_participant_type"];
+          result_status?: Database["public"]["Enums"]["game_result_status"] | null;
+          team_key?: string | null;
+          user_id?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "game_session_participants_game_session_id_fkey";
+            columns: ["game_session_id"];
+            isOneToOne: false;
+            referencedRelation: "game_sessions";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "game_session_participants_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "user_profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      game_sessions: {
+        Row: {
+          completed_at: string | null;
+          completed_by_user_id: string | null;
+          created_at: string;
+          created_by_user_id: string | null;
+          ended_at: string | null;
+          external_session_id: string | null;
+          game_key: string;
+          game_mode_key: string | null;
+          human_player_count: number;
+          id: string;
+          level_key: string | null;
+          map_key: string | null;
+          metadata: Json;
+          session_status: Database["public"]["Enums"]["game_session_status"];
+          started_at: string;
+          total_duration_seconds: number | null;
+          updated_at: string;
+        };
+        Insert: {
+          completed_at?: string | null;
+          completed_by_user_id?: string | null;
+          created_at?: string;
+          created_by_user_id?: string | null;
+          ended_at?: string | null;
+          external_session_id?: string | null;
+          game_key: string;
+          game_mode_key?: string | null;
+          human_player_count?: number;
+          id?: string;
+          level_key?: string | null;
+          map_key?: string | null;
+          metadata?: Json;
+          session_status?: Database["public"]["Enums"]["game_session_status"];
+          started_at?: string;
+          total_duration_seconds?: number | null;
+          updated_at?: string;
+        };
+        Update: {
+          completed_at?: string | null;
+          completed_by_user_id?: string | null;
+          created_at?: string;
+          created_by_user_id?: string | null;
+          ended_at?: string | null;
+          external_session_id?: string | null;
+          game_key?: string;
+          game_mode_key?: string | null;
+          human_player_count?: number;
+          id?: string;
+          level_key?: string | null;
+          map_key?: string | null;
+          metadata?: Json;
+          session_status?: Database["public"]["Enums"]["game_session_status"];
+          started_at?: string;
+          total_duration_seconds?: number | null;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "game_sessions_completed_by_user_id_fkey";
+            columns: ["completed_by_user_id"];
+            isOneToOne: false;
+            referencedRelation: "user_profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "game_sessions_created_by_user_id_fkey";
+            columns: ["created_by_user_id"];
+            isOneToOne: false;
+            referencedRelation: "user_profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      user_achievement_unlocks: {
+        Row: {
+          achievement_id: string;
+          id: number;
+          metadata: Json;
+          unlocked_at: string;
+          user_id: string;
+        };
+        Insert: {
+          achievement_id: string;
+          id?: number;
+          metadata?: Json;
+          unlocked_at?: string;
+          user_id: string;
+        };
+        Update: {
+          achievement_id?: string;
+          id?: number;
+          metadata?: Json;
+          unlocked_at?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "user_achievement_unlocks_achievement_id_fkey";
+            columns: ["achievement_id"];
+            isOneToOne: false;
+            referencedRelation: "achievement_definitions";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "user_achievement_unlocks_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "user_profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      user_profiles: {
+        Row: {
+          account_status: Database["public"]["Enums"]["user_account_status"];
+          app_role: Database["public"]["Enums"]["app_user_role"];
+          avatar_url: string | null;
+          banned_until: string | null;
+          bio: string | null;
+          created_at: string;
+          display_name: string;
+          email: string | null;
+          id: string;
+          locale: string | null;
+          moderation_note: string | null;
+          timezone: string | null;
+          updated_at: string;
+          username: string | null;
+          website_url: string | null;
+        };
+        Insert: {
+          account_status?: Database["public"]["Enums"]["user_account_status"];
+          app_role?: Database["public"]["Enums"]["app_user_role"];
+          avatar_url?: string | null;
+          banned_until?: string | null;
+          bio?: string | null;
+          created_at?: string;
+          display_name: string;
+          email?: string | null;
+          id: string;
+          locale?: string | null;
+          moderation_note?: string | null;
+          timezone?: string | null;
+          updated_at?: string;
+          username?: string | null;
+          website_url?: string | null;
+        };
+        Update: {
+          account_status?: Database["public"]["Enums"]["user_account_status"];
+          app_role?: Database["public"]["Enums"]["app_user_role"];
+          avatar_url?: string | null;
+          banned_until?: string | null;
+          bio?: string | null;
+          created_at?: string;
+          display_name?: string;
           email?: string | null;
           id?: string;
-          name?: string | null;
-          profile_image_url?: string | null;
+          locale?: string | null;
+          moderation_note?: string | null;
+          timezone?: string | null;
+          updated_at?: string;
+          username?: string | null;
+          website_url?: string | null;
         };
         Relationships: [];
       };
     };
     Views: {
-      fly_squasher_scores_with_user_meta: {
+      fly_squasher_leaderboard: {
         Row: {
           date: string | null;
           id: number | null;
           level: number | null;
-          level_rn: number | null;
           name: string | null;
           score: number | null;
           user_id: string | null;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "game_score_records_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "user_profiles";
+            referencedColumns: ["id"];
+          }
+        ];
       };
-      little_muncher_scores_with_user_meta: {
+      game_leaderboard_scores: {
+        Row: {
+          display_name: string | null;
+          game_key: string | null;
+          id: number | null;
+          metadata: Json | null;
+          ranking_scope_key: string | null;
+          scope_rank: number | null;
+          score_value: number | null;
+          submitted_at: string | null;
+          user_id: string | null;
+          user_scope_rank: number | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "game_score_records_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "user_profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      game_score_records_full: {
+        Row: {
+          display_name: string | null;
+          eliminated: boolean | null;
+          eliminated_at: string | null;
+          faction_key: string | null;
+          game_key: string | null;
+          game_session_id: string | null;
+          id: number | null;
+          metrics: Json | null;
+          participant_id: number | null;
+          participant_number: number | null;
+          participant_type: Database["public"]["Enums"]["game_participant_type"] | null;
+          ranking_scope_key: string | null;
+          result_status: Database["public"]["Enums"]["game_result_status"] | null;
+          score_value: number | null;
+          submitted_at: string | null;
+          team_key: string | null;
+          user_id: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "game_score_records_game_session_id_fkey";
+            columns: ["game_session_id"];
+            isOneToOne: false;
+            referencedRelation: "game_sessions";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "game_score_records_participant_id_fkey";
+            columns: ["participant_id"];
+            isOneToOne: false;
+            referencedRelation: "game_session_participants";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "game_score_records_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "user_profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      little_muncher_leaderboard: {
         Row: {
           date: string | null;
           hill: number | null;
@@ -410,121 +805,39 @@ export type Database = {
           user_id: string | null;
           user_name: string | null;
         };
-        Relationships: [];
-      };
-      probable_waffle_match_history: {
-        Row: {
-          created_by_name: string | null;
-          ended_at: string | null;
-          game_instance_id: string | null;
-          game_type: string | null;
-          human_player_count: number | null;
-          id: string | null;
-          map_id: number | null;
-          players: Json | null;
-          scores_submitted: boolean | null;
-          session_state: string | null;
-          started_at: string | null;
-          submitted_by_name: string | null;
-          total_duration_seconds: number | null;
-          user_participated: boolean | null;
-          user_result: string | null;
-        };
-        Relationships: [];
-      };
-      probable_waffle_player_scores_full: {
-        Row: {
-          buildings_constructed: number | null;
-          buildings_destroyed: number | null;
-          buildings_lost: number | null;
-          created_at: string | null;
-          damage_dealt: number | null;
-          damage_received: number | null;
-          eliminated: boolean | null;
-          eliminated_at: string | null;
-          faction_type: string | null;
-          final_resources_minerals: number | null;
-          final_resources_stone: number | null;
-          final_resources_wood: number | null;
-          final_score: number | null;
-          game_result: string | null;
-          game_session_id: string | null;
-          healing_done: number | null;
-          id: number | null;
-          max_army_size: number | null;
-          max_building_count: number | null;
-          player_name: string | null;
-          player_number: number | null;
-          player_type: string | null;
-          resources_collected_minerals: number | null;
-          resources_collected_stone: number | null;
-          resources_collected_wood: number | null;
-          resources_spent_minerals: number | null;
-          resources_spent_stone: number | null;
-          resources_spent_wood: number | null;
-          team_number: number | null;
-          units_killed: number | null;
-          units_lost: number | null;
-          units_produced: number | null;
-          user_id: string | null;
-        };
         Relationships: [
           {
-            foreignKeyName: "probable_waffle_player_scores_user_id_fkey";
+            foreignKeyName: "game_score_records_user_id_fkey";
             columns: ["user_id"];
             isOneToOne: false;
-            referencedRelation: "profiles";
-            referencedColumns: ["id"];
-          }
-        ];
-      };
-      probable_waffle_player_stats: {
-        Row: {
-          avg_final_score: number | null;
-          losses: number | null;
-          max_final_score: number | null;
-          player_name: string | null;
-          ties: number | null;
-          total_buildings_constructed: number | null;
-          total_buildings_destroyed: number | null;
-          total_games: number | null;
-          total_units_killed: number | null;
-          total_units_produced: number | null;
-          user_id: string | null;
-          win_rate_percentage: number | null;
-          wins: number | null;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "probable_waffle_player_scores_user_id_fkey";
-            columns: ["user_id"];
-            isOneToOne: false;
-            referencedRelation: "profiles";
+            referencedRelation: "user_profiles";
             referencedColumns: ["id"];
           }
         ];
       };
     };
     Functions: {
-      get_player_score_metrics: {
-        Args: { p_player_score_id: number };
-        Returns: Json;
-      };
-      refresh_probable_waffle_player_scores_full: {
-        Args: never;
-        Returns: undefined;
-      };
-      upsert_player_score_metric: {
-        Args: {
-          p_metric_key: string;
-          p_metric_value: number;
-          p_player_score_id: number;
-        };
-        Returns: undefined;
-      };
+      refresh_game_score_records_full: { Args: never; Returns: undefined };
     };
     Enums: {
-      [_ in never]: never;
+      achievement_difficulty: "easy" | "medium" | "hard";
+      app_user_role: "user" | "moderator" | "admin";
+      chat_channel_type: "global_lobby" | "game_lobby" | "game_session" | "direct" | "system";
+      chat_membership_role: "owner" | "moderator" | "member";
+      chat_message_status: "visible" | "hidden" | "deleted";
+      chat_report_reason:
+        | "spam"
+        | "abuse"
+        | "harassment"
+        | "hate_speech"
+        | "cheating"
+        | "personal_information"
+        | "other";
+      chat_report_status: "open" | "reviewed" | "dismissed" | "actioned";
+      game_participant_type: "human" | "ai" | "spectator";
+      game_result_status: "win" | "loss" | "tie" | "quit";
+      game_session_status: "in_progress" | "completed" | "abandoned";
+      user_account_status: "active" | "limited" | "disabled";
     };
     CompositeTypes: {
       [_ in never]: never;
@@ -643,6 +956,18 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {}
+    Enums: {
+      achievement_difficulty: ["easy", "medium", "hard"],
+      app_user_role: ["user", "moderator", "admin"],
+      chat_channel_type: ["global_lobby", "game_lobby", "game_session", "direct", "system"],
+      chat_membership_role: ["owner", "moderator", "member"],
+      chat_message_status: ["visible", "hidden", "deleted"],
+      chat_report_reason: ["spam", "abuse", "harassment", "hate_speech", "cheating", "personal_information", "other"],
+      chat_report_status: ["open", "reviewed", "dismissed", "actioned"],
+      game_participant_type: ["human", "ai", "spectator"],
+      game_result_status: ["win", "loss", "tie", "quit"],
+      game_session_status: ["in_progress", "completed", "abandoned"],
+      user_account_status: ["active", "limited", "disabled"]
+    }
   }
 } as const;

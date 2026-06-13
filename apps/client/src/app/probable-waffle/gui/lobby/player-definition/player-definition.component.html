@@ -7,12 +7,21 @@
         <div class="player-card" [style.border-color]="getColorForPlayer(player)">
           <div class="player-header">
             <div class="player-color" [style.background-color]="getColorForPlayer(player)"></div>
-            <div class="player-name">
-              {{ getPlayerName(player) }}
-              @if (getPlayerIsHost(player)) {
-                <span class="host-badge">Host</span>
-              }
-            </div>
+            @if (canViewProfile(player)) {
+              <button class="player-name player-name-button" type="button" (click)="openPlayerProfile(player)">
+                {{ getPlayerName(player) }}
+                @if (getPlayerIsHost(player)) {
+                  <span class="host-badge">Host</span>
+                }
+              </button>
+            } @else {
+              <div class="player-name">
+                {{ getPlayerName(player) }}
+                @if (getPlayerIsHost(player)) {
+                  <span class="host-badge">Host</span>
+                }
+              </div>
+            }
             <div class="player-actions">
               @if (!getPlayerIsCreator(player) && !getPlayerIsCurrentPlayer(player) && isHost) {
                 <button
@@ -129,4 +138,10 @@
       }
     </div>
   </div>
+
+  <fuzzy-waddle-modal #profileModal [modalConfig]="profileModalConfig">
+    @if (selectedProfileUserId(); as userId) {
+      <fuzzy-waddle-profile [userId]="userId" [embedded]="true" />
+    }
+  </fuzzy-waddle-modal>
 }

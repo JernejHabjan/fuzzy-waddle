@@ -3,7 +3,7 @@
 ## Tech Stack
 
 | Layer              | Technology                                      |
-| ------------------ | ----------------------------------------------- |
+|--------------------|-------------------------------------------------|
 | Frontend (web)     | Angular 21, Phaser 4, Bootstrap 5, Chart.js     |
 | Frontend (desktop) | Tauri 2 (Rust shell wrapping the Angular build) |
 | Backend            | NestJS 11, Socket.IO                            |
@@ -27,7 +27,7 @@ fuzzy-waddle/
 ## Games
 
 | Game            | Genre              | Directory                              |
-| --------------- | ------------------ | -------------------------------------- |
+|-----------------|--------------------|----------------------------------------|
 | Probable Waffle | Real-time strategy | `apps/client/src/app/probable-waffle/` |
 | Fly Squasher    | Arcade             | `apps/client/src/app/fly-squasher/`    |
 | Little Muncher  | Platformer         | `apps/client/src/app/little-muncher/`  |
@@ -65,15 +65,26 @@ See [Tauri Desktop](tauri-desktop.md) for prerequisites and build instructions.
 ## API Architecture
 
 - Game modules in `apps/api/src/app/{game-name}/`
-- Authentication via Supabase OAuth + JWT (`SupabaseAuthGuard`)
+- Authentication via Supabase OAuth + JWT
 - WebSocket gateways (`@WebSocketGateway()`) handle real-time multiplayer state
+
+## Database Architecture
+
+- Supabase Auth owns login identity; `user_profiles` stores app profile data.
+- Game content lives in TypeScript and assets. Database rows store stable game, level, hill, and map keys.
+- Game history and scoring use shared session, participant, score, metric, and snapshot tables.
+- Chat uses shared channel and message tables for global lobby, game lobby, and in-game chat.
+- Private session chat is fetched through the Nest API service-role path, not direct client Supabase reads.
+- Moderation uses `user_profiles.app_role`; the client loads the current profile first and only requests moderation queues for `moderator` and `admin`.
+- Temporary restrictions use `user_profiles.account_status = limited` with `banned_until`; permanent bans use `account_status = disabled`.
+- Angular can use Supabase directly where RLS is sufficient; Nest API handles service-role, moderation, score submission, snapshots, and cross-user aggregation.
 
 ## Real-time Communication
 
 Socket.IO is used for multiplayer game state synchronization:
 
 - **Client**: `AuthenticatedSocketService` establishes a JWT-authenticated Socket.IO connection
-- **Server**: WebSocket gateways with `SupabaseAuthGuard` validate tokens on every event
+- **Server**: authenticated HTTP and WebSocket entrypoints validate JWTs, and online-only paths also check `user_profiles` so banned users cannot use chat or multiplayer features
 - **Event contracts**: defined in `libs/api-interfaces/src/lib/communicators/` — import these in both client and server to keep event names and payloads in sync
 - **AOTA multiplayer design**: see [AOTA Multiplayer Architecture](aota-multiplayer-architecture.md)
 

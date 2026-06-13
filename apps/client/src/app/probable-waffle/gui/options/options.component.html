@@ -1,9 +1,9 @@
 @if (!fromGame) {
-  <fuzzy-waddle-home-nav routerLink="/aota" title="Ashes of the Ancients" />
+  <fuzzy-waddle-home-nav routerLink="/aota" title="Ashes of the Ancients" [showBack]="true" />
 }
 
 <fuzzy-waddle-center-wrapper>
-  <div class="card-container">
+  <div class="card-container aota-card-shell">
     <div class="general-title">Options:</div>
 
     <div class="card mt-3 p-3">
@@ -97,6 +97,18 @@
           id="enabledMouseCornerMovement"
         />
         <label class="form-check-label" for="enabledMouseCornerMovement"> Enable mouse corner camera movement </label>
+      </div>
+      <div class="mb-0">
+        <label class="form-label form-label--select" for="homeScreenBackground">Home screen background</label>
+        <select
+          id="homeScreenBackground"
+          class="form-select"
+          [(ngModel)]="optionsService.gameSettings.homeScreenBackground"
+          (change)="saveToLocalStorage('game')"
+        >
+          <option value="ashfall">Ashfall</option>
+          <option value="constellation">Constellation</option>
+        </select>
       </div>
     </div>
 

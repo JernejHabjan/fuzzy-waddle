@@ -1,22 +1,36 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary py-0">
-  <div class="container-fluid">
-    <a class="navbar-brand btn-home align-items-center d-flex" [routerLink]="routerLink()">
-      <img alt="Home Logo" height="46px" [src]="imgSrc()" width="46px" />
-      <div class="title">{{ title() }}</div>
+<nav class="navbar navbar-expand-lg home-nav py-0">
+  <div class="container-fluid home-nav-shell">
+    <a class="navbar-brand btn-home align-items-center d-flex" [class.btn-home-back]="showBack()" [routerLink]="routerLink()">
+      @if (showBack()) {
+        <span class="home-nav-backmark">
+          <fa-icon [icon]="faChevronLeft" />
+          <span>Back</span>
+        </span>
+        <div class="title-wrap">
+          <div class="title">{{ title() }}</div>
+        </div>
+      } @else {
+        <img alt="Home Logo" class="home-nav-logo" height="46px" [src]="imgSrc()" width="46px" />
+        <div class="title-wrap">
+          <div class="title">{{ title() }}</div>
+        </div>
+      }
     </a>
-    <button
-      aria-controls="navbarSupportedContent"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-      class="navbar-toggler"
-      data-bs-target="#navbarSupportedContent"
-      data-bs-toggle="collapse"
-      type="button"
-    >
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ng-content />
-    </div>
+    @if (hasActions()) {
+      <button
+        aria-controls="navbarSupportedContent"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+        class="navbar-toggler"
+        data-bs-target="#navbarSupportedContent"
+        data-bs-toggle="collapse"
+        type="button"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ng-content />
+      </div>
+    }
   </div>
 </nav>

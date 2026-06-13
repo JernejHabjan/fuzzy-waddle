@@ -5,8 +5,7 @@ import { DatePipe } from "@angular/common";
 import {
   type GameSessionDetails,
   ProbableWaffleGameInstanceType,
-  ProbableWaffleLevels,
-  ProbableWaffleMapEnum
+  ProbableWaffleLevels
 } from "@fuzzy-waddle/api-interfaces";
 import { MatchHistoryService } from "../../services/match-history.service";
 import { ScoreTableComponent } from "../score-screen/table/score-table.component";
@@ -67,8 +66,8 @@ export class MatchDetailsComponent implements OnInit {
     });
   }
 
-  protected getMapName(mapId: ProbableWaffleMapEnum): string {
-    const level = Object.values(ProbableWaffleLevels).find((l) => l.id === Number(mapId));
+  protected getMapName(mapKey: string | null): string {
+    const level = Object.values(ProbableWaffleLevels).find((l) => l.id.toString() === mapKey);
     return level?.name ?? "Unknown Map";
   }
 

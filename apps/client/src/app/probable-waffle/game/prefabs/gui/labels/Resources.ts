@@ -95,7 +95,33 @@ export default class Resources extends Phaser.GameObjects.Container {
 
   /* START-USER-CODE */
 
-  // Write your code here.
+  private readonly resourceTypes = ["food", "wood", "stone", "minerals", "housing"] as const;
+
+  setMobileLayout(isMobile: boolean) {
+    const background = this.resources_container.list.find(
+      (child): child is Phaser.GameObjects.NineSlice => child instanceof Phaser.GameObjects.NineSlice
+    );
+    const resources = this.resourceTypes
+      .map((type) =>
+        this.resources_container.list.find(
+          (child): child is Resource => child instanceof Resource && child.type === type
+        )
+      )
+      .filter((resource): resource is Resource => !!resource);
+
+    this.resources_container.setScale(isMobile ? 1 : 2);
+
+    if (background) {
+      background.setSize(isMobile ? 92 : 50, isMobile ? 214 : 10);
+      background.scaleX = isMobile ? 0.7 : 4.62;
+      background.scaleY = isMobile ? 0.5 : 2.8023638778148445;
+    }
+
+    resources.forEach((resource, index) => {
+      resource.x = isMobile ? 42 : 42 + index * 42;
+      resource.y = isMobile ? 21 + index * 21: 21;
+    });
+  }
 
   /* END-USER-CODE */
 }

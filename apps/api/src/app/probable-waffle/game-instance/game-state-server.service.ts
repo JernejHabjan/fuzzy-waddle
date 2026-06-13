@@ -54,6 +54,14 @@ export class GameStateServerService {
     private readonly pauseStateValidator: PauseStateValidatorService
   ) {}
 
+  ensureAuthorizedMutation(body: CommunicatorEvent<any, ProbableWaffleCommunicatorType>, user: User): void {
+    this.gameInstanceService.ensureCanMutateGameInstance(body, user);
+  }
+
+  ensureCanAccessGameRoom(gameInstanceId: string, user: User): void {
+    this.gameInstanceService.ensureCanJoinGameRoom(gameInstanceId, user);
+  }
+
   updateGameState(body: ProbableWaffleCommunicatorEventUnion, user: User): UpdateGameStateResult {
     const gameInstance = this.gameInstanceService.findGameInstance(body.gameInstanceId!);
     if (!gameInstance && body.communicator === ProbableWaffleCommunicators.InstanceReseed) {

@@ -2,7 +2,6 @@ import {
   ConnectedSocket,
   MessageBody,
   OnGatewayConnection,
-  OnGatewayDisconnect,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer
@@ -29,9 +28,8 @@ import {
   type ProbableWaffleWebsocketRoomEvent
 } from "@fuzzy-waddle/api-interfaces";
 import { ProbableWaffleChatService } from "../chat/probable-waffle-chat.service";
-import { Logger, UseGuards } from "@nestjs/common";
 import { type AuthUser } from "@supabase/supabase-js";
-import { SupabaseAuthGuard } from "../../../auth/guards/supabase-auth.guard";
+import { OnlineAccessGuard } from "../../../auth/guards/online-access.guard";
 import { CurrentUser } from "../../../auth/current-user";
 import { GameStateServerService, type UpdateGameStateResult } from "./game-state-server.service";
 import { RoomServerService } from "../game-room/room-server.service";
@@ -57,8 +55,13 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
     private readonly roomServerService: RoomServerService,
     private readonly chatService: ChatService,
     private readonly disconnectTracker: PlayerDisconnectTrackerService,
-    private readonly gameInstanceService: GameInstanceService
+    private readonly gameInstanceService: GameInstanceService,
+    private readonly socketConnectionAuthService: SocketConnectionAuthService
   ) {}
+
+  async handleConnection(client: Socket): Promise<void> {
+    await this.socketConnectionAuthService.disconnectUnauthenticatedClient(client);
+  }
 
   emitGameFound(probableWaffleGameFoundEvent: ProbableWaffleGameFoundEvent) {
     this.server.emit(ProbableWaffleGameInstanceEvent.GameFound, probableWaffleGameFoundEvent);
@@ -125,7 +128,7 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
     }
   }
 
-  @UseGuards(SupabaseAuthGuard)
+  @UseGuards(OnlineAccessGuard)
   @SubscribeMessage(ProbableWaffleGatewayEvent.ProbableWaffleAction)
   /**
    * Main relay path for gameplay events.
@@ -143,6 +146,7 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
     this.debugLog(
       `action communicator=${body.communicator} game=${body.gameInstanceId} user=${user.id} socket=${socket.id}`
     );
+    this.gameStateServerService.ensureAuthorizedMutation(body, user);
 
     const removedPlayerUserId = this.getRemovedPlayerUserId(body);
     const participantLeft = this.isParticipantLeaving(body);
@@ -199,7 +203,7 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
     // else: security/sequence violation — drop entirely; no relay of any kind.
   }
 
-  @UseGuards(SupabaseAuthGuard)
+  @UseGuards(OnlineAccessGuard)
   @SubscribeMessage(ProbableWaffleGatewayEvent.ProbableWaffleMessage)
   async broadcastProbableWaffleMessage(
     @CurrentUser() user: AuthUser,
@@ -207,6 +211,10 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
     @ConnectedSocket() socket: Socket
   ) {
     console.log(`Ashes of the Ancients - GI chat message ${body.gameInstanceId}`);
+    if (!body.gameInstanceId) {
+      throw new BadRequestException("Game instance ID is required");
+    }
+    this.gameStateServerService.ensureCanAccessGameRoom(body.gameInstanceId, user);
 
     // clone the payload
     const newPayload = { ...body };
@@ -234,13 +242,15 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
     }
   }
 
-  @UseGuards(SupabaseAuthGuard)
+  @UseGuards(OnlineAccessGuard)
   @SubscribeMessage(ProbableWaffleGatewayEvent.ProbableWaffleWebsocketRoom)
   async broadcastProbableWaffleWebsocketRoom(
     @CurrentUser() user: AuthUser,
     @MessageBody() body: ProbableWaffleWebsocketRoomEvent,
     @ConnectedSocket() socket: Socket
   ) {
+    this.gameStateServerService.ensureCanAccessGameRoom(body.gameInstanceId, user);
+
     switch (body.type) {
       case "join":
         {
