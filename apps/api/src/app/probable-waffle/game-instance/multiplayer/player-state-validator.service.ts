@@ -14,6 +14,14 @@ import type { User } from "@supabase/supabase-js";
 type PlayerDataChangeProperty = ProbableWafflePlayerDataChangeEvent["property"];
 
 @Injectable()
+/**
+ * Validates player-scoped state mutations that are still sent outside lockstep
+ * command batches.
+ *
+ * These checks prevent side-channel state drift: selection, control groups,
+ * resources, and housing must still obey ownership and sanity limits even
+ * though they are not part of the command-stream validator.
+ */
 export class PlayerStateValidatorService {
   private readonly logger = new Logger(PlayerStateValidatorService.name);
 
@@ -89,6 +97,7 @@ export class PlayerStateValidatorService {
 
   cleanup(_: string): void {}
 
+  /** Restricts mutable player-state events to the owner, with host fallback for explicit leave. */
   private canUserMutateProperty(
     event: ProbableWafflePlayerDataChangeEvent,
     gameInstance: ProbableWaffleGameInstance,

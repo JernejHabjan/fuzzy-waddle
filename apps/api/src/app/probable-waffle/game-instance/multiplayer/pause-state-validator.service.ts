@@ -3,6 +3,13 @@ import { type ProbableWaffleGameInstance, type ProbableWafflePauseChangedEvent }
 import type { User } from "@supabase/supabase-js";
 
 @Injectable()
+/**
+ * Enforces pause ownership and anti-spam rules for multiplayer matches.
+ *
+ * Pause is relayed outside the lockstep command stream, so the server has to
+ * remember enough per-match state to reject duplicate transitions and cooldown
+ * abuse deterministically.
+ */
 export class PauseStateValidatorService {
   private readonly logger = new Logger(PauseStateValidatorService.name);
   private static readonly MIN_PAUSE_INTERVAL_MS = 60_000;
@@ -58,6 +65,7 @@ export class PauseStateValidatorService {
     this.currentPauseState.delete(gameInstanceId);
   }
 
+  /** Lazily creates per-match counters so pause validation survives across many toggle attempts. */
   private getPlayerState(gameInstanceId: string, playerNumber: number): { pauseCount: number; lastPauseAt: number } {
     let instanceState = this.playerPauseState.get(gameInstanceId);
     if (!instanceState) {

@@ -45,6 +45,14 @@ export type UpdateGameStateResult =
   | { success: false; relayEmpty: true; rejectionReason: string; overrideTick?: number };
 
 @Injectable()
+/**
+ * Applies authoritative multiplayer mutations on the server and decides how
+ * each event should be relayed.
+ *
+ * The important invariant here is that lockstep ticks are validated before
+ * relay, but once a tick is authoritative the server prefers relaying an empty
+ * batch over dropping the slot entirely so peers do not deadlock forever.
+ */
 export class GameStateServerService {
   // 1024 batches ≈ ~51 seconds at 20 ticks/s — enough to cover the full reconnect grace window.
   private static readonly COMMAND_HISTORY_LIMIT = 1024;
@@ -67,6 +75,7 @@ export class GameStateServerService {
     this.gameInstanceService.ensureCanJoinGameRoom(gameInstanceId, user);
   }
 
+  /** Mutates in-memory game state and returns the exact relay policy for the gateway. */
   updateGameState(body: ProbableWaffleCommunicatorEventUnion, user: User): UpdateGameStateResult {
     const gameInstance = this.gameInstanceService.findGameInstance(body.gameInstanceId!);
     if (!gameInstance && body.communicator === ProbableWaffleCommunicators.InstanceReseed) {

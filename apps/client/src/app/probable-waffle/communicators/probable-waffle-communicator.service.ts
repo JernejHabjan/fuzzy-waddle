@@ -31,6 +31,13 @@ import { type ProbableWaffleCommunicatorServiceInterface } from "./probable-waff
 @Injectable({
   providedIn: "root"
 })
+/**
+ * Owns the client-side communicator graph for one active game instance.
+ *
+ * In multiplayer this service also owns socket room membership. Keeping that
+ * join/leave behavior centralized avoids duplicating reconnect logic across the
+ * lobby, game scene, and recovery services.
+ */
 export class ProbableWaffleCommunicatorService
   implements CommunicatorService, OnDestroy, ProbableWaffleCommunicatorServiceInterface
 {
@@ -189,6 +196,9 @@ export class ProbableWaffleCommunicatorService
     }
 
     if (socket) {
+      // Register once and also join immediately. The immediate emit covers the
+      // already-connected case, while the connect listener covers reconnects
+      // that come back with a new socket id and would otherwise miss room relay.
       this.socketConnectHandler = () => {
         console.info(`[Communicator] Joining game room after connect. gameInstanceId=${gameInstanceId}`);
         this.emitRoomMembership(socket, gameInstanceId, "join");
@@ -255,6 +265,9 @@ export class ProbableWaffleCommunicatorService
       this.joinedSocketId === socketId &&
       this.joinedGameInstanceId === gameInstanceId
     ) {
+      // Room joins are idempotent from the gameplay perspective, but suppressing
+      // duplicate emits keeps reconnect debugging readable and avoids redundant
+      // tracker updates on the API side.
       return;
     }
 

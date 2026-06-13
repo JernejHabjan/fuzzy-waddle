@@ -238,6 +238,10 @@ export class ReconnectService {
 
       const currentActors = [...actorIndex.getAllIdActors()];
       if (response.reason === "desync-correction") {
+        // Desync correction preserves the live scene where possible so users do not
+        // see a full world rebuild for a small divergence. Reconnect/spectator
+        // catch-up instead rebuilds from scratch because arbitrary lifecycle events
+        // may have been missed while the client was away.
         this.applyActorSnapshotInPlace(actorIndex, creator, currentActors, snapshot.actors as ActorDefinition[]);
       } else {
         // Reconnect and spectator catch-up rebuild from a clean baseline because the
@@ -410,6 +414,9 @@ export class ReconnectService {
     currentActors: readonly Phaser.GameObjects.GameObject[],
     snapshotActors: readonly ActorDefinition[]
   ): void {
+    // The host snapshot is authoritative on ids, names, and transforms. Applying
+    // in place avoids twitchy full-scene rebuilds while still converging every
+    // actor to the host's deterministic state.
     const liveActorById = new Map(
       currentActors
         .map((actor) => [getActorComponent(actor, IdComponent)?.id, actor] as const)

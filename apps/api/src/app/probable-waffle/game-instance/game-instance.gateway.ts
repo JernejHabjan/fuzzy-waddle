@@ -47,6 +47,14 @@ const RECONNECT_WINDOW_SECONDS = 60;
     origin: process.env.CORS_ORIGIN?.split(",")
   }
 })
+/**
+ * Socket.IO entry point for Probable Waffle realtime traffic.
+ *
+ * This gateway deliberately keeps transport concerns here and pushes state
+ * authority into GameStateServerService plus the validator services. That split
+ * matters for multiplayer debugging because relay policy and mutation policy
+ * are different problems.
+ */
 export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private readonly logger = new Logger(GameInstanceGateway.name);
   private readonly debug = process.env.PROBABLE_WAFFLE_MULTIPLAYER_DEBUG === "true";
@@ -244,6 +252,12 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
 
   @UseGuards(OnlineAccessGuard)
   @SubscribeMessage(ProbableWaffleGatewayEvent.ProbableWaffleWebsocketRoom)
+  /**
+   * Binds authenticated sockets to one game room.
+   *
+   * Lockstep traffic is always room-broadcast, so reconnecting clients must
+   * re-join here before any command, pause, or recovery event can reach them.
+   */
   async broadcastProbableWaffleWebsocketRoom(
     @CurrentUser() user: AuthUser,
     @MessageBody() body: ProbableWaffleWebsocketRoomEvent,
