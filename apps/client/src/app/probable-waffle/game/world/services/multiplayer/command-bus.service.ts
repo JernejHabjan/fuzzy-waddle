@@ -447,6 +447,7 @@ export class CommandBusService {
    */
   resetAfterSnapshot(snapshotTick: number, commandTail: readonly ProbableWaffleReplayCommandBatch[] = []): void {
     const preResetLastSentExecutionTick = this.lastSentExecutionTick;
+    const commandTailLookup = new Set(commandTail.map((batch) => `${batch.tick}:${batch.playerNumber}`));
     this.buffer.clear();
     this.pendingOutbound.clear();
     this.sentTransportSequenceByTick.clear();
@@ -474,6 +475,29 @@ export class CommandBusService {
       );
     }
     this.lastSentExecutionTick = resetBaselineTick;
+
+    const restoredAcceptedSlots: string[] = [];
+    for (const playerNumber of this.humanPlayerNumbers) {
+      const acceptedTick = this.lastReceivedTickByPlayer.get(playerNumber) ?? snapshotTick;
+      for (let tick = snapshotTick + 1; tick <= acceptedTick; tick++) {
+        if (commandTailLookup.has(`${tick}:${playerNumber}`)) {
+          continue;
+        }
+        // Snapshot replay tails can omit empty heartbeats even though lockstep had
+        // already accepted them before the reset. Re-materialize those accepted
+        // empty slots here so recovery cannot strand an old tick behind a sparse tail.
+        this.buffer.commit(tick, playerNumber, []);
+        if (playerNumber === this.localPlayerNumber) {
+          this.recordLocalTickStage(tick, "snapshot-ack-backfill");
+        }
+        restoredAcceptedSlots.push(`${playerNumber}:${tick}`);
+      }
+    }
+    if (restoredAcceptedSlots.length > 0) {
+      this.logger.warn(
+        `[CommandBus][SNAPSHOT-ACK-BACKFILL] ${this.getMultiplayerLogContext()} snapshotTick=${snapshotTick} restored=${restoredAcceptedSlots.join(",")}`
+      );
+    }
 
     if (this.localPlayerNumber !== null) {
       for (
