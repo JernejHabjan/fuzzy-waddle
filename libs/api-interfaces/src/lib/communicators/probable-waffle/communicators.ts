@@ -159,6 +159,26 @@ export interface ProbableWaffleCommunicatorMessageEvent extends ProbableWaffleCo
   chatMessage: ChatMessage;
 }
 
+export interface ProbableWaffleGameCommandTransportMeta {
+  /**
+   * Monotonic sequence assigned by the sending client. This lets us prove
+   * whether command packets were emitted, relayed, or received out of order.
+   */
+  clientSequence: number;
+  /** Wall-clock timestamp captured on the sending client for diagnostics only. */
+  clientSentAtWallTimeMs: number;
+  /** Simulation tick the sender was executing when it emitted this packet. */
+  clientObservedTick: number;
+  /** Highest authoritative local tick the sender had already seen echoed back. */
+  clientAcknowledgedLocalTick: number;
+  /** Which command-bus path emitted the packet. */
+  clientSource: "startup-seed" | "steady-state-tick" | "snapshot-reset";
+  /** Monotonic relay sequence assigned by the API per (game, player) stream. */
+  serverRelaySequence?: number;
+  /** Wall-clock timestamp captured by the API when it received/relayed the packet. */
+  serverReceivedAtWallTimeMs?: number;
+}
+
 /**
  * Carries one player's committed command batch for a given simulation tick.
  * Sent by every player on every tick (even if commands is empty) so peers can
@@ -173,6 +193,8 @@ export interface ProbableWaffleGameCommandEvent extends ProbableWaffleCommunicat
   playerNumber: PlayerNumber;
   /** Serialised GameCommand objects. Cast to GameCommand[] on the client. */
   commands: unknown[];
+  /** Optional transport diagnostics for ordering and jitter investigation. */
+  transportMeta?: ProbableWaffleGameCommandTransportMeta;
   /**
    * Set by the server when a batch is rejected due to payload validation.
    * The batch is still relayed as empty (commands: []) so the lockstep barrier

@@ -58,6 +58,7 @@ const RECONNECT_WINDOW_SECONDS = 60;
 export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private readonly logger = new Logger(GameInstanceGateway.name);
   private readonly debug = process.env.PROBABLE_WAFFLE_MULTIPLAYER_DEBUG === "true";
+  private readonly commandRelaySequenceByStream = new Map<string, number>();
   @WebSocketServer() private readonly server!: Server;
 
   constructor(
@@ -162,8 +163,13 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
     const roomId = `${ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance}${body.gameInstanceId}`;
     if (result.success) {
       if (body.communicator === ProbableWaffleCommunicators.GameCommand) {
+        const payload = body.payload as ProbableWaffleGameCommandEvent;
+        const relayedBody = {
+          ...body,
+          payload: this.decorateCommandRelayPayload(payload)
+        };
         // Include the sender so it commits via the authoritative server echo instead of self-delivery.
-        this.server.to(roomId).emit(ProbableWaffleGatewayEvent.ProbableWaffleAction, body);
+        this.server.to(roomId).emit(ProbableWaffleGatewayEvent.ProbableWaffleAction, relayedBody);
       } else if (body.communicator === ProbableWaffleCommunicators.InstanceReseed) {
         // Reseed payload is server-ingestion only; do not rebroadcast full instance blobs.
       } else if (body.communicator === ProbableWaffleCommunicators.SnapshotResponse) {
@@ -199,12 +205,12 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
       const payload = body.payload as ProbableWaffleGameCommandEvent;
       const rejectedAsEmptyBatch = {
         ...body,
-        payload: {
+        payload: this.decorateCommandRelayPayload({
           ...payload,
           tick: result.overrideTick ?? payload.tick,
           commands: [],
           rejectionReason: result.rejectionReason
-        } satisfies ProbableWaffleGameCommandEvent
+        } satisfies ProbableWaffleGameCommandEvent)
       };
       this.server.to(roomId).emit(ProbableWaffleGatewayEvent.ProbableWaffleAction, rejectedAsEmptyBatch);
     }
@@ -460,5 +466,28 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
       return;
     }
     this.logger.debug(`[Multiplayer] ${message}`);
+  }
+
+  /**
+   * The gateway is the single fan-out point for gameplay command traffic, so it
+   * assigns one relay sequence per (game, player) stream. That lets client logs
+   * distinguish sender-side jitter from relay-side reordering.
+   */
+  private decorateCommandRelayPayload(payload: ProbableWaffleGameCommandEvent): ProbableWaffleGameCommandEvent {
+    const streamKey = `${payload.gameInstanceId}:${payload.playerNumber}`;
+    const nextSequence = (this.commandRelaySequenceByStream.get(streamKey) ?? 0) + 1;
+    this.commandRelaySequenceByStream.set(streamKey, nextSequence);
+    const transportMeta = payload.transportMeta
+      ? {
+          ...payload.transportMeta,
+          serverRelaySequence: nextSequence,
+          serverReceivedAtWallTimeMs: Date.now()
+        }
+      : undefined;
+
+    return {
+      ...payload,
+      transportMeta
+    };
   }
 }

@@ -5,6 +5,7 @@ import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { CommandBuffer } from "./command-buffer";
 import { getCommunicator, hasMultiplayerCommandRelay } from "../../../data/scene-data";
 import {
+  type ProbableWaffleGameCommandEvent,
   type PlayerNumber,
   ProbableWafflePlayerType,
   type ProbableWaffleReplayCommandBatch
@@ -64,13 +65,18 @@ export class CommandBusService {
   // Keep a short recent timeline of local tick lifecycle events so stale-heartbeat
   // and stall logs can show how a problematic tick moved through send/echo/commit.
   private readonly localTickTimeline = new Map<number, string[]>();
+  private readonly remoteReceiveTimeline = new Map<PlayerNumber, string[]>();
+  private readonly sentTransportSequenceByTick = new Map<number, number>();
+  private readonly lastReceivedRelaySequenceByPlayer = new Map<PlayerNumber, number>();
   private lastSentExecutionTick = 0;
+  private nextOutboundTransportSequence = 1;
   private stallSignature: string | null = null;
   private stallLogTimer: number | null = null;
   private pendingStallTick: number | null = null;
   private queuedWhileStalledSignature: string | null = null;
   private readonly lastReceivedTickByPlayer = new Map<PlayerNumber, number>();
   private lastSentTickByLocalPlayer: number | null = null;
+  private lastLoggedStallTick: number | null = null;
 
   /**
    * Activates the multiplayer relay path.
@@ -112,6 +118,7 @@ export class CommandBusService {
     // Receive remote command batches (including local player's server echo) and buffer them
     this.subscriptions.push(
       commandRelay.on.subscribe((event) => {
+        this.observeReceivedCommandEvent(event);
         if (event.rejectionReason && event.playerNumber === this.localPlayerNumber) {
           // The server rejected our batch (payload invalid) and relayed an empty one.
           // Log clearly so the developer can see what caused the desync.
@@ -126,6 +133,9 @@ export class CommandBusService {
         } else {
           this.debugLog(`received heartbeat tick=${event.tick} player=${event.playerNumber}`);
         }
+        // Packet arrival order is diagnostic only. Buffer/received-tick state must
+        // still follow authoritative accepted tick progress so one late empty
+        // heartbeat cannot strand a permanent gap in lockstep.
         this.materializeAcceptedTickProgress(event.playerNumber, event.tick);
         this.buffer.commit(event.tick, event.playerNumber, event.commands as GameCommand[]);
         this.lastReceivedTickByPlayer.set(
@@ -306,7 +316,19 @@ export class CommandBusService {
       return;
     }
     const acknowledgedLocalTick = this.lastReceivedTickByPlayer.get(this.localPlayerNumber) ?? -1;
+    const existingSequence = this.sentTransportSequenceByTick.get(tick);
+    if (existingSequence !== undefined) {
+      // Ordering diagnostics must never become the authority that suppresses a
+      // heartbeat. onTick() advances lastSentExecutionTick before we get here,
+      // so dropping the send would create a real outbound hole and freeze peers.
+      this.logger.warn(
+        `[CommandBus][DUPLICATE-LOCAL-SEND] ${this.getMultiplayerLogContext()} source=${source} tick=${tick} commands=${commands.length} existingClientSequence=${existingSequence} recentLocalTicks={${this.describeRecentLocalTickTimeline()}}`
+      );
+    }
+    const clientSequence = this.nextOutboundTransportSequence++;
+    this.sentTransportSequenceByTick.set(tick, clientSequence);
     this.recordLocalTickStage(tick, `${source}:${commands.length > 0 ? "send-batch" : "send-heartbeat"}`);
+    this.recordLocalTickStage(tick, `client-seq(${clientSequence})`);
     if (tick <= acknowledgedLocalTick) {
       // Older-than-ack sends are the clearest signal that a recovery/startup path
       // emitted a heartbeat after the server had already accepted a newer local tick.
@@ -325,7 +347,14 @@ export class CommandBusService {
       emitterUserId: this.scene.userId,
       tick,
       playerNumber: this.localPlayerNumber,
-      commands
+      commands,
+      transportMeta: {
+        clientSequence,
+        clientSentAtWallTimeMs: Date.now(),
+        clientObservedTick: this.tickService?.currentTick ?? 0,
+        clientAcknowledgedLocalTick: acknowledgedLocalTick,
+        clientSource: source
+      }
     });
   }
 
@@ -420,8 +449,10 @@ export class CommandBusService {
     const preResetLastSentExecutionTick = this.lastSentExecutionTick;
     this.buffer.clear();
     this.pendingOutbound.clear();
+    this.sentTransportSequenceByTick.clear();
     this.clearPendingStallLog();
     this.stallSignature = null;
+    this.lastLoggedStallTick = null;
     // Snapshot tick can lag behind the server's already-accepted local batches.
     // If we blindly restart from snapshotTick+1 we can spam stale ticks after correction.
     // Use the highest known accepted local tick as the post-reset baseline.
@@ -532,6 +563,11 @@ export class CommandBusService {
         this.localTickTimeline.delete(knownTick);
       }
     }
+    for (const knownTick of [...this.sentTransportSequenceByTick.keys()]) {
+      if (knownTick < floorTick) {
+        this.sentTransportSequenceByTick.delete(knownTick);
+      }
+    }
   }
 
   private describeRecentLocalTickTimeline(): string {
@@ -539,6 +575,62 @@ export class CommandBusService {
       .sort((left, right) => left[0] - right[0])
       .map(([tick, stages]) => `${tick}:${stages.join(">")}`)
       .join(" | ");
+  }
+
+  private recordRemoteReceiveStage(playerNumber: PlayerNumber, stage: string): void {
+    const stages = this.remoteReceiveTimeline.get(playerNumber) ?? [];
+    stages.push(stage);
+    if (stages.length > 8) {
+      stages.shift();
+    }
+    this.remoteReceiveTimeline.set(playerNumber, stages);
+  }
+
+  private describeRemoteReceiveTimeline(): string {
+    return [...this.remoteReceiveTimeline.entries()]
+      .sort((left, right) => left[0] - right[0])
+      .map(([playerNumber, stages]) => `${playerNumber}:${stages.join(">")}`)
+      .join(" | ");
+  }
+
+  private observeReceivedCommandEvent(event: ProbableWaffleGameCommandEvent): void {
+    const previousReceivedTick = this.lastReceivedTickByPlayer.get(event.playerNumber) ?? 0;
+    const previousRelaySequence = this.lastReceivedRelaySequenceByPlayer.get(event.playerNumber) ?? 0;
+    const relaySequence = event.transportMeta?.serverRelaySequence;
+    const tickOrder =
+      event.tick <= previousReceivedTick
+        ? "duplicate-or-late"
+        : event.tick === previousReceivedTick + 1
+          ? "in-order"
+          : `gap+${event.tick - previousReceivedTick - 1}`;
+    const relayOrder =
+      relaySequence === undefined
+        ? "no-relay-seq"
+        : relaySequence <= previousRelaySequence
+          ? "duplicate-or-late"
+          : relaySequence === previousRelaySequence + 1
+            ? "in-order"
+            : `jump+${relaySequence - previousRelaySequence - 1}`;
+    const wallLatency =
+      event.transportMeta?.serverReceivedAtWallTimeMs !== undefined
+        ? Math.max(0, Date.now() - event.transportMeta.serverReceivedAtWallTimeMs)
+        : undefined;
+    this.recordRemoteReceiveStage(
+      event.playerNumber,
+      `tick=${event.tick}/${tickOrder},relaySeq=${relaySequence ?? "none"}/${relayOrder},commands=${event.commands.length}`
+    );
+    if (relaySequence !== undefined) {
+      this.lastReceivedRelaySequenceByPlayer.set(
+        event.playerNumber,
+        Math.max(previousRelaySequence, relaySequence)
+      );
+    }
+
+    if (tickOrder !== "in-order" || relayOrder !== "in-order") {
+      this.logger.warn(
+        `[CommandBus][RECEIVE-ORDER] ${this.getMultiplayerLogContext()} player=${event.playerNumber} tick=${event.tick} tickOrder=${tickOrder} previousReceivedTick=${previousReceivedTick} relaySequence=${relaySequence ?? "none"} relayOrder=${relayOrder} clientSequence=${event.transportMeta?.clientSequence ?? "none"} clientObservedTick=${event.transportMeta?.clientObservedTick ?? "none"} clientAckTick=${event.transportMeta?.clientAcknowledgedLocalTick ?? "none"} source=${event.transportMeta?.clientSource ?? "unknown"} wallRelayLatencyMs=${wallLatency ?? "none"} recentRemoteTicks={${this.describeRemoteReceiveTimeline()}}`
+      );
+    }
   }
 
   private logStall(nextTick: number): void {
@@ -550,6 +642,7 @@ export class CommandBusService {
       return;
     }
     this.stallSignature = signature;
+    this.lastLoggedStallTick = nextTick;
     this.debugLog(
       `stall nextTick=${nextTick} committed=${committed.join(",") || "none"} missing=${missing.join(",") || "none"} pauses=${pauseReasons}`
     );
@@ -562,7 +655,7 @@ export class CommandBusService {
     const missingReasons = this.describeMissingPlayers(nextTick, missing);
     const localTimeline = this.describeRecentLocalTickTimeline();
     this.logger.warn(
-      `[CommandBus][STALL] ${this.getMultiplayerLogContext()} nextTick=${nextTick} waitingForPlayers=${missing.join(",") || "none"} committedBy=${committed.join(",") || "none"} pauses=${pauseReasons} localPlayer=${this.localPlayerNumber ?? "none"} lastSentLocalTick=${this.lastSentTickByLocalPlayer ?? "none"} lastReceivedByPlayer={${lastReceivedByPlayer}} missingReasons={${missingReasons}} recentLocalTicks={${localTimeline}} socketConnected=${socketConnected}`
+      `[CommandBus][STALL] ${this.getMultiplayerLogContext()} nextTick=${nextTick} waitingForPlayers=${missing.join(",") || "none"} committedBy=${committed.join(",") || "none"} pauses=${pauseReasons} localPlayer=${this.localPlayerNumber ?? "none"} lastSentLocalTick=${this.lastSentTickByLocalPlayer ?? "none"} lastReceivedByPlayer={${lastReceivedByPlayer}} missingReasons={${missingReasons}} recentLocalTicks={${localTimeline}} recentRemoteTicks={${this.describeRemoteReceiveTimeline()}} socketConnected=${socketConnected}`
     );
   }
 
@@ -577,6 +670,10 @@ export class CommandBusService {
 
     this.clearPendingStallLog();
     this.pendingStallTick = nextTick;
+    const missing = this.humanPlayerNumbers.filter((playerNumber) => !this.buffer.getCommittedPlayers(nextTick).includes(playerNumber));
+    // A single missing next-tick heartbeat is the common jitter case now. Give
+    // that path a slightly longer window before escalating it to a hard stall log.
+    const delayMs = this.isOnlyOneTickLag(nextTick, missing) ? 400 : CommandBusService.STALL_LOG_DELAY_MS;
     this.stallLogTimer = window.setTimeout(() => {
       this.stallLogTimer = null;
       this.pendingStallTick = null;
@@ -584,7 +681,7 @@ export class CommandBusService {
         return;
       }
       this.logStall(nextTick);
-    }, CommandBusService.STALL_LOG_DELAY_MS);
+    }, delayMs);
   }
 
   private clearPendingStallLog(): void {
@@ -610,6 +707,11 @@ export class CommandBusService {
     if (missing.length === 0) {
       return;
     }
+    // Avoid spamming "queued while stalled" for the expected one-tick-lag case
+    // until the stall itself has persisted long enough to earn a real warning.
+    if (this.isOnlyOneTickLag(blockedTick, missing) && this.lastLoggedStallTick !== blockedTick) {
+      return;
+    }
 
     const signature = `${commandType}|${executeTick}|${blockedTick}|${missing.join(",")}|${committed.join(",")}`;
     if (signature === this.queuedWhileStalledSignature) {
@@ -618,7 +720,7 @@ export class CommandBusService {
     this.queuedWhileStalledSignature = signature;
     const missingReasons = this.describeMissingPlayers(blockedTick, missing);
     this.logger.warn(
-      `[CommandBus][QUEUE-WHILE-STALLED] ${this.getMultiplayerLogContext()} command=${commandType} player=${playerNumber} executeTick=${executeTick} blockedTick=${blockedTick} missingPlayers=${missing.join(",")} committedPlayers=${committed.join(",") || "none"} missingReasons={${missingReasons}} recentLocalTicks={${this.describeRecentLocalTickTimeline()}}`
+      `[CommandBus][QUEUE-WHILE-STALLED] ${this.getMultiplayerLogContext()} command=${commandType} player=${playerNumber} executeTick=${executeTick} blockedTick=${blockedTick} missingPlayers=${missing.join(",")} committedPlayers=${committed.join(",") || "none"} missingReasons={${missingReasons}} recentLocalTicks={${this.describeRecentLocalTickTimeline()}} recentRemoteTicks={${this.describeRemoteReceiveTimeline()}}`
     );
   }
 
@@ -660,6 +762,13 @@ export class CommandBusService {
         return `${missingPlayer}:last-received=${lastReceived},not-committed-in-buffer-for-${blockedTick}`;
       })
       .join(" ");
+  }
+
+  private isOnlyOneTickLag(blockedTick: number, missingPlayers: readonly PlayerNumber[]): boolean {
+    return (
+      missingPlayers.length > 0 &&
+      missingPlayers.every((missingPlayer) => this.lastReceivedTickByPlayer.get(missingPlayer) === blockedTick - 1)
+    );
   }
 
   private resolveLocalPlayerNumber(scene: ProbableWaffleScene): PlayerNumber | null {

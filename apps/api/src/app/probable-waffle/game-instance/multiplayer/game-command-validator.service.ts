@@ -79,6 +79,7 @@ export class GameCommandValidatorService {
     user: User
   ): GameCommandValidationResult {
     const { playerNumber, tick, commands, gameInstanceId } = event;
+    const transportMeta = this.describeTransportMeta(event);
 
     // ── Phase 1: Security / authoritative checks ────────────────────────────
     // Failures here are protocol violations.  The batch is DROPPED entirely
@@ -89,7 +90,7 @@ export class GameCommandValidatorService {
     //    AI players have userId = null; only the current host may submit commands on their behalf.
     const player = gameInstance.getPlayerByNumber(playerNumber);
     if (!player) {
-      this.logger.warn(`[GameCommand] Unknown playerNumber ${playerNumber} in instance ${gameInstanceId}`);
+      this.logger.warn(`[GameCommand] Unknown playerNumber ${playerNumber} in instance ${gameInstanceId} ${transportMeta}`);
       return { valid: false, relayEmpty: false, reason: `unknown playerNumber ${playerNumber}` };
     }
     const playerUserId = player.playerController.data.userId;
@@ -97,7 +98,7 @@ export class GameCommandValidatorService {
       if (playerUserId !== null) {
         // Non-null userId mismatch — one human trying to control another human's units.
         this.logger.warn(
-          `[GameCommand] Ownership violation: user ${user.id} tried to submit for player ${playerNumber} owned by ${playerUserId}`
+          `[GameCommand] Ownership violation: user ${user.id} tried to submit for player ${playerNumber} owned by ${playerUserId} ${transportMeta}`
         );
         return { valid: false, relayEmpty: false, reason: `ownership violation for player ${playerNumber}` };
       }
@@ -107,7 +108,7 @@ export class GameCommandValidatorService {
         gameInstance.gameInstanceMetadata.data.createdBy;
       if (hostUserId !== user.id) {
         this.logger.warn(
-          `[GameCommand] AI-player command from non-host: user ${user.id} tried to submit for AI player ${playerNumber}, host is ${hostUserId}`
+          `[GameCommand] AI-player command from non-host: user ${user.id} tried to submit for AI player ${playerNumber}, host is ${hostUserId} ${transportMeta}`
         );
         return { valid: false, relayEmpty: false, reason: `non-host AI command for player ${playerNumber}` };
       }
@@ -125,7 +126,7 @@ export class GameCommandValidatorService {
     // Invalid ticks are converted into empty commits for the next canonical tick
     // so peers do not block forever on a missing slot from this player.
     if (!Number.isInteger(tick) || tick < 0) {
-      this.logger.warn(`[GameCommand] Invalid tick ${tick} from player ${playerNumber}`);
+      this.logger.warn(`[GameCommand] Invalid tick ${tick} from player ${playerNumber} ${transportMeta}`);
       playerTicks.set(playerNumber, canonicalTick);
       return {
         valid: false,
@@ -142,7 +143,7 @@ export class GameCommandValidatorService {
       // batch here only creates noisy late echoes without adding authority.
       this.logger.warn(
         `[GameCommand] Stale batch: game=${gameInstanceId} player=${playerNumber} user=${user.id} emitter=${event.emitterUserId ?? "n/a"} ` +
-          `sentTick=${tick} lastAcceptedTick=${prev} canonicalNextTick=${canonicalTick} commandCount=${commands.length}`
+          `sentTick=${tick} lastAcceptedTick=${prev} canonicalNextTick=${canonicalTick} commandCount=${commands.length} ${transportMeta}`
       );
       // Do not advance sequence state for stale duplicates/out-of-order old packets.
       // The authoritative slot for this tick already exists; advancing here can
@@ -156,7 +157,7 @@ export class GameCommandValidatorService {
     if (prev === -1 && this.allowHighInitialTickAfterReseed.has(instanceKey)) {
       playerTicks.set(playerNumber, tick);
     } else if (tick > prev + GameCommandValidatorService.MAX_TICK_JUMP + 1) {
-      this.logger.warn(`[GameCommand] Tick jump too large: player ${playerNumber} jumped from ${prev} to ${tick}`);
+      this.logger.warn(`[GameCommand] Tick jump too large: player ${playerNumber} jumped from ${prev} to ${tick} ${transportMeta}`);
       playerTicks.set(playerNumber, canonicalTick);
       return {
         valid: false,
@@ -421,5 +422,14 @@ export class GameCommandValidatorService {
 
   private isFiniteInteger(value: unknown): value is number {
     return typeof value === "number" && Number.isFinite(value) && Number.isInteger(value);
+  }
+
+  private describeTransportMeta(event: ProbableWaffleGameCommandEvent): string {
+    const transportMeta = event.transportMeta;
+    if (!transportMeta) {
+      return "transportMeta=none";
+    }
+
+    return `transportMeta={clientSeq=${transportMeta.clientSequence} clientObservedTick=${transportMeta.clientObservedTick} clientAckTick=${transportMeta.clientAcknowledgedLocalTick} clientSource=${transportMeta.clientSource} serverRelaySeq=${transportMeta.serverRelaySequence ?? "none"}}`;
   }
 }
