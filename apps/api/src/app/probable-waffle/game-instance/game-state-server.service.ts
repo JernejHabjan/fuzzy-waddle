@@ -14,11 +14,16 @@ import {
   ProbableWaffleListeners,
   type ProbableWafflePlayerDataChangeEvent,
   type ProbableWaffleSnapshotResponseEvent,
-  type ProbableWaffleSpectatorDataChangeEvent
+  type ProbableWaffleSpectatorDataChangeEvent,
+  ProbableWaffleCommunicatorType,
+  CommunicatorEvent
 } from "@fuzzy-waddle/api-interfaces";
 import { GameInstanceService } from "./game-instance.service";
 import { type User } from "@supabase/supabase-js";
-import { GameCommandValidatorService, type GameCommandValidationResult } from "./multiplayer/game-command-validator.service";
+import {
+  GameCommandValidatorService,
+  type GameCommandValidationResult
+} from "./multiplayer/game-command-validator.service";
 import { PlayerStateValidatorService } from "./multiplayer/player-state-validator.service";
 import { PauseStateValidatorService } from "./multiplayer/pause-state-validator.service";
 
