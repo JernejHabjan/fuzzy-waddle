@@ -69,7 +69,15 @@ export class SnapshotService {
       if (!e.emitterUserId) {
         return;
       }
-      this.sendSnapshot(scene, e.emitterUserId, e.reason === "desync-correction" ? "desync-correction" : "reconnect");
+      this.sendSnapshot(
+        scene,
+        e.emitterUserId,
+        e.reason === "desync-correction"
+          ? "desync-correction"
+          : e.reason === "spectator-catch-up"
+            ? "spectator-catch-up"
+            : "reconnect"
+      );
     });
 
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.destroy());

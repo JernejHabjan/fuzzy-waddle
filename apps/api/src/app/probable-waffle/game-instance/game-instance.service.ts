@@ -70,7 +70,7 @@ export class GameInstanceService implements GameInstanceServiceInterface {
   stopGameInstance(gameInstanceId: GameInstanceId, user: User) {
     const gameInstance = this.findGameInstance(gameInstanceId);
     if (!gameInstance) return;
-    if (!this.checkIfPlayerIsCreator(gameInstance, user)) return;
+    if (!gameInstance.isHost(user.id)) return;
     this.forceStopGameInstance(gameInstanceId, user);
   }
 
@@ -220,10 +220,6 @@ ensureCanMutateGameInstance(body: CommunicatorEvent<any, ProbableWaffleCommunica
       throw new ForbiddenException("Game instance mutation denied");
   }
 }
-  private checkIfPlayerIsCreator(gameInstance: ProbableWaffleGameInstance, user: User) {
-    return gameInstance.gameInstanceMetadata.data.createdBy === user.id;
-  }
-
   private requireGameInstance(gameInstanceId: GameInstanceId): ProbableWaffleGameInstance {
     const gameInstance = this.findGameInstance(gameInstanceId);
     if (!gameInstance) {

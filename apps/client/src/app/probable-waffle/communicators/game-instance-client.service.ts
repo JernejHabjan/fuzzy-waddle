@@ -553,8 +553,14 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   async navigateToLobbyOrDirectlyToGame(): Promise<void> {
     if (!this.gameInstance)
       throw new Error("Game instance not found in navigateToLobbyOrDirectlyToGame in GameInstanceClientService");
+    const sessionState = this.gameInstance.gameInstanceMetadata.data.sessionState;
+    const isSpectator = this.gameInstance.spectators.some((spectator) => spectator.data.userId === this.authService.userId);
     switch (this.getNormalizedGameInstanceType()) {
       case ProbableWaffleGameInstanceType.SelfHosted:
+        if (isSpectator && sessionState !== GameSessionState.NotStarted) {
+          await this.router.navigate(["aota/game"]);
+          break;
+        }
         // join lobby
         await this.router.navigate(["aota/lobby"]);
         break;
