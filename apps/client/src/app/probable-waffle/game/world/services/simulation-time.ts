@@ -1,26 +1,26 @@
 import { getSceneService } from "./scene-component-helpers";
 import { SimulationTickService } from "./simulation-tick.service";
 
-export function getSimulationNow(scene: Phaser.Scene): number {
+export function getSimulationNow(scene: Phaser.Scene | undefined | null): number {
   const tickService = tryGetSimulationTickService(scene);
   if (!tickService) {
-    return scene.time.now;
+    return scene?.time.now ?? Date.now();
   }
 
   return tickService.currentTick * SimulationTickService.TICK_INTERVAL_MS;
 }
 
-export function getInterpolatedSimulationNow(scene: Phaser.Scene): number {
+export function getInterpolatedSimulationNow(scene: Phaser.Scene | undefined | null): number {
   const tickService = tryGetSimulationTickService(scene);
   if (!tickService) {
-    return scene.time.now;
+    return scene?.time.now ?? Date.now();
   }
 
   return tickService.getInterpolatedTimeMs();
 }
 
 export function getSimulationDelta(
-  scene: Phaser.Scene,
+  scene: Phaser.Scene | undefined | null,
   lastSimulationTimeMs: number | undefined
 ): { now: number; delta: number } {
   const now = getSimulationNow(scene);
@@ -47,7 +47,7 @@ export function getSimulationDelta(
 export class CancelableSimDelay {
   private cancelled = false;
 
-  constructor(scene: Phaser.Scene, durationMs: number, callback: () => void) {
+  constructor(scene: Phaser.Scene | undefined | null, durationMs: number, callback: () => void) {
     waitForSimulationDuration(scene, durationMs).then(() => {
       if (!this.cancelled) {
         callback();
@@ -61,11 +61,15 @@ export class CancelableSimDelay {
   }
 }
 
-export function waitForSimulationDuration(scene: Phaser.Scene, durationMs: number): Promise<void> {
+export function waitForSimulationDuration(scene: Phaser.Scene | undefined | null, durationMs: number): Promise<void> {
   const tickService = tryGetSimulationTickService(scene);
   if (!tickService) {
     return new Promise<void>((resolve) => {
       // Intentional wall-clock fallback for scenes that do not run SimulationTickService.
+      if (!scene) {
+        setTimeout(() => resolve(), durationMs);
+        return;
+      }
       scene.time.delayedCall(durationMs, () => resolve());
     });
   }
@@ -82,7 +86,7 @@ export function waitForSimulationDuration(scene: Phaser.Scene, durationMs: numbe
         return;
       }
       settled = true;
-      scene.events.off(Phaser.Scenes.Events.SHUTDOWN, shutdownHandler);
+      scene?.events.off(Phaser.Scenes.Events.SHUTDOWN, shutdownHandler);
       tickSubscription?.unsubscribe();
     };
     const shutdownHandler = () => {
@@ -98,11 +102,12 @@ export function waitForSimulationDuration(scene: Phaser.Scene, durationMs: numbe
       resolve();
     });
 
-    scene.events.once(Phaser.Scenes.Events.SHUTDOWN, shutdownHandler);
+    scene?.events.once(Phaser.Scenes.Events.SHUTDOWN, shutdownHandler);
   });
 }
 
-function tryGetSimulationTickService(scene: Phaser.Scene): SimulationTickService | undefined {
+function tryGetSimulationTickService(scene: Phaser.Scene | undefined | null): SimulationTickService | undefined {
+  if (!scene) return undefined;
   if (!scene.scene || !scene.scene.isActive()) return undefined;
   return getSceneService(scene, SimulationTickService);
 }
