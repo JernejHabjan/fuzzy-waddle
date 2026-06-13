@@ -308,14 +308,15 @@ export class CommandBusService {
 
   /**
    * During scene startup, seedInitialTicks() sends ticks 1..INPUT_DELAY immediately.
-   * If a peer's socket path is not fully ready yet, those initial empty heartbeats can
-   * be missed while later ticks are received, which would stall forever on blockedTick=1.
+   * If a peer's socket path is not fully ready yet, one of those initial heartbeats can
+   * be missed while a later startup tick is still received, which would stall forever
+   * on the first missing blockedTick.
    *
    * Backfill only these startup grace ticks as empty commits when we observe a later
-   * remote tick from that player and the early slots are still absent.
+   * remote startup tick from that player and the early slots are still absent.
    */
   private backfillStartupHeartbeatGap(playerNumber: PlayerNumber, receivedTick: number): void {
-    if (receivedTick <= CommandBusService.INPUT_DELAY_TICKS) {
+    if (receivedTick <= 1) {
       return;
     }
     const currentTick = this.tickService?.currentTick ?? 0;
@@ -326,7 +327,8 @@ export class CommandBusService {
     }
 
     const filledTicks: number[] = [];
-    for (let tick = 1; tick <= CommandBusService.INPUT_DELAY_TICKS; tick++) {
+    const highestMissingStartupTick = Math.min(receivedTick - 1, CommandBusService.INPUT_DELAY_TICKS);
+    for (let tick = 1; tick <= highestMissingStartupTick; tick++) {
       if (this.buffer.hasPlayerCommit(tick, playerNumber)) {
         continue;
       }

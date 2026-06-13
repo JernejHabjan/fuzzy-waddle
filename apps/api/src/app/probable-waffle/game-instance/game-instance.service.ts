@@ -5,6 +5,7 @@ import {
   type DifficultyModifiers,
   GameInstanceId,
   type MapTuning,
+  ProbableWaffleCommunicators,
   type ProbableWaffleCommunicatorType,
   ProbableWaffleGameInstance,
   type ProbableWaffleGameInstanceData,
@@ -194,6 +195,10 @@ ensureCanJoinGameRoom(gameInstanceId: GameInstanceId, user: User): void {
  * Mutations are intentionally narrower than reads:
  * hosts manage lobby metadata, players manage active state, and join/leave
  * events can only target the authenticated caller.
+ *
+ * This auth gate runs before the deeper multiplayer validators. It must allow
+ * authoritative lockstep transport events through to those validators, or the
+ * gateway can reject a valid command relay before sequence/ownership checks run.
  */
 ensureCanMutateGameInstance(body: CommunicatorEvent<any, ProbableWaffleCommunicatorType>, user: User): void {
   const gameInstance = this.requireGameInstance(body.gameInstanceId!);
@@ -206,6 +211,12 @@ ensureCanMutateGameInstance(body: CommunicatorEvent<any, ProbableWaffleCommunica
       return;
     case "gameModeDataChange":
     case "gameStateDataChange":
+    case ProbableWaffleCommunicators.GameCommand:
+    case ProbableWaffleCommunicators.StateHash:
+    case ProbableWaffleCommunicators.SnapshotRequest:
+    case ProbableWaffleCommunicators.SnapshotResponse:
+    case ProbableWaffleCommunicators.DesyncAlert:
+    case ProbableWaffleCommunicators.PauseChanged:
       if (!gameInstance.isPlayer(user.id)) {
         throw new ForbiddenException("Only players can update active game state");
       }
