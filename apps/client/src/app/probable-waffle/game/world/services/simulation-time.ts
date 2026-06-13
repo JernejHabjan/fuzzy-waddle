@@ -2,7 +2,7 @@ import { getSceneService } from "./scene-component-helpers";
 import { SimulationTickService } from "./simulation-tick.service";
 
 export function getSimulationNow(scene: Phaser.Scene): number {
-  const tickService = getSceneService(scene, SimulationTickService);
+  const tickService = tryGetSimulationTickService(scene);
   if (!tickService) {
     return scene.time.now;
   }
@@ -11,7 +11,7 @@ export function getSimulationNow(scene: Phaser.Scene): number {
 }
 
 export function getInterpolatedSimulationNow(scene: Phaser.Scene): number {
-  const tickService = getSceneService(scene, SimulationTickService);
+  const tickService = tryGetSimulationTickService(scene);
   if (!tickService) {
     return scene.time.now;
   }
@@ -62,7 +62,7 @@ export class CancelableSimDelay {
 }
 
 export function waitForSimulationDuration(scene: Phaser.Scene, durationMs: number): Promise<void> {
-  const tickService = getSceneService(scene, SimulationTickService);
+  const tickService = tryGetSimulationTickService(scene);
   if (!tickService) {
     return new Promise<void>((resolve) => {
       // Intentional wall-clock fallback for scenes that do not run SimulationTickService.
@@ -100,4 +100,9 @@ export function waitForSimulationDuration(scene: Phaser.Scene, durationMs: numbe
 
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, shutdownHandler);
   });
+}
+
+function tryGetSimulationTickService(scene: Phaser.Scene): SimulationTickService | undefined {
+  if (!scene.scene || !scene.scene.isActive()) return undefined;
+  return getSceneService(scene, SimulationTickService);
 }
