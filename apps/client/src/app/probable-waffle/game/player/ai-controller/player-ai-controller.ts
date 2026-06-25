@@ -10,6 +10,7 @@ import { getSimulationNow } from "./ai-time";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { SimulationTickService } from "../../world/services/simulation-tick.service";
 import type { Subscription } from "rxjs";
+import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 
 export class PlayerAiController {
   private static readonly MAX_SCHEDULED_STEPS_PER_RUN = 5;
@@ -25,7 +26,7 @@ export class PlayerAiController {
   private stepInFlight = false;
   private stepQueued = false;
   constructor(
-    public readonly scene: Phaser.Scene,
+    public readonly scene: ProbableWaffleScene,
     public readonly player: ProbableWafflePlayer
   ) {
     this.blackboard = new PlayerAiBlackboard(scene);

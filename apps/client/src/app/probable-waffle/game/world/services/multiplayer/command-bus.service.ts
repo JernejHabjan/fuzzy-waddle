@@ -1,8 +1,10 @@
 import { Subject, Subscription } from "rxjs";
-import type { GameCommand, GameCommandInput } from "@fuzzy-waddle/api-interfaces";
 import {
+  type GameCommand,
+  type GameCommandInput,
   type PlayerNumber,
   type ProbableWaffleGameCommandEvent,
+  ProbableWaffleGameCommandTypes,
   ProbableWafflePlayerType,
   type ProbableWaffleReplayCommandBatch
 } from "@fuzzy-waddle/api-interfaces";
@@ -16,6 +18,7 @@ import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "../../../entity/components/owner-component";
 import { isMultiplayerDebugEnabled } from "./multiplayer-debug";
 import { createMultiplayerClientLogger } from "./multiplayer-client-logger";
+import { getNgxSocketIoRawSocket } from "../../../../communicators/ngx-socket-io-access";
 
 /**
  * Central command bus for all player- and AI-issued simulation commands.
@@ -668,7 +671,7 @@ export class CommandBusService {
       .map((playerNumber) => `${playerNumber}:${this.lastReceivedTickByPlayer.get(playerNumber) ?? "none"}`)
       .join(" ");
     const socketConnected = this.scene?.baseGameData.communicator.activeSocket
-      ? ((this.scene.baseGameData.communicator.activeSocket as any).ioSocket?.connected ?? "unknown")
+      ? (getNgxSocketIoRawSocket(this.scene.baseGameData.communicator.activeSocket)?.connected ?? "unknown")
       : "no-socket";
     const missingReasons = this.describeMissingPlayers(nextTick, missing);
     const localTimeline = this.describeRecentLocalTickTimeline();
@@ -838,7 +841,7 @@ export class CommandBusService {
       return null;
     }
 
-    if ("targetObjectIds" in command) {
+    if (command.type === ProbableWaffleGameCommandTypes.ActorAction) {
       const targetObjectIds = command.targetObjectIds?.filter((targetId, index, ids) => {
         if (ids.indexOf(targetId) !== index) {
           return false;

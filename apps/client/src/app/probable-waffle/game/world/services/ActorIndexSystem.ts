@@ -15,7 +15,11 @@ import { HealthComponent } from "../../entity/components/combat/components/healt
 import { getTileCoordsUnderObject } from "../../library/tile-under-object";
 import { getSceneComponent, getSceneService } from "./scene-component-helpers";
 import { SimulationTickService } from "./simulation-tick.service";
-import { hasMultiplayerCommandRelay } from "../../data/scene-data";
+import {
+  getSnapshotApplySuppressedUntilTick,
+  hasMultiplayerCommandRelay,
+  isSnapshotApplyInProgress
+} from "../../data/scene-data";
 import { TilemapComponent } from "../tilemap/tilemap.component";
 import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
 import { getCanonicalActorNameCached } from "../../data/tech-tree/canonical-actor-name";
@@ -89,15 +93,15 @@ export class ActorIndexSystem {
     if (!hasMultiplayerCommandRelay(this.scene)) {
       return;
     }
-    if (this.scene.data.get("snapshotApplyInProgress")) {
+    if (isSnapshotApplyInProgress(this.scene)) {
       return;
     }
     const tick = getSceneService(this.scene, SimulationTickService)?.currentTick ?? 0;
     if (tick <= 5) {
       return;
     }
-    const suppressedUntilTick = Number(this.scene.data.get("snapshotApplySuppressedUntilTick") ?? -1);
-    if (Number.isFinite(suppressedUntilTick) && tick <= suppressedUntilTick) {
+    const suppressedUntilTick = getSnapshotApplySuppressedUntilTick(this.scene);
+    if (suppressedUntilTick !== undefined && tick <= suppressedUntilTick) {
       return;
     }
     const id = getActorComponent(obj, IdComponent)?.id ?? "unknown";

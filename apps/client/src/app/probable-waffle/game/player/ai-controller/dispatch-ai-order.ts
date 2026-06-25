@@ -5,6 +5,7 @@ import { getActorComponent } from "../../data/actor-component";
 import { IdComponent } from "../../entity/components/id-component";
 import type { OrderData } from "../../ai/OrderData";
 import type { PlayerNumber } from "@fuzzy-waddle/api-interfaces";
+import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 
 /**
  * Converts an AI-generated OrderData into an ActorActionCommand and dispatches
@@ -22,12 +23,12 @@ import type { PlayerNumber } from "@fuzzy-waddle/api-interfaces";
  * be addressed over the network without a stable ID.
  */
 export function dispatchAiOrder(
-  scene: Phaser.Scene,
+  scene: ProbableWaffleScene,
   unit: Phaser.GameObjects.GameObject,
   order: OrderData,
   playerNumber: PlayerNumber
 ): void {
-  if ("isHost" in scene && scene.isHost === false) {
+  if (!scene.isHost) {
     console.warn(`[AI] Skipping AI dispatch for player ${playerNumber} on non-host client.`);
     return;
   }

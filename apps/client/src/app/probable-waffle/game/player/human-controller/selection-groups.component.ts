@@ -8,7 +8,7 @@ import { IdComponent } from "../../entity/components/id-component";
 import type { AllScenesEventData, SelectionGroupData } from "@fuzzy-waddle/api-interfaces";
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 import type { Subscription } from "rxjs";
-import GameProbableWaffleScene from "../../world/scenes/GameProbableWaffleScene";
+import type GameProbableWaffleScene from "../../world/scenes/GameProbableWaffleScene";
 
 export interface SelectionGroup {
   actors: Phaser.GameObjects.GameObject[];
@@ -35,7 +35,7 @@ export class SelectionGroupsComponent {
   private externalModalOpen = false;
   private externalModalSubscription?: Subscription;
 
-  constructor(private scene: Phaser.Scene) {
+  constructor(private scene: GameProbableWaffleScene) {
     onSceneInitialized(scene, this.init, this);
     this.setupEventListeners();
   }
@@ -47,9 +47,8 @@ export class SelectionGroupsComponent {
   }
 
   private listenToExternalModalEvents() {
-    const scene = this.scene as any;
-    if (scene.communicator?.allScenes) {
-      this.externalModalSubscription = scene.communicator.allScenes.subscribe((event: AllScenesEventData) => {
+    if (this.scene.communicator?.allScenes) {
+      this.externalModalSubscription = this.scene.communicator.allScenes.subscribe((event: AllScenesEventData) => {
         if (event.name === "external-modal-opened") {
           this.externalModalOpen = true;
         } else if (event.name === "external-modal-closed") {
@@ -257,8 +256,8 @@ export class SelectionGroupsComponent {
   }
 
   private syncSelectionGroupsToPlayerController(emitNetworkUpdate = true): void {
-    const probableWaffleScene = this.scene as GameProbableWaffleScene;
-    const currentPlayerNumber = probableWaffleScene.player?.playerNumber;
+    const player = this.scene.playerOrNull;
+    const currentPlayerNumber = player?.playerNumber;
     if (currentPlayerNumber === undefined) {
       return;
     }
@@ -267,15 +266,15 @@ export class SelectionGroupsComponent {
       ...group,
       actorIds: sanitizeOwnedActorIds(this.scene, group.actorIds, currentPlayerNumber)
     }));
-    probableWaffleScene.player!.playerController.data.selectionGroups = groups;
+    player.playerController.data.selectionGroups = groups;
 
-    if (!emitNetworkUpdate || !probableWaffleScene.communicator.playerChanged) {
+    if (!emitNetworkUpdate || !this.scene.communicator.playerChanged) {
       return;
     }
 
-    probableWaffleScene.communicator.playerChanged.send({
-      gameInstanceId: probableWaffleScene.baseGameData.gameInstance.gameInstanceMetadata.data.gameInstanceId!,
-      emitterUserId: probableWaffleScene.player?.playerController.data.userId ?? null,
+    this.scene.communicator.playerChanged.send({
+      gameInstanceId: this.scene.gameInstanceId,
+      emitterUserId: player.playerController.data.userId ?? null,
       property: "playerController.data.selectionGroups",
       data: {
         playerNumber: currentPlayerNumber,

@@ -28,6 +28,7 @@ import { Socket } from "ngx-socket-io";
 import type { CommunicatorService } from "../../shared/game/communicators/CommunicatorService";
 import { type ProbableWaffleCommunicatorServiceInterface } from "./probable-waffle-communicator.service.interface";
 import { createMultiplayerClientLogger } from "../game/world/services/multiplayer/multiplayer-client-logger";
+import { getNgxSocketIoRawSocket, type NgxSocketIoRawSocket } from "./ngx-socket-io-access";
 
 @Injectable({
   providedIn: "root"
@@ -93,11 +94,7 @@ export class ProbableWaffleCommunicatorService
   private socketConnectHandler?: () => void;
   private joinedSocketId?: string;
   private joinedGameInstanceId?: GameInstanceId;
-  private rawSocket?: {
-    on: (event: string, handler: () => void) => void;
-    off?: (event: string, handler: () => void) => void;
-    removeListener?: (event: string, handler: () => void) => void;
-  };
+  private rawSocket?: NgxSocketIoRawSocket;
 
   startCommunication(gameInstanceId: GameInstanceId, socket?: Socket) {
     this.destroySubscriptions();
@@ -205,7 +202,7 @@ export class ProbableWaffleCommunicatorService
         this.logger.info(`[Communicator] Joining game room after connect. gameInstanceId=${gameInstanceId}`);
         this.emitRoomMembership(socket, gameInstanceId, "join");
       };
-      const rawSocket = (socket as any).ioSocket;
+      const rawSocket = getNgxSocketIoRawSocket(socket);
       if (rawSocket) {
         this.rawSocket = rawSocket;
         rawSocket.on("connect", this.socketConnectHandler);
@@ -260,7 +257,7 @@ export class ProbableWaffleCommunicatorService
     gameInstanceId: GameInstanceId,
     type: ProbableWaffleWebsocketRoomEvent["type"]
   ): void {
-    const socketId = (socket as any).ioSocket?.id as string | undefined;
+    const socketId = getNgxSocketIoRawSocket(socket)?.id;
     if (
       type === "join" &&
       socketId &&

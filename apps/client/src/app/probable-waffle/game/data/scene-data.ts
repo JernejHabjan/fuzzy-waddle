@@ -28,6 +28,28 @@ import { ActorIndexSystem } from "../world/services/ActorIndexSystem";
 import { OwnerComponent } from "../entity/components/owner-component";
 import { getSceneService } from "../world/services/scene-component-helpers";
 
+export enum ProbableWaffleSceneDataKey {
+  SnapshotApplyInProgress = "snapshotApplyInProgress",
+  SnapshotApplySuppressedUntilTick = "snapshotApplySuppressedUntilTick"
+}
+
+export function isSnapshotApplyInProgress(scene: Scene): boolean {
+  return scene.data.get(ProbableWaffleSceneDataKey.SnapshotApplyInProgress) === true;
+}
+
+export function setSnapshotApplyInProgress(scene: Scene, inProgress: boolean): void {
+  scene.data.set(ProbableWaffleSceneDataKey.SnapshotApplyInProgress, inProgress);
+}
+
+export function getSnapshotApplySuppressedUntilTick(scene: Scene): number | undefined {
+  const value = scene.data.get(ProbableWaffleSceneDataKey.SnapshotApplySuppressedUntilTick);
+  return typeof value === "number" && Number.isFinite(value) ? value : undefined;
+}
+
+export function setSnapshotApplySuppressedUntilTick(scene: Scene, tick: number): void {
+  scene.data.set(ProbableWaffleSceneDataKey.SnapshotApplySuppressedUntilTick, tick);
+}
+
 export function getPlayer(scene: Scene, playerNumber?: PlayerNumber): ProbableWafflePlayer | undefined {
   if (!scene) {
     console.error("Scene is undefined");
@@ -143,7 +165,7 @@ export function sendPlayerStateEvent(
   }
 ): void {
   if (!(scene instanceof BaseScene)) throw new Error("Scene is not of type BaseScene");
-  if (options?.suppressDuringSnapshotRestore && scene.data.get("snapshotApplyInProgress")) {
+  if (options?.suppressDuringSnapshotRestore && isSnapshotApplyInProgress(scene)) {
     return;
   }
 

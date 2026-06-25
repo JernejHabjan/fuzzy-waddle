@@ -1,6 +1,10 @@
 import { filter, type Subscription } from "rxjs";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
-import { getCommunicator } from "../../../data/scene-data";
+import {
+  getCommunicator,
+  setSnapshotApplyInProgress,
+  setSnapshotApplySuppressedUntilTick
+} from "../../../data/scene-data";
 import { getSceneComponent, getSceneService } from "../scene-component-helpers";
 import { CommandBusService } from "../multiplayer/command-bus.service";
 import { SimulationTickService } from "../simulation-tick.service";
@@ -23,6 +27,10 @@ import {
 } from "@fuzzy-waddle/api-interfaces";
 import { ProbableWaffleSceneEventName } from "./probable-waffle-scene-events";
 import { createMultiplayerClientLogger } from "../multiplayer/multiplayer-client-logger";
+import {
+  getNgxSocketIoRawSocket,
+  type NgxSocketIoRawSocket
+} from "../../../../communicators/ngx-socket-io-access";
 
 /**
  * Handles the reconnect flow for a client that drops and rejoins mid-game.
@@ -47,7 +55,7 @@ export class ReconnectService {
   private socketDisconnectHandler?: (reason: string) => void;
   private instanceReseedRequiredSub?: Subscription;
   /** Stored so destroy() can call removeListener. */
-  private rawSocket?: any;
+  private rawSocket?: NgxSocketIoRawSocket;
   private awaitingReconnect = false;
   private reseedSent = false;
 
@@ -96,8 +104,7 @@ export class ReconnectService {
       this.socketDisconnectHandler = (reason: string) => {
         this.onSocketDisconnect(scene, reason);
       };
-      // Use the underlying socket.io socket via ngx-socket-io's ioSocket property.
-      const rawSocket = (socket as any).ioSocket;
+      const rawSocket = getNgxSocketIoRawSocket(socket);
       if (rawSocket) {
         this.rawSocket = rawSocket;
         rawSocket.on("connect", this.socketConnectHandler);
@@ -228,7 +235,7 @@ export class ReconnectService {
     );
 
     simTick?.pauseTick(pauseReason);
-    scene.data.set("snapshotApplyInProgress", true);
+    setSnapshotApplyInProgress(scene, true);
 
     try {
       const snapshotActorIds = new Set(
@@ -331,10 +338,10 @@ export class ReconnectService {
         tick: snapshot.tick
       });
       // Suppress "late registration" diagnostics briefly after snapshot rebuild.
-      scene.data.set("snapshotApplySuppressedUntilTick", snapshot.tick + 5);
+      setSnapshotApplySuppressedUntilTick(scene, snapshot.tick + 5);
       this.logger.info("[Reconnect] Snapshot applied. Simulation resumed.");
     } finally {
-      scene.data.set("snapshotApplyInProgress", false);
+      setSnapshotApplyInProgress(scene, false);
     }
   }
 
@@ -618,10 +625,12 @@ export class ReconnectService {
     this.awaitingReconnect = false;
     this.reseedSent = false;
     if (this.socketConnectHandler && this.rawSocket) {
-      this.rawSocket.off("connect", this.socketConnectHandler);
+      this.rawSocket.off?.("connect", this.socketConnectHandler);
+      this.rawSocket.removeListener?.("connect", this.socketConnectHandler);
     }
     if (this.socketDisconnectHandler && this.rawSocket) {
-      this.rawSocket.off("disconnect", this.socketDisconnectHandler);
+      this.rawSocket.off?.("disconnect", this.socketDisconnectHandler);
+      this.rawSocket.removeListener?.("disconnect", this.socketDisconnectHandler);
     }
   }
 }

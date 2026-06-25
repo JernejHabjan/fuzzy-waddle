@@ -49,6 +49,7 @@ import { getUnitStrength } from "./ai-utils";
 import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
 import { dispatchAiOrder } from "./dispatch-ai-order";
 import { IdComponent } from "../../entity/components/id-component";
+import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class PlayerAiControllerAgent implements IPlayerControllerAgent {
@@ -76,7 +77,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   private productionValidator: ProductionValidator;
 
   constructor(
-    private readonly scene: Phaser.Scene,
+    private readonly scene: ProbableWaffleScene,
     private readonly player: ProbableWafflePlayer,
     private readonly blackboard: PlayerAiBlackboard
   ) {
