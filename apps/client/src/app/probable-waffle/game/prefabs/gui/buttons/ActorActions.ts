@@ -936,16 +936,22 @@ export default class ActorActions extends Phaser.GameObjects.Container {
               console.error("No production building found");
               return;
             }
-
-            const dispatched = dispatchProductionCommand(this.mainSceneWithActors, allActors, playerNumber, product);
-            const sound = this.mainSceneWithActors.sound;
-
-            sound.stopByKey(AudioSprites.UI_FEEDBACK);
-
             const crossSceneCommunicationService = getSceneService(
               this.mainSceneWithActors,
               CrossSceneCommunicationService
             );
+            const sound = this.mainSceneWithActors.sound;
+            sound.stopByKey(AudioSprites.UI_FEEDBACK);
+            if (this.areAllProductionQueuesFull(allActors)) {
+              this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.PRODUCTION_QUEUE_FULL);
+              crossSceneCommunicationService?.emit(
+                HudMessages.HudVisualFeedbackMessageEventName,
+                HudVisualFeedbackMessageType.ProductionQueueFull
+              );
+              return;
+            }
+
+            const dispatched = dispatchProductionCommand(this.mainSceneWithActors, allActors, playerNumber, product);
             switch (dispatched) {
               case false:
                 this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.NOT_ENOUGH_RESOURCES);
@@ -975,6 +981,18 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       });
     }
     return index;
+  }
+
+  private areAllProductionQueuesFull(actors: Phaser.GameObjects.GameObject[]): boolean {
+    const productionBuildings = actors
+      .filter((actor) => getActorComponent(actor, ProductionComponent)?.isFinished)
+      .map((actor) => getActorComponent(actor, QueueComponent))
+      .filter((queueComponent): queueComponent is QueueComponent => !!queueComponent);
+
+    return (
+      productionBuildings.length > 0 &&
+      productionBuildings.every((queueComponent) => queueComponent.findQueueForNewItem() === undefined)
+    );
   }
 
   private showResearchIcons(

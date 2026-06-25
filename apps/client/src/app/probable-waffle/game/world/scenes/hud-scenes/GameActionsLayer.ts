@@ -378,6 +378,7 @@ export default class GameActionsLayer extends ProbableWaffleScene {
     this.game_action_settings = game_action_settings;
     this.game_action_restart = game_action_restart;
     this.game_action_continue = game_action_continue;
+    this.game_actions_bg = game_actions_bg;
     this.game_actions_container = game_actions_container;
 
     this.events.emit("scene-awake");
@@ -389,6 +390,7 @@ export default class GameActionsLayer extends ProbableWaffleScene {
   private game_action_settings!: Phaser.GameObjects.Container;
   private game_action_restart!: Phaser.GameObjects.Container;
   private game_action_continue!: Phaser.GameObjects.Container;
+  private game_actions_bg!: Phaser.GameObjects.NineSlice;
   private game_actions_container!: Phaser.GameObjects.Container;
   private pauseToggleButton?: Phaser.GameObjects.Container;
 
@@ -519,6 +521,14 @@ export default class GameActionsLayer extends ProbableWaffleScene {
     });
 
     this.pauseToggleButton = pauseButton;
+    this.expandBackgroundForPauseButton();
+  }
+
+  private expandBackgroundForPauseButton(): void {
+    // The pause button sits above the original menu stack, so extend the panel
+    // upward instead of leaving the button floating outside the dark background.
+    this.game_actions_bg.y = -257;
+    this.game_actions_bg.scaleY = 12;
   }
 
   private get isVisibleSaveButton() {
