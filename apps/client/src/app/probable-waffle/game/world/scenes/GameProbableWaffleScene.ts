@@ -38,7 +38,7 @@ import { ActorDebugDamageSystem } from "../services/actor-debug-damage-system";
 import { SpellCursor } from "../../player/human-controller/spell-cursor";
 import { AoeZoneManager } from "../../entity/systems/aoe-zone-manager";
 import { CommandBusService } from "../services/multiplayer/command-bus.service";
-import { SimulationTickService } from "../services/simulation-tick.service";
+import { SimulationPauseReason, SimulationTickService } from "../services/simulation-tick.service";
 import { StateHashService } from "../services/recovery/state-hash.service";
 import { SnapshotService } from "../services/recovery/snapshot.service";
 import { ReconnectService } from "../services/recovery/reconnect.service";
@@ -104,7 +104,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
       snapshotService
     );
     const simTickService = getSceneService(this, SimulationTickService);
-    simTickService?.pauseTick("scene-bootstrap");
+    simTickService?.pauseTick(SimulationPauseReason.SceneBootstrap);
     new ActorDebugDamageSystem(this);
     if (!this.baseGameData.gameInstance.gameInstanceMetadata.isReplay()) {
       this.sceneGameData.systems.push(new AiPlayerHandler(this));
@@ -148,7 +148,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
       this.scene.scene.data.remove("justCreated");
     });
     this.sceneGameData.initializers.sceneInitialized.next(true);
-    simTickService?.resumeTick("scene-bootstrap");
+    simTickService?.resumeTick(SimulationPauseReason.SceneBootstrap);
 
     if (!environment.production) {
       const achievementService = getSceneExternalComponent(this.scene.scene, AchievementService);

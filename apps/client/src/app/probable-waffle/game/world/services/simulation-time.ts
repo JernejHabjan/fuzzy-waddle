@@ -19,18 +19,6 @@ export function getInterpolatedSimulationNow(scene: Phaser.Scene | undefined | n
   return tickService.getInterpolatedTimeMs();
 }
 
-export function getSimulationDelta(
-  scene: Phaser.Scene | undefined | null,
-  lastSimulationTimeMs: number | undefined
-): { now: number; delta: number } {
-  const now = getSimulationNow(scene);
-  if (lastSimulationTimeMs === undefined) {
-    return { now, delta: 0 };
-  }
-
-  return { now, delta: Math.max(0, now - lastSimulationTimeMs) };
-}
-
 /**
  * A cancellable simulation-time delay that replaces `scene.time.delayedCall` for
  * simulation-affecting callbacks (damage application, projectile spawning, etc.).
@@ -47,6 +35,11 @@ export function getSimulationDelta(
 export class CancelableSimDelay {
   private cancelled = false;
 
+  /**
+   * Schedules `callback` against deterministic simulation time when available.
+   * The fallback path is intentionally wall-clock based for menus, tests, or HUD
+   * scenes that do not register SimulationTickService.
+   */
   constructor(scene: Phaser.Scene | undefined | null, durationMs: number, callback: () => void) {
     waitForSimulationDuration(scene, durationMs).then(() => {
       if (!this.cancelled) {
@@ -61,6 +54,11 @@ export class CancelableSimDelay {
   }
 }
 
+/**
+ * Resolves after `durationMs` of simulation time. Multiplayer lockstep pauses
+ * stop this clock, so gameplay callbacks do not drift ahead while waiting for
+ * peers, reconnect snapshots, or player pauses.
+ */
 export function waitForSimulationDuration(scene: Phaser.Scene | undefined | null, durationMs: number): Promise<void> {
   const tickService = tryGetSimulationTickService(scene);
   if (!tickService) {

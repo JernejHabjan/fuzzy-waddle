@@ -7,7 +7,7 @@ import {
 } from "../../../data/scene-data";
 import { getSceneComponent, getSceneService } from "../scene-component-helpers";
 import { CommandBusService } from "../multiplayer/command-bus.service";
-import { SimulationTickService } from "../simulation-tick.service";
+import { SimulationPauseReason, SimulationTickService } from "../simulation-tick.service";
 import { ActorIndexSystem } from "../ActorIndexSystem";
 import { SceneActorCreator } from "../scene-actor-creator";
 import { SelectionGroupsComponent } from "../../../player/human-controller/selection-groups.component";
@@ -220,9 +220,12 @@ export class ReconnectService {
     const actorIndex = getSceneService(scene, ActorIndexSystem);
     const commandBus = getSceneService(scene, CommandBusService);
     const creator = getSceneService(scene, SceneActorCreator);
-    // Use a distinct reason ("snapshot-restore") so this pause does not collide with
-    // ConnectionRecoveryService's "reconnect" pause, which has independent lifetime.
-    const pauseReason = response.reason === "desync-correction" ? "desync-correction" : "snapshot-restore";
+    // Use a distinct reason so this pause does not collide with the reconnect
+    // dialog pause, which has independent lifetime.
+    const pauseReason =
+      response.reason === "desync-correction"
+        ? SimulationPauseReason.DesyncCorrection
+        : SimulationPauseReason.SnapshotRestore;
 
     if (!actorIndex || !creator) {
       this.logger.error("[Reconnect] Required services not available; cannot apply snapshot.");
@@ -326,7 +329,7 @@ export class ReconnectService {
 
       simTick?.resumeTick(pauseReason);
       if (response.reason === "desync-correction") {
-        simTick?.resumeTick("desync");
+        simTick?.resumeTick(SimulationPauseReason.Desync);
       }
 
       if (response.reason === "desync-correction") {

@@ -1,6 +1,17 @@
 import { Subject } from "rxjs";
 import Phaser from "phaser";
 
+export enum SimulationPauseReason {
+  Manual = "manual",
+  SceneBootstrap = "scene-bootstrap",
+  Lockstep = "lockstep",
+  Reconnect = "reconnect",
+  SnapshotRestore = "snapshot-restore",
+  Desync = "desync",
+  DesyncCorrection = "desync-correction",
+  Player = "player"
+}
+
 /**
  * Drives the deterministic simulation at a fixed 20 Hz tick rate.
  *
@@ -24,7 +35,7 @@ export class SimulationTickService {
   readonly tick$ = new Subject<number>();
 
   private accumulated = 0;
-  private readonly pauseReasons = new Set<string>();
+  private readonly pauseReasons = new Set<SimulationPauseReason>();
   private simulationTimeScale = 1;
 
   constructor(private readonly scene: Phaser.Scene) {
@@ -33,12 +44,12 @@ export class SimulationTickService {
   }
 
   /** Called by CommandBusService in multiplayer when waiting for peers. */
-  pauseTick(reason: string = "manual"): void {
+  pauseTick(reason: SimulationPauseReason = SimulationPauseReason.Manual): void {
     this.pauseReasons.add(reason);
   }
 
   /** Called by CommandBusService when all peers' commands are buffered. */
-  resumeTick(reason: string = "manual"): void {
+  resumeTick(reason: SimulationPauseReason = SimulationPauseReason.Manual): void {
     this.pauseReasons.delete(reason);
   }
 
@@ -46,7 +57,7 @@ export class SimulationTickService {
     return this.pauseReasons.size > 0;
   }
 
-  getPauseReasons(): string[] {
+  getPauseReasons(): SimulationPauseReason[] {
     return [...this.pauseReasons].sort();
   }
 

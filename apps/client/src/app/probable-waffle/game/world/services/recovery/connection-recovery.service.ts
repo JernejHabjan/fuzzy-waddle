@@ -5,7 +5,7 @@ import { getCommunicator } from "../../../data/scene-data";
 import { SceneDialogHelper } from "../../scenes/scene-dialog-helper";
 import type ReconnectRecoveryDialog from "../../scenes/hud-scenes/ReconnectRecoveryDialog";
 import { getSceneService } from "../scene-component-helpers";
-import { SimulationTickService } from "../simulation-tick.service";
+import { SimulationPauseReason, SimulationTickService } from "../simulation-tick.service";
 import { CommandBusService } from "../multiplayer/command-bus.service";
 import {
   type LocalConnectionLostSceneEvent,
@@ -62,7 +62,7 @@ export class ConnectionRecoveryService {
     // SimulationTickService doesn't keep "reconnect" in its paused Set.
     if (this.activeReconnects.size > 0) {
       const simTick = this.probableWaffleScene && getSceneService(this.probableWaffleScene, SimulationTickService);
-      simTick?.resumeTick("reconnect");
+      simTick?.resumeTick(SimulationPauseReason.Reconnect);
     }
     this.activeReconnects.clear();
     this.closeDialog();
@@ -130,7 +130,7 @@ export class ConnectionRecoveryService {
 
   private pauseAndShowDialog(): void {
     const simTick = this.probableWaffleScene && getSceneService(this.probableWaffleScene, SimulationTickService);
-    simTick?.pauseTick("reconnect");
+    simTick?.pauseTick(SimulationPauseReason.Reconnect);
     this.ensureDialog();
     this.dialog?.setup(this.buildMessage(), this.leaveMatch);
   }
@@ -138,7 +138,7 @@ export class ConnectionRecoveryService {
   private updateDialogAndPause(): void {
     if (!this.activeReconnects.size) {
       const simTick = this.probableWaffleScene && getSceneService(this.probableWaffleScene, SimulationTickService);
-      simTick?.resumeTick("reconnect");
+      simTick?.resumeTick(SimulationPauseReason.Reconnect);
       this.closeDialog();
       return;
     }
@@ -174,14 +174,15 @@ export class ConnectionRecoveryService {
   }
 
   private readonly onLocalConnectionLost = (event: LocalConnectionLostSceneEvent) => {
-    const playerNumber = event.playerNumber ?? this.probableWaffleScene?.playerOrNull?.playerNumber;
-    if (playerNumber === undefined || playerNumber === null) {
+    const scene = this.probableWaffleScene;
+    const playerNumber = event.playerNumber ?? scene?.playerOrNull?.playerNumber;
+    if (!scene || playerNumber === undefined || playerNumber === null) {
       return;
     }
 
     this.onPlayerDisconnected(
       {
-        gameInstanceId: this.probableWaffleScene!.gameInstanceId,
+        gameInstanceId: scene.gameInstanceId,
         emitterUserId: null,
         playerNumber,
         reconnectWindowSeconds: 0
@@ -217,7 +218,7 @@ export class ConnectionRecoveryService {
     }
 
     const simTick = getSceneService(this.probableWaffleScene, SimulationTickService);
-    simTick?.resumeTick("reconnect");
+    simTick?.resumeTick(SimulationPauseReason.Reconnect);
     this.closeDialog();
     this.probableWaffleScene.communicator.allScenes.emit({ name: "quit" });
   };

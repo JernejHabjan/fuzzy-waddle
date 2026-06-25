@@ -8,7 +8,7 @@ import {
   ProbableWafflePlayerType,
   type ProbableWaffleReplayCommandBatch
 } from "@fuzzy-waddle/api-interfaces";
-import { SimulationTickService } from "../simulation-tick.service";
+import { SimulationPauseReason, SimulationTickService } from "../simulation-tick.service";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { CommandBuffer } from "./command-buffer";
 import { getCommunicator, hasMultiplayerCommandRelay } from "../../../data/scene-data";
@@ -191,7 +191,7 @@ export class CommandBusService {
 
     // On every tick: flush commands, send outbound batch, gate next tick
     if (this.tickService) {
-      this.tickService.pauseTick("lockstep");
+      this.tickService.pauseTick(SimulationPauseReason.Lockstep);
       this.subscriptions.push(this.tickService.tick$.subscribe((tick) => this.onTick(tick)));
     }
 
@@ -299,7 +299,7 @@ export class CommandBusService {
     // 3. Gate the next tick: stall until all peers have committed for tick+1
     if (this.tickService && !this.hasAllForTick(tick + 1)) {
       this.scheduleStallLog(tick + 1);
-      this.tickService.pauseTick("lockstep");
+      this.tickService.pauseTick(SimulationPauseReason.Lockstep);
     }
 
     this.buffer.gc(tick);
@@ -371,7 +371,7 @@ export class CommandBusService {
         this.debugLog(`resume nextTick=${nextTick}`);
         this.stallSignature = null;
       }
-      this.tickService.resumeTick("lockstep");
+      this.tickService.resumeTick(SimulationPauseReason.Lockstep);
       this.queuedWhileStalledSignature = null;
     }
   }

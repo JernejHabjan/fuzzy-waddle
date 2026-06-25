@@ -1,7 +1,7 @@
 import type { ProbableWafflePauseChangedEvent } from "@fuzzy-waddle/api-interfaces";
 import { getCommunicator, getCurrentPlayerNumber } from "../../../data/scene-data";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
-import { SimulationTickService } from "../simulation-tick.service";
+import { SimulationPauseReason, SimulationTickService } from "../simulation-tick.service";
 import { getSceneService } from "../scene-component-helpers";
 import { filter, type Subscription } from "rxjs";
 import Phaser from "phaser";
@@ -9,7 +9,6 @@ import Phaser from "phaser";
 export class PauseSyncService {
   private static readonly MIN_PAUSE_INTERVAL_MS = 60_000;
   private static readonly MAX_PAUSES_PER_MATCH = 3;
-  private static readonly PLAYER_PAUSE_REASON = "player";
 
   private pauseChangedSub?: Subscription;
   private pauseToggleRequestSub?: Subscription;
@@ -92,9 +91,9 @@ export class PauseSyncService {
 
     this.playerPaused = event.paused;
     if (event.paused) {
-      tickService.pauseTick(PauseSyncService.PLAYER_PAUSE_REASON);
+      tickService.pauseTick(SimulationPauseReason.Player);
     } else {
-      tickService.resumeTick(PauseSyncService.PLAYER_PAUSE_REASON);
+      tickService.resumeTick(SimulationPauseReason.Player);
     }
   }
 
