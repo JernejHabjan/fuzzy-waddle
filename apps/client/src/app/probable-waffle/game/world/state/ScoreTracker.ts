@@ -22,6 +22,10 @@ import { ProbableWaffleSceneEventName } from "../services/recovery/probable-waff
 import { getSceneService } from "../services/scene-component-helpers";
 import { SimulationTickService } from "../services/simulation-tick.service";
 
+type RawScoreData = Map<PlayerNumber, PlayerScoreData> | [PlayerNumber, PlayerScoreData][] | PlayerScoreData[] | {
+  [playerNumber: string]: PlayerScoreData;
+};
+
 /**
  * Tracks player scores throughout the game for the score screen.
  * Similar to GameModeConditionChecker, runs continuously and collects statistics.
@@ -397,7 +401,7 @@ export class ScoreTracker {
     const gameState = this.scene.baseGameData.gameInstance.gameState;
     if (!gameState) return undefined;
 
-    const rawScoreData = gameState.data.scoreData as unknown;
+    const rawScoreData = gameState.data.scoreData as RawScoreData | undefined;
     if (!rawScoreData) return undefined;
     if (rawScoreData instanceof Map) {
       return rawScoreData;
@@ -405,28 +409,39 @@ export class ScoreTracker {
 
     const normalized = new Map<PlayerNumber, PlayerScoreData>();
     if (Array.isArray(rawScoreData)) {
-      rawScoreData.forEach((entry: unknown) => {
-        if (Array.isArray(entry) && entry.length === 2) {
+      rawScoreData.forEach((entry) => {
+        if (this.isScoreTuple(entry)) {
           const [playerNumber, playerScore] = entry;
-          if (typeof playerNumber === "number" && playerScore) {
-            normalized.set(playerNumber, playerScore as PlayerScoreData);
-          }
+          normalized.set(playerNumber, playerScore);
           return;
         }
 
-        if (entry && typeof entry === "object" && "playerNumber" in entry) {
-          const playerScore = entry as PlayerScoreData;
-          normalized.set(playerScore.playerNumber, playerScore);
+        if (this.isPlayerScoreData(entry)) {
+          normalized.set(entry.playerNumber, entry);
         }
       });
     } else {
-      Object.entries(rawScoreData as Record<string, PlayerScoreData>).forEach(([playerNumber, playerScore]) => {
-        normalized.set(Number(playerNumber), playerScore);
+      Object.entries(rawScoreData).forEach(([playerNumber, playerScore]) => {
+        if (this.isPlayerScoreData(playerScore)) {
+          normalized.set(Number(playerNumber), playerScore);
+        }
       });
     }
 
     gameState.data.scoreData = normalized;
     return normalized;
+  }
+
+  private isScoreTuple(
+    entry: PlayerScoreData | [PlayerNumber, PlayerScoreData]
+  ): entry is [PlayerNumber, PlayerScoreData] {
+    return Array.isArray(entry) && typeof entry[0] === "number" && this.isPlayerScoreData(entry[1]);
+  }
+
+  private isPlayerScoreData(
+    entry: PlayerScoreData | [PlayerNumber, PlayerScoreData] | undefined
+  ): entry is PlayerScoreData {
+    return !!entry && !Array.isArray(entry) && typeof entry.playerNumber === "number";
   }
 
   /**
