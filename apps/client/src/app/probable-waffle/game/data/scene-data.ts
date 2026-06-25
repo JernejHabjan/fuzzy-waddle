@@ -2,9 +2,6 @@ import {
   type PlayerNumber,
   type PlayerStateHousing,
   type PlayerStateResources,
-  type ProbableWaffleGameStateDataChangeEvent,
-  type ProbableWaffleGameStateDataChangeEventProperty,
-  type ProbableWaffleGameStateDataPayload,
   ProbableWafflePlayer,
   type ProbableWafflePlayerDataChangeEvent,
   type ProbableWafflePlayerDataChangeEventPayload,
@@ -15,8 +12,6 @@ import { ProbableWaffleScene } from "../core/probable-waffle.scene";
 import { ProbableWaffleCommunicatorService } from "../../communicators/probable-waffle-communicator.service";
 import { getActorComponent, hasActorComponent } from "./actor-component";
 import { IdComponent } from "../entity/components/id-component";
-import { Observable } from "rxjs";
-import GameProbableWaffleScene from "../world/scenes/GameProbableWaffleScene";
 import { BaseScene } from "../../../shared/game/phaser/scene/base.scene";
 import { AttackComponent } from "../entity/components/combat/components/attack-component";
 import { ProductionComponent } from "../entity/components/production/production-component";
@@ -57,7 +52,10 @@ export function getPlayer(scene: Scene, playerNumber?: PlayerNumber): ProbableWa
   }
   if (!(scene instanceof BaseScene)) throw new Error("scene is not instanceof BaseScene");
   if (playerNumber === undefined) {
-    playerNumber = scene.baseGameData.user.playerNumber!;
+    playerNumber = scene.baseGameData.user.playerNumber;
+  }
+  if (playerNumber === undefined) {
+    return undefined;
   }
   return scene.baseGameData.gameInstance.getPlayerByNumber(playerNumber);
 }
@@ -106,45 +104,6 @@ export function isRealtimeMultiplayerMatch(scene: Scene): boolean {
   return hasMultiplayerCommandRelay(scene) && !scene.baseGameData.gameInstance.gameInstanceMetadata.isReplay();
 }
 
-export function listenToActorEvents(
-  gameObject: Phaser.GameObjects.GameObject,
-  property: ProbableWaffleGameStateDataChangeEventProperty | null = null
-): Observable<ProbableWaffleGameStateDataChangeEvent> | undefined {
-  const actorId = getActorComponent(gameObject, IdComponent)?.id;
-  if (!actorId) throw new Error("actorId is not defined");
-
-  return getCommunicator(gameObject.scene).gameStateChanged?.onWithFilter(
-    (p) => p.data.actorDefinition?.id === actorId && (property ? p.property.includes(property) : true)
-  );
-}
-
-export function sendActorEvent(
-  gameObject: Phaser.GameObjects.GameObject,
-  property: ProbableWaffleGameStateDataChangeEventProperty,
-  payloadIn: ProbableWaffleGameStateDataPayload
-): void {
-  const id = getActorComponent(gameObject, IdComponent)?.id;
-  if (!id) return; // throw new Error("actorId is not defined");
-  if (!(gameObject.scene instanceof GameProbableWaffleScene))
-    throw new Error("Scene is not of type GameProbableWaffleSceneData");
-
-  const communicator = getCommunicator(gameObject.scene);
-  const data: ProbableWaffleGameStateDataPayload = {
-    actorDefinition: {
-      id,
-      ...payloadIn.actorDefinition
-    },
-    gameState: payloadIn.gameState
-  };
-
-  communicator.gameStateChanged?.send({
-    property,
-    data,
-    gameInstanceId: gameObject.scene.gameInstanceId,
-    emitterUserId: gameObject.scene.userId
-  });
-}
-
 export function sendPlayerStateEvent(
   scene: Scene,
   property: ProbableWafflePlayerDataChangeEventProperty,
@@ -170,8 +129,13 @@ export function sendPlayerStateEvent(
   }
 
   const communicator = getCommunicator(scene);
+  const playerNumberToSend = playerNumber ?? scene.player.playerNumber;
+  if (playerNumberToSend === undefined) {
+    console.warn(`[PlayerState] Skipping ${property} because the local player number is not ready yet.`);
+    return;
+  }
   const data = {
-    playerNumber: playerNumber ?? scene.player.playerNumber!,
+    playerNumber: playerNumberToSend,
     ...payloadIn
   } satisfies ProbableWafflePlayerDataChangeEventPayload;
 
@@ -207,7 +171,11 @@ export function emitEventSelection(
       `[Selection] Sanitized ${actorIds.length - sanitizedActorIds.length} stale actor IDs before sending ${property}.`
     );
   }
-  scene.communicator.playerChanged!.send({
+  const playerChanged = scene.communicator.playerChanged;
+  if (!playerChanged) {
+    return;
+  }
+  playerChanged.send({
     property,
     data: {
       playerNumber: player.playerNumber,

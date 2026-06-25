@@ -162,8 +162,12 @@ export class PlayerStateValidatorService {
 
     const seenGroupKeys = new Set<number>();
     const actorIndex = this.getActorIndex(gameInstance);
+    const playerNumber = event.data.playerNumber;
+    if (playerNumber === undefined) {
+      return false;
+    }
     for (const group of selectionGroups) {
-      if (!this.isValidSelectionGroup(group, event.data.playerNumber!, actorIndex, seenGroupKeys)) {
+      if (!this.isValidSelectionGroup(group, playerNumber, actorIndex, seenGroupKeys)) {
         this.logger.warn(
           `[PlayerState] Invalid control group ${group?.groupKey ?? "unknown"} for player ${event.data.playerNumber}`
         );
@@ -184,7 +188,11 @@ export class PlayerStateValidatorService {
       return false;
     }
 
-    const player = gameInstance.getPlayerByNumber(event.data.playerNumber!);
+    const playerNumber = event.data.playerNumber;
+    if (playerNumber === undefined) {
+      return false;
+    }
+    const player = gameInstance.getPlayerByNumber(playerNumber);
     if (!player) {
       return false;
     }
@@ -241,7 +249,11 @@ export class PlayerStateValidatorService {
       return false;
     }
 
-    const player = gameInstance.getPlayerByNumber(event.data.playerNumber!);
+    const playerNumber = event.data.playerNumber;
+    if (playerNumber === undefined) {
+      return false;
+    }
+    const player = gameInstance.getPlayerByNumber(playerNumber);
     if (!player) {
       return false;
     }
@@ -258,8 +270,8 @@ export class PlayerStateValidatorService {
       return true;
     }
 
-    const carriedResources = this.getCarriedResources(gameInstance, event.data.playerNumber!);
-    const hasRefundableState = this.hasRefundableState(gameInstance, event.data.playerNumber!);
+    const carriedResources = this.getCarriedResources(gameInstance, playerNumber);
+    const hasRefundableState = this.hasRefundableState(gameInstance, playerNumber);
     for (const [resourceType, amount] of Object.entries(normalizedResources)) {
       if (amount <= (carriedResources[resourceType as ResourceType] ?? 0)) {
         continue;

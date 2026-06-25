@@ -1,4 +1,4 @@
-import type { PlayerNumber, ProbableWaffleReplayDesyncDiagnostic } from "@fuzzy-waddle/api-interfaces";
+import type { PlayerNumber } from "@fuzzy-waddle/api-interfaces";
 
 export enum ProbableWaffleSceneEventName {
   SceneAwake = "scene-awake",
@@ -22,11 +22,3 @@ export type ReconnectSnapshotAppliedSceneEvent = {
   reason?: "reconnect" | "spectator-catch-up" | "desync-correction";
   tick?: number;
 };
-
-export type DesyncStateChangedSceneEvent = {
-  playerNumber: number;
-  state: "mismatch" | "resolved";
-  reason?: string;
-};
-
-export type DesyncDiagnosticsSceneEvent = ProbableWaffleReplayDesyncDiagnostic;

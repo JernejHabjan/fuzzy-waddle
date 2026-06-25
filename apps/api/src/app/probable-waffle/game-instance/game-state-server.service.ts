@@ -1,10 +1,8 @@
 import { Injectable, Logger } from "@nestjs/common";
 import {
-  CommunicatorEvent,
   GameSessionState,
   type ProbableWaffleCommunicatorEventUnion,
   ProbableWaffleCommunicators,
-  ProbableWaffleCommunicatorType,
   type ProbableWaffleDesyncAlertEvent,
   type ProbableWaffleGameCommandEvent,
   ProbableWaffleGameInstance,
@@ -67,7 +65,7 @@ export class GameStateServerService {
     private readonly pauseStateValidator: PauseStateValidatorService
   ) {}
 
-  ensureAuthorizedMutation(body: CommunicatorEvent<any, ProbableWaffleCommunicatorType>, user: User): void {
+  ensureAuthorizedMutation(body: ProbableWaffleCommunicatorEventUnion, user: User): void {
     this.gameInstanceService.ensureCanMutateGameInstance(body, user);
   }
 
@@ -77,7 +75,17 @@ export class GameStateServerService {
 
   /** Mutates in-memory game state and returns the exact relay policy for the gateway. */
   updateGameState(body: ProbableWaffleCommunicatorEventUnion, user: User): UpdateGameStateResult {
-    const gameInstance = this.gameInstanceService.findGameInstance(body.gameInstanceId!);
+    const gameInstanceId = body.gameInstanceId;
+    if (!gameInstanceId) {
+      if (body.communicator === ProbableWaffleCommunicators.InstanceReseed) {
+        return this.handleInstanceReseed(body.payload as ProbableWaffleInstanceReseedEvent, user);
+      }
+      this.logger.warn(
+        `[GameStateServer] Missing gameInstanceId for communicator=${body.communicator} user=${user.id}.`
+      );
+      return { success: false, relayEmpty: false };
+    }
+    const gameInstance = this.gameInstanceService.findGameInstance(gameInstanceId);
     if (!gameInstance && body.communicator === ProbableWaffleCommunicators.InstanceReseed) {
       return this.handleInstanceReseed(body.payload as ProbableWaffleInstanceReseedEvent, user);
     }
@@ -100,8 +108,8 @@ export class GameStateServerService {
           case "sessionState":
             switch (giMetadata.data.sessionState) {
               case GameSessionState.Stopped:
-                this.gameInstanceService.stopGameInstance(body.gameInstanceId!, user);
-                this.cleanup(String(body.gameInstanceId));
+                this.gameInstanceService.stopGameInstance(gameInstanceId, user);
+                this.cleanup(gameInstanceId);
                 break;
             }
             break;
@@ -168,10 +176,7 @@ export class GameStateServerService {
         }
         // Response is routed by gateway to target user only.
         const snapshotResponse = body.payload as ProbableWaffleSnapshotResponseEvent;
-        snapshotResponse.commandTail = this.getCommandTail(
-          gameInstance.gameInstanceMetadata.data.gameInstanceId!,
-          snapshotResponse.snapshot.tick
-        );
+        snapshotResponse.commandTail = this.getCommandTail(gameInstanceId, snapshotResponse.snapshot.tick);
         break;
       case ProbableWaffleCommunicators.DesyncAlert:
         if (!this.validateDesyncAlert(body.payload as ProbableWaffleDesyncAlertEvent, gameInstance, user)) {

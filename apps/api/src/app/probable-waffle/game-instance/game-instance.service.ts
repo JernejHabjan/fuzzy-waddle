@@ -1,12 +1,11 @@
 import { ForbiddenException, Injectable } from "@nestjs/common";
 import { type User } from "@supabase/supabase-js";
 import {
-  type CommunicatorEvent,
   type DifficultyModifiers,
   GameInstanceId,
   type MapTuning,
   ProbableWaffleCommunicators,
-  type ProbableWaffleCommunicatorType,
+  type ProbableWaffleCommunicatorEventUnion,
   ProbableWaffleGameInstance,
   type ProbableWaffleGameInstanceData,
   ProbableWaffleGameInstanceVisibility,
@@ -109,9 +108,12 @@ export class GameInstanceService implements GameInstanceServiceInterface {
       }
       return isOld;
     });
-    oldGameInstances.forEach((gi) =>
-      this.gameInstanceHolderService.removeGameInstance(gi.gameInstanceMetadata.data.gameInstanceId!)
-    );
+    oldGameInstances.forEach((gi) => {
+      const gameInstanceId = gi.gameInstanceMetadata.data.gameInstanceId;
+      if (gameInstanceId) {
+        this.gameInstanceHolderService.removeGameInstance(gameInstanceId);
+      }
+    });
   }
 
   findGameInstance(gameInstanceId: GameInstanceId): ProbableWaffleGameInstance | undefined {
@@ -142,12 +144,12 @@ electReplacementHost(
     .filter(
       (player) =>
         player.playerController.data.playerDefinition?.playerType === ProbableWafflePlayerType.Human &&
-        player.playerController.data.userId !== null &&
+        typeof player.playerController.data.userId === "string" &&
         player.playerController.data.userId !== previousHostUserId &&
         player.playerNumber !== undefined &&
-        !isUserDisconnected(player.playerController.data.userId!, gameInstanceId)
+        !isUserDisconnected(player.playerController.data.userId, gameInstanceId)
     )
-    .sort((a, b) => a.playerNumber! - b.playerNumber!)[0];
+    .sort((a, b) => (a.playerNumber ?? Number.MAX_SAFE_INTEGER) - (b.playerNumber ?? Number.MAX_SAFE_INTEGER))[0];
 
   if (!nextHost?.playerController.data.userId || nextHost.playerNumber === undefined) {
     return null;
@@ -200,8 +202,12 @@ ensureCanJoinGameRoom(gameInstanceId: GameInstanceId, user: User): void {
  * authoritative lockstep transport events through to those validators, or the
  * gateway can reject a valid command relay before sequence/ownership checks run.
  */
-ensureCanMutateGameInstance(body: CommunicatorEvent<any, ProbableWaffleCommunicatorType>, user: User): void {
-  const gameInstance = this.requireGameInstance(body.gameInstanceId!);
+ensureCanMutateGameInstance(body: ProbableWaffleCommunicatorEventUnion, user: User): void {
+  const gameInstanceId = body.gameInstanceId;
+  if (!gameInstanceId) {
+    throw new ForbiddenException("Game instance mutation target missing");
+  }
+  const gameInstance = this.requireGameInstance(gameInstanceId);
 
   switch (body.communicator) {
     case "gameInstanceMetadataDataChange":
@@ -222,7 +228,7 @@ ensureCanMutateGameInstance(body: CommunicatorEvent<any, ProbableWaffleCommunica
       }
       return;
     case "playerDataChange":
-      this.ensureCanMutatePlayerData(gameInstance, body.payload as ProbableWafflePlayerDataChangeEvent, user);
+      this.ensureCanMutatePlayerData(gameInstance, body.payload, user);
       return;
     case "spectatorDataChange":
       this.ensureUserOwnsTarget(body.payload.data?.userId ?? null, user.id, "Spectator access denied");
