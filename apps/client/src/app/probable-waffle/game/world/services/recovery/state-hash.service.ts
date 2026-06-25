@@ -1,4 +1,5 @@
 import type {
+  ActorDefinition,
   ProbableWaffleReplayDesyncDiagnostic,
   ProbableWaffleStateHashDiagnostics
 } from "@fuzzy-waddle/api-interfaces";
@@ -53,12 +54,38 @@ interface PendingCorrection {
   reason?: string;
 }
 
+type StableSerializable =
+  | string
+  | number
+  | boolean
+  | null
+  | undefined
+  | readonly StableSerializable[]
+  | { readonly [key: string]: StableSerializable };
+
+interface HashOrderData {
+  readonly targetGameObjectId?: StableSerializable;
+  readonly targetTileLocation?: {
+    readonly x?: number;
+    readonly y?: number;
+    readonly z?: number;
+  } | null;
+}
+
+interface HashOrder {
+  readonly orderType?: StableSerializable;
+  readonly data?: HashOrderData | null;
+}
+
 /**
  * Computes a periodic deterministic hash of all actor states and exchanges it with
  * peers to detect simulation divergence. Only active in multiplayer — no-op in SP.
  *
  * Hash scope per actor: {id, health, tileX, tileY, owner}. Actors sorted by ID
  * so every client produces an identical string for the same simulation state.
+ * The service hashes once per HASH_INTERVAL_TICKS instead of every simulation tick:
+ * full actor serialization is intentionally diagnostic-heavy, and per-tick hashing
+ * would compete with lockstep command processing during large battles.
  *
  * On mismatch: logs a structured error and shows a persistent on-screen indicator on
  * the desynced client while automatic snapshot correction retries run.
@@ -104,8 +131,8 @@ export class StateHashService {
   private onTick(tick: number, scene: ProbableWaffleScene): void {
     if (tick % HASH_INTERVAL_TICKS !== 0) return;
 
-    // Keep steady-state payload small, but switch to rich diagnostics while any
-    // mismatch/correction flow is active so logs can explain exactly what diverged.
+    // Hashing runs once per second at the default tick rate. This keeps steady-state
+    // desync detection cheap; diagnostics are included only when configured or needed.
     const includeDiagnostics =
       INCLUDE_HASH_DIAGNOSTICS_IN_STEADY_STATE || this.activeMismatches.size > 0 || this.pendingCorrections.size > 0;
     const snapshot = this.computeHashSnapshot(scene, includeDiagnostics);
@@ -113,10 +140,11 @@ export class StateHashService {
     this.pruneOldHashes(tick);
 
     const communicator = getCommunicator(scene);
+    const stateHashChanged = communicator.stateHashChanged;
     const playerNumber = scene.playerOrNull?.playerNumber ?? null;
-    if (playerNumber === null) return;
+    if (!stateHashChanged || playerNumber === null) return;
 
-    communicator.stateHashChanged!.send({
+    stateHashChanged.send({
       gameInstanceId: scene.gameInstanceId,
       emitterUserId: scene.userId ?? "",
       tick,
@@ -145,7 +173,9 @@ export class StateHashService {
       };
     }
 
-    const actorDigests = includeDiagnostics ? ({} as Record<string, string>) : undefined;
+    const actorDigests: ProbableWaffleStateHashDiagnostics["actorDigests"] | undefined = includeDiagnostics
+      ? {}
+      : undefined;
     const entries = actorIndex
       .getAllIdActors()
       .filter((go) => !this.shouldIgnoreForStateHash(go))
@@ -487,7 +517,7 @@ export class StateHashService {
   }
 
   /** Serializes production/research queues into deterministic textual digest segments. */
-  private serializeActorQueueState(actor: { production?: any; research?: any }): string {
+  private serializeActorQueueState(actor: Pick<ActorDefinition, "production" | "research">): string {
     const productionQueue = actor.production?.queue ?? [];
     const researchQueue = actor.research?.researches ?? [];
     const serializedProduction = productionQueue
@@ -506,12 +536,9 @@ export class StateHashService {
   }
 
   /** Serializes carrying/resource/container values that commonly diverge in economy bugs. */
-  private serializeActorEconomyState(actor: {
-    gatherer?: any;
-    resourceSource?: any;
-    resourceDrain?: any;
-    container?: any;
-  }): string {
+  private serializeActorEconomyState(
+    actor: Pick<ActorDefinition, "gatherer" | "resourceSource" | "resourceDrain" | "container">
+  ): string {
     const gathered = `${actor.gatherer?.carriedResourceType ?? "none"}:${Math.round(actor.gatherer?.carriedResourceAmount ?? 0)}`;
     const source = Math.round(actor.resourceSource?.currentResources ?? -1);
     const drain = Math.round(actor.resourceDrain?.currentCapacity ?? -1);
@@ -545,7 +572,7 @@ export class StateHashService {
     // on current/queued order intent makes desync reports point at actual sim drift.
     return this.stableSerialize({
       currentOrder: this.summarizeOrderForHash(blackboard.currentOrder),
-      orderQueue: (blackboard.orderQueue ?? []).map((order: unknown) => this.summarizeOrderForHash(order)),
+      orderQueue: (blackboard.orderQueue ?? []).map((order) => this.summarizeOrderForHash(order)),
       queueLength: Array.isArray(blackboard.orderQueue) ? blackboard.orderQueue.length : 0
     });
   }
@@ -555,33 +582,39 @@ export class StateHashService {
    * order type, stable actor target id, and logical tile target. Volatile runtime
    * references and bookkeeping fields are intentionally excluded from the hash.
    */
-  private summarizeOrderForHash(order: unknown): unknown {
+  private summarizeOrderForHash(order: unknown): StableSerializable {
     if (!order || typeof order !== "object") {
-      return order ?? null;
+      return this.toStableScalar(order);
     }
 
-    const orderRecord = order as Record<string, unknown>;
-    const data = (orderRecord["data"] as Record<string, unknown> | undefined) ?? undefined;
-    const targetTileLocation =
-      data && typeof data["targetTileLocation"] === "object" && data["targetTileLocation"] !== null
-        ? {
-            x: Math.round(Number((data["targetTileLocation"] as Record<string, unknown>)["x"] ?? 0)),
-            y: Math.round(Number((data["targetTileLocation"] as Record<string, unknown>)["y"] ?? 0)),
-            z: Math.round(Number((data["targetTileLocation"] as Record<string, unknown>)["z"] ?? 0))
-          }
-        : undefined;
+    const orderRecord = order as HashOrder;
+    const data = orderRecord.data ?? undefined;
+    const targetTileLocation = data?.targetTileLocation
+      ? {
+          x: Math.round(Number(data.targetTileLocation.x ?? 0)),
+          y: Math.round(Number(data.targetTileLocation.y ?? 0)),
+          z: Math.round(Number(data.targetTileLocation.z ?? 0))
+        }
+      : undefined;
 
     return {
-      orderType: orderRecord["orderType"] ?? null,
+      orderType: this.toStableScalar(orderRecord.orderType),
       data: {
-        targetGameObjectId: data?.["targetGameObjectId"] ?? null,
+        targetGameObjectId: this.toStableScalar(data?.targetGameObjectId),
         targetTileLocation
       }
     };
   }
 
+  private toStableScalar(value: unknown): StableSerializable {
+    if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
+      return value;
+    }
+    return value === undefined ? null : String(value);
+  }
+
   /** Deterministic serializer with stable object-key ordering to avoid hash noise from key order. */
-  private stableSerialize(value: unknown): string {
+  private stableSerialize(value: StableSerializable): string {
     if (value === null) {
       return "null";
     }
@@ -592,10 +625,9 @@ export class StateHashService {
       return `[${value.map((item) => this.stableSerialize(item)).join(",")}]`;
     }
     if (typeof value === "object") {
-      const record = value as Record<string, unknown>;
-      return `{${Object.keys(record)
+      return `{${Object.keys(value)
         .sort()
-        .map((key) => `${key}:${this.stableSerialize(record[key])}`)
+        .map((key) => `${key}:${this.stableSerialize(value[key])}`)
         .join(",")}}`;
     }
     return String(value);

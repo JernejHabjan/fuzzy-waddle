@@ -8,7 +8,11 @@ import { buildReplayTickDigest } from "./replay-debug-tools";
 
 const SUPPORTED_REPLAY_COMPATIBILITY_VERSIONS = new Set(["lockstep-v1"]);
 
-/** Replays recorded command batches deterministically by tick in replay matches. */
+/**
+ * Replays recorded authoritative command batches deterministically by tick.
+ * Playback deliberately bypasses live multiplayer relays and feeds the same
+ * command batches into CommandBusService that the original match recorded.
+ */
 export class ReplayPlaybackService {
   private tickSub?: Subscription;
   private readonly batchesByTick = new Map<number, ProbableWaffleReplayCommandBatch[]>();

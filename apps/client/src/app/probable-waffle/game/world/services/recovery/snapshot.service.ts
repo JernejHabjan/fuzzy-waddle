@@ -7,18 +7,15 @@ import { ActorManager } from "../../../data/actor-manager";
 import { getCommunicator } from "../../../data/scene-data";
 import type {
   ActorDefinition,
-  PlayerNumber,
-  ProbableWafflePlayerStateData,
   ProbableWaffleSnapshotData,
   ProbableWaffleSnapshotResponseEvent,
-  SelectionGroupData,
   UserId
 } from "@fuzzy-waddle/api-interfaces";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { CancelableSimDelay } from "../simulation-time";
 import { createMultiplayerClientLogger } from "../multiplayer/multiplayer-client-logger";
 
-/** How often the host refreshes its stored snapshot (in milliseconds). */
+/** How often the host refreshes its stored reconnect snapshot (in milliseconds). */
 const SNAPSHOT_REFRESH_INTERVAL_MS = 60_000;
 
 /**
@@ -26,9 +23,9 @@ const SNAPSHOT_REFRESH_INTERVAL_MS = 60_000;
  *   - Reconnect catch-up
  *   - Late-join spectator catch-up
  *
- * Only the host captures snapshots. On receiving a `snapshot-request` event
- * the host serialises the current simulation state and sends it back via
- * `snapshot-response`.
+ * Only the host captures snapshots. The host keeps a low-frequency cached
+ * snapshot for reconnect readiness, then captures again immediately before
+ * responding so the payload reflects the current authoritative tick.
  *
  * Serialisation delegates entirely to the existing `ActorManager.getActorDefinitionFromActor`
  * path — the same mechanism used by SaveGame/LoadGame — so no custom serialisation
@@ -52,7 +49,8 @@ export class SnapshotService {
       return;
     }
 
-    // Periodic refresh so the snapshot stays fresh for reconnecting players.
+    // Periodic refresh keeps a warm snapshot available without serializing the
+    // full actor graph every tick. On-demand responses still refresh first.
     this.refreshHandle = setInterval(() => {
       this.captureSnapshot(scene);
     }, SNAPSHOT_REFRESH_INTERVAL_MS);
@@ -112,8 +110,8 @@ export class SnapshotService {
 
     // --- Player states ---
     // Deep-clone each player's state data so the snapshot is immutable.
-    const playerStates: Record<PlayerNumber, ProbableWafflePlayerStateData> = {};
-    const playerSelectionGroups: Record<PlayerNumber, SelectionGroupData[]> = {};
+    const playerStates: ProbableWaffleSnapshotData["playerStates"] = {};
+    const playerSelectionGroups: NonNullable<ProbableWaffleSnapshotData["playerSelectionGroups"]> = {};
     for (const player of scene.players) {
       const num = player.playerNumber;
       if (num !== undefined) {
@@ -142,6 +140,8 @@ export class SnapshotService {
   ): void {
     // Reconnect/spectator catch-up must reflect the host's current sim state, not the
     // last periodic checkpoint, otherwise recent commands would be lost on restore.
+    // This is intentionally on-demand rather than every tick to avoid making full
+    // actor serialization part of the steady-state multiplayer hot path.
     this.captureSnapshot(scene);
 
     if (!this.latestSnapshot) {

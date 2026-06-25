@@ -119,8 +119,10 @@ export type ProbableWafflePlayerDataChangeEventProperty =
   | typeof ProbableWafflePlayerDataChangeProperties.HousingCurrentIncreased
   | typeof ProbableWafflePlayerDataChangeProperties.HousingCurrentDecreased
   | typeof ProbableWafflePlayerDataChangeProperties.PlayerSceneReady
-  | typeof ProbableWafflePlayerDataChangeProperties.CommandIssuedMove // todo this command needs to be removed from here as it belongs to actor event
-  | typeof ProbableWafflePlayerDataChangeProperties.CommandIssuedActor; // todo this command needs to be removed from here as it belongs to actor event
+  // Legacy command properties are still consumed by existing listeners and backend validation.
+  // New lockstep multiplayer commands should use ProbableWaffleGameCommandEvent instead.
+  | typeof ProbableWafflePlayerDataChangeProperties.CommandIssuedMove
+  | typeof ProbableWafflePlayerDataChangeProperties.CommandIssuedActor;
 export interface ProbableWafflePlayerDataChangeEvent extends ProbableWaffleCommunicatorEvent {
   property: ProbableWafflePlayerDataChangeEventProperty;
   data: ProbableWafflePlayerDataChangeEventPayload;
