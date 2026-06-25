@@ -572,7 +572,7 @@ export class StateHashService {
     // on current/queued order intent makes desync reports point at actual sim drift.
     return this.stableSerialize({
       currentOrder: this.summarizeOrderForHash(blackboard.currentOrder),
-      orderQueue: (blackboard.orderQueue ?? []).map((order) => this.summarizeOrderForHash(order)),
+      orderQueue: (blackboard.orderQueue ?? []).map((order: unknown) => this.summarizeOrderForHash(order)),
       queueLength: Array.isArray(blackboard.orderQueue) ? blackboard.orderQueue.length : 0
     });
   }
@@ -625,9 +625,10 @@ export class StateHashService {
       return `[${value.map((item) => this.stableSerialize(item)).join(",")}]`;
     }
     if (typeof value === "object") {
-      return `{${Object.keys(value)
+      const record = value as { readonly [key: string]: StableSerializable };
+      return `{${Object.keys(record)
         .sort()
-        .map((key) => `${key}:${this.stableSerialize(value[key])}`)
+        .map((key) => `${key}:${this.stableSerialize(record[key])}`)
         .join(",")}}`;
     }
     return String(value);

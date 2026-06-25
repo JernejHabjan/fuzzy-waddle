@@ -13,6 +13,7 @@ import type { GameCommand } from "../../game-instance/probable-waffle/game-comma
 import type { GameInstanceId, PlayerNumber, UserId } from "../../game-instance/player/player";
 import type { SelectionGroupData } from "../../game-instance/probable-waffle/component-data";
 import type { ProbableWaffleGameInstanceData } from "../../game-instance/probable-waffle/game-instance";
+import type { ProbableWaffleDoubleSelectionData, ProbableWaffleSelectionData } from "./communicator-game-events";
 
 export const ProbableWaffleGameCommunicatorTypes = {
   Selection: "selection"
@@ -316,16 +317,16 @@ export enum ProbableWaffleGatewayEvent {
 
 export type AllScenesEventData =
   | { name: "chat-message-received"; data: ChatMessage }
+  | { name: "selection.singleSelect"; data: ProbableWaffleSelectionData }
+  | { name: "selection.doubleSelect"; data: ProbableWaffleDoubleSelectionData }
+  | { name: "selection.multiSelect"; data: ProbableWaffleSelectionData }
+  | { name: "selection.multiSelectPreview"; data: ProbableWaffleSelectionData }
+  | { name: "selection.terrainSelect"; data: ProbableWaffleSelectionData }
   | {
       name:
         | "save-game"
         | "restart-game"
         | "selection.deselect"
-        | "selection.singleSelect"
-        | "selection.doubleSelect"
-        | "selection.multiSelect"
-        | "selection.multiSelectPreview"
-        | "selection.terrainSelect"
         | "quit"
         | "external-modal-opened"
         | "external-modal-closed"

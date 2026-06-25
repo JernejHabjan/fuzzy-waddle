@@ -12,6 +12,8 @@ import { ProbableWaffleScene } from "../core/probable-waffle.scene";
 import { ProbableWaffleCommunicatorService } from "../../communicators/probable-waffle-communicator.service";
 import { getActorComponent, hasActorComponent } from "./actor-component";
 import { IdComponent } from "../entity/components/id-component";
+import { Observable } from "rxjs";
+import GameProbableWaffleScene from "../world/scenes/GameProbableWaffleScene";
 import { BaseScene } from "../../../shared/game/phaser/scene/base.scene";
 import { AttackComponent } from "../entity/components/combat/components/attack-component";
 import { ProductionComponent } from "../entity/components/production/production-component";

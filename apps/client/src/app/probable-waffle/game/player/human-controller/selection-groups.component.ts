@@ -257,7 +257,10 @@ export class SelectionGroupsComponent {
 
   private syncSelectionGroupsToPlayerController(emitNetworkUpdate = true): void {
     const player = this.scene.playerOrNull;
-    const currentPlayerNumber = player?.playerNumber;
+    if (!player) {
+      return;
+    }
+    const currentPlayerNumber = player.playerNumber;
     if (currentPlayerNumber === undefined) {
       return;
     }

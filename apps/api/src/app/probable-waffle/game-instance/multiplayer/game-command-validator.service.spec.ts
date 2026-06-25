@@ -213,7 +213,7 @@ describe("GameCommandValidatorService", () => {
     expect(result).toEqual({ valid: false, relayEmpty: true, reason: expect.any(String) });
   });
 
-  it("relays empty on unknown actor id (payload error)", () => {
+  it("accepts unknown actor id when server actor mirror is behind", () => {
     const event: ProbableWaffleGameCommandEvent = {
       gameInstanceId: "gi-1",
       emitterUserId: "user-1",
@@ -232,7 +232,7 @@ describe("GameCommandValidatorService", () => {
       ]
     };
     const result = service.validate(event, createGameInstance(), { id: "user-1" } as never);
-    expect(result).toEqual({ valid: false, relayEmpty: true, reason: expect.stringContaining("unknown actor") });
+    expect(result).toEqual({ valid: true });
   });
 
   it("accepts high first tick after reseed bootstrap is enabled", () => {

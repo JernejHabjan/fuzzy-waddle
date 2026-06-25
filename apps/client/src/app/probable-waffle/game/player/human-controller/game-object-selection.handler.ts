@@ -16,7 +16,6 @@ import { HealthComponent } from "../../entity/components/combat/components/healt
 import {
   type ActorId,
   ObjectNames,
-  type ProbableWaffleDoubleSelectionData,
   type ProbableWaffleSelectionData
 } from "@fuzzy-waddle/api-interfaces";
 import { getActorSystem } from "../../data/actor-system";
@@ -93,7 +92,7 @@ export class GameObjectSelectionHandler {
 
             break;
           case "selection.doubleSelect":
-            const doubleSelectData = selection.data as ProbableWaffleDoubleSelectionData;
+            const doubleSelectData = selection.data;
             const objectId = doubleSelectData.objectId;
             if (this.debug) console.log("doubleSelect", objectId);
             const actors = this.getSameTypeActorsInViewportById(objectId);

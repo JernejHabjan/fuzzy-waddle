@@ -115,7 +115,7 @@ export class SnapshotService {
     for (const player of scene.players) {
       const num = player.playerNumber;
       if (num !== undefined) {
-        playerStates[num] = structuredClone(player.playerState.data) as ProbableWafflePlayerStateData;
+        playerStates[num] = structuredClone(player.playerState.data);
         playerSelectionGroups[num] = structuredClone(player.playerController.data.selectionGroups ?? []);
       }
     }

@@ -720,7 +720,7 @@ export class CommandBusService {
     executeTick: number,
     playerNumber: PlayerNumber
   ): void {
-    if (!this.tickService || !this.tickService.getPauseReasons().includes("lockstep")) {
+    if (!this.tickService || !this.tickService.getPauseReasons().includes(SimulationPauseReason.Lockstep)) {
       return;
     }
 
