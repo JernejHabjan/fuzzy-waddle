@@ -15,7 +15,7 @@ export function isMultiplayerDebugEnabled(): boolean {
   try {
     return (
       globalThis.localStorage?.getItem(DEBUG_STORAGE_KEY) === "true" ||
-      globalThis.location?.search.includes(DEBUG_QUERY_PARAM) === true
+      globalThis.location?.search.includes(DEBUG_QUERY_PARAM)
     );
   } catch {
     return false;

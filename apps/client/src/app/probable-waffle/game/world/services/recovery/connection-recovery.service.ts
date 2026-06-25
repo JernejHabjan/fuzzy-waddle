@@ -46,11 +46,7 @@ export class ConnectionRecoveryService {
     });
 
     probableWaffleScene.events.on(ProbableWaffleSceneEventName.LocalConnectionLost, this.onLocalConnectionLost, this);
-    probableWaffleScene.events.on(
-      ProbableWaffleSceneEventName.ReconnectSnapshotApplied,
-      this.onSnapshotApplied,
-      this
-    );
+    probableWaffleScene.events.on(ProbableWaffleSceneEventName.ReconnectSnapshotApplied, this.onSnapshotApplied, this);
     probableWaffleScene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.destroy());
   }
 
@@ -71,7 +67,11 @@ export class ConnectionRecoveryService {
     this.activeReconnects.clear();
     this.closeDialog();
 
-    this.probableWaffleScene?.events.off(ProbableWaffleSceneEventName.LocalConnectionLost, this.onLocalConnectionLost, this);
+    this.probableWaffleScene?.events.off(
+      ProbableWaffleSceneEventName.LocalConnectionLost,
+      this.onLocalConnectionLost,
+      this
+    );
     this.probableWaffleScene?.events.off(
       ProbableWaffleSceneEventName.ReconnectSnapshotApplied,
       this.onSnapshotApplied,

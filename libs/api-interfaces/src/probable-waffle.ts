@@ -9,6 +9,7 @@ export * from "./lib/game-instance/probable-waffle/pre-requirement";
 export * from "./lib/game-instance/probable-waffle/research-type";
 export * from "./lib/game-instance/probable-waffle/game-mode";
 export * from "./lib/game-instance/probable-waffle/player-scores.dto";
+export * from "./lib/game-instance/probable-waffle/game-command";
 export * from "./lib/game-instance/probable-waffle/game-state";
 export * from "./lib/game-instance/probable-waffle/player";
 export * from "./lib/game-instance/probable-waffle/game-instance-medatada";

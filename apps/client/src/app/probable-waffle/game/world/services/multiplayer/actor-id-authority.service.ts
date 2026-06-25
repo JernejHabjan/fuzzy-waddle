@@ -7,8 +7,6 @@ import { SimulationTickService } from "../simulation-tick.service";
 import { getSceneService } from "../scene-component-helpers";
 import GameObject = Phaser.GameObjects.GameObject;
 
-const SIM_ID_PREFIX = "sim-";
-
 /**
  * Assigns deterministic actor ids derived from shared simulation context.
  *
@@ -18,9 +16,11 @@ const SIM_ID_PREFIX = "sim-";
 export class ActorIdAuthorityService {
   private readonly sequenceBySignature = new Map<string, number>();
   private readonly sessionSalt: string;
+  private readonly SIM_ID_PREFIX = "sim-";
 
   constructor(private readonly scene: Phaser.Scene) {
-    const gameInstanceId = "gameInstanceId" in scene ? String((scene as { gameInstanceId?: string }).gameInstanceId ?? "local") : "local";
+    const gameInstanceId =
+      "gameInstanceId" in scene ? String((scene as { gameInstanceId?: string }).gameInstanceId ?? "local") : "local";
     const seed = String(scene.sys.game.config.seed?.[0] ?? "seed");
     this.sessionSalt = `${gameInstanceId}|${seed}`;
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
@@ -51,7 +51,7 @@ export class ActorIdAuthorityService {
 
   /** Identifies ids created by this service. */
   isDeterministicActorId(actorId: ActorId | undefined): boolean {
-    return !!actorId && actorId.startsWith(SIM_ID_PREFIX);
+    return !!actorId && actorId.startsWith(this.SIM_ID_PREFIX);
   }
 
   /** Builds a stable id from deterministic spawn context for this simulation tick. */
@@ -69,7 +69,7 @@ export class ActorIdAuthorityService {
     this.pruneOldSequences(tick);
 
     const basis = `${this.sessionSalt}|${signature}|${nextSequence}`;
-    return `${SIM_ID_PREFIX}${fnv1a32(basis)}`;
+    return `${this.SIM_ID_PREFIX}${fnv1a32(basis)}`;
   }
 
   /** Keeps only recent counters to avoid unbounded memory growth. */

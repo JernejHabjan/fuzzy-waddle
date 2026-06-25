@@ -21,8 +21,8 @@ import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { SnapshotService } from "./snapshot.service";
 import { ActorManager } from "../../../data/actor-manager";
 import { PawnAiController } from "../../../prefabs/ai-agents/pawn-ai-controller";
-import { ProbableWaffleSceneEventName } from "./probable-waffle-scene-events";
 import type { ReconnectSnapshotAppliedSceneEvent } from "./probable-waffle-scene-events";
+import { ProbableWaffleSceneEventName } from "./probable-waffle-scene-events";
 import { createMultiplayerClientLogger } from "../multiplayer/multiplayer-client-logger";
 
 interface HashSnapshot {

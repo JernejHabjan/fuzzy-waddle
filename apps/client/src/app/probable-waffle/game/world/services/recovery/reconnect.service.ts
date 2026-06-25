@@ -16,7 +16,6 @@ import {
   type ActorDefinition,
   GameSessionState,
   type PlayerNumber,
-  type ProbableWafflePlayerStateData,
   ProbableWaffleGatewayEvent,
   type ProbableWaffleInstanceReseedRequiredEvent,
   type ProbableWaffleSnapshotResponseEvent,
@@ -253,9 +252,7 @@ export class ReconnectService {
           snapshot.actors as ActorDefinition[]
         );
         if (inPlaceResult.requiresFullRebuild) {
-          this.logger.warn(
-            `[Reconnect] Escalating desync correction to full rebuild. reason=${inPlaceResult.reason}`
-          );
+          this.logger.warn(`[Reconnect] Escalating desync correction to full rebuild. reason=${inPlaceResult.reason}`);
           this.rebuildActorsFromSnapshot(
             actorIndex,
             creator,

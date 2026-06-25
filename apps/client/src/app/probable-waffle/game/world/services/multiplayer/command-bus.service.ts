@@ -1,15 +1,15 @@
 import { Subject, Subscription } from "rxjs";
-import type { GameCommand, GameCommandInput } from "../../../data/commands/game-command";
+import type { GameCommand, GameCommandInput } from "@fuzzy-waddle/api-interfaces";
+import {
+  type PlayerNumber,
+  type ProbableWaffleGameCommandEvent,
+  ProbableWafflePlayerType,
+  type ProbableWaffleReplayCommandBatch
+} from "@fuzzy-waddle/api-interfaces";
 import { SimulationTickService } from "../simulation-tick.service";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { CommandBuffer } from "./command-buffer";
 import { getCommunicator, hasMultiplayerCommandRelay } from "../../../data/scene-data";
-import {
-  type ProbableWaffleGameCommandEvent,
-  type PlayerNumber,
-  ProbableWafflePlayerType,
-  type ProbableWaffleReplayCommandBatch
-} from "@fuzzy-waddle/api-interfaces";
 import { getSceneService } from "../scene-component-helpers";
 import { ActorIndexSystem } from "../ActorIndexSystem";
 import { getActorComponent } from "../../../data/actor-component";
@@ -458,7 +458,9 @@ export class CommandBusService {
     // If we blindly restart from snapshotTick+1 we can spam stale ticks after correction.
     // Use the highest known accepted local tick as the post-reset baseline.
     const acceptedLocalTick =
-      this.localPlayerNumber !== null ? (this.lastReceivedTickByPlayer.get(this.localPlayerNumber) ?? snapshotTick) : snapshotTick;
+      this.localPlayerNumber !== null
+        ? (this.lastReceivedTickByPlayer.get(this.localPlayerNumber) ?? snapshotTick)
+        : snapshotTick;
     const localTailTick =
       this.localPlayerNumber !== null
         ? commandTail
@@ -500,11 +502,7 @@ export class CommandBusService {
     }
 
     if (this.localPlayerNumber !== null) {
-      for (
-        let tick = resetBaselineTick + 1;
-        tick <= resetBaselineTick + CommandBusService.INPUT_DELAY_TICKS;
-        tick++
-      ) {
+      for (let tick = resetBaselineTick + 1; tick <= resetBaselineTick + CommandBusService.INPUT_DELAY_TICKS; tick++) {
         // Same as seedInitialTicks: directly commit here so the barrier doesn't
         // stall before the server echo arrives.  Re-commit on echo is harmless.
         this.buffer.commit(tick, this.localPlayerNumber, []);
@@ -644,10 +642,7 @@ export class CommandBusService {
       `tick=${event.tick}/${tickOrder},relaySeq=${relaySequence ?? "none"}/${relayOrder},commands=${event.commands.length}`
     );
     if (relaySequence !== undefined) {
-      this.lastReceivedRelaySequenceByPlayer.set(
-        event.playerNumber,
-        Math.max(previousRelaySequence, relaySequence)
-      );
+      this.lastReceivedRelaySequenceByPlayer.set(event.playerNumber, Math.max(previousRelaySequence, relaySequence));
     }
 
     if (tickOrder !== "in-order" || relayOrder !== "in-order") {
@@ -694,7 +689,9 @@ export class CommandBusService {
 
     this.clearPendingStallLog();
     this.pendingStallTick = nextTick;
-    const missing = this.humanPlayerNumbers.filter((playerNumber) => !this.buffer.getCommittedPlayers(nextTick).includes(playerNumber));
+    const missing = this.humanPlayerNumbers.filter(
+      (playerNumber) => !this.buffer.getCommittedPlayers(nextTick).includes(playerNumber)
+    );
     // A single missing next-tick heartbeat is the common jitter case now. Give
     // that path a slightly longer window before escalating it to a hard stall log.
     const delayMs = this.isOnlyOneTickLag(nextTick, missing) ? 400 : CommandBusService.STALL_LOG_DELAY_MS;
@@ -775,9 +772,7 @@ export class CommandBusService {
         if (lastReceived < blockedTick) {
           const ticksBehind = blockedTick - lastReceived;
           const lagLabel =
-            ticksBehind === 1
-              ? "awaiting-next-commit(one-tick-lag)"
-              : "remote-not-advancing(multi-tick-lag)";
+            ticksBehind === 1 ? "awaiting-next-commit(one-tick-lag)" : "remote-not-advancing(multi-tick-lag)";
           return `${missingPlayer}:last-received=${lastReceived},missing=${blockedTick},behind=${ticksBehind},cause=${lagLabel}`;
         }
         if (missingPlayer === this.localPlayerNumber) {

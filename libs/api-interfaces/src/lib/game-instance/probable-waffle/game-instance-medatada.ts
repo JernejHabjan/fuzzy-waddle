@@ -1,4 +1,5 @@
 import { GameInstanceMetadata, type GameInstanceMetadataData } from "../game-instance-metadata";
+import type { GameCommand } from "./game-command";
 
 export enum ProbableWaffleGameInstanceType {
   Matchmaking,
@@ -17,7 +18,7 @@ export interface ProbableWaffleReplayPlayerData {
 export interface ProbableWaffleReplayCommandBatch {
   tick: number;
   playerNumber: number;
-  commands: unknown[];
+  commands: GameCommand[];
 }
 
 export interface ProbableWaffleReplayTickDigest {

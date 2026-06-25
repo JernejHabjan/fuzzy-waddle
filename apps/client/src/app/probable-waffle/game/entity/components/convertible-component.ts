@@ -1,6 +1,5 @@
 import GameObject = Phaser.GameObjects.GameObject;
 import { getActorComponent } from "../../data/actor-component";
-import { removeActorComponent } from "../../data/actor-data";
 import { OwnerComponent } from "./owner-component";
 import { HealthComponent } from "./combat/components/health-component";
 import { onObjectReady } from "../../data/game-object-helper";

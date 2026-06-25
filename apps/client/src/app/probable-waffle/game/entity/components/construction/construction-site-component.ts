@@ -1,10 +1,5 @@
 import { PaymentType } from "../production/payment-type";
-import {
-  type ConstructionSiteComponentData,
-  ConstructionStateEnum,
-  ObjectNames,
-  ResourceType
-} from "@fuzzy-waddle/api-interfaces";
+import { type ConstructionSiteComponentData, ConstructionStateEnum, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { HealthComponent } from "../combat/components/health-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "../owner-component";
@@ -27,10 +22,10 @@ import { PawnAiController } from "../../../prefabs/ai-agents/pawn-ai-controller"
 import type { ConstructionSiteDefinition } from "./construction-site-definition";
 import type { ProductionCostDefinition } from "../production/production-cost-definition";
 import { IdComponent } from "../id-component";
-import GameObject = Phaser.GameObjects.GameObject;
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 import { ProbableWaffleSceneEventName } from "../../../world/services/recovery/probable-waffle-scene-events";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export class ConstructionSiteComponent {
   public progressPercentage = 0;
@@ -55,7 +50,9 @@ export class ConstructionSiteComponent {
   ) {
     this.constructionProgressUiComponent = new ConstructionProgressUiComponent(this.gameObject);
     onObjectReady(gameObject, this.init, this);
-    this.simulationTickSub = getSceneService(gameObject.scene, SimulationTickService)?.tick$.subscribe(() => this.update());
+    this.simulationTickSub = getSceneService(gameObject.scene, SimulationTickService)?.tick$.subscribe(() =>
+      this.update()
+    );
     gameObject.on(Phaser.GameObjects.Events.DESTROY, this.onDestroy, this);
     gameObject.once(HealthComponent.KilledEvent, this.onDestroy, this);
   }

@@ -1,7 +1,7 @@
 import {
   ObjectNames,
-  ProbableWaffleGameCommandTypes,
   type PlayerNumber,
+  ProbableWaffleGameCommandTypes,
   type ResearchType
 } from "@fuzzy-waddle/api-interfaces";
 import { getActorComponent } from "../actor-component";

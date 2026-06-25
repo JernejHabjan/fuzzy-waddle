@@ -1,4 +1,4 @@
-import type { GameCommand } from "../../../data/commands/game-command";
+import type { GameCommand } from "@fuzzy-waddle/api-interfaces";
 import type { PlayerNumber } from "@fuzzy-waddle/api-interfaces";
 
 /**
@@ -58,9 +58,7 @@ export class CommandBuffer {
     const tickMap = this.buffer.get(tick);
     if (!tickMap) return [];
     this.buffer.delete(tick);
-    return [...tickMap.entries()]
-      .sort(([a], [b]) => a - b)
-      .flatMap(([, cmds]) => cmds);
+    return [...tickMap.entries()].sort(([a], [b]) => a - b).flatMap(([, cmds]) => cmds);
   }
 
   /**

@@ -33,12 +33,6 @@ import type {
 import type { AoeZoneData } from "../../probable-waffle/spell";
 import type { PlayerNumber } from "../player/player";
 
-export interface ProbableWaffleGameCommand {
-  command: string;
-  target: any;
-  issuedAt: Date;
-}
-
 export class ProbableWaffleGameState extends BaseGameState<ProbableWaffleGameStateData> {
   constructor(data?: ProbableWaffleGameStateData) {
     super(ProbableWaffleGameState.normalizeData(data) as ProbableWaffleGameStateData);
@@ -71,7 +65,11 @@ export class ProbableWaffleGameState extends BaseGameState<ProbableWaffleGameSta
   }
 
   private static normalizeScoreData(
-    scoreData: ProbableWaffleGameStateData["scoreData"] | PlayerScoreData[] | Array<[PlayerNumber, PlayerScoreData]> | Record<string, PlayerScoreData>
+    scoreData:
+      | ProbableWaffleGameStateData["scoreData"]
+      | PlayerScoreData[]
+      | Array<[PlayerNumber, PlayerScoreData]>
+      | Record<string, PlayerScoreData>
   ): Map<PlayerNumber, PlayerScoreData> {
     if (scoreData instanceof Map) {
       return scoreData;
@@ -82,7 +80,9 @@ export class ProbableWaffleGameState extends BaseGameState<ProbableWaffleGameSta
     }
 
     if (Array.isArray(scoreData)) {
-      if (scoreData.every((entry): entry is [PlayerNumber, PlayerScoreData] => Array.isArray(entry) && entry.length === 2)) {
+      if (
+        scoreData.every((entry): entry is [PlayerNumber, PlayerScoreData] => Array.isArray(entry) && entry.length === 2)
+      ) {
         return new Map<PlayerNumber, PlayerScoreData>(scoreData);
       }
 
@@ -112,7 +112,11 @@ export class ProbableWaffleGameState extends BaseGameState<ProbableWaffleGameSta
   }
 
   private static normalizePlayerScores(
-    playerScores: GameScoreSnapshot["playerScores"] | Array<PlayerScoreSnapshot & { playerNumber: number }> | Array<[PlayerNumber, PlayerScoreSnapshot]> | Record<string, PlayerScoreSnapshot>
+    playerScores:
+      | GameScoreSnapshot["playerScores"]
+      | Array<PlayerScoreSnapshot & { playerNumber: number }>
+      | Array<[PlayerNumber, PlayerScoreSnapshot]>
+      | Record<string, PlayerScoreSnapshot>
   ): Map<PlayerNumber, PlayerScoreSnapshot> {
     if (playerScores instanceof Map) {
       return playerScores;
@@ -123,13 +127,20 @@ export class ProbableWaffleGameState extends BaseGameState<ProbableWaffleGameSta
     }
 
     if (Array.isArray(playerScores)) {
-      if (playerScores.every((entry): entry is [PlayerNumber, PlayerScoreSnapshot] => Array.isArray(entry) && entry.length === 2)) {
+      if (
+        playerScores.every(
+          (entry): entry is [PlayerNumber, PlayerScoreSnapshot] => Array.isArray(entry) && entry.length === 2
+        )
+      ) {
         return new Map<PlayerNumber, PlayerScoreSnapshot>(playerScores);
       }
 
       return new Map<PlayerNumber, PlayerScoreSnapshot>(
         playerScores
-          .filter((entry): entry is PlayerScoreSnapshot & { playerNumber: number } => !!entry && typeof entry.playerNumber === "number")
+          .filter(
+            (entry): entry is PlayerScoreSnapshot & { playerNumber: number } =>
+              !!entry && typeof entry.playerNumber === "number"
+          )
           .map(({ playerNumber, ...snapshot }) => [playerNumber, snapshot] as const)
       );
     }
@@ -152,7 +163,8 @@ export interface ProbableWaffleGameStateData extends BaseData {
   playerResearch?: Record<PlayerNumber, string[]>;
 }
 
-export interface ActorDefinition extends Record<string, any> {
+export interface ActorDefinition {
+  [key: string]: unknown;
   name?: ObjectNames;
   owner?: Partial<OwnerComponentData>;
   id?: Partial<IdComponentData>;

@@ -10,9 +10,9 @@ import type {
   PlayerNumber,
   ProbableWafflePlayerStateData,
   ProbableWaffleSnapshotData,
+  ProbableWaffleSnapshotResponseEvent,
   SelectionGroupData,
-  UserId,
-  ProbableWaffleSnapshotResponseEvent
+  UserId
 } from "@fuzzy-waddle/api-interfaces";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { CancelableSimDelay } from "../simulation-time";
@@ -23,8 +23,8 @@ const SNAPSHOT_REFRESH_INTERVAL_MS = 60_000;
 
 /**
  * Manages full-simulation snapshots used for:
- *   - Reconnect catch-up (step 12)
- *   - Late-join spectator catch-up (step 13)
+ *   - Reconnect catch-up
+ *   - Late-join spectator catch-up
  *
  * Only the host captures snapshots. On receiving a `snapshot-request` event
  * the host serialises the current simulation state and sends it back via
@@ -64,23 +64,25 @@ export class SnapshotService {
     });
 
     // Serve the latest snapshot to any client that requests one.
-    this.requestSub = communicator.snapshotRequested.on.pipe(
-      // Ignore own echo (host sent nothing, but guard it anyway).
-      filter((e) => e.emitterUserId !== scene.userId)
-    ).subscribe((e) => {
-      if (!e.emitterUserId) {
-        return;
-      }
-      this.sendSnapshot(
-        scene,
-        e.emitterUserId,
-        e.reason === "desync-correction"
-          ? "desync-correction"
-          : e.reason === "spectator-catch-up"
-            ? "spectator-catch-up"
-            : "reconnect"
-      );
-    });
+    this.requestSub = communicator.snapshotRequested.on
+      .pipe(
+        // Ignore own echo (host sent nothing, but guard it anyway).
+        filter((e) => e.emitterUserId !== scene.userId)
+      )
+      .subscribe((e) => {
+        if (!e.emitterUserId) {
+          return;
+        }
+        this.sendSnapshot(
+          scene,
+          e.emitterUserId,
+          e.reason === "desync-correction"
+            ? "desync-correction"
+            : e.reason === "spectator-catch-up"
+              ? "spectator-catch-up"
+              : "reconnect"
+        );
+      });
 
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.destroy());
   }

@@ -9,6 +9,7 @@ import {
 } from "../../game-instance/probable-waffle/player";
 import type { ProbableWaffleSpectatorData } from "../../game-instance/probable-waffle/spectator";
 import type { ActorDefinition, ProbableWaffleGameStateData } from "../../game-instance/probable-waffle/game-state";
+import type { GameCommand } from "../../game-instance/probable-waffle/game-command";
 import type { GameInstanceId, PlayerNumber, UserId } from "../../game-instance/player/player";
 import type { SelectionGroupData } from "../../game-instance/probable-waffle/component-data";
 import type { ProbableWaffleGameInstanceData } from "../../game-instance/probable-waffle/game-instance";
@@ -183,16 +184,13 @@ export interface ProbableWaffleGameCommandTransportMeta {
  * Carries one player's committed command batch for a given simulation tick.
  * Sent by every player on every tick (even if commands is empty) so peers can
  * advance the lockstep barrier.
- *
- * Commands are typed as unknown[] here because GameCommand is defined in the
- * client app. The receiving client casts them to GameCommand[] after validation.
  */
 export interface ProbableWaffleGameCommandEvent extends ProbableWaffleCommunicatorEvent {
   /** The simulation tick on which these commands should execute. */
   tick: number;
   playerNumber: PlayerNumber;
-  /** Serialised GameCommand objects. Cast to GameCommand[] on the client. */
-  commands: unknown[];
+  /** Serialised GameCommand objects. */
+  commands: GameCommand[];
   /** Optional transport diagnostics for ordering and jitter investigation. */
   transportMeta?: ProbableWaffleGameCommandTransportMeta;
   /**
@@ -203,19 +201,6 @@ export interface ProbableWaffleGameCommandEvent extends ProbableWaffleCommunicat
    */
   rejectionReason?: string;
 }
-
-export const ProbableWaffleGameCommandTypes = {
-  Move: "MOVE",
-  ActorAction: "ACTOR_ACTION",
-  Stop: "STOP",
-  Production: "PRODUCTION",
-  CancelProduction: "CANCEL_PRODUCTION",
-  Research: "RESEARCH",
-  CancelResearch: "CANCEL_RESEARCH"
-} as const;
-
-export type ProbableWaffleGameCommandType =
-  (typeof ProbableWaffleGameCommandTypes)[keyof typeof ProbableWaffleGameCommandTypes];
 
 /** Periodic state-hash snapshot. Each client broadcasts its own hash; peers compare. */
 export interface ProbableWaffleStateHashDiagnostics {

@@ -40,8 +40,6 @@ import { PlayerDisconnectTrackerService } from "./multiplayer/player-disconnect-
 import { GameInstanceService } from "./game-instance.service";
 import { SocketConnectionAuthService } from "../../../auth/socket-connection-auth.service";
 
-const RECONNECT_WINDOW_SECONDS = 60;
-
 @WebSocketGateway({
   cors: {
     origin: process.env.CORS_ORIGIN?.split(",")
@@ -59,6 +57,8 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
   private readonly logger = new Logger(GameInstanceGateway.name);
   private readonly debug = process.env.PROBABLE_WAFFLE_MULTIPLAYER_DEBUG === "true";
   private readonly commandRelaySequenceByStream = new Map<string, number>();
+  private readonly RECONNECT_WINDOW_SECONDS = 60;
+
   @WebSocketServer() private readonly server!: Server;
 
   constructor(
@@ -125,7 +125,7 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
           gameInstanceId: playerInfo.gameInstanceId,
           emitterUserId: null,
           playerNumber,
-          reconnectWindowSeconds: RECONNECT_WINDOW_SECONDS
+          reconnectWindowSeconds: this.RECONNECT_WINDOW_SECONDS
         } satisfies ProbableWafflePlayerDisconnectedEvent
       });
 

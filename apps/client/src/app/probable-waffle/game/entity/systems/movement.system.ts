@@ -617,7 +617,8 @@ export class MovementSystem {
       const destinationTile: Vector2Simple = { x: assignedPoint.x, y: assignedPoint.y };
 
       // Check if the assigned point is valid and reachable
-      const terrainType = this.actorTranslateComponent?.actorTranslateDefinition.movementTerrainType ?? MovementTerrainType.Ground;
+      const terrainType =
+        this.actorTranslateComponent?.actorTranslateDefinition.movementTerrainType ?? MovementTerrainType.Ground;
       if (this.navigationService.isTileNavigable(destinationTile, terrainType)) {
         const path = await this.navigationService.findPathFromGameObjectToTile(this.gameObject, destinationTile);
         if (path !== null && path.length > 0) {

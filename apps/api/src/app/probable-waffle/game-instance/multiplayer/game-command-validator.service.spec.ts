@@ -55,7 +55,7 @@ describe("GameCommandValidatorService", () => {
           ]
         }
       }
-    } as unknown as ProbableWaffleGameInstance;
+    } as ProbableWaffleGameInstance;
   }
 
   function createMoveEvent(worldX: number, worldY: number, tick = 0): ProbableWaffleGameCommandEvent {

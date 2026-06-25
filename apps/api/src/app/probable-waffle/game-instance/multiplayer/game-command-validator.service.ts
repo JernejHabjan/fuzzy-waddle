@@ -1,12 +1,13 @@
 import { Injectable, Logger } from "@nestjs/common";
 import {
-  AllOrderTypes,
   type ActorDefinition,
+  AllOrderTypes,
+  type GameCommand,
   ObjectNames,
   OrderType,
   type ProbableWaffleGameCommandEvent,
-  ProbableWaffleGameCommandTypes,
   type ProbableWaffleGameCommandType,
+  ProbableWaffleGameCommandTypes,
   type ProbableWaffleGameInstance,
   ResearchType
 } from "@fuzzy-waddle/api-interfaces";
@@ -15,11 +16,11 @@ import type { User } from "@supabase/supabase-js";
 /**
  * Result of batch validation.
  *
- * - `{ valid: true }` — relay the batch as-is to all peers.
- * - `{ valid: false, relayEmpty: true,  reason }` — the player and tick are
+ * - `{ valid: true }` - relay the batch as-is to all peers.
+ * - `{ valid: false, relayEmpty: true, reason }` - the player and tick are
  *   authoritative but the payload is bad; relay an empty batch so the lockstep
  *   barrier can advance without desync.
- * - `{ valid: false, relayEmpty: false, reason }` — security / ownership
+ * - `{ valid: false, relayEmpty: false, reason }` - security / ownership
  *   violation; drop the message entirely (no relay of any kind).
  */
 export type GameCommandValidationResult =
@@ -30,16 +31,16 @@ export type GameCommandValidationResult =
  * Cheap server-side validation for incoming command batches.
  *
  * The server never runs the simulation, so it can only check:
- *   1. Player ownership  — the JWT user must own the playerNumber they're
+ *   1. Player ownership - the JWT user must own the playerNumber they're
  *      submitting commands for.
- *   2. Sequence numbers — each player's tick must advance monotonically.
+ *   2. Sequence numbers - each player's tick must advance monotonically.
  *      On sequence mismatch, server relays an empty batch for the next
  *      canonical tick so lockstep does not stall permanently.
- *   3. Rate limiting     — at most MAX_BATCHES_PER_SECOND batches per player
+ *   3. Rate limiting - at most MAX_BATCHES_PER_SECOND batches per player
  *      per second; once the tick is confirmed authoritative, excess batches
  *      are replaced with an empty relay rather than dropped, so the lockstep
  *      barrier still advances.
- *   4. Payload schema   — batch must be an array; individual command fields
+ *   4. Payload schema - batch must be an array; individual command fields
  *      must not be wildly out of range.  Payload failures → RELAY EMPTY (the
  *      tick is authoritative but the commands cannot be applied).
  */
@@ -53,7 +54,7 @@ export class GameCommandValidatorService {
     Object.values(ProbableWaffleGameCommandTypes)
   );
 
-  /** Maximum tick jump allowed in one batch — guards against far-future exploits. */
+  /** Maximum tick jump allowed in one batch - guards against far-future exploits. */
   private static readonly MAX_TICK_JUMP = 10;
 
   /** Maximum command batches a player may send per second. */
@@ -90,13 +91,15 @@ export class GameCommandValidatorService {
     //    AI players have userId = null; only the current host may submit commands on their behalf.
     const player = gameInstance.getPlayerByNumber(playerNumber);
     if (!player) {
-      this.logger.warn(`[GameCommand] Unknown playerNumber ${playerNumber} in instance ${gameInstanceId} ${transportMeta}`);
+      this.logger.warn(
+        `[GameCommand] Unknown playerNumber ${playerNumber} in instance ${gameInstanceId} ${transportMeta}`
+      );
       return { valid: false, relayEmpty: false, reason: `unknown playerNumber ${playerNumber}` };
     }
     const playerUserId = player.playerController.data.userId;
     if (playerUserId !== user.id) {
       if (playerUserId !== null) {
-        // Non-null userId mismatch — one human trying to control another human's units.
+        // Non-null userId mismatch- one human trying to control another human's units.
         this.logger.warn(
           `[GameCommand] Ownership violation: user ${user.id} tried to submit for player ${playerNumber} owned by ${playerUserId} ${transportMeta}`
         );
@@ -157,7 +160,9 @@ export class GameCommandValidatorService {
     if (prev === -1 && this.allowHighInitialTickAfterReseed.has(instanceKey)) {
       playerTicks.set(playerNumber, tick);
     } else if (tick > prev + GameCommandValidatorService.MAX_TICK_JUMP + 1) {
-      this.logger.warn(`[GameCommand] Tick jump too large: player ${playerNumber} jumped from ${prev} to ${tick} ${transportMeta}`);
+      this.logger.warn(
+        `[GameCommand] Tick jump too large: player ${playerNumber} jumped from ${prev} to ${tick} ${transportMeta}`
+      );
       playerTicks.set(playerNumber, canonicalTick);
       return {
         valid: false,
@@ -166,7 +171,7 @@ export class GameCommandValidatorService {
         overrideTick: canonicalTick
       };
     } else {
-      // Sequence accepted — record the tick now so subsequent checks can treat
+      // Sequence accepted- record the tick now so subsequent checks can treat
       // this slot as authoritative even if the payload turns out to be invalid.
       playerTicks.set(playerNumber, tick);
     }
@@ -182,7 +187,7 @@ export class GameCommandValidatorService {
       return { valid: false, relayEmpty: true, reason: `commands field is not an array` };
     }
     if (commands.length > GameCommandValidatorService.MAX_COMMANDS_PER_BATCH) {
-      this.logger.warn(`[GameCommand] Oversized batch (${commands.length}) from player ${playerNumber} — dropping`);
+      this.logger.warn(`[GameCommand] Oversized batch (${commands.length}) from player ${playerNumber} - dropping`);
       return {
         valid: false,
         relayEmpty: true,
@@ -242,7 +247,7 @@ export class GameCommandValidatorService {
    * Returns null on success, or an error string describing the failure.
    */
   private validateCommandPayload(
-    command: unknown,
+    command: GameCommand,
     expectedTick: number,
     playerNumber: number,
     actorIndex: Map<string, ActorDefinition>,
@@ -253,7 +258,7 @@ export class GameCommandValidatorService {
       return `non-object command`;
     }
 
-    const payload = command as Record<string, unknown>;
+    const payload = command as RawGameCommand;
     const type = payload.type;
     if (!this.isKnownCommandType(type)) {
       this.logger.warn(`[GameCommand] Unknown command type ${String(type)} in ${gameInstanceId}`);
@@ -361,7 +366,10 @@ export class GameCommandValidatorService {
   }
 
   private isKnownCommandType(value: unknown): value is ProbableWaffleGameCommandType {
-    return typeof value === "string" && GameCommandValidatorService.KNOWN_COMMAND_TYPES.has(value as ProbableWaffleGameCommandType);
+    return (
+      typeof value === "string" &&
+      GameCommandValidatorService.KNOWN_COMMAND_TYPES.has(value as ProbableWaffleGameCommandType)
+    );
   }
 
   private readActorIds(value: unknown): string[] | null {
@@ -404,7 +412,7 @@ export class GameCommandValidatorService {
     if (!value || typeof value !== "object") {
       return false;
     }
-    const vector = value as Record<string, unknown>;
+    const vector = value as PartialVector3;
     return this.isFiniteInteger(vector.x) && this.isFiniteInteger(vector.y) && this.isFiniteInteger(vector.z);
   }
 
@@ -412,7 +420,7 @@ export class GameCommandValidatorService {
     if (!value || typeof value !== "object") {
       return false;
     }
-    const vector = value as Record<string, unknown>;
+    const vector = value as PartialVector3;
     return this.isFiniteNumber(vector.x) && this.isFiniteNumber(vector.y) && this.isFiniteNumber(vector.z);
   }
 
@@ -433,3 +441,24 @@ export class GameCommandValidatorService {
     return `transportMeta={clientSeq=${transportMeta.clientSequence} clientObservedTick=${transportMeta.clientObservedTick} clientAckTick=${transportMeta.clientAcknowledgedLocalTick} clientSource=${transportMeta.clientSource} serverRelaySeq=${transportMeta.serverRelaySequence ?? "none"}}`;
   }
 }
+
+type RawGameCommand = {
+  type?: unknown;
+  tick?: unknown;
+  playerNumber?: unknown;
+  actorIds?: unknown;
+  queue?: unknown;
+  tileVec3?: unknown;
+  worldVec3?: unknown;
+  orderType?: unknown;
+  targetObjectIds?: unknown;
+  actorName?: unknown;
+  queueIndex?: unknown;
+  researchType?: unknown;
+};
+
+type PartialVector3 = {
+  x?: unknown;
+  y?: unknown;
+  z?: unknown;
+};

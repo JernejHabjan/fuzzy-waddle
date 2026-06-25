@@ -60,13 +60,9 @@ export class RandomMovementComponent {
     if (!this.gameObject.active) return;
     if (this.randomMovementDefinition.shouldPreventMovementStart()) return;
     this.removeDelay();
-    const randomDelay = (this.randomService?.between(
-      this.randomMovementDefinition.delay.min,
-      this.randomMovementDefinition.delay.max
-    ) ?? Phaser.Math.Between(
-      this.randomMovementDefinition.delay.min,
-      this.randomMovementDefinition.delay.max
-    ));
+    const randomDelay =
+      this.randomService?.between(this.randomMovementDefinition.delay.min, this.randomMovementDefinition.delay.max) ??
+      Phaser.Math.Between(this.randomMovementDefinition.delay.min, this.randomMovementDefinition.delay.max);
     const simulationTickService = getSceneService(this.gameObject.scene, SimulationTickService);
     if (simulationTickService) {
       this.nextMoveAtMs = simulationTickService.currentTick * SimulationTickService.TICK_INTERVAL_MS + randomDelay;
