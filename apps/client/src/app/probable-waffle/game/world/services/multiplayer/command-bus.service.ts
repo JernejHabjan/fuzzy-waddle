@@ -128,7 +128,7 @@ export class CommandBusService {
         }
         if (event.commands.length > 0) {
           this.debugLog(
-            `received batch tick=${event.tick} player=${event.playerNumber} commands=${event.commands.length} types=${this.describeCommandTypes(event.commands as GameCommand[])}`
+            `received batch tick=${event.tick} player=${event.playerNumber} commands=${event.commands.length} types=${this.describeCommandTypes(event.commands)}`
           );
         } else {
           this.debugLog(`received heartbeat tick=${event.tick} player=${event.playerNumber}`);
@@ -137,7 +137,7 @@ export class CommandBusService {
         // still follow authoritative accepted tick progress so one late empty
         // heartbeat cannot strand a permanent gap in lockstep.
         this.materializeAcceptedTickProgress(event.playerNumber, event.tick);
-        this.buffer.commit(event.tick, event.playerNumber, event.commands as GameCommand[]);
+        this.buffer.commit(event.tick, event.playerNumber, event.commands);
         this.lastReceivedTickByPlayer.set(
           event.playerNumber,
           Math.max(this.lastReceivedTickByPlayer.get(event.playerNumber) ?? -1, event.tick)
@@ -432,8 +432,7 @@ export class CommandBusService {
   }
 
   playReplayBatch(batch: ProbableWaffleReplayCommandBatch): void {
-    const commands = batch.commands as GameCommand[];
-    for (const command of commands) {
+    for (const command of batch.commands) {
       this._command$.next(command);
     }
   }
@@ -513,7 +512,7 @@ export class CommandBusService {
     }
 
     for (const batch of [...commandTail].sort((a, b) => a.tick - b.tick || a.playerNumber - b.playerNumber)) {
-      this.buffer.commit(batch.tick, batch.playerNumber, batch.commands as GameCommand[]);
+      this.buffer.commit(batch.tick, batch.playerNumber, batch.commands);
     }
 
     this.tryUnblockTick();

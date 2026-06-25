@@ -18,9 +18,6 @@ export const ProbableWaffleGameCommunicatorTypes = {
   Selection: "selection"
 } as const;
 
-export type ProbableWaffleGameCommunicatorType =
-  (typeof ProbableWaffleGameCommunicatorTypes)[keyof typeof ProbableWaffleGameCommunicatorTypes];
-
 export const ProbableWaffleCommunicators = {
   GameInstanceMetadataDataChange: "gameInstanceMetadataDataChange",
   GameModeDataChange: "gameModeDataChange",
@@ -315,25 +312,26 @@ export enum ProbableWaffleGatewayEvent {
   ProbableWaffleWebsocketRoom = "probable-waffle-websocket-room"
 }
 
-export interface AllScenesEventData {
-  name:
-    | "save-game"
-    | "restart-game"
-    | "selection.deselect"
-    | "selection.singleSelect"
-    | "selection.doubleSelect"
-    | "selection.multiSelect"
-    | "selection.multiSelectPreview"
-    | "selection.terrainSelect"
-    | "quit"
-    | "chat-message-received"
-    | "external-modal-opened"
-    | "external-modal-closed"
-    | "hud-scene-shutdown"
-    | "desync-detected"
-    | "pause-toggle-requested";
-  data?: unknown;
-}
+export type AllScenesEventData =
+  | { name: "chat-message-received"; data: ChatMessage }
+  | {
+      name:
+        | "save-game"
+        | "restart-game"
+        | "selection.deselect"
+        | "selection.singleSelect"
+        | "selection.doubleSelect"
+        | "selection.multiSelect"
+        | "selection.multiSelectPreview"
+        | "selection.terrainSelect"
+        | "quit"
+        | "external-modal-opened"
+        | "external-modal-closed"
+        | "hud-scene-shutdown"
+        | "desync-detected"
+        | "pause-toggle-requested";
+      data?: undefined;
+    };
 
 export interface ProbableWaffleCommunicatorPayloadByType {
   [ProbableWaffleCommunicators.GameInstanceMetadataDataChange]: ProbableWaffleGameInstanceMetadataChangeEvent;

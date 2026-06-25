@@ -20,7 +20,11 @@ import { HudGameState } from "../../../hud/hud-game-state";
 import { HudElementVisibilityHandler } from "../../../hud/hud-element-visibility.handler";
 import { CursorHandler } from "../../../player/human-controller/cursor.handler";
 import { MultiSelectionHandler } from "../../../player/human-controller/multi-selection.handler";
-import { ProbableWaffleGameInstanceType, ProbableWafflePlayerType } from "@fuzzy-waddle/api-interfaces";
+import {
+  type AllScenesEventData,
+  ProbableWaffleGameInstanceType,
+  ProbableWafflePlayerType
+} from "@fuzzy-waddle/api-interfaces";
 import { getGameObjectBounds } from "../../../data/game-object-helper";
 import { filter, Subscription } from "rxjs";
 import { environment } from "../../../../../../environments/environment";
@@ -28,11 +32,6 @@ import ConfirmationDialog from "../../../prefabs/gui/dialogs/ConfirmationDialog"
 import SurrenderDialog from "../../../prefabs/gui/SurrenderDialog";
 import { getPlayers } from "../../../data/scene-data";
 import { ConnectionRecoveryService } from "../../services/recovery/connection-recovery.service";
-
-interface ChatMessageEventPayload {
-  fullName: string;
-  text: string;
-}
 /* END-USER-IMPORTS */
 
 export default class HudProbableWaffle extends ProbableWaffleScene {
@@ -348,13 +347,16 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
 
     // Subscribe to chat message received events from Angular
     this.chatMessageSubscription = this.probableWaffleScene.communicator.allScenes
-      .pipe(filter((value) => value.name === "chat-message-received"))
+      .pipe(
+        filter(
+          (value): value is Extract<AllScenesEventData, { name: "chat-message-received" }> =>
+            value.name === "chat-message-received"
+        )
+      )
       .subscribe((event) => {
-        if (this.isChatMessageEventPayload(event.data) && this.chatNotification) {
-          const { fullName, text } = event.data;
-          this.chatNotification.showMessage(fullName, text);
-          this.chatButton?.showUnreadBadge();
-        }
+        const { fullName, text } = event.data;
+        this.chatNotification.showMessage(fullName, text);
+        this.chatButton?.showUnreadBadge();
       });
 
     // show example chat message on startup in dev mode after 2 seconds
@@ -374,13 +376,6 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     super.destroy();
   }
 
-  private isChatMessageEventPayload(value: unknown): value is ChatMessageEventPayload {
-    if (typeof value !== "object" || value === null) {
-      return false;
-    }
-    const payload = value as Record<string, unknown>;
-    return typeof payload["fullName"] === "string" && typeof payload["text"] === "string";
-  }
   /* END-USER-CODE */
 }
 
