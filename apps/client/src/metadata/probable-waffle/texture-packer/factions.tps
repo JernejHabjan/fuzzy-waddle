@@ -4,7 +4,7 @@
         <key>fileFormatVersion</key>
         <int>6</int>
         <key>texturePackerVersion</key>
-        <string>7.4.0</string>
+        <string>7.1.0</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -270,6 +270,25 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">../sprites/factions/building_icons/skaduwee/ember_stone.png</key>
+            <key type="filename">../sprites/factions/buildings/skaduwee/ember_stone/ember_stone1.png</key>
+            <key type="filename">../sprites/factions/buildings/skaduwee/ember_stone/ember_stone2.png</key>
+            <key type="filename">../sprites/factions/buildings/skaduwee/ember_stone/ember_stone3.png</key>
+            <key type="filename">../sprites/factions/buildings/skaduwee/ember_stone/foundation/foundation_1.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>16,32,32,64</rect>
+                <key>scale9Paddings</key>
+                <rect>16,32,32,64</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">../sprites/factions/building_icons/skaduwee/frost_forge.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
@@ -325,9 +344,12 @@
             <key type="filename">../sprites/factions/buildings/skaduwee/infantry_inn/foundation/foundation_1.png</key>
             <key type="filename">../sprites/factions/buildings/skaduwee/infantry_inn/foundation/foundation_2.png</key>
             <key type="filename">../sprites/factions/buildings/skaduwee/infantry_inn/infantry_inn.png</key>
-            <key type="filename">../sprites/factions/buildings/tivara/workmill.png</key>
+            <key type="filename">../sprites/factions/buildings/tivara/mining_camp/foundation/foundation_1.png</key>
+            <key type="filename">../sprites/factions/buildings/tivara/mining_camp/foundation/foundation_2.png</key>
+            <key type="filename">../sprites/factions/buildings/tivara/mining_camp/mining-camp.png</key>
             <key type="filename">../sprites/factions/buildings/tivara/workmill/foundation/foundation_1.png</key>
             <key type="filename">../sprites/factions/buildings/tivara/workmill/foundation/foundation_2.png</key>
+            <key type="filename">../sprites/factions/buildings/tivara/workmill/workmill.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -704,9 +726,9 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
-            <key type="filename">../sprites/factions/buildings/tivara/watchtower.png</key>
             <key type="filename">../sprites/factions/buildings/tivara/watchtower/foundation/foundation_1.png</key>
             <key type="filename">../sprites/factions/buildings/tivara/watchtower/foundation/foundation_2.png</key>
+            <key type="filename">../sprites/factions/buildings/tivara/watchtower/watchtower.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>

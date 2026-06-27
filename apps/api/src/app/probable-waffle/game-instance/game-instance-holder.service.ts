@@ -1,15 +1,16 @@
 import { Injectable } from "@nestjs/common";
-import { ProbableWaffleGameInstance } from "@fuzzy-waddle/api-interfaces";
+import { GameInstanceId, ProbableWaffleGameInstance } from "@fuzzy-waddle/api-interfaces";
+import { type GameInstanceHolderServiceInterface } from "./game-instance-holder.service.interface";
 
 @Injectable()
-export class GameInstanceHolderService {
+export class GameInstanceHolderService implements GameInstanceHolderServiceInterface {
   private _openGameInstances: ProbableWaffleGameInstance[] = [];
 
   get openGameInstances(): ProbableWaffleGameInstance[] {
     return this._openGameInstances;
   }
 
-  removeGameInstance(gameInstanceId: string) {
+  removeGameInstance(gameInstanceId: GameInstanceId) {
     this._openGameInstances = this.openGameInstances.filter(
       (gi) => gi.gameInstanceMetadata.data.gameInstanceId !== gameInstanceId
     );
@@ -19,9 +20,15 @@ export class GameInstanceHolderService {
     this._openGameInstances.push(gameInstance);
   }
 
-  findGameInstance(gameInstanceId: string): ProbableWaffleGameInstance | undefined {
+  findGameInstance(gameInstanceId: GameInstanceId): ProbableWaffleGameInstance | undefined {
     return this.openGameInstances.find(
       (gameInstance) => gameInstance.gameInstanceMetadata.data.gameInstanceId === gameInstanceId
     );
+  }
+
+  getOpenGameInstanceIds(): GameInstanceId[] {
+    return this.openGameInstances
+      .map((gameInstance) => gameInstance.gameInstanceMetadata.data.gameInstanceId)
+      .filter((gameInstanceId): gameInstanceId is GameInstanceId => !!gameInstanceId);
   }
 }

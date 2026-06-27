@@ -2,7 +2,7 @@ import {
   ANIM_BUILDING_ICON_ANIMS_TIVARA_SANDHOLD_ACTION,
   ANIM_BUILDING_ICON_ANIMS_TIVARA_SANDHOLD_IDLE
 } from "../../../icon-animations";
-import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { getBuildingQueueCapabilities, ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PaymentType } from "../../../../entity/components/production/payment-type";
 import { coreConstructionSiteDefinition } from "../../shared/core-construction-site.definition";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
@@ -11,8 +11,9 @@ import { ActorPhysicalType } from "../../../../entity/components/combat/componen
 export const sandholdDefinition = {
   components: {
     representable: {
-      width: 320,
-      height: 320
+      width: 288,
+      height: 280,
+      origin: { x: 0.5, y: 0.8 }
     },
     objectDescriptor: {
       color: 0xc2a080
@@ -31,7 +32,13 @@ export const sandholdDefinition = {
     info: {
       name: "Sandhold",
       description:
-        "A monument of stone and shadow, Sandhold is the cradle of Tivara’s power, commanding the restless workers and hoarding the lifeblood of the desert",
+        "A monument of stone and shadow, Sandhold is the cradle of Tivara's power, commanding the restless workers and hoarding the lifeblood of the desert",
+      tooltipDescription: [
+        "Main base of operations",
+        "Trains workers for economy",
+        "Collects and stores resources",
+        "Provides housing for units"
+      ],
       portraitAnimation: {
         idle: ANIM_BUILDING_ICON_ANIMS_TIVARA_SANDHOLD_IDLE,
         action: ANIM_BUILDING_ICON_ANIMS_TIVARA_SANDHOLD_ACTION
@@ -44,33 +51,45 @@ export const sandholdDefinition = {
     },
     health: {
       physicalState: ActorPhysicalType.Structural,
-      maxHealth: 100,
-      maxArmour: 50
+      maxHealth: 500,
+      maxArmour: 300
     },
     productionCost: {
       resources: {
-        [ResourceType.Wood]: 10,
-        [ResourceType.Minerals]: 10
+        [ResourceType.Wood]: 400,
+        [ResourceType.Stone]: 400
       },
       refundFactor: 0.5,
-      productionTime: 5000,
+      productionTime: 60000,
       costType: PaymentType.PayImmediately
+    },
+    housing: {
+      housingCapacity: 8
     },
     container: {
       capacity: 2
     },
     resourceDrain: {
-      resourceTypes: [ResourceType.Wood, ResourceType.Minerals, ResourceType.Stone, ResourceType.Ambrosia]
+      resourceTypes: [ResourceType.Wood, ResourceType.Minerals, ResourceType.Stone, ResourceType.Food],
+      cooldown: 1000
     },
     production: {
+      availableProduceActors: getBuildingQueueCapabilities(ObjectNames.Sandhold)!.availableProduceActors!
+    },
+    queue: {
       queueCount: 1,
-      capacityPerQueue: 5,
-      availableProduceActors: [ObjectNames.TivaraWorker]
+      capacityPerQueue: 5
+    },
+    research: {
+      availableResearch: getBuildingQueueCapabilities(ObjectNames.Sandhold)!.availableResearch!
     },
     selectable: {},
     collider: { enabled: true },
     constructable: {
       ...coreConstructionSiteDefinition
     }
+  },
+  meta: {
+    isMainBuilding: true
   }
 } satisfies PrefabDefinition;

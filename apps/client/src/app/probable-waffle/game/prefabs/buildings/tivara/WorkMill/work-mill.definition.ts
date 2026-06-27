@@ -8,7 +8,8 @@ export const workMillDefinition = {
   components: {
     representable: {
       width: 128,
-      height: 128
+      height: 128,
+      origin: { x: 0.5, y: 0.75 }
     },
     objectDescriptor: {
       color: 0x967847
@@ -27,9 +28,10 @@ export const workMillDefinition = {
     info: {
       name: "Work Mill",
       description: "A sturdy mill that turns raw timber into vital resources",
+      tooltipDescription: ["Drop-off point for wood", "Place near forests", "Reduces worker travel time"],
       smallImage: {
         key: "factions",
-        frame: "buildings/tivara/workmill.png",
+        frame: "buildings/tivara/workmill/workmill.png",
         origin: { x: 0.5, y: 0.5 }
       }
     },
@@ -39,15 +41,15 @@ export const workMillDefinition = {
     },
     productionCost: {
       resources: {
-        [ResourceType.Wood]: 10,
-        [ResourceType.Minerals]: 10
+        [ResourceType.Wood]: 100
       },
       refundFactor: 0.5,
-      productionTime: 5000,
+      productionTime: 10000,
       costType: PaymentType.PayImmediately
     },
     resourceDrain: {
-      resourceTypes: [ResourceType.Wood]
+      resourceTypes: [ResourceType.Wood],
+      cooldown: 1000
     },
     selectable: {},
     collider: { enabled: true },

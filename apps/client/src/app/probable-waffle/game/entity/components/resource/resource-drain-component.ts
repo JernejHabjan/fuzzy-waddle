@@ -4,11 +4,10 @@ import { Subject } from "rxjs";
 import { getActorComponent } from "../../../data/actor-component";
 import { emitResource } from "../../../data/scene-data";
 import { onObjectReady } from "../../../data/game-object-helper";
+import { OwnerComponent } from "../owner-component";
+import type { ResourceDrainDefinition } from "./resource-drain-definition";
+import { waitForSimulationDuration } from "../../../world/services/simulation-time";
 import GameObject = Phaser.GameObjects.GameObject;
-
-export type ResourceDrainDefinition = {
-  resourceTypes: ResourceType[];
-};
 
 // this is to be applied to townHall/mine/lodge where resources can be returned to
 export class ResourceDrainComponent {
@@ -45,18 +44,23 @@ export class ResourceDrainComponent {
       this.containerComponent?.loadGameObject(gatherer);
     }
 
-    await new Promise((resolve) => {
-      setTimeout(resolve, 1000); // todo read cooldown from elsewhere
-    });
+    await waitForSimulationDuration(this.gameObject.scene, this.resourceDrainDefinition.cooldown);
 
     if (this.gathererMustEnter) {
       this.containerComponent?.unloadGameObject(gatherer);
       this.currentCapacity -= 1;
     }
 
-    emitResource(this.gameObject.scene, "resource.added", {
-      [resourceType]: amount
-    } satisfies Partial<PlayerStateResources>);
+    const ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
+    const owner = ownerComponent?.getOwner();
+    emitResource(
+      this.gameObject.scene,
+      "resource.added",
+      {
+        [resourceType]: amount
+      } satisfies Partial<PlayerStateResources>,
+      owner
+    );
 
     // notify listeners
     this.onResourcesReturned.next([resourceType, amount, gatherer]);

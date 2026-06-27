@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data version="1.0">
+    <struct type="Settings">
+        <key>fileFormatVersion</key>
+        <int>6</int>
+        <key>texturePackerVersion</key>
+        <string>7.4.0</string>
+        <key>autoSDSettings</key>
+        <array>
+            <struct type="AutoSDSettings">
+                <key>scale</key>
+                <double>1</double>
+                <key>extension</key>
+                <string></string>
+                <key>spriteFilter</key>
+                <string></string>
+                <key>acceptFractionalValues</key>
+                <false/>
+                <key>maxTextureSize</key>
+                <QSize>
+                    <key>width</key>
+                    <int>-1</int>
+                    <key>height</key>
+                    <int>-1</int>
+                </QSize>
+            </struct>
+        </array>
+        <key>allowRotation</key>
+        <false/>
+        <key>shapeDebug</key>
+        <false/>
+        <key>dpi</key>
+        <uint>72</uint>
+        <key>dataFormat</key>
+        <string>phaser</string>
+        <key>textureFileName</key>
+        <filename>../../../assets/probable-waffle/atlas/mobs_mushroom_warrior.png</filename>
+        <key>flipPVR</key>
+        <false/>
+        <key>pvrQualityLevel</key>
+        <uint>3</uint>
+        <key>astcQualityLevel</key>
+        <uint>2</uint>
+        <key>basisUniversalQualityLevel</key>
+        <uint>2</uint>
+        <key>etc1QualityLevel</key>
+        <uint>70</uint>
+        <key>etc2QualityLevel</key>
+        <uint>70</uint>
+        <key>dxtCompressionMode</key>
+        <enum type="SettingsBase::DxtCompressionMode">DXT_PERCEPTUAL</enum>
+        <key>ditherType</key>
+        <enum type="SettingsBase::DitherType">PngQuantLow</enum>
+        <key>backgroundColor</key>
+        <uint>0</uint>
+        <key>libGdx</key>
+        <struct type="LibGDX">
+            <key>filtering</key>
+            <struct type="LibGDXFiltering">
+                <key>x</key>
+                <enum type="LibGDXFiltering::Filtering">Linear</enum>
+                <key>y</key>
+                <enum type="LibGDXFiltering::Filtering">Linear</enum>
+            </struct>
+        </struct>
+        <key>shapePadding</key>
+        <uint>0</uint>
+        <key>jpgQuality</key>
+        <uint>80</uint>
+        <key>pngOptimizationLevel</key>
+        <uint>1</uint>
+        <key>webpQualityLevel</key>
+        <uint>101</uint>
+        <key>textureSubPath</key>
+        <string></string>
+        <key>textureFormat</key>
+        <enum type="SettingsBase::TextureFormat">png8</enum>
+        <key>borderPadding</key>
+        <uint>0</uint>
+        <key>maxTextureSize</key>
+        <QSize>
+            <key>width</key>
+            <int>2048</int>
+            <key>height</key>
+            <int>2048</int>
+        </QSize>
+        <key>fixedTextureSize</key>
+        <QSize>
+            <key>width</key>
+            <int>-1</int>
+            <key>height</key>
+            <int>-1</int>
+        </QSize>
+        <key>algorithmSettings</key>
+        <struct type="AlgorithmSettings">
+            <key>algorithm</key>
+            <enum type="AlgorithmSettings::AlgorithmId">MaxRects</enum>
+            <key>freeSizeMode</key>
+            <enum type="AlgorithmSettings::AlgorithmFreeSizeMode">Best</enum>
+            <key>sizeConstraints</key>
+            <enum type="AlgorithmSettings::SizeConstraints">AnySize</enum>
+            <key>forceSquared</key>
+            <false/>
+            <key>maxRects</key>
+            <struct type="AlgorithmMaxRectsSettings">
+                <key>heuristic</key>
+                <enum type="AlgorithmMaxRectsSettings::Heuristic">Best</enum>
+            </struct>
+            <key>basic</key>
+            <struct type="AlgorithmBasicSettings">
+                <key>sortBy</key>
+                <enum type="AlgorithmBasicSettings::SortBy">Best</enum>
+                <key>order</key>
+                <enum type="AlgorithmBasicSettings::Order">Ascending</enum>
+            </struct>
+            <key>polygon</key>
+            <struct type="AlgorithmPolygonSettings">
+                <key>alignToGrid</key>
+                <uint>1</uint>
+            </struct>
+        </struct>
+        <key>dataFileNames</key>
+        <map type="GFileNameMap">
+            <key>json</key>
+            <struct type="DataFile">
+                <key>name</key>
+                <filename>../../../assets/probable-waffle/atlas/mobs_mushroom_warrior.json</filename>
+            </struct>
+        </map>
+        <key>multiPackMode</key>
+        <enum type="SettingsBase::MultiPackMode">MultiPackOff</enum>
+        <key>forceIdenticalLayout</key>
+        <false/>
+        <key>outputFormat</key>
+        <enum type="SettingsBase::OutputFormat">RGBA8888</enum>
+        <key>alphaHandling</key>
+        <enum type="SettingsBase::AlphaHandling">ClearTransparentPixels</enum>
+        <key>contentProtection</key>
+        <struct type="ContentProtection">
+            <key>key</key>
+            <string></string>
+        </struct>
+        <key>autoAliasEnabled</key>
+        <true/>
+        <key>trimSpriteNames</key>
+        <false/>
+        <key>prependSmartFolderName</key>
+        <false/>
+        <key>autodetectAnimations</key>
+        <true/>
+        <key>globalSpriteSettings</key>
+        <struct type="SpriteSettings">
+            <key>scale</key>
+            <double>1</double>
+            <key>scaleMode</key>
+            <enum type="ScaleMode">Smooth</enum>
+            <key>extrude</key>
+            <uint>1</uint>
+            <key>trimThreshold</key>
+            <uint>1</uint>
+            <key>trimMargin</key>
+            <uint>1</uint>
+            <key>trimMode</key>
+            <enum type="SpriteSettings::TrimMode">Trim</enum>
+            <key>tracerTolerance</key>
+            <int>200</int>
+            <key>heuristicMask</key>
+            <false/>
+            <key>defaultPivotPoint</key>
+            <point_f>0.5,0.5</point_f>
+            <key>writePivotPoints</key>
+            <false/>
+        </struct>
+        <key>individualSpriteSettings</key>
+        <map type="IndividualSpriteSettingsMap">
+            <key type="filename">../sprites/mobs/Mushroom Warrior/attack/e/14.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/attack/e/15.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/attack/e/16.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/attack/e/17.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/attack/e/18.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/attack/e/19.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/attack/e/20.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/attack/n/21.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/attack/n/22.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/attack/n/23.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/attack/n/24.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/attack/n/25.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/attack/n/26.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/attack/n/27.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/attack/s/0.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/attack/s/1.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/attack/s/2.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/attack/s/3.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/attack/s/4.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/attack/s/5.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/attack/s/6.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/attack/w/10.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/attack/w/11.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/attack/w/12.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/attack/w/13.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/attack/w/7.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/attack/w/8.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/attack/w/9.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/death/e/10.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/death/e/11.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/death/e/12.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/death/e/13.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/death/e/14.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/death/n/15.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/death/n/16.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/death/n/17.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/death/n/18.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/death/n/19.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/death/s/0.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/death/s/1.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/death/s/2.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/death/s/3.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/death/s/4.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/death/w/5.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/death/w/6.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/death/w/7.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/death/w/8.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/death/w/9.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/hidden/e/2.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/hidden/n/3.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/hidden/s/0.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/hidden/w/1.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/hide/e/10.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/hide/e/11.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/hide/e/12.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/hide/e/13.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/hide/e/14.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/hide/n/15.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/hide/n/16.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/hide/n/17.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/hide/n/18.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/hide/n/19.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/hide/s/0.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/hide/s/1.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/hide/s/2.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/hide/s/3.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/hide/s/4.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/hide/w/5.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/hide/w/6.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/hide/w/7.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/hide/w/8.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/hide/w/9.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/hit/e/4.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/hit/e/5.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/hit/n/6.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/hit/n/7.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/hit/s/0.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/hit/s/1.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/hit/w/2.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/hit/w/3.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/idle/e/10.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/idle/e/11.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/idle/e/8.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/idle/e/9.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/idle/n/12.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/idle/n/13.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/idle/n/14.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/idle/n/15.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/idle/s/0.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/idle/s/1.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/idle/s/2.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/idle/s/3.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/idle/w/4.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/idle/w/5.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/idle/w/6.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/idle/w/7.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/show up/e/6.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/show up/e/7.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/show up/e/8.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/show up/n/10.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/show up/n/11.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/show up/n/9.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/show up/s/0.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/show up/s/1.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/show up/s/2.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/show up/w/3.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/show up/w/4.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/show up/w/5.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/walk/e/10.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/walk/e/11.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/walk/e/8.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/walk/e/9.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/walk/n/12.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/walk/n/13.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/walk/n/14.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/walk/n/15.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/walk/s/0.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/walk/s/1.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/walk/s/2.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/walk/s/3.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/walk/w/4.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/walk/w/5.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/walk/w/6.png</key>
+            <key type="filename">../sprites/mobs/Mushroom Warrior/walk/w/7.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>16,16,32,32</rect>
+                <key>scale9Paddings</key>
+                <rect>16,16,32,32</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+        </map>
+        <key>fileLists</key>
+        <map type="SpriteSheetMap">
+            <key>default</key>
+            <struct type="SpriteSheet">
+                <key>files</key>
+                <array>
+                    <filename>../sprites/mobs/Mushroom Warrior</filename>
+                </array>
+            </struct>
+        </map>
+        <key>ignoreFileList</key>
+        <array/>
+        <key>replaceList</key>
+        <array/>
+        <key>ignoredWarnings</key>
+        <array/>
+        <key>commonDivisorX</key>
+        <uint>1</uint>
+        <key>commonDivisorY</key>
+        <uint>1</uint>
+        <key>packNormalMaps</key>
+        <false/>
+        <key>autodetectNormalMaps</key>
+        <true/>
+        <key>normalMapFilter</key>
+        <string></string>
+        <key>normalMapSuffix</key>
+        <string></string>
+        <key>normalMapSheetFileName</key>
+        <filename></filename>
+        <key>exporterProperties</key>
+        <map type="ExporterProperties"/>
+    </struct>
+</data>

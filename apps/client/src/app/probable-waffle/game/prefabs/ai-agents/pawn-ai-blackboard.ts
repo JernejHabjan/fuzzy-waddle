@@ -1,5 +1,6 @@
 import { Blackboard } from "../../ai/blackboard";
 import { OrderData } from "../../ai/OrderData";
+import { Subject } from "rxjs";
 
 export class PawnAiBlackboard extends Blackboard {
   private orderQueue: OrderData[] = [];
@@ -8,6 +9,7 @@ export class PawnAiBlackboard extends Blackboard {
   private status: "idle" | "executing" | "paused" = "idle";
   private failedOrders: OrderData[] = [];
   cancellationHandler?: () => void;
+  currentOrderChanged = new Subject<OrderData | undefined>();
 
   getStatus(): string {
     return this.status;
@@ -41,7 +43,11 @@ export class PawnAiBlackboard extends Blackboard {
   }
 
   setCurrentOrder(order?: OrderData): void {
+    const previous = this.currentOrder;
     this.currentOrder = order;
+    if (previous !== order) {
+      this.currentOrderChanged.next(order);
+    }
   }
 
   resetAll(): void {
@@ -61,7 +67,11 @@ export class PawnAiBlackboard extends Blackboard {
     if (callCancellationHandler) {
       this.cancellationHandler?.();
     }
+    const previous = this.currentOrder;
     this.currentOrder = undefined;
+    if (previous !== undefined) {
+      this.currentOrderChanged.next(undefined);
+    }
   }
 
   remember<T>(key: string, value: T): void {
@@ -91,7 +101,8 @@ export class PawnAiBlackboard extends Blackboard {
   getData(): Record<string, any> {
     return {
       orderQueue: this.orderQueue.map((order) => OrderData.mapFromOrderDataClassToRecord(order)),
-      currentOrder: this.currentOrder ? OrderData.mapFromOrderDataClassToRecord(this.currentOrder) : undefined,
+      // Use explicit null so snapshot serialization cannot drop "no current order" state.
+      currentOrder: this.currentOrder ? OrderData.mapFromOrderDataClassToRecord(this.currentOrder) : null,
       memory: Array.from(this.memory.entries()).reduce(
         (obj, [key, value]) => {
           obj[key] = value;
@@ -109,8 +120,13 @@ export class PawnAiBlackboard extends Blackboard {
         OrderData.mapFromRecordToOrderDataClass(order, scene)
       );
     }
-    if (data.currentOrder) {
-      this.currentOrder = OrderData.mapFromRecordToOrderDataClass(data.currentOrder, scene);
+    if (Object.prototype.hasOwnProperty.call(data, "currentOrder")) {
+      if (data.currentOrder) {
+        this.setCurrentOrder(OrderData.mapFromRecordToOrderDataClass(data.currentOrder, scene));
+      } else {
+        // Snapshot explicitly says no active order: clear stale local order deterministically.
+        this.setCurrentOrder(undefined);
+      }
     }
     if (data.memory) {
       this.memory = new Map(Object.entries(data.memory));

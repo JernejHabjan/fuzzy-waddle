@@ -1,0 +1,46 @@
+{
+    "id": "1757a63f-b1b5-4c04-a8e6-1227fabf9393",
+    "sceneType": "PREFAB",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 128,
+        "borderHeight": 128
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "17d5cbc1-9e48-4c5f-9ca5-f58e74dd6f78",
+            "label": "container_2",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "-24.402698920542555 -66.32343174744562 0.16862688641111845 -81.86881142737215 23.57192387826992 -65.70837248079418 21.93176583386608 -7.687781660008142 31.157654833637707 -3.5873865489985235 31.88592104464726 2.8076344446160846 0.4596112364866798 19.684726748998614 -32.42162032205171 3.098618794691646 -31.78341012035986 -3.7924063045490044 -22.55752112058823 -6.252643371154775",
+            "x": 32,
+            "y": 96.44864925818341,
+            "list": [
+                {
+                    "type": "Sprite",
+                    "id": "77b5f59b-f4cb-4c7f-9e0e-ea1ff6c235b2",
+                    "label": "buildings_skaduwee_ember_stone_ember_stone",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/skaduwee/ember_stone/ember_stone1.png"
+                    },
+                    "y": -32.44865158816356,
+                    "animationPlayMethod": 1,
+                    "animationKey": "buildings/skaduwee/ember_stone/ember_stone"
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

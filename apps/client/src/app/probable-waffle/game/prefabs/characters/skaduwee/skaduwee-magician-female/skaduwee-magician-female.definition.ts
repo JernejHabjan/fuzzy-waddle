@@ -7,20 +7,26 @@ import {
   SkaduweeMagicianSfxMoveSounds,
   SkaduweeMagicianSfxSelectionSounds
 } from "./SkaduweeMagicianSfx";
-import { weaponDefinitions } from "../../../../entity/components/combat/attack-data";
 import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PaymentType } from "../../../../entity/components/production/payment-type";
-import { AiType } from "../../../ai-agents/pawn-ai-controller";
-import { ANIM_SKADUWEE_MAGICIAN_FEMALE_DEFINITION } from "./skaduwee_magician_female_anim";
+import {
+  ANIM_SKADUWEE_MAGICIAN_FEMALE_DEFINITION_LEVEL_1,
+  ANIM_SKADUWEE_MAGICIAN_FEMALE_DEFINITION_LEVEL_2,
+  ANIM_SKADUWEE_MAGICIAN_FEMALE_DEFINITION_LEVEL_3
+} from "./skaduwee_magician_female_anim";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 import { SoundType } from "../../../../entity/components/actor-audio/sound-type";
 import { ActorPhysicalType } from "../../../../entity/components/combat/components/actor-physical-type";
+import { weaponDefinitions } from "../../../../entity/components/combat/weapon-definitions";
+import { AiType } from "../../../ai-agents/ai-type";
+import { SpellType } from "../../../../entity/components/combat/spell-type";
 
 export const skaduweeMagicianFemaleDefinition = {
   components: {
     representable: {
-      width: 64,
-      height: 64
+      width: 32,
+      height: 48,
+      origin: { x: 0.5, y: 0.899286430676403 }
     },
     objectDescriptor: {
       color: 0xf2f7fa
@@ -38,6 +44,7 @@ export const skaduweeMagicianFemaleDefinition = {
     info: {
       name: "Umbramancer",
       description: "A conduit of shadow and void, this sorcerer commands dark energies that consume all light and hope",
+      tooltipDescription: ["Ranged magic attacker", "Deals elemental fire damage", "Fragile but powerful"],
       smallImage: {
         key: "factions",
         frame: "character_icons/skaduwee/magician_female.png",
@@ -49,16 +56,22 @@ export const skaduweeMagicianFemaleDefinition = {
       maxHealth: 50
     },
     attack: {
-      attacks: [weaponDefinitions.fireSpell, weaponDefinitions.staff]
+      attacks: [weaponDefinitions.FrostSpell, weaponDefinitions.SkaduweeMagicianStaff]
+    },
+    spell: {
+      availableSpells: [SpellType.Snowstorm, SpellType.HealingTotem, SpellType.HealingLight]
     },
     productionCost: {
       resources: {
-        [ResourceType.Wood]: 10,
-        [ResourceType.Minerals]: 10
+        [ResourceType.Wood]: 25,
+        [ResourceType.Food]: 120
       },
       refundFactor: 0.5,
-      productionTime: 5000,
+      productionTime: 10000,
       costType: PaymentType.PayImmediately
+    },
+    housingCost: {
+      housingNeeded: 1
     },
     requirements: {
       actors: [ObjectNames.InfantryInn]
@@ -82,10 +95,43 @@ export const skaduweeMagicianFemaleDefinition = {
         [SoundType.LocationUnavailable]: SkaduweeMagicianSfxLocationSounds
       }
     },
-    animatable: { animations: ANIM_SKADUWEE_MAGICIAN_FEMALE_DEFINITION }
+    animatable: { animations: ANIM_SKADUWEE_MAGICIAN_FEMALE_DEFINITION_LEVEL_1 },
+    level: { level: 1, maxLevel: 3 }
   },
   systems: {
     movement: { enabled: true },
-    action: { enabled: true }
+    action: { enabled: true },
+    spellCasting: { enabled: true }
+  },
+  meta: {
+    maxLevel: 3,
+    levelOverrides: {
+      2: {
+        components: {
+          health: { maxHealth: 75 },
+          attack: {
+            attacks: [
+              { ...weaponDefinitions.FrostSpell, damage: 10, range: 7 },
+              { ...weaponDefinitions.SkaduweeMagicianStaff, damage: 4 }
+            ]
+          },
+          animatable: { animations: ANIM_SKADUWEE_MAGICIAN_FEMALE_DEFINITION_LEVEL_2 },
+          level: { level: 2 }
+        }
+      },
+      3: {
+        components: {
+          health: { maxHealth: 100 },
+          attack: {
+            attacks: [
+              { ...weaponDefinitions.FrostSpell, damage: 14, range: 8, cooldown: 1800 },
+              { ...weaponDefinitions.SkaduweeMagicianStaff, damage: 6, range: 3 }
+            ]
+          },
+          animatable: { animations: ANIM_SKADUWEE_MAGICIAN_FEMALE_DEFINITION_LEVEL_3 },
+          level: { level: 3 }
+        }
+      }
+    }
   }
 } satisfies PrefabDefinition;

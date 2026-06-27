@@ -64,7 +64,7 @@
                     "displayName": "Actor Info Label",
                     "scope": "CLASS",
                     "x": -188,
-                    "y": -63,
+                    "y": -68,
                     "scaleX": 0.5,
                     "scaleY": 0.5
                 },
@@ -78,8 +78,8 @@
                     "label": "progress_bar",
                     "displayName": "Progress Bar",
                     "scope": "CLASS",
-                    "x": -49,
-                    "y": -56
+                    "x": -146,
+                    "y": -50
                 },
                 {
                     "prefabId": "c69196b1-3c89-4041-b182-49ee43a7f77d",

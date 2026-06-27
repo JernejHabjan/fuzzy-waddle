@@ -2,10 +2,11 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
-    "module": "commonjs",
+    "module": "preserve",
     "types": ["jest", "node"],
-    "verbatimModuleSyntax": false
+    "verbatimModuleSyntax": false,
+    "moduleResolution": "bundler"
   },
-  "files": ["src/test-setup.ts"],
+  "files": ["src/test-setup.ts", "src/test/mocks/phaser-module.d.ts"],
   "include": ["jest.config.ts", "**/*.test.ts", "**/*.spec.ts", "**/*.d.ts"]
 }

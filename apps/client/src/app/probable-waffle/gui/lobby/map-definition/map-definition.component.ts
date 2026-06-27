@@ -11,26 +11,27 @@ import {
 import {
   GameSetupHelpers,
   type PlayerLobbyDefinition,
+  type PlayerNumber,
   type PositionPlayerDefinition,
   ProbableWaffleLevels,
   type ProbableWaffleMapData,
   ProbableWafflePlayer,
   type ProbableWafflePlayerDataChangeEventProperty
 } from "@fuzzy-waddle/api-interfaces";
-import {
-  type ProbableWaffleCommunicators,
-  SceneCommunicatorClientService
-} from "../../../communicators/scene-communicator-client.service";
+import { SceneCommunicatorClientService } from "../../../communicators/scene-communicator-client.service";
 import { Subscription } from "rxjs";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { AuthService } from "../../../../auth/auth.service";
+import type { ProbableWaffleCommunicators } from "../../../communicators/probable-waffle.communicators";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 
 /**
  * canvas element containing info about current player and position.
  * Represented as a rectangle on canvas
  * */
 interface DisplayRect {
-  playerNumber: number;
+  playerNumber: PlayerNumber;
   positionNumber: number;
   tileX: number;
   tileY: number;
@@ -48,13 +49,17 @@ interface DisplayRect {
 @Component({
   selector: "probable-waffle-map-definition",
   templateUrl: "./map-definition.component.html",
-  styleUrls: ["./map-definition.component.scss"]
+  styleUrls: ["./map-definition.component.scss"],
+  imports: [FaIconComponent]
 })
 export class MapDefinitionComponent implements OnInit, OnDestroy {
   private readonly preferredCanvasWidth = 400;
   private readonly preferredCanvasHeight = 200;
+  private readonly dragHintStorageKey = "probable-waffle:lobby-drag-start-positions-hint-dismissed";
   protected canvasWidth = this.preferredCanvasWidth;
   protected canvasHeight = this.preferredCanvasHeight;
+  protected readonly faInfoCircle = faInfoCircle;
+  protected showDragCoachmark = false;
   private img!: HTMLImageElement;
   // get canvas related references
   private ctx?: CanvasRenderingContext2D;
@@ -100,6 +105,10 @@ export class MapDefinitionComponent implements OnInit, OnDestroy {
     return mapData;
   }
 
+  private getGameInstanceId(): string | undefined {
+    return this.gameInstanceClientService.gameInstance?.gameInstanceMetadata?.data?.gameInstanceId;
+  }
+
   private get players(): ProbableWafflePlayer[] {
     return this.gameInstanceClientService.gameInstance?.players ?? [];
   }
@@ -109,7 +118,17 @@ export class MapDefinitionComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.showDragCoachmark = !this.hasSeenDragHint();
     this.startListeningToGameInstanceEventsInLobby();
+  }
+
+  protected dismissDragCoachmark(): void {
+    if (!this.showDragCoachmark) {
+      return;
+    }
+    this.showDragCoachmark = false;
+    this.persistDragHintSeen();
+    this.cdr.detectChanges();
   }
 
   private startListeningToGameInstanceEventsInLobby() {
@@ -214,7 +233,7 @@ export class MapDefinitionComponent implements OnInit, OnDestroy {
     return isoCoordinates;
   }
 
-  @HostListener("window:resize", ["$event"])
+  @HostListener("window:resize")
   onResize() {
     this.refresh();
   }
@@ -257,7 +276,7 @@ export class MapDefinitionComponent implements OnInit, OnDestroy {
         }
         const maxPlayers = this.mapData.mapInfo.startPositionsOnTile.length;
         const playerNumber = definition!.player.playerNumber;
-        const color = GameSetupHelpers.getStringColorForPlayer(playerNumber, maxPlayers);
+        const color = GameSetupHelpers.getStringColorForPlayer(playerNumber, maxPlayers, this.getGameInstanceId());
         this.createDraggablePlayerRectangle(i, playerPosition, isoCoordinate, color);
       }
     }
@@ -288,6 +307,7 @@ export class MapDefinitionComponent implements OnInit, OnDestroy {
     canvas.width = this.canvasWidth;
     canvas.height = this.canvasHeight;
     this.cdr.detectChanges();
+    this.updateCanvasCursor();
     this.initialize();
   }
 
@@ -326,7 +346,41 @@ export class MapDefinitionComponent implements OnInit, OnDestroy {
     canvas.onmouseup = this.myUp.bind(this);
     canvas.onmousemove = this.myMove.bind(this);
     canvas.onmouseout = this.myOut.bind(this);
+    this.updateCanvasCursor();
     this.draw();
+  }
+
+  private hasSeenDragHint(): boolean {
+    try {
+      return localStorage.getItem(this.dragHintStorageKey) === "true";
+    } catch {
+      return false;
+    }
+  }
+
+  private persistDragHintSeen(): void {
+    try {
+      localStorage.setItem(this.dragHintStorageKey, "true");
+    } catch {
+      // Ignore storage errors and keep the hint ephemeral.
+    }
+  }
+
+  private updateCanvasCursor(): void {
+    if (!this.canvas) {
+      return;
+    }
+    const canvas = this.canvas.nativeElement as HTMLCanvasElement;
+    if (!this.isHost) {
+      canvas.style.cursor = "default";
+      return;
+    }
+    if (this.currentlyDragging) {
+      canvas.style.cursor = "grabbing";
+      return;
+    }
+    const isHoveringDraggableDot = this.rects.some((rect) => rect.isHovering);
+    canvas.style.cursor = isHoveringDraggableDot ? "grab" : "default";
   }
 
   private async initializeImage() {
@@ -362,7 +416,7 @@ export class MapDefinitionComponent implements OnInit, OnDestroy {
    * Adds new draggable rectangle
    */
   private createDraggablePlayerRectangle(
-    playerNumber: number,
+    playerNumber: PlayerNumber,
     positionNumber: number,
     isoCoordinate: { x: number; y: number },
     fill: string
@@ -453,6 +507,7 @@ export class MapDefinitionComponent implements OnInit, OnDestroy {
 
       r.isHovering = this.intersects({ x: mx, y: my }, { x: r.worldX, y: r.worldY, width: r.width, height: r.height });
       if (previousIsHovering !== r.isHovering) {
+        this.updateCanvasCursor();
         this.draw();
       }
     }
@@ -486,6 +541,10 @@ export class MapDefinitionComponent implements OnInit, OnDestroy {
       r.zIndex = 1;
     });
     this.currentlyDragging = rectangles.length > 0;
+    if (this.currentlyDragging) {
+      this.dismissDragCoachmark();
+    }
+    this.updateCanvasCursor();
 
     // save the current mouse position
     this.startX = mx;
@@ -551,6 +610,7 @@ export class MapDefinitionComponent implements OnInit, OnDestroy {
     await this.handleRectangleOnEmptyTileUp();
     this.handleRectangleSnappingOnUp();
     this.clearDraggingFlags();
+    this.updateCanvasCursor();
   }
 
   /**
@@ -805,6 +865,7 @@ export class MapDefinitionComponent implements OnInit, OnDestroy {
       r.worldY = r.tileY;
     });
     this.clearDraggingFlags();
+    this.updateCanvasCursor();
     this.draw();
   }
 

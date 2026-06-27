@@ -1,5 +1,5 @@
-import { type SoundDefinition } from "../../../../entity/components/actor-audio/audio-actor-component";
 import { AudioSprites } from "../../../../sfx/audio-sprites";
+import type { SoundDefinition } from "../../../../entity/components/actor-audio/sound-definition";
 
 export enum SfxStone {
   RESOURCES_STONE_OUT_OF_RESOURCES = "resources stone out of resources",

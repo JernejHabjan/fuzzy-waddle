@@ -1,9 +1,9 @@
 @if (!fromGame) {
-  <fuzzy-waddle-home-nav routerLink="/aota" title="Ashes of the Ancients" />
+  <fuzzy-waddle-home-nav routerLink="/aota" title="Ashes of the Ancients" [showBack]="true" />
 }
 
 <fuzzy-waddle-center-wrapper>
-  <div class="card-container">
+  <div class="card-container aota-card-shell">
     <div class="general-title">Options:</div>
 
     <div class="card mt-3 p-3">
@@ -15,7 +15,7 @@
         <input
           type="range"
           [(ngModel)]="optionsService.volumeSettings.masterVolume"
-          (change)="saveToLocalStorage()"
+          (change)="saveToLocalStorage('volume')"
           class="form-range"
           id="masterVolume"
         />
@@ -27,7 +27,7 @@
         <input
           type="range"
           [(ngModel)]="optionsService.volumeSettings.sfxVolume"
-          (change)="saveToLocalStorage()"
+          (change)="saveToLocalStorage('volume')"
           class="form-range"
           id="sfxVolume"
         />
@@ -39,10 +39,76 @@
         <input
           type="range"
           [(ngModel)]="optionsService.volumeSettings.musicVolume"
-          (change)="saveToLocalStorage()"
+          (change)="saveToLocalStorage('volume')"
           class="form-range"
           id="musicVolume"
         />
+      </div>
+    </div>
+
+    @if (isTauri) {
+      <div class="card mt-3 p-3">
+        <h5 class="mb-3">Display:</h5>
+        <div class="mb-3 form-check form-switch">
+          <input
+            type="checkbox"
+            class="form-check-input"
+            id="fullscreenToggle"
+            [checked]="isFullscreen()"
+            (change)="toggleFullscreen()"
+          />
+          <label class="form-check-label" for="fullscreenToggle">
+            Fullscreen
+            <span class="info-icon" title="Toggle between fullscreen and windowed mode. You can also use the title bar button when windowed.">
+              <fa-icon [icon]="faInfoCircle" />
+            </span>
+          </label>
+        </div>
+      </div>
+    }
+
+    <div class="card mt-3 p-3">
+      <h5 class="mb-3">Game Controls:</h5>
+      @if (!isTauri) {
+        <div class="mb-3 form-check">
+          <input
+            type="checkbox"
+            [(ngModel)]="optionsService.gameSettings.lockToScreen"
+            (change)="saveToLocalStorage('game')"
+            class="form-check-input"
+            id="lockToScreen"
+          />
+          <label class="form-check-label" for="lockToScreen">
+            Lock cursor to screen
+            <span
+              class="info-icon"
+              title="Locks cursor to game window. Automatically releases when dialogs open. Cursor position may jump when releasing lock."
+              ><fa-icon [icon]="faInfoCircle" />
+            </span>
+          </label>
+        </div>
+      }
+      <div class="mb-3 form-check">
+        <input
+          type="checkbox"
+          [(ngModel)]="optionsService.gameSettings.enabledMouseCornerMovement"
+          (change)="saveToLocalStorage('game')"
+          class="form-check-input"
+          id="enabledMouseCornerMovement"
+        />
+        <label class="form-check-label" for="enabledMouseCornerMovement"> Enable mouse corner camera movement </label>
+      </div>
+      <div class="mb-0">
+        <label class="form-label form-label--select" for="homeScreenBackground">Home screen background</label>
+        <select
+          id="homeScreenBackground"
+          class="form-select"
+          [(ngModel)]="optionsService.gameSettings.homeScreenBackground"
+          (change)="saveToLocalStorage('game')"
+        >
+          <option value="ashfall">Ashfall</option>
+          <option value="constellation">Constellation</option>
+        </select>
       </div>
     </div>
 

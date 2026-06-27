@@ -4,11 +4,10 @@
 
 /* START-USER-IMPORTS */
 import { setActorData } from "../../../../data/actor-data";
-import { WalkableComponent, type WalkableDefinition } from "../../../../entity/components/movement/walkable-component";
-import {
-  ObjectDescriptorComponent,
-  type ObjectDescriptorDefinition
-} from "../../../../entity/components/object-descriptor-component";
+import { NavigableComponent } from "../../../../entity/components/movement/navigable-component";
+import { ObjectDescriptorComponent } from "../../../../entity/components/object-descriptor-component";
+import type { ObjectDescriptorDefinition } from "../../../../entity/components/object-descriptor-definition";
+import type { NavigableDefinition } from "../../../../entity/components/movement/navigable-definition";
 /* END-USER-IMPORTS */
 
 export default class BridgeStone extends Phaser.GameObjects.Image {
@@ -23,9 +22,9 @@ export default class BridgeStone extends Phaser.GameObjects.Image {
     );
 
     /* START-USER-CTR-CODE */
-    const walkableComponent = new WalkableComponent(this, { shrinkPathToRight: 4 } satisfies WalkableDefinition);
-    // TODO #387 - until this is properly implemented, we are marking the bridge as walkable from all sides
-    walkableComponent.allowWalkablePath({
+    const navigableComponent = new NavigableComponent(this, { shrinkPathToRight: 4 } satisfies NavigableDefinition);
+    // TODO #387 - until this is properly implemented, we are marking the bridge as navigable from all sides
+    navigableComponent.allowNavigablePath({
       bottomLeft: true,
       topRight: true,
       bottom: true,
@@ -41,7 +40,7 @@ export default class BridgeStone extends Phaser.GameObjects.Image {
         new ObjectDescriptorComponent({
           color: 0x97a09e
         } satisfies ObjectDescriptorDefinition),
-        walkableComponent
+        navigableComponent
       ],
       []
     );

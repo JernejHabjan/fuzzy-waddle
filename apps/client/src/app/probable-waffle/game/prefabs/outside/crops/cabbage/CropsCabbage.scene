@@ -1,0 +1,42 @@
+{
+    "id": "df9061d4-2df0-4312-b085-49ca7af7096a",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "6c198916-4ed6-454f-8bfa-a7c4f8d24837",
+            "label": "crops_cabbage_4_png",
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": 16,
+            "hitArea.y": 16,
+            "hitArea.radius": 10.28109453790222,
+            "texture": {
+                "key": "crops",
+                "frame": "crops/cabbage/4.png"
+            },
+            "x": 31.68692833330426,
+            "y": 43.93006833295536,
+            "originX": 0.4902165104157581,
+            "originY": 0.6228146354048549
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

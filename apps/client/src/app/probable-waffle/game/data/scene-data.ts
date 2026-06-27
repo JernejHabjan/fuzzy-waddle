@@ -1,18 +1,16 @@
 import {
+  type PlayerNumber,
+  type PlayerStateHousing,
   type PlayerStateResources,
-  type ProbableWaffleGameStateDataChangeEvent,
-  type ProbableWaffleGameStateDataChangeEventProperty,
-  type ProbableWaffleGameStateDataPayload,
   ProbableWafflePlayer,
   type ProbableWafflePlayerDataChangeEvent,
   type ProbableWafflePlayerDataChangeEventPayload,
-  type ProbableWafflePlayerDataChangeEventProperty,
-  type Vector3Simple
+  type ProbableWafflePlayerDataChangeEventProperty
 } from "@fuzzy-waddle/api-interfaces";
 import { Scene } from "phaser";
 import { ProbableWaffleScene } from "../core/probable-waffle.scene";
 import { ProbableWaffleCommunicatorService } from "../../communicators/probable-waffle-communicator.service";
-import { getActorComponent } from "./actor-component";
+import { getActorComponent, hasActorComponent } from "./actor-component";
 import { IdComponent } from "../entity/components/id-component";
 import { Observable } from "rxjs";
 import GameProbableWaffleScene from "../world/scenes/GameProbableWaffleScene";
@@ -23,16 +21,43 @@ import { GathererComponent } from "../entity/components/resource/gatherer-compon
 import { SelectableComponent } from "../entity/components/selectable-component";
 import { HealthComponent } from "../entity/components/combat/components/health-component";
 import { VisionComponent } from "../entity/components/vision-component";
-import { type GameObjectActionAssignerConfig } from "../prefabs/gui/game-object-action-assigner";
+import { ActorIndexSystem } from "../world/services/ActorIndexSystem";
+import { OwnerComponent } from "../entity/components/owner-component";
+import { getSceneService } from "../world/services/scene-component-helpers";
 
-export function getPlayer(scene: Scene, playerNumber?: number): ProbableWafflePlayer | undefined {
+export enum ProbableWaffleSceneDataKey {
+  SnapshotApplyInProgress = "snapshotApplyInProgress",
+  SnapshotApplySuppressedUntilTick = "snapshotApplySuppressedUntilTick"
+}
+
+export function isSnapshotApplyInProgress(scene: Scene): boolean {
+  return scene.data.get(ProbableWaffleSceneDataKey.SnapshotApplyInProgress) === true;
+}
+
+export function setSnapshotApplyInProgress(scene: Scene, inProgress: boolean): void {
+  scene.data.set(ProbableWaffleSceneDataKey.SnapshotApplyInProgress, inProgress);
+}
+
+export function getSnapshotApplySuppressedUntilTick(scene: Scene): number | undefined {
+  const value = scene.data.get(ProbableWaffleSceneDataKey.SnapshotApplySuppressedUntilTick);
+  return typeof value === "number" && Number.isFinite(value) ? value : undefined;
+}
+
+export function setSnapshotApplySuppressedUntilTick(scene: Scene, tick: number): void {
+  scene.data.set(ProbableWaffleSceneDataKey.SnapshotApplySuppressedUntilTick, tick);
+}
+
+export function getPlayer(scene: Scene, playerNumber?: PlayerNumber): ProbableWafflePlayer | undefined {
   if (!scene) {
     console.error("Scene is undefined");
     return undefined;
   }
   if (!(scene instanceof BaseScene)) throw new Error("scene is not instanceof BaseScene");
   if (playerNumber === undefined) {
-    playerNumber = scene.baseGameData.user.playerNumber!;
+    playerNumber = scene.baseGameData.user.playerNumber;
+  }
+  if (playerNumber === undefined) {
+    return undefined;
   }
   return scene.baseGameData.gameInstance.getPlayerByNumber(playerNumber);
 }
@@ -69,64 +94,66 @@ export function getCommunicator(scene: Scene): ProbableWaffleCommunicatorService
   return scene.baseGameData.communicator;
 }
 
-export function listenToActorEvents(
-  gameObject: Phaser.GameObjects.GameObject,
-  property: ProbableWaffleGameStateDataChangeEventProperty | null = null
-): Observable<ProbableWaffleGameStateDataChangeEvent> | undefined {
-  const actorId = getActorComponent(gameObject, IdComponent)?.id;
-  if (!actorId) throw new Error("actorId is not defined");
-
-  return getCommunicator(gameObject.scene).gameStateChanged?.onWithFilter(
-    (p) => p.data.actorDefinition?.id === actorId && (property ? p.property.includes(property) : true)
-  );
+export function hasMultiplayerCommandRelay(scene: Scene): boolean {
+  return !!getCommunicator(scene).gameCommandChanged;
 }
 
-export function sendActorEvent(
-  gameObject: Phaser.GameObjects.GameObject,
-  property: ProbableWaffleGameStateDataChangeEventProperty,
-  payloadIn: ProbableWaffleGameStateDataPayload
-): void {
-  const id = getActorComponent(gameObject, IdComponent)?.id;
-  if (!id) return; // throw new Error("actorId is not defined");
-  if (!(gameObject.scene instanceof GameProbableWaffleScene))
-    throw new Error("Scene is not of type GameProbableWaffleSceneData");
+export function isRealtimeMultiplayerMatch(scene: Scene): boolean {
+  if (!(scene instanceof BaseScene)) {
+    return false;
+  }
 
-  const communicator = getCommunicator(gameObject.scene);
-  const data: ProbableWaffleGameStateDataPayload = {
-    actorDefinition: {
-      id,
-      ...payloadIn.actorDefinition
-    },
-    gameState: payloadIn.gameState
-  };
-
-  communicator.gameStateChanged?.send({
-    property,
-    data,
-    gameInstanceId: gameObject.scene.gameInstanceId,
-    emitterUserId: gameObject.scene.userId
-  });
+  return hasMultiplayerCommandRelay(scene) && !scene.baseGameData.gameInstance.gameInstanceMetadata.isReplay();
 }
 
 export function sendPlayerStateEvent(
   scene: Scene,
   property: ProbableWafflePlayerDataChangeEventProperty,
-  payloadIn: ProbableWafflePlayerDataChangeEventPayload
+  payloadIn: ProbableWafflePlayerDataChangeEventPayload,
+  playerNumber?: PlayerNumber,
+  options?: {
+    /**
+     * When true in multiplayer, emit only locally and do not send to server.
+     * This is used for UI/local mirror state that should not enter lockstep relay.
+     */
+    localOnlyInMultiplayer?: boolean;
+    /**
+     * When true, suppresses this player-state event while a reconnect/desync snapshot
+     * is being applied, so transient actor recreation side-effects cannot perturb
+     * the restored authoritative state.
+     */
+    suppressDuringSnapshotRestore?: boolean;
+  }
 ): void {
   if (!(scene instanceof BaseScene)) throw new Error("Scene is not of type BaseScene");
+  if (options?.suppressDuringSnapshotRestore && isSnapshotApplyInProgress(scene)) {
+    return;
+  }
 
   const communicator = getCommunicator(scene);
+  const playerNumberToSend = playerNumber ?? scene.player.playerNumber;
+  if (playerNumberToSend === undefined) {
+    console.warn(`[PlayerState] Skipping ${property} because the local player number is not ready yet.`);
+    return;
+  }
   const data = {
-    playerNumber: scene.player.playerNumber!, // todo this is incorrect, as AI player will not be able to get resources
+    playerNumber: playerNumberToSend,
     ...payloadIn
   } satisfies ProbableWafflePlayerDataChangeEventPayload;
 
-  communicator.playerChanged?.send({
+  const event = {
     property,
     data,
     gameInstanceId: scene.gameInstanceId,
     emitterUserId: scene.userId
-  });
+  };
+
+  if (hasMultiplayerCommandRelay(scene) && options?.localOnlyInMultiplayer) {
+    communicator.playerChanged?.sendLocally(event);
+    return;
+  }
+
+  communicator.playerChanged?.send(event);
 }
 
 export function emitEventSelection(
@@ -136,12 +163,26 @@ export function emitEventSelection(
 ) {
   if (!(scene instanceof ProbableWaffleScene)) throw new Error("Scene is not of type ProbableWaffleScene");
   const player = getPlayer(scene);
-  scene.communicator.playerChanged!.send({
+  if (player?.playerNumber === undefined) {
+    console.warn(`[Selection] Skipping ${property} because the local player is not ready yet.`);
+    return;
+  }
+  const sanitizedActorIds = sanitizeOwnedActorIds(scene, actorIds, player.playerNumber);
+  if (property !== "selection.cleared" && actorIds && sanitizedActorIds.length !== actorIds.length) {
+    console.warn(
+      `[Selection] Sanitized ${actorIds.length - sanitizedActorIds.length} stale actor IDs before sending ${property}.`
+    );
+  }
+  const playerChanged = scene.communicator.playerChanged;
+  if (!playerChanged) {
+    return;
+  }
+  playerChanged.send({
     property,
     data: {
-      playerNumber: player?.playerNumber,
+      playerNumber: player.playerNumber,
       playerStateData: {
-        selection: actorIds
+        selection: property === "selection.cleared" ? actorIds : sanitizedActorIds
       }
     },
     gameInstanceId: scene.gameInstanceId,
@@ -149,24 +190,86 @@ export function emitEventSelection(
   });
 }
 
-export function listenToResourceChanged(scene: Scene) {
+export function sanitizeOwnedActorIds(
+  scene: Phaser.Scene,
+  actorIds: string[] | undefined,
+  playerNumber: PlayerNumber | undefined
+): string[] {
+  if (!actorIds?.length || playerNumber === undefined) {
+    return actorIds ?? [];
+  }
+
+  const actorIndex = getSceneService(scene, ActorIndexSystem);
+  if (!actorIndex) {
+    return actorIds;
+  }
+
+  const sanitized: string[] = [];
+  const seen = new Set<string>();
+  for (const actorId of actorIds) {
+    if (!actorId || seen.has(actorId)) {
+      continue;
+    }
+    const actor = actorIndex.getActorById(actorId);
+    const owner = actor ? getActorComponent(actor, OwnerComponent)?.getOwner() : undefined;
+    if (actor?.active && owner === playerNumber) {
+      sanitized.push(actorId);
+      seen.add(actorId);
+    }
+  }
+  return sanitized;
+}
+
+export function listenToPlayerChangedChanged(scene: Scene, searchString: string) {
   if (!(scene instanceof ProbableWaffleScene)) throw new Error("Scene is not of type ProbableWaffleScene");
   const player = getPlayer(scene);
   return scene.communicator.playerChanged?.onWithFilter(
-    (p) => p.data.playerNumber === player?.playerNumber && p.property.startsWith("resource.")
+    (p) => p.data.playerNumber === player?.playerNumber && p.property.startsWith(searchString)
   );
 }
 
 export function emitResource(
   scene: Scene,
   action: "resource.added" | "resource.removed",
-  resources: Partial<PlayerStateResources>
+  resources: Partial<PlayerStateResources>,
+  playerNumber?: PlayerNumber
 ) {
-  sendPlayerStateEvent(scene, action, {
-    playerStateData: {
-      resources: resources as PlayerStateResources
+  sendPlayerStateEvent(
+    scene,
+    action,
+    {
+      playerStateData: {
+        resources: resources as PlayerStateResources
+      }
+    },
+    playerNumber,
+    {
+      localOnlyInMultiplayer: true,
+      suppressDuringSnapshotRestore: true
     }
-  });
+  );
+}
+
+export function emitHousing(
+  scene: Scene,
+  action: "housing.added" | "housing.removed" | "housing.current.increased" | "housing.current.decreased",
+  housing: Partial<PlayerStateHousing>,
+  playerNumber?: PlayerNumber
+) {
+  sendPlayerStateEvent(
+    scene,
+    action,
+    {
+      playerStateData: {
+        housing: housing as PlayerStateHousing
+      }
+    },
+    playerNumber,
+    {
+      localOnlyInMultiplayer: true,
+      suppressDuringSnapshotRestore: true
+    }
+  );
 }
 
 export function listenToSelectionEvents(scene: Scene): Observable<ProbableWafflePlayerDataChangeEvent> | undefined {
@@ -175,41 +278,6 @@ export function listenToSelectionEvents(scene: Scene): Observable<ProbableWaffle
   return scene.communicator.playerChanged?.onWithFilter(
     (p) => p.data.playerNumber === player?.playerNumber && p.property.startsWith("selection.")
   );
-}
-
-export function emitEventIssueMoveCommandToSelectedActors(
-  scene: Phaser.Scene,
-  tileVec3: Vector3Simple,
-  worldVec3: Vector3Simple,
-  selectedActorObjectIds: string[]
-) {
-  if (!(scene instanceof ProbableWaffleScene)) throw new Error("Scene is not of type ProbableWaffleScene");
-  scene.communicator.playerChanged!.send({
-    property: "command.issued.move",
-    data: {
-      playerNumber: getPlayer(scene)?.playerNumber,
-      data: {
-        tileVec3,
-        worldVec3,
-        selectedActorObjectIds
-      }
-    },
-    gameInstanceId: scene.gameInstanceId,
-    emitterUserId: scene.userId
-  });
-}
-
-export function emitEventIssueActorCommandToSelectedActors(scene: Phaser.Scene, data: GameObjectActionAssignerConfig) {
-  if (!(scene instanceof ProbableWaffleScene)) throw new Error("Scene is not of type ProbableWaffleScene");
-  scene.communicator.playerChanged!.send({
-    property: "command.issued.actor",
-    data: {
-      playerNumber: getPlayer(scene)?.playerNumber,
-      data
-    },
-    gameInstanceId: scene.gameInstanceId,
-    emitterUserId: scene.userId
-  });
 }
 
 export function getSelectedActors(scene: Phaser.Scene): Phaser.GameObjects.GameObject[] {
@@ -232,7 +300,7 @@ export function getSelectedActors(scene: Phaser.Scene): Phaser.GameObjects.GameO
 
 export function getSelectableSceneChildren(scene: Phaser.Scene): Phaser.GameObjects.GameObject[] {
   return scene.children.list.filter(
-    (actor) => !!getActorComponent(actor, SelectableComponent) && !!getActorComponent(actor, IdComponent)
+    (actor) => hasActorComponent(actor, SelectableComponent) && hasActorComponent(actor, IdComponent)
   );
 }
 

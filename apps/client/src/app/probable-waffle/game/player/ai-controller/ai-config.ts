@@ -19,18 +19,17 @@ export const AI_CONFIG = {
   defenderFallbackMaxCount: 4,
   // Default thresholds (fallbacks when adaptive system not available)
   baseHeavyAttackDefaultThreshold: 10,
-  militaryPowerDefaultThreshold: 3,
   resourceSurplusDefaultThreshold: 500,
   needMoreResourcesThreshold: 5000,
   hasSufficientResourcesThreshold: 500,
   resourceShortageThreshold: 300,
   gatherSearchRadius: 100,
   hasEnoughResourcesForWorkerThreshold: 100,
-  sufficientResourcesForUpgradeThreshold: 1000,
   needMoreWorkersThreshold: 5,
   housingBuffer: 3,
   // Production / supply planning
-  defaultWorkMillWoodCost: 120,
+  unitQueueCooldownMs: 5000,
+  hasEnoughResourcesForMilitaryUnitThreshold: 150,
   // Building placement search parameters
   buildingPlacementSearchStartRadius: 2,
   buildingPlacementSearchIncrement: 2,
@@ -38,6 +37,5 @@ export const AI_CONFIG = {
   buildingPlacementSearchStep: 2,
   buildingPlacementRandomOffsetRange: 10,
   // Base planning stale timing
-  baseReplanStaleMs: 4000,
-  fallbackVisibleEnemyLimit: 3
+  baseReplanStaleMs: 4000
 };

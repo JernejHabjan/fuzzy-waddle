@@ -13,6 +13,7 @@ import {
   type ProbableWafflePlayerStateData
 } from "./player";
 import { ProbableWaffleSpectator, type ProbableWaffleSpectatorData } from "./spectator";
+import type { PlayerNumber } from "../player/player";
 
 export type ProbableWaffleGameInstanceData = GameInstanceData<
   ProbableWaffleGameInstanceMetadataData,
@@ -62,7 +63,7 @@ export class ProbableWaffleGameInstance extends GameInstance<
     });
   }
 
-  getPlayerByNumber(playerNumber: number) {
+  getPlayerByNumber(playerNumber: PlayerNumber) {
     return this.players.find((p) => {
       if (!p.playerController.data.playerDefinition) throw new Error("Player definition is required");
       return p.playerNumber === playerNumber;

@@ -1,7 +1,7 @@
 import GameObject = Phaser.GameObjects.GameObject;
 import { getActorComponent } from "../../data/actor-component";
 import { Plugins } from "../../world/const/Plugins";
-import { GameSetupHelpers, Guid, type OwnerComponentData } from "@fuzzy-waddle/api-interfaces";
+import { GameSetupHelpers, Guid, type OwnerComponentData, type PlayerNumber } from "@fuzzy-waddle/api-interfaces";
 import GameProbableWaffleScene from "../../world/scenes/GameProbableWaffleScene";
 import { HealthComponent } from "./combat/components/health-component";
 import { getGameObjectDepth, onObjectReady } from "../../data/game-object-helper";
@@ -10,10 +10,9 @@ import { ActorTranslateComponent } from "./movement/actor-translate-component";
 import { ContainerComponent } from "./building/container-component";
 import { ConstructionSiteComponent } from "./construction/construction-site-component";
 import { VisionComponent } from "./vision-component";
-
-export type OwnerDefinition = {
-  color: { originalColor: number; epsilon: number }[];
-};
+import { getSceneService } from "../../world/services/scene-component-helpers";
+import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
+import type { OwnerDefinition } from "./owner-definition";
 
 export class OwnerComponent {
   static readonly ZIndex = 1;
@@ -23,7 +22,7 @@ export class OwnerComponent {
    * Not using color replace as it adds huge load on GPU
    */
   static useColorReplace = false;
-  private owner?: number;
+  private owner?: PlayerNumber;
   ownerColor?: Phaser.Display.Color;
   private readonly colorReplacePipelinePlugin?: any;
   private colorPipelineInstances: any[] = [];
@@ -45,7 +44,8 @@ export class OwnerComponent {
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.on(ContainerComponent.GameObjectVisibilityChanged, this.gameObjectVisibilityChanged, this);
     // Todo - now calling refreshOwnerUiVisibility on tick to update visibility due to FOW changes
-    gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.refreshOwnerUiVisibility, this);
+    // Intentional frame update: owner ring visibility is purely visual and follows render/FOW visibility updates.
+    gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.refreshOwnerUiVisibilityFrameNonDeterministic, this);
   }
 
   private init() {
@@ -63,23 +63,76 @@ export class OwnerComponent {
 
   private gameObjectVisibilityChanged(visible: boolean) {
     this.gameObjectVisible = visible;
-    this.refreshOwnerUiVisibility();
+    this.refreshOwnerUiVisibilityFrameNonDeterministic();
   }
 
-  private refreshOwnerUiVisibility() {
+  private refreshOwnerUiVisibilityFrameNonDeterministic() {
     let visible = this.gameObjectVisible;
     const visionComponent = getActorComponent(this.gameObject, VisionComponent);
     if (!visionComponent || !visionComponent.visibilityByCurrentPlayer) visible = false;
     this.ownerUiElement?.setVisible(visible);
   }
 
-  setOwner(playerNumber?: number) {
+  setOwner(playerNumber?: PlayerNumber) {
+    const oldOwner = this.owner;
+    const newOwner = playerNumber;
+
+    // Handle tech tree unlock changes when owner changes
+    if (oldOwner === newOwner) return;
+    const actorIndexSystem = getSceneService(this.gameObject.scene, ActorIndexSystem);
+    actorIndexSystem?.updateActorOwnership(this.gameObject, oldOwner, newOwner);
     this.owner = playerNumber;
     this.tryToSetComponents();
   }
 
+  setOwnerWithBlink(playerNumber: PlayerNumber) {
+    const oldOwner = this.owner;
+    this.setOwner(playerNumber);
+
+    // Only blink if this was a conversion from no owner to owned
+    if (oldOwner === undefined && playerNumber !== undefined) {
+      this.playBlinkEffect();
+    }
+  }
+
+  private playBlinkEffect() {
+    // Get the sprite to apply tint effect
+    const sprite = this.gameObject as Phaser.GameObjects.Sprite;
+    if (!sprite || !sprite.scene || typeof sprite.setTint !== "function") return;
+
+    const ownerColorValue = this.ownerColor?.color ?? 0xffffff;
+
+    // Create a chain of tweens for the blink effect
+    sprite.scene.tweens.chain({
+      targets: sprite,
+      tweens: [
+        {
+          tint: 0xffffff,
+          duration: 150,
+          onStart: () => sprite.setTint(0xffffff)
+        },
+        {
+          tint: ownerColorValue,
+          duration: 150,
+          onStart: () => sprite.setTint(ownerColorValue)
+        },
+        {
+          tint: 0xffffff,
+          duration: 150,
+          onStart: () => sprite.setTint(0xffffff)
+        },
+        {
+          tint: ownerColorValue,
+          duration: 150,
+          onStart: () => sprite.setTint(ownerColorValue),
+          onComplete: () => sprite.clearTint()
+        }
+      ]
+    });
+  }
+
   clearOwner() {
-    this.owner = undefined;
+    this.setOwner(undefined);
     this.assignOwnerColor();
     this.setOwnerColorToActor();
   }
@@ -104,7 +157,12 @@ export class OwnerComponent {
     }
     const gameScene = this.gameObject.scene as GameProbableWaffleScene;
     const maxPlayers = gameScene.mapInfo.mapInfo.startPositionsOnTile.length;
-    const { hue, saturation, lightness } = GameSetupHelpers.getHslColorForPlayer(this.owner, maxPlayers);
+    const gameInstanceId = gameScene.gameInstanceId;
+    const { hue, saturation, lightness } = GameSetupHelpers.getHslColorForPlayer(
+      this.owner,
+      maxPlayers,
+      gameInstanceId
+    );
     const { hueNormalized, saturationNormalized, lightnessNormalized } = {
       hueNormalized: hue / 360,
       saturationNormalized: saturation / 100,
@@ -239,6 +297,6 @@ export class OwnerComponent {
     this.healthUiVisibilitySubscription?.unsubscribe();
     this.constructionProgressSubscription?.unsubscribe();
     this.gameObject.off(ContainerComponent.GameObjectVisibilityChanged, this.gameObjectVisibilityChanged, this);
-    this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.refreshOwnerUiVisibility, this);
+    this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.refreshOwnerUiVisibilityFrameNonDeterministic, this);
   }
 }

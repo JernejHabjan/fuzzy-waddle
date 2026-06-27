@@ -6,13 +6,13 @@
 import { onSceneInitialized } from "../../../data/game-object-helper";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { AudioService } from "../../../world/services/audio.service";
-import { type SoundDefinition } from "../../../entity/components/actor-audio/audio-actor-component";
 import {
   EnvironmentSfxBirdsSounds,
   EnvironmentSfxLavaSounds,
   EnvironmentSfxSeagullsSounds,
   EnvironmentSfxWaterSounds
 } from "../../../sfx/environment-sfx";
+import type { SoundDefinition } from "../../../entity/components/actor-audio/sound-definition";
 /* END-USER-IMPORTS */
 
 export default class SoundEffectMarker extends Phaser.GameObjects.Ellipse {
@@ -39,6 +39,7 @@ export default class SoundEffectMarker extends Phaser.GameObjects.Ellipse {
 
     // 3 to 5 seconds
     const delay = Phaser.Math.Between(3, 5) * 1000;
+    // Intentional wall-clock timer: ambient environment SFX scheduling is non-authoritative.
     this.scene.time.delayedCall(delay, () => {
       this.playSound();
     });
@@ -64,6 +65,7 @@ export default class SoundEffectMarker extends Phaser.GameObjects.Ellipse {
     if (!this.active) return;
     const soundDefinitions = this.getSoundDefinitions();
     if (!soundDefinitions) return;
+    // we can use random here as it's just ambient variation
     const soundDefinition = soundDefinitions[Math.floor(Math.random() * soundDefinitions.length)]!;
     this.audioService.playSpatialAudioSprite(this, soundDefinition.key, soundDefinition.spriteName, undefined, {
       onComplete: () => {

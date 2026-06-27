@@ -1,8 +1,9 @@
-import { Component, inject } from "@angular/core";
+import { Component, inject, signal, viewChild } from "@angular/core";
 import { FactionDefinitions } from "../../../game/player/faction-definitions";
 import { faCheck, faSpinner, faTimes } from "@fortawesome/free-solid-svg-icons";
 import {
   GameSetupHelpers,
+  type PlayerNumber,
   type PositionPlayerDefinition,
   ProbableWaffleAiDifficulty,
   ProbableWaffleGameInstanceType,
@@ -17,6 +18,9 @@ import { GameInstanceClientService } from "../../../communicators/game-instance-
 import { FormsModule } from "@angular/forms";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { AuthService } from "../../../../auth/auth.service";
+import { ModalComponent } from "../../../../shared/components/modal/modal.component";
+import { ProfileComponent } from "../../../../home/profile/profile.component";
+import type { ModalConfig } from "../../../../shared/components/modal/modal-config";
 
 export class PlayerTypeDefinitions {
   static playerTypes = [
@@ -43,9 +47,10 @@ export class DifficultyDefinitions {
   selector: "probable-waffle-player-definition",
   templateUrl: "./player-definition.component.html",
   styleUrls: ["./player-definition.component.scss"],
-  imports: [FormsModule, FaIconComponent]
+  imports: [FormsModule, FaIconComponent, ModalComponent, ProfileComponent]
 })
 export class PlayerDefinitionComponent {
+  private readonly profileModal = viewChild<ModalComponent>("profileModal");
   protected readonly gameInstanceClientService = inject(GameInstanceClientService);
   protected readonly authService = inject(AuthService);
   protected readonly faSpinner = faSpinner;
@@ -55,6 +60,13 @@ export class PlayerDefinitionComponent {
   protected PlayerType = ProbableWafflePlayerType;
   protected FactionDefinitions = FactionDefinitions;
   protected DifficultyDefinitions = DifficultyDefinitions;
+  protected readonly selectedProfileUserId = signal<string | null>(null);
+  protected readonly profileModalConfig: ModalConfig = {
+    modalTitle: "Player Profile",
+    dismissButtonLabel: "Close",
+    hideCloseButton: () => true,
+    windowClass: "aota-player-profile-modal"
+  };
 
   protected async addAiPlayer() {
     await this.gameInstanceClientService.addAiPlayer();
@@ -64,7 +76,7 @@ export class PlayerDefinitionComponent {
     await this.gameInstanceClientService.playerSlotOpened();
   }
 
-  protected async removePlayer(playerNumber: number) {
+  protected async removePlayer(playerNumber: PlayerNumber) {
     await this.gameInstanceClientService.removePlayer(playerNumber);
   }
 
@@ -98,9 +110,11 @@ export class PlayerDefinitionComponent {
   }
 
   getColorForPlayer(player: ProbableWafflePlayer): string {
+    const gameInstanceId = this.gameInstanceClientService.gameInstance?.gameInstanceMetadata?.data?.gameInstanceId;
     return GameSetupHelpers.getStringColorForPlayer(
       player.playerNumber!,
-      this.mapDetails!.mapInfo!.startPositionsOnTile.length
+      this.mapDetails!.mapInfo!.startPositionsOnTile.length,
+      gameInstanceId
     );
   }
 
@@ -184,6 +198,23 @@ export class PlayerDefinitionComponent {
     return name;
   }
 
+  protected canViewProfile(player: ProbableWafflePlayer): boolean {
+    return (
+      this.definition(player).playerType === ProbableWafflePlayerType.Human &&
+      !!player.playerController.data.userId
+    );
+  }
+
+  protected async openPlayerProfile(player: ProbableWafflePlayer): Promise<void> {
+    const userId = player.playerController.data.userId;
+    if (!userId || !this.canViewProfile(player)) {
+      return;
+    }
+
+    this.selectedProfileUserId.set(userId);
+    await this.profileModal()?.open();
+  }
+
   getPlayerIsCurrentPlayer(player: ProbableWafflePlayer) {
     const currentPlayerNumber = this.gameInstanceClientService.currentPlayerNumber;
     const playerNumber = player.playerNumber;
@@ -193,7 +224,9 @@ export class PlayerDefinitionComponent {
   }
 
   getPlayerIsCreator(player: ProbableWafflePlayer) {
-    const creatorUserId = this.gameInstanceClientService.gameInstance?.gameInstanceMetadata!.data.createdBy;
+    const creatorUserId =
+      this.gameInstanceClientService.gameInstance?.gameInstanceMetadata!.data.currentHostUserId ??
+      this.gameInstanceClientService.gameInstance?.gameInstanceMetadata!.data.createdBy;
     const userId = player.playerController.data.userId;
     // noinspection UnnecessaryLocalVariableJS
     const isCreator = creatorUserId === userId;

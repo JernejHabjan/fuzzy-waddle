@@ -7,37 +7,14 @@ import { HealthComponent } from "../combat/components/health-component";
 import { AttackComponent } from "../combat/components/attack-component";
 import { GathererComponent } from "../resource/gatherer-component";
 import { AnimationType } from "./animation-type";
+import { AnimationVariant } from "./animation-variant";
 import type { IsoDirection } from "../movement/iso-directions";
-
-const oneTimeAnimations: AnimationType[] = [
-  AnimationType.Shoot,
-  AnimationType.Cast,
-  AnimationType.Slash,
-  AnimationType.InvertedSlash,
-  AnimationType.Smash,
-  AnimationType.Thrust,
-  AnimationType.LargeSlash,
-  AnimationType.LargeThrust,
-  AnimationType.Chop,
-  AnimationType.Mine
-];
-
-type AnimationDefinition = {
-  key: string;
-  frameRate?: number;
-  repeat?: number;
-};
-
-export type AnimationDefinitionMap = {
-  [key in AnimationType | string]?: {
-    [direction in IsoDirection]?: AnimationDefinition;
-  };
-};
-
-export interface ActorAnimationsDefinition {
-  animations: AnimationDefinitionMap;
-  defaultDirection?: IsoDirection;
-}
+import { oneTimeAnimations } from "./one-time-animations";
+import type { ActorAnimationsDefinition } from "./actor-animations-definition";
+import type { AnimationOptions } from "./animation-options";
+import { environment } from "../../../../../../environments/environment";
+import { ResourceType } from "@fuzzy-waddle/api-interfaces";
+import type { AnimationDefinitionMap } from "./animation-definition-map";
 
 export class AnimationActorComponent {
   private sprite?: Phaser.GameObjects.Sprite;
@@ -57,16 +34,42 @@ export class AnimationActorComponent {
   }
 
   playOrderAnimation(orderType: OrderType, animationOptions?: AnimationOptions) {
-    this.playAnimation(this.mapOrderTypeToAnimationType(orderType), animationOptions);
+    const animationType = this.mapOrderTypeToAnimationType(orderType);
+
+    // If this is a walk animation and the actor is carrying resources, use the appropriate variant
+    if (animationType === AnimationType.Walk && !animationOptions?.variant) {
+      const variant = this.getWalkVariantForCarriedResources();
+      if (variant) {
+        animationOptions = { ...animationOptions, variant };
+      }
+    }
+
+    this.playAnimation(animationType, animationOptions);
   }
 
   playCustomAnimation(key: AnimationType | string, animationOptions?: AnimationOptions) {
     this.playAnimation(key, animationOptions);
   }
 
+  swapAnimationSet(newAnimations: AnimationDefinitionMap, defaultDirection?: IsoDirection) {
+    this.animationsDefinition = {
+      animations: newAnimations,
+      defaultDirection: defaultDirection || this.animationsDefinition?.defaultDirection || "south"
+    };
+
+    // Restart current animation with new definition if one was playing
+    if (this.currentAnimation && this.isAnimating) {
+      this.playAnimation(this.currentAnimation, { forceRestart: true });
+    }
+  }
+
   private init() {
     this.setSprite();
     this.listenToDirectionChange();
+    if (!this.currentAnimation) {
+      // play animation, so it plays with correct "level" if the animation gets swapped on startup
+      this.playAnimation(AnimationType.Idle);
+    }
   }
 
   private setSprite() {
@@ -95,6 +98,7 @@ export class AnimationActorComponent {
   }
 
   private setDirection(direction: IsoDirection) {
+    if (this.currentDirection === direction) return;
     this.currentDirection = direction;
     // If there's a current animation playing, update it with the new direction
     if (this.currentAnimation && this.sprite) {
@@ -104,6 +108,14 @@ export class AnimationActorComponent {
 
   private playAnimation(type: AnimationType | string | null, animationOptions?: AnimationOptions) {
     if (!this.sprite || !this.animationsDefinition || !type) return;
+
+    if (!environment.production) {
+      const healthComponent = getActorComponent(this.gameObject, HealthComponent);
+      if (healthComponent?.killed === true && type !== AnimationType.Death) {
+        console.error(`AnimationActorComponent: Tried to play order animation ${type} for dead actor`, this.gameObject);
+        return; // Don't play animations for dead actors
+      }
+    }
 
     const animationsByType = this.animationsDefinition.animations[type];
     if (!animationsByType) {
@@ -159,6 +171,19 @@ export class AnimationActorComponent {
       } satisfies AnimationOptions;
     }
 
+    // Check if a variant is requested and exists
+    let effectiveDef = animationDef;
+    const variantDef = animationOptions.variant && animationDef.variants?.[animationOptions.variant];
+    if (variantDef) {
+      // If variant is a string, create a temporary definition with that key
+      if (typeof variantDef === "string") {
+        effectiveDef = { key: variantDef };
+      } else {
+        // If variant is an object, use it as the definition
+        effectiveDef = variantDef;
+      }
+    }
+
     // Don't restart the animation if it's already playing unless forced
     if (!animationOptions.forceRestart && this.currentAnimation === type && this.sprite.anims.isPlaying) {
       return;
@@ -167,15 +192,15 @@ export class AnimationActorComponent {
     this.currentAnimation = type;
 
     const config: Phaser.Types.Animations.PlayAnimationConfig = {
-      key: animationDef.key
+      key: effectiveDef.key
     };
 
-    if (animationDef.frameRate !== undefined) {
-      config.frameRate = animationDef.frameRate;
+    if (effectiveDef.frameRate !== undefined) {
+      config.frameRate = effectiveDef.frameRate;
     }
 
-    if (animationDef.repeat !== undefined) {
-      config.repeat = animationDef.repeat;
+    if (effectiveDef.repeat !== undefined) {
+      config.repeat = effectiveDef.repeat;
     }
 
     if (animationOptions.repeat !== undefined) {
@@ -194,7 +219,10 @@ export class AnimationActorComponent {
 
       // If this was a one-time animation like attack, return to idle
       if (oneTimeAnimations.includes(type as AnimationType)) {
-        this.playAnimation(AnimationType.Idle, animationOptions);
+        const healthComponent = getActorComponent(this.gameObject, HealthComponent);
+        if (this.gameObject && this.gameObject.scene && (!healthComponent || !healthComponent.killed)) {
+          this.playAnimation(AnimationType.Idle, animationOptions);
+        }
       }
     });
   }
@@ -239,13 +267,27 @@ export class AnimationActorComponent {
     return gathererComponent.getGatherAnimation();
   }
 
+  private getWalkVariantForCarriedResources(): AnimationVariant | null {
+    const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
+    if (!gathererComponent || !gathererComponent.isCarryingResources()) return null;
+
+    const resourceType = gathererComponent.carriedResourceType;
+    if (!resourceType) return null;
+
+    switch (resourceType) {
+      case ResourceType.Wood:
+        return AnimationVariant.CarryingLogs;
+      case ResourceType.Stone:
+      case ResourceType.Minerals:
+        return AnimationVariant.CarryingOre;
+      case ResourceType.Food:
+        return AnimationVariant.CarryingBasket;
+      default:
+        return null;
+    }
+  }
+
   private destroy() {
     this.directionChangedSubscription?.unsubscribe();
   }
-}
-
-export interface AnimationOptions {
-  forceRestart?: boolean;
-  onComplete?: () => void;
-  repeat?: number;
 }

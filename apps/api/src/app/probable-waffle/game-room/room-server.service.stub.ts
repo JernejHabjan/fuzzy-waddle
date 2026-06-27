@@ -1,7 +1,6 @@
 import { type User } from "@supabase/supabase-js";
 import {
-  type CommunicatorEvent,
-  type ProbableWaffleCommunicatorType,
+  type ProbableWaffleCommunicatorEventUnion,
   ProbableWaffleGameInstance,
   type ProbableWaffleGetRoomsDto,
   type ProbableWaffleRoom,
@@ -16,10 +15,7 @@ export const roomServerServiceStub = {
   roomEvent(type: RoomAction, gameInstance: ProbableWaffleGameInstance, user: User | null): void {
     //
   },
-  emitCertainGameInstanceEventsToAllUsers(
-    body: CommunicatorEvent<any, ProbableWaffleCommunicatorType>,
-    user: User
-  ): void {
+  emitCertainGameInstanceEventsToAllUsers(body: ProbableWaffleCommunicatorEventUnion, user: User): void {
     //
   }
 } satisfies RoomServerServiceInterface;

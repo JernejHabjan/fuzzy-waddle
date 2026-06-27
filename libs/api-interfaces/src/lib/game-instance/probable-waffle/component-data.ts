@@ -1,6 +1,11 @@
 import type { Vector3Simple } from "../../game/vector";
 import { ResourceType } from "../../probable-waffle/resource-type-definition";
 import { ObjectNames } from "./object-names";
+import type { ActorId } from "../player/player";
+import type { PrerequisiteType } from "./prereque-type";
+import type { StatusEffectData } from "../../probable-waffle/status-effect";
+import type { PreRequirement } from "./pre-requirement";
+import type { ResearchType } from "./research-type";
 
 export interface VisionComponentData {
   visibilityByCurrentPlayer?: boolean;
@@ -17,8 +22,6 @@ export interface HealingComponentData {
 
 export interface BuilderComponentData {
   remainingCooldown?: number;
-  enterConstructionSite?: boolean;
-  constructionSiteOffset?: number;
   assignedConstructionSiteId?: string;
 }
 
@@ -29,7 +32,7 @@ export interface GathererComponentData {
 }
 
 export interface ContainerComponentData {
-  containedIds?: string[];
+  containedIds?: ActorId[];
 }
 
 export interface ResourceDrainComponentData {
@@ -40,17 +43,21 @@ export interface ResourceSourceComponentData {
   currentResources?: number;
 }
 
+export interface ProductionQueueItemData {
+  name: ObjectNames;
+  remainingTime: number; // ms remaining for this specific item
+}
+
 export interface ProductionComponentData {
-  queue?: ObjectNames[];
+  queue?: ProductionQueueItemData[]; // Array of items with per-item progress
   isProducing?: boolean;
-  progress?: number;
   rallyPoint?: RallyPointComponentData;
 }
 
 export interface RallyPointComponentData {
   tileVec3?: Vector3Simple;
   worldVec3?: Vector3Simple;
-  actorId?: string;
+  actorId?: ActorId;
 }
 
 export interface ActorTranslateComponentData {
@@ -60,7 +67,7 @@ export interface ActorTranslateComponentData {
   facingAngle?: number;
 }
 
-export interface WalkableComponentData {
+export interface NavigableComponentData {
   speed?: number;
   pathingRadius?: number;
 }
@@ -83,4 +90,156 @@ export interface IdComponentData {
 
 export interface BackboardComponentData {
   blackboard: Record<string, any>;
+}
+
+export interface HousingComponentData {
+  housingProvided?: boolean;
+}
+
+// Selection group data for save/load
+export interface SelectionGroupData {
+  groupKey: number;
+  actorIds: ActorId[];
+  timestamp: number;
+}
+
+// Camera state data for save/load
+export interface CameraStateData {
+  scrollX?: number;
+  scrollY?: number;
+  zoom?: number;
+}
+// Player AI blackboard data for save/load
+export interface PlayerAiBlackboardData {
+  // ---- Legacy / top-level ----
+  currentStrategy?: string;
+  baseSize?: number;
+  mapFullyExplored?: boolean;
+  wantsToSurrender?: boolean;
+  surrenderOfferedAt?: number;
+  surrenderRejected?: boolean;
+  activeTechUpgrades?: number;
+  lastTechUpgradeAt?: number;
+
+  // ---- Economy ----
+  economy?: {
+    resources: Record<string, number>;
+    reserved: Record<string, number>;
+
+    incomeInstant?: Record<string, number>;
+    incomeSmoothed?: Record<string, number>;
+    lastIncomeSampleAt?: number;
+    lastIncomeSnapshot?: Record<string, number>;
+  };
+
+  // ---- Production ----
+  production?: {
+    supply: {
+      used: number;
+      max: number;
+      pendingFromQueued: number;
+    };
+
+    // NEW
+    plannedStructures?: Array<{
+      id: string;
+      name: ObjectNames;
+      reservedAt: number;
+      cost: Partial<Record<ResourceType, number>>;
+    }>;
+
+    prereqQueue?: Array<{
+      id: string;
+      type: PrerequisiteType;
+      preRequirement: PreRequirement;
+      insertedAt: number;
+    }>;
+  };
+
+  // ---- Army (numbers only, no GameObjects) ----
+  army?: {
+    militaryStrength: number;
+    enemyMilitaryStrength: number;
+    enemyIntel: Record<
+      number,
+      {
+        strength: number;
+        unitsInCombat: number;
+        flankOpen: boolean;
+      }
+    >;
+  };
+
+  // ---- Intel ----
+  intel?: {
+    enemyFlankOpen: boolean;
+    mapFullyExplored: boolean;
+    enemyPowerTrend: Array<{
+      at: number;
+      own: number;
+      enemy: number;
+    }>;
+    lastScoutedAt: number;
+  };
+
+  // ---- Map / planning ----
+  map?: {
+    baseCenterTile: Vector3Simple | null;
+    suggestedBuildTiles: Array<{ x: number; y: number }>;
+  };
+
+  // ---- Strategy slice ----
+  strategy?: {
+    current: string;
+    baseSize: number;
+    modeLockedUntil: number;
+  };
+
+  // ---- Combat metadata ----
+  combat?: {
+    engagements: Array<{
+      id: string;
+      startedAt: number;
+      ourUnits: number;
+      enemyUnits: number;
+    }>;
+    lastEngagementAt: number;
+  };
+
+  // ---- Cooldowns ----
+  cooldowns?: Record<string, number>;
+}
+
+// AI behavior tree state data for save/load
+export interface AIBehaviorTreeStateData {
+  blackboard: PlayerAiBlackboardData;
+  telemetry?: unknown;
+}
+
+export interface ConvertibleComponentData {
+  detectionRange?: number;
+  checkInterval?: number;
+}
+
+export interface StatusEffectComponentData {
+  activeEffects?: StatusEffectData[];
+}
+
+export interface SpellComponentData {
+  cooldowns?: Record<string, number>; // spellType -> remaining cooldown
+  autocastEnabled?: Record<string, boolean>; // spellType -> enabled
+}
+
+export interface ResearchQueueItemData {
+  type: ResearchType;
+  remainingTime: number; // ms remaining for this specific item
+}
+
+export interface ResearchComponentData {
+  researches?: ResearchQueueItemData[]; // Array of items with per-item progress
+}
+
+export interface LevelComponentData {
+  level?: number;
+  maxLevel?: number;
 }

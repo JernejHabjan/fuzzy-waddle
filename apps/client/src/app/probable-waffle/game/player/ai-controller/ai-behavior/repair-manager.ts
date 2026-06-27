@@ -4,10 +4,9 @@ import { getActorComponent } from "../../../data/actor-component";
 import { BuilderComponent } from "../../../entity/components/construction/builder-component";
 import { HealthComponent } from "../../../entity/components/combat/components/health-component";
 import { ScenePlayerHelpers } from "../../../data/scene-player-helpers";
-import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { type PlayerNumber } from "@fuzzy-waddle/api-interfaces";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
-import { GathererComponent } from "../../../entity/components/resource/gatherer-component";
 
 /**
  * RepairManager
@@ -21,7 +20,7 @@ export class RepairManager {
 
   constructor(
     private readonly scene: Phaser.Scene,
-    private readonly playerNumber: number,
+    private readonly playerNumber: PlayerNumber,
     private readonly blackboard: PlayerAiBlackboard,
     private readonly log: (...args: any[]) => void
   ) {}
@@ -35,14 +34,13 @@ export class RepairManager {
   }
 
   assignRepairWorkers(): State {
-    const now = Date.now();
+    const now = this.blackboard.getNow();
     if (now - this.lastRepairAssignTime < this.repairCooldownMs) return State.FAILED;
 
-    this.blackboard.workers = getSceneService(this.scene, ActorIndexSystem)!
-      .getAllIdActors()
-      .filter((go) => getActorComponent(go, BuilderComponent));
+    const currentPlayerActors = getSceneService(this.scene, ActorIndexSystem)!.getOwnedActors(this.playerNumber);
 
-    const { currentPlayerActors } = ScenePlayerHelpers.getActorsByPlayer(this.scene, this.playerNumber);
+    this.blackboard.workers = currentPlayerActors.filter((go) => getActorComponent(go, BuilderComponent));
+
     const damaged = currentPlayerActors.filter((go) => {
       const health = getActorComponent(go, HealthComponent);
       return health && !health.killed && health.healthComponentData.health < health.healthDefinition.maxHealth;

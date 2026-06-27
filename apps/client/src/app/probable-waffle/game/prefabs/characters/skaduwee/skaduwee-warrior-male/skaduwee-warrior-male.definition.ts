@@ -7,20 +7,25 @@ import {
   SkaduweeWarriorSfxMoveSounds,
   SkaduweeWarriorSfxSelectionSounds
 } from "./SkaduweeWarriorSfx";
-import { weaponDefinitions } from "../../../../entity/components/combat/attack-data";
 import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PaymentType } from "../../../../entity/components/production/payment-type";
-import { AiType } from "../../../ai-agents/pawn-ai-controller";
-import { ANIM_SKADUWEE_WARRIOR_MALE_DEFINITION } from "./skaduwee_warrior_male_anims";
+import {
+  ANIM_SKADUWEE_WARRIOR_MALE_DEFINITION_LEVEL_1,
+  ANIM_SKADUWEE_WARRIOR_MALE_DEFINITION_LEVEL_2,
+  ANIM_SKADUWEE_WARRIOR_MALE_DEFINITION_LEVEL_3
+} from "./skaduwee_warrior_male_anims";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 import { SoundType } from "../../../../entity/components/actor-audio/sound-type";
 import { ActorPhysicalType } from "../../../../entity/components/combat/components/actor-physical-type";
+import { weaponDefinitions } from "../../../../entity/components/combat/weapon-definitions";
+import { AiType } from "../../../ai-agents/ai-type";
 
 export const skaduweeWarriorMaleDefinition = {
   components: {
     representable: {
-      width: 64,
-      height: 64
+      width: 32,
+      height: 48,
+      origin: { x: 0.5, y: 0.899286430676403 }
     },
     objectDescriptor: {
       color: 0xf2f7fa
@@ -39,6 +44,11 @@ export const skaduweeWarriorMaleDefinition = {
     info: {
       name: "Garruk",
       description: "Unyielding and fierce, he brings ruin to all who oppose him",
+      tooltipDescription: [
+        "Strong melee fighter",
+        "Highly durable frontline unit",
+        "Effective against armored targets"
+      ],
       smallImage: {
         key: "factions",
         frame: "character_icons/skaduwee/warrior_male.png",
@@ -47,19 +57,21 @@ export const skaduweeWarriorMaleDefinition = {
     },
     health: {
       physicalState: ActorPhysicalType.Biological,
-      maxHealth: 100
+      maxHealth: 150
     },
     attack: {
-      attacks: [weaponDefinitions.axe]
+      attacks: [weaponDefinitions.SkaduweeAxe]
     },
     productionCost: {
       resources: {
-        [ResourceType.Wood]: 10,
-        [ResourceType.Minerals]: 10
+        [ResourceType.Food]: 100
       },
       refundFactor: 0.5,
       productionTime: 5000,
       costType: PaymentType.PayImmediately
+    },
+    housingCost: {
+      housingNeeded: 1
     },
     requirements: {
       actors: [ObjectNames.InfantryInn]
@@ -83,10 +95,36 @@ export const skaduweeWarriorMaleDefinition = {
         [SoundType.LocationUnavailable]: SkaduweeWarriorSfxLocationSounds
       }
     },
-    animatable: { animations: ANIM_SKADUWEE_WARRIOR_MALE_DEFINITION }
+    animatable: { animations: ANIM_SKADUWEE_WARRIOR_MALE_DEFINITION_LEVEL_1 },
+    level: { level: 1, maxLevel: 3 }
   },
   systems: {
     movement: { enabled: true },
     action: { enabled: true }
+  },
+  meta: {
+    maxLevel: 3,
+    levelOverrides: {
+      2: {
+        components: {
+          health: { maxHealth: 200 },
+          attack: {
+            attacks: [{ ...weaponDefinitions.SkaduweeAxe, damage: 8, cooldown: 900 }]
+          },
+          animatable: { animations: ANIM_SKADUWEE_WARRIOR_MALE_DEFINITION_LEVEL_2 },
+          level: { level: 2 }
+        }
+      },
+      3: {
+        components: {
+          health: { maxHealth: 280 },
+          attack: {
+            attacks: [{ ...weaponDefinitions.SkaduweeAxe, damage: 11, cooldown: 800 }]
+          },
+          animatable: { animations: ANIM_SKADUWEE_WARRIOR_MALE_DEFINITION_LEVEL_3 },
+          level: { level: 3 }
+        }
+      }
+    }
   }
 } satisfies PrefabDefinition;

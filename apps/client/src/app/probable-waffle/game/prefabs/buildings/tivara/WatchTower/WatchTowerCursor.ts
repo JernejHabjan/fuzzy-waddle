@@ -8,7 +8,7 @@ import Phaser from "phaser";
 
 export default class WatchTowerCursor extends Phaser.GameObjects.Image {
   constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
-    super(scene, x ?? 64, y ?? 147, texture || "factions", frame ?? "buildings/tivara/watchtower.png");
+    super(scene, x ?? 64, y ?? 147, texture || "factions", frame ?? "buildings/tivara/watchtower/watchtower.png");
 
     this.setInteractive(
       new Phaser.Geom.Polygon(

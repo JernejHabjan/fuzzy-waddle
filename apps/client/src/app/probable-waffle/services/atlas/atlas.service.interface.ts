@@ -1,4 +1,6 @@
 export interface AtlasServiceInterface {
+  atlasImage: HTMLImageElement;
+
   getSpriteFrame(name: string): Promise<{
     x: number;
     y: number;

@@ -1,16 +1,17 @@
-import { weaponDefinitions } from "../../../../entity/components/combat/attack-data";
 import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PaymentType } from "../../../../entity/components/production/payment-type";
-import { AiType } from "../../../ai-agents/pawn-ai-controller";
 import { ANIM_GENERAL_WARRIOR_DEFINITION } from "./warrior_anim";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 import { ActorPhysicalType } from "../../../../entity/components/combat/components/actor-physical-type";
+import { weaponDefinitions } from "../../../../entity/components/combat/weapon-definitions";
+import { AiType } from "../../../ai-agents/ai-type";
 
 export const generalWarriorDefinition = {
   components: {
     representable: {
-      width: 64,
-      height: 64
+      width: 32,
+      height: 48,
+      origin: { x: 0.5, y: 0.899286430676403 }
     },
     objectDescriptor: {
       color: 0x75502d
@@ -37,19 +38,21 @@ export const generalWarriorDefinition = {
     },
     health: {
       physicalState: ActorPhysicalType.Biological,
-      maxHealth: 100
+      maxHealth: 150
     },
     attack: {
-      attacks: [weaponDefinitions.spear]
+      attacks: [weaponDefinitions.GeneralWarriorSpear]
     },
     productionCost: {
       resources: {
-        [ResourceType.Wood]: 10,
-        [ResourceType.Minerals]: 10
+        [ResourceType.Food]: 80
       },
       refundFactor: 0.5,
       productionTime: 5000,
       costType: PaymentType.PayImmediately
+    },
+    housingCost: {
+      housingNeeded: 1
     },
     selectable: {},
     translatable: {
@@ -59,9 +62,15 @@ export const generalWarriorDefinition = {
     aiControlled: {
       type: AiType.Character
     },
+    audio: {
+      sounds: {
+        // todo
+      }
+    },
     animatable: { animations: ANIM_GENERAL_WARRIOR_DEFINITION }
   },
   systems: {
-    movement: { enabled: true }
+    movement: { enabled: true },
+    action: { enabled: true }
   }
 } satisfies PrefabDefinition;

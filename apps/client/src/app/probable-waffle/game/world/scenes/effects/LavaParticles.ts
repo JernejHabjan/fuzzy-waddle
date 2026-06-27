@@ -9,6 +9,7 @@ export class LavaParticles {
       gravityY: -100,
       scale: { start: 1, end: 0 },
       angle: { min: 180, max: 360 },
+      // we can use randomness here as it's just visual effect
       frequency: Math.random() * 1000 + 4000
     });
   }

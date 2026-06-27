@@ -1,5 +1,15 @@
-<router-outlet />
+<!-- Custom frameless title bar (Tauri desktop only, hidden in fullscreen) -->
+@if (isTauri() && !tauriService.windowIsFullscreen()) {
+  <fuzzy-waddle-tauri-titlebar />
+}
+
+<main class="h-100" [style.paddingTop]="titlebarPadding()">
+  <router-outlet />
+</main>
 
 <fuzzy-waddle-sw-refresh />
 
 <app-toast-container />
+
+<!-- Cinematic splash overlay (Tauri desktop only, auto-hides after ~3 s) -->
+<fuzzy-waddle-tauri-splash />

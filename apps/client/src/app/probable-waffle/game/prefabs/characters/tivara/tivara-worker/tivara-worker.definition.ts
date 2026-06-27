@@ -2,6 +2,10 @@ import { generalWorkerDefinitions } from "../../shared/worker/worker-shared.defi
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
+import {
+  ConstructableCategory,
+  ConstructableDefinition
+} from "../../../../entity/components/construction/constructable-category";
 
 export const tivaraWorkerDefinition: PrefabDefinition = {
   ...generalWorkerDefinitions,
@@ -10,6 +14,7 @@ export const tivaraWorkerDefinition: PrefabDefinition = {
     info: {
       name: "Tivara Scavenger",
       description: "Guardian of forgotten secrets, laboring in shadow to uphold the ancient cycle",
+      tooltipDescription: ["Gathers resources", "Constructs buildings", "Weak in combat"],
       smallImage: {
         key: "factions",
         frame: "character_icons/tivara/worker.png",
@@ -17,8 +22,9 @@ export const tivaraWorkerDefinition: PrefabDefinition = {
       }
     },
     representable: {
-      width: 64,
-      height: 64
+      width: 32,
+      height: 48,
+      origin: { x: 0.5, y: 0.5 }
     },
     objectDescriptor: {
       color: 0xc2a080
@@ -37,16 +43,28 @@ export const tivaraWorkerDefinition: PrefabDefinition = {
     builder: {
       constructionSiteOffset: 2,
       enterConstructionSite: false,
-      constructableBuildings: [
-        ObjectNames.Sandhold,
-        ObjectNames.AnkGuard,
-        ObjectNames.Olival,
-        ObjectNames.Temple,
-        ObjectNames.WorkMill,
-        ObjectNames.WatchTower,
-        ObjectNames.Wall,
-        ObjectNames.Stairs
-      ]
+      constructableBuildings: new ConstructableDefinition(
+        [
+          // keep this in sync with actor-manager
+          ObjectNames.Sandhold,
+          ObjectNames.Olival,
+          ObjectNames.AnkGuard,
+          ObjectNames.Temple
+        ],
+        [
+          new ConstructableCategory("gui", "action_icons/category_resource_gathering.png", "Resource Gathering", [
+            new ConstructableDefinition([
+              ObjectNames.WorkMill,
+              ObjectNames.MiningCamp,
+              ObjectNames.Granary,
+              ObjectNames.Field
+            ])
+          ]),
+          new ConstructableCategory("gui", "action_icons/category_defensive_buildings.png", "Defensive Structures", [
+            new ConstructableDefinition([ObjectNames.WatchTower, ObjectNames.Wall, ObjectNames.Stairs])
+          ])
+        ]
+      )
     }
   },
   meta: {

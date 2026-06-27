@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, type OnDestroy, type OnInit, Output } from "@angular/core";
+import { Component, inject, type OnDestroy, type OnInit, output } from "@angular/core";
 import {
   GameSessionState,
   ProbableWaffleGameInstanceType,
@@ -29,7 +29,7 @@ export class LobbiesComponent implements OnInit, OnDestroy {
   protected selectedRoom?: ProbableWaffleRoom;
   private readonly roomsService = inject(RoomsService);
   private readonly gameInstanceClientService = inject(GameInstanceClientService);
-  @Output() requestNavigateToHostLobby: EventEmitter<void> = new EventEmitter<void>();
+  readonly requestNavigateToHostLobby = output<void>();
 
   async ngOnInit(): Promise<void> {
     await this.roomsService.init();
@@ -41,13 +41,16 @@ export class LobbiesComponent implements OnInit, OnDestroy {
 
   protected canAddSelfAsPlayer(): boolean {
     if (!this.selectedRoom) return false;
-    return this.selectedRoom.players.some(
-      (player) => player.controllerData.playerDefinition?.playerType === ProbableWafflePlayerType.NetworkOpen
+    return (
+      this.selectedRoom.gameInstanceMetadataData.sessionState === GameSessionState.NotStarted &&
+      this.selectedRoom.players.some(
+        (player) => player.controllerData.playerDefinition?.playerType === ProbableWafflePlayerType.NetworkOpen
+      )
     );
   }
 
   protected canAddSelfAsSpectator(): boolean {
-    return !!this.selectedRoom;
+    return !!this.selectedRoom && this.selectedRoom.gameInstanceMetadataData.sessionState !== GameSessionState.Stopped;
   }
 
   protected async addSelfAsPlayer() {
@@ -98,12 +101,9 @@ export class LobbiesComponent implements OnInit, OnDestroy {
       .rooms()
       .filter(
         (room) =>
-          room.gameInstanceMetadataData.sessionState === GameSessionState.NotStarted &&
+          room.gameInstanceMetadataData.sessionState !== GameSessionState.Stopped &&
           room.gameInstanceMetadataData.visibility === ProbableWaffleGameInstanceVisibility.Public &&
-          room.gameInstanceMetadataData?.type === ProbableWaffleGameInstanceType.SelfHosted &&
-          room.players.some(
-            (p) => p.controllerData.playerDefinition?.playerType === ProbableWafflePlayerType.NetworkOpen
-          )
+          room.gameInstanceMetadataData?.type === ProbableWaffleGameInstanceType.SelfHosted
       );
   }
 }

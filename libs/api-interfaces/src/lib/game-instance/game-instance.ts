@@ -5,10 +5,10 @@ import { BaseGameState } from "./game-state";
 import { BaseGameMode } from "./game-mode";
 import { BasePlayerState } from "./player/player-state";
 import { BasePlayerController, type BasePlayerControllerData } from "./player/player-controller";
-import { BasePlayer } from "./player/player";
+import { BasePlayer, type GameInstanceId, type UserId } from "./player/player";
 
 export interface GameInstanceDataDto {
-  gameInstanceId: string;
+  gameInstanceId: GameInstanceId;
 }
 
 export type GameInstanceData<
@@ -127,11 +127,11 @@ export abstract class GameInstance<
     return new this.constructors.spectator(spectatorData);
   }
 
-  removeSpectator(userId: string) {
+  removeSpectator(userId: UserId) {
     this.spectators = this.spectators.filter((s) => s.data.userId !== userId);
   }
 
-  removePlayerByUserId(userId: string) {
+  removePlayerByUserId(userId: UserId) {
     this.players = this.players.filter((p) => p.playerController.data.userId !== userId);
   }
 
@@ -158,23 +158,27 @@ export abstract class GameInstance<
     this.spectators?.forEach((s) => s.resetData());
   }
 
-  getPlayer(userId: string | null): TPlayer | null {
+  getPlayer(userId: UserId | null): TPlayer | null {
     return this.players.find((p) => p.playerController.data.userId === userId) ?? null;
   }
 
-  getSpectator(userId: string | null): TSpectator | null {
+  getSpectator(userId: UserId | null): TSpectator | null {
     return this.spectators.find((s) => s.data.userId === userId) ?? null;
   }
 
-  isHost(userId: string | null): boolean {
-    return this.gameInstanceMetadata?.data.createdBy === userId;
+  isHost(userId: UserId | null): boolean {
+    return (this.gameInstanceMetadata?.data as GameInstanceMetadataData & { currentHostUserId?: UserId | null })
+      .currentHostUserId
+      ? (this.gameInstanceMetadata?.data as GameInstanceMetadataData & { currentHostUserId?: UserId | null })
+          .currentHostUserId === userId
+      : this.gameInstanceMetadata?.data.createdBy === userId;
   }
 
-  isPlayer(userId: string | null): boolean {
+  isPlayer(userId: UserId | null): boolean {
     return this.players.some((p) => p.playerController.data.userId === userId);
   }
 
-  isSpectator(userId: string | null): boolean {
+  isSpectator(userId: UserId | null): boolean {
     return this.spectators.some((s) => s.data.userId === userId);
   }
 }

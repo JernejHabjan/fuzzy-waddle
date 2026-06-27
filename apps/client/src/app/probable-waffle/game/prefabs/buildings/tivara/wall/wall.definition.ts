@@ -8,7 +8,8 @@ export const wallDefinition = {
   components: {
     representable: {
       width: 64,
-      height: 96
+      height: 64,
+      origin: { x: 0.5, y: 0.75 }
     },
     objectDescriptor: {
       color: 0x95a083
@@ -27,6 +28,11 @@ export const wallDefinition = {
     info: {
       name: "Wall",
       description: "Defense building",
+      tooltipDescription: [
+        "Blocks enemy movement",
+        "Can be drag-placed for efficiency",
+        "Units can walk on top"
+      ],
       smallImage: {
         key: "factions",
         frame: "buildings/tivara/wall/wall_top_right_bottom_left.png",
@@ -41,11 +47,10 @@ export const wallDefinition = {
     },
     productionCost: {
       resources: {
-        [ResourceType.Wood]: 10,
-        [ResourceType.Stone]: 30
+        [ResourceType.Stone]: 25
       },
       refundFactor: 0.5,
-      productionTime: 5000,
+      productionTime: 10000,
       costType: PaymentType.PayImmediately
     },
     collider: { enabled: true },
@@ -53,8 +58,8 @@ export const wallDefinition = {
       ...coreConstructionSiteDefinition,
       canBeDragPlaced: true
     },
-    walkable: {
-      walkableHeight: 42,
+    navigable: {
+      navigableHeight: 42,
       exitHeight: 64,
       // can be accessed from the stairs
       acceptMinimumHeight: 64

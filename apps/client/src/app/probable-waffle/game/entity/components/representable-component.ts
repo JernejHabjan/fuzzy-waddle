@@ -1,18 +1,19 @@
-import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
-import {
-  getGameObjectBoundsRaw,
-  getGameObjectRenderedTransformRaw,
-  getGameObjectVisibility,
-  onObjectReady
-} from "../../data/game-object-helper";
+import type {
+  ObjectNames,
+  RepresentableComponentData,
+  Vector2Simple,
+  Vector3Simple
+} from "@fuzzy-waddle/api-interfaces";
+import { getGameObjectBounds, getGameObjectVisibility, onObjectReady } from "../../data/game-object-helper";
 import { getActorComponent } from "../../data/actor-component";
 import { FlyingComponent } from "./movement/flying-component";
 import { DepthHelper } from "../../world/services/depth.helper";
-import type { RepresentableComponentData } from "@fuzzy-waddle/api-interfaces";
-export interface RepresentableDefinition {
-  width: number;
-  height: number;
-}
+import { TilemapComponent } from "../../world/tilemap/tilemap.component";
+import type { RepresentableDefinition } from "./representable-definition";
+import { getPwActorDefinition } from "../../prefabs/definitions/actor-definitions";
+import { environment } from "../../../../../environments/environment";
+import { getResearchedLevelForActor } from "../../data/actor-level-utils";
+
 export class RepresentableComponent {
   /**
    * Center of the game object relative to the origin of the game object.
@@ -20,13 +21,8 @@ export class RepresentableComponent {
    */
   private _logicalWorldTransform?: Vector3Simple;
   private _visible?: boolean;
-  bounds = new Phaser.Geom.Rectangle(0, 0, 0, 0);
-  private initialBounds?: {
-    width: number;
-    height: number;
-    offsetX: number;
-    offsetY: number;
-  };
+  private _debugGraphics?: Phaser.GameObjects.Graphics;
+  private static readonly drawDebug = false;
 
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,
@@ -36,58 +32,30 @@ export class RepresentableComponent {
   }
 
   private setTransformInitially() {
+    if (this._logicalWorldTransform) {
+      // Logical transform was already restored (e.g. from snapshot/authoritative actor data).
+      // Do not overwrite it with prefab constructor defaults when the object becomes ready.
+      this.drawDebugBounds();
+      return;
+    }
+
     if (!this.gameObject) return;
     const transformComponent = this.gameObject as unknown as Phaser.GameObjects.Components.Transform;
     if (transformComponent) {
       this.logicalWorldTransform = {
         x: transformComponent.x ?? 0,
-        y: transformComponent.y ?? 0,
-        z: transformComponent.z ?? 0 // z component may be assigned in editor itself from prefab properties "z" property
+        // #519 - adjusted by flying height offset so spawned prefab from Phaser Editor gets correct "logical" transform
+        // This also fixes an issue where flying units would be weirdly offset from save-game
+        y: (transformComponent.y ?? 0) + this.flyingHeightOffset,
+        // z component may be assigned in editor itself from prefab properties "z" property
+        z: transformComponent.z ?? 0
       };
     } else {
       this.logicalWorldTransform = { x: 0, y: 0, z: 0 }; // default to origin if transform is not available
       console.warn("RepresentableComponent: GameObject transform is not available, bounds may not be accurate.");
     }
-    this.ensureInitialBounds();
-    this.refreshBounds();
-  }
 
-  private refreshBounds(): void {
-    if (!this.initialBounds) return;
-    const renderedTransform = this.renderedWorldTransform;
-    const scaleX = (this.gameObject as any).scaleX ?? 1;
-    const scaleY = (this.gameObject as any).scaleY ?? 1;
-
-    this.bounds = new Phaser.Geom.Rectangle(
-      renderedTransform.x + this.initialBounds.offsetX * scaleX,
-      renderedTransform.y + this.initialBounds.offsetY * scaleY,
-      this.initialBounds.width * scaleX,
-      this.initialBounds.height * scaleY
-    );
-  }
-
-  private ensureInitialBounds() {
-    if (this.initialBounds) return;
-    const bounds = getGameObjectBoundsRaw(this.gameObject);
-    if (!bounds) {
-      console.warn("Could not get initial bounds for", this.gameObject);
-      this.initialBounds = {
-        width: this.representableDefinition.width,
-        height: this.representableDefinition.height,
-        offsetX: -this.representableDefinition.width * 0.5,
-        offsetY: -this.representableDefinition.height * 0.5
-      };
-      return;
-    }
-
-    const transform = getGameObjectRenderedTransformRaw(this.gameObject)!;
-
-    this.initialBounds = {
-      width: bounds.width,
-      height: bounds.height,
-      offsetX: bounds.x - transform.x,
-      offsetY: bounds.y - transform.y
-    };
+    this.drawDebugBounds();
   }
 
   /**
@@ -95,8 +63,21 @@ export class RepresentableComponent {
    */
   getActualLogicalZ(logicalWorldTransform: Vector3Simple): number {
     const logicalZ = logicalWorldTransform.z;
-    const flightHeight = getActorComponent(this.gameObject, FlyingComponent)?.flightDefinition?.height ?? 0;
-    return logicalZ + flightHeight;
+    return logicalZ + this.flyingHeightOffset;
+  }
+
+  private get flyingHeightOffset() {
+    const flightDefinition = getActorComponent(this.gameObject, FlyingComponent)?.flightDefinition;
+    if (!flightDefinition) return 0;
+    return flightDefinition.height + TilemapComponent.tileWidth / 2;
+  }
+
+  /**
+   * Get the flying height component only (in pixels).
+   * Returns the additional height from flying, not including base Z.
+   */
+  get flyingHeightPixels(): number {
+    return this.getActualLogicalZ(this.logicalWorldTransform) - this.logicalWorldTransform.z;
   }
 
   get logicalWorldTransform(): Vector3Simple {
@@ -112,8 +93,8 @@ export class RepresentableComponent {
       x: worldPosition.x,
       y: worldPosition.y - this.getActualLogicalZ(worldPosition) // adjust y by z offset
     } satisfies Vector2Simple;
-    this.ensureInitialBounds();
-    this.refreshBounds();
+
+    this.drawDebugBounds();
   }
 
   private set renderedWorldTransform(worldPosition: Vector2Simple) {
@@ -154,13 +135,69 @@ export class RepresentableComponent {
     if (data.logicalWorldTransform) {
       this.logicalWorldTransform = data.logicalWorldTransform;
     }
-
-    this.refreshBounds();
   }
 
   getData(): RepresentableComponentData {
     return {
       logicalWorldTransform: this.logicalWorldTransform
     } satisfies RepresentableComponentData;
+  }
+
+  /**
+   * Draws debug visualization showing the bounds box and origin point of this game object.
+   * The bounds box is drawn in green, and the origin point is drawn as a red dot.
+   */
+  drawDebugBounds(): void {
+    if (environment.production || !RepresentableComponent.drawDebug) return;
+    const bounds = getGameObjectBounds(this.gameObject);
+    if (!bounds) {
+      console.warn("RepresentableComponent: Could not get bounds for debug drawing");
+      return;
+    }
+
+    const origin = getPwActorDefinition(this.gameObject.name, getResearchedLevelForActor(this.gameObject))?.components
+      ?.representable?.origin;
+    if (!origin) {
+      console.warn("RepresentableComponent: Could not get origin for debug drawing");
+      return;
+    }
+
+    // Create graphics object if it doesn't exist
+    if (!this._debugGraphics) {
+      this._debugGraphics = this.gameObject.scene.add.graphics();
+      this._debugGraphics.setDepth(10000); // Draw on top
+    }
+
+    // Clear previous drawing
+    this._debugGraphics.clear();
+
+    // Draw bounds rectangle in green
+    this._debugGraphics.lineStyle(2, 0x00ff00, 1);
+    this._debugGraphics.strokeRect(bounds.x, bounds.y, bounds.width, bounds.height);
+
+    // Draw origin point as a red dot
+    const originX = bounds.x + bounds.width * origin.x;
+    const originY = bounds.y + bounds.height * origin.y;
+    this._debugGraphics.fillStyle(0xff0000, 1);
+    this._debugGraphics.fillCircle(originX, originY, 4);
+
+    // Draw crosshair at origin
+    this._debugGraphics.lineStyle(1, 0xff0000, 1);
+    this._debugGraphics.beginPath();
+    this._debugGraphics.moveTo(originX - 8, originY);
+    this._debugGraphics.lineTo(originX + 8, originY);
+    this._debugGraphics.moveTo(originX, originY - 8);
+    this._debugGraphics.lineTo(originX, originY + 8);
+    this._debugGraphics.strokePath();
+  }
+
+  /**
+   * Clears the debug bounds visualization.
+   */
+  clearDebugBounds(): void {
+    if (this._debugGraphics) {
+      this._debugGraphics.destroy();
+      this._debugGraphics = undefined;
+    }
   }
 }

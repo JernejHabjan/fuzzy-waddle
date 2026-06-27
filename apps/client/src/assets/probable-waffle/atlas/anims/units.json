@@ -1,283 +1,378 @@
 {
-  "anims": [
-    {
-      "key": "skaduwee/owl/idle/down",
-      "type": "frame",
-      "frames": [
+    "anims": [
         {
-          "key": "units",
-          "frame": "skaduwee/owl/idle/down_1.png",
-          "duration": 0,
-          "keyframe": false
+            "key": "skaduwee/owl/idle/down",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "units",
+                    "frame": "skaduwee/owl/flying/down_1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "units",
+                    "frame": "skaduwee/owl/flying/down_2.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 2,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
         },
         {
-          "key": "units",
-          "frame": "skaduwee/owl/idle/down_2.png",
-          "duration": 0,
-          "keyframe": false
+            "key": "skaduwee/owl/attack/down",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "units",
+                    "frame": "skaduwee/owl/flying/down_1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "units",
+                    "frame": "skaduwee/owl/flying/down_2.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 4,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "skaduwee/owl/idle/left",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "units",
+                    "frame": "skaduwee/owl/flying/left_1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "units",
+                    "frame": "skaduwee/owl/flying/left_2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "units",
+                    "frame": "skaduwee/owl/flying/left_3.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 2,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "skaduwee/owl/move/left",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "units",
+                    "frame": "skaduwee/owl/flying/left_1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "units",
+                    "frame": "skaduwee/owl/flying/left_2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "units",
+                    "frame": "skaduwee/owl/flying/left_3.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 6,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "skaduwee/owl/attack/left",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "units",
+                    "frame": "skaduwee/owl/flying/left_1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "units",
+                    "frame": "skaduwee/owl/flying/left_2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "units",
+                    "frame": "skaduwee/owl/flying/left_3.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 4,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "skaduwee/owl/idle/right",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "units",
+                    "frame": "skaduwee/owl/flying/right_1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "units",
+                    "frame": "skaduwee/owl/flying/right_2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "units",
+                    "frame": "skaduwee/owl/flying/right_3.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 2,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "skaduwee/owl/move/right",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "units",
+                    "frame": "skaduwee/owl/flying/right_1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "units",
+                    "frame": "skaduwee/owl/flying/right_2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "units",
+                    "frame": "skaduwee/owl/flying/right_3.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 6,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "skaduwee/owl/attack/right",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "units",
+                    "frame": "skaduwee/owl/flying/right_1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "units",
+                    "frame": "skaduwee/owl/flying/right_2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "units",
+                    "frame": "skaduwee/owl/flying/right_3.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 4,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "skaduwee/owl/idle/up",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "units",
+                    "frame": "skaduwee/owl/flying/up_1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "units",
+                    "frame": "skaduwee/owl/flying/up_2.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 2,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "skaduwee/owl/move/up",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "units",
+                    "frame": "skaduwee/owl/flying/up_4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "units",
+                    "frame": "skaduwee/owl/flying/up_1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "units",
+                    "frame": "skaduwee/owl/flying/up_2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "units",
+                    "frame": "skaduwee/owl/flying/up_3.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "skaduwee/owl/attack/up",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "units",
+                    "frame": "skaduwee/owl/flying/up_1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "units",
+                    "frame": "skaduwee/owl/flying/up_2.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 4,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "skaduwee/owl/death/death",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "units",
+                    "frame": "skaduwee/owl/death/death_1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "units",
+                    "frame": "skaduwee/owl/death/death_2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "units",
+                    "frame": "skaduwee/owl/death/death_3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "units",
+                    "frame": "skaduwee/owl/death/death_4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "units",
+                    "frame": "skaduwee/owl/death/death_5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 5,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "skaduwee/owl/move/down",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "units",
+                    "frame": "skaduwee/owl/flying/move_down_4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "units",
+                    "frame": "skaduwee/owl/flying/move_down_2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "units",
+                    "frame": "skaduwee/owl/flying/move_down_1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "units",
+                    "frame": "skaduwee/owl/flying/move_down_3.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
         }
-      ],
-      "frameRate": 5,
-      "skipMissedFrames": true,
-      "repeat": -1
+    ],
+    "globalTimeScale": 1,
+    "meta": {
+        "app": "Phaser Editor 2D v3",
+        "contentType": "Phaser v3 Animations"
     },
-    {
-      "key": "skaduwee/owl/idle/right",
-      "type": "frame",
-      "frames": [
-        {
-          "key": "units",
-          "frame": "skaduwee/owl/idle/right_1.png",
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "units",
-          "frame": "skaduwee/owl/idle/right_2.png",
-          "duration": 0,
-          "keyframe": false
-        }
-      ],
-      "frameRate": 5,
-      "skipMissedFrames": true,
-      "repeat": -1
-    },
-    {
-      "key": "skaduwee/owl/idle/up",
-      "type": "frame",
-      "frames": [
-        {
-          "key": "units",
-          "frame": "skaduwee/owl/idle/up_1.png",
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "units",
-          "frame": "skaduwee/owl/idle/up_2.png",
-          "duration": 0,
-          "keyframe": false
-        }
-      ],
-      "frameRate": 5,
-      "skipMissedFrames": true,
-      "repeat": -1
-    },
-    {
-      "key": "skaduwee/owl/idle/right_1",
-      "type": "frame",
-      "frames": [
-        {
-          "key": "units",
-          "frame": "skaduwee/owl/idle/right_1.png",
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "units",
-          "frame": "skaduwee/owl/idle/right_2.png",
-          "duration": 0,
-          "keyframe": false
-        }
-      ],
-      "frameRate": 5,
-      "skipMissedFrames": true,
-      "repeat": -1
-    },
-    {
-      "key": "skaduwee/owl/move/down",
-      "type": "frame",
-      "frames": [
-        {
-          "key": "units",
-          "frame": "skaduwee/owl/move/down_1.png",
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "units",
-          "frame": "skaduwee/owl/move/down_2.png",
-          "duration": 0,
-          "keyframe": false
-        }
-      ],
-      "frameRate": 10,
-      "skipMissedFrames": true,
-      "repeat": -1
-    },
-    {
-      "key": "skaduwee/owl/move/left",
-      "type": "frame",
-      "frames": [
-        {
-          "key": "units",
-          "frame": "skaduwee/owl/move/left_1.png",
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "units",
-          "frame": "skaduwee/owl/move/left_2.png",
-          "duration": 0,
-          "keyframe": false
-        }
-      ],
-      "frameRate": 10,
-      "skipMissedFrames": true,
-      "repeat": -1
-    },
-    {
-      "key": "skaduwee/owl/move/up",
-      "type": "frame",
-      "frames": [
-        {
-          "key": "units",
-          "frame": "skaduwee/owl/move/up_1.png",
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "units",
-          "frame": "skaduwee/owl/move/up_2.png",
-          "duration": 0,
-          "keyframe": false
-        }
-      ],
-      "frameRate": 10,
-      "skipMissedFrames": true,
-      "repeat": -1
-    },
-    {
-      "key": "skaduwee/owl/move/right",
-      "type": "frame",
-      "frames": [
-        {
-          "key": "units",
-          "frame": "skaduwee/owl/move/right_1.png",
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "units",
-          "frame": "skaduwee/owl/move/right_2.png",
-          "duration": 0,
-          "keyframe": false
-        }
-      ],
-      "frameRate": 10,
-      "skipMissedFrames": true,
-      "repeat": -1
-    },
-    {
-      "key": "skaduwee/owl/attack/up",
-      "type": "frame",
-      "frames": [
-        {
-          "key": "units",
-          "frame": "skaduwee/owl/attack/up_1.png",
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "units",
-          "frame": "skaduwee/owl/attack/up_2.png",
-          "duration": 0,
-          "keyframe": false
-        }
-      ],
-      "frameRate": 5,
-      "skipMissedFrames": true
-    },
-    {
-      "key": "skaduwee/owl/attack/down",
-      "type": "frame",
-      "frames": [
-        {
-          "key": "units",
-          "frame": "skaduwee/owl/attack/down_1.png",
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "units",
-          "frame": "skaduwee/owl/attack/down_2.png",
-          "duration": 0,
-          "keyframe": false
-        }
-      ],
-      "frameRate": 5,
-      "skipMissedFrames": true
-    },
-    {
-      "key": "skaduwee/owl/attack/left",
-      "type": "frame",
-      "frames": [
-        {
-          "key": "units",
-          "frame": "skaduwee/owl/attack/left_1.png",
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "units",
-          "frame": "skaduwee/owl/attack/left_2.png",
-          "duration": 0,
-          "keyframe": false
-        }
-      ],
-      "frameRate": 5,
-      "skipMissedFrames": true
-    },
-    {
-      "key": "skaduwee/owl/attack/right",
-      "type": "frame",
-      "frames": [
-        {
-          "key": "units",
-          "frame": "skaduwee/owl/attack/right_1.png",
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "units",
-          "frame": "skaduwee/owl/attack/right_2.png",
-          "duration": 0,
-          "keyframe": false
-        }
-      ],
-      "frameRate": 5,
-      "skipMissedFrames": true
-    },
-    {
-      "key": "skaduwee/owl/die/down",
-      "type": "frame",
-      "frames": [
-        {
-          "key": "units",
-          "frame": "skaduwee/owl/die/down_1.png",
-          "duration": 0,
-          "keyframe": false
-        },
-        {
-          "key": "units",
-          "frame": "skaduwee/owl/die/down_2.png",
-          "duration": 0,
-          "keyframe": false
-        }
-      ],
-      "frameRate": 5,
-      "skipMissedFrames": true
+    "settings": {
+        "sourceLang": "TYPE_SCRIPT",
+        "esModule": true,
+        "generateCode": false,
+        "outputFolder": "fuzzy-waddle/i/_"
     }
-  ],
-  "globalTimeScale": 1,
-  "meta": {
-    "app": "Phaser Editor 2D v3",
-    "contentType": "Phaser v3 Animations"
-  },
-  "settings": {
-    "sourceLang": "TYPE_SCRIPT",
-    "esModule": true,
-    "generateCode": true,
-    "outputFolder": "fuzzy-waddle/apps/client/src/app/probable-waffle/game/prefabs/units/anims"
-  }
 }

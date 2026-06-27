@@ -1,18 +1,39 @@
-<fuzzy-waddle-home-nav />
+<fuzzy-waddle-home-nav [showBack]="true" />
 @if (groupedAttributions$ | async; as groupedAttributions) {
-  <div class="container mt-4">
+  <div class="attribution-page">
+    <section class="attribution-header">
+      <div>
+        <span class="eyebrow">Credits Archive</span>
+        <h1>Attributions</h1>
+        <p>{{ getTotalEntries(groupedAttributions) }} assets and sources, grouped by type for quick auditing.</p>
+      </div>
+      <div class="header-stats">
+        <div class="stat-card">
+          <span class="stat-label">Categories</span>
+          <strong>{{ groupedAttributions.length }}</strong>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Entries</span>
+          <strong>{{ getTotalEntries(groupedAttributions) }}</strong>
+        </div>
+      </div>
+    </section>
+
     @for (typeGroup of groupedAttributions; track typeGroup.type) {
-      <div class="mb-2">
-        <h2 class="text-primary" style="font-size: 1.5rem">{{ typeGroup.type }}</h2>
-        @for (attribution of typeGroup.items; track attribution) {
-          <div class="card mb-1 ms-1" style="font-size: 0.875rem">
-            <div class="card-body p-2">
+      <section class="type-group">
+        <div class="group-heading">
+          <h2>{{ typeGroup.type }}</h2>
+          <span>{{ typeGroup.items.length }} entries</span>
+        </div>
+        <div class="group-grid">
+          @for (attribution of typeGroup.items; track attribution.name) {
+            <article class="attribution-card">
               @if (attribution.url) {
-                <h3 class="card-title mb-1" style="font-size: 1.25rem">
-                  <a [href]="attribution.url" target="_blank">{{ attribution.name }}</a>
+                <h3 class="card-title mb-1">
+                  <a [href]="attribution.url" target="_blank" rel="noreferrer">{{ attribution.name }}</a>
                 </h3>
               } @else {
-                <h3 class="card-title mb-1" style="font-size: 1.25rem">{{ attribution.name }}</h3>
+                <h3 class="card-title mb-1">{{ attribution.name }}</h3>
               }
               <p class="card-text mb-1"><strong>Type:</strong> {{ attribution.type }}</p>
               @if (attribution.author) {
@@ -21,22 +42,27 @@
               @if (attribution.reason) {
                 <p class="card-text mb-1"><strong>Reason:</strong> {{ attribution.reason }}</p>
               }
+              @if (attribution.obtained) {
+                <p class="card-text mb-1"><strong>Obtained:</strong> {{ attribution.obtained }}</p>
+              }
               @if (attribution.license) {
                 @if (attribution.license.name) {
                   <p class="card-text mb-1">
                     <strong>License: </strong>
                     @if (attribution.license.url) {
-                      <a [href]="attribution.license.url" target="_blank">{{ attribution.license.name }}</a>
+                      <a [href]="attribution.license.url" target="_blank" rel="noreferrer">{{
+                        attribution.license.name
+                      }}</a>
                     } @else {
                       {{ attribution.license.name }}
                     }
                   </p>
                 }
               }
-            </div>
-          </div>
-        }
-      </div>
+            </article>
+          }
+        </div>
+      </section>
     }
   </div>
 }

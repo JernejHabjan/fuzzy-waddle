@@ -14,11 +14,8 @@ import { ActorTranslateComponent } from "./movement/actor-translate-component";
 import { HealthComponent } from "./combat/components/health-component";
 import { ContainerComponent } from "./building/container-component";
 import { VisionComponent } from "./vision-component";
-import type { SelectableComponentData } from "@fuzzy-waddle/api-interfaces";
-
-export type SelectableDefinition = {
-  offsetY?: number;
-};
+import { type SelectableComponentData } from "@fuzzy-waddle/api-interfaces";
+import type { SelectableDefinition } from "./selectable-definition";
 
 export class SelectableComponent {
   private selected: boolean = false;
@@ -50,7 +47,8 @@ export class SelectableComponent {
   private createSelectionCircle() {
     const bounds = getGameObjectBounds(this.gameObject);
     if (!bounds) return;
-    const ellipse = new Phaser.Geom.Ellipse(0, 0, bounds.width, bounds.width / 2);
+    const width = bounds.width;
+    const ellipse = new Phaser.Geom.Ellipse(0, 0, width, width / 2);
     ellipse.y = this.selectableDefinition?.offsetY ?? 0;
     const graphics = this.gameObject.scene.add.graphics();
     graphics.lineStyle(2, 0xffffff);
@@ -84,6 +82,7 @@ export class SelectableComponent {
    * sets selection circle position based on the game object's rendered transform.
    */
   private setPosition() {
+    if (!this.selectionCircle) return;
     const renderedTransform = getGameObjectRenderedTransform(this.gameObject);
     if (!renderedTransform) throw new Error("Transform not found");
     if (renderedTransform.x === undefined || renderedTransform.y === undefined) return;
@@ -120,7 +119,14 @@ export class SelectableComponent {
   }
 
   setData(data: Partial<SelectableComponentData>) {
-    if (data.selected !== undefined) this.setSelected(data.selected);
+    const selected = data.selected;
+    if (selected !== undefined) {
+      setTimeout(() => {
+        // slight delay that ensures that other components have had a chance to update first
+        this.setSelected(selected);
+        this.setPosition();
+      }, 1);
+    }
   }
 
   getData(): SelectableComponentData {

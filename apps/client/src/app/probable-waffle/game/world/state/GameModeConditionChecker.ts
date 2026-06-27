@@ -6,19 +6,30 @@ import {
 } from "../../../../shared/game/phaser/scene/base.scene";
 import {
   GameSessionState,
+  GameResultStatus,
   type LoseConditions,
+  ProbableWaffleGameInstanceType,
   ProbableWaffleGameMode,
   ProbableWafflePlayer,
   ProbableWafflePlayerType,
   type TieConditions,
   type WinConditions
 } from "@fuzzy-waddle/api-interfaces";
-import { throttle } from "../../library/throttle";
 import { type ProbableWaffleGameData } from "../../core/probable-waffle-game-data";
 import { ScenePlayerHelpers } from "../../data/scene-player-helpers";
 import { getCurrentPlayerNumber } from "../../data/scene-data";
 import { getActorComponent } from "../../data/actor-component";
 import { ConstructionSiteComponent } from "../../entity/components/construction/construction-site-component";
+import { filter, type Subscription } from "rxjs";
+import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
+import type EndGameDialog from "../scenes/hud-scenes/EndGameDialog";
+import { getSceneService, getSceneSystem } from "../services/scene-component-helpers";
+import { AiPlayerHandler } from "../../player/ai-controller/ai-player-handler";
+import HudProbableWaffle from "../scenes/hud-scenes/HudProbableWaffle";
+import { SceneDialogHelper } from "../scenes/scene-dialog-helper";
+import { ScoreTracker } from "./ScoreTracker";
+import { SimulationTickService } from "../services/simulation-tick.service";
+import { CancelableSimDelay } from "../services/simulation-time";
 
 export class GameModeConditionChecker {
   private loseConditions: LoseConditions;
@@ -28,22 +39,38 @@ export class GameModeConditionChecker {
   private currentPlayerNumber!: number;
   private players!: ProbableWafflePlayer[];
   private currentPlayer!: ProbableWafflePlayer;
+  private selfQuitSubscription?: Subscription;
+  private stopped: boolean = false;
+  private readonly checkIntervalTicks = 20; // 1 second at the fixed 20 Hz simulation rate.
+  private readonly surrenderCheckIntervalTicks = 40; // 2 seconds at the fixed 20 Hz simulation rate.
+  private lastSurrenderCheckTick = 0;
+  private currentDelay?: CancelableSimDelay;
+  private simulationTickSub?: Subscription;
 
-  constructor(private readonly scene: Phaser.Scene) {
+  constructor(private readonly scene: ProbableWaffleScene) {
     const gameModeData = getGameModeFromScene<ProbableWaffleGameMode>(scene).data;
     this.loseConditions = gameModeData.loseConditions;
     this.winConditions = gameModeData.winConditions;
     this.tieConditions = gameModeData.tieConditions;
 
-    this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.throttleCheck, this);
+    this.currentDelay = new CancelableSimDelay(this.scene, 1000, () => this.startChecking());
     this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
+    this.listenToPlayerQuit();
   }
 
-  private throttleCheck = throttle(this.check.bind(this), 1000);
+  private startChecking() {
+    this.simulationTickSub = getSceneService(this.scene, SimulationTickService)?.tick$.subscribe((tick) => {
+      if (tick % this.checkIntervalTicks === 0) {
+        this.check(tick);
+      }
+    });
+  }
 
-  private check() {
+  private check(tick: number) {
     if (!this.scene.scene || !this.scene.scene.isActive()) return;
+    if (this.stopped) return;
     this.prepareData();
+    this.checkAiSurrender(tick);
     if (this.checkWinConditions()) {
       this.winGame();
       return;
@@ -67,6 +94,15 @@ export class GameModeConditionChecker {
     this.runChecksForSelfAndAiPlayers();
   }
 
+  private listenToPlayerQuit() {
+    this.selfQuitSubscription = this.scene.communicator.allScenes
+      .pipe(filter((scene) => scene.name === "quit"))
+      .subscribe(() => {
+        if (this.stopped) return;
+        this.selfQuit();
+      });
+  }
+
   private runChecksForSelfAndAiPlayers() {
     const isHost = isPlayerHostInScene(this.scene, this.currentPlayer);
     const aiPlayers = this.players.filter(
@@ -84,6 +120,107 @@ export class GameModeConditionChecker {
         console.log(`Player ${player.playerNumber} has no actors left, marked as killed.`);
       }
     });
+  }
+
+  private checkAiSurrender(tick: number) {
+    if (tick - this.lastSurrenderCheckTick < this.surrenderCheckIntervalTicks) return;
+    this.lastSurrenderCheckTick = tick;
+
+    // Only check surrender in single-player mode (InstantGame or Skirmish)
+    const baseGameData = getBaseGameDataFromScene<ProbableWaffleGameData>(this.scene);
+    const gameType = baseGameData.gameInstance.gameInstanceMetadata.data.type;
+    if (
+      gameType !== ProbableWaffleGameInstanceType.InstantGame &&
+      gameType !== ProbableWaffleGameInstanceType.Skirmish
+    ) {
+      return;
+    }
+
+    // Check if there are any other human players
+    const humanPlayers = this.players.filter(
+      (player) =>
+        player.playerController.data.playerDefinition?.playerType === ProbableWafflePlayerType.Human &&
+        !player.playerController.data.leftOrKilled
+    );
+    if (humanPlayers.length > 1) {
+      return; // Multiple human players, don't offer surrender
+    }
+
+    // Check AI players for surrender requests
+    const isHost = isPlayerHostInScene(this.scene, this.currentPlayer);
+    if (!isHost) return;
+
+    const aiPlayers = this.players.filter(
+      (player) =>
+        player.playerController.data.playerDefinition?.playerType === ProbableWafflePlayerType.AI &&
+        !player.playerController.data.leftOrKilled
+    );
+
+    aiPlayers.forEach((aiPlayer) => {
+      // Get AI controller to check surrender state using getSceneSystem
+      const aiPlayerHandler = getSceneSystem(this.scene, AiPlayerHandler);
+      if (!aiPlayerHandler) return;
+
+      const aiController = aiPlayerHandler.getAiPlayerController(aiPlayer.playerNumber!);
+      if (!aiController) return;
+
+      const blackboard = aiController.blackboard;
+      if (blackboard.wantsToSurrender) {
+        // Show surrender dialog
+        // Note: We keep wantsToSurrender flag set to prevent offering again
+        // The flag will be reset when the dialog is accepted/rejected
+        this.showSurrenderDialog(aiPlayer, aiController);
+      }
+    });
+  }
+
+  private showSurrenderDialog(aiPlayer: ProbableWafflePlayer, aiController: any) {
+    // Find the HUD scene
+    const hudScene = this.scene.scene.get("HudProbableWaffle") as HudProbableWaffle;
+    if (!hudScene || !hudScene.surrenderDialog) return;
+
+    // Don't show if dialog is already visible
+    if (hudScene.surrenderDialog.visible) return;
+
+    hudScene.surrenderDialog.showSurrenderRequest(
+      aiPlayer,
+      (player: ProbableWafflePlayer) => {
+        // Reset surrender flag before handling
+        aiController.blackboard.wantsToSurrender = false;
+        this.handleSurrenderAccepted(player);
+      },
+      (player: ProbableWafflePlayer) => {
+        // Reset surrender flag before handling
+        aiController.blackboard.wantsToSurrender = false;
+        this.handleSurrenderRejected(player);
+      }
+    );
+  }
+
+  private handleSurrenderAccepted(player: ProbableWafflePlayer) {
+    console.log(`Player ${player.playerNumber} surrender accepted - eliminating player`);
+    // Mark player as eliminated
+    player.playerController.data.leftOrKilled = true;
+
+    // Destroy all units/buildings owned by this player
+    const actors = this.actorsByPlayer?.get(player.playerNumber!) || [];
+    actors.forEach((actor) => {
+      if (actor && actor.active) {
+        actor.destroy();
+      }
+    });
+  }
+
+  private handleSurrenderRejected(player: ProbableWafflePlayer) {
+    console.log(`Player ${player.playerNumber} surrender rejected - continuing game`);
+    // Mark surrender as rejected so AI won't offer again
+    const aiPlayerHandler = getSceneSystem(this.scene, AiPlayerHandler);
+    if (aiPlayerHandler) {
+      const aiController = aiPlayerHandler.getAiPlayerController(player.playerNumber!);
+      if (aiController) {
+        aiController.blackboard.surrenderRejected = true;
+      }
+    }
   }
 
   private checkWinConditions(): boolean {
@@ -105,7 +242,7 @@ export class GameModeConditionChecker {
       }
     }
     if (this.winConditions.timeReachedInMinutes) {
-      const elapsedTime = this.scene.game.loop.time / 1000 / 60; // Convert to minutes
+      const elapsedTime = this.getElapsedGameMinutes();
       if (elapsedTime >= this.winConditions.timeReachedInMinutes) {
         return true; // Time limit reached, consider it a win
       }
@@ -178,7 +315,7 @@ export class GameModeConditionChecker {
 
   private checkTieConditions(): boolean {
     if (this.tieConditions.maximumTimeLimitInMinutes) {
-      const elapsedTime = this.scene.game.loop.time / 1000 / 60; // Convert to minutes
+      const elapsedTime = this.getElapsedGameMinutes();
       if (elapsedTime >= this.tieConditions.maximumTimeLimitInMinutes) {
         console.log("Maximum time limit reached, tie condition met.");
         return true; // Time limit reached, consider it a tie
@@ -187,25 +324,92 @@ export class GameModeConditionChecker {
     return false;
   }
 
+  private getElapsedGameMinutes(): number {
+    const currentTick = getSceneService(this.scene, SimulationTickService)?.currentTick ?? 0;
+    return currentTick / 20 / 60;
+  }
+
+  private selfQuit() {
+    this.currentPlayer.playerController.data.leftOrKilled = true;
+    console.log(`Player ${this.currentPlayer.playerNumber} has quit the game.`);
+
+    // Update ScoreTracker
+    const scoreTracker = getSceneSystem(this.scene, ScoreTracker);
+    if (scoreTracker) {
+      scoreTracker.setPlayerResult(this.currentPlayerNumber, GameResultStatus.Quit);
+      scoreTracker.finalizeScores();
+      scoreTracker.stop();
+    }
+
+    this.navigateToScoreScreen();
+    this.stop();
+  }
+
   private winGame() {
-    // Implement your win game logic here
-    console.log("You win!");
-    this.tempQuit();
+    // Update ScoreTracker with results
+    const scoreTracker = getSceneSystem(this.scene, ScoreTracker);
+    if (scoreTracker) {
+      scoreTracker.setPlayerResult(this.currentPlayerNumber, GameResultStatus.Win);
+
+      // Set enemy results
+      this.players.forEach((player) => {
+        if (player.playerNumber !== this.currentPlayerNumber) {
+          scoreTracker.setPlayerResult(player.playerNumber!, GameResultStatus.Loss);
+        }
+      });
+
+      scoreTracker.finalizeScores();
+      scoreTracker.stop();
+    }
+
+    this.createEndGameLayer("You have won the game!", () => {
+      this.navigateToScoreScreen();
+    });
+    this.stop();
   }
 
   private loseGame() {
-    // Implement your lose game logic here
-    console.log("You lose!");
-    this.tempQuit();
+    // Update ScoreTracker with results
+    const scoreTracker = getSceneSystem(this.scene, ScoreTracker);
+    if (scoreTracker) {
+      scoreTracker.setPlayerResult(this.currentPlayerNumber, GameResultStatus.Loss);
+
+      // Set enemy results (they won)
+      this.players.forEach((player) => {
+        if (player.playerNumber !== this.currentPlayerNumber && !player.playerController.data.leftOrKilled) {
+          scoreTracker.setPlayerResult(player.playerNumber!, GameResultStatus.Win);
+        }
+      });
+
+      scoreTracker.finalizeScores();
+      scoreTracker.stop();
+    }
+
+    this.createEndGameLayer("You have lost the game.", () => {
+      this.navigateToScoreScreen();
+    });
+    this.stop();
   }
 
   private tieGame() {
-    // Implement your tie game logic here
-    console.log("It's a tie!");
-    this.tempQuit();
+    // Update ScoreTracker with tie results for all players
+    const scoreTracker = getSceneSystem(this.scene, ScoreTracker);
+    if (scoreTracker) {
+      this.players.forEach((player) => {
+        scoreTracker.setPlayerResult(player.playerNumber!, GameResultStatus.Tie);
+      });
+
+      scoreTracker.finalizeScores();
+      scoreTracker.stop();
+    }
+
+    this.createEndGameLayer("The game ended in a tie!", () => {
+      this.navigateToScoreScreen();
+    });
+    this.stop();
   }
 
-  private tempQuit() {
+  private navigateToScoreScreen() {
     const baseGameData = getBaseGameDataFromScene<ProbableWaffleGameData>(this.scene);
     const communicator = baseGameData.communicator;
     // todo rather than this, change the player state session state to "to score screen" because only 1 player quits
@@ -217,8 +421,22 @@ export class GameModeConditionChecker {
     });
   }
 
+  private createEndGameLayer = (message: string, callback: () => void) => {
+    const layer = SceneDialogHelper.showDialog<EndGameDialog>(this.scene, "EndGameDialog");
+    setTimeout(() => {
+      layer.setMessage(message);
+      layer.setCallback(callback);
+    }, 100);
+  };
+
+  private stop() {
+    this.stopped = true;
+  }
+
   private destroy() {
-    this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.throttleCheck);
+    this.simulationTickSub?.unsubscribe();
     this.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.destroy);
+    this.selfQuitSubscription?.unsubscribe();
+    this.currentDelay?.remove();
   }
 }

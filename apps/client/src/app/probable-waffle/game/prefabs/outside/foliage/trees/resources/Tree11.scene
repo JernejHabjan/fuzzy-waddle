@@ -13,26 +13,46 @@
     },
     "displayList": [
         {
-            "type": "Image",
-            "id": "6fa3b318-5e1b-484d-aedb-62be0a74f353",
-            "label": "foliage_trees_resources_tree11_png",
-            "hitArea.shape": "POLYGON",
-            "hitArea.points": "3.784376857318719 27.45468445486062 20.869663472802703 17.062602905236346 48.523168613328316 11.073945741046074 91.1483166643296 21.289890315252997 88.15398808223446 46.12520384910084 57.33001738419635 60.04002490707233 59.795935040039396 89.80717375260627 35.66516940786099 90.5117216542757 30.733334096174897 84.52306449008546 40.24473076871237 63.73890139083691 29.32423829283601 46.301340824518206 7.307116365665934 36.43767020114601",
-            "texture": {
-                "key": "outside",
-                "frame": "foliage/trees/resources/tree11.png"
-            },
-            "x": 92,
+            "type": "Container",
+            "id": "b7250b20-2ab5-4ca0-a2cf-4ccd551b5d5a",
+            "label": "container_1",
+            "x": 93,
             "y": 169,
-            "scaleX": 2,
-            "scaleY": 2,
-            "originY": 0.917368042051417
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "6fa3b318-5e1b-484d-aedb-62be0a74f353",
+                    "label": "foliage_trees_resources_tree11_png",
+                    "hitArea.shape": "POLYGON",
+                    "hitArea.points": "3.784376857318719 27.45468445486062 20.869663472802703 17.062602905236346 48.523168613328316 11.073945741046074 91.1483166643296 21.289890315252997 88.15398808223446 46.12520384910084 57.33001738419635 60.04002490707233 59.795935040039396 89.80717375260627 35.66516940786099 90.5117216542757 30.733334096174897 84.52306449008546 40.24473076871237 63.73890139083691 29.32423829283601 46.301340824518206 7.307116365665934 36.43767020114601",
+                    "texture": {
+                        "key": "outside",
+                        "frame": "foliage/trees/resources/tree11.png"
+                    },
+                    "y": -169,
+                    "scaleX": 2,
+                    "scaleY": 2,
+                    "originY": 0
+                },
+                {
+                    "prefabId": "f85960b3-fbc6-4971-adb9-ac3bc4ebea8e",
+                    "id": "f817f328-4c10-4e5e-bd6a-b967e2dad4b9",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "treeBird",
+                    "scope": "CLASS",
+                    "x": -53,
+                    "y": -35
+                }
+            ]
         }
     ],
     "plainObjects": [],
     "meta": {
-        "app": "Phaser Editor 2D - Scene Editor",
-        "url": "https://phasereditor2d.com",
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
         "contentType": "phasereditor2d.core.scene.SceneContentType",
         "version": 5
     }

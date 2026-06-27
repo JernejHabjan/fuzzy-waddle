@@ -1,0 +1,45 @@
+{
+    "id": "f64cc718-5fab-44b8-b0f7-14254f01b2bb",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 150,
+        "borderHeight": 150
+    },
+    "displayList": [
+        {
+            "type": "Sprite",
+            "id": "2cf9674c-59cb-41cd-a083-61e1033b67a9",
+            "label": "forest_wendigo_idle_se",
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": 50,
+            "hitArea.y": 50,
+            "hitArea.radius": 27.39945381949527,
+            "texture": {
+                "key": "mobs_wendigo",
+                "frame": "wendigo - idle/s/0.png"
+            },
+            "x": 75,
+            "y": 107.32729416367076,
+            "scaleX": 1.5,
+            "scaleY": 1.5,
+            "originY": 0.7157949246115552,
+            "animationPlayMethod": 1,
+            "animationKey": "mobs_forest_wendigo_wendigo - idle/s"
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

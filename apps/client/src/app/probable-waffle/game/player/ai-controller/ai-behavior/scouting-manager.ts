@@ -26,7 +26,7 @@ export class ScoutingManager {
   ) {}
 
   /** Evaluate if more scouting is needed (unvisited sectors threshold). */
-  needToScout(now: number = performance.now()): boolean {
+  needToScout(now: number = this.blackboard.getNow()): boolean {
     if (now - this.lastNeedEval < 1500) return this.cachedNeed;
     this.lastNeedEval = now;
     // Count sectors visited in last 20s
@@ -39,7 +39,7 @@ export class ScoutingManager {
   }
 
   /** Mark sectors around visible friendly units as visited. Call periodically. */
-  updateVisionSampling(now: number = performance.now()) {
+  updateVisionSampling(now: number = this.blackboard.getNow()) {
     this.blackboard.units.forEach((u) => {
       const body: any = u.body || u;
       if (!body || body.x == null) return;
@@ -49,7 +49,7 @@ export class ScoutingManager {
     });
   }
 
-  assignScoutUnits(now: number = performance.now()): boolean {
+  assignScoutUnits(now: number = this.blackboard.getNow()): boolean {
     if (now - this.lastAssignAt < this.assignCooldownMs) return false;
     const idleCandidates: GameObject[] = [];
     this.blackboard.units.forEach((u) => {

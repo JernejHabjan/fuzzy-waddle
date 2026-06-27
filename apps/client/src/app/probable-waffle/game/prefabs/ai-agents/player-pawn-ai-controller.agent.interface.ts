@@ -10,10 +10,14 @@ export interface IPlayerPawnControllerAgent {
   PlayerOrderIs(orderType: string): boolean;
 
   // Assign orders
-  AssignDropOffResourcesOrder(): State;
-  AssignGatherResourcesOrder(): State;
+  AssignDropOffResourcesOrder(): Promise<State>;
+  AssignGatherResourcesOrder(): Promise<State>;
   AssignEnemy(source: string): State;
   AssignMoveRandomlyInRange(range: number): Promise<State>;
+
+  // Status Effects
+  IsStunned(): boolean;
+  IsSlowed(): boolean;
 
   // Combat-related Actions
   HasAttackComponent(): boolean;
@@ -23,6 +27,9 @@ export interface IPlayerPawnControllerAgent {
   Attack(): State;
   NoEnemiesVisible(): boolean;
   AnyEnemyVisible(): boolean;
+  AnyAttackableEnemyVisible(): boolean;
+  AssignAttackableEnemyToCurrentOrder(): State;
+  CanAttackCurrentTarget(): boolean;
   CooldownReady(type: PlayerPawnCooldownType): boolean;
   Attacked(): boolean;
 
@@ -31,9 +38,24 @@ export interface IPlayerPawnControllerAgent {
   CanHeal(): boolean;
   HasHealerComponent(): boolean;
 
+  // Spell Casting
+  HasSpellComponent(): boolean;
+  HasAutocastSpellReady(): boolean;
+  CastAutocastSpell(): State;
+
+  // Farm tending
+  TargetHasTendableComponent(): boolean;
+  GrowthReady(): boolean;
+  GrowthPercentBelow(threshold: number): boolean;
+  AssignSelfAsTender(): State;
+  UnassignSelfAsTender(): State;
+  MoveToRandomSpotOnTarget(): Promise<State>;
+  PlaySeedingAnimation(): State;
+  PlayTendingAnimation(): State;
+
   // Resource Gathering
-  AcquireNewResourceSource(): State;
-  AcquireNewResourceDrain(): State;
+  AcquireNewResourceSource(): Promise<State>;
+  AcquireNewResourceDrain(): Promise<State>;
   GatherResource(): Promise<State>;
   DropOffResources(): Promise<State>;
   ContinueGathering(): State;
@@ -48,7 +70,7 @@ export interface IPlayerPawnControllerAgent {
   CanAssignBuilder(): boolean;
   HasBuilderComponent(): boolean;
   LeaveConstructionSiteOrCurrentContainer(): State;
-  AssignNextBuildOrder(): State;
+  AssignNextBuildOrder(): Promise<State>;
 
   // Repair
   ConstructionSiteFinished(): boolean;
@@ -60,7 +82,7 @@ export interface IPlayerPawnControllerAgent {
   MoveToTarget(type: PlayerPawnRangeType): Promise<State>;
   MoveToTargetOrLocation(type: PlayerPawnRangeType): Promise<State>;
   MoveToLocation(): Promise<State>;
-  Stop(): State;
+  Stop(fromNode: string): State;
   TargetExists(): boolean;
   TargetOrLocationExists(): boolean;
 

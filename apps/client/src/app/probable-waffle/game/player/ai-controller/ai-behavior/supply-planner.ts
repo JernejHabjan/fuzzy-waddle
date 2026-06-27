@@ -1,8 +1,8 @@
 import { PlayerAiBlackboard } from "../player-ai-blackboard";
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 
-export type SupplyUrgency = "none" | "normal" | "emergency";
-export interface SupplyAssessment {
+type SupplyUrgency = "none" | "normal" | "emergency";
+interface SupplyAssessment {
   urgency: SupplyUrgency;
   reason: string;
 }
@@ -20,7 +20,7 @@ export class SupplyPlanner {
 
   constructor(private readonly blackboard: PlayerAiBlackboard) {}
 
-  assess(now: number = performance.now()): SupplyAssessment {
+  assess(now: number = this.blackboard.getNow()): SupplyAssessment {
     if (now - this.lastAssessAt < this.assessCooldownMs) return this.cached;
     this.lastAssessAt = now;
     const supply = this.blackboard.production.supply;

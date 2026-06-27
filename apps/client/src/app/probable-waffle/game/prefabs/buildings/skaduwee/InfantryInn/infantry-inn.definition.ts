@@ -1,5 +1,5 @@
 import { ANIM_BUILDING_ICON_ANIMS_SKADUWEE_INFANTRY_INN } from "../../../icon-animations";
-import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { getBuildingQueueCapabilities, ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PaymentType } from "../../../../entity/components/production/payment-type";
 import { coreConstructionSiteDefinition } from "../../shared/core-construction-site.definition";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
@@ -9,7 +9,8 @@ export const infantryInnDefinition = {
   components: {
     representable: {
       width: 128,
-      height: 128
+      height: 128,
+      origin: { x: 0.5, y: 0.8 }
     },
     objectDescriptor: {
       color: 0xf2f7fa
@@ -28,6 +29,11 @@ export const infantryInnDefinition = {
     info: {
       name: "Infantry Inn",
       description: "Trains infantry units",
+      tooltipDescription: [
+        "Trains infantry units",
+        "Produces melee, ranged, and magic fighters",
+        "Core military production building"
+      ],
       portraitAnimation: {
         idle: ANIM_BUILDING_ICON_ANIMS_SKADUWEE_INFANTRY_INN,
         action: ANIM_BUILDING_ICON_ANIMS_SKADUWEE_INFANTRY_INN
@@ -40,25 +46,26 @@ export const infantryInnDefinition = {
     },
     health: {
       physicalState: ActorPhysicalType.Structural,
-      maxHealth: 100
+      maxHealth: 400
     },
     productionCost: {
       resources: {
-        [ResourceType.Wood]: 10,
-        [ResourceType.Minerals]: 10
+        [ResourceType.Wood]: 200,
+        [ResourceType.Stone]: 50
       },
       refundFactor: 0.5,
-      productionTime: 5000,
+      productionTime: 20000,
       costType: PaymentType.PayImmediately
     },
     production: {
+      availableProduceActors: getBuildingQueueCapabilities(ObjectNames.InfantryInn)!.availableProduceActors!
+    },
+    queue: {
       queueCount: 1,
-      capacityPerQueue: 5,
-      availableProduceActors: [
-        ObjectNames.SkaduweeMagicianFemale,
-        ObjectNames.SkaduweeRangedFemale,
-        ObjectNames.SkaduweeWarriorMale
-      ]
+      capacityPerQueue: 5
+    },
+    research: {
+      availableResearch: getBuildingQueueCapabilities(ObjectNames.InfantryInn)!.availableResearch!
     },
     selectable: {},
     collider: { enabled: true },

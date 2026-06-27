@@ -32,7 +32,12 @@ export class AnimatedTile {
    * @param {TileAnimationData} tileAnimationData  - the animation data
    * @param {number} firstgid - the starting index of the first tile index the tileset of the tile contains
    */
-  constructor(tile: Phaser.Tilemaps.Tile, tileAnimationData: TileAnimationData, firstgid: number) {
+  constructor(
+    tile: Phaser.Tilemaps.Tile,
+    tileAnimationData: TileAnimationData,
+    firstgid: number,
+    private readonly scene: Phaser.Scene
+  ) {
     this.tile = tile;
     this.tileAnimationData = tileAnimationData;
     this.firstgid = firstgid;
@@ -49,7 +54,9 @@ export class AnimatedTile {
    * @param {number} delta - the delta time in ms since the last frame
    */
   public update(delta: number): void {
-    this.elapsedTime += delta;
+    const deltaWithTimeScale = delta * this.scene.time.timeScale;
+
+    this.elapsedTime += deltaWithTimeScale;
     this.elapsedTime %= this.animationDuration;
 
     const animationFrameIndex = Math.floor(this.elapsedTime / this.tileAnimationData[0]!.duration);

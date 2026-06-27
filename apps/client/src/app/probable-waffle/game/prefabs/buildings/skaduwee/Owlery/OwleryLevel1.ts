@@ -51,9 +51,10 @@ export default class OwleryLevel1 extends Phaser.GameObjects.Container {
       owlSprite.play(ANIM_SKADUWEE_BUILDINGS_OWLERY_OWL, true);
     });
     const randomDelay = Phaser.Math.Between(20000, 40000);
-    setTimeout(() => {
+    // Intentional wall-clock timer: owl flap loop is ambient animation only.
+    this.scene.time.delayedCall(randomDelay, () => {
       this.flapRandomly(owlSprite);
-    }, randomDelay);
+    });
   };
   /* END-USER-CODE */
 }

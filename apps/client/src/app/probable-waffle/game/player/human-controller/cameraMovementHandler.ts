@@ -1,26 +1,40 @@
 import { Cameras, Geom, Input, type Types } from "phaser";
 import GameProbableWaffleScene from "../../world/scenes/GameProbableWaffleScene";
+import { Subscription } from "rxjs";
+import { getSceneExternalComponent } from "../../world/services/scene-component-helpers";
+import { OptionsService } from "../../../gui/options/options.service";
+import { GameSettings } from "../../core/gameSettings";
+import type { CameraStateData } from "@fuzzy-waddle/api-interfaces";
+import { FULLSCREEN_TOP_EDGE_PX, isFullscreenTopEdgeExit } from "./fullscreen-edge-guard";
+
+export interface CameraMovementHandlerConfig {
+  cameraEdgeMovementSpeed: number;
+  cameraKeyboardMovementSpeed: number;
+  enabledMouseCornerMovement?: boolean;
+  /** Set to true when the cursor is guaranteed to already be inside the game window at startup (e.g. Tauri desktop). */
+  cursorOverGame?: boolean;
+}
 
 export class CameraMovementHandler {
-  private readonly enabledMouseCornerMovement = false;
   private readonly input: Input.InputPlugin;
   private readonly mainCamera: Cameras.Scene2D.Camera;
-  private cursorOverGameInstance = false;
+  private cursorOverGameInstance: boolean;
   private keyboardMovementControls: Cameras.Controls.FixedKeyControl | null = null;
   private readonly cameraEdgeMargin = 30;
+  private readonly cameraEdgeMarginTop = FULLSCREEN_TOP_EDGE_PX;
   private readonly cameraMinZoom = 30;
   private readonly cameraMaxZoom = 0.3;
+  private optionsChangedSubscription?: Subscription;
+  private cameraStateSetFromData: boolean = false;
 
   constructor(
     private readonly scene: Phaser.Scene,
-    private readonly config: {
-      cameraEdgeMovementSpeed: number;
-      cameraKeyboardMovementSpeed: number;
-    } = {
+    private config: CameraMovementHandlerConfig = {
       cameraEdgeMovementSpeed: 30,
       cameraKeyboardMovementSpeed: 2
     }
   ) {
+    this.cursorOverGameInstance = config.cursorOverGame ?? false;
     this.mainCamera = scene.cameras.main;
     this.input = scene.input;
     this.createKeyboardControls();
@@ -28,8 +42,14 @@ export class CameraMovementHandler {
     this.zoomListener();
     this.screenEdgeListener();
     this.scene.events.on(Phaser.Scenes.Events.CREATE, this.create, this);
-    this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
+    // Intentional frame update: camera movement is input/rendering behavior, not deterministic simulation state.
+    this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.updateFrameNonDeterministic, this);
     this.scene.events.on(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
+    this.subscribeToOptions();
+  }
+
+  setConfig(config: Partial<CameraMovementHandlerConfig>) {
+    this.config = { ...this.config, ...config };
   }
 
   /**
@@ -47,7 +67,7 @@ export class CameraMovementHandler {
     );
   }
 
-  update(time: number, delta: number) {
+  updateFrameNonDeterministic(_: number, delta: number) {
     this.keyboardMovementControls?.update(delta);
     this.screenEdgeMovementUpdate();
   }
@@ -60,18 +80,20 @@ export class CameraMovementHandler {
     this.input.on(Input.Events.POINTER_MOVE, this.handlePointerMove, this);
     this.input.on(Input.Events.POINTER_UP, this.handlePointerUp, this);
     this.keyboardMovementControls?.destroy();
+    this.optionsChangedSubscription?.unsubscribe();
   }
 
   private createKeyboardControls() {
     if (!this.input.keyboard) return;
     const cursors = this.input.keyboard.createCursorKeys();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const wasdKeys = this.input.keyboard.addKeys({
-      up: Input.Keyboard.KeyCodes.W,
-      left: Input.Keyboard.KeyCodes.A,
-      down: Input.Keyboard.KeyCodes.S,
-      right: Input.Keyboard.KeyCodes.D
-    }) satisfies Partial<Types.Input.Keyboard.CursorKeys>;
+    // WASD disabled for camera movement as it conflicts with player controls, but can be easily re-enabled if needed in the future
+    // const wasdKeys = this.input.keyboard.addKeys({
+    //   up: Input.Keyboard.KeyCodes.W,
+    //   left: Input.Keyboard.KeyCodes.A,
+    //   down: Input.Keyboard.KeyCodes.S,
+    //   right: Input.Keyboard.KeyCodes.D
+    // }) satisfies Partial<Types.Input.Keyboard.CursorKeys>;
 
     // wasdKey can also be used here
     const controlConfig: Types.Cameras.Controls.FixedKeyControlConfig = {
@@ -118,8 +140,13 @@ export class CameraMovementHandler {
     this.input.off(Input.Events.POINTER_MOVE, this.handlePointerMove);
   }
 
+  /**
+   * Handle edge scrolling based on pointer position
+   * Note: Works automatically with pointer lock via patched Pointer.move()
+   * (see apps/client/src/app/shared/game/phaser/patches/pointer-lock-patch.ts)
+   */
   private screenEdgeMovementUpdate() {
-    if (!this.enabledMouseCornerMovement || !this.cursorOverGameInstance) return;
+    if (!this.config.enabledMouseCornerMovement || !this.cursorOverGameInstance) return;
 
     const pointer = this.input.activePointer;
     const margin = this.cameraEdgeMargin;
@@ -137,8 +164,9 @@ export class CameraMovementHandler {
       this.mainCamera.scrollX += speed * factor;
     }
     // Top
-    if (pointer.y < margin) {
-      const factor = 1 - pointer.y / margin;
+    const topMargin = this.cameraEdgeMarginTop;
+    if (pointer.y < topMargin) {
+      const factor = 1 - pointer.y / topMargin;
       this.mainCamera.scrollY -= speed * factor;
     }
     // Bottom
@@ -235,6 +263,7 @@ export class CameraMovementHandler {
 
   private screenEdgeListener() {
     this.input.on(Input.Events.GAME_OUT, () => {
+      if (isFullscreenTopEdgeExit(this.input)) return;
       this.cursorOverGameInstance = false;
       this.input.off(Input.Events.POINTER_MOVE, this.handlePointerMove);
     });
@@ -243,7 +272,20 @@ export class CameraMovementHandler {
     });
   }
 
+  private subscribeToOptions() {
+    const optionsService = getSceneExternalComponent(this.scene, OptionsService);
+    this.optionsChangedSubscription = optionsService?.settingsChanged.subscribe((change) => {
+      if (change.type === "game") {
+        const newGameSettings = change.payload as GameSettings;
+        this.setConfig({
+          enabledMouseCornerMovement: newGameSettings.enabledMouseCornerMovement
+        });
+      }
+    });
+  }
+
   private create() {
+    if (this.cameraStateSetFromData) return;
     this.centerCameraOnSpawnPoint();
   }
 
@@ -256,6 +298,55 @@ export class CameraMovementHandler {
     if (initialWorldSpawnPosition) {
       this.mainCamera.scrollX = initialWorldSpawnPosition.x - this.mainCamera.width / 2;
       this.mainCamera.scrollY = initialWorldSpawnPosition.y - this.mainCamera.height / 2;
+      this.clampCameraToBounds();
     }
+  }
+
+  /**
+   * Clamps the camera position to stay within the defined bounds.
+   * Uses isCameraOutOfBounds to check if clamping is needed.
+   */
+  private clampCameraToBounds(): void {
+    if (!this.mainCamera.useBounds) return;
+    if (!this.isCameraOutOfBounds) return;
+
+    const bounds = this.mainCamera.getBounds();
+    const worldView = this.recalculateCameraWorldView();
+
+    // Clamp camera position to bounds
+    if (worldView.left < bounds.left) {
+      this.mainCamera.scrollX = bounds.left + worldView.width / 2;
+    }
+    if (worldView.right > bounds.right) {
+      this.mainCamera.scrollX = bounds.right - worldView.width / 2;
+    }
+    if (worldView.top < bounds.top) {
+      this.mainCamera.scrollY = bounds.top + worldView.height / 2;
+    }
+    if (worldView.bottom > bounds.bottom) {
+      this.mainCamera.scrollY = bounds.bottom - worldView.height / 2;
+    }
+  }
+
+  /**
+   * Get the current camera state for saving.
+   */
+  getCameraState(): CameraStateData {
+    return {
+      scrollX: this.mainCamera.scrollX,
+      scrollY: this.mainCamera.scrollY,
+      zoom: this.mainCamera.zoom
+    };
+  }
+
+  /**
+   * Set camera state from saved data.
+   * Validates camera bounds to ensure the camera is within valid range.
+   */
+  setCameraState(state: CameraStateData): void {
+    if (state.scrollX !== undefined) this.mainCamera.scrollX = state.scrollX;
+    if (state.scrollY !== undefined) this.mainCamera.scrollY = state.scrollY;
+    if (state.zoom !== undefined) this.mainCamera.zoom = state.zoom;
+    if (state.scrollX !== undefined || state.scrollY !== undefined) this.cameraStateSetFromData = true;
   }
 }

@@ -1,5 +1,5 @@
-import { type SoundDefinition } from "../../../../../entity/components/actor-audio/audio-actor-component";
 import { AudioSprites } from "../../../../../sfx/audio-sprites";
+import type { SoundDefinition } from "../../../../../entity/components/actor-audio/sound-definition";
 
 export enum SfxBush {
   BUSH_RUSTLE_1 = "bush rustle 1",

@@ -1,0 +1,74 @@
+{
+    "id": "562e6de3-f2af-48c3-b297-7d67a34dfe91",
+    "sceneType": "PREFAB",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 32,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "d41c62a4-6a00-44db-a1c6-30b7bebef470",
+            "label": "container_1",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "-23.458392181796142 -67.23014929027885 0.0015186356688623448 -84.92122957885901 22.3076633473569 -69.53768150183278 26.15355036661346 -6.46513438602522 32.30696959742395 3.1495831621161727 -0.5751191417874324 19.805161133512343 -32.56631031021266 2.9370785174335907",
+            "x": 32,
+            "y": 96,
+            "list": [
+                {
+                    "prefabId": "2475b77a-58b3-4f6b-87cc-b2502d73ad23",
+                    "id": "96a92624-cba8-4df2-9bb4-7e9c9781657a",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "visible"
+                    ],
+                    "label": "emberStoneCursor",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0,
+                    "visible": false
+                },
+                {
+                    "prefabId": "0e262c51-e497-4b22-b8da-4b99fb226053",
+                    "id": "f4c05a42-b796-43ed-b5ce-c89585fdebc3",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "visible"
+                    ],
+                    "label": "emberStoneFoundation1",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0,
+                    "visible": false
+                },
+                {
+                    "prefabId": "1757a63f-b1b5-4c04-a8e6-1227fabf9393",
+                    "id": "8287ef48-964b-47c0-a3e6-522e0e6cfa6b",
+                    "unlock": [
+                        "x",
+                        "y"
+                    ],
+                    "label": "emberStoneLevel1",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": 0
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

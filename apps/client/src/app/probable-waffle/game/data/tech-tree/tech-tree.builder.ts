@@ -1,85 +1,157 @@
 // Pure builder that infers tech graph from prefab actor definitions.
-import { type TechTreeGraph, type TechTreeNode } from "./tech-tree.types";
-import { FactionType, ObjectNames } from "@fuzzy-waddle/api-interfaces";
-import { pwActorDefinitions } from "../../prefabs/definitions/actor-definitions";
+import { type TechTreeGraph } from "./tech-tree-graph";
+import { ObjectNames, PreRequirement } from "@fuzzy-waddle/api-interfaces";
+import { getPwActorDefinition } from "../../prefabs/definitions/actor-definitions";
+import { BuilderComponent } from "../../entity/components/construction/builder-component";
+import type { TechTreeNode } from "./tech-tree-node";
 
-function detectFaction(objectName: string): FactionType | null {
-  // todo
-  if (objectName.toLowerCase().includes("tivara")) return FactionType.Tivara;
-  if (objectName.toLowerCase().includes("skaduwee")) return FactionType.Skaduwee;
-  return null;
-}
+/**
+ * Recursively gather all actors starting from main buildings.
+ * This creates a unified tech tree containing actors from all factions.
+ */
+function gatherAllActors(mainBuildingNames: ObjectNames[]): Set<ObjectNames> {
+  const allActors = new Set<ObjectNames>();
+  const visited = new Set<ObjectNames>();
 
-function isWorkerName(name: string): boolean {
-  return /tivara.*worker/i.test(name) || /skaduwee.*worker/i.test(name); // todo
+  function visit(actorName: ObjectNames) {
+    if (visited.has(actorName)) return;
+    visited.add(actorName);
+    allActors.add(actorName);
+
+    const definition = getPwActorDefinition(actorName, null);
+    if (!definition) return;
+
+    const components = definition.components || {};
+
+    // Add all actors that can be produced by this building
+    const producible = components.production?.availableProduceActors || [];
+    producible.forEach((actor) => visit(actor as ObjectNames));
+
+    // Add all buildings that can be constructed by this unit
+    if (components.builder?.constructableBuildings) {
+      const constructable = BuilderComponent.getFlatConstructableBuildings(components.builder.constructableBuildings);
+      constructable.forEach((building) => visit(building as ObjectNames));
+    }
+
+    // Add all required actors (tech requirements)
+    const requirements = components.requirements?.actors || [];
+    requirements.forEach((required) => visit(required as ObjectNames));
+  }
+
+  mainBuildingNames.forEach((mainBuilding) => visit(mainBuilding));
+  return allActors;
 }
 
 export class TechTreeBuilder {
-  // Build per-faction graphs (workers used as roots) with produce & construct edges.
-  static build(): Record<FactionType, TechTreeGraph> {
-    const graphs: Record<FactionType, TechTreeGraph> = {
-      [FactionType.Tivara]: { faction: FactionType.Tivara, nodes: {}, roots: [] },
-      [FactionType.Skaduwee]: { faction: FactionType.Skaduwee, nodes: {}, roots: [] }
-    } as const;
+  /**
+   * Build a unified tech tree graph containing all actors from all factions.
+   *
+   * Algorithm:
+   * 1. Start from all main buildings (Sandhold, FrostForge)
+   * 2. Recursively follow production, construction, and requirement relationships
+   * 3. Build complete actor set
+   * 4. Create nodes and infer all relationships
+   */
+  static build(): TechTreeGraph {
+    // Step 1: Gather all actors from all factions
+    const allActors = gatherAllActors([ObjectNames.Sandhold, ObjectNames.FrostForge]);
 
-    // First pass: create nodes & identify roots
-    Object.entries(pwActorDefinitions).forEach(([key, def]) => {
-      const faction = detectFaction(key);
-      if (!faction) return;
-      const id = key as ObjectNames;
+    const graph: TechTreeGraph = { nodes: {} };
+
+    // Step 2: Create nodes for all actors
+    allActors.forEach((actorName: ObjectNames) => {
+      const definition = getPwActorDefinition(actorName, null);
+      if (!definition) return;
+
+      const components = definition.components || {};
+      let kind: "Unit" | "Building" | "Upgrade" = "Unit";
+      if (components.production || components.constructable) {
+        kind = "Building";
+      }
+
       const node: TechTreeNode = {
-        id,
-        faction,
-        kind: "Unit", // default; will refine below
-        prerequisites: [],
+        id: actorName,
+        kind,
+        prerequisites: new PreRequirement(),
         produces: [],
-        constructs: []
+        constructs: [],
+        definition
       };
-      const components = def.components || {};
-      if (components.production) node.kind = "Building";
-      if (components.builder) node.kind = node.kind === "Building" ? "Building" : "Unit";
-      graphs[faction].nodes[id] = node;
-      if (isWorkerName(key)) {
-        graphs[faction].roots.push(id);
-      }
+
+      graph.nodes[actorName] = node;
     });
 
-    // Second pass: add edges
-    Object.entries(pwActorDefinitions).forEach(([key, def]) => {
-      const faction = detectFaction(key);
-      if (!faction) return;
-      const components = def.components || {};
-      const fromNode = graphs[faction].nodes[key];
+    // Step 3: Build prerequisite relationships from requirements
+    allActors.forEach((actorName) => {
+      const node = graph.nodes[actorName];
+      if (!node) return;
+
+      const definition = getPwActorDefinition(actorName, null);
+      const requirements = definition?.components?.requirements?.actors;
+
+      // Add object (building/unit) prerequisites
+      if (requirements && Array.isArray(requirements)) {
+        requirements.forEach((requiredActor) => {
+          // Only add prerequisite if the required actor exists in the graph
+          if (graph.nodes[requiredActor] && !node.prerequisites.prereqs.objectNames.includes(requiredActor)) {
+            node.prerequisites.prereqs.objectNames.push(requiredActor);
+          }
+        });
+      }
+
+      // NOTE: We do NOT add spell research as prerequisites for unit creation.
+      // Units can be created even if their spells aren't researched yet.
+      // Spell research only gates whether those spells can be cast, not whether the unit can be produced.
+      // This is handled at the spell usage level via SpellComponent.isSpellResearched()
+    });
+
+    // Step 4: Build production and construction edges
+    allActors.forEach((actorName) => {
+      const fromNode = graph.nodes[actorName];
       if (!fromNode) return;
+
+      const definition = getPwActorDefinition(actorName, null);
+      const components = definition?.components || {};
+
       // Production edges
-      const produce: string[] | undefined = components.production?.availableProduceActors;
-      if (Array.isArray(produce)) {
-        produce.forEach((p) => {
-          if (graphs[faction].nodes[p]) {
-            fromNode.produces.push(p as ObjectNames);
-            // Add prerequisite link on produced node
-            const producedNode = graphs[faction].nodes[p];
-            if (producedNode && !producedNode.prerequisites.includes(fromNode.id)) {
-              producedNode.prerequisites.push(fromNode.id);
+      const producible = components.production?.availableProduceActors;
+      if (Array.isArray(producible)) {
+        producible.forEach((producedActor) => {
+          const producedActorName = producedActor as ObjectNames;
+          const producedNode = graph.nodes[producedActorName];
+
+          if (producedNode) {
+            if (!fromNode.produces.includes(producedActorName)) {
+              fromNode.produces.push(producedActorName);
+            }
+
+            // Add prerequisite: produced unit requires this building
+            if (!producedNode.prerequisites.prereqs.objectNames.includes(fromNode.id)) {
+              producedNode.prerequisites.prereqs.objectNames.push(fromNode.id);
             }
           }
         });
       }
-      // Construction edges (workers / builders)
-      const constructs: string[] | undefined = components.builder?.constructableBuildings;
-      if (Array.isArray(constructs)) {
-        constructs.forEach((b) => {
-          if (graphs[faction].nodes[b]) {
-            fromNode.constructs.push(b as ObjectNames);
-            const buildingNode = graphs[faction].nodes[b];
-            if (buildingNode && !buildingNode.prerequisites.includes(fromNode.id)) {
-              buildingNode.prerequisites.push(fromNode.id);
+
+      // Construction edges
+      if (components.builder?.constructableBuildings) {
+        const constructable = BuilderComponent.getFlatConstructableBuildings(components.builder.constructableBuildings);
+        constructable.forEach((buildingObjectName) => {
+          const buildingNode = graph.nodes[buildingObjectName];
+
+          if (buildingNode) {
+            if (!fromNode.constructs.includes(buildingObjectName)) {
+              fromNode.constructs.push(buildingObjectName);
             }
+
+            // NOTE: We do NOT add the builder as a tech prerequisite for buildings.
+            // Buildings only need builders to physically construct them, not as tech unlocks.
+            // Tech prerequisites come from the building's `requirements` component only.
           }
         });
       }
     });
 
-    return graphs;
+    return graph;
   }
 }

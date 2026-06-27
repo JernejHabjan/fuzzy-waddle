@@ -1,23 +1,43 @@
 @use "../../../../styles/_variables.scss" as *;
 
-.logo {
-  display: flex;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-
-  .logo-text {
-    display: none; // Hide original logo text as we're replacing it
-  }
-}
-
-.constellation-background {
+.home-background {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   z-index: 1;
+  opacity: 0.5;
+}
+
+.home-container {
+  position: relative;
+  min-height: 100vh;
+  height: auto;
+  overflow-x: clip;
+  overflow-y: auto;
+  background-color: #14171c;
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  &::before {
+    inset: 1.5rem;
+    border: 1px solid rgba(111, 85, 52, 0.16);
+    box-shadow:
+      inset 0 0 0 1px rgba(240, 196, 107, 0.03),
+      inset 0 0 0 3rem rgba(0, 0, 0, 0.04);
+  }
+
+  &::after {
+    inset: 2.5rem;
+    border: 1px solid rgba(111, 85, 52, 0.3);
+  }
 }
 
 .home-content {
@@ -25,11 +45,12 @@
   z-index: 2;
   display: flex;
   width: 100%;
-  height: 100%;
+  height: auto;
   align-items: center;
   justify-content: space-between;
-  padding: 2rem 2rem 2rem 0;
-  gap: 2rem;
+  min-height: 100vh;
+  padding: 3rem 3rem 3rem 0;
+  gap: 3rem;
   pointer-events: none;
 }
 
@@ -38,31 +59,76 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
+  min-width: 0;
 }
+
+.banner-placeholder {
+  width: 300px;
+  height: clamp(28rem, 72vh, 48rem);
+  flex: 0 0 auto;
+}
+
 .menu-container {
   pointer-events: all;
+  padding: 2rem 0;
+}
+
+.mobile-warning-content {
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #f5ecd9;
+
+  p {
+    margin-bottom: 1rem;
+  }
 }
 
 // Responsive design
 @media (max-width: 1200px) {
   .home-content {
     flex-direction: column;
-    justify-content: start;
-    padding: 1rem;
+    justify-content: flex-start;
+    min-height: 100vh;
+    padding: 2rem 1rem 3rem;
     gap: 3rem;
   }
+
   .menu-container {
-    height: 0;
+    width: 100%;
+    padding: 0;
   }
 
   .left-container {
     flex: 0;
+    width: 100%;
+    justify-content: center;
   }
 }
 
 @media (max-width: 768px) {
+  .home-container {
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    &::before,
+    &::after {
+      inset: 0.75rem;
+    }
+  }
+
   .home-content {
-    padding: 1rem;
+    padding: 1.5rem 0.75rem 2rem;
     gap: 2rem;
+    align-items: center;
+  }
+
+  .menu-container,
+  .left-container {
+    width: 100%;
+  }
+
+  .menu-container {
+    display: flex;
+    justify-content: center;
   }
 }

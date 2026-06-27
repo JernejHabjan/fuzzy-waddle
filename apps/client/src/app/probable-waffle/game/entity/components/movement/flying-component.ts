@@ -3,11 +3,8 @@ import { HealthComponent } from "../combat/components/health-component";
 import { Subscription } from "rxjs";
 import { getActorComponent } from "../../../data/actor-component";
 import { ActorTranslateComponent } from "./actor-translate-component";
+import type { FlightDefinition } from "./flight-definition";
 import Graphics = Phaser.GameObjects.Graphics;
-
-export interface FlightDefinition {
-  height: number;
-}
 
 export class FlyingComponent {
   private verticalLineGraphics?: Graphics;

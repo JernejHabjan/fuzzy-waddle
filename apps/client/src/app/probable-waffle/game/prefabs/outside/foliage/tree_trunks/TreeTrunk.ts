@@ -3,11 +3,7 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { setActorData } from "../../../../data/actor-data";
-import {
-  ObjectDescriptorComponent,
-  type ObjectDescriptorDefinition
-} from "../../../../entity/components/object-descriptor-component";
+import { initStaticActor } from "../../../../data/init-static-actor";
 /* END-USER-IMPORTS */
 
 export default class TreeTrunk extends Phaser.GameObjects.Image {
@@ -17,15 +13,7 @@ export default class TreeTrunk extends Phaser.GameObjects.Image {
     this.setInteractive(new Phaser.Geom.Rectangle(24, 6, 16, 16), Phaser.Geom.Rectangle.Contains);
 
     /* START-USER-CTR-CODE */
-    setActorData(
-      this,
-      [
-        new ObjectDescriptorComponent({
-          color: 0xaa865a
-        } satisfies ObjectDescriptorDefinition)
-      ],
-      []
-    );
+    initStaticActor(this, 0xaa865a);
     /* END-USER-CTR-CODE */
   }
 

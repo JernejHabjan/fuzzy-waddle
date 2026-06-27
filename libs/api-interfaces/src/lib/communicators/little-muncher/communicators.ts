@@ -2,6 +2,7 @@ export type LittleMuncherCommunicatorType = "move" | "score" | "pause" | "timeCl
 
 export interface LittleMuncherCommunicatorScoreEvent {
   score: number;
+  stage: "game" | "final";
 }
 
 export interface LittleMuncherCommunicatorClimbingEvent {

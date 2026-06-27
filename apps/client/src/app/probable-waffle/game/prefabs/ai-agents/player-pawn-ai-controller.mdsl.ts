@@ -1,17 +1,17 @@
 /**
- * sequence - (needs all succeeded in sequence) updates in sequence - moves to succeeded if all children have succeeded, moves to failed if any have failed
- * selector - (any succeed in sequence) updates in sequence - moves to failed if all have failed, moves to success if any have succeeded
- * parallel - runs multiple until all SUCCESS or any FAILURE
- * race - runs multiple until any SUCCESS or all FAILURE
- * all - runs multiple until all finish
+ * sequence - updates in sequence, succeeds if all children succeed, fails if any child fails
+ * selector - updates in sequence, succeeds if any child succeeds, fails if all children fail
+ * parallel - updates all children concurrently, succeeds if all succeed, fails if any fails
+ * race - updates all children concurrently, succeeds if any succeeds, fails if all fail
+ * all - updates all children concurrently until all finish
  * lotto - selects one child to run
  * repeat - runs N times or until child returns FAILURE
- * retry - runs N times if child returns FAILURE, if child returns SUCCESS, returns SUCCESS
- * flip - returns SUCCESS if child returns FAILURE, returns FAILURE if child returns SUCCESS
+ * retry - runs N times if child returns FAILURE, returns SUCCESS if child returns SUCCESS
+ * flip - inverts child result: SUCCESS becomes FAILURE, FAILURE becomes SUCCESS
  * succeed - returns SUCCESS
  * fail - returns FAILURE
  * action - runs a function
- * condition - checks a condition
+ * condition - checks a condition, returns SUCCESS or FAILURE based on result
  * wait - waits for N ms
  * branch - runs another tree
  * callbacks - entry, step, exit functions
@@ -23,14 +23,25 @@
 export const PlayerPawnAiControllerMdsl = `
 root {
     selector {
-        fail {
-            sequence {
-                condition [OrderExistsInQueue]
-                action [AssignNextOrderFromQueue]
+        /* If stunned, do nothing - just wait */
+        sequence {
+            condition [IsStunned]
+            action [Succeed]
+        }
+        /* Normal AI logic when not stunned */
+        sequence {
+            flip { condition [IsStunned] }
+            selector {
+                fail {
+                    sequence {
+                        condition [OrderExistsInQueue]
+                        action [AssignNextOrderFromQueue]
+                    }
+                }
+                branch [ExecuteCurrentOrder]
+                branch [AutoAssignNewOrder]
             }
         }
-        branch [ExecuteCurrentOrder]
-        branch [AutoAssignNewOrder]
     }
 }
 
@@ -44,11 +55,33 @@ root [ExecuteCurrentOrder] {
         branch [Build]
         branch [Repair]
         branch [Heal]
+        branch [EnterContainerOrder]
     }
 }
 
 root [AutoAssignNewOrder] {
     selector {
+
+        /* Autocast spells when ready */
+        sequence {
+            condition [HasSpellComponent]
+            condition [HasAutocastSpellReady]
+            action [CastAutocastSpell]
+        }
+
+        /* Load pending boarders when docked at shore */
+        sequence {
+            condition [IsWaterUnit]
+            condition [HasContainerComponent]
+            condition [HasPendingBoarders]
+            selector {
+                action [LoadPendingBoarders]
+                sequence {
+                    action [MoveToShoreForBoarding]
+                    action [LoadPendingBoarders]
+                }
+            }
+        }
 
         /* Retaliation */
         sequence {
@@ -62,7 +95,7 @@ root [AutoAssignNewOrder] {
 
         /* Attacking visible enemies */
         sequence {
-            condition [AnyEnemyVisible]
+            condition [AnyAttackableEnemyVisible]
             condition [HasAttackComponent]
             flip {
                 condition [HasHarvestComponent]
@@ -80,6 +113,36 @@ root [AutoAssignNewOrder] {
     }
 }
 
+root [EnterContainerOrder] {
+    sequence {
+        condition [PlayerOrderIs, "enterContainer"]
+        succeed {
+            selector {
+                /* Already inside a container — nothing to do */
+                sequence {
+                    condition [IsAlreadyInContainer]
+                    action [Stop, "EnterContainer:AlreadyLoaded"]
+                }
+                /* Land container: walk adjacent, then board if close enough */
+                sequence {
+                    flip { condition [IsWaterContainerTarget] }
+                    action [MoveAdjacentToContainer]
+                    condition [CanBoardContainerNow]
+                    action [BoardContainer]
+                    action [Stop, "EnterContainer:Boarded"]
+                }
+                /* Water container (boat): walk to shore and register boarding request */
+                sequence {
+                    condition [IsWaterContainerTarget]
+                    action [MoveToNearestShoreForContainer]
+                    action [Stop, "EnterContainer:MovedToShore"]
+                }
+                action [Stop, "EnterContainer:Failed"]
+            }
+        }
+    }
+}
+
 root [Attack] {
     sequence { /* ALL MUST SUCCEED */
         condition [PlayerOrderIs, "attack"]
@@ -91,7 +154,7 @@ root [Attack] {
                     flip {
                         condition [TargetOrLocationExists]
                     }
-                    action [Stop]
+                    action [Stop, "Attack - No Target Or Location"]
                 }
 
                 /* if no attack component, stop */
@@ -99,7 +162,7 @@ root [Attack] {
                     flip {
                         condition [HasAttackComponent]
                     }
-                    action [Stop]
+                    action [Stop, "Attack - No Attack Component"]
                 }
 
                 /* if target exists but is not alive, stop */
@@ -108,7 +171,7 @@ root [Attack] {
                     flip {
                         condition [TargetIsAlive]
                     }
-                    action [Stop]
+                    action [Stop, "Attack - Target Not Alive"]
                 }
 
                 /* try to acquire visible enemy for current attack (attack-move) */
@@ -116,8 +179,17 @@ root [Attack] {
                     flip {
                         condition [TargetExists]
                     }
-                    condition [AnyEnemyVisible]
-                    action [AssignVisibleEnemyToCurrentOrder]
+                    condition [AnyAttackableEnemyVisible]
+                    action [AssignAttackableEnemyToCurrentOrder]
+                }
+
+                /* if target exists but cannot be attacked, stop */
+                sequence {
+                    condition [TargetExists]
+                    flip {
+                        condition [CanAttackCurrentTarget]
+                    }
+                    action [Stop, "Attack - Target Not Attackable"]
                 }
 
                 /* exit current container */
@@ -141,9 +213,21 @@ root [Attack] {
                     sequence {
                         /* cooldown may not be ready - wait until it is ms */
                         /* action [Log, "Waiting in attack"] */
-                        wait [100] until [CooldownReady, "attack"]
+                        wait [5] until [CooldownReady, "attack"]
                         /* action [Log, "Done waiting in attack"] */
                     }
+                }
+
+                /* validate again if I'm alive, if target is alive or target is reachable, etc */
+                /* consolidate liveness validations: stop if any fail */
+                sequence {
+                    flip {
+                        parallel {
+                            condition [SelfIsAlive]
+                            condition [TargetIsAlive]
+                        }
+                    }
+                    action [Stop, "Attack - Validation Failed"]
                 }
 
                 /* cooldown ready, attack */
@@ -164,7 +248,7 @@ root [Move] {
                     flip {
                         condition [TargetOrLocationExists]
                     }
-                    action [Stop]
+                    action [Stop, "Move - No Target"]
                 }
 
                 /* exit current container */
@@ -173,13 +257,15 @@ root [Move] {
                 }
 
                 /* move */
-                action [MoveToTargetOrLocation, "move"]
+                fail {
+                    action [MoveToTargetOrLocation, "move"]
+                }
 
                 /* if reached target, stop */
                 sequence {
                     /* action [Log, "Reached target"] */
                     action [InRange, "move"]
-                    action [Stop]
+                    action [Stop, "Move - Reached Target"]
                 }
             }
         }
@@ -191,7 +277,7 @@ root [Stop] {
         condition [PlayerOrderIs, "stop"]
         /* ensure that action succeeds - we don't want to seek another action as current action is stop */
         succeed {
-            action [Stop]
+            action [Stop, "Stop - Order Complete"]
         }
     }
 }
@@ -202,6 +288,39 @@ root [Gather] {
         /* ensure that action succeeds - we don't want to seek another action as current action is gather */
         succeed {
             selector { /* executes until first succeeds */
+
+                /* ── FARM FIELD TENDING PATH ────────────────────────────── */
+                /* Guards: target must be a tendable field AND crops not ready. */
+                /* While growing: walk to spot, animate, wait 1.5s — succeeds  */
+                /* so the outer succeed{selector} absorbs the tick and the root */
+                /* restarts, looping back here until GrowthReady.               */
+                /* When GrowthReady: flip{} fails → branch fails → selector     */
+                /* falls through to GatherCapacityFull / GatherResource below.  */
+                sequence {
+                    condition [TargetHasTendableComponent]
+                    /* Exit this branch when crops are ready → fall through to harvest */
+                    flip { condition [GrowthReady] }
+                    /* Assign self as tender (idempotent) */
+                    action [AssignSelfAsTender]
+                    /* Walk to a random spot on the field */
+                    action [MoveToRandomSpotOnTarget]
+                    /* Play correct animation depending on growth stage */
+                    selector {
+                        /* Seeding phase (0-33%): Thrust animation */
+                        sequence {
+                            condition [GrowthPercentBelow, 33]
+                            action [PlaySeedingAnimation]
+                        }
+                        /* Growing phase (33-99%): Dig animation */
+                        action [PlayTendingAnimation]
+                    }
+                    /* Pause at spot briefly; exits early when crops become ready */
+                    wait [1500] until [GrowthReady]
+                    /* Sequence succeeds → selector stops → succeed{} absorbs →  */
+                    /* outer root completes for this tick and restarts next tick. */
+                }
+                /* ─────────────────────────────────────────────────────── */
+
                 fail { /* marks itself as fail, so it doesn't exist selector branch */
                     sequence {
                         /* if target does not have resources, acquire new resource source */
@@ -217,7 +336,7 @@ root [Gather] {
                     flip {
                         condition [TargetExists]
                     }
-                    action [Stop]
+                    action [Stop, "Gather - No Resources Exist"]
                 }
 
                 /* if no harvest component, stop */
@@ -225,7 +344,7 @@ root [Gather] {
                     flip {
                         condition [HasHarvestComponent]
                     }
-                    action [Stop]
+                    action [Stop, "Gather - No Harvest Component"]
                 }
 
                 /* if gathering capacity is full, drop off resources */
@@ -255,9 +374,21 @@ root [Gather] {
                     sequence {
                         /* cooldown may not be ready - wait until it is ms */
                         /* action [Log, "Waiting in gather"] */
-                        wait [100] until [CooldownReady, "gather"]
+                        wait [5] until [CooldownReady, "gather"]
                         /* action [Log, "Done waiting in gather"] */
                     }
+                }
+
+                /* validate again if I'm alive and target is alive */
+                /* consolidate liveness + resource validations: stop if any fail */
+                sequence {
+                    flip {
+                        parallel {
+                            condition [SelfIsAlive]
+                            condition [TargetHasResources]
+                        }
+                    }
+                    action [Stop, "Gather - Validation Failed"]
                 }
 
                 /* cooldown ready, gather */
@@ -289,7 +420,7 @@ root [ReturnResources] {
                     flip {
                         condition [TargetExists]
                     }
-                    action [Stop]
+                    action [Stop, "ReturnResources - No Resource Drains Exist"]
                 }
 
                 /* if no harvest component, stop */
@@ -297,7 +428,7 @@ root [ReturnResources] {
                     flip {
                         condition [HasHarvestComponent]
                     }
-                    action [Stop]
+                    action [Stop, "ReturnResources - No Harvest Component"]
                 }
 
                 /* if gathering capacity is empty, gather */
@@ -321,6 +452,17 @@ root [ReturnResources] {
                     action [MoveToTarget, "dropOff"]
                 }
 
+                sequence {
+                    /* consolidate liveness validations: stop if any fail */
+                    flip {
+                        parallel {
+                            condition [SelfIsAlive]
+                            condition [TargetIsAlive]
+                        }
+                    }
+                    action [Stop, "ReturnResources - Validation Failed"]
+                }
+
                 /* deposit resources */
                 action [DropOffResources]
             }
@@ -339,7 +481,7 @@ root [Build] {
                     flip {
                         condition [TargetExists]
                     }
-                    action [Stop]
+                    action [Stop, "Build - No Target"]
                 }
 
                 /* if no builderComponent, stop */
@@ -347,7 +489,7 @@ root [Build] {
                     flip {
                         condition [HasBuilderComponent]
                     }
-                    action [Stop]
+                    action [Stop, "Build - No Builder Component"]
                 }
 
                 /* if builder cannot be assigned, stop */
@@ -355,7 +497,7 @@ root [Build] {
                     flip {
                         condition [CanAssignBuilder]
                     }
-                    action [Stop]
+                    action [Stop, "Build - Cannot Assign Builder"]
                 }
 
                 /* exit current container */
@@ -371,6 +513,16 @@ root [Build] {
                     action [MoveToTarget, "construct"]
                 }
 
+                /* if target is unreachable (MoveToTarget failed), stop and try next construction site */
+                sequence {
+                    flip {
+                      action [InRange, "construct"]
+                    }
+                    /* we're not in range and couldn't move there - target unreachable */
+                    action [Stop, "Build - Target Unreachable"]
+                    action [AssignNextBuildOrder]
+                }
+
                 sequence {
                     /* if cooldown not ready, wait */
                     flip {
@@ -379,15 +531,31 @@ root [Build] {
                     sequence {
                         /* cooldown may not be ready - wait until it is ms */
                         /* action [Log, "Waiting in construct"] */
-                        wait [100] until [CooldownReady, "construct"]
+                        wait [5] until [CooldownReady, "construct"]
                         /* action [Log, "Done waiting in construct"] */
                     }
+                }
+
+                /* validate again if I'm alive and target exists */
+                /* consolidate validations: stop if any fail */
+                sequence {
+                    flip {
+                        parallel {
+                            condition [SelfIsAlive]
+                            condition [TargetExists]
+                            condition [CanAssignBuilder]
+                        }
+                    }
+                    action [Stop, "Build - Validation Failed"]
                 }
 
                 succeed {
                     sequence {
                       /* cooldown ready, construct */
                       action [ConstructBuilding]
+
+                      /* if the just-finished building is a field (tendable), start tending it */
+                      action [AutoAssignTendOrderIfTendable]
 
                       action [AssignNextBuildOrder]
                     }
@@ -408,7 +576,7 @@ root [Repair] {
                     flip {
                         condition [TargetExists]
                     }
-                    action [Stop]
+                    action [Stop, "Repair - No Target"]
                 }
 
                 /* if no builderComponent, stop */
@@ -416,7 +584,7 @@ root [Repair] {
                     flip {
                         condition [HasBuilderComponent]
                     }
-                    action [Stop]
+                    action [Stop, "Repair - No Builder Component"]
                 }
 
                 /* if target is not fully built, stop */
@@ -424,13 +592,13 @@ root [Repair] {
                     flip {
                         condition [ConstructionSiteFinished]
                     }
-                    action [Stop]
+                    action [Stop, "Repair - Construction Not Finished"]
                 }
 
                 /* if target health is 100%, stop */
                 sequence {
                     condition [TargetHealthFull]
-                    action [Stop]
+                    action [Stop, "Repair - Target Health Full"]
                 }
 
                 /* if repairer cannot be assigned, stop */
@@ -438,7 +606,7 @@ root [Repair] {
                     flip {
                         condition [CanAssignRepairer]
                     }
-                    action [Stop]
+                    action [Stop, "Repair - Cannot Assign Repairer"]
                 }
 
                 /* exit current container */
@@ -462,9 +630,22 @@ root [Repair] {
                     sequence {
                         /* cooldown may not be ready - wait until it is ms */
                         /* action [Log, "Waiting in repair"] */
-                        wait [100] until [CooldownReady, "repair"]
+                        wait [5] until [CooldownReady, "repair"]
                         /* action [Log, "Done waiting in repair"] */
                     }
+                }
+
+                /* validate again if I'm alive and target is alive */
+                /* consolidate validations: stop if any fail */
+                sequence {
+                    flip {
+                        parallel {
+                            condition [SelfIsAlive]
+                            condition [TargetIsAlive]
+                            condition [CanAssignRepairer]
+                        }
+                    }
+                    action [Stop, "Repair - Validation Failed"]
                 }
 
                 /* cooldown ready, repair */
@@ -485,7 +666,7 @@ root [Heal] {
                     flip {
                         condition [TargetExists]
                     }
-                    action [Stop]
+                    action [Stop, "Heal - No Target"]
                 }
 
                 /* if no healerComponent, stop */
@@ -493,13 +674,13 @@ root [Heal] {
                     flip {
                         condition [HasHealerComponent]
                     }
-                    action [Stop]
+                    action [Stop, "Heal - No Healer Component"]
                 }
 
                 /* if target health is 100%, stop */
                 sequence {
                     condition [TargetHealthFull]
-                    action [Stop]
+                    action [Stop, "Heal - Target Health Full"]
                 }
 
                 /* if healer cannot be assigned, stop */
@@ -507,7 +688,7 @@ root [Heal] {
                     flip {
                         condition [CanHeal]
                     }
-                    action [Stop]
+                    action [Stop, "Heal - Cannot Heal"]
                 }
 
                 /* exit current container */
@@ -531,9 +712,26 @@ root [Heal] {
                     sequence {
                         /* cooldown may not be ready - wait until it is ms */
                         /* action [Log, "Waiting in heal"] */
-                        wait [100] until [CooldownReady, "heal"]
+                        wait [5] until [CooldownReady, "heal"]
                         /* action [Log, "Done waiting in heal"] */
                     }
+                }
+
+                /* validate again if I'm alive and target is alive */
+                /* consolidate validations: stop if any fail (including full health) */
+                sequence {
+                    flip {
+                        parallel {
+                            condition [SelfIsAlive]
+                            condition [TargetIsAlive]
+                            condition [CanHeal]
+                            /* stop when TargetHealthFull is true */
+                            flip {
+                                condition [TargetHealthFull]
+                            }
+                        }
+                    }
+                    action [Stop, "Heal - Validation Failed"]
                 }
 
                 /* cooldown ready, heal */

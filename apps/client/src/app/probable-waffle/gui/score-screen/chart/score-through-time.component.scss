@@ -1,6 +1,39 @@
-.chart-title {
-  font-size: 1.5rem;
-  font-weight: 500;
+@use "../../../../../styles/_variables" as *;
+
+.chart-container {
+  padding: 1rem 0;
+  color: #f5ecd9;
+}
+
+.chart-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   margin-bottom: 1rem;
+
+  label {
+    font-weight: bold;
+    color: #f0c46b;
+  }
+
+  select {
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.8rem;
+    border: 1px solid rgba(111, 85, 52, 0.45);
+    background-color: #101317;
+    color: #f5ecd9;
+    cursor: pointer;
+    font-size: 0.9rem;
+
+    &:focus {
+      border-color: rgba(240, 196, 107, 0.68);
+      outline: none;
+    }
+  }
+}
+
+.no-data {
   text-align: center;
+  padding: 2rem;
+  color: #c8b89b;
 }

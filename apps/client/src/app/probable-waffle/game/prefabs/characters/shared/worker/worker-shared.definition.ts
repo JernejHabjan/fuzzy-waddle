@@ -1,9 +1,9 @@
-import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
-import { weaponDefinitions } from "../../../../entity/components/combat/attack-data";
+import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PaymentType } from "../../../../entity/components/production/payment-type";
-import { AiType } from "../../../ai-agents/pawn-ai-controller";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 import { ActorPhysicalType } from "../../../../entity/components/combat/components/actor-physical-type";
+import { weaponDefinitions } from "../../../../entity/components/combat/weapon-definitions";
+import { AiType } from "../../../ai-agents/ai-type";
 
 export const generalWorkerDefinitions: Partial<PrefabDefinition> = {
   components: {
@@ -12,19 +12,21 @@ export const generalWorkerDefinitions: Partial<PrefabDefinition> = {
     },
     health: {
       physicalState: ActorPhysicalType.Biological,
-      maxHealth: 100
+      maxHealth: 50
     },
     attack: {
-      attacks: [weaponDefinitions.hands]
+      attacks: [weaponDefinitions.WorkerHands]
     },
     productionCost: {
       resources: {
-        [ResourceType.Wood]: 10,
-        [ResourceType.Minerals]: 10
+        [ResourceType.Food]: 50
       },
       refundFactor: 0.5,
       productionTime: 5000,
       costType: PaymentType.PayImmediately
+    },
+    housingCost: {
+      housingNeeded: 1
     },
     healing: {
       range: 2,
@@ -32,13 +34,9 @@ export const generalWorkerDefinitions: Partial<PrefabDefinition> = {
       cooldown: 1000
     },
     gatherer: {
-      resourceSweepRadius: 20,
-      resourceSourceGameObjectClasses: [
-        ResourceType.Ambrosia,
-        ResourceType.Wood,
-        ResourceType.Minerals,
-        ResourceType.Stone
-      ]
+      // this high, so AI player can resume gathering resources if last resource source was far away
+      resourceSweepRadius: 100,
+      resourceSourceGameObjectClasses: [ResourceType.Wood, ResourceType.Minerals, ResourceType.Stone, ResourceType.Food]
     },
     selectable: {},
     translatable: {

@@ -1,15 +1,16 @@
 import { ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PaymentType } from "../../../../entity/components/production/payment-type";
-import { weaponDefinitions } from "../../../../entity/components/combat/attack-data";
 import { coreConstructionSiteDefinition } from "../../shared/core-construction-site.definition";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 import { ActorPhysicalType } from "../../../../entity/components/combat/components/actor-physical-type";
+import { weaponDefinitions } from "../../../../entity/components/combat/weapon-definitions";
 
 export const watchTowerDefinition = {
   components: {
     representable: {
-      width: 128,
-      height: 176
+      width: 112,
+      height: 160,
+      origin: { x: 0.5, y: 0.84 }
     },
     objectDescriptor: {
       color: 0x95a083
@@ -28,15 +29,16 @@ export const watchTowerDefinition = {
     info: {
       name: "Watch Tower",
       description: "Main defense building",
+      tooltipDescription: ["Defensive structure with ranged attack", "Extended vision range", "Units can walk on top"],
       smallImage: {
         key: "factions",
-        frame: "buildings/tivara/watchtower.png",
+        frame: "buildings/tivara/watchtower/watchtower.png",
         origin: { x: 0.5, y: 0.5 }
       }
     },
     selectable: {},
-    walkable: {
-      walkableHeight: 128,
+    navigable: {
+      navigableHeight: 128,
       exitHeight: 128,
       // can be accessed from the stairs or a wall
       acceptMinimumHeight: 64
@@ -48,11 +50,10 @@ export const watchTowerDefinition = {
     },
     productionCost: {
       resources: {
-        [ResourceType.Wood]: 10,
-        [ResourceType.Stone]: 30
+        [ResourceType.Stone]: 250
       },
       refundFactor: 0.5,
-      productionTime: 5000,
+      productionTime: 30000,
       costType: PaymentType.PayImmediately
     },
     // note - this unit can be walked on and can not contain units
@@ -60,7 +61,7 @@ export const watchTowerDefinition = {
     //   capacity: 2
     // },
     attack: {
-      attacks: [weaponDefinitions.bowTower]
+      attacks: [weaponDefinitions.BowTower]
     },
     collider: { enabled: true },
     constructable: {

@@ -5,6 +5,8 @@
 /* START-USER-IMPORTS */
 import { getActorComponent } from "../../data/actor-component";
 import { ProductionComponent } from "../../entity/components/production/production-component";
+import { ResearchComponent } from "../../entity/components/research/research-component";
+import { TendableComponent } from "../../entity/components/tendable/tendable-component";
 import { Subscription } from "rxjs";
 /* END-USER-IMPORTS */
 
@@ -63,42 +65,110 @@ export default class ProgressBar extends Phaser.GameObjects.Container {
   /* START-USER-CODE */
   private readonly maxWidth = 72;
   private productionProgressSubscription?: Subscription;
+  private researchProgressSubscription?: Subscription;
+  private researchCancelledSubscription?: Subscription;
+  private researchCompletedSubscription?: Subscription;
+  private tendableProgressSubscription?: Subscription;
+  private tendableResetSubscription?: Subscription;
 
   setProgressBar(actor: Phaser.GameObjects.GameObject) {
-    // todo make this generic progress bar, this setter should pass in subject and currentPercentage, so we can subscribe to it
-    // Retrieve the ProductionComponent from the actor
-    const productionComponent = getActorComponent(actor, ProductionComponent);
-    if (!productionComponent) {
-      this.cleanActor();
+    // Clean up any existing subscriptions
+    this.cleanActor();
+
+    // Check for TendableComponent (farm growth) — shown in preference to production/research
+    const tendableComponent = getActorComponent(actor, TendableComponent);
+    if (tendableComponent) {
+      this.subscribeToTendable(tendableComponent);
       return;
     }
 
-    // Clean up any existing subscription
-    this.productionProgressSubscription?.unsubscribe();
+    // Check for ProductionComponent
+    const productionComponent = getActorComponent(actor, ProductionComponent);
+    if (productionComponent) {
+      this.subscribeToProduction(productionComponent);
+    }
 
+    // Check for ResearchComponent
+    const researchComponent = getActorComponent(actor, ResearchComponent);
+    if (researchComponent) {
+      this.subscribeToResearch(researchComponent);
+    }
+
+    // If neither component exists, hide the progress bar
+    if (!productionComponent && !researchComponent) {
+      this.visible = false;
+    }
+  }
+
+  private subscribeToTendable(tendableComponent: TendableComponent) {
+    // Show growth 0–100% always (including 0 and 100)
+    const update = (percent: number) => {
+      this.visible = true;
+      this.setPercentage(percent);
+    };
+    this.tendableProgressSubscription = tendableComponent.growthProgressChanged.subscribe(update);
+    this.tendableResetSubscription = tendableComponent.onReset.subscribe(() => {
+      this.visible = true;
+      this.setPercentage(0);
+    });
+    // Set initial state
+    update(tendableComponent.growthPercent);
+  }
+
+  private subscribeToProduction(productionComponent: ProductionComponent) {
     // Subscribe to production progress updates
     this.productionProgressSubscription = productionComponent.productionProgressObservable.subscribe((event) => {
       const { progressInPercentage } = event;
-      this.handleProductionProgressUpdate(progressInPercentage);
+      this.handleProgressUpdate(progressInPercentage);
     });
 
     // Set initial state based on whether production is ongoing
     if (productionComponent.isProducing) {
       const percentage = productionComponent.getCurrentProgress() ?? 0;
-      this.handleProductionProgressUpdate(percentage);
+      this.handleProgressUpdate(percentage);
     } else {
       this.visible = false;
-      // do not clear subscription
     }
   }
 
-  private handleProductionProgressUpdate(progressInPercentage: number) {
+  private subscribeToResearch(researchComponent: ResearchComponent) {
+    // Subscribe to research progress updates
+    this.researchProgressSubscription = researchComponent.researchProgress.subscribe((event) => {
+      const { progress } = event;
+      this.handleProgressUpdate(progress);
+    });
+
+    // Subscribe to research cancelled - hide progress bar
+    this.researchCancelledSubscription = researchComponent.researchCancelled.subscribe(() => {
+      this.visible = false;
+    });
+
+    // Subscribe to research completed - hide progress bar
+    this.researchCompletedSubscription = researchComponent.researchCompleted.subscribe(() => {
+      this.visible = false;
+    });
+
+    // Set initial state based on whether research is ongoing
+    if (researchComponent.currentResearchType) {
+      const progress = researchComponent.getResearchProgress(researchComponent.currentResearchType);
+      this.handleProgressUpdate(progress);
+    } else {
+      this.visible = false;
+    }
+  }
+
+  private handleProgressUpdate(progressInPercentage: number) {
     this.visible = progressInPercentage > 0 && progressInPercentage < 100;
     this.setPercentage(progressInPercentage);
   }
 
   cleanActor() {
     this.productionProgressSubscription?.unsubscribe();
+    this.researchProgressSubscription?.unsubscribe();
+    this.researchCancelledSubscription?.unsubscribe();
+    this.researchCompletedSubscription?.unsubscribe();
+    this.tendableProgressSubscription?.unsubscribe();
+    this.tendableResetSubscription?.unsubscribe();
     this.visible = false;
   }
 

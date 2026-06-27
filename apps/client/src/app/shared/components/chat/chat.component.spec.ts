@@ -6,6 +6,14 @@ import { AvatarProviderService } from "./avatar-provider/avatar-provider.service
 import { avatarProviderServiceStub } from "./avatar-provider/avatar-provider.service.stub";
 import { AuthService } from "../../../auth/auth.service";
 import { authServiceStub } from "../../../auth/auth.service.stub";
+import { ChatService } from "../../../data-access/chat/chat.service";
+import { Subject } from "rxjs";
+import { provideRouter } from "@angular/router";
+
+const chatServiceStub = {
+  getMessages: () => Promise.resolve({ messages: [], total: 0, hasMore: false }),
+  reportMessage: () => Promise.resolve()
+};
 
 describe("ChatComponent", () => {
   let component: ChatComponent;
@@ -14,6 +22,7 @@ describe("ChatComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
+        provideRouter([]),
         {
           provide: AvatarProviderService,
           useValue: avatarProviderServiceStub
@@ -21,6 +30,10 @@ describe("ChatComponent", () => {
         {
           provide: AuthService,
           useValue: authServiceStub
+        },
+        {
+          provide: ChatService,
+          useValue: chatServiceStub
         }
       ],
       imports: [ChatComponent, FormsModule]
@@ -28,6 +41,7 @@ describe("ChatComponent", () => {
 
     fixture = TestBed.createComponent(ChatComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput("messageListener", new Subject());
     fixture.detectChanges();
   });
 

@@ -1,0 +1,42 @@
+@if (shouldRender && phase() !== 'gone') {
+  <div
+    class="splash-overlay"
+    [class.phase-leaving]="phase() === 'leaving'"
+  >
+    <!-- Decorative corner frames -->
+    <div class="corner corner--tl"></div>
+    <div class="corner corner--tr"></div>
+    <div class="corner corner--bl"></div>
+    <div class="corner corner--br"></div>
+
+    <!-- Animated particle dots -->
+    <div class="particles" aria-hidden="true">
+      @for (i of [1,2,3,4,5,6,7,8,9,10,11,12]; track i) {
+        <span class="particle" [style.--i]="i"></span>
+      }
+    </div>
+
+    <!-- Central content -->
+    <div class="splash-content">
+      <div class="emblem" aria-hidden="true">
+        <div class="emblem-glow"></div>
+        <img alt="" class="emblem-logo" src="assets/icons/fuzzy-waddle.svg" />
+      </div>
+
+      <h1 class="splash-title">Ashes of the Ancients</h1>
+      <p class="splash-tagline">Ash falls. War rises.</p>
+
+      <div class="splash-divider" aria-hidden="true">
+        <span class="divider-line"></span>
+        <span class="divider-diamond"></span>
+        <span class="divider-line"></span>
+      </div>
+
+      <p class="splash-studio">Created by Jernej Habjan</p>
+    </div>
+
+    @if (appVersion()) {
+      <div class="splash-version">v{{ appVersion() }}</div>
+    }
+  </div>
+}

@@ -3,29 +3,26 @@ import { ContainerComponent } from "../building/container-component";
 import { Subject } from "rxjs";
 import { getActorComponent } from "../../../data/actor-component";
 import { getGameObjectRenderedTransform } from "../../../data/game-object-helper";
+import type { ResourceSourceDefinition } from "./resource-source-definition";
+import { waitForSimulationDuration } from "../../../world/services/simulation-time";
 import GameObject = Phaser.GameObjects.GameObject;
-
-export type ResourceSourceDefinition = {
-  resourceType: ResourceType;
-  maximumResources: number;
-  gatheringFactor: number;
-};
 
 export class ResourceSourceComponent {
   private static readonly debug = false;
   onResourcesChanged: Subject<[ResourceType, number, GameObject]> = new Subject<[ResourceType, number, GameObject]>();
   onDepleted: Subject<GameObject> = new Subject<GameObject>();
+  onAssignedGatherersChanged: Subject<number> = new Subject<number>();
   private currentResources: number;
   private containerComponent?: ContainerComponent;
   private gathererMustEnter = false;
-  private maximumCapacity = 0;
   private currentCapacity = 0;
   private depletedImage?: Phaser.GameObjects.Image;
   private scene?: Phaser.Scene;
+  private assignedGatherers: Set<GameObject> = new Set();
 
   constructor(
     private readonly gameObject: GameObject,
-    private readonly resourceSourceDefinition: ResourceSourceDefinition
+    public readonly resourceSourceDefinition: ResourceSourceDefinition
   ) {
     this.currentResources = this.resourceSourceDefinition.maximumResources;
     this.init();
@@ -33,7 +30,6 @@ export class ResourceSourceComponent {
 
   init(): void {
     this.containerComponent = getActorComponent(this.gameObject, ContainerComponent);
-    this.maximumCapacity = this.containerComponent?.containerDefinition.capacity ?? 0;
     this.gathererMustEnter = !!this.containerComponent;
     this.scene = this.gameObject.scene;
     this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
@@ -45,9 +41,7 @@ export class ResourceSourceComponent {
       this.containerComponent?.loadGameObject(gatherer);
     }
 
-    await new Promise((resolve) => {
-      setTimeout(resolve, 1000); // todo read cooldown from elsewhere
-    });
+    await waitForSimulationDuration(this.gameObject.scene, this.resourceSourceDefinition.cooldown);
 
     if (this.gathererMustEnter) {
       this.containerComponent?.unloadGameObject(gatherer);
@@ -78,20 +72,23 @@ export class ResourceSourceComponent {
     }
 
     this.onResourcesChanged.next([this.resourceSourceDefinition.resourceType, gatheredAmount, gatherer]);
-    // check if we're depleted
-    if (this.currentResources <= 0) {
+    // check if we're depleted — only trigger when something was actually gathered to avoid
+    // infinite reset when gather() is called on a locked (resources=0) field
+    if (gatheredAmount > 0 && this.currentResources <= 0) {
       this.onDepleted.next(this.gameObject);
-      const renderedTransform = getGameObjectRenderedTransform(this.gameObject);
-      this.gameObject.destroy();
-      this.spawnTreeTrunk(renderedTransform);
+      if (!this.resourceSourceDefinition.respawnOnDepletion) {
+        const renderedTransform = getGameObjectRenderedTransform(this.gameObject);
+        this.gameObject.destroy();
+        this.spawnDepletedResourceSourceSprite(renderedTransform);
+      }
     }
     return gatheredAmount;
   }
 
   /**
-   * Spawns a tree trunk image at the given rendered transform position.
+   * Spawns a depleted resource source image at the given rendered transform position.
    */
-  private spawnTreeTrunk(renderedTransform: Vector2Simple | null) {
+  private spawnDepletedResourceSourceSprite(renderedTransform: Vector2Simple | null) {
     if (!renderedTransform) return;
     if (!this.scene) return;
 
@@ -103,16 +100,15 @@ export class ResourceSourceComponent {
         frame = "foliage/tree_trunks/tree_fallen.png";
         break;
       case ResourceType.Stone:
-        texture = "outside"; // todo
-        frame = "foliage/tree_trunks/tree_fallen.png"; // todo
+        texture = "outside";
+        frame = "nature/resources/stone_pile_depleted_1.png"; // todo - zip to spritesheet
         break;
       case ResourceType.Minerals:
-        texture = "outside"; // todo
-        frame = "foliage/tree_trunks/tree_fallen.png"; // todo
+        texture = "outside";
+        frame = "nature/resources/minerals_pile_depleted_1.png"; // todo - zip to spritesheet
         break;
-      case ResourceType.Ambrosia:
-        texture = "outside"; // todo
-        frame = "foliage/tree_trunks/tree_fallen.png"; // todo
+      case ResourceType.Food:
+        // No depleted image for crops – they simply disappear when harvested
         break;
     }
     if (!texture || !frame) return;
@@ -142,6 +138,59 @@ export class ResourceSourceComponent {
 
   getCurrentResources(): number {
     return this.currentResources;
+  }
+
+  /**
+   * Register a gatherer as assigned to this resource source
+   */
+  assignGatherer(gatherer: GameObject): void {
+    if (!this.assignedGatherers.has(gatherer)) {
+      this.assignedGatherers.add(gatherer);
+      this.onAssignedGatherersChanged.next(this.assignedGatherers.size);
+    }
+  }
+
+  /**
+   * Unregister a gatherer from this resource source
+   */
+  unassignGatherer(gatherer: GameObject): void {
+    if (this.assignedGatherers.has(gatherer)) {
+      this.assignedGatherers.delete(gatherer);
+      this.onAssignedGatherersChanged.next(this.assignedGatherers.size);
+    }
+  }
+
+  /**
+   * Get the count of gatherers currently assigned to this resource
+   */
+  getAssignedGatherersCount(): number {
+    return this.assignedGatherers.size;
+  }
+
+  /**
+   * Check if this resource source can accept another gatherer
+   */
+  canAcceptGatherer(): boolean {
+    const maxGatherers = this.resourceSourceDefinition.maxGatherers;
+    if (maxGatherers === undefined) return true;
+    return this.assignedGatherers.size < maxGatherers;
+  }
+
+  /**
+   * Get the maximum number of gatherers allowed
+   */
+  getMaxGatherers(): number | undefined {
+    return this.resourceSourceDefinition.maxGatherers;
+  }
+
+  /** Sets current resources to the definition maximum. Used by TendableComponent when crops are ready. */
+  refillResources(): void {
+    this.currentResources = this.resourceSourceDefinition.maximumResources;
+  }
+
+  /** Sets current resources to zero. Used by TendableComponent to lock a field before it is grown. */
+  lockResources(): void {
+    this.currentResources = 0;
   }
 
   setData(data: Partial<ResourceSourceComponentData>) {

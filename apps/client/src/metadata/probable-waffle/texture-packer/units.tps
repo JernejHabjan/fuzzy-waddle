@@ -4,7 +4,7 @@
         <key>fileFormatVersion</key>
         <int>6</int>
         <key>texturePackerVersion</key>
-        <string>7.1.0</string>
+        <string>7.4.0</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -50,7 +50,7 @@
         <key>dxtCompressionMode</key>
         <enum type="SettingsBase::DxtCompressionMode">DXT_PERCEPTUAL</enum>
         <key>ditherType</key>
-        <enum type="SettingsBase::DitherType">NearestNeighbour</enum>
+        <enum type="SettingsBase::DitherType">PngQuantLow</enum>
         <key>backgroundColor</key>
         <uint>0</uint>
         <key>libGdx</key>
@@ -74,7 +74,7 @@
         <key>textureSubPath</key>
         <string></string>
         <key>textureFormat</key>
-        <enum type="SettingsBase::TextureFormat">png</enum>
+        <enum type="SettingsBase::TextureFormat">png8</enum>
         <key>borderPadding</key>
         <uint>0</uint>
         <key>maxTextureSize</key>
@@ -173,32 +173,22 @@
         </struct>
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
-            <key type="filename">../sprites/units/skaduwee/owl/attack/down_1.png</key>
-            <key type="filename">../sprites/units/skaduwee/owl/attack/down_2.png</key>
-            <key type="filename">../sprites/units/skaduwee/owl/attack/left_1.png</key>
-            <key type="filename">../sprites/units/skaduwee/owl/attack/left_2.png</key>
-            <key type="filename">../sprites/units/skaduwee/owl/attack/right_1.png</key>
-            <key type="filename">../sprites/units/skaduwee/owl/attack/right_2.png</key>
-            <key type="filename">../sprites/units/skaduwee/owl/attack/up_1.png</key>
-            <key type="filename">../sprites/units/skaduwee/owl/attack/up_2.png</key>
-            <key type="filename">../sprites/units/skaduwee/owl/die/down_1.png</key>
-            <key type="filename">../sprites/units/skaduwee/owl/die/down_2.png</key>
-            <key type="filename">../sprites/units/skaduwee/owl/idle/down_1.png</key>
-            <key type="filename">../sprites/units/skaduwee/owl/idle/down_2.png</key>
-            <key type="filename">../sprites/units/skaduwee/owl/idle/left_1.png</key>
-            <key type="filename">../sprites/units/skaduwee/owl/idle/left_2.png</key>
-            <key type="filename">../sprites/units/skaduwee/owl/idle/right_1.png</key>
-            <key type="filename">../sprites/units/skaduwee/owl/idle/right_2.png</key>
-            <key type="filename">../sprites/units/skaduwee/owl/idle/up_1.png</key>
-            <key type="filename">../sprites/units/skaduwee/owl/idle/up_2.png</key>
-            <key type="filename">../sprites/units/skaduwee/owl/move/down_1.png</key>
-            <key type="filename">../sprites/units/skaduwee/owl/move/down_2.png</key>
-            <key type="filename">../sprites/units/skaduwee/owl/move/left_1.png</key>
-            <key type="filename">../sprites/units/skaduwee/owl/move/left_2.png</key>
-            <key type="filename">../sprites/units/skaduwee/owl/move/right_1.png</key>
-            <key type="filename">../sprites/units/skaduwee/owl/move/right_2.png</key>
-            <key type="filename">../sprites/units/skaduwee/owl/move/up_1.png</key>
-            <key type="filename">../sprites/units/skaduwee/owl/move/up_2.png</key>
+            <key type="filename">../sprites/units/common/boat/common_boat-0.png</key>
+            <key type="filename">../sprites/units/common/boat/common_boat-12.png</key>
+            <key type="filename">../sprites/units/common/boat/common_boat-18.png</key>
+            <key type="filename">../sprites/units/common/boat/common_boat-24.png</key>
+            <key type="filename">../sprites/units/common/boat/common_boat-30.png</key>
+            <key type="filename">../sprites/units/common/boat/common_boat-36.png</key>
+            <key type="filename">../sprites/units/common/boat/common_boat-42.png</key>
+            <key type="filename">../sprites/units/common/boat/common_boat-6.png</key>
+            <key type="filename">../sprites/units/common/viking-ship/ship1.png</key>
+            <key type="filename">../sprites/units/common/viking-ship/ship11.png</key>
+            <key type="filename">../sprites/units/common/viking-ship/ship13.png</key>
+            <key type="filename">../sprites/units/common/viking-ship/ship15.png</key>
+            <key type="filename">../sprites/units/common/viking-ship/ship3.png</key>
+            <key type="filename">../sprites/units/common/viking-ship/ship5.png</key>
+            <key type="filename">../sprites/units/common/viking-ship/ship7.png</key>
+            <key type="filename">../sprites/units/common/viking-ship/ship9.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -207,9 +197,44 @@
                 <key>scale9Enabled</key>
                 <false/>
                 <key>scale9Borders</key>
-                <rect>12,12,24,24</rect>
+                <rect>16,16,32,32</rect>
                 <key>scale9Paddings</key>
-                <rect>12,12,24,24</rect>
+                <rect>16,16,32,32</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">../sprites/units/skaduwee/owl/death/death_1.png</key>
+            <key type="filename">../sprites/units/skaduwee/owl/death/death_2.png</key>
+            <key type="filename">../sprites/units/skaduwee/owl/death/death_3.png</key>
+            <key type="filename">../sprites/units/skaduwee/owl/death/death_4.png</key>
+            <key type="filename">../sprites/units/skaduwee/owl/death/death_5.png</key>
+            <key type="filename">../sprites/units/skaduwee/owl/flying/down_1.png</key>
+            <key type="filename">../sprites/units/skaduwee/owl/flying/down_2.png</key>
+            <key type="filename">../sprites/units/skaduwee/owl/flying/left_1.png</key>
+            <key type="filename">../sprites/units/skaduwee/owl/flying/left_2.png</key>
+            <key type="filename">../sprites/units/skaduwee/owl/flying/left_3.png</key>
+            <key type="filename">../sprites/units/skaduwee/owl/flying/move_down_1.png</key>
+            <key type="filename">../sprites/units/skaduwee/owl/flying/move_down_2.png</key>
+            <key type="filename">../sprites/units/skaduwee/owl/flying/move_down_3.png</key>
+            <key type="filename">../sprites/units/skaduwee/owl/flying/move_down_4.png</key>
+            <key type="filename">../sprites/units/skaduwee/owl/flying/right_1.png</key>
+            <key type="filename">../sprites/units/skaduwee/owl/flying/right_2.png</key>
+            <key type="filename">../sprites/units/skaduwee/owl/flying/right_3.png</key>
+            <key type="filename">../sprites/units/skaduwee/owl/flying/up_1.png</key>
+            <key type="filename">../sprites/units/skaduwee/owl/flying/up_2.png</key>
+            <key type="filename">../sprites/units/skaduwee/owl/flying/up_3.png</key>
+            <key type="filename">../sprites/units/skaduwee/owl/flying/up_4.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>23,16,46,32</rect>
+                <key>scale9Paddings</key>
+                <rect>23,16,46,32</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>

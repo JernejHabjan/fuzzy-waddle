@@ -21,6 +21,11 @@ export const tivaraWorkerMaleDefinition = {
   ...tivaraWorkerDefinition,
   components: {
     ...tivaraWorkerDefinition.components,
+    representable: {
+      width: 32,
+      height: 48,
+      origin: { x: 0.5, y: 0.8820941312001258 }
+    },
     info: {
       name: "Sandward",
       description: "From ruin to rise again — their toil feeds the endless rhythm etched in stone and soul",
@@ -48,5 +53,9 @@ export const tivaraWorkerMaleDefinition = {
       }
     },
     animatable: { animations: ANIM_TIVARA_WORKER_MALE_DEFINITION }
+  },
+  meta: {
+    ...tivaraWorkerDefinition.meta,
+    randomOfType: []
   }
 } satisfies PrefabDefinition;

@@ -7,10 +7,12 @@ import PushActionScript from "../../../../../shared/game/phaser/script-nodes/Pus
 import OnPointerUpScript from "../../../../../shared/game/phaser/script-nodes-basic/OnPointerUpScript";
 import EmitEventActionScript from "../../../../../shared/game/phaser/script-nodes-basic/EmitEventActionScript";
 /* START-USER-IMPORTS */
-import ActorDefinitionTooltip, { type TooltipInfo } from "../labels/ActorDefinitionTooltip";
+import ActorDefinitionTooltip from "../labels/ActorDefinitionTooltip";
 import HudProbableWaffle from "../../../world/scenes/hud-scenes/HudProbableWaffle";
 import { getGameObjectBounds } from "../../../data/game-object-helper";
 import { IconHelper } from "../labels/IconHelper";
+import type { ActorActionSetup } from "./actor-action-setup";
+import type { TooltipInfo } from "../labels/tooltip-info";
 /* END-USER-IMPORTS */
 
 export default class ActorAction extends Phaser.GameObjects.Container {
@@ -69,7 +71,8 @@ export default class ActorAction extends Phaser.GameObjects.Container {
     this.once(Phaser.Input.Events.DESTROY, this.destroyCore);
     this.on(Phaser.Input.Events.POINTER_OVER, this.onPointerOver);
     this.on(Phaser.Input.Events.POINTER_OUT, this.onPointerOut);
-    this.on("actor-action", this.onAction);
+    this.on("actor-action", this.triggerAction);
+    this.on(Phaser.Input.Events.POINTER_DOWN, this.onPointerDown);
     /* END-USER-CTR-CODE */
   }
 
@@ -83,10 +86,18 @@ export default class ActorAction extends Phaser.GameObjects.Container {
   private tooltip?: ActorDefinitionTooltip;
   private tooltipInfo?: TooltipInfo;
   private action: (() => void) | undefined;
+  private onRightClickAction: (() => void) | undefined;
   private tooltipTimeoutId?: number;
 
   // Small shortcut label rendered on top of the button
   private shortcutText?: Phaser.GameObjects.Text;
+
+  // Cooldown overlay mask and countdown text
+  private cooldownMask?: Phaser.GameObjects.Graphics;
+  private cooldownText?: Phaser.GameObjects.Text;
+
+  // Autocast indicator
+  private autocastIndicator?: Phaser.GameObjects.Image;
 
   setup(setup: ActorActionSetup) {
     if (setup.icon) {
@@ -96,7 +107,10 @@ export default class ActorAction extends Phaser.GameObjects.Container {
     this.setVisible(setup.visible);
     this.tooltipInfo = setup.tooltipInfo;
     this.action = setup.action;
+    this.onRightClickAction = setup.onRightClick;
     this.setShortcutLabel(setup.shortcut);
+    this.setCooldownProgress(setup.cooldownProgress, setup.cooldownRemaining);
+    this.setAutocastIndicator(setup.autocastEnabled ?? false);
   }
 
   private ensureShortcutText() {
@@ -141,7 +155,8 @@ export default class ActorAction extends Phaser.GameObjects.Container {
 
   private setDisabled(disabled: boolean) {
     this.disabled = disabled;
-    this.actor_action_click.setDisabled(disabled);
+    // do not actually disable the button, as we want to react to it on click
+    // this.actor_action_click.setDisabled(disabled);
     this.recolorDisabled();
   }
 
@@ -150,6 +165,72 @@ export default class ActorAction extends Phaser.GameObjects.Container {
     this.game_action_icon.setTint(this.disabled ? 0x666666 : 0xffffff);
     // adjust shortcut alpha too
     this.shortcutText?.setAlpha(this.disabled ? 0.5 : 1);
+  }
+
+  private setCooldownProgress(progress?: number, remainingMs?: number) {
+    if (progress === undefined || progress >= 100) {
+      // No cooldown, hide overlay
+      this.cooldownMask?.setVisible(false);
+      this.cooldownText?.setVisible(false);
+      return;
+    }
+
+    // Ensure cooldown mask exists
+    if (!this.cooldownMask) {
+      this.cooldownMask = this.scene.add.graphics();
+      this.cooldownMask.setDepth(5);
+      this.add(this.cooldownMask);
+    }
+
+    // Ensure cooldown text exists
+    if (!this.cooldownText) {
+      this.cooldownText = this.scene.add.text(10, 5, "", {
+        fontSize: "10px",
+        fontFamily: "disposabledroid",
+        color: "#ffffff",
+        resolution: 10
+      });
+      this.cooldownText.setOrigin(1, 1);
+      this.cooldownText.setDepth(10);
+      this.cooldownText.setShadow(1, 1, "#000000", 2, true, true);
+      this.add(this.cooldownText);
+    }
+
+    // Draw mask that decreases from top to bottom as cooldown progresses
+    // progress: 0% = just cast (full mask), 100% = ready (no mask)
+    this.cooldownMask.clear();
+    const maskHeight = ((100 - progress) / 100) * 26; // 26 is roughly the button height
+    this.cooldownMask.fillStyle(0x000000, 0.6);
+    this.cooldownMask.fillRect(-17, -13, 34, maskHeight);
+    this.cooldownMask.setVisible(true);
+
+    // Update countdown text
+    if (remainingMs !== undefined) {
+      const seconds = Math.ceil(remainingMs / 1000);
+      this.cooldownText.setText(`${seconds}s`);
+      this.cooldownText.setVisible(true);
+    } else {
+      this.cooldownText.setVisible(false);
+    }
+  }
+
+  setAutocastIndicator(enabled: boolean) {
+    if (!enabled) {
+      this.autocastIndicator?.setVisible(false);
+      return;
+    }
+
+    // Ensure autocast indicator exists
+    if (!this.autocastIndicator) {
+      this.autocastIndicator = this.scene.add.image(10, -8, "gui", "cryos_mini_gui/icons/recycle.png");
+      this.autocastIndicator.setOrigin(0.5, 0.5);
+      this.autocastIndicator.setScale(0.4);
+      this.autocastIndicator.setDepth(10);
+      this.autocastIndicator.setTint(0xffaa00); // Golden/orange tint
+      this.add(this.autocastIndicator);
+    }
+
+    this.autocastIndicator.setVisible(true);
   }
 
   private onPointerOver = () => {
@@ -171,15 +252,17 @@ export default class ActorAction extends Phaser.GameObjects.Container {
       const hudScene = this.scene as HudProbableWaffle;
       const bounds = getGameObjectBounds(hudScene.actor_actions_container);
 
-      const x = bounds?.x ?? 0;
-      const y = bounds?.y ?? 0;
-      this.tooltip = new ActorDefinitionTooltip(this.scene, x, y);
+      this.tooltip = new ActorDefinitionTooltip(this.scene, 0, 0);
       this.tooltip.setup(this.tooltipInfo);
-      // set origin of tooltip to 1,1
-      const boundsTooltip = getGameObjectBounds(this.tooltip);
-      if (boundsTooltip) {
-        this.tooltip.y -= boundsTooltip.height;
+      const tooltipBounds = getGameObjectBounds(this.tooltip);
+
+      if (bounds && tooltipBounds) {
+        const x = hudScene.scale.width;
+        // TODO - I cannot make it to stick to the top right edge of actor_actions_container - needs further investigation
+        const y = hudScene.scale.height - bounds.height - 80;
+        this.tooltip.setPosition(x, y);
       }
+
       this.scene.add.existing(this.tooltip);
     }, 500);
   };
@@ -196,15 +279,26 @@ export default class ActorAction extends Phaser.GameObjects.Container {
     this.tooltip?.destroy();
   }
 
-  private onAction = () => {
-    if (this.disabled) return;
+  triggerAction = () => {
+    // do not actually disable the button, as we want to react to it on click
+    // if (this.disabled) return;
     this.action?.();
   };
 
+  private onPointerDown = (pointer: Phaser.Input.Pointer) => {
+    // Right-click (button 2) triggers the right-click action
+    if (pointer.rightButtonDown() && this.onRightClickAction) {
+      this.onRightClickAction();
+      // Prevent default action
+      pointer.event?.preventDefault();
+    }
+  };
+
   private destroyCore = () => {
-    this.off("actor-action", this.onAction);
+    this.off("actor-action", this.triggerAction);
     this.off(Phaser.Input.Events.POINTER_OVER, this.onPointerOver);
     this.off(Phaser.Input.Events.POINTER_OUT, this.onPointerOut);
+    this.off(Phaser.Input.Events.POINTER_DOWN, this.onPointerDown);
     this.destroyTooltip();
   };
 
@@ -212,22 +306,5 @@ export default class ActorAction extends Phaser.GameObjects.Container {
 }
 
 /* END OF COMPILED CODE */
-
-export type ActorActionSetup = {
-  icon?: {
-    key: string;
-    frame: string;
-    origin?: {
-      x: number;
-      y: number;
-    };
-  };
-  disabled?: boolean;
-  visible: boolean;
-  action?: () => void;
-  tooltipInfo?: TooltipInfo;
-  // Optional shortcut label (e.g., "A", "M", "1")
-  shortcut?: string;
-};
 
 // You can write more code here

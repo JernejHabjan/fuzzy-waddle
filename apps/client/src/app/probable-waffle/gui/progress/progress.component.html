@@ -1,7 +1,7 @@
-<fuzzy-waddle-home-nav routerLink="/aota" title="Ashes of the Ancients" />
+<fuzzy-waddle-home-nav routerLink="/aota" title="Ashes of the Ancients" [showBack]="true" />
 
 <fuzzy-waddle-center-wrapper>
-  <div class="card-container">
+  <div class="card-container aota-card-shell">
     <div class="d-flex flex-column flex-grow-1 overflow-auto align-items-center">
       <div class="w-100">
         @if (!authService.isAuthenticated && !isViewingOtherUser()) {

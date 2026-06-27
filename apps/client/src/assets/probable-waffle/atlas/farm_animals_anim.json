@@ -1,0 +1,2622 @@
+{
+    "anims": [
+        {
+            "key": "Bull/Idle/back/Bull_back_Idle",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Bull/Idle/back/Bull_back_Idle1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Bull/Idle/back/Bull_back_Idle2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Bull/Idle/back/Bull_back_Idle3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Bull/Idle/back/Bull_back_Idle4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Bull/Idle/front/Bull_front_Idle",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Bull/Idle/front/Bull_front_Idle1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Bull/Idle/front/Bull_front_Idle2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Bull/Idle/front/Bull_front_Idle3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Bull/Idle/front/Bull_front_Idle4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Bull/Idle/left/Bull_left_Idle",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Bull/Idle/left/Bull_left_Idle1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Bull/Idle/left/Bull_left_Idle2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Bull/Idle/left/Bull_left_Idle3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Bull/Idle/left/Bull_left_Idle4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Bull/Idle/right/Bull_right_Idle",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Bull/Idle/right/Bull_right_Idle1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Bull/Idle/right/Bull_right_Idle2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Bull/Idle/right/Bull_right_Idle3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Bull/Idle/right/Bull_right_Idle4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Bull/Walk/back/Bull_back_Walk",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Bull/Walk/back/Bull_back_Walk1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Bull/Walk/back/Bull_back_Walk2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Bull/Walk/back/Bull_back_Walk3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Bull/Walk/back/Bull_back_Walk4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Bull/Walk/back/Bull_back_Walk5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Bull/Walk/back/Bull_back_Walk6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Bull/Walk/front/Bull_front_Walk",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Bull/Walk/front/Bull_front_Walk1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Bull/Walk/front/Bull_front_Walk2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Bull/Walk/front/Bull_front_Walk3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Bull/Walk/front/Bull_front_Walk4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Bull/Walk/front/Bull_front_Walk5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Bull/Walk/front/Bull_front_Walk6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Bull/Walk/left/Bull_left_Walk",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Bull/Walk/left/Bull_left_Walk1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Bull/Walk/left/Bull_left_Walk2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Bull/Walk/left/Bull_left_Walk3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Bull/Walk/left/Bull_left_Walk4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Bull/Walk/left/Bull_left_Walk5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Bull/Walk/left/Bull_left_Walk6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Bull/Walk/right/Bull_right_Walk",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Bull/Walk/right/Bull_right_Walk1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Bull/Walk/right/Bull_right_Walk2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Bull/Walk/right/Bull_right_Walk3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Bull/Walk/right/Bull_right_Walk4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Bull/Walk/right/Bull_right_Walk5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Bull/Walk/right/Bull_right_Walk6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Calf/Calf_Idle/back/Calf_back_Idle",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Calf/Calf_Idle/back/Calf_back_Idle1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Calf/Calf_Idle/back/Calf_back_Idle2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Calf/Calf_Idle/back/Calf_back_Idle3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Calf/Calf_Idle/back/Calf_back_Idle4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Calf/Calf_Idle/front/Calf_front_Idle",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Calf/Calf_Idle/front/Calf_front_Idle1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Calf/Calf_Idle/front/Calf_front_Idle2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Calf/Calf_Idle/front/Calf_front_Idle3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Calf/Calf_Idle/front/Calf_front_Idle4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Calf/Calf_Idle/left/Calf_left_Idle",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Calf/Calf_Idle/left/Calf_left_Idle1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Calf/Calf_Idle/left/Calf_left_Idle2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Calf/Calf_Idle/left/Calf_left_Idle3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Calf/Calf_Idle/left/Calf_left_Idle4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Calf/Calf_Idle/right/Calf_right_Idle",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Calf/Calf_Idle/right/Calf_right_Idle1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Calf/Calf_Idle/right/Calf_right_Idle2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Calf/Calf_Idle/right/Calf_right_Idle3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Calf/Calf_Idle/right/Calf_right_Idle4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Calf/Calf_Walk/back/Calf_back_Walk",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Calf/Calf_Walk/back/Calf_back_Walk1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Calf/Calf_Walk/back/Calf_back_Walk2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Calf/Calf_Walk/back/Calf_back_Walk3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Calf/Calf_Walk/back/Calf_back_Walk4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Calf/Calf_Walk/back/Calf_back_Walk5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Calf/Calf_Walk/back/Calf_back_Walk6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Calf/Calf_Walk/front/Calf_front_Walk",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Calf/Calf_Walk/front/Calf_front_Walk1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Calf/Calf_Walk/front/Calf_front_Walk2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Calf/Calf_Walk/front/Calf_front_Walk3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Calf/Calf_Walk/front/Calf_front_Walk4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Calf/Calf_Walk/front/Calf_front_Walk5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Calf/Calf_Walk/front/Calf_front_Walk6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Calf/Calf_Walk/left/Calf_left_Walk",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Calf/Calf_Walk/left/Calf_left_Walk1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Calf/Calf_Walk/left/Calf_left_Walk2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Calf/Calf_Walk/left/Calf_left_Walk3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Calf/Calf_Walk/left/Calf_left_Walk4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Calf/Calf_Walk/left/Calf_left_Walk5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Calf/Calf_Walk/left/Calf_left_Walk6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Calf/Calf_Walk/right/Calf_right_Walk",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Calf/Calf_Walk/right/Calf_right_Walk1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Calf/Calf_Walk/right/Calf_right_Walk2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Calf/Calf_Walk/right/Calf_right_Walk3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Calf/Calf_Walk/right/Calf_right_Walk4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Calf/Calf_Walk/right/Calf_right_Walk5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Calf/Calf_Walk/right/Calf_right_Walk6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Chick/Idle/back/Chick_Idle_back",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Chick/Idle/back/Chick_Idle_back1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Chick/Idle/back/Chick_Idle_back2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Chick/Idle/back/Chick_Idle_back3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Chick/Idle/back/Chick_Idle_back4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Chick/Idle/front/Chick_Idle_front",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Chick/Idle/front/Chick_Idle_front1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Chick/Idle/front/Chick_Idle_front2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Chick/Idle/front/Chick_Idle_front3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Chick/Idle/front/Chick_Idle_front4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Chick/Idle/left/Chick_Idle_left",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Chick/Idle/left/Chick_Idle_left1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Chick/Idle/left/Chick_Idle_left2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Chick/Idle/left/Chick_Idle_left3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Chick/Idle/left/Chick_Idle_left4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Chick/Idle/right/Chick_Idle_right",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Chick/Idle/right/Chick_Idle_right1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Chick/Idle/right/Chick_Idle_right2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Chick/Idle/right/Chick_Idle_right3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Chick/Idle/right/Chick_Idle_right4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Chick/Walk/back/Chick_walk_back",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Chick/Walk/back/Chick_walk_back1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Chick/Walk/back/Chick_walk_back2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Chick/Walk/back/Chick_walk_back3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Chick/Walk/back/Chick_walk_back4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Chick/Walk/back/Chick_walk_back5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Chick/Walk/back/Chick_walk_back6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Chick/Walk/front/Chick_walk_front",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Chick/Walk/front/Chick_walk_front1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Chick/Walk/front/Chick_walk_front2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Chick/Walk/front/Chick_walk_front3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Chick/Walk/front/Chick_walk_front4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Chick/Walk/front/Chick_walk_front5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Chick/Walk/front/Chick_walk_front6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Chick/Walk/left/Chick_walk_left",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Chick/Walk/left/Chick_walk_left1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Chick/Walk/left/Chick_walk_left2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Chick/Walk/left/Chick_walk_left3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Chick/Walk/left/Chick_walk_left4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Chick/Walk/left/Chick_walk_left5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Chick/Walk/left/Chick_walk_left6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Chick/Walk/right/Chick_walk_right",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Chick/Walk/right/Chick_walk_right1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Chick/Walk/right/Chick_walk_right2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Chick/Walk/right/Chick_walk_right3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Chick/Walk/right/Chick_walk_right4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Chick/Walk/right/Chick_walk_right5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Chick/Walk/right/Chick_walk_right6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Lamb/Lamb_Idle/back/Lamb_Idle_back",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Lamb/Lamb_Idle/back/Lamb_Idle_back1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Lamb/Lamb_Idle/back/Lamb_Idle_back2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Lamb/Lamb_Idle/back/Lamb_Idle_back3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Lamb/Lamb_Idle/back/Lamb_Idle_back4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Lamb/Lamb_Idle/front/Lamb_Idle_front",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Lamb/Lamb_Idle/front/Lamb_Idle_front1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Lamb/Lamb_Idle/front/Lamb_Idle_front2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Lamb/Lamb_Idle/front/Lamb_Idle_front3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Lamb/Lamb_Idle/front/Lamb_Idle_front4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Lamb/Lamb_Idle/left/Lamb_Idle_left",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Lamb/Lamb_Idle/left/Lamb_Idle_left1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Lamb/Lamb_Idle/left/Lamb_Idle_left2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Lamb/Lamb_Idle/left/Lamb_Idle_left3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Lamb/Lamb_Idle/left/Lamb_Idle_left4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Lamb/Lamb_Idle/right/Lamb_Idle_right",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Lamb/Lamb_Idle/right/Lamb_Idle_right1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Lamb/Lamb_Idle/right/Lamb_Idle_right2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Lamb/Lamb_Idle/right/Lamb_Idle_right3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Lamb/Lamb_Idle/right/Lamb_Idle_right4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Lamb/Lamb_walk/back/Lamb_walk_back",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Lamb/Lamb_walk/back/Lamb_walk_back1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Lamb/Lamb_walk/back/Lamb_walk_back2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Lamb/Lamb_walk/back/Lamb_walk_back3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Lamb/Lamb_walk/back/Lamb_walk_back4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Lamb/Lamb_walk/back/Lamb_walk_back5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Lamb/Lamb_walk/back/Lamb_walk_back6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Lamb/Lamb_walk/front/Lamb_walk_front",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Lamb/Lamb_walk/front/Lamb_walk_front1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Lamb/Lamb_walk/front/Lamb_walk_front2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Lamb/Lamb_walk/front/Lamb_walk_front3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Lamb/Lamb_walk/front/Lamb_walk_front4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Lamb/Lamb_walk/front/Lamb_walk_front5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Lamb/Lamb_walk/front/Lamb_walk_front6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Lamb/Lamb_walk/left/Lamb_walk_left",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Lamb/Lamb_walk/left/Lamb_walk_left1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Lamb/Lamb_walk/left/Lamb_walk_left2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Lamb/Lamb_walk/left/Lamb_walk_left3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Lamb/Lamb_walk/left/Lamb_walk_left4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Lamb/Lamb_walk/left/Lamb_walk_left5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Lamb/Lamb_walk/left/Lamb_walk_left6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Lamb/Lamb_walk/right/Lamb_walk_right",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Lamb/Lamb_walk/right/Lamb_walk_right1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Lamb/Lamb_walk/right/Lamb_walk_right2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Lamb/Lamb_walk/right/Lamb_walk_right3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Lamb/Lamb_walk/right/Lamb_walk_right4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Lamb/Lamb_walk/right/Lamb_walk_right5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Lamb/Lamb_walk/right/Lamb_walk_right6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Piglet/Piglet_Idle/back/Piglet_back_Idle",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Piglet/Piglet_Idle/back/Piglet_back_Idle1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Piglet/Piglet_Idle/back/Piglet_back_Idle2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Piglet/Piglet_Idle/back/Piglet_back_Idle3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Piglet/Piglet_Idle/back/Piglet_back_Idle4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Piglet/Piglet_Idle/front/Piglet_front_Idle",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Piglet/Piglet_Idle/front/Piglet_front_Idle1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Piglet/Piglet_Idle/front/Piglet_front_Idle2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Piglet/Piglet_Idle/front/Piglet_front_Idle3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Piglet/Piglet_Idle/front/Piglet_front_Idle4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Piglet/Piglet_Idle/left/Piglet_left_Idle",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Piglet/Piglet_Idle/left/Piglet_left_Idle1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Piglet/Piglet_Idle/left/Piglet_left_Idle2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Piglet/Piglet_Idle/left/Piglet_left_Idle3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Piglet/Piglet_Idle/left/Piglet_left_Idle4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Piglet/Piglet_Idle/right/Piglet_right_Idle",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Piglet/Piglet_Idle/right/Piglet_right_Idle1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Piglet/Piglet_Idle/right/Piglet_right_Idle2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Piglet/Piglet_Idle/right/Piglet_right_Idle3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Piglet/Piglet_Idle/right/Piglet_right_Idle4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Piglet/Piglet_Walk/back/Piglet_back_Walk",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Piglet/Piglet_Walk/back/Piglet_back_Walk1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Piglet/Piglet_Walk/back/Piglet_back_Walk2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Piglet/Piglet_Walk/back/Piglet_back_Walk3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Piglet/Piglet_Walk/back/Piglet_back_Walk4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Piglet/Piglet_Walk/back/Piglet_back_Walk5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Piglet/Piglet_Walk/back/Piglet_back_Walk6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Piglet/Piglet_Walk/front/Piglet_front_Walk",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Piglet/Piglet_Walk/front/Piglet_front_Walk1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Piglet/Piglet_Walk/front/Piglet_front_Walk2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Piglet/Piglet_Walk/front/Piglet_front_Walk3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Piglet/Piglet_Walk/front/Piglet_front_Walk4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Piglet/Piglet_Walk/front/Piglet_front_Walk5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Piglet/Piglet_Walk/front/Piglet_front_Walk6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Piglet/Piglet_Walk/left/Piglet_left_Walk",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Piglet/Piglet_Walk/left/Piglet_left_Walk1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Piglet/Piglet_Walk/left/Piglet_left_Walk2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Piglet/Piglet_Walk/left/Piglet_left_Walk3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Piglet/Piglet_Walk/left/Piglet_left_Walk4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Piglet/Piglet_Walk/left/Piglet_left_Walk5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Piglet/Piglet_Walk/left/Piglet_left_Walk6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Piglet/Piglet_Walk/right/Piglet_right_Walk",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Piglet/Piglet_Walk/right/Piglet_right_Walk1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Piglet/Piglet_Walk/right/Piglet_right_Walk2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Piglet/Piglet_Walk/right/Piglet_right_Walk3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Piglet/Piglet_Walk/right/Piglet_right_Walk4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Piglet/Piglet_Walk/right/Piglet_right_Walk5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Piglet/Piglet_Walk/right/Piglet_right_Walk6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Rooster/Rooster_Idle/back/Rooster__back_Idle",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Idle/back/Rooster__back_Idle1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Idle/back/Rooster__back_Idle2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Idle/back/Rooster__back_Idle3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Idle/back/Rooster__back_Idle4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Idle/back/Rooster__back_Idle5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Idle/back/Rooster__back_Idle6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Rooster/Rooster_Idle/front/Rooster__front_Idle",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Idle/front/Rooster__front_Idle1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Idle/front/Rooster__front_Idle2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Idle/front/Rooster__front_Idle3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Idle/front/Rooster__front_Idle4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Idle/front/Rooster__front_Idle5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Idle/front/Rooster__front_Idle6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Rooster/Rooster_Idle/left/Rooster__left_Idle",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Idle/left/Rooster__left_Idle1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Idle/left/Rooster__left_Idle2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Idle/left/Rooster__left_Idle3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Idle/left/Rooster__left_Idle4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Idle/left/Rooster__left_Idle5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Idle/left/Rooster__left_Idle6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Rooster/Rooster_Idle/right/Rooster__right_Idle",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Idle/right/Rooster__right_Idle1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Idle/right/Rooster__right_Idle2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Idle/right/Rooster__right_Idle3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Idle/right/Rooster__right_Idle4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Idle/right/Rooster__right_Idle5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Idle/right/Rooster__right_Idle6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Rooster/Rooster_Walk/back/Rooster__back_Walk",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Walk/back/Rooster__back_Walk1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Walk/back/Rooster__back_Walk2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Walk/back/Rooster__back_Walk3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Walk/back/Rooster__back_Walk4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Walk/back/Rooster__back_Walk5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Walk/back/Rooster__back_Walk6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Rooster/Rooster_Walk/front/Rooster__front_Walk",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Walk/front/Rooster__front_Walk1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Walk/front/Rooster__front_Walk2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Walk/front/Rooster__front_Walk3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Walk/front/Rooster__front_Walk4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Walk/front/Rooster__front_Walk5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Walk/front/Rooster__front_Walk6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Rooster/Rooster_Walk/left/Rooster__left_Walk",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Walk/left/Rooster__left_Walk1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Walk/left/Rooster__left_Walk2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Walk/left/Rooster__left_Walk3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Walk/left/Rooster__left_Walk4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Walk/left/Rooster__left_Walk5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Walk/left/Rooster__left_Walk6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Rooster/Rooster_Walk/right/Rooster__right_Walk",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Walk/right/Rooster__right_Walk1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Walk/right/Rooster__right_Walk2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Walk/right/Rooster__right_Walk3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Walk/right/Rooster__right_Walk4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Walk/right/Rooster__right_Walk5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Rooster/Rooster_Walk/right/Rooster__right_Walk6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Sheep/Sheep_Idle/back/Sheep_Idle_back",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Sheep/Sheep_Idle/back/Sheep_Idle_back1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Sheep/Sheep_Idle/back/Sheep_Idle_back2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Sheep/Sheep_Idle/back/Sheep_Idle_back3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Sheep/Sheep_Idle/back/Sheep_Idle_back4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Sheep/Sheep_Idle/front/Sheep_Idle_front",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Sheep/Sheep_Idle/front/Sheep_Idle_front1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Sheep/Sheep_Idle/front/Sheep_Idle_front2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Sheep/Sheep_Idle/front/Sheep_Idle_front3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Sheep/Sheep_Idle/front/Sheep_Idle_front4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Sheep/Sheep_Idle/left/Sheep_Idle_left",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Sheep/Sheep_Idle/left/Sheep_Idle_left1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Sheep/Sheep_Idle/left/Sheep_Idle_left2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Sheep/Sheep_Idle/left/Sheep_Idle_left3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Sheep/Sheep_Idle/left/Sheep_Idle_left4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Sheep/Sheep_Idle/right/Sheep_Idle_right",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Sheep/Sheep_Idle/right/Sheep_Idle_right1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Sheep/Sheep_Idle/right/Sheep_Idle_right2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Sheep/Sheep_Idle/right/Sheep_Idle_right3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Sheep/Sheep_Idle/right/Sheep_Idle_right4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Sheep/Sheep_Walk/back/Sheep_walk_back",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Sheep/Sheep_Walk/back/Sheep_walk_back1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Sheep/Sheep_Walk/back/Sheep_walk_back2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Sheep/Sheep_Walk/back/Sheep_walk_back3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Sheep/Sheep_Walk/back/Sheep_walk_back4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Sheep/Sheep_Walk/back/Sheep_walk_back5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Sheep/Sheep_Walk/back/Sheep_walk_back6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Sheep/Sheep_Walk/front/Sheep_walk_front",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Sheep/Sheep_Walk/front/Sheep_walk_front1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Sheep/Sheep_Walk/front/Sheep_walk_front2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Sheep/Sheep_Walk/front/Sheep_walk_front3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Sheep/Sheep_Walk/front/Sheep_walk_front4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Sheep/Sheep_Walk/front/Sheep_walk_front5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Sheep/Sheep_Walk/front/Sheep_walk_front6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Sheep/Sheep_Walk/left/Sheep_walk_left",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Sheep/Sheep_Walk/left/Sheep_walk_left1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Sheep/Sheep_Walk/left/Sheep_walk_left2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Sheep/Sheep_Walk/left/Sheep_walk_left3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Sheep/Sheep_Walk/left/Sheep_walk_left4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Sheep/Sheep_Walk/left/Sheep_walk_left5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Sheep/Sheep_Walk/left/Sheep_walk_left6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Sheep/Sheep_Walk/right/Sheep_walk_right",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Sheep/Sheep_Walk/right/Sheep_walk_right1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Sheep/Sheep_Walk/right/Sheep_walk_right2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Sheep/Sheep_Walk/right/Sheep_walk_right3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Sheep/Sheep_Walk/right/Sheep_walk_right4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Sheep/Sheep_Walk/right/Sheep_walk_right5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Sheep/Sheep_Walk/right/Sheep_walk_right6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Turkey/Turkey_Idle/back/Turkey_Idle_Back",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Turkey/Turkey_Idle/back/Turkey_Idle_Back1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Turkey/Turkey_Idle/back/Turkey_Idle_Back2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Turkey/Turkey_Idle/back/Turkey_Idle_Back3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Turkey/Turkey_Idle/back/Turkey_Idle_Back4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Turkey/Turkey_Idle/front/Turkey_Idle_Front",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Turkey/Turkey_Idle/front/Turkey_Idle_Front1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Turkey/Turkey_Idle/front/Turkey_Idle_Front2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Turkey/Turkey_Idle/front/Turkey_Idle_Front3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Turkey/Turkey_Idle/front/Turkey_Idle_Front4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Turkey/Turkey_Idle/left/Turkey_Idle_Left",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Turkey/Turkey_Idle/left/Turkey_Idle_Left1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Turkey/Turkey_Idle/left/Turkey_Idle_Left2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Turkey/Turkey_Idle/left/Turkey_Idle_Left3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Turkey/Turkey_Idle/left/Turkey_Idle_Left4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Turkey/Turkey_Idle/right/Turkey_Idle_Right",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Turkey/Turkey_Idle/right/Turkey_Idle_Right1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Turkey/Turkey_Idle/right/Turkey_Idle_Right2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Turkey/Turkey_Idle/right/Turkey_Idle_Right3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Turkey/Turkey_Idle/right/Turkey_Idle_Right4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Turkey/Turkey_Walk/back/Turkey_Walk_Back",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Turkey/Turkey_Walk/back/Turkey_Walk_Back1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Turkey/Turkey_Walk/back/Turkey_Walk_Back2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Turkey/Turkey_Walk/back/Turkey_Walk_Back3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Turkey/Turkey_Walk/back/Turkey_Walk_Back4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Turkey/Turkey_Walk/back/Turkey_Walk_Back5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Turkey/Turkey_Walk/back/Turkey_Walk_Back6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Turkey/Turkey_Walk/front/Turkey_Walk_Front",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Turkey/Turkey_Walk/front/Turkey_Walk_Front1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Turkey/Turkey_Walk/front/Turkey_Walk_Front2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Turkey/Turkey_Walk/front/Turkey_Walk_Front3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Turkey/Turkey_Walk/front/Turkey_Walk_Front4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Turkey/Turkey_Walk/front/Turkey_Walk_Front5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Turkey/Turkey_Walk/front/Turkey_Walk_Front6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Turkey/Turkey_Walk/left/Turkey_Walk_Left",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Turkey/Turkey_Walk/left/Turkey_Walk_Left1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Turkey/Turkey_Walk/left/Turkey_Walk_Left2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Turkey/Turkey_Walk/left/Turkey_Walk_Left3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Turkey/Turkey_Walk/left/Turkey_Walk_Left4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Turkey/Turkey_Walk/left/Turkey_Walk_Left5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Turkey/Turkey_Walk/left/Turkey_Walk_Left6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Turkey/Turkey_Walk/right/Turkey_Walk_Right",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "farm_animals",
+                    "frame": "Turkey/Turkey_Walk/right/Turkey_Walk_Right1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Turkey/Turkey_Walk/right/Turkey_Walk_Right2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Turkey/Turkey_Walk/right/Turkey_Walk_Right3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Turkey/Turkey_Walk/right/Turkey_Walk_Right4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Turkey/Turkey_Walk/right/Turkey_Walk_Right5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "farm_animals",
+                    "frame": "Turkey/Turkey_Walk/right/Turkey_Walk_Right6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        }
+    ],
+    "globalTimeScale": 1,
+    "meta": {
+        "app": "Phaser Editor 2D v3",
+        "contentType": "Phaser v3 Animations"
+    },
+    "settings": {
+        "sourceLang": "TYPE_SCRIPT",
+        "esModule": false,
+        "generateCode": true
+    }
+}

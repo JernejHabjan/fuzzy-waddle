@@ -1,7 +1,5 @@
 import { onObjectReady } from "../../data/game-object-helper";
 import { Subscription } from "rxjs";
-import { getCommunicator, getCurrentPlayerNumber } from "../../data/scene-data";
-import { SelectableComponent } from "../components/selectable-component";
 import { getActorComponent } from "../../data/actor-component";
 import { HealthComponent } from "../components/combat/components/health-component";
 import { PawnAiController } from "../../prefabs/ai-agents/pawn-ai-controller";
@@ -23,19 +21,19 @@ import { getSceneService } from "../../world/services/scene-component-helpers";
 import { DebuggingService } from "../../world/services/DebuggingService";
 import { ContainableComponent } from "../components/building/containable-component";
 import { AudioActorComponent } from "../components/actor-audio/audio-actor-component";
-import { WalkableComponent } from "../components/movement/walkable-component";
+import { NavigableComponent } from "../components/movement/navigable-component";
 import { FlyingComponent } from "../components/movement/flying-component";
-import { type GameObjectActionAssignerConfig } from "../../prefabs/gui/game-object-action-assigner";
+import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
+import type { ActorActionCommand } from "../../data/commands/game-command";
 
 export class ActionSystem {
-  private playerChangedSubscription?: Subscription;
+  private commandBusSubscription?: Subscription;
   private aiDebuggingSubscription?: Subscription;
   private displayDebugInfo: boolean = false;
   private audioActorComponent?: AudioActorComponent;
-  private shiftKey: Phaser.Input.Keyboard.Key | undefined;
 
   constructor(private readonly gameObject: Phaser.GameObjects.GameObject) {
-    this.listenToActorActionEvents();
+    this.listenToCommandBusEvents();
     onObjectReady(gameObject, this.init, this);
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
@@ -49,65 +47,78 @@ export class ActionSystem {
       });
       this.audioActorComponent = getActorComponent(this.gameObject, AudioActorComponent);
     }
-    this.subscribeToShiftKey();
   }
-  private subscribeToShiftKey() {
-    this.shiftKey = this.gameObject.scene.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
+  private listenToCommandBusEvents() {
+    const commandBus = getSceneService(this.gameObject.scene, CommandBusService);
+    if (!commandBus) {
+      console.error("ActionSystem: CommandBusService not found — commands will not be received");
+      return;
+    }
+
+    const myId = getActorComponent(this.gameObject, IdComponent)?.id;
+
+    this.commandBusSubscription = commandBus.command$.subscribe((cmd) => {
+      if (!this.gameObject.active) return;
+
+      // Resolve actor ID lazily in case it was not available at construction time
+      const actorId = myId ?? getActorComponent(this.gameObject, IdComponent)?.id;
+      if (!actorId) return;
+      if (!cmd.actorIds.includes(actorId)) return;
+
+      if (cmd.type === "ACTOR_ACTION") {
+        this.handleActorActionCommand(cmd);
+      } else if (cmd.type === "STOP") {
+        this.handleStopCommand();
+      }
+    });
   }
-  private listenToActorActionEvents() {
-    this.playerChangedSubscription = getCommunicator(this.gameObject.scene)
-      .playerChanged?.onWithFilter((p) => p.property === "command.issued.actor") // todo it's actually blackboard that should replicate
-      .subscribe((payload) => {
-        if (!this.gameObject.active) return;
-        const canIssueCommand = this.canIssueCommand();
-        if (!canIssueCommand) return;
 
-        const isSelected = getActorComponent(this.gameObject, SelectableComponent)?.getSelected();
-        if (!isSelected) return;
+  private handleActorActionCommand(cmd: ActorActionCommand) {
+    const payerPawnAiController = getActorComponent(this.gameObject, PawnAiController);
+    if (!payerPawnAiController) return;
 
-        const payerPawnAiController = getActorComponent(this.gameObject, PawnAiController);
-        if (!payerPawnAiController) return;
+    let action: OrderData | null = null;
+    let targetGameObject: Phaser.GameObjects.GameObject | undefined;
 
-        const { objectIds, orderType, tileVec3 } = payload.data.data as GameObjectActionAssignerConfig;
+    if (cmd.targetObjectIds) {
+      const clickedGameObjects = this.gameObject.scene.children.list.filter((go) =>
+        cmd.targetObjectIds!.includes(getActorComponent(go, IdComponent)?.id ?? "")
+      );
+      if (clickedGameObjects.length > 0) {
+        targetGameObject = clickedGameObjects[0];
+      }
+    }
 
-        let action: OrderData | null = null;
-        let targetGameObject: Phaser.GameObjects.GameObject | undefined;
-
-        if (objectIds) {
-          const clickedGameObjects = this.gameObject.scene.children.list.filter((go) =>
-            objectIds.includes(getActorComponent(go, IdComponent)?.id ?? "")
-          );
-          if (clickedGameObjects.length > 0) {
-            targetGameObject = clickedGameObjects[0];
-          }
-        }
-
-        if (orderType) {
-          action = new OrderData(orderType, {
-            targetGameObject,
-            targetTileLocation: tileVec3
-          });
-        } else if (targetGameObject) {
-          action = this.findAction(targetGameObject);
-        } else if (tileVec3) {
-          action = new OrderData(OrderType.Move, {
-            targetTileLocation: tileVec3
-          });
-        }
-
-        if (!action) return;
-
-        if (this.displayDebugInfo && !environment.production) {
-          console.log("ActionSystem: action", action);
-        }
-
-        if (this.shiftKey?.isDown) {
-          payerPawnAiController.blackboard.addOrder(action);
-        } else {
-          payerPawnAiController.blackboard.overrideOrderQueueAndActiveOrder(action);
-        }
-        this.playOrderSound(action);
+    if (cmd.orderType) {
+      action = new OrderData(cmd.orderType, {
+        targetGameObject,
+        targetTileLocation: cmd.tileVec3
       });
+    } else if (targetGameObject) {
+      action = this.findAction(targetGameObject);
+    } else if (cmd.tileVec3) {
+      action = new OrderData(OrderType.Move, {
+        targetTileLocation: cmd.tileVec3
+      });
+    }
+
+    if (!action) return;
+
+    if (this.displayDebugInfo && !environment.production) {
+      console.log("ActionSystem: action", action);
+    }
+
+    if (cmd.queue) {
+      payerPawnAiController.blackboard.addOrder(action);
+    } else {
+      payerPawnAiController.blackboard.overrideOrderQueueAndActiveOrder(action);
+    }
+    this.playOrderSound(action);
+  }
+
+  private handleStopCommand() {
+    const payerPawnAiController = getActorComponent(this.gameObject, PawnAiController);
+    payerPawnAiController?.blackboard.resetCurrentOrder();
   }
 
   private findAction(targetGameObject: Phaser.GameObjects.GameObject): OrderData | null {
@@ -122,10 +133,10 @@ export class ActionSystem {
       if (selfPlayerNumber === targetPlayerNumber) {
         // ally
 
-        const targetIsWalkable = getActorComponent(targetGameObject, WalkableComponent);
+        const targetIsNavigable = getActorComponent(targetGameObject, NavigableComponent);
         const selfHasFlying = getActorComponent(this.gameObject, FlyingComponent);
-        if (targetIsWalkable && !selfHasFlying) {
-          // target is walkable and self is not flying
+        if (targetIsNavigable && !selfHasFlying) {
+          // target is navigable and self is not flying
           return new OrderData(OrderType.Move, { targetGameObject });
         }
 
@@ -191,10 +202,17 @@ export class ActionSystem {
 
           const selfContainableComponent = getActorComponent(this.gameObject, ContainableComponent);
           if (selfContainableComponent) {
-            // self is containable
-
-            console.warn("todo - this is not yet supported in player-pawn-ai-controller"); // todo
+            // self is containable — issue boarding order
             return new OrderData(OrderType.EnterContainer, { targetGameObject });
+          }
+        }
+
+        // Player-owned resource sources (e.g. Field) — gatherer can harvest them
+        const targetResourceSourceComponent = getActorComponent(targetGameObject, ResourceSourceComponent);
+        if (targetResourceSourceComponent) {
+          const selfGathererComponent = getActorComponent(this.gameObject, GathererComponent);
+          if (selfGathererComponent) {
+            return new OrderData(OrderType.Gather, { targetGameObject });
           }
         }
       } else {
@@ -233,20 +251,13 @@ export class ActionSystem {
     return null;
   }
 
-  private canIssueCommand() {
-    const currentPlayerNr = getCurrentPlayerNumber(this.gameObject.scene);
-    const actorPlayerNr = getActorComponent(this.gameObject, OwnerComponent)?.getOwner();
-    return actorPlayerNr === currentPlayerNr;
+  private destroy() {
+    this.commandBusSubscription?.unsubscribe();
+    this.aiDebuggingSubscription?.unsubscribe();
   }
 
   private playOrderSound(action: OrderData) {
     if (!this.audioActorComponent) return;
     this.audioActorComponent.playOrderSound(action);
-  }
-
-  private destroy() {
-    this.playerChangedSubscription?.unsubscribe();
-    this.aiDebuggingSubscription?.unsubscribe();
-    this.shiftKey?.destroy();
   }
 }

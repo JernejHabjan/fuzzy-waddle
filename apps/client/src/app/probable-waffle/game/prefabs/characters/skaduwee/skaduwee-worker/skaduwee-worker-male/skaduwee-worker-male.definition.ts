@@ -20,6 +20,11 @@ export const skaduweeWorkerMaleDefinition = {
   ...skaduweeWorkerDefinition,
   components: {
     ...skaduweeWorkerDefinition.components,
+    representable: {
+      width: 32,
+      height: 48,
+      origin: { x: 0.5, y: 0.8994189111288416 }
+    },
     info: {
       name: "Darkwright",
       description: "A shadowbound worker, crafting the foundation of dark dominion",
@@ -46,5 +51,9 @@ export const skaduweeWorkerMaleDefinition = {
       }
     },
     animatable: { animations: ANIM_SKADUWEE_WORKER_MALE_DEFINITION }
+  },
+  meta: {
+    ...skaduweeWorkerDefinition.meta,
+    randomOfType: []
   }
 } satisfies PrefabDefinition;

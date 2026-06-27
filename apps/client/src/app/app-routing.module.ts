@@ -1,9 +1,14 @@
-import { NgModule } from "@angular/core";
-import { RouterModule, type Routes } from "@angular/router";
+import { inject, NgModule } from "@angular/core";
+import { Router, RouterModule, type Routes } from "@angular/router";
 import { AuthGuard } from "./auth/auth.guard";
+import { AppRoleGuard } from "./auth/app-role.guard";
 import { LevelGuard } from "./fly-squasher/choose-level/level.guard";
 import { environment } from "../environments/environment";
 import { GameInstanceGuard } from "./probable-waffle/gui/online/lobby-page/game-instance.guard";
+import { isTauri } from "./shared/utils/tauri";
+
+/** In Tauri the only published game is Probable Waffle — redirect root to /aota. */
+const tauriHomeRedirect = () => (isTauri() ? inject(Router).createUrlTree(["/aota"]) : true);
 
 const littleMuncherRoutes = [
   {
@@ -12,6 +17,11 @@ const littleMuncherRoutes = [
       {
         path: "",
         loadComponent: () => import("./little-muncher/little-muncher.component").then((m) => m.LittleMuncherComponent)
+      },
+      {
+        path: "high-score",
+        loadComponent: () =>
+          import("./little-muncher/high-score/high-score.component").then((m) => m.HighScoreComponent)
       },
       { path: "**", redirectTo: "" }
     ]
@@ -38,8 +48,8 @@ const probableWaffleRoutes = [
           },
           {
             path: "online",
-            loadComponent: () => import("./probable-waffle/gui/online/online.component").then((m) => m.OnlineComponent),
-            canActivate: [() => !environment.production]
+            loadComponent: () => import("./probable-waffle/gui/online/online.component").then((m) => m.OnlineComponent)
+            // canActivate: [() => !environment.production] // set to alpha in #606
           },
           {
             path: "skirmish",
@@ -67,6 +77,18 @@ const probableWaffleRoutes = [
           {
             path: "replay",
             loadComponent: () => import("./probable-waffle/gui/replay/replay.component").then((m) => m.ReplayComponent)
+          },
+          {
+            path: "match-history",
+            loadComponent: () =>
+              import("./probable-waffle/gui/match-history/match-history-page.component").then(
+                (m) => m.MatchHistoryPageComponent
+              )
+          },
+          {
+            path: "match-details/:gameInstanceId",
+            loadComponent: () =>
+              import("./probable-waffle/gui/match-history/match-details.component").then((m) => m.MatchDetailsComponent)
           },
           {
             path: "progress",
@@ -157,10 +179,16 @@ const dungeonCrawlerRoutes = [
 const routes = [
   {
     path: "",
-    loadComponent: () => import("./home/page/home-page.component").then((m) => m.HomePageComponent)
+    loadComponent: () => import("./home/page/home-page.component").then((m) => m.HomePageComponent),
+    canActivate: [tauriHomeRedirect]
   },
   {
     path: "profile",
+    loadComponent: () => import("./home/profile/profile.component").then((m) => m.ProfileComponent),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: "profile/:userId",
     loadComponent: () => import("./home/profile/profile.component").then((m) => m.ProfileComponent),
     canActivate: [AuthGuard]
   },
@@ -171,6 +199,11 @@ const routes = [
   {
     path: "attributions",
     loadComponent: () => import("./home/attribution/attribution.component").then((m) => m.AttributionComponent)
+  },
+  {
+    path: "moderation",
+    loadComponent: () => import("./home/moderation/moderation.component").then((m) => m.ModerationComponent),
+    canActivate: [AuthGuard, AppRoleGuard]
   },
   ...littleMuncherRoutes,
   ...probableWaffleRoutes,

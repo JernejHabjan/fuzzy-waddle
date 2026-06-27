@@ -1,12 +1,12 @@
 import { Component, inject } from "@angular/core";
 import type { OnInit } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { NgClass } from "@angular/common";
 import { type Toast, ToastService } from "../services/toast.service";
 
 @Component({
   selector: "app-toast-container",
   standalone: true,
-  imports: [CommonModule],
+  imports: [NgClass],
   template: `
     <div class="toast-container position-fixed top-0 end-0 p-3">
       @for (toast of toasts; track toast) {

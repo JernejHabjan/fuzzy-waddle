@@ -1,5 +1,5 @@
 import { ANIM_BUILDING_ICON_ANIMS_SKADUWEE_FROST_FORGE } from "../../../icon-animations";
-import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { getBuildingQueueCapabilities, ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PaymentType } from "../../../../entity/components/production/payment-type";
 import { coreConstructionSiteDefinition } from "../../shared/core-construction-site.definition";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
@@ -8,11 +8,15 @@ import { ActorPhysicalType } from "../../../../entity/components/combat/componen
 export const frostForgeDefinition = {
   components: {
     representable: {
-      width: 256,
-      height: 384
+      width: 192,
+      height: 288,
+      origin: { x: 0.5, y: 0.84 }
     },
     objectDescriptor: {
       color: 0xf2f7fa
+    },
+    housing: {
+      housingCapacity: 8
     },
     owner: {
       color: [
@@ -28,6 +32,12 @@ export const frostForgeDefinition = {
     info: {
       name: "Frost Forge",
       description: "Main building of the Skaduwee faction. It is used to produce workers and store resources.",
+      tooltipDescription: [
+        "Main base of operations",
+        "Trains workers for economy",
+        "Collects and stores resources",
+        "Provides housing for units"
+      ],
       portraitAnimation: {
         idle: ANIM_BUILDING_ICON_ANIMS_SKADUWEE_FROST_FORGE,
         action: ANIM_BUILDING_ICON_ANIMS_SKADUWEE_FROST_FORGE
@@ -40,15 +50,16 @@ export const frostForgeDefinition = {
     },
     health: {
       physicalState: ActorPhysicalType.Structural,
-      maxHealth: 100
+      maxHealth: 500,
+      maxArmour: 300
     },
     productionCost: {
       resources: {
-        [ResourceType.Wood]: 10,
-        [ResourceType.Minerals]: 10
+        [ResourceType.Wood]: 400,
+        [ResourceType.Stone]: 400
       },
       refundFactor: 0.5,
-      productionTime: 5000,
+      productionTime: 60000,
       costType: PaymentType.PayImmediately
     },
     selectable: {},
@@ -56,16 +67,22 @@ export const frostForgeDefinition = {
       capacity: 2
     },
     resourceDrain: {
-      resourceTypes: [ResourceType.Wood, ResourceType.Minerals, ResourceType.Stone, ResourceType.Ambrosia]
+      resourceTypes: [ResourceType.Wood, ResourceType.Minerals, ResourceType.Stone, ResourceType.Food],
+      cooldown: 1000
     },
     production: {
+      availableProduceActors: getBuildingQueueCapabilities(ObjectNames.FrostForge)!.availableProduceActors!
+    },
+    queue: {
       queueCount: 1,
-      capacityPerQueue: 5,
-      availableProduceActors: [ObjectNames.SkaduweeWorker]
+      capacityPerQueue: 5
     },
     collider: { enabled: true },
     constructable: {
       ...coreConstructionSiteDefinition
     }
+  },
+  meta: {
+    isMainBuilding: true
   }
 } satisfies PrefabDefinition;

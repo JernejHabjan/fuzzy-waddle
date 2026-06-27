@@ -3,11 +3,7 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { setActorData } from "../../../../data/actor-data";
-import {
-  ObjectDescriptorComponent,
-  type ObjectDescriptorDefinition
-} from "../../../../entity/components/object-descriptor-component";
+import { initStaticActor } from "../../../../data/init-static-actor";
 /* END-USER-IMPORTS */
 
 export default class Reeds1 extends Phaser.GameObjects.Image {
@@ -15,15 +11,7 @@ export default class Reeds1 extends Phaser.GameObjects.Image {
     super(scene, x ?? 32, y ?? 32, texture || "outside", frame ?? "nature/grass/reeds_1.png");
 
     /* START-USER-CTR-CODE */
-    setActorData(
-      this,
-      [
-        new ObjectDescriptorComponent({
-          color: null
-        } satisfies ObjectDescriptorDefinition)
-      ],
-      []
-    );
+    initStaticActor(this, null);
     /* END-USER-CTR-CODE */
   }
 

@@ -3,23 +3,21 @@
 .main-menu {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
-  padding: 1rem;
-  width: 400px; // Slightly wider to accommodate grid buttons
+  gap: 1.5rem;
+  padding: 1.25rem;
+  width: min(440px, calc(100vw - 2rem));
   max-height: calc(100vh - 2rem);
   overflow-y: auto;
-
-  // Card-row style background
-  background-color: $quaternary;
-  border-top: 2px solid $primary;
-  border-bottom: 2px solid $primary;
-  border-radius: $app-border-radius;
+  background-color: rgba(19, 23, 28, 0.94);
+  border: 1px solid rgba(111, 85, 52, 0.7);
+  border-radius: 1.25rem;
+  box-shadow: 0 24px 44px rgba(0, 0, 0, 0.35);
 }
 
 .menu-grid {
   display: grid;
-  grid-template-columns: 1fr; // Single column layout
-  gap: 2rem;
+  grid-template-columns: 1fr;
+  gap: 1.35rem;
 }
 
 .menu-section {
@@ -31,38 +29,28 @@
 // Section buttons in 2 columns
 .section-buttons {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); // Two equal columns
+  grid-template-columns: repeat(2, 1fr);
   gap: 0.75rem;
 
   .menu-button {
     width: 100%;
     box-sizing: border-box;
-    height: 100%; // Make all buttons the same height
+    height: 100%;
     display: flex;
     flex-direction: column;
   }
 
-  // When there's only one button, it should take the right column
   &:has(.menu-button:only-child) {
-    grid-template-columns: 0 1fr;
-
-    .menu-button {
-      grid-column: 2;
-    }
+    grid-template-columns: 1fr;
   }
 }
 
-// For smaller screens, switch back to a single column
 @media (max-width: 576px) {
   .section-buttons {
     grid-template-columns: 1fr;
 
     &:has(.menu-button:only-child) {
       grid-template-columns: 1fr;
-
-      .menu-button {
-        grid-column: 1;
-      }
     }
   }
 }
@@ -71,7 +59,6 @@
 @media (max-width: 768px) {
   .main-menu {
     width: 350px;
-    // Remove scroll on mobile
     max-height: none;
     overflow-y: visible;
   }
@@ -82,88 +69,86 @@
 }
 
 .menu-section-title {
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   font-weight: 600;
-  color: $secondary;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid rgba($secondary, 0.3);
+  color: #f0c46b;
+  padding-bottom: 0.65rem;
+  border-bottom: 1px solid rgba(111, 85, 52, 0.6);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  font-family: $app-font-bold;
+  letter-spacing: 0.12em;
+  font-family: "Cinzel", $app-font-bold, serif;
 }
 
 .menu-button {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 0.75rem 1rem;
+  justify-content: center;
+  gap: 0.3rem;
+  min-height: 5.75rem;
+  padding: 0.95rem 1rem;
   position: relative;
-
-  // Card-style design
-  border-radius: $app-border-radius;
-  background-color: $quaternary;
-  border: 4px solid $primary;
-  box-shadow: 10px 10px 0 0 $primary;
-
-  color: $dark;
+  overflow: hidden;
+  border-radius: 1rem;
+  background-color: #1f252c;
+  border: 1px solid rgba(111, 85, 52, 0.6);
+  box-shadow: inset 0 0 0 1px rgba(240, 196, 107, 0.05);
+  color: #f5ecd9;
   text-decoration: none;
-  transition: all 0.3s ease;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    background-color 0.2s ease;
   cursor: pointer;
 
-  // Fix for hover movement
-  min-height: 1.5rem; // Ensure consistent height regardless of description visibility
-
   &:hover {
-    background-color: $tertiary;
-    transform: translate(10px, 10px);
-    box-shadow: 0 0 0 0 $primary;
-
-    .menu-button-text {
-      opacity: 0; // Hide the title on hover
-    }
-
-    .menu-button-description {
-      opacity: 1;
-      transform: translateY(-1.5rem); // Move up to overlay the hidden title
-      visibility: visible;
-    }
+    background-color: #252d35;
+    border-color: rgba(240, 196, 107, 0.78);
+    transform: translateY(-2px);
   }
 
   &:active {
-    transform: translate(12px, 12px);
+    transform: translateY(0);
   }
 }
 
 .menu-button-text {
-  font-size: 1.1rem;
-  font-weight: 600;
-  transition: all 0.3s ease; // Changed to include opacity
-  color: $dark;
-  font-family: $app-font-bold;
-  position: relative; // Added for proper stacking
-  z-index: 1; // Ensure text is above the description
+  font-size: 1.08rem;
+  font-weight: 700;
+  color: #f5ecd9;
+  font-family: "Cinzel", $app-font-bold, serif;
+  position: relative;
+  z-index: 1;
+}
+
+.menu-button-tag {
+  position: absolute;
+  top: 0.7rem;
+  right: 0.7rem;
+  padding: 0.25rem 0.45rem;
+  border-radius: 0.35rem;
+  background-color: #f0c46b;
+  color: #14171c;
+  font-family: "Cinzel", $app-font-bold, serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1;
+  z-index: 1;
 }
 
 .menu-button-description {
-  font-size: 0.875rem;
-  color: rgba($dark, 0.9); // Made slightly darker for better readability
-  font-weight: 400;
-  opacity: 0;
-  visibility: hidden;
-  position: absolute;
-  top: 1.8rem; // Positioned to overlay the title when it fades out
-  left: 1rem;
-  right: 1rem;
-  transition: all 0.3s ease;
-  transform: translateY(0); // Start at the same position as the title
-  pointer-events: none; // Prevent description from interfering with button clicks
+  font-size: 0.92rem;
+  color: #c8b89b;
+  font-weight: 500;
+  line-height: 1.2;
 }
 
-// Back button styles
 .back-button-container {
   display: flex;
   justify-content: center;
-  margin-top: 1rem;
+  margin-top: 0.25rem;
 }
 
 .back-button {
@@ -174,14 +159,7 @@
   align-items: center;
   padding: 0.75rem 1.5rem;
 
-  // Override hover effects for the back button
   &:hover {
-    .menu-button-text {
-      opacity: 1; // Keep text visible on hover
-      transform: none; // No transform
-    }
-
-    // No description to show
     .menu-button-description {
       display: none;
     }
@@ -192,30 +170,38 @@
   }
 }
 
-// Responsive design
 @media (max-width: 1200px) {
   .main-menu {
-    // Remove scroll on mobile
     max-height: none;
     overflow-y: visible;
   }
 }
 
-// Custom scrollbar using variable colors
+.app-version {
+  font-family: "Rajdhani", sans-serif;
+  font-size: 0.7rem;
+  color: rgba(200, 184, 155, 0.6);
+  text-align: right;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding-right: 4px;
+  margin-top: -0.5rem;
+}
+
 .main-menu::-webkit-scrollbar {
   width: 8px;
 }
 
 .main-menu::-webkit-scrollbar-track {
-  background: rgba($tertiary, 1);
+  background: rgba(111, 85, 52, 0.18);
   border-radius: 3px;
 }
 
 .main-menu::-webkit-scrollbar-thumb {
-  background: rgba($primary, 1);
+  background: rgba(240, 196, 107, 0.42);
   border-radius: 3px;
 }
 
 .main-menu::-webkit-scrollbar-thumb:hover {
-  background: rgba($primary, 1);
+  background: rgba(240, 196, 107, 0.58);
 }

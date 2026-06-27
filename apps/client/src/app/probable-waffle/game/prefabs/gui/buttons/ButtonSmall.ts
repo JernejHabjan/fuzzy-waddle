@@ -17,7 +17,13 @@ export default class ButtonSmall extends Phaser.GameObjects.Container {
     // textEle
     const textEle = scene.add.text(6, 1, "", {});
     textEle.setOrigin(0.5, 0.5);
-    textEle.setStyle({ align: "center", fontFamily: "disposabledroid", resolution: 10 });
+    textEle.setStyle({
+      align: "center",
+      fontFamily: "disposabledroid",
+      resolution: 10,
+      color: "#000000ff",
+      fontSize: "20px"
+    });
     this.add(textEle);
 
     // image_1
@@ -40,15 +46,14 @@ export default class ButtonSmall extends Phaser.GameObjects.Container {
 
   private btnEle: Phaser.GameObjects.NineSlice;
   private textEle: Phaser.GameObjects.Text;
-  private image_1: Phaser.GameObjects.Image;
+  public image_1: Phaser.GameObjects.Image;
   public text: string = "";
-  public w: number = 20;
+  public override w: number = 20;
   public h: number = 20;
-  public fontSize: number = 16;
-  public buttonImage!: { key: string; frame?: string | number };
+  public fontSize: number = 20;
 
   /* START-USER-CODE */
-  scene: Phaser.Scene;
+  override scene: Phaser.Scene;
   clicked = new EventEmitter<void>();
 
   // Write your code here.

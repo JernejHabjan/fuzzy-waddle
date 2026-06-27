@@ -1,9 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { RoomGateway } from "./room.gateway";
 import {
-  type CommunicatorEvent,
   GameSessionState,
-  type ProbableWaffleCommunicatorType,
+  ProbableWaffleCommunicators,
+  type ProbableWaffleCommunicatorEventUnion,
   ProbableWaffleGameInstance,
   ProbableWaffleGameInstanceVisibility,
   type ProbableWaffleGetRoomsDto,
@@ -40,27 +40,39 @@ export class RoomServerService implements RoomServerServiceInterface {
     return gameInstanceToRoom;
   }
 
-  roomEvent(type: RoomAction, gameInstance: ProbableWaffleGameInstance, user: User | null) {
-    this.roomGateway.emitRoom({
+  roomEvent(type: RoomAction, gameInstance: ProbableWaffleGameInstance, _user: User | null) {
+    const roomEvent = {
       room: this.getGameInstanceToRoom(gameInstance),
       action: type
-    } satisfies ProbableWaffleRoomEvent);
+    } satisfies ProbableWaffleRoomEvent;
+
+    if (gameInstance.gameInstanceMetadata.data.visibility === ProbableWaffleGameInstanceVisibility.Public) {
+      this.roomGateway.emitRoom(roomEvent);
+      return;
+    }
+
+    const gameInstanceId = gameInstance.gameInstanceMetadata.data.gameInstanceId;
+    if (!gameInstanceId) {
+      return;
+    }
+
+    this.roomGateway.emitRoomToGameInstance(gameInstanceId, roomEvent);
   }
 
-  emitCertainGameInstanceEventsToAllUsers(body: CommunicatorEvent<any, ProbableWaffleCommunicatorType>, user: User) {
+  emitCertainGameInstanceEventsToAllUsers(body: ProbableWaffleCommunicatorEventUnion, user: User) {
     const gameInstance = this.gameInstanceHolderService.findGameInstance(body.gameInstanceId!);
     if (!gameInstance) {
       console.log("game instance not found in emitCertainGameInstanceEventsToAllUsers in RoomServerService");
       return false;
     }
     switch (body.communicator) {
-      case "gameInstanceMetadataDataChange":
+      case ProbableWaffleCommunicators.GameInstanceMetadataDataChange:
         this.roomEvent("game_instance_metadata", gameInstance, user);
         break;
-      case "gameModeDataChange":
+      case ProbableWaffleCommunicators.GameModeDataChange:
         this.roomEvent("game_mode", gameInstance, user);
         break;
-      case "playerDataChange":
+      case ProbableWaffleCommunicators.PlayerDataChange:
         const playerData = body.payload as ProbableWafflePlayerDataChangeEvent;
         switch (playerData.property) {
           case "joined":
@@ -71,7 +83,7 @@ export class RoomServerService implements RoomServerServiceInterface {
             break;
         }
         break;
-      case "spectatorDataChange":
+      case ProbableWaffleCommunicators.SpectatorDataChange:
         const spectatorData = body.payload as ProbableWaffleSpectatorDataChangeEvent;
         switch (spectatorData.property) {
           case "joined":

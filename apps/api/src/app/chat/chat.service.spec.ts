@@ -4,6 +4,8 @@ import { SupabaseProviderService } from "../../core/supabase-provider/supabase-p
 import { supabaseProviderServiceStub } from "../../core/supabase-provider/supabase-provider.service.stub";
 import { TextSanitizationService } from "../../core/content-filters/text-sanitization.service";
 import { textSanitizationServiceStub } from "../../core/content-filters/text-sanitization.service.stub";
+import { GameInstanceService } from "../probable-waffle/game-instance/game-instance.service";
+import { GameInstanceServiceStub } from "../probable-waffle/game-instance/game-instance.service.stub";
 
 describe("ChatService", () => {
   let service: ChatService;
@@ -13,7 +15,8 @@ describe("ChatService", () => {
       providers: [
         ChatService,
         { provide: SupabaseProviderService, useValue: supabaseProviderServiceStub },
-        { provide: TextSanitizationService, useValue: textSanitizationServiceStub }
+        { provide: TextSanitizationService, useValue: textSanitizationServiceStub },
+        { provide: GameInstanceService, useValue: GameInstanceServiceStub }
       ]
     }).compile();
 

@@ -35,7 +35,7 @@
                     "fontFamily": "disposabledroid",
                     "fontSize": "22px",
                     "maxLines": 1,
-                    "wordWrapWidth": 200
+                    "wordWrapWidth": 400
                 },
                 {
                     "type": "Text",
@@ -52,7 +52,7 @@
                     "fontFamily": "disposabledroid",
                     "fontSize": "20px",
                     "maxLines": 1,
-                    "wordWrapWidth": 200
+                    "wordWrapWidth": 400
                 }
             ]
         }

@@ -17,7 +17,8 @@ import StairsBottomLeft from "./StairsBottomLeft";
 import StairsBottomRight from "./StairsBottomRight";
 import { setActorData } from "../../../../data/actor-data";
 import { getActorComponent } from "../../../../data/actor-component";
-import { type WalkablePath, WalkableComponent } from "../../../../entity/components/movement/walkable-component";
+import { NavigableComponent } from "../../../../entity/components/movement/navigable-component";
+import type { NavigablePath } from "../../../../entity/components/movement/navigable-path";
 /* END-USER-IMPORTS */
 
 export default class Stairs extends Phaser.GameObjects.Container {
@@ -88,14 +89,14 @@ export default class Stairs extends Phaser.GameObjects.Container {
     } else {
       throw new Error("Stairs type not found");
     }
-    const walkableComponent = getActorComponent(this, WalkableComponent);
-    if (walkableComponent) {
-      const walkablePath = this.getWalkablePath(stairsType);
-      walkableComponent.allowWalkablePath(walkablePath);
+    const navigableComponent = getActorComponent(this, NavigableComponent);
+    if (navigableComponent) {
+      const navigablePath = this.getNavigablePath(stairsType);
+      navigableComponent.allowNavigablePath(navigablePath);
     }
   }
 
-  private getWalkablePath(stairsType: StairsType): WalkablePath {
+  private getNavigablePath(stairsType: StairsType): NavigablePath {
     switch (stairsType) {
       case StairsType.TopLeft:
         return {
@@ -136,13 +137,14 @@ export default class Stairs extends Phaser.GameObjects.Container {
     onObjectReady(
       this,
       () => {
-        this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.throttleRedrawStairs, this); // todo remove this later
+        // Intentional frame update: stairs mesh refresh is visual neighbor rendering only.
+        this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.throttleRedrawStairsFrameNonDeterministic, this); // todo remove this later
       },
       this
     );
   }
 
-  private throttleRedrawStairs = throttle(this.refreshStairsType.bind(this), 1000);
+  private throttleRedrawStairsFrameNonDeterministic = throttle(this.refreshStairsType.bind(this), 1000);
 
   private refreshStairsType() {
     if (!this.active) return;
@@ -224,7 +226,7 @@ export default class Stairs extends Phaser.GameObjects.Container {
   }
 
   override destroy(fromScene?: boolean) {
-    this.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.throttleRedrawStairs, this);
+    this.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.throttleRedrawStairsFrameNonDeterministic, this);
     super.destroy(fromScene);
   }
 

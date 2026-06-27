@@ -7,11 +7,19 @@ export const tree11Definition = {
     ...treeDefinitions.components,
     resourceSource: {
       ...treeDefinitions.components!.resourceSource!,
-      maximumResources: 80
+      maximumResources: 240
     },
     representable: {
-      width: 184,
-      height: 184
+      width: 128,
+      height: 152,
+      origin: { x: 0.5, y: 0.911458 }
+    },
+    info: {
+      ...treeDefinitions.components!.info!,
+      smallImage: {
+        ...treeDefinitions.components!.info!.smallImage!,
+        frame: "foliage/trees/resources/tree11.png"
+      }
     }
   }
 } satisfies PrefabDefinition;

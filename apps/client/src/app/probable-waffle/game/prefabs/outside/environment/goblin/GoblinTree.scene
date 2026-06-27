@@ -1,0 +1,40 @@
+{
+    "id": "b4d50f53-a9ef-472b-b51a-6b39503a7dd3",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "f9ea8afc-1b36-4242-baff-2797b2827956",
+            "label": "goblin_tree_png",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "0 34.5 16.36014736178263 5.5589829964632145 75.5 0 106.71774586632623 26.454177650638925 151 34.5 134.9544953989961 80.66873675336511 85.25781622149711 95.91658150100686 88.08149117476412 133.18909088413108 16.924882352436022 130.9301509215175 32.737462090731164 102.12866639819423 3.935977567407839 64.85615701506997",
+            "texture": {
+                "key": "environment_1",
+                "frame": "goblin/tree.png"
+            },
+            "x": 6.251536193002131,
+            "y": 64.5525838759272,
+            "originX": 0.329480372139087,
+            "originY": 0.8699462599704869
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

@@ -1,4 +1,4 @@
-import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { getBuildingQueueCapabilities, ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import {
   ANIM_BUILDING_ICON_ANIMS_SKADUWEE_OWLERY_ACTION,
   ANIM_BUILDING_ICON_ANIMS_SKADUWEE_OWLERY_IDLE
@@ -12,7 +12,8 @@ export const owleryDefinition = {
   components: {
     representable: {
       width: 64,
-      height: 192
+      height: 196,
+      origin: { x: 0.5, y: 0.916666667 }
     },
     objectDescriptor: {
       color: 0xf2f7fa
@@ -31,6 +32,7 @@ export const owleryDefinition = {
     info: {
       name: "Owlery",
       description: "Produces Owls",
+      tooltipDescription: ["Trains flying units", "Produces fast aerial scouts and attackers"],
       portraitAnimation: {
         idle: ANIM_BUILDING_ICON_ANIMS_SKADUWEE_OWLERY_IDLE,
         action: ANIM_BUILDING_ICON_ANIMS_SKADUWEE_OWLERY_ACTION
@@ -43,21 +45,27 @@ export const owleryDefinition = {
     },
     health: {
       physicalState: ActorPhysicalType.Structural,
-      maxHealth: 100
+      maxHealth: 200,
+      maxArmour: 200
     },
     productionCost: {
       resources: {
-        [ResourceType.Wood]: 10,
-        [ResourceType.Minerals]: 10
+        [ResourceType.Wood]: 100,
+        [ResourceType.Stone]: 200
       },
       refundFactor: 0.5,
-      productionTime: 5000,
+      productionTime: 30000,
       costType: PaymentType.PayImmediately
     },
+    buildingPrerequisites: {
+      requiresAnyOf: [ObjectNames.InfantryInn]
+    },
     production: {
+      availableProduceActors: getBuildingQueueCapabilities(ObjectNames.Owlery)!.availableProduceActors!
+    },
+    queue: {
       queueCount: 1,
-      capacityPerQueue: 5,
-      availableProduceActors: [ObjectNames.SkaduweeOwl]
+      capacityPerQueue: 5
     },
     selectable: {},
     collider: { enabled: true },

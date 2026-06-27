@@ -8,7 +8,8 @@ export const stairsDefinition = {
   components: {
     representable: {
       width: 64,
-      height: 64
+      height: 64,
+      origin: { x: 0.5, y: 0.75 }
     },
     objectDescriptor: {
       color: 0x95a083
@@ -16,6 +17,7 @@ export const stairsDefinition = {
     info: {
       name: "Stairs",
       description: "Used to move to top of the Wall and Watch Tower",
+      tooltipDescription: ["Allows units to climb walls", "Access point for elevated defenses"],
       smallImage: {
         key: "factions",
         frame: "buildings/tivara/stairs/stairs_top_left.png",
@@ -33,8 +35,8 @@ export const stairsDefinition = {
     vision: {
       range: 10
     },
-    walkable: {
-      walkableHeight: 24,
+    navigable: {
+      navigableHeight: 24,
       exitHeight: 64,
       acceptMinimumHeight: 0
     },
@@ -46,8 +48,7 @@ export const stairsDefinition = {
     },
     productionCost: {
       resources: {
-        [ResourceType.Wood]: 10,
-        [ResourceType.Minerals]: 10
+        [ResourceType.Stone]: 25
       },
       refundFactor: 0.5,
       productionTime: 5000,

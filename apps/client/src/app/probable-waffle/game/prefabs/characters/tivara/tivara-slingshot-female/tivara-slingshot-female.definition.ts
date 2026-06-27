@@ -7,20 +7,26 @@ import {
   TivaraSlingshotSfxMoveSounds,
   TivaraSlingshotSfxSelectionSounds
 } from "./TivaraSlingshotSfx";
-import { weaponDefinitions } from "../../../../entity/components/combat/attack-data";
 import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PaymentType } from "../../../../entity/components/production/payment-type";
-import { AiType } from "../../../ai-agents/pawn-ai-controller";
-import { ANIM_TIVARA_SLINGSHOT_FEMALE_DEFINITION } from "./tivara_slingshot_female_anims";
+import {
+  ANIM_TIVARA_SLINGSHOT_FEMALE_DEFINITION_LEVEL_1,
+  ANIM_TIVARA_SLINGSHOT_FEMALE_DEFINITION_LEVEL_2,
+  ANIM_TIVARA_SLINGSHOT_FEMALE_DEFINITION_LEVEL_3
+} from "./tivara_slingshot_female_anims";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 import { SoundType } from "../../../../entity/components/actor-audio/sound-type";
 import { ActorPhysicalType } from "../../../../entity/components/combat/components/actor-physical-type";
+import { weaponDefinitions } from "../../../../entity/components/combat/weapon-definitions";
+import { AiType } from "../../../ai-agents/ai-type";
+import { SpellType } from "../../../../entity/components/combat/spell-type";
 
 export const tivaraSlingshotFemaleDefinition = {
   components: {
     representable: {
-      width: 64,
-      height: 64
+      width: 32,
+      height: 48,
+      origin: { x: 0.5, y: 0.8995955734617012 }
     },
     objectDescriptor: {
       color: 0xc2a080
@@ -39,6 +45,7 @@ export const tivaraSlingshotFemaleDefinition = {
     info: {
       name: "Cursed Banshee",
       description: "A silent stalker armed with ancient curses and deadly precision",
+      tooltipDescription: ["Ranged attacker", "Effective against light units", "Vulnerable in melee combat"],
       smallImage: {
         key: "factions",
         frame: "character_icons/tivara/slingshot_female.png",
@@ -50,19 +57,25 @@ export const tivaraSlingshotFemaleDefinition = {
       maxHealth: 100
     },
     attack: {
-      attacks: [weaponDefinitions.slingshot]
+      attacks: [weaponDefinitions.TivaraSlingshot, weaponDefinitions.TivaraSlingshotShortRange]
     },
     productionCost: {
       resources: {
-        [ResourceType.Wood]: 10,
-        [ResourceType.Minerals]: 10
+        [ResourceType.Wood]: 25,
+        [ResourceType.Food]: 120
       },
       refundFactor: 0.5,
-      productionTime: 5000,
+      productionTime: 10000,
       costType: PaymentType.PayImmediately
     },
+    housingCost: {
+      housingNeeded: 1
+    },
     requirements: {
-      actors: [ObjectNames.AnkGuard]
+      actors: [ObjectNames.Temple]
+    },
+    spell: {
+      availableSpells: [SpellType.Firestorm, SpellType.FrostNova, SpellType.HealingRain]
     },
     selectable: {},
     translatable: {
@@ -83,10 +96,42 @@ export const tivaraSlingshotFemaleDefinition = {
         [SoundType.LocationUnavailable]: TivaraSlingshotSfxLocationSounds
       }
     },
-    animatable: { animations: ANIM_TIVARA_SLINGSHOT_FEMALE_DEFINITION }
+    animatable: { animations: ANIM_TIVARA_SLINGSHOT_FEMALE_DEFINITION_LEVEL_1 },
+    level: { level: 1, maxLevel: 3 }
   },
   systems: {
     movement: { enabled: true },
     action: { enabled: true }
+  },
+  meta: {
+    maxLevel: 3,
+    levelOverrides: {
+      2: {
+        components: {
+          health: { maxHealth: 150 },
+          attack: {
+            attacks: [
+              { ...weaponDefinitions.TivaraSlingshot, damage: 7, range: 6 },
+              { ...weaponDefinitions.TivaraSlingshotShortRange, damage: 4 }
+            ]
+          },
+          animatable: { animations: ANIM_TIVARA_SLINGSHOT_FEMALE_DEFINITION_LEVEL_2 },
+          level: { level: 2 }
+        }
+      },
+      3: {
+        components: {
+          health: { maxHealth: 200 },
+          attack: {
+            attacks: [
+              { ...weaponDefinitions.TivaraSlingshot, damage: 10, range: 7, cooldown: 1200 },
+              { ...weaponDefinitions.TivaraSlingshotShortRange, damage: 6, cooldown: 800 }
+            ]
+          },
+          animatable: { animations: ANIM_TIVARA_SLINGSHOT_FEMALE_DEFINITION_LEVEL_3 },
+          level: { level: 3 }
+        }
+      }
+    }
   }
 } satisfies PrefabDefinition;

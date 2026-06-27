@@ -1,13 +1,14 @@
-import { ApplicationRef, ComponentRef, createComponent, EnvironmentInjector, inject, Injectable } from "@angular/core";
+import {
+  ApplicationRef,
+  ComponentRef,
+  createComponent,
+  EnvironmentInjector,
+  inject,
+  Injectable,
+  inputBinding
+} from "@angular/core";
 import { AchievementNotificationComponent } from "../components/achievement-notification/achievement-notification.component";
-
-export interface AchievementNotificationOptions {
-  title: string;
-  description: string;
-  spriteId: string;
-  autoHide?: boolean;
-  autoHideDuration?: number;
-}
+import type { AchievementNotificationOptions } from "./achievement-notification.options";
 
 @Injectable({
   providedIn: "root"
@@ -52,17 +53,15 @@ export class AchievementNotificationService {
   ): ComponentRef<AchievementNotificationComponent> {
     // Create the component
     const componentRef = createComponent(AchievementNotificationComponent, {
-      environmentInjector: this.injector
+      environmentInjector: this.injector,
+      bindings: [
+        inputBinding("title", () => options.title),
+        inputBinding("description", () => options.description),
+        inputBinding("spriteId", () => options.spriteId),
+        inputBinding("autoHide", () => options.autoHide !== false),
+        inputBinding("autoHideDuration", () => options.autoHideDuration ?? 5000)
+      ]
     });
-
-    // Set inputs
-    componentRef.instance.title = options.title;
-    componentRef.instance.description = options.description;
-    componentRef.instance.spriteId = options.spriteId;
-    componentRef.instance.autoHide = options.autoHide !== false;
-    if (options.autoHideDuration) {
-      componentRef.instance.autoHideDuration = options.autoHideDuration;
-    }
 
     // Append to the DOM
     document.body.appendChild(componentRef.location.nativeElement);

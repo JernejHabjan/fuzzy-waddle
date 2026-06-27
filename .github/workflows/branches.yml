@@ -20,25 +20,23 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [ 23 ]
+        node-version: [ 24 ]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          lfs: true
-        #   fetch-depth: 50
+          lfs: false
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 9
+          version: 10
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
-          cache-dependency-path: 'pnpm-lock.yaml'
 
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
@@ -55,8 +53,8 @@ jobs:
           NX_BRANCH: ${{ github.event.number }}
           NX_RUN_GROUP: ${{ github.run_id }}
 
-      - name: Build Packages
-        run: pnpm run build-gh-pages
+      - name: Test build
+        run: pnpm run build
         env:
           NX_BRANCH: ${{ github.event.number }}
           NX_RUN_GROUP: ${{ github.run_id }}

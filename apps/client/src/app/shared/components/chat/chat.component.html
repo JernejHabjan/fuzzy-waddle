@@ -1,21 +1,100 @@
-<div #chatBody class="chat-body">
+<div #chatBody class="chat-body" (scroll)="onScroll()">
   <div class="chat-messages">
+    @if (isLoading) {
+      <div class="chat-loading">Loading...</div>
+    }
     @for (message of messages; track message) {
-      <div class="chat-message">
+      <div class="chat-message" [class.chat-message-reported]="message.reportedByCurrentUser">
         <div class="chat-message-content">
-          <div class="chat-message-sender">
-            <img alt="avatar" class="avatar" height="20" src="{{ avatarProviderService.getAvatar(message.userId) }}" />
-            <div class="chat-message-sender-name">{{ message.fullName }}</div>
-          </div>
+          @if (message.id && message.userId !== authService.userId) {
+            <div class="chat-message-header">
+              <div class="chat-message-sender">
+                <img alt="avatar" class="avatar" height="20" src="{{ avatarProviderService.getAvatar(message.userId) }}" />
+                <button class="chat-message-sender-name" type="button" (click)="openProfile(message)">{{ message.fullName }}</button>
+                @if (getRoleIcon(message.senderRole ?? null); as roleIcon) {
+                  <fa-icon
+                    [icon]="roleIcon"
+                    [title]="getRoleLabel(message.senderRole ?? null) ?? ''"
+                    class="chat-message-role-icon"
+                  />
+                }
+                @if (message.reportedByCurrentUser) {
+                  <span class="chat-message-reported-label">Reported</span>
+                }
+              </div>
+              <div class="chat-message-menu">
+                <button class="chat-message-menu-button" type="button" (click)="toggleMessageMenu(message)">
+                  <fa-icon [icon]="faEllipsis" />
+                </button>
+                @if (openMessageMenuId === message.id) {
+                  <div class="chat-message-menu-panel">
+                    @if (canReportMessage(message)) {
+                      <button class="chat-message-report-button" type="button" (click)="openReportForm(message)">
+                        Report
+                      </button>
+                    } @else {
+                      <span class="chat-message-menu-muted">Already reported</span>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+          } @else {
+            <div class="chat-message-header">
+              <div class="chat-message-sender">
+                <img alt="avatar" class="avatar" height="20" src="{{ avatarProviderService.getAvatar(message.userId) }}" />
+                <button class="chat-message-sender-name" type="button" (click)="openProfile(message)">{{ message.fullName }}</button>
+                @if (getRoleIcon(message.senderRole ?? null); as roleIcon) {
+                  <fa-icon
+                    [icon]="roleIcon"
+                    [title]="getRoleLabel(message.senderRole ?? null) ?? ''"
+                    class="chat-message-role-icon"
+                  />
+                }
+                @if (message.reportedByCurrentUser) {
+                  <span class="chat-message-reported-label">Reported</span>
+                }
+              </div>
+            </div>
+          }
           <div class="chat-message-text">{{ message.text }}</div>
+          @if (reportingMessageId === message.id) {
+            <form class="chat-message-report-form" (ngSubmit)="submitReport(message)">
+              <select
+                [(ngModel)]="reportReason"
+                [ngModelOptions]="{ standalone: true }"
+                class="chat-message-report-select"
+              >
+                @for (reason of reportReasons; track reason) {
+                  <option [ngValue]="reason">{{ reportReasonLabels[reason] }}</option>
+                }
+              </select>
+              <input
+                [(ngModel)]="reportDetails"
+                [ngModelOptions]="{ standalone: true }"
+                class="chat-message-report-details"
+                maxlength="1000"
+                placeholder="Optional details"
+                type="text"
+              />
+              <button class="chat-message-report-submit" type="submit">Submit</button>
+              <button class="chat-message-report-cancel" type="button" (click)="cancelReport()">Cancel</button>
+            </form>
+          }
         </div>
       </div>
+    }
+    @if (reportErrorMessage) {
+      <div class="chat-report-error">{{ reportErrorMessage }}</div>
     }
   </div>
 </div>
 
 <div class="chat-footer">
-  <form (submit)="sendMessage()" class="chat-form">
+  @if (reportStatusMessage) {
+    <div class="chat-report-status">{{ reportStatusMessage }}</div>
+  }
+  <form (ngSubmit)="sendMessage()" class="chat-form">
     <input
       [(ngModel)]="message"
       [ngModelOptions]="{ standalone: true }"

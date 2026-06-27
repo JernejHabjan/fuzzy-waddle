@@ -27,7 +27,7 @@
                     "label": "buildings_tivara_workmill_png_1",
                     "texture": {
                         "key": "factions",
-                        "frame": "buildings/tivara/workmill.png"
+                        "frame": "buildings/tivara/workmill/workmill.png"
                     },
                     "y": -32.29342343955079
                 }

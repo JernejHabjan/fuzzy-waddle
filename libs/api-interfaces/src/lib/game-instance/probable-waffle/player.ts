@@ -1,10 +1,11 @@
-import { BasePlayer } from "../player/player";
+import { BasePlayer, type PlayerNumber } from "../player/player";
 import type { BaseData } from "../data";
 import { BasePlayerController, type BasePlayerControllerData } from "../player/player-controller";
 import { BasePlayerState } from "../player/player-state";
 import { ResourceType } from "../../probable-waffle/resource-type-definition";
 import type { PlayerStateAction } from "../../probable-waffle/probable-waffle-player-state-action";
 import type { Vector3Simple } from "../../game/vector";
+import type { AIBehaviorTreeStateData, CameraStateData, SelectionGroupData } from "./component-data";
 
 export class ProbableWafflePlayer extends BasePlayer<
   ProbableWafflePlayerStateData,
@@ -32,7 +33,7 @@ export class ProbableWafflePlayer extends BasePlayer<
     this.playerState.data.selection = [];
   }
 
-  get playerNumber(): number | undefined {
+  get playerNumber(): PlayerNumber | undefined {
     return this.playerController.data.playerDefinition?.player.playerNumber ?? undefined;
   }
 
@@ -81,20 +82,31 @@ export class ProbableWafflePlayer extends BasePlayer<
   canPayAllResources(constructionCosts: Partial<Record<ResourceType, number>>) {
     // noinspection UnnecessaryLocalVariableJS
     const canAfford = Object.entries(constructionCosts).every(([resourceType, amount]) => {
-      const resourceAmount = this.playerState.data.resources[resourceType as ResourceType] || 0;
-      return resourceAmount >= amount;
+      return this.canPayResources(resourceType as ResourceType, amount);
     });
     return canAfford;
+  }
+
+  canPayResources(resourceType: ResourceType, amount: number) {
+    const resourceAmount = this.playerState.data.resources[resourceType] || 0;
+    return resourceAmount >= amount;
+  }
+
+  canAffordHousing(housingNeeded: number) {
+    return this.playerState.data.housing.currentHousing + housingNeeded <= this.playerState.data.housing.maxHousing;
   }
 }
 
 export interface ProbableWafflePlayerStateData extends BaseData {
   resources: PlayerStateResources;
+  housing: PlayerStateHousing;
   summary: PlayerStateAction[];
   /**
    * contains GUID from actors' IdComponent
    */
   selection: string[];
+  // AI behavior tree state for save/load (AI players only)
+  aiBehaviorTreeState?: AIBehaviorTreeStateData;
 }
 
 export class ProbableWafflePlayerState extends BasePlayerState<ProbableWafflePlayerStateData> {
@@ -106,11 +118,14 @@ export class ProbableWafflePlayerState extends BasePlayerState<ProbableWafflePla
     super.resetData();
     this.data = {
       resources: {
-        [ResourceType.Ambrosia]: 0,
-        [ResourceType.Minerals]: 500,
-        [ResourceType.Stone]: 100,
-        [ResourceType.Wood]: 200,
-        [ResourceType.Food]: 8
+        [ResourceType.Food]: 2000,
+        [ResourceType.Wood]: 2000,
+        [ResourceType.Stone]: 2000,
+        [ResourceType.Minerals]: 2000
+      },
+      housing: {
+        currentHousing: 0,
+        maxHousing: 0
       },
       summary: [],
       selection: []
@@ -127,6 +142,10 @@ export class ProbableWafflePlayerController extends BasePlayerController<Probabl
 export interface ProbableWafflePlayerControllerData extends BasePlayerControllerData {
   playerDefinition?: PositionPlayerDefinition;
   leftOrKilled?: boolean;
+  // Camera position for save/load (human players only)
+  cameraState?: CameraStateData;
+  // Selection groups for save/load (human players only)
+  selectionGroups?: SelectionGroupData[];
 }
 
 export enum ProbableWafflePlayerType {
@@ -142,8 +161,7 @@ export enum ProbableWaffleAiDifficulty {
 }
 
 export interface PlayerLobbyDefinition {
-  // 1 - 8
-  playerNumber: number;
+  playerNumber: PlayerNumber;
   playerName?: string;
   playerPosition?: number;
   joined: boolean;
@@ -161,6 +179,28 @@ export function getRandomFactionType(): FactionType {
   return enumValues[randomIndex] as FactionType;
 }
 
+/**
+ * Creates a PlayerLobbyDefinition with default values.
+ * This centralizes player lobby definition creation to avoid duplication.
+ *
+ * @param playerNumber - The player number (1-8)
+ * @param playerPosition - The player position (defaults to playerNumber - 1 if not provided)
+ * @param playerName - The player name (defaults to "Player {playerNumber}" if not provided)
+ * @returns A PlayerLobbyDefinition object
+ */
+export function createPlayerLobbyDefinition(
+  playerNumber: PlayerNumber,
+  playerPosition?: number,
+  playerName?: string
+): PlayerLobbyDefinition {
+  return {
+    playerNumber,
+    playerName: playerName ?? `Player ${playerNumber}`,
+    playerPosition: playerPosition ?? playerNumber - 1,
+    joined: true
+  };
+}
+
 export interface PositionPlayerDefinition {
   // assigned only after entering the game in world space coordinates
   initialWorldLogicalSpawnPosition?: Vector3Simple;
@@ -173,4 +213,9 @@ export interface PositionPlayerDefinition {
 
 export type PlayerStateResources = {
   [key in ResourceType]: number;
+};
+
+export type PlayerStateHousing = {
+  currentHousing: number;
+  maxHousing: number;
 };

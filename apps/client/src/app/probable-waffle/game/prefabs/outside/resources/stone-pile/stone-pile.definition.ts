@@ -7,7 +7,8 @@ export const stonePileDefinition = {
   components: {
     representable: {
       width: 64,
-      height: 64
+      height: 32,
+      origin: { x: 0.5, y: 0.7378671494275097 }
     },
     objectDescriptor: {
       color: 0xbea55b
@@ -16,10 +17,22 @@ export const stonePileDefinition = {
       enabled: true
     },
     selectable: { offsetY: 16 },
+    info: {
+      name: "Stone Pile",
+      description: "A pile of stone waiting to be gathered",
+      tooltipDescription: ["Provides stone resource", "Send workers to harvest"],
+      smallImage: {
+        key: "outside",
+        frame: "nature/resources/stone_pile_1.png",
+        origin: { x: 0.5, y: 0.5 }
+      }
+    },
     resourceSource: {
       resourceType: ResourceType.Stone,
-      maximumResources: 100,
-      gatheringFactor: 1
+      maximumResources: 500,
+      gatheringFactor: 6,
+      maxGatherers: 2,
+      cooldown: 2000
     },
     audio: {
       sounds: {

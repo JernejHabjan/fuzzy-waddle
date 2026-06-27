@@ -1,10 +1,10 @@
 import { GatherData } from "./gather-data";
 import { ResourceSourceComponent } from "./resource-source-component";
 import { DistanceHelper } from "../../../library/distance-helper";
-import { Subject } from "rxjs";
+import { Subject, type Subscription } from "rxjs";
 import { ContainerComponent } from "../building/container-component";
 import { ResourceDrainComponent } from "./resource-drain-component";
-import { ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { type GathererComponentData, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "../owner-component";
 import { ConstructionSiteComponent } from "../construction/construction-site-component";
@@ -16,23 +16,19 @@ import {
   SharedActorActionsSfxChoppingSounds,
   SharedActorActionsSfxMiningSounds
 } from "../../../sfx/shared-actor-actions-sfx";
-import { type SoundDefinition } from "../actor-audio/audio-actor-component";
 import { AnimationActorComponent } from "../animation/animation-actor-component";
 import { OrderType } from "../../../ai/order-type";
 import { ActorTranslateComponent } from "../movement/actor-translate-component";
-import { getGameObjectVisibility, onObjectReady } from "../../../data/game-object-helper";
-import GameObject = Phaser.GameObjects.GameObject;
+import { getGameObjectLogicalTransform, getGameObjectVisibility, onObjectReady } from "../../../data/game-object-helper";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
-import { type GathererComponentData } from "@fuzzy-waddle/api-interfaces";
 import { AnimationType } from "../animation/animation-type";
 import { SoundType } from "../actor-audio/sound-type";
-
-export type GathererDefinition = {
-  // types of gameObjects the gatherer can gather resourcesFrom
-  resourceSourceGameObjectClasses: string[];
-  // radius in which gameObject will automatically gather resourcesFrom
-  resourceSweepRadius: number;
-};
+import { isCropResourceSource } from "../tendable/growth-stage.interface";
+import type { SoundDefinition } from "../actor-audio/sound-definition";
+import type { GathererDefinition } from "./gatherer-definition";
+import { SimulationTickService } from "../../../world/services/simulation-tick.service";
+import { IdComponent } from "../id-component";
+import GameObject = Phaser.GameObjects.GameObject;
 
 export class GathererComponent {
   private static readonly debug = false;
@@ -64,12 +60,12 @@ export class GathererComponent {
       needsReturnToDrain: true
     },
     {
-      capacity: 3,
-      cooldown: 1000,
+      capacity: 5,
+      cooldown: 2000,
       range: 1,
-      resourceType: ResourceType.Ambrosia,
-      amountPerGathering: 1,
-      needsReturnToDrain: true
+      resourceType: ResourceType.Food,
+      amountPerGathering: 2,
+      needsReturnToDrain: false
     }
   ];
   // amount the gameObject is carrying
@@ -79,6 +75,9 @@ export class GathererComponent {
   previousResourceSource: GameObject | null = null;
   previousResourceType: ResourceType | null = null;
   remainingCooldown = 0;
+  private cooldownTickSub?: Subscription;
+  private simulationTickService?: SimulationTickService;
+  private cooldownStartedTick: number | null = null;
 
   onResourceGathered: Subject<[GameObject, GameObject, GatherData, number]> = new Subject<
     [GameObject, GameObject, GatherData, number]
@@ -92,7 +91,6 @@ export class GathererComponent {
     private readonly gameObject: GameObject,
     private readonly gathererComponentDefinition: GathererDefinition
   ) {
-    gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
     onObjectReady(this.gameObject, this.onObjectReady, this);
@@ -102,21 +100,41 @@ export class GathererComponent {
     this.audioService = getSceneService(this.gameObject.scene, AudioService);
     this.animationActorComponent = getActorComponent(this.gameObject, AnimationActorComponent);
     this.actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
+    this.simulationTickService = getSceneService(this.gameObject.scene, SimulationTickService);
+    this.cooldownTickSub = this.simulationTickService?.tick$.subscribe(() => {
+      this.onSimulationTick();
+    });
   }
 
-  private update(_: number, delta: number): void {
+  private onSimulationTick(): void {
     if (this.remainingCooldown <= 0) {
       return;
     }
-    this.remainingCooldown -= delta;
+    const currentTick = this.simulationTickService?.currentTick;
+    // Guard against subscription-order drift: if cooldown was started this same tick,
+    // do not decrement it until the next simulation tick.
+    if (currentTick !== undefined && this.cooldownStartedTick === currentTick) {
+      return;
+    }
+    this.remainingCooldown -= SimulationTickService.TICK_INTERVAL_MS;
     this.remainingCooldown = Math.max(this.remainingCooldown, 0);
+    if (this.remainingCooldown <= 0) {
+      this.cooldownStartedTick = null;
+    }
     // if (this.remainingCooldown <= 0) {
     //   this.onCooldownReady.emit(this.gameObject);
     // }
   }
 
   private destroy() {
-    this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
+    this.cooldownTickSub?.unsubscribe();
+    // Unassign from resource source
+    if (this.currentResourceSource) {
+      const resourceSourceComponent = getActorComponent(this.currentResourceSource, ResourceSourceComponent);
+      if (resourceSourceComponent) {
+        resourceSourceComponent.unassignGatherer(this.gameObject);
+      }
+    }
   }
 
   canGatherFrom(gameObject: GameObject): boolean {
@@ -129,7 +147,9 @@ export class GathererComponent {
     if (this.carriedResourceAmount >= resourceSourceComponent.getMaximumResources()) {
       return false;
     }
-    // todo
+    // check if resource source can accept more gatherers
+    // noinspection RedundantIfStatementJS
+    if (!resourceSourceComponent.canAcceptGatherer()) return false;
 
     return true;
   }
@@ -140,12 +160,24 @@ export class GathererComponent {
   startGatheringResources(resourceSource: GameObject): boolean {
     if (this.currentResourceSource === resourceSource) return true;
 
+    // Check again if we can gather from this resource source (including maxGatherers check)
     if (!this.canGatherFrom(resourceSource)) return false;
+
+    // Unassign from previous resource source if switching
+    if (this.currentResourceSource) {
+      const previousResourceSourceComponent = getActorComponent(this.currentResourceSource, ResourceSourceComponent);
+      if (previousResourceSourceComponent) {
+        previousResourceSourceComponent.unassignGatherer(this.gameObject);
+      }
+    }
 
     this.currentResourceSource = resourceSource;
 
     const resourceSourceComponent = getActorComponent(resourceSource, ResourceSourceComponent);
     if (!resourceSourceComponent) return false;
+
+    // Assign this gatherer to the new resource source
+    resourceSourceComponent.assignGatherer(this.gameObject);
 
     const gatherData = this.getGatherDataForResourceSource(resourceSource);
 
@@ -165,15 +197,11 @@ export class GathererComponent {
     return true;
   }
 
-  findClosestResourceDrain(): GameObject | null {
+  async findClosestResourceDrain(): Promise<GameObject | null> {
     if (this.carriedResourceType === null) {
       // Gatherer is not carrying any resources
       return null;
     }
-
-    // find nearby gameObjects
-    let closestResourceDrain: GameObject | null = null;
-    let closestResourceDrainDistance = 0;
 
     const gatherer = this.gameObject;
     const gatherOwnerComponent = getActorComponent(gatherer, OwnerComponent);
@@ -182,17 +210,34 @@ export class GathererComponent {
     // Use indexed drains if available, otherwise nothing
     const drains = actorIndex ? actorIndex.getResourceDrainsFiltered(undefined, this.carriedResourceType) : [];
 
-    for (const resourceDrain of drains) {
+    const validDrains = drains.filter((resourceDrain) => {
       // check owner / team
-      if (!gatherOwnerComponent || !gatherOwnerComponent.isSameTeamAsGameObject(resourceDrain)) continue;
+      if (!gatherOwnerComponent || !gatherOwnerComponent.isSameTeamAsGameObject(resourceDrain)) return false;
 
       // check ready to use
-      if (!GathererComponent.isReadyToUse(resourceDrain)) continue;
+      return GathererComponent.isReadyToUse(resourceDrain);
+    });
 
-      // distance (todo: pathing)
-      const distance = DistanceHelper.getTileDistanceBetweenGameObjects(gatherer, resourceDrain);
-      if (distance && (!closestResourceDrain || distance < closestResourceDrainDistance)) {
-        closestResourceDrain = resourceDrain;
+    // Use batch method for better performance
+    const pairs: [GameObject, GameObject][] = validDrains.map((drain) => [gatherer, drain]);
+    const distances = await DistanceHelper.batchGetDistancesBetweenGameObjects(pairs);
+
+    let closestResourceDrain: GameObject | null = null;
+    let closestResourceDrainDistance = Infinity;
+
+    for (let i = 0; i < validDrains.length; i++) {
+      const distance = distances[i];
+      if (typeof distance !== "number") {
+        continue;
+      }
+      const candidate = validDrains[i]!;
+      if (
+        distance < closestResourceDrainDistance ||
+        (distance === closestResourceDrainDistance &&
+          closestResourceDrain !== null &&
+          this.compareActorTieBreaker(candidate, closestResourceDrain) < 0)
+      ) {
+        closestResourceDrain = candidate;
         closestResourceDrainDistance = distance;
       }
     }
@@ -210,7 +255,7 @@ export class GathererComponent {
   }
 
   // Gets the resource source the gameObject has recently been gathering from, if available, or a similar one within its sweep radius
-  getPreferredResourceSource(): GameObject | undefined {
+  async getPreferredResourceSource(): Promise<GameObject | undefined> {
     if (this.previousResourceSource) {
       return this.previousResourceSource;
     }
@@ -220,38 +265,77 @@ export class GathererComponent {
     );
   }
 
-  getNewResourceSource(): GameObject | undefined {
+  async getNewResourceSource(): Promise<GameObject | undefined> {
     this.previousResourceSource = null;
     return this.getPreferredResourceSource();
   }
 
-  getClosestResourceSource(resourceType: ResourceType | null, maxDistance: number): GameObject | undefined {
-    let closestResourceSource: GameObject | undefined = undefined;
-    let closestResourceSourceDistance = 0;
-
+  async getClosestResourceSource(
+    resourceType: ResourceType | null,
+    maxDistance: number
+  ): Promise<GameObject | undefined> {
     const actorIndex = getSceneService(this.gameObject.scene, ActorIndexSystem);
     const sources = actorIndex ? actorIndex.getResourceSourcesFiltered(resourceType ?? undefined) : [];
 
-    for (const gameObject of sources) {
+    const validSources = sources.filter((gameObject) => {
       const resourceSourceComponent = getActorComponent(gameObject, ResourceSourceComponent);
-      if (!resourceSourceComponent) continue;
+      if (!resourceSourceComponent) return false;
       // if not correct resource type
-      if (resourceType && resourceSourceComponent.getResourceType() !== resourceType) continue;
+      if (resourceType && resourceSourceComponent.getResourceType() !== resourceType) return false;
       // check amount of resources
-      if (resourceSourceComponent.getCurrentResources() <= 0) continue;
-      // distance (todo: pathing)
-      const distance = DistanceHelper.getTileDistanceBetweenGameObjects(this.gameObject, gameObject);
-      if (distance === null) continue;
+      if (resourceSourceComponent.getCurrentResources() <= 0) return false;
+      // check if resource source can accept more gatherers
+      // noinspection RedundantIfStatementJS
+      if (!resourceSourceComponent.canAcceptGatherer()) return false;
+      return true;
+    });
+
+    // Use batch method for better performance
+    const pairs: [GameObject, GameObject][] = validSources.map((source) => [this.gameObject, source]);
+    const distances = await DistanceHelper.batchGetDistancesBetweenGameObjects(pairs);
+
+    let closestResourceSource: GameObject | undefined = undefined;
+    let closestResourceSourceDistance = Infinity;
+
+    for (let i = 0; i < validSources.length; i++) {
+      const distance = distances[i];
+      if (typeof distance !== "number") continue;
       if (maxDistance > 0 && distance > maxDistance) continue;
-      if (!closestResourceSource || distance < closestResourceSourceDistance) {
-        closestResourceSource = gameObject;
+      const candidate = validSources[i];
+      if (!candidate) {
+        continue;
+      }
+      if (
+        distance < closestResourceSourceDistance ||
+        (distance === closestResourceSourceDistance &&
+          closestResourceSource !== undefined &&
+          this.compareActorTieBreaker(candidate, closestResourceSource) < 0)
+      ) {
+        closestResourceSource = candidate;
         closestResourceSourceDistance = distance;
       }
     }
     return closestResourceSource;
   }
 
-  getPreferredResourceDrain(): GameObject | null {
+  /**
+   * Deterministic tie-break for equal-distance candidates.
+   * Without this, Set/list iteration order differences can desync resource target selection.
+   */
+  private compareActorTieBreaker(left: GameObject, right: GameObject): number {
+    const leftId = getActorComponent(left, IdComponent)?.id;
+    const rightId = getActorComponent(right, IdComponent)?.id;
+    if (leftId && rightId && leftId !== rightId) {
+      return leftId.localeCompare(rightId);
+    }
+    const leftTransform = getGameObjectLogicalTransform(left);
+    const rightTransform = getGameObjectLogicalTransform(right);
+    const leftKey = `${left.name}:${Math.round(leftTransform?.x ?? 0)}:${Math.round(leftTransform?.y ?? 0)}:${Math.round(leftTransform?.z ?? 0)}`;
+    const rightKey = `${right.name}:${Math.round(rightTransform?.x ?? 0)}:${Math.round(rightTransform?.y ?? 0)}:${Math.round(rightTransform?.z ?? 0)}`;
+    return leftKey.localeCompare(rightKey);
+  }
+
+  async getPreferredResourceDrain(): Promise<GameObject | null> {
     return this.findClosestResourceDrain();
   }
 
@@ -274,6 +358,15 @@ export class GathererComponent {
     const gatherData = this.getGatherDataForResourceSource(resourceSource);
     if (!gatherData) return 0;
 
+    // Check again if we can gather (resource source might have changed)
+    const resourceSourceComponent = getActorComponent(resourceSource, ResourceSourceComponent);
+    if (!resourceSourceComponent) {
+      return 0;
+    }
+    if (!resourceSourceComponent.canAcceptGatherer() && resourceSource !== this.currentResourceSource) {
+      return 0;
+    }
+
     // determine amount to gather
     let amountToGather = gatherData.amountPerGathering;
     if (this.carriedResourceAmount + amountToGather > gatherData.capacity) {
@@ -281,11 +374,11 @@ export class GathererComponent {
     }
 
     // gather resources
-    const resourceSourceComponent = getActorComponent(resourceSource, ResourceSourceComponent);
-    if (!resourceSourceComponent) {
+    const gatheredAmount = await resourceSourceComponent.extractResources(this.gameObject, amountToGather);
+    if (getActorComponent(this.gameObject, HealthComponent)?.killed) {
+      // actor died while gathering
       return 0;
     }
-    const gatheredAmount = await resourceSourceComponent.extractResources(this.gameObject, amountToGather);
     this.setCarriedResourceAmount(this.carriedResourceAmount + gatheredAmount);
 
     this.playGatherSound();
@@ -294,6 +387,7 @@ export class GathererComponent {
 
     // start cooldown timer
     this.remainingCooldown = gatherData.cooldown;
+    this.cooldownStartedTick = this.simulationTickService?.currentTick ?? null;
 
     if (GathererComponent.debug) {
       console.log(`Gathered ${gatheredAmount} ${gatherData.resourceType} from ${resourceSource.name}`);
@@ -301,7 +395,11 @@ export class GathererComponent {
 
     this.onResourceGathered.next([this.gameObject, resourceSource, gatherData, gatheredAmount]);
 
-    if (gatherData.needsReturnToDrain) {
+    // Allow the resource source definition to override the gatherer's default needsReturnToDrain
+    const needsReturnToDrain =
+      resourceSourceComponent.resourceSourceDefinition.needsReturnToDrain ?? gatherData.needsReturnToDrain;
+
+    if (needsReturnToDrain) {
       // check if we're at capacity
       if (this.carriedResourceAmount >= gatherData.capacity) {
         this.leaveCurrentResourceSource();
@@ -318,7 +416,7 @@ export class GathererComponent {
 
           const carriedAmount = this.carriedResourceAmount;
           if (carriedAmount > 0) {
-            emitResource(this.gameObject.scene, "resource.added", { [carriedResourceType]: carriedAmount });
+            emitResource(this.gameObject.scene, "resource.added", { [carriedResourceType]: carriedAmount }, owner);
             this.setCarriedResourceAmount(0);
 
             if (GathererComponent.debug) {
@@ -401,6 +499,12 @@ export class GathererComponent {
       containerComponent.unloadGameObject(this.gameObject);
     }
 
+    // Unassign from resource source
+    const resourceSourceComponent = getActorComponent(this.currentResourceSource, ResourceSourceComponent);
+    if (resourceSourceComponent) {
+      resourceSourceComponent.unassignGatherer(this.gameObject);
+    }
+
     // store data about resource source for future reference (e.g. return here, or find similar)
     this.previousResourceSource = this.currentResourceSource;
     this.previousResourceType = this.carriedResourceType;
@@ -413,8 +517,6 @@ export class GathererComponent {
     if (!resourceType) return;
     let sounds: SoundDefinition[] = [];
     switch (resourceType) {
-      case ResourceType.Ambrosia:
-        break;
       case ResourceType.Wood:
         sounds = SharedActorActionsSfxChoppingSounds;
         break;
@@ -422,8 +524,12 @@ export class GathererComponent {
       case ResourceType.Minerals:
         sounds = SharedActorActionsSfxMiningSounds;
         break;
+      case ResourceType.Food:
+        sounds = SharedActorActionsSfxChoppingSounds;
+        break;
     }
 
+    // can be random as it doesn't need to be deterministic
     const randomSound = sounds[Math.floor(Math.random() * sounds.length)]!;
     const visibilityComponent = getGameObjectVisibility(this.gameObject);
     if (visibilityComponent && visibilityComponent.visible) {
@@ -439,35 +545,47 @@ export class GathererComponent {
   }
 
   getGatherAnimation(): AnimationType | null {
+    // If the current resource source hosts crops, use the crop-specific animation
+    if (isCropResourceSource(this.currentResourceSource)) {
+      const cropAnim = this.currentResourceSource.getActiveCropHarvestAnimation();
+      if (cropAnim != null) return cropAnim;
+    }
     const resourceType = this.carriedResourceType;
     if (!resourceType) return null;
     switch (resourceType) {
-      case ResourceType.Ambrosia:
-        return AnimationType.Mine;
       case ResourceType.Wood:
         return AnimationType.Chop;
       case ResourceType.Stone:
         return AnimationType.Mine;
       case ResourceType.Minerals:
         return AnimationType.Mine;
+      case ResourceType.Food:
+        return AnimationType.Harvest;
+      default:
+        return null;
     }
-    return null;
   }
 
   getGatherSound(): SoundType | null {
+    // If the current resource source hosts crops, use the crop-specific sound
+    if (isCropResourceSource(this.currentResourceSource)) {
+      const cropSound = this.currentResourceSource.getActiveCropHarvestSound();
+      if (cropSound != null) return cropSound;
+    }
     const resourceType = this.carriedResourceType;
     if (!resourceType) return null;
     switch (resourceType) {
-      case ResourceType.Ambrosia:
-        return SoundType.Mine;
       case ResourceType.Wood:
         return SoundType.Chop;
       case ResourceType.Stone:
         return SoundType.Mine;
       case ResourceType.Minerals:
         return SoundType.Mine;
+      case ResourceType.Food:
+        return SoundType.Chop;
+      default:
+        return null;
     }
-    return null;
   }
 
   setData(data: Partial<GathererComponentData>) {
@@ -480,7 +598,11 @@ export class GathererComponent {
     if (data.carriedResourceType !== undefined) {
       this.carriedResourceType = data.carriedResourceType;
     }
-    if (data.remainingCooldown !== undefined) this.remainingCooldown = data.remainingCooldown;
+    if (data.remainingCooldown !== undefined) {
+      this.remainingCooldown = data.remainingCooldown;
+      // Fixes gather cooldown drift by anchoring restored cooldown start to the current simulation tick.
+      this.cooldownStartedTick = this.remainingCooldown > 0 ? (this.simulationTickService?.currentTick ?? null) : null;
+    }
   }
 
   getData(): GathererComponentData {

@@ -9,6 +9,10 @@ import PushActionScript from "../../../../../shared/game/phaser/script-nodes/Pus
 /* START-USER-IMPORTS */
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import HudProbableWaffle from "../../../world/scenes/hud-scenes/HudProbableWaffle";
+import { environment } from "../../../../../../environments/environment";
+import { getSceneService } from "../../../world/services/scene-component-helpers";
+import { SimulationTickService } from "../../../world/services/simulation-tick.service";
+import { hasMultiplayerCommandRelay } from "../../../data/scene-data";
 /* END-USER-IMPORTS */
 
 export default class GameSpeedModifier extends Phaser.GameObjects.Container {
@@ -147,6 +151,50 @@ export default class GameSpeedModifier extends Phaser.GameObjects.Container {
     // action_click
     new PushActionScript(onPointerDownScript);
 
+    // multiplier_100x
+    const multiplier_100x = scene.add.container(144, 15);
+    multiplier_100x.setInteractive(
+      new Phaser.Geom.Rectangle(-17, -13, 34.60550202698232, 25.429332302435576),
+      Phaser.Geom.Rectangle.Contains
+    );
+    this.add(multiplier_100x);
+
+    // game_action_bg_3
+    const game_action_bg_3 = scene.add.nineslice(
+      0,
+      0,
+      "gui",
+      "cryos_mini_gui/buttons/button_small.png",
+      23,
+      20,
+      3,
+      3,
+      3,
+      3
+    );
+    game_action_bg_3.scaleX = 2.0762647352357817;
+    game_action_bg_3.scaleY = 1.5492262688240692;
+    multiplier_100x.add(game_action_bg_3);
+
+    // text_3
+    const text_3 = scene.add.text(0, -1, "", {});
+    text_3.setOrigin(0.5, 0.5);
+    text_3.text = "100x";
+    text_3.setStyle({ color: "#000000ff", fontFamily: "disposabledroid", fontSize: "22px", resolution: 10 });
+    multiplier_100x.add(text_3);
+
+    // onPointerUpScript_menu_2
+    const onPointerUpScript_menu_2 = new OnPointerUpScript(multiplier_100x);
+
+    // emitActorAction_3
+    const emitActorAction_3 = new EmitEventActionScript(onPointerUpScript_menu_2);
+
+    // onPointerDownScript_3
+    const onPointerDownScript_3 = new OnPointerDownScript(multiplier_100x);
+
+    // action_click_3
+    new PushActionScript(onPointerDownScript_3);
+
     // emitActorAction_2 (prefab fields)
     emitActorAction_2.eventName = "action";
 
@@ -156,9 +204,13 @@ export default class GameSpeedModifier extends Phaser.GameObjects.Container {
     // emitActorAction (prefab fields)
     emitActorAction.eventName = "action";
 
+    // emitActorAction_3 (prefab fields)
+    emitActorAction_3.eventName = "action";
+
     this.multiplier_10x = multiplier_10x;
     this.multiplier_3x = multiplier_3x;
     this.multiplier_1x = multiplier_1x;
+    this.multiplier_100x = multiplier_100x;
 
     /* START-USER-CTR-CODE */
     this.scene.events.on(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
@@ -169,34 +221,52 @@ export default class GameSpeedModifier extends Phaser.GameObjects.Container {
   private multiplier_10x: Phaser.GameObjects.Container;
   private multiplier_3x: Phaser.GameObjects.Container;
   private multiplier_1x: Phaser.GameObjects.Container;
+  private multiplier_100x: Phaser.GameObjects.Container;
 
   /* START-USER-CODE */
   private mainSceneWithActors?: ProbableWaffleScene;
   private init() {
     this.mainSceneWithActors = (this.scene as HudProbableWaffle).probableWaffleScene!;
     this.multiplier_1x.on("action", () => {
-      if (this.mainSceneWithActors) {
-        this.mainSceneWithActors.time.timeScale = 1;
-        this.mainSceneWithActors.anims.globalTimeScale = 1;
-        this.mainSceneWithActors.tweens.timeScale = 1;
-      }
+      this.setGameSpeed(1);
     });
 
     this.multiplier_3x.on("action", () => {
-      if (this.mainSceneWithActors) {
-        this.mainSceneWithActors.time.timeScale = 3;
-        this.mainSceneWithActors.anims.globalTimeScale = 3;
-        this.mainSceneWithActors.tweens.timeScale = 3;
-      }
+      this.setGameSpeed(3);
     });
 
     this.multiplier_10x.on("action", () => {
-      if (this.mainSceneWithActors) {
-        this.mainSceneWithActors.time.timeScale = 10;
-        this.mainSceneWithActors.anims.globalTimeScale = 10;
-        this.mainSceneWithActors.tweens.timeScale = 10;
-      }
+      this.setGameSpeed(10);
     });
+
+    this.multiplier_100x.on("action", () => {
+      this.setGameSpeed(100);
+    });
+
+    if (environment.production) {
+      this.multiplier_100x.destroy();
+    }
+  }
+
+  private setGameSpeed(speed: number): void {
+    if (!this.mainSceneWithActors) {
+      return;
+    }
+
+    this.mainSceneWithActors.time.timeScale = speed;
+    this.mainSceneWithActors.anims.globalTimeScale = speed;
+    this.mainSceneWithActors.tweens.timeScale = speed;
+
+    const simulationTickService = getSceneService(this.mainSceneWithActors, SimulationTickService);
+    simulationTickService?.setSimulationTimeScale(this.isSinglePlayerSpeedControlEnabled() ? speed : 1);
+  }
+
+  private isSinglePlayerSpeedControlEnabled(): boolean {
+    if (!this.mainSceneWithActors) {
+      return false;
+    }
+
+    return !hasMultiplayerCommandRelay(this.mainSceneWithActors);
   }
 
   override destroy() {

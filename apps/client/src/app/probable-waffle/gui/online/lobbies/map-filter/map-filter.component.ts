@@ -1,4 +1,4 @@
-import { Component, EventEmitter, type OnInit, Output } from "@angular/core";
+import { Component, type OnInit, output } from "@angular/core";
 import { ProbableWaffleLevels, ProbableWaffleMapEnum } from "@fuzzy-waddle/api-interfaces";
 
 @Component({
@@ -7,7 +7,7 @@ import { ProbableWaffleLevels, ProbableWaffleMapEnum } from "@fuzzy-waddle/api-i
   styleUrls: ["./map-filter.component.scss"]
 })
 export class MapFilterComponent implements OnInit {
-  @Output() filter = new EventEmitter<ProbableWaffleMapEnum[]>();
+  readonly filter = output<ProbableWaffleMapEnum[]>();
   protected checkedMaps: { id: number; name: string; checked: boolean }[] = [];
 
   ngOnInit(): void {

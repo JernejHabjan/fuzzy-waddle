@@ -9,6 +9,8 @@ import EmitEventActionScript from "../../../../../shared/game/phaser/script-node
 /* START-USER-IMPORTS */
 import { IconHelper } from "./IconHelper";
 import { Subject } from "rxjs";
+import type { ActorIconClickAction } from "./actor-icon-click-action";
+import type { ActorIconObjectDefinition } from "./actor-icon-object-definition";
 /* END-USER-IMPORTS */
 
 export default class ActorIcon extends Phaser.GameObjects.Container {
@@ -21,6 +23,13 @@ export default class ActorIcon extends Phaser.GameObjects.Container {
     const bg = scene.add.nineslice(0, 0, "gui", "cryos_mini_gui/surfaces/surface_dark.png", 16, 16, 2, 2, 2, 2);
     bg.setOrigin(0, 0);
     this.add(bg);
+
+    // highlight
+    const highlight = scene.add.rectangle(8, 8, 16, 16);
+    highlight.setStrokeStyle(2, 0xffffff, 1);
+    highlight.isFilled = false;
+    highlight.visible = false;
+    this.add(highlight);
 
     // nr
     const nr = scene.add.text(8, 7, "", {});
@@ -52,6 +61,7 @@ export default class ActorIcon extends Phaser.GameObjects.Container {
 
     this.nr = nr;
     this.image = image;
+    this.highlight = highlight;
 
     /* START-USER-CTR-CODE */
     this.nr.visible = false;
@@ -64,6 +74,7 @@ export default class ActorIcon extends Phaser.GameObjects.Container {
 
   private nr: Phaser.GameObjects.Text;
   private image: Phaser.GameObjects.Image;
+  private highlight: Phaser.GameObjects.Rectangle;
 
   /* START-USER-CODE */
   private definition?: ActorIconObjectDefinition;
@@ -93,7 +104,9 @@ export default class ActorIcon extends Phaser.GameObjects.Container {
     this.clickSubject.next({
       definition: {
         actorObjectId: this.definition?.actorObjectId,
-        iconIndex: this.definition?.iconIndex
+        iconIndex: this.definition?.iconIndex,
+        researchType: this.definition?.researchType,
+        containedActorId: this.definition?.containedActorId
       },
       keys: { ctrl: isCtrlPressed, shift: isShiftPressed }
     });
@@ -103,6 +116,10 @@ export default class ActorIcon extends Phaser.GameObjects.Container {
     return this.clickSubject.asObservable();
   }
 
+  setHighlight(highlighted: boolean) {
+    this.highlight.visible = highlighted;
+  }
+
   override destroy(fromScene?: boolean) {
     this.off("actor-action", this.emitClick, this);
     super.destroy(fromScene);
@@ -110,18 +127,5 @@ export default class ActorIcon extends Phaser.GameObjects.Container {
 
   /* END-USER-CODE */
 }
-
-/* END OF COMPILED CODE */
-export type ActorIconClickAction = {
-  definition: ActorIconObjectDefinition;
-  keys: {
-    ctrl: boolean;
-    shift: boolean;
-  };
-};
-export type ActorIconObjectDefinition = {
-  actorObjectId?: string;
-  iconIndex?: number;
-};
 
 // You can write more code here

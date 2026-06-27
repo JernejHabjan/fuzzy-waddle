@@ -1,8 +1,10 @@
-import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import type { PlayerNumber, Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { NavigationService } from "../../../world/services/navigation.service";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
-import { PlayerAiBlackboard } from "../player-ai-blackboard";
+import { NeedType } from "./need-type";
+import { ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { getSimulationNow } from "../ai-time";
 import GameObject = Phaser.GameObjects.GameObject;
 
 // Lightweight result of a map analysis pass
@@ -23,60 +25,95 @@ export class MapAnalyzer {
 
   constructor(
     public readonly scene: Phaser.Scene,
-    private readonly playerNumber: number
+    private readonly playerNumber: PlayerNumber
   ) {}
 
   /**
    * Compute analysis if stale, otherwise return cached.
    */
-  analyzeIfStale(ttlMs: number = 2500): MapAnalysis {
-    const now = Date.now();
+  async analyzeIfStale(ttlMs: number = 2500): Promise<MapAnalysis> {
+    const now = getSimulationNow(this.scene);
     if (this.lastResult && now - this.lastComputedAt < ttlMs) {
       return this.lastResult;
     }
-    const result = this.computeAnalysis();
+    const result = await this.computeAnalysis();
     this.lastResult = result;
     this.lastComputedAt = now;
     return result;
   }
 
-  /**
-   * Convenience: perform analysis (respecting TTL) AND push results into the AI blackboard.
-   * Returns the (possibly cached) MapAnalysis.
-   */
-  analyzeAndUpdateBlackboard(blackboard: PlayerAiBlackboard, ttlMs: number = 2500): MapAnalysis {
-    const result = this.analyzeIfStale(ttlMs);
-    // Write-through to blackboard (centralizes this logic here instead of agent)
-    blackboard.mapAnalysis = result;
-    blackboard.baseCenterTile = result.baseCenterTile ?? null;
-    blackboard.suggestedBuildTiles = result.candidateBuildSpots ?? [];
-    return result;
-  }
-
   isStale(ttlMs: number) {
-    return !this.lastResult || Date.now() - this.lastComputedAt >= ttlMs;
+    return !this.lastResult || getSimulationNow(this.scene) - this.lastComputedAt >= ttlMs;
   }
 
   getLastResult(): MapAnalysis | undefined {
     return this.lastResult;
   }
 
-  scoreBuildSpot(tile: Vector2Simple, baseCenter?: Vector2Simple): number {
+  scoreBuildSpot(
+    tile: Vector2Simple,
+    baseCenter?: Vector2Simple,
+    buildingType?: NeedType,
+    resourceType?: ResourceType
+  ): number {
     if (!baseCenter) return 0;
-    // Prefer moderate distance (not too close, not too far)
-    const d = this.manhattan(tile, baseCenter);
-    const ideal = 6;
-    return Math.max(0, 10 - Math.abs(ideal - d));
+
+    let score = 0;
+    const distanceToBase = this.manhattan(tile, baseCenter);
+    const navigation = getSceneService(this.scene, NavigationService);
+    if (!navigation) return 0;
+
+    switch (buildingType) {
+      case NeedType.Gathering:
+        // score based on proximity to the specified resource
+        const actorIndex = getSceneService(this.scene, ActorIndexSystem);
+        if (actorIndex && resourceType) {
+          const resourceNodes = actorIndex.getResourceSourcesFiltered(resourceType);
+          let minDistance = Infinity;
+          for (const node of resourceNodes) {
+            const nodeTile = navigation.getCenterTileCoordUnderObject(node);
+            if (nodeTile) {
+              const d = this.manhattan(tile, nodeTile);
+              if (d < minDistance) {
+                minDistance = d;
+              }
+            }
+          }
+          // Higher score for being closer to a resource node.
+          score += Math.max(0, 50 - minDistance * 2);
+        }
+        // also some score for being not too far from base
+        score += Math.max(0, 20 - distanceToBase);
+        break;
+      case NeedType.Production:
+        // score based on proximity to base center
+        score += Math.max(0, 30 - distanceToBase);
+        break;
+      case NeedType.Defense:
+        // score based on being on the perimeter
+        const idealDefenseDistance = 10; // for example
+        score += Math.max(0, 20 - Math.abs(distanceToBase - idealDefenseDistance));
+        // could also add score for being on a choke point or path to enemy
+        break;
+      case NeedType.Housing:
+      default:
+        // Prefer moderate distance (not too close, not too far)
+        const ideal = 6;
+        score += Math.max(0, 10 - Math.abs(distanceToBase - ideal));
+        break;
+    }
+
+    return score;
   }
 
-  private computeAnalysis(): MapAnalysis {
+  private async computeAnalysis(): Promise<MapAnalysis> {
     const actorIndex = getSceneService(this.scene, ActorIndexSystem);
     const navigation = getSceneService(this.scene, NavigationService);
 
     const analysis: MapAnalysis = {
       baseCenterTile: undefined,
       candidateBuildSpots: [],
-      analyzedAtMs: Date.now()
+      analyzedAtMs: getSimulationNow(this.scene)
     };
 
     if (!actorIndex || !navigation) {
@@ -99,9 +136,9 @@ export class MapAnalyzer {
       analysis.baseCenterTile = this.averageTile(ownedTiles);
     }
 
-    // 2) Find candidate build spots around base center (walkable, spaced out)
+    // 2) Find candidate build spots around base center (navigable, spaced out)
     if (analysis.baseCenterTile) {
-      analysis.candidateBuildSpots = this.sampleCandidateBuildSpots(navigation, analysis.baseCenterTile);
+      analysis.candidateBuildSpots = await this.sampleCandidateBuildSpots(navigation, analysis.baseCenterTile);
     }
 
     return analysis;
@@ -119,22 +156,39 @@ export class MapAnalyzer {
     return { x: Math.round(sum.x / tiles.length), y: Math.round(sum.y / tiles.length), z: 0 };
   }
 
-  private sampleCandidateBuildSpots(navigation: NavigationService, base: Vector3Simple): Vector3Simple[] {
+  private async sampleCandidateBuildSpots(
+    navigation: NavigationService,
+    base: Vector3Simple
+  ): Promise<Vector3Simple[]> {
     const spots: Vector3Simple[] = [];
-    const maxTry = 120; // sampling attempts
-    const radius = 10;
+    const maxTry = 20; // sampling attempts
+    const radius = 20; // todo this must be dynamic based on current base size
     const minSpacing = 3; // tiles between suggested spots
+    const maxSpots = 3;
 
     for (let i = 0; i < maxTry; i++) {
       const tile = navigation.randomTileInRadius(base, radius);
       if (!tile) continue;
 
-      if (!navigation.isWithinGridBounds(tile) || !navigation.isTileWalkable(tile)) continue;
+      if (!navigation.isWithinGridBounds(tile) || !navigation.isTileNavigable(tile)) continue;
 
-      // Spacing filter
-      if (spots.some((s) => this.manhattan(s, tile) < minSpacing)) continue;
+      const path = await navigation.findPathBetweenTiles(base, tile);
+      if (!path || !path.length) continue; // too close or unreachable
+      if (path.length > radius) continue; // too far
+
+      // Check spacing from existing spots
+      let tooClose = false;
+      for (const s of spots) {
+        if (this.manhattan(s, tile) < minSpacing) {
+          tooClose = true;
+          break;
+        }
+      }
+      if (tooClose) continue;
+
       spots.push({ x: tile.x, y: tile.y, z: 0 });
-      if (spots.length >= 12) break;
+
+      if (spots.length >= maxSpots) break;
     }
 
     // Sort by score (best first)

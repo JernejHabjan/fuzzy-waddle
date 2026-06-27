@@ -9,8 +9,9 @@ import { ActorPhysicalType } from "../../../../entity/components/combat/componen
 export const olivalDefinition = {
   components: {
     representable: {
-      width: 32,
-      height: 64
+      width: 76,
+      height: 112,
+      origin: { x: 0.5, y: 0.8 }
     },
     objectDescriptor: {
       color: 0xc2a080
@@ -29,6 +30,7 @@ export const olivalDefinition = {
     info: {
       name: "Olival",
       description: "A living gem that transforms the barren sands into a foundation for dark power",
+      tooltipDescription: ["Provides additional housing", "Expands population capacity"],
       smallImage: {
         key: "factions",
         frame: "buildings/tivara/olival/olival.png",
@@ -37,19 +39,21 @@ export const olivalDefinition = {
     },
     health: {
       physicalState: ActorPhysicalType.Structural,
-      maxHealth: 100
+      maxHealth: 200
     },
     productionCost: {
       resources: {
-        [ResourceType.Wood]: 10,
-        [ResourceType.Minerals]: 10
+        [ResourceType.Wood]: 100
       },
       refundFactor: 0.5,
-      productionTime: 5000,
+      productionTime: 10000,
       costType: PaymentType.PayImmediately
     },
     requirements: {
       actors: [ObjectNames.Sandhold]
+    },
+    housing: {
+      housingCapacity: 8
     },
     selectable: {},
     collider: { enabled: true },

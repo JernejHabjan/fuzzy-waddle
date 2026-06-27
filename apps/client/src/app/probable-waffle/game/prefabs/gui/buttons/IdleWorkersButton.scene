@@ -1,0 +1,157 @@
+{
+    "id": "c9b0f5d2-6115-4e8a-aeee-c7dd53a1ca8c",
+    "sceneType": "PREFAB",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 184,
+        "borderHeight": 184
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "8678fa31-e0c5-4bbd-95c0-7cb57f7a381a",
+            "label": "multiplier_1x",
+            "displayName": "Actor action",
+            "scope": "CLASS",
+            "hitArea.shape": "RECTANGLE",
+            "hitArea.x": 4,
+            "hitArea.y": 2,
+            "hitArea.width": 34.60550202698232,
+            "hitArea.height": 25.429332302435576,
+            "list": [
+                {
+                    "type": "NineSlice",
+                    "id": "93811fcf-bda8-4f90-884b-956eb8ff8a84",
+                    "label": "game_action_bg",
+                    "displayName": "Background",
+                    "texture": {
+                        "key": "gui",
+                        "frame": "cryos_mini_gui/buttons/button_small.png"
+                    },
+                    "x": 21,
+                    "y": 15,
+                    "scaleX": 2.0762647352357817,
+                    "scaleY": 1.5492262688240692,
+                    "leftWidth": 3,
+                    "rightWidth": 3,
+                    "topHeight": 3,
+                    "bottomHeight": 3,
+                    "width": 20,
+                    "height": 20
+                },
+                {
+                    "type": "Text",
+                    "id": "44724d29-c3a2-4468-8d7f-a955bb1a28aa",
+                    "label": "button_text",
+                    "scope": "CLASS",
+                    "x": 21,
+                    "y": 14,
+                    "originX": 0.5,
+                    "originY": 0.5,
+                    "text": "1",
+                    "resolution": 10,
+                    "fontFamily": "disposabledroid",
+                    "fontSize": "22px",
+                    "color": "#000000ff"
+                },
+                {
+                    "type": "Text",
+                    "id": "24508047-d671-43ba-8337-59d789df94c9",
+                    "label": "button_text_1",
+                    "x": 30,
+                    "y": 2,
+                    "originX": 0.5,
+                    "originY": 0.5,
+                    "text": "z",
+                    "resolution": 10,
+                    "fontFamily": "disposabledroid",
+                    "fontSize": "18px",
+                    "color": "#000000ff",
+                    "stroke": "#ffffffff",
+                    "shadow.offsetX": 1,
+                    "shadow.offsetY": 1,
+                    "shadow.color": "#000000ff"
+                },
+                {
+                    "type": "Text",
+                    "id": "37284184-0def-4b59-a1d8-81682c54e97c",
+                    "label": "button_text_2",
+                    "x": 37,
+                    "y": -2,
+                    "originX": 0.5,
+                    "originY": 0.5,
+                    "text": "z",
+                    "resolution": 10,
+                    "fontFamily": "disposabledroid",
+                    "color": "#000000ff",
+                    "stroke": "#ffffffff",
+                    "shadow.offsetX": 1,
+                    "shadow.offsetY": 1,
+                    "shadow.color": "#000000ff"
+                },
+                {
+                    "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f955",
+                    "id": "a1c00882-4d1c-44b4-bb8a-4cce41c425db",
+                    "label": "onPointerUpScript_menu_9",
+                    "displayName": "Pointer up",
+                    "list": [
+                        {
+                            "prefabId": "757fdd95-b5cc-4c5b-adef-a26b5965d851",
+                            "id": "67cddd74-361a-460d-ba11-6fcffdc2ef39",
+                            "unlock": [
+                                "eventName"
+                            ],
+                            "label": "emitActorAction",
+                            "displayName": "Emit \"action\"",
+                            "eventName": "action"
+                        }
+                    ]
+                },
+                {
+                    "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f954",
+                    "id": "10532570-c8b3-497a-90db-d76c83bf916c",
+                    "label": "onPointerDownScript",
+                    "displayName": "Pointer down",
+                    "list": [
+                        {
+                            "prefabId": "0e39177a-6e19-4b56-a7c2-2360a2e41505",
+                            "id": "ad18f23d-03b5-4fde-a52d-4c7dd764aa6c",
+                            "label": "action_click",
+                            "displayName": "Push action"
+                        }
+                    ]
+                },
+                {
+                    "type": "Text",
+                    "id": "a007beb4-28f1-4b7d-98bb-793e9755ec88",
+                    "label": "button_text_3",
+                    "x": 44,
+                    "y": -5,
+                    "originX": 0.5,
+                    "originY": 0.5,
+                    "text": "z",
+                    "resolution": 10,
+                    "fontFamily": "disposabledroid",
+                    "fontSize": "14px",
+                    "color": "#000000ff",
+                    "stroke": "#ffffffff",
+                    "shadow.offsetX": 1,
+                    "shadow.offsetY": 1,
+                    "shadow.color": "#000000ff"
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

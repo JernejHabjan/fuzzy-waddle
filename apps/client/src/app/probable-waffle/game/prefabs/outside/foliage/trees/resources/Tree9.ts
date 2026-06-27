@@ -2,32 +2,55 @@
 
 /* START OF COMPILED CODE */
 
+import TreeBird from "../../../../animals/tree-bird/TreeBird";
 /* START-USER-IMPORTS */
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import Phaser from "phaser";
+import { hasMultiplayerCommandRelay } from "../../../../../data/scene-data";
 /* END-USER-IMPORTS */
 
-export default class Tree9 extends Phaser.GameObjects.Image {
-  constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {
-    super(scene, x ?? 128, y ?? 346, texture || "outside", frame ?? "foliage/trees/resources/tree9.png");
+export default class Tree9 extends Phaser.GameObjects.Container {
+  constructor(scene: Phaser.Scene, x?: number, y?: number) {
+    super(scene, x ?? 126, y ?? 342);
 
-    this.setInteractive(
+    // foliage_trees_resources_tree9_png
+    const foliage_trees_resources_tree9_png = scene.add.image(2, 4, "outside", "foliage/trees/resources/tree9.png");
+    foliage_trees_resources_tree9_png.setInteractive(
       new Phaser.Geom.Polygon(
         "7.082902511161393 1.2876334322518659 64 0 119.42461645248203 1.9747387162966419 125.26501136686261 31.520265930221953 111.17935304394473 43.201055758983124 99.84211585720595 68.96750391066216 121.82948494663874 88.20645186391585 76.13698355766124 109.50671566930386 84.03869432417613 180.27855992591563 61.70777259272097 185.43184955625145 42.81237728148967 180.9656652099604 48.30921955384787 116.72132115177399 9.144218363295714 99.88724169267701 8.113560437228557 86.83224129582631 32.50579802081805 69.99816183672932 6.395797227116617 46.29302953718461"
       ),
       Phaser.Geom.Polygon.Contains
     );
-    this.scaleX = 2;
-    this.scaleY = 2;
-    this.setOrigin(0.5, 0.9008114208215593);
+    foliage_trees_resources_tree9_png.scaleX = 2;
+    foliage_trees_resources_tree9_png.scaleY = 2;
+    foliage_trees_resources_tree9_png.setOrigin(0.5, 0.9008114208215593);
+    this.add(foliage_trees_resources_tree9_png);
+
+    // treeBird
+    const treeBird = new TreeBird(scene, -85, -74);
+    this.add(treeBird);
+
+    this.treeBird = treeBird;
 
     /* START-USER-CTR-CODE */
+    this.handleBirdVisibility();
     /* END-USER-CTR-CODE */
   }
 
+  private treeBird: TreeBird;
+
   /* START-USER-CODE */
   override name = ObjectNames.Tree9;
-  // Write your code here.
+  private handleBirdVisibility() {
+    if (hasMultiplayerCommandRelay(this.scene)) {
+      this.treeBird.setVisible(false);
+      return;
+    }
+    const randomNum = Phaser.Math.Between(1, 5);
+    if (randomNum !== 1) {
+      this.treeBird.setVisible(false);
+    }
+  }
 
   /* END-USER-CODE */
 }

@@ -1,17 +1,17 @@
 /**
- * sequence - (needs all succeeded in sequence) updates in sequence - moves to succeeded if all children have succeeded, moves to failed if any have failed
- * selector - (any succeed in sequence) updates in sequence - moves to failed if all have failed, moves to success if any have succeeded
- * parallel - runs multiple until all SUCCESS or any FAILURE
- * race - runs multiple until any SUCCESS or all FAILURE
- * all - runs multiple until all finish
+ * sequence - updates in sequence, succeeds if all children succeed, fails if any child fails
+ * selector - updates in sequence, succeeds if any child succeeds, fails if all children fail
+ * parallel - updates all children concurrently, succeeds if all succeed, fails if any fails
+ * race - updates all children concurrently, succeeds if any succeeds, fails if all fail
+ * all - updates all children concurrently until all finish
  * lotto - selects one child to run
  * repeat - runs N times or until child returns FAILURE
- * retry - runs N times if child returns FAILURE, if child returns SUCCESS, returns SUCCESS
- * flip - returns SUCCESS if child returns FAILURE, returns FAILURE if child returns SUCCESS
+ * retry - runs N times if child returns FAILURE, returns SUCCESS if child returns SUCCESS
+ * flip - inverts child result: SUCCESS becomes FAILURE, FAILURE becomes SUCCESS
  * succeed - returns SUCCESS
  * fail - returns FAILURE
  * action - runs a function
- * condition - checks a condition
+ * condition - checks a condition, returns SUCCESS or FAILURE based on result
  * wait - waits for N ms
  * branch - runs another tree
  * callbacks - entry, step, exit functions
@@ -22,6 +22,7 @@
 export const PlayerAiControllerMdsl = `
 root {
     selector {
+        branch [CheckSurrender]
         branch [AnalyzeMap]
         branch [PlanBase]
         branch [ExecuteBasePlan]
@@ -30,12 +31,21 @@ root {
         branch [AdjustStrategyBasedOnGameState]
         branch [DefendBase]
         branch [AttackEnemy]
-        branch [ExpandBase]
         branch [ManageEconomy]
         branch [ManageLogistics]
-        branch [AdvanceTech]
+        branch [PursueResearch]
         branch [ScoutEnemy]
         branch [CombatTactics]
+    }
+}
+
+root [CheckSurrender] {
+    /* Check if AI should offer surrender when in a losing position. Fails to allow other selector children to proceed.*/
+    fail {
+        sequence {
+            condition [ShouldOfferSurrender]
+            action [OfferSurrender]
+        }
     }
 }
 
@@ -75,6 +85,7 @@ root [MaintainForces] {
     /* Handles continuous unit production (throttled & resource aware). Fails to allow other branches.*/
     fail {
         sequence {
+            condition [HasSupplyCapacity]
             condition [ShouldProduceMilitaryUnit]
             condition [HasIdleProductionBuilding]
             condition [HasResourcesForQueuedUnit]
@@ -94,42 +105,42 @@ root [RepairBase] {
 }
 
 root [AdjustStrategyBasedOnGameState] {
-    selector {
-        sequence {
-            condition [IsEnemyPlayerWeak]
-            action [ShiftToAggressiveStrategy]
-        }
-        sequence {
-            condition [IsBaseUnderHeavyAttack]
-            action [ShiftToDefensiveStrategy]
-        }
-        sequence {
-            condition [HasSurplusResources]
-            action [ShiftToEconomicStrategy]
+    /* Adjusts overall AI strategy based on game state (non-blocking).*/
+    fail {
+        selector {
+            sequence {
+                condition [IsEnemyPlayerWeak]
+                action [ShiftToAggressiveStrategy]
+            }
+            sequence {
+                condition [IsBaseUnderHeavyAttack]
+                action [ShiftToDefensiveStrategy]
+            }
+            sequence {
+                condition [HasSurplusResources]
+                action [ShiftToEconomicStrategy]
+            }
         }
     }
 }
 
 root [DefendBase] {
-    sequence {
-        condition [IsBaseUnderAttack]
-        action [AssignDefenders]
+    /* Assigns defenders if base is under attack (non-blocking).*/
+    fail {
+        sequence {
+            condition [IsBaseUnderAttack]
+            action [AssignDefenders]
+        }
     }
 }
 
 root [AttackEnemy] {
-    sequence {
-        condition [HasEnoughMilitaryPower]
-        action [AttackEnemyBase]
-    }
-}
-
-root [ExpandBase] {
-    sequence {
-        condition [IsBaseExpansionNeeded]
-        condition [HasSufficientResources]
-        branch [ChooseStructureToBuild]
-        branch [BuildStructure]
+    /* Initiates attacks on enemy bases when conditions are met (non-blocking).*/
+    fail {
+        sequence {
+            condition [HasEnoughMilitaryPower]
+            action [AttackEnemyBase]
+        }
     }
 }
 
@@ -159,14 +170,15 @@ root [ManageLogistics] {
     }
 }
 
-root [AdvanceTech] {
-    /* Drives tech / upgrade progression pacing (non-blocking).*/
+root [PursueResearch] {
+    /* Pursues research and tech upgrades (currently prioritizes spell research based on unit composition) (non-blocking).*/
     fail {
         sequence {
-            condition [ShouldPursueNextTech]
-            condition [HaveIdleUpgradeBuilding]
-            condition [HasResourcesForNextTech]
-            action [StartNextTechUpgrade]
+            condition [ShouldPursueResearch]
+            flip {
+                condition [IsResearchInProgress]
+            }
+            action [TryStartResearch]
         }
     }
 }
@@ -174,7 +186,7 @@ root [AdvanceTech] {
 root [GatherResources] {
     succeed {
         sequence {
-            condition [NeedMoreResources]
+            /* condition [NeedMoreResources] */
             branch [AssignWorkersToGather]
         }
     }
@@ -187,6 +199,7 @@ root [AssignWorkersToGather] {
 root [TrainWorkers] {
     succeed {
         sequence {
+            condition [HasSupplyCapacity]
             condition [NeedMoreWorkers]
             condition [HasIdleTrainingBuilding]
             condition [HasEnoughResourcesForWorker]
@@ -211,63 +224,37 @@ root [OptimizeResourceGathering] {
     }
 }
 
-root [ChooseStructureToBuild] {
-    selector {
-        sequence {
-            condition [NeedMoreHousing]
-            action [AssignHousingBuilding]
-        }
-        sequence {
-            condition [NeedMoreProduction]
-            action [AssignProductionBuilding]
-        }
-        sequence {
-            condition [NeedMoreDefense]
-            action [AssignDefenseBuilding]
-        }
-    }
-}
-
-root [BuildStructure] {
-    sequence {
-        action [AssignWorkerToBuild]
-        action [StartBuildingStructure]
-    }
-}
-
 root [ScoutEnemy] {
-    sequence {
-        condition [NeedToScout]
-        action [AssignScoutUnits]
-        selector {
-            sequence {
-                condition [EnemySpotted]
-                action [AnalyzeEnemyBase]
+    fail {
+        sequence {
+            condition [NeedToScout]
+            action [AssignScoutUnits]
+            selector {
+                sequence {
+                    condition [EnemySpotted]
+                    action [AnalyzeEnemyBase]
+                }
+                action [ContinueScouting]
             }
-            action [ContinueScouting]
         }
     }
 }
 
 root [CombatTactics] {
-    selector {
-        sequence {
-            condition [IsInCombat]
-            branch [ExecuteCombatMicro]
+    fail {
+        selector {
+            sequence {
+                condition [IsInCombat]
+                branch [ExecuteCombatMicro]
+            }
         }
     }
 }
 
 root [ExecuteCombatMicro] {
     parallel {
-        sequence {
-            condition [LowHealthUnit]
-            action [RetreatUnit]
-        }
-        sequence {
-            condition [EnemyInRange]
-            action [FocusFire]
-        }
+        action [RetreatLowHealthUnitsInCombat]
+        action [FocusFireForUnitsInCombat]
         sequence {
             condition [EnemyFlankOpen]
             action [FlankEnemy]

@@ -3,11 +3,7 @@ import { getGameObjectRenderedTransform, onSceneInitialized } from "../../data/g
 import { getSceneExternalComponent } from "./scene-component-helpers";
 import { OptionsService } from "../../../gui/options/options.service";
 import { filter, Subscription } from "rxjs";
-
-export interface AdditionalAudioConfig {
-  onComplete?: () => void;
-  waitIfLockedOrGameLostFocus?: boolean;
-}
+import type { AdditionalAudioConfig } from "./additionalAudioConfig";
 
 export class AudioService {
   private readonly playAudioAlsoOnBlur = true;
@@ -55,6 +51,7 @@ export class AudioService {
   }
 
   private shuffleOstQueue() {
+    // can be random as it doesn't need to be deterministic
     this.ostQueue = this.ost.sort(() => Math.random() - 0.5);
     this.currentTrackIndex = 0;
   }
@@ -265,6 +262,23 @@ export class AudioService {
 
   stopSound(key: string) {
     this.scene.sound.stopByKey(key);
+  }
+
+  /**
+   * Fade out a sound over a specified duration
+   * @param sound The sound to fade out
+   * @param duration Duration of fade in milliseconds
+   */
+  fadeOut(sound: Phaser.Sound.BaseSound, duration: number = 1000): void {
+    this.scene.tweens.add({
+      targets: sound,
+      volume: 0,
+      duration: duration,
+      ease: "Linear",
+      onComplete: () => {
+        sound.stop();
+      }
+    });
   }
 
   private volumeChanged() {

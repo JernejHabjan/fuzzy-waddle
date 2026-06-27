@@ -21,6 +21,11 @@ export const skaduweeWorkerFemaleDefinition = {
   ...skaduweeWorkerDefinition,
   components: {
     ...skaduweeWorkerDefinition.components,
+    representable: {
+      width: 32,
+      height: 48,
+      origin: { x: 0.5, y: 0.9062870143450004 }
+    },
     info: {
       name: "Shadehand",
       description: "With whispered effort, the foundations of shadow are laid",
@@ -47,5 +52,9 @@ export const skaduweeWorkerFemaleDefinition = {
       }
     },
     animatable: { animations: ANIM_SKADUWEE_WORKER_FEMALE_DEFINITION }
+  },
+  meta: {
+    ...skaduweeWorkerDefinition.meta,
+    randomOfType: []
   }
 } satisfies PrefabDefinition;

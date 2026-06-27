@@ -3,8 +3,6 @@ export interface Vector2Simple {
   y: number;
 }
 
-export interface Vector3Simple {
-  x: number;
-  y: number;
+export interface Vector3Simple extends Vector2Simple {
   z: number;
 }

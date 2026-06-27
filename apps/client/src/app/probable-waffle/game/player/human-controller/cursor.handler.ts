@@ -1,4 +1,29 @@
 import { LockedCursorHandler } from "./locked-cursor.handler";
+import { Input } from "phaser";
+import { ProbableWaffleScene } from "../../core/probable-waffle.scene";
+import { getActorComponent } from "../../data/actor-component";
+import { OwnerComponent } from "../../entity/components/owner-component";
+import { ResourceSourceComponent } from "../../entity/components/resource/resource-source-component";
+import { AttackComponent } from "../../entity/components/combat/components/attack-component";
+import { HealingComponent } from "../../entity/components/combat/components/healing-component";
+import { BuilderComponent } from "../../entity/components/construction/builder-component";
+import { ConstructionSiteComponent } from "../../entity/components/construction/construction-site-component";
+import { ContainerComponent } from "../../entity/components/building/container-component";
+import { getCurrentPlayerNumber, getSelectedActors } from "../../data/scene-data";
+import { canActorTraverseTile, getSelectableGameObject } from "../../data/game-object-helper";
+import { getSceneComponent, getSceneService } from "../../world/services/scene-component-helpers";
+import { PlayerActionsHandler } from "./player-actions-handler";
+import { BuildingCursor } from "./building-cursor";
+import { MULTI_SELECTING } from "./multi-selection.handler";
+import { OrderType } from "../../ai/order-type";
+import { GameSettings } from "../../core/gameSettings";
+import { ContainableComponent } from "../../entity/components/building/containable-component";
+import { GathererComponent } from "../../entity/components/resource/gatherer-component";
+import GameObject = Phaser.GameObjects.GameObject;
+import { ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { NavigationService } from "../../world/services/navigation.service";
+import { IsoHelper } from "../../world/tilemap/iso-helper";
+import { ActorTranslateComponent } from "../../entity/components/movement/actor-translate-component";
 
 export enum CursorType {
   Add = "add",
@@ -82,7 +107,7 @@ export enum CursorType {
 
 export class CursorHandler {
   // noinspection SpellCheckingInspection
-  private readonly cursors: Record<CursorType, string> = {
+  readonly cursors: Record<CursorType, string> = {
     [CursorType.Add]: "Cursor Add",
     [CursorType.AttackEnemy]: "Cursor Attack Enemy",
     [CursorType.AttackFriends]: "Cursor Attack Friends",
@@ -162,21 +187,272 @@ export class CursorHandler {
     [CursorType.TargetMoveB]: "Cursor Target Move B"
   };
 
-  private currentCursor?: string;
+  private currentCursor?: CursorType;
+  private currentCursorUrl?: string;
+  private mainScene?: ProbableWaffleScene;
+  private lastHoveredCursor: CursorType = CursorType.Default;
+  private multiSelecting: boolean = false;
+  private lockedCursorHandler: LockedCursorHandler;
 
   constructor(private readonly scene: Phaser.Scene) {
-    new LockedCursorHandler(scene, this);
+    const gameSettings = GameSettings.loadFromLocalStorage();
+    this.lockedCursorHandler = new LockedCursorHandler(scene, this, gameSettings.lockToScreen);
     this.setupCursor();
+    this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
+    // Listen to multi-selection events from HUD scene
+    this.scene.events.on(MULTI_SELECTING, this.onMultiSelecting, this);
+  }
+
+  getLockedCursorHandler(): LockedCursorHandler {
+    return this.lockedCursorHandler;
+  }
+
+  /**
+   * Initialize with main game scene to enable hover-based cursor changes
+   */
+  initializeWithMainScene(mainScene: ProbableWaffleScene) {
+    this.mainScene = mainScene;
+    this.setupHoverDetection();
+  }
+
+  private onMultiSelecting(multiSelecting: boolean) {
+    this.multiSelecting = multiSelecting;
   }
 
   private setupCursor() {
     this.setCursor(CursorType.Default);
   }
 
+  private setupHoverDetection() {
+    if (!this.mainScene) return;
+
+    // Listen to pointer move events on the main scene
+    this.mainScene.input.on(Input.Events.POINTER_MOVE, this.handlePointerMove, this);
+  }
+
+  private handlePointerMove(pointer: Phaser.Input.Pointer, gameObjectsUnderCursor: GameObject[]) {
+    if (!this.mainScene) return;
+
+    // Don't change cursor during multi-selection
+    if (this.multiSelecting) {
+      return;
+    }
+
+    // Don't change cursor if building is being placed
+    const buildingCursor = getSceneComponent(this.mainScene, BuildingCursor);
+    if (buildingCursor?.placingBuilding) {
+      return;
+    }
+
+    // Don't change cursor if PlayerActionsHandler is currently handling an action
+    const playerActionsHandler = getSceneService(this.mainScene, PlayerActionsHandler);
+    if (playerActionsHandler?.isHandlingActions()) {
+      // During a Move order, show terrain-mismatch feedback
+      if (playerActionsHandler.getCurrentOrderType() === OrderType.Move) {
+        const terrainCursor = this.getTerrainCursorForPointer(pointer);
+        if (terrainCursor !== this.lastHoveredCursor) {
+          this.lastHoveredCursor = terrainCursor;
+          this.setCursor(terrainCursor);
+        }
+      }
+      return;
+    }
+
+    // Get the first selectable game object under cursor
+    const selectableObject = gameObjectsUnderCursor.map((go) => getSelectableGameObject(go)).find((go) => !!go);
+
+    const selectedActors = getSelectedActors(this.mainScene);
+
+    if (selectableObject) {
+      const contextualCursor = this.determineContextualCursor(
+        selectableObject,
+        selectedActors,
+        playerActionsHandler?.getCurrentOrderType()
+      );
+      if (contextualCursor !== this.lastHoveredCursor) {
+        this.lastHoveredCursor = contextualCursor;
+        this.setCursor(contextualCursor);
+      }
+    } else {
+      // No actor under cursor, reset to default
+      if (this.lastHoveredCursor !== CursorType.Default) {
+        this.lastHoveredCursor = CursorType.Default;
+        this.setCursor(CursorType.Default);
+      }
+    }
+  }
+
+  /**
+   * Determine the appropriate cursor based on the actor under the cursor
+   */
+  private determineContextualCursor(
+    gameObject: GameObject,
+    selectedActors: GameObject[],
+    currentOrderType: OrderType | undefined
+  ): CursorType {
+    if (!this.mainScene) return CursorType.Default;
+
+    const currentPlayerNumber = getCurrentPlayerNumber(this.mainScene);
+    const ownerComponent = getActorComponent(gameObject, OwnerComponent);
+    const actorOwner = ownerComponent?.getOwner();
+    const isEnemy = actorOwner !== undefined && actorOwner !== currentPlayerNumber;
+    const isFriendly = actorOwner !== undefined && actorOwner === currentPlayerNumber;
+
+    // If there's a current order, use cursor based on that
+    if (currentOrderType) {
+      return this.getCursorForOrder(currentOrderType, gameObject, isEnemy);
+    }
+
+    // No active order - determine cursor based on actor type and relationship
+    // Priority: resource source > enemy > friendly > construction site > container > default
+
+    const hasSelectedActors = selectedActors.length > 0;
+
+    // Check if it's a resource source (tree, mine, etc.)
+    const resourceSource = getActorComponent(gameObject, ResourceSourceComponent);
+    if (resourceSource) {
+      if (hasSelectedActors && selectedActors.some((actor) => !!getActorComponent(actor, GathererComponent))) {
+        switch (resourceSource.resourceSourceDefinition.resourceType) {
+          case ResourceType.Wood:
+            return CursorType.ChopGreen;
+          case ResourceType.Stone:
+            return CursorType.PickaxeGreen;
+          case ResourceType.Minerals:
+            return CursorType.PickaxeGreen;
+          case ResourceType.Food:
+            return CursorType.ScytheGreen;
+          default:
+            throw new Error(
+              `Unhandled resource type for cursor: ${resourceSource.resourceSourceDefinition.resourceType}`
+            );
+        }
+      }
+    }
+
+    // Check if it's an enemy
+    if (isEnemy) {
+      if (hasSelectedActors && selectedActors.some((actor) => !!getActorComponent(actor, AttackComponent))) {
+        return CursorType.AttackRed;
+      }
+      return CursorType.DefaultEnemy;
+    }
+
+    // Check if it's a friendly unit/building
+    if (isFriendly) {
+      return CursorType.DefaultFriends;
+    }
+
+    // Check if it's a construction site
+    const constructionSite = getActorComponent(gameObject, ConstructionSiteComponent);
+    if (constructionSite) {
+      if (hasSelectedActors && selectedActors.some((actor) => !!getActorComponent(actor, BuilderComponent))) {
+        return CursorType.BuildGreen;
+      }
+    }
+
+    // Check if it's a container (e.g., building to enter)
+    const container = getActorComponent(gameObject, ContainerComponent);
+    if (container) {
+      if (hasSelectedActors && selectedActors.some((actor) => !!getActorComponent(actor, ContainableComponent))) {
+        return CursorType.QuestionGreen;
+      }
+    }
+
+    return CursorType.Default;
+  }
+
+  /**
+   * Get cursor for a specific order type when hovering over an actor
+   */
+  private getCursorForOrder(orderType: OrderType, gameObject: GameObject, isEnemy: boolean): CursorType {
+    switch (orderType) {
+      case OrderType.Attack: {
+        const attackComponent = getActorComponent(gameObject, AttackComponent);
+        if (attackComponent) {
+          return isEnemy ? CursorType.AttackGreen : CursorType.AttackRed;
+        }
+        return CursorType.CannotTarget;
+      }
+      case OrderType.Gather: {
+        const resourceSource = getActorComponent(gameObject, ResourceSourceComponent);
+        if (resourceSource) {
+          return CursorType.ChopGreen;
+        }
+        return CursorType.CannotTarget;
+      }
+      case OrderType.Heal: {
+        const healable = getActorComponent(gameObject, HealingComponent);
+        if (healable && !isEnemy) {
+          return CursorType.PotionGreen;
+        }
+        return CursorType.CannotTarget;
+      }
+      case OrderType.Repair: {
+        const constructionSite = getActorComponent(gameObject, ConstructionSiteComponent);
+        if (constructionSite && !isEnemy) {
+          return CursorType.BuildGreen;
+        }
+        return CursorType.CannotTarget;
+      }
+      case OrderType.Build: {
+        const builder = getActorComponent(gameObject, BuilderComponent);
+        if (builder) {
+          return CursorType.BuildGreen;
+        }
+        return CursorType.CannotTarget;
+      }
+      case OrderType.EnterContainer: {
+        const container = getActorComponent(gameObject, ContainerComponent);
+        if (container) {
+          return CursorType.TargetMoveB;
+        }
+        return CursorType.CannotTarget;
+      }
+      case OrderType.Move:
+      case OrderType.ReturnResources:
+      case OrderType.Stop:
+      default:
+        return CursorType.Default;
+    }
+  }
+
+  /**
+   * Returns the appropriate cursor for the given pointer position based on terrain vs selected actors.
+   * Used during an active Move order to show whether the hovered tile is valid terrain.
+   */
+  private getTerrainCursorForPointer(pointer: Phaser.Input.Pointer): CursorType {
+    if (!this.mainScene) return CursorType.TargetMoveA;
+
+    const navigationService = getSceneService(this.mainScene, NavigationService);
+    if (!navigationService) return CursorType.TargetMoveA;
+
+    const selectedMovableActors = getSelectedActors(this.mainScene).filter(
+      (actor) => !!getActorComponent(actor, ActorTranslateComponent)
+    );
+    if (selectedMovableActors.length === 0) return CursorType.TargetMoveA;
+
+    try {
+      const worldPos = this.mainScene.cameras.main.getWorldPoint(pointer.x, pointer.y);
+      const tileXY = IsoHelper.isometricWorldToTileXY(this.mainScene, worldPos.x, worldPos.y, false);
+      const allSelectedActorsBlocked = selectedMovableActors.every(
+        (actor) => !canActorTraverseTile(actor, navigationService, tileXY)
+      );
+      if (allSelectedActorsBlocked) return CursorType.Impossible;
+    } catch {
+      // If tile resolution fails, fall back to default move cursor
+    }
+
+    return CursorType.TargetMoveA;
+  }
+
   setCursor(cursorType: CursorType) {
     const cursorName = this.cursors[cursorType];
-    this.currentCursor = this.getRawCursorUrl(cursorName);
+    this.currentCursor = cursorType;
+    this.currentCursorUrl = this.getRawCursorUrl(cursorName);
     this.scene.input.setDefaultCursor(this.getCursorUrl(cursorName));
+
+    // Notify locked cursor handler to update the custom cursor image
+    this.lockedCursorHandler.onCursorChanged();
   }
 
   private getRawCursorUrl(cursor: string): string {
@@ -188,6 +464,18 @@ export class CursorHandler {
   }
 
   getCurrentCursorUrl(): string {
-    return this.currentCursor || this.getRawCursorUrl(this.cursors.default);
+    return this.currentCursorUrl || this.getRawCursorUrl(this.cursors.default);
+  }
+
+  getCurrentCursorType(): CursorType {
+    return this.currentCursor || CursorType.Default;
+  }
+
+  private destroy() {
+    if (this.mainScene) {
+      this.mainScene.input.off(Input.Events.POINTER_MOVE, this.handlePointerMove, this);
+    }
+    this.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
+    this.scene.events.off(MULTI_SELECTING, this.onMultiSelecting, this);
   }
 }

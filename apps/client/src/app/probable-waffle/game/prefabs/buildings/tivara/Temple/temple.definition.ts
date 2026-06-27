@@ -1,4 +1,4 @@
-import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { getBuildingQueueCapabilities, ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import {
   ANIM_BUILDING_ICON_ANIMS_TIVARA_TEMPLE_ACTION,
   ANIM_BUILDING_ICON_ANIMS_TIVARA_TEMPLE_IDLE
@@ -11,8 +11,9 @@ import { ActorPhysicalType } from "../../../../entity/components/combat/componen
 export const templeDefinition = {
   components: {
     representable: {
-      width: 192,
-      height: 192
+      width: 176,
+      height: 176,
+      origin: { x: 0.5, y: 0.8 }
     },
     objectDescriptor: {
       color: 0xc2a080
@@ -32,6 +33,7 @@ export const templeDefinition = {
       name: "Hall of Echoing Rites",
       description:
         "Ancient fabrics sway between crumbling pillars, and the air hums with ritual echoes long buried in the sand",
+      tooltipDescription: ["Advanced military building", "Trains specialized ranged units"],
       portraitAnimation: {
         idle: ANIM_BUILDING_ICON_ANIMS_TIVARA_TEMPLE_IDLE,
         action: ANIM_BUILDING_ICON_ANIMS_TIVARA_TEMPLE_ACTION
@@ -44,24 +46,29 @@ export const templeDefinition = {
     },
     health: {
       physicalState: ActorPhysicalType.Structural,
-      maxHealth: 100
+      maxHealth: 200,
+      maxArmour: 200
     },
     productionCost: {
       resources: {
-        [ResourceType.Wood]: 10,
-        [ResourceType.Minerals]: 10
+        [ResourceType.Wood]: 150,
       },
       refundFactor: 0.5,
-      productionTime: 5000,
+      productionTime: 30000,
       costType: PaymentType.PayImmediately
+    },
+    buildingPrerequisites: {
+      requiresAnyOf: [ObjectNames.AnkGuard]
     },
     requirements: {
       actors: [ObjectNames.AnkGuard]
     },
     production: {
+      availableProduceActors: getBuildingQueueCapabilities(ObjectNames.Temple)!.availableProduceActors!
+    },
+    queue: {
       queueCount: 1,
-      capacityPerQueue: 5,
-      availableProduceActors: [ObjectNames.TivaraSlingshotFemale]
+      capacityPerQueue: 5
     },
     selectable: {},
     collider: { enabled: true },

@@ -1,16 +1,19 @@
 import { GameObjects, Input } from "phaser";
+import { isFullscreenTopEdgeExit } from "./fullscreen-edge-guard";
 import {
   type ActorDefinition,
   ObjectNames,
+  type PlayerNumber,
+  ResourceType,
   type Vector2Simple,
   type Vector3Simple
 } from "@fuzzy-waddle/api-interfaces";
 import { ActorManager } from "../../data/actor-manager";
 import { getGameObjectBounds, getGameObjectLogicalTransform, onSceneInitialized } from "../../data/game-object-helper";
 import { DepthHelper } from "../../world/services/depth.helper";
-import { pwActorDefinitions } from "../../prefabs/definitions/actor-definitions";
+import { getPwActorDefinition } from "../../prefabs/definitions/actor-definitions";
 import { upgradeFromCoreToConstructingActorData } from "../../data/actor-data";
-import { emitEventIssueActorCommandToSelectedActors, getCurrentPlayerNumber } from "../../data/scene-data";
+import { getCurrentPlayerNumber, getPlayer } from "../../data/scene-data";
 import { EventEmitter } from "@angular/core";
 import GameProbableWaffleScene from "../../world/scenes/GameProbableWaffleScene";
 import { Subscription } from "rxjs";
@@ -25,6 +28,16 @@ import { AudioService } from "../../world/services/audio.service";
 import { UiFeedbackBuildDeniedSound } from "../../hud/UiFeedbackSfx";
 import { FogOfWarComponent } from "../../world/tilemap/fog-of-war.component";
 import { RepresentableComponent } from "../../entity/components/representable-component";
+import { ProductionValidator } from "../../data/tech-tree/production-validator";
+import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
+import { ActorTranslateComponent } from "../../entity/components/movement/actor-translate-component";
+import { OwnerComponent } from "../../entity/components/owner-component";
+import { PawnAiController } from "../../prefabs/ai-agents/pawn-ai-controller";
+import { OrderData } from "../../ai/OrderData";
+import { OrderType } from "../../ai/order-type";
+import { getCostForObjectName } from "../../entity/components/production/cost-utils";
+import { IsoHelper } from "../../world/tilemap/iso-helper";
+import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 import Vector2 = Phaser.Math.Vector2;
 
 export class BuildingCursor {
@@ -42,6 +55,7 @@ export class BuildingCursor {
   private navigationService?: NavigationService;
   private audioService?: AudioService;
   private fogOfWarComponent?: FogOfWarComponent;
+  private actorIndex!: ActorIndexSystem;
   private escKey: Phaser.Input.Keyboard.Key | undefined;
   private shiftKey: Phaser.Input.Keyboard.Key | undefined;
   private downPointerLocation?: Vector2Simple;
@@ -50,6 +64,9 @@ export class BuildingCursor {
   private canBeDragPlaced: boolean = false;
   private canConstructBuildingAt: boolean = false;
   private invalidCursorPositions: Set<string> = new Set(); // Track positions where buildings can't be placed
+  private actorsToMove: Set<GameObjects.GameObject> = new Set(); // Track actors that need to be moved when placing buildings
+  private externalModalOpen: boolean = false;
+  private externalModalSubscription?: Subscription;
 
   // Helper: stable key based on snapped logical position (avoids z-offset and float drift)
   private getSnappedLogicalKey(go: GameObjects.GameObject): string | undefined {
@@ -64,7 +81,7 @@ export class BuildingCursor {
     this.stopPlacingSubscription = this.stopPlacingBuilding.subscribe(() => this.stop());
     this.scene.input.on(Input.Events.POINTER_MOVE, this.handlePointerMove, this);
     this.scene.input.on(Input.Events.POINTER_DOWN, this.onPointerDown, this);
-    this.scene.input.on(Input.Events.GAME_OUT, this.stop, this);
+    this.scene.input.on(Input.Events.GAME_OUT, this.handleGameOut, this);
     this.scene.input.on(Input.Events.POINTER_UP, this.onPointerUp, this);
     onSceneInitialized(scene, this.init, this);
     scene.onShutdown.subscribe(() => this.destroy());
@@ -77,16 +94,211 @@ export class BuildingCursor {
     this.navigationService = getSceneService(this.scene, NavigationService);
     this.audioService = getSceneService(this.scene, AudioService);
     this.fogOfWarComponent = getSceneComponent(this.scene, FogOfWarComponent);
+    this.actorIndex = getSceneService(this.scene, ActorIndexSystem)!;
+    this.subscribeToExternalModalEvents();
+  }
+
+  private subscribeToExternalModalEvents(): void {
+    // Listen to chat modal state changes
+    this.externalModalSubscription = this.scene.communicator.allScenes.subscribe((event) => {
+      if (event.name === "external-modal-opened") {
+        this.externalModalOpen = true;
+      } else if (event.name === "external-modal-closed") {
+        this.externalModalOpen = false;
+      }
+    });
   }
 
   get placingBuilding() {
     return !!this.building;
   }
 
+  /**
+   * Check if an actor should be ignored during building placement because it can be moved automatically.
+   * This applies to actors that:
+   * 1. Are owned by the current player
+   * 2. Have ActorTranslateComponent (can move)
+   * 3. Have PawnAiController (AI-controlled, can receive move orders)
+   */
+  private canActorBeAutoMoved(actor: GameObjects.GameObject): boolean {
+    const currentPlayer = getCurrentPlayerNumber(this.scene);
+    if (!currentPlayer) return false;
+
+    // Check if actor is owned by current player
+    const ownerComponent = getActorComponent(actor, OwnerComponent);
+    if (!ownerComponent || ownerComponent.getOwner() !== currentPlayer) return false;
+
+    // Check if actor has ActorTranslateComponent (can move)
+    const actorTranslateComponent = getActorComponent(actor, ActorTranslateComponent);
+    if (!actorTranslateComponent) return false;
+
+    // Check if actor is AI-controlled (can receive orders)
+    const pawnAiController = getActorComponent(actor, PawnAiController);
+    if (!pawnAiController) return false;
+
+    return true;
+  }
+
+  /**
+   * Issue move orders to actors that need to be moved out of the way.
+   * Finds a safe tile near the building and orders the actor to move there.
+   * @param buildingsBeingPlaced - Array of building game objects that are being placed (to exclude their tiles)
+   * @returns Promise that resolves once all actors have completed their movement
+   */
+  private async moveActorsOutOfTheWay(buildingsBeingPlaced: GameObjects.GameObject[]): Promise<void> {
+    if (!this.navigationService || !this.tileMapComponent || this.actorsToMove.size === 0) return;
+
+    try {
+      // Collect all tiles that will be occupied by buildings being placed
+      const occupiedTiles = new Set<string>();
+      for (const building of buildingsBeingPlaced) {
+        const tilesUnderBuilding = getTileCoordsUnderObject(this.tileMapComponent.tilemap, building);
+        for (const tile of tilesUnderBuilding) {
+          occupiedTiles.add(`${tile.x},${tile.y}`);
+        }
+      }
+
+      const movementPromises: Promise<void>[] = [];
+
+      this.actorsToMove.forEach((actor) => {
+        const pawnAiController = getActorComponent(actor, PawnAiController);
+        if (!pawnAiController) return;
+
+        const actorTransform = getGameObjectLogicalTransform(actor);
+        if (!actorTransform) return;
+
+        // Get the actor's current tile position
+        const actorCurrentTile = IsoHelper.isometricWorldToTileXY(
+          this.scene,
+          actorTransform.x,
+          actorTransform.y,
+          false
+        );
+
+        // Find a nearby navigable tile to move the actor to
+        // Try tiles in a spiral pattern around the actor's current tile position
+        let targetTile: Vector3Simple | undefined;
+        const maxDistance = 5; // Search up to 5 tiles away
+
+        for (let distance = 1; distance <= maxDistance && !targetTile; distance++) {
+          for (let dx = -distance; dx <= distance && !targetTile; dx++) {
+            for (let dy = -distance; dy <= distance && !targetTile; dy++) {
+              // Only check tiles at the current distance (forming a square ring)
+              if (Math.abs(dx) !== distance && Math.abs(dy) !== distance) continue;
+
+              // Calculate test tile in tile coordinates
+              const testTileX = actorCurrentTile.x + dx;
+              const testTileY = actorCurrentTile.y + dy;
+
+              // Skip if this is the actor's current tile
+              if (testTileX === actorCurrentTile.x && testTileY === actorCurrentTile.y) {
+                continue;
+              }
+
+              // Skip if this tile will be occupied by a building being placed
+              const tileKey = `${testTileX},${testTileY}`;
+              if (occupiedTiles.has(tileKey)) {
+                continue;
+              }
+
+              // Check if the tile is navigable
+              const isNavigable = this.navigationService!.isTileNavigable({ x: testTileX, y: testTileY });
+              if (isNavigable) {
+                targetTile = { x: testTileX, y: testTileY, z: 0 } satisfies Vector3Simple;
+              }
+            }
+          }
+        }
+
+        // If we found a target tile, issue the move order and track the movement promise
+        if (targetTile) {
+          const order = new OrderData(OrderType.Move, { targetTileLocation: targetTile });
+          pawnAiController.blackboard.overrideOrderQueueAndActiveOrder(order);
+          pawnAiController.blackboard.setCurrentOrder(order);
+
+          // Create a promise that resolves when the actor completes movement
+          const movementPromise = this.waitForActorMovementComplete(actor);
+          movementPromises.push(movementPromise);
+        }
+      });
+
+      // Wait for all actors to complete their movement
+      if (movementPromises.length > 0) {
+        await Promise.all(movementPromises);
+      }
+    } catch (error) {
+      console.error("Error in moveActorsOutOfTheWay:", error);
+      // Don't let actor movement errors break building placement
+    } finally {
+      // Clear the set of actors to move
+      this.actorsToMove.clear();
+    }
+  }
+
+  /**
+   * Waits for an actor to complete its current movement order.
+   * Resolves when the actor's order changes or times out after a reasonable duration.
+   * @param actor - The actor to monitor
+   * @returns Promise that resolves when movement is complete
+   */
+  private waitForActorMovementComplete(actor: GameObjects.GameObject): Promise<void> {
+    return new Promise((resolve) => {
+      const pawnAiController = getActorComponent(actor, PawnAiController);
+      if (!pawnAiController) {
+        resolve();
+        return;
+      }
+
+      const maxWaitTime = 30000; // 30 seconds max wait
+      const startTime = Date.now();
+      const checkInterval = 100; // Check every 100ms
+
+      const checkMovementComplete = () => {
+        const elapsed = Date.now() - startTime;
+
+        // Timeout safety check
+        if (elapsed > maxWaitTime) {
+          resolve();
+          return;
+        }
+
+        const currentOrder = pawnAiController.blackboard.getCurrentOrder();
+
+        // If no current order or order is no longer Move type, movement is complete
+        if (!currentOrder || currentOrder.orderType !== OrderType.Move) {
+          resolve();
+          return;
+        }
+
+        // Check if actor is close enough to target
+        const actorTransform = getGameObjectLogicalTransform(actor);
+        if (currentOrder.data.targetTileLocation && actorTransform) {
+          const targetTile = currentOrder.data.targetTileLocation;
+          const distance = Math.sqrt(
+            Math.pow(actorTransform.x - targetTile.x, 2) + Math.pow(actorTransform.y - targetTile.y, 2)
+          );
+
+          // Consider movement complete if within ~1 tile distance
+          if (distance < 2) {
+            resolve();
+            return;
+          }
+        }
+
+        // Not complete yet, check again later
+        // Intentional wall-clock polling: this is local placement UX, not lockstep simulation state.
+        this.scene.time.delayedCall(checkInterval, checkMovementComplete);
+      };
+
+      // Start checking
+      checkMovementComplete();
+    });
+  }
+
   private spawn(name: ObjectNames) {
     if (this.building) this.stop();
 
-    const definition = pwActorDefinitions[name as ObjectNames]?.components?.constructable;
+    const definition = getPwActorDefinition(name, null)?.components?.constructable;
     if (!definition) return;
 
     this.canBeDragPlaced = definition.canBeDragPlaced;
@@ -170,10 +382,23 @@ export class BuildingCursor {
     if (this.isDragging) {
       // Reset invalid positions set
       this.invalidCursorPositions.clear();
+      const cumulativeCost: Partial<Record<ResourceType, number>> = {};
 
       // Check each spawned object individually and track which ones can't be placed
       for (const gameObject of this.spawnedCursorGameObjects) {
-        const canPlace = this.getCanConstructBuildingAt(gameObject, [...this.spawnedCursorGameObjects, this.building!]);
+        const canPlace = this.getCanConstructBuildingAt(
+          gameObject,
+          [...this.spawnedCursorGameObjects, this.building!],
+          cumulativeCost
+        );
+
+        const cost = getCostForObjectName(gameObject.name as ObjectNames);
+        if (cost) {
+          for (const resource in cost) {
+            cumulativeCost[resource as ResourceType] =
+              (cumulativeCost[resource as ResourceType] || 0) + cost[resource as ResourceType]!;
+          }
+        }
 
         if (!canPlace) {
           const key = this.getSnappedLogicalKey(gameObject);
@@ -190,69 +415,83 @@ export class BuildingCursor {
       // If not dragging, just update the main building cursor
       const constructionInterface = getActorComponent(this.building, ConstructionGameObjectInterfaceComponent);
       if (constructionInterface) {
+        this.canConstructBuildingAt = this.getCanConstructBuildingAt(this.building);
         constructionInterface.tintAndAlphaCursor(this.canConstructBuildingAt ? undefined : 0xff0000, 0.7);
       }
     }
   }
 
+  private _canPlaceAt(
+    tiles: Vector2Simple[],
+    ignoreGameObjects: GameObjects.GameObject[] = [],
+    trackActorsToMove: boolean = false
+  ): boolean {
+    if (!this.tileMapComponent || !this.navigationService || !this.fogOfWarComponent) return false;
+
+    // 1. Check Fog of War
+    const allTilesVisible = tiles.every((tile) => {
+      const tileVisible = this.fogOfWarComponent!.getTileVisibility(tile.x, tile.y);
+      return tileVisible === "visible";
+    });
+    if (!allTilesVisible) return false;
+
+    // 2. Check Walkability
+    const allTilesNavigable = tiles.every((tile) => this.navigationService!.isTileNavigable(tile));
+    if (!allTilesNavigable) return false;
+
+    // 3. Check for collisions with other actors
+    const objectsToIgnore = new Set<GameObjects.GameObject>(ignoreGameObjects);
+    const children = this.actorIndex.getAllIdActors().filter((c) => {
+      if (objectsToIgnore.has(c)) return false;
+
+      const tilesUnderChild = getTileCoordsUnderObject(this.tileMapComponent!.tilemap, c);
+      if (!tilesUnderChild.length) return false;
+
+      const overlaps = tiles.some((tile) =>
+        tilesUnderChild.some((childTile) => childTile.x === tile.x && childTile.y === tile.y)
+      );
+
+      if (overlaps && this.canActorBeAutoMoved(c)) {
+        if (trackActorsToMove) {
+          this.actorsToMove.add(c);
+        }
+        return false; // Don't count as a collision
+      }
+
+      return overlaps;
+    });
+
+    return children.length === 0;
+  }
+
   getCanConstructBuildingAt(
     building?: GameObjects.GameObject,
-    ignoreGameObjects: GameObjects.GameObject[] = []
+    ignoreGameObjects: GameObjects.GameObject[] = [],
+    currentCost: Partial<Record<ResourceType, number>> = {},
+    trackActorsToMove: boolean = false
   ): boolean {
-    if (!this.tileMapComponent || !this.navigationService || !this.fogOfWarComponent || !building) return false;
+    if (!this.tileMapComponent || !building) return false;
+
+    const playerNumber = getCurrentPlayerNumber(this.scene);
+    if (playerNumber) {
+      const validation = ProductionValidator.validateObject(
+        this.scene,
+        playerNumber,
+        building.name as ObjectNames,
+        currentCost
+      );
+      if (!validation.canQueue) {
+        return false;
+      }
+    }
 
     const tilesUnderBuilding = getTileCoordsUnderObject(this.tileMapComponent.tilemap, building);
     if (!tilesUnderBuilding.length) return false;
 
-    const isAreaBeneathGameObjectWalkable = this.navigationService.isAreaBeneathGameObjectWalkable(building);
-    if (!isAreaBeneathGameObjectWalkable) return false;
-
-    const bounds = getGameObjectBounds(building);
-    if (!bounds) return false;
-
-    const minX = Math.floor(bounds.x);
-    const minY = Math.floor(bounds.y);
-    const maxX = Math.floor(bounds.x + bounds.width);
-    const maxY = Math.floor(bounds.y + bounds.height);
-
-    const allTileVisible = tilesUnderBuilding.every((tile) => {
-      const tileVisible = this.fogOfWarComponent!.getTileVisibility(tile.x, tile.y);
-      return tileVisible === "visible";
-    });
-
-    if (!allTileVisible) return false;
-
     // Create the list of objects to ignore (don't collide with self or with objects in the ignore list)
-    const objectsToIgnore = new Set<GameObjects.GameObject>([building, ...ignoreGameObjects]);
+    const objectsToIgnore = [building, ...ignoreGameObjects];
 
-    // Check for collisions with existing game objects (excluding those in the ignore list)
-    const children = this.scene.children.list.filter((c) => {
-      if (objectsToIgnore.has(c)) return false;
-      if (c instanceof Phaser.GameObjects.Graphics) return false;
-
-      // pulling logical transform from the game object, so we know on which tile he is standing (z axis invariant)
-      const logicalTransform = getGameObjectLogicalTransform(c);
-      if (!logicalTransform) return false;
-
-      // Quick bounds check
-      if (
-        logicalTransform.x < minX ||
-        logicalTransform.x > maxX ||
-        logicalTransform.y < minY ||
-        logicalTransform.y > maxY
-      )
-        return false;
-
-      // More precise tile-based collision check
-      const tilesUnderChild = getTileCoordsUnderObject(this.tileMapComponent!.tilemap, c);
-      if (!tilesUnderChild.length) return false;
-
-      return tilesUnderBuilding.some((tile) =>
-        tilesUnderChild.some((childTile) => childTile.x === tile.x && childTile.y === tile.y)
-      );
-    });
-
-    return children.length === 0;
+    return this._canPlaceAt(tilesUnderBuilding, objectsToIgnore, trackActorsToMove);
   }
 
   private drawPlacementGrid(location: Vector2Simple) {
@@ -268,26 +507,6 @@ export class BuildingCursor {
 
     gridGraphics.clear();
 
-    const canConstruct = this.canConstructBuildingAt;
-
-    gridGraphics.lineStyle(2, canConstruct ? 0x00ff00 : 0xff0000, 1);
-    gridGraphics.fillStyle(canConstruct ? 0x00ff00 : 0xff0000, 0.3);
-
-    function drawIsoDiamond(isoX: number, isoY: number, fill: boolean) {
-      gridGraphics.beginPath();
-      gridGraphics.moveTo(isoX, isoY - tileSize / 4);
-      gridGraphics.lineTo(isoX + tileSize / 2, isoY);
-      gridGraphics.lineTo(isoX, isoY + tileSize / 4);
-      gridGraphics.lineTo(isoX - tileSize / 2, isoY);
-      gridGraphics.closePath();
-
-      if (fill) {
-        gridGraphics.fillPath();
-      } else {
-        gridGraphics.stroke();
-      }
-    }
-
     const buildingWidth = Math.floor(bounds.width / tileSize);
     const buildingHeight = Math.floor(bounds.width / tileSize);
 
@@ -297,18 +516,70 @@ export class BuildingCursor {
     const outerRangeX = innerRangeX + 2; // 2 tiles beyond
     const outerRangeY = innerRangeY + 2; // 2 tiles beyond
 
-    // Draw the entire grid
+    // Helper function to check if a specific tile position is occupied
+    const isTileOccupied = (worldX: number, worldY: number): boolean => {
+      if (!this.tileMapComponent) return true;
+
+      // Convert world coordinates to tile coordinates
+      const tileCoord = IsoHelper.isometricWorldToTileXY(this.scene, worldX, worldY, false);
+      // for some reason we need to ceil the clicked tile - its not ok if se set snapToFloor to true
+      tileCoord.x = Math.ceil(tileCoord.x);
+      tileCoord.y = Math.ceil(tileCoord.y);
+
+      const ignoreList = [this.building!, ...this.spawnedCursorGameObjects];
+      return !this._canPlaceAt([tileCoord], ignoreList, false);
+    };
+
+    const drawDiamond = (isoX: number, isoY: number, color: number, fill: boolean, outline: boolean) => {
+      const path = new Phaser.Geom.Polygon([
+        isoX,
+        isoY - tileSize / 4,
+        isoX + tileSize / 2,
+        isoY,
+        isoX,
+        isoY + tileSize / 4,
+        isoX - tileSize / 2,
+        isoY
+      ]);
+
+      if (fill) {
+        gridGraphics.fillStyle(color, 0.3);
+        gridGraphics.fillPoints(path.points, true);
+      }
+      if (outline) {
+        gridGraphics.lineStyle(2, color, 1);
+        gridGraphics.strokePoints(path.points, true);
+      }
+    };
+
+    const tilesToDraw: { x: number; y: number; color: number; isInner: boolean; occupied: boolean }[] = [];
     for (let i = -outerRangeX; i <= outerRangeX; i++) {
       for (let j = -outerRangeY; j <= outerRangeY; j++) {
         const isoX = xPos + (i - j) * (tileSize / 2);
         const isoY = yPos + (i + j) * (tileSize / 4);
-
-        // Determine if this is part of the inner area (building footprint)
-        const isInnerTile = Math.abs(i) <= innerRangeX && Math.abs(j) <= innerRangeY;
-
-        drawIsoDiamond(isoX, isoY, isInnerTile);
+        const occupied = isTileOccupied(isoX, isoY);
+        tilesToDraw.push({
+          x: isoX,
+          y: isoY,
+          color: occupied ? 0xff0000 : 0x00ff00,
+          isInner: Math.abs(i) <= innerRangeX && Math.abs(j) <= innerRangeY,
+          occupied
+        });
       }
     }
+
+    // Draw fills first
+    tilesToDraw.forEach((t) => {
+      if (t.isInner) {
+        drawDiamond(t.x, t.y, t.color, true, false);
+      }
+    });
+
+    // Then draw outlines, ensuring red is on top of green
+    const greenTiles = tilesToDraw.filter((t) => !t.occupied);
+    const redTiles = tilesToDraw.filter((t) => t.occupied);
+    greenTiles.forEach((t) => drawDiamond(t.x, t.y, t.color, false, true));
+    redTiles.forEach((t) => drawDiamond(t.x, t.y, t.color, false, true));
 
     this.placementGrid = gridGraphics;
   }
@@ -338,7 +609,7 @@ export class BuildingCursor {
   private drawAttackRange(location: Vector2Simple) {
     if (!location || !this.building) return;
 
-    const definition = pwActorDefinitions[this.building.name as ObjectNames];
+    const definition = getPwActorDefinition(this.building.name, null);
     if (!definition) return;
 
     const attackDefinition = definition.components?.attack;
@@ -360,6 +631,16 @@ export class BuildingCursor {
     const yPos = location.y;
 
     attackRangeGraphics.strokeEllipse(xPos, yPos, rangeRadiusX, rangeRadiusY);
+
+    // Draw high ground bonus range if the weapon has one
+    const highGroundBonus = primaryAttack.highGroundRangeBonus ?? 0;
+    if (highGroundBonus > 0) {
+      const bonusRangeRadiusX = (primaryAttack.range + highGroundBonus) * this.tileSize;
+      const bonusRangeRadiusY = bonusRangeRadiusX / 2;
+      // Use a lighter/dashed style for the potential high ground bonus range
+      attackRangeGraphics.lineStyle(1, 0xff6600, 0.5);
+      attackRangeGraphics.strokeEllipse(xPos, yPos, bonusRangeRadiusX, bonusRangeRadiusY);
+    }
 
     this.attackRangeCircle = attackRangeGraphics;
   }
@@ -389,6 +670,9 @@ export class BuildingCursor {
       this.stop();
       return;
     }
+
+    // Re-validate just before placing
+    this.updateObjectVisuals();
 
     if (this.isDragging) {
       // For drag operations, check if all buildings can be placed
@@ -530,13 +814,11 @@ export class BuildingCursor {
   }
 
   private spawnCursorGameObjectAt(x: number, y: number) {
-    const actor = ActorManager.createActorCore(
-      this.scene,
-      this.building!.name as ObjectNames,
-      {
+    const actor = ActorManager.createActorCore(this.scene, this.building!.name as ObjectNames, {
+      representable: {
         logicalWorldTransform: { x, y, z: 0 }
-      } as ActorDefinition
-    );
+      }
+    } satisfies ActorDefinition);
     const gameObject = this.scene.add.existing(actor);
     this.spawnedCursorGameObjects.push(gameObject);
     DepthHelper.setActorDepth(gameObject);
@@ -555,7 +837,10 @@ export class BuildingCursor {
     this.invalidCursorPositions.clear();
   }
 
-  private placeBuildings() {
+  private async placeBuildings() {
+    // Clear the actors to move set before checking placement
+    this.actorsToMove.clear();
+
     // Filter out any objects at invalid positions when in drag mode
     const objectsToPlace = this.isDragging
       ? this.spawnedCursorGameObjects.filter((obj) => {
@@ -564,21 +849,40 @@ export class BuildingCursor {
         })
       : [];
 
+    // Track actors that need to be moved for all buildings being placed
     if (this.isDragging && objectsToPlace.length) {
-      this.building?.destroy();
+      for (const gameObject of objectsToPlace) {
+        this.getCanConstructBuildingAt(gameObject, [...this.spawnedCursorGameObjects, this.building!], {}, true);
+      }
+    } else if (this.building) {
+      this.getCanConstructBuildingAt(this.building, [], {}, true);
+    }
+
+    // Collect all buildings being placed to pass to moveActorsOutOfTheWay
+    const buildingsBeingPlaced: GameObjects.GameObject[] =
+      this.isDragging && objectsToPlace.length ? objectsToPlace : this.building ? [this.building] : [];
+
+    // Exit build mode immediately
+    const buildingToPlace = this.building;
+    this.building = undefined;
+    this.clearGraphics();
+
+    // Move actors out of the way before placing buildings, wait for them to complete
+    await this.moveActorsOutOfTheWay(buildingsBeingPlaced);
+
+    if (this.isDragging && objectsToPlace.length) {
+      buildingToPlace?.destroy();
       for (const gameObject of objectsToPlace) {
         this.spawnConstructionSite(gameObject);
       }
-    } else if (this.building) {
-      this.spawnConstructionSite(this.building);
+    } else if (buildingToPlace) {
+      this.spawnConstructionSite(buildingToPlace);
     } else {
       throw new Error("No building to place");
     }
 
-    this.building = undefined;
     this.pointerLocation = undefined;
     this.downPointerLocation = undefined;
-    this.clearGraphics();
     this.spawnedCursorGameObjects = [];
     this.invalidCursorPositions.clear();
     this.isDragging = false;
@@ -597,16 +901,25 @@ export class BuildingCursor {
     upgradeFromCoreToConstructingActorData(gameObject, actorDefinition);
     // todo Save to game state
 
-    // instruct the builder to start building
+    // Instruct selected builders to begin constructing the placed site
+    if (!currentPlayer) return;
     const idComponent = getActorComponent(gameObject, IdComponent)!;
-    emitEventIssueActorCommandToSelectedActors(this.scene, { objectIds: [idComponent.id] });
+    const selectedActorIds = getPlayer(this.scene)?.getSelection() ?? [];
+    const commandBus = getSceneService(this.scene, CommandBusService);
+    commandBus?.dispatch({
+      type: "ACTOR_ACTION",
+      playerNumber: currentPlayer,
+      actorIds: selectedActorIds,
+      targetObjectIds: [idComponent.id],
+      queue: false
+    });
   }
 
   static spawnBuildingForPlayer(
     scene: Phaser.Scene,
     name: ObjectNames,
     logicalWorldTransform: Vector3Simple,
-    playerNumber?: number
+    playerNumber?: PlayerNumber
   ) {
     const actorDefinition = {
       ...(playerNumber && {
@@ -629,11 +942,22 @@ export class BuildingCursor {
   private subscribeToCancelAction() {
     this.escKey = this.scene.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
     if (!this.escKey) return;
-    this.escKey.on(Phaser.Input.Keyboard.Events.DOWN, this.stop, this);
+    this.escKey.on(Phaser.Input.Keyboard.Events.DOWN, this.onEscapeKeyDown, this);
+  }
+
+  private onEscapeKeyDown() {
+    // Don't process keyboard events if external modal is open
+    if (this.externalModalOpen) return;
+    this.stop();
   }
 
   private subscribeToShiftKey() {
     this.shiftKey = this.scene.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
+  }
+
+  private handleGameOut() {
+    if (isFullscreenTopEdgeExit(this.scene.input)) return;
+    this.stop();
   }
 
   stop() {
@@ -643,6 +967,7 @@ export class BuildingCursor {
     this.downPointerLocation = undefined;
     this.clearGraphics();
     this.clearSpawnedCursorGameObjects();
+    this.actorsToMove.clear();
     this.isDragging = false;
   }
 
@@ -651,9 +976,10 @@ export class BuildingCursor {
     this.scene.input.off(Input.Events.POINTER_MOVE, this.handlePointerMove, this);
     this.scene.input.off(Input.Events.POINTER_DOWN, this.onPointerDown, this);
     this.scene.input.off(Input.Events.POINTER_UP, this.onPointerUp, this);
-    this.scene.input.off(Input.Events.GAME_OUT, this.stop, this);
-    this.escKey?.off(Phaser.Input.Keyboard.Events.DOWN, this.stop, this);
+    this.scene.input.off(Input.Events.GAME_OUT, this.handleGameOut, this);
+    this.escKey?.off(Phaser.Input.Keyboard.Events.DOWN, this.onEscapeKeyDown, this);
     this.shiftKey?.destroy();
+    this.externalModalSubscription?.unsubscribe();
     this.startPlacingSubscription.unsubscribe();
     this.stopPlacingSubscription.unsubscribe();
   }

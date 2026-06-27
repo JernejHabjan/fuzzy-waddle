@@ -3,15 +3,26 @@
     @if (mapData) {
       <div class="map-name">{{ mapData.name }}</div>
       <div class="map-description">{{ mapData.presentation.description }}</div>
-      <div>{{ mapData.mapInfo.widthTiles }} x {{ mapData.mapInfo.heightTiles }}</div>
-      <div class="position-relative">
-        <canvas class="m-4" #canvas [height]="canvasHeight" [width]="canvasWidth"></canvas>
+      <div class="map-meta">
+        <span>{{ mapData.mapInfo.widthTiles }} x {{ mapData.mapInfo.heightTiles }}</span>
         @if (isHost) {
-          <div
-            class="position-absolute tooltip-drag-and-drop"
-            style="top: 1px; left: calc(50% - {{ canvasWidth / 2 }}px)"
+          <button
+            type="button"
+            class="map-help-button"
+            title="Drag player dots to choose starting positions."
+            aria-label="Starting position help"
           >
-            Drag to reposition
+            <fa-icon [icon]="faInfoCircle" />
+          </button>
+        }
+      </div>
+      <div class="position-relative">
+        <canvas class="m-4 map-canvas" #canvas [height]="canvasHeight" [width]="canvasWidth"></canvas>
+        @if (isHost && showDragCoachmark) {
+          <div class="position-absolute drag-coachmark" style="top: 1rem; left: calc(50% - {{ canvasWidth / 2 }}px + 1rem)">
+            <div class="drag-coachmark__title">Choose start positions</div>
+            <div class="drag-coachmark__body">Drag player dots on the map to reposition them.</div>
+            <button type="button" class="drag-coachmark__dismiss" (click)="dismissDragCoachmark()">Got it</button>
           </div>
         }
       </div>

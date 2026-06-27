@@ -1,5 +1,5 @@
-import { type SoundDefinition } from "../entity/components/actor-audio/audio-actor-component";
 import { AudioSprites } from "./audio-sprites";
+import type { SoundDefinition } from "../entity/components/actor-audio/sound-definition";
 
 // This file was generated from "convert-to-enums.js" script
 export enum SharedActorActionsSfx {

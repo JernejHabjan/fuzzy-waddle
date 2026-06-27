@@ -42,7 +42,7 @@ import Stairs from "../prefabs/buildings/tivara/stairs/Stairs";
 import StonePile from "../prefabs/outside/resources/stone-pile/StonePile";
 import { SkaduweeWorker } from "../prefabs/characters/skaduwee/skaduwee-worker/SkaduweeWorker";
 import { TivaraWorker } from "../prefabs/characters/tivara/tivara-worker/TivaraWorker";
-import { pwActorDefinitions } from "../prefabs/definitions/actor-definitions";
+import { getPwActorDefinition } from "../prefabs/definitions/actor-definitions";
 import { RepresentableComponent } from "../entity/components/representable-component";
 import { VisionComponent } from "../entity/components/vision-component";
 import { AttackComponent } from "../entity/components/combat/components/attack-component";
@@ -54,20 +54,175 @@ import { ResourceDrainComponent } from "../entity/components/resource/resource-d
 import { ResourceSourceComponent } from "../entity/components/resource/resource-source-component";
 import { ProductionComponent } from "../entity/components/production/production-component";
 import { PawnAiController } from "../prefabs/ai-agents/pawn-ai-controller";
-import GameObject = Phaser.GameObjects.GameObject;
+import { HousingComponent } from "../entity/components/building/housing-component";
 import { getSceneService } from "../world/services/scene-component-helpers";
 import { SceneActorCreator } from "../world/services/scene-actor-creator";
+import MiningCamp from "../prefabs/buildings/tivara/MiningCamp";
+import Emberstone from "../prefabs/buildings/skaduwee/Emberstone";
+import Granary from "../prefabs/buildings/shared/Granary";
+import Field from "../prefabs/buildings/shared/Field";
+import { SpellComponent } from "../entity/components/combat/components/spell-component";
+import { StatusEffectComponent } from "../entity/components/status-effect/status-effect-component";
+import { ResearchComponent } from "../entity/components/research/research-component";
+import { LevelComponent } from "../entity/components/level/level-component";
+import Wolf from "../prefabs/animals/wolf/Wolf";
+import Boar from "../prefabs/animals/boar/Boar";
+import Stag from "../prefabs/animals/stag/Stag";
+import Badger from "../prefabs/animals/badger/Badger";
+import Centurion from "../prefabs/characters/general/centurion/Centurion";
+import Minotaur from "../prefabs/characters/mobs/minotaur/Minotaur";
+import Cyclops from "../prefabs/characters/mobs/cyclops/Cyclops";
+import Mummy from "../prefabs/characters/mobs/mummy/Mummy";
+import OrcBoomerang from "../prefabs/characters/mobs/orcs/orc_boomerang/OrcBoomerang";
+import OrcMagician from "../prefabs/characters/mobs/orcs/orc_magician/OrcMagician";
+import OrcWarrior from "../prefabs/characters/mobs/orcs/orc_warrior/OrcWarrior";
+import PirateSwordsman from "../prefabs/characters/mobs/pirates/pirate_swordsman/PirateSwordsman";
+import SkeletonBowman from "../prefabs/characters/mobs/skeleton/skeleton_bowman/SkeletonBowman";
+import SkeletonMelee from "../prefabs/characters/mobs/skeleton/skeleton_melee/SkeletonMelee";
+import PirateScimitar from "../prefabs/characters/mobs/pirates/pirate_scimitar/PirateScimitar";
+import SkeletonScythe from "../prefabs/characters/mobs/skeleton/skeleton_scythe/SkeletonScythe";
+import Zombie1 from "../prefabs/characters/mobs/zombies/zombie1/Zombie1";
+import Zombie2 from "../prefabs/characters/mobs/zombies/zombie2/Zombie2";
+import SkeletonSwordsman from "../prefabs/characters/mobs/skeleton/skeleton_swordsman/SkeletonSwordsman";
+import Zombie3 from "../prefabs/characters/mobs/zombies/zombie3/Zombie3";
+import { RandomService } from "../world/services/random.service";
+import HealingTotem from "../prefabs/buildings/tivara/HealingTotem/HealingTotem";
+import TivaraAlchemist from "../prefabs/characters/tivara/tivara-alchemist/TivaraAlchemist";
+import Hare from "../prefabs/animals/hare/Hare";
+import Deer from "../prefabs/animals/deer/Deer";
+import Boar2 from "../prefabs/animals/boar2/Boar2";
+import Turkey from "../prefabs/animals/turkey/Turkey";
+import BlackGrouse from "../prefabs/animals/black_grouse/BlackGrouse";
+import Fox from "../prefabs/animals/fox/Fox";
+import Sheep2 from "../prefabs/animals/sheep2/Sheep2";
+import Rooster from "../prefabs/animals/rooster/Rooster";
+import Chick from "../prefabs/animals/chick/Chick";
+import Calf from "../prefabs/animals/calf/Calf";
+import Bull from "../prefabs/animals/bull/Bull";
+import Lamb from "../prefabs/animals/lamb/Lamb";
+import Piglet from "../prefabs/animals/piglet/Piglet";
+import GameObject = Phaser.GameObjects.GameObject;
+import Banshee from "../prefabs/characters/mobs/banshee/Banshee";
+import BigWaterSlime from "../prefabs/characters/mobs/big_water_slime/BigWaterSlime";
+import SmallWaterSlime from "../prefabs/characters/mobs/small_water_slime/SmallWaterSlime";
+import FireSlime from "../prefabs/characters/mobs/fire_slime/FireSlime";
+import StoneGolem from "../prefabs/characters/mobs/stone_golem/StoneGolem";
+import MetalGolem from "../prefabs/characters/mobs/metal_golem/MetalGolem";
+import EarthGolem from "../prefabs/characters/mobs/earth_golem/EarthGolem";
+import Medusa from "../prefabs/characters/mobs/medusa/Medusa";
+import Minotaur2 from "../prefabs/characters/mobs/minotaur2/Minotaur2";
+import FlyingDemonRed from "../prefabs/characters/mobs/flying_demon_red/FlyingDemonRed";
+import FlowerMonster from "../prefabs/characters/mobs/flower_monster/FlowerMonster";
+import FlyingDemonBlue from "../prefabs/characters/mobs/flying_demon_blue/FlyingDemonBlue";
+import MushroomWarrior from "../prefabs/characters/mobs/mushroom_warrior/MushroomWarrior";
+import PumpkinWarlock from "../prefabs/characters/mobs/pumpkin_warlock/PumpkinWarlock";
+import PumpkinWarlockBat from "../prefabs/characters/mobs/pumpkin_warlock_bat/PumpkinWarlockBat";
+import PumpkinWarlockPumpkin from "../prefabs/characters/mobs/pumpkin_warlock_pumpkin/PumpkinWarlockPumpkin";
+import SandWorm from "../prefabs/characters/mobs/sand_worm/SandWorm";
+import ForestWendigo from "../prefabs/characters/mobs/forest_wendigo/ForestWendigo";
+import SnowWendigo from "../prefabs/characters/mobs/snow_wendigo/SnowWendigo";
+import VikingBoat from "../prefabs/characters/shared/VikingBoat/VikingBoat";
+import CommonBoat from "../prefabs/characters/shared/CommonBoat/CommonBoat";
+import CropsCabbage from "../prefabs/outside/crops/cabbage/CropsCabbage";
+import CropsPeppers from "../prefabs/outside/crops/peppers/CropsPeppers";
+import CropsBeans from "../prefabs/outside/crops/beans/CropsBeans";
+import CropsCucumbers from "../prefabs/outside/crops/cucumbers/CropsCucumbers";
+import CropsGrapes from "../prefabs/outside/crops/grapes/CropsGrapes";
+import CropsLettuce from "../prefabs/outside/crops/lettuce/CropsLettuce";
+import CropsPineapple from "../prefabs/outside/crops/pineapple/CropsPineapple";
+import CropsPumpkin from "../prefabs/outside/crops/pumpkin/CropsPumpkin";
+import CropsSunflowers from "../prefabs/outside/crops/sunflowers/CropsSunflowers";
+import CropsWheat from "../prefabs/outside/crops/wheat/CropsWheat";
+import CropsZucchini from "../prefabs/outside/crops/zucchini/CropsZucchini";
+import GroundBoletus from "../prefabs/outside/crops/ground/boletus/GroundBoletus";
+import GroundCarrot from "../prefabs/outside/crops/ground/carrot/GroundCarrot";
+import GroundChampignons from "../prefabs/outside/crops/ground/champignons/GroundChampignons";
+import GroundTurnip from "../prefabs/outside/crops/ground/turnip/GroundTurnip";
 
-export type ActorConstructor = new (scene: Phaser.Scene) => GameObject;
-export type ActorMap = { [name: string]: ActorConstructor };
+type ActorMap = { [name: string]: new (scene: Phaser.Scene) => GameObject };
 export class ActorManager {
   private static animals: ActorMap = {
     [ObjectNames.Hedgehog]: Hedgehog,
-    [ObjectNames.Sheep]: Sheep
+    [ObjectNames.Sheep]: Sheep,
+    [ObjectNames.Wolf]: Wolf,
+    [ObjectNames.Boar]: Boar,
+    [ObjectNames.Stag]: Stag,
+    [ObjectNames.Badger]: Badger,
+    [ObjectNames.Bull]: Bull,
+    [ObjectNames.Calf]: Calf,
+    [ObjectNames.Chick]: Chick,
+    [ObjectNames.Lamb]: Lamb,
+    [ObjectNames.Piglet]: Piglet,
+    [ObjectNames.Rooster]: Rooster,
+    [ObjectNames.Sheep2]: Sheep2,
+    [ObjectNames.Turkey]: Turkey,
+    [ObjectNames.Black_grouse]: BlackGrouse,
+    [ObjectNames.Boar2]: Boar2,
+    [ObjectNames.Deer]: Deer,
+    [ObjectNames.Fox]: Fox,
+    [ObjectNames.Hare]: Hare
+  };
+
+  private static crops: ActorMap = {
+    [ObjectNames.CropsBeans]: CropsBeans,
+    [ObjectNames.CropsCabbage]: CropsCabbage,
+    [ObjectNames.CropsCucumbers]: CropsCucumbers,
+    [ObjectNames.CropsGrapes]: CropsGrapes,
+    [ObjectNames.CropsLettuce]: CropsLettuce,
+    [ObjectNames.CropsPeppers]: CropsPeppers,
+    [ObjectNames.CropsPineapple]: CropsPineapple,
+    [ObjectNames.CropsPumpkin]: CropsPumpkin,
+    [ObjectNames.CropsSunflowers]: CropsSunflowers,
+    [ObjectNames.CropsWheat]: CropsWheat,
+    [ObjectNames.CropsZucchini]: CropsZucchini,
+    [ObjectNames.GroundBoletus]: GroundBoletus,
+    [ObjectNames.GroundCarrot]: GroundCarrot,
+    [ObjectNames.GroundChampignons]: GroundChampignons,
+    [ObjectNames.GroundTurnip]: GroundTurnip
   };
 
   private static general: ActorMap = {
-    [ObjectNames.GeneralWarrior]: GeneralWarrior
+    [ObjectNames.GeneralWarrior]: GeneralWarrior,
+    [ObjectNames.Centurion]: Centurion,
+    [ObjectNames.VikingBoat]: VikingBoat,
+    [ObjectNames.CommonBoat]: CommonBoat
+  };
+
+  private static mobs: ActorMap = {
+    [ObjectNames.Cyclops]: Cyclops,
+    [ObjectNames.Minotaur]: Minotaur,
+    [ObjectNames.Mummy]: Mummy,
+    [ObjectNames.OrcBoomerang]: OrcBoomerang,
+    [ObjectNames.OrcMagician]: OrcMagician,
+    [ObjectNames.OrcWarrior]: OrcWarrior,
+    [ObjectNames.PirateScimitar]: PirateScimitar,
+    [ObjectNames.PirateSwordsman]: PirateSwordsman,
+    [ObjectNames.SkeletonBowman]: SkeletonBowman,
+    [ObjectNames.SkeletonMelee]: SkeletonMelee,
+    [ObjectNames.SkeletonScythe]: SkeletonScythe,
+    [ObjectNames.SkeletonSwordsman]: SkeletonSwordsman,
+    [ObjectNames.Zombie1]: Zombie1,
+    [ObjectNames.Zombie2]: Zombie2,
+    [ObjectNames.Zombie3]: Zombie3,
+    [ObjectNames.Banshee]: Banshee,
+    [ObjectNames.FlowerMonster]: FlowerMonster,
+    [ObjectNames.FlyingDemonBlue]: FlyingDemonBlue,
+    [ObjectNames.FlyingDemonRed]: FlyingDemonRed,
+    [ObjectNames.EarthGolem]: EarthGolem,
+    [ObjectNames.StoneGolem]: StoneGolem,
+    [ObjectNames.MetalGolem]: MetalGolem,
+    [ObjectNames.Medusa]: Medusa,
+    [ObjectNames.Minotaur2]: Minotaur2,
+    [ObjectNames.MushroomWarrior]: MushroomWarrior,
+    [ObjectNames.PumpkinWarlock]: PumpkinWarlock,
+    [ObjectNames.PumpkinWarlockBat]: PumpkinWarlockBat,
+    [ObjectNames.PumpkinWarlockPumpkin]: PumpkinWarlockPumpkin,
+    [ObjectNames.SandWorm]: SandWorm,
+    [ObjectNames.SmallWaterSlime]: SmallWaterSlime,
+    [ObjectNames.BigWaterSlime]: BigWaterSlime,
+    [ObjectNames.FireSlime]: FireSlime,
+    [ObjectNames.SnowWendigo]: SnowWendigo,
+    [ObjectNames.ForestWendigo]: ForestWendigo
   };
 
   private static tivaraWorkers: ActorMap = {
@@ -78,7 +233,8 @@ export class ActorManager {
 
   private static tivaraUnits: ActorMap = {
     [ObjectNames.TivaraMacemanMale]: TivaraMacemanMale,
-    [ObjectNames.TivaraSlingshotFemale]: TivaraSlingshotFemale
+    [ObjectNames.TivaraSlingshotFemale]: TivaraSlingshotFemale,
+    [ObjectNames.TivaraAlchemist]: TivaraAlchemist
   };
 
   private static tivaraBuildings: ActorMap = {
@@ -86,13 +242,13 @@ export class ActorManager {
     [ObjectNames.Olival]: Olival,
     [ObjectNames.Sandhold]: Sandhold,
     [ObjectNames.Temple]: Temple,
-    [ObjectNames.WorkMill]: WorkMill
-  };
-
-  private static tivaraWall: ActorMap = {
     [ObjectNames.Stairs]: Stairs,
     [ObjectNames.WatchTower]: WatchTower,
-    [ObjectNames.Wall]: Wall
+    [ObjectNames.Wall]: Wall,
+    [ObjectNames.WorkMill]: WorkMill,
+    [ObjectNames.MiningCamp]: MiningCamp,
+    [ObjectNames.Granary]: Granary,
+    [ObjectNames.Field]: Field
   };
 
   private static skaduweeWorkers: ActorMap = {
@@ -110,7 +266,15 @@ export class ActorManager {
   private static skaduweeBuildings: ActorMap = {
     [ObjectNames.FrostForge]: FrostForge,
     [ObjectNames.InfantryInn]: InfantryInn,
-    [ObjectNames.Owlery]: Owlery
+    [ObjectNames.Owlery]: Owlery,
+    [ObjectNames.Emberstone]: Emberstone,
+    [ObjectNames.WorkMill]: WorkMill,
+    [ObjectNames.WatchTower]: WatchTower,
+    [ObjectNames.Wall]: Wall,
+    [ObjectNames.Stairs]: Stairs,
+    [ObjectNames.MiningCamp]: MiningCamp,
+    [ObjectNames.Granary]: Granary,
+    [ObjectNames.Field]: Field
   };
 
   private static resources: ActorMap = {
@@ -126,17 +290,23 @@ export class ActorManager {
     [ObjectNames.StonePile]: StonePile
   };
 
+  private static spells: ActorMap = {
+    [ObjectNames.HealingTotem]: HealingTotem
+  };
+
   public static actorMap: ActorMap = {
     ...ActorManager.animals,
+    ...ActorManager.crops,
     ...ActorManager.general,
+    ...ActorManager.mobs,
     ...ActorManager.tivaraWorkers,
     ...ActorManager.tivaraUnits,
     ...ActorManager.tivaraBuildings,
-    ...ActorManager.tivaraWall,
     ...ActorManager.skaduweeWorkers,
     ...ActorManager.skaduweeUnits,
     ...ActorManager.skaduweeBuildings,
-    ...ActorManager.resources
+    ...ActorManager.resources,
+    ...ActorManager.spells
   } as const;
 
   static getActorDefinitionFromActor(actor: GameObject): ActorDefinition | undefined {
@@ -153,6 +323,7 @@ export class ActorManager {
       id: getActorComponent(actor, IdComponent)?.getData(),
       constructionSite: getActorComponent(actor, ConstructionSiteComponent)?.getData(),
       health: getActorComponent(actor, HealthComponent)?.getData(),
+      housing: getActorComponent(actor, HousingComponent)?.getData(),
       vision: getActorComponent(actor, VisionComponent)?.getData(),
       attack: getActorComponent(actor, AttackComponent)?.getData(),
       healing: getActorComponent(actor, HealingComponent)?.getData(),
@@ -162,23 +333,27 @@ export class ActorManager {
       resourceDrain: getActorComponent(actor, ResourceDrainComponent)?.getData(),
       resourceSource: getActorComponent(actor, ResourceSourceComponent)?.getData(),
       production: getActorComponent(actor, ProductionComponent)?.getData(),
+      research: getActorComponent(actor, ResearchComponent)?.getData(),
       representable: getActorComponent(actor, RepresentableComponent)?.getData(),
-      blackboard: getActorComponent(actor, PawnAiController)?.getData()
-    };
+      blackboard: getActorComponent(actor, PawnAiController)?.getData(),
+      spell: getActorComponent(actor, SpellComponent)?.getData(),
+      statusEffects: getActorComponent(actor, StatusEffectComponent)?.getData(),
+      level: getActorComponent(actor, LevelComponent)?.getData()
+    } satisfies ActorDefinition;
 
     return actorDefinition;
   }
 
   static createActorFully(scene: Phaser.Scene, name: ObjectNames, actorDefinition: ActorDefinition): GameObject {
-    const definition = pwActorDefinitions[name as ObjectNames];
+    const definition = getPwActorDefinition(name, null);
     if (!definition) {
       throw new Error(`Actor definition for ${name} not found.`);
     }
 
     if (definition.meta?.randomOfType?.length) {
       // If the actor definition has a randomOfType, we need to pick a random one from the list
-      const randomIndex = Math.floor(Math.random() * definition.meta.randomOfType.length);
-      name = definition.meta.randomOfType[randomIndex] as ObjectNames;
+      const randomService = getSceneService(scene, RandomService)!;
+      name = randomService.pick(definition.meta.randomOfType) as ObjectNames;
     }
 
     let actor: GameObject | undefined = undefined;
@@ -214,7 +389,7 @@ export class ActorManager {
     if (!sceneActorCreator) {
       throw new Error("SceneActorCreator not found in scene");
     }
-    sceneActorCreator.registerAndSaveNewActor(actor);
+    sceneActorCreator.registerAndSaveNewActor(actor, actorDefinition.id?.id);
     return actor;
   }
 
@@ -236,6 +411,12 @@ export class ActorManager {
     actor = new actorConstructor(scene);
     setCoreActorDataFromName(actor, actorDefinition);
     setConstructingActorDataFromName(actor, actorDefinition);
+
+    const sceneActorCreator = getSceneService(scene, SceneActorCreator);
+    if (!sceneActorCreator) {
+      throw new Error("SceneActorCreator not found in scene");
+    }
+    sceneActorCreator.registerAndSaveNewActor(actor, actorDefinition.id?.id);
     return actor;
   }
 }

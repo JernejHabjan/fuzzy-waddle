@@ -6,10 +6,13 @@ import ActorInfoLabel from "./ActorInfoLabel";
 /* START-USER-IMPORTS */
 import { getActorComponent } from "../../../data/actor-component";
 import { HealthComponent } from "../../../entity/components/combat/components/health-component";
-import { DamageType } from "../../../entity/components/combat/damage-type";
 import { Subscription } from "rxjs";
 import GameObject = Phaser.GameObjects.GameObject;
 import type { PrefabDefinition } from "../../definitions/prefab-definition";
+import { ResourceSourceComponent } from "../../../entity/components/resource/resource-source-component";
+import { DamageType } from "@fuzzy-waddle/api-interfaces";
+import { TendableComponent } from "../../../entity/components/tendable/tendable-component";
+import { ContainerComponent } from "../../../entity/components/building/container-component";
 /* END-USER-IMPORTS */
 
 export default class ActorDetails extends Phaser.GameObjects.Container {
@@ -80,8 +83,20 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
   /* START-USER-CODE */
   private healthSubscription?: Subscription;
   private armourSubscription?: Subscription;
+  private resourcesChangedSubscription?: Subscription;
+  private assignedGatherersChangedSubscription?: Subscription;
+  private tendableProgressSubscription?: Subscription;
 
-  showActorAttributes(actor: GameObject, definition: PrefabDefinition) {
+  static getActorAttributeIconsAndTexts(
+    definition: PrefabDefinition,
+    actor?: GameObject
+  ): {
+    icon: {
+      key: string;
+      frame: string;
+    };
+    text: string;
+  }[] {
     const iconsAndTexts: {
       icon: {
         key: string;
@@ -89,12 +104,67 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
       };
       text: string;
     }[] = [];
+
+    const maxHealth = definition.components?.health?.maxHealth;
+    if (maxHealth) {
+      iconsAndTexts.push({ icon: { key: "gui", frame: "actor_info_icons/heart.png" }, text: maxHealth.toString() });
+    }
+
+    const maxArmour = definition.components?.health?.maxArmour;
+    if (maxArmour) {
+      iconsAndTexts.push({ icon: { key: "gui", frame: "actor_info_icons/shield.png" }, text: maxArmour.toString() });
+    }
+
+    // Check if this is a tendable resource (e.g. Field) — shown instead of raw resource count
+    const tendableComponent = actor ? getActorComponent(actor, TendableComponent) : undefined;
+    if (tendableComponent) {
+      iconsAndTexts.push({
+        icon: { key: "gui", frame: "actor_info_icons/element.png" },
+        text: `${Math.round(tendableComponent.growthPercent)}%`
+      });
+      return iconsAndTexts;
+    }
+
+    // Check if this is a resource source
+    const resourceSourceComponent = actor ? getActorComponent(actor, ResourceSourceComponent) : undefined;
+    if (resourceSourceComponent) {
+      // Show remaining resources
+      const currentResources = resourceSourceComponent.getCurrentResources();
+      const maxResources = resourceSourceComponent.getMaximumResources();
+      const resourcesText = `${currentResources}/${maxResources}`;
+      iconsAndTexts.push({
+        icon: { key: "gui", frame: "actor_info_icons/element.png" }, // todo
+        text: resourcesText
+      });
+
+      // Show assigned gatherers count
+      const assignedCount = resourceSourceComponent.getAssignedGatherersCount();
+      const gatherersText = assignedCount === 1 ? "1 gatherer" : `${assignedCount} gatherers`;
+      iconsAndTexts.push({
+        icon: { key: "gui", frame: "actor_info_icons/element.png" }, // todo
+        text: gatherersText
+      });
+
+      return iconsAndTexts;
+    }
+
     const tileStepDuration = definition.components?.translatable?.tileMoveDuration;
     if (tileStepDuration) {
       const movementSpeed = (1000 / tileStepDuration).toFixed(1) + " t/s";
       iconsAndTexts.push({
         icon: { key: "gui", frame: "actor_info_icons/boot.png" },
         text: movementSpeed
+      });
+    }
+
+    // Container capacity (transport vessels, buildings that hold units)
+    const containerComponent = actor ? getActorComponent(actor, ContainerComponent) : undefined;
+    if (containerComponent) {
+      const count = containerComponent.getContainedGameObjects().length;
+      const cap = containerComponent.containerDefinition.capacity;
+      iconsAndTexts.push({
+        icon: { key: "gui", frame: "actor_info_icons/element.png" }, // todo: cargo icon
+        text: `${count}/${cap}`
       });
     }
 
@@ -121,11 +191,70 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
           text: primaryAttackDamage?.toString()
         });
       }
-      const primaryAttackRange = primaryAttack?.range;
       iconsAndTexts.push({
         icon: { key: "gui", frame: "actor_info_icons/bow.png" },
-        text: primaryAttackRange?.toString()
+        text: primaryAttack?.range.toString()
       });
+      const highGroundBonus = primaryAttack?.highGroundRangeBonus;
+      if (highGroundBonus && highGroundBonus > 0) {
+        iconsAndTexts.push({
+          icon: { key: "gui", frame: "actor_info_icons/high-ground.png" }, // todo
+          text: highGroundBonus.toString()
+        });
+      }
+    }
+
+    // Training time
+    const productionTime = definition.components?.productionCost?.productionTime;
+    if (productionTime && productionTime > 0) {
+      const timeInSeconds = (productionTime / 1000).toFixed(1);
+      iconsAndTexts.push({
+        icon: { key: "gui", frame: "actor_info_icons/training_time.png" }, // TODO: icon doesn't exist yet
+        text: `${timeInSeconds}s`
+      });
+    }
+
+    return iconsAndTexts;
+  }
+
+  showActorAttributes(actor: GameObject, definition: PrefabDefinition) {
+    const iconsAndTexts = ActorDetails.getActorAttributeIconsAndTexts(definition, actor);
+
+    // Check if this is a tendable actor (e.g. Field) — subscribe to live growth updates
+    this.tendableProgressSubscription?.unsubscribe();
+    const tendableComponent = getActorComponent(actor, TendableComponent);
+    if (tendableComponent) {
+      // attributes[0] = health (if any), attributes[1] = growth %
+      const growthIndex = definition.components?.health?.maxHealth ? 1 : 0;
+      this.tendableProgressSubscription = tendableComponent.growthProgressChanged.subscribe((percent) => {
+        const attribute = this.attributes[growthIndex];
+        if (!attribute) return;
+        attribute.setText(`${Math.round(percent)}%`);
+      });
+    }
+
+    // Check if this is a resource source
+    const resourceSourceComponent = getActorComponent(actor, ResourceSourceComponent);
+    if (resourceSourceComponent) {
+      const maxResources = resourceSourceComponent.getMaximumResources();
+      // Subscribe to resource changes
+      this.resourcesChangedSubscription?.unsubscribe();
+      this.resourcesChangedSubscription = resourceSourceComponent.onResourcesChanged.subscribe(() => {
+        const attribute = this.attributes[0];
+        if (!attribute) return;
+        const updatedResources = resourceSourceComponent.getCurrentResources();
+        attribute.setText(`${updatedResources}/${maxResources}`);
+      });
+
+      // Subscribe to gatherer count changes
+      this.assignedGatherersChangedSubscription?.unsubscribe();
+      this.assignedGatherersChangedSubscription = resourceSourceComponent.onAssignedGatherersChanged.subscribe(
+        (count) => {
+          const attribute = this.attributes[1];
+          if (!attribute) return;
+          attribute.setText(count === 1 ? "1 gatherer" : `${count} gatherers`);
+        }
+      );
     }
 
     const healthComponent = getActorComponent(actor, HealthComponent);
@@ -134,10 +263,15 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
     if (maxHealth) {
       const currentHealth = Math.round(healthComponent!.healthComponentData!.health);
       const health = `${currentHealth}/${maxHealth}`;
-      const iconIndex = iconsAndTexts.push({ icon: { key: "gui", frame: "actor_info_icons/heart.png" }, text: health });
+      const healthInfo = iconsAndTexts.find((i) => i.icon.frame === "actor_info_icons/heart.png");
+      if (healthInfo) {
+        healthInfo.text = health;
+      }
 
       this.healthSubscription = healthComponent!.healthChanged.subscribe((newHealth) => {
-        const attribute = this.attributes[iconIndex - 1];
+        const attribute = this.attributes.find(
+          (a) => a.icon.frame.texture.key === "gui" && a.icon.frame.name === "actor_info_icons/heart.png"
+        );
         if (!attribute) return;
         attribute.setText(`${Math.round(newHealth)}/${maxHealth}`);
       });
@@ -148,13 +282,15 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
     if (maxArmour) {
       const currentArmour = Math.round(healthComponent!.healthComponentData.armour);
       const armour = `${currentArmour}/${maxArmour}`;
-      const iconIndex = iconsAndTexts.push({
-        icon: { key: "gui", frame: "actor_info_icons/shield.png" },
-        text: armour
-      });
+      const armourInfo = iconsAndTexts.find((i) => i.icon.frame === "actor_info_icons/shield.png");
+      if (armourInfo) {
+        armourInfo.text = armour;
+      }
 
       this.armourSubscription = healthComponent!.armorChanged.subscribe((newArmour) => {
-        const icon = this.attributes[iconIndex - 1];
+        const icon = this.attributes.find(
+          (a) => a.icon.frame.texture.key === "gui" && a.icon.frame.name === "actor_info_icons/shield.png"
+        );
         if (!icon) return;
         icon.setText(`${Math.round(newArmour)}/${maxArmour}`);
       });
@@ -171,11 +307,17 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
   }
   hideAll() {
     this.attributes.forEach((a) => (a.visible = false));
+    this.resourcesChangedSubscription?.unsubscribe();
+    this.assignedGatherersChangedSubscription?.unsubscribe();
+    this.tendableProgressSubscription?.unsubscribe();
   }
 
   override destroy(fromScene?: boolean) {
     this.healthSubscription?.unsubscribe();
     this.armourSubscription?.unsubscribe();
+    this.resourcesChangedSubscription?.unsubscribe();
+    this.assignedGatherersChangedSubscription?.unsubscribe();
+    this.tendableProgressSubscription?.unsubscribe();
     super.destroy(fromScene);
   }
 

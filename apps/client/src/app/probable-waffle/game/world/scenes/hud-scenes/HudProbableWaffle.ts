@@ -11,16 +11,27 @@ import AiControllerDebugPanel from "../../../prefabs/gui/debug/ai-controller/AiC
 import GameSpeedModifier from "../../../prefabs/gui/buttons/GameSpeedModifier";
 import HudMessages from "../../../prefabs/gui/labels/HudMessages";
 import GroupContainer from "../../../prefabs/gui/labels/GroupContainer";
+import IdleWorkersButton from "../../../prefabs/gui/buttons/IdleWorkersButton";
+import ChatButton from "../../../prefabs/gui/buttons/ChatButton";
+import ChatNotification from "../../../prefabs/gui/labels/ChatNotification";
 /* START-USER-IMPORTS */
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { HudGameState } from "../../../hud/hud-game-state";
 import { HudElementVisibilityHandler } from "../../../hud/hud-element-visibility.handler";
 import { CursorHandler } from "../../../player/human-controller/cursor.handler";
 import { MultiSelectionHandler } from "../../../player/human-controller/multi-selection.handler";
-import { ProbableWaffleGameInstanceType } from "@fuzzy-waddle/api-interfaces";
+import {
+  type AllScenesEventData,
+  ProbableWaffleGameInstanceType,
+  ProbableWafflePlayerType
+} from "@fuzzy-waddle/api-interfaces";
 import { getGameObjectBounds } from "../../../data/game-object-helper";
 import { filter, Subscription } from "rxjs";
 import { environment } from "../../../../../../environments/environment";
+import ConfirmationDialog from "../../../prefabs/gui/dialogs/ConfirmationDialog";
+import SurrenderDialog from "../../../prefabs/gui/SurrenderDialog";
+import { getPlayers } from "../../../data/scene-data";
+import { ConnectionRecoveryService } from "../../services/recovery/connection-recovery.service";
 /* END-USER-IMPORTS */
 
 export default class HudProbableWaffle extends ProbableWaffleScene {
@@ -72,6 +83,18 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     const groupContainer = new GroupContainer(this, 552, 541);
     this.add.existing(groupContainer);
 
+    // idleWorkersButton
+    const idleWorkersButton = new IdleWorkersButton(this, 13, 520);
+    this.add.existing(idleWorkersButton);
+
+    // chatButton
+    const chatButton = new ChatButton(this, 13, 560);
+    this.add.existing(chatButton);
+
+    // chatNotification
+    const chatNotification = new ChatNotification(this, 13, 500);
+    this.add.existing(chatNotification);
+
     // lists
     const hudElements: Array<any> = [];
 
@@ -84,6 +107,9 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.gameSpeedModifier = gameSpeedModifier;
     this.hudMessages = hudMessages;
     this.groupContainer = groupContainer;
+    this.idleWorkersButton = idleWorkersButton;
+    this.chatButton = chatButton;
+    this.chatNotification = chatNotification;
     this.hudElements = hudElements;
 
     this.events.emit("scene-awake");
@@ -98,11 +124,19 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   private gameSpeedModifier!: GameSpeedModifier;
   private hudMessages!: HudMessages;
   private groupContainer!: GroupContainer;
+  private idleWorkersButton!: IdleWorkersButton;
+  private chatButton!: ChatButton;
+  private chatNotification!: ChatNotification;
   private hudElements!: Array<any>;
 
   /* START-USER-CODE */
+  public confirmationDialog!: ConfirmationDialog;
+  public surrenderDialog!: SurrenderDialog;
   private saveGameSubscription?: Subscription;
+  private chatMessageSubscription?: Subscription;
   private readonly actorInfoSmallScreenBreakpoint = 1200;
+  private cursorHandler?: CursorHandler;
+  private connectionRecovery?: ConnectionRecoveryService;
 
   probableWaffleScene?: ProbableWaffleScene;
   override preload() {
@@ -112,25 +146,57 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   override create() {
     this.editorCreate();
 
+    this.confirmationDialog = new ConfirmationDialog(this, 640, 360);
+    this.add.existing(this.confirmationDialog);
+
+    this.surrenderDialog = new SurrenderDialog(this, 640, 360);
+    this.add.existing(this.surrenderDialog);
+
     // resize the scene to match the screen size
     this.scale.on("resize", this.resize, this);
     this.resize({ height: this.scale.height, width: this.scale.width });
 
     new HudGameState(this, this.probableWaffleScene!);
     new HudElementVisibilityHandler(this, this.hudElements);
-    this.sceneGameData.components.push(
-      new MultiSelectionHandler(this, this.probableWaffleScene!),
-      new CursorHandler(this)
-    );
+    this.cursorHandler = new CursorHandler(this);
+    this.sceneGameData.components.push(new MultiSelectionHandler(this, this.probableWaffleScene!), this.cursorHandler);
 
     this.minimap_container.initializeWithParentScene(this.probableWaffleScene!, this);
 
     this.hudMessages.setup(this.probableWaffleScene!);
+
+    this.idleWorkersButton.setup(this.probableWaffleScene!);
+
+    // Initialize cursor handler with main scene for hover detection
+    if (this.probableWaffleScene && this.cursorHandler) {
+      this.cursorHandler.initializeWithMainScene(this.probableWaffleScene);
+    }
   }
 
   initializeWithParentScene(probableWaffleScene: ProbableWaffleScene) {
     this.probableWaffleScene = probableWaffleScene;
     this.subscribeToSaveGameEvent();
+    this.subscribeToChatMessageEvents();
+    this.subscribeToSceneShutdown();
+
+    this.connectionRecovery = new ConnectionRecoveryService();
+    this.connectionRecovery.init(this, probableWaffleScene);
+
+    // Initialize cursor handler with main scene if it was created before the parent scene was set
+    if (this.cursorHandler) {
+      this.cursorHandler.initializeWithMainScene(probableWaffleScene);
+    }
+  }
+
+  private subscribeToSceneShutdown() {
+    this.onShutdown.subscribe(() => {
+      // Emit event to close chat modal when leaving the game
+      this.communicator.allScenes.emit({
+        name: "hud-scene-shutdown",
+        data: undefined
+      });
+      this.connectionRecovery?.destroy();
+    });
   }
 
   private resize(gameSize: { height: number; width: number }) {
@@ -144,7 +210,8 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     // set resources top left
     this.resources_container.x = 10;
     this.resources_container.y = 10;
-    this.resources_container.scale = sceneWidth > this.actorInfoSmallScreenBreakpoint ? 1 : 0.9;
+    this.resources_container.scale = 1;
+    this.resources_container.setMobileLayout(sceneWidth <= this.actorInfoSmallScreenBreakpoint);
 
     // set game actions to top right
     this.game_actions_container.x = this.scale.width - 10;
@@ -158,7 +225,8 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.minimap_container.scaleX = sceneWidth > this.minimap_container.minimapSmallScreenBreakpoint ? 1.026 : 0.55;
     this.minimap_container.scaleY = sceneWidth > this.minimap_container.minimapSmallScreenBreakpoint ? 0.953 : 0.55;
     this.minimap_container.visible = sceneWidth > this.minimap_container.minimapHideBreakpoint;
-    const minimapHeight = getGameObjectBounds(this.minimap_container)!.height;
+    const minimapBounds = getGameObjectBounds(this.minimap_container)!;
+    const minimapHeight = minimapBounds.height;
 
     // set hudMessages above minimap on left side
     this.hudMessages.x = 10;
@@ -200,8 +268,49 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
         this.gameType === ProbableWaffleGameInstanceType.Skirmish) &&
       sceneWidth > this.minimap_container.minimapHideBreakpoint;
 
+    // position idle workers button below game speed modifier on left side
+    this.idleWorkersButton.x = 10;
+    this.idleWorkersButton.y = this.gameSpeedModifier.y + 40;
+    // if game speed modifier is hidden, position idle workers button at same height as game speed modifier
+    if (!this.gameSpeedModifier.visible) {
+      this.idleWorkersButton.y = this.gameSpeedModifier.y;
+    }
+    this.idleWorkersButton.scale = sceneWidth > this.actorInfoSmallScreenBreakpoint ? 1 : 0.7;
+    this.idleWorkersButton.visible = sceneWidth > this.minimap_container.minimapHideBreakpoint;
+
+    // position chat button at the top on right side of minimap
+    // hide for Skirmish mode (single-player) and small screens
+    const nrOfRemainingHumanPlayers = getPlayers(this.probableWaffleScene!).filter(
+      (p) =>
+        p.playerController.data.playerDefinition?.playerType === ProbableWafflePlayerType.Human &&
+        !p.playerController.data.leftOrKilled
+    ).length;
+
+    const isChatVisible =
+      (this.gameType === ProbableWaffleGameInstanceType.Matchmaking ||
+        this.gameType === ProbableWaffleGameInstanceType.SelfHosted) &&
+      nrOfRemainingHumanPlayers > 1 &&
+      sceneWidth > this.minimap_container.minimapHideBreakpoint;
+    this.chatButton.x = minimapBounds.right - 60;
+    this.chatButton.y = this.scale.height - minimapHeight + 10;
+    this.chatButton.scale = sceneWidth > this.actorInfoSmallScreenBreakpoint ? 1 : 0.7;
+    this.chatButton.visible = isChatVisible;
+
+    // position chat notification above chat button on left side
+    this.chatNotification.x = 10;
+    this.chatNotification.y = this.chatButton.y - 10;
+    this.chatNotification.scale = sceneWidth > this.actorInfoSmallScreenBreakpoint ? 1 : 0.7;
+
+    // position surrender dialog in center of screen
+    this.surrenderDialog.x = this.scale.width / 2;
+    this.surrenderDialog.y = this.scale.height / 2;
+
     // redraw minimap
     this.minimap_container.redrawMinimap();
+
+    // position confirmation dialog in center of screen
+    this.confirmationDialog.x = this.scale.width / 2;
+    this.confirmationDialog.y = this.scale.height / 2;
   }
 
   private get gameType() {
@@ -223,6 +332,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
             padding: { x: 20, y: 10 }
           });
           text.setOrigin(0.5);
+          // Intentional wall-clock timer for transient HUD toast cleanup.
           this.time.delayedCall(500, () => text.destroy());
         });
       });
@@ -232,10 +342,40 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.saveGameSubscription = this.subscribeToGameEvent("save-game", "Game saved");
   }
 
+  private subscribeToChatMessageEvents() {
+    if (!this.probableWaffleScene) return;
+
+    // Subscribe to chat message received events from Angular
+    this.chatMessageSubscription = this.probableWaffleScene.communicator.allScenes
+      .pipe(
+        filter(
+          (value): value is Extract<AllScenesEventData, { name: "chat-message-received" }> =>
+            value.name === "chat-message-received"
+        )
+      )
+      .subscribe((event) => {
+        const { fullName, text } = event.data;
+        this.chatNotification.showMessage(fullName, text);
+        this.chatButton?.showUnreadBadge();
+      });
+
+    // show example chat message on startup in dev mode after 2 seconds
+    // if (!environment.production) {
+    //   // Intentional wall-clock timer: this sample notification is purely HUD debug behavior.
+    //   this.time.delayedCall(2000, () => {
+    //     this.chatNotification.showMessage("Test User", "Hello! This is an example chat message.");
+    //     this.chatButton?.showUnreadBadge();
+    //   });
+    // }
+  }
+
   override destroy() {
     this.saveGameSubscription?.unsubscribe();
+    this.chatMessageSubscription?.unsubscribe();
+    this.connectionRecovery?.destroy();
     super.destroy();
   }
+
   /* END-USER-CODE */
 }
 

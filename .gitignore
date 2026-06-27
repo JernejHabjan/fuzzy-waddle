@@ -50,6 +50,7 @@ Thumbs.db
 migrations.json
 
 # local env files
+.env
 .env.local
 # migration to pnpm
 package-lock.json
@@ -58,3 +59,20 @@ package-lock.json
 .nx/workspace-data
 .cursor/rules/nx-rules.mdc
 .github/instructions/nx.instructions.md
+/.idea/sqldialects.xml
+NUL
+supabase/.temp
+.claude/settings.json
+.claude/settings.local.json
+
+.claude/worktrees
+
+.nx/polygraph
+.nx/self-healing
+.ai/
+.junie
+AGENTS.md
+CLAUDE.md
+plugins
+docs/ai/
+.codex

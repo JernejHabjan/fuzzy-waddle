@@ -17,8 +17,7 @@ export default class PushActionScript extends ScriptNode {
 
   /* START-USER-CODE */
   private disabled: boolean = false;
-  private originalScaleX: number | null = null;
-  private originalScaleY: number | null = null;
+  private originalAlpha: number | null = null;
   private activeTween: Phaser.Tweens.Tween | null = null; // Track the active tween
 
   setDisabled(disabled: boolean) {
@@ -33,43 +32,40 @@ export default class PushActionScript extends ScriptNode {
 
     if (!gameObject) return;
 
-    // Store the original scale if not already stored
-    if (this.originalScaleX === null && gameObjectAny.scaleX !== undefined) {
-      this.originalScaleX = gameObjectAny.scaleX;
-      this.originalScaleY = gameObjectAny.scaleY;
+    // Store the original alpha if not already stored
+    if (this.originalAlpha === null && gameObjectAny.alpha !== undefined) {
+      this.originalAlpha = gameObjectAny.alpha;
     }
 
-    // If a tween is already running, stop it and reset the scale
+    // If a tween is already running, stop it and reset the alpha
     if (this.activeTween) {
       this.activeTween.stop();
-      this.resetScale();
+      this.resetAlpha();
       this.activeTween = null;
     } else {
-      // Always reset scale before starting a new tween
-      this.resetScale();
+      // Always reset alpha before starting a new tween
+      this.resetAlpha();
     }
 
     this.activeTween = this.scene.add.tween({
       targets: gameObject,
-      scaleX: "*=0.8",
-      scaleY: "*=0.8",
+      alpha: 0.6,
       duration: 80,
       yoyo: true,
       onYoyo: () => {
         this.executeChildren(args);
       },
       onComplete: () => {
-        this.resetScale();
+        this.resetAlpha();
         this.activeTween = null;
       }
     });
   }
 
-  private resetScale() {
+  private resetAlpha() {
     const gameObject = this.gameObject as any;
-    if (gameObject && this.originalScaleX !== null) {
-      gameObject.scaleX = this.originalScaleX;
-      gameObject.scaleY = this.originalScaleY;
+    if (gameObject && this.originalAlpha !== null) {
+      gameObject.alpha = this.originalAlpha;
     }
   }
 

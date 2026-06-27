@@ -1,5 +1,5 @@
-import { pwActorDefinitions } from "../prefabs/definitions/actor-definitions";
-import { type ActorDefinition, ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { getPwActorDefinition } from "../prefabs/definitions/actor-definitions";
+import { type ActorDefinition } from "@fuzzy-waddle/api-interfaces";
 import { VisionComponent } from "../entity/components/vision-component";
 import { InfoComponent } from "../entity/components/info-component";
 import { ObjectDescriptorComponent } from "../entity/components/object-descriptor-component";
@@ -28,9 +28,24 @@ import { ActionSystem } from "../entity/systems/action.system";
 import { HealingComponent } from "../entity/components/combat/components/healing-component";
 import { AudioActorComponent } from "../entity/components/actor-audio/audio-actor-component";
 import { AnimationActorComponent } from "../entity/components/animation/animation-actor-component";
+import { ShipAnimationComponent } from "../entity/components/animation/ship-animation-component";
 import { RepresentableComponent } from "../entity/components/representable-component";
 import { FlyingComponent } from "../entity/components/movement/flying-component";
-import { WalkableComponent } from "../entity/components/movement/walkable-component";
+import { NavigableComponent } from "../entity/components/movement/navigable-component";
+import { HousingComponent } from "../entity/components/building/housing-component";
+import { HousingCostComponent } from "../entity/components/building/housing-cost-component";
+import { MovementDecalCursorService } from "../entity/components/movement/movement-decal-cursor.service";
+import { getSceneService } from "../world/services/scene-component-helpers";
+import { SceneActorCreator } from "../world/services/scene-actor-creator";
+import { StatusEffectComponent } from "../entity/components/status-effect/status-effect-component";
+import { StatusEffectVisualComponent } from "../entity/components/status-effect/status-effect-visual-component";
+import { StatusEffectUiComponent } from "../entity/components/status-effect/status-effect-ui-component";
+import { SpellComponent } from "../entity/components/combat/components/spell-component";
+import { SpellCastingSystem } from "../entity/systems/spell-casting.system";
+import { ResearchComponent } from "../entity/components/research/research-component";
+import { LevelComponent } from "../entity/components/level/level-component";
+import { TendableComponent } from "../entity/components/tendable/tendable-component";
+import { QueueCommandSystem } from "../entity/systems/queue-command.system";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export const ActorDataKey = "actorData";
@@ -60,17 +75,20 @@ export function setActorData(
     actorData = new ActorData(componentMap, systemMap);
     actor.setData(ActorDataKey, actorData);
   }
-  setActorProperties(actor, actorDefinition);
+  applyActorDefinitionToActor(actor, actorDefinition);
   actor.emit(ActorDataChangedEvent, actorData);
 }
 
-function setActorProperties(actor: GameObject, actorDefinition?: Partial<ActorDefinition>) {
+export function applyActorDefinitionToActor(actor: GameObject, actorDefinition?: Partial<ActorDefinition>) {
   if (!actorDefinition) return;
+  if (actorDefinition.id) getActorComponent(actor, IdComponent)?.setData(actorDefinition.id);
+  if (actorDefinition.representable)
+    getActorComponent(actor, RepresentableComponent)?.setData(actorDefinition.representable);
   if (actorDefinition.owner) getActorComponent(actor, OwnerComponent)?.setData(actorDefinition.owner);
   if (actorDefinition.selected) getActorComponent(actor, SelectableComponent)?.setData(actorDefinition.selected);
-  if (actorDefinition.id) getActorComponent(actor, IdComponent)?.setData(actorDefinition.id);
   if (actorDefinition.constructionSite)
     getActorComponent(actor, ConstructionSiteComponent)?.setData(actorDefinition.constructionSite);
+  if (actorDefinition.housing) getActorComponent(actor, HousingComponent)?.setData(actorDefinition.housing);
   if (actorDefinition.health) getActorComponent(actor, HealthComponent)?.setData(actorDefinition.health);
   if (actorDefinition.vision) getActorComponent(actor, VisionComponent)?.setData(actorDefinition.vision);
   if (actorDefinition.attack) getActorComponent(actor, AttackComponent)?.setData(actorDefinition.attack);
@@ -83,15 +101,20 @@ function setActorProperties(actor: GameObject, actorDefinition?: Partial<ActorDe
   if (actorDefinition.resourceSource)
     getActorComponent(actor, ResourceSourceComponent)?.setData(actorDefinition.resourceSource);
   if (actorDefinition.production) getActorComponent(actor, ProductionComponent)?.setData(actorDefinition.production);
+  if (actorDefinition.research) getActorComponent(actor, ResearchComponent)?.setData(actorDefinition.research);
   if (actorDefinition.representable)
     getActorComponent(actor, RepresentableComponent)?.setData(actorDefinition.representable);
   if (actorDefinition.blackboard) getActorComponent(actor, PawnAiController)?.setData(actorDefinition.blackboard);
+  if (actorDefinition.spell) getActorComponent(actor, SpellComponent)?.setData(actorDefinition.spell);
+  if (actorDefinition.statusEffects)
+    getActorComponent(actor, StatusEffectComponent)?.setData(actorDefinition.statusEffects);
+  if (actorDefinition.level) getActorComponent(actor, LevelComponent)?.setData(actorDefinition.level);
 
   DepthHelper.setActorDepth(actor);
 }
 
 function gatherCoreActorData(actor: Phaser.GameObjects.GameObject): { components: any[]; systems: any[] } {
-  const definition = pwActorDefinitions[actor.name as ObjectNames];
+  const definition = getPwActorDefinition(actor.name, null);
   if (!definition) {
     throw new Error(`Actor definition for ${actor.name} not found.`);
   }
@@ -111,6 +134,8 @@ function gatherCoreActorData(actor: Phaser.GameObjects.GameObject): { components
     ...(componentDefinitions?.productionCost
       ? [new ProductionCostComponent(actor, componentDefinitions.productionCost)]
       : []),
+    ...(componentDefinitions?.housingCost ? [new HousingCostComponent(actor, componentDefinitions.housingCost)] : []),
+    ...(componentDefinitions?.housing ? [new HousingComponent(actor, componentDefinitions.housing)] : []),
     ...(componentDefinitions?.audio ? [new AudioActorComponent(actor, componentDefinitions.audio)] : [])
   ];
 
@@ -118,7 +143,7 @@ function gatherCoreActorData(actor: Phaser.GameObjects.GameObject): { components
 }
 
 function gatherConstructingActorData(actor: Phaser.GameObjects.GameObject): { components: any[]; systems: any[] } {
-  const definition = pwActorDefinitions[actor.name as ObjectNames];
+  const definition = getPwActorDefinition(actor.name, null);
   if (!definition) {
     throw new Error(`Actor definition for ${actor.name} not found.`);
   }
@@ -132,6 +157,7 @@ function gatherConstructingActorData(actor: Phaser.GameObjects.GameObject): { co
       ? [new ConstructionSiteComponent(actor, componentDefinitions.constructable)]
       : []),
     ...(componentDefinitions?.production ? [new ProductionComponent(actor, componentDefinitions.production)] : []),
+    ...(componentDefinitions?.research ? [new ResearchComponent(actor, componentDefinitions.research)] : []),
     ...(componentDefinitions?.selectable ? [new SelectableComponent(actor, componentDefinitions.selectable)] : []),
     ...(componentDefinitions?.health ? [new HealthComponent(actor, componentDefinitions.health)] : []),
     ...(componentDefinitions?.collider ? [new ColliderComponent(actor, componentDefinitions.collider)] : [])
@@ -141,7 +167,7 @@ function gatherConstructingActorData(actor: Phaser.GameObjects.GameObject): { co
 }
 
 function gatherCompletedActorData(actor: Phaser.GameObjects.GameObject): { components: any[]; systems: any[] } {
-  const definition = pwActorDefinitions[actor.name as ObjectNames];
+  const definition = getPwActorDefinition(actor.name, null);
   if (!definition) {
     throw new Error(`Actor definition for ${actor.name} not found.`);
   }
@@ -158,21 +184,30 @@ function gatherCompletedActorData(actor: Phaser.GameObjects.GameObject): { compo
       ? [new ResourceSourceComponent(actor, componentDefinitions.resourceSource)]
       : []),
     ...(componentDefinitions?.healing ? [new HealingComponent(actor, componentDefinitions.healing)] : []),
+    ...(componentDefinitions?.health
+      ? [new StatusEffectComponent(actor), new StatusEffectVisualComponent(actor), new StatusEffectUiComponent(actor)]
+      : []),
+    ...(componentDefinitions?.spell ? [new SpellComponent(actor, componentDefinitions.spell)] : []),
     ...(componentDefinitions?.builder ? [new BuilderComponent(actor, componentDefinitions.builder)] : []),
     ...(componentDefinitions?.gatherer ? [new GathererComponent(actor, componentDefinitions.gatherer)] : []),
     ...(componentDefinitions?.translatable
-      ? [new ActorTranslateComponent(actor, componentDefinitions.translatable)]
+      ? [new ActorTranslateComponent(actor, componentDefinitions.translatable), new MovementDecalCursorService(actor)]
       : []),
     ...(componentDefinitions?.flying ? [new FlyingComponent(actor, componentDefinitions.flying)] : []),
-    ...(componentDefinitions?.walkable ? [new WalkableComponent(actor, componentDefinitions.walkable)] : []),
+    ...(componentDefinitions?.navigable ? [new NavigableComponent(actor, componentDefinitions.navigable)] : []),
     ...(componentDefinitions?.animatable ? [new AnimationActorComponent(actor, componentDefinitions.animatable)] : []),
-    ...(componentDefinitions?.aiControlled ? [new PawnAiController(actor, componentDefinitions.aiControlled)] : [])
+    ...(componentDefinitions?.shipAnimatable ? [new ShipAnimationComponent(actor, componentDefinitions.shipAnimatable)] : []),
+    ...(componentDefinitions?.aiControlled ? [new PawnAiController(actor, componentDefinitions.aiControlled)] : []),
+    ...(componentDefinitions?.level ? [new LevelComponent(actor, componentDefinitions.level)] : []),
+    ...(componentDefinitions?.tendable ? [new TendableComponent(actor, componentDefinitions.tendable)] : [])
   ];
 
   const systemDefinitions = definition.systems;
   const systems = [
+    ...(componentDefinitions?.production || componentDefinitions?.research ? [new QueueCommandSystem(actor)] : []),
     ...(systemDefinitions?.movement ? [new MovementSystem(actor)] : []),
-    ...(systemDefinitions?.action ? [new ActionSystem(actor)] : [])
+    ...(systemDefinitions?.action ? [new ActionSystem(actor)] : []),
+    ...(systemDefinitions?.spellCasting ? [new SpellCastingSystem(actor)] : [])
   ];
   return { components, systems };
 }
@@ -229,7 +264,12 @@ export function upgradeFromCoreToConstructingActorData(
     actorData.systems.set(system.constructor, system);
   }
 
-  setActorProperties(actor, actorDefinition);
+  applyActorDefinitionToActor(actor, actorDefinition);
+  const sceneActorCreator = getSceneService(actor.scene, SceneActorCreator);
+  if (!sceneActorCreator) {
+    throw new Error("SceneActorCreator not found in scene");
+  }
+  sceneActorCreator.registerAndSaveNewActor(actor);
 
   actor.emit(ActorDataChangedEvent, actorData);
 }
@@ -252,7 +292,7 @@ export function upgradeFromConstructingToFullActorData(
     actorData.systems.set(system.constructor, system);
   }
 
-  setActorProperties(actor, actorDefinition);
+  applyActorDefinitionToActor(actor, actorDefinition);
 
   actor.emit(ActorDataChangedEvent, actorData);
 }
@@ -264,7 +304,7 @@ export function addActorComponent(
 ) {
   const actorData = actor.getData(ActorDataKey) as ActorData;
   actorData.components.set(component.constructor, component);
-  setActorProperties(actor, actorDefinition);
+  applyActorDefinitionToActor(actor, actorDefinition);
   actor.emit(ActorDataChangedEvent, actorData);
 }
 
@@ -275,7 +315,7 @@ export function addActorSystem(
 ) {
   const actorData = actor.getData(ActorDataKey) as ActorData;
   actorData.systems.set(system.constructor, system);
-  setActorProperties(actor, actorDefinition);
+  applyActorDefinitionToActor(actor, actorDefinition);
   actor.emit(ActorDataChangedEvent, actorData);
 }
 
@@ -286,7 +326,7 @@ export function removeActorComponent(
 ) {
   const actorData = actor.getData(ActorDataKey) as ActorData;
   actorData.components.delete(component.constructor);
-  setActorProperties(actor, actorDefinition);
+  applyActorDefinitionToActor(actor, actorDefinition);
   actor.emit(ActorDataChangedEvent, actorData);
 }
 
@@ -297,7 +337,7 @@ export function removeActorSystem(
 ) {
   const actorData = actor.getData(ActorDataKey) as ActorData;
   actorData.systems.delete(system.constructor);
-  setActorProperties(actor, actorDefinition);
+  applyActorDefinitionToActor(actor, actorDefinition);
   actor.emit(ActorDataChangedEvent, actorData);
 }
 

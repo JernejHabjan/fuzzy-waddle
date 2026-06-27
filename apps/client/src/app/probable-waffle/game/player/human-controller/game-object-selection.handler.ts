@@ -4,8 +4,6 @@ import { getActorComponent } from "../../data/actor-component";
 import { getGameObjectBounds } from "../../data/game-object-helper";
 import { IdComponent } from "../../entity/components/id-component";
 import {
-  emitEventIssueActorCommandToSelectedActors,
-  emitEventIssueMoveCommandToSelectedActors,
   emitEventSelection,
   getCurrentPlayerNumber,
   getPlayer,
@@ -13,10 +11,11 @@ import {
 } from "../../data/scene-data";
 import { AttackComponent } from "../../entity/components/combat/components/attack-component";
 import { ProductionCostComponent } from "../../entity/components/production/production-cost-component";
+import { ProductionComponent } from "../../entity/components/production/production-component";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import {
+  type ActorId,
   ObjectNames,
-  type ProbableWaffleDoubleSelectionData,
   type ProbableWaffleSelectionData
 } from "@fuzzy-waddle/api-interfaces";
 import { getActorSystem } from "../../data/actor-system";
@@ -24,16 +23,21 @@ import { MovementSystem } from "../../entity/systems/movement.system";
 import { AudioActorComponent } from "../../entity/components/actor-audio/audio-actor-component";
 import { OwnerComponent } from "../../entity/components/owner-component";
 import GameObject = Phaser.GameObjects.GameObject;
-import { pwActorDefinitions } from "../../prefabs/definitions/actor-definitions";
+import { getPwActorDefinition, pwActorDefinitions } from "../../prefabs/definitions/actor-definitions";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { PlayerActionsHandler } from "./player-actions-handler";
 import { SoundType } from "../../entity/components/actor-audio/sound-type";
+import { ContainableComponent } from "../../entity/components/building/containable-component";
+import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
 
 export class GameObjectSelectionHandler {
   private readonly debug = false;
   private sub!: Subscription;
+  private externalModalOpen = false;
+  private externalModalSubscription?: Subscription;
   constructor(private readonly scene: ProbableWaffleScene) {
     this.bindSelectionInput();
+    this.listenToExternalModalEvents();
     this.scene.onShutdown.subscribe(() => this.destroy());
   }
 
@@ -70,12 +74,25 @@ export class GameObjectSelectionHandler {
                 this.playAudio(objectIds!);
               }
             } else if (isRightClick) {
-              emitEventIssueActorCommandToSelectedActors(this.scene, { objectIds: objectIds! });
+              // Command selected actors to interact with the right-clicked target.
+              // Ownership filtering happens at dispatch time — only own actors are in selection.
+              const playerNumber = getCurrentPlayerNumber(this.scene);
+              const selectedActorIds = getPlayer(this.scene)?.getSelection() ?? [];
+              if (playerNumber && selectedActorIds.length) {
+                const commandBus = getSceneService(this.scene, CommandBusService);
+                commandBus?.dispatch({
+                  type: "ACTOR_ACTION",
+                  playerNumber,
+                  actorIds: selectedActorIds,
+                  targetObjectIds: objectIds!,
+                  queue: isShiftDown ?? false
+                });
+              }
             }
 
             break;
           case "selection.doubleSelect":
-            const doubleSelectData = selection.data as ProbableWaffleDoubleSelectionData;
+            const doubleSelectData = selection.data;
             const objectId = doubleSelectData.objectId;
             if (this.debug) console.log("doubleSelect", objectId);
             const actors = this.getSameTypeActorsInViewportById(objectId);
@@ -91,12 +108,18 @@ export class GameObjectSelectionHandler {
               const selectedActorObjectIds = this.getSelectedMovableActors().map(
                 (actor) => getActorComponent(actor, IdComponent)!.id
               );
-              emitEventIssueMoveCommandToSelectedActors(
-                this.scene,
-                data.terrainSelectedTileVec3!,
-                data.terrainSelectedWorldVec3!,
-                selectedActorObjectIds
-              );
+              const playerNumber = getCurrentPlayerNumber(this.scene);
+              if (playerNumber && selectedActorObjectIds.length) {
+                const commandBus = getSceneService(this.scene, CommandBusService);
+                commandBus?.dispatch({
+                  type: "MOVE",
+                  playerNumber,
+                  actorIds: selectedActorObjectIds,
+                  tileVec3: data.terrainSelectedTileVec3!,
+                  worldVec3: data.terrainSelectedWorldVec3!,
+                  queue: isShiftDown ?? false
+                });
+              }
             }
             break;
           case "selection.multiSelect":
@@ -157,7 +180,10 @@ export class GameObjectSelectionHandler {
       worldXyEnd.y - worldXyStart.y
     );
 
-    return selectableChildren.filter((selectableChild) => {
+    const actorsInArea = selectableChildren.filter((selectableChild) => {
+      // Skip actors that are loaded inside a container
+      if (getActorComponent(selectableChild, ContainableComponent)?.isContained()) return false;
+
       const bounds = getGameObjectBounds(selectableChild);
       if (!bounds) return false;
       const actorBounds = new Phaser.Geom.Rectangle(bounds.x, bounds.y, bounds.width, bounds.height);
@@ -173,6 +199,16 @@ export class GameObjectSelectionHandler {
 
       return actorOverlapPercentageWidth > minOverlapPercentage && actorOverlapPercentageHeight > minOverlapPercentage;
     });
+
+    // Filter to only friendly units if any friendly units are in the selection
+    const friendlyActors = actorsInArea.filter((actor) => this.selectionIsForCurrentPlayer(actor));
+    // If any friendly units are selected, only return friendly units
+    if (friendlyActors.length > 0) {
+      return friendlyActors;
+    }
+
+    // Otherwise return all actors in the area
+    return actorsInArea;
   }
 
   /**
@@ -218,16 +254,32 @@ export class GameObjectSelectionHandler {
     if (selectedActors.length === 0) return [];
     const selectedActorsGameObjects = this.getActorsByIds(selectedActors);
     // noinspection UnnecessaryLocalVariableJS
-    const movableActors = selectedActorsGameObjects.filter((actor) => !!getActorSystem(actor, MovementSystem));
+    const movableActors = selectedActorsGameObjects.filter(
+      (actor) => !!getActorSystem(actor, MovementSystem) || !!getActorComponent(actor, ProductionComponent)
+    );
     return movableActors;
   }
 
   private destroy() {
     this.sub.unsubscribe();
     this.scene.input.keyboard?.off("keydown", this.onKeyDown, this);
+    this.externalModalSubscription?.unsubscribe();
+  }
+
+  private listenToExternalModalEvents() {
+    this.externalModalSubscription = this.scene.communicator.allScenes.subscribe((event) => {
+      if (event.name === "external-modal-opened") {
+        this.externalModalOpen = true;
+      } else if (event.name === "external-modal-closed") {
+        this.externalModalOpen = false;
+      }
+    });
   }
 
   private onKeyDown(e: KeyboardEvent) {
+    // Don't process keyboard events if chat modal is open
+    if (this.externalModalOpen) return;
+
     if (e.code !== "Escape") return;
     const actions = getSceneService(this.scene, PlayerActionsHandler);
     // If PlayerActionsHandler doesn't have any ongoing actions, then ESC key will cancel the current selection
@@ -237,7 +289,7 @@ export class GameObjectSelectionHandler {
     }
   }
 
-  private playAudio(actorIds: string[]) {
+  private playAudio(actorIds: ActorId[]) {
     if (!actorIds.length) return;
     const firstActorId = actorIds[0]!;
     const firstActor = this.getActorsByIds([firstActorId])[0];
@@ -261,7 +313,7 @@ export class GameObjectSelectionHandler {
    * Gets game objects in current users viewport by the same actor name.
    * Used when double-clicking on an actor to select same actors on screen by type
    */
-  private getSameTypeActorsInViewportById(objectId: string): GameObject[] {
+  private getSameTypeActorsInViewportById(objectId: ActorId): GameObject[] {
     const selectableChildren = this.getSelectableChildren();
 
     // Find the original actor to get its type/name
@@ -300,8 +352,8 @@ export class GameObjectSelectionHandler {
    */
   private getParentType(actorName: ObjectNames): ObjectNames | undefined {
     for (const key in pwActorDefinitions) {
-      const actorDefinition = pwActorDefinitions[key as ObjectNames];
-      if (actorDefinition.meta?.randomOfType?.includes(actorName as ObjectNames)) {
+      const actorDefinition = getPwActorDefinition(key as ObjectNames, null);
+      if (actorDefinition?.meta?.randomOfType?.includes(actorName as ObjectNames)) {
         return key as ObjectNames;
       }
     }

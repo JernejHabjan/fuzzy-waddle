@@ -1,0 +1,35 @@
+{
+    "id": "2475b77a-58b3-4f6b-87cc-b2502d73ad23",
+    "sceneType": "PREFAB",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 128,
+        "borderHeight": 128
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "9f4375b3-c529-4a86-9af6-d7a5d1620552",
+            "label": "buildings_skaduwee_ember_stone_ember_stone1_png",
+            "texture": {
+                "key": "factions",
+                "frame": "buildings/skaduwee/ember_stone/ember_stone1.png"
+            },
+            "x": 32,
+            "y": 96.04024666957675,
+            "originY": 0.7503144271060683
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

@@ -1,14 +1,22 @@
-import { Component, inject, Input, type OnInit } from "@angular/core";
+import { Component, inject, input, type OnInit } from "@angular/core";
 
 import {
+  type GameScoreSnapshot,
+  type GameScoreSnapshotDto,
   GameSetupHelpers,
-  type PlayerStateAction,
-  type PlayerStateActionType,
-  ProbableWafflePlayer
+  type PlayerNumber
 } from "@fuzzy-waddle/api-interfaces";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
+import { ScoreDataService } from "../../../services/score-data.service";
 import { type ChartConfiguration, type ChartData, type ChartTypeRegistry, type DefaultDataPoint } from "chart.js";
 import { BaseChartDirective } from "ng2-charts";
+
+type SnapshotMetric = "units" | "buildings" | "resources" | "armyValue";
+
+interface MetricOption {
+  value: SnapshotMetric;
+  label: string;
+}
 
 @Component({
   selector: "probable-waffle-score-through-time",
@@ -17,10 +25,27 @@ import { BaseChartDirective } from "ng2-charts";
   styleUrls: ["./score-through-time.component.scss"]
 })
 export class ScoreThroughTimeComponent implements OnInit {
-  @Input({ required: true }) summaryType!: "units" | "buildings" | "resources";
-  protected ready = false;
   private readonly gameInstanceClientService = inject(GameInstanceClientService);
-  protected readonly chartData: ChartData<"line", Array<number | DefaultDataPoint<keyof ChartTypeRegistry>>, string> = {
+  private readonly scoreDataService = inject(ScoreDataService);
+
+  // Optional external data for match history view
+  readonly externalSnapshots = input<GameScoreSnapshotDto[] | undefined>();
+  readonly externalPlayers = input<Array<{ playerNumber: number; playerName: string }> | undefined>();
+  readonly externalGameInstanceId = input<string | undefined>();
+
+  protected ready = false;
+
+  protected readonly metricOptions: MetricOption[] = [
+    { value: "units", label: "Unit Count" },
+    { value: "buildings", label: "Building Count" },
+    { value: "resources", label: "Total Resources" },
+    { value: "armyValue", label: "Army Value" }
+  ];
+
+  protected selectedMetric: SnapshotMetric = "units";
+
+  // Reassigned on each build so ng2-charts detects the change
+  protected chartData: ChartData<"line", Array<number | DefaultDataPoint<keyof ChartTypeRegistry>>, string> = {
     datasets: [],
     labels: []
   };
@@ -31,122 +56,121 @@ export class ScoreThroughTimeComponent implements OnInit {
     string
   >["options"] = {
     responsive: true,
+    animation: false, // prevents crash when legend is clicked after chart destroys
+    plugins: {
+      legend: { position: "top" }
+    },
     scales: {
-      x: {
-        type: "linear",
-        position: "bottom",
-        ticks: {
-          callback: this.formatTimestampLabel
-        }
-      }
+      y: { beginAtZero: true }
     }
   };
 
   protected readonly chartLegend = true;
-  protected readonly chartType: "bar" | "line" | "scatter" | "bubble" | "pie" | "doughnut" | "polarArea" | "radar" =
-    "line";
-  private summaryAddType!: PlayerStateActionType;
-  private summaryRemoveType!: PlayerStateActionType;
-  protected chartTitle!: string;
+  protected readonly chartType = "line" as const;
+
   ngOnInit(): void {
-    this.prepareGraphData();
+    this.buildChart();
   }
 
-  private prepareGraphData() {
-    if (!this.gameInstanceClientService.gameInstance) return;
+  protected onMetricChange(event: Event): void {
+    this.selectedMetric = (event.target as HTMLSelectElement).value as SnapshotMetric;
+    this.buildChart();
+  }
 
-    switch (this.summaryType) {
-      case "units":
-        this.summaryAddType = "unit_produced";
-        this.summaryRemoveType = "unit_killed";
-        this.chartTitle = "Units produced";
-        break;
-      case "buildings":
-        this.summaryAddType = "building_constructed";
-        this.summaryRemoveType = "building_destroyed";
-        this.chartTitle = "Buildings constructed";
-        break;
-      case "resources":
-        this.summaryAddType = "resource_collected";
-        this.summaryRemoveType = "resource_spent";
-        this.chartTitle = "Resources collected";
-        break;
+  private buildChart(): void {
+    const external = this.externalSnapshots();
+    if (external && external.length > 0) {
+      this.buildFromSnapshotDtos(external);
+      return;
     }
 
-    const players = this.gameInstanceClientService.gameInstance.players;
-    const allTimestamps = this.getAllTimestamps(players);
+    const snapshots = this.scoreDataService.getScoreSnapshots();
+    if (snapshots.length > 0) {
+      this.buildFromSnapshots(snapshots);
+    } else {
+      this.ready = false;
+    }
+  }
 
-    this.chartData.labels = allTimestamps.map((n) => n.toString());
+  private buildFromSnapshotDtos(snapshots: GameScoreSnapshotDto[]): void {
+    const players = this.externalPlayers() ?? [];
+    const gameInstanceId = this.externalGameInstanceId();
+    const totalPlayers = players.length || snapshots[0]?.playerScores?.length || 1;
 
-    players.forEach((player) => {
-      const playerName = player.playerController.data.playerDefinition!.player.playerName!;
-      const buildingProduced = this.getBuildingProducedForPlayer(player, allTimestamps);
+    const playerNumbers = Array.from(
+      new Set(snapshots.flatMap((s) => s.playerScores.map((ps) => ps.playerNumber)))
+    ).sort((a, b) => a - b);
 
-      this.chartData.datasets.push({
-        label: playerName,
-        data: buildingProduced,
-        fill: false,
-        borderColor: GameSetupHelpers.getStringColorForPlayer(player.playerNumber!, players.length)
+    const startTime = snapshots[0]?.timestamp ?? 0;
+    const labels = snapshots.map((s) => `${Math.floor((s.timestamp - startTime) / 1000)}s`);
+
+    const datasets = playerNumbers.map((playerNumber) => {
+      const playerInfo = players.find((p) => p.playerNumber === playerNumber);
+      const label = playerInfo?.playerName ?? `Player ${playerNumber}`;
+      const color = GameSetupHelpers.getStringColorForPlayer(playerNumber, totalPlayers, gameInstanceId);
+
+      const data = snapshots.map((snapshot) => {
+        const ps = snapshot.playerScores.find((p) => p.playerNumber === playerNumber);
+        if (!ps) return 0;
+        switch (this.selectedMetric) {
+          case "units":
+            return ps.unitsCount;
+          case "buildings":
+            return ps.buildingsCount;
+          case "resources":
+            return ps.totalResources;
+          case "armyValue":
+            return ps.armyValue;
+        }
       });
+
+      return { label, data, fill: false, borderColor: color, backgroundColor: color, tension: 0.1 };
     });
+
+    this.chartData = { labels, datasets };
     this.ready = true;
   }
 
-  private getBuildingProducedForPlayer(player: ProbableWafflePlayer, allTimestamps: number[]): number[] {
-    const timestamps = allTimestamps;
-    const buildingProduced: number[] = new Array(timestamps.length).fill(0);
+  private buildFromSnapshots(snapshots: GameScoreSnapshot[]): void {
+    const gameInstance = this.gameInstanceClientService.gameInstance;
+    const gameInstanceId = gameInstance?.gameInstanceMetadata?.data?.gameInstanceId;
+    const players = gameInstance?.players ?? [];
 
-    let cumulativeCount = 0;
-    const summary = player.playerState.data.summary;
-
-    timestamps.forEach((timestamp, index) => {
-      const producedEvent = summary.find((s) => s.type === this.summaryAddType && s.time === timestamp);
-      if (producedEvent) {
-        cumulativeCount++;
-      }
-
-      const killedEvents = this.getOtherPlayers(player)
-        .map((p) => p.playerState.data.summary)
-        .flat()
-        .filter(
-          (s) =>
-            s.type === this.summaryRemoveType && s.time === timestamp && s.data.killedPlayerNr === player.playerNumber
-        );
-
-      cumulativeCount -= killedEvents.length;
-      buildingProduced[index] = cumulativeCount;
-    });
-
-    return buildingProduced;
-  }
-
-  getOtherPlayers(player: ProbableWafflePlayer): ProbableWafflePlayer[] {
-    return this.gameInstanceClientService.gameInstance!.players.filter((p) => p.playerNumber !== player.playerNumber);
-  }
-
-  private getAllTimestamps(players: ProbableWafflePlayer[]): number[] {
-    const timestamps: number[] = [];
-
-    players.forEach((player) => {
-      const summary = player.playerState.data.summary;
-
-      summary.forEach((s: PlayerStateAction) => {
-        if (!timestamps.includes(s.time)) {
-          timestamps.push(s.time);
-        }
+    const playerNumbers: PlayerNumber[] = [];
+    snapshots.forEach((s) => {
+      s.playerScores.forEach((_, num) => {
+        if (!playerNumbers.includes(num)) playerNumbers.push(num);
       });
     });
-    // Ensure that 0 is in the timestamps array
-    if (!timestamps.includes(0)) {
-      timestamps.unshift(0);
-    }
-    // Sort timestamps in ascending order
-    // noinspection UnnecessaryLocalVariableJS
-    const sortedTimestamps = timestamps.sort((a, b) => a - b);
-    return sortedTimestamps;
-  }
 
-  private formatTimestampLabel(value: string | number): string {
-    return Math.floor((value as number) / 1000).toString() + "s";
+    const startTime = snapshots[0]?.timestamp ?? 0;
+    const labels = snapshots.map((s) => `${Math.floor((s.timestamp - startTime) / 1000)}s`);
+
+    const datasets = playerNumbers.map((playerNumber) => {
+      const player = players.find((p) => p.playerNumber === playerNumber);
+      const label = player?.playerController?.data?.playerDefinition?.player?.playerName ?? `Player ${playerNumber}`;
+      const color = GameSetupHelpers.getStringColorForPlayer(playerNumber, players.length, gameInstanceId);
+
+      const data = snapshots.map((snapshot) => {
+        const ps = snapshot.playerScores.get(playerNumber);
+        if (!ps) return 0;
+        switch (this.selectedMetric) {
+          case "units":
+            return ps.unitsCount;
+          case "buildings":
+            return ps.buildingsCount;
+          case "resources":
+            return ps.totalResources;
+          case "armyValue":
+            return ps.armyValue;
+        }
+      });
+
+      return { label, data, fill: false, borderColor: color, backgroundColor: color, tension: 0.1 };
+    });
+
+    // Assign a new object so ng2-charts detects the reference change and redraws
+    this.chartData = { labels, datasets };
+    this.ready = true;
   }
 }

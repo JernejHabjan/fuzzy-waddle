@@ -3,12 +3,7 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { setActorData } from "../../../../../../data/actor-data";
-import { ColliderComponent } from "../../../../../../entity/components/movement/collider-component";
-import {
-  ObjectDescriptorComponent,
-  type ObjectDescriptorDefinition
-} from "../../../../../../entity/components/object-descriptor-component";
+import { initStaticActor } from "../../../../../../data/init-static-actor";
 /* END-USER-IMPORTS */
 
 export default class ChristmasTree extends Phaser.GameObjects.Image {
@@ -30,16 +25,7 @@ export default class ChristmasTree extends Phaser.GameObjects.Image {
     this.setOrigin(0.5, 0.8475971974696084);
 
     /* START-USER-CTR-CODE */
-    setActorData(
-      this,
-      [
-        new ObjectDescriptorComponent({
-          color: 0xc6c209
-        } satisfies ObjectDescriptorDefinition),
-        new ColliderComponent(this)
-      ],
-      []
-    );
+    initStaticActor(this, 0xc6c209, true);
     /* END-USER-CTR-CODE */
   }
 

@@ -4,6 +4,7 @@ import type { OnInit } from "@angular/core";
 import {
   type ProbableWaffleGameInstanceData,
   type ProbableWaffleGameInstanceSaveData,
+  ProbableWaffleGameInstanceType,
   ProbableWaffleLevels
 } from "@fuzzy-waddle/api-interfaces";
 import { Router } from "@angular/router";
@@ -31,7 +32,9 @@ export class LoadComponent implements OnInit {
   }
 
   private async setData() {
-    this.gameInstanceDataRecords = await this.gameInstanceStorageService.getFromStorage();
+    this.gameInstanceDataRecords = (await this.gameInstanceStorageService.getFromStorage()).filter(
+      (record) => record.gameInstanceData.gameInstanceMetadataData?.type !== ProbableWaffleGameInstanceType.Replay
+    );
     // sort descending
     this.gameInstanceDataRecords.sort((a, b) => {
       const aCreated = a.created;

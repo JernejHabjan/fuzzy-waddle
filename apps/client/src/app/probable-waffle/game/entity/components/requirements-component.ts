@@ -1,9 +1,6 @@
 import GameObject = Phaser.GameObjects.GameObject;
-import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import type { RequirementsDefinition } from "./requirements-definition";
 
-export type RequirementsDefinition = {
-  actors: ObjectNames[];
-};
 export class RequirementsComponent {
   // todo should use techTreeComponent maybe?
 

@@ -131,6 +131,18 @@
             "scope": "CLASS",
             "x": 552,
             "y": 541
+        },
+        {
+            "prefabId": "c9b0f5d2-6115-4e8a-aeee-c7dd53a1ca8c",
+            "id": "c9238e68-65a0-442a-872c-9592b759f41c",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "idleWorkersButton",
+            "scope": "CLASS",
+            "x": 13,
+            "y": 520
         }
     ],
     "plainObjects": [],

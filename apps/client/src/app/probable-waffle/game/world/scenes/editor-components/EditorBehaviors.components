@@ -6,6 +6,7 @@
             "objectDisplayFormat": "",
             "baseClass": "",
             "gameObjectType": "Phaser.GameObjects.GameObject",
+            "generateGameObjectField": true,
             "properties": [
                 {
                     "name": "owner_id",
@@ -13,8 +14,11 @@
                     "tooltip": "",
                     "defValue": "-1",
                     "customDefinition": false,
+                    "editorOnly": false,
+                    "deprecated": false,
                     "type": {
                         "id": "option",
+                        "isArray": false,
                         "options": [
                             "1",
                             "2",
@@ -28,7 +32,72 @@
                         ]
                     }
                 }
-            ]
+            ],
+            "constraints": [],
+            "constraintsCondition": "all"
+        },
+        {
+            "name": "EditorConvertible",
+            "displayName": "EditorConvertible",
+            "objectDisplayFormat": "",
+            "baseClass": "",
+            "gameObjectType": "Phaser.GameObjects.GameObject",
+            "generateGameObjectField": true,
+            "properties": [
+                {
+                    "name": "detection_range",
+                    "label": "Detection Range",
+                    "tooltip": "Range in tiles to detect nearby owned units",
+                    "defValue": 8,
+                    "customDefinition": false,
+                    "editorOnly": false,
+                    "deprecated": false,
+                    "type": {
+                        "id": "number",
+                        "isArray": false
+                    }
+                },
+                {
+                    "name": "check_interval",
+                    "label": "Check Interval",
+                    "tooltip": "How often to check for nearby units (in milliseconds)",
+                    "defValue": 500,
+                    "customDefinition": false,
+                    "editorOnly": false,
+                    "deprecated": false,
+                    "type": {
+                        "id": "number",
+                        "isArray": false
+                    }
+                }
+            ],
+            "constraints": [],
+            "constraintsCondition": "all"
+        },
+        {
+            "name": "EditorActorLevel",
+            "displayName": "",
+            "objectDisplayFormat": "",
+            "baseClass": "",
+            "gameObjectType": "Phaser.GameObjects.GameObject",
+            "generateGameObjectField": true,
+            "properties": [
+                {
+                    "name": "level",
+                    "label": "Level",
+                    "tooltip": "",
+                    "defValue": 1,
+                    "customDefinition": false,
+                    "editorOnly": false,
+                    "deprecated": false,
+                    "type": {
+                        "id": "number",
+                        "isArray": false
+                    }
+                }
+            ],
+            "constraints": [],
+            "constraintsCondition": "all"
         }
     ],
     "meta": {

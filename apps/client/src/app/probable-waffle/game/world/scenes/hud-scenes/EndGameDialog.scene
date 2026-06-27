@@ -1,0 +1,156 @@
+{
+    "id": "3cc79c58-df37-4d35-9f53-032d1cf18c6e",
+    "sceneType": "SCENE",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadPackFiles": [],
+        "createMethodName": "editorCreate",
+        "sceneKey": "EndGameDialog",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 336,
+        "borderHeight": 430
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "ce521c53-8cc9-4cbb-8feb-b5a09cbaa2ee",
+            "label": "dialog_container",
+            "displayName": "Game actions",
+            "scope": "CLASS",
+            "list": [
+                {
+                    "type": "NineSlice",
+                    "id": "c74ff430-b90f-46f4-a842-0f1b2c86f676",
+                    "label": "game_actions_bg",
+                    "displayName": "Background",
+                    "texture": {
+                        "key": "gui",
+                        "frame": "cryos_mini_gui/surfaces/surface_dark.png"
+                    },
+                    "x": -112.60605580401727,
+                    "y": -190.29550515717648,
+                    "scaleX": 10.948325638168216,
+                    "scaleY": 10.305188906705764,
+                    "originX": 0,
+                    "originY": 0,
+                    "leftWidth": 1,
+                    "rightWidth": 1,
+                    "topHeight": 1,
+                    "bottomHeight": 1,
+                    "width": 20,
+                    "height": 25
+                },
+                {
+                    "type": "Container",
+                    "id": "506db526-1bda-4b80-958f-eaf4c3fb5d94",
+                    "label": "continue_button",
+                    "displayName": "Continue",
+                    "scope": "CLASS",
+                    "hitArea.shape": "RECTANGLE",
+                    "hitArea.x": -42,
+                    "hitArea.y": -13,
+                    "hitArea.width": 85.7117848223629,
+                    "hitArea.height": 25.429332302435576,
+                    "x": -5,
+                    "y": 22,
+                    "scaleX": 2,
+                    "scaleY": 2,
+                    "list": [
+                        {
+                            "type": "NineSlice",
+                            "id": "673e1f26-249b-4c53-bc7d-ef062ca13a19",
+                            "label": "game_actions_quit_bg_2",
+                            "displayName": "Background",
+                            "texture": {
+                                "key": "gui",
+                                "frame": "cryos_mini_gui/buttons/button_small.png"
+                            },
+                            "scaleX": 2.3521289589041787,
+                            "scaleY": 1.5492262688240692,
+                            "leftWidth": 3,
+                            "rightWidth": 3,
+                            "topHeight": 3,
+                            "bottomHeight": 3,
+                            "width": 40,
+                            "height": 20
+                        },
+                        {
+                            "type": "Text",
+                            "id": "217ce496-0080-43e7-9086-a9b592b338b5",
+                            "label": "text_1",
+                            "displayName": "Text",
+                            "x": -1,
+                            "originX": 0.5,
+                            "originY": 0.5,
+                            "text": "Continue",
+                            "resolution": 10,
+                            "align": "center",
+                            "fontFamily": "disposabledroid",
+                            "fontSize": "18px",
+                            "color": "#000000ff",
+                            "stroke": "#ffffffff"
+                        },
+                        {
+                            "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f955",
+                            "id": "a341c04e-f56e-4d7f-a156-99dc12f164eb",
+                            "label": "onPointerUpScript_continue",
+                            "displayName": "Pointer up",
+                            "list": [
+                                {
+                                    "prefabId": "757fdd95-b5cc-4c5b-adef-a26b5965d851",
+                                    "id": "b7d0e0d7-434a-4827-9bed-bed5cbcbe476",
+                                    "unlock": [
+                                        "eventName"
+                                    ],
+                                    "label": "emitEventContinueAction",
+                                    "displayName": "Emit \"continue\"",
+                                    "eventName": "continue"
+                                }
+                            ]
+                        },
+                        {
+                            "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f954",
+                            "id": "ab5bffd3-6e92-4086-bb2d-14dcfe3fe14a",
+                            "label": "onPointerDownScript_continue",
+                            "displayName": "Pointer down",
+                            "list": [
+                                {
+                                    "prefabId": "0e39177a-6e19-4b56-a7c2-2360a2e41505",
+                                    "id": "6cc2bdbc-bf0c-432c-a19b-38aee4976200",
+                                    "label": "continue_click",
+                                    "displayName": "Push action"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "Text",
+                    "id": "0262823d-88e8-43db-a95e-90aa259b9847",
+                    "label": "message",
+                    "scope": "CLASS",
+                    "x": -95,
+                    "y": -96,
+                    "originY": 0.5,
+                    "resolution": 10,
+                    "align": "center",
+                    "fontFamily": "disposabledroid",
+                    "fontSize": "32px",
+                    "color": "#ffffffff",
+                    "maxLines": 5,
+                    "wordWrapWidth": 200
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

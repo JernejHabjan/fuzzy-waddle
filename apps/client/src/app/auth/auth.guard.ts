@@ -8,9 +8,7 @@ export class AuthGuard implements CanActivate {
   private readonly router = inject(Router);
 
   async canActivate(): Promise<boolean> {
-    if (this.authService.processing) {
-      await this.authService.processing;
-    }
+    await this.authService.ensureAuthReady();
     const isAuthenticated = this.authService.isAuthenticated;
     if (!isAuthenticated) {
       await this.router.navigate(["/"]);
