@@ -10,9 +10,93 @@
 }
 
 .profile-shell {
-  width: min(1120px, calc(100% - 2rem));
+  width: min(1120px, 100%);
   margin: 0 auto;
-  padding: 1.5rem 0 2rem;
+  padding: 1.5rem 1rem 2rem;
+  box-sizing: border-box;
+}
+
+.profile-page-embedded {
+  overflow: visible;
+}
+
+.profile-shell-embedded {
+  width: 100%;
+  max-width: none;
+  padding: 0.75rem 0 0;
+}
+
+.profile-shell-embedded .hero-panel {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.1rem;
+  padding: 1.15rem;
+  border-radius: 20px;
+}
+
+.profile-shell-embedded .hero-copy h1 {
+  font-size: clamp(1.65rem, 5vw, 2.35rem);
+  line-height: 1;
+}
+
+.profile-shell-embedded .hero-meta,
+.profile-shell-embedded .stats-grid,
+.profile-shell-embedded .content-grid,
+.profile-shell-embedded .detail-grid,
+.profile-shell-embedded .game-metrics {
+  grid-template-columns: 1fr;
+}
+
+.profile-shell-embedded .hero-meta {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.profile-shell-embedded .meta-pill,
+.profile-shell-embedded .preferred-link {
+  width: 100%;
+  justify-content: flex-start;
+  border-radius: 18px;
+  box-sizing: border-box;
+}
+
+.profile-shell-embedded .hero-sidebar {
+  justify-items: stretch;
+}
+
+.profile-shell-embedded .profile-avatar,
+.profile-shell-embedded .profile-role-banner {
+  justify-self: center;
+}
+
+.profile-shell-embedded .profile-role-banner {
+  max-width: 100%;
+}
+
+.profile-shell-embedded .stat-card,
+.profile-shell-embedded .info-card,
+.profile-shell-embedded .games-panel,
+.profile-shell-embedded .game-card,
+.profile-shell-embedded .empty-state {
+  border-radius: 18px;
+}
+
+.profile-shell-embedded .stat-card,
+.profile-shell-embedded .info-card,
+.profile-shell-embedded .games-panel,
+.profile-shell-embedded .game-card {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.profile-shell-embedded .summary-line,
+.profile-shell-embedded .game-card-header {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+}
+
+.profile-shell-embedded .section-heading {
+  align-items: flex-start;
 }
 
 .hero-panel,
@@ -58,12 +142,14 @@
   margin: 1rem 0 0.35rem;
   font-size: clamp(2rem, 4vw, 3.35rem);
   line-height: 0.95;
+  overflow-wrap: anywhere;
 }
 
 .handle {
   margin: 0 0 1rem;
   color: $app-text-on-dark-muted;
   font-size: 1rem;
+  overflow-wrap: anywhere;
 }
 
 .hero-text {
@@ -71,6 +157,7 @@
   margin: 0;
   color: $app-text-on-dark-soft;
   font-size: 1rem;
+  overflow-wrap: anywhere;
 }
 
 .hero-meta {
@@ -85,6 +172,18 @@
   border-radius: 999px;
   background: $app-surface-glass;
   color: $app-text-on-dark;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.meta-pill span,
+.preferred-card p,
+.detail-grid p,
+.moderation-note span,
+.game-card-header p,
+.game-metrics strong,
+.summary-line span {
+  overflow-wrap: anywhere;
 }
 
 .hero-sidebar {
@@ -109,6 +208,7 @@
   background: $app-overlay-warm;
   color: $app-accent-warm-contrast;
   font-weight: 700;
+  text-align: center;
 }
 
 .preferred-card {
@@ -116,6 +216,7 @@
   padding: 1.1rem;
   border-radius: 22px;
   background: $app-surface-glass-strong;
+  box-sizing: border-box;
 }
 
 .preferred-label,
@@ -132,6 +233,7 @@
   margin-top: 0.35rem;
   font-size: 1.35rem;
   font-weight: 800;
+  overflow-wrap: anywhere;
 }
 
 .preferred-card p {
@@ -199,6 +301,7 @@
 .section-heading h2 {
   margin: 0;
   font-size: 1.2rem;
+  overflow-wrap: anywhere;
 }
 
 .detail-grid {
@@ -260,6 +363,7 @@
 .game-card-header h3 {
   margin: 0;
   font-size: 1.2rem;
+  overflow-wrap: anywhere;
 }
 
 .game-card-header p {
@@ -272,6 +376,8 @@
   border-radius: 999px;
   background: $app-overlay-muted;
   font-weight: 700;
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }
 
 .game-metrics {
@@ -312,5 +418,100 @@
 
   .game-card-header {
     flex-direction: column;
+  }
+}
+
+@media (max-width: 640px) {
+  .profile-shell {
+    padding: 1rem 0.75rem 1.5rem;
+  }
+
+  .hero-panel,
+  .info-card,
+  .games-panel,
+  .stat-card,
+  .empty-state {
+    border-radius: 20px;
+  }
+
+  .hero-panel {
+    gap: 1.25rem;
+    padding: 1.1rem;
+  }
+
+  .hero-copy h1 {
+    font-size: clamp(1.65rem, 9vw, 2.25rem);
+    line-height: 1;
+  }
+
+  .hero-meta {
+    gap: 0.55rem;
+  }
+
+  .meta-pill {
+    width: 100%;
+    justify-content: flex-start;
+    padding: 0.65rem 0.85rem;
+    border-radius: 18px;
+  }
+
+  .hero-sidebar {
+    justify-items: stretch;
+  }
+
+  .profile-avatar,
+  .profile-role-banner {
+    justify-self: center;
+  }
+
+  .preferred-card {
+    padding: 1rem;
+    border-radius: 18px;
+  }
+
+  .stat-card,
+  .info-card,
+  .games-panel,
+  .game-card {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .section-heading {
+    align-items: flex-start;
+  }
+
+  .summary-line {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .hero-panel {
+    padding: 1rem 0.9rem;
+  }
+
+  .eyebrow,
+  .meta-pill,
+  .profile-role-banner,
+  .preferred-link,
+  .game-badge {
+    border-radius: 16px;
+  }
+
+  .profile-avatar {
+    width: 104px;
+    height: 104px;
+  }
+
+  .detail-grid {
+    gap: 0.75rem;
+  }
+
+  .profile-shell-embedded .profile-avatar {
+    width: 104px;
+    height: 104px;
   }
 }

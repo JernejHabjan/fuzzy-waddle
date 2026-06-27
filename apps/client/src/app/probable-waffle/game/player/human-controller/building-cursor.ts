@@ -13,7 +13,7 @@ import { getGameObjectBounds, getGameObjectLogicalTransform, onSceneInitialized 
 import { DepthHelper } from "../../world/services/depth.helper";
 import { getPwActorDefinition } from "../../prefabs/definitions/actor-definitions";
 import { upgradeFromCoreToConstructingActorData } from "../../data/actor-data";
-import { emitEventIssueActorCommandToSelectedActors, getCurrentPlayerNumber } from "../../data/scene-data";
+import { getCurrentPlayerNumber, getPlayer } from "../../data/scene-data";
 import { EventEmitter } from "@angular/core";
 import GameProbableWaffleScene from "../../world/scenes/GameProbableWaffleScene";
 import { Subscription } from "rxjs";
@@ -29,6 +29,7 @@ import { UiFeedbackBuildDeniedSound } from "../../hud/UiFeedbackSfx";
 import { FogOfWarComponent } from "../../world/tilemap/fog-of-war.component";
 import { RepresentableComponent } from "../../entity/components/representable-component";
 import { ProductionValidator } from "../../data/tech-tree/production-validator";
+import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
 import { ActorTranslateComponent } from "../../entity/components/movement/actor-translate-component";
 import { OwnerComponent } from "../../entity/components/owner-component";
 import { PawnAiController } from "../../prefabs/ai-agents/pawn-ai-controller";
@@ -285,6 +286,7 @@ export class BuildingCursor {
         }
 
         // Not complete yet, check again later
+        // Intentional wall-clock polling: this is local placement UX, not lockstep simulation state.
         this.scene.time.delayedCall(checkInterval, checkMovementComplete);
       };
 
@@ -899,9 +901,18 @@ export class BuildingCursor {
     upgradeFromCoreToConstructingActorData(gameObject, actorDefinition);
     // todo Save to game state
 
-    // instruct the builder to start building
+    // Instruct selected builders to begin constructing the placed site
+    if (!currentPlayer) return;
     const idComponent = getActorComponent(gameObject, IdComponent)!;
-    emitEventIssueActorCommandToSelectedActors(this.scene, { objectIds: [idComponent.id] });
+    const selectedActorIds = getPlayer(this.scene)?.getSelection() ?? [];
+    const commandBus = getSceneService(this.scene, CommandBusService);
+    commandBus?.dispatch({
+      type: "ACTOR_ACTION",
+      playerNumber: currentPlayer,
+      actorIds: selectedActorIds,
+      targetObjectIds: [idComponent.id],
+      queue: false
+    });
   }
 
   static spawnBuildingForPlayer(

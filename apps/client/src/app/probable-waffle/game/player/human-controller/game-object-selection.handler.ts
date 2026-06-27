@@ -4,8 +4,6 @@ import { getActorComponent } from "../../data/actor-component";
 import { getGameObjectBounds } from "../../data/game-object-helper";
 import { IdComponent } from "../../entity/components/id-component";
 import {
-  emitEventIssueActorCommandToSelectedActors,
-  emitEventIssueMoveCommandToSelectedActors,
   emitEventSelection,
   getCurrentPlayerNumber,
   getPlayer,
@@ -13,11 +11,11 @@ import {
 } from "../../data/scene-data";
 import { AttackComponent } from "../../entity/components/combat/components/attack-component";
 import { ProductionCostComponent } from "../../entity/components/production/production-cost-component";
+import { ProductionComponent } from "../../entity/components/production/production-component";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import {
   type ActorId,
   ObjectNames,
-  type ProbableWaffleDoubleSelectionData,
   type ProbableWaffleSelectionData
 } from "@fuzzy-waddle/api-interfaces";
 import { getActorSystem } from "../../data/actor-system";
@@ -30,6 +28,7 @@ import { getSceneService } from "../../world/services/scene-component-helpers";
 import { PlayerActionsHandler } from "./player-actions-handler";
 import { SoundType } from "../../entity/components/actor-audio/sound-type";
 import { ContainableComponent } from "../../entity/components/building/containable-component";
+import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
 
 export class GameObjectSelectionHandler {
   private readonly debug = false;
@@ -75,12 +74,25 @@ export class GameObjectSelectionHandler {
                 this.playAudio(objectIds!);
               }
             } else if (isRightClick) {
-              emitEventIssueActorCommandToSelectedActors(this.scene, { objectIds: objectIds! });
+              // Command selected actors to interact with the right-clicked target.
+              // Ownership filtering happens at dispatch time — only own actors are in selection.
+              const playerNumber = getCurrentPlayerNumber(this.scene);
+              const selectedActorIds = getPlayer(this.scene)?.getSelection() ?? [];
+              if (playerNumber && selectedActorIds.length) {
+                const commandBus = getSceneService(this.scene, CommandBusService);
+                commandBus?.dispatch({
+                  type: "ACTOR_ACTION",
+                  playerNumber,
+                  actorIds: selectedActorIds,
+                  targetObjectIds: objectIds!,
+                  queue: isShiftDown ?? false
+                });
+              }
             }
 
             break;
           case "selection.doubleSelect":
-            const doubleSelectData = selection.data as ProbableWaffleDoubleSelectionData;
+            const doubleSelectData = selection.data;
             const objectId = doubleSelectData.objectId;
             if (this.debug) console.log("doubleSelect", objectId);
             const actors = this.getSameTypeActorsInViewportById(objectId);
@@ -96,12 +108,18 @@ export class GameObjectSelectionHandler {
               const selectedActorObjectIds = this.getSelectedMovableActors().map(
                 (actor) => getActorComponent(actor, IdComponent)!.id
               );
-              emitEventIssueMoveCommandToSelectedActors(
-                this.scene,
-                data.terrainSelectedTileVec3!,
-                data.terrainSelectedWorldVec3!,
-                selectedActorObjectIds
-              );
+              const playerNumber = getCurrentPlayerNumber(this.scene);
+              if (playerNumber && selectedActorObjectIds.length) {
+                const commandBus = getSceneService(this.scene, CommandBusService);
+                commandBus?.dispatch({
+                  type: "MOVE",
+                  playerNumber,
+                  actorIds: selectedActorObjectIds,
+                  tileVec3: data.terrainSelectedTileVec3!,
+                  worldVec3: data.terrainSelectedWorldVec3!,
+                  queue: isShiftDown ?? false
+                });
+              }
             }
             break;
           case "selection.multiSelect":
@@ -236,7 +254,9 @@ export class GameObjectSelectionHandler {
     if (selectedActors.length === 0) return [];
     const selectedActorsGameObjects = this.getActorsByIds(selectedActors);
     // noinspection UnnecessaryLocalVariableJS
-    const movableActors = selectedActorsGameObjects.filter((actor) => !!getActorSystem(actor, MovementSystem));
+    const movableActors = selectedActorsGameObjects.filter(
+      (actor) => !!getActorSystem(actor, MovementSystem) || !!getActorComponent(actor, ProductionComponent)
+    );
     return movableActors;
   }
 

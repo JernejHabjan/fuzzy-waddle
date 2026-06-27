@@ -3,7 +3,6 @@ import { FactionType, ObjectNames, ProbableWafflePlayer } from "@fuzzy-waddle/ap
 import { PlayerAiBlackboard } from "../player-ai-blackboard";
 import { getActorComponent } from "../../../data/actor-component";
 import { ProductionComponent } from "../../../entity/components/production/production-component";
-import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
 import { getCostForObjectName } from "../../../entity/components/production/cost-utils";
 import { ProductionValidator } from "../../../data/tech-tree/production-validator";
 import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
@@ -12,6 +11,7 @@ import { AI_CONFIG } from "../ai-config";
 import { FlyingComponent } from "../../../entity/components/movement/flying-component";
 import { AdaptiveThresholdManager } from "./adaptive-threshold-manager";
 import { getUnitStrength } from "../ai-utils";
+import { dispatchProductionCommand } from "../../../data/commands/queue-command-dispatch";
 
 /**
  * ForceMaintenanceManager
@@ -33,7 +33,7 @@ export class ForceMaintenanceManager {
 
   shouldProduceMilitaryUnit(): boolean {
     const targetStrength = this.adaptiveThresholds.getMilitaryUnitTargetStrength();
-    const now = performance.now();
+    const now = this.blackboard.getNow();
     if (now - this.lastUnitQueueTime < AI_CONFIG.unitQueueCooldownMs) return false;
     const unitsStrength = this.blackboard.units.reduce((sum, u) => sum + getUnitStrength(u), 0);
     return unitsStrength < targetStrength;
@@ -52,7 +52,7 @@ export class ForceMaintenanceManager {
   }
 
   queueMilitaryUnitProduction(): State {
-    const now = performance.now();
+    const now = this.blackboard.getNow();
     if (!this.hasResourcesForQueuedUnit()) return State.FAILED;
     if (this.blackboard.getTotalResources() < this.adaptiveThresholds.getResourceGatheringThreshold()) {
       return State.FAILED; // economy is low
@@ -64,9 +64,8 @@ export class ForceMaintenanceManager {
     });
     if (!buildings.length) return State.FAILED;
 
-    let productionComponent: ProductionComponent | null = null;
+    let productionBuilding: Phaser.GameObjects.GameObject | null = null;
     let pickedUnitName: ObjectNames | null = null;
-    let productionCost = null;
 
     for (const building of buildings) {
       const prod = getActorComponent(building, ProductionComponent);
@@ -118,22 +117,16 @@ export class ForceMaintenanceManager {
           continue;
         }
 
-        const def = getPwActorDefinition(unitName, null);
-        if (!def?.components?.productionCost) continue;
-
-        productionComponent = prod;
-        productionCost = def.components.productionCost;
+        productionBuilding = building;
         pickedUnitName = unitName;
         break;
       }
     }
 
-    if (!productionComponent || productionCost === null || pickedUnitName === null) return State.FAILED;
-
-    productionComponent.startProduction({
-      actorName: pickedUnitName,
-      costData: productionCost
-    });
+    if (!productionBuilding || pickedUnitName === null) return State.FAILED;
+    if (!dispatchProductionCommand(this.scene, [productionBuilding], this.player.playerNumber!, pickedUnitName)) {
+      return State.FAILED;
+    }
 
     this.lastUnitQueueTime = now;
     this.log(`Queued military unit production: ${pickedUnitName}`);

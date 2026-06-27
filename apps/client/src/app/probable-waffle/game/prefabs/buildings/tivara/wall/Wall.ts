@@ -178,13 +178,14 @@ export default class Wall extends Phaser.GameObjects.Container {
     onObjectReady(
       this,
       () => {
-        this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.throttleRedrawWalls, this); // todo remove this later
+        // Intentional frame update: wall mesh refresh is visual neighbor rendering only.
+        this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.throttleRedrawWallsFrameNonDeterministic, this); // todo remove this later
       },
       this
     );
   }
 
-  private throttleRedrawWalls = throttle(this.refreshWallType.bind(this), 1000);
+  private throttleRedrawWallsFrameNonDeterministic = throttle(this.refreshWallType.bind(this), 1000);
 
   private refreshWallType() {
     if (!this.active) return;
@@ -277,7 +278,7 @@ export default class Wall extends Phaser.GameObjects.Container {
     return getNeighboursByTypes(this, [Wall, WatchTower, Stairs], TilemapComponent.tileWidth);
   }
   override destroy(fromScene?: boolean) {
-    this.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.throttleRedrawWalls, this);
+    this.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.throttleRedrawWallsFrameNonDeterministic, this);
     super.destroy(fromScene);
   }
   /* END-USER-CODE */

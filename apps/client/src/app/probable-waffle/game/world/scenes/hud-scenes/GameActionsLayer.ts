@@ -378,6 +378,7 @@ export default class GameActionsLayer extends ProbableWaffleScene {
     this.game_action_settings = game_action_settings;
     this.game_action_restart = game_action_restart;
     this.game_action_continue = game_action_continue;
+    this.game_actions_bg = game_actions_bg;
     this.game_actions_container = game_actions_container;
 
     this.events.emit("scene-awake");
@@ -389,10 +390,19 @@ export default class GameActionsLayer extends ProbableWaffleScene {
   private game_action_settings!: Phaser.GameObjects.Container;
   private game_action_restart!: Phaser.GameObjects.Container;
   private game_action_continue!: Phaser.GameObjects.Container;
+  private game_actions_bg!: Phaser.GameObjects.NineSlice;
   private game_actions_container!: Phaser.GameObjects.Container;
+  private pauseToggleButton?: Phaser.GameObjects.Container;
 
   /* START-USER-CODE */
   private readonly smallScreenBreakpoint = 800;
+  private readonly panelBaseWidth = 20;
+  private readonly panelBaseHeight = 40;
+  private readonly panelWidth = this.panelBaseWidth * 10.948325638168216;
+  private readonly panelCenterX = -112.60605580401727 + this.panelWidth / 2;
+  private readonly buttonStackSpacing = 66;
+  private readonly panelVerticalPadding = 43;
+
   override create() {
     this.editorCreate();
 
@@ -407,6 +417,7 @@ export default class GameActionsLayer extends ProbableWaffleScene {
     this.handleLoadGame();
     this.handleSettings();
     this.handleRestart();
+    this.createPauseToggleButton();
     this.handleButtonVisibility();
   }
 
@@ -473,6 +484,59 @@ export default class GameActionsLayer extends ProbableWaffleScene {
     });
   }
 
+  private createPauseToggleButton() {
+    const pauseButton = this.add.container(-3.6060558040172737, -214.29550515717648);
+    pauseButton.setInteractive(
+      new Phaser.Geom.Rectangle(-42, -13, 85.7117848223629, 25.429332302435576),
+      Phaser.Geom.Rectangle.Contains
+    );
+    pauseButton.scaleX = 2;
+    pauseButton.scaleY = 2;
+    this.game_actions_container.add(pauseButton);
+
+    const pauseButtonBg = this.add.nineslice(
+      0,
+      0,
+      "gui",
+      "cryos_mini_gui/buttons/button_small.png",
+      40,
+      20,
+      3,
+      3,
+      3,
+      3
+    );
+    pauseButtonBg.scaleX = 2.3521289589041787;
+    pauseButtonBg.scaleY = 1.5492262688240692;
+    pauseButton.add(pauseButtonBg);
+
+    const pauseText = this.add.text(-1, 0, "", {});
+    pauseText.setOrigin(0.5, 0.5);
+    pauseText.text = "Pause";
+    pauseText.setStyle({
+      align: "center",
+      color: "#000000ff",
+      fontFamily: "disposabledroid",
+      fontSize: "18px",
+      resolution: 10
+    });
+    pauseButton.add(pauseText);
+
+    pauseButton.on("pointerdown", () => {
+      this.communicator.allScenes.emit({ name: "pause-toggle-requested" });
+      this.destroySelf();
+    });
+
+    this.pauseToggleButton = pauseButton;
+    this.expandBackgroundForPauseButton();
+  }
+
+  private expandBackgroundForPauseButton(): void {
+    // The pause button sits above the original menu stack, so extend the panel
+    // upward instead of leaving the button floating outside the dark background.
+    this.layoutButtonsAndBackground();
+  }
+
   private get isVisibleSaveButton() {
     return !this.isReplay;
   }
@@ -489,6 +553,55 @@ export default class GameActionsLayer extends ProbableWaffleScene {
     this.game_action_load.visible = this.isVisibleLoadButton;
     this.game_action_save.visible = this.isVisibleSaveButton;
     this.game_action_restart.visible = this.isVisibleRestartButton;
+    if (this.pauseToggleButton) {
+      this.pauseToggleButton.visible = this.isVisiblePauseButton;
+    }
+    this.layoutButtonsAndBackground();
+  }
+
+  private layoutButtonsAndBackground() {
+    const visibleButtons = this.getVisibleActionButtons();
+    if (visibleButtons.length === 0) {
+      this.game_actions_bg.visible = false;
+      return;
+    }
+
+    this.game_actions_bg.visible = true;
+
+    const firstButtonY = -((visibleButtons.length - 1) * this.buttonStackSpacing) / 2;
+    visibleButtons.forEach((button, index) => {
+      button.x = this.panelCenterX;
+      button.y = firstButtonY + index * this.buttonStackSpacing;
+    });
+
+    const topButtonY = visibleButtons[0]!.y;
+    const bottomButtonY = visibleButtons[visibleButtons.length - 1]!.y;
+    const panelHeight = bottomButtonY - topButtonY + this.panelVerticalPadding * 2;
+
+    this.game_actions_bg.x = this.panelCenterX - this.panelWidth / 2;
+    this.game_actions_bg.y = topButtonY - this.panelVerticalPadding;
+    this.game_actions_bg.scaleX = this.panelWidth / this.panelBaseWidth;
+    this.game_actions_bg.scaleY = panelHeight / this.panelBaseHeight;
+  }
+
+  private getVisibleActionButtons(): Phaser.GameObjects.Container[] {
+    return this.getOrderedActionButtons().filter((button) => button.visible);
+  }
+
+  private getOrderedActionButtons(): Phaser.GameObjects.Container[] {
+    return [
+      this.pauseToggleButton,
+      this.game_action_continue,
+      this.game_action_restart,
+      this.game_action_settings,
+      this.game_action_save,
+      this.game_action_load,
+      this.game_action_quit
+    ].filter((button): button is Phaser.GameObjects.Container => Boolean(button));
+  }
+
+  private get isVisiblePauseButton() {
+    return !this.isReplay && !this.isSpectator;
   }
 
   private get isReplay() {

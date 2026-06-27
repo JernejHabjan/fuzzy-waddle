@@ -37,11 +37,15 @@ import { ProductionValidator } from "../../../data/tech-tree/production-validato
 import { findProductionBuildingWithLeastRemainingTime } from "../../../entity/components/production/production-helpers";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import {
+  dispatchCancelResearchCommand,
+  dispatchProductionCommand,
+  dispatchResearchCommand
+} from "../../../data/commands/queue-command-dispatch";
+import {
   type ConstructableCategory,
   ConstructableDefinition
 } from "../../../entity/components/construction/constructable-category";
 import { SelectionTabHandler } from "../../../player/human-controller/selection-tab-handler";
-import { AssignProductionErrorCode } from "../../../entity/components/production/assign-production-error-code";
 import type { ActorActionSetup } from "./actor-action-setup";
 import { SpellComponent } from "../../../entity/components/combat/components/spell-component";
 import { spellDefinitions } from "../../../entity/components/combat/spell-definitions";
@@ -927,46 +931,37 @@ export default class ActorActions extends Phaser.GameObjects.Container {
 
             // Find the production building with the least total remaining production time
             const targetComponent = findProductionBuildingWithLeastRemainingTime(allActors);
-            if (!targetComponent) {
+            const playerNumber = getCurrentPlayerNumber(this.mainSceneWithActors);
+            if (!targetComponent || !playerNumber) {
               console.error("No production building found");
               return;
             }
-
-            const errorCode = targetComponent.startProduction({
-              actorName: product,
-              costData: actorDefinition!.components!.productionCost
-            });
-            const sound = this.mainSceneWithActors.sound;
-
-            sound.stopByKey(AudioSprites.UI_FEEDBACK);
-
             const crossSceneCommunicationService = getSceneService(
               this.mainSceneWithActors,
               CrossSceneCommunicationService
             );
-            switch (errorCode) {
-              case AssignProductionErrorCode.NotEnoughResources:
+            const sound = this.mainSceneWithActors.sound;
+            sound.stopByKey(AudioSprites.UI_FEEDBACK);
+            if (this.areAllProductionQueuesFull(allActors)) {
+              this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.PRODUCTION_QUEUE_FULL);
+              crossSceneCommunicationService?.emit(
+                HudMessages.HudVisualFeedbackMessageEventName,
+                HudVisualFeedbackMessageType.ProductionQueueFull
+              );
+              return;
+            }
+
+            const dispatched = dispatchProductionCommand(this.mainSceneWithActors, allActors, playerNumber, product);
+            switch (dispatched) {
+              case false:
                 this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.NOT_ENOUGH_RESOURCES);
                 crossSceneCommunicationService?.emit(
                   HudMessages.HudVisualFeedbackMessageEventName,
                   HudVisualFeedbackMessageType.NotEnoughResources
                 );
                 break;
-              case AssignProductionErrorCode.QueueFull:
-                this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.PRODUCTION_QUEUE_FULL);
-                crossSceneCommunicationService?.emit(
-                  HudMessages.HudVisualFeedbackMessageEventName,
-                  HudVisualFeedbackMessageType.ProductionQueueFull
-                );
-                break;
-              case AssignProductionErrorCode.NotFinished:
-                console.error("Not finished");
-                break;
-              case AssignProductionErrorCode.InvalidProduct:
-                console.error("Invalid product");
-                break;
-              case AssignProductionErrorCode.NoOwner:
-                console.error("No owner");
+              case true:
+                this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.BUTTON_CLICK);
                 break;
             }
           },
@@ -986,6 +981,18 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       });
     }
     return index;
+  }
+
+  private areAllProductionQueuesFull(actors: Phaser.GameObjects.GameObject[]): boolean {
+    const productionBuildings = actors
+      .filter((actor) => getActorComponent(actor, ProductionComponent)?.isFinished)
+      .map((actor) => getActorComponent(actor, QueueComponent))
+      .filter((queueComponent): queueComponent is QueueComponent => !!queueComponent);
+
+    return (
+      productionBuildings.length > 0 &&
+      productionBuildings.every((queueComponent) => queueComponent.findQueueForNewItem() === undefined)
+    );
   }
 
   private showResearchIcons(
@@ -1042,11 +1049,16 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         action: () => {
           if (isActiveInThisBuilding) {
             // Cancel the active research
-            researchComponent.cancelResearch();
-            this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.BUTTON_CLICK);
+            const playerNumber = getCurrentPlayerNumber(this.mainSceneWithActors);
+            if (playerNumber && dispatchCancelResearchCommand(this.mainSceneWithActors, actor, playerNumber)) {
+              this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.BUTTON_CLICK);
+            }
           } else if (!disabled) {
             // Start/queue research
-            const success = researchComponent.startResearch(researchType);
+            const playerNumber = getCurrentPlayerNumber(this.mainSceneWithActors);
+            const success =
+              !!playerNumber &&
+              dispatchResearchCommand(this.mainSceneWithActors, actor, playerNumber, researchType);
             if (success) {
               this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.BUTTON_CLICK);
             } else {

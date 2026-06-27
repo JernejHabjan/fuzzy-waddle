@@ -12,6 +12,7 @@ import { SelectableComponent } from "../entity/components/selectable-component";
 import { IdComponent } from "../entity/components/id-component";
 import { AoeZoneManager } from "../entity/systems/aoe-zone-manager";
 import { TechTreeService } from "./tech-tree/tech-tree.service";
+import { CancelableSimDelay } from "../world/services/simulation-time";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class LoadGame {
@@ -93,7 +94,7 @@ export class LoadGame {
     const selectionGroups = currentPlayer.playerController.data.selectionGroups;
     if (selectionGroups && selectionGroups.length > 0) {
       // Use a short delay to ensure actors are indexed
-      this.scene.time.delayedCall(100, () => {
+      new CancelableSimDelay(this.scene, 100, () => {
         const selectionGroupsComponent = getSceneComponent(this.scene, SelectionGroupsComponent);
         if (selectionGroupsComponent) {
           selectionGroupsComponent.setGroups(selectionGroups);
@@ -103,7 +104,7 @@ export class LoadGame {
 
     // Restore current selection - sync selected actors to player state
     // SelectableComponent.setData() is called per-actor during load, but player state selection[] is not synced
-    this.scene.time.delayedCall(150, () => {
+    new CancelableSimDelay(this.scene, 150, () => {
       this.syncSelectionToPlayerState();
     });
   }

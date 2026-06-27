@@ -39,6 +39,7 @@ export default class SoundEffectMarker extends Phaser.GameObjects.Ellipse {
 
     // 3 to 5 seconds
     const delay = Phaser.Math.Between(3, 5) * 1000;
+    // Intentional wall-clock timer: ambient environment SFX scheduling is non-authoritative.
     this.scene.time.delayedCall(delay, () => {
       this.playSound();
     });

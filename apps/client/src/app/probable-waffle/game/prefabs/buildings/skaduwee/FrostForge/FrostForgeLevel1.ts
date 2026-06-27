@@ -88,6 +88,7 @@ export default class FrostForgeLevel1 extends Phaser.GameObjects.Container {
     cloud.alpha = 0;
     cloud.y = -215;
     // Waiting for 2-4 seconds, then appear it in 1 second
+    // Intentional wall-clock timer: cloud loop is ambient decoration only.
     this.scene.time.delayedCall(Phaser.Math.Between(1000, 8000), () => {
       this.moveAndFade(cloud);
     });
@@ -105,6 +106,7 @@ export default class FrostForgeLevel1 extends Phaser.GameObjects.Container {
         onComplete: () => {
           if (!this.active) return;
           // Waiting for 2-4 seconds
+          // Intentional wall-clock timer: cloud loop is ambient decoration only.
           this.scene.time.delayedCall(Phaser.Math.Between(1000, 8000), () => {
             if (!this.active) return;
             // Re-appearing and setting down

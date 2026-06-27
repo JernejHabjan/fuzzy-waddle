@@ -1,7 +1,6 @@
 import { type User } from "@supabase/supabase-js";
 import {
-  type CommunicatorEvent,
-  type ProbableWaffleCommunicatorType,
+  type ProbableWaffleCommunicatorEventUnion,
   ProbableWaffleGameInstance,
   type ProbableWaffleGetRoomsDto,
   type ProbableWaffleRoom,
@@ -11,8 +10,5 @@ import {
 export interface RoomServerServiceInterface {
   getVisibleRooms(user: User, body: ProbableWaffleGetRoomsDto): Promise<ProbableWaffleRoom[]>;
   roomEvent(type: RoomAction, gameInstance: ProbableWaffleGameInstance, user: User | null): void;
-  emitCertainGameInstanceEventsToAllUsers(
-    body: CommunicatorEvent<any, ProbableWaffleCommunicatorType>,
-    user: User
-  ): void;
+  emitCertainGameInstanceEventsToAllUsers(body: ProbableWaffleCommunicatorEventUnion, user: User): void;
 }

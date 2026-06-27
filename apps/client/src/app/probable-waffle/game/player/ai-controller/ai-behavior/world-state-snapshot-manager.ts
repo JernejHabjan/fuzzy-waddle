@@ -19,7 +19,6 @@ import { ContainableComponent } from "../../../entity/components/building/contai
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class WorldStateSnapshotManager {
-  private ownedScanInitialized = false;
   private lastOwnedRefreshAt = 0;
 
   constructor(
@@ -38,11 +37,6 @@ export class WorldStateSnapshotManager {
   private async refreshWorldState(now: number) {
     const index = getSceneService(this.scene, ActorIndexSystem);
     if (!index) return;
-
-    if (!this.ownedScanInitialized) {
-      index.scanExistingActors();
-      this.ownedScanInitialized = true;
-    }
 
     const owned = index.getOwnedActors(this.player.playerNumber);
 

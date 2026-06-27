@@ -1,6 +1,5 @@
 import GameObject = Phaser.GameObjects.GameObject;
 import { getActorComponent } from "../../data/actor-component";
-import { removeActorComponent } from "../../data/actor-data";
 import { OwnerComponent } from "./owner-component";
 import { HealthComponent } from "./combat/components/health-component";
 import { onObjectReady } from "../../data/game-object-helper";
@@ -9,11 +8,14 @@ import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 import { DistanceHelper } from "../../library/distance-helper";
 import type { ConvertibleDefinition } from "./convertible-definition";
 import type { ConvertibleComponentData, PlayerNumber } from "@fuzzy-waddle/api-interfaces";
+import { SimulationTickService } from "../../world/services/simulation-tick.service";
+import type { Subscription } from "rxjs";
 
 export class ConvertibleComponent {
   private accumulatedTime = 0;
   private ready = false;
   private converted = false;
+  private simulationTickSub?: Subscription;
 
   constructor(
     private readonly gameObject: GameObject,
@@ -33,13 +35,14 @@ export class ConvertibleComponent {
     }
 
     this.ready = true;
-    this.gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
+    this.simulationTickSub = getSceneService(this.gameObject.scene, SimulationTickService)?.tick$.subscribe(() =>
+      this.update()
+    );
   }
 
-  private update(_time: number, delta: number) {
+  private update() {
     if (!this.ready || this.converted) return;
-
-    this.accumulatedTime += delta;
+    this.accumulatedTime += SimulationTickService.TICK_INTERVAL_MS;
 
     if (this.accumulatedTime >= this.convertibleDefinition.checkInterval) {
       this.accumulatedTime = 0;
@@ -94,6 +97,6 @@ export class ConvertibleComponent {
 
   private destroy() {
     this.ready = false;
-    this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
+    this.simulationTickSub?.unsubscribe();
   }
 }

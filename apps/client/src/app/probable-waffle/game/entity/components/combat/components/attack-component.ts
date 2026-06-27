@@ -1,6 +1,7 @@
 import { type AttackData } from "../attack-data";
 import { HealthComponent } from "./health-component";
 import { getActorComponent } from "../../../../data/actor-component";
+import type { Subscription } from "rxjs";
 import { AnimationActorComponent } from "../../animation/animation-actor-component";
 import { getHighGroundRangeBonus } from "../high-ground.helper";
 import {
@@ -32,6 +33,8 @@ import type { ProjectileData } from "../projectile-data";
 import type { AttackDefinition } from "./attack-definition";
 import type { IsoDirection } from "../../movement/iso-directions";
 import { TilemapComponent } from "../../../../world/tilemap/tilemap.component";
+import { CancelableSimDelay } from "../../../../world/services/simulation-time";
+import { SimulationTickService } from "../../../../world/services/simulation-tick.service";
 import TivaraAlchemistVase from "../../../../prefabs/weapons/TivaraAlchemistVase";
 import GameObject = Phaser.GameObjects.GameObject;
 
@@ -44,10 +47,14 @@ export class AttackComponent {
   private projectileTween?: Phaser.Tweens.Tween;
   private rotationTween?: Phaser.Tweens.Tween;
   currentAttack: AttackData | null = null;
+  private cooldownTickSub?: Subscription;
+  private simulationTickService?: SimulationTickService;
+  private cooldownStartedTick: number | null = null;
   private projectileSprite?: Phaser.GameObjects.Image;
+  private readonly projectileImpactTimers = new Set<CancelableSimDelay>();
   // track delayed fire so we can cancel before projectile spawns
-  private fireTimer?: Phaser.Time.TimerEvent;
-  private hitTimer?: Phaser.Time.TimerEvent;
+  private fireTimer?: CancelableSimDelay;
+  private hitTimer?: CancelableSimDelay;
 
   private attackDefinition: AttackDefinition;
 
@@ -58,7 +65,6 @@ export class AttackComponent {
     this.attackDefinition = {
       ...initialAttackDefinition
     };
-    gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
     onObjectReady(this.gameObject, this.init, this);
@@ -69,32 +75,48 @@ export class AttackComponent {
     this.animationActorComponent = getActorComponent(this.gameObject, AnimationActorComponent);
     this.audioService = getSceneService(this.gameObject.scene, AudioService);
     this.actorIndexSystem = getSceneService(this.gameObject.scene, ActorIndexSystem);
+    this.simulationTickService = getSceneService(this.gameObject.scene, SimulationTickService);
+    this.cooldownTickSub = this.simulationTickService?.tick$.subscribe(() => {
+      this.onSimulationTick();
+    });
   }
 
   private destroy() {
-    this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
     this.gameObject.off(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     this.gameObject.off(HealthComponent.KilledEvent, this.destroy, this);
+    this.cooldownTickSub?.unsubscribe();
     // cancel pending spawn timer (if any)
     if (this.fireTimer) {
-      this.fireTimer.remove(false);
+      this.fireTimer.remove();
       this.fireTimer = undefined;
     }
     if (this.hitTimer) {
-      this.hitTimer.remove(false);
+      this.hitTimer.remove();
       this.hitTimer = undefined;
     }
+    for (const timer of this.projectileImpactTimers) {
+      timer.remove();
+    }
+    this.projectileImpactTimers.clear();
     this.stopProjectile();
   }
 
-  private update(_: number, delta: number): void {
-    const deltaWithTimeScale = delta * this.gameObject.scene.time.timeScale;
+  private onSimulationTick(): void {
     if (this.remainingCooldown <= 0) {
       return;
     }
-    this.remainingCooldown -= deltaWithTimeScale;
+    const currentTick = this.simulationTickService?.currentTick;
+    // Guard against subscription-order drift: if cooldown was started this same tick,
+    // do not decrement it until the next simulation tick.
+    if (currentTick !== undefined && this.cooldownStartedTick === currentTick) {
+      return;
+    }
+    this.remainingCooldown -= SimulationTickService.TICK_INTERVAL_MS;
 
     this.remainingCooldown = Math.max(this.remainingCooldown, 0);
+    if (this.remainingCooldown <= 0) {
+      this.cooldownStartedTick = null;
+    }
     // if (this.remainingCooldown <= 0) {
     //   this.onCooldownReady.emit(this.gameObject);
     // }
@@ -163,6 +185,7 @@ export class AttackComponent {
     }
 
     this.remainingCooldown = attack.cooldown;
+    this.cooldownStartedTick = this.simulationTickService?.currentTick ?? null;
   }
 
   private applyInstantAttackDamage(attack: AttackData, enemy: GameObject) {
@@ -178,10 +201,12 @@ export class AttackComponent {
 
   private scheduleInstantAttackImpact(attack: AttackData, enemy: GameObject) {
     if (this.hitTimer) {
-      this.hitTimer.remove(false);
+      this.hitTimer.remove();
       this.hitTimer = undefined;
     }
-    this.hitTimer = this.gameObject.scene.time.delayedCall(attack.delays.hit, () => {
+    // Use CancelableSimDelay so damage fires at the same simulation tick on all clients,
+    // regardless of render frame rate.
+    this.hitTimer = new CancelableSimDelay(this.gameObject.scene, attack.delays.hit, () => {
       this.hitTimer = undefined;
 
       if (!this.gameObject.active || !enemy.active) return;
@@ -308,15 +333,14 @@ export class AttackComponent {
     const projectile = attack.projectile;
     if (!projectile) return;
     if (!this.actorTranslateComponent) return;
-    const targetPosition = getGameObjectBounds(enemy);
-    if (!targetPosition) return;
-    const position = getGameObjectBounds(this.gameObject);
-    if (!position) return;
+    const attackerLogical = getGameObjectLogicalTransform(this.gameObject);
+    const enemyLogical = getGameObjectLogicalTransform(enemy);
+    if (!attackerLogical || !enemyLogical) return;
 
     this.playSharedAttackLogic(attack, enemy);
 
-    // schedule projectile spawn; keep a reference so Stop can cancel it
-    this.fireTimer = this.gameObject.scene.time.delayedCall(attack.delays.fire, () => {
+    // Use CancelableSimDelay so projectile spawns at the same simulation tick on all clients.
+    this.fireTimer = new CancelableSimDelay(this.gameObject.scene, attack.delays.fire, () => {
       // clear timer reference when it fires
       this.fireTimer = undefined;
 
@@ -326,10 +350,10 @@ export class AttackComponent {
       const enemyHealthComponent = getActorComponent(enemy, HealthComponent);
       if (!enemyHealthComponent || enemyHealthComponent.killed) return;
 
-      const targetX = targetPosition.x + targetPosition.width / 2;
-      const targetY = targetPosition.y + targetPosition.height / 2;
-      const baseStartX = position.centerX;
-      const baseStartY = position.centerY;
+      const targetX = enemyLogical.x;
+      const targetY = enemyLogical.y;
+      const baseStartX = attackerLogical.x;
+      const baseStartY = attackerLogical.y;
 
       const salvoCount = projectile.salvo?.count ?? 1;
       const spreadPx = projectile.salvo?.spreadPx ?? 0;
@@ -401,11 +425,21 @@ export class AttackComponent {
 
     const projectileSpeed = projectile.speed;
     const distance = Phaser.Math.Distance.Between(startX, startY, targetX, targetY);
-    const duration = (distance / projectileSpeed) * 1000; // convert to milliseconds
+    const rawDurationMs = (distance / projectileSpeed) * 1000; // convert to milliseconds
+    const duration = Math.max(
+      SimulationTickService.TICK_INTERVAL_MS,
+      Math.ceil(rawDurationMs / SimulationTickService.TICK_INTERVAL_MS) * SimulationTickService.TICK_INTERVAL_MS
+    );
 
     let rotationTween: Phaser.Tweens.Tween | undefined;
     let cleanedUp = false;
     let tween: Phaser.Tweens.Tween;
+    const impactDelayMs = duration;
+    const impactTimer = new CancelableSimDelay(this.gameObject.scene, impactDelayMs, () => {
+      this.projectileImpactTimers.delete(impactTimer);
+      this.applyDeterministicProjectileImpact(projectile, targetX, targetY, attack, enemy, stopThis);
+    });
+    this.projectileImpactTimers.add(impactTimer);
 
     const cleanupThis = () => {
       if (cleanedUp) return;
@@ -439,9 +473,6 @@ export class AttackComponent {
         targetY,
         duration,
         projectile,
-        attack,
-        enemy,
-        stopThis,
         cleanupThis
       );
     } else {
@@ -456,17 +487,7 @@ export class AttackComponent {
         y: targetY,
         duration: duration,
         ease: "Linear",
-        onComplete: cleanupThis,
-        onUpdate: () => {
-          if (!this.gameObject.active || !enemy.active) return;
-          const projectileBounds = getGameObjectBounds(projectileSprite);
-          if (!projectileBounds) return;
-          const enemyBounds = getGameObjectBounds(enemy);
-          if (!enemyBounds) return;
-          if (Phaser.Geom.Intersects.RectangleToRectangle(projectileBounds, enemyBounds)) {
-            this.projectileHitEnemy(projectile, targetX, targetY, attack, enemy, stopThis);
-          }
-        }
+        onComplete: cleanupThis
       });
 
       // spin projectile
@@ -492,10 +513,7 @@ export class AttackComponent {
     targetY: number,
     duration: number,
     projectile: ProjectileData,
-    attack: AttackData,
-    enemy: GameObject,
-    stopFn: () => void = () => this.stopProjectile(),
-    onCompleteFn: () => void = stopFn
+    onCompleteFn: () => void = () => this.stopProjectile()
   ): Phaser.Tweens.Tween {
     const peakHeight = projectile.parabolicPeakHeight ?? 120;
     let lastTrailTime = 0;
@@ -505,7 +523,7 @@ export class AttackComponent {
       to: 1,
       duration,
       onUpdate: (tween) => {
-        if (!this.gameObject.active || !enemy.active) return;
+        if (!this.gameObject.active) return;
         const t = tween.getValue() ?? 0;
         const x = startX + (targetX - startX) * t;
         const arcOffset = -peakHeight * 4 * t * (1 - t);
@@ -537,21 +555,12 @@ export class AttackComponent {
             });
           }
         }
-
-        // Hit detection
-        const projectileBounds = getGameObjectBounds(projectileSprite);
-        if (!projectileBounds) return;
-        const enemyBounds = getGameObjectBounds(enemy);
-        if (!enemyBounds) return;
-        if (Phaser.Geom.Intersects.RectangleToRectangle(projectileBounds, enemyBounds)) {
-          this.projectileHitEnemy(projectile, targetX, targetY, attack, enemy, stopFn);
-        }
       },
       onComplete: () => onCompleteFn()
     });
   }
 
-  private projectileHitEnemy(
+  private applyDeterministicProjectileImpact(
     projectile: ProjectileData,
     targetX: number,
     targetY: number,
@@ -603,11 +612,11 @@ export class AttackComponent {
   public cancelCurrentAttack(): void {
     // cancel only pre-spawn scheduling
     if (!this.projectileSprite && this.fireTimer) {
-      this.fireTimer.remove(false);
+      this.fireTimer.remove();
       this.fireTimer = undefined;
     }
     if (this.hitTimer) {
-      this.hitTimer.remove(false);
+      this.hitTimer.remove();
       this.hitTimer = undefined;
     }
     // do not call stopProjectile here if projectile is already travelling
@@ -661,6 +670,7 @@ export class AttackComponent {
         );
       }
     }
+    // Intentional wall-clock timer: fire sound timing is cosmetic and does not drive hit resolution.
     this.gameObject.scene.time.delayedCall(attack.delays.fire, () => {
       if (fire) {
         const visibilityComponent = getGameObjectVisibility(this.gameObject);
@@ -737,8 +747,16 @@ export class AttackComponent {
   }
 
   setData(data: Partial<AttackComponentData> & Partial<AttackDefinition>) {
+    if (data.remainingCooldown !== undefined || data.currentAttackIndex !== undefined) {
+      this.resetTransientAttackExecutionState();
+    }
+
     // Update runtime state
-    if (data.remainingCooldown !== undefined) this.remainingCooldown = data.remainingCooldown;
+    if (data.remainingCooldown !== undefined) {
+      this.remainingCooldown = data.remainingCooldown;
+      // Fixes same-tick cooldown drift after restore by marking cooldown as started on the current simulation tick.
+      this.cooldownStartedTick = this.remainingCooldown > 0 ? (this.simulationTickService?.currentTick ?? null) : null;
+    }
     if (data.currentAttackIndex !== undefined) {
       const idx = data.currentAttackIndex;
       if (idx === null || idx === undefined) {
@@ -766,5 +784,26 @@ export class AttackComponent {
       remainingCooldown: this.remainingCooldown,
       currentAttackIndex
     };
+  }
+
+  /**
+   * Snapshot/desync correction replaces the authoritative combat runtime state.
+   * Any locally scheduled fire/hit timers from the pre-correction timeline must
+   * be cancelled first or they can re-fire after restore and reintroduce drift.
+   */
+  private resetTransientAttackExecutionState(): void {
+    if (this.fireTimer) {
+      this.fireTimer.remove();
+      this.fireTimer = undefined;
+    }
+    if (this.hitTimer) {
+      this.hitTimer.remove();
+      this.hitTimer = undefined;
+    }
+    for (const timer of this.projectileImpactTimers) {
+      timer.remove();
+    }
+    this.projectileImpactTimers.clear();
+    this.stopProjectile();
   }
 }

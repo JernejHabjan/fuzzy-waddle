@@ -139,6 +139,7 @@ export class MovementDecalCursorService {
     }
 
     // Hide after 1 second
+    // Intentional wall-clock timer: marker auto-hide is UI-only feedback.
     this.inaccessibleTimer = this.gameObject.scene.time.delayedCall(1000, () => {
       this.hideInaccessibleMarker();
     });

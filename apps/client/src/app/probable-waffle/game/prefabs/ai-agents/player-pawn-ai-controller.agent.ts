@@ -38,6 +38,9 @@ import { getGameObjectTileInRadius } from "../../data/game-object-helper";
 import { NavigationService } from "../../world/services/navigation.service";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { isWaterUnit } from "../../data/game-object-helper";
+import { SimulationTickService } from "../../world/services/simulation-tick.service";
+import { getSimulationNow } from "../../world/services/simulation-time";
+import { IdComponent } from "../../entity/components/id-component";
 
 export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
   constructor(
@@ -668,15 +671,21 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
 
   Attacked() {
     const attackedCooldown = 1000; // milliseconds
+    const attackedCooldownTicks = Math.ceil(attackedCooldown / SimulationTickService.TICK_INTERVAL_MS);
     const healthComponent = getActorComponent(this.gameObject, HealthComponent);
     if (!healthComponent) return false;
 
     const latestDamage = healthComponent.latestDamage;
     if (!latestDamage) return false;
 
+    const simulationTickService = getSceneService(this.gameObject.scene, SimulationTickService);
+    if (simulationTickService && latestDamage.simulationTick !== undefined) {
+      const ticksSinceDamage = simulationTickService.currentTick - latestDamage.simulationTick;
+      return ticksSinceDamage < attackedCooldownTicks;
+    }
+
     // Use scene time for proper timeScale support
-    const scene = this.gameObject.scene;
-    const currentSceneTime = scene.time.now;
+    const currentSceneTime = getSimulationNow(this.gameObject.scene);
     const damageSceneTime = latestDamage.sceneTime;
     const sceneTimeSinceDamage = currentSceneTime - damageSceneTime;
 
@@ -834,14 +843,38 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
     const attackableEnemies = visionComponent.getVisibleEnemies().filter((enemy) => this.canAttackTarget(enemy));
     if (attackableEnemies.length === 0) return null;
 
+    // Deterministic target ordering: closest first, then stable actor identity.
     attackableEnemies.sort((a, b) => {
       const distanceA = DistanceHelper.getTileDistanceBetweenGameObjects(this.gameObject, a);
       const distanceB = DistanceHelper.getTileDistanceBetweenGameObjects(this.gameObject, b);
-      if (distanceA === null || distanceB === null) return 0;
-      return distanceA - distanceB;
+      if (distanceA === null && distanceB === null) {
+        return this.compareEnemyTieBreaker(a, b);
+      }
+      if (distanceA === null) {
+        return 1;
+      }
+      if (distanceB === null) {
+        return -1;
+      }
+      if (distanceA !== distanceB) {
+        return distanceA - distanceB;
+      }
+      return this.compareEnemyTieBreaker(a, b);
     });
 
     return attackableEnemies[0]!;
+  }
+
+  private compareEnemyTieBreaker(a: Phaser.GameObjects.GameObject, b: Phaser.GameObjects.GameObject): number {
+    const aId = getActorComponent(a, IdComponent)?.id;
+    const bId = getActorComponent(b, IdComponent)?.id;
+    if (aId && bId && aId !== bId) {
+      return aId.localeCompare(bId);
+    }
+    // Fallback key keeps ordering stable even when one side is missing an id.
+    const aStable = `${a.name}:${aId ?? ""}`;
+    const bStable = `${b.name}:${bId ?? ""}`;
+    return aStable.localeCompare(bStable);
   }
 
   private canAttackTarget(target: Phaser.GameObjects.GameObject): boolean {

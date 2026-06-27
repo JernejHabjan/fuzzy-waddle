@@ -2,12 +2,11 @@ import {
   ANIM_BUILDING_ICON_ANIMS_TIVARA_SANDHOLD_ACTION,
   ANIM_BUILDING_ICON_ANIMS_TIVARA_SANDHOLD_IDLE
 } from "../../../icon-animations";
-import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { getBuildingQueueCapabilities, ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PaymentType } from "../../../../entity/components/production/payment-type";
 import { coreConstructionSiteDefinition } from "../../shared/core-construction-site.definition";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 import { ActorPhysicalType } from "../../../../entity/components/combat/components/actor-physical-type";
-import { ResearchType } from "@fuzzy-waddle/api-interfaces";
 
 export const sandholdDefinition = {
   components: {
@@ -75,25 +74,14 @@ export const sandholdDefinition = {
       cooldown: 1000
     },
     production: {
-      availableProduceActors: [ObjectNames.TivaraWorker, ObjectNames.CommonBoat, ObjectNames.VikingBoat]
+      availableProduceActors: getBuildingQueueCapabilities(ObjectNames.Sandhold)!.availableProduceActors!
     },
     queue: {
       queueCount: 1,
       capacityPerQueue: 5
     },
     research: {
-      availableResearch: [
-        ResearchType.TivaraSlingshotUpgradeLevel2,
-        ResearchType.TivaraSlingshotUpgradeLevel3,
-        ResearchType.TivaraMacemanUpgradeLevel2,
-        ResearchType.TivaraMacemanUpgradeLevel3,
-        ResearchType.SkaduweeWarriorUpgradeLevel2,
-        ResearchType.SkaduweeWarriorUpgradeLevel3,
-        ResearchType.SkaduweeMagicianUpgradeLevel2,
-        ResearchType.SkaduweeMagicianUpgradeLevel3,
-        ResearchType.SkaduweeRangedUpgradeLevel2,
-        ResearchType.SkaduweeRangedUpgradeLevel3
-      ]
+      availableResearch: getBuildingQueueCapabilities(ObjectNames.Sandhold)!.availableResearch!
     },
     selectable: {},
     collider: { enabled: true },

@@ -5,7 +5,7 @@ import { type ProbableWaffleGameInstanceSaveData } from "@fuzzy-waddle/api-inter
 @Injectable({
   providedIn: "root"
 })
-export class GameInstanceIndexeddbStorageService implements GameInstanceStorageServiceInterface {
+export class GameInstanceIndexeddbStorageService extends GameInstanceStorageServiceInterface {
   private readonly dbName = "probable-waffle-db";
   private readonly objectStoreName = "game-instances";
   private db: IDBDatabase | null = null;
@@ -13,6 +13,7 @@ export class GameInstanceIndexeddbStorageService implements GameInstanceStorageS
   private isInitialized = false;
 
   constructor() {
+    super();
     this.initializeDatabase();
   }
 

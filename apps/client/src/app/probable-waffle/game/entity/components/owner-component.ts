@@ -45,7 +45,8 @@ export class OwnerComponent {
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.on(ContainerComponent.GameObjectVisibilityChanged, this.gameObjectVisibilityChanged, this);
     // Todo - now calling refreshOwnerUiVisibility on tick to update visibility due to FOW changes
-    gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.refreshOwnerUiVisibility, this);
+    // Intentional frame update: owner ring visibility is purely visual and follows render/FOW visibility updates.
+    gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.refreshOwnerUiVisibilityFrameNonDeterministic, this);
   }
 
   private init() {
@@ -63,10 +64,10 @@ export class OwnerComponent {
 
   private gameObjectVisibilityChanged(visible: boolean) {
     this.gameObjectVisible = visible;
-    this.refreshOwnerUiVisibility();
+    this.refreshOwnerUiVisibilityFrameNonDeterministic();
   }
 
-  private refreshOwnerUiVisibility() {
+  private refreshOwnerUiVisibilityFrameNonDeterministic() {
     let visible = this.gameObjectVisible;
     const visionComponent = getActorComponent(this.gameObject, VisionComponent);
     if (!visionComponent || !visionComponent.visibilityByCurrentPlayer) visible = false;
@@ -298,6 +299,6 @@ export class OwnerComponent {
     this.healthUiVisibilitySubscription?.unsubscribe();
     this.constructionProgressSubscription?.unsubscribe();
     this.gameObject.off(ContainerComponent.GameObjectVisibilityChanged, this.gameObjectVisibilityChanged, this);
-    this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.refreshOwnerUiVisibility, this);
+    this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.refreshOwnerUiVisibilityFrameNonDeterministic, this);
   }
 }

@@ -21,7 +21,7 @@ export class TargetingManager {
     private readonly blackboard: PlayerAiBlackboard
   ) {}
 
-  async update(now: number = performance.now()): Promise<void> {
+  async update(now: number = this.blackboard.getNow()): Promise<void> {
     if (now - this.lastEvalAt < this.evalCooldownMs && this.cachedTarget) return;
     this.lastEvalAt = now;
     const enemies = this.blackboard.visibleEnemies as GameObject[];

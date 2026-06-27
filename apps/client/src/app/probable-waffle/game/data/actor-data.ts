@@ -45,6 +45,7 @@ import { SpellCastingSystem } from "../entity/systems/spell-casting.system";
 import { ResearchComponent } from "../entity/components/research/research-component";
 import { LevelComponent } from "../entity/components/level/level-component";
 import { TendableComponent } from "../entity/components/tendable/tendable-component";
+import { QueueCommandSystem } from "../entity/systems/queue-command.system";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export const ActorDataKey = "actorData";
@@ -74,11 +75,11 @@ export function setActorData(
     actorData = new ActorData(componentMap, systemMap);
     actor.setData(ActorDataKey, actorData);
   }
-  setActorProperties(actor, actorDefinition);
+  applyActorDefinitionToActor(actor, actorDefinition);
   actor.emit(ActorDataChangedEvent, actorData);
 }
 
-function setActorProperties(actor: GameObject, actorDefinition?: Partial<ActorDefinition>) {
+export function applyActorDefinitionToActor(actor: GameObject, actorDefinition?: Partial<ActorDefinition>) {
   if (!actorDefinition) return;
   if (actorDefinition.id) getActorComponent(actor, IdComponent)?.setData(actorDefinition.id);
   if (actorDefinition.representable)
@@ -203,6 +204,7 @@ function gatherCompletedActorData(actor: Phaser.GameObjects.GameObject): { compo
 
   const systemDefinitions = definition.systems;
   const systems = [
+    ...(componentDefinitions?.production || componentDefinitions?.research ? [new QueueCommandSystem(actor)] : []),
     ...(systemDefinitions?.movement ? [new MovementSystem(actor)] : []),
     ...(systemDefinitions?.action ? [new ActionSystem(actor)] : []),
     ...(systemDefinitions?.spellCasting ? [new SpellCastingSystem(actor)] : [])
@@ -262,7 +264,7 @@ export function upgradeFromCoreToConstructingActorData(
     actorData.systems.set(system.constructor, system);
   }
 
-  setActorProperties(actor, actorDefinition);
+  applyActorDefinitionToActor(actor, actorDefinition);
   const sceneActorCreator = getSceneService(actor.scene, SceneActorCreator);
   if (!sceneActorCreator) {
     throw new Error("SceneActorCreator not found in scene");
@@ -290,7 +292,7 @@ export function upgradeFromConstructingToFullActorData(
     actorData.systems.set(system.constructor, system);
   }
 
-  setActorProperties(actor, actorDefinition);
+  applyActorDefinitionToActor(actor, actorDefinition);
 
   actor.emit(ActorDataChangedEvent, actorData);
 }
@@ -302,7 +304,7 @@ export function addActorComponent(
 ) {
   const actorData = actor.getData(ActorDataKey) as ActorData;
   actorData.components.set(component.constructor, component);
-  setActorProperties(actor, actorDefinition);
+  applyActorDefinitionToActor(actor, actorDefinition);
   actor.emit(ActorDataChangedEvent, actorData);
 }
 
@@ -313,7 +315,7 @@ export function addActorSystem(
 ) {
   const actorData = actor.getData(ActorDataKey) as ActorData;
   actorData.systems.set(system.constructor, system);
-  setActorProperties(actor, actorDefinition);
+  applyActorDefinitionToActor(actor, actorDefinition);
   actor.emit(ActorDataChangedEvent, actorData);
 }
 
@@ -324,7 +326,7 @@ export function removeActorComponent(
 ) {
   const actorData = actor.getData(ActorDataKey) as ActorData;
   actorData.components.delete(component.constructor);
-  setActorProperties(actor, actorDefinition);
+  applyActorDefinitionToActor(actor, actorDefinition);
   actor.emit(ActorDataChangedEvent, actorData);
 }
 
@@ -335,7 +337,7 @@ export function removeActorSystem(
 ) {
   const actorData = actor.getData(ActorDataKey) as ActorData;
   actorData.systems.delete(system.constructor);
-  setActorProperties(actor, actorDefinition);
+  applyActorDefinitionToActor(actor, actorDefinition);
   actor.emit(ActorDataChangedEvent, actorData);
 }
 

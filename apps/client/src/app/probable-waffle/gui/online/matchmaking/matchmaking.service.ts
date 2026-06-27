@@ -24,6 +24,8 @@ export class MatchmakingService implements IMatchmakingService {
   private gameFoundSubscription?: Subscription;
   gameFound: boolean = false;
   navigatingText: string | undefined;
+  private countdownTimers: number[] = [];
+  private readonly excludeDevMaps = true;
 
   constructor() {
     const firstNrOfPlayersOption = this.nrOfPlayersOptions[0];
@@ -40,6 +42,7 @@ export class MatchmakingService implements IMatchmakingService {
   }
 
   async init(): Promise<void> {
+    this.clearCountdownTimers();
     this.gameFound = false;
     this.navigatingText = undefined;
     this.searching = false;
@@ -47,7 +50,12 @@ export class MatchmakingService implements IMatchmakingService {
   }
 
   async destroy(): Promise<void> {
+    this.clearCountdownTimers();
     this.roomsService.destroy();
+    if (this.gameFound) {
+      this.gameFoundSubscription?.unsubscribe();
+      return;
+    }
     await this.cancelSearching();
   }
 
@@ -72,7 +80,7 @@ export class MatchmakingService implements IMatchmakingService {
 
   private get levels(): MatchmakingLevel[] {
     return Object.values(ProbableWaffleLevels)
-      .filter((level) => (environment.production ? !level.devOnly : true))
+      .filter((level) => (environment.production || this.excludeDevMaps ? !level.devOnly : true))
       .map((level) => ({
         id: level.id,
         name: level.name,
@@ -104,13 +112,17 @@ export class MatchmakingService implements IMatchmakingService {
 
   private onGameFound = async ($event: ProbableWaffleGameFoundEvent) => {
     this.gameFound = true;
+    this.searching = false;
+    this.gameFoundSubscription?.unsubscribe();
 
     await this.gameInstanceClientService.joinGameInstanceAsPlayerForMatchmaking($event.gameInstanceId);
 
     this.navigatingText = "Joining game in 3 seconds...";
-    setTimeout(() => (this.navigatingText = "Joining game in 2 seconds..."), 1000);
-    setTimeout(() => (this.navigatingText = "Joining game in 1 second..."), 2000);
-    setTimeout(async () => await this.gameInstanceClientService.navigateToLobbyOrDirectlyToGame(), 3000);
+    this.countdownTimers.push(window.setTimeout(() => (this.navigatingText = "Joining game in 2 seconds..."), 1000));
+    this.countdownTimers.push(window.setTimeout(() => (this.navigatingText = "Joining game in 1 second..."), 2000));
+    this.countdownTimers.push(
+      window.setTimeout(async () => await this.gameInstanceClientService.navigateToLobbyOrDirectlyToGame(), 3000)
+    );
   };
 
   async cancelSearching() {
@@ -118,6 +130,11 @@ export class MatchmakingService implements IMatchmakingService {
     this.searching = false;
     this.gameFoundSubscription?.unsubscribe();
     await this.gameInstanceClientService.stopRequestGameSearchForMatchmaking();
+  }
+
+  private clearCountdownTimers(): void {
+    this.countdownTimers.forEach((timer) => clearTimeout(timer));
+    this.countdownTimers = [];
   }
 
   nrOfPlayersChanged(nr: number) {

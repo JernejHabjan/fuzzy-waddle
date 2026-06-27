@@ -1,4 +1,5 @@
 import { ProbableWaffleGameInstance } from "../../game-instance/probable-waffle/game-instance";
+import { ProbableWaffleGameState } from "../../game-instance/probable-waffle/game-state";
 import type {
   ProbableWaffleGameInstanceMetadataChangeEvent,
   ProbableWaffleGameModeDataChangeEvent,
@@ -17,6 +18,7 @@ import { ProbableWaffleGameMode, type ProbableWaffleGameModeData } from "../../g
 import { GameSessionState } from "../../game-instance/session";
 import { GameSetupHelpers } from "../../probable-waffle/game-setup.helpers";
 import type { ActorDefinition } from "../../game-instance/probable-waffle/game-state";
+import type { Vector3Simple } from "../../game/vector";
 
 export class ProbableWaffleListeners {
   private static readonly debug = false;
@@ -43,6 +45,9 @@ export class ProbableWaffleListeners {
         break;
       case "createdBy":
         gameInstance.gameInstanceMetadata!.data.createdBy = payload.data.createdBy!;
+        break;
+      case "currentHostUserId":
+        gameInstance.gameInstanceMetadata!.data.currentHostUserId = payload.data.currentHostUserId!;
         break;
       default:
         throw new Error("Unknown communicator for gameInstanceMetadataDataChange: " + payload.property);
@@ -158,6 +163,12 @@ export class ProbableWaffleListeners {
             player.playerNumber
           );
           break;
+        case "playerController.data.selectionGroups" as ProbableWafflePlayerDataChangeEventProperty:
+          player = gameInstance.getPlayerByNumber(payload.data.playerNumber!);
+          if (!player) throw new Error("Player not found with number " + payload.data.playerNumber);
+          player.playerController.data.selectionGroups = payload.data.playerControllerData!.selectionGroups;
+          ProbableWaffleListeners.logDebugInfo("selection groups changed for player", player.playerNumber);
+          break;
 
         case "selection.added" as ProbableWafflePlayerDataChangeEventProperty:
           player = gameInstance.getPlayerByNumber(payload.data.playerNumber!);
@@ -207,6 +218,9 @@ export class ProbableWaffleListeners {
           player = gameInstance.getPlayerByNumber(payload.data.playerNumber!);
           if (!player) throw new Error("Player not found with number " + payload.data.playerNumber);
           const tileVec3 = payload.data.data!["tileVec3"];
+          if (!isVector3Simple(tileVec3)) {
+            break;
+          }
 
           // get selected actors and issue move command to them
           const selectedActors = player.getSelection();
@@ -258,6 +272,14 @@ export class ProbableWaffleListeners {
             player.playerState.data.housing.currentHousing = player.playerState.data.housing.maxHousing;
           }
 
+          function isVector3Simple(value: unknown): value is Vector3Simple {
+            if (typeof value !== "object" || value === null) {
+              return false;
+            }
+            const vector = value as Record<string, unknown>;
+            return typeof vector["x"] === "number" && typeof vector["y"] === "number" && typeof vector["z"] === "number";
+          }
+
           ProbableWaffleListeners.logDebugInfo("housing removed for player", player.playerNumber);
           break;
         case "housing.current.increased" as ProbableWafflePlayerDataChangeEventProperty:
@@ -277,6 +299,9 @@ export class ProbableWaffleListeners {
             player.playerState.data.housing.currentHousing = 0;
           }
           ProbableWaffleListeners.logDebugInfo("housing current decreased for player", player.playerNumber);
+          break;
+        case "player.scene-ready" as ProbableWafflePlayerDataChangeEventProperty:
+          // Handled client-side by ReadyBarrier; server just relays the event.
           break;
         default:
           throw new Error("Unknown communicator for playerDataChange: " + payload.property);
@@ -303,12 +328,12 @@ export class ProbableWaffleListeners {
   }
 
   static gameStateDataChanged(gameInstance: ProbableWaffleGameInstance, event: ProbableWaffleGameStateDataChangeEvent) {
-    switch (event.property) {
-      case "all": {
-        gameInstance.gameState!.data = event.data.gameState as any;
-        ProbableWaffleListeners.logDebugInfo("game state changed to", gameInstance.gameState!.data);
-        break;
-      }
+      switch (event.property) {
+        case "all": {
+          gameInstance.gameState = new ProbableWaffleGameState(event.data.gameState as any);
+          ProbableWaffleListeners.logDebugInfo("game state changed to", gameInstance.gameState!.data);
+          break;
+        }
       case "health.health":
         const actorHealth = this.getActorById(event.data.actorDefinition!.id!, gameInstance);
         if (!actorHealth) throw new Error("Actor not found with id " + event.data.actorDefinition!.id);

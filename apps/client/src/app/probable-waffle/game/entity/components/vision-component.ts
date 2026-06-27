@@ -6,6 +6,7 @@ import { getSceneService } from "../../world/services/scene-component-helpers";
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 import { type VisionComponentData } from "@fuzzy-waddle/api-interfaces";
 import type { VisionDefinition } from "./vision-definition";
+import { IdComponent } from "./id-component";
 
 export class VisionComponent {
   private visibleEnemies?: GameObject[];
@@ -60,10 +61,7 @@ export class VisionComponent {
     if (visibleEnemies.length === 0) return null;
     // find the closest enemy
     visibleEnemies.sort((a, b) => {
-      const distanceA = DistanceHelper.getTileDistanceBetweenGameObjects(this.gameObject, a);
-      const distanceB = DistanceHelper.getTileDistanceBetweenGameObjects(this.gameObject, b);
-      if (distanceA === null || distanceB === null) return 0;
-      return distanceA - distanceB;
+      return this.compareActorsByDistanceThenStableKey(a, b);
     });
     return visibleEnemies[0]!;
   }
@@ -90,12 +88,27 @@ export class VisionComponent {
     if (visibleFriendlies.length === 0) return null;
     // find the closest friendly
     visibleFriendlies.sort((a, b) => {
-      const distanceA = DistanceHelper.getTileDistanceBetweenGameObjects(this.gameObject, a);
-      const distanceB = DistanceHelper.getTileDistanceBetweenGameObjects(this.gameObject, b);
-      if (distanceA === null || distanceB === null) return 0;
-      return distanceA - distanceB;
+      return this.compareActorsByDistanceThenStableKey(a, b);
     });
     return visibleFriendlies[0]!;
+  }
+
+  private compareActorsByDistanceThenStableKey(a: GameObject, b: GameObject): number {
+    const distanceA = DistanceHelper.getTileDistanceBetweenGameObjects(this.gameObject, a);
+    const distanceB = DistanceHelper.getTileDistanceBetweenGameObjects(this.gameObject, b);
+    const normalizedDistanceA = distanceA ?? Number.MAX_SAFE_INTEGER;
+    const normalizedDistanceB = distanceB ?? Number.MAX_SAFE_INTEGER;
+    if (normalizedDistanceA !== normalizedDistanceB) {
+      return normalizedDistanceA - normalizedDistanceB;
+    }
+    // Deterministic tie-break so equal-distance target picks cannot diverge between peers.
+    const idA = this.getStableActorSortKey(a);
+    const idB = this.getStableActorSortKey(b);
+    return idA.localeCompare(idB);
+  }
+
+  private getStableActorSortKey(actor: GameObject): string {
+    return getActorComponent(actor, IdComponent)?.id ?? actor.name;
   }
 
   setData(data: Partial<VisionComponentData>) {

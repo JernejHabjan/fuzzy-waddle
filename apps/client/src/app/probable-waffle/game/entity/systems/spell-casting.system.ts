@@ -21,6 +21,7 @@ import { AudioService } from "../../world/services/audio.service";
 import { AoeZoneManager } from "./aoe-zone-manager";
 import { NavigationService } from "../../world/services/navigation.service";
 import { SceneActorCreator } from "../../world/services/scene-actor-creator";
+import { CancelableSimDelay } from "../../world/services/simulation-time";
 import { DistanceHelper } from "../../library/distance-helper";
 import FrostBolt from "../../prefabs/weapons/FrostBolt";
 import { ProjectileType } from "../components/combat/projectile-type";
@@ -467,7 +468,7 @@ export class SpellCastingSystem {
     if (newGameObject) {
       // If the prefab has a duration, schedule its destruction
       if (spellData.spawnPrefab.duration) {
-        this.gameObject.scene.time.delayedCall(spellData.spawnPrefab.duration, () => {
+        new CancelableSimDelay(this.gameObject.scene, spellData.spawnPrefab.duration, () => {
           if (!newGameObject.active || !newGameObject.scene) return; // Already destroyed
           const healthComponent = getActorComponent(newGameObject, HealthComponent);
           if (healthComponent) {

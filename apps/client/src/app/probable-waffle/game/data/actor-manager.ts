@@ -389,7 +389,7 @@ export class ActorManager {
     if (!sceneActorCreator) {
       throw new Error("SceneActorCreator not found in scene");
     }
-    sceneActorCreator.registerAndSaveNewActor(actor);
+    sceneActorCreator.registerAndSaveNewActor(actor, actorDefinition.id?.id);
     return actor;
   }
 
@@ -416,7 +416,7 @@ export class ActorManager {
     if (!sceneActorCreator) {
       throw new Error("SceneActorCreator not found in scene");
     }
-    sceneActorCreator.registerAndSaveNewActor(actor);
+    sceneActorCreator.registerAndSaveNewActor(actor, actorDefinition.id?.id);
     return actor;
   }
 }

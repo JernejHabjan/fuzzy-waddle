@@ -14,6 +14,12 @@ import {
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import { getTileCoordsUnderObject } from "../../library/tile-under-object";
 import { getSceneComponent, getSceneService } from "./scene-component-helpers";
+import { SimulationTickService } from "./simulation-tick.service";
+import {
+  getSnapshotApplySuppressedUntilTick,
+  hasMultiplayerCommandRelay,
+  isSnapshotApplyInProgress
+} from "../../data/scene-data";
 import { TilemapComponent } from "../tilemap/tilemap.component";
 import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
 import { getCanonicalActorNameCached } from "../../data/tech-tree/canonical-actor-name";
@@ -48,6 +54,7 @@ export class ActorIndexSystem {
 
     if (!this.idActors.has(obj)) {
       this.idActors.add(obj);
+      this.logLateRegistration(obj);
 
       const ownerComp = getActorComponent(obj, OwnerComponent);
       const owner = ownerComp?.getOwner();
@@ -81,6 +88,28 @@ export class ActorIndexSystem {
       obj.once(Phaser.GameObjects.Events.DESTROY, () => this.unregisterActor(obj));
     }
   };
+
+  private logLateRegistration(obj: GameObject): void {
+    if (!hasMultiplayerCommandRelay(this.scene)) {
+      return;
+    }
+    if (isSnapshotApplyInProgress(this.scene)) {
+      return;
+    }
+    const tick = getSceneService(this.scene, SimulationTickService)?.currentTick ?? 0;
+    if (tick <= 5) {
+      return;
+    }
+    const suppressedUntilTick = getSnapshotApplySuppressedUntilTick(this.scene);
+    if (suppressedUntilTick !== undefined && tick <= suppressedUntilTick) {
+      return;
+    }
+    const id = getActorComponent(obj, IdComponent)?.id ?? "unknown";
+    const owner = getActorComponent(obj, OwnerComponent)?.getOwner() ?? "none";
+    console.warn(
+      `[ActorIndex] Late actor registration detected at tick=${tick} id=${id} name=${obj.name} owner=${owner}.`
+    );
+  }
 
   unregisterActor = (obj?: GameObject) => {
     if (!obj) return;

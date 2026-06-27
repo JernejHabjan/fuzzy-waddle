@@ -423,6 +423,34 @@
   color: #1a1510;
 }
 
+.aota-player-profile-modal .modal-dialog {
+  width: min(42rem, calc(100vw - 1rem));
+  max-width: none;
+  margin: 0.75rem auto;
+}
+
+.aota-player-profile-modal .modal-content {
+  background-color: #1b2128;
+  border: 1px solid rgba(111, 85, 52, 0.78);
+  color: #f5ecd9;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.46);
+}
+
+.aota-player-profile-modal .modal-header,
+.aota-player-profile-modal .modal-footer {
+  border-color: rgba(111, 85, 52, 0.42);
+  background-color: rgba(15, 18, 22, 0.82);
+}
+
+.aota-player-profile-modal .modal-body {
+  padding: 0 0.75rem 0.75rem;
+  color: #f5ecd9;
+}
+
+.aota-player-profile-modal .modal-title {
+  color: #f5ecd9;
+}
+
 @media (max-width: 768px) {
   .probable-waffle-theme {
     font-size: 0.98rem;
@@ -462,5 +490,14 @@
 
   .probable-waffle-theme .btn {
     max-width: 100%;
+  }
+
+  .aota-player-profile-modal .modal-dialog {
+    width: calc(100vw - 0.75rem);
+    margin: 0.375rem auto;
+  }
+
+  .aota-player-profile-modal .modal-body {
+    padding: 0 0.5rem 0.5rem;
   }
 }
