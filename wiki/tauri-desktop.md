@@ -29,6 +29,10 @@ pnpm tauri:build
 
 Output: `apps/client/src-tauri/target/release/bundle/nsis/Ashes of the Ancients_<version>_x64-setup.exe`
 
+## Release Versioning
+
+Desktop releases use the same version as the web app. See [releases.md](releases.md) for the required version bump flow and sync rules before merging into `main`.
+
 ## Features
 
 ### Splash Screen

@@ -69,6 +69,19 @@
   }
 </div>
 
+<div class="card-row project-hub-row">
+  <section class="project-hub card-container">
+    <div class="project-hub-header">
+      <span class="project-hub-version">Version {{ environment.version }}</span>
+    </div>
+    <div class="project-hub-links">
+      <a class="project-hub-link" [href]="repositoryUrl" target="_blank" rel="noopener noreferrer"> GitHub </a>
+      <!--      <span class="project-hub-link project-hub-link-muted">Discord: soon</span>-->
+      <!--      <span class="project-hub-link project-hub-link-muted">Twitter: soon</span>-->
+    </div>
+  </section>
+</div>
+
 @if (serverHealthService.serverAvailable && authService.isAuthenticated && !isBanned) {
   <fuzzy-waddle-chat-float />
 }

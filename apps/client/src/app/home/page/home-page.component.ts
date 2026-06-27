@@ -34,6 +34,7 @@ export class HomePageComponent implements OnInit {
   protected readonly faCopyright = faCopyright;
   protected readonly faShieldHalved = faShieldHalved;
   protected readonly environment = environment;
+  protected readonly repositoryUrl = "https://github.com/JernejHabjan/fuzzy-waddle";
   protected pendingModerationCount = 0;
   protected isModerator = false;
   protected isBanned = false;
