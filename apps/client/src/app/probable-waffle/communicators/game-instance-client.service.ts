@@ -710,7 +710,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
    */
   async startReplay(gameInstanceSaveData: ProbableWaffleGameInstanceSaveData): Promise<void> {
     const replayGameInstanceData = structuredClone(gameInstanceSaveData.gameInstanceData);
-    replayGameInstanceData.gameInstanceMetadataData!.type = ProbableWaffleGameInstanceType.Replay;
+    this.normalizeReplayMetadata(replayGameInstanceData);
     this.gameInstance = new ProbableWaffleGameInstance(replayGameInstanceData);
     this.syncCurrentPlayerNumberFromGameInstance();
     await this.startListeningToGameInstanceEvents();
@@ -758,6 +758,18 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   private getNormalizedGameInstanceType(): ProbableWaffleGameInstanceType | undefined {
     const rawType = this.gameInstance?.gameInstanceMetadata?.data.type;
     return rawType ?? undefined;
+  }
+
+  private normalizeReplayMetadata(replayGameInstanceData: ProbableWaffleGameInstanceData): void {
+    const metadata = replayGameInstanceData.gameInstanceMetadataData;
+    if (!metadata) {
+      throw new Error("Replay metadata is required to start replay playback");
+    }
+    metadata.type = ProbableWaffleGameInstanceType.Replay;
+    // Persisted replays can carry the original pre-game state from the recorded
+    // match. Playback should always boot directly into simulation instead of
+    // reusing live-session waiting UI such as "Waiting for players to join...".
+    metadata.sessionState = GameSessionState.InProgress;
   }
 
   private async handleSelfRemovedFromGameInstance(): Promise<void> {

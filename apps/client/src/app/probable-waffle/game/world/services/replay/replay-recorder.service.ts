@@ -1,4 +1,5 @@
 import {
+  GameSessionState,
   type ProbableWaffleGameInstanceData,
   type ProbableWaffleGameInstanceSaveData,
   ProbableWaffleGameInstanceType,
@@ -110,6 +111,7 @@ export class ReplayRecorderService {
     }
     metadataData.type = ProbableWaffleGameInstanceType.Replay;
     metadataData.updatedOn = new Date();
+    metadataData.sessionState = GameSessionState.InProgress;
     metadataData.startOptions = {
       ...metadataData.startOptions,
       replayData
