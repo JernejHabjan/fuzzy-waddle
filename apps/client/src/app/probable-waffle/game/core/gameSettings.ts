@@ -1,3 +1,4 @@
+import { environment } from "apps/client/src/environments/environment";
 import { isTauri } from "../../../shared/utils/tauri";
 
 export type HomeScreenBackground = "ashfall" | "constellation";
@@ -14,7 +15,7 @@ export class GameSettings {
     this.lockToScreen = false;
     // In Tauri the whole window is the game canvas, so edge-scroll is always desirable
     this.enabledMouseCornerMovement = isTauri();
-    this.enableSceneLightingEffects = false;
+    this.enableSceneLightingEffects = environment.production;
     this.homeScreenBackground = "ashfall";
   }
 
