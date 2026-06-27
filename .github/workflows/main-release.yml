@@ -138,6 +138,9 @@ jobs:
       - name: Verify app versions are in sync
         run: pnpm run version:check
 
+      - name: Build web client for Tauri
+        run: pnpm nx build client --configuration=tauri
+
       - name: Build installer and publish release
         uses: tauri-apps/tauri-action@v0
         env:
