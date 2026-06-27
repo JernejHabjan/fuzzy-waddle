@@ -1,4 +1,4 @@
-import { environment } from "apps/client/src/environments/environment";
+import { environment } from "../../../../environments/environment";
 import { isTauri } from "../../../shared/utils/tauri";
 
 export type HomeScreenBackground = "ashfall" | "constellation";
