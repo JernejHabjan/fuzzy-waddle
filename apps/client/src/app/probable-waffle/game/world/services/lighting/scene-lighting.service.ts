@@ -1,8 +1,10 @@
 import type { ProbableWaffleLightingAmbientKeyframe } from "@fuzzy-waddle/api-interfaces";
 import { Subscription } from "rxjs";
 import { GameSettings } from "../../../core/gameSettings";
+import { getActorComponent } from "../../../data/actor-component";
 import { getGameObjectBoundsRaw, getGameObjectDepth } from "../../../data/game-object-helper";
 import { HealthComponent } from "../../../entity/components/combat/components/health-component";
+import { ActorTranslateComponent } from "../../../entity/components/movement/actor-translate-component";
 import { OptionsService } from "../../../../gui/options/options.service";
 import type GameProbableWaffleScene from "../../scenes/GameProbableWaffleScene";
 import { getSceneExternalComponent } from "../scene-component-helpers";
@@ -16,6 +18,15 @@ import {
   type ResolvedSceneLightingConfig,
   resolveSceneLightingConfig
 } from "./scene-lighting.config";
+
+/**
+ * Temporary branch-level kill switch for dropped shadows.
+ * Keep this `false` until the shadow implementation is ready to ship again.
+ */
+const DROP_SHADOWS_RUNTIME_ENABLED = false;
+
+/** Describes how a tracked render target participates in camera-based effect culling. */
+type VisibilityCullMode = "always" | "expandedVisibilityCamera" | "expandedShadowCamera";
 
 type LightingAwareGameObject = Phaser.GameObjects.GameObject & {
   setLighting?: (enable: boolean) => Phaser.GameObjects.GameObject;
@@ -46,9 +57,15 @@ type TrackedObject = {
   ambientTarget?: AmbientResponsiveGameObject;
   shadowCaster?: ShadowCasterGameObject;
   shadowVisual?: Phaser.GameObjects.Ellipse;
+  actorMovedSubscription?: Subscription;
   lightingEnabled: boolean;
   ambientAlpha: number;
   shadowEnabled: boolean;
+  /**
+   * Dirty shadows bypass the throttled reprojection interval once so movement- and camera-driven
+   * changes land immediately, then fall back to the cheaper periodic updates.
+   */
+  shadowDirty: boolean;
   onDestroy: () => void;
   onKilled: () => void;
 };
@@ -69,6 +86,10 @@ export class SceneLightingService {
   private readonly config: ResolvedSceneLightingConfig;
   private readonly trackedObjects = new Map<Phaser.GameObjects.GameObject, TrackedObject>();
   private readonly animatedLightUpdaters = new Set<AnimatedLightUpdater>();
+  /** Cached world-space bounds for container subtrees to avoid repeated recursive aggregation. */
+  private readonly renderBoundsCache = new WeakMap<Phaser.GameObjects.GameObject, Phaser.Geom.Rectangle | null>();
+  /** Dirty roots whose cached container bounds must be recomputed before the next cull query. */
+  private readonly dirtyRenderBounds = new WeakSet<Phaser.GameObjects.GameObject>();
 
   private keyLight?: Phaser.GameObjects.Light;
   private ambientColor = 0xffffff;
@@ -76,7 +97,14 @@ export class SceneLightingService {
   private cycleElapsedMs = 0;
   private effectsEnabled = false;
   private visibilityRefreshAccumulator = 0;
-  private readonly visibilityRefreshIntervalMs = 200;
+  private readonly visibilityRefreshIntervalMs = 100;
+  /** Cached so camera-driven lighting and ambient culling can refresh immediately between interval ticks. */
+  private lastVisibilityCameraState?: { scrollX: number; scrollY: number; zoom: number };
+  /** Stable shadows are reprojected at this cadence to keep the moving sun/moon affordable. */
+  private shadowUpdateAccumulator = 0;
+  private readonly shadowUpdateIntervalMs = 100;
+  /** Cached so the service can react immediately to camera movement without a separate event bus. */
+  private lastCameraState?: { scrollX: number; scrollY: number; zoom: number };
   private optionsChangedSubscription?: Subscription;
 
   constructor(private readonly scene: GameProbableWaffleScene) {
@@ -105,6 +133,8 @@ export class SceneLightingService {
    * This is used by dynamic containers like walls and stairs.
    */
   syncGameObjectTree(gameObject: Phaser.GameObjects.GameObject): void {
+    this.invalidateRenderableBounds(gameObject);
+    this.markShadowDirtyForTree(gameObject);
     if (!this.config.enabled || !this.effectsEnabled || shouldIgnoreSceneLighting(gameObject)) return;
     if (this.isContainer(gameObject)) {
       gameObject.list.forEach((child) => this.syncGameObjectTree(child));
@@ -137,14 +167,20 @@ export class SceneLightingService {
       gameObject.list.forEach((child) => this.registerGameObject(child));
     }
 
+    this.invalidateRenderableBounds(gameObject);
+
     const tracked: TrackedObject = {
       gameObject,
       lightingTarget: this.asLightingTarget(gameObject),
       ambientTarget: this.asAmbientTarget(gameObject),
       shadowCaster: this.asShadowCaster(gameObject),
+      actorMovedSubscription: this.areDropShadowsEnabled()
+        ? this.subscribeToActorMovement(gameObject)
+        : undefined,
       lightingEnabled: false,
       ambientAlpha: 1,
       shadowEnabled: false,
+      shadowDirty: this.areDropShadowsEnabled(),
       onDestroy: () => this.unregisterGameObject(gameObject),
       onKilled: () => this.unregisterGameObject(gameObject)
     };
@@ -160,11 +196,13 @@ export class SceneLightingService {
   unregisterGameObject(gameObject: Phaser.GameObjects.GameObject): void {
     const tracked = this.trackedObjects.get(gameObject);
     if (!tracked) return;
+    this.invalidateRenderableBounds(gameObject);
     this.applyLighting(tracked, false);
     this.applyAmbient(tracked, false);
     this.applyShadow(tracked, false);
     tracked.shadowVisual?.destroy();
     tracked.shadowVisual = undefined;
+    tracked.actorMovedSubscription?.unsubscribe();
     tracked.gameObject.off(Phaser.GameObjects.Events.DESTROY, tracked.onDestroy);
     tracked.gameObject.off(HealthComponent.KilledEvent, tracked.onKilled);
     this.trackedObjects.delete(gameObject);
@@ -173,6 +211,15 @@ export class SceneLightingService {
   addAnimatedLightUpdater(updater: AnimatedLightUpdater): () => void {
     this.animatedLightUpdaters.add(updater);
     return () => this.animatedLightUpdaters.delete(updater);
+  }
+
+  /**
+   * Registers a late-created runtime object after its lighting metadata has been assigned.
+   * Ambient-only UI graphics use this because `scene.add.graphics()` adds them to the scene
+   * before they can be marked as ambient responsive.
+   */
+  registerDynamicGameObject(gameObject: Phaser.GameObjects.GameObject): void {
+    this.registerGameObject(gameObject);
   }
 
   addLight(
@@ -229,6 +276,10 @@ export class SceneLightingService {
       return;
     }
 
+    if (this.didVisibilityCameraStateChange()) {
+      this.visibilityRefreshAccumulator = this.visibilityRefreshIntervalMs;
+    }
+
     if (this.config.dayNightCycle.enabled) {
       this.advanceCycle(delta);
       const nextAmbient = this.calculateAmbientColor(this.cycleTime);
@@ -245,11 +296,27 @@ export class SceneLightingService {
       this.trackedObjects.forEach((tracked) => this.refreshTrackedObject(tracked));
     }
 
-    this.trackedObjects.forEach((tracked) => {
-      if (tracked.shadowEnabled) {
-        this.updateShadowTransform(tracked);
+    if (this.areDropShadowsEnabled()) {
+      // Camera motion should immediately invalidate nearby shadows even though steady-state
+      // reprojection remains throttled for performance.
+      if (this.didCameraStateChange()) {
+        this.visibilityRefreshAccumulator = this.visibilityRefreshIntervalMs;
+        this.shadowUpdateAccumulator = this.shadowUpdateIntervalMs;
+        this.markVisibleShadowCastersDirty();
       }
-    });
+
+      // Dirty casters bypass the interval once, then the regular throttled pass takes over again.
+      this.flushDirtyShadows();
+      this.shadowUpdateAccumulator += delta;
+      if (this.shadowUpdateAccumulator >= this.shadowUpdateIntervalMs) {
+        this.shadowUpdateAccumulator = 0;
+        this.trackedObjects.forEach((tracked) => {
+          if (this.shouldUpdateShadow(tracked)) {
+            this.updateShadowTransform(tracked);
+          }
+        });
+      }
+    }
 
     this.animatedLightUpdaters.forEach((updater) => updater(_time, delta));
   }
@@ -352,26 +419,47 @@ export class SceneLightingService {
   }
 
   private refreshTrackedObject(tracked: TrackedObject): void {
-    const shouldRenderLightingAndShadow = this.effectsEnabled && this.shouldRenderEffects(tracked.gameObject);
+    const shouldRenderLighting = this.effectsEnabled && this.shouldRenderLighting(tracked);
     const shouldRenderAmbient = this.effectsEnabled && this.shouldRenderAmbient(tracked);
-    this.applyLighting(tracked, shouldRenderLightingAndShadow);
+    const shouldRenderShadow = this.effectsEnabled && this.shouldRenderShadow(tracked);
+    this.applyLighting(tracked, shouldRenderLighting);
     this.applyAmbient(tracked, shouldRenderAmbient);
-    this.applyShadow(tracked, shouldRenderLightingAndShadow);
+    this.applyShadow(tracked, shouldRenderShadow);
   }
 
   /**
-   * Quick visibility gate used before any expensive effect work.
-   * When lighting is enabled we only update active, visible, on-camera objects.
+   * Phaser lighting culling is split by render role rather than object type checks scattered
+   * across the service. Tilemap layers stay lit for the full scene because their world-space
+   * bounds do not map cleanly to the camera when the isometric map extends into negative X.
    */
-  private shouldRenderEffects(gameObject: Phaser.GameObjects.GameObject): boolean {
-    if (gameObject.scene !== this.scene) return false;
-    const active = (gameObject as LightingAwareGameObject).active ?? true;
-    const visible = (gameObject as LightingAwareGameObject).visible ?? true;
-    if (!active || !visible) return false;
+  private shouldRenderLighting(tracked: TrackedObject): boolean {
+    const target = tracked.lightingTarget;
+    if (!target) return false;
+    if (tracked.gameObject.scene !== this.scene) return false;
+    if ((target.active ?? true) === false || (target.visible ?? true) === false) return false;
+    return this.isGameObjectInCullRange(tracked.gameObject, this.getLightingCullMode(tracked.gameObject));
+  }
 
-    const bounds = this.getRenderableBounds(gameObject);
-    if (!bounds) return false;
-    return Phaser.Geom.Rectangle.Overlaps(this.scene.cameras.main.worldView, bounds);
+  /**
+   * Shadows are updated at a lower cadence than the rest of the lighting system.
+   * This keeps shadow motion responsive enough while avoiding per-frame transform churn.
+   */
+  private shouldUpdateShadow(tracked: TrackedObject): boolean {
+    if (!tracked.shadowEnabled || !tracked.shadowCaster || !tracked.shadowVisual) return false;
+    if ((tracked.shadowCaster.active ?? true) === false || (tracked.shadowCaster.visible ?? true) === false) return false;
+    if (tracked.shadowDirty) return true;
+    return this.isGameObjectInCullRange(tracked.shadowCaster, "expandedShadowCamera");
+  }
+
+  /**
+   * Shadows stay active in a larger area around the camera so quick camera pans do not
+   * repeatedly pop nearby shadows in and out.
+   */
+  private shouldRenderShadow(tracked: TrackedObject): boolean {
+    if (!tracked.shadowCaster) return false;
+    if (tracked.gameObject.scene !== this.scene) return false;
+    if ((tracked.shadowCaster.active ?? true) === false || (tracked.shadowCaster.visible ?? true) === false) return false;
+    return this.isGameObjectInCullRange(tracked.shadowCaster, "expandedShadowCamera");
   }
 
   /**
@@ -384,9 +472,68 @@ export class SceneLightingService {
     if (tracked.gameObject.scene !== this.scene) return false;
     if ((target.active ?? true) === false || (target.visible ?? true) === false) return false;
 
-    const bounds = this.getRenderableBounds(tracked.gameObject) ?? this.getRenderableBounds(target);
-    if (!bounds) return true;
-    return Phaser.Geom.Rectangle.Overlaps(this.scene.cameras.main.worldView, bounds);
+    const rootMode = this.getAmbientCullMode(tracked.gameObject);
+    if (this.isGameObjectInCullRange(tracked.gameObject, rootMode)) return true;
+
+    const targetMode = this.getAmbientCullMode(target);
+    return this.isGameObjectInCullRange(target, targetMode, true);
+  }
+
+  /**
+   * World layers such as tilemaps should stay lit even when the camera moves beyond their raw
+   * bounds, while ordinary world actors still use the camera rect to avoid unnecessary pipeline work.
+   */
+  private getLightingCullMode(gameObject: Phaser.GameObjects.GameObject): VisibilityCullMode {
+    if (gameObject instanceof Phaser.Tilemaps.TilemapLayer) {
+      return "always";
+    }
+    return "expandedVisibilityCamera";
+  }
+
+  /**
+   * Ambient-only overlays can fall back to always-on behavior when they do not expose stable bounds.
+   * This keeps health bars and owner strips darkening even though Phaser Graphics are lightweight UI helpers.
+   */
+  private getAmbientCullMode(gameObject: Phaser.GameObjects.GameObject): VisibilityCullMode {
+    if (gameObject instanceof Phaser.Tilemaps.TilemapLayer) {
+      return "always";
+    }
+    return "expandedVisibilityCamera";
+  }
+
+  /**
+   * Centralized cull helper shared by lighting, ambient overlays, and shadows.
+   * `allowMissingBounds` is only used for ambient-only helper graphics that should keep responding
+   * to the cycle even when Phaser cannot provide a stable world-space rectangle for them.
+   */
+  private isGameObjectInCullRange(
+    gameObject: Phaser.GameObjects.GameObject,
+    mode: VisibilityCullMode,
+    allowMissingBounds: boolean = false
+  ): boolean {
+    if (mode === "always") return true;
+
+    const bounds = this.getRenderableBounds(gameObject);
+    if (!bounds) return allowMissingBounds;
+
+    const cullBounds = mode === "expandedShadowCamera"
+      ? this.getExpandedShadowCullBounds()
+      : this.getExpandedVisibilityCullBounds();
+    return Phaser.Geom.Rectangle.Overlaps(cullBounds, bounds);
+  }
+
+  /**
+   * Lighting and ambient dimming stay active in a wider area around the viewport so camera pans do
+   * not reveal nearby objects that have not yet been updated to the current day-night state.
+   */
+  private getExpandedVisibilityCullBounds(): Phaser.Geom.Rectangle {
+    const worldView = this.scene.cameras.main.worldView;
+    return new Phaser.Geom.Rectangle(
+      worldView.x - worldView.width * 3,
+      worldView.y - worldView.height * 3,
+      worldView.width * 7,
+      worldView.height * 7
+    );
   }
 
   private applyLighting(tracked: TrackedObject, enabled: boolean): void {
@@ -412,13 +559,14 @@ export class SceneLightingService {
   }
 
   private applyShadow(tracked: TrackedObject, enabled: boolean): void {
-    if (!this.config.dropShadow.enabled || !tracked.shadowCaster) return;
+    if (!this.areDropShadowsEnabled() || !tracked.shadowCaster) return;
     const shadowVisual = this.ensureShadowVisual(tracked);
     if (!shadowVisual) return;
 
     if (!enabled) {
       shadowVisual.setVisible(false);
       tracked.shadowEnabled = false;
+      tracked.shadowDirty = false;
       return;
     }
 
@@ -432,6 +580,7 @@ export class SceneLightingService {
    * The shadow object is marked to fully ignore lighting so it never re-registers itself.
    */
   private ensureShadowVisual(tracked: TrackedObject): Phaser.GameObjects.Ellipse | undefined {
+    if (!this.areDropShadowsEnabled()) return undefined;
     if (tracked.shadowVisual || !tracked.shadowCaster) return tracked.shadowVisual;
 
     const ellipse = new Phaser.GameObjects.Ellipse(this.scene, 0, 0, 10, 10, this.config.dropShadow.color, 0);
@@ -454,6 +603,7 @@ export class SceneLightingService {
     if (!bounds) {
       tracked.shadowVisual.setVisible(false);
       tracked.shadowEnabled = false;
+      tracked.shadowDirty = false;
       return;
     }
 
@@ -489,6 +639,18 @@ export class SceneLightingService {
     tracked.shadowVisual.setRotation(Phaser.Math.DegToRad(angle));
     tracked.shadowVisual.setFillStyle(this.config.dropShadow.color, opacity);
     tracked.shadowVisual.setDepth(depth);
+    tracked.shadowDirty = false;
+  }
+
+  /**
+   * Dirty shadows bypass the throttled pass so movement-triggered updates land in the same frame.
+   * The lower-frequency pass still handles stable shadows that only need periodic sun/moon reprojection.
+   */
+  private flushDirtyShadows(): void {
+    this.trackedObjects.forEach((tracked) => {
+      if (!tracked.shadowDirty) return;
+      this.applyShadow(tracked, this.effectsEnabled && this.shouldRenderShadow(tracked));
+    });
   }
 
   private getShadowLightPosition(fallbackX: number, fallbackY: number): { x: number; y: number } {
@@ -550,12 +712,16 @@ export class SceneLightingService {
     this.trackedObjects.forEach((tracked) => {
       tracked.gameObject.off(Phaser.GameObjects.Events.DESTROY, tracked.onDestroy);
       tracked.gameObject.off(HealthComponent.KilledEvent, tracked.onKilled);
+      tracked.actorMovedSubscription?.unsubscribe();
       this.applyLighting(tracked, false);
       this.applyAmbient(tracked, false);
       tracked.shadowVisual?.destroy();
     });
     this.trackedObjects.clear();
     this.visibilityRefreshAccumulator = 0;
+    this.lastVisibilityCameraState = undefined;
+    this.shadowUpdateAccumulator = 0;
+    this.lastCameraState = undefined;
   }
 
   private asLightingTarget(gameObject: Phaser.GameObjects.GameObject): LightingAwareGameObject | undefined {
@@ -574,6 +740,7 @@ export class SceneLightingService {
   }
 
   private asShadowCaster(gameObject: Phaser.GameObjects.GameObject): ShadowCasterGameObject | undefined {
+    if (!this.areDropShadowsEnabled()) return undefined;
     if (shouldIgnoreSceneLighting(gameObject) || !shouldCastSceneShadow(gameObject)) return undefined;
     if (gameObject instanceof Phaser.GameObjects.Graphics) return undefined;
     if (gameObject instanceof Phaser.GameObjects.Text) return undefined;
@@ -581,14 +748,32 @@ export class SceneLightingService {
     if (gameObject instanceof Phaser.Tilemaps.TilemapLayer) return undefined;
     if (gameObject instanceof Phaser.GameObjects.Particles.ParticleEmitter) return undefined;
     if (gameObject.parentContainer && this.shouldContainerCastShadow(gameObject.parentContainer)) return undefined;
-    if (!this.getRenderableBounds(gameObject)) return undefined;
+    const bounds = this.getRenderableBounds(gameObject);
+    if (!bounds || !this.hasMeaningfulShadowBounds(bounds)) return undefined;
     return gameObject as ShadowCasterGameObject;
   }
 
+  /**
+   * Shadows are reserved for materially large world objects so tiny props and helper visuals
+   * do not create unnecessary shadow objects or update work.
+   */
+  private hasMeaningfulShadowBounds(bounds: Phaser.Geom.Rectangle): boolean {
+    return bounds.width >= 20 && bounds.height >= 14 && bounds.width * bounds.height >= 480;
+  }
+
   private shouldContainerCastShadow(gameObject: Phaser.GameObjects.GameObject): boolean {
+    if (!this.areDropShadowsEnabled()) return false;
     if (!(gameObject instanceof Phaser.GameObjects.Container)) return false;
     if (shouldIgnoreSceneLighting(gameObject) || !shouldCastSceneShadow(gameObject)) return false;
     return this.getRenderableBounds(gameObject) !== null;
+  }
+
+  /**
+   * Central shadow gate so the entire dropped-shadow path can be disabled without touching
+   * map config or scene settings while the implementation is being iterated on.
+   */
+  private areDropShadowsEnabled(): boolean {
+    return DROP_SHADOWS_RUNTIME_ENABLED && this.config.dropShadow.enabled;
   }
 
   private getRenderableBounds(gameObject: Phaser.GameObjects.GameObject): Phaser.Geom.Rectangle | null {
@@ -600,7 +785,30 @@ export class SceneLightingService {
     return getGameObjectBoundsRaw(gameObject);
   }
 
+  /**
+   * Returns an expanded camera rect used only for shadow work.
+   * Padding by three viewport widths/heights keeps nearby shadows warm in cache during camera motion.
+   */
+  private getExpandedShadowCullBounds(): Phaser.Geom.Rectangle {
+    const worldView = this.scene.cameras.main.worldView;
+    return new Phaser.Geom.Rectangle(
+      worldView.x - worldView.width * 3,
+      worldView.y - worldView.height * 3,
+      worldView.width * 7,
+      worldView.height * 7
+    );
+  }
+
+  /**
+   * Container bounds are cached because recursive child-bound aggregation is one of the more
+   * expensive operations in the current lighting system. Dynamic prefabs explicitly invalidate
+   * this cache via `syncGameObjectTree(...)`.
+   */
   private getContainerRenderableBounds(container: Phaser.GameObjects.Container): Phaser.Geom.Rectangle | null {
+    if (!this.dirtyRenderBounds.has(container)) {
+      return this.renderBoundsCache.get(container) ?? null;
+    }
+
     let aggregateBounds: Phaser.Geom.Rectangle | null = null;
 
     container.list.forEach((child) => {
@@ -623,7 +831,124 @@ export class SceneLightingService {
       aggregateBounds.setTo(left, top, right - left, bottom - top);
     });
 
-    return aggregateBounds;
+    let cachedBounds: Phaser.Geom.Rectangle | null = null;
+    if (aggregateBounds) {
+      const resolvedBounds = aggregateBounds as Phaser.Geom.Rectangle;
+      cachedBounds = new Phaser.Geom.Rectangle(
+        resolvedBounds.x,
+        resolvedBounds.y,
+        resolvedBounds.width,
+        resolvedBounds.height
+      );
+    }
+    this.renderBoundsCache.set(container, cachedBounds);
+    this.dirtyRenderBounds.delete(container);
+    return cachedBounds;
+  }
+
+  /**
+   * Marks cached bounds dirty for a root object and its container descendants.
+   * This is used for dynamic prefabs such as walls and stairs when they replace child visuals.
+   */
+  private invalidateRenderableBounds(gameObject: Phaser.GameObjects.GameObject): void {
+    this.renderBoundsCache.delete(gameObject);
+    this.dirtyRenderBounds.add(gameObject);
+    if (!(gameObject instanceof Phaser.GameObjects.Container)) return;
+    gameObject.list.forEach((child) => this.invalidateRenderableBounds(child));
+  }
+
+  /**
+   * Actor movement events are the cheapest reliable signal that a shadow caster subtree moved.
+   * We only mark the tree dirty here; the shadow pass still owns the actual transform update cadence.
+   */
+  private subscribeToActorMovement(gameObject: Phaser.GameObjects.GameObject): Subscription | undefined {
+    const actorTranslateComponent = getActorComponent(gameObject, ActorTranslateComponent);
+    if (!actorTranslateComponent) return undefined;
+    return actorTranslateComponent.actorMovedLogicalPosition.subscribe(() => {
+      this.invalidateRenderableBounds(gameObject);
+      this.markShadowDirtyForTree(gameObject);
+    });
+  }
+
+  /**
+   * Marks a root object and any tracked descendants for shadow recomputation.
+   * This is used when movement or prefab mutations shift world-space bounds.
+   */
+  private markShadowDirtyForTree(gameObject: Phaser.GameObjects.GameObject): void {
+    const tracked = this.trackedObjects.get(gameObject);
+    if (tracked?.shadowCaster) {
+      tracked.shadowDirty = true;
+    }
+
+    if (!(gameObject instanceof Phaser.GameObjects.Container)) return;
+    gameObject.list.forEach((child) => this.markShadowDirtyForTree(child));
+  }
+
+  /**
+   * Camera motion has no dedicated event in the current stack, so we watch scroll and zoom
+   * and trigger an immediate shadow refresh when the view changes.
+   */
+  private didCameraStateChange(): boolean {
+    const camera = this.scene.cameras.main;
+    const nextState = {
+      scrollX: camera.scrollX,
+      scrollY: camera.scrollY,
+      zoom: camera.zoom
+    };
+
+    if (!this.lastCameraState) {
+      this.lastCameraState = nextState;
+      return true;
+    }
+
+    const changed =
+      this.lastCameraState.scrollX !== nextState.scrollX ||
+      this.lastCameraState.scrollY !== nextState.scrollY ||
+      this.lastCameraState.zoom !== nextState.zoom;
+
+    this.lastCameraState = nextState;
+    return changed;
+  }
+
+  /**
+   * Lighting and ambient-only overlays should react immediately to camera pans even when shadow
+   * support is fully disabled. This keeps visibility-based culling from lagging behind the viewport.
+   */
+  private didVisibilityCameraStateChange(): boolean {
+    const camera = this.scene.cameras.main;
+    const nextState = {
+      scrollX: camera.scrollX,
+      scrollY: camera.scrollY,
+      zoom: camera.zoom
+    };
+
+    if (!this.lastVisibilityCameraState) {
+      this.lastVisibilityCameraState = nextState;
+      return true;
+    }
+
+    const changed =
+      this.lastVisibilityCameraState.scrollX !== nextState.scrollX ||
+      this.lastVisibilityCameraState.scrollY !== nextState.scrollY ||
+      this.lastVisibilityCameraState.zoom !== nextState.zoom;
+
+    this.lastVisibilityCameraState = nextState;
+    return changed;
+  }
+
+  /**
+   * Marks currently visible shadow casters dirty so the next shadow pass reprojects them
+   * against the new camera context without touching the whole scene.
+   */
+  private markVisibleShadowCastersDirty(): void {
+    const shadowCullBounds = this.getExpandedShadowCullBounds();
+    this.trackedObjects.forEach((tracked) => {
+      if (!tracked.shadowCaster) return;
+      const bounds = this.getRenderableBounds(tracked.shadowCaster);
+      if (!bounds) return;
+      if (!Phaser.Geom.Rectangle.Overlaps(shadowCullBounds, bounds)) return;
+      tracked.shadowDirty = true;
+    });
   }
 
   private isContainer(gameObject: Phaser.GameObjects.GameObject): gameObject is Phaser.GameObjects.Container {

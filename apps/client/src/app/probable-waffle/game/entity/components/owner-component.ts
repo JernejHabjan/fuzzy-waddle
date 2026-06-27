@@ -14,6 +14,7 @@ import { getSceneService } from "../../world/services/scene-component-helpers";
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 import type { OwnerDefinition } from "./owner-definition";
 import { markGameObjectAmbientResponsive } from "../../world/services/lighting/lighting-game-object-meta";
+import { SceneLightingService } from "../../world/services/lighting/scene-lighting.service";
 
 export class OwnerComponent {
   static readonly ZIndex = 1;
@@ -202,6 +203,8 @@ export class OwnerComponent {
     const height = Math.max(healthHeight, constructionHeight, 0);
     this.ownerUiElement = this.gameObject.scene.add.graphics();
     markGameObjectAmbientResponsive(this.ownerUiElement);
+    // Graphics are added to the scene before their lighting metadata exists, so register again after marking.
+    getSceneService(this.gameObject.scene, SceneLightingService)?.registerDynamicGameObject(this.ownerUiElement);
     this.ownerUiElement.fillStyle(this.ownerColor.color);
     this.ownerUiElement.fillRect(0, 0, width + this.borderSize * 2, height + this.borderSize * 2);
     this.updateOwnerUiElementPosition();

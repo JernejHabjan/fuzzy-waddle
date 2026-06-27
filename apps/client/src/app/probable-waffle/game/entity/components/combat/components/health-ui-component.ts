@@ -6,6 +6,8 @@ import { getGameObjectBounds, getGameObjectDepth, onObjectReady } from "../../..
 import { OwnerComponent } from "../../owner-component";
 import { ActorTranslateComponent } from "../../movement/actor-translate-component";
 import { markGameObjectAmbientResponsive } from "../../../../world/services/lighting/lighting-game-object-meta";
+import { getSceneService } from "../../../../world/services/scene-component-helpers";
+import { SceneLightingService } from "../../../../world/services/lighting/scene-lighting.service";
 
 export class HealthUiComponent {
   static readonly ZIndex = 1;
@@ -42,6 +44,8 @@ export class HealthUiComponent {
   ) {
     this.bar = this.gameObject.scene.add.graphics();
     markGameObjectAmbientResponsive(this.bar);
+    // Graphics are added to the scene before their lighting metadata exists, so register again after marking.
+    getSceneService(this.gameObject.scene, SceneLightingService)?.registerDynamicGameObject(this.bar);
     onObjectReady(gameObject, this.init, this);
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
