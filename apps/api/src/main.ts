@@ -5,6 +5,8 @@
 
 import { Logger, ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
+// eslint-disable-next-line @nx/enforce-module-boundaries
+import packageJson from "../../../package.json";
 
 import { AppModule } from "./app/app.module";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
@@ -37,6 +39,7 @@ async function bootstrap() {
   app.use(helmet());
 
   await app.listen(port);
+  Logger.log(`📦 Fuzzy Waddle API version: ${packageJson.version}`);
   Logger.log(`🚀 Application is running on: http://localhost:${port}/${globalPrefix}`);
 }
 

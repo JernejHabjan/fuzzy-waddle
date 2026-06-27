@@ -1,6 +1,6 @@
 [package]
 name = "probable-waffle"
-version = "1.0.0"
+version = "0.1.0"
 description = "Probable Waffle — Ashes of the Ancients desktop app"
 authors = ["Jernej Habjan"]
 license = "MIT"
