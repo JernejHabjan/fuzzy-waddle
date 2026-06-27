@@ -1,8 +1,8 @@
 @if (!embedded()) {
   <fuzzy-waddle-profile-nav />
 }
-<div class="profile-page">
-  <div class="profile-shell">
+<div class="profile-page" [class.profile-page-embedded]="embedded()">
+  <div class="profile-shell" [class.profile-shell-embedded]="embedded()">
     @if (isLoadingProfile()) {
       <div class="empty-state loading-state">
         <fa-icon [icon]="faClock" />

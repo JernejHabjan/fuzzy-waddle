@@ -64,7 +64,8 @@ export class PlayerDefinitionComponent {
   protected readonly profileModalConfig: ModalConfig = {
     modalTitle: "Player Profile",
     dismissButtonLabel: "Close",
-    hideCloseButton: () => true
+    hideCloseButton: () => true,
+    windowClass: "aota-player-profile-modal"
   };
 
   protected async addAiPlayer() {
