@@ -1,6 +1,6 @@
 {
   "name": "fuzzy-waddle",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "UNLICENSED",
   "scripts": {
     "start": "nx run-many --all --target=serve",

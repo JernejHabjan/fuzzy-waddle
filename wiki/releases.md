@@ -7,7 +7,7 @@ This project releases from the version in the root `package.json`.
 Before merging a PR into `main`, bump and sync the app version:
 
 ```bash
-pnpm run version:app -- 1.2.3
+pnpm run version:app 1.2.3
 ```
 
 This updates:
