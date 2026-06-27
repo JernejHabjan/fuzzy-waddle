@@ -67,6 +67,7 @@ For full setup instructions see the [Getting Started guide](wiki/getting-started
 | [Tauri Desktop](wiki/tauri-desktop.md)     | Desktop app prerequisites, dev workflow, build commands  |
 | [Supabase Setup](wiki/supabase.md)         | Auth, type generation, JDBC, local dev                   |
 | [Deployment](wiki/deployment.md)           | Render and GitHub Pages deployment config                |
+| [Releases](wiki/releases.md)               | Version bump rules and automated release flow            |
 | [Troubleshooting](wiki/troubleshooting.md) | Common issues and fixes                                  |
 
 ---

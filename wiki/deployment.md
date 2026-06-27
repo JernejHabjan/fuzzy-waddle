@@ -34,7 +34,9 @@ Reference: [Render SPA routing](https://render.com/docs/deploy-create-react-app#
 ## GitHub Pages (client mirror)
 
 A second client deployment runs on GitHub Pages at [https://jernejhabjan.github.io/fuzzy-waddle/](https://jernejhabjan.github.io/fuzzy-waddle/).
-This is handled automatically by the CI workflow in `.github/workflows/`.
+This is handled automatically after merges to `main`.
+
+Automated release behavior after merging to `main` is documented in [releases.md](releases.md).
 
 ## Supabase Hosted Settings
 
