@@ -112,6 +112,7 @@ export class SpawnBerryComponent {
     };
 
     if (delay) {
+      // Intentional wall-clock timer: berry cleanup is purely cosmetic.
       this.gameObject.scene.time.delayedCall(1000, destroy);
     } else {
       destroy();
@@ -121,7 +122,6 @@ export class SpawnBerryComponent {
   destroy() {
     if (!this.gameObject.scene) return;
     this.destroyTweenAndCurrentBerry(false);
-    this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.gameObject.update, this);
     this.gameObject.off(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, this.spawnBerry, this);
   }
 }

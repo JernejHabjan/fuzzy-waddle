@@ -167,7 +167,11 @@ export abstract class GameInstance<
   }
 
   isHost(userId: UserId | null): boolean {
-    return this.gameInstanceMetadata?.data.createdBy === userId;
+    return (this.gameInstanceMetadata?.data as GameInstanceMetadataData & { currentHostUserId?: UserId | null })
+      .currentHostUserId
+      ? (this.gameInstanceMetadata?.data as GameInstanceMetadataData & { currentHostUserId?: UserId | null })
+          .currentHostUserId === userId
+      : this.gameInstanceMetadata?.data.createdBy === userId;
   }
 
   isPlayer(userId: UserId | null): boolean {

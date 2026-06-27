@@ -1,8 +1,10 @@
-import { Subject } from "rxjs";
+import { Subject, type Subscription } from "rxjs";
 import { getActorComponent } from "../../../data/actor-component";
 import { ResourceSourceComponent } from "../resource/resource-source-component";
 import { onObjectReady } from "../../../data/game-object-helper";
 import type { TendableDefinition } from "./tendable-definition";
+import { SimulationTickService } from "../../../world/services/simulation-tick.service";
+import { getSceneService } from "../../../world/services/scene-component-helpers";
 import GameObject = Phaser.GameObjects.GameObject;
 
 /**
@@ -31,12 +33,15 @@ export class TendableComponent {
   get phase(): TendablePhase { return this._currentPhase; }
   private tenders = new Set<GameObject>();
   private resourceSourceComponent?: ResourceSourceComponent;
+  private simulationTickSub?: Subscription;
 
   constructor(
     private readonly gameObject: GameObject,
     readonly definition: TendableDefinition
   ) {
-    gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
+    this.simulationTickSub = getSceneService(gameObject.scene, SimulationTickService)?.tick$.subscribe(() =>
+      this.update()
+    );
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     onObjectReady(gameObject, this.onObjectReady, this);
   }
@@ -53,13 +58,13 @@ export class TendableComponent {
     });
   }
 
-  private update(_time: number, delta: number): void {
+  private update(): void {
     if (this.growthPercent >= 100) return;
     if (!this.definition.autoStart && this.tenders.size === 0) return;
 
     const boostMultiplier = this.tenders.size > 0 ? this.definition.tenderBoostMultiplier : 1;
     const growthPerMs = 100 / this.definition.growthDurationMs;
-    const deltaScaled = delta * this.gameObject.scene.time.timeScale;
+    const deltaScaled = SimulationTickService.TICK_INTERVAL_MS;
     this.growthPercent = Math.min(100, this.growthPercent + growthPerMs * deltaScaled * boostMultiplier);
 
     this.growthProgressChanged.next(this.growthPercent);
@@ -116,7 +121,7 @@ export class TendableComponent {
   }
 
   private destroy(): void {
-    this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
+    this.simulationTickSub?.unsubscribe();
     this.growthProgressChanged.complete();
     this.phaseChanged.complete();
     this.harvestReady.complete();

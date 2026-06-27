@@ -12,8 +12,6 @@ import {
 } from "../../data/game-object-helper";
 import { Subscription } from "rxjs";
 import { AudioService } from "../../world/services/audio.service";
-import { getCommunicator, getCurrentPlayerNumber } from "../../data/scene-data";
-import { SelectableComponent } from "../components/selectable-component";
 import { getActorComponent } from "../../data/actor-component";
 import { ActorTranslateComponent } from "../components/movement/actor-translate-component";
 import { HealthComponent } from "../components/combat/components/health-component";
@@ -28,7 +26,6 @@ import {
   SharedActorActionsSfxSnowSounds,
   SharedActorActionsSfxStoneSounds
 } from "../../sfx/shared-actor-actions-sfx";
-import { OwnerComponent } from "../components/owner-component";
 import { AnimationActorComponent } from "../components/animation/animation-actor-component";
 import { FlyingComponent } from "../components/movement/flying-component";
 import { MovementTerrainType } from "../components/movement/movement-terrain-type";
@@ -39,23 +36,24 @@ import { getTileCoordsUnderObject } from "../../library/tile-under-object";
 import { TilemapComponent } from "../../world/tilemap/tilemap.component";
 import type { IsoDirection } from "../components/movement/iso-directions";
 import type { PathMoveConfig } from "./path-move-config";
-import Tween = Phaser.Tweens.Tween;
-import TweenChain = Phaser.Tweens.TweenChain;
+import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
+import { getInterpolatedSimulationNow } from "../../world/services/simulation-time";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class MovementSystem {
   private _navigationService?: NavigationService;
-  private _currentTween?: Tween | TweenChain;
+  // Active movement is driven from interpolated simulation time so visuals freeze
+  // with lockstep instead of reaching the tile early and waiting for the next
+  // authoritative simulation tick to unlock the following step.
+  private _cancelCurrentMovement?: () => void;
   private readonly DEBUG = false;
-  private playerChangedSubscription?: Subscription;
+  private commandBusSubscription?: Subscription;
   private actorTranslateComponent?: ActorTranslateComponent;
   private tileMapComponent!: TilemapComponent;
   private audioService: AudioService | undefined;
   private audioActorComponent: AudioActorComponent | undefined;
   private animationActorComponent?: AnimationActorComponent;
   private statusEffectComponent?: StatusEffectComponent;
-  private shiftKey: Phaser.Input.Keyboard.Key | undefined;
-  private targetGameObject?: GameObject;
 
   constructor(private readonly gameObject: Phaser.GameObjects.GameObject) {
     this.listenToMoveEvents();
@@ -70,38 +68,38 @@ export class MovementSystem {
     this.audioService = getSceneService(this.gameObject.scene, AudioService);
     this.audioActorComponent = getActorComponent(this.gameObject, AudioActorComponent);
     this.tileMapComponent = getSceneComponent(this.gameObject.scene, TilemapComponent)!;
-    this.subscribeToShiftKey();
-  }
-
-  private subscribeToShiftKey() {
-    this.shiftKey = this.gameObject.scene.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
   }
 
   private listenToMoveEvents() {
-    this.playerChangedSubscription = getCommunicator(this.gameObject.scene)
-      .playerChanged?.onWithFilter((p) => p.property === "command.issued.move") // todo it's actually blackboard that should replicate
-      .subscribe(async (payload) => {
-        const isSelected = getActorComponent(this.gameObject, SelectableComponent)?.getSelected();
-        if (!isSelected) return;
-        const canIssueCommand = this.canIssueCommand();
-        if (!canIssueCommand) return;
-        const tileVec3 = payload.data.data!["tileVec3"] as Vector3Simple;
-        const selectedActorObjectIds = payload.data.data!["selectedActorObjectIds"] as string[];
-        const newWorldVec3 = await this.getTileVec3ByDynamicFlocking(tileVec3, selectedActorObjectIds);
-        const payerPawnAiController = getActorComponent(this.gameObject, PawnAiController);
-        if (payerPawnAiController) {
-          const newOrder = new OrderData(OrderType.Move, { targetTileLocation: newWorldVec3 });
-          if (this.shiftKey?.isDown) {
-            payerPawnAiController.blackboard.addOrder(newOrder);
-          } else {
-            payerPawnAiController.blackboard.overrideOrderQueueAndActiveOrder(newOrder);
-          }
+    const commandBus = getSceneService(this.gameObject.scene, CommandBusService);
+    if (!commandBus) {
+      console.error("MovementSystem: CommandBusService not found — move commands will not be received");
+      return;
+    }
 
-          this.playOrderSound(payerPawnAiController.blackboard.peekNextPlayerOrder()!);
+    const myId = getActorComponent(this.gameObject, IdComponent)?.id;
+
+    this.commandBusSubscription = commandBus.command$.subscribe(async (cmd) => {
+      if (cmd.type !== "MOVE") return;
+
+      const actorId = myId ?? getActorComponent(this.gameObject, IdComponent)?.id;
+      if (!actorId || !cmd.actorIds.includes(actorId)) return;
+
+      const newWorldVec3 = await this.getTileVec3ByDynamicFlocking(cmd.tileVec3, cmd.actorIds as ActorId[]);
+      const payerPawnAiController = getActorComponent(this.gameObject, PawnAiController);
+      if (payerPawnAiController) {
+        const newOrder = new OrderData(OrderType.Move, { targetTileLocation: newWorldVec3 });
+        if (cmd.queue) {
+          payerPawnAiController.blackboard.addOrder(newOrder);
         } else {
-          this.moveToLocationByFollowingStaticPath(newWorldVec3);
+          payerPawnAiController.blackboard.overrideOrderQueueAndActiveOrder(newOrder);
         }
-      });
+
+        this.playOrderSound(payerPawnAiController.blackboard.peekNextPlayerOrder()!);
+      } else {
+        this.moveToLocationByFollowingStaticPath(newWorldVec3);
+      }
+    });
   }
 
   private playOrderSound(action: OrderData) {
@@ -157,10 +155,17 @@ export class MovementSystem {
     gameObject: GameObject,
     pathMoveConfig?: Partial<PathMoveConfig>
   ): Promise<boolean> {
+    return this.moveToActorByFollowingDeterministicSnapshotPath(gameObject, pathMoveConfig);
+  }
+
+  private async moveToActorByFollowingDeterministicSnapshotPath(
+    destinationGameObject: GameObject,
+    pathMoveConfig?: Partial<PathMoveConfig>
+  ): Promise<boolean> {
     const flyingComponent = getActorComponent(this.gameObject, FlyingComponent);
     const usePathfinding = !flyingComponent;
     if (!usePathfinding) {
-      const vec3 = getGameObjectCurrentTile(gameObject);
+      const vec3 = getGameObjectCurrentTile(destinationGameObject);
       if (!vec3) return false;
       return this.moveDirectlyToLocationWithoutPathfinding(
         {
@@ -168,39 +173,11 @@ export class MovementSystem {
           y: vec3.y,
           z: 0
         } satisfies Vector3Simple,
-        pathMoveConfig
+        pathMoveConfig as PathMoveConfig
       )
         .then(() => true)
         .catch(() => false);
     }
-
-    return this.calculateAndFollowPathOfMovingTarget(gameObject, pathMoveConfig);
-  }
-
-  /**
-   * Calculates and follows a dynamic path to a moving target game object.
-   * This method is used for "following" behavior where the target may move during pathfinding.
-   *
-   * Unlike moveAlongPathByFollowingPreCalculatedStaticPath which follows a static pre-calculated path, this method:
-   * - Recalculates the path dynamically after each step
-   * - Handles moving targets that may change position
-   * - Finds the closest navigable tile within a specified radius of the target
-   * - Stops and recalculates if the target moves significantly
-   *
-   * Use cases:
-   * - Following another character/unit
-   * - Moving to interact with a movable object
-   * - AI units pursuing a target
-   *
-   * @param destinationGameObject The target game object to follow/move towards
-   * @param pathMoveConfig Optional configuration for movement behavior
-   * @returns Promise<boolean> - true if movement started successfully, false otherwise
-   */
-  private async calculateAndFollowPathOfMovingTarget(
-    destinationGameObject: GameObject,
-    pathMoveConfig?: Partial<PathMoveConfig>
-  ): Promise<boolean> {
-    if (!this.navigationService) return false;
 
     const path = await this.getPathToClosestNavigableTileBetweenGameObjectsInRadius(
       destinationGameObject,
@@ -208,101 +185,15 @@ export class MovementSystem {
     );
     if (!path || !path.length) return false;
 
-    if (this.DEBUG) this.navigationService.drawDebugPath(path);
-
-    // Cancel any ongoing movement before starting new path
     this.cancelMovement();
 
     try {
-      if (!path.length) return false;
-      // Remove the first tile, as it's the current tile
       path.shift();
-
-      // Store the target for potential path recalculation
-      this.targetGameObject = destinationGameObject;
-
-      // Start moving along the path with smoother transitions
-      if (path.length > 0) {
-        await this.moveAlongDynamicPath(path, pathMoveConfig);
-      } else {
-        // Target is adjacent, complete immediately
-        pathMoveConfig?.onComplete?.();
-        this.playMovementAnimation(false, pathMoveConfig);
-      }
-
+      await this.moveAlongPathByFollowingPreCalculatedStaticPath(path, pathMoveConfig as PathMoveConfig);
       return true;
-    } catch (e) {
+    } catch {
       return false;
     }
-  }
-
-  /**
-   * Moves along a path while allowing for dynamic recalculation.
-   * This provides smoother movement than the recursive approach.
-   */
-  private async moveAlongDynamicPath(path: Vector2Simple[], config?: Partial<PathMoveConfig>): Promise<void> {
-    if (!path.length) {
-      config?.onComplete?.();
-      this.playMovementAnimation(false, config);
-      this.targetGameObject = undefined;
-      return;
-    }
-
-    const nextTile = path.shift();
-    if (!nextTile) return Promise.reject("No next tile to move to");
-
-    this.cancelMovement();
-    config?.onPathUpdate?.(nextTile);
-
-    const onComplete = async () => {
-      // Check if we still have a target to follow
-      if (this.targetGameObject && this.targetGameObject.active && this.targetGameObject.scene.scene.isActive()) {
-        // Recalculate path to the moving target
-        try {
-          const newPath = await this.getPathToClosestNavigableTileBetweenGameObjectsInRadius(
-            this.targetGameObject,
-            config?.radiusTilesAroundDestination
-          );
-
-          if (newPath && newPath.length > 1) {
-            // Remove current position from new path
-            newPath.shift();
-            // Continue with the new path
-            await this.moveAlongDynamicPath(newPath, config);
-          } else {
-            // Reached target or no path available
-            config?.onComplete?.();
-            this.playMovementAnimation(false, config);
-            this.targetGameObject = undefined;
-          }
-        } catch (error) {
-          // Path calculation failed, try to continue with remaining original path
-          if (path.length > 0) {
-            await this.moveAlongDynamicPath(path, config);
-          } else {
-            config?.onComplete?.();
-            this.playMovementAnimation(false, config);
-            this.targetGameObject = undefined;
-          }
-        }
-      } else if (path.length > 0) {
-        // Continue with remaining path if no target to follow
-        await this.moveAlongDynamicPath(path, config);
-      } else {
-        // End of path
-        config?.onComplete?.();
-        this.playMovementAnimation(false, config);
-        this.targetGameObject = undefined;
-      }
-    };
-
-    const onStop = () => {
-      config?.onStop?.();
-      this.playMovementAnimation(false, config);
-      this.targetGameObject = undefined;
-    };
-
-    return this.moveActorToTileWithTween(nextTile, config, onComplete, onStop);
   }
 
   /**
@@ -387,10 +278,8 @@ export class MovementSystem {
   };
 
   cancelMovement() {
-    if (this._currentTween) {
-      this._currentTween.stop();
-      this._currentTween = undefined;
-    }
+    this._cancelCurrentMovement?.();
+    this._cancelCurrentMovement = undefined;
   }
 
   /**
@@ -476,34 +365,70 @@ export class MovementSystem {
         standardStepDistance,
         tileDistanceMultiplier
       );
+      const startTransform = { ...logicalTransform };
+      const startTime = getInterpolatedSimulationNow(this.gameObject.scene);
+      let settled = false;
 
-      this._currentTween = this.gameObject.scene.tweens.add({
-        targets: logicalTransform,
-        x: newLogicalTransform.x,
-        y: newLogicalTransform.y,
-        z: newLogicalTransform.z,
-        duration,
-        onComplete: async () => {
-          if (onComplete) {
-            await onComplete();
-          }
-          resolve();
-        },
-        onStop: () => {
-          if (onStop) {
-            onStop();
-          } else {
-            config?.onStop?.();
-            if (!config?.ignoreAnimations) this.playMovementAnimation(false, config);
-          }
-          resolve();
-        },
-        onUpdate: () => {
-          this.tweenUpdate(logicalTransform);
-          throttledTweenUpdate?.();
-          config?.onUpdate?.();
+      const cleanup = () => {
+        this.gameObject.scene.events.off(Phaser.Scenes.Events.UPDATE, updateMovement);
+        this.gameObject.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, cancelMovement);
+        if (this._cancelCurrentMovement === cancelMovement) {
+          this._cancelCurrentMovement = undefined;
         }
-      });
+      };
+
+      const finishMovement = async () => {
+        if (settled) {
+          return;
+        }
+        settled = true;
+        cleanup();
+        logicalTransform.x = newLogicalTransform.x;
+        logicalTransform.y = newLogicalTransform.y;
+        logicalTransform.z = newLogicalTransform.z;
+        this.tweenUpdate(logicalTransform);
+        if (onComplete) {
+          await onComplete();
+        }
+        resolve();
+      };
+
+      const cancelMovement = () => {
+        if (settled) {
+          return;
+        }
+        settled = true;
+        cleanup();
+        if (onStop) {
+          onStop();
+        } else {
+          config?.onStop?.();
+          if (!config?.ignoreAnimations) this.playMovementAnimation(false, config);
+        }
+        resolve();
+      };
+
+      const updateMovement = () => {
+        const elapsed = Math.max(0, getInterpolatedSimulationNow(this.gameObject.scene) - startTime);
+        const progress = duration <= 0 ? 1 : Phaser.Math.Clamp(elapsed / duration, 0, 1);
+        logicalTransform.x = Phaser.Math.Linear(startTransform.x, newLogicalTransform.x, progress);
+        logicalTransform.y = Phaser.Math.Linear(startTransform.y, newLogicalTransform.y, progress);
+        logicalTransform.z = Phaser.Math.Linear(startTransform.z, newLogicalTransform.z, progress);
+        this.tweenUpdate(logicalTransform);
+        throttledTweenUpdate?.();
+        config?.onUpdate?.();
+        if (progress >= 1) {
+          void finishMovement();
+        }
+      };
+
+      // Movement progression is computed from interpolated simulation time.
+      // That keeps visual travel smooth while also freezing exactly when lockstep
+      // pauses, so the next path segment cannot be delayed behind a wall-clock tween.
+      this._cancelCurrentMovement = cancelMovement;
+      this.gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, updateMovement);
+      this.gameObject.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, cancelMovement);
+      updateMovement();
     });
   }
 
@@ -599,9 +524,7 @@ export class MovementSystem {
 
   private destroy() {
     this.cancelMovement();
-    this.targetGameObject = undefined;
-    this.shiftKey?.destroy();
-    this.playerChangedSubscription?.unsubscribe();
+    this.commandBusSubscription?.unsubscribe();
   }
 
   async canMoveTo(targetGameObject: Phaser.GameObjects.GameObject, range?: number): Promise<boolean> {
@@ -619,12 +542,6 @@ export class MovementSystem {
       targetGameObject,
       range
     );
-  }
-
-  private canIssueCommand() {
-    const currentPlayerNr = getCurrentPlayerNumber(this.gameObject.scene);
-    const actorPlayerNr = getActorComponent(this.gameObject, OwnerComponent)?.getOwner();
-    return actorPlayerNr === currentPlayerNr;
   }
 
   /**
@@ -687,7 +604,10 @@ export class MovementSystem {
     formationPoints.sort((a, b) => {
       const distA = Math.sqrt(Math.pow(a.x - tileVec3.x, 2) + Math.pow(a.y - tileVec3.y, 2));
       const distB = Math.sqrt(Math.pow(b.x - tileVec3.x, 2) + Math.pow(b.y - tileVec3.y, 2));
-      return distA - distB;
+      if (distA !== distB) return distA - distB;
+      // Deterministic tie-break for equal-distance points keeps formation assignment stable.
+      if (a.y !== b.y) return a.y - b.y;
+      return a.x - b.x;
     });
 
     // Assign a unique formation point to this unit based on its sorted index
@@ -697,7 +617,8 @@ export class MovementSystem {
       const destinationTile: Vector2Simple = { x: assignedPoint.x, y: assignedPoint.y };
 
       // Check if the assigned point is valid and reachable
-      const terrainType = this.actorTranslateComponent?.actorTranslateDefinition.movementTerrainType ?? MovementTerrainType.Ground;
+      const terrainType =
+        this.actorTranslateComponent?.actorTranslateDefinition.movementTerrainType ?? MovementTerrainType.Ground;
       if (this.navigationService.isTileNavigable(destinationTile, terrainType)) {
         const path = await this.navigationService.findPathFromGameObjectToTile(this.gameObject, destinationTile);
         if (path !== null && path.length > 0) {

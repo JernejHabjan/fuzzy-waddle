@@ -8,7 +8,7 @@ import {
 } from "@fuzzy-waddle/api-interfaces";
 import { ActorManager } from "../../data/actor-manager";
 import GameProbableWaffleScene from "../scenes/GameProbableWaffleScene";
-import { getCommunicator } from "../../data/scene-data";
+import { getCommunicator, hasMultiplayerCommandRelay } from "../../data/scene-data";
 import Spawn from "../../prefabs/buildings/misc/Spawn";
 import EditorOwner from "../scenes/editor-components/EditorOwner";
 import EditorActorLevel from "../scenes/editor-components/EditorActorLevel";
@@ -33,12 +33,15 @@ import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
 import GameObject = Phaser.GameObjects.GameObject;
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import { upgradeActorToLevel } from "../../data/actor-level-utils";
+import { ActorIdAuthorityService } from "./multiplayer/actor-id-authority.service";
 
 export class SceneActorCreator {
   private readonly loadGame: LoadGame;
+  private readonly actorIdAuthority: ActorIdAuthorityService;
+  private readonly lifecycleBoundActors = new WeakSet<GameObject>();
   constructor(private readonly scene: GameProbableWaffleScene) {
-    this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
     this.loadGame = new LoadGame(scene as GameProbableWaffleScene);
+    this.actorIdAuthority = new ActorIdAuthorityService(scene);
   }
 
   /**
@@ -55,13 +58,15 @@ export class SceneActorCreator {
     } else {
       this.spawnFromSpawnList();
     }
-    this.saveAllKnownActorsToGameState();
+    // Host mirrors canonical actor state to server for validation/recovery flows.
+    if (this.scene.isHost) {
+      this.saveAllKnownActorsToGameState();
+    }
   }
 
   private spawnFromSpawnList() {
     const list = this.scene.children.getChildren();
     const toDestroy: Phaser.GameObjects.GameObject[] = [];
-    const actorIndex = getSceneService(this.scene, ActorIndexSystem);
 
     list.forEach((gameObject: Phaser.GameObjects.GameObject) => {
       if (gameObject instanceof Spawn) {
@@ -90,12 +95,9 @@ export class SceneActorCreator {
           if (editorLevel > 1) {
             upgradeActorToLevel(gameObject, editorLevel);
           }
-          // Register in the actor index after init
-          actorIndex?.registerActor(gameObject);
-        } else {
-          // Already initialized - ensure it's indexed
-          actorIndex?.registerActor(gameObject);
         }
+        // Register in the actor index after init
+        this.registerAndSaveNewActor(gameObject);
       }
     });
     toDestroy.forEach((gameObject) => gameObject.destroy());
@@ -142,7 +144,7 @@ export class SceneActorCreator {
     }
 
     const gameObject = this.scene.add.existing(actor);
-    this.registerAndSaveNewActor(gameObject);
+    this.registerAndSaveNewActor(gameObject, actorDefinition.id?.id);
     return gameObject;
   }
 
@@ -205,10 +207,14 @@ export class SceneActorCreator {
     return constructionState === ConstructionStateEnum.Finished || constructionState === undefined;
   }
 
-  public registerAndSaveNewActor(actor: Phaser.GameObjects.GameObject) {
+  public registerAndSaveNewActor(actor: Phaser.GameObjects.GameObject, authoritativeId?: string) {
+    this.actorIdAuthority.applyAuthoritativeOrDeterministicId(actor, authoritativeId);
+    this.bindLifecycleHandlers(actor);
+
     const actorIndex = getSceneService(this.scene, ActorIndexSystem);
     actorIndex?.registerActor(actor);
     this.saveActorToGameState(actor);
+    this.syncHostActorState();
   }
 
   public saveAllKnownActorsToGameState() {
@@ -258,7 +264,49 @@ export class SceneActorCreator {
     }
   }
 
-  private destroy() {}
+  private bindLifecycleHandlers(actor: Phaser.GameObjects.GameObject) {
+    if (this.lifecycleBoundActors.has(actor)) {
+      return;
+    }
+    this.lifecycleBoundActors.add(actor);
+    actor.once(Phaser.GameObjects.Events.DESTROY, () => this.handleActorDestroyed(actor));
+  }
+
+  private handleActorDestroyed(actor: Phaser.GameObjects.GameObject) {
+    const actorId = getActorComponent(actor, IdComponent)?.id;
+    if (!actorId) {
+      return;
+    }
+
+    if (!(this.scene instanceof GameProbableWaffleScene)) {
+      return;
+    }
+
+    const actors = this.scene.baseGameData.gameInstance.gameState?.data.actors;
+    if (!actors) {
+      return;
+    }
+
+    const actorIndex = actors.findIndex((entry) => entry.id?.id === actorId);
+    if (actorIndex === -1) {
+      return;
+    }
+
+    actors.splice(actorIndex, 1);
+    this.syncHostActorState();
+  }
+
+  /**
+   * Host-only actor sync must happen immediately so server validation can
+   * see newly created/destroyed actors in the same tick as command ingest.
+   */
+  private syncHostActorState() {
+    if (!this.scene.isHost || !hasMultiplayerCommandRelay(this.scene)) {
+      return;
+    }
+
+    this.saveAllKnownActorsToGameState();
+  }
 
   private spawnActorsFromSpawnList(spawn: Spawn) {
     if (!(this.scene instanceof GameProbableWaffleScene)) return;

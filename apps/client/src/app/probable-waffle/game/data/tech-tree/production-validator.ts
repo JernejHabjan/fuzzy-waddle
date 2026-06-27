@@ -15,8 +15,8 @@ import { getPwActorDefinition } from "../../prefabs/definitions/actor-definition
 import { getActorComponent } from "../actor-component";
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 import { ProductionComponent } from "../../entity/components/production/production-component";
-import { RandomService } from "../../world/services/random.service";
 import { shouldConsiderActorUnlocked } from "./actor-unlock-utils";
+import { SimulationTickService } from "../../world/services/simulation-tick.service";
 
 export class ProductionValidator {
   private static readonly debugEnabled = false;
@@ -122,8 +122,8 @@ export class ProductionValidator {
 
   /** Insert prerequisite tasks into blackboard production prereqQueue (order: earliest first). */
   schedulePrerequisites(prereqs: PreRequirement, finalTarget: ObjectNames) {
-    const now = performance.now();
-    const randomService = getSceneService(this.scene, RandomService)!;
+    const insertedAt = getSceneService(this.scene, SimulationTickService)?.currentTick ?? 0;
+    let queueIndex = this.blackboard.production.prereqQueue.length;
     // Insert in reverse so that earliest prerequisite appears first in queue processing
     const objectNames = [...prereqs.prereqs.objectNames];
     const researchTypes = [...prereqs.prereqs.researchTypes];
@@ -132,7 +132,7 @@ export class ProductionValidator {
 
     objectNames.reverse().forEach((p) => {
       this.blackboard.production.prereqQueue.push({
-        id: `${p}-${now}-${randomService.random().toString(36).slice(2)}`,
+        id: `${p}-${insertedAt}-${queueIndex++}`,
         type: "prefab",
         preRequirement: new PreRequirement({
           objectNames: [p],
@@ -140,12 +140,12 @@ export class ProductionValidator {
           resources: {},
           supply: null
         }),
-        insertedAt: now
+        insertedAt
       });
     });
     researchTypes.reverse().forEach((p) => {
       this.blackboard.production.prereqQueue.push({
-        id: `${p}-${now}-${randomService.random().toString(36).slice(2)}`,
+        id: `${p}-${insertedAt}-${queueIndex++}`,
         type: "research",
         preRequirement: new PreRequirement({
           objectNames: [],
@@ -153,12 +153,12 @@ export class ProductionValidator {
           resources: {},
           supply: null
         }),
-        insertedAt: now
+        insertedAt
       });
     });
     if (supply) {
       this.blackboard.production.prereqQueue.push({
-        id: `supply-${now}-${randomService.random().toString(36).slice(2)}`,
+        id: `supply-${insertedAt}-${queueIndex++}`,
         type: "supply",
         preRequirement: new PreRequirement({
           objectNames: [],
@@ -166,12 +166,12 @@ export class ProductionValidator {
           resources: {},
           supply
         }),
-        insertedAt: now
+        insertedAt
       });
     }
     if (resources && Object.keys(resources).length > 0) {
       this.blackboard.production.prereqQueue.push({
-        id: `resources-${now}-${randomService.random().toString(36).slice(2)}`,
+        id: `resources-${insertedAt}-${queueIndex++}`,
         type: "resources",
         preRequirement: new PreRequirement({
           objectNames: [],
@@ -179,7 +179,7 @@ export class ProductionValidator {
           resources,
           supply: null
         }),
-        insertedAt: now
+        insertedAt
       });
     }
   }

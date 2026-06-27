@@ -114,6 +114,7 @@ export class FlyRepresentableComponent implements IFlyBase {
     bloodSplatter.setTint(0x00ff00);
     // set scale
     bloodSplatter.setScale(this.scale);
+    // Intentional wall-clock timer: this is a visual-only blood fade effect.
     this.scene.time.delayedCall(3 * 1000, () => {
       this.scene.tweens.add({
         targets: bloodSplatter,

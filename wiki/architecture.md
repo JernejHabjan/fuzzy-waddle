@@ -86,6 +86,7 @@ Socket.IO is used for multiplayer game state synchronization:
 - **Client**: `AuthenticatedSocketService` establishes a JWT-authenticated Socket.IO connection
 - **Server**: authenticated HTTP and WebSocket entrypoints validate JWTs, and online-only paths also check `user_profiles` so banned users cannot use chat or multiplayer features
 - **Event contracts**: defined in `libs/api-interfaces/src/lib/communicators/` — import these in both client and server to keep event names and payloads in sync
+- **AOTA multiplayer design**: see [AOTA Multiplayer Architecture](aota-multiplayer-architecture.md)
 
 ## Shared Interfaces
 

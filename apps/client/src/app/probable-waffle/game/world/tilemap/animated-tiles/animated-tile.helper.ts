@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import type { TilesetTileData } from "./tileset-tile-data";
 import { AnimatedTile } from "./animated-tile";
+import { ProbableWaffleSceneEventName } from "../../services/recovery/probable-waffle-scene-events";
 
 export class AnimatedTilemap {
   private readonly animatedTiles: AnimatedTile[];
@@ -11,8 +12,8 @@ export class AnimatedTilemap {
     private readonly tilesets: Phaser.Tilemaps.Tileset[]
   ) {
     this.animatedTiles = this.initAnimatedTiles();
-    this.scene.events.on("update", this.update);
-    this.scene.events.on("shutdown", this.destroy);
+    this.scene.events.on(ProbableWaffleSceneEventName.Update, this.update);
+    this.scene.events.on(ProbableWaffleSceneEventName.Shutdown, this.destroy);
   }
 
   private initAnimatedTiles = () => {
@@ -45,5 +46,5 @@ export class AnimatedTilemap {
   }
 
   private update = (_: number, delta: number) => this.animatedTiles.forEach((tile) => tile.update(delta));
-  private destroy = () => this.scene?.events.off("update", this.update);
+  private destroy = () => this.scene?.events.off(ProbableWaffleSceneEventName.Update, this.update);
 }

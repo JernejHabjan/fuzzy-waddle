@@ -5,8 +5,6 @@ import { getSceneComponent, getSceneService } from "../../world/services/scene-c
 import { type Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 import { canActorTraverseTile } from "../../data/game-object-helper";
 import {
-  emitEventIssueActorCommandToSelectedActors,
-  emitEventIssueMoveCommandToSelectedActors,
   getCurrentPlayerNumber,
   listenToSelectionEvents
 } from "../../data/scene-data";
@@ -27,7 +25,10 @@ import { HealthComponent } from "../../entity/components/combat/components/healt
 import HudProbableWaffle from "../../world/scenes/hud-scenes/HudProbableWaffle";
 import { OwnerComponent } from "../../entity/components/owner-component";
 import { findProductionBuildingWithLeastRemainingTime } from "../../entity/components/production/production-helpers";
+import { IdComponent } from "../../entity/components/id-component";
+import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
 import { NavigationService } from "../../world/services/navigation.service";
+import { dispatchProductionCommand } from "../../data/commands/queue-command-dispatch";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class PlayerActionsHandler {
@@ -41,6 +42,7 @@ export class PlayerActionsHandler {
   private primarySelectedActor?: GameObject;
   buildingModeActive: boolean = false;
   private externalModalOpen = false;
+  private shiftKey?: Phaser.Input.Keyboard.Key;
 
   // Letter hotkeys for lists (production/buildings)
   private readonly HOTKEYS: string[] = ["q", "w", "e", "r", "t", "y", "u", "i", "o"];
@@ -59,6 +61,7 @@ export class PlayerActionsHandler {
   }
 
   private bindSceneInput() {
+    this.shiftKey = this.scene.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
     this.scene.input.on(Phaser.Input.Events.POINTER_UP, this.pointerHandler, this);
 
     // Listen to selection changes to track primary selection deterministically
@@ -109,6 +112,7 @@ export class PlayerActionsHandler {
   private onKeyDown(e: KeyboardEvent) {
     // Don't process keyboard events if chat modal is open
     if (this.externalModalOpen) return;
+    if (this.scene.isSpectator || this.scene.baseGameData.gameInstance.gameInstanceMetadata.isReplay()) return;
 
     const code = e.code;
     if (!code) return;
@@ -127,16 +131,13 @@ export class PlayerActionsHandler {
         const production = actor ? getActorComponent(actor, ProductionComponent) : undefined;
         const product = production?.productionDefinition.availableProduceActors[listIndex];
         if (production && production.isFinished && product) {
-          const def = getPwActorDefinition(product, null);
-          const cost = def?.components?.productionCost;
-          if (cost) {
-            // Find the production building with the least total remaining production time
-            const targetComponent = findProductionBuildingWithLeastRemainingTime(this.currentSelectedActors);
-            if (targetComponent) {
-              targetComponent.startProduction({ actorName: product, costData: cost });
-              e.preventDefault();
-              return;
-            }
+          // Find the production building with the least total remaining production time
+          const targetComponent = findProductionBuildingWithLeastRemainingTime(this.currentSelectedActors);
+          const playerNumber = getCurrentPlayerNumber(this.scene);
+          if (targetComponent && playerNumber) {
+            dispatchProductionCommand(this.scene, this.currentSelectedActors, playerNumber, product);
+            e.preventDefault();
+            return;
           }
         }
       }
@@ -174,10 +175,16 @@ export class PlayerActionsHandler {
         break;
       case "KeyS":
         // Stop current orders immediately
-        this.currentSelectedActors.forEach((actor) => {
-          const pawnAiController = getActorComponent(actor, PawnAiController);
-          pawnAiController?.blackboard.resetCurrentOrder();
-        });
+        if (this.currentSelectedActors.length) {
+          const stopPlayerNumber = getCurrentPlayerNumber(this.scene);
+          const stopActorIds = this.currentSelectedActors
+            .map((a) => getActorComponent(a, IdComponent)?.id)
+            .filter((id): id is string => !!id);
+          if (stopPlayerNumber && stopActorIds.length) {
+            const commandBus = getSceneService(this.scene, CommandBusService);
+            commandBus?.dispatch({ type: "STOP", playerNumber: stopPlayerNumber, actorIds: stopActorIds });
+          }
+        }
         this.stopOrderCommand();
         e.preventDefault();
         break;
@@ -212,6 +219,8 @@ export class PlayerActionsHandler {
   }
 
   private async deleteSelectedActors() {
+    if (this.scene.isSpectator || this.scene.baseGameData.gameInstance.gameInstanceMetadata.isReplay()) return;
+
     const currentPlayerNumber = getCurrentPlayerNumber(this.scene);
     if (!currentPlayerNumber) return;
 
@@ -246,6 +255,7 @@ export class PlayerActionsHandler {
   }
 
   private pointerHandler(pointer: Phaser.Input.Pointer, gameObjectsUnderCursor: GameObject[]) {
+    if (this.scene.isSpectator || this.scene.baseGameData.gameInstance.gameInstanceMetadata.isReplay()) return;
     if (!this.handlingActions) return;
 
     const cursorHandler = getSceneComponent(this.hudScene, CursorHandler);
@@ -275,6 +285,7 @@ export class PlayerActionsHandler {
     this.hudScene.input.keyboard?.off("keydown", this.onKeyDown, this);
     this.selectionChangedSubscription?.unsubscribe();
     this.externalModalSubscription?.unsubscribe();
+    this.shiftKey?.destroy();
   }
 
   isHandlingActions(): boolean {
@@ -308,6 +319,10 @@ export class PlayerActionsHandler {
   }
 
   startOrderCommand(orderType: OrderType, actors: GameObject[]) {
+    if (this.scene.isSpectator || this.scene.baseGameData.gameInstance.gameInstanceMetadata.isReplay()) {
+      return;
+    }
+
     // Only start the order if at least one actor supports it
     if (!this.selectionSupportsOrder(orderType, actors)) {
       // silently ignore if no capable actor is selected
@@ -378,12 +393,26 @@ export class PlayerActionsHandler {
         }
       : undefined;
 
+    const playerNumber = getCurrentPlayerNumber(this.scene);
+    if (!playerNumber) return;
+
+    // Capture shift state at dispatch time so all clients apply the same queue/override decision
+    const queue = this.shiftKey?.isDown ?? false;
+
+    const actorIds = this.currentSelectedActors
+      .map((a) => getActorComponent(a, IdComponent)?.id)
+      .filter((id): id is string => !!id);
+    if (!actorIds.length) return;
+
+    const commandBus = getSceneService(this.scene, CommandBusService);
+    if (!commandBus) return;
+
     const hasProductionRallyPointOrder =
       orderType === OrderType.Move &&
       this.primarySelectedActor &&
       getActorComponent(this.primarySelectedActor, ProductionComponent);
     if (hasProductionRallyPointOrder && !!tileVec3 && !!worldVec3) {
-      emitEventIssueMoveCommandToSelectedActors(this.scene, tileVec3, worldVec3, []);
+      commandBus.dispatch({ type: "MOVE", playerNumber, actorIds, tileVec3, worldVec3, queue });
     } else {
       // Validate terrain compatibility before issuing Move commands
       if (orderType === OrderType.Move && tileVec3 && !targetGameObjectId) {
@@ -396,10 +425,14 @@ export class PlayerActionsHandler {
           return;
         }
       }
-      emitEventIssueActorCommandToSelectedActors(this.scene, {
+      commandBus.dispatch({
+        type: "ACTOR_ACTION",
+        playerNumber,
+        actorIds,
         orderType,
-        objectIds: targetGameObjectId ? [targetGameObjectId] : undefined,
-        tileVec3
+        targetObjectIds: targetGameObjectId ? [targetGameObjectId] : undefined,
+        tileVec3,
+        queue
       });
     }
   }

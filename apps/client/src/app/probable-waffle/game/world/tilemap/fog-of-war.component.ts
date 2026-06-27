@@ -85,8 +85,9 @@ export class FogOfWarComponent {
     this.scanForPlayerActors();
 
     // Subscribe to navigation updates
-    this.scene.events.on(NavigationService.UpdateNavigationEvent, this.throttleUpdateFogOfWar, this); // todo this for some reason doesnt work - also it doesnt work in navigation.service.ts
-    this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.throttleUpdateFogOfWar, this); // todo this is very expensive
+    this.scene.events.on(NavigationService.UpdateNavigationEvent, this.throttleUpdateFogOfWarFrameNonDeterministic, this); // todo this for some reason doesnt work - also it doesnt work in navigation.service.ts
+    // Intentional frame update: fog rendering is visual-only and should track camera/visibility changes every rendered frame.
+    this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.throttleUpdateFogOfWarFrameNonDeterministic, this); // todo this is very expensive
     this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
 
     // Initial draw of fog
@@ -229,7 +230,7 @@ export class FogOfWarComponent {
     this.redrawFogOfWar();
   }
 
-  private throttleUpdateFogOfWar = throttle(this.updateFogOfWar.bind(this), 100);
+  private throttleUpdateFogOfWarFrameNonDeterministic = throttle(this.updateFogOfWar.bind(this), 100);
 
   public updateFogOfWar(): void {
     // Store previous state for dirty tile tracking
@@ -542,8 +543,8 @@ export class FogOfWarComponent {
   }
 
   private destroy(): void {
-    this.scene?.events.off(NavigationService.UpdateNavigationEvent, this.throttleUpdateFogOfWar, this);
-    this.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.throttleUpdateFogOfWar, this);
+    this.scene?.events.off(NavigationService.UpdateNavigationEvent, this.throttleUpdateFogOfWarFrameNonDeterministic, this);
+    this.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.throttleUpdateFogOfWarFrameNonDeterministic, this);
 
     // Clear all caches
     this.visionTilesCache.clear();

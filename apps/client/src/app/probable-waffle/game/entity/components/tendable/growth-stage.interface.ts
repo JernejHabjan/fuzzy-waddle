@@ -22,6 +22,7 @@ export interface CropResourceSourceInterface {
 
 export function isCropResourceSource(obj: unknown): obj is CropResourceSourceInterface {
   return (
+    !!obj &&
     typeof (obj as CropResourceSourceInterface).getActiveCropHarvestAnimation === "function" &&
     typeof (obj as CropResourceSourceInterface).getActiveCropHarvestSound === "function" &&
     typeof (obj as CropResourceSourceInterface).getActiveCropTendAnimation === "function"

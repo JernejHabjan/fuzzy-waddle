@@ -6,7 +6,6 @@
 import ActorIcon from "./ActorIcon";
 import { getPwActorDefinition } from "../../definitions/actor-definitions";
 import { getActorComponent } from "../../../data/actor-component";
-import { ProductionComponent } from "../../../entity/components/production/production-component";
 import { BehaviorSubject, Subscription } from "rxjs";
 import { SingleSelectionHandler } from "../../../player/human-controller/single-selection.handler";
 import { getSceneComponent, getSceneService } from "../../../world/services/scene-component-helpers";
@@ -22,6 +21,11 @@ import { ContainerComponent } from "../../../entity/components/building/containe
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { NavigationService } from "../../../world/services/navigation.service";
 import { isWaterUnit } from "../../../data/game-object-helper";
+import {
+  dispatchCancelProductionCommand,
+  dispatchCancelResearchCommand
+} from "../../../data/commands/queue-command-dispatch";
+import { getCurrentPlayerNumber } from "../../../data/scene-data";
 /* END-USER-IMPORTS */
 
 export default class ActorInfoLabels extends Phaser.GameObjects.Container {
@@ -272,11 +276,13 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
             item.iconData.origin ?? { x: 0.5, y: 0.5 }
           );
         }
+        icon.setAlpha(1);
         icon.visible = true;
         activeItems++;
       } else {
         // Empty queue slot - show slot number
         icon.setNumber(index + 1);
+        icon.setAlpha(1);
         icon.visible = true;
       }
     });
@@ -309,6 +315,7 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
         infoComponent.smallImage.frame,
         infoComponent.smallImage.origin
       );
+      icon.setAlpha(1);
       icon.visible = true;
 
       // Set highlight if this actor is in the highlight list
@@ -362,10 +369,9 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
     if (queueItem.type !== SharedQueueItemType.Production) return;
     if (!queueItem.productionData) return;
 
-    const productionComponent = getActorComponent(actor, ProductionComponent);
-    if (!productionComponent) return;
-
-    productionComponent.cancelProduction(queueItem.productionData);
+    const playerNumber = getCurrentPlayerNumber(actor.scene);
+    if (!playerNumber) return;
+    dispatchCancelProductionCommand(actor.scene, actor, playerNumber, action.definition.iconIndex);
   }
 
   private tryHandleIconClickResearch(action: ActorIconClickAction) {
@@ -383,11 +389,12 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
     if (!queueItem.researchData) return;
 
     const researchComponent = getActorComponent(actor, ResearchComponent);
-    if (!researchComponent) return;
+    const playerNumber = getCurrentPlayerNumber(actor.scene);
+    if (!researchComponent || !playerNumber) return;
 
     // Cancel the research if it's currently in progress
     if (researchComponent.currentResearchType === queueItem.researchData) {
-      researchComponent.cancelResearch();
+      dispatchCancelResearchCommand(actor.scene, actor, playerNumber);
     }
   }
 

@@ -33,6 +33,7 @@ import { ProductionValidator } from "../../data/tech-tree/production-validator";
 import { AI_CONFIG } from "./ai-config";
 import { RandomService } from "../../world/services/random.service";
 import { RepairManager } from "./ai-behavior/repair-manager";
+import { dispatchProductionCommand, dispatchResearchCommand } from "../../data/commands/queue-command-dispatch";
 import { LogisticsManager } from "./ai-behavior/logistics-manager";
 import { TechProgressManager } from "./ai-behavior/tech-progress-manager";
 import { AdaptiveThresholdManager } from "./ai-behavior/adaptive-threshold-manager";
@@ -46,6 +47,9 @@ import { PlayerAiBlackboard } from "./player-ai-blackboard";
 import { WorldStateSnapshotManager } from "./ai-behavior/world-state-snapshot-manager";
 import { getUnitStrength } from "./ai-utils";
 import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
+import { dispatchAiOrder } from "./dispatch-ai-order";
+import { IdComponent } from "../../entity/components/id-component";
+import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class PlayerAiControllerAgent implements IPlayerControllerAgent {
@@ -73,7 +77,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   private productionValidator: ProductionValidator;
 
   constructor(
-    private readonly scene: Phaser.Scene,
+    private readonly scene: ProbableWaffleScene,
     private readonly player: ProbableWafflePlayer,
     private readonly blackboard: PlayerAiBlackboard
   ) {
@@ -111,7 +115,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       this.logDebugInfo.bind(this)
     );
     this.logisticsManager = new LogisticsManager(this.blackboard, this.logDebugInfo.bind(this));
-    this.techManager = new TechProgressManager(this.blackboard, this.logDebugInfo.bind(this));
+    this.techManager = new TechProgressManager(this.blackboard, player.playerNumber!, this.logDebugInfo.bind(this));
     this.economyManager = new EconomyManager(this.blackboard);
     this.worldStateSnapshotManager = new WorldStateSnapshotManager(this.scene, this.player, this.blackboard);
     this.combatMicro = new CombatMicroManager(this.scene, this.blackboard, this.logDebugInfo.bind(this));
@@ -181,9 +185,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
           });
           if (prodBuilding) {
             const prod = getActorComponent(prodBuilding, ProductionComponent);
-            const def = getPwActorDefinition(targetObjectName, null);
-            const costData = def?.components?.productionCost;
-            if (prod && costData) {
+            if (prod) {
               const validation = this.productionValidator.validate(targetObjectName);
               if (validation && !validation.canQueue) {
                 // If still blocked (e.g., nested prereqs) schedule them (avoid infinite loop by checking difference)
@@ -198,8 +200,9 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
                 }
                 return;
               }
-              prod.startProduction({ actorName: targetObjectName, costData });
-              queue.shift();
+              if (dispatchProductionCommand(this.scene, [prodBuilding], this.player.playerNumber!, targetObjectName)) {
+                queue.shift();
+              }
             }
           }
         }
@@ -234,7 +237,12 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
         if (researchBuilding) {
           const researchComponent = getActorComponent(researchBuilding, ResearchComponent);
           if (researchComponent) {
-            const started = researchComponent.startResearch(researchType);
+            const started = dispatchResearchCommand(
+              this.scene,
+              researchBuilding,
+              this.player.playerNumber!,
+              researchType
+            );
             if (started) {
               this.logDebugInfo(`[AI] Started research: ${researchType}`);
               queue.shift(); // Successfully started, remove from queue
@@ -316,7 +324,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
 
   async AnalyzeGameMap(): Promise<State> {
     // Cooldown gating: avoid excessive map analyses.
-    const now = performance.now();
+    const now = this.blackboard.getNow();
     if (!this.cooldowns.canRun("analyzeMap", now)) {
       this.logDebugInfo("[Map] Analysis on cooldown");
       return State.FAILED;
@@ -403,15 +411,25 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
         this.blackboard.enemiesNearBase.forEach((enemy) => {
           if (!unit.active || !enemy.active) return;
           const d = DistanceHelper.getTileDistanceBetweenGameObjects(unit, enemy);
-          if (d !== null && d < closestDist) {
+          if (d === null) {
+            return;
+          }
+          if (d < closestDist) {
             closestDist = d;
             closestEnemy = enemy;
+            return;
+          }
+          if (d === closestDist && closestEnemy) {
+            const closestId = getActorComponent(closestEnemy, IdComponent)?.id ?? "";
+            const candidateId = getActorComponent(enemy, IdComponent)?.id ?? "";
+            if (closestId && candidateId && candidateId.localeCompare(closestId) < 0) {
+              closestEnemy = enemy;
+            }
           }
         });
         if (!closestEnemy) return;
         const newOrder = new OrderData(OrderType.Attack, { targetGameObject: closestEnemy });
-        aiController.blackboard.overrideOrderQueueAndActiveOrder(newOrder);
-        aiController.blackboard.setCurrentOrder(newOrder);
+        dispatchAiOrder(this.scene, unit, newOrder, this.player.playerNumber!);
         assignedCount++;
       });
       this.logDebugInfo(`[Defense] ${assignedCount} defenders assigned to targets`);
@@ -422,7 +440,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   }
 
   async AttackEnemyBase(): Promise<State> {
-    const now = performance.now();
+    const now = this.blackboard.getNow();
     if (!this.cooldowns.canRun("attackTrigger", now)) {
       this.logDebugInfo("[Attack] Attack trigger on cooldown");
       return State.FAILED;
@@ -445,8 +463,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       if (!aiController) return;
       if (aiController.blackboard.getCurrentOrder()) return;
       const newOrder = new OrderData(OrderType.Attack, { targetGameObject: target });
-      aiController.blackboard.overrideOrderQueueAndActiveOrder(newOrder);
-      aiController.blackboard.setCurrentOrder(newOrder);
+      dispatchAiOrder(this.scene, unit, newOrder, this.player.playerNumber!);
       assignedCount++;
     });
     this.logDebugInfo(`[Attack] ${assignedCount} units assigned to attack ${target.name}`);
@@ -523,8 +540,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
         const aiController = getActorComponent(worker, PawnAiController);
         const newOrder = new OrderData(OrderType.Gather, { targetGameObject: closestResourceSource });
         if (aiController) {
-          aiController.blackboard.overrideOrderQueueAndActiveOrder(newOrder);
-          aiController.blackboard.setCurrentOrder(newOrder);
+          dispatchAiOrder(this.scene, worker, newOrder, this.player.playerNumber!);
         }
         assigned++;
       }
@@ -598,16 +614,11 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     });
 
     if (trainingBuildings.length === 0) return State.FAILED;
-    const prodComp = getActorComponent(trainingBuildings[0]!, ProductionComponent)!;
-    // Dynamic cost sourcing
-    const def = getPwActorDefinition(workerName, null);
-    const costData = def?.components?.productionCost;
-    if (!costData) return State.FAILED;
-    prodComp.startProduction({
-      actorName: workerName,
-      costData
-    });
-    return State.SUCCEEDED;
+    const targetBuilding = trainingBuildings[0]!;
+    if (dispatchProductionCommand(this.scene, [targetBuilding], this.player.playerNumber!, workerName)) {
+      return State.SUCCEEDED;
+    }
+    return State.FAILED;
   }
 
   GatherResources() {
@@ -679,8 +690,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
         const aiController = getActorComponent(worker, PawnAiController);
         const newOrder = new OrderData(OrderType.Gather, { targetGameObject: closestResourceSource });
         if (aiController) {
-          aiController.blackboard.overrideOrderQueueAndActiveOrder(newOrder);
-          aiController.blackboard.setCurrentOrder(newOrder);
+          dispatchAiOrder(this.scene, worker, newOrder, this.player.playerNumber!);
         }
       }
       this.logDebugInfo("Reassigned workers to gather the most critical resource.");
@@ -793,9 +803,9 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
 
     validWorkers.forEach((w) => {
       const aiController = getActorComponent(w, PawnAiController);
+      if (!aiController) return;
       const newOrder = new OrderData(OrderType.Build, { targetGameObject: building });
-      aiController!.blackboard.overrideOrderQueueAndActiveOrder(newOrder);
-      aiController!.blackboard.setCurrentOrder(newOrder);
+      dispatchAiOrder(this.scene, w, newOrder, this.player.playerNumber!);
     });
     // Mark reservation usage & release any lingering plan reservation reference
     this.basePlanner.markTileUsed({ x: tileLocationXYZ.x, y: tileLocationXYZ.y });
@@ -865,7 +875,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       this.logDebugInfo("[Strategy] Already in aggressive strategy");
       return State.FAILED;
     }
-    const now = performance.now();
+    const now = this.blackboard.getNow();
     if (!this.cooldowns.canRun("strategyShift", now)) {
       this.logDebugInfo("[Strategy] Strategy shift on cooldown");
       return State.FAILED; // cooldown gate
@@ -897,7 +907,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       this.logDebugInfo("[Strategy] Already in defensive strategy");
       return State.FAILED;
     }
-    const now = performance.now();
+    const now = this.blackboard.getNow();
     if (!this.cooldowns.canRun("strategyShift", now)) {
       this.logDebugInfo("[Strategy] Strategy shift on cooldown");
       return State.FAILED;
@@ -922,7 +932,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       this.logDebugInfo("[Strategy] Already in economic strategy");
       return State.FAILED;
     }
-    const now = performance.now();
+    const now = this.blackboard.getNow();
     if (!this.cooldowns.canRun("strategyShift", now)) {
       this.logDebugInfo("[Strategy] Strategy shift on cooldown");
       return State.FAILED;
@@ -1030,7 +1040,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   }
   async GatherEnemyData(): Promise<State> {
     // Placeholder: simply succeed after ensuring targeting manager updated.
-    await this.targetingManager.update(performance.now());
+    await this.targetingManager.update(this.blackboard.getNow());
     return State.SUCCEEDED;
   }
   ShouldProduceMilitaryUnit(): boolean {
@@ -1088,7 +1098,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   }
 
   OfferSurrender(): State {
-    const now = performance.now();
+    const now = this.blackboard.getNow();
     this.blackboard.wantsToSurrender = true;
     this.blackboard.surrenderOfferedAt = now;
     this.logDebugInfo("AI player offering surrender");

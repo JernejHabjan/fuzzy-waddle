@@ -104,11 +104,12 @@ export default class Minimap extends Phaser.GameObjects.Container {
     this.fogOfWarComponent = getSceneComponent(probableWaffleScene, FogOfWarComponent);
     this.playerActionsHandler = getSceneService(probableWaffleScene, PlayerActionsHandler);
     this.redrawMinimap();
-    this.probableWaffleScene.events.on(NavigationService.UpdateNavigationEvent, this.throttleRedrawMinimap, this);
-    this.probableWaffleScene.events.on(Phaser.Scenes.Events.UPDATE, this.throttleRedrawMinimap, this); // TODO FOR SOME REASON UpdateNavigationEvent doesnt get triggered
+    this.probableWaffleScene.events.on(NavigationService.UpdateNavigationEvent, this.throttleRedrawMinimapFrameNonDeterministic, this);
+    // Intentional frame update: minimap redraw is HUD rendering and does not mutate authoritative simulation state.
+    this.probableWaffleScene.events.on(Phaser.Scenes.Events.UPDATE, this.throttleRedrawMinimapFrameNonDeterministic, this); // TODO FOR SOME REASON UpdateNavigationEvent doesnt get triggered
   }
 
-  private throttleRedrawMinimap = throttle(this.redrawMinimap.bind(this), 1000);
+  private throttleRedrawMinimapFrameNonDeterministic = throttle(this.redrawMinimap.bind(this), 1000);
 
   redrawMinimap() {
     if (!this.probableWaffleScene || !this.hudProbableWaffle) return;
@@ -490,7 +491,7 @@ export default class Minimap extends Phaser.GameObjects.Container {
     this.actorDiamonds.forEach((diamond) => diamond.destroy());
     this.tileColorCache.clear();
     this.diamondTileCoords.clear();
-    this.probableWaffleScene?.events.off(NavigationService.UpdateNavigationEvent, this.throttleRedrawMinimap, this);
+    this.probableWaffleScene?.events.off(NavigationService.UpdateNavigationEvent, this.throttleRedrawMinimapFrameNonDeterministic, this);
     super.destroy(fromScene);
   }
 

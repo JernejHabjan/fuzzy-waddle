@@ -1,15 +1,19 @@
 import { PaymentType } from "./payment-type";
 import { OwnerComponent } from "../owner-component";
 import { getActorComponent } from "../../../data/actor-component";
-import { emitResource, getCommunicator, getCurrentPlayerNumber, getPlayer } from "../../../data/scene-data";
+import { emitResource, getPlayer } from "../../../data/scene-data";
 import { QueueComponent } from "../queue/queue-component";
 import { QueueItemType, type UnifiedQueueItem } from "../queue/queue-item";
-import { type ProductionComponentData, ResourceType, type Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import {
+  ProbableWaffleGameCommandTypes,
+  type ProductionComponentData,
+  ResourceType,
+  type Vector3Simple
+} from "@fuzzy-waddle/api-interfaces";
 import { HealthComponent } from "../combat/components/health-component";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { SceneActorCreator } from "../../../world/services/scene-actor-creator";
 import { getGameObjectBounds, getGameObjectLogicalTransform, onObjectReady } from "../../../data/game-object-helper";
-import { SelectableComponent } from "../selectable-component";
 import { Subject, Subscription } from "rxjs";
 import RallyPoint from "../../../prefabs/buildings/misc/RallyPoint";
 import { ConstructionSiteComponent } from "../construction/construction-site-component";
@@ -22,6 +26,9 @@ import type { ProductionCostDefinition } from "./production-cost-definition";
 import { NavigationService } from "../../../world/services/navigation.service";
 import { IsoHelper } from "../../../world/tilemap/iso-helper";
 import { MovementTerrainType } from "../movement/movement-terrain-type";
+import { ProbableWaffleSceneEventName } from "../../../world/services/recovery/probable-waffle-scene-events";
+import { CommandBusService } from "../../../world/services/multiplayer/command-bus.service";
+import { IdComponent } from "../id-component";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class ProductionComponent {
@@ -68,20 +75,30 @@ export class ProductionComponent {
   }
 
   private listenToMoveEvents() {
-    this.playerChangedSubscription = getCommunicator(this.gameObject.scene)
-      .playerChanged?.onWithFilter((p) => p.property === "command.issued.move")
-      .subscribe((payload) => {
-        switch (payload.property) {
-          case "command.issued.move":
-            const tileVec3 = payload.data.data!["tileVec3"] as Vector3Simple;
-            const worldVec3 = payload.data.data!["worldVec3"] as Vector3Simple;
-            const isSelected = getActorComponent(this.gameObject, SelectableComponent)?.getSelected();
-            if (isSelected && this.canIssueCommand()) {
-              this.rallyPoint.setLocation(tileVec3, worldVec3);
-            }
-            break;
-        }
-      });
+    const commandBus = getSceneService(this.gameObject.scene, CommandBusService);
+    if (!commandBus) {
+      return;
+    }
+
+    this.playerChangedSubscription = commandBus.command$.subscribe((command) => {
+      if (command.type !== ProbableWaffleGameCommandTypes.Move) {
+        return;
+      }
+
+      const owner = getActorComponent(this.gameObject, OwnerComponent)?.getOwner();
+      if (owner === undefined || owner !== command.playerNumber) {
+        return;
+      }
+
+      const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
+      if (!actorId || !command.actorIds.includes(actorId)) {
+        return;
+      }
+
+      // Rally-point assignment is a deterministic MOVE command targeting production buildings.
+      // Apply it on every client from the command bus stream, not local UI events.
+      this.rallyPoint.setLocation(command.tileVec3, command.worldVec3);
+    });
   }
 
   get isProducing(): boolean {
@@ -213,8 +230,7 @@ export class ProductionComponent {
     }
 
     const unitDef = getPwActorDefinition(actorName, null);
-    const isWaterUnit =
-      unitDef?.components?.translatable?.movementTerrainType === MovementTerrainType.Water;
+    const isWaterUnit = unitDef?.components?.translatable?.movementTerrainType === MovementTerrainType.Water;
 
     let spawnTile: { x: number; y: number } | null | undefined;
     if (isWaterUnit) {
@@ -254,7 +270,7 @@ export class ProductionComponent {
     const newGameObject = sceneActorCreator.createFinishedActor(actorName, finalSpawnPosition, originalOwner);
     if (newGameObject) {
       if (originalOwner !== undefined) {
-        this.gameObject.scene.events.emit("score.unit_produced", originalOwner);
+        this.gameObject.scene.events.emit(ProbableWaffleSceneEventName.ScoreUnitProduced, originalOwner);
       }
       if (this.rallyPoint.isSet()) {
         // noinspection JSIgnoredPromiseFromCall
@@ -356,12 +372,6 @@ export class ProductionComponent {
     sharedQueue.cancelProductionItem(item);
   }
 
-  private canIssueCommand() {
-    const currentPlayerNr = getCurrentPlayerNumber(this.gameObject.scene);
-    const actorPlayerNr = getActorComponent(this.gameObject, OwnerComponent)?.getOwner();
-    return actorPlayerNr === currentPlayerNr;
-  }
-
   getData(): ProductionComponentData {
     const sharedQueue = getActorComponent(this.gameObject, QueueComponent);
 
@@ -381,7 +391,8 @@ export class ProductionComponent {
   }
 
   setData(data: Partial<ProductionComponentData>) {
-    if (data.queue && data.queue.length > 0) {
+    // Fixes stale local queue state when snapshot intentionally contains an empty queue.
+    if (data.queue !== undefined) {
       this.createSharedQueue();
       const sharedQueue = getActorComponent(this.gameObject, QueueComponent);
       if (!sharedQueue) return;

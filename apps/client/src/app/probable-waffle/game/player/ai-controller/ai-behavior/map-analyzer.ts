@@ -4,6 +4,7 @@ import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { NeedType } from "./need-type";
 import { ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { getSimulationNow } from "../ai-time";
 import GameObject = Phaser.GameObjects.GameObject;
 
 // Lightweight result of a map analysis pass
@@ -31,7 +32,7 @@ export class MapAnalyzer {
    * Compute analysis if stale, otherwise return cached.
    */
   async analyzeIfStale(ttlMs: number = 2500): Promise<MapAnalysis> {
-    const now = Date.now();
+    const now = getSimulationNow(this.scene);
     if (this.lastResult && now - this.lastComputedAt < ttlMs) {
       return this.lastResult;
     }
@@ -42,7 +43,7 @@ export class MapAnalyzer {
   }
 
   isStale(ttlMs: number) {
-    return !this.lastResult || Date.now() - this.lastComputedAt >= ttlMs;
+    return !this.lastResult || getSimulationNow(this.scene) - this.lastComputedAt >= ttlMs;
   }
 
   getLastResult(): MapAnalysis | undefined {
@@ -112,7 +113,7 @@ export class MapAnalyzer {
     const analysis: MapAnalysis = {
       baseCenterTile: undefined,
       candidateBuildSpots: [],
-      analyzedAtMs: Date.now()
+      analyzedAtMs: getSimulationNow(this.scene)
     };
 
     if (!actorIndex || !navigation) {

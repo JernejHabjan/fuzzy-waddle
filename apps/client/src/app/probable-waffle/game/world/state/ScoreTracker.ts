@@ -12,12 +12,19 @@ import {
 import { getPlayersFromScene } from "../../../../shared/game/phaser/scene/base.scene";
 import { getCurrentPlayerNumber } from "../../data/scene-data";
 import { ScenePlayerHelpers } from "../../data/scene-player-helpers";
-import { throttle } from "../../library/throttle";
 import { getActorComponent, hasActorComponent } from "../../data/actor-component";
 import { ConstructionSiteComponent } from "../../entity/components/construction/construction-site-component";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import { OwnerComponent } from "../../entity/components/owner-component";
 import type { Subscription } from "rxjs";
+import { CancelableSimDelay } from "../services/simulation-time";
+import { ProbableWaffleSceneEventName } from "../services/recovery/probable-waffle-scene-events";
+import { getSceneService } from "../services/scene-component-helpers";
+import { SimulationTickService } from "../services/simulation-tick.service";
+
+type RawScoreData = Map<PlayerNumber, PlayerScoreData> | [PlayerNumber, PlayerScoreData][] | PlayerScoreData[] | {
+  [playerNumber: string]: PlayerScoreData;
+};
 
 /**
  * Tracks player scores throughout the game for the score screen.
@@ -27,28 +34,33 @@ export class ScoreTracker {
   private currentPlayerNumber!: PlayerNumber;
   private players!: ProbableWafflePlayer[];
   private stopped: boolean = false;
-  private snapshotInterval = 5000; // Create snapshot every 5 seconds
-  private lastSnapshotTime = 0;
+  private readonly updateIntervalTicks = 20; // 1 second at the fixed 20 Hz simulation rate.
+  private readonly snapshotIntervalTicks = 100; // 5 seconds at the fixed 20 Hz simulation rate.
+  private lastSnapshotTick = 0;
   private resourceSubscription?: Subscription;
+  private startTrackingDelay?: CancelableSimDelay;
+  private simulationTickSub?: Subscription;
 
   constructor(private readonly scene: ProbableWaffleScene) {
     this.initializePlayerScores();
 
     // Start checking after 1 second delay
-    this.scene.time.delayedCall(1000, this.startTracking, [], this);
+    this.startTrackingDelay = new CancelableSimDelay(this.scene, 1000, () => this.startTracking());
     this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
   }
 
   private startTracking() {
-    this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.throttleUpdate, this);
+    this.simulationTickSub = getSceneService(this.scene, SimulationTickService)?.tick$.subscribe((tick) => {
+      if (tick % this.updateIntervalTicks === 0) {
+        this.update(tick);
+      }
+    });
     this.scene.events.on(HealthComponent.KilledEvent, this.onActorKilled, this);
-    this.scene.events.on("score.damage", this.onDamage, this);
-    this.scene.events.on("score.unit_produced", this.onUnitProduced, this);
-    this.scene.events.on("score.building_constructed", this.onBuildingConstructed, this);
+    this.scene.events.on(ProbableWaffleSceneEventName.ScoreDamage, this.onDamage, this);
+    this.scene.events.on(ProbableWaffleSceneEventName.ScoreUnitProduced, this.onUnitProduced, this);
+    this.scene.events.on(ProbableWaffleSceneEventName.ScoreBuildingConstructed, this.onBuildingConstructed, this);
     this.subscribeToResourceEvents();
   }
-
-  private throttleUpdate = throttle(this.update.bind(this), 1000);
 
   /**
    * Initialize score data for all players
@@ -85,7 +97,7 @@ export class ScoreTracker {
   /**
    * Main update loop - tracks live metrics
    */
-  private update() {
+  private update(tick: number) {
     if (!this.scene.scene || !this.scene.scene.isActive()) return;
     if (this.stopped) return;
 
@@ -93,7 +105,7 @@ export class ScoreTracker {
     this.players = getPlayersFromScene<ProbableWafflePlayer>(this.scene);
 
     this.updateLiveMetrics();
-    this.createSnapshotIfNeeded();
+    this.createSnapshotIfNeeded(tick);
   }
 
   /**
@@ -136,10 +148,9 @@ export class ScoreTracker {
   /**
    * Create a snapshot for timeline charts
    */
-  private createSnapshotIfNeeded() {
-    const now = Date.now();
-    if (now - this.lastSnapshotTime < this.snapshotInterval) return;
-    this.lastSnapshotTime = now;
+  private createSnapshotIfNeeded(tick: number) {
+    if (tick - this.lastSnapshotTick < this.snapshotIntervalTicks) return;
+    this.lastSnapshotTick = tick;
 
     const { actorsByPlayer } = ScenePlayerHelpers.getActorsByPlayer(this.scene);
     const playerScores = new Map<PlayerNumber, PlayerScoreSnapshot>();
@@ -162,7 +173,7 @@ export class ScoreTracker {
     });
 
     const snapshot: GameScoreSnapshot = {
-      timestamp: now,
+      timestamp: tick * SimulationTickService.TICK_INTERVAL_MS,
       playerScores
     };
 
@@ -184,7 +195,7 @@ export class ScoreTracker {
   public setMetric(playerNumber: PlayerNumber, metricKey: string, value: number) {
     if (!this.scene.baseGameData.gameInstance.gameState) return;
 
-    const scoreData = this.scene.baseGameData.gameInstance.gameState.data.scoreData;
+    const scoreData = this.getScoreData();
     if (!scoreData) return;
 
     const playerScore = scoreData.get(playerNumber);
@@ -199,7 +210,7 @@ export class ScoreTracker {
   public getMetric(playerNumber: PlayerNumber, metricKey: string): number | undefined {
     if (!this.scene.baseGameData.gameInstance.gameState) return undefined;
 
-    const scoreData = this.scene.baseGameData.gameInstance.gameState.data.scoreData;
+    const scoreData = this.getScoreData();
     if (!scoreData) return undefined;
 
     const playerScore = scoreData.get(playerNumber);
@@ -214,8 +225,7 @@ export class ScoreTracker {
   public incrementMetric(playerNumber: PlayerNumber, metricKey: string, amount: number = 1) {
     if (!this.scene.baseGameData.gameInstance.gameState) return;
 
-    const gameState = this.scene.baseGameData.gameInstance.gameState;
-    const scoreData = gameState.data.scoreData;
+    const scoreData = this.getScoreData();
     if (!scoreData) return;
 
     const playerScore = scoreData.get(playerNumber);
@@ -231,8 +241,7 @@ export class ScoreTracker {
   public setPlayerResult(playerNumber: PlayerNumber, result: GameResultStatus) {
     if (!this.scene.baseGameData.gameInstance.gameState) return;
 
-    const gameState = this.scene.baseGameData.gameInstance.gameState;
-    const scoreData = gameState.data.scoreData;
+    const scoreData = this.getScoreData();
     if (!scoreData) return;
 
     const playerScore = scoreData.get(playerNumber);
@@ -247,8 +256,7 @@ export class ScoreTracker {
   public setPlayerEliminated(playerNumber: PlayerNumber, eliminatedAt: number) {
     if (!this.scene.baseGameData.gameInstance.gameState) return;
 
-    const gameState = this.scene.baseGameData.gameInstance.gameState;
-    const scoreData = gameState.data.scoreData;
+    const scoreData = this.getScoreData();
     if (!scoreData) return;
 
     const playerScore = scoreData.get(playerNumber);
@@ -264,8 +272,7 @@ export class ScoreTracker {
   public calculateFinalScore(playerNumber: PlayerNumber): number {
     if (!this.scene.baseGameData.gameInstance.gameState) return 0;
 
-    const gameState = this.scene.baseGameData.gameInstance.gameState;
-    const scoreData = gameState.data.scoreData;
+    const scoreData = this.getScoreData();
     const metrics = scoreData?.get(playerNumber)?.metrics;
     if (!metrics) return 0;
 
@@ -298,8 +305,7 @@ export class ScoreTracker {
   public finalizeScores() {
     if (!this.scene.baseGameData.gameInstance.gameState) return;
 
-    const gameState = this.scene.baseGameData.gameInstance.gameState;
-    const scoreData = gameState.data.scoreData;
+    const scoreData = this.getScoreData();
     if (!scoreData) return;
 
     scoreData.forEach((playerScore, playerNumber) => {
@@ -391,16 +397,64 @@ export class ScoreTracker {
     }
   }
 
+  private getScoreData(): Map<PlayerNumber, PlayerScoreData> | undefined {
+    const gameState = this.scene.baseGameData.gameInstance.gameState;
+    if (!gameState) return undefined;
+
+    const rawScoreData = gameState.data.scoreData as RawScoreData | undefined;
+    if (!rawScoreData) return undefined;
+    if (rawScoreData instanceof Map) {
+      return rawScoreData;
+    }
+
+    const normalized = new Map<PlayerNumber, PlayerScoreData>();
+    if (Array.isArray(rawScoreData)) {
+      rawScoreData.forEach((entry) => {
+        if (this.isScoreTuple(entry)) {
+          const [playerNumber, playerScore] = entry;
+          normalized.set(playerNumber, playerScore);
+          return;
+        }
+
+        if (this.isPlayerScoreData(entry)) {
+          normalized.set(entry.playerNumber, entry);
+        }
+      });
+    } else {
+      Object.entries(rawScoreData).forEach(([playerNumber, playerScore]) => {
+        if (this.isPlayerScoreData(playerScore)) {
+          normalized.set(Number(playerNumber), playerScore);
+        }
+      });
+    }
+
+    gameState.data.scoreData = normalized;
+    return normalized;
+  }
+
+  private isScoreTuple(
+    entry: PlayerScoreData | [PlayerNumber, PlayerScoreData]
+  ): entry is [PlayerNumber, PlayerScoreData] {
+    return Array.isArray(entry) && typeof entry[0] === "number" && this.isPlayerScoreData(entry[1]);
+  }
+
+  private isPlayerScoreData(
+    entry: PlayerScoreData | [PlayerNumber, PlayerScoreData] | undefined
+  ): entry is PlayerScoreData {
+    return !!entry && !Array.isArray(entry) && typeof entry.playerNumber === "number";
+  }
+
   /**
    * Cleanup
    */
   private destroy() {
-    this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.throttleUpdate, this);
+    this.startTrackingDelay?.remove();
+    this.simulationTickSub?.unsubscribe();
     this.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
     this.scene.events.off(HealthComponent.KilledEvent, this.onActorKilled, this);
-    this.scene.events.off("score.damage", this.onDamage, this);
-    this.scene.events.off("score.unit_produced", this.onUnitProduced, this);
-    this.scene.events.off("score.building_constructed", this.onBuildingConstructed, this);
+    this.scene.events.off(ProbableWaffleSceneEventName.ScoreDamage, this.onDamage, this);
+    this.scene.events.off(ProbableWaffleSceneEventName.ScoreUnitProduced, this.onUnitProduced, this);
+    this.scene.events.off(ProbableWaffleSceneEventName.ScoreBuildingConstructed, this.onBuildingConstructed, this);
     this.resourceSubscription?.unsubscribe();
     this.stopped = true;
   }

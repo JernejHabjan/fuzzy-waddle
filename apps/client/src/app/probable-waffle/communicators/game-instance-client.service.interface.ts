@@ -25,6 +25,7 @@ export interface GameInstanceClientServiceInterface {
     type: ProbableWaffleGameInstanceType
   ): Promise<void>;
   stopGameInstance(): Promise<void>;
+  disconnectSelfFromCurrentGame(): Promise<void>;
   startGame(): Promise<void>;
   joinGameInstanceAsPlayerForMatchmaking(gameInstanceId: GameInstanceId): Promise<void>;
   joinGameInstanceAsPlayer(gameInstanceId: GameInstanceId): Promise<void>;

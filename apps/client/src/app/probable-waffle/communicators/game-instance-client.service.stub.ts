@@ -58,6 +58,9 @@ export const gameInstanceClientServiceStub = {
   async stopGameInstance(): Promise<void> {
     return Promise.resolve();
   },
+  async disconnectSelfFromCurrentGame(): Promise<void> {
+    return Promise.resolve();
+  },
   async startGame(): Promise<void> {
     return Promise.resolve();
   },

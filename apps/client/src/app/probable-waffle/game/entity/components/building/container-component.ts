@@ -9,12 +9,13 @@ import { IdComponent } from "../id-component";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import type { ContainerDefinition } from "./container-definition";
-import { Subject } from "rxjs";
+import { Subject, type Subscription } from "rxjs";
 import { ContainableComponent } from "./containable-component";
 import { NavigationService } from "../../../world/services/navigation.service";
 import { RepresentableComponent } from "../representable-component";
 import { ActorTranslateComponent } from "../movement/actor-translate-component";
 import type { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
+import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 
 /**
  * apply to resource source that needs gameObjects to enter to gather
@@ -32,11 +33,18 @@ export class ContainerComponent {
   private pendingBoarderShores = new Map<GameObject, Vector2Simple>();
   /** Emits whenever units are loaded or unloaded, so HUD can refresh container display. */
   readonly containerChanged = new Subject<void>();
+  // Fixes partial container restore when referenced units are not indexed yet at setData time.
+  private pendingContainedIds?: string[];
+  private simulationTickSub?: Subscription;
 
   constructor(
     private readonly gameObject: GameObject,
     public containerDefinition: ContainerDefinition
   ) {
+    // Fixes one-shot restore race by retrying contained-id resolution on deterministic ticks.
+    this.simulationTickSub = getSceneService(gameObject.scene, SimulationTickService)?.tick$.subscribe(() =>
+      this.tryResolveContainedActorReferences()
+    );
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.once(HealthComponent.KilledEvent, this.onKilled, this);
   }
@@ -112,6 +120,7 @@ export class ContainerComponent {
 
   destroy() {
     this.onKilled();
+    this.simulationTickSub?.unsubscribe();
     this.containerChanged.complete();
   }
 
@@ -177,12 +186,10 @@ export class ContainerComponent {
 
   setData(data: Partial<ContainerComponentData>) {
     if (data.containedIds !== undefined) {
-      const actorIndex = getSceneService(this.gameObject.scene, ActorIndexSystem);
-      const actors = actorIndex?.getActorsByIds(data.containedIds) ?? [];
+      // Fixes silent drops of contained units during reconnect snapshots with delayed actor indexing.
+      this.pendingContainedIds = [...data.containedIds];
       this.containedGameObjects.clear();
-      actors.forEach((actor) => {
-        this.loadGameObject(actor);
-      });
+      this.tryResolveContainedActorReferences();
     }
   }
 
@@ -195,5 +202,32 @@ export class ContainerComponent {
     return {
       containedIds
     } satisfies ContainerComponentData;
+  }
+
+  private tryResolveContainedActorReferences(): void {
+    if (!this.pendingContainedIds) {
+      return;
+    }
+
+    const actorIndex = getSceneService(this.gameObject.scene, ActorIndexSystem);
+    if (!actorIndex) {
+      return;
+    }
+
+    const resolvedActors: GameObject[] = [];
+    for (const id of this.pendingContainedIds) {
+      const actor = actorIndex.getActorById(id);
+      if (!actor) {
+        // Fixes cross-peer divergence by waiting until all contained ids resolve before applying state.
+        return;
+      }
+      resolvedActors.push(actor);
+    }
+
+    this.containedGameObjects.clear();
+    resolvedActors.forEach((actor) => {
+      this.loadGameObject(actor);
+    });
+    this.pendingContainedIds = undefined;
   }
 }

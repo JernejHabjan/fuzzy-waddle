@@ -42,7 +42,8 @@ export class CameraMovementHandler {
     this.zoomListener();
     this.screenEdgeListener();
     this.scene.events.on(Phaser.Scenes.Events.CREATE, this.create, this);
-    this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
+    // Intentional frame update: camera movement is input/rendering behavior, not deterministic simulation state.
+    this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.updateFrameNonDeterministic, this);
     this.scene.events.on(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
     this.subscribeToOptions();
   }
@@ -66,7 +67,7 @@ export class CameraMovementHandler {
     );
   }
 
-  update(_: number, delta: number) {
+  updateFrameNonDeterministic(_: number, delta: number) {
     this.keyboardMovementControls?.update(delta);
     this.screenEdgeMovementUpdate();
   }

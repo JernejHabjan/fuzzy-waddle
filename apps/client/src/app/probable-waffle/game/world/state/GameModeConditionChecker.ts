@@ -15,7 +15,6 @@ import {
   type TieConditions,
   type WinConditions
 } from "@fuzzy-waddle/api-interfaces";
-import { throttle } from "../../library/throttle";
 import { type ProbableWaffleGameData } from "../../core/probable-waffle-game-data";
 import { ScenePlayerHelpers } from "../../data/scene-player-helpers";
 import { getCurrentPlayerNumber } from "../../data/scene-data";
@@ -24,11 +23,13 @@ import { ConstructionSiteComponent } from "../../entity/components/construction/
 import { filter, type Subscription } from "rxjs";
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import type EndGameDialog from "../scenes/hud-scenes/EndGameDialog";
-import { getSceneSystem } from "../services/scene-component-helpers";
+import { getSceneService, getSceneSystem } from "../services/scene-component-helpers";
 import { AiPlayerHandler } from "../../player/ai-controller/ai-player-handler";
 import HudProbableWaffle from "../scenes/hud-scenes/HudProbableWaffle";
 import { SceneDialogHelper } from "../scenes/scene-dialog-helper";
 import { ScoreTracker } from "./ScoreTracker";
+import { SimulationTickService } from "../services/simulation-tick.service";
+import { CancelableSimDelay } from "../services/simulation-time";
 
 export class GameModeConditionChecker {
   private loseConditions: LoseConditions;
@@ -40,9 +41,11 @@ export class GameModeConditionChecker {
   private currentPlayer!: ProbableWafflePlayer;
   private selfQuitSubscription?: Subscription;
   private stopped: boolean = false;
-  private surrenderCheckInterval = 2000; // Check every 2 seconds
-  private lastSurrenderCheckTime = 0;
-  private currentDelay?: Phaser.Time.TimerEvent;
+  private readonly checkIntervalTicks = 20; // 1 second at the fixed 20 Hz simulation rate.
+  private readonly surrenderCheckIntervalTicks = 40; // 2 seconds at the fixed 20 Hz simulation rate.
+  private lastSurrenderCheckTick = 0;
+  private currentDelay?: CancelableSimDelay;
+  private simulationTickSub?: Subscription;
 
   constructor(private readonly scene: ProbableWaffleScene) {
     const gameModeData = getGameModeFromScene<ProbableWaffleGameMode>(scene).data;
@@ -50,22 +53,24 @@ export class GameModeConditionChecker {
     this.winConditions = gameModeData.winConditions;
     this.tieConditions = gameModeData.tieConditions;
 
-    this.currentDelay = this.scene.time.delayedCall(1000, this.startChecking, [], this);
+    this.currentDelay = new CancelableSimDelay(this.scene, 1000, () => this.startChecking());
     this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
     this.listenToPlayerQuit();
   }
 
   private startChecking() {
-    this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.throttleCheck, this);
+    this.simulationTickSub = getSceneService(this.scene, SimulationTickService)?.tick$.subscribe((tick) => {
+      if (tick % this.checkIntervalTicks === 0) {
+        this.check(tick);
+      }
+    });
   }
 
-  private throttleCheck = throttle(this.check.bind(this), 1000);
-
-  private check() {
+  private check(tick: number) {
     if (!this.scene.scene || !this.scene.scene.isActive()) return;
     if (this.stopped) return;
     this.prepareData();
-    this.checkAiSurrender();
+    this.checkAiSurrender(tick);
     if (this.checkWinConditions()) {
       this.winGame();
       return;
@@ -117,10 +122,9 @@ export class GameModeConditionChecker {
     });
   }
 
-  private checkAiSurrender() {
-    const now = Date.now();
-    if (now - this.lastSurrenderCheckTime < this.surrenderCheckInterval) return;
-    this.lastSurrenderCheckTime = now;
+  private checkAiSurrender(tick: number) {
+    if (tick - this.lastSurrenderCheckTick < this.surrenderCheckIntervalTicks) return;
+    this.lastSurrenderCheckTick = tick;
 
     // Only check surrender in single-player mode (InstantGame or Skirmish)
     const baseGameData = getBaseGameDataFromScene<ProbableWaffleGameData>(this.scene);
@@ -238,7 +242,7 @@ export class GameModeConditionChecker {
       }
     }
     if (this.winConditions.timeReachedInMinutes) {
-      const elapsedTime = this.scene.game.loop.time / 1000 / 60; // Convert to minutes
+      const elapsedTime = this.getElapsedGameMinutes();
       if (elapsedTime >= this.winConditions.timeReachedInMinutes) {
         return true; // Time limit reached, consider it a win
       }
@@ -311,13 +315,18 @@ export class GameModeConditionChecker {
 
   private checkTieConditions(): boolean {
     if (this.tieConditions.maximumTimeLimitInMinutes) {
-      const elapsedTime = this.scene.game.loop.time / 1000 / 60; // Convert to minutes
+      const elapsedTime = this.getElapsedGameMinutes();
       if (elapsedTime >= this.tieConditions.maximumTimeLimitInMinutes) {
         console.log("Maximum time limit reached, tie condition met.");
         return true; // Time limit reached, consider it a tie
       }
     }
     return false;
+  }
+
+  private getElapsedGameMinutes(): number {
+    const currentTick = getSceneService(this.scene, SimulationTickService)?.currentTick ?? 0;
+    return currentTick / 20 / 60;
   }
 
   private selfQuit() {
@@ -425,9 +434,9 @@ export class GameModeConditionChecker {
   }
 
   private destroy() {
-    this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.throttleCheck);
+    this.simulationTickSub?.unsubscribe();
     this.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.destroy);
     this.selfQuitSubscription?.unsubscribe();
-    this.currentDelay?.destroy();
+    this.currentDelay?.remove();
   }
 }

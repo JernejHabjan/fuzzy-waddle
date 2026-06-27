@@ -97,6 +97,7 @@ export default class ChatNotification extends Phaser.GameObjects.Container {
     }
 
     // Auto-hide after 5 seconds
+    // Intentional wall-clock timer: chat bubble visibility is UI-only.
     this.hideTimer = this.scene.time.delayedCall(5000, () => {
       this.hide();
     });

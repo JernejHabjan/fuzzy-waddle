@@ -32,6 +32,13 @@ export class RepresentableComponent {
   }
 
   private setTransformInitially() {
+    if (this._logicalWorldTransform) {
+      // Logical transform was already restored (e.g. from snapshot/authoritative actor data).
+      // Do not overwrite it with prefab constructor defaults when the object becomes ready.
+      this.drawDebugBounds();
+      return;
+    }
+
     if (!this.gameObject) return;
     const transformComponent = this.gameObject as unknown as Phaser.GameObjects.Components.Transform;
     if (transformComponent) {

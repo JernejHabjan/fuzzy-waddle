@@ -508,7 +508,8 @@ export class NavigationService {
     const maxAttempts = validTiles.length; // Limit attempts to prevent infinite loops
     while (attempts < maxAttempts) {
       const randomIndex = this.randomService.between(0, validTiles.length - 1);
-      const tile = this.randomService.pick(validTiles)!;
+      // Use the same sampled index for selection and removal to keep RNG progression deterministic.
+      const tile = validTiles[randomIndex]!;
 
       // Check path to the random tile
       const path = await this.findPathForTerrain(currentTile, tile, terrainType);
@@ -742,7 +743,7 @@ export class NavigationService {
     }
 
     // Sort the navigable tiles based on distance to fromTile
-    navigableTilesArray.sort((a, b) => this.getTileDistance(a, fromTile) - this.getTileDistance(b, fromTile));
+    navigableTilesArray.sort((a, b) => this.compareTilesByDistanceThenCoordinates(a, b, fromTile));
 
     return navigableTilesArray[0]!; // Return the closest tile
   }
@@ -775,6 +776,22 @@ export class NavigationService {
     const dx = tile1.x - tile2.x;
     const dy = tile1.y - tile2.y;
     return Math.sqrt(dx * dx + dy * dy);
+  }
+
+  private compareTilesByDistanceThenCoordinates(
+    a: Vector2Simple,
+    b: Vector2Simple,
+    referenceTile: Vector2Simple
+  ): number {
+    const distanceDelta = this.getTileDistance(a, referenceTile) - this.getTileDistance(b, referenceTile);
+    if (distanceDelta !== 0) {
+      return distanceDelta;
+    }
+    // Deterministic tie-break for equal-distance tiles.
+    if (a.y !== b.y) {
+      return a.y - b.y;
+    }
+    return a.x - b.x;
   }
 
   private destroy() {
@@ -882,7 +899,7 @@ export class NavigationService {
 
       if (candidateTiles.length > 0) {
         // Sort by Euclidean distance
-        candidateTiles.sort((a, b) => this.getTileDistance(a, targetTile) - this.getTileDistance(b, targetTile));
+        candidateTiles.sort((a, b) => this.compareTilesByDistanceThenCoordinates(a, b, targetTile));
 
         // Test each candidate tile for pathfinding reachability
         for (const candidate of candidateTiles) {
@@ -1003,9 +1020,7 @@ export class NavigationService {
       if (targetTile) {
         // Sort by distance to targetTile (closest first)
         candidates.sort((a, b) => {
-          const distA = this.getTileDistance(a, targetTile);
-          const distB = this.getTileDistance(b, targetTile);
-          return distA - distB;
+          return this.compareTilesByDistanceThenCoordinates(a, b, targetTile);
         });
       } else {
         // Sort by y descending (higher y first), then by x descending (higher x first)

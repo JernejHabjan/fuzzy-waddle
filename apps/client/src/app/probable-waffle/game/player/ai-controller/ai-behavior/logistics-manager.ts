@@ -25,7 +25,7 @@ export class LogisticsManager {
   ) {}
 
   shouldRebalance(): boolean {
-    const now = Date.now();
+    const now = this.blackboard.getNow();
     if (now - this.lastRebalanceAt < this.rebalanceCooldownMs) {
       this.log("[Logistics] Rebalance on cooldown");
       return false;
@@ -108,7 +108,7 @@ export class LogisticsManager {
 
     if (reassignedCount > 0) {
       this.log(`[Logistics] ✓ Redirected ${reassignedCount} workers to gather scarce resource: ${scarceResource}`);
-      this.lastRebalanceAt = Date.now();
+      this.lastRebalanceAt = this.blackboard.getNow();
       return State.SUCCEEDED;
     }
 
@@ -117,7 +117,7 @@ export class LogisticsManager {
   }
 
   async rebalanceHarvesters(): Promise<State> {
-    const now = Date.now();
+    const now = this.blackboard.getNow();
     if (now - this.lastRebalanceAt < this.rebalanceCooldownMs) {
       this.log("[Logistics] Rebalance on cooldown");
       return State.FAILED;

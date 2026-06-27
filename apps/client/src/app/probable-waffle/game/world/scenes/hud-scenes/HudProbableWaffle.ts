@@ -20,13 +20,18 @@ import { HudGameState } from "../../../hud/hud-game-state";
 import { HudElementVisibilityHandler } from "../../../hud/hud-element-visibility.handler";
 import { CursorHandler } from "../../../player/human-controller/cursor.handler";
 import { MultiSelectionHandler } from "../../../player/human-controller/multi-selection.handler";
-import { ProbableWaffleGameInstanceType, ProbableWafflePlayerType } from "@fuzzy-waddle/api-interfaces";
+import {
+  type AllScenesEventData,
+  ProbableWaffleGameInstanceType,
+  ProbableWafflePlayerType
+} from "@fuzzy-waddle/api-interfaces";
 import { getGameObjectBounds } from "../../../data/game-object-helper";
 import { filter, Subscription } from "rxjs";
 import { environment } from "../../../../../../environments/environment";
 import ConfirmationDialog from "../../../prefabs/gui/dialogs/ConfirmationDialog";
 import SurrenderDialog from "../../../prefabs/gui/SurrenderDialog";
 import { getPlayers } from "../../../data/scene-data";
+import { ConnectionRecoveryService } from "../../services/recovery/connection-recovery.service";
 /* END-USER-IMPORTS */
 
 export default class HudProbableWaffle extends ProbableWaffleScene {
@@ -131,6 +136,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   private chatMessageSubscription?: Subscription;
   private readonly actorInfoSmallScreenBreakpoint = 1200;
   private cursorHandler?: CursorHandler;
+  private connectionRecovery?: ConnectionRecoveryService;
 
   probableWaffleScene?: ProbableWaffleScene;
   override preload() {
@@ -173,6 +179,9 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.subscribeToChatMessageEvents();
     this.subscribeToSceneShutdown();
 
+    this.connectionRecovery = new ConnectionRecoveryService();
+    this.connectionRecovery.init(this, probableWaffleScene);
+
     // Initialize cursor handler with main scene if it was created before the parent scene was set
     if (this.cursorHandler) {
       this.cursorHandler.initializeWithMainScene(probableWaffleScene);
@@ -186,6 +195,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
         name: "hud-scene-shutdown",
         data: undefined
       });
+      this.connectionRecovery?.destroy();
     });
   }
 
@@ -322,6 +332,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
             padding: { x: 20, y: 10 }
           });
           text.setOrigin(0.5);
+          // Intentional wall-clock timer for transient HUD toast cleanup.
           this.time.delayedCall(500, () => text.destroy());
         });
       });
@@ -336,17 +347,21 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
 
     // Subscribe to chat message received events from Angular
     this.chatMessageSubscription = this.probableWaffleScene.communicator.allScenes
-      .pipe(filter((value) => value.name === "chat-message-received"))
+      .pipe(
+        filter(
+          (value): value is Extract<AllScenesEventData, { name: "chat-message-received" }> =>
+            value.name === "chat-message-received"
+        )
+      )
       .subscribe((event) => {
-        if (event.data && this.chatNotification) {
-          const { fullName, text } = event.data;
-          this.chatNotification.showMessage(fullName, text);
-          this.chatButton?.showUnreadBadge();
-        }
+        const { fullName, text } = event.data;
+        this.chatNotification.showMessage(fullName, text);
+        this.chatButton?.showUnreadBadge();
       });
 
     // show example chat message on startup in dev mode after 2 seconds
     // if (!environment.production) {
+    //   // Intentional wall-clock timer: this sample notification is purely HUD debug behavior.
     //   this.time.delayedCall(2000, () => {
     //     this.chatNotification.showMessage("Test User", "Hello! This is an example chat message.");
     //     this.chatButton?.showUnreadBadge();
@@ -357,8 +372,10 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   override destroy() {
     this.saveGameSubscription?.unsubscribe();
     this.chatMessageSubscription?.unsubscribe();
+    this.connectionRecovery?.destroy();
     super.destroy();
   }
+
   /* END-USER-CODE */
 }
 

@@ -16,7 +16,7 @@ import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 })
 export class MainMenuButtonsComponent implements OnInit {
   protected readonly enabledInstantDemoGame = !environment.production;
-  protected readonly enabledMultiplayer = !environment.production;
+  protected readonly enabledMultiplayer = true; // set to alpha in #606
   protected readonly enabledReplay = !environment.production;
   protected readonly enabledLoadGame = true;
   protected readonly enabledMatchHistory = true; // finished in #588

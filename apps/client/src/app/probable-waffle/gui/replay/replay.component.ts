@@ -5,6 +5,7 @@ import { GameInstanceClientService } from "../../communicators/game-instance-cli
 import {
   type ProbableWaffleGameInstanceData,
   type ProbableWaffleGameInstanceSaveData,
+  ProbableWaffleGameInstanceType,
   ProbableWaffleLevels
 } from "@fuzzy-waddle/api-interfaces";
 import { GameInstanceStorageServiceInterface } from "../../communicators/storage/game-instance-storage.service.interface";
@@ -22,7 +23,9 @@ export class ReplayComponent implements OnInit {
   private readonly gameInstanceClientService = inject(GameInstanceClientService);
   protected gameInstanceDataRecords: ProbableWaffleGameInstanceSaveData[] = [];
   async ngOnInit(): Promise<void> {
-    this.gameInstanceDataRecords = await this.gameInstanceStorageService.getFromStorage();
+    this.gameInstanceDataRecords = (await this.gameInstanceStorageService.getFromStorage()).filter(
+      (record) => record.gameInstanceData.gameInstanceMetadataData?.type === ProbableWaffleGameInstanceType.Replay
+    );
   }
 
   protected getMapName(gameInstanceData: ProbableWaffleGameInstanceData): string {

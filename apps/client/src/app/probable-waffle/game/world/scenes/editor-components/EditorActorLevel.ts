@@ -6,6 +6,7 @@
 import { getActorComponent } from "../../../data/actor-component";
 import { LevelComponent } from "../../../entity/components/level/level-component";
 import { upgradeActorToLevel } from "../../../data/actor-level-utils";
+import { ProbableWaffleSceneEventName } from "../../services/recovery/probable-waffle-scene-events";
 /* END-USER-IMPORTS */
 
 export default class EditorActorLevel {
@@ -14,7 +15,7 @@ export default class EditorActorLevel {
     (gameObject as any)["__EditorActorLevel"] = this;
 
     /* START-USER-CTR-CODE */
-    gameObject.scene.events.once("scene-awake", this.awake, this);
+    gameObject.scene.events.once(ProbableWaffleSceneEventName.SceneAwake, this.awake, this);
     /* END-USER-CTR-CODE */
   }
 

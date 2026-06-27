@@ -223,7 +223,9 @@ export class PlayerDefinitionComponent {
   }
 
   getPlayerIsCreator(player: ProbableWafflePlayer) {
-    const creatorUserId = this.gameInstanceClientService.gameInstance?.gameInstanceMetadata!.data.createdBy;
+    const creatorUserId =
+      this.gameInstanceClientService.gameInstance?.gameInstanceMetadata!.data.currentHostUserId ??
+      this.gameInstanceClientService.gameInstance?.gameInstanceMetadata!.data.createdBy;
     const userId = player.playerController.data.userId;
     // noinspection UnnecessaryLocalVariableJS
     const isCreator = creatorUserId === userId;

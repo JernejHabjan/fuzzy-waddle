@@ -24,7 +24,7 @@ import { FogOfWarComponent } from "../tilemap/fog-of-war.component";
 import { SelectionGroupsComponent } from "../../player/human-controller/selection-groups.component";
 import { GameModeConditionChecker } from "../state/GameModeConditionChecker";
 import { ScoreTracker } from "../state/ScoreTracker";
-import { getSceneExternalComponent } from "../services/scene-component-helpers";
+import { getSceneExternalComponent, getSceneService } from "../services/scene-component-helpers";
 import { AchievementService } from "../../../services/achievement/achievement.service";
 import { AchievementType } from "../../../services/achievement/achievement-type";
 import { environment } from "../../../../../environments/environment";
@@ -37,6 +37,17 @@ import { LockedCursorHandler } from "../../player/human-controller/locked-cursor
 import { ActorDebugDamageSystem } from "../services/actor-debug-damage-system";
 import { SpellCursor } from "../../player/human-controller/spell-cursor";
 import { AoeZoneManager } from "../../entity/systems/aoe-zone-manager";
+import { CommandBusService } from "../services/multiplayer/command-bus.service";
+import { SimulationPauseReason, SimulationTickService } from "../services/simulation-tick.service";
+import { StateHashService } from "../services/recovery/state-hash.service";
+import { SnapshotService } from "../services/recovery/snapshot.service";
+import { ReconnectService } from "../services/recovery/reconnect.service";
+import { ReplayPlaybackService } from "../services/replay/replay-playback.service";
+import { ReplayRecorderService } from "../services/replay/replay-recorder.service";
+import { HostMigrationService } from "../services/recovery/host-migration.service";
+import { PauseSyncService } from "../services/multiplayer/pause-sync.service";
+import { hasMultiplayerCommandRelay } from "../../data/scene-data";
+import { ProbableWafflePlayerType } from "@fuzzy-waddle/api-interfaces";
 import { isTauri } from "../../../../shared/utils/tauri";
 
 export default class GameProbableWaffleScene extends ProbableWaffleScene {
@@ -64,6 +75,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     this.sceneGameData.systems.push(new ScoreTracker(this)); // Track player scores for score screen
     const creator = new SceneActorCreator(this);
     const actorIndex = new ActorIndexSystem(this);
+    const snapshotService = new SnapshotService();
 
     this.sceneGameData.components.push(
       this.getCameraMovementHandler(),
@@ -75,6 +87,9 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     );
     this.sceneGameData.services.push(
       this.getRandomService(),
+      // CommandBusService and SimulationTickService must be registered first so they're available during initInitialActors()
+      new CommandBusService(),
+      new SimulationTickService(this),
       new NavigationService(this, this.tilemap),
       new AudioService(this),
       new PlayerActionsHandler(this, hud),
@@ -84,15 +99,47 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
       actorIndex,
       new TechTreeService(),
       new SpellCursor(this),
-      new AoeZoneManager(this)
+      new AoeZoneManager(this),
+      new PauseSyncService(this),
+      snapshotService
     );
+    const simTickService = getSceneService(this, SimulationTickService);
+    simTickService?.pauseTick(SimulationPauseReason.SceneBootstrap);
     new ActorDebugDamageSystem(this);
-    this.sceneGameData.systems.push(new AiPlayerHandler(this));
-    this.sceneGameData.components.push(new FogOfWarComponent(this, this.tilemap));
+    if (!this.baseGameData.gameInstance.gameInstanceMetadata.isReplay()) {
+      this.sceneGameData.systems.push(new AiPlayerHandler(this));
+    }
+    if (!this.isSpectator) {
+      this.sceneGameData.components.push(new FogOfWarComponent(this, this.tilemap));
+    }
 
     creator.initInitialActors();
     // Populate the index after initial actors are in place
     actorIndex.scanExistingActors();
+
+    // Wire SimulationTickService into CommandBusService now that both are registered
+    const commandBus = getSceneService(this, CommandBusService);
+    const simTick = getSceneService(this, SimulationTickService);
+    if (commandBus && simTick) {
+      commandBus.tickService = simTick;
+      // Activate the multiplayer relay path when a socket is present
+      const humanPlayerCount = this.baseGameData.gameInstance.players.filter(
+        (player) => player.playerController.data.playerDefinition?.playerType === ProbableWafflePlayerType.Human
+      ).length;
+      if (hasMultiplayerCommandRelay(this) && humanPlayerCount > 1) {
+        commandBus.initMultiplayer(this);
+      }
+    }
+
+    // Desync detection: hash state every 60 ticks and compare with peers (MP only).
+    new StateHashService().init(this);
+    // Snapshot service: host keeps a rolling snapshot for reconnect / late spectator catch-up.
+    snapshotService.init(this);
+    // Reconnect service: non-host clients request a snapshot when they rejoin after a drop.
+    new ReconnectService().init(this);
+    new HostMigrationService().init(this);
+    new ReplayRecorderService().init(this);
+    new ReplayPlaybackService().init(this);
 
     super.create();
 
@@ -101,6 +148,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
       this.scene.scene.data.remove("justCreated");
     });
     this.sceneGameData.initializers.sceneInitialized.next(true);
+    simTickService?.resumeTick(SimulationPauseReason.SceneBootstrap);
 
     if (!environment.production) {
       const achievementService = getSceneExternalComponent(this.scene.scene, AchievementService);

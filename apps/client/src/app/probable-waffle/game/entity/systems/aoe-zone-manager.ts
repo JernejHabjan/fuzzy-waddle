@@ -1,4 +1,5 @@
 import { type AoeZoneData, type StatusEffectData, type Vector2Simple } from "@fuzzy-waddle/api-interfaces";
+import type { Subscription } from "rxjs";
 import { onSceneInitialized } from "../../data/game-object-helper";
 import { getActorComponent } from "../../data/actor-component";
 import { OwnerComponent } from "../components/owner-component";
@@ -6,11 +7,12 @@ import { StatusEffectComponent } from "../components/status-effect/status-effect
 import { HealthComponent } from "../components/combat/components/health-component";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import Phaser from "phaser";
-import { RandomService } from "../../world/services/random.service";
 import { TilemapComponent } from "../../world/tilemap/tilemap.component";
 import { EffectsAnims } from "../../animations/effects";
 import { AudioService } from "../../world/services/audio.service";
 import { RepresentableComponent } from "../components/representable-component";
+import { getSimulationNow } from "../../world/services/simulation-time";
+import { SimulationTickService } from "../../world/services/simulation-tick.service";
 
 interface ZoneVisual {
   zoneId: string;
@@ -23,8 +25,9 @@ interface ZoneVisual {
 export class AoeZoneManager {
   private activeZones: AoeZoneData[] = [];
   private zoneVisuals: Map<string, ZoneVisual> = new Map();
-  private randomService!: RandomService;
   private audioService?: AudioService;
+  private nextZoneId = 0;
+  private simulationTickSub?: Subscription;
 
   constructor(private readonly scene: Phaser.Scene) {
     onSceneInitialized(this.scene, this.init, this);
@@ -32,18 +35,17 @@ export class AoeZoneManager {
   }
 
   private init(): void {
-    this.randomService = getSceneService(this.scene, RandomService)!;
     this.audioService = getSceneService(this.scene, AudioService);
-    this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
+    this.simulationTickSub = getSceneService(this.scene, SimulationTickService)?.tick$.subscribe(() => this.update());
   }
 
   createZone(data: Omit<AoeZoneData, "id" | "remainingTime" | "lastTickTime">): string {
-    const zoneId = `zone_${Date.now()}_${this.randomService.random().toString(36).substr(2, 9)}`;
+    const zoneId = `zone_${this.nextZoneId++}`;
     const zone: AoeZoneData = {
       ...data,
       id: zoneId,
       remainingTime: data.duration,
-      lastTickTime: this.scene.time.now
+      lastTickTime: getSimulationNow(this.scene)
     };
 
     this.activeZones.push(zone);
@@ -60,13 +62,14 @@ export class AoeZoneManager {
     }
   }
 
-  private update(_time: number, delta: number): void {
-    const now = this.scene.time.now;
+  private update(): void {
+    const now = getSimulationNow(this.scene);
+    const elapsed = SimulationTickService.TICK_INTERVAL_MS;
     const zonesToRemove: string[] = [];
 
     for (const zone of this.activeZones) {
       // Decrement remaining time
-      zone.remainingTime -= delta;
+      zone.remainingTime -= elapsed;
 
       // Check for tick
       if (zone.lastTickTime !== undefined) {
@@ -280,6 +283,7 @@ export class AoeZoneManager {
     );
 
     // Return to normal after short delay
+    // Intentional wall-clock timer: pulse redraw is visual-only feedback.
     this.scene.time.delayedCall(100, () => {
       if (visual.graphics.active) {
         this.drawZoneCircle(
@@ -333,7 +337,12 @@ export class AoeZoneManager {
 
     for (const zone of this.activeZones) {
       const radiusInPixels = this.getRadiusInPixels(zone.radius);
-      const distance = Phaser.Math.Distance.Between(zone.worldPosition.x, zone.worldPosition.y, worldPosition.x, worldPosition.y);
+      const distance = Phaser.Math.Distance.Between(
+        zone.worldPosition.x,
+        zone.worldPosition.y,
+        worldPosition.x,
+        worldPosition.y
+      );
 
       if (distance <= radiusInPixels) {
         zones.push(zone);
@@ -357,14 +366,14 @@ export class AoeZoneManager {
     for (const zone of zones) {
       this.activeZones.push({
         ...zone,
-        lastTickTime: this.scene.time.now
+        lastTickTime: getSimulationNow(this.scene)
       });
       this.createZoneVisual(zone);
     }
   }
 
   private destroy(): void {
-    this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
+    this.simulationTickSub?.unsubscribe();
 
     // Clean up all zone visuals
     for (const [id] of this.zoneVisuals) {

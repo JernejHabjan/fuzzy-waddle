@@ -15,6 +15,7 @@ import { FlyingComponent } from "../entity/components/movement/flying-component"
 
 export function getGameObjectBounds(gameObject?: Phaser.GameObjects.GameObject): Phaser.Geom.Rectangle | null {
   if (!gameObject) return null;
+  if (!gameObject.active || !gameObject.scene) return getGameObjectBoundsRaw(gameObject);
   const representable = getPwActorDefinition(gameObject.name, getResearchedLevelForActor(gameObject))?.components?.representable;
   if (!representable) {
     const rawBounds = getGameObjectBoundsRaw(gameObject);
@@ -22,7 +23,9 @@ export function getGameObjectBounds(gameObject?: Phaser.GameObjects.GameObject):
     return rawBounds;
   }
   const representableComponent = getActorComponent(gameObject, RepresentableComponent);
-  if (!representableComponent) throw new Error(`Representable component not found on gameObject ${gameObject.name}`);
+  if (!representableComponent) {
+    return getGameObjectBoundsRaw(gameObject);
+  }
 
   const worldTransform = representableComponent.renderedWorldTransform;
   const origin = representable.origin;
@@ -158,9 +161,10 @@ export function onSceneInitialized(scene: Phaser.Scene, callback: () => void, sc
       if (delay === null) {
         executeCallback();
       } else {
-        setTimeout(() => {
+        // Fixes nondeterministic init timing caused by setTimeout running outside Phaser's scene clock.
+        scene.time.delayedCall(delay, () => {
           executeCallback();
-        }, delay);
+        });
       }
     });
 }
@@ -178,10 +182,11 @@ export function onObjectReady(
     if (delay === null) {
       callback.call(scope);
     } else {
-      setTimeout(() => {
+      // Fixes nondeterministic object-ready callback ordering by scheduling on Phaser time instead of wall-clock timers.
+      gameObject.scene.time.delayedCall(delay, () => {
         if (!gameObject.active) return;
         callback.call(scope);
-      }, delay);
+      });
     }
   };
   getSceneInitializers(gameObject.scene)

@@ -78,6 +78,7 @@ export default class HudMessages extends Phaser.GameObjects.Text {
     const color = severity === "warning" ? "#FFA500" : severity === "error" ? "#FF0000" : "#FFFFFF";
     this.setStyle({ fill: color, fontFamily: "disposabledroid", resolution: 10 });
     if (this.delayedCall) this.delayedCall.destroy();
+    // Intentional wall-clock timer: HUD feedback auto-hide is UI-only.
     this.delayedCall = this.scene.time.delayedCall(5000, () => {
       this.setText("");
     });

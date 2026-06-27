@@ -6,6 +6,7 @@ import { emitResource } from "../../../data/scene-data";
 import { onObjectReady } from "../../../data/game-object-helper";
 import { OwnerComponent } from "../owner-component";
 import type { ResourceDrainDefinition } from "./resource-drain-definition";
+import { waitForSimulationDuration } from "../../../world/services/simulation-time";
 import GameObject = Phaser.GameObjects.GameObject;
 
 // this is to be applied to townHall/mine/lodge where resources can be returned to
@@ -43,11 +44,7 @@ export class ResourceDrainComponent {
       this.containerComponent?.loadGameObject(gatherer);
     }
 
-    await new Promise<void>((resolve) => {
-      this.gameObject.scene.time.delayedCall(this.resourceDrainDefinition.cooldown, () => {
-        resolve();
-      });
-    });
+    await waitForSimulationDuration(this.gameObject.scene, this.resourceDrainDefinition.cooldown);
 
     if (this.gathererMustEnter) {
       this.containerComponent?.unloadGameObject(gatherer);
