@@ -49,8 +49,13 @@ import { hasMultiplayerCommandRelay } from "../../data/scene-data";
 import { ProbableWafflePlayerType } from "@fuzzy-waddle/api-interfaces";
 import { isTauri } from "../../../../shared/utils/tauri";
 import { SceneLightingService } from "../services/lighting/scene-lighting.service";
+import SceneBootOverlayScene from "./preload-scenes/SceneBootOverlayScene";
+import { CancelableSimDelay } from "../services/simulation-time";
 
 export default class GameProbableWaffleScene extends ProbableWaffleScene {
+  static readonly BootOverlayBootstrapReadyDataKey = "bootOverlayBootstrapReady";
+  static readonly BootOverlayLightingReadyDataKey = "bootOverlayLightingReady";
+  private bootOverlayLightingReadyDelay?: CancelableSimDelay;
   tilemap!: Phaser.Tilemaps.Tilemap;
 
   override init() {
@@ -58,9 +63,14 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
   }
 
   override create() {
+    this.data.set(GameProbableWaffleScene.BootOverlayBootstrapReadyDataKey, false);
+    this.data.set(GameProbableWaffleScene.BootOverlayLightingReadyDataKey, false);
+    this.launchBootOverlayScene();
+
     const hud = this.scene.get<HudProbableWaffle>("HudProbableWaffle") as HudProbableWaffle;
     hud.scene.start();
     hud.initializeWithParentScene(this);
+    this.scene.bringToTop(SceneBootOverlayScene.SceneKey);
 
     const lightingService = new SceneLightingService(this);
 
@@ -150,6 +160,8 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
       this.scene.scene.data.remove("justCreated");
     });
     this.sceneGameData.initializers.sceneInitialized.next(true);
+    this.data.set(GameProbableWaffleScene.BootOverlayBootstrapReadyDataKey, true);
+    this.scheduleBootOverlayLightingReady();
     simTickService?.resumeTick(SimulationPauseReason.SceneBootstrap);
 
     if (!environment.production) {
@@ -169,6 +181,29 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
   }
 
   /**
+   * Starts the fullscreen boot overlay scene and keeps it above both the world and HUD scenes.
+   */
+  private launchBootOverlayScene(): void {
+    if (!this.scene.isActive(SceneBootOverlayScene.SceneKey)) {
+      this.scene.launch(SceneBootOverlayScene.SceneKey, { gameSceneKey: this.scene.key });
+    }
+    this.scene.bringToTop(SceneBootOverlayScene.SceneKey);
+  }
+
+  /**
+   * Holds the boot overlay for one short simulation-time slice after bootstrap so the first
+   * visible frame already includes the applied lighting state. Using simulation time keeps
+   * the delay aligned with bootstrap pauses and single-player speed scaling.
+   */
+  private scheduleBootOverlayLightingReady(): void {
+    this.bootOverlayLightingReadyDelay?.remove();
+    this.bootOverlayLightingReadyDelay = new CancelableSimDelay(this, 100, () => {
+      this.data.set(GameProbableWaffleScene.BootOverlayLightingReadyDataKey, true);
+      this.bootOverlayLightingReadyDelay = undefined;
+    });
+  }
+
+  /**
    * Initialize RandomService with seed from game config for deterministic randomness
    */
   private getRandomService(): RandomService {
@@ -178,6 +213,8 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
   }
 
   private cleanup() {
+    this.bootOverlayLightingReadyDelay?.remove();
+    this.bootOverlayLightingReadyDelay = undefined;
     this.sceneGameData.components = [];
     this.sceneGameData.services = [];
     this.sceneGameData.systems = [];

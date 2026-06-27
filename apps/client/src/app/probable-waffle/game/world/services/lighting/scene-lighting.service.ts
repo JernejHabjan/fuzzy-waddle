@@ -15,9 +15,9 @@ import {
   shouldRespondToSceneAmbient
 } from "./lighting-game-object-meta";
 import {
-  type ResolvedSceneLightingConfig,
   resolveSceneLightingConfig
 } from "./scene-lighting.config";
+import type { ResolvedSceneLightingConfig } from "./resolved-scene-lighting.config";
 
 /**
  * Temporary branch-level kill switch for dropped shadows.

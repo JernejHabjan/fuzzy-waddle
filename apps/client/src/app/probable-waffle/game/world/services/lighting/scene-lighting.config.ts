@@ -1,11 +1,5 @@
-import type {
-  ProbableWaffleLightingAmbientKeyframe,
-  ProbableWaffleLightingConfig
-} from "@fuzzy-waddle/api-interfaces";
-
-export const DEFAULT_DAY_NIGHT_CYCLE_DURATION_MS = 60_000;
-
-const DEFAULT_AMBIENT_COLOR = 0xffffff;
+import type { ProbableWaffleLightingAmbientKeyframe, ProbableWaffleLightingConfig } from "@fuzzy-waddle/api-interfaces";
+import type { ResolvedSceneLightingConfig } from "./resolved-scene-lighting.config";
 
 const DEFAULT_AMBIENT_KEYFRAMES: ProbableWaffleLightingAmbientKeyframe[] = [
   { time: 0, ambientColor: 0x31415f },
@@ -15,40 +9,6 @@ const DEFAULT_AMBIENT_KEYFRAMES: ProbableWaffleLightingAmbientKeyframe[] = [
   { time: 1, ambientColor: 0x31415f }
 ];
 
-export type ResolvedSceneLightingConfig = {
-  enabled: boolean;
-  ambientColor: number;
-  selfShadow: {
-    enabled: boolean | null;
-    penumbra: number;
-    diffuseFlatThreshold: number;
-  };
-  dropShadow: {
-    enabled: boolean;
-    color: number;
-    opacityDay: number;
-    opacityNight: number;
-    widthScale: number;
-    heightScale: number;
-    minOffset: number;
-    maxOffset: number;
-  };
-  dayNightCycle: {
-    enabled: boolean;
-    durationMs: number;
-    startTimeNormalized: number;
-    keyframes: ProbableWaffleLightingAmbientKeyframe[];
-  };
-  keyLight: {
-    enabled: boolean;
-    color: number;
-    intensity: number;
-    radius: number;
-    z: number;
-    orbitRadius: number;
-  };
-};
-
 /**
  * Resolves per-map lighting data into a fully-populated runtime config.
  * All defaults live here so the service can stay focused on runtime behavior.
@@ -57,6 +17,8 @@ export function resolveSceneLightingConfig(
   mapLightingConfig: ProbableWaffleLightingConfig | undefined,
   fallbackRadius: number
 ): ResolvedSceneLightingConfig {
+  const DEFAULT_DAY_NIGHT_CYCLE_DURATION_MS = 60_000;
+  const DEFAULT_AMBIENT_COLOR = 0xffffff;
   const dayNightConfig = mapLightingConfig?.dayNightCycle;
   const keyframes = normalizeKeyframes(dayNightConfig?.keyframes);
 
