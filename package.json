@@ -1,6 +1,6 @@
 {
   "name": "fuzzy-waddle",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "license": "UNLICENSED",
   "scripts": {
     "start": "nx run-many --all --target=serve",
@@ -9,6 +9,9 @@
     "start:client-open": "nx serve client --host=0.0.0.0 --disable-host-check",
     "tauri:dev": "nx run client:tauri-dev",
     "tauri:build": "nx run client:tauri-build",
+    "version:app": "node tools/ci/set-app-version.mjs",
+    "version:check": "node tools/ci/check-version.mjs sync",
+    "version:tauri": "pnpm run version:app --",
     "editor": "phasereditor2d-launcher -project . -port 1959",
     "editor-remote": "phasereditor2d-launcher -project . -disable-open-browser -public -port 1959",
     "build": "nx run-many --all --target=build",
@@ -45,8 +48,8 @@
     "generate-supabase-types:remote": "supabase gen types typescript --project-id \"bhzetyxjimpabioxoodz\" --schema public > \"libs/api-interfaces/src/database/database.types.ts\""
   },
   "engines": {
-    "node": ">=24.13.0",
-    "pnpm": ">=10.0"
+    "node": ">=24.13.0 <25",
+    "pnpm": ">=10.0 <11"
   },
   "private": true,
   "dependencies": {
