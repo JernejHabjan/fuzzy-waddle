@@ -209,7 +209,7 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
     if (productionTime && productionTime > 0) {
       const timeInSeconds = (productionTime / 1000).toFixed(1);
       iconsAndTexts.push({
-        icon: { key: "gui", frame: "actor_info_icons/training_time.png" }, // TODO: icon doesn't exist yet
+        icon: { key: "gui", frame: "actor_info_icons/training_time.png" }, // TODO #652: icon doesn't exist yet
         text: `${timeInSeconds}s`
       });
     }

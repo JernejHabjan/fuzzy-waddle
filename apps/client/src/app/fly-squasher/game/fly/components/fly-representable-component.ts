@@ -104,7 +104,7 @@ export class FlyRepresentableComponent implements IFlyBase {
       millisecondsSinceKilled
     );
 
-    this._fly.setTint(hexColor.color); // TODO THIS DOESN'T WORK OK
+    this._fly.setTint(hexColor.color); // TODO #646: This doesn't work correctly yet
   }
 
   private displayBlood = () => {

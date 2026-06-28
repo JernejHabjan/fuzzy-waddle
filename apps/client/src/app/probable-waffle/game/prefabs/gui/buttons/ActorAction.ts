@@ -258,7 +258,7 @@ export default class ActorAction extends Phaser.GameObjects.Container {
 
       if (bounds && tooltipBounds) {
         const x = hudScene.scale.width;
-        // TODO - I cannot make it to stick to the top right edge of actor_actions_container - needs further investigation
+        // TODO #653: I cannot make it stick to the top-right edge of actor_actions_container - needs further investigation
         const y = hudScene.scale.height - bounds.height - 80;
         this.tooltip.setPosition(x, y);
       }
