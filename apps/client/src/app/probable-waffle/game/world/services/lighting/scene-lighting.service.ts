@@ -22,6 +22,14 @@ import type { ResolvedSceneLightingConfig } from "./resolved-scene-lighting.conf
 /**
  * Temporary branch-level kill switch for dropped shadows.
  * Keep this `false` until the shadow implementation is ready to ship again.
+ *
+ * Note that actor shadows are now disabled.
+ * "selfShadow" in phaser 4 is not actual "cast-shadow on terrain".
+ * In the code, the ellipse shadows can be enabled, but currently they look quite bad.
+ * Duplicating actor sprite and converting it into shadow may not work as desired as some game objects have multiple sprites. Shadows may be too detailed and may not look good.
+ *
+ * The best option would be to create a custom hand-drawn sprite and attach it to an actor and then transform and stretch that sprite as the light source moves.
+ * Currently, this is of very low priority.
  */
 const DROP_SHADOWS_RUNTIME_ENABLED = false;
 

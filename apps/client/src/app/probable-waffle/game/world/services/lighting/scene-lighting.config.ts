@@ -17,7 +17,7 @@ export function resolveSceneLightingConfig(
   mapLightingConfig: ProbableWaffleLightingConfig | undefined,
   fallbackRadius: number
 ): ResolvedSceneLightingConfig {
-  const DEFAULT_DAY_NIGHT_CYCLE_DURATION_MS = 60_000;
+  const DEFAULT_DAY_NIGHT_CYCLE_DURATION_MS = 60_000 * 5;
   const DEFAULT_AMBIENT_COLOR = 0xffffff;
   const dayNightConfig = mapLightingConfig?.dayNightCycle;
   const keyframes = normalizeKeyframes(dayNightConfig?.keyframes);
