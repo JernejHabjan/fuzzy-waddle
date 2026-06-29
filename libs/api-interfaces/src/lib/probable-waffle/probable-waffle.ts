@@ -114,7 +114,7 @@ export const ProbableWaffleLevels: ProbableWaffleMapType = {
         maxOffset: 24
       },
       dayNightCycle: {
-        startTimeNormalized: 0.2,
+        startTimeNormalized: 0.25,
         keyframes: [
           { time: 0, ambientColor: 0x364663 },
           { time: 0.25, ambientColor: 0xe6edf5 },
@@ -169,6 +169,7 @@ export const ProbableWaffleLevels: ProbableWaffleMapType = {
         maxOffset: 20
       },
       dayNightCycle: {
+        startTimeNormalized: 0.25,
         keyframes: [
           { time: 0, ambientColor: 0x30405f },
           { time: 0.25, ambientColor: 0xe7eef8 },
@@ -225,7 +226,7 @@ export const ProbableWaffleLevels: ProbableWaffleMapType = {
         maxOffset: 28
       },
       dayNightCycle: {
-        startTimeNormalized: 0.1,
+        startTimeNormalized: 0.25,
         keyframes: [
           { time: 0, ambientColor: 0x4d2f24 },
           { time: 0.25, ambientColor: 0xffd7b0 },
