@@ -106,7 +106,7 @@ export default class Minimap extends Phaser.GameObjects.Container {
     this.redrawMinimap();
     this.probableWaffleScene.events.on(NavigationService.UpdateNavigationEvent, this.throttleRedrawMinimapFrameNonDeterministic, this);
     // Intentional frame update: minimap redraw is HUD rendering and does not mutate authoritative simulation state.
-    this.probableWaffleScene.events.on(Phaser.Scenes.Events.UPDATE, this.throttleRedrawMinimapFrameNonDeterministic, this); // TODO FOR SOME REASON UpdateNavigationEvent doesnt get triggered
+    this.probableWaffleScene.events.on(Phaser.Scenes.Events.UPDATE, this.throttleRedrawMinimapFrameNonDeterministic, this); // TODO #651: For some reason UpdateNavigationEvent doesn't get triggered
   }
 
   private throttleRedrawMinimapFrameNonDeterministic = throttle(this.redrawMinimap.bind(this), 1000);

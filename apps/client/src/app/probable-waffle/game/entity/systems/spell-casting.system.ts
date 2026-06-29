@@ -124,7 +124,7 @@ export class SpellCastingSystem {
 
     // Play cast sound
     if (this.audioService && spellData.sounds?.cast) {
-      // TODO: Play cast sound
+      // TODO #647: Play cast sound
     }
 
     // Spawn projectile or apply effects immediately
@@ -240,12 +240,12 @@ export class SpellCastingSystem {
   ): void {
     // Play impact animation
     if (spellData.projectile?.impactAnimation) {
-      // TODO: Create impact animation at target position
+      // TODO #648: Create impact animation at target position
     }
 
     // Play impact sound
     if (this.audioService && spellData.sounds?.impact) {
-      // TODO: Play impact sound
+      // TODO #649: Play impact sound
     }
 
     // Apply spell effects

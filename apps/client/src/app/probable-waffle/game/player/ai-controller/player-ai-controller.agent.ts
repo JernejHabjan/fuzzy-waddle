@@ -850,7 +850,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     return State.SUCCEEDED;
   }
 
-  // TODO we can use something like this to determine if the player is weak (BUT IT NEEDS TO BE EVENT-DRIVEN AND STORED IN THE BLACKBOARD OR PLAYER DIRECTLY)
+  // TODO #654: We can use something like this to determine if the player is weak, but it needs to be event-driven and stored in the blackboard or player directly
   // const { currentPlayerActors, enemyActors } = ScenePlayerHelpers.getActorsByPlayer(this.scene, this.player.playerNumber!);
   // let enemyPlayersUnitsCount = 0;
   // // find enemy player with least units

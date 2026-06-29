@@ -129,7 +129,7 @@ export class HealthComponent {
             if (this.gameObject.active) asTint.clearTint?.();
           });
         }
-        // TODO SET RUBBLE IN ITS PLACE - use ConstructionGameObjectInterfaceComponent and rename it somehow
+        // TODO #650: Set rubble in its place - use ConstructionGameObjectInterfaceComponent and rename it somehow
         break;
       case ActorPhysicalType.Organic:
         asTint = this.gameObject as any as Phaser.GameObjects.Components.Tint & { clearTint?: () => void };
