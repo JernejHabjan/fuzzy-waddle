@@ -30,6 +30,5 @@ export type ResolvedSceneLightingConfig = {
     intensity: number;
     radius: number;
     z: number;
-    orbitRadius: number;
   };
 };

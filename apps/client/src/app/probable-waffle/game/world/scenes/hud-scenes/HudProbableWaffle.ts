@@ -32,6 +32,8 @@ import ConfirmationDialog from "../../../prefabs/gui/dialogs/ConfirmationDialog"
 import SurrenderDialog from "../../../prefabs/gui/SurrenderDialog";
 import { getPlayers } from "../../../data/scene-data";
 import { ConnectionRecoveryService } from "../../services/recovery/connection-recovery.service";
+import { getSceneService } from "../../services/scene-component-helpers";
+import { SceneLightingService } from "../../services/lighting/scene-lighting.service";
 /* END-USER-IMPORTS */
 
 export default class HudProbableWaffle extends ProbableWaffleScene {
@@ -95,6 +97,17 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     const chatNotification = new ChatNotification(this, 13, 500);
     this.add.existing(chatNotification);
 
+    // dayNightClockText
+    const dayNightClockText = this.add.text(13, 692, "", {
+      color: "#ffffffff",
+      fontFamily: "disposabledroid",
+      fontSize: "18px",
+      resolution: 10,
+      stroke: "#000000ff",
+      strokeThickness: 3
+    });
+    dayNightClockText.setOrigin(0, 1);
+
     // lists
     const hudElements: Array<any> = [];
 
@@ -110,6 +123,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.idleWorkersButton = idleWorkersButton;
     this.chatButton = chatButton;
     this.chatNotification = chatNotification;
+    this.dayNightClockText = dayNightClockText;
     this.hudElements = hudElements;
 
     this.events.emit("scene-awake");
@@ -127,6 +141,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   private idleWorkersButton!: IdleWorkersButton;
   private chatButton!: ChatButton;
   private chatNotification!: ChatNotification;
+  private dayNightClockText!: Phaser.GameObjects.Text;
   private hudElements!: Array<any>;
 
   /* START-USER-CODE */
@@ -135,8 +150,12 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   private saveGameSubscription?: Subscription;
   private chatMessageSubscription?: Subscription;
   private readonly actorInfoSmallScreenBreakpoint = 1200;
+  private readonly dayNightClockBottomMargin = 14;
+  private readonly dayNightClockRefreshIntervalMs = 100;
   private cursorHandler?: CursorHandler;
   private connectionRecovery?: ConnectionRecoveryService;
+  private dayNightClockAccumulatorMs = 0;
+  private lastDayNightClockText = "";
 
   probableWaffleScene?: ProbableWaffleScene;
   override preload() {
@@ -171,6 +190,8 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     if (this.probableWaffleScene && this.cursorHandler) {
       this.cursorHandler.initializeWithMainScene(this.probableWaffleScene);
     }
+
+    this.refreshDayNightClock(true);
   }
 
   initializeWithParentScene(probableWaffleScene: ProbableWaffleScene) {
@@ -301,6 +322,11 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.chatNotification.y = this.chatButton.y - 10;
     this.chatNotification.scale = sceneWidth > this.actorInfoSmallScreenBreakpoint ? 1 : 0.7;
 
+    // Anchor the day/night clock to the bottom-left HUD column under the worker controls.
+    this.dayNightClockText.x = 12;
+    this.dayNightClockText.y = this.scale.height - this.dayNightClockBottomMargin;
+    this.dayNightClockText.scale = sceneWidth > this.actorInfoSmallScreenBreakpoint ? 1 : 0.8;
+
     // position surrender dialog in center of screen
     this.surrenderDialog.x = this.scale.width / 2;
     this.surrenderDialog.y = this.scale.height / 2;
@@ -311,6 +337,8 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     // position confirmation dialog in center of screen
     this.confirmationDialog.x = this.scale.width / 2;
     this.confirmationDialog.y = this.scale.height / 2;
+
+    this.refreshDayNightClock(true);
   }
 
   private get gameType() {
@@ -374,6 +402,42 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.chatMessageSubscription?.unsubscribe();
     this.connectionRecovery?.destroy();
     super.destroy();
+  }
+
+  override update(_time: number, delta: number) {
+    this.dayNightClockAccumulatorMs += delta;
+    if (this.dayNightClockAccumulatorMs < this.dayNightClockRefreshIntervalMs) {
+      return;
+    }
+
+    this.dayNightClockAccumulatorMs = 0;
+    this.refreshDayNightClock();
+  }
+
+  /**
+   * Pulls the current normalized day/night time from the world lighting service and mirrors it
+   * into a lightweight HUD text label.
+   */
+  private refreshDayNightClock(force: boolean = false): void {
+    const lightingService = this.probableWaffleScene
+      ? getSceneService(this.probableWaffleScene, SceneLightingService)
+      : undefined;
+    const clockState = lightingService?.getDayNightClockState();
+    const nextVisible = clockState?.enabled ?? false;
+    const nextText = nextVisible ? clockState?.displayText ?? "" : "";
+
+    this.dayNightClockText.visible = nextVisible;
+    if (!nextVisible) {
+      this.lastDayNightClockText = "";
+      return;
+    }
+
+    if (!force && this.lastDayNightClockText === nextText) {
+      return;
+    }
+
+    this.dayNightClockText.setText(nextText);
+    this.lastDayNightClockText = nextText;
   }
 
   /* END-USER-CODE */

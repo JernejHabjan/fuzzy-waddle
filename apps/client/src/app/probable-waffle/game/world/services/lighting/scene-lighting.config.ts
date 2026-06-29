@@ -3,9 +3,10 @@ import type { ResolvedSceneLightingConfig } from "./resolved-scene-lighting.conf
 
 const DEFAULT_AMBIENT_KEYFRAMES: ProbableWaffleLightingAmbientKeyframe[] = [
   { time: 0, ambientColor: 0x31415f },
-  { time: 0.25, ambientColor: 0xe7edf7 },
+  { time: 0.18, ambientColor: 0x7d8da8 },
+  { time: 0.3, ambientColor: 0xe7edf7 },
   { time: 0.5, ambientColor: 0xffdeb9 },
-  { time: 0.75, ambientColor: 0x28354f },
+  { time: 0.82, ambientColor: 0x4b5b77 },
   { time: 1, ambientColor: 0x31415f }
 ];
 
@@ -51,8 +52,7 @@ export function resolveSceneLightingConfig(
       color: mapLightingConfig?.keyLight?.color ?? 0xffffff,
       intensity: mapLightingConfig?.keyLight?.intensity ?? 1.1,
       radius: mapLightingConfig?.keyLight?.radius ?? fallbackRadius,
-      z: mapLightingConfig?.keyLight?.z ?? 200,
-      orbitRadius: mapLightingConfig?.keyLight?.orbitRadius ?? Math.max(180, Math.floor(fallbackRadius * 0.35))
+      z: mapLightingConfig?.keyLight?.z ?? 200
     }
   };
 }

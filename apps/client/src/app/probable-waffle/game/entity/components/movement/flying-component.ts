@@ -4,6 +4,9 @@ import { Subscription } from "rxjs";
 import { getActorComponent } from "../../../data/actor-component";
 import { ActorTranslateComponent } from "./actor-translate-component";
 import type { FlightDefinition } from "./flight-definition";
+import { markGameObjectAmbientResponsive } from "../../../world/services/lighting/lighting-game-object-meta";
+import { getSceneService } from "../../../world/services/scene-component-helpers";
+import { SceneLightingService } from "../../../world/services/lighting/scene-lighting.service";
 import Graphics = Phaser.GameObjects.Graphics;
 
 export class FlyingComponent {
@@ -58,6 +61,9 @@ export class FlyingComponent {
     const bottomY = bounds.bottom;
     const height = this.flightDefinition.height;
     const graphics = this.gameObject.scene.add.graphics();
+    markGameObjectAmbientResponsive(graphics);
+    // Graphics are added to the scene before their lighting metadata exists, so register again after marking.
+    getSceneService(this.gameObject.scene, SceneLightingService)?.registerDynamicGameObject(graphics);
     graphics.lineStyle(2, 0xffffff, 0.7);
     graphics.beginPath();
     graphics.moveTo(0, 0);

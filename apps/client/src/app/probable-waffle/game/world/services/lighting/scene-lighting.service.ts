@@ -80,6 +80,23 @@ type TrackedObject = {
 
 type AnimatedLightUpdater = (time: number, delta: number) => void;
 
+export type SceneDayNightClockState = {
+  enabled: boolean;
+  normalizedTime: number;
+  displayText: string;
+};
+
+type SceneLightFootprint = {
+  left: number;
+  right: number;
+  top: number;
+  bottom: number;
+  width: number;
+  height: number;
+  centerX: number;
+  centerY: number;
+};
+
 /**
  * Centralized Phaser 4 lighting coordinator for the Probable Waffle scene.
  *
@@ -91,6 +108,22 @@ type AnimatedLightUpdater = (time: number, delta: number) => void;
  * - react live to the user-facing lighting setting
  */
 export class SceneLightingService {
+  private static readonly IsoTopLayerAllowance = 8;
+  private static readonly KeyLightTravelMarginRatio = 0.18;
+  /**
+   * Positions sunrise / sunset around the vertical middle band of the isometric footprint so the
+   * light sweep reads across the body of the map instead of hugging the elevated top allowance.
+   */
+  private static readonly KeyLightHorizonRatio = 0.52;
+  /**
+   * Keeps the noon apex above the map midpoint without pushing the light path unrealistically far
+   * into the top-only area of the scene.
+   */
+  private static readonly KeyLightVerticalArcRatio = 0.28;
+  private static readonly KeyLightRadiusMinScale = 1.2;
+  private static readonly KeyLightRadiusMaxScale = 1.7;
+  private static readonly KeyLightIntensityMinScale = 0.02;
+  private static readonly KeyLightIntensityMaxScale = 0.72;
   private readonly config: ResolvedSceneLightingConfig;
   private readonly trackedObjects = new Map<Phaser.GameObjects.GameObject, TrackedObject>();
   private readonly animatedLightUpdaters = new Set<AnimatedLightUpdater>();
@@ -222,6 +255,18 @@ export class SceneLightingService {
   }
 
   /**
+   * Exposes a HUD-friendly day/night clock snapshot without leaking lighting internals.
+   */
+  getDayNightClockState(): SceneDayNightClockState {
+    const normalizedTime = Phaser.Math.Wrap(this.cycleTime, 0, 1);
+    return {
+      enabled: this.config.enabled && this.config.dayNightCycle.enabled && this.effectsEnabled,
+      normalizedTime,
+      displayText: this.formatClockText(normalizedTime)
+    };
+  }
+
+  /**
    * Registers a late-created runtime object after its lighting metadata has been assigned.
    * Ambient-only UI graphics use this because `scene.add.graphics()` adds them to the scene
    * before they can be marked as ambient responsive.
@@ -265,10 +310,10 @@ export class SceneLightingService {
     this.scene.lights.setAmbientColor(this.ambientColor);
 
     if (this.config.keyLight.enabled) {
-      const center = this.getMapCenter();
+      const footprint = this.getSceneLightFootprint();
       this.keyLight = this.scene.lights.addLight(
-        center.x,
-        center.y,
+        footprint.centerX,
+        footprint.centerY,
         this.config.keyLight.radius,
         this.config.keyLight.color,
         this.config.keyLight.intensity,
@@ -342,35 +387,102 @@ export class SceneLightingService {
     this.keyLight.intensity = state.intensity;
   }
 
-  private getMapCenter(): { x: number; y: number } {
+  /**
+   * Computes the moving key-light state for the current cycle position.
+   * The light path is derived from the isometric map footprint so it sweeps across the same
+   * world-space span as the actual map instead of assuming a simple 0..width coordinate system.
+   */
+  private getKeyLightState(cycleTime: number): { x: number; y: number; radius: number; intensity: number } {
+    const footprint = this.getSceneLightFootprint();
+    const travelMargin = footprint.width * SceneLightingService.KeyLightTravelMarginRatio;
+    const verticalTravel = footprint.height * SceneLightingService.KeyLightVerticalArcRatio;
+    const horizonY = footprint.top + footprint.height * SceneLightingService.KeyLightHorizonRatio;
+    const { sunriseTime, sunsetTime } = this.getSunWindow();
+    const daylightProgress = this.getNormalizedWindowProgress(cycleTime, sunriseTime, sunsetTime);
+    const daylightArc = Math.sin(daylightProgress * Math.PI);
+    const solarPresence = easeInOut(daylightArc);
+    const horizontalProgress = easeInOut(daylightProgress);
+    const radius = this.config.keyLight.radius * lerpNumber(
+      SceneLightingService.KeyLightRadiusMinScale,
+      SceneLightingService.KeyLightRadiusMaxScale,
+      solarPresence
+    );
+    const intensity = this.config.keyLight.intensity * lerpNumber(
+      SceneLightingService.KeyLightIntensityMinScale,
+      SceneLightingService.KeyLightIntensityMaxScale,
+      solarPresence
+    );
+    const x = cycleTime <= sunriseTime
+      ? footprint.left - travelMargin
+      : cycleTime >= sunsetTime
+        ? footprint.right + travelMargin
+        : lerpNumber(footprint.left - travelMargin, footprint.right + travelMargin, horizontalProgress);
+    const y = horizonY - daylightArc * verticalTravel;
+
     return {
-      x: this.scene.tilemap.widthInPixels * 0.5,
-      y: this.scene.tilemap.heightInPixels * 0.5
+      x,
+      y,
+      radius,
+      intensity
     };
   }
 
   /**
-   * Computes the moving key-light state for the current cycle position.
-   * The light stays high above the map and expands its radius so the sun reads broader and softer.
+   * Derives a stable sunrise/sunset window from the ambient keyframes so the key light sweep
+   * follows the same notion of "day" as the map tinting.
    */
-  private getKeyLightState(cycleTime: number): { x: number; y: number; radius: number; intensity: number } {
+  private getSunWindow(): { sunriseTime: number; sunsetTime: number } {
+    const keyframes = this.config.dayNightCycle.keyframes;
+    if (keyframes.length < 2) {
+      return { sunriseTime: 0.2, sunsetTime: 0.8 };
+    }
+
+    const firstDaylightKeyframe = keyframes.find((keyframe) => keyframe.time > 0 && keyframe.time < 0.5);
+    const lastDaylightKeyframe = [...keyframes].reverse().find((keyframe) => keyframe.time > 0.5 && keyframe.time < 1);
+
+    const sunriseTime = firstDaylightKeyframe?.time ?? 0.2;
+    const sunsetTime = lastDaylightKeyframe?.time ?? 0.8;
+
+    if (sunsetTime <= sunriseTime) {
+      return { sunriseTime: 0.2, sunsetTime: 0.8 };
+    }
+
+    return { sunriseTime, sunsetTime };
+  }
+
+  /**
+   * Returns the world-space footprint for lighting using the same core isometric assumptions as
+   * the camera bounds: centered X, elevated top allowance for stacked layers, and bottom aligned
+   * to the tilemap pixel height.
+   */
+  private getSceneLightFootprint(): SceneLightFootprint {
     const width = this.scene.tilemap.widthInPixels;
     const height = this.scene.tilemap.heightInPixels;
-    const travelMargin = Math.max(220, Math.floor(width * 0.2));
-    const verticalTravel = Math.max(240, Math.floor(height * 0.48));
-    const horizonY = height * 0.3;
-    const daylightArc = Math.max(0, Math.sin(cycleTime * Math.PI));
-    const solarPresence = easeInOut(daylightArc);
-    const horizontalProgress = easeIn(cycleTime);
-    const radius = this.config.keyLight.radius * lerpNumber(1.2, 1.7, solarPresence);
-    const intensity = this.config.keyLight.intensity * lerpNumber(0.02, 0.72, solarPresence);
+    const topAllowance = this.scene.tilemap.tileHeight * SceneLightingService.IsoTopLayerAllowance;
+    const left = -width / 2;
+    const right = width / 2;
+    const top = -topAllowance;
+    const bottom = height;
 
     return {
-      x: lerpNumber(-travelMargin * 1.35, width + travelMargin, horizontalProgress),
-      y: horizonY - daylightArc * verticalTravel,
-      radius,
-      intensity
+      left,
+      right,
+      top,
+      bottom,
+      width: right - left,
+      height: bottom - top,
+      centerX: (left + right) / 2,
+      centerY: (top + bottom) / 2
     };
+  }
+
+  /**
+   * Maps a cycle position into 0..1 inside a configured window and clamps outside it.
+   */
+  private getNormalizedWindowProgress(time: number, start: number, end: number): number {
+    if (end <= start) return 0;
+    const clamped = Phaser.Math.Clamp(time, start, end);
+    return (clamped - start) / (end - start);
   }
 
   /**
@@ -395,6 +507,17 @@ export class SceneLightingService {
   private getCycleTimeFromElapsedMs(elapsedMs: number): number {
     const duration = Math.max(1, this.config.dayNightCycle.durationMs);
     return elapsedMs / duration;
+  }
+
+  /**
+   * Converts the normalized cycle position into a stable 24-hour HUD clock.
+   * `0` maps to midnight, `0.25` to 06:00, `0.5` to 12:00, and so on.
+   */
+  private formatClockText(normalizedTime: number): string {
+    const totalMinutes = Math.floor(Phaser.Math.Wrap(normalizedTime, 0, 1) * 24 * 60);
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
   }
 
   private calculateAmbientColor(cycleTime: number): number {

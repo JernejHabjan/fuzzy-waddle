@@ -19,39 +19,105 @@ export type ProbableWaffleLightingAmbientKeyframe = {
 };
 
 export type ProbableWaffleLightingConfig = {
+  /**
+   * Master per-map switch for the lighting system.
+   * When `false`, the scene skips dynamic lighting, ambient cycling, and related light setup.
+   */
   enabled?: boolean;
   /**
    * Base ambient fallback color when day/night cycle is disabled.
    */
   ambientColor?: number;
   selfShadow?: {
+    /**
+     * Enables Phaser 4 self-shadowing on compatible lit objects.
+     * This affects how normal-mapped or self-shadow-capable renderables shade themselves.
+     */
     enabled?: boolean | null;
+    /**
+     * Controls how soft the lit-to-shadow transition appears on self-shadowed surfaces.
+     */
     penumbra?: number;
+    /**
+     * Threshold for flattening very subtle normal variation so self-shadowing does not overreact
+     * on nearly-flat surfaces.
+     */
     diffuseFlatThreshold?: number;
   };
   dropShadow?: {
+    /**
+     * Enables dropped terrain-shadow behavior for this map when the runtime shadow path is active.
+     */
     enabled?: boolean;
+    /**
+     * Base shadow tint color used for dropped terrain shadows.
+     */
     color?: number;
+    /**
+     * Shadow opacity during strongest daylight.
+     */
     opacityDay?: number;
+    /**
+     * Shadow opacity during night-time or moonlit portions of the cycle.
+     */
     opacityNight?: number;
+    /**
+     * Horizontal shadow stretch relative to the caster bounds.
+     */
     widthScale?: number;
+    /**
+     * Vertical shadow thickness relative to the caster bounds.
+     */
     heightScale?: number;
+    /**
+     * Minimum caster-to-shadow offset when the sun is high and shadows are shorter.
+     */
     minOffset?: number;
+    /**
+     * Maximum caster-to-shadow offset when the sun is low and shadows are longer.
+     */
     maxOffset?: number;
   };
   dayNightCycle?: {
+    /**
+     * Enables animated ambient progression across the configured keyframes.
+     */
     enabled?: boolean;
+    /**
+     * Full in-game day/night cycle duration in milliseconds before time scaling is applied.
+     */
     durationMs?: number;
+    /**
+     * Initial normalized time when the scene starts.
+     * `0` is midnight, `0.5` is midday, and `1` wraps back to midnight.
+     */
     startTimeNormalized?: number;
+    /**
+     * Ordered ambient-color checkpoints used to interpolate the scene tint through the day.
+     */
     keyframes?: ProbableWaffleLightingAmbientKeyframe[];
   };
   keyLight?: {
+    /**
+     * Enables the main moving directional-style scene light used to represent the sun or moon.
+     */
     enabled?: boolean;
+    /**
+     * Base color of the moving key light.
+     */
     color?: number;
+    /**
+     * Peak light intensity before runtime day-phase scaling is applied.
+     */
     intensity?: number;
+    /**
+     * Base light radius used by the moving key light.
+     */
     radius?: number;
+    /**
+     * Z height of the key light in Phaser's light pipeline.
+     */
     z?: number;
-    orbitRadius?: number;
   };
 };
 
@@ -114,21 +180,25 @@ export const ProbableWaffleLevels: ProbableWaffleMapType = {
         maxOffset: 24
       },
       dayNightCycle: {
-        startTimeNormalized: 0.25,
+        startTimeNormalized: 0.3,
         keyframes: [
-          { time: 0, ambientColor: 0x364663 },
-          { time: 0.25, ambientColor: 0xe6edf5 },
-          { time: 0.5, ambientColor: 0xffe8c9 },
-          { time: 0.75, ambientColor: 0x2d3954 },
-          { time: 1, ambientColor: 0x364663 }
+          { time: 0, ambientColor: 0x43536d }, // 12:00 AM
+          { time: 0.1666666667, ambientColor: 0x43536d }, // 4:00 AM
+          { time: 0.2083333333, ambientColor: 0x8294b0 }, // 5:00 AM
+          { time: 0.2916666667, ambientColor: 0xb9c7d8 }, // 7:00 AM
+          { time: 0.5, ambientColor: 0xf7faff }, // 12:00 PM
+          { time: 0.5833333333, ambientColor: 0xfff6e8 }, // 2:00 PM
+          { time: 0.75, ambientColor: 0xd6dee8 }, // 6:00 PM
+          { time: 0.875, ambientColor: 0xa0b0c4 }, // 9:00 PM
+          { time: 0.9583333333, ambientColor: 0x43536d }, // 11:00 PM
+          { time: 1, ambientColor: 0x43536d } // 12:00 AM
         ]
       },
       keyLight: {
         color: 0xfff3dc,
-        intensity: 1.15,
-        radius: 1150,
-        z: 210,
-        orbitRadius: 420
+        intensity: 0.25,
+        radius: 2400,
+        z: 1000
       }
     }
   },
@@ -169,21 +239,25 @@ export const ProbableWaffleLevels: ProbableWaffleMapType = {
         maxOffset: 20
       },
       dayNightCycle: {
-        startTimeNormalized: 0.25,
+        startTimeNormalized: 0.3,
         keyframes: [
-          { time: 0, ambientColor: 0x30405f },
-          { time: 0.25, ambientColor: 0xe7eef8 },
-          { time: 0.5, ambientColor: 0xf4f9ff },
-          { time: 0.75, ambientColor: 0x283752 },
-          { time: 1, ambientColor: 0x30405f }
+          { time: 0, ambientColor: 0x43546f }, // 12:00 AM
+          { time: 0.1666666667, ambientColor: 0x43546f }, // 4:00 AM
+          { time: 0.2083333333, ambientColor: 0x7f93b2 }, // 5:00 AM
+          { time: 0.2916666667, ambientColor: 0xb9cce4 }, // 7:00 AM
+          { time: 0.5, ambientColor: 0xf7fbff }, // 12:00 PM
+          { time: 0.5833333333, ambientColor: 0xffffff }, // 2:00 PM
+          { time: 0.75, ambientColor: 0xdde6f3 }, // 6:00 PM
+          { time: 0.875, ambientColor: 0xa8bbd4 }, // 9:00 PM
+          { time: 0.9583333333, ambientColor: 0x43546f }, // 11:00 PM
+          { time: 1, ambientColor: 0x43546f } // 12:00 AM
         ]
       },
       keyLight: {
         color: 0xdfe9ff,
-        intensity: 1.05,
-        radius: 1200,
-        z: 225,
-        orbitRadius: 480
+        intensity: 0.25,
+        radius: 2400,
+        z: 1000
       }
     }
   },
@@ -226,21 +300,25 @@ export const ProbableWaffleLevels: ProbableWaffleMapType = {
         maxOffset: 28
       },
       dayNightCycle: {
-        startTimeNormalized: 0.25,
+        startTimeNormalized: 0.3,
         keyframes: [
-          { time: 0, ambientColor: 0x4d2f24 },
-          { time: 0.25, ambientColor: 0xffd7b0 },
-          { time: 0.5, ambientColor: 0xffbe88 },
-          { time: 0.75, ambientColor: 0x3a2622 },
-          { time: 1, ambientColor: 0x4d2f24 }
+          { time: 0, ambientColor: 0x5f4035 }, // 12:00 AM
+          { time: 0.1666666667, ambientColor: 0x5f4035 }, // 4:00 AM
+          { time: 0.2083333333, ambientColor: 0xa78570 }, // 5:00 AM
+          { time: 0.2916666667, ambientColor: 0xd8b397 }, // 7:00 AM
+          { time: 0.5, ambientColor: 0xffecd6 }, // 12:00 PM
+          { time: 0.5833333333, ambientColor: 0xffd9b6 }, // 2:00 PM
+          { time: 0.75, ambientColor: 0xeec5a7 }, // 6:00 PM
+          { time: 0.875, ambientColor: 0xc09c8f }, // 9:00 PM
+          { time: 0.9583333333, ambientColor: 0x5f4035 }, // 11:00 PM
+          { time: 1, ambientColor: 0x5f4035 } // 12:00 AM
         ]
       },
       keyLight: {
         color: 0xff9f66,
-        intensity: 1.25,
-        radius: 1260,
-        z: 250,
-        orbitRadius: 460
+        intensity: 0.25,
+        radius: 2400,
+        z: 1000
       }
     }
   }
