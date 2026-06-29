@@ -143,6 +143,21 @@
             "scope": "CLASS",
             "x": 13,
             "y": 520
+        },
+        {
+            "type": "Text",
+            "id": "f6d183fb-6d89-4eb8-987d-ec4e7dafce2a",
+            "label": "dayNightClockText",
+            "scope": "CLASS",
+            "x": 13,
+            "y": 692,
+            "originY": 1,
+            "resolution": 10,
+            "fontFamily": "disposabledroid",
+            "fontSize": "18px",
+            "color": "#ffffffff",
+            "stroke": "#000000ff",
+            "strokeThickness": 3
         }
     ],
     "plainObjects": [],

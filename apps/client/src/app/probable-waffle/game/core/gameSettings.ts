@@ -1,3 +1,4 @@
+import { environment } from "../../../../environments/environment";
 import { isTauri } from "../../../shared/utils/tauri";
 
 export type HomeScreenBackground = "ashfall" | "constellation";
@@ -5,6 +6,7 @@ export type HomeScreenBackground = "ashfall" | "constellation";
 export class GameSettings {
   lockToScreen: boolean;
   enabledMouseCornerMovement: boolean;
+  enableSceneLightingEffects: boolean;
   homeScreenBackground: HomeScreenBackground;
 
   constructor() {
@@ -13,6 +15,7 @@ export class GameSettings {
     this.lockToScreen = false;
     // In Tauri the whole window is the game canvas, so edge-scroll is always desirable
     this.enabledMouseCornerMovement = isTauri();
+    this.enableSceneLightingEffects = environment.production;
     this.homeScreenBackground = "ashfall";
   }
 
@@ -20,6 +23,7 @@ export class GameSettings {
     const fromLocalStorage = GameSettings.loadFromLocalStorage();
     this.lockToScreen = fromLocalStorage.lockToScreen;
     this.enabledMouseCornerMovement = fromLocalStorage.enabledMouseCornerMovement;
+    this.enableSceneLightingEffects = fromLocalStorage.enableSceneLightingEffects;
     this.homeScreenBackground = fromLocalStorage.homeScreenBackground;
   }
 
@@ -37,6 +41,8 @@ export class GameSettings {
       settings.lockToScreen = parsedSettings.lockToScreen ?? defaults.lockToScreen;
       settings.enabledMouseCornerMovement =
         parsedSettings.enabledMouseCornerMovement ?? defaults.enabledMouseCornerMovement;
+      settings.enableSceneLightingEffects =
+        parsedSettings.enableSceneLightingEffects ?? defaults.enableSceneLightingEffects;
       settings.homeScreenBackground =
         parsedSettings.homeScreenBackground === "constellation" ? "constellation" : defaults.homeScreenBackground;
       return settings;
