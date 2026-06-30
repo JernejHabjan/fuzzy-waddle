@@ -29,6 +29,10 @@ import { MovementTerrainType } from "../movement/movement-terrain-type";
 import { ProbableWaffleSceneEventName } from "../../../world/services/recovery/probable-waffle-scene-events";
 import { CommandBusService } from "../../../world/services/multiplayer/command-bus.service";
 import { IdComponent } from "../id-component";
+import { OrderType } from "../../../ai/order-type";
+import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
+import { getActorSystem } from "../../../data/actor-system";
+import { ActionSystem } from "../../systems/action.system";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class ProductionComponent {
@@ -46,6 +50,7 @@ export class ProductionComponent {
     this.rallyPoint = new RallyPoint(this.gameObject.scene);
     this.listenToMoveEvents();
     onObjectReady(gameObject, this.initOnObjectReady, this);
+    gameObject.on(OwnerComponent.OwnerChangedEvent, this.handleOwnerChanged, this);
     gameObject.on(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
   }
@@ -81,10 +86,6 @@ export class ProductionComponent {
     }
 
     this.playerChangedSubscription = commandBus.command$.subscribe((command) => {
-      if (command.type !== ProbableWaffleGameCommandTypes.Move) {
-        return;
-      }
-
       const owner = getActorComponent(this.gameObject, OwnerComponent)?.getOwner();
       if (owner === undefined || owner !== command.playerNumber) {
         return;
@@ -95,10 +96,40 @@ export class ProductionComponent {
         return;
       }
 
-      // Rally-point assignment is a deterministic MOVE command targeting production buildings.
-      // Apply it on every client from the command bus stream, not local UI events.
-      this.rallyPoint.setLocation(command.tileVec3, command.worldVec3);
+      if (command.type === ProbableWaffleGameCommandTypes.Move) {
+        // Rally-point assignment is a deterministic MOVE command targeting production buildings.
+        // Apply it on every client from the command bus stream, not local UI events.
+        this.rallyPoint.setLocation(command.tileVec3, command.worldVec3);
+        return;
+      }
+
+      if (command.type !== ProbableWaffleGameCommandTypes.ActorAction) {
+        return;
+      }
+
+      if (command.orderType !== undefined && command.orderType !== OrderType.Move) {
+        return;
+      }
+
+      const targetActorId = command.targetObjectIds?.[0];
+      if (!targetActorId) {
+        this.rallyPoint.reset();
+        return;
+      }
+
+      const actorIndex = getSceneService(this.gameObject.scene, ActorIndexSystem);
+      const targetActor = actorIndex?.getActorById(targetActorId);
+      if (!targetActor) {
+        this.rallyPoint.reset();
+        return;
+      }
+
+      this.rallyPoint.setActor(targetActor as Phaser.GameObjects.GameObject & Phaser.GameObjects.Components.Transform);
     });
+  }
+
+  private handleOwnerChanged() {
+    this.rallyPoint.reset();
   }
 
   get isProducing(): boolean {
@@ -226,7 +257,7 @@ export class ProductionComponent {
     // Determine target tile preference based on rally point if it's set
     let targetTile: Vector3Simple | undefined;
     if (this.rallyPoint.isSet()) {
-      targetTile = this.rallyPoint.tileVec3;
+      targetTile = this.rallyPoint.getTargetTileVec3();
     }
 
     const unitDef = getPwActorDefinition(actorName, null);
@@ -273,9 +304,28 @@ export class ProductionComponent {
         this.gameObject.scene.events.emit(ProbableWaffleSceneEventName.ScoreUnitProduced, originalOwner);
       }
       if (this.rallyPoint.isSet()) {
-        // noinspection JSIgnoredPromiseFromCall
-        this.rallyPoint.navigateGameObjectToRallyPoint(newGameObject);
+        this.executeSpawnRallyAction(newGameObject);
       }
+    }
+  }
+
+  private executeSpawnRallyAction(newGameObject: Phaser.GameObjects.GameObject) {
+    const actionSystem = getActorSystem<ActionSystem>(newGameObject, ActionSystem);
+    if (!actionSystem) {
+      // noinspection JSIgnoredPromiseFromCall
+      this.rallyPoint.navigateGameObjectToRallyPoint(newGameObject);
+      return;
+    }
+
+    const targetGameObject = this.rallyPoint.getTargetGameObject();
+    if (targetGameObject?.active) {
+      actionSystem.executeAction(undefined, targetGameObject);
+      return;
+    }
+
+    const targetTile = this.rallyPoint.getTargetTileVec3();
+    if (targetTile) {
+      actionSystem.executeAction(OrderType.Move, undefined, targetTile);
     }
   }
 
@@ -357,6 +407,7 @@ export class ProductionComponent {
 
   private destroy() {
     this.playerChangedSubscription?.unsubscribe();
+    this.gameObject.off(OwnerComponent.OwnerChangedEvent, this.handleOwnerChanged, this);
     this.rallyPoint.destroy();
   }
 

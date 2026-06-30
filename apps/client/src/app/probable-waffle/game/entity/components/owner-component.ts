@@ -19,6 +19,7 @@ import { SceneLightingService } from "../../world/services/lighting/scene-lighti
 export class OwnerComponent {
   static readonly ZIndex = 1;
   static readonly OwnerColorAppliedEvent = "owner-color-applied";
+  static readonly OwnerChangedEvent = "owner-changed";
   private readonly borderSize = 2;
   /**
    * Not using color replace as it adds huge load on GPU
@@ -85,6 +86,7 @@ export class OwnerComponent {
     actorIndexSystem?.updateActorOwnership(this.gameObject, oldOwner, newOwner);
     this.owner = playerNumber;
     this.tryToSetComponents();
+    this.gameObject.emit(OwnerComponent.OwnerChangedEvent, oldOwner, newOwner);
   }
 
   setOwnerWithBlink(playerNumber: PlayerNumber) {

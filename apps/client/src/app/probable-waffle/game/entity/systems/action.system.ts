@@ -74,10 +74,6 @@ export class ActionSystem {
   }
 
   private handleActorActionCommand(cmd: ActorActionCommand) {
-    const payerPawnAiController = getActorComponent(this.gameObject, PawnAiController);
-    if (!payerPawnAiController) return;
-
-    let action: OrderData | null = null;
     let targetGameObject: Phaser.GameObjects.GameObject | undefined;
 
     if (cmd.targetObjectIds) {
@@ -89,31 +85,46 @@ export class ActionSystem {
       }
     }
 
-    if (cmd.orderType) {
-      action = new OrderData(cmd.orderType, {
+    this.executeAction(cmd.orderType, targetGameObject, cmd.tileVec3, cmd.queue);
+  }
+
+  public executeAction(
+    orderType?: OrderType,
+    targetGameObject?: Phaser.GameObjects.GameObject,
+    tileVec3?: ActorActionCommand["tileVec3"],
+    queue: boolean = false
+  ): boolean {
+    const payerPawnAiController = getActorComponent(this.gameObject, PawnAiController);
+    if (!payerPawnAiController) return false;
+
+    let action: OrderData | null = null;
+
+    if (orderType) {
+      action = new OrderData(orderType, {
         targetGameObject,
-        targetTileLocation: cmd.tileVec3
+        targetTileLocation: tileVec3
       });
     } else if (targetGameObject) {
       action = this.findAction(targetGameObject);
-    } else if (cmd.tileVec3) {
+    } else if (tileVec3) {
       action = new OrderData(OrderType.Move, {
-        targetTileLocation: cmd.tileVec3
+        targetTileLocation: tileVec3
       });
     }
 
-    if (!action) return;
+    if (!action) return false;
 
     if (this.displayDebugInfo && !environment.production) {
       console.log("ActionSystem: action", action);
     }
 
-    if (cmd.queue) {
+    if (queue) {
       payerPawnAiController.blackboard.addOrder(action);
     } else {
       payerPawnAiController.blackboard.overrideOrderQueueAndActiveOrder(action);
     }
     this.playOrderSound(action);
+    return true;
   }
 
   private handleStopCommand() {
