@@ -16,6 +16,11 @@ interface Reservation {
   keys: string[];
 }
 
+export interface MovementReservationResult {
+  reserved: boolean;
+  blockers: ActorId[];
+}
+
 /**
  * Owns dynamic actor footprint reservations separately from static terrain navigation.
  * Occupancy keys include logical height so floor and wall actors can share the same x/y tile.
@@ -39,11 +44,15 @@ export class MovementOccupancyService {
   }
 
   reserveStep(actorId: ActorId, footprint: Vector2Simple[], heightLayer: number): boolean {
+    return this.reserve(actorId, footprint, heightLayer, this.stepReservations).reserved;
+  }
+
+  tryReserveStep(actorId: ActorId, footprint: Vector2Simple[], heightLayer: number): MovementReservationResult {
     return this.reserve(actorId, footprint, heightLayer, this.stepReservations);
   }
 
   reserveDestination(actorId: ActorId, footprint: Vector2Simple[], heightLayer: number): boolean {
-    return this.reserve(actorId, footprint, heightLayer, this.destinationReservations);
+    return this.reserve(actorId, footprint, heightLayer, this.destinationReservations).reserved;
   }
 
   releaseStep(actorId: ActorId): void {
@@ -74,18 +83,23 @@ export class MovementOccupancyService {
     return this.stepReservations.has(actorId);
   }
 
+  hasAnyActiveStepReservation(actorIds: ActorId[]): boolean {
+    return actorIds.some((actorId) => this.hasActiveStepReservation(actorId));
+  }
+
   private reserve(
     actorId: ActorId,
     footprint: Vector2Simple[],
     heightLayer: number,
     reservations: Map<ActorId, Reservation>
-  ): boolean {
+  ): MovementReservationResult {
     const keys = footprint.map((tile) => this.toKey(tile, heightLayer));
-    if (this.getBlockingActors(actorId, footprint, heightLayer).length > 0) {
-      return false;
+    const blockers = this.getBlockingActors(actorId, footprint, heightLayer);
+    if (blockers.length > 0) {
+      return { reserved: false, blockers };
     }
     reservations.set(actorId, { actorId, keys });
-    return true;
+    return { reserved: true, blockers: [] };
   }
 
   private collectReservationBlockers(

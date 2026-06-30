@@ -43,6 +43,26 @@ import { getInterpolatedSimulationNow } from "../../world/services/simulation-ti
 import { MovementOccupancyService } from "../../world/services/movement-occupancy.service";
 import GameObject = Phaser.GameObjects.GameObject;
 
+const BLOCKED_STEP_MAX_WAIT_ATTEMPTS = 2;
+const BLOCKED_STEP_WAIT_MS = 120;
+const BLOCKED_STEP_MAX_SIDE_STEP_ATTEMPTS = 2;
+const BLOCKED_STEP_MAX_REPATH_ATTEMPTS = 2;
+
+interface BlockedStepRecoveryState {
+  waitAttemptsByTile: Map<string, number>;
+  sideStepAttempts: number;
+  repathAttempts: number;
+}
+
+class MovementStepBlockedError extends Error {
+  constructor(
+    readonly tile: Vector2Simple,
+    readonly blockers: ActorId[]
+  ) {
+    super("Next movement tile is occupied");
+  }
+}
+
 export class MovementSystem {
   private _navigationService?: NavigationService;
   // Active movement is driven from interpolated simulation time so visuals freeze
@@ -232,7 +252,12 @@ export class MovementSystem {
    */
   private async moveAlongPathByFollowingPreCalculatedStaticPath(
     path: Vector2Simple[],
-    config?: PathMoveConfig
+    config?: PathMoveConfig,
+    recoveryState: BlockedStepRecoveryState = {
+      waitAttemptsByTile: new Map<string, number>(),
+      sideStepAttempts: 0,
+      repathAttempts: 0
+    }
   ): Promise<void> {
     if (!path.length) {
       config?.onComplete?.();
@@ -246,7 +271,7 @@ export class MovementSystem {
     config?.onPathUpdate?.(nextTile);
 
     const onComplete = async () => {
-      await this.moveAlongPathByFollowingPreCalculatedStaticPath(path, config);
+      await this.moveAlongPathByFollowingPreCalculatedStaticPath(path, config, recoveryState);
     };
 
     const onStop = () => {
@@ -254,7 +279,123 @@ export class MovementSystem {
       this.playMovementAnimation(false, config);
     };
 
-    return this.moveActorToTileWithTween(nextTile, config, onComplete, onStop);
+    try {
+      await this.moveActorToTileWithTween(nextTile, config, onComplete, onStop);
+    } catch (error) {
+      if (!(error instanceof MovementStepBlockedError)) {
+        throw error;
+      }
+      await this.recoverFromBlockedPathStep(error, nextTile, path, config, recoveryState);
+    }
+  }
+
+  private async recoverFromBlockedPathStep(
+    error: MovementStepBlockedError,
+    blockedTile: Vector2Simple,
+    remainingPath: Vector2Simple[],
+    config: PathMoveConfig | undefined,
+    recoveryState: BlockedStepRecoveryState
+  ): Promise<void> {
+    const finalDestination = remainingPath[remainingPath.length - 1] ?? blockedTile;
+    const blockedTileKey = `${blockedTile.x},${blockedTile.y}`;
+    const waitAttempts = recoveryState.waitAttemptsByTile.get(blockedTileKey) ?? 0;
+    if (
+      waitAttempts < BLOCKED_STEP_MAX_WAIT_ATTEMPTS &&
+      this.movementOccupancyService?.hasAnyActiveStepReservation(error.blockers)
+    ) {
+      recoveryState.waitAttemptsByTile.set(blockedTileKey, waitAttempts + 1);
+      await this.waitForBlockedStep();
+      await this.moveAlongPathByFollowingPreCalculatedStaticPath([blockedTile, ...remainingPath], config, recoveryState);
+      return;
+    }
+
+    if (recoveryState.sideStepAttempts < BLOCKED_STEP_MAX_SIDE_STEP_ATTEMPTS) {
+      const sideStepTile = this.getBestSideStepTile(blockedTile, finalDestination);
+      if (sideStepTile) {
+        recoveryState.sideStepAttempts++;
+        config?.onPathUpdate?.(sideStepTile);
+        await this.moveActorToTileWithTween(sideStepTile, config);
+        await this.repathToDestination(finalDestination, config, recoveryState);
+        return;
+      }
+    }
+
+    if (recoveryState.repathAttempts < BLOCKED_STEP_MAX_REPATH_ATTEMPTS) {
+      recoveryState.repathAttempts++;
+      await this.repathToDestination(finalDestination, config, recoveryState);
+      return;
+    }
+
+    throw error;
+  }
+
+  private waitForBlockedStep(): Promise<void> {
+    return new Promise((resolve) => {
+      const scene = this.gameObject.scene;
+      if (!isSceneActive(scene)) {
+        resolve();
+        return;
+      }
+      // Use Phaser scene time so congestion waits pause with the simulation scene lifecycle.
+      scene.time.delayedCall(BLOCKED_STEP_WAIT_MS, () => resolve());
+    });
+  }
+
+  private async repathToDestination(
+    destinationTile: Vector2Simple,
+    config: PathMoveConfig | undefined,
+    recoveryState: BlockedStepRecoveryState
+  ): Promise<void> {
+    if (!this.navigationService) return Promise.reject("No navigationService");
+    const newPath = await this.navigationService.findPathFromGameObjectToTile(this.gameObject, destinationTile);
+    if (!newPath || !newPath.length) return Promise.reject("No congestion recovery path found");
+    newPath.shift();
+    await this.moveAlongPathByFollowingPreCalculatedStaticPath(newPath, config, recoveryState);
+  }
+
+  private getBestSideStepTile(blockedTile: Vector2Simple, finalDestination: Vector2Simple): Vector2Simple | undefined {
+    const currentTile = getGameObjectCurrentTile(this.gameObject);
+    const navigationService = this.navigationService;
+    const movementOccupancy = this.movementOccupancyService;
+    const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
+    if (!currentTile || !navigationService || !movementOccupancy || !actorId) return undefined;
+
+    const terrainType =
+      this.actorTranslateComponent?.actorTranslateDefinition.movementTerrainType ?? MovementTerrainType.Ground;
+    const currentHeight = navigationService.getNavigableHeightAtTile(currentTile);
+    const candidates: Vector2Simple[] = [];
+    for (let dy = -1; dy <= 1; dy++) {
+      for (let dx = -1; dx <= 1; dx++) {
+        if (dx === 0 && dy === 0) continue;
+        const candidate = { x: currentTile.x + dx, y: currentTile.y + dy };
+        if (candidate.x === blockedTile.x && candidate.y === blockedTile.y) continue;
+        if (!navigationService.isWithinGridBounds(candidate, terrainType)) continue;
+        if (!navigationService.isTileNavigable(candidate, terrainType)) continue;
+        const candidateHeight = navigationService.getNavigableHeightAtTile(candidate);
+        if (candidateHeight !== currentHeight) continue;
+        const footprint = movementOccupancy.getActorFootprintAtTile(this.gameObject, candidate);
+        if (!movementOccupancy.isFootprintFree(actorId, footprint, candidateHeight)) continue;
+        candidates.push(candidate);
+      }
+    }
+
+    candidates.sort((a, b) => {
+      const progressDelta =
+        this.getTileDistance(a, finalDestination) - this.getTileDistance(b, finalDestination);
+      if (progressDelta !== 0) return progressDelta;
+      const blockedDelta = this.getTileDistance(b, blockedTile) - this.getTileDistance(a, blockedTile);
+      if (blockedDelta !== 0) return blockedDelta;
+      if (a.y !== b.y) return a.y - b.y;
+      return a.x - b.x;
+    });
+
+    return candidates[0];
+  }
+
+  private getTileDistance(a: Vector2Simple, b: Vector2Simple): number {
+    const dx = a.x - b.x;
+    const dy = a.y - b.y;
+    return Math.sqrt(dx * dx + dy * dy);
   }
 
   /**
@@ -287,8 +428,9 @@ export class MovementSystem {
     const movementOccupancy = this.movementOccupancyService;
     if (actorId && movementOccupancy) {
       const footprint = movementOccupancy.getActorFootprintAtTile(this.gameObject, tile);
-      if (!movementOccupancy.reserveStep(actorId, footprint, navigableHeight)) {
-        return Promise.reject("Next movement tile is occupied");
+      const reservation = movementOccupancy.tryReserveStep(actorId, footprint, navigableHeight);
+      if (!reservation.reserved) {
+        return Promise.reject(new MovementStepBlockedError(tile, reservation.blockers));
       }
     }
 
