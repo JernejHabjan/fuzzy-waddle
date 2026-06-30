@@ -40,6 +40,7 @@ import type { IsoDirection } from "../components/movement/iso-directions";
 import type { PathMoveConfig } from "./path-move-config";
 import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
 import { getInterpolatedSimulationNow } from "../../world/services/simulation-time";
+import { MovementOccupancyService } from "../../world/services/movement-occupancy.service";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class MovementSystem {
@@ -56,6 +57,7 @@ export class MovementSystem {
   private audioActorComponent: AudioActorComponent | undefined;
   private animationActorComponent?: AnimationActorComponent;
   private statusEffectComponent?: StatusEffectComponent;
+  private _movementOccupancyService?: MovementOccupancyService;
 
   constructor(private readonly gameObject: Phaser.GameObjects.GameObject) {
     this.listenToMoveEvents();
@@ -87,6 +89,7 @@ export class MovementSystem {
       const actorId = myId ?? getActorComponent(this.gameObject, IdComponent)?.id;
       if (!actorId || !cmd.actorIds.includes(actorId)) return;
 
+      this.movementOccupancyService?.releaseDestination(actorId);
       const newWorldVec3 = await this.getTileVec3ByDynamicFlocking(cmd.tileVec3, cmd.actorIds as ActorId[]);
       const payerPawnAiController = getActorComponent(this.gameObject, PawnAiController);
       if (payerPawnAiController) {
@@ -116,6 +119,12 @@ export class MovementSystem {
   private get navigationService(): NavigationService | undefined {
     this._navigationService = this._navigationService ?? getSceneService(this.gameObject.scene, NavigationService);
     return this._navigationService;
+  }
+
+  private get movementOccupancyService(): MovementOccupancyService | undefined {
+    this._movementOccupancyService =
+      this._movementOccupancyService ?? getSceneService(this.gameObject.scene, MovementOccupancyService);
+    return this._movementOccupancyService;
   }
 
   async moveToLocationByFollowingStaticPath(
@@ -148,6 +157,9 @@ export class MovementSystem {
     } catch (e) {
       // console.error("Error moving along path", e);
       return false;
+    } finally {
+      const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
+      if (actorId) this.movementOccupancyService?.releaseDestination(actorId);
     }
 
     return true;
@@ -271,7 +283,31 @@ export class MovementSystem {
     const navigableHeight = this.navigationService?.getNavigableHeightAtTile(tile) ?? 0;
     const newLogicalTransform = { ...tileWorldXY, z: navigableHeight } as Vector3Simple;
 
-    return this.startMovementTween(newLogicalTransform, config, onComplete, onStop);
+    const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
+    const movementOccupancy = this.movementOccupancyService;
+    if (actorId && movementOccupancy) {
+      const footprint = movementOccupancy.getActorFootprintAtTile(this.gameObject, tile);
+      if (!movementOccupancy.reserveStep(actorId, footprint, navigableHeight)) {
+        return Promise.reject("Next movement tile is occupied");
+      }
+    }
+
+    const wrappedOnComplete = async () => {
+      if (actorId) movementOccupancy?.releaseStep(actorId);
+      if (onComplete) {
+        await onComplete();
+      }
+    };
+
+    const wrappedOnStop = () => {
+      if (actorId) movementOccupancy?.releaseStep(actorId);
+      onStop?.();
+    };
+
+    return this.startMovementTween(newLogicalTransform, config, wrappedOnComplete, wrappedOnStop).catch((error) => {
+      if (actorId) movementOccupancy?.releaseStep(actorId);
+      throw error;
+    });
   }
 
   private tweenUpdate = (logicalTransform: Vector3Simple) => {
@@ -282,6 +318,8 @@ export class MovementSystem {
   cancelMovement() {
     this._cancelCurrentMovement?.();
     this._cancelCurrentMovement = undefined;
+    const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
+    if (actorId) this.movementOccupancyService?.releaseStep(actorId);
   }
 
   /**
@@ -535,6 +573,8 @@ export class MovementSystem {
 
   private destroy() {
     this.cancelMovement();
+    const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
+    if (actorId) this.movementOccupancyService?.releaseAll(actorId);
     this.commandBusSubscription?.unsubscribe();
   }
 
@@ -568,6 +608,9 @@ export class MovementSystem {
   ): Promise<Vector3Simple> {
     const unitCount = selectedActorObjectIds.length;
     if (unitCount < 2) {
+      return tileVec3;
+    }
+    if (getActorComponent(this.gameObject, FlyingComponent)) {
       return tileVec3;
     }
 
@@ -633,10 +676,15 @@ export class MovementSystem {
       if (this.navigationService.isTileNavigable(destinationTile, terrainType)) {
         const path = await this.navigationService.findPathFromGameObjectToTile(this.gameObject, destinationTile);
         if (path !== null && path.length > 0) {
+          const destinationHeight = this.navigationService.getNavigableHeightAtTile(destinationTile);
+          const footprint = this.movementOccupancyService?.getActorFootprintAtTile(this.gameObject, destinationTile);
+          if (footprint && !this.movementOccupancyService?.reserveDestination(ownId, footprint, destinationHeight)) {
+            return tileVec3;
+          }
           return {
             x: destinationTile.x,
             y: destinationTile.y,
-            z: tileVec3.z // Keep the original Z coordinate
+            z: destinationHeight
           } satisfies Vector3Simple;
         }
       }

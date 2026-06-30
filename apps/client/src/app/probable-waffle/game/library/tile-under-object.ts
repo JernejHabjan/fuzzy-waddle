@@ -51,6 +51,22 @@ export function getTileCoordsUnderObject(
   return tileIndexes1;
 }
 
+export function getTileCoordsUnderObjectAtTile(
+  tilemap: Phaser.Tilemaps.Tilemap,
+  gameObject: Phaser.GameObjects.GameObject,
+  centerTile: Vector2Simple
+): Vector2Simple[] {
+  const currentCenter = getCenterTileCoordUnderObject(tilemap, gameObject);
+  if (!currentCenter) return [centerTile];
+
+  const currentFootprint = getTileCoordsUnderObject(tilemap, gameObject);
+  if (currentFootprint.length === 0) return [centerTile];
+
+  const offsetX = centerTile.x - currentCenter.x;
+  const offsetY = centerTile.y - currentCenter.y;
+  return currentFootprint.map((tile) => ({ x: tile.x + offsetX, y: tile.y + offsetY }));
+}
+
 export function getCenterTileCoordUnderObject(
   tilemap: Phaser.Tilemaps.Tilemap,
   gameObject: Phaser.GameObjects.GameObject
