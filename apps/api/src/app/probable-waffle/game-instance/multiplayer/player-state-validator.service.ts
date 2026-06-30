@@ -43,11 +43,13 @@ export class PlayerStateValidatorService {
     ProbableWafflePlayerDataChangeProperties.SelectionCleared
   ]);
   private static readonly CONTROL_GROUP_PROPERTY = ProbableWafflePlayerDataChangeProperties.SelectionGroupsChanged;
+  private static readonly LEFT_OR_KILLED_PROPERTY = ProbableWafflePlayerDataChangeProperties.LeftOrKilledChanged;
   private static readonly OWNER_ONLY_PROPERTIES: ReadonlySet<PlayerDataChangeProperty> = new Set([
     ...PlayerStateValidatorService.RESOURCE_PROPERTIES,
     ...PlayerStateValidatorService.HOUSING_PROPERTIES,
     ...PlayerStateValidatorService.SELECTION_PROPERTIES,
     PlayerStateValidatorService.CONTROL_GROUP_PROPERTY,
+    PlayerStateValidatorService.LEFT_OR_KILLED_PROPERTY,
     ProbableWafflePlayerDataChangeProperties.PlayerSceneReady,
     ProbableWafflePlayerDataChangeProperties.CommandIssuedMove,
     ProbableWafflePlayerDataChangeProperties.CommandIssuedActor
@@ -88,6 +90,8 @@ export class PlayerStateValidatorService {
       case ProbableWafflePlayerDataChangeProperties.SelectionSet:
       case ProbableWafflePlayerDataChangeProperties.SelectionCleared:
         return this.validateSelectionChange(event, gameInstance);
+      case PlayerStateValidatorService.LEFT_OR_KILLED_PROPERTY:
+        return this.validateLeftOrKilledChange(event);
       case PlayerStateValidatorService.CONTROL_GROUP_PROPERTY:
         return this.validateSelectionGroupsChange(event, gameInstance);
       default:
@@ -173,6 +177,16 @@ export class PlayerStateValidatorService {
         );
         return false;
       }
+    }
+
+    return true;
+  }
+
+  private validateLeftOrKilledChange(event: ProbableWafflePlayerDataChangeEvent): boolean {
+    const leftOrKilled = event.data.playerControllerData?.leftOrKilled;
+    if (typeof leftOrKilled !== "boolean") {
+      this.logger.warn(`[PlayerState] Invalid leftOrKilled payload in ${event.gameInstanceId}`);
+      return false;
     }
 
     return true;

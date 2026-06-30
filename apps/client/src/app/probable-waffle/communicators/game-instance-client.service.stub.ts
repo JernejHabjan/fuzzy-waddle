@@ -128,5 +128,8 @@ export const gameInstanceClientServiceStub = {
   },
   async leaveLobby(): Promise<void> {
     return Promise.resolve();
+  },
+  async leaveScoreScreen(navigateHome: boolean = true): Promise<void> {
+    return Promise.resolve();
   }
 } satisfies GameInstanceClientServiceInterface;

@@ -26,6 +26,10 @@ export class ScoreScreenComponent implements OnInit, OnDestroy {
     this.activeTab = scoreTable;
   };
 
+  protected leave = async () => {
+    await this.gameInstanceClientService.leaveScoreScreen();
+  };
+
   async ngOnInit() {
     // Submit scores if this is an online game and user is last human player
     const gameInstance = this.gameInstanceClientService.gameInstance;
@@ -90,11 +94,10 @@ export class ScoreScreenComponent implements OnInit, OnDestroy {
 
   @HostListener("window:beforeunload")
   async onBeforeUnload() {
-    await this.ngOnDestroy();
+    await this.gameInstanceClientService.leaveScoreScreen(false);
   }
 
   async ngOnDestroy() {
     this.scoreSubmissionSub?.unsubscribe();
-    await this.gameInstanceClientService.stopGameInstance();
   }
 }

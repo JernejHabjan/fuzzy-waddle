@@ -737,6 +737,15 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     await this.router.navigate(["aota"]);
   }
 
+  async leaveScoreScreen(navigateHome: boolean = true): Promise<void> {
+    await this.disconnectSelfFromCurrentGame();
+    await this.cleanupLocalGameState();
+
+    if (navigateHome) {
+      await this.router.navigate(["aota"]);
+    }
+  }
+
   private async cleanupLocalGameState(): Promise<void> {
     await this.stopListeningToGameInstanceEvents();
     this.gameInstance = undefined;

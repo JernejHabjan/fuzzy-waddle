@@ -80,6 +80,7 @@ export const ProbableWafflePlayerDataChangeProperties = {
   Joined: "joined",
   Left: "left",
   JoinedFromNetwork: "joinedFromNetwork",
+  LeftOrKilledChanged: "playerController.data.leftOrKilled",
   SelectionAdded: "selection.added",
   SelectionRemoved: "selection.removed",
   SelectionSet: "selection.set",
@@ -109,6 +110,7 @@ export type ProbableWafflePlayerDataChangeEventProperty =
   | typeof ProbableWafflePlayerDataChangeProperties.Joined
   | typeof ProbableWafflePlayerDataChangeProperties.Left
   | typeof ProbableWafflePlayerDataChangeProperties.JoinedFromNetwork
+  | typeof ProbableWafflePlayerDataChangeProperties.LeftOrKilledChanged
   | typeof ProbableWafflePlayerDataChangeProperties.SelectionAdded
   | typeof ProbableWafflePlayerDataChangeProperties.SelectionRemoved
   | typeof ProbableWafflePlayerDataChangeProperties.SelectionSet

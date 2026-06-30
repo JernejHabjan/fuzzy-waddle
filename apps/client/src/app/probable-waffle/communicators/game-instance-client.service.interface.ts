@@ -53,4 +53,5 @@ export interface GameInstanceClientServiceInterface {
   saveGameInstance(data: Record<string, any>): Promise<void>;
   startReplay(gameInstanceSaveData: ProbableWaffleGameInstanceSaveData): Promise<void>;
   leaveLobby(): Promise<void>;
+  leaveScoreScreen(navigateHome?: boolean): Promise<void>;
 }

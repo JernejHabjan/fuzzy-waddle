@@ -8,6 +8,7 @@ import {
   GameResultStatus,
   GameSessionState,
   type LoseConditions,
+  ProbableWafflePlayerDataChangeProperties,
   ProbableWaffleGameInstanceType,
   ProbableWaffleGameMode,
   ProbableWafflePlayer,
@@ -41,6 +42,7 @@ export class GameModeConditionChecker {
   private players!: ProbableWafflePlayer[];
   private currentPlayer!: ProbableWafflePlayer;
   private selfQuitSubscription?: Subscription;
+  private playerLeftOrKilledSubscription?: Subscription;
   private stopped: boolean = false;
   private readonly checkIntervalTicks = 20; // 1 second at the fixed 20 Hz simulation rate.
   private readonly surrenderCheckIntervalTicks = 40; // 2 seconds at the fixed 20 Hz simulation rate.
@@ -57,6 +59,7 @@ export class GameModeConditionChecker {
     this.currentDelay = new CancelableSimDelay(this.scene, 1000, () => this.startChecking());
     this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
     this.listenToPlayerQuit();
+    this.listenToPlayerLeftOrKilled();
   }
 
   private startChecking() {
@@ -122,10 +125,29 @@ export class GameModeConditionChecker {
       // check if player has no actors left, if yes, mark as left or killed
       const actors = this.actorsByPlayer?.get(player.playerNumber!) || [];
       if (actors.length === 0) {
-        player.playerController.data.leftOrKilled = true;
+        this.markPlayerLeftOrKilled(player);
         console.log(`Player ${player.playerNumber} has no actors left, marked as killed.`);
       }
     });
+  }
+
+  private listenToPlayerLeftOrKilled() {
+    this.playerLeftOrKilledSubscription = this.scene.communicator.playerChanged?.on
+      .pipe(filter((event) => event.property === ProbableWafflePlayerDataChangeProperties.LeftOrKilledChanged))
+      .subscribe((event) => {
+        if (this.stopped || !isSceneActive(this.scene)) {
+          return;
+        }
+
+        this.ensureCurrentPlayerPrepared();
+        if (event.data.playerNumber === this.currentPlayerNumber) {
+          return;
+        }
+
+        if (this.checkWinConditions()) {
+          this.winGame();
+        }
+      });
   }
 
   private checkAiSurrender(tick: number) {
@@ -206,7 +228,7 @@ export class GameModeConditionChecker {
   private handleSurrenderAccepted(player: ProbableWafflePlayer) {
     console.log(`Player ${player.playerNumber} surrender accepted - eliminating player`);
     // Mark player as eliminated
-    player.playerController.data.leftOrKilled = true;
+    this.markPlayerLeftOrKilled(player);
 
     // Destroy all units/buildings owned by this player
     const actors = this.actorsByPlayer?.get(player.playerNumber!) || [];
@@ -312,7 +334,7 @@ export class GameModeConditionChecker {
       const buildings = actors.filter((actor) => getActorComponent(actor, ConstructionSiteComponent));
       if (buildings.length === 0) {
         console.log("All buildings eliminated, lose condition met.");
-        this.currentPlayer.playerController.data.leftOrKilled = true;
+        this.markPlayerLeftOrKilled(this.currentPlayer);
         return true; // No buildings left, consider it a loss
       }
     }
@@ -336,7 +358,8 @@ export class GameModeConditionChecker {
   }
 
   private selfQuit() {
-    this.currentPlayer.playerController.data.leftOrKilled = true;
+    this.ensureCurrentPlayerPrepared();
+    this.markPlayerLeftOrKilled(this.currentPlayer);
     console.log(`Player ${this.currentPlayer.playerNumber} has quit the game.`);
 
     // Update ScoreTracker
@@ -347,8 +370,44 @@ export class GameModeConditionChecker {
       scoreTracker.stop();
     }
 
-    this.navigateToScoreScreen();
+    this.navigateToScoreScreenLocally();
     this.stop();
+  }
+
+  /**
+   * leftOrKilled is shared match state. When a player quits or is eliminated we
+   * must relay it, otherwise other clients keep evaluating stale opponents and
+   * never resolve the remaining player's win condition.
+   */
+  private markPlayerLeftOrKilled(player: ProbableWafflePlayer) {
+    if (player.playerController.data.leftOrKilled) {
+      return;
+    }
+
+    player.playerController.data.leftOrKilled = true;
+    if (player.playerNumber === undefined) {
+      return;
+    }
+
+    this.scene.communicator.playerChanged?.send({
+      property: ProbableWafflePlayerDataChangeProperties.LeftOrKilledChanged,
+      gameInstanceId: this.scene.gameInstanceId,
+      emitterUserId: this.scene.userId,
+      data: {
+        playerNumber: player.playerNumber,
+        playerControllerData: {
+          leftOrKilled: true
+        }
+      }
+    });
+  }
+
+  private ensureCurrentPlayerPrepared() {
+    if (this.currentPlayer && this.currentPlayerNumber !== undefined) {
+      return;
+    }
+
+    this.prepareData();
   }
 
   private winGame() {
@@ -369,7 +428,7 @@ export class GameModeConditionChecker {
     }
 
     this.createEndGameLayer("You have won the game!", () => {
-      this.navigateToScoreScreen();
+      this.broadcastScoreScreenTransition();
     });
     this.stop();
   }
@@ -392,7 +451,7 @@ export class GameModeConditionChecker {
     }
 
     this.createEndGameLayer("You have lost the game.", () => {
-      this.navigateToScoreScreen();
+      this.broadcastScoreScreenTransition();
     });
     this.stop();
   }
@@ -410,16 +469,26 @@ export class GameModeConditionChecker {
     }
 
     this.createEndGameLayer("The game ended in a tie!", () => {
-      this.navigateToScoreScreen();
+      this.broadcastScoreScreenTransition();
     });
     this.stop();
   }
 
-  private navigateToScoreScreen() {
+  private broadcastScoreScreenTransition() {
     const baseGameData = getBaseGameDataFromScene<ProbableWaffleGameData>(this.scene);
     const communicator = baseGameData.communicator;
-    // todo rather than this, change the player state session state to "to score screen" because only 1 player quits
     communicator.gameInstanceMetadataChanged?.send({
+      property: "sessionState",
+      gameInstanceId: baseGameData.gameInstance.gameInstanceMetadata.data.gameInstanceId!,
+      data: { sessionState: GameSessionState.ToScoreScreen },
+      emitterUserId: baseGameData.user.userId
+    });
+  }
+
+  private navigateToScoreScreenLocally() {
+    const baseGameData = getBaseGameDataFromScene<ProbableWaffleGameData>(this.scene);
+    const communicator = baseGameData.communicator;
+    communicator.gameInstanceMetadataChanged?.sendLocally({
       property: "sessionState",
       gameInstanceId: baseGameData.gameInstance.gameInstanceMetadata.data.gameInstanceId!,
       data: { sessionState: GameSessionState.ToScoreScreen },
@@ -443,6 +512,7 @@ export class GameModeConditionChecker {
     this.simulationTickSub?.unsubscribe();
     this.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
     this.selfQuitSubscription?.unsubscribe();
+    this.playerLeftOrKilledSubscription?.unsubscribe();
     this.currentDelay?.remove();
   }
 }
