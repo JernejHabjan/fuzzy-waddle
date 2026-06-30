@@ -87,6 +87,8 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     const creator = new SceneActorCreator(this);
     const actorIndex = new ActorIndexSystem(this);
     const snapshotService = new SnapshotService();
+    const commandBusService = new CommandBusService(this);
+    const simTickService = new SimulationTickService(this);
 
     this.sceneGameData.components.push(
       this.getCameraMovementHandler(),
@@ -99,8 +101,8 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     this.sceneGameData.services.push(
       this.getRandomService(),
       // CommandBusService and SimulationTickService must be registered first so they're available during initInitialActors()
-      new CommandBusService(),
-      new SimulationTickService(this),
+      commandBusService,
+      simTickService,
       new NavigationService(this, this.tilemap),
       new AudioService(this),
       new PlayerActionsHandler(this, hud),
@@ -115,7 +117,6 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
       new PauseSyncService(this),
       snapshotService
     );
-    const simTickService = getSceneService(this, SimulationTickService);
     simTickService?.pauseTick(SimulationPauseReason.SceneBootstrap);
     new ActorDebugDamageSystem(this);
     if (!this.baseGameData.gameInstance.gameInstanceMetadata.isReplay()) {
@@ -128,20 +129,8 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     creator.initInitialActors();
     // Populate the index after initial actors are in place
     actorIndex.scanExistingActors();
-
-    // Wire SimulationTickService into CommandBusService now that both are registered
-    const commandBus = getSceneService(this, CommandBusService);
-    const simTick = getSceneService(this, SimulationTickService);
-    if (commandBus && simTick) {
-      commandBus.tickService = simTick;
-      // Activate the multiplayer relay path when a socket is present
-      const humanPlayerCount = this.baseGameData.gameInstance.players.filter(
-        (player) => player.playerController.data.playerDefinition?.playerType === ProbableWafflePlayerType.Human
-      ).length;
-      if (hasMultiplayerCommandRelay(this) && humanPlayerCount > 1) {
-        commandBus.initMultiplayer(this);
-      }
-    }
+    // Activate the multiplayer relay path when a socket is present
+    commandBusService.tryInitMultiplayer();
 
     // Desync detection: hash state every 60 ticks and compare with peers (MP only).
     new StateHashService().init(this);
