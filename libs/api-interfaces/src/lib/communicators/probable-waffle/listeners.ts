@@ -169,6 +169,12 @@ export class ProbableWaffleListeners {
           player.playerController.data.selectionGroups = payload.data.playerControllerData!.selectionGroups;
           ProbableWaffleListeners.logDebugInfo("selection groups changed for player", player.playerNumber);
           break;
+        case "playerController.data.leftOrKilled" as ProbableWafflePlayerDataChangeEventProperty:
+          player = gameInstance.getPlayerByNumber(payload.data.playerNumber!);
+          if (!player) throw new Error("Player not found with number " + payload.data.playerNumber);
+          player.playerController.data.leftOrKilled = payload.data.playerControllerData!.leftOrKilled;
+          ProbableWaffleListeners.logDebugInfo("leftOrKilled changed for player", player.playerNumber);
+          break;
 
         case "selection.added" as ProbableWafflePlayerDataChangeEventProperty:
           player = gameInstance.getPlayerByNumber(payload.data.playerNumber!);
