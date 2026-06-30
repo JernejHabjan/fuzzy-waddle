@@ -98,13 +98,13 @@ export class FlyRepresentableComponent implements IFlyBase {
     const millisecondsSinceKilled = new Date().getTime() - killedAt.getTime();
 
     const hexColor = Phaser.Display.Color.Interpolate.ColorWithColor(
-      Phaser.Display.Color.HexStringToColor("#ffffff"),
-      Phaser.Display.Color.HexStringToColor("#ff0000"),
+      Phaser.Display.Color.HexStringToColor("#fd6d6d"),
+      Phaser.Display.Color.HexStringToColor("#271f15"),
       despawnTimeInMilliseconds,
       millisecondsSinceKilled
     );
 
-    this._fly.setTint(hexColor.color); // TODO #646: This doesn't work correctly yet
+    this._fly.setTint(hexColor.color);
   }
 
   private displayBlood = () => {
