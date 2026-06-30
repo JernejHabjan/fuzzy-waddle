@@ -664,28 +664,49 @@ export class MovementSystem {
       return a.x - b.x;
     });
 
-    // Assign a unique formation point to this unit based on its sorted index
-    if (ownSortedIndex < formationPoints.length) {
-      const assignedPoint = formationPoints[ownSortedIndex];
-      if (!assignedPoint) return tileVec3;
-      const destinationTile: Vector2Simple = { x: assignedPoint.x, y: assignedPoint.y };
+    const terrainType =
+      this.actorTranslateComponent?.actorTranslateDefinition.movementTerrainType ?? MovementTerrainType.Ground;
+    const targetHeight = this.navigationService.getNavigableHeightAtTile(tileVec3);
+    const sameHeightFormationPoints: Vector2Simple[] = [];
+    const otherHeightFormationPoints: Vector2Simple[] = [];
+    for (const point of formationPoints) {
+      const pointHeight = this.navigationService.getNavigableHeightAtTile(point);
+      if (pointHeight === targetHeight) {
+        sameHeightFormationPoints.push(point);
+      } else {
+        otherHeightFormationPoints.push(point);
+      }
+    }
 
-      // Check if the assigned point is valid and reachable
-      const terrainType =
-        this.actorTranslateComponent?.actorTranslateDefinition.movementTerrainType ?? MovementTerrainType.Ground;
-      if (this.navigationService.isTileNavigable(destinationTile, terrainType)) {
-        const path = await this.navigationService.findPathFromGameObjectToTile(this.gameObject, destinationTile);
-        if (path !== null && path.length > 0) {
-          const destinationHeight = this.navigationService.getNavigableHeightAtTile(destinationTile);
-          const footprint = this.movementOccupancyService?.getActorFootprintAtTile(this.gameObject, destinationTile);
-          if (footprint && !this.movementOccupancyService?.reserveDestination(ownId, footprint, destinationHeight)) {
-            return tileVec3;
+    // Assign a unique formation point to this unit based on its sorted index
+    const orderedCandidateGroups = [sameHeightFormationPoints, otherHeightFormationPoints];
+    for (const candidateGroup of orderedCandidateGroups) {
+      if (candidateGroup.length === 0) continue;
+      const candidateStartIndex = ownSortedIndex % candidateGroup.length;
+      const orderedCandidates = [
+        ...candidateGroup.slice(candidateStartIndex),
+        ...candidateGroup.slice(0, candidateStartIndex)
+      ];
+
+      for (const assignedPoint of orderedCandidates) {
+        const destinationTile: Vector2Simple = { x: assignedPoint.x, y: assignedPoint.y };
+
+        // Check if the assigned point is valid and reachable
+        if (this.navigationService.isTileNavigable(destinationTile, terrainType)) {
+          const path = await this.navigationService.findPathFromGameObjectToTile(this.gameObject, destinationTile);
+          if (path !== null && path.length > 0) {
+            const destinationHeight = this.navigationService.getNavigableHeightAtTile(destinationTile);
+            const movementOccupancy = this.movementOccupancyService;
+            const footprint = movementOccupancy?.getActorFootprintAtTile(this.gameObject, destinationTile);
+            if (footprint && !movementOccupancy?.reserveDestination(ownId, footprint, destinationHeight)) {
+              continue;
+            }
+            return {
+              x: destinationTile.x,
+              y: destinationTile.y,
+              z: destinationHeight
+            } satisfies Vector3Simple;
           }
-          return {
-            x: destinationTile.x,
-            y: destinationTile.y,
-            z: destinationHeight
-          } satisfies Vector3Simple;
         }
       }
     }
