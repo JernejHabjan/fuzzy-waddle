@@ -10,17 +10,19 @@
             <div class="chat-message-header">
               <div class="chat-message-sender">
                 <img alt="avatar" class="avatar" height="20" src="{{ avatarProviderService.getAvatar(message.userId) }}" />
-                <button class="chat-message-sender-name" type="button" (click)="openProfile(message)">{{ message.fullName }}</button>
-                @if (getRoleIcon(message.senderRole ?? null); as roleIcon) {
-                  <fa-icon
-                    [icon]="roleIcon"
-                    [title]="getRoleLabel(message.senderRole ?? null) ?? ''"
-                    class="chat-message-role-icon"
-                  />
-                }
-                @if (message.reportedByCurrentUser) {
-                  <span class="chat-message-reported-label">Reported</span>
-                }
+                <div class="chat-message-sender-meta">
+                  <button class="chat-message-sender-name" type="button" (click)="openProfile(message)">{{ message.fullName }}</button>
+                  @if (getRoleIcon(message.senderRole ?? null); as roleIcon) {
+                    <fa-icon
+                      [icon]="roleIcon"
+                      [title]="getRoleLabel(message.senderRole ?? null) ?? ''"
+                      class="chat-message-role-icon"
+                    />
+                  }
+                  @if (message.reportedByCurrentUser) {
+                    <span class="chat-message-reported-label">Reported</span>
+                  }
+                </div>
               </div>
               <div class="chat-message-menu">
                 <button class="chat-message-menu-button" type="button" (click)="toggleMessageMenu(message)">
@@ -43,17 +45,19 @@
             <div class="chat-message-header">
               <div class="chat-message-sender">
                 <img alt="avatar" class="avatar" height="20" src="{{ avatarProviderService.getAvatar(message.userId) }}" />
-                <button class="chat-message-sender-name" type="button" (click)="openProfile(message)">{{ message.fullName }}</button>
-                @if (getRoleIcon(message.senderRole ?? null); as roleIcon) {
-                  <fa-icon
-                    [icon]="roleIcon"
-                    [title]="getRoleLabel(message.senderRole ?? null) ?? ''"
-                    class="chat-message-role-icon"
-                  />
-                }
-                @if (message.reportedByCurrentUser) {
-                  <span class="chat-message-reported-label">Reported</span>
-                }
+                <div class="chat-message-sender-meta">
+                  <button class="chat-message-sender-name" type="button" (click)="openProfile(message)">{{ message.fullName }}</button>
+                  @if (getRoleIcon(message.senderRole ?? null); as roleIcon) {
+                    <fa-icon
+                      [icon]="roleIcon"
+                      [title]="getRoleLabel(message.senderRole ?? null) ?? ''"
+                      class="chat-message-role-icon"
+                    />
+                  }
+                  @if (message.reportedByCurrentUser) {
+                    <span class="chat-message-reported-label">Reported</span>
+                  }
+                </div>
               </div>
             </div>
           }
