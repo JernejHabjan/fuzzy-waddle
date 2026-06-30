@@ -738,6 +738,9 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   }
 
   async leaveScoreScreen(navigateHome: boolean = true): Promise<void> {
+    // Leaving results means this player is done consuming the finished match.
+    // The server's existing player.left handling tears the instance down only
+    // after the last human has left, so avoid sending global Stopped here.
     await this.disconnectSelfFromCurrentGame();
     await this.cleanupLocalGameState();
 

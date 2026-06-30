@@ -183,6 +183,8 @@ export class PlayerStateValidatorService {
   }
 
   private validateLeftOrKilledChange(event: ProbableWafflePlayerDataChangeEvent): boolean {
+    // Quit/elimination is intentionally simple here: ownership is enforced by
+    // OWNER_ONLY_PROPERTIES and the payload itself is just a boolean flag.
     const leftOrKilled = event.data.playerControllerData?.leftOrKilled;
     if (typeof leftOrKilled !== "boolean") {
       this.logger.warn(`[PlayerState] Invalid leftOrKilled payload in ${event.gameInstanceId}`);

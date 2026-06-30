@@ -94,6 +94,8 @@ export class ScoreScreenComponent implements OnInit, OnDestroy {
 
   @HostListener("window:beforeunload")
   async onBeforeUnload() {
+    // Best-effort score-screen exit. This should remove only the current player
+    // from the finished match, not force-stop the session for other viewers.
     await this.gameInstanceClientService.leaveScoreScreen(false);
   }
 

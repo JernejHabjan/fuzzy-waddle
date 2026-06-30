@@ -144,6 +144,9 @@ export class GameModeConditionChecker {
           return;
         }
 
+        // Remote quits do not always line up with this checker's periodic tick.
+        // Re-evaluate immediately so the surviving player can resolve victory
+        // without waiting for another scheduled pass.
         if (this.checkWinConditions()) {
           this.winGame();
         }
@@ -370,6 +373,8 @@ export class GameModeConditionChecker {
       scoreTracker.stop();
     }
 
+    // Quit is a per-player exit. Route only this client to the score screen and
+    // let the remaining players finish through the normal shared win/loss flow.
     this.navigateToScoreScreenLocally();
     this.stop();
   }
@@ -477,6 +482,8 @@ export class GameModeConditionChecker {
   private broadcastScoreScreenTransition() {
     const baseGameData = getBaseGameDataFromScene<ProbableWaffleGameData>(this.scene);
     const communicator = baseGameData.communicator;
+    // Win/loss/tie are match-wide outcomes, so this session-state transition
+    // must be broadcast to every client that is still attached to the match.
     communicator.gameInstanceMetadataChanged?.send({
       property: "sessionState",
       gameInstanceId: baseGameData.gameInstance.gameInstanceMetadata.data.gameInstanceId!,
@@ -488,6 +495,8 @@ export class GameModeConditionChecker {
   private navigateToScoreScreenLocally() {
     const baseGameData = getBaseGameDataFromScene<ProbableWaffleGameData>(this.scene);
     const communicator = baseGameData.communicator;
+    // Local-only quit redirect: peers should keep simulating until their own
+    // global end condition resolves and broadcasts the match-wide transition.
     communicator.gameInstanceMetadataChanged?.sendLocally({
       property: "sessionState",
       gameInstanceId: baseGameData.gameInstance.gameInstanceMetadata.data.gameInstanceId!,
