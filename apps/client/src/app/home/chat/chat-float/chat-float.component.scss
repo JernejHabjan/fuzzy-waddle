@@ -5,8 +5,9 @@
   bottom: 0;
   right: 0;
   z-index: 999;
-  width: 300px;
-  height: 400px;
+  width: 320px;
+  height: 460px;
+  max-height: 100%;
   overflow: hidden;
 
   .chat {
@@ -21,25 +22,33 @@
       flex-direction: row;
       justify-content: space-between;
       align-items: center;
-      padding: 10px;
+      flex-shrink: 0;
+      padding: 4px 6px;
       color: $app-text-on-dark;
       background-color: $primary;
 
       .chat-title {
         font-family: $app-font-bold;
-        margin-right: 10px;
+        margin-right: 6px;
+        font-size: 0.8rem;
+        line-height: 1;
       }
 
       .chat-minimize {
         display: flex;
         flex-direction: row;
         align-items: center;
-        padding: 10px;
+        justify-content: center;
+        width: 22px;
+        height: 22px;
+        padding: 0;
         border: 1px solid $app-border-ui;
-        border-radius: 10px;
+        border-radius: 6px;
         background-color: $app-surface-plain;
         cursor: pointer;
         color: $dark;
+        font-size: 0.75rem;
+        line-height: 1;
         transition:
           background-color 0.1s ease-in-out,
           color 0.1s ease-in-out;
@@ -56,4 +65,20 @@
 .chat-container-minimized {
   height: unset;
   width: unset;
+
+  .chat {
+    .chat-header {
+      padding: 8px 10px;
+
+      .chat-title {
+        font-size: 1rem;
+      }
+
+      .chat-minimize {
+        width: 30px;
+        height: 30px;
+        font-size: 1rem;
+      }
+    }
+  }
 }
