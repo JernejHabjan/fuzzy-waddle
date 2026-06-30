@@ -19,6 +19,7 @@ import { setActorData } from "../../../../data/actor-data";
 import { getActorComponent } from "../../../../data/actor-component";
 import { NavigableComponent } from "../../../../entity/components/movement/navigable-component";
 import type { NavigablePath } from "../../../../entity/components/movement/navigable-path";
+import type { HeightDirectionPortDefinition } from "../../../../entity/components/movement/navigable-definition";
 import { getSceneService } from "../../../../world/services/scene-component-helpers";
 import { SceneLightingService } from "../../../../world/services/lighting/scene-lighting.service";
 /* END-USER-IMPORTS */
@@ -95,7 +96,7 @@ export default class Stairs extends Phaser.GameObjects.Container {
     const navigableComponent = getActorComponent(this, NavigableComponent);
     if (navigableComponent) {
       const navigablePath = this.getNavigablePath(stairsType);
-      navigableComponent.allowNavigablePath(navigablePath);
+      navigableComponent.allowNavigablePath(navigablePath, this.getNavigablePorts(stairsType));
     }
   }
 
@@ -103,27 +104,68 @@ export default class Stairs extends Phaser.GameObjects.Container {
     switch (stairsType) {
       case StairsType.TopLeft:
         return {
+          topLeft: true,
           right: true,
           bottomRight: true,
           bottom: true
         };
       case StairsType.TopRight:
         return {
+          topRight: true,
           left: true,
           bottomLeft: true,
           bottom: true
         };
       case StairsType.BottomLeft:
         return {
+          bottomLeft: true,
           top: true,
           topRight: true,
           right: true
         };
       case StairsType.BottomRight:
         return {
+          bottomRight: true,
           top: true,
           topLeft: true,
           left: true
+        };
+      default:
+        return {};
+    }
+  }
+
+  private getNavigablePorts(stairsType: StairsType): Partial<Record<keyof NavigablePath, HeightDirectionPortDefinition>> {
+    const low = { enterHeight: 0, exitHeight: 0 };
+    const high = { enterHeight: 64, exitHeight: 64 };
+    switch (stairsType) {
+      case StairsType.TopLeft:
+        return {
+          topLeft: high,
+          right: low,
+          bottomRight: low,
+          bottom: low
+        };
+      case StairsType.TopRight:
+        return {
+          topRight: high,
+          left: low,
+          bottomLeft: low,
+          bottom: low
+        };
+      case StairsType.BottomLeft:
+        return {
+          bottomLeft: high,
+          top: low,
+          topRight: low,
+          right: low
+        };
+      case StairsType.BottomRight:
+        return {
+          bottomRight: high,
+          top: low,
+          topLeft: low,
+          left: low
         };
       default:
         return {};

@@ -25,7 +25,6 @@ import { RandomService } from "./random.service";
 import { throttleWithTrailing } from "../../library/throttle";
 import { environment } from "../../../../../environments/environment";
 import { RepresentableComponent } from "../../entity/components/representable-component";
-import type { NavigablePath } from "../../entity/components/movement/navigable-path";
 import { NavigablePathDirection } from "../../entity/components/movement/navigable-path-direction";
 import { ActorIndexSystem } from "./ActorIndexSystem";
 import { DistanceHelper } from "../../library/distance-helper";
@@ -33,6 +32,13 @@ import { MovementTerrainType } from "../../entity/components/movement/movement-t
 import { ActorTranslateComponent } from "../../entity/components/movement/actor-translate-component";
 import { TerrainGridBuilder } from "./terrain-grid-builder";
 import { WaterNavigationHelper } from "./water-navigation.helper";
+import {
+  HEIGHT_NAVIGATION_DIRECTIONS,
+  HeightNavigationGraphBuilder,
+  type HeightNavigationCell,
+  type HeightNavigationEdge,
+  type HeightNavigationGraph
+} from "./height-navigation-graph-builder";
 
 export enum TerrainType {
   Grass = "grass",
@@ -41,15 +47,6 @@ export enum TerrainType {
   Sand = "sand",
   Snow = "snow",
   Stone = "stone"
-}
-
-// HeightMapCell stores height and walkability info for each tile
-interface HeightMapCell {
-  navigableHeight: number;
-  exitHeight: number;
-  acceptMinimumHeight: number;
-  isNavigable: boolean;
-  navigableComponent?: NavigableComponent;
 }
 
 // Path cache for expensive pathfinding operations
@@ -68,7 +65,8 @@ export class NavigationService {
   private randomService!: RandomService;
   private easyStarNavigationGrid: number[][] = [];
   private tilemapGrid: number[][] = [];
-  private heightMapGrid: HeightMapCell[][] = [];
+  private heightMapGrid: HeightNavigationCell[][] = [];
+  private heightNavigationGraph?: HeightNavigationGraph;
   private readonly DEBUG = false;
   private readonly DEBUG_DEMO = false;
   private readonly DEBUG_CLICK_INFO = false;
@@ -171,66 +169,12 @@ export class NavigationService {
     this.setupNavigation();
   }
 
-  // Populate heightMapGrid with info from tilemap and Navigable objects
+  // Populate heightMapGrid with directed, exact-height navigation graph info.
   private extractHeightMapGrid() {
-    // Initialize grid with default values
-    this.heightMapGrid = this.tilemapGrid.map((row) =>
-      row.map((tile) => ({
-        navigableHeight: 0,
-        exitHeight: 0,
-        acceptMinimumHeight: 0,
-        isNavigable: tile === 0
-      }))
+    this.heightNavigationGraph = new HeightNavigationGraphBuilder(this.scene, this.tilemap).build(
+      this.easyStarNavigationGrid
     );
-
-    const navigableTilesToProcess: { x: number; y: number; navigableComponent: NavigableComponent }[] = [];
-
-    // First pass: Overlay Navigable objects without checking accessibility yet
-    this.scene.children.each((child) => {
-      const navigableComponent = getActorComponent(child, NavigableComponent);
-      if (!navigableComponent) return;
-      const tiles = getTileCoordsUnderObject(this.tilemap, child);
-      const def = navigableComponent.navigableDefinition;
-      tiles.forEach(({ x, y }) => {
-        if (!(this.heightMapGrid[y] && this.heightMapGrid[y][x])) return; // Skip if out of bounds
-        this.heightMapGrid[y][x] = {
-          navigableHeight: def.navigableHeight ?? 0,
-          exitHeight: def.exitHeight ?? 0,
-          acceptMinimumHeight: def.acceptMinimumHeight ?? 0,
-          isNavigable: false, // Assume not navigable until proven otherwise in the second pass
-          navigableComponent: navigableComponent
-        };
-        navigableTilesToProcess.push({ x, y, navigableComponent });
-      });
-    });
-
-    // Second pass: Determine accessibility for all navigable objects
-    navigableTilesToProcess.forEach(({ x, y }) => {
-      const cell = this.heightMapGrid[y]?.[x];
-      if (!cell) return;
-      const neighborOffsets = [
-        { dx: 0, dy: -1 },
-        { dx: 0, dy: 1 },
-        { dx: -1, dy: 0 },
-        { dx: 1, dy: 0 },
-        { dx: -1, dy: -1 },
-        { dx: 1, dy: -1 },
-        { dx: -1, dy: 1 },
-        { dx: 1, dy: 1 }
-      ];
-      for (const { dx, dy } of neighborOffsets) {
-        const nx = x + dx,
-          ny = y + dy;
-        if (ny >= 0 && ny < this.heightMapGrid.length && nx >= 0 && nx < this.heightMapGrid[ny]!.length) {
-          const neighbor = this.heightMapGrid[ny]![nx]!;
-          // Accessible if neighbor is navigable and can access from neighbor to this tile
-          if (this.canAccessFrom(neighbor, cell)) {
-            cell.isNavigable = true;
-            break;
-          }
-        }
-      }
-    });
+    this.heightMapGrid = this.heightNavigationGraph.cells;
   }
 
   private setDirectionalConditions(): void {
@@ -254,77 +198,17 @@ export class NavigationService {
           { dir: BOTTOM_RIGHT, dx: 1, dy: 1, name: NavigablePathDirection.BottomRight }
         ];
 
-        const checkDirection = (
-          dir: Direction,
-          dx: number,
-          dy: number,
-          name: NavigablePathDirection,
-          pathDef?: NavigablePath
-        ) => {
+        const checkDirection = (dir: Direction, dx: number, dy: number) => {
           const nx = x + dx;
           const ny = y + dy;
           if (ny >= 0 && ny < this.heightMapGrid.length && nx >= 0 && nx < this.heightMapGrid[ny]!.length) {
-            const neighbor = this.heightMapGrid[ny]![nx]!;
-            const neighborNavigableComponent = neighbor.navigableComponent;
-
-            // check if we can move from cell to neighbor based on height
-            const canMoveToNeighbor = this.canAccessFrom(cell, neighbor);
-            // check if we can move from neighbor to cell based on height
-            const canMoveFromNeighbor = this.canAccessFrom(neighbor, cell);
-
-            if (!canMoveToNeighbor && !canMoveFromNeighbor) return;
-
-            // Check if current cell restricts movement in this direction (exiting check)
-            // If pathDef is undefined, the cell is accessible from all sides
-            if (pathDef && !pathDef[name]) {
-              // Current cell doesn't allow exiting in this direction
-              return;
-            }
-
-            // Check if neighbor cell restricts movement from the opposite direction (entering check)
-            if (neighborNavigableComponent && !neighborNavigableComponent.accessibleFromAllSides) {
-              const neighborPathDef = neighborNavigableComponent.navigablePathDefinition;
-              if (!neighborPathDef) {
-                // This indicates a data integrity issue: accessibleFromAllSides is false but no path definition exists
-                console.warn(
-                  `NavigableComponent at (${nx}, ${ny}) has accessibleFromAllSides=false but undefined navigablePathDefinition. ` +
-                    `Checking from (${x}, ${y}) direction ${name}`
-                );
-                return;
-              }
-              const oppositeDirection: NavigablePathDirection | undefined = {
-                [NavigablePathDirection.Top]: NavigablePathDirection.Bottom,
-                [NavigablePathDirection.Bottom]: NavigablePathDirection.Top,
-                [NavigablePathDirection.Left]: NavigablePathDirection.Right,
-                [NavigablePathDirection.Right]: NavigablePathDirection.Left,
-                [NavigablePathDirection.TopLeft]: NavigablePathDirection.BottomRight,
-                [NavigablePathDirection.TopRight]: NavigablePathDirection.BottomLeft,
-                [NavigablePathDirection.BottomLeft]: NavigablePathDirection.TopRight,
-                [NavigablePathDirection.BottomRight]: NavigablePathDirection.TopLeft
-              }[name];
-              if (!oppositeDirection || !neighborPathDef[oppositeDirection]) {
-                // Neighbor doesn't allow entry from this direction
-                return;
-              }
-            }
-
-            allowedDirections.push(dir);
+            if (this.canTraverseBetween({ x, y }, { x: nx, y: ny })) allowedDirections.push(dir);
           }
         };
 
-        const navigableComponent = cell.navigableComponent;
-        const pathDef = navigableComponent?.navigablePathDefinition;
-        const accessibleFromAllSides = navigableComponent?.accessibleFromAllSides ?? true;
-
-        if (navigableComponent && !accessibleFromAllSides) {
-          directions.forEach(({ dir, dx, dy, name }) => {
-            checkDirection(dir, dx, dy, name, pathDef);
-          });
-        } else {
-          directions.forEach(({ dir, dx, dy, name }) => {
-            checkDirection(dir, dx, dy, name);
-          });
-        }
+        directions.forEach(({ dir, dx, dy }) => {
+          checkDirection(dir, dx, dy);
+        });
 
         this.easyStar.setDirectionalCondition(x, y, allowedDirections);
         if (this.DEBUG_CLICK_INFO && !environment.production) {
@@ -334,15 +218,59 @@ export class NavigationService {
     }
   }
 
-  // canAccessFrom: allow access if exitHeight of 'from' >= acceptMinimumHeight of 'to'
-  // Or if stairs (navigableHeight < exitHeight) allow access from ground to stairs/wall
-  private canAccessFrom(from: HeightMapCell, to: HeightMapCell): boolean {
-    // Allow access if exitHeight of 'from' >= acceptMinimumHeight of 'to'
-    if (from.exitHeight >= to.acceptMinimumHeight) return true;
-    // Stairs logic: allow access from ground to stairs/wall
-    // noinspection RedundantIfStatementJS
-    if (from.navigableHeight < from.exitHeight && to.navigableHeight >= from.exitHeight) return true;
-    return false;
+  getNavigationCell(tile: Vector2Simple): HeightNavigationCell | undefined {
+    return this.heightMapGrid[tile.y]?.[tile.x];
+  }
+
+  getAllowedDirectionsAtTile(tile: Vector2Simple): NavigablePathDirection[] {
+    const edges = this.heightNavigationGraph?.edgesByTileKey.get(`${tile.x},${tile.y}`) ?? [];
+    return edges.map((edge) => edge.direction);
+  }
+
+  canTraverseBetween(from: Vector2Simple, to: Vector2Simple): boolean {
+    const edges = this.heightNavigationGraph?.edgesByTileKey.get(`${from.x},${from.y}`) ?? [];
+    return edges.some((edge) => edge.to.x === to.x && edge.to.y === to.y);
+  }
+
+  getConnectedNavigableTiles(
+    startTile: Vector2Simple,
+    options: { sameHeightOnly?: boolean; maxTiles?: number } = {}
+  ): Vector2Simple[] {
+    const startCell = this.getNavigationCell(startTile);
+    if (!startCell?.isNavigable || !this.heightNavigationGraph) return [];
+
+    const sameHeightOnly = options.sameHeightOnly ?? false;
+    const maxTiles = options.maxTiles ?? 64;
+    const result: Vector2Simple[] = [];
+    const visited = new Set<string>();
+    const queue: Vector2Simple[] = [{ x: startTile.x, y: startTile.y }];
+    visited.add(`${startTile.x},${startTile.y}`);
+
+    while (queue.length > 0 && result.length < maxTiles) {
+      const current = queue.shift()!;
+      const currentCell = this.getNavigationCell(current);
+      if (!currentCell?.isNavigable) continue;
+      if (!sameHeightOnly || currentCell.navigableHeight === startCell.navigableHeight) {
+        result.push(current);
+      }
+
+      const edges = this.getSortedEdges(current);
+      for (const edge of edges) {
+        const key = `${edge.to.x},${edge.to.y}`;
+        if (visited.has(key)) continue;
+        const nextCell = this.getNavigationCell(edge.to);
+        if (!nextCell?.isNavigable) continue;
+        if (sameHeightOnly && nextCell.navigableHeight !== startCell.navigableHeight) continue;
+        visited.add(key);
+        queue.push({ x: edge.to.x, y: edge.to.y });
+      }
+    }
+
+    return result;
+  }
+
+  getHeightGraphDebugSnapshot(): HeightNavigationGraph | undefined {
+    return this.heightNavigationGraph;
   }
 
   private async findPath(fromTileXY: Vector2Simple, toTileXY: Vector2Simple): Promise<Vector2Simple[] | null> {
@@ -376,6 +304,49 @@ export class NavigationService {
       });
       this.easyStar.calculate();
     });
+  }
+
+  private async findPathWithGrid(
+    fromTileXY: Vector2Simple,
+    toTileXY: Vector2Simple,
+    navigationGrid: number[][],
+    useHeightGraphDirections: boolean
+  ): Promise<Vector2Simple[] | null> {
+    const easyStar = new EasyStar();
+    easyStar.setGrid(navigationGrid);
+    easyStar.setAcceptableTiles([0]);
+    easyStar.enableDiagonals();
+    if (useHeightGraphDirections) {
+      this.setDirectionalConditionsForEasyStar(easyStar, navigationGrid);
+    }
+    return new Promise((resolve) => {
+      easyStar.findPath(fromTileXY.x, fromTileXY.y, toTileXY.x, toTileXY.y, (path) => {
+        resolve(!path ? null : path.length === 0 ? [] : path);
+      });
+      easyStar.calculate();
+    });
+  }
+
+  async findPathFromGameObjectToTileAvoidingDynamicBlockers(
+    gameObject: Phaser.GameObjects.GameObject,
+    toTile: Vector2Simple,
+    dynamicBlockedTiles: Vector2Simple[]
+  ): Promise<Vector2Simple[] | null> {
+    const fromTile = getCenterTileCoordUnderObject(this.tilemap, gameObject);
+    if (!fromTile) return [];
+    const terrainType = this.getUnitTerrainType(gameObject);
+    if (terrainType === MovementTerrainType.Water) return this.findPathForTerrain(fromTile, toTile, terrainType);
+
+    const blockedKeys = new Set(
+      dynamicBlockedTiles
+        .filter((tile) => !(tile.x === fromTile.x && tile.y === fromTile.y))
+        .filter((tile) => !(tile.x === toTile.x && tile.y === toTile.y))
+        .map((tile) => `${tile.x},${tile.y}`)
+    );
+    const grid = this.easyStarNavigationGrid.map((row, y) =>
+      row.map((tile, x) => (blockedKeys.has(`${x},${y}`) ? 1 : tile))
+    );
+    return this.findPathWithGrid(fromTile, toTile, grid, true);
   }
 
   private cleanPathCache(now: number = performance.now()): void {
@@ -475,6 +446,53 @@ export class NavigationService {
     this.easyStar.setAcceptableTiles([0]);
     this.easyStar.enableDiagonals();
     this.setDirectionalConditions();
+  }
+
+  private setDirectionalConditionsForEasyStar(easyStar: EasyStar, navigationGrid: number[][]): void {
+    for (let y = 0; y < navigationGrid.length; y++) {
+      for (let x = 0; x < navigationGrid[y]!.length; x++) {
+        if (navigationGrid[y]![x] !== 0) continue;
+        const allowedDirections = this.getSortedEdges({ x, y })
+          .filter((edge) => navigationGrid[edge.to.y]?.[edge.to.x] === 0)
+          .map((edge) => this.toEasyStarDirection(edge.direction));
+        easyStar.setDirectionalCondition(x, y, allowedDirections);
+      }
+    }
+  }
+
+  private getSortedEdges(tile: Vector2Simple): HeightNavigationEdge[] {
+    const edges = this.heightNavigationGraph?.edgesByTileKey.get(`${tile.x},${tile.y}`) ?? [];
+    return [...edges].sort((a, b) => {
+      const directionDelta = this.getDirectionSortIndex(a.direction) - this.getDirectionSortIndex(b.direction);
+      if (directionDelta !== 0) return directionDelta;
+      if (a.to.y !== b.to.y) return a.to.y - b.to.y;
+      return a.to.x - b.to.x;
+    });
+  }
+
+  private getDirectionSortIndex(direction: NavigablePathDirection): number {
+    return HEIGHT_NAVIGATION_DIRECTIONS.findIndex((entry) => entry.direction === direction);
+  }
+
+  private toEasyStarDirection(direction: NavigablePathDirection): Direction {
+    switch (direction) {
+      case NavigablePathDirection.Top:
+        return TOP;
+      case NavigablePathDirection.Bottom:
+        return BOTTOM;
+      case NavigablePathDirection.Left:
+        return LEFT;
+      case NavigablePathDirection.Right:
+        return RIGHT;
+      case NavigablePathDirection.TopLeft:
+        return TOP_LEFT;
+      case NavigablePathDirection.TopRight:
+        return TOP_RIGHT;
+      case NavigablePathDirection.BottomLeft:
+        return BOTTOM_LEFT;
+      case NavigablePathDirection.BottomRight:
+        return BOTTOM_RIGHT;
+    }
   }
 
   private throttleUpdateNavigation = throttleWithTrailing(this.updateNavigation.bind(this), 100);

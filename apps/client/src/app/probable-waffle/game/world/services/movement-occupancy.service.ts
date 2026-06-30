@@ -16,6 +16,13 @@ interface Reservation {
   keys: string[];
 }
 
+export interface MovementOccupancyDebugEntry {
+  actorId: ActorId;
+  tiles: Vector2Simple[];
+  heightLayer: number;
+  source: "current" | "step" | "destination";
+}
+
 export interface MovementReservationResult {
   reserved: boolean;
   blockers: ActorId[];
@@ -79,6 +86,33 @@ export class MovementOccupancyService {
     return Array.from(blockers).sort();
   }
 
+  getDynamicBlockedTilesForActor(actorId: ActorId, heightLayer: number): Vector2Simple[] {
+    const blockedKeys = new Set<string>();
+    for (const entry of this.getDebugSnapshot()) {
+      if (entry.actorId === actorId) continue;
+      if (entry.heightLayer !== Math.round(heightLayer)) continue;
+      entry.tiles.forEach((tile) => blockedKeys.add(`${tile.x},${tile.y}`));
+    }
+    return Array.from(blockedKeys)
+      .map((key) => {
+        const [x, y] = key.split(",").map(Number);
+        return { x: x!, y: y! };
+      })
+      .sort((a, b) => (a.y !== b.y ? a.y - b.y : a.x - b.x));
+  }
+
+  getDebugSnapshot(): MovementOccupancyDebugEntry[] {
+    const entries: MovementOccupancyDebugEntry[] = [];
+    entries.push(...this.getCurrentOccupancyDebugEntries());
+    entries.push(...this.getReservationDebugEntries(this.stepReservations, "step"));
+    entries.push(...this.getReservationDebugEntries(this.destinationReservations, "destination"));
+    return entries.sort((a, b) => {
+      if (a.heightLayer !== b.heightLayer) return a.heightLayer - b.heightLayer;
+      if (a.actorId !== b.actorId) return a.actorId.localeCompare(b.actorId);
+      return a.source.localeCompare(b.source);
+    });
+  }
+
   hasActiveStepReservation(actorId: ActorId): boolean {
     return this.stepReservations.has(actorId);
   }
@@ -139,6 +173,49 @@ export class MovementOccupancyService {
         blockers.add(id);
       }
     }
+  }
+
+  private getCurrentOccupancyDebugEntries(): MovementOccupancyDebugEntry[] {
+    const tilemap = getSceneComponent(this.scene, TilemapComponent)?.tilemap;
+    const actorIndex = getSceneService(this.scene, ActorIndexSystem);
+    if (!tilemap || !actorIndex) return [];
+
+    const entries: MovementOccupancyDebugEntry[] = [];
+    for (const actor of actorIndex.getAllIdActors()) {
+      if (!isGameObjectActiveInActiveScene(actor)) continue;
+      if (getActorComponent(actor, FlyingComponent)) continue;
+      if (!getActorComponent(actor, ActorTranslateComponent)) continue;
+      if (!getActorComponent(actor, RepresentableComponent)) continue;
+      if (getActorComponent(actor, HealthComponent)?.killed) continue;
+
+      const actorId = getActorComponent(actor, IdComponent)?.id;
+      if (!actorId) continue;
+      entries.push({
+        actorId,
+        tiles: getTileCoordsUnderObject(tilemap, actor).sort((a, b) => (a.y !== b.y ? a.y - b.y : a.x - b.x)),
+        heightLayer: this.getActorHeightLayer(actor),
+        source: "current"
+      });
+    }
+    return entries;
+  }
+
+  private getReservationDebugEntries(
+    reservations: Map<ActorId, Reservation>,
+    source: "step" | "destination"
+  ): MovementOccupancyDebugEntry[] {
+    return Array.from(reservations.values()).map((reservation) => {
+      const parsed = reservation.keys.map((key) => {
+        const [x, y, z] = key.split(",").map(Number);
+        return { tile: { x: x!, y: y! }, heightLayer: z! };
+      });
+      return {
+        actorId: reservation.actorId,
+        tiles: parsed.map((entry) => entry.tile).sort((a, b) => (a.y !== b.y ? a.y - b.y : a.x - b.x)),
+        heightLayer: parsed[0]?.heightLayer ?? 0,
+        source
+      };
+    });
   }
 
   private getActorHeightLayer(actor: Phaser.GameObjects.GameObject): number {

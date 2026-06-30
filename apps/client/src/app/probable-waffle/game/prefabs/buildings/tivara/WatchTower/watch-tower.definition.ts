@@ -41,7 +41,7 @@ export const watchTowerDefinition = {
       navigableHeight: 128,
       exitHeight: 128,
       // can be accessed from the stairs or a wall
-      acceptMinimumHeight: 64
+      enterHeight: 64
     },
     health: {
       physicalState: ActorPhysicalType.Structural,

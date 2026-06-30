@@ -34,6 +34,7 @@ import { getPlayers } from "../../../data/scene-data";
 import { ConnectionRecoveryService } from "../../services/recovery/connection-recovery.service";
 import { getSceneService } from "../../services/scene-component-helpers";
 import { SceneLightingService } from "../../services/lighting/scene-lighting.service";
+import { NavigationDebugService } from "../../services/navigation-debug.service";
 /* END-USER-IMPORTS */
 
 export default class HudProbableWaffle extends ProbableWaffleScene {
@@ -156,6 +157,8 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   private connectionRecovery?: ConnectionRecoveryService;
   private dayNightClockAccumulatorMs = 0;
   private lastDayNightClockText = "";
+  private navigationDebugButton?: Phaser.GameObjects.Container;
+  private navigationDebugButtonText?: Phaser.GameObjects.Text;
 
   probableWaffleScene?: ProbableWaffleScene;
   override preload() {
@@ -164,6 +167,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
 
   override create() {
     this.editorCreate();
+    this.createNavigationDebugButton();
 
     this.confirmationDialog = new ConfirmationDialog(this, 640, 360);
     this.add.existing(this.confirmationDialog);
@@ -278,6 +282,13 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.aiControllerDebugPanel.scale = sceneWidth > this.actorInfoSmallScreenBreakpoint ? 1 : 0.7;
     this.aiControllerDebugPanel.visible = !environment.production;
 
+    if (this.navigationDebugButton) {
+      this.navigationDebugButton.x = this.aiControllerDebugPanel.x - 238;
+      this.navigationDebugButton.y = this.aiControllerDebugPanel.y + 15;
+      this.navigationDebugButton.scale = this.aiControllerDebugPanel.scale;
+      this.navigationDebugButton.visible = !environment.production;
+    }
+
     // position game speed modifier above minimap on left side
     this.gameSpeedModifier.x = 10;
     this.gameSpeedModifier.y = this.scale.height - minimapHeight + 10;
@@ -343,6 +354,39 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
 
   private get gameType() {
     return this.probableWaffleScene?.baseGameData.gameInstance.gameInstanceMetadata.data.type;
+  }
+
+  private createNavigationDebugButton(): void {
+    if (environment.production) return;
+
+    const button = this.add.container(0, 0);
+    button.setInteractive(new Phaser.Geom.Rectangle(-90, -13, 190, 26), Phaser.Geom.Rectangle.Contains);
+    const bg = this.add.nineslice(0, 0, "gui", "cryos_mini_gui/buttons/button_small.png", 95, 20, 3, 3, 3, 3);
+    bg.scaleX = 2.1;
+    bg.scaleY = 1.55;
+    const text = this.add.text(0, -1, "Show navigation debugging", {
+      color: "#000000ff",
+      fontFamily: "disposabledroid",
+      fontSize: "20px",
+      resolution: 10
+    });
+    text.setOrigin(0.5, 0.5);
+    button.add([bg, text]);
+    button.on("pointerup", () => this.toggleNavigationDebugging());
+    this.navigationDebugButton = button;
+    this.navigationDebugButtonText = text;
+  }
+
+  private toggleNavigationDebugging(): void {
+    if (!this.probableWaffleScene) return;
+    const debugService = getSceneService(this.probableWaffleScene, NavigationDebugService);
+    if (!debugService) return;
+    debugService.setEnabled(!debugService.isEnabled());
+    if (this.navigationDebugButtonText) {
+      this.navigationDebugButtonText.text = debugService.isEnabled()
+        ? "Hide navigation debugging"
+        : "Show navigation debugging";
+    }
   }
 
   private subscribeToGameEvent(eventName: string, displayText: string) {
