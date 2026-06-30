@@ -85,9 +85,11 @@ export class SceneGameState {
         break;
       }
       case GameSessionState.InProgress:
+        this.pauseAfterDelay?.remove();
         this.scene.scene.resume();
         break;
       case GameSessionState.ToScoreScreen:
+        this.pauseAfterDelay?.remove();
         this.scene.scene.stop();
         break;
       case GameSessionState.Stopped:
