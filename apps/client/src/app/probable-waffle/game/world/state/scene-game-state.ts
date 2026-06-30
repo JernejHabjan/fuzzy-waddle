@@ -8,8 +8,8 @@ export class SceneGameState {
   private sessionStateSubscription?: { unsubscribe(): void };
   private pauseAfterDelay?: TimerEvent;
   constructor(private readonly scene: ProbableWaffleScene) {
-    scene.onShutdown.subscribe(() => this.destroy()); // todo unsubscribe
-    scene.onPostCreate.subscribe(() => this.listen()); // todo unsubscribe
+    scene.onShutdown.subscribe(() => this.destroy());
+    scene.onPostCreate.subscribe(() => this.listen());
   }
 
   private listen() {
