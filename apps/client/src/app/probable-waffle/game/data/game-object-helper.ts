@@ -205,7 +205,8 @@ export function onObjectReady(
     } else {
       // Fixes nondeterministic object-ready callback ordering by scheduling on Phaser time instead of wall-clock timers.
       gameObject.scene.time.delayedCall(delay, () => {
-        if (!isGameObjectActiveInActiveScene(gameObject)) return;
+        // do not use isGameObjectActiveInActiveScene here
+        if (!gameObject.active) return;
         callback.call(scope);
       });
     }
@@ -216,7 +217,8 @@ export function onObjectReady(
       first()
     )
     .subscribe(() => {
-      if (isGameObjectActiveInActiveScene(gameObject) && gameObject.scene.sys.displayList.exists(gameObject)) {
+      // do not use isGameObjectActiveInActiveScene here
+      if (gameObject.active && gameObject.scene.sys.displayList.exists(gameObject)) {
         executeCallback();
       } else {
         gameObject.once(Phaser.GameObjects.Events.ADDED_TO_SCENE, () => executeCallback());
