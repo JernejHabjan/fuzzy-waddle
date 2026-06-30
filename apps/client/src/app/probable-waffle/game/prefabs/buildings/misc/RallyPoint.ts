@@ -12,12 +12,20 @@ import { GameObjects } from "phaser";
 import { getActorComponent } from "../../../data/actor-component";
 import { SelectableComponent } from "../../../entity/components/selectable-component";
 import { Subscription } from "rxjs";
-import { getGameObjectRenderedTransform } from "../../../data/game-object-helper";
+import {
+  getGameObjectCurrentTile,
+  getGameObjectLogicalTransform,
+  getGameObjectRenderedTransform
+} from "../../../data/game-object-helper";
 import { SharedActorActionsRallyPointSound } from "../../../sfx/shared-actor-actions-sfx";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { AudioService } from "../../../world/services/audio.service";
 import { IdComponent } from "../../../entity/components/id-component";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
+import { ActorTranslateComponent } from "../../../entity/components/movement/actor-translate-component";
+import { HealthComponent } from "../../../entity/components/combat/components/health-component";
+import { ResourceSourceComponent } from "../../../entity/components/resource/resource-source-component";
+import { OwnerComponent } from "../../../entity/components/owner-component";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export default class RallyPoint extends Phaser.GameObjects.Image {
@@ -43,6 +51,9 @@ export default class RallyPoint extends Phaser.GameObjects.Image {
   public actor?: GameObject = undefined;
 
   private selectionChangedSubscription?: Subscription;
+  private ownerMovedSubscription?: Subscription;
+  private targetMovedSubscription?: Subscription;
+  private targetDepletedSubscription?: Subscription;
   private selectionComponent: SelectableComponent | undefined;
   private audioService?: AudioService;
 
@@ -56,13 +67,16 @@ export default class RallyPoint extends Phaser.GameObjects.Image {
     this.setDepth(this.drawDepth);
     this.lineGraphics.setDepth(this.drawDepth);
 
-    this.selectionComponent = getActorComponent(this.owner, SelectableComponent);
+    this.selectionComponent = getActorComponent(owner, SelectableComponent);
     if (this.selectionComponent) {
       this.selectionChangedSubscription = this.selectionComponent.selectionChanged.subscribe(() => {
         this.handleVisibility();
       });
     }
-    this.audioService = getSceneService(this.owner.scene, AudioService);
+    this.ownerMovedSubscription = getActorComponent(owner, ActorTranslateComponent)?.actorMovedLogicalPosition.subscribe(
+      () => this.drawLine()
+    );
+    this.audioService = getSceneService(owner.scene, AudioService);
   }
 
   private handleVisibility() {
@@ -87,6 +101,7 @@ export default class RallyPoint extends Phaser.GameObjects.Image {
 
   /* END-USER-CODE */
   setLocation(tileVec3: Vector3Simple, worldVec3: Vector3Simple) {
+    this.clearActorTargetSubscriptions();
     this.tileVec3 = tileVec3;
     this.worldVec3 = worldVec3;
     this.actor = undefined;
@@ -98,17 +113,30 @@ export default class RallyPoint extends Phaser.GameObjects.Image {
   }
 
   setActor(gameObject: Phaser.GameObjects.GameObject & Phaser.GameObjects.Components.Transform) {
+    this.clearActorTargetSubscriptions();
     this.actor = gameObject;
     this.tileVec3 = undefined;
     this.worldVec3 = undefined;
-    this.x = gameObject.x;
-    this.y = gameObject.y;
-    this.z = gameObject.z;
+    this.updatePositionFromActor();
+    this.subscribeToActorTarget(gameObject);
     this.handleVisibility();
+    this.playRallyPointSetSound();
   }
 
   isSet() {
     return this.tileVec3 || this.actor;
+  }
+
+  getTargetGameObject() {
+    return this.actor;
+  }
+
+  getTargetTileVec3() {
+    if (this.tileVec3) return this.tileVec3;
+    if (!this.actor) return undefined;
+    const tile = getGameObjectCurrentTile(this.actor);
+    if (!tile) return undefined;
+    return { x: tile.x, y: tile.y, z: 0 } satisfies Vector3Simple;
   }
 
   /**
@@ -173,19 +201,66 @@ export default class RallyPoint extends Phaser.GameObjects.Image {
       const actor = actorIndex?.getActorById(data.actorId);
       if (actor) {
         this.setActor(actor as any);
+      } else {
+        this.reset();
       }
     } else {
-      this.tileVec3 = undefined;
-      this.worldVec3 = undefined;
-      this.actor = undefined;
-      this.visible = false;
-      this.lineGraphics?.setVisible(false);
+      this.reset();
     }
   }
 
+  reset() {
+    this.clearActorTargetSubscriptions();
+    this.tileVec3 = undefined;
+    this.worldVec3 = undefined;
+    this.actor = undefined;
+    this.visible = false;
+    this.lineGraphics?.clear();
+    this.lineGraphics?.setVisible(false);
+  }
+
+  private subscribeToActorTarget(gameObject: Phaser.GameObjects.GameObject) {
+    this.targetMovedSubscription = getActorComponent(gameObject, ActorTranslateComponent)?.actorMovedLogicalPosition.subscribe(
+      () => {
+        this.updatePositionFromActor();
+        this.handleVisibility();
+      }
+    );
+    this.targetDepletedSubscription = getActorComponent(gameObject, ResourceSourceComponent)?.onDepleted.subscribe(() =>
+      this.reset()
+    );
+    gameObject.once(Phaser.GameObjects.Events.DESTROY, this.reset, this);
+    gameObject.once(HealthComponent.KilledEvent, this.reset, this);
+    gameObject.once(OwnerComponent.OwnerChangedEvent, this.reset, this);
+  }
+
+  private updatePositionFromActor() {
+    if (!this.actor) return;
+    const renderedTransform = getGameObjectRenderedTransform(this.actor);
+    const logicalTransform = getGameObjectLogicalTransform(this.actor);
+    if (!renderedTransform) return;
+    this.x = renderedTransform.x;
+    this.y = renderedTransform.y;
+    this.z = logicalTransform?.z ?? 0;
+  }
+
+  private clearActorTargetSubscriptions() {
+    if (this.actor) {
+      this.actor.off(Phaser.GameObjects.Events.DESTROY, this.reset, this);
+      this.actor.off(HealthComponent.KilledEvent, this.reset, this);
+      this.actor.off(OwnerComponent.OwnerChangedEvent, this.reset, this);
+    }
+    this.targetMovedSubscription?.unsubscribe();
+    this.targetMovedSubscription = undefined;
+    this.targetDepletedSubscription?.unsubscribe();
+    this.targetDepletedSubscription = undefined;
+  }
+
   override destroy(fromScene?: boolean) {
+    this.clearActorTargetSubscriptions();
     super.destroy(fromScene);
     this.selectionChangedSubscription?.unsubscribe();
+    this.ownerMovedSubscription?.unsubscribe();
     this.lineGraphics?.destroy();
   }
 }
