@@ -1,4 +1,4 @@
-import { getGameObjectBounds } from "../../../../../data/game-object-helper";
+import { getGameObjectBounds, isGameObjectActiveInActiveScene } from "../../../../../data/game-object-helper";
 import { DepthHelper } from "../../../../../world/services/depth.helper";
 import GameObject = Phaser.GameObjects.GameObject;
 
@@ -92,7 +92,7 @@ export class SpawnBerryComponent {
     const berry = this.berry;
 
     const destroy = () => {
-      if (!this.gameObject.active) return;
+      if (!isGameObjectActiveInActiveScene(this.gameObject)) return;
       if (counter) {
         counter.stop();
         this.counter = undefined;

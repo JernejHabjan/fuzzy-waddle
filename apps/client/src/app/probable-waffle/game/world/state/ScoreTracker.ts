@@ -10,6 +10,7 @@ import {
   GameResultStatus
 } from "@fuzzy-waddle/api-interfaces";
 import { getPlayersFromScene } from "../../../../shared/game/phaser/scene/base.scene";
+import { isGameObjectActiveInActiveScene, isSceneActive } from "../../data/game-object-helper";
 import { getCurrentPlayerNumber } from "../../data/scene-data";
 import { ScenePlayerHelpers } from "../../data/scene-player-helpers";
 import { getActorComponent, hasActorComponent } from "../../data/actor-component";
@@ -98,7 +99,7 @@ export class ScoreTracker {
    * Main update loop - tracks live metrics
    */
   private update(tick: number) {
-    if (!this.scene.scene || !this.scene.scene.isActive()) return;
+    if (!isSceneActive(this.scene)) return;
     if (this.stopped) return;
 
     this.currentPlayerNumber = getCurrentPlayerNumber(this.scene)!;
@@ -348,7 +349,7 @@ export class ScoreTracker {
   }
 
   private onActorKilled(gameObject: Phaser.GameObjects.GameObject) {
-    if (!gameObject || !gameObject.active) return;
+    if (!isGameObjectActiveInActiveScene(gameObject)) return;
     const isBuilding = this.isBuilding(gameObject);
     const victimOwner = getActorComponent(gameObject, OwnerComponent)?.getOwner();
     const hc = getActorComponent(gameObject, HealthComponent);

@@ -1,4 +1,4 @@
-import { onObjectReady } from "../../data/game-object-helper";
+import { isGameObjectActiveInActiveScene, onObjectReady } from "../../data/game-object-helper";
 import { Subscription } from "rxjs";
 import { getActorComponent } from "../../data/actor-component";
 import { HealthComponent } from "../components/combat/components/health-component";
@@ -58,7 +58,7 @@ export class ActionSystem {
     const myId = getActorComponent(this.gameObject, IdComponent)?.id;
 
     this.commandBusSubscription = commandBus.command$.subscribe((cmd) => {
-      if (!this.gameObject.active) return;
+      if (!isGameObjectActiveInActiveScene(this.gameObject)) return;
 
       // Resolve actor ID lazily in case it was not available at construction time
       const actorId = myId ?? getActorComponent(this.gameObject, IdComponent)?.id;

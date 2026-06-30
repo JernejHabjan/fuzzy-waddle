@@ -1,5 +1,6 @@
 import { getSceneService } from "./scene-component-helpers";
 import { SimulationTickService } from "./simulation-tick.service";
+import { isSceneActive } from "../../data/game-object-helper";
 
 export function getSimulationNow(scene: Phaser.Scene | undefined | null): number {
   const tickService = tryGetSimulationTickService(scene);
@@ -106,6 +107,6 @@ export function waitForSimulationDuration(scene: Phaser.Scene | undefined | null
 
 function tryGetSimulationTickService(scene: Phaser.Scene | undefined | null): SimulationTickService | undefined {
   if (!scene) return undefined;
-  if (!scene.scene || !scene.scene.isActive()) return undefined;
+  if (!isSceneActive(scene)) return undefined;
   return getSceneService(scene, SimulationTickService);
 }

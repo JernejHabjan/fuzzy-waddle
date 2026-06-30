@@ -10,7 +10,6 @@ import GameActionsLayer from "../scenes/hud-scenes/GameActionsLayer";
 import EndGameDialog from "../scenes/hud-scenes/EndGameDialog";
 import ReconnectRecoveryDialog from "../scenes/hud-scenes/ReconnectRecoveryDialog";
 import MapSandbox from "../scenes/game-maps/MapSandbox";
-import SceneBootOverlayScene from "../scenes/preload-scenes/SceneBootOverlayScene";
 
 export const probableWaffleGameConfig: Types.Core.GameConfig = {
   ...baseGameConfig,
@@ -22,7 +21,6 @@ export const probableWaffleGameConfig: Types.Core.GameConfig = {
     MapRiverCrossing,
     MapEmberEnclave,
     HudProbableWaffle,
-    SceneBootOverlayScene,
     GameActionsLayer,
     EndGameDialog,
     ReconnectRecoveryDialog

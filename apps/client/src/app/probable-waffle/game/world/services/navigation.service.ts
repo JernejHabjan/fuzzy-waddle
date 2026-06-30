@@ -20,7 +20,7 @@ import { drawDebugPath } from "../../debug/debug-path";
 import { drawDebugPoint } from "../../debug/debug-point";
 import { getSceneComponent, getSceneService } from "./scene-component-helpers";
 import { TilemapComponent } from "../tilemap/tilemap.component";
-import { getSelectableGameObject, onSceneInitialized } from "../../data/game-object-helper";
+import { getSelectableGameObject, isGameObjectActiveInActiveScene, onSceneInitialized } from "../../data/game-object-helper";
 import { RandomService } from "./random.service";
 import { throttleWithTrailing } from "../../library/throttle";
 import { environment } from "../../../../../environments/environment";
@@ -680,7 +680,9 @@ export class NavigationService {
     targetGameObject: Phaser.GameObjects.GameObject,
     radiusTiles?: number
   ): Promise<Vector2Simple[] | null> {
-    if (!gameObject.active || !targetGameObject.active) return null;
+    if (!isGameObjectActiveInActiveScene(gameObject) || !isGameObjectActiveInActiveScene(targetGameObject)) {
+      return null;
+    }
 
     const fromTile = getCenterTileCoordUnderObject(this.tilemap, gameObject);
     if (!fromTile) return null;

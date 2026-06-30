@@ -4,6 +4,7 @@ import { HealthComponent } from "../../../entity/components/combat/components/he
 import { DistanceHelper } from "../../../library/distance-helper";
 import { OwnerComponent } from "../../../entity/components/owner-component";
 import { AttackComponent } from "../../../entity/components/combat/components/attack-component";
+import { isGameObjectActiveInActiveScene, isSceneActive } from "../../../data/game-object-helper";
 import GameObject = Phaser.GameObjects.GameObject;
 
 /**
@@ -65,7 +66,7 @@ export class TargetingManager {
     let best: { score: number; obj: GameObject } | undefined;
     for (let i = 0; i < enemies.length; i++) {
       const e = enemies[i]!;
-      if (!e.active) continue;
+      if (!isGameObjectActiveInActiveScene(e)) continue;
       let score = 0;
       const hc = getActorComponent(e, HealthComponent);
       if (hc) {
@@ -75,13 +76,13 @@ export class TargetingManager {
 
       if (center) {
         const distance = distances[i];
-        if (typeof distance !== 'number') {
+        if (typeof distance !== "number") {
           continue; // ignore this target if distance cannot be calculated
         }
         score += 30 / distance; // nearer to our base center slightly higher priority
       }
 
-      if (!this.scene.scene.isActive()) {
+      if (!isSceneActive(this.scene)) {
         // after long async action, scene might be destroyed
         return null;
       }

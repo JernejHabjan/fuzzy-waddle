@@ -2,9 +2,11 @@ import { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { GameSessionState, ProbableWaffleGameInstanceType } from "@fuzzy-waddle/api-interfaces";
 import { getCommunicator } from "../../data/scene-data";
 import { ReadyBarrier } from "../services/multiplayer/ready-barrier.service";
+import TimerEvent = Phaser.Time.TimerEvent;
 
 export class SceneGameState {
   private sessionStateSubscription?: { unsubscribe(): void };
+  private pauseAfterDelay?: TimerEvent;
   constructor(private readonly scene: ProbableWaffleScene) {
     scene.onShutdown.subscribe(() => this.destroy());
     scene.onPostCreate.subscribe(() => this.listen());
@@ -48,7 +50,11 @@ export class SceneGameState {
       case GameSessionState.NotStarted:
         throw new Error("Game should not be in this state " + sessionState);
       case GameSessionState.MovingPlayersToGame:
-        this.scene.scene.pause();
+        // Using a scene delay here so macro tasks like setting up scene initially is done before it's paused.
+        // Using just a simple delay (non-tick related) as here game is not really running yet.
+        this.pauseAfterDelay = this.scene.time.delayedCall(1, () => {
+          this.scene.scene.pause();
+        });
         break;
       case GameSessionState.StartingTheGame: {
         // Only the host advances to InProgress — non-host clients wait for the
@@ -70,8 +76,7 @@ export class SceneGameState {
         // we advance immediately rather than making the player wait needlessly.
         const type = this.scene.baseGameData.gameInstance.gameInstanceMetadata.data.type;
         const isNetworked =
-          type === ProbableWaffleGameInstanceType.Matchmaking ||
-          type === ProbableWaffleGameInstanceType.SelfHosted;
+          type === ProbableWaffleGameInstanceType.Matchmaking || type === ProbableWaffleGameInstanceType.SelfHosted;
         if (isNetworked) {
           setTimeout(() => sendInProgress(), 3000);
         } else {
@@ -80,9 +85,11 @@ export class SceneGameState {
         break;
       }
       case GameSessionState.InProgress:
+        this.pauseAfterDelay?.remove();
         this.scene.scene.resume();
         break;
       case GameSessionState.ToScoreScreen:
+        this.pauseAfterDelay?.remove();
         this.scene.scene.stop();
         break;
       case GameSessionState.Stopped:
@@ -93,5 +100,6 @@ export class SceneGameState {
 
   private destroy() {
     this.sessionStateSubscription?.unsubscribe();
+    this.pauseAfterDelay?.remove();
   }
 }

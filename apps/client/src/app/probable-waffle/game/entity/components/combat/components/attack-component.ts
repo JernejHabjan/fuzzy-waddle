@@ -9,6 +9,7 @@ import {
   getGameObjectDepth,
   getGameObjectLogicalTransform,
   getGameObjectVisibility,
+  isGameObjectActiveInActiveScene,
   onObjectReady
 } from "../../../../data/game-object-helper";
 import { OrderType } from "../../../../ai/order-type";
@@ -209,7 +210,7 @@ export class AttackComponent {
     this.hitTimer = new CancelableSimDelay(this.gameObject.scene, attack.delays.hit, () => {
       this.hitTimer = undefined;
 
-      if (!this.gameObject.active || !enemy.active) return;
+      if (!isGameObjectActiveInActiveScene(this.gameObject) || !isGameObjectActiveInActiveScene(enemy)) return;
       const healthComponent = getActorComponent(this.gameObject, HealthComponent);
       if (!healthComponent || healthComponent.killed) return;
 
@@ -344,7 +345,7 @@ export class AttackComponent {
       // clear timer reference when it fires
       this.fireTimer = undefined;
 
-      if (!this.gameObject.active || !enemy.active) return;
+      if (!isGameObjectActiveInActiveScene(this.gameObject) || !isGameObjectActiveInActiveScene(enemy)) return;
       const healthComponent = getActorComponent(this.gameObject, HealthComponent);
       if (!healthComponent || healthComponent.killed) return;
       const enemyHealthComponent = getActorComponent(enemy, HealthComponent);
@@ -523,7 +524,7 @@ export class AttackComponent {
       to: 1,
       duration,
       onUpdate: (tween) => {
-        if (!this.gameObject.active) return;
+        if (!isGameObjectActiveInActiveScene(this.gameObject)) return;
         const t = tween.getValue() ?? 0;
         const x = startX + (targetX - startX) * t;
         const arcOffset = -peakHeight * 4 * t * (1 - t);

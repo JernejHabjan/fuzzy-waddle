@@ -16,6 +16,7 @@ import { DistanceHelper } from "../../../library/distance-helper";
 import { AI_CONFIG } from "../ai-config";
 import { getResearchedLevelForActor } from "../../../data/actor-level-utils";
 import { ContainableComponent } from "../../../entity/components/building/containable-component";
+import { isSceneActive } from "../../../data/game-object-helper";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class WorldStateSnapshotManager {
@@ -169,7 +170,7 @@ export class WorldStateSnapshotManager {
       console.warn("AI Blackboard: No base center tile defined for enemy proximity check.");
       this.blackboard.enemiesNearBase = [];
     }
-    if (!this.scene.scene.isActive()) {
+    if (!isSceneActive(this.scene)) {
       // after long async action, scene might be destroyed
       return;
     }

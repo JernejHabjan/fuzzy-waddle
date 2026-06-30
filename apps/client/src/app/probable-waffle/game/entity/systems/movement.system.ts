@@ -8,6 +8,8 @@ import {
   getGameObjectTileInNavigableRadius,
   getGameObjectTileInRadius,
   getGameObjectVisibility,
+  isGameObjectActiveInActiveScene,
+  isSceneActive,
   onObjectReady
 } from "../../data/game-object-helper";
 import { Subscription } from "rxjs";
@@ -120,7 +122,7 @@ export class MovementSystem {
     tileVec3: Vector3Simple,
     pathMoveConfig?: PathMoveConfig
   ): Promise<boolean> {
-    if (!this.gameObject.active || !this.gameObject.scene) return false;
+    if (!isGameObjectActiveInActiveScene(this.gameObject)) return false;
     const flyingComponent = getActorComponent(this.gameObject, FlyingComponent);
     const usePathfinding = !flyingComponent;
     if (!usePathfinding) {
@@ -259,7 +261,7 @@ export class MovementSystem {
     onComplete?: (() => void) | (() => Promise<void>),
     onStop?: () => void
   ): Promise<void> {
-    if (!this.gameObject.scene || !this.gameObject.scene.scene.isActive()) {
+    if (!isGameObjectActiveInActiveScene(this.gameObject)) {
       return Promise.reject("Scene is not active");
     }
     const tileWorldXY = this.navigationService?.getTileWorldCenter(tile);
@@ -343,6 +345,11 @@ export class MovementSystem {
     onStop?: () => void,
     tileDistanceMultiplier: number = 1
   ): Promise<void> {
+    const scene = this.gameObject.scene;
+    if (!isGameObjectActiveInActiveScene(this.gameObject) || !scene) {
+      return Promise.reject("Game object scene is unavailable");
+    }
+
     const actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
     const throttledTweenUpdate = config?.onUpdateThrottled
       ? throttle(config.onUpdateThrottled, config.onUpdateThrottle ?? 360)
@@ -366,12 +373,12 @@ export class MovementSystem {
         tileDistanceMultiplier
       );
       const startTransform = { ...logicalTransform };
-      const startTime = getInterpolatedSimulationNow(this.gameObject.scene);
+      const startTime = getInterpolatedSimulationNow(scene);
       let settled = false;
 
       const cleanup = () => {
-        this.gameObject.scene.events.off(Phaser.Scenes.Events.UPDATE, updateMovement);
-        this.gameObject.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, cancelMovement);
+        scene.events.off(Phaser.Scenes.Events.UPDATE, updateMovement);
+        scene.events.off(Phaser.Scenes.Events.SHUTDOWN, cancelMovement);
         if (this._cancelCurrentMovement === cancelMovement) {
           this._cancelCurrentMovement = undefined;
         }
@@ -409,7 +416,11 @@ export class MovementSystem {
       };
 
       const updateMovement = () => {
-        const elapsed = Math.max(0, getInterpolatedSimulationNow(this.gameObject.scene) - startTime);
+        if (!isGameObjectActiveInActiveScene(this.gameObject) || !isSceneActive(scene)) {
+          cancelMovement();
+          return;
+        }
+        const elapsed = Math.max(0, getInterpolatedSimulationNow(scene) - startTime);
         const progress = duration <= 0 ? 1 : Phaser.Math.Clamp(elapsed / duration, 0, 1);
         logicalTransform.x = Phaser.Math.Linear(startTransform.x, newLogicalTransform.x, progress);
         logicalTransform.y = Phaser.Math.Linear(startTransform.y, newLogicalTransform.y, progress);
@@ -426,8 +437,8 @@ export class MovementSystem {
       // That keeps visual travel smooth while also freezing exactly when lockstep
       // pauses, so the next path segment cannot be delayed behind a wall-clock tween.
       this._cancelCurrentMovement = cancelMovement;
-      this.gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, updateMovement);
-      this.gameObject.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, cancelMovement);
+      scene.events.on(Phaser.Scenes.Events.UPDATE, updateMovement);
+      scene.events.once(Phaser.Scenes.Events.SHUTDOWN, cancelMovement);
       updateMovement();
     });
   }
@@ -488,7 +499,7 @@ export class MovementSystem {
   private playMovementAnimation(isMoving: boolean, config?: PathMoveConfig) {
     if (!this.animationActorComponent) return;
     if (config?.ignoreAnimations) return;
-    if (!this.gameObject.active) return;
+    if (!isGameObjectActiveInActiveScene(this.gameObject)) return;
     const isKilled = getActorComponent(this.gameObject, HealthComponent)?.killed ?? false;
     if (isKilled) return;
     this.animationActorComponent.playOrderAnimation(isMoving ? OrderType.Move : OrderType.Stop);

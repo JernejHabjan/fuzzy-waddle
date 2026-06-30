@@ -9,7 +9,7 @@ import type { Subscription } from "rxjs";
 import { getActorComponent } from "../../../data/actor-component";
 import { HealthComponent } from "../combat/components/health-component";
 import Phaser from "phaser";
-import { onObjectReady } from "../../../data/game-object-helper";
+import { isGameObjectActiveInActiveScene, onObjectReady } from "../../../data/game-object-helper";
 import { getSimulationNow } from "../../../world/services/simulation-time";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
@@ -119,7 +119,7 @@ export class StatusEffectComponent {
   }
 
   private update(): void {
-    if (!this.gameObject.active) return;
+    if (!isGameObjectActiveInActiveScene(this.gameObject)) return;
 
     const now = getSimulationNow(this.gameObject.scene);
     const elapsed = SimulationTickService.TICK_INTERVAL_MS;

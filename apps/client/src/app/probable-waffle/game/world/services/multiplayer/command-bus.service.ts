@@ -5,6 +5,7 @@ import {
   type PlayerNumber,
   type ProbableWaffleGameCommandEvent,
   ProbableWaffleGameCommandTypes,
+  ProbableWafflePlayer,
   ProbableWafflePlayerType,
   type ProbableWaffleReplayCommandBatch
 } from "@fuzzy-waddle/api-interfaces";
@@ -19,6 +20,7 @@ import { OwnerComponent } from "../../../entity/components/owner-component";
 import { isMultiplayerDebugEnabled } from "./multiplayer-debug";
 import { createMultiplayerClientLogger } from "./multiplayer-client-logger";
 import { getNgxSocketIoRawSocket } from "../../../../communicators/ngx-socket-io-access";
+import { getPlayersFromScene } from "../../../../../shared/game/phaser/scene/base.scene";
 
 /**
  * Central command bus for all player- and AI-issued simulation commands.
@@ -52,9 +54,6 @@ export class CommandBusService {
   private readonly _commandBatch$ = new Subject<ProbableWaffleReplayCommandBatch>();
   readonly commandBatch$ = this._commandBatch$.asObservable();
 
-  /** Injected after construction once SimulationTickService is registered. */
-  tickService: SimulationTickService | null = null;
-
   private isMultiplayer = false;
   private humanPlayerNumbers: PlayerNumber[] = [];
   private localPlayerNumber: PlayerNumber | null = null;
@@ -62,7 +61,6 @@ export class CommandBusService {
   private pendingOutbound = new Map<number, GameCommand[]>();
   private readonly buffer = new CommandBuffer();
   private readonly subscriptions: Subscription[] = [];
-  private scene: ProbableWaffleScene | null = null;
   private readonly debug = isMultiplayerDebugEnabled();
   private readonly logger = createMultiplayerClientLogger("CommandBus");
   // Keep a short recent timeline of local tick lifecycle events so stale-heartbeat
@@ -81,16 +79,33 @@ export class CommandBusService {
   private lastSentTickByLocalPlayer: number | null = null;
   private lastLoggedStallTick: number | null = null;
 
+  constructor(private readonly scene: ProbableWaffleScene) {
+    // Scene shutdown must always own bus teardown, even if multiplayer init never runs
+    // or fails partway through bootstrap. Otherwise old completed subjects and
+    // subscriptions can leak across leave/re-enter cycles.
+    scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
+  }
+
+  tryInitMultiplayer(): void {
+    // Activate the multiplayer relay path when a socket is present
+    const humanPlayerCount = this.scene.baseGameData.gameInstance.players.filter(
+      (player) => player.playerController.data.playerDefinition?.playerType === ProbableWafflePlayerType.Human
+    ).length;
+    if (hasMultiplayerCommandRelay(this.scene) && humanPlayerCount > 1) {
+      this.initMultiplayer();
+    }
+  }
+
   /**
    * Activates the multiplayer relay path.
    * Must be called after tickService is set and the communicator is ready.
    * Safe to call only in sessions where multiplayer command relay is available.
    */
-  initMultiplayer(scene: ProbableWaffleScene): void {
-    this.scene = scene;
+  private initMultiplayer(): void {
+    const scene = this.scene;
     this.isMultiplayer = true;
     this.localPlayerNumber = this.resolveLocalPlayerNumber(scene);
-    this.humanPlayerNumbers = scene.baseGameData.gameInstance.players
+    this.humanPlayerNumbers = getPlayersFromScene<ProbableWafflePlayer>(scene)
       .filter((p) => p.playerController.data.playerDefinition?.playerType === ProbableWafflePlayerType.Human)
       .map((p) => p.playerNumber!);
     this.humanPlayerNumbers.sort((a, b) => a - b);
@@ -115,9 +130,6 @@ export class CommandBusService {
       this.isMultiplayer = false;
       return;
     }
-
-    scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.destroy());
-
     // Receive remote command batches (including local player's server echo) and buffer them
     this.subscriptions.push(
       commandRelay.on.subscribe((event) => {
@@ -860,5 +872,9 @@ export class CommandBusService {
       ...command,
       actorIds
     };
+  }
+
+  private get tickService(): SimulationTickService {
+    return getSceneService(this.scene, SimulationTickService)!;
   }
 }

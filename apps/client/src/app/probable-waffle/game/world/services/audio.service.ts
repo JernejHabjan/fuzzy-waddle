@@ -1,5 +1,5 @@
 import { VolumeSettings } from "../../core/volumeSettings";
-import { getGameObjectRenderedTransform, onSceneInitialized } from "../../data/game-object-helper";
+import { getGameObjectRenderedTransform, isGameObjectActiveInActiveScene, onSceneInitialized } from "../../data/game-object-helper";
 import { getSceneExternalComponent } from "./scene-component-helpers";
 import { OptionsService } from "../../../gui/options/options.service";
 import { filter, Subscription } from "rxjs";
@@ -196,7 +196,7 @@ export class AudioService {
   ): Phaser.Types.Sound.SoundConfig | undefined {
     const transform = getGameObjectRenderedTransform(gameObject);
     if (!transform) return undefined;
-    if (!gameObject.active || !gameObject.scene) return undefined;
+    if (!isGameObjectActiveInActiveScene(gameObject)) return undefined;
     const camera = gameObject.scene.cameras.main;
     const { x: camX, y: camY } = camera.midPoint;
     const cameraZoom = camera.zoom;

@@ -13,10 +13,31 @@ import { ActorTranslateComponent } from "../entity/components/movement/actor-tra
 import { MovementTerrainType } from "../entity/components/movement/movement-terrain-type";
 import { FlyingComponent } from "../entity/components/movement/flying-component";
 
+/**
+ * Returns true when the Phaser scene still has an attached ScenePlugin and is
+ * currently active. Use this for lifecycle guards before reading scene-owned
+ * systems, timers, input, or event emitters during async callbacks and teardown.
+ */
+export function isSceneActive(scene?: Phaser.Scene): scene is Phaser.Scene {
+  return !!scene?.scene?.scene && scene.scene.isActive();
+}
+
+/**
+ * Returns true when the game object is still active and its owning scene is
+ * also active. Use this for actor/component/system guards when work needs both
+ * a live game object and a live scene context.
+ */
+export function isGameObjectActiveInActiveScene(
+  gameObject?: Phaser.GameObjects.GameObject | null
+): gameObject is Phaser.GameObjects.GameObject {
+  return !!gameObject?.active && isSceneActive(gameObject.scene);
+}
+
 export function getGameObjectBounds(gameObject?: Phaser.GameObjects.GameObject): Phaser.Geom.Rectangle | null {
   if (!gameObject) return null;
-  if (!gameObject.active || !gameObject.scene) return getGameObjectBoundsRaw(gameObject);
-  const representable = getPwActorDefinition(gameObject.name, getResearchedLevelForActor(gameObject))?.components?.representable;
+  if (!isGameObjectActiveInActiveScene(gameObject)) return getGameObjectBoundsRaw(gameObject);
+  const representable = getPwActorDefinition(gameObject.name, getResearchedLevelForActor(gameObject))?.components
+    ?.representable;
   if (!representable) {
     const rawBounds = getGameObjectBoundsRaw(gameObject);
     if (!rawBounds) throw new Error(`Bounds not found for gameObject ${gameObject.name}`);
@@ -184,6 +205,7 @@ export function onObjectReady(
     } else {
       // Fixes nondeterministic object-ready callback ordering by scheduling on Phaser time instead of wall-clock timers.
       gameObject.scene.time.delayedCall(delay, () => {
+        // do not use isGameObjectActiveInActiveScene here
         if (!gameObject.active) return;
         callback.call(scope);
       });
@@ -195,6 +217,7 @@ export function onObjectReady(
       first()
     )
     .subscribe(() => {
+      // do not use isGameObjectActiveInActiveScene here
       if (gameObject.active && gameObject.scene.sys.displayList.exists(gameObject)) {
         executeCallback();
       } else {

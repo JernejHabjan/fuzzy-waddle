@@ -250,6 +250,14 @@ export class ProbableWaffleCommunicatorService
     this.playerDisconnected?.destroy();
     this.playerReconnected?.destroy();
     this.hostMigrated?.destroy();
+    this.resetLocalEventBuses();
+  }
+
+  private resetLocalEventBuses(): void {
+    this.utilityEvents.complete();
+    this.allScenes.complete();
+    this.utilityEvents = new EventEmitter<{ name: "save-game" | "load-game" | "settings" | "chat"; data?: any }>();
+    this.allScenes = new EventEmitter<AllScenesEventData>();
   }
 
   private emitRoomMembership(
