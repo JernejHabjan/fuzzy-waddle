@@ -4,7 +4,12 @@ import { VisionComponent } from "../../entity/components/vision-component";
 import { getActorComponent } from "../../data/actor-component";
 import { getCurrentPlayerNumber } from "../../data/scene-data";
 import { IdComponent } from "../../entity/components/id-component";
-import { getGameObjectBounds, getGameObjectVisibility, getGameObjectCurrentTile } from "../../data/game-object-helper";
+import {
+  getGameObjectBounds,
+  getGameObjectVisibility,
+  getGameObjectCurrentTile,
+  isGameObjectActiveInActiveScene
+} from "../../data/game-object-helper";
 import { IsoHelper } from "./iso-helper";
 import { ResourceSourceComponent } from "../../entity/components/resource/resource-source-component";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
@@ -180,7 +185,7 @@ export class FogOfWarComponent {
 
     // Remove actors that no longer exist
     for (const [id, actor] of this.playerActors) {
-      if (!currentActorIds.has(id) || !actor.active) {
+      if (!currentActorIds.has(id) || !isGameObjectActiveInActiveScene(actor)) {
         this.playerActors.delete(id);
         this.actorPositionCache.delete(id);
         this.dirtyActors.add(id); // Mark as dirty to recalculate vision
@@ -377,7 +382,7 @@ export class FogOfWarComponent {
   private updateActorsVisibility(): void {
     this.playerActors.forEach((actor, id) => {
       // Skip if actor is no longer valid
-      if (!actor.active || !actor.scene) {
+      if (!isGameObjectActiveInActiveScene(actor)) {
         this.playerActors.delete(id);
         return;
       }

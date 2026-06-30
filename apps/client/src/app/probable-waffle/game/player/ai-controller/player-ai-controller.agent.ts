@@ -21,7 +21,7 @@ import { PawnAiController } from "../../prefabs/ai-agents/pawn-ai-controller";
 import { OrderData } from "../../ai/OrderData";
 import { OrderType } from "../../ai/order-type";
 import { BuildingCursor } from "../human-controller/building-cursor";
-import { getGameObjectLogicalTransform } from "../../data/game-object-helper";
+import { getGameObjectLogicalTransform, isGameObjectActiveInActiveScene } from "../../data/game-object-helper";
 import { DistanceHelper } from "../../library/distance-helper";
 import { MapAnalyzer } from "./ai-behavior/map-analyzer";
 import { BasePlanner } from "./ai-behavior/base-planner";
@@ -409,7 +409,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
         let closestEnemy: GameObject | null = null;
         let closestDist = Infinity;
         this.blackboard.enemiesNearBase.forEach((enemy) => {
-          if (!unit.active || !enemy.active) return;
+          if (!isGameObjectActiveInActiveScene(unit) || !isGameObjectActiveInActiveScene(enemy)) return;
           const d = DistanceHelper.getTileDistanceBetweenGameObjects(unit, enemy);
           if (d === null) {
             return;

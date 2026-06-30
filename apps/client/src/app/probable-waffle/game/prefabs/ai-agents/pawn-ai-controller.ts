@@ -14,6 +14,7 @@ import { type BackboardComponentData } from "@fuzzy-waddle/api-interfaces";
 import type { PawnAiDefinition } from "./pawn-ai-definition";
 import { AiType } from "./ai-type";
 import { getActorComponent } from "../../data/actor-component";
+import { isGameObjectActiveInActiveScene } from "../../data/game-object-helper";
 import { SimulationTickService } from "../../world/services/simulation-tick.service";
 
 export class PawnAiController {
@@ -83,7 +84,7 @@ export class PawnAiController {
 
   private updateFrameNonDeterministicFallback(_: number, delta: number) {
     if (!PawnAiController.AI_ENABLED) return;
-    if (!this.gameObject.active) return;
+    if (!isGameObjectActiveInActiveScene(this.gameObject)) return;
     const healthComponent = getActorComponent(this.gameObject, HealthComponent);
     if (healthComponent && healthComponent.killed) return;
     this.elapsedTime += delta * this.gameObject.scene.time.timeScale;
@@ -95,7 +96,7 @@ export class PawnAiController {
 
   private updateOnSimulationTick() {
     if (!PawnAiController.AI_ENABLED) return;
-    if (!this.gameObject.active) return;
+    if (!isGameObjectActiveInActiveScene(this.gameObject)) return;
     const healthComponent = getActorComponent(this.gameObject, HealthComponent);
     if (healthComponent && healthComponent.killed) return;
     this.elapsedTime += SimulationTickService.TICK_INTERVAL_MS;

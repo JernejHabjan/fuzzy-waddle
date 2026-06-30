@@ -10,6 +10,7 @@ import {
   getGameObjectBounds,
   getGameObjectDepth,
   getGameObjectVisibility,
+  isGameObjectActiveInActiveScene,
   onObjectReady
 } from "../../../../data/game-object-helper";
 import { SelectableComponent } from "../../selectable-component";
@@ -252,7 +253,7 @@ export class HealthComponent {
 
   /** Destroys the actor immediately without playing death animations or sounds. */
   destroyActorSilently() {
-    if (!this.gameObject.active || !this.gameObject.scene) return;
+    if (!isGameObjectActiveInActiveScene(this.gameObject)) return;
     this.suppressReactions = true;
     this.setHealthValue(0, false);
     this.gameObject.scene.events.emit(HealthComponent.KilledEvent, this.gameObject);
@@ -262,7 +263,7 @@ export class HealthComponent {
   }
 
   killActor() {
-    if (!this.gameObject.active || !this.gameObject.scene) return;
+    if (!isGameObjectActiveInActiveScene(this.gameObject)) return;
     this.setHealthValue(0, false);
     this.gameObject.scene.events.emit(HealthComponent.KilledEvent, this.gameObject);
     this.playDeathSound();
@@ -345,7 +346,7 @@ export class HealthComponent {
   }
 
   setVisibilityUiComponent(visible: boolean) {
-    if (!this.gameObject.active) return;
+    if (!isGameObjectActiveInActiveScene(this.gameObject)) return;
     this.shouldUiElementsBeVisible = visible;
     const constructionSiteComponent = getActorComponent(this.gameObject, ConstructionSiteComponent);
     if (constructionSiteComponent && !constructionSiteComponent.isFinished) visible = false;

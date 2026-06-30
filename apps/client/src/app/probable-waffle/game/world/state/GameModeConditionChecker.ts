@@ -5,8 +5,8 @@ import {
   isPlayerHostInScene
 } from "../../../../shared/game/phaser/scene/base.scene";
 import {
-  GameSessionState,
   GameResultStatus,
+  GameSessionState,
   type LoseConditions,
   ProbableWaffleGameInstanceType,
   ProbableWaffleGameMode,
@@ -16,6 +16,7 @@ import {
   type WinConditions
 } from "@fuzzy-waddle/api-interfaces";
 import { type ProbableWaffleGameData } from "../../core/probable-waffle-game-data";
+import { isGameObjectActiveInActiveScene, isSceneActive } from "../../data/game-object-helper";
 import { ScenePlayerHelpers } from "../../data/scene-player-helpers";
 import { getCurrentPlayerNumber } from "../../data/scene-data";
 import { getActorComponent } from "../../data/actor-component";
@@ -67,7 +68,7 @@ export class GameModeConditionChecker {
   }
 
   private check(tick: number) {
-    if (!this.scene.scene || !this.scene.scene.isActive()) return;
+    if (!isSceneActive(this.scene)) return;
     if (this.stopped) return;
     this.prepareData();
     this.checkAiSurrender(tick);
@@ -88,7 +89,12 @@ export class GameModeConditionChecker {
   private prepareData() {
     this.currentPlayerNumber = getCurrentPlayerNumber(this.scene)!;
     this.players = getPlayersFromScene<ProbableWafflePlayer>(this.scene);
-    this.currentPlayer = this.players.find((player) => player.playerNumber === this.currentPlayerNumber)!;
+    const currentPlayer = this.players.find((player) => player.playerNumber === this.currentPlayerNumber);
+    if (!currentPlayer) {
+      console.error("Current player not found", this.currentPlayerNumber, this.players);
+      throw new Error("Current player not found");
+    }
+    this.currentPlayer = currentPlayer;
     this.actorsByPlayer = ScenePlayerHelpers.getActorsByPlayer(this.scene).actorsByPlayer;
 
     this.runChecksForSelfAndAiPlayers();
@@ -205,7 +211,7 @@ export class GameModeConditionChecker {
     // Destroy all units/buildings owned by this player
     const actors = this.actorsByPlayer?.get(player.playerNumber!) || [];
     actors.forEach((actor) => {
-      if (actor && actor.active) {
+      if (isGameObjectActiveInActiveScene(actor)) {
         actor.destroy();
       }
     });
@@ -435,7 +441,7 @@ export class GameModeConditionChecker {
 
   private destroy() {
     this.simulationTickSub?.unsubscribe();
-    this.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.destroy);
+    this.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
     this.selfQuitSubscription?.unsubscribe();
     this.currentDelay?.remove();
   }

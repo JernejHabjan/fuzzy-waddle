@@ -1,4 +1,5 @@
 import { getTilesAroundGameObjectsOfShape } from "../../../data/tile-map-helpers";
+import { isGameObjectActiveInActiveScene } from "../../../data/game-object-helper";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { NavigationService } from "../../../world/services/navigation.service";
 import { GameObjects } from "phaser";
@@ -45,7 +46,7 @@ export class TileMapTintComponent {
     if (this.killed) return;
     this.killed = true;
     this.gameObject.scene.events.off(this.rerenderTintEvent, this.tintTilemapAroundTransform, this);
-    if (!this.gameObject.active || !this.gameObject.scene.scene.isActive()) return;
+    if (!isGameObjectActiveInActiveScene(this.gameObject)) return;
     this.restoreTint();
     // make sure others know to rerender tints as current tint may be overlapping with others
     this.gameObject.scene.events.emit(this.rerenderTintEvent);

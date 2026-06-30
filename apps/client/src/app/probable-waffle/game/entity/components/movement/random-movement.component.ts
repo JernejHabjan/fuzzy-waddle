@@ -1,5 +1,5 @@
 import { GameObjects } from "phaser";
-import { onObjectReady } from "../../../data/game-object-helper";
+import { isGameObjectActiveInActiveScene, onObjectReady } from "../../../data/game-object-helper";
 import { HealthComponent } from "../combat/components/health-component";
 import { moveGameObjectToRandomTileInNavigableRadius, MovementSystem } from "../../systems/movement.system";
 import { getActorSystem } from "../../../data/actor-system";
@@ -44,7 +44,7 @@ export class RandomMovementComponent {
 
   async move() {
     if (this.disabledInMultiplayer) return;
-    if (!this.gameObject.active) return;
+    if (!isGameObjectActiveInActiveScene(this.gameObject)) return;
 
     try {
       await moveGameObjectToRandomTileInNavigableRadius(this.gameObject, this.randomMovementDefinition.radius);
@@ -57,7 +57,7 @@ export class RandomMovementComponent {
 
   moveAfterDelay() {
     if (this.disabledInMultiplayer) return;
-    if (!this.gameObject.active) return;
+    if (!isGameObjectActiveInActiveScene(this.gameObject)) return;
     if (this.randomMovementDefinition.shouldPreventMovementStart()) return;
     this.removeDelay();
     const randomDelay =
@@ -91,7 +91,7 @@ export class RandomMovementComponent {
   }
 
   private onSimulationTick(tick: number) {
-    if (!this.gameObject.active || this.nextMoveAtMs === undefined) return;
+    if (!isGameObjectActiveInActiveScene(this.gameObject) || this.nextMoveAtMs === undefined) return;
     const now = tick * SimulationTickService.TICK_INTERVAL_MS;
     if (now < this.nextMoveAtMs) return;
     this.nextMoveAtMs = undefined;

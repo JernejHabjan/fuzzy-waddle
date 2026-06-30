@@ -5,7 +5,7 @@ import type { SpellData } from "../spell-data";
 import { spellDefinitions } from "../spell-definitions";
 import { type SpellComponentData } from "@fuzzy-waddle/api-interfaces";
 import Phaser from "phaser";
-import { onObjectReady } from "../../../../data/game-object-helper";
+import { isGameObjectActiveInActiveScene, onObjectReady } from "../../../../data/game-object-helper";
 import { getActorComponent } from "../../../../data/actor-component";
 import { OwnerComponent } from "../../owner-component";
 import { getSceneService } from "../../../../world/services/scene-component-helpers";
@@ -141,7 +141,7 @@ export class SpellComponent {
   }
 
   private onSimulationTick(): void {
-    if (!this.gameObject.active) return;
+    if (!isGameObjectActiveInActiveScene(this.gameObject)) return;
     const deltaWithTimeScale = SimulationTickService.TICK_INTERVAL_MS;
     const currentTick = this.simulationTickService?.currentTick;
 

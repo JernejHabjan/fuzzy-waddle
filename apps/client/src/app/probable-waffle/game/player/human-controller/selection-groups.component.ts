@@ -1,6 +1,6 @@
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import { emitEventSelection, getSelectedActors, sanitizeOwnedActorIds } from "../../data/scene-data";
-import { onSceneInitialized } from "../../data/game-object-helper";
+import { isGameObjectActiveInActiveScene, onSceneInitialized } from "../../data/game-object-helper";
 import { CrossSceneCommunicationService } from "../../world/services/CrossSceneCommunicationService";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { getActorComponent } from "../../data/actor-component";
@@ -124,7 +124,7 @@ export class SelectionGroupsComponent {
     }
 
     // Filter out destroyed actors
-    const validActors = group.actors.filter((actor) => actor.active);
+    const validActors = group.actors.filter((actor) => isGameObjectActiveInActiveScene(actor));
 
     // Update the group with only valid actors
     if (validActors.length !== group.actors.length) {
@@ -197,7 +197,7 @@ export class SelectionGroupsComponent {
     const result: SelectionGroupData[] = [];
     this.groups.forEach((group, key) => {
       const actorIds = group.actors
-        .filter((actor) => actor.active)
+        .filter((actor) => isGameObjectActiveInActiveScene(actor))
         .map((actor) => {
           const idComponent = getActorComponent(actor, IdComponent);
           return idComponent?.id;
@@ -229,7 +229,7 @@ export class SelectionGroupsComponent {
       const actors: Phaser.GameObjects.GameObject[] = [];
       for (const actorId of groupData.actorIds) {
         const actor = actorIndex.getActorById(actorId);
-        if (actor && actor.active) {
+        if (isGameObjectActiveInActiveScene(actor)) {
           actors.push(actor);
         }
       }

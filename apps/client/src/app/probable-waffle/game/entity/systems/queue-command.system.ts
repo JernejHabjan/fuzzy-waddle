@@ -1,5 +1,6 @@
 import { Subscription } from "rxjs";
 import { getActorComponent } from "../../data/actor-component";
+import { isGameObjectActiveInActiveScene } from "../../data/game-object-helper";
 import { getPwActorDefinition } from "../../prefabs/definitions/actor-definitions";
 import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
 import { getSceneService } from "../../world/services/scene-component-helpers";
@@ -34,7 +35,7 @@ export class QueueCommandSystem {
     }
 
     this.commandBusSubscription = commandBus.command$.subscribe((cmd) => {
-      if (!this.gameObject.active) return;
+      if (!isGameObjectActiveInActiveScene(this.gameObject)) return;
       const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
       if (!actorId || !cmd.actorIds.includes(actorId)) return;
 
