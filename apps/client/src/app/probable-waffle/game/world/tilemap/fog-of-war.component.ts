@@ -90,7 +90,11 @@ export class FogOfWarComponent {
     this.scanForPlayerActors();
 
     // Subscribe to navigation updates
-    this.scene.events.on(NavigationService.UpdateNavigationEvent, this.throttleUpdateFogOfWarFrameNonDeterministic, this); // todo this for some reason doesnt work - also it doesnt work in navigation.service.ts
+    this.scene.events.on(
+      NavigationService.UpdateNavigationEvent,
+      this.throttleUpdateFogOfWarFrameNonDeterministic,
+      this
+    ); // todo this for some reason doesnt work - also it doesnt work in navigation.service.ts
     // Intentional frame update: fog rendering is visual-only and should track camera/visibility changes every rendered frame.
     this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.throttleUpdateFogOfWarFrameNonDeterministic, this); // todo this is very expensive
     this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
@@ -307,7 +311,12 @@ export class FogOfWarComponent {
                 const x = tilePos.x + dx;
                 const y = tilePos.y + dy;
                 // Check if tile is within the valid grid bounds
-                if (x < this.startX || y < this.startY || x >= this.startX + this.gridWidth || y >= this.startY + this.gridHeight) {
+                if (
+                  x < this.startX ||
+                  y < this.startY ||
+                  x >= this.startX + this.gridWidth ||
+                  y >= this.startY + this.gridHeight
+                ) {
                   continue;
                 }
                 const tileKey = this.getTileKey(x, y);
@@ -323,7 +332,7 @@ export class FogOfWarComponent {
           if (this.visionTilesCache.size > 500) {
             // Remove oldest entries (first entries in the map)
             const keysToDelete = Array.from(this.visionTilesCache.keys()).slice(0, 100);
-            keysToDelete.forEach(key => this.visionTilesCache.delete(key));
+            keysToDelete.forEach((key) => this.visionTilesCache.delete(key));
           }
         }
 
@@ -502,14 +511,7 @@ export class FogOfWarComponent {
       this.drawIsometricTile(worldX, worldY, this.tileWidth, this.tileHeight, this.COLOR_EXPLORED, this.ALPHA_EXPLORED);
     } else {
       // Unexplored
-      this.drawIsometricTile(
-        worldX,
-        worldY,
-        this.tileWidth,
-        this.tileHeight,
-        this.COLOR_UNEXPLORED,
-        alphaUnexplored
-      );
+      this.drawIsometricTile(worldX, worldY, this.tileWidth, this.tileHeight, this.COLOR_UNEXPLORED, alphaUnexplored);
     }
   }
 
@@ -548,7 +550,11 @@ export class FogOfWarComponent {
   }
 
   private destroy(): void {
-    this.scene?.events.off(NavigationService.UpdateNavigationEvent, this.throttleUpdateFogOfWarFrameNonDeterministic, this);
+    this.scene?.events.off(
+      NavigationService.UpdateNavigationEvent,
+      this.throttleUpdateFogOfWarFrameNonDeterministic,
+      this
+    );
     this.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.throttleUpdateFogOfWarFrameNonDeterministic, this);
 
     // Clear all caches
