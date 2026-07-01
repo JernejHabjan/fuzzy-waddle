@@ -23,6 +23,11 @@ export interface MovementOccupancyDebugEntry {
   source: "current" | "step" | "destination";
 }
 
+export interface MovementDynamicBlocker {
+  tile: Vector2Simple;
+  heightLayer: number;
+}
+
 export interface MovementReservationResult {
   reserved: boolean;
   blockers: ActorId[];
@@ -87,18 +92,29 @@ export class MovementOccupancyService {
   }
 
   getDynamicBlockedTilesForActor(actorId: ActorId, heightLayer: number): Vector2Simple[] {
+    return this.getDynamicBlockersForActor(actorId)
+      .filter((blocker) => blocker.heightLayer === Math.round(heightLayer))
+      .map((blocker) => blocker.tile);
+  }
+
+  getDynamicBlockersForActor(actorId: ActorId): MovementDynamicBlocker[] {
     const blockedKeys = new Set<string>();
     for (const entry of this.getDebugSnapshot()) {
       if (entry.actorId === actorId) continue;
-      if (entry.heightLayer !== Math.round(heightLayer)) continue;
-      entry.tiles.forEach((tile) => blockedKeys.add(`${tile.x},${tile.y}`));
+      for (const tile of entry.tiles) {
+        blockedKeys.add(`${tile.x},${tile.y},${entry.heightLayer}`);
+      }
     }
     return Array.from(blockedKeys)
       .map((key) => {
-        const [x, y] = key.split(",").map(Number);
-        return { x: x!, y: y! };
+        const [x, y, heightLayer] = key.split(",").map(Number);
+        return { tile: { x: x!, y: y! }, heightLayer: Math.round(heightLayer!) };
       })
-      .sort((a, b) => (a.y !== b.y ? a.y - b.y : a.x - b.x));
+      .sort((a, b) => {
+        if (a.heightLayer !== b.heightLayer) return a.heightLayer - b.heightLayer;
+        if (a.tile.y !== b.tile.y) return a.tile.y - b.tile.y;
+        return a.tile.x - b.tile.x;
+      });
   }
 
   getDebugSnapshot(): MovementOccupancyDebugEntry[] {

@@ -1,5 +1,6 @@
 import { NavigableComponent } from "../../entity/components/movement/navigable-component";
 import { NavigablePathDirection } from "../../entity/components/movement/navigable-path-direction";
+import { getDynamicBlockedTileKeysForHeightGraph } from "./height-navigation-dynamic-blockers";
 import { canConnectHeightNavigationPorts } from "./height-navigation-graph-builder";
 
 describe("height navigation ports", () => {
@@ -32,6 +33,44 @@ describe("height navigation ports", () => {
     component.allowNavigablePath({ top: true, bottom: false });
     expect(component.getDirectionPort(NavigablePathDirection.Top)).toEqual({ enterHeight: 0, exitHeight: 0 });
     expect(component.getDirectionPort(NavigablePathDirection.Bottom)).toBeUndefined();
+  });
+});
+
+describe("height navigation dynamic blockers", () => {
+  const heightAt = (tile: { x: number; y: number }) => {
+    if (tile.x === 1 && tile.y === 1) return 0;
+    if (tile.x === 2 && tile.y === 2) return 64;
+    if (tile.x === 3 && tile.y === 3) return 64;
+    return undefined;
+  };
+
+  it("blocks only when the dynamic blocker height matches the graph cell height", () => {
+    const blockedKeys = getDynamicBlockedTileKeysForHeightGraph(
+      [
+        { tile: { x: 1, y: 1 }, heightLayer: 0 },
+        { tile: { x: 2, y: 2 }, heightLayer: 0 },
+        { tile: { x: 3, y: 3 }, heightLayer: 64 }
+      ],
+      heightAt,
+      { x: 0, y: 0 },
+      { x: 4, y: 4 }
+    );
+
+    expect([...blockedKeys].sort()).toEqual(["1,1", "3,3"]);
+  });
+
+  it("does not dynamically block the requesting actor origin or target tile", () => {
+    const blockedKeys = getDynamicBlockedTileKeysForHeightGraph(
+      [
+        { tile: { x: 1, y: 1 }, heightLayer: 0 },
+        { tile: { x: 3, y: 3 }, heightLayer: 64 }
+      ],
+      heightAt,
+      { x: 1, y: 1 },
+      { x: 3, y: 3 }
+    );
+
+    expect([...blockedKeys]).toEqual([]);
   });
 });
 

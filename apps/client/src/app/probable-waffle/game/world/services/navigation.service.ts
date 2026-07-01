@@ -39,6 +39,8 @@ import {
   type HeightNavigationEdge,
   type HeightNavigationGraph
 } from "./height-navigation-graph-builder";
+import type { MovementDynamicBlocker } from "./movement-occupancy.service";
+import { getDynamicBlockedTileKeysForHeightGraph } from "./height-navigation-dynamic-blockers";
 
 export enum TerrainType {
   Grass = "grass",
@@ -330,23 +332,31 @@ export class NavigationService {
   async findPathFromGameObjectToTileAvoidingDynamicBlockers(
     gameObject: Phaser.GameObjects.GameObject,
     toTile: Vector2Simple,
-    dynamicBlockedTiles: Vector2Simple[]
+    dynamicBlockers: MovementDynamicBlocker[]
   ): Promise<Vector2Simple[] | null> {
     const fromTile = getCenterTileCoordUnderObject(this.tilemap, gameObject);
     if (!fromTile) return [];
     const terrainType = this.getUnitTerrainType(gameObject);
     if (terrainType === MovementTerrainType.Water) return this.findPathForTerrain(fromTile, toTile, terrainType);
 
-    const blockedKeys = new Set(
-      dynamicBlockedTiles
-        .filter((tile) => !(tile.x === fromTile.x && tile.y === fromTile.y))
-        .filter((tile) => !(tile.x === toTile.x && tile.y === toTile.y))
-        .map((tile) => `${tile.x},${tile.y}`)
-    );
+    const blockedKeys = this.getDynamicBlockedTileKeys(dynamicBlockers, fromTile, toTile);
     const grid = this.easyStarNavigationGrid.map((row, y) =>
       row.map((tile, x) => (blockedKeys.has(`${x},${y}`) ? 1 : tile))
     );
     return this.findPathWithGrid(fromTile, toTile, grid, true);
+  }
+
+  private getDynamicBlockedTileKeys(
+    dynamicBlockers: MovementDynamicBlocker[],
+    fromTile: Vector2Simple,
+    toTile: Vector2Simple
+  ): Set<string> {
+    return getDynamicBlockedTileKeysForHeightGraph(
+      dynamicBlockers,
+      (tile) => this.getNavigationCell(tile)?.navigableHeight,
+      fromTile,
+      toTile
+    );
   }
 
   private cleanPathCache(now: number = performance.now()): void {

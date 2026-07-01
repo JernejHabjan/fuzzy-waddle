@@ -351,15 +351,12 @@ export class MovementSystem {
   ): Promise<void> {
     if (!this.navigationService) return Promise.reject("No navigationService");
     const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
-    const currentHeight = this.navigationService.getNavigableHeightAtTile(destinationTile);
-    const dynamicBlockedTiles =
-      actorId && this.movementOccupancyService
-        ? this.movementOccupancyService.getDynamicBlockedTilesForActor(actorId, currentHeight)
-        : [];
+    const dynamicBlockers =
+      actorId && this.movementOccupancyService ? this.movementOccupancyService.getDynamicBlockersForActor(actorId) : [];
     const newPath = await this.navigationService.findPathFromGameObjectToTileAvoidingDynamicBlockers(
       this.gameObject,
       destinationTile,
-      dynamicBlockedTiles
+      dynamicBlockers
     );
     if (!newPath || !newPath.length) return Promise.reject("No congestion recovery path found");
     newPath.shift();
@@ -387,7 +384,7 @@ export class MovementSystem {
           candidates.push(candidate);
         }
       }
-      const fallback = await this.getFirstReachableCandidate(candidates, destinationTile, destinationHeight);
+      const fallback = await this.getFirstReachableCandidate(candidates, destinationTile);
       if (fallback) return fallback;
     }
     return undefined;
@@ -395,14 +392,13 @@ export class MovementSystem {
 
   private async getFirstReachableCandidate(
     candidates: Vector2Simple[],
-    destinationTile: Vector2Simple,
-    heightLayer: number
+    destinationTile: Vector2Simple
   ): Promise<Vector2Simple | undefined> {
     const navigationService = this.navigationService;
     const movementOccupancy = this.movementOccupancyService;
     const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
     if (!navigationService || !movementOccupancy || !actorId) return undefined;
-    const dynamicBlockedTiles = movementOccupancy.getDynamicBlockedTilesForActor(actorId, heightLayer);
+    const dynamicBlockers = movementOccupancy.getDynamicBlockersForActor(actorId);
     const orderedCandidates = [...candidates].sort((a, b) => {
       const distanceDelta = this.getTileDistance(a, destinationTile) - this.getTileDistance(b, destinationTile);
       if (distanceDelta !== 0) return distanceDelta;
@@ -413,7 +409,7 @@ export class MovementSystem {
       const path = await navigationService.findPathFromGameObjectToTileAvoidingDynamicBlockers(
         this.gameObject,
         candidate,
-        dynamicBlockedTiles
+        dynamicBlockers
       );
       if (path && path.length > 0) return candidate;
     }
@@ -899,11 +895,11 @@ export class MovementSystem {
         if (this.navigationService.isTileNavigable(destinationTile, terrainType)) {
           const movementOccupancy = this.movementOccupancyService;
           const destinationHeight = this.navigationService.getNavigableHeightAtTile(destinationTile);
-          const dynamicBlockedTiles = movementOccupancy?.getDynamicBlockedTilesForActor(ownId, destinationHeight) ?? [];
+          const dynamicBlockers = movementOccupancy?.getDynamicBlockersForActor(ownId) ?? [];
           const path = await this.navigationService.findPathFromGameObjectToTileAvoidingDynamicBlockers(
             this.gameObject,
             destinationTile,
-            dynamicBlockedTiles
+            dynamicBlockers
           );
           if (path !== null && path.length > 0) {
             const footprint = movementOccupancy?.getActorFootprintAtTile(this.gameObject, destinationTile);
