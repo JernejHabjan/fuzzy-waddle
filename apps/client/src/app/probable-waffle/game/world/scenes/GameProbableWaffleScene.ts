@@ -49,6 +49,7 @@ import { isTauri } from "../../../../shared/utils/tauri";
 import { SceneLightingService } from "../services/lighting/scene-lighting.service";
 import { MovementOccupancyService } from "../services/movement-occupancy.service";
 import { NavigationDebugService } from "../services/navigation-debug.service";
+import { NavigationDebugFixture } from "../services/navigation-debug-fixture";
 
 export default class GameProbableWaffleScene extends ProbableWaffleScene {
   tilemap!: Phaser.Tilemaps.Tilemap;
@@ -119,6 +120,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     }
 
     creator.initInitialActors();
+    new NavigationDebugFixture(this, creator).createIfEnabled();
     // Populate the index after initial actors are in place
     actorIndex.scanExistingActors();
     // Activate the multiplayer relay path when a socket is present

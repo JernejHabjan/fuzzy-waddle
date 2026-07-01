@@ -121,51 +121,7 @@ export default class Wall extends Phaser.GameObjects.Container {
   }
 
   private getNavigablePath(wallType: WallType): NavigablePath {
-    switch (wallType) {
-      case WallType.TopRightBottomRight:
-        return { topLeft: true, left: true, bottomLeft: true };
-      case WallType.TopRightBottomLeft:
-        return { topLeft: true, bottomRight: true };
-      case WallType.TopLeftBottomRight:
-        return { topRight: true, bottomLeft: true };
-      case WallType.TopLeftBottomLeft:
-        return { topRight: true, right: true, bottomRight: true };
-      case WallType.Empty:
-        return {
-          top: true,
-          bottom: true,
-          left: true,
-          right: true,
-          topLeft: true,
-          topRight: true,
-          bottomLeft: true,
-          bottomRight: true
-        };
-      case WallType.Full:
-        return {};
-      case WallType.TopLeft:
-        return { topRight: true, right: true, bottomRight: true, bottom: true, bottomLeft: true };
-      case WallType.TopRight:
-        return { topLeft: true, left: true, bottomLeft: true, bottom: true, bottomRight: true };
-      case WallType.BottomLeft:
-        return { topLeft: true, top: true, topRight: true, right: true, bottomRight: true };
-      case WallType.BottomRight:
-        return { topRight: true, top: true, topLeft: true, left: true, bottomLeft: true };
-      case WallType.TopLeftTopRight:
-        return { bottomLeft: true, bottom: true, bottomRight: true };
-      case WallType.BottomLeftBottomRight:
-        return { topRight: true, top: true, topLeft: true };
-      case WallType.TopLeftTopRightBottomLeft:
-        return { bottomRight: true };
-      case WallType.TopRightBottomLeftBottomRight:
-        return { topLeft: true };
-      case WallType.TopLeftTopRightBottomRight:
-        return { bottomLeft: true };
-      case WallType.TopLeftBottomLeftBottomRight:
-        return { topRight: true };
-      default:
-        return {};
-    }
+    return getWallNavigablePath(wallType);
   }
 
   private setup() {
@@ -303,4 +259,52 @@ export enum WallType {
   TopRightBottomLeftBottomRight,
   TopLeftTopRightBottomRight,
   TopLeftBottomLeftBottomRight
+}
+
+export function getWallNavigablePath(wallType: WallType): NavigablePath {
+  switch (wallType) {
+    case WallType.TopRightBottomRight:
+      return { topLeft: true, left: true, bottomLeft: true };
+    case WallType.TopRightBottomLeft:
+      return { topLeft: true, bottomRight: true };
+    case WallType.TopLeftBottomRight:
+      return { topRight: true, bottomLeft: true };
+    case WallType.TopLeftBottomLeft:
+      return { topRight: true, right: true, bottomRight: true };
+    case WallType.Empty:
+      return {
+        top: true,
+        bottom: true,
+        left: true,
+        right: true,
+        topLeft: true,
+        topRight: true,
+        bottomLeft: true,
+        bottomRight: true
+      };
+    case WallType.Full:
+      return {};
+    case WallType.TopLeft:
+      return { topRight: true, right: true, bottomRight: true, bottom: true, bottomLeft: true };
+    case WallType.TopRight:
+      return { topLeft: true, left: true, bottomLeft: true, bottom: true, bottomRight: true };
+    case WallType.BottomLeft:
+      return { topLeft: true, top: true, topRight: true, right: true, bottomRight: true };
+    case WallType.BottomRight:
+      return { topRight: true, top: true, topLeft: true, left: true, bottomLeft: true };
+    case WallType.TopLeftTopRight:
+      return { bottomLeft: true, bottom: true, bottomRight: true };
+    case WallType.BottomLeftBottomRight:
+      return { topRight: true, top: true, topLeft: true };
+    case WallType.TopLeftTopRightBottomLeft:
+      return { bottomRight: true };
+    case WallType.TopRightBottomLeftBottomRight:
+      return { topLeft: true };
+    case WallType.TopLeftTopRightBottomRight:
+      return { bottomLeft: true };
+    case WallType.TopLeftBottomLeftBottomRight:
+      return { topRight: true };
+    default:
+      return {};
+  }
 }

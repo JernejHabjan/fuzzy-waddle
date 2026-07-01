@@ -1,7 +1,9 @@
 import { NavigableComponent } from "../../entity/components/movement/navigable-component";
 import { NavigablePathDirection } from "../../entity/components/movement/navigable-path-direction";
+import { getStairsNavigablePath, getStairsNavigablePorts, StairsType } from "../../prefabs/buildings/tivara/stairs/Stairs";
+import { getWallNavigablePath, WallType } from "../../prefabs/buildings/tivara/wall/Wall";
 import { getDynamicBlockedTileKeysForHeightGraph } from "./height-navigation-dynamic-blockers";
-import { canConnectHeightNavigationPorts } from "./height-navigation-graph-builder";
+import { canConnectHeightNavigationPorts, HEIGHT_NAVIGATION_DIRECTIONS } from "./height-navigation-graph-builder";
 
 describe("height navigation ports", () => {
   it("connects only when source exitHeight exactly matches target enterHeight", () => {
@@ -44,6 +46,62 @@ describe("height navigation ports", () => {
     expect(component.getDirectionPort(NavigablePathDirection.Top)).toEqual({ enterHeight: 0, exitHeight: 0 });
     expect(component.getDirectionPort(NavigablePathDirection.Bottom)).toBeUndefined();
   });
+
+  it.each(Object.values(WallType).filter((value): value is WallType => typeof value === "number"))(
+    "keeps every wall type elevated-only for open directions: %s",
+    (wallType) => {
+      const component = createNavigableComponent({ navigableHeight: 42, enterHeight: 64, exitHeight: 64 });
+      component.allowNavigablePath(getWallNavigablePath(wallType));
+
+      for (const { direction } of HEIGHT_NAVIGATION_DIRECTIONS) {
+        const port = component.getDirectionPort(direction);
+        if (getWallNavigablePath(wallType)[direction]) {
+          expect(port).toEqual({ enterHeight: 64, exitHeight: 64 });
+          expect(canConnectHeightNavigationPorts({ enterHeight: 0, exitHeight: 0 }, port)).toBe(false);
+        } else {
+          expect(port).toBeUndefined();
+        }
+      }
+    }
+  );
+
+  it("keeps bottom-left/bottom-right wall approachable only from the open upper sides", () => {
+    expect(getWallNavigablePath(WallType.BottomLeftBottomRight)).toEqual({
+      topRight: true,
+      top: true,
+      topLeft: true
+    });
+  });
+
+  it.each(Object.values(StairsType).filter((value): value is StairsType => typeof value === "number"))(
+    "matches every stair type low sides to ground and high side to elevated surfaces: %s",
+    (stairsType) => {
+      const component = createNavigableComponent({ navigableHeight: 24, enterHeight: 0, exitHeight: 64 });
+      component.allowNavigablePath(getStairsNavigablePath(stairsType), getStairsNavigablePorts(stairsType));
+
+      const highDirections = Object.entries(getStairsNavigablePorts(stairsType))
+        .filter(([, port]) => port?.enterHeight === 64 && port.exitHeight === 64)
+        .map(([direction]) => direction)
+        .sort();
+      expect(highDirections).toHaveLength(1);
+
+      for (const { direction } of HEIGHT_NAVIGATION_DIRECTIONS) {
+        const port = component.getDirectionPort(direction);
+        if (!getStairsNavigablePath(stairsType)[direction]) {
+          expect(port).toBeUndefined();
+          continue;
+        }
+
+        if (highDirections.includes(direction)) {
+          expect(canConnectHeightNavigationPorts({ enterHeight: 64, exitHeight: 64 }, port)).toBe(true);
+          expect(canConnectHeightNavigationPorts({ enterHeight: 0, exitHeight: 0 }, port)).toBe(false);
+        } else {
+          expect(canConnectHeightNavigationPorts({ enterHeight: 0, exitHeight: 0 }, port)).toBe(true);
+          expect(canConnectHeightNavigationPorts({ enterHeight: 64, exitHeight: 64 }, port)).toBe(false);
+        }
+      }
+    }
+  );
 });
 
 describe("height navigation dynamic blockers", () => {

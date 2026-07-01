@@ -101,75 +101,11 @@ export default class Stairs extends Phaser.GameObjects.Container {
   }
 
   private getNavigablePath(stairsType: StairsType): NavigablePath {
-    switch (stairsType) {
-      case StairsType.TopLeft:
-        return {
-          topLeft: true,
-          right: true,
-          bottomRight: true,
-          bottom: true
-        };
-      case StairsType.TopRight:
-        return {
-          topRight: true,
-          left: true,
-          bottomLeft: true,
-          bottom: true
-        };
-      case StairsType.BottomLeft:
-        return {
-          bottomLeft: true,
-          top: true,
-          topRight: true,
-          right: true
-        };
-      case StairsType.BottomRight:
-        return {
-          bottomRight: true,
-          top: true,
-          topLeft: true,
-          left: true
-        };
-      default:
-        return {};
-    }
+    return getStairsNavigablePath(stairsType);
   }
 
   private getNavigablePorts(stairsType: StairsType): Partial<Record<keyof NavigablePath, HeightDirectionPortDefinition>> {
-    const low = { enterHeight: 0, exitHeight: 0 };
-    const high = { enterHeight: 64, exitHeight: 64 };
-    switch (stairsType) {
-      case StairsType.TopLeft:
-        return {
-          topLeft: high,
-          right: low,
-          bottomRight: low,
-          bottom: low
-        };
-      case StairsType.TopRight:
-        return {
-          topRight: high,
-          left: low,
-          bottomLeft: low,
-          bottom: low
-        };
-      case StairsType.BottomLeft:
-        return {
-          bottomLeft: high,
-          top: low,
-          topRight: low,
-          right: low
-        };
-      case StairsType.BottomRight:
-        return {
-          bottomRight: high,
-          top: low,
-          topLeft: low,
-          left: low
-        };
-      default:
-        return {};
-    }
+    return getStairsNavigablePorts(stairsType);
   }
 
   private setup() {
@@ -284,4 +220,78 @@ export enum StairsType {
   TopRight,
   BottomLeft,
   BottomRight
+}
+
+export function getStairsNavigablePath(stairsType: StairsType): NavigablePath {
+  switch (stairsType) {
+    case StairsType.TopLeft:
+      return {
+        topLeft: true,
+        right: true,
+        bottomRight: true,
+        bottom: true
+      };
+    case StairsType.TopRight:
+      return {
+        topRight: true,
+        left: true,
+        bottomLeft: true,
+        bottom: true
+      };
+    case StairsType.BottomLeft:
+      return {
+        bottomLeft: true,
+        top: true,
+        topRight: true,
+        right: true
+      };
+    case StairsType.BottomRight:
+      return {
+        bottomRight: true,
+        top: true,
+        topLeft: true,
+        left: true
+      };
+    default:
+      return {};
+  }
+}
+
+export function getStairsNavigablePorts(
+  stairsType: StairsType
+): Partial<Record<keyof NavigablePath, HeightDirectionPortDefinition>> {
+  const low = { enterHeight: 0, exitHeight: 0 };
+  const high = { enterHeight: 64, exitHeight: 64 };
+  switch (stairsType) {
+    case StairsType.TopLeft:
+      return {
+        topLeft: high,
+        right: low,
+        bottomRight: low,
+        bottom: low
+      };
+    case StairsType.TopRight:
+      return {
+        topRight: high,
+        left: low,
+        bottomLeft: low,
+        bottom: low
+      };
+    case StairsType.BottomLeft:
+      return {
+        bottomLeft: high,
+        top: low,
+        topRight: low,
+        right: low
+      };
+    case StairsType.BottomRight:
+      return {
+        bottomRight: high,
+        top: low,
+        topLeft: low,
+        left: low
+      };
+    default:
+      return {};
+  }
 }
