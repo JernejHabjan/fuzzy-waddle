@@ -1,8 +1,10 @@
 import { environment } from "../../../../../environments/environment";
-import { MovementOccupancyService } from "./movement-occupancy.service";
+import { MovementOccupancyService, type MovementOccupancyDebugEntry } from "./movement-occupancy.service";
 import { NavigationService } from "./navigation.service";
 import { getSceneService } from "./scene-component-helpers";
 import { HEIGHT_NAVIGATION_DIRECTIONS } from "./height-navigation-graph-builder";
+
+const DYNAMIC_REDRAW_INTERVAL_MS = 250;
 
 /**
  * Visual-only renderer for the height navigation graph. It must never mutate
@@ -15,12 +17,14 @@ export class NavigationDebugService {
   private enabled = false;
   private graphics?: Phaser.GameObjects.Graphics;
   private labels: Phaser.GameObjects.Text[] = [];
+  private lastDynamicRedrawAt = 0;
 
   constructor(
     private readonly scene: Phaser.Scene,
     private readonly tilemap: Phaser.Tilemaps.Tilemap
   ) {
     scene.events.on(NavigationService.UpdateNavigationEvent, this.redraw, this);
+    scene.events.on(Phaser.Scenes.Events.UPDATE, this.updateDynamicOverlays, this);
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
   }
 
@@ -49,10 +53,19 @@ export class NavigationDebugService {
     this.drawOccupancy();
   }
 
+  private updateDynamicOverlays(time: number): void {
+    if (!this.enabled || environment.production) return;
+    if (time - this.lastDynamicRedrawAt < DYNAMIC_REDRAW_INTERVAL_MS) return;
+    this.lastDynamicRedrawAt = time;
+    this.redraw();
+  }
+
   private drawGraph(): void {
     const navigationService = getSceneService(this.scene, NavigationService);
     const graph = navigationService?.getHeightGraphDebugSnapshot();
     if (!navigationService || !graph || !this.graphics) return;
+    const occupancy = getSceneService(this.scene, MovementOccupancyService);
+    const occupancyEntries = occupancy?.getDebugSnapshot() ?? [];
 
     for (const row of graph.cells) {
       for (const cell of row) {
@@ -69,13 +82,42 @@ export class NavigationDebugService {
           const target = navigationService.getTileWorldCenter(to);
           if (!target) continue;
           if (allowedKeys.has(`${to.x},${to.y}`)) {
-            this.drawDirectedEdge(center.x, center.y, target.x, target.y, 0x4de96c, 0.55);
+            const edge = edges.find((candidate) => candidate.to.x === to.x && candidate.to.y === to.y);
+            const isDynamicallyBlocked =
+              !!edge && this.isDynamicallyBlocked(edge.to, edge.enterHeight, occupancyEntries);
+            this.drawDirectedEdge(
+              center.x,
+              center.y,
+              target.x,
+              target.y,
+              isDynamicallyBlocked ? 0xff8f1f : 0x4de96c,
+              isDynamicallyBlocked ? 0.8 : 0.55
+            );
+            if (edge) {
+              this.addLabel(
+                Phaser.Math.Linear(center.x, target.x, 0.5),
+                Phaser.Math.Linear(center.y, target.y, 0.5) - 8,
+                `${edge.exitHeight}->${edge.enterHeight}`
+              );
+            }
           } else if (graph.cells[to.y]?.[to.x]?.isNavigable) {
             this.drawDirectedEdge(center.x, center.y, target.x, target.y, 0x8b1e1e, 0.35);
           }
         }
       }
     }
+  }
+
+  private isDynamicallyBlocked(
+    tile: { x: number; y: number },
+    heightLayer: number,
+    occupancyEntries: MovementOccupancyDebugEntry[]
+  ): boolean {
+    return occupancyEntries.some(
+      (entry) =>
+        Math.round(entry.heightLayer) === Math.round(heightLayer) &&
+        entry.tiles.some((entryTile) => entryTile.x === tile.x && entryTile.y === tile.y)
+    );
   }
 
   private drawOccupancy(): void {
@@ -144,6 +186,7 @@ export class NavigationDebugService {
 
   private destroy(): void {
     this.scene.events.off(NavigationService.UpdateNavigationEvent, this.redraw, this);
+    this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.updateDynamicOverlays, this);
     this.clear();
   }
 }
