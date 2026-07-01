@@ -23,6 +23,16 @@ describe("height navigation ports", () => {
     expect(component.getDirectionPort(NavigablePathDirection.Top)).toEqual({ enterHeight: 64, exitHeight: 64 });
   });
 
+  it("keeps standing height separate from the directional connection height", () => {
+    const component = createNavigableComponent({ navigableHeight: 128, enterHeight: 64, exitHeight: 64 });
+    const wallPort = { enterHeight: 64, exitHeight: 64 };
+    const towerPort = component.getDirectionPort(NavigablePathDirection.Top);
+
+    expect(component.getDestinationHeight()).toBe(128);
+    expect(canConnectHeightNavigationPorts(wallPort, towerPort)).toBe(true);
+    expect(canConnectHeightNavigationPorts(towerPort, wallPort)).toBe(true);
+  });
+
   it("keeps deprecated acceptMinimumHeight as compatibility fallback", () => {
     const component = createNavigableComponent({ acceptMinimumHeight: 64, exitHeight: 64 });
     expect(component.getDirectionPort(NavigablePathDirection.Top)).toEqual({ enterHeight: 64, exitHeight: 64 });

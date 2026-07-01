@@ -39,7 +39,8 @@ export const watchTowerDefinition = {
     selectable: {},
     navigable: {
       navigableHeight: 128,
-      exitHeight: 128,
+      // The tower stands visually higher than walls, but its walkway connects at wall height.
+      exitHeight: 64,
       // can be accessed from the stairs or a wall
       enterHeight: 64
     },
