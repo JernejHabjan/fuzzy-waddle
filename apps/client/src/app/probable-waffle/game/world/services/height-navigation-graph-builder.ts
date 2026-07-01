@@ -54,6 +54,51 @@ export function canConnectHeightNavigationPorts(
 }
 
 /**
+ * Converts height cells into deterministic directed edges. Tests use this pure
+ * helper so route fixtures exercise the same exact height-port rule as the scene graph builder.
+ */
+export function buildHeightNavigationEdges(cells: HeightNavigationCell[][]): Map<string, HeightNavigationEdge[]> {
+  const edgesByTileKey = new Map<string, HeightNavigationEdge[]>();
+  for (let y = 0; y < cells.length; y++) {
+    for (let x = 0; x < cells[y]!.length; x++) {
+      const cell = cells[y]![x]!;
+      if (!cell.isNavigable) continue;
+      const edges: HeightNavigationEdge[] = [];
+      for (const direction of HEIGHT_NAVIGATION_DIRECTIONS) {
+        const edge = getHeightNavigationEdge(cell, direction, cells);
+        if (edge) edges.push(edge);
+      }
+      edgesByTileKey.set(toHeightNavigationTileKey(cell), edges);
+    }
+  }
+  return edgesByTileKey;
+}
+
+export function toHeightNavigationTileKey(tile: Vector2Simple): string {
+  return `${tile.x},${tile.y}`;
+}
+
+function getHeightNavigationEdge(
+  from: HeightNavigationCell,
+  direction: DirectionOffset,
+  cells: HeightNavigationCell[][]
+): HeightNavigationEdge | undefined {
+  const to = cells[from.y + direction.dy]?.[from.x + direction.dx];
+  if (!to?.isNavigable) return undefined;
+  const exitPort = from.ports[direction.direction];
+  const enterPort = to.ports[direction.opposite];
+  if (!exitPort || !enterPort) return undefined;
+  if (!canConnectHeightNavigationPorts(exitPort, enterPort)) return undefined;
+  return {
+    from: { x: from.x, y: from.y },
+    to: { x: to.x, y: to.y },
+    direction: direction.direction,
+    exitHeight: exitPort.exitHeight,
+    enterHeight: enterPort.enterHeight
+  };
+}
+
+/**
  * Builds the static height-connected navigation graph. It owns only terrain and
  * navigable-object height edges; moving actors are overlaid later by movement occupancy.
  */
@@ -66,7 +111,7 @@ export class HeightNavigationGraphBuilder {
   build(navigationGrid: number[][]): HeightNavigationGraph {
     const cells = this.createBaseCells(navigationGrid);
     this.applyNavigableSurfaces(cells);
-    const edgesByTileKey = this.buildEdges(cells);
+    const edgesByTileKey = buildHeightNavigationEdges(cells);
     return { cells, edgesByTileKey };
   }
 
@@ -136,44 +181,4 @@ export class HeightNavigationGraphBuilder {
     ) as Partial<Record<NavigablePathDirection, HeightDirectionPortDefinition>>;
   }
 
-  private buildEdges(cells: HeightNavigationCell[][]): Map<string, HeightNavigationEdge[]> {
-    const edgesByTileKey = new Map<string, HeightNavigationEdge[]>();
-    for (let y = 0; y < cells.length; y++) {
-      for (let x = 0; x < cells[y]!.length; x++) {
-        const cell = cells[y]![x]!;
-        if (!cell.isNavigable) continue;
-        const edges: HeightNavigationEdge[] = [];
-        for (const direction of HEIGHT_NAVIGATION_DIRECTIONS) {
-          const edge = this.getEdge(cell, direction, cells);
-          if (edge) edges.push(edge);
-        }
-        edgesByTileKey.set(this.toTileKey(cell), edges);
-      }
-    }
-    return edgesByTileKey;
-  }
-
-  private getEdge(
-    from: HeightNavigationCell,
-    direction: DirectionOffset,
-    cells: HeightNavigationCell[][]
-  ): HeightNavigationEdge | undefined {
-    const to = cells[from.y + direction.dy]?.[from.x + direction.dx];
-    if (!to?.isNavigable) return undefined;
-    const exitPort = from.ports[direction.direction];
-    const enterPort = to.ports[direction.opposite];
-    if (!exitPort || !enterPort) return undefined;
-    if (!canConnectHeightNavigationPorts(exitPort, enterPort)) return undefined;
-    return {
-      from: { x: from.x, y: from.y },
-      to: { x: to.x, y: to.y },
-      direction: direction.direction,
-      exitHeight: exitPort.exitHeight,
-      enterHeight: enterPort.enterHeight
-    };
-  }
-
-  private toTileKey(tile: Vector2Simple): string {
-    return `${tile.x},${tile.y}`;
-  }
 }

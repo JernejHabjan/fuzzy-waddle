@@ -3,7 +3,14 @@ import { NavigablePathDirection } from "../../entity/components/movement/navigab
 import { getStairsNavigablePath, getStairsNavigablePorts, StairsType } from "../../prefabs/buildings/tivara/stairs/Stairs";
 import { getWallNavigablePath, WallType } from "../../prefabs/buildings/tivara/wall/Wall";
 import { getDynamicBlockedTileKeysForHeightGraph } from "./height-navigation-dynamic-blockers";
-import { canConnectHeightNavigationPorts, HEIGHT_NAVIGATION_DIRECTIONS } from "./height-navigation-graph-builder";
+import {
+  buildHeightNavigationEdges,
+  canConnectHeightNavigationPorts,
+  HEIGHT_NAVIGATION_DIRECTIONS,
+  type HeightNavigationCell,
+  type HeightNavigationEdge,
+  toHeightNavigationTileKey
+} from "./height-navigation-graph-builder";
 
 describe("height navigation ports", () => {
   it("connects only when source exitHeight exactly matches target enterHeight", () => {
@@ -142,7 +149,122 @@ describe("height navigation dynamic blockers", () => {
   });
 });
 
+describe("height navigation graph connectivity", () => {
+  it("connects wall down stairs across ground up a higher ramp to cliff and tower", () => {
+    const graph = createLineGraph([
+      createCell(0, 64, { right: { enterHeight: 64, exitHeight: 64 } }),
+      createCell(1, 24, {
+        left: { enterHeight: 64, exitHeight: 64 },
+        right: { enterHeight: 0, exitHeight: 0 }
+      }),
+      createCell(2, 0, flatLinePorts(0)),
+      createCell(3, 0, flatLinePorts(0)),
+      createCell(4, 32, {
+        left: { enterHeight: 0, exitHeight: 0 },
+        right: { enterHeight: 128, exitHeight: 128 }
+      }),
+      createCell(5, 96, {
+        left: { enterHeight: 128, exitHeight: 128 },
+        right: { enterHeight: 128, exitHeight: 128 }
+      }),
+      createCell(6, 192, { left: { enterHeight: 128, exitHeight: 128 } })
+    ]);
+
+    expect(isReachable(graph, 0, 6)).toBe(true);
+    expect(isReachable(graph, 6, 0)).toBe(true);
+  });
+
+  it("does not connect the long route when the down-stair high side faces the wrong way", () => {
+    const graph = createLineGraph([
+      createCell(0, 64, { right: { enterHeight: 64, exitHeight: 64 } }),
+      createCell(1, 24, {
+        left: { enterHeight: 0, exitHeight: 0 },
+        right: { enterHeight: 64, exitHeight: 64 }
+      }),
+      createCell(2, 0, flatLinePorts(0))
+    ]);
+
+    expect(isReachable(graph, 0, 2)).toBe(false);
+  });
+
+  it("does not connect the long route when one elevated height port mismatches", () => {
+    const graph = createLineGraph([
+      createCell(0, 0, flatLinePorts(0)),
+      createCell(1, 32, {
+        left: { enterHeight: 0, exitHeight: 0 },
+        right: { enterHeight: 128, exitHeight: 128 }
+      }),
+      createCell(2, 96, { left: { enterHeight: 64, exitHeight: 64 } })
+    ]);
+
+    expect(isReachable(graph, 0, 2)).toBe(false);
+  });
+
+  it("does not allow ground to enter an open wall without a connected height path", () => {
+    const graph = createLineGraph([
+      createCell(0, 0, { right: { enterHeight: 0, exitHeight: 0 } }),
+      createCell(1, 42, { left: { enterHeight: 64, exitHeight: 64 } })
+    ]);
+
+    expect(isReachable(graph, 0, 1)).toBe(false);
+  });
+
+  it("rejects old threshold-style access when exit height is above enter height but not exact", () => {
+    const graph = createLineGraph([
+      createCell(0, 64, { right: { enterHeight: 64, exitHeight: 64 } }),
+      createCell(1, 42, { left: { enterHeight: 32, exitHeight: 32 } })
+    ]);
+
+    expect(isReachable(graph, 0, 1)).toBe(false);
+  });
+});
+
 function createNavigableComponent(definition: ConstructorParameters<typeof NavigableComponent>[1]): NavigableComponent {
   const gameObject = { scene: { events: { emit: jest.fn() } } } as unknown as Phaser.GameObjects.GameObject;
   return new NavigableComponent(gameObject, definition);
+}
+
+function createLineGraph(cells: HeightNavigationCell[]): Map<string, HeightNavigationEdge[]> {
+  return buildHeightNavigationEdges([cells]);
+}
+
+function createCell(
+  x: number,
+  navigableHeight: number,
+  ports: HeightNavigationCell["ports"]
+): HeightNavigationCell {
+  return {
+    x,
+    y: 0,
+    navigableHeight,
+    isNavigable: true,
+    ports
+  };
+}
+
+function flatLinePorts(height: number): HeightNavigationCell["ports"] {
+  return {
+    left: { enterHeight: height, exitHeight: height },
+    right: { enterHeight: height, exitHeight: height }
+  };
+}
+
+function isReachable(edgesByTileKey: Map<string, HeightNavigationEdge[]>, startX: number, targetX: number): boolean {
+  const queue = [{ x: startX, y: 0 }];
+  const visited = new Set<string>();
+
+  while (queue.length > 0) {
+    const tile = queue.shift()!;
+    const key = toHeightNavigationTileKey(tile);
+    if (visited.has(key)) continue;
+    visited.add(key);
+    if (tile.x === targetX) return true;
+
+    const nextTiles = [...(edgesByTileKey.get(key) ?? [])]
+      .map((edge) => edge.to)
+      .sort((a, b) => a.y - b.y || a.x - b.x);
+    queue.push(...nextTiles);
+  }
+
+  return false;
 }
