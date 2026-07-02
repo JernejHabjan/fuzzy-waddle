@@ -2,7 +2,6 @@
 
 import { enableProdMode, importProvidersFrom, isDevMode, provideZoneChangeDetection } from "@angular/core";
 import { isTauri } from "./app/shared/utils/tauri";
-import { provideCharts, withDefaultRegisterables } from "ng2-charts";
 
 import { environment } from "./environments/environment";
 import { AppComponent } from "./app/app.component";
@@ -40,7 +39,6 @@ bootstrapApplication(AppComponent, {
     ),
     AuthGuard,
     { provide: GameInstanceStorageServiceInterface, useClass: GameInstanceIndexeddbStorageService },
-    provideHttpClient(withInterceptors([authReadyInterceptor, accessTokenInterceptor])),
-    provideCharts(withDefaultRegisterables())
+    provideHttpClient(withInterceptors([authReadyInterceptor, accessTokenInterceptor]))
   ]
 }).catch((err) => console.error(err));
