@@ -15,11 +15,7 @@ import { GameInstanceStorageServiceInterface } from "./app/probable-waffle/commu
 import { accessTokenInterceptor } from "./app/auth/access-token.interceptor";
 import { provideHttpClient, withInterceptors } from "@angular/common/http";
 import { AuthGuard } from "./app/auth/auth.guard";
-import Phaser from "phaser";
 import { authReadyInterceptor } from "./app/auth/auth-ready.interceptor";
-
-// needed as Phaser 4.1.0 changed ESM builds - see https://phaser.io/news/2026/04/phaser-4-1-0-salusa-release
-Object.assign(window, { Phaser });
 
 if (environment.production) {
   enableProdMode();

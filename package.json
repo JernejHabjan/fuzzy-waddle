@@ -141,6 +141,7 @@
     "@nx/workspace": "22.7.2",
     "@swc-node/register": "1.11.1",
     "@swc/core": "1.15.5",
+    "@swc/jest": "0.2.39",
     "@swc/helpers": "0.5.18",
     "@types/jest": "30.0.0",
     "@types/node": "^24.7.2",
