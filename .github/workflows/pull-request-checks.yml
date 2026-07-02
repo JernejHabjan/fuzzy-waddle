@@ -1,5 +1,6 @@
 name: Pull Request Checks
 
+# Run validation on non-draft PR activity for the long-lived branches.
 on:
   pull_request:
     branches:
@@ -11,11 +12,18 @@ on:
       - synchronize
       - reopened
 
+# Required by nx-set-shas when it resolves the commit range for affected runs.
+permissions:
+  actions: read
+  contents: read
+
+# Shared Nx Cloud configuration for the jobs in this workflow.
 env:
   NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
   NX_CLOUD_CONTINUOUS_ASSIGNMENT: true
 
 jobs:
+  # Keep version policy separate from distributed Nx work. This only runs for PRs into main.
   version:
     if: github.event.pull_request.draft == false && github.base_ref == 'main'
     runs-on: ubuntu-latest
@@ -44,6 +52,7 @@ jobs:
       - name: Verify app versions are in sync
         run: pnpm run version:check
 
+  # Main PR validation path: compute affected scope, distribute Nx tasks, then close the agent run.
   build:
     if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
@@ -54,6 +63,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
+          fetch-depth: 0
           lfs: false
 
       - name: Setup pnpm
@@ -73,6 +83,11 @@ jobs:
       - name: Verify app versions are in sync
         run: pnpm run version:check
 
+      # Populate NX_BASE / NX_HEAD so `nx affected` compares the PR against the correct git range.
+      - name: Set Nx SHAs
+        uses: nrwl/nx-set-shas@v5
+
+      # Start the Nx Cloud coordinator before running distributed tasks.
       - name: Start Nx Agents run
         run: >
           pnpm exec nx-cloud start-ci-run
@@ -83,12 +98,14 @@ jobs:
           NX_BRANCH: ${{ github.event.number }}
           NX_RUN_GROUP: ${{ github.run_id }}
 
+      # Run only the projects touched by this PR and let Nx schedule them across agents.
       - name: Run distributed workspace checks
-        run: pnpm exec nx run-many -t lint,test,build --all
+        run: pnpm exec nx affected -t lint,test,build
         env:
           NX_BRANCH: ${{ github.event.number }}
           NX_RUN_GROUP: ${{ github.run_id }}
 
+      # Always close the CI run so idle agents do not linger after success or failure.
       - name: Complete Nx Agents run
         if: always()
         run: pnpm exec nx-cloud complete-ci-run

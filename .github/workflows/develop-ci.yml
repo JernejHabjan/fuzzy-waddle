@@ -1,14 +1,22 @@
 name: Develop CI
 
+# Validate and publish the develop branch preview build.
 on:
   push:
     branches: [ develop ]
 
+# Required by nx-set-shas when it resolves the commit range for affected runs.
+permissions:
+  actions: read
+  contents: read
+
+# Shared Nx Cloud configuration for the jobs in this workflow.
 env:
   NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
   NX_CLOUD_CONTINUOUS_ASSIGNMENT: true
 
 jobs:
+  # Run affected validation on develop pushes, then build the GitHub Pages client artifact.
   build:
     runs-on: ubuntu-latest
     strategy:
@@ -18,8 +26,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
+          fetch-depth: 0
           lfs: false
-        #   fetch-depth: 50
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -35,6 +43,11 @@ jobs:
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
 
+      # Populate NX_BASE / NX_HEAD so `nx affected` uses the previous successful range on develop.
+      - name: Set Nx SHAs
+        uses: nrwl/nx-set-shas@v5
+
+      # Start the Nx Cloud coordinator before running distributed tasks.
       - name: Start Nx Agents run
         run: >
           pnpm exec nx-cloud start-ci-run
@@ -45,18 +58,21 @@ jobs:
           NX_BRANCH: ${{ github.ref_name }}
           NX_RUN_GROUP: ${{ github.run_id }}
 
+      # Validate only the projects affected by the develop push.
       - name: Run distributed workspace checks
-        run: pnpm exec nx run-many -t lint,test --all
+        run: pnpm exec nx affected -t lint,test
         env:
           NX_BRANCH: ${{ github.ref_name }}
           NX_RUN_GROUP: ${{ github.run_id }}
 
+      # Keep the existing preview build behavior local to the coordinator job.
       - name: Build Packages
         run: pnpm run build-gh-pages
         env:
           NX_BRANCH: ${{ github.ref_name }}
           NX_RUN_GROUP: ${{ github.run_id }}
 
+      # Always close the CI run so idle agents do not linger after success or failure.
       - name: Complete Nx Agents run
         if: always()
         run: pnpm exec nx-cloud complete-ci-run
@@ -73,7 +89,7 @@ jobs:
       #     # Upload dist/apps/client
       #     path: 'dist/apps/client'
 
-  # Deploy job
+  # Optional deploy job kept commented until Pages deployment is needed again.
   #deploy:
   #  # Add a dependency to the build job
   #  needs: build

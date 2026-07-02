@@ -1,14 +1,17 @@
 name: Main Release
 
+# Build and publish release artifacts when changes land on main.
 on:
   push:
     branches: [ main ]
 
+# Shared Nx Cloud configuration for the jobs in this workflow.
 env:
   NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
   NX_CLOUD_CONTINUOUS_ASSIGNMENT: true
 
 jobs:
+  # Coordinator-only release checks: version sync, version discovery, and tag collision guard.
   prepare:
     runs-on: ubuntu-latest
     outputs:
@@ -51,6 +54,7 @@ jobs:
             exit 1
           fi
 
+  # Linux web release path: build the GitHub Pages artifact and deploy it.
   github_pages:
     needs: prepare
     runs-on: ubuntu-latest
@@ -81,6 +85,7 @@ jobs:
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
 
+      # Start the Nx Cloud coordinator before running distributed build work.
       - name: Start Nx Agents run
         run: >
           pnpm exec nx-cloud start-ci-run
@@ -91,6 +96,7 @@ jobs:
           NX_BRANCH: ${{ github.ref_name }}
           NX_RUN_GROUP: ${{ github.run_id }}
 
+      # Build the client bundle that is later uploaded to GitHub Pages.
       - name: Build GitHub Pages client
         run: pnpm run build-gh-pages
         env:
@@ -105,6 +111,7 @@ jobs:
         with:
           path: dist/apps/client
 
+      # Always close the CI run so idle agents do not linger after success or failure.
       - name: Complete Nx Agents run
         if: always()
         run: pnpm exec nx-cloud complete-ci-run
@@ -116,6 +123,7 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
 
+  # Windows release path: keep Tauri packaging local because it depends on Windows tooling.
   tauri_release:
     needs: prepare
     runs-on: windows-latest
@@ -159,6 +167,7 @@ jobs:
       - name: Build web client for Tauri
         run: pnpm nx build client --configuration=tauri
 
+      # The action creates the GitHub release and uploads the NSIS installer assets.
       - name: Build installer and publish release
         uses: tauri-apps/tauri-action@v0
         env:
