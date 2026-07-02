@@ -9,6 +9,8 @@ import { TauriService } from "../../../shared/services/tauri.service";
   templateUrl: "./probable-waffle.component.html",
   styleUrls: ["./probable-waffle.component.scss"],
   imports: [RouterOutlet],
+  // The lazy-loaded AOTA theme stylesheet needs to reach routed children under this shell,
+  // so these route-scoped styles must stay global instead of using Angular's scoped attributes.
   encapsulation: ViewEncapsulation.None,
   host: {
     ...AngularHost.contentFlexFullHeight,
