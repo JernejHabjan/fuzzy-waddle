@@ -18,7 +18,6 @@
         "inlineStyleLanguage": "scss",
         "assets": ["apps/client/src/favicon.ico", "apps/client/src/assets", "apps/client/src/manifest.webmanifest"],
         "styles": ["apps/client/src/styles/styles.scss"],
-        "scripts": ["node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"],
         "serviceWorker": true,
         "ngswConfigPath": "apps/client/ngsw-config.json",
         "allowedCommonJsDependencies": [
@@ -38,8 +37,8 @@
           "budgets": [
             {
               "type": "initial",
-              "maximumWarning": "3mb",
-              "maximumError": "3.5mb"
+              "maximumWarning": "800kb",
+              "maximumError": "1mb"
             },
             {
               "type": "anyComponentStyle",
