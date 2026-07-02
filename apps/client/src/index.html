@@ -21,6 +21,13 @@
     <meta property="og:description" content="Game development with Phaser and networking" />
     <meta name="author" content="Jernej Habjan" />
     <meta name="keywords" content="Game development, Phaser, networking" />
+    <!-- The home route always features this fixed banner, so preload it before Angular bootstraps. -->
+    <link
+      rel="preload"
+      as="image"
+      href="assets/games/images/dungeon-crawler-banner.webp"
+      fetchpriority="high"
+    />
   </head>
   <body>
     <fuzzy-waddle-root></fuzzy-waddle-root>

@@ -1,4 +1,4 @@
-import { Component, HostListener, inject, type OnDestroy, type OnInit } from "@angular/core";
+import { Component, HostListener, inject, type OnDestroy, type OnInit, ViewEncapsulation } from "@angular/core";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 import { UserInstanceService } from "../../../home/profile/user-instance.service";
 import { RouterOutlet } from "@angular/router";
@@ -9,6 +9,7 @@ import { TauriService } from "../../../shared/services/tauri.service";
   templateUrl: "./probable-waffle.component.html",
   styleUrls: ["./probable-waffle.component.scss"],
   imports: [RouterOutlet],
+  encapsulation: ViewEncapsulation.None,
   host: {
     ...AngularHost.contentFlexFullHeight,
     "(window:focus)": "onWindowFocus()",

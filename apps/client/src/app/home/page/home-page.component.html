@@ -14,11 +14,15 @@
 }
 
 <a class="tile-featured cursor-pointer position-relative nav-link" routerLink="{{ featuredGame.route }}">
+  <!-- Explicit dimensions keep the hero stable before the banner is decoded. -->
   <img
     [alt]="featuredGame.name"
     [src]="'assets/games/images/' + featuredGame.bannerImage"
     class="featured-image"
+    decoding="async"
     fetchpriority="high"
+    height="720"
+    width="1600"
   />
   <div class="featured-title">
     <div>Featured</div>
@@ -29,7 +33,14 @@
 <div class="card-row">
   @for (game of displayGames; track game) {
     <a class="tile-game nav-link card-container" routerLink="{{ game.route }}">
-      <img [alt]="game.name" class="game-image" src="{{ 'assets/games/images/' + game.image }}" loading="lazy" />
+      <img
+        [alt]="game.name"
+        class="game-image"
+        height="200"
+        loading="lazy"
+        src="{{ 'assets/games/images/' + game.image }}"
+        width="600"
+      />
       <div class="game-title">
         <h2>{{ game.name }}</h2>
         @if (game.inDevelopment) {
@@ -82,6 +93,7 @@
   </section>
 </div>
 
-@if (serverHealthService.serverAvailable && authService.isAuthenticated && !isBanned) {
+<!-- Keep chat off the landing page's first-paint path. -->
+@defer (when serverHealthService.serverAvailable && authService.isAuthenticated && !isBanned) {
   <fuzzy-waddle-chat-float />
 }
