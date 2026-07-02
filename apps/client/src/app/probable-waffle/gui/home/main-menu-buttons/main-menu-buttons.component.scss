@@ -20,6 +20,25 @@
   gap: 1.35rem;
 }
 
+@media (min-width: 769px) {
+  .main-menu {
+    max-height: 80vh;
+  }
+}
+
+@media (max-width: 800px) {
+  .main-menu {
+    max-height: 70vh;
+  }
+}
+
+
+@media (max-width: 769px) {
+  .main-menu {
+    overflow: unset;
+  }
+}
+
 .menu-section {
   display: flex;
   flex-direction: column;
@@ -59,8 +78,6 @@
 @media (max-width: 768px) {
   .main-menu {
     width: 350px;
-    max-height: none;
-    overflow-y: visible;
   }
 
   .menu-grid {
@@ -145,7 +162,7 @@
   line-height: 1.2;
 }
 
-.back-button-container {
+.menu-section-footer {
   display: flex;
   justify-content: center;
   margin-top: 0.25rem;
@@ -167,13 +184,6 @@
 
   .menu-button-text {
     margin-bottom: 0;
-  }
-}
-
-@media (max-width: 1200px) {
-  .main-menu {
-    max-height: none;
-    overflow-y: visible;
   }
 }
 
