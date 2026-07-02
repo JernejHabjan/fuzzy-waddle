@@ -14,7 +14,7 @@
     "version:tauri": "pnpm run version:app --",
     "editor": "phasereditor2d-launcher -project . -port 1959",
     "editor-remote": "phasereditor2d-launcher -project . -disable-open-browser -public -port 1959",
-    "build": "nx run-many --all --target=build",
+    "build": "nx run-many --all --target=build --configuration=production",
     "build-gh-pages": "nx run build -- --base-href=/fuzzy-waddle/",
     "test": "nx run-many --all --target=test",
     "lint": "nx run-many --all --target=lint",
