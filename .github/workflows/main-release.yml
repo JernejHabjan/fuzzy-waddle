@@ -94,14 +94,16 @@ jobs:
           --stop-agents-after="build"
         env:
           NX_BRANCH: ${{ github.ref_name }}
-          NX_RUN_GROUP: ${{ github.run_id }}
+          # `github.run_id` is reused on Actions reruns, so include the attempt to avoid
+          # reopening an Nx Cloud run group that was already completed by a prior attempt.
+          NX_RUN_GROUP: ${{ github.run_id }}-${{ github.run_attempt }}
 
       # Build the client bundle that is later uploaded to GitHub Pages.
       - name: Build GitHub Pages client
         run: pnpm run build-gh-pages
         env:
           NX_BRANCH: ${{ github.ref_name }}
-          NX_RUN_GROUP: ${{ github.run_id }}
+          NX_RUN_GROUP: ${{ github.run_id }}-${{ github.run_attempt }}
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -117,7 +119,7 @@ jobs:
         run: pnpm exec nx-cloud complete-ci-run
         env:
           NX_BRANCH: ${{ github.ref_name }}
-          NX_RUN_GROUP: ${{ github.run_id }}
+          NX_RUN_GROUP: ${{ github.run_id }}-${{ github.run_attempt }}
 
       - name: Deploy to GitHub Pages
         id: deployment

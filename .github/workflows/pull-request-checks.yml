@@ -96,14 +96,16 @@ jobs:
           --stop-agents-after="lint,test,build"
         env:
           NX_BRANCH: ${{ github.event.number }}
-          NX_RUN_GROUP: ${{ github.run_id }}
+          # `github.run_id` is reused on Actions reruns, so include the attempt to avoid
+          # reopening an Nx Cloud run group that was already completed by a prior attempt.
+          NX_RUN_GROUP: ${{ github.run_id }}-${{ github.run_attempt }}
 
       # Run only the projects touched by this PR and let Nx schedule them across agents.
       - name: Run distributed workspace checks
         run: pnpm exec nx affected -t lint,test,build
         env:
           NX_BRANCH: ${{ github.event.number }}
-          NX_RUN_GROUP: ${{ github.run_id }}
+          NX_RUN_GROUP: ${{ github.run_id }}-${{ github.run_attempt }}
 
       # Always close the CI run so idle agents do not linger after success or failure.
       - name: Complete Nx Agents run
@@ -111,4 +113,4 @@ jobs:
         run: pnpm exec nx-cloud complete-ci-run
         env:
           NX_BRANCH: ${{ github.event.number }}
-          NX_RUN_GROUP: ${{ github.run_id }}
+          NX_RUN_GROUP: ${{ github.run_id }}-${{ github.run_attempt }}
