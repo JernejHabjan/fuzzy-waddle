@@ -6,6 +6,7 @@ on:
 
 env:
   NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+  NX_CLOUD_CONTINUOUS_ASSIGNMENT: true
 
 jobs:
   prepare:
@@ -80,6 +81,16 @@ jobs:
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Start Nx Agents run
+        run: >
+          pnpm exec nx-cloud start-ci-run
+          --distribute-on="3 ci-linux-node24"
+          --require-explicit-completion
+          --stop-agents-after="build"
+        env:
+          NX_BRANCH: ${{ github.ref_name }}
+          NX_RUN_GROUP: ${{ github.run_id }}
+
       - name: Build GitHub Pages client
         run: pnpm run build-gh-pages
         env:
@@ -93,6 +104,13 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: dist/apps/client
+
+      - name: Complete Nx Agents run
+        if: always()
+        run: pnpm exec nx-cloud complete-ci-run
+        env:
+          NX_BRANCH: ${{ github.ref_name }}
+          NX_RUN_GROUP: ${{ github.run_id }}
 
       - name: Deploy to GitHub Pages
         id: deployment

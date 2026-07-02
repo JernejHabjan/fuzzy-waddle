@@ -1,0 +1,21 @@
+launch-templates:
+  ci-linux-node24:
+    resource-class: 'docker_linux_amd64/small'
+    image: 'ubuntu22.04-node24.14-v1'
+    init-steps:
+      - name: Checkout
+        uses: 'nrwl/nx-cloud-workflows/v6/workflow-steps/checkout/main.yaml'
+
+      - name: Install Node 24.13.0
+        uses: 'nrwl/nx-cloud-workflows/v6/workflow-steps/install-node/main.yaml'
+        inputs:
+          node_version: '24.13.0'
+
+      - name: Activate pnpm 10
+        script: |
+          corepack enable
+          corepack prepare pnpm@10.0.0 --activate
+          pnpm --version
+
+      - name: Install dependencies
+        script: pnpm install --frozen-lockfile
