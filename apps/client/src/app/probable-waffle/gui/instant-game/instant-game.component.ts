@@ -38,7 +38,7 @@ export class InstantGameComponent implements OnInit {
 
     // const allMaps = Object.values(ProbableWaffleLevels);
     // const map = allMaps[Math.floor(Math.random() * allMaps.length)].id;
-    const map = ProbableWaffleMapEnum.RiverCrossing;
+    const map = ProbableWaffleMapEnum.Sandbox; // todo
     await this.gameInstanceClientService.gameModeChanged("map", { map });
     await this.gameInstanceClientService.gameInstanceMetadataChanged("sessionState", {
       sessionState: GameSessionState.MovingPlayersToGame
