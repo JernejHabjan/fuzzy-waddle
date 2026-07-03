@@ -15,7 +15,7 @@ import Wall from "../wall/Wall";
 import StairsTopRight from "./StairsTopRight";
 import StairsBottomLeft from "./StairsBottomLeft";
 import StairsBottomRight from "./StairsBottomRight";
-import { setActorData } from "../../../../data/actor-data";
+import { ActorDataChangedEvent, setActorData } from "../../../../data/actor-data";
 import { getActorComponent } from "../../../../data/actor-component";
 import { NavigableComponent } from "../../../../entity/components/movement/navigable-component";
 import type { NavigablePath } from "../../../../entity/components/movement/navigable-path";
@@ -74,7 +74,10 @@ export default class Stairs extends Phaser.GameObjects.Container {
   private stairs?: Phaser.GameObjects.GameObject;
   private currentStairsType?: StairsType;
   updateStairs(stairsType: StairsType) {
-    if (this.currentStairsType === stairsType) return;
+    if (this.currentStairsType === stairsType) {
+      this.updateNavigablePath(stairsType);
+      return;
+    }
     this.currentStairsType = stairsType;
     this.stairs?.destroy();
     const stairClasses = {
@@ -93,11 +96,7 @@ export default class Stairs extends Phaser.GameObjects.Container {
     } else {
       throw new Error("Stairs type not found");
     }
-    const navigableComponent = getActorComponent(this, NavigableComponent);
-    if (navigableComponent) {
-      const navigablePath = this.getNavigablePath(stairsType);
-      navigableComponent.allowNavigablePath(navigablePath, this.getNavigablePorts(stairsType));
-    }
+    this.updateNavigablePath(stairsType);
   }
 
   private getNavigablePath(stairsType: StairsType): NavigablePath {
@@ -108,12 +107,23 @@ export default class Stairs extends Phaser.GameObjects.Container {
     return getStairsNavigablePorts(stairsType);
   }
 
+  private updateNavigablePath(stairsType: StairsType) {
+    const navigableComponent = getActorComponent(this, NavigableComponent);
+    if (!navigableComponent) return;
+    navigableComponent.allowNavigablePath(this.getNavigablePath(stairsType), this.getNavigablePorts(stairsType));
+  }
+
+  private updateCurrentNavigablePath() {
+    this.updateNavigablePath(this.currentStairsType ?? StairsType.TopLeft);
+  }
+
   private setup() {
     setActorData(
       this,
       [new ConstructionGameObjectInterfaceComponent(this, this.handlePrefabVisibility, this.cursor)],
       []
     );
+    this.on(ActorDataChangedEvent, this.updateCurrentNavigablePath, this);
 
     onObjectReady(
       this,
@@ -207,6 +217,7 @@ export default class Stairs extends Phaser.GameObjects.Container {
   }
 
   override destroy(fromScene?: boolean) {
+    this.off(ActorDataChangedEvent, this.updateCurrentNavigablePath, this);
     this.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.throttleRedrawStairsFrameNonDeterministic, this);
     super.destroy(fromScene);
   }

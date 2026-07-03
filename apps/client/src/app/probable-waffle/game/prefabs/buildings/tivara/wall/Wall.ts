@@ -27,7 +27,7 @@ import { throttle } from "../../../../library/throttle";
 import Stairs from "../stairs/Stairs";
 import { getNeighboursByTypes } from "../../../../data/tile-map-helpers";
 import { TilemapComponent } from "../../../../world/tilemap/tilemap.component";
-import { setActorData } from "../../../../data/actor-data";
+import { ActorDataChangedEvent, setActorData } from "../../../../data/actor-data";
 import { getActorComponent } from "../../../../data/actor-component";
 import { NavigableComponent } from "../../../../entity/components/movement/navigable-component";
 import type { NavigablePath } from "../../../../entity/components/movement/navigable-path";
@@ -80,7 +80,10 @@ export default class Wall extends Phaser.GameObjects.Container {
   private wall?: Phaser.GameObjects.GameObject;
   private currentWallType?: WallType;
   updateWall(wallType: WallType) {
-    if (this.currentWallType === wallType) return;
+    if (this.currentWallType === wallType) {
+      this.updateNavigablePath(wallType);
+      return;
+    }
     this.currentWallType = wallType;
     this.wall?.destroy();
 
@@ -113,15 +116,21 @@ export default class Wall extends Phaser.GameObjects.Container {
       throw new Error("Wall type not found");
     }
 
-    const navigableComponent = getActorComponent(this, NavigableComponent);
-    if (navigableComponent) {
-      const navigablePath = this.getNavigablePath(wallType);
-      navigableComponent.allowNavigablePath(navigablePath);
-    }
+    this.updateNavigablePath(wallType);
   }
 
   private getNavigablePath(wallType: WallType): NavigablePath {
     return getWallNavigablePath(wallType);
+  }
+
+  private updateNavigablePath(wallType: WallType) {
+    const navigableComponent = getActorComponent(this, NavigableComponent);
+    if (!navigableComponent) return;
+    navigableComponent.allowNavigablePath(this.getNavigablePath(wallType));
+  }
+
+  private updateCurrentNavigablePath() {
+    this.updateNavigablePath(this.currentWallType ?? WallType.Full);
   }
 
   private setup() {
@@ -130,6 +139,7 @@ export default class Wall extends Phaser.GameObjects.Container {
       [new ConstructionGameObjectInterfaceComponent(this, this.handlePrefabVisibility, this.cursor)],
       []
     );
+    this.on(ActorDataChangedEvent, this.updateCurrentNavigablePath, this);
 
     onObjectReady(
       this,
@@ -234,6 +244,7 @@ export default class Wall extends Phaser.GameObjects.Container {
     return getNeighboursByTypes(this, [Wall, WatchTower, Stairs], TilemapComponent.tileWidth);
   }
   override destroy(fromScene?: boolean) {
+    this.off(ActorDataChangedEvent, this.updateCurrentNavigablePath, this);
     this.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.throttleRedrawWallsFrameNonDeterministic, this);
     super.destroy(fromScene);
   }

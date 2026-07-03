@@ -393,7 +393,7 @@ export class NavigationService {
     actualTilesUnderColliders.forEach((tile) => {
       if (!tile) return;
       if (this.DEBUG) tile.tint = 0xff0000;
-      emptyGrid[tile.y]![tile.x]! = 1;
+      this.setObjectGridTile(emptyGrid, tile, 1);
     });
 
     const navigables = this.getTileIndexesForNavigables();
@@ -402,10 +402,20 @@ export class NavigationService {
     actualNavigableTiles.forEach((tile) => {
       if (!tile) return;
       if (this.DEBUG) tile.tint = 0x00ff00;
-      emptyGrid[tile.y]![tile.x]! = 0;
+      this.setObjectGridTile(emptyGrid, tile, 0);
     });
 
     return emptyGrid;
+  }
+
+  private setObjectGridTile(
+    objectGrid: (number | undefined)[][],
+    tile: Phaser.Tilemaps.Tile,
+    value: number
+  ): void {
+    const row = objectGrid[tile.y];
+    if (!row || tile.x < 0 || tile.x >= row.length) return;
+    row[tile.x] = value;
   }
 
   /**
@@ -432,6 +442,7 @@ export class NavigationService {
       const navigableComponent = getActorComponent(child, NavigableComponent);
       if (!navigableComponent) return;
       const tilesUnderObject: Vector2Simple[] = getTileCoordsUnderObject(this.tilemap, child);
+      if (tilesUnderObject.length === 0) return;
       const { shrinkX, shrinkY } = NavigableComponent.handleNavigable(child);
 
       const minX = Math.min(...tilesUnderObject.map((tile) => tile.x));
