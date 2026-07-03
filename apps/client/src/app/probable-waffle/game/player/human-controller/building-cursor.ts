@@ -278,12 +278,13 @@ export class BuildingCursor {
         const actorTransform = getGameObjectLogicalTransform(actor);
         if (currentOrder.data.targetTileLocation && actorTransform) {
           const targetTile = currentOrder.data.targetTileLocation;
+          const actorTile = IsoHelper.isometricWorldToTileXY(this.scene, actorTransform.x, actorTransform.y, false);
           const distance = Math.sqrt(
-            Math.pow(actorTransform.x - targetTile.x, 2) + Math.pow(actorTransform.y - targetTile.y, 2)
+            Math.pow(actorTile.x - targetTile.x, 2) + Math.pow(actorTile.y - targetTile.y, 2)
           );
 
-          // Consider movement complete if within ~1 tile distance
-          if (distance < 2) {
+          // Compare in tile space so placement does not wait on a world-vs-tile mismatch.
+          if (distance <= 1) {
             resolve();
             return;
           }

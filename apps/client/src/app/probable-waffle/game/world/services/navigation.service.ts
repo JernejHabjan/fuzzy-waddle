@@ -258,6 +258,15 @@ export class NavigationService {
   }
 
   /**
+   * Public read-only wrapper for the static height-graph traversal rule.
+   * Callers that need to make one-off movement decisions should reuse the
+   * graph-owned edge test instead of reimplementing direction checks.
+   */
+  canTraverseBetweenTiles(from: Vector2Simple, to: Vector2Simple): boolean {
+    return this.canTraverseBetween(from, to);
+  }
+
+  /**
    * Returns the traversable connected component starting at startTile.
    * sameHeightOnly is used by formation assignment so groups prefer one
    * elevated platform before spilling onto connected lower/higher tiles.

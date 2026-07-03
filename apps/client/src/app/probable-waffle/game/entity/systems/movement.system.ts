@@ -51,6 +51,9 @@ const BLOCKED_STEP_WAIT_MS = 120;
 const BLOCKED_STEP_MAX_SIDE_STEP_ATTEMPTS = 2;
 // Full repaths are more expensive and can reshuffle routes, so cap retries.
 const BLOCKED_STEP_MAX_REPATH_ATTEMPTS = 2;
+// A repath may temporarily fail while another unit clears the route, but do
+// not wait forever before escalating to the fallback-destination flow.
+const BLOCKED_STEP_MAX_REPATH_WAIT_ATTEMPTS = 2;
 // Last-resort fallback search radius around the original destination tile.
 const BLOCKED_STEP_FALLBACK_RADIUS = 6;
 // Formation expansion stops after a bounded connected-component search so large
@@ -355,15 +358,15 @@ export class MovementSystem {
         recoveryState.sideStepAttempts++;
         config?.onPathUpdate?.(sideStepTile);
         await this.moveActorToTileWithTween(sideStepTile, config);
-        await this.repathToDestination(finalDestination, config, recoveryState);
-        return;
+        const recovered = await this.repathToDestination(finalDestination, config, recoveryState);
+        if (recovered) return;
       }
     }
 
     if (recoveryState.repathAttempts < BLOCKED_STEP_MAX_REPATH_ATTEMPTS) {
       recoveryState.repathAttempts++;
-      await this.repathToDestination(finalDestination, config, recoveryState);
-      return;
+      const recovered = await this.repathToDestination(finalDestination, config, recoveryState);
+      if (recovered) return;
     }
 
     const fallbackTile = await this.findReachableFallbackTile(finalDestination);
@@ -389,7 +392,9 @@ export class MovementSystem {
    * formation slots, but using them as path blockers can make a moving group
    * close every temporary route around a large object. Active step reservations
    * and current actor footprints still block traversal, and a no-path result is
-   * retried because those blockers can clear on the next congestion wait.
+   * retried a small number of times because those blockers can clear on the
+   * next congestion wait. When that never happens, control returns so the
+   * caller can escalate to a fallback destination instead of hanging forever.
    * @param destinationTile The original tile the order is still trying to reach.
    * @param config Optional movement callbacks and animation flags for the order.
    * @param recoveryState Mutable counters that survive across repath retries.
@@ -398,11 +403,12 @@ export class MovementSystem {
     destinationTile: Vector2Simple,
     config: PathMoveConfig | undefined,
     recoveryState: BlockedStepRecoveryState
-  ): Promise<void> {
+  ): Promise<boolean> {
     if (!this.navigationService) return Promise.reject("No navigationService");
     const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
     let newPath: Vector2Simple[] | null = null;
-    while (isGameObjectActiveInActiveScene(this.gameObject)) {
+    let waitAttempts = 0;
+    while (isGameObjectActiveInActiveScene(this.gameObject) && waitAttempts <= BLOCKED_STEP_MAX_REPATH_WAIT_ATTEMPTS) {
       // Repathing overlays only dynamic blockers. Static height edges stay owned
       // by NavigationService so wall/stairs connectivity cannot diverge here.
       const dynamicBlockers =
@@ -420,13 +426,15 @@ export class MovementSystem {
 
       // Congestion can temporarily make every route around a large obstacle look closed.
       // Keep the order alive and retry after other actors release their current steps.
+      waitAttempts++;
+      if (waitAttempts > BLOCKED_STEP_MAX_REPATH_WAIT_ATTEMPTS) break;
       await this.waitForBlockedStep();
       recoveryState.sideStepAttempts = 0;
-      recoveryState.repathAttempts = 0;
     }
-    if (!newPath || !newPath.length) return;
+    if (!newPath || !newPath.length) return false;
     newPath.shift();
     await this.moveAlongPathByFollowingPreCalculatedStaticPath(newPath, config, recoveryState);
+    return true;
   }
 
   /**
@@ -557,6 +565,7 @@ export class MovementSystem {
         if (candidate.x === blockedTile.x && candidate.y === blockedTile.y) continue;
         if (!navigationService.isWithinGridBounds(candidate, terrainType)) continue;
         if (!navigationService.isTileNavigable(candidate, terrainType)) continue;
+        if (!navigationService.canTraverseBetweenTiles(currentTile, candidate)) continue;
         const candidateHeight = navigationService.getNavigableHeightAtTile(candidate);
         if (candidateHeight !== currentHeight) continue;
         const footprint = movementOccupancy.getActorFootprintAtTile(this.gameObject, candidate);
