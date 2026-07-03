@@ -61,6 +61,7 @@ export function canConnectHeightNavigationPorts(
 /**
  * Converts height cells into deterministic directed edges. Tests use this pure
  * helper so route fixtures exercise the same exact height-port rule as the scene graph builder.
+ * @param cells Height-annotated navigable cells indexed by tile coordinates.
  */
 export function buildHeightNavigationEdges(cells: HeightNavigationCell[][]): Map<string, HeightNavigationEdge[]> {
   const edgesByTileKey = new Map<string, HeightNavigationEdge[]>();
@@ -79,10 +80,17 @@ export function buildHeightNavigationEdges(cells: HeightNavigationCell[][]): Map
   return edgesByTileKey;
 }
 
+/**
+ * Builds the stable map key used by height-graph edge lookup tables.
+ */
 export function toHeightNavigationTileKey(tile: Vector2Simple): string {
   return `${tile.x},${tile.y}`;
 }
 
+/**
+ * Builds one directed edge when adjacent source/target ports exist and their
+ * exact exit/enter heights match.
+ */
 function getHeightNavigationEdge(
   from: HeightNavigationCell,
   direction: DirectionOffset,
@@ -187,6 +195,10 @@ export class HeightNavigationGraphBuilder {
     return ports;
   }
 
+  /**
+   * Creates identical enter/exit ports for simple flat terrain cells that do
+   * not need per-direction height overrides.
+   */
   private createFlatPorts(
     enterHeight: number,
     exitHeight: number

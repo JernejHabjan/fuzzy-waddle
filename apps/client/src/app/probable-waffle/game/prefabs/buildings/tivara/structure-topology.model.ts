@@ -7,24 +7,15 @@ import type { NavigablePath } from "../../../entity/components/movement/navigabl
  * stairs, and towers derive visuals and navigable ports from the same
  * 8-direction neighbor graph so rendered shape and navigation stay aligned.
  */
-export interface StructureNeighborDirections extends Required<NavigablePath> {}
+export type StructureNeighborDirections = Required<NavigablePath>;
 
 export type StructureDirectionKey = keyof StructureNeighborDirections;
 export type StructureCornerKey = "topLeft" | "topRight" | "bottomLeft" | "bottomRight";
 
-export const STRUCTURE_DIRECTION_KEYS: StructureDirectionKey[] = [
-  "top",
-  "bottom",
-  "left",
-  "right",
-  "topLeft",
-  "topRight",
-  "bottomLeft",
-  "bottomRight"
-];
-
-export const STRUCTURE_CORNER_KEYS: StructureCornerKey[] = ["topLeft", "topRight", "bottomLeft", "bottomRight"];
-
+/**
+ * Normalizes a partial neighbor snapshot into an explicit 8-direction boolean
+ * structure so topology logic can rely on absent values meaning false.
+ */
 export function toStructureNeighborDirections(
   directions: Partial<StructureNeighborDirections>
 ): StructureNeighborDirections {
@@ -94,16 +85,10 @@ export function buildWallOpenVisualCorners(
   return openCorners;
 }
 
-export function createStructureDirections(
-  directions: StructureDirectionKey[]
-): StructureNeighborDirections {
-  const result = toStructureNeighborDirections({});
-  for (const direction of directions) {
-    result[direction] = true;
-  }
-  return result;
-}
-
+/**
+ * Returns true when any of the candidate directions is present in the
+ * normalized neighbor set.
+ */
 export function hasAnyStructureDirection(
   directions: Partial<StructureNeighborDirections>,
   candidates: StructureDirectionKey[]
@@ -112,6 +97,10 @@ export function hasAnyStructureDirection(
   return candidates.some((direction) => normalized[direction]);
 }
 
+/**
+ * Counts how many of the requested directions are present so callers can rank
+ * prefab matches deterministically.
+ */
 export function countStructureDirectionMatches(
   directions: Partial<StructureNeighborDirections>,
   candidates: StructureDirectionKey[]

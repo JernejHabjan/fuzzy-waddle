@@ -152,10 +152,10 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   private hudElements!: Array<any>;
 
   /* START-USER-CODE */
+  private readonly enabledNavigationDebugToggle = false;
   private saveGameSubscription?: Subscription;
   private readonly actorInfoSmallScreenBreakpoint = 1200;
   private readonly dayNightClockBottomMargin = 14;
-  private readonly navigationDebugButtonTopMargin = 12;
   private cursorHandler?: CursorHandler;
   private connectionRecovery?: ConnectionRecoveryService;
 
@@ -275,7 +275,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
 
     const aiDebugPanelBounds = getGameObjectBounds(this.aiControllerDebugPanel)!;
     this.navigationDebugToggle.scale = sceneWidth > this.actorInfoSmallScreenBreakpoint ? 1 : 0.7;
-    this.navigationDebugToggle.visible = !environment.production;
+    this.navigationDebugToggle.visible = !environment.production && this.enabledNavigationDebugToggle;
     this.navigationDebugToggle.x = aiDebugPanelBounds.x;
     this.navigationDebugToggle.y = aiDebugPanelBounds.height + 8;
 

@@ -222,7 +222,10 @@ describe("height navigation graph connectivity", () => {
 });
 
 function createNavigableComponent(definition: ConstructorParameters<typeof NavigableComponent>[1]): NavigableComponent {
-  const gameObject = { scene: { events: { emit: jest.fn() } } } as unknown as Phaser.GameObjects.GameObject;
+  const gameObject = {
+    once: jest.fn(),
+    scene: { events: { emit: jest.fn() } }
+  } as unknown as Phaser.GameObjects.GameObject;
   return new NavigableComponent(gameObject, definition);
 }
 

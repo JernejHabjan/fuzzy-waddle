@@ -140,6 +140,10 @@ export default class Wall extends Phaser.GameObjects.Container {
     return ports;
   }
 
+  /**
+   * Reapplies the current wall prefab's navigable contract after actor data or
+   * visibility changes without rebuilding the rendered child prefab.
+   */
   private updateCurrentNavigablePath() {
     this.updateNavigablePath(WALL_PREFAB_DEFINITIONS[this.currentWallKey ?? "full"]);
   }
@@ -177,6 +181,10 @@ export default class Wall extends Phaser.GameObjects.Container {
     return WALL_PREFAB_DEFINITIONS[WALL_PREFAB_BY_OPEN_CORNERS[toOpenCornerSignature(openCorners)]];
   }
 
+  /**
+   * Updates the cursor texture so placement previews mirror the resolved wall
+   * topology without swapping the full prefab container.
+   */
   private updateCursor(definition: WallPrefabDefinition) {
     const wall = this.cursor as any as Phaser.GameObjects.Image;
     wall.setTexture("factions", definition.texture);

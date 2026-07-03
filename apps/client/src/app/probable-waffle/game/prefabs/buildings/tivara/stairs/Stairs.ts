@@ -137,6 +137,10 @@ export default class Stairs extends Phaser.GameObjects.Container {
     return ports;
   }
 
+  /**
+   * Reapplies the current stair prefab's navigable contract after actor data or
+   * visibility changes without recreating the rendered child prefab.
+   */
   private updateCurrentNavigablePath() {
     this.updateNavigablePath(STAIRS_PREFAB_DEFINITIONS[this.currentStairsKey ?? "topLeft"]);
   }
@@ -190,6 +194,10 @@ export default class Stairs extends Phaser.GameObjects.Container {
     return bestScore <= 0 ? STAIRS_PREFAB_DEFINITIONS.topLeft : bestDefinition;
   }
 
+  /**
+   * Updates the cursor texture so placement previews match the currently
+   * selected stair topology without swapping the full prefab container.
+   */
   private updateCursor(definition: StairsPrefabDefinition) {
     const stairs = this.cursor as any as Phaser.GameObjects.Image;
     stairs.setTexture("factions", definition.texture);
@@ -347,6 +355,10 @@ export const STAIRS_PREFAB_DEFINITIONS: Record<StairsPrefabKey, StairsPrefabDefi
 export const STAIRS_PREFAB_LIST = Object.values(STAIRS_PREFAB_DEFINITIONS);
 export const STAIRS_PREFAB_KEYS = Object.keys(STAIRS_PREFAB_DEFINITIONS) as StairsPrefabKey[];
 
+/**
+ * Returns true when a stair prefab orientation has at least one matching upper
+ * neighbor direction in the current structure topology snapshot.
+ */
 export function canStairsPrefabSnapToNeighbor(
   stairsKey: StairsPrefabKey,
   directions: Partial<StructureNeighborDirections>

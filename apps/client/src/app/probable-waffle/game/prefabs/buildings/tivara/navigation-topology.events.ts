@@ -37,6 +37,10 @@ export function emitStructureTopologyChangedAtTile(
   } satisfies StructureTopologyChangedPayload);
 }
 
+/**
+ * Returns true when a topology event originated from one of the 8 neighboring
+ * tiles around the given structure.
+ */
 export function isStructureTopologyChangeAdjacent(
   gameObject: Phaser.GameObjects.GameObject,
   payload: StructureTopologyChangedPayload

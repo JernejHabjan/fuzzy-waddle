@@ -178,6 +178,9 @@ export function getIsometricNeighbourDirectionsByTypes(
  * Returns logical tile neighbors for the supplied types. Use this for topology
  * and navigation decisions; visual-prefab selection that depends on authored
  * sprite offsets should use getIsometricNeighbourDirectionsByTypes instead.
+ * @param gameObject The structure or prefab whose neighbors are being queried.
+ * @param neighbourTypes Constructor types that count as matching neighbors.
+ * @param tileWidth Tile width used by the world-space fallback path.
  */
 export function getNeighbourDirectionsByTypes(
   gameObject: Phaser.GameObjects.GameObject & Phaser.GameObjects.Components.Transform,
@@ -236,10 +239,18 @@ export function getNeighbourDirectionsByTypes(
   };
 }
 
+/**
+ * Compares authored world positions with a tiny epsilon so prefab-neighbor
+ * checks do not drift on fractional isometric coordinates.
+ */
 function isSameWorldPosition(a: number, b: number): boolean {
   return Math.abs(a - b) <= 0.001;
 }
 
+/**
+ * Filters neighbors down to active instances of the requested prefab types and
+ * excludes killed structures so topology refreshes follow the live world state.
+ */
 function isActiveLivingNeighbourOfType(
   child: Phaser.GameObjects.GameObject,
   neighbourTypes: (new (scene: Phaser.Scene) => Phaser.GameObjects.GameObject)[]

@@ -5,6 +5,10 @@ import type { MovementDynamicBlocker } from "./movement-occupancy.service";
  * Converts dynamic actor blockers into temporary EasyStar blocked tile keys.
  * A blocker only applies when its actor footprint height matches the static
  * graph cell height, so actors on ground and elevated surfaces can share x/y.
+ * @param dynamicBlockers Temporary occupancy blockers with their height layers.
+ * @param getNavigableHeightAtTile Height lookup for the static graph cell at a tile.
+ * @param fromTile The requesting actor's current tile, which stays passable.
+ * @param toTile The query destination tile, which also stays passable.
  */
 export function getDynamicBlockedTileKeysForHeightGraph(
   dynamicBlockers: MovementDynamicBlocker[],

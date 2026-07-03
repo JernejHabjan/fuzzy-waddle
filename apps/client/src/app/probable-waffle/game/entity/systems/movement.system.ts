@@ -42,11 +42,19 @@ import { getInterpolatedSimulationNow } from "../../world/services/simulation-ti
 import { MovementOccupancyService } from "../../world/services/movement-occupancy.service";
 import GameObject = Phaser.GameObjects.GameObject;
 
+// When another actor is already stepping through the blocked tile, wait briefly
+// a couple of times before trying more disruptive recovery.
 const BLOCKED_STEP_MAX_WAIT_ATTEMPTS = 2;
+// Congestion waits use scene time so they pause with the simulation lifecycle.
 const BLOCKED_STEP_WAIT_MS = 120;
+// Small local side-steps are the first spatial recovery option after waiting.
 const BLOCKED_STEP_MAX_SIDE_STEP_ATTEMPTS = 2;
+// Full repaths are more expensive and can reshuffle routes, so cap retries.
 const BLOCKED_STEP_MAX_REPATH_ATTEMPTS = 2;
+// Last-resort fallback search radius around the original destination tile.
 const BLOCKED_STEP_FALLBACK_RADIUS = 6;
+// Formation expansion stops after a bounded connected-component search so large
+// move groups do not flood-fill an entire platform while assigning destinations.
 const FORMATION_MAX_CONNECTED_CELLS = 96;
 
 interface BlockedStepRecoveryState {
@@ -55,6 +63,10 @@ interface BlockedStepRecoveryState {
   repathAttempts: number;
 }
 
+/**
+ * Signals that the next tile in an otherwise valid path is temporarily blocked
+ * by dynamic actor occupancy rather than static terrain connectivity.
+ */
 class MovementStepBlockedError extends Error {
   constructor(
     readonly tile: Vector2Simple,
@@ -293,6 +305,20 @@ export class MovementSystem {
     }
   }
 
+  /**
+   * Handles dynamic congestion after a single blocked step on a valid static
+   * route. Recovery keeps the original order alive and escalates from the
+   * least disruptive option to the most disruptive one:
+ * 1. wait for transient step reservations to clear
+ * 2. sidestep locally and repath to the original destination
+ * 3. repath directly from the current tile
+ * 4. pick a nearby same-height fallback tile and route there instead
+ * @param error Dynamic occupancy details for the blocked next step.
+ * @param blockedTile The tile that the actor failed to enter.
+ * @param remainingPath The rest of the original path after the blocked step.
+ * @param config Optional movement callbacks and animation flags for the order.
+ * @param recoveryState Mutable counters that keep retries bounded across recursive recovery.
+  */
   private async recoverFromBlockedPathStep(
     error: MovementStepBlockedError,
     blockedTile: Vector2Simple,
@@ -355,11 +381,14 @@ export class MovementSystem {
   /**
    * Rebuilds a dynamic-blocker path to the same destination after congestion.
    * Destination reservations are intentionally ignored here: they claim final
-   * formation slots, but using them as path blockers can make a moving group
-   * close every temporary route around a large object. Active step reservations
-   * and current actor footprints still block traversal, and a no-path result is
-   * retried because those blockers can clear on the next congestion wait.
-   */
+ * formation slots, but using them as path blockers can make a moving group
+ * close every temporary route around a large object. Active step reservations
+ * and current actor footprints still block traversal, and a no-path result is
+ * retried because those blockers can clear on the next congestion wait.
+ * @param destinationTile The original tile the order is still trying to reach.
+ * @param config Optional movement callbacks and animation flags for the order.
+ * @param recoveryState Mutable counters that survive across repath retries.
+  */
   private async repathToDestination(
     destinationTile: Vector2Simple,
     config: PathMoveConfig | undefined,
@@ -395,6 +424,14 @@ export class MovementSystem {
     await this.moveAlongPathByFollowingPreCalculatedStaticPath(newPath, config, recoveryState);
   }
 
+  /**
+   * Finds a nearby replacement destination when the original endpoint stays
+ * unreachable after waiting, sidestepping, and repathing. Candidates must:
+ * - stay on the same navigable height layer as the destination
+ * - fit the actor's full footprint
+ * - remain reachable when dynamic blockers are overlaid
+ * @param destinationTile The original target tile whose height layer and vicinity are preserved.
+  */
   private async findReachableFallbackTile(destinationTile: Vector2Simple): Promise<Vector2Simple | undefined> {
     const navigationService = this.navigationService;
     const movementOccupancy = this.movementOccupancyService;
@@ -430,6 +467,13 @@ export class MovementSystem {
     return undefined;
   }
 
+  /**
+ * Chooses the first reachable candidate tile from a deterministic ordering.
+ * Distance to the original destination wins first so fallback endpoints stay
+ * visually close to the player's requested location.
+ * @param candidates Reachability candidates that already passed local footprint checks.
+ * @param destinationTile The original destination used for deterministic ranking.
+  */
   private async getFirstReachableCandidate(
     candidates: Vector2Simple[],
     destinationTile: Vector2Simple
@@ -458,6 +502,14 @@ export class MovementSystem {
     return undefined;
   }
 
+  /**
+ * Reserves and routes to the fallback destination chosen after congestion
+ * recovery exhausted the original endpoint. Reserving first keeps another
+ * actor from stealing the same escape slot during the repath.
+ * @param fallbackTile The replacement tile selected near the original destination.
+ * @param config Optional movement callbacks and animation flags for the order.
+ * @param recoveryState Mutable counters reused while finishing the recovered order.
+  */
   private async moveToFallbackTile(
     fallbackTile: Vector2Simple,
     config: PathMoveConfig | undefined,
@@ -475,6 +527,13 @@ export class MovementSystem {
     await this.repathToDestination(fallbackTile, config, recoveryState);
   }
 
+  /**
+ * Picks a one-step local detour around the blocked tile without changing
+ * height layers. Candidates are ranked by forward progress toward the final
+ * destination, then by how much they move away from the blockage.
+ * @param blockedTile The immediate blocked next step from the current tile.
+ * @param finalDestination The eventual order destination used to rank progress.
+  */
   private getBestSideStepTile(blockedTile: Vector2Simple, finalDestination: Vector2Simple): Vector2Simple | undefined {
     const currentTile = getGameObjectCurrentTile(this.gameObject);
     const navigationService = this.navigationService;

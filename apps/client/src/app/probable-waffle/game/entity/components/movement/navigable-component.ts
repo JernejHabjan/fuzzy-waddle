@@ -131,6 +131,10 @@ function areNavigablePathsEqual(left: Partial<NavigablePath>, right: Partial<Nav
   );
 }
 
+/**
+ * Compares per-direction height ports so navigable updates can avoid emitting a
+ * graph rebuild when nothing semantically changed.
+ */
 function areDirectionPortsEqual(
   left: Partial<Record<keyof NavigablePath, HeightDirectionPortDefinition>>,
   right: Partial<Record<keyof NavigablePath, HeightDirectionPortDefinition>>
@@ -147,6 +151,10 @@ function areDirectionPortsEqual(
   );
 }
 
+/**
+ * Treats missing directional ports distinctly from defined ports so closed or
+ * fallback sides are not mistaken for exact height matches.
+ */
 function areDirectionPortDefinitionsEqual(
   left?: HeightDirectionPortDefinition,
   right?: HeightDirectionPortDefinition
