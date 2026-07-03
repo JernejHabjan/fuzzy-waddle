@@ -248,7 +248,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(olival);
 
     // watchTower
-    const watchTower = new WatchTower(this, -352, 288);
+    const watchTower = new WatchTower(this, -384, 288);
     this.add.existing(watchTower);
 
     // bushDownwardsSmall
