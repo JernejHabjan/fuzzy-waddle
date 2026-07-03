@@ -160,6 +160,9 @@ export class NavigationDebugService {
           this.addLabel(center.x, center.y - 16, `z:${cell.navigableHeight}`);
         }
 
+        // Green arrows are traversable directed edges. Red arrows mark a
+        // neighboring navigable tile that exists but rejects traversal from
+        // this cell because the height ports do not match.
         const edges = graph.edgesByTileKey.get(`${cell.x},${cell.y}`) ?? [];
         const allowedKeys = new Set(edges.map((edge) => `${edge.to.x},${edge.to.y}`));
         for (const direction of HEIGHT_NAVIGATION_DIRECTIONS) {
@@ -216,6 +219,8 @@ export class NavigationDebugService {
         if (!center || !visibleWorld.contains(center.x, center.y)) continue;
         const edges = graph.edgesByTileKey.get(`${cell.x},${cell.y}`) ?? [];
         for (const edge of edges) {
+          // Orange arrows reuse the static graph edge but highlight that the
+          // destination tile/height is currently blocked by occupancy.
           if (!this.isDynamicallyBlocked(edge.to, edge.enterHeight, occupancyEntries)) continue;
           const target = this.getTileCenter(edge.to.x, edge.to.y);
           if (!target) continue;
@@ -326,6 +331,7 @@ export class NavigationDebugService {
 
   private clearLabels(): void {
     if (this.labels.length < LABEL_POOL_MIN_SIZE) {
+      // Pool labels so toggling the overlay does not churn text objects.
       while (this.labels.length < LABEL_POOL_MIN_SIZE) {
         this.createLabel();
       }
@@ -366,6 +372,8 @@ export class NavigationDebugService {
     maxY: number;
   } {
     const worldView = this.scene.cameras.main.worldView;
+    // Convert the visible camera rectangle back into tile space so redraws are
+    // limited to the currently visible slice of the map.
     const corners = [
       IsoHelper.isometricWorldToTileXY(this.scene, worldView.left, worldView.top),
       IsoHelper.isometricWorldToTileXY(this.scene, worldView.right, worldView.top),

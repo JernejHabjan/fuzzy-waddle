@@ -87,6 +87,11 @@ export default class Wall extends Phaser.GameObjects.Container {
     onAdjacentTopologyChanged: this.refreshWallType.bind(this)
   });
 
+  /**
+   * Rebuilds the rendered wall segment and reapplies the matching navigation
+   * directions. Prefab key, visual corners, and accessible sides intentionally
+   * come from the same neighbor snapshot.
+   */
   updateWall(wallKey: WallPrefabKey) {
     if (this.currentWallKey === wallKey) {
       return;
@@ -112,6 +117,8 @@ export default class Wall extends Phaser.GameObjects.Container {
   }
 
   private getAugmentedNavigablePath(definition: WallPrefabDefinition): NavigablePath {
+    // Base wall paths describe the prefab's open corners. Cardinal neighbors can
+    // also open a straight high-side continuation across adjacent segments.
     const basePath = { ...definition.navigablePath };
     const elevatedNeighbors = this.cardinalElevatedNeighbors;
     if (elevatedNeighbors.top) basePath.top = true;
@@ -204,6 +211,8 @@ export default class Wall extends Phaser.GameObjects.Container {
   }
 
   private get wallAccessDirections(): StructureNeighborDirections {
+    // Visual corners and walkable access are related but not identical: a pair
+    // of diagonal neighbors can imply a straight traversable side.
     return buildWallAccessDirections(this.elevatedNeighborDirections);
   }
 
@@ -408,6 +417,10 @@ const WALL_PREFAB_BY_OPEN_CORNERS: Record<WallOpenCornerSignature, WallPrefabKey
   "1111": "empty"
 };
 
+/**
+ * Encodes open corners in a fixed order so the lookup table stays compact and
+ * deterministic across neighbor refreshes.
+ */
 function toOpenCornerSignature(openCorners: Record<StructureCornerKey, boolean>): WallOpenCornerSignature {
   return `${openCorners.topLeft ? 1 : 0}${openCorners.topRight ? 1 : 0}${openCorners.bottomLeft ? 1 : 0}${openCorners.bottomRight ? 1 : 0}`;
 }

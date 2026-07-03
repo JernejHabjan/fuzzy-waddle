@@ -214,6 +214,9 @@ export class MovementSystem {
         .catch(() => false);
     }
 
+    // Actor-target movement snapshots a path to the nearest reachable tile by
+    // the target object. The order stays deterministic until recovery chooses
+    // to wait, sidestep, or repath after a blockage.
     const path = await this.getPathToClosestNavigableTileBetweenGameObjectsInRadius(
       destinationGameObject,
       pathMoveConfig?.radiusTilesAroundDestination
@@ -297,6 +300,8 @@ export class MovementSystem {
     config: PathMoveConfig | undefined,
     recoveryState: BlockedStepRecoveryState
   ): Promise<void> {
+    // Escalate from cheapest to most disruptive recovery:
+    // wait -> sidestep -> repath -> same-height fallback tile.
     const finalDestination = remainingPath[remainingPath.length - 1] ?? blockedTile;
     const blockedTileKey = `${blockedTile.x},${blockedTile.y}`;
     const waitAttempts = recoveryState.waitAttemptsByTile.get(blockedTileKey) ?? 0;
@@ -398,6 +403,8 @@ export class MovementSystem {
 
     const destinationHeight = navigationService.getNavigableHeightAtTile(destinationTile);
     const candidates: Vector2Simple[] = [];
+    // Search outward in Manhattan rings so the first accepted tile is the
+    // closest deterministic fallback on the destination's height layer.
     for (let radius = 1; radius <= BLOCKED_STEP_FALLBACK_RADIUS; radius++) {
       for (let dy = -radius; dy <= radius; dy++) {
         for (let dx = -radius; dx <= radius; dx++) {
@@ -463,6 +470,8 @@ export class MovementSystem {
       this.movementOccupancyService?.releaseDestination(actorId);
       this.movementOccupancyService?.reserveDestination(actorId, footprint, heightLayer);
     }
+    // Reserve the escape slot before repathing so another actor cannot claim it
+    // while this unit is recalculating its route.
     await this.repathToDestination(fallbackTile, config, recoveryState);
   }
 

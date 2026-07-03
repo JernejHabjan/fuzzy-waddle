@@ -173,6 +173,8 @@ export class NavigationService {
   }
 
   // Populate heightMapGrid with directed, exact-height navigation graph info.
+  // The EasyStar grid answers "can stand here"; the height graph answers
+  // "which neighbor transitions are legal from here".
   private extractHeightMapGrid() {
     this.heightNavigationGraph = new HeightNavigationGraphBuilder(this.scene, this.tilemap).build(
       this.easyStarNavigationGrid
@@ -235,6 +237,11 @@ export class NavigationService {
     return edges.some((edge) => edge.to.x === to.x && edge.to.y === to.y);
   }
 
+  /**
+   * Returns the traversable connected component starting at startTile.
+   * sameHeightOnly is used by formation assignment so groups prefer one
+   * elevated platform before spilling onto connected lower/higher tiles.
+   */
   getConnectedNavigableTiles(
     startTile: Vector2Simple,
     options: { sameHeightOnly?: boolean; maxTiles?: number } = {}
@@ -320,6 +327,8 @@ export class NavigationService {
     easyStar.setAcceptableTiles([0]);
     easyStar.enableDiagonals();
     if (useHeightGraphDirections) {
+      // Reapply static directed height edges against this temporary grid so
+      // dynamic blockers cannot re-enable invalid wall/stairs transitions.
       this.setDirectionalConditionsForEasyStar(easyStar, navigationGrid);
     }
     return new Promise((resolve) => {
@@ -477,6 +486,8 @@ export class NavigationService {
     for (let y = 0; y < navigationGrid.length; y++) {
       for (let x = 0; x < navigationGrid[y]!.length; x++) {
         if (navigationGrid[y]![x] !== 0) continue;
+        // Only edges that exist in the height graph and whose destination tile
+        // stays unblocked in this overlay grid are exposed to EasyStar.
         const allowedDirections = this.getSortedEdges({ x, y })
           .filter((edge) => navigationGrid[edge.to.y]?.[edge.to.x] === 0)
           .map((edge) => this.toEasyStarDirection(edge.direction));
@@ -751,7 +762,9 @@ export class NavigationService {
     const fromTile = getCenterTileCoordUnderObject(this.tilemap, gameObject);
     if (!fromTile) return null;
 
-    // Step 2: Find the closest navigable tile around the building within the radius
+    // Step 2: Find the closest navigable tile around the building within the radius.
+    // The target object's own footprint stays blocked; callers move beside it,
+    // not into the occupied structure tiles.
     const closestNavigableTile = this.closestNavigableTileBetweenGameObjectsInRadius(
       gameObject,
       targetGameObject,

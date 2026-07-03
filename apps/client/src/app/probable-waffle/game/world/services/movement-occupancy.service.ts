@@ -61,6 +61,11 @@ export class MovementOccupancyService {
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
   }
 
+  /**
+   * Projects the actor's current footprint pattern onto a candidate center
+   * tile. Multi-tile units must reserve every covered tile, not only the
+   * logical center used by pathfinding.
+   */
   getActorFootprintAtTile(actor: Phaser.GameObjects.GameObject, centerTile: Vector2Simple): Vector2Simple[] {
     const tilemap = getSceneComponent(this.scene, TilemapComponent)?.tilemap;
     if (!tilemap) return [centerTile];
@@ -142,6 +147,8 @@ export class MovementOccupancyService {
     if (MovementOccupancyService.DISABLED) return [];
     const includeDestinationReservations = options.includeDestinationReservations ?? true;
     const blockedKeys = new Set<string>();
+    // Merge live occupancy and transient reservations into one overlay view for
+    // dynamic pathfinding/debugging. Static terrain stays in NavigationService.
     const entries = [
       ...this.getCurrentOccupancyDebugEntries(),
       ...this.getReservationDebugEntries(this.stepReservations, "step"),
@@ -238,6 +245,8 @@ export class MovementOccupancyService {
       if (!id || id === actorId) continue;
 
       const heightLayer = this.getActorHeightLayer(actor);
+      // Use the actor's live logical height so units standing on walls/stairs
+      // block only that elevated layer instead of the ground below.
       const actorKeys = getTileCoordsUnderObject(tilemap, actor).map((tile) => this.toKey(tile, heightLayer));
       if (actorKeys.some((key) => keySet.has(key))) {
         blockers.add(id);

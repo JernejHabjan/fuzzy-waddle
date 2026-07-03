@@ -174,6 +174,11 @@ export function getIsometricNeighbourDirectionsByTypes(
   };
 }
 
+/**
+ * Returns logical tile neighbors for the supplied types. Use this for topology
+ * and navigation decisions; visual-prefab selection that depends on authored
+ * sprite offsets should use getIsometricNeighbourDirectionsByTypes instead.
+ */
 export function getNeighbourDirectionsByTypes(
   gameObject: Phaser.GameObjects.GameObject & Phaser.GameObjects.Components.Transform,
   neighbourTypes: (new (scene: Phaser.Scene) => Phaser.GameObjects.GameObject)[],

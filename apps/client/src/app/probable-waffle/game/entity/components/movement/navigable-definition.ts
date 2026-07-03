@@ -5,6 +5,10 @@ export interface HeightDirectionPortDefinition {
   exitHeight: number;
 }
 
+/**
+ * Static navigation contract for elevated structures. Simple surfaces can rely
+ * on one enter/exit pair, while walls and stairs override it per direction.
+ */
 export interface NavigableDefinition {
   shrinkPathToRight?: number;
   shrinkPathToLeft?: number;

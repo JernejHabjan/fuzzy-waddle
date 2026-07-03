@@ -12,6 +12,10 @@ export interface StructureTopologyChangedPayload {
   tile: Vector2Simple;
 }
 
+/**
+ * Emits a topology refresh anchored to the structure's logical center tile.
+ * Neighbor-driven wall/stairs recomputes use tile adjacency only.
+ */
 export function emitStructureTopologyChanged(gameObject: Phaser.GameObjects.GameObject): void {
   const tilemap = getSceneComponent(gameObject.scene, TilemapComponent)?.tilemap;
   if (!tilemap) return;
@@ -72,6 +76,8 @@ export class StructureTopologyService {
   }
 
   notifyIfVisibilityChanged(previousStates: boolean[], nextStates: boolean[]): void {
+    // Construction previews and finished structures can expose different
+    // geometry; only wake neighbors when that visible topology actually changed.
     if (previousStates.length !== nextStates.length) {
       this.notify();
       return;

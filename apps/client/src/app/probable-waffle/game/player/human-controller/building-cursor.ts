@@ -179,8 +179,8 @@ export class BuildingCursor {
           false
         );
 
-        // Find a nearby navigable tile to move the actor to
-        // Try tiles in a spiral pattern around the actor's current tile position
+        // Search outward ring by ring so the first accepted tile is nearby and
+        // deterministic for the same placement snapshot.
         let targetTile: Vector3Simple | undefined;
         const maxDistance = 5; // Search up to 5 tiles away
 
@@ -326,6 +326,8 @@ export class BuildingCursor {
 
     this.building = this.scene.add.existing(actor);
     this.pointerLocation = worldPosition;
+    // Preview structures participate in the same topology refresh as placed
+    // ones so wall/stairs cursors show their final neighbor-aware shape.
     this.notifyStructureTopologyChangedForPreview(this.building);
 
     if (!this.isDragging) {
@@ -447,7 +449,8 @@ export class BuildingCursor {
     const allTilesNavigable = tiles.every((tile) => this.navigationService!.isTileNavigable(tile));
     if (!allTilesNavigable) return false;
 
-    // 3. Check for collisions with other actors
+    // 3. Check for collisions with other actors. Owned mobile actors can be
+    // ignored here because placement will order them to move before commit.
     const objectsToIgnore = new Set<GameObjects.GameObject>(ignoreGameObjects);
     const children = this.actorIndex.getAllIdActors().filter((c) => {
       if (objectsToIgnore.has(c)) return false;
@@ -796,7 +799,8 @@ export class BuildingCursor {
       return points;
     };
 
-    // Generate points for both segments
+    // Build an L-shaped drag path in iso space so drag placement follows snapped
+    // tile traversal instead of cutting a diagonal through intermediate cells.
     const firstSegmentPoints = generatePoints(new Vector2(startX, startY), new Vector2(midpointX, midpointY));
     const secondSegmentPoints = generatePoints(new Vector2(midpointX, midpointY), new Vector2(endX, endY));
 
@@ -872,7 +876,8 @@ export class BuildingCursor {
     const buildingsBeingPlaced: GameObjects.GameObject[] =
       this.isDragging && objectsToPlace.length ? objectsToPlace : this.building ? [this.building] : [];
 
-    // Exit build mode immediately
+    // Exit build mode before waiting on local actor movement so preview updates
+    // cannot keep mutating the placement while the commit is in progress.
     const buildingToPlace = this.building;
     this.building = undefined;
     this.clearGraphics();

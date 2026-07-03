@@ -34,6 +34,8 @@ export class NavigableComponent {
   static handleNavigable(gameObject: GameObject) {
     const navigableComponent = getActorComponent(gameObject, NavigableComponent);
     if (!navigableComponent) return { shrinkX: 0, shrinkY: 0 };
+    // Shrink values are authored across the whole prefab footprint, so convert
+    // them to per-side trimming before filtering walkable tiles.
     const shrinkPathToRight = navigableComponent.navigableDefinition.shrinkPathToRight ?? 0;
     const shrinkX = shrinkPathToRight / 2;
 
@@ -54,6 +56,7 @@ export class NavigableComponent {
     approachableFrom: Partial<NavigablePath>,
     directionPorts?: Partial<Record<keyof NavigablePath, HeightDirectionPortDefinition>>
   ) {
+    // Skip rebuilds when neighbor refreshes produce the same directional contract.
     const nextDirectionPorts = directionPorts ?? this.directionPorts;
     if (
       this.explicitNavigablePath &&
@@ -72,6 +75,10 @@ export class NavigableComponent {
     return this.navigablePath;
   }
 
+  /**
+   * Closed directions are enforced only after a prefab explicitly sets its
+   * path. Untouched navigables remain open on all sides for compatibility.
+   */
   isDirectionOpen(direction: keyof NavigablePath): boolean {
     return !this.explicitNavigablePath || this.navigablePath[direction] === true;
   }

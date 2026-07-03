@@ -84,6 +84,11 @@ export default class Stairs extends Phaser.GameObjects.Container {
     onAdjacentTopologyChanged: this.refreshStairsType.bind(this)
   });
 
+  /**
+   * Swaps the rendered stair variant and reapplies its navigation contract.
+   * Visual slope and traversable ports must stay coupled for both previews and
+   * finished structures.
+   */
   updateStairs(stairsKey: StairsPrefabKey) {
     if (this.currentStairsKey === stairsKey) {
       return;
@@ -108,6 +113,8 @@ export default class Stairs extends Phaser.GameObjects.Container {
   }
 
   private getAugmentedNavigablePath(definition: StairsPrefabDefinition): NavigablePath {
+    // The prefab definition describes the intrinsic slope. Cardinal elevated
+    // neighbors reopen flat exits so connected platforms stay walkable.
     const basePath = { ...definition.navigablePath };
     const elevatedNeighbors = this.cardinalElevatedNeighbors;
     if (elevatedNeighbors.top) basePath.top = true;
@@ -217,6 +224,8 @@ export default class Stairs extends Phaser.GameObjects.Container {
   }
 
   private get cardinalElevatedNeighbors() {
+    // Diagonal neighbors affect art selection; only cardinal elevated neighbors
+    // extend the usable straight platform exits.
     const directions = this.elevatedNeighborDirections;
     return {
       top: directions.top,

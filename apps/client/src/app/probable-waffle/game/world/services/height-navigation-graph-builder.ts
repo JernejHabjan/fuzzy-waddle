@@ -47,6 +47,10 @@ export const HEIGHT_NAVIGATION_DIRECTIONS: DirectionOffset[] = [
   { direction: NavigablePathDirection.BottomRight, opposite: NavigablePathDirection.TopLeft, dx: 1, dy: 1 }
 ];
 
+/**
+ * Height ports connect only when the outgoing surface height exactly matches
+ * the incoming side on the neighbor tile.
+ */
 export function canConnectHeightNavigationPorts(
   exitPort: HeightDirectionPortDefinition | undefined,
   enterPort: HeightDirectionPortDefinition | undefined
@@ -114,6 +118,8 @@ export class HeightNavigationGraphBuilder {
 
   build(navigationGrid: number[][]): HeightNavigationGraph {
     const cells = this.createBaseCells(navigationGrid);
+    // Start from flat terrain cells, then overwrite the tiles occupied by
+    // elevated navigable prefabs before deriving directed edges.
     this.applyNavigableSurfaces(cells);
     const edgesByTileKey = buildHeightNavigationEdges(cells);
     return { cells, edgesByTileKey };
@@ -139,6 +145,8 @@ export class HeightNavigationGraphBuilder {
 
       const tilesUnderObject = getTileCoordsUnderObject(this.tilemap, child);
       const { shrinkX, shrinkY } = NavigableComponent.handleNavigable(child);
+      // Large prefabs can trim their outer footprint so only the walkable deck
+      // contributes height cells to the graph.
       const surfaceTiles = this.shrinkTiles(tilesUnderObject, shrinkX, shrinkY);
       const def = navigableComponent.navigableDefinition;
 
