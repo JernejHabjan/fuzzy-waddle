@@ -3,6 +3,7 @@
   "npmScope": "fuzzy-waddle",
   "targetDefaults": {
     "build": {
+      "cache": true,
       "dependsOn": ["^build"],
       "inputs": ["production", "^production"]
     },
@@ -10,7 +11,11 @@
       "inputs": ["default", "^production"]
     },
     "lint": {
+      "cache": true,
       "inputs": ["default", "{workspaceRoot}/.eslintrc.json"]
+    },
+    "test": {
+      "cache": true
     },
     "@nx/jest:jest": {
       "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"],

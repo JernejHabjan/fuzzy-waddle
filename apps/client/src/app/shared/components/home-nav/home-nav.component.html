@@ -18,17 +18,16 @@
     </a>
     @if (hasActions()) {
       <button
+        [attr.aria-expanded]="!actionsCollapsed()"
         aria-controls="navbarSupportedContent"
-        aria-expanded="false"
         aria-label="Toggle navigation"
         class="navbar-toggler"
-        data-bs-target="#navbarSupportedContent"
-        data-bs-toggle="collapse"
+        (click)="toggleActions()"
         type="button"
       >
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <div [ngbCollapse]="actionsCollapsed()" class="navbar-collapse" id="navbarSupportedContent">
         <ng-content />
       </div>
     }

@@ -9,7 +9,7 @@ import {
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { ScoreDataService } from "../../../services/score-data.service";
 import { type ChartConfiguration, type ChartData, type ChartTypeRegistry, type DefaultDataPoint } from "chart.js";
-import { BaseChartDirective } from "ng2-charts";
+import { BaseChartDirective, provideCharts, withDefaultRegisterables } from "ng2-charts";
 
 type SnapshotMetric = "units" | "buildings" | "resources" | "armyValue";
 
@@ -21,6 +21,7 @@ interface MetricOption {
 @Component({
   selector: "probable-waffle-score-through-time",
   imports: [BaseChartDirective],
+  providers: [provideCharts(withDefaultRegisterables())],
   templateUrl: "./score-through-time.component.html",
   styleUrls: ["./score-through-time.component.scss"]
 })

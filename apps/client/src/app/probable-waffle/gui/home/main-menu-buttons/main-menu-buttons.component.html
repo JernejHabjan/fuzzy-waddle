@@ -106,20 +106,20 @@
         }
       </div>
     </div>
-  </div>
 
-  <div class="back-button-container">
-    @if (isTauri) {
-      <button class="menu-button" (click)="quit()">
-        <span class="menu-button-text">Quit</span>
-        <span class="menu-button-description">Exit to desktop</span>
-      </button>
-    }
-    @else {
-      <button class="menu-button back-button" routerLink="/">
-        <span class="menu-button-text">Back</span>
-      </button>
-    }
+    <div class="menu-section menu-section-footer">
+      @if (isTauri) {
+        <button class="menu-button back-button" (click)="quit()">
+          <span class="menu-button-text">Quit</span>
+          <span class="menu-button-description">Exit to desktop</span>
+        </button>
+      }
+      @else {
+        <button class="menu-button back-button" routerLink="/">
+          <span class="menu-button-text">Back</span>
+        </button>
+      }
+    </div>
   </div>
 
   @if (isTauri && appVersion()) {

@@ -80,6 +80,8 @@ jobs:
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
 
+      # Release builds also stay on the coordinator runner for now. Nx Agents did not
+      # materially reduce runtime for this repo's current target graph.
       - name: Build GitHub Pages client
         run: pnpm run build-gh-pages
         env:

@@ -4,7 +4,26 @@ export default {
   preset: "../../jest.preset.js",
   testEnvironment: "node",
   transform: {
-    "^.+\\.[tj]s$": ["ts-jest", { tsconfig: "<rootDir>/tsconfig.spec.json" }]
+    "^.+\\.[tj]s$": [
+      "@swc/jest",
+      {
+        sourceMaps: "inline",
+        module: {
+          type: "commonjs"
+        },
+        jsc: {
+          target: "es2024",
+          parser: {
+            syntax: "typescript",
+            decorators: true
+          },
+          transform: {
+            legacyDecorator: true,
+            decoratorMetadata: true
+          }
+        }
+      }
+    ]
   },
   moduleFileExtensions: ["ts", "js", "html"],
   coverageDirectory: "../../coverage/apps/api"

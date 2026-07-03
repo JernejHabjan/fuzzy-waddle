@@ -72,12 +72,16 @@ jobs:
       - name: Verify app versions are in sync
         run: pnpm run version:check
 
+      # Keep PR validation local to one runner. Nx Agents currently add coordination
+      # overhead here without speeding up this repo's mostly client-heavy workload.
       - name: Run linter
         run: pnpm run lint
         env:
           NX_BRANCH: ${{ github.event.number }}
           NX_RUN_GROUP: ${{ github.run_id }}
 
+      # Revisit distributed CI only after the expensive targets are split into more
+      # independent units that Nx can actually schedule across multiple machines.
       - name: Run tests
         run: pnpm run test
         env:
