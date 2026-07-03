@@ -1,6 +1,6 @@
 launch-templates:
   ci-linux-node24:
-    resource-class: 'docker_linux_amd64/small'
+    resource-class: 'docker_linux_amd64/medium'
     image: 'ubuntu22.04-node24.14-v1'
     init-steps:
       - name: Checkout
