@@ -1,6 +1,5 @@
 name: Pull Request Checks
 
-# Run validation on non-draft PR activity for the long-lived branches.
 on:
   pull_request:
     branches:
@@ -12,8 +11,10 @@ on:
       - synchronize
       - reopened
 
+env:
+  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+
 jobs:
-  # Keep version policy separate from distributed Nx work. This only runs for PRs into main.
   version:
     if: github.event.pull_request.draft == false && github.base_ref == 'main'
     runs-on: ubuntu-latest
@@ -42,13 +43,53 @@ jobs:
       - name: Verify app versions are in sync
         run: pnpm run version:check
 
-  # Main PR validation path: compute affected scope, distribute Nx tasks, then close the agent run.
   build:
     if: github.event.pull_request.draft == false
-    uses: ./.github/workflows/nx-ci-runner.yml
-    secrets: inherit
-    with:
-      run_version_check: true
-      nx_branch: ${{ github.event.number }}
-      stop_agents_after: lint,test,build
-      nx_commands: pnpm exec nx affected -t lint,test,build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [ 24 ]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          lfs: false
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify app versions are in sync
+        run: pnpm run version:check
+
+      # Keep PR validation local to one runner. Nx Agents currently add coordination
+      # overhead here without speeding up this repo's mostly client-heavy workload.
+      - name: Run linter
+        run: pnpm run lint
+        env:
+          NX_BRANCH: ${{ github.event.number }}
+          NX_RUN_GROUP: ${{ github.run_id }}
+
+      # Revisit distributed CI only after the expensive targets are split into more
+      # independent units that Nx can actually schedule across multiple machines.
+      - name: Run tests
+        run: pnpm run test
+        env:
+          NX_BRANCH: ${{ github.event.number }}
+          NX_RUN_GROUP: ${{ github.run_id }}
+
+      - name: Test build
+        run: pnpm run build
+        env:
+          NX_BRANCH: ${{ github.event.number }}
+          NX_RUN_GROUP: ${{ github.run_id }}

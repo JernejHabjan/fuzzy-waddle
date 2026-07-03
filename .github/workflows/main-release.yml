@@ -1,12 +1,13 @@
 name: Main Release
 
-# Build and publish release artifacts when changes land on main.
 on:
   push:
     branches: [ main ]
 
+env:
+  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+
 jobs:
-  # Coordinator-only release checks: version sync, version discovery, and tag collision guard.
   prepare:
     runs-on: ubuntu-latest
     outputs:
@@ -49,26 +50,56 @@ jobs:
             exit 1
           fi
 
-  # Linux web release path: build the GitHub Pages artifact and deploy it.
   github_pages:
     needs: prepare
-    uses: ./.github/workflows/nx-ci-runner.yml
-    secrets: inherit
+    runs-on: ubuntu-latest
     permissions:
       pages: write
       id-token: write
-    with:
-      fetch_depth: 50
-      lfs: true
-      use_nx_set_shas: false
-      nx_branch: ${{ github.ref_name }}
-      stop_agents_after: build
-      nx_commands: pnpm run build-gh-pages
-      setup_pages: true
-      upload_pages_artifact: true
-      upload_pages_artifact_path: dist/apps/client
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 50
+          lfs: true
 
-  # Windows release path: keep Tauri packaging local because it depends on Windows tooling.
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Use Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'pnpm'
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Release builds also stay on the coordinator runner for now. Nx Agents did not
+      # materially reduce runtime for this repo's current target graph.
+      - name: Build GitHub Pages client
+        run: pnpm run build-gh-pages
+        env:
+          NX_BRANCH: ${{ github.ref_name }}
+          NX_RUN_GROUP: ${{ github.run_id }}
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/apps/client
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
   tauri_release:
     needs: prepare
     runs-on: windows-latest
@@ -112,7 +143,6 @@ jobs:
       - name: Build web client for Tauri
         run: pnpm nx build client --configuration=tauri
 
-      # The action creates the GitHub release and uploads the NSIS installer assets.
       - name: Build installer and publish release
         uses: tauri-apps/tauri-action@v0
         env:
@@ -125,17 +155,3 @@ jobs:
           releaseDraft: false
           prerelease: false
           args: --bundles nsis
-
-  deploy:
-    needs: github_pages
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
