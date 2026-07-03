@@ -35,29 +35,25 @@ import { StructureTopologyService } from "../navigation-topology.events";
 /* END-USER-IMPORTS */
 
 export default class Wall extends Phaser.GameObjects.Container {
+
   constructor(scene: Phaser.Scene, x?: number, y?: number) {
     super(scene, x ?? 32, y ?? 80.06815881041706);
 
     // foundation
     const foundation = scene.add.image(0, 0, "factions", "buildings/tivara/wall/foundation/foundation_1.png");
-    foundation.setInteractive(
-      new Phaser.Geom.Polygon(
-        "-0.9934205307175148 83.52408318472752 -0.6619106331295725 70.26368728120998 27.51643066184519 51.69913301628543 63.31949960134254 71.92123676914967 62.656479806166665 83.52408318472752 28.510960354609008 97.115988985833"
-      ),
-      Phaser.Geom.Polygon.Contains
-    );
+    foundation.setInteractive(new Phaser.Geom.Polygon("-0.9934205307175148 83.52408318472752 -0.6619106331295725 70.26368728120998 27.51643066184519 51.69913301628543 63.31949960134254 71.92123676914967 62.656479806166665 83.52408318472752 28.510960354609008 97.115988985833"), Phaser.Geom.Polygon.Contains);
     foundation.setOrigin(0.5, 0.8352819626557144);
     foundation.visible = false;
     this.add(foundation);
 
     // cursor
-    const cursor = scene.add.image(0, -8, "factions", "buildings/tivara/wall/wall_top_right_bottom_left.png");
+    const cursor = scene.add.image(0, 0, "factions", "buildings/tivara/wall/wall_top_right_bottom_left.png");
     cursor.setOrigin(0.5, 0.8352819626557144);
     cursor.visible = false;
     this.add(cursor);
 
     // editorWall
-    const editorWall = new WallTopRightBottomLeft(scene, 0, -8);
+    const editorWall = new WallTopRightBottomLeft(scene, 0, 0);
     this.add(editorWall);
 
     this.foundation = foundation;
