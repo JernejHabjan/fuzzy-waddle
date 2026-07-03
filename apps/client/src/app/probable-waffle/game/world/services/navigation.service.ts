@@ -614,6 +614,13 @@ export class NavigationService {
       const destinationTile = getCenterTileCoordUnderObject(this.tilemap, destinationGameObject);
       if (!destinationTile) return undefined;
       closestNavigableTile = destinationTile; // Use the tile under the destination object directly
+      console.log(
+        `[NavigableTargetSelection] actor=${gameObject.name} target=${destinationGameObject.name} ` +
+          `from=${fromTile.x},${fromTile.y} destination=${destinationTile.x},${destinationTile.y} ` +
+          `targetTiles=[${getTileCoordsUnderObject(this.tilemap, destinationGameObject)
+            .map((tile) => `${tile.x},${tile.y}`)
+            .join(";")}] radius=${radiusTiles ?? "-"} navigable=${isNavigable}`
+      );
     } else {
       // Step 1: Get blocked tiles (occupied by the destination object)
       const blockedTiles = getTileCoordsUnderObject(this.tilemap, destinationGameObject);
@@ -627,6 +634,16 @@ export class NavigationService {
         terrainType
       );
     }
+
+    const targetCenterTile = getCenterTileCoordUnderObject(this.tilemap, destinationGameObject);
+    console.log(
+      `[ObjectTargetTileChoice] actor=${gameObject.name} target=${destinationGameObject.name} ` +
+        `from=${fromTile.x},${fromTile.y} chosen=${closestNavigableTile?.x ?? "?"},${closestNavigableTile?.y ?? "?"} ` +
+        `center=${targetCenterTile?.x ?? "?"},${targetCenterTile?.y ?? "?"} ` +
+        `targetTiles=[${getTileCoordsUnderObject(this.tilemap, destinationGameObject)
+          .map((tile) => `${tile.x},${tile.y}`)
+          .join(";")}] radius=${radiusTiles ?? "-"} navigable=${isNavigable}`
+    );
 
     return closestNavigableTile; // Return the closest navigable tile if found, or undefined
   }
@@ -739,7 +756,78 @@ export class NavigationService {
 
     // Step 3: Use EasyStar to find the path to the closest navigable tile
     const terrainType = this.getUnitTerrainType(gameObject);
-    return this.findPathForTerrain(fromTile, closestNavigableTile, terrainType);
+    const path = await this.findPathForTerrain(fromTile, closestNavigableTile, terrainType);
+    const centerTile = getCenterTileCoordUnderObject(this.tilemap, targetGameObject);
+    const pathString = path ? path.map((tile) => `${tile.x},${tile.y}`).join(" -> ") : "null";
+    console.log(
+      `[ObjectTargetPath] actor=${gameObject.name} target=${targetGameObject.name} ` +
+        `from=${fromTile.x},${fromTile.y} chosen=${closestNavigableTile.x},${closestNavigableTile.y} ` +
+        `center=${centerTile?.x ?? "?"},${centerTile?.y ?? "?"} ` +
+        `targetTiles=[${getTileCoordsUnderObject(this.tilemap, targetGameObject)
+          .map((tile) => `${tile.x},${tile.y}`)
+          .join(";")}] path=${pathString}`
+    );
+    if (!path) {
+      this.logMissingObjectTargetPath(gameObject, targetGameObject, fromTile, closestNavigableTile);
+    }
+    return path;
+  }
+
+  private logMissingObjectTargetPath(
+    gameObject: Phaser.GameObjects.GameObject,
+    targetGameObject: Phaser.GameObjects.GameObject,
+    fromTile: Vector2Simple,
+    targetTile: Vector2Simple
+  ): void {
+    const targetObjectTiles = getTileCoordsUnderObject(this.tilemap, targetGameObject);
+    const nearbyNavigables = this.scene.children.list
+      .filter((child) => !!getActorComponent(child, NavigableComponent))
+      .map((child) => ({
+        name: child.name,
+        center: getCenterTileCoordUnderObject(this.tilemap, child),
+        tiles: getTileCoordsUnderObject(this.tilemap, child)
+      }))
+      .filter((entry) =>
+        entry.center &&
+        (entry.tiles.some((tile) => tile.x === fromTile.x && tile.y === fromTile.y) ||
+          Math.abs(entry.center.x - fromTile.x) <= 2 && Math.abs(entry.center.y - fromTile.y) <= 2 ||
+          Math.abs(entry.center.x - targetTile.x) <= 2 && Math.abs(entry.center.y - targetTile.y) <= 2)
+      )
+      .sort((a, b) => {
+        const aCenter = a.center!;
+        const bCenter = b.center!;
+        if (aCenter.y !== bCenter.y) return aCenter.y - bCenter.y;
+        return aCenter.x - bCenter.x;
+      });
+
+    const nearbySummary = nearbyNavigables
+      .map((entry) => {
+        const center = entry.center!;
+        const cell = this.getNavigationCell(center);
+        const dirs = this.getAllowedDirectionsAtTile(center).join("|") || "-";
+        const tiles = entry.tiles.map((tile) => `${tile.x},${tile.y}`).join(";");
+        return `${entry.name}@${center.x},${center.y} tiles=[${tiles}] h=${cell?.navigableHeight ?? "?"} dirs=[${dirs}]`;
+      })
+      .join(" || ");
+
+    const fromCell = this.getNavigationCell(fromTile);
+    const targetCell = this.getNavigationCell(targetTile);
+    const fromDirs = this.getAllowedDirectionsAtTile(fromTile).join("|") || "-";
+    const targetDirs = this.getAllowedDirectionsAtTile(targetTile).join("|") || "-";
+
+    const adjacentChecks = HEIGHT_NAVIGATION_DIRECTIONS.map(({ direction, dx, dy }) => {
+      const candidate = { x: fromTile.x + dx, y: fromTile.y + dy };
+      return `${direction}:${candidate.x},${candidate.y}=${this.canTraverseBetween(fromTile, candidate)}`;
+    }).join(" ");
+
+    console.log(
+      `[MissingObjectTargetPath] actor=${gameObject.name} from=${fromTile.x},${fromTile.y} ` +
+        `target=${targetGameObject.name} targetTile=${targetTile.x},${targetTile.y} ` +
+        `targetTiles=[${targetObjectTiles.map((tile) => `${tile.x},${tile.y}`).join(";")}] ` +
+        `fromCell=h${fromCell?.navigableHeight ?? "?"}/dirs[${fromDirs}] ` +
+        `targetCell=h${targetCell?.navigableHeight ?? "?"}/dirs[${targetDirs}] ` +
+        `fromAdjacent={${adjacentChecks}} nearby={${nearbySummary || "-"}}`
+    );
   }
 
   private getClosestNavigableTileAroundBlockedTilesInRadius(

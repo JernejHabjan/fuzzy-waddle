@@ -206,13 +206,13 @@ export default class Stairs extends Phaser.GameObjects.Container {
 
   private get visualNeighborDirections(): StructureNeighborDirections {
     return toStructureNeighborDirections(
-      getIsometricNeighbourDirectionsByTypes(this, [Wall, WatchTower], TilemapComponent.tileWidth)
+      getIsometricNeighbourDirectionsByTypes(this, [Wall, WatchTower, Stairs], TilemapComponent.tileWidth)
     );
   }
 
   private get elevatedNeighborDirections(): StructureNeighborDirections {
     return toStructureNeighborDirections(
-      getNeighbourDirectionsByTypes(this, [Wall, WatchTower], TilemapComponent.tileWidth)
+      getNeighbourDirectionsByTypes(this, [Wall, WatchTower, Stairs], TilemapComponent.tileWidth)
     );
   }
 

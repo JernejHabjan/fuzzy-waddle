@@ -38,6 +38,8 @@ export interface MovementReservationResult {
  * Occupancy keys include logical height so floor and wall actors can share the same x/y tile.
  */
 export class MovementOccupancyService {
+  // TODO: remove this temporary debug bypass after wall/stairs navigation issues are resolved.
+  private static readonly DISABLED = false;
   private readonly stepReservations = new Map<ActorId, Reservation>();
   private readonly destinationReservations = new Map<ActorId, Reservation>();
 
@@ -52,18 +54,22 @@ export class MovementOccupancyService {
   }
 
   isFootprintFree(actorId: ActorId, footprint: Vector2Simple[], heightLayer: number): boolean {
+    if (MovementOccupancyService.DISABLED) return true;
     return this.getBlockingActors(actorId, footprint, heightLayer).length === 0;
   }
 
   reserveStep(actorId: ActorId, footprint: Vector2Simple[], heightLayer: number): boolean {
+    if (MovementOccupancyService.DISABLED) return true;
     return this.reserve(actorId, footprint, heightLayer, this.stepReservations).reserved;
   }
 
   tryReserveStep(actorId: ActorId, footprint: Vector2Simple[], heightLayer: number): MovementReservationResult {
+    if (MovementOccupancyService.DISABLED) return { reserved: true, blockers: [] };
     return this.reserve(actorId, footprint, heightLayer, this.stepReservations);
   }
 
   reserveDestination(actorId: ActorId, footprint: Vector2Simple[], heightLayer: number): boolean {
+    if (MovementOccupancyService.DISABLED) return true;
     return this.reserve(actorId, footprint, heightLayer, this.destinationReservations).reserved;
   }
 
@@ -81,6 +87,7 @@ export class MovementOccupancyService {
   }
 
   getBlockingActors(actorId: ActorId, footprint: Vector2Simple[], heightLayer: number): ActorId[] {
+    if (MovementOccupancyService.DISABLED) return [];
     const keys = footprint.map((tile) => this.toKey(tile, heightLayer));
     const blockers = new Set<ActorId>();
 
@@ -92,12 +99,14 @@ export class MovementOccupancyService {
   }
 
   getDynamicBlockedTilesForActor(actorId: ActorId, heightLayer: number): Vector2Simple[] {
+    if (MovementOccupancyService.DISABLED) return [];
     return this.getDynamicBlockersForActor(actorId)
       .filter((blocker) => blocker.heightLayer === Math.round(heightLayer))
       .map((blocker) => blocker.tile);
   }
 
   getDynamicBlockersForActor(actorId: ActorId): MovementDynamicBlocker[] {
+    if (MovementOccupancyService.DISABLED) return [];
     const blockedKeys = new Set<string>();
     for (const entry of this.getDebugSnapshot()) {
       if (entry.actorId === actorId) continue;
@@ -118,6 +127,7 @@ export class MovementOccupancyService {
   }
 
   getDebugSnapshot(): MovementOccupancyDebugEntry[] {
+    if (MovementOccupancyService.DISABLED) return [];
     const entries: MovementOccupancyDebugEntry[] = [];
     entries.push(...this.getCurrentOccupancyDebugEntries());
     entries.push(...this.getReservationDebugEntries(this.stepReservations, "step"));
@@ -130,10 +140,12 @@ export class MovementOccupancyService {
   }
 
   hasActiveStepReservation(actorId: ActorId): boolean {
+    if (MovementOccupancyService.DISABLED) return false;
     return this.stepReservations.has(actorId);
   }
 
   hasAnyActiveStepReservation(actorIds: ActorId[]): boolean {
+    if (MovementOccupancyService.DISABLED) return false;
     return actorIds.some((actorId) => this.hasActiveStepReservation(actorId));
   }
 
