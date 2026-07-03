@@ -2,7 +2,6 @@
 
 import { enableProdMode, importProvidersFrom, isDevMode, provideZoneChangeDetection } from "@angular/core";
 import { isTauri } from "./app/shared/utils/tauri";
-import { provideCharts, withDefaultRegisterables } from "ng2-charts";
 
 import { environment } from "./environments/environment";
 import { AppComponent } from "./app/app.component";
@@ -15,11 +14,7 @@ import { GameInstanceStorageServiceInterface } from "./app/probable-waffle/commu
 import { accessTokenInterceptor } from "./app/auth/access-token.interceptor";
 import { provideHttpClient, withInterceptors } from "@angular/common/http";
 import { AuthGuard } from "./app/auth/auth.guard";
-import Phaser from "phaser";
 import { authReadyInterceptor } from "./app/auth/auth-ready.interceptor";
-
-// needed as Phaser 4.1.0 changed ESM builds - see https://phaser.io/news/2026/04/phaser-4-1-0-salusa-release
-Object.assign(window, { Phaser });
 
 if (environment.production) {
   enableProdMode();
@@ -44,7 +39,6 @@ bootstrapApplication(AppComponent, {
     ),
     AuthGuard,
     { provide: GameInstanceStorageServiceInterface, useClass: GameInstanceIndexeddbStorageService },
-    provideHttpClient(withInterceptors([authReadyInterceptor, accessTokenInterceptor])),
-    provideCharts(withDefaultRegisterables())
+    provideHttpClient(withInterceptors([authReadyInterceptor, accessTokenInterceptor]))
   ]
 }).catch((err) => console.error(err));

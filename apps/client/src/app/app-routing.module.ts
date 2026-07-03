@@ -6,9 +6,15 @@ import { LevelGuard } from "./fly-squasher/choose-level/level.guard";
 import { environment } from "../environments/environment";
 import { GameInstanceGuard } from "./probable-waffle/gui/online/lobby-page/game-instance.guard";
 import { isTauri } from "./shared/utils/tauri";
+import { ensurePhaserGlobal } from "./shared/game/phaser/ensure-phaser-global";
 
 /** In Tauri the only published game is Probable Waffle — redirect root to /aota. */
 const tauriHomeRedirect = () => (isTauri() ? inject(Router).createUrlTree(["/aota"]) : true);
+
+async function loadGameComponent<T>(loader: () => Promise<T>): Promise<T> {
+  await ensurePhaserGlobal();
+  return loader();
+}
 
 const littleMuncherRoutes = [
   {
@@ -16,7 +22,10 @@ const littleMuncherRoutes = [
     children: [
       {
         path: "",
-        loadComponent: () => import("./little-muncher/little-muncher.component").then((m) => m.LittleMuncherComponent)
+        loadComponent: () =>
+          loadGameComponent(() => import("./little-muncher/little-muncher.component")).then(
+            (m) => m.LittleMuncherComponent
+          )
       },
       {
         path: "high-score",
@@ -119,7 +128,7 @@ const probableWaffleRoutes = [
           {
             path: "game",
             loadComponent: () =>
-              import("./probable-waffle/gui/main/probable-waffle-game.component").then(
+              loadGameComponent(() => import("./probable-waffle/gui/main/probable-waffle-game.component")).then(
                 (m) => m.ProbableWaffleGameComponent
               ),
             canActivate: [GameInstanceGuard]
@@ -146,7 +155,7 @@ const flySquasherRoutes = [
       },
       {
         path: "play/:level",
-        loadComponent: () => import("./fly-squasher/main/main.component").then((m) => m.MainComponent),
+        loadComponent: () => loadGameComponent(() => import("./fly-squasher/main/main.component")).then((m) => m.MainComponent),
         canActivate: [LevelGuard]
       },
       {
@@ -169,7 +178,9 @@ const dungeonCrawlerRoutes = [
       {
         path: "",
         loadComponent: () =>
-          import("./dungeon-crawler/dungeon-crawler.component").then((m) => m.DungeonCrawlerComponent)
+          loadGameComponent(() => import("./dungeon-crawler/dungeon-crawler.component")).then(
+            (m) => m.DungeonCrawlerComponent
+          )
       },
       { path: "**", redirectTo: "" }
     ]

@@ -34,12 +34,17 @@ jobs:
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
 
+      # Keep CI on a single GitHub runner for this repo. Recent Nx Agents trials did
+      # not improve end-to-end time because the expensive work is concentrated in a
+      # small number of large client targets rather than many independent projects.
       - name: Run linter
         run: pnpm run lint
         env:
           NX_BRANCH: ${{ github.event.number }}
           NX_RUN_GROUP: ${{ github.run_id }}
 
+      # If the workspace structure changes and affected work becomes broadly
+      # parallelizable, re-evaluate Nx Agents before adding the extra CI complexity.
       - name: Run tests
         run: pnpm run test
         env:

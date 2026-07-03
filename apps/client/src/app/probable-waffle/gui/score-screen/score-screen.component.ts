@@ -1,6 +1,5 @@
 import { Component, HostListener, inject, type OnDestroy, type OnInit } from "@angular/core";
 import { Subscription } from "rxjs";
-import { RouterLink } from "@angular/router";
 import { ScoreTableComponent } from "./table/score-table.component";
 import { ScoreThroughTimeComponent } from "./chart/score-through-time.component";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
@@ -10,7 +9,7 @@ import { AuthService } from "../../../auth/auth.service";
 import { type GameScoreSnapshotDto, ProbableWafflePlayerType } from "@fuzzy-waddle/api-interfaces";
 
 @Component({
-  imports: [RouterLink, ScoreTableComponent, ScoreThroughTimeComponent],
+  imports: [ScoreTableComponent, ScoreThroughTimeComponent],
   templateUrl: "./score-screen.component.html",
   styleUrls: ["./score-screen.component.scss"]
 })

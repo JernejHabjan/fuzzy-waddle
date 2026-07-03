@@ -15,6 +15,10 @@ export class CurrentUserProfileService implements ICurrentUserProfileService {
   private cachedProfile: CurrentUserProfileDto | null = null;
   private cachedForUserId: string | null = null;
   private readonly profileCache = new Map<string, CurrentUserProfileDto | null>();
+  // The home shell and header can ask for the same profile during bootstrap.
+  // Reuse one in-flight request so we do not add duplicate API work to first render.
+  private currentProfileRequest: Promise<CurrentUserProfileDto | null> | null = null;
+  private readonly userProfileRequests = new Map<string, Promise<CurrentUserProfileDto | null>>();
 
   async getUserProfile(userId?: string | null, forceRefresh = false): Promise<CurrentUserProfileDto | null> {
     await this.authService.ensureAuthReady();
@@ -34,9 +38,24 @@ export class CurrentUserProfileService implements ICurrentUserProfileService {
     }
 
     const url = `${environment.api}api/profile/${userId}`;
-    const profile = await firstValueFrom(this.httpClient.get<CurrentUserProfileDto | null>(url));
-    this.profileCache.set(userId, profile);
-    return profile;
+    if (!forceRefresh) {
+      const pendingRequest = this.userProfileRequests.get(userId);
+      if (pendingRequest) {
+        return await pendingRequest;
+      }
+    }
+
+    const request = firstValueFrom(this.httpClient.get<CurrentUserProfileDto | null>(url))
+      .then((profile) => {
+        this.profileCache.set(userId, profile);
+        return profile;
+      })
+      .finally(() => {
+        this.userProfileRequests.delete(userId);
+      });
+
+    this.userProfileRequests.set(userId, request);
+    return await request;
   }
 
   async getCurrentUserProfile(forceRefresh = false): Promise<CurrentUserProfileDto | null> {
@@ -52,15 +71,29 @@ export class CurrentUserProfileService implements ICurrentUserProfileService {
       return this.cachedProfile;
     }
 
+    if (!forceRefresh && this.currentProfileRequest) {
+      return await this.currentProfileRequest;
+    }
+
     const url = `${environment.api}api/profile/me`;
-    this.cachedProfile = await firstValueFrom(this.httpClient.get<CurrentUserProfileDto>(url));
-    this.cachedForUserId = currentUserId;
-    return this.cachedProfile;
+    this.currentProfileRequest = firstValueFrom(this.httpClient.get<CurrentUserProfileDto>(url))
+      .then((profile) => {
+        this.cachedProfile = profile;
+        this.cachedForUserId = currentUserId;
+        return profile;
+      })
+      .finally(() => {
+        this.currentProfileRequest = null;
+      });
+
+    return await this.currentProfileRequest;
   }
 
   clearCache(): void {
     this.cachedProfile = null;
     this.cachedForUserId = null;
     this.profileCache.clear();
+    this.currentProfileRequest = null;
+    this.userProfileRequests.clear();
   }
 }
