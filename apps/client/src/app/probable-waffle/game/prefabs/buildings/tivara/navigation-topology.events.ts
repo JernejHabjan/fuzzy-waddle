@@ -1,5 +1,6 @@
 import type { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
 import { onObjectReady } from "../../../data/game-object-helper";
+import { HealthComponent } from "../../../entity/components/combat/components/health-component";
 import { getCenterTileCoordUnderObject } from "../../../library/tile-under-object";
 import { getSceneComponent } from "../../../world/services/scene-component-helpers";
 import { TilemapComponent } from "../../../world/tilemap/tilemap.component";
@@ -62,6 +63,7 @@ export class StructureTopologyService {
   ) {}
 
   init(): void {
+    this.gameObject.once(HealthComponent.KilledEvent, this.handleKilled, this);
     onObjectReady(this.gameObject, this.handleReady, this);
   }
 
@@ -83,6 +85,7 @@ export class StructureTopologyService {
   }
 
   destroy(): void {
+    this.gameObject.off(HealthComponent.KilledEvent, this.handleKilled, this);
     this.gameObject.scene?.events.off(StructureTopologyChangedEvent, this.handleStructureTopologyChanged, this);
     this.initialRefreshTimer?.destroy();
     this.notify();
@@ -106,5 +109,11 @@ export class StructureTopologyService {
     if (!this.gameObject.active || !this.options.onAdjacentTopologyChanged) return;
     if (!isStructureTopologyChangeAdjacent(this.gameObject, payload)) return;
     this.options.onAdjacentTopologyChanged();
+  }
+
+  private handleKilled(): void {
+    // Neighbor prefab selection ignores killed structures, so adjacent walls
+    // and stairs need the same topology refresh they get when an object is removed.
+    this.notify();
   }
 }

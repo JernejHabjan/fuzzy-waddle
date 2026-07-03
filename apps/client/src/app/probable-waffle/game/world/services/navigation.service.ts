@@ -72,6 +72,7 @@ export class NavigationService {
   private readonly DEBUG = false;
   private readonly DEBUG_DEMO = false;
   private readonly DEBUG_CLICK_INFO = false;
+  private readonly DEBUG_OBJECT_TARGET_PATHS = false;
   private directionalConditions: Map<string, Direction[]> = new Map();
   private pathCache = new Map<string, PathCache>();
   private readonly waterNavHelper = new WaterNavigationHelper();
@@ -339,6 +340,9 @@ export class NavigationService {
     const terrainType = this.getUnitTerrainType(gameObject);
     if (terrainType === MovementTerrainType.Water) return this.findPathForTerrain(fromTile, toTile, terrainType);
 
+    // Dynamic blockers are overlaid only for this request. The cached/static
+    // navigation grid remains unchanged, so one actor's congestion recovery
+    // cannot poison normal pathfinding for everyone else.
     const blockedKeys = this.getDynamicBlockedTileKeys(dynamicBlockers, fromTile, toTile);
     const grid = this.easyStarNavigationGrid.map((row, y) =>
       row.map((tile, x) => (blockedKeys.has(`${x},${y}`) ? 1 : tile))
@@ -614,13 +618,15 @@ export class NavigationService {
       const destinationTile = getCenterTileCoordUnderObject(this.tilemap, destinationGameObject);
       if (!destinationTile) return undefined;
       closestNavigableTile = destinationTile; // Use the tile under the destination object directly
-      console.log(
-        `[NavigableTargetSelection] actor=${gameObject.name} target=${destinationGameObject.name} ` +
-          `from=${fromTile.x},${fromTile.y} destination=${destinationTile.x},${destinationTile.y} ` +
-          `targetTiles=[${getTileCoordsUnderObject(this.tilemap, destinationGameObject)
-            .map((tile) => `${tile.x},${tile.y}`)
-            .join(";")}] radius=${radiusTiles ?? "-"} navigable=${isNavigable}`
-      );
+      if (this.DEBUG_OBJECT_TARGET_PATHS) {
+        console.log(
+          `[NavigableTargetSelection] actor=${gameObject.name} target=${destinationGameObject.name} ` +
+            `from=${fromTile.x},${fromTile.y} destination=${destinationTile.x},${destinationTile.y} ` +
+            `targetTiles=[${getTileCoordsUnderObject(this.tilemap, destinationGameObject)
+              .map((tile) => `${tile.x},${tile.y}`)
+              .join(";")}] radius=${radiusTiles ?? "-"} navigable=${isNavigable}`
+        );
+      }
     } else {
       // Step 1: Get blocked tiles (occupied by the destination object)
       const blockedTiles = getTileCoordsUnderObject(this.tilemap, destinationGameObject);
@@ -636,14 +642,16 @@ export class NavigationService {
     }
 
     const targetCenterTile = getCenterTileCoordUnderObject(this.tilemap, destinationGameObject);
-    console.log(
-      `[ObjectTargetTileChoice] actor=${gameObject.name} target=${destinationGameObject.name} ` +
-        `from=${fromTile.x},${fromTile.y} chosen=${closestNavigableTile?.x ?? "?"},${closestNavigableTile?.y ?? "?"} ` +
-        `center=${targetCenterTile?.x ?? "?"},${targetCenterTile?.y ?? "?"} ` +
-        `targetTiles=[${getTileCoordsUnderObject(this.tilemap, destinationGameObject)
-          .map((tile) => `${tile.x},${tile.y}`)
-          .join(";")}] radius=${radiusTiles ?? "-"} navigable=${isNavigable}`
-    );
+    if (this.DEBUG_OBJECT_TARGET_PATHS) {
+      console.log(
+        `[ObjectTargetTileChoice] actor=${gameObject.name} target=${destinationGameObject.name} ` +
+          `from=${fromTile.x},${fromTile.y} chosen=${closestNavigableTile?.x ?? "?"},${closestNavigableTile?.y ?? "?"} ` +
+          `center=${targetCenterTile?.x ?? "?"},${targetCenterTile?.y ?? "?"} ` +
+          `targetTiles=[${getTileCoordsUnderObject(this.tilemap, destinationGameObject)
+            .map((tile) => `${tile.x},${tile.y}`)
+            .join(";")}] radius=${radiusTiles ?? "-"} navigable=${isNavigable}`
+      );
+    }
 
     return closestNavigableTile; // Return the closest navigable tile if found, or undefined
   }
@@ -757,16 +765,18 @@ export class NavigationService {
     // Step 3: Use EasyStar to find the path to the closest navigable tile
     const terrainType = this.getUnitTerrainType(gameObject);
     const path = await this.findPathForTerrain(fromTile, closestNavigableTile, terrainType);
-    const centerTile = getCenterTileCoordUnderObject(this.tilemap, targetGameObject);
-    const pathString = path ? path.map((tile) => `${tile.x},${tile.y}`).join(" -> ") : "null";
-    console.log(
-      `[ObjectTargetPath] actor=${gameObject.name} target=${targetGameObject.name} ` +
-        `from=${fromTile.x},${fromTile.y} chosen=${closestNavigableTile.x},${closestNavigableTile.y} ` +
-        `center=${centerTile?.x ?? "?"},${centerTile?.y ?? "?"} ` +
-        `targetTiles=[${getTileCoordsUnderObject(this.tilemap, targetGameObject)
-          .map((tile) => `${tile.x},${tile.y}`)
-          .join(";")}] path=${pathString}`
-    );
+    if (this.DEBUG_OBJECT_TARGET_PATHS) {
+      const centerTile = getCenterTileCoordUnderObject(this.tilemap, targetGameObject);
+      const pathString = path ? path.map((tile) => `${tile.x},${tile.y}`).join(" -> ") : "null";
+      console.log(
+        `[ObjectTargetPath] actor=${gameObject.name} target=${targetGameObject.name} ` +
+          `from=${fromTile.x},${fromTile.y} chosen=${closestNavigableTile.x},${closestNavigableTile.y} ` +
+          `center=${centerTile?.x ?? "?"},${centerTile?.y ?? "?"} ` +
+          `targetTiles=[${getTileCoordsUnderObject(this.tilemap, targetGameObject)
+            .map((tile) => `${tile.x},${tile.y}`)
+            .join(";")}] path=${pathString}`
+      );
+    }
     if (!path) {
       this.logMissingObjectTargetPath(gameObject, targetGameObject, fromTile, closestNavigableTile);
     }
@@ -779,6 +789,7 @@ export class NavigationService {
     fromTile: Vector2Simple,
     targetTile: Vector2Simple
   ): void {
+    if (!this.DEBUG_OBJECT_TARGET_PATHS) return;
     const targetObjectTiles = getTileCoordsUnderObject(this.tilemap, targetGameObject);
     const nearbyNavigables = this.scene.children.list
       .filter((child) => !!getActorComponent(child, NavigableComponent))

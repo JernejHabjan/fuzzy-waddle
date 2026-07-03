@@ -1,5 +1,6 @@
 import GameObject = Phaser.GameObjects.GameObject;
 import { getActorComponent } from "../../../data/actor-component";
+import { HealthComponent } from "../combat/components/health-component";
 import { NavigationService } from "../../../world/services/navigation.service";
 import type { NavigablePath } from "./navigable-path";
 import type { HeightDirectionPortDefinition, NavigableDefinition } from "./navigable-definition";
@@ -27,6 +28,7 @@ export class NavigableComponent {
     public readonly navigableDefinition: NavigableDefinition
   ) {
     this.directionPorts = navigableDefinition.directionPorts ?? {};
+    this.gameObject.once(HealthComponent.KilledEvent, this.handleKilled, this);
   }
 
   static handleNavigable(gameObject: GameObject) {
@@ -100,6 +102,12 @@ export class NavigableComponent {
       (this.navigablePath.bottomLeft ?? false) &&
       (this.navigablePath.bottomRight ?? false)
     );
+  }
+
+  private handleKilled(): void {
+    // Killed navigable structures stop contributing height cells immediately;
+    // the graph builder also filters them out during the rebuild.
+    this.gameObject.scene.events.emit(NavigationService.UpdateNavigationEvent);
   }
 }
 

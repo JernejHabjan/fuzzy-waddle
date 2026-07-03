@@ -5,6 +5,7 @@ import { NavigableComponent } from "../../entity/components/movement/navigable-c
 import type { HeightDirectionPortDefinition } from "../../entity/components/movement/navigable-definition";
 import { getActorComponent } from "../../data/actor-component";
 import { getTileCoordsUnderObject } from "../../library/tile-under-object";
+import { HealthComponent } from "../../entity/components/combat/components/health-component";
 
 export interface HeightNavigationCell {
   x: number;
@@ -87,6 +88,9 @@ function getHeightNavigationEdge(
   if (!to?.isNavigable) return undefined;
   const exitPort = from.ports[direction.direction];
   const enterPort = to.ports[direction.opposite];
+  // Edges are directional and exact-height. This rejects old threshold-style
+  // movement where a high exit could enter any lower surface, which broke
+  // stairs/walls by letting units step through closed sides.
   if (!exitPort || !enterPort) return undefined;
   if (!canConnectHeightNavigationPorts(exitPort, enterPort)) return undefined;
   return {
@@ -131,6 +135,7 @@ export class HeightNavigationGraphBuilder {
     this.scene.children.each((child) => {
       const navigableComponent = getActorComponent(child, NavigableComponent);
       if (!navigableComponent) return;
+      if (getActorComponent(child, HealthComponent)?.killed) return;
 
       const tilesUnderObject = getTileCoordsUnderObject(this.tilemap, child);
       const { shrinkX, shrinkY } = NavigableComponent.handleNavigable(child);
@@ -166,6 +171,8 @@ export class HeightNavigationGraphBuilder {
   ): Partial<Record<NavigablePathDirection, HeightDirectionPortDefinition>> {
     const ports: Partial<Record<NavigablePathDirection, HeightDirectionPortDefinition>> = {};
     for (const { direction } of HEIGHT_NAVIGATION_DIRECTIONS) {
+      // NavigableComponent owns closed-side filtering and fallback ports; the
+      // graph builder only serializes the resulting per-direction contract.
       const port = navigableComponent.getDirectionPort(direction as keyof NavigablePath);
       if (port) ports[direction] = port;
     }

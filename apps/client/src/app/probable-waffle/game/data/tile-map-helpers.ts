@@ -1,4 +1,6 @@
+import { getActorComponent } from "./actor-component";
 import { getGameObjectCurrentTile } from "./game-object-helper";
+import { HealthComponent } from "../entity/components/combat/components/health-component";
 import { getCenterTileCoordUnderObject } from "../library/tile-under-object";
 import { getSceneComponent } from "../world/services/scene-component-helpers";
 import { TilemapComponent } from "../world/tilemap/tilemap.component";
@@ -149,11 +151,16 @@ export function getIsometricNeighbourDirectionsByTypes(
 } {
   const tileHeight = tileWidth / 2;
   const allObjects = gameObject.scene.children.list.filter(
-    (child) => child !== gameObject && neighbourTypes.some((type) => child instanceof type && child.active)
+    (child) => child !== gameObject && isActiveLivingNeighbourOfType(child, neighbourTypes)
   ) as (Phaser.GameObjects.GameObject & Phaser.GameObjects.Components.Transform)[];
 
+  // Visual prefab art is authored in isometric world offsets. Tile-center
+  // deltas can call a visually top-right neighbor "top", which breaks wall and
+  // stair sprite selection even though navigation still needs tile deltas.
   const matchesWorldDirection = (dx: number, dy: number) =>
-    allObjects.some((child) => isSameWorldPosition(child.x, gameObject.x + dx) && isSameWorldPosition(child.y, gameObject.y + dy));
+    allObjects.some(
+      (child) => isSameWorldPosition(child.x, gameObject.x + dx) && isSameWorldPosition(child.y, gameObject.y + dy)
+    );
 
   return {
     top: matchesWorldDirection(0, -tileHeight),
@@ -182,12 +189,14 @@ export function getNeighbourDirectionsByTypes(
   bottomRight: boolean;
 } {
   const allObjects = gameObject.scene.children.list.filter(
-    (child) => child !== gameObject && neighbourTypes.some((type) => child instanceof type && child.active)
+    (child) => child !== gameObject && isActiveLivingNeighbourOfType(child, neighbourTypes)
   ) as (Phaser.GameObjects.GameObject & Phaser.GameObjects.Components.Transform)[];
 
   const tilemap = getSceneComponent(gameObject.scene, TilemapComponent)?.tilemap;
   const ownTile = tilemap ? getCenterTileCoordUnderObject(tilemap, gameObject) : undefined;
   if (tilemap && ownTile) {
+    // Navigation uses logical tile adjacency, not art offsets. This is what
+    // lets elevated surfaces connect through the height graph consistently.
     const matchesDirection = (dx: number, dy: number) =>
       allObjects.some((child) => {
         const tile = getCenterTileCoordUnderObject(tilemap, child);
@@ -224,4 +233,12 @@ export function getNeighbourDirectionsByTypes(
 
 function isSameWorldPosition(a: number, b: number): boolean {
   return Math.abs(a - b) <= 0.001;
+}
+
+function isActiveLivingNeighbourOfType(
+  child: Phaser.GameObjects.GameObject,
+  neighbourTypes: (new (scene: Phaser.Scene) => Phaser.GameObjects.GameObject)[]
+): boolean {
+  if (!neighbourTypes.some((type) => child instanceof type && child.active)) return false;
+  return getActorComponent(child, HealthComponent)?.killed !== true;
 }

@@ -36,9 +36,13 @@ export interface MovementReservationResult {
 /**
  * Owns dynamic actor footprint reservations separately from static terrain navigation.
  * Occupancy keys include logical height so floor and wall actors can share the same x/y tile.
+ * Step reservations prevent two actors from tweening into the same height layer
+ * at once; destination reservations keep group commands from assigning the same
+ * final footprint before movement starts.
  */
 export class MovementOccupancyService {
-  // TODO: remove this temporary debug bypass after wall/stairs navigation issues are resolved.
+  // Keep the bypass centralized so movement debugging can disable dynamic
+  // blockers without changing pathfinding or movement-system call sites.
   private static readonly DISABLED = false;
   private readonly stepReservations = new Map<ActorId, Reservation>();
   private readonly destinationReservations = new Map<ActorId, Reservation>();
@@ -247,6 +251,8 @@ export class MovementOccupancyService {
   }
 
   private getActorHeightLayer(actor: Phaser.GameObjects.GameObject): number {
+    // Dynamic blockers must use the actor's current rendered/logical z layer,
+    // not the target tile height, so units on walls do not block ground tiles.
     const z = getActorComponent(actor, RepresentableComponent)?.logicalWorldTransform.z ?? 0;
     return Math.round(z);
   }

@@ -300,6 +300,9 @@ export class MovementSystem {
     const finalDestination = remainingPath[remainingPath.length - 1] ?? blockedTile;
     const blockedTileKey = `${blockedTile.x},${blockedTile.y}`;
     const waitAttempts = recoveryState.waitAttemptsByTile.get(blockedTileKey) ?? 0;
+    // Prefer a short wait when the blocker is another actor's active step.
+    // That case usually clears without changing the selected path, which keeps
+    // groups from scattering when they briefly meet at a choke point.
     if (
       waitAttempts < BLOCKED_STEP_MAX_WAIT_ATTEMPTS &&
       this.movementOccupancyService?.hasAnyActiveStepReservation(error.blockers)
@@ -351,6 +354,8 @@ export class MovementSystem {
   ): Promise<void> {
     if (!this.navigationService) return Promise.reject("No navigationService");
     const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
+    // Repathing overlays only dynamic blockers. Static height edges stay owned
+    // by NavigationService so wall/stairs connectivity cannot diverge here.
     const dynamicBlockers =
       actorId && this.movementOccupancyService ? this.movementOccupancyService.getDynamicBlockersForActor(actorId) : [];
     const newPath = await this.navigationService.findPathFromGameObjectToTileAvoidingDynamicBlockers(
@@ -923,6 +928,8 @@ export class MovementSystem {
   private getConnectedFormationPoints(tileVec3: Vector3Simple, unitCount: number): Vector2Simple[] {
     const navigationService = this.navigationService;
     if (!navigationService) return [{ x: tileVec3.x, y: tileVec3.y }];
+    // Prefer connected same-height positions so formations do not assign some
+    // units to the ground while others are standing on walls or stairs.
     const connectedSameHeight = navigationService.getConnectedNavigableTiles(
       { x: tileVec3.x, y: tileVec3.y },
       { sameHeightOnly: true, maxTiles: FORMATION_MAX_CONNECTED_CELLS }

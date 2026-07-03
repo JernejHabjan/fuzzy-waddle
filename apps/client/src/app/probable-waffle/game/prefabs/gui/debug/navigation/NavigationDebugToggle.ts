@@ -64,7 +64,6 @@ export default class NavigationDebugToggle extends Phaser.GameObjects.Container 
   /* START-USER-CODE */
   private init(): void {
     this.button.on("action", this.toggleNavigationDebugging, this);
-    this.scene.events.on(NavigationDebugService.ChangedEvent, this.handleDebugChanged, this);
     this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
     this.refreshButtonText();
   }
@@ -73,9 +72,8 @@ export default class NavigationDebugToggle extends Phaser.GameObjects.Container 
     const debugService = this.getDebugService();
     if (!debugService) return;
     debugService.setEnabled(!debugService.isEnabled());
-  }
-
-  private handleDebugChanged(): void {
+    // The debug service lives on the game scene while this button lives on the
+    // HUD scene, so refresh locally instead of relying on cross-scene events.
     this.refreshButtonText();
   }
 
@@ -91,7 +89,6 @@ export default class NavigationDebugToggle extends Phaser.GameObjects.Container 
 
   override destroy(fromScene?: boolean): void {
     this.button.off("action", this.toggleNavigationDebugging, this);
-    this.scene?.events.off(NavigationDebugService.ChangedEvent, this.handleDebugChanged, this);
     super.destroy(fromScene);
   }
   /* END-USER-CODE */
