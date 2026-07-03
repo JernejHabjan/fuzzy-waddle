@@ -274,12 +274,10 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.aiControllerDebugPanel.visible = !environment.production;
 
     const aiDebugPanelBounds = getGameObjectBounds(this.aiControllerDebugPanel)!;
-    this.navigationDebugToggle.scale = this.aiControllerDebugPanel.scale;
+    this.navigationDebugToggle.scale = sceneWidth > this.actorInfoSmallScreenBreakpoint ? 1 : 0.7;
     this.navigationDebugToggle.visible = !environment.production;
-    const navigationDebugToggleBounds = getGameObjectBounds(this.navigationDebugToggle)!;
-    this.navigationDebugToggle.x += aiDebugPanelBounds.centerX - navigationDebugToggleBounds.centerX;
-    this.navigationDebugToggle.y +=
-      aiDebugPanelBounds.bottom + this.navigationDebugButtonTopMargin - navigationDebugToggleBounds.top;
+    this.navigationDebugToggle.x = aiDebugPanelBounds.x;
+    this.navigationDebugToggle.y = aiDebugPanelBounds.height + 8;
 
     // position game speed modifier above minimap on left side
     this.gameSpeedModifier.x = 10;
