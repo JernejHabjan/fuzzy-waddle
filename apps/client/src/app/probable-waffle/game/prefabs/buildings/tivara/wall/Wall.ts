@@ -21,9 +21,7 @@ import WallTopLeftBottomRightBottomLeft from "./WallTopLeftBottomRightBottomLeft
 import WallTopLeftTopRightBottomRight from "./WallTopLeftTopRightBottomRight";
 import WallBottomLeftBottomRightTopRight from "./WallBottomLeftBottomRightTopRight";
 import WallBottomLeftTopLeftTopRight from "./WallBottomLeftTopLeftTopRight";
-import { onObjectReady } from "../../../../data/game-object-helper";
 import WatchTower from "./WatchTower";
-import { throttle } from "../../../../library/throttle";
 import Stairs from "../stairs/Stairs";
 import { getNeighboursByTypes } from "../../../../data/tile-map-helpers";
 import { TilemapComponent } from "../../../../world/tilemap/tilemap.component";
@@ -33,6 +31,7 @@ import { NavigableComponent } from "../../../../entity/components/movement/navig
 import type { NavigablePath } from "../../../../entity/components/movement/navigable-path";
 import { getSceneService } from "../../../../world/services/scene-component-helpers";
 import { SceneLightingService } from "../../../../world/services/lighting/scene-lighting.service";
+import { StructureTopologyService } from "../navigation-topology.events";
 /* END-USER-IMPORTS */
 
 export default class Wall extends Phaser.GameObjects.Container {
@@ -79,9 +78,12 @@ export default class Wall extends Phaser.GameObjects.Container {
 
   private wall?: Phaser.GameObjects.GameObject;
   private currentWallType?: WallType;
+  private readonly topologyService = new StructureTopologyService(this, {
+    onInitialRefresh: this.refreshWallType.bind(this),
+    onAdjacentTopologyChanged: this.refreshWallType.bind(this)
+  });
   updateWall(wallType: WallType) {
     if (this.currentWallType === wallType) {
-      this.updateNavigablePath(wallType);
       return;
     }
     this.currentWallType = wallType;
@@ -140,25 +142,17 @@ export default class Wall extends Phaser.GameObjects.Container {
       []
     );
     this.on(ActorDataChangedEvent, this.updateCurrentNavigablePath, this);
-
-    onObjectReady(
-      this,
-      () => {
-        // Intentional frame update: wall mesh refresh is visual neighbor rendering only.
-        this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.throttleRedrawWallsFrameNonDeterministic, this); // todo remove this later
-      },
-      this
-    );
+    this.topologyService.init();
   }
-
-  private throttleRedrawWallsFrameNonDeterministic = throttle(this.refreshWallType.bind(this), 1000);
 
   private refreshWallType() {
     if (!this.active) return;
     const wallType = this.getWallTypeAccordingToNeighbors();
     const wall = this.wall as any as Phaser.GameObjects.Container;
     if (this.cursor.visible) {
-      this.updateCursor(wallType);
+      if (this.currentWallType !== wallType) {
+        this.updateCursor(wallType);
+      }
     } else if (wall.visible) {
       this.updateWall(wallType);
     }
@@ -235,9 +229,18 @@ export default class Wall extends Phaser.GameObjects.Container {
 
   private handlePrefabVisibility = (progress: number | null) => {
     const wall = this.wall as any as Phaser.GameObjects.Container;
+    const wasCursorVisible = this.cursor.visible;
+    const wasWallVisible = wall.visible;
     this.cursor.visible = progress === null;
     wall.visible = progress === 100;
     this.foundation.visible = progress !== null && progress < 100;
+    if (!wasWallVisible && wall.visible) {
+      this.refreshWallType();
+    }
+    this.topologyService.notifyIfVisibilityChanged(
+      [wasCursorVisible, wasWallVisible],
+      [this.cursor.visible, wall.visible]
+    );
   };
 
   private get neighbors() {
@@ -245,7 +248,7 @@ export default class Wall extends Phaser.GameObjects.Container {
   }
   override destroy(fromScene?: boolean) {
     this.off(ActorDataChangedEvent, this.updateCurrentNavigablePath, this);
-    this.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.throttleRedrawWallsFrameNonDeterministic, this);
+    this.topologyService.destroy();
     super.destroy(fromScene);
   }
   /* END-USER-CODE */

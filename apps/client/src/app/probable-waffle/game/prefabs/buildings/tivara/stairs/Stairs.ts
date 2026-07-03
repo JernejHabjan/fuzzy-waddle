@@ -6,8 +6,6 @@ import StairsTopLeft from "./StairsTopLeft";
 /* START-USER-IMPORTS */
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { ConstructionGameObjectInterfaceComponent } from "../../../../entity/components/construction/construction-game-object-interface-component";
-import { onObjectReady } from "../../../../data/game-object-helper";
-import { throttle } from "../../../../library/throttle";
 import { getNeighboursByTypes } from "../../../../data/tile-map-helpers";
 import WatchTower from "../wall/WatchTower";
 import { TilemapComponent } from "../../../../world/tilemap/tilemap.component";
@@ -22,6 +20,7 @@ import type { NavigablePath } from "../../../../entity/components/movement/navig
 import type { HeightDirectionPortDefinition } from "../../../../entity/components/movement/navigable-definition";
 import { getSceneService } from "../../../../world/services/scene-component-helpers";
 import { SceneLightingService } from "../../../../world/services/lighting/scene-lighting.service";
+import { StructureTopologyService } from "../navigation-topology.events";
 /* END-USER-IMPORTS */
 
 export default class Stairs extends Phaser.GameObjects.Container {
@@ -73,9 +72,12 @@ export default class Stairs extends Phaser.GameObjects.Container {
   override name = ObjectNames.Stairs;
   private stairs?: Phaser.GameObjects.GameObject;
   private currentStairsType?: StairsType;
+  private readonly topologyService = new StructureTopologyService(this, {
+    onInitialRefresh: this.refreshStairsType.bind(this),
+    onAdjacentTopologyChanged: this.refreshStairsType.bind(this)
+  });
   updateStairs(stairsType: StairsType) {
     if (this.currentStairsType === stairsType) {
-      this.updateNavigablePath(stairsType);
       return;
     }
     this.currentStairsType = stairsType;
@@ -124,25 +126,17 @@ export default class Stairs extends Phaser.GameObjects.Container {
       []
     );
     this.on(ActorDataChangedEvent, this.updateCurrentNavigablePath, this);
-
-    onObjectReady(
-      this,
-      () => {
-        // Intentional frame update: stairs mesh refresh is visual neighbor rendering only.
-        this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.throttleRedrawStairsFrameNonDeterministic, this); // todo remove this later
-      },
-      this
-    );
+    this.topologyService.init();
   }
-
-  private throttleRedrawStairsFrameNonDeterministic = throttle(this.refreshStairsType.bind(this), 1000);
 
   private refreshStairsType() {
     if (!this.active) return;
     const stairsType = this.getStairsTypeAccordingToNeighbors();
     const stairs = this.stairs as any as Phaser.GameObjects.Container;
     if (this.cursor.visible) {
-      this.updateCursor(stairsType);
+      if (this.currentStairsType !== stairsType) {
+        this.updateCursor(stairsType);
+      }
     } else if (stairs.visible) {
       this.updateStairs(stairsType);
     }
@@ -207,9 +201,18 @@ export default class Stairs extends Phaser.GameObjects.Container {
 
   private handlePrefabVisibility = (progress: number | null) => {
     const stairs = this.stairs as any as Phaser.GameObjects.Container;
+    const wasCursorVisible = this.cursor.visible;
+    const wasStairsVisible = stairs.visible;
     this.cursor.visible = progress === null;
     stairs.visible = progress === 100;
     this.foundation.visible = progress !== null && progress < 100;
+    if (!wasStairsVisible && stairs.visible) {
+      this.refreshStairsType();
+    }
+    this.topologyService.notifyIfVisibilityChanged(
+      [wasCursorVisible, wasStairsVisible],
+      [this.cursor.visible, stairs.visible]
+    );
   };
 
   private get neighbors() {
@@ -218,7 +221,7 @@ export default class Stairs extends Phaser.GameObjects.Container {
 
   override destroy(fromScene?: boolean) {
     this.off(ActorDataChangedEvent, this.updateCurrentNavigablePath, this);
-    this.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.throttleRedrawStairsFrameNonDeterministic, this);
+    this.topologyService.destroy();
     super.destroy(fromScene);
   }
 

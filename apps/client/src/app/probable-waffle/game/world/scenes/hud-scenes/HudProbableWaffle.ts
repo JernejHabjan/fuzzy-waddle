@@ -153,6 +153,9 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   private readonly actorInfoSmallScreenBreakpoint = 1200;
   private readonly dayNightClockBottomMargin = 14;
   private readonly dayNightClockRefreshIntervalMs = 100;
+  private readonly navigationDebugButtonWidth = 250;
+  private readonly navigationDebugButtonHeight = 28;
+  private readonly navigationDebugButtonTopMargin = 12;
   private cursorHandler?: CursorHandler;
   private connectionRecovery?: ConnectionRecoveryService;
   private dayNightClockAccumulatorMs = 0;
@@ -283,8 +286,10 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.aiControllerDebugPanel.visible = !environment.production;
 
     if (this.navigationDebugButton) {
-      this.navigationDebugButton.x = this.aiControllerDebugPanel.x - 238;
-      this.navigationDebugButton.y = this.aiControllerDebugPanel.y + 15;
+      const aiDebugPanelBounds = getGameObjectBounds(this.aiControllerDebugPanel)!;
+      this.navigationDebugButton.x = aiDebugPanelBounds.centerX;
+      this.navigationDebugButton.y =
+        aiDebugPanelBounds.bottom + this.navigationDebugButtonHeight / 2 + this.navigationDebugButtonTopMargin;
       this.navigationDebugButton.scale = this.aiControllerDebugPanel.scale;
       this.navigationDebugButton.visible = !environment.production;
     }
@@ -360,9 +365,28 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     if (environment.production) return;
 
     const button = this.add.container(0, 0);
-    button.setInteractive(new Phaser.Geom.Rectangle(-90, -13, 190, 26), Phaser.Geom.Rectangle.Contains);
-    const bg = this.add.nineslice(0, 0, "gui", "cryos_mini_gui/buttons/button_small.png", 95, 20, 3, 3, 3, 3);
-    bg.scaleX = 2.1;
+    button.setInteractive(
+      new Phaser.Geom.Rectangle(
+        -this.navigationDebugButtonWidth / 2,
+        -this.navigationDebugButtonHeight / 2,
+        this.navigationDebugButtonWidth,
+        this.navigationDebugButtonHeight
+      ),
+      Phaser.Geom.Rectangle.Contains
+    );
+    const bg = this.add.nineslice(
+      0,
+      0,
+      "gui",
+      "cryos_mini_gui/buttons/button_small.png",
+      this.navigationDebugButtonWidth / 2,
+      20,
+      3,
+      3,
+      3,
+      3
+    );
+    bg.scaleX = 2;
     bg.scaleY = 1.55;
     const text = this.add.text(0, -1, "Show navigation debugging", {
       color: "#000000ff",
@@ -468,7 +492,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
       : undefined;
     const clockState = lightingService?.getDayNightClockState();
     const nextVisible = clockState?.enabled ?? false;
-    const nextText = nextVisible ? clockState?.displayText ?? "" : "";
+    const nextText = nextVisible ? (clockState?.displayText ?? "") : "";
 
     this.dayNightClockText.visible = nextVisible;
     if (!nextVisible) {

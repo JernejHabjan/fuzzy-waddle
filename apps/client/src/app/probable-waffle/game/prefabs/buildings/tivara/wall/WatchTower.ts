@@ -10,6 +10,7 @@ import WatchTowerLevel1 from "../WatchTower/WatchTowerLevel1";
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { ConstructionGameObjectInterfaceComponent } from "../../../../entity/components/construction/construction-game-object-interface-component";
 import { setActorData } from "../../../../data/actor-data";
+import { StructureTopologyService } from "../navigation-topology.events";
 /* END-USER-IMPORTS */
 
 export default class WatchTower extends Phaser.GameObjects.Container {
@@ -53,20 +54,33 @@ export default class WatchTower extends Phaser.GameObjects.Container {
 
   /* START-USER-CODE */
   override name = ObjectNames.WatchTower;
+  private readonly topologyService = new StructureTopologyService(this, {});
   private setup() {
     setActorData(
       this,
       [new ConstructionGameObjectInterfaceComponent(this, this.handlePrefabVisibility, this.watchTowerCursor)],
       []
     );
+    this.topologyService.init();
   }
 
   private handlePrefabVisibility = (progress: number | null) => {
+    const wasCursorVisible = this.watchTowerCursor.visible;
+    const wasLevelVisible = this.watchTowerLevel1.visible;
     this.watchTowerCursor.visible = progress === null;
     this.watchTowerLevel1.visible = progress === 100;
     this.watchTowerFoundation1.visible = progress !== null && progress < 50;
     this.watchTowerFoundation2.visible = progress !== null && progress >= 50 && progress < 100;
-  };
+    this.topologyService.notifyIfVisibilityChanged(
+      [wasCursorVisible, wasLevelVisible],
+      [this.watchTowerCursor.visible, this.watchTowerLevel1.visible]
+    );
+  }
+
+  override destroy(fromScene?: boolean) {
+    this.topologyService.destroy();
+    super.destroy(fromScene);
+  }
   /* END-USER-CODE */
 }
 

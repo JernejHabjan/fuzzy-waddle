@@ -52,9 +52,17 @@ export class NavigableComponent {
     approachableFrom: Partial<NavigablePath>,
     directionPorts?: Partial<Record<keyof NavigablePath, HeightDirectionPortDefinition>>
   ) {
+    const nextDirectionPorts = directionPorts ?? this.directionPorts;
+    if (
+      this.explicitNavigablePath &&
+      areNavigablePathsEqual(this.navigablePath, approachableFrom) &&
+      areDirectionPortsEqual(this.directionPorts, nextDirectionPorts)
+    ) {
+      return;
+    }
     this.navigablePath = approachableFrom;
     this.explicitNavigablePath = true;
-    if (directionPorts) this.directionPorts = directionPorts;
+    this.directionPorts = nextDirectionPorts;
     this.gameObject.scene.events.emit(NavigationService.UpdateNavigationEvent);
   }
 
@@ -93,4 +101,42 @@ export class NavigableComponent {
       (this.navigablePath.bottomRight ?? false)
     );
   }
+}
+
+function areNavigablePathsEqual(left: Partial<NavigablePath>, right: Partial<NavigablePath>): boolean {
+  return (
+    (left.top === true) === (right.top === true) &&
+    (left.bottom === true) === (right.bottom === true) &&
+    (left.left === true) === (right.left === true) &&
+    (left.right === true) === (right.right === true) &&
+    (left.topLeft === true) === (right.topLeft === true) &&
+    (left.topRight === true) === (right.topRight === true) &&
+    (left.bottomLeft === true) === (right.bottomLeft === true) &&
+    (left.bottomRight === true) === (right.bottomRight === true)
+  );
+}
+
+function areDirectionPortsEqual(
+  left: Partial<Record<keyof NavigablePath, HeightDirectionPortDefinition>>,
+  right: Partial<Record<keyof NavigablePath, HeightDirectionPortDefinition>>
+): boolean {
+  return (
+    areDirectionPortDefinitionsEqual(left.top, right.top) &&
+    areDirectionPortDefinitionsEqual(left.bottom, right.bottom) &&
+    areDirectionPortDefinitionsEqual(left.left, right.left) &&
+    areDirectionPortDefinitionsEqual(left.right, right.right) &&
+    areDirectionPortDefinitionsEqual(left.topLeft, right.topLeft) &&
+    areDirectionPortDefinitionsEqual(left.topRight, right.topRight) &&
+    areDirectionPortDefinitionsEqual(left.bottomLeft, right.bottomLeft) &&
+    areDirectionPortDefinitionsEqual(left.bottomRight, right.bottomRight)
+  );
+}
+
+function areDirectionPortDefinitionsEqual(
+  left?: HeightDirectionPortDefinition,
+  right?: HeightDirectionPortDefinition
+): boolean {
+  if (!left && !right) return true;
+  if (!left || !right) return false;
+  return left.enterHeight === right.enterHeight && left.exitHeight === right.exitHeight;
 }

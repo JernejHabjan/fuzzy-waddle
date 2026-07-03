@@ -38,6 +38,10 @@ import { OrderType } from "../../ai/order-type";
 import { getCostForObjectName } from "../../entity/components/production/cost-utils";
 import { IsoHelper } from "../../world/tilemap/iso-helper";
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
+import {
+  emitStructureTopologyChanged,
+  emitStructureTopologyChangedAtTile
+} from "../../prefabs/buildings/tivara/navigation-topology.events";
 import Vector2 = Phaser.Math.Vector2;
 
 export class BuildingCursor {
@@ -322,6 +326,7 @@ export class BuildingCursor {
 
     this.building = this.scene.add.existing(actor);
     this.pointerLocation = worldPosition;
+    this.notifyStructureTopologyChangedForPreview(this.building);
 
     if (!this.isDragging) {
       this.drawPlacementGrid(worldPosition);
@@ -357,12 +362,15 @@ export class BuildingCursor {
       console.error("Building cursor: RepresentableComponent not found on building game object.");
       return;
     }
+    const previousTile = IsoHelper.isometricWorldToTileXY(this.scene, representableComponent.logicalWorldTransform.x, representableComponent.logicalWorldTransform.y, false);
     representableComponent.logicalWorldTransform = {
       x: worldPosition.x,
       y: worldPosition.y,
       z: 0
     } satisfies Vector3Simple;
     DepthHelper.setActorDepth(this.building);
+    emitStructureTopologyChangedAtTile(this.building, previousTile);
+    this.notifyStructureTopologyChangedForPreview(this.building);
 
     // Check if the current building can be placed
     this.canConstructBuildingAt = this.getCanConstructBuildingAt(this.building);
@@ -822,6 +830,7 @@ export class BuildingCursor {
     const gameObject = this.scene.add.existing(actor);
     this.spawnedCursorGameObjects.push(gameObject);
     DepthHelper.setActorDepth(gameObject);
+    this.notifyStructureTopologyChangedForPreview(gameObject);
 
     if (!this.isDragging) {
       this.drawPlacementGrid({ x, y });
@@ -831,6 +840,7 @@ export class BuildingCursor {
 
   private clearSpawnedCursorGameObjects() {
     for (const gameObject of this.spawnedCursorGameObjects) {
+      this.notifyStructureTopologyChangedForPreview(gameObject);
       gameObject.destroy();
     }
     this.spawnedCursorGameObjects = [];
@@ -961,6 +971,9 @@ export class BuildingCursor {
   }
 
   stop() {
+    if (this.building) {
+      this.notifyStructureTopologyChangedForPreview(this.building);
+    }
     this.building?.destroy();
     this.building = undefined;
     this.pointerLocation = undefined;
@@ -969,6 +982,11 @@ export class BuildingCursor {
     this.clearSpawnedCursorGameObjects();
     this.actorsToMove.clear();
     this.isDragging = false;
+  }
+
+  private notifyStructureTopologyChangedForPreview(gameObject?: GameObjects.GameObject) {
+    if (!gameObject) return;
+    emitStructureTopologyChanged(gameObject);
   }
 
   private destroy() {
