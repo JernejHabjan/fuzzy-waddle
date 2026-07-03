@@ -5,7 +5,7 @@
         "compilerInsertSpaces": true,
         "compilerTabSize": 2,
         "snapEnabled": true,
-        "snapWidth": 32,
+        "snapHeight": 8,
         "exportClass": true,
         "autoImport": true,
         "superClassName": "GameProbableWaffleScene",
@@ -331,7 +331,7 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "1",
-            "x": -352,
+            "x": -384,
             "y": 288
         },
         {

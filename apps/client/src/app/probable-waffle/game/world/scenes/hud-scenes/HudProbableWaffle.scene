@@ -97,6 +97,18 @@
             "y": 82
         },
         {
+            "prefabId": "2ea4981f-5143-494e-9789-96ca2a6116c7",
+            "id": "2fd93f0d-0a8d-4302-a234-8bc582396f20",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "navigationDebugToggle",
+            "scope": "CLASS",
+            "x": 1276,
+            "y": 51
+        },
+        {
             "prefabId": "7dacf888-7495-4899-a649-366b6ff3bad5",
             "id": "9cd1458e-4240-4b34-adae-ab6d1ec08f1b",
             "unlock": [
@@ -145,19 +157,64 @@
             "y": 520
         },
         {
-            "type": "Text",
-            "id": "f6d183fb-6d89-4eb8-987d-ec4e7dafce2a",
-            "label": "dayNightClockText",
+            "prefabId": "f6f59ad2-861b-4f66-87b1-f1f4b85fbcaa",
+            "id": "29ce484f-beb8-447d-9352-14d1f3fcb6fc",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "chatButton",
+            "scope": "CLASS",
+            "x": 386,
+            "y": 489
+        },
+        {
+            "prefabId": "b9194f0b-4f9f-45ca-a31a-881ffca5e16d",
+            "id": "427607b1-b9a5-4f5d-bd7d-b81e1bb5b967",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "chatNotification",
+            "scope": "CLASS",
+            "x": 7,
+            "y": 434
+        },
+        {
+            "prefabId": "b6ff5db8-fbfb-4b51-adfe-0bdad0cdedce",
+            "id": "9709419e-0bc8-4bfd-ab78-813b7f3108f6",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "dayNightClockLabel",
             "scope": "CLASS",
             "x": 13,
-            "y": 692,
-            "originY": 1,
-            "resolution": 10,
-            "fontFamily": "disposabledroid",
-            "fontSize": "18px",
-            "color": "#ffffffff",
-            "stroke": "#000000ff",
-            "strokeThickness": 3
+            "y": 692
+        },
+        {
+            "prefabId": "8552f4bd-87ce-4bdf-aed4-b4c919b08b80",
+            "id": "473c0138-5aa8-4f7a-bb12-6821eaaf02a9",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "confirmationDialog",
+            "scope": "CLASS",
+            "x": 640,
+            "y": 360
+        },
+        {
+            "prefabId": "c2ecac06-c622-41d5-bd39-cbee463d067f",
+            "id": "3f31498d-7ba2-44c9-b525-fb2996673721",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "surrenderDialog",
+            "scope": "CLASS",
+            "x": 640,
+            "y": 360
         }
     ],
     "plainObjects": [],

@@ -47,6 +47,8 @@ import { HostMigrationService } from "../services/recovery/host-migration.servic
 import { PauseSyncService } from "../services/multiplayer/pause-sync.service";
 import { isTauri } from "../../../../shared/utils/tauri";
 import { SceneLightingService } from "../services/lighting/scene-lighting.service";
+import { MovementOccupancyService } from "../services/movement-occupancy.service";
+import { NavigationDebugService } from "../services/navigation-debug.service";
 
 export default class GameProbableWaffleScene extends ProbableWaffleScene {
   tilemap!: Phaser.Tilemaps.Tilemap;
@@ -92,6 +94,8 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
       commandBusService,
       simTickService,
       new NavigationService(this, this.tilemap),
+      new MovementOccupancyService(this),
+      new NavigationDebugService(this, this.tilemap),
       new AudioService(this),
       new PlayerActionsHandler(this, hud),
       lightingService,

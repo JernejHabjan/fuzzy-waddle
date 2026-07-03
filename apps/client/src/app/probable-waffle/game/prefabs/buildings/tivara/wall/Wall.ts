@@ -21,18 +21,28 @@ import WallTopLeftBottomRightBottomLeft from "./WallTopLeftBottomRightBottomLeft
 import WallTopLeftTopRightBottomRight from "./WallTopLeftTopRightBottomRight";
 import WallBottomLeftBottomRightTopRight from "./WallBottomLeftBottomRightTopRight";
 import WallBottomLeftTopLeftTopRight from "./WallBottomLeftTopLeftTopRight";
-import { onObjectReady } from "../../../../data/game-object-helper";
 import WatchTower from "./WatchTower";
-import { throttle } from "../../../../library/throttle";
 import Stairs from "../stairs/Stairs";
-import { getNeighboursByTypes } from "../../../../data/tile-map-helpers";
+import {
+  getIsometricNeighbourDirectionsByTypes,
+  getNeighbourDirectionsByTypes
+} from "../../../../data/tile-map-helpers";
 import { TilemapComponent } from "../../../../world/tilemap/tilemap.component";
-import { setActorData } from "../../../../data/actor-data";
+import { ActorDataChangedEvent, setActorData } from "../../../../data/actor-data";
 import { getActorComponent } from "../../../../data/actor-component";
 import { NavigableComponent } from "../../../../entity/components/movement/navigable-component";
+import type { HeightDirectionPortDefinition } from "../../../../entity/components/movement/navigable-definition";
 import type { NavigablePath } from "../../../../entity/components/movement/navigable-path";
 import { getSceneService } from "../../../../world/services/scene-component-helpers";
 import { SceneLightingService } from "../../../../world/services/lighting/scene-lighting.service";
+import { StructureTopologyService } from "../navigation-topology.events";
+import {
+  buildWallAccessDirections,
+  buildWallOpenVisualCorners,
+  type StructureCornerKey,
+  type StructureNeighborDirections,
+  toStructureNeighborDirections
+} from "../structure-topology.model";
 /* END-USER-IMPORTS */
 
 export default class Wall extends Phaser.GameObjects.Container {
@@ -52,13 +62,13 @@ export default class Wall extends Phaser.GameObjects.Container {
     this.add(foundation);
 
     // cursor
-    const cursor = scene.add.image(0, -8, "factions", "buildings/tivara/wall/wall_top_right_bottom_left.png");
+    const cursor = scene.add.image(0, 0, "factions", "buildings/tivara/wall/wall_top_right_bottom_left.png");
     cursor.setOrigin(0.5, 0.8352819626557144);
     cursor.visible = false;
     this.add(cursor);
 
     // editorWall
-    const editorWall = new WallTopRightBottomLeft(scene, 0, -8);
+    const editorWall = new WallTopRightBottomLeft(scene, 0, 0);
     this.add(editorWall);
 
     this.foundation = foundation;
@@ -66,7 +76,7 @@ export default class Wall extends Phaser.GameObjects.Container {
 
     /* START-USER-CTR-CODE */
     editorWall.destroy();
-    this.updateWall(WallType.Full);
+    this.updateWall("full");
     this.setup();
     /* END-USER-CTR-CODE */
   }
@@ -78,94 +88,71 @@ export default class Wall extends Phaser.GameObjects.Container {
   override name = ObjectNames.Wall;
 
   private wall?: Phaser.GameObjects.GameObject;
-  private currentWallType?: WallType;
-  updateWall(wallType: WallType) {
-    if (this.currentWallType === wallType) return;
-    this.currentWallType = wallType;
+  private currentWallKey?: WallPrefabKey;
+  private readonly topologyService = new StructureTopologyService(this, {
+    onInitialRefresh: this.refreshWallType.bind(this),
+    onAdjacentTopologyChanged: this.refreshWallType.bind(this)
+  });
+
+  /**
+   * Rebuilds the rendered wall segment and reapplies the matching navigation
+   * directions. Prefab key, visual corners, and accessible sides intentionally
+   * come from the same neighbor snapshot.
+   */
+  private updateWall(wallKey: WallPrefabKey) {
+    if (this.currentWallKey === wallKey) {
+      return;
+    }
+    this.currentWallKey = wallKey;
     this.wall?.destroy();
 
-    const wallClasses = {
-      [WallType.TopRightBottomRight]: WallTopRightBottomRight,
-      [WallType.TopRightBottomLeft]: WallTopRightBottomLeft,
-      [WallType.TopLeftBottomRight]: WallTopLeftBottomRight,
-      [WallType.TopLeftBottomLeft]: WallTopLeftBottomLeft,
-      [WallType.Empty]: WallEmpty,
-      [WallType.TopLeft]: WallTopLeft,
-      [WallType.TopRight]: WallTopRight,
-      [WallType.BottomLeft]: WallBottomLeft,
-      [WallType.BottomRight]: WallBottomRight,
-      [WallType.TopLeftTopRight]: WallTopLeftTopRight,
-      [WallType.BottomLeftBottomRight]: WallBottomLeftBottomRight,
-      [WallType.Full]: WallFull,
-      [WallType.TopLeftBottomLeftBottomRight]: WallTopLeftBottomRightBottomLeft,
-      [WallType.TopLeftTopRightBottomRight]: WallTopLeftTopRightBottomRight,
-      [WallType.TopRightBottomLeftBottomRight]: WallBottomLeftBottomRightTopRight,
-      [WallType.TopLeftTopRightBottomLeft]: WallBottomLeftTopLeftTopRight
-    };
+    const definition = WALL_PREFAB_DEFINITIONS[wallKey];
+    this.wall = new definition.prefab(this.scene, 0, 0);
+    this.add(this.wall);
+    getSceneService(this.scene, SceneLightingService)?.syncGameObjectTree(this);
 
-    const WallClass = wallClasses[wallType];
-
-    if (WallClass) {
-      this.wall = new WallClass(this.scene, 0, 0);
-      this.add(this.wall);
-      getSceneService(this.scene, SceneLightingService)?.syncGameObjectTree(this);
-    } else {
-      throw new Error("Wall type not found");
-    }
-
-    const navigableComponent = getActorComponent(this, NavigableComponent);
-    if (navigableComponent) {
-      const navigablePath = this.getNavigablePath(wallType);
-      navigableComponent.allowNavigablePath(navigablePath);
-    }
+    this.updateNavigablePath(definition);
   }
 
-  private getNavigablePath(wallType: WallType): NavigablePath {
-    switch (wallType) {
-      case WallType.TopRightBottomRight:
-        return { topLeft: true, left: true, bottomLeft: true };
-      case WallType.TopRightBottomLeft:
-        return { topLeft: true, bottomRight: true };
-      case WallType.TopLeftBottomRight:
-        return { topRight: true, bottomLeft: true };
-      case WallType.TopLeftBottomLeft:
-        return { topRight: true, right: true, bottomRight: true };
-      case WallType.Empty:
-        return {
-          top: true,
-          bottom: true,
-          left: true,
-          right: true,
-          topLeft: true,
-          topRight: true,
-          bottomLeft: true,
-          bottomRight: true
-        };
-      case WallType.Full:
-        return {};
-      case WallType.TopLeft:
-        return { topRight: true, right: true, bottomRight: true, bottom: true, bottomLeft: true };
-      case WallType.TopRight:
-        return { topLeft: true, left: true, bottomLeft: true, bottom: true, bottomRight: true };
-      case WallType.BottomLeft:
-        return { topLeft: true, top: true, topRight: true, right: true, bottomRight: true };
-      case WallType.BottomRight:
-        return { topRight: true, top: true, topLeft: true, left: true, bottomLeft: true };
-      case WallType.TopLeftTopRight:
-        return { bottomLeft: true, bottom: true, bottomRight: true };
-      case WallType.BottomLeftBottomRight:
-        return { topRight: true, top: true, topLeft: true };
-      case WallType.TopLeftTopRightBottomLeft:
-        return { bottomRight: true };
-      case WallType.TopRightBottomLeftBottomRight:
-        return { topLeft: true };
-      case WallType.TopLeftTopRightBottomRight:
-        return { bottomLeft: true };
-      case WallType.TopLeftBottomLeftBottomRight:
-        return { topRight: true };
-      default:
-        return {};
+  private updateNavigablePath(definition: WallPrefabDefinition) {
+    const navigableComponent = getActorComponent(this, NavigableComponent);
+    if (!navigableComponent) return;
+    navigableComponent.allowNavigablePath(
+      this.getAugmentedNavigablePath(definition),
+      this.getAugmentedNavigablePorts(definition)
+    );
+  }
+
+  private getAugmentedNavigablePath(definition: WallPrefabDefinition): NavigablePath {
+    // Base wall paths describe the prefab's open corners. Cardinal neighbors can
+    // also open a straight high-side continuation across adjacent segments.
+    const basePath = { ...definition.navigablePath };
+    const elevatedNeighbors = this.cardinalElevatedNeighbors;
+    if (elevatedNeighbors.top) basePath.top = true;
+    if (elevatedNeighbors.bottom) basePath.bottom = true;
+    if (elevatedNeighbors.left) basePath.left = true;
+    if (elevatedNeighbors.right) basePath.right = true;
+    return basePath;
+  }
+
+  private getAugmentedNavigablePorts(
+    definition: WallPrefabDefinition
+  ): Partial<Record<keyof NavigablePath, HeightDirectionPortDefinition>> {
+    const high = { enterHeight: 64, exitHeight: 64 };
+    const path = this.getAugmentedNavigablePath(definition);
+    const ports: Partial<Record<keyof NavigablePath, HeightDirectionPortDefinition>> = {};
+    for (const direction of Object.keys(path) as (keyof NavigablePath)[]) {
+      if (path[direction]) ports[direction] = high;
     }
+    return ports;
+  }
+
+  /**
+   * Reapplies the current wall prefab's navigable contract after actor data or
+   * visibility changes without rebuilding the rendered child prefab.
+   */
+  private updateCurrentNavigablePath() {
+    this.updateNavigablePath(WALL_PREFAB_DEFINITIONS[this.currentWallKey ?? "full"]);
   }
 
   private setup() {
@@ -174,111 +161,89 @@ export default class Wall extends Phaser.GameObjects.Container {
       [new ConstructionGameObjectInterfaceComponent(this, this.handlePrefabVisibility, this.cursor)],
       []
     );
-
-    onObjectReady(
-      this,
-      () => {
-        // Intentional frame update: wall mesh refresh is visual neighbor rendering only.
-        this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.throttleRedrawWallsFrameNonDeterministic, this); // todo remove this later
-      },
-      this
-    );
+    this.on(ActorDataChangedEvent, this.updateCurrentNavigablePath, this);
+    this.topologyService.init();
   }
-
-  private throttleRedrawWallsFrameNonDeterministic = throttle(this.refreshWallType.bind(this), 1000);
 
   private refreshWallType() {
     if (!this.active) return;
-    const wallType = this.getWallTypeAccordingToNeighbors();
+    const definition = this.getWallDefinitionAccordingToNeighbors();
     const wall = this.wall as any as Phaser.GameObjects.Container;
     if (this.cursor.visible) {
-      this.updateCursor(wallType);
+      if (this.currentWallKey !== definition.key) {
+        this.updateCursor(definition);
+      }
     } else if (wall.visible) {
-      this.updateWall(wallType);
+      this.updateWall(definition.key);
     }
+    this.updateNavigablePath(definition);
   }
 
-  private getWallTypeAccordingToNeighbors(): WallType {
-    const neighbors = this.neighbors;
-    if (!neighbors.topLeft && !neighbors.topRight && !neighbors.bottomLeft && !neighbors.bottomRight) {
-      return WallType.Full;
-    } else if (neighbors.topLeft && neighbors.topRight && neighbors.bottomLeft && neighbors.bottomRight) {
-      return WallType.Empty;
-    } else if (neighbors.topLeft && neighbors.topRight && neighbors.bottomRight && !neighbors.bottomLeft) {
-      return WallType.BottomLeft;
-    } else if (neighbors.topLeft && neighbors.topRight && !neighbors.bottomRight && !neighbors.bottomLeft) {
-      return WallType.BottomLeftBottomRight;
-    } else if (neighbors.topLeft && neighbors.topRight && neighbors.bottomLeft && !neighbors.bottomRight) {
-      return WallType.BottomRight;
-    } else if (!neighbors.topLeft && neighbors.topRight && neighbors.bottomLeft && neighbors.bottomRight) {
-      return WallType.TopLeft;
-    } else if (!neighbors.topLeft && neighbors.topRight && !neighbors.bottomLeft && neighbors.bottomRight) {
-      return WallType.TopLeftBottomLeft;
-    } else if (!neighbors.topLeft && neighbors.topRight && neighbors.bottomLeft && !neighbors.bottomRight) {
-      return WallType.TopLeftBottomRight;
-    } else if (!neighbors.topLeft && !neighbors.topRight && neighbors.bottomLeft && neighbors.bottomRight) {
-      return WallType.TopLeftTopRight;
-    } else if (neighbors.topLeft && !neighbors.topRight && neighbors.bottomLeft && neighbors.bottomRight) {
-      return WallType.TopRight;
-    } else if (neighbors.topLeft && !neighbors.topRight && !neighbors.bottomLeft && neighbors.bottomRight) {
-      return WallType.TopRightBottomLeft;
-    } else if (neighbors.topLeft && !neighbors.topRight && neighbors.bottomLeft && !neighbors.bottomRight) {
-      return WallType.TopRightBottomRight;
-    } else if (neighbors.bottomRight && !neighbors.topRight && !neighbors.bottomLeft && !neighbors.topLeft) {
-      return WallType.TopLeftTopRightBottomLeft;
-    } else if (neighbors.topLeft && !neighbors.topRight && !neighbors.bottomLeft && !neighbors.bottomRight) {
-      return WallType.TopRightBottomLeftBottomRight;
-    } else if (neighbors.bottomLeft && !neighbors.topRight && !neighbors.bottomRight && !neighbors.topLeft) {
-      return WallType.TopLeftTopRightBottomRight;
-    } else if (neighbors.topRight && !neighbors.topLeft && !neighbors.bottomRight && !neighbors.bottomLeft) {
-      return WallType.TopLeftBottomLeftBottomRight;
-    } else {
-      throw new Error("Wall type not found");
-    }
+  /**
+   * Wall prefab names describe extended corners. Elevated neighbors mark open
+   * corners; cardinal-only sides span both corners on that side.
+   */
+  private getWallDefinitionAccordingToNeighbors(): WallPrefabDefinition {
+    const openCorners = buildWallOpenVisualCorners(this.visualNeighborDirections);
+    return WALL_PREFAB_DEFINITIONS[WALL_PREFAB_BY_OPEN_CORNERS[toOpenCornerSignature(openCorners)]];
   }
 
-  private updateCursor(wallType: WallType) {
+  /**
+   * Updates the cursor texture so placement previews mirror the resolved wall
+   * topology without swapping the full prefab container.
+   */
+  private updateCursor(definition: WallPrefabDefinition) {
     const wall = this.cursor as any as Phaser.GameObjects.Image;
-    const texturePaths = {
-      [WallType.TopRightBottomRight]: "buildings/tivara/wall/wall_top_right_bottom_right.png",
-      [WallType.TopRightBottomLeft]: "buildings/tivara/wall/wall_top_right_bottom_left.png",
-      [WallType.TopLeftBottomRight]: "buildings/tivara/wall/wall_top_left_bottom_right.png",
-      [WallType.TopLeftBottomLeft]: "buildings/tivara/wall/wall_top_left_bottom_left.png",
-      [WallType.Empty]: "buildings/tivara/wall/wall_empty.png",
-      [WallType.TopLeft]: "buildings/tivara/wall/wall_top_left.png",
-      [WallType.TopRight]: "buildings/tivara/wall/wall_top_right.png",
-      [WallType.BottomLeft]: "buildings/tivara/wall/wall_bottom_left.png",
-      [WallType.BottomRight]: "buildings/tivara/wall/wall_bottom_right.png",
-      [WallType.TopLeftTopRight]: "buildings/tivara/wall/wall_top_left_top_right.png",
-      [WallType.BottomLeftBottomRight]: "buildings/tivara/wall/wall_bottom_left_bottom_right.png",
-      [WallType.Full]: "buildings/tivara/wall/wall_full.png",
-      [WallType.TopLeftBottomLeftBottomRight]: "buildings/tivara/wall/wall_top_left_bottom_right_bottom_left.png",
-      [WallType.TopLeftTopRightBottomRight]: "buildings/tivara/wall/wall_top_left_top_right_bottom_right.png",
-      [WallType.TopRightBottomLeftBottomRight]: "buildings/tivara/wall/wall_bottom_left_bottom_right_top_right.png",
-      [WallType.TopLeftTopRightBottomLeft]: "buildings/tivara/wall/wall_bottom_left_top_left_top_right.png"
-    };
-
-    const texturePath = texturePaths[wallType];
-
-    if (texturePath) {
-      wall.setTexture("factions", texturePath);
-    } else {
-      throw new Error("Wall type not found");
-    }
+    wall.setTexture("factions", definition.texture);
   }
 
   private handlePrefabVisibility = (progress: number | null) => {
     const wall = this.wall as any as Phaser.GameObjects.Container;
+    const wasCursorVisible = this.cursor.visible;
+    const wasWallVisible = wall.visible;
     this.cursor.visible = progress === null;
     wall.visible = progress === 100;
     this.foundation.visible = progress !== null && progress < 100;
+    if (!wasWallVisible && wall.visible) {
+      this.refreshWallType();
+    }
+    this.topologyService.notifyIfVisibilityChanged(
+      [wasCursorVisible, wasWallVisible],
+      [this.cursor.visible, wall.visible]
+    );
   };
 
-  private get neighbors() {
-    return getNeighboursByTypes(this, [Wall, WatchTower, Stairs], TilemapComponent.tileWidth);
+  private get visualNeighborDirections(): StructureNeighborDirections {
+    return toStructureNeighborDirections(
+      getIsometricNeighbourDirectionsByTypes(this, [Wall, WatchTower, Stairs], TilemapComponent.tileWidth)
+    );
   }
+
+  private get elevatedNeighborDirections(): StructureNeighborDirections {
+    return toStructureNeighborDirections(
+      getNeighbourDirectionsByTypes(this, [Wall, WatchTower, Stairs], TilemapComponent.tileWidth)
+    );
+  }
+
+  private get wallAccessDirections(): StructureNeighborDirections {
+    // Visual corners and walkable access are related but not identical: a pair
+    // of diagonal neighbors can imply a straight traversable side.
+    return buildWallAccessDirections(this.elevatedNeighborDirections);
+  }
+
+  private get cardinalElevatedNeighbors() {
+    const directions = this.wallAccessDirections;
+    return {
+      top: directions.top,
+      bottom: directions.bottom,
+      left: directions.left,
+      right: directions.right
+    };
+  }
+
   override destroy(fromScene?: boolean) {
-    this.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.throttleRedrawWallsFrameNonDeterministic, this);
+    this.off(ActorDataChangedEvent, this.updateCurrentNavigablePath, this);
+    this.topologyService.destroy();
     super.destroy(fromScene);
   }
   /* END-USER-CODE */
@@ -286,21 +251,190 @@ export default class Wall extends Phaser.GameObjects.Container {
 
 /* END OF COMPILED CODE */
 
-export enum WallType {
-  TopRightBottomRight,
-  TopRightBottomLeft,
-  TopLeftBottomRight,
-  TopLeftBottomLeft,
-  Empty,
-  Full,
-  TopLeft,
-  TopRight,
-  BottomLeft,
-  BottomRight,
-  TopLeftTopRight,
-  BottomLeftBottomRight,
-  TopLeftTopRightBottomLeft,
-  TopRightBottomLeftBottomRight,
-  TopLeftTopRightBottomRight,
-  TopLeftBottomLeftBottomRight
+type WallPrefabClass = new (scene: Phaser.Scene, x?: number, y?: number) => Phaser.GameObjects.GameObject;
+
+export interface WallPrefabDefinition {
+  key: WallPrefabKey;
+  prefab: WallPrefabClass;
+  texture: string;
+  extendedCorners: StructureCornerKey[];
+  navigablePath: NavigablePath;
+}
+
+export type WallPrefabKey =
+  | "topRightBottomRight"
+  | "topRightBottomLeft"
+  | "topLeftBottomRight"
+  | "topLeftBottomLeft"
+  | "empty"
+  | "full"
+  | "topLeft"
+  | "topRight"
+  | "bottomLeft"
+  | "bottomRight"
+  | "topLeftTopRight"
+  | "bottomLeftBottomRight"
+  | "topLeftTopRightBottomLeft"
+  | "topRightBottomLeftBottomRight"
+  | "topLeftTopRightBottomRight"
+  | "topLeftBottomLeftBottomRight";
+
+/**
+ * Wall definitions are keyed by extended/blocked corners. The navigable path is
+ * the matching approachable/open directions and intentionally preserves the
+ * current height-navigation behavior.
+ */
+export const WALL_PREFAB_DEFINITIONS: Record<WallPrefabKey, WallPrefabDefinition> = {
+  topRightBottomRight: {
+    key: "topRightBottomRight",
+    prefab: WallTopRightBottomRight,
+    texture: "buildings/tivara/wall/wall_top_right_bottom_right.png",
+    extendedCorners: ["topRight", "bottomRight"],
+    navigablePath: { topLeft: true, left: true, bottomLeft: true }
+  },
+  topRightBottomLeft: {
+    key: "topRightBottomLeft",
+    prefab: WallTopRightBottomLeft,
+    texture: "buildings/tivara/wall/wall_top_right_bottom_left.png",
+    extendedCorners: ["topRight", "bottomLeft"],
+    navigablePath: { topLeft: true, bottomRight: true }
+  },
+  topLeftBottomRight: {
+    key: "topLeftBottomRight",
+    prefab: WallTopLeftBottomRight,
+    texture: "buildings/tivara/wall/wall_top_left_bottom_right.png",
+    extendedCorners: ["topLeft", "bottomRight"],
+    navigablePath: { topRight: true, bottomLeft: true }
+  },
+  topLeftBottomLeft: {
+    key: "topLeftBottomLeft",
+    prefab: WallTopLeftBottomLeft,
+    texture: "buildings/tivara/wall/wall_top_left_bottom_left.png",
+    extendedCorners: ["topLeft", "bottomLeft"],
+    navigablePath: { topRight: true, right: true, bottomRight: true }
+  },
+  empty: {
+    key: "empty",
+    prefab: WallEmpty,
+    texture: "buildings/tivara/wall/wall_empty.png",
+    extendedCorners: [],
+    navigablePath: {
+      top: true,
+      bottom: true,
+      left: true,
+      right: true,
+      topLeft: true,
+      topRight: true,
+      bottomLeft: true,
+      bottomRight: true
+    }
+  },
+  full: {
+    key: "full",
+    prefab: WallFull,
+    texture: "buildings/tivara/wall/wall_full.png",
+    extendedCorners: ["topLeft", "topRight", "bottomLeft", "bottomRight"],
+    navigablePath: {}
+  },
+  topLeft: {
+    key: "topLeft",
+    prefab: WallTopLeft,
+    texture: "buildings/tivara/wall/wall_top_left.png",
+    extendedCorners: ["topLeft"],
+    navigablePath: { topRight: true, right: true, bottomRight: true, bottom: true, bottomLeft: true }
+  },
+  topRight: {
+    key: "topRight",
+    prefab: WallTopRight,
+    texture: "buildings/tivara/wall/wall_top_right.png",
+    extendedCorners: ["topRight"],
+    navigablePath: { topLeft: true, left: true, bottomLeft: true, bottom: true, bottomRight: true }
+  },
+  bottomLeft: {
+    key: "bottomLeft",
+    prefab: WallBottomLeft,
+    texture: "buildings/tivara/wall/wall_bottom_left.png",
+    extendedCorners: ["bottomLeft"],
+    navigablePath: { topLeft: true, top: true, topRight: true, right: true, bottomRight: true }
+  },
+  bottomRight: {
+    key: "bottomRight",
+    prefab: WallBottomRight,
+    texture: "buildings/tivara/wall/wall_bottom_right.png",
+    extendedCorners: ["bottomRight"],
+    navigablePath: { topRight: true, top: true, topLeft: true, left: true, bottomLeft: true }
+  },
+  topLeftTopRight: {
+    key: "topLeftTopRight",
+    prefab: WallTopLeftTopRight,
+    texture: "buildings/tivara/wall/wall_top_left_top_right.png",
+    extendedCorners: ["topLeft", "topRight"],
+    navigablePath: { bottomLeft: true, bottom: true, bottomRight: true }
+  },
+  bottomLeftBottomRight: {
+    key: "bottomLeftBottomRight",
+    prefab: WallBottomLeftBottomRight,
+    texture: "buildings/tivara/wall/wall_bottom_left_bottom_right.png",
+    extendedCorners: ["bottomLeft", "bottomRight"],
+    navigablePath: { topRight: true, top: true, topLeft: true }
+  },
+  topLeftTopRightBottomLeft: {
+    key: "topLeftTopRightBottomLeft",
+    prefab: WallBottomLeftTopLeftTopRight,
+    texture: "buildings/tivara/wall/wall_bottom_left_top_left_top_right.png",
+    extendedCorners: ["topLeft", "topRight", "bottomLeft"],
+    navigablePath: { bottomRight: true }
+  },
+  topRightBottomLeftBottomRight: {
+    key: "topRightBottomLeftBottomRight",
+    prefab: WallBottomLeftBottomRightTopRight,
+    texture: "buildings/tivara/wall/wall_bottom_left_bottom_right_top_right.png",
+    extendedCorners: ["topRight", "bottomLeft", "bottomRight"],
+    navigablePath: { topLeft: true }
+  },
+  topLeftTopRightBottomRight: {
+    key: "topLeftTopRightBottomRight",
+    prefab: WallTopLeftTopRightBottomRight,
+    texture: "buildings/tivara/wall/wall_top_left_top_right_bottom_right.png",
+    extendedCorners: ["topLeft", "topRight", "bottomRight"],
+    navigablePath: { bottomLeft: true }
+  },
+  topLeftBottomLeftBottomRight: {
+    key: "topLeftBottomLeftBottomRight",
+    prefab: WallTopLeftBottomRightBottomLeft,
+    texture: "buildings/tivara/wall/wall_top_left_bottom_right_bottom_left.png",
+    extendedCorners: ["topLeft", "bottomLeft", "bottomRight"],
+    navigablePath: { topRight: true }
+  }
+};
+
+export const WALL_PREFAB_KEYS = Object.keys(WALL_PREFAB_DEFINITIONS) as WallPrefabKey[];
+
+type WallOpenCornerSignature = `${0 | 1}${0 | 1}${0 | 1}${0 | 1}`;
+
+const WALL_PREFAB_BY_OPEN_CORNERS: Record<WallOpenCornerSignature, WallPrefabKey> = {
+  "0000": "full",
+  "0001": "topLeftTopRightBottomLeft",
+  "0010": "topLeftTopRightBottomRight",
+  "0011": "topLeftTopRight",
+  "0100": "topLeftBottomLeftBottomRight",
+  "0101": "topLeftBottomLeft",
+  "0110": "topLeftBottomRight",
+  "0111": "topLeft",
+  "1000": "topRightBottomLeftBottomRight",
+  "1001": "topRightBottomLeft",
+  "1010": "topRightBottomRight",
+  "1011": "topRight",
+  "1100": "bottomLeftBottomRight",
+  "1101": "bottomLeft",
+  "1110": "bottomRight",
+  "1111": "empty"
+};
+
+/**
+ * Encodes open corners in a fixed order so the lookup table stays compact and
+ * deterministic across neighbor refreshes.
+ */
+function toOpenCornerSignature(openCorners: Record<StructureCornerKey, boolean>): WallOpenCornerSignature {
+  return `${openCorners.topLeft ? 1 : 0}${openCorners.topRight ? 1 : 0}${openCorners.bottomLeft ? 1 : 0}${openCorners.bottomRight ? 1 : 0}`;
 }

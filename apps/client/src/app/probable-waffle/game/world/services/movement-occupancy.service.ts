@@ -1,0 +1,299 @@
+import type { ActorId, Vector2Simple } from "@fuzzy-waddle/api-interfaces";
+import { getActorComponent } from "../../data/actor-component";
+import { isGameObjectActiveInActiveScene } from "../../data/game-object-helper";
+import { HealthComponent } from "../../entity/components/combat/components/health-component";
+import { ActorTranslateComponent } from "../../entity/components/movement/actor-translate-component";
+import { FlyingComponent } from "../../entity/components/movement/flying-component";
+import { IdComponent } from "../../entity/components/id-component";
+import { RepresentableComponent } from "../../entity/components/representable-component";
+import { getTileCoordsUnderObject, getTileCoordsUnderObjectAtTile } from "../../library/tile-under-object";
+import { TilemapComponent } from "../tilemap/tilemap.component";
+import { ActorIndexSystem } from "./ActorIndexSystem";
+import { getSceneComponent, getSceneService } from "./scene-component-helpers";
+
+interface Reservation {
+  actorId: ActorId;
+  keys: string[];
+}
+
+export interface MovementOccupancyOptions {
+  /**
+   * Destination reservations reserve final formation slots, not traversable space.
+   * Recovery pathing should usually ignore them so a crowded group does not turn
+   * its own assigned endpoints into temporary walls while units are still moving.
+   */
+  includeDestinationReservations?: boolean;
+}
+
+export interface MovementOccupancyDebugEntry {
+  actorId: ActorId;
+  tiles: Vector2Simple[];
+  heightLayer: number;
+  source: "current" | "step" | "destination";
+}
+
+export interface MovementDynamicBlocker {
+  tile: Vector2Simple;
+  heightLayer: number;
+}
+
+export interface MovementReservationResult {
+  reserved: boolean;
+  blockers: ActorId[];
+}
+
+/**
+ * Owns dynamic actor footprint reservations separately from static terrain navigation.
+ * Occupancy keys include logical height so floor and wall actors can share the same x/y tile.
+ * Step reservations prevent two actors from tweening into the same height layer
+ * at once; destination reservations keep group commands from assigning the same
+ * final footprint before movement starts. Current occupancy and active steps
+ * block traversal; destination reservations only block other destination claims.
+ */
+export class MovementOccupancyService {
+  // Keep the bypass centralized so movement debugging can disable dynamic
+  // blockers without changing pathfinding or movement-system call sites.
+  private static readonly DISABLED = false;
+  private readonly stepReservations = new Map<ActorId, Reservation>();
+  private readonly destinationReservations = new Map<ActorId, Reservation>();
+
+  constructor(private readonly scene: Phaser.Scene) {
+    scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
+  }
+
+  /**
+   * Projects the actor's current footprint pattern onto a candidate center
+   * tile. Multi-tile units must reserve every covered tile, not only the
+   * logical center used by pathfinding.
+   */
+  getActorFootprintAtTile(actor: Phaser.GameObjects.GameObject, centerTile: Vector2Simple): Vector2Simple[] {
+    const tilemap = getSceneComponent(this.scene, TilemapComponent)?.tilemap;
+    if (!tilemap) return [centerTile];
+    return getTileCoordsUnderObjectAtTile(tilemap, actor, centerTile);
+  }
+
+  isFootprintFree(
+    actorId: ActorId,
+    footprint: Vector2Simple[],
+    heightLayer: number,
+    options?: MovementOccupancyOptions
+  ): boolean {
+    if (MovementOccupancyService.DISABLED) return true;
+    return this.getBlockingActors(actorId, footprint, heightLayer, options).length === 0;
+  }
+
+  tryReserveStep(actorId: ActorId, footprint: Vector2Simple[], heightLayer: number): MovementReservationResult {
+    if (MovementOccupancyService.DISABLED) return { reserved: true, blockers: [] };
+    return this.reserve(actorId, footprint, heightLayer, this.stepReservations, {
+      includeDestinationReservations: false
+    });
+  }
+
+  reserveDestination(actorId: ActorId, footprint: Vector2Simple[], heightLayer: number): boolean {
+    if (MovementOccupancyService.DISABLED) return true;
+    return this.reserve(actorId, footprint, heightLayer, this.destinationReservations).reserved;
+  }
+
+  releaseStep(actorId: ActorId): void {
+    this.stepReservations.delete(actorId);
+  }
+
+  releaseDestination(actorId: ActorId): void {
+    this.destinationReservations.delete(actorId);
+  }
+
+  releaseAll(actorId: ActorId): void {
+    this.releaseStep(actorId);
+    this.releaseDestination(actorId);
+  }
+
+  getBlockingActors(
+    actorId: ActorId,
+    footprint: Vector2Simple[],
+    heightLayer: number,
+    options: MovementOccupancyOptions = {}
+  ): ActorId[] {
+    if (MovementOccupancyService.DISABLED) return [];
+    const includeDestinationReservations = options.includeDestinationReservations ?? true;
+    const keys = footprint.map((tile) => this.toKey(tile, heightLayer));
+    const blockers = new Set<ActorId>();
+
+    this.collectReservationBlockers(blockers, actorId, keys, this.stepReservations);
+    if (includeDestinationReservations) {
+      this.collectReservationBlockers(blockers, actorId, keys, this.destinationReservations);
+    }
+    this.collectCurrentOccupancyBlockers(blockers, actorId, keys);
+
+    return Array.from(blockers).sort();
+  }
+
+  getDynamicBlockersForActor(actorId: ActorId, options: MovementOccupancyOptions = {}): MovementDynamicBlocker[] {
+    if (MovementOccupancyService.DISABLED) return [];
+    const includeDestinationReservations = options.includeDestinationReservations ?? true;
+    const blockedKeys = new Set<string>();
+    // Merge live occupancy and transient reservations into one overlay view for
+    // dynamic pathfinding/debugging. Static terrain stays in NavigationService.
+    const entries = [
+      ...this.getCurrentOccupancyDebugEntries(),
+      ...this.getReservationDebugEntries(this.stepReservations, "step"),
+      ...(includeDestinationReservations
+        ? this.getReservationDebugEntries(this.destinationReservations, "destination")
+        : [])
+    ];
+    for (const entry of entries) {
+      if (entry.actorId === actorId) continue;
+      for (const tile of entry.tiles) {
+        blockedKeys.add(`${tile.x},${tile.y},${entry.heightLayer}`);
+      }
+    }
+    return Array.from(blockedKeys)
+      .map((key) => {
+        const [x, y, heightLayer] = key.split(",").map(Number);
+        return { tile: { x: x!, y: y! }, heightLayer: Math.round(heightLayer!) };
+      })
+      .sort((a, b) => {
+        if (a.heightLayer !== b.heightLayer) return a.heightLayer - b.heightLayer;
+        if (a.tile.y !== b.tile.y) return a.tile.y - b.tile.y;
+        return a.tile.x - b.tile.x;
+      });
+  }
+
+  getDebugSnapshot(): MovementOccupancyDebugEntry[] {
+    if (MovementOccupancyService.DISABLED) return [];
+    const entries: MovementOccupancyDebugEntry[] = [];
+    entries.push(...this.getCurrentOccupancyDebugEntries());
+    entries.push(...this.getReservationDebugEntries(this.stepReservations, "step"));
+    entries.push(...this.getReservationDebugEntries(this.destinationReservations, "destination"));
+    return entries.sort((a, b) => {
+      if (a.heightLayer !== b.heightLayer) return a.heightLayer - b.heightLayer;
+      if (a.actorId !== b.actorId) return a.actorId.localeCompare(b.actorId);
+      return a.source.localeCompare(b.source);
+    });
+  }
+
+  hasActiveStepReservation(actorId: ActorId): boolean {
+    if (MovementOccupancyService.DISABLED) return false;
+    return this.stepReservations.has(actorId);
+  }
+
+  hasAnyActiveStepReservation(actorIds: ActorId[]): boolean {
+    if (MovementOccupancyService.DISABLED) return false;
+    return actorIds.some((actorId) => this.hasActiveStepReservation(actorId));
+  }
+
+  private reserve(
+    actorId: ActorId,
+    footprint: Vector2Simple[],
+    heightLayer: number,
+    reservations: Map<ActorId, Reservation>,
+    options?: MovementOccupancyOptions
+  ): MovementReservationResult {
+    const keys = footprint.map((tile) => this.toKey(tile, heightLayer));
+    const blockers = this.getBlockingActors(actorId, footprint, heightLayer, options);
+    if (blockers.length > 0) {
+      return { reserved: false, blockers };
+    }
+    reservations.set(actorId, { actorId, keys });
+    return { reserved: true, blockers: [] };
+  }
+
+  private collectReservationBlockers(
+    blockers: Set<ActorId>,
+    actorId: ActorId,
+    keys: string[],
+    reservations: Map<ActorId, Reservation>
+  ): void {
+    const keySet = new Set(keys);
+    for (const reservation of reservations.values()) {
+      if (reservation.actorId === actorId) continue;
+      if (reservation.keys.some((key) => keySet.has(key))) {
+        blockers.add(reservation.actorId);
+      }
+    }
+  }
+
+  private collectCurrentOccupancyBlockers(blockers: Set<ActorId>, actorId: ActorId, keys: string[]): void {
+    const tilemap = getSceneComponent(this.scene, TilemapComponent)?.tilemap;
+    const actorIndex = getSceneService(this.scene, ActorIndexSystem);
+    if (!tilemap || !actorIndex) return;
+
+    const keySet = new Set(keys);
+    for (const actor of actorIndex.getAllIdActors()) {
+      if (!isGameObjectActiveInActiveScene(actor)) continue;
+      if (getActorComponent(actor, FlyingComponent)) continue;
+      if (!getActorComponent(actor, ActorTranslateComponent)) continue;
+      if (!getActorComponent(actor, RepresentableComponent)) continue;
+      if (getActorComponent(actor, HealthComponent)?.killed) continue;
+
+      const id = getActorComponent(actor, IdComponent)?.id;
+      if (!id || id === actorId) continue;
+
+      const heightLayer = this.getActorHeightLayer(actor);
+      // Use the actor's live logical height so units standing on walls/stairs
+      // block only that elevated layer instead of the ground below.
+      const actorKeys = getTileCoordsUnderObject(tilemap, actor).map((tile) => this.toKey(tile, heightLayer));
+      if (actorKeys.some((key) => keySet.has(key))) {
+        blockers.add(id);
+      }
+    }
+  }
+
+  private getCurrentOccupancyDebugEntries(): MovementOccupancyDebugEntry[] {
+    const tilemap = getSceneComponent(this.scene, TilemapComponent)?.tilemap;
+    const actorIndex = getSceneService(this.scene, ActorIndexSystem);
+    if (!tilemap || !actorIndex) return [];
+
+    const entries: MovementOccupancyDebugEntry[] = [];
+    for (const actor of actorIndex.getAllIdActors()) {
+      if (!isGameObjectActiveInActiveScene(actor)) continue;
+      if (getActorComponent(actor, FlyingComponent)) continue;
+      if (!getActorComponent(actor, ActorTranslateComponent)) continue;
+      if (!getActorComponent(actor, RepresentableComponent)) continue;
+      if (getActorComponent(actor, HealthComponent)?.killed) continue;
+
+      const actorId = getActorComponent(actor, IdComponent)?.id;
+      if (!actorId) continue;
+      entries.push({
+        actorId,
+        tiles: getTileCoordsUnderObject(tilemap, actor).sort((a, b) => (a.y !== b.y ? a.y - b.y : a.x - b.x)),
+        heightLayer: this.getActorHeightLayer(actor),
+        source: "current"
+      });
+    }
+    return entries;
+  }
+
+  private getReservationDebugEntries(
+    reservations: Map<ActorId, Reservation>,
+    source: "step" | "destination"
+  ): MovementOccupancyDebugEntry[] {
+    return Array.from(reservations.values()).map((reservation) => {
+      const parsed = reservation.keys.map((key) => {
+        const [x, y, z] = key.split(",").map(Number);
+        return { tile: { x: x!, y: y! }, heightLayer: z! };
+      });
+      return {
+        actorId: reservation.actorId,
+        tiles: parsed.map((entry) => entry.tile).sort((a, b) => (a.y !== b.y ? a.y - b.y : a.x - b.x)),
+        heightLayer: parsed[0]?.heightLayer ?? 0,
+        source
+      };
+    });
+  }
+
+  private getActorHeightLayer(actor: Phaser.GameObjects.GameObject): number {
+    // Dynamic blockers must use the actor's current rendered/logical z layer,
+    // not the target tile height, so units on walls do not block ground tiles.
+    const z = getActorComponent(actor, RepresentableComponent)?.logicalWorldTransform.z ?? 0;
+    return Math.round(z);
+  }
+
+  private toKey(tile: Vector2Simple, heightLayer: number): string {
+    return `${tile.x},${tile.y},${Math.round(heightLayer)}`;
+  }
+
+  private destroy(): void {
+    this.stepReservations.clear();
+    this.destinationReservations.clear();
+  }
+}

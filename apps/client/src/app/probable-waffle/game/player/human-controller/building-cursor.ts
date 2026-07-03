@@ -38,6 +38,10 @@ import { OrderType } from "../../ai/order-type";
 import { getCostForObjectName } from "../../entity/components/production/cost-utils";
 import { IsoHelper } from "../../world/tilemap/iso-helper";
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
+import {
+  emitStructureTopologyChanged,
+  emitStructureTopologyChangedAtTile
+} from "../../prefabs/buildings/tivara/navigation-topology.events";
 import Vector2 = Phaser.Math.Vector2;
 
 export class BuildingCursor {
@@ -175,8 +179,8 @@ export class BuildingCursor {
           false
         );
 
-        // Find a nearby navigable tile to move the actor to
-        // Try tiles in a spiral pattern around the actor's current tile position
+        // Search outward ring by ring so the first accepted tile is nearby and
+        // deterministic for the same placement snapshot.
         let targetTile: Vector3Simple | undefined;
         const maxDistance = 5; // Search up to 5 tiles away
 
@@ -274,12 +278,13 @@ export class BuildingCursor {
         const actorTransform = getGameObjectLogicalTransform(actor);
         if (currentOrder.data.targetTileLocation && actorTransform) {
           const targetTile = currentOrder.data.targetTileLocation;
+          const actorTile = IsoHelper.isometricWorldToTileXY(this.scene, actorTransform.x, actorTransform.y, false);
           const distance = Math.sqrt(
-            Math.pow(actorTransform.x - targetTile.x, 2) + Math.pow(actorTransform.y - targetTile.y, 2)
+            Math.pow(actorTile.x - targetTile.x, 2) + Math.pow(actorTile.y - targetTile.y, 2)
           );
 
-          // Consider movement complete if within ~1 tile distance
-          if (distance < 2) {
+          // Compare in tile space so placement does not wait on a world-vs-tile mismatch.
+          if (distance <= 1) {
             resolve();
             return;
           }
@@ -322,6 +327,9 @@ export class BuildingCursor {
 
     this.building = this.scene.add.existing(actor);
     this.pointerLocation = worldPosition;
+    // Preview structures participate in the same topology refresh as placed
+    // ones so wall/stairs cursors show their final neighbor-aware shape.
+    this.notifyStructureTopologyChangedForPreview(this.building);
 
     if (!this.isDragging) {
       this.drawPlacementGrid(worldPosition);
@@ -357,12 +365,20 @@ export class BuildingCursor {
       console.error("Building cursor: RepresentableComponent not found on building game object.");
       return;
     }
+    const previousTile = IsoHelper.isometricWorldToTileXY(
+      this.scene,
+      representableComponent.logicalWorldTransform.x,
+      representableComponent.logicalWorldTransform.y,
+      false
+    );
     representableComponent.logicalWorldTransform = {
       x: worldPosition.x,
       y: worldPosition.y,
       z: 0
     } satisfies Vector3Simple;
     DepthHelper.setActorDepth(this.building);
+    emitStructureTopologyChangedAtTile(this.building, previousTile);
+    this.notifyStructureTopologyChangedForPreview(this.building);
 
     // Check if the current building can be placed
     this.canConstructBuildingAt = this.getCanConstructBuildingAt(this.building);
@@ -439,7 +455,8 @@ export class BuildingCursor {
     const allTilesNavigable = tiles.every((tile) => this.navigationService!.isTileNavigable(tile));
     if (!allTilesNavigable) return false;
 
-    // 3. Check for collisions with other actors
+    // 3. Check for collisions with other actors. Owned mobile actors can be
+    // ignored here because placement will order them to move before commit.
     const objectsToIgnore = new Set<GameObjects.GameObject>(ignoreGameObjects);
     const children = this.actorIndex.getAllIdActors().filter((c) => {
       if (objectsToIgnore.has(c)) return false;
@@ -788,7 +805,8 @@ export class BuildingCursor {
       return points;
     };
 
-    // Generate points for both segments
+    // Build an L-shaped drag path in iso space so drag placement follows snapped
+    // tile traversal instead of cutting a diagonal through intermediate cells.
     const firstSegmentPoints = generatePoints(new Vector2(startX, startY), new Vector2(midpointX, midpointY));
     const secondSegmentPoints = generatePoints(new Vector2(midpointX, midpointY), new Vector2(endX, endY));
 
@@ -822,6 +840,7 @@ export class BuildingCursor {
     const gameObject = this.scene.add.existing(actor);
     this.spawnedCursorGameObjects.push(gameObject);
     DepthHelper.setActorDepth(gameObject);
+    this.notifyStructureTopologyChangedForPreview(gameObject);
 
     if (!this.isDragging) {
       this.drawPlacementGrid({ x, y });
@@ -831,6 +850,7 @@ export class BuildingCursor {
 
   private clearSpawnedCursorGameObjects() {
     for (const gameObject of this.spawnedCursorGameObjects) {
+      this.notifyStructureTopologyChangedForPreview(gameObject);
       gameObject.destroy();
     }
     this.spawnedCursorGameObjects = [];
@@ -862,7 +882,8 @@ export class BuildingCursor {
     const buildingsBeingPlaced: GameObjects.GameObject[] =
       this.isDragging && objectsToPlace.length ? objectsToPlace : this.building ? [this.building] : [];
 
-    // Exit build mode immediately
+    // Exit build mode before waiting on local actor movement so preview updates
+    // cannot keep mutating the placement while the commit is in progress.
     const buildingToPlace = this.building;
     this.building = undefined;
     this.clearGraphics();
@@ -961,6 +982,9 @@ export class BuildingCursor {
   }
 
   stop() {
+    if (this.building) {
+      this.notifyStructureTopologyChangedForPreview(this.building);
+    }
     this.building?.destroy();
     this.building = undefined;
     this.pointerLocation = undefined;
@@ -969,6 +993,11 @@ export class BuildingCursor {
     this.clearSpawnedCursorGameObjects();
     this.actorsToMove.clear();
     this.isDragging = false;
+  }
+
+  private notifyStructureTopologyChangedForPreview(gameObject?: GameObjects.GameObject) {
+    if (!gameObject) return;
+    emitStructureTopologyChanged(gameObject);
   }
 
   private destroy() {

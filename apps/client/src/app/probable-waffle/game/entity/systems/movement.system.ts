@@ -34,13 +34,50 @@ import { MovementTerrainType } from "../components/movement/movement-terrain-typ
 import { RepresentableComponent } from "../components/representable-component";
 import { IdComponent } from "../components/id-component";
 import { StatusEffectComponent } from "../components/status-effect/status-effect-component";
-import { getTileCoordsUnderObject } from "../../library/tile-under-object";
 import { TilemapComponent } from "../../world/tilemap/tilemap.component";
 import type { IsoDirection } from "../components/movement/iso-directions";
 import type { PathMoveConfig } from "./path-move-config";
 import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
 import { getInterpolatedSimulationNow } from "../../world/services/simulation-time";
+import { MovementOccupancyService } from "../../world/services/movement-occupancy.service";
 import GameObject = Phaser.GameObjects.GameObject;
+
+// When another actor is already stepping through the blocked tile, wait briefly
+// a couple of times before trying more disruptive recovery.
+const BLOCKED_STEP_MAX_WAIT_ATTEMPTS = 2;
+// Congestion waits use scene time so they pause with the simulation lifecycle.
+const BLOCKED_STEP_WAIT_MS = 120;
+// Small local side-steps are the first spatial recovery option after waiting.
+const BLOCKED_STEP_MAX_SIDE_STEP_ATTEMPTS = 2;
+// Full repaths are more expensive and can reshuffle routes, so cap retries.
+const BLOCKED_STEP_MAX_REPATH_ATTEMPTS = 2;
+// A repath may temporarily fail while another unit clears the route, but do
+// not wait forever before escalating to the fallback-destination flow.
+const BLOCKED_STEP_MAX_REPATH_WAIT_ATTEMPTS = 2;
+// Last-resort fallback search radius around the original destination tile.
+const BLOCKED_STEP_FALLBACK_RADIUS = 6;
+// Formation expansion stops after a bounded connected-component search so large
+// move groups do not flood-fill an entire platform while assigning destinations.
+const FORMATION_MAX_CONNECTED_CELLS = 96;
+
+interface BlockedStepRecoveryState {
+  waitAttemptsByTile: Map<string, number>;
+  sideStepAttempts: number;
+  repathAttempts: number;
+}
+
+/**
+ * Signals that the next tile in an otherwise valid path is temporarily blocked
+ * by dynamic actor occupancy rather than static terrain connectivity.
+ */
+class MovementStepBlockedError extends Error {
+  constructor(
+    readonly tile: Vector2Simple,
+    readonly blockers: ActorId[]
+  ) {
+    super("Next movement tile is occupied");
+  }
+}
 
 export class MovementSystem {
   private _navigationService?: NavigationService;
@@ -56,6 +93,7 @@ export class MovementSystem {
   private audioActorComponent: AudioActorComponent | undefined;
   private animationActorComponent?: AnimationActorComponent;
   private statusEffectComponent?: StatusEffectComponent;
+  private _movementOccupancyService?: MovementOccupancyService;
 
   constructor(private readonly gameObject: Phaser.GameObjects.GameObject) {
     this.listenToMoveEvents();
@@ -87,6 +125,7 @@ export class MovementSystem {
       const actorId = myId ?? getActorComponent(this.gameObject, IdComponent)?.id;
       if (!actorId || !cmd.actorIds.includes(actorId)) return;
 
+      this.movementOccupancyService?.releaseDestination(actorId);
       const newWorldVec3 = await this.getTileVec3ByDynamicFlocking(cmd.tileVec3, cmd.actorIds as ActorId[]);
       const payerPawnAiController = getActorComponent(this.gameObject, PawnAiController);
       if (payerPawnAiController) {
@@ -116,6 +155,12 @@ export class MovementSystem {
   private get navigationService(): NavigationService | undefined {
     this._navigationService = this._navigationService ?? getSceneService(this.gameObject.scene, NavigationService);
     return this._navigationService;
+  }
+
+  private get movementOccupancyService(): MovementOccupancyService | undefined {
+    this._movementOccupancyService =
+      this._movementOccupancyService ?? getSceneService(this.gameObject.scene, MovementOccupancyService);
+    return this._movementOccupancyService;
   }
 
   async moveToLocationByFollowingStaticPath(
@@ -148,6 +193,9 @@ export class MovementSystem {
     } catch (e) {
       // console.error("Error moving along path", e);
       return false;
+    } finally {
+      const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
+      if (actorId) this.movementOccupancyService?.releaseDestination(actorId);
     }
 
     return true;
@@ -181,6 +229,9 @@ export class MovementSystem {
         .catch(() => false);
     }
 
+    // Actor-target movement snapshots a path to the nearest reachable tile by
+    // the target object. The order stays deterministic until recovery chooses
+    // to wait, sidestep, or repath after a blockage.
     const path = await this.getPathToClosestNavigableTileBetweenGameObjectsInRadius(
       destinationGameObject,
       pathMoveConfig?.radiusTilesAroundDestination
@@ -195,6 +246,9 @@ export class MovementSystem {
       return true;
     } catch {
       return false;
+    } finally {
+      const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
+      if (actorId) this.movementOccupancyService?.releaseDestination(actorId);
     }
   }
 
@@ -216,11 +270,17 @@ export class MovementSystem {
    *
    * @param path Array of tile coordinates representing the movement path
    * @param config Optional configuration for movement behavior and callbacks
+   * @param recoveryState Mutable counters that keep retries bounded across recursive recovery.
    * @returns Promise<void> - resolves when the entire path is completed
    */
   private async moveAlongPathByFollowingPreCalculatedStaticPath(
     path: Vector2Simple[],
-    config?: PathMoveConfig
+    config?: PathMoveConfig,
+    recoveryState: BlockedStepRecoveryState = {
+      waitAttemptsByTile: new Map<string, number>(),
+      sideStepAttempts: 0,
+      repathAttempts: 0
+    }
   ): Promise<void> {
     if (!path.length) {
       config?.onComplete?.();
@@ -234,7 +294,7 @@ export class MovementSystem {
     config?.onPathUpdate?.(nextTile);
 
     const onComplete = async () => {
-      await this.moveAlongPathByFollowingPreCalculatedStaticPath(path, config);
+      await this.moveAlongPathByFollowingPreCalculatedStaticPath(path, config, recoveryState);
     };
 
     const onStop = () => {
@@ -242,7 +302,305 @@ export class MovementSystem {
       this.playMovementAnimation(false, config);
     };
 
-    return this.moveActorToTileWithTween(nextTile, config, onComplete, onStop);
+    try {
+      await this.moveActorToTileWithTween(nextTile, config, onComplete, onStop);
+    } catch (error) {
+      if (!(error instanceof MovementStepBlockedError)) {
+        throw error;
+      }
+      await this.recoverFromBlockedPathStep(error, nextTile, path, config, recoveryState);
+    }
+  }
+
+  /**
+   * Handles dynamic congestion after a single blocked step on a valid static
+   * route. Recovery keeps the original order alive and escalates from the
+   * least disruptive option to the most disruptive one:
+   * 1. wait for transient step reservations to clear
+   * 2. sidestep locally and repath to the original destination
+   * 3. repath directly from the current tile
+   * 4. pick a nearby same-height fallback tile and route there instead
+   * @param error Dynamic occupancy details for the blocked next step.
+   * @param blockedTile The tile that the actor failed to enter.
+   * @param remainingPath The rest of the original path after the blocked step.
+   * @param config Optional movement callbacks and animation flags for the order.
+   * @param recoveryState Mutable counters that keep retries bounded across recursive recovery.
+   */
+  private async recoverFromBlockedPathStep(
+    error: MovementStepBlockedError,
+    blockedTile: Vector2Simple,
+    remainingPath: Vector2Simple[],
+    config: PathMoveConfig | undefined,
+    recoveryState: BlockedStepRecoveryState
+  ): Promise<void> {
+    // Escalate from cheapest to most disruptive recovery:
+    // wait -> sidestep -> repath -> same-height fallback tile.
+    const finalDestination = remainingPath[remainingPath.length - 1] ?? blockedTile;
+    const blockedTileKey = `${blockedTile.x},${blockedTile.y}`;
+    const waitAttempts = recoveryState.waitAttemptsByTile.get(blockedTileKey) ?? 0;
+    // Prefer a short wait when the blocker is another actor's active step.
+    // That case usually clears without changing the selected path, which keeps
+    // groups from scattering when they briefly meet at a choke point.
+    if (
+      waitAttempts < BLOCKED_STEP_MAX_WAIT_ATTEMPTS &&
+      this.movementOccupancyService?.hasAnyActiveStepReservation(error.blockers)
+    ) {
+      recoveryState.waitAttemptsByTile.set(blockedTileKey, waitAttempts + 1);
+      await this.waitForBlockedStep();
+      await this.moveAlongPathByFollowingPreCalculatedStaticPath(
+        [blockedTile, ...remainingPath],
+        config,
+        recoveryState
+      );
+      return;
+    }
+
+    if (recoveryState.sideStepAttempts < BLOCKED_STEP_MAX_SIDE_STEP_ATTEMPTS) {
+      const sideStepTile = this.getBestSideStepTile(blockedTile, finalDestination);
+      if (sideStepTile) {
+        recoveryState.sideStepAttempts++;
+        config?.onPathUpdate?.(sideStepTile);
+        await this.moveActorToTileWithTween(sideStepTile, config);
+        const recovered = await this.repathToDestination(finalDestination, config, recoveryState);
+        if (recovered) return;
+      }
+    }
+
+    if (recoveryState.repathAttempts < BLOCKED_STEP_MAX_REPATH_ATTEMPTS) {
+      recoveryState.repathAttempts++;
+      const recovered = await this.repathToDestination(finalDestination, config, recoveryState);
+      if (recovered) return;
+    }
+
+    const fallbackTile = await this.findReachableFallbackTile(finalDestination);
+    if (!fallbackTile) throw error;
+    await this.moveToFallbackTile(fallbackTile, config, recoveryState);
+  }
+
+  private waitForBlockedStep(): Promise<void> {
+    return new Promise((resolve) => {
+      const scene = this.gameObject.scene;
+      if (!isSceneActive(scene)) {
+        resolve();
+        return;
+      }
+      // Use Phaser scene time so congestion waits pause with the simulation scene lifecycle.
+      scene.time.delayedCall(BLOCKED_STEP_WAIT_MS, () => resolve());
+    });
+  }
+
+  /**
+   * Rebuilds a dynamic-blocker path to the same destination after congestion.
+   * Destination reservations are intentionally ignored here: they claim final
+   * formation slots, but using them as path blockers can make a moving group
+   * close every temporary route around a large object. Active step reservations
+   * and current actor footprints still block traversal, and a no-path result is
+   * retried a small number of times because those blockers can clear on the
+   * next congestion wait. When that never happens, control returns so the
+   * caller can escalate to a fallback destination instead of hanging forever.
+   * @param destinationTile The original tile the order is still trying to reach.
+   * @param config Optional movement callbacks and animation flags for the order.
+   * @param recoveryState Mutable counters that survive across repath retries.
+   */
+  private async repathToDestination(
+    destinationTile: Vector2Simple,
+    config: PathMoveConfig | undefined,
+    recoveryState: BlockedStepRecoveryState
+  ): Promise<boolean> {
+    if (!this.navigationService) return Promise.reject("No navigationService");
+    const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
+    let newPath: Vector2Simple[] | null = null;
+    let waitAttempts = 0;
+    while (isGameObjectActiveInActiveScene(this.gameObject) && waitAttempts <= BLOCKED_STEP_MAX_REPATH_WAIT_ATTEMPTS) {
+      // Repathing overlays only dynamic blockers. Static height edges stay owned
+      // by NavigationService so wall/stairs connectivity cannot diverge here.
+      const dynamicBlockers =
+        actorId && this.movementOccupancyService
+          ? this.movementOccupancyService.getDynamicBlockersForActor(actorId, {
+              includeDestinationReservations: false
+            })
+          : [];
+      newPath = await this.navigationService.findPathFromGameObjectToTileAvoidingDynamicBlockers(
+        this.gameObject,
+        destinationTile,
+        dynamicBlockers
+      );
+      if (newPath && newPath.length) break;
+
+      // Congestion can temporarily make every route around a large obstacle look closed.
+      // Keep the order alive and retry after other actors release their current steps.
+      waitAttempts++;
+      if (waitAttempts > BLOCKED_STEP_MAX_REPATH_WAIT_ATTEMPTS) break;
+      await this.waitForBlockedStep();
+    }
+    if (!newPath || !newPath.length) return false;
+    newPath.shift();
+    await this.moveAlongPathByFollowingPreCalculatedStaticPath(newPath, config, recoveryState);
+    return true;
+  }
+
+  /**
+   * Finds a nearby replacement destination when the original endpoint stays
+   * unreachable after waiting, sidestepping, and repathing. Candidates must:
+   * - stay on the same navigable height layer as the destination
+   * - fit the actor's full footprint
+   * - remain reachable when dynamic blockers are overlaid
+   * @param destinationTile The original target tile whose height layer and vicinity are preserved.
+   */
+  private async findReachableFallbackTile(destinationTile: Vector2Simple): Promise<Vector2Simple | undefined> {
+    const navigationService = this.navigationService;
+    const movementOccupancy = this.movementOccupancyService;
+    const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
+    if (!navigationService || !movementOccupancy || !actorId) return undefined;
+
+    const destinationHeight = navigationService.getNavigableHeightAtTile(destinationTile);
+    const candidates: Vector2Simple[] = [];
+    // Search outward in Manhattan rings so the first accepted tile is the
+    // closest deterministic fallback on the destination's height layer.
+    for (let radius = 1; radius <= BLOCKED_STEP_FALLBACK_RADIUS; radius++) {
+      for (let dy = -radius; dy <= radius; dy++) {
+        for (let dx = -radius; dx <= radius; dx++) {
+          if (Math.abs(dx) + Math.abs(dy) !== radius) continue;
+          const candidate = { x: destinationTile.x + dx, y: destinationTile.y + dy };
+          if (!navigationService.isWithinGridBounds(candidate)) continue;
+          if (!navigationService.isTileNavigable(candidate)) continue;
+          if (navigationService.getNavigableHeightAtTile(candidate) !== destinationHeight) continue;
+          const footprint = movementOccupancy.getActorFootprintAtTile(this.gameObject, candidate);
+          if (
+            !movementOccupancy.isFootprintFree(actorId, footprint, destinationHeight, {
+              includeDestinationReservations: false
+            })
+          ) {
+            continue;
+          }
+          candidates.push(candidate);
+        }
+      }
+      const fallback = await this.getFirstReachableCandidate(candidates, destinationTile);
+      if (fallback) return fallback;
+    }
+    return undefined;
+  }
+
+  /**
+   * Chooses the first reachable candidate tile from a deterministic ordering.
+   * Distance to the original destination wins first so fallback endpoints stay
+   * visually close to the player's requested location.
+   * @param candidates Reachability candidates that already passed local footprint checks.
+   * @param destinationTile The original destination used for deterministic ranking.
+   */
+  private async getFirstReachableCandidate(
+    candidates: Vector2Simple[],
+    destinationTile: Vector2Simple
+  ): Promise<Vector2Simple | undefined> {
+    const navigationService = this.navigationService;
+    const movementOccupancy = this.movementOccupancyService;
+    const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
+    if (!navigationService || !movementOccupancy || !actorId) return undefined;
+    const dynamicBlockers = movementOccupancy.getDynamicBlockersForActor(actorId, {
+      includeDestinationReservations: false
+    });
+    const orderedCandidates = [...candidates].sort((a, b) => {
+      const distanceDelta = this.getTileDistance(a, destinationTile) - this.getTileDistance(b, destinationTile);
+      if (distanceDelta !== 0) return distanceDelta;
+      if (a.y !== b.y) return a.y - b.y;
+      return a.x - b.x;
+    });
+    for (const candidate of orderedCandidates) {
+      const path = await navigationService.findPathFromGameObjectToTileAvoidingDynamicBlockers(
+        this.gameObject,
+        candidate,
+        dynamicBlockers
+      );
+      if (path && path.length > 0) return candidate;
+    }
+    return undefined;
+  }
+
+  /**
+   * Reserves and routes to the fallback destination chosen after congestion
+   * recovery exhausted the original endpoint. Reserving first keeps another
+   * actor from stealing the same escape slot during the repath.
+   * @param fallbackTile The replacement tile selected near the original destination.
+   * @param config Optional movement callbacks and animation flags for the order.
+   * @param recoveryState Mutable counters reused while finishing the recovered order.
+   */
+  private async moveToFallbackTile(
+    fallbackTile: Vector2Simple,
+    config: PathMoveConfig | undefined,
+    recoveryState: BlockedStepRecoveryState
+  ): Promise<void> {
+    const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
+    const heightLayer = this.navigationService?.getNavigableHeightAtTile(fallbackTile) ?? 0;
+    const footprint = this.movementOccupancyService?.getActorFootprintAtTile(this.gameObject, fallbackTile);
+    if (actorId && footprint) {
+      this.movementOccupancyService?.releaseDestination(actorId);
+      this.movementOccupancyService?.reserveDestination(actorId, footprint, heightLayer);
+    }
+    // Reserve the escape slot before repathing so another actor cannot claim it
+    // while this unit is recalculating its route.
+    const recovered = await this.repathToDestination(fallbackTile, config, recoveryState);
+    if (!recovered) {
+      throw new Error("Failed to repath to fallback destination");
+    }
+  }
+
+  /**
+   * Picks a one-step local detour around the blocked tile without changing
+   * height layers. Candidates are ranked by forward progress toward the final
+   * destination, then by how much they move away from the blockage.
+   * @param blockedTile The immediate blocked next step from the current tile.
+   * @param finalDestination The eventual order destination used to rank progress.
+   */
+  private getBestSideStepTile(blockedTile: Vector2Simple, finalDestination: Vector2Simple): Vector2Simple | undefined {
+    const currentTile = getGameObjectCurrentTile(this.gameObject);
+    const navigationService = this.navigationService;
+    const movementOccupancy = this.movementOccupancyService;
+    const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
+    if (!currentTile || !navigationService || !movementOccupancy || !actorId) return undefined;
+
+    const terrainType =
+      this.actorTranslateComponent?.actorTranslateDefinition.movementTerrainType ?? MovementTerrainType.Ground;
+    const currentHeight = navigationService.getNavigableHeightAtTile(currentTile);
+    const candidates: Vector2Simple[] = [];
+    for (let dy = -1; dy <= 1; dy++) {
+      for (let dx = -1; dx <= 1; dx++) {
+        if (dx === 0 && dy === 0) continue;
+        const candidate = { x: currentTile.x + dx, y: currentTile.y + dy };
+        if (candidate.x === blockedTile.x && candidate.y === blockedTile.y) continue;
+        if (!navigationService.isWithinGridBounds(candidate, terrainType)) continue;
+        if (!navigationService.isTileNavigable(candidate, terrainType)) continue;
+        if (!navigationService.canTraverseBetweenTiles(currentTile, candidate)) continue;
+        const candidateHeight = navigationService.getNavigableHeightAtTile(candidate);
+        if (candidateHeight !== currentHeight) continue;
+        const footprint = movementOccupancy.getActorFootprintAtTile(this.gameObject, candidate);
+        if (
+          !movementOccupancy.isFootprintFree(actorId, footprint, candidateHeight, {
+            includeDestinationReservations: false
+          })
+        ) {
+          continue;
+        }
+        candidates.push(candidate);
+      }
+    }
+
+    candidates.sort((a, b) => {
+      const progressDelta = this.getTileDistance(a, finalDestination) - this.getTileDistance(b, finalDestination);
+      if (progressDelta !== 0) return progressDelta;
+      const blockedDelta = this.getTileDistance(b, blockedTile) - this.getTileDistance(a, blockedTile);
+      if (blockedDelta !== 0) return blockedDelta;
+      if (a.y !== b.y) return a.y - b.y;
+      return a.x - b.x;
+    });
+
+    return candidates[0];
+  }
+
+  private getTileDistance(a: Vector2Simple, b: Vector2Simple): number {
+    const dx = a.x - b.x;
+    const dy = a.y - b.y;
+    return Math.sqrt(dx * dx + dy * dy);
   }
 
   /**
@@ -271,7 +629,32 @@ export class MovementSystem {
     const navigableHeight = this.navigationService?.getNavigableHeightAtTile(tile) ?? 0;
     const newLogicalTransform = { ...tileWorldXY, z: navigableHeight } as Vector3Simple;
 
-    return this.startMovementTween(newLogicalTransform, config, onComplete, onStop);
+    const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
+    const movementOccupancy = this.movementOccupancyService;
+    if (actorId && movementOccupancy) {
+      const footprint = movementOccupancy.getActorFootprintAtTile(this.gameObject, tile);
+      const reservation = movementOccupancy.tryReserveStep(actorId, footprint, navigableHeight);
+      if (!reservation.reserved) {
+        return Promise.reject(new MovementStepBlockedError(tile, reservation.blockers));
+      }
+    }
+
+    const wrappedOnComplete = async () => {
+      if (actorId) movementOccupancy?.releaseStep(actorId);
+      if (onComplete) {
+        await onComplete();
+      }
+    };
+
+    const wrappedOnStop = () => {
+      if (actorId) movementOccupancy?.releaseStep(actorId);
+      onStop?.();
+    };
+
+    return this.startMovementTween(newLogicalTransform, config, wrappedOnComplete, wrappedOnStop).catch((error) => {
+      if (actorId) movementOccupancy?.releaseStep(actorId);
+      throw error;
+    });
   }
 
   private tweenUpdate = (logicalTransform: Vector3Simple) => {
@@ -282,6 +665,8 @@ export class MovementSystem {
   cancelMovement() {
     this._cancelCurrentMovement?.();
     this._cancelCurrentMovement = undefined;
+    const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
+    if (actorId) this.movementOccupancyService?.releaseStep(actorId);
   }
 
   /**
@@ -535,6 +920,8 @@ export class MovementSystem {
 
   private destroy() {
     this.cancelMovement();
+    const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
+    if (actorId) this.movementOccupancyService?.releaseAll(actorId);
     this.commandBusSubscription?.unsubscribe();
   }
 
@@ -570,6 +957,9 @@ export class MovementSystem {
     if (unitCount < 2) {
       return tileVec3;
     }
+    if (getActorComponent(this.gameObject, FlyingComponent)) {
+      return tileVec3;
+    }
 
     const idComponent = getActorComponent(this.gameObject, IdComponent);
     if (!idComponent || !this.navigationService) return tileVec3;
@@ -585,27 +975,7 @@ export class MovementSystem {
       return tileVec3; // Should not happen if logic is correct
     }
 
-    // Use a tighter formation spacing for better visual formation
-    const tilesUnderGameObject = getTileCoordsUnderObject(this.tileMapComponent.tilemap, this.gameObject);
-    const size = tilesUnderGameObject.length > 0 ? Math.ceil(Math.sqrt(tilesUnderGameObject.length)) : 1;
-    // Reduce spacing to just the unit size without additional buffer for tighter formations
-    const spacingInTiles = Math.max(1, size);
-
-    const gridSize = Math.ceil(Math.sqrt(unitCount));
-    const formationPoints: Vector2Simple[] = [];
-
-    // Generate a grid of potential destination points around the target
-    const startX = tileVec3.x - Math.floor(gridSize / 2) * spacingInTiles;
-    const startY = tileVec3.y - Math.floor(gridSize / 2) * spacingInTiles;
-
-    for (let r = 0; r < gridSize; r++) {
-      for (let c = 0; c < gridSize; c++) {
-        formationPoints.push({
-          x: startX + c * spacingInTiles,
-          y: startY + r * spacingInTiles
-        });
-      }
-    }
+    const formationPoints = this.getConnectedFormationPoints(tileVec3, unitCount);
 
     // Sort the selected units by their ID to ensure a consistent order
     const sortedSelectedIds = [...selectedActorObjectIds].sort();
@@ -621,29 +991,86 @@ export class MovementSystem {
       return a.x - b.x;
     });
 
-    // Assign a unique formation point to this unit based on its sorted index
-    if (ownSortedIndex < formationPoints.length) {
-      const assignedPoint = formationPoints[ownSortedIndex];
-      if (!assignedPoint) return tileVec3;
-      const destinationTile: Vector2Simple = { x: assignedPoint.x, y: assignedPoint.y };
+    const terrainType =
+      this.actorTranslateComponent?.actorTranslateDefinition.movementTerrainType ?? MovementTerrainType.Ground;
+    const targetHeight = this.navigationService.getNavigableHeightAtTile(tileVec3);
+    const sameHeightFormationPoints: Vector2Simple[] = [];
+    const otherHeightFormationPoints: Vector2Simple[] = [];
+    for (const point of formationPoints) {
+      const pointHeight = this.navigationService.getNavigableHeightAtTile(point);
+      if (pointHeight === targetHeight) {
+        sameHeightFormationPoints.push(point);
+      } else {
+        otherHeightFormationPoints.push(point);
+      }
+    }
 
-      // Check if the assigned point is valid and reachable
-      const terrainType =
-        this.actorTranslateComponent?.actorTranslateDefinition.movementTerrainType ?? MovementTerrainType.Ground;
-      if (this.navigationService.isTileNavigable(destinationTile, terrainType)) {
-        const path = await this.navigationService.findPathFromGameObjectToTile(this.gameObject, destinationTile);
-        if (path !== null && path.length > 0) {
-          return {
-            x: destinationTile.x,
-            y: destinationTile.y,
-            z: tileVec3.z // Keep the original Z coordinate
-          } satisfies Vector3Simple;
+    // Assign a unique formation point to this unit based on its sorted index
+    const orderedCandidateGroups = [sameHeightFormationPoints, otherHeightFormationPoints];
+    for (const candidateGroup of orderedCandidateGroups) {
+      if (candidateGroup.length === 0) continue;
+      const candidateStartIndex = ownSortedIndex % candidateGroup.length;
+      const orderedCandidates = [
+        ...candidateGroup.slice(candidateStartIndex),
+        ...candidateGroup.slice(0, candidateStartIndex)
+      ];
+
+      for (const assignedPoint of orderedCandidates) {
+        const destinationTile: Vector2Simple = { x: assignedPoint.x, y: assignedPoint.y };
+
+        // Check if the assigned point is valid and reachable
+        if (this.navigationService.isTileNavigable(destinationTile, terrainType)) {
+          const movementOccupancy = this.movementOccupancyService;
+          const destinationHeight = this.navigationService.getNavigableHeightAtTile(destinationTile);
+          const dynamicBlockers =
+            movementOccupancy?.getDynamicBlockersForActor(ownId, {
+              includeDestinationReservations: false
+            }) ?? [];
+          const path = await this.navigationService.findPathFromGameObjectToTileAvoidingDynamicBlockers(
+            this.gameObject,
+            destinationTile,
+            dynamicBlockers
+          );
+          if (path !== null && path.length > 0) {
+            const footprint = movementOccupancy?.getActorFootprintAtTile(this.gameObject, destinationTile);
+            if (footprint && !movementOccupancy?.reserveDestination(ownId, footprint, destinationHeight)) {
+              continue;
+            }
+            return {
+              x: destinationTile.x,
+              y: destinationTile.y,
+              z: destinationHeight
+            } satisfies Vector3Simple;
+          }
         }
       }
     }
 
     // Fallback to original target if no suitable position is found
     return tileVec3;
+  }
+
+  private getConnectedFormationPoints(tileVec3: Vector3Simple, unitCount: number): Vector2Simple[] {
+    const navigationService = this.navigationService;
+    if (!navigationService) return [{ x: tileVec3.x, y: tileVec3.y }];
+    // Prefer connected same-height positions so formations do not assign some
+    // units to the ground while others are standing on walls or stairs.
+    const connectedSameHeight = navigationService.getConnectedNavigableTiles(
+      { x: tileVec3.x, y: tileVec3.y },
+      { sameHeightOnly: true, maxTiles: FORMATION_MAX_CONNECTED_CELLS }
+    );
+    if (connectedSameHeight.length >= unitCount) {
+      return connectedSameHeight;
+    }
+    const connectedAnyHeight = navigationService.getConnectedNavigableTiles(
+      { x: tileVec3.x, y: tileVec3.y },
+      { sameHeightOnly: false, maxTiles: FORMATION_MAX_CONNECTED_CELLS }
+    );
+    return connectedSameHeight.concat(
+      connectedAnyHeight.filter(
+        (point) => !connectedSameHeight.some((sameHeight) => sameHeight.x === point.x && sameHeight.y === point.y)
+      )
+    );
   }
 
   /**

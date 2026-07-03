@@ -38,7 +38,7 @@ export const stairsDefinition = {
     navigable: {
       navigableHeight: 24,
       exitHeight: 64,
-      acceptMinimumHeight: 0
+      enterHeight: 0
     },
     selectable: {},
     health: {

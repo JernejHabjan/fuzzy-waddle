@@ -66,8 +66,8 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "1",
-            "x": -160,
-            "y": 624
+            "x": -144,
+            "y": 616
         },
         {
             "prefabId": "e858a91a-5bcf-4095-9fd3-07f98cf4415d",
@@ -81,8 +81,8 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "1",
-            "x": 32,
-            "y": 752
+            "x": 160,
+            "y": 688
         },
         {
             "prefabId": "5f8b7bf2-30e6-4361-b3c5-7a796ee21bd3",
@@ -96,8 +96,8 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "1",
-            "x": 0,
-            "y": 768
+            "x": 128,
+            "y": 704
         },
         {
             "prefabId": "edf32147-e546-4f6e-91ba-1720c6b75ac9",
@@ -111,8 +111,8 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "1",
-            "x": 108,
-            "y": 786
+            "x": -16,
+            "y": 784
         },
         {
             "prefabId": "5f8b7bf2-30e6-4361-b3c5-7a796ee21bd3",
@@ -126,8 +126,8 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "1",
-            "x": -32,
-            "y": 784
+            "x": 96,
+            "y": 720
         },
         {
             "prefabId": "5f8b7bf2-30e6-4361-b3c5-7a796ee21bd3",
@@ -141,12 +141,117 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "1",
-            "x": -64,
-            "y": 800
+            "x": 64,
+            "y": 736
+        },
+        {
+            "prefabId": "5f8b7bf2-30e6-4361-b3c5-7a796ee21bd3",
+            "id": "08f4bc04-836c-416f-a7e5-d1602cc3a8db",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "wall_3",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": 224,
+            "y": 648
+        },
+        {
+            "prefabId": "5f8b7bf2-30e6-4361-b3c5-7a796ee21bd3",
+            "id": "5549757d-e2c9-41bb-bbbc-92191656d692",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "wall_4",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": 256,
+            "y": 664
+        },
+        {
+            "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f37",
+            "id": "467daf55-c469-459d-b8fa-4182adf295c2",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "watchTower_1",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": 448,
+            "y": 728
+        },
+        {
+            "prefabId": "5f8b7bf2-30e6-4361-b3c5-7a796ee21bd3",
+            "id": "93f2f34b-0ee8-4bd0-8d5d-2be8c303c748",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "wall_5",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": 496,
+            "y": 752
         },
         {
             "prefabId": "e858a91a-5bcf-4095-9fd3-07f98cf4415d",
-            "id": "22a8f57b-7d26-4990-9f25-b6e129042ae4",
+            "id": "d398b1e7-09fb-4f4c-ae12-3eb3c63b5244",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "stairs_3",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": 528,
+            "y": 768
+        },
+        {
+            "prefabId": "e858a91a-5bcf-4095-9fd3-07f98cf4415d",
+            "id": "5a10a4d7-5e99-4b57-8e7f-4f8437e7e3e7",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "stairs_4",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": 64,
+            "y": 576
+        },
+        {
+            "prefabId": "e858a91a-5bcf-4095-9fd3-07f98cf4415d",
+            "id": "8c599c93-a7be-4257-b984-9c528190c651",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "stairs_5",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": 32,
+            "y": 560
+        },
+        {
+            "prefabId": "e858a91a-5bcf-4095-9fd3-07f98cf4415d",
+            "id": "a4c863e1-2452-4611-ba9d-e11449d58511",
             "unlock": [
                 "x",
                 "y"
@@ -156,8 +261,8 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "1",
-            "x": -96,
-            "y": 816
+            "x": 32,
+            "y": 752
         }
     ],
     "plainObjects": [

@@ -51,6 +51,28 @@ export function getTileCoordsUnderObject(
   return tileIndexes1;
 }
 
+export function getTileCoordsUnderObjectAtTile(
+  tilemap: Phaser.Tilemaps.Tilemap,
+  gameObject: Phaser.GameObjects.GameObject,
+  centerTile: Vector2Simple
+): Vector2Simple[] {
+  const currentCenter = getCenterTileCoordUnderObject(tilemap, gameObject);
+  if (!currentCenter) return [centerTile];
+
+  const currentFootprint = getTileCoordsUnderObject(tilemap, gameObject);
+  if (currentFootprint.length === 0) return [centerTile];
+
+  // Preserve the actor's current footprint shape and only translate it to the
+  // requested center tile so occupancy can reserve multi-tile bodies correctly.
+  const offsetX = centerTile.x - currentCenter.x;
+  const offsetY = centerTile.y - currentCenter.y;
+  return currentFootprint.map((tile) => ({ x: tile.x + offsetX, y: tile.y + offsetY }));
+}
+
+/**
+ * Returns the logical center tile of the current footprint. Multi-tile objects
+ * use the averaged center so pathing and occupancy share the same anchor.
+ */
 export function getCenterTileCoordUnderObject(
   tilemap: Phaser.Tilemaps.Tilemap,
   gameObject: Phaser.GameObjects.GameObject

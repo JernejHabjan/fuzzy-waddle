@@ -62,7 +62,7 @@ export const wallDefinition = {
       navigableHeight: 42,
       exitHeight: 64,
       // can be accessed from the stairs
-      acceptMinimumHeight: 64
+      enterHeight: 64
     }
   }
 } satisfies PrefabDefinition;

@@ -6,21 +6,30 @@ import StairsTopLeft from "./StairsTopLeft";
 /* START-USER-IMPORTS */
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { ConstructionGameObjectInterfaceComponent } from "../../../../entity/components/construction/construction-game-object-interface-component";
-import { onObjectReady } from "../../../../data/game-object-helper";
-import { throttle } from "../../../../library/throttle";
-import { getNeighboursByTypes } from "../../../../data/tile-map-helpers";
+import {
+  getIsometricNeighbourDirectionsByTypes,
+  getNeighbourDirectionsByTypes
+} from "../../../../data/tile-map-helpers";
 import WatchTower from "../wall/WatchTower";
 import { TilemapComponent } from "../../../../world/tilemap/tilemap.component";
 import Wall from "../wall/Wall";
 import StairsTopRight from "./StairsTopRight";
 import StairsBottomLeft from "./StairsBottomLeft";
 import StairsBottomRight from "./StairsBottomRight";
-import { setActorData } from "../../../../data/actor-data";
+import { ActorDataChangedEvent, setActorData } from "../../../../data/actor-data";
 import { getActorComponent } from "../../../../data/actor-component";
 import { NavigableComponent } from "../../../../entity/components/movement/navigable-component";
 import type { NavigablePath } from "../../../../entity/components/movement/navigable-path";
+import type { HeightDirectionPortDefinition } from "../../../../entity/components/movement/navigable-definition";
 import { getSceneService } from "../../../../world/services/scene-component-helpers";
 import { SceneLightingService } from "../../../../world/services/lighting/scene-lighting.service";
+import { StructureTopologyService } from "../navigation-topology.events";
+import {
+  countStructureDirectionMatches,
+  type StructureDirectionKey,
+  type StructureNeighborDirections,
+  toStructureNeighborDirections
+} from "../structure-topology.model";
 /* END-USER-IMPORTS */
 
 export default class Stairs extends Phaser.GameObjects.Container {
@@ -60,7 +69,7 @@ export default class Stairs extends Phaser.GameObjects.Container {
 
     /* START-USER-CTR-CODE */
     editorStairs.destroy();
-    this.updateStairs(StairsType.TopLeft);
+    this.updateStairs("topLeft");
     this.setup();
     /* END-USER-CTR-CODE */
   }
@@ -71,63 +80,71 @@ export default class Stairs extends Phaser.GameObjects.Container {
   /* START-USER-CODE */
   override name = ObjectNames.Stairs;
   private stairs?: Phaser.GameObjects.GameObject;
-  private currentStairsType?: StairsType;
-  updateStairs(stairsType: StairsType) {
-    if (this.currentStairsType === stairsType) return;
-    this.currentStairsType = stairsType;
+  private currentStairsKey?: StairsPrefabKey;
+  private readonly topologyService = new StructureTopologyService(this, {
+    onInitialRefresh: this.refreshStairsType.bind(this),
+    onAdjacentTopologyChanged: this.refreshStairsType.bind(this)
+  });
+
+  /**
+   * Swaps the rendered stair variant and reapplies its navigation contract.
+   * Visual slope and traversable ports must stay coupled for both previews and
+   * finished structures.
+   */
+  private updateStairs(stairsKey: StairsPrefabKey) {
+    if (this.currentStairsKey === stairsKey) {
+      return;
+    }
+    this.currentStairsKey = stairsKey;
     this.stairs?.destroy();
-    const stairClasses = {
-      [StairsType.TopLeft]: StairsTopLeft,
-      [StairsType.TopRight]: StairsTopRight,
-      [StairsType.BottomLeft]: StairsBottomLeft,
-      [StairsType.BottomRight]: StairsBottomRight
-    };
 
-    const StairsClass = stairClasses[stairsType];
-
-    if (StairsClass) {
-      this.stairs = new StairsClass(this.scene, 0, 0);
-      this.add(this.stairs);
-      getSceneService(this.scene, SceneLightingService)?.syncGameObjectTree(this);
-    } else {
-      throw new Error("Stairs type not found");
-    }
-    const navigableComponent = getActorComponent(this, NavigableComponent);
-    if (navigableComponent) {
-      const navigablePath = this.getNavigablePath(stairsType);
-      navigableComponent.allowNavigablePath(navigablePath);
-    }
+    const definition = STAIRS_PREFAB_DEFINITIONS[stairsKey];
+    this.stairs = new definition.prefab(this.scene, 0, 0);
+    this.add(this.stairs);
+    getSceneService(this.scene, SceneLightingService)?.syncGameObjectTree(this);
+    this.updateNavigablePath(definition);
   }
 
-  private getNavigablePath(stairsType: StairsType): NavigablePath {
-    switch (stairsType) {
-      case StairsType.TopLeft:
-        return {
-          right: true,
-          bottomRight: true,
-          bottom: true
-        };
-      case StairsType.TopRight:
-        return {
-          left: true,
-          bottomLeft: true,
-          bottom: true
-        };
-      case StairsType.BottomLeft:
-        return {
-          top: true,
-          topRight: true,
-          right: true
-        };
-      case StairsType.BottomRight:
-        return {
-          top: true,
-          topLeft: true,
-          left: true
-        };
-      default:
-        return {};
-    }
+  private updateNavigablePath(definition: StairsPrefabDefinition) {
+    const navigableComponent = getActorComponent(this, NavigableComponent);
+    if (!navigableComponent) return;
+    navigableComponent.allowNavigablePath(
+      this.getAugmentedNavigablePath(definition),
+      this.getAugmentedNavigablePorts(definition)
+    );
+  }
+
+  private getAugmentedNavigablePath(definition: StairsPrefabDefinition): NavigablePath {
+    // The prefab definition describes the intrinsic slope. Cardinal elevated
+    // neighbors reopen flat exits so connected platforms stay walkable.
+    const basePath = { ...definition.navigablePath };
+    const elevatedNeighbors = this.cardinalElevatedNeighbors;
+    if (elevatedNeighbors.top) basePath.top = true;
+    if (elevatedNeighbors.bottom) basePath.bottom = true;
+    if (elevatedNeighbors.left) basePath.left = true;
+    if (elevatedNeighbors.right) basePath.right = true;
+    return basePath;
+  }
+
+  private getAugmentedNavigablePorts(
+    definition: StairsPrefabDefinition
+  ): Partial<Record<keyof NavigablePath, HeightDirectionPortDefinition>> {
+    const ports = { ...definition.navigablePorts };
+    const high = { enterHeight: 64, exitHeight: 64 };
+    const elevatedNeighbors = this.cardinalElevatedNeighbors;
+    if (elevatedNeighbors.top) ports.top = high;
+    if (elevatedNeighbors.bottom) ports.bottom = high;
+    if (elevatedNeighbors.left) ports.left = high;
+    if (elevatedNeighbors.right) ports.right = high;
+    return ports;
+  }
+
+  /**
+   * Reapplies the current stair prefab's navigable contract after actor data or
+   * visibility changes without recreating the rendered child prefab.
+   */
+  private updateCurrentNavigablePath() {
+    this.updateNavigablePath(STAIRS_PREFAB_DEFINITIONS[this.currentStairsKey ?? "topLeft"]);
   }
 
   private setup() {
@@ -136,100 +153,101 @@ export default class Stairs extends Phaser.GameObjects.Container {
       [new ConstructionGameObjectInterfaceComponent(this, this.handlePrefabVisibility, this.cursor)],
       []
     );
-
-    onObjectReady(
-      this,
-      () => {
-        // Intentional frame update: stairs mesh refresh is visual neighbor rendering only.
-        this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.throttleRedrawStairsFrameNonDeterministic, this); // todo remove this later
-      },
-      this
-    );
+    this.on(ActorDataChangedEvent, this.updateCurrentNavigablePath, this);
+    this.topologyService.init();
   }
-
-  private throttleRedrawStairsFrameNonDeterministic = throttle(this.refreshStairsType.bind(this), 1000);
 
   private refreshStairsType() {
     if (!this.active) return;
-    const stairsType = this.getStairsTypeAccordingToNeighbors();
+    const definition = this.getStairsDefinitionAccordingToNeighbors();
     const stairs = this.stairs as any as Phaser.GameObjects.Container;
     if (this.cursor.visible) {
-      this.updateCursor(stairsType);
+      if (this.currentStairsKey !== definition.key) {
+        this.updateCursor(definition);
+      }
     } else if (stairs.visible) {
-      this.updateStairs(stairsType);
+      this.updateStairs(definition.key);
     }
+    this.updateNavigablePath(definition);
   }
 
-  private getStairsTypeAccordingToNeighbors(): StairsType {
-    const neighbors = this.neighbors;
-    if (!neighbors.topLeft && !neighbors.topRight && !neighbors.bottomLeft && !neighbors.bottomRight) {
-      return StairsType.TopLeft;
-    } else if (neighbors.topLeft && neighbors.topRight && neighbors.bottomLeft && neighbors.bottomRight) {
-      return StairsType.TopLeft;
-    } else if (neighbors.topLeft && neighbors.topRight && neighbors.bottomRight && !neighbors.bottomLeft) {
-      return StairsType.TopLeft;
-    } else if (neighbors.topLeft && neighbors.topRight && !neighbors.bottomRight && !neighbors.bottomLeft) {
-      return StairsType.TopLeft;
-    } else if (neighbors.topLeft && neighbors.topRight && neighbors.bottomLeft && !neighbors.bottomRight) {
-      return StairsType.TopLeft;
-    } else if (!neighbors.topLeft && neighbors.topRight && neighbors.bottomLeft && neighbors.bottomRight) {
-      return StairsType.BottomRight;
-    } else if (!neighbors.topLeft && neighbors.topRight && !neighbors.bottomLeft && neighbors.bottomRight) {
-      return StairsType.TopRight;
-    } else if (!neighbors.topLeft && neighbors.topRight && neighbors.bottomLeft && !neighbors.bottomRight) {
-      return StairsType.TopRight;
-    } else if (!neighbors.topLeft && !neighbors.topRight && neighbors.bottomLeft && neighbors.bottomRight) {
-      return StairsType.BottomLeft;
-    } else if (neighbors.topLeft && !neighbors.topRight && neighbors.bottomLeft && neighbors.bottomRight) {
-      return StairsType.TopLeft;
-    } else if (neighbors.topLeft && !neighbors.topRight && !neighbors.bottomLeft && neighbors.bottomRight) {
-      return StairsType.TopLeft;
-    } else if (neighbors.topLeft && !neighbors.topRight && neighbors.bottomLeft && !neighbors.bottomRight) {
-      return StairsType.TopLeft;
-    } else if (neighbors.bottomRight && !neighbors.topRight && !neighbors.bottomLeft && !neighbors.topLeft) {
-      return StairsType.BottomRight;
-    } else if (neighbors.topLeft && !neighbors.topRight && !neighbors.bottomLeft && !neighbors.bottomRight) {
-      return StairsType.TopLeft;
-    } else if (neighbors.bottomLeft && !neighbors.topRight && !neighbors.bottomRight && !neighbors.topLeft) {
-      return StairsType.BottomLeft;
-    } else if (neighbors.topRight && !neighbors.topLeft && !neighbors.bottomRight && !neighbors.bottomLeft) {
-      return StairsType.TopRight;
-    } else {
-      throw new Error("Stairs type not found");
+  /**
+   * Stairs art points at the upper-side neighbor cluster. If more than one
+   * cluster matches, keep the strongest match and preserve the current prefab
+   * on exact ties to avoid visual jitter.
+   */
+  private getStairsDefinitionAccordingToNeighbors(): StairsPrefabDefinition {
+    const current = this.currentStairsKey ? STAIRS_PREFAB_DEFINITIONS[this.currentStairsKey] : undefined;
+    let bestDefinition = current ?? STAIRS_PREFAB_DEFINITIONS.topLeft;
+    let bestScore = 0;
+
+    for (const definition of STAIRS_PREFAB_LIST) {
+      const score = countStructureDirectionMatches(this.visualNeighborDirections, definition.upperNeighborCluster);
+      if (score > bestScore) {
+        bestScore = score;
+        bestDefinition = definition;
+        continue;
+      }
+      if (score === bestScore && current?.key === definition.key) {
+        bestDefinition = definition;
+      }
     }
+
+    return bestScore <= 0 ? STAIRS_PREFAB_DEFINITIONS.topLeft : bestDefinition;
   }
 
-  private updateCursor(stairsType: StairsType) {
+  /**
+   * Updates the cursor texture so placement previews match the currently
+   * selected stair topology without swapping the full prefab container.
+   */
+  private updateCursor(definition: StairsPrefabDefinition) {
     const stairs = this.cursor as any as Phaser.GameObjects.Image;
-    const texturePaths = {
-      [StairsType.TopLeft]: "buildings/tivara/stairs/stairs_top_left.png",
-      [StairsType.TopRight]: "buildings/tivara/stairs/stairs_top_right.png",
-      [StairsType.BottomLeft]: "buildings/tivara/stairs/stairs_bottom_left.png",
-      [StairsType.BottomRight]: "buildings/tivara/stairs/stairs_bottom_right.png"
-    };
-
-    const texturePath = texturePaths[stairsType];
-
-    if (texturePath) {
-      stairs.setTexture("factions", texturePath);
-    } else {
-      throw new Error("Stairs type not found");
-    }
+    stairs.setTexture("factions", definition.texture);
   }
 
   private handlePrefabVisibility = (progress: number | null) => {
     const stairs = this.stairs as any as Phaser.GameObjects.Container;
+    const wasCursorVisible = this.cursor.visible;
+    const wasStairsVisible = stairs.visible;
     this.cursor.visible = progress === null;
     stairs.visible = progress === 100;
     this.foundation.visible = progress !== null && progress < 100;
+    if (!wasStairsVisible && stairs.visible) {
+      this.refreshStairsType();
+    }
+    this.topologyService.notifyIfVisibilityChanged(
+      [wasCursorVisible, wasStairsVisible],
+      [this.cursor.visible, stairs.visible]
+    );
   };
 
-  private get neighbors() {
-    return getNeighboursByTypes(this, [Wall, WatchTower], TilemapComponent.tileWidth);
+  private get visualNeighborDirections(): StructureNeighborDirections {
+    return toStructureNeighborDirections(
+      getIsometricNeighbourDirectionsByTypes(this, [Wall, WatchTower, Stairs], TilemapComponent.tileWidth)
+    );
+  }
+
+  private get elevatedNeighborDirections(): StructureNeighborDirections {
+    return toStructureNeighborDirections(
+      getNeighbourDirectionsByTypes(this, [Wall, WatchTower, Stairs], TilemapComponent.tileWidth)
+    );
+  }
+
+  private get cardinalElevatedNeighbors() {
+    // Diagonal neighbors affect art selection; only cardinal elevated neighbors
+    // extend the usable straight platform exits.
+    const directions = this.elevatedNeighborDirections;
+    return {
+      top: directions.top,
+      bottom: directions.bottom,
+      left: directions.left,
+      right: directions.right
+    };
   }
 
   override destroy(fromScene?: boolean) {
-    this.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.throttleRedrawStairsFrameNonDeterministic, this);
+    this.off(ActorDataChangedEvent, this.updateCurrentNavigablePath, this);
+    this.topologyService.destroy();
     super.destroy(fromScene);
   }
 
@@ -237,9 +255,104 @@ export default class Stairs extends Phaser.GameObjects.Container {
 }
 
 /* END OF COMPILED CODE */
-export enum StairsType {
-  TopLeft,
-  TopRight,
-  BottomLeft,
-  BottomRight
+
+type StairsPrefabClass = new (scene: Phaser.Scene, x?: number, y?: number) => Phaser.GameObjects.GameObject;
+
+export interface StairsPrefabDefinition {
+  key: StairsPrefabKey;
+  prefab: StairsPrefabClass;
+  texture: string;
+  upperNeighborCluster: StructureDirectionKey[];
+  navigablePath: NavigablePath;
+  navigablePorts: Partial<Record<keyof NavigablePath, HeightDirectionPortDefinition>>;
 }
+
+export type StairsPrefabKey = "topLeft" | "topRight" | "bottomLeft" | "bottomRight";
+
+const low = { enterHeight: 0, exitHeight: 0 };
+const high = { enterHeight: 64, exitHeight: 64 };
+
+/**
+ * Stairs visual rules match the same-named diagonal cluster so one topRight
+ * neighbor displays stairs_top_right, one bottomRight neighbor displays
+ * stairs_bottom_right, and cardinal-only neighbors resolve to the adjacent
+ * same-side stair. Navigation data intentionally preserves the current working
+ * ports while moving them into the prefab definition table.
+ */
+export const STAIRS_PREFAB_DEFINITIONS: Record<StairsPrefabKey, StairsPrefabDefinition> = {
+  topLeft: {
+    key: "topLeft",
+    prefab: StairsTopLeft,
+    texture: "buildings/tivara/stairs/stairs_top_left.png",
+    upperNeighborCluster: ["left", "topLeft", "top"],
+    navigablePath: {
+      topLeft: true,
+      right: true,
+      bottomRight: true,
+      bottom: true
+    },
+    navigablePorts: {
+      topLeft: high,
+      right: low,
+      bottomRight: low,
+      bottom: low
+    }
+  },
+  topRight: {
+    key: "topRight",
+    prefab: StairsTopRight,
+    texture: "buildings/tivara/stairs/stairs_top_right.png",
+    upperNeighborCluster: ["top", "topRight", "right"],
+    navigablePath: {
+      topRight: true,
+      left: true,
+      bottomLeft: true,
+      bottom: true
+    },
+    navigablePorts: {
+      topRight: high,
+      left: low,
+      bottomLeft: low,
+      bottom: low
+    }
+  },
+  bottomLeft: {
+    key: "bottomLeft",
+    prefab: StairsBottomLeft,
+    texture: "buildings/tivara/stairs/stairs_bottom_left.png",
+    upperNeighborCluster: ["left", "bottomLeft", "bottom"],
+    navigablePath: {
+      bottomLeft: true,
+      top: true,
+      topRight: true,
+      right: true
+    },
+    navigablePorts: {
+      bottomLeft: high,
+      top: low,
+      topRight: low,
+      right: low
+    }
+  },
+  bottomRight: {
+    key: "bottomRight",
+    prefab: StairsBottomRight,
+    texture: "buildings/tivara/stairs/stairs_bottom_right.png",
+    upperNeighborCluster: ["bottom", "bottomRight", "right"],
+    navigablePath: {
+      bottomRight: true,
+      top: true,
+      topLeft: true,
+      left: true
+    },
+    navigablePorts: {
+      bottomRight: high,
+      top: low,
+      topLeft: low,
+      left: low
+    }
+  }
+};
+
+export const STAIRS_PREFAB_LIST = Object.values(STAIRS_PREFAB_DEFINITIONS);
+export const STAIRS_PREFAB_KEYS = Object.keys(STAIRS_PREFAB_DEFINITIONS) as StairsPrefabKey[];
