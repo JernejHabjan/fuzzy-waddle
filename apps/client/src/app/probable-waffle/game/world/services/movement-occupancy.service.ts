@@ -16,6 +16,10 @@ interface Reservation {
   keys: string[];
 }
 
+export interface MovementOccupancyOptions {
+  includeDestinationReservations?: boolean;
+}
+
 export interface MovementOccupancyDebugEntry {
   actorId: ActorId;
   tiles: Vector2Simple[];
@@ -57,19 +61,30 @@ export class MovementOccupancyService {
     return getTileCoordsUnderObjectAtTile(tilemap, actor, centerTile);
   }
 
-  isFootprintFree(actorId: ActorId, footprint: Vector2Simple[], heightLayer: number): boolean {
+  isFootprintFree(
+    actorId: ActorId,
+    footprint: Vector2Simple[],
+    heightLayer: number,
+    options?: MovementOccupancyOptions
+  ): boolean {
     if (MovementOccupancyService.DISABLED) return true;
-    return this.getBlockingActors(actorId, footprint, heightLayer).length === 0;
+    return this.getBlockingActors(actorId, footprint, heightLayer, options).length === 0;
   }
 
   reserveStep(actorId: ActorId, footprint: Vector2Simple[], heightLayer: number): boolean {
     if (MovementOccupancyService.DISABLED) return true;
-    return this.reserve(actorId, footprint, heightLayer, this.stepReservations).reserved;
+    // Destination reservations only assign final formation slots; treating them
+    // as step blockers can close every route through crowded chokepoints.
+    return this.reserve(actorId, footprint, heightLayer, this.stepReservations, {
+      includeDestinationReservations: false
+    }).reserved;
   }
 
   tryReserveStep(actorId: ActorId, footprint: Vector2Simple[], heightLayer: number): MovementReservationResult {
     if (MovementOccupancyService.DISABLED) return { reserved: true, blockers: [] };
-    return this.reserve(actorId, footprint, heightLayer, this.stepReservations);
+    return this.reserve(actorId, footprint, heightLayer, this.stepReservations, {
+      includeDestinationReservations: false
+    });
   }
 
   reserveDestination(actorId: ActorId, footprint: Vector2Simple[], heightLayer: number): boolean {
@@ -90,13 +105,21 @@ export class MovementOccupancyService {
     this.releaseDestination(actorId);
   }
 
-  getBlockingActors(actorId: ActorId, footprint: Vector2Simple[], heightLayer: number): ActorId[] {
+  getBlockingActors(
+    actorId: ActorId,
+    footprint: Vector2Simple[],
+    heightLayer: number,
+    options: MovementOccupancyOptions = {}
+  ): ActorId[] {
     if (MovementOccupancyService.DISABLED) return [];
+    const includeDestinationReservations = options.includeDestinationReservations ?? true;
     const keys = footprint.map((tile) => this.toKey(tile, heightLayer));
     const blockers = new Set<ActorId>();
 
     this.collectReservationBlockers(blockers, actorId, keys, this.stepReservations);
-    this.collectReservationBlockers(blockers, actorId, keys, this.destinationReservations);
+    if (includeDestinationReservations) {
+      this.collectReservationBlockers(blockers, actorId, keys, this.destinationReservations);
+    }
     this.collectCurrentOccupancyBlockers(blockers, actorId, keys);
 
     return Array.from(blockers).sort();
@@ -109,10 +132,18 @@ export class MovementOccupancyService {
       .map((blocker) => blocker.tile);
   }
 
-  getDynamicBlockersForActor(actorId: ActorId): MovementDynamicBlocker[] {
+  getDynamicBlockersForActor(actorId: ActorId, options: MovementOccupancyOptions = {}): MovementDynamicBlocker[] {
     if (MovementOccupancyService.DISABLED) return [];
+    const includeDestinationReservations = options.includeDestinationReservations ?? true;
     const blockedKeys = new Set<string>();
-    for (const entry of this.getDebugSnapshot()) {
+    const entries = [
+      ...this.getCurrentOccupancyDebugEntries(),
+      ...this.getReservationDebugEntries(this.stepReservations, "step"),
+      ...(includeDestinationReservations
+        ? this.getReservationDebugEntries(this.destinationReservations, "destination")
+        : [])
+    ];
+    for (const entry of entries) {
       if (entry.actorId === actorId) continue;
       for (const tile of entry.tiles) {
         blockedKeys.add(`${tile.x},${tile.y},${entry.heightLayer}`);
@@ -157,10 +188,11 @@ export class MovementOccupancyService {
     actorId: ActorId,
     footprint: Vector2Simple[],
     heightLayer: number,
-    reservations: Map<ActorId, Reservation>
+    reservations: Map<ActorId, Reservation>,
+    options?: MovementOccupancyOptions
   ): MovementReservationResult {
     const keys = footprint.map((tile) => this.toKey(tile, heightLayer));
-    const blockers = this.getBlockingActors(actorId, footprint, heightLayer);
+    const blockers = this.getBlockingActors(actorId, footprint, heightLayer, options);
     if (blockers.length > 0) {
       return { reserved: false, blockers };
     }

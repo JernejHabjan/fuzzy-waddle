@@ -354,16 +354,30 @@ export class MovementSystem {
   ): Promise<void> {
     if (!this.navigationService) return Promise.reject("No navigationService");
     const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
-    // Repathing overlays only dynamic blockers. Static height edges stay owned
-    // by NavigationService so wall/stairs connectivity cannot diverge here.
-    const dynamicBlockers =
-      actorId && this.movementOccupancyService ? this.movementOccupancyService.getDynamicBlockersForActor(actorId) : [];
-    const newPath = await this.navigationService.findPathFromGameObjectToTileAvoidingDynamicBlockers(
-      this.gameObject,
-      destinationTile,
-      dynamicBlockers
-    );
-    if (!newPath || !newPath.length) return Promise.reject("No congestion recovery path found");
+    let newPath: Vector2Simple[] | null = null;
+    while (isGameObjectActiveInActiveScene(this.gameObject)) {
+      // Repathing overlays only dynamic blockers. Static height edges stay owned
+      // by NavigationService so wall/stairs connectivity cannot diverge here.
+      const dynamicBlockers =
+        actorId && this.movementOccupancyService
+          ? this.movementOccupancyService.getDynamicBlockersForActor(actorId, {
+              includeDestinationReservations: false
+            })
+          : [];
+      newPath = await this.navigationService.findPathFromGameObjectToTileAvoidingDynamicBlockers(
+        this.gameObject,
+        destinationTile,
+        dynamicBlockers
+      );
+      if (newPath && newPath.length) break;
+
+      // Congestion can temporarily make every route around a large obstacle look closed.
+      // Keep the order alive and retry after other actors release their current steps.
+      await this.waitForBlockedStep();
+      recoveryState.sideStepAttempts = 0;
+      recoveryState.repathAttempts = 0;
+    }
+    if (!newPath || !newPath.length) return;
     newPath.shift();
     await this.moveAlongPathByFollowingPreCalculatedStaticPath(newPath, config, recoveryState);
   }
@@ -385,7 +399,13 @@ export class MovementSystem {
           if (!navigationService.isTileNavigable(candidate)) continue;
           if (navigationService.getNavigableHeightAtTile(candidate) !== destinationHeight) continue;
           const footprint = movementOccupancy.getActorFootprintAtTile(this.gameObject, candidate);
-          if (!movementOccupancy.isFootprintFree(actorId, footprint, destinationHeight)) continue;
+          if (
+            !movementOccupancy.isFootprintFree(actorId, footprint, destinationHeight, {
+              includeDestinationReservations: false
+            })
+          ) {
+            continue;
+          }
           candidates.push(candidate);
         }
       }
@@ -403,7 +423,9 @@ export class MovementSystem {
     const movementOccupancy = this.movementOccupancyService;
     const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
     if (!navigationService || !movementOccupancy || !actorId) return undefined;
-    const dynamicBlockers = movementOccupancy.getDynamicBlockersForActor(actorId);
+    const dynamicBlockers = movementOccupancy.getDynamicBlockersForActor(actorId, {
+      includeDestinationReservations: false
+    });
     const orderedCandidates = [...candidates].sort((a, b) => {
       const distanceDelta = this.getTileDistance(a, destinationTile) - this.getTileDistance(b, destinationTile);
       if (distanceDelta !== 0) return distanceDelta;
@@ -457,7 +479,13 @@ export class MovementSystem {
         const candidateHeight = navigationService.getNavigableHeightAtTile(candidate);
         if (candidateHeight !== currentHeight) continue;
         const footprint = movementOccupancy.getActorFootprintAtTile(this.gameObject, candidate);
-        if (!movementOccupancy.isFootprintFree(actorId, footprint, candidateHeight)) continue;
+        if (
+          !movementOccupancy.isFootprintFree(actorId, footprint, candidateHeight, {
+            includeDestinationReservations: false
+          })
+        ) {
+          continue;
+        }
         candidates.push(candidate);
       }
     }
@@ -900,7 +928,10 @@ export class MovementSystem {
         if (this.navigationService.isTileNavigable(destinationTile, terrainType)) {
           const movementOccupancy = this.movementOccupancyService;
           const destinationHeight = this.navigationService.getNavigableHeightAtTile(destinationTile);
-          const dynamicBlockers = movementOccupancy?.getDynamicBlockersForActor(ownId) ?? [];
+          const dynamicBlockers =
+            movementOccupancy?.getDynamicBlockersForActor(ownId, {
+              includeDestinationReservations: false
+            }) ?? [];
           const path = await this.navigationService.findPathFromGameObjectToTileAvoidingDynamicBlockers(
             this.gameObject,
             destinationTile,
