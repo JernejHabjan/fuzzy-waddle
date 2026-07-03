@@ -66,8 +66,8 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "1",
-            "x": -160,
-            "y": 624
+            "x": -144,
+            "y": 616
         },
         {
             "prefabId": "e858a91a-5bcf-4095-9fd3-07f98cf4415d",
@@ -81,7 +81,7 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "1",
-            "x": 144,
+            "x": 160,
             "y": 688
         },
         {
@@ -96,8 +96,8 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "1",
-            "x": 112,
-            "y": 712
+            "x": 128,
+            "y": 704
         },
         {
             "prefabId": "edf32147-e546-4f6e-91ba-1720c6b75ac9",
@@ -111,8 +111,8 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "1",
-            "x": 108,
-            "y": 786
+            "x": -16,
+            "y": 784
         },
         {
             "prefabId": "5f8b7bf2-30e6-4361-b3c5-7a796ee21bd3",
@@ -126,8 +126,8 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "1",
-            "x": 80,
-            "y": 728
+            "x": 96,
+            "y": 720
         },
         {
             "prefabId": "5f8b7bf2-30e6-4361-b3c5-7a796ee21bd3",
@@ -141,23 +141,8 @@
                 "EditorOwner"
             ],
             "EditorOwner.owner_id": "1",
-            "x": 48,
-            "y": 744
-        },
-        {
-            "prefabId": "e858a91a-5bcf-4095-9fd3-07f98cf4415d",
-            "id": "22a8f57b-7d26-4990-9f25-b6e129042ae4",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "stairs_1",
-            "components": [
-                "EditorOwner"
-            ],
-            "EditorOwner.owner_id": "1",
-            "x": 16,
-            "y": 752
+            "x": 64,
+            "y": 736
         },
         {
             "prefabId": "5f8b7bf2-30e6-4361-b3c5-7a796ee21bd3",
@@ -217,7 +202,7 @@
             ],
             "EditorOwner.owner_id": "1",
             "x": 496,
-            "y": 760
+            "y": 752
         },
         {
             "prefabId": "e858a91a-5bcf-4095-9fd3-07f98cf4415d",
@@ -263,6 +248,21 @@
             "EditorOwner.owner_id": "1",
             "x": 32,
             "y": 560
+        },
+        {
+            "prefabId": "e858a91a-5bcf-4095-9fd3-07f98cf4415d",
+            "id": "a4c863e1-2452-4611-ba9d-e11449d58511",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "stairs_1",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": 32,
+            "y": 752
         }
     ],
     "plainObjects": [

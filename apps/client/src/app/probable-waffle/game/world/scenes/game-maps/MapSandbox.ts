@@ -43,32 +43,28 @@ export default class MapSandbox extends GameProbableWaffleScene {
     this.add.existing(watchTower);
 
     // stairs
-    const stairs = new Stairs(this, -160, 624);
+    const stairs = new Stairs(this, -144, 616);
     this.add.existing(stairs);
 
     // stairs_2
-    const stairs_2 = new Stairs(this, 144, 688);
+    const stairs_2 = new Stairs(this, 160, 688);
     this.add.existing(stairs_2);
 
     // wall
-    const wall = new Wall(this, 112, 712);
+    const wall = new Wall(this, 128, 704);
     this.add.existing(wall);
 
     // tivaraWorkerMale
-    const tivaraWorkerMale = new TivaraWorkerMale(this, 108, 786);
+    const tivaraWorkerMale = new TivaraWorkerMale(this, -16, 784);
     this.add.existing(tivaraWorkerMale);
 
     // wall_1
-    const wall_1 = new Wall(this, 80, 728);
+    const wall_1 = new Wall(this, 96, 720);
     this.add.existing(wall_1);
 
     // wall_2
-    const wall_2 = new Wall(this, 48, 744);
+    const wall_2 = new Wall(this, 64, 736);
     this.add.existing(wall_2);
-
-    // stairs_1
-    const stairs_1 = new Stairs(this, 16, 752);
-    this.add.existing(stairs_1);
 
     // wall_3
     const wall_3 = new Wall(this, 224, 648);
@@ -83,7 +79,7 @@ export default class MapSandbox extends GameProbableWaffleScene {
     this.add.existing(watchTower_1);
 
     // wall_5
-    const wall_5 = new Wall(this, 496, 760);
+    const wall_5 = new Wall(this, 496, 752);
     this.add.existing(wall_5);
 
     // stairs_3
@@ -97,6 +93,10 @@ export default class MapSandbox extends GameProbableWaffleScene {
     // stairs_5
     const stairs_5 = new Stairs(this, 32, 560);
     this.add.existing(stairs_5);
+
+    // stairs_1
+    const stairs_1 = new Stairs(this, 32, 752);
+    this.add.existing(stairs_1);
 
     // watchTower (components)
     const watchTowerEditorOwner = new EditorOwner(watchTower);
@@ -126,10 +126,6 @@ export default class MapSandbox extends GameProbableWaffleScene {
     const wall_2EditorOwner = new EditorOwner(wall_2);
     wall_2EditorOwner.owner_id = "1";
 
-    // stairs_1 (components)
-    const stairs_1EditorOwner = new EditorOwner(stairs_1);
-    stairs_1EditorOwner.owner_id = "1";
-
     // wall_3 (components)
     const wall_3EditorOwner = new EditorOwner(wall_3);
     wall_3EditorOwner.owner_id = "1";
@@ -157,6 +153,10 @@ export default class MapSandbox extends GameProbableWaffleScene {
     // stairs_5 (components)
     const stairs_5EditorOwner = new EditorOwner(stairs_5);
     stairs_5EditorOwner.owner_id = "1";
+
+    // stairs_1 (components)
+    const stairs_1EditorOwner = new EditorOwner(stairs_1);
+    stairs_1EditorOwner.owner_id = "1";
 
     this.tilemap = tilemap;
 
