@@ -347,6 +347,14 @@ export class MovementSystem {
     });
   }
 
+  /**
+   * Rebuilds a dynamic-blocker path to the same destination after congestion.
+   * Destination reservations are intentionally ignored here: they claim final
+   * formation slots, but using them as path blockers can make a moving group
+   * close every temporary route around a large object. Active step reservations
+   * and current actor footprints still block traversal, and a no-path result is
+   * retried because those blockers can clear on the next congestion wait.
+   */
   private async repathToDestination(
     destinationTile: Vector2Simple,
     config: PathMoveConfig | undefined,

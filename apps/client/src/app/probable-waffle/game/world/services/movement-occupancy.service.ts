@@ -17,6 +17,11 @@ interface Reservation {
 }
 
 export interface MovementOccupancyOptions {
+  /**
+   * Destination reservations reserve final formation slots, not traversable space.
+   * Recovery pathing should usually ignore them so a crowded group does not turn
+   * its own assigned endpoints into temporary walls while units are still moving.
+   */
   includeDestinationReservations?: boolean;
 }
 
@@ -42,7 +47,8 @@ export interface MovementReservationResult {
  * Occupancy keys include logical height so floor and wall actors can share the same x/y tile.
  * Step reservations prevent two actors from tweening into the same height layer
  * at once; destination reservations keep group commands from assigning the same
- * final footprint before movement starts.
+ * final footprint before movement starts. Current occupancy and active steps
+ * block traversal; destination reservations only block other destination claims.
  */
 export class MovementOccupancyService {
   // Keep the bypass centralized so movement debugging can disable dynamic
