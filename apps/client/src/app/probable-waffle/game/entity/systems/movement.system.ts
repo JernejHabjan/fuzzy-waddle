@@ -246,6 +246,9 @@ export class MovementSystem {
       return true;
     } catch {
       return false;
+    } finally {
+      const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
+      if (actorId) this.movementOccupancyService?.releaseDestination(actorId);
     }
   }
 
@@ -429,7 +432,6 @@ export class MovementSystem {
       waitAttempts++;
       if (waitAttempts > BLOCKED_STEP_MAX_REPATH_WAIT_ATTEMPTS) break;
       await this.waitForBlockedStep();
-      recoveryState.sideStepAttempts = 0;
     }
     if (!newPath || !newPath.length) return false;
     newPath.shift();
@@ -537,7 +539,10 @@ export class MovementSystem {
     }
     // Reserve the escape slot before repathing so another actor cannot claim it
     // while this unit is recalculating its route.
-    await this.repathToDestination(fallbackTile, config, recoveryState);
+    const recovered = await this.repathToDestination(fallbackTile, config, recoveryState);
+    if (!recovered) {
+      throw new Error("Failed to repath to fallback destination");
+    }
   }
 
   /**

@@ -679,32 +679,33 @@ export class NavigationService {
 
     const terrainType = this.getUnitTerrainType(gameObject);
     const isNavigable = !!getActorComponent(destinationGameObject, NavigableComponent);
+    const shouldMoveOntoNavigableTarget = isNavigable && (radiusTiles === undefined || radiusTiles <= 0);
+    const targetTiles = getTileCoordsUnderObject(this.tilemap, destinationGameObject);
 
     let closestNavigableTile;
-    if (isNavigable) {
-      // no need to find the closest navigable - try to find the tile under the destination object
-      // this moves actor ON the wall or tower
+    if (shouldMoveOntoNavigableTarget) {
+      // Direct move orders for navigable structures still route onto the
+      // structure itself. Range-limited queries must not bypass the radius and
+      // therefore use the blocked-footprint search below instead.
       const destinationTile = getCenterTileCoordUnderObject(this.tilemap, destinationGameObject);
       if (!destinationTile) return undefined;
-      closestNavigableTile = destinationTile; // Use the tile under the destination object directly
+      closestNavigableTile = destinationTile;
       if (this.DEBUG_OBJECT_TARGET_PATHS) {
         console.log(
           `[NavigableTargetSelection] actor=${gameObject.name} target=${destinationGameObject.name} ` +
             `from=${fromTile.x},${fromTile.y} destination=${destinationTile.x},${destinationTile.y} ` +
-            `targetTiles=[${getTileCoordsUnderObject(this.tilemap, destinationGameObject)
-              .map((tile) => `${tile.x},${tile.y}`)
-              .join(";")}] radius=${radiusTiles ?? "-"} navigable=${isNavigable}`
+            `targetTiles=[${targetTiles.map((tile) => `${tile.x},${tile.y}`).join(";")}] ` +
+            `radius=${radiusTiles ?? "-"} navigable=${isNavigable}`
         );
       }
     } else {
-      // Step 1: Get blocked tiles (occupied by the destination object)
-      const blockedTiles = getTileCoordsUnderObject(this.tilemap, destinationGameObject);
-
-      // Step 2: Find the closest navigable tile around the blocked tiles within the radius
+      // Range-limited object queries answer "which reachable tile gets me within
+      // radius of this footprint?" even when the target structure itself is
+      // navigable.
       // noinspection UnnecessaryLocalVariableJS
       closestNavigableTile = this.getClosestNavigableTileAroundBlockedTilesInRadius(
         fromTile,
-        blockedTiles,
+        targetTiles,
         radiusTiles,
         terrainType
       );
@@ -716,9 +717,8 @@ export class NavigationService {
         `[ObjectTargetTileChoice] actor=${gameObject.name} target=${destinationGameObject.name} ` +
           `from=${fromTile.x},${fromTile.y} chosen=${closestNavigableTile?.x ?? "?"},${closestNavigableTile?.y ?? "?"} ` +
           `center=${targetCenterTile?.x ?? "?"},${targetCenterTile?.y ?? "?"} ` +
-          `targetTiles=[${getTileCoordsUnderObject(this.tilemap, destinationGameObject)
-            .map((tile) => `${tile.x},${tile.y}`)
-            .join(";")}] radius=${radiusTiles ?? "-"} navigable=${isNavigable}`
+          `targetTiles=[${targetTiles.map((tile) => `${tile.x},${tile.y}`).join(";")}] ` +
+          `radius=${radiusTiles ?? "-"} navigable=${isNavigable}`
       );
     }
 
