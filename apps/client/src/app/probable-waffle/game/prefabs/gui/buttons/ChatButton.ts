@@ -44,7 +44,7 @@ export default class ChatButton extends Phaser.GameObjects.Container {
     this.add(button_text);
 
     // unread_badge
-    const unread_badge = scene.add.circle(38, 4, 6, 0xff0000);
+    const unread_badge = scene.add.ellipse(38, 4, 12, 12, 0xff0000);
     unread_badge.setStrokeStyle(1, 0xffffff);
     unread_badge.visible = false;
     this.add(unread_badge);
@@ -75,7 +75,7 @@ export default class ChatButton extends Phaser.GameObjects.Container {
     /* END-USER-CTR-CODE */
   }
 
-  private unread_badge: Phaser.GameObjects.Arc;
+  private unread_badge: Phaser.GameObjects.Ellipse;
 
   /* START-USER-CODE */
 

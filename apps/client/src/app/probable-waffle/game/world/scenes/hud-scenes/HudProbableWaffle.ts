@@ -8,6 +8,7 @@ import Minimap from "../../../prefabs/gui/Minimap";
 import GameActions from "../../../prefabs/gui/buttons/GameActions";
 import Resources from "../../../prefabs/gui/labels/Resources";
 import AiControllerDebugPanel from "../../../prefabs/gui/debug/ai-controller/AiControllerDebugPanel";
+import NavigationDebugToggle from "../../../prefabs/gui/debug/navigation/NavigationDebugToggle";
 import GameSpeedModifier from "../../../prefabs/gui/buttons/GameSpeedModifier";
 import HudMessages from "../../../prefabs/gui/labels/HudMessages";
 import GroupContainer from "../../../prefabs/gui/labels/GroupContainer";
@@ -32,9 +33,8 @@ import ConfirmationDialog from "../../../prefabs/gui/dialogs/ConfirmationDialog"
 import SurrenderDialog from "../../../prefabs/gui/SurrenderDialog";
 import { getPlayers } from "../../../data/scene-data";
 import { ConnectionRecoveryService } from "../../services/recovery/connection-recovery.service";
-import { getSceneService } from "../../services/scene-component-helpers";
 import { SceneLightingService } from "../../services/lighting/scene-lighting.service";
-import { NavigationDebugService } from "../../services/navigation-debug.service";
+import { getSceneService } from "../../services/scene-component-helpers";
 /* END-USER-IMPORTS */
 
 export default class HudProbableWaffle extends ProbableWaffleScene {
@@ -73,6 +73,10 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     const aiControllerDebugPanel = new AiControllerDebugPanel(this, 1276, 82);
     this.add.existing(aiControllerDebugPanel);
 
+    // navigationDebugToggle
+    const navigationDebugToggle = new NavigationDebugToggle(this, 1276, 51);
+    this.add.existing(navigationDebugToggle);
+
     // gameSpeedModifier
     const gameSpeedModifier = new GameSpeedModifier(this, 13, 486);
     this.add.existing(gameSpeedModifier);
@@ -91,23 +95,24 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.add.existing(idleWorkersButton);
 
     // chatButton
-    const chatButton = new ChatButton(this, 13, 560);
+    const chatButton = new ChatButton(this, 386, 489);
     this.add.existing(chatButton);
 
     // chatNotification
-    const chatNotification = new ChatNotification(this, 13, 500);
+    const chatNotification = new ChatNotification(this, 7, 434);
     this.add.existing(chatNotification);
 
     // dayNightClockText
-    const dayNightClockText = this.add.text(13, 692, "", {
+    const dayNightClockText = this.add.text(13, 692, "", {});
+    dayNightClockText.setOrigin(0, 1);
+    dayNightClockText.setStyle({
       color: "#ffffffff",
       fontFamily: "disposabledroid",
       fontSize: "18px",
-      resolution: 10,
       stroke: "#000000ff",
-      strokeThickness: 3
+      strokeThickness: 3,
+      resolution: 10
     });
-    dayNightClockText.setOrigin(0, 1);
 
     // lists
     const hudElements: Array<any> = [];
@@ -118,6 +123,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.game_actions_container = game_actions_container;
     this.resources_container = resources_container;
     this.aiControllerDebugPanel = aiControllerDebugPanel;
+    this.navigationDebugToggle = navigationDebugToggle;
     this.gameSpeedModifier = gameSpeedModifier;
     this.hudMessages = hudMessages;
     this.groupContainer = groupContainer;
@@ -136,6 +142,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   private game_actions_container!: GameActions;
   private resources_container!: Resources;
   private aiControllerDebugPanel!: AiControllerDebugPanel;
+  private navigationDebugToggle!: NavigationDebugToggle;
   private gameSpeedModifier!: GameSpeedModifier;
   private hudMessages!: HudMessages;
   private groupContainer!: GroupContainer;
@@ -153,15 +160,11 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   private readonly actorInfoSmallScreenBreakpoint = 1200;
   private readonly dayNightClockBottomMargin = 14;
   private readonly dayNightClockRefreshIntervalMs = 100;
-  private readonly navigationDebugButtonWidth = 250;
-  private readonly navigationDebugButtonHeight = 28;
   private readonly navigationDebugButtonTopMargin = 12;
   private cursorHandler?: CursorHandler;
   private connectionRecovery?: ConnectionRecoveryService;
   private dayNightClockAccumulatorMs = 0;
   private lastDayNightClockText = "";
-  private navigationDebugButton?: Phaser.GameObjects.Container;
-  private navigationDebugButtonText?: Phaser.GameObjects.Text;
 
   probableWaffleScene?: ProbableWaffleScene;
   override preload() {
@@ -170,7 +173,6 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
 
   override create() {
     this.editorCreate();
-    this.createNavigationDebugButton();
 
     this.confirmationDialog = new ConfirmationDialog(this, 640, 360);
     this.add.existing(this.confirmationDialog);
@@ -285,14 +287,13 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.aiControllerDebugPanel.scale = sceneWidth > this.actorInfoSmallScreenBreakpoint ? 1 : 0.7;
     this.aiControllerDebugPanel.visible = !environment.production;
 
-    if (this.navigationDebugButton) {
-      const aiDebugPanelBounds = getGameObjectBounds(this.aiControllerDebugPanel)!;
-      this.navigationDebugButton.x = aiDebugPanelBounds.centerX;
-      this.navigationDebugButton.y =
-        aiDebugPanelBounds.bottom + this.navigationDebugButtonHeight / 2 + this.navigationDebugButtonTopMargin;
-      this.navigationDebugButton.scale = this.aiControllerDebugPanel.scale;
-      this.navigationDebugButton.visible = !environment.production;
-    }
+    const aiDebugPanelBounds = getGameObjectBounds(this.aiControllerDebugPanel)!;
+    this.navigationDebugToggle.scale = this.aiControllerDebugPanel.scale;
+    this.navigationDebugToggle.visible = !environment.production;
+    const navigationDebugToggleBounds = getGameObjectBounds(this.navigationDebugToggle)!;
+    this.navigationDebugToggle.x += aiDebugPanelBounds.centerX - navigationDebugToggleBounds.centerX;
+    this.navigationDebugToggle.y +=
+      aiDebugPanelBounds.bottom + this.navigationDebugButtonTopMargin - navigationDebugToggleBounds.top;
 
     // position game speed modifier above minimap on left side
     this.gameSpeedModifier.x = 10;
@@ -359,58 +360,6 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
 
   private get gameType() {
     return this.probableWaffleScene?.baseGameData.gameInstance.gameInstanceMetadata.data.type;
-  }
-
-  private createNavigationDebugButton(): void {
-    if (environment.production) return;
-
-    const button = this.add.container(0, 0);
-    button.setInteractive(
-      new Phaser.Geom.Rectangle(
-        -this.navigationDebugButtonWidth / 2,
-        -this.navigationDebugButtonHeight / 2,
-        this.navigationDebugButtonWidth,
-        this.navigationDebugButtonHeight
-      ),
-      Phaser.Geom.Rectangle.Contains
-    );
-    const bg = this.add.nineslice(
-      0,
-      0,
-      "gui",
-      "cryos_mini_gui/buttons/button_small.png",
-      this.navigationDebugButtonWidth / 2,
-      20,
-      3,
-      3,
-      3,
-      3
-    );
-    bg.scaleX = 2;
-    bg.scaleY = 1.55;
-    const text = this.add.text(0, -1, "Show navigation debugging", {
-      color: "#000000ff",
-      fontFamily: "disposabledroid",
-      fontSize: "20px",
-      resolution: 10
-    });
-    text.setOrigin(0.5, 0.5);
-    button.add([bg, text]);
-    button.on("pointerup", () => this.toggleNavigationDebugging());
-    this.navigationDebugButton = button;
-    this.navigationDebugButtonText = text;
-  }
-
-  private toggleNavigationDebugging(): void {
-    if (!this.probableWaffleScene) return;
-    const debugService = getSceneService(this.probableWaffleScene, NavigationDebugService);
-    if (!debugService) return;
-    debugService.setEnabled(!debugService.isEnabled());
-    if (this.navigationDebugButtonText) {
-      this.navigationDebugButtonText.text = debugService.isEnabled()
-        ? "Hide navigation debugging"
-        : "Show navigation debugging";
-    }
   }
 
   private subscribeToGameEvent(eventName: string, displayText: string) {
