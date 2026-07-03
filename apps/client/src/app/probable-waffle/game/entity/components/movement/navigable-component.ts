@@ -71,10 +71,6 @@ export class NavigableComponent {
     this.gameObject.scene.events.emit(NavigationService.UpdateNavigationEvent);
   }
 
-  get navigablePathDefinition(): NavigablePath {
-    return this.navigablePath;
-  }
-
   /**
    * Closed directions are enforced only after a prefab explicitly sets its
    * path. Untouched navigables remain open on all sides for compatibility.
@@ -95,20 +91,6 @@ export class NavigableComponent {
       exitHeight: this.navigableDefinition.exitHeight ?? 0
     };
     return this.directionPorts[direction] ?? fallbackPort;
-  }
-
-  get accessibleFromAllSides(): boolean {
-    if (!this.explicitNavigablePath) return true;
-    return (
-      (this.navigablePath.top ?? false) &&
-      (this.navigablePath.bottom ?? false) &&
-      (this.navigablePath.left ?? false) &&
-      (this.navigablePath.right ?? false) &&
-      (this.navigablePath.topLeft ?? false) &&
-      (this.navigablePath.topRight ?? false) &&
-      (this.navigablePath.bottomLeft ?? false) &&
-      (this.navigablePath.bottomRight ?? false)
-    );
   }
 
   private handleKilled(): void {
@@ -139,6 +121,7 @@ function areDirectionPortsEqual(
   left: Partial<Record<keyof NavigablePath, HeightDirectionPortDefinition>>,
   right: Partial<Record<keyof NavigablePath, HeightDirectionPortDefinition>>
 ): boolean {
+  // noinspection JSSuspiciousNameCombination
   return (
     areDirectionPortDefinitionsEqual(left.top, right.top) &&
     areDirectionPortDefinitionsEqual(left.bottom, right.bottom) &&

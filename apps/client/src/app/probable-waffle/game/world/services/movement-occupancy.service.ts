@@ -82,15 +82,6 @@ export class MovementOccupancyService {
     return this.getBlockingActors(actorId, footprint, heightLayer, options).length === 0;
   }
 
-  reserveStep(actorId: ActorId, footprint: Vector2Simple[], heightLayer: number): boolean {
-    if (MovementOccupancyService.DISABLED) return true;
-    // Destination reservations only assign final formation slots; treating them
-    // as step blockers can close every route through crowded chokepoints.
-    return this.reserve(actorId, footprint, heightLayer, this.stepReservations, {
-      includeDestinationReservations: false
-    }).reserved;
-  }
-
   tryReserveStep(actorId: ActorId, footprint: Vector2Simple[], heightLayer: number): MovementReservationResult {
     if (MovementOccupancyService.DISABLED) return { reserved: true, blockers: [] };
     return this.reserve(actorId, footprint, heightLayer, this.stepReservations, {
@@ -134,13 +125,6 @@ export class MovementOccupancyService {
     this.collectCurrentOccupancyBlockers(blockers, actorId, keys);
 
     return Array.from(blockers).sort();
-  }
-
-  getDynamicBlockedTilesForActor(actorId: ActorId, heightLayer: number): Vector2Simple[] {
-    if (MovementOccupancyService.DISABLED) return [];
-    return this.getDynamicBlockersForActor(actorId)
-      .filter((blocker) => blocker.heightLayer === Math.round(heightLayer))
-      .map((blocker) => blocker.tile);
   }
 
   getDynamicBlockersForActor(actorId: ActorId, options: MovementOccupancyOptions = {}): MovementDynamicBlocker[] {

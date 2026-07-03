@@ -6,7 +6,10 @@ import StairsTopLeft from "./StairsTopLeft";
 /* START-USER-IMPORTS */
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { ConstructionGameObjectInterfaceComponent } from "../../../../entity/components/construction/construction-game-object-interface-component";
-import { getIsometricNeighbourDirectionsByTypes, getNeighbourDirectionsByTypes } from "../../../../data/tile-map-helpers";
+import {
+  getIsometricNeighbourDirectionsByTypes,
+  getNeighbourDirectionsByTypes
+} from "../../../../data/tile-map-helpers";
 import WatchTower from "../wall/WatchTower";
 import { TilemapComponent } from "../../../../world/tilemap/tilemap.component";
 import Wall from "../wall/Wall";
@@ -23,10 +26,9 @@ import { SceneLightingService } from "../../../../world/services/lighting/scene-
 import { StructureTopologyService } from "../navigation-topology.events";
 import {
   countStructureDirectionMatches,
-  hasAnyStructureDirection,
-  toStructureNeighborDirections,
   type StructureDirectionKey,
-  type StructureNeighborDirections
+  type StructureNeighborDirections,
+  toStructureNeighborDirections
 } from "../structure-topology.model";
 /* END-USER-IMPORTS */
 
@@ -89,7 +91,7 @@ export default class Stairs extends Phaser.GameObjects.Container {
    * Visual slope and traversable ports must stay coupled for both previews and
    * finished structures.
    */
-  updateStairs(stairsKey: StairsPrefabKey) {
+  private updateStairs(stairsKey: StairsPrefabKey) {
     if (this.currentStairsKey === stairsKey) {
       return;
     }
@@ -354,14 +356,3 @@ export const STAIRS_PREFAB_DEFINITIONS: Record<StairsPrefabKey, StairsPrefabDefi
 
 export const STAIRS_PREFAB_LIST = Object.values(STAIRS_PREFAB_DEFINITIONS);
 export const STAIRS_PREFAB_KEYS = Object.keys(STAIRS_PREFAB_DEFINITIONS) as StairsPrefabKey[];
-
-/**
- * Returns true when a stair prefab orientation has at least one matching upper
- * neighbor direction in the current structure topology snapshot.
- */
-export function canStairsPrefabSnapToNeighbor(
-  stairsKey: StairsPrefabKey,
-  directions: Partial<StructureNeighborDirections>
-): boolean {
-  return hasAnyStructureDirection(directions, STAIRS_PREFAB_DEFINITIONS[stairsKey].upperNeighborCluster);
-}

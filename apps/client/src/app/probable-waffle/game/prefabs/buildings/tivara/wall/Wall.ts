@@ -23,7 +23,10 @@ import WallBottomLeftBottomRightTopRight from "./WallBottomLeftBottomRightTopRig
 import WallBottomLeftTopLeftTopRight from "./WallBottomLeftTopLeftTopRight";
 import WatchTower from "./WatchTower";
 import Stairs from "../stairs/Stairs";
-import { getIsometricNeighbourDirectionsByTypes, getNeighbourDirectionsByTypes } from "../../../../data/tile-map-helpers";
+import {
+  getIsometricNeighbourDirectionsByTypes,
+  getNeighbourDirectionsByTypes
+} from "../../../../data/tile-map-helpers";
 import { TilemapComponent } from "../../../../world/tilemap/tilemap.component";
 import { ActorDataChangedEvent, setActorData } from "../../../../data/actor-data";
 import { getActorComponent } from "../../../../data/actor-component";
@@ -36,20 +39,24 @@ import { StructureTopologyService } from "../navigation-topology.events";
 import {
   buildWallAccessDirections,
   buildWallOpenVisualCorners,
-  toStructureNeighborDirections,
   type StructureCornerKey,
-  type StructureNeighborDirections
+  type StructureNeighborDirections,
+  toStructureNeighborDirections
 } from "../structure-topology.model";
 /* END-USER-IMPORTS */
 
 export default class Wall extends Phaser.GameObjects.Container {
-
   constructor(scene: Phaser.Scene, x?: number, y?: number) {
     super(scene, x ?? 32, y ?? 80.06815881041706);
 
     // foundation
     const foundation = scene.add.image(0, 0, "factions", "buildings/tivara/wall/foundation/foundation_1.png");
-    foundation.setInteractive(new Phaser.Geom.Polygon("-0.9934205307175148 83.52408318472752 -0.6619106331295725 70.26368728120998 27.51643066184519 51.69913301628543 63.31949960134254 71.92123676914967 62.656479806166665 83.52408318472752 28.510960354609008 97.115988985833"), Phaser.Geom.Polygon.Contains);
+    foundation.setInteractive(
+      new Phaser.Geom.Polygon(
+        "-0.9934205307175148 83.52408318472752 -0.6619106331295725 70.26368728120998 27.51643066184519 51.69913301628543 63.31949960134254 71.92123676914967 62.656479806166665 83.52408318472752 28.510960354609008 97.115988985833"
+      ),
+      Phaser.Geom.Polygon.Contains
+    );
     foundation.setOrigin(0.5, 0.8352819626557144);
     foundation.visible = false;
     this.add(foundation);
@@ -92,7 +99,7 @@ export default class Wall extends Phaser.GameObjects.Container {
    * directions. Prefab key, visual corners, and accessible sides intentionally
    * come from the same neighbor snapshot.
    */
-  updateWall(wallKey: WallPrefabKey) {
+  private updateWall(wallKey: WallPrefabKey) {
     if (this.currentWallKey === wallKey) {
       return;
     }
@@ -401,7 +408,6 @@ export const WALL_PREFAB_DEFINITIONS: Record<WallPrefabKey, WallPrefabDefinition
   }
 };
 
-export const WALL_PREFAB_LIST = Object.values(WALL_PREFAB_DEFINITIONS);
 export const WALL_PREFAB_KEYS = Object.keys(WALL_PREFAB_DEFINITIONS) as WallPrefabKey[];
 
 type WallOpenCornerSignature = `${0 | 1}${0 | 1}${0 | 1}${0 | 1}`;

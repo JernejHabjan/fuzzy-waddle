@@ -116,25 +116,6 @@ function createVirtualTiles(
   return virtualTiles;
 }
 
-export function getNeighboursByTypes(
-  gameObject: Phaser.GameObjects.GameObject & Phaser.GameObjects.Components.Transform,
-  neighbourTypes: (new (scene: Phaser.Scene) => Phaser.GameObjects.GameObject)[],
-  tileWidth: number
-): {
-  topLeft: boolean;
-  topRight: boolean;
-  bottomLeft: boolean;
-  bottomRight: boolean;
-} {
-  const directions = getNeighbourDirectionsByTypes(gameObject, neighbourTypes, tileWidth);
-  return {
-    topLeft: directions.topLeft,
-    topRight: directions.topRight,
-    bottomLeft: directions.bottomLeft,
-    bottomRight: directions.bottomRight
-  };
-}
-
 export function getIsometricNeighbourDirectionsByTypes(
   gameObject: Phaser.GameObjects.GameObject & Phaser.GameObjects.Components.Transform,
   neighbourTypes: (new (scene: Phaser.Scene) => Phaser.GameObjects.GameObject)[],

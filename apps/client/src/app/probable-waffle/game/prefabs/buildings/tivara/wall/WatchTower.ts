@@ -75,7 +75,7 @@ export default class WatchTower extends Phaser.GameObjects.Container {
       [wasCursorVisible, wasLevelVisible],
       [this.watchTowerCursor.visible, this.watchTowerLevel1.visible]
     );
-  }
+  };
 
   override destroy(fromScene?: boolean) {
     this.topologyService.destroy();

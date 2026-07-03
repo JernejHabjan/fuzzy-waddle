@@ -86,18 +86,6 @@ export function buildWallOpenVisualCorners(
 }
 
 /**
- * Returns true when any of the candidate directions is present in the
- * normalized neighbor set.
- */
-export function hasAnyStructureDirection(
-  directions: Partial<StructureNeighborDirections>,
-  candidates: StructureDirectionKey[]
-): boolean {
-  const normalized = toStructureNeighborDirections(directions);
-  return candidates.some((direction) => normalized[direction]);
-}
-
-/**
  * Counts how many of the requested directions are present so callers can rank
  * prefab matches deterministically.
  */

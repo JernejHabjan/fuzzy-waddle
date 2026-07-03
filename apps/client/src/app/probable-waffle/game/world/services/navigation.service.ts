@@ -228,42 +228,42 @@ export class NavigationService {
   }
 
   /**
- * Returns the static height-graph cell for a tile, including whether it is
- * navigable, which height layer it belongs to, and which directed ports it exposes.
- * @param tile Logical tile coordinates in the navigation grid.
-  */
+   * Returns the static height-graph cell for a tile, including whether it is
+   * navigable, which height layer it belongs to, and which directed ports it exposes.
+   * @param tile Logical tile coordinates in the navigation grid.
+   */
   private getNavigationCell(tile: Vector2Simple): HeightNavigationCell | undefined {
     return this.heightMapGrid[tile.y]?.[tile.x];
   }
 
   /**
- * Returns the directed exits that are valid from this tile according to the
- * current height graph. Debug tools use this to explain missing connections.
- * @param tile Logical tile coordinates in the navigation grid.
-  */
+   * Returns the directed exits that are valid from this tile according to the
+   * current height graph. Debug tools use this to explain missing connections.
+   * @param tile Logical tile coordinates in the navigation grid.
+   */
   private getAllowedDirectionsAtTile(tile: Vector2Simple): NavigablePathDirection[] {
     const edges = this.heightNavigationGraph?.edgesByTileKey.get(`${tile.x},${tile.y}`) ?? [];
     return edges.map((edge) => edge.direction);
   }
 
   /**
- * Checks whether the static height graph contains a directed edge from one
- * tile to the next. This is stricter than "both tiles are navigable".
- * @param from Source tile.
- * @param to Neighbor tile being tested as the directed destination.
-  */
+   * Checks whether the static height graph contains a directed edge from one
+   * tile to the next. This is stricter than "both tiles are navigable".
+   * @param from Source tile.
+   * @param to Neighbor tile being tested as the directed destination.
+   */
   private canTraverseBetween(from: Vector2Simple, to: Vector2Simple): boolean {
     const edges = this.heightNavigationGraph?.edgesByTileKey.get(`${from.x},${from.y}`) ?? [];
     return edges.some((edge) => edge.to.x === to.x && edge.to.y === to.y);
   }
 
   /**
- * Returns the traversable connected component starting at startTile.
- * sameHeightOnly is used by formation assignment so groups prefer one
- * elevated platform before spilling onto connected lower/higher tiles.
- * @param startTile Tile where the graph walk starts.
- * @param options Optional same-height and traversal-limit settings.
-  */
+   * Returns the traversable connected component starting at startTile.
+   * sameHeightOnly is used by formation assignment so groups prefer one
+   * elevated platform before spilling onto connected lower/higher tiles.
+   * @param startTile Tile where the graph walk starts.
+   * @param options Optional same-height and traversal-limit settings.
+   */
   getConnectedNavigableTiles(
     startTile: Vector2Simple,
     options: { sameHeightOnly?: boolean; maxTiles?: number } = {}
@@ -339,14 +339,14 @@ export class NavigationService {
   }
 
   /**
- * Runs a one-off EasyStar path query against a caller-supplied overlay grid.
- * This is used for dynamic blocker recovery so temporary occupancy can block
- * tiles without mutating the shared cached navigation grid.
- * @param fromTileXY Start tile for the path query.
- * @param toTileXY Destination tile for the path query.
- * @param navigationGrid Temporary blocked/unblocked overlay grid.
- * @param useHeightGraphDirections Whether to enforce directed height transitions.
-  */
+   * Runs a one-off EasyStar path query against a caller-supplied overlay grid.
+   * This is used for dynamic blocker recovery so temporary occupancy can block
+   * tiles without mutating the shared cached navigation grid.
+   * @param fromTileXY Start tile for the path query.
+   * @param toTileXY Destination tile for the path query.
+   * @param navigationGrid Temporary blocked/unblocked overlay grid.
+   * @param useHeightGraphDirections Whether to enforce directed height transitions.
+   */
   private async findPathWithGrid(
     fromTileXY: Vector2Simple,
     toTileXY: Vector2Simple,
@@ -371,13 +371,13 @@ export class NavigationService {
   }
 
   /**
- * Finds a path for one actor while overlaying transient occupancy blockers on
- * top of the static terrain grid. Height-graph directions are still enforced,
- * so congestion handling cannot invent invalid wall or stairs transitions.
- * @param gameObject Actor requesting the path.
- * @param toTile Requested destination tile.
- * @param dynamicBlockers Temporary occupancy blockers to overlay for this query.
-  */
+   * Finds a path for one actor while overlaying transient occupancy blockers on
+   * top of the static terrain grid. Height-graph directions are still enforced,
+   * so congestion handling cannot invent invalid wall or stairs transitions.
+   * @param gameObject Actor requesting the path.
+   * @param toTile Requested destination tile.
+   * @param dynamicBlockers Temporary occupancy blockers to overlay for this query.
+   */
   async findPathFromGameObjectToTileAvoidingDynamicBlockers(
     gameObject: Phaser.GameObjects.GameObject,
     toTile: Vector2Simple,
@@ -399,12 +399,12 @@ export class NavigationService {
   }
 
   /**
- * Converts dynamic occupancy entries into tile keys that can be painted onto
- * a temporary pathfinding grid for a single query.
- * @param dynamicBlockers Temporary occupancy blockers with their height layers.
- * @param fromTile The querying actor's current tile, which stays passable.
- * @param toTile The requested destination tile, which also stays passable.
-  */
+   * Converts dynamic occupancy entries into tile keys that can be painted onto
+   * a temporary pathfinding grid for a single query.
+   * @param dynamicBlockers Temporary occupancy blockers with their height layers.
+   * @param fromTile The querying actor's current tile, which stays passable.
+   * @param toTile The requested destination tile, which also stays passable.
+   */
   private getDynamicBlockedTileKeys(
     dynamicBlockers: MovementDynamicBlocker[],
     fromTile: Vector2Simple,
@@ -525,12 +525,12 @@ export class NavigationService {
   }
 
   /**
- * Mirrors the static height graph into an EasyStar instance. Callers can pass
- * an overlay grid so a path query keeps the same directional rules while also
- * honoring temporary blocked tiles.
- * @param easyStar The pathfinder instance being configured for one query.
- * @param navigationGrid The blocked/unblocked grid that limits destination tiles.
-  */
+   * Mirrors the static height graph into an EasyStar instance. Callers can pass
+   * an overlay grid so a path query keeps the same directional rules while also
+   * honoring temporary blocked tiles.
+   * @param easyStar The pathfinder instance being configured for one query.
+   * @param navigationGrid The blocked/unblocked grid that limits destination tiles.
+   */
   private setDirectionalConditionsForEasyStar(easyStar: EasyStar, navigationGrid: number[][]): void {
     for (let y = 0; y < navigationGrid.length; y++) {
       for (let x = 0; x < navigationGrid[y]!.length; x++) {
@@ -965,14 +965,6 @@ export class NavigationService {
 
   public isTileGridWithoutBlockingObjectsNavigable(tile: Vector2Simple): boolean {
     return this.tilemapGrid[tile.y]?.[tile.x] === 0; // Check if the tile is navigable in the base tilemap grid
-  }
-
-  isAreaBeneathGameObjectNavigable(gameObject: Phaser.GameObjects.GameObject): boolean {
-    const tileIndexesUnderObject = getTileCoordsUnderObject(this.tilemap, gameObject);
-    const actualTilesUnderObject = tileIndexesUnderObject.map((tileIndex) =>
-      this.tilemap.getTileAt(tileIndex.x, tileIndex.y)
-    );
-    return actualTilesUnderObject.every((tile) => tile && this.isTileNavigable({ x: tile.x, y: tile.y }));
   }
 
   private getTileDistance(tile1: Vector2Simple, tile2: Vector2Simple): number {

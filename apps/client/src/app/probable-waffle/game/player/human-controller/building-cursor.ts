@@ -364,7 +364,12 @@ export class BuildingCursor {
       console.error("Building cursor: RepresentableComponent not found on building game object.");
       return;
     }
-    const previousTile = IsoHelper.isometricWorldToTileXY(this.scene, representableComponent.logicalWorldTransform.x, representableComponent.logicalWorldTransform.y, false);
+    const previousTile = IsoHelper.isometricWorldToTileXY(
+      this.scene,
+      representableComponent.logicalWorldTransform.x,
+      representableComponent.logicalWorldTransform.y,
+      false
+    );
     representableComponent.logicalWorldTransform = {
       x: worldPosition.x,
       y: worldPosition.y,
