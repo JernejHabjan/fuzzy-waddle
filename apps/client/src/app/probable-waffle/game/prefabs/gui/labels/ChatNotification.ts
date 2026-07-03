@@ -3,6 +3,10 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
+import { type AllScenesEventData } from "@fuzzy-waddle/api-interfaces";
+import { filter, Subscription } from "rxjs";
+import type ChatButton from "../buttons/ChatButton";
+import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 /* END-USER-IMPORTS */
 
 export default class ChatNotification extends Phaser.GameObjects.Container {
@@ -70,6 +74,27 @@ export default class ChatNotification extends Phaser.GameObjects.Container {
   /* START-USER-CODE */
   private hideTimer?: Phaser.Time.TimerEvent;
   private readonly maxMessageLength = 80;
+  private probableWaffleScene?: ProbableWaffleScene;
+  private chatButton?: ChatButton;
+  private chatMessageSubscription?: Subscription;
+
+  initializeWithParentScene(probableWaffleScene: ProbableWaffleScene, chatButton: ChatButton) {
+    this.probableWaffleScene = probableWaffleScene;
+    this.chatButton = chatButton;
+    this.chatMessageSubscription?.unsubscribe();
+    this.chatMessageSubscription = probableWaffleScene.communicator.allScenes
+      .pipe(
+        filter(
+          (value): value is Extract<AllScenesEventData, { name: "chat-message-received" }> =>
+            value.name === "chat-message-received"
+        )
+      )
+      .subscribe((event) => {
+        const { fullName, text } = event.data;
+        this.showMessage(fullName, text);
+        this.chatButton?.showUnreadBadge();
+      });
+  }
 
   showMessage(playerName: string, messageText: string) {
     // Truncate message if too long
@@ -112,6 +137,7 @@ export default class ChatNotification extends Phaser.GameObjects.Container {
   }
 
   override destroy() {
+    this.chatMessageSubscription?.unsubscribe();
     if (this.hideTimer) {
       this.hideTimer.destroy();
     }

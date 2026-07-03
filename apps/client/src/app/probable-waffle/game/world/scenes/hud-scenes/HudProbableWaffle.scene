@@ -181,19 +181,40 @@
             "y": 434
         },
         {
-            "type": "Text",
-            "id": "f6d183fb-6d89-4eb8-987d-ec4e7dafce2a",
-            "label": "dayNightClockText",
+            "prefabId": "b6ff5db8-fbfb-4b51-adfe-0bdad0cdedce",
+            "id": "9709419e-0bc8-4bfd-ab78-813b7f3108f6",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "dayNightClockLabel",
             "scope": "CLASS",
             "x": 13,
-            "y": 692,
-            "originY": 1,
-            "resolution": 10,
-            "fontFamily": "disposabledroid",
-            "fontSize": "18px",
-            "color": "#ffffffff",
-            "stroke": "#000000ff",
-            "strokeThickness": 3
+            "y": 692
+        },
+        {
+            "prefabId": "8552f4bd-87ce-4bdf-aed4-b4c919b08b80",
+            "id": "473c0138-5aa8-4f7a-bb12-6821eaaf02a9",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "confirmationDialog",
+            "scope": "CLASS",
+            "x": 640,
+            "y": 360
+        },
+        {
+            "prefabId": "c2ecac06-c622-41d5-bd39-cbee463d067f",
+            "id": "3f31498d-7ba2-44c9-b525-fb2996673721",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "surrenderDialog",
+            "scope": "CLASS",
+            "x": 640,
+            "y": 360
         }
     ],
     "plainObjects": [],
