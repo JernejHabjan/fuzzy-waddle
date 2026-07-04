@@ -62,7 +62,12 @@ export const centurionDefinition = {
     aiControlled: {
       type: AiType.Character
     },
-    animatable: { animations: ANIM_CENTURION_DEFINITION }
+    animatable: { animations: ANIM_CENTURION_DEFINITION },
+    audio: {
+      sounds: {
+        // todo
+      }
+    }
   },
   systems: {
     movement: { enabled: true },

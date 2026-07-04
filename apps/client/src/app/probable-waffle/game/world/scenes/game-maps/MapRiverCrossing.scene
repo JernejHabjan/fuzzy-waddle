@@ -2777,8 +2777,12 @@
                 "y"
             ],
             "label": "eartGolem",
-            "x": -719,
-            "y": 956
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -1008,
+            "y": 640
         },
         {
             "prefabId": "910c2f19-d3c6-4430-8993-d13ff8cec6e0",
@@ -2788,8 +2792,12 @@
                 "y"
             ],
             "label": "stoneGolem",
-            "x": -792,
-            "y": 1129
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -1184,
+            "y": 664
         },
         {
             "prefabId": "f3cab382-58b4-47e3-bd7c-20b62bd38249",
@@ -2799,8 +2807,12 @@
                 "y"
             ],
             "label": "metalGolem",
-            "x": -640,
-            "y": 1168
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -896,
+            "y": 656
         },
         {
             "prefabId": "ff9fc477-3a20-4065-b9f9-9f52935c7102",

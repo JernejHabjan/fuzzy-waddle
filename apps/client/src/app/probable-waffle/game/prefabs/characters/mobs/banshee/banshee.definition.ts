@@ -67,7 +67,12 @@ export const bansheeDefinition = {
     aiControlled: {
       type: AiType.Character
     },
-    animatable: { animations: ANIM_BANSHEE_DEFINITION }
+    animatable: { animations: ANIM_BANSHEE_DEFINITION },
+    audio: {
+      sounds: {
+        // todo
+      }
+    }
   },
   systems: {
     movement: { enabled: true },

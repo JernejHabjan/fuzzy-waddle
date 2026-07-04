@@ -332,6 +332,66 @@ export const weaponDefinitions = {
       hit: 500
     }
   },
+  [WeaponType.EarthGolemSmash]: {
+    weaponType: WeaponType.EarthGolemSmash,
+    canTargetAir: false,
+    damage: 12,
+    damageType: DamageType.Physical,
+    cooldown: 3000,
+    range: 3,
+    minRange: 0,
+    highGroundRangeBonus: 0,
+    animationType: AnimationType.Thrust,
+    sounds: {
+      preparing: null,
+      fire: SharedActorActionsSfxHeavyWeaponSwingSounds,
+      hit: SharedActorActionsSfxAxeHitSounds
+    },
+    delays: {
+      fire: 200,
+      hit: 500
+    }
+  },
+  [WeaponType.StoneGolemSmash]: {
+    weaponType: WeaponType.StoneGolemSmash,
+    canTargetAir: false,
+    damage: 10,
+    damageType: DamageType.Physical,
+    cooldown: 2000,
+    range: 3,
+    minRange: 0,
+    highGroundRangeBonus: 0,
+    animationType: AnimationType.Thrust,
+    sounds: {
+      preparing: null,
+      fire: SharedActorActionsSfxHeavyWeaponSwingSounds,
+      hit: SharedActorActionsSfxAxeHitSounds
+    },
+    delays: {
+      fire: 200,
+      hit: 500
+    }
+  },
+  [WeaponType.MetalGolemSmash]: {
+    weaponType: WeaponType.MetalGolemSmash,
+    canTargetAir: false,
+    damage: 15,
+    damageType: DamageType.Physical,
+    cooldown: 3500,
+    range: 3,
+    minRange: 0,
+    highGroundRangeBonus: 0,
+    animationType: AnimationType.Thrust,
+    sounds: {
+      preparing: null,
+      fire: SharedActorActionsSfxHeavyWeaponSwingSounds,
+      hit: SharedActorActionsSfxAxeHitSounds
+    },
+    delays: {
+      fire: 200,
+      hit: 500
+    }
+  },
   [WeaponType.CorpyClaws]: {
     weaponType: WeaponType.CorpyClaws,
     canTargetAir: false,

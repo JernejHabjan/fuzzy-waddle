@@ -1055,15 +1055,15 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(smallWaterSlime);
 
     // eartGolem
-    const eartGolem = new EarthGolem(this, -719, 956);
+    const eartGolem = new EarthGolem(this, -1008, 640);
     this.add.existing(eartGolem);
 
     // stoneGolem
-    const stoneGolem = new StoneGolem(this, -792, 1129);
+    const stoneGolem = new StoneGolem(this, -1184, 664);
     this.add.existing(stoneGolem);
 
     // metalGolem
-    const metalGolem = new MetalGolem(this, -640, 1168);
+    const metalGolem = new MetalGolem(this, -896, 656);
     this.add.existing(metalGolem);
 
     // minotaur2
@@ -1415,6 +1415,18 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // tivaraMacemanMale (components)
     const tivaraMacemanMaleEditorOwner = new EditorOwner(tivaraMacemanMale);
     tivaraMacemanMaleEditorOwner.owner_id = "1";
+
+    // eartGolem (components)
+    const eartGolemEditorOwner = new EditorOwner(eartGolem);
+    eartGolemEditorOwner.owner_id = "1";
+
+    // stoneGolem (components)
+    const stoneGolemEditorOwner = new EditorOwner(stoneGolem);
+    stoneGolemEditorOwner.owner_id = "1";
+
+    // metalGolem (components)
+    const metalGolemEditorOwner = new EditorOwner(metalGolem);
+    metalGolemEditorOwner.owner_id = "1";
 
     // medusa (components)
     const medusaEditorOwner = new EditorOwner(medusa);

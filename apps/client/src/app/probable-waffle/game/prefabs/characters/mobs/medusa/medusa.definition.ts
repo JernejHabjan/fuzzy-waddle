@@ -68,7 +68,12 @@ export const medusaDefinition = {
     aiControlled: {
       type: AiType.Character
     },
-    animatable: { animations: ANIM_MEDUSA_DEFINITION }
+    animatable: { animations: ANIM_MEDUSA_DEFINITION },
+    audio: {
+      sounds: {
+        // todo
+      }
+    }
   },
   systems: {
     movement: { enabled: true },
