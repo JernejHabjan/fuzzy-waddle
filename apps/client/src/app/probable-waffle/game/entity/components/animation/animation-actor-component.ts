@@ -210,6 +210,8 @@ export class AnimationActorComponent {
       config.repeat = animationOptions.repeat;
     }
 
+    // Mirroring is owned by the animation definition so changing to a non-mirrored anim always clears it.
+    this.sprite.setFlipX(effectiveDef.mirrorX === true);
     this.isAnimating = true;
     this.sprite.play(config);
 

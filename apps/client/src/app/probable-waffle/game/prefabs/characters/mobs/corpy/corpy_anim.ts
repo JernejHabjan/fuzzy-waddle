@@ -12,30 +12,29 @@ const WALK_UP_RIGHT = "corpy/walk/Corpio_walk_up_right";
 const ANIM_CORPY_DEATH_DEATH = "corpy/death/death";
 
 export const ANIM_CORPY_DEFINITION: AnimationDefinitionMap = {
-  // TODO - needs also flip animations!!!! for all but death
   [AnimationType.Idle]: {
-    northwest: { key: IDLE_UP_RIGHT },
+    northwest: { key: IDLE_UP_RIGHT, mirrorX: true },
     southwest: { key: IDLE_BOTTOM_LEFT },
     northeast: { key: IDLE_UP_RIGHT },
-    southeast: { key: IDLE_BOTTOM_LEFT }
+    southeast: { key: IDLE_BOTTOM_LEFT, mirrorX: true }
   },
   [AnimationType.Walk]: {
-    northwest: { key: WALK_UP_RIGHT },
+    northwest: { key: WALK_UP_RIGHT, mirrorX: true },
     southwest: { key: WALK_BOTTOM_LEFT },
     northeast: { key: WALK_UP_RIGHT },
-    southeast: { key: WALK_BOTTOM_LEFT }
+    southeast: { key: WALK_BOTTOM_LEFT, mirrorX: true }
   },
   [AnimationType.Thrust]: {
-    northwest: { key: ATTACK_CLAW_CLAW_ATTACK_UP_RIGHT },
+    northwest: { key: ATTACK_CLAW_CLAW_ATTACK_UP_RIGHT, mirrorX: true },
     southwest: { key: ATTACK_CLAW_CLAW_ATTACK_BOTTOM_LEFT },
     northeast: { key: ATTACK_CLAW_CLAW_ATTACK_UP_RIGHT },
-    southeast: { key: ATTACK_CLAW_CLAW_ATTACK_BOTTOM_LEFT }
+    southeast: { key: ATTACK_CLAW_CLAW_ATTACK_BOTTOM_LEFT, mirrorX: true }
   },
   [AnimationType.Shoot]: {
-    northwest: { key: ATTACK_TAIL_ATTACK_TAIL_UP_RIGHT },
+    northwest: { key: ATTACK_TAIL_ATTACK_TAIL_UP_RIGHT, mirrorX: true },
     southwest: { key: ATTACK_TAIL_ATTACK_TAIL_BOTTOM_LEFT },
     northeast: { key: ATTACK_TAIL_ATTACK_TAIL_UP_RIGHT },
-    southeast: { key: ATTACK_TAIL_ATTACK_TAIL_BOTTOM_LEFT }
+    southeast: { key: ATTACK_TAIL_ATTACK_TAIL_BOTTOM_LEFT, mirrorX: true }
   },
   [AnimationType.Death]: {
     northwest: { key: ANIM_CORPY_DEATH_DEATH },
