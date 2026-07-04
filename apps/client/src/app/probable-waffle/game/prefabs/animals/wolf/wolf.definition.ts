@@ -6,8 +6,9 @@ import { weaponDefinitions } from "../../../entity/components/combat/weapon-defi
 export const wolfDefinition = {
   components: {
     representable: {
-      width: 64,
-      height: 64
+      width: 48,
+      height: 48,
+      origin: { x: 0.5, y: 0.631606606461893 }
     },
     objectDescriptor: {
       color: 0x3b4a50
@@ -44,7 +45,7 @@ export const wolfDefinition = {
     },
     animatable: { animations: ANIM_WOLF_DEFINITION },
     attack: {
-      attacks: [weaponDefinitions.wolfBite]
+      attacks: [weaponDefinitions.WolfBite]
     }
   },
   systems: {

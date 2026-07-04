@@ -1,0 +1,40 @@
+{
+    "id": "f24c9ed3-2831-446a-9d2b-fad98b38b9c5",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Sprite",
+            "id": "00a336b4-974c-4134-9302-993b6881ec4e",
+            "label": "undead_land_Dead_arm_shadow1_1_png",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "1.4845399507259174 12.756769922952692 10.553220621740493 2.0686819892569375 32 0 45.93515411873253 9.27643549210066 60.50981948286311 49.11385415405757 47.71650210768182 57.534771919999685 32.57715939420447 53.56583294251831 27.556996879892836 31.379953443786214",
+            "texture": {
+                "key": "environment_1",
+                "frame": "undead_land/Dead_arm_shadow1_1.png"
+            },
+            "x": 45.60302064031087,
+            "y": 48.48582216572539,
+            "originX": 0.7125471975048574,
+            "originY": 0.7575909713394592
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

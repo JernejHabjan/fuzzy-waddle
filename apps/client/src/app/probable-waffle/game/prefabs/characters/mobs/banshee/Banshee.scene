@@ -1,0 +1,45 @@
+{
+    "id": "2da4ac72-30ff-4a63-a1c9-507ed4cda6ae",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 120,
+        "borderHeight": 120
+    },
+    "displayList": [
+        {
+            "type": "Sprite",
+            "id": "aa562a59-b377-4914-919b-ee8293f621d7",
+            "label": "banshee_idle_se",
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": 40,
+            "hitArea.y": 43,
+            "hitArea.radius": 21.192170586571407,
+            "texture": {
+                "key": "mobs_banshee",
+                "frame": "idle/s/0.png"
+            },
+            "x": 60,
+            "y": 93,
+            "scaleX": 2,
+            "scaleY": 2,
+            "originY": 0.773612963520417,
+            "animationPlayMethod": 1,
+            "animationKey": "mobs_banshee_idle/s"
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

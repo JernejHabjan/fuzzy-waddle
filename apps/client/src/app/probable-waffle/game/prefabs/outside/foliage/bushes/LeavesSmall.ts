@@ -3,9 +3,7 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { setActorData } from "../../../../data/actor-data";
-import { ObjectDescriptorComponent } from "../../../../entity/components/object-descriptor-component";
-import { ObjectDescriptorDefinition } from "../../../../entity/components/object-descriptor-definition";
+import { initStaticActor } from "../../../../data/init-static-actor";
 /* END-USER-IMPORTS */
 
 export default class LeavesSmall extends Phaser.GameObjects.Image {
@@ -16,15 +14,7 @@ export default class LeavesSmall extends Phaser.GameObjects.Image {
     this.setOrigin(0.5, 0.75);
 
     /* START-USER-CTR-CODE */
-    setActorData(
-      this,
-      [
-        new ObjectDescriptorComponent({
-          color: null
-        } satisfies ObjectDescriptorDefinition)
-      ],
-      []
-    );
+    initStaticActor(this, null);
     /* END-USER-CTR-CODE */
   }
 

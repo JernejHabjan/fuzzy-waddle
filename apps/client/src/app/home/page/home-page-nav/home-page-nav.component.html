@@ -1,4 +1,4 @@
-<fuzzy-waddle-home-nav>
+<fuzzy-waddle-home-nav [hasActions]="true">
   <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
     @if (!authService.processing && !authService.isAuthenticated) {
       <li (click)="authService.signInWithGoogle()" class="nav-item">
@@ -17,7 +17,10 @@
             height="32"
             src="{{ avatarProviderService.getAvatar(authService.userId!) }}"
           />
-          {{ authService.fullName! }}
+          {{ currentUserProfile?.displayName || authService.fullName || "Profile" }}
+          @if (getRoleIcon(currentUserProfile?.role ?? null); as roleIcon) {
+            <fa-icon [icon]="roleIcon" [title]="getRoleLabel(currentUserProfile?.role ?? null) ?? ''" class="role-icon" />
+          }
         </a>
       </li>
     }

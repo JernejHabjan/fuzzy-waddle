@@ -1,0 +1,127 @@
+@use "../../../styles/_variables.scss" as *;
+
+.moderation-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  overflow: auto;
+}
+
+.moderation-toolbar,
+.moderation-group-header,
+.report-actions,
+.ban-controls,
+.group-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.moderation-toolbar,
+.moderation-group-header {
+  justify-content: space-between;
+}
+
+.moderation-toolbar,
+.moderation-group {
+  padding: 16px;
+}
+
+.toolbar-subtitle,
+.group-email,
+.group-status,
+.moderation-state {
+  margin: 0;
+  color: $app-muted-ink;
+}
+
+.moderation-banned-section {
+  display: grid;
+  gap: 1rem;
+}
+
+.banned-users-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.banned-user-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 1rem;
+}
+
+.banned-user-actions {
+  display: grid;
+  align-content: start;
+  gap: 0.5rem;
+  justify-items: end;
+}
+
+.moderation-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.group-identity {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.group-role-icon {
+  color: $primary;
+}
+
+.moderation-report {
+  padding: 10px;
+}
+
+.report-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: $app-text-muted;
+  font-size: 0.85rem;
+}
+
+blockquote {
+  margin: 8px 0;
+  padding-left: 10px;
+  border-left: 3px solid $primary;
+}
+
+.report-details {
+  font-size: 0.9rem;
+}
+
+.ban-controls {
+  justify-content: flex-end;
+}
+
+.ban-until-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+}
+
+.ban-note-input,
+.ban-until-field input {
+  border: 2px solid $primary;
+  padding: 0.5rem 0.75rem;
+  min-width: 220px;
+  border-radius: $app-border-radius;
+}
+
+.moderation-error {
+  color: $app-danger;
+}
+
+.btn {
+  border-radius: $app-border-radius;
+}

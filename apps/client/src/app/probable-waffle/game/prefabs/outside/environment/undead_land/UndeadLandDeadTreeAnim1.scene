@@ -1,0 +1,62 @@
+{
+    "id": "df5200a0-dc56-4e18-833c-f6030f96d011",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "6b7c16ec-6bb1-416d-b191-c7cb86991fd5",
+            "label": "container_2",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "-12.74771091699725 -70.90219914851379 36.518638751830736 -102.61873327007686 70.77249560311884 -48.91206882423006 20.8718152518596 8.177692594583476 -19.5139048629307 8.389136155393885",
+            "x": -23.8314053788544,
+            "y": 148.0491760631506,
+            "scaleX": 1.5,
+            "scaleY": 1.5,
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "ba546f0d-57e1-486c-9b2f-652e473f3256",
+                    "label": "undead_land_DeadTreeAnim1_Animation1-0_png",
+                    "texture": {
+                        "key": "environment_1",
+                        "frame": "undead_land/DeadTreeBase1.png"
+                    },
+                    "x": 20.93291208890689,
+                    "y": -43.98025974234983
+                },
+                {
+                    "type": "Sprite",
+                    "id": "a1baa647-56cb-489f-81c8-7c2909c4edba",
+                    "label": "undead_land_DeadTreeAnim1_Animation1-0_png_1",
+                    "texture": {
+                        "key": "environment_1",
+                        "frame": "undead_land/DeadTreeAnim1/DeadTreeAnim1.png"
+                    },
+                    "x": 20.93291208890689,
+                    "y": -43.98025974234983,
+                    "animationPlayMethod": 1,
+                    "animationKey": "undead_land/DeadTreeAnim1/DeadTreeAnim"
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

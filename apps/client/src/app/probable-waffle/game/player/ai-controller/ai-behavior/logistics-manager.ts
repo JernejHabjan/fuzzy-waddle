@@ -6,6 +6,7 @@ import { getCostForObjectName } from "../../../entity/components/production/cost
 import { GathererComponent } from "../../../entity/components/resource/gatherer-component";
 import { AI_CONFIG } from "../ai-config";
 import { State } from "mistreevous";
+import { QueueItemType } from "../../../entity/components/queue/queue-item";
 
 /**
  * LogisticsManager
@@ -24,7 +25,7 @@ export class LogisticsManager {
   ) {}
 
   shouldRebalance(): boolean {
-    const now = Date.now();
+    const now = this.blackboard.getNow();
     if (now - this.lastRebalanceAt < this.rebalanceCooldownMs) {
       this.log("[Logistics] Rebalance on cooldown");
       return false;
@@ -107,7 +108,7 @@ export class LogisticsManager {
 
     if (reassignedCount > 0) {
       this.log(`[Logistics] ✓ Redirected ${reassignedCount} workers to gather scarce resource: ${scarceResource}`);
-      this.lastRebalanceAt = Date.now();
+      this.lastRebalanceAt = this.blackboard.getNow();
       return State.SUCCEEDED;
     }
 
@@ -116,7 +117,7 @@ export class LogisticsManager {
   }
 
   async rebalanceHarvesters(): Promise<State> {
-    const now = Date.now();
+    const now = this.blackboard.getNow();
     if (now - this.lastRebalanceAt < this.rebalanceCooldownMs) {
       this.log("[Logistics] Rebalance on cooldown");
       return State.FAILED;
@@ -138,17 +139,20 @@ export class LogisticsManager {
     const resourceData: { [key in ResourceType]?: { score: number } } = {};
 
     // 1. Projected spend
-    const projectedSpend: Record<ResourceType, number> = { wood: 0, stone: 0, minerals: 0 };
+    const projectedSpend: Record<ResourceType, number> = { wood: 0, stone: 0, minerals: 0, food: 0 };
     // from queues
     this.blackboard.trainingBuildings.forEach((b) => {
       const prod = getActorComponent(b, ProductionComponent);
       if (prod) {
         prod.itemsFromAllQueues.forEach((item) => {
-          const cost = getCostForObjectName(item.actorName);
-          if (cost) {
-            for (const key in cost) {
-              const r = key as ResourceType;
-              projectedSpend[r] += cost[r] ?? 0;
+          // Only process production items (not research)
+          if (item.type === QueueItemType.Production && item.productionData) {
+            const cost = getCostForObjectName(item.productionData.actorName);
+            if (cost) {
+              for (const key in cost) {
+                const r = key as ResourceType;
+                projectedSpend[r] += cost[r] ?? 0;
+              }
             }
           }
         });

@@ -1,9 +1,13 @@
-<div class="home-container h-100">
-  <probable-waffle-constellation-effect class="constellation-background" />
+<div class="home-container aota-page aota-home h-100">
+  <probable-waffle-home-background-effect class="home-background" />
   <div class="home-content">
     <div class="left-container">
       @if (isLargeScreen) {
-        <probable-waffle-banner />
+        @defer (on idle) {
+          <probable-waffle-banner />
+        } @placeholder {
+          <div class="banner-placeholder" aria-hidden="true"></div>
+        }
       }
       <probable-waffle-title />
     </div>

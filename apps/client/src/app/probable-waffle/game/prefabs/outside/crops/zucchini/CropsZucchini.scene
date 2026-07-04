@@ -1,0 +1,42 @@
+{
+    "id": "7d28b4dd-aeb0-486e-ba48-424bbe5261d0",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "786dacca-114c-45b8-a868-ac95c718393e",
+            "label": "crops_zucchini_12_png",
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": 16,
+            "hitArea.y": 16,
+            "hitArea.radius": 11.131814446083911,
+            "texture": {
+                "key": "crops",
+                "frame": "crops/zucchini/12.png"
+            },
+            "x": 32.192928314208984,
+            "y": 40.75645580539479,
+            "originX": 0.5060289692054787,
+            "originY": 0.5236392296187007
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

@@ -15,4 +15,34 @@ export interface ProjectileData {
     anims: string[];
     tint?: number;
   };
+  // Defines how projectile spawns and moves
+  spawnBehavior?: {
+    // 'launch' = normal projectile from caster to target
+    // 'fall' = spawn above target and fall straight down
+    type: "launch" | "fall";
+    // For 'fall' type: how far above target to spawn (in pixels)
+    spawnOffsetY?: number;
+    // Custom easing for movement (e.g., 'Cubic.easeIn' for falling)
+    ease?: string;
+  };
+  // 'parabolic' makes the projectile arc through the air (like cannon/ship volley)
+  trajectoryType?: "linear" | "parabolic";
+  // Peak height (px) above the midpoint for parabolic trajectory (default: 120)
+  parabolicPeakHeight?: number;
+  // Spawns a trail image at intervals while the projectile travels
+  trailEffect?: {
+    key: string;
+    frame: string;
+    intervalMs: number;
+  };
+  /**
+   * When set, fire multiple projectiles in a single attack.
+   * Each projectile is launched from a slightly offset origin along the hull.
+   */
+  salvo?: {
+    /** Number of projectiles to fire. */
+    count: number;
+    /** Total horizontal spread in world pixels across all projectile origins. */
+    spreadPx: number;
+  };
 }

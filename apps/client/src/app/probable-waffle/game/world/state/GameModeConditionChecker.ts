@@ -5,8 +5,10 @@ import {
   isPlayerHostInScene
 } from "../../../../shared/game/phaser/scene/base.scene";
 import {
+  GameResultStatus,
   GameSessionState,
   type LoseConditions,
+  ProbableWafflePlayerDataChangeProperties,
   ProbableWaffleGameInstanceType,
   ProbableWaffleGameMode,
   ProbableWafflePlayer,
@@ -14,8 +16,8 @@ import {
   type TieConditions,
   type WinConditions
 } from "@fuzzy-waddle/api-interfaces";
-import { throttle } from "../../library/throttle";
 import { type ProbableWaffleGameData } from "../../core/probable-waffle-game-data";
+import { isGameObjectActiveInActiveScene, isSceneActive } from "../../data/game-object-helper";
 import { ScenePlayerHelpers } from "../../data/scene-player-helpers";
 import { getCurrentPlayerNumber } from "../../data/scene-data";
 import { getActorComponent } from "../../data/actor-component";
@@ -23,10 +25,13 @@ import { ConstructionSiteComponent } from "../../entity/components/construction/
 import { filter, type Subscription } from "rxjs";
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import type EndGameDialog from "../scenes/hud-scenes/EndGameDialog";
-import { getSceneSystem } from "../services/scene-component-helpers";
+import { getSceneService, getSceneSystem } from "../services/scene-component-helpers";
 import { AiPlayerHandler } from "../../player/ai-controller/ai-player-handler";
 import HudProbableWaffle from "../scenes/hud-scenes/HudProbableWaffle";
 import { SceneDialogHelper } from "../scenes/scene-dialog-helper";
+import { ScoreTracker } from "./ScoreTracker";
+import { SimulationTickService } from "../services/simulation-tick.service";
+import { CancelableSimDelay } from "../services/simulation-time";
 
 export class GameModeConditionChecker {
   private loseConditions: LoseConditions;
@@ -37,9 +42,13 @@ export class GameModeConditionChecker {
   private players!: ProbableWafflePlayer[];
   private currentPlayer!: ProbableWafflePlayer;
   private selfQuitSubscription?: Subscription;
+  private playerLeftOrKilledSubscription?: Subscription;
   private stopped: boolean = false;
-  private surrenderCheckInterval = 2000; // Check every 2 seconds
-  private lastSurrenderCheckTime = 0;
+  private readonly checkIntervalTicks = 20; // 1 second at the fixed 20 Hz simulation rate.
+  private readonly surrenderCheckIntervalTicks = 40; // 2 seconds at the fixed 20 Hz simulation rate.
+  private lastSurrenderCheckTick = 0;
+  private currentDelay?: CancelableSimDelay;
+  private simulationTickSub?: Subscription;
 
   constructor(private readonly scene: ProbableWaffleScene) {
     const gameModeData = getGameModeFromScene<ProbableWaffleGameMode>(scene).data;
@@ -47,18 +56,25 @@ export class GameModeConditionChecker {
     this.winConditions = gameModeData.winConditions;
     this.tieConditions = gameModeData.tieConditions;
 
-    this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.throttleCheck, this);
+    this.currentDelay = new CancelableSimDelay(this.scene, 1000, () => this.startChecking());
     this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
     this.listenToPlayerQuit();
+    this.listenToPlayerLeftOrKilled();
   }
 
-  private throttleCheck = throttle(this.check.bind(this), 1000);
+  private startChecking() {
+    this.simulationTickSub = getSceneService(this.scene, SimulationTickService)?.tick$.subscribe((tick) => {
+      if (tick % this.checkIntervalTicks === 0) {
+        this.check(tick);
+      }
+    });
+  }
 
-  private check() {
-    if (!this.scene.scene || !this.scene.scene.isActive()) return;
+  private check(tick: number) {
+    if (!isSceneActive(this.scene)) return;
     if (this.stopped) return;
     this.prepareData();
-    this.checkAiSurrender();
+    this.checkAiSurrender(tick);
     if (this.checkWinConditions()) {
       this.winGame();
       return;
@@ -76,7 +92,12 @@ export class GameModeConditionChecker {
   private prepareData() {
     this.currentPlayerNumber = getCurrentPlayerNumber(this.scene)!;
     this.players = getPlayersFromScene<ProbableWafflePlayer>(this.scene);
-    this.currentPlayer = this.players.find((player) => player.playerNumber === this.currentPlayerNumber)!;
+    const currentPlayer = this.players.find((player) => player.playerNumber === this.currentPlayerNumber);
+    if (!currentPlayer) {
+      console.error("Current player not found", this.currentPlayerNumber, this.players);
+      throw new Error("Current player not found");
+    }
+    this.currentPlayer = currentPlayer;
     this.actorsByPlayer = ScenePlayerHelpers.getActorsByPlayer(this.scene).actorsByPlayer;
 
     this.runChecksForSelfAndAiPlayers();
@@ -104,16 +125,37 @@ export class GameModeConditionChecker {
       // check if player has no actors left, if yes, mark as left or killed
       const actors = this.actorsByPlayer?.get(player.playerNumber!) || [];
       if (actors.length === 0) {
-        player.playerController.data.leftOrKilled = true;
+        this.markPlayerLeftOrKilled(player);
         console.log(`Player ${player.playerNumber} has no actors left, marked as killed.`);
       }
     });
   }
 
-  private checkAiSurrender() {
-    const now = Date.now();
-    if (now - this.lastSurrenderCheckTime < this.surrenderCheckInterval) return;
-    this.lastSurrenderCheckTime = now;
+  private listenToPlayerLeftOrKilled() {
+    this.playerLeftOrKilledSubscription = this.scene.communicator.playerChanged?.on
+      .pipe(filter((event) => event.property === ProbableWafflePlayerDataChangeProperties.LeftOrKilledChanged))
+      .subscribe((event) => {
+        if (this.stopped || !isSceneActive(this.scene)) {
+          return;
+        }
+
+        this.ensureCurrentPlayerPrepared();
+        if (event.data.playerNumber === this.currentPlayerNumber) {
+          return;
+        }
+
+        // Remote quits do not always line up with this checker's periodic tick.
+        // Re-evaluate immediately so the surviving player can resolve victory
+        // without waiting for another scheduled pass.
+        if (this.checkWinConditions()) {
+          this.winGame();
+        }
+      });
+  }
+
+  private checkAiSurrender(tick: number) {
+    if (tick - this.lastSurrenderCheckTick < this.surrenderCheckIntervalTicks) return;
+    this.lastSurrenderCheckTick = tick;
 
     // Only check surrender in single-player mode (InstantGame or Skirmish)
     const baseGameData = getBaseGameDataFromScene<ProbableWaffleGameData>(this.scene);
@@ -189,12 +231,12 @@ export class GameModeConditionChecker {
   private handleSurrenderAccepted(player: ProbableWafflePlayer) {
     console.log(`Player ${player.playerNumber} surrender accepted - eliminating player`);
     // Mark player as eliminated
-    player.playerController.data.leftOrKilled = true;
+    this.markPlayerLeftOrKilled(player);
 
     // Destroy all units/buildings owned by this player
     const actors = this.actorsByPlayer?.get(player.playerNumber!) || [];
     actors.forEach((actor) => {
-      if (actor && actor.active) {
+      if (isGameObjectActiveInActiveScene(actor)) {
         actor.destroy();
       }
     });
@@ -231,7 +273,7 @@ export class GameModeConditionChecker {
       }
     }
     if (this.winConditions.timeReachedInMinutes) {
-      const elapsedTime = this.scene.game.loop.time / 1000 / 60; // Convert to minutes
+      const elapsedTime = this.getElapsedGameMinutes();
       if (elapsedTime >= this.winConditions.timeReachedInMinutes) {
         return true; // Time limit reached, consider it a win
       }
@@ -295,7 +337,7 @@ export class GameModeConditionChecker {
       const buildings = actors.filter((actor) => getActorComponent(actor, ConstructionSiteComponent));
       if (buildings.length === 0) {
         console.log("All buildings eliminated, lose condition met.");
-        this.currentPlayer.playerController.data.leftOrKilled = true;
+        this.markPlayerLeftOrKilled(this.currentPlayer);
         return true; // No buildings left, consider it a loss
       }
     }
@@ -304,7 +346,7 @@ export class GameModeConditionChecker {
 
   private checkTieConditions(): boolean {
     if (this.tieConditions.maximumTimeLimitInMinutes) {
-      const elapsedTime = this.scene.game.loop.time / 1000 / 60; // Convert to minutes
+      const elapsedTime = this.getElapsedGameMinutes();
       if (elapsedTime >= this.tieConditions.maximumTimeLimitInMinutes) {
         console.log("Maximum time limit reached, tie condition met.");
         return true; // Time limit reached, consider it a tie
@@ -313,39 +355,149 @@ export class GameModeConditionChecker {
     return false;
   }
 
+  private getElapsedGameMinutes(): number {
+    const currentTick = getSceneService(this.scene, SimulationTickService)?.currentTick ?? 0;
+    return currentTick / 20 / 60;
+  }
+
   private selfQuit() {
-    this.currentPlayer.playerController.data.leftOrKilled = true;
+    this.ensureCurrentPlayerPrepared();
+    this.markPlayerLeftOrKilled(this.currentPlayer);
     console.log(`Player ${this.currentPlayer.playerNumber} has quit the game.`);
-    this.navigateToScoreScreen();
+
+    // Update ScoreTracker
+    const scoreTracker = getSceneSystem(this.scene, ScoreTracker);
+    if (scoreTracker) {
+      scoreTracker.setPlayerResult(this.currentPlayerNumber, GameResultStatus.Quit);
+      scoreTracker.finalizeScores();
+      scoreTracker.stop();
+    }
+
+    // Quit is a per-player exit. Route only this client to the score screen and
+    // let the remaining players finish through the normal shared win/loss flow.
+    this.navigateToScoreScreenLocally();
     this.stop();
   }
 
+  /**
+   * leftOrKilled is shared match state. When a player quits or is eliminated we
+   * must relay it, otherwise other clients keep evaluating stale opponents and
+   * never resolve the remaining player's win condition.
+   */
+  private markPlayerLeftOrKilled(player: ProbableWafflePlayer) {
+    if (player.playerController.data.leftOrKilled) {
+      return;
+    }
+
+    player.playerController.data.leftOrKilled = true;
+    if (player.playerNumber === undefined) {
+      return;
+    }
+
+    this.scene.communicator.playerChanged?.send({
+      property: ProbableWafflePlayerDataChangeProperties.LeftOrKilledChanged,
+      gameInstanceId: this.scene.gameInstanceId,
+      emitterUserId: this.scene.userId,
+      data: {
+        playerNumber: player.playerNumber,
+        playerControllerData: {
+          leftOrKilled: true
+        }
+      }
+    });
+  }
+
+  private ensureCurrentPlayerPrepared() {
+    if (this.currentPlayer && this.currentPlayerNumber !== undefined) {
+      return;
+    }
+
+    this.prepareData();
+  }
+
   private winGame() {
+    // Update ScoreTracker with results
+    const scoreTracker = getSceneSystem(this.scene, ScoreTracker);
+    if (scoreTracker) {
+      scoreTracker.setPlayerResult(this.currentPlayerNumber, GameResultStatus.Win);
+
+      // Set enemy results
+      this.players.forEach((player) => {
+        if (player.playerNumber !== this.currentPlayerNumber) {
+          scoreTracker.setPlayerResult(player.playerNumber!, GameResultStatus.Loss);
+        }
+      });
+
+      scoreTracker.finalizeScores();
+      scoreTracker.stop();
+    }
+
     this.createEndGameLayer("You have won the game!", () => {
-      this.navigateToScoreScreen();
+      this.broadcastScoreScreenTransition();
     });
     this.stop();
   }
 
   private loseGame() {
+    // Update ScoreTracker with results
+    const scoreTracker = getSceneSystem(this.scene, ScoreTracker);
+    if (scoreTracker) {
+      scoreTracker.setPlayerResult(this.currentPlayerNumber, GameResultStatus.Loss);
+
+      // Set enemy results (they won)
+      this.players.forEach((player) => {
+        if (player.playerNumber !== this.currentPlayerNumber && !player.playerController.data.leftOrKilled) {
+          scoreTracker.setPlayerResult(player.playerNumber!, GameResultStatus.Win);
+        }
+      });
+
+      scoreTracker.finalizeScores();
+      scoreTracker.stop();
+    }
+
     this.createEndGameLayer("You have lost the game.", () => {
-      this.navigateToScoreScreen();
+      this.broadcastScoreScreenTransition();
     });
     this.stop();
   }
 
   private tieGame() {
+    // Update ScoreTracker with tie results for all players
+    const scoreTracker = getSceneSystem(this.scene, ScoreTracker);
+    if (scoreTracker) {
+      this.players.forEach((player) => {
+        scoreTracker.setPlayerResult(player.playerNumber!, GameResultStatus.Tie);
+      });
+
+      scoreTracker.finalizeScores();
+      scoreTracker.stop();
+    }
+
     this.createEndGameLayer("The game ended in a tie!", () => {
-      this.navigateToScoreScreen();
+      this.broadcastScoreScreenTransition();
     });
     this.stop();
   }
 
-  private navigateToScoreScreen() {
+  private broadcastScoreScreenTransition() {
     const baseGameData = getBaseGameDataFromScene<ProbableWaffleGameData>(this.scene);
     const communicator = baseGameData.communicator;
-    // todo rather than this, change the player state session state to "to score screen" because only 1 player quits
+    // Win/loss/tie are match-wide outcomes, so this session-state transition
+    // must be broadcast to every client that is still attached to the match.
     communicator.gameInstanceMetadataChanged?.send({
+      property: "sessionState",
+      gameInstanceId: baseGameData.gameInstance.gameInstanceMetadata.data.gameInstanceId!,
+      data: { sessionState: GameSessionState.ToScoreScreen },
+      emitterUserId: baseGameData.user.userId
+    });
+  }
+
+  private navigateToScoreScreenLocally() {
+    const baseGameData = getBaseGameDataFromScene<ProbableWaffleGameData>(this.scene);
+    const communicator = baseGameData.communicator;
+    // Local-only quit redirect: peers should keep simulating until their own
+    // global end condition resolves and broadcasts the match-wide transition.
+    communicator.gameInstanceMetadataChanged?.sendLocally({
       property: "sessionState",
       gameInstanceId: baseGameData.gameInstance.gameInstanceMetadata.data.gameInstanceId!,
       data: { sessionState: GameSessionState.ToScoreScreen },
@@ -366,8 +518,10 @@ export class GameModeConditionChecker {
   }
 
   private destroy() {
-    this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.throttleCheck);
-    this.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.destroy);
+    this.simulationTickSub?.unsubscribe();
+    this.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
     this.selfQuitSubscription?.unsubscribe();
+    this.playerLeftOrKilledSubscription?.unsubscribe();
+    this.currentDelay?.remove();
   }
 }

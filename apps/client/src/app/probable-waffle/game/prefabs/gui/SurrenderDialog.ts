@@ -1,84 +1,100 @@
 /* START OF COMPILED CODE */
 
+import ButtonSmall from "./buttons/ButtonSmall";
 /* START-USER-IMPORTS */
 import { ProbableWafflePlayer } from "@fuzzy-waddle/api-interfaces";
 /* END-USER-IMPORTS */
 
 export default class SurrenderDialog extends Phaser.GameObjects.Container {
   constructor(scene: Phaser.Scene, x?: number, y?: number) {
-    super(scene, x ?? 0, y ?? 0);
+    super(scene, x ?? 640, y ?? 360);
 
-    // Background panel
-    const background = scene.add.rectangle(0, 0, 400, 150, 0x000000, 0.8);
-    this.add(background);
+    // overlay
+    const overlay = scene.add.rectangle(0, 0, 1280, 720, 0x000000, 0.7);
+    this.add(overlay);
 
-    // Border
-    const border = scene.add.rectangle(0, 0, 400, 150);
-    border.setStrokeStyle(2, 0xffffff);
-    this.add(border);
+    // dialogBg
+    const dialogBg = scene.add.nineslice(
+      0,
+      0,
+      "gui",
+      "cryos_mini_gui/surfaces/surface_parchment.png",
+      360,
+      170,
+      3,
+      3,
+      3,
+      3
+    );
+    this.add(dialogBg);
 
-    // Title text
-    const titleText = scene.add.text(0, -40, "", {
+    // titleText
+    const titleText = scene.add.text(0, -34, "", {});
+    titleText.setOrigin(0.5, 0.5);
+    titleText.text = "Player wants to surrender";
+    titleText.setStyle({
+      color: "#000000ff",
       fontFamily: "disposabledroid",
-      fontSize: "24px",
-      color: "#ffffff",
+      fontSize: "22px",
       align: "center",
       resolution: 10
     });
-    titleText.setOrigin(0.5);
+    titleText.setWordWrapWidth(320);
     this.add(titleText);
 
-    // Accept button background
-    const acceptButtonBg = scene.add.rectangle(-60, 20, 100, 40, 0x00ff00, 1);
-    acceptButtonBg.setInteractive({ useHandCursor: true });
-    this.add(acceptButtonBg);
+    // acceptButton
+    const acceptButton = new ButtonSmall(scene, -70, 45);
+    acceptButton.text = "Yes";
+    acceptButton.w = 90;
+    acceptButton.h = 30;
+    acceptButton.fontSize = 20;
+    this.add(acceptButton);
 
-    // Accept button text
-    const acceptButtonText = scene.add.text(-60, 20, "Yes", {
-      fontFamily: "disposabledroid",
-      fontSize: "20px",
-      color: "#000000",
-      resolution: 10
-    });
-    acceptButtonText.setOrigin(0.5);
-    this.add(acceptButtonText);
+    // rejectButton
+    const rejectButton = new ButtonSmall(scene, 70, 45);
+    rejectButton.text = "No";
+    rejectButton.w = 90;
+    rejectButton.h = 30;
+    rejectButton.fontSize = 20;
+    this.add(rejectButton);
 
-    // Reject button background
-    const rejectButtonBg = scene.add.rectangle(60, 20, 100, 40, 0xff0000, 1);
-    rejectButtonBg.setInteractive({ useHandCursor: true });
-    this.add(rejectButtonBg);
-
-    // Reject button text
-    const rejectButtonText = scene.add.text(60, 20, "No", {
-      fontFamily: "disposabledroid",
-      fontSize: "20px",
-      color: "#ffffff",
-      resolution: 10
-    });
-    rejectButtonText.setOrigin(0.5);
-    this.add(rejectButtonText);
-
+    this.overlay = overlay;
+    this.dialogBg = dialogBg;
     this.titleText = titleText;
-    this.acceptButtonBg = acceptButtonBg;
-    this.rejectButtonBg = rejectButtonBg;
+    this.acceptButton = acceptButton;
+    this.rejectButton = rejectButton;
 
     this.visible = false;
 
     /* START-USER-CTR-CODE */
-    // Set up button listeners once during construction
-    this.acceptButtonBg.on("pointerdown", this.handleAcceptClick, this);
-    this.rejectButtonBg.on("pointerdown", this.handleRejectClick, this);
+    this.scene.events.once(Phaser.Scenes.Events.CREATE, () => {
+      this.postCreate();
+    });
     /* END-USER-CTR-CODE */
   }
 
+  private overlay!: Phaser.GameObjects.Rectangle;
+  private dialogBg!: Phaser.GameObjects.NineSlice;
   private titleText!: Phaser.GameObjects.Text;
-  private acceptButtonBg!: Phaser.GameObjects.Rectangle;
-  private rejectButtonBg!: Phaser.GameObjects.Rectangle;
+  private acceptButton!: ButtonSmall;
+  private rejectButton!: ButtonSmall;
 
   /* START-USER-CODE */
   private surrenderingPlayer?: ProbableWafflePlayer;
   private onAcceptCallback?: (player: ProbableWafflePlayer) => void;
   private onRejectCallback?: (player: ProbableWafflePlayer) => void;
+
+  private postCreate() {
+    this.overlay.setInteractive();
+    this.overlay.setOrigin(0, 0);
+    this.acceptButton.image_1.setVisible(false);
+    this.rejectButton.image_1.setVisible(false);
+    this.acceptButton.clicked.subscribe(() => this.handleAcceptClick());
+    this.rejectButton.clicked.subscribe(() => this.handleRejectClick());
+    this.setDepth(10000);
+    this.scene.scale.on("resize", this.handleResize, this);
+    this.handleResize({ width: this.scene.scale.width, height: this.scene.scale.height });
+  }
 
   private handleAcceptClick() {
     if (this.surrenderingPlayer && this.onAcceptCallback) {
@@ -117,10 +133,15 @@ export default class SurrenderDialog extends Phaser.GameObjects.Container {
   }
 
   override destroy(fromScene?: boolean) {
-    // Clean up event listeners
-    this.acceptButtonBg.off("pointerdown", this.handleAcceptClick, this);
-    this.rejectButtonBg.off("pointerdown", this.handleRejectClick, this);
+    this.scene.scale.off("resize", this.handleResize, this);
     super.destroy(fromScene);
+  }
+
+  private handleResize(gameSize: { width: number; height: number }) {
+    this.overlay.x = -this.x;
+    this.overlay.y = -this.y;
+    this.overlay.width = gameSize.width;
+    this.overlay.height = gameSize.height;
   }
 
   /* END-USER-CODE */

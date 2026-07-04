@@ -49,6 +49,14 @@ export interface ProbableWafflePlayerLeftDto extends GameInstanceDataDto {
 export interface RequestGameSearchForMatchMakingDto {
   mapPoolIds: number[];
   factionType: FactionType | null;
+  teamConfiguration?: MatchmakingTeamConfiguration;
+}
+
+export enum MatchmakingTeamConfiguration {
+  FreeForAll = "FFA", // Each player on their own team
+  TwoVsTwo = "2v2", // 2 teams of 2 players
+  ThreeVsThree = "3v3", // 2 teams of 3 players
+  FourVsFour = "4v4" // 2 teams of 4 players
 }
 
 export enum ProbableWaffleGatewayRoomTypes {
@@ -58,6 +66,7 @@ export enum ProbableWaffleGatewayRoomTypes {
 export interface PendingMatchmakingGameInstance {
   gameInstance: ProbableWaffleGameInstance;
   commonMapPoolIds: number[];
+  teamConfiguration: MatchmakingTeamConfiguration;
 }
 
 export interface ProbableWaffleGameInstanceSaveData {

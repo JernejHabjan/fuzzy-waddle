@@ -1,7 +1,7 @@
 import { GatherData } from "./gather-data";
 import { ResourceSourceComponent } from "./resource-source-component";
 import { DistanceHelper } from "../../../library/distance-helper";
-import { Subject } from "rxjs";
+import { Subject, type Subscription } from "rxjs";
 import { ContainerComponent } from "../building/container-component";
 import { ResourceDrainComponent } from "./resource-drain-component";
 import { type GathererComponentData, ResourceType } from "@fuzzy-waddle/api-interfaces";
@@ -19,12 +19,15 @@ import {
 import { AnimationActorComponent } from "../animation/animation-actor-component";
 import { OrderType } from "../../../ai/order-type";
 import { ActorTranslateComponent } from "../movement/actor-translate-component";
-import { getGameObjectVisibility, onObjectReady } from "../../../data/game-object-helper";
+import { getGameObjectLogicalTransform, getGameObjectVisibility, onObjectReady } from "../../../data/game-object-helper";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { AnimationType } from "../animation/animation-type";
 import { SoundType } from "../actor-audio/sound-type";
+import { isCropResourceSource } from "../tendable/growth-stage.interface";
 import type { SoundDefinition } from "../actor-audio/sound-definition";
 import type { GathererDefinition } from "./gatherer-definition";
+import { SimulationTickService } from "../../../world/services/simulation-tick.service";
+import { IdComponent } from "../id-component";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class GathererComponent {
@@ -55,6 +58,14 @@ export class GathererComponent {
       resourceType: ResourceType.Minerals,
       amountPerGathering: 1,
       needsReturnToDrain: true
+    },
+    {
+      capacity: 5,
+      cooldown: 2000,
+      range: 1,
+      resourceType: ResourceType.Food,
+      amountPerGathering: 2,
+      needsReturnToDrain: false
     }
   ];
   // amount the gameObject is carrying
@@ -64,6 +75,9 @@ export class GathererComponent {
   previousResourceSource: GameObject | null = null;
   previousResourceType: ResourceType | null = null;
   remainingCooldown = 0;
+  private cooldownTickSub?: Subscription;
+  private simulationTickService?: SimulationTickService;
+  private cooldownStartedTick: number | null = null;
 
   onResourceGathered: Subject<[GameObject, GameObject, GatherData, number]> = new Subject<
     [GameObject, GameObject, GatherData, number]
@@ -77,7 +91,6 @@ export class GathererComponent {
     private readonly gameObject: GameObject,
     private readonly gathererComponentDefinition: GathererDefinition
   ) {
-    gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
     onObjectReady(this.gameObject, this.onObjectReady, this);
@@ -87,23 +100,34 @@ export class GathererComponent {
     this.audioService = getSceneService(this.gameObject.scene, AudioService);
     this.animationActorComponent = getActorComponent(this.gameObject, AnimationActorComponent);
     this.actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
+    this.simulationTickService = getSceneService(this.gameObject.scene, SimulationTickService);
+    this.cooldownTickSub = this.simulationTickService?.tick$.subscribe(() => {
+      this.onSimulationTick();
+    });
   }
 
-  private update(_: number, delta: number): void {
-    const deltaWithTimeScale = delta * this.gameObject.scene.time.timeScale;
-
+  private onSimulationTick(): void {
     if (this.remainingCooldown <= 0) {
       return;
     }
-    this.remainingCooldown -= deltaWithTimeScale;
+    const currentTick = this.simulationTickService?.currentTick;
+    // Guard against subscription-order drift: if cooldown was started this same tick,
+    // do not decrement it until the next simulation tick.
+    if (currentTick !== undefined && this.cooldownStartedTick === currentTick) {
+      return;
+    }
+    this.remainingCooldown -= SimulationTickService.TICK_INTERVAL_MS;
     this.remainingCooldown = Math.max(this.remainingCooldown, 0);
+    if (this.remainingCooldown <= 0) {
+      this.cooldownStartedTick = null;
+    }
     // if (this.remainingCooldown <= 0) {
     //   this.onCooldownReady.emit(this.gameObject);
     // }
   }
 
   private destroy() {
-    this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
+    this.cooldownTickSub?.unsubscribe();
     // Unassign from resource source
     if (this.currentResourceSource) {
       const resourceSourceComponent = getActorComponent(this.currentResourceSource, ResourceSourceComponent);
@@ -195,7 +219,7 @@ export class GathererComponent {
     });
 
     // Use batch method for better performance
-    const pairs: [GameObject, GameObject][] = validDrains.map(drain => [gatherer, drain]);
+    const pairs: [GameObject, GameObject][] = validDrains.map((drain) => [gatherer, drain]);
     const distances = await DistanceHelper.batchGetDistancesBetweenGameObjects(pairs);
 
     let closestResourceDrain: GameObject | null = null;
@@ -203,8 +227,17 @@ export class GathererComponent {
 
     for (let i = 0; i < validDrains.length; i++) {
       const distance = distances[i];
-      if (typeof distance === 'number' && distance < closestResourceDrainDistance) {
-        closestResourceDrain = validDrains[i]!;
+      if (typeof distance !== "number") {
+        continue;
+      }
+      const candidate = validDrains[i]!;
+      if (
+        distance < closestResourceDrainDistance ||
+        (distance === closestResourceDrainDistance &&
+          closestResourceDrain !== null &&
+          this.compareActorTieBreaker(candidate, closestResourceDrain) < 0)
+      ) {
+        closestResourceDrain = candidate;
         closestResourceDrainDistance = distance;
       }
     }
@@ -258,7 +291,7 @@ export class GathererComponent {
     });
 
     // Use batch method for better performance
-    const pairs: [GameObject, GameObject][] = validSources.map(source => [this.gameObject, source]);
+    const pairs: [GameObject, GameObject][] = validSources.map((source) => [this.gameObject, source]);
     const distances = await DistanceHelper.batchGetDistancesBetweenGameObjects(pairs);
 
     let closestResourceSource: GameObject | undefined = undefined;
@@ -266,14 +299,40 @@ export class GathererComponent {
 
     for (let i = 0; i < validSources.length; i++) {
       const distance = distances[i];
-      if (typeof distance !== 'number') continue;
+      if (typeof distance !== "number") continue;
       if (maxDistance > 0 && distance > maxDistance) continue;
-      if (distance < closestResourceSourceDistance) {
-        closestResourceSource = validSources[i];
+      const candidate = validSources[i];
+      if (!candidate) {
+        continue;
+      }
+      if (
+        distance < closestResourceSourceDistance ||
+        (distance === closestResourceSourceDistance &&
+          closestResourceSource !== undefined &&
+          this.compareActorTieBreaker(candidate, closestResourceSource) < 0)
+      ) {
+        closestResourceSource = candidate;
         closestResourceSourceDistance = distance;
       }
     }
     return closestResourceSource;
+  }
+
+  /**
+   * Deterministic tie-break for equal-distance candidates.
+   * Without this, Set/list iteration order differences can desync resource target selection.
+   */
+  private compareActorTieBreaker(left: GameObject, right: GameObject): number {
+    const leftId = getActorComponent(left, IdComponent)?.id;
+    const rightId = getActorComponent(right, IdComponent)?.id;
+    if (leftId && rightId && leftId !== rightId) {
+      return leftId.localeCompare(rightId);
+    }
+    const leftTransform = getGameObjectLogicalTransform(left);
+    const rightTransform = getGameObjectLogicalTransform(right);
+    const leftKey = `${left.name}:${Math.round(leftTransform?.x ?? 0)}:${Math.round(leftTransform?.y ?? 0)}:${Math.round(leftTransform?.z ?? 0)}`;
+    const rightKey = `${right.name}:${Math.round(rightTransform?.x ?? 0)}:${Math.round(rightTransform?.y ?? 0)}:${Math.round(rightTransform?.z ?? 0)}`;
+    return leftKey.localeCompare(rightKey);
   }
 
   async getPreferredResourceDrain(): Promise<GameObject | null> {
@@ -328,6 +387,7 @@ export class GathererComponent {
 
     // start cooldown timer
     this.remainingCooldown = gatherData.cooldown;
+    this.cooldownStartedTick = this.simulationTickService?.currentTick ?? null;
 
     if (GathererComponent.debug) {
       console.log(`Gathered ${gatheredAmount} ${gatherData.resourceType} from ${resourceSource.name}`);
@@ -335,7 +395,11 @@ export class GathererComponent {
 
     this.onResourceGathered.next([this.gameObject, resourceSource, gatherData, gatheredAmount]);
 
-    if (gatherData.needsReturnToDrain) {
+    // Allow the resource source definition to override the gatherer's default needsReturnToDrain
+    const needsReturnToDrain =
+      resourceSourceComponent.resourceSourceDefinition.needsReturnToDrain ?? gatherData.needsReturnToDrain;
+
+    if (needsReturnToDrain) {
       // check if we're at capacity
       if (this.carriedResourceAmount >= gatherData.capacity) {
         this.leaveCurrentResourceSource();
@@ -460,6 +524,9 @@ export class GathererComponent {
       case ResourceType.Minerals:
         sounds = SharedActorActionsSfxMiningSounds;
         break;
+      case ResourceType.Food:
+        sounds = SharedActorActionsSfxChoppingSounds;
+        break;
     }
 
     // can be random as it doesn't need to be deterministic
@@ -478,6 +545,11 @@ export class GathererComponent {
   }
 
   getGatherAnimation(): AnimationType | null {
+    // If the current resource source hosts crops, use the crop-specific animation
+    if (isCropResourceSource(this.currentResourceSource)) {
+      const cropAnim = this.currentResourceSource.getActiveCropHarvestAnimation();
+      if (cropAnim != null) return cropAnim;
+    }
     const resourceType = this.carriedResourceType;
     if (!resourceType) return null;
     switch (resourceType) {
@@ -487,11 +559,19 @@ export class GathererComponent {
         return AnimationType.Mine;
       case ResourceType.Minerals:
         return AnimationType.Mine;
+      case ResourceType.Food:
+        return AnimationType.Harvest;
+      default:
+        return null;
     }
-    return null;
   }
 
   getGatherSound(): SoundType | null {
+    // If the current resource source hosts crops, use the crop-specific sound
+    if (isCropResourceSource(this.currentResourceSource)) {
+      const cropSound = this.currentResourceSource.getActiveCropHarvestSound();
+      if (cropSound != null) return cropSound;
+    }
     const resourceType = this.carriedResourceType;
     if (!resourceType) return null;
     switch (resourceType) {
@@ -501,8 +581,11 @@ export class GathererComponent {
         return SoundType.Mine;
       case ResourceType.Minerals:
         return SoundType.Mine;
+      case ResourceType.Food:
+        return SoundType.Chop;
+      default:
+        return null;
     }
-    return null;
   }
 
   setData(data: Partial<GathererComponentData>) {
@@ -515,7 +598,11 @@ export class GathererComponent {
     if (data.carriedResourceType !== undefined) {
       this.carriedResourceType = data.carriedResourceType;
     }
-    if (data.remainingCooldown !== undefined) this.remainingCooldown = data.remainingCooldown;
+    if (data.remainingCooldown !== undefined) {
+      this.remainingCooldown = data.remainingCooldown;
+      // Fixes gather cooldown drift by anchoring restored cooldown start to the current simulation tick.
+      this.cooldownStartedTick = this.remainingCooldown > 0 ? (this.simulationTickService?.currentTick ?? null) : null;
+    }
   }
 
   getData(): GathererComponentData {

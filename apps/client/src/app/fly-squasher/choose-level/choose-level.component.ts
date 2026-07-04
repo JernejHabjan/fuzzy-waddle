@@ -15,4 +15,5 @@ import { CenterWrapperComponent } from "../../shared/components/center-wrapper/c
 })
 export class ChooseLevelComponent {
   protected readonly flySquasherLevels = FlySquasherLevels;
+  protected readonly levelCount = Object.keys(FlySquasherLevels).length;
 }

@@ -12,9 +12,7 @@ export const treeDefinitions = {
       enabled: true,
       colliderFactorReduction: 0.5
     },
-    selectable: {
-      sizeFactorReduction: 0.5
-    },
+    selectable: {},
     info: {
       name: "Tree",
       description: "A tree that can be chopped for wood",

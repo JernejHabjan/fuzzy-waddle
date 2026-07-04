@@ -1,5 +1,5 @@
 import { ANIM_BUILDING_ICON_ANIMS_SKADUWEE_FROST_FORGE } from "../../../icon-animations";
-import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { getBuildingQueueCapabilities, ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PaymentType } from "../../../../entity/components/production/payment-type";
 import { coreConstructionSiteDefinition } from "../../shared/core-construction-site.definition";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
@@ -8,8 +8,9 @@ import { ActorPhysicalType } from "../../../../entity/components/combat/componen
 export const frostForgeDefinition = {
   components: {
     representable: {
-      width: 256,
-      height: 384
+      width: 192,
+      height: 288,
+      origin: { x: 0.5, y: 0.84 }
     },
     objectDescriptor: {
       color: 0xf2f7fa
@@ -55,7 +56,6 @@ export const frostForgeDefinition = {
     productionCost: {
       resources: {
         [ResourceType.Wood]: 400,
-        [ResourceType.Minerals]: 300,
         [ResourceType.Stone]: 400
       },
       refundFactor: 0.5,
@@ -67,13 +67,15 @@ export const frostForgeDefinition = {
       capacity: 2
     },
     resourceDrain: {
-      resourceTypes: [ResourceType.Wood, ResourceType.Minerals, ResourceType.Stone],
+      resourceTypes: [ResourceType.Wood, ResourceType.Minerals, ResourceType.Stone, ResourceType.Food],
       cooldown: 1000
     },
     production: {
+      availableProduceActors: getBuildingQueueCapabilities(ObjectNames.FrostForge)!.availableProduceActors!
+    },
+    queue: {
       queueCount: 1,
-      capacityPerQueue: 5,
-      availableProduceActors: [ObjectNames.SkaduweeWorker]
+      capacityPerQueue: 5
     },
     collider: { enabled: true },
     constructable: {

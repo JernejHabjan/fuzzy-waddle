@@ -14,6 +14,7 @@ import { CenterWrapperComponent } from "../../shared/components/center-wrapper/c
 @Component({
   selector: "little-muncher-high-score",
   templateUrl: "./high-score.component.html",
+  styleUrls: ["./high-score.component.scss"],
   imports: [FaIconComponent, RouterLink, HomeNavComponent, CenterWrapperComponent],
   host: AngularHost.contentFlexFullHeight
 })
@@ -44,5 +45,9 @@ export class HighScoreComponent implements OnInit {
 
   protected getTopScoresForHill(highScores: LittleMuncherScoreDto[], hill: LittleMuncherHillEnum) {
     return highScores.filter((score) => score.hill === hill).sort((a, b) => b.score - a.score);
+  }
+
+  protected getTopScoreForHill(hill: LittleMuncherHillEnum): number {
+    return this.getTopScoresForHill(this.highScores, hill)[0]?.score ?? 0;
   }
 }

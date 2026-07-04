@@ -21,8 +21,9 @@ export const skaduweeWorkerDefinition: PrefabDefinition = {
       }
     },
     representable: {
-      width: 64,
-      height: 64
+      width: 32,
+      height: 48,
+      origin: { x: 0.5, y: 0.5 }
     },
     objectDescriptor: {
       color: 0xf2f7fa
@@ -51,7 +52,12 @@ export const skaduweeWorkerDefinition: PrefabDefinition = {
         ],
         [
           new ConstructableCategory("gui", "action_icons/category_resource_gathering.png", "Resource Gathering", [
-            new ConstructableDefinition([ObjectNames.WorkMill, ObjectNames.MiningCamp])
+            new ConstructableDefinition([
+              ObjectNames.WorkMill,
+              ObjectNames.MiningCamp,
+              ObjectNames.Granary,
+              ObjectNames.Field
+            ])
           ]),
           new ConstructableCategory("gui", "action_icons/category_defensive_buildings.png", "Defensive Structures", [
             new ConstructableDefinition([ObjectNames.WatchTower, ObjectNames.Wall, ObjectNames.Stairs])

@@ -23,14 +23,25 @@
 export const PlayerPawnAiControllerMdsl = `
 root {
     selector {
-        fail {
-            sequence {
-                condition [OrderExistsInQueue]
-                action [AssignNextOrderFromQueue]
+        /* If stunned, do nothing - just wait */
+        sequence {
+            condition [IsStunned]
+            action [Succeed]
+        }
+        /* Normal AI logic when not stunned */
+        sequence {
+            flip { condition [IsStunned] }
+            selector {
+                fail {
+                    sequence {
+                        condition [OrderExistsInQueue]
+                        action [AssignNextOrderFromQueue]
+                    }
+                }
+                branch [ExecuteCurrentOrder]
+                branch [AutoAssignNewOrder]
             }
         }
-        branch [ExecuteCurrentOrder]
-        branch [AutoAssignNewOrder]
     }
 }
 
@@ -44,11 +55,33 @@ root [ExecuteCurrentOrder] {
         branch [Build]
         branch [Repair]
         branch [Heal]
+        branch [EnterContainerOrder]
     }
 }
 
 root [AutoAssignNewOrder] {
     selector {
+
+        /* Autocast spells when ready */
+        sequence {
+            condition [HasSpellComponent]
+            condition [HasAutocastSpellReady]
+            action [CastAutocastSpell]
+        }
+
+        /* Load pending boarders when docked at shore */
+        sequence {
+            condition [IsWaterUnit]
+            condition [HasContainerComponent]
+            condition [HasPendingBoarders]
+            selector {
+                action [LoadPendingBoarders]
+                sequence {
+                    action [MoveToShoreForBoarding]
+                    action [LoadPendingBoarders]
+                }
+            }
+        }
 
         /* Retaliation */
         sequence {
@@ -62,7 +95,7 @@ root [AutoAssignNewOrder] {
 
         /* Attacking visible enemies */
         sequence {
-            condition [AnyEnemyVisible]
+            condition [AnyAttackableEnemyVisible]
             condition [HasAttackComponent]
             flip {
                 condition [HasHarvestComponent]
@@ -77,6 +110,36 @@ root [AutoAssignNewOrder] {
         /*         wait [2000, 5000] */
         /*     } */
         /* } */
+    }
+}
+
+root [EnterContainerOrder] {
+    sequence {
+        condition [PlayerOrderIs, "enterContainer"]
+        succeed {
+            selector {
+                /* Already inside a container — nothing to do */
+                sequence {
+                    condition [IsAlreadyInContainer]
+                    action [Stop, "EnterContainer:AlreadyLoaded"]
+                }
+                /* Land container: walk adjacent, then board if close enough */
+                sequence {
+                    flip { condition [IsWaterContainerTarget] }
+                    action [MoveAdjacentToContainer]
+                    condition [CanBoardContainerNow]
+                    action [BoardContainer]
+                    action [Stop, "EnterContainer:Boarded"]
+                }
+                /* Water container (boat): walk to shore and register boarding request */
+                sequence {
+                    condition [IsWaterContainerTarget]
+                    action [MoveToNearestShoreForContainer]
+                    action [Stop, "EnterContainer:MovedToShore"]
+                }
+                action [Stop, "EnterContainer:Failed"]
+            }
+        }
     }
 }
 
@@ -116,8 +179,17 @@ root [Attack] {
                     flip {
                         condition [TargetExists]
                     }
-                    condition [AnyEnemyVisible]
-                    action [AssignVisibleEnemyToCurrentOrder]
+                    condition [AnyAttackableEnemyVisible]
+                    action [AssignAttackableEnemyToCurrentOrder]
+                }
+
+                /* if target exists but cannot be attacked, stop */
+                sequence {
+                    condition [TargetExists]
+                    flip {
+                        condition [CanAttackCurrentTarget]
+                    }
+                    action [Stop, "Attack - Target Not Attackable"]
                 }
 
                 /* exit current container */
@@ -216,6 +288,39 @@ root [Gather] {
         /* ensure that action succeeds - we don't want to seek another action as current action is gather */
         succeed {
             selector { /* executes until first succeeds */
+
+                /* ── FARM FIELD TENDING PATH ────────────────────────────── */
+                /* Guards: target must be a tendable field AND crops not ready. */
+                /* While growing: walk to spot, animate, wait 1.5s — succeeds  */
+                /* so the outer succeed{selector} absorbs the tick and the root */
+                /* restarts, looping back here until GrowthReady.               */
+                /* When GrowthReady: flip{} fails → branch fails → selector     */
+                /* falls through to GatherCapacityFull / GatherResource below.  */
+                sequence {
+                    condition [TargetHasTendableComponent]
+                    /* Exit this branch when crops are ready → fall through to harvest */
+                    flip { condition [GrowthReady] }
+                    /* Assign self as tender (idempotent) */
+                    action [AssignSelfAsTender]
+                    /* Walk to a random spot on the field */
+                    action [MoveToRandomSpotOnTarget]
+                    /* Play correct animation depending on growth stage */
+                    selector {
+                        /* Seeding phase (0-33%): Thrust animation */
+                        sequence {
+                            condition [GrowthPercentBelow, 33]
+                            action [PlaySeedingAnimation]
+                        }
+                        /* Growing phase (33-99%): Dig animation */
+                        action [PlayTendingAnimation]
+                    }
+                    /* Pause at spot briefly; exits early when crops become ready */
+                    wait [1500] until [GrowthReady]
+                    /* Sequence succeeds → selector stops → succeed{} absorbs →  */
+                    /* outer root completes for this tick and restarts next tick. */
+                }
+                /* ─────────────────────────────────────────────────────── */
+
                 fail { /* marks itself as fail, so it doesn't exist selector branch */
                     sequence {
                         /* if target does not have resources, acquire new resource source */
@@ -448,6 +553,9 @@ root [Build] {
                     sequence {
                       /* cooldown ready, construct */
                       action [ConstructBuilding]
+
+                      /* if the just-finished building is a field (tendable), start tending it */
+                      action [AutoAssignTendOrderIfTendable]
 
                       action [AssignNextBuildOrder]
                     }

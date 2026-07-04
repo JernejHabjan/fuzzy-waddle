@@ -1,0 +1,1194 @@
+{
+    "anims": [
+        {
+            "key": "mobs_minotaur2_death/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "death/e/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "death/e/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "death/e/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "death/e/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "death/e/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "death/e/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_minotaur2_death/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "death/n/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "death/n/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "death/n/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "death/n/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "death/n/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "death/n/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_minotaur2_death/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "death/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "death/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "death/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "death/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "death/s/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "death/s/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_minotaur2_death/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "death/w/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "death/w/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "death/w/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "death/w/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "death/w/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "death/w/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_minotaur2_hit/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "hit/e/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "hit/e/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_minotaur2_hit/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "hit/n/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "hit/n/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_minotaur2_hit/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "hit/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "hit/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_minotaur2_hit/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "hit/w/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "hit/w/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_minotaur2_horn attack/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "horn attack/e/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "horn attack/e/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "horn attack/e/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "horn attack/e/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "horn attack/e/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "horn attack/e/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_minotaur2_horn attack/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "horn attack/n/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "horn attack/n/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "horn attack/n/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "horn attack/n/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "horn attack/n/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "horn attack/n/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_minotaur2_horn attack/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "horn attack/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "horn attack/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "horn attack/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "horn attack/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "horn attack/s/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "horn attack/s/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_minotaur2_horn attack/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "horn attack/w/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "horn attack/w/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "horn attack/w/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "horn attack/w/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "horn attack/w/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "horn attack/w/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_minotaur2_idle/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "idle/e/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "idle/e/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "idle/e/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "idle/e/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_minotaur2_idle/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "idle/n/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "idle/n/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "idle/n/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "idle/n/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_minotaur2_idle/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "idle/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "idle/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "idle/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "idle/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_minotaur2_idle/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "idle/w/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "idle/w/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "idle/w/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "idle/w/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_minotaur2_punch attack/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "punch attack/e/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "punch attack/e/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "punch attack/e/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "punch attack/e/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "punch attack/e/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "punch attack/e/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_minotaur2_punch attack/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "punch attack/n/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "punch attack/n/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "punch attack/n/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "punch attack/n/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "punch attack/n/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "punch attack/n/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_minotaur2_punch attack/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "punch attack/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "punch attack/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "punch attack/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "punch attack/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "punch attack/s/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "punch attack/s/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_minotaur2_punch attack/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "punch attack/w/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "punch attack/w/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "punch attack/w/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "punch attack/w/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "punch attack/w/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "punch attack/w/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_minotaur2_run/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "run/e/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "run/e/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "run/e/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "run/e/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "run/e/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "run/e/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "run/e/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "run/e/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_minotaur2_run/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "run/n/24.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "run/n/25.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "run/n/26.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "run/n/27.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "run/n/28.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "run/n/29.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "run/n/30.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "run/n/31.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_minotaur2_run/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "run/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "run/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "run/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "run/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "run/s/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "run/s/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "run/s/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "run/s/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_minotaur2_run/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "run/w/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "run/w/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "run/w/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "run/w/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "run/w/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "run/w/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "run/w/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "run/w/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_minotaur2_stomp attack/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "stomp attack/e/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "stomp attack/e/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "stomp attack/e/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "stomp attack/e/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "stomp attack/e/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "stomp attack/e/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_minotaur2_stomp attack/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "stomp attack/n/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "stomp attack/n/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "stomp attack/n/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "stomp attack/n/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "stomp attack/n/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "stomp attack/n/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_minotaur2_stomp attack/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "stomp attack/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "stomp attack/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "stomp attack/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "stomp attack/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "stomp attack/s/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "stomp attack/s/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_minotaur2_stomp attack/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "stomp attack/w/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "stomp attack/w/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "stomp attack/w/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "stomp attack/w/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "stomp attack/w/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_minotaur",
+                    "frame": "stomp attack/w/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        }
+    ],
+    "globalTimeScale": 1,
+    "meta": {
+        "app": "Phaser Editor 2D v3",
+        "contentType": "Phaser v3 Animations"
+    },
+    "settings": {
+        "sourceLang": "TYPE_SCRIPT",
+        "esModule": false,
+        "generateCode": true
+    }
+}

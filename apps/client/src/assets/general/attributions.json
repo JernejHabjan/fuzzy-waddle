@@ -78,11 +78,11 @@
   {
     "type": "Software",
     "name": "Universal LPC Spritesheet Character Generator",
-    "url": "https://github.com/sanderfrenken/Universal-LPC-Spritesheet-Character-Generator",
-    "author": "Sander Frenken",
+    "url": "https://github.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator",
+    "author": "LiberatedPixelCup",
     "license": {
-      "name": "GPL-3.0 license",
-      "url": "https://github.com/sanderfrenken/Universal-LPC-Spritesheet-Character-Generator/blob/master/LICENSE"
+      "name": "GNU General Public License v3.0",
+      "url": "https://github.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator/blob/master/LICENSE"
     }
   },
   {

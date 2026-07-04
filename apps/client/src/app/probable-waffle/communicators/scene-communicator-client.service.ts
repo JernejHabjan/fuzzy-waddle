@@ -12,8 +12,8 @@ import type { GameInstanceId } from "@fuzzy-waddle/api-interfaces";
 export class SceneCommunicatorClientService implements SceneCommunicatorClientServiceInterface {
   private readonly communicator = inject(ProbableWaffleCommunicatorService);
   private readonly authenticatedSocketService = inject(AuthenticatedSocketService);
-  async createCommunicators(gameInstanceId: GameInstanceId): Promise<ProbableWaffleCommunicators> {
-    const socket = await this.authenticatedSocketService.getSocket();
+  async createCommunicators(gameInstanceId: GameInstanceId, useServerTransport: boolean = true): Promise<ProbableWaffleCommunicators> {
+    const socket = useServerTransport ? await this.authenticatedSocketService.getSocket() : undefined;
     this.communicator.startCommunication(gameInstanceId, socket);
     return this.communicatorObservables;
   }
@@ -36,8 +36,12 @@ export class SceneCommunicatorClientService implements SceneCommunicatorClientSe
     };
   }
 
-  async destroyCommunicators(gameInstanceId: GameInstanceId, subscriptions: Subscription[]): Promise<void> {
-    const socket = await this.authenticatedSocketService.getSocket();
+  async destroyCommunicators(
+    gameInstanceId: GameInstanceId,
+    subscriptions: Subscription[],
+    useServerTransport: boolean = true
+  ): Promise<void> {
+    const socket = useServerTransport ? await this.authenticatedSocketService.getSocket() : undefined;
     this.communicator.stopCommunication(gameInstanceId, socket);
     subscriptions.forEach((subscription) => subscription.unsubscribe());
   }

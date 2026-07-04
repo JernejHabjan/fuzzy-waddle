@@ -4,9 +4,9 @@ import { getActorComponent } from "../../data/actor-component";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import { AnimationActorComponent } from "../../entity/components/animation/animation-actor-component";
 import { AnimationType } from "../../entity/components/animation/animation-type";
-import { DamageType } from "../../entity/components/combat/damage-type";
 import { environment } from "../../../../../environments/environment";
 import type { Subscription } from "rxjs";
+import { DamageType } from "@fuzzy-waddle/api-interfaces";
 
 export class ActorDebugDamageSystem {
   private externalModalOpen = false;
@@ -14,12 +14,12 @@ export class ActorDebugDamageSystem {
   constructor(private scene: ProbableWaffleScene) {
     if (!environment.production) {
       this.bindKeyboardListener();
-      this.listenToChatModalEvents();
+      this.listenToExternalModalEvents();
     }
     scene.onShutdown.subscribe(() => this.destroy());
   }
 
-  private listenToChatModalEvents() {
+  private listenToExternalModalEvents() {
     this.externalModalSubscription = this.scene.communicator.allScenes.subscribe((event) => {
       if (event.name === "external-modal-opened") {
         this.externalModalOpen = true;

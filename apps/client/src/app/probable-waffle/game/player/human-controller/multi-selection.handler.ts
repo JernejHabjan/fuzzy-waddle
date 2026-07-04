@@ -1,4 +1,5 @@
 import Phaser, { GameObjects, Geom, Input } from "phaser";
+import { isFullscreenTopEdgeExit } from "./fullscreen-edge-guard";
 import HudProbableWaffle from "../../world/scenes/hud-scenes/HudProbableWaffle";
 import { type ProbableWaffleSelectionData } from "@fuzzy-waddle/api-interfaces";
 import { getSceneComponent } from "../../world/services/scene-component-helpers";
@@ -66,6 +67,7 @@ export class MultiSelectionHandler {
   }
 
   private handleGameOut() {
+    if (isFullscreenTopEdgeExit(this.hudScene.input)) return;
     this.hideSelectionRectangle();
     this.pointerWithinGame = false;
   }

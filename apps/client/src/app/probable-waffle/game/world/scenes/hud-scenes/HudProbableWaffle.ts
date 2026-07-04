@@ -8,12 +8,14 @@ import Minimap from "../../../prefabs/gui/Minimap";
 import GameActions from "../../../prefabs/gui/buttons/GameActions";
 import Resources from "../../../prefabs/gui/labels/Resources";
 import AiControllerDebugPanel from "../../../prefabs/gui/debug/ai-controller/AiControllerDebugPanel";
+import NavigationDebugToggle from "../../../prefabs/gui/debug/navigation/NavigationDebugToggle";
 import GameSpeedModifier from "../../../prefabs/gui/buttons/GameSpeedModifier";
 import HudMessages from "../../../prefabs/gui/labels/HudMessages";
 import GroupContainer from "../../../prefabs/gui/labels/GroupContainer";
 import IdleWorkersButton from "../../../prefabs/gui/buttons/IdleWorkersButton";
 import ChatButton from "../../../prefabs/gui/buttons/ChatButton";
 import ChatNotification from "../../../prefabs/gui/labels/ChatNotification";
+import DayNightClockLabel from "../../../prefabs/gui/labels/DayNightClockLabel";
 /* START-USER-IMPORTS */
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { HudGameState } from "../../../hud/hud-game-state";
@@ -27,6 +29,7 @@ import { environment } from "../../../../../../environments/environment";
 import ConfirmationDialog from "../../../prefabs/gui/dialogs/ConfirmationDialog";
 import SurrenderDialog from "../../../prefabs/gui/SurrenderDialog";
 import { getPlayers } from "../../../data/scene-data";
+import { ConnectionRecoveryService } from "../../services/recovery/connection-recovery.service";
 /* END-USER-IMPORTS */
 
 export default class HudProbableWaffle extends ProbableWaffleScene {
@@ -65,6 +68,10 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     const aiControllerDebugPanel = new AiControllerDebugPanel(this, 1276, 82);
     this.add.existing(aiControllerDebugPanel);
 
+    // navigationDebugToggle
+    const navigationDebugToggle = new NavigationDebugToggle(this, 1276, 51);
+    this.add.existing(navigationDebugToggle);
+
     // gameSpeedModifier
     const gameSpeedModifier = new GameSpeedModifier(this, 13, 486);
     this.add.existing(gameSpeedModifier);
@@ -83,12 +90,24 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.add.existing(idleWorkersButton);
 
     // chatButton
-    const chatButton = new ChatButton(this, 13, 560);
+    const chatButton = new ChatButton(this, 386, 489);
     this.add.existing(chatButton);
 
     // chatNotification
-    const chatNotification = new ChatNotification(this, 13, 500);
+    const chatNotification = new ChatNotification(this, 7, 434);
     this.add.existing(chatNotification);
+
+    // dayNightClockLabel
+    const dayNightClockLabel = new DayNightClockLabel(this, 13, 692);
+    this.add.existing(dayNightClockLabel);
+
+    // confirmationDialog
+    const confirmationDialog = new ConfirmationDialog(this, 640, 360);
+    this.add.existing(confirmationDialog);
+
+    // surrenderDialog
+    const surrenderDialog = new SurrenderDialog(this, 640, 360);
+    this.add.existing(surrenderDialog);
 
     // lists
     const hudElements: Array<any> = [];
@@ -99,12 +118,16 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.game_actions_container = game_actions_container;
     this.resources_container = resources_container;
     this.aiControllerDebugPanel = aiControllerDebugPanel;
+    this.navigationDebugToggle = navigationDebugToggle;
     this.gameSpeedModifier = gameSpeedModifier;
     this.hudMessages = hudMessages;
     this.groupContainer = groupContainer;
     this.idleWorkersButton = idleWorkersButton;
     this.chatButton = chatButton;
     this.chatNotification = chatNotification;
+    this.dayNightClockLabel = dayNightClockLabel;
+    this.confirmationDialog = confirmationDialog;
+    this.surrenderDialog = surrenderDialog;
     this.hudElements = hudElements;
 
     this.events.emit("scene-awake");
@@ -116,21 +139,25 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   private game_actions_container!: GameActions;
   private resources_container!: Resources;
   private aiControllerDebugPanel!: AiControllerDebugPanel;
+  private navigationDebugToggle!: NavigationDebugToggle;
   private gameSpeedModifier!: GameSpeedModifier;
   private hudMessages!: HudMessages;
   private groupContainer!: GroupContainer;
   private idleWorkersButton!: IdleWorkersButton;
   private chatButton!: ChatButton;
   private chatNotification!: ChatNotification;
+  private dayNightClockLabel!: DayNightClockLabel;
+  public confirmationDialog!: ConfirmationDialog;
+  public surrenderDialog!: SurrenderDialog;
   private hudElements!: Array<any>;
 
   /* START-USER-CODE */
-  public confirmationDialog!: ConfirmationDialog;
-  public surrenderDialog!: SurrenderDialog;
+  private readonly enabledNavigationDebugToggle = false;
   private saveGameSubscription?: Subscription;
-  private chatMessageSubscription?: Subscription;
   private readonly actorInfoSmallScreenBreakpoint = 1200;
+  private readonly dayNightClockBottomMargin = 14;
   private cursorHandler?: CursorHandler;
+  private connectionRecovery?: ConnectionRecoveryService;
 
   probableWaffleScene?: ProbableWaffleScene;
   override preload() {
@@ -139,12 +166,6 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
 
   override create() {
     this.editorCreate();
-
-    this.confirmationDialog = new ConfirmationDialog(this, 640, 360);
-    this.add.existing(this.confirmationDialog);
-
-    this.surrenderDialog = new SurrenderDialog(this, 640, 360);
-    this.add.existing(this.surrenderDialog);
 
     // resize the scene to match the screen size
     this.scale.on("resize", this.resize, this);
@@ -160,6 +181,8 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.hudMessages.setup(this.probableWaffleScene!);
 
     this.idleWorkersButton.setup(this.probableWaffleScene!);
+    this.dayNightClockLabel.initializeWithParentScene(this.probableWaffleScene!);
+    this.chatNotification.initializeWithParentScene(this.probableWaffleScene!, this.chatButton);
 
     // Initialize cursor handler with main scene for hover detection
     if (this.probableWaffleScene && this.cursorHandler) {
@@ -170,8 +193,10 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   initializeWithParentScene(probableWaffleScene: ProbableWaffleScene) {
     this.probableWaffleScene = probableWaffleScene;
     this.subscribeToSaveGameEvent();
-    this.subscribeToChatMessageEvents();
     this.subscribeToSceneShutdown();
+
+    this.connectionRecovery = new ConnectionRecoveryService();
+    this.connectionRecovery.init(this, probableWaffleScene);
 
     // Initialize cursor handler with main scene if it was created before the parent scene was set
     if (this.cursorHandler) {
@@ -186,6 +211,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
         name: "hud-scene-shutdown",
         data: undefined
       });
+      this.connectionRecovery?.destroy();
     });
   }
 
@@ -200,7 +226,8 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     // set resources top left
     this.resources_container.x = 10;
     this.resources_container.y = 10;
-    this.resources_container.scale = sceneWidth > this.actorInfoSmallScreenBreakpoint ? 1 : 0.9;
+    this.resources_container.scale = 1;
+    this.resources_container.setMobileLayout(sceneWidth <= this.actorInfoSmallScreenBreakpoint);
 
     // set game actions to top right
     this.game_actions_container.x = this.scale.width - 10;
@@ -246,6 +273,12 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.aiControllerDebugPanel.scale = sceneWidth > this.actorInfoSmallScreenBreakpoint ? 1 : 0.7;
     this.aiControllerDebugPanel.visible = !environment.production;
 
+    const aiDebugPanelBounds = getGameObjectBounds(this.aiControllerDebugPanel)!;
+    this.navigationDebugToggle.scale = sceneWidth > this.actorInfoSmallScreenBreakpoint ? 1 : 0.7;
+    this.navigationDebugToggle.visible = !environment.production && this.enabledNavigationDebugToggle;
+    this.navigationDebugToggle.x = aiDebugPanelBounds.x;
+    this.navigationDebugToggle.y = aiDebugPanelBounds.height + 8;
+
     // position game speed modifier above minimap on left side
     this.gameSpeedModifier.x = 10;
     this.gameSpeedModifier.y = this.scale.height - minimapHeight + 10;
@@ -290,6 +323,11 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.chatNotification.y = this.chatButton.y - 10;
     this.chatNotification.scale = sceneWidth > this.actorInfoSmallScreenBreakpoint ? 1 : 0.7;
 
+    // Anchor the day/night clock to the bottom-left HUD column under the worker controls.
+    this.dayNightClockLabel.x = 12;
+    this.dayNightClockLabel.y = this.scale.height - this.dayNightClockBottomMargin;
+    this.dayNightClockLabel.scale = sceneWidth > this.actorInfoSmallScreenBreakpoint ? 1 : 0.8;
+
     // position surrender dialog in center of screen
     this.surrenderDialog.x = this.scale.width / 2;
     this.surrenderDialog.y = this.scale.height / 2;
@@ -321,6 +359,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
             padding: { x: 20, y: 10 }
           });
           text.setOrigin(0.5);
+          // Intentional wall-clock timer for transient HUD toast cleanup.
           this.time.delayedCall(500, () => text.destroy());
         });
       });
@@ -330,34 +369,12 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.saveGameSubscription = this.subscribeToGameEvent("save-game", "Game saved");
   }
 
-  private subscribeToChatMessageEvents() {
-    if (!this.probableWaffleScene) return;
-
-    // Subscribe to chat message received events from Angular
-    this.chatMessageSubscription = this.probableWaffleScene.communicator.allScenes
-      .pipe(filter((value) => value.name === "chat-message-received"))
-      .subscribe((event) => {
-        if (event.data && this.chatNotification) {
-          const { fullName, text } = event.data;
-          this.chatNotification.showMessage(fullName, text);
-          this.chatButton?.showUnreadBadge();
-        }
-      });
-
-    // show example chat message on startup in dev mode after 2 seconds
-    // if (!environment.production) {
-    //   this.time.delayedCall(2000, () => {
-    //     this.chatNotification.showMessage("Test User", "Hello! This is an example chat message.");
-    //     this.chatButton?.showUnreadBadge();
-    //   });
-    // }
-  }
-
   override destroy() {
     this.saveGameSubscription?.unsubscribe();
-    this.chatMessageSubscription?.unsubscribe();
+    this.connectionRecovery?.destroy();
     super.destroy();
   }
+
   /* END-USER-CODE */
 }
 

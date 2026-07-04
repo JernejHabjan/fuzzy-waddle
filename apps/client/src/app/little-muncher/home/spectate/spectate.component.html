@@ -1,13 +1,21 @@
 @if (serverHealthService.serverAvailable && spectateService.rooms.length) {
-  <div class="card-container">
-    <div class="general-title">Spectate current games:</div>
-    <div>
-      @for (room of spectateService.rooms; track room) {
-        <div class="d-flex justify-content-between p-2">
-          <div>Room id: {{ room.gameInstanceMetadataData.gameInstanceId }}</div>
-          <button (click)="spectate(room)" class="btn btn-primary ms-2" type="button">Spectate</button>
+  <aside class="spectate-panel">
+    <div class="spectate-header">
+      <span class="eyebrow">Live Feed</span>
+      <h2>Spectate Current Runs</h2>
+      <p>Jump into active cake runs and watch how other players handle the pace.</p>
+    </div>
+
+    <div class="spectate-list">
+      @for (room of spectateService.rooms; track room.gameInstanceMetadataData.gameInstanceId) {
+        <div class="spectate-room">
+          <div>
+            <div class="room-label">Room ID</div>
+            <div class="room-value">{{ room.gameInstanceMetadataData.gameInstanceId }}</div>
+          </div>
+          <button (click)="spectate(room)" class="btn btn-primary" type="button">Spectate</button>
         </div>
       }
     </div>
-  </div>
+  </aside>
 }

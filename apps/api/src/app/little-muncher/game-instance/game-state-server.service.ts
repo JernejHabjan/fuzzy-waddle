@@ -41,7 +41,7 @@ export class GameStateServerService {
         gameInstance.gameState!.data.climbedHeight = (
           body.payload as LittleMuncherCommunicatorClimbingEvent
         ).timeClimbing;
-        console.log("updating time climbing", body.payload);
+        // console.log("updating time climbing", body.payload);
         break;
       case "pause":
         if (!authUserPlayer) {
@@ -67,7 +67,7 @@ export class GameStateServerService {
           return false;
         }
         player.playerState.data.score = (body.payload as LittleMuncherCommunicatorScoreEvent).score;
-        console.log("updating score", body.payload);
+        // console.log("updating score", body.payload);
         break;
       case "move":
         if (!authUserPlayer) {
@@ -75,7 +75,7 @@ export class GameStateServerService {
           return false;
         }
         player.playerState.data.position = body.payload as LittleMuncherPosition;
-        console.log("updating position", body.payload);
+        // console.log("updating position", body.payload);
         break;
       default:
         throw new Error("Unknown communicator");

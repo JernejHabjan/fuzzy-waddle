@@ -2,7 +2,7 @@ import {
   ANIM_BUILDING_ICON_ANIMS_TIVARA_SANDHOLD_ACTION,
   ANIM_BUILDING_ICON_ANIMS_TIVARA_SANDHOLD_IDLE
 } from "../../../icon-animations";
-import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { getBuildingQueueCapabilities, ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PaymentType } from "../../../../entity/components/production/payment-type";
 import { coreConstructionSiteDefinition } from "../../shared/core-construction-site.definition";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
@@ -11,8 +11,9 @@ import { ActorPhysicalType } from "../../../../entity/components/combat/componen
 export const sandholdDefinition = {
   components: {
     representable: {
-      width: 320,
-      height: 320
+      width: 288,
+      height: 280,
+      origin: { x: 0.5, y: 0.8 }
     },
     objectDescriptor: {
       color: 0xc2a080
@@ -56,7 +57,6 @@ export const sandholdDefinition = {
     productionCost: {
       resources: {
         [ResourceType.Wood]: 400,
-        [ResourceType.Minerals]: 300,
         [ResourceType.Stone]: 400
       },
       refundFactor: 0.5,
@@ -70,13 +70,18 @@ export const sandholdDefinition = {
       capacity: 2
     },
     resourceDrain: {
-      resourceTypes: [ResourceType.Wood, ResourceType.Minerals, ResourceType.Stone],
+      resourceTypes: [ResourceType.Wood, ResourceType.Minerals, ResourceType.Stone, ResourceType.Food],
       cooldown: 1000
     },
     production: {
+      availableProduceActors: getBuildingQueueCapabilities(ObjectNames.Sandhold)!.availableProduceActors!
+    },
+    queue: {
       queueCount: 1,
-      capacityPerQueue: 5,
-      availableProduceActors: [ObjectNames.TivaraWorker]
+      capacityPerQueue: 5
+    },
+    research: {
+      availableResearch: getBuildingQueueCapabilities(ObjectNames.Sandhold)!.availableResearch!
     },
     selectable: {},
     collider: { enabled: true },

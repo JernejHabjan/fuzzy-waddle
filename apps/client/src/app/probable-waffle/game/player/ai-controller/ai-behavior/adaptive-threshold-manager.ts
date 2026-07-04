@@ -50,7 +50,7 @@ export class AdaptiveThresholdManager {
   /**
    * Recompute all thresholds if needed.
    */
-  update(now: number = Date.now()): void {
+  update(now: number = this.blackboard.getNow()): void {
     if (now - this.lastUpdatedAt < this.minUpdateIntervalMs) return;
     this.lastUpdatedAt = now;
 

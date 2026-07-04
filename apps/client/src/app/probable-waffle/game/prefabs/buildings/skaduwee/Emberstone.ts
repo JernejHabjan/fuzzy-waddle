@@ -14,7 +14,7 @@ import { setActorData } from "../../../data/actor-data";
 export default class Emberstone extends Phaser.GameObjects.Container {
 
 	constructor(scene: Phaser.Scene, x?: number, y?: number) {
-		super(scene, x ?? 15.99154048826449, y ?? 54.535253459978904);
+		super(scene, x ?? 32, y ?? 96);
 
 		this.setInteractive(new Phaser.Geom.Polygon("-23.458392181796142 -67.23014929027885 0.0015186356688623448 -84.92122957885901 22.3076633473569 -69.53768150183278 26.15355036661346 -6.46513438602522 32.30696959742395 3.1495831621161727 -0.5751191417874324 19.805161133512343 -32.56631031021266 2.9370785174335907"), Phaser.Geom.Polygon.Contains);
 

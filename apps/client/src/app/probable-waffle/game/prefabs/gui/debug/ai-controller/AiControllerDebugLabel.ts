@@ -305,7 +305,15 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
     lines.push(`--- Prerequisites Queue ---`);
     lines.push(`Pending: ${bb.production.prereqQueue.length}`);
     bb.production.prereqQueue.slice(0, 2).forEach((prereq) => {
-      lines.push(`  ${prereq.type}: ${prereq.objectName}`);
+      let target = "unknown";
+      if (prereq.preRequirement.prereqs.objectNames.length > 0) {
+        target = prereq.preRequirement.prereqs.objectNames[0]!;
+      } else if (prereq.preRequirement.prereqs.researchTypes.length > 0) {
+        target = prereq.preRequirement.prereqs.researchTypes[0]!;
+      } else if (prereq.preRequirement.prereqs.supply !== null) {
+        target = `supply(${prereq.preRequirement.prereqs.supply})`;
+      }
+      lines.push(`  ${prereq.type}: ${target}`);
     });
 
     lines.push(``);

@@ -1,20 +1,62 @@
 import { getSceneInitializers, getSceneService } from "../world/services/scene-component-helpers";
 import { NavigationService } from "../world/services/navigation.service";
-import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames, type Vector2Simple, type Vector3Simple } from "@fuzzy-waddle/api-interfaces";
 import { filter, first } from "rxjs";
 import { GameObjects } from "phaser";
 import { SelectableComponent } from "../entity/components/selectable-component";
 import { IdComponent } from "../entity/components/id-component";
 import { getActorComponent, getActorComponents } from "./actor-component";
 import { RepresentableComponent } from "../entity/components/representable-component";
+import { getPwActorDefinition } from "../prefabs/definitions/actor-definitions";
+import { getResearchedLevelForActor } from "./actor-level-utils";
+import { ActorTranslateComponent } from "../entity/components/movement/actor-translate-component";
+import { MovementTerrainType } from "../entity/components/movement/movement-terrain-type";
+import { FlyingComponent } from "../entity/components/movement/flying-component";
+
+/**
+ * Returns true when the Phaser scene still has an attached ScenePlugin and is
+ * currently active. Use this for lifecycle guards before reading scene-owned
+ * systems, timers, input, or event emitters during async callbacks and teardown.
+ */
+export function isSceneActive(scene?: Phaser.Scene): scene is Phaser.Scene {
+  return !!scene?.scene?.scene && scene.scene.isActive();
+}
+
+/**
+ * Returns true when the game object is still active and its owning scene is
+ * also active. Use this for actor/component/system guards when work needs both
+ * a live game object and a live scene context.
+ */
+export function isGameObjectActiveInActiveScene(
+  gameObject?: Phaser.GameObjects.GameObject | null
+): gameObject is Phaser.GameObjects.GameObject {
+  return !!gameObject?.active && isSceneActive(gameObject.scene);
+}
 
 export function getGameObjectBounds(gameObject?: Phaser.GameObjects.GameObject): Phaser.Geom.Rectangle | null {
   if (!gameObject) return null;
-  const representableComponent = getActorComponent(gameObject, RepresentableComponent);
-  if (representableComponent) {
-    return representableComponent.bounds;
+  if (!isGameObjectActiveInActiveScene(gameObject)) return getGameObjectBoundsRaw(gameObject);
+  const representable = getPwActorDefinition(gameObject.name, getResearchedLevelForActor(gameObject))?.components
+    ?.representable;
+  if (!representable) {
+    const rawBounds = getGameObjectBoundsRaw(gameObject);
+    if (!rawBounds) throw new Error(`Bounds not found for gameObject ${gameObject.name}`);
+    return rawBounds;
   }
-  return getGameObjectBoundsRaw(gameObject);
+  const representableComponent = getActorComponent(gameObject, RepresentableComponent);
+  if (!representableComponent) {
+    return getGameObjectBoundsRaw(gameObject);
+  }
+
+  const worldTransform = representableComponent.renderedWorldTransform;
+  const origin = representable.origin;
+
+  // Calculate the top-left corner based on origin
+  // worldTransform is at the origin point, so we need to offset by the origin
+  const topLeftX = worldTransform.x - representable.width * origin.x;
+  const topLeftY = worldTransform.y - representable.height * origin.y;
+
+  return new Phaser.Geom.Rectangle(topLeftX, topLeftY, representable.width, representable.height);
 }
 
 export function getGameObjectBoundsRaw(gameObject?: Phaser.GameObjects.GameObject): Phaser.Geom.Rectangle | null {
@@ -79,7 +121,10 @@ export async function getGameObjectTileInNavigableRadius(
 
   const currentTile = getGameObjectCurrentTile(gameObject);
   if (!currentTile) return null;
-  return navigationService.randomTileInNavigableRadius(currentTile, radius);
+  const terrainType =
+    getActorComponent(gameObject, ActorTranslateComponent)?.actorTranslateDefinition.movementTerrainType ??
+    MovementTerrainType.Ground;
+  return navigationService.randomTileInNavigableRadius(currentTile, radius, terrainType);
 }
 
 export function getGameObjectTileInRadius(
@@ -137,9 +182,10 @@ export function onSceneInitialized(scene: Phaser.Scene, callback: () => void, sc
       if (delay === null) {
         executeCallback();
       } else {
-        setTimeout(() => {
+        // Fixes nondeterministic init timing caused by setTimeout running outside Phaser's scene clock.
+        scene.time.delayedCall(delay, () => {
           executeCallback();
-        }, delay);
+        });
       }
     });
 }
@@ -157,10 +203,12 @@ export function onObjectReady(
     if (delay === null) {
       callback.call(scope);
     } else {
-      setTimeout(() => {
+      // Fixes nondeterministic object-ready callback ordering by scheduling on Phaser time instead of wall-clock timers.
+      gameObject.scene.time.delayedCall(delay, () => {
+        // do not use isGameObjectActiveInActiveScene here
         if (!gameObject.active) return;
         callback.call(scope);
-      }, delay);
+      });
     }
   };
   getSceneInitializers(gameObject.scene)
@@ -169,10 +217,35 @@ export function onObjectReady(
       first()
     )
     .subscribe(() => {
+      // do not use isGameObjectActiveInActiveScene here
       if (gameObject.active && gameObject.scene.sys.displayList.exists(gameObject)) {
         executeCallback();
       } else {
         gameObject.once(Phaser.GameObjects.Events.ADDED_TO_SCENE, () => executeCallback());
       }
     });
+}
+
+/**
+ * Returns true if the given game object is a water-terrain unit (e.g. a transport ship).
+ * Water units can only move on water tiles and require shore access to load/unload.
+ */
+export function isWaterUnit(gameObject: Phaser.GameObjects.GameObject): boolean {
+  const translateComponent = getActorComponent(gameObject, ActorTranslateComponent);
+  return translateComponent?.actorTranslateDefinition.movementTerrainType === MovementTerrainType.Water;
+}
+
+export function isFlyingUnit(gameObject: Phaser.GameObjects.GameObject): boolean {
+  return !!getActorComponent(gameObject, FlyingComponent);
+}
+
+export function canActorTraverseTile(
+  gameObject: Phaser.GameObjects.GameObject,
+  navigationService: NavigationService,
+  tile: Vector2Simple
+): boolean {
+  if (isFlyingUnit(gameObject)) return true;
+  const translateComponent = getActorComponent(gameObject, ActorTranslateComponent);
+  const terrainType = translateComponent?.actorTranslateDefinition.movementTerrainType ?? MovementTerrainType.Ground;
+  return navigationService.isTileNavigable(tile, terrainType);
 }

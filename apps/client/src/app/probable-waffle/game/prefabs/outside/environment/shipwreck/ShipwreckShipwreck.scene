@@ -1,0 +1,39 @@
+{
+    "id": "4d326a58-3da6-4760-b038-e15e30685526",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "448c9655-3853-437d-b1d8-40827f6914f0",
+            "label": "shipwreck_shipwreck_png",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "25.902964142914925 33.87593413534407 11.143612946685721 9.100911582762706 43.03438449543205 19.803695988633578 89.70336897259202 34.982114005291606 105.04886067444545 68.42154368395727 131.84621185529394 4.062093412004856 138.717327542691 9.558985961922517 118.67463032887882 76.14360857814802 160.4044332139048 117.88196680741368 176.56116601548936 122.64772685799022 188.03962105066614 155.01954948528652 147.03073167982728 167.90360985376103 156.42125645260325 177.9812461952767 141.5400515224054 181.3285164552235 20.396436172462984 128.71058251534953 29.47901572913844 85.05588331723163",
+            "texture": {
+                "key": "environment_1",
+                "frame": "shipwreck/shipwreck.png"
+            },
+            "x": 32,
+            "y": 48,
+            "originY": 0.75
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

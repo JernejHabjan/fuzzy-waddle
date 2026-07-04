@@ -60,3 +60,35 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+.notification-enter {
+  animation: notification-enter 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.notification-leave {
+  animation: notification-leave 300ms cubic-bezier(0.7, 0, 0.84, 0);
+}
+
+@keyframes notification-enter {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes notification-leave {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}

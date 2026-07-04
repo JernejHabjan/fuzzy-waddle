@@ -1,0 +1,42 @@
+{
+    "id": "f4c3661a-1e1e-4711-9e0d-466da1a0dcec",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "51171289-36cb-40a7-898e-ad822099b813",
+            "label": "goblin_cart_png",
+            "hitArea.shape": "RECTANGLE",
+            "hitArea.x": 3,
+            "hitArea.y": 4,
+            "hitArea.width": 23.73732381366613,
+            "hitArea.height": 20.641938598625728,
+            "texture": {
+                "key": "environment_1",
+                "frame": "goblin/cart.png"
+            },
+            "x": 32,
+            "y": 48,
+            "originY": 0.75
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

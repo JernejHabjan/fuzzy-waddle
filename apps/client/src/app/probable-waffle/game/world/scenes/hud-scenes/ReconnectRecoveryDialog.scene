@@ -1,0 +1,135 @@
+{
+    "id": "b4c567d8-e9f0-4123-abcd-1234567890ef",
+    "sceneType": "SCENE",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadPackFiles": [],
+        "createMethodName": "editorCreate",
+        "sceneKey": "ReconnectRecoveryDialog",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 300,
+        "borderHeight": 280
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "c5d678e9-f012-4234-bcde-2345678901fa",
+            "label": "dialog_container",
+            "displayName": "Dialog",
+            "scope": "CLASS",
+            "list": [
+                {
+                    "type": "NineSlice",
+                    "id": "d6e789f0-1234-4345-cdef-3456789012ab",
+                    "label": "dialog_bg",
+                    "displayName": "Background",
+                    "texture": {
+                        "key": "gui",
+                        "frame": "cryos_mini_gui/surfaces/surface_dark.png"
+                    },
+                    "x": -150,
+                    "y": -120,
+                    "scaleX": 15,
+                    "scaleY": 10,
+                    "originX": 0,
+                    "originY": 0,
+                    "leftWidth": 1,
+                    "rightWidth": 1,
+                    "topHeight": 1,
+                    "bottomHeight": 1,
+                    "width": 20,
+                    "height": 25
+                },
+                {
+                    "type": "Text",
+                    "id": "e7f89012-3456-4456-def0-4567890123bc",
+                    "label": "title_text",
+                    "displayName": "Title",
+                    "y": -80,
+                    "originX": 0.5,
+                    "originY": 0.5,
+                    "text": "Connection interrupted",
+                    "resolution": 10,
+                    "align": "center",
+                    "fontFamily": "disposabledroid",
+                    "fontSize": "24px",
+                    "color": "#ffcc66ff"
+                },
+                {
+                    "type": "Text",
+                    "id": "f8901234-5678-4567-ef01-5678901234cd",
+                    "label": "message_text",
+                    "displayName": "Message",
+                    "scope": "CLASS",
+                    "y": -19,
+                    "originX": 0.5,
+                    "originY": 0.5,
+                    "resolution": 10,
+                    "align": "center",
+                    "fontFamily": "disposabledroid",
+                    "color": "#ffffffff",
+                    "wordWrapWidth": 260
+                },
+                {
+                    "type": "Text",
+                    "id": "90123456-7890-4678-f012-6789012345de",
+                    "label": "hint_text",
+                    "displayName": "Hint",
+                    "y": 50,
+                    "originX": 0.5,
+                    "originY": 0.5,
+                    "text": "The match resumes automatically when sync recovers.",
+                    "resolution": 10,
+                    "align": "center",
+                    "fontFamily": "disposabledroid",
+                    "fontSize": "14px",
+                    "color": "#bbbbbbff",
+                    "wordWrapWidth": 260
+                },
+                {
+                    "type": "NineSlice",
+                    "id": "01234567-8901-4789-0123-7890123456ef",
+                    "label": "leave_match_button_bg",
+                    "displayName": "Leave Match Button",
+                    "scope": "CLASS",
+                    "texture": {
+                        "key": "gui",
+                        "frame": "cryos_mini_gui/buttons/button_small.png"
+                    },
+                    "y": 92,
+                    "leftWidth": 4,
+                    "rightWidth": 4,
+                    "topHeight": 4,
+                    "bottomHeight": 4,
+                    "width": 180,
+                    "height": 34
+                },
+                {
+                    "type": "Text",
+                    "id": "12345678-9012-4890-1234-8901234567fa",
+                    "label": "leave_match_button_text",
+                    "displayName": "Leave Match Text",
+                    "scope": "CLASS",
+                    "y": 91,
+                    "originX": 0.5,
+                    "originY": 0.5,
+                    "text": "Leave match",
+                    "resolution": 10,
+                    "align": "center",
+                    "fontFamily": "disposabledroid",
+                    "color": "#000000ff"
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

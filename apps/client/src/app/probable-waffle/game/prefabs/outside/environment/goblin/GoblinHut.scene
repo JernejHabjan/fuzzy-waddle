@@ -1,0 +1,137 @@
+{
+    "id": "9e5cf3a3-c7ea-4b82-8a6a-b1c604c782e6",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "e285a239-c214-4877-adf3-16ec0234435b",
+            "label": "container_1",
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": -0.4534871513064971,
+            "hitArea.y": -27.052392960701646,
+            "hitArea.radius": 39.50143389856971,
+            "x": 30.953486320099046,
+            "y": 45.80095789410308,
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "41848ad5-b03a-4db5-8fae-bc08a3c58cb5",
+                    "label": "goblin_hut_base_png",
+                    "hitArea.shape": "POLYGON",
+                    "hitArea.points": "0 16 32 0 64 16 64 48 32 64 0 48",
+                    "texture": {
+                        "key": "environment_1",
+                        "frame": "goblin/hut_base.png"
+                    },
+                    "x": 1.0465136799009542,
+                    "y": 2.199042105896922,
+                    "originY": 0.75
+                },
+                {
+                    "type": "Image",
+                    "id": "4c06107a-6e7f-4b08-ac86-5193d2d23d96",
+                    "label": "goblin_fence_nw_se_2_png_2",
+                    "texture": {
+                        "key": "environment_1",
+                        "frame": "goblin/fence_nw_se_2.png"
+                    },
+                    "x": 29.046513679900954,
+                    "y": -17.800957894103078,
+                    "scaleX": 0.4179423772937699,
+                    "scaleY": 0.6369858896462168
+                },
+                {
+                    "type": "Image",
+                    "id": "60b2cb18-c64e-4bf8-85ce-6f8846fa2eac",
+                    "label": "goblin_fence_nw_se_2_png_1",
+                    "texture": {
+                        "key": "environment_1",
+                        "frame": "goblin/fence_nw_se_2.png"
+                    },
+                    "x": -8.953486320099046,
+                    "y": -9.800957894103078,
+                    "scaleX": 0.4179423772937699,
+                    "scaleY": 0.6369858896462168
+                },
+                {
+                    "type": "Image",
+                    "id": "11983f5e-8264-4325-97f1-40bb41fa65f3",
+                    "label": "goblin_fence_nw_se_2_png",
+                    "texture": {
+                        "key": "environment_1",
+                        "frame": "goblin/fence_nw_se_2.png"
+                    },
+                    "x": -35.953486320099046,
+                    "y": -16.800957894103078,
+                    "scaleX": 0.4179423772937699,
+                    "scaleY": 0.6369858896462168
+                },
+                {
+                    "type": "Image",
+                    "id": "69242f82-b55e-4acd-a25f-c085836ed618",
+                    "label": "goblin_roof3_png",
+                    "texture": {
+                        "key": "environment_1",
+                        "frame": "goblin/roof3.png"
+                    },
+                    "x": -2.9534863200990458,
+                    "y": -28.800957894103078
+                },
+                {
+                    "type": "Image",
+                    "id": "7edce05d-c8d1-4522-97ac-45db66cef666",
+                    "label": "goblin_hut_base_left_fence_png",
+                    "texture": {
+                        "key": "environment_1",
+                        "frame": "goblin/hut_base_left_fence.png"
+                    },
+                    "x": -4.953486320099046,
+                    "y": -4.800957894103078
+                },
+                {
+                    "type": "Image",
+                    "id": "6696dad3-aa72-466b-a594-e978320539e9",
+                    "label": "goblin_roof1_png",
+                    "texture": {
+                        "key": "environment_1",
+                        "frame": "goblin/roof1.png"
+                    },
+                    "x": -3.9534863200990458,
+                    "y": -49.80095789410308,
+                    "scaleX": 0.7683722690370435,
+                    "scaleY": 0.6837905223322212
+                },
+                {
+                    "type": "Image",
+                    "id": "945be840-739a-4d6d-8435-a92be58603a9",
+                    "label": "goblin_spikes3_png",
+                    "texture": {
+                        "key": "environment_1",
+                        "frame": "goblin/spikes3.png"
+                    },
+                    "x": 27.046513679900954,
+                    "y": -6.800957894103078
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

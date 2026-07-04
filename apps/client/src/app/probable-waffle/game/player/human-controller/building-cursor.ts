@@ -1,4 +1,5 @@
 import { GameObjects, Input } from "phaser";
+import { isFullscreenTopEdgeExit } from "./fullscreen-edge-guard";
 import {
   type ActorDefinition,
   ObjectNames,
@@ -10,9 +11,9 @@ import {
 import { ActorManager } from "../../data/actor-manager";
 import { getGameObjectBounds, getGameObjectLogicalTransform, onSceneInitialized } from "../../data/game-object-helper";
 import { DepthHelper } from "../../world/services/depth.helper";
-import { pwActorDefinitions } from "../../prefabs/definitions/actor-definitions";
+import { getPwActorDefinition } from "../../prefabs/definitions/actor-definitions";
 import { upgradeFromCoreToConstructingActorData } from "../../data/actor-data";
-import { emitEventIssueActorCommandToSelectedActors, getCurrentPlayerNumber } from "../../data/scene-data";
+import { getCurrentPlayerNumber, getPlayer } from "../../data/scene-data";
 import { EventEmitter } from "@angular/core";
 import GameProbableWaffleScene from "../../world/scenes/GameProbableWaffleScene";
 import { Subscription } from "rxjs";
@@ -28,6 +29,7 @@ import { UiFeedbackBuildDeniedSound } from "../../hud/UiFeedbackSfx";
 import { FogOfWarComponent } from "../../world/tilemap/fog-of-war.component";
 import { RepresentableComponent } from "../../entity/components/representable-component";
 import { ProductionValidator } from "../../data/tech-tree/production-validator";
+import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
 import { ActorTranslateComponent } from "../../entity/components/movement/actor-translate-component";
 import { OwnerComponent } from "../../entity/components/owner-component";
 import { PawnAiController } from "../../prefabs/ai-agents/pawn-ai-controller";
@@ -35,8 +37,12 @@ import { OrderData } from "../../ai/OrderData";
 import { OrderType } from "../../ai/order-type";
 import { getCostForObjectName } from "../../entity/components/production/cost-utils";
 import { IsoHelper } from "../../world/tilemap/iso-helper";
-import Vector2 = Phaser.Math.Vector2;
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
+import {
+  emitStructureTopologyChanged,
+  emitStructureTopologyChangedAtTile
+} from "../../prefabs/buildings/tivara/navigation-topology.events";
+import Vector2 = Phaser.Math.Vector2;
 
 export class BuildingCursor {
   placementGrid?: GameObjects.Graphics;
@@ -64,7 +70,7 @@ export class BuildingCursor {
   private invalidCursorPositions: Set<string> = new Set(); // Track positions where buildings can't be placed
   private actorsToMove: Set<GameObjects.GameObject> = new Set(); // Track actors that need to be moved when placing buildings
   private externalModalOpen: boolean = false;
-  private chatModalSubscription?: Subscription;
+  private externalModalSubscription?: Subscription;
 
   // Helper: stable key based on snapped logical position (avoids z-offset and float drift)
   private getSnappedLogicalKey(go: GameObjects.GameObject): string | undefined {
@@ -79,7 +85,7 @@ export class BuildingCursor {
     this.stopPlacingSubscription = this.stopPlacingBuilding.subscribe(() => this.stop());
     this.scene.input.on(Input.Events.POINTER_MOVE, this.handlePointerMove, this);
     this.scene.input.on(Input.Events.POINTER_DOWN, this.onPointerDown, this);
-    this.scene.input.on(Input.Events.GAME_OUT, this.stop, this);
+    this.scene.input.on(Input.Events.GAME_OUT, this.handleGameOut, this);
     this.scene.input.on(Input.Events.POINTER_UP, this.onPointerUp, this);
     onSceneInitialized(scene, this.init, this);
     scene.onShutdown.subscribe(() => this.destroy());
@@ -93,9 +99,12 @@ export class BuildingCursor {
     this.audioService = getSceneService(this.scene, AudioService);
     this.fogOfWarComponent = getSceneComponent(this.scene, FogOfWarComponent);
     this.actorIndex = getSceneService(this.scene, ActorIndexSystem)!;
+    this.subscribeToExternalModalEvents();
+  }
 
+  private subscribeToExternalModalEvents(): void {
     // Listen to chat modal state changes
-    this.chatModalSubscription = this.scene.communicator.allScenes.subscribe((event) => {
+    this.externalModalSubscription = this.scene.communicator.allScenes.subscribe((event) => {
       if (event.name === "external-modal-opened") {
         this.externalModalOpen = true;
       } else if (event.name === "external-modal-closed") {
@@ -170,8 +179,8 @@ export class BuildingCursor {
           false
         );
 
-        // Find a nearby walkable tile to move the actor to
-        // Try tiles in a spiral pattern around the actor's current tile position
+        // Search outward ring by ring so the first accepted tile is nearby and
+        // deterministic for the same placement snapshot.
         let targetTile: Vector3Simple | undefined;
         const maxDistance = 5; // Search up to 5 tiles away
 
@@ -196,9 +205,9 @@ export class BuildingCursor {
                 continue;
               }
 
-              // Check if the tile is walkable
-              const isWalkable = this.navigationService!.isTileWalkable({ x: testTileX, y: testTileY });
-              if (isWalkable) {
+              // Check if the tile is navigable
+              const isNavigable = this.navigationService!.isTileNavigable({ x: testTileX, y: testTileY });
+              if (isNavigable) {
                 targetTile = { x: testTileX, y: testTileY, z: 0 } satisfies Vector3Simple;
               }
             }
@@ -269,18 +278,20 @@ export class BuildingCursor {
         const actorTransform = getGameObjectLogicalTransform(actor);
         if (currentOrder.data.targetTileLocation && actorTransform) {
           const targetTile = currentOrder.data.targetTileLocation;
+          const actorTile = IsoHelper.isometricWorldToTileXY(this.scene, actorTransform.x, actorTransform.y, false);
           const distance = Math.sqrt(
-            Math.pow(actorTransform.x - targetTile.x, 2) + Math.pow(actorTransform.y - targetTile.y, 2)
+            Math.pow(actorTile.x - targetTile.x, 2) + Math.pow(actorTile.y - targetTile.y, 2)
           );
 
-          // Consider movement complete if within ~1 tile distance
-          if (distance < 2) {
+          // Compare in tile space so placement does not wait on a world-vs-tile mismatch.
+          if (distance <= 1) {
             resolve();
             return;
           }
         }
 
         // Not complete yet, check again later
+        // Intentional wall-clock polling: this is local placement UX, not lockstep simulation state.
         this.scene.time.delayedCall(checkInterval, checkMovementComplete);
       };
 
@@ -292,7 +303,7 @@ export class BuildingCursor {
   private spawn(name: ObjectNames) {
     if (this.building) this.stop();
 
-    const definition = pwActorDefinitions[name as ObjectNames]?.components?.constructable;
+    const definition = getPwActorDefinition(name, null)?.components?.constructable;
     if (!definition) return;
 
     this.canBeDragPlaced = definition.canBeDragPlaced;
@@ -316,6 +327,9 @@ export class BuildingCursor {
 
     this.building = this.scene.add.existing(actor);
     this.pointerLocation = worldPosition;
+    // Preview structures participate in the same topology refresh as placed
+    // ones so wall/stairs cursors show their final neighbor-aware shape.
+    this.notifyStructureTopologyChangedForPreview(this.building);
 
     if (!this.isDragging) {
       this.drawPlacementGrid(worldPosition);
@@ -351,12 +365,20 @@ export class BuildingCursor {
       console.error("Building cursor: RepresentableComponent not found on building game object.");
       return;
     }
+    const previousTile = IsoHelper.isometricWorldToTileXY(
+      this.scene,
+      representableComponent.logicalWorldTransform.x,
+      representableComponent.logicalWorldTransform.y,
+      false
+    );
     representableComponent.logicalWorldTransform = {
       x: worldPosition.x,
       y: worldPosition.y,
       z: 0
     } satisfies Vector3Simple;
     DepthHelper.setActorDepth(this.building);
+    emitStructureTopologyChangedAtTile(this.building, previousTile);
+    this.notifyStructureTopologyChangedForPreview(this.building);
 
     // Check if the current building can be placed
     this.canConstructBuildingAt = this.getCanConstructBuildingAt(this.building);
@@ -430,10 +452,11 @@ export class BuildingCursor {
     if (!allTilesVisible) return false;
 
     // 2. Check Walkability
-    const allTilesWalkable = tiles.every((tile) => this.navigationService!.isTileWalkable(tile));
-    if (!allTilesWalkable) return false;
+    const allTilesNavigable = tiles.every((tile) => this.navigationService!.isTileNavigable(tile));
+    if (!allTilesNavigable) return false;
 
-    // 3. Check for collisions with other actors
+    // 3. Check for collisions with other actors. Owned mobile actors can be
+    // ignored here because placement will order them to move before commit.
     const objectsToIgnore = new Set<GameObjects.GameObject>(ignoreGameObjects);
     const children = this.actorIndex.getAllIdActors().filter((c) => {
       if (objectsToIgnore.has(c)) return false;
@@ -603,7 +626,7 @@ export class BuildingCursor {
   private drawAttackRange(location: Vector2Simple) {
     if (!location || !this.building) return;
 
-    const definition = pwActorDefinitions[this.building.name as ObjectNames];
+    const definition = getPwActorDefinition(this.building.name, null);
     if (!definition) return;
 
     const attackDefinition = definition.components?.attack;
@@ -782,7 +805,8 @@ export class BuildingCursor {
       return points;
     };
 
-    // Generate points for both segments
+    // Build an L-shaped drag path in iso space so drag placement follows snapped
+    // tile traversal instead of cutting a diagonal through intermediate cells.
     const firstSegmentPoints = generatePoints(new Vector2(startX, startY), new Vector2(midpointX, midpointY));
     const secondSegmentPoints = generatePoints(new Vector2(midpointX, midpointY), new Vector2(endX, endY));
 
@@ -816,6 +840,7 @@ export class BuildingCursor {
     const gameObject = this.scene.add.existing(actor);
     this.spawnedCursorGameObjects.push(gameObject);
     DepthHelper.setActorDepth(gameObject);
+    this.notifyStructureTopologyChangedForPreview(gameObject);
 
     if (!this.isDragging) {
       this.drawPlacementGrid({ x, y });
@@ -825,6 +850,7 @@ export class BuildingCursor {
 
   private clearSpawnedCursorGameObjects() {
     for (const gameObject of this.spawnedCursorGameObjects) {
+      this.notifyStructureTopologyChangedForPreview(gameObject);
       gameObject.destroy();
     }
     this.spawnedCursorGameObjects = [];
@@ -856,7 +882,8 @@ export class BuildingCursor {
     const buildingsBeingPlaced: GameObjects.GameObject[] =
       this.isDragging && objectsToPlace.length ? objectsToPlace : this.building ? [this.building] : [];
 
-    // Exit build mode immediately
+    // Exit build mode before waiting on local actor movement so preview updates
+    // cannot keep mutating the placement while the commit is in progress.
     const buildingToPlace = this.building;
     this.building = undefined;
     this.clearGraphics();
@@ -895,9 +922,18 @@ export class BuildingCursor {
     upgradeFromCoreToConstructingActorData(gameObject, actorDefinition);
     // todo Save to game state
 
-    // instruct the builder to start building
+    // Instruct selected builders to begin constructing the placed site
+    if (!currentPlayer) return;
     const idComponent = getActorComponent(gameObject, IdComponent)!;
-    emitEventIssueActorCommandToSelectedActors(this.scene, { objectIds: [idComponent.id] });
+    const selectedActorIds = getPlayer(this.scene)?.getSelection() ?? [];
+    const commandBus = getSceneService(this.scene, CommandBusService);
+    commandBus?.dispatch({
+      type: "ACTOR_ACTION",
+      playerNumber: currentPlayer,
+      actorIds: selectedActorIds,
+      targetObjectIds: [idComponent.id],
+      queue: false
+    });
   }
 
   static spawnBuildingForPlayer(
@@ -931,7 +967,7 @@ export class BuildingCursor {
   }
 
   private onEscapeKeyDown() {
-    // Don't process keyboard events if chat modal is open
+    // Don't process keyboard events if external modal is open
     if (this.externalModalOpen) return;
     this.stop();
   }
@@ -940,7 +976,15 @@ export class BuildingCursor {
     this.shiftKey = this.scene.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
   }
 
+  private handleGameOut() {
+    if (isFullscreenTopEdgeExit(this.scene.input)) return;
+    this.stop();
+  }
+
   stop() {
+    if (this.building) {
+      this.notifyStructureTopologyChangedForPreview(this.building);
+    }
     this.building?.destroy();
     this.building = undefined;
     this.pointerLocation = undefined;
@@ -951,15 +995,20 @@ export class BuildingCursor {
     this.isDragging = false;
   }
 
+  private notifyStructureTopologyChangedForPreview(gameObject?: GameObjects.GameObject) {
+    if (!gameObject) return;
+    emitStructureTopologyChanged(gameObject);
+  }
+
   private destroy() {
     this.stop();
     this.scene.input.off(Input.Events.POINTER_MOVE, this.handlePointerMove, this);
     this.scene.input.off(Input.Events.POINTER_DOWN, this.onPointerDown, this);
     this.scene.input.off(Input.Events.POINTER_UP, this.onPointerUp, this);
-    this.scene.input.off(Input.Events.GAME_OUT, this.stop, this);
+    this.scene.input.off(Input.Events.GAME_OUT, this.handleGameOut, this);
     this.escKey?.off(Phaser.Input.Keyboard.Events.DOWN, this.onEscapeKeyDown, this);
     this.shiftKey?.destroy();
-    this.chatModalSubscription?.unsubscribe();
+    this.externalModalSubscription?.unsubscribe();
     this.startPlacingSubscription.unsubscribe();
     this.stopPlacingSubscription.unsubscribe();
   }

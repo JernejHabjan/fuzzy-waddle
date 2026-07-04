@@ -8,7 +8,8 @@ export const wallDefinition = {
   components: {
     representable: {
       width: 64,
-      height: 96
+      height: 64,
+      origin: { x: 0.5, y: 0.75 }
     },
     objectDescriptor: {
       color: 0x95a083
@@ -57,11 +58,11 @@ export const wallDefinition = {
       ...coreConstructionSiteDefinition,
       canBeDragPlaced: true
     },
-    walkable: {
-      walkableHeight: 42,
+    navigable: {
+      navigableHeight: 42,
       exitHeight: 64,
       // can be accessed from the stairs
-      acceptMinimumHeight: 64
+      enterHeight: 64
     }
   }
 } satisfies PrefabDefinition;

@@ -4,7 +4,7 @@ https://pflat.itch.io/lpc-character-generator
 
 ### Configuration:
 
-- open .ini and change `export_individual_sheets` to `true`
+- open .ini and change `export_individual_sheets` to `always` - https://pflat.itch.io/lpc-character-generator/devlog/777996/version-09-important-bug-fixes
 
 ## Compressing
 
@@ -13,4 +13,5 @@ https://pflat.itch.io/lpc-character-generator
 ## additional sources
 
 - https://lpc.opengameart.org/
-- https://sanderfrenken.github.io/Universal-LPC-Spritesheet-Character-Generator
+- https://github.com/liberatedpixelcup/Universal-LPC-Spritesheet-Character-Generator
+    - contains sit, run, emote, jump, climb, combat_idle

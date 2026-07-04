@@ -10,14 +10,16 @@ import { ResourceDrainComponent } from "../../../entity/components/resource/reso
 import { OwnerComponent } from "../../../entity/components/owner-component";
 import { HealthComponent } from "../../../entity/components/combat/components/health-component";
 import { getActorComponent } from "../../../data/actor-component";
-import { pwActorDefinitions } from "../../../prefabs/definitions/actor-definitions";
+import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
 import { getUnitStrength } from "../ai-utils";
 import { DistanceHelper } from "../../../library/distance-helper";
 import { AI_CONFIG } from "../ai-config";
+import { getResearchedLevelForActor } from "../../../data/actor-level-utils";
+import { ContainableComponent } from "../../../entity/components/building/containable-component";
+import { isSceneActive } from "../../../data/game-object-helper";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class WorldStateSnapshotManager {
-  private ownedScanInitialized = false;
   private lastOwnedRefreshAt = 0;
 
   constructor(
@@ -36,11 +38,6 @@ export class WorldStateSnapshotManager {
   private async refreshWorldState(now: number) {
     const index = getSceneService(this.scene, ActorIndexSystem);
     if (!index) return;
-
-    if (!this.ownedScanInitialized) {
-      index.scanExistingActors();
-      this.ownedScanInitialized = true;
-    }
 
     const owned = index.getOwnedActors(this.player.playerNumber);
 
@@ -66,7 +63,7 @@ export class WorldStateSnapshotManager {
 
     owned.forEach((go) => {
       const actorName = go.name as ObjectNames;
-      const definition = pwActorDefinitions[actorName];
+      const definition = getPwActorDefinition(actorName, getResearchedLevelForActor(go));
       if (!definition) return;
 
       const isMainBuilding = definition.meta?.isMainBuilding === true;
@@ -81,11 +78,11 @@ export class WorldStateSnapshotManager {
       if (productionComp) production.push(go);
       if (resourceDrain) gathering.push(go);
 
-      if (techTree?.isDefensiveBuilding(faction, actorName)) {
+      if (techTree?.isDefensiveBuilding(actorName)) {
         defense.push(go);
       }
 
-      if (techTree?.isHousingBuilding(faction, actorName)) {
+      if (techTree?.isHousingBuilding(actorName)) {
         housing.push(go);
       }
     });
@@ -173,7 +170,7 @@ export class WorldStateSnapshotManager {
       console.warn("AI Blackboard: No base center tile defined for enemy proximity check.");
       this.blackboard.enemiesNearBase = [];
     }
-    if (!this.scene.scene.isActive()) {
+    if (!isSceneActive(this.scene)) {
       // after long async action, scene might be destroyed
       return;
     }
@@ -189,7 +186,7 @@ export class WorldStateSnapshotManager {
 
     for (let i = 0; i < enemies.length; i++) {
       const d = distances[i];
-      if (typeof d === 'number' && d <= AI_CONFIG.enemyNearBaseRadiusTiles) {
+      if (typeof d === "number" && d <= AI_CONFIG.enemyNearBaseRadiusTiles) {
         near.push(enemies[i]!);
       }
     }
@@ -231,9 +228,10 @@ export class WorldStateSnapshotManager {
 
     const candidates = allActors.filter((obj) => {
       if (ownedSet.has(obj)) return false;
-      if (!getActorComponent(obj, HealthComponent)) return false;
-      // noinspection RedundantIfStatementJS
       if (!getActorComponent(obj, OwnerComponent)) return false;
+      // Skip actors that are inside a container — they are not targetable
+      // noinspection RedundantIfStatementJS
+      if (getActorComponent(obj, ContainableComponent)?.isContained()) return false;
       return true;
     });
 

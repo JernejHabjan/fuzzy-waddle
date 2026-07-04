@@ -1,26 +1,33 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { type PlayerSummary, ScoreTableComponent } from "./score-table.component";
+import { ScoreTableComponent } from "./score-table.component";
 import {
   createPlayerLobbyDefinition,
   FactionType,
-  type PlayerLobbyDefinition,
+  type PlayerScoreData,
   type PositionPlayerDefinition,
   ProbableWaffleGameInstanceType,
   ProbableWaffleGameInstanceVisibility,
-  ProbableWafflePlayerType
+  ProbableWafflePlayerType,
+  STANDARD_METRICS
 } from "@fuzzy-waddle/api-interfaces";
-import { DebugElement } from "@angular/core";
-import { By } from "@angular/platform-browser";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.stub";
+import { ScoreDataService } from "../../../services/score-data.service";
 
 describe("ScoreTableComponent", () => {
   let component: ScoreTableComponent;
   let fixture: ComponentFixture<ScoreTableComponent>;
 
+  const scoreDataServiceStub = {
+    getSortedPlayersByScore: (): PlayerScoreData[] => []
+  };
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [{ provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub }],
+      providers: [
+        { provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub },
+        { provide: ScoreDataService, useValue: scoreDataServiceStub }
+      ],
       imports: [ScoreTableComponent]
     }).compileComponents();
 
@@ -34,8 +41,6 @@ describe("ScoreTableComponent", () => {
   });
 
   it("should set players correctly on initialization", () => {
-    // Assuming you have some mock player data
-
     gameInstanceClientServiceStub.createGameInstance(
       "test",
       ProbableWaffleGameInstanceVisibility.Private,
@@ -49,41 +54,33 @@ describe("ScoreTableComponent", () => {
       factionType: FactionType.Skaduwee,
       playerType: ProbableWafflePlayerType.AI
     } satisfies PositionPlayerDefinition;
-    gameInstance.players[0].playerController.data.playerDefinition = playerDefinition;
+    gameInstance.players[0]!.playerController.data.playerDefinition = playerDefinition;
 
     component.ngOnInit();
-    expect(component["players"].length).toBe(1);
+    expect(component["players"].length).toBe(0); // no score data in stub
   });
 
-  it("should display unit_produced value in the DOM", () => {
-    // Assuming you have some mock player data
-    // noinspection UnnecessaryLocalVariableJS
-    const mockPlayers = [
+  it("should display player scores when provided as input", () => {
+    const mockScores: PlayerScoreData[] = [
       {
         playerNumber: 1,
-        name: "Player 1",
-        unit_produced: 10,
-        unit_killed: 5,
-        building_constructed: 3,
-        building_destroyed: 1,
-        resource_collected: 100,
-        resource_spent: 50
+        playerName: "Player 1",
+        playerType: "Human",
+        factionType: "Unknown",
+        gameResult: "win",
+        eliminated: false,
+        finalScore: 100,
+        metrics: {
+          [STANDARD_METRICS.UNITS_PRODUCED]: 10
+        }
       }
-    ] satisfies PlayerSummary[];
+    ];
 
-    // Set the component's players property
-    component["players"] = mockPlayers;
-
-    // Trigger change detection
+    fixture.componentRef.setInput("playerScores", mockScores);
+    component.ngOnInit();
     fixture.detectChanges();
 
-    // Get the DebugElement for the unit_produced cell
-    const unitProducedCell: DebugElement = fixture.debugElement.query(By.css("tbody tr td:nth-child(2)")); // Assuming 'unit_produced' is the second column
-
-    // Extract the text content from the DebugElement
-    const unitProducedValue = unitProducedCell.nativeElement.textContent.trim();
-
-    // Assert the value in the DOM
-    expect(unitProducedValue).toBe("10"); // Adjust this value based on your actual mock data
+    expect(component["players"].length).toBe(1);
+    expect(component["players"][0]!.playerName).toBe("Player 1");
   });
 });

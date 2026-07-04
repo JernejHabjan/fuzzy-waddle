@@ -8,8 +8,9 @@ import { weaponDefinitions } from "../../../../entity/components/combat/weapon-d
 export const watchTowerDefinition = {
   components: {
     representable: {
-      width: 128,
-      height: 176
+      width: 112,
+      height: 160,
+      origin: { x: 0.5, y: 0.84 }
     },
     objectDescriptor: {
       color: 0x95a083
@@ -28,11 +29,7 @@ export const watchTowerDefinition = {
     info: {
       name: "Watch Tower",
       description: "Main defense building",
-      tooltipDescription: [
-        "Defensive structure with ranged attack",
-        "Extended vision range",
-        "Units can walk on top"
-      ],
+      tooltipDescription: ["Defensive structure with ranged attack", "Extended vision range", "Units can walk on top"],
       smallImage: {
         key: "factions",
         frame: "buildings/tivara/watchtower/watchtower.png",
@@ -40,11 +37,12 @@ export const watchTowerDefinition = {
       }
     },
     selectable: {},
-    walkable: {
-      walkableHeight: 128,
-      exitHeight: 128,
+    navigable: {
+      navigableHeight: 104,
+      // The tower stands visually higher than walls, but its walkway connects at wall height.
+      exitHeight: 64,
       // can be accessed from the stairs or a wall
-      acceptMinimumHeight: 64
+      enterHeight: 64
     },
     health: {
       physicalState: ActorPhysicalType.Structural,
@@ -64,7 +62,7 @@ export const watchTowerDefinition = {
     //   capacity: 2
     // },
     attack: {
-      attacks: [weaponDefinitions.bowTower]
+      attacks: [weaponDefinitions.BowTower]
     },
     collider: { enabled: true },
     constructable: {

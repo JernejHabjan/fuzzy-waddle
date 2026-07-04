@@ -1,7 +1,6 @@
 import { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { ScaleHandler } from "../../player/human-controller/scale.handler";
 import { CameraMovementHandler } from "../../player/human-controller/cameraMovementHandler";
-import { LightsHandler } from "./effects/lights.handler";
 import { DepthHelper } from "../services/depth.helper";
 import { AnimatedTilemap } from "../tilemap/animated-tiles/animated-tile.helper";
 import { SingleSelectionHandler } from "../../player/human-controller/single-selection.handler";
@@ -23,6 +22,7 @@ import { CrossSceneCommunicationService } from "../services/CrossSceneCommunicat
 import { FogOfWarComponent } from "../tilemap/fog-of-war.component";
 import { SelectionGroupsComponent } from "../../player/human-controller/selection-groups.component";
 import { GameModeConditionChecker } from "../state/GameModeConditionChecker";
+import { ScoreTracker } from "../state/ScoreTracker";
 import { getSceneExternalComponent } from "../services/scene-component-helpers";
 import { AchievementService } from "../../../services/achievement/achievement.service";
 import { AchievementType } from "../../../services/achievement/achievement-type";
@@ -34,6 +34,21 @@ import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
 import { SelectionTabHandler } from "../../player/human-controller/selection-tab-handler";
 import { LockedCursorHandler } from "../../player/human-controller/locked-cursor.handler";
 import { ActorDebugDamageSystem } from "../services/actor-debug-damage-system";
+import { SpellCursor } from "../../player/human-controller/spell-cursor";
+import { AoeZoneManager } from "../../entity/systems/aoe-zone-manager";
+import { CommandBusService } from "../services/multiplayer/command-bus.service";
+import { SimulationPauseReason, SimulationTickService } from "../services/simulation-tick.service";
+import { StateHashService } from "../services/recovery/state-hash.service";
+import { SnapshotService } from "../services/recovery/snapshot.service";
+import { ReconnectService } from "../services/recovery/reconnect.service";
+import { ReplayPlaybackService } from "../services/replay/replay-playback.service";
+import { ReplayRecorderService } from "../services/replay/replay-recorder.service";
+import { HostMigrationService } from "../services/recovery/host-migration.service";
+import { PauseSyncService } from "../services/multiplayer/pause-sync.service";
+import { isTauri } from "../../../../shared/utils/tauri";
+import { SceneLightingService } from "../services/lighting/scene-lighting.service";
+import { MovementOccupancyService } from "../services/movement-occupancy.service";
+import { NavigationDebugService } from "../services/navigation-debug.service";
 
 export default class GameProbableWaffleScene extends ProbableWaffleScene {
   tilemap!: Phaser.Tilemaps.Tilemap;
@@ -46,59 +61,78 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     const hud = this.scene.get<HudProbableWaffle>("HudProbableWaffle") as HudProbableWaffle;
     hud.scene.start();
     hud.initializeWithParentScene(this);
+
+    const lightingService = new SceneLightingService(this);
+
     new SceneGameState(this);
     new ScaleHandler(this, this.tilemap, { margins: { left: 150, bottom: 100 }, maxLayers: 8 });
-    const gameSettings = GameSettings.loadFromLocalStorage();
-    const cameraMovementHandler = new CameraMovementHandler(this, {
-      cameraEdgeMovementSpeed: 30,
-      cameraKeyboardMovementSpeed: 2,
-      enabledMouseCornerMovement: gameSettings.enabledMouseCornerMovement
-    });
-    this.sceneGameData.components.push(cameraMovementHandler);
-    new LightsHandler(this, { enableLights: false });
     new DepthHelper(this);
     new AnimatedTilemap(this, this.tilemap, this.tilemap.tilesets);
-    this.sceneGameData.components.push(new SingleSelectionHandler(this, hud, this.tilemap));
     new GameObjectSelectionHandler(this);
     new GameObjectActionAssigner(this);
     new SaveGame(this);
     new RestartGame(this, hud);
     new GameModeConditionChecker(this);
+    this.sceneGameData.systems.push(new ScoreTracker(this)); // Track player scores for score screen
     const creator = new SceneActorCreator(this);
-    const audioService = new AudioService(this);
-    const playerActionsHandler = new PlayerActionsHandler(this, hud);
     const actorIndex = new ActorIndexSystem(this);
-    const techTreeService = new TechTreeService();
-
-    // Initialize RandomService with seed from game config for deterministic randomness
-    const seed = this.sys.game.config.seed?.[0];
-    if (!seed) throw new Error("Game seed is not defined");
-    const randomService = new RandomService(seed);
+    const snapshotService = new SnapshotService();
+    const commandBusService = new CommandBusService(this);
+    const simTickService = new SimulationTickService(this);
 
     this.sceneGameData.components.push(
+      this.getCameraMovementHandler(),
+      new SingleSelectionHandler(this, hud, this.tilemap),
       new TilemapComponent(this.tilemap),
       new BuildingCursor(this),
       new SelectionGroupsComponent(this),
       new SelectionTabHandler(this)
     );
     this.sceneGameData.services.push(
-      randomService,
+      this.getRandomService(),
+      // CommandBusService and SimulationTickService must be registered first so they're available during initInitialActors()
+      commandBusService,
+      simTickService,
       new NavigationService(this, this.tilemap),
-      audioService,
-      playerActionsHandler,
+      new MovementOccupancyService(this),
+      new NavigationDebugService(this, this.tilemap),
+      new AudioService(this),
+      new PlayerActionsHandler(this, hud),
+      lightingService,
       creator,
       new DebuggingService(),
       new CrossSceneCommunicationService(),
       actorIndex,
-      techTreeService
+      new TechTreeService(),
+      new SpellCursor(this),
+      new AoeZoneManager(this),
+      new PauseSyncService(this),
+      snapshotService
     );
+    simTickService?.pauseTick(SimulationPauseReason.SceneBootstrap);
     new ActorDebugDamageSystem(this);
-    this.sceneGameData.systems.push(new AiPlayerHandler(this));
-    this.sceneGameData.components.push(new FogOfWarComponent(this, this.tilemap));
+    if (!this.baseGameData.gameInstance.gameInstanceMetadata.isReplay()) {
+      this.sceneGameData.systems.push(new AiPlayerHandler(this));
+    }
+    if (!this.isSpectator) {
+      this.sceneGameData.components.push(new FogOfWarComponent(this, this.tilemap));
+    }
 
     creator.initInitialActors();
     // Populate the index after initial actors are in place
     actorIndex.scanExistingActors();
+    // Activate the multiplayer relay path when a socket is present
+    commandBusService.tryInitMultiplayer();
+
+    // Desync detection: hash state every 60 ticks and compare with peers (MP only).
+    new StateHashService().init(this);
+    // Snapshot service: host keeps a rolling snapshot for reconnect / late spectator catch-up.
+    snapshotService.init(this);
+    // Reconnect service: non-host clients request a snapshot when they rejoin after a drop.
+    new ReconnectService().init(this);
+    new HostMigrationService().init(this);
+    new ReplayRecorderService().init(this);
+    new ReplayPlaybackService().init(this);
 
     super.create();
 
@@ -107,11 +141,31 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
       this.scene.scene.data.remove("justCreated");
     });
     this.sceneGameData.initializers.sceneInitialized.next(true);
+    simTickService?.resumeTick(SimulationPauseReason.SceneBootstrap);
 
     if (!environment.production) {
       const achievementService = getSceneExternalComponent(this.scene.scene, AchievementService);
       achievementService?.unlockAchievement(AchievementType.FIRST_VICTORY); // just for test
     }
+  }
+
+  private getCameraMovementHandler(): CameraMovementHandler {
+    const gameSettings = GameSettings.loadFromLocalStorage();
+    return new CameraMovementHandler(this, {
+      cameraEdgeMovementSpeed: 30,
+      cameraKeyboardMovementSpeed: 2,
+      enabledMouseCornerMovement: gameSettings.enabledMouseCornerMovement,
+      cursorOverGame: isTauri() // in Tauri the cursor is inside the window from startup; in browser let GAME_OVER set it
+    });
+  }
+
+  /**
+   * Initialize RandomService with seed from game config for deterministic randomness
+   */
+  private getRandomService(): RandomService {
+    const seed = this.sys.game.config.seed?.[0];
+    if (!seed) throw new Error("Game seed is not defined");
+    return new RandomService(seed);
   }
 
   private cleanup() {

@@ -1,72 +1,69 @@
 @use "../../../../styles/_variables.scss" as *;
 
 .online-container {
-  max-width: 800px;
-  width: 95%;
+  max-width: 940px;
+  width: min(95%, 940px);
   min-width: auto;
-  margin: 2rem auto;
-  padding: 1rem;
-  border: 1px solid $tertiary;
-  border-radius: $app-border-radius;
-  background-color: #f7f7f7;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 2rem auto 3rem;
+  padding: 1.4rem;
+  border: 1px solid rgba(111, 85, 52, 0.64);
+  border-radius: 1.15rem;
+  background-color: rgba(29, 35, 42, 0.96);
+  box-shadow: 0 24px 40px rgba(0, 0, 0, 0.28);
 }
 
-/* Start with resetting the list style */
 .nav-tabs {
   list-style-type: none;
   padding: 0;
   display: flex;
   justify-content: space-around;
-  border-bottom: 2px solid $tertiary;
-  margin-bottom: 1rem;
+  border-bottom: 1px solid rgba(111, 85, 52, 0.45);
+  margin-bottom: 1.25rem;
+  gap: 0.5rem;
 }
 
-/* Style each list item */
 .nav-tabs li {
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  border-radius: $app-border-radius $app-border-radius 0 0;
+  transition: background-color 0.2s ease;
+  border-radius: 0.8rem 0.8rem 0 0;
   flex-grow: 1;
   text-align: center;
   user-select: none;
 }
 
-/* Hover effect for list items */
 .nav-tabs li:hover {
-  background-color: $quaternary;
+  background-color: rgba(240, 196, 107, 0.08);
 }
 
-/* Style for the anchor elements in the list */
 .nav-tabs li a {
   text-decoration: none;
-  color: $dark;
-  font-weight: bold;
+  color: #c8b89b;
+  font-weight: 700;
   display: block;
-  padding: 10px 15px;
+  padding: 0.8rem 1rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-/* Coloring for the active state */
 .nav-tabs li a.active {
-  background-color: $tertiary;
-  color: $primary;
-  border-radius: $app-border-radius $app-border-radius 0 0;
+  background-color: rgba(240, 196, 107, 0.12);
+  color: #f5ecd9;
+  border-radius: 0.8rem 0.8rem 0 0;
 }
 
 .tab-content {
-  padding: 1rem;
+  padding: 0.35rem;
   min-height: 400px;
 
   @media (max-width: 768px) {
     min-height: 300px;
-    padding: 0.5rem;
+    padding: 0.2rem;
   }
 }
 
 .server-health {
-  max-width: 500px;
-  margin-left: auto;
-  margin-right: auto;
+  max-width: 540px;
+  margin: 0 auto;
   text-align: center;
 }
 
@@ -85,8 +82,8 @@
 
 .mode-card {
   padding: 1.5rem;
-  border: 1px solid $tertiary;
-  border-radius: $app-border-radius;
+  border: 1px solid rgba(111, 85, 52, 0.64);
+  border-radius: 1rem;
   cursor: pointer;
   transition: all 0.3s ease;
   width: 45%;
@@ -98,21 +95,22 @@
   }
 
   h2 {
-    color: $primary;
+    color: #f0c46b;
     font-size: clamp(1.2rem, 4vw, 1.5rem);
   }
 
   p {
-    color: $secondary;
+    color: #c8b89b;
     font-size: clamp(0.9rem, 3vw, 1rem);
+    margin-bottom: 0;
   }
 
   &:hover,
   &.active {
-    border-color: $primary;
-    background-color: $quaternary;
+    border-color: rgba(240, 196, 107, 0.72);
+    background-color: rgba(240, 196, 107, 0.08);
     transform: translateY(-5px);
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 16px 24px rgba(0, 0, 0, 0.24);
 
     @media (max-width: 768px) {
       transform: translateY(-3px);
@@ -120,21 +118,13 @@
   }
 }
 
-/* Responsive adjustments for tab content */
-.tab-content {
-  padding: 1rem;
-  min-height: 400px;
-
-  @media (max-width: 768px) {
-    min-height: 300px;
-    padding: 0.5rem;
-  }
-}
-
-/* Make tables responsive */
 .custom-game-container,
 .matchmaking-container {
   overflow-x: auto;
+  background-color: rgba(15, 18, 22, 0.5);
+  border-radius: 1rem;
+  border: 1px solid rgba(111, 85, 52, 0.22);
+  padding: 1rem;
 
   table {
     min-width: 100%;

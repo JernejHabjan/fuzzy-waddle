@@ -8,7 +8,8 @@ export const miningCampDefinition = {
   components: {
     representable: {
       width: 128,
-      height: 128
+      height: 128,
+      origin: { x: 0.5, y: 0.8 }
     },
     objectDescriptor: {
       color: 0x967847

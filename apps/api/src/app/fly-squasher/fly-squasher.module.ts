@@ -1,10 +1,11 @@
 import { Module } from "@nestjs/common";
 import { FlySquasherController } from "./fly-squasher.controller";
 import { FlySquasherService } from "./fly-squasher.service";
-import { SupabaseProviderService } from "../../core/supabase-provider/supabase-provider.service";
+import { AuthModule } from "../../auth/auth.module";
 
 @Module({
-  providers: [SupabaseProviderService, FlySquasherService],
+  providers: [FlySquasherService],
+  imports: [AuthModule],
   controllers: [FlySquasherController]
 })
 export class FlySquasherModule {}

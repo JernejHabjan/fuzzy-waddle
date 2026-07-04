@@ -6,6 +6,8 @@ import { GameInstanceGatewayStub } from "../../little-muncher/game-instance/game
 import { RoomServerService } from "../game-room/room-server.service";
 import { GameInstanceServiceStub } from "../game-instance/game-instance.service.stub";
 import { roomServerServiceStub } from "../game-room/room-server.service.stub";
+import { GameSessionService } from "../game-session/game-session.service";
+import { gameSessionServiceStub } from "../game-session/game-session.service.stub";
 
 describe("MatchmakingService", () => {
   let service: MatchmakingService;
@@ -22,6 +24,10 @@ describe("MatchmakingService", () => {
         {
           provide: RoomServerService,
           useValue: roomServerServiceStub
+        },
+        {
+          provide: GameSessionService,
+          useValue: gameSessionServiceStub
         }
       ]
     }).compile();

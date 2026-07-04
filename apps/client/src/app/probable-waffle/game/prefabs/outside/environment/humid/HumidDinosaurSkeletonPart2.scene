@@ -1,0 +1,39 @@
+{
+    "id": "b74572df-3149-4f65-ae9f-9d34ebd0db1d",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "8620e5ba-924c-4d9a-b80d-09ffd18c6bf6",
+            "label": "humid_Dinosaur_skeleton_part2_dark_shadow_png",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "38.115908169522555 26.693145284144016 47.72879654321693 17.080256910449634 93.22980151203703 42.07376668205503 99.42477401952897 67.49451593693576 96.64771737823946 89.0701098423387 78.06279985576367 107.44140762317684 63.75027716604092 108.0822668480898 81.4807157219661 86.29305320104922 82.33519468851674 66.8536567120228 63.96389690767856 43.1418653902433 52.21481111760764 54.89095118031422 63.75027716604092 76.68016482735482 53.92376905070887 99.96471666585899 41.32020429408735 97.82851924948247 50.07861370123112 77.10740431063013 26.580442121089277 57.02714859669074 42.38830300227562 45.49168254825748",
+            "texture": {
+                "key": "environment_1",
+                "frame": "humid/Dinosaur_skeleton_part2_dark_shadow.png"
+            },
+            "x": 32,
+            "y": 1.8581369856962908,
+            "originY": 0.38951669520075227
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

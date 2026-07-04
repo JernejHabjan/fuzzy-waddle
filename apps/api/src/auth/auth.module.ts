@@ -6,9 +6,15 @@ import { ScheduleModule } from "@nestjs/schedule";
 import { JwtModule } from "@nestjs/jwt";
 import { UserAuthCacheService } from "../core/cache/user-auth-cache.service.ts/user-auth-cache.service";
 import { SupabaseProviderService } from "../core/supabase-provider/supabase-provider.service";
+import { SupabaseAuthGuard } from "./guards/supabase-auth.guard";
+import { OnlineAccessGuard } from "./guards/online-access.guard";
+import { ModeratorAccessGuard } from "./guards/moderator-access.guard";
+import { SocketConnectionAuthService } from "./socket-connection-auth.service";
+import { UserProfilesModule } from "../app/user-profiles/user-profiles.module";
 
 @Module({
   imports: [
+    UserProfilesModule,
     PassportModule,
     JwtModule.register({
       secret: jwtConstants.secret,
@@ -16,7 +22,23 @@ import { SupabaseProviderService } from "../core/supabase-provider/supabase-prov
     }),
     ScheduleModule.forRoot()
   ],
-  providers: [SupabaseStrategy, UserAuthCacheService, SupabaseProviderService],
-  exports: [SupabaseStrategy]
+  providers: [
+    SupabaseStrategy,
+    UserAuthCacheService,
+    SupabaseProviderService,
+    SupabaseAuthGuard,
+    OnlineAccessGuard,
+    ModeratorAccessGuard,
+    SocketConnectionAuthService
+  ],
+  exports: [
+    UserProfilesModule,
+    SupabaseStrategy,
+    SupabaseAuthGuard,
+    OnlineAccessGuard,
+    ModeratorAccessGuard,
+    SocketConnectionAuthService,
+    SupabaseProviderService
+  ]
 })
 export class AuthModule {}

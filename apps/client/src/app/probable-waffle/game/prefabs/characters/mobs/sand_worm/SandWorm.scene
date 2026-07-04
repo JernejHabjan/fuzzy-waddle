@@ -1,0 +1,46 @@
+{
+    "id": "2048aa1d-8bcd-4b27-8107-957cfd8f46d5",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 120,
+        "borderHeight": 120
+    },
+    "displayList": [
+        {
+            "type": "Sprite",
+            "id": "e6c68b14-923e-4f16-acb5-7739709302a6",
+            "label": "sand_worm_idle_se",
+            "hitArea.shape": "ELLIPSE",
+            "hitArea.x": 40,
+            "hitArea.y": 40,
+            "hitArea.width": 33.08900932188992,
+            "hitArea.height": 58.980091581563954,
+            "texture": {
+                "key": "mobs_sand_work",
+                "frame": "idle/s/0.png"
+            },
+            "x": 60,
+            "y": 90.94116220089873,
+            "scaleX": 2,
+            "scaleY": 2,
+            "originY": 0.7564559818612397,
+            "animationPlayMethod": 1,
+            "animationKey": "mobs_sand_worm_idle/s"
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

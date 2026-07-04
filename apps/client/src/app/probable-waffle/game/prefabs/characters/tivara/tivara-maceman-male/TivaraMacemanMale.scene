@@ -20,27 +20,27 @@
             "hitArea.y": -25.354877574887297,
             "hitArea.radius": 32,
             "x": 32,
-            "y": 57.35487752340556,
+            "y": 57.0471238601215,
             "list": [
                 {
                     "type": "Sprite",
-                    "id": "6e638249-b741-4ede-8c65-ee1dac0da0c4",
+                    "id": "83c508f6-00d4-40c5-9330-6de0b4a034d6",
                     "label": "tivara_maceman_male_idle_down",
                     "texture": {
-                        "key": "maceman_male_idle",
+                        "key": "maceman_male_lvl1_idle",
                         "frame": 4
                     },
-                    "y": -25.354877523405563,
+                    "y": -25.047123860121502,
                     "animationPlayMethod": 1,
-                    "animationKey": "tivara_maceman_male_idle_down"
+                    "animationKey": "maceman_male_lvl1_idle_2"
                 }
             ]
         }
     ],
     "plainObjects": [],
     "meta": {
-        "app": "Phaser Editor 2D - Scene Editor",
-        "url": "https://phasereditor2d.com",
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
         "contentType": "phasereditor2d.core.scene.SceneContentType",
         "version": 5
     }

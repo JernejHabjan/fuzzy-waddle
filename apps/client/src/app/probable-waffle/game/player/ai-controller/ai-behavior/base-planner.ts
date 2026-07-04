@@ -4,7 +4,7 @@ import { getSceneService } from "../../../world/services/scene-component-helpers
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { NavigationService } from "../../../world/services/navigation.service";
 import { RandomService } from "../../../world/services/random.service";
-import { pwActorDefinitions } from "../../../prefabs/definitions/actor-definitions";
+import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
 import { PlayerAiBlackboard } from "../player-ai-blackboard";
 import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
 import { SupplyPlanner } from "./supply-planner";
@@ -14,6 +14,7 @@ import { AdaptiveThresholdManager } from "./adaptive-threshold-manager";
 import { getActorComponent } from "../../../data/actor-component";
 import { ProductionComponent } from "../../../entity/components/production/production-component";
 import { LogisticsManager } from "./logistics-manager";
+import { getSimulationNow } from "../ai-time";
 
 interface PlannedBuilding {
   id: string;
@@ -40,6 +41,7 @@ export class BasePlanner {
   private lastAnalysisVersion = 0;
   private buildingNeeds: BuildingNeed[] = [];
   private lastNeedsComputedAt = 0;
+  private nextPlanId = 0;
   private readonly reservationTtlMs = 10000; // Expire stale unused reservations
   private accessibilityChecked = false;
   private reservedBuilding: {
@@ -138,11 +140,11 @@ export class BasePlanner {
     const chosen = scored[0]!.tile;
     const randomService = getSceneService(this.analyzer.scene, RandomService)!;
     this.plans.push({
-      id: `${Date.now()}-${randomService.random().toString(36).slice(2)}`,
+      id: `plan-${this.nextPlanId++}-${randomService.random().toString(36).slice(2)}`,
       type: buildingType,
       tile: chosen,
       priority,
-      reservedAt: Date.now()
+      reservedAt: this.getNow()
     });
     return chosen;
   }
@@ -216,13 +218,13 @@ export class BasePlanner {
     if (!tile) return null;
     // Attempt resource reservation (best-effort)
     const cost = this.getCostForObjectName(objectName) || {};
-    const plan = blackboard.beginPlannedStructure(objectName, cost, Date.now());
+    const plan = blackboard.beginPlannedStructure(objectName, cost, this.getNow());
     this.reservedBuilding = {
       objectName,
       tile,
       needType: top.type,
       resourceType: (top as any).resourceType,
-      reservedAt: Date.now(),
+      reservedAt: this.getNow(),
       planId: plan ? plan.id : undefined
     };
     return { objectName, tile };
@@ -247,7 +249,7 @@ export class BasePlanner {
    * (Phase 2 heuristic: simple thresholds)
    */
   recomputeNeeds(blackboard: PlayerAiBlackboard, adaptiveThresholds: AdaptiveThresholdManager): BuildingNeed[] {
-    const now = Date.now();
+    const now = this.getNow();
     this.buildingNeeds = [];
 
     // Assess supply & proactively plan housing if needed
@@ -281,7 +283,7 @@ export class BasePlanner {
       if (mostNeeded) {
         const resourceType = mostNeeded;
         const hasGatheringBuildingForResource = blackboard.gatheringStructures.some((building) => {
-          const def = pwActorDefinitions[building.name as ObjectNames];
+          const def = getPwActorDefinition(building.name, null);
           const drain = def?.components?.resourceDrain;
           return drain?.resourceTypes.includes(resourceType);
         });
@@ -329,7 +331,7 @@ export class BasePlanner {
       if (mostNeeded) {
         const resourceType = mostNeeded;
         const hasGatheringBuildingForResource = blackboard.gatheringStructures.some((building) => {
-          const def = pwActorDefinitions[building.name as ObjectNames];
+          const def = getPwActorDefinition(building.name, null);
           const drain = def?.components?.resourceDrain;
           return drain?.resourceTypes.includes(resourceType);
         });
@@ -352,7 +354,7 @@ export class BasePlanner {
   }
 
   isNeedsStale(ttlMs: number): boolean {
-    return Date.now() - this.lastNeedsComputedAt >= ttlMs;
+    return this.getNow() - this.lastNeedsComputedAt >= ttlMs;
   }
 
   getCurrentNeeds(): BuildingNeed[] {
@@ -380,11 +382,11 @@ export class BasePlanner {
         candidates = techTree.getDefensiveBuildingsExcludingMain(this.factionType);
         break;
       case NeedType.Gathering:
-        candidates = techTree.getResourceGatheringBuildingsExcludingMain(this.factionType);
+        candidates = techTree.getResourceGatheringBuildingsExcludingMain();
         if (resourceType) {
           // Filter by resource type
           candidates = candidates.filter((c) => {
-            const def = pwActorDefinitions[c];
+            const def = getPwActorDefinition(c, null);
             const drain = def?.components?.resourceDrain;
             return drain?.resourceTypes.includes(resourceType);
           });
@@ -395,16 +397,24 @@ export class BasePlanner {
     // Filter out tech-locked buildings
     const unlockedCandidates = candidates.filter((candidate) => {
       const validation = this.productionValidator.validate(candidate);
-      // allow queue if it can be queued or if it's not tech/building blocked (eg. just resource blocked)
-      return validation.canQueue || (!validation.techBlocked && !validation.buildingPrereqBlocked);
+      // allow queue if it can be queued or if it's only blocked by resources/supply (not tech/building prereqs)
+      const hasObjectOrResearchPrereqs =
+        validation.prereqs.objectNames.length > 0 || validation.prereqs.researchTypes.length > 0;
+      return validation.canQueue || !hasObjectOrResearchPrereqs;
     });
 
     if (unlockedCandidates.length === 0) {
       // consider scheduling prerequisites
       if (candidates.length > 0) {
         const validation = this.productionValidator.validate(candidates[0]!);
-        if (validation.prereqs.length > 0) {
-          this.productionValidator.schedulePrerequisites(validation.prereqs, candidates[0]!);
+        const hasPrereqs =
+          validation.prereqs.objectNames.length > 0 ||
+          validation.prereqs.researchTypes.length > 0 ||
+          Object.keys(validation.prereqs.resources).length > 0 ||
+          (validation.prereqs.supply !== null && validation.prereqs.supply > 0);
+
+        if (hasPrereqs) {
+          this.productionValidator.schedulePrerequisites(validation, candidates[0]!);
         }
       }
       return null;
@@ -452,7 +462,7 @@ export class BasePlanner {
   }
 
   private pruneExpiredReservations() {
-    const now = Date.now();
+    const now = this.getNow();
     this.plans = this.plans.filter((p) => now - p.reservedAt < this.reservationTtlMs);
     // Release outdated reservedBuilding link (resource reservation pruned elsewhere)
     if (this.reservedBuilding && now - this.reservedBuilding.reservedAt >= this.reservationTtlMs) {
@@ -463,7 +473,7 @@ export class BasePlanner {
   // --- Cost & resource helpers ---
 
   getCostForObjectName(objectName: ObjectNames): Partial<Record<ResourceType, number>> | undefined {
-    const definition = pwActorDefinitions[objectName];
+    const definition = getPwActorDefinition(objectName, null);
     return definition?.components?.productionCost?.resources;
   }
 
@@ -471,5 +481,9 @@ export class BasePlanner {
     const cost = this.getCostForObjectName(objectName);
     if (!cost) return true;
     return blackboard.hasAtLeastResources(cost);
+  }
+
+  private getNow(): number {
+    return getSimulationNow(this.analyzer.scene);
   }
 }

@@ -35,7 +35,7 @@ export default class Resource extends Phaser.GameObjects.Container {
 
   private resource_text: Phaser.GameObjects.Text;
   public resource_icon: Phaser.GameObjects.Image;
-  public override type: "wood" | "stone" | "minerals" | "housing" | "" = "";
+  public override type: "wood" | "stone" | "minerals" | "food" | "housing" | "" = "";
   public static = false;
 
   /* START-USER-CODE */
@@ -76,6 +76,8 @@ export default class Resource extends Phaser.GameObjects.Container {
         return resources.stone.toString();
       case "minerals":
         return resources.minerals.toString();
+      case "food":
+        return resources.food.toString();
       case "housing":
         const housing = this.player.playerState.data.housing;
         return housing.currentHousing + "/" + housing.maxHousing;

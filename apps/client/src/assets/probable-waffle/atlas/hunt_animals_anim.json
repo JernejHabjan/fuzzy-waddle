@@ -1,0 +1,2646 @@
+{
+    "anims": [
+        {
+            "key": "Black_grouse/Black_grouse_Flight/back/Black_grouse_Flight_Back",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Flight/back/Black_grouse_Flight_Back1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Flight/back/Black_grouse_Flight_Back2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Flight/back/Black_grouse_Flight_Back3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Flight/back/Black_grouse_Flight_Back4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Flight/back/Black_grouse_Flight_Back5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Flight/back/Black_grouse_Flight_Back6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Black_grouse/Black_grouse_Flight/front/Black_grouse_Flight_Front",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Flight/front/Black_grouse_Flight_Front1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Flight/front/Black_grouse_Flight_Front2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Flight/front/Black_grouse_Flight_Front3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Flight/front/Black_grouse_Flight_Front4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Flight/front/Black_grouse_Flight_Front5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Flight/front/Black_grouse_Flight_Front6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Black_grouse/Black_grouse_Flight/left/Black_grouse_Flight_left",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Flight/left/Black_grouse_Flight_left1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Flight/left/Black_grouse_Flight_left2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Flight/left/Black_grouse_Flight_left3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Flight/left/Black_grouse_Flight_left4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Flight/left/Black_grouse_Flight_left5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Flight/left/Black_grouse_Flight_left6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Black_grouse/Black_grouse_Flight/right/Black_grouse_Flight_Right",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Flight/right/Black_grouse_Flight_Right1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Flight/right/Black_grouse_Flight_Right2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Flight/right/Black_grouse_Flight_Right3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Flight/right/Black_grouse_Flight_Right4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Flight/right/Black_grouse_Flight_Right5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Flight/right/Black_grouse_Flight_Right6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Black_grouse/Black_grouse_Idle/back/Black_grouse_Idle_Back",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Idle/back/Black_grouse_Idle_Back1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Idle/back/Black_grouse_Idle_Back2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Idle/back/Black_grouse_Idle_Back3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Idle/back/Black_grouse_Idle_Back4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Black_grouse/Black_grouse_Idle/front/Black_grouse_Idle_Front",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Idle/front/Black_grouse_Idle_Front1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Idle/front/Black_grouse_Idle_Front2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Idle/front/Black_grouse_Idle_Front3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Idle/front/Black_grouse_Idle_Front4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Black_grouse/Black_grouse_Idle/left/Black_grouse_Idle_left",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Idle/left/Black_grouse_Idle_left1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Idle/left/Black_grouse_Idle_left2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Idle/left/Black_grouse_Idle_left3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Idle/left/Black_grouse_Idle_left4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Black_grouse/Black_grouse_Idle/right/Black_grouse_Idle_Right",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Idle/right/Black_grouse_Idle_Right1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Idle/right/Black_grouse_Idle_Right2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Idle/right/Black_grouse_Idle_Right3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Idle/right/Black_grouse_Idle_Right4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Black_grouse/Black_grouse_Walk/back/Black_grouse_Walk_Back",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Walk/back/Black_grouse_Walk_Back1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Walk/back/Black_grouse_Walk_Back2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Walk/back/Black_grouse_Walk_Back3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Walk/back/Black_grouse_Walk_Back4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Walk/back/Black_grouse_Walk_Back5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Walk/back/Black_grouse_Walk_Back6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Black_grouse/Black_grouse_Walk/front/Black_grouse_Walk_Front",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Walk/front/Black_grouse_Walk_Front1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Walk/front/Black_grouse_Walk_Front2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Walk/front/Black_grouse_Walk_Front3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Walk/front/Black_grouse_Walk_Front4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Walk/front/Black_grouse_Walk_Front5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Walk/front/Black_grouse_Walk_Front6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Black_grouse/Black_grouse_Walk/left/Black_grouse_Walk_left",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Walk/left/Black_grouse_Walk_left1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Walk/left/Black_grouse_Walk_left2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Walk/left/Black_grouse_Walk_left3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Walk/left/Black_grouse_Walk_left4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Walk/left/Black_grouse_Walk_left5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Walk/left/Black_grouse_Walk_left6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Black_grouse/Black_grouse_Walk/right/Black_grouse_Walk_right",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Walk/right/Black_grouse_Walk_right1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Walk/right/Black_grouse_Walk_right2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Walk/right/Black_grouse_Walk_right3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Walk/right/Black_grouse_Walk_right4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Walk/right/Black_grouse_Walk_right5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Black_grouse/Black_grouse_Walk/right/Black_grouse_Walk_right6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Boar/Attack/back/Boar_back_Attack",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Attack/back/Boar_back_Attack1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Attack/back/Boar_back_Attack2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Attack/back/Boar_back_Attack3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Attack/back/Boar_back_Attack4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Attack/back/Boar_back_Attack5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Boar/Attack/front/Boar_front_Attack",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Attack/front/Boar_front_Attack1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Attack/front/Boar_front_Attack2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Attack/front/Boar_front_Attack3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Attack/front/Boar_front_Attack4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Attack/front/Boar_front_Attack5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Boar/Attack/left/Boar_left_Attack",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Attack/left/Boar_left_Attack1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Attack/left/Boar_left_Attack2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Attack/left/Boar_left_Attack3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Attack/left/Boar_left_Attack4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Attack/left/Boar_left_Attack5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Boar/Attack/right/Boar_Attack_right",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Attack/right/Boar_Attack_right1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Attack/right/Boar_Attack_right2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Attack/right/Boar_Attack_right3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Attack/right/Boar_Attack_right4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Attack/right/Boar_Attack_right5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Boar/Idle/back/Boar_back_Idle",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Idle/back/Boar_back_Idle1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Idle/back/Boar_back_Idle2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Idle/back/Boar_back_Idle3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Idle/back/Boar_back_Idle4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Boar/Idle/front/Boar_front_Idle",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Idle/front/Boar_front_Idle1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Idle/front/Boar_front_Idle2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Idle/front/Boar_front_Idle3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Idle/front/Boar_front_Idle4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Boar/Idle/left/Boar_left_Idle",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Idle/left/Boar_left_Idle1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Idle/left/Boar_left_Idle2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Idle/left/Boar_left_Idle3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Idle/left/Boar_left_Idle4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Boar/Idle/right/Boar_Idle_right",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Idle/right/Boar_Idle_right1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Idle/right/Boar_Idle_right2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Idle/right/Boar_Idle_right3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Idle/right/Boar_Idle_right4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Boar/Run/back/Boar_back_Run",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Run/back/Boar_back_Run1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Run/back/Boar_back_Run2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Run/back/Boar_back_Run3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Run/back/Boar_back_Run4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Run/back/Boar_back_Run5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Boar/Run/front/Boar_front_Run",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Run/front/Boar_front_Run1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Run/front/Boar_front_Run2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Run/front/Boar_front_Run3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Run/front/Boar_front_Run4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Run/front/Boar_front_Run5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Boar/Run/left/Boar_left_Run",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Run/left/Boar_left_Run1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Run/left/Boar_left_Run2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Run/left/Boar_left_Run3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Run/left/Boar_left_Run4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Run/left/Boar_left_Run5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Boar/Run/right/Boar_Run_right",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Run/right/Boar_Run_right1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Run/right/Boar_Run_right2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Run/right/Boar_Run_right3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Run/right/Boar_Run_right4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Run/right/Boar_Run_right5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Boar/Walk/back/Boar_back_Walk",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Walk/back/Boar_back_Walk1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Walk/back/Boar_back_Walk2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Walk/back/Boar_back_Walk3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Walk/back/Boar_back_Walk4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Walk/back/Boar_back_Walk5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Walk/back/Boar_back_Walk6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Boar/Walk/front/Boar_front_Walk",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Walk/front/Boar_front_Walk1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Walk/front/Boar_front_Walk2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Walk/front/Boar_front_Walk3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Walk/front/Boar_front_Walk4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Walk/front/Boar_front_Walk5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Walk/front/Boar_front_Walk6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Boar/Walk/left/Boar_left_Walk",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Walk/left/Boar_left_Walk1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Walk/left/Boar_left_Walk2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Walk/left/Boar_left_Walk3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Walk/left/Boar_left_Walk4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Walk/left/Boar_left_Walk5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Walk/left/Boar_left_Walk6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Boar/Walk/right/Boar_Walk_right",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Walk/right/Boar_Walk_right1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Walk/right/Boar_Walk_right2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Walk/right/Boar_Walk_right3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Walk/right/Boar_Walk_right4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Walk/right/Boar_Walk_right5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Boar/Walk/right/Boar_Walk_right6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Deer/Idle/back/Deer_Idle_back",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Idle/back/Deer_Idle_back1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Idle/back/Deer_Idle_back2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Idle/back/Deer_Idle_back3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Idle/back/Deer_Idle_back4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Deer/Idle/front/Deer_Idle_front",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Idle/front/Deer_Idle_front1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Idle/front/Deer_Idle_front2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Idle/front/Deer_Idle_front3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Idle/front/Deer_Idle_front4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Deer/Idle/left/Deer_Idle_left",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Idle/left/Deer_Idle_left1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Idle/left/Deer_Idle_left2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Idle/left/Deer_Idle_left3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Idle/left/Deer_Idle_left4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Deer/Idle/right/Deer_Idle_right",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Idle/right/Deer_Idle_right1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Idle/right/Deer_Idle_right2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Idle/right/Deer_Idle_right3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Idle/right/Deer_Idle_right4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Deer/Run/back/Deer_Run_back",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Run/back/Deer_Run_back1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Run/back/Deer_Run_back2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Run/back/Deer_Run_back3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Run/back/Deer_Run_back4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Run/back/Deer_Run_back5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Run/back/Deer_Run_back6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Deer/Run/front/Deer_Run_front",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Run/front/Deer_Run_front1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Run/front/Deer_Run_front2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Run/front/Deer_Run_front3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Run/front/Deer_Run_front4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Run/front/Deer_Run_front5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Run/front/Deer_Run_front6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Deer/Run/left/Deer_Run_left",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Run/left/Deer_Run_left1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Run/left/Deer_Run_left2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Run/left/Deer_Run_left3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Run/left/Deer_Run_left4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Run/left/Deer_Run_left5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Run/left/Deer_Run_left6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Deer/Run/right/Deer_Run_right",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Run/right/Deer_Run_right1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Run/right/Deer_Run_right2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Run/right/Deer_Run_right3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Run/right/Deer_Run_right4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Run/right/Deer_Run_right5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Run/right/Deer_Run_right6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Deer/Walk/back/Deer_Walk_back",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Walk/back/Deer_Walk_back1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Walk/back/Deer_Walk_back2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Walk/back/Deer_Walk_back3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Walk/back/Deer_Walk_back4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Walk/back/Deer_Walk_back5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Walk/back/Deer_Walk_back6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Deer/Walk/front/Deer_Walk_front",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Walk/front/Deer_Walk_front1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Walk/front/Deer_Walk_front2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Walk/front/Deer_Walk_front3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Walk/front/Deer_Walk_front4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Walk/front/Deer_Walk_front5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Walk/front/Deer_Walk_front6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Deer/Walk/left/Deer_Walk_left",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Walk/left/Deer_Walk_left1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Walk/left/Deer_Walk_left2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Walk/left/Deer_Walk_left3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Walk/left/Deer_Walk_left4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Walk/left/Deer_Walk_left5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Walk/left/Deer_Walk_left6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Deer/Walk/right/Deer_Walk_right",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Walk/right/Deer_Walk_right1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Walk/right/Deer_Walk_right2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Walk/right/Deer_Walk_right3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Walk/right/Deer_Walk_right4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Walk/right/Deer_Walk_right5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Deer/Walk/right/Deer_Walk_right6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Fox/Idle/back/Fox_Idle_back",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Idle/back/Fox_Idle_back1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Idle/back/Fox_Idle_back2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Idle/back/Fox_Idle_back3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Idle/back/Fox_Idle_back4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Fox/Idle/front/Fox_Idle_front",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Idle/front/Fox_Idle_front1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Idle/front/Fox_Idle_front2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Idle/front/Fox_Idle_front3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Idle/front/Fox_Idle_front4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Fox/Idle/left/Fox_Idle_left",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Idle/left/Fox_Idle_left1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Idle/left/Fox_Idle_left2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Idle/left/Fox_Idle_left3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Idle/left/Fox_Idle_left4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Fox/Idle/right/Fox_Idle_right",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Idle/right/Fox_Idle_right1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Idle/right/Fox_Idle_right2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Idle/right/Fox_Idle_right3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Idle/right/Fox_Idle_right4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Fox/Run/back/Fox_Run_back",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Run/back/Fox_Run_back1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Run/back/Fox_Run_back2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Run/back/Fox_Run_back3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Run/back/Fox_Run_back4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Run/back/Fox_Run_back5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Run/back/Fox_Run_back6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Fox/Run/front/Fox_Run_front",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Run/front/Fox_Run_front1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Run/front/Fox_Run_front2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Run/front/Fox_Run_front3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Run/front/Fox_Run_front4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Run/front/Fox_Run_front5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Run/front/Fox_Run_front6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Fox/Run/left/Fox_Run_left",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Run/left/Fox_Run_left1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Run/left/Fox_Run_left2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Run/left/Fox_Run_left3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Run/left/Fox_Run_left4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Run/left/Fox_Run_left5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Run/left/Fox_Run_left6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Fox/Run/right/Fox_Run_right",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Run/right/Fox_Run_right1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Run/right/Fox_Run_right2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Run/right/Fox_Run_right3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Run/right/Fox_Run_right4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Run/right/Fox_Run_right5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Run/right/Fox_Run_right6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Fox/Walk/back/Fox_walk_back",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Walk/back/Fox_walk_back1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Walk/back/Fox_walk_back2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Walk/back/Fox_walk_back3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Walk/back/Fox_walk_back4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Walk/back/Fox_walk_back5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Walk/back/Fox_walk_back6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Fox/Walk/front/Fox_walk_front",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Walk/front/Fox_walk_front1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Walk/front/Fox_walk_front2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Walk/front/Fox_walk_front3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Walk/front/Fox_walk_front4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Walk/front/Fox_walk_front5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Walk/front/Fox_walk_front6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Fox/Walk/left/Fox_walk_left",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Walk/left/Fox_walk_left1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Walk/left/Fox_walk_left2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Walk/left/Fox_walk_left3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Walk/left/Fox_walk_left4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Walk/left/Fox_walk_left5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Walk/left/Fox_walk_left6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Fox/Walk/right/Fox_walk_right",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Walk/right/Fox_walk_right1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Walk/right/Fox_walk_right2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Walk/right/Fox_walk_right3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Walk/right/Fox_walk_right4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Walk/right/Fox_walk_right5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Fox/Walk/right/Fox_walk_right6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Hare/Idle/back/Hare_Idle_back",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Idle/back/Hare_Idle_back1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Idle/back/Hare_Idle_back2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Idle/back/Hare_Idle_back3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Idle/back/Hare_Idle_back4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Hare/Idle/front/Hare_Idle_front",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Idle/front/Hare_Idle_front1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Idle/front/Hare_Idle_front2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Idle/front/Hare_Idle_front3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Idle/front/Hare_Idle_front4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Hare/Idle/left/Hare_Idle_left",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Idle/left/Hare_Idle_left1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Idle/left/Hare_Idle_left2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Idle/left/Hare_Idle_left3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Idle/left/Hare_Idle_left4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Hare/Idle/right/Hare_Idle_right",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Idle/right/Hare_Idle_right1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Idle/right/Hare_Idle_right2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Idle/right/Hare_Idle_right3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Idle/right/Hare_Idle_right4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Hare/Run/back/Hare_Run_back",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Run/back/Hare_Run_back1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Run/back/Hare_Run_back2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Run/back/Hare_Run_back3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Run/back/Hare_Run_back4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Run/back/Hare_Run_back5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Run/back/Hare_Run_back6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Hare/Run/front/Hare_Run_front",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Run/front/Hare_Run_front1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Run/front/Hare_Run_front2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Run/front/Hare_Run_front3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Run/front/Hare_Run_front4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Run/front/Hare_Run_front5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Run/front/Hare_Run_front6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Hare/Run/left/Hare_Run_left",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Run/left/Hare_Run_left1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Run/left/Hare_Run_left2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Run/left/Hare_Run_left3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Run/left/Hare_Run_left4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Run/left/Hare_Run_left5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Run/left/Hare_Run_left6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Hare/Run/right/Hare_Run_right",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Run/right/Hare_Run_right1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Run/right/Hare_Run_right2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Run/right/Hare_Run_right3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Run/right/Hare_Run_right4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Run/right/Hare_Run_right5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Run/right/Hare_Run_right6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Hare/Walk/back/Hare_Walk_back",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Walk/back/Hare_Walk_back1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Walk/back/Hare_Walk_back2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Walk/back/Hare_Walk_back3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Walk/back/Hare_Walk_back4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Walk/back/Hare_Walk_back5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Hare/Walk/front/Hare_Walk_front",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Walk/front/Hare_Walk_front1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Walk/front/Hare_Walk_front2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Walk/front/Hare_Walk_front3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Walk/front/Hare_Walk_front4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Walk/front/Hare_Walk_front5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Hare/Walk/left/Hare_Walk_left",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Walk/left/Hare_Walk_left1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Walk/left/Hare_Walk_left2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Walk/left/Hare_Walk_left3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Walk/left/Hare_Walk_left4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Walk/left/Hare_Walk_left5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "Hare/Walk/right/Hare_Walk_right",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Walk/right/Hare_Walk_right1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Walk/right/Hare_Walk_right2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Walk/right/Hare_Walk_right3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Walk/right/Hare_Walk_right4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "hunt_animals",
+                    "frame": "Hare/Walk/right/Hare_Walk_right5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        }
+    ],
+    "globalTimeScale": 1,
+    "meta": {
+        "app": "Phaser Editor 2D v3",
+        "contentType": "Phaser v3 Animations"
+    },
+    "settings": {
+        "sourceLang": "TYPE_SCRIPT",
+        "esModule": false,
+        "generateCode": true
+    }
+}

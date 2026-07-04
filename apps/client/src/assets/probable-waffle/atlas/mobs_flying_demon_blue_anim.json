@@ -1,0 +1,787 @@
+{
+    "anims": [
+        {
+            "key": "mobs_flying_demon_blue_atack/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "atack/e/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "atack/e/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "atack/e/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "atack/e/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "atack/e/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_flying_demon_blue_atack/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "atack/n/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "atack/n/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "atack/n/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "atack/n/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "atack/n/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_flying_demon_blue_atack/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "atack/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "atack/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "atack/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "atack/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "atack/s/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_flying_demon_blue_atack/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "atack/w/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "atack/w/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "atack/w/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "atack/w/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "atack/w/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_flying_demon_blue_cast/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "cast/e/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "cast/e/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "cast/e/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "cast/e/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "cast/e/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "cast/e/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_flying_demon_blue_cast/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "cast/n/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "cast/n/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "cast/n/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "cast/n/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "cast/n/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "cast/n/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_flying_demon_blue_cast/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "cast/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "cast/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "cast/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "cast/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "cast/s/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "cast/s/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_flying_demon_blue_cast/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "cast/w/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "cast/w/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "cast/w/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "cast/w/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "cast/w/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "cast/w/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_flying_demon_blue_death/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "death/e/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "death/e/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "death/e/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "death/e/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "death/e/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "death/e/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_flying_demon_blue_death/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "death/n/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "death/n/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "death/n/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "death/n/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "death/n/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "death/n/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_flying_demon_blue_death/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "death/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "death/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "death/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "death/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "death/s/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "death/s/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_flying_demon_blue_death/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "death/w/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "death/w/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "death/w/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "death/w/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "death/w/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "death/w/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_flying_demon_blue_fire shot (blue",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "fire shot (blue)/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "fire shot (blue)/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "fire shot (blue)/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "fire shot (blue)/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_flying_demon_blue_fly/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "fly/e/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "fly/e/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "fly/e/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "fly/e/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_flying_demon_blue_fly/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "fly/n/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "fly/n/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "fly/n/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "fly/n/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_flying_demon_blue_fly/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "fly/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "fly/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "fly/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "fly/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_flying_demon_blue_fly/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "fly/w/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "fly/w/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "fly/w/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "fly/w/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_flying_demon_blue_hit/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "hit/e/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "hit/e/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_flying_demon_blue_hit/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "hit/n/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "hit/n/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_flying_demon_blue_hit/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "hit/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "hit/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_flying_demon_blue_hit/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "hit/w/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_flying_demon_blue",
+                    "frame": "hit/w/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        }
+    ],
+    "globalTimeScale": 1,
+    "meta": {
+        "app": "Phaser Editor 2D v3",
+        "contentType": "Phaser v3 Animations"
+    },
+    "settings": {
+        "sourceLang": "JAVA_SCRIPT",
+        "esModule": false,
+        "generateCode": false
+    }
+}

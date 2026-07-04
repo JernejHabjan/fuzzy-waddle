@@ -3,11 +3,8 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
+import { initStaticActor } from "../../../../data/init-static-actor";
 import { LavaParticles } from "../../../../world/scenes/effects/LavaParticles";
-import { setActorData } from "../../../../data/actor-data";
-import { ColliderComponent } from "../../../../entity/components/movement/collider-component";
-import { ObjectDescriptorComponent } from "../../../../entity/components/object-descriptor-component";
-import type { ObjectDescriptorDefinition } from "../../../../entity/components/object-descriptor-definition";
 /* END-USER-IMPORTS */
 
 export default class BlockObsidianLava5 extends Phaser.GameObjects.Container {
@@ -36,16 +33,7 @@ export default class BlockObsidianLava5 extends Phaser.GameObjects.Container {
     this.add(outside_nature_block_obsidian_lava_5);
 
     /* START-USER-CTR-CODE */
-    setActorData(
-      this,
-      [
-        new ObjectDescriptorComponent({
-          color: 0xbd3c00
-        } satisfies ObjectDescriptorDefinition),
-        new ColliderComponent(this)
-      ],
-      []
-    );
+    initStaticActor(this, 0xbd3c00, true);
     this.particles = new LavaParticles(scene, this.x, this.y);
     /* END-USER-CTR-CODE */
   }

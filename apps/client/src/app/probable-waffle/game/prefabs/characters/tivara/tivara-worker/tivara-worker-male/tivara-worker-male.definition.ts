@@ -16,12 +16,16 @@ import { tivaraWorkerDefinition } from "../tivara-worker.definition";
 import { ANIM_TIVARA_WORKER_MALE_DEFINITION } from "./tivara_worker_male_anims";
 import type { PrefabDefinition } from "../../../../definitions/prefab-definition";
 import { SoundType } from "../../../../../entity/components/actor-audio/sound-type";
-import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 
 export const tivaraWorkerMaleDefinition = {
   ...tivaraWorkerDefinition,
   components: {
     ...tivaraWorkerDefinition.components,
+    representable: {
+      width: 32,
+      height: 48,
+      origin: { x: 0.5, y: 0.8820941312001258 }
+    },
     info: {
       name: "Sandward",
       description: "From ruin to rise again — their toil feeds the endless rhythm etched in stone and soul",

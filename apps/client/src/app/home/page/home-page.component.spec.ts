@@ -6,8 +6,6 @@ import { HomePageNavTestingComponent } from "./home-page-nav/home-page-nav.compo
 import { provideRouter } from "@angular/router";
 import { AuthService } from "../../auth/auth.service";
 import { authServiceStub } from "../../auth/auth.service.stub";
-import { DbAccessTestService } from "../../data-access/db-access-test/db-access-test.service";
-import { dbAccessTestServiceStub } from "../../data-access/db-access-test/db-access-test.service.stub";
 import { HomePageNavComponent } from "./home-page-nav/home-page-nav.component";
 import { ServerHealthService } from "../../shared/services/server-health.service";
 import { serverHealthServiceStub } from "../../shared/services/server-health.service.stub";
@@ -22,7 +20,6 @@ describe("HomePageComponent", () => {
       providers: [
         provideRouter([]),
         { provide: AuthService, useValue: authServiceStub },
-        { provide: DbAccessTestService, useValue: dbAccessTestServiceStub },
         { provide: ServerHealthService, useValue: serverHealthServiceStub }
       ]
     })

@@ -6,6 +6,7 @@ import TreeBird from "../../../../animals/tree-bird/TreeBird";
 /* START-USER-IMPORTS */
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import Phaser from "phaser";
+import { hasMultiplayerCommandRelay } from "../../../../../data/scene-data";
 /* END-USER-IMPORTS */
 
 export default class Tree11 extends Phaser.GameObjects.Container {
@@ -47,6 +48,10 @@ export default class Tree11 extends Phaser.GameObjects.Container {
   override name = ObjectNames.Tree11;
 
   private handleBirdVisibility() {
+    if (hasMultiplayerCommandRelay(this.scene)) {
+      this.treeBird.setVisible(false);
+      return;
+    }
     const randomNum = Phaser.Math.Between(1, 5);
     if (randomNum !== 1) {
       this.treeBird.setVisible(false);

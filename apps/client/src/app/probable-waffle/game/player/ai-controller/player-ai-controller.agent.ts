@@ -13,14 +13,15 @@ import { DebuggingService } from "../../world/services/DebuggingService";
 import { Subscription } from "rxjs";
 import { getActorComponent } from "../../data/actor-component";
 import { ProductionComponent } from "../../entity/components/production/production-component";
-import { pwActorDefinitions } from "../../prefabs/definitions/actor-definitions";
+import { ResearchComponent } from "../../entity/components/research/research-component";
+import { getPwActorDefinition, pwActorDefinitions } from "../../prefabs/definitions/actor-definitions";
 import { GathererComponent } from "../../entity/components/resource/gatherer-component";
 import { BuilderComponent } from "../../entity/components/construction/builder-component";
 import { PawnAiController } from "../../prefabs/ai-agents/pawn-ai-controller";
 import { OrderData } from "../../ai/OrderData";
 import { OrderType } from "../../ai/order-type";
 import { BuildingCursor } from "../human-controller/building-cursor";
-import { getGameObjectLogicalTransform } from "../../data/game-object-helper";
+import { getGameObjectLogicalTransform, isGameObjectActiveInActiveScene } from "../../data/game-object-helper";
 import { DistanceHelper } from "../../library/distance-helper";
 import { MapAnalyzer } from "./ai-behavior/map-analyzer";
 import { BasePlanner } from "./ai-behavior/base-planner";
@@ -32,6 +33,7 @@ import { ProductionValidator } from "../../data/tech-tree/production-validator";
 import { AI_CONFIG } from "./ai-config";
 import { RandomService } from "../../world/services/random.service";
 import { RepairManager } from "./ai-behavior/repair-manager";
+import { dispatchProductionCommand, dispatchResearchCommand } from "../../data/commands/queue-command-dispatch";
 import { LogisticsManager } from "./ai-behavior/logistics-manager";
 import { TechProgressManager } from "./ai-behavior/tech-progress-manager";
 import { AdaptiveThresholdManager } from "./ai-behavior/adaptive-threshold-manager";
@@ -44,6 +46,10 @@ import { EconomyManager } from "./ai-behavior/economy-manager";
 import { PlayerAiBlackboard } from "./player-ai-blackboard";
 import { WorldStateSnapshotManager } from "./ai-behavior/world-state-snapshot-manager";
 import { getUnitStrength } from "./ai-utils";
+import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
+import { dispatchAiOrder } from "./dispatch-ai-order";
+import { IdComponent } from "../../entity/components/id-component";
+import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class PlayerAiControllerAgent implements IPlayerControllerAgent {
@@ -71,7 +77,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   private productionValidator: ProductionValidator;
 
   constructor(
-    private readonly scene: Phaser.Scene,
+    private readonly scene: ProbableWaffleScene,
     private readonly player: ProbableWafflePlayer,
     private readonly blackboard: PlayerAiBlackboard
   ) {
@@ -109,7 +115,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       this.logDebugInfo.bind(this)
     );
     this.logisticsManager = new LogisticsManager(this.blackboard, this.logDebugInfo.bind(this));
-    this.techManager = new TechProgressManager(this.blackboard, this.logDebugInfo.bind(this));
+    this.techManager = new TechProgressManager(this.blackboard, player.playerNumber!, this.logDebugInfo.bind(this));
     this.economyManager = new EconomyManager(this.blackboard);
     this.worldStateSnapshotManager = new WorldStateSnapshotManager(this.scene, this.player, this.blackboard);
     this.combatMicro = new CombatMicroManager(this.scene, this.blackboard, this.logDebugInfo.bind(this));
@@ -140,58 +146,175 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     this.scoutingManager.updateVisionSampling(now);
     // Update primary target cache
     await this.targetingManager.update(now);
-    this.processPrerequisiteQueue(now);
+    this.processPrerequisiteQueue();
     if (this.cooldowns.canRun("adaptiveThresholds", now)) {
       this.adaptiveThresholds.update();
       this.cooldowns.markRun("adaptiveThresholds", now);
     }
   }
 
-  private processPrerequisiteQueue(now: number) {
+  private processPrerequisiteQueue() {
     const queue = this.blackboard.production.prereqQueue;
     if (!queue || queue.length === 0) return;
     const next = queue[0];
     if (!next) return;
-    // Heuristic: attempt construct via assignBuilding if building definition exists; else attempt production.
-    const isBuilding = pwActorDefinitions[next.objectName]?.components?.production; // buildings have production component usually
-    if (next.type === "construct" && isBuilding) {
-      const state = this.assignBuilding(next.objectName as ObjectNames);
-      if (state === State.SUCCEEDED) queue.shift();
-      return;
-    }
-    if (next.type === "produce" || !isBuilding) {
-      // Attempt to queue production in any idle training building
-      const prodBuilding = this.blackboard.trainingBuildings.find((b) => {
-        const prod = getActorComponent(b, ProductionComponent);
-        return prod?.isIdle;
-      });
-      if (prodBuilding) {
-        const prod = getActorComponent(prodBuilding, ProductionComponent);
-        const def = pwActorDefinitions[next.objectName as ObjectNames];
-        const costData = def?.components?.productionCost;
-        if (prod && costData) {
-          const validation = this.productionValidator.validate(next.objectName as ObjectNames);
-          if (validation && !validation.canQueue) {
-            // If still blocked (e.g., nested prereqs) schedule them (avoid infinite loop by checking difference)
-            if (validation.techBlocked && validation.prereqs.length > 0) {
-              this.productionValidator.schedulePrerequisites(validation.prereqs, next.objectName as ObjectNames);
-            }
-            // Handle building prerequisites
-            if (
-              validation.buildingPrereqBlocked &&
-              validation.missingBuildings &&
-              validation.missingBuildings.length > 0
-            ) {
-              this.productionValidator.schedulePrerequisites(
-                validation.missingBuildings,
-                next.objectName as ObjectNames
-              );
-            }
-            return;
-          }
-          prod.startProduction({ actorName: next.objectName as ObjectNames, costData });
-          queue.shift();
+
+    // Handle different prerequisite types
+    switch (next.type) {
+      case "prefab": {
+        // Extract the target object name from the prereq
+        const targetObjectName =
+          next.preRequirement.prereqs.objectNames.length > 0 ? next.preRequirement.prereqs.objectNames[0] : null;
+
+        if (!targetObjectName) {
+          queue.shift(); // Remove invalid entry
+          return;
         }
+
+        // Heuristic: attempt construct via assignBuilding if building definition exists; else attempt production.
+        const isBuilding = getPwActorDefinition(targetObjectName, null)?.components?.production; // buildings have production component usually
+        if (isBuilding) {
+          const state = this.assignBuilding(targetObjectName);
+          if (state === State.SUCCEEDED) queue.shift();
+          return;
+        } else {
+          // Attempt to queue production in any idle training building
+          const prodBuilding = this.blackboard.trainingBuildings.find((b) => {
+            const prod = getActorComponent(b, ProductionComponent);
+            return prod?.isIdle;
+          });
+          if (prodBuilding) {
+            const prod = getActorComponent(prodBuilding, ProductionComponent);
+            if (prod) {
+              const validation = this.productionValidator.validate(targetObjectName);
+              if (validation && !validation.canQueue) {
+                // If still blocked (e.g., nested prereqs) schedule them (avoid infinite loop by checking difference)
+                const hasPrereqs =
+                  validation.prereqs.objectNames.length > 0 ||
+                  validation.prereqs.researchTypes.length > 0 ||
+                  Object.keys(validation.prereqs.resources).length > 0 ||
+                  (validation.prereqs.supply !== null && validation.prereqs.supply > 0);
+
+                if (hasPrereqs) {
+                  this.productionValidator.schedulePrerequisites(validation, targetObjectName);
+                }
+                return;
+              }
+              if (dispatchProductionCommand(this.scene, [prodBuilding], this.player.playerNumber!, targetObjectName)) {
+                queue.shift();
+              }
+            }
+          }
+        }
+        break;
+      }
+
+      case "research": {
+        const researchType =
+          next.preRequirement.prereqs.researchTypes.length > 0 ? next.preRequirement.prereqs.researchTypes[0] : null;
+
+        if (!researchType) {
+          queue.shift(); // Remove invalid entry
+          return;
+        }
+
+        // Check if already researched
+        const owner = this.player.playerNumber;
+        if (owner !== undefined && getSceneService(this.scene, TechTreeService)!.isResearched(owner, researchType)) {
+          queue.shift(); // Already completed
+          return;
+        }
+
+        // Find a building that can perform this research and is not currently researching
+        const researchBuilding = this.blackboard.productionBuildings.find((b) => {
+          const researchComponent = getActorComponent(b, ResearchComponent);
+          if (!researchComponent) return false;
+
+          // Check if building can perform this specific research and is not currently researching
+          return researchComponent.availableResearch.includes(researchType) && !researchComponent.isResearching;
+        });
+
+        if (researchBuilding) {
+          const researchComponent = getActorComponent(researchBuilding, ResearchComponent);
+          if (researchComponent) {
+            const started = dispatchResearchCommand(
+              this.scene,
+              researchBuilding,
+              this.player.playerNumber!,
+              researchType
+            );
+            if (started) {
+              this.logDebugInfo(`[AI] Started research: ${researchType}`);
+              queue.shift(); // Successfully started, remove from queue
+            } else {
+              const validation = researchComponent.canStartResearch(researchType);
+              this.logDebugInfo(`[AI] Cannot start research ${researchType}: ${validation.reason}`);
+              // Don't remove from queue, might become available later (e.g., when resources arrive)
+            }
+          }
+        } else {
+          // No building available for this research - might need to build one first
+          this.logDebugInfo(`[AI] No building available for research: ${researchType}`);
+        }
+        break;
+      }
+
+      case "supply": {
+        const requiredSupply = next.preRequirement.prereqs.supply;
+        if (!requiredSupply) {
+          queue.shift(); // Remove invalid entry
+          return;
+        }
+
+        // Check if we now have enough supply
+        const currentSupply = this.blackboard.production.supply.max;
+        const currentSupplyUsed = this.blackboard.production.supply.used;
+        const availableSupply = currentSupply - currentSupplyUsed;
+
+        if (availableSupply >= requiredSupply) {
+          queue.shift(); // Supply requirement met
+        } else {
+          // Try to build supply structures
+          // Find supply-providing building (e.g., house, farm, etc.)
+          const supplyBuildingEntry = Object.entries(pwActorDefinitions)
+            .filter(([_, def]) => !!def?.components?.housing?.housingCapacity)
+            .sort(([, defA], [, defB]) => {
+              const capA = defA?.components?.housing?.housingCapacity ?? 0;
+              const capB = defB?.components?.housing?.housingCapacity ?? 0;
+              return capB - capA; // Descending order (higher capacity first)
+            })[0];
+
+          if (supplyBuildingEntry) {
+            const [supplyBuildingName] = supplyBuildingEntry;
+            this.assignBuilding(supplyBuildingName as ObjectNames);
+            // Don't remove from queue until supply is actually available
+          }
+        }
+        break;
+      }
+
+      case "resources": {
+        const requiredResources = next.preRequirement.prereqs.resources;
+        if (!requiredResources || Object.keys(requiredResources).length === 0) {
+          queue.shift(); // Remove invalid entry
+          return;
+        }
+
+        // Check if we now have enough resources
+        let hasAllResources = true;
+        for (const [resourceType, amount] of Object.entries(requiredResources)) {
+          const currentAmount = this.blackboard.economy.resources[resourceType as ResourceType] || 0;
+          if (amount !== undefined && currentAmount < amount) {
+            hasAllResources = false;
+            break;
+          }
+        }
+
+        if (hasAllResources) {
+          queue.shift(); // Resource requirement met
+        }
+        // Otherwise wait for resources to accumulate
+        break;
       }
     }
   }
@@ -201,7 +324,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
 
   async AnalyzeGameMap(): Promise<State> {
     // Cooldown gating: avoid excessive map analyses.
-    const now = performance.now();
+    const now = this.blackboard.getNow();
     if (!this.cooldowns.canRun("analyzeMap", now)) {
       this.logDebugInfo("[Map] Analysis on cooldown");
       return State.FAILED;
@@ -286,16 +409,27 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
         let closestEnemy: GameObject | null = null;
         let closestDist = Infinity;
         this.blackboard.enemiesNearBase.forEach((enemy) => {
+          if (!isGameObjectActiveInActiveScene(unit) || !isGameObjectActiveInActiveScene(enemy)) return;
           const d = DistanceHelper.getTileDistanceBetweenGameObjects(unit, enemy);
-          if (d !== null && d < closestDist) {
+          if (d === null) {
+            return;
+          }
+          if (d < closestDist) {
             closestDist = d;
             closestEnemy = enemy;
+            return;
+          }
+          if (d === closestDist && closestEnemy) {
+            const closestId = getActorComponent(closestEnemy, IdComponent)?.id ?? "";
+            const candidateId = getActorComponent(enemy, IdComponent)?.id ?? "";
+            if (closestId && candidateId && candidateId.localeCompare(closestId) < 0) {
+              closestEnemy = enemy;
+            }
           }
         });
         if (!closestEnemy) return;
         const newOrder = new OrderData(OrderType.Attack, { targetGameObject: closestEnemy });
-        aiController.blackboard.overrideOrderQueueAndActiveOrder(newOrder);
-        aiController.blackboard.setCurrentOrder(newOrder);
+        dispatchAiOrder(this.scene, unit, newOrder, this.player.playerNumber!);
         assignedCount++;
       });
       this.logDebugInfo(`[Defense] ${assignedCount} defenders assigned to targets`);
@@ -306,7 +440,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   }
 
   async AttackEnemyBase(): Promise<State> {
-    const now = performance.now();
+    const now = this.blackboard.getNow();
     if (!this.cooldowns.canRun("attackTrigger", now)) {
       this.logDebugInfo("[Attack] Attack trigger on cooldown");
       return State.FAILED;
@@ -329,8 +463,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       if (!aiController) return;
       if (aiController.blackboard.getCurrentOrder()) return;
       const newOrder = new OrderData(OrderType.Attack, { targetGameObject: target });
-      aiController.blackboard.overrideOrderQueueAndActiveOrder(newOrder);
-      aiController.blackboard.setCurrentOrder(newOrder);
+      dispatchAiOrder(this.scene, unit, newOrder, this.player.playerNumber!);
       assignedCount++;
     });
     this.logDebugInfo(`[Attack] ${assignedCount} units assigned to attack ${target.name}`);
@@ -407,8 +540,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
         const aiController = getActorComponent(worker, PawnAiController);
         const newOrder = new OrderData(OrderType.Gather, { targetGameObject: closestResourceSource });
         if (aiController) {
-          aiController.blackboard.overrideOrderQueueAndActiveOrder(newOrder);
-          aiController.blackboard.setCurrentOrder(newOrder);
+          dispatchAiOrder(this.scene, worker, newOrder, this.player.playerNumber!);
         }
         assigned++;
       }
@@ -459,11 +591,13 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     if (this.productionValidator) {
       const validation = this.productionValidator.validate(workerName);
       if (!validation.canQueue) {
-        if (validation.techBlocked && validation.prereqs.length > 0) {
+        const hasPrereqs = validation.prereqs.objectNames.length > 0 || validation.prereqs.researchTypes.length > 0;
+
+        if (hasPrereqs) {
           this.logDebugInfo(
-            `[Production] Worker training blocked by tech requirements. Scheduling ${validation.prereqs.length} prerequisites`
+            `[Production] Worker training blocked by prerequisites. Scheduling: ${JSON.stringify(validation.prereqs)}`
           );
-          this.productionValidator.schedulePrerequisites(validation.prereqs, workerName);
+          this.productionValidator.schedulePrerequisites(validation, workerName);
         }
         return State.FAILED;
       }
@@ -480,16 +614,11 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     });
 
     if (trainingBuildings.length === 0) return State.FAILED;
-    const prodComp = getActorComponent(trainingBuildings[0]!, ProductionComponent)!;
-    // Dynamic cost sourcing
-    const def = pwActorDefinitions[workerName];
-    const costData = def?.components?.productionCost;
-    if (!costData) return State.FAILED;
-    prodComp.startProduction({
-      actorName: workerName,
-      costData
-    });
-    return State.SUCCEEDED;
+    const targetBuilding = trainingBuildings[0]!;
+    if (dispatchProductionCommand(this.scene, [targetBuilding], this.player.playerNumber!, workerName)) {
+      return State.SUCCEEDED;
+    }
+    return State.FAILED;
   }
 
   GatherResources() {
@@ -561,8 +690,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
         const aiController = getActorComponent(worker, PawnAiController);
         const newOrder = new OrderData(OrderType.Gather, { targetGameObject: closestResourceSource });
         if (aiController) {
-          aiController.blackboard.overrideOrderQueueAndActiveOrder(newOrder);
-          aiController.blackboard.setCurrentOrder(newOrder);
+          dispatchAiOrder(this.scene, worker, newOrder, this.player.playerNumber!);
         }
       }
       this.logDebugInfo("Reassigned workers to gather the most critical resource.");
@@ -675,9 +803,9 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
 
     validWorkers.forEach((w) => {
       const aiController = getActorComponent(w, PawnAiController);
+      if (!aiController) return;
       const newOrder = new OrderData(OrderType.Build, { targetGameObject: building });
-      aiController!.blackboard.overrideOrderQueueAndActiveOrder(newOrder);
-      aiController!.blackboard.setCurrentOrder(newOrder);
+      dispatchAiOrder(this.scene, w, newOrder, this.player.playerNumber!);
     });
     // Mark reservation usage & release any lingering plan reservation reference
     this.basePlanner.markTileUsed({ x: tileLocationXYZ.x, y: tileLocationXYZ.y });
@@ -722,7 +850,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     return State.SUCCEEDED;
   }
 
-  // TODO we can use something like this to determine if the player is weak (BUT IT NEEDS TO BE EVENT-DRIVEN AND STORED IN THE BLACKBOARD OR PLAYER DIRECTLY)
+  // TODO #654: We can use something like this to determine if the player is weak, but it needs to be event-driven and stored in the blackboard or player directly
   // const { currentPlayerActors, enemyActors } = ScenePlayerHelpers.getActorsByPlayer(this.scene, this.player.playerNumber!);
   // let enemyPlayersUnitsCount = 0;
   // // find enemy player with least units
@@ -747,7 +875,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       this.logDebugInfo("[Strategy] Already in aggressive strategy");
       return State.FAILED;
     }
-    const now = performance.now();
+    const now = this.blackboard.getNow();
     if (!this.cooldowns.canRun("strategyShift", now)) {
       this.logDebugInfo("[Strategy] Strategy shift on cooldown");
       return State.FAILED; // cooldown gate
@@ -779,7 +907,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       this.logDebugInfo("[Strategy] Already in defensive strategy");
       return State.FAILED;
     }
-    const now = performance.now();
+    const now = this.blackboard.getNow();
     if (!this.cooldowns.canRun("strategyShift", now)) {
       this.logDebugInfo("[Strategy] Strategy shift on cooldown");
       return State.FAILED;
@@ -804,7 +932,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       this.logDebugInfo("[Strategy] Already in economic strategy");
       return State.FAILED;
     }
-    const now = performance.now();
+    const now = this.blackboard.getNow();
     if (!this.cooldowns.canRun("strategyShift", now)) {
       this.logDebugInfo("[Strategy] Strategy shift on cooldown");
       return State.FAILED;
@@ -837,17 +965,14 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   async RedirectWorkersToScarceResource(): Promise<State> {
     return this.logisticsManager.redirectToScarce();
   }
-  ShouldPursueNextTech(): boolean {
-    return this.techManager.shouldPursueNext();
+  ShouldPursueResearch(): boolean {
+    return this.techManager.shouldPursueResearch();
   }
-  HaveIdleUpgradeBuilding(): boolean {
-    return this.techManager.haveIdleUpgradeBuilding();
+  IsResearchInProgress(): boolean {
+    return this.techManager.isResearchInProgress();
   }
-  HasResourcesForNextTech(): boolean {
-    return this.techManager.hasResourcesForNext();
-  }
-  StartNextTechUpgrade(): State {
-    return this.techManager.startNext();
+  TryStartResearch(): State {
+    return this.techManager.tryStartResearch();
   }
   ShouldReanalyzeMap(): boolean {
     if (!this.mapAnalyzer) return true;
@@ -915,7 +1040,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   }
   async GatherEnemyData(): Promise<State> {
     // Placeholder: simply succeed after ensuring targeting manager updated.
-    await this.targetingManager.update(performance.now());
+    await this.targetingManager.update(this.blackboard.getNow());
     return State.SUCCEEDED;
   }
   ShouldProduceMilitaryUnit(): boolean {
@@ -973,7 +1098,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   }
 
   OfferSurrender(): State {
-    const now = performance.now();
+    const now = this.blackboard.getNow();
     this.blackboard.wantsToSurrender = true;
     this.blackboard.surrenderOfferedAt = now;
     this.logDebugInfo("AI player offering surrender");

@@ -15,6 +15,7 @@ export class AiPlayerHandler {
   createAiPlayerControllersForAiPlayers() {
     // this only runs on host machine
     if (!this.scene.isHost) return;
+    if (this.aiPlayerControllers.length > 0) return;
 
     const aiPlayers = this.scene.players.filter(
       (player) => player.playerController.data.playerDefinition!.playerType === ProbableWafflePlayerType.AI

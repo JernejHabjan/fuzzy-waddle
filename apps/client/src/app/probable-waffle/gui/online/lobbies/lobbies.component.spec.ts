@@ -8,6 +8,13 @@ import { GameInstanceClientService } from "../../../communicators/game-instance-
 import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.stub";
 import { RoomsService } from "../../../communicators/rooms/rooms.service";
 import { FontAwesomeTestingModule } from "@fortawesome/angular-fontawesome/testing";
+import {
+  GameSessionState,
+  ProbableWaffleGameInstanceType,
+  ProbableWaffleGameInstanceVisibility,
+  ProbableWafflePlayerType,
+  type ProbableWaffleRoom
+} from "@fuzzy-waddle/api-interfaces";
 
 @Component({ selector: "probable-waffle-lobbies", template: "", standalone: true, imports: [] })
 export class LobbiesTestingComponent {}
@@ -42,5 +49,61 @@ describe("LobbiesComponent", () => {
 
   it("should create", () => {
     expect(component).toBeTruthy();
+  });
+
+  it("keeps full public self-hosted lobbies visible so they can still be spectated", () => {
+    const fullLobby = {
+      gameInstanceMetadataData: {
+        gameInstanceId: "game-1",
+        sessionState: GameSessionState.NotStarted,
+        visibility: ProbableWaffleGameInstanceVisibility.Public,
+        type: ProbableWaffleGameInstanceType.SelfHosted,
+        name: "Full lobby"
+      },
+      players: [
+        {
+          controllerData: {
+            playerDefinition: {
+              playerType: ProbableWafflePlayerType.Human
+            }
+          }
+        }
+      ],
+      spectators: []
+    } satisfies Partial<ProbableWaffleRoom> as ProbableWaffleRoom;
+
+    roomsServiceStub.rooms.set([fullLobby]);
+
+    expect((component as any).getRoomsToJoin).toEqual([fullLobby]);
+    expect((component as any).canAddSelfAsPlayer()).toBe(false);
+  });
+
+  it("keeps in-progress public self-hosted lobbies visible for spectating only", () => {
+    const inProgressLobby = {
+      gameInstanceMetadataData: {
+        gameInstanceId: "game-2",
+        sessionState: GameSessionState.InProgress,
+        visibility: ProbableWaffleGameInstanceVisibility.Public,
+        type: ProbableWaffleGameInstanceType.SelfHosted,
+        name: "Live lobby"
+      },
+      players: [
+        {
+          controllerData: {
+            playerDefinition: {
+              playerType: ProbableWafflePlayerType.Human
+            }
+          }
+        }
+      ],
+      spectators: []
+    } satisfies Partial<ProbableWaffleRoom> as ProbableWaffleRoom;
+
+    roomsServiceStub.rooms.set([inProgressLobby]);
+    (component as any).select(inProgressLobby);
+
+    expect((component as any).getRoomsToJoin).toEqual([inProgressLobby]);
+    expect((component as any).canAddSelfAsPlayer()).toBe(false);
+    expect((component as any).canAddSelfAsSpectator()).toBe(true);
   });
 });

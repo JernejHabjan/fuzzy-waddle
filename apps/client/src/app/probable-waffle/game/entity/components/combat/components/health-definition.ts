@@ -5,5 +5,5 @@ export type HealthDefinition = {
   readonly maxArmour?: number;
   readonly regenerateHealthRate?: number;
   readonly healthDisplayBehavior?: "always" | "onDamage";
-  readonly physicalState: ActorPhysicalType;
+  readonly physicalState?: ActorPhysicalType;
 };

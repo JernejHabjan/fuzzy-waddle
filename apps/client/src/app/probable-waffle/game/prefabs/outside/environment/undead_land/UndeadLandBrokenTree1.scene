@@ -1,0 +1,40 @@
+{
+    "id": "8d47396c-e30c-4065-bc42-18b5930474a0",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Sprite",
+            "id": "090540f8-11de-407b-8498-f0fb11b7d3ce",
+            "label": "undead_land_Broken_tree_shadow1_1_png",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "27.516786534046425 59.070761958397426 64.72700467758798 55.81834205926133 92.68477789435457 46.587001846178026 99.97113602640982 75.9479588175671 27.439177209326722 78.05797943770042",
+            "texture": {
+                "key": "environment_1",
+                "frame": "undead_land/Broken_tree_shadow1_1.png"
+            },
+            "x": 30.28818402963794,
+            "y": 17.187312533482924,
+            "originX": 0.4866264377315464,
+            "originY": 0.5092758791678353
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

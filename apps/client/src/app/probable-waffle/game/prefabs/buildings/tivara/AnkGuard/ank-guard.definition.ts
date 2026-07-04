@@ -2,7 +2,7 @@ import {
   ANIM_BUILDING_ICON_ANIMS_TIVARA_ANKGUARD_ACTION,
   ANIM_BUILDING_ICON_ANIMS_TIVARA_ANKGUARD_IDLE
 } from "../../../icon-animations";
-import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { getBuildingQueueCapabilities, ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PaymentType } from "../../../../entity/components/production/payment-type";
 import { coreConstructionSiteDefinition } from "../../shared/core-construction-site.definition";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
@@ -12,7 +12,8 @@ export const ankGuardDefinition = {
   components: {
     representable: {
       width: 256,
-      height: 256
+      height: 176,
+      origin: { x: 0.5, y: 0.8 }
     },
     objectDescriptor: {
       color: 0xc2a080
@@ -60,9 +61,14 @@ export const ankGuardDefinition = {
       costType: PaymentType.PayImmediately
     },
     production: {
+      availableProduceActors: getBuildingQueueCapabilities(ObjectNames.AnkGuard)!.availableProduceActors!
+    },
+    research: {
+      availableResearch: getBuildingQueueCapabilities(ObjectNames.AnkGuard)!.availableResearch!
+    },
+    queue: {
       queueCount: 1,
-      capacityPerQueue: 5,
-      availableProduceActors: [ObjectNames.TivaraSlingshotFemale, ObjectNames.TivaraMacemanMale]
+      capacityPerQueue: 5
     },
     selectable: {},
     collider: { enabled: true },

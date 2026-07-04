@@ -1,8 +1,8 @@
-import { DamageType } from "./damage-type";
 import { AnimationType } from "../animation/animation-type";
 import { WeaponType } from "./weapon-type";
 import type { SoundDefinition } from "../actor-audio/sound-definition";
 import type { ProjectileData } from "./projectile-data";
+import { DamageType } from "@fuzzy-waddle/api-interfaces";
 
 export interface AttackData {
   // Time before this attack can be used again, in seconds
@@ -17,6 +17,10 @@ export interface AttackData {
   highGroundRangeBonus?: number;
   // Type of the projectile to spawn - if not set, damage will be dealt instantly
   projectile?: ProjectileData;
+  meleeAoe?: {
+    angleDegrees: number;
+    range: number;
+  };
   animationType: AnimationType;
   sounds: {
     preparing: SoundDefinition[] | null;

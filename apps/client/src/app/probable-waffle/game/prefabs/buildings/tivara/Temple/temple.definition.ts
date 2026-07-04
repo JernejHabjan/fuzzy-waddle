@@ -1,4 +1,4 @@
-import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { getBuildingQueueCapabilities, ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import {
   ANIM_BUILDING_ICON_ANIMS_TIVARA_TEMPLE_ACTION,
   ANIM_BUILDING_ICON_ANIMS_TIVARA_TEMPLE_IDLE
@@ -11,8 +11,9 @@ import { ActorPhysicalType } from "../../../../entity/components/combat/componen
 export const templeDefinition = {
   components: {
     representable: {
-      width: 192,
-      height: 192
+      width: 176,
+      height: 176,
+      origin: { x: 0.5, y: 0.8 }
     },
     objectDescriptor: {
       color: 0xc2a080
@@ -51,7 +52,6 @@ export const templeDefinition = {
     productionCost: {
       resources: {
         [ResourceType.Wood]: 150,
-        [ResourceType.Minerals]: 50
       },
       refundFactor: 0.5,
       productionTime: 30000,
@@ -64,9 +64,11 @@ export const templeDefinition = {
       actors: [ObjectNames.AnkGuard]
     },
     production: {
+      availableProduceActors: getBuildingQueueCapabilities(ObjectNames.Temple)!.availableProduceActors!
+    },
+    queue: {
       queueCount: 1,
-      capacityPerQueue: 5,
-      availableProduceActors: [ObjectNames.TivaraSlingshotFemale]
+      capacityPerQueue: 5
     },
     selectable: {},
     collider: { enabled: true },

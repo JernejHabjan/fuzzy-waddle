@@ -4,15 +4,32 @@ import { IdComponent } from "../../entity/components/id-component";
 import { OwnerComponent } from "../../entity/components/owner-component";
 import { ResourceSourceComponent } from "../../entity/components/resource/resource-source-component";
 import { ResourceDrainComponent } from "../../entity/components/resource/resource-drain-component";
-import { type ActorId, ObjectNames, type PlayerNumber, ResourceType } from "@fuzzy-waddle/api-interfaces";
+import {
+  type ActorId,
+  ConstructionStateEnum,
+  ObjectNames,
+  type PlayerNumber,
+  ResourceType
+} from "@fuzzy-waddle/api-interfaces";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import { getTileCoordsUnderObject } from "../../library/tile-under-object";
 import { getSceneComponent, getSceneService } from "./scene-component-helpers";
+import { SimulationTickService } from "./simulation-tick.service";
+import {
+  getSnapshotApplySuppressedUntilTick,
+  hasMultiplayerCommandRelay,
+  isSnapshotApplyInProgress
+} from "../../data/scene-data";
 import { TilemapComponent } from "../tilemap/tilemap.component";
 import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
 import { getCanonicalActorNameCached } from "../../data/tech-tree/canonical-actor-name";
+import { ConstructionSiteComponent } from "../../entity/components/construction/construction-site-component";
+import { shouldConsiderActorUnlocked } from "../../data/tech-tree/actor-unlock-utils";
+import { EventEmitter } from "@angular/core";
 
 export class ActorIndexSystem {
+  // Event emitted when an actor unlock is registered for a player
+  readonly actorUnlockRegistered = new EventEmitter<{ playerNumber: PlayerNumber; actorName: ObjectNames }>();
   private readonly idActors = new Set<GameObject>();
   private readonly ownedActors = new Map<PlayerNumber, Set<GameObject>>();
   private readonly resourceSources = new Set<GameObject>();
@@ -20,6 +37,8 @@ export class ActorIndexSystem {
   // Track count of each actor type per player for tech unlock management
   // Uses canonical names to group variants (e.g., TivaraWorkerMale counts as TivaraWorker)
   private readonly actorTypeCounts = new Map<PlayerNumber, Map<ObjectNames, number>>();
+  // Track construction state subscriptions for cleanup
+  private readonly constructionSubscriptions = new Map<GameObject, any>();
 
   constructor(private readonly scene: Phaser.Scene) {
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
@@ -35,6 +54,7 @@ export class ActorIndexSystem {
 
     if (!this.idActors.has(obj)) {
       this.idActors.add(obj);
+      this.logLateRegistration(obj);
 
       const ownerComp = getActorComponent(obj, OwnerComponent);
       const owner = ownerComp?.getOwner();
@@ -52,12 +72,7 @@ export class ActorIndexSystem {
           // Use canonical name to group variants (e.g., TivaraWorkerMale -> TivaraWorker)
           const canonicalName = getCanonicalActorNameCached(actorName);
           this.incrementActorTypeCount(owner, canonicalName);
-
-          // Register unlock in tech tree service
-          const techTreeService = getSceneService(this.scene, TechTreeService);
-          if (techTreeService) {
-            techTreeService.registerActorUnlock(owner, canonicalName);
-          }
+          this.registerActorUnlockWithConstructionCheck(owner, canonicalName, obj, "actor registered");
         }
       }
 
@@ -74,10 +89,39 @@ export class ActorIndexSystem {
     }
   };
 
+  private logLateRegistration(obj: GameObject): void {
+    if (!hasMultiplayerCommandRelay(this.scene)) {
+      return;
+    }
+    if (isSnapshotApplyInProgress(this.scene)) {
+      return;
+    }
+    const tick = getSceneService(this.scene, SimulationTickService)?.currentTick ?? 0;
+    if (tick <= 5) {
+      return;
+    }
+    const suppressedUntilTick = getSnapshotApplySuppressedUntilTick(this.scene);
+    if (suppressedUntilTick !== undefined && tick <= suppressedUntilTick) {
+      return;
+    }
+    const id = getActorComponent(obj, IdComponent)?.id ?? "unknown";
+    const owner = getActorComponent(obj, OwnerComponent)?.getOwner() ?? "none";
+    console.warn(
+      `[ActorIndex] Late actor registration detected at tick=${tick} id=${id} name=${obj.name} owner=${owner}.`
+    );
+  }
+
   unregisterActor = (obj?: GameObject) => {
     if (!obj) return;
 
     if (this.idActors.delete(obj)) {
+      // Clean up construction subscription if exists
+      const subscription = this.constructionSubscriptions.get(obj);
+      if (subscription) {
+        subscription.unsubscribe();
+        this.constructionSubscriptions.delete(obj);
+      }
+
       // remove from owned map
       const ownerComp = getActorComponent(obj, OwnerComponent);
       const owner = ownerComp?.getOwner();
@@ -271,7 +315,58 @@ export class ActorIndexSystem {
     return this.getActorsAtTile(tile).length === 0;
   }
 
+  /**
+   * Register actor unlock with tech tree, handling construction state appropriately.
+   * If the actor is fully constructed, registers immediately.
+   * If under construction, waits for construction to finish before registering.
+   */
+  private registerActorUnlockWithConstructionCheck(
+    owner: PlayerNumber,
+    canonicalName: ObjectNames,
+    gameObject: GameObject,
+    logContext: string
+  ) {
+    const techTreeService = getSceneService(this.scene, TechTreeService);
+    if (!techTreeService) return;
+
+    // Register unlock immediately if it should be considered unlocked (finished buildings and alive actors)
+    if (shouldConsiderActorUnlocked(gameObject)) {
+      // console.log(`Registering actor unlock (${logContext}):`, { owner, canonicalName, gameObject });
+      techTreeService.registerActorUnlock(owner, canonicalName);
+      // Emit event so UI can react to new unlocks
+      this.actorUnlockRegistered.emit({ playerNumber: owner, actorName: canonicalName });
+    } else {
+      // For buildings under construction, register unlock when construction finishes
+      const constructionSite = getActorComponent(gameObject, ConstructionSiteComponent);
+      if (constructionSite) {
+        const subscription = constructionSite.constructionStateChanged.subscribe((state) => {
+          if (state === ConstructionStateEnum.Finished) {
+            // console.log(`Registering actor unlock (${logContext}, construction finished):`, {
+            //   owner,
+            //   canonicalName,
+            //   gameObject
+            // });
+            techTreeService.registerActorUnlock(owner, canonicalName);
+            // Emit event so UI can react to new unlocks
+            this.actorUnlockRegistered.emit({ playerNumber: owner, actorName: canonicalName });
+            // Clean up subscription after construction finishes
+            subscription.unsubscribe();
+            this.constructionSubscriptions.delete(gameObject);
+          }
+        });
+        // Store subscription for cleanup on destroy
+        this.constructionSubscriptions.set(gameObject, subscription);
+      }
+    }
+  }
+
   private destroy() {
+    // Clean up all construction subscriptions
+    this.constructionSubscriptions.forEach((subscription) => {
+      subscription.unsubscribe();
+    });
+    this.constructionSubscriptions.clear();
+
     this.idActors.clear();
     this.ownedActors.clear();
     this.resourceSources.clear();
@@ -321,9 +416,7 @@ export class ActorIndexSystem {
       // Increment new owner's actor type count
       if (canonicalName) {
         this.incrementActorTypeCount(newOwner, canonicalName);
-        if (techTreeService) {
-          techTreeService.registerActorUnlock(newOwner, canonicalName);
-        }
+        this.registerActorUnlockWithConstructionCheck(newOwner, canonicalName, gameObject, "ownership change");
       }
     }
   }

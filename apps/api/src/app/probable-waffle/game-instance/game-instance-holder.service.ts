@@ -1,8 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { GameInstanceId, ProbableWaffleGameInstance } from "@fuzzy-waddle/api-interfaces";
+import { type GameInstanceHolderServiceInterface } from "./game-instance-holder.service.interface";
 
 @Injectable()
-export class GameInstanceHolderService {
+export class GameInstanceHolderService implements GameInstanceHolderServiceInterface {
   private _openGameInstances: ProbableWaffleGameInstance[] = [];
 
   get openGameInstances(): ProbableWaffleGameInstance[] {
@@ -23,5 +24,11 @@ export class GameInstanceHolderService {
     return this.openGameInstances.find(
       (gameInstance) => gameInstance.gameInstanceMetadata.data.gameInstanceId === gameInstanceId
     );
+  }
+
+  getOpenGameInstanceIds(): GameInstanceId[] {
+    return this.openGameInstances
+      .map((gameInstance) => gameInstance.gameInstanceMetadata.data.gameInstanceId)
+      .filter((gameInstanceId): gameInstanceId is GameInstanceId => !!gameInstanceId);
   }
 }

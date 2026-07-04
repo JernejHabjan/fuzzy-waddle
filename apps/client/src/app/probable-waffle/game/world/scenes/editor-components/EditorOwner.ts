@@ -5,6 +5,7 @@
 /* START-USER-IMPORTS */
 import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "../../../entity/components/owner-component";
+import { ProbableWaffleSceneEventName } from "../../services/recovery/probable-waffle-scene-events";
 /* END-USER-IMPORTS */
 
 export default class EditorOwner {
@@ -13,7 +14,7 @@ export default class EditorOwner {
     (gameObject as any)["__EditorOwner"] = this;
 
     /* START-USER-CTR-CODE */
-    gameObject.scene.events.once("scene-awake", this.awake, this);
+    gameObject.scene.events.once(ProbableWaffleSceneEventName.SceneAwake, this.awake, this);
     /* END-USER-CTR-CODE */
   }
 

@@ -13,10 +13,13 @@ import { VisionComponent } from "./vision-component";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 import type { OwnerDefinition } from "./owner-definition";
+import { markGameObjectAmbientResponsive } from "../../world/services/lighting/lighting-game-object-meta";
+import { SceneLightingService } from "../../world/services/lighting/scene-lighting.service";
 
 export class OwnerComponent {
   static readonly ZIndex = 1;
   static readonly OwnerColorAppliedEvent = "owner-color-applied";
+  static readonly OwnerChangedEvent = "owner-changed";
   private readonly borderSize = 2;
   /**
    * Not using color replace as it adds huge load on GPU
@@ -44,7 +47,8 @@ export class OwnerComponent {
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.on(ContainerComponent.GameObjectVisibilityChanged, this.gameObjectVisibilityChanged, this);
     // Todo - now calling refreshOwnerUiVisibility on tick to update visibility due to FOW changes
-    gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.refreshOwnerUiVisibility, this);
+    // Intentional frame update: owner ring visibility is purely visual and follows render/FOW visibility updates.
+    gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.refreshOwnerUiVisibilityFrameNonDeterministic, this);
   }
 
   private init() {
@@ -62,10 +66,10 @@ export class OwnerComponent {
 
   private gameObjectVisibilityChanged(visible: boolean) {
     this.gameObjectVisible = visible;
-    this.refreshOwnerUiVisibility();
+    this.refreshOwnerUiVisibilityFrameNonDeterministic();
   }
 
-  private refreshOwnerUiVisibility() {
+  private refreshOwnerUiVisibilityFrameNonDeterministic() {
     let visible = this.gameObjectVisible;
     const visionComponent = getActorComponent(this.gameObject, VisionComponent);
     if (!visionComponent || !visionComponent.visibilityByCurrentPlayer) visible = false;
@@ -82,6 +86,7 @@ export class OwnerComponent {
     actorIndexSystem?.updateActorOwnership(this.gameObject, oldOwner, newOwner);
     this.owner = playerNumber;
     this.tryToSetComponents();
+    this.gameObject.emit(OwnerComponent.OwnerChangedEvent, oldOwner, newOwner);
   }
 
   setOwnerWithBlink(playerNumber: PlayerNumber) {
@@ -199,6 +204,9 @@ export class OwnerComponent {
     const width = Math.max(healthWidth, constructionWidth, 25);
     const height = Math.max(healthHeight, constructionHeight, 0);
     this.ownerUiElement = this.gameObject.scene.add.graphics();
+    markGameObjectAmbientResponsive(this.ownerUiElement);
+    // Graphics are added to the scene before their lighting metadata exists, so register again after marking.
+    getSceneService(this.gameObject.scene, SceneLightingService)?.registerDynamicGameObject(this.ownerUiElement);
     this.ownerUiElement.fillStyle(this.ownerColor.color);
     this.ownerUiElement.fillRect(0, 0, width + this.borderSize * 2, height + this.borderSize * 2);
     this.updateOwnerUiElementPosition();
@@ -296,6 +304,6 @@ export class OwnerComponent {
     this.healthUiVisibilitySubscription?.unsubscribe();
     this.constructionProgressSubscription?.unsubscribe();
     this.gameObject.off(ContainerComponent.GameObjectVisibilityChanged, this.gameObjectVisibilityChanged, this);
-    this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.refreshOwnerUiVisibility, this);
+    this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.refreshOwnerUiVisibilityFrameNonDeterministic, this);
   }
 }

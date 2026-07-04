@@ -3,8 +3,6 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { moveGameObjectToRandomTileInNavigableRadius, MovementSystem } from "../../../entity/systems/movement.system";
-import { getActorSystem } from "../../../data/actor-system";
 import { onObjectReady } from "../../../data/game-object-helper";
 import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
 import { getActorComponent } from "../../../data/actor-component";
@@ -13,6 +11,8 @@ import { AnimationActorComponent } from "../../../entity/components/animation/an
 import { SoundType } from "../../../entity/components/actor-audio/sound-type";
 import { RandomService } from "../../../world/services/random.service";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
+import { RandomMovementComponent } from "../../../entity/components/movement/random-movement.component";
+import type { RandomMovementDefinition } from "../../../entity/components/movement/random-movement-definition";
 /* END-USER-IMPORTS */
 
 export default class Hedgehog extends Phaser.GameObjects.Sprite {
@@ -23,7 +23,7 @@ export default class Hedgehog extends Phaser.GameObjects.Sprite {
     this.setOrigin(0.5, 0.6748775087412171);
 
     /* START-USER-CTR-CODE */
-    onObjectReady(this, this.postSceneCreate, this);
+    onObjectReady(this, this.init, this);
     /* END-USER-CTR-CODE */
   }
 
@@ -31,14 +31,20 @@ export default class Hedgehog extends Phaser.GameObjects.Sprite {
   override name = ObjectNames.Hedgehog;
   private actorAudioComponent?: AudioActorComponent;
   private animationActorComponent?: AnimationActorComponent;
-  private readonly radius = 2;
-  private currentDelay: Phaser.Time.TimerEvent | null = null;
+  private randomMovementComponent!: RandomMovementComponent;
   private curledUp = false;
 
-  private postSceneCreate() {
+  private init() {
     this.actorAudioComponent = getActorComponent(this, AudioActorComponent);
     this.animationActorComponent = getActorComponent(this, AnimationActorComponent);
-    this.moveHedgehogAfterDelay();
+    this.randomMovementComponent = new RandomMovementComponent(this, {
+      radius: 2,
+      shouldPreventMovementStart: () => this.curledUp,
+      delay: {
+        min: 2000,
+        max: 6000
+      }
+    } satisfies RandomMovementDefinition);
     this.handleClick();
   }
 
@@ -50,29 +56,18 @@ export default class Hedgehog extends Phaser.GameObjects.Sprite {
     this.curlUp();
   }
 
-  async moveHedgehog() {
-    if (!this.active) return;
-
-    try {
-      await moveGameObjectToRandomTileInNavigableRadius(this, this.radius);
-      this.moveHedgehogAfterDelay();
-    } catch (e) {
-      console.error(e);
-    }
-  }
-
   private curlUp() {
     if (!this.active) return;
     if (this.curledUp) return;
-    this.removeDelay();
-    this.cancelMovement();
+    this.randomMovementComponent.removeDelay();
+    this.randomMovementComponent.cancelMovement();
 
     this.curledUp = true;
 
     this.animationActorComponent?.playCustomAnimation("ball", {
       onComplete: () => {
         this.curledUp = false;
-        this.moveHedgehogAfterDelay();
+        this.randomMovementComponent.moveAfterDelay();
       }
     });
     const randomService = getSceneService(this.scene, RandomService)!;
@@ -80,29 +75,9 @@ export default class Hedgehog extends Phaser.GameObjects.Sprite {
     this.actorAudioComponent?.playSpatialCustomSound(sound);
   }
 
-  private moveHedgehogAfterDelay() {
-    if (!this.active) return;
-    if (this.curledUp) return;
-    this.removeDelay();
-    const randomDelay = Phaser.Math.Between(1000, 5000);
-    this.currentDelay = this.scene.time.delayedCall(randomDelay, this.moveHedgehog, [], this);
-  }
-
-  private removeDelay() {
-    this.currentDelay?.remove(false);
-    this.currentDelay = null;
-  }
-
-  private cancelMovement = () => {
-    const movementSystem = getActorSystem<MovementSystem>(this, MovementSystem);
-    if (movementSystem) movementSystem.cancelMovement();
-  };
-
   override destroy(fromScene?: boolean) {
     super.destroy(fromScene);
     this.off(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, this.onClick, this);
-    this.removeDelay();
-    this.cancelMovement();
   }
   /* END-USER-CODE */
 }

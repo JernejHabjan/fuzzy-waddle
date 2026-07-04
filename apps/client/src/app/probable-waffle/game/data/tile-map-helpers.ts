@@ -1,4 +1,9 @@
+import { getActorComponent } from "./actor-component";
 import { getGameObjectCurrentTile } from "./game-object-helper";
+import { HealthComponent } from "../entity/components/combat/components/health-component";
+import { getCenterTileCoordUnderObject } from "../library/tile-under-object";
+import { getSceneComponent } from "../world/services/scene-component-helpers";
+import { TilemapComponent } from "../world/tilemap/tilemap.component";
 
 /**
  * using own implementation - https://github.com/phaserjs/phaser/issues/6671
@@ -111,39 +116,126 @@ function createVirtualTiles(
   return virtualTiles;
 }
 
-export function getNeighboursByTypes(
+export function getIsometricNeighbourDirectionsByTypes(
   gameObject: Phaser.GameObjects.GameObject & Phaser.GameObjects.Components.Transform,
   neighbourTypes: (new (scene: Phaser.Scene) => Phaser.GameObjects.GameObject)[],
   tileWidth: number
 ): {
+  top: boolean;
+  bottom: boolean;
+  left: boolean;
+  right: boolean;
   topLeft: boolean;
   topRight: boolean;
   bottomLeft: boolean;
   bottomRight: boolean;
 } {
   const tileHeight = tileWidth / 2;
-
   const allObjects = gameObject.scene.children.list.filter(
-    (child) => child !== gameObject && neighbourTypes.some((type) => child instanceof type && child.active)
+    (child) => child !== gameObject && isActiveLivingNeighbourOfType(child, neighbourTypes)
   ) as (Phaser.GameObjects.GameObject & Phaser.GameObjects.Components.Transform)[];
 
-  const topLeftObject = allObjects.find(
-    (wall) => wall.x === gameObject.x - tileWidth / 2 && wall.y === gameObject.y - tileHeight / 2
-  );
-  const topRightObject = allObjects.find(
-    (wall) => wall.x === gameObject.x + tileWidth / 2 && wall.y === gameObject.y - tileHeight / 2
-  );
-  const bottomLeftObject = allObjects.find(
-    (wall) => wall.x === gameObject.x - tileWidth / 2 && wall.y === gameObject.y + tileHeight / 2
-  );
-  const bottomRightObject = allObjects.find(
-    (wall) => wall.x === gameObject.x + tileWidth / 2 && wall.y === gameObject.y + tileHeight / 2
-  );
+  // Visual prefab art is authored in isometric world offsets. Tile-center
+  // deltas can call a visually top-right neighbor "top", which breaks wall and
+  // stair sprite selection even though navigation still needs tile deltas.
+  const matchesWorldDirection = (dx: number, dy: number) =>
+    allObjects.some(
+      (child) => isSameWorldPosition(child.x, gameObject.x + dx) && isSameWorldPosition(child.y, gameObject.y + dy)
+    );
 
   return {
-    topLeft: !!topLeftObject,
-    topRight: !!topRightObject,
-    bottomLeft: !!bottomLeftObject,
-    bottomRight: !!bottomRightObject
+    top: matchesWorldDirection(0, -tileHeight),
+    bottom: matchesWorldDirection(0, tileHeight),
+    left: matchesWorldDirection(-tileWidth, 0),
+    right: matchesWorldDirection(tileWidth, 0),
+    topLeft: matchesWorldDirection(-tileWidth / 2, -tileHeight / 2),
+    topRight: matchesWorldDirection(tileWidth / 2, -tileHeight / 2),
+    bottomLeft: matchesWorldDirection(-tileWidth / 2, tileHeight / 2),
+    bottomRight: matchesWorldDirection(tileWidth / 2, tileHeight / 2)
   };
+}
+
+/**
+ * Returns logical tile neighbors for the supplied types. Use this for topology
+ * and navigation decisions; visual-prefab selection that depends on authored
+ * sprite offsets should use getIsometricNeighbourDirectionsByTypes instead.
+ * @param gameObject The structure or prefab whose neighbors are being queried.
+ * @param neighbourTypes Constructor types that count as matching neighbors.
+ * @param tileWidth Tile width used by the world-space fallback path.
+ */
+export function getNeighbourDirectionsByTypes(
+  gameObject: Phaser.GameObjects.GameObject & Phaser.GameObjects.Components.Transform,
+  neighbourTypes: (new (scene: Phaser.Scene) => Phaser.GameObjects.GameObject)[],
+  tileWidth: number
+): {
+  top: boolean;
+  bottom: boolean;
+  left: boolean;
+  right: boolean;
+  topLeft: boolean;
+  topRight: boolean;
+  bottomLeft: boolean;
+  bottomRight: boolean;
+} {
+  const allObjects = gameObject.scene.children.list.filter(
+    (child) => child !== gameObject && isActiveLivingNeighbourOfType(child, neighbourTypes)
+  ) as (Phaser.GameObjects.GameObject & Phaser.GameObjects.Components.Transform)[];
+
+  const tilemap = getSceneComponent(gameObject.scene, TilemapComponent)?.tilemap;
+  const ownTile = tilemap ? getCenterTileCoordUnderObject(tilemap, gameObject) : undefined;
+  if (tilemap && ownTile) {
+    // Navigation uses logical tile adjacency, not art offsets. This is what
+    // lets elevated surfaces connect through the height graph consistently.
+    const matchesDirection = (dx: number, dy: number) =>
+      allObjects.some((child) => {
+        const tile = getCenterTileCoordUnderObject(tilemap, child);
+        return !!tile && tile.x === ownTile.x + dx && tile.y === ownTile.y + dy;
+      });
+
+    return {
+      top: matchesDirection(0, -1),
+      bottom: matchesDirection(0, 1),
+      left: matchesDirection(-1, 0),
+      right: matchesDirection(1, 0),
+      topLeft: matchesDirection(-1, -1),
+      topRight: matchesDirection(1, -1),
+      bottomLeft: matchesDirection(-1, 1),
+      bottomRight: matchesDirection(1, 1)
+    };
+  }
+
+  const tileHeight = tileWidth / 2;
+  const matchesWorldDirection = (dx: number, dy: number) =>
+    allObjects.some((child) => child.x === gameObject.x + dx && child.y === gameObject.y + dy);
+
+  return {
+    top: false,
+    bottom: false,
+    left: false,
+    right: false,
+    topLeft: matchesWorldDirection(-tileWidth / 2, -tileHeight / 2),
+    topRight: matchesWorldDirection(tileWidth / 2, -tileHeight / 2),
+    bottomLeft: matchesWorldDirection(-tileWidth / 2, tileHeight / 2),
+    bottomRight: matchesWorldDirection(tileWidth / 2, tileHeight / 2)
+  };
+}
+
+/**
+ * Compares authored world positions with a tiny epsilon so prefab-neighbor
+ * checks do not drift on fractional isometric coordinates.
+ */
+function isSameWorldPosition(a: number, b: number): boolean {
+  return Math.abs(a - b) <= 0.001;
+}
+
+/**
+ * Filters neighbors down to active instances of the requested prefab types and
+ * excludes killed structures so topology refreshes follow the live world state.
+ */
+function isActiveLivingNeighbourOfType(
+  child: Phaser.GameObjects.GameObject,
+  neighbourTypes: (new (scene: Phaser.Scene) => Phaser.GameObjects.GameObject)[]
+): boolean {
+  if (!neighbourTypes.some((type) => child instanceof type && child.active)) return false;
+  return getActorComponent(child, HealthComponent)?.killed !== true;
 }

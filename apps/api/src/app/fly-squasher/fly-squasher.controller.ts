@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post, UseGuards } from "@nestjs/common";
-import { SupabaseAuthGuard } from "../../auth/guards/supabase-auth.guard";
+import { OnlineAccessGuard } from "../../auth/guards/online-access.guard";
 import { CurrentUser } from "../../auth/current-user";
 import { type AuthUser } from "@supabase/supabase-js";
 import { ScoreDto } from "@fuzzy-waddle/api-interfaces";
@@ -10,7 +10,7 @@ export class FlySquasherController {
   constructor(private readonly flySquasherService: FlySquasherService) {}
 
   @Post("post-score")
-  @UseGuards(SupabaseAuthGuard)
+  @UseGuards(OnlineAccessGuard)
   async startGame(@CurrentUser() user: AuthUser, @Body() body: ScoreDto): Promise<void> {
     await this.flySquasherService.postScore(body, user);
   }

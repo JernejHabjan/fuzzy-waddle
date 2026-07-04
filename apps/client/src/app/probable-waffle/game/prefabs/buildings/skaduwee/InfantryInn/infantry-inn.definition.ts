@@ -1,5 +1,5 @@
 import { ANIM_BUILDING_ICON_ANIMS_SKADUWEE_INFANTRY_INN } from "../../../icon-animations";
-import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { getBuildingQueueCapabilities, ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PaymentType } from "../../../../entity/components/production/payment-type";
 import { coreConstructionSiteDefinition } from "../../shared/core-construction-site.definition";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
@@ -9,7 +9,8 @@ export const infantryInnDefinition = {
   components: {
     representable: {
       width: 128,
-      height: 128
+      height: 128,
+      origin: { x: 0.5, y: 0.8 }
     },
     objectDescriptor: {
       color: 0xf2f7fa
@@ -57,13 +58,14 @@ export const infantryInnDefinition = {
       costType: PaymentType.PayImmediately
     },
     production: {
+      availableProduceActors: getBuildingQueueCapabilities(ObjectNames.InfantryInn)!.availableProduceActors!
+    },
+    queue: {
       queueCount: 1,
-      capacityPerQueue: 5,
-      availableProduceActors: [
-        ObjectNames.SkaduweeMagicianFemale,
-        ObjectNames.SkaduweeRangedFemale,
-        ObjectNames.SkaduweeWarriorMale
-      ]
+      capacityPerQueue: 5
+    },
+    research: {
+      availableResearch: getBuildingQueueCapabilities(ObjectNames.InfantryInn)!.availableResearch!
     },
     selectable: {},
     collider: { enabled: true },

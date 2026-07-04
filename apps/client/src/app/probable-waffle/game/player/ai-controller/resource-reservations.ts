@@ -7,6 +7,7 @@ export interface ResourceReservation {
   minerals?: number;
   wood?: number;
   stone?: number;
+  food?: number;
   housing?: number;
   expiresAt: number;
   createdAt: number;
@@ -28,6 +29,7 @@ export class ReservationPool {
       minerals: costs.minerals || 0,
       wood: costs.wood || 0,
       stone: costs.stone || 0,
+      food: costs.food || 0,
       createdAt: now,
       expiresAt: now + ttlMs
     } satisfies ResourceReservation;
@@ -54,12 +56,14 @@ export class ReservationPool {
     const total = {
       [ResourceType.Minerals]: 0,
       [ResourceType.Wood]: 0,
-      [ResourceType.Stone]: 0
+      [ResourceType.Stone]: 0,
+      [ResourceType.Food]: 0
     } satisfies Record<ResourceType, number>;
     for (const r of this.reservations.values()) {
       total[ResourceType.Minerals] += r.minerals || 0;
       total[ResourceType.Wood] += r.wood || 0;
       total[ResourceType.Stone] += r.stone || 0;
+      total[ResourceType.Food] += r.food || 0;
     }
     return total;
   }

@@ -10,6 +10,9 @@ import PushActionScript from "../../../../../shared/game/phaser/script-nodes/Pus
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import HudProbableWaffle from "../../../world/scenes/hud-scenes/HudProbableWaffle";
 import { environment } from "../../../../../../environments/environment";
+import { getSceneService } from "../../../world/services/scene-component-helpers";
+import { SimulationTickService } from "../../../world/services/simulation-tick.service";
+import { hasMultiplayerCommandRelay } from "../../../data/scene-data";
 /* END-USER-IMPORTS */
 
 export default class GameSpeedModifier extends Phaser.GameObjects.Container {
@@ -225,40 +228,45 @@ export default class GameSpeedModifier extends Phaser.GameObjects.Container {
   private init() {
     this.mainSceneWithActors = (this.scene as HudProbableWaffle).probableWaffleScene!;
     this.multiplier_1x.on("action", () => {
-      if (this.mainSceneWithActors) {
-        this.mainSceneWithActors.time.timeScale = 1;
-        this.mainSceneWithActors.anims.globalTimeScale = 1;
-        this.mainSceneWithActors.tweens.timeScale = 1;
-      }
+      this.setGameSpeed(1);
     });
 
     this.multiplier_3x.on("action", () => {
-      if (this.mainSceneWithActors) {
-        this.mainSceneWithActors.time.timeScale = 3;
-        this.mainSceneWithActors.anims.globalTimeScale = 3;
-        this.mainSceneWithActors.tweens.timeScale = 3;
-      }
+      this.setGameSpeed(3);
     });
 
     this.multiplier_10x.on("action", () => {
-      if (this.mainSceneWithActors) {
-        this.mainSceneWithActors.time.timeScale = 10;
-        this.mainSceneWithActors.anims.globalTimeScale = 10;
-        this.mainSceneWithActors.tweens.timeScale = 10;
-      }
+      this.setGameSpeed(10);
     });
 
     this.multiplier_100x.on("action", () => {
-      if (this.mainSceneWithActors) {
-        this.mainSceneWithActors.time.timeScale = 100;
-        this.mainSceneWithActors.anims.globalTimeScale = 100;
-        this.mainSceneWithActors.tweens.timeScale = 100;
-      }
+      this.setGameSpeed(100);
     });
 
     if (environment.production) {
       this.multiplier_100x.destroy();
     }
+  }
+
+  private setGameSpeed(speed: number): void {
+    if (!this.mainSceneWithActors) {
+      return;
+    }
+
+    this.mainSceneWithActors.time.timeScale = speed;
+    this.mainSceneWithActors.anims.globalTimeScale = speed;
+    this.mainSceneWithActors.tweens.timeScale = speed;
+
+    const simulationTickService = getSceneService(this.mainSceneWithActors, SimulationTickService);
+    simulationTickService?.setSimulationTimeScale(this.isSinglePlayerSpeedControlEnabled() ? speed : 1);
+  }
+
+  private isSinglePlayerSpeedControlEnabled(): boolean {
+    if (!this.mainSceneWithActors) {
+      return false;
+    }
+
+    return !hasMultiplayerCommandRelay(this.mainSceneWithActors);
   }
 
   override destroy() {

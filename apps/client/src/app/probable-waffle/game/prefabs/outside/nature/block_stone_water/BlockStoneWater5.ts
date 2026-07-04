@@ -3,10 +3,7 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { setActorData } from "../../../../data/actor-data";
-import { ColliderComponent } from "../../../../entity/components/movement/collider-component";
-import { ObjectDescriptorComponent } from "../../../../entity/components/object-descriptor-component";
-import { ObjectDescriptorDefinition } from "../../../../entity/components/object-descriptor-definition";
+import { initStaticActor } from "../../../../data/init-static-actor";
 /* END-USER-IMPORTS */
 
 export default class BlockStoneWater5 extends Phaser.GameObjects.Container {
@@ -36,16 +33,7 @@ export default class BlockStoneWater5 extends Phaser.GameObjects.Container {
     this.add(outside_nature_block_stone_water_5);
 
     /* START-USER-CTR-CODE */
-    setActorData(
-      this,
-      [
-        new ObjectDescriptorComponent({
-          color: 0x95a083
-        } satisfies ObjectDescriptorDefinition),
-        new ColliderComponent(this)
-      ],
-      []
-    );
+    initStaticActor(this, 0x95a083, true);
     /* END-USER-CTR-CODE */
   }
 

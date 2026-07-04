@@ -5,8 +5,9 @@ import type { PrefabDefinition } from "../../definitions/prefab-definition";
 export const stagDefinition = {
   components: {
     representable: {
-      width: 32,
-      height: 41
+      width: 48,
+      height: 48,
+      origin: { x: 0.5, y: 0.8122607482100719 }
     },
     objectDescriptor: {
       color: 0xc75841
@@ -18,6 +19,10 @@ export const stagDefinition = {
       sounds: {
         // todo
       }
+    },
+    collider: {
+      enabled: false,
+      colliderFactorReduction: 0.5
     },
     animatable: { animations: ANIM_STAG_DEFINITION }
   },

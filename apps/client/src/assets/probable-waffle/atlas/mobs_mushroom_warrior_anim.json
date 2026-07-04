@@ -1,0 +1,1058 @@
+{
+    "anims": [
+        {
+            "key": "mobs_mushroom_warrior_attack/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "attack/e/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "attack/e/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "attack/e/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "attack/e/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "attack/e/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "attack/e/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "attack/e/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_mushroom_warrior_attack/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "attack/n/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "attack/n/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "attack/n/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "attack/n/24.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "attack/n/25.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "attack/n/26.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "attack/n/27.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_mushroom_warrior_attack/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "attack/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "attack/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "attack/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "attack/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "attack/s/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "attack/s/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "attack/s/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_mushroom_warrior_attack/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "attack/w/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "attack/w/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "attack/w/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "attack/w/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "attack/w/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "attack/w/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "attack/w/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_mushroom_warrior_death/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "death/e/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "death/e/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "death/e/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "death/e/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "death/e/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_mushroom_warrior_death/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "death/n/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "death/n/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "death/n/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "death/n/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "death/n/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_mushroom_warrior_death/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "death/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "death/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "death/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "death/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "death/s/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_mushroom_warrior_death/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "death/w/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "death/w/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "death/w/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "death/w/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "death/w/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_mushroom_warrior_hidden/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "hidden/e/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_mushroom_warrior_hidden/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "hidden/n/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_mushroom_warrior_hidden/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "hidden/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_mushroom_warrior_hidden/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "hidden/w/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_mushroom_warrior_hide/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "hide/e/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "hide/e/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "hide/e/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "hide/e/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "hide/e/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_mushroom_warrior_hide/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "hide/n/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "hide/n/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "hide/n/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "hide/n/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "hide/n/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_mushroom_warrior_hide/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "hide/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "hide/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "hide/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "hide/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "hide/s/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_mushroom_warrior_hide/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "hide/w/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "hide/w/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "hide/w/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "hide/w/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "hide/w/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_mushroom_warrior_hit/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "hit/e/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "hit/e/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_mushroom_warrior_hit/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "hit/n/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "hit/n/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_mushroom_warrior_hit/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "hit/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "hit/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_mushroom_warrior_hit/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "hit/w/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "hit/w/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_mushroom_warrior_idle/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "idle/e/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "idle/e/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "idle/e/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "idle/e/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_mushroom_warrior_idle/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "idle/n/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "idle/n/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "idle/n/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "idle/n/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_mushroom_warrior_idle/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "idle/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "idle/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "idle/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "idle/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_mushroom_warrior_idle/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "idle/w/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "idle/w/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "idle/w/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "idle/w/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_mushroom_warrior_show up/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "show up/e/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "show up/e/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "show up/e/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_mushroom_warrior_show up/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "show up/n/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "show up/n/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "show up/n/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_mushroom_warrior_show up/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "show up/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "show up/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "show up/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_mushroom_warrior_show up/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "show up/w/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "show up/w/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "show up/w/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_mushroom_warrior_walk/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "walk/e/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "walk/e/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "walk/e/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "walk/e/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_mushroom_warrior_walk/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "walk/n/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "walk/n/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "walk/n/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "walk/n/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_mushroom_warrior_walk/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "walk/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "walk/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "walk/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "walk/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_mushroom_warrior_walk/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "walk/w/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "walk/w/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "walk/w/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_mushroom_warrior",
+                    "frame": "walk/w/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        }
+    ],
+    "globalTimeScale": 1,
+    "meta": {
+        "app": "Phaser Editor 2D v3",
+        "contentType": "Phaser v3 Animations"
+    },
+    "settings": {
+        "sourceLang": "TYPE_SCRIPT",
+        "esModule": false,
+        "generateCode": true
+    }
+}

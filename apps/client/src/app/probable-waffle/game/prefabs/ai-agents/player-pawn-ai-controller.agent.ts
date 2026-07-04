@@ -15,8 +15,10 @@ import { PawnAiBlackboard } from "./pawn-ai-blackboard";
 import { GathererComponent } from "../../entity/components/resource/gatherer-component";
 import { ResourceSourceComponent } from "../../entity/components/resource/resource-source-component";
 import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import { SpellTargetType } from "@fuzzy-waddle/api-interfaces";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import { ContainableComponent } from "../../entity/components/building/containable-component";
+import { ContainerComponent } from "../../entity/components/building/container-component";
 import { ResourceDrainComponent } from "../../entity/components/resource/resource-drain-component";
 import { BuilderComponent } from "../../entity/components/construction/builder-component";
 import { OrderData } from "../../ai/OrderData";
@@ -24,6 +26,21 @@ import { HealingComponent } from "../../entity/components/combat/components/heal
 import { ConstructionSiteComponent } from "../../entity/components/construction/construction-site-component";
 import { AnimationActorComponent } from "../../entity/components/animation/animation-actor-component";
 import type { PathMoveConfig } from "../../entity/systems/path-move-config";
+import { StatusEffectComponent } from "../../entity/components/status-effect/status-effect-component";
+import { SpellComponent } from "../../entity/components/combat/components/spell-component";
+import { SpellCastingSystem } from "../../entity/systems/spell-casting.system";
+import { spellDefinitions } from "../../entity/components/combat/spell-definitions";
+import { RepresentableComponent } from "../../entity/components/representable-component";
+import { TendableComponent } from "../../entity/components/tendable/tendable-component";
+import { isCropResourceSource } from "../../entity/components/tendable/growth-stage.interface";
+import { AnimationType } from "../../entity/components/animation/animation-type";
+import { getGameObjectTileInRadius } from "../../data/game-object-helper";
+import { NavigationService } from "../../world/services/navigation.service";
+import { getSceneService } from "../../world/services/scene-component-helpers";
+import { isWaterUnit } from "../../data/game-object-helper";
+import { SimulationTickService } from "../../world/services/simulation-tick.service";
+import { getSimulationNow } from "../../world/services/simulation-time";
+import { IdComponent } from "../../entity/components/id-component";
 
 export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
   constructor(
@@ -41,6 +58,10 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
     const playerOrder = this.blackboard.peekNextPlayerOrder();
     if (!playerOrder) return State.FAILED;
     this.blackboard.setCurrentOrder(playerOrder);
+    // Cancel any pending boarding request when starting a non-boarding order
+    if (playerOrder.orderType !== OrderType.EnterContainer) {
+      getActorComponent(this.gameObject, ContainableComponent)?.cancelAnyPendingBoardingRequest();
+    }
     return State.SUCCEEDED;
   }
 
@@ -71,6 +92,26 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
     return healthComponent.alive;
   }
 
+  /**
+   * Checks if the actor is currently stunned or frozen
+   * Stunned actors cannot move, attack, or cast spells
+   */
+  IsStunned() {
+    const statusEffectComponent = getActorComponent(this.gameObject, StatusEffectComponent);
+    if (!statusEffectComponent) return false;
+    return statusEffectComponent.isStunned();
+  }
+
+  /**
+   * Checks if the actor is currently slowed
+   * Slowed actors can still act but move slower
+   */
+  IsSlowed() {
+    const statusEffectComponent = getActorComponent(this.gameObject, StatusEffectComponent);
+    if (!statusEffectComponent) return false;
+    return statusEffectComponent.isSlowed();
+  }
+
   async InRange(type: PlayerPawnRangeType): Promise<State> {
     const currentOrder = this.blackboard.getCurrentOrder();
     if (!currentOrder) {
@@ -88,7 +129,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
       const movementSystem = getActorSystem(this.gameObject, MovementSystem);
       let distance: null | number;
       if (movementSystem) {
-        const nrTiles = await movementSystem.getPathToClosestWalkableTileBetweenGameObjectsInRadius(
+        const nrTiles = await movementSystem.getPathToClosestNavigableTileBetweenGameObjectsInRadius(
           targetGameObject,
           range
         );
@@ -237,9 +278,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
       if (isAttackMove) {
         success = await movementSystem.moveToLocationByFollowingStaticPath(location, {
           onUpdateThrottled: () => {
-            const vision = getActorComponent(this.gameObject, VisionComponent);
-            if (!vision) return;
-            const enemy = vision.getClosestVisibleEnemy();
+            const enemy = this.getClosestAttackableVisibleEnemy();
             if (enemy) {
               currentOrder.data.targetGameObject = enemy;
               movementSystem.cancelMovement();
@@ -262,11 +301,27 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
 
     const currentOrder = this.blackboard.getCurrentOrder();
     if (currentOrder) {
-      // exit container
-      const containableComponent = getActorComponent(this.gameObject, ContainableComponent);
-      if (containableComponent) {
-        containableComponent.leaveContainer();
+      if (currentOrder.orderType !== OrderType.EnterContainer) {
+        // Exit any container the actor is in for non-boarding orders
+        const containableComponent = getActorComponent(this.gameObject, ContainableComponent);
+        if (containableComponent) {
+          containableComponent.leaveContainer();
+        }
+        // Also cancel any pending boarding request registered while walking to shore
+        getActorComponent(this.gameObject, ContainableComponent)?.cancelAnyPendingBoardingRequest();
+      } else if (fromNode !== "EnterContainer:MovedToShore") {
+        // EnterContainer order cancelled before the unit reached shore — cancel boarding request
+        const target = currentOrder.data.targetGameObject;
+        if (target) {
+          getActorComponent(target, ContainerComponent)?.cancelBoardingRequest(this.gameObject);
+        }
       }
+      // Unassign from any farm being tended
+      const tendableTarget = currentOrder.data.targetGameObject;
+      if (tendableTarget) {
+        getActorComponent(tendableTarget, TendableComponent)?.unassignTender(this.gameObject);
+      }
+
       switch (currentOrder.orderType) {
         case OrderType.Move:
           // movement cancelled below
@@ -305,6 +360,100 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
     return State.SUCCEEDED;
   };
 
+  // ─── Farm Tending ───────────────────────────────────────────────────────────
+
+  TargetHasTendableComponent(): boolean {
+    const target = this.blackboard.getCurrentOrder()?.data.targetGameObject;
+    if (!target) return false;
+    return !!getActorComponent(target, TendableComponent);
+  }
+
+  GrowthReady(): boolean {
+    const target = this.blackboard.getCurrentOrder()?.data.targetGameObject;
+    if (!target) return false;
+    return getActorComponent(target, TendableComponent)?.isReadyForHarvest() ?? false;
+  }
+
+  GrowthPercentBelow(threshold: number): boolean {
+    const target = this.blackboard.getCurrentOrder()?.data.targetGameObject;
+    if (!target) return false;
+    const tendable = getActorComponent(target, TendableComponent);
+    if (!tendable) return false;
+    return tendable.growthPercent < threshold;
+  }
+
+  AssignSelfAsTender(): State {
+    const target = this.blackboard.getCurrentOrder()?.data.targetGameObject;
+    if (!target) return State.FAILED;
+    const tendable = getActorComponent(target, TendableComponent);
+    if (!tendable) return State.FAILED;
+    if (tendable.isTenderAssigned(this.gameObject)) return State.SUCCEEDED;
+    if (!tendable.canAssignTender()) return State.FAILED;
+    tendable.assignTender(this.gameObject);
+    return State.SUCCEEDED;
+  }
+
+  UnassignSelfAsTender(): State {
+    const target = this.blackboard.getCurrentOrder()?.data.targetGameObject;
+    if (target) {
+      getActorComponent(target, TendableComponent)?.unassignTender(this.gameObject);
+    }
+    return State.SUCCEEDED;
+  }
+
+  async MoveToRandomSpotOnTarget(): Promise<State> {
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return State.FAILED;
+    const target = currentOrder.data.targetGameObject;
+    if (!target) return State.FAILED;
+    // Use the worker's MovementSystem — the field has none
+    const movementSystem = getActorSystem(this.gameObject, MovementSystem);
+    if (!movementSystem) return State.FAILED;
+    try {
+      // Use spatial (non-pathfinding) tile lookup — field's own tile may be blocked by its collider
+      const randomTile = getGameObjectTileInRadius(target, 2);
+      if (!randomTile) return State.FAILED;
+      const success = await movementSystem.moveToLocationByFollowingStaticPath({
+        x: randomTile.x,
+        y: randomTile.y,
+        z: 0
+      });
+      return success ? State.SUCCEEDED : State.FAILED;
+    } catch {
+      return State.FAILED;
+    }
+  }
+
+  PlaySeedingAnimation(): State {
+    getActorComponent(this.gameObject, AnimationActorComponent)?.playCustomAnimation(AnimationType.Thrust);
+    return State.SUCCEEDED;
+  }
+
+  PlayTendingAnimation(): State {
+    const target = this.blackboard.getCurrentOrder()?.data.targetGameObject;
+    const anim = isCropResourceSource(target)
+      ? (target.getActiveCropTendAnimation() ?? AnimationType.Dig)
+      : AnimationType.Dig;
+    getActorComponent(this.gameObject, AnimationActorComponent)?.playCustomAnimation(anim);
+    return State.SUCCEEDED;
+  }
+
+  /**
+   * After finishing construction of a tendable building (e.g. a Field), immediately
+   * issue a Gather order on it so the builder begins tending/harvesting without
+   * needing a manual command.  Always returns SUCCEEDED so the build sequence continues.
+   */
+  AutoAssignTendOrderIfTendable(): State {
+    const currentOrder = this.blackboard.getCurrentOrder();
+    const target = currentOrder?.data.targetGameObject;
+    if (!target) return State.SUCCEEDED;
+    if (!getActorComponent(target, TendableComponent)) return State.SUCCEEDED;
+    this.blackboard.addOrder(new OrderData(OrderType.Gather, { targetGameObject: target }));
+    return State.SUCCEEDED;
+  }
+
+  // ────────────────────────────────────────────────────────────────────────────
+
   Attack() {
     const currentOrder = this.blackboard.getCurrentOrder();
     if (!currentOrder) return State.FAILED;
@@ -315,6 +464,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
     if (targetHealth && !targetHealth.alive) return State.FAILED;
     const attackComponent = getActorComponent(this.gameObject, AttackComponent);
     if (!attackComponent) return State.FAILED;
+    if (!attackComponent.getAttack(target)) return State.FAILED;
     if (attackComponent.remainingCooldown > 0) return State.FAILED;
     attackComponent.useAttack(target);
     return State.SUCCEEDED;
@@ -326,16 +476,26 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
     return visionComponent.getVisibleEnemies().length > 0;
   }
 
+  AnyAttackableEnemyVisible() {
+    return !!this.getClosestAttackableVisibleEnemy();
+  }
+
   // Assign closest visible enemy to the CURRENT order (used for attack-move).
-  AssignVisibleEnemyToCurrentOrder(): State {
+  AssignAttackableEnemyToCurrentOrder(): State {
     const currentOrder = this.blackboard.getCurrentOrder();
     if (!currentOrder) return State.FAILED;
-    const vision = getActorComponent(this.gameObject, VisionComponent);
-    if (!vision) return State.FAILED;
-    const enemy = vision.getClosestVisibleEnemy();
+    const enemy = this.getClosestAttackableVisibleEnemy();
     if (!enemy) return State.FAILED;
     currentOrder.data.targetGameObject = enemy;
     return State.SUCCEEDED;
+  }
+
+  CanAttackCurrentTarget() {
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return false;
+    const target = currentOrder.data.targetGameObject;
+    if (!target) return false;
+    return this.canAttackTarget(target);
   }
 
   private async CanMoveToTarget(range: number): Promise<boolean> {
@@ -511,15 +671,21 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
 
   Attacked() {
     const attackedCooldown = 1000; // milliseconds
+    const attackedCooldownTicks = Math.ceil(attackedCooldown / SimulationTickService.TICK_INTERVAL_MS);
     const healthComponent = getActorComponent(this.gameObject, HealthComponent);
     if (!healthComponent) return false;
 
     const latestDamage = healthComponent.latestDamage;
     if (!latestDamage) return false;
 
+    const simulationTickService = getSceneService(this.gameObject.scene, SimulationTickService);
+    if (simulationTickService && latestDamage.simulationTick !== undefined) {
+      const ticksSinceDamage = simulationTickService.currentTick - latestDamage.simulationTick;
+      return ticksSinceDamage < attackedCooldownTicks;
+    }
+
     // Use scene time for proper timeScale support
-    const scene = this.gameObject.scene;
-    const currentSceneTime = scene.time.now;
+    const currentSceneTime = getSimulationNow(this.gameObject.scene);
     const damageSceneTime = latestDamage.sceneTime;
     const sceneTimeSinceDamage = currentSceneTime - damageSceneTime;
 
@@ -560,9 +726,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
   AssignEnemy(source: string): State {
     switch (source) {
       case "vision":
-        const visionComponent = getActorComponent(this.gameObject, VisionComponent);
-        if (!visionComponent) return State.FAILED;
-        const visibleEnemy = visionComponent.getClosestVisibleEnemy();
+        const visibleEnemy = this.getClosestAttackableVisibleEnemy();
         if (!visibleEnemy) return State.FAILED;
         this.blackboard.addOrder(new OrderData(OrderType.Attack, { targetGameObject: visibleEnemy }));
         return State.SUCCEEDED;
@@ -573,6 +737,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
         if (!latestDamage) return State.FAILED;
         const attacker = latestDamage.damageInitiator;
         if (!attacker) return State.FAILED;
+        if (!this.canAttackTarget(attacker)) return State.FAILED;
         this.blackboard.addOrder(new OrderData(OrderType.Attack, { targetGameObject: attacker }));
         return State.SUCCEEDED;
       default:
@@ -669,6 +834,53 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
   NoEnemiesVisible() {
     // Check if there are no enemies visible to the agent
     return false;
+  }
+
+  private getClosestAttackableVisibleEnemy(): Phaser.GameObjects.GameObject | null {
+    const visionComponent = getActorComponent(this.gameObject, VisionComponent);
+    if (!visionComponent) return null;
+
+    const attackableEnemies = visionComponent.getVisibleEnemies().filter((enemy) => this.canAttackTarget(enemy));
+    if (attackableEnemies.length === 0) return null;
+
+    // Deterministic target ordering: closest first, then stable actor identity.
+    attackableEnemies.sort((a, b) => {
+      const distanceA = DistanceHelper.getTileDistanceBetweenGameObjects(this.gameObject, a);
+      const distanceB = DistanceHelper.getTileDistanceBetweenGameObjects(this.gameObject, b);
+      if (distanceA === null && distanceB === null) {
+        return this.compareEnemyTieBreaker(a, b);
+      }
+      if (distanceA === null) {
+        return 1;
+      }
+      if (distanceB === null) {
+        return -1;
+      }
+      if (distanceA !== distanceB) {
+        return distanceA - distanceB;
+      }
+      return this.compareEnemyTieBreaker(a, b);
+    });
+
+    return attackableEnemies[0]!;
+  }
+
+  private compareEnemyTieBreaker(a: Phaser.GameObjects.GameObject, b: Phaser.GameObjects.GameObject): number {
+    const aId = getActorComponent(a, IdComponent)?.id;
+    const bId = getActorComponent(b, IdComponent)?.id;
+    if (aId && bId && aId !== bId) {
+      return aId.localeCompare(bId);
+    }
+    // Fallback key keeps ordering stable even when one side is missing an id.
+    const aStable = `${a.name}:${aId ?? ""}`;
+    const bStable = `${b.name}:${bId ?? ""}`;
+    return aStable.localeCompare(bStable);
+  }
+
+  private canAttackTarget(target: Phaser.GameObjects.GameObject): boolean {
+    const attackComponent = getActorComponent(this.gameObject, AttackComponent);
+    if (!attackComponent) return false;
+    return !!attackComponent.getAttack(target);
   }
 
   HasHarvestComponent() {
@@ -769,5 +981,335 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
   Log(message: string): State {
     console.log(message);
     return State.SUCCEEDED;
+  }
+
+  // ========== Container Boarding AI ==========
+
+  HasContainableComponent(): boolean {
+    return !!getActorComponent(this.gameObject, ContainableComponent);
+  }
+
+  /** True if self is a water-terrain unit (e.g. a transport boat). */
+  IsWaterUnit(): boolean {
+    return isWaterUnit(this.gameObject);
+  }
+
+  /** True if the current order's target container is a water-terrain unit (e.g. a transport boat). */
+  IsWaterContainerTarget(): boolean {
+    const target = this.blackboard.getCurrentOrder()?.data.targetGameObject;
+    return !!target && isWaterUnit(target);
+  }
+
+  IsAlreadyInContainer(): boolean {
+    return getActorComponent(this.gameObject, ContainableComponent)?.isContained() ?? false;
+  }
+
+  /** True if self is adjacent to the target container and the container still has capacity. */
+  CanBoardContainerNow(): boolean {
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return false;
+    const target = currentOrder.data.targetGameObject;
+    if (!target) return false;
+
+    const containerComp = getActorComponent(target, ContainerComponent);
+    if (!containerComp || !containerComp.canLoadGameObject(this.gameObject)) return false;
+
+    // Unit must be within boarding range (adjacent tile) of the container
+    const dist = DistanceHelper.getTileDistanceBetweenGameObjects(this.gameObject, target);
+    return dist !== null && dist <= 1;
+  }
+
+  /** Load self into the target container and cancel any pending boarding request. */
+  BoardContainer(): State {
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return State.FAILED;
+    const target = currentOrder.data.targetGameObject;
+    if (!target) return State.FAILED;
+
+    const containerComp = getActorComponent(target, ContainerComponent);
+    if (!containerComp) return State.FAILED;
+    if (!containerComp.canLoadGameObject(this.gameObject)) return State.FAILED;
+
+    containerComp.cancelBoardingRequest(this.gameObject);
+    containerComp.loadGameObject(this.gameObject);
+    getActorComponent(this.gameObject, ContainableComponent)?.setContainer(target);
+    return State.SUCCEEDED;
+  }
+
+  /**
+   * Try to walk directly adjacent to the container using land pathfinding.
+   * Succeeds when the unit is (or gets) within boarding range of the ship.
+   * Fast-fails for water containers (boats in deep water) so the MDSL selector
+   * falls through immediately to MoveToNearestShoreForContainer.
+   */
+  async MoveAdjacentToContainer(): Promise<State> {
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return State.FAILED;
+    const target = currentOrder.data.targetGameObject;
+    if (!target) return State.FAILED;
+
+    // Water units cannot be reached via land pathfinding — skip the walk attempt
+    if (isWaterUnit(target)) return State.FAILED;
+
+    // Already adjacent — skip movement entirely
+    if (this.CanBoardContainerNow()) return State.SUCCEEDED;
+
+    const movementSystem = getActorSystem(this.gameObject, MovementSystem);
+    if (!movementSystem) return State.FAILED;
+
+    try {
+      const success = await movementSystem.moveToActorByAdjustingPathDynamically(target, {
+        radiusTilesAroundDestination: 1
+      } satisfies Partial<PathMoveConfig>);
+      // Movement may return false when path is empty (unit already at destination tile).
+      // Accept that case too if we're now within boarding range.
+      return success || this.CanBoardContainerNow() ? State.SUCCEEDED : State.FAILED;
+    } catch {
+      return State.FAILED;
+    }
+  }
+
+  /**
+   * Fallback for when the container is not directly reachable (deep water).
+   * Finds the meeting point (water-side shore tile + adjacent land tile), registers the boarding
+   * request immediately so the boat starts heading to shore in parallel, then walks to the land tile.
+   * Cancels the request if movement fails.
+   */
+  async MoveToNearestShoreForContainer(): Promise<State> {
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return State.FAILED;
+    const target = currentOrder.data.targetGameObject;
+    if (!target) return State.FAILED;
+
+    const movementSystem = getActorSystem(this.gameObject, MovementSystem);
+    if (!movementSystem) return State.FAILED;
+
+    const navService = getSceneService(this.gameObject.scene, NavigationService);
+    if (!navService) return State.FAILED;
+
+    // Find the nearest shore tile (water-side) from the ship's current position
+    const shipTile = navService.getCenterTileCoordUnderObject(target);
+    if (!shipTile) return State.FAILED;
+
+    const shoreTile = navService.findNearestShoreTile(shipTile);
+    if (!shoreTile) return State.FAILED;
+
+    // Shore tile is a water tile — the ground unit must walk to the adjacent land tile instead
+    const groundMeetingPoint = navService.findGroundTileAdjacentToShoreTile(shoreTile);
+    if (!groundMeetingPoint) return State.FAILED;
+
+    const containerComp = getActorComponent(target, ContainerComponent);
+    const containableComp = getActorComponent(this.gameObject, ContainableComponent);
+
+    // Register boarding intent NOW so the boat starts navigating to shore in parallel
+    // while this unit is still walking to the meeting point.
+    // Pass the water-side shore tile so boat and unit converge on the same spot.
+    if (containerComp) {
+      containerComp.registerBoardingRequest(this.gameObject, shoreTile);
+      if (containableComp) containableComp.pendingContainerBoardingRequest = target;
+    }
+
+    const shoreLocation: Vector3Simple = { x: groundMeetingPoint.x, y: groundMeetingPoint.y, z: 0 };
+    const success = await movementSystem.moveToLocationByFollowingStaticPath(shoreLocation);
+
+    if (!success && containerComp) {
+      // Clean up if we couldn't reach the shore
+      containerComp.cancelBoardingRequest(this.gameObject);
+      if (containableComp) containableComp.pendingContainerBoardingRequest = null;
+    }
+
+    return success ? State.SUCCEEDED : State.FAILED;
+  }
+
+  HasContainerComponent(): boolean {
+    return !!getActorComponent(this.gameObject, ContainerComponent);
+  }
+
+  HasPendingBoarders(): boolean {
+    return getActorComponent(this.gameObject, ContainerComponent)?.hasPendingBoarders() ?? false;
+  }
+
+  /**
+   * Navigate the container actor to the shore tile where the first pending boarder is waiting.
+   * Uses the pre-agreed shore tile stored on the boarding request when available, so the boat
+   * converges on the exact same tile the boarder already walked to.
+   * Falls back to finding the nearest shore to the boarder's current position otherwise.
+   */
+  async MoveToShoreForBoarding(): Promise<State> {
+    const containerComp = getActorComponent(this.gameObject, ContainerComponent);
+    if (!containerComp) return State.FAILED;
+    const boarders = containerComp.getPendingBoarders();
+    if (boarders.length === 0) return State.FAILED;
+
+    const navService = getSceneService(this.gameObject.scene, NavigationService);
+    if (!navService) return State.FAILED;
+    const movementSystem = getActorSystem(this.gameObject, MovementSystem);
+    if (!movementSystem) return State.FAILED;
+
+    const firstBoarder = boarders[0]!;
+    // Prefer the shore tile the boarder pre-negotiated when it registered
+    let shoreTile = containerComp.getTargetShoreForBoarder(firstBoarder);
+    if (!shoreTile) {
+      const boarderTile = navService.getCenterTileCoordUnderObject(firstBoarder);
+      if (!boarderTile) return State.FAILED;
+      shoreTile = navService.findNearestShoreTile(boarderTile) ?? undefined;
+    }
+    if (!shoreTile) return State.FAILED;
+
+    const shoreLocation: Vector3Simple = { x: shoreTile.x, y: shoreTile.y, z: 0 };
+    const success = await movementSystem.moveToLocationByFollowingStaticPath(shoreLocation);
+    return success ? State.SUCCEEDED : State.FAILED;
+  }
+
+  /**
+   * When self (container actor) is on a shore tile, load all pending boarders that are
+   * adjacent (within boarding range) of the container.
+   */
+  LoadPendingBoarders(): State {
+    const containerComp = getActorComponent(this.gameObject, ContainerComponent);
+    if (!containerComp) return State.FAILED;
+
+    const navService = getSceneService(this.gameObject.scene, NavigationService);
+    if (!navService) return State.FAILED;
+
+    const selfTile = navService.getCenterTileCoordUnderObject(this.gameObject);
+    if (!selfTile || !navService.isShoreTile(selfTile)) return State.FAILED;
+
+    const boarders = containerComp.getPendingBoarders();
+    let loaded = 0;
+    for (const boarder of boarders) {
+      if (!containerComp.canLoadGameObject(boarder)) continue;
+      // Boarder must be within boarding range of the container (adjacent tile)
+      const dist = DistanceHelper.getTileDistanceBetweenGameObjects(this.gameObject, boarder);
+      if (dist === null || dist > 2) continue;
+      containerComp.cancelBoardingRequest(boarder);
+      containerComp.loadGameObject(boarder);
+      getActorComponent(boarder, ContainableComponent)?.setContainer(this.gameObject);
+      loaded++;
+    }
+
+    return loaded > 0 ? State.SUCCEEDED : State.FAILED;
+  }
+
+  // ========== Spell Casting AI ==========
+
+  HasSpellComponent(): boolean {
+    return !!getActorComponent(this.gameObject, SpellComponent);
+  }
+
+  HasAutocastSpellReady(): boolean {
+    const spellComponent = getActorComponent(this.gameObject, SpellComponent);
+    if (!spellComponent) return false;
+
+    const spellCastingSystem = getActorSystem(this.gameObject, SpellCastingSystem);
+    if (!spellCastingSystem) return false;
+
+    for (const spellType of spellComponent.availableSpells) {
+      if (!spellComponent.isAutocastEnabled(spellType)) continue;
+      if (!spellComponent.isSpellResearched(spellType)) continue;
+      if (!spellComponent.canCastSpell(spellType)) continue;
+
+      // Check if we have a valid target for this spell
+      const spellData = spellDefinitions[spellType];
+      if (!spellData) continue;
+
+      if (this.hasValidAutocastTarget(spellData.targetType)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private hasValidAutocastTarget(targetType: SpellTargetType): boolean {
+    const visionComponent = getActorComponent(this.gameObject, VisionComponent);
+    if (!visionComponent) return false;
+
+    switch (targetType) {
+      case SpellTargetType.Ground:
+      case SpellTargetType.EnemyUnit:
+        // For offensive spells, need visible enemy
+        return visionComponent.getVisibleEnemies().length > 0;
+      case SpellTargetType.FriendlyUnit:
+      case SpellTargetType.Self:
+        // For healing spells, need visible damaged friendly
+        const visibleFriendlies = visionComponent.getVisibleFriendlies();
+        return visibleFriendlies.some((friendly) => {
+          const healthComponent = getActorComponent(friendly, HealthComponent);
+          return healthComponent && !healthComponent.healthIsFull && healthComponent.alive;
+        });
+      default:
+        return false;
+    }
+  }
+
+  CastAutocastSpell(): State {
+    const spellComponent = getActorComponent(this.gameObject, SpellComponent);
+    if (!spellComponent) return State.FAILED;
+
+    const spellCastingSystem = getActorSystem(this.gameObject, SpellCastingSystem);
+    if (!spellCastingSystem) return State.FAILED;
+
+    const visionComponent = getActorComponent(this.gameObject, VisionComponent);
+    if (!visionComponent) return State.FAILED;
+
+    for (const spellType of spellComponent.availableSpells) {
+      if (!spellComponent.isAutocastEnabled(spellType)) continue;
+      if (!spellComponent.isSpellResearched(spellType)) continue;
+      if (!spellComponent.canCastSpell(spellType)) continue;
+
+      const spellData = spellDefinitions[spellType];
+      if (!spellData) continue;
+
+      // Find target position based on spell target type
+      let targetPosition: Vector3Simple | null = null;
+
+      switch (spellData.targetType) {
+        case SpellTargetType.EnemyUnit:
+        case SpellTargetType.Ground:
+          // For offensive spells, target closest enemy position
+          const enemy = visionComponent.getClosestVisibleEnemy();
+          if (enemy) {
+            const representableComponentEnemy = getActorComponent(enemy, RepresentableComponent);
+            if (enemy && representableComponentEnemy) {
+              targetPosition = representableComponentEnemy.logicalWorldTransform;
+            }
+          }
+          break;
+        case SpellTargetType.FriendlyUnit:
+          // Find damaged friendly
+          const friendlies = visionComponent.getVisibleFriendlies();
+          for (const friendly of friendlies) {
+            const healthComponent = getActorComponent(friendly, HealthComponent);
+            const representableComponentFriendly = getActorComponent(friendly, RepresentableComponent);
+            if (
+              healthComponent &&
+              !healthComponent.healthIsFull &&
+              healthComponent.alive &&
+              representableComponentFriendly
+            ) {
+              targetPosition = representableComponentFriendly.logicalWorldTransform;
+              break;
+            }
+          }
+          break;
+        case SpellTargetType.Self:
+          const representableComponentSelf = getActorComponent(this.gameObject, RepresentableComponent);
+          if (representableComponentSelf) {
+            targetPosition = representableComponentSelf.logicalWorldTransform;
+          }
+          break;
+      }
+
+      if (!targetPosition) continue;
+
+      // Cast the spell
+      const success = spellCastingSystem.castSpell(spellType, targetPosition);
+      if (success) {
+        return State.SUCCEEDED;
+      }
+    }
+
+    return State.FAILED;
   }
 }

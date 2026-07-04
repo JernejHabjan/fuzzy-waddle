@@ -33,7 +33,7 @@ root {
         branch [AttackEnemy]
         branch [ManageEconomy]
         branch [ManageLogistics]
-        branch [AdvanceTech]
+        branch [PursueResearch]
         branch [ScoutEnemy]
         branch [CombatTactics]
     }
@@ -170,14 +170,15 @@ root [ManageLogistics] {
     }
 }
 
-root [AdvanceTech] {
-    /* Drives tech / upgrade progression pacing (non-blocking).*/
+root [PursueResearch] {
+    /* Pursues research and tech upgrades (currently prioritizes spell research based on unit composition) (non-blocking).*/
     fail {
         sequence {
-            condition [ShouldPursueNextTech]
-            condition [HaveIdleUpgradeBuilding]
-            condition [HasResourcesForNextTech]
-            action [StartNextTechUpgrade]
+            condition [ShouldPursueResearch]
+            flip {
+                condition [IsResearchInProgress]
+            }
+            action [TryStartResearch]
         }
     }
 }

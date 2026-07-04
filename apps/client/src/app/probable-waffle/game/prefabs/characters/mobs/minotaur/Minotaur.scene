@@ -1,0 +1,51 @@
+{
+    "id": "1457b917-a97a-463b-9989-20ec3446c7a8",
+    "sceneType": "PREFAB",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 1280,
+        "borderHeight": 720
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "e76c1fc5-9b94-46d4-bb7e-f2bc03ec42b6",
+            "label": "container_1",
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": -1,
+            "hitArea.y": -57,
+            "hitArea.radius": 70.06050123719255,
+            "x": 64.07536195898811,
+            "y": 117.4242644869538,
+            "list": [
+                {
+                    "type": "Sprite",
+                    "id": "e3527f1d-89a8-4604-b032-f9950fadd5d9",
+                    "label": "general_warrior_idle_down",
+                    "texture": {
+                        "key": "minotaur_idle",
+                        "frame": 4
+                    },
+                    "x": -0.07536195898811116,
+                    "y": -53.8115935885163,
+                    "scaleX": 2,
+                    "scaleY": 2,
+                    "animationPlayMethod": 1,
+                    "animationKey": "minotaur_idle_2"
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

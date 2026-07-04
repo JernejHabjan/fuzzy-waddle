@@ -20,7 +20,7 @@ export class SupplyPlanner {
 
   constructor(private readonly blackboard: PlayerAiBlackboard) {}
 
-  assess(now: number = performance.now()): SupplyAssessment {
+  assess(now: number = this.blackboard.getNow()): SupplyAssessment {
     if (now - this.lastAssessAt < this.assessCooldownMs) return this.cached;
     this.lastAssessAt = now;
     const supply = this.blackboard.production.supply;

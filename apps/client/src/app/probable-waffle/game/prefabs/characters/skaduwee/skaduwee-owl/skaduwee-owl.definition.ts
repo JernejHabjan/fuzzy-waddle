@@ -17,8 +17,9 @@ import { AiType } from "../../../ai-agents/ai-type";
 export const skaduweeOwlDefinition = {
   components: {
     representable: {
-      width: 32,
-      height: 32
+      width: 48,
+      height: 48,
+      origin: { x: 0.5, y: 0.5 }
     },
     objectDescriptor: {
       color: 0xe9ecf2
@@ -37,11 +38,7 @@ export const skaduweeOwlDefinition = {
     info: {
       name: "Mirk",
       description: "A tiny harbinger of decay, this swift flyer unleashes toxic venom that corrupts all it touches",
-      tooltipDescription: [
-        "Fast flying unit",
-        "Can attack ground targets",
-        "Good for scouting and harassment"
-      ],
+      tooltipDescription: ["Fast flying unit", "Can attack ground targets", "Good for scouting and harassment"],
       smallImage: {
         key: "factions",
         frame: "character_icons/skaduwee/owl.png",
@@ -53,13 +50,13 @@ export const skaduweeOwlDefinition = {
       maxHealth: 80
     },
     attack: {
-      attacks: [weaponDefinitions.furball]
+      attacks: [weaponDefinitions.Furball]
     },
     selectable: {},
     productionCost: {
       resources: {
         [ResourceType.Stone]: 40,
-        [ResourceType.Minerals]: 100
+        [ResourceType.Food]: 100
       },
       refundFactor: 0.5,
       productionTime: 10000,

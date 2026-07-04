@@ -33,7 +33,7 @@ export class InstantGameComponent implements OnInit {
     currentPlayer.team = 1;
     aiPlayer.team = 2;
 
-    currentPlayer.factionType = FactionType.Skaduwee;
+    currentPlayer.factionType = FactionType.Tivara;
     aiPlayer.factionType = FactionType.Skaduwee;
 
     // const allMaps = Object.values(ProbableWaffleLevels);

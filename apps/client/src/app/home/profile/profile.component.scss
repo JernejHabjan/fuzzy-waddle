@@ -1,4 +1,517 @@
-.user-item-header {
-  color: #17a2b8;
-  margin-bottom: 0.5rem;
+@use "../../../styles/_variables.scss" as *;
+
+:host {
+  background-color: $tertiary;
+}
+
+.profile-page {
+  flex: 1;
+  overflow: auto;
+}
+
+.profile-shell {
+  width: min(1120px, 100%);
+  margin: 0 auto;
+  padding: 1.5rem 1rem 2rem;
+  box-sizing: border-box;
+}
+
+.profile-page-embedded {
+  overflow: visible;
+}
+
+.profile-shell-embedded {
+  width: 100%;
+  max-width: none;
+  padding: 0.75rem 0 0;
+}
+
+.profile-shell-embedded .hero-panel {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.1rem;
+  padding: 1.15rem;
+  border-radius: 20px;
+}
+
+.profile-shell-embedded .hero-copy h1 {
+  font-size: clamp(1.65rem, 5vw, 2.35rem);
+  line-height: 1;
+}
+
+.profile-shell-embedded .hero-meta,
+.profile-shell-embedded .stats-grid,
+.profile-shell-embedded .content-grid,
+.profile-shell-embedded .detail-grid,
+.profile-shell-embedded .game-metrics {
+  grid-template-columns: 1fr;
+}
+
+.profile-shell-embedded .hero-meta {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.profile-shell-embedded .meta-pill,
+.profile-shell-embedded .preferred-link {
+  width: 100%;
+  justify-content: flex-start;
+  border-radius: 18px;
+  box-sizing: border-box;
+}
+
+.profile-shell-embedded .hero-sidebar {
+  justify-items: stretch;
+}
+
+.profile-shell-embedded .profile-avatar,
+.profile-shell-embedded .profile-role-banner {
+  justify-self: center;
+}
+
+.profile-shell-embedded .profile-role-banner {
+  max-width: 100%;
+}
+
+.profile-shell-embedded .stat-card,
+.profile-shell-embedded .info-card,
+.profile-shell-embedded .games-panel,
+.profile-shell-embedded .game-card,
+.profile-shell-embedded .empty-state {
+  border-radius: 18px;
+}
+
+.profile-shell-embedded .stat-card,
+.profile-shell-embedded .info-card,
+.profile-shell-embedded .games-panel,
+.profile-shell-embedded .game-card {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.profile-shell-embedded .summary-line,
+.profile-shell-embedded .game-card-header {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+}
+
+.profile-shell-embedded .section-heading {
+  align-items: flex-start;
+}
+
+.hero-panel,
+.info-card,
+.games-panel,
+.stat-card {
+  border: 1px solid $app-border-subtle;
+  box-shadow: 0 24px 60px $app-shadow-strong;
+}
+
+.hero-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(280px, 0.9fr);
+  gap: 1.5rem;
+  padding: 1.75rem;
+  border-radius: 28px;
+  background:
+    linear-gradient(135deg, $app-surface-glass-soft, transparent),
+    linear-gradient(135deg, $app-overlay-warm-gradient, $app-overlay-cool-gradient),
+    $app-surface-dark;
+  color: $app-text-on-dark;
+}
+
+.eyebrow,
+.meta-pill,
+.profile-role-banner {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.eyebrow {
+  width: fit-content;
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  background: $app-surface-glass;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hero-copy h1 {
+  margin: 1rem 0 0.35rem;
+  font-size: clamp(2rem, 4vw, 3.35rem);
+  line-height: 0.95;
+  overflow-wrap: anywhere;
+}
+
+.handle {
+  margin: 0 0 1rem;
+  color: $app-text-on-dark-muted;
+  font-size: 1rem;
+  overflow-wrap: anywhere;
+}
+
+.hero-text {
+  max-width: 48rem;
+  margin: 0;
+  color: $app-text-on-dark-soft;
+  font-size: 1rem;
+  overflow-wrap: anywhere;
+}
+
+.hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.4rem;
+}
+
+.meta-pill {
+  padding: 0.7rem 1rem;
+  border-radius: 999px;
+  background: $app-surface-glass;
+  color: $app-text-on-dark;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.meta-pill span,
+.preferred-card p,
+.detail-grid p,
+.moderation-note span,
+.game-card-header p,
+.game-metrics strong,
+.summary-line span {
+  overflow-wrap: anywhere;
+}
+
+.hero-sidebar {
+  display: grid;
+  align-content: start;
+  justify-items: center;
+  gap: 1rem;
+}
+
+.profile-avatar {
+  width: 128px;
+  height: 128px;
+  border: 4px solid $app-surface-glass-border;
+  border-radius: 50%;
+  object-fit: cover;
+  background: $app-border-subtle;
+}
+
+.profile-role-banner {
+  padding: 0.55rem 0.95rem;
+  border-radius: 999px;
+  background: $app-overlay-warm;
+  color: $app-accent-warm-contrast;
+  font-weight: 700;
+  text-align: center;
+}
+
+.preferred-card {
+  width: 100%;
+  padding: 1.1rem;
+  border-radius: 22px;
+  background: $app-surface-glass-strong;
+  box-sizing: border-box;
+}
+
+.preferred-label,
+.detail-label,
+.stat-label {
+  color: $app-text-muted;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.preferred-value {
+  margin-top: 0.35rem;
+  font-size: 1.35rem;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.preferred-card p {
+  margin: 0.35rem 0 0;
+  color: $app-text-on-dark-muted;
+}
+
+.preferred-link {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.7rem 1rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, $app-accent-warm, $app-accent-warm-strong);
+  color: $app-text-on-accent;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.stat-card,
+.info-card,
+.games-panel {
+  border-radius: 24px;
+  background: $app-surface-light;
+}
+
+.stat-card {
+  padding: 1rem 1.1rem;
+}
+
+.stat-value {
+  margin-top: 0.35rem;
+  color: $app-text-main;
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.9fr);
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.info-card,
+.games-panel {
+  padding: 1.35rem;
+  color: $app-text-main;
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-bottom: 1rem;
+}
+
+.section-heading h2 {
+  margin: 0;
+  font-size: 1.2rem;
+  overflow-wrap: anywhere;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.detail-grid p,
+.summary-line strong,
+.moderation-note span,
+.game-card-header p {
+  margin: 0.25rem 0 0;
+}
+
+.summary-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid $app-border-dark-subtle;
+}
+
+.summary-line:last-of-type {
+  border-bottom: 0;
+}
+
+.moderation-note {
+  display: grid;
+  gap: 0.35rem;
+  margin-top: 1rem;
+  padding: 0.9rem 1rem;
+  border-radius: 18px;
+  background: $app-overlay-warm-strong;
+}
+
+.games-panel {
+  margin-top: 1rem;
+}
+
+.game-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.game-card {
+  padding: 1.15rem;
+  border-radius: 20px;
+  background: $app-surface-white-70;
+}
+
+.game-card-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.game-card-header h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  overflow-wrap: anywhere;
+}
+
+.game-card-header p {
+  color: $app-text-muted;
+}
+
+.game-badge {
+  height: fit-content;
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  background: $app-overlay-muted;
+  font-weight: 700;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.game-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.game-metrics strong {
+  display: block;
+  margin-top: 0.3rem;
+  font-size: 1.05rem;
+}
+
+.empty-state {
+  display: grid;
+  justify-items: center;
+  gap: 0.8rem;
+  padding: 2rem 1rem;
+  border-radius: 24px;
+  background: $app-surface-white-70;
+  color: $app-text-main;
+  text-align: center;
+}
+
+.loading-state {
+  margin-top: 1.5rem;
+}
+
+@media (max-width: 991px) {
+  .hero-panel,
+  .content-grid,
+  .stats-grid,
+  .detail-grid,
+  .game-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .game-card-header {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 640px) {
+  .profile-shell {
+    padding: 1rem 0.75rem 1.5rem;
+  }
+
+  .hero-panel,
+  .info-card,
+  .games-panel,
+  .stat-card,
+  .empty-state {
+    border-radius: 20px;
+  }
+
+  .hero-panel {
+    gap: 1.25rem;
+    padding: 1.1rem;
+  }
+
+  .hero-copy h1 {
+    font-size: clamp(1.65rem, 9vw, 2.25rem);
+    line-height: 1;
+  }
+
+  .hero-meta {
+    gap: 0.55rem;
+  }
+
+  .meta-pill {
+    width: 100%;
+    justify-content: flex-start;
+    padding: 0.65rem 0.85rem;
+    border-radius: 18px;
+  }
+
+  .hero-sidebar {
+    justify-items: stretch;
+  }
+
+  .profile-avatar,
+  .profile-role-banner {
+    justify-self: center;
+  }
+
+  .preferred-card {
+    padding: 1rem;
+    border-radius: 18px;
+  }
+
+  .stat-card,
+  .info-card,
+  .games-panel,
+  .game-card {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .section-heading {
+    align-items: flex-start;
+  }
+
+  .summary-line {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .hero-panel {
+    padding: 1rem 0.9rem;
+  }
+
+  .eyebrow,
+  .meta-pill,
+  .profile-role-banner,
+  .preferred-link,
+  .game-badge {
+    border-radius: 16px;
+  }
+
+  .profile-avatar {
+    width: 104px;
+    height: 104px;
+  }
+
+  .detail-grid {
+    gap: 0.75rem;
+  }
+
+  .profile-shell-embedded .profile-avatar {
+    width: 104px;
+    height: 104px;
+  }
 }

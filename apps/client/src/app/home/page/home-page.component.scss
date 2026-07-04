@@ -1,17 +1,27 @@
+@use "sass:color";
 @use "../../../styles/_variables.scss" as *;
 
 :host {
   background-color: $tertiary;
 }
 
+.ban-banner {
+  margin: 20px;
+  padding: 16px 20px;
+}
+
 .tile-featured {
+  display: block;
   margin-top: 20px;
   margin-bottom: 20px;
+  aspect-ratio: 16 / 7;
+  min-height: clamp(220px, 34vw, 420px);
+  overflow: hidden;
 
   .featured-image {
+    display: block;
     height: 100%;
     width: 100%;
-    max-height: 200px;
     object-fit: cover;
   }
 
@@ -34,7 +44,7 @@
 
     &:hover {
       background-color: $primary;
-      color: white;
+      color: $app-text-on-dark;
     }
   }
   @media (max-width: 520px) {
@@ -74,6 +84,7 @@
     }
 
     .game-image {
+      display: block;
       width: 100%;
       height: 100px;
       object-fit: cover;
@@ -93,7 +104,7 @@
 
     .in-development {
       background-color: $primary;
-      color: white;
+      color: $app-text-on-dark;
       padding: 5px;
       border-radius: 5px;
       font-family: $app-font-bold;
@@ -104,6 +115,7 @@
     }
   }
   .general-tile {
+    position: relative;
     text-align: center;
     margin: 30px;
     padding: 30px;
@@ -121,5 +133,122 @@
       transform: translate(10px, 10px);
       box-shadow: 0 0 0 0 $primary;
     }
+
+    &.moderation-tile.needs-attention {
+      border: 3px solid $app-danger;
+      box-shadow:
+        10px 10px 0 0 $primary,
+        0 0 0 3px rgba($app-danger, 0.15);
+
+      &:hover {
+        box-shadow: 0 0 0 3px rgba($app-danger, 0.15);
+      }
+    }
+
+    .moderation-count {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      min-width: 24px;
+      border-radius: 999px;
+      background-color: $app-danger;
+      color: $app-text-on-dark;
+      font-family: $app-font-bold;
+      padding: 2px 6px;
+    }
+  }
+}
+
+.project-hub-row {
+  justify-content: start;
+}
+
+.project-hub {
+  width: min(100%, 920px);
+  margin: 24px;
+  padding: 24px 28px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba($tertiary, 0.18)), $app-surface-plain-soft;
+  border: 1px solid rgba($primary, 0.22);
+  box-shadow:
+    0 10px 24px rgba($primary, 0.08),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.45);
+}
+
+.project-hub-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+
+  h2 {
+    margin: 0;
+    font-family: $app-font-bold;
+  }
+}
+
+.project-hub-version {
+  color: rgba($app-text-main, 0.7);
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.project-hub-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.project-hub-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 42px;
+  padding: 0.65rem 1rem;
+  border: 1px solid rgba($primary, 0.35);
+  border-radius: 999px;
+  color: $primary;
+  text-decoration: none;
+  font-family: $app-font-bold;
+  transition:
+    background-color 0.1s ease-in-out,
+    color 0.1s ease-in-out,
+    border-color 0.1s ease-in-out;
+
+  &:hover,
+  &:focus-visible {
+    background-color: rgba($primary, 0.14);
+    color: color.adjust($primary, $lightness: 10%);
+    border-color: rgba(color.adjust($primary, $lightness: 10%), 0.7);
+  }
+}
+
+.project-hub-link-muted {
+  color: rgba($app-text-main, 0.58);
+  border-color: rgba($primary, 0.12);
+  cursor: default;
+
+  &:hover,
+  &:focus-visible {
+    background-color: transparent;
+    color: rgba($app-text-main, 0.58);
+    border-color: rgba($primary, 0.12);
+  }
+}
+
+@media (max-width: 520px) {
+  .project-hub {
+    margin: 16px;
+    padding: 20px;
+  }
+
+  .project-hub-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .project-hub-links {
+    flex-direction: column;
   }
 }

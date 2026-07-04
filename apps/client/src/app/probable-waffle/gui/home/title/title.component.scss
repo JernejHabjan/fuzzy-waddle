@@ -1,5 +1,4 @@
 @use "../../../../../styles/_variables.scss" as *;
-@use "sass:color";
 
 :host {
   flex: 1;
@@ -11,30 +10,20 @@
 
 .game-title {
   text-align: center;
-  animation: titleGlow 12s ease-in-out infinite alternate;
-  backdrop-filter: blur(12px);
-  padding: 1.5rem 2rem;
-  border-radius: 20px;
+  padding: 2rem 2.5rem;
+  border: 1px solid rgba(111, 85, 52, 0.42);
+  background-color: rgba(19, 23, 28, 0.82);
+  box-shadow: 0 24px 40px rgba(0, 0, 0, 0.26);
 }
+
 .title-main {
-  font-size: clamp(4rem, 8vw, 8rem);
-  font-family: $app-font-bold;
-  color: #ffffff;
+  font-size: clamp(3.5rem, 7vw, 7.2rem);
+  font-family: "Cinzel", $app-font-bold, serif;
+  color: #f5ecd9;
   margin: 0;
-  text-shadow:
-    0 0 20px rgba($primary, 0.5),
-    0 0 40px rgba($primary, 0.3),
-    0 0 60px rgba($primary, 0.2);
-  background: linear-gradient(
-    135deg,
-    color.adjust($primary, $lightness: 10%) 50%,
-    color.adjust($primary, $lightness: 30%) 100%
-  );
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-size: 200% 200%;
-  animation: shimmer 4s ease-in-out infinite;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-shadow: 0 8px 24px rgba(0, 0, 0, 0.42);
   z-index: 1;
   pointer-events: none;
   user-select: none;
@@ -42,49 +31,17 @@
 
 .title-tagline {
   font-size: clamp(1rem, 2vw, 1.5rem);
-  font-weight: 400;
-  color: $secondary;
+  font-weight: 600;
+  color: #f0c46b;
   margin-top: 1rem;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  opacity: 0.8;
+  opacity: 0.92;
   z-index: 1;
   pointer-events: none;
   user-select: none;
 }
 
-@keyframes titleGlow {
-  0% {
-    filter: drop-shadow(0 0 5px rgba($primary, 0.1));
-  }
-  100% {
-    filter: drop-shadow(0 0 8px rgba($primary, 0.15));
-  }
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 0.6;
-  }
-  50% {
-    opacity: 1;
-  }
-}
-
-// Responsive design
 @media (max-width: 1200px) {
   :host {
     order: 1;
@@ -97,6 +54,10 @@
 }
 
 @media (max-width: 768px) {
+  .game-title {
+    padding: 1.5rem 1.25rem;
+  }
+
   .title-main {
     font-size: clamp(2.5rem, 10vw, 4rem);
   }

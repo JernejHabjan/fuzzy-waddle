@@ -13,28 +13,34 @@
     },
     "displayList": [
         {
-            "type": "Sprite",
-            "id": "789c7e2c-df08-4569-9679-a9c3a0309e4e",
-            "label": "skaduwee_worker_female_idle_down",
+            "type": "Container",
+            "id": "e76c1fc5-9b94-46d4-bb7e-f2bc03ec42b6",
+            "label": "container_1",
             "hitArea.shape": "CIRCLE",
-            "hitArea.x": 32,
-            "hitArea.y": 32,
+            "hitArea.y": -25.354877574887297,
             "hitArea.radius": 32,
-            "texture": {
-                "key": "skaduwee_worker_female_idle",
-                "frame": 4
-            },
             "x": 32,
-            "y": 58.00236660260104,
-            "originY": 0.9062870143450004,
-            "animationPlayMethod": 1,
-            "animationKey": "skaduwee_worker_female_idle_down"
+            "y": 57.077002702152576,
+            "list": [
+                {
+                    "type": "Sprite",
+                    "id": "789c7e2c-df08-4569-9679-a9c3a0309e4e",
+                    "label": "skaduwee_worker_female_idle_down",
+                    "texture": {
+                        "key": "base_idle",
+                        "frame": 4
+                    },
+                    "y": -25,
+                    "animationPlayMethod": 1,
+                    "animationKey": "skaduwee_worker_female_base_idle_2"
+                }
+            ]
         }
     ],
     "plainObjects": [],
     "meta": {
-        "app": "Phaser Editor 2D - Scene Editor",
-        "url": "https://phasereditor2d.com",
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
         "contentType": "phasereditor2d.core.scene.SceneContentType",
         "version": 5
     }

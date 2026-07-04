@@ -1,0 +1,186 @@
+@use "../../../styles/_variables.scss" as *;
+
+:host {
+  display: block;
+  overflow: auto;
+  background: $tertiary;
+}
+
+.attribution-page {
+  display: grid;
+  gap: 1.25rem;
+  width: min(1200px, calc(100vw - 2rem));
+  margin: 1rem auto;
+  padding: 1rem 0 2rem;
+}
+
+.attribution-header,
+.type-group,
+.attribution-card,
+.stat-card {
+  border: 1px solid $app-border-ui;
+  border-radius: 24px;
+  background: $app-surface-plain-soft;
+  box-shadow: 0 16px 40px $app-shadow-soft;
+}
+
+.attribution-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: end;
+  padding: 1.5rem;
+}
+
+.eyebrow {
+  display: inline-flex;
+  margin-bottom: 0.55rem;
+  padding: 0.3rem 0.7rem;
+  border: 1px solid $app-border-ui;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 72%);
+  color: $secondary;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.attribution-header h1,
+.group-heading h2 {
+  margin: 0;
+  font-family: $app-font-bold;
+  color: $primary;
+}
+
+.attribution-header p,
+.attribution-card p,
+.group-heading span {
+  margin: 0.35rem 0 0;
+  color: $app-text-muted;
+}
+
+.header-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(120px, 1fr));
+  gap: 0.75rem;
+}
+
+.stat-card {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.9rem 1rem;
+}
+
+.stat-label {
+  color: $app-text-muted;
+  font-size: 0.85rem;
+}
+
+.stat-card strong {
+  color: $primary;
+  font-size: 1.15rem;
+}
+
+.type-group {
+  display: grid;
+  gap: 1rem;
+  padding: 1.25rem;
+}
+
+.group-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+}
+
+.group-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+.attribution-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(220px, 320px) minmax(0, 1fr);
+  gap: 0.75rem 1.25rem;
+  min-width: 0;
+  padding: 1rem;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  align-items: start;
+}
+
+.card-title {
+  margin-bottom: 0.7rem;
+  font-size: 1.2rem;
+  min-width: 0;
+  grid-column: 1;
+  grid-row: 1 / span 2;
+}
+
+.card-title a {
+  position: relative;
+  z-index: 1;
+  display: inline;
+  color: $primary;
+  text-decoration: underline;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.card-text,
+.card-text a {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.card-text {
+  margin: 0;
+}
+
+.card-text:first-of-type {
+  margin-top: 0.15rem;
+}
+
+.card-title + .card-text {
+  grid-column: 2;
+}
+
+.card-text a {
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 800px) {
+  .attribution-page {
+    width: min(100vw, calc(100vw - 1rem));
+    margin: 0.5rem auto;
+  }
+
+  .attribution-header,
+  .group-heading {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .attribution-header,
+  .type-group {
+    padding: 1rem;
+  }
+
+  .header-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .attribution-card {
+    grid-template-columns: 1fr;
+    gap: 0.45rem;
+  }
+
+  .card-title {
+    grid-row: auto;
+  }
+}

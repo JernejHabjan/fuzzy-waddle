@@ -1,0 +1,40 @@
+{
+    "id": "daf92e15-085f-4c32-bfa2-b554266b5c12",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Sprite",
+            "id": "e28def1c-e7e9-4aba-9865-faaf920a8a19",
+            "label": "cursed_land_Spike_plant_shadow1_1_png",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "49.08360343499368 82.32651579700044 135.72002218176033 80.35750628002847 206.6043647927512 54.760382559392866 176.41288553251434 92.1715633818603 154.0974443401654 156.49254093627798 112.74824448375404 164.36857900416587 95.68349533666361 116.45601409118126",
+            "texture": {
+                "key": "environment_1",
+                "frame": "cursed_land/Spike_plant_shadow1_1.png"
+            },
+            "x": 40.06285700295234,
+            "y": 44.92000073450029,
+            "originX": 0.5275892851677826,
+            "originY": 0.6051562528691418
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

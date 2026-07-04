@@ -1,0 +1,45 @@
+{
+    "id": "cdae2bce-1e9c-4851-b419-618b2202916b",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 96,
+        "borderHeight": 96
+    },
+    "displayList": [
+        {
+            "type": "Sprite",
+            "id": "d39f89f4-3d20-4be5-a430-d7ad6a267531",
+            "label": "fire_slime_idle_se",
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": 32,
+            "hitArea.y": 32,
+            "hitArea.radius": 11.37981854685626,
+            "texture": {
+                "key": "mobs_slimes",
+                "frame": "Slime3/Idle/s/0.png"
+            },
+            "x": 48,
+            "y": 58,
+            "scaleX": 1.5,
+            "scaleY": 1.5,
+            "originY": 0.6104108424142778,
+            "animationPlayMethod": 1,
+            "animationKey": "mobs_Slime3/Idle/s"
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

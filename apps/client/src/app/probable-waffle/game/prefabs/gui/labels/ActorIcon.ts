@@ -104,7 +104,9 @@ export default class ActorIcon extends Phaser.GameObjects.Container {
     this.clickSubject.next({
       definition: {
         actorObjectId: this.definition?.actorObjectId,
-        iconIndex: this.definition?.iconIndex
+        iconIndex: this.definition?.iconIndex,
+        researchType: this.definition?.researchType,
+        containedActorId: this.definition?.containedActorId
       },
       keys: { ctrl: isCtrlPressed, shift: isShiftPressed }
     });

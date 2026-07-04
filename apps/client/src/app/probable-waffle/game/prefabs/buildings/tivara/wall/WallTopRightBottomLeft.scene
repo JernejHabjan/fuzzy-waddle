@@ -25,14 +25,14 @@
                 "frame": "buildings/tivara/wall/wall_top_right_bottom_left.png"
             },
             "x": 32,
-            "y": 80.18706841494858,
-            "originY": 0.8352819626557144
+            "y": 79.3137916759991,
+            "originY": 0.8261853642337079
         }
     ],
     "plainObjects": [],
     "meta": {
-        "app": "Phaser Editor 2D - Scene Editor",
-        "url": "https://phasereditor2d.com",
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
         "contentType": "phasereditor2d.core.scene.SceneContentType",
         "version": 5
     }

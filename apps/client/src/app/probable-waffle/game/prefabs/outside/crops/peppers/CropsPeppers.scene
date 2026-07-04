@@ -1,0 +1,43 @@
+{
+    "id": "5828bb19-3b8d-4cf6-9224-07100af127f9",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "3fead6c4-f0c9-4c48-b0dc-88e75d3cc85b",
+            "label": "crops_peppers_0_png",
+            "hitArea.shape": "RECTANGLE",
+            "hitArea.x": 7,
+            "hitArea.y": 1,
+            "hitArea.width": 18.446827399365826,
+            "hitArea.height": 29.717491181808942,
+            "texture": {
+                "key": "crops",
+                "frame": "crops/peppers/0.png"
+            },
+            "x": 31.621740899838485,
+            "y": 50.710856884490866,
+            "originX": 0.48817940311995267,
+            "originY": 0.8347142776403396
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

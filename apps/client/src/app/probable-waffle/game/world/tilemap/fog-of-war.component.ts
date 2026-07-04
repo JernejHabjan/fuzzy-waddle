@@ -4,12 +4,18 @@ import { VisionComponent } from "../../entity/components/vision-component";
 import { getActorComponent } from "../../data/actor-component";
 import { getCurrentPlayerNumber } from "../../data/scene-data";
 import { IdComponent } from "../../entity/components/id-component";
-import { getGameObjectBounds, getGameObjectVisibility, getGameObjectCurrentTile } from "../../data/game-object-helper";
+import {
+  getGameObjectBounds,
+  getGameObjectVisibility,
+  getGameObjectCurrentTile,
+  isGameObjectActiveInActiveScene
+} from "../../data/game-object-helper";
 import { IsoHelper } from "./iso-helper";
 import { ResourceSourceComponent } from "../../entity/components/resource/resource-source-component";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import { getSceneService } from "../services/scene-component-helpers";
 import { ActorIndexSystem } from "../services/ActorIndexSystem";
+import { ContainableComponent } from "../../entity/components/building/containable-component";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export enum FogOfWarMode {
@@ -84,8 +90,13 @@ export class FogOfWarComponent {
     this.scanForPlayerActors();
 
     // Subscribe to navigation updates
-    this.scene.events.on(NavigationService.UpdateNavigationEvent, this.throttleUpdateFogOfWar, this); // todo this for some reason doesnt work - also it doesnt work in navigation.service.ts
-    this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.throttleUpdateFogOfWar, this); // todo this is very expensive
+    this.scene.events.on(
+      NavigationService.UpdateNavigationEvent,
+      this.throttleUpdateFogOfWarFrameNonDeterministic,
+      this
+    ); // todo this for some reason doesnt work - also it doesnt work in navigation.service.ts
+    // Intentional frame update: fog rendering is visual-only and should track camera/visibility changes every rendered frame.
+    this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.throttleUpdateFogOfWarFrameNonDeterministic, this); // todo this is very expensive
     this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
 
     // Initial draw of fog
@@ -178,7 +189,7 @@ export class FogOfWarComponent {
 
     // Remove actors that no longer exist
     for (const [id, actor] of this.playerActors) {
-      if (!currentActorIds.has(id) || !actor.active) {
+      if (!currentActorIds.has(id) || !isGameObjectActiveInActiveScene(actor)) {
         this.playerActors.delete(id);
         this.actorPositionCache.delete(id);
         this.dirtyActors.add(id); // Mark as dirty to recalculate vision
@@ -228,7 +239,7 @@ export class FogOfWarComponent {
     this.redrawFogOfWar();
   }
 
-  private throttleUpdateFogOfWar = throttle(this.updateFogOfWar.bind(this), 100);
+  private throttleUpdateFogOfWarFrameNonDeterministic = throttle(this.updateFogOfWar.bind(this), 100);
 
   public updateFogOfWar(): void {
     // Store previous state for dirty tile tracking
@@ -300,7 +311,12 @@ export class FogOfWarComponent {
                 const x = tilePos.x + dx;
                 const y = tilePos.y + dy;
                 // Check if tile is within the valid grid bounds
-                if (x < this.startX || y < this.startY || x >= this.startX + this.gridWidth || y >= this.startY + this.gridHeight) {
+                if (
+                  x < this.startX ||
+                  y < this.startY ||
+                  x >= this.startX + this.gridWidth ||
+                  y >= this.startY + this.gridHeight
+                ) {
                   continue;
                 }
                 const tileKey = this.getTileKey(x, y);
@@ -316,7 +332,7 @@ export class FogOfWarComponent {
           if (this.visionTilesCache.size > 500) {
             // Remove oldest entries (first entries in the map)
             const keysToDelete = Array.from(this.visionTilesCache.keys()).slice(0, 100);
-            keysToDelete.forEach(key => this.visionTilesCache.delete(key));
+            keysToDelete.forEach((key) => this.visionTilesCache.delete(key));
           }
         }
 
@@ -375,7 +391,7 @@ export class FogOfWarComponent {
   private updateActorsVisibility(): void {
     this.playerActors.forEach((actor, id) => {
       // Skip if actor is no longer valid
-      if (!actor.active || !actor.scene) {
+      if (!isGameObjectActiveInActiveScene(actor)) {
         this.playerActors.delete(id);
         return;
       }
@@ -413,6 +429,11 @@ export class FogOfWarComponent {
 
     const healthComponent = getActorComponent(actor, HealthComponent);
     if (healthComponent && healthComponent.hidden) {
+      visible = false;
+    }
+    // Keep units hidden when they are inside a container (e.g. loaded onto a ship)
+    const containableComponent = getActorComponent(actor, ContainableComponent);
+    if (containableComponent && containableComponent.isContained()) {
       visible = false;
     }
     visibilityComponent.setVisible(visible);
@@ -490,14 +511,7 @@ export class FogOfWarComponent {
       this.drawIsometricTile(worldX, worldY, this.tileWidth, this.tileHeight, this.COLOR_EXPLORED, this.ALPHA_EXPLORED);
     } else {
       // Unexplored
-      this.drawIsometricTile(
-        worldX,
-        worldY,
-        this.tileWidth,
-        this.tileHeight,
-        this.COLOR_UNEXPLORED,
-        alphaUnexplored
-      );
+      this.drawIsometricTile(worldX, worldY, this.tileWidth, this.tileHeight, this.COLOR_UNEXPLORED, alphaUnexplored);
     }
   }
 
@@ -536,8 +550,12 @@ export class FogOfWarComponent {
   }
 
   private destroy(): void {
-    this.scene?.events.off(NavigationService.UpdateNavigationEvent, this.throttleUpdateFogOfWar, this);
-    this.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.throttleUpdateFogOfWar, this);
+    this.scene?.events.off(
+      NavigationService.UpdateNavigationEvent,
+      this.throttleUpdateFogOfWarFrameNonDeterministic,
+      this
+    );
+    this.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.throttleUpdateFogOfWarFrameNonDeterministic, this);
 
     // Clear all caches
     this.visionTilesCache.clear();

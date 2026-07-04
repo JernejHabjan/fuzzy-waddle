@@ -13,11 +13,12 @@ import { getActorComponent } from "../../../data/actor-component";
 import { AttackComponent } from "../../../entity/components/combat/components/attack-component";
 import { ProductionComponent } from "../../../entity/components/production/production-component";
 import { ActorTranslateComponent } from "../../../entity/components/movement/actor-translate-component";
-import { pwActorDefinitions } from "../../definitions/actor-definitions";
+import { getPwActorDefinition } from "../../definitions/actor-definitions";
 import { HealthComponent } from "../../../entity/components/combat/components/health-component";
 import { AudioService } from "../../../world/services/audio.service";
 import { BuilderComponent } from "../../../entity/components/construction/builder-component";
-import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import type { PreRequirement, PreRequirementType } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames, ResearchType } from "@fuzzy-waddle/api-interfaces";
 import { getSceneComponent, getSceneService } from "../../../world/services/scene-component-helpers";
 import { BuildingCursor } from "../../../player/human-controller/building-cursor";
 import { ConstructionSiteComponent } from "../../../entity/components/construction/construction-site-component";
@@ -34,17 +35,34 @@ import { GathererComponent } from "../../../entity/components/resource/gatherer-
 import { getPrimarySelectedActor } from "../../../data/selection-helpers";
 import { ProductionValidator } from "../../../data/tech-tree/production-validator";
 import { findProductionBuildingWithLeastRemainingTime } from "../../../entity/components/production/production-helpers";
+import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
+import {
+  dispatchCancelResearchCommand,
+  dispatchProductionCommand,
+  dispatchResearchCommand
+} from "../../../data/commands/queue-command-dispatch";
 import {
   type ConstructableCategory,
   ConstructableDefinition
 } from "../../../entity/components/construction/constructable-category";
 import { SelectionTabHandler } from "../../../player/human-controller/selection-tab-handler";
-import { ProductionInvalidReason } from "../../../data/tech-tree/production-invalid-reason";
-import type { ProductionValidationResult } from "../../../data/tech-tree/production-validation-result";
-import { AssignProductionErrorCode } from "../../../entity/components/production/assign-production-error-code";
 import type { ActorActionSetup } from "./actor-action-setup";
+import { SpellComponent } from "../../../entity/components/combat/components/spell-component";
+import { spellDefinitions } from "../../../entity/components/combat/spell-definitions";
+import { SpellCursor } from "../../../player/human-controller/spell-cursor";
+import type { SpellType } from "../../../entity/components/combat/spell-type";
+import { ResearchComponent } from "../../../entity/components/research/research-component";
+import { researchDefinitions } from "../../../entity/components/research/research-definitions";
+import { QueueComponent } from "../../../entity/components/queue/queue-component";
+import { QueueItemType } from "../../../entity/components/queue/queue-item";
+import { ContainerComponent } from "../../../entity/components/building/container-component";
+import { NavigationService } from "../../../world/services/navigation.service";
+import { isWaterUnit } from "../../../data/game-object-helper";
 /* END-USER-IMPORTS */
 
+/**
+ * HUD component displaying action buttons for selected actors (attack, move, build, produce units, research, etc.)
+ */
 export default class ActorActions extends Phaser.GameObjects.Container {
   constructor(scene: Phaser.Scene, x?: number, y?: number) {
     super(scene, x ?? 256, y ?? 197);
@@ -191,23 +209,25 @@ export default class ActorActions extends Phaser.GameObjects.Container {
   private readonly hudScene: HudProbableWaffle;
   private readonly audioService: AudioService;
   private readonly playerActionsHandler: PlayerActionsHandler;
-  /**
-   * If true, building icons are displayed with back button
-   */
+  /** If true, building icons are displayed with back button */
   private buildingMode: boolean = false;
-  /**
-   * Navigation stack for building categories. Empty array means root level.
-   */
+  /** Navigation stack for building categories. Empty array means root level. */
   private categoryNavigationStack: ConstructableCategory[] = [];
 
   private get HOTKEYS(): readonly string[] {
     return this.playerActionsHandler.getListHotkeys();
   }
 
-  // keep UI in sync with handler
   private buildingModeSubscription?: Subscription;
   private resourceChangedSubscription?: Subscription;
+  private actorUnlockSubscription?: Subscription;
+  private researchEventSubscriptions: Subscription[] = [];
+  private spellCooldownSubscriptions: Subscription[] = [];
+  private spellUpdateTimer?: Phaser.Time.TimerEvent;
+  /** Refreshes container Unload button when the container actor moves to/from shore. */
+  private containerMovementSubscription?: Subscription;
 
+  /** Subscribe to selection changes and update displayed actions accordingly */
   private subscribeToPlayerSelection() {
     this.selectionChangedSubscription = listenToSelectionEvents(this.scene)?.subscribe(() => {
       // Update tab handler with new selection
@@ -231,6 +251,9 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         this.subscribeToActorKillEvent(actor);
         this.subscribeToActorConstructionEvent(actor, actorsByPriority);
         this.subscribeToResourceChanges();
+        this.subscribeToActorUnlockEvents();
+        this.subscribeToResearchChanges();
+        this.subscribeToSpellCooldowns(actor);
       }
     });
 
@@ -248,11 +271,15 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     const tabHandler = getSceneComponent(this.mainSceneWithActors, SelectionTabHandler);
     if (tabHandler) {
       this.tabHandlerSubscription = tabHandler.currentTabIndex$.subscribe(() => {
-        this.refreshForCurrentSelection();
+        // Make sure this triggers after the other events
+        setTimeout(() => {
+          this.refreshForCurrentSelection();
+        }, 50);
       });
     }
   }
 
+  /** Handle hotkey presses when in building mode to trigger corresponding action buttons */
   private onBuildModeKeyDown(hotkeyIndex: number) {
     if (!this.buildingMode) return;
 
@@ -284,6 +311,8 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       action.setup({ visible: false });
     });
     this.resourceChangedSubscription?.unsubscribe();
+    this.containerMovementSubscription?.unsubscribe();
+    this.stopSpellCooldownTimer();
   }
 
   private subscribeToActorKillEvent(actor: Phaser.GameObjects.GameObject) {
@@ -324,6 +353,68 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       });
   }
 
+  private subscribeToActorUnlockEvents() {
+    // Unsubscribe from previous subscription
+    this.actorUnlockSubscription?.unsubscribe();
+
+    const playerNr = getCurrentPlayerNumber(this.mainSceneWithActors);
+    if (!playerNr) return;
+
+    // Subscribe to actor unlock events from ActorIndexSystem
+    const actorIndex = getSceneService(this.mainSceneWithActors, ActorIndexSystem);
+    if (!actorIndex) return;
+
+    this.actorUnlockSubscription = actorIndex.actorUnlockRegistered.subscribe((event) => {
+      // Only refresh if the unlock is for the current player
+      if (event.playerNumber === playerNr) {
+        // When a new actor is unlocked (building finishes construction), refresh the UI
+        this.refreshForCurrentSelection();
+        // Re-subscribe to research changes to pick up newly constructed buildings with research
+        this.subscribeToResearchChanges();
+      }
+    });
+  }
+
+  private subscribeToResearchChanges() {
+    // Unsubscribe from all previous research subscriptions
+    this.researchEventSubscriptions.forEach((sub) => sub.unsubscribe());
+    this.researchEventSubscriptions = [];
+
+    const playerNr = getCurrentPlayerNumber(this.mainSceneWithActors);
+    if (!playerNr) return;
+
+    // Get all owned actors with research components
+    const actorIndex = getSceneService(this.mainSceneWithActors, ActorIndexSystem);
+    if (!actorIndex) return;
+
+    const ownedActors = actorIndex.getOwnedActors(playerNr);
+
+    // Subscribe to research events for all owned buildings
+    ownedActors.forEach((actor) => {
+      const researchComponent = getActorComponent(actor, ResearchComponent);
+      if (researchComponent) {
+        // Research started - refresh all buildings (hide started research from all)
+        const startedSub = researchComponent.researchStarted.subscribe(() => {
+          this.refreshForCurrentSelection();
+        });
+        this.researchEventSubscriptions.push(startedSub);
+
+        // Research completed - refresh all (hide from buildings, unlock spells on units)
+        const completedSub = researchComponent.researchCompleted.subscribe(() => {
+          this.refreshForCurrentSelection();
+        });
+        this.researchEventSubscriptions.push(completedSub);
+
+        // Research cancelled - refresh all (show research icons again)
+        const cancelledSub = researchComponent.researchCancelled.subscribe(() => {
+          this.refreshForCurrentSelection();
+        });
+        this.researchEventSubscriptions.push(cancelledSub);
+      }
+    });
+  }
+
+  /** Action definition for attack command */
   private readonly attackAction = (actors: Phaser.GameObjects.GameObject[]) =>
     ({
       icon: {
@@ -465,7 +556,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       action: async () => {
         // Check if it's a main building
         const actorName = actor.name;
-        const actorDefinition = pwActorDefinitions[actorName as keyof typeof pwActorDefinitions];
+        const actorDefinition = getPwActorDefinition(actorName, null);
         const isMainBuilding = actorDefinition?.meta?.isMainBuilding ?? false;
 
         if (isMainBuilding) {
@@ -493,6 +584,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       shortcut: "del"
     }) satisfies ActorActionSetup;
 
+  /** Main method to display action buttons based on selected actor's components */
   private showActorActions(actor: Phaser.GameObjects.GameObject, allActors: Phaser.GameObjects.GameObject[]) {
     this.hideAllIcons();
     let index = 0;
@@ -542,14 +634,18 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       index = this.showMoveIcons(actor, allActors, index);
       index = this.showRallyPointIcon(actor, allActors, index);
       index = this.showHealIcons(actor, allActors, index);
+      index = this.showSpellIcons(actor, allActors, index);
       index = this.showGatherIcons(actor, allActors, index);
+      index = this.showContainerIcons(actor, allActors, index);
       index = this.showProductionIcons(actor, allActors, index);
+      index = this.showResearchIcons(actor, allActors, index);
       index = this.showBuilderIcons(actor, allActors, index);
       // Always show delete button at the bottom-right position
       this.showDeleteIcon(actor, allActors, index);
     }
   }
 
+  /** Check if the actor belongs to the current player */
   private canShowIcons(actor: Phaser.GameObjects.GameObject) {
     const currentPlayerNr = getCurrentPlayerNumber(this.mainSceneWithActors);
     const actorPlayerNr = getActorComponent(actor, OwnerComponent)?.getOwner();
@@ -630,6 +726,82 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     return index;
   }
 
+  private showSpellIcons(
+    actor: Phaser.GameObjects.GameObject,
+    allActors: Phaser.GameObjects.GameObject[],
+    index: number
+  ): number {
+    const spellComponent = getActorComponent(actor, SpellComponent);
+    if (!spellComponent) return index;
+
+    const spellCursor = getSceneService(this.mainSceneWithActors, SpellCursor);
+
+    spellComponent.availableSpells.forEach((spellType, localIndex) => {
+      const spellData = spellDefinitions[spellType];
+      if (!spellData) return;
+
+      const isResearched = spellComponent.isSpellResearched(spellType);
+
+      // Hide spells that require research but haven't been researched yet
+      if (!isResearched && spellData.requiresResearch) {
+        return;
+      }
+
+      const action = this.actor_actions[index];
+      if (!action) {
+        console.error("Action button not found at index", index);
+        return;
+      }
+
+      const cooldownProgress = spellComponent.getCooldownProgress(spellType);
+      const cooldownRemaining = spellComponent.getCooldownRemaining(spellType);
+      const autocastEnabled = spellComponent.isAutocastEnabled(spellType);
+
+      // Use validation state similar to production
+      const { disabled, unmetRequirements } = this.getSpellValidationState(spellType, spellComponent);
+
+      action.setup({
+        icon: {
+          key: spellData.icon.key,
+          frame: spellData.icon.frame,
+          origin: { x: 0.5, y: 0.5 }
+        },
+        visible: true,
+        disabled,
+        cooldownProgress: cooldownProgress < 100 ? cooldownProgress : undefined,
+        cooldownRemaining: cooldownRemaining > 0 ? cooldownRemaining : undefined,
+        autocastEnabled: isResearched && autocastEnabled,
+        action: () => {
+          if (disabled) return;
+          // Activate spell cursor for ground-target spells
+          if (spellCursor) {
+            spellCursor.startCastingSpell.emit(spellType);
+          }
+        },
+        onRightClick: () => {
+          // Toggle autocast on right-click
+          spellComponent.toggleAutocast(spellType);
+          // Update autocast indicator immediately
+          const newAutocastState = spellComponent.isAutocastEnabled(spellType);
+          action.setAutocastIndicator(newAutocastState);
+        },
+        tooltipInfo: {
+          title: spellData.name,
+          description: spellData.description,
+          iconKey: spellData.icon.key,
+          iconFrame: spellData.icon.frame,
+          iconOrigin: { x: 0.5, y: 0.5 },
+          unmetRequirements: unmetRequirements ?? undefined
+        },
+        // Use hotkey from position (Q, W, E, R, T, Y, U, I, O)
+        shortcut: this.HOTKEYS[localIndex]
+      } satisfies ActorActionSetup);
+      index++;
+    });
+
+    return index;
+  }
+
   private showGatherIcons(
     actor: Phaser.GameObjects.GameObject,
     allActors: Phaser.GameObjects.GameObject[],
@@ -648,6 +820,76 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     return index;
   }
 
+  private showContainerIcons(
+    actor: Phaser.GameObjects.GameObject,
+    _allActors: Phaser.GameObjects.GameObject[],
+    index: number
+  ): number {
+    // Always clean up any stale movement subscription when rebuilding the action bar
+    this.containerMovementSubscription?.unsubscribe();
+
+    const containerComponent = getActorComponent(actor, ContainerComponent);
+    if (!containerComponent) return index;
+
+    const hasUnits = containerComponent.getContainedGameObjects().length > 0;
+
+    // Shore check only applies to water units — ground containers can always unload
+    let isOnShore = true;
+    if (isWaterUnit(actor)) {
+      const navigationService = getSceneService(this.mainSceneWithActors, NavigationService);
+      const tile = navigationService?.getCenterTileCoordUnderObject(actor);
+      isOnShore = tile ? (navigationService?.isShoreTile(tile) ?? false) : false;
+    }
+
+    const canUnload = hasUnits && isOnShore;
+
+    const action = this.actor_actions[index];
+    if (!action) {
+      console.error("Action button not found at index", index);
+      return index;
+    }
+
+    const tooltipDescription = !hasUnits
+      ? "No units to unload"
+      : isWaterUnit(actor) && !isOnShore
+        ? "Must be docked at a shore tile to unload"
+        : "Unload all carried units";
+
+    action.setup({
+      icon: {
+        key: "gui",
+        frame: "action_icons/hand.png",
+        origin: { x: 0.5, y: 0.5 }
+      },
+      visible: true,
+      disabled: !canUnload,
+      action: () => {
+        if (!canUnload) return;
+        containerComponent.unloadAll();
+      },
+      tooltipInfo: {
+        title: "Unload All",
+        description: tooltipDescription,
+        iconKey: "gui",
+        iconFrame: "action_icons/hand.png",
+        iconOrigin: { x: 0.5, y: 0.5 }
+      },
+      shortcut: "u"
+    } satisfies ActorActionSetup);
+    index++;
+
+    // Refresh the button when the actor moves to/from a shore tile
+    this.containerMovementSubscription?.unsubscribe();
+    const translateComponent = getActorComponent(actor, ActorTranslateComponent);
+    if (translateComponent) {
+      this.containerMovementSubscription = translateComponent.actorMovedLogicalPosition.subscribe(() => {
+        this.refreshForCurrentSelection();
+      });
+    }
+
+    return index;
+  }
+
   private showProductionIcons(
     actor: Phaser.GameObjects.GameObject,
     allActors: Phaser.GameObjects.GameObject[],
@@ -657,13 +899,13 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     if (productionComponent && productionComponent.isFinished) {
       const availableToProduce = productionComponent.productionDefinition.availableProduceActors;
       availableToProduce.forEach((product: ObjectNames, localIndex: number): void => {
-        const actorDefinition = pwActorDefinitions[product];
-        const info = actorDefinition.components?.info;
+        const actorDefinition = getPwActorDefinition(product, null);
+        const info = actorDefinition?.components?.info;
         if (!info || !info.smallImage) {
           throw new Error(`Info component not found for ${product}`);
         }
         // UI validation gating
-        const { disabled, disabledDescription, reason, validation } = this.getProductionValidationState(product);
+        const { disabled, validation } = this.getProductionValidationState(product);
 
         const action = this.actor_actions[index];
         if (!action) {
@@ -680,55 +922,46 @@ export default class ActorActions extends Phaser.GameObjects.Container {
           visible: true,
           action: () => {
             if (disabled) {
-              this.playInvalidActionSfx(reason);
+              this.playInvalidActionSfx();
               return;
             }
-            if (!actorDefinition.components?.productionCost) {
+            if (!actorDefinition?.components?.productionCost) {
               throw new Error(`Production cost not found for ${product}`);
             }
 
             // Find the production building with the least total remaining production time
             const targetComponent = findProductionBuildingWithLeastRemainingTime(allActors);
-            if (!targetComponent) {
+            const playerNumber = getCurrentPlayerNumber(this.mainSceneWithActors);
+            if (!targetComponent || !playerNumber) {
               console.error("No production building found");
               return;
             }
-
-            const errorCode = targetComponent.startProduction({
-              actorName: product,
-              costData: actorDefinition.components.productionCost
-            });
-            const sound = this.mainSceneWithActors.sound;
-
-            sound.stopByKey(AudioSprites.UI_FEEDBACK);
-
             const crossSceneCommunicationService = getSceneService(
               this.mainSceneWithActors,
               CrossSceneCommunicationService
             );
-            switch (errorCode) {
-              case AssignProductionErrorCode.NotEnoughResources:
+            const sound = this.mainSceneWithActors.sound;
+            sound.stopByKey(AudioSprites.UI_FEEDBACK);
+            if (this.areAllProductionQueuesFull(allActors)) {
+              this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.PRODUCTION_QUEUE_FULL);
+              crossSceneCommunicationService?.emit(
+                HudMessages.HudVisualFeedbackMessageEventName,
+                HudVisualFeedbackMessageType.ProductionQueueFull
+              );
+              return;
+            }
+
+            const dispatched = dispatchProductionCommand(this.mainSceneWithActors, allActors, playerNumber, product);
+            switch (dispatched) {
+              case false:
                 this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.NOT_ENOUGH_RESOURCES);
                 crossSceneCommunicationService?.emit(
                   HudMessages.HudVisualFeedbackMessageEventName,
                   HudVisualFeedbackMessageType.NotEnoughResources
                 );
                 break;
-              case AssignProductionErrorCode.QueueFull:
-                this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.PRODUCTION_QUEUE_FULL);
-                crossSceneCommunicationService?.emit(
-                  HudMessages.HudVisualFeedbackMessageEventName,
-                  HudVisualFeedbackMessageType.ProductionQueueFull
-                );
-                break;
-              case AssignProductionErrorCode.NotFinished:
-                console.error("Not finished");
-                break;
-              case AssignProductionErrorCode.InvalidProduct:
-                console.error("Invalid product");
-                break;
-              case AssignProductionErrorCode.NoOwner:
-                console.error("No owner");
+              case true:
+                this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.BUTTON_CLICK);
                 break;
             }
           },
@@ -737,7 +970,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
             iconKey: info.smallImage.key!,
             iconFrame: info.smallImage.frame,
             iconOrigin: info.smallImage.origin ?? { x: 0.5, y: 0.5 },
-            description: disabledDescription ?? info.description,
+            description: info.description,
             definition: actorDefinition,
             unmetRequirements: validation?.prereqs
           },
@@ -748,6 +981,129 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       });
     }
     return index;
+  }
+
+  private areAllProductionQueuesFull(actors: Phaser.GameObjects.GameObject[]): boolean {
+    const productionBuildings = actors
+      .filter((actor) => getActorComponent(actor, ProductionComponent)?.isFinished)
+      .map((actor) => getActorComponent(actor, QueueComponent))
+      .filter((queueComponent): queueComponent is QueueComponent => !!queueComponent);
+
+    return (
+      productionBuildings.length > 0 &&
+      productionBuildings.every((queueComponent) => queueComponent.findQueueForNewItem() === undefined)
+    );
+  }
+
+  private showResearchIcons(
+    actor: Phaser.GameObjects.GameObject,
+    _allActors: Phaser.GameObjects.GameObject[],
+    index: number
+  ): number {
+    const researchComponent = getActorComponent(actor, ResearchComponent);
+    if (!researchComponent) return index;
+
+    for (const researchType of researchComponent.availableResearch) {
+      const researchData = researchDefinitions[researchType];
+      if (!researchData) continue;
+
+      // Hide research that has unmet prerequisites — those will appear once their prerequisite is done
+      if (researchData.prerequisiteResearch?.some((prereq) => !researchComponent.isResearched(prereq))) continue;
+
+      const action = this.actor_actions[index];
+      if (!action) {
+        console.error("Action button not found at index", index);
+        return index;
+      }
+
+      // Skip if already fully completed in TechTree
+      const isAlreadyResearched = researchComponent.isResearched(researchType);
+      if (isAlreadyResearched) continue;
+
+      // Is this research currently the active (first) item being processed in this building?
+      const isActiveInThisBuilding = researchComponent.currentResearchType === researchType;
+      const progress = isActiveInThisBuilding ? researchComponent.getResearchProgress(researchType) : 0;
+
+      // Is this research already queued anywhere (this or another building)?
+      const isQueuedGlobally = this.isResearchTypeQueuedGlobally(researchType);
+
+      // Validation state (resources, prerequisites) - only relevant when not yet queued
+      const { disabled: isValidationDisabled, unmetRequirements } = this.getResearchValidationState(
+        researchType,
+        researchComponent
+      );
+
+      // Disable if already in queue globally or if validation fails
+      // But keep it interactable (not disabled) if it's the active item - so the player can cancel
+      const disabled = isQueuedGlobally || isValidationDisabled;
+
+      action.setup({
+        icon: {
+          key: researchData.icon.key,
+          frame: researchData.icon.frame,
+          origin: { x: 0.5, y: 0.5 }
+        },
+        visible: true,
+        disabled: disabled && !isActiveInThisBuilding,
+        cooldownProgress: isActiveInThisBuilding ? progress : undefined,
+        action: () => {
+          if (isActiveInThisBuilding) {
+            // Cancel the active research
+            const playerNumber = getCurrentPlayerNumber(this.mainSceneWithActors);
+            if (playerNumber && dispatchCancelResearchCommand(this.mainSceneWithActors, actor, playerNumber)) {
+              this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.BUTTON_CLICK);
+            }
+          } else if (!disabled) {
+            // Start/queue research
+            const playerNumber = getCurrentPlayerNumber(this.mainSceneWithActors);
+            const success =
+              !!playerNumber &&
+              dispatchResearchCommand(this.mainSceneWithActors, actor, playerNumber, researchType);
+            if (success) {
+              this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.BUTTON_CLICK);
+            } else {
+              this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.NOT_ENOUGH_RESOURCES);
+            }
+          } else {
+            this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.NOT_ENOUGH_RESOURCES);
+          }
+        },
+        tooltipInfo: {
+          title: researchData.name + (isActiveInThisBuilding ? " (Click to cancel)" : ""),
+          description: researchData.description,
+          iconKey: researchData.icon.key,
+          iconFrame: researchData.icon.frame,
+          iconOrigin: { x: 0.5, y: 0.5 },
+          unmetRequirements: unmetRequirements
+        }
+      } satisfies ActorActionSetup);
+      index++;
+    }
+
+    return index;
+  }
+
+  /** Check if a research type is currently queued in any owned building's queue */
+  private isResearchTypeQueuedGlobally(researchType: ResearchType): boolean {
+    const playerNr = getCurrentPlayerNumber(this.mainSceneWithActors);
+    if (!playerNr) return false;
+
+    const actorIndex = getSceneService(this.mainSceneWithActors, ActorIndexSystem);
+    if (!actorIndex) return false;
+
+    const ownedActors = actorIndex.getOwnedActors(playerNr);
+
+    for (const actor of ownedActors) {
+      const sharedQueue = getActorComponent(actor, QueueComponent);
+      if (sharedQueue) {
+        const hasInQueue = sharedQueue.allItems.some(
+          (item) => item.type === QueueItemType.Research && item.researchData === researchType
+        );
+        if (hasInQueue) return true;
+      }
+    }
+
+    return false;
   }
 
   private showBuilderIcons(
@@ -808,6 +1164,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     }
   }
 
+  /** Show buildable structures and categories when in building mode */
   private showBuildableIcons(
     actor: Phaser.GameObjects.GameObject,
     allActors: Phaser.GameObjects.GameObject[],
@@ -864,13 +1221,13 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         console.error("Not enough slots for building icons");
         return;
       }
-      const actorDefinition = pwActorDefinitions[building];
-      const info = actorDefinition.components?.info;
+      const actorDefinition = getPwActorDefinition(building, null);
+      const info = actorDefinition?.components?.info;
       if (!info || !info.smallImage) {
         throw new Error(`Info component not found for ${building}`);
       }
       // UI validation gating
-      const { disabled, disabledDescription, reason, validation } = this.getProductionValidationState(building);
+      const { disabled, validation } = this.getProductionValidationState(building);
 
       const action = this.actor_actions[index];
       if (!action) {
@@ -887,7 +1244,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         visible: true,
         action: () => {
           if (disabled) {
-            this.playInvalidActionSfx(reason);
+            this.playInvalidActionSfx();
             return;
           }
           const buildingCursor = getSceneComponent(this.mainSceneWithActors, BuildingCursor);
@@ -898,7 +1255,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
           iconKey: info.smallImage.key!,
           iconFrame: info.smallImage.frame,
           iconOrigin: info.smallImage.origin ?? { x: 0.5, y: 0.5 },
-          description: disabledDescription ?? info.description,
+          description: info.description,
           definition: actorDefinition,
           unmetRequirements: validation?.prereqs
         },
@@ -952,9 +1309,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     return index;
   }
 
-  /**
-   * Get the constructable definition for the current navigation level
-   */
+  /** Get the constructable definition for the current navigation level */
   private getCurrentConstructableLevel(builderComponent: BuilderComponent): ConstructableDefinition {
     let current = builderComponent.constructableBuildingsNested;
 
@@ -992,66 +1347,175 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     return current;
   }
 
+  /** Check if an object can be produced/built, including tech tree and resource requirements */
   private getProductionValidationState(objectName: ObjectNames): {
     disabled: boolean;
     disabledDescription: string | null;
-    reason: ProductionInvalidReason | null;
-    validation: ProductionValidationResult | null;
+    validation: PreRequirement | null;
   } {
     const playerNumber = getCurrentPlayerNumber(this.mainSceneWithActors)!;
     const validation = ProductionValidator.validateObject(this.mainSceneWithActors, playerNumber, objectName);
-    let disabled = !validation.canQueue;
+    const disabled = !validation.canQueue;
     let disabledDescription: string | null = null;
-    let reason: ProductionInvalidReason | null = validation.reason ?? null;
 
-    if (validation.techBlocked) {
-      const requirementNames =
-        validation.prereqs?.map((req) => pwActorDefinitions[req]?.components?.info?.name ?? req).join(", ") ?? "";
+    // Check for tech prerequisites (object and research requirements)
+    const hasObjectPrereqs = validation.prereqs.objectNames.length > 0;
+    const hasResearchPrereqs = validation.prereqs.researchTypes.length > 0;
+
+    if (hasObjectPrereqs || hasResearchPrereqs) {
+      const requirementObjectNames =
+        validation.prereqs.objectNames?.map((req) => getPwActorDefinition(req, null)?.components?.info?.name ?? req) ??
+        [];
+      const requirementResearchNames =
+        validation.prereqs.researchTypes?.map((req) => researchDefinitions[req]?.name ?? req) ?? [];
+      const requirementNames = [...requirementObjectNames, ...requirementResearchNames].join(", ");
       disabledDescription = `Requires: ${requirementNames}`;
-      reason = ProductionInvalidReason.TechLocked;
     }
 
-    if (validation.buildingPrereqBlocked) {
-      const missingBuildingNames =
-        validation.missingBuildings
-          ?.map((building) => pwActorDefinitions[building]?.components?.info?.name ?? building)
-          .join(", ") ?? "";
-      disabledDescription = `Requires Building: ${missingBuildingNames}`;
-      reason = ProductionInvalidReason.BuildingPrerequisitesMissing;
+    // Check for resource requirements
+    const hasResourcePrereqs = Object.keys(validation.prereqs.resources).length > 0;
+    if (hasResourcePrereqs && !disabledDescription) {
+      disabledDescription = "Not enough resources";
     }
 
-    const actorDefinition = pwActorDefinitions[objectName];
-    const player = getPlayer(this.mainSceneWithActors, playerNumber);
-    const cost = actorDefinition.components?.productionCost;
-    if (player && cost && !player.canPayAllResources(cost.resources)) {
-      disabled = true;
-      if (!disabledDescription) {
-        disabledDescription = "Not enough resources";
-        reason = ProductionInvalidReason.NotEnoughResources;
-      }
+    // Check for supply requirements
+    if (validation.prereqs.supply !== null && validation.prereqs.supply > 0 && !disabledDescription) {
+      disabledDescription = `Need ${validation.prereqs.supply} more supply`;
     }
 
-    return { disabled, disabledDescription, reason, validation };
+    return { disabled, disabledDescription, validation };
   }
 
-  private playInvalidActionSfx(reason: ProductionInvalidReason | null) {
-    switch (reason) {
-      case ProductionInvalidReason.NotEnoughResources:
-        this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.NOT_ENOUGH_RESOURCES);
-        break;
-      case ProductionInvalidReason.TechLocked:
-        this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.BUILD_DENIED); // TODO
-        break;
-      case ProductionInvalidReason.SupplyBlocked:
-        this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.BUILD_DENIED); // TODO
-        break;
-      case ProductionInvalidReason.BuildingPrerequisitesMissing:
-        this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.BUILD_DENIED); // TODO
-        break;
-      default:
-        this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.BUILD_DENIED);
-        break;
+  /** Subscribe to the selected actor's spell cooldown events and drive a refresh timer */
+  private subscribeToSpellCooldowns(actor: Phaser.GameObjects.GameObject) {
+    this.spellCooldownSubscriptions.forEach((sub) => sub.unsubscribe());
+    this.spellCooldownSubscriptions = [];
+    this.stopSpellCooldownTimer();
+
+    const spellComponent = getActorComponent(actor, SpellComponent);
+    if (!spellComponent) return;
+
+    // Start the timer when a cooldown begins
+    const startedSub = spellComponent.spellCooldownStarted.subscribe(() => {
+      this.startSpellCooldownTimer(spellComponent);
+    });
+    this.spellCooldownSubscriptions.push(startedSub);
+
+    // Stop the timer when the last cooldown expires
+    const endedSub = spellComponent.spellCooldownEnded.subscribe(() => {
+      const stillActive = spellComponent.availableSpells.some((s) => spellComponent.getCooldownRemaining(s) > 0);
+      if (!stillActive) {
+        this.stopSpellCooldownTimer();
+        // Final refresh to clear the cooldown overlays
+        this.refreshForCurrentSelection();
+      }
+    });
+    this.spellCooldownSubscriptions.push(endedSub);
+
+    // If there are already active cooldowns when the actor is selected, start timer immediately
+    const hasActiveCooldowns = spellComponent.availableSpells.some((s) => spellComponent.getCooldownRemaining(s) > 0);
+    if (hasActiveCooldowns) {
+      this.startSpellCooldownTimer(spellComponent);
     }
+  }
+
+  private startSpellCooldownTimer(spellComponent: SpellComponent) {
+    if (this.spellUpdateTimer) return; // Already running
+
+    this.spellUpdateTimer = this.mainSceneWithActors.time.addEvent({
+      delay: 100,
+      loop: true,
+      callback: () => {
+        // Stop if no more active cooldowns
+        const stillActive = spellComponent?.availableSpells.some((s) => spellComponent.getCooldownRemaining(s) > 0);
+        if (!stillActive) {
+          this.stopSpellCooldownTimer();
+          this.refreshForCurrentSelection();
+          return;
+        }
+        this.refreshForCurrentSelection();
+      }
+    });
+  }
+
+  private stopSpellCooldownTimer() {
+    this.spellUpdateTimer?.remove(false);
+    this.spellUpdateTimer = undefined;
+  }
+
+  /** Check if a spell can be cast (cooldown, mana, research requirements) */
+  private getSpellValidationState(
+    spellType: SpellType,
+    spellComponent: SpellComponent
+  ): {
+    disabled: boolean;
+    disabledDescription: string | null;
+    unmetRequirements: PreRequirementType;
+  } {
+    const spellData = spellDefinitions[spellType];
+    const isResearched = spellComponent.isSpellResearched(spellType);
+    const canCast = spellComponent.canCastSpell(spellType);
+
+    const disabled = !isResearched || !canCast;
+    let disabledDescription: string | null = null;
+    const unmetRequirements: PreRequirementType = {
+      objectNames: [],
+      researchTypes: [],
+      resources: {},
+      supply: null
+    };
+
+    if (!isResearched && spellData.requiresResearch) {
+      const researchData = researchDefinitions[spellData.requiresResearch];
+      const researchName = researchData?.name ?? spellData.requiresResearch;
+      disabledDescription = `Requires: ${researchName}`;
+      unmetRequirements.researchTypes = [spellData.requiresResearch];
+    }
+
+    return { disabled, disabledDescription, unmetRequirements };
+  }
+
+  /** Check if research can be started (resources, prerequisites) */
+  private getResearchValidationState(
+    researchType: ResearchType,
+    researchComponent: ResearchComponent
+  ): {
+    disabled: boolean;
+    disabledDescription: string | null;
+    unmetRequirements: PreRequirementType;
+  } {
+    const researchData = researchDefinitions[researchType];
+    const isAlreadyResearched = researchComponent.isResearched(researchType);
+    const isCurrentlyResearching = researchComponent.currentResearchType === researchType;
+    const { canStart, reason } = researchComponent.canStartResearch(researchType);
+
+    const currentPlayerNr = getCurrentPlayerNumber(this.mainSceneWithActors);
+    const player = getPlayer(this.mainSceneWithActors, currentPlayerNr);
+    const canAfford = player?.canPayAllResources(researchData.cost) ?? false;
+
+    const disabled = !canStart && !isCurrentlyResearching;
+    let disabledDescription: string | null = null;
+    const unmetRequirements = {
+      objectNames: [],
+      researchTypes: [],
+      resources: {},
+      supply: null
+    } satisfies PreRequirementType;
+
+    if (!canAfford && !isCurrentlyResearching) {
+      disabledDescription = "Not enough resources";
+    } else if (reason) {
+      disabledDescription = reason;
+      // If there are prerequisite research items, add them to unmet requirements
+      // Note: This assumes the reason contains info about missing prerequisites
+      // You may need to extend ResearchComponent to expose prerequisite info
+    }
+
+    return { disabled, disabledDescription, unmetRequirements };
+  }
+
+  private playInvalidActionSfx() {
+    this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.BUILD_DENIED);
   }
 
   override destroy(fromScene?: boolean) {
@@ -1061,6 +1525,10 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     this.actorConstructionSubscription?.unsubscribe();
     this.buildingModeSubscription?.unsubscribe();
     this.resourceChangedSubscription?.unsubscribe();
+    this.actorUnlockSubscription?.unsubscribe();
+    this.researchEventSubscriptions.forEach((sub) => sub.unsubscribe());
+    this.spellCooldownSubscriptions.forEach((sub) => sub.unsubscribe());
+    this.stopSpellCooldownTimer();
     this.categoryNavigationStack = [];
     this.tabHandlerSubscription?.unsubscribe();
     this.mainSceneWithActors.events.off(

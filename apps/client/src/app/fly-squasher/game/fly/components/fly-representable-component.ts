@@ -98,13 +98,13 @@ export class FlyRepresentableComponent implements IFlyBase {
     const millisecondsSinceKilled = new Date().getTime() - killedAt.getTime();
 
     const hexColor = Phaser.Display.Color.Interpolate.ColorWithColor(
-      Phaser.Display.Color.HexStringToColor("#ffffff"),
-      Phaser.Display.Color.HexStringToColor("#ff0000"),
+      Phaser.Display.Color.HexStringToColor("#fd6d6d"),
+      Phaser.Display.Color.HexStringToColor("#271f15"),
       despawnTimeInMilliseconds,
       millisecondsSinceKilled
     );
 
-    this._fly.setTint(hexColor.color); // TODO THIS DOESN'T WORK OK
+    this._fly.setTint(hexColor.color);
   }
 
   private displayBlood = () => {
@@ -114,6 +114,7 @@ export class FlyRepresentableComponent implements IFlyBase {
     bloodSplatter.setTint(0x00ff00);
     // set scale
     bloodSplatter.setScale(this.scale);
+    // Intentional wall-clock timer: this is a visual-only blood fade effect.
     this.scene.time.delayedCall(3 * 1000, () => {
       this.scene.tweens.add({
         targets: bloodSplatter,

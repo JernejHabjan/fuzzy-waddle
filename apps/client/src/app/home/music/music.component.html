@@ -1,12 +1,30 @@
-<fuzzy-waddle-home-nav />
-<div class="music-list">
-  @for (track of ost; track track) {
-    <div class="music-item">
-      <p class="track-name">{{ track.name }}</p>
-      <audio controls class="audio-player">
-        <source [src]="track.path" type="audio/mpeg" />
-        Your browser does not support the audio element.
-      </audio>
+<fuzzy-waddle-home-nav [showBack]="true" />
+<div class="music-page">
+  <section class="music-header">
+    <div>
+      <span class="eyebrow">Sound Booth</span>
+      <h1>Music Library</h1>
+      <p>Preview the current soundtrack lineup across the Fuzzy Waddle games without leaving the app.</p>
     </div>
-  }
+    <div class="header-stat">
+      <span class="stat-label">Tracks</span>
+      <strong>{{ ost.length }}</strong>
+    </div>
+  </section>
+
+  <div class="music-list">
+    @for (track of ost; track track.path) {
+      <article class="music-item">
+        <div class="track-meta">
+          <span class="game-tag">{{ track.game }}</span>
+          <p class="track-name">{{ track.name }}</p>
+          <p class="track-note">{{ track.note }}</p>
+        </div>
+        <audio controls class="audio-player">
+          <source [src]="track.path" type="audio/mpeg" />
+          Your browser does not support the audio element.
+        </audio>
+      </article>
+    }
+  </div>
 </div>

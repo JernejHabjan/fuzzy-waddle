@@ -58,6 +58,9 @@ export const gameInstanceClientServiceStub = {
   async stopGameInstance(): Promise<void> {
     return Promise.resolve();
   },
+  async disconnectSelfFromCurrentGame(): Promise<void> {
+    return Promise.resolve();
+  },
   async startGame(): Promise<void> {
     return Promise.resolve();
   },
@@ -121,6 +124,12 @@ export const gameInstanceClientServiceStub = {
     return Promise.resolve();
   },
   async startReplay(gameInstanceSaveData: ProbableWaffleGameInstanceSaveData): Promise<void> {
+    return Promise.resolve();
+  },
+  async leaveLobby(): Promise<void> {
+    return Promise.resolve();
+  },
+  async leaveScoreScreen(navigateHome: boolean = true): Promise<void> {
     return Promise.resolve();
   }
 } satisfies GameInstanceClientServiceInterface;

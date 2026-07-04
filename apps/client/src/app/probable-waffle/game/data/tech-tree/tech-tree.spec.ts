@@ -5,15 +5,14 @@ import { FactionType, ObjectNames } from "@fuzzy-waddle/api-interfaces";
 describe("TechTree", () => {
   describe("TechTreeBuilder", () => {
     it("should build tech trees for both factions", () => {
-      const graphs = TechTreeBuilder.build();
+      const graph = TechTreeBuilder.build();
 
-      expect(graphs[FactionType.Tivara]).toBeDefined();
-      expect(graphs[FactionType.Skaduwee]).toBeDefined();
+      expect(graph).toBeDefined();
     });
 
     it("should embed full definitions in tech tree nodes", () => {
-      const graphs = TechTreeBuilder.build();
-      const tivaraWorkerNode = graphs[FactionType.Tivara].nodes[ObjectNames.TivaraWorker];
+      const graph = TechTreeBuilder.build();
+      const tivaraWorkerNode = graph.nodes[ObjectNames.TivaraWorker];
 
       expect(tivaraWorkerNode).toBeDefined();
       expect(tivaraWorkerNode!.definition).toBeDefined();
@@ -21,8 +20,8 @@ describe("TechTree", () => {
     });
 
     it("should infer construction relationships for workers", () => {
-      const graphs = TechTreeBuilder.build();
-      const tivaraWorkerNode = graphs[FactionType.Tivara].nodes[ObjectNames.TivaraWorker];
+      const graph = TechTreeBuilder.build();
+      const tivaraWorkerNode = graph.nodes[ObjectNames.TivaraWorker];
 
       // Workers should be able to construct buildings
       expect(tivaraWorkerNode!.constructs.length).toBeGreaterThan(0);
@@ -30,8 +29,8 @@ describe("TechTree", () => {
     });
 
     it("should infer production relationships for buildings", () => {
-      const graphs = TechTreeBuilder.build();
-      const sandholdNode = graphs[FactionType.Tivara].nodes[ObjectNames.Sandhold];
+      const graph = TechTreeBuilder.build();
+      const sandholdNode = graph.nodes[ObjectNames.Sandhold];
 
       // Sandhold should produce workers
       expect(sandholdNode).toBeDefined();
@@ -40,19 +39,19 @@ describe("TechTree", () => {
     });
 
     it("should set prerequisites based on requirements component", () => {
-      const graphs = TechTreeBuilder.build();
-      const tivaraWorkerNode = graphs[FactionType.Tivara].nodes[ObjectNames.TivaraWorker];
+      const graph = TechTreeBuilder.build();
+      const tivaraWorkerNode = graph.nodes[ObjectNames.TivaraWorker];
 
       // Worker requires Sandhold (from requirements component)
-      expect(tivaraWorkerNode!.prerequisites).toContain(ObjectNames.Sandhold);
+      expect(tivaraWorkerNode!.prerequisites.prereqs.objectNames).toContain(ObjectNames.Sandhold);
     });
 
     it("should set prerequisites based on production relationships", () => {
-      const graphs = TechTreeBuilder.build();
-      const tivaraWorkerNode = graphs[FactionType.Tivara].nodes[ObjectNames.TivaraWorker];
+      const graph = TechTreeBuilder.build();
+      const tivaraWorkerNode = graph.nodes[ObjectNames.TivaraWorker];
 
       // Worker is produced by Sandhold, so Sandhold should be a prerequisite
-      expect(tivaraWorkerNode!.prerequisites).toContain(ObjectNames.Sandhold);
+      expect(tivaraWorkerNode!.prerequisites.prereqs.objectNames).toContain(ObjectNames.Sandhold);
     });
   });
 
@@ -71,8 +70,8 @@ describe("TechTree", () => {
     });
 
     it("should initialize with graphs for both factions", () => {
-      const tivaraGraph = service.getGraph(FactionType.Tivara);
-      const skaduweeGraph = service.getGraph(FactionType.Skaduwee);
+      const tivaraGraph = service.getGraph();
+      const skaduweeGraph = service.getGraph();
 
       expect(tivaraGraph).toBeDefined();
       expect(skaduweeGraph).toBeDefined();
@@ -80,38 +79,38 @@ describe("TechTree", () => {
 
     it("should get prerequisites for locked actors", () => {
       const testPlayerNumber = 1;
-      const prereqs = service.getPrerequisites(testPlayerNumber, FactionType.Tivara, ObjectNames.AnkGuard);
+      const prereqs = service.getPrerequisites(testPlayerNumber, ObjectNames.AnkGuard);
 
-      // Should return a Set
-      expect(prereqs).toBeInstanceOf(Set);
+      // Should return a Array
+      expect(prereqs.prereqs.objectNames).toBeInstanceOf(Array);
 
       // AnkGuard requires worker to build it, but prerequisites should not include self
-      expect(prereqs.has(ObjectNames.AnkGuard)).toBe(false);
+      expect(prereqs.prereqs.objectNames.includes(ObjectNames.AnkGuard)).toBe(false);
     });
 
     it("should get definition from tech tree", () => {
-      const definition = service.getDefinition(FactionType.Tivara, ObjectNames.TivaraWorker);
+      const definition = service.getDefinition(ObjectNames.TivaraWorker);
 
       expect(definition).toBeDefined();
       expect(definition?.components?.builder).toBeDefined();
     });
 
     it("should get producible units for buildings", () => {
-      const producible = service.getProducibleUnits(FactionType.Tivara, ObjectNames.Sandhold);
+      const producible = service.getProducibleUnits(ObjectNames.Sandhold);
 
       expect(producible).toContain(ObjectNames.TivaraWorker);
     });
 
     it("should get constructable buildings for units", () => {
-      const constructable = service.getConstructableBuildings(FactionType.Tivara, ObjectNames.TivaraWorker);
+      const constructable = service.getConstructableBuildings(ObjectNames.TivaraWorker);
 
       expect(constructable.length).toBeGreaterThan(0);
       expect(constructable).toContain(ObjectNames.Sandhold);
     });
 
     it("should validate tech tree structure", () => {
-      const tivaraErrors = service.validateTechTree(FactionType.Tivara);
-      const skaduweeErrors = service.validateTechTree(FactionType.Skaduwee);
+      const tivaraErrors = service.validateTechTree();
+      const skaduweeErrors = service.validateTechTree();
 
       // Validation should run without crashing
       // Note: Errors may exist due to incomplete actor definitions
@@ -126,6 +125,88 @@ describe("TechTree", () => {
       if (skaduweeErrors.length > 0) {
         console.log("[Test] Skaduwee validation issues:", skaduweeErrors.length);
       }
+    });
+
+    it("should get main building for Tivara faction", () => {
+      const mainBuilding = service.getMainBuildingForFaction(FactionType.Tivara);
+
+      expect(mainBuilding).toBe(ObjectNames.Sandhold);
+    });
+
+    it("should get main building for Skaduwee faction", () => {
+      const mainBuilding = service.getMainBuildingForFaction(FactionType.Skaduwee);
+
+      expect(mainBuilding).toBe(ObjectNames.FrostForge);
+    });
+
+    it("should get housing buildings for Tivara faction", () => {
+      const housingBuildings = service.getHousingBuildingsExcludingMain(FactionType.Tivara);
+
+      // Should not include buildings from other factions
+      const hasSkaduweeBuildings = housingBuildings.some((b) => b.toString().startsWith("Skaduwee"));
+      expect(hasSkaduweeBuildings).toBe(false);
+
+      // Should not include FrostForge
+      expect(housingBuildings).not.toContain(ObjectNames.FrostForge);
+    });
+
+    it("should get housing buildings for Skaduwee faction", () => {
+      const housingBuildings = service.getHousingBuildingsExcludingMain(FactionType.Skaduwee);
+
+      // Should not include buildings from other factions
+      const hasTivaraBuildings = housingBuildings.some(
+        (b) => b.toString().startsWith("Tivara") || b === ObjectNames.Sandhold
+      );
+      expect(hasTivaraBuildings).toBe(false);
+
+      // Should not include Sandhold
+      expect(housingBuildings).not.toContain(ObjectNames.Sandhold);
+    });
+
+    it("should get defensive buildings for Tivara faction", () => {
+      const defensiveBuildings = service.getDefensiveBuildingsExcludingMain(FactionType.Tivara);
+
+      // Should not include buildings from other factions
+      const hasSkaduweeBuildings = defensiveBuildings.some((b) => b.toString().startsWith("Skaduwee"));
+      expect(hasSkaduweeBuildings).toBe(false);
+    });
+
+    it("should get defensive buildings for Skaduwee faction", () => {
+      const defensiveBuildings = service.getDefensiveBuildingsExcludingMain(FactionType.Skaduwee);
+
+      // Should not include buildings from other factions
+      const hasTivaraBuildings = defensiveBuildings.some(
+        (b) => b.toString().startsWith("Tivara") || b === ObjectNames.Sandhold
+      );
+      expect(hasTivaraBuildings).toBe(false);
+    });
+
+    it("should get resource buildings for Tivara faction", () => {
+      const resourceBuildings = service.getResourceBuildingsExcludingMain(FactionType.Tivara);
+
+      // Should not include buildings from other factions
+      const hasSkaduweeBuildings = resourceBuildings.some((b) => b.toString().startsWith("Skaduwee"));
+      expect(hasSkaduweeBuildings).toBe(false);
+    });
+
+    it("should get resource buildings for Skaduwee faction", () => {
+      const resourceBuildings = service.getResourceBuildingsExcludingMain(FactionType.Skaduwee);
+
+      // Should not include buildings from other factions
+      const hasTivaraBuildings = resourceBuildings.some(
+        (b) => b.toString().startsWith("Tivara") || b === ObjectNames.Sandhold
+      );
+      expect(hasTivaraBuildings).toBe(false);
+    });
+
+    it("should get all housing buildings when no faction specified", () => {
+      const allHousing = service.getHousingBuildingsExcludingMain();
+      const tivaraHousing = service.getHousingBuildingsExcludingMain(FactionType.Tivara);
+      const skaduweeHousing = service.getHousingBuildingsExcludingMain(FactionType.Skaduwee);
+
+      // All should be greater than or equal to faction-specific
+      expect(allHousing.length).toBeGreaterThanOrEqual(tivaraHousing.length);
+      expect(allHousing.length).toBeGreaterThanOrEqual(skaduweeHousing.length);
     });
   });
 });

@@ -1,14 +1,24 @@
-<div>
-  <div class="chart-title">
-    <h3>{{ chartTitle }}</h3>
+<div class="chart-container">
+  <div class="chart-controls">
+    <label for="metric-select">Show:</label>
+    <select id="metric-select" (change)="onMetricChange($event)">
+      @for (opt of metricOptions; track opt.value) {
+        <option [value]="opt.value" [selected]="opt.value === selectedMetric">{{ opt.label }}</option>
+      }
+    </select>
   </div>
+
   @if (ready) {
     @if (chartData.labels!.length > 1) {
-      <canvas baseChart [data]="chartData" [options]="chartOptions" [legend]="chartLegend" [type]="chartType"> </canvas>
+      <canvas baseChart [data]="chartData" [options]="chartOptions" [legend]="chartLegend" [type]="chartType"></canvas>
     } @else {
       <div class="no-data">
-        <h3>No data available</h3>
+        <p>No timeline data available. Data is captured every 5 seconds during gameplay.</p>
       </div>
     }
+  } @else {
+    <div class="no-data">
+      <p>No snapshot data available.</p>
+    </div>
   }
 </div>

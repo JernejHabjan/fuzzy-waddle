@@ -1,0 +1,152 @@
+{
+    "anims": [
+        {
+            "key": "undead_land/DeadTreeAnim1/DeadTreeAnim",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "environment_1",
+                    "frame": "undead_land/DeadTreeAnim1/DeadTreeAnim1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "environment_1",
+                    "frame": "undead_land/DeadTreeAnim1/DeadTreeAnim2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "environment_1",
+                    "frame": "undead_land/DeadTreeAnim1/DeadTreeAnim3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "environment_1",
+                    "frame": "undead_land/DeadTreeAnim1/DeadTreeAnim4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "environment_1",
+                    "frame": "undead_land/DeadTreeAnim1/DeadTreeAnim5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "environment_1",
+                    "frame": "undead_land/DeadTreeAnim1/DeadTreeAnim6.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 4,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "undead_land/DeadTreeAnim2/Animation",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "environment_1",
+                    "frame": "undead_land/DeadTreeAnim2/Animation2-0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "environment_1",
+                    "frame": "undead_land/DeadTreeAnim2/Animation2-1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "environment_1",
+                    "frame": "undead_land/DeadTreeAnim2/Animation2-2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "environment_1",
+                    "frame": "undead_land/DeadTreeAnim2/Animation2-3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "environment_1",
+                    "frame": "undead_land/DeadTreeAnim2/Animation2-4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "environment_1",
+                    "frame": "undead_land/DeadTreeAnim2/Animation2-5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 4,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "undead_land/DeadTreeAnim3/Animation",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "environment_1",
+                    "frame": "undead_land/DeadTreeAnim3/Animation3-0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "environment_1",
+                    "frame": "undead_land/DeadTreeAnim3/Animation3-1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "environment_1",
+                    "frame": "undead_land/DeadTreeAnim3/Animation3-2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "environment_1",
+                    "frame": "undead_land/DeadTreeAnim3/Animation3-3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "environment_1",
+                    "frame": "undead_land/DeadTreeAnim3/Animation3-4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "environment_1",
+                    "frame": "undead_land/DeadTreeAnim3/Animation3-5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 4,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        }
+    ],
+    "globalTimeScale": 1,
+    "meta": {
+        "app": "Phaser Editor 2D v3",
+        "contentType": "Phaser v3 Animations"
+    },
+    "settings": {
+        "sourceLang": "TYPE_SCRIPT",
+        "esModule": false,
+        "generateCode": false
+    }
+}

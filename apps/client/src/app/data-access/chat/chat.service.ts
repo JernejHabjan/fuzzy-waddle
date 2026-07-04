@@ -4,7 +4,12 @@ import { map } from "rxjs/operators";
 import { firstValueFrom, Observable } from "rxjs";
 import { type IChatService } from "./chat.service.interface";
 import { AuthenticatedSocketService } from "./authenticated-socket.service";
-import { type ChatMessage, GatewayChatEvent, type GetMessagesResponseDto } from "@fuzzy-waddle/api-interfaces";
+import {
+  type ChatMessage,
+  GatewayChatEvent,
+  type GetMessagesResponseDto,
+  type ReportChatMessageDto
+} from "@fuzzy-waddle/api-interfaces";
 import { environment } from "../../../environments/environment";
 
 @Injectable({
@@ -31,5 +36,10 @@ export class ChatService implements IChatService {
       params = params.set("gameInstanceId", gameInstanceId);
     }
     return await firstValueFrom(this.httpClient.get<GetMessagesResponseDto>(url, { params }));
+  }
+
+  async reportMessage(messageId: number, report: ReportChatMessageDto): Promise<void> {
+    const url = `${environment.api}api/chat/messages/${messageId}/report`;
+    await firstValueFrom(this.httpClient.post<void>(url, report));
   }
 }

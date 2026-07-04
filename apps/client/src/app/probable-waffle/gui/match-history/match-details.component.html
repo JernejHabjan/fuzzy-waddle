@@ -1,0 +1,75 @@
+<div class="container mt-4 overflow-auto aota-data-page">
+  <div class="card-container aota-card-shell">
+    @if (!authService.isAuthenticated) {
+      <div class="text-center">
+        <p>Not authenticated. Please Login to continue</p>
+        <button routerLink="" class="btn btn-primary m-1" type="button">Home</button>
+      </div>
+    } @else if (serverHealthService.serverChecking) {
+      <div class="text-center">
+        <p>Checking server health...</p>
+      </div>
+    } @else if (!serverHealthService.serverAvailable) {
+      <div class="text-center">
+        <p>Server is not available</p>
+      </div>
+    } @else if (loading()) {
+      <div class="text-center">
+        <p>Loading match details...</p>
+      </div>
+    } @else if (error()) {
+      <div class="text-center text-danger">
+        <p>{{ error() }}</p>
+        <button class="btn btn-primary mt-2" (click)="handleBack()">Back to Match History</button>
+      </div>
+    } @else if (gameDetails()) {
+      <div class="match-details">
+        <div class="match-header">
+          <button class="btn btn-secondary mb-3" (click)="handleBack()">← Back to Match History</button>
+          <h2 class="text-center text-primary mb-4">Match Details</h2>
+        </div>
+
+        <div class="game-info mb-4">
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">Map:</span>
+              <span class="info-value">{{ getMapName(gameDetails()!.gameSession.mapKey) }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Date:</span>
+              <span class="info-value">{{ gameDetails()!.gameSession.endedAt | date: "medium" }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Duration:</span>
+              <span class="info-value">{{ formatDuration(gameDetails()!.gameSession.totalDurationSeconds) }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Game Type:</span>
+              <span class="info-value">{{ getGameTypeName(gameDetails()!.gameSession.gameType) }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Players:</span>
+              <span class="info-value"
+                >{{ gameDetails()!.gameSession.humanPlayerCount }} human player{{
+                  gameDetails()!.gameSession.humanPlayerCount > 1 ? "s" : ""
+                }}</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <h3 class="text-primary mb-3">Player Scores</h3>
+        <probable-waffle-score-table [playerScores]="gameDetails()!.playerScores"/>
+
+        @if (gameDetails()!.snapshots.length > 0) {
+          <h3 class="text-primary mt-4 mb-3">Stats Over Time</h3>
+          <probable-waffle-score-through-time
+            [externalSnapshots]="gameDetails()!.snapshots"
+            [externalPlayers]="gameDetails()!.playerScores"
+            [externalGameInstanceId]="gameDetails()!.gameSession.gameInstanceId"
+          />
+        }
+      </div>
+    }
+  </div>
+</div>

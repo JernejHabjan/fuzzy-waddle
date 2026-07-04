@@ -10,6 +10,7 @@ import { AngularHost } from "../../../shared/consts";
 import { Subscription } from "rxjs";
 import { OptionsService } from "../options/options.service";
 import { AchievementService } from "../../services/achievement/achievement.service";
+import { GameInstanceStorageServiceInterface } from "../../communicators/storage/game-instance-storage.service.interface";
 import type { Types } from "phaser";
 
 @Component({
@@ -32,6 +33,7 @@ export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly optionsService = inject(OptionsService);
   private readonly achievementService = inject(AchievementService);
+  private readonly gameInstanceStorageService = inject(GameInstanceStorageServiceInterface);
   private refreshSubscription?: Subscription;
 
   ngOnInit(): void {
@@ -67,7 +69,7 @@ export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
     this.gameData = {
       gameInstance,
       communicator: this.communicatorService,
-      components: [this.optionsService, this.achievementService],
+      components: [this.optionsService, this.achievementService, this.gameInstanceStorageService],
       user: new ProbableWaffleUserInfo(this.authService.userId, this.gameInstanceClientService.currentPlayerNumber)
     } as const;
   }

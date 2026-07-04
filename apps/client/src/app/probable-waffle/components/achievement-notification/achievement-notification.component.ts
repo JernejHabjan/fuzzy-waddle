@@ -9,21 +9,7 @@ import { AudioAtlasService } from "../../services/audio-atlas/audio-atlas.servic
   standalone: true,
   imports: [AtlasSpriteComponent],
   templateUrl: "./achievement-notification.component.html",
-  styleUrls: ["./achievement-notification.component.scss"],
-  animations: [
-    trigger("notificationAnimation", [
-      // Element starts completely off-screen and invisible
-      transition(":enter", [
-        style({ transform: "translateX(100%)", opacity: 0 }),
-        animate("300ms cubic-bezier(0.16, 1, 0.3, 1)", style({ transform: "translateX(0)", opacity: 1 }))
-      ]),
-      // Element slides out and fades away
-      transition(":leave", [
-        style({ transform: "translateX(0)", opacity: 1 }),
-        animate("300ms cubic-bezier(0.7, 0, 0.84, 0)", style({ transform: "translateX(100%)", opacity: 0 }))
-      ])
-    ])
-  ]
+  styleUrls: ["./achievement-notification.component.scss"]
 })
 export class AchievementNotificationComponent implements OnInit, OnDestroy {
   readonly title = input<string>("");

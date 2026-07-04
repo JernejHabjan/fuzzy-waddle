@@ -7,8 +7,9 @@ import { SoundType } from "../../../entity/components/actor-audio/sound-type";
 export const sheepDefinition = {
   components: {
     representable: {
-      width: 64,
-      height: 64
+      width: 48,
+      height: 48,
+      origin: { x: 0.5, y: 0.772219288835404 }
     },
     objectDescriptor: {
       color: 0xf2f7fa

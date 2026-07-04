@@ -1,0 +1,107 @@
+@use "../../../../styles/_variables.scss" as *;
+
+:host {
+  display: block;
+  --lm-border: #f29ab4;
+  --lm-shell: #fff8fb;
+  --lm-panel: #fffdfb;
+  --lm-accent: #ff6b8a;
+  --lm-support: #5fc58d;
+  --lm-ink: #7b2f58;
+  --lm-soft-ink: #9a6784;
+  --lm-shadow: rgb(225 108 146 / 18%);
+  --lm-font-display: "Trebuchet MS", "Arial Rounded MT Bold", "Verdana", sans-serif;
+  --lm-font-body: ui-rounded, "Trebuchet MS", "Verdana", sans-serif;
+  font-family: var(--lm-font-body);
+}
+
+.spectate-panel {
+  display: grid;
+  gap: 1rem;
+  padding: 1.4rem;
+  border: 2px solid var(--lm-border);
+  border-radius: 24px;
+  background: var(--lm-shell);
+  box-shadow: 0 16px 40px var(--lm-shadow);
+}
+
+.spectate-header {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.eyebrow {
+  display: inline-flex;
+  width: fit-content;
+  margin-bottom: 0.55rem;
+  padding: 0.3rem 0.7rem;
+  border: 1px solid var(--lm-border);
+  border-radius: 999px;
+  background: #ffe7ef;
+  color: var(--lm-support);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-family: var(--lm-font-body);
+}
+
+.spectate-header h2 {
+  margin: 0;
+  font-family: var(--lm-font-display);
+  color: var(--lm-ink);
+}
+
+.spectate-header p,
+.room-label {
+  margin: 0;
+  color: var(--lm-soft-ink);
+}
+
+.spectate-list {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.spectate-room {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.95rem 1rem;
+  border: 1px solid #ffd3df;
+  border-radius: 18px;
+  background: var(--lm-panel);
+}
+
+.room-value {
+  font-weight: 700;
+  color: var(--lm-accent);
+  word-break: break-word;
+}
+
+:host .btn-primary {
+  border-color: var(--lm-accent);
+  background: var(--lm-accent);
+  color: #fff8ef;
+  border-radius: 999px;
+  font-family: var(--lm-font-body);
+  font-weight: 700;
+}
+
+:host .btn-primary:hover,
+:host .btn-primary:focus-visible {
+  border-color: #b34f3b;
+  background: #b34f3b;
+}
+
+@media (max-width: 640px) {
+  .spectate-panel {
+    padding: 1rem;
+  }
+
+  .spectate-room {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

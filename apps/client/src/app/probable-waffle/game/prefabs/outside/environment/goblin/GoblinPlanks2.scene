@@ -1,0 +1,39 @@
+{
+    "id": "4e0d878b-a380-4ba3-814f-ab77072b15ed",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "ac0d6c84-716c-434a-a487-5bdd4534ee8d",
+            "label": "goblin_planks2_png",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "7.599920554314409 17.8827666904182 17.021562022956296 14.924809485146916 31.92090201987834 22.812695365870354 17.021562022956296 31.029243158290605 0.36935849698458156 23.14135727756716",
+            "texture": {
+                "key": "environment_1",
+                "frame": "goblin/planks2.png"
+            },
+            "x": 32,
+            "y": 48.45223017565329,
+            "originY": 0.7328821929891653
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

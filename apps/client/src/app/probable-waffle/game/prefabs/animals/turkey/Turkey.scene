@@ -1,0 +1,45 @@
+{
+    "id": "9341f192-75ca-48cf-af0e-0e48d3791a25",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 48,
+        "borderHeight": 48
+    },
+    "displayList": [
+        {
+            "type": "Sprite",
+            "id": "fe2914fc-dfb1-4395-8e6a-c6a1da150def",
+            "label": "turkey_idle_se",
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": 16,
+            "hitArea.y": 16,
+            "hitArea.radius": 10.325289790596205,
+            "texture": {
+                "key": "farm_animals",
+                "frame": "Turkey/Turkey_Idle/front/Turkey_Idle_Front1.png"
+            },
+            "x": 24,
+            "y": 37,
+            "scaleX": 1.5,
+            "scaleY": 1.5,
+            "originY": 0.773612963520417,
+            "animationPlayMethod": 1,
+            "animationKey": "Turkey/Turkey_Idle/front/Turkey_Idle_Front"
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

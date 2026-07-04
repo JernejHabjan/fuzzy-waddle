@@ -11,4 +11,5 @@ export interface GameInstanceServiceInterface {
   stopGameInstance(gameInstanceId: GameInstanceId, user: User): void;
   findGameInstance(gameInstanceId: GameInstanceId): ProbableWaffleGameInstance | undefined;
   getGameInstanceData(gameInstanceId: GameInstanceId): ProbableWaffleGameInstanceData | null;
+  getGameInstanceDataForUser(gameInstanceId: GameInstanceId, user: User): ProbableWaffleGameInstanceData | null;
 }

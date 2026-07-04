@@ -1,0 +1,45 @@
+{
+    "id": "701e1d93-9275-4663-9e7a-146b113a59ff",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 48,
+        "borderHeight": 48
+    },
+    "displayList": [
+        {
+            "type": "Sprite",
+            "id": "508580ad-9c80-4fb1-bcfb-a71a5d0971a9",
+            "label": "sheep_idle_se",
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": 16,
+            "hitArea.y": 16,
+            "hitArea.radius": 11.25749329763324,
+            "texture": {
+                "key": "farm_animals",
+                "frame": "Sheep/Sheep_Idle/front/Sheep_Idle_front1.png"
+            },
+            "x": 24,
+            "y": 37,
+            "scaleX": 1.5,
+            "scaleY": 1.5,
+            "originY": 0.773612963520417,
+            "animationPlayMethod": 1,
+            "animationKey": "Sheep/Sheep_Idle/front/Sheep_Idle_front"
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

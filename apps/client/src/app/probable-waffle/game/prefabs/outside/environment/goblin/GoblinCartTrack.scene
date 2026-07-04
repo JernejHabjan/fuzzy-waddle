@@ -1,0 +1,39 @@
+{
+    "id": "3d55cf0f-00c9-47d3-af1d-abc826bbe18d",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "c2d9e0bc-d1d1-4656-a818-c521a593b3ca",
+            "label": "goblin_cart_track_png",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "3.035878140551034 13.652822974183877 16.75715499453817 6.69275500477011 22.722927539749975 9.07906402285483 29.881854594004125 15.541984280167611 17.85087996116033 22.502052249581375",
+            "texture": {
+                "key": "environment_1",
+                "frame": "goblin/cart_track.png"
+            },
+            "x": 32,
+            "y": 41.53707988719502,
+            "originY": 0.5480337464748444
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

@@ -9,7 +9,7 @@ import {
   output,
   viewChild
 } from "@angular/core";
-import type { ChatMessage } from "@fuzzy-waddle/api-interfaces";
+import { ChatReportReason, type ChatMessage } from "@fuzzy-waddle/api-interfaces";
 import { AvatarProviderService } from "./avatar-provider/avatar-provider.service";
 import { Observable, Subscription, Subject } from "rxjs";
 import { debounceTime } from "rxjs/operators";
@@ -18,6 +18,10 @@ import { FormsModule } from "@angular/forms";
 import { AuthService } from "../../../auth/auth.service";
 import { AngularHost } from "../../consts";
 import { ChatService } from "../../../data-access/chat/chat.service";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
+import { getRoleIcon, getRoleLabel } from "../../utils/app-role-presentation";
+import { Router } from "@angular/router";
 
 const DEFAULT_PAGE_SIZE = 10;
 const SCROLL_THRESHOLD = 50;
@@ -26,7 +30,7 @@ const SCROLL_THRESHOLD = 50;
   selector: "fuzzy-waddle-chat",
   templateUrl: "./chat.component.html",
   styleUrls: ["./chat.component.scss"],
-  imports: [FormsModule],
+  imports: [FormsModule, FaIconComponent],
   host: AngularHost.contentFlexFullHeight
 })
 export class ChatComponent implements OnInit, OnDestroy {
@@ -40,15 +44,37 @@ export class ChatComponent implements OnInit, OnDestroy {
   protected readonly messages: ChatMessage[] = [];
   protected isLoading = false;
   protected hasMoreMessages = true;
+  protected reportingMessageId: number | null = null;
+  protected reportReason: ChatReportReason = ChatReportReason.Abuse;
+  protected reportDetails = "";
+  protected reportStatusMessage = "";
+  protected reportErrorMessage = "";
+  protected openMessageMenuId: number | null = null;
+  protected readonly faEllipsis = faEllipsis;
+  protected readonly getRoleIcon = getRoleIcon;
+  protected readonly getRoleLabel = getRoleLabel;
+  private readonly locallyReportedMessageIds = new Set<number>();
+  protected readonly reportReasons = Object.values(ChatReportReason);
+  protected readonly reportReasonLabels: Record<ChatReportReason, string> = {
+    [ChatReportReason.Spam]: "Spam",
+    [ChatReportReason.Abuse]: "Abuse",
+    [ChatReportReason.Harassment]: "Harassment",
+    [ChatReportReason.HateSpeech]: "Hate speech",
+    [ChatReportReason.Cheating]: "Cheating",
+    [ChatReportReason.PersonalInformation]: "Personal information",
+    [ChatReportReason.Other]: "Other"
+  };
   private messageSubscription?: Subscription;
   private scrollSubscription?: Subscription;
   private offset = 0;
+  private reportStatusTimeoutId?: ReturnType<typeof setTimeout>;
 
   private scrollSubject = new Subject<void>();
 
   protected readonly avatarProviderService = inject(AvatarProviderService);
   protected readonly authService = inject(AuthService);
   private readonly chatService = inject(ChatService);
+  private readonly router = inject(Router);
 
   async ngOnInit(): Promise<void> {
     // Fetch previous messages
@@ -57,6 +83,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
     this.messageSubscription = this.messageListener()?.subscribe((msg: ChatMessage) => {
       this.messages.push(msg);
+      this.clearReportStatusMessage();
       this.scrollToBottom();
     });
 
@@ -79,6 +106,11 @@ export class ChatComponent implements OnInit, OnDestroy {
         this.gameInstanceId() ?? undefined
       );
       if (response.messages.length > 0) {
+        for (const message of response.messages) {
+          if (message.id && message.reportedByCurrentUser) {
+            this.locallyReportedMessageIds.add(message.id);
+          }
+        }
         // Prepend older messages to the beginning
         this.messages.unshift(...response.messages);
         this.offset += response.messages.length;
@@ -141,6 +173,76 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.message = "";
   }
 
+  protected openReportForm(message: ChatMessage): void {
+    if (!message.id || !this.canReportMessage(message)) {
+      return;
+    }
+
+    this.reportingMessageId = message.id;
+    this.openMessageMenuId = null;
+    this.reportReason = ChatReportReason.Abuse;
+    this.reportDetails = "";
+    this.reportStatusMessage = "";
+    this.reportErrorMessage = "";
+  }
+
+  protected cancelReport(): void {
+    this.reportingMessageId = null;
+    this.reportDetails = "";
+    this.reportErrorMessage = "";
+  }
+
+  protected async submitReport(message: ChatMessage): Promise<void> {
+    if (!message.id) {
+      return;
+    }
+
+    this.reportStatusMessage = "";
+    this.reportErrorMessage = "";
+
+    try {
+      await this.chatService.reportMessage(message.id, {
+        reason: this.reportReason,
+        details: this.reportDetails.trim() || undefined
+      });
+      this.locallyReportedMessageIds.add(message.id);
+      message.reportedByCurrentUser = true;
+      message.currentUserReportStatus = null;
+      this.reportStatusMessage = "Report submitted.";
+      this.queueClearReportStatusMessage();
+      this.reportingMessageId = null;
+      this.reportDetails = "";
+    } catch (error) {
+      console.error("Failed to report chat message:", error);
+      this.reportErrorMessage = "Could not submit report.";
+    }
+  }
+
+  protected toggleMessageMenu(message: ChatMessage): void {
+    if (!message.id) {
+      return;
+    }
+
+    this.openMessageMenuId = this.openMessageMenuId === message.id ? null : message.id;
+  }
+
+  protected canReportMessage(message: ChatMessage): boolean {
+    return (
+      !!message.id &&
+      message.userId !== this.authService.userId &&
+      !message.reportedByCurrentUser &&
+      !this.locallyReportedMessageIds.has(message.id)
+    );
+  }
+
+  protected async openProfile(message: ChatMessage): Promise<void> {
+    if (!message.userId) {
+      return;
+    }
+
+    await this.router.navigate(message.userId === this.authService.userId ? ["/profile"] : ["/profile", message.userId]);
+  }
+
   @HostListener("window:beforeunload")
   async onBeforeUnload() {
     this.ngOnDestroy();
@@ -151,6 +253,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.messageSubscription?.unsubscribe();
     this.scrollSubscription?.unsubscribe();
     this.scrollSubject.complete();
+    this.clearReportStatusTimer();
   }
 
   createMessage(message: string): ChatMessage {
@@ -160,5 +263,24 @@ export class ChatComponent implements OnInit, OnDestroy {
       fullName: this.authService.fullName as string,
       createdAt: new Date()
     };
+  }
+
+  private queueClearReportStatusMessage(): void {
+    this.clearReportStatusTimer();
+    this.reportStatusTimeoutId = setTimeout(() => {
+      this.reportStatusMessage = "";
+    }, 3000);
+  }
+
+  private clearReportStatusMessage(): void {
+    this.clearReportStatusTimer();
+    this.reportStatusMessage = "";
+  }
+
+  private clearReportStatusTimer(): void {
+    if (this.reportStatusTimeoutId) {
+      clearTimeout(this.reportStatusTimeoutId);
+      this.reportStatusTimeoutId = undefined;
+    }
   }
 }

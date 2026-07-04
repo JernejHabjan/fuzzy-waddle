@@ -1,0 +1,4199 @@
+{
+	"textures": [
+		{
+			"image": "mobs_wendigo.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 256,
+				"h": 1547
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "branch - full animation/0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 27,
+						"w": 3,
+						"h": 3
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 3,
+						"h": 3
+					}
+				},
+				{
+					"filename": "branch - full animation/1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 26,
+						"w": 7,
+						"h": 5
+					},
+					"frame": {
+						"x": 6,
+						"y": 1,
+						"w": 7,
+						"h": 5
+					}
+				},
+				{
+					"filename": "branch - full animation/18.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 27,
+						"w": 14,
+						"h": 5
+					},
+					"frame": {
+						"x": 15,
+						"y": 1,
+						"w": 14,
+						"h": 5
+					}
+				},
+				{
+					"filename": "branch - full animation/2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 25,
+						"w": 9,
+						"h": 7
+					},
+					"frame": {
+						"x": 31,
+						"y": 1,
+						"w": 9,
+						"h": 7
+					}
+				},
+				{
+					"filename": "branch - full animation/6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 25,
+						"w": 14,
+						"h": 7
+					},
+					"frame": {
+						"x": 42,
+						"y": 1,
+						"w": 14,
+						"h": 7
+					}
+				},
+				{
+					"filename": "branch - full animation/3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 24,
+						"w": 15,
+						"h": 8
+					},
+					"frame": {
+						"x": 58,
+						"y": 1,
+						"w": 15,
+						"h": 8
+					}
+				},
+				{
+					"filename": "branch - full animation/4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 24,
+						"w": 15,
+						"h": 8
+					},
+					"frame": {
+						"x": 58,
+						"y": 1,
+						"w": 15,
+						"h": 8
+					}
+				},
+				{
+					"filename": "branch - full animation/5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 24,
+						"w": 15,
+						"h": 8
+					},
+					"frame": {
+						"x": 58,
+						"y": 1,
+						"w": 15,
+						"h": 8
+					}
+				},
+				{
+					"filename": "branch - full animation/7.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 20,
+						"w": 16,
+						"h": 12
+					},
+					"frame": {
+						"x": 75,
+						"y": 1,
+						"w": 16,
+						"h": 12
+					}
+				},
+				{
+					"filename": "branch - full animation/17.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 20,
+						"w": 16,
+						"h": 12
+					},
+					"frame": {
+						"x": 75,
+						"y": 1,
+						"w": 16,
+						"h": 12
+					}
+				},
+				{
+					"filename": "branch - full animation/8.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 11,
+						"w": 16,
+						"h": 21
+					},
+					"frame": {
+						"x": 93,
+						"y": 1,
+						"w": 16,
+						"h": 21
+					}
+				},
+				{
+					"filename": "branch - full animation/16.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 11,
+						"w": 16,
+						"h": 21
+					},
+					"frame": {
+						"x": 111,
+						"y": 1,
+						"w": 16,
+						"h": 21
+					}
+				},
+				{
+					"filename": "branch - full animation/9.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 7,
+						"w": 16,
+						"h": 25
+					},
+					"frame": {
+						"x": 129,
+						"y": 1,
+						"w": 16,
+						"h": 25
+					}
+				},
+				{
+					"filename": "branch - full animation/15.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 5,
+						"w": 16,
+						"h": 26
+					},
+					"frame": {
+						"x": 147,
+						"y": 1,
+						"w": 16,
+						"h": 26
+					}
+				},
+				{
+					"filename": "branch - full animation/10.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 3,
+						"w": 16,
+						"h": 29
+					},
+					"frame": {
+						"x": 165,
+						"y": 1,
+						"w": 16,
+						"h": 29
+					}
+				},
+				{
+					"filename": "branch - full animation/14.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 3,
+						"w": 16,
+						"h": 29
+					},
+					"frame": {
+						"x": 165,
+						"y": 1,
+						"w": 16,
+						"h": 29
+					}
+				},
+				{
+					"filename": "branch - full animation/11.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 2,
+						"w": 16,
+						"h": 30
+					},
+					"frame": {
+						"x": 183,
+						"y": 1,
+						"w": 16,
+						"h": 30
+					}
+				},
+				{
+					"filename": "branch - full animation/12.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 2,
+						"w": 16,
+						"h": 30
+					},
+					"frame": {
+						"x": 183,
+						"y": 1,
+						"w": 16,
+						"h": 30
+					}
+				},
+				{
+					"filename": "branch - full animation/13.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 16,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 2,
+						"w": 16,
+						"h": 30
+					},
+					"frame": {
+						"x": 183,
+						"y": 1,
+						"w": 16,
+						"h": 30
+					}
+				},
+				{
+					"filename": "wendigo - death/e/21.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 30,
+						"y": 45,
+						"w": 60,
+						"h": 32
+					},
+					"frame": {
+						"x": 1,
+						"y": 11,
+						"w": 60,
+						"h": 32
+					}
+				},
+				{
+					"filename": "wendigo - death/e/19.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 30,
+						"y": 30,
+						"w": 51,
+						"h": 47
+					},
+					"frame": {
+						"x": 201,
+						"y": 1,
+						"w": 51,
+						"h": 47
+					}
+				},
+				{
+					"filename": "wendigo - death/e/23.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 30,
+						"y": 45,
+						"w": 61,
+						"h": 32
+					},
+					"frame": {
+						"x": 63,
+						"y": 24,
+						"w": 61,
+						"h": 32
+					}
+				},
+				{
+					"filename": "wendigo - death/w/13.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 45,
+						"w": 60,
+						"h": 32
+					},
+					"frame": {
+						"x": 126,
+						"y": 33,
+						"w": 60,
+						"h": 32
+					}
+				},
+				{
+					"filename": "wendigo - death/w/15.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 45,
+						"w": 61,
+						"h": 32
+					},
+					"frame": {
+						"x": 188,
+						"y": 50,
+						"w": 61,
+						"h": 32
+					}
+				},
+				{
+					"filename": "wendigo - death/e/20.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 30,
+						"y": 39,
+						"w": 59,
+						"h": 38
+					},
+					"frame": {
+						"x": 1,
+						"y": 45,
+						"w": 59,
+						"h": 38
+					}
+				},
+				{
+					"filename": "wendigo - death/e/22.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 30,
+						"y": 44,
+						"w": 61,
+						"h": 33
+					},
+					"frame": {
+						"x": 62,
+						"y": 58,
+						"w": 61,
+						"h": 33
+					}
+				},
+				{
+					"filename": "wendigo - death/w/14.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 44,
+						"w": 61,
+						"h": 33
+					},
+					"frame": {
+						"x": 125,
+						"y": 67,
+						"w": 61,
+						"h": 33
+					}
+				},
+				{
+					"filename": "wendigo - death/s/4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 18,
+						"y": 43,
+						"w": 65,
+						"h": 34
+					},
+					"frame": {
+						"x": 188,
+						"y": 84,
+						"w": 65,
+						"h": 34
+					}
+				},
+				{
+					"filename": "wendigo - death/w/12.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 11,
+						"y": 39,
+						"w": 59,
+						"h": 38
+					},
+					"frame": {
+						"x": 1,
+						"y": 85,
+						"w": 59,
+						"h": 38
+					}
+				},
+				{
+					"filename": "wendigo - death/s/6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 20,
+						"y": 42,
+						"w": 61,
+						"h": 37
+					},
+					"frame": {
+						"x": 62,
+						"y": 93,
+						"w": 61,
+						"h": 37
+					}
+				},
+				{
+					"filename": "wendigo - death/s/3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 20,
+						"y": 37,
+						"w": 61,
+						"h": 40
+					},
+					"frame": {
+						"x": 125,
+						"y": 102,
+						"w": 61,
+						"h": 40
+					}
+				},
+				{
+					"filename": "wendigo - death/s/5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 19,
+						"y": 42,
+						"w": 63,
+						"h": 38
+					},
+					"frame": {
+						"x": 188,
+						"y": 120,
+						"w": 63,
+						"h": 38
+					}
+				},
+				{
+					"filename": "wendigo - death/s/7.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 19,
+						"y": 42,
+						"w": 63,
+						"h": 38
+					},
+					"frame": {
+						"x": 188,
+						"y": 120,
+						"w": 63,
+						"h": 38
+					}
+				},
+				{
+					"filename": "wendigo - death/s/2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 27,
+						"y": 30,
+						"w": 47,
+						"h": 47
+					},
+					"frame": {
+						"x": 1,
+						"y": 125,
+						"w": 47,
+						"h": 47
+					}
+				},
+				{
+					"filename": "wendigo - death/w/11.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 19,
+						"y": 30,
+						"w": 51,
+						"h": 47
+					},
+					"frame": {
+						"x": 50,
+						"y": 132,
+						"w": 51,
+						"h": 47
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/n/38.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 25,
+						"y": 29,
+						"w": 52,
+						"h": 48
+					},
+					"frame": {
+						"x": 103,
+						"y": 144,
+						"w": 52,
+						"h": 48
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/n/39.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 25,
+						"y": 29,
+						"w": 52,
+						"h": 48
+					},
+					"frame": {
+						"x": 103,
+						"y": 144,
+						"w": 52,
+						"h": 48
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/n/40.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 25,
+						"y": 29,
+						"w": 52,
+						"h": 48
+					},
+					"frame": {
+						"x": 103,
+						"y": 144,
+						"w": 52,
+						"h": 48
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/n/41.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 25,
+						"y": 29,
+						"w": 52,
+						"h": 48
+					},
+					"frame": {
+						"x": 103,
+						"y": 144,
+						"w": 52,
+						"h": 48
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/n/42.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 25,
+						"y": 29,
+						"w": 52,
+						"h": 48
+					},
+					"frame": {
+						"x": 103,
+						"y": 144,
+						"w": 52,
+						"h": 48
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/n/43.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 25,
+						"y": 29,
+						"w": 52,
+						"h": 48
+					},
+					"frame": {
+						"x": 103,
+						"y": 144,
+						"w": 52,
+						"h": 48
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/n/44.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 25,
+						"y": 29,
+						"w": 52,
+						"h": 48
+					},
+					"frame": {
+						"x": 103,
+						"y": 144,
+						"w": 52,
+						"h": 48
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/n/45.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 25,
+						"y": 29,
+						"w": 52,
+						"h": 48
+					},
+					"frame": {
+						"x": 103,
+						"y": 144,
+						"w": 52,
+						"h": 48
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/s/1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 26,
+						"y": 29,
+						"w": 46,
+						"h": 48
+					},
+					"frame": {
+						"x": 157,
+						"y": 160,
+						"w": 46,
+						"h": 48
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/s/2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 25,
+						"y": 32,
+						"w": 47,
+						"h": 48
+					},
+					"frame": {
+						"x": 205,
+						"y": 160,
+						"w": 47,
+						"h": 48
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/s/3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 25,
+						"y": 32,
+						"w": 47,
+						"h": 48
+					},
+					"frame": {
+						"x": 205,
+						"y": 160,
+						"w": 47,
+						"h": 48
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/s/4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 25,
+						"y": 32,
+						"w": 47,
+						"h": 48
+					},
+					"frame": {
+						"x": 205,
+						"y": 160,
+						"w": 47,
+						"h": 48
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/s/5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 25,
+						"y": 32,
+						"w": 47,
+						"h": 48
+					},
+					"frame": {
+						"x": 205,
+						"y": 160,
+						"w": 47,
+						"h": 48
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/s/6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 25,
+						"y": 32,
+						"w": 47,
+						"h": 48
+					},
+					"frame": {
+						"x": 205,
+						"y": 160,
+						"w": 47,
+						"h": 48
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/s/7.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 25,
+						"y": 32,
+						"w": 47,
+						"h": 48
+					},
+					"frame": {
+						"x": 205,
+						"y": 160,
+						"w": 47,
+						"h": 48
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/s/8.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 25,
+						"y": 32,
+						"w": 47,
+						"h": 48
+					},
+					"frame": {
+						"x": 205,
+						"y": 160,
+						"w": 47,
+						"h": 48
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/s/9.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 25,
+						"y": 32,
+						"w": 47,
+						"h": 48
+					},
+					"frame": {
+						"x": 205,
+						"y": 160,
+						"w": 47,
+						"h": 48
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/s/10.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 26,
+						"y": 29,
+						"w": 46,
+						"h": 48
+					},
+					"frame": {
+						"x": 1,
+						"y": 174,
+						"w": 46,
+						"h": 48
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/n/37.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 26,
+						"y": 28,
+						"w": 51,
+						"h": 49
+					},
+					"frame": {
+						"x": 49,
+						"y": 181,
+						"w": 51,
+						"h": 49
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/n/46.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 26,
+						"y": 28,
+						"w": 51,
+						"h": 49
+					},
+					"frame": {
+						"x": 49,
+						"y": 181,
+						"w": 51,
+						"h": 49
+					}
+				},
+				{
+					"filename": "wendigo - death/n/27.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 24,
+						"y": 32,
+						"w": 53,
+						"h": 48
+					},
+					"frame": {
+						"x": 102,
+						"y": 194,
+						"w": 53,
+						"h": 48
+					}
+				},
+				{
+					"filename": "wendigo - death/n/28.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 20,
+						"y": 38,
+						"w": 61,
+						"h": 48
+					},
+					"frame": {
+						"x": 157,
+						"y": 210,
+						"w": 61,
+						"h": 48
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/e/26.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 30,
+						"y": 27,
+						"w": 46,
+						"h": 50
+					},
+					"frame": {
+						"x": 1,
+						"y": 224,
+						"w": 46,
+						"h": 50
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/e/27.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 30,
+						"y": 27,
+						"w": 46,
+						"h": 50
+					},
+					"frame": {
+						"x": 1,
+						"y": 224,
+						"w": 46,
+						"h": 50
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/e/28.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 30,
+						"y": 27,
+						"w": 46,
+						"h": 50
+					},
+					"frame": {
+						"x": 1,
+						"y": 224,
+						"w": 46,
+						"h": 50
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/e/29.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 30,
+						"y": 27,
+						"w": 46,
+						"h": 50
+					},
+					"frame": {
+						"x": 1,
+						"y": 224,
+						"w": 46,
+						"h": 50
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/e/30.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 30,
+						"y": 27,
+						"w": 46,
+						"h": 50
+					},
+					"frame": {
+						"x": 1,
+						"y": 224,
+						"w": 46,
+						"h": 50
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/e/31.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 30,
+						"y": 27,
+						"w": 46,
+						"h": 50
+					},
+					"frame": {
+						"x": 1,
+						"y": 224,
+						"w": 46,
+						"h": 50
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/e/32.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 30,
+						"y": 27,
+						"w": 46,
+						"h": 50
+					},
+					"frame": {
+						"x": 1,
+						"y": 224,
+						"w": 46,
+						"h": 50
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/e/33.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 30,
+						"y": 27,
+						"w": 46,
+						"h": 50
+					},
+					"frame": {
+						"x": 1,
+						"y": 224,
+						"w": 46,
+						"h": 50
+					}
+				},
+				{
+					"filename": "wendigo - death/n/26.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 27,
+						"y": 29,
+						"w": 47,
+						"h": 49
+					},
+					"frame": {
+						"x": 49,
+						"y": 232,
+						"w": 47,
+						"h": 49
+					}
+				},
+				{
+					"filename": "wendigo - death/n/30.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 22,
+						"y": 38,
+						"w": 57,
+						"h": 48
+					},
+					"frame": {
+						"x": 98,
+						"y": 244,
+						"w": 57,
+						"h": 48
+					}
+				},
+				{
+					"filename": "wendigo - death/n/31.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 22,
+						"y": 38,
+						"w": 57,
+						"h": 48
+					},
+					"frame": {
+						"x": 98,
+						"y": 244,
+						"w": 57,
+						"h": 48
+					}
+				},
+				{
+					"filename": "wendigo - death/s/1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 24,
+						"y": 29,
+						"w": 53,
+						"h": 48
+					},
+					"frame": {
+						"x": 157,
+						"y": 260,
+						"w": 53,
+						"h": 48
+					}
+				},
+				{
+					"filename": "wendigo - walk/e/11.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 30,
+						"y": 23,
+						"w": 42,
+						"h": 54
+					},
+					"frame": {
+						"x": 212,
+						"y": 260,
+						"w": 42,
+						"h": 54
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/w/14.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 24,
+						"y": 27,
+						"w": 46,
+						"h": 50
+					},
+					"frame": {
+						"x": 1,
+						"y": 276,
+						"w": 46,
+						"h": 50
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/w/15.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 24,
+						"y": 27,
+						"w": 46,
+						"h": 50
+					},
+					"frame": {
+						"x": 1,
+						"y": 276,
+						"w": 46,
+						"h": 50
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/w/16.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 24,
+						"y": 27,
+						"w": 46,
+						"h": 50
+					},
+					"frame": {
+						"x": 1,
+						"y": 276,
+						"w": 46,
+						"h": 50
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/w/17.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 24,
+						"y": 27,
+						"w": 46,
+						"h": 50
+					},
+					"frame": {
+						"x": 1,
+						"y": 276,
+						"w": 46,
+						"h": 50
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/w/18.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 24,
+						"y": 27,
+						"w": 46,
+						"h": 50
+					},
+					"frame": {
+						"x": 1,
+						"y": 276,
+						"w": 46,
+						"h": 50
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/w/19.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 24,
+						"y": 27,
+						"w": 46,
+						"h": 50
+					},
+					"frame": {
+						"x": 1,
+						"y": 276,
+						"w": 46,
+						"h": 50
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/w/20.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 24,
+						"y": 27,
+						"w": 46,
+						"h": 50
+					},
+					"frame": {
+						"x": 1,
+						"y": 276,
+						"w": 46,
+						"h": 50
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/w/21.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 24,
+						"y": 27,
+						"w": 46,
+						"h": 50
+					},
+					"frame": {
+						"x": 1,
+						"y": 276,
+						"w": 46,
+						"h": 50
+					}
+				},
+				{
+					"filename": "wendigo - attack 1/n/24.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 24,
+						"y": 26,
+						"w": 45,
+						"h": 51
+					},
+					"frame": {
+						"x": 49,
+						"y": 283,
+						"w": 45,
+						"h": 51
+					}
+				},
+				{
+					"filename": "wendigo - attack 3/s/4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 21,
+						"y": 28,
+						"w": 59,
+						"h": 49
+					},
+					"frame": {
+						"x": 96,
+						"y": 294,
+						"w": 59,
+						"h": 49
+					}
+				},
+				{
+					"filename": "wendigo - attack 1/s/3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 18,
+						"y": 27,
+						"w": 51,
+						"h": 50
+					},
+					"frame": {
+						"x": 157,
+						"y": 310,
+						"w": 51,
+						"h": 50
+					}
+				},
+				{
+					"filename": "wendigo - death/e/18.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 26,
+						"w": 45,
+						"h": 51
+					},
+					"frame": {
+						"x": 210,
+						"y": 316,
+						"w": 45,
+						"h": 51
+					}
+				},
+				{
+					"filename": "wendigo - death/w/10.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 26,
+						"y": 26,
+						"w": 45,
+						"h": 51
+					},
+					"frame": {
+						"x": 1,
+						"y": 328,
+						"w": 45,
+						"h": 51
+					}
+				},
+				{
+					"filename": "wendigo - walk/s/1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 26,
+						"w": 46,
+						"h": 51
+					},
+					"frame": {
+						"x": 48,
+						"y": 336,
+						"w": 46,
+						"h": 51
+					}
+				},
+				{
+					"filename": "wendigo - death/n/29.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 22,
+						"y": 37,
+						"w": 57,
+						"h": 49
+					},
+					"frame": {
+						"x": 96,
+						"y": 345,
+						"w": 57,
+						"h": 49
+					}
+				},
+				{
+					"filename": "wendigo - attack 1/s/4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 18,
+						"y": 26,
+						"w": 51,
+						"h": 51
+					},
+					"frame": {
+						"x": 155,
+						"y": 362,
+						"w": 51,
+						"h": 51
+					}
+				},
+				{
+					"filename": "wendigo - attack 1/s/5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 18,
+						"y": 26,
+						"w": 51,
+						"h": 51
+					},
+					"frame": {
+						"x": 155,
+						"y": 362,
+						"w": 51,
+						"h": 51
+					}
+				},
+				{
+					"filename": "wendigo - walk/s/3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 26,
+						"y": 26,
+						"w": 46,
+						"h": 51
+					},
+					"frame": {
+						"x": 208,
+						"y": 369,
+						"w": 46,
+						"h": 51
+					}
+				},
+				{
+					"filename": "wendigo - attack 1/n/25.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 24,
+						"y": 25,
+						"w": 45,
+						"h": 52
+					},
+					"frame": {
+						"x": 1,
+						"y": 381,
+						"w": 45,
+						"h": 52
+					}
+				},
+				{
+					"filename": "wendigo - attack 1/n/26.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 24,
+						"y": 25,
+						"w": 45,
+						"h": 52
+					},
+					"frame": {
+						"x": 48,
+						"y": 389,
+						"w": 45,
+						"h": 52
+					}
+				},
+				{
+					"filename": "wendigo - attack 3/s/5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 22,
+						"y": 27,
+						"w": 57,
+						"h": 50
+					},
+					"frame": {
+						"x": 95,
+						"y": 396,
+						"w": 57,
+						"h": 50
+					}
+				},
+				{
+					"filename": "wendigo - attack 1/e/17.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 30,
+						"y": 25,
+						"w": 49,
+						"h": 52
+					},
+					"frame": {
+						"x": 154,
+						"y": 415,
+						"w": 49,
+						"h": 52
+					}
+				},
+				{
+					"filename": "wendigo - attack 1/w/10.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 21,
+						"y": 25,
+						"w": 49,
+						"h": 52
+					},
+					"frame": {
+						"x": 205,
+						"y": 422,
+						"w": 49,
+						"h": 52
+					}
+				},
+				{
+					"filename": "wendigo - idle/s/3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 28,
+						"y": 25,
+						"w": 45,
+						"h": 52
+					},
+					"frame": {
+						"x": 1,
+						"y": 435,
+						"w": 45,
+						"h": 52
+					}
+				},
+				{
+					"filename": "wendigo - attack 1/s/6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 28,
+						"y": 24,
+						"w": 45,
+						"h": 53
+					},
+					"frame": {
+						"x": 48,
+						"y": 443,
+						"w": 45,
+						"h": 53
+					}
+				},
+				{
+					"filename": "wendigo - idle/s/1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 28,
+						"y": 24,
+						"w": 45,
+						"h": 53
+					},
+					"frame": {
+						"x": 48,
+						"y": 443,
+						"w": 45,
+						"h": 53
+					}
+				},
+				{
+					"filename": "wendigo - attack 3/s/6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 22,
+						"y": 27,
+						"w": 57,
+						"h": 50
+					},
+					"frame": {
+						"x": 95,
+						"y": 448,
+						"w": 57,
+						"h": 50
+					}
+				},
+				{
+					"filename": "wendigo - attack 3/s/7.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 22,
+						"y": 27,
+						"w": 57,
+						"h": 50
+					},
+					"frame": {
+						"x": 95,
+						"y": 448,
+						"w": 57,
+						"h": 50
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/s/0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 27,
+						"y": 25,
+						"w": 47,
+						"h": 52
+					},
+					"frame": {
+						"x": 154,
+						"y": 469,
+						"w": 47,
+						"h": 52
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/s/11.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 27,
+						"y": 25,
+						"w": 47,
+						"h": 52
+					},
+					"frame": {
+						"x": 154,
+						"y": 469,
+						"w": 47,
+						"h": 52
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/n/36.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 25,
+						"y": 25,
+						"w": 51,
+						"h": 52
+					},
+					"frame": {
+						"x": 203,
+						"y": 476,
+						"w": 51,
+						"h": 52
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/n/47.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 25,
+						"y": 25,
+						"w": 51,
+						"h": 52
+					},
+					"frame": {
+						"x": 203,
+						"y": 476,
+						"w": 51,
+						"h": 52
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/e/25.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 30,
+						"y": 24,
+						"w": 44,
+						"h": 53
+					},
+					"frame": {
+						"x": 1,
+						"y": 489,
+						"w": 44,
+						"h": 53
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/e/34.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 30,
+						"y": 24,
+						"w": 44,
+						"h": 53
+					},
+					"frame": {
+						"x": 1,
+						"y": 489,
+						"w": 44,
+						"h": 53
+					}
+				},
+				{
+					"filename": "wendigo - attack 3/n/28.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 21,
+						"y": 27,
+						"w": 59,
+						"h": 50
+					},
+					"frame": {
+						"x": 47,
+						"y": 500,
+						"w": 59,
+						"h": 50
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/w/13.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 26,
+						"y": 24,
+						"w": 44,
+						"h": 53
+					},
+					"frame": {
+						"x": 108,
+						"y": 500,
+						"w": 44,
+						"h": 53
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/w/22.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 26,
+						"y": 24,
+						"w": 44,
+						"h": 53
+					},
+					"frame": {
+						"x": 108,
+						"y": 500,
+						"w": 44,
+						"h": 53
+					}
+				},
+				{
+					"filename": "wendigo - death/e/17.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 27,
+						"y": 25,
+						"w": 47,
+						"h": 52
+					},
+					"frame": {
+						"x": 154,
+						"y": 523,
+						"w": 47,
+						"h": 52
+					}
+				},
+				{
+					"filename": "wendigo - death/s/0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 25,
+						"y": 25,
+						"w": 51,
+						"h": 52
+					},
+					"frame": {
+						"x": 203,
+						"y": 530,
+						"w": 51,
+						"h": 52
+					}
+				},
+				{
+					"filename": "wendigo - walk/w/7.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 28,
+						"y": 23,
+						"w": 42,
+						"h": 54
+					},
+					"frame": {
+						"x": 1,
+						"y": 544,
+						"w": 42,
+						"h": 54
+					}
+				},
+				{
+					"filename": "wendigo - attack 3/e/20.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 19,
+						"y": 26,
+						"w": 55,
+						"h": 51
+					},
+					"frame": {
+						"x": 45,
+						"y": 552,
+						"w": 55,
+						"h": 51
+					}
+				},
+				{
+					"filename": "wendigo - death/w/9.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 26,
+						"y": 25,
+						"w": 47,
+						"h": 52
+					},
+					"frame": {
+						"x": 102,
+						"y": 555,
+						"w": 47,
+						"h": 52
+					}
+				},
+				{
+					"filename": "wendigo - idle/s/2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 27,
+						"y": 25,
+						"w": 47,
+						"h": 52
+					},
+					"frame": {
+						"x": 151,
+						"y": 577,
+						"w": 47,
+						"h": 52
+					}
+				},
+				{
+					"filename": "wendigo - attack 3/w/12.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 26,
+						"y": 26,
+						"w": 55,
+						"h": 51
+					},
+					"frame": {
+						"x": 200,
+						"y": 584,
+						"w": 55,
+						"h": 51
+					}
+				},
+				{
+					"filename": "wendigo - attack 3/n/29.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 21,
+						"y": 26,
+						"w": 59,
+						"h": 51
+					},
+					"frame": {
+						"x": 1,
+						"y": 605,
+						"w": 59,
+						"h": 51
+					}
+				},
+				{
+					"filename": "wendigo - death/n/25.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 24,
+						"y": 26,
+						"w": 53,
+						"h": 51
+					},
+					"frame": {
+						"x": 62,
+						"y": 609,
+						"w": 53,
+						"h": 51
+					}
+				},
+				{
+					"filename": "wendigo - attack 3/e/21.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 19,
+						"y": 25,
+						"w": 55,
+						"h": 52
+					},
+					"frame": {
+						"x": 117,
+						"y": 631,
+						"w": 55,
+						"h": 52
+					}
+				},
+				{
+					"filename": "wendigo - attack 3/e/22.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 19,
+						"y": 25,
+						"w": 55,
+						"h": 52
+					},
+					"frame": {
+						"x": 174,
+						"y": 637,
+						"w": 55,
+						"h": 52
+					}
+				},
+				{
+					"filename": "wendigo - attack 3/n/30.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 21,
+						"y": 25,
+						"w": 59,
+						"h": 52
+					},
+					"frame": {
+						"x": 1,
+						"y": 658,
+						"w": 59,
+						"h": 52
+					}
+				},
+				{
+					"filename": "wendigo - attack 3/n/31.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 21,
+						"y": 25,
+						"w": 59,
+						"h": 52
+					},
+					"frame": {
+						"x": 1,
+						"y": 658,
+						"w": 59,
+						"h": 52
+					}
+				},
+				{
+					"filename": "wendigo - walk/n/13.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 30,
+						"y": 25,
+						"w": 47,
+						"h": 52
+					},
+					"frame": {
+						"x": 62,
+						"y": 662,
+						"w": 47,
+						"h": 52
+					}
+				},
+				{
+					"filename": "wendigo - attack 3/w/13.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 26,
+						"y": 25,
+						"w": 55,
+						"h": 52
+					},
+					"frame": {
+						"x": 111,
+						"y": 685,
+						"w": 55,
+						"h": 52
+					}
+				},
+				{
+					"filename": "wendigo - attack 3/w/14.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 26,
+						"y": 25,
+						"w": 55,
+						"h": 52
+					},
+					"frame": {
+						"x": 168,
+						"y": 691,
+						"w": 55,
+						"h": 52
+					}
+				},
+				{
+					"filename": "wendigo - walk/n/15.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 24,
+						"y": 25,
+						"w": 47,
+						"h": 52
+					},
+					"frame": {
+						"x": 1,
+						"y": 712,
+						"w": 47,
+						"h": 52
+					}
+				},
+				{
+					"filename": "wendigo - attack 1/e/18.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 30,
+						"y": 24,
+						"w": 49,
+						"h": 53
+					},
+					"frame": {
+						"x": 50,
+						"y": 716,
+						"w": 49,
+						"h": 53
+					}
+				},
+				{
+					"filename": "wendigo - attack 1/e/19.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 30,
+						"y": 24,
+						"w": 49,
+						"h": 53
+					},
+					"frame": {
+						"x": 50,
+						"y": 716,
+						"w": 49,
+						"h": 53
+					}
+				},
+				{
+					"filename": "wendigo - attack 1/w/11.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 21,
+						"y": 24,
+						"w": 49,
+						"h": 53
+					},
+					"frame": {
+						"x": 101,
+						"y": 739,
+						"w": 49,
+						"h": 53
+					}
+				},
+				{
+					"filename": "wendigo - attack 1/w/12.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 21,
+						"y": 24,
+						"w": 49,
+						"h": 53
+					},
+					"frame": {
+						"x": 101,
+						"y": 739,
+						"w": 49,
+						"h": 53
+					}
+				},
+				{
+					"filename": "wendigo - attack 3/e/23.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 19,
+						"y": 24,
+						"w": 55,
+						"h": 53
+					},
+					"frame": {
+						"x": 152,
+						"y": 745,
+						"w": 55,
+						"h": 53
+					}
+				},
+				{
+					"filename": "wendigo - idle/s/0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 28,
+						"y": 24,
+						"w": 45,
+						"h": 53
+					},
+					"frame": {
+						"x": 209,
+						"y": 745,
+						"w": 45,
+						"h": 53
+					}
+				},
+				{
+					"filename": "wendigo - idle/n/15.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 27,
+						"y": 24,
+						"w": 47,
+						"h": 53
+					},
+					"frame": {
+						"x": 1,
+						"y": 766,
+						"w": 47,
+						"h": 53
+					}
+				},
+				{
+					"filename": "wendigo - idle/n/14.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 26,
+						"y": 24,
+						"w": 49,
+						"h": 53
+					},
+					"frame": {
+						"x": 50,
+						"y": 771,
+						"w": 49,
+						"h": 53
+					}
+				},
+				{
+					"filename": "wendigo - walk/s/0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 28,
+						"y": 24,
+						"w": 45,
+						"h": 53
+					},
+					"frame": {
+						"x": 101,
+						"y": 794,
+						"w": 45,
+						"h": 53
+					}
+				},
+				{
+					"filename": "wendigo - attack 3/w/15.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 26,
+						"y": 24,
+						"w": 55,
+						"h": 53
+					},
+					"frame": {
+						"x": 148,
+						"y": 800,
+						"w": 55,
+						"h": 53
+					}
+				},
+				{
+					"filename": "wendigo - walk/s/2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 28,
+						"y": 24,
+						"w": 45,
+						"h": 53
+					},
+					"frame": {
+						"x": 205,
+						"y": 800,
+						"w": 45,
+						"h": 53
+					}
+				},
+				{
+					"filename": "wendigo - attack 1/n/27.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 27,
+						"y": 23,
+						"w": 47,
+						"h": 54
+					},
+					"frame": {
+						"x": 1,
+						"y": 821,
+						"w": 47,
+						"h": 54
+					}
+				},
+				{
+					"filename": "wendigo - attack 1/n/21.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 30,
+						"y": 23,
+						"w": 49,
+						"h": 54
+					},
+					"frame": {
+						"x": 50,
+						"y": 826,
+						"w": 49,
+						"h": 54
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/e/24.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 22,
+						"w": 43,
+						"h": 55
+					},
+					"frame": {
+						"x": 101,
+						"y": 849,
+						"w": 43,
+						"h": 55
+					}
+				},
+				{
+					"filename": "wendigo - death/n/24.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 25,
+						"y": 24,
+						"w": 51,
+						"h": 53
+					},
+					"frame": {
+						"x": 146,
+						"y": 855,
+						"w": 51,
+						"h": 53
+					}
+				},
+				{
+					"filename": "wendigo - attack 3/s/0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 27,
+						"y": 23,
+						"w": 47,
+						"h": 54
+					},
+					"frame": {
+						"x": 199,
+						"y": 855,
+						"w": 47,
+						"h": 54
+					}
+				},
+				{
+					"filename": "wendigo - idle/e/11.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 25,
+						"y": 23,
+						"w": 47,
+						"h": 54
+					},
+					"frame": {
+						"x": 1,
+						"y": 877,
+						"w": 47,
+						"h": 54
+					}
+				},
+				{
+					"filename": "wendigo - idle/e/10.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 24,
+						"y": 23,
+						"w": 48,
+						"h": 54
+					},
+					"frame": {
+						"x": 50,
+						"y": 882,
+						"w": 48,
+						"h": 54
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/e/35.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 22,
+						"w": 43,
+						"h": 55
+					},
+					"frame": {
+						"x": 100,
+						"y": 906,
+						"w": 43,
+						"h": 55
+					}
+				},
+				{
+					"filename": "wendigo - idle/n/12.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 27,
+						"y": 23,
+						"w": 47,
+						"h": 54
+					},
+					"frame": {
+						"x": 145,
+						"y": 910,
+						"w": 47,
+						"h": 54
+					}
+				},
+				{
+					"filename": "wendigo - hit/s/0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 20,
+						"y": 23,
+						"w": 61,
+						"h": 54
+					},
+					"frame": {
+						"x": 194,
+						"y": 911,
+						"w": 61,
+						"h": 54
+					}
+				},
+				{
+					"filename": "wendigo - idle/n/13.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 27,
+						"y": 23,
+						"w": 47,
+						"h": 54
+					},
+					"frame": {
+						"x": 1,
+						"y": 933,
+						"w": 47,
+						"h": 54
+					}
+				},
+				{
+					"filename": "wendigo - idle/w/6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 28,
+						"y": 23,
+						"w": 48,
+						"h": 54
+					},
+					"frame": {
+						"x": 50,
+						"y": 938,
+						"w": 48,
+						"h": 54
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/w/12.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 28,
+						"y": 22,
+						"w": 43,
+						"h": 55
+					},
+					"frame": {
+						"x": 100,
+						"y": 963,
+						"w": 43,
+						"h": 55
+					}
+				},
+				{
+					"filename": "wendigo - idle/w/7.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 28,
+						"y": 23,
+						"w": 47,
+						"h": 54
+					},
+					"frame": {
+						"x": 145,
+						"y": 966,
+						"w": 47,
+						"h": 54
+					}
+				},
+				{
+					"filename": "wendigo - hit/s/1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 20,
+						"y": 23,
+						"w": 61,
+						"h": 54
+					},
+					"frame": {
+						"x": 194,
+						"y": 967,
+						"w": 61,
+						"h": 54
+					}
+				},
+				{
+					"filename": "wendigo - walk/n/12.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 27,
+						"y": 23,
+						"w": 47,
+						"h": 54
+					},
+					"frame": {
+						"x": 1,
+						"y": 989,
+						"w": 47,
+						"h": 54
+					}
+				},
+				{
+					"filename": "wendigo - walk/n/14.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 27,
+						"y": 23,
+						"w": 47,
+						"h": 54
+					},
+					"frame": {
+						"x": 1,
+						"y": 989,
+						"w": 47,
+						"h": 54
+					}
+				},
+				{
+					"filename": "wendigo - attack 1/e/20.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 25,
+						"y": 22,
+						"w": 47,
+						"h": 55
+					},
+					"frame": {
+						"x": 50,
+						"y": 994,
+						"w": 47,
+						"h": 55
+					}
+				},
+				{
+					"filename": "wendigo - attack 2/w/23.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 28,
+						"y": 22,
+						"w": 43,
+						"h": 55
+					},
+					"frame": {
+						"x": 99,
+						"y": 1020,
+						"w": 43,
+						"h": 55
+					}
+				},
+				{
+					"filename": "wendigo - attack 1/n/22.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 22,
+						"w": 47,
+						"h": 55
+					},
+					"frame": {
+						"x": 144,
+						"y": 1022,
+						"w": 47,
+						"h": 55
+					}
+				},
+				{
+					"filename": "wendigo - attack 1/n/23.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 22,
+						"w": 47,
+						"h": 55
+					},
+					"frame": {
+						"x": 144,
+						"y": 1022,
+						"w": 47,
+						"h": 55
+					}
+				},
+				{
+					"filename": "wendigo - walk/e/9.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 25,
+						"y": 23,
+						"w": 50,
+						"h": 54
+					},
+					"frame": {
+						"x": 193,
+						"y": 1023,
+						"w": 50,
+						"h": 54
+					}
+				},
+				{
+					"filename": "wendigo - attack 1/w/13.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 28,
+						"y": 22,
+						"w": 47,
+						"h": 55
+					},
+					"frame": {
+						"x": 1,
+						"y": 1045,
+						"w": 47,
+						"h": 55
+					}
+				},
+				{
+					"filename": "wendigo - attack 3/s/1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 26,
+						"y": 22,
+						"w": 47,
+						"h": 55
+					},
+					"frame": {
+						"x": 50,
+						"y": 1051,
+						"w": 47,
+						"h": 55
+					}
+				},
+				{
+					"filename": "wendigo - walk/w/5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 25,
+						"y": 23,
+						"w": 50,
+						"h": 54
+					},
+					"frame": {
+						"x": 99,
+						"y": 1079,
+						"w": 50,
+						"h": 54
+					}
+				},
+				{
+					"filename": "wendigo - attack 1/s/0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 27,
+						"y": 22,
+						"w": 48,
+						"h": 55
+					},
+					"frame": {
+						"x": 151,
+						"y": 1079,
+						"w": 48,
+						"h": 55
+					}
+				},
+				{
+					"filename": "wendigo - attack 3/n/24.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 25,
+						"y": 22,
+						"w": 51,
+						"h": 55
+					},
+					"frame": {
+						"x": 201,
+						"y": 1079,
+						"w": 51,
+						"h": 55
+					}
+				},
+				{
+					"filename": "wendigo - attack 3/s/2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 26,
+						"y": 22,
+						"w": 47,
+						"h": 55
+					},
+					"frame": {
+						"x": 1,
+						"y": 1102,
+						"w": 47,
+						"h": 55
+					}
+				},
+				{
+					"filename": "wendigo - attack 3/s/3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 26,
+						"y": 22,
+						"w": 47,
+						"h": 55
+					},
+					"frame": {
+						"x": 1,
+						"y": 1102,
+						"w": 47,
+						"h": 55
+					}
+				},
+				{
+					"filename": "wendigo - idle/e/8.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 25,
+						"y": 22,
+						"w": 47,
+						"h": 55
+					},
+					"frame": {
+						"x": 50,
+						"y": 1108,
+						"w": 47,
+						"h": 55
+					}
+				},
+				{
+					"filename": "wendigo - death/e/16.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 25,
+						"y": 22,
+						"w": 48,
+						"h": 55
+					},
+					"frame": {
+						"x": 99,
+						"y": 1135,
+						"w": 48,
+						"h": 55
+					}
+				},
+				{
+					"filename": "wendigo - death/w/8.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 27,
+						"y": 22,
+						"w": 48,
+						"h": 55
+					},
+					"frame": {
+						"x": 149,
+						"y": 1136,
+						"w": 48,
+						"h": 55
+					}
+				},
+				{
+					"filename": "wendigo - idle/e/9.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 25,
+						"y": 22,
+						"w": 47,
+						"h": 55
+					},
+					"frame": {
+						"x": 199,
+						"y": 1136,
+						"w": 47,
+						"h": 55
+					}
+				},
+				{
+					"filename": "wendigo - idle/w/4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 28,
+						"y": 22,
+						"w": 47,
+						"h": 55
+					},
+					"frame": {
+						"x": 1,
+						"y": 1159,
+						"w": 47,
+						"h": 55
+					}
+				},
+				{
+					"filename": "wendigo - idle/w/5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 28,
+						"y": 22,
+						"w": 47,
+						"h": 55
+					},
+					"frame": {
+						"x": 50,
+						"y": 1165,
+						"w": 47,
+						"h": 55
+					}
+				},
+				{
+					"filename": "wendigo - walk/e/8.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 27,
+						"y": 22,
+						"w": 45,
+						"h": 55
+					},
+					"frame": {
+						"x": 99,
+						"y": 1192,
+						"w": 45,
+						"h": 55
+					}
+				},
+				{
+					"filename": "wendigo - walk/e/10.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 27,
+						"y": 22,
+						"w": 45,
+						"h": 55
+					},
+					"frame": {
+						"x": 146,
+						"y": 1193,
+						"w": 45,
+						"h": 55
+					}
+				},
+				{
+					"filename": "wendigo - walk/w/4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 28,
+						"y": 22,
+						"w": 45,
+						"h": 55
+					},
+					"frame": {
+						"x": 193,
+						"y": 1193,
+						"w": 45,
+						"h": 55
+					}
+				},
+				{
+					"filename": "wendigo - walk/w/6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 28,
+						"y": 22,
+						"w": 45,
+						"h": 55
+					},
+					"frame": {
+						"x": 1,
+						"y": 1216,
+						"w": 45,
+						"h": 55
+					}
+				},
+				{
+					"filename": "wendigo - attack 1/s/1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 26,
+						"y": 21,
+						"w": 48,
+						"h": 56
+					},
+					"frame": {
+						"x": 48,
+						"y": 1222,
+						"w": 48,
+						"h": 56
+					}
+				},
+				{
+					"filename": "wendigo - attack 1/s/2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 26,
+						"y": 21,
+						"w": 48,
+						"h": 56
+					},
+					"frame": {
+						"x": 48,
+						"y": 1222,
+						"w": 48,
+						"h": 56
+					}
+				},
+				{
+					"filename": "wendigo - attack 3/e/16.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 20,
+						"y": 21,
+						"w": 51,
+						"h": 56
+					},
+					"frame": {
+						"x": 98,
+						"y": 1250,
+						"w": 51,
+						"h": 56
+					}
+				},
+				{
+					"filename": "wendigo - attack 3/n/25.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 23,
+						"y": 21,
+						"w": 51,
+						"h": 56
+					},
+					"frame": {
+						"x": 151,
+						"y": 1250,
+						"w": 51,
+						"h": 56
+					}
+				},
+				{
+					"filename": "wendigo - attack 3/w/8.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 29,
+						"y": 21,
+						"w": 51,
+						"h": 56
+					},
+					"frame": {
+						"x": 204,
+						"y": 1250,
+						"w": 51,
+						"h": 56
+					}
+				},
+				{
+					"filename": "wendigo - hit/n/6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 21,
+						"y": 21,
+						"w": 59,
+						"h": 56
+					},
+					"frame": {
+						"x": 1,
+						"y": 1280,
+						"w": 59,
+						"h": 56
+					}
+				},
+				{
+					"filename": "wendigo - hit/n/7.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 21,
+						"y": 21,
+						"w": 59,
+						"h": 56
+					},
+					"frame": {
+						"x": 62,
+						"y": 1308,
+						"w": 59,
+						"h": 56
+					}
+				},
+				{
+					"filename": "wendigo - attack 3/e/17.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 18,
+						"y": 20,
+						"w": 51,
+						"h": 57
+					},
+					"frame": {
+						"x": 123,
+						"y": 1308,
+						"w": 51,
+						"h": 57
+					}
+				},
+				{
+					"filename": "wendigo - attack 3/n/26.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 23,
+						"y": 20,
+						"w": 51,
+						"h": 57
+					},
+					"frame": {
+						"x": 176,
+						"y": 1308,
+						"w": 51,
+						"h": 57
+					}
+				},
+				{
+					"filename": "wendigo - attack 3/n/27.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 23,
+						"y": 20,
+						"w": 51,
+						"h": 57
+					},
+					"frame": {
+						"x": 176,
+						"y": 1308,
+						"w": 51,
+						"h": 57
+					}
+				},
+				{
+					"filename": "wendigo - attack 3/w/9.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 20,
+						"w": 51,
+						"h": 57
+					},
+					"frame": {
+						"x": 1,
+						"y": 1338,
+						"w": 51,
+						"h": 57
+					}
+				},
+				{
+					"filename": "wendigo - attack 3/e/18.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 18,
+						"y": 19,
+						"w": 51,
+						"h": 58
+					},
+					"frame": {
+						"x": 54,
+						"y": 1366,
+						"w": 51,
+						"h": 58
+					}
+				},
+				{
+					"filename": "wendigo - attack 3/e/19.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 18,
+						"y": 19,
+						"w": 51,
+						"h": 58
+					},
+					"frame": {
+						"x": 54,
+						"y": 1366,
+						"w": 51,
+						"h": 58
+					}
+				},
+				{
+					"filename": "wendigo - attack 3/w/10.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 19,
+						"w": 51,
+						"h": 58
+					},
+					"frame": {
+						"x": 107,
+						"y": 1367,
+						"w": 51,
+						"h": 58
+					}
+				},
+				{
+					"filename": "wendigo - attack 3/w/11.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 31,
+						"y": 19,
+						"w": 51,
+						"h": 58
+					},
+					"frame": {
+						"x": 107,
+						"y": 1367,
+						"w": 51,
+						"h": 58
+					}
+				},
+				{
+					"filename": "wendigo - hit/e/4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 20,
+						"y": 19,
+						"w": 55,
+						"h": 58
+					},
+					"frame": {
+						"x": 160,
+						"y": 1367,
+						"w": 55,
+						"h": 58
+					}
+				},
+				{
+					"filename": "wendigo - hit/e/5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 20,
+						"y": 19,
+						"w": 55,
+						"h": 58
+					},
+					"frame": {
+						"x": 1,
+						"y": 1426,
+						"w": 55,
+						"h": 58
+					}
+				},
+				{
+					"filename": "wendigo - hit/w/2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 25,
+						"y": 19,
+						"w": 55,
+						"h": 58
+					},
+					"frame": {
+						"x": 58,
+						"y": 1427,
+						"w": 55,
+						"h": 58
+					}
+				},
+				{
+					"filename": "wendigo - hit/w/3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 25,
+						"y": 19,
+						"w": 55,
+						"h": 58
+					},
+					"frame": {
+						"x": 115,
+						"y": 1427,
+						"w": 55,
+						"h": 58
+					}
+				},
+				{
+					"filename": "wendigo - attack 1/e/14.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 19,
+						"y": 18,
+						"w": 54,
+						"h": 59
+					},
+					"frame": {
+						"x": 172,
+						"y": 1427,
+						"w": 54,
+						"h": 59
+					}
+				},
+				{
+					"filename": "wendigo - attack 1/e/15.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 19,
+						"y": 18,
+						"w": 55,
+						"h": 59
+					},
+					"frame": {
+						"x": 1,
+						"y": 1486,
+						"w": 55,
+						"h": 59
+					}
+				},
+				{
+					"filename": "wendigo - attack 1/e/16.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 19,
+						"y": 18,
+						"w": 55,
+						"h": 59
+					},
+					"frame": {
+						"x": 1,
+						"y": 1486,
+						"w": 55,
+						"h": 59
+					}
+				},
+				{
+					"filename": "wendigo - attack 1/w/7.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 27,
+						"y": 18,
+						"w": 54,
+						"h": 59
+					},
+					"frame": {
+						"x": 58,
+						"y": 1487,
+						"w": 54,
+						"h": 59
+					}
+				},
+				{
+					"filename": "wendigo - attack 1/w/8.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 26,
+						"y": 18,
+						"w": 55,
+						"h": 59
+					},
+					"frame": {
+						"x": 114,
+						"y": 1487,
+						"w": 55,
+						"h": 59
+					}
+				},
+				{
+					"filename": "wendigo - attack 1/w/9.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 26,
+						"y": 18,
+						"w": 55,
+						"h": 59
+					},
+					"frame": {
+						"x": 114,
+						"y": 1487,
+						"w": 55,
+						"h": 59
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "3.0",
+		"smartupdate": "$TexturePacker:SmartUpdate:e80a55bbfe31ab26bd9907cd43d9a8f8:ee6da113776255dc7017812e9cc534db:b72b2d310f491ef2b900a52310f52e30$"
+	}
+}

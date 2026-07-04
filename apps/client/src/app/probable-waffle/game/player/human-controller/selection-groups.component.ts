@@ -1,6 +1,6 @@
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
-import { emitEventSelection, getSelectedActors } from "../../data/scene-data";
-import { onSceneInitialized } from "../../data/game-object-helper";
+import { emitEventSelection, getSelectedActors, sanitizeOwnedActorIds } from "../../data/scene-data";
+import { isGameObjectActiveInActiveScene, onSceneInitialized } from "../../data/game-object-helper";
 import { CrossSceneCommunicationService } from "../../world/services/CrossSceneCommunicationService";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { getActorComponent } from "../../data/actor-component";
@@ -8,6 +8,7 @@ import { IdComponent } from "../../entity/components/id-component";
 import type { AllScenesEventData, SelectionGroupData } from "@fuzzy-waddle/api-interfaces";
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 import type { Subscription } from "rxjs";
+import type GameProbableWaffleScene from "../../world/scenes/GameProbableWaffleScene";
 
 export interface SelectionGroup {
   actors: Phaser.GameObjects.GameObject[];
@@ -34,7 +35,7 @@ export class SelectionGroupsComponent {
   private externalModalOpen = false;
   private externalModalSubscription?: Subscription;
 
-  constructor(private scene: Phaser.Scene) {
+  constructor(private scene: GameProbableWaffleScene) {
     onSceneInitialized(scene, this.init, this);
     this.setupEventListeners();
   }
@@ -42,13 +43,12 @@ export class SelectionGroupsComponent {
   private init(): void {
     this.crossSceneCommunicationService = getSceneService(this.scene, CrossSceneCommunicationService);
     this.setupEventListeners();
-    this.listenToChatModalEvents();
+    this.listenToExternalModalEvents();
   }
 
-  private listenToChatModalEvents() {
-    const scene = this.scene as any;
-    if (scene.communicator?.allScenes) {
-      this.externalModalSubscription = scene.communicator.allScenes.subscribe((event: AllScenesEventData) => {
+  private listenToExternalModalEvents() {
+    if (this.scene.communicator?.allScenes) {
+      this.externalModalSubscription = this.scene.communicator.allScenes.subscribe((event: AllScenesEventData) => {
         if (event.name === "external-modal-opened") {
           this.externalModalOpen = true;
         } else if (event.name === "external-modal-closed") {
@@ -112,6 +112,7 @@ export class SelectionGroupsComponent {
     } satisfies SelectionGroup;
 
     this.groups.set(groupKey, group);
+    this.syncSelectionGroupsToPlayerController();
     this.emitGroupEvent(SelectionGroupsComponent.GroupCreatedEvent, groupKey);
     this.emitGroupEvent(SelectionGroupsComponent.GroupSelectedEvent, groupKey);
   }
@@ -123,7 +124,7 @@ export class SelectionGroupsComponent {
     }
 
     // Filter out destroyed actors
-    const validActors = group.actors.filter((actor) => actor.active);
+    const validActors = group.actors.filter((actor) => isGameObjectActiveInActiveScene(actor));
 
     // Update the group with only valid actors
     if (validActors.length !== group.actors.length) {
@@ -162,6 +163,10 @@ export class SelectionGroupsComponent {
         this.emitGroupEvent(SelectionGroupsComponent.GroupUpdatedEvent, key);
       }
     });
+
+    if (updatedGroups) {
+      this.syncSelectionGroupsToPlayerController();
+    }
   }
 
   private emitGroupEvent(eventName: string, groupKey: number): void {
@@ -192,7 +197,7 @@ export class SelectionGroupsComponent {
     const result: SelectionGroupData[] = [];
     this.groups.forEach((group, key) => {
       const actorIds = group.actors
-        .filter((actor) => actor.active)
+        .filter((actor) => isGameObjectActiveInActiveScene(actor))
         .map((actor) => {
           const idComponent = getActorComponent(actor, IdComponent);
           return idComponent?.id;
@@ -224,7 +229,7 @@ export class SelectionGroupsComponent {
       const actors: Phaser.GameObjects.GameObject[] = [];
       for (const actorId of groupData.actorIds) {
         const actor = actorIndex.getActorById(actorId);
-        if (actor && actor.active) {
+        if (isGameObjectActiveInActiveScene(actor)) {
           actors.push(actor);
         }
       }
@@ -238,6 +243,8 @@ export class SelectionGroupsComponent {
         this.emitGroupEvent(SelectionGroupsComponent.GroupCreatedEvent, groupData.groupKey);
       }
     }
+
+    this.syncSelectionGroupsToPlayerController(false);
   }
 
   /**
@@ -246,5 +253,38 @@ export class SelectionGroupsComponent {
   clearGroups(): void {
     this.groups.clear();
     this.lastTapTimestamp.clear();
+  }
+
+  private syncSelectionGroupsToPlayerController(emitNetworkUpdate = true): void {
+    const player = this.scene.playerOrNull;
+    if (!player) {
+      return;
+    }
+    const currentPlayerNumber = player.playerNumber;
+    if (currentPlayerNumber === undefined) {
+      return;
+    }
+
+    const groups = this.getGroups().map((group) => ({
+      ...group,
+      actorIds: sanitizeOwnedActorIds(this.scene, group.actorIds, currentPlayerNumber)
+    }));
+    player.playerController.data.selectionGroups = groups;
+
+    if (!emitNetworkUpdate || !this.scene.communicator.playerChanged) {
+      return;
+    }
+
+    this.scene.communicator.playerChanged.send({
+      gameInstanceId: this.scene.gameInstanceId,
+      emitterUserId: player.playerController.data.userId ?? null,
+      property: "playerController.data.selectionGroups",
+      data: {
+        playerNumber: currentPlayerNumber,
+        playerControllerData: {
+          selectionGroups: groups
+        }
+      }
+    });
   }
 }

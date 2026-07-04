@@ -1,0 +1,10 @@
+// Scope the heavy AOTA theme to the lazy route shell so it no longer inflates
+// the global home-page stylesheet.
+@use "../../../../styles/probable-waffle/probable-waffle-pages";
+
+.probable-waffle-shell {
+  display: block;
+  min-height: 100vh;
+  height: auto;
+  overflow: auto;
+}

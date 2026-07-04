@@ -1,15 +1,18 @@
 .matchmaking {
-  max-width: 500px;
+  max-width: 540px;
   width: 100%;
   margin-left: auto;
   margin-right: auto;
+  padding: 1rem;
+  border-radius: 1rem;
+  background-color: rgba(15, 18, 22, 0.5);
 }
 
 .matchmaking-tooltip {
-  font-style: italic;
-  font-size: 0.8em;
-  text-align: center;
+  font-size: 0.95rem;
+  text-align: left;
   margin-bottom: 1rem;
+  color: #c8b89b;
 }
 
 .grid-container {
@@ -28,25 +31,27 @@
   font-weight: bold;
   text-align: center;
   margin-top: 20px;
+  color: #f0c46b;
 }
 
 .general-title {
   margin: 1rem 0 0.5rem;
-  font-weight: bold;
+  font-weight: 700;
+  color: #f0c46b;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 
   @media (max-width: 768px) {
     text-align: center;
   }
 }
 
-/* Responsive form controls */
 select.form-select {
   width: 100%;
   max-width: 300px;
   margin: 0 auto;
 }
 
-/* Improve button layout on mobile */
 .w-100 {
   @media (max-width: 480px) {
     display: flex;

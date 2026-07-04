@@ -1,0 +1,42 @@
+{
+    "id": "290e3289-a6f5-45b8-af3a-f30ed4f78e64",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "60e2e841-1a6b-48a0-ba1e-d0a6c70a7c75",
+            "label": "rocky_Black_mushrooms1_ground_shadow_png",
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": 32,
+            "hitArea.y": 32,
+            "hitArea.radius": 24.91976519490765,
+            "texture": {
+                "key": "environment_1",
+                "frame": "rocky/Black_mushrooms1_ground_shadow.png"
+            },
+            "x": 29.283653638266,
+            "y": 54.68639104426831,
+            "originX": 0.45755708809790624,
+            "originY": 0.8544748600666924
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

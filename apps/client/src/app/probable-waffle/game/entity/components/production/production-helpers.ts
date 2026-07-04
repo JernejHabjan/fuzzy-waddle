@@ -31,3 +31,27 @@ export function findProductionBuildingWithLeastRemainingTime(actors: GameObject[
 
   return targetBuilding;
 }
+
+export function findProductionBuildingGameObjectWithLeastRemainingTime(actors: GameObject[]): GameObject | null {
+  const productionBuildings = actors.filter((actor) => {
+    const component = getActorComponent(actor, ProductionComponent);
+    return !!component?.isFinished;
+  });
+
+  if (productionBuildings.length === 0) return null;
+  if (productionBuildings.length === 1) return productionBuildings[0]!;
+
+  let minTime = Number.MAX_SAFE_INTEGER;
+  let targetBuilding = productionBuildings[0]!;
+
+  for (const building of productionBuildings) {
+    const productionComponent = getActorComponent(building, ProductionComponent);
+    const totalRemainingTime = productionComponent?.getTotalRemainingProductionTime() ?? Number.MAX_SAFE_INTEGER;
+    if (totalRemainingTime < minTime) {
+      minTime = totalRemainingTime;
+      targetBuilding = building;
+    }
+  }
+
+  return targetBuilding;
+}

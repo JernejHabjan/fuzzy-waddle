@@ -21,6 +21,7 @@ export class GameInstanceGuard implements CanActivate {
       if (!environment.production) {
         await this.serverHealthService.checkHealth();
         if (this.serverHealthService.serverAvailable) {
+          // await this.router.navigate(["/aota/online"]);
           await this.router.navigate(["/aota/instant-game"]);
           // await this.router.navigate(["/aota/instant-network-match"]);
         } else {

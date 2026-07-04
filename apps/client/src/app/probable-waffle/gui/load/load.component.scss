@@ -1,0 +1,23 @@
+.aota-data-page {
+  padding-bottom: 2rem;
+  color: #f5ecd9;
+}
+
+.aota-card-shell {
+  padding: 1.5rem;
+}
+
+.aota-data-grid {
+  align-items: start;
+
+  > div {
+    padding: 0.75rem;
+    border-bottom: 1px solid rgba(111, 85, 52, 0.18);
+  }
+}
+
+.img-thumbnail {
+  background-color: rgba(15, 18, 22, 0.85);
+  border-color: rgba(111, 85, 52, 0.38);
+  border-radius: 0.9rem;
+}

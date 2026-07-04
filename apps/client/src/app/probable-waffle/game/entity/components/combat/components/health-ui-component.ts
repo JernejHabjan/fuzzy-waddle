@@ -5,14 +5,18 @@ import { Subscription } from "rxjs";
 import { getGameObjectBounds, getGameObjectDepth, onObjectReady } from "../../../../data/game-object-helper";
 import { OwnerComponent } from "../../owner-component";
 import { ActorTranslateComponent } from "../../movement/actor-translate-component";
+import { markGameObjectAmbientResponsive } from "../../../../world/services/lighting/lighting-game-object-meta";
+import { getSceneService } from "../../../../world/services/scene-component-helpers";
+import { SceneLightingService } from "../../../../world/services/lighting/scene-lighting.service";
 
 export class HealthUiComponent {
-  static ZIndex = 1;
+  static readonly ZIndex = 1;
   private healthComponent?: HealthComponent;
   private readonly bar: GameObjects.Graphics;
   private barWidth = 25;
-  private barHeight = 8;
-  static barBorder = 2;
+  private readonly barHeight = 8;
+  static readonly barBorder = 2;
+  private readonly aboveGameObjectOffset = 12;
 
   private redThreshold = 0.3;
   private orangeThreshold = 0.5;
@@ -39,6 +43,9 @@ export class HealthUiComponent {
     private readonly type: "health" | "armor"
   ) {
     this.bar = this.gameObject.scene.add.graphics();
+    markGameObjectAmbientResponsive(this.bar);
+    // Graphics are added to the scene before their lighting metadata exists, so register again after marking.
+    getSceneService(this.gameObject.scene, SceneLightingService)?.registerDynamicGameObject(this.bar);
     onObjectReady(gameObject, this.init, this);
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
@@ -105,7 +112,7 @@ export class HealthUiComponent {
 
     const width = this.barWidth;
     const x = bounds.centerX - width / 2;
-    let y = bounds.centerY - bounds.height / 2;
+    let y = bounds.centerY - bounds.height / 2 - this.aboveGameObjectOffset;
     if (this.type === "armor") {
       y += this.barHeight - HealthUiComponent.barBorder;
     }
@@ -121,6 +128,11 @@ export class HealthUiComponent {
     this.changedSubscription?.unsubscribe();
     this.actorMovedSubscription?.unsubscribe();
     this.gameObject.off(OwnerComponent.OwnerColorAppliedEvent, this.draw, this);
+  }
+
+  refresh() {
+    if (!this.bar.active) return;
+    this.draw();
   }
 
   private draw() {

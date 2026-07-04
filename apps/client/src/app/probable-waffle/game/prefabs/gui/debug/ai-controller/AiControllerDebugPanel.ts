@@ -77,7 +77,7 @@ export default class AiControllerDebugPanel extends Phaser.GameObjects.Container
     /* START-USER-CTR-CODE */
     this.init();
     this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
-    this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.onUpdate, this); // periodic telemetry refresh
+    this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.onUpdateFrameNonDeterministic, this); // periodic telemetry refresh
     /* END-USER-CTR-CODE */
   }
 
@@ -116,7 +116,7 @@ export default class AiControllerDebugPanel extends Phaser.GameObjects.Container
     this.add(this.playerButtonsContainer);
   }
 
-  private onUpdate() {
+  private onUpdateFrameNonDeterministic() {
     if (!this.enabled) return;
     const now = performance.now();
     this.labels.forEach((lbl) => lbl.refreshTelemetry(now));
@@ -387,7 +387,7 @@ export default class AiControllerDebugPanel extends Phaser.GameObjects.Container
 
   override destroy() {
     this.button.off("action", this.toggleLabels, this);
-    this.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.onUpdate, this);
+    this.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.onUpdateFrameNonDeterministic, this);
     this.labels.forEach((label) => label.destroy());
     if (this.labelsContainer) this.labelsContainer.destroy();
     if (this.categoryButtonsContainer) this.categoryButtonsContainer.destroy();

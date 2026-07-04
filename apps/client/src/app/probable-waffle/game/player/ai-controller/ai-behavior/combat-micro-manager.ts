@@ -45,7 +45,7 @@ export class CombatMicroManager {
   }
 
   focusFireForUnitsInCombat(): boolean {
-    const now = performance.now();
+    const now = this.blackboard.getNow();
     if (now - this.lastFocusFireAt < this.focusFireCooldownMs) return false;
 
     const enemies = this.blackboard.visibleEnemies;
@@ -107,7 +107,7 @@ export class CombatMicroManager {
   }
 
   flankEnemy(): boolean {
-    const now = performance.now();
+    const now = this.blackboard.getNow();
     if (now - this.lastFlankAt < this.flankCooldownMs) return false;
     if (!this.blackboard.enemyFlankOpen) return false;
     const enemies = this.blackboard.visibleEnemies;
@@ -137,7 +137,7 @@ export class CombatMicroManager {
   }
 
   retreatLowHealthUnitsInCombat(): boolean {
-    const now = performance.now();
+    const now = this.blackboard.getNow();
     if (now - this.lastRetreatCheckAt < this.retreatCooldownMs) return false;
     const lows = this.getLowHealthUnits();
     if (lows.length === 0) return false;

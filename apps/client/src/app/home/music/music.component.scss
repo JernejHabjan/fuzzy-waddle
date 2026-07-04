@@ -1,37 +1,111 @@
 @use "../../../styles/_variables.scss" as *;
-.music-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  padding: 1rem;
-  max-width: 80%;
-  width: 800px;
-  margin: 0 auto;
+
+:host {
+  display: block;
   overflow: auto;
+  background: $tertiary;
+}
+
+.music-page {
+  display: grid;
+  gap: 1.25rem;
+  width: min(1000px, calc(100vw - 2rem));
+  margin: 1rem auto;
+  padding: 1rem 0 2rem;
+}
+
+.music-header,
+.music-item,
+.header-stat {
+  border: 1px solid $app-border-ui;
+  border-radius: 24px;
+  background: $app-surface-plain-soft;
+  box-shadow: 0 16px 40px $app-shadow-soft;
+}
+
+.music-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: end;
+  padding: 1.5rem;
+}
+
+.eyebrow,
+.game-tag {
+  display: inline-flex;
+  width: fit-content;
+  margin-bottom: 0.55rem;
+  padding: 0.3rem 0.7rem;
+  border: 1px solid $app-border-ui;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 72%);
+  color: $secondary;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.music-header h1,
+.track-name {
+  margin: 0;
+  font-family: $app-font-bold;
+  color: $primary;
+}
+
+.music-header p,
+.track-note,
+.stat-label {
+  margin: 0.35rem 0 0;
+  color: $app-text-muted;
+}
+
+.header-stat {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.9rem 1rem;
+  min-width: 120px;
+}
+
+.header-stat strong {
+  color: $primary;
+  font-size: 1.15rem;
+}
+
+.music-list {
+  display: grid;
+  gap: 1rem;
 }
 
 .music-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 1rem;
-  background: $primary;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-  transition: transform 0.2s ease-in-out;
-
-  &:hover {
-    transform: scale(1.02);
-  }
+  display: grid;
+  gap: 1rem;
+  padding: 1.2rem;
 }
 
-.track-name {
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: #ffffff;
-  margin-bottom: 0.5rem;
+.track-meta {
+  display: grid;
+  gap: 0.45rem;
 }
 
 .audio-player {
   width: 100%;
+}
+
+@media (max-width: 720px) {
+  .music-page {
+    width: min(100vw, calc(100vw - 1rem));
+    margin: 0.5rem auto;
+  }
+
+  .music-header {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 1rem;
+  }
+
+  .music-item {
+    padding: 1rem;
+  }
 }
