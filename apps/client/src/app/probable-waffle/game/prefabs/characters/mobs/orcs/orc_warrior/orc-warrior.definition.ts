@@ -65,6 +65,7 @@ export const orcWarriorDefinition = {
     animatable: { animations: ANIM_ORC_WARRIOR_DEFINITION }
   },
   systems: {
-    movement: { enabled: true }
+    movement: { enabled: true },
+    action: { enabled: true }
   }
 } satisfies PrefabDefinition;

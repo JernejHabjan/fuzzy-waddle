@@ -65,6 +65,7 @@ export const orcBoomerangDefinition = {
     animatable: { animations: ANIM_ORC_BOOMERANG_DEFINITION }
   },
   systems: {
-    movement: { enabled: true }
+    movement: { enabled: true },
+    action: { enabled: true }
   }
 } satisfies PrefabDefinition;

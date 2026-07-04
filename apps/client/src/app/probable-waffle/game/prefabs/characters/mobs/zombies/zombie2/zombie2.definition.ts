@@ -65,6 +65,7 @@ export const zombie2Definition = {
     animatable: { animations: ANIM_ZOMBIE2_DEFINITION }
   },
   systems: {
-    movement: { enabled: true }
+    movement: { enabled: true },
+    action: { enabled: true }
   }
 } satisfies PrefabDefinition;

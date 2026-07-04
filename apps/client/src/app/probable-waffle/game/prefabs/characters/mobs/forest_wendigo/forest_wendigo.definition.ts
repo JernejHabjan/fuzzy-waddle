@@ -22,6 +22,7 @@ export const forestWendigoDefinition = {
     animatable: { animations: ANIM_FOREST_WENDIGO_DEFINITION }
   },
   systems: {
-    movement: { enabled: true }
+    movement: { enabled: true },
+    action: { enabled: true }
   }
 } satisfies PrefabDefinition;

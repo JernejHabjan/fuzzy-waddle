@@ -65,6 +65,7 @@ export const pirateSwordsmanDefinition = {
     animatable: { animations: ANIM_PIRATE_SWORDSMAN_DEFINITION }
   },
   systems: {
-    movement: { enabled: true }
+    movement: { enabled: true },
+    action: { enabled: true }
   }
 } satisfies PrefabDefinition;

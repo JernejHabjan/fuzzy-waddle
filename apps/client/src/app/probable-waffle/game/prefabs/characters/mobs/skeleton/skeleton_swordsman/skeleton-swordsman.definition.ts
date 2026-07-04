@@ -65,6 +65,7 @@ export const skeletonSwordsmanDefinition = {
     animatable: { animations: ANIM_SKELETON_SWORDSMAN_DEFINITION }
   },
   systems: {
-    movement: { enabled: true }
+    movement: { enabled: true },
+    action: { enabled: true }
   }
 } satisfies PrefabDefinition;

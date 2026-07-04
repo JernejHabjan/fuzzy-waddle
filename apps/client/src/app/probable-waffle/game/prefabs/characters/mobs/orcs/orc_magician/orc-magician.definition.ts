@@ -65,6 +65,7 @@ export const orcMagicianDefinition = {
     animatable: { animations: ANIM_ORC_MAGICIAN_DEFINITION }
   },
   systems: {
-    movement: { enabled: true }
+    movement: { enabled: true },
+    action: { enabled: true }
   }
 } satisfies PrefabDefinition;

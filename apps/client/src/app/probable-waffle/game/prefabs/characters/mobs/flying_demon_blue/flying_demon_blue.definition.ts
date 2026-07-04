@@ -22,6 +22,7 @@ export const flyingDemonBlueDefinition = {
     animatable: { animations: ANIM_FLYING_DEMON_BLUE_DEFINITION }
   },
   systems: {
-    movement: { enabled: true }
+    movement: { enabled: true },
+    action: { enabled: true }
   }
 } satisfies PrefabDefinition;

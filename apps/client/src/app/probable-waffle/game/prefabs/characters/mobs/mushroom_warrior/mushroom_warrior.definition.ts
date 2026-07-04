@@ -22,6 +22,7 @@ export const mushroomWarriorDefinition = {
     animatable: { animations: ANIM_MUSHROOM_WARRIOR_DEFINITION }
   },
   systems: {
-    movement: { enabled: true }
+    movement: { enabled: true },
+    action: { enabled: true }
   }
 } satisfies PrefabDefinition;

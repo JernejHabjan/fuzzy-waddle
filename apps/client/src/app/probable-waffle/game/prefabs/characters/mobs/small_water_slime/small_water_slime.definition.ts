@@ -22,6 +22,7 @@ export const smallWaterSlimeDefinition = {
     animatable: { animations: ANIM_SMALL_WATER_SLIME_DEFINITION }
   },
   systems: {
-    movement: { enabled: true }
+    movement: { enabled: true },
+    action: { enabled: true }
   }
 } satisfies PrefabDefinition;

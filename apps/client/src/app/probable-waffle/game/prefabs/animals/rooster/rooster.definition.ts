@@ -22,6 +22,7 @@ export const roosterDefinition = {
     animatable: { animations: ANIM_ROOSTER_DEFINITION }
   },
   systems: {
-    movement: { enabled: true }
+    movement: { enabled: true },
+    action: { enabled: true }
   }
 } satisfies PrefabDefinition;

@@ -22,6 +22,7 @@ export const pumpkinWarlockDefinition = {
     animatable: { animations: ANIM_PUMPKIN_WARLOCK_DEFINITION }
   },
   systems: {
-    movement: { enabled: true }
+    movement: { enabled: true },
+    action: { enabled: true }
   }
 } satisfies PrefabDefinition;

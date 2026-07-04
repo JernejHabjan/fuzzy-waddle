@@ -22,6 +22,7 @@ export const minotaur2Definition = {
     animatable: { animations: ANIM_MINOTAUR2_DEFINITION }
   },
   systems: {
-    movement: { enabled: true }
+    movement: { enabled: true },
+    action: { enabled: true }
   }
 } satisfies PrefabDefinition;

@@ -22,6 +22,7 @@ export const fireSlimeDefinition = {
     animatable: { animations: ANIM_FIRE_SLIME_DEFINITION }
   },
   systems: {
-    movement: { enabled: true }
+    movement: { enabled: true },
+    action: { enabled: true }
   }
 } satisfies PrefabDefinition;

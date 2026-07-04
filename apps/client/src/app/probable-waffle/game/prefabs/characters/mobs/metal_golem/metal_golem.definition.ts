@@ -22,6 +22,7 @@ export const metalGolemDefinition = {
     animatable: { animations: ANIM_METAL_GOLEM_DEFINITION }
   },
   systems: {
-    movement: { enabled: true }
+    movement: { enabled: true },
+    action: { enabled: true }
   }
 } satisfies PrefabDefinition;

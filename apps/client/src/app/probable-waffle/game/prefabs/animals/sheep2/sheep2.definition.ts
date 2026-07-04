@@ -22,6 +22,7 @@ export const sheep2Definition = {
     animatable: { animations: ANIM_SHEEP2_DEFINITION }
   },
   systems: {
-    movement: { enabled: true }
+    movement: { enabled: true },
+    action: { enabled: true }
   }
 } satisfies PrefabDefinition;

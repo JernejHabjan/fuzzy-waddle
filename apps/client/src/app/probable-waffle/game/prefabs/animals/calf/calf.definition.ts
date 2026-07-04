@@ -22,6 +22,7 @@ export const calfDefinition = {
     animatable: { animations: ANIM_CALF_DEFINITION }
   },
   systems: {
-    movement: { enabled: true }
+    movement: { enabled: true },
+    action: { enabled: true }
   }
 } satisfies PrefabDefinition;

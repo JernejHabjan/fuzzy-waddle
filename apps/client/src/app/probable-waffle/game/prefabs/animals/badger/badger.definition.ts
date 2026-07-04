@@ -22,6 +22,7 @@ export const badgerDefinition = {
     animatable: { animations: ANIM_BADGER_DEFINITION }
   },
   systems: {
-    movement: { enabled: true }
+    movement: { enabled: true },
+    action: { enabled: true }
   }
 } satisfies PrefabDefinition;

@@ -22,6 +22,7 @@ export const foxDefinition = {
     animatable: { animations: ANIM_FOX_DEFINITION }
   },
   systems: {
-    movement: { enabled: true }
+    movement: { enabled: true },
+    action: { enabled: true }
   }
 } satisfies PrefabDefinition;

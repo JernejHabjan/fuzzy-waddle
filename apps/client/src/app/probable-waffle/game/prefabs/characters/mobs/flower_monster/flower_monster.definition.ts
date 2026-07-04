@@ -22,6 +22,7 @@ export const flowerMonsterDefinition = {
     animatable: { animations: ANIM_FLOWER_MONSTER_DEFINITION }
   },
   systems: {
-    movement: { enabled: true }
+    movement: { enabled: true },
+    action: { enabled: true }
   }
 } satisfies PrefabDefinition;

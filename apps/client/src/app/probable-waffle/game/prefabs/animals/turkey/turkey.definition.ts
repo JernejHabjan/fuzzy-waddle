@@ -22,6 +22,7 @@ export const turkeyDefinition = {
     animatable: { animations: ANIM_TURKEY_DEFINITION }
   },
   systems: {
-    movement: { enabled: true }
+    movement: { enabled: true },
+    action: { enabled: true }
   }
 } satisfies PrefabDefinition;

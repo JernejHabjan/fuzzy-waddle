@@ -22,6 +22,7 @@ export const sandWormDefinition = {
     animatable: { animations: ANIM_SAND_WORM_DEFINITION }
   },
   systems: {
-    movement: { enabled: true }
+    movement: { enabled: true },
+    action: { enabled: true }
   }
 } satisfies PrefabDefinition;

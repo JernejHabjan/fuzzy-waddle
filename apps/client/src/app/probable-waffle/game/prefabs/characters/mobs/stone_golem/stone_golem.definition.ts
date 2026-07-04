@@ -22,6 +22,7 @@ export const stoneGolemDefinition = {
     animatable: { animations: ANIM_STONE_GOLEM_DEFINITION }
   },
   systems: {
-    movement: { enabled: true }
+    movement: { enabled: true },
+    action: { enabled: true }
   }
 } satisfies PrefabDefinition;

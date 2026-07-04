@@ -22,6 +22,7 @@ export const bullDefinition = {
     animatable: { animations: ANIM_BULL_DEFINITION }
   },
   systems: {
-    movement: { enabled: true }
+    movement: { enabled: true },
+    action: { enabled: true }
   }
 } satisfies PrefabDefinition;
