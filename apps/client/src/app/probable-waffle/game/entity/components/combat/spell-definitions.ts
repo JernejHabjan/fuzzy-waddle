@@ -3,6 +3,7 @@ import type { SpellData } from "./spell-data";
 import { ProjectileType } from "./projectile-type";
 import { AnimationType } from "../animation/animation-type";
 import { DamageType, ObjectNames, ResearchType, SpellTargetType } from "@fuzzy-waddle/api-interfaces";
+import { BansheeAnimationTypes } from "../../../prefabs/characters/mobs/banshee/anims-banshee";
 
 export const spellDefinitions: Record<SpellType, SpellData> = {
   // ========== SNOWSTORM - AOE Freeze + DoT ==========
@@ -173,5 +174,46 @@ export const spellDefinitions: Record<SpellType, SpellData> = {
     icon: { key: "factions", frame: "spell_icons/healing_totem.png" },
     autocastDefault: false,
     requiresResearch: ResearchType.HealingTotemSpell
+  },
+
+  // ========== BANSHEE SCREAM - AOE Stun ==========
+  [SpellType.BansheeScream]: {
+    type: SpellType.BansheeScream,
+    name: "Scream",
+    description: "Stun enemies in an area",
+    cooldown: 30000,
+    range: 8,
+    aoeRadius: 6,
+    targetType: SpellTargetType.Ground,
+    targetAllies: false,
+    targetEnemies: true,
+    targetSelf: false,
+    damageType: DamageType.Physical, // todo?
+    instantDamage: 2,
+    stunDuration: 5000,
+    tintColor: 0x6666ff,
+    castAnimation: BansheeAnimationTypes.Scream,
+    sounds: { cast: "frost_cast", impact: "frost_impact" }, // todo
+    icon: { key: "factions", frame: "spell_icons/snowstorm.png" }, // todo
+    autocastDefault: true
+  },
+  // ========== BANSHEE TELEPORT ==========
+  [SpellType.BansheeTeleport]: {
+    // TODO MAKE IT ACTUALLY TELEPORT AND PLAY BANSHEE APPEAR AT ARRIVAL POINT
+    type: SpellType.BansheeTeleport,
+    name: "Phase Shift",
+    description: "The banshee instantly slips through the spirit realm, reappearing at a nearby target location.",
+    cooldown: 30000,
+    range: 8,
+    aoeRadius: 6, // TODO MAKE NULLABLE
+    targetType: SpellTargetType.Ground, // TODO MAKE NULLABLE
+    targetAllies: false, // TODO MAKE NULLABLE
+    targetEnemies: false, // TODO MAKE NULLABLE
+    targetSelf: false, // TODO MAKE NULLABLE
+    castAnimation: BansheeAnimationTypes.Disappear,
+    sounds: { cast: "frost_cast", impact: "frost_impact" }, // todo
+    icon: { key: "factions", frame: "spell_icons/snowstorm.png" }, // todo
+    autocastDefault: false,
+    requiresResearch: ResearchType.BansheeTeleport
   }
 };

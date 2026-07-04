@@ -42,7 +42,7 @@ export const ANIM_CENTURION_DEFINITION: AnimationDefinitionMap = {
     west: { key: ANIM_CENTURION_WALK_1 },
     east: { key: ANIM_CENTURION_WALK_RIGHT }
   },
-  [AnimationType.Thrust]: {
+  [AnimationType.LargeThrust]: {
     north: { key: ANIM_CENTURION_THRUST },
     south: { key: ANIM_CENTURION_THRUST_2 },
     west: { key: ANIM_CENTURION_THRUST_1 },

@@ -271,6 +271,27 @@ export const weaponDefinitions = {
       hit: 500
     }
   },
+
+  [WeaponType.BansheeSlash]: {
+    weaponType: WeaponType.BansheeSlash,
+    canTargetAir: false,
+    damage: 6,
+    damageType: DamageType.Physical,
+    cooldown: 1000,
+    range: 1,
+    minRange: 0,
+    highGroundRangeBonus: 0,
+    animationType: AnimationType.Slash,
+    sounds: {
+      preparing: null,
+      fire: SharedActorActionsSfxHeavyWeaponSwingSounds,
+      hit: SharedActorActionsSfxAxeHitSounds
+    },
+    delays: {
+      fire: 200,
+      hit: 500
+    }
+  },
   [WeaponType.SkaduweeAxe]: {
     weaponType: WeaponType.SkaduweeAxe,
     canTargetAir: false,

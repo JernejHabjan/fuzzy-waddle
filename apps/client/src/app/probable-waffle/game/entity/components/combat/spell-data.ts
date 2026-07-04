@@ -51,7 +51,7 @@ export interface SpellData {
   // Visual & Audio
   projectile?: ProjectileData;
   impactAnimation?: string;
-  castAnimation?: AnimationType;
+  castAnimation?: AnimationType | string;
   sounds?: { cast?: string; impact?: string; loop?: string };
   icon: { key: string; frame: string };
 

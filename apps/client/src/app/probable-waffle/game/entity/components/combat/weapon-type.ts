@@ -27,6 +27,8 @@ export enum WeaponType {
   AlchemistVase = "AlchemistVase",
   CorpyAcid = "CorpyAcid",
   CorpyClaws = "CorpyClaws",
+  BansheeScream = "BansheeScream",
+  BansheeSlash = "BansheeSlash",
   BowTower = "BowTower",
   WolfBite = "WolfBite",
   ShipVolley = "ShipVolley",

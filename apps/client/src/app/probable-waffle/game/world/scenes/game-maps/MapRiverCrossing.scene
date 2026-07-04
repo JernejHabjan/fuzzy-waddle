@@ -3041,6 +3041,21 @@
             "EditorOwner.owner_id": "1",
             "x": -416,
             "y": 456
+        },
+        {
+            "prefabId": "2da4ac72-30ff-4a63-a1c9-507ed4cda6ae",
+            "id": "13662975-a67f-438c-a465-600709bb4c28",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "banshee_1",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -320,
+            "y": 400
         }
     ],
     "plainObjects": [

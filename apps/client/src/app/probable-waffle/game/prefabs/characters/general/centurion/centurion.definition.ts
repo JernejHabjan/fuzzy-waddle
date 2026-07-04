@@ -65,6 +65,7 @@ export const centurionDefinition = {
     animatable: { animations: ANIM_CENTURION_DEFINITION }
   },
   systems: {
-    movement: { enabled: true }
+    movement: { enabled: true },
+    action: { enabled: true }
   }
 } satisfies PrefabDefinition;

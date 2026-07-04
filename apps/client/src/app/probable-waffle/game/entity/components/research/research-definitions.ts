@@ -39,6 +39,18 @@ export const researchDefinitions: Record<ResearchType, ResearchData> = {
     refundFactor: 0.5
   },
 
+  [ResearchType.BansheeTeleport]: {
+    type: ResearchType.BansheeTeleport,
+    name: "Phase Shift",
+    description: "Unlocks Phase Shift, allowing Banshees to instantly teleport to a nearby target location.",
+    unlocksSpell: SpellType.BansheeTeleport,
+    cost: { [ResourceType.Minerals]: 150, [ResourceType.Wood]: 75 },
+    researchTime: 45000,
+    icon: { key: "factions", frame: "spell_icons/firestorm.png" }, // todo
+    requiredBuilding: ObjectNames.InfantryInn,
+    refundFactor: 0.5
+  },
+
   [ResearchType.HealingLightSpell]: {
     type: ResearchType.HealingLightSpell,
     name: "Healing Light",

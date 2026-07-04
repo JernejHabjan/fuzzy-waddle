@@ -1146,6 +1146,10 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     const corpy = new Corpy(this, -416, 456);
     this.add.existing(corpy);
 
+    // banshee_1
+    const banshee_1 = new Banshee(this, -320, 400);
+    this.add.existing(banshee_1);
+
     // spawn (components)
     const spawnEditorOwner = new EditorOwner(spawn);
     spawnEditorOwner.owner_id = "1";
@@ -1431,6 +1435,10 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // corpy (components)
     const corpyEditorOwner = new EditorOwner(corpy);
     corpyEditorOwner.owner_id = "1";
+
+    // banshee_1 (components)
+    const banshee_1EditorOwner = new EditorOwner(banshee_1);
+    banshee_1EditorOwner.owner_id = "1";
 
     this.tilemap = tilemap;
 
