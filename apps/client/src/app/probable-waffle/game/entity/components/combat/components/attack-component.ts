@@ -410,6 +410,9 @@ export class AttackComponent {
       case ProjectileType.VaseProjectile:
         projectileSprite = new TivaraAlchemistVase(this.gameObject.scene);
         break;
+      case ProjectileType.CorpyAcidProjectile:
+        projectileSprite = new SkaduweeOwlFurball(this.gameObject.scene); // todo
+        break;
       case ProjectileType.FrostBoltProjectile:
         projectileSprite = new FrostBolt(this.gameObject.scene);
         break;

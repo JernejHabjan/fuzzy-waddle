@@ -138,6 +138,7 @@ import GroundBoletus from "../prefabs/outside/crops/ground/boletus/GroundBoletus
 import GroundCarrot from "../prefabs/outside/crops/ground/carrot/GroundCarrot";
 import GroundChampignons from "../prefabs/outside/crops/ground/champignons/GroundChampignons";
 import GroundTurnip from "../prefabs/outside/crops/ground/turnip/GroundTurnip";
+import Corpy from "../prefabs/characters/mobs/corpy/Corpy";
 
 type ActorMap = { [name: string]: new (scene: Phaser.Scene) => GameObject };
 export class ActorManager {
@@ -190,6 +191,7 @@ export class ActorManager {
 
   private static mobs: ActorMap = {
     [ObjectNames.Cyclops]: Cyclops,
+    [ObjectNames.Corpy]: Corpy,
     [ObjectNames.Minotaur]: Minotaur,
     [ObjectNames.Mummy]: Mummy,
     [ObjectNames.OrcBoomerang]: OrcBoomerang,

@@ -1,0 +1,43 @@
+{
+    "id": "2222fbc3-12b5-41d9-bb80-5f82bfa80cbd",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 300,
+        "borderHeight": 280
+    },
+    "displayList": [
+        {
+            "type": "Sprite",
+            "id": "870bf286-22ff-47a8-b515-998461c6b1ee",
+            "label": "corpy_idle_Corpio_idle_bottom_left",
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": 48,
+            "hitArea.y": 48,
+            "hitArea.radius": 34.67401439603983,
+            "texture": {
+                "key": "animals",
+                "frame": "corpy/idle/Corpio_idle_bottom_left1.png"
+            },
+            "x": 48,
+            "y": 53.26887806294279,
+            "originY": 0.5548841464889874,
+            "animationPlayMethod": 1,
+            "animationKey": "corpy/idle/Corpio_idle_bottom_left"
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

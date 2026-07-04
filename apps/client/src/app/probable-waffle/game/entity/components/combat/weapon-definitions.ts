@@ -291,6 +291,26 @@ export const weaponDefinitions = {
       hit: 500
     }
   },
+  [WeaponType.CorpyClaws]: {
+    weaponType: WeaponType.CorpyClaws,
+    canTargetAir: false,
+    damage: 10,
+    damageType: DamageType.Physical,
+    cooldown: 1000,
+    range: 1,
+    minRange: 0,
+    highGroundRangeBonus: 0,
+    animationType: AnimationType.Thrust,
+    sounds: {
+      preparing: null,
+      fire: SharedActorActionsSfxHeavyWeaponSwingSounds,
+      hit: SharedActorActionsSfxAxeHitSounds
+    },
+    delays: {
+      fire: 200,
+      hit: 500
+    }
+  },
   [WeaponType.SkeletonScythe]: {
     weaponType: WeaponType.SkeletonScythe,
     canTargetAir: false,
@@ -616,6 +636,37 @@ export const weaponDefinitions = {
     canTargetAir: true,
     projectile: {
       type: ProjectileType.VaseProjectile,
+      speed: 800,
+      orientation: {
+        randomizeOrientation: true,
+        pointingOrientation: 0
+      },
+      impactAnimation: {
+        anims: [EffectsAnims.ANIM_IMPACT_DEBRIS]
+      }
+    },
+    damage: 9,
+    damageType: DamageType.Physical,
+    cooldown: 3000,
+    range: 6,
+    minRange: 0,
+    highGroundRangeBonus: 1,
+    animationType: AnimationType.Shoot,
+    sounds: {
+      preparing: null,
+      fire: null, // todo
+      hit: null // todo
+    },
+    delays: {
+      fire: 200,
+      hit: 500
+    }
+  },
+  [WeaponType.CorpyAcid]: {
+    weaponType: WeaponType.CorpyAcid,
+    canTargetAir: true,
+    projectile: {
+      type: ProjectileType.CorpyAcidProjectile,
       speed: 800,
       orientation: {
         randomizeOrientation: true,

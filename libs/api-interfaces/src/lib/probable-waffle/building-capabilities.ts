@@ -37,7 +37,7 @@ export const BUILDING_QUEUE_CAPABILITIES: Partial<Record<ObjectNames, BuildingQu
   },
   [ObjectNames.Temple]: {
     queueCapacity: 5,
-    availableProduceActors: [ObjectNames.TivaraSlingshotFemale, ObjectNames.TivaraAlchemist]
+    availableProduceActors: [ObjectNames.TivaraSlingshotFemale, ObjectNames.TivaraAlchemist, ObjectNames.Corpy]
   },
   [ObjectNames.FrostForge]: {
     queueCapacity: 5,

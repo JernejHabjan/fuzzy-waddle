@@ -25,6 +25,7 @@ export enum ObjectNames {
   CommonBoat = "CommonBoat",
   Centurion = "Centurion",
   Cyclops = "Cyclops",
+  Corpy = "Corpy",
   Minotaur = "Minotaur",
   Mummy = "Mummy",
   OrcBoomerang = "OrcBoomerang",

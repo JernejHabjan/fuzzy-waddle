@@ -140,6 +140,7 @@ import UndeadLandDeadTreeAnim2 from "../../../prefabs/outside/environment/undead
 import UndeadLandDeadTreeAnim1 from "../../../prefabs/outside/environment/undead_land/UndeadLandDeadTreeAnim1";
 import CommonBoat from "../../../prefabs/characters/shared/CommonBoat/CommonBoat";
 import VikingBoat from "../../../prefabs/characters/shared/VikingBoat/VikingBoat";
+import Corpy from "../../../prefabs/characters/mobs/corpy/Corpy";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -1141,6 +1142,10 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     const vikingBoat = new VikingBoat(this, 928, 496);
     this.add.existing(vikingBoat);
 
+    // corpy
+    const corpy = new Corpy(this, -416, 456);
+    this.add.existing(corpy);
+
     // spawn (components)
     const spawnEditorOwner = new EditorOwner(spawn);
     spawnEditorOwner.owner_id = "1";
@@ -1422,6 +1427,10 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // vikingBoat (components)
     const vikingBoatEditorOwner = new EditorOwner(vikingBoat);
     vikingBoatEditorOwner.owner_id = "1";
+
+    // corpy (components)
+    const corpyEditorOwner = new EditorOwner(corpy);
+    corpyEditorOwner.owner_id = "1";
 
     this.tilemap = tilemap;
 

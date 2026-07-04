@@ -3026,6 +3026,21 @@
             "EditorOwner.owner_id": "1",
             "x": 928,
             "y": 496
+        },
+        {
+            "prefabId": "2222fbc3-12b5-41d9-bb80-5f82bfa80cbd",
+            "id": "4f113bd6-ed6c-4428-a13b-13d6871ea2db",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "corpy",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -416,
+            "y": 456
         }
     ],
     "plainObjects": [
