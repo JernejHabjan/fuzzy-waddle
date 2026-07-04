@@ -398,6 +398,9 @@ export class AttackComponent {
       case ProjectileType.FlowerSpit:
         projectileSprite = new SlingshotRock(this.gameObject.scene); // todo poison dart -  // todo use mobs_flower_monster_plant shot anim
         break;
+      case ProjectileType.SandWormAcid:
+        projectileSprite = new SlingshotRock(this.gameObject.scene); // todo poison dart -  // todo use mobs_flower_monster_plant shot anim
+        break;
       case ProjectileType.ArrowProjectile:
         projectileSprite = new Arrow(this.gameObject.scene);
         break;

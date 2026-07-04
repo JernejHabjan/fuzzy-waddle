@@ -1103,7 +1103,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(pumpkinWarlockPumpkin);
 
     // sandWorm
-    const sandWorm = new SandWorm(this, -704, 864);
+    const sandWorm = new SandWorm(this, -752, 760);
     this.add.existing(sandWorm);
 
     // forestWendigo
@@ -1435,6 +1435,10 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // flowerMonster (components)
     const flowerMonsterEditorOwner = new EditorOwner(flowerMonster);
     flowerMonsterEditorOwner.owner_id = "1";
+
+    // sandWorm (components)
+    const sandWormEditorOwner = new EditorOwner(sandWorm);
+    sandWormEditorOwner.owner_id = "1";
 
     // forestWendigo (components)
     const forestWendigoEditorOwner = new EditorOwner(forestWendigo);

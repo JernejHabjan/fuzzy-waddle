@@ -28,6 +28,7 @@ import {
 import { DamageType } from "@fuzzy-waddle/api-interfaces";
 import { MedusaAnimationTypes } from "../../../prefabs/characters/mobs/medusa/anims-medusa";
 import { FlowerMonsterAnimationTypes } from "../../../prefabs/characters/mobs/flower_monster/anims-flower_monster";
+import { SandWormAnimationTypes } from "../../../prefabs/characters/mobs/sand_worm/anims-sand_worm";
 
 export const weaponDefinitions = {
   [WeaponType.TivaraSlingshot]: {
@@ -434,6 +435,57 @@ export const weaponDefinitions = {
     minRange: 2,
     highGroundRangeBonus: 1,
     animationType: FlowerMonsterAnimationTypes.Shoot,
+    sounds: {
+      preparing: SharedActorActionsSfxLeatherNockSounds, // todo
+      fire: SharedActorActionsSfxSlingshotFireSounds, // todo
+      hit: SharedActorActionsSfxSlingshotHitSounds // todo
+    },
+    delays: {
+      fire: 500,
+      hit: 0
+    }
+  },
+  [WeaponType.SandWormBite]: {
+    weaponType: WeaponType.SandWormBite,
+    canTargetAir: false,
+    damage: 20,
+    damageType: DamageType.Physical,
+    cooldown: 2000,
+    range: 3,
+    minRange: 0,
+    highGroundRangeBonus: 0,
+    animationType: SandWormAnimationTypes.Bite,
+    sounds: {
+      preparing: null,
+      fire: SharedActorActionsSfxHeavyWeaponSwingSounds,
+      hit: SharedActorActionsSfxAxeHitSounds
+    },
+    delays: {
+      fire: 200,
+      hit: 500
+    }
+  },
+  [WeaponType.SandWormShootAcid]: {
+    weaponType: WeaponType.SandWormShootAcid,
+    canTargetAir: true,
+    projectile: {
+      type: ProjectileType.SandWormAcid,
+      speed: 700,
+      orientation: {
+        randomizeOrientation: false,
+        pointingOrientation: 0
+      },
+      impactAnimation: {
+        anims: EffectsAnims.debrisAnimations // todo use POISON_SHOT_FULL_ANIMATION anim
+      }
+    },
+    damage: 6,
+    damageType: DamageType.Physical,
+    cooldown: 1000,
+    range: 8,
+    minRange: 2,
+    highGroundRangeBonus: 1,
+    animationType: SandWormAnimationTypes.Shoot,
     sounds: {
       preparing: SharedActorActionsSfxLeatherNockSounds, // todo
       fire: SharedActorActionsSfxSlingshotFireSounds, // todo

@@ -119,7 +119,9 @@ export class AnimationActorComponent {
 
     const animationsByType = this.animationsDefinition.animations[type];
     if (!animationsByType) {
-      console.warn(`AnimationActorComponent: No animation found for type ${type} in animations definition`);
+      console.warn(
+        `AnimationActorComponent: No animation found for type ${type} in animations definition for actor ${this.gameObject.name}`
+      );
       return;
     }
 

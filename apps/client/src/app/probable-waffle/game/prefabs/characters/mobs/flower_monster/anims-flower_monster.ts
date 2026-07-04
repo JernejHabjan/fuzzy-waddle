@@ -47,6 +47,7 @@ export const ANIM_FLOWER_MONSTER_DEFINITION: AnimationDefinitionMap = {
     east: { key: IDLE_E }
   },
   [FlowerMonsterAnimationTypes.ShrunkenDown]: {
+    // todo use this
     south: { key: BASE_S },
     north: { key: BASE_N },
     west: { key: BASE_W },
@@ -77,6 +78,7 @@ export const ANIM_FLOWER_MONSTER_DEFINITION: AnimationDefinitionMap = {
     east: { key: ATTACK_2_E }
   },
   [FlowerMonsterAnimationTypes.Grow]: {
+    // todo use this
     south: { key: GROW_S },
     north: { key: GROW_N },
     west: { key: GROW_W },

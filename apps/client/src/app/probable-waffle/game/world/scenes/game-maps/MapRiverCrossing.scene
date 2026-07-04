@@ -2929,8 +2929,12 @@
                 "y"
             ],
             "label": "sandWorm",
-            "x": -704,
-            "y": 864
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -752,
+            "y": 760
         },
         {
             "prefabId": "f64cc718-5fab-44b8-b0f7-14254f01b2bb",
