@@ -1075,7 +1075,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(medusa);
 
     // flowerMonster
-    const flowerMonster = new FlowerMonster(this, -544, 880);
+    const flowerMonster = new FlowerMonster(this, 592, 816);
     this.add.existing(flowerMonster);
 
     // flyingDemonBlue
@@ -1431,6 +1431,10 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // medusa (components)
     const medusaEditorOwner = new EditorOwner(medusa);
     medusaEditorOwner.owner_id = "1";
+
+    // flowerMonster (components)
+    const flowerMonsterEditorOwner = new EditorOwner(flowerMonster);
+    flowerMonsterEditorOwner.owner_id = "1";
 
     // forestWendigo (components)
     const forestWendigoEditorOwner = new EditorOwner(forestWendigo);

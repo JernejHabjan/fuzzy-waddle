@@ -36,5 +36,7 @@ export enum WeaponType {
   BowTower = "BowTower",
   WolfBite = "WolfBite",
   ShipVolley = "ShipVolley",
-  ShipFireVolley = "ShipFireVolley"
+  ShipFireVolley = "ShipFireVolley",
+  FlowerSpit = "FlowerSpit",
+  FlowerStomp = "FlowerStomp"
 }

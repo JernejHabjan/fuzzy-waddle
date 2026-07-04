@@ -2848,8 +2848,12 @@
                 "y"
             ],
             "label": "flowerMonster",
-            "x": -544,
-            "y": 880
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": 592,
+            "y": 816
         },
         {
             "prefabId": "579c629d-1200-40e0-87b8-a743851497cc",

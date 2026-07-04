@@ -62,7 +62,12 @@ export const cyclopsDefinition = {
     aiControlled: {
       type: AiType.Character
     },
-    animatable: { animations: ANIM_CYCLOPS_DEFINITION }
+    animatable: { animations: ANIM_CYCLOPS_DEFINITION },
+    audio: {
+      sounds: {
+        // todo
+      }
+    }
   },
   systems: {
     movement: { enabled: true },
