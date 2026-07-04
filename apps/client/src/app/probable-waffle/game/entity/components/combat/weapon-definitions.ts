@@ -26,6 +26,7 @@ import {
   SkaduweeOwlSfxFurballHitSounds
 } from "../../../prefabs/characters/skaduwee/skaduwee-owl/SkaduweeOwlSfx";
 import { DamageType } from "@fuzzy-waddle/api-interfaces";
+import { MedusaAnimationTypes } from "../../../prefabs/characters/mobs/medusa/anims-medusa";
 
 export const weaponDefinitions = {
   [WeaponType.TivaraSlingshot]: {
@@ -271,7 +272,6 @@ export const weaponDefinitions = {
       hit: 500
     }
   },
-
   [WeaponType.BansheeSlash]: {
     weaponType: WeaponType.BansheeSlash,
     canTargetAir: false,
@@ -286,6 +286,26 @@ export const weaponDefinitions = {
       preparing: null,
       fire: SharedActorActionsSfxHeavyWeaponSwingSounds,
       hit: SharedActorActionsSfxAxeHitSounds
+    },
+    delays: {
+      fire: 200,
+      hit: 500
+    }
+  },
+  [WeaponType.MedusaSnakes]: {
+    weaponType: WeaponType.MedusaSnakes,
+    canTargetAir: false,
+    damage: 6,
+    damageType: DamageType.Physical,
+    cooldown: 1000,
+    range: 1,
+    minRange: 0,
+    highGroundRangeBonus: 0,
+    animationType: MedusaAnimationTypes.SnakeAttack,
+    sounds: {
+      preparing: null,
+      fire: SharedActorActionsSfxHeavyWeaponSwingSounds, // todo
+      hit: SharedActorActionsSfxAxeHitSounds // todo
     },
     delays: {
       fire: 200,

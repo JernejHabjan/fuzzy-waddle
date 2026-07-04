@@ -10,7 +10,7 @@ import { SpellType } from "../../../../entity/components/combat/spell-type";
 export const bansheeDefinition = {
   components: {
     representable: {
-      width: 80,
+      width: 60,
       height: 80,
       origin: { x: 0.5, y: 0.9 }
     },
@@ -49,14 +49,15 @@ export const bansheeDefinition = {
     },
     productionCost: {
       resources: {
-        [ResourceType.Food]: 140
+        [ResourceType.Food]: 140,
+        [ResourceType.Minerals]: 100
       },
       refundFactor: 0.5,
-      productionTime: 5000,
+      productionTime: 10000,
       costType: PaymentType.PayImmediately
     },
     housingCost: {
-      housingNeeded: 2
+      housingNeeded: 3
     },
     selectable: {},
     translatable: {

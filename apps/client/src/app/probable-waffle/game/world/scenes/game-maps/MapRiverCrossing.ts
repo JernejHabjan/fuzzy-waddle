@@ -1071,7 +1071,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(minotaur2);
 
     // medusa
-    const medusa = new Medusa(this, -672, 800);
+    const medusa = new Medusa(this, -208, 336);
     this.add.existing(medusa);
 
     // flowerMonster
@@ -1415,6 +1415,10 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // tivaraMacemanMale (components)
     const tivaraMacemanMaleEditorOwner = new EditorOwner(tivaraMacemanMale);
     tivaraMacemanMaleEditorOwner.owner_id = "1";
+
+    // medusa (components)
+    const medusaEditorOwner = new EditorOwner(medusa);
+    medusaEditorOwner.owner_id = "1";
 
     // field (components)
     const fieldEditorOwner = new EditorOwner(field);

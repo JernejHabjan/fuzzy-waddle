@@ -4,6 +4,7 @@ import { ProjectileType } from "./projectile-type";
 import { AnimationType } from "../animation/animation-type";
 import { DamageType, ObjectNames, ResearchType, SpellTargetType } from "@fuzzy-waddle/api-interfaces";
 import { BansheeAnimationTypes } from "../../../prefabs/characters/mobs/banshee/anims-banshee";
+import { MedusaAnimationTypes } from "../../../prefabs/characters/mobs/medusa/anims-medusa";
 
 export const spellDefinitions: Record<SpellType, SpellData> = {
   // ========== SNOWSTORM - AOE Freeze + DoT ==========
@@ -174,6 +175,28 @@ export const spellDefinitions: Record<SpellType, SpellData> = {
     icon: { key: "factions", frame: "spell_icons/healing_totem.png" },
     autocastDefault: false,
     requiresResearch: ResearchType.HealingTotemSpell
+  },
+
+  // ========== MEDUSA GAZE - Targeted Long Stun ==========
+  [SpellType.MedusaGaze]: {
+    type: SpellType.MedusaGaze,
+    name: "Gaze",
+    description: "Turns the target to stone, stunning it for a long duration.",
+    cooldown: 30000,
+    range: 8,
+    aoeRadius: 6,
+    targetType: SpellTargetType.Ground,
+    targetAllies: false,
+    targetEnemies: true,
+    targetSelf: false,
+    damageType: DamageType.Physical, // todo?
+    instantDamage: 2,
+    stunDuration: 30000,
+    tintColor: 0x6666ff,
+    castAnimation: MedusaAnimationTypes.GazeAttack,
+    sounds: { cast: "frost_cast", impact: "frost_impact" }, // todo
+    icon: { key: "factions", frame: "spell_icons/snowstorm.png" }, // todo
+    autocastDefault: true
   },
 
   // ========== BANSHEE SCREAM - AOE Stun ==========

@@ -2821,8 +2821,12 @@
                 "y"
             ],
             "label": "medusa",
-            "x": -672,
-            "y": 800
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -208,
+            "y": 336
         },
         {
             "prefabId": "109bf399-2e51-481a-984b-0fc0dbc89070",

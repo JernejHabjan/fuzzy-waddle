@@ -4,6 +4,7 @@ export enum SpellType {
   Firestorm = "firestorm", // Persistent AOE burn zone
   BansheeScream = "bansheeScream", // AOE stun
   BansheeTeleport = "BansheeTeleport", // Teleport
+  MedusaGaze = "MedusaGaze", // AOE stun
 
   // Control spells
   FrostNova = "frostNova", // AOE slow (no stun)

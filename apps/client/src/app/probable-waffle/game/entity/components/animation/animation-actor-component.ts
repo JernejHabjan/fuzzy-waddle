@@ -227,7 +227,7 @@ export class AnimationActorComponent {
     });
   }
 
-  private mapOrderTypeToAnimationType(orderType: OrderType): AnimationType | null {
+  private mapOrderTypeToAnimationType(orderType: OrderType): AnimationType | string | null {
     switch (orderType) {
       case OrderType.Attack:
         return this.getAttackAnimationType();
@@ -252,7 +252,7 @@ export class AnimationActorComponent {
     }
   }
 
-  private getAttackAnimationType(): AnimationType | null {
+  private getAttackAnimationType(): AnimationType | string | null {
     const attackComponent = getActorComponent(this.gameObject, AttackComponent);
     if (!attackComponent) return null;
     const currentAttack = attackComponent.currentAttack;
