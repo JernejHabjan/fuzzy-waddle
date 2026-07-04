@@ -61,12 +61,17 @@ export const ankGuardDefinition = {
       costType: PaymentType.PayImmediately
     },
     production: {
-      availableProduceActors: [ObjectNames.TivaraSlingshotFemale, ObjectNames.TivaraMacemanMale]
+      availableProduceActors: [
+        ObjectNames.TivaraSlingshotFemale,
+        ObjectNames.TivaraMacemanMale,
+        ObjectNames.ForestWendigo
+      ]
     },
     research: {
       availableResearch: [
         ResearchType.FirestormSpell,
         ResearchType.FrostNovaSpell,
+        ResearchType.WendigoBranches,
         ResearchType.HealingRainSpell,
         ResearchType.CommonBoatUpgradeLevel2,
         ResearchType.VikingBoatUpgradeLevel2

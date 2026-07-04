@@ -32,6 +32,7 @@ export enum WeaponType {
   MetalGolemSmash = "MetalGolemSmash",
   MedusaSnakes = "MedusaSnakes",
   BansheeSlash = "BansheeSlash",
+  WendigoSlash = "WendigoSlash",
   BowTower = "BowTower",
   WolfBite = "WolfBite",
   ShipVolley = "ShipVolley",

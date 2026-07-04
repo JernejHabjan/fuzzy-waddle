@@ -3,6 +3,7 @@ export enum ResearchType {
   SnowstormSpell = "snowstormSpell",
   FirestormSpell = "firestormSpell",
   FrostNovaSpell = "frostNovaSpell",
+  WendigoBranches = "WendigoBranches",
 
   // Utility spells
   BansheeTeleport = "bansheeTeleport",

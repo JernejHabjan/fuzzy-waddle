@@ -1245,7 +1245,7 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 8,
+            "frameRate": 3,
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false
@@ -1279,7 +1279,7 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 8,
+            "frameRate": 3,
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false
@@ -1313,7 +1313,7 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 8,
+            "frameRate": 3,
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false
@@ -1347,7 +1347,7 @@
                     "keyframe": false
                 }
             ],
-            "frameRate": 8,
+            "frameRate": 3,
             "skipMissedFrames": true,
             "repeat": -1,
             "randomFrame": false

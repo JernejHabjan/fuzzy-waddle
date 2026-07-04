@@ -2936,8 +2936,12 @@
                 "y"
             ],
             "label": "forestWendigo",
-            "x": -608,
-            "y": 832
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -1072,
+            "y": 720
         },
         {
             "prefabId": "4612164f-6867-4ecd-ac87-0273a25cbb5b",
@@ -2947,8 +2951,12 @@
                 "y"
             ],
             "label": "snowWendigo",
-            "x": -768,
-            "y": 800
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -960,
+            "y": 720
         },
         {
             "prefabId": "a3f7b2c1-d4e5-4f6a-8b9c-0d1e2f3a4b5c",

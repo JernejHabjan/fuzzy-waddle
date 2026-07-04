@@ -51,6 +51,18 @@ export const researchDefinitions: Record<ResearchType, ResearchData> = {
     refundFactor: 0.5
   },
 
+  [ResearchType.WendigoBranches]: {
+    type: ResearchType.WendigoBranches,
+    name: "Living Branches",
+    description: "Unlocks Living Branches, allowing Wendigos to summon branches that damage and hinder nearby enemies.",
+    unlocksSpell: SpellType.WendigoBranches,
+    cost: { [ResourceType.Minerals]: 75, [ResourceType.Wood]: 25 },
+    researchTime: 20000,
+    icon: { key: "factions", frame: "spell_icons/frost_nova.png" }, // todo
+    requiredBuilding: ObjectNames.InfantryInn, // todo also ankguard
+    refundFactor: 0.5
+  },
+
   [ResearchType.HealingLightSpell]: {
     type: ResearchType.HealingLightSpell,
     name: "Healing Light",

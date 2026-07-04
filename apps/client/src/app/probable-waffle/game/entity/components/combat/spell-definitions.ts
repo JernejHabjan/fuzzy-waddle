@@ -5,6 +5,7 @@ import { AnimationType } from "../animation/animation-type";
 import { DamageType, ObjectNames, ResearchType, SpellTargetType } from "@fuzzy-waddle/api-interfaces";
 import { BansheeAnimationTypes } from "../../../prefabs/characters/mobs/banshee/anims-banshee";
 import { MedusaAnimationTypes } from "../../../prefabs/characters/mobs/medusa/anims-medusa";
+import { WendigoAnimationTypes } from "../../../prefabs/characters/mobs/forest_wendigo/anims-forest_wendigo";
 
 export const spellDefinitions: Record<SpellType, SpellData> = {
   // ========== SNOWSTORM - AOE Freeze + DoT ==========
@@ -238,5 +239,46 @@ export const spellDefinitions: Record<SpellType, SpellData> = {
     icon: { key: "factions", frame: "spell_icons/snowstorm.png" }, // todo
     autocastDefault: false,
     requiresResearch: ResearchType.BansheeTeleport
+  },
+  // ========== WENDIGO BRANCHES ==========
+  [SpellType.WendigoBranches]: {
+    type: SpellType.WendigoBranches,
+    name: "Living Branches",
+    description: "Living branches erupt from the ground in a straight line, damaging all enemies in their path.",
+    cooldown: 20000,
+    range: 6,
+    aoeRadius: 3, // todo should be straight line
+    targetType: SpellTargetType.Ground,
+    targetAllies: false,
+    targetEnemies: true,
+    targetSelf: false,
+    damageType: DamageType.Physical,
+    instantDamage: 20,
+    castAnimation: WendigoAnimationTypes.CastBranch,
+    sounds: { cast: "frost_cast", impact: "frost_slow" }, // todo
+    icon: { key: "factions", frame: "spell_icons/frost_nova.png" }, // todo
+    autocastDefault: true,
+    requiresResearch: ResearchType.WendigoBranches
+  },
+  // ========== WENDIGO STOMP ==========
+  [SpellType.WendigoStomp]: {
+    type: SpellType.WendigoStomp,
+    name: "Stomp",
+    description: "Stun enemies in an area",
+    cooldown: 30000,
+    range: 8,
+    aoeRadius: 6,
+    targetType: SpellTargetType.Ground,
+    targetAllies: false,
+    targetEnemies: true,
+    targetSelf: false,
+    damageType: DamageType.Physical, // todo?
+    instantDamage: 2,
+    stunDuration: 5000,
+    tintColor: 0x6666ff,
+    castAnimation: WendigoAnimationTypes.Stomp,
+    sounds: { cast: "frost_cast", impact: "frost_impact" }, // todo
+    icon: { key: "factions", frame: "spell_icons/snowstorm.png" }, // todo
+    autocastDefault: true
   }
 };

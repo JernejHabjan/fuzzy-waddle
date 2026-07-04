@@ -1107,11 +1107,11 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(sandWorm);
 
     // forestWendigo
-    const forestWendigo = new ForestWendigo(this, -608, 832);
+    const forestWendigo = new ForestWendigo(this, -1072, 720);
     this.add.existing(forestWendigo);
 
     // snowWendigo
-    const snowWendigo = new SnowWendigo(this, -768, 800);
+    const snowWendigo = new SnowWendigo(this, -960, 720);
     this.add.existing(snowWendigo);
 
     // field
@@ -1431,6 +1431,14 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // medusa (components)
     const medusaEditorOwner = new EditorOwner(medusa);
     medusaEditorOwner.owner_id = "1";
+
+    // forestWendigo (components)
+    const forestWendigoEditorOwner = new EditorOwner(forestWendigo);
+    forestWendigoEditorOwner.owner_id = "1";
+
+    // snowWendigo (components)
+    const snowWendigoEditorOwner = new EditorOwner(snowWendigo);
+    snowWendigoEditorOwner.owner_id = "1";
 
     // field (components)
     const fieldEditorOwner = new EditorOwner(field);

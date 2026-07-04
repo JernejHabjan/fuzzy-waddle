@@ -5,6 +5,8 @@ export enum SpellType {
   BansheeScream = "bansheeScream", // AOE stun
   BansheeTeleport = "BansheeTeleport", // Teleport
   MedusaGaze = "MedusaGaze", // AOE stun
+  WendigoStomp = "WendigoStomp", // AOE stun
+  WendigoBranches = "WendigoBranches", // AOE line of attack
 
   // Control spells
   FrostNova = "frostNova", // AOE slow (no stun)

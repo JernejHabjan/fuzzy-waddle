@@ -61,7 +61,8 @@ export const infantryInnDefinition = {
       availableProduceActors: [
         ObjectNames.SkaduweeMagicianFemale,
         ObjectNames.SkaduweeRangedFemale,
-        ObjectNames.SkaduweeWarriorMale
+        ObjectNames.SkaduweeWarriorMale,
+        ObjectNames.ForestWendigo
       ]
     },
     queue: {
@@ -69,7 +70,12 @@ export const infantryInnDefinition = {
       capacityPerQueue: 5
     },
     research: {
-      availableResearch: [ResearchType.SnowstormSpell, ResearchType.HealingLightSpell, ResearchType.HealingTotemSpell]
+      availableResearch: [
+        ResearchType.SnowstormSpell,
+        ResearchType.HealingLightSpell,
+        ResearchType.HealingTotemSpell,
+        ResearchType.WendigoBranches
+      ]
     },
     selectable: {},
     collider: { enabled: true },
