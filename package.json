@@ -175,7 +175,7 @@
     "typescript": "5.9.3",
     "@tauri-apps/cli": "2.11.2",
     "webpack": "^5.101.3",
-    "webpack-dev-server": "^5.2.1",
+    "webpack-dev-server": "^5.2.5",
     "webpack-cli": "^7.0.0"
   },
   "pnpm": {
