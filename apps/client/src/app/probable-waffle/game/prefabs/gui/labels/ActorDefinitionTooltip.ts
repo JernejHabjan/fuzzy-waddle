@@ -12,6 +12,7 @@ import { getCurrentPlayerNumber, getPlayer } from "../../../data/scene-data";
 import { getPwActorDefinition } from "../../definitions/actor-definitions";
 import type { TooltipInfo } from "./tooltip-info";
 import { researchDefinitions } from "../../../entity/components/research/research-definitions";
+import { getGameObjectBounds } from "../../../data/game-object-helper";
 /* END-USER-IMPORTS */
 
 export default class ActorDefinitionTooltip extends Phaser.GameObjects.Container {
@@ -144,6 +145,10 @@ export default class ActorDefinitionTooltip extends Phaser.GameObjects.Container
 
   private attributeLabels: ActorInfoLabel[] = [];
   private resourceLabels: Resource[] = [];
+
+  getBackgroundBounds(): Phaser.Geom.Rectangle | null {
+    return getGameObjectBounds(this.game_actions_bg);
+  }
 
   private manageAttributeLabels(count: number) {
     while (this.attributeLabels.length < count) {

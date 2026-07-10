@@ -8,7 +8,6 @@ import OnPointerUpScript from "../../../../../shared/game/phaser/script-nodes-ba
 import EmitEventActionScript from "../../../../../shared/game/phaser/script-nodes-basic/EmitEventActionScript";
 /* START-USER-IMPORTS */
 import ActorDefinitionTooltip from "../labels/ActorDefinitionTooltip";
-import HudProbableWaffle from "../../../world/scenes/hud-scenes/HudProbableWaffle";
 import { getGameObjectBounds } from "../../../data/game-object-helper";
 import { IconHelper } from "../labels/IconHelper";
 import type { ActorActionSetup } from "./actor-action-setup";
@@ -249,21 +248,24 @@ export default class ActorAction extends Phaser.GameObjects.Container {
       if (!this.pointerIn) return;
       if (!this.tooltipInfo) return;
 
-      const hudScene = this.scene as HudProbableWaffle;
-      const bounds = getGameObjectBounds(hudScene.actor_actions_container);
-
       this.tooltip = new ActorDefinitionTooltip(this.scene, 0, 0);
       this.tooltip.setup(this.tooltipInfo);
-      const tooltipBounds = getGameObjectBounds(this.tooltip);
-
-      if (bounds && tooltipBounds) {
-        const x = hudScene.scale.width;
-        // TODO #653: I cannot make it stick to the top-right edge of actor_actions_container - needs further investigation
-        const y = hudScene.scale.height - bounds.height - 80;
-        this.tooltip.setPosition(x, y);
-      }
-
       this.scene.add.existing(this.tooltip);
+
+      const buttonBounds = getGameObjectBounds(this);
+      const tooltipBackgroundBounds = this.tooltip.getBackgroundBounds();
+      if (buttonBounds && tooltipBackgroundBounds) {
+        const tooltipMargin = 4;
+        const minimumX = tooltipMargin - tooltipBackgroundBounds.left;
+        const maximumX = this.scene.scale.width - tooltipMargin - tooltipBackgroundBounds.right;
+        const centeredX = buttonBounds.centerX - tooltipBackgroundBounds.centerX;
+
+        // The tooltip container origin is unrelated to its frame; position the rendered frame instead.
+        this.tooltip.setPosition(
+          Phaser.Math.Clamp(centeredX, minimumX, maximumX),
+          buttonBounds.top - tooltipBackgroundBounds.bottom
+        );
+      }
     }, 500);
   };
 
