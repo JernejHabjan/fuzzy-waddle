@@ -255,9 +255,14 @@ export default class ActorAction extends Phaser.GameObjects.Container {
       const buttonBounds = getGameObjectBounds(this);
       const tooltipBackgroundBounds = this.tooltip.getBackgroundBounds();
       if (buttonBounds && tooltipBackgroundBounds) {
-        // The tooltip container origin is unrelated to its frame; align the rendered frame to the hovered button.
+        const tooltipMargin = 4;
+        const minimumX = tooltipMargin - tooltipBackgroundBounds.left;
+        const maximumX = this.scene.scale.width - tooltipMargin - tooltipBackgroundBounds.right;
+        const centeredX = buttonBounds.centerX - tooltipBackgroundBounds.centerX;
+
+        // The tooltip container origin is unrelated to its frame; position the rendered frame instead.
         this.tooltip.setPosition(
-          buttonBounds.right - tooltipBackgroundBounds.right,
+          Phaser.Math.Clamp(centeredX, minimumX, maximumX),
           buttonBounds.top - tooltipBackgroundBounds.bottom
         );
       }
