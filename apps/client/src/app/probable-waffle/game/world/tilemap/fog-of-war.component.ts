@@ -94,9 +94,9 @@ export class FogOfWarComponent {
       NavigationService.UpdateNavigationEvent,
       this.throttleUpdateFogOfWarFrameNonDeterministic,
       this
-    ); // todo this for some reason doesnt work - also it doesnt work in navigation.service.ts
-    // Intentional frame update: fog rendering is visual-only and should track camera/visibility changes every rendered frame.
-    this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.throttleUpdateFogOfWarFrameNonDeterministic, this); // todo this is very expensive
+    ); // Navigation changes do not include actor XY movement or ownership and killed-state changes.
+    // Keep this throttled frame update so visibility follows all actor state changes, not only navigation rebuilds.
+    this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.throttleUpdateFogOfWarFrameNonDeterministic, this);
     this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
 
     // Initial draw of fog
