@@ -25,9 +25,13 @@
 
       @if (selectedMode === "custom") {
         <div class="custom-game-container">
+          <div class="custom-game-intro">
+            <h2>Custom multiplayer</h2>
+            <p>Join an available lobby, or create one and invite another player.</p>
+          </div>
           <ul class="nav-tabs">
-            <li (click)="selectTab('join')"><a [class.active]="selectedTab === 'join'">Join</a></li>
-            <li (click)="selectTab('host')"><a [class.active]="selectedTab === 'host'">Host</a></li>
+            <li (click)="selectTab('join')"><a [class.active]="selectedTab === 'join'">Join a game</a></li>
+            <li (click)="selectTab('host')"><a [class.active]="selectedTab === 'host'">Create a game</a></li>
           </ul>
           <div class="tab-content">
             @switch (selectedTab) {

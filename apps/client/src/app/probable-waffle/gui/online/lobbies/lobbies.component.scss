@@ -28,8 +28,18 @@
   color: #c8b89b;
 }
 
+.selection-help {
+  margin-bottom: 0.75rem;
+  color: #c8b89b;
+}
+
 .cursor-pointer {
   cursor: pointer;
+}
+
+tr.cursor-pointer:focus-visible td {
+  outline: 2px solid rgba(240, 196, 107, 0.9);
+  outline-offset: -2px;
 }
 
 .card-container {
@@ -49,6 +59,45 @@
   @media (max-width: 768px) {
     margin-top: 0;
   }
+}
+
+.lobby-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  .map-details {
+    text-align: center;
+  }
+
+  .map-description {
+    margin-top: 0.5rem;
+    font-size: 0.8em;
+    text-align: left;
+  }
+}
+
+.empty-state {
+  color: #c8b89b;
+  font-size: 0.9rem;
+}
+
+.join-unavailable {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.lobby-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.join-help {
+  flex-basis: 100%;
+  color: #c8b89b;
+  font-size: 0.85rem;
 }
 
 table {

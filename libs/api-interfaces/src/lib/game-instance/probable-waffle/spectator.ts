@@ -7,4 +7,6 @@ export class ProbableWaffleSpectator extends BaseSpectator<ProbableWaffleSpectat
   }
 }
 
-export interface ProbableWaffleSpectatorData extends BaseSpectatorData {}
+export interface ProbableWaffleSpectatorData extends BaseSpectatorData {
+  displayName?: string;
+}

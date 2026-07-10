@@ -129,14 +129,23 @@
       }
     </div>
 
-    <div class="player-actions-container">
-      @if (allowOpenSlotForMp && !allFilled && isHost) {
-        <button (click)="openMpSlot()" class="btn btn-primary" type="button">Open MP Slot</button>
-      }
-      @if (!allFilled && isHost) {
-        <button (click)="addAiPlayer()" class="btn btn-primary" type="button">Add AI Player</button>
-      }
-    </div>
+    @if (!allFilled && isHost) {
+      <div class="add-player-card">
+        <div class="add-player-title">Add a player</div>
+        <div class="add-player-options">
+          @if (allowOpenSlotForMp) {
+            <button (click)="openMpSlot()" class="add-player-option" type="button">
+              <span>Open player space</span>
+              <small>Make space for another person to join this lobby.</small>
+            </button>
+          }
+          <button (click)="addAiPlayer()" class="add-player-option" type="button">
+            <span>Add A.I. player</span>
+            <small>Add a computer-controlled opponent.</small>
+          </button>
+        </div>
+      </div>
+    }
   </div>
 
   <fuzzy-waddle-modal #profileModal [modalConfig]="profileModalConfig">
