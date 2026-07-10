@@ -105,8 +105,9 @@ export default class Minimap extends Phaser.GameObjects.Container {
     this.playerActionsHandler = getSceneService(probableWaffleScene, PlayerActionsHandler);
     this.redrawMinimap();
     this.probableWaffleScene.events.on(NavigationService.UpdateNavigationEvent, this.throttleRedrawMinimapFrameNonDeterministic, this);
-    // Intentional frame update: minimap redraw is HUD rendering and does not mutate authoritative simulation state.
-    this.probableWaffleScene.events.on(Phaser.Scenes.Events.UPDATE, this.throttleRedrawMinimapFrameNonDeterministic, this); // TODO #651: For some reason UpdateNavigationEvent doesn't get triggered
+    // Keep this throttled frame update: actor XY movement, ownership, and death/visibility changes do not emit navigation updates.
+    // Do not replace it with UpdateNavigationEvent alone or actor markers and fog colors will become stale.
+    this.probableWaffleScene.events.on(Phaser.Scenes.Events.UPDATE, this.throttleRedrawMinimapFrameNonDeterministic, this);
   }
 
   private throttleRedrawMinimapFrameNonDeterministic = throttle(this.redrawMinimap.bind(this), 1000);
@@ -492,6 +493,7 @@ export default class Minimap extends Phaser.GameObjects.Container {
     this.tileColorCache.clear();
     this.diamondTileCoords.clear();
     this.probableWaffleScene?.events.off(NavigationService.UpdateNavigationEvent, this.throttleRedrawMinimapFrameNonDeterministic, this);
+    this.probableWaffleScene?.events.off(Phaser.Scenes.Events.UPDATE, this.throttleRedrawMinimapFrameNonDeterministic, this);
     super.destroy(fromScene);
   }
 
