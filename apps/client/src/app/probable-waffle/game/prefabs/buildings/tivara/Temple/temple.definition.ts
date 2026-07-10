@@ -1,4 +1,4 @@
-import { getBuildingQueueCapabilities, ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import {
   ANIM_BUILDING_ICON_ANIMS_TIVARA_TEMPLE_ACTION,
   ANIM_BUILDING_ICON_ANIMS_TIVARA_TEMPLE_IDLE
@@ -51,7 +51,7 @@ export const templeDefinition = {
     },
     productionCost: {
       resources: {
-        [ResourceType.Wood]: 150,
+        [ResourceType.Wood]: 150
       },
       refundFactor: 0.5,
       productionTime: 30000,
@@ -64,7 +64,12 @@ export const templeDefinition = {
       actors: [ObjectNames.AnkGuard]
     },
     production: {
-      availableProduceActors: getBuildingQueueCapabilities(ObjectNames.Temple)!.availableProduceActors!
+      availableProduceActors: [
+        ObjectNames.TivaraSlingshotFemale,
+        ObjectNames.TivaraAlchemist,
+        ObjectNames.Corpy,
+        ObjectNames.Medusa
+      ]
     },
     queue: {
       queueCount: 1,

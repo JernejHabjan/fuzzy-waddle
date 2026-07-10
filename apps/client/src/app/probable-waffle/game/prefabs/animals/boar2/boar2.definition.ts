@@ -22,6 +22,7 @@ export const boar2Definition = {
     animatable: { animations: ANIM_BOAR2_DEFINITION }
   },
   systems: {
-    movement: { enabled: true }
+    movement: { enabled: true },
+    action: { enabled: true }
   }
 } satisfies PrefabDefinition;

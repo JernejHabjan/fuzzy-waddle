@@ -1,5 +1,6 @@
 import type { AnimationDefinitionMap } from "../../../../entity/components/animation/animation-definition-map";
 import { AnimationType } from "../../../../entity/components/animation/animation-type";
+import { WendigoAnimationTypes } from "../forest_wendigo/anims-forest_wendigo";
 
 const ATTACK_1_E = "mobs_snow_wendigo_attack 1/e";
 const ATTACK_1_N = "mobs_snow_wendigo_attack 1/n";
@@ -30,12 +31,6 @@ const WALK_N = "mobs_snow_wendigo_walk/n";
 const WALK_S = "mobs_snow_wendigo_walk/s";
 const WALK_W = "mobs_snow_wendigo_walk/w";
 
-export enum SnowWendigoAnimationTypes {
-  Attack1 = "Attack1",
-  Attack2 = "Attack2",
-  Attack3 = "Attack3"
-}
-
 export const ANIM_SNOW_WENDIGO_DEFINITION: AnimationDefinitionMap = {
   [AnimationType.Idle]: {
     south: { key: IDLE_S },
@@ -61,19 +56,19 @@ export const ANIM_SNOW_WENDIGO_DEFINITION: AnimationDefinitionMap = {
     west: { key: HIT_W },
     east: { key: HIT_E }
   },
-  [SnowWendigoAnimationTypes.Attack1]: {
+  [WendigoAnimationTypes.Slash]: {
     south: { key: ATTACK_1_S },
     north: { key: ATTACK_1_N },
     west: { key: ATTACK_1_W },
     east: { key: ATTACK_1_E }
   },
-  [SnowWendigoAnimationTypes.Attack2]: {
+  [WendigoAnimationTypes.CastBranch]: {
     south: { key: ATTACK_2_S },
     north: { key: ATTACK_2_N },
     west: { key: ATTACK_2_W },
     east: { key: ATTACK_2_E }
   },
-  [SnowWendigoAnimationTypes.Attack3]: {
+  [WendigoAnimationTypes.Stomp]: {
     south: { key: ATTACK_3_S },
     north: { key: ATTACK_3_N },
     west: { key: ATTACK_3_W },

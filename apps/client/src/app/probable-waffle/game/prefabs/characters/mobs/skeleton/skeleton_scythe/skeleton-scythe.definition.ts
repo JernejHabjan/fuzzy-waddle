@@ -65,6 +65,7 @@ export const skeletonScytheDefinition = {
     animatable: { animations: ANIM_SKELETON_SCYTHE_DEFINITION }
   },
   systems: {
-    movement: { enabled: true }
+    movement: { enabled: true },
+    action: { enabled: true }
   }
 } satisfies PrefabDefinition;

@@ -2777,8 +2777,12 @@
                 "y"
             ],
             "label": "eartGolem",
-            "x": -719,
-            "y": 956
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -1008,
+            "y": 640
         },
         {
             "prefabId": "910c2f19-d3c6-4430-8993-d13ff8cec6e0",
@@ -2788,8 +2792,12 @@
                 "y"
             ],
             "label": "stoneGolem",
-            "x": -792,
-            "y": 1129
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -1184,
+            "y": 664
         },
         {
             "prefabId": "f3cab382-58b4-47e3-bd7c-20b62bd38249",
@@ -2799,8 +2807,12 @@
                 "y"
             ],
             "label": "metalGolem",
-            "x": -640,
-            "y": 1168
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -896,
+            "y": 656
         },
         {
             "prefabId": "ff9fc477-3a20-4065-b9f9-9f52935c7102",
@@ -2821,8 +2833,12 @@
                 "y"
             ],
             "label": "medusa",
-            "x": -672,
-            "y": 800
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -208,
+            "y": 336
         },
         {
             "prefabId": "109bf399-2e51-481a-984b-0fc0dbc89070",
@@ -2832,8 +2848,12 @@
                 "y"
             ],
             "label": "flowerMonster",
-            "x": -544,
-            "y": 880
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": 592,
+            "y": 816
         },
         {
             "prefabId": "579c629d-1200-40e0-87b8-a743851497cc",
@@ -2909,8 +2929,12 @@
                 "y"
             ],
             "label": "sandWorm",
-            "x": -704,
-            "y": 864
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -752,
+            "y": 760
         },
         {
             "prefabId": "f64cc718-5fab-44b8-b0f7-14254f01b2bb",
@@ -2920,8 +2944,12 @@
                 "y"
             ],
             "label": "forestWendigo",
-            "x": -608,
-            "y": 832
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -1072,
+            "y": 720
         },
         {
             "prefabId": "4612164f-6867-4ecd-ac87-0273a25cbb5b",
@@ -2931,8 +2959,12 @@
                 "y"
             ],
             "label": "snowWendigo",
-            "x": -768,
-            "y": 800
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -960,
+            "y": 720
         },
         {
             "prefabId": "a3f7b2c1-d4e5-4f6a-8b9c-0d1e2f3a4b5c",
@@ -3026,6 +3058,36 @@
             "EditorOwner.owner_id": "1",
             "x": 928,
             "y": 496
+        },
+        {
+            "prefabId": "2222fbc3-12b5-41d9-bb80-5f82bfa80cbd",
+            "id": "4f113bd6-ed6c-4428-a13b-13d6871ea2db",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "corpy",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -416,
+            "y": 456
+        },
+        {
+            "prefabId": "2da4ac72-30ff-4a63-a1c9-507ed4cda6ae",
+            "id": "13662975-a67f-438c-a465-600709bb4c28",
+            "unlock": [
+                "x",
+                "y"
+            ],
+            "label": "banshee_1",
+            "components": [
+                "EditorOwner"
+            ],
+            "EditorOwner.owner_id": "1",
+            "x": -320,
+            "y": 400
         }
     ],
     "plainObjects": [

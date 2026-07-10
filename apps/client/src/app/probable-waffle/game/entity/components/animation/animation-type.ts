@@ -12,7 +12,7 @@ export enum AnimationType {
   Heal = "Heal",
   Cast = "Cast",
   Death = "Death",
-  Damage = "Damage",
+  Damage = "Damage", // TODO this doesn't trigger!!!! for example golems have this
   Slash = "Slash",
   InvertedSlash = "InvertedSlash",
   Smash = "Smash",

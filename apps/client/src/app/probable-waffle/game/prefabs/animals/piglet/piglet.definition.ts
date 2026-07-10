@@ -22,6 +22,7 @@ export const pigletDefinition = {
     animatable: { animations: ANIM_PIGLET_DEFINITION }
   },
   systems: {
-    movement: { enabled: true }
+    movement: { enabled: true },
+    action: { enabled: true }
   }
 } satisfies PrefabDefinition;

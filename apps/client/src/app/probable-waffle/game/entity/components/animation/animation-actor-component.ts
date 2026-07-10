@@ -119,7 +119,9 @@ export class AnimationActorComponent {
 
     const animationsByType = this.animationsDefinition.animations[type];
     if (!animationsByType) {
-      console.warn(`AnimationActorComponent: No animation found for type ${type} in animations definition`);
+      console.warn(
+        `AnimationActorComponent: No animation found for type ${type} in animations definition for actor ${this.gameObject.name}`
+      );
       return;
     }
 
@@ -208,6 +210,8 @@ export class AnimationActorComponent {
       config.repeat = animationOptions.repeat;
     }
 
+    // Mirroring is owned by the animation definition so changing to a non-mirrored anim always clears it.
+    this.sprite.setFlipX(effectiveDef.mirrorX === true);
     this.isAnimating = true;
     this.sprite.play(config);
 
@@ -227,7 +231,7 @@ export class AnimationActorComponent {
     });
   }
 
-  private mapOrderTypeToAnimationType(orderType: OrderType): AnimationType | null {
+  private mapOrderTypeToAnimationType(orderType: OrderType): AnimationType | string | null {
     switch (orderType) {
       case OrderType.Attack:
         return this.getAttackAnimationType();
@@ -252,7 +256,7 @@ export class AnimationActorComponent {
     }
   }
 
-  private getAttackAnimationType(): AnimationType | null {
+  private getAttackAnimationType(): AnimationType | string | null {
     const attackComponent = getActorComponent(this.gameObject, AttackComponent);
     if (!attackComponent) return null;
     const currentAttack = attackComponent.currentAttack;

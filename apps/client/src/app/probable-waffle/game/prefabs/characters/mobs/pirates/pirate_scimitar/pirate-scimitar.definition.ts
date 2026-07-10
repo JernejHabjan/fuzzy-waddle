@@ -65,6 +65,7 @@ export const pirateScimitarDefinition = {
     animatable: { animations: ANIM_PIRATE_SCIMITAR_DEFINITION }
   },
   systems: {
-    movement: { enabled: true }
+    movement: { enabled: true },
+    action: { enabled: true }
   }
 } satisfies PrefabDefinition;

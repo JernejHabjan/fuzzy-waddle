@@ -32,11 +32,11 @@ const IDLE_W = "mobs_sand_worm_idle/w";
 const POISON_SHOT_FULL_ANIMATION = "mobs_sand_worm_poison shot - full animation";
 
 export enum SandWormAnimationTypes {
-  Attack1 = "Attack1",
-  Attack2 = "Attack2",
+  Bite = "Bite",
+  Shoot = "Shoot",
   ComeOut = "ComeOut",
   Hide = "Hide",
-  PoisonShot = "PoisonShot"
+  PoisonProjectile = "PoisonProjectile" // TODO USE THIS PROJECTILE
 }
 
 export const ANIM_SAND_WORM_DEFINITION: AnimationDefinitionMap = {
@@ -58,31 +58,33 @@ export const ANIM_SAND_WORM_DEFINITION: AnimationDefinitionMap = {
     west: { key: HIT_W },
     east: { key: HIT_E }
   },
-  [SandWormAnimationTypes.Attack1]: {
+  [SandWormAnimationTypes.Bite]: {
     south: { key: ATTACK1_S },
     north: { key: ATTACK1_N },
     west: { key: ATTACK1_W },
     east: { key: ATTACK1_E }
   },
-  [SandWormAnimationTypes.Attack2]: {
+  [SandWormAnimationTypes.Shoot]: {
     south: { key: ATTACK2_S },
     north: { key: ATTACK2_N },
     west: { key: ATTACK2_W },
     east: { key: ATTACK2_E }
   },
   [SandWormAnimationTypes.ComeOut]: {
+    // todo use this
     south: { key: COME_OUT_S },
     north: { key: COME_OUT_N },
     west: { key: COME_OUT_W },
     east: { key: COME_OUT_E }
   },
   [SandWormAnimationTypes.Hide]: {
+    // todo use this
     south: { key: HIDE_S },
     north: { key: HIDE_N },
     west: { key: HIDE_W },
     east: { key: HIDE_E }
   },
-  [SandWormAnimationTypes.PoisonShot]: {
+  [SandWormAnimationTypes.PoisonProjectile]: {
     south: { key: POISON_SHOT_FULL_ANIMATION },
     north: { key: POISON_SHOT_FULL_ANIMATION },
     west: { key: POISON_SHOT_FULL_ANIMATION },

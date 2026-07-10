@@ -22,6 +22,7 @@ export const blackGrouseDefinition = {
     animatable: { animations: ANIM_BLACK_GROUSE_DEFINITION }
   },
   systems: {
-    movement: { enabled: true }
+    movement: { enabled: true },
+    action: { enabled: true }
   }
 } satisfies PrefabDefinition;

@@ -22,6 +22,7 @@ export const lambDefinition = {
     animatable: { animations: ANIM_LAMB_DEFINITION }
   },
   systems: {
-    movement: { enabled: true }
+    movement: { enabled: true },
+    action: { enabled: true }
   }
 } satisfies PrefabDefinition;

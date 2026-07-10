@@ -1,4 +1,4 @@
-import { getBuildingQueueCapabilities, ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames, ResearchType, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import {
   ANIM_BUILDING_ICON_ANIMS_SKADUWEE_OWLERY_ACTION,
   ANIM_BUILDING_ICON_ANIMS_SKADUWEE_OWLERY_IDLE
@@ -61,7 +61,10 @@ export const owleryDefinition = {
       requiresAnyOf: [ObjectNames.InfantryInn]
     },
     production: {
-      availableProduceActors: getBuildingQueueCapabilities(ObjectNames.Owlery)!.availableProduceActors!
+      availableProduceActors: [ObjectNames.SkaduweeOwl, ObjectNames.Banshee]
+    },
+    research: {
+      availableResearch: [ResearchType.BansheeTeleport]
     },
     queue: {
       queueCount: 1,

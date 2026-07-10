@@ -140,6 +140,7 @@ import UndeadLandDeadTreeAnim2 from "../../../prefabs/outside/environment/undead
 import UndeadLandDeadTreeAnim1 from "../../../prefabs/outside/environment/undead_land/UndeadLandDeadTreeAnim1";
 import CommonBoat from "../../../prefabs/characters/shared/CommonBoat/CommonBoat";
 import VikingBoat from "../../../prefabs/characters/shared/VikingBoat/VikingBoat";
+import Corpy from "../../../prefabs/characters/mobs/corpy/Corpy";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -1054,15 +1055,15 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(smallWaterSlime);
 
     // eartGolem
-    const eartGolem = new EarthGolem(this, -719, 956);
+    const eartGolem = new EarthGolem(this, -1008, 640);
     this.add.existing(eartGolem);
 
     // stoneGolem
-    const stoneGolem = new StoneGolem(this, -792, 1129);
+    const stoneGolem = new StoneGolem(this, -1184, 664);
     this.add.existing(stoneGolem);
 
     // metalGolem
-    const metalGolem = new MetalGolem(this, -640, 1168);
+    const metalGolem = new MetalGolem(this, -896, 656);
     this.add.existing(metalGolem);
 
     // minotaur2
@@ -1070,11 +1071,11 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(minotaur2);
 
     // medusa
-    const medusa = new Medusa(this, -672, 800);
+    const medusa = new Medusa(this, -208, 336);
     this.add.existing(medusa);
 
     // flowerMonster
-    const flowerMonster = new FlowerMonster(this, -544, 880);
+    const flowerMonster = new FlowerMonster(this, 592, 816);
     this.add.existing(flowerMonster);
 
     // flyingDemonBlue
@@ -1102,15 +1103,15 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.add.existing(pumpkinWarlockPumpkin);
 
     // sandWorm
-    const sandWorm = new SandWorm(this, -704, 864);
+    const sandWorm = new SandWorm(this, -752, 760);
     this.add.existing(sandWorm);
 
     // forestWendigo
-    const forestWendigo = new ForestWendigo(this, -608, 832);
+    const forestWendigo = new ForestWendigo(this, -1072, 720);
     this.add.existing(forestWendigo);
 
     // snowWendigo
-    const snowWendigo = new SnowWendigo(this, -768, 800);
+    const snowWendigo = new SnowWendigo(this, -960, 720);
     this.add.existing(snowWendigo);
 
     // field
@@ -1140,6 +1141,14 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // vikingBoat
     const vikingBoat = new VikingBoat(this, 928, 496);
     this.add.existing(vikingBoat);
+
+    // corpy
+    const corpy = new Corpy(this, -416, 456);
+    this.add.existing(corpy);
+
+    // banshee_1
+    const banshee_1 = new Banshee(this, -320, 400);
+    this.add.existing(banshee_1);
 
     // spawn (components)
     const spawnEditorOwner = new EditorOwner(spawn);
@@ -1407,6 +1416,38 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     const tivaraMacemanMaleEditorOwner = new EditorOwner(tivaraMacemanMale);
     tivaraMacemanMaleEditorOwner.owner_id = "1";
 
+    // eartGolem (components)
+    const eartGolemEditorOwner = new EditorOwner(eartGolem);
+    eartGolemEditorOwner.owner_id = "1";
+
+    // stoneGolem (components)
+    const stoneGolemEditorOwner = new EditorOwner(stoneGolem);
+    stoneGolemEditorOwner.owner_id = "1";
+
+    // metalGolem (components)
+    const metalGolemEditorOwner = new EditorOwner(metalGolem);
+    metalGolemEditorOwner.owner_id = "1";
+
+    // medusa (components)
+    const medusaEditorOwner = new EditorOwner(medusa);
+    medusaEditorOwner.owner_id = "1";
+
+    // flowerMonster (components)
+    const flowerMonsterEditorOwner = new EditorOwner(flowerMonster);
+    flowerMonsterEditorOwner.owner_id = "1";
+
+    // sandWorm (components)
+    const sandWormEditorOwner = new EditorOwner(sandWorm);
+    sandWormEditorOwner.owner_id = "1";
+
+    // forestWendigo (components)
+    const forestWendigoEditorOwner = new EditorOwner(forestWendigo);
+    forestWendigoEditorOwner.owner_id = "1";
+
+    // snowWendigo (components)
+    const snowWendigoEditorOwner = new EditorOwner(snowWendigo);
+    snowWendigoEditorOwner.owner_id = "1";
+
     // field (components)
     const fieldEditorOwner = new EditorOwner(field);
     fieldEditorOwner.owner_id = "1";
@@ -1422,6 +1463,14 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     // vikingBoat (components)
     const vikingBoatEditorOwner = new EditorOwner(vikingBoat);
     vikingBoatEditorOwner.owner_id = "1";
+
+    // corpy (components)
+    const corpyEditorOwner = new EditorOwner(corpy);
+    corpyEditorOwner.owner_id = "1";
+
+    // banshee_1 (components)
+    const banshee_1EditorOwner = new EditorOwner(banshee_1);
+    banshee_1EditorOwner.owner_id = "1";
 
     this.tilemap = tilemap;
 

@@ -22,6 +22,7 @@ export const chickDefinition = {
     animatable: { animations: ANIM_CHICK_DEFINITION }
   },
   systems: {
-    movement: { enabled: true }
+    movement: { enabled: true },
+    action: { enabled: true }
   }
 } satisfies PrefabDefinition;

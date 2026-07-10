@@ -1,3863 +1,4388 @@
 {
-  "textures": [
-    {
-      "image": "animals.png",
-      "format": "RGBA8888",
-      "size": {
-        "w": 1140,
-        "h": 126
-      },
-      "scale": 1,
-      "frames": [
-        {
-          "filename": "sheep/sheep_left.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 64,
-            "h": 64
-          },
-          "spriteSourceSize": {
-            "x": 7,
-            "y": 24,
-            "w": 53,
-            "h": 34
-          },
-          "frame": {
-            "x": 1,
-            "y": 1,
-            "w": 53,
-            "h": 34
-          }
-        },
-        {
-          "filename": "sheep/sheep_right.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 64,
-            "h": 64
-          },
-          "spriteSourceSize": {
-            "x": 4,
-            "y": 24,
-            "w": 53,
-            "h": 34
-          },
-          "frame": {
-            "x": 1,
-            "y": 37,
-            "w": 53,
-            "h": 34
-          }
-        },
-        {
-          "filename": "sheep/walk/sheep_left_walk1.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 64,
-            "h": 64
-          },
-          "spriteSourceSize": {
-            "x": 7,
-            "y": 24,
-            "w": 53,
-            "h": 34
-          },
-          "frame": {
-            "x": 1,
-            "y": 73,
-            "w": 53,
-            "h": 34
-          }
-        },
-        {
-          "filename": "4.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 32,
-            "h": 32
-          },
-          "spriteSourceSize": {
-            "x": 2,
-            "y": 8,
-            "w": 30,
-            "h": 16
-          },
-          "frame": {
-            "x": 1,
-            "y": 109,
-            "w": 30,
-            "h": 16
-          }
-        },
-        {
-          "filename": "1.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 32,
-            "h": 32
-          },
-          "spriteSourceSize": {
-            "x": 3,
-            "y": 9,
-            "w": 29,
-            "h": 15
-          },
-          "frame": {
-            "x": 33,
-            "y": 109,
-            "w": 29,
-            "h": 15
-          }
-        },
-        {
-          "filename": "sheep/walk/sheep_left_walk2.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 64,
-            "h": 64
-          },
-          "spriteSourceSize": {
-            "x": 7,
-            "y": 24,
-            "w": 53,
-            "h": 34
-          },
-          "frame": {
-            "x": 56,
-            "y": 1,
-            "w": 53,
-            "h": 34
-          }
-        },
-        {
-          "filename": "sheep/walk/sheep_left_walk4.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 64,
-            "h": 64
-          },
-          "spriteSourceSize": {
-            "x": 7,
-            "y": 24,
-            "w": 53,
-            "h": 34
-          },
-          "frame": {
-            "x": 56,
-            "y": 37,
-            "w": 53,
-            "h": 34
-          }
-        },
-        {
-          "filename": "sheep/walk/sheep_right_walk1.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 64,
-            "h": 64
-          },
-          "spriteSourceSize": {
-            "x": 4,
-            "y": 24,
-            "w": 53,
-            "h": 34
-          },
-          "frame": {
-            "x": 56,
-            "y": 73,
-            "w": 53,
-            "h": 34
-          }
-        },
-        {
-          "filename": "3.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 32,
-            "h": 32
-          },
-          "spriteSourceSize": {
-            "x": 3,
-            "y": 9,
-            "w": 29,
-            "h": 15
-          },
-          "frame": {
-            "x": 64,
-            "y": 109,
-            "w": 29,
-            "h": 15
-          }
-        },
-        {
-          "filename": "0.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 32,
-            "h": 32
-          },
-          "spriteSourceSize": {
-            "x": 3,
-            "y": 9,
-            "w": 26,
-            "h": 15
-          },
-          "frame": {
-            "x": 95,
-            "y": 109,
-            "w": 26,
-            "h": 15
-          }
-        },
-        {
-          "filename": "sheep/walk/sheep_right_walk2.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 64,
-            "h": 64
-          },
-          "spriteSourceSize": {
-            "x": 4,
-            "y": 24,
-            "w": 53,
-            "h": 34
-          },
-          "frame": {
-            "x": 111,
-            "y": 1,
-            "w": 53,
-            "h": 34
-          }
-        },
-        {
-          "filename": "sheep/walk/sheep_right_walk4.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 64,
-            "h": 64
-          },
-          "spriteSourceSize": {
-            "x": 4,
-            "y": 24,
-            "w": 53,
-            "h": 34
-          },
-          "frame": {
-            "x": 111,
-            "y": 37,
-            "w": 53,
-            "h": 34
-          }
-        },
-        {
-          "filename": "sheep/walk/sheep_left_walk3.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 64,
-            "h": 64
-          },
-          "spriteSourceSize": {
-            "x": 7,
-            "y": 25,
-            "w": 53,
-            "h": 33
-          },
-          "frame": {
-            "x": 111,
-            "y": 73,
-            "w": 53,
-            "h": 33
-          }
-        },
-        {
-          "filename": "frog/BlueBlue/idle/ToxicFrogBlueBlue_Idle-3.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 17,
-            "w": 24,
-            "h": 17
-          },
-          "frame": {
-            "x": 123,
-            "y": 108,
-            "w": 24,
-            "h": 17
-          }
-        },
-        {
-          "filename": "frog/BlueBrown/idle/ToxicFrogBlueBrown_Idle-3.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 17,
-            "w": 24,
-            "h": 17
-          },
-          "frame": {
-            "x": 149,
-            "y": 108,
-            "w": 24,
-            "h": 17
-          }
-        },
-        {
-          "filename": "sheep/walk/sheep_right_walk3.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 64,
-            "h": 64
-          },
-          "spriteSourceSize": {
-            "x": 4,
-            "y": 25,
-            "w": 53,
-            "h": 33
-          },
-          "frame": {
-            "x": 166,
-            "y": 1,
-            "w": 53,
-            "h": 33
-          }
-        },
-        {
-          "filename": "sheep/sheep_up.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 64,
-            "h": 64
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 17,
-            "w": 37,
-            "h": 42
-          },
-          "frame": {
-            "x": 166,
-            "y": 36,
-            "w": 37,
-            "h": 42
-          }
-        },
-        {
-          "filename": "hedgehog/3.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 32,
-            "h": 32
-          },
-          "spriteSourceSize": {
-            "x": 0,
-            "y": 4,
-            "w": 31,
-            "h": 26
-          },
-          "frame": {
-            "x": 166,
-            "y": 80,
-            "w": 31,
-            "h": 26
-          }
-        },
-        {
-          "filename": "frog/GreenBlue/idle/ToxicFrogGreenBlue_Idle-3.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 17,
-            "w": 24,
-            "h": 17
-          },
-          "frame": {
-            "x": 175,
-            "y": 108,
-            "w": 24,
-            "h": 17
-          }
-        },
-        {
-          "filename": "hedgehog/15.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 32,
-            "h": 32
-          },
-          "spriteSourceSize": {
-            "x": 1,
-            "y": 4,
-            "w": 31,
-            "h": 26
-          },
-          "frame": {
-            "x": 199,
-            "y": 80,
-            "w": 31,
-            "h": 26
-          }
-        },
-        {
-          "filename": "frog/GreenBrown/idle/ToxicFrogGreenBrown_Idle-3.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 17,
-            "w": 24,
-            "h": 17
-          },
-          "frame": {
-            "x": 201,
-            "y": 108,
-            "w": 24,
-            "h": 17
-          }
-        },
-        {
-          "filename": "frog/PurpleBlue/idle/ToxicFrogPurpleBlue_Idle-3.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 17,
-            "w": 24,
-            "h": 17
-          },
-          "frame": {
-            "x": 227,
-            "y": 108,
-            "w": 24,
-            "h": 17
-          }
-        },
-        {
-          "filename": "sheep/walk/sheep_up_walk1.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 64,
-            "h": 64
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 17,
-            "w": 37,
-            "h": 42
-          },
-          "frame": {
-            "x": 205,
-            "y": 36,
-            "w": 37,
-            "h": 42
-          }
-        },
-        {
-          "filename": "hedgehog/1.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 32,
-            "h": 32
-          },
-          "spriteSourceSize": {
-            "x": 0,
-            "y": 5,
-            "w": 32,
-            "h": 25
-          },
-          "frame": {
-            "x": 232,
-            "y": 80,
-            "w": 32,
-            "h": 25
-          }
-        },
-        {
-          "filename": "8.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 32,
-            "h": 32
-          },
-          "spriteSourceSize": {
-            "x": 0,
-            "y": 7,
-            "w": 32,
-            "h": 18
-          },
-          "frame": {
-            "x": 253,
-            "y": 107,
-            "w": 32,
-            "h": 18
-          }
-        },
-        {
-          "filename": "sheep/sheared/sheep_left.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 64,
-            "h": 64
-          },
-          "spriteSourceSize": {
-            "x": 7,
-            "y": 31,
-            "w": 47,
-            "h": 27
-          },
-          "frame": {
-            "x": 221,
-            "y": 1,
-            "w": 47,
-            "h": 27
-          }
-        },
-        {
-          "filename": "sheep/effects/wool_2.png",
-          "rotated": false,
-          "trimmed": false,
-          "sourceSize": {
-            "w": 2,
-            "h": 3
-          },
-          "spriteSourceSize": {
-            "x": 0,
-            "y": 0,
-            "w": 2,
-            "h": 3
-          },
-          "frame": {
-            "x": 221,
-            "y": 30,
-            "w": 2,
-            "h": 3
-          }
-        },
-        {
-          "filename": "sheep/effects/wool_1.png",
-          "rotated": false,
-          "trimmed": false,
-          "sourceSize": {
-            "w": 2,
-            "h": 2
-          },
-          "spriteSourceSize": {
-            "x": 0,
-            "y": 0,
-            "w": 2,
-            "h": 2
-          },
-          "frame": {
-            "x": 225,
-            "y": 30,
-            "w": 2,
-            "h": 2
-          }
-        },
-        {
-          "filename": "sheep/walk/sheep_up_walk2.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 64,
-            "h": 64
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 17,
-            "w": 37,
-            "h": 42
-          },
-          "frame": {
-            "x": 244,
-            "y": 30,
-            "w": 37,
-            "h": 42
-          }
-        },
-        {
-          "filename": "sheep/sheared/sheep_right.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 64,
-            "h": 64
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 31,
-            "w": 47,
-            "h": 27
-          },
-          "frame": {
-            "x": 270,
-            "y": 1,
-            "w": 47,
-            "h": 27
-          }
-        },
-        {
-          "filename": "hedgehog/2.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 32,
-            "h": 32
-          },
-          "spriteSourceSize": {
-            "x": 0,
-            "y": 5,
-            "w": 32,
-            "h": 25
-          },
-          "frame": {
-            "x": 266,
-            "y": 74,
-            "w": 32,
-            "h": 25
-          }
-        },
-        {
-          "filename": "hedgehog/0.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 32,
-            "h": 32
-          },
-          "spriteSourceSize": {
-            "x": 0,
-            "y": 6,
-            "w": 32,
-            "h": 24
-          },
-          "frame": {
-            "x": 287,
-            "y": 101,
-            "w": 32,
-            "h": 24
-          }
-        },
-        {
-          "filename": "sheep/walk/sheep_up_walk3.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 64,
-            "h": 64
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 17,
-            "w": 37,
-            "h": 42
-          },
-          "frame": {
-            "x": 283,
-            "y": 30,
-            "w": 37,
-            "h": 42
-          }
-        },
-        {
-          "filename": "hedgehog/13.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 32,
-            "h": 32
-          },
-          "spriteSourceSize": {
-            "x": 0,
-            "y": 5,
-            "w": 32,
-            "h": 25
-          },
-          "frame": {
-            "x": 300,
-            "y": 74,
-            "w": 32,
-            "h": 25
-          }
-        },
-        {
-          "filename": "hedgehog/12.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 32,
-            "h": 32
-          },
-          "spriteSourceSize": {
-            "x": 0,
-            "y": 6,
-            "w": 32,
-            "h": 24
-          },
-          "frame": {
-            "x": 321,
-            "y": 101,
-            "w": 32,
-            "h": 24
-          }
-        },
-        {
-          "filename": "hedgehog/14.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 32,
-            "h": 32
-          },
-          "spriteSourceSize": {
-            "x": 0,
-            "y": 5,
-            "w": 32,
-            "h": 25
-          },
-          "frame": {
-            "x": 319,
-            "y": 1,
-            "w": 32,
-            "h": 25
-          }
-        },
-        {
-          "filename": "sheep/walk/sheep_up_walk5.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 64,
-            "h": 64
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 17,
-            "w": 37,
-            "h": 42
-          },
-          "frame": {
-            "x": 322,
-            "y": 28,
-            "w": 37,
-            "h": 42
-          }
-        },
-        {
-          "filename": "frog/BlueBlue/attack/ToxicFrogBlueBlue_Attack-4.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 14,
-            "w": 38,
-            "h": 20
-          },
-          "frame": {
-            "x": 353,
-            "y": 1,
-            "w": 38,
-            "h": 20
-          }
-        },
-        {
-          "filename": "hedgehog/4.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 32,
-            "h": 32
-          },
-          "spriteSourceSize": {
-            "x": 0,
-            "y": 4,
-            "w": 30,
-            "h": 26
-          },
-          "frame": {
-            "x": 334,
-            "y": 72,
-            "w": 30,
-            "h": 26
-          }
-        },
-        {
-          "filename": "frog/BlueBrown/attack/ToxicFrogBlueBrown_Attack-4.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 14,
-            "w": 38,
-            "h": 20
-          },
-          "frame": {
-            "x": 355,
-            "y": 100,
-            "w": 38,
-            "h": 20
-          }
-        },
-        {
-          "filename": "sheep/walk/sheep_up_walk4.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 64,
-            "h": 64
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 18,
-            "w": 37,
-            "h": 41
-          },
-          "frame": {
-            "x": 361,
-            "y": 23,
-            "w": 37,
-            "h": 41
-          }
-        },
-        {
-          "filename": "frog/GreenBlue/attack/ToxicFrogGreenBlue_Attack-4.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 14,
-            "w": 38,
-            "h": 20
-          },
-          "frame": {
-            "x": 393,
-            "y": 1,
-            "w": 38,
-            "h": 20
-          }
-        },
-        {
-          "filename": "hedgehog/16.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 32,
-            "h": 32
-          },
-          "spriteSourceSize": {
-            "x": 2,
-            "y": 4,
-            "w": 30,
-            "h": 26
-          },
-          "frame": {
-            "x": 366,
-            "y": 66,
-            "w": 30,
-            "h": 26
-          }
-        },
-        {
-          "filename": "frog/GreenBrown/attack/ToxicFrogGreenBrown_Attack-4.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 14,
-            "w": 38,
-            "h": 20
-          },
-          "frame": {
-            "x": 395,
-            "y": 94,
-            "w": 38,
-            "h": 20
-          }
-        },
-        {
-          "filename": "frog/PurpleBlue/attack/ToxicFrogPurpleBlue_Attack-4.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 14,
-            "w": 38,
-            "h": 20
-          },
-          "frame": {
-            "x": 398,
-            "y": 66,
-            "w": 38,
-            "h": 20
-          }
-        },
-        {
-          "filename": "sheep/walk/sheep_down_walk4.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 64,
-            "h": 64
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 22,
-            "w": 37,
-            "h": 37
-          },
-          "frame": {
-            "x": 435,
-            "y": 88,
-            "w": 37,
-            "h": 37
-          }
-        },
-        {
-          "filename": "sheep/sheep_down.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 64,
-            "h": 64
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 21,
-            "w": 37,
-            "h": 38
-          },
-          "frame": {
-            "x": 400,
-            "y": 23,
-            "w": 37,
-            "h": 38
-          }
-        },
-        {
-          "filename": "frog/PurpleWhite/attack/ToxicFrogPurpleWhite_Attack-4.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 14,
-            "w": 38,
-            "h": 20
-          },
-          "frame": {
-            "x": 433,
-            "y": 1,
-            "w": 38,
-            "h": 20
-          }
-        },
-        {
-          "filename": "frog/BlueBlue/attack/ToxicFrogBlueBlue_Attack-5.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 15,
-            "w": 38,
-            "h": 19
-          },
-          "frame": {
-            "x": 438,
-            "y": 63,
-            "w": 38,
-            "h": 19
-          }
-        },
-        {
-          "filename": "sheep/walk/sheep_down_walk1.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 64,
-            "h": 64
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 21,
-            "w": 37,
-            "h": 38
-          },
-          "frame": {
-            "x": 439,
-            "y": 23,
-            "w": 37,
-            "h": 38
-          }
-        },
-        {
-          "filename": "frog/BlueBrown/attack/ToxicFrogBlueBrown_Attack-5.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 15,
-            "w": 38,
-            "h": 19
-          },
-          "frame": {
-            "x": 473,
-            "y": 1,
-            "w": 38,
-            "h": 19
-          }
-        },
-        {
-          "filename": "sheep/walk/sheep_down_walk2.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 64,
-            "h": 64
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 21,
-            "w": 37,
-            "h": 38
-          },
-          "frame": {
-            "x": 474,
-            "y": 84,
-            "w": 37,
-            "h": 38
-          }
-        },
-        {
-          "filename": "sheep/walk/sheep_down_walk3.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 64,
-            "h": 64
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 21,
-            "w": 37,
-            "h": 38
-          },
-          "frame": {
-            "x": 478,
-            "y": 22,
-            "w": 37,
-            "h": 38
-          }
-        },
-        {
-          "filename": "frog/GreenBlue/attack/ToxicFrogGreenBlue_Attack-5.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 15,
-            "w": 38,
-            "h": 19
-          },
-          "frame": {
-            "x": 513,
-            "y": 1,
-            "w": 38,
-            "h": 19
-          }
-        },
-        {
-          "filename": "frog/GreenBrown/attack/ToxicFrogGreenBrown_Attack-5.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 15,
-            "w": 38,
-            "h": 19
-          },
-          "frame": {
-            "x": 478,
-            "y": 62,
-            "w": 38,
-            "h": 19
-          }
-        },
-        {
-          "filename": "sheep/walk/sheep_down_walk5.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 64,
-            "h": 64
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 21,
-            "w": 37,
-            "h": 38
-          },
-          "frame": {
-            "x": 517,
-            "y": 22,
-            "w": 37,
-            "h": 38
-          }
-        },
-        {
-          "filename": "frog/PurpleBlue/attack/ToxicFrogPurpleBlue_Attack-5.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 15,
-            "w": 38,
-            "h": 19
-          },
-          "frame": {
-            "x": 553,
-            "y": 1,
-            "w": 38,
-            "h": 19
-          }
-        },
-        {
-          "filename": "sheep/walk/sheep_down_walk6.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 64,
-            "h": 64
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 21,
-            "w": 37,
-            "h": 38
-          },
-          "frame": {
-            "x": 513,
-            "y": 83,
-            "w": 37,
-            "h": 38
-          }
-        },
-        {
-          "filename": "frog/PurpleWhite/attack/ToxicFrogPurpleWhite_Attack-5.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 15,
-            "w": 38,
-            "h": 19
-          },
-          "frame": {
-            "x": 518,
-            "y": 62,
-            "w": 38,
-            "h": 19
-          }
-        },
-        {
-          "filename": "sheep/sheared/sheep_down.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 64,
-            "h": 64
-          },
-          "spriteSourceSize": {
-            "x": 18,
-            "y": 29,
-            "w": 25,
-            "h": 30
-          },
-          "frame": {
-            "x": 556,
-            "y": 22,
-            "w": 25,
-            "h": 30
-          }
-        },
-        {
-          "filename": "sheep/sheared/sheep_up.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 64,
-            "h": 64
-          },
-          "spriteSourceSize": {
-            "x": 19,
-            "y": 19,
-            "w": 23,
-            "h": 40
-          },
-          "frame": {
-            "x": 552,
-            "y": 83,
-            "w": 23,
-            "h": 40
-          }
-        },
-        {
-          "filename": "hedgehog/5.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 32,
-            "h": 32
-          },
-          "spriteSourceSize": {
-            "x": 0,
-            "y": 4,
-            "w": 30,
-            "h": 25
-          },
-          "frame": {
-            "x": 558,
-            "y": 54,
-            "w": 30,
-            "h": 25
-          }
-        },
-        {
-          "filename": "hedgehog/17.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 32,
-            "h": 32
-          },
-          "spriteSourceSize": {
-            "x": 2,
-            "y": 4,
-            "w": 30,
-            "h": 25
-          },
-          "frame": {
-            "x": 583,
-            "y": 22,
-            "w": 30,
-            "h": 25
-          }
-        },
-        {
-          "filename": "frog/BlueBlue/attack/ToxicFrogBlueBlue_Attack-3.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 15,
-            "w": 36,
-            "h": 19
-          },
-          "frame": {
-            "x": 593,
-            "y": 1,
-            "w": 36,
-            "h": 19
-          }
-        },
-        {
-          "filename": "hedgehog/8.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 32,
-            "h": 32
-          },
-          "spriteSourceSize": {
-            "x": 1,
-            "y": 6,
-            "w": 30,
-            "h": 23
-          },
-          "frame": {
-            "x": 577,
-            "y": 81,
-            "w": 30,
-            "h": 23
-          }
-        },
-        {
-          "filename": "frog/BlueBrown/attack/ToxicFrogBlueBrown_Attack-3.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 15,
-            "w": 36,
-            "h": 19
-          },
-          "frame": {
-            "x": 577,
-            "y": 106,
-            "w": 36,
-            "h": 19
-          }
-        },
-        {
-          "filename": "hedgehog/11.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 32,
-            "h": 32
-          },
-          "spriteSourceSize": {
-            "x": 1,
-            "y": 6,
-            "w": 30,
-            "h": 23
-          },
-          "frame": {
-            "x": 590,
-            "y": 49,
-            "w": 30,
-            "h": 23
-          }
-        },
-        {
-          "filename": "frog/GreenBlue/attack/ToxicFrogGreenBlue_Attack-3.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 15,
-            "w": 36,
-            "h": 19
-          },
-          "frame": {
-            "x": 615,
-            "y": 22,
-            "w": 36,
-            "h": 19
-          }
-        },
-        {
-          "filename": "frog/GreenBrown/attack/ToxicFrogGreenBrown_Attack-3.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 15,
-            "w": 36,
-            "h": 19
-          },
-          "frame": {
-            "x": 631,
-            "y": 1,
-            "w": 36,
-            "h": 19
-          }
-        },
-        {
-          "filename": "frog/PurpleBlue/attack/ToxicFrogPurpleBlue_Attack-3.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 15,
-            "w": 36,
-            "h": 19
-          },
-          "frame": {
-            "x": 609,
-            "y": 74,
-            "w": 36,
-            "h": 19
-          }
-        },
-        {
-          "filename": "frog/PurpleWhite/attack/ToxicFrogPurpleWhite_Attack-3.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 15,
-            "w": 36,
-            "h": 19
-          },
-          "frame": {
-            "x": 622,
-            "y": 43,
-            "w": 36,
-            "h": 19
-          }
-        },
-        {
-          "filename": "7.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 32,
-            "h": 32
-          },
-          "spriteSourceSize": {
-            "x": 0,
-            "y": 7,
-            "w": 32,
-            "h": 19
-          },
-          "frame": {
-            "x": 653,
-            "y": 22,
-            "w": 32,
-            "h": 19
-          }
-        },
-        {
-          "filename": "9.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 32,
-            "h": 32
-          },
-          "spriteSourceSize": {
-            "x": 0,
-            "y": 7,
-            "w": 32,
-            "h": 18
-          },
-          "frame": {
-            "x": 669,
-            "y": 1,
-            "w": 32,
-            "h": 18
-          }
-        },
-        {
-          "filename": "5.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 32,
-            "h": 32
-          },
-          "spriteSourceSize": {
-            "x": 2,
-            "y": 6,
-            "w": 29,
-            "h": 20
-          },
-          "frame": {
-            "x": 615,
-            "y": 95,
-            "w": 29,
-            "h": 20
-          }
-        },
-        {
-          "filename": "6.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 32,
-            "h": 32
-          },
-          "spriteSourceSize": {
-            "x": 2,
-            "y": 6,
-            "w": 29,
-            "h": 20
-          },
-          "frame": {
-            "x": 646,
-            "y": 95,
-            "w": 29,
-            "h": 20
-          }
-        },
-        {
-          "filename": "hedgehog/7.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 32,
-            "h": 32
-          },
-          "spriteSourceSize": {
-            "x": 3,
-            "y": 7,
-            "w": 26,
-            "h": 22
-          },
-          "frame": {
-            "x": 647,
-            "y": 64,
-            "w": 26,
-            "h": 22
-          }
-        },
-        {
-          "filename": "frog/BlueBlue/hop/ToxicFrogBlueBlue_Hop-5.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 8,
-            "y": 13,
-            "w": 25,
-            "h": 19
-          },
-          "frame": {
-            "x": 660,
-            "y": 43,
-            "w": 25,
-            "h": 19
-          }
-        },
-        {
-          "filename": "hedgehog/10.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 32,
-            "h": 32
-          },
-          "spriteSourceSize": {
-            "x": 3,
-            "y": 7,
-            "w": 26,
-            "h": 22
-          },
-          "frame": {
-            "x": 675,
-            "y": 64,
-            "w": 26,
-            "h": 22
-          }
-        },
-        {
-          "filename": "hedgehog/6.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 32,
-            "h": 32
-          },
-          "spriteSourceSize": {
-            "x": 3,
-            "y": 8,
-            "w": 26,
-            "h": 21
-          },
-          "frame": {
-            "x": 677,
-            "y": 88,
-            "w": 26,
-            "h": 21
-          }
-        },
-        {
-          "filename": "hedgehog/9.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 32,
-            "h": 32
-          },
-          "spriteSourceSize": {
-            "x": 3,
-            "y": 8,
-            "w": 26,
-            "h": 21
-          },
-          "frame": {
-            "x": 687,
-            "y": 21,
-            "w": 26,
-            "h": 21
-          }
-        },
-        {
-          "filename": "frog/BlueBlue/hop/ToxicFrogBlueBlue_Hop-4.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 9,
-            "y": 12,
-            "w": 24,
-            "h": 18
-          },
-          "frame": {
-            "x": 703,
-            "y": 1,
-            "w": 24,
-            "h": 18
-          }
-        },
-        {
-          "filename": "frog/BlueBrown/hop/ToxicFrogBlueBrown_Hop-4.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 9,
-            "y": 12,
-            "w": 24,
-            "h": 18
-          },
-          "frame": {
-            "x": 687,
-            "y": 44,
-            "w": 24,
-            "h": 18
-          }
-        },
-        {
-          "filename": "frog/BlueBrown/hop/ToxicFrogBlueBrown_Hop-5.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 8,
-            "y": 13,
-            "w": 25,
-            "h": 19
-          },
-          "frame": {
-            "x": 703,
-            "y": 64,
-            "w": 25,
-            "h": 19
-          }
-        },
-        {
-          "filename": "frog/GreenBlue/hop/ToxicFrogGreenBlue_Hop-4.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 9,
-            "y": 12,
-            "w": 24,
-            "h": 18
-          },
-          "frame": {
-            "x": 713,
-            "y": 44,
-            "w": 24,
-            "h": 18
-          }
-        },
-        {
-          "filename": "frog/GreenBlue/hop/ToxicFrogGreenBlue_Hop-5.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 8,
-            "y": 13,
-            "w": 25,
-            "h": 19
-          },
-          "frame": {
-            "x": 715,
-            "y": 21,
-            "w": 25,
-            "h": 19
-          }
-        },
-        {
-          "filename": "frog/GreenBrown/hop/ToxicFrogGreenBrown_Hop-4.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 9,
-            "y": 12,
-            "w": 24,
-            "h": 18
-          },
-          "frame": {
-            "x": 729,
-            "y": 1,
-            "w": 24,
-            "h": 18
-          }
-        },
-        {
-          "filename": "frog/BlueBlue/hop/ToxicFrogBlueBlue_Hop-3.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 11,
-            "y": 10,
-            "w": 23,
-            "h": 23
-          },
-          "frame": {
-            "x": 705,
-            "y": 85,
-            "w": 23,
-            "h": 23
-          }
-        },
-        {
-          "filename": "2.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 32,
-            "h": 32
-          },
-          "spriteSourceSize": {
-            "x": 3,
-            "y": 9,
-            "w": 25,
-            "h": 15
-          },
-          "frame": {
-            "x": 705,
-            "y": 110,
-            "w": 25,
-            "h": 15
-          }
-        },
-        {
-          "filename": "frog/BlueBrown/hop/ToxicFrogBlueBrown_Hop-3.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 11,
-            "y": 10,
-            "w": 23,
-            "h": 23
-          },
-          "frame": {
-            "x": 730,
-            "y": 64,
-            "w": 23,
-            "h": 23
-          }
-        },
-        {
-          "filename": "frog/GreenBrown/hop/ToxicFrogGreenBrown_Hop-5.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 8,
-            "y": 13,
-            "w": 25,
-            "h": 19
-          },
-          "frame": {
-            "x": 730,
-            "y": 89,
-            "w": 25,
-            "h": 19
-          }
-        },
-        {
-          "filename": "frog/BlueBlue/attack/ToxicFrogBlueBlue_Attack-2.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 9,
-            "y": 19,
-            "w": 24,
-            "h": 15
-          },
-          "frame": {
-            "x": 732,
-            "y": 110,
-            "w": 24,
-            "h": 15
-          }
-        },
-        {
-          "filename": "frog/PurpleBlue/hop/ToxicFrogPurpleBlue_Hop-5.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 8,
-            "y": 13,
-            "w": 25,
-            "h": 19
-          },
-          "frame": {
-            "x": 739,
-            "y": 42,
-            "w": 25,
-            "h": 19
-          }
-        },
-        {
-          "filename": "frog/PurpleWhite/hop/ToxicFrogPurpleWhite_Hop-5.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 8,
-            "y": 13,
-            "w": 25,
-            "h": 19
-          },
-          "frame": {
-            "x": 742,
-            "y": 21,
-            "w": 25,
-            "h": 19
-          }
-        },
-        {
-          "filename": "frog/PurpleBlue/hop/ToxicFrogPurpleBlue_Hop-4.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 9,
-            "y": 12,
-            "w": 24,
-            "h": 18
-          },
-          "frame": {
-            "x": 755,
-            "y": 1,
-            "w": 24,
-            "h": 18
-          }
-        },
-        {
-          "filename": "frog/GreenBlue/hop/ToxicFrogGreenBlue_Hop-3.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 11,
-            "y": 10,
-            "w": 23,
-            "h": 23
-          },
-          "frame": {
-            "x": 755,
-            "y": 63,
-            "w": 23,
-            "h": 23
-          }
-        },
-        {
-          "filename": "frog/BlueBlue/hop/ToxicFrogBlueBlue_Hop-6.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 15,
-            "w": 23,
-            "h": 19
-          },
-          "frame": {
-            "x": 766,
-            "y": 42,
-            "w": 23,
-            "h": 19
-          }
-        },
-        {
-          "filename": "frog/BlueBlue/idle/ToxicFrogBlueBlue_Idle-6.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 15,
-            "w": 23,
-            "h": 19
-          },
-          "frame": {
-            "x": 769,
-            "y": 21,
-            "w": 23,
-            "h": 19
-          }
-        },
-        {
-          "filename": "frog/PurpleWhite/hop/ToxicFrogPurpleWhite_Hop-4.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 9,
-            "y": 12,
-            "w": 24,
-            "h": 18
-          },
-          "frame": {
-            "x": 781,
-            "y": 1,
-            "w": 24,
-            "h": 18
-          }
-        },
-        {
-          "filename": "frog/BlueBlue/idle/ToxicFrogBlueBlue_Idle-7.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 15,
-            "w": 23,
-            "h": 19
-          },
-          "frame": {
-            "x": 757,
-            "y": 88,
-            "w": 23,
-            "h": 19
-          }
-        },
-        {
-          "filename": "frog/BlueBlue/hop/ToxicFrogBlueBlue_Hop-2.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 9,
-            "y": 19,
-            "w": 24,
-            "h": 15
-          },
-          "frame": {
-            "x": 758,
-            "y": 109,
-            "w": 24,
-            "h": 15
-          }
-        },
-        {
-          "filename": "frog/GreenBrown/hop/ToxicFrogGreenBrown_Hop-3.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 11,
-            "y": 10,
-            "w": 23,
-            "h": 23
-          },
-          "frame": {
-            "x": 780,
-            "y": 63,
-            "w": 23,
-            "h": 23
-          }
-        },
-        {
-          "filename": "frog/BlueBrown/hop/ToxicFrogBlueBrown_Hop-6.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 15,
-            "w": 23,
-            "h": 19
-          },
-          "frame": {
-            "x": 791,
-            "y": 42,
-            "w": 23,
-            "h": 19
-          }
-        },
-        {
-          "filename": "frog/BlueBrown/idle/ToxicFrogBlueBrown_Idle-6.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 15,
-            "w": 23,
-            "h": 19
-          },
-          "frame": {
-            "x": 794,
-            "y": 21,
-            "w": 23,
-            "h": 19
-          }
-        },
-        {
-          "filename": "frog/BlueBlue/attack/ToxicFrogBlueBlue_Attack-0.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 16,
-            "w": 23,
-            "h": 18
-          },
-          "frame": {
-            "x": 807,
-            "y": 1,
-            "w": 23,
-            "h": 18
-          }
-        },
-        {
-          "filename": "frog/BlueBrown/idle/ToxicFrogBlueBrown_Idle-7.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 15,
-            "w": 23,
-            "h": 19
-          },
-          "frame": {
-            "x": 782,
-            "y": 88,
-            "w": 23,
-            "h": 19
-          }
-        },
-        {
-          "filename": "frog/BlueBrown/attack/ToxicFrogBlueBrown_Attack-2.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 9,
-            "y": 19,
-            "w": 24,
-            "h": 15
-          },
-          "frame": {
-            "x": 784,
-            "y": 109,
-            "w": 24,
-            "h": 15
-          }
-        },
-        {
-          "filename": "frog/PurpleBlue/hop/ToxicFrogPurpleBlue_Hop-3.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 11,
-            "y": 10,
-            "w": 23,
-            "h": 23
-          },
-          "frame": {
-            "x": 805,
-            "y": 63,
-            "w": 23,
-            "h": 23
-          }
-        },
-        {
-          "filename": "frog/GreenBlue/hop/ToxicFrogGreenBlue_Hop-6.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 15,
-            "w": 23,
-            "h": 19
-          },
-          "frame": {
-            "x": 816,
-            "y": 42,
-            "w": 23,
-            "h": 19
-          }
-        },
-        {
-          "filename": "frog/GreenBlue/idle/ToxicFrogGreenBlue_Idle-6.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 15,
-            "w": 23,
-            "h": 19
-          },
-          "frame": {
-            "x": 819,
-            "y": 21,
-            "w": 23,
-            "h": 19
-          }
-        },
-        {
-          "filename": "frog/BlueBlue/hop/ToxicFrogBlueBlue_Hop-0.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 16,
-            "w": 23,
-            "h": 18
-          },
-          "frame": {
-            "x": 832,
-            "y": 1,
-            "w": 23,
-            "h": 18
-          }
-        },
-        {
-          "filename": "frog/GreenBlue/idle/ToxicFrogGreenBlue_Idle-7.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 15,
-            "w": 23,
-            "h": 19
-          },
-          "frame": {
-            "x": 807,
-            "y": 88,
-            "w": 23,
-            "h": 19
-          }
-        },
-        {
-          "filename": "frog/BlueBrown/hop/ToxicFrogBlueBrown_Hop-2.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 9,
-            "y": 19,
-            "w": 24,
-            "h": 15
-          },
-          "frame": {
-            "x": 810,
-            "y": 109,
-            "w": 24,
-            "h": 15
-          }
-        },
-        {
-          "filename": "frog/PurpleWhite/hop/ToxicFrogPurpleWhite_Hop-3.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 11,
-            "y": 10,
-            "w": 23,
-            "h": 23
-          },
-          "frame": {
-            "x": 830,
-            "y": 63,
-            "w": 23,
-            "h": 23
-          }
-        },
-        {
-          "filename": "frog/GreenBrown/hop/ToxicFrogGreenBrown_Hop-6.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 15,
-            "w": 23,
-            "h": 19
-          },
-          "frame": {
-            "x": 841,
-            "y": 42,
-            "w": 23,
-            "h": 19
-          }
-        },
-        {
-          "filename": "frog/GreenBrown/idle/ToxicFrogGreenBrown_Idle-6.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 15,
-            "w": 23,
-            "h": 19
-          },
-          "frame": {
-            "x": 844,
-            "y": 21,
-            "w": 23,
-            "h": 19
-          }
-        },
-        {
-          "filename": "frog/BlueBlue/idle/ToxicFrogBlueBlue_Idle-0.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 16,
-            "w": 23,
-            "h": 18
-          },
-          "frame": {
-            "x": 857,
-            "y": 1,
-            "w": 23,
-            "h": 18
-          }
-        },
-        {
-          "filename": "frog/GreenBrown/idle/ToxicFrogGreenBrown_Idle-7.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 15,
-            "w": 23,
-            "h": 19
-          },
-          "frame": {
-            "x": 832,
-            "y": 88,
-            "w": 23,
-            "h": 19
-          }
-        },
-        {
-          "filename": "frog/GreenBlue/attack/ToxicFrogGreenBlue_Attack-2.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 9,
-            "y": 19,
-            "w": 24,
-            "h": 15
-          },
-          "frame": {
-            "x": 836,
-            "y": 109,
-            "w": 24,
-            "h": 15
-          }
-        },
-        {
-          "filename": "frog/PurpleBlue/hop/ToxicFrogPurpleBlue_Hop-6.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 15,
-            "w": 23,
-            "h": 19
-          },
-          "frame": {
-            "x": 855,
-            "y": 63,
-            "w": 23,
-            "h": 19
-          }
-        },
-        {
-          "filename": "frog/PurpleBlue/idle/ToxicFrogPurpleBlue_Idle-6.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 15,
-            "w": 23,
-            "h": 19
-          },
-          "frame": {
-            "x": 866,
-            "y": 42,
-            "w": 23,
-            "h": 19
-          }
-        },
-        {
-          "filename": "frog/PurpleBlue/idle/ToxicFrogPurpleBlue_Idle-7.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 15,
-            "w": 23,
-            "h": 19
-          },
-          "frame": {
-            "x": 869,
-            "y": 21,
-            "w": 23,
-            "h": 19
-          }
-        },
-        {
-          "filename": "frog/BlueBlue/idle/ToxicFrogBlueBlue_Idle-1.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 16,
-            "w": 23,
-            "h": 18
-          },
-          "frame": {
-            "x": 882,
-            "y": 1,
-            "w": 23,
-            "h": 18
-          }
-        },
-        {
-          "filename": "frog/PurpleWhite/hop/ToxicFrogPurpleWhite_Hop-6.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 15,
-            "w": 23,
-            "h": 19
-          },
-          "frame": {
-            "x": 857,
-            "y": 84,
-            "w": 23,
-            "h": 19
-          }
-        },
-        {
-          "filename": "frog/PurpleWhite/idle/ToxicFrogPurpleWhite_Idle-6.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 15,
-            "w": 23,
-            "h": 19
-          },
-          "frame": {
-            "x": 880,
-            "y": 63,
-            "w": 23,
-            "h": 19
-          }
-        },
-        {
-          "filename": "frog/PurpleWhite/idle/ToxicFrogPurpleWhite_Idle-7.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 15,
-            "w": 23,
-            "h": 19
-          },
-          "frame": {
-            "x": 891,
-            "y": 42,
-            "w": 23,
-            "h": 19
-          }
-        },
-        {
-          "filename": "frog/BlueBlue/idle/ToxicFrogBlueBlue_Idle-4.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 16,
-            "w": 23,
-            "h": 18
-          },
-          "frame": {
-            "x": 894,
-            "y": 21,
-            "w": 23,
-            "h": 18
-          }
-        },
-        {
-          "filename": "frog/BlueBlue/idle/ToxicFrogBlueBlue_Idle-5.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 16,
-            "w": 23,
-            "h": 18
-          },
-          "frame": {
-            "x": 907,
-            "y": 1,
-            "w": 23,
-            "h": 18
-          }
-        },
-        {
-          "filename": "frog/BlueBrown/attack/ToxicFrogBlueBrown_Attack-0.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 16,
-            "w": 23,
-            "h": 18
-          },
-          "frame": {
-            "x": 862,
-            "y": 105,
-            "w": 23,
-            "h": 18
-          }
-        },
-        {
-          "filename": "frog/BlueBrown/hop/ToxicFrogBlueBrown_Hop-0.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 16,
-            "w": 23,
-            "h": 18
-          },
-          "frame": {
-            "x": 882,
-            "y": 84,
-            "w": 23,
-            "h": 18
-          }
-        },
-        {
-          "filename": "frog/BlueBrown/idle/ToxicFrogBlueBrown_Idle-0.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 16,
-            "w": 23,
-            "h": 18
-          },
-          "frame": {
-            "x": 905,
-            "y": 63,
-            "w": 23,
-            "h": 18
-          }
-        },
-        {
-          "filename": "frog/BlueBrown/idle/ToxicFrogBlueBrown_Idle-1.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 16,
-            "w": 23,
-            "h": 18
-          },
-          "frame": {
-            "x": 916,
-            "y": 41,
-            "w": 23,
-            "h": 18
-          }
-        },
-        {
-          "filename": "frog/BlueBrown/idle/ToxicFrogBlueBrown_Idle-4.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 16,
-            "w": 23,
-            "h": 18
-          },
-          "frame": {
-            "x": 919,
-            "y": 21,
-            "w": 23,
-            "h": 18
-          }
-        },
-        {
-          "filename": "frog/BlueBrown/idle/ToxicFrogBlueBrown_Idle-5.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 16,
-            "w": 23,
-            "h": 18
-          },
-          "frame": {
-            "x": 932,
-            "y": 1,
-            "w": 23,
-            "h": 18
-          }
-        },
-        {
-          "filename": "frog/GreenBlue/attack/ToxicFrogGreenBlue_Attack-0.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 16,
-            "w": 23,
-            "h": 18
-          },
-          "frame": {
-            "x": 887,
-            "y": 104,
-            "w": 23,
-            "h": 18
-          }
-        },
-        {
-          "filename": "frog/GreenBlue/hop/ToxicFrogGreenBlue_Hop-0.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 16,
-            "w": 23,
-            "h": 18
-          },
-          "frame": {
-            "x": 907,
-            "y": 83,
-            "w": 23,
-            "h": 18
-          }
-        },
-        {
-          "filename": "frog/GreenBlue/idle/ToxicFrogGreenBlue_Idle-0.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 16,
-            "w": 23,
-            "h": 18
-          },
-          "frame": {
-            "x": 930,
-            "y": 61,
-            "w": 23,
-            "h": 18
-          }
-        },
-        {
-          "filename": "frog/GreenBlue/idle/ToxicFrogGreenBlue_Idle-1.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 16,
-            "w": 23,
-            "h": 18
-          },
-          "frame": {
-            "x": 941,
-            "y": 41,
-            "w": 23,
-            "h": 18
-          }
-        },
-        {
-          "filename": "frog/GreenBlue/idle/ToxicFrogGreenBlue_Idle-4.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 16,
-            "w": 23,
-            "h": 18
-          },
-          "frame": {
-            "x": 944,
-            "y": 21,
-            "w": 23,
-            "h": 18
-          }
-        },
-        {
-          "filename": "frog/GreenBlue/idle/ToxicFrogGreenBlue_Idle-5.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 16,
-            "w": 23,
-            "h": 18
-          },
-          "frame": {
-            "x": 957,
-            "y": 1,
-            "w": 23,
-            "h": 18
-          }
-        },
-        {
-          "filename": "frog/GreenBrown/attack/ToxicFrogGreenBrown_Attack-0.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 16,
-            "w": 23,
-            "h": 18
-          },
-          "frame": {
-            "x": 912,
-            "y": 103,
-            "w": 23,
-            "h": 18
-          }
-        },
-        {
-          "filename": "frog/GreenBrown/hop/ToxicFrogGreenBrown_Hop-0.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 16,
-            "w": 23,
-            "h": 18
-          },
-          "frame": {
-            "x": 932,
-            "y": 81,
-            "w": 23,
-            "h": 18
-          }
-        },
-        {
-          "filename": "frog/GreenBrown/idle/ToxicFrogGreenBrown_Idle-0.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 16,
-            "w": 23,
-            "h": 18
-          },
-          "frame": {
-            "x": 955,
-            "y": 61,
-            "w": 23,
-            "h": 18
-          }
-        },
-        {
-          "filename": "frog/GreenBrown/idle/ToxicFrogGreenBrown_Idle-1.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 16,
-            "w": 23,
-            "h": 18
-          },
-          "frame": {
-            "x": 966,
-            "y": 41,
-            "w": 23,
-            "h": 18
-          }
-        },
-        {
-          "filename": "frog/GreenBrown/idle/ToxicFrogGreenBrown_Idle-4.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 16,
-            "w": 23,
-            "h": 18
-          },
-          "frame": {
-            "x": 969,
-            "y": 21,
-            "w": 23,
-            "h": 18
-          }
-        },
-        {
-          "filename": "frog/GreenBrown/idle/ToxicFrogGreenBrown_Idle-5.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 16,
-            "w": 23,
-            "h": 18
-          },
-          "frame": {
-            "x": 982,
-            "y": 1,
-            "w": 23,
-            "h": 18
-          }
-        },
-        {
-          "filename": "frog/PurpleBlue/attack/ToxicFrogPurpleBlue_Attack-0.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 16,
-            "w": 23,
-            "h": 18
-          },
-          "frame": {
-            "x": 937,
-            "y": 101,
-            "w": 23,
-            "h": 18
-          }
-        },
-        {
-          "filename": "frog/PurpleBlue/hop/ToxicFrogPurpleBlue_Hop-0.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 16,
-            "w": 23,
-            "h": 18
-          },
-          "frame": {
-            "x": 957,
-            "y": 81,
-            "w": 23,
-            "h": 18
-          }
-        },
-        {
-          "filename": "frog/PurpleBlue/idle/ToxicFrogPurpleBlue_Idle-0.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 16,
-            "w": 23,
-            "h": 18
-          },
-          "frame": {
-            "x": 980,
-            "y": 61,
-            "w": 23,
-            "h": 18
-          }
-        },
-        {
-          "filename": "frog/PurpleBlue/idle/ToxicFrogPurpleBlue_Idle-1.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 16,
-            "w": 23,
-            "h": 18
-          },
-          "frame": {
-            "x": 991,
-            "y": 41,
-            "w": 23,
-            "h": 18
-          }
-        },
-        {
-          "filename": "frog/PurpleBlue/idle/ToxicFrogPurpleBlue_Idle-4.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 16,
-            "w": 23,
-            "h": 18
-          },
-          "frame": {
-            "x": 994,
-            "y": 21,
-            "w": 23,
-            "h": 18
-          }
-        },
-        {
-          "filename": "frog/PurpleBlue/idle/ToxicFrogPurpleBlue_Idle-5.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 16,
-            "w": 23,
-            "h": 18
-          },
-          "frame": {
-            "x": 1007,
-            "y": 1,
-            "w": 23,
-            "h": 18
-          }
-        },
-        {
-          "filename": "frog/PurpleWhite/attack/ToxicFrogPurpleWhite_Attack-0.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 16,
-            "w": 23,
-            "h": 18
-          },
-          "frame": {
-            "x": 962,
-            "y": 101,
-            "w": 23,
-            "h": 18
-          }
-        },
-        {
-          "filename": "frog/PurpleWhite/hop/ToxicFrogPurpleWhite_Hop-0.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 16,
-            "w": 23,
-            "h": 18
-          },
-          "frame": {
-            "x": 982,
-            "y": 81,
-            "w": 23,
-            "h": 18
-          }
-        },
-        {
-          "filename": "frog/PurpleWhite/idle/ToxicFrogPurpleWhite_Idle-0.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 16,
-            "w": 23,
-            "h": 18
-          },
-          "frame": {
-            "x": 1005,
-            "y": 61,
-            "w": 23,
-            "h": 18
-          }
-        },
-        {
-          "filename": "frog/PurpleWhite/idle/ToxicFrogPurpleWhite_Idle-1.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 16,
-            "w": 23,
-            "h": 18
-          },
-          "frame": {
-            "x": 1016,
-            "y": 41,
-            "w": 23,
-            "h": 18
-          }
-        },
-        {
-          "filename": "frog/PurpleWhite/idle/ToxicFrogPurpleWhite_Idle-4.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 16,
-            "w": 23,
-            "h": 18
-          },
-          "frame": {
-            "x": 1019,
-            "y": 21,
-            "w": 23,
-            "h": 18
-          }
-        },
-        {
-          "filename": "frog/PurpleWhite/idle/ToxicFrogPurpleWhite_Idle-5.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 16,
-            "w": 23,
-            "h": 18
-          },
-          "frame": {
-            "x": 1032,
-            "y": 1,
-            "w": 23,
-            "h": 18
-          }
-        },
-        {
-          "filename": "frog/PurpleWhite/idle/ToxicFrogPurpleWhite_Idle-3.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 17,
-            "w": 24,
-            "h": 17
-          },
-          "frame": {
-            "x": 987,
-            "y": 101,
-            "w": 24,
-            "h": 17
-          }
-        },
-        {
-          "filename": "frog/BlueBlue/attack/ToxicFrogBlueBlue_Attack-1.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 17,
-            "w": 23,
-            "h": 17
-          },
-          "frame": {
-            "x": 1007,
-            "y": 81,
-            "w": 23,
-            "h": 17
-          }
-        },
-        {
-          "filename": "frog/BlueBlue/hop/ToxicFrogBlueBlue_Hop-1.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 17,
-            "w": 23,
-            "h": 17
-          },
-          "frame": {
-            "x": 1030,
-            "y": 61,
-            "w": 23,
-            "h": 17
-          }
-        },
-        {
-          "filename": "frog/BlueBlue/idle/ToxicFrogBlueBlue_Idle-2.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 17,
-            "w": 23,
-            "h": 17
-          },
-          "frame": {
-            "x": 1041,
-            "y": 41,
-            "w": 23,
-            "h": 17
-          }
-        },
-        {
-          "filename": "frog/BlueBrown/attack/ToxicFrogBlueBrown_Attack-1.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 17,
-            "w": 23,
-            "h": 17
-          },
-          "frame": {
-            "x": 1044,
-            "y": 21,
-            "w": 23,
-            "h": 17
-          }
-        },
-        {
-          "filename": "frog/BlueBrown/hop/ToxicFrogBlueBrown_Hop-1.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 17,
-            "w": 23,
-            "h": 17
-          },
-          "frame": {
-            "x": 1057,
-            "y": 1,
-            "w": 23,
-            "h": 17
-          }
-        },
-        {
-          "filename": "frog/BlueBrown/idle/ToxicFrogBlueBrown_Idle-2.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 17,
-            "w": 23,
-            "h": 17
-          },
-          "frame": {
-            "x": 1013,
-            "y": 100,
-            "w": 23,
-            "h": 17
-          }
-        },
-        {
-          "filename": "frog/GreenBlue/attack/ToxicFrogGreenBlue_Attack-1.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 17,
-            "w": 23,
-            "h": 17
-          },
-          "frame": {
-            "x": 1032,
-            "y": 80,
-            "w": 23,
-            "h": 17
-          }
-        },
-        {
-          "filename": "frog/GreenBlue/hop/ToxicFrogGreenBlue_Hop-1.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 17,
-            "w": 23,
-            "h": 17
-          },
-          "frame": {
-            "x": 1055,
-            "y": 60,
-            "w": 23,
-            "h": 17
-          }
-        },
-        {
-          "filename": "frog/GreenBlue/idle/ToxicFrogGreenBlue_Idle-2.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 17,
-            "w": 23,
-            "h": 17
-          },
-          "frame": {
-            "x": 1066,
-            "y": 40,
-            "w": 23,
-            "h": 17
-          }
-        },
-        {
-          "filename": "frog/GreenBrown/attack/ToxicFrogGreenBrown_Attack-1.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 17,
-            "w": 23,
-            "h": 17
-          },
-          "frame": {
-            "x": 1069,
-            "y": 20,
-            "w": 23,
-            "h": 17
-          }
-        },
-        {
-          "filename": "frog/GreenBrown/hop/ToxicFrogGreenBrown_Hop-1.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 17,
-            "w": 23,
-            "h": 17
-          },
-          "frame": {
-            "x": 1082,
-            "y": 1,
-            "w": 23,
-            "h": 17
-          }
-        },
-        {
-          "filename": "frog/GreenBrown/idle/ToxicFrogGreenBrown_Idle-2.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 17,
-            "w": 23,
-            "h": 17
-          },
-          "frame": {
-            "x": 1038,
-            "y": 99,
-            "w": 23,
-            "h": 17
-          }
-        },
-        {
-          "filename": "frog/PurpleBlue/attack/ToxicFrogPurpleBlue_Attack-1.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 17,
-            "w": 23,
-            "h": 17
-          },
-          "frame": {
-            "x": 1057,
-            "y": 79,
-            "w": 23,
-            "h": 17
-          }
-        },
-        {
-          "filename": "frog/PurpleBlue/hop/ToxicFrogPurpleBlue_Hop-1.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 17,
-            "w": 23,
-            "h": 17
-          },
-          "frame": {
-            "x": 1080,
-            "y": 59,
-            "w": 23,
-            "h": 17
-          }
-        },
-        {
-          "filename": "frog/PurpleBlue/idle/ToxicFrogPurpleBlue_Idle-2.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 17,
-            "w": 23,
-            "h": 17
-          },
-          "frame": {
-            "x": 1091,
-            "y": 39,
-            "w": 23,
-            "h": 17
-          }
-        },
-        {
-          "filename": "frog/PurpleWhite/attack/ToxicFrogPurpleWhite_Attack-1.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 17,
-            "w": 23,
-            "h": 17
-          },
-          "frame": {
-            "x": 1094,
-            "y": 20,
-            "w": 23,
-            "h": 17
-          }
-        },
-        {
-          "filename": "frog/PurpleWhite/hop/ToxicFrogPurpleWhite_Hop-1.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 17,
-            "w": 23,
-            "h": 17
-          },
-          "frame": {
-            "x": 1107,
-            "y": 1,
-            "w": 23,
-            "h": 17
-          }
-        },
-        {
-          "filename": "frog/PurpleWhite/idle/ToxicFrogPurpleWhite_Idle-2.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 10,
-            "y": 17,
-            "w": 23,
-            "h": 17
-          },
-          "frame": {
-            "x": 1116,
-            "y": 39,
-            "w": 23,
-            "h": 17
-          }
-        },
-        {
-          "filename": "frog/GreenBlue/hop/ToxicFrogGreenBlue_Hop-2.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 9,
-            "y": 19,
-            "w": 24,
-            "h": 15
-          },
-          "frame": {
-            "x": 1063,
-            "y": 98,
-            "w": 24,
-            "h": 15
-          }
-        },
-        {
-          "filename": "frog/GreenBrown/attack/ToxicFrogGreenBrown_Attack-2.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 9,
-            "y": 19,
-            "w": 24,
-            "h": 15
-          },
-          "frame": {
-            "x": 1082,
-            "y": 78,
-            "w": 24,
-            "h": 15
-          }
-        },
-        {
-          "filename": "frog/GreenBrown/hop/ToxicFrogGreenBrown_Hop-2.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 9,
-            "y": 19,
-            "w": 24,
-            "h": 15
-          },
-          "frame": {
-            "x": 1105,
-            "y": 58,
-            "w": 24,
-            "h": 15
-          }
-        },
-        {
-          "filename": "frog/PurpleBlue/attack/ToxicFrogPurpleBlue_Attack-2.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 9,
-            "y": 19,
-            "w": 24,
-            "h": 15
-          },
-          "frame": {
-            "x": 1089,
-            "y": 95,
-            "w": 24,
-            "h": 15
-          }
-        },
-        {
-          "filename": "frog/PurpleBlue/hop/ToxicFrogPurpleBlue_Hop-2.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 9,
-            "y": 19,
-            "w": 24,
-            "h": 15
-          },
-          "frame": {
-            "x": 1108,
-            "y": 75,
-            "w": 24,
-            "h": 15
-          }
-        },
-        {
-          "filename": "frog/PurpleWhite/attack/ToxicFrogPurpleWhite_Attack-2.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 9,
-            "y": 19,
-            "w": 24,
-            "h": 15
-          },
-          "frame": {
-            "x": 1115,
-            "y": 92,
-            "w": 24,
-            "h": 15
-          }
-        },
-        {
-          "filename": "frog/PurpleWhite/hop/ToxicFrogPurpleWhite_Hop-2.png",
-          "rotated": false,
-          "trimmed": true,
-          "sourceSize": {
-            "w": 48,
-            "h": 48
-          },
-          "spriteSourceSize": {
-            "x": 9,
-            "y": 19,
-            "w": 24,
-            "h": 15
-          },
-          "frame": {
-            "x": 1115,
-            "y": 109,
-            "w": 24,
-            "h": 15
-          }
-        }
-      ]
-    }
-  ],
-  "meta": {
-    "app": "https://www.codeandweb.com/texturepacker",
-    "version": "3.0",
-    "smartupdate": "$TexturePacker:SmartUpdate:fda7c949890f764a57146ef0d472bc80:7a0f6c2519ab9052e9cf01233aa88f4f:b00d48b51f56eb7c81e25100fcce2828$"
-  }
+	"textures": [
+		{
+			"image": "animals.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 1851,
+				"h": 128
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "corpy/attack_claw/Corpio_claw_attack_bottom_left2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 96,
+						"h": 96
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 19,
+						"w": 91,
+						"h": 66
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 91,
+						"h": 66
+					}
+				},
+				{
+					"filename": "corpy/walk/Corpio_walk_bottom_left2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 96,
+						"h": 96
+					},
+					"spriteSourceSize": {
+						"x": 12,
+						"y": 16,
+						"w": 65,
+						"h": 58
+					},
+					"frame": {
+						"x": 1,
+						"y": 69,
+						"w": 65,
+						"h": 58
+					}
+				},
+				{
+					"filename": "corpy/attack_claw/Corpio_claw_attack_up_right1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 96,
+						"h": 96
+					},
+					"spriteSourceSize": {
+						"x": 13,
+						"y": 22,
+						"w": 65,
+						"h": 56
+					},
+					"frame": {
+						"x": 68,
+						"y": 69,
+						"w": 65,
+						"h": 56
+					}
+				},
+				{
+					"filename": "corpy/attack_claw/Corpio_claw_attack_up_right2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 96,
+						"h": 96
+					},
+					"spriteSourceSize": {
+						"x": 13,
+						"y": 16,
+						"w": 78,
+						"h": 60
+					},
+					"frame": {
+						"x": 94,
+						"y": 1,
+						"w": 78,
+						"h": 60
+					}
+				},
+				{
+					"filename": "corpy/death/death5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 96,
+						"h": 96
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 3,
+						"h": 3
+					},
+					"frame": {
+						"x": 94,
+						"y": 63,
+						"w": 3,
+						"h": 3
+					}
+				},
+				{
+					"filename": "sheep/effects/wool_2.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 2,
+						"h": 3
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 2,
+						"h": 3
+					},
+					"frame": {
+						"x": 99,
+						"y": 63,
+						"w": 2,
+						"h": 3
+					}
+				},
+				{
+					"filename": "sheep/effects/wool_1.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 2,
+						"h": 2
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 2,
+						"h": 2
+					},
+					"frame": {
+						"x": 103,
+						"y": 63,
+						"w": 2,
+						"h": 2
+					}
+				},
+				{
+					"filename": "corpy/walk/Corpio_walk_up_right2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 96,
+						"h": 96
+					},
+					"spriteSourceSize": {
+						"x": 20,
+						"y": 22,
+						"w": 65,
+						"h": 59
+					},
+					"frame": {
+						"x": 135,
+						"y": 63,
+						"w": 65,
+						"h": 59
+					}
+				},
+				{
+					"filename": "corpy/attack_tail/Corpio_attack_tail_up_right1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 96,
+						"h": 96
+					},
+					"spriteSourceSize": {
+						"x": 16,
+						"y": 17,
+						"w": 65,
+						"h": 56
+					},
+					"frame": {
+						"x": 174,
+						"y": 1,
+						"w": 65,
+						"h": 56
+					}
+				},
+				{
+					"filename": "corpy/attack_claw/Corpio_claw_attack_bottom_left3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 96,
+						"h": 96
+					},
+					"spriteSourceSize": {
+						"x": 18,
+						"y": 19,
+						"w": 59,
+						"h": 68
+					},
+					"frame": {
+						"x": 202,
+						"y": 59,
+						"w": 59,
+						"h": 68
+					}
+				},
+				{
+					"filename": "corpy/attack_tail/Corpio_attack_tail_up_right2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 96,
+						"h": 96
+					},
+					"spriteSourceSize": {
+						"x": 16,
+						"y": 16,
+						"w": 65,
+						"h": 56
+					},
+					"frame": {
+						"x": 241,
+						"y": 1,
+						"w": 65,
+						"h": 56
+					}
+				},
+				{
+					"filename": "corpy/idle/Corpio_idle_up_right1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 96,
+						"h": 96
+					},
+					"spriteSourceSize": {
+						"x": 21,
+						"y": 20,
+						"w": 65,
+						"h": 56
+					},
+					"frame": {
+						"x": 263,
+						"y": 59,
+						"w": 65,
+						"h": 56
+					}
+				},
+				{
+					"filename": "corpy/walk/Corpio_walk_up_right1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 96,
+						"h": 96
+					},
+					"spriteSourceSize": {
+						"x": 20,
+						"y": 21,
+						"w": 65,
+						"h": 56
+					},
+					"frame": {
+						"x": 308,
+						"y": 1,
+						"w": 65,
+						"h": 56
+					}
+				},
+				{
+					"filename": "corpy/attack_claw/Corpio_claw_attack_bottom_left1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 96,
+						"h": 96
+					},
+					"spriteSourceSize": {
+						"x": 16,
+						"y": 19,
+						"w": 61,
+						"h": 58
+					},
+					"frame": {
+						"x": 330,
+						"y": 59,
+						"w": 61,
+						"h": 58
+					}
+				},
+				{
+					"filename": "corpy/idle/Corpio_idle_up_right2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 96,
+						"h": 96
+					},
+					"spriteSourceSize": {
+						"x": 21,
+						"y": 20,
+						"w": 62,
+						"h": 55
+					},
+					"frame": {
+						"x": 375,
+						"y": 1,
+						"w": 62,
+						"h": 55
+					}
+				},
+				{
+					"filename": "corpy/attack_tail/Coprio_attack_tail_bottom_left1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 96,
+						"h": 96
+					},
+					"spriteSourceSize": {
+						"x": 16,
+						"y": 23,
+						"w": 61,
+						"h": 58
+					},
+					"frame": {
+						"x": 393,
+						"y": 58,
+						"w": 61,
+						"h": 58
+					}
+				},
+				{
+					"filename": "corpy/attack_tail/Corpio_attack_tail_up_right3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 96,
+						"h": 96
+					},
+					"spriteSourceSize": {
+						"x": 17,
+						"y": 15,
+						"w": 64,
+						"h": 53
+					},
+					"frame": {
+						"x": 439,
+						"y": 1,
+						"w": 64,
+						"h": 53
+					}
+				},
+				{
+					"filename": "corpy/idle/Corpio_idle_bottom_left1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 96,
+						"h": 96
+					},
+					"spriteSourceSize": {
+						"x": 18,
+						"y": 18,
+						"w": 61,
+						"h": 58
+					},
+					"frame": {
+						"x": 456,
+						"y": 56,
+						"w": 61,
+						"h": 58
+					}
+				},
+				{
+					"filename": "corpy/attack_tail/Coprio_attack_tail_bottom_left3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 96,
+						"h": 96
+					},
+					"spriteSourceSize": {
+						"x": 16,
+						"y": 28,
+						"w": 62,
+						"h": 53
+					},
+					"frame": {
+						"x": 505,
+						"y": 1,
+						"w": 62,
+						"h": 53
+					}
+				},
+				{
+					"filename": "corpy/walk/Corpio_walk_bottom_left1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 96,
+						"h": 96
+					},
+					"spriteSourceSize": {
+						"x": 12,
+						"y": 14,
+						"w": 61,
+						"h": 58
+					},
+					"frame": {
+						"x": 519,
+						"y": 56,
+						"w": 61,
+						"h": 58
+					}
+				},
+				{
+					"filename": "corpy/attack_claw/Corpio_claw_attack_up_right3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 96,
+						"h": 96
+					},
+					"spriteSourceSize": {
+						"x": 13,
+						"y": 27,
+						"w": 60,
+						"h": 50
+					},
+					"frame": {
+						"x": 569,
+						"y": 1,
+						"w": 60,
+						"h": 50
+					}
+				},
+				{
+					"filename": "corpy/idle/Corpio_idle_bottom_left2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 96,
+						"h": 96
+					},
+					"spriteSourceSize": {
+						"x": 20,
+						"y": 19,
+						"w": 59,
+						"h": 58
+					},
+					"frame": {
+						"x": 582,
+						"y": 53,
+						"w": 59,
+						"h": 58
+					}
+				},
+				{
+					"filename": "sheep/sheep_left.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 24,
+						"w": 53,
+						"h": 34
+					},
+					"frame": {
+						"x": 631,
+						"y": 1,
+						"w": 53,
+						"h": 34
+					}
+				},
+				{
+					"filename": "corpy/attack_tail/Coprio_attack_tail_bottom_left2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 96,
+						"h": 96
+					},
+					"spriteSourceSize": {
+						"x": 16,
+						"y": 2,
+						"w": 61,
+						"h": 79
+					},
+					"frame": {
+						"x": 643,
+						"y": 37,
+						"w": 61,
+						"h": 79
+					}
+				},
+				{
+					"filename": "sheep/sheep_right.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 24,
+						"w": 53,
+						"h": 34
+					},
+					"frame": {
+						"x": 686,
+						"y": 1,
+						"w": 53,
+						"h": 34
+					}
+				},
+				{
+					"filename": "sheep/walk/sheep_left_walk1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 24,
+						"w": 53,
+						"h": 34
+					},
+					"frame": {
+						"x": 706,
+						"y": 37,
+						"w": 53,
+						"h": 34
+					}
+				},
+				{
+					"filename": "sheep/walk/sheep_left_walk2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 24,
+						"w": 53,
+						"h": 34
+					},
+					"frame": {
+						"x": 741,
+						"y": 1,
+						"w": 53,
+						"h": 34
+					}
+				},
+				{
+					"filename": "sheep/walk/sheep_left_walk4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 24,
+						"w": 53,
+						"h": 34
+					},
+					"frame": {
+						"x": 706,
+						"y": 73,
+						"w": 53,
+						"h": 34
+					}
+				},
+				{
+					"filename": "8.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 7,
+						"w": 32,
+						"h": 18
+					},
+					"frame": {
+						"x": 706,
+						"y": 109,
+						"w": 32,
+						"h": 18
+					}
+				},
+				{
+					"filename": "9.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 7,
+						"w": 32,
+						"h": 18
+					},
+					"frame": {
+						"x": 740,
+						"y": 109,
+						"w": 32,
+						"h": 18
+					}
+				},
+				{
+					"filename": "sheep/walk/sheep_right_walk1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 24,
+						"w": 53,
+						"h": 34
+					},
+					"frame": {
+						"x": 761,
+						"y": 37,
+						"w": 53,
+						"h": 34
+					}
+				},
+				{
+					"filename": "sheep/walk/sheep_right_walk2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 24,
+						"w": 53,
+						"h": 34
+					},
+					"frame": {
+						"x": 796,
+						"y": 1,
+						"w": 53,
+						"h": 34
+					}
+				},
+				{
+					"filename": "sheep/walk/sheep_right_walk4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 24,
+						"w": 53,
+						"h": 34
+					},
+					"frame": {
+						"x": 761,
+						"y": 73,
+						"w": 53,
+						"h": 34
+					}
+				},
+				{
+					"filename": "4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 8,
+						"w": 30,
+						"h": 16
+					},
+					"frame": {
+						"x": 774,
+						"y": 109,
+						"w": 30,
+						"h": 16
+					}
+				},
+				{
+					"filename": "1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 9,
+						"w": 29,
+						"h": 15
+					},
+					"frame": {
+						"x": 806,
+						"y": 109,
+						"w": 29,
+						"h": 15
+					}
+				},
+				{
+					"filename": "sheep/walk/sheep_left_walk3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 25,
+						"w": 53,
+						"h": 33
+					},
+					"frame": {
+						"x": 816,
+						"y": 37,
+						"w": 53,
+						"h": 33
+					}
+				},
+				{
+					"filename": "sheep/walk/sheep_right_walk3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 25,
+						"w": 53,
+						"h": 33
+					},
+					"frame": {
+						"x": 851,
+						"y": 1,
+						"w": 53,
+						"h": 33
+					}
+				},
+				{
+					"filename": "sheep/sheared/sheep_left.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 31,
+						"w": 47,
+						"h": 27
+					},
+					"frame": {
+						"x": 816,
+						"y": 72,
+						"w": 47,
+						"h": 27
+					}
+				},
+				{
+					"filename": "hedgehog/3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 4,
+						"w": 31,
+						"h": 26
+					},
+					"frame": {
+						"x": 837,
+						"y": 101,
+						"w": 31,
+						"h": 26
+					}
+				},
+				{
+					"filename": "sheep/sheared/sheep_right.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 31,
+						"w": 47,
+						"h": 27
+					},
+					"frame": {
+						"x": 865,
+						"y": 72,
+						"w": 47,
+						"h": 27
+					}
+				},
+				{
+					"filename": "hedgehog/15.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 4,
+						"w": 31,
+						"h": 26
+					},
+					"frame": {
+						"x": 870,
+						"y": 101,
+						"w": 31,
+						"h": 26
+					}
+				},
+				{
+					"filename": "hedgehog/1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 5,
+						"w": 32,
+						"h": 25
+					},
+					"frame": {
+						"x": 903,
+						"y": 101,
+						"w": 32,
+						"h": 25
+					}
+				},
+				{
+					"filename": "corpy/death/death2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 96,
+						"h": 96
+					},
+					"spriteSourceSize": {
+						"x": 28,
+						"y": 34,
+						"w": 30,
+						"h": 28
+					},
+					"frame": {
+						"x": 871,
+						"y": 36,
+						"w": 30,
+						"h": 28
+					}
+				},
+				{
+					"filename": "hedgehog/2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 5,
+						"w": 32,
+						"h": 25
+					},
+					"frame": {
+						"x": 903,
+						"y": 36,
+						"w": 32,
+						"h": 25
+					}
+				},
+				{
+					"filename": "hedgehog/13.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 5,
+						"w": 32,
+						"h": 25
+					},
+					"frame": {
+						"x": 906,
+						"y": 1,
+						"w": 32,
+						"h": 25
+					}
+				},
+				{
+					"filename": "hedgehog/14.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 5,
+						"w": 32,
+						"h": 25
+					},
+					"frame": {
+						"x": 914,
+						"y": 63,
+						"w": 32,
+						"h": 25
+					}
+				},
+				{
+					"filename": "hedgehog/4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 4,
+						"w": 30,
+						"h": 26
+					},
+					"frame": {
+						"x": 937,
+						"y": 28,
+						"w": 30,
+						"h": 26
+					}
+				},
+				{
+					"filename": "hedgehog/0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 6,
+						"w": 32,
+						"h": 24
+					},
+					"frame": {
+						"x": 940,
+						"y": 1,
+						"w": 32,
+						"h": 24
+					}
+				},
+				{
+					"filename": "sheep/walk/sheep_down_walk4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 22,
+						"w": 37,
+						"h": 37
+					},
+					"frame": {
+						"x": 937,
+						"y": 90,
+						"w": 37,
+						"h": 37
+					}
+				},
+				{
+					"filename": "hedgehog/16.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 4,
+						"w": 30,
+						"h": 26
+					},
+					"frame": {
+						"x": 948,
+						"y": 56,
+						"w": 30,
+						"h": 26
+					}
+				},
+				{
+					"filename": "hedgehog/12.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 6,
+						"w": 32,
+						"h": 24
+					},
+					"frame": {
+						"x": 969,
+						"y": 27,
+						"w": 32,
+						"h": 24
+					}
+				},
+				{
+					"filename": "frog/BlueBlue/attack/ToxicFrogBlueBlue_Attack-4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 14,
+						"w": 38,
+						"h": 20
+					},
+					"frame": {
+						"x": 974,
+						"y": 1,
+						"w": 38,
+						"h": 20
+					}
+				},
+				{
+					"filename": "corpy/death/death3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 96,
+						"h": 96
+					},
+					"spriteSourceSize": {
+						"x": 25,
+						"y": 29,
+						"w": 44,
+						"h": 38
+					},
+					"frame": {
+						"x": 976,
+						"y": 84,
+						"w": 44,
+						"h": 38
+					}
+				},
+				{
+					"filename": "frog/BlueBrown/attack/ToxicFrogBlueBrown_Attack-4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 14,
+						"w": 38,
+						"h": 20
+					},
+					"frame": {
+						"x": 980,
+						"y": 53,
+						"w": 38,
+						"h": 20
+					}
+				},
+				{
+					"filename": "frog/GreenBlue/attack/ToxicFrogGreenBlue_Attack-4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 14,
+						"w": 38,
+						"h": 20
+					},
+					"frame": {
+						"x": 1003,
+						"y": 23,
+						"w": 38,
+						"h": 20
+					}
+				},
+				{
+					"filename": "frog/GreenBrown/attack/ToxicFrogGreenBrown_Attack-4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 14,
+						"w": 38,
+						"h": 20
+					},
+					"frame": {
+						"x": 1014,
+						"y": 1,
+						"w": 38,
+						"h": 20
+					}
+				},
+				{
+					"filename": "frog/PurpleBlue/attack/ToxicFrogPurpleBlue_Attack-4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 14,
+						"w": 38,
+						"h": 20
+					},
+					"frame": {
+						"x": 1020,
+						"y": 45,
+						"w": 38,
+						"h": 20
+					}
+				},
+				{
+					"filename": "3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 9,
+						"w": 29,
+						"h": 15
+					},
+					"frame": {
+						"x": 1020,
+						"y": 67,
+						"w": 29,
+						"h": 15
+					}
+				},
+				{
+					"filename": "frog/PurpleWhite/attack/ToxicFrogPurpleWhite_Attack-4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 14,
+						"w": 38,
+						"h": 20
+					},
+					"frame": {
+						"x": 1043,
+						"y": 23,
+						"w": 38,
+						"h": 20
+					}
+				},
+				{
+					"filename": "frog/BlueBlue/attack/ToxicFrogBlueBlue_Attack-5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 15,
+						"w": 38,
+						"h": 19
+					},
+					"frame": {
+						"x": 1054,
+						"y": 1,
+						"w": 38,
+						"h": 19
+					}
+				},
+				{
+					"filename": "corpy/death/death4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 96,
+						"h": 96
+					},
+					"spriteSourceSize": {
+						"x": 25,
+						"y": 29,
+						"w": 44,
+						"h": 38
+					},
+					"frame": {
+						"x": 1022,
+						"y": 84,
+						"w": 44,
+						"h": 38
+					}
+				},
+				{
+					"filename": "0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 9,
+						"w": 26,
+						"h": 15
+					},
+					"frame": {
+						"x": 1051,
+						"y": 67,
+						"w": 26,
+						"h": 15
+					}
+				},
+				{
+					"filename": "frog/BlueBrown/attack/ToxicFrogBlueBrown_Attack-5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 15,
+						"w": 38,
+						"h": 19
+					},
+					"frame": {
+						"x": 1060,
+						"y": 45,
+						"w": 38,
+						"h": 19
+					}
+				},
+				{
+					"filename": "frog/GreenBlue/attack/ToxicFrogGreenBlue_Attack-5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 15,
+						"w": 38,
+						"h": 19
+					},
+					"frame": {
+						"x": 1083,
+						"y": 22,
+						"w": 38,
+						"h": 19
+					}
+				},
+				{
+					"filename": "frog/GreenBrown/attack/ToxicFrogGreenBrown_Attack-5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 15,
+						"w": 38,
+						"h": 19
+					},
+					"frame": {
+						"x": 1094,
+						"y": 1,
+						"w": 38,
+						"h": 19
+					}
+				},
+				{
+					"filename": "sheep/sheep_up.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 17,
+						"w": 37,
+						"h": 42
+					},
+					"frame": {
+						"x": 1068,
+						"y": 84,
+						"w": 37,
+						"h": 42
+					}
+				},
+				{
+					"filename": "2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 9,
+						"w": 25,
+						"h": 15
+					},
+					"frame": {
+						"x": 1079,
+						"y": 66,
+						"w": 25,
+						"h": 15
+					}
+				},
+				{
+					"filename": "frog/PurpleBlue/attack/ToxicFrogPurpleBlue_Attack-5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 15,
+						"w": 38,
+						"h": 19
+					},
+					"frame": {
+						"x": 1100,
+						"y": 43,
+						"w": 38,
+						"h": 19
+					}
+				},
+				{
+					"filename": "frog/BlueBlue/hop/ToxicFrogBlueBlue_Hop-4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 12,
+						"w": 24,
+						"h": 18
+					},
+					"frame": {
+						"x": 1106,
+						"y": 64,
+						"w": 24,
+						"h": 18
+					}
+				},
+				{
+					"filename": "frog/PurpleWhite/attack/ToxicFrogPurpleWhite_Attack-5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 15,
+						"w": 38,
+						"h": 19
+					},
+					"frame": {
+						"x": 1123,
+						"y": 22,
+						"w": 38,
+						"h": 19
+					}
+				},
+				{
+					"filename": "frog/BlueBlue/attack/ToxicFrogBlueBlue_Attack-3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 15,
+						"w": 36,
+						"h": 19
+					},
+					"frame": {
+						"x": 1134,
+						"y": 1,
+						"w": 36,
+						"h": 19
+					}
+				},
+				{
+					"filename": "sheep/walk/sheep_up_walk1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 17,
+						"w": 37,
+						"h": 42
+					},
+					"frame": {
+						"x": 1107,
+						"y": 84,
+						"w": 37,
+						"h": 42
+					}
+				},
+				{
+					"filename": "frog/BlueBrown/hop/ToxicFrogBlueBrown_Hop-4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 12,
+						"w": 24,
+						"h": 18
+					},
+					"frame": {
+						"x": 1132,
+						"y": 64,
+						"w": 24,
+						"h": 18
+					}
+				},
+				{
+					"filename": "frog/BlueBrown/attack/ToxicFrogBlueBrown_Attack-3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 15,
+						"w": 36,
+						"h": 19
+					},
+					"frame": {
+						"x": 1140,
+						"y": 43,
+						"w": 36,
+						"h": 19
+					}
+				},
+				{
+					"filename": "frog/GreenBlue/attack/ToxicFrogGreenBlue_Attack-3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 15,
+						"w": 36,
+						"h": 19
+					},
+					"frame": {
+						"x": 1163,
+						"y": 22,
+						"w": 36,
+						"h": 19
+					}
+				},
+				{
+					"filename": "frog/GreenBrown/attack/ToxicFrogGreenBrown_Attack-3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 15,
+						"w": 36,
+						"h": 19
+					},
+					"frame": {
+						"x": 1172,
+						"y": 1,
+						"w": 36,
+						"h": 19
+					}
+				},
+				{
+					"filename": "sheep/walk/sheep_up_walk2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 17,
+						"w": 37,
+						"h": 42
+					},
+					"frame": {
+						"x": 1146,
+						"y": 84,
+						"w": 37,
+						"h": 42
+					}
+				},
+				{
+					"filename": "frog/GreenBlue/hop/ToxicFrogGreenBlue_Hop-4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 12,
+						"w": 24,
+						"h": 18
+					},
+					"frame": {
+						"x": 1158,
+						"y": 64,
+						"w": 24,
+						"h": 18
+					}
+				},
+				{
+					"filename": "frog/PurpleBlue/attack/ToxicFrogPurpleBlue_Attack-3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 15,
+						"w": 36,
+						"h": 19
+					},
+					"frame": {
+						"x": 1178,
+						"y": 43,
+						"w": 36,
+						"h": 19
+					}
+				},
+				{
+					"filename": "frog/GreenBrown/hop/ToxicFrogGreenBrown_Hop-4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 12,
+						"w": 24,
+						"h": 18
+					},
+					"frame": {
+						"x": 1184,
+						"y": 64,
+						"w": 24,
+						"h": 18
+					}
+				},
+				{
+					"filename": "frog/PurpleWhite/attack/ToxicFrogPurpleWhite_Attack-3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 15,
+						"w": 36,
+						"h": 19
+					},
+					"frame": {
+						"x": 1201,
+						"y": 22,
+						"w": 36,
+						"h": 19
+					}
+				},
+				{
+					"filename": "7.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 7,
+						"w": 32,
+						"h": 19
+					},
+					"frame": {
+						"x": 1210,
+						"y": 1,
+						"w": 32,
+						"h": 19
+					}
+				},
+				{
+					"filename": "sheep/walk/sheep_up_walk3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 17,
+						"w": 37,
+						"h": 42
+					},
+					"frame": {
+						"x": 1185,
+						"y": 84,
+						"w": 37,
+						"h": 42
+					}
+				},
+				{
+					"filename": "frog/PurpleBlue/hop/ToxicFrogPurpleBlue_Hop-4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 12,
+						"w": 24,
+						"h": 18
+					},
+					"frame": {
+						"x": 1210,
+						"y": 64,
+						"w": 24,
+						"h": 18
+					}
+				},
+				{
+					"filename": "frog/BlueBlue/hop/ToxicFrogBlueBlue_Hop-5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 8,
+						"y": 13,
+						"w": 25,
+						"h": 19
+					},
+					"frame": {
+						"x": 1216,
+						"y": 43,
+						"w": 25,
+						"h": 19
+					}
+				},
+				{
+					"filename": "frog/BlueBrown/hop/ToxicFrogBlueBrown_Hop-5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 8,
+						"y": 13,
+						"w": 25,
+						"h": 19
+					},
+					"frame": {
+						"x": 1239,
+						"y": 22,
+						"w": 25,
+						"h": 19
+					}
+				},
+				{
+					"filename": "frog/GreenBlue/hop/ToxicFrogGreenBlue_Hop-5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 8,
+						"y": 13,
+						"w": 25,
+						"h": 19
+					},
+					"frame": {
+						"x": 1244,
+						"y": 1,
+						"w": 25,
+						"h": 19
+					}
+				},
+				{
+					"filename": "sheep/walk/sheep_up_walk5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 17,
+						"w": 37,
+						"h": 42
+					},
+					"frame": {
+						"x": 1224,
+						"y": 84,
+						"w": 37,
+						"h": 42
+					}
+				},
+				{
+					"filename": "frog/PurpleWhite/hop/ToxicFrogPurpleWhite_Hop-4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 12,
+						"w": 24,
+						"h": 18
+					},
+					"frame": {
+						"x": 1236,
+						"y": 64,
+						"w": 24,
+						"h": 18
+					}
+				},
+				{
+					"filename": "frog/GreenBrown/hop/ToxicFrogGreenBrown_Hop-5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 8,
+						"y": 13,
+						"w": 25,
+						"h": 19
+					},
+					"frame": {
+						"x": 1243,
+						"y": 43,
+						"w": 25,
+						"h": 19
+					}
+				},
+				{
+					"filename": "frog/BlueBlue/attack/ToxicFrogBlueBlue_Attack-0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 16,
+						"w": 23,
+						"h": 18
+					},
+					"frame": {
+						"x": 1262,
+						"y": 64,
+						"w": 23,
+						"h": 18
+					}
+				},
+				{
+					"filename": "frog/PurpleBlue/hop/ToxicFrogPurpleBlue_Hop-5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 8,
+						"y": 13,
+						"w": 25,
+						"h": 19
+					},
+					"frame": {
+						"x": 1266,
+						"y": 22,
+						"w": 25,
+						"h": 19
+					}
+				},
+				{
+					"filename": "frog/PurpleWhite/hop/ToxicFrogPurpleWhite_Hop-5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 8,
+						"y": 13,
+						"w": 25,
+						"h": 19
+					},
+					"frame": {
+						"x": 1271,
+						"y": 1,
+						"w": 25,
+						"h": 19
+					}
+				},
+				{
+					"filename": "frog/BlueBlue/hop/ToxicFrogBlueBlue_Hop-6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 15,
+						"w": 23,
+						"h": 19
+					},
+					"frame": {
+						"x": 1270,
+						"y": 43,
+						"w": 23,
+						"h": 19
+					}
+				},
+				{
+					"filename": "frog/BlueBlue/idle/ToxicFrogBlueBlue_Idle-6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 15,
+						"w": 23,
+						"h": 19
+					},
+					"frame": {
+						"x": 1293,
+						"y": 22,
+						"w": 23,
+						"h": 19
+					}
+				},
+				{
+					"filename": "frog/BlueBlue/idle/ToxicFrogBlueBlue_Idle-7.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 15,
+						"w": 23,
+						"h": 19
+					},
+					"frame": {
+						"x": 1298,
+						"y": 1,
+						"w": 23,
+						"h": 19
+					}
+				},
+				{
+					"filename": "sheep/walk/sheep_up_walk4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 18,
+						"w": 37,
+						"h": 41
+					},
+					"frame": {
+						"x": 1263,
+						"y": 84,
+						"w": 37,
+						"h": 41
+					}
+				},
+				{
+					"filename": "frog/BlueBlue/hop/ToxicFrogBlueBlue_Hop-0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 16,
+						"w": 23,
+						"h": 18
+					},
+					"frame": {
+						"x": 1287,
+						"y": 64,
+						"w": 23,
+						"h": 18
+					}
+				},
+				{
+					"filename": "frog/BlueBrown/hop/ToxicFrogBlueBrown_Hop-6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 15,
+						"w": 23,
+						"h": 19
+					},
+					"frame": {
+						"x": 1295,
+						"y": 43,
+						"w": 23,
+						"h": 19
+					}
+				},
+				{
+					"filename": "frog/BlueBrown/idle/ToxicFrogBlueBrown_Idle-6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 15,
+						"w": 23,
+						"h": 19
+					},
+					"frame": {
+						"x": 1318,
+						"y": 22,
+						"w": 23,
+						"h": 19
+					}
+				},
+				{
+					"filename": "frog/BlueBrown/idle/ToxicFrogBlueBrown_Idle-7.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 15,
+						"w": 23,
+						"h": 19
+					},
+					"frame": {
+						"x": 1323,
+						"y": 1,
+						"w": 23,
+						"h": 19
+					}
+				},
+				{
+					"filename": "sheep/sheep_down.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 21,
+						"w": 37,
+						"h": 38
+					},
+					"frame": {
+						"x": 1302,
+						"y": 84,
+						"w": 37,
+						"h": 38
+					}
+				},
+				{
+					"filename": "frog/BlueBlue/idle/ToxicFrogBlueBlue_Idle-0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 16,
+						"w": 23,
+						"h": 18
+					},
+					"frame": {
+						"x": 1312,
+						"y": 64,
+						"w": 23,
+						"h": 18
+					}
+				},
+				{
+					"filename": "frog/GreenBlue/hop/ToxicFrogGreenBlue_Hop-6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 15,
+						"w": 23,
+						"h": 19
+					},
+					"frame": {
+						"x": 1320,
+						"y": 43,
+						"w": 23,
+						"h": 19
+					}
+				},
+				{
+					"filename": "frog/BlueBlue/idle/ToxicFrogBlueBlue_Idle-1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 16,
+						"w": 23,
+						"h": 18
+					},
+					"frame": {
+						"x": 1337,
+						"y": 64,
+						"w": 23,
+						"h": 18
+					}
+				},
+				{
+					"filename": "frog/GreenBlue/idle/ToxicFrogGreenBlue_Idle-6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 15,
+						"w": 23,
+						"h": 19
+					},
+					"frame": {
+						"x": 1343,
+						"y": 22,
+						"w": 23,
+						"h": 19
+					}
+				},
+				{
+					"filename": "frog/GreenBlue/idle/ToxicFrogGreenBlue_Idle-7.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 15,
+						"w": 23,
+						"h": 19
+					},
+					"frame": {
+						"x": 1348,
+						"y": 1,
+						"w": 23,
+						"h": 19
+					}
+				},
+				{
+					"filename": "frog/GreenBrown/hop/ToxicFrogGreenBrown_Hop-6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 15,
+						"w": 23,
+						"h": 19
+					},
+					"frame": {
+						"x": 1345,
+						"y": 43,
+						"w": 23,
+						"h": 19
+					}
+				},
+				{
+					"filename": "frog/GreenBrown/idle/ToxicFrogGreenBrown_Idle-6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 15,
+						"w": 23,
+						"h": 19
+					},
+					"frame": {
+						"x": 1368,
+						"y": 22,
+						"w": 23,
+						"h": 19
+					}
+				},
+				{
+					"filename": "frog/GreenBrown/idle/ToxicFrogGreenBrown_Idle-7.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 15,
+						"w": 23,
+						"h": 19
+					},
+					"frame": {
+						"x": 1373,
+						"y": 1,
+						"w": 23,
+						"h": 19
+					}
+				},
+				{
+					"filename": "sheep/walk/sheep_down_walk1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 21,
+						"w": 37,
+						"h": 38
+					},
+					"frame": {
+						"x": 1341,
+						"y": 84,
+						"w": 37,
+						"h": 38
+					}
+				},
+				{
+					"filename": "frog/BlueBlue/idle/ToxicFrogBlueBlue_Idle-4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 16,
+						"w": 23,
+						"h": 18
+					},
+					"frame": {
+						"x": 1362,
+						"y": 64,
+						"w": 23,
+						"h": 18
+					}
+				},
+				{
+					"filename": "frog/PurpleBlue/hop/ToxicFrogPurpleBlue_Hop-6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 15,
+						"w": 23,
+						"h": 19
+					},
+					"frame": {
+						"x": 1370,
+						"y": 43,
+						"w": 23,
+						"h": 19
+					}
+				},
+				{
+					"filename": "frog/PurpleBlue/idle/ToxicFrogPurpleBlue_Idle-6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 15,
+						"w": 23,
+						"h": 19
+					},
+					"frame": {
+						"x": 1393,
+						"y": 22,
+						"w": 23,
+						"h": 19
+					}
+				},
+				{
+					"filename": "frog/PurpleBlue/idle/ToxicFrogPurpleBlue_Idle-7.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 15,
+						"w": 23,
+						"h": 19
+					},
+					"frame": {
+						"x": 1398,
+						"y": 1,
+						"w": 23,
+						"h": 19
+					}
+				},
+				{
+					"filename": "sheep/walk/sheep_down_walk2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 21,
+						"w": 37,
+						"h": 38
+					},
+					"frame": {
+						"x": 1380,
+						"y": 84,
+						"w": 37,
+						"h": 38
+					}
+				},
+				{
+					"filename": "frog/BlueBlue/idle/ToxicFrogBlueBlue_Idle-5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 16,
+						"w": 23,
+						"h": 18
+					},
+					"frame": {
+						"x": 1387,
+						"y": 64,
+						"w": 23,
+						"h": 18
+					}
+				},
+				{
+					"filename": "frog/PurpleWhite/hop/ToxicFrogPurpleWhite_Hop-6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 15,
+						"w": 23,
+						"h": 19
+					},
+					"frame": {
+						"x": 1395,
+						"y": 43,
+						"w": 23,
+						"h": 19
+					}
+				},
+				{
+					"filename": "frog/BlueBrown/attack/ToxicFrogBlueBrown_Attack-0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 16,
+						"w": 23,
+						"h": 18
+					},
+					"frame": {
+						"x": 1412,
+						"y": 64,
+						"w": 23,
+						"h": 18
+					}
+				},
+				{
+					"filename": "frog/PurpleWhite/idle/ToxicFrogPurpleWhite_Idle-6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 15,
+						"w": 23,
+						"h": 19
+					},
+					"frame": {
+						"x": 1418,
+						"y": 22,
+						"w": 23,
+						"h": 19
+					}
+				},
+				{
+					"filename": "frog/PurpleWhite/idle/ToxicFrogPurpleWhite_Idle-7.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 15,
+						"w": 23,
+						"h": 19
+					},
+					"frame": {
+						"x": 1423,
+						"y": 1,
+						"w": 23,
+						"h": 19
+					}
+				},
+				{
+					"filename": "frog/BlueBrown/hop/ToxicFrogBlueBrown_Hop-0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 16,
+						"w": 23,
+						"h": 18
+					},
+					"frame": {
+						"x": 1420,
+						"y": 43,
+						"w": 23,
+						"h": 18
+					}
+				},
+				{
+					"filename": "frog/BlueBrown/idle/ToxicFrogBlueBrown_Idle-0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 16,
+						"w": 23,
+						"h": 18
+					},
+					"frame": {
+						"x": 1443,
+						"y": 22,
+						"w": 23,
+						"h": 18
+					}
+				},
+				{
+					"filename": "frog/BlueBrown/idle/ToxicFrogBlueBrown_Idle-1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 16,
+						"w": 23,
+						"h": 18
+					},
+					"frame": {
+						"x": 1448,
+						"y": 1,
+						"w": 23,
+						"h": 18
+					}
+				},
+				{
+					"filename": "sheep/walk/sheep_down_walk3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 21,
+						"w": 37,
+						"h": 38
+					},
+					"frame": {
+						"x": 1419,
+						"y": 84,
+						"w": 37,
+						"h": 38
+					}
+				},
+				{
+					"filename": "frog/BlueBrown/idle/ToxicFrogBlueBrown_Idle-4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 16,
+						"w": 23,
+						"h": 18
+					},
+					"frame": {
+						"x": 1437,
+						"y": 63,
+						"w": 23,
+						"h": 18
+					}
+				},
+				{
+					"filename": "frog/BlueBrown/idle/ToxicFrogBlueBrown_Idle-5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 16,
+						"w": 23,
+						"h": 18
+					},
+					"frame": {
+						"x": 1445,
+						"y": 42,
+						"w": 23,
+						"h": 18
+					}
+				},
+				{
+					"filename": "frog/GreenBlue/attack/ToxicFrogGreenBlue_Attack-0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 16,
+						"w": 23,
+						"h": 18
+					},
+					"frame": {
+						"x": 1468,
+						"y": 21,
+						"w": 23,
+						"h": 18
+					}
+				},
+				{
+					"filename": "frog/GreenBlue/hop/ToxicFrogGreenBlue_Hop-0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 16,
+						"w": 23,
+						"h": 18
+					},
+					"frame": {
+						"x": 1473,
+						"y": 1,
+						"w": 23,
+						"h": 18
+					}
+				},
+				{
+					"filename": "sheep/walk/sheep_down_walk5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 21,
+						"w": 37,
+						"h": 38
+					},
+					"frame": {
+						"x": 1458,
+						"y": 83,
+						"w": 37,
+						"h": 38
+					}
+				},
+				{
+					"filename": "frog/GreenBlue/idle/ToxicFrogGreenBlue_Idle-0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 16,
+						"w": 23,
+						"h": 18
+					},
+					"frame": {
+						"x": 1462,
+						"y": 62,
+						"w": 23,
+						"h": 18
+					}
+				},
+				{
+					"filename": "frog/GreenBlue/idle/ToxicFrogGreenBlue_Idle-1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 16,
+						"w": 23,
+						"h": 18
+					},
+					"frame": {
+						"x": 1470,
+						"y": 41,
+						"w": 23,
+						"h": 18
+					}
+				},
+				{
+					"filename": "frog/GreenBlue/idle/ToxicFrogGreenBlue_Idle-4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 16,
+						"w": 23,
+						"h": 18
+					},
+					"frame": {
+						"x": 1493,
+						"y": 21,
+						"w": 23,
+						"h": 18
+					}
+				},
+				{
+					"filename": "frog/GreenBlue/idle/ToxicFrogGreenBlue_Idle-5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 16,
+						"w": 23,
+						"h": 18
+					},
+					"frame": {
+						"x": 1498,
+						"y": 1,
+						"w": 23,
+						"h": 18
+					}
+				},
+				{
+					"filename": "5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 6,
+						"w": 29,
+						"h": 20
+					},
+					"frame": {
+						"x": 1487,
+						"y": 61,
+						"w": 29,
+						"h": 20
+					}
+				},
+				{
+					"filename": "frog/GreenBrown/attack/ToxicFrogGreenBrown_Attack-0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 16,
+						"w": 23,
+						"h": 18
+					},
+					"frame": {
+						"x": 1495,
+						"y": 41,
+						"w": 23,
+						"h": 18
+					}
+				},
+				{
+					"filename": "frog/GreenBrown/hop/ToxicFrogGreenBrown_Hop-0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 16,
+						"w": 23,
+						"h": 18
+					},
+					"frame": {
+						"x": 1518,
+						"y": 21,
+						"w": 23,
+						"h": 18
+					}
+				},
+				{
+					"filename": "frog/GreenBrown/idle/ToxicFrogGreenBrown_Idle-0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 16,
+						"w": 23,
+						"h": 18
+					},
+					"frame": {
+						"x": 1523,
+						"y": 1,
+						"w": 23,
+						"h": 18
+					}
+				},
+				{
+					"filename": "sheep/walk/sheep_down_walk6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 21,
+						"w": 37,
+						"h": 38
+					},
+					"frame": {
+						"x": 1497,
+						"y": 83,
+						"w": 37,
+						"h": 38
+					}
+				},
+				{
+					"filename": "6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 6,
+						"w": 29,
+						"h": 20
+					},
+					"frame": {
+						"x": 1518,
+						"y": 61,
+						"w": 29,
+						"h": 20
+					}
+				},
+				{
+					"filename": "frog/GreenBrown/idle/ToxicFrogGreenBrown_Idle-1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 16,
+						"w": 23,
+						"h": 18
+					},
+					"frame": {
+						"x": 1520,
+						"y": 41,
+						"w": 23,
+						"h": 18
+					}
+				},
+				{
+					"filename": "frog/GreenBrown/idle/ToxicFrogGreenBrown_Idle-4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 16,
+						"w": 23,
+						"h": 18
+					},
+					"frame": {
+						"x": 1543,
+						"y": 21,
+						"w": 23,
+						"h": 18
+					}
+				},
+				{
+					"filename": "frog/GreenBrown/idle/ToxicFrogGreenBrown_Idle-5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 16,
+						"w": 23,
+						"h": 18
+					},
+					"frame": {
+						"x": 1548,
+						"y": 1,
+						"w": 23,
+						"h": 18
+					}
+				},
+				{
+					"filename": "frog/PurpleBlue/attack/ToxicFrogPurpleBlue_Attack-0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 16,
+						"w": 23,
+						"h": 18
+					},
+					"frame": {
+						"x": 1545,
+						"y": 41,
+						"w": 23,
+						"h": 18
+					}
+				},
+				{
+					"filename": "frog/PurpleBlue/hop/ToxicFrogPurpleBlue_Hop-0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 16,
+						"w": 23,
+						"h": 18
+					},
+					"frame": {
+						"x": 1568,
+						"y": 21,
+						"w": 23,
+						"h": 18
+					}
+				},
+				{
+					"filename": "frog/PurpleBlue/idle/ToxicFrogPurpleBlue_Idle-0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 16,
+						"w": 23,
+						"h": 18
+					},
+					"frame": {
+						"x": 1573,
+						"y": 1,
+						"w": 23,
+						"h": 18
+					}
+				},
+				{
+					"filename": "sheep/sheared/sheep_up.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 19,
+						"y": 19,
+						"w": 23,
+						"h": 40
+					},
+					"frame": {
+						"x": 1536,
+						"y": 83,
+						"w": 23,
+						"h": 40
+					}
+				},
+				{
+					"filename": "frog/PurpleBlue/idle/ToxicFrogPurpleBlue_Idle-1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 16,
+						"w": 23,
+						"h": 18
+					},
+					"frame": {
+						"x": 1549,
+						"y": 61,
+						"w": 23,
+						"h": 18
+					}
+				},
+				{
+					"filename": "frog/PurpleBlue/idle/ToxicFrogPurpleBlue_Idle-4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 16,
+						"w": 23,
+						"h": 18
+					},
+					"frame": {
+						"x": 1570,
+						"y": 41,
+						"w": 23,
+						"h": 18
+					}
+				},
+				{
+					"filename": "frog/PurpleBlue/idle/ToxicFrogPurpleBlue_Idle-5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 16,
+						"w": 23,
+						"h": 18
+					},
+					"frame": {
+						"x": 1593,
+						"y": 21,
+						"w": 23,
+						"h": 18
+					}
+				},
+				{
+					"filename": "frog/PurpleWhite/attack/ToxicFrogPurpleWhite_Attack-0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 16,
+						"w": 23,
+						"h": 18
+					},
+					"frame": {
+						"x": 1598,
+						"y": 1,
+						"w": 23,
+						"h": 18
+					}
+				},
+				{
+					"filename": "sheep/sheared/sheep_down.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 64
+					},
+					"spriteSourceSize": {
+						"x": 18,
+						"y": 29,
+						"w": 25,
+						"h": 30
+					},
+					"frame": {
+						"x": 1561,
+						"y": 81,
+						"w": 25,
+						"h": 30
+					}
+				},
+				{
+					"filename": "frog/PurpleWhite/hop/ToxicFrogPurpleWhite_Hop-0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 16,
+						"w": 23,
+						"h": 18
+					},
+					"frame": {
+						"x": 1574,
+						"y": 61,
+						"w": 23,
+						"h": 18
+					}
+				},
+				{
+					"filename": "frog/PurpleWhite/idle/ToxicFrogPurpleWhite_Idle-0.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 16,
+						"w": 23,
+						"h": 18
+					},
+					"frame": {
+						"x": 1595,
+						"y": 41,
+						"w": 23,
+						"h": 18
+					}
+				},
+				{
+					"filename": "frog/PurpleWhite/idle/ToxicFrogPurpleWhite_Idle-1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 16,
+						"w": 23,
+						"h": 18
+					},
+					"frame": {
+						"x": 1618,
+						"y": 21,
+						"w": 23,
+						"h": 18
+					}
+				},
+				{
+					"filename": "frog/PurpleWhite/idle/ToxicFrogPurpleWhite_Idle-4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 16,
+						"w": 23,
+						"h": 18
+					},
+					"frame": {
+						"x": 1623,
+						"y": 1,
+						"w": 23,
+						"h": 18
+					}
+				},
+				{
+					"filename": "hedgehog/5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 4,
+						"w": 30,
+						"h": 25
+					},
+					"frame": {
+						"x": 1588,
+						"y": 81,
+						"w": 30,
+						"h": 25
+					}
+				},
+				{
+					"filename": "frog/PurpleWhite/idle/ToxicFrogPurpleWhite_Idle-5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 16,
+						"w": 23,
+						"h": 18
+					},
+					"frame": {
+						"x": 1599,
+						"y": 61,
+						"w": 23,
+						"h": 18
+					}
+				},
+				{
+					"filename": "frog/BlueBlue/idle/ToxicFrogBlueBlue_Idle-3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 17,
+						"w": 24,
+						"h": 17
+					},
+					"frame": {
+						"x": 1620,
+						"y": 41,
+						"w": 24,
+						"h": 17
+					}
+				},
+				{
+					"filename": "frog/BlueBrown/idle/ToxicFrogBlueBrown_Idle-3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 17,
+						"w": 24,
+						"h": 17
+					},
+					"frame": {
+						"x": 1643,
+						"y": 21,
+						"w": 24,
+						"h": 17
+					}
+				},
+				{
+					"filename": "frog/GreenBlue/idle/ToxicFrogGreenBlue_Idle-3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 17,
+						"w": 24,
+						"h": 17
+					},
+					"frame": {
+						"x": 1648,
+						"y": 1,
+						"w": 24,
+						"h": 17
+					}
+				},
+				{
+					"filename": "frog/GreenBrown/idle/ToxicFrogGreenBrown_Idle-3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 17,
+						"w": 24,
+						"h": 17
+					},
+					"frame": {
+						"x": 1588,
+						"y": 108,
+						"w": 24,
+						"h": 17
+					}
+				},
+				{
+					"filename": "frog/PurpleBlue/idle/ToxicFrogPurpleBlue_Idle-3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 17,
+						"w": 24,
+						"h": 17
+					},
+					"frame": {
+						"x": 1614,
+						"y": 108,
+						"w": 24,
+						"h": 17
+					}
+				},
+				{
+					"filename": "hedgehog/17.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 4,
+						"w": 30,
+						"h": 25
+					},
+					"frame": {
+						"x": 1620,
+						"y": 81,
+						"w": 30,
+						"h": 25
+					}
+				},
+				{
+					"filename": "frog/PurpleWhite/idle/ToxicFrogPurpleWhite_Idle-3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 17,
+						"w": 24,
+						"h": 17
+					},
+					"frame": {
+						"x": 1640,
+						"y": 108,
+						"w": 24,
+						"h": 17
+					}
+				},
+				{
+					"filename": "frog/BlueBlue/attack/ToxicFrogBlueBlue_Attack-1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 17,
+						"w": 23,
+						"h": 17
+					},
+					"frame": {
+						"x": 1624,
+						"y": 60,
+						"w": 23,
+						"h": 17
+					}
+				},
+				{
+					"filename": "frog/BlueBlue/hop/ToxicFrogBlueBlue_Hop-1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 17,
+						"w": 23,
+						"h": 17
+					},
+					"frame": {
+						"x": 1646,
+						"y": 40,
+						"w": 23,
+						"h": 17
+					}
+				},
+				{
+					"filename": "frog/BlueBlue/idle/ToxicFrogBlueBlue_Idle-2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 17,
+						"w": 23,
+						"h": 17
+					},
+					"frame": {
+						"x": 1669,
+						"y": 20,
+						"w": 23,
+						"h": 17
+					}
+				},
+				{
+					"filename": "frog/BlueBrown/attack/ToxicFrogBlueBrown_Attack-1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 17,
+						"w": 23,
+						"h": 17
+					},
+					"frame": {
+						"x": 1674,
+						"y": 1,
+						"w": 23,
+						"h": 17
+					}
+				},
+				{
+					"filename": "frog/BlueBrown/hop/ToxicFrogBlueBrown_Hop-1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 17,
+						"w": 23,
+						"h": 17
+					},
+					"frame": {
+						"x": 1649,
+						"y": 59,
+						"w": 23,
+						"h": 17
+					}
+				},
+				{
+					"filename": "frog/BlueBrown/idle/ToxicFrogBlueBrown_Idle-2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 17,
+						"w": 23,
+						"h": 17
+					},
+					"frame": {
+						"x": 1671,
+						"y": 39,
+						"w": 23,
+						"h": 17
+					}
+				},
+				{
+					"filename": "frog/GreenBlue/attack/ToxicFrogGreenBlue_Attack-1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 17,
+						"w": 23,
+						"h": 17
+					},
+					"frame": {
+						"x": 1694,
+						"y": 20,
+						"w": 23,
+						"h": 17
+					}
+				},
+				{
+					"filename": "frog/GreenBlue/hop/ToxicFrogGreenBlue_Hop-1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 17,
+						"w": 23,
+						"h": 17
+					},
+					"frame": {
+						"x": 1699,
+						"y": 1,
+						"w": 23,
+						"h": 17
+					}
+				},
+				{
+					"filename": "hedgehog/8.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 6,
+						"w": 30,
+						"h": 23
+					},
+					"frame": {
+						"x": 1652,
+						"y": 78,
+						"w": 30,
+						"h": 23
+					}
+				},
+				{
+					"filename": "frog/GreenBlue/idle/ToxicFrogGreenBlue_Idle-2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 17,
+						"w": 23,
+						"h": 17
+					},
+					"frame": {
+						"x": 1674,
+						"y": 58,
+						"w": 23,
+						"h": 17
+					}
+				},
+				{
+					"filename": "frog/GreenBrown/attack/ToxicFrogGreenBrown_Attack-1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 17,
+						"w": 23,
+						"h": 17
+					},
+					"frame": {
+						"x": 1696,
+						"y": 39,
+						"w": 23,
+						"h": 17
+					}
+				},
+				{
+					"filename": "frog/GreenBrown/hop/ToxicFrogGreenBrown_Hop-1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 17,
+						"w": 23,
+						"h": 17
+					},
+					"frame": {
+						"x": 1719,
+						"y": 20,
+						"w": 23,
+						"h": 17
+					}
+				},
+				{
+					"filename": "frog/GreenBrown/idle/ToxicFrogGreenBrown_Idle-2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 17,
+						"w": 23,
+						"h": 17
+					},
+					"frame": {
+						"x": 1724,
+						"y": 1,
+						"w": 23,
+						"h": 17
+					}
+				},
+				{
+					"filename": "hedgehog/11.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 6,
+						"w": 30,
+						"h": 23
+					},
+					"frame": {
+						"x": 1666,
+						"y": 103,
+						"w": 30,
+						"h": 23
+					}
+				},
+				{
+					"filename": "hedgehog/7.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 7,
+						"w": 26,
+						"h": 22
+					},
+					"frame": {
+						"x": 1684,
+						"y": 77,
+						"w": 26,
+						"h": 22
+					}
+				},
+				{
+					"filename": "frog/PurpleBlue/attack/ToxicFrogPurpleBlue_Attack-1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 17,
+						"w": 23,
+						"h": 17
+					},
+					"frame": {
+						"x": 1699,
+						"y": 58,
+						"w": 23,
+						"h": 17
+					}
+				},
+				{
+					"filename": "frog/PurpleBlue/hop/ToxicFrogPurpleBlue_Hop-1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 17,
+						"w": 23,
+						"h": 17
+					},
+					"frame": {
+						"x": 1721,
+						"y": 39,
+						"w": 23,
+						"h": 17
+					}
+				},
+				{
+					"filename": "frog/PurpleBlue/idle/ToxicFrogPurpleBlue_Idle-2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 17,
+						"w": 23,
+						"h": 17
+					},
+					"frame": {
+						"x": 1744,
+						"y": 20,
+						"w": 23,
+						"h": 17
+					}
+				},
+				{
+					"filename": "frog/PurpleWhite/attack/ToxicFrogPurpleWhite_Attack-1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 17,
+						"w": 23,
+						"h": 17
+					},
+					"frame": {
+						"x": 1749,
+						"y": 1,
+						"w": 23,
+						"h": 17
+					}
+				},
+				{
+					"filename": "hedgehog/10.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 7,
+						"w": 26,
+						"h": 22
+					},
+					"frame": {
+						"x": 1698,
+						"y": 101,
+						"w": 26,
+						"h": 22
+					}
+				},
+				{
+					"filename": "hedgehog/6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 8,
+						"w": 26,
+						"h": 21
+					},
+					"frame": {
+						"x": 1712,
+						"y": 77,
+						"w": 26,
+						"h": 21
+					}
+				},
+				{
+					"filename": "frog/PurpleWhite/hop/ToxicFrogPurpleWhite_Hop-1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 17,
+						"w": 23,
+						"h": 17
+					},
+					"frame": {
+						"x": 1724,
+						"y": 58,
+						"w": 23,
+						"h": 17
+					}
+				},
+				{
+					"filename": "frog/PurpleWhite/idle/ToxicFrogPurpleWhite_Idle-2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 10,
+						"y": 17,
+						"w": 23,
+						"h": 17
+					},
+					"frame": {
+						"x": 1746,
+						"y": 39,
+						"w": 23,
+						"h": 17
+					}
+				},
+				{
+					"filename": "frog/BlueBlue/attack/ToxicFrogBlueBlue_Attack-2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 19,
+						"w": 24,
+						"h": 15
+					},
+					"frame": {
+						"x": 1769,
+						"y": 20,
+						"w": 24,
+						"h": 15
+					}
+				},
+				{
+					"filename": "frog/BlueBlue/hop/ToxicFrogBlueBlue_Hop-2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 19,
+						"w": 24,
+						"h": 15
+					},
+					"frame": {
+						"x": 1774,
+						"y": 1,
+						"w": 24,
+						"h": 15
+					}
+				},
+				{
+					"filename": "hedgehog/9.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 8,
+						"w": 26,
+						"h": 21
+					},
+					"frame": {
+						"x": 1726,
+						"y": 100,
+						"w": 26,
+						"h": 21
+					}
+				},
+				{
+					"filename": "corpy/death/death1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 96,
+						"h": 96
+					},
+					"spriteSourceSize": {
+						"x": 40,
+						"y": 40,
+						"w": 19,
+						"h": 21
+					},
+					"frame": {
+						"x": 1740,
+						"y": 77,
+						"w": 19,
+						"h": 21
+					}
+				},
+				{
+					"filename": "frog/BlueBrown/attack/ToxicFrogBlueBrown_Attack-2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 19,
+						"w": 24,
+						"h": 15
+					},
+					"frame": {
+						"x": 1749,
+						"y": 58,
+						"w": 24,
+						"h": 15
+					}
+				},
+				{
+					"filename": "frog/BlueBrown/hop/ToxicFrogBlueBrown_Hop-2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 19,
+						"w": 24,
+						"h": 15
+					},
+					"frame": {
+						"x": 1771,
+						"y": 37,
+						"w": 24,
+						"h": 15
+					}
+				},
+				{
+					"filename": "frog/GreenBlue/attack/ToxicFrogGreenBlue_Attack-2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 19,
+						"w": 24,
+						"h": 15
+					},
+					"frame": {
+						"x": 1795,
+						"y": 18,
+						"w": 24,
+						"h": 15
+					}
+				},
+				{
+					"filename": "frog/GreenBlue/hop/ToxicFrogGreenBlue_Hop-2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 19,
+						"w": 24,
+						"h": 15
+					},
+					"frame": {
+						"x": 1800,
+						"y": 1,
+						"w": 24,
+						"h": 15
+					}
+				},
+				{
+					"filename": "frog/BlueBlue/hop/ToxicFrogBlueBlue_Hop-3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 11,
+						"y": 10,
+						"w": 23,
+						"h": 23
+					},
+					"frame": {
+						"x": 1754,
+						"y": 100,
+						"w": 23,
+						"h": 23
+					}
+				},
+				{
+					"filename": "frog/BlueBrown/hop/ToxicFrogBlueBrown_Hop-3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 11,
+						"y": 10,
+						"w": 23,
+						"h": 23
+					},
+					"frame": {
+						"x": 1761,
+						"y": 75,
+						"w": 23,
+						"h": 23
+					}
+				},
+				{
+					"filename": "frog/GreenBrown/attack/ToxicFrogGreenBrown_Attack-2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 19,
+						"w": 24,
+						"h": 15
+					},
+					"frame": {
+						"x": 1775,
+						"y": 54,
+						"w": 24,
+						"h": 15
+					}
+				},
+				{
+					"filename": "frog/GreenBrown/hop/ToxicFrogGreenBrown_Hop-2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 19,
+						"w": 24,
+						"h": 15
+					},
+					"frame": {
+						"x": 1797,
+						"y": 35,
+						"w": 24,
+						"h": 15
+					}
+				},
+				{
+					"filename": "frog/PurpleBlue/attack/ToxicFrogPurpleBlue_Attack-2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 19,
+						"w": 24,
+						"h": 15
+					},
+					"frame": {
+						"x": 1821,
+						"y": 18,
+						"w": 24,
+						"h": 15
+					}
+				},
+				{
+					"filename": "frog/PurpleBlue/hop/ToxicFrogPurpleBlue_Hop-2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 19,
+						"w": 24,
+						"h": 15
+					},
+					"frame": {
+						"x": 1826,
+						"y": 1,
+						"w": 24,
+						"h": 15
+					}
+				},
+				{
+					"filename": "frog/GreenBlue/hop/ToxicFrogGreenBlue_Hop-3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 11,
+						"y": 10,
+						"w": 23,
+						"h": 23
+					},
+					"frame": {
+						"x": 1779,
+						"y": 100,
+						"w": 23,
+						"h": 23
+					}
+				},
+				{
+					"filename": "frog/GreenBrown/hop/ToxicFrogGreenBrown_Hop-3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 11,
+						"y": 10,
+						"w": 23,
+						"h": 23
+					},
+					"frame": {
+						"x": 1786,
+						"y": 71,
+						"w": 23,
+						"h": 23
+					}
+				},
+				{
+					"filename": "frog/PurpleWhite/attack/ToxicFrogPurpleWhite_Attack-2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 19,
+						"w": 24,
+						"h": 15
+					},
+					"frame": {
+						"x": 1801,
+						"y": 52,
+						"w": 24,
+						"h": 15
+					}
+				},
+				{
+					"filename": "frog/PurpleWhite/hop/ToxicFrogPurpleWhite_Hop-2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 19,
+						"w": 24,
+						"h": 15
+					},
+					"frame": {
+						"x": 1823,
+						"y": 35,
+						"w": 24,
+						"h": 15
+					}
+				},
+				{
+					"filename": "frog/PurpleBlue/hop/ToxicFrogPurpleBlue_Hop-3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 11,
+						"y": 10,
+						"w": 23,
+						"h": 23
+					},
+					"frame": {
+						"x": 1804,
+						"y": 96,
+						"w": 23,
+						"h": 23
+					}
+				},
+				{
+					"filename": "frog/PurpleWhite/hop/ToxicFrogPurpleWhite_Hop-3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 11,
+						"y": 10,
+						"w": 23,
+						"h": 23
+					},
+					"frame": {
+						"x": 1811,
+						"y": 69,
+						"w": 23,
+						"h": 23
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "3.0",
+		"smartupdate": "$TexturePacker:SmartUpdate:374d1ee8c665a51cc4824a755db9b13b:37bc1efc8b7e51e80306a72642414a2f:b00d48b51f56eb7c81e25100fcce2828$"
+	}
 }

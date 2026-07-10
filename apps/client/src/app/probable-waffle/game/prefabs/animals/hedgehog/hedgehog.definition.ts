@@ -26,6 +26,7 @@ export const hedgehogDefinition = {
     animatable: { animations: ANIM_HEDGEHOG_DEFINITION }
   },
   systems: {
-    movement: { enabled: true }
+    movement: { enabled: true },
+    action: { enabled: true }
   }
 } satisfies PrefabDefinition;

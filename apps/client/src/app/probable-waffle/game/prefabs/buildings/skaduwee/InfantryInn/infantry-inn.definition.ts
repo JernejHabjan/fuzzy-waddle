@@ -1,5 +1,5 @@
 import { ANIM_BUILDING_ICON_ANIMS_SKADUWEE_INFANTRY_INN } from "../../../icon-animations";
-import { getBuildingQueueCapabilities, ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames, ResearchType, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PaymentType } from "../../../../entity/components/production/payment-type";
 import { coreConstructionSiteDefinition } from "../../shared/core-construction-site.definition";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
@@ -58,14 +58,24 @@ export const infantryInnDefinition = {
       costType: PaymentType.PayImmediately
     },
     production: {
-      availableProduceActors: getBuildingQueueCapabilities(ObjectNames.InfantryInn)!.availableProduceActors!
+      availableProduceActors: [
+        ObjectNames.SkaduweeMagicianFemale,
+        ObjectNames.SkaduweeRangedFemale,
+        ObjectNames.SkaduweeWarriorMale,
+        ObjectNames.ForestWendigo
+      ]
     },
     queue: {
       queueCount: 1,
       capacityPerQueue: 5
     },
     research: {
-      availableResearch: getBuildingQueueCapabilities(ObjectNames.InfantryInn)!.availableResearch!
+      availableResearch: [
+        ResearchType.SnowstormSpell,
+        ResearchType.HealingLightSpell,
+        ResearchType.HealingTotemSpell,
+        ResearchType.WendigoBranches
+      ]
     },
     selectable: {},
     collider: { enabled: true },

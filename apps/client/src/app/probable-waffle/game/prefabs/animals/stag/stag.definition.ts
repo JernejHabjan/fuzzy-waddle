@@ -27,6 +27,7 @@ export const stagDefinition = {
     animatable: { animations: ANIM_STAG_DEFINITION }
   },
   systems: {
-    movement: { enabled: true }
+    movement: { enabled: true },
+    action: { enabled: true }
   }
 } satisfies PrefabDefinition;

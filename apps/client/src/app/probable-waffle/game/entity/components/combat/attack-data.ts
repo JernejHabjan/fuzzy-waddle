@@ -21,7 +21,7 @@ export interface AttackData {
     angleDegrees: number;
     range: number;
   };
-  animationType: AnimationType;
+  animationType: AnimationType | string;
   sounds: {
     preparing: SoundDefinition[] | null;
     fire: SoundDefinition[] | null;

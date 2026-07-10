@@ -2,7 +2,7 @@ import {
   ANIM_BUILDING_ICON_ANIMS_TIVARA_ANKGUARD_ACTION,
   ANIM_BUILDING_ICON_ANIMS_TIVARA_ANKGUARD_IDLE
 } from "../../../icon-animations";
-import { getBuildingQueueCapabilities, ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames, ResearchType, ResourceType } from "@fuzzy-waddle/api-interfaces";
 import { PaymentType } from "../../../../entity/components/production/payment-type";
 import { coreConstructionSiteDefinition } from "../../shared/core-construction-site.definition";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
@@ -61,10 +61,21 @@ export const ankGuardDefinition = {
       costType: PaymentType.PayImmediately
     },
     production: {
-      availableProduceActors: getBuildingQueueCapabilities(ObjectNames.AnkGuard)!.availableProduceActors!
+      availableProduceActors: [
+        ObjectNames.TivaraSlingshotFemale,
+        ObjectNames.TivaraMacemanMale,
+        ObjectNames.ForestWendigo
+      ]
     },
     research: {
-      availableResearch: getBuildingQueueCapabilities(ObjectNames.AnkGuard)!.availableResearch!
+      availableResearch: [
+        ResearchType.FirestormSpell,
+        ResearchType.FrostNovaSpell,
+        ResearchType.WendigoBranches,
+        ResearchType.HealingRainSpell,
+        ResearchType.CommonBoatUpgradeLevel2,
+        ResearchType.VikingBoatUpgradeLevel2
+      ]
     },
     queue: {
       queueCount: 1,

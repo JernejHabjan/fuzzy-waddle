@@ -22,6 +22,7 @@ export const bigWaterSlimeDefinition = {
     animatable: { animations: ANIM_BIG_WATER_SLIME_DEFINITION }
   },
   systems: {
-    movement: { enabled: true }
+    movement: { enabled: true },
+    action: { enabled: true }
   }
 } satisfies PrefabDefinition;

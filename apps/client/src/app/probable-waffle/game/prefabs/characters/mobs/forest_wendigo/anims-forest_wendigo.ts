@@ -31,10 +31,10 @@ const WALK_N = "mobs_forest_wendigo_wendigo - walk/n";
 const WALK_S = "mobs_forest_wendigo_wendigo - walk/s";
 const WALK_W = "mobs_forest_wendigo_wendigo - walk/w";
 
-export enum ForestWendigoAnimationTypes {
-  Attack1 = "Attack1",
-  Attack2 = "Attack2",
-  Attack3 = "Attack3",
+export enum WendigoAnimationTypes {
+  Slash = "Slash",
+  CastBranch = "CastBranch",
+  Stomp = "Stomp",
   BranchAttack = "BranchAttack"
 }
 export const ANIM_FOREST_WENDIGO_DEFINITION: AnimationDefinitionMap = {
@@ -62,25 +62,25 @@ export const ANIM_FOREST_WENDIGO_DEFINITION: AnimationDefinitionMap = {
     west: { key: HIT_W },
     east: { key: HIT_E }
   },
-  [ForestWendigoAnimationTypes.Attack1]: {
+  [WendigoAnimationTypes.Slash]: {
     south: { key: ATTACK_1_S },
     north: { key: ATTACK_1_N },
     west: { key: ATTACK_1_W },
     east: { key: ATTACK_1_E }
   },
-  [ForestWendigoAnimationTypes.Attack2]: {
+  [WendigoAnimationTypes.CastBranch]: {
     south: { key: ATTACK_2_S },
     north: { key: ATTACK_2_N },
     west: { key: ATTACK_2_W },
     east: { key: ATTACK_2_E }
   },
-  [ForestWendigoAnimationTypes.Attack3]: {
+  [WendigoAnimationTypes.Stomp]: {
     south: { key: ATTACK_3_S },
     north: { key: ATTACK_3_N },
     west: { key: ATTACK_3_W },
     east: { key: ATTACK_3_E }
   },
-  [ForestWendigoAnimationTypes.BranchAttack]: {
+  [WendigoAnimationTypes.BranchAttack]: {
     south: { key: BRANCH_FULL_ANIMATION },
     north: { key: BRANCH_FULL_ANIMATION },
     west: { key: BRANCH_FULL_ANIMATION },

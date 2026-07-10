@@ -49,6 +49,7 @@ export const wolfDefinition = {
     }
   },
   systems: {
-    movement: { enabled: true }
+    movement: { enabled: true },
+    action: { enabled: true }
   }
 } satisfies PrefabDefinition;

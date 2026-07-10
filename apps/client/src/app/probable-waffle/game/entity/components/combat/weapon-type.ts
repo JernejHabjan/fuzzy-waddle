@@ -25,8 +25,20 @@ export enum WeaponType {
   MinotaurHands = "MinotaurHands",
   Furball = "Furball",
   AlchemistVase = "AlchemistVase",
+  CorpyAcid = "CorpyAcid",
+  CorpyClaws = "CorpyClaws",
+  EarthGolemSmash = "EarthGolemSmash",
+  StoneGolemSmash = "StoneGolemSmash",
+  MetalGolemSmash = "MetalGolemSmash",
+  MedusaSnakes = "MedusaSnakes",
+  BansheeSlash = "BansheeSlash",
+  WendigoSlash = "WendigoSlash",
   BowTower = "BowTower",
   WolfBite = "WolfBite",
   ShipVolley = "ShipVolley",
-  ShipFireVolley = "ShipFireVolley"
+  ShipFireVolley = "ShipFireVolley",
+  FlowerSpit = "FlowerSpit",
+  FlowerStomp = "FlowerStomp",
+  "SandWormBite" = "SandWormBite",
+  "SandWormShootAcid" = "SandWormShootAcid"
 }

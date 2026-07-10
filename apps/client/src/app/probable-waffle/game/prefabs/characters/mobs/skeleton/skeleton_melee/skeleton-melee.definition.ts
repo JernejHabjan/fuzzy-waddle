@@ -65,6 +65,7 @@ export const skeletonMeleeDefinition = {
     animatable: { animations: ANIM_SKELETON_MELEE_DEFINITION }
   },
   systems: {
-    movement: { enabled: true }
+    movement: { enabled: true },
+    action: { enabled: true }
   }
 } satisfies PrefabDefinition;

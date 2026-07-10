@@ -65,6 +65,7 @@ export const mummyDefinition = {
     animatable: { animations: ANIM_MUMMY_DEFINITION }
   },
   systems: {
-    movement: { enabled: true }
+    movement: { enabled: true },
+    action: { enabled: true }
   }
 } satisfies PrefabDefinition;

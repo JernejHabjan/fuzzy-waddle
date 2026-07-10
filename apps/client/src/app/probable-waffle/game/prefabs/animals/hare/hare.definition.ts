@@ -22,6 +22,7 @@ export const hareDefinition = {
     animatable: { animations: ANIM_HARE_DEFINITION }
   },
   systems: {
-    movement: { enabled: true }
+    movement: { enabled: true },
+    action: { enabled: true }
   }
 } satisfies PrefabDefinition;

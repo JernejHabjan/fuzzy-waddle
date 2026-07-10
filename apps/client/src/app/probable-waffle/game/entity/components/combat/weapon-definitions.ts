@@ -26,6 +26,9 @@ import {
   SkaduweeOwlSfxFurballHitSounds
 } from "../../../prefabs/characters/skaduwee/skaduwee-owl/SkaduweeOwlSfx";
 import { DamageType } from "@fuzzy-waddle/api-interfaces";
+import { MedusaAnimationTypes } from "../../../prefabs/characters/mobs/medusa/anims-medusa";
+import { FlowerMonsterAnimationTypes } from "../../../prefabs/characters/mobs/flower_monster/anims-flower_monster";
+import { SandWormAnimationTypes } from "../../../prefabs/characters/mobs/sand_worm/anims-sand_worm";
 
 export const weaponDefinitions = {
   [WeaponType.TivaraSlingshot]: {
@@ -271,6 +274,46 @@ export const weaponDefinitions = {
       hit: 500
     }
   },
+  [WeaponType.BansheeSlash]: {
+    weaponType: WeaponType.BansheeSlash,
+    canTargetAir: false,
+    damage: 6,
+    damageType: DamageType.Physical,
+    cooldown: 1000,
+    range: 1,
+    minRange: 0,
+    highGroundRangeBonus: 0,
+    animationType: AnimationType.Slash,
+    sounds: {
+      preparing: null,
+      fire: SharedActorActionsSfxHeavyWeaponSwingSounds,
+      hit: SharedActorActionsSfxAxeHitSounds
+    },
+    delays: {
+      fire: 200,
+      hit: 500
+    }
+  },
+  [WeaponType.MedusaSnakes]: {
+    weaponType: WeaponType.MedusaSnakes,
+    canTargetAir: false,
+    damage: 6,
+    damageType: DamageType.Physical,
+    cooldown: 1000,
+    range: 1,
+    minRange: 0,
+    highGroundRangeBonus: 0,
+    animationType: MedusaAnimationTypes.SnakeAttack,
+    sounds: {
+      preparing: null,
+      fire: SharedActorActionsSfxHeavyWeaponSwingSounds, // todo
+      hit: SharedActorActionsSfxAxeHitSounds // todo
+    },
+    delays: {
+      fire: 200,
+      hit: 500
+    }
+  },
   [WeaponType.SkaduweeAxe]: {
     weaponType: WeaponType.SkaduweeAxe,
     canTargetAir: false,
@@ -281,6 +324,208 @@ export const weaponDefinitions = {
     minRange: 0,
     highGroundRangeBonus: 0,
     animationType: AnimationType.Smash, // todo - there are also inverted slash, slash.
+    sounds: {
+      preparing: null,
+      fire: SharedActorActionsSfxHeavyWeaponSwingSounds,
+      hit: SharedActorActionsSfxAxeHitSounds
+    },
+    delays: {
+      fire: 200,
+      hit: 500
+    }
+  },
+  [WeaponType.EarthGolemSmash]: {
+    weaponType: WeaponType.EarthGolemSmash,
+    canTargetAir: false,
+    damage: 12,
+    damageType: DamageType.Physical,
+    cooldown: 3000,
+    range: 3,
+    minRange: 0,
+    highGroundRangeBonus: 0,
+    animationType: AnimationType.Thrust,
+    sounds: {
+      preparing: null,
+      fire: SharedActorActionsSfxHeavyWeaponSwingSounds,
+      hit: SharedActorActionsSfxAxeHitSounds
+    },
+    delays: {
+      fire: 200,
+      hit: 500
+    }
+  },
+  [WeaponType.StoneGolemSmash]: {
+    weaponType: WeaponType.StoneGolemSmash,
+    canTargetAir: false,
+    damage: 10,
+    damageType: DamageType.Physical,
+    cooldown: 2000,
+    range: 3,
+    minRange: 0,
+    highGroundRangeBonus: 0,
+    animationType: AnimationType.Thrust,
+    sounds: {
+      preparing: null,
+      fire: SharedActorActionsSfxHeavyWeaponSwingSounds,
+      hit: SharedActorActionsSfxAxeHitSounds
+    },
+    delays: {
+      fire: 200,
+      hit: 500
+    }
+  },
+  [WeaponType.MetalGolemSmash]: {
+    weaponType: WeaponType.MetalGolemSmash,
+    canTargetAir: false,
+    damage: 15,
+    damageType: DamageType.Physical,
+    cooldown: 3500,
+    range: 3,
+    minRange: 0,
+    highGroundRangeBonus: 0,
+    animationType: AnimationType.Thrust,
+    sounds: {
+      preparing: null,
+      fire: SharedActorActionsSfxHeavyWeaponSwingSounds,
+      hit: SharedActorActionsSfxAxeHitSounds
+    },
+    delays: {
+      fire: 200,
+      hit: 500
+    }
+  },
+  [WeaponType.FlowerStomp]: {
+    weaponType: WeaponType.FlowerStomp,
+    canTargetAir: false,
+    damage: 6,
+    damageType: DamageType.Physical,
+    cooldown: 2000,
+    range: 3,
+    minRange: 0,
+    highGroundRangeBonus: 0,
+    animationType: FlowerMonsterAnimationTypes.AttackStomp,
+    sounds: {
+      preparing: null,
+      fire: SharedActorActionsSfxHeavyWeaponSwingSounds,
+      hit: SharedActorActionsSfxAxeHitSounds
+    },
+    delays: {
+      fire: 200,
+      hit: 500
+    }
+  },
+  [WeaponType.FlowerSpit]: {
+    weaponType: WeaponType.FlowerSpit,
+    canTargetAir: true,
+    projectile: {
+      type: ProjectileType.FlowerSpit,
+      speed: 700,
+      orientation: {
+        randomizeOrientation: false,
+        pointingOrientation: 0
+      },
+      impactAnimation: {
+        anims: EffectsAnims.debrisAnimations // todo use mobs_flower_monster_plant shot anim
+      }
+    },
+    damage: 10,
+    damageType: DamageType.Physical,
+    cooldown: 1000,
+    range: 8,
+    minRange: 2,
+    highGroundRangeBonus: 1,
+    animationType: FlowerMonsterAnimationTypes.Shoot,
+    sounds: {
+      preparing: SharedActorActionsSfxLeatherNockSounds, // todo
+      fire: SharedActorActionsSfxSlingshotFireSounds, // todo
+      hit: SharedActorActionsSfxSlingshotHitSounds // todo
+    },
+    delays: {
+      fire: 500,
+      hit: 0
+    }
+  },
+  [WeaponType.SandWormBite]: {
+    weaponType: WeaponType.SandWormBite,
+    canTargetAir: false,
+    damage: 20,
+    damageType: DamageType.Physical,
+    cooldown: 2000,
+    range: 3,
+    minRange: 0,
+    highGroundRangeBonus: 0,
+    animationType: SandWormAnimationTypes.Bite,
+    sounds: {
+      preparing: null,
+      fire: SharedActorActionsSfxHeavyWeaponSwingSounds,
+      hit: SharedActorActionsSfxAxeHitSounds
+    },
+    delays: {
+      fire: 200,
+      hit: 500
+    }
+  },
+  [WeaponType.SandWormShootAcid]: {
+    weaponType: WeaponType.SandWormShootAcid,
+    canTargetAir: true,
+    projectile: {
+      type: ProjectileType.SandWormAcid,
+      speed: 700,
+      orientation: {
+        randomizeOrientation: false,
+        pointingOrientation: 0
+      },
+      impactAnimation: {
+        anims: EffectsAnims.debrisAnimations // todo use POISON_SHOT_FULL_ANIMATION anim
+      }
+    },
+    damage: 6,
+    damageType: DamageType.Physical,
+    cooldown: 1000,
+    range: 8,
+    minRange: 2,
+    highGroundRangeBonus: 1,
+    animationType: SandWormAnimationTypes.Shoot,
+    sounds: {
+      preparing: SharedActorActionsSfxLeatherNockSounds, // todo
+      fire: SharedActorActionsSfxSlingshotFireSounds, // todo
+      hit: SharedActorActionsSfxSlingshotHitSounds // todo
+    },
+    delays: {
+      fire: 500,
+      hit: 0
+    }
+  },
+  [WeaponType.CorpyClaws]: {
+    weaponType: WeaponType.CorpyClaws,
+    canTargetAir: false,
+    damage: 10,
+    damageType: DamageType.Physical,
+    cooldown: 1000,
+    range: 1,
+    minRange: 0,
+    highGroundRangeBonus: 0,
+    animationType: AnimationType.Thrust,
+    sounds: {
+      preparing: null,
+      fire: SharedActorActionsSfxHeavyWeaponSwingSounds,
+      hit: SharedActorActionsSfxAxeHitSounds
+    },
+    delays: {
+      fire: 200,
+      hit: 500
+    }
+  },
+  [WeaponType.WendigoSlash]: {
+    weaponType: WeaponType.WendigoSlash,
+    canTargetAir: false,
+    damage: 9,
+    damageType: DamageType.Physical,
+    cooldown: 1000,
+    range: 1,
+    minRange: 0,
+    highGroundRangeBonus: 0,
+    animationType: AnimationType.Thrust,
     sounds: {
       preparing: null,
       fire: SharedActorActionsSfxHeavyWeaponSwingSounds,
@@ -616,6 +861,37 @@ export const weaponDefinitions = {
     canTargetAir: true,
     projectile: {
       type: ProjectileType.VaseProjectile,
+      speed: 800,
+      orientation: {
+        randomizeOrientation: true,
+        pointingOrientation: 0
+      },
+      impactAnimation: {
+        anims: [EffectsAnims.ANIM_IMPACT_DEBRIS]
+      }
+    },
+    damage: 9,
+    damageType: DamageType.Physical,
+    cooldown: 3000,
+    range: 6,
+    minRange: 0,
+    highGroundRangeBonus: 1,
+    animationType: AnimationType.Shoot,
+    sounds: {
+      preparing: null,
+      fire: null, // todo
+      hit: null // todo
+    },
+    delays: {
+      fire: 200,
+      hit: 500
+    }
+  },
+  [WeaponType.CorpyAcid]: {
+    weaponType: WeaponType.CorpyAcid,
+    canTargetAir: true,
+    projectile: {
+      type: ProjectileType.CorpyAcidProjectile,
       speed: 800,
       orientation: {
         randomizeOrientation: true,
