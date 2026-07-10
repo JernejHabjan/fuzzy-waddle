@@ -180,6 +180,13 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
         body.communicator === ProbableWaffleCommunicators.DesyncAlert
       ) {
         this.server.to(roomId).emit(ProbableWaffleGatewayEvent.ProbableWaffleAction, body);
+      } else if (
+        body.communicator === ProbableWaffleCommunicators.PlayerDataChange &&
+        (body.payload as ProbableWafflePlayerDataChangeEvent).property === "joinedFromNetwork"
+      ) {
+        // The joining client starts with a Network Open slot and needs the authoritative echo
+        // to become Human locally and learn its player number for lobby controls.
+        this.server.to(roomId).emit(ProbableWaffleGatewayEvent.ProbableWaffleAction, body);
       } else {
         // https://socket.io/docs/v3/emit-cheatsheet/
         socket.to(roomId).emit(ProbableWaffleGatewayEvent.ProbableWaffleAction, body);
