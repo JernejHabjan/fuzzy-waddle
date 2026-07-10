@@ -37,9 +37,12 @@ export class TriggerComponent {
     const playerPositions = players.map((player) => player.playerController.data.playerDefinition!);
     const selectedPlayers = playerPositions.filter((startPosition) => startPosition.player.joined);
     const selectedEmptyTeams = playerPositions.filter(
-      (startPosition) => !startPosition.team && startPosition.player.joined
+      (startPosition) => startPosition.team === undefined && startPosition.player.joined
     );
-    const selectedTeams = playerPositions.filter((startPosition) => !startPosition.team && startPosition.player.joined);
+    // Count assigned teams separately from unassigned players so distinct teams are recognized before startGame assigns defaults.
+    const selectedTeams = playerPositions.filter(
+      (startPosition) => startPosition.team !== undefined && startPosition.player.joined
+    );
     const selectedTeamsSet = new Set(selectedTeams.map((startPosition) => startPosition.team));
     return selectedPlayers.length >= 2 && selectedEmptyTeams.length + selectedTeamsSet.size >= 2;
   }
