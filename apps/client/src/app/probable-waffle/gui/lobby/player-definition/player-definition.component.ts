@@ -192,10 +192,8 @@ export class PlayerDefinitionComponent {
 
   getPlayerName(player: ProbableWafflePlayer) {
     const playerNumber = player.playerNumber!;
-    const isCurrentPlayer = this.getPlayerIsCurrentPlayer(player);
-    // noinspection UnnecessaryLocalVariableJS
-    const name = isCurrentPlayer ? "You" : `Player ${playerNumber}`;
-    return name;
+    const name = this.definition(player).player.playerName ?? `Player ${playerNumber}`;
+    return this.getPlayerIsCurrentPlayer(player) ? `${name} (You)` : name;
   }
 
   protected canViewProfile(player: ProbableWafflePlayer): boolean {

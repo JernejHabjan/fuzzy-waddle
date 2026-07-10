@@ -36,6 +36,7 @@ import {
 import { ServerHealthService } from "../../shared/services/server-health.service";
 import { SceneCommunicatorClientService } from "./scene-communicator-client.service";
 import { AuthService } from "../../auth/auth.service";
+import { CurrentUserProfileService } from "../../data-access/profile/current-user-profile.service";
 import { type GameInstanceClientServiceInterface } from "./game-instance-client.service.interface";
 import { Router } from "@angular/router";
 import { ProbableWaffleCommunicatorService } from "./probable-waffle-communicator.service";
@@ -62,6 +63,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   currentPlayerNumber?: PlayerNumber;
 
   private readonly authService = inject(AuthService);
+  private readonly currentUserProfileService = inject(CurrentUserProfileService);
   private readonly httpClient = inject(HttpClient);
   private readonly serverHealthService = inject(ServerHealthService);
   private readonly sceneCommunicatorClientService = inject(SceneCommunicatorClientService);
@@ -491,7 +493,8 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     const userId = this.authService.userId;
 
     await this.playerChanged("joinedFromNetwork", {
-      playerControllerData: { userId }
+      playerControllerData: { userId },
+      playerName: await this.getCurrentPlayerName()
     });
     console.log("joined game instance as player");
   }
@@ -502,7 +505,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     const firstFreePlayerNumber = GameSetupHelpers.getFirstFreePlayerNumber(gameInstance.players);
     const firstFreePosition = GameSetupHelpers.getFirstFreePosition(gameInstance.players);
     const playerDefinition = {
-      player: createPlayerLobbyDefinition(firstFreePlayerNumber, firstFreePosition),
+      player: createPlayerLobbyDefinition(firstFreePlayerNumber, firstFreePosition, await this.getCurrentPlayerName()),
       playerType: ProbableWafflePlayerType.Human
     } satisfies PositionPlayerDefinition;
 
@@ -656,8 +659,21 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     });
   }
 
+  private async getCurrentPlayerName(): Promise<string> {
+    try {
+      const profile = await this.currentUserProfileService.getCurrentUserProfile();
+      return profile?.displayName || this.authService.fullName || "Player";
+    } catch {
+      // A profile refresh must not prevent an authenticated player from joining a lobby.
+      return this.authService.fullName || "Player";
+    }
+  }
+
   async addSelfAsSpectator(): Promise<void> {
-    await this.spectatorChanged("joined", { userId: this.authService.userId! });
+    await this.spectatorChanged("joined", {
+      userId: this.authService.userId!,
+      displayName: await this.getCurrentPlayerName()
+    });
   }
 
   async getGameFoundListener(): Promise<Observable<ProbableWaffleGameFoundEvent>> {

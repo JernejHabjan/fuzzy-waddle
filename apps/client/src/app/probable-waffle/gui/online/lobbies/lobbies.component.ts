@@ -15,6 +15,7 @@ import { GameInstanceClientService } from "../../../communicators/game-instance-
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { MapFilterComponent } from "./map-filter/map-filter.component";
+import { ToastService } from "../../../../shared/services/toast.service";
 
 @Component({
   selector: "probable-waffle-lobbies",
@@ -29,6 +30,7 @@ export class LobbiesComponent implements OnInit, OnDestroy {
   protected selectedRoom?: ProbableWaffleRoom;
   private readonly roomsService = inject(RoomsService);
   private readonly gameInstanceClientService = inject(GameInstanceClientService);
+  private readonly toastService = inject(ToastService);
   readonly requestNavigateToHostLobby = output<void>();
 
   async ngOnInit(): Promise<void> {
@@ -49,11 +51,26 @@ export class LobbiesComponent implements OnInit, OnDestroy {
     );
   }
 
+  protected get joinActionMessage(): string {
+    if (!this.selectedRoom) return "Select a lobby to see how you can join it.";
+    if (this.selectedRoom.gameInstanceMetadataData.sessionState !== GameSessionState.NotStarted) {
+      return "This game has already started. You can still join it as a spectator.";
+    }
+    if (!this.selectedRoom.players.some(this.isNetworkOpenPlayer)) {
+      return "No multiplayer slots are open in this lobby. Ask the host to open a player slot.";
+    }
+    return "Join this lobby as a player.";
+  }
+
   protected canAddSelfAsSpectator(): boolean {
     return !!this.selectedRoom && this.selectedRoom.gameInstanceMetadataData.sessionState !== GameSessionState.Stopped;
   }
 
   protected async addSelfAsPlayer() {
+    if (!this.canAddSelfAsPlayer()) {
+      this.toastService.showWarning("Cannot join as player", this.joinActionMessage);
+      return;
+    }
     if (!this.selectedRoom?.gameInstanceMetadataData?.gameInstanceId) return;
     await this.gameInstanceClientService.joinGameInstanceAsPlayer(
       this.selectedRoom.gameInstanceMetadataData.gameInstanceId
@@ -71,6 +88,11 @@ export class LobbiesComponent implements OnInit, OnDestroy {
 
   protected select(room: ProbableWaffleRoom) {
     this.selectedRoom = room;
+  }
+
+  protected selectWithKeyboard(event: Event, room: ProbableWaffleRoom): void {
+    event.preventDefault();
+    this.select(room);
   }
 
   protected toggleFilterPopup(): void {
@@ -106,4 +128,11 @@ export class LobbiesComponent implements OnInit, OnDestroy {
           room.gameInstanceMetadataData?.type === ProbableWaffleGameInstanceType.SelfHosted
       );
   }
+
+  protected get selectedRoomPlayers() {
+    return this.selectedRoom ? ProbableWaffleRoomHelper.getActivatedPlayersInRoom(this.selectedRoom) : [];
+  }
+
+  private readonly isNetworkOpenPlayer = (player: ProbableWaffleRoom["players"][number]): boolean =>
+    player.controllerData.playerDefinition?.playerType === ProbableWafflePlayerType.NetworkOpen;
 }

@@ -110,6 +110,9 @@ export class ProbableWaffleListeners {
           firstNetworkOpenPlayer.playerController.data.userId = controllerData.userId;
           firstNetworkOpenPlayer.playerController.data.playerDefinition!.playerType = ProbableWafflePlayerType.Human;
           firstNetworkOpenPlayer.playerController.data.playerDefinition!.player.joined = true;
+          if (payload.data.playerName) {
+            firstNetworkOpenPlayer.playerController.data.playerDefinition!.player.playerName = payload.data.playerName;
+          }
           break;
         case "left":
           controllerData = payload.data.playerControllerData as ProbableWafflePlayerControllerData;

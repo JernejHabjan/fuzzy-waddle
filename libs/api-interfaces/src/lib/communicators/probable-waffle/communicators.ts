@@ -100,6 +100,8 @@ export const ProbableWafflePlayerDataChangeProperties = {
 export type ProbableWafflePlayerDataChangeEventPayload = Partial<{
   // provide player number only when updating player
   playerNumber?: PlayerNumber;
+  // Sent when a human claims a lobby slot so every client can render the same player identity.
+  playerName?: string;
   playerStateData: Partial<ProbableWafflePlayerStateData>;
   playerControllerData: Partial<ProbableWafflePlayerControllerData>;
   data: Record<string, unknown>;

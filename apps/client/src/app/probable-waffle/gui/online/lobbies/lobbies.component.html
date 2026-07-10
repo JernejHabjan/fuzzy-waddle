@@ -1,5 +1,5 @@
 <div class="lobbies">
-  <div class="lobbies-tooltip">Browse currently open game lobbies to join or spectate</div>
+  <div class="lobbies-tooltip">Browse currently open game lobbies to join or spectate.</div>
 
   @if (getRoomsToJoin.length === 0) {
     <div class="text-center">No open lobbies</div>
@@ -7,6 +7,10 @@
       <button (click)="navigateToCreateLobby()" class="btn btn-primary" type="button">Create lobby</button>
     </div>
   } @else {
+    <div class="selection-help">
+      <div class="text-primary">Choose a lobby</div>
+      <div>Select a row to view its map, players, and join options.</div>
+    </div>
     <div class="d-flex">
       <div>
         <div>
@@ -27,7 +31,17 @@
           </thead>
           <tbody>
             @for (room of getRoomsToJoin; track room) {
-              <tr (click)="select(room)" class="cursor-pointer {{ room === selectedRoom ? 'selected-row' : '' }}">
+              <tr
+                (click)="select(room)"
+                (keydown.enter)="selectWithKeyboard($event, room)"
+                (keydown.space)="selectWithKeyboard($event, room)"
+                [attr.aria-selected]="room === selectedRoom"
+                [attr.title]="'Select ' + room.gameInstanceMetadataData.name + ' to view details'"
+                [class.selected-row]="room === selectedRoom"
+                class="cursor-pointer"
+                role="button"
+                tabindex="0"
+              >
                 <td>{{ room.gameInstanceMetadataData.name }}</td>
                 <td>
                   @if (room.gameModeData && mapInfoOfMap(room.gameModeData.map)) {
@@ -49,15 +63,26 @@
         </table>
       </div>
       @if (selectedRoom) {
-        <div class="card-container">
-          <div>
-            <img alt="map preview" [src]="mapInfo!.presentation.imagePath" />
-            <div style="font-size: 0.8em">{{ mapInfo!.presentation.description }}</div>
+        <div class="card-container lobby-details">
+          <div class="map-details">
+            @if (mapInfo; as selectedMap) {
+              <img [alt]="selectedMap.name + ' map preview'" [src]="selectedMap.presentation.imagePath" />
+              <div class="map-description">{{ selectedMap.presentation.description }}</div>
+            } @else {
+              <div class="empty-state">
+                <div class="text-primary">Map not selected yet</div>
+                <div>The host needs to choose a map before this lobby can start.</div>
+              </div>
+            }
           </div>
           <div>
             <div class="text-primary">Joined players</div>
-            @for (player of ProbableWaffleRoomHelper.getActivatedPlayersInRoom(selectedRoom); track player) {
-              <div>{{ player.controllerData.playerDefinition!.player.playerName }}</div>
+            @if (selectedRoomPlayers.length) {
+              @for (player of selectedRoomPlayers; track player) {
+                <div>{{ player.controllerData.playerDefinition!.player.playerName }}</div>
+              }
+            } @else {
+              <div class="empty-state">No players have joined yet.</div>
             }
           </div>
           @if (selectedRoom.spectators.length) {
@@ -70,18 +95,28 @@
       }
     </div>
 
-    <div>
-      <button (click)="addSelfAsPlayer()" [disabled]="!canAddSelfAsPlayer()" class="btn btn-primary" type="button">
+    <div class="lobby-actions">
+      <button
+        (click)="addSelfAsPlayer()"
+        [attr.aria-disabled]="!canAddSelfAsPlayer()"
+        [class.join-unavailable]="!canAddSelfAsPlayer()"
+        [title]="joinActionMessage"
+        class="btn btn-primary"
+        type="button"
+      >
         Join
       </button>
       <button
         (click)="addSelfAsSpectator()"
         [disabled]="!canAddSelfAsSpectator()"
-        class="ms-2 btn btn-primary"
+        class="btn btn-primary"
         type="button"
       >
         Spectate
       </button>
+      @if (!canAddSelfAsPlayer()) {
+        <div class="join-help">{{ joinActionMessage }}</div>
+      }
     </div>
   }
 </div>
