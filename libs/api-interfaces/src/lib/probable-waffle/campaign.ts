@@ -1,4 +1,5 @@
 import type { ProbableWaffleMapEnum } from "./probable-waffle";
+import type { ProbableWaffleGameInstanceData } from "../game-instance/probable-waffle/game-instance";
 
 /** Permanent identifiers used by progress, saves, routes, and campaign runs. */
 export type CampaignChapterId = string;
@@ -63,4 +64,28 @@ export interface CampaignMissionProgress {
   mission: CampaignMissionDefinition;
   state: CampaignMissionState;
   completedAt?: string;
+}
+
+export type GameSaveKind = "manual" | "autosave";
+export type GameSaveScope = "campaign" | "skirmish";
+export type GameSaveSyncState = "local" | "pending" | "synced" | "failed" | "deleted";
+
+/** Versioned replacement for the legacy name-keyed browser save shape. */
+export interface GameSaveRecord {
+  id: string;
+  formatVersion: 1;
+  scope: GameSaveScope;
+  kind: GameSaveKind;
+  name?: string;
+  createdAt: string;
+  updatedAt: string;
+  revision: number;
+  syncState: GameSaveSyncState;
+  campaign?: {
+    chapterId: CampaignChapterId;
+    missionId: CampaignMissionId;
+    runId: string;
+  };
+  thumbnail?: string;
+  gameInstanceData: ProbableWaffleGameInstanceData;
 }
