@@ -59,7 +59,9 @@ export class LittleMuncherCommunicatorService implements CommunicatorService, On
   stopCommunication() {
     this.move?.destroy();
     this.score?.destroy();
+    this.timeClimbing?.destroy();
     this.pause?.destroy();
+    this.reset?.destroy();
   }
 
   ngOnDestroy(): void {
