@@ -50,6 +50,7 @@ import { InGameChatComponent } from "../gui/in-game-chat/in-game-chat.component"
 import type { SaveGamePayload } from "../game/data/save-game-payload";
 import type { ProbableWaffleCommunicators } from "./probable-waffle.communicators";
 import type { MatchmakingOptions } from "../gui/online/matchmaking/matchmaking-options";
+import { GameSaveService } from "../services/game-save/game-save.service";
 
 @Injectable({
   providedIn: "root"
@@ -70,6 +71,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   private readonly probableWaffleCommunicatorService = inject(ProbableWaffleCommunicatorService);
   private readonly authenticatedSocketService = inject(AuthenticatedSocketService);
   private readonly gameInstanceStorageService = inject(GameInstanceStorageServiceInterface);
+  private readonly gameSaveService = inject(GameSaveService);
   private readonly modalService = inject(NgbModal);
   private readonly router = inject(Router);
   private readonly ngZone = inject(NgZone);
@@ -723,6 +725,28 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
 
   async saveGameInstance(data: SaveGamePayload): Promise<void> {
     const gameInstanceData = this.gameInstance!.data;
+    const campaign = gameInstanceData.gameInstanceMetadataData?.campaignContext;
+    if (campaign) {
+      await this.gameSaveService.save({
+        scope: "campaign",
+        kind: data.kind ?? "manual",
+        name: data.name,
+        thumbnail: data.thumbnail,
+        gameInstanceData,
+        campaign: { chapterId: campaign.chapterId, missionId: campaign.missionId, runId: campaign.runId }
+      });
+      return;
+    }
+    if (gameInstanceData.gameInstanceMetadataData?.type === ProbableWaffleGameInstanceType.Skirmish) {
+      await this.gameSaveService.save({
+        scope: "skirmish",
+        kind: data.kind ?? "manual",
+        name: data.name,
+        thumbnail: data.thumbnail,
+        gameInstanceData
+      });
+      return;
+    }
     const name = gameInstanceData.gameInstanceMetadataData!.name;
     await this.gameInstanceStorageService.saveToStorage({
       saveName: name + " " + new Date().toLocaleString(),
@@ -824,6 +848,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
       case ProbableWaffleGameInstanceType.Matchmaking:
         return true;
       case ProbableWaffleGameInstanceType.Skirmish:
+      case ProbableWaffleGameInstanceType.Campaign:
       case ProbableWaffleGameInstanceType.InstantGame:
       case ProbableWaffleGameInstanceType.Replay:
         return false;
