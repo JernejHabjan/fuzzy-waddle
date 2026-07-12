@@ -2,10 +2,20 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from "@a
 import type { OnInit } from "@angular/core";
 
 import type { GameSaveRecord } from "@fuzzy-waddle/api-interfaces";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 import { DatePipe } from "@angular/common";
 import { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { GameSaveService } from "../../services/game-save/game-save.service";
+import { AOTA_CAMPAIGN_CATALOG } from "../campaign/campaign-catalog";
+
+interface CampaignSaveGroup {
+  missionId: string;
+  chapterLabel: string;
+  missionTitle: string;
+  newestAt: string;
+  saves: GameSaveRecord[];
+}
 
 @Component({
   selector: "fuzzy-waddle-load",
@@ -18,20 +28,48 @@ export class LoadComponent implements OnInit {
   private readonly gameSaveService = inject(GameSaveService);
   private readonly gameInstanceClientService = inject(GameInstanceClientService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   protected readonly saves = signal<GameSaveRecord[]>([]);
+  protected readonly renameSaveId = signal<string | undefined>(undefined);
+  protected readonly renameValue = signal("");
+  missionScopeId?: string;
+  scopeFilter?: GameSaveRecord["scope"];
   protected readonly campaignGroups = computed(() => {
     const groups = new Map<string, GameSaveRecord[]>();
-    for (const save of this.saves().filter((save) => save.scope === "campaign")) {
+    for (const save of this.filteredSaves().filter((save) => save.scope === "campaign")) {
       const key = save.campaign!.missionId;
       groups.set(key, [...(groups.get(key) ?? []), save]);
     }
-    return [...groups.entries()].sort(([, a], [, b]) => b[0].updatedAt.localeCompare(a[0].updatedAt));
+    return [...groups.entries()]
+      .map(([missionId, saves]): CampaignSaveGroup => {
+        const chapter = AOTA_CAMPAIGN_CATALOG.chapters.find((candidate) =>
+          candidate.missions.some((mission) => mission.id === missionId)
+        );
+        const mission = chapter?.missions.find((candidate) => candidate.id === missionId);
+        return {
+          missionId,
+          chapterLabel: chapter?.subtitle ?? "Campaign",
+          missionTitle: mission?.title ?? missionId,
+          newestAt: saves.at(0)?.updatedAt ?? "",
+          saves
+        };
+      })
+      .sort((a, b) => b.newestAt.localeCompare(a.newestAt));
   });
-  protected readonly skirmishSaves = computed(() => this.saves().filter((save) => save.scope === "skirmish"));
+  protected readonly filteredSaves = computed(() =>
+    this.saves().filter(
+      (save) =>
+        (!this.scopeFilter || save.scope === this.scopeFilter) &&
+        (!this.missionScopeId || save.campaign?.missionId === this.missionScopeId)
+    )
+  );
+  protected readonly skirmishSaves = computed(() => this.filteredSaves().filter((save) => save.scope === "skirmish"));
   fromGame: boolean = false;
   dialogRef?: NgbModalRef;
 
   async ngOnInit(): Promise<void> {
+    this.missionScopeId ??= this.route.snapshot.queryParamMap.get("missionId") ?? undefined;
+    if (this.missionScopeId) this.scopeFilter = "campaign";
     await this.setData();
   }
 
@@ -58,6 +96,25 @@ export class LoadComponent implements OnInit {
     await this.setData();
   }
 
+  protected beginRename(save: GameSaveRecord): void {
+    if (save.kind !== "manual") return;
+    this.renameSaveId.set(save.id);
+    this.renameValue.set(save.name ?? "");
+  }
+
+  protected updateRenameValue(event: Event): void {
+    this.renameValue.set((event.target as HTMLInputElement).value);
+  }
+
+  protected async confirmRename(): Promise<void> {
+    const id = this.renameSaveId();
+    const name = this.renameValue().trim();
+    if (!id || !name) return;
+    await this.gameSaveService.rename(id, name);
+    this.renameSaveId.set(undefined);
+    await this.setData();
+  }
+
   handleLeave() {
     if (this.fromGame) {
       this.dialogRef?.close();
@@ -66,4 +123,3 @@ export class LoadComponent implements OnInit {
     }
   }
 }
-import { GameSaveService } from "../../services/game-save/game-save.service";

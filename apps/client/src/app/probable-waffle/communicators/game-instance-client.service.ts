@@ -81,6 +81,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   private externalModalRef?: NgbModalRef;
   private selfExitInProgress = false;
   private autosaveTimer?: ReturnType<typeof setInterval>;
+  private lastCheckpointAutosave?: { checkpointId: string; savedAt: number };
   gameInstanceToGameComponentCommunicator = new Subject<"refresh">();
 
   async createGameInstance(
@@ -188,6 +189,12 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
               });
               (modalRef.componentInstance as LoadComponent).fromGame = true;
               (modalRef.componentInstance as LoadComponent).dialogRef = modalRef;
+              (modalRef.componentInstance as LoadComponent).scopeFilter =
+                this.getNormalizedGameInstanceType() === ProbableWaffleGameInstanceType.Campaign
+                  ? "campaign"
+                  : "skirmish";
+              (modalRef.componentInstance as LoadComponent).missionScopeId =
+                this.gameInstance?.gameInstanceMetadata.data.campaignContext?.missionId;
               break;
             case "settings":
               if (this.DEBUG) {
@@ -378,6 +385,17 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   private stopAutosaveTimer(): void {
     if (this.autosaveTimer) clearInterval(this.autosaveTimer);
     this.autosaveTimer = undefined;
+  }
+
+  requestCheckpointAutosave(checkpointId: string): void {
+    const now = Date.now();
+    if (
+      this.lastCheckpointAutosave?.checkpointId === checkpointId &&
+      now - this.lastCheckpointAutosave.savedAt < 60_000
+    )
+      return;
+    this.lastCheckpointAutosave = { checkpointId, savedAt: now };
+    this.probableWaffleCommunicatorService.allScenes.emit({ name: "save-game", data: { kind: "autosave" } });
   }
 
   async startGame(): Promise<void> {
@@ -746,12 +764,15 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
 
   async saveGameInstance(data: SaveGamePayload): Promise<void> {
     const gameInstanceData = this.gameInstance!.data;
+    const saveName =
+      data.kind === "autosave" ? undefined : data.name?.trim() || window.prompt("Name this save")?.trim();
+    if (data.kind !== "autosave" && !saveName) return;
     const campaign = gameInstanceData.gameInstanceMetadataData?.campaignContext;
     if (campaign) {
       await this.gameSaveService.save({
         scope: "campaign",
         kind: data.kind ?? "manual",
-        name: data.name,
+        name: saveName,
         thumbnail: data.thumbnail,
         gameInstanceData,
         campaign: { chapterId: campaign.chapterId, missionId: campaign.missionId, runId: campaign.runId }
@@ -762,7 +783,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
       await this.gameSaveService.save({
         scope: "skirmish",
         kind: data.kind ?? "manual",
-        name: data.name,
+        name: saveName,
         thumbnail: data.thumbnail,
         gameInstanceData
       });

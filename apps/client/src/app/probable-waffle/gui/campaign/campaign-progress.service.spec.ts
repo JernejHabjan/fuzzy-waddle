@@ -1,11 +1,15 @@
 import { TestBed } from "@angular/core/testing";
 import { CampaignProgressService } from "./campaign-progress.service";
+import { provideHttpClient } from "@angular/common/http";
+import { AuthService } from "../../../auth/auth.service";
 
 describe("CampaignProgressService", () => {
   let service: CampaignProgressService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [provideHttpClient(), { provide: AuthService, useValue: { isAuthenticated: false } }]
+    });
     service = TestBed.inject(CampaignProgressService);
   });
 

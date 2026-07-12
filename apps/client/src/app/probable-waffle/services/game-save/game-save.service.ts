@@ -65,6 +65,7 @@ export class GameSaveService {
       revision: record.revision + 1,
       syncState: "local"
     });
+    void this.syncService.flush();
   }
 
   async delete(id: string): Promise<void> {

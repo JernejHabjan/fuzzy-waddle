@@ -29,8 +29,14 @@ export class GameSaveRepository {
     const records = this.read();
     const index = records.findIndex((record) => record.id === id);
     if (index === -1) return;
-    records[index] = { ...records[index], syncState: "deleted", revision: records[index].revision + 1 };
+    const current = records[index];
+    if (!current) return;
+    records[index] = { ...current, syncState: "deleted", revision: current.revision + 1 };
     this.write(records);
+  }
+
+  async remove(id: string): Promise<void> {
+    this.write(this.read().filter((record) => record.id !== id));
   }
 
   private read(): GameSaveRecord[] {

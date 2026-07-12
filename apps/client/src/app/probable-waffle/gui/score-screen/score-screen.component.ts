@@ -6,7 +6,8 @@ import { GameInstanceClientService } from "../../communicators/game-instance-cli
 import { ScoreDataService } from "../../services/score-data.service";
 import { ScoreSubmissionService } from "../../services/score-submission.service";
 import { AuthService } from "../../../auth/auth.service";
-import { type GameScoreSnapshotDto, ProbableWafflePlayerType } from "@fuzzy-waddle/api-interfaces";
+import { GameResultStatus, type GameScoreSnapshotDto, ProbableWafflePlayerType } from "@fuzzy-waddle/api-interfaces";
+import { CampaignProgressService } from "../campaign/campaign-progress.service";
 
 @Component({
   imports: [ScoreTableComponent, ScoreThroughTimeComponent],
@@ -19,6 +20,7 @@ export class ScoreScreenComponent implements OnInit, OnDestroy {
   private readonly scoreDataService = inject(ScoreDataService);
   private readonly scoreSubmissionService = inject(ScoreSubmissionService);
   private readonly authService = inject(AuthService);
+  private readonly campaignProgressService = inject(CampaignProgressService);
   private scoreSubmissionSub?: Subscription;
 
   protected changeTab = (scoreTable: string) => {
@@ -33,6 +35,24 @@ export class ScoreScreenComponent implements OnInit, OnDestroy {
     // Submit scores if this is an online game and user is last human player
     const gameInstance = this.gameInstanceClientService.gameInstance;
     if (!gameInstance) return;
+
+    const campaignContext = gameInstance.gameInstanceMetadata.data.campaignContext;
+    if (campaignContext) {
+      const playerResult = this.scoreDataService
+        .getAllPlayerScores()
+        .find((score) => score.playerNumber === this.gameInstanceClientService.currentPlayerNumber)?.gameResult;
+      const outcome =
+        playerResult === GameResultStatus.Win
+          ? "victory"
+          : playerResult === GameResultStatus.Quit
+            ? "abandoned"
+            : "defeat";
+      await this.campaignProgressService.recordResult({
+        runId: campaignContext.runId,
+        missionId: campaignContext.missionId,
+        outcome
+      });
+    }
 
     const gameInstanceId = gameInstance.gameInstanceMetadata.data.gameInstanceId!;
 

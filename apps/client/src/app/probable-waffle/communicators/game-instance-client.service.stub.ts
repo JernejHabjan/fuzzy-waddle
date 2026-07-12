@@ -126,6 +126,7 @@ export const gameInstanceClientServiceStub = {
   async saveGameInstance(data: Record<string, any>): Promise<void> {
     return Promise.resolve();
   },
+  requestCheckpointAutosave(checkpointId: string): void {},
   async startReplay(gameInstanceSaveData: ProbableWaffleGameInstanceSaveData): Promise<void> {
     return Promise.resolve();
   },

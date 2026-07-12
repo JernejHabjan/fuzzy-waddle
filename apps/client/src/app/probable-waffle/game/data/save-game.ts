@@ -7,7 +7,7 @@ import { TechTreeService } from "./tech-tree/tech-tree.service";
 import type { SaveGamePayload } from "./save-game-payload";
 import { SelectionGroupsComponent } from "../player/human-controller/selection-groups.component";
 import { CameraMovementHandler } from "../player/human-controller/cameraMovementHandler";
-import { ProbableWafflePlayerType } from "@fuzzy-waddle/api-interfaces";
+import { type AllScenesEventData, ProbableWafflePlayerType } from "@fuzzy-waddle/api-interfaces";
 import { AiPlayerHandler } from "../player/ai-controller/ai-player-handler";
 
 export class SaveGame {
@@ -15,7 +15,11 @@ export class SaveGame {
 
   constructor(private scene: GameProbableWaffleScene) {
     this.saveGameSubscription = scene.communicator.allScenes
-      .pipe(filter((scene) => scene.name === "save-game"))
+      .pipe(
+        filter(
+          (event): event is Extract<AllScenesEventData, { name: "save-game" }> => event.name === "save-game"
+        )
+      )
       .subscribe((event) => this.onSaveGame(event.data?.kind));
     scene.onShutdown.subscribe(() => this.destroy());
   }

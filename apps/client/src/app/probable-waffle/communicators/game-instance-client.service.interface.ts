@@ -52,6 +52,7 @@ export interface GameInstanceClientServiceInterface {
   loadGameInstance(gameInstanceSaveData: ProbableWaffleGameInstanceSaveData): Promise<void>;
   loadSavedGameData(gameInstanceData: ProbableWaffleGameInstanceData): Promise<void>;
   saveGameInstance(data: Record<string, any>): Promise<void>;
+  requestCheckpointAutosave(checkpointId: string): void;
   startReplay(gameInstanceSaveData: ProbableWaffleGameInstanceSaveData): Promise<void>;
   leaveLobby(): Promise<void>;
   leaveScoreScreen(navigateHome?: boolean): Promise<void>;

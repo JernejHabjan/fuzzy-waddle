@@ -1,26 +1,44 @@
 <div class="container mt-4 overflow-auto aota-data-page">
   <div class="card-container aota-card-shell">
-    @if (saves().length) {
-      <h2 class="text-primary">Campaign</h2>
-      @for (group of campaignGroups(); track group[0]) {
-        <details [open]="$first">
-          <summary>{{ group[0] }} · {{ group[1].length }} saves</summary>
-          @for (save of group[1]; track save.id) {
-            <div class="aota-save-row">
-              <span>{{ save.name || "Autosave" }} · {{ save.updatedAt | date: "medium" }}</span
-              ><button class="btn btn-primary" (click)="loadSave(save)">Load</button
-              ><button class="btn btn-primary" (click)="deleteSave(save)">Delete</button>
-            </div>
-          }
-        </details>
+    @if (filteredSaves().length) {
+      @if (!scopeFilter || scopeFilter === "campaign") {
+        <h2 class="text-primary">{{ missionScopeId ? "Mission Saves" : "Campaign" }}</h2>
+        @for (group of campaignGroups(); track group.missionId) {
+          <details [open]="$first">
+            <summary>{{ group.chapterLabel }} · {{ group.missionTitle }} · {{ group.saves.length }} saves</summary>
+            @for (save of group.saves; track save.id) {
+              <div class="aota-save-row">
+                <span
+                  ><strong>{{ save.kind === "autosave" ? "Autosave" : save.name }}</strong> ·
+                  {{ save.updatedAt | date: "medium" }} · {{ save.syncState }}</span
+                >
+                @if (renameSaveId() === save.id) {
+                  <input
+                    type="text"
+                    [value]="renameValue()"
+                    (input)="updateRenameValue($event)"
+                    aria-label="Save name"
+                  />
+                  <button class="btn btn-secondary" (click)="confirmRename()">Save Name</button>
+                } @else if (save.kind === "manual") {
+                  <button class="btn btn-secondary" (click)="beginRename(save)">Rename</button>
+                }
+                <button class="btn btn-primary" (click)="loadSave(save)">Load</button>
+                <button class="btn btn-danger" (click)="deleteSave(save)">Delete</button>
+              </div>
+            }
+          </details>
+        }
       }
-      <h2 class="text-primary mt-4">Skirmish</h2>
-      @for (save of skirmishSaves(); track save.id) {
-        <div class="aota-save-row">
-          <span>{{ save.name || "Autosave" }} · {{ save.updatedAt | date: "medium" }}</span
-          ><button class="btn btn-primary" (click)="loadSave(save)">Load</button
-          ><button class="btn btn-primary" (click)="deleteSave(save)">Delete</button>
-        </div>
+      @if (!scopeFilter || scopeFilter === "skirmish") {
+        <h2 class="text-primary mt-4">Skirmish</h2>
+        @for (save of skirmishSaves(); track save.id) {
+          <div class="aota-save-row">
+            <span>{{ save.name || "Autosave" }} · {{ save.updatedAt | date: "medium" }}</span
+            ><button class="btn btn-primary" (click)="loadSave(save)">Load</button
+            ><button class="btn btn-primary" (click)="deleteSave(save)">Delete</button>
+          </div>
+        }
       }
     } @else {
       <div class="text-center">No saved games found.</div>

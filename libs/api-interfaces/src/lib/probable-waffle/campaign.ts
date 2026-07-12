@@ -58,6 +58,16 @@ export interface CampaignProgressData {
   completedMissions: CampaignMissionCompletion[];
 }
 
+export type CampaignMissionOutcome = "victory" | "defeat" | "abandoned";
+
+export interface CampaignMissionResult {
+  runId: string;
+  missionId: CampaignMissionId;
+  outcome: CampaignMissionOutcome;
+  durationSeconds?: number;
+  completedObjectiveIds?: string[];
+}
+
 export type CampaignMissionState = "locked" | "available" | "inProgress" | "completed" | "planned";
 
 export interface CampaignMissionProgress {

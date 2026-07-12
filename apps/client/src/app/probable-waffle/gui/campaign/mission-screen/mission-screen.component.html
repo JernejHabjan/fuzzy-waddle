@@ -7,8 +7,8 @@
       <span>{{ chapter.summary }}</span>
     </header>
 
-    <section class="mission-screen__layout">
-      <nav class="mission-screen__journey" aria-label="Chapter missions">
+    <section class="mission-screen__layout" [style.--mission-background]="'url(' + chapter.artwork.desktopSrc + ')'">
+      <nav class="mission-screen__journey" [class]="'mission-screen__journey mission-screen__journey--' + chapter.layout" aria-label="Chapter missions">
         @for (chapterMission of chapter.missions; track chapterMission.id) {
           <a
             [routerLink]="['/aota/campaign', chapter.id, chapterMission.id]"
@@ -36,7 +36,12 @@
           @case ("available") {
             @if (continueSaveAvailable()) {
               <button type="button" class="btn btn-primary" (click)="continueMission()">Continue</button>
-              <a class="btn btn-outline-secondary ms-2" routerLink="/aota/load">Load Game</a>
+              <a
+                class="btn btn-outline-secondary ms-2"
+                routerLink="/aota/load"
+                [queryParams]="{ missionId: mission.id }"
+                >Load Game</a
+              >
             } @else {
               <button type="button" class="btn btn-primary" (click)="startMission()">Start Mission</button>
             }

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, inject, signal, type OnInit } from "@angular/core";
 import { RouterLink } from "@angular/router";
 
 import { HomeNavComponent } from "../../../shared/components/home-nav/home-nav.component";
@@ -13,10 +13,10 @@ import { CampaignProgressService } from "./campaign-progress.service";
   imports: [HomeNavComponent, ChapterCardComponent, RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CampaignComponent {
+export class CampaignComponent implements OnInit {
   private readonly campaignProgressService = inject(CampaignProgressService);
   protected readonly catalog = AOTA_CAMPAIGN_CATALOG;
-  protected readonly selectedChapterId = signal(AOTA_CAMPAIGN_CATALOG.chapters[0].id);
+  protected readonly selectedChapterId = signal(AOTA_CAMPAIGN_CATALOG.chapters.at(0)?.id ?? "prologue");
   protected readonly recommendedMission = this.campaignProgressService.recommendedMission;
   protected readonly chapterStates = computed(() =>
     this.catalog.chapters.map((chapter) => {
@@ -37,5 +37,9 @@ export class CampaignComponent {
 
   protected selectChapter(chapterId: string): void {
     this.selectedChapterId.set(chapterId);
+  }
+
+  async ngOnInit(): Promise<void> {
+    await this.campaignProgressService.load();
   }
 }

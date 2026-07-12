@@ -6,10 +6,12 @@ import {
 } from "@fuzzy-waddle/api-interfaces";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 import { AOTA_CAMPAIGN_CATALOG } from "./campaign-catalog";
+import { CampaignProgressService } from "./campaign-progress.service";
 
 @Injectable({ providedIn: "root" })
 export class CampaignLaunchService {
   private readonly gameInstanceClientService = inject(GameInstanceClientService);
+  private readonly campaignProgressService = inject(CampaignProgressService);
   private launchInProgress = false;
 
   /** Creates a private one-player campaign run and bypasses the skirmish lobby. */
@@ -24,11 +26,12 @@ export class CampaignLaunchService {
       );
       const metadata = this.gameInstanceClientService.gameInstance?.gameInstanceMetadata.data;
       if (!metadata) throw new Error("Campaign game metadata is required");
+      const runId = await this.campaignProgressService.startRun(mission.id);
       metadata.campaignContext = {
         catalogVersion: AOTA_CAMPAIGN_CATALOG.version,
         chapterId: mission.chapterId,
         missionId: mission.id,
-        runId: crypto.randomUUID()
+        runId
       };
       await this.gameInstanceClientService.addSelfAsPlayer();
       await this.gameInstanceClientService.addAiPlayer();

@@ -6,6 +6,16 @@ create table public.probable_waffle_campaign_progress (
   primary key (user_id, mission_id)
 );
 
+create table public.probable_waffle_campaign_runs (
+  id uuid primary key,
+  user_id uuid not null references auth.users(id) on delete cascade,
+  mission_id text not null,
+  outcome text null check (outcome in ('victory', 'defeat', 'abandoned')),
+  started_at timestamptz not null default now(),
+  completed_at timestamptz null,
+  result_metadata jsonb not null default '{}'::jsonb
+);
+
 create table public.probable_waffle_game_saves (
   id uuid primary key,
   user_id uuid not null references auth.users(id) on delete cascade,
@@ -32,8 +42,11 @@ create index probable_waffle_game_saves_campaign_idx on public.probable_waffle_g
 create trigger probable_waffle_game_saves_updated_at before update on public.probable_waffle_game_saves for each row execute function public.set_updated_at();
 
 alter table public.probable_waffle_campaign_progress enable row level security;
+alter table public.probable_waffle_campaign_runs enable row level security;
 alter table public.probable_waffle_game_saves enable row level security;
 create policy "Service role owns campaign progress" on public.probable_waffle_campaign_progress for all to service_role using (true) with check (true);
+create policy "Service role owns campaign runs" on public.probable_waffle_campaign_runs for all to service_role using (true) with check (true);
 create policy "Service role owns game saves" on public.probable_waffle_game_saves for all to service_role using (true) with check (true);
 grant select, insert, update, delete on public.probable_waffle_campaign_progress to service_role;
+grant select, insert, update, delete on public.probable_waffle_campaign_runs to service_role;
 grant select, insert, update, delete on public.probable_waffle_game_saves to service_role;
