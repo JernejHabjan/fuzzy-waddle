@@ -6,6 +6,7 @@ import type {
   ProbableWaffleGameInstanceData
 } from "@fuzzy-waddle/api-interfaces";
 import { GameSaveRepository } from "./game-save.repository";
+import { GameSaveSyncService } from "./game-save-sync.service";
 
 export interface SaveGameRequest {
   scope: "campaign" | "skirmish";
@@ -19,6 +20,7 @@ export interface SaveGameRequest {
 @Injectable({ providedIn: "root" })
 export class GameSaveService {
   private readonly repository = inject(GameSaveRepository);
+  private readonly syncService = inject(GameSaveSyncService);
 
   async save(request: SaveGameRequest): Promise<GameSaveRecord> {
     const now = new Date().toISOString();
@@ -39,6 +41,7 @@ export class GameSaveService {
     };
     await this.repository.upsert(record);
     await this.retainAutosaves(record);
+    void this.syncService.flush();
     return record;
   }
 
@@ -66,6 +69,7 @@ export class GameSaveService {
 
   async delete(id: string): Promise<void> {
     await this.repository.markDeleted(id);
+    void this.syncService.flush();
   }
 
   /** Caps automatic snapshots per mission/run while preserving all named manual saves. */

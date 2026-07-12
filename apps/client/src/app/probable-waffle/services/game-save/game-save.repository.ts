@@ -12,6 +12,10 @@ export class GameSaveRepository {
       .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
   }
 
+  async listIncludingDeleted(): Promise<GameSaveRecord[]> {
+    return this.read();
+  }
+
   async upsert(record: GameSaveRecord): Promise<void> {
     const records = this.read();
     const index = records.findIndex((candidate) => candidate.id === record.id);
