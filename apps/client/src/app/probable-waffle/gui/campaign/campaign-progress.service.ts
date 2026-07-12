@@ -105,6 +105,11 @@ export class CampaignProgressService implements CampaignProgressServiceInterface
         return { mission, state: "completed", completedAt: completion.completedAt };
       }
 
+      // Development builds expose the complete campaign for rapid UI and mission testing without fabricated progress.
+      if (!environment.production) {
+        return { mission, state: "available" };
+      }
+
       if (mission.availability === "planned") {
         return { mission, state: "planned" };
       }

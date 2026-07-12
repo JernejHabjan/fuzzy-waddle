@@ -20,7 +20,7 @@
                 state === 'locked' || state === 'planned' ? null : ['/aota/campaign', chapter.id, chapterMission.id]
               "
               [class.mission-screen__node--selected]="chapterMission.id === mission.id"
-              [class.mission-screen__node--planned]="chapterMission.availability === 'planned'"
+              [class.mission-screen__node--planned]="state === 'planned'"
               [class.mission-screen__node--locked]="state === 'locked' || state === 'planned'"
               [class.mission-screen__node--tivara]="chapterMission.faction === 'tivara'"
               [class.mission-screen__node--skaduwee]="chapterMission.faction === 'skaduwee'"

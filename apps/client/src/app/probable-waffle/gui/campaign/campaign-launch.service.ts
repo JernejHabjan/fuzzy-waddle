@@ -9,6 +9,7 @@ import { GameInstanceClientService } from "../../communicators/game-instance-cli
 import { AOTA_CAMPAIGN_CATALOG } from "./campaign-catalog";
 import { CampaignProgressService } from "./campaign-progress.service";
 import { CampaignLaunchServiceInterface } from "./campaign-launch.service.interface";
+import { environment } from "../../../../environments/environment";
 
 @Injectable({ providedIn: "root" })
 /** Coordinates campaign metadata, players, map selection, and direct game navigation. */
@@ -19,7 +20,8 @@ export class CampaignLaunchService implements CampaignLaunchServiceInterface {
 
   /** Creates a private one-player campaign run and bypasses the skirmish lobby. */
   async startMission(mission: CampaignMissionDefinition): Promise<void> {
-    if (this.launchInProgress || mission.availability !== CampaignAvailability.Playable) return;
+    if (this.launchInProgress || (environment.production && mission.availability !== CampaignAvailability.Playable))
+      return;
     this.launchInProgress = true;
     try {
       await this.gameInstanceClientService.createGameInstance(
