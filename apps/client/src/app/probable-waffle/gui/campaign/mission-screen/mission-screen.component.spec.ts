@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, convertToParamMap, provideRouter } from "@angular/router";
 import { MissionScreenComponent } from "./mission-screen.component";
+import { CampaignLaunchService } from "../campaign-launch.service";
 
 describe("MissionScreenComponent", () => {
   let fixture: ComponentFixture<MissionScreenComponent>;
@@ -13,7 +14,8 @@ describe("MissionScreenComponent", () => {
         {
           provide: ActivatedRoute,
           useValue: { snapshot: { paramMap: convertToParamMap({ chapterId: "prologue", missionId: "dreams" }) } }
-        }
+        },
+        { provide: CampaignLaunchService, useValue: { startMission: async () => undefined } }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(MissionScreenComponent);

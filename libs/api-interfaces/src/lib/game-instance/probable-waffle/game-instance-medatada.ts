@@ -1,12 +1,21 @@
 import { GameInstanceMetadata, type GameInstanceMetadataData } from "../game-instance-metadata";
 import type { GameCommand } from "./game-command";
+import type { CampaignChapterId, CampaignMissionId } from "../../probable-waffle/campaign";
 
 export enum ProbableWaffleGameInstanceType {
   Matchmaking,
   SelfHosted,
   Skirmish,
   InstantGame,
-  Replay
+  Replay,
+  Campaign
+}
+
+export interface CampaignGameContext {
+  catalogVersion: number;
+  chapterId: CampaignChapterId;
+  missionId: CampaignMissionId;
+  runId: string;
 }
 
 export interface ProbableWaffleReplayPlayerData {
@@ -71,6 +80,7 @@ export interface ProbableWaffleGameInstanceMetadataData extends GameInstanceMeta
   startOptions: GameInstanceMetadataStartOptions;
   rndSeed: number;
   currentHostUserId?: string | null;
+  campaignContext?: CampaignGameContext;
 }
 
 export class ProbableWaffleGameInstanceMetadata extends GameInstanceMetadata<ProbableWaffleGameInstanceMetadataData> {

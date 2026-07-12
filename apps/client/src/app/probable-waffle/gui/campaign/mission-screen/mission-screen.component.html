@@ -34,7 +34,7 @@
         </ul>
         @switch (missionProgress()?.state) {
           @case ("available") {
-            <button type="button" class="btn btn-primary">Start Mission</button>
+            <button type="button" class="btn btn-primary" (click)="startMission()">Start Mission</button>
           }
           @case ("completed") {
             <button type="button" class="btn btn-primary">Replay Mission</button>

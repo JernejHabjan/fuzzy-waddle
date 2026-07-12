@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/c
 import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 import { AOTA_CAMPAIGN_CATALOG } from "../campaign-catalog";
 import { CampaignProgressService } from "../campaign-progress.service";
+import { CampaignLaunchService } from "../campaign-launch.service";
 
 @Component({
   selector: "fuzzy-waddle-campaign-mission-screen",
@@ -14,6 +15,7 @@ export class MissionScreenComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly campaignProgressService = inject(CampaignProgressService);
+  private readonly campaignLaunchService = inject(CampaignLaunchService);
   private readonly chapterId = this.route.snapshot.paramMap.get("chapterId");
   private readonly missionId = this.route.snapshot.paramMap.get("missionId");
   protected readonly chapter = AOTA_CAMPAIGN_CATALOG.chapters.find((chapter) => chapter.id === this.chapterId);
@@ -29,5 +31,10 @@ export class MissionScreenComponent {
     if (!this.chapter || (this.missionId && !this.selectedMission())) {
       void this.router.navigate(["/aota/campaign"], { replaceUrl: true });
     }
+  }
+
+  protected async startMission(): Promise<void> {
+    const mission = this.selectedMission();
+    if (mission) await this.campaignLaunchService.startMission(mission);
   }
 }
