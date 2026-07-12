@@ -1004,15 +1004,22 @@ export class NavigationService {
   }
 
   getTerrainUnderActor(gameObject: Phaser.GameObjects.GameObject): TerrainType | undefined {
-    const tile = getTileCoordsUnderObject(this.tilemap, gameObject)[0];
-    if (!tile) return undefined;
-    const tileData = this.tilemap.getTileAt(tile.x, tile.y);
-    if (!tileData) return undefined;
-    const terrainType = tileData.properties.terrainType;
-    if (!terrainType) return undefined;
-    if (this.terrainTypes.includes(terrainType)) {
-      return terrainType as TerrainType;
+    const tilesUnderActor = getTileCoordsUnderObject(this.tilemap, gameObject);
+    for (const tile of tilesUnderActor) {
+      const tileData = this.tilemap.getTileAt(tile.x, tile.y);
+      const terrainType = tileData?.properties.terrainType;
+      if (terrainType && this.terrainTypes.includes(terrainType)) {
+        return terrainType as TerrainType;
+      }
     }
+
+    // Walkable prefabs can replace non-navigable map tiles (for example a bridge
+    // over water). They are a solid surface for movement audio when no terrain
+    // tile supplies a terrain type.
+    if (tilesUnderActor.some((tile) => this.getNavigationCell(tile)?.navigableComponent)) {
+      return TerrainType.Stone;
+    }
+
     return undefined;
   }
 
