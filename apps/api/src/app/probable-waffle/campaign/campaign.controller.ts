@@ -2,7 +2,7 @@ import { Body, Controller, Get, Post, UseGuards } from "@nestjs/common";
 import type { AuthUser } from "@supabase/supabase-js";
 import { CurrentUser } from "../../../auth/current-user";
 import { OnlineAccessGuard } from "../../../auth/guards/online-access.guard";
-import { CampaignResultDto, StartCampaignRunDto } from "./campaign.dto";
+import { CampaignResultDto, MergeCampaignProgressDto, StartCampaignRunDto } from "./campaign.dto";
 import { CampaignServerService } from "./campaign.service";
 
 @Controller("probable-waffle/campaign")
@@ -17,5 +17,8 @@ export class CampaignController {
   }
   @Post("results") result(@CurrentUser() user: AuthUser, @Body() dto: CampaignResultDto) {
     return this.service.result(user.id, dto);
+  }
+  @Post("merge") merge(@CurrentUser() user: AuthUser, @Body() dto: MergeCampaignProgressDto) {
+    return this.service.merge(user.id, dto.completedMissions);
   }
 }

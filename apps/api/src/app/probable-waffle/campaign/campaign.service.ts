@@ -58,6 +58,28 @@ export class CampaignServerService {
     }
   }
 
+  async merge(userId: string, completions: Array<{ missionId: string; completedAt: string }>): Promise<void> {
+    const progress = this.table("probable_waffle_campaign_progress");
+    for (const completion of completions) {
+      if (!completion.missionId || Number.isNaN(Date.parse(completion.completedAt))) continue;
+      const { data: existing, error: readError } = await progress
+        .select("completed_at")
+        .eq("user_id", userId)
+        .eq("mission_id", completion.missionId)
+        .maybeSingle();
+      if (readError) throw readError;
+      const completedAt =
+        existing?.completed_at && existing.completed_at < completion.completedAt
+          ? existing.completed_at
+          : completion.completedAt;
+      const { error } = await progress.upsert(
+        { user_id: userId, mission_id: completion.missionId, completed_at: completedAt },
+        { onConflict: "user_id,mission_id" }
+      );
+      if (error) throw error;
+    }
+  }
+
   private table(name: string) {
     // Generated database typings are refreshed after the migration is applied.
     return this.supabaseProviderService.supabaseClient.from(name as never) as any;

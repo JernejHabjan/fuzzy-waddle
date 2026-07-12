@@ -12,3 +12,8 @@ export class CampaignResultDto {
   @IsOptional() @IsInt() @Min(0) durationSeconds?: number;
   @IsOptional() @IsArray() @IsString({ each: true }) completedObjectiveIds?: string[];
 }
+
+export class MergeCampaignProgressDto {
+  @IsArray()
+  completedMissions!: Array<{ missionId: string; completedAt: string }>;
+}

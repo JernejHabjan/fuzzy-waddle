@@ -42,7 +42,11 @@ export class CampaignProgressService {
       const remote = await firstValueFrom(
         this.httpClient.get<CampaignProgressData>(`${environment.api}api/probable-waffle/campaign/progress`)
       );
-      this.progress.set(this.mergeProgress(guest, remote));
+      const merged = this.mergeProgress(guest, remote);
+      this.progress.set(merged);
+      if (guest.completedMissions.length) {
+        await firstValueFrom(this.httpClient.post(`${environment.api}api/probable-waffle/campaign/merge`, guest));
+      }
     } catch {
       this.progress.set(guest);
     }
