@@ -1,2 +1,21 @@
 <fuzzy-waddle-home-nav routerLink="/aota" title="Ashes of the Ancients" [showBack]="true" />
-<coming-soon />
+<main class="aota-campaign-surface campaign-overview">
+  <header class="campaign-overview__header">
+    <p class="campaign-overview__eyebrow">Campaign</p>
+    <h1>Ashes of the Ancients</h1>
+    <p>Choose a chapter to follow the story. The complete roadmap is visible from the beginning.</p>
+  </header>
+
+  <section aria-label="Campaign chapters">
+    <div class="aota-campaign-scroll-row campaign-overview__chapters">
+      @for (chapterState of chapterStates(); track chapterState.chapter.id) {
+        <fuzzy-waddle-campaign-chapter-card
+          [chapter]="chapterState.chapter"
+          [missionProgress]="chapterState.progress"
+          [state]="chapterState.state"
+          (chapterSelected)="selectChapter($event)"
+        />
+      }
+    </div>
+  </section>
+</main>

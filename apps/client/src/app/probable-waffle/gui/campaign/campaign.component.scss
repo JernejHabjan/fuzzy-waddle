@@ -1,0 +1,37 @@
+.campaign-overview {
+  min-block-size: calc(100vh - 4rem);
+  padding: var(--aota-campaign-page-padding);
+  background:
+    radial-gradient(circle at 50% -10%, rgb(240 196 107 / 14%), transparent 35rem),
+    linear-gradient(180deg, #11161d, #090c11);
+}
+
+.campaign-overview__header {
+  max-inline-size: 48rem;
+  margin: 0 auto clamp(1.5rem, 4vw, 3rem);
+  text-align: center;
+}
+
+.campaign-overview__eyebrow {
+  margin: 0;
+  color: var(--aota-gold);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.campaign-overview h1 {
+  margin: 0.25rem 0 0.75rem;
+  color: var(--aota-gold);
+  font-size: clamp(1.8rem, 4vw, 3.25rem);
+}
+
+.campaign-overview__header p:last-child {
+  margin: 0;
+  color: var(--aota-muted);
+}
+
+.campaign-overview__chapters {
+  padding: 0.5rem max(0.25rem, calc((100vw - 100rem) / 2));
+}

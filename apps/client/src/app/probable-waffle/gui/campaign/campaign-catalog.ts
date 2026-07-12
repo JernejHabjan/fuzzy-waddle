@@ -9,7 +9,7 @@ const campaignArtworkRoot = "assets/probable-waffle/campaign";
 
 function createArtwork(key: string, alt: string, focalPosition: string) {
   return {
-    desktopSrc: `${campaignArtworkRoot}/chapters/${key}.webp`,
+    desktopSrc: `${campaignArtworkRoot}/chapters/${key}.png`,
     alt,
     focalPosition
   };

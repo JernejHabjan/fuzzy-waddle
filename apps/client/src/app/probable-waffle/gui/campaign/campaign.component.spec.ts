@@ -3,7 +3,6 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { CampaignComponent } from "./campaign.component";
 import { provideRouter } from "@angular/router";
 import { HomeNavTestingComponent } from "../../../shared/components/home-nav/home-nav.component.spec";
-import { ComingSoonComponent } from "../coming-soon/coming-soon.component";
 import { HomeNavComponent } from "../../../shared/components/home-nav/home-nav.component";
 
 describe("CampaignComponent", () => {
@@ -12,7 +11,7 @@ describe("CampaignComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CampaignComponent, ComingSoonComponent],
+      imports: [CampaignComponent],
       providers: [provideRouter([])]
     })
       .overrideComponent(CampaignComponent, {
@@ -32,5 +31,9 @@ describe("CampaignComponent", () => {
 
   it("should create", () => {
     expect(component).toBeTruthy();
+  });
+
+  it("renders the full campaign roadmap", () => {
+    expect(fixture.nativeElement.querySelectorAll("fuzzy-waddle-campaign-chapter-card").length).toBe(5);
   });
 });
