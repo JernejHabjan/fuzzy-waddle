@@ -16,11 +16,11 @@ export class SaveGame {
   constructor(private scene: GameProbableWaffleScene) {
     this.saveGameSubscription = scene.communicator.allScenes
       .pipe(filter((scene) => scene.name === "save-game"))
-      .subscribe(() => this.onSaveGame());
+      .subscribe((event) => this.onSaveGame(event.data?.kind));
     scene.onShutdown.subscribe(() => this.destroy());
   }
 
-  private async onSaveGame() {
+  private async onSaveGame(kind: SaveGamePayload["kind"] = "manual") {
     const sceneActorCreator = getSceneService(this.scene, SceneActorCreator);
     if (!sceneActorCreator) throw new Error("SceneActorCreator not found");
     sceneActorCreator.saveAllKnownActorsToGameState();
@@ -41,7 +41,8 @@ export class SaveGame {
     this.scene.communicator.utilityEvents.emit({
       name: "save-game",
       data: {
-        thumbnail
+        thumbnail,
+        kind
       } satisfies SaveGamePayload
     });
   }

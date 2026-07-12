@@ -80,6 +80,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   private externalModalOpen = false;
   private externalModalRef?: NgbModalRef;
   private selfExitInProgress = false;
+  private autosaveTimer?: ReturnType<typeof setInterval>;
   gameInstanceToGameComponentCommunicator = new Subject<"refresh">();
 
   async createGameInstance(
@@ -344,6 +345,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     this.listenToUtilityGameEvents();
     this.listenToChatMessagesForNotifications();
     this.listenToSceneShutdown();
+    this.startAutosaveTimer();
   }
 
   private async stopListeningToGameInstanceEvents() {
@@ -357,6 +359,25 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     );
     this.communicatorSubscriptions = [];
     this.communicators = undefined;
+    this.stopAutosaveTimer();
+  }
+
+  /** Autosave requests stay at the Angular/Phaser boundary so the save scene owns serialization and thumbnails. */
+  private startAutosaveTimer(): void {
+    this.stopAutosaveTimer();
+    const type = this.getNormalizedGameInstanceType();
+    if (type !== ProbableWaffleGameInstanceType.Campaign && type !== ProbableWaffleGameInstanceType.Skirmish) return;
+    this.autosaveTimer = setInterval(
+      () => {
+        this.probableWaffleCommunicatorService.allScenes.emit({ name: "save-game", data: { kind: "autosave" } });
+      },
+      10 * 60 * 1000
+    );
+  }
+
+  private stopAutosaveTimer(): void {
+    if (this.autosaveTimer) clearInterval(this.autosaveTimer);
+    this.autosaveTimer = undefined;
   }
 
   async startGame(): Promise<void> {
