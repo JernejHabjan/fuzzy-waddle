@@ -1,0 +1,37 @@
+.aota-campaign-surface {
+  --aota-campaign-page-padding: clamp(1rem, 3vw, 3rem);
+  --aota-campaign-gap: clamp(0.75rem, 2vw, 1.5rem);
+  --aota-campaign-card-width: clamp(15rem, 22vw, 20rem);
+  --aota-campaign-focus-ring: 0 0 0 0.2rem rgb(240 196 107 / 62%);
+}
+
+.aota-campaign-surface :focus-visible {
+  outline: none;
+  box-shadow: var(--aota-campaign-focus-ring);
+}
+
+.aota-campaign-scroll-row {
+  display: flex;
+  gap: var(--aota-campaign-gap);
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scroll-snap-type: inline mandatory;
+  scrollbar-color: var(--aota-gold-soft) transparent;
+}
+
+.aota-campaign-scroll-row > * {
+  flex: 0 0 var(--aota-campaign-card-width);
+  scroll-snap-align: center;
+}
+
+@media (max-width: 700px) {
+  .aota-campaign-scroll-row {
+    flex-direction: column;
+    overflow: visible;
+    scroll-snap-type: none;
+  }
+
+  .aota-campaign-scroll-row > * {
+    flex-basis: auto;
+  }
+}
