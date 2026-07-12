@@ -151,9 +151,10 @@ export abstract class GameInstance<
     this.gameInstanceMetadata?.resetData();
     this.gameMode?.resetData();
     this.gameState?.resetData();
+    // A level can be restarted without leaving the game, so keep the player
+    // identity that determines ownership and input eligibility.
     this.players?.forEach((p) => {
       p.playerState?.resetData();
-      p.playerController?.resetData();
     });
     this.spectators?.forEach((s) => s.resetData());
   }
