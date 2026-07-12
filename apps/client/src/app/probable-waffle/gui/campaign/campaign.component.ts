@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from "@angular/core";
+import { RouterLink } from "@angular/router";
 
 import { HomeNavComponent } from "../../../shared/components/home-nav/home-nav.component";
 import { AOTA_CAMPAIGN_CATALOG } from "./campaign-catalog";
@@ -9,7 +10,7 @@ import { CampaignProgressService } from "./campaign-progress.service";
   selector: "fuzzy-waddle-campaign",
   templateUrl: "./campaign.component.html",
   styleUrls: ["./campaign.component.scss"],
-  imports: [HomeNavComponent, ChapterCardComponent],
+  imports: [HomeNavComponent, ChapterCardComponent, RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CampaignComponent {

@@ -35,3 +35,9 @@
 .campaign-overview__chapters {
   padding: 0.5rem max(0.25rem, calc((100vw - 100rem) / 2));
 }
+
+.campaign-overview__actions {
+  display: flex;
+  justify-content: center;
+  margin-top: clamp(1.25rem, 3vw, 2rem);
+}

@@ -1,0 +1,52 @@
+@if (chapter && selectedMission(); as mission) {
+  <main class="aota-campaign-surface mission-screen">
+    <a class="mission-screen__back" routerLink="/aota/campaign">← Back to Chapters</a>
+    <header class="mission-screen__header">
+      <p>{{ chapter.subtitle }}</p>
+      <h1>{{ chapter.title }}</h1>
+      <span>{{ chapter.summary }}</span>
+    </header>
+
+    <section class="mission-screen__layout">
+      <nav class="mission-screen__journey" aria-label="Chapter missions">
+        @for (chapterMission of chapter.missions; track chapterMission.id) {
+          <a
+            [routerLink]="['/aota/campaign', chapter.id, chapterMission.id]"
+            [class.mission-screen__node--selected]="chapterMission.id === mission.id"
+            [class.mission-screen__node--planned]="chapterMission.availability === 'planned'"
+            class="mission-screen__node"
+          >
+            <span>{{ chapterMission.order + 1 }}</span>
+            {{ chapterMission.title }}
+          </a>
+        }
+      </nav>
+
+      <article class="mission-screen__briefing">
+        <p class="mission-screen__eyebrow">{{ mission.environment }} · {{ mission.faction }}</p>
+        <h2>{{ mission.title }}</h2>
+        <p>{{ mission.briefing }}</p>
+        <h3>Objectives</h3>
+        <ul>
+          @for (objective of mission.objectives; track objective) {
+            <li>{{ objective }}</li>
+          }
+        </ul>
+        @switch (missionProgress()?.state) {
+          @case ("available") {
+            <button type="button" class="btn btn-primary">Start Mission</button>
+          }
+          @case ("completed") {
+            <button type="button" class="btn btn-primary">Replay Mission</button>
+          }
+          @case ("planned") {
+            <button type="button" class="btn btn-outline-secondary" disabled>Coming Soon</button>
+          }
+          @default {
+            <button type="button" class="btn btn-outline-secondary" disabled>Locked</button>
+          }
+        }
+      </article>
+    </section>
+  </main>
+}
