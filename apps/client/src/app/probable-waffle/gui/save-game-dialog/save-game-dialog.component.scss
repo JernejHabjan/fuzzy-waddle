@@ -1,0 +1,26 @@
+/* Modal body containing the manual-save naming form. */
+.save-game-dialog {
+  display: grid;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: #11161d;
+  color: #f4ead5;
+}
+
+/* Compact title area at the top of the save dialog. */
+.save-game-dialog__header h2 {
+  margin: 0;
+}
+
+/* Label and input stack for the requested save name. */
+.save-game-dialog__field {
+  display: grid;
+  gap: 0.4rem;
+}
+
+/* Right-aligned cancel and confirm controls. */
+.save-game-dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}

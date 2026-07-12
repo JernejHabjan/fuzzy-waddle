@@ -5,6 +5,12 @@ import { CampaignProgressService } from "../campaign-progress.service";
 import { CampaignLaunchService } from "../campaign-launch.service";
 import { GameSaveService } from "../../../services/game-save/game-save.service";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
+import {
+  isCampaignChapterId,
+  isCampaignMissionId,
+  type CampaignChapterId,
+  type CampaignMissionId
+} from "@fuzzy-waddle/api-interfaces";
 
 @Component({
   selector: "fuzzy-waddle-campaign-mission-screen",
@@ -21,8 +27,10 @@ export class MissionScreenComponent implements OnInit {
   private readonly gameSaveService = inject(GameSaveService);
   private readonly gameInstanceClientService = inject(GameInstanceClientService);
   protected readonly continueSaveAvailable = signal(false);
-  private readonly chapterId = this.route.snapshot.paramMap.get("chapterId");
-  private readonly missionId = this.route.snapshot.paramMap.get("missionId");
+  protected readonly launchInProgress = signal(false);
+  protected readonly launchError = signal<string | undefined>(undefined);
+  private readonly chapterId = this.readChapterId();
+  private readonly missionId = this.readMissionId();
   protected readonly chapter = AOTA_CAMPAIGN_CATALOG.chapters.find((chapter) => chapter.id === this.chapterId);
   protected readonly selectedMission = computed(
     () => this.chapter?.missions.find((mission) => mission.id === this.missionId) ?? this.chapter?.missions[0]
@@ -32,13 +40,29 @@ export class MissionScreenComponent implements OnInit {
     return mission ? this.campaignProgressService.getMissionProgress(mission.id) : undefined;
   });
 
+  /** Returns the authoritative unlock state used to style and disable each mission node. */
+  protected missionState(missionId: CampaignMissionId) {
+    return this.campaignProgressService.getMissionProgress(missionId)?.state ?? "locked";
+  }
+
   constructor() {
     if (!this.chapter || (this.missionId && !this.selectedMission())) {
       void this.router.navigate(["/aota/campaign"], { replaceUrl: true });
     }
   }
 
+  private readChapterId(): CampaignChapterId | undefined {
+    const value = this.route.snapshot.paramMap.get("chapterId");
+    return isCampaignChapterId(value) ? value : undefined;
+  }
+
+  private readMissionId(): CampaignMissionId | undefined {
+    const value = this.route.snapshot.paramMap.get("missionId");
+    return isCampaignMissionId(value) ? value : undefined;
+  }
+
   async ngOnInit(): Promise<void> {
+    await this.campaignProgressService.load();
     const mission = this.selectedMission();
     if (mission)
       this.continueSaveAvailable.set(Boolean(await this.gameSaveService.continueCampaignMission(mission.id)));
@@ -46,7 +70,17 @@ export class MissionScreenComponent implements OnInit {
 
   protected async startMission(): Promise<void> {
     const mission = this.selectedMission();
-    if (mission) await this.campaignLaunchService.startMission(mission);
+    if (!mission || this.launchInProgress()) return;
+    this.launchInProgress.set(true);
+    this.launchError.set(undefined);
+    try {
+      await this.campaignLaunchService.startMission(mission);
+    } catch (error) {
+      console.error("Unable to start campaign mission", error);
+      this.launchError.set("The mission could not be started. Please try again.");
+    } finally {
+      this.launchInProgress.set(false);
+    }
   }
 
   protected async continueMission(): Promise<void> {

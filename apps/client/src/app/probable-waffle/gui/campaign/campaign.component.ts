@@ -1,22 +1,24 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal, type OnInit } from "@angular/core";
-import { RouterLink } from "@angular/router";
+import { ChangeDetectionStrategy, Component, computed, inject, type OnInit } from "@angular/core";
+import type { CampaignChapterId } from "@fuzzy-waddle/api-interfaces";
+import { Router } from "@angular/router";
 
 import { HomeNavComponent } from "../../../shared/components/home-nav/home-nav.component";
 import { AOTA_CAMPAIGN_CATALOG } from "./campaign-catalog";
-import { ChapterCardComponent, type CampaignChapterCardState } from "./chapter-card/chapter-card.component";
+import { ChapterCardComponent } from "./chapter-card/chapter-card.component";
+import type { CampaignChapterCardState } from "./chapter-card/campaign-chapter-card-state";
 import { CampaignProgressService } from "./campaign-progress.service";
 
 @Component({
   selector: "fuzzy-waddle-campaign",
   templateUrl: "./campaign.component.html",
   styleUrls: ["./campaign.component.scss"],
-  imports: [HomeNavComponent, ChapterCardComponent, RouterLink],
+  imports: [HomeNavComponent, ChapterCardComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CampaignComponent implements OnInit {
   private readonly campaignProgressService = inject(CampaignProgressService);
+  private readonly router = inject(Router);
   protected readonly catalog = AOTA_CAMPAIGN_CATALOG;
-  protected readonly selectedChapterId = signal(AOTA_CAMPAIGN_CATALOG.chapters.at(0)?.id ?? "prologue");
   protected readonly recommendedMission = this.campaignProgressService.recommendedMission;
   protected readonly chapterStates = computed(() =>
     this.catalog.chapters.map((chapter) => {
@@ -29,14 +31,16 @@ export class CampaignComponent implements OnInit {
         isRecommended: progress.some(
           (missionProgress) => missionProgress.mission.id === this.recommendedMission()?.mission.id
         ),
-        isSelected: chapter.id === this.selectedChapterId()
+        isLocked: !progress.some((missionProgress) =>
+          ["available", "inProgress", "completed"].includes(missionProgress.state)
+        )
       };
       return { chapter, progress, state };
     })
   );
 
-  protected selectChapter(chapterId: string): void {
-    this.selectedChapterId.set(chapterId);
+  protected async selectChapter(chapterId: CampaignChapterId): Promise<void> {
+    await this.router.navigate(["/aota/campaign", chapterId]);
   }
 
   async ngOnInit(): Promise<void> {

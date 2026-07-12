@@ -1,15 +1,26 @@
-import { IsBoolean, IsIn, IsInt, IsObject, IsOptional, IsString, IsUUID, Min } from "class-validator";
+import { IsBoolean, IsIn, IsInt, IsOptional, IsString, IsUUID, Min } from "class-validator";
+import {
+  CAMPAIGN_CHAPTER_IDS,
+  CAMPAIGN_MISSION_IDS,
+  type CampaignChapterId,
+  type CampaignMissionId,
+  GameSaveKind,
+  GameSaveScope
+} from "@fuzzy-waddle/api-interfaces";
 
 export class SyncGameSaveDto {
   @IsUUID() id!: string;
-  @IsIn(["campaign", "skirmish"]) scope!: "campaign" | "skirmish";
-  @IsIn(["manual", "autosave"]) kind!: "manual" | "autosave";
+  @IsIn(Object.values(GameSaveScope)) scope!: GameSaveScope;
+  @IsIn(Object.values(GameSaveKind)) kind!: GameSaveKind;
   @IsOptional() @IsString() name?: string;
-  @IsOptional() @IsString() campaignChapterId?: string;
-  @IsOptional() @IsString() campaignMissionId?: string;
+  @IsOptional()
+  @IsIn([...CAMPAIGN_CHAPTER_IDS])
+  campaignChapterId?: CampaignChapterId;
+  @IsOptional() @IsIn([...CAMPAIGN_MISSION_IDS]) campaignMissionId?: CampaignMissionId;
   @IsOptional() @IsString() campaignRunId?: string;
   @IsInt() @Min(1) revision!: number;
+  @IsInt() @Min(1) formatVersion!: number;
   @IsBoolean() isDeleted!: boolean;
   @IsOptional() @IsString() thumbnail?: string;
-  @IsObject() gameInstanceData!: object;
+  @IsString() encodedGameInstanceData!: string;
 }

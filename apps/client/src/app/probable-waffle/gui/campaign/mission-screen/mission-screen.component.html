@@ -8,17 +8,35 @@
     </header>
 
     <section class="mission-screen__layout" [style.--mission-background]="'url(' + chapter.artwork.desktopSrc + ')'">
-      <nav class="mission-screen__journey" [class]="'mission-screen__journey mission-screen__journey--' + chapter.layout" aria-label="Chapter missions">
+      <nav
+        class="mission-screen__journey"
+        [class]="'mission-screen__journey mission-screen__journey--' + chapter.layout"
+        aria-label="Chapter missions"
+      >
         @for (chapterMission of chapter.missions; track chapterMission.id) {
-          <a
-            [routerLink]="['/aota/campaign', chapter.id, chapterMission.id]"
-            [class.mission-screen__node--selected]="chapterMission.id === mission.id"
-            [class.mission-screen__node--planned]="chapterMission.availability === 'planned'"
-            class="mission-screen__node"
-          >
-            <span>{{ chapterMission.order + 1 }}</span>
-            {{ chapterMission.title }}
-          </a>
+          @if (missionState(chapterMission.id); as state) {
+            <a
+              [routerLink]="
+                state === 'locked' || state === 'planned' ? null : ['/aota/campaign', chapter.id, chapterMission.id]
+              "
+              [class.mission-screen__node--selected]="chapterMission.id === mission.id"
+              [class.mission-screen__node--planned]="chapterMission.availability === 'planned'"
+              [class.mission-screen__node--locked]="state === 'locked' || state === 'planned'"
+              [class.mission-screen__node--tivara]="chapterMission.faction === 'tivara'"
+              [class.mission-screen__node--skaduwee]="chapterMission.faction === 'skaduwee'"
+              [attr.aria-disabled]="state === 'locked' || state === 'planned'"
+              class="mission-screen__node"
+            >
+              <span>{{ chapterMission.order + 1 }}</span>
+              <span class="mission-screen__node-copy">
+                <strong>{{ chapterMission.title }}</strong>
+                <small>{{ chapterMission.faction }}</small>
+              </span>
+              @if (state === "locked" || state === "planned") {
+                <span class="mission-screen__node-lock" aria-label="Locked mission">🔒</span>
+              }
+            </a>
+          }
         }
       </nav>
 
@@ -43,11 +61,25 @@
                 >Load Game</a
               >
             } @else {
-              <button type="button" class="btn btn-primary" (click)="startMission()">Start Mission</button>
+              <button type="button" class="btn btn-primary" [disabled]="launchInProgress()" (click)="startMission()">
+                @if (launchInProgress()) {
+                  <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                  Starting…
+                } @else {
+                  Start Mission
+                }
+              </button>
             }
           }
           @case ("completed") {
-            <button type="button" class="btn btn-primary">Replay Mission</button>
+            <button type="button" class="btn btn-primary" [disabled]="launchInProgress()" (click)="startMission()">
+              @if (launchInProgress()) {
+                <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                Starting…
+              } @else {
+                Replay Mission
+              }
+            </button>
           }
           @case ("planned") {
             <button type="button" class="btn btn-outline-secondary" disabled>Coming Soon</button>
@@ -55,6 +87,9 @@
           @default {
             <button type="button" class="btn btn-outline-secondary" disabled>Locked</button>
           }
+        }
+        @if (launchError()) {
+          <p class="mission-screen__error" role="alert">{{ launchError() }}</p>
         }
       </article>
     </section>

@@ -1,12 +1,10 @@
 import { ChangeDetectionStrategy, Component, input, output } from "@angular/core";
-import type { CampaignChapterDefinition, CampaignMissionProgress } from "@fuzzy-waddle/api-interfaces";
-
-export interface CampaignChapterCardState {
-  completedMissions: number;
-  totalMissions: number;
-  isRecommended: boolean;
-  isSelected: boolean;
-}
+import type {
+  CampaignChapterDefinition,
+  CampaignChapterId,
+  CampaignMissionProgress
+} from "@fuzzy-waddle/api-interfaces";
+import type { CampaignChapterCardState } from "./campaign-chapter-card-state";
 
 @Component({
   selector: "fuzzy-waddle-campaign-chapter-card",
@@ -18,9 +16,11 @@ export class ChapterCardComponent {
   readonly chapter = input.required<CampaignChapterDefinition>();
   readonly missionProgress = input.required<CampaignMissionProgress[]>();
   readonly state = input.required<CampaignChapterCardState>();
-  readonly chapterSelected = output<string>();
+  readonly chapterSelected = output<CampaignChapterId>();
 
+  /** Locked cards remain visible for roadmap context but cannot be entered. */
   selectChapter(): void {
+    if (this.state().isLocked) return;
     this.chapterSelected.emit(this.chapter().id);
   }
 }

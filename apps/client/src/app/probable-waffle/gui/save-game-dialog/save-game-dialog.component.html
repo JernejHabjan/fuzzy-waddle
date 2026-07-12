@@ -1,0 +1,13 @@
+<form class="save-game-dialog" (ngSubmit)="confirm()">
+  <header class="save-game-dialog__header">
+    <h2>Save Game</h2>
+  </header>
+  <label class="save-game-dialog__field">
+    Save name
+    <input class="form-control" type="text" [formControl]="saveName" maxlength="80" autofocus />
+  </label>
+  <footer class="save-game-dialog__actions">
+    <button class="btn btn-outline-secondary" type="button" (click)="cancel()">Cancel</button>
+    <button class="btn btn-primary" type="submit" [disabled]="saveName.invalid">Save</button>
+  </footer>
+</form>

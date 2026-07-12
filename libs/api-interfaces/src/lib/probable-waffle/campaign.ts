@@ -2,13 +2,98 @@ import type { ProbableWaffleMapEnum } from "./probable-waffle";
 import type { ProbableWaffleGameInstanceData } from "../game-instance/probable-waffle/game-instance";
 
 /** Permanent identifiers used by progress, saves, routes, and campaign runs. */
-export type CampaignChapterId = string;
-export type CampaignMissionId = string;
+export type CampaignChapterId =
+  | "prologue"
+  | "two-homelands"
+  | "crystal-war"
+  | "united-against-volcano"
+  | "the-betrayal";
+export type CampaignMissionId =
+  | "dreams"
+  | "cyclops-and-sheep"
+  | "snow-wendigo-and-fire"
+  | "slingshooters-and-wolves"
+  | "owl-and-skaduwee-crystal"
+  | "sand-dunes-and-tivara-crystal"
+  | "we-had-enough"
+  | "sailing-towards-the-new-future"
+  | "the-first-and-last-dinner"
+  | "the-siege"
+  | "time-rush"
+  | "joining-crystal"
+  | "mobster-or-friend"
+  | "the-volcano-is-getting-angry"
+  | "cult-wars"
+  | "the-volcano"
+  | "the-betrayal"
+  | "undead-and-cursed-lands"
+  | "end-game"
+  | "resolution";
 
-export type CampaignMissionLayout = "single" | "parallel" | "collision" | "united" | "finale";
-export type CampaignFaction = "tivara" | "skaduwee" | "both" | "switching";
-export type CampaignContentType = "mission" | "cinematic";
-export type CampaignAvailability = "playable" | "planned" | "hidden";
+export const CAMPAIGN_CHAPTER_IDS: readonly CampaignChapterId[] = [
+  "prologue",
+  "two-homelands",
+  "crystal-war",
+  "united-against-volcano",
+  "the-betrayal"
+];
+
+export const CAMPAIGN_MISSION_IDS: readonly CampaignMissionId[] = [
+  "dreams",
+  "cyclops-and-sheep",
+  "snow-wendigo-and-fire",
+  "slingshooters-and-wolves",
+  "owl-and-skaduwee-crystal",
+  "sand-dunes-and-tivara-crystal",
+  "we-had-enough",
+  "sailing-towards-the-new-future",
+  "the-first-and-last-dinner",
+  "the-siege",
+  "time-rush",
+  "joining-crystal",
+  "mobster-or-friend",
+  "the-volcano-is-getting-angry",
+  "cult-wars",
+  "the-volcano",
+  "the-betrayal",
+  "undead-and-cursed-lands",
+  "end-game",
+  "resolution"
+];
+
+export function isCampaignChapterId(value: string | null): value is CampaignChapterId {
+  return value !== null && (CAMPAIGN_CHAPTER_IDS as readonly string[]).includes(value);
+}
+
+export function isCampaignMissionId(value: string | null): value is CampaignMissionId {
+  return value !== null && (CAMPAIGN_MISSION_IDS as readonly string[]).includes(value);
+}
+
+export enum CampaignMissionLayout {
+  Single = "single",
+  Parallel = "parallel",
+  Collision = "collision",
+  United = "united",
+  Finale = "finale"
+}
+
+export enum CampaignFaction {
+  Tivara = "tivara",
+  Skaduwee = "skaduwee",
+  Both = "both",
+  Switching = "switching"
+}
+
+export enum CampaignContentType {
+  Mission = "mission",
+  Cinematic = "cinematic"
+}
+
+export enum CampaignAvailability {
+  Playable = "playable",
+  Planned = "planned",
+  Hidden = "hidden"
+}
 
 export interface CampaignArtworkDefinition {
   /** Replaceable asset path; functional labels and controls are never part of the artwork. */
@@ -30,7 +115,7 @@ export interface CampaignMissionDefinition {
   environment: string;
   briefing: string;
   objectives: string[];
-  mapId?: ProbableWaffleMapEnum;
+  mapId: ProbableWaffleMapEnum;
 }
 
 export interface CampaignChapterDefinition {
@@ -58,7 +143,12 @@ export interface CampaignProgressData {
   completedMissions: CampaignMissionCompletion[];
 }
 
-export type CampaignMissionOutcome = "victory" | "defeat" | "abandoned";
+export const CampaignMissionOutcome = {
+  Victory: "victory",
+  Defeat: "defeat",
+  Abandoned: "abandoned"
+} as const;
+export type CampaignMissionOutcome = (typeof CampaignMissionOutcome)[keyof typeof CampaignMissionOutcome];
 
 export interface CampaignMissionResult {
   runId: string;
@@ -76,14 +166,33 @@ export interface CampaignMissionProgress {
   completedAt?: string;
 }
 
-export type GameSaveKind = "manual" | "autosave";
-export type GameSaveScope = "campaign" | "skirmish";
-export type GameSaveSyncState = "local" | "pending" | "synced" | "failed" | "deleted";
+export const GameSaveKind = { Manual: "manual", Autosave: "autosave" } as const;
+export type GameSaveKind = (typeof GameSaveKind)[keyof typeof GameSaveKind];
+
+export const GameSaveScope = { Campaign: "campaign", Skirmish: "skirmish" } as const;
+export type GameSaveScope = (typeof GameSaveScope)[keyof typeof GameSaveScope];
+
+export const GameSaveSyncState = {
+  Local: "local",
+  Pending: "pending",
+  Synced: "synced",
+  Failed: "failed",
+  Deleted: "deleted"
+} as const;
+export type GameSaveSyncState = (typeof GameSaveSyncState)[keyof typeof GameSaveSyncState];
+
+export const GAME_SAVE_FORMAT_VERSION = 1 as const;
+
+/**
+ * This key is intentionally shipped in client code. It deters low-effort IndexedDB and network-payload editing;
+ * it is not a security boundary because a determined user can recover it from the application bundle.
+ */
+export const PROBABLE_WAFFLE_SAVE_DATA_KEY = "9a8d43c1e775be105f326d8092cc92c9c13fe5d4162c62a94bd87d9ca7f2b160";
 
 /** Versioned replacement for the legacy name-keyed browser save shape. */
 export interface GameSaveRecord {
   id: string;
-  formatVersion: 1;
+  formatVersion: typeof GAME_SAVE_FORMAT_VERSION;
   scope: GameSaveScope;
   kind: GameSaveKind;
   name?: string;
@@ -98,4 +207,9 @@ export interface GameSaveRecord {
   };
   thumbnail?: string;
   gameInstanceData: ProbableWaffleGameInstanceData;
+}
+
+/** Wire/storage representation keeps the large game state encoded while retaining searchable save metadata. */
+export interface EncodedGameSaveRecord extends Omit<GameSaveRecord, "gameInstanceData"> {
+  encodedGameInstanceData: string;
 }

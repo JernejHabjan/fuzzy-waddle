@@ -6,7 +6,12 @@ import { GameInstanceClientService } from "../../communicators/game-instance-cli
 import { ScoreDataService } from "../../services/score-data.service";
 import { ScoreSubmissionService } from "../../services/score-submission.service";
 import { AuthService } from "../../../auth/auth.service";
-import { GameResultStatus, type GameScoreSnapshotDto, ProbableWafflePlayerType } from "@fuzzy-waddle/api-interfaces";
+import {
+  CampaignMissionOutcome,
+  GameResultStatus,
+  type GameScoreSnapshotDto,
+  ProbableWafflePlayerType
+} from "@fuzzy-waddle/api-interfaces";
 import { CampaignProgressService } from "../campaign/campaign-progress.service";
 
 @Component({
@@ -43,10 +48,10 @@ export class ScoreScreenComponent implements OnInit, OnDestroy {
         .find((score) => score.playerNumber === this.gameInstanceClientService.currentPlayerNumber)?.gameResult;
       const outcome =
         playerResult === GameResultStatus.Win
-          ? "victory"
+          ? CampaignMissionOutcome.Victory
           : playerResult === GameResultStatus.Quit
-            ? "abandoned"
-            : "defeat";
+            ? CampaignMissionOutcome.Abandoned
+            : CampaignMissionOutcome.Defeat;
       await this.campaignProgressService.recordResult({
         runId: campaignContext.runId,
         missionId: campaignContext.missionId,

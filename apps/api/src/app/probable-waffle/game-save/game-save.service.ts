@@ -1,9 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import { SupabaseProviderService } from "../../../core/supabase-provider/supabase-provider.service";
 import type { SyncGameSaveDto } from "./game-save.dto";
+import type { GameSaveServerServiceInterface } from "./game-save.service.interface";
 
 @Injectable()
-export class GameSaveServerService {
+/** Persists owner-scoped encoded saves without decoding client game state. */
+export class GameSaveServerService implements GameSaveServerServiceInterface {
   constructor(private readonly supabaseProviderService: SupabaseProviderService) {}
 
   async list(userId: string) {
@@ -35,9 +37,10 @@ export class GameSaveServerService {
         campaign_mission_id: dto.campaignMissionId ?? null,
         campaign_run_id: dto.campaignRunId ?? null,
         revision: dto.revision,
+        format_version: dto.formatVersion,
         is_deleted: dto.isDeleted,
         thumbnail: dto.thumbnail ?? null,
-        game_instance_data: dto.gameInstanceData
+        encoded_game_instance_data: dto.encodedGameInstanceData
       })
       .select()
       .single();

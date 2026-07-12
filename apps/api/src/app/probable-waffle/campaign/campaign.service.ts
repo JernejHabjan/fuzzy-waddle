@@ -1,9 +1,12 @@
 import { Injectable } from "@nestjs/common";
 import { SupabaseProviderService } from "../../../core/supabase-provider/supabase-provider.service";
 import type { CampaignResultDto } from "./campaign.dto";
+import type { CampaignMissionId } from "@fuzzy-waddle/api-interfaces";
+import type { CampaignServerServiceInterface } from "./campaign.service.interface";
 
 @Injectable()
-export class CampaignServerService {
+/** Persists authenticated campaign runs and idempotent mission completion progress. */
+export class CampaignServerService implements CampaignServerServiceInterface {
   constructor(private readonly supabaseProviderService: SupabaseProviderService) {}
 
   async progress(userId: string) {
@@ -19,7 +22,7 @@ export class CampaignServerService {
     };
   }
 
-  async start(userId: string, runId: string, missionId: string): Promise<void> {
+  async start(userId: string, runId: string, missionId: CampaignMissionId): Promise<void> {
     const { error } = await this.table("probable_waffle_campaign_runs").upsert(
       { id: runId, user_id: userId, mission_id: missionId },
       { onConflict: "id" }
@@ -58,7 +61,10 @@ export class CampaignServerService {
     }
   }
 
-  async merge(userId: string, completions: Array<{ missionId: string; completedAt: string }>): Promise<void> {
+  async merge(
+    userId: string,
+    completions: Array<{ missionId: CampaignMissionId; completedAt: string }>
+  ): Promise<void> {
     const progress = this.table("probable_waffle_campaign_progress");
     for (const completion of completions) {
       if (!completion.missionId || Number.isNaN(Date.parse(completion.completedAt))) continue;

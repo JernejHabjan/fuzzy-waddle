@@ -4,26 +4,37 @@ import { firstValueFrom } from "rxjs";
 import { AuthService } from "../../../auth/auth.service";
 import { environment } from "../../../../environments/environment";
 import { GameSaveRepository } from "./game-save.repository";
-import type { GameSaveRecord, ProbableWaffleGameInstanceData } from "@fuzzy-waddle/api-interfaces";
+import {
+  GAME_SAVE_FORMAT_VERSION,
+  GameSaveScope,
+  GameSaveSyncState,
+  type CampaignChapterId,
+  type CampaignMissionId,
+  type EncodedGameSaveRecord,
+  type GameSaveRecord
+} from "@fuzzy-waddle/api-interfaces";
+import { GameSaveSyncServiceInterface } from "./game-save-sync.service.interface";
 
 interface RemoteGameSaveRecord {
   id: string;
   scope: GameSaveRecord["scope"];
   kind: GameSaveRecord["kind"];
   name: string | null;
-  campaign_chapter_id: string | null;
-  campaign_mission_id: string | null;
+  campaign_chapter_id: CampaignChapterId | null;
+  campaign_mission_id: CampaignMissionId | null;
   campaign_run_id: string | null;
   revision: number;
   is_deleted: boolean;
   thumbnail: string | null;
-  game_instance_data: ProbableWaffleGameInstanceData;
+  format_version: typeof GAME_SAVE_FORMAT_VERSION;
+  encoded_game_instance_data: string;
   created_at: string;
   updated_at: string;
 }
 
 @Injectable({ providedIn: "root" })
-export class GameSaveSyncService {
+/** Reconciles encoded offline saves with the authenticated backend using revisions and tombstones. */
+export class GameSaveSyncService implements GameSaveSyncServiceInterface {
   private readonly authService = inject(AuthService);
   private readonly httpClient = inject(HttpClient);
   private readonly repository = inject(GameSaveRepository);
@@ -33,7 +44,7 @@ export class GameSaveSyncService {
     if (!this.authService.isAuthenticated) return;
     await this.pullAndMerge();
     for (const save of await this.repository.listIncludingDeleted()) {
-      if (save.syncState === "synced") continue;
+      if (save.syncState === GameSaveSyncState.Synced) continue;
       try {
         await this.uploadWithRetry({
           id: save.id,
@@ -41,17 +52,18 @@ export class GameSaveSyncService {
           kind: save.kind,
           name: save.name,
           revision: save.revision,
-          isDeleted: save.syncState === "deleted",
+          formatVersion: save.formatVersion,
+          isDeleted: save.syncState === GameSaveSyncState.Deleted,
           thumbnail: save.thumbnail,
-          gameInstanceData: save.gameInstanceData,
+          encodedGameInstanceData: save.encodedGameInstanceData,
           campaignChapterId: save.campaign?.chapterId,
           campaignMissionId: save.campaign?.missionId,
           campaignRunId: save.campaign?.runId
         });
-        if (save.syncState === "deleted") await this.repository.remove(save.id);
-        else await this.repository.upsert({ ...save, syncState: "synced" });
+        if (save.syncState === GameSaveSyncState.Deleted) await this.repository.remove(save.id);
+        else await this.repository.upsert({ ...save, syncState: GameSaveSyncState.Synced });
       } catch {
-        await this.repository.upsert({ ...save, syncState: "failed" });
+        await this.repository.upsert({ ...save, syncState: GameSaveSyncState.Failed });
       }
     }
   }
@@ -75,7 +87,7 @@ export class GameSaveSyncService {
         continue;
       }
       const campaign =
-        remote.scope === "campaign" &&
+        remote.scope === GameSaveScope.Campaign &&
         remote.campaign_chapter_id &&
         remote.campaign_mission_id &&
         remote.campaign_run_id
@@ -85,21 +97,22 @@ export class GameSaveSyncService {
               runId: remote.campaign_run_id
             }
           : undefined;
-      if (remote.scope === "campaign" && !campaign) continue;
-      await this.repository.upsert({
+      if (remote.scope === GameSaveScope.Campaign && !campaign) continue;
+      const record: EncodedGameSaveRecord = {
         id: remote.id,
-        formatVersion: 1,
+        formatVersion: remote.format_version,
         scope: remote.scope,
         kind: remote.kind,
         name: remote.name ?? undefined,
         createdAt: remote.created_at,
         updatedAt: remote.updated_at,
         revision: remote.revision,
-        syncState: "synced",
+        syncState: GameSaveSyncState.Synced,
         campaign,
         thumbnail: remote.thumbnail ?? undefined,
-        gameInstanceData: remote.game_instance_data
-      });
+        encodedGameInstanceData: remote.encoded_game_instance_data
+      };
+      await this.repository.upsert(record);
     }
   }
 

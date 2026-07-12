@@ -12,6 +12,7 @@ export class PauseSyncService {
 
   private pauseChangedSub?: Subscription;
   private pauseToggleRequestSub?: Subscription;
+  private externalModalPauseSub?: Subscription;
   private playerPaused = false;
   private playerPauseCount = 0;
   private lastPauseRequestedAt = 0;
@@ -30,9 +31,19 @@ export class PauseSyncService {
     this.pauseToggleRequestSub = communicator.allScenes
       .pipe(filter((event) => event.name === "pause-toggle-requested"))
       .subscribe(() => this.togglePause());
+    // Angular overlays use an independent reason so save dialogs never consume or toggle limited player pauses.
+    this.externalModalPauseSub = communicator.allScenes
+      .pipe(filter((event) => event.name === "external-modal-pause-changed"))
+      .subscribe((event) => this.applyExternalModalPause(event.data.paused));
     if (communicator.pauseChanged) {
       this.pauseChangedSub = communicator.pauseChanged.on.subscribe((event) => this.applyPauseEvent(event));
     }
+  }
+
+  private applyExternalModalPause(paused: boolean): void {
+    const tickService = getSceneService(this.scene, SimulationTickService);
+    if (paused) tickService?.pauseTick(SimulationPauseReason.ExternalModal);
+    else tickService?.resumeTick(SimulationPauseReason.ExternalModal);
   }
 
   private togglePause(): void {
@@ -100,5 +111,6 @@ export class PauseSyncService {
   destroy(): void {
     this.pauseChangedSub?.unsubscribe();
     this.pauseToggleRequestSub?.unsubscribe();
+    this.externalModalPauseSub?.unsubscribe();
   }
 }

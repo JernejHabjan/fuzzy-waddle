@@ -1,51 +1,77 @@
+@use "../campaign-shared";
+
+/* Full chapter mission-selection surface. */
 .mission-screen {
   min-block-size: calc(100vh - 4rem);
   padding: var(--aota-campaign-page-padding);
   background: linear-gradient(180deg, #10161d, #080b10);
 }
+/* Back link and gold campaign metadata. */
 .mission-screen__back,
 .mission-screen__eyebrow,
 .mission-screen__header > p {
   color: var(--aota-gold);
 }
+/* Chapter heading above the mission layout. */
 .mission-screen__header {
   max-inline-size: 54rem;
   margin: 1rem 0 2rem;
 }
+/* Uppercase chapter sequence label. */
 .mission-screen__header p {
   margin: 0;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
+/* Chapter title. */
 .mission-screen__header h1 {
   margin: 0.3rem 0;
   color: var(--aota-text);
 }
+/* Chapter summary copy. */
 .mission-screen__header span {
   color: var(--aota-muted);
 }
+/* Flexible two-column mission journey and briefing layout. */
 .mission-screen__layout {
   display: grid;
   grid-template-columns: minmax(16rem, 1fr) minmax(20rem, 28rem);
   gap: clamp(1rem, 4vw, 3rem);
   align-items: start;
+  min-block-size: clamp(30rem, 68vh, 52rem);
 }
+/* Illustrated mission journey panel expands to the available viewport height. */
 .mission-screen__journey {
+  position: relative;
   display: grid;
   gap: 0.8rem;
   padding: clamp(1rem, 3vw, 2rem);
   border: 1px solid var(--aota-border-soft);
   border-radius: 1rem;
-  background: linear-gradient(90deg, rgb(10 14 19 / 88%), rgb(10 14 19 / 58%)), var(--mission-background), var(--aota-panel);
+  background:
+    linear-gradient(90deg, rgb(10 14 19 / 88%), rgb(10 14 19 / 58%)), var(--mission-background), var(--aota-panel);
   background-position: center;
   background-size: cover;
+  min-block-size: 100%;
+  align-content: center;
 }
+/* Parallel/collision chapters expose two faction lanes. */
 .mission-screen__journey--parallel,
-.mission-screen__journey--collision { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.mission-screen__journey--collision {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(1.5rem, 5vw, 4rem);
+}
+/* Final converging mission spans both faction lanes. */
 .mission-screen__journey--parallel .mission-screen__node:last-child,
-.mission-screen__journey--collision .mission-screen__node:last-child { grid-column: 1 / -1; justify-self: center; }
+.mission-screen__journey--collision .mission-screen__node:last-child {
+  grid-column: 1 / -1;
+  justify-self: center;
+}
+/* Each mission is a readable node on its faction path. */
 .mission-screen__node {
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -56,7 +82,8 @@
   color: var(--aota-text);
   text-decoration: none;
 }
-.mission-screen__node span {
+/* Numbered circular mission marker. */
+.mission-screen__node > span:first-child {
   display: grid;
   place-items: center;
   inline-size: 1.8rem;
@@ -65,14 +92,62 @@
   border-radius: 50%;
   color: var(--aota-gold);
 }
+/* Mission title and faction label. */
+.mission-screen__node-copy {
+  display: grid;
+}
+
+/* Compact faction label under a mission title. */
+.mission-screen__node-copy small {
+  color: var(--aota-muted);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Gold accent identifies Tivara's branch. */
+.mission-screen__node--tivara {
+  border-inline-start-color: #d39b3a;
+}
+
+/* Ice-blue accent identifies Skaduwee's branch. */
+.mission-screen__node--skaduwee {
+  border-inline-start-color: #72a9d4;
+}
+
+/* Subtle lane lines make parallel faction progression visually explicit. */
+.mission-screen__journey--parallel::before,
+.mission-screen__journey--collision::before {
+  position: absolute;
+  inset: 12% 25% 12%;
+  border-inline: 2px solid rgb(240 196 107 / 32%);
+  content: "";
+  pointer-events: none;
+}
+
+/* Hover and selection feedback for accessible mission nodes. */
 .mission-screen__node:hover,
 .mission-screen__node--selected {
   border-color: var(--aota-gold-soft);
   background: rgb(240 196 107 / 12%);
 }
+/* Planned content uses subdued text. */
 .mission-screen__node--planned {
   color: var(--aota-muted);
 }
+/* Locked missions remain visible but cannot be navigated to. */
+.mission-screen__node--locked {
+  cursor: not-allowed;
+  filter: grayscale(0.75);
+  opacity: 0.58;
+}
+
+/* Lock icon is aligned at the far edge of the node. */
+.mission-screen__node-lock {
+  margin-inline-start: auto;
+}
+
+/* Mission briefing and controls. */
 .mission-screen__briefing {
   padding: clamp(1rem, 3vw, 2rem);
   border: 1px solid var(--aota-border);
@@ -80,14 +155,23 @@
   background: var(--aota-panel);
   box-shadow: 0 1rem 2rem var(--aota-shadow);
 }
+/* Mission title inside the briefing. */
 .mission-screen__briefing h2 {
   margin-top: 0.25rem;
   color: var(--aota-gold);
 }
+/* Supporting briefing and objective copy. */
 .mission-screen__briefing p,
 .mission-screen__briefing li {
   color: var(--aota-muted);
 }
+/* Action failure displayed near the mission controls. */
+.mission-screen__error {
+  margin-block: 1rem 0;
+  color: #ff9e9e !important;
+}
+
+/* Phone and narrow-window layout stacks the journey above the briefing. */
 @media (max-width: 700px) {
   .mission-screen__layout {
     grid-template-columns: 1fr;
@@ -95,6 +179,16 @@
   .mission-screen__briefing {
     order: 2;
   }
-  .mission-screen__journey { grid-template-columns: 1fr; }
-  .mission-screen__journey .mission-screen__node:last-child { grid-column: auto; justify-self: stretch; }
+  .mission-screen__journey {
+    grid-template-columns: 1fr;
+    min-block-size: 30rem;
+    background-image: linear-gradient(90deg, rgb(10 14 19 / 90%), rgb(10 14 19 / 68%)), var(--mission-background);
+  }
+  .mission-screen__journey::before {
+    display: none;
+  }
+  .mission-screen__journey .mission-screen__node:last-child {
+    grid-column: auto;
+    justify-self: stretch;
+  }
 }

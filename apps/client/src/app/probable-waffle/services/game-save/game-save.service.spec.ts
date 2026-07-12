@@ -1,13 +1,22 @@
 import { TestBed } from "@angular/core/testing";
 import type { ProbableWaffleGameInstanceData } from "@fuzzy-waddle/api-interfaces";
 import { GameSaveService } from "./game-save.service";
+import { GameSaveCodecService } from "./game-save-codec.service";
+import { GameSaveCodecServiceStub } from "./game-save-codec.service.stub";
+import { GameSaveRepository } from "./game-save.repository";
+import { GameSaveRepositoryStub } from "./game-save.repository.stub";
 
 describe("GameSaveService", () => {
   let service: GameSaveService;
   const data = { gameInstanceMetadataData: { gameInstanceId: "run-1" } } as ProbableWaffleGameInstanceData;
   beforeEach(() => {
     localStorage.clear();
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: GameSaveCodecService, useClass: GameSaveCodecServiceStub },
+        { provide: GameSaveRepository, useClass: GameSaveRepositoryStub }
+      ]
+    });
     service = TestBed.inject(GameSaveService);
   });
   it("continues from the newest valid manual or automatic campaign save", async () => {

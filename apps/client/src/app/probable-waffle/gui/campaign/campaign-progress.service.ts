@@ -1,21 +1,24 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable, computed, inject, signal } from "@angular/core";
 import { firstValueFrom } from "rxjs";
-import type {
-  CampaignCatalog,
-  CampaignMissionId,
-  CampaignMissionProgress,
-  CampaignProgressData
+import {
+  CampaignMissionOutcome,
+  type CampaignCatalog,
+  type CampaignMissionId,
+  type CampaignMissionProgress,
+  type CampaignProgressData
 } from "@fuzzy-waddle/api-interfaces";
 import { AOTA_CAMPAIGN_CATALOG } from "./campaign-catalog";
 import { AuthService } from "../../../auth/auth.service";
 import { environment } from "../../../../environments/environment";
+import { CampaignProgressServiceInterface } from "./campaign-progress.service.interface";
 
 const EMPTY_PROGRESS: CampaignProgressData = { completedMissions: [] };
 const GUEST_PROGRESS_KEY = "aota-campaign-progress-v1";
 
 @Injectable({ providedIn: "root" })
-export class CampaignProgressService {
+/** Resolves mission unlocks and reconciles guest progress with authenticated persistence. */
+export class CampaignProgressService implements CampaignProgressServiceInterface {
   private readonly catalog = AOTA_CAMPAIGN_CATALOG;
   private readonly authService = inject(AuthService);
   private readonly httpClient = inject(HttpClient);
@@ -69,9 +72,9 @@ export class CampaignProgressService {
   async recordResult(result: {
     runId: string;
     missionId: CampaignMissionId;
-    outcome: "victory" | "defeat" | "abandoned";
+    outcome: CampaignMissionOutcome;
   }): Promise<void> {
-    if (result.outcome === "victory") {
+    if (result.outcome === CampaignMissionOutcome.Victory) {
       const merged = this.mergeProgress(this.progress(), {
         completedMissions: [{ missionId: result.missionId, completedAt: new Date().toISOString() }]
       });
@@ -112,7 +115,7 @@ export class CampaignProgressService {
   }
 
   private mergeProgress(left: CampaignProgressData, right: CampaignProgressData): CampaignProgressData {
-    const completions = new Map<string, string>();
+    const completions = new Map<CampaignMissionId, string>();
     for (const completion of [...left.completedMissions, ...right.completedMissions]) {
       const current = completions.get(completion.missionId);
       if (!current || completion.completedAt < current) completions.set(completion.missionId, completion.completedAt);

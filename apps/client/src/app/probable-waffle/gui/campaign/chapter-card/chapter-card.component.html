@@ -2,7 +2,8 @@
   class="campaign-chapter-card"
   type="button"
   [class.campaign-chapter-card--recommended]="state().isRecommended"
-  [class.campaign-chapter-card--selected]="state().isSelected"
+  [class.campaign-chapter-card--locked]="state().isLocked"
+  [disabled]="state().isLocked"
   (click)="selectChapter()"
 >
   <img
@@ -21,5 +22,8 @@
   </span>
   @if (state().isRecommended) {
     <span class="campaign-chapter-card__recommendation">Continue</span>
+  }
+  @if (state().isLocked) {
+    <span class="campaign-chapter-card__lock" aria-label="Locked chapter">🔒 Locked</span>
   }
 </button>

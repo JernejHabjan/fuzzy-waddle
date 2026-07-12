@@ -9,7 +9,8 @@ export enum SimulationPauseReason {
   SnapshotRestore = "snapshot-restore",
   Desync = "desync",
   DesyncCorrection = "desync-correction",
-  Player = "player"
+  Player = "player",
+  ExternalModal = "external-modal"
 }
 
 /**

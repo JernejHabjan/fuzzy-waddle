@@ -8,6 +8,8 @@ import {
   type GameInstanceId,
   GameSessionState,
   GameSetupHelpers,
+  GameSaveKind,
+  GameSaveScope,
   getRandomFactionType,
   type MapTuning,
   type PlayerLobbyDefinition,
@@ -51,6 +53,7 @@ import type { SaveGamePayload } from "../game/data/save-game-payload";
 import type { ProbableWaffleCommunicators } from "./probable-waffle.communicators";
 import type { MatchmakingOptions } from "../gui/online/matchmaking/matchmaking-options";
 import { GameSaveService } from "../services/game-save/game-save.service";
+import { SaveGameDialogComponent } from "../gui/save-game-dialog/save-game-dialog.component";
 
 @Injectable({
   providedIn: "root"
@@ -764,14 +767,13 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
 
   async saveGameInstance(data: SaveGamePayload): Promise<void> {
     const gameInstanceData = this.gameInstance!.data;
-    const saveName =
-      data.kind === "autosave" ? undefined : data.name?.trim() || window.prompt("Name this save")?.trim();
+    const saveName = data.kind === "autosave" ? undefined : data.name?.trim() || (await this.requestManualSaveName());
     if (data.kind !== "autosave" && !saveName) return;
     const campaign = gameInstanceData.gameInstanceMetadataData?.campaignContext;
     if (campaign) {
       await this.gameSaveService.save({
-        scope: "campaign",
-        kind: data.kind ?? "manual",
+        scope: GameSaveScope.Campaign,
+        kind: data.kind === "autosave" ? GameSaveKind.Autosave : GameSaveKind.Manual,
         name: saveName,
         thumbnail: data.thumbnail,
         gameInstanceData,
@@ -781,8 +783,8 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     }
     if (gameInstanceData.gameInstanceMetadataData?.type === ProbableWaffleGameInstanceType.Skirmish) {
       await this.gameSaveService.save({
-        scope: "skirmish",
-        kind: data.kind ?? "manual",
+        scope: GameSaveScope.Skirmish,
+        kind: data.kind === "autosave" ? GameSaveKind.Autosave : GameSaveKind.Manual,
         name: saveName,
         thumbnail: data.thumbnail,
         gameInstanceData
@@ -796,6 +798,25 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
       gameInstanceData,
       thumbnail: data.thumbnail
     });
+  }
+
+  /** Pauses single-player simulation while the Angular save-name dialog owns input focus. */
+  private async requestManualSaveName(): Promise<string | undefined> {
+    this.probableWaffleCommunicatorService.allScenes.emit({
+      name: "external-modal-pause-changed",
+      data: { paused: true }
+    });
+    try {
+      const modal = this.modalService.open(SaveGameDialogComponent, { centered: true, backdrop: "static" });
+      return (await modal.result) as string;
+    } catch {
+      return undefined;
+    } finally {
+      this.probableWaffleCommunicatorService.allScenes.emit({
+        name: "external-modal-pause-changed",
+        data: { paused: false }
+      });
+    }
   }
 
   /**

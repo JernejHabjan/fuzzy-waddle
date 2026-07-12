@@ -1,69 +1,83 @@
 import { Injectable, inject } from "@angular/core";
-import type {
-  CampaignChapterId,
-  CampaignMissionId,
-  GameSaveRecord,
-  ProbableWaffleGameInstanceData
+import {
+  GAME_SAVE_FORMAT_VERSION,
+  GameSaveKind,
+  GameSaveScope,
+  GameSaveSyncState,
+  type EncodedGameSaveRecord,
+  type CampaignMissionId,
+  type GameSaveRecord
 } from "@fuzzy-waddle/api-interfaces";
 import { GameSaveRepository } from "./game-save.repository";
 import { GameSaveSyncService } from "./game-save-sync.service";
-
-export interface SaveGameRequest {
-  scope: "campaign" | "skirmish";
-  kind: "manual" | "autosave";
-  name?: string;
-  thumbnail?: string;
-  gameInstanceData: ProbableWaffleGameInstanceData;
-  campaign?: { chapterId: CampaignChapterId; missionId: CampaignMissionId; runId: string };
-}
+import { GameSaveCodecService } from "./game-save-codec.service";
+import { GameSaveServiceInterface } from "./game-save.service.interface";
+import type { SaveGameRequest } from "./save-game-request";
 
 @Injectable({ providedIn: "root" })
-export class GameSaveService {
+/** Owns decoded save operations while persistence and transport retain encoded payloads. */
+export class GameSaveService implements GameSaveServiceInterface {
   private readonly repository = inject(GameSaveRepository);
   private readonly syncService = inject(GameSaveSyncService);
+  private readonly codec = inject(GameSaveCodecService);
 
   async save(request: SaveGameRequest): Promise<GameSaveRecord> {
     const now = new Date().toISOString();
     const record: GameSaveRecord = {
       id: crypto.randomUUID(),
-      formatVersion: 1,
+      formatVersion: GAME_SAVE_FORMAT_VERSION,
       scope: request.scope,
       kind: request.kind,
       name: request.name,
       createdAt: now,
       updatedAt: now,
       revision: 1,
-      syncState: "local",
+      syncState: GameSaveSyncState.Local,
       campaign: request.campaign,
       thumbnail: request.thumbnail,
       // JSON persistence below creates the durable value copy; keeping this assignment compatible with older test runtimes.
       gameInstanceData: request.gameInstanceData
     };
-    await this.repository.upsert(record);
+    await this.repository.upsert(await this.encodeRecord(record));
     await this.retainAutosaves(record);
     void this.syncService.flush();
     return record;
   }
 
   async list(): Promise<GameSaveRecord[]> {
-    return this.repository.list();
+    const records = await this.repository.list();
+    const decoded = await Promise.all(
+      records.map(async (record) => {
+        try {
+          return await this.decodeRecord(record);
+        } catch (error) {
+          console.error(`Unable to decode save ${record.id}`, error);
+          return undefined;
+        }
+      })
+    );
+    return decoded.filter((record): record is GameSaveRecord => Boolean(record));
   }
 
   async continueCampaignMission(missionId: CampaignMissionId): Promise<GameSaveRecord | undefined> {
     return (await this.list()).find(
-      (record) => record.scope === "campaign" && record.campaign?.missionId === missionId
+      (record) => record.scope === GameSaveScope.Campaign && record.campaign?.missionId === missionId
     );
   }
 
   async rename(id: string, name: string): Promise<void> {
     const record = (await this.list()).find((candidate) => candidate.id === id);
-    if (!record || record.kind !== "manual") return;
+    if (!record || record.kind !== GameSaveKind.Manual) return;
+    const encoded = (await this.repository.list()).find((candidate) => candidate.id === id);
+    if (!encoded) return;
     await this.repository.upsert({
+      ...encoded,
       ...record,
+      encodedGameInstanceData: encoded.encodedGameInstanceData,
       name,
       updatedAt: new Date().toISOString(),
       revision: record.revision + 1,
-      syncState: "local"
+      syncState: GameSaveSyncState.Local
     });
     void this.syncService.flush();
   }
@@ -75,19 +89,29 @@ export class GameSaveService {
 
   /** Caps automatic snapshots per mission/run while preserving all named manual saves. */
   private async retainAutosaves(newest: GameSaveRecord): Promise<void> {
-    if (newest.kind !== "autosave") return;
+    if (newest.kind !== GameSaveKind.Autosave) return;
     const scopeKey =
-      newest.scope === "campaign"
+      newest.scope === GameSaveScope.Campaign
         ? newest.campaign?.missionId
         : newest.gameInstanceData.gameInstanceMetadataData?.gameInstanceId;
     const autosaves = (await this.list()).filter(
       (record) =>
-        record.kind === "autosave" &&
+        record.kind === GameSaveKind.Autosave &&
         record.scope === newest.scope &&
-        (record.scope === "campaign"
+        (record.scope === GameSaveScope.Campaign
           ? record.campaign?.missionId === scopeKey
           : record.gameInstanceData.gameInstanceMetadataData?.gameInstanceId === scopeKey)
     );
     await Promise.all(autosaves.slice(10).map((record) => this.delete(record.id)));
+  }
+
+  private async encodeRecord(record: GameSaveRecord): Promise<EncodedGameSaveRecord> {
+    const { gameInstanceData, ...metadata } = record;
+    return { ...metadata, encodedGameInstanceData: await this.codec.encode(gameInstanceData) };
+  }
+
+  private async decodeRecord(record: EncodedGameSaveRecord): Promise<GameSaveRecord> {
+    const { encodedGameInstanceData, ...metadata } = record;
+    return { ...metadata, gameInstanceData: await this.codec.decode(encodedGameInstanceData) };
   }
 }
