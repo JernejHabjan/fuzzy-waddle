@@ -34,7 +34,12 @@
         </ul>
         @switch (missionProgress()?.state) {
           @case ("available") {
-            <button type="button" class="btn btn-primary" (click)="startMission()">Start Mission</button>
+            @if (continueSaveAvailable()) {
+              <button type="button" class="btn btn-primary" (click)="continueMission()">Continue</button>
+              <a class="btn btn-outline-secondary ms-2" routerLink="/aota/load">Load Game</a>
+            } @else {
+              <button type="button" class="btn btn-primary" (click)="startMission()">Start Mission</button>
+            }
           }
           @case ("completed") {
             <button type="button" class="btn btn-primary">Replay Mission</button>
