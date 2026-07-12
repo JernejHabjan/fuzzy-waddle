@@ -557,7 +557,9 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     if (!this.gameInstance)
       throw new Error("Game instance not found in navigateToLobbyOrDirectlyToGame in GameInstanceClientService");
     const sessionState = this.gameInstance.gameInstanceMetadata.data.sessionState;
-    const isSpectator = this.gameInstance.spectators.some((spectator) => spectator.data.userId === this.authService.userId);
+    const isSpectator = this.gameInstance.spectators.some(
+      (spectator) => spectator.data.userId === this.authService.userId
+    );
     switch (this.getNormalizedGameInstanceType()) {
       case ProbableWaffleGameInstanceType.SelfHosted:
         if (isSpectator && sessionState !== GameSessionState.NotStarted) {
@@ -705,6 +707,15 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   async loadGameInstance(gameInstanceSaveData: ProbableWaffleGameInstanceSaveData): Promise<void> {
     gameInstanceSaveData.gameInstanceData.gameInstanceMetadataData!.startOptions.loadFromSave = true;
     this.gameInstance = new ProbableWaffleGameInstance(gameInstanceSaveData.gameInstanceData);
+    this.syncCurrentPlayerNumberFromGameInstance();
+    await this.startListeningToGameInstanceEvents();
+    await this.navigateDirectlyToGame();
+  }
+
+  async loadSavedGameData(gameInstanceData: ProbableWaffleGameInstanceData): Promise<void> {
+    if (!gameInstanceData.gameInstanceMetadataData) throw new Error("Save metadata is required");
+    gameInstanceData.gameInstanceMetadataData.startOptions.loadFromSave = true;
+    this.gameInstance = new ProbableWaffleGameInstance(gameInstanceData);
     this.syncCurrentPlayerNumberFromGameInstance();
     await this.startListeningToGameInstanceEvents();
     await this.navigateDirectlyToGame();

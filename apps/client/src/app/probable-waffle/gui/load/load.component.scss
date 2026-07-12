@@ -21,3 +21,12 @@
   border-color: rgba(111, 85, 52, 0.38);
   border-radius: 0.9rem;
 }
+
+.aota-save-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--aota-border-soft);
+}

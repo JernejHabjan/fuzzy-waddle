@@ -50,6 +50,7 @@ export interface GameInstanceClientServiceInterface {
   addAiPlayer(): Promise<PositionPlayerDefinition>;
   addSelfAsPlayer(): Promise<PositionPlayerDefinition>;
   loadGameInstance(gameInstanceSaveData: ProbableWaffleGameInstanceSaveData): Promise<void>;
+  loadSavedGameData(gameInstanceData: ProbableWaffleGameInstanceData): Promise<void>;
   saveGameInstance(data: Record<string, any>): Promise<void>;
   startReplay(gameInstanceSaveData: ProbableWaffleGameInstanceSaveData): Promise<void>;
   leaveLobby(): Promise<void>;

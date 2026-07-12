@@ -1,15 +1,9 @@
-import { Component, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from "@angular/core";
 import type { OnInit } from "@angular/core";
 
-import {
-  type ProbableWaffleGameInstanceData,
-  type ProbableWaffleGameInstanceSaveData,
-  ProbableWaffleGameInstanceType,
-  ProbableWaffleLevels
-} from "@fuzzy-waddle/api-interfaces";
+import type { GameSaveRecord } from "@fuzzy-waddle/api-interfaces";
 import { Router } from "@angular/router";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
-import { GameInstanceStorageServiceInterface } from "../../communicators/storage/game-instance-storage.service.interface";
 import { DatePipe } from "@angular/common";
 import { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 
@@ -17,13 +11,23 @@ import { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
   selector: "fuzzy-waddle-load",
   imports: [DatePipe],
   templateUrl: "./load.component.html",
-  styleUrls: ["./load.component.scss"]
+  styleUrls: ["./load.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoadComponent implements OnInit {
-  private readonly gameInstanceStorageService = inject(GameInstanceStorageServiceInterface);
+  private readonly gameSaveService = inject(GameSaveService);
   private readonly gameInstanceClientService = inject(GameInstanceClientService);
   private readonly router = inject(Router);
-  protected gameInstanceDataRecords: ProbableWaffleGameInstanceSaveData[] = [];
+  protected readonly saves = signal<GameSaveRecord[]>([]);
+  protected readonly campaignGroups = computed(() => {
+    const groups = new Map<string, GameSaveRecord[]>();
+    for (const save of this.saves().filter((save) => save.scope === "campaign")) {
+      const key = save.campaign!.missionId;
+      groups.set(key, [...(groups.get(key) ?? []), save]);
+    }
+    return [...groups.entries()].sort(([, a], [, b]) => b[0].updatedAt.localeCompare(a[0].updatedAt));
+  });
+  protected readonly skirmishSaves = computed(() => this.saves().filter((save) => save.scope === "skirmish"));
   fromGame: boolean = false;
   dialogRef?: NgbModalRef;
 
@@ -32,43 +36,25 @@ export class LoadComponent implements OnInit {
   }
 
   private async setData() {
-    this.gameInstanceDataRecords = (await this.gameInstanceStorageService.getFromStorage()).filter(
-      (record) => record.gameInstanceData.gameInstanceMetadataData?.type !== ProbableWaffleGameInstanceType.Replay
-    );
-    // sort descending
-    this.gameInstanceDataRecords.sort((a, b) => {
-      const aCreated = a.created;
-      const bCreated = b.created;
-      if (aCreated < bCreated) {
-        return 1;
-      } else if (aCreated > bCreated) {
-        return -1;
-      } else {
-        return 0;
-      }
-    });
+    this.saves.set(await this.gameSaveService.list());
   }
 
-  protected getMapName(gameInstanceData: ProbableWaffleGameInstanceData): string {
-    return ProbableWaffleLevels[gameInstanceData.gameModeData!.map!].name;
-  }
-
-  protected async loadSave(gameInstanceSaveData: ProbableWaffleGameInstanceSaveData) {
+  protected async loadSave(save: GameSaveRecord) {
     if (this.fromGame) {
       this.dialogRef?.close();
       // if we are loading from the game, we need to stop the current game instance
       await this.gameInstanceClientService.stopGameInstance();
       setTimeout(async () => {
-        await this.gameInstanceClientService.loadGameInstance(gameInstanceSaveData);
+        await this.gameInstanceClientService.loadSavedGameData(save.gameInstanceData);
         this.gameInstanceClientService.gameInstanceToGameComponentCommunicator.next("refresh");
       }, 50);
     } else {
-      await this.gameInstanceClientService.loadGameInstance(gameInstanceSaveData);
+      await this.gameInstanceClientService.loadSavedGameData(save.gameInstanceData);
     }
   }
 
-  protected async deleteSave(gameInstanceSaveData: ProbableWaffleGameInstanceSaveData) {
-    await this.gameInstanceStorageService.deleteFromStorage(gameInstanceSaveData);
+  protected async deleteSave(save: GameSaveRecord) {
+    await this.gameSaveService.delete(save.id);
     await this.setData();
   }
 
@@ -80,3 +66,4 @@ export class LoadComponent implements OnInit {
     }
   }
 }
+import { GameSaveService } from "../../services/game-save/game-save.service";
