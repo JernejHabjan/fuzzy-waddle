@@ -29,11 +29,12 @@ export class MissionScreenComponent implements OnInit {
   protected readonly continueSaveAvailable = signal(false);
   protected readonly launchInProgress = signal(false);
   protected readonly launchError = signal<string | undefined>(undefined);
+  private readonly requestedMissionId = this.route.snapshot.paramMap.get("missionId");
   private readonly chapterId = this.readChapterId();
   private readonly missionId = this.readMissionId();
   protected readonly chapter = AOTA_CAMPAIGN_CATALOG.chapters.find((chapter) => chapter.id === this.chapterId);
-  protected readonly selectedMission = computed(
-    () => this.chapter?.missions.find((mission) => mission.id === this.missionId) ?? this.chapter?.missions[0]
+  protected readonly selectedMission = computed(() =>
+    this.missionId ? this.chapter?.missions.find((mission) => mission.id === this.missionId) : this.chapter?.missions[0]
   );
   protected readonly missionProgress = computed(() => {
     const mission = this.selectedMission();
@@ -43,12 +44,6 @@ export class MissionScreenComponent implements OnInit {
   /** Returns the authoritative unlock state used to style and disable each mission node. */
   protected missionState(missionId: CampaignMissionId) {
     return this.campaignProgressService.getMissionProgress(missionId)?.state ?? "locked";
-  }
-
-  constructor() {
-    if (!this.chapter || (this.missionId && !this.selectedMission())) {
-      void this.router.navigate(["/aota/campaign"], { replaceUrl: true });
-    }
   }
 
   private readChapterId(): CampaignChapterId | undefined {
@@ -64,8 +59,15 @@ export class MissionScreenComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     await this.campaignProgressService.load();
     const mission = this.selectedMission();
-    if (mission)
-      this.continueSaveAvailable.set(Boolean(await this.gameSaveService.continueCampaignMission(mission.id)));
+    if (!this.chapter || !mission || (this.requestedMissionId !== null && !this.missionId)) {
+      const recommended = this.campaignProgressService.recommendedMission()?.mission;
+      await this.router.navigate(
+        recommended ? ["/aota/campaign", recommended.chapterId, recommended.id] : ["/aota/campaign"],
+        { replaceUrl: true }
+      );
+      return;
+    }
+    this.continueSaveAvailable.set(Boolean(await this.gameSaveService.continueCampaignMission(mission.id)));
   }
 
   protected async startMission(): Promise<void> {
@@ -87,6 +89,16 @@ export class MissionScreenComponent implements OnInit {
     const mission = this.selectedMission();
     if (!mission) return;
     const save = await this.gameSaveService.continueCampaignMission(mission.id);
-    if (save) await this.gameInstanceClientService.loadSavedGameData(save.gameInstanceData);
+    if (!save) return;
+    this.launchInProgress.set(true);
+    this.launchError.set(undefined);
+    try {
+      await this.gameInstanceClientService.loadSavedGameData(save.gameInstanceData);
+    } catch (error) {
+      console.error("Unable to continue campaign mission", error);
+      this.launchError.set("The save could not be loaded. Choose another save or start the mission again.");
+    } finally {
+      this.launchInProgress.set(false);
+    }
   }
 }

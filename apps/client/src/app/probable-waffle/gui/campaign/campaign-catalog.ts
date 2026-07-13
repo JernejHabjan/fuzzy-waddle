@@ -21,6 +21,14 @@ function createArtwork(key: string, alt: string, focalPosition: string) {
   };
 }
 
+function createMissionArtwork(key: string, alt: string, focalPosition: string) {
+  return {
+    desktopSrc: `${campaignArtworkRoot}/mission-boards/${key}.png`,
+    alt,
+    focalPosition
+  };
+}
+
 function mission(
   chapterId: CampaignChapterId,
   order: number,
@@ -59,6 +67,11 @@ const chapters: CampaignChapterDefinition[] = [
     summary: "Ancient visions draw Tivara and Skaduwee toward the same uncertain future.",
     layout: CampaignMissionLayout.Single,
     artwork: createArtwork("prologue-the-dream", "A volcanic vision at the beginning of the campaign", "50% 45%"),
+    missionArtwork: createMissionArtwork(
+      "prologue-the-dream",
+      "A volcanic battlefield beneath an ancient crystal",
+      "50% 52%"
+    ),
     missions: [
       mission(
         "prologue",
@@ -82,6 +95,11 @@ const chapters: CampaignChapterDefinition[] = [
     summary: "Tivara and Skaduwee follow separate paths, until neither can ignore the other any longer.",
     layout: CampaignMissionLayout.Parallel,
     artwork: createArtwork("two-homelands", "Desert and snowbound homelands divided by an ancient road", "50% 50%"),
+    missionArtwork: createMissionArtwork(
+      "two-homelands",
+      "A road connecting Tivara's desert homeland and Skaduwee's frozen homeland",
+      "50% 52%"
+    ),
     missions: [
       mission(
         "two-homelands",
@@ -167,6 +185,11 @@ const chapters: CampaignChapterDefinition[] = [
     summary: "The promise of a shared future turns into open conflict over the crystals.",
     layout: CampaignMissionLayout.Collision,
     artwork: createArtwork("crystal-war", "A frozen fortress facing a fleet across crystal waters", "45% 50%"),
+    missionArtwork: createMissionArtwork(
+      "crystal-war",
+      "Opposing fleets and citadels across crystal waters",
+      "50% 52%"
+    ),
     missions: [
       mission(
         "crystal-war",
@@ -242,6 +265,11 @@ const chapters: CampaignChapterDefinition[] = [
       "Tivara and Skaduwee armies advancing together toward a volcano",
       "50% 42%"
     ),
+    missionArtwork: createMissionArtwork(
+      "united-against-volcano",
+      "Two armies advancing together toward an erupting volcano",
+      "50% 52%"
+    ),
     missions: [
       mission(
         "united-against-volcano",
@@ -301,6 +329,11 @@ const chapters: CampaignChapterDefinition[] = [
     summary: "The final path returns to the volcano, where the alliance is tested one last time.",
     layout: CampaignMissionLayout.Finale,
     artwork: createArtwork("the-betrayal", "A corrupted volcanic battlefield under violet storm clouds", "50% 48%"),
+    missionArtwork: createMissionArtwork(
+      "the-betrayal",
+      "A corrupted volcanic throne surrounded by violet crystals",
+      "50% 52%"
+    ),
     missions: [
       mission(
         "the-betrayal",

@@ -48,6 +48,7 @@ export class GameSaveService implements GameSaveServiceInterface {
     const records = await this.repository.list();
     const decoded = await Promise.all(
       records.map(async (record) => {
+        if (record.formatVersion !== GAME_SAVE_FORMAT_VERSION) return undefined;
         try {
           return await this.decodeRecord(record);
         } catch (error) {

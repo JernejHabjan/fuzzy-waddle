@@ -1,4 +1,5 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
+import { GameSaveScope, isCampaignMissionInChapter } from "@fuzzy-waddle/api-interfaces";
 import { SupabaseProviderService } from "../../../core/supabase-provider/supabase-provider.service";
 import type { SyncGameSaveDto } from "./game-save.dto";
 import type { GameSaveServerServiceInterface } from "./game-save.service.interface";
@@ -19,13 +20,15 @@ export class GameSaveServerService implements GameSaveServerServiceInterface {
 
   /** The user id is always supplied by the authenticated request, never by the client payload. */
   async upsert(userId: string, dto: SyncGameSaveDto) {
+    this.validateScope(dto);
     const { data: existing, error: readError } = await this.table()
       .select("revision")
       .eq("id", dto.id)
       .eq("user_id", userId)
       .maybeSingle();
     if (readError) throw readError;
-    if (existing && existing.revision > dto.revision) return existing;
+    // Equal revisions are already persisted; accepting them again could overwrite a newer server timestamp.
+    if (existing && existing.revision >= dto.revision) return existing;
     const { data, error } = await this.table()
       .upsert({
         id: dto.id,
@@ -46,6 +49,23 @@ export class GameSaveServerService implements GameSaveServerServiceInterface {
       .single();
     if (error) throw error;
     return data;
+  }
+
+  /** Ensures campaign metadata is complete, related, and absent from skirmish records before storage. */
+  private validateScope(dto: SyncGameSaveDto): void {
+    const campaignFields = [dto.campaignChapterId, dto.campaignMissionId, dto.campaignRunId];
+    if (dto.scope === GameSaveScope.Campaign) {
+      if (!dto.campaignChapterId || !dto.campaignMissionId || !dto.campaignRunId) {
+        throw new BadRequestException("Campaign saves require chapter, mission, and run identifiers");
+      }
+      if (!isCampaignMissionInChapter(dto.campaignChapterId, dto.campaignMissionId)) {
+        throw new BadRequestException("Campaign mission does not belong to the supplied chapter");
+      }
+      return;
+    }
+    if (campaignFields.some(Boolean)) {
+      throw new BadRequestException("Skirmish saves cannot include campaign identifiers");
+    }
   }
 
   private table() {

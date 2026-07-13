@@ -1,7 +1,9 @@
 import { type Session } from "@supabase/supabase-js";
+import type { Observable } from "rxjs";
 
 export interface AuthServiceInterface {
   processing: Promise<unknown> | null;
+  readonly sessionChanges: Observable<Session | null>;
   get session(): Session | null;
   get fullName(): string | null;
   get accessToken(): string | null;

@@ -61,12 +61,41 @@ export const CAMPAIGN_MISSION_IDS: readonly CampaignMissionId[] = [
   "resolution"
 ];
 
+/** Stable mission ownership keeps save and run context from pairing valid but unrelated IDs. */
+const CAMPAIGN_MISSION_CHAPTER: ReadonlyMap<CampaignMissionId, CampaignChapterId> = new Map([
+  ["dreams", "prologue"],
+  ["cyclops-and-sheep", "two-homelands"],
+  ["snow-wendigo-and-fire", "two-homelands"],
+  ["slingshooters-and-wolves", "two-homelands"],
+  ["owl-and-skaduwee-crystal", "two-homelands"],
+  ["sand-dunes-and-tivara-crystal", "two-homelands"],
+  ["we-had-enough", "two-homelands"],
+  ["sailing-towards-the-new-future", "crystal-war"],
+  ["the-first-and-last-dinner", "crystal-war"],
+  ["the-siege", "crystal-war"],
+  ["time-rush", "crystal-war"],
+  ["joining-crystal", "crystal-war"],
+  ["mobster-or-friend", "united-against-volcano"],
+  ["the-volcano-is-getting-angry", "united-against-volcano"],
+  ["cult-wars", "united-against-volcano"],
+  ["the-volcano", "united-against-volcano"],
+  ["the-betrayal", "the-betrayal"],
+  ["undead-and-cursed-lands", "the-betrayal"],
+  ["end-game", "the-betrayal"],
+  ["resolution", "the-betrayal"]
+]);
+
 export function isCampaignChapterId(value: string | null): value is CampaignChapterId {
   return value !== null && (CAMPAIGN_CHAPTER_IDS as readonly string[]).includes(value);
 }
 
 export function isCampaignMissionId(value: string | null): value is CampaignMissionId {
   return value !== null && (CAMPAIGN_MISSION_IDS as readonly string[]).includes(value);
+}
+
+/** Validates the stable chapter-to-mission relationship at API and storage boundaries. */
+export function isCampaignMissionInChapter(chapterId: CampaignChapterId, missionId: CampaignMissionId): boolean {
+  return CAMPAIGN_MISSION_CHAPTER.get(missionId) === chapterId;
 }
 
 export enum CampaignMissionLayout {
@@ -126,6 +155,8 @@ export interface CampaignChapterDefinition {
   summary: string;
   layout: CampaignMissionLayout;
   artwork: CampaignArtworkDefinition;
+  /** Decorative background for the mission journey; it deliberately stays separate from the chapter-card art. */
+  missionArtwork: CampaignArtworkDefinition;
   missions: CampaignMissionDefinition[];
 }
 

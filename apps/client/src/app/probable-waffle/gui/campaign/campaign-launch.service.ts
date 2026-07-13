@@ -20,8 +20,17 @@ export class CampaignLaunchService implements CampaignLaunchServiceInterface {
 
   /** Creates a private one-player campaign run and bypasses the skirmish lobby. */
   async startMission(mission: CampaignMissionDefinition): Promise<void> {
-    if (this.launchInProgress || (environment.production && mission.availability !== CampaignAvailability.Playable))
-      return;
+    if (this.launchInProgress) return;
+    if (environment.production) {
+      const missionProgress = this.campaignProgressService.getMissionProgress(mission.id);
+      if (
+        mission.availability !== CampaignAvailability.Playable ||
+        !missionProgress ||
+        (missionProgress.state !== "available" && missionProgress.state !== "completed")
+      ) {
+        throw new Error(`Campaign mission ${mission.id} is not available to launch`);
+      }
+    }
     this.launchInProgress = true;
     try {
       await this.gameInstanceClientService.createGameInstance(

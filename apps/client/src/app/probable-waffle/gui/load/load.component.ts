@@ -1,7 +1,13 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from "@angular/core";
 import type { OnInit } from "@angular/core";
 
-import type { GameSaveRecord } from "@fuzzy-waddle/api-interfaces";
+import {
+  GameSaveKind,
+  GameSaveScope,
+  isCampaignMissionId,
+  type CampaignMissionId,
+  type GameSaveRecord
+} from "@fuzzy-waddle/api-interfaces";
 import { ActivatedRoute, Router } from "@angular/router";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 import { DatePipe } from "@angular/common";
@@ -10,7 +16,7 @@ import { GameSaveService } from "../../services/game-save/game-save.service";
 import { AOTA_CAMPAIGN_CATALOG } from "../campaign/campaign-catalog";
 
 interface CampaignSaveGroup {
-  missionId: string;
+  missionId: CampaignMissionId;
   chapterLabel: string;
   missionTitle: string;
   newestAt: string;
@@ -32,12 +38,13 @@ export class LoadComponent implements OnInit {
   protected readonly saves = signal<GameSaveRecord[]>([]);
   protected readonly renameSaveId = signal<string | undefined>(undefined);
   protected readonly renameValue = signal("");
-  missionScopeId?: string;
-  scopeFilter?: GameSaveRecord["scope"];
+  missionScopeId?: CampaignMissionId;
+  scopeFilter?: GameSaveScope;
   protected readonly campaignGroups = computed(() => {
-    const groups = new Map<string, GameSaveRecord[]>();
-    for (const save of this.filteredSaves().filter((save) => save.scope === "campaign")) {
-      const key = save.campaign!.missionId;
+    const groups = new Map<CampaignMissionId, GameSaveRecord[]>();
+    for (const save of this.filteredSaves()) {
+      if (save.scope !== GameSaveScope.Campaign || !save.campaign) continue;
+      const key = save.campaign.missionId;
       groups.set(key, [...(groups.get(key) ?? []), save]);
     }
     return [...groups.entries()]
@@ -63,12 +70,15 @@ export class LoadComponent implements OnInit {
         (!this.missionScopeId || save.campaign?.missionId === this.missionScopeId)
     )
   );
-  protected readonly skirmishSaves = computed(() => this.filteredSaves().filter((save) => save.scope === "skirmish"));
+  protected readonly skirmishSaves = computed(() =>
+    this.filteredSaves().filter((save) => save.scope === GameSaveScope.Skirmish)
+  );
   fromGame: boolean = false;
   dialogRef?: NgbModalRef;
 
   async ngOnInit(): Promise<void> {
-    this.missionScopeId ??= this.route.snapshot.queryParamMap.get("missionId") ?? undefined;
+    const requestedMissionId = this.route.snapshot.queryParamMap.get("missionId");
+    this.missionScopeId ??= isCampaignMissionId(requestedMissionId) ? requestedMissionId : undefined;
     if (this.missionScopeId) this.scopeFilter = "campaign";
     await this.setData();
   }
@@ -97,7 +107,7 @@ export class LoadComponent implements OnInit {
   }
 
   protected beginRename(save: GameSaveRecord): void {
-    if (save.kind !== "manual") return;
+    if (save.kind !== GameSaveKind.Manual) return;
     this.renameSaveId.set(save.id);
     this.renameValue.set(save.name ?? "");
   }

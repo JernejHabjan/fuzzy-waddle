@@ -14,7 +14,13 @@ export class GameSaveRepository implements GameSaveRepositoryInterface {
     const records = await this.read();
     return records
       .filter((record) => record.syncState !== GameSaveSyncState.Deleted)
-      .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+      .sort(
+        (a, b) =>
+          b.updatedAt.localeCompare(a.updatedAt) ||
+          b.revision - a.revision ||
+          b.createdAt.localeCompare(a.createdAt) ||
+          b.id.localeCompare(a.id)
+      );
   }
 
   async listIncludingDeleted(): Promise<EncodedGameSaveRecord[]> {

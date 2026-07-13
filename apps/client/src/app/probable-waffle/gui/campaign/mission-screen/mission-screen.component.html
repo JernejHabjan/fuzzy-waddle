@@ -7,7 +7,11 @@
       <span>{{ chapter.summary }}</span>
     </header>
 
-    <section class="mission-screen__layout" [style.--mission-background]="'url(' + chapter.artwork.desktopSrc + ')'">
+    <section
+      class="mission-screen__layout"
+      [style.--mission-background]="'url(' + chapter.missionArtwork.desktopSrc + ')'"
+      [style.--mission-background-position]="chapter.missionArtwork.focalPosition"
+    >
       <nav
         class="mission-screen__journey"
         [class]="'mission-screen__journey mission-screen__journey--' + chapter.layout"
@@ -53,7 +57,14 @@
         @switch (missionProgress()?.state) {
           @case ("available") {
             @if (continueSaveAvailable()) {
-              <button type="button" class="btn btn-primary" (click)="continueMission()">Continue</button>
+              <button type="button" class="btn btn-primary" [disabled]="launchInProgress()" (click)="continueMission()">
+                @if (launchInProgress()) {
+                  <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                  Loading…
+                } @else {
+                  Continue
+                }
+              </button>
               <a
                 class="btn btn-outline-secondary ms-2"
                 routerLink="/aota/load"
@@ -72,14 +83,31 @@
             }
           }
           @case ("completed") {
-            <button type="button" class="btn btn-primary" [disabled]="launchInProgress()" (click)="startMission()">
-              @if (launchInProgress()) {
-                <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-                Starting…
-              } @else {
-                Replay Mission
-              }
-            </button>
+            @if (continueSaveAvailable()) {
+              <button type="button" class="btn btn-primary" [disabled]="launchInProgress()" (click)="continueMission()">
+                @if (launchInProgress()) {
+                  <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                  Loading…
+                } @else {
+                  Continue
+                }
+              </button>
+              <a
+                class="btn btn-outline-secondary ms-2"
+                routerLink="/aota/load"
+                [queryParams]="{ missionId: mission.id }"
+                >Load Game</a
+              >
+            } @else {
+              <button type="button" class="btn btn-primary" [disabled]="launchInProgress()" (click)="startMission()">
+                @if (launchInProgress()) {
+                  <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                  Starting…
+                } @else {
+                  Replay Mission
+                }
+              </button>
+            }
           }
           @case ("planned") {
             <button type="button" class="btn btn-outline-secondary" disabled>Coming Soon</button>

@@ -38,10 +38,30 @@ export class GameSaveSyncService implements GameSaveSyncServiceInterface {
   private readonly authService = inject(AuthService);
   private readonly httpClient = inject(HttpClient);
   private readonly repository = inject(GameSaveRepository);
+  private flushInProgress?: Promise<void>;
+
+  constructor() {
+    // A save queued while offline must retry when connectivity returns even if the player does not save again.
+    if (typeof window !== "undefined") window.addEventListener("online", this.flushOnReconnect);
+    this.authService.sessionChanges?.subscribe((session) => {
+      if (session) void this.flush();
+    });
+  }
 
   /** Local writes always win availability; sync failures leave their records queued for the next attempt. */
   async flush(): Promise<void> {
     if (!this.authService.isAuthenticated) return;
+    if (this.flushInProgress) return this.flushInProgress;
+    this.flushInProgress = this.flushQueuedSaves();
+    try {
+      await this.flushInProgress;
+    } finally {
+      this.flushInProgress = undefined;
+    }
+  }
+
+  /** A single flush owns reconciliation so overlapping saves or reconnects cannot upload the same revision twice. */
+  private async flushQueuedSaves(): Promise<void> {
     await this.pullAndMerge();
     for (const save of await this.repository.listIncludingDeleted()) {
       if (save.syncState === GameSaveSyncState.Synced) continue;
@@ -68,6 +88,10 @@ export class GameSaveSyncService implements GameSaveSyncServiceInterface {
     }
   }
 
+  private readonly flushOnReconnect = (): void => {
+    void this.flush();
+  };
+
   /** Server revisions win only for the same save id; independent local saves are preserved. */
   private async pullAndMerge(): Promise<void> {
     let remoteRecords: RemoteGameSaveRecord[];
@@ -81,7 +105,12 @@ export class GameSaveSyncService implements GameSaveSyncServiceInterface {
     const local = new Map((await this.repository.listIncludingDeleted()).map((record) => [record.id, record]));
     for (const remote of remoteRecords) {
       const localRecord = local.get(remote.id);
-      if (localRecord && localRecord.revision > remote.revision) continue;
+      if (
+        localRecord &&
+        (localRecord.revision > remote.revision ||
+          (localRecord.revision === remote.revision && localRecord.updatedAt >= remote.updated_at))
+      )
+        continue;
       if (remote.is_deleted) {
         await this.repository.remove(remote.id);
         continue;

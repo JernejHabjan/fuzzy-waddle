@@ -7,48 +7,68 @@ import { TechTreeService } from "./tech-tree/tech-tree.service";
 import type { SaveGamePayload } from "./save-game-payload";
 import { SelectionGroupsComponent } from "../player/human-controller/selection-groups.component";
 import { CameraMovementHandler } from "../player/human-controller/cameraMovementHandler";
-import { type AllScenesEventData, ProbableWafflePlayerType } from "@fuzzy-waddle/api-interfaces";
+import { GameSessionState, type AllScenesEventData, ProbableWafflePlayerType } from "@fuzzy-waddle/api-interfaces";
 import { AiPlayerHandler } from "../player/ai-controller/ai-player-handler";
+import { SimulationTickService } from "../world/services/simulation-tick.service";
 
 export class SaveGame {
   private saveGameSubscription: Subscription;
+  private saveInProgress = false;
 
   constructor(private scene: GameProbableWaffleScene) {
     this.saveGameSubscription = scene.communicator.allScenes
-      .pipe(
-        filter(
-          (event): event is Extract<AllScenesEventData, { name: "save-game" }> => event.name === "save-game"
-        )
-      )
+      .pipe(filter((event): event is Extract<AllScenesEventData, { name: "save-game" }> => event.name === "save-game"))
       .subscribe((event) => this.onSaveGame(event.data?.kind));
     scene.onShutdown.subscribe(() => this.destroy());
   }
 
+  /**
+   * Serialization stays in Phaser because only the scene can produce a coherent actor snapshot.
+   * Automatic snapshots are rejected during pauses and while another save is running so they never
+   * capture a modal-paused or partially serialized simulation.
+   */
   private async onSaveGame(kind: SaveGamePayload["kind"] = "manual") {
-    const sceneActorCreator = getSceneService(this.scene, SceneActorCreator);
-    if (!sceneActorCreator) throw new Error("SceneActorCreator not found");
-    sceneActorCreator.saveAllKnownActorsToGameState();
+    if (this.saveInProgress || (kind === "autosave" && !this.canAutosave())) return;
+    this.saveInProgress = true;
+    try {
+      const sceneActorCreator = getSceneService(this.scene, SceneActorCreator);
+      if (!sceneActorCreator) throw new Error("SceneActorCreator not found");
+      sceneActorCreator.saveAllKnownActorsToGameState();
 
-    // Save camera position and selection groups for the current player
-    this.saveCurrentPlayerData();
+      // Save camera position and selection groups for the current player
+      this.saveCurrentPlayerData();
 
-    // Save AI behaviour tree state for all AI players
-    this.saveAiPlayersState();
+      // Save AI behaviour tree state for all AI players
+      this.saveAiPlayersState();
 
-    // Save AOE zones
-    this.saveAoeZones();
+      // Save AOE zones
+      this.saveAoeZones();
 
-    // Save research state
-    this.saveResearchState();
+      // Save research state
+      this.saveResearchState();
 
-    const thumbnail = await this.takeScreenshot();
-    this.scene.communicator.utilityEvents.emit({
-      name: "save-game",
-      data: {
-        thumbnail,
-        kind
-      } satisfies SaveGamePayload
-    });
+      const thumbnail = await this.takeScreenshot();
+      this.scene.communicator.utilityEvents.emit({
+        name: "save-game",
+        data: {
+          thumbnail,
+          kind
+        } satisfies SaveGamePayload
+      });
+    } finally {
+      this.saveInProgress = false;
+    }
+  }
+
+  /** Autosaves only run after gameplay is active and the deterministic simulation is advancing. */
+  private canAutosave(): boolean {
+    const tickService = getSceneService(this.scene, SimulationTickService);
+    return (
+      this.scene.sys.isActive() &&
+      this.scene.baseGameData.gameInstance.gameInstanceMetadata.data.sessionState === GameSessionState.InProgress &&
+      tickService !== undefined &&
+      !tickService.isPaused
+    );
   }
 
   private saveCurrentPlayerData(): void {
