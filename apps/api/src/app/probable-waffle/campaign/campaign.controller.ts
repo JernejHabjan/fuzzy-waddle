@@ -13,8 +13,8 @@ export class CampaignController {
   progress(@CurrentUser() user: AuthUser) {
     return this.service.progress(user.id);
   }
-  @Post("runs") s
-  tart(@CurrentUser() user: AuthUser, @Body() dto: StartCampaignRunDto) {
+  @Post("runs")
+  start(@CurrentUser() user: AuthUser, @Body() dto: StartCampaignRunDto) {
     return this.service.start(user.id, dto.runId, dto.missionId);
   }
   @Post("results")
