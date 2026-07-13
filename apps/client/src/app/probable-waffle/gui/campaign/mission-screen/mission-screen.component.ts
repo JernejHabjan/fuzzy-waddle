@@ -7,6 +7,7 @@ import { CampaignLaunchService } from "../campaign-launch.service";
 import { GameSaveService } from "../../../services/game-save/game-save.service";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import {
+  CampaignFaction,
   isCampaignChapterId,
   isCampaignMissionId,
   type CampaignChapterId,
@@ -21,6 +22,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MissionScreenComponent implements OnInit {
+  protected readonly campaignFaction = CampaignFaction;
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);

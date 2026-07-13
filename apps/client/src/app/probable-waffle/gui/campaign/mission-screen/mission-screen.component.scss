@@ -116,32 +116,28 @@
   border-inline-start-color: #72a9d4;
 }
 
-/* SVG overlay keeps two-homelands branch paths stable as the grid grows or cards resize. */
-.mission-screen__branch-lines {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  inline-size: 100%;
-  block-size: 100%;
-  pointer-events: none;
+/* Divider marks the transition from independent faction paths to their shared mission. */
+.mission-screen__faction-divider {
+  display: flex;
+  grid-column: 1 / -1;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--aota-gold);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
-/* Shared line treatment makes faction progression readable without competing with mission cards. */
-.mission-screen__branch-line {
-  fill: none;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 0.35;
+/* Divider rules frame the shared-faction transition label. */
+.mission-screen__faction-divider span {
+  flex: 1;
+  block-size: 1px;
+  background: linear-gradient(90deg, transparent, var(--aota-gold-soft));
 }
 
-/* Gold line follows Tivara's three-mission branch into the shared finale. */
-.mission-screen__branch-line--tivara {
-  stroke: rgb(211 155 58 / 82%);
-}
-
-/* Ice-blue line follows Skaduwee's two-mission branch into the shared finale. */
-.mission-screen__branch-line--skaduwee {
-  stroke: rgb(114 169 212 / 82%);
+/* The second divider rule mirrors the gold fade toward the panel edge. */
+.mission-screen__faction-divider span:last-child {
+  background: linear-gradient(90deg, var(--aota-gold-soft), transparent);
 }
 
 /* Hover and selection feedback for accessible mission nodes. */
@@ -202,9 +198,6 @@
     grid-template-columns: 1fr;
     min-block-size: 30rem;
     background-image: linear-gradient(90deg, rgb(10 14 19 / 90%), rgb(10 14 19 / 68%)), var(--mission-background);
-  }
-  .mission-screen__branch-lines {
-    display: none;
   }
   .mission-screen__journey .mission-screen__node:last-child {
     grid-column: auto;

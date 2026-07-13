@@ -18,22 +18,15 @@
           [class]="'mission-screen__journey mission-screen__journey--' + chapter.layout"
           aria-label="Chapter missions"
         >
-          @if (chapter.layout === "parallel") {
-            <svg
-              class="mission-screen__branch-lines"
-              viewBox="0 0 100 100"
-              preserveAspectRatio="none"
-              aria-hidden="true"
-            >
-              <path class="mission-screen__branch-line mission-screen__branch-line--tivara" d="M 4 12 V 67 L 50 88" />
-              <path
-                class="mission-screen__branch-line mission-screen__branch-line--skaduwee"
-                d="M 54 12 V 52 L 50 88"
-              />
-            </svg>
-          }
           @for (chapterMission of chapter.missions; track chapterMission.id) {
             @if (missionState(chapterMission.id); as state) {
+              @if (chapter.layout === "parallel" && chapterMission.faction === campaignFaction.Switching) {
+                <div class="mission-screen__faction-divider" role="separator" aria-label="Factions join forces">
+                  <span></span>
+                  <strong>Switching</strong>
+                  <span></span>
+                </div>
+              }
               <a
                 [routerLink]="
                   state === 'locked' || state === 'planned' ? null : ['/aota/campaign', chapter.id, chapterMission.id]
