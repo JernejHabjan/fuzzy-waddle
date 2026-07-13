@@ -1,5 +1,5 @@
 export interface SaveGamePayload {
   thumbnail: string;
-  kind?: "manual" | "autosave";
+  kind?: "manual" | "autosave" | "quicksave";
   name?: string;
 }

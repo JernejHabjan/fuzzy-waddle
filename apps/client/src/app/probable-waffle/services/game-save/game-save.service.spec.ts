@@ -60,4 +60,23 @@ describe("GameSaveService", () => {
     expect(replacement.revision).toBe(2);
     expect((await service.list()).map((save) => save.name)).toEqual(["After battle"]);
   });
+  it("keeps one quicksave slot for the current campaign mission", async () => {
+    const first = await service.save({
+      scope: "campaign",
+      kind: "quicksave",
+      name: "Quick Save",
+      gameInstanceData: data,
+      campaign: { chapterId: "prologue", missionId: "dreams", runId: "run-1" }
+    });
+    const second = await service.save({
+      scope: "campaign",
+      kind: "quicksave",
+      name: "Quick Save",
+      gameInstanceData: data,
+      campaign: { chapterId: "prologue", missionId: "dreams", runId: "run-1" }
+    });
+    expect(second.id).toBe(first.id);
+    expect(second.revision).toBe(2);
+    expect((await service.list()).filter((save) => save.kind === "quicksave")).toHaveLength(1);
+  });
 });

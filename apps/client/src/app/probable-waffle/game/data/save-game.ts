@@ -19,8 +19,17 @@ export class SaveGame {
     this.saveGameSubscription = scene.communicator.allScenes
       .pipe(filter((event): event is Extract<AllScenesEventData, { name: "save-game" }> => event.name === "save-game"))
       .subscribe((event) => this.onSaveGame(event.data?.kind));
+    scene.input.keyboard?.on("keydown", this.handleQuickSaveShortcut, this);
     scene.onShutdown.subscribe(() => this.destroy());
   }
+
+  /** Ctrl+S creates/replaces the current mission or skirmish quicksave without opening a dialog. */
+  private readonly handleQuickSaveShortcut = (event: KeyboardEvent): void => {
+    if (!event.ctrlKey || event.code !== "KeyS" || event.repeat) return;
+    // Prevent the browser's Save Page action while the Phaser game owns the keyboard shortcut.
+    event.preventDefault();
+    this.scene.communicator.allScenes.emit({ name: "save-game", data: { kind: "quicksave" } });
+  };
 
   /**
    * Serialization stays in Phaser because only the scene can produce a coherent actor snapshot.
@@ -156,5 +165,6 @@ export class SaveGame {
 
   private destroy() {
     this.saveGameSubscription.unsubscribe();
+    this.scene.input.keyboard?.off("keydown", this.handleQuickSaveShortcut, this);
   }
 }

@@ -768,21 +768,28 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
 
   async saveGameInstance(data: SaveGamePayload): Promise<void> {
     const gameInstanceData = this.gameInstance!.data;
-    const manualSave =
-      data.kind === "autosave"
+    const requestedSave =
+      data.kind === "autosave" || data.kind === "quicksave"
         ? undefined
         : data.name?.trim()
-          ? { name: data.name.trim() }
+          ? { kind: "manual" as const, name: data.name.trim() }
           : await this.requestManualSaveName();
-    const saveName = manualSave?.name;
-    if (data.kind !== "autosave" && !saveName) return;
+    const saveKind =
+      data.kind === "autosave"
+        ? GameSaveKind.Autosave
+        : data.kind === "quicksave" || requestedSave?.kind === "quicksave"
+          ? GameSaveKind.Quicksave
+          : GameSaveKind.Manual;
+    const manualSaveName = requestedSave?.kind === "manual" ? requestedSave.name : undefined;
+    const saveName = saveKind === GameSaveKind.Quicksave ? "Quick Save" : manualSaveName;
+    if (saveKind === GameSaveKind.Manual && !saveName) return;
     const campaign = gameInstanceData.gameInstanceMetadataData?.campaignContext;
     if (campaign) {
       await this.gameSaveService.save({
         scope: GameSaveScope.Campaign,
-        kind: data.kind === "autosave" ? GameSaveKind.Autosave : GameSaveKind.Manual,
+        kind: saveKind,
         name: saveName,
-        overwriteSaveId: manualSave?.overwriteSaveId,
+        overwriteSaveId: requestedSave?.kind === "manual" ? requestedSave.overwriteSaveId : undefined,
         thumbnail: data.thumbnail,
         gameInstanceData,
         campaign: { chapterId: campaign.chapterId, missionId: campaign.missionId, runId: campaign.runId }
@@ -792,9 +799,9 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     if (gameInstanceData.gameInstanceMetadataData?.type === ProbableWaffleGameInstanceType.Skirmish) {
       await this.gameSaveService.save({
         scope: GameSaveScope.Skirmish,
-        kind: data.kind === "autosave" ? GameSaveKind.Autosave : GameSaveKind.Manual,
+        kind: saveKind,
         name: saveName,
-        overwriteSaveId: manualSave?.overwriteSaveId,
+        overwriteSaveId: requestedSave?.kind === "manual" ? requestedSave.overwriteSaveId : undefined,
         thumbnail: data.thumbnail,
         gameInstanceData
       });

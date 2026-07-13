@@ -197,7 +197,7 @@ export interface CampaignMissionProgress {
   completedAt?: string;
 }
 
-export const GameSaveKind = { Manual: "manual", Autosave: "autosave" } as const;
+export const GameSaveKind = { Manual: "manual", Autosave: "autosave", Quicksave: "quicksave" } as const;
 export type GameSaveKind = (typeof GameSaveKind)[keyof typeof GameSaveKind];
 
 export const GameSaveScope = { Campaign: "campaign", Skirmish: "skirmish" } as const;

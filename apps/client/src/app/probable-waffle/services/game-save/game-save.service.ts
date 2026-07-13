@@ -31,7 +31,14 @@ export class GameSaveService implements GameSaveServiceInterface {
             record.kind === GameSaveKind.Manual &&
             this.hasMatchingSaveScope(record, request)
         )
-      : undefined;
+      : request.kind === GameSaveKind.Quicksave
+        ? (await this.repository.list()).find(
+            (record) =>
+              record.kind === GameSaveKind.Quicksave &&
+              record.scope === request.scope &&
+              this.hasMatchingSaveScope(record, request)
+          )
+        : undefined;
     const record: GameSaveRecord = {
       id: overwrite?.id ?? crypto.randomUUID(),
       formatVersion: GAME_SAVE_FORMAT_VERSION,

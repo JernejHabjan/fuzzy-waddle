@@ -121,7 +121,7 @@ const chapters: CampaignChapterDefinition[] = [
         "Snow Wendigo & Fire",
         CampaignFaction.Skaduwee,
         CampaignAvailability.Playable,
-        ["cyclops-and-sheep"],
+        ["dreams"],
         "Skaduwee tundra",
         "A winter hunt reveals an ember that should not exist in the snow.",
         ["Track the wendigo", "Recover the ember"],
@@ -134,7 +134,7 @@ const chapters: CampaignChapterDefinition[] = [
         "Slingshooters & Wolves",
         CampaignFaction.Tivara,
         CampaignAvailability.Playable,
-        ["snow-wendigo-and-fire"],
+        ["cyclops-and-sheep"],
         "Tivara woodland",
         "The road forward is guarded by more than wolves.",
         ["Train the slingshooters", "Clear the pass"]
@@ -146,7 +146,7 @@ const chapters: CampaignChapterDefinition[] = [
         "Owl & Skaduwee Crystal",
         CampaignFaction.Skaduwee,
         CampaignAvailability.Playable,
-        ["slingshooters-and-wolves"],
+        ["snow-wendigo-and-fire"],
         "Skaduwee ice fields",
         "A watchful guide leads Skaduwee to a crystal beneath the ice.",
         ["Find the crystal", "Hold the excavation"]
@@ -158,7 +158,7 @@ const chapters: CampaignChapterDefinition[] = [
         "Sand Dunes & Tivara Crystal",
         CampaignFaction.Tivara,
         CampaignAvailability.Playable,
-        ["owl-and-skaduwee-crystal"],
+        ["slingshooters-and-wolves"],
         "Tivara dunes",
         "Tivara's crystal is buried under shifting sand and old resentment.",
         ["Cross the dunes", "Claim the crystal"]
@@ -170,7 +170,7 @@ const chapters: CampaignChapterDefinition[] = [
         "We Had Enough",
         CampaignFaction.Switching,
         CampaignAvailability.Playable,
-        ["sand-dunes-and-tivara-crystal"],
+        ["sand-dunes-and-tivara-crystal", "owl-and-skaduwee-crystal"],
         "Borderlands",
         "The two journeys collide at last.",
         ["Meet both forces", "Survive the confrontation"]

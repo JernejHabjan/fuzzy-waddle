@@ -2,7 +2,7 @@ import type {
   CampaignChapterId,
   CampaignMissionId,
   GameSaveKind,
-  type GameSaveRecord,
+  GameSaveRecord,
   GameSaveScope,
   ProbableWaffleGameInstanceData
 } from "@fuzzy-waddle/api-interfaces";

@@ -60,8 +60,13 @@ export class SaveGameDialogComponent implements OnInit {
   protected confirm(): void {
     const name = this.saveName.value.trim();
     if (!name) return;
-    const result: SaveGameDialogResult = { name, overwriteSaveId: this.overwriteSaveId() };
+    const result: SaveGameDialogResult = { kind: "manual", name, overwriteSaveId: this.overwriteSaveId() };
     this.activeModal.close(result);
+  }
+
+  /** Closes immediately with the one-slot quicksave action, avoiding an extra name prompt. */
+  protected quickSave(): void {
+    this.activeModal.close({ kind: "quicksave" } satisfies SaveGameDialogResult);
   }
 
   protected cancel(): void {

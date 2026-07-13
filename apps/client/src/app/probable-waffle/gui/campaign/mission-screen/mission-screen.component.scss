@@ -116,55 +116,32 @@
   border-inline-start-color: #72a9d4;
 }
 
-/* The final node sits below both faction paths. */
-.mission-screen__journey--parallel .mission-screen__node:last-child {
-  margin-top: 1.75rem;
-}
-
-/* Tivara missions are linked only to the next Tivara mission, not to the interleaved Skaduwee turn. */
-.mission-screen__journey--parallel .mission-screen__node--tivara:not(:nth-last-child(2))::after {
+/* SVG overlay keeps two-homelands branch paths stable as the grid grows or cards resize. */
+.mission-screen__branch-lines {
   position: absolute;
-  inset-inline-start: 1.65rem;
-  inset-block-start: 100%;
-  block-size: 0.8rem;
-  border-inline-start: 2px solid rgb(211 155 58 / 70%);
-  content: "";
+  inset: 0;
+  z-index: 0;
+  inline-size: 100%;
+  block-size: 100%;
   pointer-events: none;
 }
 
-/* Skaduwee missions are linked only to the next Skaduwee mission. */
-.mission-screen__journey--parallel .mission-screen__node--skaduwee:not(:nth-last-child(3))::after {
-  position: absolute;
-  inset-inline-start: 1.65rem;
-  inset-block-start: 100%;
-  block-size: 0.8rem;
-  border-inline-start: 2px solid rgb(114 169 212 / 70%);
-  content: "";
-  pointer-events: none;
+/* Shared line treatment makes faction progression readable without competing with mission cards. */
+.mission-screen__branch-line {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 0.35;
 }
 
-/* The final Tivara and Skaduwee branches converge independently on the switching mission. */
-.mission-screen__journey--parallel .mission-screen__node--tivara:nth-last-child(2)::after,
-.mission-screen__journey--parallel .mission-screen__node--skaduwee:nth-last-child(3)::after {
-  position: absolute;
-  inset-block-start: 100%;
-  inline-size: 50%;
-  block-size: 1.75rem;
-  border-block-end: 2px solid rgb(240 196 107 / 55%);
-  content: "";
-  pointer-events: none;
+/* Gold line follows Tivara's three-mission branch into the shared finale. */
+.mission-screen__branch-line--tivara {
+  stroke: rgb(211 155 58 / 82%);
 }
 
-/* Tivara's terminal branch bends inward toward the shared mission. */
-.mission-screen__journey--parallel .mission-screen__node--tivara:nth-last-child(2)::after {
-  inset-inline-start: 50%;
-  border-inline-end: 2px solid rgb(211 155 58 / 70%);
-}
-
-/* Skaduwee's terminal branch bends inward toward the shared mission. */
-.mission-screen__journey--parallel .mission-screen__node--skaduwee:nth-last-child(3)::after {
-  inset-inline-end: 50%;
-  border-inline-start: 2px solid rgb(114 169 212 / 70%);
+/* Ice-blue line follows Skaduwee's two-mission branch into the shared finale. */
+.mission-screen__branch-line--skaduwee {
+  stroke: rgb(114 169 212 / 82%);
 }
 
 /* Hover and selection feedback for accessible mission nodes. */
@@ -226,7 +203,7 @@
     min-block-size: 30rem;
     background-image: linear-gradient(90deg, rgb(10 14 19 / 90%), rgb(10 14 19 / 68%)), var(--mission-background);
   }
-  .mission-screen__journey--parallel .mission-screen__node::after {
+  .mission-screen__branch-lines {
     display: none;
   }
   .mission-screen__journey .mission-screen__node:last-child {
