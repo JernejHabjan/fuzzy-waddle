@@ -15,7 +15,7 @@ describe("LoadComponent", () => {
       providers: [
         provideRouter([]),
         { provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub },
-        { provide: GameSaveService, useValue: GameSaveServiceStub }
+        { provide: GameSaveService, useValue: new GameSaveServiceStub() }
       ],
       imports: [LoadComponent]
     }).compileComponents();

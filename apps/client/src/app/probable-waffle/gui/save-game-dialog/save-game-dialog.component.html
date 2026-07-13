@@ -1,13 +1,32 @@
-<form class="save-game-dialog" (ngSubmit)="confirm()">
+<section class="save-game-dialog" aria-labelledby="save-game-dialog-title">
   <header class="save-game-dialog__header">
-    <h2>Save Game</h2>
+    <h2 id="save-game-dialog-title">Save Game</h2>
   </header>
+  @if (saves().length) {
+    <section class="save-game-dialog__existing" aria-label="Existing saves">
+      <h3>Overwrite an existing save</h3>
+      @for (save of saves(); track save.id) {
+        <button
+          type="button"
+          class="save-game-dialog__save"
+          [class.save-game-dialog__save--selected]="overwriteSaveId() === save.id"
+          (click)="selectOverwrite(save)"
+        >
+          <span>{{ save.name }}</span>
+          <small>{{ save.updatedAt | date: "medium" }}</small>
+        </button>
+      }
+      <button type="button" class="btn btn-outline-secondary" (click)="createNewSave()">Create New Save</button>
+    </section>
+  }
   <label class="save-game-dialog__field">
     Save name
     <input class="form-control" type="text" [formControl]="saveName" maxlength="80" autofocus />
   </label>
   <footer class="save-game-dialog__actions">
     <button class="btn btn-outline-secondary" type="button" (click)="cancel()">Cancel</button>
-    <button class="btn btn-primary" type="submit" [disabled]="saveName.invalid">Save</button>
+    <button class="btn btn-primary" type="button" [disabled]="saveName.invalid" (click)="confirm()">
+      {{ overwriteSaveId() ? "Overwrite" : "Save" }}
+    </button>
   </footer>
-</form>
+</section>

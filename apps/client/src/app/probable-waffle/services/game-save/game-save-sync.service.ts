@@ -8,29 +8,11 @@ import {
   GAME_SAVE_FORMAT_VERSION,
   GameSaveScope,
   GameSaveSyncState,
-  type CampaignChapterId,
-  type CampaignMissionId,
   type EncodedGameSaveRecord,
   type GameSaveRecord
 } from "@fuzzy-waddle/api-interfaces";
 import { GameSaveSyncServiceInterface } from "./game-save-sync.service.interface";
-
-interface RemoteGameSaveRecord {
-  id: string;
-  scope: GameSaveRecord["scope"];
-  kind: GameSaveRecord["kind"];
-  name: string | null;
-  campaign_chapter_id: CampaignChapterId | null;
-  campaign_mission_id: CampaignMissionId | null;
-  campaign_run_id: string | null;
-  revision: number;
-  is_deleted: boolean;
-  thumbnail: string | null;
-  format_version: typeof GAME_SAVE_FORMAT_VERSION;
-  encoded_game_instance_data: string;
-  created_at: string;
-  updated_at: string;
-}
+import type { RemoteGameSaveRecord } from "./remote-game-save-record";
 
 @Injectable({ providedIn: "root" })
 /** Reconciles encoded offline saves with the authenticated backend using revisions and tombstones. */

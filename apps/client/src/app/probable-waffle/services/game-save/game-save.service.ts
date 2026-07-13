@@ -23,15 +23,24 @@ export class GameSaveService implements GameSaveServiceInterface {
 
   async save(request: SaveGameRequest): Promise<GameSaveRecord> {
     const now = new Date().toISOString();
+    const overwrite = request.overwriteSaveId
+      ? (await this.repository.list()).find(
+          (record) =>
+            record.id === request.overwriteSaveId &&
+            record.scope === request.scope &&
+            record.kind === GameSaveKind.Manual &&
+            this.hasMatchingSaveScope(record, request)
+        )
+      : undefined;
     const record: GameSaveRecord = {
-      id: crypto.randomUUID(),
+      id: overwrite?.id ?? crypto.randomUUID(),
       formatVersion: GAME_SAVE_FORMAT_VERSION,
       scope: request.scope,
       kind: request.kind,
       name: request.name,
-      createdAt: now,
+      createdAt: overwrite?.createdAt ?? now,
       updatedAt: now,
-      revision: 1,
+      revision: (overwrite?.revision ?? 0) + 1,
       syncState: GameSaveSyncState.Local,
       campaign: request.campaign,
       thumbnail: request.thumbnail,
@@ -42,6 +51,16 @@ export class GameSaveService implements GameSaveServiceInterface {
     await this.retainAutosaves(record);
     void this.syncService.flush();
     return record;
+  }
+
+  /** Prevents an overwrite choice from another mission or skirmish scope replacing the current game's save. */
+  private hasMatchingSaveScope(record: EncodedGameSaveRecord, request: SaveGameRequest): boolean {
+    if (record.scope === GameSaveScope.Skirmish) return request.scope === GameSaveScope.Skirmish;
+    return (
+      request.scope === GameSaveScope.Campaign &&
+      record.campaign?.chapterId === request.campaign?.chapterId &&
+      record.campaign?.missionId === request.campaign?.missionId
+    );
   }
 
   async list(): Promise<GameSaveRecord[]> {

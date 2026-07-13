@@ -40,4 +40,24 @@ describe("GameSaveService", () => {
       });
     expect((await service.list()).length).toBe(10);
   });
+  it("overwrites only a named save from the same campaign mission", async () => {
+    const original = await service.save({
+      scope: "campaign",
+      kind: "manual",
+      name: "Before battle",
+      gameInstanceData: data,
+      campaign: { chapterId: "prologue", missionId: "dreams", runId: "run-1" }
+    });
+    const replacement = await service.save({
+      scope: "campaign",
+      kind: "manual",
+      name: "After battle",
+      overwriteSaveId: original.id,
+      gameInstanceData: data,
+      campaign: { chapterId: "prologue", missionId: "dreams", runId: "run-1" }
+    });
+    expect(replacement.id).toBe(original.id);
+    expect(replacement.revision).toBe(2);
+    expect((await service.list()).map((save) => save.name)).toEqual(["After battle"]);
+  });
 });

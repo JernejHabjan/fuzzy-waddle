@@ -13,9 +13,9 @@ describe("CampaignProgressService", () => {
     service = TestBed.inject(CampaignProgressService);
   });
 
-  it("starts with Dreams as the only available mission", () => {
+  it("unlocks all missions in development for campaign iteration", () => {
     expect(service.getMissionProgress("dreams")?.state).toBe("available");
-    expect(service.getMissionProgress("cyclops-and-sheep")?.state).toBe("locked");
+    expect(service.getMissionProgress("cyclops-and-sheep")?.state).toBe("available");
     expect(service.recommendedMission()?.mission.id).toBe("dreams");
   });
 
@@ -26,7 +26,7 @@ describe("CampaignProgressService", () => {
     expect(service.getMissionProgress("cyclops-and-sheep")?.state).toBe("available");
   });
 
-  it("keeps roadmap entries planned even when their prerequisites are completed", () => {
+  it("unlocks planned roadmap entries in development", () => {
     service.setProgress({
       completedMissions: [
         { missionId: "dreams", completedAt: "2026-07-12T10:00:00.000Z" },
@@ -39,6 +39,6 @@ describe("CampaignProgressService", () => {
       ]
     });
 
-    expect(service.getMissionProgress("sailing-towards-the-new-future")?.state).toBe("planned");
+    expect(service.getMissionProgress("sailing-towards-the-new-future")?.state).toBe("available");
   });
 });

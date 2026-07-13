@@ -2,6 +2,7 @@ import type {
   CampaignChapterId,
   CampaignMissionId,
   GameSaveKind,
+  type GameSaveRecord,
   GameSaveScope,
   ProbableWaffleGameInstanceData
 } from "@fuzzy-waddle/api-interfaces";
@@ -13,5 +14,7 @@ export interface SaveGameRequest {
   name?: string;
   thumbnail?: string;
   gameInstanceData: ProbableWaffleGameInstanceData;
+  /** Existing scoped manual save to replace while retaining its identity and original creation date. */
+  overwriteSaveId?: GameSaveRecord["id"];
   campaign?: { chapterId: CampaignChapterId; missionId: CampaignMissionId; runId: string };
 }

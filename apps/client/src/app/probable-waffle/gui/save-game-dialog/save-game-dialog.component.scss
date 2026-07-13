@@ -1,10 +1,48 @@
-/* Modal body containing the manual-save naming form. */
+/* Modal body containing scoped manual-save selection and naming controls. */
 .save-game-dialog {
   display: grid;
   gap: 1rem;
   padding: 1.5rem;
   background: #11161d;
   color: #f4ead5;
+}
+
+/* Existing same-scope manual saves available to overwrite. */
+.save-game-dialog__existing {
+  display: grid;
+  gap: 0.5rem;
+  max-block-size: 18rem;
+  overflow-y: auto;
+}
+
+/* Existing-save section heading. */
+.save-game-dialog__existing h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+/* Selectable row showing an existing save name and timestamp. */
+.save-game-dialog__save {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.7rem;
+  border: 1px solid var(--aota-border-soft);
+  border-radius: 0.5rem;
+  background: rgb(15 18 22 / 85%);
+  color: inherit;
+  text-align: start;
+}
+
+/* Selected save row clearly communicates that confirmation replaces it. */
+.save-game-dialog__save--selected {
+  border-color: var(--aota-gold);
+  background: rgb(240 196 107 / 14%);
+}
+
+/* Secondary timestamp in an existing-save row. */
+.save-game-dialog__save small {
+  color: var(--aota-muted);
 }
 
 /* Compact title area at the top of the save dialog. */

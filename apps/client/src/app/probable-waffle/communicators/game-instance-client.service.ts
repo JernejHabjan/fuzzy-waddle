@@ -54,6 +54,7 @@ import type { ProbableWaffleCommunicators } from "./probable-waffle.communicator
 import type { MatchmakingOptions } from "../gui/online/matchmaking/matchmaking-options";
 import { GameSaveService } from "../services/game-save/game-save.service";
 import { SaveGameDialogComponent } from "../gui/save-game-dialog/save-game-dialog.component";
+import type { SaveGameDialogResult } from "../gui/save-game-dialog/save-game-dialog-result";
 
 @Injectable({
   providedIn: "root"
@@ -767,7 +768,13 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
 
   async saveGameInstance(data: SaveGamePayload): Promise<void> {
     const gameInstanceData = this.gameInstance!.data;
-    const saveName = data.kind === "autosave" ? undefined : data.name?.trim() || (await this.requestManualSaveName());
+    const manualSave =
+      data.kind === "autosave"
+        ? undefined
+        : data.name?.trim()
+          ? { name: data.name.trim() }
+          : await this.requestManualSaveName();
+    const saveName = manualSave?.name;
     if (data.kind !== "autosave" && !saveName) return;
     const campaign = gameInstanceData.gameInstanceMetadataData?.campaignContext;
     if (campaign) {
@@ -775,6 +782,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
         scope: GameSaveScope.Campaign,
         kind: data.kind === "autosave" ? GameSaveKind.Autosave : GameSaveKind.Manual,
         name: saveName,
+        overwriteSaveId: manualSave?.overwriteSaveId,
         thumbnail: data.thumbnail,
         gameInstanceData,
         campaign: { chapterId: campaign.chapterId, missionId: campaign.missionId, runId: campaign.runId }
@@ -786,6 +794,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
         scope: GameSaveScope.Skirmish,
         kind: data.kind === "autosave" ? GameSaveKind.Autosave : GameSaveKind.Manual,
         name: saveName,
+        overwriteSaveId: manualSave?.overwriteSaveId,
         thumbnail: data.thumbnail,
         gameInstanceData
       });
@@ -800,15 +809,18 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     });
   }
 
-  /** Pauses single-player simulation while the Angular save-name dialog owns input focus. */
-  private async requestManualSaveName(): Promise<string | undefined> {
+  /** Pauses single-player simulation while the scoped Angular save dialog owns input focus. */
+  private async requestManualSaveName(): Promise<SaveGameDialogResult | undefined> {
     this.probableWaffleCommunicatorService.allScenes.emit({
       name: "external-modal-pause-changed",
       data: { paused: true }
     });
     try {
       const modal = this.modalService.open(SaveGameDialogComponent, { centered: true, backdrop: "static" });
-      return (await modal.result) as string;
+      const component = modal.componentInstance as SaveGameDialogComponent;
+      const campaign = this.gameInstance?.gameInstanceMetadata.data.campaignContext;
+      await component.configure(campaign ? GameSaveScope.Campaign : GameSaveScope.Skirmish, campaign?.missionId);
+      return (await modal.result) as SaveGameDialogResult;
     } catch {
       return undefined;
     } finally {

@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal, type OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, signal, type OnInit } from "@angular/core";
 import { ActivatedRoute, Router, RouterLink } from "@angular/router";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { AOTA_CAMPAIGN_CATALOG } from "../campaign-catalog";
 import { CampaignProgressService } from "../campaign-progress.service";
 import { CampaignLaunchService } from "../campaign-launch.service";
@@ -22,6 +23,7 @@ import {
 export class MissionScreenComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly campaignProgressService = inject(CampaignProgressService);
   private readonly campaignLaunchService = inject(CampaignLaunchService);
   private readonly gameSaveService = inject(GameSaveService);
@@ -29,12 +31,16 @@ export class MissionScreenComponent implements OnInit {
   protected readonly continueSaveAvailable = signal(false);
   protected readonly launchInProgress = signal(false);
   protected readonly launchError = signal<string | undefined>(undefined);
-  private readonly requestedMissionId = this.route.snapshot.paramMap.get("missionId");
-  private readonly chapterId = this.readChapterId();
-  private readonly missionId = this.readMissionId();
-  protected readonly chapter = AOTA_CAMPAIGN_CATALOG.chapters.find((chapter) => chapter.id === this.chapterId);
+  private readonly chapterId = signal<CampaignChapterId | undefined>(undefined);
+  private readonly missionId = signal<CampaignMissionId | undefined>(undefined);
+  private readonly requestedMissionId = signal<string | null>(null);
+  protected readonly chapter = computed(() =>
+    AOTA_CAMPAIGN_CATALOG.chapters.find((chapter) => chapter.id === this.chapterId())
+  );
   protected readonly selectedMission = computed(() =>
-    this.missionId ? this.chapter?.missions.find((mission) => mission.id === this.missionId) : this.chapter?.missions[0]
+    this.missionId()
+      ? this.chapter()?.missions.find((mission) => mission.id === this.missionId())
+      : this.chapter()?.missions[0]
   );
   protected readonly missionProgress = computed(() => {
     const mission = this.selectedMission();
@@ -46,20 +52,28 @@ export class MissionScreenComponent implements OnInit {
     return this.campaignProgressService.getMissionProgress(missionId)?.state ?? "locked";
   }
 
-  private readChapterId(): CampaignChapterId | undefined {
-    const value = this.route.snapshot.paramMap.get("chapterId");
+  private readChapterId(value: string | null): CampaignChapterId | undefined {
     return isCampaignChapterId(value) ? value : undefined;
   }
 
-  private readMissionId(): CampaignMissionId | undefined {
-    const value = this.route.snapshot.paramMap.get("missionId");
+  private readMissionId(value: string | null): CampaignMissionId | undefined {
     return isCampaignMissionId(value) ? value : undefined;
   }
 
   async ngOnInit(): Promise<void> {
     await this.campaignProgressService.load();
+    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
+      this.chapterId.set(this.readChapterId(params.get("chapterId")));
+      this.requestedMissionId.set(params.get("missionId"));
+      this.missionId.set(this.readMissionId(params.get("missionId")));
+      void this.resolveMissionRoute();
+    });
+  }
+
+  /** Updates the briefing and continue state whenever Angular reuses this screen for another mission URL. */
+  private async resolveMissionRoute(): Promise<void> {
     const mission = this.selectedMission();
-    if (!this.chapter || !mission || (this.requestedMissionId !== null && !this.missionId)) {
+    if (!this.chapter() || !mission || (this.requestedMissionId() !== null && !this.missionId())) {
       const recommended = this.campaignProgressService.recommendedMission()?.mission;
       await this.router.navigate(
         recommended ? ["/aota/campaign", recommended.chapterId, recommended.id] : ["/aota/campaign"],

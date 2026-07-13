@@ -116,14 +116,55 @@
   border-inline-start-color: #72a9d4;
 }
 
-/* Subtle lane lines make parallel faction progression visually explicit. */
-.mission-screen__journey--parallel::before,
-.mission-screen__journey--collision::before {
+/* The final node sits below both faction paths. */
+.mission-screen__journey--parallel .mission-screen__node:last-child {
+  margin-top: 1.75rem;
+}
+
+/* Tivara missions are linked only to the next Tivara mission, not to the interleaved Skaduwee turn. */
+.mission-screen__journey--parallel .mission-screen__node--tivara:not(:nth-last-child(2))::after {
   position: absolute;
-  inset: 12% 25% 12%;
-  border-inline: 2px solid rgb(240 196 107 / 32%);
+  inset-inline-start: 1.65rem;
+  inset-block-start: 100%;
+  block-size: 0.8rem;
+  border-inline-start: 2px solid rgb(211 155 58 / 70%);
   content: "";
   pointer-events: none;
+}
+
+/* Skaduwee missions are linked only to the next Skaduwee mission. */
+.mission-screen__journey--parallel .mission-screen__node--skaduwee:not(:nth-last-child(3))::after {
+  position: absolute;
+  inset-inline-start: 1.65rem;
+  inset-block-start: 100%;
+  block-size: 0.8rem;
+  border-inline-start: 2px solid rgb(114 169 212 / 70%);
+  content: "";
+  pointer-events: none;
+}
+
+/* The final Tivara and Skaduwee branches converge independently on the switching mission. */
+.mission-screen__journey--parallel .mission-screen__node--tivara:nth-last-child(2)::after,
+.mission-screen__journey--parallel .mission-screen__node--skaduwee:nth-last-child(3)::after {
+  position: absolute;
+  inset-block-start: 100%;
+  inline-size: 50%;
+  block-size: 1.75rem;
+  border-block-end: 2px solid rgb(240 196 107 / 55%);
+  content: "";
+  pointer-events: none;
+}
+
+/* Tivara's terminal branch bends inward toward the shared mission. */
+.mission-screen__journey--parallel .mission-screen__node--tivara:nth-last-child(2)::after {
+  inset-inline-start: 50%;
+  border-inline-end: 2px solid rgb(211 155 58 / 70%);
+}
+
+/* Skaduwee's terminal branch bends inward toward the shared mission. */
+.mission-screen__journey--parallel .mission-screen__node--skaduwee:nth-last-child(3)::after {
+  inset-inline-end: 50%;
+  border-inline-start: 2px solid rgb(114 169 212 / 70%);
 }
 
 /* Hover and selection feedback for accessible mission nodes. */
@@ -185,7 +226,7 @@
     min-block-size: 30rem;
     background-image: linear-gradient(90deg, rgb(10 14 19 / 90%), rgb(10 14 19 / 68%)), var(--mission-background);
   }
-  .mission-screen__journey::before {
+  .mission-screen__journey--parallel .mission-screen__node::after {
     display: none;
   }
   .mission-screen__journey .mission-screen__node:last-child {
