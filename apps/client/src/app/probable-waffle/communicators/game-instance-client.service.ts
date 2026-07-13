@@ -22,7 +22,6 @@ import {
   type ProbableWaffleGameInstanceData,
   ProbableWaffleGameInstanceEvent,
   type ProbableWaffleGameInstanceMetadataData,
-  type ProbableWaffleGameInstanceSaveData,
   ProbableWaffleGameInstanceType,
   ProbableWaffleGameInstanceVisibility,
   type ProbableWaffleGameModeData,
@@ -44,7 +43,6 @@ import { Router } from "@angular/router";
 import { ProbableWaffleCommunicatorService } from "./probable-waffle-communicator.service";
 import { map } from "rxjs/operators";
 import { AuthenticatedSocketService } from "../../data-access/chat/authenticated-socket.service";
-import { GameInstanceStorageServiceInterface } from "./storage/game-instance-storage.service.interface";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { LoadComponent } from "../gui/load/load.component";
 import { OptionsComponent } from "../gui/options/options.component";
@@ -74,7 +72,6 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   private readonly sceneCommunicatorClientService = inject(SceneCommunicatorClientService);
   private readonly probableWaffleCommunicatorService = inject(ProbableWaffleCommunicatorService);
   private readonly authenticatedSocketService = inject(AuthenticatedSocketService);
-  private readonly gameInstanceStorageService = inject(GameInstanceStorageServiceInterface);
   private readonly gameSaveService = inject(GameSaveService);
   private readonly modalService = inject(NgbModal);
   private readonly router = inject(Router);
@@ -749,14 +746,6 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     await firstValueFrom(this.httpClient.delete<void>(url, {}));
   }
 
-  async loadGameInstance(gameInstanceSaveData: ProbableWaffleGameInstanceSaveData): Promise<void> {
-    gameInstanceSaveData.gameInstanceData.gameInstanceMetadataData!.startOptions.loadFromSave = true;
-    this.gameInstance = new ProbableWaffleGameInstance(gameInstanceSaveData.gameInstanceData);
-    this.syncCurrentPlayerNumberFromGameInstance();
-    await this.startListeningToGameInstanceEvents();
-    await this.navigateDirectlyToGame();
-  }
-
   async loadSavedGameData(gameInstanceData: ProbableWaffleGameInstanceData): Promise<void> {
     if (!gameInstanceData.gameInstanceMetadataData) throw new Error("Save metadata is required");
     gameInstanceData.gameInstanceMetadataData.startOptions.loadFromSave = true;
@@ -796,23 +785,13 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
       });
       return;
     }
-    if (gameInstanceData.gameInstanceMetadataData?.type === ProbableWaffleGameInstanceType.Skirmish) {
-      await this.gameSaveService.save({
-        scope: GameSaveScope.Skirmish,
-        kind: saveKind,
-        name: saveName,
-        overwriteSaveId: requestedSave?.kind === "manual" ? requestedSave.overwriteSaveId : undefined,
-        thumbnail: data.thumbnail,
-        gameInstanceData
-      });
-      return;
-    }
-    const name = gameInstanceData.gameInstanceMetadataData!.name;
-    await this.gameInstanceStorageService.saveToStorage({
-      saveName: name + " " + new Date().toLocaleString(),
-      created: new Date(),
-      gameInstanceData,
-      thumbnail: data.thumbnail
+    await this.gameSaveService.save({
+      scope: GameSaveScope.Skirmish,
+      kind: saveKind,
+      name: saveName,
+      overwriteSaveId: requestedSave?.kind === "manual" ? requestedSave.overwriteSaveId : undefined,
+      thumbnail: data.thumbnail,
+      gameInstanceData
     });
   }
 
@@ -841,8 +820,8 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   /**
    * todo this is a prototype
    */
-  async startReplay(gameInstanceSaveData: ProbableWaffleGameInstanceSaveData): Promise<void> {
-    const replayGameInstanceData = structuredClone(gameInstanceSaveData.gameInstanceData);
+  async startReplay(gameInstanceData: ProbableWaffleGameInstanceData): Promise<void> {
+    const replayGameInstanceData = structuredClone(gameInstanceData);
     this.normalizeReplayMetadata(replayGameInstanceData);
     this.gameInstance = new ProbableWaffleGameInstance(replayGameInstanceData);
     this.syncCurrentPlayerNumberFromGameInstance();

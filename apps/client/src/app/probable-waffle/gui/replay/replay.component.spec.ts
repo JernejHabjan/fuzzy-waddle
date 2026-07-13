@@ -1,11 +1,11 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ReplayComponent } from "./replay.component";
-import { gameInstanceLocalStorageServiceStub } from "../../communicators/storage/game-instance-local-storage.service.stub";
-import { GameInstanceStorageServiceInterface } from "../../communicators/storage/game-instance-storage.service.interface";
 import { GameLengthPipe } from "../../../shared/pipes/game-length.pipe";
 import { gameInstanceClientServiceStub } from "../../communicators/game-instance-client.service.stub";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 import { provideRouter } from "@angular/router";
+import { GameSaveService } from "../../services/game-save/game-save.service";
+import { GameSaveServiceStub } from "../../services/game-save/game-save.service.stub";
 
 describe("ReplayComponent", () => {
   let component: ReplayComponent;
@@ -16,7 +16,7 @@ describe("ReplayComponent", () => {
       providers: [
         provideRouter([]),
         { provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub },
-        { provide: GameInstanceStorageServiceInterface, useValue: gameInstanceLocalStorageServiceStub }
+        { provide: GameSaveService, useValue: new GameSaveServiceStub() }
       ],
       imports: [ReplayComponent, GameLengthPipe]
     }).compileComponents();

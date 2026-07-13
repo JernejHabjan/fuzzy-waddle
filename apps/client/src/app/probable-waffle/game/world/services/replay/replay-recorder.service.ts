@@ -1,7 +1,8 @@
 import {
   GameSessionState,
+  GameSaveKind,
+  GameSaveScope,
   type ProbableWaffleGameInstanceData,
-  type ProbableWaffleGameInstanceSaveData,
   ProbableWaffleGameInstanceType,
   type ProbableWaffleReplayCommandBatch,
   type ProbableWaffleReplayData,
@@ -9,7 +10,7 @@ import {
 } from "@fuzzy-waddle/api-interfaces";
 import type { Subscription } from "rxjs";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
-import { GameInstanceIndexeddbStorageService } from "../../../../communicators/storage/game-instance-indexeddb-storage.service";
+import { GameSaveService } from "../../../../services/game-save/game-save.service";
 import { getSceneExternalComponent, getSceneService } from "../scene-component-helpers";
 import { CommandBusService } from "../multiplayer/command-bus.service";
 import { buildReplayTickDigest } from "./replay-debug-tools";
@@ -69,9 +70,9 @@ export class ReplayRecorderService {
     }
     this.replayPersistStarted = true;
 
-    const storage = getSceneExternalComponent(scene, GameInstanceIndexeddbStorageService);
-    if (!storage) {
-      console.warn("[ReplayRecorder] Storage service unavailable; replay not persisted.");
+    const gameSaveService = getSceneExternalComponent(scene, GameSaveService);
+    if (!gameSaveService) {
+      console.warn("[ReplayRecorder] Game save service unavailable; replay not persisted.");
       return;
     }
 
@@ -117,15 +118,13 @@ export class ReplayRecorderService {
       replayData
     };
 
-    const created = new Date();
-    const replayRecord: ProbableWaffleGameInstanceSaveData = {
-      saveName: `${metadataData.name} Replay ${created.toISOString()} ${scene.gameInstanceId}`,
-      created,
+    await gameSaveService.save({
+      scope: GameSaveScope.Skirmish,
+      kind: GameSaveKind.Manual,
+      name: `${metadataData.name} Replay ${new Date().toISOString()} ${scene.gameInstanceId}`,
       gameInstanceData: replayGameInstanceData,
       thumbnail: ""
-    };
-
-    await storage.saveToStorage(replayRecord).catch((error: unknown) => {
+    }).catch((error: unknown) => {
       console.error("[ReplayRecorder] Failed to save replay.", error);
     });
   }

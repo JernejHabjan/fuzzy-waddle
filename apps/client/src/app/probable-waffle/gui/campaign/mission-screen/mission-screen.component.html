@@ -84,6 +84,14 @@
                   [queryParams]="{ missionId: mission.id }"
                   >Load Game</a
                 >
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary ms-2"
+                  [disabled]="launchInProgress()"
+                  (click)="startMission()"
+                >
+                  Start Fresh
+                </button>
               } @else {
                 <button type="button" class="btn btn-primary" [disabled]="launchInProgress()" (click)="startMission()">
                   @if (launchInProgress()) {
@@ -116,6 +124,14 @@
                   [queryParams]="{ missionId: mission.id }"
                   >Load Game</a
                 >
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary ms-2"
+                  [disabled]="launchInProgress()"
+                  (click)="startMission()"
+                >
+                  Start Fresh
+                </button>
               } @else {
                 <button type="button" class="btn btn-primary" [disabled]="launchInProgress()" (click)="startMission()">
                   @if (launchInProgress()) {

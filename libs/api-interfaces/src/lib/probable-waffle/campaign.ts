@@ -220,7 +220,7 @@ export const GAME_SAVE_FORMAT_VERSION = 1 as const;
  */
 export const PROBABLE_WAFFLE_SAVE_DATA_KEY = "9a8d43c1e775be105f326d8092cc92c9c13fe5d4162c62a94bd87d9ca7f2b160";
 
-/** Versioned replacement for the legacy name-keyed browser save shape. */
+/** Versioned browser save shape. */
 export interface GameSaveRecord {
   id: string;
   formatVersion: typeof GAME_SAVE_FORMAT_VERSION;

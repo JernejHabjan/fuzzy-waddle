@@ -3,9 +3,8 @@ import { type EncodedGameSaveRecord, GameSaveSyncState } from "@fuzzy-waddle/api
 import { GameSaveRepositoryInterface } from "./game-save.repository.interface";
 
 const DATABASE_NAME = "probable-waffle-db";
-const DATABASE_VERSION = 2;
+const DATABASE_VERSION = 3;
 const OBJECT_STORE_NAME = "game-saves";
-const LEGACY_GAME_INSTANCE_STORE_NAME = "game-instances";
 
 @Injectable({ providedIn: "root" })
 /** IndexedDB authority for searchable save metadata and encoded game-state payloads. */
@@ -49,15 +48,12 @@ export class GameSaveRepository implements GameSaveRepositoryInterface {
     return this.request("readonly", (store) => store.getAll());
   }
 
-  /** Opens the shared game database while preserving the legacy game-instances store. */
+  /** Opens the single save authority and removes the retired name-keyed store during upgrade. */
   private openDatabase(): Promise<IDBDatabase> {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open(DATABASE_NAME, DATABASE_VERSION);
       request.onupgradeneeded = () => {
-        // The database is shared with replay/legacy instance storage, so a first-run save browser must create both stores.
-        if (!request.result.objectStoreNames.contains(LEGACY_GAME_INSTANCE_STORE_NAME)) {
-          request.result.createObjectStore(LEGACY_GAME_INSTANCE_STORE_NAME, { keyPath: "saveName" });
-        }
+        if (request.result.objectStoreNames.contains("game-instances")) request.result.deleteObjectStore("game-instances");
         if (!request.result.objectStoreNames.contains(OBJECT_STORE_NAME)) {
           request.result.createObjectStore(OBJECT_STORE_NAME, { keyPath: "id" });
         }

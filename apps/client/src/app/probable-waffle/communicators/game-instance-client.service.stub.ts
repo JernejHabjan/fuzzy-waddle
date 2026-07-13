@@ -9,7 +9,6 @@ import {
   ProbableWaffleGameInstance,
   type ProbableWaffleGameInstanceData,
   type ProbableWaffleGameInstanceMetadataData,
-  type ProbableWaffleGameInstanceSaveData,
   ProbableWaffleGameInstanceType,
   ProbableWaffleGameInstanceVisibility,
   type ProbableWaffleGameModeData,
@@ -117,9 +116,6 @@ export const gameInstanceClientServiceStub = {
   ): Promise<void> {
     return Promise.resolve();
   },
-  async loadGameInstance(gameInstanceSaveData: ProbableWaffleGameInstanceSaveData): Promise<void> {
-    return Promise.resolve();
-  },
   async loadSavedGameData(gameInstanceData: ProbableWaffleGameInstanceData): Promise<void> {
     return Promise.resolve();
   },
@@ -127,7 +123,7 @@ export const gameInstanceClientServiceStub = {
     return Promise.resolve();
   },
   requestCheckpointAutosave(checkpointId: string): void {},
-  async startReplay(gameInstanceSaveData: ProbableWaffleGameInstanceSaveData): Promise<void> {
+  async startReplay(gameInstanceData: ProbableWaffleGameInstanceData): Promise<void> {
     return Promise.resolve();
   },
   async leaveLobby(): Promise<void> {

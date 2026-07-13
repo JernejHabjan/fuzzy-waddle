@@ -2,12 +2,17 @@
   <div class="card-container aota-card-shell">
     @if (filteredSaves().length) {
       @if (!scopeFilter || scopeFilter === "campaign") {
-        <h2 class="text-primary">{{ missionScopeId ? "Mission Saves" : "Campaign" }}</h2>
+        @if (!fromGame) {
+          <h2 class="text-primary">{{ missionScopeId ? "Mission Saves" : "Campaign" }}</h2>
+        }
         @for (group of campaignGroups(); track group.missionId) {
           <details [open]="$first">
             <summary>{{ group.chapterLabel }} · {{ group.missionTitle }} · {{ group.saves.length }} saves</summary>
             @for (save of group.saves; track save.id) {
               <div class="aota-save-row">
+                @if (save.thumbnail) {
+                  <img class="save-thumbnail" [src]="save.thumbnail" alt="Saved game preview" />
+                }
                 <span
                   ><strong>{{ save.kind === "autosave" ? "Autosave" : save.name }}</strong> ·
                   {{ save.updatedAt | date: "medium" }} · {{ save.syncState }}</span
@@ -31,9 +36,14 @@
         }
       }
       @if (!scopeFilter || scopeFilter === "skirmish") {
-        <h2 class="text-primary mt-4">Skirmish</h2>
+        @if (!fromGame) {
+          <h2 class="text-primary mt-4">Skirmish</h2>
+        }
         @for (save of skirmishSaves(); track save.id) {
           <div class="aota-save-row">
+            @if (save.thumbnail) {
+              <img class="save-thumbnail" [src]="save.thumbnail" alt="Saved game preview" />
+            }
             <span>{{ save.name || "Autosave" }} · {{ save.updatedAt | date: "medium" }}</span
             ><button class="btn btn-primary" (click)="loadSave(save)">Load</button
             ><button class="btn btn-primary" (click)="deleteSave(save)">Delete</button>

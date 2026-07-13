@@ -68,10 +68,3 @@ export interface PendingMatchmakingGameInstance {
   commonMapPoolIds: number[];
   teamConfiguration: MatchmakingTeamConfiguration;
 }
-
-export interface ProbableWaffleGameInstanceSaveData {
-  saveName: string;
-  created: Date;
-  gameInstanceData: ProbableWaffleGameInstanceData;
-  thumbnail: string;
-}

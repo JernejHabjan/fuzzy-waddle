@@ -4,6 +4,7 @@ import type { OnInit } from "@angular/core";
 import {
   GameSaveKind,
   GameSaveScope,
+  ProbableWaffleGameInstanceType,
   isCampaignMissionId,
   type CampaignMissionId,
   type GameSaveRecord
@@ -66,6 +67,7 @@ export class LoadComponent implements OnInit {
   protected readonly filteredSaves = computed(() =>
     this.saves().filter(
       (save) =>
+        save.gameInstanceData.gameInstanceMetadataData?.type !== ProbableWaffleGameInstanceType.Replay &&
         (!this.scopeFilter || save.scope === this.scopeFilter) &&
         (!this.missionScopeId || save.campaign?.missionId === this.missionScopeId)
     )

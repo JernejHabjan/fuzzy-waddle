@@ -2,7 +2,13 @@ import { ChangeDetectionStrategy, Component, inject, signal, type OnInit } from 
 import { FormControl, ReactiveFormsModule, Validators } from "@angular/forms";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { DatePipe } from "@angular/common";
-import { GameSaveKind, GameSaveScope, type CampaignMissionId, type GameSaveRecord } from "@fuzzy-waddle/api-interfaces";
+import {
+  GameSaveKind,
+  GameSaveScope,
+  type CampaignMissionId,
+  type GameSaveRecord,
+  ProbableWaffleGameInstanceType
+} from "@fuzzy-waddle/api-interfaces";
 import { GameSaveService } from "../../services/game-save/game-save.service";
 import type { SaveGameDialogResult } from "./save-game-dialog-result";
 
@@ -39,6 +45,7 @@ export class SaveGameDialogComponent implements OnInit {
       (await this.gameSaveService.list()).filter(
         (save) =>
           save.kind === GameSaveKind.Manual &&
+          save.gameInstanceData.gameInstanceMetadataData?.type !== ProbableWaffleGameInstanceType.Replay &&
           save.scope === this.scope &&
           (save.scope === GameSaveScope.Skirmish || save.campaign?.missionId === this.missionScopeId)
       )
