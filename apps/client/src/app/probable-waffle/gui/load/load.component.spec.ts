@@ -4,6 +4,7 @@ import { GameInstanceClientService } from "../../communicators/game-instance-cli
 import { gameInstanceClientServiceStub } from "../../communicators/game-instance-client.service.stub";
 import { provideRouter } from "@angular/router";
 import { GameSaveService } from "../../services/game-save/game-save.service";
+import { GameSaveServiceStub } from "../../services/game-save/game-save.service.stub";
 
 describe("LoadComponent", () => {
   let component: LoadComponent;
@@ -14,7 +15,7 @@ describe("LoadComponent", () => {
       providers: [
         provideRouter([]),
         { provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub },
-        { provide: GameSaveService, useValue: { list: async () => [], delete: async () => undefined } }
+        { provide: GameSaveService, useValue: GameSaveServiceStub }
       ],
       imports: [LoadComponent]
     }).compileComponents();

@@ -1,9 +1,9 @@
-import { Injectable, inject } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import {
-  ProbableWaffleGameInstanceType,
-  ProbableWaffleGameInstanceVisibility,
   CampaignAvailability,
-  type CampaignMissionDefinition
+  type CampaignMissionDefinition,
+  ProbableWaffleGameInstanceType,
+  ProbableWaffleGameInstanceVisibility
 } from "@fuzzy-waddle/api-interfaces";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 import { AOTA_CAMPAIGN_CATALOG } from "./campaign-catalog";

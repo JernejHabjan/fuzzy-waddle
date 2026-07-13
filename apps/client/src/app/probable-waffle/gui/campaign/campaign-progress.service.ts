@@ -1,10 +1,10 @@
 import { HttpClient } from "@angular/common/http";
-import { Injectable, computed, inject, signal } from "@angular/core";
+import { computed, inject, Injectable, signal } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 import {
-  CampaignMissionOutcome,
   type CampaignCatalog,
   type CampaignMissionId,
+  CampaignMissionOutcome,
   type CampaignMissionProgress,
   type CampaignProgressData
 } from "@fuzzy-waddle/api-interfaces";

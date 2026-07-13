@@ -6,6 +6,7 @@ import { HomeNavTestingComponent } from "../../../shared/components/home-nav/hom
 import { HomeNavComponent } from "../../../shared/components/home-nav/home-nav.component";
 import { provideHttpClient } from "@angular/common/http";
 import { AuthService } from "../../../auth/auth.service";
+import { authServiceStub } from "../../../auth/auth.service.stub";
 
 describe("CampaignComponent", () => {
   let component: CampaignComponent;
@@ -14,11 +15,7 @@ describe("CampaignComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [CampaignComponent],
-      providers: [
-        provideRouter([]),
-        provideHttpClient(),
-        { provide: AuthService, useValue: { isAuthenticated: false } }
-      ]
+      providers: [provideRouter([]), provideHttpClient(), { provide: AuthService, useValue: authServiceStub }]
     })
       .overrideComponent(CampaignComponent, {
         remove: {

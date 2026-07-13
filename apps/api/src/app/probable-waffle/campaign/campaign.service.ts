@@ -10,7 +10,8 @@ export class CampaignServerService implements CampaignServerServiceInterface {
   constructor(private readonly supabaseProviderService: SupabaseProviderService) {}
 
   async progress(userId: string) {
-    const { data, error } = await this.table("probable_waffle_campaign_progress")
+    const { data, error } = await this.supabaseProviderService.supabaseClient
+      .from("probable_waffle_campaign_progress")
       .select("mission_id, completed_at")
       .eq("user_id", userId);
     if (error) throw error;
@@ -23,16 +24,15 @@ export class CampaignServerService implements CampaignServerServiceInterface {
   }
 
   async start(userId: string, runId: string, missionId: CampaignMissionId): Promise<void> {
-    const { error } = await this.table("probable_waffle_campaign_runs").upsert(
-      { id: runId, user_id: userId, mission_id: missionId },
-      { onConflict: "id" }
-    );
+    const { error } = await this.supabaseProviderService.supabaseClient
+      .from("probable_waffle_campaign_runs")
+      .upsert({ id: runId, user_id: userId, mission_id: missionId }, { onConflict: "id" });
     if (error) throw error;
   }
 
   /** Result writes are owner-scoped and idempotent; only victories add completion progress. */
   async result(userId: string, result: CampaignResultDto): Promise<void> {
-    const runs = this.table("probable_waffle_campaign_runs");
+    const runs = this.supabaseProviderService.supabaseClient.from("probable_waffle_campaign_runs");
     const { data: run, error: readError } = await runs
       .select("id, mission_id, outcome")
       .eq("id", result.runId)
@@ -53,10 +53,9 @@ export class CampaignServerService implements CampaignServerServiceInterface {
       .eq("user_id", userId);
     if (error) throw error;
     if (result.outcome === "victory") {
-      const { error: progressError } = await this.table("probable_waffle_campaign_progress").upsert(
-        { user_id: userId, mission_id: result.missionId },
-        { onConflict: "user_id,mission_id" }
-      );
+      const { error: progressError } = await this.supabaseProviderService.supabaseClient
+        .from("probable_waffle_campaign_progress")
+        .upsert({ user_id: userId, mission_id: result.missionId }, { onConflict: "user_id,mission_id" });
       if (progressError) throw progressError;
     }
   }
@@ -65,7 +64,7 @@ export class CampaignServerService implements CampaignServerServiceInterface {
     userId: string,
     completions: Array<{ missionId: CampaignMissionId; completedAt: string }>
   ): Promise<void> {
-    const progress = this.table("probable_waffle_campaign_progress");
+    const progress = this.supabaseProviderService.supabaseClient.from("probable_waffle_campaign_progress");
     for (const completion of completions) {
       if (!completion.missionId || Number.isNaN(Date.parse(completion.completedAt))) continue;
       const { data: existing, error: readError } = await progress
@@ -84,10 +83,5 @@ export class CampaignServerService implements CampaignServerServiceInterface {
       );
       if (error) throw error;
     }
-  }
-
-  private table(name: string) {
-    // Generated database typings are refreshed after the migration is applied.
-    return this.supabaseProviderService.supabaseClient.from(name as never) as any;
   }
 }

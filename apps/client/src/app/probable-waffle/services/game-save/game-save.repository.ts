@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { GameSaveSyncState, type EncodedGameSaveRecord } from "@fuzzy-waddle/api-interfaces";
+import { type EncodedGameSaveRecord, GameSaveSyncState } from "@fuzzy-waddle/api-interfaces";
 import { GameSaveRepositoryInterface } from "./game-save.repository.interface";
 
 const DATABASE_NAME = "probable-waffle-db";

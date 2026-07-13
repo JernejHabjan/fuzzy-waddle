@@ -9,16 +9,20 @@ import { CampaignServerService } from "./campaign.service";
 @UseGuards(OnlineAccessGuard)
 export class CampaignController {
   constructor(private readonly service: CampaignServerService) {}
-  @Get("progress") progress(@CurrentUser() user: AuthUser) {
+  @Get("progress")
+  progress(@CurrentUser() user: AuthUser) {
     return this.service.progress(user.id);
   }
-  @Post("runs") start(@CurrentUser() user: AuthUser, @Body() dto: StartCampaignRunDto) {
+  @Post("runs") s
+  tart(@CurrentUser() user: AuthUser, @Body() dto: StartCampaignRunDto) {
     return this.service.start(user.id, dto.runId, dto.missionId);
   }
-  @Post("results") result(@CurrentUser() user: AuthUser, @Body() dto: CampaignResultDto) {
+  @Post("results")
+  result(@CurrentUser() user: AuthUser, @Body() dto: CampaignResultDto) {
     return this.service.result(user.id, dto);
   }
-  @Post("merge") merge(@CurrentUser() user: AuthUser, @Body() dto: MergeCampaignProgressDto) {
+  @Post("merge")
+  merge(@CurrentUser() user: AuthUser, @Body() dto: MergeCampaignProgressDto) {
     return this.service.merge(user.id, dto.completedMissions);
   }
 }

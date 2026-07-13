@@ -1,13 +1,13 @@
 import {
   CampaignAvailability,
+  type CampaignCatalog,
+  type CampaignChapterDefinition,
+  type CampaignChapterId,
   CampaignContentType,
   CampaignFaction,
-  CampaignMissionLayout,
-  type CampaignCatalog,
-  type CampaignChapterId,
-  type CampaignChapterDefinition,
-  type CampaignMissionId,
   type CampaignMissionDefinition,
+  type CampaignMissionId,
+  CampaignMissionLayout,
   ProbableWaffleMapEnum
 } from "@fuzzy-waddle/api-interfaces";
 

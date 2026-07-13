@@ -6,6 +6,7 @@ import { GameInstanceClientService } from "../../communicators/game-instance-cli
 import { gameInstanceClientServiceStub } from "../../communicators/game-instance-client.service.stub";
 import { provideRouter } from "@angular/router";
 import { CampaignProgressService } from "../campaign/campaign-progress.service";
+import { CampaignProgressServiceStub } from "../campaign/campaign-progress.service.stub";
 
 describe("ScoreScreenComponent", () => {
   let component: ScoreScreenComponent;
@@ -17,7 +18,7 @@ describe("ScoreScreenComponent", () => {
       providers: [
         provideRouter([]),
         { provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub },
-        { provide: CampaignProgressService, useValue: { recordResult: async () => undefined } }
+        { provide: CampaignProgressService, useValue: CampaignProgressServiceStub }
       ]
     })
       .overrideComponent(ScoreScreenComponent, {

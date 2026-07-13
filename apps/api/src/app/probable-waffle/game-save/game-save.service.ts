@@ -10,7 +10,8 @@ export class GameSaveServerService implements GameSaveServerServiceInterface {
   constructor(private readonly supabaseProviderService: SupabaseProviderService) {}
 
   async list(userId: string) {
-    const { data, error } = await this.table()
+    const { data, error } = await this.supabaseProviderService.supabaseClient
+      .from("probable_waffle_game_saves")
       .select("*")
       .eq("user_id", userId)
       .order("updated_at", { ascending: false });
@@ -21,7 +22,8 @@ export class GameSaveServerService implements GameSaveServerServiceInterface {
   /** The user id is always supplied by the authenticated request, never by the client payload. */
   async upsert(userId: string, dto: SyncGameSaveDto) {
     this.validateScope(dto);
-    const { data: existing, error: readError } = await this.table()
+    const { data: existing, error: readError } = await this.supabaseProviderService.supabaseClient
+      .from("probable_waffle_game_saves")
       .select("revision")
       .eq("id", dto.id)
       .eq("user_id", userId)
@@ -29,7 +31,8 @@ export class GameSaveServerService implements GameSaveServerServiceInterface {
     if (readError) throw readError;
     // Equal revisions are already persisted; accepting them again could overwrite a newer server timestamp.
     if (existing && existing.revision >= dto.revision) return existing;
-    const { data, error } = await this.table()
+    const { data, error } = await this.supabaseProviderService.supabaseClient
+      .from("probable_waffle_game_saves")
       .upsert({
         id: dto.id,
         user_id: userId,
@@ -66,10 +69,5 @@ export class GameSaveServerService implements GameSaveServerServiceInterface {
     if (campaignFields.some(Boolean)) {
       throw new BadRequestException("Skirmish saves cannot include campaign identifiers");
     }
-  }
-
-  private table() {
-    // Database typings are regenerated separately from Supabase migrations.
-    return this.supabaseProviderService.supabaseClient.from("probable_waffle_game_saves" as never) as any;
   }
 }
