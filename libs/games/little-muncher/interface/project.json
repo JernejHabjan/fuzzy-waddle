@@ -1,0 +1,8 @@
+{
+  "name": "little-muncher-interface",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/games/little-muncher/interface/src",
+  "projectType": "library",
+  "targets": { "lint": { "executor": "@nx/eslint:lint" } },
+  "tags": ["scope:little-muncher", "type:interface"]
+}

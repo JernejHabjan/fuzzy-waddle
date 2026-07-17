@@ -23,14 +23,14 @@ const littleMuncherRoutes = [
       {
         path: "",
         loadComponent: () =>
-          loadGameComponent(() => import("./little-muncher/little-muncher.component")).then(
+          loadGameComponent(() => import("@fuzzy-waddle/little-muncher-interface/little-muncher.component")).then(
             (m) => m.LittleMuncherComponent
           )
       },
       {
         path: "high-score",
         loadComponent: () =>
-          import("./little-muncher/high-score/high-score.component").then((m) => m.HighScoreComponent)
+          import("@fuzzy-waddle/little-muncher-interface/high-score/high-score.component").then((m) => m.HighScoreComponent)
       },
       { path: "**", redirectTo: "" }
     ]

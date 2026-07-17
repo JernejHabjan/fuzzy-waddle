@@ -32,6 +32,11 @@
             "glob": "**/*",
             "input": "libs/games/fly-squasher/gameplay/src/assets",
             "output": "assets"
+          },
+          {
+            "glob": "**/*",
+            "input": "libs/games/little-muncher/gameplay/src/assets",
+            "output": "assets"
           }
         ],
         "styles": ["apps/client/src/styles/styles.scss"],

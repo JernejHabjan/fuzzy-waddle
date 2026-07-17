@@ -31,6 +31,12 @@
       "@fuzzy-waddle/fly-squasher-interface/*": ["libs/games/fly-squasher/interface/src/lib/*"],
       "@fuzzy-waddle/fly-squasher-protocol": ["libs/games/fly-squasher/protocol/src/index.ts"],
       "@fuzzy-waddle/fly-squasher-server": ["libs/games/fly-squasher/server/src/index.ts"],
+      "@fuzzy-waddle/little-muncher-gameplay": ["libs/games/little-muncher/gameplay/src/index.ts"],
+      "@fuzzy-waddle/little-muncher-gameplay/*": ["libs/games/little-muncher/gameplay/src/lib/*"],
+      "@fuzzy-waddle/little-muncher-interface": ["libs/games/little-muncher/interface/src/index.ts"],
+      "@fuzzy-waddle/little-muncher-interface/*": ["libs/games/little-muncher/interface/src/lib/*"],
+      "@fuzzy-waddle/little-muncher-protocol": ["libs/games/little-muncher/protocol/src/index.ts"],
+      "@fuzzy-waddle/little-muncher-server": ["libs/games/little-muncher/server/src/index.ts"],
       "@fuzzy-waddle/api/*": ["apps/api/src/*"],
       "@fuzzy-waddle/portal/*": ["apps/client/src/app/*"],
       "@fuzzy-waddle/portal-environments/*": ["apps/client/src/environments/*"]
