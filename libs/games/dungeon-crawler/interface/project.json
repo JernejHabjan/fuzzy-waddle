@@ -1,0 +1,8 @@
+{
+  "name": "dungeon-crawler-interface",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/games/dungeon-crawler/interface/src",
+  "projectType": "library",
+  "targets": { "lint": { "executor": "@nx/eslint:lint" } },
+  "tags": ["scope:dungeon-crawler", "type:interface"]
+}

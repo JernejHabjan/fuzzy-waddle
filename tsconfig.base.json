@@ -20,7 +20,11 @@
       "@fuzzy-waddle/platform-game-sessions": ["libs/platform/game-sessions/src/index.ts"],
       "@fuzzy-waddle/platform-database-schema": ["libs/platform/database-schema/src/index.ts"],
       "@fuzzy-waddle/platform-game-host": ["libs/platform/game-host/src/index.ts"],
-      "@fuzzy-waddle/platform-game-host/*": ["libs/platform/game-host/src/lib/game/*"]
+      "@fuzzy-waddle/platform-game-host/*": ["libs/platform/game-host/src/lib/game/*"],
+      "@fuzzy-waddle/dungeon-crawler-gameplay": ["libs/games/dungeon-crawler/gameplay/src/index.ts"],
+      "@fuzzy-waddle/dungeon-crawler-gameplay/*": ["libs/games/dungeon-crawler/gameplay/src/lib/*"],
+      "@fuzzy-waddle/dungeon-crawler-interface": ["libs/games/dungeon-crawler/interface/src/index.ts"],
+      "@fuzzy-waddle/dungeon-crawler-interface/*": ["libs/games/dungeon-crawler/interface/src/lib/*"]
     },
     "strict": true,
     "noUnusedLocals": false,

@@ -193,7 +193,7 @@ const dungeonCrawlerRoutes = [
       {
         path: "",
         loadComponent: () =>
-          loadGameComponent(() => import("./dungeon-crawler/dungeon-crawler.component")).then(
+          loadGameComponent(() => import("@fuzzy-waddle/dungeon-crawler-interface/dungeon-crawler.component")).then(
             (m) => m.DungeonCrawlerComponent
           )
       },

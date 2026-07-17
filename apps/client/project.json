@@ -19,7 +19,16 @@
         "polyfills": ["apps/client/src/polyfills.ts", "@angular/localize/init"],
         "tsConfig": "apps/client/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
-        "assets": ["apps/client/src/favicon.ico", "apps/client/src/assets", "apps/client/src/manifest.webmanifest"],
+        "assets": [
+          "apps/client/src/favicon.ico",
+          "apps/client/src/assets",
+          "apps/client/src/manifest.webmanifest",
+          {
+            "glob": "**/*",
+            "input": "libs/games/dungeon-crawler/gameplay/src/assets",
+            "output": "assets"
+          }
+        ],
         "styles": ["apps/client/src/styles/styles.scss"],
         "serviceWorker": "apps/client/ngsw-config.json",
         "allowedCommonJsDependencies": [
