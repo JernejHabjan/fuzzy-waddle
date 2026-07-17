@@ -8,7 +8,7 @@
 | Frontend (desktop) | Tauri 2 (Rust shell wrapping the Angular build) |
 | Backend            | NestJS 11, Socket.IO                            |
 | Database / Auth    | Supabase (PostgreSQL)                           |
-| Monorepo tooling   | Nx 22                                           |
+| Monorepo tooling   | Nx 23                                           |
 | Package manager    | pnpm                                            |
 
 ## Monorepo Structure

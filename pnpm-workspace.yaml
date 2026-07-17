@@ -1,6 +1,7 @@
 packages:
   - 'apps/**'
   - 'libs/**'
+strictDepBuilds: true
 allowBuilds:
   '@swc/core@1.15.43': false
   'nx@23.0.1': false

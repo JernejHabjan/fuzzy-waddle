@@ -17,13 +17,13 @@
     "build": "nx run-many --all --target=build --configuration=production",
     "build-gh-pages": "nx run build -- --base-href=/fuzzy-waddle/",
     "test": "nx run-many --all --target=test",
+    "test:ci": "nx run-many --all --target=test --configuration=ci",
     "lint": "nx run-many --all --target=lint",
     "lint-fix": "nx run-many --all --target=lint --fix",
     "lint-staged": "nx run-many --all --target=lint --with-deps",
     "e2e": "nx run client-e2e:e2e",
     "nx": "nx",
     "nx-build-client": "nx build client",
-    "nx-build-server": "nx build server",
     "affected:apps": "nx affected:apps",
     "affected:libs": "nx affected:libs",
     "affected:build": "nx affected:build",
@@ -49,8 +49,9 @@
   },
   "engines": {
     "node": ">=24.13.0 <25",
-    "pnpm": ">=10.0 <12"
+    "pnpm": "10.34.5"
   },
+  "packageManager": "pnpm@10.34.5",
   "private": true,
   "dependencies": {
     "@angular/cdk": "21.2.14",
