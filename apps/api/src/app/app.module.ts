@@ -6,7 +6,7 @@ import { ChatModule } from "./chat/chat.module";
 import { LittleMuncherModule } from "./little-muncher/little-muncher.module";
 import { APP_GUARD } from "@nestjs/core";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
-import { FlySquasherModule } from "./fly-squasher/fly-squasher.module";
+import { FlySquasherModule } from "@fuzzy-waddle/fly-squasher-server";
 import { ProbableWaffleModule } from "./probable-waffle/probable-waffle.module";
 import { AchievementsModule } from "./achievements/achievements.module";
 import { UserProfilesModule } from "./user-profiles/user-profiles.module";

@@ -27,6 +27,11 @@
             "glob": "**/*",
             "input": "libs/games/dungeon-crawler/gameplay/src/assets",
             "output": "assets"
+          },
+          {
+            "glob": "**/*",
+            "input": "libs/games/fly-squasher/gameplay/src/assets",
+            "output": "assets"
           }
         ],
         "styles": ["apps/client/src/styles/styles.scss"],

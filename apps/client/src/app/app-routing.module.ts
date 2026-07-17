@@ -2,7 +2,7 @@ import { inject, NgModule } from "@angular/core";
 import { Router, RouterModule, type Routes } from "@angular/router";
 import { AuthGuard } from "./auth/auth.guard";
 import { AppRoleGuard } from "./auth/app-role.guard";
-import { LevelGuard } from "./fly-squasher/choose-level/level.guard";
+import { LevelGuard } from "@fuzzy-waddle/fly-squasher-interface/choose-level/level.guard";
 import { environment } from "../environments/environment";
 import { GameInstanceGuard } from "./probable-waffle/gui/online/lobby-page/game-instance.guard";
 import { isTauri } from "./shared/utils/tauri";
@@ -160,26 +160,26 @@ const flySquasherRoutes = [
     children: [
       {
         path: "",
-        loadComponent: () => import("./fly-squasher/home/home.component").then((m) => m.HomeComponent)
+        loadComponent: () => import("@fuzzy-waddle/fly-squasher-interface/home/home.component").then((m) => m.HomeComponent)
       },
       {
         path: "choose-level",
         loadComponent: () =>
-          import("./fly-squasher/choose-level/choose-level.component").then((m) => m.ChooseLevelComponent)
+          import("@fuzzy-waddle/fly-squasher-interface/choose-level/choose-level.component").then((m) => m.ChooseLevelComponent)
       },
       {
         path: "play/:level",
         loadComponent: () =>
-          loadGameComponent(() => import("./fly-squasher/main/main.component")).then((m) => m.MainComponent),
+          loadGameComponent(() => import("@fuzzy-waddle/fly-squasher-interface/main/main.component")).then((m) => m.MainComponent),
         canActivate: [LevelGuard]
       },
       {
         path: "high-score",
-        loadComponent: () => import("./fly-squasher/high-score/high-score.component").then((m) => m.HighScoreComponent)
+        loadComponent: () => import("@fuzzy-waddle/fly-squasher-interface/high-score/high-score.component").then((m) => m.HighScoreComponent)
       },
       {
         path: "options",
-        loadComponent: () => import("./fly-squasher/options/options.component").then((m) => m.OptionsComponent)
+        loadComponent: () => import("@fuzzy-waddle/fly-squasher-interface/options/options.component").then((m) => m.OptionsComponent)
       },
       { path: "**", redirectTo: "" }
     ]

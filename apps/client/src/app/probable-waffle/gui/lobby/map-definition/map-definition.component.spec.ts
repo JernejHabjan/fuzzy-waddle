@@ -5,7 +5,7 @@ import { Component } from "@angular/core";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.stub";
 import { SceneCommunicatorClientService } from "../../../communicators/scene-communicator-client.service";
-import { sceneCommunicatorClientServiceStub } from "../../../../fly-squasher/main/scene-communicator-client.service.stub";
+import { sceneCommunicatorClientServiceStub } from "@fuzzy-waddle/fly-squasher-interface/main/scene-communicator-client.service.stub";
 import { AuthService } from "../../../../auth/auth.service";
 import { authServiceStub } from "../../../../auth/auth.service.stub";
 

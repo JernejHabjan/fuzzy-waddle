@@ -1,0 +1,8 @@
+{
+  "name": "fly-squasher-interface",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/games/fly-squasher/interface/src",
+  "projectType": "library",
+  "targets": { "lint": { "executor": "@nx/eslint:lint" } },
+  "tags": ["scope:fly-squasher", "type:interface"]
+}
