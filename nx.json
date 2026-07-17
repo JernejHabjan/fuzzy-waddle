@@ -130,7 +130,7 @@
       "typeSeparator": "."
     }
   },
-  "defaultProject": "client",
+  "defaultProject": "portal",
   "defaultBase": "develop",
   "nxCloudId": "67a8ed1f35fa9168f97724be",
   "analytics": false

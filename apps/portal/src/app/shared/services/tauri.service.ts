@@ -10,7 +10,7 @@ export { isTauri };
  * Uses `window.__TAURI_INTERNALS__` (runtime detection) to guard all Tauri calls.
  * This makes the service a safe no-op in browser builds.
  *
- * The Tauri Rust commands are declared in `apps/client/src-tauri/src/lib.rs`.
+ * The Tauri Rust commands are declared in `apps/probable-waffle-desktop/src-tauri/src/lib.rs`.
  */
 
 @Injectable({

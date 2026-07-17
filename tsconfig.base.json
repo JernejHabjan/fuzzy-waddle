@@ -45,7 +45,7 @@
       "@fuzzy-waddle/probable-waffle-interface/*": ["libs/games/probable-waffle/interface/src/lib/*"],
       "@fuzzy-waddle/environments/*": ["libs/platform/game-host/src/lib/environments/*"],
       "@fuzzy-waddle/api/*": ["apps/api/src/*"],
-      "@fuzzy-waddle/portal/*": ["apps/client/src/app/*"],
+      "@fuzzy-waddle/portal/*": ["apps/portal/src/app/*"],
       "@fuzzy-waddle/portal-environments/*": ["libs/platform/game-host/src/lib/environments/*"]
     },
     "strict": true,

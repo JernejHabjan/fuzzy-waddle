@@ -4,8 +4,8 @@
   "version": "0.1.1",
   "identifier": "com.fuzzywaddle.probablewaffle",
   "build": {
-    "frontendDist": "../../../dist/apps/client",
-    "devUrl": "http://localhost:4200/aota"
+    "frontendDist": "../../../dist/apps/probable-waffle-desktop",
+    "devUrl": "http://localhost:4201/aota"
   },
   "app": {
     "windows": [

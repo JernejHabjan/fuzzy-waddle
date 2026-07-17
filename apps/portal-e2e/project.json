@@ -1,19 +1,19 @@
 {
-  "name": "client-e2e",
+  "name": "portal-e2e",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/client-e2e/src",
+  "sourceRoot": "apps/portal-e2e/src",
   "projectType": "application",
   "targets": {
     "e2e": {
       "executor": "@nx/cypress:cypress",
       "options": {
-        "cypressConfig": "apps/client-e2e/cypress.config.ts",
-        "devServerTarget": "client:serve:development",
+        "cypressConfig": "apps/portal-e2e/cypress.config.ts",
+        "devServerTarget": "portal:serve:development",
         "testingType": "e2e"
       },
       "configurations": {
         "production": {
-          "devServerTarget": "client:serve:production"
+          "devServerTarget": "portal:serve:production"
         }
       }
     },
@@ -21,10 +21,10 @@
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["apps/client-e2e/**/*.{js,ts}"]
+        "lintFilePatterns": ["apps/portal-e2e/**/*.{js,ts}"]
       }
     }
   },
-  "tags": ["scope:client", "type:e2e"],
-  "implicitDependencies": ["client"]
+  "tags": ["scope:portal", "type:e2e"],
+  "implicitDependencies": ["portal"]
 }

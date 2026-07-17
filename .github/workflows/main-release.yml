@@ -94,7 +94,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
         with:
-          path: dist/apps/client
+          path: dist/apps/portal
 
       - name: Deploy to GitHub Pages
         id: deployment
@@ -132,7 +132,7 @@ jobs:
       - name: Cache Rust build artifacts
         uses: swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32 # v2
         with:
-          workspaces: ./apps/client/src-tauri -> target
+          workspaces: ./apps/probable-waffle-desktop/src-tauri -> target
 
       - name: Install frontend dependencies
         run: pnpm install --frozen-lockfile
@@ -140,15 +140,15 @@ jobs:
       - name: Verify app versions are in sync
         run: pnpm run version:check
 
-      - name: Build web client for Tauri
-        run: pnpm nx build client --configuration=tauri
+      - name: Build Probable Waffle web host for Tauri
+        run: pnpm nx build probable-waffle-desktop --configuration=tauri
 
       - name: Build installer and publish release
         uses: tauri-apps/tauri-action@84b9d35b5fc46c1e45415bdb6144030364f7ebc5 # v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          projectPath: apps/client
+          projectPath: apps/probable-waffle-desktop
           tagName: v__VERSION__
           releaseName: Ashes of the Ancients v__VERSION__
           releaseBody: Desktop release for Ashes of the Ancients v__VERSION__.

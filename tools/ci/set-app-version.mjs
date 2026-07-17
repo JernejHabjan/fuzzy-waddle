@@ -16,8 +16,8 @@ if (!/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/.test(version)) {
 const workspaceRoot = process.cwd();
 
 const packageJsonPath = path.join(workspaceRoot, 'package.json');
-const cargoTomlPath = path.join(workspaceRoot, 'apps', 'client', 'src-tauri', 'Cargo.toml');
-const tauriConfigPath = path.join(workspaceRoot, 'apps', 'client', 'src-tauri', 'tauri.conf.json');
+const cargoTomlPath = path.join(workspaceRoot, 'apps', 'probable-waffle-desktop', 'src-tauri', 'Cargo.toml');
+const tauriConfigPath = path.join(workspaceRoot, 'apps', 'probable-waffle-desktop', 'src-tauri', 'tauri.conf.json');
 
 const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
 packageJson.version = version;
@@ -30,7 +30,7 @@ const nextCargoToml = cargoToml.replace(
 );
 
 if (cargoToml === nextCargoToml) {
-  console.error('Failed to update version in apps/client/src-tauri/Cargo.toml');
+  console.error('Failed to update version in apps/probable-waffle-desktop/src-tauri/Cargo.toml');
   process.exit(1);
 }
 

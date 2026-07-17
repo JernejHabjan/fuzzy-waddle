@@ -6,8 +6,8 @@ const mode = process.argv[2];
 const workspaceRoot = process.cwd();
 
 const packageJsonPath = path.join(workspaceRoot, 'package.json');
-const cargoTomlPath = path.join(workspaceRoot, 'apps', 'client', 'src-tauri', 'Cargo.toml');
-const tauriConfigPath = path.join(workspaceRoot, 'apps', 'client', 'src-tauri', 'tauri.conf.json');
+const cargoTomlPath = path.join(workspaceRoot, 'apps', 'probable-waffle-desktop', 'src-tauri', 'Cargo.toml');
+const tauriConfigPath = path.join(workspaceRoot, 'apps', 'probable-waffle-desktop', 'src-tauri', 'tauri.conf.json');
 
 function readPackageVersion() {
   return JSON.parse(fs.readFileSync(packageJsonPath, 'utf8')).version;
@@ -19,14 +19,14 @@ function checkSync() {
   const cargoMatch = cargoToml.match(/^version = "(.*)"$/m);
 
   if (!cargoMatch) {
-    console.error('Could not find package version in apps/client/src-tauri/Cargo.toml');
+    console.error('Could not find package version in apps/probable-waffle-desktop/src-tauri/Cargo.toml');
     process.exit(1);
   }
 
   const tauriVersion = JSON.parse(fs.readFileSync(tauriConfigPath, 'utf8')).version;
   const mismatches = [
-    ['apps/client/src-tauri/Cargo.toml', cargoMatch[1]],
-    ['apps/client/src-tauri/tauri.conf.json', tauriVersion],
+    ['apps/probable-waffle-desktop/src-tauri/Cargo.toml', cargoMatch[1]],
+    ['apps/probable-waffle-desktop/src-tauri/tauri.conf.json', tauriVersion],
   ].filter(([, version]) => version !== packageVersion);
 
   if (mismatches.length > 0) {

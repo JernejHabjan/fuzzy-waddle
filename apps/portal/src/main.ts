@@ -1,9 +1,9 @@
 /// <reference types="@angular/localize" />
 
 import { enableProdMode, importProvidersFrom, isDevMode, provideZoneChangeDetection } from "@angular/core";
-import { isTauri } from "./app/shared/utils/tauri";
+import { isTauri } from "@fuzzy-waddle/platform-game-host/tauri";
 
-import { environment } from "./environments/environment";
+import { environment } from "@fuzzy-waddle/environments/environment";
 import { AppComponent } from "./app/app.component";
 import { SocketIoModule } from "ngx-socket-io";
 import { ServiceWorkerModule } from "@angular/service-worker";

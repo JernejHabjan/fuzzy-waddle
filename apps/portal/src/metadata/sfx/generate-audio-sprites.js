@@ -82,13 +82,13 @@ const commonOpts = {
 };
 
 function updateResources(obj) {
-  obj.resources = obj.resources.map((resource) => resource.replace("apps/client/src/", ""));
+  obj.resources = obj.resources.map((resource) => resource.replace("apps/portal/src/", ""));
   return obj;
 }
 
 function generateAudioSprites(pattern, outputPath) {
-  const fullPattern = `apps/client/src/${pattern}`;
-  const fullOutputPath = `apps/client/src/${outputPath}`;
+  const fullPattern = `apps/portal/src/${pattern}`;
+  const fullOutputPath = `apps/portal/src/${outputPath}`;
   const opts = { ...commonOpts, output: fullOutputPath };
   audiosprite([fullPattern], opts, function (err, obj) {
     if (err) {
