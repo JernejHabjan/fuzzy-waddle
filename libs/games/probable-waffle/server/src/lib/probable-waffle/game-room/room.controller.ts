@@ -1,0 +1,29 @@
+import { Body, Controller, Post, UseGuards } from "@nestjs/common";
+import { OnlineAccessGuard } from "@fuzzy-waddle/api/auth/guards/online-access.guard";
+import { CurrentUser } from "@fuzzy-waddle/api/auth/current-user";
+import { type AuthUser } from "@supabase/supabase-js";
+import { type ProbableWaffleGetRoomsDto, type ProbableWaffleRoom } from "@fuzzy-waddle/api-interfaces";
+import { RoomServerService } from "./room-server.service";
+
+@Controller("probable-waffle")
+export class RoomController {
+  constructor(private readonly roomServerService: RoomServerService) {}
+
+  // @Post("join-room")
+  // @UseGuards(SupabaseAuthGuard)
+  // async joinRoom(
+  //   @CurrentUser() user: AuthUser,
+  //   @Body() body: ProbableWaffleJoinDto
+  // ): Promise<ProbableWaffleGameInstanceData> {
+  //   return await this.roomServerService.joinRoom(body, user);
+  // }
+
+  @Post("get-rooms")
+  @UseGuards(OnlineAccessGuard)
+  async getRooms(
+    @CurrentUser() user: AuthUser,
+    @Body() body: ProbableWaffleGetRoomsDto
+  ): Promise<ProbableWaffleRoom[]> {
+    return await this.roomServerService.getVisibleRooms(user, body);
+  }
+}

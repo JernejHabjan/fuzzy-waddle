@@ -7,7 +7,7 @@ import { LittleMuncherModule } from "@fuzzy-waddle/little-muncher-server";
 import { APP_GUARD } from "@nestjs/core";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { FlySquasherModule } from "@fuzzy-waddle/fly-squasher-server";
-import { ProbableWaffleModule } from "./probable-waffle/probable-waffle.module";
+import { ProbableWaffleModule } from "@fuzzy-waddle/probable-waffle-server";
 import { AchievementsModule } from "./achievements/achievements.module";
 import { UserProfilesModule } from "./user-profiles/user-profiles.module";
 

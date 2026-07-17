@@ -37,6 +37,8 @@
       "@fuzzy-waddle/little-muncher-interface/*": ["libs/games/little-muncher/interface/src/lib/*"],
       "@fuzzy-waddle/little-muncher-protocol": ["libs/games/little-muncher/protocol/src/index.ts"],
       "@fuzzy-waddle/little-muncher-server": ["libs/games/little-muncher/server/src/index.ts"],
+      "@fuzzy-waddle/probable-waffle-protocol": ["libs/games/probable-waffle/protocol/src/index.ts"],
+      "@fuzzy-waddle/probable-waffle-server": ["libs/games/probable-waffle/server/src/index.ts"],
       "@fuzzy-waddle/api/*": ["apps/api/src/*"],
       "@fuzzy-waddle/portal/*": ["apps/client/src/app/*"],
       "@fuzzy-waddle/portal-environments/*": ["apps/client/src/environments/*"]
