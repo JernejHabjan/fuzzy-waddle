@@ -1,7 +1,11 @@
 import { type AuthServiceInterface } from "./auth.service.interface";
 import { type Session } from "@supabase/supabase-js";
+import { BehaviorSubject } from "rxjs";
+
+const sessionChanges = new BehaviorSubject<Session | null>(null);
 
 export const authServiceStub = {
+  sessionChanges: sessionChanges.asObservable(),
   get session(): Session | null {
     return null;
   },

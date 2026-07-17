@@ -5,6 +5,8 @@ import { ScoreThroughTimeTestingComponent } from "./chart/score-through-time.com
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 import { gameInstanceClientServiceStub } from "../../communicators/game-instance-client.service.stub";
 import { provideRouter } from "@angular/router";
+import { CampaignProgressService } from "../campaign/campaign-progress.service";
+import { CampaignProgressServiceStub } from "../campaign/campaign-progress.service.stub";
 
 describe("ScoreScreenComponent", () => {
   let component: ScoreScreenComponent;
@@ -13,7 +15,11 @@ describe("ScoreScreenComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ScoreScreenComponent],
-      providers: [provideRouter([]), { provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub }]
+      providers: [
+        provideRouter([]),
+        { provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub },
+        { provide: CampaignProgressService, useValue: CampaignProgressServiceStub }
+      ]
     })
       .overrideComponent(ScoreScreenComponent, {
         remove: {

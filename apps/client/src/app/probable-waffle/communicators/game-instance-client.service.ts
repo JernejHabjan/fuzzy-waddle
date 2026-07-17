@@ -8,6 +8,8 @@ import {
   type GameInstanceId,
   GameSessionState,
   GameSetupHelpers,
+  GameSaveKind,
+  GameSaveScope,
   getRandomFactionType,
   type MapTuning,
   type PlayerLobbyDefinition,
@@ -20,7 +22,6 @@ import {
   type ProbableWaffleGameInstanceData,
   ProbableWaffleGameInstanceEvent,
   type ProbableWaffleGameInstanceMetadataData,
-  type ProbableWaffleGameInstanceSaveData,
   ProbableWaffleGameInstanceType,
   ProbableWaffleGameInstanceVisibility,
   type ProbableWaffleGameModeData,
@@ -42,7 +43,6 @@ import { Router } from "@angular/router";
 import { ProbableWaffleCommunicatorService } from "./probable-waffle-communicator.service";
 import { map } from "rxjs/operators";
 import { AuthenticatedSocketService } from "../../data-access/chat/authenticated-socket.service";
-import { GameInstanceStorageServiceInterface } from "./storage/game-instance-storage.service.interface";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { LoadComponent } from "../gui/load/load.component";
 import { OptionsComponent } from "../gui/options/options.component";
@@ -50,6 +50,9 @@ import { InGameChatComponent } from "../gui/in-game-chat/in-game-chat.component"
 import type { SaveGamePayload } from "../game/data/save-game-payload";
 import type { ProbableWaffleCommunicators } from "./probable-waffle.communicators";
 import type { MatchmakingOptions } from "../gui/online/matchmaking/matchmaking-options";
+import { GameSaveService } from "../services/game-save/game-save.service";
+import { SaveGameDialogComponent } from "../gui/save-game-dialog/save-game-dialog.component";
+import type { SaveGameDialogResult } from "../gui/save-game-dialog/save-game-dialog-result";
 
 @Injectable({
   providedIn: "root"
@@ -69,7 +72,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   private readonly sceneCommunicatorClientService = inject(SceneCommunicatorClientService);
   private readonly probableWaffleCommunicatorService = inject(ProbableWaffleCommunicatorService);
   private readonly authenticatedSocketService = inject(AuthenticatedSocketService);
-  private readonly gameInstanceStorageService = inject(GameInstanceStorageServiceInterface);
+  private readonly gameSaveService = inject(GameSaveService);
   private readonly modalService = inject(NgbModal);
   private readonly router = inject(Router);
   private readonly ngZone = inject(NgZone);
@@ -78,6 +81,8 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   private externalModalOpen = false;
   private externalModalRef?: NgbModalRef;
   private selfExitInProgress = false;
+  private autosaveTimer?: ReturnType<typeof setInterval>;
+  private lastCheckpointAutosave?: { checkpointId: string; savedAt: number };
   gameInstanceToGameComponentCommunicator = new Subject<"refresh">();
 
   async createGameInstance(
@@ -185,6 +190,12 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
               });
               (modalRef.componentInstance as LoadComponent).fromGame = true;
               (modalRef.componentInstance as LoadComponent).dialogRef = modalRef;
+              (modalRef.componentInstance as LoadComponent).scopeFilter =
+                this.getNormalizedGameInstanceType() === ProbableWaffleGameInstanceType.Campaign
+                  ? "campaign"
+                  : "skirmish";
+              (modalRef.componentInstance as LoadComponent).missionScopeId =
+                this.gameInstance?.gameInstanceMetadata.data.campaignContext?.missionId;
               break;
             case "settings":
               if (this.DEBUG) {
@@ -342,6 +353,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     this.listenToUtilityGameEvents();
     this.listenToChatMessagesForNotifications();
     this.listenToSceneShutdown();
+    this.startAutosaveTimer();
   }
 
   private async stopListeningToGameInstanceEvents() {
@@ -355,6 +367,36 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     );
     this.communicatorSubscriptions = [];
     this.communicators = undefined;
+    this.stopAutosaveTimer();
+  }
+
+  /** Autosave requests stay at the Angular/Phaser boundary so the save scene owns serialization and thumbnails. */
+  private startAutosaveTimer(): void {
+    this.stopAutosaveTimer();
+    const type = this.getNormalizedGameInstanceType();
+    if (type !== ProbableWaffleGameInstanceType.Campaign && type !== ProbableWaffleGameInstanceType.Skirmish) return;
+    this.autosaveTimer = setInterval(
+      () => {
+        this.probableWaffleCommunicatorService.allScenes.emit({ name: "save-game", data: { kind: "autosave" } });
+      },
+      10 * 60 * 1000
+    );
+  }
+
+  private stopAutosaveTimer(): void {
+    if (this.autosaveTimer) clearInterval(this.autosaveTimer);
+    this.autosaveTimer = undefined;
+  }
+
+  requestCheckpointAutosave(checkpointId: string): void {
+    const now = Date.now();
+    if (
+      this.lastCheckpointAutosave?.checkpointId === checkpointId &&
+      now - this.lastCheckpointAutosave.savedAt < 60_000
+    )
+      return;
+    this.lastCheckpointAutosave = { checkpointId, savedAt: now };
+    this.probableWaffleCommunicatorService.allScenes.emit({ name: "save-game", data: { kind: "autosave" } });
   }
 
   async startGame(): Promise<void> {
@@ -557,7 +599,9 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     if (!this.gameInstance)
       throw new Error("Game instance not found in navigateToLobbyOrDirectlyToGame in GameInstanceClientService");
     const sessionState = this.gameInstance.gameInstanceMetadata.data.sessionState;
-    const isSpectator = this.gameInstance.spectators.some((spectator) => spectator.data.userId === this.authService.userId);
+    const isSpectator = this.gameInstance.spectators.some(
+      (spectator) => spectator.data.userId === this.authService.userId
+    );
     switch (this.getNormalizedGameInstanceType()) {
       case ProbableWaffleGameInstanceType.SelfHosted:
         if (isSpectator && sessionState !== GameSessionState.NotStarted) {
@@ -702,9 +746,10 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     await firstValueFrom(this.httpClient.delete<void>(url, {}));
   }
 
-  async loadGameInstance(gameInstanceSaveData: ProbableWaffleGameInstanceSaveData): Promise<void> {
-    gameInstanceSaveData.gameInstanceData.gameInstanceMetadataData!.startOptions.loadFromSave = true;
-    this.gameInstance = new ProbableWaffleGameInstance(gameInstanceSaveData.gameInstanceData);
+  async loadSavedGameData(gameInstanceData: ProbableWaffleGameInstanceData): Promise<void> {
+    if (!gameInstanceData.gameInstanceMetadataData) throw new Error("Save metadata is required");
+    gameInstanceData.gameInstanceMetadataData.startOptions.loadFromSave = true;
+    this.gameInstance = new ProbableWaffleGameInstance(gameInstanceData);
     this.syncCurrentPlayerNumberFromGameInstance();
     await this.startListeningToGameInstanceEvents();
     await this.navigateDirectlyToGame();
@@ -712,20 +757,71 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
 
   async saveGameInstance(data: SaveGamePayload): Promise<void> {
     const gameInstanceData = this.gameInstance!.data;
-    const name = gameInstanceData.gameInstanceMetadataData!.name;
-    await this.gameInstanceStorageService.saveToStorage({
-      saveName: name + " " + new Date().toLocaleString(),
-      created: new Date(),
-      gameInstanceData,
-      thumbnail: data.thumbnail
+    const requestedSave =
+      data.kind === "autosave" || data.kind === "quicksave"
+        ? undefined
+        : data.name?.trim()
+          ? { kind: "manual" as const, name: data.name.trim() }
+          : await this.requestManualSaveName();
+    const saveKind =
+      data.kind === "autosave"
+        ? GameSaveKind.Autosave
+        : data.kind === "quicksave" || requestedSave?.kind === "quicksave"
+          ? GameSaveKind.Quicksave
+          : GameSaveKind.Manual;
+    const manualSaveName = requestedSave?.kind === "manual" ? requestedSave.name : undefined;
+    const saveName = saveKind === GameSaveKind.Quicksave ? "Quick Save" : manualSaveName;
+    if (saveKind === GameSaveKind.Manual && !saveName) return;
+    const campaign = gameInstanceData.gameInstanceMetadataData?.campaignContext;
+    if (campaign) {
+      await this.gameSaveService.save({
+        scope: GameSaveScope.Campaign,
+        kind: saveKind,
+        name: saveName,
+        overwriteSaveId: requestedSave?.kind === "manual" ? requestedSave.overwriteSaveId : undefined,
+        thumbnail: data.thumbnail,
+        gameInstanceData,
+        campaign: { chapterId: campaign.chapterId, missionId: campaign.missionId, runId: campaign.runId }
+      });
+      return;
+    }
+    await this.gameSaveService.save({
+      scope: GameSaveScope.Skirmish,
+      kind: saveKind,
+      name: saveName,
+      overwriteSaveId: requestedSave?.kind === "manual" ? requestedSave.overwriteSaveId : undefined,
+      thumbnail: data.thumbnail,
+      gameInstanceData
     });
+  }
+
+  /** Pauses single-player simulation while the scoped Angular save dialog owns input focus. */
+  private async requestManualSaveName(): Promise<SaveGameDialogResult | undefined> {
+    this.probableWaffleCommunicatorService.allScenes.emit({
+      name: "external-modal-pause-changed",
+      data: { paused: true }
+    });
+    try {
+      const modal = this.modalService.open(SaveGameDialogComponent, { centered: true, backdrop: "static" });
+      const component = modal.componentInstance as SaveGameDialogComponent;
+      const campaign = this.gameInstance?.gameInstanceMetadata.data.campaignContext;
+      await component.configure(campaign ? GameSaveScope.Campaign : GameSaveScope.Skirmish, campaign?.missionId);
+      return (await modal.result) as SaveGameDialogResult;
+    } catch {
+      return undefined;
+    } finally {
+      this.probableWaffleCommunicatorService.allScenes.emit({
+        name: "external-modal-pause-changed",
+        data: { paused: false }
+      });
+    }
   }
 
   /**
    * todo this is a prototype
    */
-  async startReplay(gameInstanceSaveData: ProbableWaffleGameInstanceSaveData): Promise<void> {
-    const replayGameInstanceData = structuredClone(gameInstanceSaveData.gameInstanceData);
+  async startReplay(gameInstanceData: ProbableWaffleGameInstanceData): Promise<void> {
+    const replayGameInstanceData = structuredClone(gameInstanceData);
     this.normalizeReplayMetadata(replayGameInstanceData);
     this.gameInstance = new ProbableWaffleGameInstance(replayGameInstanceData);
     this.syncCurrentPlayerNumberFromGameInstance();
@@ -813,6 +909,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
       case ProbableWaffleGameInstanceType.Matchmaking:
         return true;
       case ProbableWaffleGameInstanceType.Skirmish:
+      case ProbableWaffleGameInstanceType.Campaign:
       case ProbableWaffleGameInstanceType.InstantGame:
       case ProbableWaffleGameInstanceType.Replay:
         return false;

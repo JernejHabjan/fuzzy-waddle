@@ -7,7 +7,6 @@ import type {
   ProbableWaffleGameInstance,
   ProbableWaffleGameInstanceData,
   ProbableWaffleGameInstanceMetadataData,
-  ProbableWaffleGameInstanceSaveData,
   ProbableWaffleGameInstanceType,
   ProbableWaffleGameInstanceVisibility,
   ProbableWaffleGameModeData
@@ -49,9 +48,10 @@ export interface GameInstanceClientServiceInterface {
   getGameInstanceData(gameInstanceId: GameInstanceId): Promise<ProbableWaffleGameInstanceData | null>;
   addAiPlayer(): Promise<PositionPlayerDefinition>;
   addSelfAsPlayer(): Promise<PositionPlayerDefinition>;
-  loadGameInstance(gameInstanceSaveData: ProbableWaffleGameInstanceSaveData): Promise<void>;
+  loadSavedGameData(gameInstanceData: ProbableWaffleGameInstanceData): Promise<void>;
   saveGameInstance(data: Record<string, any>): Promise<void>;
-  startReplay(gameInstanceSaveData: ProbableWaffleGameInstanceSaveData): Promise<void>;
+  requestCheckpointAutosave(checkpointId: string): void;
+  startReplay(gameInstanceData: ProbableWaffleGameInstanceData): Promise<void>;
   leaveLobby(): Promise<void>;
   leaveScoreScreen(navigateHome?: boolean): Promise<void>;
 }

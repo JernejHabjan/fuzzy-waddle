@@ -1,13 +1,31 @@
-const { composePlugins, withNx } = require("@nx/webpack");
+const { NxAppWebpackPlugin } = require("@nx/webpack/app-plugin");
 
-// Nx plugins for webpack.
-module.exports = composePlugins(
-  withNx({
-    target: "node"
-  }),
-  (config) => {
-    // Update the webpack config as needed here.
-    // e.g. `config.plugins.push(new MyPlugin())`
-    return config;
+const configValues = {
+  build: {
+    default: {
+      target: "node",
+      compiler: "tsc",
+      outputPath: "../../dist/apps/api",
+      main: "./src/main.ts",
+      tsConfig: "./tsconfig.app.json",
+      outputFileName: "main.js",
+      sourceMap: true,
+      assets: ["./src/assets"]
+    },
+    production: {
+      optimization: true,
+      extractLicenses: true,
+      inspect: false
+    }
   }
-);
+};
+
+const configuration = process.env.NX_TASK_TARGET_CONFIGURATION || "default";
+const buildOptions = {
+  ...configValues.build.default,
+  ...configValues.build[configuration]
+};
+
+module.exports = {
+  plugins: [new NxAppWebpackPlugin(buildOptions)]
+};

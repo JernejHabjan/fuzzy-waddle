@@ -18,6 +18,10 @@ import { AuthModule } from "../../auth/auth.module";
 import { PlayerDisconnectTrackerService } from "./game-instance/multiplayer/player-disconnect-tracker.service";
 import { PauseStateValidatorService } from "./game-instance/multiplayer/pause-state-validator.service";
 import { PlayerStateValidatorService } from "./game-instance/multiplayer/player-state-validator.service";
+import { GameSaveController } from "./game-save/game-save.controller";
+import { GameSaveServerService } from "./game-save/game-save.service";
+import { CampaignController } from "./campaign/campaign.controller";
+import { CampaignServerService } from "./campaign/campaign.service";
 
 @Module({
   imports: [AuthModule, forwardRef(() => ChatModule), GameSessionModule],
@@ -34,9 +38,11 @@ import { PlayerStateValidatorService } from "./game-instance/multiplayer/player-
     TextSanitizationService,
     ProbableWaffleChatService,
     RoomServerService,
-    PlayerDisconnectTrackerService
+    PlayerDisconnectTrackerService,
+    GameSaveServerService,
+    CampaignServerService
   ],
   exports: [GameInstanceService],
-  controllers: [GameInstanceController, RoomController, MatchmakingController]
+  controllers: [GameInstanceController, RoomController, MatchmakingController, GameSaveController, CampaignController]
 })
 export class ProbableWaffleModule {}

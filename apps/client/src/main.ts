@@ -9,8 +9,6 @@ import { SocketIoModule } from "ngx-socket-io";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { AppRoutingModule } from "./app/app-routing.module";
 import { bootstrapApplication, BrowserModule } from "@angular/platform-browser";
-import { GameInstanceIndexeddbStorageService } from "./app/probable-waffle/communicators/storage/game-instance-indexeddb-storage.service";
-import { GameInstanceStorageServiceInterface } from "./app/probable-waffle/communicators/storage/game-instance-storage.service.interface";
 import { accessTokenInterceptor } from "./app/auth/access-token.interceptor";
 import { provideHttpClient, withInterceptors } from "@angular/common/http";
 import { AuthGuard } from "./app/auth/auth.guard";
@@ -38,7 +36,6 @@ bootstrapApplication(AppComponent, {
       SocketIoModule.forRoot(environment.socketIoConfig)
     ),
     AuthGuard,
-    { provide: GameInstanceStorageServiceInterface, useClass: GameInstanceIndexeddbStorageService },
     provideHttpClient(withInterceptors([authReadyInterceptor, accessTokenInterceptor]))
   ]
 }).catch((err) => console.error(err));

@@ -56,6 +56,20 @@ const probableWaffleRoutes = [
               import("./probable-waffle/gui/campaign/campaign.component").then((m) => m.CampaignComponent)
           },
           {
+            path: "campaign/:chapterId",
+            loadComponent: () =>
+              import("./probable-waffle/gui/campaign/mission-screen/mission-screen.component").then(
+                (m) => m.MissionScreenComponent
+              )
+          },
+          {
+            path: "campaign/:chapterId/:missionId",
+            loadComponent: () =>
+              import("./probable-waffle/gui/campaign/mission-screen/mission-screen.component").then(
+                (m) => m.MissionScreenComponent
+              )
+          },
+          {
             path: "online",
             loadComponent: () => import("./probable-waffle/gui/online/online.component").then((m) => m.OnlineComponent)
             // canActivate: [() => !environment.production] // set to alpha in #606
@@ -155,7 +169,8 @@ const flySquasherRoutes = [
       },
       {
         path: "play/:level",
-        loadComponent: () => loadGameComponent(() => import("./fly-squasher/main/main.component")).then((m) => m.MainComponent),
+        loadComponent: () =>
+          loadGameComponent(() => import("./fly-squasher/main/main.component")).then((m) => m.MainComponent),
         canActivate: [LevelGuard]
       },
       {

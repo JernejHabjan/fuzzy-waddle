@@ -1,6 +1,11 @@
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
 export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "14.5";
+  };
   public: {
     Tables: {
       achievement_definitions: {
@@ -615,6 +620,111 @@ export type Database = {
           }
         ];
       };
+      probable_waffle_campaign_progress: {
+        Row: {
+          completed_at: string;
+          mission_id: Database["public"]["Enums"]["probable_waffle_campaign_mission_id"];
+          result_metadata: Json;
+          user_id: string;
+        };
+        Insert: {
+          completed_at?: string;
+          mission_id: Database["public"]["Enums"]["probable_waffle_campaign_mission_id"];
+          result_metadata?: Json;
+          user_id: string;
+        };
+        Update: {
+          completed_at?: string;
+          mission_id?: Database["public"]["Enums"]["probable_waffle_campaign_mission_id"];
+          result_metadata?: Json;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
+      probable_waffle_campaign_runs: {
+        Row: {
+          completed_at: string | null;
+          id: string;
+          mission_id: Database["public"]["Enums"]["probable_waffle_campaign_mission_id"];
+          outcome: Database["public"]["Enums"]["probable_waffle_campaign_outcome"] | null;
+          result_metadata: Json;
+          started_at: string;
+          user_id: string;
+        };
+        Insert: {
+          completed_at?: string | null;
+          id: string;
+          mission_id: Database["public"]["Enums"]["probable_waffle_campaign_mission_id"];
+          outcome?: Database["public"]["Enums"]["probable_waffle_campaign_outcome"] | null;
+          result_metadata?: Json;
+          started_at?: string;
+          user_id: string;
+        };
+        Update: {
+          completed_at?: string | null;
+          id?: string;
+          mission_id?: Database["public"]["Enums"]["probable_waffle_campaign_mission_id"];
+          outcome?: Database["public"]["Enums"]["probable_waffle_campaign_outcome"] | null;
+          result_metadata?: Json;
+          started_at?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
+      probable_waffle_game_saves: {
+        Row: {
+          campaign_chapter_id: Database["public"]["Enums"]["probable_waffle_campaign_chapter_id"] | null;
+          campaign_mission_id: Database["public"]["Enums"]["probable_waffle_campaign_mission_id"] | null;
+          campaign_run_id: string | null;
+          created_at: string;
+          encoded_game_instance_data: string;
+          format_version: number;
+          id: string;
+          is_deleted: boolean;
+          kind: Database["public"]["Enums"]["probable_waffle_game_save_kind"];
+          name: string | null;
+          revision: number;
+          scope: Database["public"]["Enums"]["probable_waffle_game_save_scope"];
+          thumbnail: string | null;
+          updated_at: string;
+          user_id: string;
+        };
+        Insert: {
+          campaign_chapter_id?: Database["public"]["Enums"]["probable_waffle_campaign_chapter_id"] | null;
+          campaign_mission_id?: Database["public"]["Enums"]["probable_waffle_campaign_mission_id"] | null;
+          campaign_run_id?: string | null;
+          created_at?: string;
+          encoded_game_instance_data: string;
+          format_version: number;
+          id: string;
+          is_deleted?: boolean;
+          kind: Database["public"]["Enums"]["probable_waffle_game_save_kind"];
+          name?: string | null;
+          revision: number;
+          scope: Database["public"]["Enums"]["probable_waffle_game_save_scope"];
+          thumbnail?: string | null;
+          updated_at?: string;
+          user_id: string;
+        };
+        Update: {
+          campaign_chapter_id?: Database["public"]["Enums"]["probable_waffle_campaign_chapter_id"] | null;
+          campaign_mission_id?: Database["public"]["Enums"]["probable_waffle_campaign_mission_id"] | null;
+          campaign_run_id?: string | null;
+          created_at?: string;
+          encoded_game_instance_data?: string;
+          format_version?: number;
+          id?: string;
+          is_deleted?: boolean;
+          kind?: Database["public"]["Enums"]["probable_waffle_game_save_kind"];
+          name?: string | null;
+          revision?: number;
+          scope?: Database["public"]["Enums"]["probable_waffle_game_save_scope"];
+          thumbnail?: string | null;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       user_achievement_unlocks: {
         Row: {
           achievement_id: string;
@@ -837,6 +947,36 @@ export type Database = {
       game_participant_type: "human" | "ai" | "spectator";
       game_result_status: "win" | "loss" | "tie" | "quit";
       game_session_status: "in_progress" | "completed" | "abandoned";
+      probable_waffle_campaign_chapter_id:
+        | "prologue"
+        | "two-homelands"
+        | "crystal-war"
+        | "united-against-volcano"
+        | "the-betrayal";
+      probable_waffle_campaign_mission_id:
+        | "dreams"
+        | "cyclops-and-sheep"
+        | "snow-wendigo-and-fire"
+        | "slingshooters-and-wolves"
+        | "owl-and-skaduwee-crystal"
+        | "sand-dunes-and-tivara-crystal"
+        | "we-had-enough"
+        | "sailing-towards-the-new-future"
+        | "the-first-and-last-dinner"
+        | "the-siege"
+        | "time-rush"
+        | "joining-crystal"
+        | "mobster-or-friend"
+        | "the-volcano-is-getting-angry"
+        | "cult-wars"
+        | "the-volcano"
+        | "the-betrayal"
+        | "undead-and-cursed-lands"
+        | "end-game"
+        | "resolution";
+      probable_waffle_campaign_outcome: "victory" | "defeat" | "abandoned";
+      probable_waffle_game_save_kind: "manual" | "autosave" | "quicksave";
+      probable_waffle_game_save_scope: "campaign" | "skirmish";
       user_account_status: "active" | "limited" | "disabled";
     };
     CompositeTypes: {
@@ -967,6 +1107,38 @@ export const Constants = {
       game_participant_type: ["human", "ai", "spectator"],
       game_result_status: ["win", "loss", "tie", "quit"],
       game_session_status: ["in_progress", "completed", "abandoned"],
+      probable_waffle_campaign_chapter_id: [
+        "prologue",
+        "two-homelands",
+        "crystal-war",
+        "united-against-volcano",
+        "the-betrayal"
+      ],
+      probable_waffle_campaign_mission_id: [
+        "dreams",
+        "cyclops-and-sheep",
+        "snow-wendigo-and-fire",
+        "slingshooters-and-wolves",
+        "owl-and-skaduwee-crystal",
+        "sand-dunes-and-tivara-crystal",
+        "we-had-enough",
+        "sailing-towards-the-new-future",
+        "the-first-and-last-dinner",
+        "the-siege",
+        "time-rush",
+        "joining-crystal",
+        "mobster-or-friend",
+        "the-volcano-is-getting-angry",
+        "cult-wars",
+        "the-volcano",
+        "the-betrayal",
+        "undead-and-cursed-lands",
+        "end-game",
+        "resolution"
+      ],
+      probable_waffle_campaign_outcome: ["victory", "defeat", "abandoned"],
+      probable_waffle_game_save_kind: ["manual", "autosave", "quicksave"],
+      probable_waffle_game_save_scope: ["campaign", "skirmish"],
       user_account_status: ["active", "limited", "disabled"]
     }
   }

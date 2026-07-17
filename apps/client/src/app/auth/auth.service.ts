@@ -3,7 +3,7 @@ import { type Session } from "@supabase/supabase-js";
 import { DataAccessService } from "../data-access/data-access.service";
 import { type AuthServiceInterface } from "./auth.service.interface";
 import { isTauri, TauriService } from "../shared/services/tauri.service";
-import type { Subscription } from "rxjs";
+import { BehaviorSubject, type Observable, type Subscription } from "rxjs";
 import { environment } from "../../environments/environment";
 
 /** Deep-link scheme registered in tauri.conf.json → plugins.deep-link.desktop.schemes */
@@ -38,6 +38,9 @@ export class AuthService implements AuthServiceInterface, OnDestroy {
   private readonly tauriSubscription?: Subscription;
 
   private _session: Session | null = null;
+  private readonly sessionChangesSubject = new BehaviorSubject<Session | null>(null);
+  /** Emits after each local authentication transition so offline feature queues can resume safely. */
+  readonly sessionChanges: Observable<Session | null> = this.sessionChangesSubject.asObservable();
 
   constructor() {
     // In Tauri, listen for deep-link callbacks to complete the OAuth PKCE flow.
@@ -168,7 +171,7 @@ export class AuthService implements AuthServiceInterface, OnDestroy {
           return;
         }
         console.log("[AuthService] session established (implicit):", data.session?.user?.email);
-        this._session = data.session;
+        this.updateSession(data.session);
         return;
       }
 
@@ -185,7 +188,7 @@ export class AuthService implements AuthServiceInterface, OnDestroy {
         return;
       }
       console.log("[AuthService] session established (pkce):", data.session?.user?.email);
-      this._session = data.session;
+      this.updateSession(data.session);
     } catch (err) {
       console.error("[AuthService] deep-link auth callback failed:", err);
     }
@@ -197,7 +200,7 @@ export class AuthService implements AuthServiceInterface, OnDestroy {
     if (error) {
       console.error("error", error);
     } else {
-      this._session = null;
+      this.updateSession(null);
     }
     this.processing = null;
   }
@@ -209,7 +212,7 @@ export class AuthService implements AuthServiceInterface, OnDestroy {
     if (error) {
       console.error("error", error);
     }
-    this._session = data.session;
+    this.updateSession(data.session);
     this.processing = null;
     return data.session;
   }
@@ -229,5 +232,11 @@ export class AuthService implements AuthServiceInterface, OnDestroy {
 
   ngOnDestroy(): void {
     this.tauriSubscription?.unsubscribe();
+  }
+
+  /** Keeps the session getter and reactive consumers in lockstep after every auth path. */
+  private updateSession(session: Session | null): void {
+    this._session = session;
+    this.sessionChangesSubject.next(session);
   }
 }

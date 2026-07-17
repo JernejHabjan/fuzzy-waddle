@@ -55,10 +55,16 @@ export default class PreloadProbableWaffle extends ProbableWaffleScene {
   override preload() {
     this.editorCreate();
     this.center();
+    const mapInfo = this.mapInfo;
+    if (!mapInfo?.loader) {
+      throw new Error(
+        "Probable Waffle cannot preload because the game instance has no valid map. Configure gameMode.map before navigating to the game."
+      );
+    }
     this.load.pack("asset-pack", "assets/probable-waffle/asset-packers/asset-pack-probable-waffle.json");
     this.load.pack(
       "asset-pack-map",
-      "assets/probable-waffle/asset-packers/maps/" + this.mapInfo.loader.mapLoaderAssetPackPath
+      "assets/probable-waffle/asset-packers/maps/" + mapInfo.loader.mapLoaderAssetPackPath
     );
   }
 

@@ -1,5 +1,4 @@
 import { Component, inject, type OnDestroy, type OnInit, input } from "@angular/core";
-import { animate, style, transition, trigger } from "@angular/animations";
 
 import { AtlasSpriteComponent } from "../atlas-sprite/atlas-sprite.component";
 import { AudioAtlasService } from "../../services/audio-atlas/audio-atlas.service";

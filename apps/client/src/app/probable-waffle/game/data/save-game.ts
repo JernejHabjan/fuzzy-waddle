@@ -7,43 +7,77 @@ import { TechTreeService } from "./tech-tree/tech-tree.service";
 import type { SaveGamePayload } from "./save-game-payload";
 import { SelectionGroupsComponent } from "../player/human-controller/selection-groups.component";
 import { CameraMovementHandler } from "../player/human-controller/cameraMovementHandler";
-import { ProbableWafflePlayerType } from "@fuzzy-waddle/api-interfaces";
+import { GameSessionState, type AllScenesEventData, ProbableWafflePlayerType } from "@fuzzy-waddle/api-interfaces";
 import { AiPlayerHandler } from "../player/ai-controller/ai-player-handler";
+import { SimulationTickService } from "../world/services/simulation-tick.service";
 
 export class SaveGame {
   private saveGameSubscription: Subscription;
+  private saveInProgress = false;
 
   constructor(private scene: GameProbableWaffleScene) {
     this.saveGameSubscription = scene.communicator.allScenes
-      .pipe(filter((scene) => scene.name === "save-game"))
-      .subscribe(() => this.onSaveGame());
+      .pipe(filter((event): event is Extract<AllScenesEventData, { name: "save-game" }> => event.name === "save-game"))
+      .subscribe((event) => this.onSaveGame(event.data?.kind));
+    scene.input.keyboard?.on("keydown", this.handleQuickSaveShortcut, this);
     scene.onShutdown.subscribe(() => this.destroy());
   }
 
-  private async onSaveGame() {
-    const sceneActorCreator = getSceneService(this.scene, SceneActorCreator);
-    if (!sceneActorCreator) throw new Error("SceneActorCreator not found");
-    sceneActorCreator.saveAllKnownActorsToGameState();
+  /** Ctrl+S creates/replaces the current mission or skirmish quicksave without opening a dialog. */
+  private readonly handleQuickSaveShortcut = (event: KeyboardEvent): void => {
+    if (!event.ctrlKey || event.code !== "KeyS" || event.repeat) return;
+    // Prevent the browser's Save Page action while the Phaser game owns the keyboard shortcut.
+    event.preventDefault();
+    this.scene.communicator.allScenes.emit({ name: "save-game", data: { kind: "quicksave" } });
+  };
 
-    // Save camera position and selection groups for the current player
-    this.saveCurrentPlayerData();
+  /**
+   * Serialization stays in Phaser because only the scene can produce a coherent actor snapshot.
+   * Automatic snapshots are rejected during pauses and while another save is running so they never
+   * capture a modal-paused or partially serialized simulation.
+   */
+  private async onSaveGame(kind: SaveGamePayload["kind"] = "manual") {
+    if (this.saveInProgress || (kind === "autosave" && !this.canAutosave())) return;
+    this.saveInProgress = true;
+    try {
+      const sceneActorCreator = getSceneService(this.scene, SceneActorCreator);
+      if (!sceneActorCreator) throw new Error("SceneActorCreator not found");
+      sceneActorCreator.saveAllKnownActorsToGameState();
 
-    // Save AI behaviour tree state for all AI players
-    this.saveAiPlayersState();
+      // Save camera position and selection groups for the current player
+      this.saveCurrentPlayerData();
 
-    // Save AOE zones
-    this.saveAoeZones();
+      // Save AI behaviour tree state for all AI players
+      this.saveAiPlayersState();
 
-    // Save research state
-    this.saveResearchState();
+      // Save AOE zones
+      this.saveAoeZones();
 
-    const thumbnail = await this.takeScreenshot();
-    this.scene.communicator.utilityEvents.emit({
-      name: "save-game",
-      data: {
-        thumbnail
-      } satisfies SaveGamePayload
-    });
+      // Save research state
+      this.saveResearchState();
+
+      const thumbnail = await this.takeScreenshot();
+      this.scene.communicator.utilityEvents.emit({
+        name: "save-game",
+        data: {
+          thumbnail,
+          kind
+        } satisfies SaveGamePayload
+      });
+    } finally {
+      this.saveInProgress = false;
+    }
+  }
+
+  /** Autosaves only run after gameplay is active and the deterministic simulation is advancing. */
+  private canAutosave(): boolean {
+    const tickService = getSceneService(this.scene, SimulationTickService);
+    return (
+      this.scene.sys.isActive() &&
+      this.scene.baseGameData.gameInstance.gameInstanceMetadata.data.sessionState === GameSessionState.InProgress &&
+      tickService !== undefined &&
+      !tickService.isPaused
+    );
   }
 
   private saveCurrentPlayerData(): void {
@@ -131,5 +165,6 @@ export class SaveGame {
 
   private destroy() {
     this.saveGameSubscription.unsubscribe();
+    this.scene.input.keyboard?.off("keydown", this.handleQuickSaveShortcut, this);
   }
 }

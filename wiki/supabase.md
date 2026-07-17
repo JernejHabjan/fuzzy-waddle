@@ -217,27 +217,37 @@ supabase status
 
 ### Applying Migrations Remotely
 
-Do not use `supabase db reset` on the hosted database. That command is for local development.
+Do not use `supabase db reset` on the hosted database. That command destroys and recreates only the local database.
 
-The hosted Supabase project is updated after migrations are merged into `main`. Verify migrations locally before merging:
+Create a timestamped migration for every schema change. The migration is the executable history; keep the matching declarative source under `supabase/schemas/` in the same change.
+
+```bash
+# Authenticate once on this machine.
+supabase login
+
+# Link this checkout to the intended hosted project. Confirm the project ref before continuing.
+supabase link --project-ref bhzetyxjimpabioxoodz
+
+# Create the migration, then copy the reviewed SQL from the matching schema change.
+supabase migration new probable_waffle_game_saves
+```
+
+Before a remote apply, review and prove the complete migration history against the local database:
 
 ```bash
 supabase db reset
-pnpm generate-supabase-types
 supabase db lint --local --schema public --level warning --fail-on none
+pnpm generate-supabase-types
 ```
 
-If an urgent manual remote apply is ever needed outside the normal merge flow, preview first:
+Inspect the pending remote changes, then apply them to the linked project only after confirming both the SQL and the target project:
 
 ```bash
 supabase db push --dry-run
-```
-
-Then apply only after reviewing the SQL and confirming the target project:
-
-```bash
 supabase db push
 ```
+
+`supabase db push` records applied migrations in the hosted migration history and only applies pending files from `supabase/migrations/`. Do not edit a migration that has already been applied remotely; create a new corrective migration instead.
 
 ## Connecting via JDBC
 

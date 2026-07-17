@@ -29,11 +29,6 @@
           "codeCoverage": true
         }
       }
-    },
-    "@nx/webpack:webpack": {
-      "cache": true,
-      "dependsOn": ["^build"],
-      "inputs": ["production", "^production"]
     }
   },
   "namedInputs": {
@@ -50,6 +45,17 @@
   "cli": {
     "packageManager": "pnpm"
   },
+  "plugins": [
+    {
+      "plugin": "@nx/webpack/plugin",
+      "options": {
+        "buildTargetName": "build",
+        "serveTargetName": "webpack-serve",
+        "previewTargetName": "webpack-preview",
+        "serveStaticTargetName": "webpack-serve-static"
+      }
+    }
+  ],
   "generators": {
     "@nx/angular:application": {
       "style": "scss",

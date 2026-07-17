@@ -1,0 +1,160 @@
+@if (chapter(); as chapter) {
+  @if (selectedMission(); as mission) {
+    <main class="aota-campaign-surface mission-screen">
+      <a class="mission-screen__back" routerLink="/aota/campaign">← Back to Chapters</a>
+      <header class="mission-screen__header">
+        <p>{{ chapter.subtitle }}</p>
+        <h1>{{ chapter.title }}</h1>
+        <span>{{ chapter.summary }}</span>
+      </header>
+
+      <section
+        class="mission-screen__layout"
+        [style.--mission-background]="'url(' + chapter.missionArtwork.desktopSrc + ')'"
+        [style.--mission-background-position]="chapter.missionArtwork.focalPosition"
+      >
+        <nav
+          class="mission-screen__journey"
+          [class]="'mission-screen__journey mission-screen__journey--' + chapter.layout"
+          aria-label="Chapter missions"
+        >
+          @for (chapterMission of chapter.missions; track chapterMission.id) {
+            @if (missionState(chapterMission.id); as state) {
+              @if (chapter.layout === "parallel" && chapterMission.faction === campaignFaction.Switching) {
+                <div class="mission-screen__faction-divider" role="separator" aria-label="Factions join forces">
+                  <span></span>
+                  <strong>Switching</strong>
+                  <span></span>
+                </div>
+              }
+              <a
+                [routerLink]="
+                  state === 'locked' || state === 'planned' ? null : ['/aota/campaign', chapter.id, chapterMission.id]
+                "
+                [class.mission-screen__node--selected]="chapterMission.id === mission.id"
+                [class.mission-screen__node--planned]="state === 'planned'"
+                [class.mission-screen__node--locked]="state === 'locked' || state === 'planned'"
+                [class.mission-screen__node--tivara]="chapterMission.faction === 'tivara'"
+                [class.mission-screen__node--skaduwee]="chapterMission.faction === 'skaduwee'"
+                [attr.aria-disabled]="state === 'locked' || state === 'planned'"
+                class="mission-screen__node"
+              >
+                <span>{{ chapterMission.order + 1 }}</span>
+                <span class="mission-screen__node-copy">
+                  <strong>{{ chapterMission.title }}</strong>
+                  <small>{{ chapterMission.faction }}</small>
+                </span>
+                @if (state === "locked" || state === "planned") {
+                  <span class="mission-screen__node-lock" aria-label="Locked mission">🔒</span>
+                }
+              </a>
+            }
+          }
+        </nav>
+
+        <article class="mission-screen__briefing">
+          <p class="mission-screen__eyebrow">{{ mission.environment }} · {{ mission.faction }}</p>
+          <h2>{{ mission.title }}</h2>
+          <p>{{ mission.briefing }}</p>
+          <h3>Objectives</h3>
+          <ul>
+            @for (objective of mission.objectives; track objective) {
+              <li>{{ objective }}</li>
+            }
+          </ul>
+          @switch (missionProgress()?.state) {
+            @case ("available") {
+              @if (continueSaveAvailable()) {
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  [disabled]="launchInProgress()"
+                  (click)="continueMission()"
+                >
+                  @if (launchInProgress()) {
+                    <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                    Loading…
+                  } @else {
+                    Continue
+                  }
+                </button>
+                <a
+                  class="btn btn-outline-secondary ms-2"
+                  routerLink="/aota/load"
+                  [queryParams]="{ missionId: mission.id }"
+                  >Load Game</a
+                >
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary ms-2"
+                  [disabled]="launchInProgress()"
+                  (click)="startMission()"
+                >
+                  Start Fresh
+                </button>
+              } @else {
+                <button type="button" class="btn btn-primary" [disabled]="launchInProgress()" (click)="startMission()">
+                  @if (launchInProgress()) {
+                    <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                    Starting…
+                  } @else {
+                    Start Mission
+                  }
+                </button>
+              }
+            }
+            @case ("completed") {
+              @if (continueSaveAvailable()) {
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  [disabled]="launchInProgress()"
+                  (click)="continueMission()"
+                >
+                  @if (launchInProgress()) {
+                    <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                    Loading…
+                  } @else {
+                    Continue
+                  }
+                </button>
+                <a
+                  class="btn btn-outline-secondary ms-2"
+                  routerLink="/aota/load"
+                  [queryParams]="{ missionId: mission.id }"
+                  >Load Game</a
+                >
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary ms-2"
+                  [disabled]="launchInProgress()"
+                  (click)="startMission()"
+                >
+                  Start Fresh
+                </button>
+              } @else {
+                <button type="button" class="btn btn-primary" [disabled]="launchInProgress()" (click)="startMission()">
+                  @if (launchInProgress()) {
+                    <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                    Starting…
+                  } @else {
+                    Replay Mission
+                  }
+                </button>
+              }
+            }
+            @case ("planned") {
+              <button type="button" class="btn btn-outline-secondary" disabled>Coming Soon</button>
+            }
+            @default {
+              <button type="button" class="btn btn-outline-secondary" disabled>Locked</button>
+            }
+          }
+          @if (launchError()) {
+            <p class="mission-screen__error" role="alert">{{ launchError() }}</p>
+          }
+        </article>
+      </section>
+    </main>
+  }
+}

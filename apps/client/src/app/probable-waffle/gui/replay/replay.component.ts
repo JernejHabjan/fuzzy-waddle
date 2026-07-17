@@ -4,11 +4,11 @@ import { RouterLink } from "@angular/router";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 import {
   type ProbableWaffleGameInstanceData,
-  type ProbableWaffleGameInstanceSaveData,
   ProbableWaffleGameInstanceType,
-  ProbableWaffleLevels
+  ProbableWaffleLevels,
+  type GameSaveRecord
 } from "@fuzzy-waddle/api-interfaces";
-import { GameInstanceStorageServiceInterface } from "../../communicators/storage/game-instance-storage.service.interface";
+import { GameSaveService } from "../../services/game-save/game-save.service";
 import { GameLengthPipe } from "../../../shared/pipes/game-length.pipe";
 import { DatePipe } from "@angular/common";
 
@@ -19,11 +19,11 @@ import { DatePipe } from "@angular/common";
   styleUrls: ["./replay.component.scss"]
 })
 export class ReplayComponent implements OnInit {
-  private readonly gameInstanceStorageService = inject(GameInstanceStorageServiceInterface);
+  private readonly gameSaveService = inject(GameSaveService);
   private readonly gameInstanceClientService = inject(GameInstanceClientService);
-  protected gameInstanceDataRecords: ProbableWaffleGameInstanceSaveData[] = [];
+  protected gameInstanceDataRecords: GameSaveRecord[] = [];
   async ngOnInit(): Promise<void> {
-    this.gameInstanceDataRecords = (await this.gameInstanceStorageService.getFromStorage()).filter(
+    this.gameInstanceDataRecords = (await this.gameSaveService.list()).filter(
       (record) => record.gameInstanceData.gameInstanceMetadataData?.type === ProbableWaffleGameInstanceType.Replay
     );
   }
@@ -32,12 +32,14 @@ export class ReplayComponent implements OnInit {
     return ProbableWaffleLevels[gameInstanceData.gameModeData!.map!].name;
   }
 
-  protected startReplay = async (gameInstanceSaveData: ProbableWaffleGameInstanceSaveData): Promise<void> => {
-    await this.gameInstanceClientService.startReplay(gameInstanceSaveData);
+  protected startReplay = async (save: GameSaveRecord): Promise<void> => {
+    await this.gameInstanceClientService.startReplay(save.gameInstanceData);
   };
 
-  protected async deleteReplay(gameInstanceSaveData: ProbableWaffleGameInstanceSaveData) {
-    await this.gameInstanceStorageService.deleteFromStorage(gameInstanceSaveData);
-    this.gameInstanceDataRecords = await this.gameInstanceStorageService.getFromStorage();
+  protected async deleteReplay(save: GameSaveRecord) {
+    await this.gameSaveService.delete(save.id);
+    this.gameInstanceDataRecords = (await this.gameSaveService.list()).filter(
+      (record) => record.gameInstanceData.gameInstanceMetadataData?.type === ProbableWaffleGameInstanceType.Replay
+    );
   }
 }
