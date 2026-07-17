@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
-import { environment } from "../../environments/environment";
+import { environment } from "@fuzzy-waddle/environments/environment";
 import { type DataAccessServiceInterface } from "./data-access.service.interface";
 import type { Database } from "@fuzzy-waddle/api-interfaces";
 

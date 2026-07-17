@@ -1,0 +1,1256 @@
+import {
+  BOTTOM,
+  BOTTOM_LEFT,
+  BOTTOM_RIGHT,
+  type Direction,
+  js as EasyStar,
+  LEFT,
+  RIGHT,
+  TOP,
+  TOP_LEFT,
+  TOP_RIGHT
+} from "easystarjs";
+import type { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
+import Phaser, { GameObjects } from "phaser";
+import { getActorComponent } from "../../data/actor-component";
+import { NavigableComponent } from "../../entity/components/movement/navigable-component";
+import { ColliderComponent } from "../../entity/components/movement/collider-component";
+import { getCenterTileCoordUnderObject, getTileCoordsUnderObject } from "../../library/tile-under-object";
+import { drawDebugPath } from "../../debug/debug-path";
+import { drawDebugPoint } from "../../debug/debug-point";
+import { getSceneComponent, getSceneService } from "./scene-component-helpers";
+import { TilemapComponent } from "../tilemap/tilemap.component";
+import {
+  getSelectableGameObject,
+  isGameObjectActiveInActiveScene,
+  onSceneInitialized
+} from "../../data/game-object-helper";
+import { RandomService } from "./random.service";
+import { throttleWithTrailing } from "../../library/throttle";
+import { environment } from "@fuzzy-waddle/environments/environment";
+import { RepresentableComponent } from "../../entity/components/representable-component";
+import { NavigablePathDirection } from "../../entity/components/movement/navigable-path-direction";
+import { ActorIndexSystem } from "./ActorIndexSystem";
+import { DistanceHelper } from "../../library/distance-helper";
+import { MovementTerrainType } from "../../entity/components/movement/movement-terrain-type";
+import { ActorTranslateComponent } from "../../entity/components/movement/actor-translate-component";
+import { TerrainGridBuilder } from "./terrain-grid-builder";
+import { WaterNavigationHelper } from "./water-navigation.helper";
+import {
+  HEIGHT_NAVIGATION_DIRECTIONS,
+  HeightNavigationGraphBuilder,
+  type HeightNavigationCell,
+  type HeightNavigationEdge,
+  type HeightNavigationGraph
+} from "./height-navigation-graph-builder";
+import type { MovementDynamicBlocker } from "./movement-occupancy.service";
+import { getDynamicBlockedTileKeysForHeightGraph } from "./height-navigation-dynamic-blockers";
+
+export enum TerrainType {
+  Grass = "grass",
+  Gravel = "gravel",
+  Water = "water",
+  Sand = "sand",
+  Snow = "snow",
+  Stone = "stone"
+}
+
+// Path cache for expensive pathfinding operations
+interface PathCache {
+  path: Vector2Simple[] | null;
+  timestamp: number;
+}
+
+const PATH_CACHE_TTL_MS = 1000; // Cache paths for 1 second
+
+export class NavigationService {
+  private readonly terrainTypes = Object.values(TerrainType);
+  static UpdateNavigationEvent = "updateNavigation";
+  private readonly easyStar: EasyStar;
+  private actorIndex!: ActorIndexSystem;
+  private randomService!: RandomService;
+  private easyStarNavigationGrid: number[][] = [];
+  private tilemapGrid: number[][] = [];
+  private heightMapGrid: HeightNavigationCell[][] = [];
+  private heightNavigationGraph?: HeightNavigationGraph;
+  private readonly DEBUG = false;
+  private readonly DEBUG_DEMO = false;
+  private readonly DEBUG_CLICK_INFO = false;
+  private readonly DEBUG_OBJECT_TARGET_PATHS = false;
+  private directionalConditions: Map<string, Direction[]> = new Map();
+  private pathCache = new Map<string, PathCache>();
+  private readonly waterNavHelper = new WaterNavigationHelper();
+
+  constructor(
+    private readonly scene: Phaser.Scene,
+    private readonly tilemap: Phaser.Tilemaps.Tilemap
+  ) {
+    this.scene.events.on(NavigationService.UpdateNavigationEvent, this.throttleUpdateNavigation, this);
+    this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
+    this.easyStar = new EasyStar();
+    onSceneInitialized(scene, this.initNavigationService, this);
+  }
+
+  private initNavigationService() {
+    this.actorIndex = getSceneService(this.scene, ActorIndexSystem)!;
+    this.randomService = getSceneService(this.scene, RandomService)!;
+
+    this.extractTilemapGrid();
+
+    this.updateNavigation();
+
+    // DEBUG: Bind click listener to print conditional directions and heightMapGrid info
+    if (this.DEBUG_CLICK_INFO && !environment.production) {
+      this.scene.input.on(
+        Phaser.Input.Events.POINTER_UP,
+        (pointer: Phaser.Input.Pointer, gameObjectsUnderCursor: Phaser.GameObjects.GameObject[]) => {
+          const interactiveObjectIds = gameObjectsUnderCursor
+            .map((go) => getSelectableGameObject(go))
+            .filter((go) => !!go) as Phaser.GameObjects.GameObject[];
+          if (interactiveObjectIds.length === 0) return; // No interactive objects clicked
+          const object = interactiveObjectIds[0];
+          if (!object) return;
+          const tiles = getTileCoordsUnderObject(this.tilemap, object);
+          console.log("Clicked GameObject:", object);
+          tiles.forEach(({ x, y }) => {
+            const heightInfo = this.heightMapGrid[y]?.[x];
+            const directions = this.directionalConditions.get(`${x}_${y}`);
+            console.log(`Tile (${x},${y}):`, {
+              heightInfo,
+              conditionalDirections: directions
+            });
+          });
+        }
+      );
+    }
+
+    if (this.DEBUG_DEMO) {
+      this.findPath({ x: 33, y: 33 }, { x: 5, y: 10 });
+      this.debugNavigableRadius();
+    }
+  }
+
+  drawDebugPath(path: Vector2Simple[]) {
+    drawDebugPath(this.scene, this.tilemap, path);
+  }
+
+  private async debugNavigableRadius() {
+    const findAndDebugDrawRandomTileInNavigableRadius = async () => {
+      const randomTile = await this.randomTileInNavigableRadius({ x: 33, y: 30 }, 15);
+      if (!randomTile) return;
+      console.log("RANDOM TILE", randomTile);
+      const tileWorldXY = this.getTileWorldCenter(randomTile)!;
+      drawDebugPoint(this.scene, tileWorldXY, 0x0000ff);
+    };
+
+    for (let i = 0; i < 200; i++) {
+      // noinspection ES6MissingAwait
+      findAndDebugDrawRandomTileInNavigableRadius();
+    }
+  }
+
+  public static getTileWorldCenter(tilemap: Phaser.Tilemaps.Tilemap, tileXY: Vector2Simple): Vector2Simple | undefined {
+    const tileAtStart = tilemap.getTileAt(tileXY.x, tileXY.y);
+    if (!tileAtStart) return;
+    const centerX = tileAtStart.getCenterX();
+    const centerY = tileAtStart.getCenterY();
+    return { x: centerX, y: centerY };
+  }
+
+  getTileWorldCenter(tileXY: Vector2Simple): Vector2Simple | undefined {
+    return NavigationService.getTileWorldCenter(this.tilemap, tileXY);
+  }
+
+  private setup() {
+    const objectsGrid = this.extractGridFromObjects();
+    this.easyStarNavigationGrid = this.tilemapGrid.map((row, i) =>
+      row.map((tile, j) => {
+        const objectValue = objectsGrid[i]?.[j];
+        if (objectValue === undefined) return tile; // no object, use tilemap easyStarNavigationGrid
+        if (objectValue === 0) return 0; // navigable object
+        if (objectValue === 1) return 1; // blocked by object
+        return tile; // tilemap easyStarNavigationGrid
+      })
+    );
+    this.extractHeightMapGrid();
+    this.setupNavigation();
+  }
+
+  // Populate heightMapGrid with directed, exact-height navigation graph info.
+  // The EasyStar grid answers "can stand here"; the height graph answers
+  // "which neighbor transitions are legal from here".
+  private extractHeightMapGrid() {
+    this.heightNavigationGraph = new HeightNavigationGraphBuilder(this.scene, this.tilemap).build(
+      this.easyStarNavigationGrid
+    );
+    this.heightMapGrid = this.heightNavigationGraph.cells;
+  }
+
+  private setDirectionalConditions(): void {
+    // For each tile, set directional conditions based on heightMapGrid
+    this.directionalConditions.clear(); // Clear previous conditions
+    for (let y = 0; y < this.heightMapGrid.length; y++) {
+      for (let x = 0; x < this.heightMapGrid[y]!.length; x++) {
+        const cell = this.heightMapGrid[y]![x]!;
+        if (!cell.isNavigable) continue;
+        const allowedDirections: Direction[] = [];
+
+        // Check all 8 directions
+        const directions: { dir: Direction; dx: number; dy: number; name: NavigablePathDirection }[] = [
+          { dir: TOP, dx: 0, dy: -1, name: NavigablePathDirection.Top },
+          { dir: BOTTOM, dx: 0, dy: 1, name: NavigablePathDirection.Bottom },
+          { dir: LEFT, dx: -1, dy: 0, name: NavigablePathDirection.Left },
+          { dir: RIGHT, dx: 1, dy: 0, name: NavigablePathDirection.Right },
+          { dir: TOP_LEFT, dx: -1, dy: -1, name: NavigablePathDirection.TopLeft },
+          { dir: TOP_RIGHT, dx: 1, dy: -1, name: NavigablePathDirection.TopRight },
+          { dir: BOTTOM_LEFT, dx: -1, dy: 1, name: NavigablePathDirection.BottomLeft },
+          { dir: BOTTOM_RIGHT, dx: 1, dy: 1, name: NavigablePathDirection.BottomRight }
+        ];
+
+        const checkDirection = (dir: Direction, dx: number, dy: number) => {
+          const nx = x + dx;
+          const ny = y + dy;
+          if (ny >= 0 && ny < this.heightMapGrid.length && nx >= 0 && nx < this.heightMapGrid[ny]!.length) {
+            if (this.canTraverseBetween({ x, y }, { x: nx, y: ny })) allowedDirections.push(dir);
+          }
+        };
+
+        directions.forEach(({ dir, dx, dy }) => {
+          checkDirection(dir, dx, dy);
+        });
+
+        this.easyStar.setDirectionalCondition(x, y, allowedDirections);
+        if (this.DEBUG_CLICK_INFO && !environment.production) {
+          this.directionalConditions.set(`${x}_${y}`, allowedDirections); // Store for debug
+        }
+      }
+    }
+  }
+
+  /**
+   * Returns the static height-graph cell for a tile, including whether it is
+   * navigable, which height layer it belongs to, and which directed ports it exposes.
+   * @param tile Logical tile coordinates in the navigation grid.
+   */
+  private getNavigationCell(tile: Vector2Simple): HeightNavigationCell | undefined {
+    return this.heightMapGrid[tile.y]?.[tile.x];
+  }
+
+  /**
+   * Returns the directed exits that are valid from this tile according to the
+   * current height graph. Debug tools use this to explain missing connections.
+   * @param tile Logical tile coordinates in the navigation grid.
+   */
+  private getAllowedDirectionsAtTile(tile: Vector2Simple): NavigablePathDirection[] {
+    const edges = this.heightNavigationGraph?.edgesByTileKey.get(`${tile.x},${tile.y}`) ?? [];
+    return edges.map((edge) => edge.direction);
+  }
+
+  /**
+   * Checks whether the static height graph contains a directed edge from one
+   * tile to the next. This is stricter than "both tiles are navigable".
+   * @param from Source tile.
+   * @param to Neighbor tile being tested as the directed destination.
+   */
+  private canTraverseBetween(from: Vector2Simple, to: Vector2Simple): boolean {
+    const edges = this.heightNavigationGraph?.edgesByTileKey.get(`${from.x},${from.y}`) ?? [];
+    return edges.some((edge) => edge.to.x === to.x && edge.to.y === to.y);
+  }
+
+  /**
+   * Public read-only wrapper for the static height-graph traversal rule.
+   * Callers that need to make one-off movement decisions should reuse the
+   * graph-owned edge test instead of reimplementing direction checks.
+   */
+  canTraverseBetweenTiles(from: Vector2Simple, to: Vector2Simple): boolean {
+    return this.canTraverseBetween(from, to);
+  }
+
+  /**
+   * Returns the traversable connected component starting at startTile.
+   * sameHeightOnly is used by formation assignment so groups prefer one
+   * elevated platform before spilling onto connected lower/higher tiles.
+   * @param startTile Tile where the graph walk starts.
+   * @param options Optional same-height and traversal-limit settings.
+   */
+  getConnectedNavigableTiles(
+    startTile: Vector2Simple,
+    options: { sameHeightOnly?: boolean; maxTiles?: number } = {}
+  ): Vector2Simple[] {
+    const startCell = this.getNavigationCell(startTile);
+    if (!startCell?.isNavigable || !this.heightNavigationGraph) return [];
+
+    const sameHeightOnly = options.sameHeightOnly ?? false;
+    const maxTiles = options.maxTiles ?? 64;
+    const result: Vector2Simple[] = [];
+    const visited = new Set<string>();
+    const queue: Vector2Simple[] = [{ x: startTile.x, y: startTile.y }];
+    visited.add(`${startTile.x},${startTile.y}`);
+
+    while (queue.length > 0 && result.length < maxTiles) {
+      const current = queue.shift()!;
+      const currentCell = this.getNavigationCell(current);
+      if (!currentCell?.isNavigable) continue;
+      if (!sameHeightOnly || currentCell.navigableHeight === startCell.navigableHeight) {
+        result.push(current);
+      }
+
+      const edges = this.getSortedEdges(current);
+      for (const edge of edges) {
+        const key = `${edge.to.x},${edge.to.y}`;
+        if (visited.has(key)) continue;
+        const nextCell = this.getNavigationCell(edge.to);
+        if (!nextCell?.isNavigable) continue;
+        if (sameHeightOnly && nextCell.navigableHeight !== startCell.navigableHeight) continue;
+        visited.add(key);
+        queue.push({ x: edge.to.x, y: edge.to.y });
+      }
+    }
+
+    return result;
+  }
+
+  getHeightGraphDebugSnapshot(): HeightNavigationGraph | undefined {
+    return this.heightNavigationGraph;
+  }
+
+  private async findPath(fromTileXY: Vector2Simple, toTileXY: Vector2Simple): Promise<Vector2Simple[] | null> {
+    // Create cache key
+    const cacheKey = `${fromTileXY.x},${fromTileXY.y}->${toTileXY.x},${toTileXY.y}`;
+    const now = performance.now();
+
+    // Check cache
+    const cached = this.pathCache.get(cacheKey);
+    if (cached && now - cached.timestamp < PATH_CACHE_TTL_MS) {
+      return cached.path;
+    }
+
+    return new Promise((resolve) => {
+      this.easyStar.findPath(fromTileXY.x, fromTileXY.y, toTileXY.x, toTileXY.y, (path) => {
+        const result = !path ? null : path.length === 0 ? [] : path;
+
+        if (this.DEBUG && result) {
+          this.drawDebugPath(result);
+        }
+
+        // Cache the result
+        this.pathCache.set(cacheKey, { path: result, timestamp: now });
+
+        // Periodically clean up old cache entries
+        if (this.pathCache.size > 1000) {
+          this.cleanPathCache(now);
+        }
+
+        resolve(result);
+      });
+      this.easyStar.calculate();
+    });
+  }
+
+  /**
+   * Runs a one-off EasyStar path query against a caller-supplied overlay grid.
+   * This is used for dynamic blocker recovery so temporary occupancy can block
+   * tiles without mutating the shared cached navigation grid.
+   * @param fromTileXY Start tile for the path query.
+   * @param toTileXY Destination tile for the path query.
+   * @param navigationGrid Temporary blocked/unblocked overlay grid.
+   * @param useHeightGraphDirections Whether to enforce directed height transitions.
+   */
+  private async findPathWithGrid(
+    fromTileXY: Vector2Simple,
+    toTileXY: Vector2Simple,
+    navigationGrid: number[][],
+    useHeightGraphDirections: boolean
+  ): Promise<Vector2Simple[] | null> {
+    const easyStar = new EasyStar();
+    easyStar.setGrid(navigationGrid);
+    easyStar.setAcceptableTiles([0]);
+    easyStar.enableDiagonals();
+    if (useHeightGraphDirections) {
+      // Reapply static directed height edges against this temporary grid so
+      // dynamic blockers cannot re-enable invalid wall/stairs transitions.
+      this.setDirectionalConditionsForEasyStar(easyStar, navigationGrid);
+    }
+    return new Promise((resolve) => {
+      easyStar.findPath(fromTileXY.x, fromTileXY.y, toTileXY.x, toTileXY.y, (path) => {
+        resolve(!path ? null : path.length === 0 ? [] : path);
+      });
+      easyStar.calculate();
+    });
+  }
+
+  /**
+   * Finds a path for one actor while overlaying transient occupancy blockers on
+   * top of the static terrain grid. Height-graph directions are still enforced,
+   * so congestion handling cannot invent invalid wall or stairs transitions.
+   * @param gameObject Actor requesting the path.
+   * @param toTile Requested destination tile.
+   * @param dynamicBlockers Temporary occupancy blockers to overlay for this query.
+   */
+  async findPathFromGameObjectToTileAvoidingDynamicBlockers(
+    gameObject: Phaser.GameObjects.GameObject,
+    toTile: Vector2Simple,
+    dynamicBlockers: MovementDynamicBlocker[]
+  ): Promise<Vector2Simple[] | null> {
+    const fromTile = getCenterTileCoordUnderObject(this.tilemap, gameObject);
+    if (!fromTile) return [];
+    const terrainType = this.getUnitTerrainType(gameObject);
+    if (terrainType === MovementTerrainType.Water) return this.findPathForTerrain(fromTile, toTile, terrainType);
+
+    // Dynamic blockers are overlaid only for this request. The cached/static
+    // navigation grid remains unchanged, so one actor's congestion recovery
+    // cannot poison normal pathfinding for everyone else.
+    const blockedKeys = this.getDynamicBlockedTileKeys(dynamicBlockers, fromTile, toTile);
+    const grid = this.easyStarNavigationGrid.map((row, y) =>
+      row.map((tile, x) => (blockedKeys.has(`${x},${y}`) ? 1 : tile))
+    );
+    return this.findPathWithGrid(fromTile, toTile, grid, true);
+  }
+
+  /**
+   * Converts dynamic occupancy entries into tile keys that can be painted onto
+   * a temporary pathfinding grid for a single query.
+   * @param dynamicBlockers Temporary occupancy blockers with their height layers.
+   * @param fromTile The querying actor's current tile, which stays passable.
+   * @param toTile The requested destination tile, which also stays passable.
+   */
+  private getDynamicBlockedTileKeys(
+    dynamicBlockers: MovementDynamicBlocker[],
+    fromTile: Vector2Simple,
+    toTile: Vector2Simple
+  ): Set<string> {
+    return getDynamicBlockedTileKeysForHeightGraph(
+      dynamicBlockers,
+      (tile) => this.getNavigationCell(tile)?.navigableHeight,
+      fromTile,
+      toTile
+    );
+  }
+
+  private cleanPathCache(now: number = performance.now()): void {
+    for (const [key, value] of this.pathCache.entries()) {
+      if (now - value.timestamp >= PATH_CACHE_TTL_MS) {
+        this.pathCache.delete(key);
+      }
+    }
+  }
+
+  private extractTilemapGrid() {
+    const tileMapComponent = getSceneComponent(this.scene, TilemapComponent);
+    if (!tileMapComponent) throw new Error("TilemapComponent not found");
+    const data = tileMapComponent.data;
+    // Ground grid: block navigationRestriction tiles AND water terrain tiles
+    this.tilemapGrid = TerrainGridBuilder.buildGroundGrid(data);
+    // Water grid: only water terrain tiles are navigable
+    this.waterNavHelper.setup(data);
+  }
+
+  /**
+   * Undefined by default
+   * 0 for navigable
+   * 1 for blocked
+   */
+  private extractGridFromObjects(): (number | undefined)[][] {
+    const emptyGrid: (number | undefined)[][] = this.tilemapGrid.map((row) => row.map(() => undefined));
+
+    const tileIndexesUnderColliders = this.getTileIndexesUnderColliders();
+    const actualTilesUnderColliders = tileIndexesUnderColliders.map((tileIndex) =>
+      this.tilemap.getTileAt(tileIndex.x, tileIndex.y)
+    );
+    // tint tiles to red
+    actualTilesUnderColliders.forEach((tile) => {
+      if (!tile) return;
+      if (this.DEBUG) tile.tint = 0xff0000;
+      this.setObjectGridTile(emptyGrid, tile, 1);
+    });
+
+    const navigables = this.getTileIndexesForNavigables();
+    const actualNavigableTiles = navigables.map((tileIndex) => this.tilemap.getTileAt(tileIndex.x, tileIndex.y));
+    // tint tiles to green
+    actualNavigableTiles.forEach((tile) => {
+      if (!tile) return;
+      if (this.DEBUG) tile.tint = 0x00ff00;
+      this.setObjectGridTile(emptyGrid, tile, 0);
+    });
+
+    return emptyGrid;
+  }
+
+  private setObjectGridTile(objectGrid: (number | undefined)[][], tile: Phaser.Tilemaps.Tile, value: number): void {
+    const row = objectGrid[tile.y];
+    if (!row || tile.x < 0 || tile.x >= row.length) return;
+    row[tile.x] = value;
+  }
+
+  /**
+   * Returns all tile indexes under colliders
+   */
+  private getTileIndexesUnderColliders(): Vector2Simple[] {
+    const colliders: Vector2Simple[] = [];
+    this.scene.children.each((child) => {
+      const colliderComponent = getActorComponent(child, ColliderComponent);
+      if (!colliderComponent) return;
+      if (!colliderComponent.colliderDefinition?.enabled) return;
+      const tilesUnderObject = getTileCoordsUnderObject(this.tilemap, child);
+      colliders.push(...tilesUnderObject);
+    });
+    return colliders;
+  }
+
+  /**
+   * Returns all tile indexes under navigables (bridge, stairs, etc.)
+   */
+  private getTileIndexesForNavigables(): Vector2Simple[] {
+    const navigables: Vector2Simple[] = [];
+    this.scene.children.each((child) => {
+      const navigableComponent = getActorComponent(child, NavigableComponent);
+      if (!navigableComponent) return;
+      const tilesUnderObject: Vector2Simple[] = getTileCoordsUnderObject(this.tilemap, child);
+      if (tilesUnderObject.length === 0) return;
+      const { shrinkX, shrinkY } = NavigableComponent.handleNavigable(child);
+
+      const minX = Math.min(...tilesUnderObject.map((tile) => tile.x));
+      const maxX = Math.max(...tilesUnderObject.map((tile) => tile.x));
+      const minY = Math.min(...tilesUnderObject.map((tile) => tile.y));
+      const maxY = Math.max(...tilesUnderObject.map((tile) => tile.y));
+      const shrinkedTiles = tilesUnderObject.filter((tile) => {
+        const x = tile.x;
+        const y = tile.y;
+        const isShrinkedX = x >= minX + shrinkX && x <= maxX - shrinkX;
+        const isShrinkedY = y >= minY + shrinkY && y <= maxY - shrinkY;
+        return isShrinkedX && isShrinkedY;
+      });
+
+      navigables.push(...shrinkedTiles);
+    });
+    return navigables;
+  }
+
+  private setupNavigation() {
+    this.easyStar.setGrid(this.easyStarNavigationGrid);
+    this.easyStar.setAcceptableTiles([0]);
+    this.easyStar.enableDiagonals();
+    this.setDirectionalConditions();
+  }
+
+  /**
+   * Mirrors the static height graph into an EasyStar instance. Callers can pass
+   * an overlay grid so a path query keeps the same directional rules while also
+   * honoring temporary blocked tiles.
+   * @param easyStar The pathfinder instance being configured for one query.
+   * @param navigationGrid The blocked/unblocked grid that limits destination tiles.
+   */
+  private setDirectionalConditionsForEasyStar(easyStar: EasyStar, navigationGrid: number[][]): void {
+    for (let y = 0; y < navigationGrid.length; y++) {
+      for (let x = 0; x < navigationGrid[y]!.length; x++) {
+        if (navigationGrid[y]![x] !== 0) continue;
+        // Only edges that exist in the height graph and whose destination tile
+        // stays unblocked in this overlay grid are exposed to EasyStar.
+        const allowedDirections = this.getSortedEdges({ x, y })
+          .filter((edge) => navigationGrid[edge.to.y]?.[edge.to.x] === 0)
+          .map((edge) => this.toEasyStarDirection(edge.direction));
+        easyStar.setDirectionalCondition(x, y, allowedDirections);
+      }
+    }
+  }
+
+  private getSortedEdges(tile: Vector2Simple): HeightNavigationEdge[] {
+    const edges = this.heightNavigationGraph?.edgesByTileKey.get(`${tile.x},${tile.y}`) ?? [];
+    return [...edges].sort((a, b) => {
+      const directionDelta = this.getDirectionSortIndex(a.direction) - this.getDirectionSortIndex(b.direction);
+      if (directionDelta !== 0) return directionDelta;
+      if (a.to.y !== b.to.y) return a.to.y - b.to.y;
+      return a.to.x - b.to.x;
+    });
+  }
+
+  private getDirectionSortIndex(direction: NavigablePathDirection): number {
+    return HEIGHT_NAVIGATION_DIRECTIONS.findIndex((entry) => entry.direction === direction);
+  }
+
+  private toEasyStarDirection(direction: NavigablePathDirection): Direction {
+    switch (direction) {
+      case NavigablePathDirection.Top:
+        return TOP;
+      case NavigablePathDirection.Bottom:
+        return BOTTOM;
+      case NavigablePathDirection.Left:
+        return LEFT;
+      case NavigablePathDirection.Right:
+        return RIGHT;
+      case NavigablePathDirection.TopLeft:
+        return TOP_LEFT;
+      case NavigablePathDirection.TopRight:
+        return TOP_RIGHT;
+      case NavigablePathDirection.BottomLeft:
+        return BOTTOM_LEFT;
+      case NavigablePathDirection.BottomRight:
+        return BOTTOM_RIGHT;
+    }
+  }
+
+  private throttleUpdateNavigation = throttleWithTrailing(this.updateNavigation.bind(this), 100);
+
+  private updateNavigation() {
+    this.setup();
+    // Clear both the distance cache and path cache when navigation grid changes
+    DistanceHelper.clearNavigationCache();
+    this.pathCache.clear();
+    this.waterNavHelper.clearCache();
+  }
+
+  /**
+   * Uses navigation easyStarNavigationGrid to find a random tile that can be navigated to from the current tile within the radius of current tile
+   */
+  async randomTileInNavigableRadius(
+    currentTile: Vector2Simple,
+    radiusFromCurrentTile: number,
+    terrainType: MovementTerrainType = MovementTerrainType.Ground
+  ): Promise<Vector2Simple | null> {
+    // 1. Get a list of valid tile coordinates within the radius
+    const validTiles = this.validTilesInRadiusOfCurrentTile(currentTile, radiusFromCurrentTile, true, terrainType);
+
+    // 2. Ensure there are valid tiles within the radius
+    if (validTiles.length === 0) {
+      return null;
+    }
+
+    // 3. Randomly pick tiles until a reachable one within the radius is found
+    let attempts = 0;
+    const maxAttempts = validTiles.length; // Limit attempts to prevent infinite loops
+    while (attempts < maxAttempts) {
+      const randomIndex = this.randomService.between(0, validTiles.length - 1);
+      // Use the same sampled index for selection and removal to keep RNG progression deterministic.
+      const tile = validTiles[randomIndex]!;
+
+      // Check path to the random tile
+      const path = await this.findPathForTerrain(currentTile, tile, terrainType);
+
+      if (path) {
+        // Calculate path length based on XY distances:
+        const sumPathLengthByXY = path.reduce((sum, node, index) => {
+          const previousNode = index === 0 ? currentTile : path[index - 1]; // Use currentTile as the "previous" for the first node
+          if (!previousNode) return sum;
+          const dx = Math.abs(node.x - previousNode.x);
+          const dy = Math.abs(node.y - previousNode.y);
+          // If diagonal movement is allowed, count diagonal steps as 1.414 tiles (approximate square root of 2)
+          const diagonalCost = Math.sqrt(2); // Precalculate for efficiency
+          const distance = dx + dy + (dx * dy === 1 ? diagonalCost - 2 : 0);
+          return sum + distance;
+        }, 0);
+
+        if (path.length > 0 && sumPathLengthByXY <= radiusFromCurrentTile) {
+          return tile; // Reachable tile within radius found, return it
+        }
+      }
+
+      attempts++;
+      validTiles.splice(randomIndex, 1); // Remove non-reachable or out-of-radius tile
+    }
+
+    // all attempts failed
+    return null;
+  }
+
+  public randomTileInRadius(currentTile: Vector2Simple, radiusTiles: number): Vector2Simple | undefined {
+    // 1. Get a list of valid tile coordinates within the radius
+    const validTiles = this.validTilesInRadiusOfCurrentTile(currentTile, radiusTiles, true);
+
+    // 2. Ensure there are valid tiles within the radius
+    if (validTiles.length === 0) {
+      return;
+    }
+
+    // 3. Randomly pick tiles until a reachable one within the radius is found
+    const randomIndex = this.randomService.between(0, validTiles.length - 1);
+    return validTiles[randomIndex];
+  }
+
+  /**
+   * respects blocked tiles under object plus radius around them
+   */
+  public closestNavigableTileBetweenGameObjectsInRadius(
+    gameObject: Phaser.GameObjects.GameObject,
+    destinationGameObject: Phaser.GameObjects.GameObject,
+    radiusTiles?: number
+  ): Vector2Simple | undefined {
+    const fromTile = getCenterTileCoordUnderObject(this.tilemap, gameObject);
+    if (!fromTile) return undefined;
+
+    const terrainType = this.getUnitTerrainType(gameObject);
+    const isNavigable = !!getActorComponent(destinationGameObject, NavigableComponent);
+    const shouldMoveOntoNavigableTarget = isNavigable && (radiusTiles === undefined || radiusTiles <= 0);
+    const targetTiles = getTileCoordsUnderObject(this.tilemap, destinationGameObject);
+
+    let closestNavigableTile;
+    if (shouldMoveOntoNavigableTarget) {
+      // Direct move orders for navigable structures still route onto the
+      // structure itself. Range-limited queries must not bypass the radius and
+      // therefore use the blocked-footprint search below instead.
+      const destinationTile = getCenterTileCoordUnderObject(this.tilemap, destinationGameObject);
+      if (!destinationTile) return undefined;
+      closestNavigableTile = destinationTile;
+      if (this.DEBUG_OBJECT_TARGET_PATHS) {
+        console.log(
+          `[NavigableTargetSelection] actor=${gameObject.name} target=${destinationGameObject.name} ` +
+            `from=${fromTile.x},${fromTile.y} destination=${destinationTile.x},${destinationTile.y} ` +
+            `targetTiles=[${targetTiles.map((tile) => `${tile.x},${tile.y}`).join(";")}] ` +
+            `radius=${radiusTiles ?? "-"} navigable=${isNavigable}`
+        );
+      }
+    } else {
+      // Range-limited object queries answer "which reachable tile gets me within
+      // radius of this footprint?" even when the target structure itself is
+      // navigable.
+      // noinspection UnnecessaryLocalVariableJS
+      closestNavigableTile = this.getClosestNavigableTileAroundBlockedTilesInRadius(
+        fromTile,
+        targetTiles,
+        radiusTiles,
+        terrainType
+      );
+    }
+
+    const targetCenterTile = getCenterTileCoordUnderObject(this.tilemap, destinationGameObject);
+    if (this.DEBUG_OBJECT_TARGET_PATHS) {
+      console.log(
+        `[ObjectTargetTileChoice] actor=${gameObject.name} target=${destinationGameObject.name} ` +
+          `from=${fromTile.x},${fromTile.y} chosen=${closestNavigableTile?.x ?? "?"},${closestNavigableTile?.y ?? "?"} ` +
+          `center=${targetCenterTile?.x ?? "?"},${targetCenterTile?.y ?? "?"} ` +
+          `targetTiles=[${targetTiles.map((tile) => `${tile.x},${tile.y}`).join(";")}] ` +
+          `radius=${radiusTiles ?? "-"} navigable=${isNavigable}`
+      );
+    }
+
+    return closestNavigableTile; // Return the closest navigable tile if found, or undefined
+  }
+
+  /**
+   * Doesn't respect blocked tiles under object
+   */
+  private validTilesInRadiusOfCurrentTile(
+    currentTile: Vector2Simple,
+    radiusTiles: number,
+    navigable: boolean = false,
+    terrainType: MovementTerrainType = MovementTerrainType.Ground
+  ): Vector2Simple[] {
+    if (terrainType === MovementTerrainType.Water) {
+      return this.waterNavHelper.getNavigableTilesInRadius(currentTile, radiusTiles);
+    }
+    // 1. Get a list of valid tile coordinates within the radius
+    const validTiles: Vector2Simple[] = [];
+    for (let y = currentTile.y - radiusTiles; y <= currentTile.y + radiusTiles; y++) {
+      for (let x = currentTile.x - radiusTiles; x <= currentTile.x + radiusTiles; x++) {
+        const firstVal = this.easyStarNavigationGrid[0];
+        if (!firstVal) continue;
+        // Ensure coordinates are within easyStarNavigationGrid bounds
+        if (0 <= x && x < firstVal.length && 0 <= y && y < this.easyStarNavigationGrid.length) {
+          if (navigable) {
+            if (this.easyStarNavigationGrid[y]?.[x] === 0) {
+              validTiles.push({ x, y });
+            }
+          } else {
+            validTiles.push({ x, y });
+          }
+        }
+      }
+    }
+
+    return validTiles;
+  }
+
+  /** Reads the MovementTerrainType from a gameObject's ActorTranslateComponent definition. */
+  private getUnitTerrainType(gameObject: Phaser.GameObjects.GameObject): MovementTerrainType {
+    const translate = getActorComponent(gameObject, ActorTranslateComponent);
+    return translate?.actorTranslateDefinition.movementTerrainType ?? MovementTerrainType.Ground;
+  }
+
+  /** Routes pathfinding to the correct grid based on the unit's terrain type. */
+  private findPathForTerrain(
+    from: Vector2Simple,
+    to: Vector2Simple,
+    terrainType: MovementTerrainType
+  ): Promise<Vector2Simple[] | null> {
+    if (terrainType === MovementTerrainType.Water) return this.waterNavHelper.findPath(from, to);
+    return this.findPath(from, to);
+  }
+
+  /**
+   * Returns a path from the current tile under the gameObject to the target tile
+   */
+  findPathFromGameObjectToTile(
+    gameObject: Phaser.GameObjects.GameObject,
+    toTile: Vector2Simple
+  ): Promise<Vector2Simple[] | null> {
+    const currentTile = getCenterTileCoordUnderObject(this.tilemap, gameObject);
+    if (!currentTile) return Promise.resolve([]);
+    const terrainType = this.getUnitTerrainType(gameObject);
+    return this.findPathForTerrain(currentTile, toTile, terrainType);
+  }
+
+  async findPathBetweenGameObjects(
+    gameObject: Phaser.GameObjects.GameObject,
+    targetGameObject: Phaser.GameObjects.GameObject,
+    radiusTiles: number | undefined = undefined
+  ): Promise<Vector2Simple[] | null> {
+    return this.findAndUseNavigablePathBetweenGameObjectsWithRadius(gameObject, targetGameObject, radiusTiles);
+  }
+
+  async findPathBetweenTiles(fromTile: Vector2Simple, toTile: Vector2Simple): Promise<Vector2Simple[] | null> {
+    return this.findPath(fromTile, toTile);
+  }
+
+  getCenterTileCoordUnderObject(gameObject: Phaser.GameObjects.GameObject): Vector2Simple | undefined {
+    return getCenterTileCoordUnderObject(this.tilemap, gameObject);
+  }
+
+  /**
+   * Finds a path from the gameObject to the targetGameObject within the specified radius.
+   * Respects blocked tiles under the targetGameObject.
+   */
+  public async findAndUseNavigablePathBetweenGameObjectsWithRadius(
+    gameObject: Phaser.GameObjects.GameObject,
+    targetGameObject: Phaser.GameObjects.GameObject,
+    radiusTiles?: number
+  ): Promise<Vector2Simple[] | null> {
+    if (!isGameObjectActiveInActiveScene(gameObject) || !isGameObjectActiveInActiveScene(targetGameObject)) {
+      return null;
+    }
+
+    const fromTile = getCenterTileCoordUnderObject(this.tilemap, gameObject);
+    if (!fromTile) return null;
+
+    // Step 2: Find the closest navigable tile around the building within the radius.
+    // The target object's own footprint stays blocked; callers move beside it,
+    // not into the occupied structure tiles.
+    const closestNavigableTile = this.closestNavigableTileBetweenGameObjectsInRadius(
+      gameObject,
+      targetGameObject,
+      radiusTiles
+    );
+
+    if (!closestNavigableTile) {
+      return null; // Return an empty array if no navigable tile was found
+    }
+
+    // Step 3: Use EasyStar to find the path to the closest navigable tile
+    const terrainType = this.getUnitTerrainType(gameObject);
+    const path = await this.findPathForTerrain(fromTile, closestNavigableTile, terrainType);
+    if (this.DEBUG_OBJECT_TARGET_PATHS) {
+      const centerTile = getCenterTileCoordUnderObject(this.tilemap, targetGameObject);
+      const pathString = path ? path.map((tile) => `${tile.x},${tile.y}`).join(" -> ") : "null";
+      console.log(
+        `[ObjectTargetPath] actor=${gameObject.name} target=${targetGameObject.name} ` +
+          `from=${fromTile.x},${fromTile.y} chosen=${closestNavigableTile.x},${closestNavigableTile.y} ` +
+          `center=${centerTile?.x ?? "?"},${centerTile?.y ?? "?"} ` +
+          `targetTiles=[${getTileCoordsUnderObject(this.tilemap, targetGameObject)
+            .map((tile) => `${tile.x},${tile.y}`)
+            .join(";")}] path=${pathString}`
+      );
+    }
+    if (!path) {
+      this.logMissingObjectTargetPath(gameObject, targetGameObject, fromTile, closestNavigableTile);
+    }
+    return path;
+  }
+
+  private logMissingObjectTargetPath(
+    gameObject: Phaser.GameObjects.GameObject,
+    targetGameObject: Phaser.GameObjects.GameObject,
+    fromTile: Vector2Simple,
+    targetTile: Vector2Simple
+  ): void {
+    if (!this.DEBUG_OBJECT_TARGET_PATHS) return;
+    const targetObjectTiles = getTileCoordsUnderObject(this.tilemap, targetGameObject);
+    const nearbyNavigables = this.scene.children.list
+      .filter((child) => !!getActorComponent(child, NavigableComponent))
+      .map((child) => ({
+        name: child.name,
+        center: getCenterTileCoordUnderObject(this.tilemap, child),
+        tiles: getTileCoordsUnderObject(this.tilemap, child)
+      }))
+      .filter(
+        (entry) =>
+          entry.center &&
+          (entry.tiles.some((tile) => tile.x === fromTile.x && tile.y === fromTile.y) ||
+            (Math.abs(entry.center.x - fromTile.x) <= 2 && Math.abs(entry.center.y - fromTile.y) <= 2) ||
+            (Math.abs(entry.center.x - targetTile.x) <= 2 && Math.abs(entry.center.y - targetTile.y) <= 2))
+      )
+      .sort((a, b) => {
+        const aCenter = a.center!;
+        const bCenter = b.center!;
+        if (aCenter.y !== bCenter.y) return aCenter.y - bCenter.y;
+        return aCenter.x - bCenter.x;
+      });
+
+    const nearbySummary = nearbyNavigables
+      .map((entry) => {
+        const center = entry.center!;
+        const cell = this.getNavigationCell(center);
+        const dirs = this.getAllowedDirectionsAtTile(center).join("|") || "-";
+        const tiles = entry.tiles.map((tile) => `${tile.x},${tile.y}`).join(";");
+        return `${entry.name}@${center.x},${center.y} tiles=[${tiles}] h=${cell?.navigableHeight ?? "?"} dirs=[${dirs}]`;
+      })
+      .join(" || ");
+
+    const fromCell = this.getNavigationCell(fromTile);
+    const targetCell = this.getNavigationCell(targetTile);
+    const fromDirs = this.getAllowedDirectionsAtTile(fromTile).join("|") || "-";
+    const targetDirs = this.getAllowedDirectionsAtTile(targetTile).join("|") || "-";
+
+    const adjacentChecks = HEIGHT_NAVIGATION_DIRECTIONS.map(({ direction, dx, dy }) => {
+      const candidate = { x: fromTile.x + dx, y: fromTile.y + dy };
+      return `${direction}:${candidate.x},${candidate.y}=${this.canTraverseBetween(fromTile, candidate)}`;
+    }).join(" ");
+
+    console.log(
+      `[MissingObjectTargetPath] actor=${gameObject.name} from=${fromTile.x},${fromTile.y} ` +
+        `target=${targetGameObject.name} targetTile=${targetTile.x},${targetTile.y} ` +
+        `targetTiles=[${targetObjectTiles.map((tile) => `${tile.x},${tile.y}`).join(";")}] ` +
+        `fromCell=h${fromCell?.navigableHeight ?? "?"}/dirs[${fromDirs}] ` +
+        `targetCell=h${targetCell?.navigableHeight ?? "?"}/dirs[${targetDirs}] ` +
+        `fromAdjacent={${adjacentChecks}} nearby={${nearbySummary || "-"}}`
+    );
+  }
+
+  private getClosestNavigableTileAroundBlockedTilesInRadius(
+    fromTile: Vector2Simple,
+    blockedTiles: Vector2Simple[],
+    radiusTiles: number = 6, // Default radius if not specified
+    terrainType: MovementTerrainType = MovementTerrainType.Ground
+  ): Vector2Simple | undefined {
+    const navigableTiles: Set<string> = new Set(); // Use Set to avoid duplicates
+
+    // Step 1: Loop through each blocked tile
+    blockedTiles.forEach((blockedTile) => {
+      // Loop through the surrounding tiles within the specified radius
+      for (let dx = -radiusTiles; dx <= radiusTiles; dx++) {
+        for (let dy = -radiusTiles; dy <= radiusTiles; dy++) {
+          // Calculate the neighboring tile coordinates
+          const neighbor: Vector2Simple = { x: blockedTile.x + dx, y: blockedTile.y + dy };
+
+          // Check if the neighbor is within easyStarNavigationGrid bounds, navigable, and within radius
+          if (
+            this.isWithinGridBounds(neighbor, terrainType) &&
+            this.isTileNavigable(neighbor, terrainType) &&
+            Math.abs(dx) + Math.abs(dy) <= radiusTiles // Use Manhattan distance
+          ) {
+            // Use a string representation to store the tile in the Set
+            navigableTiles.add(`${neighbor.x},${neighbor.y}`);
+          }
+        }
+      }
+    });
+
+    // Convert Set to an array of Vector2Simple
+    const navigableTilesArray = Array.from(navigableTiles).map((tile) => {
+      const [x, y] = tile.split(",").map(Number);
+      return { x: x!, y: y! };
+    });
+
+    // Step 2: Find the closest navigable tile to the fromTile
+    if (navigableTilesArray.length === 0) {
+      // console.warn("No navigable tiles found around the blocked tiles.");
+      return undefined;
+    }
+
+    // Sort the navigable tiles based on distance to fromTile
+    navigableTilesArray.sort((a, b) => this.compareTilesByDistanceThenCoordinates(a, b, fromTile));
+
+    return navigableTilesArray[0]!; // Return the closest tile
+  }
+
+  isWithinGridBounds(tile: Vector2Simple, terrainType: MovementTerrainType = MovementTerrainType.Ground): boolean {
+    if (terrainType === MovementTerrainType.Water) return this.waterNavHelper.isWithinBounds(tile);
+    const firstRow = this.easyStarNavigationGrid[0];
+    if (!firstRow) return false;
+    return tile.x >= 0 && tile.x < firstRow.length && tile.y >= 0 && tile.y < this.easyStarNavigationGrid.length;
+  }
+
+  public isTileNavigable(tile: Vector2Simple, terrainType: MovementTerrainType = MovementTerrainType.Ground): boolean {
+    if (terrainType === MovementTerrainType.Water) return this.waterNavHelper.isTileNavigable(tile);
+    return this.easyStarNavigationGrid[tile.y]?.[tile.x] === 0; // Check if the tile is navigable (0 means navigable)
+  }
+
+  public isTileGridWithoutBlockingObjectsNavigable(tile: Vector2Simple): boolean {
+    return this.tilemapGrid[tile.y]?.[tile.x] === 0; // Check if the tile is navigable in the base tilemap grid
+  }
+
+  private getTileDistance(tile1: Vector2Simple, tile2: Vector2Simple): number {
+    const dx = tile1.x - tile2.x;
+    const dy = tile1.y - tile2.y;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+
+  private compareTilesByDistanceThenCoordinates(
+    a: Vector2Simple,
+    b: Vector2Simple,
+    referenceTile: Vector2Simple
+  ): number {
+    const distanceDelta = this.getTileDistance(a, referenceTile) - this.getTileDistance(b, referenceTile);
+    if (distanceDelta !== 0) {
+      return distanceDelta;
+    }
+    // Deterministic tie-break for equal-distance tiles.
+    if (a.y !== b.y) {
+      return a.y - b.y;
+    }
+    return a.x - b.x;
+  }
+
+  private destroy() {
+    this.scene?.events.off(NavigationService.UpdateNavigationEvent, this.throttleUpdateNavigation, this);
+    this.pathCache.clear();
+  }
+
+  getTerrainUnderActor(gameObject: Phaser.GameObjects.GameObject): TerrainType | undefined {
+    const tilesUnderActor = getTileCoordsUnderObject(this.tilemap, gameObject);
+    for (const tile of tilesUnderActor) {
+      const tileData = this.tilemap.getTileAt(tile.x, tile.y);
+      const terrainType = tileData?.properties.terrainType;
+      if (terrainType && this.terrainTypes.includes(terrainType)) {
+        return terrainType as TerrainType;
+      }
+    }
+
+    // Walkable prefabs can replace non-navigable map tiles (for example a bridge
+    // over water). They are a solid surface for movement audio when no terrain
+    // tile supplies a terrain type.
+    if (tilesUnderActor.some((tile) => this.getNavigationCell(tile)?.navigableComponent)) {
+      return TerrainType.Stone;
+    }
+
+    return undefined;
+  }
+
+  /**
+   * Gets the navigable height at a specific tile position.
+   * Returns the height (in px) at which units should stand when on this tile.
+   * @param tile The tile coordinates to check
+   * @returns The navigable height in pixels, or 0 if tile is out of bounds or not available
+   */
+  public getNavigableHeightAtTile(tile: Vector2Simple): number {
+    // Validate Y coordinate and row existence
+    const row = this.heightMapGrid[tile.y];
+    if (!row || tile.y < 0) {
+      console.warn(`getNavigableHeightAtTile: tile Y coordinate ${tile.y} is out of bounds`);
+      return 0;
+    }
+    // Validate X coordinate
+    if (tile.x < 0 || tile.x >= row.length) {
+      console.warn(`getNavigableHeightAtTile: tile X coordinate ${tile.x} is out of bounds`);
+      return 0;
+    }
+    const cell = row[tile.x];
+    return cell?.navigableHeight ?? 0;
+  }
+
+  /**
+   * Gets all tiles currently occupied by actors (any game object with position)
+   */
+  private getOccupiedTilesByActors(): Set<string> {
+    const occupiedTiles = new Set<string>();
+
+    const actorsWithRepresentable = this.actorIndex
+      .getAllIdActors()
+      .filter((child) => getActorComponent(child, RepresentableComponent));
+    for (const actor of actorsWithRepresentable) {
+      const tiles = getTileCoordsUnderObject(this.tilemap, actor);
+      tiles.forEach(({ x, y }) => {
+        occupiedTiles.add(`${x},${y}`);
+      });
+    }
+
+    return occupiedTiles;
+  }
+
+  /**
+   * Finds the closest unoccupied and navigable tile to the given tile position that is also reachable via pathfinding.
+   * Unoccupied means no actor sits on the tile (regardless of collider).
+   * Similar to randomTileInNavigableRadius but returns the closest reachable unoccupied tile instead of random.
+   */
+  public async getClosestUnoccupiedTile(
+    targetTile: Vector2Simple,
+    maxRadius: number = 10,
+    terrainType: MovementTerrainType = MovementTerrainType.Ground
+  ): Promise<Vector2Simple | undefined> {
+    const occupiedTiles = this.getOccupiedTilesByActors();
+
+    // First check if the target tile itself is unoccupied and navigable
+    if (
+      this.isWithinGridBounds(targetTile, terrainType) &&
+      this.isTileNavigable(targetTile, terrainType) &&
+      !occupiedTiles.has(`${targetTile.x},${targetTile.y}`)
+    ) {
+      return targetTile; // Target tile is perfect, return it immediately
+    }
+
+    // Start from radius 1 and expand outward since radius 0 (target tile) was already checked
+    for (let radius = 1; radius <= maxRadius; radius++) {
+      const candidateTiles: Vector2Simple[] = [];
+
+      // Get all tiles in current radius ring
+      for (let dx = -radius; dx <= radius; dx++) {
+        for (let dy = -radius; dy <= radius; dy++) {
+          // Only check tiles on the edge of the current radius (Manhattan distance)
+          if (Math.abs(dx) + Math.abs(dy) !== radius) continue;
+
+          const candidate = { x: targetTile.x + dx, y: targetTile.y + dy };
+
+          // Check if tile is within bounds, navigable, and unoccupied
+          if (
+            this.isWithinGridBounds(candidate, terrainType) &&
+            this.isTileNavigable(candidate, terrainType) &&
+            !occupiedTiles.has(`${candidate.x},${candidate.y}`)
+          ) {
+            candidateTiles.push(candidate);
+          }
+        }
+      }
+
+      if (candidateTiles.length > 0) {
+        // Sort by Euclidean distance
+        candidateTiles.sort((a, b) => this.compareTilesByDistanceThenCoordinates(a, b, targetTile));
+
+        // Test each candidate tile for pathfinding reachability
+        for (const candidate of candidateTiles) {
+          const path = await this.findPathForTerrain(targetTile, candidate, terrainType);
+          if (path) {
+            // Calculate actual path length to ensure it's within radius
+            const pathLength = path.reduce((sum, node, index) => {
+              const previousNode = index === 0 ? targetTile : path[index - 1];
+              if (!previousNode) return sum;
+              const dx = Math.abs(node.x - previousNode.x);
+              const dy = Math.abs(node.y - previousNode.y);
+              // If diagonal movement is allowed, count diagonal steps as 1.414 tiles (approximate square root of 2)
+              const diagonalCost = Math.sqrt(2);
+              const distance = dx + dy + (dx * dy === 1 ? diagonalCost - 2 : 0);
+              return sum + distance;
+            }, 0);
+
+            if (path.length > 0 && pathLength <= maxRadius) {
+              return candidate; // Found reachable unoccupied tile within radius
+            }
+          }
+        }
+      }
+    }
+
+    return undefined;
+  }
+
+  /**
+   * Finds the nearest water tile to the given tile position (BFS outward).
+   * Used when spawning water units from land buildings.
+   */
+  public findNearestWaterTile(fromTile: Vector2Simple, maxRadius = 30): Vector2Simple | null {
+    return this.waterNavHelper.findNearestWaterTile(fromTile, maxRadius);
+  }
+
+  /** Returns true if the tile is a shore tile (water adjacent to land). */
+  public isShoreTile(tile: Vector2Simple): boolean {
+    return this.waterNavHelper.isShoreTile(tile);
+  }
+
+  /** BFS outward from `fromTile` to find the nearest shore tile. */
+  public findNearestShoreTile(fromTile: Vector2Simple, maxRadius = 30): Vector2Simple | null {
+    return this.waterNavHelper.findNearestShoreTile(fromTile, maxRadius);
+  }
+
+  /**
+   * Given a shore tile (the water-side tile adjacent to land), finds the nearest
+   * ground-navigable tile among its 8 neighbours so a land unit can stand at the water's edge.
+   * Returns null if no navigable ground neighbour exists.
+   */
+  public findGroundTileAdjacentToShoreTile(shoreTile: Vector2Simple): Vector2Simple | null {
+    const neighbors: Vector2Simple[] = [
+      { x: shoreTile.x, y: shoreTile.y - 1 },
+      { x: shoreTile.x, y: shoreTile.y + 1 },
+      { x: shoreTile.x - 1, y: shoreTile.y },
+      { x: shoreTile.x + 1, y: shoreTile.y },
+      { x: shoreTile.x - 1, y: shoreTile.y - 1 },
+      { x: shoreTile.x + 1, y: shoreTile.y - 1 },
+      { x: shoreTile.x - 1, y: shoreTile.y + 1 },
+      { x: shoreTile.x + 1, y: shoreTile.y + 1 }
+    ];
+    for (const n of neighbors) {
+      if (this.easyStarNavigationGrid[n.y]?.[n.x] === 0) return n;
+    }
+    return null;
+  }
+
+  /**
+   * Finds the unoccupied and navigable tile around the given game object.
+   * Searches in expanding radii up to maxRange for a truly free tile.
+   * Prefers tiles with higher y (bottom) and higher x (right), or towards targetTile if provided.
+   * If no free tile found within maxRange, allows placement on occupied tiles.
+   */
+  public getSpawnPointAroundGameObject(
+    gameObject: GameObjects.GameObject,
+    maxRange: number = 10,
+    targetTile?: Vector2Simple
+  ): Vector2Simple | undefined {
+    // Compute footprint bounds
+    const tiles = getTileCoordsUnderObject(this.tilemap, gameObject);
+    if (tiles.length === 0) return undefined;
+
+    const minX = Math.min(...tiles.map((t) => t.x));
+    const maxX = Math.max(...tiles.map((t) => t.x));
+    const minY = Math.min(...tiles.map((t) => t.y));
+    const maxY = Math.max(...tiles.map((t) => t.y));
+
+    const occupied = this.getOccupiedTilesByActors();
+
+    // Try progressively larger radii
+    for (let radius = 0; radius <= maxRange; radius++) {
+      const candidates: Vector2Simple[] = [];
+
+      const expandedMinX = minX - (radius === 0 ? 1 : radius);
+      const expandedMaxX = maxX + (radius === 0 ? 1 : radius);
+      const expandedMinY = minY - (radius === 0 ? 1 : radius);
+      const expandedMaxY = maxY + (radius === 0 ? 1 : radius);
+
+      // Collect all tiles in the perimeter of the current radius
+      for (let y = expandedMinY; y <= expandedMaxY; y++) {
+        for (let x = expandedMinX; x <= expandedMaxX; x++) {
+          // Skip tiles that are inside the object's footprint
+          if (radius === 0) {
+            // Include only the immediate surrounding tiles
+            if (x >= minX && x <= maxX && y >= minY && y <= maxY) continue;
+          } else {
+            // For larger radii, only include perimeter tiles
+            const isPerimeter = x === expandedMinX || x === expandedMaxX || y === expandedMinY || y === expandedMaxY;
+            if (!isPerimeter) continue;
+          }
+
+          candidates.push({ x, y });
+        }
+      }
+
+      // Sort candidates: prefer direction towards targetTile if provided, otherwise by position
+      if (targetTile) {
+        // Sort by distance to targetTile (closest first)
+        candidates.sort((a, b) => {
+          return this.compareTilesByDistanceThenCoordinates(a, b, targetTile);
+        });
+      } else {
+        // Sort by y descending (higher y first), then by x descending (higher x first)
+        candidates.sort((a, b) => {
+          if (a.y !== b.y) return b.y - a.y; // Higher y first
+          return b.x - a.x; // Higher x first
+        });
+      }
+
+      // Check candidates for this radius
+      const allowOccupied = radius > maxRange;
+      for (const c of candidates) {
+        if (!this.isWithinGridBounds(c)) continue;
+        if (!this.isTileNavigable(c)) continue;
+        if (!allowOccupied && occupied.has(`${c.x},${c.y}`)) continue;
+        return c;
+      }
+    }
+
+    return undefined;
+  }
+}

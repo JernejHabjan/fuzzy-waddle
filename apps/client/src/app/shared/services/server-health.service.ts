@@ -1,6 +1,6 @@
 import { computed, inject, Injectable, signal } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { environment } from "../../../environments/environment";
+import { environment } from "@fuzzy-waddle/environments/environment";
 import { firstValueFrom, timeout } from "rxjs";
 import type { ServerHealthServiceInterface } from "./server-health.service.interface";
 

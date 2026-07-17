@@ -1,7 +1,7 @@
 import { Component, inject, type OnInit } from "@angular/core";
 import { DatePipe } from "@angular/common";
 import { AuthService } from "../../auth/auth.service";
-import { environment } from "../../../environments/environment";
+import { environment } from "@fuzzy-waddle/environments/environment";
 import { ServerHealthService } from "../../shared/services/server-health.service";
 
 import { ChatFloatComponent } from "../chat/chat-float/chat-float.component";

@@ -1,7 +1,7 @@
 import type { HttpInterceptorFn } from "@angular/common/http";
 import { inject } from "@angular/core";
 import { AuthService } from "./auth.service";
-import { environment } from "../../environments/environment";
+import { environment } from "@fuzzy-waddle/environments/environment";
 import { from, switchMap } from "rxjs";
 
 export const authReadyInterceptor: HttpInterceptorFn = (req, next) => {

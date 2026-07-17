@@ -10,7 +10,7 @@ import {
   type GetMessagesResponseDto,
   type ReportChatMessageDto
 } from "@fuzzy-waddle/api-interfaces";
-import { environment } from "../../../environments/environment";
+import { environment } from "@fuzzy-waddle/environments/environment";
 
 @Injectable({
   providedIn: "root"

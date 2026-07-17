@@ -4,7 +4,7 @@ import { DataAccessService } from "../data-access/data-access.service";
 import { type AuthServiceInterface } from "./auth.service.interface";
 import { isTauri, TauriService } from "../shared/services/tauri.service";
 import { BehaviorSubject, type Observable, type Subscription } from "rxjs";
-import { environment } from "../../environments/environment";
+import { environment } from "@fuzzy-waddle/environments/environment";
 
 /** Deep-link scheme registered in tauri.conf.json → plugins.deep-link.desktop.schemes */
 const TAURI_DEEP_LINK_SCHEME = "com.fuzzywaddle.probablewaffle";

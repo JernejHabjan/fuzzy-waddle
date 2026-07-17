@@ -3,8 +3,8 @@ import { Router, RouterModule, type Routes } from "@angular/router";
 import { AuthGuard } from "./auth/auth.guard";
 import { AppRoleGuard } from "./auth/app-role.guard";
 import { LevelGuard } from "@fuzzy-waddle/fly-squasher-interface/choose-level/level.guard";
-import { environment } from "../environments/environment";
-import { GameInstanceGuard } from "./probable-waffle/gui/online/lobby-page/game-instance.guard";
+import { environment } from "@fuzzy-waddle/environments/environment";
+import { GameInstanceGuard } from "@fuzzy-waddle/probable-waffle-interface/gui/online/lobby-page/game-instance.guard";
 import { isTauri } from "./shared/utils/tauri";
 import { ensurePhaserGlobal } from "@fuzzy-waddle/platform-game-host/phaser/ensure-phaser-global";
 
@@ -44,105 +44,105 @@ const probableWaffleRoutes = [
       {
         path: "",
         loadComponent: () =>
-          import("./probable-waffle/gui/router/probable-waffle.component").then((m) => m.ProbableWaffleComponent),
+          import("@fuzzy-waddle/probable-waffle-interface/gui/router/probable-waffle.component").then((m) => m.ProbableWaffleComponent),
         children: [
           {
             path: "",
-            loadComponent: () => import("./probable-waffle/gui/home/home.component").then((m) => m.HomeComponent)
+            loadComponent: () => import("@fuzzy-waddle/probable-waffle-interface/gui/home/home.component").then((m) => m.HomeComponent)
           },
           {
             path: "campaign",
             loadComponent: () =>
-              import("./probable-waffle/gui/campaign/campaign.component").then((m) => m.CampaignComponent)
+              import("@fuzzy-waddle/probable-waffle-interface/gui/campaign/campaign.component").then((m) => m.CampaignComponent)
           },
           {
             path: "campaign/:chapterId",
             loadComponent: () =>
-              import("./probable-waffle/gui/campaign/mission-screen/mission-screen.component").then(
+              import("@fuzzy-waddle/probable-waffle-interface/gui/campaign/mission-screen/mission-screen.component").then(
                 (m) => m.MissionScreenComponent
               )
           },
           {
             path: "campaign/:chapterId/:missionId",
             loadComponent: () =>
-              import("./probable-waffle/gui/campaign/mission-screen/mission-screen.component").then(
+              import("@fuzzy-waddle/probable-waffle-interface/gui/campaign/mission-screen/mission-screen.component").then(
                 (m) => m.MissionScreenComponent
               )
           },
           {
             path: "online",
-            loadComponent: () => import("./probable-waffle/gui/online/online.component").then((m) => m.OnlineComponent)
+            loadComponent: () => import("@fuzzy-waddle/probable-waffle-interface/gui/online/online.component").then((m) => m.OnlineComponent)
             // canActivate: [() => !environment.production] // set to alpha in #606
           },
           {
             path: "skirmish",
             loadComponent: () =>
-              import("./probable-waffle/gui/skirmish/skirmish.component").then((m) => m.SkirmishComponent)
+              import("@fuzzy-waddle/probable-waffle-interface/gui/skirmish/skirmish.component").then((m) => m.SkirmishComponent)
           },
           {
             path: "instant-game",
             loadComponent: () =>
-              import("./probable-waffle/gui/instant-game/instant-game.component").then((m) => m.InstantGameComponent),
+              import("@fuzzy-waddle/probable-waffle-interface/gui/instant-game/instant-game.component").then((m) => m.InstantGameComponent),
             canActivate: [() => !environment.production]
           },
           {
             path: "instant-network-match",
             loadComponent: () =>
-              import("./probable-waffle/gui/online/instant-network-match/instant-network-match.component").then(
+              import("@fuzzy-waddle/probable-waffle-interface/gui/online/instant-network-match/instant-network-match.component").then(
                 (m) => m.InstantNetworkMatchComponent
               ),
             canActivate: [() => !environment.production]
           },
           {
             path: "load",
-            loadComponent: () => import("./probable-waffle/gui/load/load.component").then((m) => m.LoadComponent)
+            loadComponent: () => import("@fuzzy-waddle/probable-waffle-interface/gui/load/load.component").then((m) => m.LoadComponent)
           },
           {
             path: "replay",
-            loadComponent: () => import("./probable-waffle/gui/replay/replay.component").then((m) => m.ReplayComponent)
+            loadComponent: () => import("@fuzzy-waddle/probable-waffle-interface/gui/replay/replay.component").then((m) => m.ReplayComponent)
           },
           {
             path: "match-history",
             loadComponent: () =>
-              import("./probable-waffle/gui/match-history/match-history-page.component").then(
+              import("@fuzzy-waddle/probable-waffle-interface/gui/match-history/match-history-page.component").then(
                 (m) => m.MatchHistoryPageComponent
               )
           },
           {
             path: "match-details/:gameInstanceId",
             loadComponent: () =>
-              import("./probable-waffle/gui/match-history/match-details.component").then((m) => m.MatchDetailsComponent)
+              import("@fuzzy-waddle/probable-waffle-interface/gui/match-history/match-details.component").then((m) => m.MatchDetailsComponent)
           },
           {
             path: "progress",
             loadComponent: () =>
-              import("./probable-waffle/gui/progress/progress.component").then((m) => m.ProgressComponent)
+              import("@fuzzy-waddle/probable-waffle-interface/gui/progress/progress.component").then((m) => m.ProgressComponent)
           },
           {
             path: "progress/:userId",
             loadComponent: () =>
-              import("./probable-waffle/gui/progress/progress.component").then((m) => m.ProgressComponent)
+              import("@fuzzy-waddle/probable-waffle-interface/gui/progress/progress.component").then((m) => m.ProgressComponent)
           },
           {
             path: "options",
             loadComponent: () =>
-              import("./probable-waffle/gui/options/options.component").then((m) => m.OptionsComponent)
+              import("@fuzzy-waddle/probable-waffle-interface/gui/options/options.component").then((m) => m.OptionsComponent)
           },
           {
             path: "lobby",
-            loadComponent: () => import("./probable-waffle/gui/lobby/lobby.component").then((m) => m.LobbyComponent),
+            loadComponent: () => import("@fuzzy-waddle/probable-waffle-interface/gui/lobby/lobby.component").then((m) => m.LobbyComponent),
             canActivate: [GameInstanceGuard]
           },
           {
             path: "score-screen",
             loadComponent: () =>
-              import("./probable-waffle/gui/score-screen/score-screen.component").then((m) => m.ScoreScreenComponent),
+              import("@fuzzy-waddle/probable-waffle-interface/gui/score-screen/score-screen.component").then((m) => m.ScoreScreenComponent),
             canActivate: [GameInstanceGuard]
           },
           {
             path: "game",
             loadComponent: () =>
-              loadGameComponent(() => import("./probable-waffle/gui/main/probable-waffle-game.component")).then(
+              loadGameComponent(() => import("@fuzzy-waddle/probable-waffle-interface/gui/main/probable-waffle-game.component")).then(
                 (m) => m.ProbableWaffleGameComponent
               ),
             canActivate: [GameInstanceGuard]

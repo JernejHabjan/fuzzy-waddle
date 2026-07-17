@@ -1,6 +1,6 @@
 import { AuthService } from "./auth.service";
 import type { HttpInterceptorFn } from "@angular/common/http";
-import { environment } from "../../environments/environment";
+import { environment } from "@fuzzy-waddle/environments/environment";
 import { inject } from "@angular/core";
 
 export const accessTokenInterceptor: HttpInterceptorFn = (req, next) => {

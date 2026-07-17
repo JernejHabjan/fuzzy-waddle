@@ -1,6 +1,6 @@
 import { inject, Injectable, NgZone, signal } from "@angular/core";
 import { Subject } from "rxjs";
-import { isTauri } from "../utils/tauri";
+import { isTauri } from "@fuzzy-waddle/platform-game-host/tauri";
 
 export { isTauri };
 
